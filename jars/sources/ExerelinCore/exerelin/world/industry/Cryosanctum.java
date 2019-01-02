@@ -10,7 +10,7 @@ public class Cryosanctum extends IndustryClassGen {
 	}
 	
 	@Override
-	public float getSpecialWeight(ProcGenEntity entity) {
+	public float getWeight(ProcGenEntity entity) {
 		float weight = 6 - entity.market.getSize();
 		if (weight < 0) weight = 0;
 		return weight/2 + 0.5f;

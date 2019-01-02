@@ -53,9 +53,9 @@
     
     "bonusSeeds":[
         {"id":"nanoforge_corrupted", "count":1},
-        {"id":"aiCore_station", "count":2},
+        {"id":"aiCore_station", "count":2, "mult":0.2},
         {"id":"aiCore_military", "mult":0.5},
         {"id":"aiCore_heavyindustry", "count":1},
-        {"id":"aiCore_other", "mult":1},
+        {"id":"aiCore_any", "mult":2},
     ],
 }

@@ -35,12 +35,7 @@ public class ExerelinUtilsMarket {
 	
 	public static float getPopulation(int size)
 	{
-		//return (int)(Math.pow(10, size));
-		if (size <= 1) return 0.125f;
-		if (size == 2) return 0.25f;
-		if (size == 3) return 0.5f;
-		
-		return (float) Math.pow(2, size - 4);
+		return 2 * (float)Math.pow(10, size);
 	}
 		
 	public static float getHyperspaceDistance(MarketAPI market1, MarketAPI market2)
@@ -59,7 +54,7 @@ public class ExerelinUtilsMarket {
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
 		market.getTariff().modifyMult("nexerelinFactionMult", conf.tariffMult);
-		if (market.hasCondition(Conditions.FREE_PORT))
+		if (factionId.equals(Factions.PLAYER) || market.hasCondition(Conditions.FREE_PORT))
 		{
 			market.getTariff().modifyMult("nexerelin_freeMarket", ExerelinConfig.freeMarketTariffMult);
 		}

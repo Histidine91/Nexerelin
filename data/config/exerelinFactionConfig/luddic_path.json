@@ -25,6 +25,8 @@
         "ideological":1,
     },
     
+    "freeMarket":true,
+    
     "startShipsSolo":[["lasher_luddic_path_Raider"]],
     "startShipsCombatSmall":[["enforcer_luddic_path_rai", "wolf_luddic_path_rai", "kite_luddic_path_Strike"]],
     "startShipsTradeSmall":[["buffalo_luddic_path_att", "dram_luddic_path_rai", "cerberus_luddic_path_Attack"]],

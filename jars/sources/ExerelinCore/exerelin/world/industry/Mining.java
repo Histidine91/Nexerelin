@@ -13,48 +13,51 @@ public class Mining extends IndustryClassGen {
 	}
 
 	@Override
-	public float getPriority(ProcGenEntity entity) {
-		float priority = 0;
+	public float getWeight(ProcGenEntity entity) {
+		float weight = 0;
 		MarketAPI market = entity.market;
 				
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			// volatiles are sufficiently rare that we want to make sure there's a source of them
+			// actually screw it, if there's anything even slightly minable, by God we will mine it!
 			switch (cond.getId())
 			{
 				case Conditions.ORE_SPARSE:
 				case Conditions.RARE_ORE_SPARSE:
 				case Conditions.ORGANICS_TRACE:
-					priority += 25;
-					break;
+				//	weight += 100;
+				//	break;
 				case Conditions.ORE_MODERATE:
 				case Conditions.RARE_ORE_MODERATE:
 				case Conditions.ORGANICS_COMMON:
-					priority += 75;
-					break;
+				//	weight += 250;
+				//	break;
 				case Conditions.ORE_ABUNDANT:
 				case Conditions.RARE_ORE_ABUNDANT:
 				case Conditions.ORGANICS_ABUNDANT:
-					priority += 125;
-					break;
+				//	weight += 400;
+				//	break;
 				case Conditions.ORE_RICH:
 				case Conditions.RARE_ORE_RICH:
 				case Conditions.ORGANICS_PLENTIFUL:
 				//case Conditions.VOLATILES_TRACE:
-					priority += 200;
-					break;
+				//	weight += 600;
+				//	break;
 				case Conditions.ORE_ULTRARICH:
 				case Conditions.RARE_ORE_ULTRARICH:
 				//case Conditions.VOLATILES_DIFFUSE:
-					priority += 300;
+				//	weight += 800;
+				//	break;
+					weight += 2000;
 					break;
 				case Conditions.VOLATILES_TRACE:
 				case Conditions.VOLATILES_DIFFUSE:
 				case Conditions.VOLATILES_ABUNDANT:
 				case Conditions.VOLATILES_PLENTIFUL:
-					return 9999;
+					return 999999;
 			}
 		}
-		return priority;
+		return weight;
 	}
 }

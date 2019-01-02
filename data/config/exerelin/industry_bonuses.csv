@@ -7,3 +7,5 @@ aiCore_fuelprod,AI Core (Fuel Production),exerelin.world.industry.bonus.AICoreFu
 aiCore_military,AI Core (Military),exerelin.world.industry.bonus.AICoreMilitary,
 aiCore_station,AI Core (Orbital Station),exerelin.world.industry.bonus.AICoreStation,
 aiCore_other,AI Core (Other),exerelin.world.industry.bonus.AICoreOther,
+aiCore_any,AI Core (Any),exerelin.world.industry.bonus.AICoreAny,
+population_upsize,Population Upsize,exerelin.world.industry.bonus.PopulationUpsize,

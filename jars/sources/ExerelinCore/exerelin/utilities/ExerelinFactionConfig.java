@@ -584,8 +584,6 @@ public class ExerelinFactionConfig
     {
         if (!industrySpawnMults.containsKey(defId))
             return 1;
-        Global.getLogger(this.getClass()).info("What the fuck is this, " 
-                + industrySpawnMults.get(defId) + ", " + industrySpawnMults.get(defId).getClass().getName());
         return (float)industrySpawnMults.get(defId);
     }
     

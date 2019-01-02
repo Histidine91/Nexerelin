@@ -13,7 +13,7 @@ public class TechMining extends IndustryClassGen {
 	}
 
 	@Override
-	public float getPriority(ProcGenEntity entity) {
+	public float getWeight(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 				
 		for (MarketConditionAPI cond : market.getConditions())

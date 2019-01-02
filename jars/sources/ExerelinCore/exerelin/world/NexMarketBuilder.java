@@ -83,12 +83,13 @@ public class NexMarketBuilder
 	protected static final int[] MOON_SIZE_ROTATION = new int[] {3, 4, 5, 6, 5, 4};
 	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5, 4, 3};
 	
-	protected static final List<IndustryClassDef> industryClasses = new ArrayList<>();
-	protected static final Map<String, IndustryClassDef> industryClassesById = new HashMap<>();
-	protected static final Map<String, IndustryClassDef> industryClassesByIndustryId = new HashMap<>();
-	protected static final List<IndustryClassDef> specialIndustryClasses = new ArrayList<>();
-	protected static final List<BonusItem> bonuses = new ArrayList<>();
-	protected static final Map<String, BonusItem> bonusesById = new HashMap<>();
+	protected static final List<IndustryClassGen> industryClasses = new ArrayList<>();
+	protected static final List<IndustryClassGen> industryClassesOrdered = new ArrayList<>();	// sorted by priority
+	protected static final Map<String, IndustryClassGen> industryClassesById = new HashMap<>();
+	protected static final Map<String, IndustryClassGen> industryClassesByIndustryId = new HashMap<>();
+	protected static final List<IndustryClassGen> specialIndustryClasses = new ArrayList<>();
+	protected static final List<BonusGen> bonuses = new ArrayList<>();
+	protected static final Map<String, BonusGen> bonusesById = new HashMap<>();
 	
 	// not a literally accurate count since it disregards HQs
 	// only used to handle the market size rotation
@@ -117,27 +118,30 @@ public class NexMarketBuilder
 				String id = row.getString("id");
 				String name = row.getString("name");
 				String classDef = row.getString("class");
+				float priority = (float)row.optDouble("priority", 0);
 				boolean special = row.optBoolean("special", false);
 				String requiredMod = row.optString("requiredMod", "");
 				
 				if (!requiredMod.isEmpty() && !Global.getSettings().getModManager().isModEnabled(requiredMod))
 					continue;
 				
-				IndustryClassDef def = new IndustryClassDef(id, name, classDef, special);
+				IndustryClassGen gen = IndustryClassGen.loadIndustryClassGen(id, name, priority, classDef, special);
 				
-				industryClasses.add(def);
-				industryClassesById.put(id, def);
+				industryClasses.add(gen);
+				industryClassesById.put(id, gen);
 				if (special) {
-					log.info("Added special industry class: " + def.id);
-					specialIndustryClasses.add(def);
+					log.info("Added special industry class: " + gen.getId());
+					specialIndustryClasses.add(gen);
 				}
-				Set<String> industryIds = def.generator.getIndustryIds();
+				Set<String> industryIds = gen.getIndustryIds();
 				for (String industryId : industryIds)
 				{
-					industryClassesByIndustryId.put(industryId, def);
+					industryClassesByIndustryId.put(industryId, gen);
 					//log.info("Adding industry ID key " + industryId + " for industry class def " + def.name);
 				}
 			}
+			industryClassesOrdered.addAll(industryClasses);
+			Collections.sort(industryClassesOrdered);
 			
 		} catch (IOException | JSONException ex) {	// fail-deadly to make sure errors don't go unnoticed
 			log.error(ex);
@@ -160,7 +164,7 @@ public class NexMarketBuilder
 				if (!requiredMod.isEmpty() && !Global.getSettings().getModManager().isModEnabled(requiredMod))
 					continue;
 				
-				BonusItem bonus = new BonusItem(id, name, classDef);
+				BonusGen bonus = BonusGen.loadBonusGen(id, name, classDef);
 				bonuses.add(bonus);
 				bonusesById.put(id, bonus);
 			}
@@ -242,7 +246,8 @@ public class NexMarketBuilder
 		boolean isMoon = data.type == EntityType.MOON;
 		int size = 1;
 		if (data.isHQ) {
-			size = 8;
+			if (factionId.equals(Factions.PLAYER)) size = 5;
+			else size = 7;
 		}
 		else {
 			if (isStation) size = getSizeFromRotation(STATION_SIZE_ROTATION, numStations);
@@ -260,12 +265,14 @@ public class NexMarketBuilder
 	
 	protected int getMaxProductiveIndustries(ProcGenEntity ent)
 	{
-		if (ent.isHQ) return 5;
+		int max = 4;
 		int size = ent.market.getSize();
-		if (size <= 4) return 1;
-		if (size <= 6) return 2;
-		if (size <= 8) return 3;
-		return 4;
+		if (size <= 4) max = 1;
+		if (size <= 6) max = 2;
+		if (size <= 8) max = 3;
+		if (ent.isHQ) max += 1;
+		
+		return max;
 	}
 	
 	protected float getSpecialIndustryChance(ProcGenEntity ent)
@@ -347,7 +354,6 @@ public class NexMarketBuilder
 			market.addIndustry(Industries.GROUNDDEFENSES);
 		
 		// add stations
-		// TODO: investigate if this breaks if we add the station industry before the custom station entity
 		if (!entity.isHQ)	// already added for HQs
 		{
 			int size1 = 4, size2 = 6, size3 = 8;
@@ -436,18 +442,24 @@ public class NexMarketBuilder
 		
 		if (data.isHQ)
 		{
-			market.addIndustry(Industries.HIGHCOMMAND);
-			market.addIndustry(Industries.WAYSTATION);
-			market.addIndustry(ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 2));
+			if (factionId.equals(Factions.PLAYER)) {
+				market.addIndustry(Industries.MILITARYBASE);
+				market.addIndustry(ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 1));
+			}
+			else {
+				market.addIndustry(Industries.HIGHCOMMAND);
+				market.addIndustry(ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 2));
+			}
+			
 			if (data == procGen.getHomeworld()) 
 			{
-				//market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
-				//newMarket.addCondition(Conditions.SHIPBREAKING_CENTER);
-				//market.addCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);
+				market.addIndustry(Industries.WAYSTATION);
 			}
 			
 			if (factionId.equals(Factions.DIKTAT))
 				market.addIndustry("lionsguard");
+			else if (factionId.equals("dassault_mikoyan"))
+				market.addIndustry("6emebureau");
 		}
 		
 		addMilitaryStructures(data, marketSize);
@@ -494,11 +506,21 @@ public class NexMarketBuilder
 			if (data.terrain != null)
 			{
 				if (data.terrain.getType().equals(Terrain.ASTEROID_BELT))
+				{
+					log.info(market.getName() + " is in asteroid belt, adding ore condition");
 					market.addCondition(Conditions.ORE_SPARSE);
+				}
+					
 				if (data.terrain.getType().equals(Terrain.ASTEROID_FIELD))
+				{
+					log.info(market.getName() + " is in asteroid ring, adding ore condition");
 					market.addCondition(Conditions.ORE_MODERATE);
+				}
 				if (data.terrain.getType().equals(Terrain.RING))
+				{
+					log.info(market.getName() + " is in ring, adding volatiles condition");
 					market.addCondition(Conditions.VOLATILES_TRACE);
+				}
 			}
 		}
 				
@@ -518,6 +540,10 @@ public class NexMarketBuilder
 		
 		Global.getSector().getEconomy().addMarket(market, true);
 		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
+		
+		// only do this when game has finished loading, so it doesn't mess with our income/debts
+		//if (factionId.equals(Factions.PLAYER))
+		//	market.setPlayerOwned(true);
 				
 		procGen.pickEntityInteractionImage(data.entity, market, planetType, data.type);
 		
@@ -559,12 +585,15 @@ public class NexMarketBuilder
 			
 			if (count == 0) continue;
 			
-			IndustryClassDef def = industryClassesByIndustryId.get(seed.industryId);
+			IndustryClassGen gen = industryClassesByIndustryId.get(seed.industryId);
 			
 			// order entities by reverse priority, highest priority markets get the industries
 			List<Pair<ProcGenEntity, Float>> ordered = new ArrayList<>();	// float is priority value
 			for (ProcGenEntity entity : entities)
 			{
+				if (entity.market.getIndustries().size() >= 16)
+					continue;
+				
 				// already present?
 				if (entity.market.hasIndustry(seed.industryId))
 				{
@@ -573,9 +602,9 @@ public class NexMarketBuilder
 				}
 				
 				// this industry isn't usable on this market
-				if (!def.generator.canApply(factionId, entity))
+				if (!gen.canApply(entity))
 					continue;
-				ordered.add(new Pair<>(entity, def.generator.getPriority(entity)));
+				ordered.add(new Pair<>(entity, gen.getWeight(entity)));
 			}
 			
 			Collections.sort(ordered, new Comparator<Pair<ProcGenEntity, Float>>() {
@@ -588,11 +617,42 @@ public class NexMarketBuilder
 			{
 				if (ordered.isEmpty()) break;
 				Pair<ProcGenEntity, Float> highest = ordered.remove(ordered.size() - 1);
-				log.info("Adding key industry " + def.name + " to market " + highest.one.name
+				log.info("Adding key industry " + gen.getName() + " to market " + highest.one.name
 						+ " (priority " + highest.two + ")");
 				highest.one.market.addIndustry(seed.industryId);
 				highest.one.numProductiveIndustries += 1;
 			}
+		}
+	}
+	
+	/**
+	 * Removes {@code IndustryClassGen}s in reverse order from {@code from},
+	 * and adds them to {@code picker} with the appropriate weight, 
+	 * until {@code from} is empty or we've reached the next highest priority.
+	 * @param ent
+	 * @param picker
+	 * @param from
+	 */
+	protected void loadPicker(ProcGenEntity ent, WeightedRandomPicker<IndustryClassGen> picker, List<IndustryClassGen> from)
+	{
+		Float currPriority = null;
+		while (true)
+		{
+			log.info("Remaining for picker: " + from.size());
+			if (from.isEmpty()) break;
+			int nextIndex = from.size() - 1;
+			float priority = from.get(nextIndex).getPriority();
+			if (currPriority == null)
+				currPriority = priority;
+			else if (priority < currPriority)
+				break;
+			
+			IndustryClassGen next = from.remove(from.size() - 1);
+			float weight = next.getWeight(ent);
+			if (weight <= 0) continue;
+			log.info("\tAdding industry class to picker: " + next.getName() 
+					+ ", priority " + priority + ", weight " + weight);
+			picker.add(next, weight);
 		}
 	}
 	
@@ -609,68 +669,78 @@ public class NexMarketBuilder
 		
 		String factionId = entity.market.getFactionId();
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		List<Pair<IndustryClassDef, Float>> industries = new ArrayList<>();
 		
-		// order compatible indsutries by priority
-		for (IndustryClassDef def : industryClasses)
+		List<IndustryClassGen> availableIndustries = new ArrayList<>();
+		for (IndustryClassGen gen : industryClassesOrdered)
 		{
-			if (def.special) continue;
-			if (!def.generator.canApply(factionId, entity))
-				continue;
+			if (gen.isSpecial()) continue;
+			if (!gen.canApply(entity)) continue;
 			
-			float priority = def.generator.getPriority(entity);
-			priority *= conf.getIndustryTypeMult(def.id);
-			if (priority <= 0) continue;
-			industries.add(new Pair<>(def, priority));
+			availableIndustries.add(gen);
 		}
 		
-		Collections.sort(industries, new Comparator<Pair<IndustryClassDef, Float>>() {
-			public int compare(Pair<IndustryClassDef, Float> p1, Pair<IndustryClassDef, Float> p2) {
-				return p1.two.compareTo(p2.two);
-			}
-		});
-		
+		WeightedRandomPicker<IndustryClassGen> picker = new WeightedRandomPicker<>();
 		// add as many industries as we're allowed to
+		int tries = 0;
 		while (entity.numProductiveIndustries < max)
 		{
-			if (industries.isEmpty()) break;
+			tries++;
+			if (tries > 50) break;
+			
 			if (entity.market.getIndustries().size() >= 16)
 				break;
 			
-			Pair<IndustryClassDef, Float> highest = industries.remove(industries.size() - 1);
-			IndustryClassDef def = highest.one;
-			log.info("Adding industry " + def.name + " to market " + entity.name 
-					+ " (priority " + highest.two + ")");
-			def.generator.apply(entity);
+			if (availableIndustries.isEmpty())
+				break;
+			
+			if (picker.isEmpty())
+				loadPicker(entity, picker, availableIndustries);
+			
+			IndustryClassGen gen = picker.pickAndRemove();
+			if (gen == null)
+			{
+				log.info("Picker is empty, skipping");
+				continue;
+			}
+				
+			
+			log.info("Adding industry " + gen.getName() + " to market " + entity.name);
+			gen.apply(entity);
 		}
-		
-		// add special industries
+	}
+	
+	public void addSpecialIndustries(ProcGenEntity entity)
+	{
 		if (entity.market.getIndustries().size() >= 16) return;
 		float specialChance = getSpecialIndustryChance(entity);
 		if (random.nextFloat() > specialChance) return;
 		
-		WeightedRandomPicker<IndustryClassDef> specialPicker = new WeightedRandomPicker<>();
-		for (IndustryClassDef def : specialIndustryClasses)
+		WeightedRandomPicker<IndustryClassGen> specialPicker = new WeightedRandomPicker<>();
+		for (IndustryClassGen gen : specialIndustryClasses)
 		{
-			if (!def.generator.canApply(factionId, entity))
+			if (!gen.canApply(entity))
 				continue;
 			
-			float weight = def.generator.getSpecialWeight(entity);
+			float weight = gen.getWeight(entity);
 			if (weight <= 0) continue;
-			specialPicker.add(def, weight);
+			specialPicker.add(gen, weight);
 		}
-		IndustryClassDef picked = specialPicker.pick();
+		IndustryClassGen picked = specialPicker.pick();
 		if (picked != null)
 		{
-			log.info("Adding special industry " + picked.name + " to market " + entity.name);
-			picked.generator.apply(entity);
+			log.info("Adding special industry " + picked.getName() + " to market " + entity.name);
+			picked.apply(entity);
 		}
 	}
 	
 	public void addIndustriesToMarkets()
 	{
 		for (ProcGenEntity ent : markets)
+		{
 			addIndustriesToMarket(ent);
+			addSpecialIndustries(ent);
+		}
+			
 	}
 	
 	/**
@@ -695,7 +765,7 @@ public class NexMarketBuilder
 			if (count <= 0)
 				continue;
 			
-			BonusItem bonus = bonusesById.get(bonusEntry.id);
+			BonusGen bonus = bonusesById.get(bonusEntry.id);
 			
 			// order industries by reverse priority, highest priority markets get the bonuses
 			List<Pair<Industry, Float>> ordered = new ArrayList<>();	// float is priority value
@@ -703,10 +773,10 @@ public class NexMarketBuilder
 			{
 				ProcGenEntity ent = procGen.procGenEntitiesByToken.get(ind.getMarket().getPrimaryEntity());
 				// this bonus isn't usable for this industry
-				if (!bonus.generator.canApply(ind, ent))
+				if (!bonus.canApply(ind, ent))
 					continue;
 				
-				ordered.add(new Pair<>(ind, bonus.generator.getPriority(ind, ent)));
+				ordered.add(new Pair<>(ind, bonus.getPriority(ind, ent)));
 			}
 			
 			Collections.sort(ordered, new Comparator<Pair<Industry, Float>>() {
@@ -722,62 +792,10 @@ public class NexMarketBuilder
 				Industry ind = highest.one;
 				ProcGenEntity ent = procGen.procGenEntitiesByToken.get(ind.getMarket().getPrimaryEntity());
 				
-				log.info("Adding bonus " + bonus.name + " to industry " + ind.getNameForModifier() 
+				log.info("Adding bonus " + bonus.getName() + " to industry " + ind.getNameForModifier() 
 						+ " on " + ind.getMarket().getName());
-				bonus.generator.apply(ind, ent);
+				bonus.apply(ind, ent);
 			}
 		}		
-	}
-		
-	// =========================================================================
-	// static classes
-	public static class IndustryClassDef
-	{
-		public final String id;
-		public final String name;
-		public IndustryClassGen generator;
-		public final boolean special;
-
-		public IndustryClassDef(String id, String name, String generatorClass, boolean special)
-		{
-			this.id = id;
-			this.name = name;
-			this.special = special;
-			
-			try {
-				ClassLoader loader = Global.getSettings().getScriptClassLoader();
-				Class<?> clazz = loader.loadClass(generatorClass);
-				generator = (IndustryClassGen)clazz.newInstance();
-			} catch (Exception ex) {
-				log.error("Failed to set generator for industry def " + name, ex);
-			}
-			
-			generator.setId(id);
-			generator.setName(name);
-		}
-	}
-	
-	public static class BonusItem
-	{
-		public final String id;
-		public final String name;
-		public BonusGen generator;
-		
-		public BonusItem(String id, String name, String generatorClass)
-		{
-			this.id = id;
-			this.name = name;
-			
-			try {
-				ClassLoader loader = Global.getSettings().getScriptClassLoader();
-				Class<?> clazz = loader.loadClass(generatorClass);
-				generator = (BonusGen)clazz.newInstance();
-			} catch (Exception ex) {
-				log.error("Failed to set generator for industry def " + name, ex);
-			}
-			
-			generator.setId(id);
-			generator.setName(name);
-		}
 	}
 }

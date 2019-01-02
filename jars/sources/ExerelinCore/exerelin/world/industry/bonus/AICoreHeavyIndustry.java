@@ -13,13 +13,13 @@ public class AICoreHeavyIndustry extends AICore {
 	
 	@Override
 	public float getPriority(Industry ind, ProcGenEntity entity) {
-		float priority = 100;
+		//float priority = ind.getBaseUpkeep() * entity.market.getUpkeepMult().getModifiedValue() / 1000;
+		//priority /= (1 + entity.numBonuses/2);
+		float priority = super.getPriority(ind, entity);
 		String indId = ind.getId();
 		if (indId.equals(Industries.ORBITALWORKS) || indId.equals("ms_massIndustry"))
 			priority *= 2;
-		if (entity.isHQ) priority += 100;
-		
-		priority /= (1 + entity.numBonuses/2);
+		if (entity.isHQ) priority *= 2;
 		
 		return priority;
 	}

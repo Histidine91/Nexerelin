@@ -19,31 +19,31 @@ public class HeavyIndustry extends IndustryClassGen {
 	}
 
 	@Override
-	public float getPriority(ProcGenEntity entity) {
+	public float getWeight(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		
-		float priority = (25 + market.getSize() * 5) * 2;
+		float weight = (25 + market.getSize() * 5) * 2;
 				
 		// bad for high hazard worlds
-		priority += (150 - market.getHazardValue()) * 2;
+		weight += (150 - market.getHazardValue()) * 2;
 		
 		// prefer not to be on same planet as fuel production
 		if (market.hasIndustry(Industries.FUELPROD))
-			priority -= 400;
+			weight -= 400;
 		// or light industry
 		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
-			priority -= 250;
+			weight -= 250;
 		
-		return priority;
+		return weight;
 	}
 	
 	@Override
-	public boolean canApply(String factionId, ProcGenEntity entity) {
+	public boolean canApply(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		if (market.hasIndustry(Industries.ORBITALWORKS) || market.hasIndustry("ms_massIndustry"))
 			return false;
 		
-		return super.canApply(factionId, entity);
+		return super.canApply(entity);
 	}
 	
 	@Override

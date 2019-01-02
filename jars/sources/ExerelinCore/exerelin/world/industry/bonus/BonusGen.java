@@ -1,5 +1,6 @@
 package exerelin.world.industry.bonus;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import java.util.Arrays;
@@ -25,6 +26,12 @@ public abstract class BonusGen {
 		this.industryIds = new HashSet<>(Arrays.asList(industryIds));
 	}
 	
+	public void init(String id, String name)
+	{
+		this.id = id;
+		this.name = name;
+	}
+	
 	/**
 	 * Gets the priority for this bonus to be added to this industry.
 	 * One bonus is added to each industry in order of priority, up to the amount
@@ -34,7 +41,7 @@ public abstract class BonusGen {
 	 * @return
 	 */
 	public float getPriority(Industry ind, ProcGenEntity entity) {
-		return 100 / (1 + entity.numBonuses/2);
+		return (100 + entity.market.getSize() * 10) / (1 + entity.numBonuses/2);
 	}
 	
 	public boolean canApply(Industry ind, ProcGenEntity entity)
@@ -45,22 +52,17 @@ public abstract class BonusGen {
 	/**
 	 * Adds the bonus to the specified industry.
 	 * Multi-industry classes should override this method to specify exactly which industry gets added.
+	 * @param ind
 	 * @param entity
 	 */
 	public void apply(Industry ind, ProcGenEntity entity) {
 		entity.numBonuses += 1;
+		entity.market.reapplyConditions();
+		entity.market.reapplyIndustries();
 	}
 	
 	public Set<String> getIndustryIds() {
 		return industryIds;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	public String getId() {
@@ -69,5 +71,21 @@ public abstract class BonusGen {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public static <T extends BonusGen> T loadBonusGen(String id, String name, String generatorClass)
+	{
+		BonusGen gen = null;
+		
+		try {
+			ClassLoader loader = Global.getSettings().getScriptClassLoader();
+			Class<?> clazz = loader.loadClass(generatorClass);
+			gen = (BonusGen)clazz.newInstance();
+			gen.init(id, name);
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+			Global.getLogger(BonusGen.class).error("Failed to load bonus generator " + name, ex);
+		}
+
+		return (T)gen;
 	}
 }

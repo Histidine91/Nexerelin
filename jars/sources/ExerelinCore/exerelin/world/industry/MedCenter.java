@@ -9,14 +9,14 @@ public class MedCenter extends IndustryClassGen {
 	}
 	
 	@Override
-	public boolean canApply(String factionId, ProcGenEntity entity) {
-		if (!factionId.equals("shadow_industry"))
+	public boolean canApply(ProcGenEntity entity) {
+		if (!entity.market.getFactionId().equals("shadow_industry"))
 			return false;
-		return super.canApply(factionId, entity);
+		return super.canApply(entity);
 	}
 	
 	@Override
-	public float getSpecialWeight(ProcGenEntity entity) {
+	public float getWeight(ProcGenEntity entity) {
 		return 1 + entity.market.getSize() / 5;
 	}
 }

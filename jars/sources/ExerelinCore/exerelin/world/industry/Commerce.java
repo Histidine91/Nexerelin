@@ -9,7 +9,7 @@ public class Commerce extends IndustryClassGen {
 	}
 	
 	@Override
-	public float getSpecialWeight(ProcGenEntity entity) {
+	public float getWeight(ProcGenEntity entity) {
 		return entity.numProductiveIndustries / 2f;
 	}
 }

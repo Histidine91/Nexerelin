@@ -4,6 +4,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 
 public class LightIndustry extends IndustryClassGen {
@@ -13,40 +15,44 @@ public class LightIndustry extends IndustryClassGen {
 	}
 
 	@Override
-	public float getPriority(ProcGenEntity entity) {
+	public float getWeight(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		
-		float priority = 25 + market.getSize() * 4;
+		float weight = 25 + market.getSize() * 4;
 				
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			switch (cond.getId())
 			{
 				case Conditions.ORGANICS_TRACE:
-					priority += 20;
+					weight += 20;
 					break;
 				case Conditions.ORGANICS_COMMON:
-					priority += 50;
+					weight += 50;
 					break;
 				case Conditions.ORGANICS_ABUNDANT:
-					priority += 75;
+					weight += 75;
 					break;
 				case Conditions.ORGANICS_PLENTIFUL:
-					priority += 100;
+					weight += 100;
 					break;
 			}
 		}
 		
 		// bad for high hazard worlds
-		priority += (175 - market.getHazardValue()) * 2;
+		weight += (175 - market.getHazardValue()) * 2;
 		
 		// prefer to not be on same planet as heavy industry
 		if (HeavyIndustry.hasHeavyIndustry(market))
-			priority -= 300;
+			weight -= 300;
 		// nor fuel production
 		if (market.hasIndustry(Industries.FUELPROD))
-			priority -= 250;
+			weight -= 250;
 		
-		return priority;
+		// hax so this isn't the default choice for little stations
+		if (entity.type == EntityType.STATION && StarSystemGenerator.random.nextBoolean())
+			weight = -1;
+		
+		return weight;
 	}
 }

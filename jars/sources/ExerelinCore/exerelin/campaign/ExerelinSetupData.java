@@ -20,8 +20,8 @@ public class ExerelinSetupData
 
 	// Sector Generation Defaults
 	public int numSystems = 16;
-	public int numPlanets = 32;
-	public int numStations = 16;
+	public int numPlanets = 36;
+	public int numStations = 12;
 	public int maxPlanetsPerSystem = 4;
 	public int maxMarketsPerSystem = 6;	// includes stations
 	public Map<String, Boolean> factions = new HashMap<>();
@@ -30,8 +30,6 @@ public class ExerelinSetupData
 	public boolean corvusMode = true;
 	public boolean respawnFactions = false;
 	public boolean onlyRespawnStartingFactions = false;
-	@Deprecated
-	public int numStartFactions = -1;
 	public boolean randomStartRelationships = false;
 	public boolean randomStartRelationshipsPirate = false;
 	public boolean easyMode = false;

@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
@@ -143,9 +144,16 @@ public class StartSetupPostTimePass {
 		}
 		
 		// commission
-		if (!factionId.equals(Factions.PLAYER))
-		{
+		if (!factionId.equals(Factions.PLAYER)) {
 			ExerelinUtilsFaction.grantCommission(factionId);
+		}
+		// make own faction start's first market player-owned
+		else if (!SectorManager.getCorvusMode() && !SectorManager.getFreeStart() && entity != null) {
+			entity.getMarket().setPlayerOwned(true);
+		}
+		
+		if (!SectorManager.getCorvusMode() && !SectorManager.getHardMode()) {
+			new GalatianAcademyStipend();
 		}
 	}
 	

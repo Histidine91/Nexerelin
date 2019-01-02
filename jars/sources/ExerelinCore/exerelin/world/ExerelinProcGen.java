@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantSeededFleetManager;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantStationFleetManager;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
@@ -361,6 +362,7 @@ public class ExerelinProcGen {
 		{
 			desirability += getDesirabilityForMarketCondition(cond);
 		}
+		
 		planetDesirabilityCache.put(planet, desirability);
 		
 		return desirability;
@@ -661,6 +663,19 @@ public class ExerelinProcGen {
 		}
 	}
 	
+	protected boolean isInCorona(PlanetAPI planet)
+	{
+		StarSystemAPI system = planet.getStarSystem();
+		if (system == null) return false;
+		
+		for (PlanetAPI star : system.getPlanets())
+		{
+			if (!star.isStar()) return false;
+			
+		}
+		return false;
+	}
+	
 	/**
 	 * Picks the "homeworld" (player faction's HQ) from the most desirable planets
 	 * @return
@@ -890,7 +905,7 @@ public class ExerelinProcGen {
 	
 	protected void init()
 	{
-		random = new Random(ExerelinUtils.getStartingSeed());
+		random = StarSystemGenerator.random;
 		marketSetup = new NexMarketBuilder(this);
 		setupData = ExerelinSetupData.getInstance();
 		factionIds = getStartingFactions();
@@ -1388,7 +1403,7 @@ public class ExerelinProcGen {
 			populatedPlanetsCopy.remove(hq);
 			
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-			if (!(config != null && config.noHomeworld == true))
+			if (!config.noHomeworld)
 				hq.isHQ = true;
 			
 			marketSetup.initMarket(hq, factionId);

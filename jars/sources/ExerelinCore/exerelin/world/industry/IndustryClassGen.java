@@ -1,18 +1,21 @@
 package exerelin.world.industry;
 
+import com.fs.starfarer.api.Global;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class IndustryClassGen {
+public abstract class IndustryClassGen implements Comparable {
 	
 	// all Starsector industry IDs that this class handles
 	// e.g. Farming class handles farming and aquaculture industries
 	protected final Set<String> industryIds;
 	protected String id;
 	protected String name;
+	protected float priority;
+	protected boolean special;
 		
 	public IndustryClassGen(Collection<String> industryIds)
 	{
@@ -24,23 +27,39 @@ public abstract class IndustryClassGen {
 		this.industryIds = new HashSet<>(Arrays.asList(industryIds));
 	}
 	
+	public void init(String id, String name, float priority, boolean special)
+	{
+		this.id = id;
+		this.name = name;
+		this.priority = priority;
+		this.special = special;
+	}
+	
 	/**
-	 * Gets the priority for this industry to be added as an economic industry.
+	 * Gets the priority tier for this industry class.
+	 * @return
+	 */
+	public float getPriority() {
+		return priority;
+	}
+	
+	/**
+	 * Gets the weight for this industry class to be added as an economic industry.
 	 * 
-	 * When adding industries to each market, industries are added in order of priority, 
-	 * up to the maximum allowed by the market size.
-	 * Returning a priority of less than zero will prevent this industry from being selected.
+	 * <p>When adding industries to each market, industries are added from a weighted random picker,
+	 * up to the maximum allowed by the market size. Higher priority industries are selected first.
+	 * Returning a weight of less than zero will prevent this industry from being selected.</p>
 	 * 
-	 * When adding key industries to each faction's markets, one industry is added to each market
-	 * in order of priority, up to the amount desired for that faction.
+	 * <p>When adding key industries to each faction's markets, one industry is added to each market
+	 * in order of weight, up to the amount desired for that faction.</p>
 	 * @param entity
 	 * @return
 	 */
-	public float getPriority(ProcGenEntity entity) {
+	public float getWeight(ProcGenEntity entity) {
 		return 100;
 	}
 	
-	public boolean canApply(String factionId, ProcGenEntity entity)
+	public boolean canApply(ProcGenEntity entity)
 	{
 		if (alreadyExists(entity)) return false;
 		return true;
@@ -70,25 +89,8 @@ public abstract class IndustryClassGen {
 		return industryIds;
 	}
 	
-	/**
-	 * Gets the random picker weight for this industry, when used as a special industry.
-	 * @param entity
-	 * @return
-	 */
-	public float getSpecialWeight(ProcGenEntity entity) {
-		return 1;
-	}
-	
 	public boolean isSpecial() {
-		return false;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return special;
 	}
 	
 	public String getId() {
@@ -97,5 +99,26 @@ public abstract class IndustryClassGen {
 	
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public int compareTo(Object o) {
+		return Float.compare(priority, ((IndustryClassGen)o).priority);
+	}
+	
+	public static <T extends IndustryClassGen> T loadIndustryClassGen(String id, String name, float priority, String generatorClass, boolean special)
+	{
+		IndustryClassGen gen = null;
+		
+		try {
+			ClassLoader loader = Global.getSettings().getScriptClassLoader();
+			Class<?> clazz = loader.loadClass(generatorClass);
+			gen = (IndustryClassGen)clazz.newInstance();
+			gen.init(id, name, priority, special);
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+			Global.getLogger(IndustryClassGen.class).error("Failed to load industry class generator " + name, ex);
+		}
+
+		return (T)gen;
 	}
 }

@@ -13,8 +13,8 @@ public class Refining extends IndustryClassGen {
 	}
 
 	@Override
-	public float getPriority(ProcGenEntity entity) {
-		float priority = 0;
+	public float getWeight(ProcGenEntity entity) {
+		float weight = 250;
 		MarketAPI market = entity.market;
 				
 		for (MarketConditionAPI cond : market.getConditions())
@@ -23,31 +23,29 @@ public class Refining extends IndustryClassGen {
 			{
 				case Conditions.ORE_SPARSE:
 				case Conditions.RARE_ORE_SPARSE:
-					priority += 25;
+					weight += 25;
 					break;
 				case Conditions.ORE_MODERATE:
 				case Conditions.RARE_ORE_MODERATE:
-					priority += 75;
+					weight += 75;
 					break;
 				case Conditions.ORE_ABUNDANT:
 				case Conditions.RARE_ORE_ABUNDANT:
-					priority += 100;
+					weight += 100;
 					break;
 				case Conditions.ORE_RICH:
 				case Conditions.RARE_ORE_RICH:
-					priority += 150;
+					weight += 150;
 					break;
 				case Conditions.ORE_ULTRARICH:
 				case Conditions.RARE_ORE_ULTRARICH:
-					priority += 200;
+					weight += 200;
 					break;
 			}
 		}
 		// bad for high hazard worlds
-		priority += (175 - market.getHazardValue()) * 2;
+		weight += (175 - market.getHazardValue()) * 2f;
 		
-		priority /= 2;
-		
-		return priority;
+		return weight;
 	}
 }

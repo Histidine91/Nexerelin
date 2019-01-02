@@ -1,12 +1,12 @@
-id,name,class,special,requiredMod
-farming,Farming,exerelin.world.industry.Farming,,
-mining,Mining,exerelin.world.industry.Mining,,
-techmining,Tech-Mining,exerelin.world.industry.TechMining,,
-refining,Refining,exerelin.world.industry.Refining,,
-lightindustry,Light Industry,exerelin.world.industry.LightIndustry,,
-heavyindustry,Heavy Industry,exerelin.world.industry.HeavyIndustry,,
-fuelproduction,Fuel Production,exerelin.world.industry.FuelProduction,,
-commerce,Commerce,exerelin.world.industry.Commerce,TRUE,
-waystation,Waystation,exerelin.world.industry.Waystation,TRUE,
-cryosanctum,Cryosanctum,exerelin.world.industry.Cryosanctum,TRUE,
-ms_medCenter,Med Center,exerelin.world.industry.MedCenter,TRUE,shadow_ships
+id,name,class,priority,special,requiredMod
+farming,Farming,exerelin.world.industry.Farming,2,,
+mining,Mining,exerelin.world.industry.Mining,3,,
+techmining,Tech-Mining,exerelin.world.industry.TechMining,1,,
+refining,Refining,exerelin.world.industry.Refining,1,,
+lightindustry,Light Industry,exerelin.world.industry.LightIndustry,1,,
+heavyindustry,Heavy Industry,exerelin.world.industry.HeavyIndustry,1,,
+fuelproduction,Fuel Production,exerelin.world.industry.FuelProduction,1,,
+commerce,Commerce,exerelin.world.industry.Commerce,,TRUE,
+waystation,Waystation,exerelin.world.industry.Waystation,,TRUE,
+cryosanctum,Cryosanctum,exerelin.world.industry.Cryosanctum,,TRUE,
+ms_medCenter,Med Center,exerelin.world.industry.MedCenter,,TRUE,shadow_ships
