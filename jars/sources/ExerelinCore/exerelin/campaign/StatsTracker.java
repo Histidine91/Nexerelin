@@ -9,25 +9,31 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CargoItemQuantity;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.TempData;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.submarkets.PrismMarket;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
  *  Tracks lifetime stats: kills, losses, planets captured, etc.
  */
-public class StatsTracker extends BaseCampaignEventListener{
+public class StatsTracker extends BaseCampaignEventListener implements ColonyPlayerHostileActListener {
     protected static final String TRACKER_MAP_KEY = "exerelin_statsTracker";
+    public static Logger log = Global.getLogger(StatsTracker.class);
     
     protected static StatsTracker tracker;
     
@@ -251,7 +257,49 @@ public class StatsTracker extends BaseCampaignEventListener{
         tracker = new StatsTracker();
         
         data.put(TRACKER_MAP_KEY, tracker);
+        Global.getSector().getListenerManager().addListener(tracker);
         return tracker;
+    }
+    
+    // all guesstimates until TempData becomes actually accessible
+    
+    @Override
+    public void reportRaidForValuablesFinishedBeforeCargoShown(
+            InteractionDialogAPI dialog, MarketAPI market, TempData actionData, CargoAPI cargo) {
+        int power = market.getSize() - 2;
+        int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
+        log.info("Making " + orphans + " orphans from raid for valuables");
+        orphansMade += orphans;
+    }
+
+    @Override
+    public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
+            TempData actionData, Industry industry) {
+        int power = market.getSize() - 2;
+        int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
+        log.info("Making " + orphans + " orphans from raid to disrupt");
+        orphansMade += orphans;
+    }
+
+    @Override
+    public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
+            MarketAPI market, TempData actionData) {
+        int power = market.getSize() - 1;
+        int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
+        log.info("Making " + orphans + " orphans from tactical bombardment");
+        orphansMade += orphans;
+    }
+
+    @Override
+    public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
+            MarketAPI market, TempData actionData) {
+        int oldSize = market.getSize() + 1;
+        float deaths = ExerelinUtilsMarket.getPopulation(oldSize) - ExerelinUtilsMarket.getPopulation(market.getSize());
+        deaths *= MathUtils.getRandomNumberInRange(0.5f, 1.5f);
+        int orphans = (int)Math.round(Math.sqrt(deaths));
+        
+        log.info("Making " + orphans + " orphans from saturation bombardment");
+        orphansMade += orphans;
     }
     
     public static class DeadOfficerEntry
