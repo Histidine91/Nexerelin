@@ -41,7 +41,7 @@
     ],
     
     "bonusSeeds":[
-        {"id":"nanoforge_pristine", "count":1},
         {"id":"population_upsize", "count":1},
+        {"id":"nanoforge_pristine", "count":1},
     ],
 }

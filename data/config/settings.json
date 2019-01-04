@@ -6,6 +6,11 @@
 
 	#"factionCommissionBounty":500,
 	
+	"baseMaxAdmins":2,
+	"colonyOverMaxPenalty":1,
+	"bombardTacticalStability":3,
+	"accessibilityNoSpaceport":-0.5,	# default -1
+	
 	"plugins":{
 		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",
 		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
