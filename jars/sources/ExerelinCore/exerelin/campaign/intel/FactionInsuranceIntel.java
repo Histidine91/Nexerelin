@@ -134,10 +134,12 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 				value += amount;
 			}
 		}
-		for (OfficerDataAPI deadOfficer : deadOfficers) {
-			float amount = deadOfficer.getPerson().getStats().getLevel() * LIFE_INSURANCE_PER_LEVEL;
-			log.info("Insuring dead officer " + deadOfficer.getPerson().getName().getFullName() + " for " + amount);
-			value += amount;
+		if (deadOfficers != null) {
+			for (OfficerDataAPI deadOfficer : deadOfficers) {
+				float amount = deadOfficer.getPerson().getStats().getLevel() * LIFE_INSURANCE_PER_LEVEL;
+				log.info("Insuring dead officer " + deadOfficer.getPerson().getName().getFullName() + " for " + amount);
+				value += amount;
+			}
 		}
 
 		return value;

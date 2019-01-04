@@ -3,6 +3,7 @@ package exerelin.campaign;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
@@ -14,18 +15,17 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -33,7 +33,6 @@ import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
@@ -44,8 +43,8 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
-import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
+import exerelin.campaign.intel.FactionInsuranceIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import java.util.ArrayList;
@@ -95,6 +94,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected List<String> liveFactionIds = new ArrayList<>();
     protected Set<String> historicFactionIds = new HashSet<>();
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
+    protected Map<FleetMemberAPI, Float[]> insuranceLostMembers = new HashMap<>();    // value is base buy value and number of D mods
     
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
@@ -210,26 +210,20 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(-numSurvivors, loserFactionId);
     }
     
-    /*
     @Override
     public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
         if (!battle.isPlayerInvolved()) return;
-        CampaignFleetAPI fleet = battle.getPrimary(battle.getNonPlayerSide());
-        FactionAPI faction = fleet.getFaction();
-        
-        // relationship is _before_ the reputation penalty caused by the combat
-        if (faction.isHostileTo("player")) return;
-        if (fleet.getMemoryWithoutUpdate().getBoolean("$exerelinFleetAggressAgainstPlayer")) return;
-        if (!fleet.knowsWhoPlayerIs()) return;
-        
-        log.info("Checking for warmonger event");
-        boolean losses = !Misc.getSnapshotMembersLost(fleet).isEmpty()
-        if (losses) createWarmongerEvent(faction.getId(), fleet);
+        FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(insuranceLostMembers, null);
     }
-    */
     
     @Override
     public void reportPlayerEngagement(EngagementResultAPI result) {
+        checkForWarmongerEvent(result);
+        checkForInsurance(result);
+    }
+    
+    protected void checkForWarmongerEvent(EngagementResultAPI result)
+    {
         boolean playerWin = result.didPlayerWin();
         EngagementResultForFleetAPI fleetResult = result.getWinnerResult();
         if (playerWin) fleetResult = result.getLoserResult();
@@ -248,6 +242,26 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (!fleet.knowsWhoPlayerIs()) return;
         
         createWarmongerEvent(faction.getId(), fleet);
+    }
+    
+    protected void checkForInsurance(EngagementResultAPI result)
+    {
+        EngagementResultForFleetAPI er = result.didPlayerWin() ? result.getWinnerResult() : result.getLoserResult();
+        List<FleetMemberAPI> disabledOrDestroyed = new ArrayList<>();
+        disabledOrDestroyed.addAll(er.getDisabled());
+        disabledOrDestroyed.addAll(er.getDestroyed());
+        
+        for (FleetMemberAPI member : disabledOrDestroyed)
+        {
+            if (insuranceLostMembers.containsKey(member))
+                continue;    // though this shouldn't happen anyway
+            if (member.isAlly())
+                continue;
+            if (member.isFighterWing())
+                continue;
+            //log.info("Member " + member.getShipName() + " disabled or destroyed");
+            insuranceLostMembers.put(member, new Float[]{member.getBaseBuyValue(), (float)FactionInsuranceIntel.countDMods(member)});
+        }
     }
     
     @Override
@@ -320,6 +334,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager.hardMode;
     }
     
+    @Deprecated
     public static void createWarmongerEvent(String targetFactionId, SectorEntityToken location)
     {
         if (ExerelinConfig.warmongerPenalty == 0) return;
@@ -384,8 +399,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("myFactionLoss", myFactionLoss);
         params.put("targetFaction", targetFactionId);
         
-        WarmongerEvent event = WarmongerEvent.getOngoingEvent();
-        if (event != null) event.reportEvent(location, params);
+        // TODO
+        //WarmongerEvent event = WarmongerEvent.getOngoingEvent();
+        //if (event != null) event.reportEvent(location, params);
     }
     
     public void handleSlaveTradeRep()
@@ -815,7 +831,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         ExerelinUtilsMarket.setTariffs(market);
         
-		// set submarket factions
+        // set submarket factions
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
         for (SubmarketAPI submarket : submarkets)
         {
@@ -846,7 +862,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // prompt player to name faction if needed (does this ever pop up?)
         if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp())
-            Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
+            //Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
+            Global.getSector().addTransientScript(new PlayerFactionSetupNag());
         
         // intel report
         MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved);
@@ -1031,13 +1048,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 			*/
         }
     }
-    
-    public static void scheduleExpelPlayerFromFaction()
-    {
-        if (sectorManager == null) return;
-        sectorManager.wantExpelPlayerFromFaction = true;
-    }
-    
+        
     public static void reinitLiveFactions()
     {
         if (sectorManager == null) return;

@@ -304,8 +304,9 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		List<OfficerDataAPI> officers = new ArrayList<>(deadOfficers);
 		if (miaOfficers != null)
 			officers.addAll(miaOfficers);
-
-		FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(disabledOrDestroyedMembers, officers);
+		
+		// don't call insurance from here; it breaks anywhere we can't use this fleet interaction dialog plugin
+		//FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(disabledOrDestroyedMembers, officers);
 		
 		// TODO: deprecated until Steiner Foundation update
 		/*
