@@ -78,7 +78,8 @@ public class FactionSpawnedOrEliminatedIntel extends BaseIntelPlugin {
 		replace.put("$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
 		replace.put("$hasOrHave", faction.getDisplayNameHasOrHave());
 		replace.put("$isOrAre", faction.getDisplayNameIsOrAre());
-		replace.put("$market", market.getName());
+		replace.put("$market", market == null ? "<" + StringHelper.getString("unknown") + ">" 
+				: market.getName());
 		String str = StringHelper.getStringAndSubstituteTokens("exerelin_factions", 
 					strKey, replace);
 		

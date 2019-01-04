@@ -398,7 +398,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(hullId, PurchaseType.SHIP, 
-					hull.getHullNameWithDashClass(), getBlueprintPointValue(Items.SHIP_BP, hull.getBaseValue()));
+					hull.getNameWithDesignationWithDashClass(), getBlueprintPointValue(Items.SHIP_BP, hull.getBaseValue()));
 			if (hull.hasTag("tiandong_retrofit"))
 				info.isTiandongRetrofit = true;
 			

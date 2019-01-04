@@ -759,8 +759,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 || !isHostile && currentRel - delta < AllianceManager.HOSTILE_THRESHOLD)
             AllianceVoter.allianceVote(playerAlignedFactionId, factionId, isHostile);
         
+        // handled by commission intel
+        /*
         if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
             SectorManager.scheduleExpelPlayerFromFaction();
+        */
 
         SectorManager.checkForVictory();
     }

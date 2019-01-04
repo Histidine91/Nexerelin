@@ -47,17 +47,15 @@ public class DirectoryScreenScript implements EveryFrameScript
 	@Override
 	public void advance(float amount)
 	{
-		// Don't do anything while in a menu/dialog
-		CampaignUIAPI ui = Global.getSector().getCampaignUI();
-		
-		if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog())
+		// Don't do anything while in a menu/dialog		
+		if (Global.getSector().isInNewGameAdvance() || Global.getSector().getCampaignUI().isShowingDialog())
 		{
 			return;
 		}
 		
 		if (Keyboard.isKeyDown(ExerelinConfig.directoryDialogKey))
 		{
-			ui.showInteractionDialog(new FactionDirectoryDialog(), Global.getSector().getPlayerFleet());
+			Global.getSector().getCampaignUI().showInteractionDialog(new FactionDirectoryDialog(), Global.getSector().getPlayerFleet());
 		}
 	}
 

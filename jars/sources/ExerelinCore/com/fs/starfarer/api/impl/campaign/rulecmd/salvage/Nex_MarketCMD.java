@@ -118,20 +118,24 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	@Override
 	protected void showDefenses(boolean withText) {
-		super.showDefenses(withText);
-		
+		// super.showDefenses(withText);
 		if (InvasionRound.canInvade(entity))
 		{
 			options.addOption("Invade the market", INVADE);
 			
 			// attempt to reorder
+			// don't do this; it'll forget which options are disabled
+			/*
 			List opts = options.getSavedOptionList();
 			Object lastOpt = opts.get(opts.size() - 1);
 			opts.remove(lastOpt);
 			opts.add(opts.size() - 1, lastOpt);
 			options.restoreSavedOptions(opts);
 			options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);	// put back the hotkey
+			*/
 		}
+		// instead we just show the other options _after_ the invade option
+		super.showDefenses(withText);
 	}
 	
 	protected void invadeMenu() {
