@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
+import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
@@ -19,6 +20,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.NexEventProbabilityManager;
+import exerelin.campaign.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.RevengeanceManager;
@@ -210,6 +212,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onGameLoad(newGame);
+        
+        if (!Misc.isPlayerFactionSetUp())
+            sector.addTransientScript(new PlayerFactionSetupNag());
     }
     
     @Override
