@@ -111,7 +111,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected float respawnInterval = 60f;
     protected final IntervalUtil respawnIntervalUtil;
     
-    protected boolean wantExpelPlayerFromFaction = false;
+    protected IntervalUtil liveFactionCheckUtil = new IntervalUtil(0.5f,0.5f);
 
     public SectorManager()
     {
@@ -135,11 +135,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             handleSlaveTradeRep();
             numSlavesRecentlySold = 0;
         }
-        if (wantExpelPlayerFromFaction)
-        {
-            wantExpelPlayerFromFaction = false;
-            expelPlayerFromFaction(false);
-        }
         
         if (respawnFactions){
             ExerelinUtils.advanceIntervalDays(respawnIntervalUtil, amount);
@@ -149,6 +144,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 respawnInterval = ExerelinConfig.factionRespawnInterval;
                 respawnIntervalUtil.setInterval(respawnInterval * 0.75F, respawnInterval * 1.25F);
             }
+        }
+        
+        ExerelinUtils.advanceIntervalDays(liveFactionCheckUtil, amount);
+        if (liveFactionCheckUtil.intervalElapsed())
+        {
+            recheckLiveFactions();
         }
     }
     
@@ -440,6 +441,41 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("avgRepChange", sumRepDelta/factionsToNotify.size());
         SlavesSoldEvent event = (SlavesSoldEvent)Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_slaves_sold");
         event.reportSlaveTrade(marketLastSoldSlaves, params);
+    }
+    
+    // regularly refresh live factions
+    // since we don't have listeners for decivilization etc.
+    public void recheckLiveFactions()
+    {
+        Set<String> newLive = new HashSet<>();
+        Set<String> oldLive = new HashSet<>(liveFactionIds);
+        Map<String, MarketAPI> factionMarkets = new HashMap<>();    // stores one market for each faction, for intel
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            String factionId = market.getFactionId();
+            if (newLive.contains(factionId))
+                continue;
+            if (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE))
+                continue;
+            if (market.getPrimaryEntity().getTags().contains(ExerelinConstants.TAG_UNINVADABLE))
+                continue;
+            newLive.add(factionId);
+            factionMarkets.put(factionId, market);
+        }
+        for (String factionId : oldLive)
+        {
+            if (!newLive.contains(factionId))
+            {
+                factionEliminated(null, Global.getSector().getFaction(factionId), null);
+            }
+            newLive.remove(factionId);    // no need to check this newLive entry against oldLive in next stage
+        }
+        for (String factionId : newLive)
+        {
+            if (!oldLive.contains(factionId))
+                factionRespawned(Global.getSector().getFaction(factionId), 
+                        factionMarkets.get(factionId));
+        }
     }
     
     public static InvasionFleetData spawnRespawnFleet(FactionAPI respawnFaction, MarketAPI sourceMarket, boolean useOriginLoc)
