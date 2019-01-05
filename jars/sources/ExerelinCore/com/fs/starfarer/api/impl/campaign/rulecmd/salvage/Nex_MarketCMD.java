@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -81,6 +82,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		String command = params.get(0).getString(memoryMap);
 		if (command == null) return false;
+		
+		initForInvasion(dialog.getInteractionTarget());
 		
 		if (command.equals("invadeMenu")) {
 			invadeMenu();
@@ -679,9 +682,10 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 		new ShowDefaultVisual().execute(null, dialog, Misc.tokenize(""), memoryMap);
 		
-		if (tempInvasion.tookForSelf)
+		FactionAPI conqueror = PlayerFactionStore.getPlayerFaction();
+		if (tempInvasion.tookForSelf && tempInvasion.success)
 		{
-			InvasionRound.conquerMarket(market, playerFaction, true);
+			conqueror = playerFaction;
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = -0.04f * market.getSize();
 			//impact.ensureAtBest = RepLevel.SUSPICIOUS;
@@ -690,8 +694,8 @@ public class Nex_MarketCMD extends MarketCMD {
 					CoreReputationPlugin.RepActions.CUSTOM, impact, null, text, true), 
 					PlayerFactionStore.getPlayerFactionId());
 		}
-		else 
-			InvasionRound.conquerMarket(market, PlayerFactionStore.getPlayerFaction(), true);
+		if (tempInvasion.success)
+			InvasionRound.conquerMarket(market, conqueror, true);
 		
 		//FireAll.fire(null, dialog, memoryMap, "MarketPostOpen");
 		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$menuState", "main", 0);
@@ -701,15 +705,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		else
 			dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
 		
-		FireAll.fire(null, dialog, memoryMap, "PopulateOptions");
-		
-		// create player faction setup screein if needed
-		// FIXME nothing I do works, work around it for now
-		if (!Misc.isPlayerFactionSetUp())
-		{
-			playerFaction.setDisplayNameOverride(StringHelper.getString("player", true));
-			//new Nex_SetupFaction().execute(null, dialog, new ArrayList<Token>(), memoryMap);
-		}
+		if (tempInvasion.success)
+			FireAll.fire(null, dialog, memoryMap, "PopulateOptions");
+		else
+			dialog.dismiss();
 	}
 	
 	protected void invadeShowLoot() {

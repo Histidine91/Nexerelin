@@ -47,6 +47,7 @@ import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
 import exerelin.campaign.intel.FactionInsuranceIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -456,9 +457,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             String factionId = market.getFactionId();
             if (newLive.contains(factionId))
                 continue;
-            if (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE))
-                continue;
-            if (market.getPrimaryEntity().getTags().contains(ExerelinConstants.TAG_UNINVADABLE))
+            if (!ExerelinUtilsMarket.canBeInvaded(market, false))
                 continue;
             newLive.add(factionId);
             factionMarkets.put(factionId, market);
@@ -899,10 +898,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         market.reapplyConditions();
         market.reapplyIndustries();
         
-        // prompt player to name faction if needed (does this ever pop up?)
-        if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp())
+        // prompt player to name faction if needed
+        if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp()) {
             //Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
+            newOwner.setDisplayNameOverride(StringHelper.getString("player", true));
             Global.getSector().addTransientScript(new PlayerFactionSetupNag());
+        }
+            
         
         // intel report
         MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved);

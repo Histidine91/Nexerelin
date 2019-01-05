@@ -129,8 +129,8 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		
 		FactionAPI faction = getFaction(factionId);
 		String factionName = Misc.ucFirst(faction.getDisplayName());
-		String numMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId).size() + "";
-		String size = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId) + "";
+		String numMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId, true).size() + "";
+		String size = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId, true) + "";
 		
 		Map<String, String> sub = new HashMap<>();
 		sub.put("$faction", factionName);

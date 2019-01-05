@@ -260,7 +260,6 @@ public class InvasionRound {
 	public static void finishInvasion(CampaignFleetAPI fleet, FactionAPI attackerFaction, MarketAPI market, float numRounds, boolean success)
 	{
 		SectorAPI sector = Global.getSector();
-		String attackerFactionId = attackerFaction.getId();
 		FactionAPI defenderFaction = market.getFaction();
 		String defenderFactionId = defenderFaction.getId();
 		
@@ -269,7 +268,7 @@ public class InvasionRound {
 		if ( fleet == playerFleet )
 		{
 			playerInvolved = true;
-			attackerFactionId = PlayerFactionStore.getPlayerFactionId();
+			String attackerFactionId = PlayerFactionStore.getPlayerFactionId();
 			attackerFaction = sector.getFaction(attackerFactionId);
 		}
 		

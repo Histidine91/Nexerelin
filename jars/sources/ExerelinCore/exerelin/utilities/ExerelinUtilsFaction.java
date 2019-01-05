@@ -43,6 +43,20 @@ public class ExerelinUtilsFaction {
         return getFactionMarkets(factionId, false);
     }
     
+    public static List<MarketAPI> getFactionMarkets(String factionId, boolean onlyInvadable)
+    {
+        List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
+        List<MarketAPI> ret = new ArrayList<>();
+        for (MarketAPI market : allMarkets)
+        {
+            if (onlyInvadable && !ExerelinUtilsMarket.canBeInvaded(market, false))
+                continue;
+            if (market.getFactionId().equals(factionId))
+                ret.add(market);
+        }
+        return ret;
+    }
+    
     public static boolean hasAnyMarkets(String factionId)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
@@ -54,34 +68,23 @@ public class ExerelinUtilsFaction {
         return false;
     }
     
-    public static List<MarketAPI> getFactionMarkets(String factionId, boolean onlyInvadable)
+	public static int getFactionMarketSizeSum(String factionId)
     {
-        List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
-        List<MarketAPI> ret = new ArrayList<>();
-        for (MarketAPI market : allMarkets)
-        {
-            if (onlyInvadable && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE))
-                continue;
-            if (onlyInvadable && market.getPrimaryEntity().getTags().contains(ExerelinConstants.TAG_UNINVADABLE))
-                continue;
-            if (market.getFactionId().equals(factionId))
-                ret.add(market);
-        }
-        return ret;
+        return getFactionMarketSizeSum(factionId, false);
     }
-    
+	
     /**
      * Returns the sum of the sizes of the faction's markets
      * @param factionId
      * @return
      */
-    public static int getFactionMarketSizeSum(String factionId)
+    public static int getFactionMarketSizeSum(String factionId, boolean onlyInvadable)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         int pop = 0;
         for (MarketAPI market : allMarkets)
         {
-            if (market.getFactionId().equals(factionId))
+            if (market.getFactionId().equals(factionId) && ExerelinUtilsMarket.canBeInvaded(market, false))
                 pop += market.getSize();
         }
         return pop;

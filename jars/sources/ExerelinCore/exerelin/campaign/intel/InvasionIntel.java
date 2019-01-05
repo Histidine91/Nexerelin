@@ -16,13 +16,11 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
-import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -483,7 +481,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 			if (outcome == InvasionOutcome.SUCCESS) {
 				return base + " - " + StringHelper.getString("successful", true);
 			}
-			else if (outcome.isFailed()) {
+			else if (outcome != null && outcome.isFailed()) {
 				return base + " - " + StringHelper.getString("failed", true);
 			}
 			return base + " - " + StringHelper.getString("over", true);

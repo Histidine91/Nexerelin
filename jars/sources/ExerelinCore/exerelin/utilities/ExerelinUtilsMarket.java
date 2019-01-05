@@ -137,6 +137,7 @@ public class ExerelinUtilsMarket {
 	{
 		if (market.hasCondition(Conditions.ABANDONED_STATION)) return false;		
 		if (market.getPrimaryEntity() instanceof CampaignFleetAPI) return false;
+		if (market.isHidden()) return false;
 		
 		FactionAPI marketFaction = market.getFaction();
 		if (isPlayer)
