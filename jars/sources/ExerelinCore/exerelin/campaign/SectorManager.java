@@ -473,9 +473,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         for (String factionId : newLive)
         {
-            if (!oldLive.contains(factionId))
-                factionRespawned(Global.getSector().getFaction(factionId), 
-                        factionMarkets.get(factionId));
+            if (oldLive.contains(factionId))
+                continue;
+            if (!ExerelinConfig.getExerelinFactionConfig(factionId).playableFaction)
+                continue;
+            factionRespawned(Global.getSector().getFaction(factionId), factionMarkets.get(factionId));
         }
     }
     
