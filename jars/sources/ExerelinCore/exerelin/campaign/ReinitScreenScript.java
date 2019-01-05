@@ -2,6 +2,7 @@ package exerelin.campaign;
 
 import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
+import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
@@ -47,7 +48,7 @@ public class ReinitScreenScript implements EveryFrameScript
 	{
 		// Don't do anything while in a menu/dialog
 		CampaignUIAPI ui = Global.getSector().getCampaignUI();
-		if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog())
+		if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog() || Global.getCurrentState() == GameState.TITLE)
 		{
 			return;
 		}
