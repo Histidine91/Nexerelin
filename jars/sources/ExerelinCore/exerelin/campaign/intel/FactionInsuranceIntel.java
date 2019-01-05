@@ -72,14 +72,10 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	protected boolean intelValidations() {
 		//log.info("Validating insurance intel item");
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-		BattleAPI battle = playerFleet.getBattle();
 
-		if (!battle.isPlayerInvolved() || Global.getSector().getMemoryWithoutUpdate().contains("$tutStage"))
-		{
-			//log.info("Player is not involved in battle");
+		if (Global.getSector().getMemoryWithoutUpdate().contains("$tutStage"))	{
 			return false;
 		}
-			
 
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		if (alignedFactionId.equals(Factions.PLAYER)) {	// no self insurance
