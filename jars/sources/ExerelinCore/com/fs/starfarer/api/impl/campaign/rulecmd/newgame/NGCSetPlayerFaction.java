@@ -55,6 +55,8 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 			// if we picked followers, have a 50% chance for it to be free start
 			if (factionId.equals(Factions.PLAYER))
 			{
+				name = StringHelper.getString("exerelin_ngc", "ownFaction");
+				
 				boolean freeStart = Math.random() < 0.5f;
 				ExerelinSetupData.getInstance().freeStart = freeStart;
 				if (freeStart) name += " (" + StringHelper.getString("exerelin_ngc", "freeStart") + ")";

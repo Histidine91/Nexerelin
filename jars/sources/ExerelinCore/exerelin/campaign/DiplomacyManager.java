@@ -948,6 +948,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         SectorAPI sector = Global.getSector();
         FactionAPI player = sector.getFaction(Factions.PLAYER);
         String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
+        ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(selectedFactionId);
+        if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.equals(Factions.PLAYER))
+            selectedFactionId = conf.spawnAsFactionId;
+        
         FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
         log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
 

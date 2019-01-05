@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.Pair;
@@ -654,7 +655,12 @@ public class ExerelinFactionConfig
     protected void pickShipsAndAddToList(WeightedRandomPicker<String> picker, List<String> list, boolean clear)
     {
         FactionAPI faction = Global.getSector().getFaction(factionId);
-        List<ShipRolePick> picks = faction.pickShip(picker.pick(), ShipPickParams.priority(), null, picker.getRandom());
+        List<ShipRolePick> picks;
+        try {
+            picks = faction.pickShip(picker.pick(), ShipPickParams.priority(), null, picker.getRandom());
+        } catch (NullPointerException npe) {    // picking role that doesn't exist
+            return;
+        }
         for (ShipRolePick pick : picks)
             list.add(pick.variantId);
         if (clear) picker.clear();
@@ -931,15 +937,19 @@ public class ExerelinFactionConfig
         StartFleetType type = StartFleetType.getType(typeStr);
                 
         if (ExerelinSetupData.getInstance().randomStartShips
-				&& (type != StartFleetType.SUPER)
-				&& (startShips.containsKey(type)))
+                && (type != StartFleetType.SUPER)
+                && (startShips.containsKey(type)))
         {
             int tries = 0;
             boolean valid = false;
             List<String> result = null;
             while (!valid && tries < 10)
             {
-                result = getRandomStartShipsForType(type);
+                if (factionId.equals(Factions.PLAYER))    // since player doesn't have ships to randomize
+                    result = ExerelinConfig.getExerelinFactionConfig(Factions.INDEPENDENT)
+                            .getRandomStartShipsForType(type);
+                else
+                    result = getRandomStartShipsForType(type);
                 valid = isRandomStartingFleetValid(result);
                 tries++;
             }
