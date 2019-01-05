@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -53,9 +54,9 @@ public class InvAssembleStage extends AssembleStage {
 	
 	@Override
 	protected float getFP(String type) {
-		float base = 100f;
+		float base = 75f;
 		if (type.equals("exerelinInvasionFleet"))
-			base = 150f;
+			base = 100f;
 			
 		if (spawnFP < base * 1.5f) {
 			base = spawnFP;

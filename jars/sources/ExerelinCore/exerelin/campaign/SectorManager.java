@@ -215,6 +215,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
         if (!battle.isPlayerInvolved()) return;
         FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(insuranceLostMembers, null);
+		insuranceLostMembers.clear();
     }
     
     @Override

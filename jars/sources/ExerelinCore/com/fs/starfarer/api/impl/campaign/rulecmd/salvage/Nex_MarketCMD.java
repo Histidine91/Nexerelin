@@ -118,7 +118,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	@Override
 	protected void showDefenses(boolean withText) {
-		// super.showDefenses(withText);
+		super.showDefenses(withText);
 		if (InvasionRound.canInvade(entity))
 		{
 			options.addOption("Invade the market", INVADE);
@@ -135,7 +135,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			*/
 		}
 		// instead we just show the other options _after_ the invade option
-		super.showDefenses(withText);
+		// ...no, because it clears our option panel
+		//super.showDefenses(withText);
 	}
 	
 	protected void invadeMenu() {

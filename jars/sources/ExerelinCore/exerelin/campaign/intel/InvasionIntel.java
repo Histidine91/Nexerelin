@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -16,10 +17,13 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
+import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -32,6 +36,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.invasion.*;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -51,6 +56,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	public static final Object OUTCOME_UPDATE = new Object();
 	public static final boolean NO_STRIKE_FLEETS = true;
 	public static final boolean DEBUG_MODE = true;
+	public static final boolean INTEL_ALWAYS_VISIBLE = true;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
@@ -70,7 +76,11 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		SUCCESS,
 		FAIL,
 		NO_LONGER_HOSTILE,
-		OTHER
+		OTHER;
+		
+		public boolean isFailed() {
+			return this == TASK_FORCE_DEFEATED || this == FAIL;
+		}
 	}
 	
 	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
@@ -140,6 +150,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	
 	protected boolean shouldDisplayIntel()
 	{
+		if (INTEL_ALWAYS_VISIBLE) return true;
 		LocationAPI loc = from.getContainingLocation();
 		if (faction.isPlayerFaction()) return true;		
 		if (AllianceManager.areFactionsAllied(faction.getId(), PlayerFactionStore.getPlayerFactionId()))
@@ -336,12 +347,30 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h);
 		
 		if (outcome == null) {
-			addStandardStrengthComparisons(info, target, targetFaction, true, false,
-										   "expedition", "expedition's");
+			addStandardStrengthComparisons(info, target, targetFaction, true, false, null, null);
 		}
 		
 		info.addSectionHeading(StringHelper.getString("status", true), 
 				   attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);
+		
+		// write our own status message for certain cancellation cases
+		if (outcome == InvasionOutcome.NO_LONGER_HOSTILE)
+		{
+			string = StringHelper.getString("exerelin_invasion", "intelOutcomeNoLongerHostile");
+			string = StringHelper.substituteToken(string, "$target", target.getName());
+			//String factionName = target.getFaction().getDisplayName();
+			//string = StringHelper.substituteToken(string, "$otherFaction", factionName);
+			
+			info.addPara(string, opad);
+			return;
+		}
+		else if (outcome == InvasionOutcome.MARKET_NO_LONGER_EXISTS)
+		{
+			string = StringHelper.getString("exerelin_invasion", "intelOutcomeNoLongerExists");
+			string = StringHelper.substituteToken(string, "$market", target.getName());
+			info.addPara(string, opad);
+			return;
+		}
 		
 		for (RaidStage stage : stages) {
 			stage.showStageInfo(info);
@@ -451,17 +480,107 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		base = StringHelper.substituteToken(base, "$market", target.getName());
 		
 		if (isEnding()) {
-			if (isSendingUpdate() && failStage >= 0) {
-				return base + " - ";
+			if (outcome == InvasionOutcome.SUCCESS) {
+				return base + " - " + StringHelper.getString("successful", true);
 			}
-			for (RaidStage stage : stages) {
-				if (stage instanceof ActionStage && stage.getStatus() == RaidStageStatus.SUCCESS) {
-					return base + " - " + StringHelper.getString("successful", true);
-				}
+			else if (outcome.isFailed()) {
+				return base + " - " + StringHelper.getString("failed", true);
 			}
 			return base + " - " + StringHelper.getString("over", true);
 		}
 		return base;
 	}
 	
+	@Override
+	public void addStandardStrengthComparisons(TooltipMakerAPI info, 
+									MarketAPI target, FactionAPI targetFaction, 
+									boolean withGround, boolean withBombard,
+									String raid, String raids) {
+		Color h = Misc.getHighlightColor();
+		float opad = 10f;
+		
+		float raidFP = getRaidFPAdjusted() / getNumFleets();
+		float raidStr = getRaidStr();
+		
+		//float defenderStr = WarSimScript.getEnemyStrength(getFaction(), system);
+		float defenderStr = WarSimScript.getFactionStrength(targetFaction, system);
+		float defensiveStr = defenderStr + WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
+		
+		float invasionGroundStr = getNumFleets() * marinesPerFleet 
+				* (1 + ExerelinConfig.getExerelinFactionConfig(faction.getId()).invasionStrengthBonusAttack);
+		float re = Nex_MarketCMD.getRaidEffectiveness(target, invasionGroundStr);
+		
+		String spaceStr = "";
+		String groundStr = "";
+		
+		int spaceWin = 0;
+		int groundWin = 0;
+		
+		if (raidStr < defensiveStr * 0.75f) {
+			spaceStr = StringHelper.getString("outmatched");
+			spaceWin = -1;
+		} else if (raidStr < defensiveStr * 1.25f) {
+			spaceStr = StringHelper.getString("evenlyMatched");
+		} else {
+			spaceStr = StringHelper.getString("superior");
+			spaceWin = 1;
+		}
+		
+		if (re < 0.33f) {
+			groundStr = StringHelper.getString("outmatched");
+			groundWin = -1;
+		} else if (re < 0.66f) {
+			groundStr = StringHelper.getString("evenlyMatched");
+		} else {
+			groundStr = StringHelper.getString("superior");
+			groundWin = 1;
+		}
+		
+		String key = "Successful";
+		if (spaceWin == -1)
+			key = "DefeatInOrbit";
+		else if (spaceWin < 1 || groundWin < 1)
+			key = "Uncertain";
+		String outcomeDesc = StringHelper.getString("exerelin_invasion", "intelPrediction" + key);
+		if (groundWin == -1)
+			outcomeDesc = StringHelper.getString("exerelin_invasion", "intelPredictionBombard") 
+					+ " " + outcomeDesc;
+		
+		info.addPara(StringHelper.getString("exerelin_invasion", "intelStrCompare") +
+				" " + outcomeDesc, opad, h, spaceStr, groundStr);
+	}
+	
+	public void terminateEvent(InvasionOutcome outcome)
+	{
+		setOutcome(outcome);
+		forceFail(true);
+	}
+	
+	// check if market should still be invaded
+	@Override
+	protected void advanceImpl(float amount) {
+		if (outcome == null)
+		{
+			if (!faction.isHostileTo(target.getFaction())) {
+				terminateEvent(InvasionOutcome.NO_LONGER_HOSTILE);
+			}
+			else if (!target.isInEconomy()) {
+				terminateEvent(InvasionOutcome.MARKET_NO_LONGER_EXISTS);
+			}
+		}
+		super.advanceImpl(amount);
+	}
+	
+	// send fleets home
+	@Override
+	protected void failedAtStage(RaidStage stage) {
+		BaseRaidStage stage2 = (BaseRaidStage)stage;
+		stage2.giveReturnOrdersToStragglers(stage2.getRoutes());
+	}
+	
+	@Override
+	public String getIcon() {
+		return Global.getSettings().getSpriteName("intel", "nex_invasion");
+		//return faction.getCrest();
+	}
 }

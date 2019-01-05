@@ -82,6 +82,10 @@
 		
 		"unknownLocation":"unknown location",
 		"anUnknownLocation":"an unknown location",
+		
+		"outmatched":"outmatched",
+		"evenlyMatched":"evenly matched",
+		"superior":"superior",
 	},
 
 	"exerelin_abilities":{
@@ -338,6 +342,13 @@
 		"intelBulletNoLongerExists":"Invasion aborted: target destroyed",
 		"intelBulletNoLongerHostile":"Invasion aborted: no longer hostile",
 		"intelBulletCancelled":"Invasion cancelled",
+		"intelStrCompare":"Compared to the defenses, the invasion's space forces are %s and its ground forces are %s.",
+		"intelPredictionDefeatInOrbit":"The invasion is likely to be defeated in orbit.",
+		"intelPredictionUncertain":"The invasion's outcome is uncertain.",
+		"intelPredictionSuccessful":"The invasion is likely to be successful.",
+		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
+		"intelOutcomeNoLongerHostile":"As $target's current faction is not currently hostile, the invasion has been cancelled.",
+		"intelOutcomeNoLongerExists":"$target has been destroyed by another hostile party. There is nothing left to invade.",
 		
 		"invasionStrength":"invasion strength",
 		"groundDefStrength":"ground defense strength",

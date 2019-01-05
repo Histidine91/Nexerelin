@@ -285,8 +285,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 								target.getName() + ".", opad);
 				break;
 			case NO_LONGER_HOSTILE:
-				info.addPara("As " + target.getName() + " is no longer controlled by a hostile faction (" + 
-						target.getFaction().getDisplayName() + "), the invasion has been cancelled.", opad);
 			case MARKET_NO_LONGER_EXISTS:
 			case OTHER:
 				info.addPara("The invasion has been aborted.", opad);

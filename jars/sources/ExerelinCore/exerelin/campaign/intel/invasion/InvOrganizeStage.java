@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.invasion;
 
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
 import exerelin.campaign.intel.InvasionIntel;

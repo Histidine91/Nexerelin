@@ -38,6 +38,8 @@
 			"war":"graphics/icons/intel/war.png",
 			"peace":"graphics/icons/intel/peace.png",
 			
+			"nex_invasion":"graphics/exerelin/icons/intel/invasion.png",
+			
 			"spyEvent0":"graphics/exerelin/icons/intel/spy4.png",
 			"spyEvent1":"graphics/exerelin/icons/intel/spy4_amber.png",
 			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png"	
