@@ -126,7 +126,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		String newRel = NexUtilsReputation.getRelationStr(storedRelation);
 		String fn1 = ExerelinUtilsFaction.getFactionShortName(factionId1);
 		String fn2 = ExerelinUtilsFaction.getFactionShortName(factionId2);
-		String str = StringHelper.getString("exerelin_diplomacy", "intelRepResult");
+		String str = StringHelper.getString("exerelin_diplomacy", reputation.delta > 0 ?
+				"intelRepResultPositive" : "intelRepResultNegative");
 		str = StringHelper.substituteToken(str, "$faction1", fn1);
 		str = StringHelper.substituteToken(str, "$faction2", fn2);
 		str = StringHelper.substituteToken(str, "$deltaAbs", delta);

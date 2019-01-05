@@ -197,7 +197,8 @@
 		"intelTitle":"Diplomacy",
 		"intelHeader1":"News summary",
 		"intelHeader2":"Effects",
-		"intelRepResult":"Relations between $faction1 and $faction2 reduced by $deltaAbs, to $newRelationStr.",
+		"intelRepResultPositive":"Relations between $faction1 and $faction2 improved by $deltaAbs, to $newRelationStr.",
+		"intelRepResultNegative":"Relations between $faction1 and $faction2 reduced by $deltaAbs, to $newRelationStr.",
 		"intelRepCurrent":"Current relations: $relationStr",
 		"intelRepCurrentShort":"Now at $relationStr",
 	
@@ -362,7 +363,7 @@
 		"recentlyInvaded":"recently invaded",
 		
 		"insufficientForces":"You do not have the forces to carry out an effective invasion.",
-		"insufficientForcesTooltip":"Requires at least $percent% force balance.",
+		"insufficientForcesTooltip":"Requires at least $percent force balance.",
 		
 		"invasionProceed":"Proceed with invasion",
 		"invasionContinue":"Continue the offensive",
