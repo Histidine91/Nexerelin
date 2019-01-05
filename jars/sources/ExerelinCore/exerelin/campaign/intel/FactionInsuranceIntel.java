@@ -110,7 +110,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 					Float[] entry = disabledOrDestroyedMembers.get(member);
 					amount = entry[0];
 				}
-				log.info("Insuring lost ship " + member.getShipName() + " for " + amount);
+				log.info("Insuring lost ship " + member.getShipName() + " for " + amount + ", potentially " + member.getHullSpec().getBaseValue());
 				value += amount;
 			}
 			// dead, recovered; compare "before" to "after" in D mod count and base value
@@ -151,7 +151,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			if (Global.getSettings().getHullModSpec(mod).hasTag("dmod"))
 				dmods++;
 		}
-		log.debug("Fleet member " + member.getShipName() + " has " + dmods + " D-mods");
+		log.info("Fleet member " + member.getShipName() + " has " + dmods + " D-mods");
 		return dmods;
 	}
 

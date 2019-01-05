@@ -7,7 +7,7 @@
     
     "playerBaseSalary": 5000,   # per month
     "playerSalaryIncrementPerLevel": 1000,
-    "playerInsuranceMult": 0.6,
+    "playerInsuranceMult": 0.8,	# lower than it looks
     "followersBaseTax": 100,    # per day, modified by market size and stability
     "fleetBonusFpPerPlayerLevel": 0.25,
     
