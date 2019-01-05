@@ -17,5 +17,18 @@
     "startShipsTradeLarge":[["mi_grancursor_support", "buffalo_hegemony_Standard", "mi_vigilance_escort"]],
     "startShipsCarrierLarge":[["mi_grancursor_assualt", "mi_varingur_standard", "mi_cavos_assualt"]],
     
-    "miningVariantsOrWings":["mi_pala_mining"]
+    "miningVariantsOrWings":["mi_pala_mining"],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"]},
+        {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"], "weight":0.5},
+    ],
+    
+    "industrySeeds":[
+        {"id":"heavyindustry", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_corrupted", "count":1},
+    ],
 }

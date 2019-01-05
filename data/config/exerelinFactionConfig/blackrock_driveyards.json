@@ -28,4 +28,21 @@
     "startShipsCarrierSmall":[["brdy_typheus_defender", "brdy_zabrus_attack", "brdy_robberfly_strike"]],
     "startShipsCarrierLarge":[["brdy_convergence_standard", "brdy_eurypterus_standard", "scarab_hunter"]],
     "startShipsSuper":[["brdy_imaginos_shock"]],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"], "weight":0.5},
+        {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"]},
+    ],
+    
+    "industrySeeds":[
+        {"id":"orbitalworks", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_pristine", "count":1},
+        {"id":"aiCore_station", "count":1, "mult":0.1},
+        {"id":"aiCore_military", "mult":0.25},
+        {"id":"aiCore_heavyindustry", "count":1},
+        {"id":"aiCore_any", "mult":1},
+    ],
 }

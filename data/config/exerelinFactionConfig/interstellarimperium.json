@@ -37,4 +37,18 @@
     "startShipsTradeLarge":[["ii_sebastos_f_art", "ii_lynx_sta", "ii_invictus_sup"]],
     "startShipsCarrierLarge":[["ii_sebastos_sta", "ii_princeps_art", "ii_decurion_sni"]],
     "startShipsSuper":[["ii_maximus_shi"]],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"]},
+        {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"], "weight":0.5},
+    ],
+
+    "industrySeeds":[
+        {"id":"orbitalworks", "mult":0.1},
+        {"id":"fuelprod", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_pristine", "count":1},
+    ],
 }
