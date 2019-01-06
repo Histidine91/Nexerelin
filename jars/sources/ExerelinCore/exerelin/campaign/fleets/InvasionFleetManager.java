@@ -64,6 +64,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
 	public static final float GENERAL_INVASION_POINT_MULT = 0.7f;
+	public static final float WANTED_FLEET_SIZE_MULT = 0.75f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -142,6 +143,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float defensiveStr = defenderStr + WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
 		
 		log.info("Estimated strength required for invasion: " + defensiveStr);
+		
+		defensiveStr *= WANTED_FLEET_SIZE_MULT;
 		
 		return Math.max(defensiveStr, 30);
 	}

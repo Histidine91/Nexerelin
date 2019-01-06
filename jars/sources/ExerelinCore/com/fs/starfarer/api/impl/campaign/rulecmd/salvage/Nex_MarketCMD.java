@@ -102,7 +102,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	private void initForInvasion(SectorEntityToken entity) {
 		String key = "$nex_MarketCMD_tempInvasion";
-		MemoryAPI mem = entity.getMarket().getMemoryWithoutUpdate();
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
 		if (mem.contains(key)) {
 			tempInvasion = (TempDataInvasion) mem.get(key);
 		} else {
@@ -136,6 +136,14 @@ public class Nex_MarketCMD extends MarketCMD {
 			options.restoreSavedOptions(opts);
 			options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);	// put back the hotkey
 			*/
+			
+			boolean hasStation = getStationFleet() != null;
+			if (hasStation)
+			{
+				options.setEnabled(INVADE, false);
+				options.setTooltip(INVADE, StringHelper.getString("exerelin_invasion", "invadeHasStation"));
+			}
+				
 		}
 		// instead we just show the other options _after_ the invade option
 		// ...no, because it clears our option panel

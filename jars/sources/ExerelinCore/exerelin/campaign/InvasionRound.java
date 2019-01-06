@@ -40,7 +40,7 @@ import org.lazywizard.lazylib.MathUtils;
 public class InvasionRound {
 	
 	public static final float DAMAGE_PER_ROUND_MULT = 0.3f;
-	public static final float INSTABILITY_PER_ROUND = 1;
+	public static final float INSTABILITY_PER_ROUND = 0.75f;
 	public static final boolean DEBUG_MESSAGES = true;
 	
 	public static Logger log = Global.getLogger(InvasionRound.class);
@@ -99,8 +99,8 @@ public class InvasionRound {
 		Industry toDisrupt = industryPicker.pick();
 		if (toDisrupt != null)
 		{
-			float dur = toDisrupt.getBuildTime() + toDisrupt.getDisruptedDays();
-			dur *= StarSystemGenerator.getNormalRandom(random, 1f, 1.25f);
+			float dur = toDisrupt.getBuildTime() * StarSystemGenerator.getNormalRandom(random, 0.75f, 1.25f);
+			dur += toDisrupt.getDisruptedDays();
 			dur = Math.min(dur, toDisrupt.getBuildTime() * 4);
 			toDisrupt.setDisrupted(dur);
 			result.disrupted = toDisrupt;
@@ -282,6 +282,8 @@ public class InvasionRound {
 		// destabilize
 		int stabilityPenalty = (int)(numRounds * INSTABILITY_PER_ROUND);
 		if (!success) stabilityPenalty /= 2;
+		if (stabilityPenalty < 1) stabilityPenalty = 1;
+		if (stabilityPenalty > 5) stabilityPenalty = 5;
 		
 		if (stabilityPenalty > 0) {
 			String reason = Misc.ucFirst(getString("recentlyInvaded"));

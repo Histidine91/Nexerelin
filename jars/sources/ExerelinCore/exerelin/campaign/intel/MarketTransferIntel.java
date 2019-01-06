@@ -2,6 +2,7 @@ package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -94,6 +95,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		sub.put("$OldFaction", Misc.ucFirst(oldName));
 		sub.put("$hasOrHave", newFaction.getDisplayNameHasOrHave());
 		sub.put("$market", marketName);
+		sub.put("$location", market.getContainingLocation().getNameWithLowercaseType());
 		sub.put("$size", size);
 		if (isPlayerInvolved) 
 			sub.put("$player", Global.getSector().getPlayerPerson().getNameString());
@@ -184,5 +186,10 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 	@Override
 	public String getSortString() {
 		return "Capture";
+	}
+	
+	@Override
+	public SectorEntityToken getMapLocation(SectorMapAPI map) {
+		return market.getPrimaryEntity();
 	}
 }

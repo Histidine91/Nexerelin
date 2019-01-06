@@ -334,6 +334,8 @@
 		"invasion":"invasion",
 		"invasions":"invasions",
 		
+		"invadeHasStation":"The orbital station must be destroyed before an invasion is possible.",
+		
 		"intelTitle":"Invasion: $market",
 		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc.",
 		"intelBulletTarget":"Held by $targetFaction",
@@ -413,9 +415,9 @@
 		"intelTransferBullet1":"Now under $faction",
 		"intelTransferBullet2":"Previously $faction",
 		
-		"intelCaptureDesc":"$NewFaction $hasOrHave captured $market (size $size) from $oldFaction.",
-		"intelCapturePlayerDesc":"$NewFaction $hasOrHave captured $market (size $size) from the $oldFaction, under the command of $player.",
-		"intelTransferDesc":"$oldFaction has transfered $market (size $size) to $newFaction.",
+		"intelCaptureDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from $oldFaction.",
+		"intelCapturePlayerDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from the $oldFaction, under the command of $player.",
+		"intelTransferDesc":"$oldFaction has transfered $market (size $size) in the $location to $newFaction.",
 		"intelTransferFactionSizeHeader":"Current status",
 		"intelTransferFactionSizeEntry":"$faction: $num markets (total size $size)",
 		
