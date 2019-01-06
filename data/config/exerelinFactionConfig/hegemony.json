@@ -28,6 +28,7 @@
     "startShipsTradeLarge":[["venture_Balanced", "buffalo_hegemony_Standard", "shepherd_Frontier"]],
     "startShipsCarrierSmall":[["condor_Attack", "lasher_Standard", "hound_hegemony_Standard"]],
     "startShipsCarrierLarge":[["mora_Assault", "enforcer_Escort", "lasher_Strike"]],
+	#"startShipsGrandFleet":[["onslaught_xiv_Elite"]],
     
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"]},

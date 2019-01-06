@@ -3,13 +3,16 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
-import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
@@ -143,8 +146,8 @@ public class ExerelinFactionConfig
         DEFAULT_DEFENCE_STATIONS.addAll(Arrays.asList(low, mid, high));
         
         DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.HEAVYINDUSTRY, 0.1f, true));
-        DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.FUELPROD, 0.1f, true));
-        DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.LIGHTINDUSTRY, 0.1f, true));
+        //DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.FUELPROD, 0.1f, true));
+        //DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.LIGHTINDUSTRY, 0.1f, true));
     }
 
     public ExerelinFactionConfig(String factionId)
@@ -644,6 +647,7 @@ public class ExerelinFactionConfig
         getStartShipTypeIfAvailable(settings, "startShipsCarrierSmall", StartFleetType.CARRIER_SMALL);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierLarge", StartFleetType.CARRIER_LARGE);
         getStartShipTypeIfAvailable(settings, "startShipsSuper", StartFleetType.SUPER);
+		getStartShipTypeIfAvailable(settings, "startShipsGrandFleet", StartFleetType.GRAND_FLEET);
     }
     
     /**
@@ -711,8 +715,36 @@ public class ExerelinFactionConfig
             pickShipsAndAddToList(rolePicker, ships, true);
         }
         return ships;
-        
     }
+    
+    protected List<String> getShipsFromFleetFactory(float fp) 
+    {
+        MarketAPI fakeMarket = Global.getFactory().createMarket("fake_market", "fake market", 6);
+        
+        FleetParamsV3 params = new FleetParamsV3(
+                fakeMarket,
+                null,
+                factionId,
+                1.5f,
+                FleetTypes.PATROL_LARGE,
+                fp, // combatPts
+                fp/8, // freighterPts 
+                fp/8, // tankerPts
+                0, // transportPts
+                0f, // linerPts
+                0f, // utilityPts
+                0f // qualityMod
+        );
+        params.withOfficers = false;
+        
+        List<String> results = new ArrayList<>();
+        for (FleetMemberAPI member : FleetFactoryV3.createFleet(params).getFleetData().getMembersInPriorityOrder())
+        {
+            results.add(member.getVariant().getHullVariantId());
+        }
+        return results;
+    } 
+    
     /**
      * Returns random starting ships
      * @param type
@@ -838,58 +870,12 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FAST_ATTACK, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        
-        return ships;
-        
-        // random fleet method: gives too many crappy little ships
-        /*
-        float combatFP = 4;
-        float tradeFP = 0;
-        String factoryType = FleetTypes.PATROL_SMALL;    // probably not needed but meh
-        switch (type) {
-            case COMBAT_SMALL:
-            case COMBAT_SMALL_SSP:
-                break;
-            case COMBAT_LARGE:
-            case COMBAT_LARGE_SSP:
-                combatFP = 6;
-                tradeFP = 2;
-                factoryType = FleetTypes.PATROL_LARGE;
-                break;
-            case TRADE_SMALL:
-            case TRADE_SMALL_SSP:
-                combatFP = 1;
-                tradeFP = 3;
-                factoryType = FleetTypes.TRADE_SMALL;
-                break;
-            case TRADE_LARGE:
-            case TRADE_LARGE_SSP:
-                combatFP = 2;
-                tradeFP = 6;
-                factoryType = FleetTypes.TRADE;
-        }
-
-        MarketAPI market = Global.getFactory().createMarket("fake_market", "fake market", 6);
-        FleetParams fleetParams = new FleetParams(null, market, factionId, null, factoryType, 
-                combatFP, // combat
-                tradeFP, // freighters
-                0,        // tankers
-                0,        // personnel transports
-                0,        // liners
-                0,        // civilian
-                0,    // utility
-                0, (float)MathUtils.getRandomNumberInRange(0.4f, 0.7f), 0, 0);    // quality bonus, quality override, officer num mult, officer level bonus
-        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
-        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+        else if (type == StartFleetType.GRAND_FLEET)
         {
-            if (member.isFighterWing())
-                ships.add(member.getSpecId());
-            else
-                ships.add(member.getVariant().getHullVariantId());
+            ships = getShipsFromFleetFactory(100);
         }
         
         return ships;
-        */
     }
     
     /**
@@ -1091,7 +1077,7 @@ public class ExerelinFactionConfig
 	
 	public static enum StartFleetType {
 		SOLO, COMBAT_SMALL, TRADE_SMALL,COMBAT_LARGE,TRADE_LARGE, 
-		CARRIER_SMALL, CARRIER_LARGE, SUPER;
+		CARRIER_SMALL, CARRIER_LARGE, SUPER, GRAND_FLEET;
 		
 		public static StartFleetType getType(String str)
 		{

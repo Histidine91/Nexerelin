@@ -206,6 +206,8 @@ nex_NGCStartShipsCarrierLarge,NewGameOptionSelected,$option == nex_NGCFleetCarri
 FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsSuper,NewGameOptionSelected,$option == nex_NGCFleetSuper,"NGCAddStartingShipsByFleetType SUPER
 FireBest ExerelinNGCStep4",,,
+nex_NGCStartShipsGrandFleet,NewGameOptionSelected,$option == nex_NGCFleetGrandFleet,"NGCAddStartingShipsByFleetType GRAND_FLEET
+FireBest ExerelinNGCStep4",,,
 ,,,,,,
 nex_NGCStartShipsBack,NewGameOptionSelected,$option == nex_NGCFleetBack,Nex_NGCListFactions listFactions $factionGroup,,,
 ,,,,,,

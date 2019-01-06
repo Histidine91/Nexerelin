@@ -25,9 +25,9 @@ import org.lwjgl.input.Keyboard;
 public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 	
 	protected static final String[] FLEET_TYPES = {"SOLO", "COMBAT_SMALL", "TRADE_SMALL", 
-		"CARRIER_SMALL", "COMBAT_LARGE", "TRADE_LARGE", "CARRIER_LARGE", "SUPER"};
+		"CARRIER_SMALL", "COMBAT_LARGE", "TRADE_LARGE", "CARRIER_LARGE", "SUPER", "GRAND_FLEET"};
 	protected static final String[] DIALOG_ENTRIES = {"Solo", "CombatSmall", "TradeSmall", 
-		"CarrierSmall", "CombatLarge", "TradeLarge", "CarrierLarge", "Super"};
+		"CarrierSmall", "CombatLarge", "TradeLarge", "CarrierLarge", "Super", "GrandFleet"};
 	protected static final Map<String, String> OPTION_TEXTS = new HashMap<>();
 	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
 	
