@@ -21,6 +21,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import java.io.IOException;
 import org.json.JSONObject;
 import java.util.*;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -30,6 +31,8 @@ public class ExerelinFactionConfig
     public static final List<DefenceStationSet> DEFAULT_DEFENCE_STATIONS = new ArrayList<>();
     public static final List<IndustrySeed> DEFAULT_INDUSTRY_SEEDS = new ArrayList<>();
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
+    
+    public static Logger log = Global.getLogger(ExerelinFactionConfig.class);
     
     public String factionId;
     public boolean playableFaction = true;
@@ -268,7 +271,7 @@ public class ExerelinFactionConfig
                     morality = Morality.valueOf(moralityName);
                 } catch (IllegalArgumentException ex) {
                     // do nothing
-                    Global.getLogger(this.getClass()).warn("Invalid morality entry for faction " + this.factionId + ": " 
+                    log.warn("Invalid morality entry for faction " + this.factionId + ": " 
                             + settings.getString("morality"));
                 }
             }
@@ -277,7 +280,7 @@ public class ExerelinFactionConfig
                 if (pirateFaction) morality = Morality.EVIL;
                 else if (isPirateNeutral) morality = Morality.AMORAL;
             }
-            //Global.getLogger(this.getClass()).info("Faction " + factionId + " has morality " + morality.toString());
+            //log.info("Faction " + factionId + " has morality " + morality.toString());
             
             // alignments
             if (settings.has("alignments"))
@@ -293,7 +296,7 @@ public class ExerelinFactionConfig
                         alignments.put(alignment, value);
                     } catch (IllegalArgumentException ex) {
                         // do nothing
-                        Global.getLogger(this.getClass()).warn("Invalid alignment entry for faction " + this.factionId + ": " + key);
+                        log.warn("Invalid alignment entry for faction " + this.factionId + ": " + key);
                     }
                 }
             }
@@ -343,7 +346,7 @@ public class ExerelinFactionConfig
             
         } catch(IOException | JSONException ex)
         {
-            Global.getLogger(this.getClass()).error("Failed to load faction config for " + factionId + ": " + ex);
+            log.error("Failed to load faction config for " + factionId + ": " + ex);
         }
         
         if (miningVariantsOrWings.isEmpty())
@@ -377,7 +380,7 @@ public class ExerelinFactionConfig
 			}
 			
         } catch (Exception ex) {
-            Global.getLogger(this.getClass()).error("Failed to load diplomacy map " + configKey, ex);
+            log.error("Failed to load diplomacy map " + configKey, ex);
         }
     }
     
@@ -413,7 +416,7 @@ public class ExerelinFactionConfig
             for (String factionId : factions)
             {
                 float disp = guessDispositionTowardsFaction(factionId);
-                Global.getLogger(this.getClass()).info("Disposition of " + this.factionId + " towards " + factionId + " is " + disp);
+                log.info("Disposition of " + this.factionId + " towards " + factionId + " is " + disp);
                 dispositions.put(factionId, disp);
             }
             dispositions.remove("default");
@@ -719,14 +722,12 @@ public class ExerelinFactionConfig
     
     protected List<String> getShipsFromFleetFactory(float fp) 
     {
-        MarketAPI fakeMarket = Global.getFactory().createMarket("fake_market", "fake market", 6);
-        
         FleetParamsV3 params = new FleetParamsV3(
-                fakeMarket,
+                null,
                 null,
                 factionId,
                 1.5f,
-                FleetTypes.PATROL_LARGE,
+                FleetTypes.TASK_FORCE,
                 fp, // combatPts
                 fp/8, // freighterPts 
                 fp/8, // tankerPts
@@ -887,8 +888,10 @@ public class ExerelinFactionConfig
     {
         for (String variantId : ships)
         {
-            if (!Global.getSettings().doesVariantExist(variantId))
+            if (!Global.getSettings().doesVariantExist(variantId)) {
+                // log.info("wtf variant does not exist: " + variantId);
                 return false;
+            }
         }
         return true;
     }
