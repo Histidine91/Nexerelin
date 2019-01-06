@@ -186,9 +186,14 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			text.highlightInLastPara(hl, "Tasserus");
 			text.highlightInLastPara(hl, "??");
 		}
-
+		
+		int hidden = 0;
 		for (MarketAPI market: markets)
 		{
+			if (market.isHidden()) {
+				hidden++;
+				continue;
+			}
 			String marketName = market.getName();
 			LocationAPI loc = market.getContainingLocation();
 			String locName = loc.getName();
@@ -222,10 +227,14 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			//text.highlightInLastPara(hl, marketName);
 			text.highlightLastInLastPara("" + size, sizeColor);
 		}
-		if (anyBase)
-		{
+		if (anyBase) {
 			//text.addParagraph("*" + StringHelper.getString("exerelin_markets", "hasBaseTip"));
 		}
+		if (hidden > 0) {
+			str = StringHelper.getStringAndSubstituteToken("exerelin_markets", "marketDirectoryHidden", "$num", hidden + "");
+			text.addPara(str, hl, hidden + "");
+		}
+		
 		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 	}

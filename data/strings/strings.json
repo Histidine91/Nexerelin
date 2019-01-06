@@ -405,6 +405,7 @@
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
+		"marketDirectoryHidden":"$num hidden markets",
 		"hasBaseTip":"has military base",
 		
 		"intelCaptureTitle":"Market Captured - $market",
@@ -503,6 +504,7 @@
 		"fleetTradeLarge":"Larger mercantile train",
 		"fleetCarrierLarge":"Medium carrier force",
 		"fleetSuper":"Super ship",
+		"fleetGrandFleet":"Grand fleet",
 		"fleetRandomReroll":"[Reroll random ships]",
 		"fleetCycle":"[Cycle fleets]"
 	},
