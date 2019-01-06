@@ -269,8 +269,8 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		data.miningStrength = miningStrength;
 		this.activeFleets.add(data);
 		
-		MiningFleetAI ai = new MiningFleetAI(fleet, data);
-		fleet.addScript(ai);
+		//MiningFleetAI ai = new MiningFleetAI(fleet, data);
+		//fleet.addScript(ai);
 		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
 	}
 	

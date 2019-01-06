@@ -22,17 +22,14 @@ import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.campaign.events.WarmongerEvent;
 import exerelin.campaign.events.covertops.InstigateRebellionEvent;
 import exerelin.campaign.fleets.DefenceFleetAI;
-import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
-import exerelin.campaign.fleets.InvasionFleetAI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
 import exerelin.campaign.fleets.InvasionSupportFleetAI;
 import exerelin.campaign.fleets.MiningFleetAI;
-import exerelin.campaign.fleets.MiningFleetManager;
-import exerelin.campaign.fleets.MiningFleetManager.MiningFleetData;
+import exerelin.campaign.fleets.MiningFleetManagerV2;
+import exerelin.campaign.fleets.MiningFleetManagerV2.MiningFleetData;
 import exerelin.campaign.fleets.RespawnFleetAI;
 import exerelin.campaign.fleets.ResponseFleetAI;
-import exerelin.campaign.fleets.ResponseFleetManager.ResponseFleetData;
 import exerelin.campaign.fleets.SuppressionFleetAI;
 import exerelin.campaign.intel.DiplomacyIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
@@ -63,14 +60,12 @@ public class XStreamConfig {
 		*/
 		
 		x.alias("DefenceFltAI", DefenceFleetAI.class);
-		x.alias("InvasionFltAI", InvasionFleetAI.class);
 		x.alias("InvasionSupportFltAI", InvasionSupportFleetAI.class);
 		x.alias("MiningFltAI", MiningFleetAI.class);
-		x.alias("MiningFltData", MiningFleetManager.MiningFleetData.class);
+		x.alias("MiningFltData", MiningFleetManagerV2.MiningFleetData.class);
 		x.alias("RespawnFltAI", RespawnFleetAI.class);
 		x.alias("ResponseFltAI", ResponseFleetAI.class);
 		x.alias("SuppressFltAI", SuppressionFleetAI.class);
-		x.alias("ExePatrolFltMngr", ExerelinPatrolFleetManager.class);
 		x.alias("InvasionFltData", InvasionFleetManager.InvasionFleetData.class);
 		x.alias("VengFltIntl", VengeanceFleetIntel.class);
 		
@@ -214,20 +209,6 @@ public class XStreamConfig {
 		x.aliasAttribute(DefenceFleetAI.class, "fleet", "flt");
 		x.aliasAttribute(DefenceFleetAI.class, "orderedReturn", "ret");
 		
-		// buggy; breaks with variables that are public in parent
-		// ExerelinPatrolFleetManager
-		//x.aliasAttribute(ExerelinPatrolFleetManager.class, "market", "mkt");
-		//x.aliasAttribute(ExerelinPatrolFleetManager.class, "activePatrols", "flts");
-		//x.aliasAttribute(ExerelinPatrolFleetManager.class, "maxPatrols", "max");
-		x.aliasAttribute(ExerelinPatrolFleetManager.class, "patrolPoints", "pts");
-		//x.aliasAttribute(ExerelinPatrolFleetManager.class, "patrolBattlesLost", "lost");
-		
-		// InvasionFleetAI
-		x.aliasAttribute(InvasionFleetAI.class, "daysTotal", "days");
-		x.aliasAttribute(InvasionFleetAI.class, "fleet", "flt");
-		x.aliasAttribute(InvasionFleetAI.class, "orderedReturn", "ret");
-		x.aliasAttribute(InvasionFleetAI.class, "responseFleetRequested", "rspn");
-		
 		// InvasionFleetData
 		x.aliasAttribute(InvasionFleetData.class, "fleet", "flt");
 		x.aliasAttribute(InvasionFleetData.class, "source", "src");
@@ -266,13 +247,6 @@ public class XStreamConfig {
 		x.aliasAttribute(ResponseFleetAI.class, "daysTotal", "days");
 		x.aliasAttribute(ResponseFleetAI.class, "fleet", "flt");
 		x.aliasAttribute(ResponseFleetAI.class, "orderedReturn", "ret");
-		
-		// ResponseFleetData
-		x.aliasAttribute(ResponseFleetData.class, "fleet", "flt");
-		x.aliasAttribute(ResponseFleetData.class, "source", "src");
-		x.aliasAttribute(ResponseFleetData.class, "target", "tgt");
-		x.aliasAttribute(ResponseFleetData.class, "sourceMarket", "srcM");
-		x.aliasAttribute(ResponseFleetData.class, "startingFleetPoints", "strtPt");
 		
 		// ExerelinReputationAdjustmentResult
 		x.aliasAttribute(ExerelinReputationAdjustmentResult.class, "wasHostile", "hstl1");

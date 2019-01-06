@@ -1,7 +1,5 @@
 package exerelin.world;
 
-import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.fleets.MiningFleetManager;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
@@ -37,6 +35,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -218,7 +218,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(DiplomacyManager.create());
 		sector.addScript(InvasionFleetManager.create());
 		//sector.addScript(ResponseFleetManager.create());
-		sector.addScript(MiningFleetManager.create());
+		sector.addScript(MiningFleetManagerV2.create());
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
 		sector.addScript(new ColonyManager());

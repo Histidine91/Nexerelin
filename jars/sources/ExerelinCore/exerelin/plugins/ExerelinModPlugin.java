@@ -16,7 +16,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
-import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.NexEventProbabilityManager;
@@ -29,6 +28,7 @@ import exerelin.campaign.StatsTracker;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
+import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
@@ -38,7 +38,6 @@ import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
-import java.util.HashMap;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -51,8 +50,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected static boolean isNewGame = false;
     
-    protected <T extends EveryFrameScript> void replaceScript(SectorAPI sector, Class toRemove, T toAdd)
+    protected <T extends EveryFrameScript> boolean replaceScript(SectorAPI sector, Class toRemove, T toAdd)
     {
+		boolean removedAny = false;
         for (EveryFrameScript script : sector.getScripts())
         {
             if (toRemove.isInstance(script))
@@ -68,9 +68,12 @@ public class ExerelinModPlugin extends BaseModPlugin
                 
                 if (toAdd != null)
                     sector.addScript(toAdd);
+				
+				removedAny = true;
                 break;
             }
         }
+		return removedAny;
     }
     
     protected void applyToExistingSave()
@@ -84,7 +87,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(DiplomacyManager.create());
         sector.addScript(im);
         //sector.addScript(ResponseFleetManager.create());
-        sector.addScript(MiningFleetManager.create());
+        sector.addScript(MiningFleetManagerV2.create());
         //sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
         sector.addScript(new ColonyManager());
@@ -148,6 +151,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
+		if (replaceScript(Global.getSector(), MiningFleetManager.class, null)) {
+			Global.getSector().getPersistentData().remove(MiningFleetManager.MANAGER_MAP_KEY);
+			Global.getSector().addScript(MiningFleetManagerV2.create());
+		}
     }
     
     protected void addEventIfNeeded(String eventId)
@@ -178,8 +185,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         addEventIfNeeded("exerelin_slaves_sold");
         addEventIfNeeded("exerelin_warmonger");
         addEventIfNeeded("nex_rebellion_creator");
-		//addEventIfNeeded("nex_trade_info");
-		*/
+        //addEventIfNeeded("nex_trade_info");
+        */
     }
     
     @Override
@@ -193,7 +200,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         DiplomacyManager.create();
         InvasionFleetManager.create();
         ResponseFleetManager.create();
-        MiningFleetManager.create();
         //CovertOpsManager.create();
         AllianceManager.create();
         
