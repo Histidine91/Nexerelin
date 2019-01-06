@@ -63,6 +63,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
+	public static final float GENERAL_INVASION_POINT_MULT = 0.7f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -489,7 +490,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (faction.isNeutralFaction()) continue;
 			if (faction.isPlayerFaction()) continue;
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-			if (config != null && !config.playableFaction) continue;
+			if (!config.playableFaction) continue;
 			boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
 			if (!allowPirates && isPirateFaction) continue;
 			
@@ -534,8 +535,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
 			increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
 			increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-			
-			if (config != null) increment *= config.invasionPointMult; 
+			increment *= GENERAL_INVASION_POINT_MULT;
+			increment *= config.invasionPointMult; 
 			
 			counter += increment;
 			
