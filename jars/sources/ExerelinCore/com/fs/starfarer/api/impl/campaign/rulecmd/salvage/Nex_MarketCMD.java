@@ -401,15 +401,16 @@ public class Nex_MarketCMD extends MarketCMD {
 			applyDefenderIncreaseFromRaid(market);
 		
 		// unrest
-		
-		//RecentUnrest.get(market).add(3, Misc.ucFirst(reason));
-		int stabilityPenalty = tempInvasion.stabilityPenalty;
+		// note that this is for GUI only, actual impact is caused in InvasionRound
+		float stabilityPenalty = tempInvasion.stabilityPenalty;
 		if (!tempInvasion.success)
 			stabilityPenalty /= 2;
+		if (stabilityPenalty < 1) stabilityPenalty = 1;
+		if (stabilityPenalty > 5) stabilityPenalty = 5;
 		
-		if (stabilityPenalty > 0) {
+		if (Math.round(stabilityPenalty) > 0) {
 			text.addPara(StringHelper.substituteToken(getString("stabilityReduced"), 
-					"$market", market.getName()), Misc.getHighlightColor(), "" + stabilityPenalty);
+					"$market", market.getName()), Misc.getHighlightColor(), "" + Math.round(stabilityPenalty));
 		}
 		
 		// reputation impact
@@ -753,7 +754,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		public boolean canInvade;
 		public int marinesLost = 0;
 		public int roundNum = 0;
-		public int stabilityPenalty = 0;
+		public float stabilityPenalty = 0;
 		public boolean success = false;
 		public boolean tookForSelf = true;
 		

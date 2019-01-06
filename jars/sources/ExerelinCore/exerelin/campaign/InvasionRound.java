@@ -280,17 +280,17 @@ public class InvasionRound {
 		float defStrength = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0);
 		
 		// destabilize
-		int stabilityPenalty = (int)(numRounds * INSTABILITY_PER_ROUND);
+		float stabilityPenalty = (int)(numRounds * INSTABILITY_PER_ROUND);
 		if (!success) stabilityPenalty /= 2;
 		if (stabilityPenalty < 1) stabilityPenalty = 1;
 		if (stabilityPenalty > 5) stabilityPenalty = 5;
 		
-		if (stabilityPenalty > 0) {
+		if (Math.round(stabilityPenalty) > 0) {
 			String reason = Misc.ucFirst(getString("recentlyInvaded"));
 			if (!attackerFaction.isPlayerFaction() || Misc.isPlayerFactionSetUp()) {
 				reason = attackerFaction.getDisplayName() + " " + getString("invasion");
 			}
-			RecentUnrest.get(market).add(stabilityPenalty, reason);
+			RecentUnrest.get(market).add(Math.round(stabilityPenalty), reason);
 		}
 		
 		// trash resource availability
