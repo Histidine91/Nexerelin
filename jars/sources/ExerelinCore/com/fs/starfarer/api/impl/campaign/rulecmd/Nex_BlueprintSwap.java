@@ -486,6 +486,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		if (spec.hasTag("package_bp"))
 			points = spec.getBasePrice() * PRICE_POINT_MULT * 5;
 		
+		points *= stack.getSize();
+		
 		return points;
 	}
 	
