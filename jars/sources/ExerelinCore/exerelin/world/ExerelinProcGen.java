@@ -225,9 +225,17 @@ public class ExerelinProcGen {
 		entity.setInteractionImage(illustration[0], illustration[1]);
 	}
 	
-	protected ProcGenEntity getHomeworld()
-	{
+	protected ProcGenEntity getHomeworld() 	{
 		return homeworld;
+	}
+	
+	/**
+	 * Checks if the system contains markets added by another mod, e.g. AE's IX Battlegroup.
+	 * @param system
+	 * @return 
+	 */
+	protected boolean hasForeignMarkets(StarSystemAPI system) {
+		return !Global.getSector().getEconomy().getMarkets(system).isEmpty();
 	}
 	
 	/**
@@ -273,6 +281,7 @@ public class ExerelinProcGen {
 			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
 			if (system.hasPulsar()) continue;
 			if (system.getStar().getSpec().isBlackHole()) continue;
+			if (hasForeignMarkets(system)) continue;
 			if (system.getBaseName().equals("Styx")) continue;
 			if (system.getBaseName().equals("Ascalon")) continue;
 			
