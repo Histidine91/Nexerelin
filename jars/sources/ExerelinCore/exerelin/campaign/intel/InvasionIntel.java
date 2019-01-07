@@ -65,6 +65,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	protected boolean isRespawn = false;
 	protected boolean intelQueuedOrAdded;
 	protected int marinesPerFleet = 0;
+	protected float fp;
 	
 	protected InvActionStage action;
 	
@@ -90,6 +91,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		this.delegate = this;
 		this.from = from;
 		this.target = target;
+		this.fp = fp;
 		targetFaction = target.getFaction();
 		
 		SectorEntityToken gather = from.getPrimaryEntity();
@@ -169,6 +171,10 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	
 	public int getMarinesPerFleet() {
 		return marinesPerFleet;
+	}
+	
+	public float getFP() {
+		return fp;
 	}
 	
 	@Override
