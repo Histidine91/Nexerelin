@@ -827,6 +827,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
         }
         
+        // unassign admin
+        if (oldOwner.isPlayerFaction() && !market.getAdmin().isAICore())
+        {
+            market.setAdmin(null);
+        }
+        
         updateSubmarkets(market, oldOwnerId, newOwnerId);
         
         // Templar stuff
@@ -948,7 +954,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (market.hasSubmarket(submarketId) && !shouldHave)
             market.removeSubmarket(submarketId);
         else if (!market.hasSubmarket(submarketId) && shouldHave)
+        {
             market.addSubmarket(submarketId);
+            market.getSubmarket(submarketId).getCargo();    // force cargo to generate if needed; fixes military submarket crash
+        }
+        
     }
     
     /**
