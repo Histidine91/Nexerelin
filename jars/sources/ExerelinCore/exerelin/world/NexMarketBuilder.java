@@ -359,7 +359,7 @@ public class NexMarketBuilder
 			int size1 = 4, size2 = 6, size3 = 8;
 			if (isStation)
 			{
-				size1 -= 2; 
+				size1 = 0; 
 				size2 -= 2; 
 				size3 -= 2;
 			}
