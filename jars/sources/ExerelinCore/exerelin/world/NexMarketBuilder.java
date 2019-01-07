@@ -384,7 +384,7 @@ public class NexMarketBuilder
 			else if (marketSize > size1)
 				sizeIndex = 0;
 			
-			if (sizeIndex > 0)
+			if (sizeIndex >= 0)
 			{
 				String station = ExerelinConfig.getExerelinFactionConfig(market.getFactionId())
 						.getRandomDefenceStation(random, sizeIndex);
@@ -638,7 +638,6 @@ public class NexMarketBuilder
 		Float currPriority = null;
 		while (true)
 		{
-			log.info("Remaining for picker: " + from.size());
 			if (from.isEmpty()) break;
 			int nextIndex = from.size() - 1;
 			float priority = from.get(nextIndex).getPriority();
