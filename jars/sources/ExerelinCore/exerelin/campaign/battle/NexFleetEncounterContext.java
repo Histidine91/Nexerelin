@@ -4,17 +4,23 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DataForEncounterSide.OfficerEngagementData;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.NexUtilsMath;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class NexFleetEncounterContext extends FleetEncounterContext {
 
@@ -222,16 +228,16 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			if (f < 0) f = 0;
 			if (f > 1) f = 1;
 			
-			float bonus = 0;
+			float bonusMult = 1;
 			if (ExerelinConfig.officerDaredevilBonus) {
 				FleetMemberAPI member = oed.sourceFleet.getFleetData().getMemberWithCaptain(person);
 				if (member != null && member.isFrigate()) {
-					bonus = FRIGATE_XP_BONUS;
+					bonusMult = FRIGATE_XP_BONUS;
 				} else if (member != null && member.isDestroyer()) {
-					bonus = DESTROYER_XP_BONUS;
+					bonusMult = DESTROYER_XP_BONUS;
 				}
 			}
-			xp *= bonus;
+			xp *= bonusMult;
 			
 			od.addXP((long)(f * xp / num), textPanelForXPGain);
 		}
