@@ -87,12 +87,13 @@ public class ReinitScreenScript implements EveryFrameScript
 		private void populateOptions()
 		{
 			options.clearOptions();
-			
+			/*
 			options.addOption(Misc.ucFirst(getString("allowRespawn")) + ": " 
 					+ StringHelper.getString(String.valueOf(allowRespawn)), Menu.OPTION_RESPAWN);
 			if (allowRespawn)
 				options.addOption(Misc.ucFirst(getString("allowRespawnNonOriginal")) + ": " 
 						+ StringHelper.getString(String.valueOf(allowRespawnNonOriginal)), Menu.OPTION_RESPAWN_NON_ORIGINAL);
+			*/
 			options.addOption(Misc.ucFirst(getString("randomizeRelationships")) + ": " 
 					+ StringHelper.getString(String.valueOf(randomizeRelationships)), Menu.OPTION_RANDOM_RELATIONSHIPS);
 			if (randomizeRelationships)
