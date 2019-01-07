@@ -79,6 +79,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 					if (true)
 					{
 						CampaignFleetAIAPI ai = fleet.getAI();
+						if (ai == null) continue;
 						
 						// clear current follow assignments
 						FleetAssignmentDataAPI currentAssignment = ai.getCurrentAssignment();
