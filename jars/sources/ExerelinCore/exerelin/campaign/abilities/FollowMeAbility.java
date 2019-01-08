@@ -76,6 +76,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 					if (!FOLLOW_VALID_FLEET_TYPES.contains(type)) continue;
 					if (mem.contains(MemFlags.FLEET_BUSY)) continue;
 					if (fleet.getBattle() != null) continue;
+					if (fleet.isStationMode()) continue;
 					if (true)
 					{
 						CampaignFleetAIAPI ai = fleet.getAI();
