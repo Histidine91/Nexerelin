@@ -39,7 +39,8 @@ import org.lazywizard.lazylib.MathUtils;
 
 public class InvasionRound {
 	
-	public static final float DAMAGE_PER_ROUND_MULT = 0.3f;
+	public static final float DAMAGE_PER_ROUND_MULT = 0.3f;	// 1 means damage dealt == strength (meaning battle ends in one round if not modified)
+	public static final float STR_DEF_MULT = 0;	// what proportion of one side's strength is used to negate other side's attack damage
 	public static final float INSTABILITY_PER_ROUND = 0.75f;
 	public static final boolean DEBUG_MESSAGES = true;
 	
@@ -58,8 +59,8 @@ public class InvasionRound {
 		if (fleet != null)
 			marines = fleet.getCargo().getMarines();
 		
-		float atkDam = (atkStr - defStr/3) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
-		float defDam = (defStr - atkStr/3) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
+		float atkDam = (atkStr - defStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
+		float defDam = (defStr - atkStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
 		if (atkDam < 0) atkDam = 0;
 		if (defDam < 0) defDam = 0;
 		
