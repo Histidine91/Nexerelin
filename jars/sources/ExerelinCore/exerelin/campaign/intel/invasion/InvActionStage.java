@@ -166,8 +166,9 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			if (fleet != null) {
 				maxCost = fleet.getCargo().getMaxFuel() * 0.25f;
 			}
-			Global.getLogger(this.getClass()).info("\tWant to bomb target, will cost " + bombCost + " of " + maxCost);
-
+			Global.getLogger(this.getClass()).info("\tBombing target would cost " + bombCost + " of " + maxCost);
+			
+			/*
 			if (bombCost <= maxCost) {
 				Global.getLogger(this.getClass()).info("\tBombing target");
 				Nex_MarketCMD cmd = new Nex_MarketCMD(market.getPrimaryEntity());
@@ -178,6 +179,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				market.reapplyIndustries();
 				log.info("New strength is " + market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0));
 			}
+			*/
 		}
 		
 		Global.getLogger(this.getClass()).info("\tInvading target");

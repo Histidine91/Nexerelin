@@ -543,12 +543,16 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		String key = "Successful";
 		if (spaceWin == -1)
 			key = "DefeatInOrbit";
+		else if (groundWin == -1)
+			key = "DefeatOnGround";
 		else if (spaceWin < 1 || groundWin < 1)
 			key = "Uncertain";
 		String outcomeDesc = StringHelper.getString("exerelin_invasion", "intelPrediction" + key);
+		/*
 		if (groundWin == -1)
 			outcomeDesc = StringHelper.getString("exerelin_invasion", "intelPredictionBombard") 
 					+ " " + outcomeDesc;
+		*/
 		
 		info.addPara(StringHelper.getString("exerelin_invasion", "intelStrCompare") +
 				" " + outcomeDesc, opad, h, spaceStr, groundStr);

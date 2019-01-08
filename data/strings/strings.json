@@ -347,6 +347,7 @@
 		"intelBulletCancelled":"Invasion cancelled",
 		"intelStrCompare":"Compared to the defenses, the invasion's space forces are %s and its ground forces are %s.",
 		"intelPredictionDefeatInOrbit":"The invasion is likely to be defeated in orbit.",
+		"intelPredictionDefeatOnGround":"The invasion is likely to be largely repelled by the ground defences.",
 		"intelPredictionUncertain":"The invasion's outcome is uncertain.",
 		"intelPredictionSuccessful":"The invasion is likely to be successful.",
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
