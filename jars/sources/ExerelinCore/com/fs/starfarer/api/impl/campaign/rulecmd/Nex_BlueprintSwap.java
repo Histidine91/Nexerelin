@@ -402,7 +402,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (hull.hasTag("tiandong_retrofit"))
 				info.isTiandongRetrofit = true;
 			
-			picker.add(info, 3);
+			picker.add(info, 3 * hull.getRarity());
 		}
 		for (FighterWingSpecAPI wing : Global.getSettings().getAllFighterWingSpecs()) {
 			if (!wing.hasTag("rare_bp") || wing.hasTag(Tags.NO_DROP))
@@ -415,7 +415,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (wing.hasTag("tiandong_retrofit"))
 				info.isTiandongRetrofit = true;
 			
-			picker.add(info, 2);
+			picker.add(info, 2 * wing.getRarity());
 		}
 		for (WeaponSpecAPI wep : Global.getSettings().getAllWeaponSpecs()) {
 			if (!wep.hasTag("rare_bp") || wep.hasTag(Tags.NO_DROP))
@@ -425,7 +425,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			
 			PurchaseInfo info = new PurchaseInfo(weaponId, PurchaseType.WEAPON, 
 					wep.getWeaponName(), getBlueprintPointValue(Items.WEAPON_BP, wep.getBaseValue()));
-			picker.add(info, 2);
+			picker.add(info, 2 * wep.getRarity());
 		}
 		
 		for (int i = 0; i < MathUtils.getRandomNumberInRange(STOCK_COUNT_MIN, STOCK_COUNT_MAX); i++)
