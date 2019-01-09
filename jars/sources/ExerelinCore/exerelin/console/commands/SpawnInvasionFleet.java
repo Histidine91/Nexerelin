@@ -10,6 +10,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.campaign.intel.InvasionIntel;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +106,10 @@ public class SpawnInvasionFleet implements BaseCommand {
 		}
 		
 		// spawn fleet
+		float fp = InvasionFleetManager.getWantedFleetSize(closestTargetMarket);
+		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
 		InvasionIntel intel = new InvasionIntel(faction, closestOriginMarket, 
-				closestTargetMarket, InvasionFleetManager.getWantedFleetSize(closestTargetMarket), 1);	
+				closestTargetMarket, fp, 1);	
 		if (intel == null) {
 			Console.showMessage("Unable to spawn fleet");
 			return CommandResult.ERROR;

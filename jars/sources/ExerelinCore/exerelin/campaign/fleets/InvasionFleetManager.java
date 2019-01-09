@@ -420,6 +420,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		// FIXME
 		float fp = getWantedFleetSize(targetMarket);
 		float organizeTime = 10 + fp/30;
+		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
 		
 		// okay, assemble battlegroup
 		if (!strikeOnly)
