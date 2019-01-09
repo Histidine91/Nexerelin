@@ -534,6 +534,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			// increment invasion counter for faction
 			if (!spawnCounter.containsKey(factionId))
 				spawnCounter.put(factionId, 0f);
+			// safety (faction can be live without markets if its last market decivilizes)
+			if (!pointsPerFaction.containsKey(factionId))
+				pointsPerFaction.put(factionId, 0f);
 			
 			float counter = spawnCounter.get(factionId);
 			float oldCounter = counter;
