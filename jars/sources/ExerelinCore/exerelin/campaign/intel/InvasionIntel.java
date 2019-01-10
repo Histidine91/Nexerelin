@@ -569,7 +569,11 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	protected void advanceImpl(float amount) {
 		if (outcome == null)
 		{
-			if (!faction.isHostileTo(target.getFaction())) {
+			// source captured before launch
+			if (getCurrentStage() <= 0 && from.getFaction() != faction) {
+				terminateEvent(InvasionOutcome.FAIL);
+			}
+			else if (!faction.isHostileTo(target.getFaction())) {
 				terminateEvent(InvasionOutcome.NO_LONGER_HOSTILE);
 			}
 			else if (!target.isInEconomy()) {

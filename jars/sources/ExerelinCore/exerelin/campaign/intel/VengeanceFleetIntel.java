@@ -300,6 +300,9 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         }
 		
         if (assembling) {
+			if (!market.getFactionId().equals(factionId))
+				endEvent(EndReason.FAILED_TO_SPAWN);
+			
 			daysToLaunch -= Global.getSector().getClock().convertToDays(amount);
 			if (daysToLaunch < 0)
 			{
