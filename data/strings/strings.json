@@ -427,6 +427,10 @@
 		"transferMarketWarning":"Are you sure you wish to transfer $market to $theFaction?",
 		"transferMarketRep":"At the current stability, transferring $market will earn $repChange reputation with the recipient faction.",
 		
+		"stabilizeHeader":"Stabilizing $market will earn $reputation reputation with $theFaction, cost $credits and require the following commodities:",
+		"stabilizeTooltipDisabled":"Insufficient resources.",
+		"stabilizeRecentUnrestEntry":"Stabilization package",
+		
 		"remoteCommDirectory":"Remote connection to comm directory",
 
 		"prismNoSale":"No sales/returns",

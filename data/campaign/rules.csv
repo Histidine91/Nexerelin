@@ -799,6 +799,44 @@ nex_blueprintSwapBuyConfirm,DialogOptionSelected,$option == nex_blueprintSwapCon
 Nex_BlueprintSwap getForSale","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
 ,,,,,,
+# stabilization package,,,,,,
+nex_stabilizePackageOption,PopulateOptions,"Nex_IsBaseOfficial any
+$faction.id != player",,,"nex_stabilizePackage_main:""I can help with your unrest problem.""",
+nex_stabilizePackageOptionDisabled,PopulateOptions,"$faction.id != player
+!Nex_StabilizePackage enabled","SetTooltip nex_stabilizePackage_main ""$market does not require such assistance at present.""
+SetEnabled nex_stabilizePackage_main false",,,
+nex_stabilizePackageOptionCooldown,PopulateOptions,"$faction.id != player
+$market.nex_stabilizePackage_cooldown","SetTooltip nex_stabilizePackage_main ""$market has already been recently stabilized. Delivery of further packages will not be worthwhile for $nex_stabilizePackage_textCooldown.""
+SetTooltipHighlightColors nex_stabilizePackage_main hColor
+SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textCooldown
+SetEnabled nex_stabilizePackage_main false",,,
+nex_stabilizePackageSelRelief,DialogOptionSelected,"$option == nex_stabilizePackage_main
+$market.nex_stabilizePackage_type == ""relief""","Nex_StabilizePackage init
+SetShortcut nex_stabilizePackage_cancel ""ESCAPE""","""Truly? We would be most grateful for any assistance you can render. Supplies and food — and of course, credits — would help get the people of $market through their current difficulties.""
+OR
+""You are most generous, $playerName. A proper contribution of aid materials and credits would greatly aid or relief efforts.""","nex_stabilizePackage_proceed:Deliver the relief package
+nex_stabilizePackage_cancel:Reconsider",
+nex_stabilizePackageSelRepression,DialogOptionSelected,"$option == nex_stabilizePackage_main
+$market.nex_stabilizePackage_type == ""repression""","Nex_StabilizePackage init
+SetShortcut nex_stabilizePackage_cancel ""ESCAPE""","""We would welcome your assistance in this matter. An adequate contribution of supplies, munitions and funding would greatly assist our efforts in maintaining order.""
+OR
+""Indeed? Well, should you have the proper supplies and credits to support our pacification efforts, my superiors would make their gratitude known.""","nex_stabilizePackage_proceed:Deliver the pacification package
+nex_stabilizePackage_cancel:Reconsider",
+nex_stabilizePackageSelReliefConfirm,DialogOptionSelected,"$option == nex_stabilizePackage_proceed
+$market.nex_stabilizePackage_type == ""relief""","Nex_StabilizePackage proceed
+FireAll PopulateOptions","""Thank you for your charity. The people of $market are in your debt.""",,
+nex_stabilizePackageSelRepressionConfirm,DialogOptionSelected,"$option == nex_stabilizePackage_proceed
+$market.nex_stabilizePackage_type == ""repression""","Nex_StabilizePackage proceed
+FireAll PopulateOptions","""Very good. $TheFaction is grateful for your assistance in this matter.""",,
+nex_stabilizePackageNeverMind,DialogOptionSelected,$option == nex_stabilizePackage_cancel,FireAll PopulateOptions,"""I see. That is unfortunate.
+
+Is there anything else you need?""
+OR
+""Perhaps generosity has its limits.
+
+Anything else?""",,
+,,,,,,
+,,,,,,
 # other base commander stuff,,,,,,
 #nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
