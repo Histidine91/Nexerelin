@@ -291,7 +291,7 @@ nex_marketHostileInvadeResultAndradaSel,DialogOptionSelected,$option == nex_mktI
 ,,,,,,
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
-nex_MarketFactionDirectoryOption,ExerelinMarketSpecial,,SetShortcut nex_factionDirectoryMain D,,7:nex_factionDirectoryMain:Faction directory,
+nex_marketFactionDirectoryOption,ExerelinMarketSpecial,,SetShortcut nex_factionDirectoryMain D,,7:nex_factionDirectoryMain:Faction directory,
 nex_FactionDirectory,DialogOptionSelected,$option == nex_factionDirectoryMain,FireAll ExerelinFactionDirectory,,,
 nex_FactionDirectoryByTrigger,ExerelinFactionDirectory,,Nex_FactionDirectory listGroups,Which faction do you want to look up?,,
 ,,,,,,
@@ -798,7 +798,7 @@ nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,Fire
 #nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player",,,nex_marketAgentReport:Get intel report,
-nex_marketAgentReportOptionFollowers,PopulateOptions,"Nex_IsBaseOfficial admin
+#nex_marketAgentReportOptionFollowers,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == player",,,nex_marketAgentReport:Get intel report,
 nex_marketAgentReport,DialogOptionSelected,$option == nex_marketAgentReport,AgentGatherIntel false,,nex_marketAgentReportDone:Done,
 nex_marketAgentReportDone,DialogOptionSelected,$option == nex_marketAgentReportDone,"ShowPersonVisual
@@ -1242,6 +1242,11 @@ $relativeStrength >= 0
 LPTitheCalc","$LP_titheConv = true 0
 $LP_titheAskedFor = true 7
 AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor",,,
+,,,,,,
+salRuins_alreadyExplored,PopulateOptions,"$market.hasRuins
+$market.ruinsExplored
+!$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $market have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
+,,,,,,
 ,,,,,,
 #Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999

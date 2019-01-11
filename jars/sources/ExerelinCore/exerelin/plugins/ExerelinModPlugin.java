@@ -52,7 +52,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected <T extends EveryFrameScript> boolean replaceScript(SectorAPI sector, Class toRemove, T toAdd)
     {
-		boolean removedAny = false;
+        boolean removedAny = false;
         for (EveryFrameScript script : sector.getScripts())
         {
             if (toRemove.isInstance(script))
@@ -68,12 +68,12 @@ public class ExerelinModPlugin extends BaseModPlugin
                 
                 if (toAdd != null)
                     sector.addScript(toAdd);
-				
-				removedAny = true;
+                
+                removedAny = true;
                 break;
             }
         }
-		return removedAny;
+        return removedAny;
     }
     
     protected void applyToExistingSave()
@@ -151,10 +151,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-		if (replaceScript(Global.getSector(), MiningFleetManager.class, null)) {
-			Global.getSector().getPersistentData().remove(MiningFleetManager.MANAGER_MAP_KEY);
-			Global.getSector().addScript(MiningFleetManagerV2.create());
-		}
+        if (replaceScript(Global.getSector(), MiningFleetManager.class, null)) {
+            Global.getSector().getPersistentData().remove(MiningFleetManager.MANAGER_MAP_KEY);
+            Global.getSector().addScript(MiningFleetManagerV2.create());
+        }
     }
     
     protected void addEventIfNeeded(String eventId)
@@ -173,7 +173,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             //sector.addScript(new NexEventProbabilityManager());
         }
         
-		/*
+        /*
         addEventIfNeeded("exerelin_faction_salary");
         addEventIfNeeded("exerelin_followers_tax");
         if (ExerelinUtilsFaction.isExiInCorvus()) {
@@ -256,7 +256,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         //Global.getLogger(this.getClass()).info("wololo officer level: " + officerMaxLevel);
         if (officerMaxLevel > 29)
             throw new RuntimeException(StringHelper.getStringAndSubstituteToken(
-					"exerelin_misc", "errorOfficerMaxLevel", "$currMax", officerMaxLevel + ""));
+                    "exerelin_misc", "errorOfficerMaxLevel", "$currMax", officerMaxLevel + ""));
     }
     
     @Override
@@ -298,7 +298,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
-			market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT));
+            market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT));
         }
         
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
