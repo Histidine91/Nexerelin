@@ -278,9 +278,6 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 				return;
 		}
 		
-		cost *= ExerelinConfig.prismBlueprintPriceMult;
-		cost = 5 * Math.round(cost/5f);
-		
 		String optId = DIALOG_OPTION_PREFIX + index;
 		String str = StringHelper.getString("exerelin_misc", "blueprintSwapPurchaseOption");
 		str = StringHelper.substituteToken(str, "$name", name);
@@ -398,7 +395,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(hullId, PurchaseType.SHIP, 
-					hull.getNameWithDesignationWithDashClass(), getBlueprintPointValue(Items.SHIP_BP, hull.getBaseValue()));
+					hull.getNameWithDesignationWithDashClass(), getBlueprintPointValue(Items.SHIP_BP, hull.getBaseValue(), true));
 			if (hull.hasTag("tiandong_retrofit"))
 				info.isTiandongRetrofit = true;
 			
@@ -411,7 +408,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (playerFaction.knowsWeapon(wingId) || banned.contains(wingId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(wingId, PurchaseType.FIGHTER, 
-					wing.getWingName(), getBlueprintPointValue(Items.FIGHTER_BP, wing.getBaseValue()));
+					wing.getWingName(), getBlueprintPointValue(Items.FIGHTER_BP, wing.getBaseValue(), true));
 			if (wing.hasTag("tiandong_retrofit"))
 				info.isTiandongRetrofit = true;
 			
@@ -424,7 +421,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (playerFaction.knowsWeapon(weaponId) || banned.contains(weaponId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(weaponId, PurchaseType.WEAPON, 
-					wep.getWeaponName(), getBlueprintPointValue(Items.WEAPON_BP, wep.getBaseValue()));
+					wep.getWeaponName(), getBlueprintPointValue(Items.WEAPON_BP, wep.getBaseValue(), true));
 			picker.add(info, 2 * wep.getRarity());
 		}
 		
@@ -481,7 +478,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 				base = Global.getSettings().getWeaponSpec(data.getData()).getBaseValue();
 				break;
 		}
-		points = getBlueprintPointValue(spec.getId(), base);
+		points = getBlueprintPointValue(spec.getId(), base, false);
 		
 		if (spec.hasTag("package_bp"))
 			points = spec.getBasePrice() * PRICE_POINT_MULT * 5;
@@ -497,7 +494,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	 * @param baseCost Base cost of the hull, fighter wing or weapon
 	 * @return
 	 */
-	public static float getBlueprintPointValue(String itemId, float baseCost)
+	public static float getBlueprintPointValue(String itemId, float baseCost, boolean isBuy)
 	{
 		SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(itemId);
 		float cost = spec.getBasePrice() + baseCost * Global.getSettings().getFloat("blueprintPriceOriginalItemMult");
@@ -507,6 +504,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			cost *= 0.5f;
 		}
 		cost *= PRICE_POINT_MULT;
+		if (isBuy) cost *= ExerelinConfig.prismBlueprintPriceMult;
 		
 		// rounding
 		cost = 5 * Math.round(cost/5f);
