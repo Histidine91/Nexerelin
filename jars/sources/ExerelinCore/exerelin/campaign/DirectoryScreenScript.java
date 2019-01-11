@@ -73,7 +73,7 @@ public class DirectoryScreenScript implements EveryFrameScript
 		{
 			INIT,
 			DIRECTORY,
-			ALLIANCES,
+			REMOTE_COMM,
 			INTEL_SCREEN,
 			EXIT
 		}
@@ -96,6 +96,7 @@ public class DirectoryScreenScript implements EveryFrameScript
 		{
 			options.clearOptions();
 			options.addOption(StringHelper.getString("exerelin_factions", "factionDirectoryOption"), Menu.DIRECTORY);
+			//options.addOption(StringHelper.getString("exerelin_markets", "remoteCommDirectory"), Menu.REMOTE_COMM);
 			//options.addOption(StringHelper.getString("exerelin_alliances", "allianceListOption"), Menu.ALLIANCES);
 			//options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), Menu.INTEL_SCREEN);
 			options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
@@ -146,9 +147,18 @@ public class DirectoryScreenScript implements EveryFrameScript
 
 				optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
 			}
-			else if (optionData == Menu.ALLIANCES)
+			else if (optionData == Menu.REMOTE_COMM)
 			{
-				AllianceManager.printAllianceList(text);
+				FleetInteractionDialogPluginImpl.inConversation = true;
+
+				optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
+				optionsDialogDelegate.setEmbeddedMode(true);
+				optionsDialogDelegate.init(dialog);
+
+				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
+				mem.set("$specialDialog", true, 0);
+
+				optionsDialogDelegate.fireAll("Nex_RemoteComm");
 			}
 			else if (optionData == Menu.INTEL_SCREEN)
 			{

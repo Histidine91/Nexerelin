@@ -702,6 +702,11 @@ ExerelinLeaveAlliance,DialogOptionSelected,$option == exerelinLeaveAlliance,"Lea
 FireAll ExerelinMarketSpecialInitialize",,,
 #END PLAYER FACTION ALLIANCE OPTIONS,,,,,,
 ,,,,,,
+# remote comm link,,,,,,
+#nex_remoteCommOption,ExerelinMarketSpecial,,SetShortcut nex_remoteComm R,,8:nex_remoteComm:Open remote comm directory,
+nex_remoteComm,DialogOptionSelected,$option == nex_remoteComm,FireAll Nex_RemoteComm,,,
+nex_remoteCommByTrigger,Nex_RemoteComm,,Nex_RemoteCommDirectory list,Which faction do you want to look up?,,
+nex_remoteCommConnect,DialogOptionSelected,"Nex_OptionStartsWith ""nex_remoteCommDirectory_open_""",Nex_RemoteCommDirectory connect,,,
 ,,,,,,
 #START MARKET TRANSFER OPTIONS,,,,,,
 nex_marketTransferInit,PopulateOptions,"Nex_IsBaseOfficial admin
