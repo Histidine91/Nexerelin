@@ -27,8 +27,8 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.campaign.missions.SWP_FamousBountyEvent;
-import data.scripts.campaign.missions.SWP_FamousBountyEvent.FamousBountyStage;
+import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
+import data.scripts.campaign.intel.SWP_IBBTracker;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
@@ -176,7 +176,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         //float qualityFactor = market.getShipQualityFactor(); 
         for (String id : weaponIds) {
             WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(id);
-            if (spec.getTier() <= maxTier) {
+            if (spec.getTier() <= maxTier && isWeaponAllowed(spec)) {
                 //float weaponQuality = 0.33f * (float) spec.getTier();
                 //float qualityDiff = Math.abs(qualityFactor - weaponQuality);
                 float qualityDiff = 0f;
@@ -202,20 +202,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         CargoAPI cargo = getCargo();
         
         float variation=(float)Math.random()*0.5f+0.75f;
-		int tries = 0;
         for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = cargo.getWeapons().size()) {
-            addRandomWeapons(10, 3);
-            for (CargoStackAPI s : cargo.getStacksCopy()) {
-                //remove all low tier weapons
-                if (s.isWeaponStack() && !isWeaponAllowed(s.getWeaponSpecIfWeapon())){
-                    float qty = s.getSize();
-                    cargo.removeItems(s.getType(), s.getData(), qty );
-                    cargo.removeEmptyStacks();
-                }
-            }
-			tries++;
-			//log.info("Add weapon try " + tries);
-			if (tries > 40) break;
+            addRandomWeapons(10, 4);
         }
     }
     
@@ -275,6 +263,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         SectorAPI sector = Global.getSector();
         for (String factionId: allowedFactions) {
             FactionAPI faction = sector.getFaction(factionId);
+            if (faction == null) continue;
             if (!faction.isShowInIntelTab()) continue;
             //if (faction.isNeutralFaction()) continue;
             //if (faction.isPlayerFaction()) continue;
@@ -424,8 +413,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 if (doIBBCheck && stageStr != null && !stageStr.isEmpty()) {
                     try {
                         // FIXME: update IBB stage check when IBB is updated
-                        FamousBountyStage stage = SWP_FamousBountyEvent.FamousBountyStage.valueOf(stageStr);
-                        if (false){
+                        FamousBountyStage stage = FamousBountyStage.valueOf(stageStr);
+                        if (!SWP_IBBTracker.getTracker().isStageComplete(stage)){
                             log.info("IBB not completed for " + entry.id + " (" + stageStr + ")");
                             proceed = false;
                         }
