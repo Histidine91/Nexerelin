@@ -1,10 +1,7 @@
-name,id,script,desc,icon,order
-#Templar Control,exerelin_templar_control,exerelin.campaign.econ.TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
-Rebellion,nex_rebellion_condition,exerelin.campaign.econ.RebellionCondition,"A rebellion is ongoing on $market.
+name,id,planetary,decivRemove,script,desc,icon,order
+#Templar Control,exerelin_templar_control,,,exerelin.campaign.econ.TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
+Rebellion,nex_rebellion_condition,,TRUE,exerelin.campaign.econ.RebellionCondition,"A rebellion is ongoing on $market.
 
 - Stability reduced by $stabilityPenalty
 - Increased demand for marines, hand weapons and supplies; sales to $market will strengthen rebels or government depending on channel",graphics/icons/markets/pirate_moot.png,1002
-#vanilla override,,,,,
-#Military Base,military_base,exerelin.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.
-
-Increases the quality and number of officers in $market's fleets.",graphics/icons/markets/military_base.png,30
+Raiding,nex_raid_condition,,TRUE,exerelin.campaign.econ.RaidCondition,"Hostile raiding fleets are active in the system, disrupting commerce and other activities.",graphics/icons/markets/pirate_activity.png,1301

@@ -10,6 +10,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.InvasionIntel;
 import java.awt.Color;
 import org.histidine.industry.scripts.util.StringHelper;
+import org.lazywizard.lazylib.MathUtils;
 
 public class InvAssembleStage extends AssembleStage {
 	
@@ -61,6 +62,8 @@ public class InvAssembleStage extends AssembleStage {
 		
 		if (Math.random() < 0.33f)
 			base *= 2f;
+		
+		base *= MathUtils.getRandomNumberInRange(0.85f, 1.15f);
 			
 		if (spawnFP < base * 1.5f) {
 			base = spawnFP;

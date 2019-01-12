@@ -29,6 +29,8 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.NexRaidIntel;
+import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -70,6 +72,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
 	public static final float DEFENSE_ESTIMATION_MULT = 0.9f;
 	public static final float BASE_INVASION_COST = 750f;	// for reference, Jangala at start of game is around 975
+	public static final float RAID_SIZE_MULT = 0.8f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -81,7 +84,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected final List<RaidIntel> activeIntel = new LinkedList();
 	protected HashMap<String, Float> spawnCounter = new HashMap<>();
 	
-	private final IntervalUtil tracker;
+	protected final IntervalUtil tracker;
 	
 	protected float daysElapsed = 0;
 	protected float templarInvasionPoints = 0;
@@ -166,7 +169,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		{
 			if (market.getFaction() != target)
 				continue;
-			strength+= estimateDefensiveStrength(market, variability);
+			strength += estimateDefensiveStrength(market, variability);
 		}
 		
 		return strength;
@@ -324,20 +327,21 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	*/
 	
-	public InvasionIntel generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly)
+	public OffensiveFleetIntel generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean raid)
 	{
-		return generateInvasionFleet(faction, targetFaction, strikeOnly, 1);
+		return generateInvasionFleet(faction, targetFaction, raid, 1);
 	}
 	
 	/**
-	 * Try to create an invasion fleet and its accompanying strike fleets (or just the strike fleets)
+	 * Try to create an invasion fleet or raid fleet.
 	 * @param faction The faction launching an invasion
 	 * @param targetFaction
-	 * @param strikeOnly
+	 * @param raid
 	 * @param sizeMult
 	 * @return The invasion fleet intel, if one was created
 	 */
-	public InvasionIntel generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly, float sizeMult)
+	public OffensiveFleetIntel generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, 
+			boolean raid, float sizeMult)
 	{
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -458,21 +462,25 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float fp = getWantedFleetSize(faction, targetMarket, 0.2f);
 		float organizeTime = 10 + fp/30;
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
+		if (raid) fp *= RAID_SIZE_MULT;
 		
 		// okay, assemble battlegroup
-		if (!strikeOnly)
+		if (!raid)
 		{
 			log.info("Spawning invasion fleet for " + faction.getDisplayName() + "; source " + originMarket.getName() + "; target " + targetMarket.getName());
 			InvasionIntel intel = new InvasionIntel(faction, originMarket, targetMarket, fp, organizeTime);
 			intel.init();
+			activeIntel.add(intel);
 			return intel;
 		}
 		else
 		{
-			// TODO
+			// raid
+			log.info("Spawning raid fleet for " + faction.getDisplayName() + "; source " + originMarket.getName() + "; target " + targetMarket.getName());
+			NexRaidIntel intel = new NexRaidIntel(faction, originMarket, targetMarket, fp, organizeTime);
+			intel.init();
+			return intel;
 		}
-		
-		return null;
 	}
 	
 	protected float getCommodityPoints(MarketAPI market, String commodity) {
@@ -607,7 +615,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			else
 			{
 				// okay, we can invade
-				InvasionIntel intel = generateInvasionFleet(faction, null, false);
+				InvasionIntel intel = (InvasionIntel)generateInvasionFleet(faction, null, false);
 				if (intel != null)
 				{
 					counter -= getInvasionPointReduction(pointsRequired, intel);
@@ -635,7 +643,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
 		if (templarInvasionPoints >= req)
 		{
-			InvasionIntel intel = generateInvasionFleet(Global.getSector().getFaction("templars"), null, false);
+			InvasionIntel intel = (InvasionIntel)generateInvasionFleet(Global.getSector().getFaction("templars"), null, false);
 			if (intel != null) templarInvasionPoints -= getInvasionPointReduction(req, intel);
 			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
 		}
@@ -647,20 +655,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				picker.add(factionId, ExerelinUtilsFaction.getFactionMarketSizeSum(factionId));
 			}
 			FactionAPI faction = Global.getSector().getFaction(picker.pick());
-			InvasionIntel intel = generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
+			InvasionIntel intel = (InvasionIntel)generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
 			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
 			if (intel != null) templarCounterInvasionPoints -= getInvasionPointReduction(req, intel);
 		}
 	}
 	
-	protected float getInvasionPointReduction(float base, InvasionIntel intel)
+	protected float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
 	{
 		return base * Math.max(intel.getFP()/BASE_INVASION_COST, 0.8f);
-	}
-	
-	public void addActiveIntel(RaidIntel intel)
-	{
-		activeIntel.add(intel);
 	}
 	
 	@Override
@@ -683,7 +686,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		List<RaidIntel> remove = new LinkedList();
 		for (RaidIntel intel : activeIntel) {
-			if (intel.isEnded()) {
+			if (intel.isEnded() || intel.isEnding()) {
 				remove.add(intel);
 			}
 		}

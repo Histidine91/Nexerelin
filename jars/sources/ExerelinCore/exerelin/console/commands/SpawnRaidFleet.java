@@ -1,22 +1,16 @@
 package exerelin.console.commands;
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.NexRaidIntel;
+import static exerelin.console.commands.SpawnInvasionFleet.getMarket;
 import exerelin.utilities.ExerelinConfig;
-import java.util.ArrayList;
-import java.util.List;
-import org.lazywizard.console.BaseCommand;
-import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
-import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.MathUtils;
 
-public class SpawnInvasionFleet implements BaseCommand {
-
+public class SpawnRaidFleet extends SpawnInvasionFleet 
+{
 	@Override
 	public CommandResult runCommand(String args, CommandContext context) {
 		if (!context.isInCampaign()) {
@@ -43,49 +37,18 @@ public class SpawnInvasionFleet implements BaseCommand {
 		
 		// spawn fleet
 		float fp = InvasionFleetManager.getWantedFleetSize(source.getFaction(), target, 0.2f);
+		fp *= InvasionFleetManager.RAID_SIZE_MULT;
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(source.getFactionId()).invasionFleetSizeMod;
 		fp *= MathUtils.getRandomNumberInRange(0.8f, 1.2f);
-		InvasionIntel intel = new InvasionIntel(source.getFaction(), source, target, fp, 1);	
+		NexRaidIntel intel = new NexRaidIntel(source.getFaction(), source, target, fp, 1);	
 		if (intel == null) {
 			Console.showMessage("Unable to spawn fleet");
 			return CommandResult.ERROR;
 		}
 		intel.init();
-		Console.showMessage("Spawning invasion from " + source.getName());
+		Console.showMessage("Spawning raid from " + source.getName());
 		Console.showMessage("Oscar Mike to " + target.getName() + " (" + target.getFaction().getDisplayName()
 				+ ") in " + target.getContainingLocation().getName());
 		return CommandResult.SUCCESS;
-	}
-	
-	/**
-	 * Gets best faction match; prints error message if not found.
-	 * @param factionId
-	 * @return 
-	 */
-	public static FactionAPI getFaction(String factionId)
-	{
-		if (factionId == null)
-		{
-			return null;
-		}
-		
-		FactionAPI faction = CommandUtils.findBestFactionMatch(factionId);
-		if (faction == null)
-		{
-			final List<String> ids = new ArrayList<>();
-			for (FactionAPI existsFaction : Global.getSector().getAllFactions())
-			{
-				ids.add(existsFaction.getId());
-			}
-			
-			Console.showMessage("Error: no such faction '" + factionId
-					+ "'! Valid factions: " + CollectionUtils.implode(ids) + ".");
-			return null;
-		}
-		return faction;
-	}
-	
-	public static MarketAPI getMarket(String marketId) {
-		return Global.getSector().getEconomy().getMarket(marketId);
 	}
 }

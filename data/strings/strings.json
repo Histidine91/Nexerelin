@@ -580,6 +580,9 @@
 		"intelBulletFailed":"Raid failed",
 		"intelBulletNoMoreTargets":"Raid over: no more targets",
 		"intelBulletCancelled":"Raid cancelled",
+		
+		"conditionPenalties":"%s stability, %s accessibility.",
+		"conditionListHeader":"The following hostile factions have active raids in the system:",
 	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",

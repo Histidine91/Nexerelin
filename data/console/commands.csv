@@ -1,6 +1,7 @@
 command,class,tags,syntax,help
 SpawnInvasionFleet,exerelin.console.commands.SpawnInvasionFleet,"campaign,nexerelin",spawninvasionfleet <source market> <target market>,Spawns an invasion fleet from the specified source market to the specified target market.
-SpawnRespawnFleet,exerelin.console.commands.SpawnRespawnFleet,"campaign,nexerelin",spawnrespawnfleet [faction],"Spawns a respawn fleet to go to a random suitable target. Will try to spawn a faction currently not in the Sector, if not specified."
+SpawnRaidFleet,exerelin.console.commands.SpawnRaidFleet,"campaign,nexerelin",spawnraidfleet <source market> <target market>,Spawns a raid fleet from the specified source market to the specified target market.
+#SpawnRespawnFleet,exerelin.console.commands.SpawnRespawnFleet,"campaign,nexerelin",spawnrespawnfleet [faction],"Spawns a respawn fleet to go to a random suitable target. Will try to spawn a faction currently not in the Sector, if not specified."
 SetMarketOwner,exerelin.console.commands.SetMarketOwner,"campaign,nexerelin",setmarketowner <entity> [owner],"Causes the market associated with <entity> to be captured by [owner], or a random live faction if not specified."
 SyncRelationships,exerelin.console.commands.SyncRelationships,"campaign,nexerelin",syncrelationships,Syncs faction relationships to match player's. Use after using Save Transfer.
 CreateDiplomacyEvent,exerelin.console.commands.CreateDiplomacyEvent,"campaign,nexerelin",creatediplomacyevent <faction1> <faction2> [stage],Creates a new diplomacy event between the two factions. Specify 'stage' as an identifier for a specific event type.
@@ -8,7 +9,6 @@ CreateAlliance,exerelin.console.commands.CreateAlliance,"campaign,nexerelin",cre
 LeaveAlliance,exerelin.console.commands.LeaveAlliance,"campaign,nexerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
 ResetRelationships,exerelin.console.commands.ResetRelationships,"campaign,nexerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
 PrintDeadOfficers,exerelin.console.commands.PrintDeadOfficers,"campaign,nexerelin",printdeadofficers,Prints information on all player officers who have died in combat.
-#PrintProductionInfo,exerelin.console.commands.PrintProductionInfo,"campaign,nexerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
 RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,nexerelin",retirecharacter,Retires your character and ends the game.
 StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,nexerelin",startvengeanceevent <faction>,Spawns a vengeance fleet for the specified faction.
 OpenNexConfig,exerelin.console.commands.OpenNexConfig,"campaign,nexerelin",opennexconfig,Opens a dialog screen to change some Nexerelin settings (as if Nexerelin was added to an existing save).

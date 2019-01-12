@@ -1,22 +1,18 @@
 package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.intel.invasion.*;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
@@ -39,7 +35,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected float fp;
 	protected float orgDur;
 	
-	protected InvActionStage action;
+	protected ActionStage action;
 	
 	public static enum OffensiveOutcome {
 		TASK_FORCE_DEFEATED,
@@ -134,12 +130,6 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	public void setOutcome(OffensiveOutcome outcome) {
 		this.outcome = outcome;
-	}
-		
-	@Override
-	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
-		RaidAssignmentAI raidAI = new RaidAssignmentAI(fleet, route, action);
-		return raidAI;
 	}
 		
 	@Override

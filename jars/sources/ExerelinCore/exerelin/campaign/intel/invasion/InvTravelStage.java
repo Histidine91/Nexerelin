@@ -6,8 +6,8 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import org.histidine.foundation.scripts.StringHelper;
 
 public class InvTravelStage extends TravelStage {
 	

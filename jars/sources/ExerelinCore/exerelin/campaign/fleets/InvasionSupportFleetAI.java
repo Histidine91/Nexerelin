@@ -15,6 +15,7 @@ import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
+@Deprecated
 public class InvasionSupportFleetAI implements EveryFrameScript
 {
 	public static Logger log = Global.getLogger(InvasionSupportFleetAI.class);
