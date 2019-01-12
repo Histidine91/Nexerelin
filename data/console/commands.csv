@@ -1,5 +1,5 @@
 command,class,tags,syntax,help
-SpawnInvasionFleet,exerelin.console.commands.SpawnInvasionFleet,"campaign,nexerelin","spawninvasionfleet [faction|""any""] [targetFaction]",Spawns an invasion fleet from the closest market of faction to go to the closest market of target faction. Faction is randomly picked if not specified; if target faction is not specified it will attack the closest hostile market.
+SpawnInvasionFleet,exerelin.console.commands.SpawnInvasionFleet,"campaign,nexerelin",spawninvasionfleet <source market> <target market>,Spawns an invasion fleet from the specified source market to the specified target market.
 SpawnRespawnFleet,exerelin.console.commands.SpawnRespawnFleet,"campaign,nexerelin",spawnrespawnfleet [faction],"Spawns a respawn fleet to go to a random suitable target. Will try to spawn a faction currently not in the Sector, if not specified."
 SetMarketOwner,exerelin.console.commands.SetMarketOwner,"campaign,nexerelin",setmarketowner <entity> [owner],"Causes the market associated with <entity> to be captured by [owner], or a random live faction if not specified."
 SyncRelationships,exerelin.console.commands.SyncRelationships,"campaign,nexerelin",syncrelationships,Syncs faction relationships to match player's. Use after using Save Transfer.
@@ -12,10 +12,6 @@ PrintDeadOfficers,exerelin.console.commands.PrintDeadOfficers,"campaign,nexereli
 RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,nexerelin",retirecharacter,Retires your character and ends the game.
 StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,nexerelin",startvengeanceevent <faction>,Spawns a vengeance fleet for the specified faction.
 OpenNexConfig,exerelin.console.commands.OpenNexConfig,"campaign,nexerelin",opennexconfig,Opens a dialog screen to change some Nexerelin settings (as if Nexerelin was added to an existing save).
-#,,,,
-#PingDistance,exerelin.console.commands.PingDistance,"campaign,nexerelin",pingdistance,Prints distance to closest market.
-#ResetClosestMarket,exerelin.console.commands.ResetClosestMarket,"campaign,nexerelin",resetclosestmarket,Debug command
-#GetTime,exerelin.console.commands.GetTime,"campaign,nexerelin",gettime,Prints some clock info
 #,,,,
 # Override default command,,,,
 SetRelation,exerelin.console.commands.SetRelationship,"core,campaign",setrelation all|<faction> [optionalTowardsFaction] <amount>,"Sets the relationship between two factions to the given number. If no second faction is entered, relationship with the player is affected. Arguments range from -100 to 100."
