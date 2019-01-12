@@ -399,6 +399,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
+            if (Nex_IsFactionRuler.isRuler(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>();
