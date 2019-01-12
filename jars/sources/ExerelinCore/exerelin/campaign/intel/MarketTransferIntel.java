@@ -3,6 +3,7 @@ package exerelin.campaign.intel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -11,9 +12,11 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,16 +27,29 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 	protected String newFactionId;
 	protected boolean isPlayerInvolved;
 	protected boolean isCapture;
-	
+	protected List<String> factionsToNotify;
+	protected float repChange;
 	
 	public MarketTransferIntel(MarketAPI market, String oldFactionId, String newFactionId, 
-			boolean isCapture, boolean isPlayerInvolved)
+			boolean isCapture, boolean isPlayerInvolved, List<String> factionsToNotify, float repChange)
 	{
 		this.market = market;
 		this.oldFactionId = oldFactionId;
 		this.newFactionId = newFactionId;
 		this.isPlayerInvolved = isPlayerInvolved;
 		this.isCapture = isCapture;
+		this.factionsToNotify = factionsToNotify;
+		this.repChange = repChange;
+		
+		if (isPlayerInvolved) {
+			TextPanelAPI text = null;
+			if (Global.getSector().getCampaignUI().getCurrentInteractionDialog() != null)
+				text = Global.getSector().getCampaignUI().getCurrentInteractionDialog().getTextPanel();
+			for (String factionId : factionsToNotify) {
+				FactionAPI faction = Global.getSector().getFaction(factionId);
+				NexUtilsReputation.adjustPlayerReputation(faction, repChange, null, text);
+			}
+		}
 	}
 	
 	protected FactionAPI getFaction(String id)

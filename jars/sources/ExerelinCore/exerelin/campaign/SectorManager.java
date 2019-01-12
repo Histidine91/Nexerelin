@@ -756,6 +756,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             sectorManager.victoryHasOccured = true;
     }
     
+    public boolean hasVictoryOccured() {
+        return victoryHasOccured;
+    }
+    
+    public void setVictoryOccured(boolean bool) {
+        victoryHasOccured = bool;
+    }
+    
     // legacy fallback method (for Save Transfer)
     @Deprecated
     public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
@@ -910,12 +918,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             newOwner.setDisplayNameOverride(StringHelper.getString("player", true));
             Global.getSector().addTransientScript(new PlayerFactionSetupNag());
         }
-            
         
         // intel report
-        MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved);
+        MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved, 
+            factionsToNotify, repChangeStrength);
         ExerelinUtils.addExpiringIntel(intel);
-                
+        
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
         

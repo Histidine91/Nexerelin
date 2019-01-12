@@ -15,6 +15,8 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
@@ -103,7 +105,8 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
 		float repChange = getRepChange(market, false);
 		
-		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, null, repChange);
+		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, 
+				new ArrayList<>(Arrays.asList(newFactionId)), repChange);
 		DiplomacyManager.getManager().getDiplomacyBrain(newFactionId).reportDiplomacyEvent(oldFactionId, repChange);
 				
 		//ExerelinUtilsReputation.adjustPlayerReputation(newFaction, null, repChange, null, dialog.getTextPanel());	// done in event
