@@ -1,16 +1,17 @@
 package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.InvasionIntel;
 import java.awt.Color;
+import org.histidine.foundation.scripts.StringHelper;
 
 public class InvTravelStage extends TravelStage {
 	
-	public InvTravelStage(InvasionIntel invasion, SectorEntityToken from, SectorEntityToken to, boolean requireNearTarget) {
+	public InvTravelStage(RaidIntel invasion, SectorEntityToken from, SectorEntityToken to, boolean requireNearTarget) {
 		super(invasion, from, to, requireNearTarget);
 	}
 	
@@ -25,12 +26,13 @@ public class InvTravelStage extends TravelStage {
 		float pad = 3f;
 		float opad = 10f;
 		
+		String key = "intelStageTravel";
+		String loc = intel.getSystem().getNameWithLowercaseType();
 		if (status == RaidStageStatus.FAILURE) {
-			info.addPara("The invasion force has failed to successfully reach the " +
-					intel.getSystem().getNameWithLowercaseType() + ".", opad);
+			key = "intelStageTravelFailed";
+			info.addPara(StringHelper.getStringAndSubstituteToken("exerelin_invasion", key, "$location", loc), opad);
 		} else if (curr == index) {
-			info.addPara("The invasion force is currently travelling to the " + 
-					intel.getSystem().getNameWithLowercaseType() + ".", opad);
+			info.addPara(StringHelper.getStringAndSubstituteToken("exerelin_invasion", key, "$location", loc), opad);
 		}
 	}
 }

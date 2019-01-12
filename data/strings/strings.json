@@ -317,6 +317,7 @@
 		"hunting":"hunting $target",
 		"beginningInvasion":"beginning invasion of $target",
 		"invading":"invading $target",
+		"movingInToInvade":"moving in to invade $target",
 		"mining":"mining $target",
 		"miningUnload":"unloading cargo and disbanding",
 		"suppressingRebellion":"suppressing rebellion at $target",
@@ -353,6 +354,18 @@
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
 		"intelOutcomeNoLongerHostile":"As $target's current faction is not currently hostile, the invasion has been cancelled.",
 		"intelOutcomeNoLongerExists":"$target has been destroyed by another hostile party. There is nothing left to invade.",
+		
+		"intelOrganizeGetForcesString":"The invasion",
+		"intelStageAssemble":"The invasion force is currently assembling in the $location.",
+		"intelStageAssembleUnknown":"The invasion force is currently assembling at an unknown location.",
+		"intelStageAssembleFail":"The invasion force has failed to successfully assemble at the rendezvous point.",
+		"intelStageTravel":"The invasion force is currently travelling to the $location.",
+		"intelStageTravelFailed":"The invasion force has failed to successfully reach the $location.",
+		"intelStageAction":"The invasion force is currently in-system.",
+		"intelStageActionSuccess":"The invasion force has conquered $market.",
+		"intelStageActionDefeatedGround":"The invasion forces have been repelled by the ground defenses of $market.",
+		"intelStageActionDefeatedSpace":"The invasion force has been defeated by the defenders of of $market.",
+		"intelStageActionAborted":"The invasion has been aborted.",
 		
 		"invasionStrength":"invasion strength",
 		"groundDefStrength":"ground defense strength",
@@ -555,6 +568,18 @@
 		"miaPresumedDead":"MIA, presumed dead",
 		"killedInAction":"killed in action",
 		"rescued":"rescued"
+	},
+	"exerelin_raid":{		
+		"raid":"raid",
+		"raids":"raids",
+		
+		"intelTitle":"Raid: $location",
+		"intelDesc":"$TheFaction $isOrAre raiding $location to disrupt local activity. The invasion forces are projected to be $strDesc.",
+		"intelBulletArrived":"Raiders arrived in system",
+		"intelBulletSuccess":"Raid successful",
+		"intelBulletFailed":"Raid failed",
+		"intelBulletNoMoreTargets":"Raid over: no more targets",
+		"intelBulletCancelled":"Raid cancelled",
 	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",

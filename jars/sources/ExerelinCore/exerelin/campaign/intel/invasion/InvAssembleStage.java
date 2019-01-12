@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.InvasionIntel;
 import java.awt.Color;
+import org.histidine.industry.scripts.util.StringHelper;
 
 public class InvAssembleStage extends AssembleStage {
 	
@@ -28,12 +29,14 @@ public class InvAssembleStage extends AssembleStage {
 		float opad = 10f;
 		
 		if (status == RaidStageStatus.FAILURE) {
-			info.addPara("The invasion force has failed to successfully assemble at the rendezvous point.", opad);
+			info.addPara(StringHelper.getString("exerelin_invasion", "intelStageAssembleFail"), opad);
 		} else if (curr == index) {
 			if (isSourceKnown()) {
-				info.addPara("The invasion force is currently assembling in the " + gatheringPoint.getContainingLocation().getNameWithLowercaseType() + ".", opad);
+				String loc = gatheringPoint.getContainingLocation().getNameWithLowercaseType();
+				info.addPara(StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
+						"intelStageAssembleUnknown", "$location", loc), opad);
 			} else {
-				info.addPara("The invasion force is currently assembling at an unknown location.", opad);
+				info.addPara(StringHelper.getString("exerelin_invasion", "intelStageAssembleUnknown"), opad);
 			}
 		}
 	}

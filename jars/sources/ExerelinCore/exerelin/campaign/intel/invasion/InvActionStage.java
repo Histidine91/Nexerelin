@@ -27,6 +27,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.InvasionIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
 public class InvActionStage extends ActionStage implements FleetActionDelegate {
@@ -127,12 +128,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	// if primary invasion fleets are still a thing
 	@Override
 	public String getRaidActionText(CampaignFleetAPI fleet, MarketAPI market) {
-		return "invading " + market.getName();
+		return StringHelper.getFleetAssignmentString("invading", market.getName());
 	}
 
 	@Override
 	public String getRaidApproachText(CampaignFleetAPI fleet, MarketAPI market) {
-		return "moving in to invade " + market.getName();
+		return StringHelper.getFleetAssignmentString("movingInToInvade", market.getName());
 	}
 	
 	// get attacker strength and defender strength
@@ -267,30 +268,31 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		if (curr < index) return;
 		
 		if (status == RaidStageStatus.ONGOING && curr == index) {
-			info.addPara("The expedition forces are currently in-system.", opad);
+			info.addPara(StringHelper.getString("exerelin_invasion", "intelStageAction"), opad);
 			return;
 		}
 		
 		InvasionIntel intel = ((InvasionIntel)this.intel);
 		if (intel.getOutcome() != null) {
+			String key = "intelStageAction";
 			switch (intel.getOutcome()) {
 			case FAIL:
-				info.addPara("The invasion forces have been repelled by the ground defenses of " + target.getName() + ".", opad);
+				key += "DefeatedGround";
 				break;
 			case SUCCESS:
-				info.addPara("The invasion force has conquered " + target.getName() + ".", opad);
+				key += "Success";
 				break;
 			case TASK_FORCE_DEFEATED:
-				info.addPara("The invasion force has been defeated by the defenders of " +
-								target.getName() + ".", opad);
+				key += "DefeatedSpace";
 				break;
 			case NO_LONGER_HOSTILE:
 			case MARKET_NO_LONGER_EXISTS:
 			case OTHER:
-				info.addPara("The invasion has been aborted.", opad);
+				key += "Aborted";
 				break;
-			
 			}
+			info.addPara(StringHelper.getStringAndSubstituteToken("exerelin_invasion",
+						key, "$market", target.getName()), opad);
 		} else if (status == RaidStageStatus.SUCCESS) {			
 			info.addPara("The expeditionary force has succeeded.", opad); // shouldn't happen?
 		} else {
@@ -307,17 +309,17 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
 	@Override
 	public String getRaidPrepText(CampaignFleetAPI fleet, SectorEntityToken from) {
-		return "orbiting " + from.getName();
+		return StringHelper.getFleetAssignmentString("orbiting", from.getName());
 	}
 	
 	@Override
 	public String getRaidInSystemText(CampaignFleetAPI fleet) {
-		return "traveling to " + target.getName();
+		return StringHelper.getFleetAssignmentString("travelingTo", target.getName());
 	}
 	
 	@Override
 	public String getRaidDefaultText(CampaignFleetAPI fleet) {
-		return "traveling to " + target.getName();		
+		return StringHelper.getFleetAssignmentString("travelingTo", target.getName());
 	}
 	
 	@Override

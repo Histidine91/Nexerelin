@@ -1,20 +1,19 @@
 package exerelin.campaign.intel.invasion;
 
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
-import exerelin.campaign.intel.InvasionIntel;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import exerelin.utilities.StringHelper;
 
 public class InvOrganizeStage extends OrganizeStage {
 	
-	public InvOrganizeStage(InvasionIntel invasion, MarketAPI market, float durDays) {
+	public InvOrganizeStage(RaidIntel invasion, MarketAPI market, float durDays) {
 		super(invasion, market, durDays);
 	}
 	
 	@Override
 	protected String getForcesString() {
-		return "The invasion force";
+		return StringHelper.getString("exerelin_invasion", "intelOrganizeGetForcesString");
 	}
 	
 	@Override
