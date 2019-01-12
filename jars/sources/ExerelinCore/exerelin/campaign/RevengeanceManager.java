@@ -4,13 +4,18 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -26,7 +31,7 @@ import org.apache.log4j.Logger;
 /**
  * Handles SS+ vengeance fleets and Nexerelin counter-invasion fleets
  */
-public class RevengeanceManager extends BaseCampaignEventListener {
+public class RevengeanceManager extends BaseCampaignEventListener implements ColonyPlayerHostileActListener {
 
 	public static final boolean DEBUG_MODE = false;
 	public static final String PERSISTENT_KEY = "nex_revengeanceManager";
@@ -70,6 +75,7 @@ public class RevengeanceManager extends BaseCampaignEventListener {
 	// this exists because else it'd be a leak in constructor
 	public void init() {
 		Global.getSector().getPersistentData().put(PERSISTENT_KEY, this);
+		Global.getSector().getListenerManager().addListener(this);
 	}
 	
 	/**
@@ -217,11 +223,9 @@ public class RevengeanceManager extends BaseCampaignEventListener {
 		else return (FLEET_STAGES.get(stage)[1]);
 	}
 	
-	// because for some reason ReportBattleFinished isn't being called, have StatsTracker call this instead
 	@Override
 	public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
 	{
-		log.info("Battle finished");
 		if (!battle.isPlayerInvolved()) return;
 		
 		List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
@@ -323,43 +327,71 @@ public class RevengeanceManager extends BaseCampaignEventListener {
 	public MarketAPI pickMarketForFactionVengeance(String factionId) 
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
-        WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
-        float total = 0f;
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-            if (faction.getId().contentEquals("cabal")) {
-                if (market.getFaction() != faction && !market.hasCondition("cabal_influence")) {
-                    continue;
-                }
-            } else {
-                if (market.getFaction() != faction) {
-                    continue;
-                }
-            }
+		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+		float total = 0f;
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (faction.getId().contentEquals("cabal")) {
+				if (market.getFaction() != faction && !market.hasCondition("cabal_influence")) {
+					continue;
+				}
+			} else {
+				if (market.getFaction() != faction) {
+					continue;
+				}
+			}
 			if (!market.hasSpaceport()) continue;
 			
-            float weight = market.getSize() * (float) Math.sqrt(NexUtilsMath.lerp(0.25f, 1f, market.getShipQualityFactor()));
-            float mod = 1f;
-            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasCondition("ii_interstellarbazaar")) {
-                mod += 0.15f;
-            }
-            if (market.hasIndustry(Industries.HIGHCOMMAND)) {
-                mod += 0.2f;
-            }
-            if (market.hasIndustry(Industries.PATROLHQ)) {
-                mod += 0.1f;
-            }
-            if (market.hasIndustry(Industries.MEGAPORT)) {
-                mod += 0.15f;
-            }
-            weight *= mod;
-            picker.add(market, weight);
-        }
-        return picker.pick();
-    }
+			float weight = market.getSize() * (float) Math.sqrt(NexUtilsMath.lerp(0.25f, 1f, market.getShipQualityFactor()));
+			float mod = 1f;
+			if (market.hasIndustry(Industries.MILITARYBASE) || market.hasCondition("ii_interstellarbazaar")) {
+				mod += 0.15f;
+			}
+			if (market.hasIndustry(Industries.HIGHCOMMAND)) {
+				mod += 0.2f;
+			}
+			if (market.hasIndustry(Industries.PATROLHQ)) {
+				mod += 0.1f;
+			}
+			if (market.hasIndustry(Industries.MEGAPORT)) {
+				mod += 0.15f;
+			}
+			weight *= mod;
+			picker.add(market, weight);
+		}
+		return picker.pick();
+	}
 	
 	public static RevengeanceManager getManager()
 	{
 		return (RevengeanceManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
+	}
+	
+	public void addVengeanceForMarketAttack(MarketAPI market, float mult)
+	{
+		float addedPoints = (float)Math.pow(2, market.getSize() - 1) * mult;
+		log.info("Adding vengeance points for market attack: " + market.getName() + ", " + addedPoints + " (mult " + mult + ")");
+		addPoints(addedPoints/2);
+		addFactionPoints(market.getFactionId(), addedPoints);
+	}
+
+	@Override
+	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
+		addVengeanceForMarketAttack(market, 1);
+	}
+
+	@Override
+	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, Industry industry) {
+		addVengeanceForMarketAttack(market, 1);
+	}
+
+	@Override
+	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
+		addVengeanceForMarketAttack(market, 1);
+	}
+
+	@Override
+	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
+		addVengeanceForMarketAttack(market, 10);
 	}
 	
 }

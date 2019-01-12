@@ -155,6 +155,13 @@ public class ExerelinModPlugin extends BaseModPlugin
             Global.getSector().getPersistentData().remove(MiningFleetManager.MANAGER_MAP_KEY);
             Global.getSector().addScript(MiningFleetManagerV2.create());
         }
+        
+        RevengeanceManager rvng = RevengeanceManager.getManager();
+        if (rvng != null && !Global.getSector().getListenerManager().hasListener(rvng))
+        {
+            Global.getLogger(this.getClass()).info("Registering revengeance manager as listener");
+            Global.getSector().getListenerManager().addListener(rvng);
+        }
     }
     
     protected void addEventIfNeeded(String eventId)
