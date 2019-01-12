@@ -63,16 +63,12 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		assemble.setAbortFP(fp * successMult);
 		addStage(assemble);
 		
-		// don't add a travel stage for same-system invasions
-		// FIXME: does this fix even work for what we want it to?
-		if (true || from.getContainingLocation() != target.getContainingLocation())
-		{
-			SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
+		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
 
-			InvTravelStage travel = new InvTravelStage(this, gather, raidJump, false);
-			travel.setAbortFP(fp * successMult);
-			addStage(travel);
-		}
+		InvTravelStage travel = new InvTravelStage(this, gather, raidJump, false);
+		travel.setAbortFP(fp * successMult);
+		addStage(travel);
+		
 		
 		action = new InvActionStage(this, target);
 		action.setAbortFP(fp * successMult);

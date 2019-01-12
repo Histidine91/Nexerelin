@@ -179,21 +179,22 @@ public class MiningFleetAI implements EveryFrameScript
 		SectorEntityToken target = data.target;
 		LocationAPI loc = target.getContainingLocation();
 		String locName = "the " + loc.getName();
-
+		String tgtName = target.getName();
 		if (loc != fleet.getContainingLocation()) {
 			LocationAPI hyper = Global.getSector().getHyperspace();
 			Vector2f dest = Misc.getPointAtRadius(loc.getLocation(), 1500.0F);
 			SectorEntityToken token = hyper.createToken(dest.x, dest.y);
 			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
-			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
+			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", tgtName));
 		}
 		else {
-			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
+			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", tgtName));
 		}
 		if (target instanceof AsteroidAPI)
-			fleet.addAssignment(FleetAssignment.INTERCEPT, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
+			fleet.addAssignment(FleetAssignment.INTERCEPT, target, 30, StringHelper.getFleetAssignmentString("mining", 
+					Misc.lcFirst(tgtName)));
 		else
-			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 30, StringHelper.getFleetAssignmentString("mining", tgtName));
 	}
 	
 	@Override

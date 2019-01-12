@@ -150,22 +150,25 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		forceFail(true);
 	}
 	
+	public void checkForTermination() {
+		if (outcome != null) return;
+		
+		// source captured before launch
+		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
+			terminateEvent(OffensiveOutcome.FAIL);
+		}
+		else if (!faction.isHostileTo(target.getFaction())) {
+			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
+		}
+		else if (!target.isInEconomy()) {
+			terminateEvent(OffensiveOutcome.MARKET_NO_LONGER_EXISTS);
+		}
+	}
+	
 	// check if market should still be attacked
 	@Override
 	protected void advanceImpl(float amount) {
-		if (outcome == null)
-		{
-			// source captured before launch
-			if (getCurrentStage() <= 0 && from.getFaction() != faction) {
-				terminateEvent(OffensiveOutcome.FAIL);
-			}
-			else if (!faction.isHostileTo(target.getFaction())) {
-				terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
-			}
-			else if (!target.isInEconomy()) {
-				terminateEvent(OffensiveOutcome.MARKET_NO_LONGER_EXISTS);
-			}
-		}
+		checkForTermination();
 		super.advanceImpl(amount);
 	}
 	

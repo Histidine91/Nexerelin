@@ -59,7 +59,7 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
- * Creates diplomacy events at regular intervals; handles war weariness
+ * General sector handler
  */
 public class SectorManager extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(SectorManager.class);

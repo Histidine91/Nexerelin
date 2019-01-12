@@ -50,8 +50,6 @@ public class NexRaidIntel extends OffensiveFleetIntel implements RaidDelegate {
 		assemble.setAbortFP(fp * successMult);
 		addStage(assemble);
 		
-		// don't add a travel stage for same-system invasions
-		// FIXME: does this fix even work for what we want it to?
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
 
 		TravelStage travel = new TravelStage(this, gather, raidJump, false);
@@ -145,6 +143,16 @@ public class NexRaidIntel extends OffensiveFleetIntel implements RaidDelegate {
 		log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
 		
 		return fleet;
+	}
+	
+	@Override
+	public void checkForTermination() {
+		if (outcome != null) return;
+		
+		// source captured before launch
+		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
+			terminateEvent(OffensiveOutcome.FAIL);
+		}
 	}
 	
 	@Override
