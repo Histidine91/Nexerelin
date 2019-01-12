@@ -372,6 +372,11 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		log.info("Adding vengeance points for market attack: " + market.getName() + ", " + addedPoints + " (mult " + mult + ")");
 		addPoints(addedPoints/2);
 		addFactionPoints(market.getFactionId(), addedPoints);
+		
+		// war weariness too
+		// not really the right place for it, but saves us having to add its own listener
+		String factionId = market.getFactionId();
+		DiplomacyManager.getManager().modifyWarWeariness(factionId, addedPoints);
 	}
 
 	@Override

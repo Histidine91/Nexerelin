@@ -582,7 +582,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         createDiplomacyEvent(faction1, faction2);
     }
     
-    public void reduceWarWeariness(String factionId, float amount)
+    public void modifyWarWeariness(String factionId, float amount)
     {
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
         if (alliance != null)
@@ -590,14 +590,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             for (String member : alliance.getMembersCopy()) 
             {
                 float weariness = getWarWeariness(member);
-                weariness = Math.max(weariness - amount, 0);
+                weariness = Math.max(weariness + amount, 0);
                 warWeariness.put(member, weariness);
             }
         }
         else
         {
             float weariness = getWarWeariness(factionId);
-            weariness = Math.max(weariness - amount, 0);
+            weariness = Math.max(weariness + amount, 0);
             warWeariness.put(factionId, weariness);
         }
     }

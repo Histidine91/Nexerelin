@@ -397,8 +397,8 @@ public class DiplomacyBrain {
 		float reduction = peaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
 		
 		DiplomacyManager.createDiplomacyEvent(faction, enemy, eventId, null);
-		DiplomacyManager.getManager().reduceWarWeariness(factionId, reduction);
-		DiplomacyManager.getManager().reduceWarWeariness(enemyId, reduction);
+		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
+		DiplomacyManager.getManager().modifyWarWeariness(enemyId, -reduction);
 		return true;
 	}
 	
