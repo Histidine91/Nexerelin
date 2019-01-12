@@ -26,7 +26,7 @@
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
     "fleetRequestCostPerFP": 2000,  # used for player-requested fleets
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
-    "pointsRequiredForInvasionFleet": 4000,    # bigger = longer delay between invasion fleets
+    "pointsRequiredForInvasionFleet": 12000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
     "invasionPointsPerPlayerLevel": 1,

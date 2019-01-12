@@ -3,7 +3,6 @@ package exerelin.campaign.intel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
@@ -14,85 +13,42 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
-import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
-import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.invasion.*;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
-// TODO: test autoresolve
-public class InvasionIntel extends RaidIntel implements RaidDelegate {
+public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
-	public static final Object ENTERED_SYSTEM_UPDATE = new Object();
-	public static final Object OUTCOME_UPDATE = new Object();
 	public static final boolean NO_STRIKE_FLEETS = true;
-	public static final boolean DEBUG_MODE = true;
-	public static final boolean INTEL_ALWAYS_VISIBLE = true;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
-	protected MarketAPI from;
-	protected MarketAPI target;
-	protected FactionAPI targetFaction;
-	protected InvasionOutcome outcome;
-	protected boolean isRespawn = false;
-	protected boolean intelQueuedOrAdded;
 	protected int marinesPerFleet = 0;
-	protected float fp;
-	
-	protected InvActionStage action;
-	
-	public static enum InvasionOutcome {
-		TASK_FORCE_DEFEATED,
-		MARKET_NO_LONGER_EXISTS,
-		SUCCESS,
-		FAIL,
-		NO_LONGER_HOSTILE,
-		OTHER;
 		
-		public boolean isFailed() {
-			return this == TASK_FORCE_DEFEATED || this == FAIL;
-		}
+	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
+		super(attacker, from, target, fp, orgDur);
 	}
 	
-	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
-		super(target.getStarSystem(), attacker, null);
-		
+	@Override
+	public void init() {
 		log.info("Creating invasion intel");
-		
-		this.target = target;
-		this.delegate = this;
-		this.from = from;
-		this.target = target;
-		this.fp = fp;
-		targetFaction = target.getFaction();
 		
 		SectorEntityToken gather = from.getPrimaryEntity();
 		
@@ -123,7 +79,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		addStage(new InvReturnStage(this));
 		
 		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
-		marinesPerFleet = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
+		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
 		
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
@@ -133,106 +89,9 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
 	}
-	
-	protected void queueIntelIfNeeded()
-	{
-		if (intelQueuedOrAdded) return;
-		Global.getSector().getIntelManager().queueIntel(this);
-		intelQueuedOrAdded = true;
-	}
-	
-	protected void addIntelIfNeeded()
-	{
-		if (intelQueuedOrAdded) return;
-		Global.getSector().getIntelManager().addIntel(this);
-		intelQueuedOrAdded = true;
-	}
-	
-	protected boolean shouldDisplayIntel()
-	{
-		if (INTEL_ALWAYS_VISIBLE) return true;
-		LocationAPI loc = from.getContainingLocation();
-		if (faction.isPlayerFaction()) return true;		
-		if (AllianceManager.areFactionsAllied(faction.getId(), PlayerFactionStore.getPlayerFactionId()))
-			return true;
 		
-		List<SectorEntityToken> sniffers = Global.getSector().getIntel().getCommSnifferLocations();
-		for (SectorEntityToken relay : sniffers)
-		{
-			if (relay.getContainingLocation() == loc)
-				return true;
-		}
-		return false;
-	}
-	
-	public InvasionOutcome getOutcome() {
-		return outcome;
-	}
-	
 	public int getMarinesPerFleet() {
 		return marinesPerFleet;
-	}
-	
-	public float getFP() {
-		return fp;
-	}
-	
-	@Override
-	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
-		// TBD
-	}
-
-	public void sendOutcomeUpdate() {
-		addIntelIfNeeded();
-		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
-	}
-	
-	public void sendEnteredSystemUpdate() {
-		queueIntelIfNeeded();
-		sendUpdateIfPlayerHasIntel(ENTERED_SYSTEM_UPDATE, false);
-	}
-	
-	@Override
-	public void sendUpdateIfPlayerHasIntel(Object listInfoParam, boolean onlyIfImportant, boolean sendIfHidden) {
-		if (listInfoParam == UPDATE_RETURNING) {
-			// we're using sendOutcomeUpdate() to send an end-of-event update instead
-			return;
-		}
-		super.sendUpdateIfPlayerHasIntel(listInfoParam, onlyIfImportant, sendIfHidden);
-	}
-
-	public void setOutcome(InvasionOutcome outcome) {
-		this.outcome = outcome;
-	}
-	
-	public List<CampaignFleetAPI> getFleetsThatMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers)
-	{
-		List<CampaignFleetAPI> fleets = new ArrayList<>();
-		for (RouteManager.RouteData route : routes) {
-			if (stragglers.contains(route)) continue;
-			CampaignFleetAPI fleet = route.getActiveFleet();
-			if (fleet != null) {
-				fleets.add(fleet);
-			}
-		}
-		return fleets;
-	}
-	
-	public int estimateAvailableMarines(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers)
-	{
-		int marines = 0;
-		List<CampaignFleetAPI> fleets = new ArrayList<>();
-		for (RouteManager.RouteData route : routes) {
-			if (stragglers.contains(route)) continue;
-			CampaignFleetAPI fleet = route.getActiveFleet();
-			if (fleet != null) {
-				marines += fleet.getCargo().getMarines();
-			}
-			else {
-				marines += marinesPerFleet;
-			}
-		}
-		return marines;
 	}
 	
 	// for intel popup in campaign screen's message area
@@ -253,7 +112,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		boolean isUpdate = getListInfoParam() != null;
 		
 		float eta = getETA();
-		FactionAPI other = target.getFaction();
+		FactionAPI other = targetFaction;
 		
 		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
 				 	 faction.getBaseUIColor(), faction.getDisplayName());
@@ -350,6 +209,14 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 				defender.getDisplayNameWithArticleWithoutArticle(), strDesc);
 		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h);
 		
+		if (Global.getSettings().isDevMode()) {
+			float fpRound = Math.round(fp);
+			float baseFP = Math.round(InvasionFleetManager.getWantedFleetSize(target));
+			info.addPara("DEBUG: The invasion's starting FP is " + fpRound 
+					+ ". At current strength, the base FP desired for the target is " 
+					+ baseFP + ".", opad, Misc.getHighlightColor(), fpRound + "", baseFP + "");
+		}
+		
 		if (outcome == null) {
 			addStandardStrengthComparisons(info, target, targetFaction, true, false, null, null);
 		}
@@ -358,7 +225,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 				   attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);
 		
 		// write our own status message for certain cancellation cases
-		if (outcome == InvasionOutcome.NO_LONGER_HOSTILE)
+		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE)
 		{
 			string = StringHelper.getString("exerelin_invasion", "intelOutcomeNoLongerHostile");
 			string = StringHelper.substituteToken(string, "$target", target.getName());
@@ -368,7 +235,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 			info.addPara(string, opad);
 			return;
 		}
-		else if (outcome == InvasionOutcome.MARKET_NO_LONGER_EXISTS)
+		else if (outcome == OffensiveOutcome.MARKET_NO_LONGER_EXISTS)
 		{
 			string = StringHelper.getString("exerelin_invasion", "intelOutcomeNoLongerExists");
 			string = StringHelper.substituteToken(string, "$market", target.getName());
@@ -383,12 +250,6 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	}
 	
 	@Override
-	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
-		RaidAssignmentAI raidAI = new RaidAssignmentAI(fleet, route, action);
-		return raidAI;
-	}
-	
-	@Override
 	public CampaignFleetAPI createFleet(String factionId, RouteManager.RouteData route, MarketAPI market, Vector2f locInHyper, Random random) {
 		if (random == null) random = new Random();
 				
@@ -399,14 +260,14 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		boolean isInvasionFleet = extra.fleetType.equals("exerelinInvasionFleet");
 		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, target);
 		
-		float fp = extra.fp;
-		if (!isInvasionFleet) fp *= 0.75f;
+		float myFP = extra.fp;
+		if (!isInvasionFleet) myFP *= 0.75f;
 		
-		float combat = fp;
-		float tanker = fp * (0.1f + random.nextFloat() * 0.05f)
+		float combat = myFP;
+		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
 				+ TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
 		float transport = isInvasionFleet ? marinesPerFleet/100 : 0;
-		float freighter = fp * (0.1f + random.nextFloat() * 0.05f);
+		float freighter = myFP * (0.1f + random.nextFloat() * 0.05f);
 		
 		if (isInvasionFleet) freighter *= 2;
 		
@@ -426,7 +287,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 				0f, // utilityPts
 				0f // qualityMod, won't get used since routes mostly have quality override set
 				);
-		//params.ignoreMarketFleetSizeMult = true; // already accounted for in extra.fp
+		params.ignoreMarketFleetSizeMult = true; // we don't need the variability involved in this
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();
@@ -466,25 +327,13 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	}
 	
 	@Override
-	public Set<String> getIntelTags(SectorMapAPI map) {
-		Set<String> tags = super.getIntelTags(map);
-		tags.add(Tags.INTEL_MILITARY);
-		//tags.add(StringHelper.getString("exerelin_invasion", "invasions", true));
-		if (targetFaction.isPlayerFaction())
-			tags.add(Tags.INTEL_COLONIES);
-		tags.add(getFaction().getId());
-		tags.add(target.getFactionId());
-		return tags;
-	}
-	
-	@Override
 	public String getName() {
 		String base = StringHelper.getString("exerelin_invasion", "intelTitle");
 		base = StringHelper.substituteToken(base, "$faction", faction.getDisplayName(), true);
 		base = StringHelper.substituteToken(base, "$market", target.getName());
 		
 		if (isEnding()) {
-			if (outcome == InvasionOutcome.SUCCESS) {
+			if (outcome == OffensiveOutcome.SUCCESS) {
 				return base + " - " + StringHelper.getString("successful", true);
 			}
 			else if (outcome != null && outcome.isFailed()) {
@@ -557,39 +406,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		info.addPara(StringHelper.getString("exerelin_invasion", "intelStrCompare") +
 				" " + outcomeDesc, opad, h, spaceStr, groundStr);
 	}
-	
-	public void terminateEvent(InvasionOutcome outcome)
-	{
-		setOutcome(outcome);
-		forceFail(true);
-	}
-	
-	// check if market should still be invaded
-	@Override
-	protected void advanceImpl(float amount) {
-		if (outcome == null)
-		{
-			// source captured before launch
-			if (getCurrentStage() <= 0 && from.getFaction() != faction) {
-				terminateEvent(InvasionOutcome.FAIL);
-			}
-			else if (!faction.isHostileTo(target.getFaction())) {
-				terminateEvent(InvasionOutcome.NO_LONGER_HOSTILE);
-			}
-			else if (!target.isInEconomy()) {
-				terminateEvent(InvasionOutcome.MARKET_NO_LONGER_EXISTS);
-			}
-		}
-		super.advanceImpl(amount);
-	}
-	
-	// send fleets home
-	@Override
-	protected void failedAtStage(RaidStage stage) {
-		BaseRaidStage stage2 = (BaseRaidStage)stage;
-		stage2.giveReturnOrdersToStragglers(stage2.getRoutes());
-	}
-	
+		
 	@Override
 	public String getIcon() {
 		return Global.getSettings().getSpriteName("intel", "nex_invasion");

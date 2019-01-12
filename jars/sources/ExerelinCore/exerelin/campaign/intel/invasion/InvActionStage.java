@@ -18,17 +18,15 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetActionDelegate;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BombardType;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.InvasionIntel;
-import exerelin.campaign.intel.InvasionIntel.InvasionOutcome;
+import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
 import org.apache.log4j.Logger;
 
 public class InvActionStage extends ActionStage implements FleetActionDelegate {
@@ -118,7 +116,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		if (!target.isInEconomy() || !target.getFaction().isHostileTo(this.intel.getFaction())) {
 			status = RaidStageStatus.FAILURE;
-			((InvasionIntel)intel).setOutcome(InvasionOutcome.NO_LONGER_HOSTILE);
+			((InvasionIntel)intel).setOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());
 			return;
@@ -186,7 +184,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		boolean success = InvasionRound.npcInvade(atkStrength, fleet, intel.getFaction(), market);
 		if (success)
 		{
-			intel.setOutcome(InvasionOutcome.SUCCESS);
+			intel.setOutcome(OffensiveOutcome.SUCCESS);
 		}
 		
 		// when FAILURE, gets sent by RaidIntel
@@ -214,7 +212,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());
 			
-			intel.setOutcome(InvasionOutcome.TASK_FORCE_DEFEATED);
+			intel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 			return;
 		}
 		
@@ -229,10 +227,10 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			performRaid(route.getActiveFleet(), target);
 			if (intel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
 		}
-		if (intel.getOutcome() != InvasionOutcome.SUCCESS)
+		if (intel.getOutcome() != OffensiveOutcome.SUCCESS)
 		{
 			status = RaidStageStatus.FAILURE;
-			intel.setOutcome(InvasionOutcome.FAIL);
+			intel.setOutcome(OffensiveOutcome.FAIL);
 			intel.sendOutcomeUpdate();
 		}
 	}

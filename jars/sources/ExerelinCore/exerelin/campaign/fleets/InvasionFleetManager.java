@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -63,8 +64,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
-	public static final float GENERAL_INVASION_POINT_MULT = 0.7f;
-	public static final float WANTED_FLEET_SIZE_MULT = 0.75f;
+	public static final float WANTED_FLEET_SIZE_MULT = 0.675f;
 	public static final float BASE_INVASION_COST = 750f;	// for reference, Jangala at start of game is about 950-1050
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
@@ -427,6 +427,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		{
 			log.info("Spawning invasion fleet for " + faction.getDisplayName() + "; source " + originMarket.getName() + "; target " + targetMarket.getName());
 			InvasionIntel intel = new InvasionIntel(faction, originMarket, targetMarket, fp, organizeTime);
+			intel.init();
 			return intel;
 		}
 		else
@@ -437,11 +438,22 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return null;
 	}
 	
+	protected float getCommodityPoints(MarketAPI market, String commodity) {
+		float pts = market.getCommodityData(commodity).getAvailable();
+		CommoditySourceType source = market.getCommodityData(commodity).getCommodityMarketData().getMarketShareData(market).getSource();
+		if (source == CommoditySourceType.GLOBAL)
+			pts *= 0.75f;
+		else if (source == CommoditySourceType.LOCAL)
+			pts *= 3;
+		
+		return pts;
+	}
+	
 	protected float getPointsPerMarketPerTick(MarketAPI market)
 	{
-		float ships = market.getCommodityData(Commodities.SHIPS).getAvailable();
-		float supplies = market.getCommodityData(Commodities.SUPPLIES).getAvailable();
-		float marines = market.getCommodityData(Commodities.MARINES).getAvailable();
+		float ships = getCommodityPoints(market, Commodities.SHIPS);
+		float supplies = getCommodityPoints(market, Commodities.SUPPLIES);
+		float marines = getCommodityPoints(market, Commodities.MARINES);
 		
 		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
 		
@@ -544,7 +556,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
 			increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
 			increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-			increment *= GENERAL_INVASION_POINT_MULT;
 			increment *= config.invasionPointMult;
 			
 			counter += increment;
