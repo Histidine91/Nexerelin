@@ -211,9 +211,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		if (Global.getSettings().isDevMode()) {
 			float fpRound = Math.round(fp);
-			float baseFP = Math.round(InvasionFleetManager.getWantedFleetSize(target));
+			float baseFP = Math.round(InvasionFleetManager.getWantedFleetSize(getFaction(), target, 0));
 			info.addPara("DEBUG: The invasion's starting FP is " + fpRound 
-					+ ". At current strength, the base FP desired for the target is " 
+					+ ". At current strength, the base FP desired for the target is approximately " 
 					+ baseFP + ".", opad, Misc.getHighlightColor(), fpRound + "", baseFP + "");
 		}
 		
