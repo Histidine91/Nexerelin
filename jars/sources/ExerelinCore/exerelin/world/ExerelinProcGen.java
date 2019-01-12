@@ -19,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.MiscellaneousThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantSeededFleetManager;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantStationFleetManager;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
@@ -274,6 +275,8 @@ public class ExerelinProcGen {
 	protected List<StarSystemAPI> getCoreSystems(float width, float height, int recursionDepth)
 	{
 		List<StarSystemAPI> list = new ArrayList<>();
+		PlanetAPI redPlanet = (PlanetAPI)Global.getSector().getMemoryWithoutUpdate().get(MiscellaneousThemeGenerator.PLANETARY_SHIELD_PLANET_KEY);
+		
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
 		{
 			Vector2f loc = system.getLocation();
@@ -284,6 +287,8 @@ public class ExerelinProcGen {
 			if (hasForeignMarkets(system)) continue;
 			if (system.getBaseName().equals("Styx")) continue;
 			if (system.getBaseName().equals("Ascalon")) continue;
+			if (redPlanet != null && redPlanet.getStarSystem() == system)
+				continue;
 			
 			list.add(system);
 		}
@@ -403,6 +408,7 @@ public class ExerelinProcGen {
 	protected void createEntityDataForSystem(StarSystemAPI system)
 	{
 		if (!system.isProcgen()) return;
+		
 		for (PlanetAPI planet : system.getPlanets())
 		{
 			if (planet.isStar()) continue;
