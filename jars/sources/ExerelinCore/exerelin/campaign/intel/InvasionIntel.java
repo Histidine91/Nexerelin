@@ -289,7 +289,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				0f, // utilityPts
 				0f // qualityMod, won't get used since routes mostly have quality override set
 				);
-		params.ignoreMarketFleetSizeMult = true; // we don't need the variability involved in this
+		
+		// we don't need the variability involved in this
+		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
+		//params.ignoreMarketFleetSizeMult = true; 
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();
