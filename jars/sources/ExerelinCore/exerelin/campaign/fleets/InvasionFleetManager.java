@@ -72,7 +72,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
 	public static final float DEFENSE_ESTIMATION_MULT = 0.9f;
 	public static final float BASE_INVASION_COST = 750f;	// for reference, Jangala at start of game is around 975
-	public static final float GENERAL_SIZE_MULT = 0.65f;
+	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
+	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;

@@ -288,7 +288,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		// we don't need the variability involved in this
 		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
-		//params.ignoreMarketFleetSizeMult = true; 
+		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+			params.ignoreMarketFleetSizeMult = true; 
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();
