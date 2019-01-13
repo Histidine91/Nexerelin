@@ -19,7 +19,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -82,7 +81,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
 	
-	public static final int MAX_ONGOING_INTEL = 10;	// does this ever matter?
+	public static final int MAX_ONGOING_INTEL = 10;
 	
 	public static Logger log = Global.getLogger(InvasionFleetManager.class);
 	
@@ -90,11 +89,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected HashMap<String, Float> spawnCounter = new HashMap<>();
 	
 	protected final IntervalUtil tracker;
-	protected IntervalUtil remnantRaidInterval = new IntervalUtil(270, 360);
+	protected IntervalUtil remnantRaidInterval = new IntervalUtil(300, 390);
 	
 	protected float daysElapsed = 0;
 	protected float templarInvasionPoints = 0;
 	protected float templarCounterInvasionPoints = 0;
+	protected int numRemnantRaids = 0;
 	
 	private static InvasionFleetManager invasionFleetManager;
 	
@@ -160,7 +160,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		strength += maxMedium * MilitaryBase.getPatrolCombatFP(PatrolType.COMBAT, random);
 		strength += maxHeavy * MilitaryBase.getPatrolCombatFP(PatrolType.HEAVY, random);
 		
-		strength *= market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).computeEffective(0f);
+		// underestimate large fleet size mults, overestimate small ones
+		float fleetSizeMult = market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).computeEffective(0f);
+		fleetSizeMult = 1 + (fleetSizeMult - 1) * 0.75f;
+		
+		strength *= fleetSizeMult;
 		
 		if (variability > 0)
 			strength *= 1 - variability + random.nextGaussian() * variability;
@@ -170,14 +174,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return strength;
 	}
 	
-	public static float estimateDefensiveStrength(FactionAPI attacker, FactionAPI target, 
+	public static float estimateDefensiveStrength(FactionAPI attacker, FactionAPI targetFaction, 
 			StarSystemAPI system, float variability) {
 		float strength = 0f;
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(system))
 		{
-			if (market.getFaction() != target)
-				continue;
+			if (targetFaction != null)
+				if (market.getFaction() != targetFaction) continue;
+			else
+				if (!market.getFaction().isHostileTo(attacker))
+					continue;
+			
 			strength += estimateDefensiveStrength(market, variability);
 		}
 		
@@ -188,15 +196,19 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return 1 + (faction.getDoctrine().getNumShips() - 1) * 0.25f;
 	}
 	
-	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target, float variability)
+	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target,
+			float variability, boolean countAllHostile)
 	{
 		//return 100 + target.getSize() * 40;
 		
 		FactionAPI targetFaction = target.getFaction();
 		StarSystemAPI system = target.getStarSystem();
 		
-		float defenderStr = estimateDefensiveStrength(attacker, targetFaction, system, variability);
-		float defensiveStr = defenderStr + WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
+		float defenderStr = estimateDefensiveStrength(attacker, 
+				countAllHostile ? null : targetFaction, 
+				system, variability);
+		float defensiveStr = defenderStr + WarSimScript.getStationStrength(
+				targetFaction, system, target.getPrimaryEntity());
 		
 		log.info("Estimated strength required for invasion: " + defensiveStr);
 		
@@ -421,49 +433,49 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (targetFaction != null && targetFaction != marketFaction)
 				continue;
 			
-			if	(marketFaction.isHostileTo(faction)) 
-			{
-				if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
-				/*
-				float defenderStrength = InvasionRound.GetDefenderStrength(market);
-				float estimateMarinesRequired = defenderStrength * 1.2f;
-				if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
-					continue;	 // too strong for us
-				*/
-				
-				// base weight based on distance
-				float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
-				if (dist < 5000.0F) {
-					dist = 5000.0F;
-				}
-				float weight = 20000.0F / dist;
-				//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
-				if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId))
-					weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
-				
-				// revanchism
-				if (ExerelinUtilsMarket.wasOriginalOwner(market, factionId))
-					weight *= 4;
-				
-				// defender of the faith
-				if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && ExerelinUtilsFaction.isLuddicFaction(factionId))
-					weight *= 4;
-				
-				// hard mode
-				if (SectorManager.getHardMode())
-				{
-					if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
-							|| marketFactionId.equals(Factions.PLAYER))
-						weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
-				}
-				
-				// help ongoing rebellions
-				RebellionEvent event = RebellionEvent.getOngoingEvent(market);
-				if (event != null && !faction.isHostileTo(event.getRebelFactionId()))
-					weight *= 5;
-				
-				targetPicker.add(market, weight);
+			if (!marketFaction.isHostileTo(faction)) continue;
+			
+			if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
+			/*
+			float defenderStrength = InvasionRound.GetDefenderStrength(market);
+			float estimateMarinesRequired = defenderStrength * 1.2f;
+			if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
+				continue;	 // too strong for us
+			*/
+
+			// base weight based on distance
+			float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
+			if (dist < 5000.0F) {
+				dist = 5000.0F;
 			}
+			float weight = 20000.0F / dist;
+			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
+			if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId))
+				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
+
+			// revanchism
+			if (ExerelinUtilsMarket.wasOriginalOwner(market, factionId))
+				weight *= 4;
+
+			// defender of the faith
+			if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && ExerelinUtilsFaction.isLuddicFaction(factionId))
+				weight *= 4;
+
+			// hard mode
+			if (SectorManager.getHardMode())
+			{
+				if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
+						|| marketFactionId.equals(Factions.PLAYER))
+					weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
+			}
+
+			// help ongoing rebellions
+			RebellionEvent event = RebellionEvent.getOngoingEvent(market);
+			if (event != null && !faction.isHostileTo(event.getRebelFactionId()))
+				weight *= 5;
+
+			targetPicker.add(market, weight);
+			
 		}
 		MarketAPI targetMarket = targetPicker.pick();
 		if (targetMarket == null) {
@@ -472,7 +484,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//log.info("\tTarget: " + targetMarket.getName());
 		
 		// FIXME
-		float fp = getWantedFleetSize(faction, targetMarket, 0.2f);
+		float fp = getWantedFleetSize(faction, targetMarket, 0.2f, false);
 		float organizeTime = 10 + fp/30;
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
 		if (raid) fp *= RAID_SIZE_MULT;
@@ -536,6 +548,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//float marineStockpile = 0;
 		//log.info("Starting invasion fleet check");
 		
+		// slow down invasion point accumulation when there are already a bunch of invasions active
+		float ongoingMod = (float)activeIntel.size() / MAX_ONGOING_INTEL;
+		if (ongoingMod >= 1) return;
+		log.info("Ongoing invasion point mod: " + (- 0.75f * ongoingMod) + " (" + activeIntel.size() + ")");
+		ongoingMod = 1 - 0.75f * ongoingMod;
+		
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
 		
 		// increment points by market
@@ -567,7 +585,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			//if (faction.isPlayerFaction()) continue;
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 			if (!config.playableFaction) continue;
+			
 			boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
+			if (factionId.equals(Factions.PLAYER))
+				isPirateFaction = isPirateFaction || ExerelinUtilsFaction.isPirateFaction(
+						PlayerFactionStore.getPlayerFactionId());
 			if (!allowPirates && isPirateFaction) continue;
 			
 			float mult = 0f;
@@ -615,6 +637,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
 			increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 			increment *= config.invasionPointMult;
+			increment *= ongoingMod;
 			
 			counter += increment;
 			
@@ -757,14 +780,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		//log.info("\tTarget: " + targetMarket.getName());
 		
-		float fp = getWantedFleetSize(faction, targetMarket, 0.2f) * 2.5f;
-		float organizeTime = 10 + fp/30;
+		float fp = getWantedFleetSize(faction, targetMarket, 0.2f, true) * 2.5f;
+		float mult = Math.min(1 + (numRemnantRaids * 0.333f), 3f);
+		fp *= mult;
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
+		float organizeTime = 10 + fp/30;
 		
 		log.info("Spawning Remnant-style raid fleet for " + faction.getDisplayName() 
 				+ " from base in " + base.getContainingLocation() + "; target " + targetMarket.getName());
 		RemnantRaidIntel intel = new RemnantRaidIntel(faction, base, targetMarket, fp, organizeTime);
 		intel.init();
+		numRemnantRaids++;
 		return intel;
 	}
 	
@@ -801,10 +827,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		this.activeIntel.removeAll(remove);
 	
-		if (this.activeIntel.size() < MAX_ONGOING_INTEL)
-		{
-			processInvasionPoints();
-		}
+		processInvasionPoints();
 		processTemplarInvasionPoints();
 	}
 	

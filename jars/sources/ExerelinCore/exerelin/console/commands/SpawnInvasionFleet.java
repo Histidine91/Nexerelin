@@ -42,7 +42,7 @@ public class SpawnInvasionFleet implements BaseCommand {
 		}
 		
 		// spawn fleet
-		float fp = InvasionFleetManager.getWantedFleetSize(source.getFaction(), target, 0.2f);
+		float fp = InvasionFleetManager.getWantedFleetSize(source.getFaction(), target, 0.2f, false);
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(source.getFactionId()).invasionFleetSizeMod;
 		fp *= MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		InvasionIntel intel = new InvasionIntel(source.getFaction(), source, target, fp, 1);	

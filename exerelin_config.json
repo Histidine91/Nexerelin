@@ -29,8 +29,8 @@
     "pointsRequiredForInvasionFleet": 12000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
-    "invasionPointsPerPlayerLevel": 1,
-    "invasionPointEconomyMult": 0.3, # each market contributes invasion points -- stability * size * this number
+    "invasionPointsPerPlayerLevel": 0.5,
+    "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
     "conquestMissionRewardMult": 1,
     #"invasionLootMult": 0.05,   # proportion of market's commodities that will be lootable on successful invasion
     

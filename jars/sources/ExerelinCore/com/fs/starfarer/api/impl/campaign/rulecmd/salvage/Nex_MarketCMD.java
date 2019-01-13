@@ -403,15 +403,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		// unrest
 		// note that this is for GUI only, actual impact is caused in InvasionRound
-		float stabilityPenalty = tempInvasion.stabilityPenalty;
-		if (!tempInvasion.success)
-			stabilityPenalty /= 2;
-		if (stabilityPenalty < 1) stabilityPenalty = 1;
-		if (stabilityPenalty > 5) stabilityPenalty = 5;
+		int stabilityPenalty = InvasionRound.getStabilityPenalty(market, tempInvasion.roundNum, tempInvasion.success);
 		
-		if (Math.round(stabilityPenalty) > 0) {
+		if (stabilityPenalty > 0) {
 			text.addPara(StringHelper.substituteToken(getString("stabilityReduced"), 
-					"$market", market.getName()), Misc.getHighlightColor(), "" + Math.round(stabilityPenalty));
+					"$market", market.getName()), Misc.getHighlightColor(), "" + stabilityPenalty);
 		}
 		
 		// reputation impact

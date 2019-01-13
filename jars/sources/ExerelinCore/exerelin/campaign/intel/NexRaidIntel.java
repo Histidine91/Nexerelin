@@ -6,7 +6,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
@@ -16,7 +15,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -27,7 +25,7 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
-public class NexRaidIntel extends OffensiveFleetIntel implements RaidDelegate {
+public class NexRaidIntel extends OffensiveFleetIntel {
 	
 	public static Logger log = Global.getLogger(NexRaidIntel.class);
 		
@@ -83,13 +81,17 @@ public class NexRaidIntel extends OffensiveFleetIntel implements RaidDelegate {
 		super.createSmallDescription(info, width, height);
 	}
 	
+	protected float getDistanceToTarget(MarketAPI market) {
+		return ExerelinUtilsMarket.getHyperspaceDistance(market, target);
+	}
+	
 	@Override
 	public CampaignFleetAPI createFleet(String factionId, RouteManager.RouteData route, MarketAPI market, Vector2f locInHyper, Random random) {
 		if (random == null) random = new Random();
 				
 		RouteManager.OptionalFleetData extra = route.getExtra();
 		
-		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, target);
+		float distance = getDistanceToTarget(market);
 		
 		float myFP = extra.fp;
 		

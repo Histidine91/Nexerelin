@@ -55,8 +55,8 @@ public class ExerelinConfig
     public static float invasionGracePeriod = 0;
     public static float pointsRequiredForInvasionFleet = 12000f;
     public static float baseInvasionPointsPerFaction = 30f;
-    public static float invasionPointsPerPlayerLevel = 1f;
-    public static float invasionPointEconomyMult = 1f;
+    public static float invasionPointsPerPlayerLevel = 0.5f;
+    public static float invasionPointEconomyMult = 0.5f;
     public static float conquestMissionRewardMult = 1f;
     @Deprecated public static float invasionLootMult = 0.05f;
     

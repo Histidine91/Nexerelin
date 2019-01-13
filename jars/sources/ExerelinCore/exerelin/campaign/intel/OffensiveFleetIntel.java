@@ -83,6 +83,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean shouldDisplayIntel()
 	{
 		if (INTEL_ALWAYS_VISIBLE) return true;
+		if (Global.getSettings().isDevMode()) return true;
 		LocationAPI loc = from.getContainingLocation();
 		if (faction.isPlayerFaction()) return true;		
 		if (AllianceManager.areFactionsAllied(faction.getId(), PlayerFactionStore.getPlayerFactionId()))

@@ -20,7 +20,7 @@ public class NexRaidAssembleStage extends NexAssembleStage {
 		float base = 120f;
 		
 		if (Math.random() < 0.33f)
-			base *= 2f;
+			base *= 1.5f;
 		
 		base *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 			

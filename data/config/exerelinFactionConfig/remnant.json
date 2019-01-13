@@ -5,4 +5,6 @@
     "hostileToAll":2,
     "startRelationships":{ "tritachyon": 0 },
     "noRandomizeRelations":true,
+	
+	"invasionSupportFleetName":"Legion",
 }

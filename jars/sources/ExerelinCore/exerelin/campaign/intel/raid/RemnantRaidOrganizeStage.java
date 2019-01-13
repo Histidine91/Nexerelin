@@ -38,7 +38,7 @@ public class RemnantRaidOrganizeStage extends OrganizeStage {
 			info.addPara("The " + raid + " has been disrupted in the planning stages and will not happen.", opad);
 		} else if (curr == index) {
 			RemnantRaidIntel rri = (RemnantRaidIntel)intel;
-			boolean known = rri.getBase().isVisibleToPlayerFleet();
+			boolean known = rri.isSourceKnown();
 			if (known) {
 				info.addPara("The " + raid + " is currently being planned at a base in the " 
 						+ rri.getBase().getStarSystem().getNameWithLowercaseType() + "." + timing,

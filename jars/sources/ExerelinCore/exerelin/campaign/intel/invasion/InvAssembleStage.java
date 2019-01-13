@@ -61,7 +61,7 @@ public class InvAssembleStage extends NexAssembleStage {
 			base = 180f;
 		
 		if (Math.random() < 0.33f)
-			base *= 2f;
+			base *= 1.5f;
 		
 		base *= MathUtils.getRandomNumberInRange(0.85f, 1.15f);
 			

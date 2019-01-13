@@ -1,12 +1,12 @@
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.PREP_STAGE;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.WAIT_STAGE;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -30,24 +30,28 @@ public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 		
 		RemnantRaidIntel raid = (RemnantRaidIntel)intel;
 		CampaignFleetAPI base = raid.getBase();
-		if (base == null || base.isAlive()) {
+		if (base == null || !base.isAlive()) {
 			status = RaidIntel.RaidStageStatus.FAILURE;
 			return;
 		}
 		
-		MarketAPI market = null;
-		
-		RouteManager.OptionalFleetData extra = new RouteManager.OptionalFleetData(market);
+		RouteManager.OptionalFleetData extra = new RouteManager.OptionalFleetData(null, intel.getFaction().getId());
 		
 		String sid = raid.getRouteSourceId();
-		RouteManager.RouteData route = RouteManager.getInstance().addRoute(sid, market, Misc.genRandomSeed(), extra, raid, null);
+		RouteManager.RouteData route = RouteManager.getInstance().addRoute(sid, null, Misc.genRandomSeed(), extra, raid, null);
 		
 		extra.fleetType = pickNextType();
 		float fp = getFP(extra.fleetType);
 		
 		//extra.fp = Misc.getAdjustedFP(fp, market);
 		extra.fp = fp;
-		extra.strength = Misc.getAdjustedStrength(fp, market);
+		extra.strength = Misc.getAdjustedStrength(fp, null);
+		
+		LocationAPI loc = base.getContainingLocation();
+		if (base.hasTag(Tags.THEME_REMNANT_RESURGENT))	// intact base
+			extra.quality = 1f;
+		else if (base.hasTag(Tags.THEME_REMNANT_SUPPRESSED))
+			extra.quality = 0.5f;
 		
 		float prepDays = 3f + 3f * (float) Math.random();
 		float travelDays = RouteLocationCalculator.getTravelDays(base, gatheringPoint);
@@ -58,15 +62,10 @@ public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 		
 		maxDays = Math.max(maxDays, prepDays + travelDays);
 		//maxDays = 6f;
-		
 	}
 	
 	@Override
 	public boolean isSourceKnown() {
-		RemnantRaidIntel rri = (RemnantRaidIntel)intel;
-		boolean known = rri.getBase().isVisibleToPlayerFleet();
-		if (rri.getFaction().getRelationshipLevel(Factions.PLAYER).isAtWorst(RepLevel.FRIENDLY))
-			known = true;
-		return known;
+		return ((RemnantRaidIntel)intel).isSourceKnown();
 	}
 }

@@ -42,6 +42,7 @@ public class InvasionRound {
 	public static final float DAMAGE_PER_ROUND_MULT = 0.3f;	// 1 means damage dealt == strength (meaning battle ends in one round if not modified)
 	public static final float STR_DEF_MULT = 0;	// what proportion of one side's strength is used to negate other side's attack damage
 	public static final float INSTABILITY_PER_ROUND = 0.75f;
+	public static final int UNREST_DO_NOT_EXCEED = 10;
 	public static final boolean DEBUG_MESSAGES = true;
 	
 	public static Logger log = Global.getLogger(InvasionRound.class);
@@ -259,7 +260,7 @@ public class InvasionRound {
 	 * @param numRounds Rounds required to complete invasion action.
 	 * @param success
 	 */
-	public static void finishInvasion(CampaignFleetAPI fleet, FactionAPI attackerFaction, MarketAPI market, float numRounds, boolean success)
+	public static void finishInvasion(CampaignFleetAPI fleet, FactionAPI attackerFaction, MarketAPI market, int numRounds, boolean success)
 	{
 		SectorAPI sector = Global.getSector();
 		FactionAPI defenderFaction = market.getFaction();
@@ -282,17 +283,14 @@ public class InvasionRound {
 		float defStrength = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0);
 		
 		// destabilize
-		float stabilityPenalty = (int)(numRounds * INSTABILITY_PER_ROUND);
-		if (!success) stabilityPenalty /= 2;
-		if (stabilityPenalty < 1) stabilityPenalty = 1;
-		if (stabilityPenalty > 5) stabilityPenalty = 5;
+		int stabilityPenalty = getStabilityPenalty(market, numRounds, success);
 		
-		if (Math.round(stabilityPenalty) > 0) {
+		if (stabilityPenalty > 0) {
 			String reason = Misc.ucFirst(getString("recentlyInvaded"));
 			if (!attackerFaction.isPlayerFaction() || Misc.isPlayerFactionSetUp()) {
 				reason = attackerFaction.getDisplayName() + " " + getString("invasion");
 			}
-			RecentUnrest.get(market).add(Math.round(stabilityPenalty), reason);
+			RecentUnrest.get(market).add(stabilityPenalty, reason);
 		}
 		
 		// trash resource availability
@@ -333,6 +331,16 @@ public class InvasionRound {
 		
 		log.info( String.format("Invasion of [%s] by " + (fleet == null ? attackerFaction.getDisplayName() : fleet.getNameWithFaction())
 				+ (success ? " successful" : " failed"), market.getName()) );
+	}
+	
+	public static int getStabilityPenalty(MarketAPI market, int rounds, boolean success) {
+		float stabilityPenalty = (int)(rounds * INSTABILITY_PER_ROUND);
+		if (stabilityPenalty < 1) stabilityPenalty = 1;
+		if (stabilityPenalty > 6) stabilityPenalty = 6;
+		if (!success) stabilityPenalty /= 2;
+		
+		stabilityPenalty = Math.min(stabilityPenalty, UNREST_DO_NOT_EXCEED - RecentUnrest.getPenalty(market));
+		return Math.round(stabilityPenalty);
 	}
 	
 	public static void conquerMarket(MarketAPI market, FactionAPI attackerFaction, boolean playerInvolved)

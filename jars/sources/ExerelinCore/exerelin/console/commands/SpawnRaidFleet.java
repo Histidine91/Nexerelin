@@ -36,7 +36,7 @@ public class SpawnRaidFleet extends SpawnInvasionFleet
 		}
 		
 		// spawn fleet
-		float fp = InvasionFleetManager.getWantedFleetSize(source.getFaction(), target, 0.2f);
+		float fp = InvasionFleetManager.getWantedFleetSize(source.getFaction(), target, 0.2f, false);
 		fp *= InvasionFleetManager.RAID_SIZE_MULT;
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(source.getFactionId()).invasionFleetSizeMod;
 		fp *= MathUtils.getRandomNumberInRange(0.8f, 1.2f);

@@ -86,7 +86,7 @@ public class ExerelinUtilsMarket {
 		if (mem.contains("$startingFactionId"))
 			return mem.getString("$startingFactionId").equals(factionId);
 		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -119,7 +119,12 @@ public class ExerelinUtilsMarket {
 			return false;
 		
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
-		if (!allowPirates && (ExerelinUtilsFaction.isPirateFaction(factionId) || isIndie))
+		boolean isPirate = ExerelinUtilsFaction.isPirateFaction(factionId);
+		// player markets count as pirate if player has a commission with a pirate faction
+		if (factionId.equals(Factions.PLAYER))
+			isPirate = isPirate || ExerelinUtilsFaction.isPirateFaction(PlayerFactionStore.getPlayerFactionId());
+		
+		if (!allowPirates && (isPirate || isIndie))
 		{
 			// this is the only circumstance when pirate markets can be invaded while allowPirateInvasions is off
 			if (!ExerelinConfig.retakePirateMarkets)
