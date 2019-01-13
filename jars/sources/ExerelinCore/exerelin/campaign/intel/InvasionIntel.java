@@ -260,6 +260,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		float myFP = extra.fp;
 		if (!isInvasionFleet) myFP *= 0.75f;
+		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
 		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
@@ -289,7 +291,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		// we don't need the variability involved in this
 		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
 		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
-			params.ignoreMarketFleetSizeMult = true; 
+			params.ignoreMarketFleetSizeMult = true;
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();

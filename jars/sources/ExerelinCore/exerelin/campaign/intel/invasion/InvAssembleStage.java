@@ -2,17 +2,17 @@ package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.raid.NexAssembleStage;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import org.histidine.industry.scripts.util.StringHelper;
 import org.lazywizard.lazylib.MathUtils;
 
-public class InvAssembleStage extends AssembleStage {
+public class InvAssembleStage extends NexAssembleStage {
 	
 	public InvAssembleStage(RaidIntel raid, SectorEntityToken gatheringPoint) {
 		super(raid, gatheringPoint);

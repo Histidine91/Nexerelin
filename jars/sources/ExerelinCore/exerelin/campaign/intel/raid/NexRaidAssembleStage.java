@@ -1,20 +1,13 @@
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import org.lazywizard.lazylib.MathUtils;
 
-public class NexRaidAssembleStage extends AssembleStage {
+public class NexRaidAssembleStage extends NexAssembleStage {
 	
 	public NexRaidAssembleStage(RaidIntel raid, SectorEntityToken gatheringPoint) {
 		super(raid, gatheringPoint);
-	}
-
-	@Override
-	public void showStageInfo(TooltipMakerAPI info) {
-		super.showStageInfo(info);
 	}
 	
 	@Override
@@ -39,4 +32,6 @@ public class NexRaidAssembleStage extends AssembleStage {
 		spawnFP -= base;
 		return base;
 	}
+	
+	
 }

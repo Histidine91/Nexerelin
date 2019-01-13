@@ -242,4 +242,196 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			od.addXP((long)(f * xp / num), textPanelForXPGain);
 		}
 	}
+	
+	// low rep impact battles have no rep impact
+	/*
+	@Override
+	public boolean adjustPlayerReputation(InteractionDialogAPI dialog, String ffText, boolean okToAdjustAlly, boolean okToAdjustEnemy) {
+		if (alreadyAdjustedRep) return false;
+		
+		if (battle != null && battle.isPlayerInvolved() && engagedInHostilities) {
+			alreadyAdjustedRep = true;
+			
+			boolean printedAdjustmentText = false;
+			
+			boolean playerWon = didPlayerWinEncounter();
+			List<CampaignFleetAPI> playerSide = battle.getPlayerSide();
+			List<CampaignFleetAPI> enemySide = battle.getNonPlayerSide();
+			
+			CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
+			pf.setMoveDestination(pf.getLocation().x, pf.getLocation().y);
+			
+			// cases to cover: 1) player destroyed ships 2) player harried/harassed 3) player pursued
+			// i.e. anything other than a non-destructive retreat, w/o an engagement
+			boolean playerWasAggressive = playerDidSeriousDamage || !playerOnlyRetreated;
+			CoreReputationPlugin.RepActions action = null;
+//			if (engagedInHostilities) {
+//				action = RepActions.COMBAT_NO_DAMAGE_ESCAPE;
+//			}
+			boolean knowsWhoPlayerIs = battle.knowsWhoPlayerIs(enemySide);
+			//boolean lowImpact = battle.getNonPlayerCombined().getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT) == true;
+			boolean lowImpact = isLowRepImpact();
+			if (lowImpact) {
+				for (CampaignFleetAPI enemy : battle.getSnapshotFor(enemySide)) {
+					Misc.makeLowRepImpact(enemy, "battleOnLowImpactSide");
+				}
+			}
+			
+			// ONLY CHANGED BLOCK
+			if (!lowImpact)
+			{
+				if (playerPursued && playerWon) {
+					if (knowsWhoPlayerIs && !lowImpact) {
+						action = CoreReputationPlugin.RepActions.COMBAT_AGGRESSIVE;
+					} else {
+						action = CoreReputationPlugin.RepActions.COMBAT_AGGRESSIVE_TOFF;
+					}
+				} else if (playerWasAggressive) {
+					if (knowsWhoPlayerIs && !lowImpact) {
+						action = CoreReputationPlugin.RepActions.COMBAT_NORMAL;
+					} else {
+						action = CoreReputationPlugin.RepActions.COMBAT_NORMAL_TOFF;
+					}
+				}
+			}
+			
+			if (!okToAdjustEnemy) action = null;
+			
+			Set<String> seen = new HashSet<String>();
+			if (action != null) {
+				// use snapshot: ensure loss of reputation with factions if their fleets were destroyed
+				for (CampaignFleetAPI enemy : battle.getSnapshotFor(enemySide)) {
+					String factionId = enemy.getFaction().getId();
+					if (seen.contains(factionId)) continue;
+					seen.add(factionId);
+					Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(action, null, dialog.getTextPanel()), factionId);
+					printedAdjustmentText = true;
+				}
+			}
+			
+			//if (playerWon) {
+				action = CoreReputationPlugin.RepActions.COMBAT_HELP_MINOR;
+				float playerFP = 0;
+				float allyFP = 0;
+				float enemyFP = 0;
+				for (CampaignFleetAPI fleet : battle.getSnapshotFor(playerSide)) {
+					for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
+						if (fleet.isPlayerFleet()) {
+							playerFP += member.getFleetPointCost();
+						} else {
+							allyFP += member.getFleetPointCost();
+						}
+					}
+				}
+				for (CampaignFleetAPI fleet : battle.getSnapshotFor(enemySide)) {
+					for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
+						enemyFP += member.getFleetPointCost();
+					}
+				}
+				if (allyFP > enemyFP || !playerWon) {
+					action = CoreReputationPlugin.RepActions.COMBAT_HELP_MINOR;
+				} else if (allyFP < enemyFP * 0.5f) {
+					action = CoreReputationPlugin.RepActions.COMBAT_HELP_CRITICAL;
+				} else {
+					action = CoreReputationPlugin.RepActions.COMBAT_HELP_MAJOR;
+				}
+				
+//				if (playerFPHullDamageToEnemies <= 0) {
+//					action = null;
+//				} else if (playerFPHullDamageToEnemies < allyFPHullDamageToEnemies * 0.1f) {
+//					action = RepActions.COMBAT_HELP_MINOR;
+//				}
+				float f = computePlayerContribFraction();
+				if (f <= 0) {
+					action = null;
+				} else if (f < 0.1f) {
+					action = CoreReputationPlugin.RepActions.COMBAT_HELP_MINOR;
+				}
+				
+				if (action != null) {
+					float totalDam = allyFPHullDamageToEnemies + playerFPHullDamageToEnemies;
+					if (totalDam < 10) {
+						action = CoreReputationPlugin.RepActions.COMBAT_HELP_MINOR;
+					} else if (totalDam < 20 && action == CoreReputationPlugin.RepActions.COMBAT_HELP_CRITICAL) {
+						action = CoreReputationPlugin.RepActions.COMBAT_HELP_MAJOR;
+					}
+				}
+				
+				if (battle.isPlayerInvolvedAtStart() && action != null) {
+					//action = RepActions.COMBAT_HELP_MINOR;
+					action = null;
+				}
+				
+				if (!okToAdjustAlly) action = null;
+//				if (leavingEarly) {
+//					action = null;
+//				}
+				
+				// rep increases
+				seen.clear();
+				for (CampaignFleetAPI ally : battle.getSnapshotFor(playerSide)) {
+					if (ally.isPlayerFleet()) continue;
+					
+					String factionId = ally.getFaction().getId();
+					if (seen.contains(factionId)) continue;
+					seen.add(factionId);
+					
+					Float friendlyFPHull = playerFPHullDamageToAlliesByFaction.get(ally.getFaction());
+					float threshold = 2f;
+					if (action == CoreReputationPlugin.RepActions.COMBAT_HELP_MAJOR) {
+						threshold = 5f;
+					} else if (action == CoreReputationPlugin.RepActions.COMBAT_HELP_CRITICAL) {
+						threshold = 10f;
+					}
+					if (friendlyFPHull != null && friendlyFPHull > threshold) {
+						// can lose reputation with sides that didn't survive
+						//Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.COMBAT_FRIENDLY_FIRE, (friendlyFPHull - threshold), dialog.getTextPanel()), factionId);
+					} else if (action != null && playerSide.contains(ally)) {
+						// only gain reputation with factions whose fleets actually survived
+						Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(action, null, dialog.getTextPanel()), factionId);
+						printedAdjustmentText = true;
+					}
+				}
+				
+				
+				// friendly fire rep decreases
+				if (okToAdjustAlly) {
+					boolean first = true;
+					seen.clear();
+					for (CampaignFleetAPI ally : battle.getSnapshotFor(playerSide)) {
+						if (ally.isPlayerFleet()) continue;
+						
+						String factionId = ally.getFaction().getId();
+						if (Factions.PLAYER.equals(factionId)) continue;
+						if (seen.contains(factionId)) continue;
+						seen.add(factionId);
+						
+						Float friendlyFPHull = playerFPHullDamageToAlliesByFaction.get(ally.getFaction());
+						float threshold = 2f;
+						if (action == CoreReputationPlugin.RepActions.COMBAT_HELP_MAJOR) {
+							threshold = 5f;
+						} else if (action == CoreReputationPlugin.RepActions.COMBAT_HELP_CRITICAL) {
+							threshold = 10f;
+						}
+						if (friendlyFPHull != null && friendlyFPHull > threshold) {
+							if (first && ffText != null) {
+								first = false;
+								dialog.getTextPanel().addParagraph(ffText);
+							}
+							// can lose reputation with sides that didn't survive
+							Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_FRIENDLY_FIRE, (friendlyFPHull - threshold), dialog.getTextPanel()), factionId);
+							printedAdjustmentText = true;
+						} else if (action != null && playerSide.contains(ally)) {
+							// only gain reputation with factions whose fleets actually survived
+							//Global.getSector().adjustPlayerReputation(new RepActionEnvelope(action, null, dialog.getTextPanel()), factionId);
+						}
+					}
+				}
+			//}
+			return printedAdjustmentText;
+		}
+		
+		return false;
+	}
+	*/
 }

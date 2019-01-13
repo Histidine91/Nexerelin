@@ -314,12 +314,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
 	@Override
 	public String getRaidInSystemText(CampaignFleetAPI fleet) {
-		return StringHelper.getFleetAssignmentString("travelingTo", target.getName());
+		return StringHelper.getFleetAssignmentString("travellingTo", target.getName());
 	}
 	
 	@Override
 	public String getRaidDefaultText(CampaignFleetAPI fleet) {
-		return StringHelper.getFleetAssignmentString("travelingTo", target.getName());
+		return StringHelper.getFleetAssignmentString("travellingTo", target.getName());
 	}
 	
 	@Override

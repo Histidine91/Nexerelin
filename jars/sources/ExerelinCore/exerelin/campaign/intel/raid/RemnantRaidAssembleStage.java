@@ -1,10 +1,12 @@
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.PREP_STAGE;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.WAIT_STAGE;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -63,6 +65,8 @@ public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 	public boolean isSourceKnown() {
 		RemnantRaidIntel rri = (RemnantRaidIntel)intel;
 		boolean known = rri.getBase().isVisibleToPlayerFleet();
+		if (rri.getFaction().getRelationshipLevel(Factions.PLAYER).isAtWorst(RepLevel.FRIENDLY))
+			known = true;
 		return known;
 	}
 }

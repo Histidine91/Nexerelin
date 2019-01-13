@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
@@ -177,5 +178,16 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected void failedAtStage(RaidStage stage) {
 		BaseRaidStage stage2 = (BaseRaidStage)stage;
 		stage2.giveReturnOrdersToStragglers(stage2.getRoutes());
+	}
+	
+	// disregard market fleet size mult if needed
+	@Override
+	protected float getRaidFPAdjusted() {
+		if (InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+			return super.getRaidFPAdjusted();
+				
+		float raidFP = getRaidFP();
+		float raidStr = raidFP * InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
+		return raidStr;
 	}
 }

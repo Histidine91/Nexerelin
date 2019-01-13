@@ -184,6 +184,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return strength;
 	}
 	
+	public static float getFactionDoctrineFleetSizeMult(FactionAPI faction) {
+		return 1 + (faction.getDoctrine().getNumShips() - 1) * 0.25f;
+	}
+	
 	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target, float variability)
 	{
 		//return 100 + target.getSize() * 40;
@@ -778,7 +782,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			return;
 		}
 		
-		if (false && Global.getSector().getClock().getCycle() >= 207) {
+		if (Global.getSector().getClock().getCycle() >= 207) {
 			remnantRaidInterval.advance(days);
 			if (remnantRaidInterval.intervalElapsed())
 				generateRemnantRaidFleet(Global.getSector().getFaction(Factions.REMNANTS), 
