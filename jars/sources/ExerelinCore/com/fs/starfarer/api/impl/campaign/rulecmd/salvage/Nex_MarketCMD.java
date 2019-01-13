@@ -696,7 +696,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		{
 			conqueror = playerFaction;
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
-			impact.delta = -0.04f * market.getSize();
+			impact.delta = -0.05f * market.getSize();
 			//impact.ensureAtBest = RepLevel.SUSPICIOUS;
 			impact.limit = RepLevel.INHOSPITABLE;
 			Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(

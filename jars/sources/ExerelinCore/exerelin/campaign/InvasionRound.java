@@ -342,8 +342,9 @@ public class InvasionRound {
 		// but it's null when it gets to the event for some reason
 		List<String> factionsToNotify = new ArrayList<>();  
 		Set<String> seenFactions = new HashSet<>();
-		float repChangeStrength = market.getSize() * 0.01f;
-
+		float repChangeStrength = (market.getSize() - 2) * 0.01f;
+		if (repChangeStrength <= 0) repChangeStrength = 0;
+		
 		for (final MarketAPI otherMarket : markets) {
 			if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
 			//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide

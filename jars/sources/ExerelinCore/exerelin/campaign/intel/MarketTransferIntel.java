@@ -46,8 +46,12 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 			if (Global.getSector().getCampaignUI().getCurrentInteractionDialog() != null)
 				text = Global.getSector().getCampaignUI().getCurrentInteractionDialog().getTextPanel();
 			for (String factionId : factionsToNotify) {
+				float thisRep = repChange;
+				if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId))
+					repChange *= 0.5f;
+				
 				FactionAPI faction = Global.getSector().getFaction(factionId);
-				NexUtilsReputation.adjustPlayerReputation(faction, repChange, null, text);
+				NexUtilsReputation.adjustPlayerReputation(faction, thisRep, null, text);
 			}
 		}
 	}
