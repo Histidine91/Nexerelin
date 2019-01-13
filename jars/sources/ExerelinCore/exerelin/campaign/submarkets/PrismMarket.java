@@ -418,7 +418,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                             log.info("IBB not completed for " + entry.id + " (" + stageStr + ")");
                             proceed = false;
                         }
-                    } catch (IllegalArgumentException | NullPointerException ex) {
+                    } catch (IllegalArgumentException | NullPointerException | NoClassDefFoundError ex) {
                         log.error("Failed to check IBB completion for " + entry.id, ex);
                         //proceed = false;
                     }
