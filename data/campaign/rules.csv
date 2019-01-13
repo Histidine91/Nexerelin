@@ -387,8 +387,7 @@ FireAll Nex_HostileAction",Security is too tight for further saboteur insertions
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""
-","SetEnabled exerelinUsePrisoner true
+$faction.id != ""neutral""","SetEnabled exerelinUsePrisoner true
 SetShortcut exerelinUsePrisoner P",,4:exerelinUsePrisoner:Prisoner actions,
 ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
@@ -800,12 +799,15 @@ Nex_BlueprintSwap getForSale","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
 ,,,,,,
 # stabilization package,,,,,,
-nex_stabilizePackageOption,PopulateOptions,"Nex_IsBaseOfficial any
+nex_stabilizePackageOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial any
 $faction.id != player",,,"nex_stabilizePackage_main:""I can help with your unrest problem.""",
-nex_stabilizePackageOptionDisabled,PopulateOptions,"$faction.id != player
+nex_stabilizePackageOptionDisabled,PopulateOptions,"$entity.hasMarket
+$faction.id != player
 !Nex_StabilizePackage enabled","SetTooltip nex_stabilizePackage_main ""$market does not require such assistance at present.""
 SetEnabled nex_stabilizePackage_main false",,,
-nex_stabilizePackageOptionCooldown,PopulateOptions,"$faction.id != player
+nex_stabilizePackageOptionCooldown,PopulateOptions,"$entity.hasMarket
+$faction.id != player
 $market.nex_stabilizePackage_cooldown","SetTooltip nex_stabilizePackage_main ""$market has already been recently stabilized. Delivery of further packages will not be worthwhile for $nex_stabilizePackage_textCooldown.""
 SetTooltipHighlightColors nex_stabilizePackage_main hColor
 SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textCooldown
