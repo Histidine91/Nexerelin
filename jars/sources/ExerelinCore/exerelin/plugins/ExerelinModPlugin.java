@@ -90,7 +90,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(MiningFleetManagerV2.create());
         //sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
-        sector.addScript(new ColonyManager());
+        new ColonyManager().init();
         new RevengeanceManager().init();
         
         // debugging
@@ -151,6 +151,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
+        // TODO remove
         if (replaceScript(Global.getSector(), MiningFleetManager.class, null)) {
             Global.getSector().getPersistentData().remove(MiningFleetManager.MANAGER_MAP_KEY);
             Global.getSector().addScript(MiningFleetManagerV2.create());

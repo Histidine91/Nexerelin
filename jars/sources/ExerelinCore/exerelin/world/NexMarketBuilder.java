@@ -175,6 +175,10 @@ public class NexMarketBuilder
 		}	
 	}
 	
+	public static Map<String, IndustryClassGen> getIndustryClassesByIndustryId() {
+		return industryClassesByIndustryId;
+	}
+	
 	public NexMarketBuilder(ExerelinProcGen procGen)
 	{
 		this.procGen = procGen;
@@ -263,7 +267,7 @@ public class NexMarketBuilder
 		return size;
 	}
 	
-	protected int getMaxProductiveIndustries(ProcGenEntity ent)
+	protected static int getMaxProductiveIndustries(ProcGenEntity ent)
 	{
 		int max = 4;
 		int size = ent.market.getSize();
@@ -280,24 +284,47 @@ public class NexMarketBuilder
 		return ent.market.getSize() * 0.08f;
 	}
 	
-	protected void addSpaceportOrMegaport(MarketAPI market, EntityType type, int marketSize)
+	public static boolean haveStation(MarketAPI market) {
+		for (Industry ind : market.getIndustries()) {
+			if (ind.getSpec().hasTag(Industries.TAG_STATION))
+				return true;
+		}
+		return false;
+	}
+	
+	public static void addIndustry(MarketAPI market, String id, boolean instant) {
+		market.addIndustry(id);
+		if (!instant) {
+			market.getIndustry(id).startBuilding();
+		}
+	}
+		
+	public static void addSpaceportOrMegaport(MarketAPI market, EntityType type, boolean instant, Random random)
 	{
-		int size = marketSize;
+		int size = market.getSize();
 		if (type == EntityType.STATION) size +=1;
 		if (random.nextBoolean()) size += 1;
 		
-		if (size > 6) market.addIndustry(Industries.MEGAPORT);
-		else market.addIndustry(Industries.SPACEPORT);
+		if (instant) {
+			if (size > 6) market.addIndustry(Industries.MEGAPORT);
+			else market.addIndustry(Industries.SPACEPORT);
+		} else {
+			market.addIndustry(Industries.SPACEPORT);
+			if (size > 6) market.getIndustry(Industries.SPACEPORT).startUpgrading();
+			else market.getIndustry(Industries.SPACEPORT).startBuilding();
+		}
 	}
 	
 	/**
 	 * Adds patrol/military bases, ground defenses and defense stations as appropriate to the market.
 	 * @param entity
-	 * @param marketSize
+	 * @param instant
+	 * @param random
 	 */
-	protected void addMilitaryStructures(ProcGenEntity entity, int marketSize)
+	public static void addMilitaryStructures(ProcGenEntity entity, boolean instant, Random random)
 	{
 		MarketAPI market = entity.market;
+		int marketSize = market.getSize();
 		
 		boolean isPirate = ExerelinUtilsFaction.isPirateFaction(market.getFactionId());
 		boolean isMoon = entity.type == EntityType.MOON;
@@ -317,7 +344,7 @@ public class NexMarketBuilder
 			if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
 			if (roll > req)
 			{
-				market.addIndustry(Industries.MILITARYBASE);
+				addIndustry(market, Industries.MILITARYBASE, instant);
 				haveBase = true;
 			}
 				
@@ -333,28 +360,39 @@ public class NexMarketBuilder
 			float req = MILITARY_BASE_CHANCE;
 			if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
 			if (roll > req)
-				market.addIndustry(Industries.PATROLHQ);
+				addIndustry(market, Industries.PATROLHQ, instant);
 		}
 		
 		// add ground defenses
-		int sizeForHeavyGun = 7, sizeForGun = 4;
-		if (isMoon || isStation)
+		if (!market.hasIndustry(Industries.HEAVYBATTERIES))
 		{
-			sizeForHeavyGun -=1;
-			sizeForGun -=1;
+			int sizeForHeavyGun = 7, sizeForGun = 4;
+			if (isMoon || isStation)
+			{
+				sizeForHeavyGun -=1;
+				sizeForGun -=1;
+			}
+			if (haveBase)
+			{
+				sizeForHeavyGun -=1;
+				sizeForGun -=1;
+			}
+			if (marketSize > sizeForHeavyGun) {
+				if (market.hasIndustry(Industries.GROUNDDEFENSES)) 
+				{
+					market.getIndustry(Industries.GROUNDDEFENSES).startUpgrading();
+					if (instant)
+						market.getIndustry(Industries.GROUNDDEFENSES).finishBuildingOrUpgrading();
+				}
+				else
+					addIndustry(market, Industries.HEAVYBATTERIES, instant);
+			}
+			else if (marketSize > sizeForGun)
+				addIndustry(market, Industries.GROUNDDEFENSES, instant);
 		}
-		if (haveBase)
-		{
-			sizeForHeavyGun -=1;
-			sizeForGun -=1;
-		}
-		if (marketSize > sizeForHeavyGun)
-			market.addIndustry(Industries.HEAVYBATTERIES);
-		else if (marketSize > sizeForGun)
-			market.addIndustry(Industries.GROUNDDEFENSES);
 		
 		// add stations
-		if (!entity.isHQ)	// already added for HQs
+		if (!entity.isHQ && !haveStation(market))	// already added for HQs
 		{
 			int size1 = 4, size2 = 6, size3 = 8;
 			if (isStation)
@@ -390,7 +428,7 @@ public class NexMarketBuilder
 						.getRandomDefenceStation(random, sizeIndex);
 				if (station != null) {
 					//log.info("Adding station: " + station);
-					market.addIndustry(station);
+					addIndustry(market, station, instant);
 				}
 			}
 		}
@@ -438,7 +476,7 @@ public class NexMarketBuilder
 		
 		// add basic industries
 		market.addIndustry(Industries.POPULATION);
-		addSpaceportOrMegaport(market, data.type, marketSize);
+		addSpaceportOrMegaport(market, data.type, true, random);
 		
 		if (data.isHQ)
 		{
@@ -462,7 +500,7 @@ public class NexMarketBuilder
 				market.addIndustry("6emebureau");
 		}
 		
-		addMilitaryStructures(data, marketSize);
+		addMilitaryStructures(data, true, random);
 		
 		// planet/terrain type stuff
 		if (!isStation)
@@ -633,7 +671,7 @@ public class NexMarketBuilder
 	 * @param picker
 	 * @param from
 	 */
-	protected void loadPicker(ProcGenEntity ent, WeightedRandomPicker<IndustryClassGen> picker, List<IndustryClassGen> from)
+	protected static void loadPicker(ProcGenEntity ent, WeightedRandomPicker<IndustryClassGen> picker, List<IndustryClassGen> from)
 	{
 		Float currPriority = null;
 		while (true)
@@ -659,8 +697,9 @@ public class NexMarketBuilder
 	 * Fills the market with productive industries, up to the permitted number depending on size.
 	 * Added industries depend on local market conditions.
 	 * @param entity
+	 * @param instant
 	 */
-	public void addIndustriesToMarket(ProcGenEntity entity)
+	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant)
 	{
 		int max = getMaxProductiveIndustries(entity);
 		if (entity.numProductiveIndustries >= max)
@@ -701,10 +740,9 @@ public class NexMarketBuilder
 				log.info("Picker is empty, skipping");
 				continue;
 			}
-				
 			
 			log.info("Adding industry " + gen.getName() + " to market " + entity.name);
-			gen.apply(entity);
+			gen.apply(entity, instant);
 		}
 	}
 	
@@ -728,7 +766,7 @@ public class NexMarketBuilder
 		if (picked != null)
 		{
 			log.info("Adding special industry " + picked.getName() + " to market " + entity.name);
-			picked.apply(entity);
+			picked.apply(entity, true);
 		}
 	}
 	
@@ -736,7 +774,7 @@ public class NexMarketBuilder
 	{
 		for (ProcGenEntity ent : markets)
 		{
-			addIndustriesToMarket(ent);
+			addIndustriesToMarket(ent, true);
 			addSpecialIndustries(ent);
 		}
 			

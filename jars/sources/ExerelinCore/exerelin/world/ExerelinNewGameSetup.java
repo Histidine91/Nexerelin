@@ -221,7 +221,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(MiningFleetManagerV2.create());
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
-		sector.addScript(new ColonyManager());
+		new ColonyManager().init();
 		new RevengeanceManager().init();
 		
 		StatsTracker.create();

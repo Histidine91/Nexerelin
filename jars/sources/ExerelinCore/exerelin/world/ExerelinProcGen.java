@@ -401,6 +401,23 @@ public class ExerelinProcGen {
 		return data;
 	}
 	
+	public static ProcGenEntity createEntityData(SectorEntityToken token)
+	{
+		ProcGenEntity data = new ProcGenEntity(token);
+		PlanetAPI planet = null;
+		if (token instanceof PlanetAPI) planet = (PlanetAPI)token;
+		data.name = token.getName();
+		data.type = planet != null ? (planet.isMoon() ? EntityType.MOON : EntityType.PLANET) : EntityType.STATION;
+		data.market = token.getMarket();
+		if (planet != null)
+			data.planetType = planet.getTypeId();
+		data.primary = token.getOrbitFocus();
+		if (token.getStarSystem() != null)
+			data.starSystem = (StarSystemAPI)token.getStarSystem();
+		
+		return data;
+	}
+	
 	/**
 	 * Creates ProcGenEntities for planets in the star system
 	 * @param system

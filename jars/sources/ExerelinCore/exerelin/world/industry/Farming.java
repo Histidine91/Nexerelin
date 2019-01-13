@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.NexMarketBuilder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,7 +57,7 @@ public class Farming extends IndustryClassGen {
 	}
 		
 	@Override
-	public void apply(ProcGenEntity entity) {
+	public void apply(ProcGenEntity entity, boolean instant) {
 		MarketAPI market = entity.market;
 		
 		// farming fix hack
@@ -72,9 +73,10 @@ public class Farming extends IndustryClassGen {
 			}
 		}
 		
+		String id = Industries.FARMING;
 		if (com.fs.starfarer.api.impl.campaign.econ.impl.Farming.AQUA_PLANETS.contains(entity.planetType))
 			market.addIndustry(Industries.AQUACULTURE);
-		else
-			market.addIndustry(Industries.FARMING);
+		
+		NexMarketBuilder.addIndustry(market, id, instant);
 	}
 }

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.NexMarketBuilder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,24 +48,25 @@ public class HeavyIndustry extends IndustryClassGen {
 	}
 	
 	@Override
-	public void apply(ProcGenEntity entity) {
+	public void apply(ProcGenEntity entity, boolean instant) {
 		MarketAPI market = entity.market;
 		if (market.hasIndustry(Industries.HEAVYINDUSTRY)) {
 			Industry ind = market.getIndustry(Industries.HEAVYINDUSTRY);
 			ind.startUpgrading();
-			ind.finishBuildingOrUpgrading();
+			if (instant) ind.finishBuildingOrUpgrading();
 		}
-		/*	TODO: modular fac not supported yet, requires a source of high capacitance storage
 		else if (market.hasIndustry("ms_modularFac")) {
 			Industry ind = market.getIndustry("ms_modularFac");
 			ind.startUpgrading();
-			ind.finishBuildingOrUpgrading();
+			if (instant) ind.finishBuildingOrUpgrading();
 		}
-		else if (market.getFactionId().equals("shadow_industry"))
-			market.addIndustry("ms_modularFac");
-		*/
-		else
-			market.addIndustry(Industries.HEAVYINDUSTRY);
+		else {
+			String id = Industries.HEAVYINDUSTRY;
+			if (market.getFactionId().equals("shadow_industry"))
+				id = "ms_modularFac";
+			
+			NexMarketBuilder.addIndustry(market, id, instant);
+		}
 		
 		entity.numProductiveIndustries += 1;
 	}

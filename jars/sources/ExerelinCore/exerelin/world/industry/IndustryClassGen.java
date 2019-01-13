@@ -2,6 +2,7 @@ package exerelin.world.industry;
 
 import com.fs.starfarer.api.Global;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.NexMarketBuilder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -79,9 +80,11 @@ public abstract class IndustryClassGen implements Comparable {
 	 * Adds the industry to the entity's market.
 	 * Multi-industry classes should override this method to specify exactly which industry gets added.
 	 * @param entity
+	 * @param instant If false, industry starts construction
 	 */
-	public void apply(ProcGenEntity entity) {
-		entity.market.addIndustry(industryIds.toArray(new String[0])[0]);
+	public void apply(ProcGenEntity entity, boolean instant) {
+		String id = industryIds.toArray(new String[0])[0];
+		NexMarketBuilder.addIndustry(entity.market, id, instant);
 		entity.numProductiveIndustries += 1;
 	}
 	
