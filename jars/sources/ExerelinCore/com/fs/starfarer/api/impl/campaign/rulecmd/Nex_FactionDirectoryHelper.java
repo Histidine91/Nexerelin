@@ -124,9 +124,10 @@ public class Nex_FactionDirectoryHelper {
 	/**
 	 * Gets the factions that should appear in the directory
 	 * @param exclusion Factions to exclude from the result
+	 * @param any Include non-live factions
 	 * @return 
 	 */
-	public static List<String> getFactionsForDirectory(Collection<String> exclusion)
+	public static List<String> getFactionsForDirectory(Collection<String> exclusion, boolean any)
 	{
 		Set<String> liveFactions = new HashSet<>(SectorManager.getLiveFactionIdsCopy());
 		List<FactionAPI> allFactions = Global.getSector().getAllFactions();
@@ -137,7 +138,9 @@ public class Nex_FactionDirectoryHelper {
 		for (FactionAPI faction : allFactions)
 		{
 			String factionId = faction.getId();
-			if (liveFactions.contains(factionId) || ExerelinUtilsFaction.hasAnyMarkets(factionId) || ExerelinUtilsFaction.isExiInCorvus(factionId))
+			boolean allowed = any && ExerelinConfig.getExerelinFactionConfig(factionId).playableFaction;
+			allowed = allowed || liveFactions.contains(factionId) || ExerelinUtilsFaction.hasAnyMarkets(factionId) || ExerelinUtilsFaction.isExiInCorvus(factionId);
+			if (allowed)
 				result.add(factionId);
 		}
 		if (exclusion != null)
@@ -145,9 +148,12 @@ public class Nex_FactionDirectoryHelper {
 			for (String toExclude : exclusion)
 				result.remove(toExclude);
 		}
-			
 		
 		return result;
+	}
+	
+	public static List<String> getFactionsForDirectory(Collection<String> exclusion) {
+		return getFactionsForDirectory(exclusion, false);
 	}
 	
 	public static String getFactionDisplayName(String factionId)

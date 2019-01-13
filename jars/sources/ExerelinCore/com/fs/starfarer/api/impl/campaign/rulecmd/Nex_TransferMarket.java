@@ -130,7 +130,8 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(Nex_FactionDirectory.ARRAYLIST_PLAYERFACTION);
+			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(
+					Nex_FactionDirectory.ARRAYLIST_PLAYERFACTION, true);
 			groups = Nex_FactionDirectoryHelper.getFactionGroupings(factionsForDirectory);
 			memory.set(FACTION_GROUPS_KEY, groups, GROUPS_CACHE_TIME);
 		}
