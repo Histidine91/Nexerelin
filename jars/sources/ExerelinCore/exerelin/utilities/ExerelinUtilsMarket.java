@@ -2,9 +2,11 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -17,8 +19,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.PlayerFactionStore;
 import java.util.Arrays;
 import java.util.List;
@@ -273,6 +277,39 @@ public class ExerelinUtilsMarket {
 
 		if (!addedPerson) {
 			addPerson(ip, market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
+		}
+	}
+	
+	public static void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
+			TempDataInvasion actionData, CargoAPI cargo) 
+	{
+		for (InvasionListener x : Global.getSector().getListenerManager().getListeners(InvasionListener.class)) {
+			x.reportInvadeLoot(dialog, market, actionData, cargo);
+		}
+	}
+	
+	public static void reportInvasionRound(InvasionRoundResult result,
+			CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr)
+	{
+		for (InvasionListener x : Global.getSector().getListenerManager().getListeners(InvasionListener.class)) {
+			x.reportInvasionRound(result, fleet, defender, atkStr, defStr);
+		}
+	}
+	
+	public static void reportInvasionFinished(CampaignFleetAPI fleet, FactionAPI attackerFaction, 
+			MarketAPI market, float numRounds, boolean success)
+	{
+		for (InvasionListener x : Global.getSector().getListenerManager().getListeners(InvasionListener.class)) {
+			x.reportInvasionFinished(fleet, attackerFaction, market, numRounds, success);
+		}
+	}
+	
+	public static void reportMarketTransferred(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
+            boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
+	{
+		for (InvasionListener x : Global.getSector().getListenerManager().getListeners(InvasionListener.class)) {
+			x.reportMarketTransfered(market, newOwner, oldOwner, playerInvolved, 
+					isCapture, factionsToNotify, repChangeStrength);
 		}
 	}
 }

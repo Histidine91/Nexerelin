@@ -44,6 +44,7 @@ import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -473,7 +474,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				contText = getString("invasionSpoils");
 			}
 
-			ListenerUtil.reportRaidForValuablesFinishedBeforeCargoShown(dialog, market, temp, tempInvasion.invasionLoot);
+			ExerelinUtilsMarket.reportInvadeLoot(dialog, market, tempInvasion, tempInvasion.invasionLoot);
 		}
 		else
 		{

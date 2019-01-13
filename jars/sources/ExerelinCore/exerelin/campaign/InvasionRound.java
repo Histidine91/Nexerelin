@@ -109,6 +109,7 @@ public class InvasionRound {
 			printDebug("\t" + toDisrupt.getCurrentName() + " disrupted for " + dur + " days");
 		}
 		
+		ExerelinUtilsMarket.reportInvasionRound(result, fleet, defender, atkStr, defStr);
 		return result;
 	}
 	
@@ -327,7 +328,9 @@ public class InvasionRound {
 				StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
 			}
 		}
-				
+		
+		ExerelinUtilsMarket.reportInvasionFinished(fleet, attackerFaction, market, numRounds, success);
+		
 		log.info( String.format("Invasion of [%s] by " + (fleet == null ? attackerFaction.getDisplayName() : fleet.getNameWithFaction())
 				+ (success ? " successful" : " failed"), market.getName()) );
 	}

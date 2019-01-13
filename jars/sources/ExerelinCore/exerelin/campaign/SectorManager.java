@@ -764,14 +764,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         victoryHasOccured = bool;
     }
     
-    // legacy fallback method (for Save Transfer)
-    @Deprecated
-    public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
-            boolean playerInvolved, List<String> factionsToNotify, float repChangeStrength)
-    {
-        transferMarket(market, newOwner, oldOwner, playerInvolved, true, factionsToNotify, repChangeStrength);
-    }
-    
     /**
      * Called when a market is transfered to another faction
      * @param market
@@ -955,6 +947,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 rvngEvent.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult);
             }
         }
+        
+        ExerelinUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
+                playerInvolved, isCapture, factionsToNotify, repChangeStrength);
     }
     
     public static void addOrRemoveSubmarket(MarketAPI market, String submarketId, boolean shouldHave)
