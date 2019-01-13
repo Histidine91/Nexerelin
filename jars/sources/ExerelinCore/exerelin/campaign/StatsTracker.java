@@ -42,12 +42,16 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     protected float fpKilled = 0;
     protected float fpLost = 0;
     protected int marketsCaptured = 0;
+    protected int marketsRaided = 0;
+    protected int marketsTacBombarded = 0;
+    protected int marketsSatBombarded = 0;
     protected int agentsUsed = 0;
     protected int saboteursUsed = 0;
     protected int prisonersRepatriated = 0;
     protected int prisonersRansomed = 0;
-    protected int slavesSold = 0;
+    @Deprecated protected int slavesSold = 0;
     protected int orphansMade = 0;  // hee hee
+    
     protected Set<DeadOfficerEntry> deadOfficers = new HashSet<>();
     
     public StatsTracker() {
@@ -72,6 +76,18 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
 
     public int getMarketsCaptured() {
         return marketsCaptured;
+    }
+    
+    public int getMarketsRaided() {
+        return marketsRaided;
+    }
+    
+    public int getMarketsTacBombarded() {
+        return marketsTacBombarded;
+    }
+    
+    public int getMarketsSatBombarded() {
+        return marketsSatBombarded;
     }
     
     public int getAgentsUsed() {
@@ -270,6 +286,8 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
         log.info("Making " + orphans + " orphans from raid for valuables");
         orphansMade += orphans;
+        
+        marketsRaided++;
     }
 
     @Override
@@ -279,6 +297,8 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
         log.info("Making " + orphans + " orphans from raid to disrupt");
         orphansMade += orphans;
+        
+        marketsRaided++;
     }
 
     @Override
@@ -288,6 +308,8 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
         log.info("Making " + orphans + " orphans from tactical bombardment");
         orphansMade += orphans;
+        
+        marketsTacBombarded++;
     }
 
     @Override
@@ -300,6 +322,8 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         
         log.info("Making " + orphans + " orphans from saturation bombardment");
         orphansMade += orphans;
+        
+        marketsSatBombarded++;
     }
     
     public static class DeadOfficerEntry

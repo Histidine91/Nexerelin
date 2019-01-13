@@ -141,6 +141,9 @@ public class VictoryScreenScript implements EveryFrameScript
 				printKeyValueLine(getString("statsOfficersLost"), tracker.getNumOfficersLost() + "");
 			printKeyValueLine(getString("statsOrphansMade"),  Misc.getWithDGS(tracker.getOrphansMade()));
 			printKeyValueLine(getString("statsMarketsCaptured"), tracker.getMarketsCaptured()+"");
+			printKeyValueLine(getString("statsMarketsRaided"), tracker.getMarketsRaided()+"");
+			printKeyValueLine(getString("statsTacticalBombardments"), tracker.getMarketsTacBombarded()+"");
+			printKeyValueLine(getString("statsSaturationBombardments"), tracker.getMarketsSatBombarded()+"");
 			//printKeyValueLine(getString("statsAgentsUsed"), tracker.getAgentsUsed()+"");
 			//printKeyValueLine(getString("statsSaboteursUsed"), tracker.getSaboteursUsed()+"");
 			printKeyValueLine(getString("statsPrisonersRepatriated"), tracker.getPrisonersRepatriated()+"");
