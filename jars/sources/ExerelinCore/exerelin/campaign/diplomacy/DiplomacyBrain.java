@@ -549,8 +549,10 @@ public class DiplomacyBrain {
 	public void considerOptions()
 	{
 		if (DiplomacyManager.disallowedFactions.contains(factionId)) return;
-		if (factionId.equals(Factions.PLAYER))
+		if (Nex_IsFactionRuler.isRuler(factionId))
 			return;
+		
+		log.info("Diplomacy brain for " + factionId + " considering options");
 		
 		boolean didSomething = false;
 		

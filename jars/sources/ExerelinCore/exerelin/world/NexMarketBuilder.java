@@ -612,6 +612,9 @@ public class NexMarketBuilder
 	 */
 	public void addKeyIndustriesForFaction(String factionId)
 	{
+		if (!marketsByFactionId.containsKey(factionId))
+			return;
+		
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		List<ProcGenEntity> entities = marketsByFactionId.get(factionId);
 		
