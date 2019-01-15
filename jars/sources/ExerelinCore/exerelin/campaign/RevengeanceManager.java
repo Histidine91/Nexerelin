@@ -366,9 +366,9 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		return (RevengeanceManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
 	}
 	
-	public void addVengeanceForMarketAttack(MarketAPI market, float mult)
+	public void addVengeanceForMarketAttack(MarketAPI market, int size, float mult)
 	{
-		float addedPoints = (float)Math.pow(2, market.getSize() - 1) * mult;
+		float addedPoints = size * size * mult;
 		log.info("Adding vengeance points for market attack: " + market.getName() + ", " + addedPoints + " (mult " + mult + ")");
 		addPoints(addedPoints/2);
 		addFactionPoints(market.getFactionId(), addedPoints);
@@ -376,27 +376,27 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		// war weariness too
 		// not really the right place for it, but saves us having to add its own listener
 		String factionId = market.getFactionId();
-		DiplomacyManager.getManager().modifyWarWeariness(factionId, addedPoints);
+		DiplomacyManager.getManager().modifyWarWeariness(factionId, addedPoints * 5);
 	}
 
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
-		addVengeanceForMarketAttack(market, 1);
+		addVengeanceForMarketAttack(market, market.getSize(), 1);
 	}
 
 	@Override
 	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, Industry industry) {
-		addVengeanceForMarketAttack(market, 1);
+		addVengeanceForMarketAttack(market, market.getSize(), 1);
 	}
 
 	@Override
 	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
-		addVengeanceForMarketAttack(market, 1);
+		addVengeanceForMarketAttack(market, market.getSize(), 1);
 	}
 
 	@Override
 	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
-		addVengeanceForMarketAttack(market, 10);
+		addVengeanceForMarketAttack(market, market.getSize() + 1, 10);
 	}
 	
 }

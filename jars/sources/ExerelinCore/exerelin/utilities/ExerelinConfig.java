@@ -31,7 +31,7 @@ public class ExerelinConfig
     @Deprecated public static float playerSalaryIncrementPerLevel = 1000f;
     public static float playerInsuranceMult = 0.8f;
     
-    public static float fleetBonusFpPerPlayerLevel = 0.25f;
+    public static float fleetBonusFpPerPlayerLevel = 1f;
     
     // Prisoners
     public static float prisonerRepatriateRepValue = 0.05f;

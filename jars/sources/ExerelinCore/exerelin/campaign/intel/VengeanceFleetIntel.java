@@ -502,48 +502,48 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			return null;
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-		float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.1f;
+		float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.5f;
         Float mod = FACTION_ADJUST.get(factionId);
         if (mod == null) {
             mod = 1f;
         }
-        int capBonus = (int)(ExerelinUtilsFleet.getPlayerLevelFPBonus() + 0.5f);
+        int capBonus = Math.round(ExerelinUtilsFleet.getPlayerLevelFPBonus());
         int combat, freighter, tanker, utility;
         float bonus;
         switch (escalationLevel) {
             default:
             case 0:
-                combat = Math.round(Math.max(6f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod));
-                combat = Math.min(30 + capBonus, combat);
+                combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod));
+                combat = Math.min(150 + capBonus, combat);
                 freighter = Math.round(combat / 10f);
                 tanker = Math.round(combat / 15f);
                 utility = Math.round(combat / 20f);
                 bonus = 0.1f;
                 break;
             case 1:
-                if (player < 16f) {
-                    combat = Math.round(Math.max(9f, player * MathUtils.getRandomNumberInRange(0.75f, 1f) / mod));
+                if (player < 80f) {
+                    combat = Math.round(Math.max(45f, player * MathUtils.getRandomNumberInRange(0.75f, 1f) / mod));
                 } else {
                     combat =
-                    Math.round((14f / mod) + (player - 16f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
+                    Math.round((70f / mod) + (player - 80f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
                 }
-                combat = Math.min(45 + capBonus, combat);
+                combat = Math.min(225 + capBonus * 2, combat);
                 freighter = Math.round(combat / 10f);
                 tanker = Math.round(combat / 15f);
                 utility = Math.round(combat / 20f);
                 bonus = 0.3f;
                 break;
             case 2:
-                if (player < 24f) {
-                    combat = Math.round(Math.max(12f, player * MathUtils.getRandomNumberInRange(1f, 1.25f) / mod));
-                } else if (player < 48f) {
-                    combat = Math.round((27f / mod) + (player - 24f) * MathUtils.getRandomNumberInRange(0.75f, 1f) /
+                if (player < 120f) {
+                    combat = Math.round(Math.max(60f, player * MathUtils.getRandomNumberInRange(1f, 1.25f) / mod));
+                } else if (player < 240f) {
+                    combat = Math.round((135f / mod) + (player - 120f) * MathUtils.getRandomNumberInRange(0.75f, 1f) /
                     mod);
                 } else {
                     combat =
-                    Math.round((48f / mod) + (player - 48f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
+                    Math.round((240f / mod) + (player - 240f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
                 }
-                combat = Math.min(60 + capBonus, combat);
+                combat = Math.min(300 + capBonus * 3, combat);
                 freighter = Math.round(combat / 10f);
                 tanker = Math.round(combat / 15f);
                 utility = Math.round(combat / 20f);
@@ -552,11 +552,11 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         }
 
         int total = combat + freighter + tanker + utility;
-        if (total > 25 && total <= 50) {
+        if (total > 125 && total <= 250) {
             bonus += 0.25f;
-        } else if (total > 50 && total <= 100) {
+        } else if (total > 250 && total <= 500) {
             bonus += 0.5f;
-        } else if (total > 100) {
+        } else if (total > 500) {
             bonus += 0.75f;
         }
         
@@ -595,10 +595,10 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             default:
             case 0:
                 
-                if (total > 100) {
+                if (total > 500) {
                     fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
                     fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
-                } else if (total > 50) {
+                } else if (total > 250) {
                     fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_CAPTAIN);
                     fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
                 } else {
@@ -607,7 +607,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                 }
                 break;
             case 1:
-                if (total > 100) {
+                if (total > 500) {
                     fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
                     fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
                 } else {
@@ -624,8 +624,8 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             market.getPrimaryEntity().getContainingLocation().addEntity(fleet);
             fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().y);
 
-            fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 2f + (float) Math.random() *
-                                2f,
+            fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
+					2f + escalationLevel + (float) Math.random() * 2f,
                                 StringHelper.getFleetAssignmentString("orbiting", market.getName()));
         } else {
             Vector2f loc = Misc.pickHyperLocationNotNearPlayer(market.getLocationInHyperspace(),

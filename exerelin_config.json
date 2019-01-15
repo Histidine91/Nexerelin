@@ -9,7 +9,7 @@
     "playerSalaryIncrementPerLevel": 1000,
     "playerInsuranceMult": 0.8,	# lower than it looks
     "followersBaseTax": 100,    # per day, modified by market size and stability
-    "fleetBonusFpPerPlayerLevel": 0.25,
+    "fleetBonusFpPerPlayerLevel": 1,
     
     "prisonerRepatriateRepValue": 0.05,
     "prisonerBaseRansomValue": 4000,
