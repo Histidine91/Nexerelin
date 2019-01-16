@@ -28,6 +28,7 @@ public class StringHelper {
 			// could be a string not found
 			//str = ex.toString();  // looks really silly
 			Global.getLogger(StringHelper.class).warn(ex);
+			return "[INVALID]" + id;
 		}
 		if (ucFirst) str = Misc.ucFirst(str);
 		return str;
