@@ -17,7 +17,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelperLegacy;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -26,8 +25,6 @@ import exerelin.utilities.StringHelper;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.histidine.industry.scripts.MiningHelper;
-import org.histidine.industry.scripts.MiningHelper.MiningReport;
 import org.lazywizard.lazylib.MathUtils;
 
 public class MiningFleetManagerV2 extends DisposableFleetManager
@@ -58,56 +55,30 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		if (entity instanceof AsteroidAPI) return true;
 		if (!(entity instanceof PlanetAPI)) return false;
 		if (entity.getMarket() == null || !entity.getMarket().isPlanetConditionMarketOnly()) return false;
-		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
-		{
-			float exhaustion = MiningHelper.getExhaustion(entity);
-			if (exhaustion > 0.7f) return false;
-			
-			MiningReport report = MiningHelper.getMiningReport(null, entity, 1 - exhaustion);
-			if (report.totalOutput.containsKey(Commodities.ORE))
-				return report.totalOutput.get(Commodities.ORE) > 0.5;
-			if (report.totalOutput.containsKey(Commodities.RARE_ORE))
-				return report.totalOutput.get(Commodities.RARE_ORE) > 0.05;
-			return false;
-		}
-		else
-		{
-			float exhaustion = MiningHelperLegacy.getExhaustion(entity);
-			if (exhaustion > 0.7f) return false;
-			
-			MiningHelperLegacy.MiningReport report = MiningHelperLegacy.getMiningReport(null, entity, 1 - exhaustion);
-			if (report.totalOutput.containsKey(Commodities.ORE))
-				return report.totalOutput.get(Commodities.ORE) > 0.5;
-			if (report.totalOutput.containsKey(Commodities.RARE_ORE))
-				return report.totalOutput.get(Commodities.RARE_ORE) > 0.05;
-			return false;
-		}
+		
+		float exhaustion = MiningHelperLegacy.getExhaustion(entity);
+		if (exhaustion > 0.7f) return false;
+
+		MiningHelperLegacy.MiningReport report = MiningHelperLegacy.getMiningReport(null, entity, 1 - exhaustion);
+		if (report.totalOutput.containsKey(Commodities.ORE))
+			return report.totalOutput.get(Commodities.ORE) > 0.5;
+		if (report.totalOutput.containsKey(Commodities.RARE_ORE))
+			return report.totalOutput.get(Commodities.RARE_ORE) > 0.05;
+		return false;
 	}
 	
 	protected boolean isGasMineable(SectorEntityToken entity)
 	{
 		if (!(entity instanceof PlanetAPI)) return false;
 		if (entity.getMarket() == null || !entity.getMarket().isPlanetConditionMarketOnly()) return false;
-		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
-		{
-			float exhaustion = MiningHelper.getExhaustion(entity);
-			if (exhaustion > 0.7f) return false;
-			
-			MiningReport report = MiningHelper.getMiningReport(null, entity, 1 - exhaustion);
-			if (report.totalOutput.containsKey(Commodities.VOLATILES))
-				return report.totalOutput.get(Commodities.VOLATILES) > 0.4;
-			return false;
-		}
-		else
-		{
-			float exhaustion = MiningHelperLegacy.getExhaustion(entity);
-			if (exhaustion > 0.7f) return false;
-			
-			MiningHelperLegacy.MiningReport report = MiningHelperLegacy.getMiningReport(null, entity, 1 - exhaustion);
-			if (report.totalOutput.containsKey(Commodities.VOLATILES))
-				return report.totalOutput.get(Commodities.VOLATILES) > 0.4;
-			return false;
-		}
+		
+		float exhaustion = MiningHelperLegacy.getExhaustion(entity);
+		if (exhaustion > 0.7f) return false;
+
+		MiningHelperLegacy.MiningReport report = MiningHelperLegacy.getMiningReport(null, entity, 1 - exhaustion);
+		if (report.totalOutput.containsKey(Commodities.VOLATILES))
+			return report.totalOutput.get(Commodities.VOLATILES) > 0.4;
+		return false;
 	}
 	
 	public CampaignFleetAPI spawnMiningFleet(MarketAPI origin)
@@ -216,24 +187,13 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		}
 		
 		float miningStrength = 0;
-		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
-		{
-			miningStrength = MiningHelper.getFleetMiningStrength(fleet);
-			// take machinery with us
-			float machineryRequired = MiningHelper.getRequiredMachinery(miningStrength);
-			float machineryToTake = Math.min(machineryRequired * 1.25f, origin.getCommodityData(Commodities.HEAVY_MACHINERY).getStockpile());
-			fleet.getCargo().addCommodity(Commodities.HEAVY_MACHINERY, machineryToTake);
-			origin.getCommodityData(Commodities.HEAVY_MACHINERY).removeFromStockpile(machineryToTake);
-		}
-		else
-		{
-			miningStrength = MiningHelperLegacy.getFleetMiningStrength(fleet);
-			// take machinery with us
-			float machineryRequired = MiningHelperLegacy.getRequiredMachinery(miningStrength);
-			float machineryToTake = Math.min(machineryRequired * 1.25f, origin.getCommodityData(Commodities.HEAVY_MACHINERY).getStockpile());
-			fleet.getCargo().addCommodity(Commodities.HEAVY_MACHINERY, machineryToTake);
-			origin.getCommodityData(Commodities.HEAVY_MACHINERY).removeFromStockpile(machineryToTake);
-		}
+		
+		miningStrength = MiningHelperLegacy.getFleetMiningStrength(fleet);
+		// take machinery with us
+		float machineryRequired = MiningHelperLegacy.getRequiredMachinery(miningStrength);
+		float machineryToTake = Math.min(machineryRequired * 1.25f, origin.getCommodityData(Commodities.HEAVY_MACHINERY).getStockpile());
+		fleet.getCargo().addCommodity(Commodities.HEAVY_MACHINERY, machineryToTake);
+		origin.getCommodityData(Commodities.HEAVY_MACHINERY).removeFromStockpile(machineryToTake);
 		
 		SectorEntityToken entity = origin.getPrimaryEntity();
 		entity.getContainingLocation().addEntity(fleet);
@@ -282,10 +242,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		}
 		timer -= POINT_INCREMENT_PERIOD;
 		
-		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
-			MiningHelper.renewResources(POINT_INCREMENT_PERIOD);
-		else
-			MiningHelperLegacy.renewResources(POINT_INCREMENT_PERIOD);
+		MiningHelperLegacy.renewResources(POINT_INCREMENT_PERIOD);
 	}
 	
 	public static MiningFleetManagerV2 create()

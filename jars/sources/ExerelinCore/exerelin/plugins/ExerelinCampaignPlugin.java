@@ -35,13 +35,8 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 
 	@Override
 	public void updateEntityFacts(SectorEntityToken entity, MemoryAPI memory) {
-		boolean canMine;
-		// if we do have SI, let it handle mining instead
-		if (!ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
-		{
-			canMine = MiningHelperLegacy.canMine(entity);
-			memory.set("$nex_canMine", canMine, 0);
-		}
+		boolean canMine = MiningHelperLegacy.canMine(entity);
+		memory.set("$nex_canMine", canMine, 0);
 		
 		if (entity instanceof AsteroidAPI)
 		{
@@ -109,7 +104,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		if (interactionTarget instanceof CampaignFleetAPI) {
 			return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
 		}
-		if (!ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST && interactionTarget instanceof AsteroidAPI) {
+		if (interactionTarget instanceof AsteroidAPI) {
 			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
 		}
 		if (interactionTarget instanceof JumpPointAPI) {
