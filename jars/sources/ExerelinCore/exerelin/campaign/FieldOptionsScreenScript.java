@@ -22,11 +22,11 @@ import exerelin.utilities.StringHelper;
 import org.lwjgl.input.Keyboard;
 
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
-public class DirectoryScreenScript implements EveryFrameScript
+public class FieldOptionsScreenScript implements EveryFrameScript
 {
 	//private static int count = 0;
 	
-	public DirectoryScreenScript()
+	public FieldOptionsScreenScript()
 	{
 		//count++;
 		//Global.getLogger(DirectoryScreenScript.class).info("Number of directory screen scripts running: " + count);
@@ -73,6 +73,7 @@ public class DirectoryScreenScript implements EveryFrameScript
 		{
 			INIT,
 			DIRECTORY,
+			FLEET_REQUEST,
 			REMOTE_COMM,
 			INTEL_SCREEN,
 			EXIT
@@ -96,12 +97,13 @@ public class DirectoryScreenScript implements EveryFrameScript
 		{
 			options.clearOptions();
 			options.addOption(StringHelper.getString("exerelin_factions", "factionDirectoryOption"), Menu.DIRECTORY);
+			options.addOption(StringHelper.getString("nex_fleetRequest", "fleetRequest", true), Menu.FLEET_REQUEST);
 			//options.addOption(StringHelper.getString("exerelin_markets", "remoteCommDirectory"), Menu.REMOTE_COMM);
 			//options.addOption(StringHelper.getString("exerelin_alliances", "allianceListOption"), Menu.ALLIANCES);
 			//options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), Menu.INTEL_SCREEN);
 			options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
 			options.setShortcut(Menu.EXIT, Keyboard.KEY_ESCAPE, false, false, false, true);
-			dialog.setPromptText(StringHelper.getString("exerelin_misc", "directoryOptions") + ":");
+			dialog.setPromptText(StringHelper.getString("options", true) + ":");
 		}
 
 		// NOTE: we use FleetInteractionDialogPluginImpl.inConversation to tell whether we're currently delegating stuff to the RuleBasedInteractionDialogPlugin
@@ -129,6 +131,18 @@ public class DirectoryScreenScript implements EveryFrameScript
 			else if (optionText != null) {
 				text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
 			}
+			
+			if (optionData == Menu.DIRECTORY || optionData == Menu.FLEET_REQUEST || optionData == Menu.REMOTE_COMM) 
+			{
+				FleetInteractionDialogPluginImpl.inConversation = true;
+
+				optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
+				optionsDialogDelegate.setEmbeddedMode(true);
+				optionsDialogDelegate.init(dialog);
+
+				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
+				mem.set("$specialDialog", true, 0);
+			}
 
 			if (optionData == Menu.INIT)
 			{
@@ -136,28 +150,14 @@ public class DirectoryScreenScript implements EveryFrameScript
 			}
 			if (optionData == Menu.DIRECTORY)
 			{
-				FleetInteractionDialogPluginImpl.inConversation = true;
-
-				optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
-				optionsDialogDelegate.setEmbeddedMode(true);
-				optionsDialogDelegate.init(dialog);
-
-				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
-				mem.set("$specialDialog", true, 0);
-
 				optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
+			}
+			else if (optionData == Menu.FLEET_REQUEST)
+			{
+				optionsDialogDelegate.fireAll("Nex_FleetRequest");
 			}
 			else if (optionData == Menu.REMOTE_COMM)
 			{
-				FleetInteractionDialogPluginImpl.inConversation = true;
-
-				optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
-				optionsDialogDelegate.setEmbeddedMode(true);
-				optionsDialogDelegate.init(dialog);
-
-				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
-				mem.set("$specialDialog", true, 0);
-
 				optionsDialogDelegate.fireAll("Nex_RemoteComm");
 			}
 			else if (optionData == Menu.INTEL_SCREEN)

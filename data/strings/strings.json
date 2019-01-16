@@ -59,6 +59,7 @@
 		"no":"no",
 		"abstain":"abstain",
 		"confirm":"confirm",
+		"proceed":"proceed",
 		"cancel":"cancel",
 		"enabled":"enabled",
 		"disabled":"disabled",
@@ -86,6 +87,8 @@
 		"outmatched":"outmatched",
 		"evenlyMatched":"evenly matched",
 		"superior":"superior",
+		
+		"none":"none",
 	},
 
 	"exerelin_abilities":{
@@ -286,14 +289,43 @@
 
 		"stationName":"Defense Station",
 
-		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
-		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
-
 		"fleetRelationship":"$faction $isOrAre $relationship.",
 
 		"supportingYourForces":"supporting your forces",
 		"joiningTheEnemy":"joining the enemy",
 		"supportingOpposingSide":"supporting the opposing side"
+	},
+	# TODO
+	"nex_fleetIntel":{
+		"title":"$action: $market",
+		"desc":"$TheFaction $isOrAre $actioning $market in the $location, held by $theTargetFaction. The $forceType $isOrAre projected to be $strDesc.",
+		"bulletTarget":"Held by $targetFaction",
+		"bulletArrived":"$ForceType arrived in system",
+		"bulletSuccess":"$Type successful",
+		"bulletFailed":"$Type failed",
+		"bulletNoLongerExists":"$Type aborted: target destroyed",
+		"bulletNoLongerHostile":"$Type aborted: no longer hostile",
+		"bulletCancelled":"$Type cancelled",
+		"strCompare":"Compared to the defenses, the $type's space forces are %s and its ground forces are %s.",
+		"predictionDefeatInOrbit":"The $type is likely to be defeated in orbit.",
+		"predictionDefeatOnGround":"The $type is likely to be largely repelled by the ground defences.",
+		"predictionUncertain":"The $type's outcome is uncertain.",
+		"predictionSuccessful":"The $type is likely to be successful.",
+		"predictionBombard":"The $forceType is likely to resort to tactical bombardment.",
+		"outcomeNoLongerHostile":"As $target's current faction is not currently hostile, the $type has been cancelled.",
+		"outcomeNoLongerExists":"$target has been destroyed by another hostile party. There is nothing left to invade.",
+		
+		"organizeGetForcesString":"The $type",
+		"stageAssemble":"The $forceType $isOrAre currently assembling in the $location.",
+		"stageAssembleUnknown":"The $forceType $isOrAre currently assembling at an unknown location.",
+		"stageAssembleFail":"The $forceType $hasOrHave failed to successfully assemble at the rendezvous point.",
+		"stageTravel":"The $forceType $isOrAre currently travelling to the $location.",
+		"stageTravelFailed":"The $forceType $hasOrHave failed to successfully reach the $location.",
+		"stageAction":"The $forceType $isOrAre currently in-system.",
+		"stageActionSuccess":"The $forceType $hasOrHave conquered $market.",
+		"stageActionDefeatedGround":"The $forceType $hasOrHave been repelled by the ground defenses of $market.",
+		"stageActionDefeatedSpace":"The $forceType $hasOrHave been defeated by the defenders of of $market.",
+		"stageActionAborted":"The $action $hasOrHave been aborted.",
 	},
 	"exerelin_fleetAssignments":{
 		"preparingFor":"preparing for $missionType at $target",
@@ -327,6 +359,24 @@
 		"missionMining":"mining expedition",
 		"missionPatrol":"patrol",
 		"missionSuppression":"rebel suppression"
+	},
+	"nex_fleetRequest":{
+		"fleetRequest":"fleet request",
+		
+		"fleetType_invasion":"invasion",
+		"fleetType_basekill":"base kill",
+		"fleetType_raid":"raid",
+		"fleetType_defense":"defense",
+		
+		"fleetCost":"fleet cost",
+		"fleetPoints":"fleet points",
+		"infoDistance":"Distance: $dist LY",
+		"timeToLaunch":"time to launch",
+		
+		"fleetSpawnMessage":"The fleet is being prepared for launch.",
+		"tooltipInsufficientFunds":"Dispatching this fleet requires $cost credits. You only have $credits credits.",
+		"proceedConfirm":"Confirm fleet launch?",
+		"proceedConfirmNonHostile":"$TheFaction is not currently hostile, but will be if you launch this fleet. Are you sure you wish to do this?",
 	},
 	"exerelin_invasion":{
 		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile. An invasion is a major enough hostile action that it can't be concealed, regardless of transponder status.",

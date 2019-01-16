@@ -23,8 +23,8 @@
     
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
-    "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
-    "fleetRequestCostPerFP": 2000,  # used for player-requested fleets
+    "fleetRequestCostPerMarine": 100,  # currently unused, previously used for player-requested fleets
+    "fleetRequestCostPerFP": 400,  # used for player-requested fleets
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
     "pointsRequiredForInvasionFleet": 18000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily

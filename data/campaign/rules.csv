@@ -291,9 +291,9 @@ nex_marketHostileInvadeResultAndradaSel,DialogOptionSelected,$option == nex_mktI
 ,,,,,,
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
-nex_marketFactionDirectoryOption,ExerelinMarketSpecial,,SetShortcut nex_factionDirectoryMain D,,7:nex_factionDirectoryMain:Faction directory,
-nex_FactionDirectory,DialogOptionSelected,$option == nex_factionDirectoryMain,FireAll ExerelinFactionDirectory,,,
-nex_FactionDirectoryByTrigger,ExerelinFactionDirectory,,Nex_FactionDirectory listGroups,Which faction do you want to look up?,,
+nex_factionDirectoryOption,ExerelinMarketSpecial,,SetShortcut nex_factionDirectoryMain D,,7:nex_factionDirectoryMain:Faction directory,
+nex_factionDirectory,DialogOptionSelected,$option == nex_factionDirectoryMain,FireAll ExerelinFactionDirectory,,,
+nex_factionDirectoryByTrigger,ExerelinFactionDirectory,,Nex_FactionDirectory listGroups,Which faction do you want to look up?,,
 ,,,,,,
 nex_factionDirectoryList1,DialogOptionSelected,$option == nex_factionDirectoryList1,Nex_FactionDirectory listFactions 1,,,
 nex_factionDirectoryList2,DialogOptionSelected,$option == nex_factionDirectoryList2,Nex_FactionDirectory listFactions 2,,,
@@ -445,52 +445,6 @@ ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem pri
 FireAll ExerelinMarketSpecial",You have no more prisoners.,,
 #END PRISONER OPTIONS,,,,,,
 ,,,,,,
-#START FLEET REQUEST OPTIONS,,,,,,
-#ExerelinMarketFleetRequestOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""","SetEnabled exerelinFleetRequestMenu true
-SetShortcut exerelinFleetRequestMenu F",,5:exerelinFleetRequestMenu:Request a fleet,
-#ExerelinMarketFleetRequestOptionNoBase,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""
-!IsFactionAlive $player.factionId
-!IsFactionAlive player","SetTooltip exerelinFleetRequestMenu ""Your faction has no base to launch a fleet from.""
-SetEnabled exerelinFleetRequestMenu false",,,
-ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleetRequestMenu,"$fleetRequestFP = 15
-$fleetRequestMarines=0
-$menuState = fleetRequest 0
-ShowVisual ""graphics/illustrations/hound_hangar.jpg""
-FireAll ExerelinFleetRequestOption",,,
-ExerelinFleetRequestOptionListFire,ExerelinFleetRequestOption,FleetRequestCanAfford,"SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $fleetRequestCost credits. $player.creditsHave credits are available.""
-SetEnabled exerelinFleetRequestFire true
-SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
-SetTooltipHighlights exerelinFleetRequestFire $fleetRequestCost $player.creditsHave
-SetShortcut exerelinFleetRequestFire RETURN",,exerelinFleetRequestFire:Request a fleet,
-ExerelinFleetRequestOptionListFireNoMarkets,ExerelinFleetRequestOption,"FleetRequestCanAfford
-!IsFactionAlive $player.factionId score:100","SetTooltip exerelinFleetRequestFire ""Your faction has no base to launch the fleet from.""
-SetEnabled exerelinFleetRequestFire false",,exerelinFleetRequestFire:Request a fleet,
-ExerelinFleetRequestOptionListFireNotEnoughCredits,ExerelinFleetRequestOption,"!FleetRequestCanAfford score:100
-IsFactionAlive $player.factionId","SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $fleetRequestCost credits. Only $player.creditsHave credits are available.""
-SetEnabled exerelinFleetRequestFire false
-SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
-SetTooltipHighlights exerelinFleetRequestFire $fleetRequestCost $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
-ExerelinFleetRequestOptionListFireNotHostile,ExerelinFleetRequestOption,"RepIsAtWorst $faction.id INHOSPITABLE
-IsValidInvasionTarget
-$fleetRequestMarines > 0","Nex_AddOptionConfirmation exerelinFleetRequestFire ""$TheFaction is not currently hostile, and you have configured the fleet request as an invasion fleet. Do you want to proceed?"" ""Yes"" ""No""",,,
-ExerelinFleetRequestOptionListChangeFP,ExerelinFleetRequestOption,,SetShortcut exerelinFleetRequestChangeFP F,,exerelinFleetRequestChangeFP:Fleet points - $fleetRequestFP,
-ExerelinFleetRequestOptionListChangeMarineCount,ExerelinFleetRequestOption,IsValidInvasionTarget,"SetEnabled exerelinFleetRequestChangeMarineCount true
-SetTooltip exerelinFleetRequestChangeMarineCount ""Carrying marines will make this fleet an invasion fleet. Dispatching one will be considered a hostile act.""
-SetShortcut exerelinFleetRequestChangeMarineCount M",,exerelinFleetRequestChangeMarineCount:Marines to deploy - $fleetRequestMarines,
-ExerelinFleetRequestOptionListChangeMarineCountInvalid,ExerelinFleetRequestOption,!IsValidInvasionTarget,"SetTooltip exerelinFleetRequestChangeMarineCount ""This market is not an eligible invasion target.""
-SetEnabled exerelinFleetRequestChangeMarineCount false",,exerelinFleetRequestChangeMarineCount:Marines to deploy - $fleetRequestMarines,
-ExerelinFleetRequestOptionListBack,ExerelinFleetRequestOption,,SetShortcut exerelinMarketSpecial ESCAPE,,exerelinMarketSpecial:Back,
-,,,,,,
-ExerelinFleetRequestChangeFP,DialogOptionSelected,$option == exerelinFleetRequestChangeFP,"FleetRequestChangeFP
-FireAll ExerelinFleetRequestOption",,,
-ExerelinFleetRequestChangeMarineCount,DialogOptionSelected,$option == exerelinFleetRequestChangeMarineCount,"FleetRequestChangeMarineCount
-FireAll ExerelinFleetRequestOption",,,
-ExerelinFleetRequestFire,DialogOptionSelected,$option == exerelinFleetRequestFire,"FleetRequestFire
-FireAll ExerelinFleetRequestOption",,,
-#END FLEET REQUEST OPTIONS,,,,,,
-,,,,,,
 #START SUPERWEAPON OPTIONS,,,,,,
 ExerelinMarketSuperweaponOption,Nex_HostileAction,"IsValidInvasionTarget
 NGCDoesFactionExist interstellarimperium
@@ -583,6 +537,44 @@ nex_miningBack:Back",
 nex_miningBack,DialogOptionSelected,$option == nex_miningBack,"$menuState = main 0
 FireAll PopulateOptions",,,
 #END MINING OPTIONS,,,,,,
+,,,,,,
+# fleet requests,,,,,,
+nex_fleetRequestOpt,ExerelinMarketSpecial,,SetShortcut nex_fleetRequest_main R,,8:nex_fleetRequest_main:Request a fleet,
+nex_fleetRequest,DialogOptionSelected,$option == nex_fleetRequest_main,FireAll Nex_FleetRequest,,,
+nex_fleetRequestByTriggerFirstTime,Nex_FleetRequest,!$nex_fleetRequest_initComplete,"Nex_FleetRequest init
+ShowVisual ""graphics/illustrations/hound_hangar.jpg""",You can dispatch a fleet.,,
+nex_fleetRequestByTrigger,Nex_FleetRequest,,"Nex_FleetRequest mainMenu
+SetShortcut nex_fleetRequestCancel ""ESCAPE""",,,
+,,,,,,
+nex_fleetRequest_selectTypeMenu,DialogOptionSelected,$option == nex_fleetRequest_selectType,,,"nex_fleetRequest_selectType_invasion:Invasion
+nex_fleetRequest_selectType_basekill:Base kill
+nex_fleetRequest_selectType_defense:Defense
+nex_fleetRequest_main:Back",
+nex_fleetRequest_selectType,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setType_""","Nex_FleetRequest setType
+FireAll Nex_FleetRequest",,,
+,,,,,,
+nex_fleetRequest_setStrengthMenu,DialogOptionSelected,$option == nex_fleetRequest_strengthMenu,Nex_FleetRequest strengthMenu,,,
+nex_fleetRequest_setStrength,DialogOptionSelected,$option == nex_fleetRequest_setStrength,"Nex_FleetRequest setStrength
+FireAll Nex_FleetRequest",,,
+,,,,,,
+nex_fleetRequest_selectSourceMenu,DialogOptionSelected,$option == nex_fleetRequest_selectSource,Nex_FleetRequest sourceMenu,,,
+nex_fleetRequest_selectSource,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setSource_""","Nex_FleetRequest setSource
+FireAll Nex_FleetRequest",,,
+,,,,,,
+nex_fleetRequest_selectFactionMenu,DialogOptionSelected,$option == nex_fleetRequest_selectFaction,Nex_FleetRequest factionMenu,,,
+nex_fleetRequest_selectFaction,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setFaction_""","Nex_FleetRequest setFaction
+FireAll Nex_FleetRequest",,,
+,,,,,,
+nex_fleetRequest_selectTargetMenu,DialogOptionSelected,$option == nex_fleetRequest_selectTarget,Nex_FleetRequest targetMenu,,,
+nex_fleetRequest_selectTarget,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setTarget_""","Nex_FleetRequest setTarget
+FireAll Nex_FleetRequest",,,
+,,,,,,
+nex_fleetRequest_proceed,DialogOptionSelected,$option == nex_fleetRequest_proceed,Nex_FleetRequest proceed,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 ,,,,,,
 ,,,,,,
 ## Base commander stuff ##,,,,,,

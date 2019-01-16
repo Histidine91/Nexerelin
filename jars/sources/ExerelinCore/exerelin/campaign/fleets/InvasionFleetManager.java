@@ -221,6 +221,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return Math.max(defensiveStr, 30);
 	}
 	
+	public static float getOrganizeTime(float fp) {
+		return 10 + fp/30;
+	}
+	
 	/*
 	public static InvasionFleetData spawnRespawnFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean useOriginLocation)
 	{
@@ -489,9 +493,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		// FIXME
 		float fp = getWantedFleetSize(faction, targetMarket, 0.2f, false);
-		float organizeTime = 10 + fp/30;
+		float organizeTime = getOrganizeTime(fp);
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
-		if (raid) fp *= RAID_SIZE_MULT;
+		if (raid)
+			fp *= RAID_SIZE_MULT;
+		else
+			organizeTime *= 1.5f;
 		
 		// okay, assemble battlegroup
 		if (!raid)
@@ -807,8 +814,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float fp = 500;	//getWantedFleetSize(faction, targetMarket, 0.2f, true) * 2.5f;
 		float mult = Math.min(1 + (numRemnantRaids * 0.25f), 3f);
 		fp *= mult;
+		float organizeTime = getOrganizeTime(fp);
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
-		float organizeTime = 10 + fp/30;
 		
 		log.info("Spawning Remnant-style raid fleet for " + faction.getDisplayName() 
 				+ " from base in " + base.getContainingLocation() + "; target " + targetMarket.getName());

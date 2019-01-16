@@ -92,6 +92,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		return marinesPerFleet;
 	}
 	
+	public void setMarinesPerFleet(int marines) {
+		marinesPerFleet = marines;
+	}
+	
 	// for intel popup in campaign screen's message area
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
@@ -181,7 +185,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);
 		
 		FactionAPI attacker = getFaction();
-		FactionAPI defender = target.getFaction();
+		FactionAPI defender = targetFaction;
 		String has = attacker.getDisplayNameHasOrHave();
 		String is = attacker.getDisplayNameIsOrAre();
 		String locationName = target.getContainingLocation().getNameWithLowercaseType();
@@ -421,5 +425,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	public String getIcon() {
 		return Global.getSettings().getSpriteName("intel", "nex_invasion");
 		//return faction.getCrest();
+	}
+	
+	@Override
+	protected float getBaseDaysAfterEnd() {
+		if (outcome == OffensiveOutcome.SUCCESS) return 15;
+		return 7;
 	}
 }

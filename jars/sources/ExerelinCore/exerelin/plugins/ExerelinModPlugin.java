@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.XStream;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.DirectoryScreenScript;
+import exerelin.campaign.FieldOptionsScreenScript;
 import exerelin.campaign.NexEventProbabilityManager;
 import exerelin.campaign.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
@@ -218,7 +218,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         SectorAPI sector = Global.getSector();
         sector.registerPlugin(new ExerelinCampaignPlugin());
-        sector.addTransientScript(new DirectoryScreenScript());
+        sector.addTransientScript(new FieldOptionsScreenScript());
         sector.addTransientScript(new SSP_AsteroidTracker());
         //sector.removeScriptsOfClass(FactionHostilityManager.class);
         
