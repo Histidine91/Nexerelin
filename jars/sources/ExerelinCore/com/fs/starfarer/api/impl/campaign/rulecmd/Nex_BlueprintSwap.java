@@ -161,11 +161,18 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	}
 	
 	protected void selectBPs() {
-		CargoAPI copy = Global.getFactory().createCargo(false);
+		final CargoAPI copy = Global.getFactory().createCargo(false);
 		//copy.addAll(cargo);
+		
+		// note that we remove the blueprints from player cargo for this screen
+		// (we'll put them back afterwards, those that weren't sold)
+		// this fixes the "learn BPs from this screen then still have them afterwards" exploit
+		// ...actually, don't, since it eats our BPs on pressing Escape
 		for (CargoStackAPI stack : playerCargo.getStacksCopy()) {
-			if (isBlueprints(stack))
+			if (isBlueprints(stack)) {
 				copy.addFromStack(stack);
+				//playerCargo.removeStack(stack);
+			}
 		}
 		copy.sort();
 		
@@ -181,11 +188,14 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			public void pickedCargo(CargoAPI cargo) {
 				cargo.sort();
 				for (CargoStackAPI stack : cargo.getStacksCopy()) {
+					//copy.removeItems(stack.getType(), stack.getData(), stack.getSize());
 					playerCargo.removeItems(stack.getType(), stack.getData(), stack.getSize());
 					if (stack.isCommodityStack()) { // should be always, but just in case
 						AddRemoveCommodity.addCommodityLossText(stack.getCommodityId(), (int) stack.getSize(), text);
 					}
 				}
+				// put back in player cargo the ones we didn't sell/learn
+				//playerCargo.addAll(copy);
 				
 				int points = (int)getPointValue(cargo);
 				
@@ -198,13 +208,16 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 					text.setFontInsignia();
 					
 					updatePointsInMemory(newPoints);
-				}				
+				}
 				
 				FireBest.fire(null, dialog, memoryMap, "Nex_BlueprintsSold");
 			}
+			
 			@Override
 			public void cancelledCargoSelection() {
+				//playerCargo.addAll(copy);
 			}
+			
 			@Override
 			public void recreateTextPanel(TooltipMakerAPI panel, CargoAPI cargo, CargoStackAPI pickedUp, boolean pickedUpFromSource, CargoAPI combined) {
 			
