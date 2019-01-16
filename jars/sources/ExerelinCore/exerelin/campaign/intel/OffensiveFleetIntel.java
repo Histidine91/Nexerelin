@@ -109,29 +109,25 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
-		if (outcome != null) {
+		log.info("Notifying raid ended: " + status + ", " + outcome);
+		if (outcome == null) {
 			if (status == RaidStageStatus.SUCCESS)
 				outcome = OffensiveOutcome.SUCCESS;
 			else
 				outcome = OffensiveOutcome.FAIL;
+		}
+		
+		if (outcome.isFailed())
+		{
+			float impact = fp/2;
+			if (this.getCurrentStage() >= 2) impact *= 2;
+			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
 		}
 	}
 
 	public void sendOutcomeUpdate() {
 		addIntelIfNeeded();
 		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
-		
-		if (isFailed())
-		{
-			float impact = fp/2;
-			if (this.getCurrentStage() >= 2) impact *= 2;
-			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
-		}
-		
-		if (outcome != null) {
-			if (isFailed()) outcome = OffensiveOutcome.FAIL;
-			else if (isSucceeded()) outcome = OffensiveOutcome.SUCCESS;
-		}
 	}
 	
 	public void sendEnteredSystemUpdate() {

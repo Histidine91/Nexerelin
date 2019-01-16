@@ -22,6 +22,8 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	
 	@Override
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
+		if (market == null || !market.isInEconomy()) return;
+		
 		float raidStr = intel.getRaidFP() / intel.getNumFleets() * Misc.FP_TO_GROUND_RAID_STR_APPROX_MULT;
 		if (fleet != null) {
 			raidStr = Nex_MarketCMD.getRaidStr(fleet);

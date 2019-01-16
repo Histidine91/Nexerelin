@@ -18,7 +18,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
-import exerelin.campaign.intel.invasion.*;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.Random;
 import org.apache.log4j.Logger;
@@ -57,7 +56,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		action.setAbortFP(fp * successMult);
 		addStage(action);
 		
-		addStage(new InvReturnStage(this));
+		addStage(new NexRaidReturnStage(this));
 		
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();

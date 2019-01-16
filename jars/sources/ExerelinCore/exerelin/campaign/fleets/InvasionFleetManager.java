@@ -87,6 +87,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	protected final List<RaidIntel> activeIntel = new LinkedList();
 	protected HashMap<String, Float> spawnCounter = new HashMap<>();
+	protected HashMap<String, Boolean> nextIsRaid = new HashMap<>();
 	
 	protected final IntervalUtil tracker;
 	protected IntervalUtil remnantRaidInterval = new IntervalUtil(300, 390);
@@ -107,6 +108,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected Object readResolve() {
 		if (remnantRaidInterval == null) {
 			remnantRaidInterval = new IntervalUtil(300, 390);
+		}
+		if (nextIsRaid == null) {
+			nextIsRaid = new HashMap<>();
 		}
 		return this;
 	}	
@@ -541,6 +545,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return total;
 	}
 	
+	public boolean shouldRaid(String factionId) {
+		if (!nextIsRaid.containsKey(factionId))
+			nextIsRaid.put(factionId, Math.random() > 0.5f);
+		return nextIsRaid.get(factionId);
+	}
+	
 	protected void processInvasionPoints()
 	{
 		SectorAPI sector = Global.getSector();
@@ -645,17 +655,20 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (counter < pointsRequired)
 			{
 				spawnCounter.put(factionId, counter);
-				if (counter > pointsRequired/2 && oldCounter < pointsRequired/2)
-					generateInvasionOrRaidFleet(faction, null, true);	 // launch a raid
+				//if (counter > pointsRequired/2 && oldCounter < pointsRequired/2)
+				//	generateInvasionOrRaidFleet(faction, null, true);	 // launch a raid
 			}
 			else
 			{
-				// okay, we can invade
-				InvasionIntel intel = (InvasionIntel)generateInvasionOrRaidFleet(faction, null, false);
+				// okay, we can invade or raid
+				// invasions and raids alternate
+				boolean shouldRaid = shouldRaid(factionId);
+				OffensiveFleetIntel intel = generateInvasionOrRaidFleet(faction, null, shouldRaid);
 				if (intel != null)
 				{
 					counter -= getInvasionPointReduction(pointsRequired, intel);
 					spawnCounter.put(factionId, counter);
+					nextIsRaid.put(factionId, !shouldRaid);
 				}
 			}
 		}
@@ -795,7 +808,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float mult = Math.min(1 + (numRemnantRaids * 0.25f), 3f);
 		fp *= mult;
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
-		float organizeTime = 2;	//10 + fp/30;
+		float organizeTime = 10 + fp/30;
 		
 		log.info("Spawning Remnant-style raid fleet for " + faction.getDisplayName() 
 				+ " from base in " + base.getContainingLocation() + "; target " + targetMarket.getName());
