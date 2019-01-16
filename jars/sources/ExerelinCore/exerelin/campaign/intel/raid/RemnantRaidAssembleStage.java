@@ -3,7 +3,6 @@ package exerelin.campaign.intel.raid;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -11,7 +10,7 @@ import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.PREP_S
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.WAIT_STAGE;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.RemnantRaidIntel;
+import java.util.List;
 
 public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 	
@@ -48,9 +47,9 @@ public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 		extra.strength = Misc.getAdjustedStrength(fp, null);
 		
 		LocationAPI loc = base.getContainingLocation();
-		if (base.hasTag(Tags.THEME_REMNANT_RESURGENT))	// intact base
+		if (loc.hasTag(Tags.THEME_REMNANT_RESURGENT) || loc.hasTag("theme_breakers_resurgent"))	// intact base
 			extra.quality = 1f;
-		else if (base.hasTag(Tags.THEME_REMNANT_SUPPRESSED))
+		else if (loc.hasTag(Tags.THEME_REMNANT_SUPPRESSED) || loc.hasTag("theme_breakers_suppressed"))
 			extra.quality = 0.5f;
 		
 		float prepDays = 3f + 3f * (float) Math.random();
@@ -67,5 +66,11 @@ public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 	@Override
 	public boolean isSourceKnown() {
 		return ((RemnantRaidIntel)intel).isSourceKnown();
+	}
+	
+	@Override
+	public void giveReturnOrdersToStragglers(List<RouteManager.RouteData> stragglers) 
+	{
+		((RemnantRaidIntel)intel).giveReturnOrdersToStragglers(this, stragglers);
 	}
 }

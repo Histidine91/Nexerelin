@@ -1,7 +1,5 @@
-package exerelin.campaign.intel;
+package exerelin.campaign.intel.raid;
 
-import exerelin.campaign.intel.raid.NexRaidAssembleStage;
-import exerelin.campaign.intel.raid.NexRaidActionStage;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -18,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.invasion.*;
 import exerelin.utilities.ExerelinUtilsMarket;

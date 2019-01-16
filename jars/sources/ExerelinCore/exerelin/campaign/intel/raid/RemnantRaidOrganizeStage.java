@@ -1,12 +1,13 @@
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.RemnantRaidIntel;
 import java.awt.Color;
+import java.util.List;
 
 public class RemnantRaidOrganizeStage extends OrganizeStage {
 
@@ -48,5 +49,11 @@ public class RemnantRaidOrganizeStage extends OrganizeStage {
 						opad, h, "" + days);
 			}
 		}
+	}
+	
+	@Override
+	public void giveReturnOrdersToStragglers(List<RouteManager.RouteData> stragglers) 
+	{
+		((RemnantRaidIntel)intel).giveReturnOrdersToStragglers(this, stragglers);
 	}
 }

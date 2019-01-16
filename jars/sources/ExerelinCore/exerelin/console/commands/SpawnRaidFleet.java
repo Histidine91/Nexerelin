@@ -2,7 +2,7 @@ package exerelin.console.commands;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.NexRaidIntel;
+import exerelin.campaign.intel.raid.NexRaidIntel;
 import static exerelin.console.commands.SpawnInvasionFleet.getMarket;
 import exerelin.utilities.ExerelinConfig;
 import org.lazywizard.console.CommonStrings;

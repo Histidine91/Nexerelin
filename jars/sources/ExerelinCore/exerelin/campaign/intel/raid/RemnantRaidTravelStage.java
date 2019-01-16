@@ -1,21 +1,20 @@
 package exerelin.campaign.intel.raid;
 
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import exerelin.campaign.econ.RaidCondition;
+import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import java.util.List;
 
-public class RemnantRaidActionStage extends NexRaidActionStage {
+public class RemnantRaidTravelStage extends TravelStage {
 
-	public RemnantRaidActionStage(RaidIntel raid, StarSystemAPI system) {
-		super(raid, system);
+	public RemnantRaidTravelStage(RaidIntel raid, SectorEntityToken from, SectorEntityToken to, boolean requireNearTarget) {
+		super(raid, from, to, requireNearTarget);
 	}
 	
 	@Override
 	public void giveReturnOrdersToStragglers(List<RouteManager.RouteData> stragglers) 
 	{
 		((RemnantRaidIntel)intel).giveReturnOrdersToStragglers(this, stragglers);
-		RaidCondition.removeRaidFromConditions(system, intel);
 	}
 }

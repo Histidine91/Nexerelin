@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import java.util.List;
@@ -108,12 +109,29 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
-		// TBD
+		if (outcome != null) {
+			if (status == RaidStageStatus.SUCCESS)
+				outcome = OffensiveOutcome.SUCCESS;
+			else
+				outcome = OffensiveOutcome.FAIL;
+		}
 	}
 
 	public void sendOutcomeUpdate() {
 		addIntelIfNeeded();
 		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
+		
+		if (isFailed())
+		{
+			float impact = fp/2;
+			if (this.getCurrentStage() >= 2) impact *= 2;
+			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
+		}
+		
+		if (outcome != null) {
+			if (isFailed()) outcome = OffensiveOutcome.FAIL;
+			else if (isSucceeded()) outcome = OffensiveOutcome.SUCCESS;
+		}
 	}
 	
 	public void sendEnteredSystemUpdate() {

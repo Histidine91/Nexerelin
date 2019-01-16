@@ -1,4 +1,4 @@
-package exerelin.campaign.intel;
+package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -7,24 +7,23 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
+import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
+import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
 import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.util.Misc;
-import static exerelin.campaign.intel.NexRaidIntel.log;
+import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 import static exerelin.campaign.intel.OffensiveFleetIntel.DEBUG_MODE;
 import exerelin.campaign.intel.invasion.InvReturnStage;
-import exerelin.campaign.intel.raid.NexRaidActionStage;
-import exerelin.campaign.intel.raid.RemnantRaidAssembleStage;
-import exerelin.campaign.intel.raid.RemnantRaidOrganizeStage;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
-import org.lwjgl.util.vector.Vector2f;
 
 public class RemnantRaidIntel extends NexRaidIntel {
 	
@@ -55,15 +54,15 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
 
-		TravelStage travel = new TravelStage(this, gather, raidJump, false);
+		RemnantRaidTravelStage travel = new RemnantRaidTravelStage(this, gather, raidJump, false);
 		travel.setAbortFP(fp * successMult);
 		addStage(travel);
 		
-		action = new NexRaidActionStage(this, system);
+		action = new RemnantRaidActionStage(this, system);
 		action.setAbortFP(fp * successMult);
 		addStage(action);
 		
-		addStage(new InvReturnStage(this));
+		addStage(new RemnantRaidReturnStage(this));
 		
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
@@ -74,6 +73,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		}
 	}
 	
+	@Override
 	public CampaignFleetAPI spawnFleet(RouteData route) {
 		
 		Random random = route.getRandom();
@@ -140,6 +140,27 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		if (getFaction().getRelationshipLevel(Factions.PLAYER).isAtWorst(RepLevel.FRIENDLY))
 			return true;
 		return getBase().isVisibleToPlayerFleet();
+	}
+	
+	public void giveReturnOrdersToStragglers(BaseRaidStage stage, List<RouteManager.RouteData> stragglers) 
+	{
+		for (RouteManager.RouteData route : stragglers) {
+			SectorEntityToken from = Global.getSector().getHyperspace().createToken(route.getInterpolatedHyperLocation());
+			
+			route.setCustom(STRAGGLER);
+			stage.resetRoute(route);
+
+			float travelDays = RouteLocationCalculator.getTravelDays(from, base);
+			if (DebugFlags.RAID_DEBUG) {
+				travelDays *= 0.1f;
+			}
+			
+			float orbitDays = 1f + 1f * (float) Math.random();
+			route.addSegment(new RouteManager.RouteSegment(travelDays, from, base));
+			route.addSegment(new RouteManager.RouteSegment(orbitDays, base));
+			
+			//route.addSegment(new RouteSegment(2f + (float) Math.random() * 1f, base));
+		}
 	}
 	
 	@Override

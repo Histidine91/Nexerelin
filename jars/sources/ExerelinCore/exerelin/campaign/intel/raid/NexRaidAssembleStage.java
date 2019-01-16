@@ -32,6 +32,4 @@ public class NexRaidAssembleStage extends NexAssembleStage {
 		spawnFP -= base;
 		return base;
 	}
-	
-	
 }
