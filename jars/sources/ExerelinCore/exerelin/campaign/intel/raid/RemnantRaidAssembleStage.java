@@ -47,10 +47,12 @@ public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 		extra.strength = Misc.getAdjustedStrength(fp, null);
 		
 		LocationAPI loc = base.getContainingLocation();
+		float quality = 0.25f + (raid.getNumPrevious() * 0.05f);
 		if (loc.hasTag(Tags.THEME_REMNANT_RESURGENT) || loc.hasTag("theme_breakers_resurgent"))	// intact base
-			extra.quality = 1f;
-		else if (loc.hasTag(Tags.THEME_REMNANT_SUPPRESSED) || loc.hasTag("theme_breakers_suppressed"))
-			extra.quality = 0.5f;
+			quality *= 2;
+		else
+			quality = Math.min(quality, 0.5f);
+		extra.quality = quality;
 		
 		float prepDays = 3f + 3f * (float) Math.random();
 		float travelDays = RouteLocationCalculator.getTravelDays(base, gatheringPoint);

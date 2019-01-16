@@ -106,11 +106,12 @@ public class ExerelinFactionConfig
     public float invasionStrengthBonusAttack = 0;	// marines
     public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;	// ships
-    public float responseFleetSizeMod = 0;
+    @Deprecated public float responseFleetSizeMod = 0;
     public float invasionPointMult = 1;	// point accumulation for launching invasions
-    public float patrolSizeMult = 1;
+    @Deprecated public float patrolSizeMult = 1;
     public float vengeanceFleetSizeMult = 1;
     public String factionIdForHqResponse = null;
+    public boolean raidsFromBases = false;
     
     // misc
     public boolean dropPrisoners = true;
@@ -206,6 +207,7 @@ public class ExerelinFactionConfig
             patrolSizeMult = (float)settings.optDouble("patrolSizeMult", patrolSizeMult);
             vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
             factionIdForHqResponse = settings.optString("factionIdForHqResponse", factionIdForHqResponse);
+            raidsFromBases = settings.optBoolean("raidsFromBases", raidsFromBases);
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             noHomeworld = settings.optBoolean("noHomeworld", noHomeworld);

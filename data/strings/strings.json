@@ -573,13 +573,18 @@
 		"raid":"raid",
 		"raids":"raids",
 		
-		"intelTitle":"Raid: $location",
-		"intelDesc":"$TheFaction $isOrAre raiding $location to disrupt local activity. The invasion forces are projected to be $strDesc.",
-		"intelBulletArrived":"Raiders arrived in system",
-		"intelBulletSuccess":"Raid successful",
-		"intelBulletFailed":"Raid failed",
-		"intelBulletNoMoreTargets":"Raid over: no more targets",
-		"intelBulletCancelled":"Raid cancelled",
+		# currently unused
+		#"intelTitle":"Raid: $location",
+		#"intelDesc":"$TheFaction $isOrAre raiding $location to disrupt local activity. The raiders are projected to be $strDesc.",
+		#"intelBulletArrived":"Raiders arrived in system",
+		#"intelBulletSuccess":"Raid successful",
+		#"intelBulletFailed":"Raid failed",
+		#"intelBulletNoMoreTargets":"Raid over: no more targets",
+		#"intelBulletCancelled":"Raid cancelled",
+		
+		#"intelStageAssemble":"The $force is currently assembling in the $location.",
+		#"intelStageAssembleUnknown":"The $force is currently assembling at an unknown location.",
+		#"intelStageAssembleFail":"The $force has failed to successfully assemble at the rendezvous point.",
 		
 		"conditionPenalties":"%s stability, %s accessibility.",
 		"conditionListHeader":"The following hostile factions have active raids in the system:",

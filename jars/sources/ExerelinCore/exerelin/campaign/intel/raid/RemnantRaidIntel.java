@@ -15,11 +15,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
-import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 import static exerelin.campaign.intel.OffensiveFleetIntel.DEBUG_MODE;
-import exerelin.campaign.intel.invasion.InvReturnStage;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import java.util.Random;
@@ -28,14 +26,21 @@ import org.lazywizard.lazylib.MathUtils;
 public class RemnantRaidIntel extends NexRaidIntel {
 	
 	protected CampaignFleetAPI base;
+	protected int numPrevious;
 	
-	public RemnantRaidIntel(FactionAPI attacker, CampaignFleetAPI base, MarketAPI target, float fp, float orgDur) {
+	public RemnantRaidIntel(FactionAPI attacker, CampaignFleetAPI base, MarketAPI target, 
+			float fp, float orgDur, int numPrevious) {
 		super(attacker, null, target, fp, orgDur);
 		this.base = base;
+		this.numPrevious = numPrevious;
 	}
 	
 	public CampaignFleetAPI getBase() {
 		return base;
+	}
+	
+	public int getNumPrevious() {
+		return numPrevious;
 	}
 	
 	@Override

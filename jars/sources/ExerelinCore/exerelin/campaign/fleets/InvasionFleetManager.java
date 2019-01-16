@@ -551,7 +551,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		// slow down invasion point accumulation when there are already a bunch of invasions active
 		float ongoingMod = (float)activeIntel.size() / MAX_ONGOING_INTEL;
 		if (ongoingMod >= 1) return;
-		log.info("Ongoing invasion point mod: " + (- 0.75f * ongoingMod) + " (" + activeIntel.size() + ")");
+		//log.info("Ongoing invasion point mod: " + (- 0.75f * ongoingMod) + " (" + activeIntel.size() + ")");
 		ongoingMod = 1 - 0.75f * ongoingMod;
 		
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
@@ -712,6 +712,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 */
 	public RemnantRaidIntel generateRemnantRaidFleet(FactionAPI faction, FactionAPI targetFaction, float sizeMult)
 	{
+		if (faction == null) {
+			WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
+			for (FactionAPI candidate : Global.getSector().getAllFactions()) 
+			{
+				if (ExerelinConfig.getExerelinFactionConfig(candidate.getId()).raidsFromBases)
+					factionPicker.add(candidate);
+			}
+			faction = factionPicker.pick();
+		}
+		if (faction == null) return null;
+		
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
@@ -780,15 +791,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		//log.info("\tTarget: " + targetMarket.getName());
 		
-		float fp = getWantedFleetSize(faction, targetMarket, 0.2f, true) * 2.5f;
-		float mult = Math.min(1 + (numRemnantRaids * 0.333f), 3f);
+		float fp = 500;	//getWantedFleetSize(faction, targetMarket, 0.2f, true) * 2.5f;
+		float mult = Math.min(1 + (numRemnantRaids * 0.25f), 3f);
 		fp *= mult;
 		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
-		float organizeTime = 10 + fp/30;
+		float organizeTime = 2;	//10 + fp/30;
 		
 		log.info("Spawning Remnant-style raid fleet for " + faction.getDisplayName() 
 				+ " from base in " + base.getContainingLocation() + "; target " + targetMarket.getName());
-		RemnantRaidIntel intel = new RemnantRaidIntel(faction, base, targetMarket, fp, organizeTime);
+		RemnantRaidIntel intel = new RemnantRaidIntel(faction, base, targetMarket, fp, organizeTime, numRemnantRaids);
 		intel.init();
 		numRemnantRaids++;
 		return intel;
@@ -811,8 +822,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (Global.getSector().getClock().getCycle() >= 207) {
 			remnantRaidInterval.advance(days);
 			if (remnantRaidInterval.intervalElapsed())
-				generateRemnantRaidFleet(Global.getSector().getFaction(Factions.REMNANTS), 
-						null, 1).init();
+				generateRemnantRaidFleet(null, null, 1);
 		}
 		
 		this.tracker.advance(days);
@@ -832,8 +842,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public static void debugRemnantRaidFleet() {
-		invasionFleetManager.generateRemnantRaidFleet(Global.getSector().getFaction(Factions.REMNANTS), 
-						null, 1).init();
+		invasionFleetManager.generateRemnantRaidFleet(null,	null, 1);
 	}
 	
 	public static InvasionFleetManager getManager()
