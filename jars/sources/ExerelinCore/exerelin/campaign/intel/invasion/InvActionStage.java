@@ -149,7 +149,8 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		status = RaidStageStatus.SUCCESS;
 		
-		float atkStrength = fleet != null ? InvasionRound.getAttackerStrength(fleet) 
+		float atkStrength = (InvasionIntel.USE_REAL_MARINES && fleet != null) ? 
+				InvasionRound.getAttackerStrength(fleet) 
 				: InvasionRound.getAttackerStrength(intel.getFaction(), intel.getMarinesPerFleet());
 		float defStrength = InvasionRound.getDefenderStrength(market, 1);
 		

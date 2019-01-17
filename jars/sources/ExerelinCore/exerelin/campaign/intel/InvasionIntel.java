@@ -39,6 +39,8 @@ import org.lwjgl.util.vector.Vector2f;
 public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public static final boolean NO_STRIKE_FLEETS = true;
+	public static final boolean USE_REAL_MARINES = true;
+	public static final int MAX_MARINES = 2500;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
@@ -78,6 +80,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
 		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
+		if (marinesPerFleet > MAX_MARINES) {
+			log.info("Capping marines at " + MAX_MARINES + " (was " + marinesPerFleet + ")");
+			marinesPerFleet = MAX_MARINES;
+		}
+		
 		
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
@@ -307,8 +314,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		fleet.setName(InvasionFleetManager.getFleetName(extra.fleetType, factionId, totalFp));
 		
-		fleet.getCargo().addMarines(marinesPerFleet);
-		log.info("Adding marines to cargo: " + marinesPerFleet);
+		if (USE_REAL_MARINES) {
+			fleet.getCargo().addMarines(marinesPerFleet);
+			log.info("Adding marines to cargo: " + marinesPerFleet);
+		}
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		if (isInvasionFleet)
