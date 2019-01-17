@@ -182,13 +182,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			StarSystemAPI system, float variability) {
 		float strength = 0f;
 		
+		if (system == null) return 0;
+		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(system))
 		{
-			if (targetFaction != null)
+			if (targetFaction != null) {
 				if (market.getFaction() != targetFaction) continue;
-			else
+			}
+			else {
 				if (!market.getFaction().isHostileTo(attacker))
 					continue;
+			}
 			
 			strength += estimateDefensiveStrength(market, variability);
 		}
@@ -498,7 +502,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (raid)
 			fp *= RAID_SIZE_MULT;
 		else
-			organizeTime *= 1.5f;
+			organizeTime *= 1.25f;
 		
 		// okay, assemble battlegroup
 		if (!raid)
@@ -722,6 +726,27 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return base * Math.max(intel.getFP()/BASE_INVASION_COST, 0.8f);
 	}
 	
+	public static CampaignFleetAPI findBase(FactionAPI faction) {
+		WeightedRandomPicker<CampaignFleetAPI> basePicker = new WeightedRandomPicker();
+		Vector2f center = new Vector2f(0, 0);
+		for (StarSystemAPI system : Global.getSector().getStarSystems()) 
+		{
+			for (CampaignFleetAPI fleet : system.getFleets()) 
+			{
+				if (fleet.isStationMode() && fleet.getFaction() == faction) 
+				{
+					float dist = MathUtils.getDistance(fleet.getLocation(), center);
+					float weight = 50000/dist;
+					if (weight > 20) weight = 20;
+					if (weight < 0.1f) weight = 0.1f;
+					basePicker.add(fleet, weight);
+				}
+			}
+		}
+		CampaignFleetAPI base = basePicker.pick();
+		return base;
+	}
+	
 	/**
 	 * Try to create a Remnant-style raid fleet.
 	 * Could in principle be used for factions like Blade Breakers too.
@@ -749,23 +774,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		String factionId = faction.getId();
 		
 		// pick a source base
-		WeightedRandomPicker<CampaignFleetAPI> basePicker = new WeightedRandomPicker();
-		Vector2f center = new Vector2f(0, 0);
-		for (StarSystemAPI system : Global.getSector().getStarSystems()) 
-		{
-			for (CampaignFleetAPI fleet : system.getFleets()) 
-			{
-				if (fleet.isStationMode() && fleet.getFaction() == faction) 
-				{
-					float dist = MathUtils.getDistance(fleet.getLocation(), center);
-					float weight = 50000/dist;
-					if (weight > 20) weight = 20;
-					if (weight < 0.1f) weight = 0.1f;
-					basePicker.add(fleet, weight);
-				}
-			}
-		}
-		CampaignFleetAPI base = basePicker.pick();
+		CampaignFleetAPI base = findBase(faction);
 		if (base == null)
 			return null;
 		

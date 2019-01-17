@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 import static exerelin.campaign.intel.OffensiveFleetIntel.DEBUG_MODE;
 import exerelin.utilities.StringHelper;
@@ -149,22 +150,36 @@ public class RemnantRaidIntel extends NexRaidIntel {
 	
 	public void giveReturnOrdersToStragglers(BaseRaidStage stage, List<RouteManager.RouteData> stragglers) 
 	{
+		CampaignFleetAPI homeBase = this.base;
+		if (homeBase == null || !homeBase.isAlive()) {
+			Global.getLogger(this.getClass()).info("Base dead, redirecting");
+			// no base, try to find a new one
+			homeBase = InvasionFleetManager.findBase(faction);
+			
+			// still no base either? Just give up and loiter forever
+			if (homeBase == null || !homeBase.isAlive()) {
+				Global.getLogger(this.getClass()).info("No remaining bases, loiter");
+				return;
+			}
+				
+		}
+		
 		for (RouteManager.RouteData route : stragglers) {
 			SectorEntityToken from = Global.getSector().getHyperspace().createToken(route.getInterpolatedHyperLocation());
 			
 			route.setCustom(STRAGGLER);
 			stage.resetRoute(route);
 
-			float travelDays = RouteLocationCalculator.getTravelDays(from, base);
+			float travelDays = RouteLocationCalculator.getTravelDays(from, homeBase);
 			if (DebugFlags.RAID_DEBUG) {
 				travelDays *= 0.1f;
 			}
 			
 			float orbitDays = 1f + 1f * (float) Math.random();
-			route.addSegment(new RouteManager.RouteSegment(travelDays, from, base));
-			route.addSegment(new RouteManager.RouteSegment(orbitDays, base));
+			route.addSegment(new RouteManager.RouteSegment(travelDays, from, homeBase));
+			route.addSegment(new RouteManager.RouteSegment(orbitDays, homeBase));
 			
-			//route.addSegment(new RouteSegment(2f + (float) Math.random() * 1f, base));
+			//route.addSegment(new RouteSegment(2f + (float) Math.random() * 1f, homeBase));
 		}
 	}
 	
@@ -172,7 +187,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 	public void checkForTermination() {
 		if (outcome != null) return;
 		
-		if (base == null || !base.isAlive())
+		if (getCurrentStage() <= 1 && (base == null || !base.isAlive()))
 			terminateEvent(OffensiveOutcome.FAIL);
 	}
 }
