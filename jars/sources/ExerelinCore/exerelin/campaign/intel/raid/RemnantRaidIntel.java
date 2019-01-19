@@ -105,6 +105,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		return MathUtils.getDistance(base.getLocationInHyperspace(), target.getLocationInHyperspace());
 	}
 	
+	// Use faction display name instead of person name prefix
 	@Override
 	public String getName() {
 		String base = Misc.ucFirst(getFaction().getDisplayName()) + " " + StringHelper.getString("exerelin_raid", "raid", true);
@@ -112,11 +113,8 @@ public class RemnantRaidIntel extends NexRaidIntel {
 			if (isSendingUpdate() && failStage >= 0) {
 				return base + " - " + StringHelper.getString("failed");
 			}
-			for (RaidStage stage : stages) {
-				if (stage instanceof ActionStage && stage.getStatus() == RaidStageStatus.SUCCESS) {
-					return base + " - " + StringHelper.getString("successful", true);
-				}
-			}
+			if (action.getStatus() == RaidStageStatus.SUCCESS)
+				return base + " - " + StringHelper.getString("successful", true);
 			return base + " - " + StringHelper.getString("over", true);
 		}
 		return base;

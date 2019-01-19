@@ -25,6 +25,8 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
+import exerelin.campaign.intel.fleets.NexReturnStage;
+import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.invasion.*;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -67,7 +69,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
 
-		InvTravelStage travel = new InvTravelStage(this, gather, raidJump, false);
+		NexTravelStage travel = new NexTravelStage(this, gather, raidJump, false);
 		travel.setAbortFP(fp * successMult);
 		addStage(travel);
 		
@@ -76,7 +78,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		action.setAbortFP(fp * successMult);
 		addStage(action);
 		
-		addStage(new InvReturnStage(this));
+		addStage(new NexReturnStage(this));
 		
 		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
 		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
@@ -103,80 +105,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		marinesPerFleet = marines;
 	}
 	
-	// for intel popup in campaign screen's message area
-	@Override
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
-		
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		float initPad = pad;
-		if (mode == ListInfoMode.IN_DESC) initPad = opad;
-		
-		Color tc = getBulletColorForMode(mode);
-		
-		bullet(info);
-		boolean isUpdate = getListInfoParam() != null;
-		
-		float eta = getETA();
-		FactionAPI other = targetFaction;
-		
-		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
-				 	 faction.getBaseUIColor(), faction.getDisplayName());
-		initPad = 0f;
-		
-		if (outcome == null)
-		{
-			String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion",
-					"intelBulletTarget", "$targetFaction", other.getDisplayName());
-			info.addPara(str, initPad, tc,
-						 other.getBaseUIColor(), other.getDisplayName());
-		}
-		
-		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
-			info.addPara(StringHelper.getString("exerelin_invasion", "intelBulletArrived"),
-						tc, initPad);
-			return;
-		}
-		
-		if (outcome != null)
-		{
-			String key = "intelBulletCancelled";
-			switch (outcome) {
-				case SUCCESS:
-					key = "intelBulletSuccess";
-					break;
-				case TASK_FORCE_DEFEATED:
-				case FAIL:
-					key = "intelBulletFailed";
-					break;
-				case MARKET_NO_LONGER_EXISTS:
-					key = "intelBulletNoLongerExists";
-					break;
-				case NO_LONGER_HOSTILE:
-					key = "intelBulletNoLongerHostile";
-					break;
-			}
-			//String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
-			//		key, "$target", target.getName());
-			//info.addPara(str, initPad, tc, other.getBaseUIColor(), target.getName());
-			String str = StringHelper.getString("exerelin_invasion", key);
-			info.addPara(str, tc, initPad);
-		} else {
-			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
-		}
-		initPad = 0f;
-		if (eta > 1 && failStage < 0) {
-			String days = getDaysString(eta);
-			info.addPara("Estimated %s " + days + " until arrival", 
-					initPad, tc, h, "" + (int)Math.round(eta));
-			initPad = 0f;
-		}
-		
-		unindent(info);
-	}
+	
 	
 	// intel long description in intel screen
 	@Override
@@ -236,8 +165,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		// write our own status message for certain cancellation cases
 		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE)
 		{
-			string = StringHelper.getString("exerelin_invasion", "intelOutcomeNoLongerHostile");
+			string = StringHelper.getString("nex_fleetIntel", "outcomeNoLongerHostile");
 			string = StringHelper.substituteToken(string, "$target", target.getName());
+			string = StringHelper.substituteToken(string, "$theAction", getActionNameWithArticle());
 			//String factionName = target.getFaction().getDisplayName();
 			//string = StringHelper.substituteToken(string, "$otherFaction", factionName);
 			
@@ -246,8 +176,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		}
 		else if (outcome == OffensiveOutcome.MARKET_NO_LONGER_EXISTS)
 		{
-			string = StringHelper.getString("exerelin_invasion", "intelOutcomeNoLongerExists");
-			string = StringHelper.substituteToken(string, "$market", target.getName());
+			string = StringHelper.getString("nex_fleetIntel", "outcomeNoLongerExists");
+			string = StringHelper.substituteToken(string, "$target", target.getName());
+			//string = StringHelper.substituteToken(string, "$theAction", getActionNameWithArticle());
 			info.addPara(string, opad);
 			return;
 		}
@@ -350,21 +281,33 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	}
 	
 	@Override
-	public String getName() {
-		String base = StringHelper.getString("exerelin_invasion", "intelTitle");
-		base = StringHelper.substituteToken(base, "$faction", faction.getDisplayName(), true);
-		base = StringHelper.substituteToken(base, "$market", target.getName());
-		
-		if (isEnding()) {
-			if (outcome == OffensiveOutcome.SUCCESS) {
-				return base + " - " + StringHelper.getString("successful", true);
-			}
-			else if (outcome != null && outcome.isFailed()) {
-				return base + " - " + StringHelper.getString("failed", true);
-			}
-			return base + " - " + StringHelper.getString("over", true);
-		}
-		return base;
+	public String getActionName() {
+		return StringHelper.getString("exerelin_invasion", "invasion");
+	}
+	
+	@Override
+	public String getActionNameWithArticle() {
+		return StringHelper.getString("exerelin_invasion", "theInvasion");
+	}
+	
+	@Override
+	public String getForceType() {
+		return StringHelper.getString("exerelin_invasion", "invasionForce");
+	}
+	
+	@Override
+	public String getForceTypeWithArticle() {
+		return StringHelper.getString("exerelin_invasion", "theInvasionForce");
+	}
+	
+	@Override
+	public String getForceTypeHasOrHave() {
+		return StringHelper.getString("exerelin_invasion", "forceHasOrHave");
+	}
+	
+	@Override
+	public String getForceTypeIsOrAre() {
+		return StringHelper.getString("exerelin_invasion", "forceIsOrAre");
 	}
 	
 	@Override
@@ -419,15 +362,17 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			key = "DefeatOnGround";
 		else if (spaceWin < 1 || groundWin < 1)
 			key = "Uncertain";
-		String outcomeDesc = StringHelper.getString("exerelin_invasion", "intelPrediction" + key);
+		String outcomeDesc = StringHelper.getString("nex_fleetIntel", "prediction" + key);
+		outcomeDesc = StringHelper.substituteToken(outcomeDesc, "$theAction", getActionNameWithArticle(), true);
 		/*
 		if (groundWin == -1)
 			outcomeDesc = StringHelper.getString("exerelin_invasion", "intelPredictionBombard") 
 					+ " " + outcomeDesc;
 		*/
 		
-		info.addPara(StringHelper.getString("exerelin_invasion", "intelStrCompare") +
-				" " + outcomeDesc, opad, h, spaceStr, groundStr);
+		String compare = StringHelper.getString("nex_fleetIntel", "strCompare");
+		compare = StringHelper.substituteToken(compare, "$theAction", getActionNameWithArticle(), true);
+		info.addPara(compare + " " + outcomeDesc, opad, h, spaceStr, groundStr);
 	}
 		
 	@Override

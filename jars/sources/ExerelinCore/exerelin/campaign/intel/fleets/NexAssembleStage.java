@@ -1,4 +1,4 @@
-package exerelin.campaign.intel.raid;
+package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -9,13 +9,73 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.PREP_STAGE;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.WAIT_STAGE;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.utilities.StringHelper;
+import java.awt.Color;
 
 public abstract class NexAssembleStage extends AssembleStage {
 	
-	public NexAssembleStage(RaidIntel raid, SectorEntityToken gatheringPoint) {
-		super(raid, gatheringPoint);
+	protected OffensiveFleetIntel offFltIntel;
+	
+	public NexAssembleStage(OffensiveFleetIntel intel, SectorEntityToken gatheringPoint) {
+		super(intel, gatheringPoint);
+		offFltIntel = intel;
+	}
+	
+	protected Object readResolve() {
+		if (offFltIntel == null)
+			offFltIntel = (OffensiveFleetIntel)intel;
+		
+		return this;
+	}
+	
+	@Override
+	public void showStageInfo(TooltipMakerAPI info) {
+		int curr = intel.getCurrentStage();
+		int index = intel.getStageIndex(this);
+		
+		Color h = Misc.getHighlightColor();
+		Color g = Misc.getGrayColor();
+		Color tc = Misc.getTextColor();
+		float pad = 3f;
+		float opad = 10f;
+		
+		String key = "stageAssemble";
+		boolean addLoc = false;
+		
+		if (isFailed(curr, index)) {
+			key = "stageAssembleFail";
+		} else if (curr == index) {
+			if (isSourceKnown()) {
+				addLoc = true;
+			} else {
+				key = "stageAssembleUnknown";
+			}
+		} else {
+			return;
+		}
+		String str =  StringHelper.getString("nex_fleetIntel", key);
+		str = StringHelper.substituteToken(str, "$theForceType", offFltIntel.getForceTypeWithArticle(), true);
+		str = StringHelper.substituteToken(str, "$isOrAre", offFltIntel.getForceTypeIsOrAre());
+		str = StringHelper.substituteToken(str, "$hasOrHave", offFltIntel.getForceTypeHasOrHave());
+		if (addLoc)
+			str = StringHelper.substituteToken(str, "$location", 
+					gatheringPoint.getContainingLocation().getNameWithLowercaseType());
+		info.addPara(str, opad);
+	}
+	
+	protected boolean isFailed(int curr, int index) {
+		if (status == RaidStageStatus.FAILURE)
+			return true;
+		if (curr == index && offFltIntel.getOutcome() == OffensiveOutcome.FAIL)
+			return true;
+		
+		return false;
 	}
 	
 	// replaces the adjusted strength calculation

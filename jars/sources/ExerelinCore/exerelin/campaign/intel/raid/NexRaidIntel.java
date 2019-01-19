@@ -12,13 +12,18 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
-import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
+import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
+import exerelin.campaign.intel.fleets.NexOrganizeStage;
+import exerelin.campaign.intel.fleets.NexReturnStage;
+import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.StringHelper;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
@@ -37,7 +42,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		
 		SectorEntityToken gather = from.getPrimaryEntity();
 		
-		addStage(new OrganizeStage(this, from, orgDur));
+		addStage(new NexOrganizeStage(this, from, orgDur));
 		
 		float successMult = 0.4f;
 		NexRaidAssembleStage assemble = new NexRaidAssembleStage(this, gather);
@@ -48,7 +53,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
 
-		TravelStage travel = new TravelStage(this, gather, raidJump, false);
+		NexTravelStage travel = new NexTravelStage(this, gather, raidJump, false);
 		travel.setAbortFP(fp * successMult);
 		addStage(travel);
 		
@@ -56,7 +61,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		action.setAbortFP(fp * successMult);
 		addStage(action);
 		
-		addStage(new NexRaidReturnStage(this));
+		addStage(new NexReturnStage(this));
 		
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
@@ -77,6 +82,36 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		super.createSmallDescription(info, width, height);
+	}
+	
+	@Override
+	public String getActionName() {
+		return StringHelper.getString("exerelin_raid", "raid");
+	}
+	
+	@Override
+	public String getActionNameWithArticle() {
+		return StringHelper.getString("exerelin_raid", "theRaid");
+	}
+	
+	@Override
+	public String getForceType() {
+		return StringHelper.getString("exerelin_raid", "raidForce");
+	}
+	
+	@Override
+	public String getForceTypeWithArticle() {
+		return StringHelper.getString("exerelin_raid", "theRaidForce");
+	}
+	
+	@Override
+	public String getForceTypeHasOrHave() {
+		return StringHelper.getString("exerelin_raid", "forceHasOrHave");
+	}
+	
+	@Override
+	public String getForceTypeIsOrAre() {
+		return StringHelper.getString("exerelin_raid", "forceIsOrAre");
 	}
 	
 	protected float getDistanceToTarget(MarketAPI market) {
@@ -166,7 +201,16 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 	
 	@Override
 	public String getName() {
-		return super.getName();
+		String base = Misc.ucFirst(getFaction().getPersonNamePrefix()) + " " + StringHelper.getString("exerelin_raid", "raid", true);
+		if (isEnding()) {
+			if (isSendingUpdate() && failStage >= 0) {
+				return base + " - " + StringHelper.getString("failed");
+			}
+			if (action.getStatus() == RaidStageStatus.SUCCESS)
+				return base + " - " + StringHelper.getString("successful", true);
+			return base + " - " + StringHelper.getString("over", true);
+		}
+		return base;
 	}
 			
 	@Override

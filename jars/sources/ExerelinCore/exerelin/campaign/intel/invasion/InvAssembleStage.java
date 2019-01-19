@@ -2,44 +2,15 @@ package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.InvasionIntel;
-import exerelin.campaign.intel.raid.NexAssembleStage;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.NexAssembleStage;
 import org.lazywizard.lazylib.MathUtils;
 
 public class InvAssembleStage extends NexAssembleStage {
 	
-	public InvAssembleStage(RaidIntel raid, SectorEntityToken gatheringPoint) {
-		super(raid, gatheringPoint);
-	}
-
-	@Override
-	public void showStageInfo(TooltipMakerAPI info) {
-		int curr = intel.getCurrentStage();
-		int index = intel.getStageIndex(this);
-		
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		if (status == RaidStageStatus.FAILURE) {
-			info.addPara(StringHelper.getString("exerelin_invasion", "intelStageAssembleFail"), opad);
-		} else if (curr == index) {
-			if (isSourceKnown()) {
-				String loc = gatheringPoint.getContainingLocation().getNameWithLowercaseType();
-				info.addPara(StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
-						"intelStageAssembleUnknown", "$location", loc), opad);
-			} else {
-				info.addPara(StringHelper.getString("exerelin_invasion", "intelStageAssembleUnknown"), opad);
-			}
-		}
+	public InvAssembleStage(OffensiveFleetIntel intel, SectorEntityToken gatheringPoint) {
+		super(intel, gatheringPoint);
 	}
 	
 	@Override

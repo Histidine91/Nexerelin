@@ -10,12 +10,13 @@ import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.PREP_S
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.WAIT_STAGE;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.OffensiveFleetIntel;
 import java.util.List;
 
 public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 	
-	public RemnantRaidAssembleStage(RaidIntel raid, SectorEntityToken gatheringPoint) {
-		super(raid, gatheringPoint);
+	public RemnantRaidAssembleStage(OffensiveFleetIntel intel, SectorEntityToken gatheringPoint) {
+		super(intel, gatheringPoint);
 	}
 	
 	@Override

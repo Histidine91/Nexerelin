@@ -1,19 +1,30 @@
-package exerelin.campaign.intel.raid;
+package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.fleets.NexOrganizeStage;
+import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.List;
 
-public class RemnantRaidOrganizeStage extends NexOrganizeStage {
+public class NexOrganizeStage extends OrganizeStage {
+	
+	protected OffensiveFleetIntel offFltIntel;
 
-	public RemnantRaidOrganizeStage(RemnantRaidIntel raid, MarketAPI market, float durDays) {
-		super(raid, market, durDays);
+	public NexOrganizeStage(OffensiveFleetIntel intel, MarketAPI market, float durDays) {
+		super(intel, market, durDays);
+		offFltIntel = intel;
+	}
+	
+	protected Object readResolve() {
+		if (offFltIntel == null)
+			offFltIntel = (OffensiveFleetIntel)intel;
+		
+		return this;
 	}
 	
 	@Override
@@ -41,20 +52,15 @@ public class RemnantRaidOrganizeStage extends NexOrganizeStage {
 		}
 		
 		String raid = offFltIntel.getActionNameWithArticle();
-		String cat = "nex_fleetIntel";
 		String key = "stageOrganize";
 		boolean haveTiming = true;
 		boolean printSource = false;
-		RemnantRaidIntel rri = (RemnantRaidIntel)intel;
-		
 		if (isFailed(curr, index)) {
 			key = "stageOrganizeDisrupted";
 			haveTiming = false;
 		} else if (curr == index) {
-			boolean known = rri.isSourceKnown();
+			boolean known = !market.isHidden() || !market.getPrimaryEntity().isDiscoverable();
 			if (known) {
-				cat = "exerelin_raid";
-				key = "stageOrganizeRemnant";
 				printSource = true;
 			} else {
 				key = "stageOrganizeUnknown";
@@ -62,22 +68,33 @@ public class RemnantRaidOrganizeStage extends NexOrganizeStage {
 		} else {
 			return;
 		}
-		
-		String str = StringHelper.getString(cat, key);
+		String str = StringHelper.getString("nex_fleetIntel", key);
 		str = StringHelper.substituteToken(str, "$theAction", raid, true);
 		if (printSource) {
-			str = StringHelper.substituteToken(str, "$location", rri.getBase()
-					.getContainingLocation().getNameWithLowercaseType());
+			str = StringHelper.substituteToken(str, "$onOrAt", market.getOnOrAt());
+			str = StringHelper.substituteToken(str, "$market", market.getName());
 		}
 		if (haveTiming)
 			str += " " + timing;
-		
 		info.addPara(str, opad, h, "" + days);
 	}
 	
+	protected boolean isFailed(int curr, int index) {
+		if (status == RaidStageStatus.FAILURE)
+			return true;
+		if (curr == index && offFltIntel.getOutcome() == OffensiveOutcome.FAIL)
+			return true;
+		
+		return false;
+	}
+	
 	@Override
-	public void giveReturnOrdersToStragglers(List<RouteManager.RouteData> stragglers) 
-	{
-		((RemnantRaidIntel)intel).giveReturnOrdersToStragglers(this, stragglers);
+	protected String getForcesString() {
+		return offFltIntel.getForceTypeWithArticle();
+	}
+	
+	@Override
+	protected String getRaidString() {
+		return offFltIntel.getActionName();
 	}
 }

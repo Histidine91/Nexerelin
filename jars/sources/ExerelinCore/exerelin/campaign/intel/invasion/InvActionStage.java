@@ -124,6 +124,24 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 	}
 	
+	// set correct outcome
+	@Override
+	protected void abortIfNeededBasedOnFP(boolean giveReturnOrders) {
+		List<RouteData> routes = getRoutes();
+		List<RouteData> stragglers = new ArrayList<RouteData>();
+		
+		boolean enoughMadeIt = enoughMadeIt(routes, stragglers);
+		//enoughMadeIt = false;
+		if (!enoughMadeIt) {
+			((InvasionIntel)intel).setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+			status = RaidStageStatus.FAILURE;
+			if (giveReturnOrders) {
+				giveReturnOrdersToStragglers(routes);
+			}
+			return;
+		}
+	}
+	
 	// TODO: only primary invasion fleet should have invasion action text
 	// if primary invasion fleets are still a thing
 	@Override

@@ -1,12 +1,13 @@
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.NexReturnStage;
 import java.util.List;
 
-public class RemnantRaidReturnStage extends NexRaidReturnStage {
+public class RemnantRaidReturnStage extends NexReturnStage {
 	
-	public RemnantRaidReturnStage(RaidIntel raid) {
+	public RemnantRaidReturnStage(OffensiveFleetIntel raid) {
 		super(raid);
 	}
 	

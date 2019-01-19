@@ -6,15 +6,20 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.ui.SectorMapAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
@@ -143,6 +148,125 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		}
 		super.sendUpdateIfPlayerHasIntel(listInfoParam, onlyIfImportant, sendIfHidden);
 	}
+	
+	// for intel popup in campaign screen's message area
+	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
+		Color h = Misc.getHighlightColor();
+		Color g = Misc.getGrayColor();
+		float pad = 3f;
+		float opad = 10f;
+		
+		float initPad = pad;
+		if (mode == ListInfoMode.IN_DESC) initPad = opad;
+		
+		Color tc = getBulletColorForMode(mode);
+		
+		bullet(info);
+		boolean isUpdate = getListInfoParam() != null;
+		
+		float eta = getETA();
+		FactionAPI other = targetFaction;
+		
+		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
+				 	 faction.getBaseUIColor(), faction.getDisplayName());
+		initPad = 0f;
+		
+		if (outcome == null)
+		{
+			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel",
+					"bulletTarget", "$targetFaction", other.getDisplayName());
+			info.addPara(str, initPad, tc,
+						 other.getBaseUIColor(), other.getDisplayName());
+		}
+		
+		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
+			String str = StringHelper.getString("nex_fleetIntel", "bulletArrived");
+			str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
+			info.addPara(str, tc, initPad);
+			return;
+		}
+		
+		if (outcome != null)
+		{
+			String key = "bulletCancelled";
+			switch (outcome) {
+				case SUCCESS:
+					key = "bulletSuccess";
+					break;
+				case TASK_FORCE_DEFEATED:
+				case FAIL:
+					key = "bulletFailed";
+					break;
+				case MARKET_NO_LONGER_EXISTS:
+					key = "bulletNoLongerExists";
+					break;
+				case NO_LONGER_HOSTILE:
+					key = "bulletNoLongerHostile";
+					break;
+			}
+			//String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
+			//		key, "$target", target.getName());
+			//info.addPara(str, initPad, tc, other.getBaseUIColor(), target.getName());
+			String str = StringHelper.getString("nex_fleetIntel", key);
+			str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
+			str = StringHelper.substituteToken(str, "$action", getActionName(), true);
+			info.addPara(str, tc, initPad);
+		} else {
+			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
+		}
+		initPad = 0f;
+		if (eta > 1 && failStage < 0) {
+			String days = getDaysString(eta);
+			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel", "bulletETA", "$days", days);
+			info.addPara(str, initPad, tc, h, "" + (int)Math.round(eta));
+			initPad = 0f;
+		}
+		
+		unindent(info);
+	}
+	
+	@Override
+	public String getName() {
+		String base = StringHelper.getString("nex_fleetIntel", "title");
+		base = StringHelper.substituteToken(base, "$action", getActionName(), true);
+		base = StringHelper.substituteToken(base, "$market", target.getName());
+		
+		if (isEnding()) {
+			if (outcome == OffensiveOutcome.SUCCESS) {
+				return base + " - " + StringHelper.getString("successful", true);
+			}
+			else if (outcome != null && outcome.isFailed()) {
+				return base + " - " + StringHelper.getString("failed", true);
+			}
+			return base + " - " + StringHelper.getString("over", true);
+		}
+		return base;
+	}
+	
+	public String getActionName() {
+		return StringHelper.getString("expedition");
+	}
+	
+	public String getActionNameWithArticle() {
+		return StringHelper.getString("theExpedition");
+	}
+	
+	public String getForceType() {
+		return StringHelper.getString("force");
+	}
+	
+	public String getForceTypeWithArticle() {
+		return StringHelper.getString("theForce");
+	}
+	
+	public String getForceTypeIsOrAre() {
+		return StringHelper.getString("is");
+	}
+	
+	public String getForceTypeHasOrHave() {
+		return StringHelper.getString("has");
+	}
 
 	public void setOutcome(OffensiveOutcome outcome) {
 		this.outcome = outcome;
@@ -173,11 +297,11 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
 			terminateEvent(OffensiveOutcome.FAIL);
 		}
-		else if (!faction.isHostileTo(target.getFaction())) {
-			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
-		}
 		else if (!target.isInEconomy()) {
 			terminateEvent(OffensiveOutcome.MARKET_NO_LONGER_EXISTS);
+		}
+		else if (!faction.isHostileTo(target.getFaction())) {
+			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
 	}
 	

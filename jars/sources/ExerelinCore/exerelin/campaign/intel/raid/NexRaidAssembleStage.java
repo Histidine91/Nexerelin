@@ -1,13 +1,14 @@
 package exerelin.campaign.intel.raid;
 
+import exerelin.campaign.intel.fleets.NexAssembleStage;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import exerelin.campaign.intel.OffensiveFleetIntel;
 import org.lazywizard.lazylib.MathUtils;
 
 public class NexRaidAssembleStage extends NexAssembleStage {
 	
-	public NexRaidAssembleStage(RaidIntel raid, SectorEntityToken gatheringPoint) {
-		super(raid, gatheringPoint);
+	public NexRaidAssembleStage(OffensiveFleetIntel intel, SectorEntityToken gatheringPoint) {
+		super(intel, gatheringPoint);
 	}
 	
 	@Override
