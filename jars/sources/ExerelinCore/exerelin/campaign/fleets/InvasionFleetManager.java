@@ -152,6 +152,23 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return name;
 	}
 	
+	// update this whenever the one in MilitaryBase is changed
+	public static int getPatrolCombatFP(PatrolType type) {
+		float combat = 0;
+		switch (type) {
+		case FAST:
+			combat = Math.round(3f + (float) 0.5f * 2f) * 5f;
+			break;
+		case COMBAT:
+			combat = Math.round(6f + (float) 0.5f * 3f) * 5f;
+			break;
+		case HEAVY:
+			combat = Math.round(10f + (float) 0.5f * 5f) * 5f;
+			break;
+		}
+		return (int) Math.round(combat);
+	}
+	
 	public static float estimateDefensiveStrength(MarketAPI market, float variability) {
 		Random random = new Random();
 		float strength = 10 * market.getSize();
@@ -160,9 +177,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		int maxMedium = (int) market.getStats().getDynamic().getMod(Stats.PATROL_NUM_MEDIUM_MOD).computeEffective(0);
 		int maxHeavy = (int) market.getStats().getDynamic().getMod(Stats.PATROL_NUM_HEAVY_MOD).computeEffective(0);
 		
-		strength += maxLight * MilitaryBase.getPatrolCombatFP(PatrolType.FAST, random);
-		strength += maxMedium * MilitaryBase.getPatrolCombatFP(PatrolType.COMBAT, random);
-		strength += maxHeavy * MilitaryBase.getPatrolCombatFP(PatrolType.HEAVY, random);
+		strength += maxLight * getPatrolCombatFP(PatrolType.FAST);
+		strength += maxMedium *getPatrolCombatFP(PatrolType.COMBAT);
+		strength += maxHeavy * getPatrolCombatFP(PatrolType.HEAVY);
 		
 		// underestimate large fleet size mults, overestimate small ones
 		float fleetSizeMult = market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).computeEffective(0f);
@@ -783,6 +800,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		for (MarketAPI market : markets) 
 		{
 			if (market.getContainingLocation().isHyperspace()) continue;
+			if (market.isHidden()) continue;
 			
 			FactionAPI marketFaction = market.getFaction();
 			String marketFactionId = marketFaction.getId();
