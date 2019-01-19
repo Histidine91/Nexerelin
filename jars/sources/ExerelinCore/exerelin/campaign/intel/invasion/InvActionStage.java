@@ -26,6 +26,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
@@ -40,7 +41,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	protected boolean gaveOrders = true; // will be set to false in updateRoutes()
 	protected float untilAutoresolve = 30f;
 	
-	public InvActionStage(InvasionIntel invasion, MarketAPI target) {
+	public InvActionStage(OffensiveFleetIntel invasion, MarketAPI target) {
 		super(invasion);
 		this.target = target;
 		playerTargeted = target.isPlayerOwned();
@@ -101,11 +102,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
 	@Override
 	protected void updateStatus() {
-//		if (true) {
-//			status = RaidStageStatus.SUCCESS;
-//			return;
-//		}
-		
 		abortIfNeededBasedOnFP(true);
 		if (status != RaidStageStatus.ONGOING) return;
 		
@@ -114,17 +110,9 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			autoresolve();
 			return;
 		}
-		
-		if (!target.isInEconomy() || !target.getFaction().isHostileTo(this.intel.getFaction())) {
-			status = RaidStageStatus.FAILURE;
-			((InvasionIntel)intel).setOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
-			removeMilScripts();
-			giveReturnOrdersToStragglers(getRoutes());
-			return;
-		}
 	}
 	
-	// set correct outcome
+	// same as parent, but also set correct outcome
 	@Override
 	protected void abortIfNeededBasedOnFP(boolean giveReturnOrders) {
 		List<RouteData> routes = getRoutes();
@@ -133,7 +121,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		boolean enoughMadeIt = enoughMadeIt(routes, stragglers);
 		//enoughMadeIt = false;
 		if (!enoughMadeIt) {
-			((InvasionIntel)intel).setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+			((OffensiveFleetIntel)intel).setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 			status = RaidStageStatus.FAILURE;
 			if (giveReturnOrders) {
 				giveReturnOrdersToStragglers(routes);
@@ -255,14 +243,13 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 	}
 	
-	
 	@Override
 	protected void updateRoutes() {
 		resetRoutes();
 		
 		gaveOrders = false;
 		
-		((InvasionIntel)intel).sendEnteredSystemUpdate();
+		((OffensiveFleetIntel)intel).sendEnteredSystemUpdate();
 		
 		List<RouteData> routes = RouteManager.getInstance().getRoutesForSource(intel.getRouteSourceId());
 		for (RouteData route : routes) {
@@ -291,7 +278,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			return;
 		}
 		
-		InvasionIntel intel = ((InvasionIntel)this.intel);
+		OffensiveFleetIntel intel = ((OffensiveFleetIntel)this.intel);
 		if (intel.getOutcome() != null) {
 			String key = "intelStageAction";
 			switch (intel.getOutcome()) {
@@ -321,7 +308,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 
 	@Override
 	public boolean canRaid(CampaignFleetAPI fleet, MarketAPI market) {
-		InvasionIntel intel = ((InvasionIntel)this.intel);
+		OffensiveFleetIntel intel = ((OffensiveFleetIntel)this.intel);
 		if (intel.getOutcome() != null) return false;
 		return market == target;
 	}

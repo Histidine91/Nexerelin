@@ -20,6 +20,7 @@
 		"intelReport":"intel report",
 		"level":"level",
 		"marine":"marine",
+		"marines":"marines",
 		"options":"options",
 		"player":"player",
 		"size":"size",
@@ -189,6 +190,20 @@
 		"destabilizeText7":"torched a storage depot",
 		"destabilizeText8":"poisoned patients at a clinic"
 	},
+	"nex_baseStrike":{
+		"strike":"strike mission",
+		"theStrike":"the strike mission",
+		"strikeForce":"strike force",
+		"theStrikeForce":"the strike force",
+		"forceIsOrAre":"is",	# if strikeForce is singular, this should be singular too, else both should be plural
+		"forceHasOrHave":"has",	# same
+		
+		"intelDesc":"$TheFaction $isOrAre attacking and destroying $market, a $targetFaction base in the $location. The strike forces are projected to be $strDesc.",
+		"intelStageAction":"The strike force is currently in-system.",
+		"intelStageActionSuccess":"The strike force has succesfully destroyed $market.",
+		"intelStageActionDefeated":"The strike force has been defeated by the defenders of of $market.",
+		"intelStageActionAborted":"The strike mission has been aborted.",
+	},
 	"nex_bombardment":{
 		"satBombWarning":"An atrocity of this scale can not be hidden, and will make the following factions hostile:",
 		"satBombWarningSmall":"An atrocity of this scale can not be hidden. $market is sufficiently low-populated that the reputational impacts will be limited, but the following factions will nevertheless be angry:",
@@ -304,9 +319,8 @@
 		"joiningTheEnemy":"joining the enemy",
 		"supportingOpposingSide":"supporting the opposing side"
 	},
-	# TODO
 	"nex_fleetIntel":{
-		"title":"$action: $market",
+		"title":"$Action: $market",
 		"desc":"$TheFaction $isOrAre $actioning $market in the $location, held by $theTargetFaction. The $forceType $isOrAre projected to be $strDesc.",
 		"bulletTarget":"Held by $targetFaction",
 		"bulletArrived":"$ForceType arrived in system",
@@ -354,6 +368,7 @@
 		"attacking":"attacking $target",
 		"attackingStarSystem":"attacking the $target star system",
 		"attackingAroundStarSystem":"attacking around the $target star system",
+		"movingInToAttack":"moving in to attack $target",
 		"defending":"defending $target",
 		"patrolling":"patrolling $target",
 		"patrollingStarSystem":"patrolling the $target star system",
@@ -377,20 +392,34 @@
 	"nex_fleetRequest":{
 		"fleetRequest":"fleet request",
 		
+		"optionFleetType":"Mission",
+		"optionStrength":"Task force strength",
+		"optionSource":"Origin market",
+		"optionFaction":"Target faction",
+		"optionTarget":"Target market",
+		
 		"fleetType_invasion":"invasion",
-		"fleetType_basekill":"base kill",
+		"fleetType_basestrike":"base strike",
 		"fleetType_raid":"raid",
 		"fleetType_defense":"defense",
 		
 		"fleetCost":"fleet cost",
+		"fleetCostHelp":"The fleet(s) will cost $credits credits per FP.",
+		"fleetCostHelpMarines":"For invasion fleets, adding marines will multiply the cost, up to $marineMult times the base cost.",
 		"fleetPoints":"fleet points",
+		"marinesPerFleet":"marines per fleet",
 		"infoDistance":"Distance: $dist LY",
 		"timeToLaunch":"time to launch",
+		"infoTargetStrength":"Estimated strength: $space",
+		"infoTargetStrengthGround":"Estimated strength: $space space, $ground ground",
 		
-		"fleetSpawnMessage":"The fleet is being prepared for launch.",
-		"tooltipInsufficientFunds":"Dispatching this fleet requires $cost credits. You only have $credits credits.",
-		"proceedConfirm":"Confirm fleet launch?",
-		"proceedConfirmNonHostile":"$TheFaction is not currently hostile, but will be if you launch this fleet. Are you sure you wish to do this?",
+		"targetEntry":"$market: size $size, def $space",
+		"targetEntryGround":"$market: size $size, space def $space, ground def $ground",
+		
+		"fleetSpawnMessage":"The task force is being prepared for launch.",
+		"tooltipInsufficientFunds":"Dispatching this task force requires $cost credits. You only have $credits credits.",
+		"proceedConfirm":"Confirm launch?",
+		"proceedConfirmNonHostile":"$TheFaction is not currently hostile, but will be if you launch this task force. Are you sure you wish to do this?",
 	},
 	"exerelin_invasion":{
 		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile. An invasion is a major enough hostile action that it can't be concealed, regardless of transponder status.",
