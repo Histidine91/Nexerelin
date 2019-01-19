@@ -769,29 +769,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         data.put(MANAGER_MAP_KEY, allianceManager);
         return allianceManager;
     }
-    
-    public static void printAllianceList(TextPanelAPI text)
-    {
-        List<Alliance> alliances = AllianceManager.getAllianceList();
-        Collections.sort(alliances, new AllianceComparator());
-
-        Color hl = Misc.getHighlightColor();
-
-        text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_alliances", "numAlliances", "$numAlliances", alliances.size()+""));
-        text.highlightInLastPara(hl, "" + alliances.size());
-        text.setFontSmallInsignia();
-        text.addParagraph(StringHelper.HR);
-        for (Alliance alliance : alliances)
-        {
-            String allianceName = alliance.getName();
-            String allianceString = alliance.getAllianceNameAndMembers();
-
-            text.addParagraph(allianceString);
-            text.highlightInLastPara(hl, allianceName);
-        }
-        text.addParagraph(StringHelper.HR);
-        text.setFontInsignia();
-    }
         
     public static class AllianceComparator implements Comparator<Alliance>
     {

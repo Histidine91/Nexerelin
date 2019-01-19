@@ -99,7 +99,6 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 			options.addOption(StringHelper.getString("exerelin_factions", "factionDirectoryOption"), Menu.DIRECTORY);
 			options.addOption(StringHelper.getString("nex_fleetRequest", "fleetRequest", true), Menu.FLEET_REQUEST);
 			//options.addOption(StringHelper.getString("exerelin_markets", "remoteCommDirectory"), Menu.REMOTE_COMM);
-			//options.addOption(StringHelper.getString("exerelin_alliances", "allianceListOption"), Menu.ALLIANCES);
 			//options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), Menu.INTEL_SCREEN);
 			options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
 			options.setShortcut(Menu.EXIT, Keyboard.KEY_ESCAPE, false, false, false, true);

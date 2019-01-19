@@ -1252,7 +1252,6 @@ $market.id == nex_prismFreeport","AddText ""Bright, slick, overusing chrome and 
 ExerelinFlavorTextMarketFollowers,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $faction.id == ""player""","AddText ""The port concourse is filled with trader starcraft of every size. Speculators crowd offloading ship captains with deals and peddlers call out to crew, holding wares and projecting personal ad-holos. Guards salute you in recognition as you pass by them."" marketFlavorTextColor",,,
 ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
-ExerelinMarketOptionAlliances,DialogOptionSelected,$option == exerelinAllianceReport,PrintAlliances,,,
 ,,,,,,
 nex_greetingRemnantTOffNormal,OpenCommLink,"!$player.transponderOn
 $faction.id == remnant score:5",,"""CID-IFF not received [TARGET UNKNOWN] respond null // 'Warning, unidentified vessel. Unlicensed anonymous operation in Tri-Tachyon space is a violation of --""

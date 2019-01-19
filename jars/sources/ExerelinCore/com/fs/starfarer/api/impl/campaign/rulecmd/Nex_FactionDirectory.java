@@ -126,10 +126,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		if (SectorManager.isFactionAlive(Factions.PLAYER))
 			opts.addOption(Misc.ucFirst(Global.getSector().getPlayerFaction().getDisplayName()), 
 					PRINT_FACTION_OPTION_PREFIX + Factions.PLAYER);
-						
-		if (!special)
-			opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_alliances", "allianceListOption")), 
-					"exerelinAllianceReport");
 		
 		String exitOpt = "exerelinMarketSpecial";
 		if (special)
