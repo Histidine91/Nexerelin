@@ -56,7 +56,7 @@ public class BaseStrikeActionStage extends InvActionStage {
 		
 		float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), 
 							 target.getStarSystem(), target.getPrimaryEntity());
-		InvasionIntel intel = ((InvasionIntel)this.intel);
+		BaseStrikeIntel intel = ((BaseStrikeIntel)this.intel);
 		
 		if (defensiveStr >= str) {
 			status = RaidIntel.RaidStageStatus.FAILURE;
