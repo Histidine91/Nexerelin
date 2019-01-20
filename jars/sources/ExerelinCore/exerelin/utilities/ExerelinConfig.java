@@ -73,7 +73,7 @@ public class ExerelinConfig
     public static boolean prismRenewBossShips = false;
     public static boolean prismUseIBBProgressForBossShips = true;
     public static float prismTariff = 2f;
-	public static float prismBlueprintPriceMult = 1.5f;
+    public static float prismBlueprintPriceMult = 1.5f;
     
     // War weariness
     public static float warWearinessDivisor = 10000f;
@@ -85,13 +85,14 @@ public class ExerelinConfig
     // Followers faction
     public static boolean followersAgents = false;
     public static boolean followersDiplomacy = true;
+    public static boolean followersInvasions = false;
     
     // Faction special stuff
     public static boolean enableAvesta = true;    // Association
     public static boolean enableShanghai = true;    // Tiandong
     public static boolean enableUnos = true;    // ApproLight
-	public static boolean enableAntioch = true;	// Templars
-	public static boolean factionRuler = false;
+    public static boolean enableAntioch = true;	// Templars
+    public static boolean factionRuler = false;
     
     // Revengeance fleets
     public static int enableRevengeFleets = 2;
@@ -166,7 +167,7 @@ public class ExerelinConfig
             prismRenewBossShips = settings.optBoolean("prismRenewBossShips", prismRenewBossShips);
             prismUseIBBProgressForBossShips = settings.optBoolean("prismUseIBBProgressForBossShips", prismUseIBBProgressForBossShips);
             prismTariff = (float)settings.optDouble("prismTariff", prismTariff);
-			prismBlueprintPriceMult = (float)settings.optDouble("prismBlueprintPriceMult", prismBlueprintPriceMult);
+            prismBlueprintPriceMult = (float)settings.optDouble("prismBlueprintPriceMult", prismBlueprintPriceMult);
             
             warWearinessDivisor = (float)settings.optDouble("warWearinessDivisor", warWearinessDivisor);
             warWearinessDivisorModPerLevel = (float)settings.optDouble("warWearinessDivisorModPerLevel", warWearinessDivisorModPerLevel);
@@ -176,12 +177,13 @@ public class ExerelinConfig
             
             followersAgents = settings.optBoolean("followersAgents", followersAgents);
             followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
+            followersInvasions = settings.optBoolean("followersInvasions", followersInvasions);
             
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             enableUnos = settings.optBoolean("enableUnos", enableUnos);
-			enableAntioch = settings.optBoolean("enableAntioch", enableAntioch);
-			factionRuler = settings.optBoolean("factionRuler", factionRuler);
+            enableAntioch = settings.optBoolean("enableAntioch", enableAntioch);
+            factionRuler = settings.optBoolean("factionRuler", factionRuler);
             
             enableRevengeFleets = settings.optInt("enableRevengeFleets", enableRevengeFleets);
             revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);

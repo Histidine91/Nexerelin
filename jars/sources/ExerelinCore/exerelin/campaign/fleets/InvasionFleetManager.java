@@ -624,7 +624,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (EXCEPTION_LIST.contains(factionId)) continue;
 			FactionAPI faction = sector.getFaction(factionId);
 			if (faction.isNeutralFaction()) continue;
-			//if (faction.isPlayerFaction()) continue;
+			if (faction.isPlayerFaction() && !ExerelinConfig.followersInvasions) continue;
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 			if (!config.playableFaction) continue;
 			
