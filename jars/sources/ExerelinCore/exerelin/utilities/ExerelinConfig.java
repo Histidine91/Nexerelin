@@ -115,6 +115,7 @@ public class ExerelinConfig
     public static boolean officerDeaths = false;
     public static boolean officerDaredevilBonus = true;
     public static boolean corvusModeLandmarks = false;
+	public static int stabilizePackageEffect = 3;
 
     public static void loadSettings()
     {
@@ -196,6 +197,7 @@ public class ExerelinConfig
             maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
+			stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             

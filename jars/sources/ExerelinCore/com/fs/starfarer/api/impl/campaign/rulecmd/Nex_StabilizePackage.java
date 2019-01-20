@@ -32,7 +32,6 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	
 	public static final String MEMORY_KEY_RECENT = "$nex_stabilizePackage_cooldown";
 	public static final int STABILIZE_INTERVAL = 60;
-	public static final int UNREST_REDUCTION = 3;
 	
 	public static final List<String> COMMODITIES_RELIEF = new ArrayList<>(Arrays.asList(
 			Commodities.SUPPLIES, Commodities.FOOD	//, Commodities.DOMESTIC_GOODS
@@ -101,7 +100,8 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	
 	protected static boolean isAllowed(MarketAPI market) {
 		if (market.isPlayerOwned()) return false;
-		return RecentUnrest.getPenalty(market) >= UNREST_REDUCTION;
+		int min = Math.min(ExerelinConfig.stabilizePackageEffect, 3);
+		return RecentUnrest.getPenalty(market) >= min;
 	}
 	
 	protected int getNeededCommodityAmount(MarketAPI market, String commodityId)
@@ -203,8 +203,18 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	protected void deliver(MarketAPI market, InteractionDialogAPI dialog)
 	{
 		RecentUnrest ru = RecentUnrest.get(market);
-		if (ru != null)
-			ru.add(-UNREST_REDUCTION, StringHelper.getString("exerelin_markets", "stabilizeRecentUnrestEntry"));
+		TextPanelAPI text = dialog.getTextPanel();
+		if (ru != null) {
+			text.setFontSmallInsignia();
+			int before = ru.getPenalty();
+			ru.add(-ExerelinConfig.stabilizePackageEffect, 
+					StringHelper.getString("exerelin_markets", "stabilizeRecentUnrestEntry"));
+			int diff = before - ru.getPenalty();
+			text.addPara(StringHelper.getStringAndSubstituteToken("exerelin_markets",
+					"stabilizeEffect", "$market", market.getName()), 
+					Misc.getPositiveHighlightColor(), "" + diff);
+			text.setFontInsignia();
+		}
 		
 		float rep = getReputation(market);
 		NexUtilsReputation.adjustPlayerReputation(market.getFaction(), dialog.getInteractionTarget().getActivePerson(), 

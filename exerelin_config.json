@@ -80,6 +80,8 @@
     
     "officerDeaths": false,	# officer permadeath (may be buggy)
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
+	
+	"stabilizePackageEffect": 3,
 
     # DO NOT TOUCH!
     # to make factions not appear, use the menu options

@@ -522,6 +522,7 @@
 		"stabilizeHeader":"Stabilizing $market will earn $reputation reputation with $theFaction, cost $credits and require the following commodities:",
 		"stabilizeTooltipDisabled":"Insufficient resources.",
 		"stabilizeRecentUnrestEntry":"Stabilization package",
+		"stabilizeEffect":"Stability of $market increased by %s.",
 		
 		"remoteCommDirectory":"Remote connection to comm directory",
 
