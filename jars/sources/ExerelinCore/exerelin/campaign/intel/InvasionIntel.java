@@ -40,7 +40,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public static final boolean NO_STRIKE_FLEETS = true;
-	public static final boolean USE_REAL_MARINES = true;
+	public static final boolean USE_REAL_MARINES = false;
 	public static final int MAX_MARINES = 2500;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
