@@ -12,9 +12,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.OffensiveFleetIntel;
@@ -70,18 +67,6 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			Global.getSector().getCampaignUI().addMessage("Raid intel from " 
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
-	}
-	
-	// for intel popup in campaign screen's message area
-	@Override
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
-		super.addBulletPoints(info, mode);
-	}
-	
-	// intel long description in intel screen
-	@Override
-	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		super.createSmallDescription(info, width, height);
 	}
 	
 	@Override

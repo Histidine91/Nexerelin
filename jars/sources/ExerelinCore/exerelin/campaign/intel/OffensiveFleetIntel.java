@@ -163,9 +163,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		Color tc = getBulletColorForMode(mode);
 		
 		bullet(info);
-		boolean isUpdate = getListInfoParam() != null;
 		
-		float eta = getETA();
 		FactionAPI other = targetFaction;
 		
 		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
@@ -181,49 +179,63 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		}
 		
 		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
-			String str = StringHelper.getString("nex_fleetIntel", "bulletArrived");
-			str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
-			info.addPara(str, tc, initPad);
+			addArrivedBullet(info, tc, initPad);
 			return;
 		}
 		
-		if (outcome != null)
-		{
-			String key = "bulletCancelled";
-			switch (outcome) {
-				case SUCCESS:
-					key = "bulletSuccess";
-					break;
-				case TASK_FORCE_DEFEATED:
-				case FAIL:
-					key = "bulletFailed";
-					break;
-				case MARKET_NO_LONGER_EXISTS:
-					key = "bulletNoLongerExists";
-					break;
-				case NO_LONGER_HOSTILE:
-					key = "bulletNoLongerHostile";
-					break;
-			}
-			//String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
-			//		key, "$target", target.getName());
-			//info.addPara(str, initPad, tc, other.getBaseUIColor(), target.getName());
-			String str = StringHelper.getString("nex_fleetIntel", key);
-			str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
-			str = StringHelper.substituteToken(str, "$action", getActionName(), true);
-			info.addPara(str, tc, initPad);
+		if (outcome != null) {
+			addOutcomeBullet(info, tc, initPad);
 		} else {
 			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
 		}
 		initPad = 0f;
+		addETABullet(info, tc, h, initPad);
+		
+		unindent(info);
+	}
+	
+	protected void addArrivedBullet(TooltipMakerAPI info, Color color, float pad) 
+	{
+		String str = StringHelper.getString("nex_fleetIntel", "bulletArrived");
+		str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
+		info.addPara(str, color, pad);
+	}
+	
+	protected void addOutcomeBullet(TooltipMakerAPI info, Color color, float pad) 
+	{
+		String key = "bulletCancelled";
+		switch (outcome) {
+			case SUCCESS:
+				key = "bulletSuccess";
+				break;
+			case TASK_FORCE_DEFEATED:
+			case FAIL:
+				key = "bulletFailed";
+				break;
+			case MARKET_NO_LONGER_EXISTS:
+				key = "bulletNoLongerExists";
+				break;
+			case NO_LONGER_HOSTILE:
+				key = "bulletNoLongerHostile";
+				break;
+		}
+		//String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
+		//		key, "$target", target.getName());
+		//info.addPara(str, initPad, tc, other.getBaseUIColor(), target.getName());
+		String str = StringHelper.getString("nex_fleetIntel", key);
+		str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
+		str = StringHelper.substituteToken(str, "$action", getActionName(), true);
+		info.addPara(str, color, pad);
+	}
+	
+	protected void addETABullet(TooltipMakerAPI info, Color color, Color hl, float pad) 
+	{
+		float eta = getETA();
 		if (eta > 1 && failStage < 0) {
 			String days = getDaysString(eta);
 			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel", "bulletETA", "$days", days);
-			info.addPara(str, initPad, tc, h, "" + (int)Math.round(eta));
-			initPad = 0f;
+			info.addPara(str, pad, color, hl, "" + (int)Math.round(eta));
 		}
-		
-		unindent(info);
 	}
 	
 	@Override

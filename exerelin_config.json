@@ -5,11 +5,7 @@
     #"minimumStations": 3,
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market
     
-    "playerBaseSalary": 5000,   # per month
-    "playerSalaryIncrementPerLevel": 1000,
-    "playerInsuranceMult": 0.8,	# lower than it looks
-    "followersBaseTax": 100,    # per day, modified by market size and stability
-    "fleetBonusFpPerPlayerLevel": 1,
+    "fleetBonusFpPerPlayerLevel": 1,	# not actually used, except for vengeance fleets
     
     "prisonerRepatriateRepValue": 0.05,
     "prisonerBaseRansomValue": 4000,
@@ -23,7 +19,6 @@
     
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
-    "fleetRequestCostPerMarine": 100,  # currently unused, previously used for player-requested fleets
     "fleetRequestCostPerFP": 400,  # used for player-requested fleets
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
     "pointsRequiredForInvasionFleet": 18000,    # bigger = longer delay between invasion fleets
@@ -48,7 +43,7 @@
     "prismRenewBossShips": false,   # if false, once a boss ship is bought or captured it won't appear in the market again
     "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SWP to unlock new boss ships for sale
     "prismTariff": 2.0,  # float, 1.0 = 100% tariff; modified by relationship with independents
-	"prismBlueprintPriceMult":1.5,
+    "prismBlueprintPriceMult":1.5,
     
     "warWearinessDivisor": 10000,   # float; higher means factions take longer on average to sign a ceasefire
     "warWearinessDivisorModPerLevel": 75,
@@ -56,8 +51,9 @@
     "warWearinessCeasefireReduction": 3000, # float; note the reduction is applied to both parties
     "warWearinessPeaceTreatyReduction": 6000,
     
-    "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
-    "maxFactionRespawns": 1,    # factions can respawn this many times (not counting initial entry into sector); <0 = unlimited
+    # does nothing for now
+    #"factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
+    #"maxFactionRespawns": 1,    # factions can respawn this many times (not counting initial entry into sector); <0 = unlimited
     
     "warmongerPenalty": 0,   # take reputation hit from starting a war? (may not be supported any longer) 0 = never, 1 = not for followers, 2 = always
     
@@ -82,7 +78,7 @@
     
     "corvusModeLandmarks": false,    # adds some decorative landmarks in non-random Sector (will always be present in random Sector)
     
-    "officerDeaths": false,	# officer permadeath
+    "officerDeaths": false,	# officer permadeath (may be buggy)
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
 
     # DO NOT TOUCH!

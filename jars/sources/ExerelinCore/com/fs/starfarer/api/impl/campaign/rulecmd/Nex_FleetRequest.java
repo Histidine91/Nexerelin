@@ -541,7 +541,6 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		switch (fleetType) {
 			case INVASION:
 				intel = new InvasionIntel(attacker, source, target, fp, timeToLaunch);
-				float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
 				((InvasionIntel)intel).setMarinesPerFleet((int)(marines));
 				break;
 			case RAID:
