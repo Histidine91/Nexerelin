@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.FieldOptionsScreenScript;
 import exerelin.campaign.NexEventProbabilityManager;
@@ -151,18 +152,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // TODO remove
-        if (replaceScript(Global.getSector(), MiningFleetManager.class, null)) {
-            Global.getSector().getPersistentData().remove(MiningFleetManager.MANAGER_MAP_KEY);
-            Global.getSector().addScript(MiningFleetManagerV2.create());
-        }
-        
         RevengeanceManager rvng = RevengeanceManager.getManager();
         if (rvng != null && !Global.getSector().getListenerManager().hasListener(rvng))
         {
             Global.getLogger(this.getClass()).info("Registering revengeance manager as listener");
             Global.getSector().getListenerManager().addListener(rvng);
         }
+        
+        replaceScript(Global.getSector(), CovertOpsManager.class, null);
     }
     
     protected void addEventIfNeeded(String eventId)
