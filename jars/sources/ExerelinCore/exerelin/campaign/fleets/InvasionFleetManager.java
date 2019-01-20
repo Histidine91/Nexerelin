@@ -74,6 +74,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
 	public static final float DEFENSE_ESTIMATION_MULT = 0.9f;
 	public static final float BASE_INVASION_COST = 750f;	// for reference, Jangala at start of game is around 975
+	public static final float MAX_INVASION_SIZE = 2000;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
@@ -238,6 +239,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		log.info("Estimated strength required for invasion: " + defensiveStr);
 		
 		defensiveStr *= GENERAL_SIZE_MULT;
+		
+		if (defensiveStr > MAX_INVASION_SIZE)
+			defensiveStr = MAX_INVASION_SIZE;
 		
 		return Math.max(defensiveStr, 30);
 	}
