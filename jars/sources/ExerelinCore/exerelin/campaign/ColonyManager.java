@@ -114,7 +114,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, 
 			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
-		Global.getLogger(ColonyManager.class).info("wololo " + market.getName());
 		if (oldOwner.isPlayerFaction())
 			buildIndustries(market);
 	}

@@ -121,6 +121,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 			sub.put("$player", Global.getSector().getPlayerPerson().getNameString());
 		
 		String str = StringHelper.getStringAndSubstituteTokens("exerelin_markets", strKey, sub);
+		str = Misc.ucFirst(str);
 		
 		LabelAPI para = info.addPara(str, opad);
 		if (isCapture)
