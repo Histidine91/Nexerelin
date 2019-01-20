@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelperLegacy;
+import exerelin.campaign.MiningHelperLegacy.MiningReport;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -217,6 +218,30 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		data.target = target;
 		data.miningStrength = miningStrength;
 		data.noWait = noWait;
+		
+		// partially fill cargo (as if we're already been mining for some time)
+		if (noWait) {
+			MiningReport report = MiningHelperLegacy.getMiningReport(fleet, target, miningStrength);
+			float mult = MathUtils.getRandomNumberInRange(0f, 0.75f);
+			if (mult > 0.1) {
+				int cargoSpace = (int)(fleet.getCargo().getSpaceLeft() * mult);
+			
+				float totalAmount = 0;
+				for (Map.Entry<String, Float> tmp : report.totalOutput.entrySet())
+				{
+					totalAmount += tmp.getValue();
+				}
+				for (Map.Entry<String, Float> tmp : report.totalOutput.entrySet())
+				{
+					String res = tmp.getKey();
+					float amount = tmp.getValue();
+					float toAdd = (amount/totalAmount) * cargoSpace;
+					fleet.getCargo().addCommodity(res, (int)toAdd);
+					//log.info("Partially filling miner's cargo with " + res + ": " 
+					//		+ (int)toAdd + "," + amount + "," + totalAmount + "," + mult);
+				}
+			}
+		}
 		
 		MiningFleetAI ai = new MiningFleetAI(fleet, data);
 		fleet.addScript(ai);
