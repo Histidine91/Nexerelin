@@ -596,6 +596,8 @@
 		"populatedPlanetsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
 		"stationsTitle":"Stations",
 		"stationsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
+		"maxPlanetsTitle":"Maximum inhabited planets per system",
+		"maxMarketsTitle":"Maximum inhabited planets + stations per system",
 		"randomizeFactionsTooltip":"Every faction has a 50% chance to be enabled (except independents, which will not be toggled from their current setting).",
 
 		"fleetSolo":"Solo frigate",

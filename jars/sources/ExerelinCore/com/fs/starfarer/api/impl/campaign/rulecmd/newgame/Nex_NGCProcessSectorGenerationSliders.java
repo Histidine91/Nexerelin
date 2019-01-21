@@ -54,6 +54,12 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 		opts.addSelector(getString("stationsTitle"), "stationCountSelector", Color.GRAY, BAR_WIDTH, 48, 8, 80, ValueDisplayMode.VALUE, 
 				getString("stationsTooltip"));
 		opts.setSelectorValue("stationCountSelector", data.numStations);
+		
+		opts.addSelector(getString("maxPlanetsTitle"), "planetMaxSelector", Color.CYAN, BAR_WIDTH, 48, 1, 5, ValueDisplayMode.VALUE, null);
+		opts.setSelectorValue("planetMaxSelector", data.maxPlanetsPerSystem);
+		
+		opts.addSelector(getString("maxMarketsTitle"), "marketMaxSelector", Color.orange, BAR_WIDTH, 48, 1, 8, ValueDisplayMode.VALUE, null);
+		opts.setSelectorValue("marketMaxSelector", data.maxMarketsPerSystem);
 	}
 	
 	protected void saveValues(OptionPanelAPI opts)
@@ -62,8 +68,10 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 		
 		if (data.corvusMode) return;
 		
-		data.numSystems = (int)(opts.getSelectorValue("systemCountSelector") + 0.5);
-		data.numPlanets = (int)(opts.getSelectorValue("planetCountSelector") + 0.5);
-		data.numStations = (int)(opts.getSelectorValue("stationCountSelector") + 0.5);
+		data.numSystems = Math.round(opts.getSelectorValue("systemCountSelector"));
+		data.numPlanets = Math.round(opts.getSelectorValue("planetCountSelector"));
+		data.numStations = Math.round(opts.getSelectorValue("stationCountSelector"));
+		data.maxPlanetsPerSystem = Math.round(opts.getSelectorValue("planetMaxSelector"));
+		data.maxMarketsPerSystem = Math.round(opts.getSelectorValue("marketMaxSelector"));
 	}
 }
