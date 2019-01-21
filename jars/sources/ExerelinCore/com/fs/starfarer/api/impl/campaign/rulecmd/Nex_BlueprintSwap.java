@@ -362,7 +362,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		MemoryAPI mem = market.getMemoryWithoutUpdate();
 		List<PurchaseInfo> stock = getBlueprintStock(mem);
 		stock.remove(toPurchase);
-		setBlueprintStock(mem, stock, true);
+		setBlueprintStock(mem, stock, false);
 	}
 	
 	
