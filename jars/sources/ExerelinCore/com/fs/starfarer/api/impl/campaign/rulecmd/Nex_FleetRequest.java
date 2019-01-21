@@ -745,20 +745,23 @@ public class Nex_FleetRequest extends PaginatedOptions {
 			addOption(text, optId);
 			
 			// tooltip
-			String tooltip = getString("targetEntryTooltip");
+			String tooltip;
 			Highlights hl = new Highlights();
 			Color hlCol = Misc.getHighlightColor();
 			
 			String defStr = String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
 					faction, market.getStarSystem(), 0));
-			tooltip = StringHelper.substituteToken(tooltip, "$space", defStr);
 			if (fleetType == FleetType.INVASION) {
+				tooltip = getString("targetEntryGroundTooltip");
+				tooltip = StringHelper.substituteToken(tooltip, "$space", defStr);
 				String groundDefStr = String.format("%.1f", InvasionRound.getDefenderStrength(market, 1));
 				tooltip = StringHelper.substituteToken(tooltip, "$ground", groundDefStr);
 				hl.setText(defStr, groundDefStr);
 				hl.setColors(hlCol, hlCol);
 			}
 			else {
+				tooltip = getString("targetEntryTooltip");
+				tooltip = StringHelper.substituteToken(tooltip, "$space", defStr);
 				hl.setText(defStr);
 				hl.setColors(hlCol);
 			}
