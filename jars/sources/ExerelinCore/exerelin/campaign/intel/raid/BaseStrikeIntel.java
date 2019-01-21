@@ -10,6 +10,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.OffensiveFleetIntel;
 import static exerelin.campaign.intel.OffensiveFleetIntel.DEBUG_MODE;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
@@ -60,6 +61,51 @@ public class BaseStrikeIntel extends NexRaidIntel {
 			Global.getSector().getCampaignUI().addMessage("Base strike intel from " 
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
+	}
+	
+	// Same as OffensiveFleetIntel's one
+	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
+		Color h = Misc.getHighlightColor();
+		Color g = Misc.getGrayColor();
+		float pad = 3f;
+		float opad = 10f;
+		
+		float initPad = pad;
+		if (mode == ListInfoMode.IN_DESC) initPad = opad;
+		
+		Color tc = getBulletColorForMode(mode);
+		
+		bullet(info);
+		
+		FactionAPI other = targetFaction;
+		
+		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
+				 	 faction.getBaseUIColor(), faction.getDisplayName());
+		initPad = 0f;
+		
+		if (outcome == null)
+		{
+			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel",
+					"bulletTarget", "$targetFaction", other.getDisplayName());
+			info.addPara(str, initPad, tc,
+						 other.getBaseUIColor(), other.getDisplayName());
+		}
+		
+		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
+			addArrivedBullet(info, tc, initPad);
+			return;
+		}
+		
+		if (outcome != null) {
+			addOutcomeBullet(info, tc, initPad);
+		} else {
+			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
+		}
+		initPad = 0f;
+		addETABullet(info, tc, h, initPad);
+		
+		unindent(info);
 	}
 	
 	// intel long description in intel screen

@@ -12,15 +12,18 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
+import static exerelin.campaign.intel.OffensiveFleetIntel.ENTERED_SYSTEM_UPDATE;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
@@ -67,6 +70,47 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			Global.getSector().getCampaignUI().addMessage("Raid intel from " 
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
+	}
+	
+	// don't display faction
+	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
+		Color h = Misc.getHighlightColor();
+		Color g = Misc.getGrayColor();
+		float pad = 3f;
+		float opad = 10f;
+		
+		float initPad = pad;
+		if (mode == ListInfoMode.IN_DESC) initPad = opad;
+		
+		Color tc = getBulletColorForMode(mode);
+		
+		bullet(info);
+		
+		FactionAPI other = targetFaction;
+		
+		if (outcome == null)
+		{
+			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel",
+					"bulletTarget", "$targetFaction", other.getDisplayName());
+			info.addPara(str, initPad, tc,
+						 other.getBaseUIColor(), other.getDisplayName());
+		}
+		
+		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
+			addArrivedBullet(info, tc, initPad);
+			return;
+		}
+		
+		if (outcome != null) {
+			addOutcomeBullet(info, tc, initPad);
+		} else {
+			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
+		}
+		initPad = 0f;
+		addETABullet(info, tc, h, initPad);
+		
+		unindent(info);
 	}
 	
 	@Override
