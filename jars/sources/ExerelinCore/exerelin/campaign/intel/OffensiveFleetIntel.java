@@ -75,7 +75,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected void queueIntelIfNeeded()
 	{
 		if (intelQueuedOrAdded) return;
-		Global.getSector().getIntelManager().queueIntel(this);
+		if (faction.isPlayerFaction())
+			Global.getSector().getIntelManager().addIntel(this);
+		else
+			Global.getSector().getIntelManager().queueIntel(this);
 		intelQueuedOrAdded = true;
 	}
 	

@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -21,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
+import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.MutableValue;
@@ -152,7 +155,10 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		fleetType = getFleetType();
 		source = getSource();
 		faction = getFaction();
-		target = getTarget();
+		if (faction == null)
+			target = null;
+		else
+			target = getTarget();
 		fp = getFP();
 		marines = getMarines();
 		
@@ -314,7 +320,7 @@ public class Nex_FleetRequest extends PaginatedOptions {
 			String time = Misc.getAtLeastStringForDays((int)Math.ceil(getTimeToLaunch()));
 			text.addPara(getString("timeToLaunch", true) + ": " + time, hl, time);
 		}
-		if (showStr && target != null) {
+		if (showStr && faction != null && target != null) {
 			boolean isInvasion = fleetType == FleetType.INVASION;
 			String key = isInvasion ? "infoTargetStrengthGround" : "infoTargetStrength";
 			Map<String, String> sub = new HashMap<>();
@@ -334,6 +340,8 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	}
 	
 	protected MarketAPI getSource() {
+		if (!memory.contains(MEM_KEY_SOURCE))
+			return null;
 		String marketId = memory.getString(MEM_KEY_SOURCE);
 		if (marketId == null || marketId.isEmpty())
 			return null;
@@ -343,10 +351,17 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	}
 	
 	protected void setSource(String marketId) {
+		if (marketId == null)
+			setSource((MarketAPI)null);
 		setSource(Global.getSector().getEconomy().getMarket(marketId));
 	}
 	
 	protected void setSource(MarketAPI market) {
+		if (market == null) {
+			memory.unset(MEM_KEY_SOURCE);
+			source = null;
+			return;
+		}
 		memory.set(MEM_KEY_SOURCE, market.getId(), 0);
 		source = market;
 	}
@@ -377,6 +392,8 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	}
 	
 	protected FactionAPI getFaction() {
+		if (!memory.contains(MEM_KEY_FACTION))
+			return null;
 		String factionId = memory.getString(MEM_KEY_FACTION);
 		if (factionId == null || factionId.isEmpty())
 			return null;
@@ -386,6 +403,11 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	}
 	
 	protected void setFaction(String factionId) {
+		if (factionId == null) {
+			memory.unset(MEM_KEY_FACTION);
+			faction = null;
+			return;
+		}
 		memory.set(MEM_KEY_FACTION, factionId, 0);
 		faction = Global.getSector().getFaction(factionId);
 		//memory.set(MEM_KEY_FACTIONNAME, Nex_FactionDirectoryHelper.getFactionDisplayName(factionId), 0);
@@ -429,8 +451,8 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		
 		if (!factions.isEmpty())
 			setFaction(factions.get(0).getId());
-		//else
-		//	memory.set(MEM_KEY_FACTIONNAME, StringHelper.getString("none"), 0);
+		else
+			setFaction(null);
 		
 		memory.set(MEM_KEY_FACTIONS, factions, 0);
 		
@@ -438,6 +460,9 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	}
 	
 	protected MarketAPI getTarget() {
+		if (!memory.contains(MEM_KEY_TARGET))
+			return null;
+		
 		String marketId = memory.getString(MEM_KEY_TARGET);
 		if (marketId == null || marketId.isEmpty())
 			return null;
@@ -447,10 +472,17 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	}
 	
 	protected void setTarget(String marketId) {
+		if (marketId == null)
+			setTarget((MarketAPI)null);
 		setTarget(Global.getSector().getEconomy().getMarket(marketId));
 	}
 	
 	protected void setTarget(MarketAPI market) {
+		if (market == null) {
+			target = null;
+			memory.unset(MEM_KEY_TARGET);
+			return;
+		}
 		memory.set(MEM_KEY_TARGET, market.getId(), 0);
 		target = market;
 	}
@@ -503,6 +535,8 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		
 		if (!markets.isEmpty())
 			setTarget(markets.get(0).getId());
+		else
+			setTarget((String)null);
 		
 		memory.set(MEM_KEY_TARGETS, markets, 0);
 		
@@ -589,6 +623,8 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		
 		String targetName = target == null ? StringHelper.getString("none") : target.getName();
 		opts.addOption(getString("optionTarget") + ": " + targetName, "nex_fleetRequest_selectTarget");
+		if (faction == null)
+			opts.setEnabled("nex_fleetRequest_selectTarget", false);
 		
 		opts.addOption(StringHelper.getString("proceed", true), OPTION_PROCEED);
 		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
@@ -656,6 +692,20 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		showOptions();
 	}
 	
+	protected String getMarketOptionString(MarketAPI market) {
+		String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
+		LocationAPI loc = market.getContainingLocation();
+		String locName = loc.getName();
+		if (loc instanceof StarSystemAPI)
+				locName = ((StarSystemAPI)loc).getBaseName();
+			
+		entry = StringHelper.substituteToken(entry, "$market", market.getName());
+		entry = StringHelper.substituteToken(entry, "$location", locName);
+		entry = StringHelper.substituteToken(entry, "$size", market.getSize() + "");
+		
+		return entry;
+	}
+	
 	/**
 	 * List source markets in option panel.
 	 */
@@ -667,7 +717,7 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		for (MarketAPI market : sources)
 		{
 			String optId = SOURCE_OPTION_PREFIX + market.getId();
-			String text = market.getName();
+			String text = getMarketOptionString(market);
 
 			addOption(text, optId);
 		}
@@ -683,24 +733,49 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		resetOpts();
 		List<MarketAPI> targets = getTargets();
 		
+		Map<String, String> tooltips = new HashMap<>();
+		Map<String, Highlights> highlights = new HashMap<>();
+		
 		for (MarketAPI market : targets)
 		{
 			String optId = TARGET_OPTION_PREFIX + market.getId();
-			String defStr = String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
-					faction, target.getStarSystem(), 0));
 			
-			String text = getString("targetEntry");
-			text = StringHelper.substituteToken(text, "$market", market.getName());
-			text = StringHelper.substituteToken(text, "$size", market.getSize() + "");
-			text = StringHelper.substituteToken(text, "$space", defStr);
-			if (fleetType == FleetType.INVASION)
-				text = StringHelper.substituteToken(text, "$ground", 
-						String.format("%.1f", InvasionRound.getDefenderStrength(target, 1)));
-			
+			// option text
+			String text = getMarketOptionString(market);
 			addOption(text, optId);
+			
+			// tooltip
+			String tooltip = getString("targetEntryTooltip");
+			Highlights hl = new Highlights();
+			Color hlCol = Misc.getHighlightColor();
+			
+			String defStr = String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
+					faction, market.getStarSystem(), 0));
+			tooltip = StringHelper.substituteToken(tooltip, "$space", defStr);
+			if (fleetType == FleetType.INVASION) {
+				String groundDefStr = String.format("%.1f", InvasionRound.getDefenderStrength(market, 1));
+				tooltip = StringHelper.substituteToken(tooltip, "$ground", groundDefStr);
+				hl.setText(defStr, groundDefStr);
+				hl.setColors(hlCol, hlCol);
+			}
+			else {
+				hl.setText(defStr);
+				hl.setColors(hlCol);
+			}
+			tooltips.put(optId, tooltip);
+			highlights.put(optId, hl);
 		}
 		
 		showOptions();
+		for (Map.Entry<String, String> tmp : tooltips.entrySet())
+		{
+			String optId = tmp.getKey();
+			String tooltip = tmp.getValue();
+			Highlights hl = highlights.get(optId);
+			dialog.getOptionPanel().setTooltip(optId, tooltip);
+			dialog.getOptionPanel().setTooltipHighlights(optId, hl.getText());
+			dialog.getOptionPanel().setTooltipHighlightColors(optId, hl.getColors());
+		}
 	}
 	
 	protected static String getString(String id) {
