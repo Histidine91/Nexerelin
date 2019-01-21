@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -30,6 +31,17 @@ public class BaseStrikeActionStage extends InvActionStage {
 		}
 		
 		super.updateStatus();
+	}
+	
+	@Override
+	protected void updateRoutes() {		
+		untilAutoresolve = 10f + 2.5f * (float) Math.random();
+		// increase autoresolve time if target location is unknown (we have to search for it)
+		if (target.getPrimaryEntity().isDiscoverable()) {
+			untilAutoresolve += 10 + 5 * (float) Math.random();
+		}
+		
+		super.updateRoutes();
 	}
 	
 	@Override
@@ -67,18 +79,19 @@ public class BaseStrikeActionStage extends InvActionStage {
 		}
 		
 		// kill base
+		/*
 		Industry station = Misc.getStationIndustry(target);
 		if (station != null) {
 			OrbitalStation.disrupt(station);
 		}
-		/*
-		CampaignFleetAPI fleet = Misc.getStationFleet(target);
-		if (fleet != null && fleet.isAlive())
-		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
-		{
-			fleet.removeFleetMemberWithDestructionFlash(member);
-		}
 		*/
+		CampaignFleetAPI fleet = Misc.getStationFleet(target);
+		if (fleet != null && fleet.isAlive()) {
+			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+			{
+				fleet.removeFleetMemberWithDestructionFlash(member);
+			}
+		}
 		
 		// base killed; we're done 
 		status = RaidIntel.RaidStageStatus.SUCCESS;
@@ -102,6 +115,12 @@ public class BaseStrikeActionStage extends InvActionStage {
 		
 		if (status == RaidIntel.RaidStageStatus.ONGOING && curr == index) {
 			info.addPara(StringHelper.getString("nex_baseStrike", "intelStageAction"), opad);
+			
+			if (Global.getSettings().isDevMode()) {
+				info.addPara("DEBUG: Autoresolving in %s days", opad, h, 
+						String.format("%.1f", untilAutoresolve));
+			}
+			
 			return;
 		}
 		

@@ -275,6 +275,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		if (status == RaidStageStatus.ONGOING && curr == index) {
 			info.addPara(StringHelper.getString("exerelin_invasion", "intelStageAction"), opad);
+			
+			if (Global.getSettings().isDevMode()) {
+				info.addPara("DEBUG: Autoresolving in %s days", opad, h, 
+						String.format("%.1f", untilAutoresolve));
+			}
+			
 			return;
 		}
 		
