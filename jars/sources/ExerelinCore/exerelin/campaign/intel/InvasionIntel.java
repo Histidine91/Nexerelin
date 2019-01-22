@@ -329,8 +329,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		float defenderStr = WarSimScript.getFactionStrength(targetFaction, system);
 		float defensiveStr = defenderStr + WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
 		
-		float invasionGroundStr = getNumFleets() * marinesPerFleet 
-				* (1 + ExerelinConfig.getExerelinFactionConfig(faction.getId()).invasionStrengthBonusAttack);
+		float invasionGroundStr = marinesPerFleet * (1 + ExerelinConfig.getExerelinFactionConfig(faction.getId())
+				.invasionStrengthBonusAttack);
+		invasionGroundStr *= 1 + (getNumFleets() - 1)/2;
+		
 		float re = Nex_MarketCMD.getRaidEffectiveness(target, invasionGroundStr);
 		
 		String spaceStr = "";
