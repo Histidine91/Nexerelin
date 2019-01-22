@@ -54,6 +54,7 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		
 		addStage(new NexReturnStage(this));
 		
+		/*
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
 		else if (DEBUG_MODE)
@@ -61,6 +62,8 @@ public class BaseStrikeIntel extends NexRaidIntel {
 			Global.getSector().getCampaignUI().addMessage("Base strike intel from " 
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
+		*/
+		addIntelIfNeeded();
 	}
 	
 	// Same as OffensiveFleetIntel's one

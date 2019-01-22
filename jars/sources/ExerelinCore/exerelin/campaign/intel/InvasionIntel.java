@@ -23,10 +23,14 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.invasion.*;
+import exerelin.campaign.intel.invasion.InvActionStage;
+import exerelin.campaign.intel.invasion.InvAssembleStage;
+import exerelin.campaign.intel.invasion.InvOrganizeStage;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -86,7 +90,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			marinesPerFleet = MAX_MARINES;
 		}
 		
-		
+		/*
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
 		else if (DEBUG_MODE)
@@ -94,6 +98,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			Global.getSector().getCampaignUI().addMessage("Invasion intel from " 
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
+		*/
+		addIntelIfNeeded();
 	}
 		
 	public int getMarinesPerFleet() {

@@ -63,6 +63,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		
 		addStage(new NexReturnStage(this));
 		
+		/*
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
 		else if (DEBUG_MODE)
@@ -70,6 +71,8 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			Global.getSector().getCampaignUI().addMessage("Raid intel from " 
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
+		*/
+		addIntelIfNeeded();
 	}
 	
 	// don't display faction

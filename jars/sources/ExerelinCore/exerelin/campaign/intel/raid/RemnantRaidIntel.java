@@ -70,6 +70,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		
 		addStage(new RemnantRaidReturnStage(this));
 		
+		/*
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
 		else if (DEBUG_MODE)
@@ -77,6 +78,8 @@ public class RemnantRaidIntel extends NexRaidIntel {
 			Global.getSector().getCampaignUI().addMessage("Remnant raid intel from " 
 					+ base.getContainingLocation().getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 		}
+		*/
+		addIntelIfNeeded();
 	}
 	
 	@Override
