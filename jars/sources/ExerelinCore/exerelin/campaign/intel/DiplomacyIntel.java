@@ -132,7 +132,6 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		str = StringHelper.substituteToken(str, "$faction2", fn2);
 		str = StringHelper.substituteToken(str, "$deltaAbs", delta);
 		str = StringHelper.substituteToken(str, "$newRelationStr", newRel);
-		str = StringHelper.substituteToken(str, "$newRelationStr", newRel);
 		
 		LabelAPI para = info.addPara(str, opad);
 		para.setHighlight(fn1, fn2, delta, newRel);

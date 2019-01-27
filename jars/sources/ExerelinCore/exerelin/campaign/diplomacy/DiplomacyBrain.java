@@ -15,6 +15,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.intel.CeasefirePromptIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.Morality;
@@ -112,6 +113,7 @@ public class DiplomacyBrain {
 	protected IntervalUtil interval = new IntervalUtil(9.5f, 10.5f);
 	protected float ourStrength = 0;
 	protected float enemyStrength = 0;
+	protected float playerCeasefireOfferCooldown = 0;
 	
 	//==========================================================================
 	//==========================================================================
@@ -364,10 +366,16 @@ public class DiplomacyBrain {
 	protected boolean tryMakePeace(String enemyId, float ourWeariness)
 	{
 		FactionAPI enemy = Global.getSector().getFaction(enemyId);
+		boolean enemyIsPlayer = Nex_IsFactionRuler.isRuler(enemyId);
 		float enemyWeariness = DiplomacyManager.getWarWeariness(enemyId, true);
 		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + ExerelinConfig.minWarWearinessForPeace);
-		if (enemyWeariness < ExerelinConfig.minWarWearinessForPeace)
-			return false;
+		if (enemyIsPlayer) {
+			if (enemyWeariness < ExerelinConfig.minWarWearinessForPeace)
+				return false;
+		} else {
+			if (playerCeasefireOfferCooldown > 0)
+				return false;
+		}
 		
 		// add war weariness of both factions, plus effects from recent events
 		float sumWeariness = ourWeariness + enemyWeariness;
@@ -392,6 +400,11 @@ public class DiplomacyBrain {
 		if (faction.isAtWorst(enemy, RepLevel.HOSTILE))
 		{
 			peaceTreaty = Math.random() < DiplomacyManager.PEACE_TREATY_CHANCE;
+		}
+		if (enemyIsPlayer) {
+			new CeasefirePromptIntel(factionId, peaceTreaty).init();
+			playerCeasefireOfferCooldown = 60;
+			return true;
 		}
 		String eventId = peaceTreaty ? "peace_treaty" : "ceasefire";
 		float reduction = peaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
@@ -665,6 +678,10 @@ public class DiplomacyBrain {
 		if (interval.intervalElapsed())
 		{
 			update(interval.getElapsed());
+		}
+		
+		if (playerCeasefireOfferCooldown > 0) {
+			playerCeasefireOfferCooldown -= days;
 		}
 	}
 	

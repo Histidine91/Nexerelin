@@ -36,6 +36,7 @@
 		"true":"true",
 		"false":"false",
 		
+		"result":"result",
 		"successful":"successful",
 		"failed":"failed",
 		"over":"over",
@@ -68,6 +69,11 @@
 		"cancel":"cancel",
 		"enabled":"enabled",
 		"disabled":"disabled",
+		"accept":"accept",
+		"reject":"reject",
+		"accepted":"accepted",
+		"rejected":"rejected",
+		"expired":"expired",
 
 		"randomize":"randomize",
 
@@ -225,7 +231,9 @@
 		"intelHeader1":"News summary",
 		"intelHeader2":"Effects",
 		"intelRepResultPositive":"Relations between $faction1 and $faction2 improved by $deltaAbs, to $newRelationStr.",
+		"intelRepResultPositivePlayer":"Relations with $faction improved by $deltaAbs, to $newRelationStr.",
 		"intelRepResultNegative":"Relations between $faction1 and $faction2 reduced by $deltaAbs, to $newRelationStr.",
+		"intelRepResultNegativePlayer":"Relations with $faction reduced by $deltaAbs, to $newRelationStr.",
 		"intelRepCurrent":"Current relations: $relationStr",
 		"intelRepCurrentShort":"Now at $relationStr",
 	
@@ -233,7 +241,14 @@
 		"player_war_msg":"You are now hostile to $factionOrAlliance",
 
 		"repChangeMsg":"Relationship with $theFaction $changedBy, currently at $currentRep",
-		"repChangeMsgOther":"$OtherFaction: relationship with $theFaction $changedBy, currently at $currentRep"
+		"repChangeMsgOther":"$OtherFaction: relationship with $theFaction $changedBy, currently at $currentRep",
+		
+		"intelCeasefireTitle":"Ceasefire Offer",
+		"intelPeaceTreatyTitle":"Peace Treaty Offer",
+		"intelCeasefireDesc":"$TheFaction $isOrAre offering an $ceasefireOrPeaceTreaty to end the ongoing hostilities. In the absence of further overt hostile actions, this will run for at least $days days and until further diplomatic events occur.",
+		"intelCeasefireDescTime":"You have $timeLeft $days to accept or reject the offer.",
+		"intelCeasefireDescResult":"You have $acceptedOrRejected the offer.",
+		"intelCeasefireConfirm":"Confirm?",
 	},
 	"exerelin_events":{
 		"agentDestabilizeMarket":"Agent terror attacks on $market",

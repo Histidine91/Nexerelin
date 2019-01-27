@@ -392,7 +392,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.repLimit);
     }
     
-    public void doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
+    public ExerelinReputationAdjustmentResult doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
     {
         SectorAPI sector = Global.getSector();
         
@@ -415,6 +415,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
             diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);
         }
+		
+		return result;
     }
     
     public DiplomacyEventDef pickDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, DiplomacyEventParams params)
@@ -512,9 +514,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         createDiplomacyEvent(faction1, faction2, null, new DiplomacyEventParams());
     }
     
-    public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params)
+    public static ExerelinReputationAdjustmentResult createDiplomacyEvent(
+			FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params)
     {
-        if (diplomacyManager == null) return;
+        if (diplomacyManager == null) return null;
         
         String factionId1 = faction1.getId();
         String factionId2 = faction2.getId();
@@ -531,7 +534,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (event == null)
         {
             log.info("No event available");
-            return;
+            return null;
         }
         log.info("Trying event: " + event.name);
         for (MarketAPI market:markets)
@@ -543,10 +546,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (market == null)
         {
             log.info("No market available");
-            return;
+            return null;
         }
         
-        diplomacyManager.doDiplomacyEvent(event, market, faction1, faction2);
+        return diplomacyManager.doDiplomacyEvent(event, market, faction1, faction2);
     }
     
     public static void createDiplomacyEvent()
