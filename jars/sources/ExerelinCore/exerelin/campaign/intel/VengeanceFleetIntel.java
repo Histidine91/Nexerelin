@@ -22,6 +22,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -507,6 +508,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             mod = 1f;
         }
         int capBonus = Math.round(ExerelinUtilsFleet.getPlayerLevelFPBonus());
+		float sizeMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(market.getFaction());
         int combat, freighter, tanker, utility;
         float bonus;
         switch (escalationLevel) {
@@ -514,9 +516,10 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             case 0:
                 combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod));
                 combat = Math.min(150 + capBonus, combat);
-                freighter = Math.round(combat / 10f);
-                tanker = Math.round(combat / 15f);
-                utility = Math.round(combat / 20f);
+                combat *= sizeMult;
+                freighter = Math.round(combat / 20f);
+                tanker = Math.round(combat / 30f);
+                utility = Math.round(combat / 40f);
                 bonus = 0.1f;
                 break;
             case 1:
@@ -526,10 +529,11 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                     combat =
                     Math.round((70f / mod) + (player - 80f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
                 }
-                combat = Math.min(225 + capBonus * 2, combat);
-                freighter = Math.round(combat / 10f);
-                tanker = Math.round(combat / 15f);
-                utility = Math.round(combat / 20f);
+                combat = (int)Math.min(225 + capBonus * 1.5f, combat);
+                combat *= sizeMult;
+                freighter = Math.round(combat / 20f);
+                tanker = Math.round(combat / 30f);
+                utility = Math.round(combat / 40f);
                 bonus = 0.3f;
                 break;
             case 2:
@@ -542,10 +546,11 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                     combat =
                     Math.round((240f / mod) + (player - 240f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
                 }
-                combat = Math.min(300 + capBonus * 3, combat);
-                freighter = Math.round(combat / 10f);
-                tanker = Math.round(combat / 15f);
-                utility = Math.round(combat / 20f);
+                combat = Math.min(300 + capBonus * 2, combat);
+                combat *= sizeMult;
+                freighter = Math.round(combat / 20f);
+                tanker = Math.round(combat / 30f);
+                utility = Math.round(combat / 40f);
                 bonus = 0.5f;
                 break;
         }
@@ -559,7 +564,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             bonus += 0.75f;
         }
         
-        float sizeMult = ExerelinConfig.getExerelinFactionConfig(factionId).vengeanceFleetSizeMult;
+        sizeMult = ExerelinConfig.getExerelinFactionConfig(factionId).vengeanceFleetSizeMult;
         combat *= sizeMult;
         freighter *= sizeMult;
         tanker *= sizeMult;
@@ -581,6 +586,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                                                 finalUtility, // utilityPts
                                                 finalBonus // qualityMod
                                                 );
+        params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
         fleet = ExerelinUtilsFleet.customCreateFleet(getFaction(), params);
 
         if (fleet == null)
