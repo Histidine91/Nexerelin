@@ -51,13 +51,15 @@ public class ExerelinConfig
     public static boolean allowPirateInvasions = false;
 	public static boolean retakePirateMarkets = true;
     public static float fleetRequestCostPerMarine = 100f;
-    public static float fleetRequestCostPerFP = 500f;
-    public static float invasionGracePeriod = 0;
+    public static float fleetRequestCostPerFP = 400f;
+    public static float invasionFleetSizeMult = 1;
+    public static float invasionGracePeriod = 15;
     public static float pointsRequiredForInvasionFleet = 18000f;
     public static float baseInvasionPointsPerFaction = 30f;
     public static float invasionPointsPerPlayerLevel = 0.5f;
     public static float invasionPointEconomyMult = 0.5f;
     public static float conquestMissionRewardMult = 1f;
+    
     @Deprecated public static float invasionLootMult = 0.05f;
     
     // Alliances
@@ -98,6 +100,7 @@ public class ExerelinConfig
     public static int enableRevengeFleets = 2;
     public static float revengePointsPerEnemyFP = 0.05f;
     public static float revengePointsForMarketCaptureMult = 2f;
+    public static float vengeanceFleetSizeMult = 1;
     
     // Misc
     public static int directoryDialogKey = 44;  // Z
@@ -148,6 +151,7 @@ public class ExerelinConfig
 			retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
             fleetRequestCostPerMarine = (float)settings.optDouble("fleetRequestCostPerMarine", fleetRequestCostPerMarine);
             fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);
+            invasionFleetSizeMult = (float)settings.optDouble("invasionFleetSizeMult", invasionFleetSizeMult);
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
             baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);
@@ -189,6 +193,7 @@ public class ExerelinConfig
             enableRevengeFleets = settings.optInt("enableRevengeFleets", enableRevengeFleets);
             revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);
             revengePointsForMarketCaptureMult = (float)settings.optDouble("revengeFleetPointsForMarketCaptureMult", revengePointsForMarketCaptureMult);
+            vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
             
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);

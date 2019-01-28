@@ -38,7 +38,7 @@ public class SpawnRaidFleet extends SpawnInvasionFleet
 		// spawn fleet
 		float fp = InvasionFleetManager.getWantedFleetSize(source.getFaction(), target, 0.2f, false);
 		fp *= InvasionFleetManager.RAID_SIZE_MULT;
-		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(source.getFactionId()).invasionFleetSizeMod;
+		fp *= InvasionFleetManager.getInvasionSizeMult(source.getFactionId());
 		fp *= MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		NexRaidIntel intel = new NexRaidIntel(source.getFaction(), source, target, fp, 1);	
 		if (intel == null) {

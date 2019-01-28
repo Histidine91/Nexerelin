@@ -565,6 +565,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         }
         
         sizeMult = ExerelinConfig.getExerelinFactionConfig(factionId).vengeanceFleetSizeMult;
+		sizeMult *= ExerelinConfig.vengeanceFleetSizeMult;
         combat *= sizeMult;
         freighter *= sizeMult;
         tanker *= sizeMult;

@@ -250,6 +250,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return 10 + fp/30;
 	}
 	
+	public static float getInvasionSizeMult(String factionId) {
+		float mult = 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
+		mult *= ExerelinConfig.invasionFleetSizeMult;
+		return mult;
+	}
+	
 	/*
 	public static InvasionFleetData spawnRespawnFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean useOriginLocation)
 	{
@@ -519,7 +525,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		// FIXME
 		float fp = getWantedFleetSize(faction, targetMarket, 0.2f, false);
 		float organizeTime = getOrganizeTime(fp);
-		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
+		fp *= InvasionFleetManager.getInvasionSizeMult(factionId);
 		if (raid)
 			fp *= RAID_SIZE_MULT;
 		else

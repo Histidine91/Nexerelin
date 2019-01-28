@@ -2,6 +2,7 @@ package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.InvasionIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.NexAssembleStage;
@@ -35,6 +36,7 @@ public class InvAssembleStage extends NexAssembleStage {
 			base *= 1.5f;
 		
 		base *= MathUtils.getRandomNumberInRange(0.85f, 1.15f);
+		base *= InvasionFleetManager.getInvasionSizeMult(intel.getFaction().getId());
 			
 		if (spawnFP < base * 1.5f) {
 			base = spawnFP;

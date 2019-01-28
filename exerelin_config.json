@@ -20,6 +20,7 @@
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
     "fleetRequestCostPerFP": 400,  # used for player-requested fleets
+	"invasionFleetSizeMult": 1,
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
     "pointsRequiredForInvasionFleet": 18000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
@@ -68,6 +69,7 @@
     "enableRevengeFleets": 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
     "revengePointsPerEnemyFP": 0.05,
     "revengePointsForMarketCaptureMult": 2,
+	"vengeanceFleetSizeMult": 1,
     
     "enableAntioch": true, # adds Antioch for Templars in random mode, replacing their normal worlds
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (random mode only)
