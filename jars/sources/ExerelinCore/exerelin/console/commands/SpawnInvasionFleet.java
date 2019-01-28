@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.InvasionIntel;
-import exerelin.utilities.ExerelinConfig;
 import java.util.ArrayList;
 import java.util.List;
 import org.lazywizard.console.BaseCommand;
@@ -86,6 +85,6 @@ public class SpawnInvasionFleet implements BaseCommand {
 	}
 	
 	public static MarketAPI getMarket(String marketId) {
-		return Global.getSector().getEconomy().getMarket(marketId);
+		return CommandUtils.findBestMarketMatch(marketId);
 	}
 }
