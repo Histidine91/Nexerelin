@@ -13,9 +13,6 @@ import org.apache.log4j.Logger;
 public class BaseLandmarkDef extends LandmarkDef {
 	
 	protected static Logger log = Global.getLogger(BaseLandmarkDef.class);
-	
-	protected static final boolean WEIGH_BY_MARKET_SIZE = true;
-	protected static final boolean PROCGEN_SYSTEMS_ONLY = false;
 		
 	@Override
 	public boolean isApplicableToEntity(SectorEntityToken entity)
@@ -28,13 +25,13 @@ public class BaseLandmarkDef extends LandmarkDef {
 		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
 		{
-			if (PROCGEN_SYSTEMS_ONLY && !system.isProcgen())
+			if (isProcgenOnly() && !system.isProcgen())
 				continue;
 			for (PlanetAPI planet : system.getPlanets())
 			{
 				if (!isApplicableToEntity(planet)) continue;
 				float weight = 1;
-				if (WEIGH_BY_MARKET_SIZE && planet.getMarket() != null)
+				if (weighByMarketSize() && planet.getMarket() != null)
 					weight = planet.getMarket().getSize();
 				picker.add(planet, weight);
 			}
@@ -84,5 +81,13 @@ public class BaseLandmarkDef extends LandmarkDef {
 	@Override
 	public void setRandom(Random random) {
 		this.random = random;
+	}
+	
+	protected boolean weighByMarketSize() {
+		return true;
+	}
+	
+	protected boolean isProcgenOnly() {
+		return false;
 	}
 }

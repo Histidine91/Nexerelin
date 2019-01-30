@@ -17,8 +17,6 @@ import java.util.Set;
 public class PlagueBeacon extends BaseLandmarkDef {
 	
 	public static final String id = "plague_beacon";
-	protected static final boolean WEIGH_BY_MARKET_SIZE = false;
-	protected static final boolean PROCGEN_SYSTEMS_ONLY = true;
 	
 	protected static final Set<String> ALLOWED_CONDITIONS = new HashSet<>(Arrays.asList(new String[]{
 		Conditions.DECIVILIZED, Conditions.RUINS_SCATTERED, Conditions.RUINS_EXTENSIVE, 
@@ -63,5 +61,15 @@ public class PlagueBeacon extends BaseLandmarkDef {
 		Misc.setWarningBeaconPingColor(beacon, Color.GREEN);
 		
 		log.info("Spawning plague beacon around " + entity.getName() + ", " + entity.getContainingLocation().getName());
+	}
+	
+	@Override
+	protected boolean weighByMarketSize() {
+		return false;
+	}
+	
+	@Override
+	protected boolean isProcgenOnly() {
+		return true;
 	}
 }
