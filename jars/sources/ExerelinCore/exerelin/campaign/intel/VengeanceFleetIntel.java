@@ -146,17 +146,17 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		else if (assembling)
 		{
 			key += "Assembling";
-			String dtl = getDays(daysToLaunchFixed) + " " + getDaysString(daysToLaunchFixed);
+			String dtl = getDays(daysToLaunch) + " " + getDaysString(daysToLaunch);
 			sub.put("$days", dtl);
 			if (!isMarketKnown())
 			{
 				key += "UnknownLoc";
-				addBullet(info, key, sub, pad, tc, getDays(daysToLaunchFixed));
+				addBullet(info, key, sub, pad, tc, getDays(daysToLaunch));
 			}
 			else
 			{
 				sub.put("$market", market.getName());
-				addBullet(info, key, sub, pad, tc, market.getName(), getDays(daysToLaunchFixed));
+				addBullet(info, key, sub, pad, tc, market.getName(), getDays(daysToLaunch));
 			}
 		}
 		else
@@ -498,7 +498,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 	{
 		if (!market.getFactionId().equals(factionId))
 			return null;
-		if (!market.isInEconomy())
+		if (!market.isInEconomy() || !market.getPrimaryEntity().isAlive())
 			return null;
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
@@ -554,7 +554,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                 bonus = 0.5f;
                 break;
         }
-
+		/*
         int total = combat + freighter + tanker + utility;
         if (total > 125 && total <= 250) {
             bonus += 0.25f;
@@ -563,6 +563,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         } else if (total > 500) {
             bonus += 0.75f;
         }
+		*/
         
         sizeMult = ExerelinConfig.getExerelinFactionConfig(factionId).vengeanceFleetSizeMult;
 		sizeMult *= ExerelinConfig.vengeanceFleetSizeMult;
