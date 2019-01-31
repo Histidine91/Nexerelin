@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
@@ -342,6 +343,22 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 				
 		float raidFP = getRaidFP();
 		float raidStr = raidFP * InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
+		return raidStr;
+	}
+	
+	@Override
+	public float getRaidStr() {
+		if (InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+			return super.getRaidStr();
+		
+		MarketAPI source = getFirstSource();
+		
+		float raidStr = getRaidFPAdjusted();
+		raidStr *= Math.max(0.25f, 0.5f + Math.min(1f, Misc.getShipQuality(source)));
+		
+		float pts = faction.getDoctrine().getOfficerQuality();
+		fp *= 1f + (pts - 1f) / 4f;
+		
 		return raidStr;
 	}
 }

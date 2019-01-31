@@ -234,7 +234,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				countAllHostile ? null : targetFaction, 
 				system, variability);
 		float defensiveStr = defenderStr + WarSimScript.getStationStrength(
-				targetFaction, system, target.getPrimaryEntity());
+				targetFaction, system, target.getPrimaryEntity()) * 0.5f;
 		
 		log.info("Estimated strength required for invasion: " + defensiveStr);
 		
