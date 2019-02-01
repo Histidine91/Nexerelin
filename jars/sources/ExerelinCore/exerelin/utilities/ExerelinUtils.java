@@ -63,7 +63,7 @@ public class ExerelinUtils
 		return list.get(randomIndex);
 	}
 	
-	public static Object getRandomListElement(List list, Random rand)
+	public static <T> T getRandomListElement(List<T> list, Random rand)
 	{
 		if (list.isEmpty())
 			return null;

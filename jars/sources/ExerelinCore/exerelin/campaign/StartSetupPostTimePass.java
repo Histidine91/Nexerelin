@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -14,6 +15,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
 import com.fs.starfarer.api.util.Misc;
@@ -26,6 +28,8 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -147,13 +151,24 @@ public class StartSetupPostTimePass {
 		if (!factionId.equals(Factions.PLAYER)) {
 			ExerelinUtilsFaction.grantCommission(factionId);
 		}
+		
 		// make own faction start's first market player-owned
 		else if (!SectorManager.getCorvusMode() && !SectorManager.getFreeStart() && entity != null) {
 			entity.getMarket().setPlayerOwned(true);
 		}
 		
+		// Galatian stipend
 		if (!SectorManager.getCorvusMode() && !SectorManager.getHardMode()) {
 			new GalatianAcademyStipend();
+		}
+		
+		// Starting blueprints placeholder
+		if (factionId.equals(Factions.PLAYER) && !SectorManager.getFreeStart()) {
+			List<String> blueprints = Arrays.asList(new String[] {
+				"low_tech_package", "midline_package", "high_tech_package"
+			});
+			String bp = ExerelinUtils.getRandomListElement(blueprints, StarSystemGenerator.random);
+			playerFleet.getCargo().addSpecial(new SpecialItemData(bp, ""), 1);
 		}
 	}
 	
