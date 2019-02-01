@@ -30,7 +30,7 @@ import com.fs.starfarer.api.util.MutableValue;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
@@ -652,7 +652,8 @@ public class Nex_FleetRequest extends PaginatedOptions {
 			else {
 				confirmMessage = getString("proceedConfirm");
 			}
-			opts.addOptionConfirmation(OPTION_PROCEED, confirmMessage, StringHelper.getString("yes"), StringHelper.getString("no"));
+			opts.addOptionConfirmation(OPTION_PROCEED, confirmMessage, 
+					StringHelper.getString("yes", true), StringHelper.getString("no", true));
 		}
 		
 		

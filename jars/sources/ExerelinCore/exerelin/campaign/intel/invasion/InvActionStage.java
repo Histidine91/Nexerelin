@@ -25,7 +25,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
-import exerelin.campaign.intel.InvasionIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.utilities.StringHelper;

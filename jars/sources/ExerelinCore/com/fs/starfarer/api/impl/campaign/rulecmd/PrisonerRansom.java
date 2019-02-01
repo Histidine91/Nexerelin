@@ -12,18 +12,18 @@ import exerelin.utilities.ExerelinConfig;
 
 public class PrisonerRansom extends AgentActionBase {
 
-        @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-                
-                boolean superResult = useSpecialPerson("prisoner", 1);
-                if (superResult == false)
-                    return false;
-                
-                int level = Global.getSector().getPlayerPerson().getStats().getLevel();
+		
+		boolean superResult = useSpecialPerson("prisoner", 1);
+		if (superResult == false)
+			return false;
+		
+		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
 		int ransomValue = (int)(ExerelinConfig.prisonerBaseRansomValue + ExerelinConfig.prisonerRansomValueIncrementPerLevel * (level - 1));
-                Global.getSector().getPlayerFleet().getCargo().getCredits().add(ransomValue);
-                StatsTracker.getStatsTracker().notifyPrisonersRansomed(1);
-                return true;
-        }
+		Global.getSector().getPlayerFleet().getCargo().getCredits().add(ransomValue);
+		StatsTracker.getStatsTracker().notifyPrisonersRansomed(1);
+		return true;
+	}
 }

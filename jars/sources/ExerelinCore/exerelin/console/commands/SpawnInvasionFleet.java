@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import java.util.ArrayList;
 import java.util.List;
 import org.lazywizard.console.BaseCommand;

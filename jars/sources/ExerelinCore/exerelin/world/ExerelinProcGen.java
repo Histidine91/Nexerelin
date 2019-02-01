@@ -794,6 +794,7 @@ public class ExerelinProcGen {
 					ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
 						lp, startAngle, orbitRadius, 0, capEntity.getOrbit().getOrbitalPeriod(), 
 						false, 0, 1, 1, 0);
+					log.info("Placing relay at Lagrange point of " + capEntity.getName());
 					
 					// check for overlap with other entities
 					
@@ -811,10 +812,14 @@ public class ExerelinProcGen {
 							ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
 								lp, startAngle, orbitRadius, 0, capEntity.getOrbit().getOrbitalPeriod(), 
 								false, 0, 1, 1, 0);
+							log.info("Placing relay at other Lagrange point of " + capEntity.getName());
 							break;
 						}
 					}
 				}
+				
+				if (MathUtils.getDistanceSquared(relay, system.getCenter()) < Math.pow(system.getCenter().getRadius(), 2))
+					log.info("Warning: Relay in " + system.getName() + " is being cooked");
 			}
 		}
 	}

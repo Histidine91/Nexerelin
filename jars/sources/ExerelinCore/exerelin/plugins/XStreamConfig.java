@@ -33,7 +33,7 @@ import exerelin.campaign.fleets.ResponseFleetAI;
 import exerelin.campaign.fleets.SuppressionFleetAI;
 import exerelin.campaign.intel.DiplomacyIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
-import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionIntel;
 import exerelin.campaign.intel.fleets.NexAssembleStage;

@@ -29,7 +29,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.RebellionEvent;
-import exerelin.campaign.intel.InvasionIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
@@ -673,13 +673,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 			
 			// increment invasion counter for faction
-			if (!spawnCounter.containsKey(factionId))
-				spawnCounter.put(factionId, 0f);
+			
 			// safety (faction can be live without markets if its last market decivilizes)
 			if (!pointsPerFaction.containsKey(factionId))
 				pointsPerFaction.put(factionId, 0f);
 			
-			float counter = spawnCounter.get(factionId);
+			float counter = getSpawnCounter(factionId);
 			float oldCounter = counter;
 			float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
 			increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
@@ -750,7 +749,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	protected float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
 	{
-		return base * Math.max(intel.getFP()/BASE_INVASION_COST, 0.8f);
+		float amount = base * Math.max(intel.getFP()/BASE_INVASION_COST, 0.8f);
+		log.info("Deducting " + amount + " invasion points for " + intel.getName());
+		return amount;
+	}
+	
+	public float getSpawnCounter(String factionId) {
+		if (!spawnCounter.containsKey(factionId))
+			spawnCounter.put(factionId, 0f);
+		return spawnCounter.get(factionId);
 	}
 	
 	public static CampaignFleetAPI findBase(FactionAPI faction) {

@@ -50,18 +50,14 @@ public class ExerelinSetupData
 			factions.put(factionId, true);
 	}
 
-	public static ExerelinSetupData getInstance()
-	{
-		if(instance == null)
-		{
+	public static ExerelinSetupData getInstance() {
+		if (instance == null) {
 			instance = new ExerelinSetupData();
 		}
-
 		return instance;
 	}
 
-	public static void resetInstance()
-	{
+	public static void resetInstance() {
 		instance = new ExerelinSetupData();
 	}
 }

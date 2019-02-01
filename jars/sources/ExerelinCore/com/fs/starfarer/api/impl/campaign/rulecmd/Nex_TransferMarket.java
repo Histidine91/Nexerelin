@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -84,6 +85,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				str = StringHelper.substituteToken(str, "$market", market.getName() + "");
 				text.addParagraph(str);
 				text.highlightLastInLastPara(repChange, Misc.getHighlightColor());
+				//text.addParagraph("Market value: " + getMarketValue(market));
 				text.setFontInsignia();
 				return true;
 		}
@@ -96,6 +98,14 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		float repChange = (5 + market.getSize()*5) * ((market.getStabilityValue() + 10) / 20);
 		if (!playerFacing) repChange *= 0.01f;
 		return repChange;
+	}
+	
+	protected float getMarketValue(MarketAPI market) {
+		float value = 0;
+		for (Industry ind : market.getIndustries()) {
+			value += ind.getBuildCost();
+		}
+		return value;
 	}
 	
 	public void transferMarket(InteractionDialogAPI dialog, MarketAPI market, String newFactionId)
