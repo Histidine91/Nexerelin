@@ -69,7 +69,7 @@
     "enableRevengeFleets": 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
     "revengePointsPerEnemyFP": 0.05,
     "revengePointsForMarketCaptureMult": 2,
-	"vengeanceFleetSizeMult": 1,
+	"vengeanceFleetSizeMult": 0.8,
     
     "enableAntioch": true, # adds Antioch for Templars in random mode, replacing their normal worlds
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (random mode only)

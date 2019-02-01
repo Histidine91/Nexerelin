@@ -502,7 +502,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			return null;
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-		float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.5f;
+		float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;
         Float mod = FACTION_ADJUST.get(factionId);
         if (mod == null) {
             mod = 1f;
@@ -515,7 +515,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             default:
             case 0:
                 combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod));
-                combat = Math.min(150 + capBonus, combat);
+                combat = Math.min(120 + capBonus, combat);
                 combat *= sizeMult;
                 freighter = Math.round(combat / 20f);
                 tanker = Math.round(combat / 30f);
@@ -529,7 +529,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                     combat =
                     Math.round((70f / mod) + (player - 80f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
                 }
-                combat = (int)Math.min(225 + capBonus * 1.5f, combat);
+                combat = (int)Math.min(210 + capBonus * 1.5f, combat);
                 combat *= sizeMult;
                 freighter = Math.round(combat / 20f);
                 tanker = Math.round(combat / 30f);
@@ -554,8 +554,9 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                 bonus = 0.5f;
                 break;
         }
-		/*
+        
         int total = combat + freighter + tanker + utility;
+        /*
         if (total > 125 && total <= 250) {
             bonus += 0.25f;
         } else if (total > 250 && total <= 500) {
