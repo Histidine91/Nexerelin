@@ -37,6 +37,7 @@ public class ExerelinSetupData
 	public boolean prismMarketPresent = false;
 	public boolean freeStart = false;
 	public boolean useFactionWeights = true;
+	public boolean randomFactionWeights = false;
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
 

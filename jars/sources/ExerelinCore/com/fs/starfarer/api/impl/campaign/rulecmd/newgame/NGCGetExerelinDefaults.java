@@ -28,6 +28,7 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$respawnFactions", setupData.respawnFactions, 0);
 		map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
 		map.set("$useFactionWeights", setupData.useFactionWeights, 0);
+		map.set("$randomFactionWeights", setupData.randomFactionWeights, 0);
 		
 		map.set("$corvusMode", setupData.corvusMode, 0);
 		map.set("$hardMode", setupData.hardMode, 0);

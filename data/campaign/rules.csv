@@ -93,6 +93,13 @@ nex_NGCListOptionEnableFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
 !$useFactionWeights","SetTooltip nex_NGCEnableUseFactionWeights ""If enabled, certain factions (e.g. Hegemony, Persean League) will start the game with more markets than others.""",,nex_NGCEnableUseFactionWeights:Enable faction spawning weights,
 nex_NGCListOptionDisableFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
 $useFactionWeights","SetTooltip nex_NGCDisableUseFactionWeights ""If enabled, certain factions (e.g. Hegemony, Persean League) will start the game with more markets than others.""",,nex_NGCDisableUseFactionWeights:Disable faction spawning weights,
+nex_NGCListOptionEnableRandomFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
+$useFactionWeights
+!$randomFactionWeights",,,nex_NGCEnableRandomFactionWeights:Enable random faction spawning weights,
+nex_NGCListOptionDisableRandomFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
+$useFactionWeights
+$randomFactionWeights",,,nex_NGCDisableRandomFactionWeights:Disable random faction spawning weights,
+,,,,,,
 ,,,,,,
 ExerelinNGCListOptionEnableRandomStartShips,ExerelinNGCOtherOptions,!$randomStartShips,"SetTooltip exerelinNGCEnableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,exerelinNGCEnableRandomStartShips:Enable random starting ships,
 ExerelinNGCListOptionDisableRandomStartShips,ExerelinNGCOtherOptions,$randomStartShips,"SetTooltip exerelinNGCDisableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,exerelinNGCDisableRandomStartShips:Disable random starting ships,
@@ -130,7 +137,11 @@ ExerelinNGCDisableRespawnFactions,NewGameOptionSelected,$option==exerelinNGCDisa
 FireAll ExerelinNGCFactionOptions",,,
 nex_NGCEnableUseFactionWeights,NewGameOptionSelected,$option==nex_NGCEnableUseFactionWeights,"Nex_NGCSetUseFactionWeights true
 FireAll ExerelinNGCFactionOptions",,,
-nex_NGCDisableUseFactionWeights,NewGameOptionSelected,$option==nex_NGCDisableUseFactionWeights,"Nex_NGCSetUseFactionWeights false
+nex_NGCDisableUseFactionWeights,NewGameOptionSelected,$option==nex_NGCDisableRandomFactionWeights,"Nex_NGCSetRandomFactionWeights false
+FireAll ExerelinNGCFactionOptions",,,
+nex_NGCEnableRandomFactionWeights,NewGameOptionSelected,$option==nex_NGCEnableRandomFactionWeights,"Nex_NGCSetRandomFactionWeights true
+FireAll ExerelinNGCFactionOptions",,,
+nex_NGCDisableRandomFactionWeights,NewGameOptionSelected,$option==nex_NGCDisableUseFactionWeights,"Nex_NGCSetUseFactionWeights false
 FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCEnableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCEnableRespawnAllFactions,"NGCSetRespawnAllFactions true
 FireAll ExerelinNGCFactionOptions",,,

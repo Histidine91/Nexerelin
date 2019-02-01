@@ -1502,8 +1502,14 @@ public class ExerelinProcGen {
 		float totalShare = 0;
 		for (String factionId : factions) {
 			float share = 1;
-			if (setupData.useFactionWeights)
-				share = ExerelinConfig.getExerelinFactionConfig(factionId).marketSpawnWeight;
+			if (setupData.useFactionWeights) {
+				if (setupData.randomFactionWeights) {
+					share = (float)(1 + 0.5f * random.nextGaussian());
+				} else {
+					share = ExerelinConfig.getExerelinFactionConfig(factionId).marketSpawnWeight;
+				}
+			}
+			
 			totalShare += share;
 			factionShare.put(factionId, share);
 		}
