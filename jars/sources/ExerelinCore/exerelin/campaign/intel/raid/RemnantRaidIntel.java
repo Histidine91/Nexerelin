@@ -12,13 +12,12 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
-import static exerelin.campaign.intel.OffensiveFleetIntel.DEBUG_MODE;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import java.util.Random;
@@ -99,6 +98,11 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		fleet.setLocation(base.getLocation().x, base.getLocation().y);
 		
 		fleet.addScript(createAssignmentAI(fleet, route));
+		
+		if (faction.getId().equals(Factions.REMNANTS)) {
+			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
+				   new RemnantRaidFleetInteractionConfigGen());		
+		}
 		
 		return fleet;
 	}
@@ -191,4 +195,5 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		if (getCurrentStage() <= 1 && (base == null || !base.isAlive()))
 			terminateEvent(OffensiveOutcome.FAIL);
 	}
+	
 }
