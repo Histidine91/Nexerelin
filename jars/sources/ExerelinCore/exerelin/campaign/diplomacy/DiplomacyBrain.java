@@ -654,6 +654,10 @@ public class DiplomacyBrain {
 		enemies = latestEnemies;
 	}
 	
+	public void addCeasefire(String enemyId) {
+		ceasefires.put(enemyId, CEASEFIRE_LENGTH);
+	}
+	
 	public void update(float days)
 	{
 		cacheRevanchism();

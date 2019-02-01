@@ -356,6 +356,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (repResult.wasHostile && !repResult.isHostile)
         {
             if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, false);
+			diplomacyManager.getDiplomacyBrain(faction1Id).addCeasefire(faction2Id);
+			diplomacyManager.getDiplomacyBrain(faction2Id).addCeasefire(faction1Id);
         }
         else if (!repResult.wasHostile && repResult.isHostile)
         {
