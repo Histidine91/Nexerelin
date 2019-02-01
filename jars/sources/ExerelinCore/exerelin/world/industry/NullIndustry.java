@@ -14,7 +14,7 @@ public class NullIndustry extends IndustryClassGen {
 	public float getWeight(ProcGenEntity entity) {
 		int size = entity.market.getSize();
 		if (size >= 7) return 0;
-		return (8 - size) * 125f;
+		return (8.5f - size) * 125f;
 	}
 	
 	@Override

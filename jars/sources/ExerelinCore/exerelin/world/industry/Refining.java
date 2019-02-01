@@ -45,6 +45,7 @@ public class Refining extends IndustryClassGen {
 		}
 		// bad for high hazard worlds
 		weight += (175 - market.getHazardValue()) * 2f;
+		weight *= 1.5f;
 		
 		return weight;
 	}
