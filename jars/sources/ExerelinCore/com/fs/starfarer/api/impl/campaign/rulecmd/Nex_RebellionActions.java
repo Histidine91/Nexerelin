@@ -155,7 +155,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				opts.addOption(getDeliverString(commodity, have), OPT_PREFIX + commodity + ":all");
 		}
 		opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_supplyCounterInsurgencyBack");
-		ExerelinUtils.addDevModeDialogOptions(dialog, false);
+		ExerelinUtils.addDevModeDialogOptions(dialog);
 	}
 	
 	public String getDeliverString(String commodityId, int num)

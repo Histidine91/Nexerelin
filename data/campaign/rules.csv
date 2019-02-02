@@ -582,10 +582,107 @@ FireAll Nex_FleetRequest",,,
 nex_fleetRequest_proceed,DialogOptionSelected,$option == nex_fleetRequest_proceed,Nex_FleetRequest proceed,,,
 ,,,,,,
 ,,,,,,
+# Decivilized market events,,,,,,
+nex_decivEvent_opt,PopulateOptions,"$market.isPlanetConditionMarketOnly
+$market.mc:decivilized score:100
+Nex_DecivEvent hasEvent
+!HostileFleetNearbyAndAware",,One of the survivors' settlements on the surface is hailing your ship.,nex_decivEvent_interact:Answer the hail,
+nex_decivEvent_opthostileFleetNearby,PopulateOptions,"$market.isPlanetConditionMarketOnly
+$market.mc:decivilized score:100
+Nex_DecivEvent hasEvent
+HostileFleetNearbyAndAware",SetEnabled nex_decivEvent_interact false,"One of the survivors' settlements on the surface is hailing your ship. But with a hostile fleet nearby, it's probably not something you have time to deal with right now.",nex_decivEvent_interact:Answer the hail,
+nex_decivEvent_init,DialogOptionSelected,$option == nex_decivEvent_interact,Nex_DecivEvent greet,"You open a comm link, your comms officer configuring the protocol to interface with whatever jury-rigged system the other party is using.",,
+nex_decivEvent_greetingFirstTime,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
+!$market.wasCivilized",,"""Hello? Is this thing on?
+
+Oh, hello, stranger! It's been a long time since anyone swung by. Is the Sector still alive? Where'd you get that ship? Did Half-Life 3 finally come out?""
+
+Maybe dropping off a datacube for $himOrHer to read at $hisOrHer own leisure would get $himOrHer to stop asking questions.
+OR
+""A ship! A ship, a ship, a ship!!
+
+Gods, are we glad to see you! For the longest time we were wondering if there was even anyone else alive out there. My name is $personName, and I can't wait to shake your hand!""",nex_decivEvent_greetingContinue:Continue,
+nex_decivEvent_greetingFirstTimeWasCivilized,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
+$market.wasCivilized",,"""Praise the gods! I was starting to fear we'd never see a ship in the sky again.
+
+As you can guess, we've had no contact with the rest of the Sector since... since the previous government fell and everything went to hell here.""
+OR
+""A $shipOrFleet! I guess the Sector hasn't forgotten $market after all.
+
+Most of us are stuck here on $market, living day to day. It's a wonder most of us are even alive, honestly.""",nex_decivEvent_greetingContinue:Continue,
+nex_decivEvent_greeting,Nex_DecivEvent_Greeting,$market.nex_decivEvent_visitedBefore,Nex_DecivEvent trade,"""Hello, space traveler! I see you decided to stop by again.""
+OR
+""Oh, it's $playerName.""",,
+nex_decivEvent_greetingRefugees,Nex_DecivEvent_Greeting,"$market.nex_decivEvent_visitedBefore
+$market.nex_decivEvent_type == ""refugees""",Nex_DecivEvent trade,"""You've come back...?""",,
+nex_decivEvent_greetingFirstTimeContinue,DialogOptionSelected,$option == nex_decivEvent_greetingContinue,Nex_DecivEvent trade,,,
 ,,,,,,
+nex_decivEvent_barterGeneric,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""",SetTextHighlights $nex_decivEvent_takeName $nex_decivEvent_giveName,"""Now, we happen to be in need of some $nex_decivEvent_takeName. In return, we can give you some $nex_decivEvent_giveName. Interested?""
+OR
+""Let's make a trade, spacer. In exchange for some $nex_decivEvent_takeName, you give us $nex_decivEvent_giveName. How about that?""",,
+nex_decivEvent_barterRareOre,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
+$market.nex_decivEvent_giveItem == ""rare_ore""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeName,"""I've got an offer for you. We've got a decent stockpile of $nex_decivEvent_giveName, but not the refining facilities to process it. At the same time, we could use some $nex_decivEvent_takeName. Would you be interested in a trade?""",,
+nex_decivEvent_barterRareMetals,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
+$market.nex_decivEvent_giveItem == ""rare_metals""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeName,"""Right, here's the deal. We happen to have a large stock of $nex_decivEvent_giveName — very valuable before the Collapse. But we lack the manufacturing industry needed to make use of them; here on $market, they're just shiny baubles. If you happen to have some $nex_decivEvent_takeName, we could make a trade.""",,
+nex_decivEvent_barterCrew,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
+$market.nex_decivEvent_giveItem == ""crew""",SetTextHighlights $nex_decivEvent_takeName,"""Now, listen here. I've got a load of prisoners captured in a recent raid. More than I want to feed, in truth. I suppose an enterprising spacefarer like yourself would have no trouble putting them to work on a starship. All I ask for in exchange is a little $nex_decivEvent_takeName.""
+
+Dealing in slaves — as this offer surely is — tends to be frowned on under most moral systems. On the other hand, the captives may be considerably better off on your $shipOrFleet than with… this person.",,
+nex_decivEvent_refugees,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""refugees""",SetTextHighlights $nex_decivEvent_giveCount,"""Please help us, good starfarer. Me and my friends, we've been stranded on this world for... for far too long. A few more months here and we'll be dead, or worse.
+
+Let us come abroad your $shipOrFleet. There are $nex_decivEvent_giveCount of us, all willing to work our passage off this place.""
+OR
+""I beg you for a favor, $playerName. This place, $market, it's no place to live. Not with the total collapse of society, with every meal possibly our last, with packs of raiders and looters seizing everything — and everyone — they can get their hands on.
+
+Please, take us away from this world. We'll work on your $shipOrFleet, all $nex_decivEvent_giveCount of us. We would be eternally grateful.""",,
+nex_decivEvent_bomb,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""bomb""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeCount,"""Right, so there's something only you can help us with.
+
+There's a nearby pack of knaves and scum that needs dealing with. We'd clear the whole rotten nest out ourselves, but alas, their defenses are a little too entrenched. You, on the other hand… with your spaceship, you could drop a few  bombs on them and blow them straight to hell. In return, we'll give you some $nex_decivEvent_giveName. Sounds good?""
+
+$personName transmits several images and the coordinates of the target. With the rudimentary defenses present, you estimate that it'd take no more than $nex_decivEvent_takeCount fuel to completely destroy this settlement. Assuming, of course, that intervening in $market's conflicts is a good idea.",,
 ,,,,,,
-,,,,,,
-,,,,,,
+nex_decivEvent_accept,DialogOptionSelected,"$option == nex_decivEvent_accept
+$market.nex_decivEvent_type == ""barter""","Nex_DecivEvent accept
+ShowDefaultVisual
+FireAll PopulateOptions","""Excellent! A pleasure doing business with you.""
+
+You cut the comm link after some pleasantries and dispatch a shuttle to the surface of $market to make the trade.",,
+nex_decivEvent_decline,DialogOptionSelected,"$option == nex_decivEvent_decline
+$market.nex_decivEvent_type == ""barter""","Nex_DecivEvent decline
+ShowDefaultVisual
+FireAll PopulateOptions","""That's a shame. Well, we'll be here if you change your mind.""
+
+You cut the comm link after exchanging some pleasantries.",,
+nex_decivEvent_acceptRefugees,DialogOptionSelected,"$option == nex_decivEvent_accept
+$market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent accept
+ShowDefaultVisual
+FireAll PopulateOptions","""Thank you so much! We'll come abroad right away.""
+
+You cut the comm link and dispatch a shuttle to the surface of $market to pick up your new  crewmembers. Hopefully they'll fit in well… and won't bring abroad some horrible new pox hitherto unknown to the Sector.",,
+nex_decivEvent_declineRefugees,DialogOptionSelected,"$option == nex_decivEvent_decline
+$market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent decline
+ShowDefaultVisual
+FireAll PopulateOptions","""You... have you no heart? You would truly leave us here?""
+
+You swiftly cut the comm link. You don't need to hear any more of this.
+OR
+""No! Don't leave us!""
+
+$personName's desperate pleas are cut off abruptly as you disconnect the link.",,
+nex_decivEvent_acceptBomb,DialogOptionSelected,"$option == nex_decivEvent_accept
+$market.nex_decivEvent_type == ""bomb""","Nex_DecivEvent accept
+ShowDefaultVisual
+FireAll PopulateOptions","The jury-rigged antimatter bombs serve to obliterate the target most satisfyingly, leaving nothing but a patchwork of craters scarring the landscape.
+
+$personName is most pleased. ""Excellent!"" $heOrShe crows. ""Take your reward, friend. You've earned it.""
+
+A while later, your shuttle returns to your $shipOrFleet with the promised goods. That's one problem taken care of, at least.",,
+nex_decivEvent_declineBomb,DialogOptionSelected,"$option == nex_decivEvent_decline
+$market.nex_decivEvent_type == ""bomb""","Nex_DecivEvent decline
+ShowDefaultVisual
+FireAll PopulateOptions","""Bah, fine. Have it your way, Captain High-and-Mighty.""
+
+You cut the comm link. The outcome of whatever feud $personName and $hisOrHer neighbors have down there is none of your concern.",,
 ,,,,,,
 ## Base commander stuff ##,,,,,,
 ExerelinConvOfficialGreeting,PickGreeting,"Nex_IsBaseOfficial command

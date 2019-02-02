@@ -1,3 +1,5 @@
 battle.wav is a mashup of two sounds, both from projects licensed as (GPL v2 or later)
 - ex_med8.wav from Scorched 3D (https://sourceforge.net/projects/scorched3d/)
 - Argh_heavy_machinegun.wav from xenoargh's Merc Squad
+
+explosion_01.ogg is just the file of the same name from Starsector, converted to stereo

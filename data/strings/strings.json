@@ -70,9 +70,11 @@
 		"enabled":"enabled",
 		"disabled":"disabled",
 		"accept":"accept",
+		"decline":"decline",
 		"reject":"reject",
 		"accepted":"accepted",
 		"rejected":"rejected",
+		"declined":"declined",
 		"expired":"expired",
 
 		"randomize":"randomize",
@@ -226,6 +228,16 @@
 		"contribution_ssModCommunity":"Various tips, pointers and feedback",
 		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector"
 	},
+	
+	"nex_decivEvent":{
+		"costPanelHeader":"Trading $commodity1 for $commodity2: amount (available)",
+		"costPanelHeaderBomb":"Bombing reward: $commodity",
+		"freeSpace":"Your fleet's holds can accommodate an additional %s units of cargo.",
+		"freeSpaceWithFuel":"Your fleet's holds can accommodate an additional %s units of cargo. You have %s fuel.",
+		"freeSpaceFuel":"Your fleet's fuel tanks can hold an additional %s units of fuel.",
+		"freeSpaceCrew":"Your fleet's crew quarters can accommodate an additional %s personnel.",
+	},
+	
 	"exerelin_diplomacy":{	
 		"intelTitle":"Diplomacy",
 		"intelHeader1":"News summary",

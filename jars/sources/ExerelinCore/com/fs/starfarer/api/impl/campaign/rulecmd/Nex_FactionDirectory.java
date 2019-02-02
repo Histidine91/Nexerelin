@@ -75,7 +75,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_factionDirectoryMain");
 				opts.setShortcut("nex_factionDirectoryMain", Keyboard.KEY_ESCAPE, false, false, false, false);
 				
-				ExerelinUtils.addDevModeDialogOptions(dialog, false);
+				ExerelinUtils.addDevModeDialogOptions(dialog);
 				
 				return true;
 				
@@ -133,7 +133,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		opts.addOption(Misc.ucFirst(StringHelper.getString("back")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
 		
-		ExerelinUtils.addDevModeDialogOptions(dialog, false);
+		ExerelinUtils.addDevModeDialogOptions(dialog);
 	}
 	
 	    

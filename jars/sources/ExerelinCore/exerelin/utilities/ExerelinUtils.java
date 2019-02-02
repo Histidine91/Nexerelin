@@ -96,16 +96,7 @@ public class ExerelinUtils
 	
 	public static void addDevModeDialogOptions(InteractionDialogAPI dialog)
 	{
-		addDevModeDialogOptions(dialog, false);
-	}
-	
-	public static void addDevModeDialogOptions(InteractionDialogAPI dialog, boolean dumpMemoryOpt)
-	{
-		if (Global.getSettings().isDevMode())
-		{
-			if (dumpMemoryOpt) DumpMemory.addOption(dialog);
-			DevMenuOptions.addOptions(dialog);
-		}
+		DevMenuOptions.addOptions(dialog);
 	}
 
 	public static String[] JSONArrayToStringArray(JSONArray jsonArray)

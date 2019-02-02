@@ -63,7 +63,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_transferMarketMain");
 				opts.setShortcut("nex_transferMarketMain", Keyboard.KEY_ESCAPE, false, false, false, false);
 				
-				ExerelinUtils.addDevModeDialogOptions(dialog, false);
+				ExerelinUtils.addDevModeDialogOptions(dialog);
 				
 				return true;
 			
@@ -161,6 +161,6 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		opts.addOption(Misc.ucFirst(StringHelper.getString("back")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
 		
-		ExerelinUtils.addDevModeDialogOptions(dialog, false);
+		ExerelinUtils.addDevModeDialogOptions(dialog);
 	}
 }
