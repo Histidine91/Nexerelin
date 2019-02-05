@@ -156,7 +156,7 @@
 		"joinedAlliance":"Joined alliance $NewAlliance",
 		"switchedAlliances":"Left $OldAlliance and joined $NewAlliance",
 		"leftAlliance":"Left alliance $OldAlliance",
-		#"allianceDissolved":"Alliance $OldAlliance has been dissolved",
+		"allianceDissolved":"Alliance $OldAlliance has been dissolved",
 		"invitedToAlliance":"$TheFaction has joined $NewAlliance",
 		"formedAlliance":"Formed $NewAlliance with $theFaction",
 		
