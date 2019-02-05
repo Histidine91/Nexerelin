@@ -8,19 +8,29 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
+import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
+import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
+import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +50,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
 	));
+	public static final int MAX_STATION_SIZE = 6;
+	public static final int MAX_NPC_COLONY_SIZE = 3;
+	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 209;
+	
+	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
+		0, 10, 25, 50, 80, 120
+	};
+	
+	protected int bonusAdminLevel = 0;
 	
 	public ColonyManager() {
 		super(true);
@@ -55,6 +74,84 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Clamps player station population, increments NPC population size, and adds bonus admins if needed.
+	 */
+	protected void updateMarkets() {
+		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+		int playerFactionSize = 0;
+		boolean allowGrowth = Global.getSector().getClock().getCycle() >= MIN_CYCLE_FOR_NPC_GROWTH;
+		for (MarketAPI market : markets) 
+		{
+			if (market.getFaction().isPlayerFaction()) 
+			{
+				if (market.getPlanetEntity() == null && market.getSize() >= MAX_STATION_SIZE) 
+				{
+					market.setImmigrationClosed(true);
+				}
+				playerFactionSize += market.getSize();
+			}
+			else 
+			{
+				if (allowGrowth && !market.isHidden() && market.getSize() < MAX_NPC_COLONY_SIZE
+						&& Misc.getMarketSizeProgress(market) >= 1) {
+					CoreImmigrationPluginImpl.increaseMarketSize(market);
+					// intel: copied from CoreImmigrationPluginImpl
+					MessageIntel intel = new MessageIntel("Colony Growth - " + market.getName(), Misc.getBasePlayerColor());
+					intel.addLine(BaseIntelPlugin.BULLET + "Size increased to %s",
+							Misc.getTextColor(), 
+							new String[] {"" + (int)Math.round(market.getSize())},
+							Misc.getHighlightColor());
+					intel.setIcon(market.getFaction().getCrest());
+					intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
+					Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING);
+				}
+			}
+			
+		}
+		updatePlayerBonusAdmins(playerFactionSize);
+	}
+		
+	protected void updatePlayerBonusAdmins(int playerFactionSize) {	
+		int index = 0;
+		for (int i=bonusAdminLevel + 1; i <BONUS_ADMIN_LEVELS.length; i++) {
+			int sizeNeeded =BONUS_ADMIN_LEVELS[i];
+			if (playerFactionSize < sizeNeeded)
+				break;
+			index = i;
+		}
+		Global.getSector().getPlayerStats().getAdminNumber().modifyFlat("nex_population_size", 
+					bonusAdminLevel, getString("globalPopulation", true));
+		if (index > bonusAdminLevel) {
+			bonusAdminLevel = index;
+			Global.getLogger(this.getClass()).info("Reached bonus level " + index + " from market size " + playerFactionSize);
+			
+			Color hl = Misc.getHighlightColor();
+			Color textColor =  Misc.getTextColor();
+			MessageIntel intel = new MessageIntel(getString("bonusAdminIntelTitle"), 
+					Global.getSector().getPlayerFaction().getBaseUIColor());
+			intel.addLine(BaseIntelPlugin.BULLET + getString("bonusAdminIntelBullet1"), textColor,
+					new String[] {playerFactionSize + ""}, hl);
+			intel.addLine(BaseIntelPlugin.BULLET + getString("bonusAdminIntelBullet2"), textColor, 
+					new String[] {bonusAdminLevel + ""}, hl);
+			if (index < BONUS_ADMIN_LEVELS.length - 1) {
+				int next = BONUS_ADMIN_LEVELS[index + 1];
+				intel.addLine(BaseIntelPlugin.BULLET + getString("bonusAdminIntelBullet3"), textColor, 
+					new String[] {next + ""}, hl);
+			}
+			intel.setIcon(Global.getSector().getPlayerFaction().getCrest());
+			Global.getSector().getCampaignUI().addMessage(intel, CommMessageAPI.MessageClickAction.COLONY_INFO);
+		}
+	}
+	
+	protected String getString(String id) {
+		return getString(id, false);
+	}
+	
+	protected String getString(String id, boolean ucFirst) {
+		return StringHelper.getString("nex_colonies", id, ucFirst);
 	}
 	
 	// this exists because else it'd be a leak in constructor
@@ -89,7 +186,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public void advance(float amount) {}
 
 	@Override
-	public void reportEconomyTick(int iterIndex) {}
+	public void reportEconomyTick(int iterIndex) {
+		updateMarkets();
+	}
 
 	@Override
 	public void reportEconomyMonthEnd() {}

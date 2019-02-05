@@ -218,6 +218,13 @@
 		"satBombWarningAllHostile":"An atrocity of this scale can not be hidden, but any factions that would be dismayed by such actions are already hostile to you.",
 		"satBombWarningVengeful":"Due to their hatred of $theFaction, the following factions can be expected to overlook your crime:",
 	},
+	"nex_colonies":{
+		"globalPopulation":"global population",
+		"bonusAdminIntelTitle":"Growth: Admin Unlocked",
+		"bonusAdminIntelBullet1":"Faction size: %s",
+		"bonusAdminIntelBullet2":"Max admins: %s",
+		"bonusAdminIntelBullet3":"Next admin at size %s",
+	},
 	"exerelin_credits":{
 		"contribution_zaphide":"The original Exerelin",
 		"contribution_histidine":"Update for Starsector 0.65 and later",
