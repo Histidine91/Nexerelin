@@ -97,7 +97,7 @@ public class DiplomacyBrain {
 	public static final float DISLIKE_THRESHOLD = -10;
 	public static final float EVENT_SKIP_CHANCE = 0.5f;
 	public static final float EVENT_CHANCE_EXPONENT_BASE = 0.8f;
-	public static final float CEASEFIRE_LENGTH = 90f;
+	public static final float CEASEFIRE_LENGTH = 150f;
 	//public static final float EVENT_AGENT_CHANCE = 0.35f;
 	
 	public static final Map<String, Float> revanchismCache = new HashMap<>();
