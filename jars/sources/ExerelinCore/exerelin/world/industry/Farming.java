@@ -71,6 +71,7 @@ public class Farming extends IndustryClassGen {
 					market.removeCondition(cond);
 				}
 			}
+			market.addCondition(Conditions.VOLTURNIAN_LOBSTER_PENS);
 		}
 		
 		String id = Industries.FARMING;
