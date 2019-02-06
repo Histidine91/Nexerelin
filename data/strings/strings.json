@@ -130,7 +130,8 @@
 		"intelLeftPoint":"$Faction left",
 		"intelDissolvedPoint":"Dissolved",
 		
-		"intelStrengthPoint":"Now has $num members; size $size",
+		"intelStrengthPoint":"$num members; size $size",
+		"intelStrengthPointUpdate":"Now has $num members; size $size",
 		"intelStrengthPointShort":"Size $size",
 		
 		"intelMembersHeader":"Members",

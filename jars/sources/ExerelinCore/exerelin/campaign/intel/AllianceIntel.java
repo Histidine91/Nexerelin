@@ -32,7 +32,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 	protected String allianceId;
 	// more permanent store, since we may decide to no longer have alliance be accessible by ID once dissolved
 	protected String allianceName;	
-	protected UpdateType updateType;
+	protected boolean isDissolved = false;
 
 	public AllianceIntel(FactionAPI faction1, FactionAPI faction2, String allianceId, String allianceName) {
 		log.info("Creating Alliance Intel");
@@ -40,8 +40,10 @@ public class AllianceIntel extends BaseIntelPlugin {
 		this.faction2 = faction2;
 		this.allianceId = allianceId;
 		this.allianceName = allianceName;
-		this.updateType = UpdateType.FORMED;
-		Global.getSector().getIntelManager().addIntel(this);
+		Global.getSector().getIntelManager().addIntel(this, true);
+		Map<String, Object> params = new HashMap<>();
+		params.put("type", UpdateType.FORMED);
+		this.sendUpdateIfPlayerHasIntel(params, false);
 	}
 	
 	@Override
@@ -53,6 +55,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 	@Override
 	//This is the message info that shows on the left
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
+		UpdateType updateType = null;
 		if (listInfoParam != null)
 		{
 			Map<String, Object> params = (Map<String, Object>)listInfoParam;
@@ -68,6 +71,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		
 		Color c = getTitleColor(mode);
 		float pad = 0f;
+		float initPad = 3;
 
 		info.addPara(getName(), c, pad);
 
@@ -76,38 +80,46 @@ public class AllianceIntel extends BaseIntelPlugin {
 		bullet(info);
 		String str, sub1, sub2;
 		
-		// TODO: write strength bullet points as well
-		switch (updateType) {
-			case FORMED:
-				addFactionNamePara(info, pad, tc, faction1);
-				addFactionNamePara(info, pad, tc, faction2);
-				
-				sub1 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
-				str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPointShort", 
-						"$size", sub1);
-				info.addPara(str, pad, tc, hl, sub1);
-				
-				break;
-			case JOINED:
-			case LEFT:
-				sub1 = Misc.ucFirst(faction1.getDisplayName());
-				str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", 
-						updateType == UpdateType.JOINED ? "intelJoinedPoint" : "intelLeftPoint", 
-						"$Faction", sub1);
-				info.addPara(str, pad, tc, faction1.getBaseUIColor(), sub1);
-				
-				sub1 = AllianceManager.getAllianceByUUID(allianceId).getMembersCopy().size() + "";
-				sub2 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
-				str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPoint", 
-						"$num", sub1);
-				str = StringHelper.substituteToken(str, "$size", sub2);
-				info.addPara(str, pad, tc, hl, sub1, sub2);
-				break;
-			case DISSOLVED:
-				//str = StringHelper.getString(Misc.ucFirst("dissolved"));
-				//info.addPara(str, pad);
-				break;
-		}		
+		if (updateType != null) {
+			switch (updateType) {
+				case FORMED:
+					addFactionNamePara(info, initPad, tc, faction1);
+					addFactionNamePara(info, pad, tc, faction2);
+
+					sub1 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
+					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPointShort", 
+							"$size", sub1);
+					info.addPara(str, pad, tc, hl, sub1);
+
+					break;
+				case JOINED:
+				case LEFT:
+					sub1 = Misc.ucFirst(faction1.getDisplayName());
+					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", 
+							updateType == UpdateType.JOINED ? "intelJoinedPoint" : "intelLeftPoint", 
+							"$Faction", sub1);
+					info.addPara(str, initPad, tc, faction1.getBaseUIColor(), sub1);
+
+					sub1 = AllianceManager.getAllianceByUUID(allianceId).getMembersCopy().size() + "";
+					sub2 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
+					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPointUpdate", 
+							"$num", sub1);
+					str = StringHelper.substituteToken(str, "$size", sub2);
+					info.addPara(str, pad, tc, hl, sub1, sub2);
+					break;
+				case DISSOLVED:
+					//str = StringHelper.getString(Misc.ucFirst("dissolved"));
+					//info.addPara(str, pad);
+					break;
+			}
+		} else {
+			sub1 = AllianceManager.getAllianceByUUID(allianceId).getMembersCopy().size() + "";
+			sub2 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
+			str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPoint", 
+					"$num", sub1);
+			str = StringHelper.substituteToken(str, "$size", sub2);
+			info.addPara(str, initPad, tc, hl, sub1, sub2);
+		}
 	}
 
 	protected static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
@@ -127,7 +139,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		String str = "";
 		Color h = Misc.getHighlightColor();
 		
-		if (updateType == UpdateType.DISSOLVED)
+		if (isDissolved)
 		{
 			info.addImages(width, 128, opad, opad, faction1.getCrest(), faction2.getCrest());
 			str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", 
@@ -221,16 +233,26 @@ public class AllianceIntel extends BaseIntelPlugin {
 
 	protected String getName() {
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelTitle", "$name", allianceName);
-		if (updateType == UpdateType.FORMED)
-		{
-			str += " - " + StringHelper.getString("formed", true);
-		}
-		else if (updateType == UpdateType.DISSOLVED)
+		if (isDissolved)
 		{
 			str += " - " + StringHelper.getString("dissolved", true);
 		}
+		else if (listInfoParam != null)
+		{
+			Map<String, Object> params = (Map<String, Object>)listInfoParam;
+			if ((UpdateType)params.get("type") == UpdateType.FORMED);
+				str += " - " + StringHelper.getString("formed", true);
+		}
 		
 		return str;
+	}
+	
+	@Override
+	public void sendUpdateIfPlayerHasIntel(Object listInfoParam, boolean onlyIfImportant, boolean sendIfHidden) {
+		Map<String, Object> params = (Map<String, Object>)listInfoParam;
+		if ((UpdateType)params.get("type") == UpdateType.DISSOLVED)
+			isDissolved = true;
+		super.sendUpdateIfPlayerHasIntel(listInfoParam, onlyIfImportant, sendIfHidden);
 	}
 
 	@Override
