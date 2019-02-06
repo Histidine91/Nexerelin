@@ -8,9 +8,11 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
+import java.awt.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -194,4 +196,9 @@ public class ExerelinUtilsFaction {
         if (commissionFaction == null) return null;
         return commissionFaction.getId();
     }
+	
+	public static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
+		String name = faction.getDisplayName();
+		info.addPara(name, pad, color, faction.getBaseUIColor(), name);
+	}
 }

@@ -1,53 +1,47 @@
 package exerelin.campaign.covertops;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.intel.agents.AgentIntel;
+import exerelin.campaign.intel.agents.CovertActionIntel;
 import java.util.Map;
 
-public class LowerRelations extends CovertOpsBase {
+public class LowerRelations extends CovertOpsAction {
 	
 	protected FactionAPI thirdFaction;
+	protected ExerelinReputationAdjustmentResult repResult2;
 
-	public LowerRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
-		super(market, agentFaction, targetFaction, playerInvolved, params);
-		thirdFaction = (FactionAPI)params.get("thirdFaction");
-	}
-		
-	@Override
-	public CovertActionResult rollSuccess() {
-		return covertActionRoll("lowerRelationsSuccessChance", null, "lowerRelationsDetectionChanceFail", playerInvolved);
+	public LowerRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, 
+			FactionAPI thirdFaction, boolean playerInvolved, Map<String, Object> params) {
+		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
+		this.thirdFaction = thirdFaction;
 	}
 
 	@Override
 	public void onSuccess() {
-		float effectMin = getConfigFloat("lowerRelationsEffectMin");
-		float effectMax = getConfigFloat("lowerRelationsEffectMax");
-		
-		ExerelinReputationAdjustmentResult repResult = adjustRelations(
-				targetFaction, thirdFaction, -effectMax, -effectMin, null, null, RepLevel.HOSTILE, true);
+		float effectMin = -getDef().effect.two;
+		float effectMax = -getDef().effect.one;
+		repResult = adjustRelations(
+				targetFaction, thirdFaction, effectMin, effectMax, null, null, RepLevel.HOSTILE, true);
 
 		reportEvent(repResult, null);
 	}
 
 	@Override
 	public void onFailure() {
-		ExerelinReputationAdjustmentResult repResult = NO_EFFECT;
-		ExerelinReputationAdjustmentResult repResult2 = NO_EFFECT;
+		repResult = NO_EFFECT;
+		repResult2 = NO_EFFECT;
 		
 		if (result.isDetected())
 		{
-			float effectMin = getConfigFloat("lowerRelationsRepLossOnDetectionMin");
-            float effectMax = getConfigFloat("lowerRelationsRepLossOnDetectionMax");
-			repResult = adjustRelations(
-					agentFaction, targetFaction, -effectMax, -effectMin, RepLevel.NEUTRAL, null, RepLevel.HOSTILE, true);
-			repResult2 = adjustRelations(
-					agentFaction, thirdFaction, -effectMax, -effectMin, RepLevel.NEUTRAL, null, RepLevel.HOSTILE, true);
+			repResult = adjustRelationsFromDetection(agentFaction, targetFaction, 
+					RepLevel.NEUTRAL, null, RepLevel.HOSTILE, true);
+			repResult2 = adjustRelationsFromDetection(agentFaction, thirdFaction, 
+					RepLevel.NEUTRAL, null, RepLevel.HOSTILE, true);
 		}
 		reportEvent(repResult, repResult2);
 	}
@@ -67,36 +61,30 @@ public class LowerRelations extends CovertOpsBase {
 			if (repResult2 != null && Math.abs(repResult2.delta) < 0.01f) return;
 		}
 		
-		Map<String, Object> params = makeEventParams(repResult);
-		params.put("thirdFaction", thirdFaction);
-		if (repResult2 != null)
-		{
-			params.put("repResult2", repResult2);
-		}
-		//Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);
+		// TODO: report event
 		
 		if (result.isDetected())
 		{
 			DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
 					agentFaction.getId(), repResult.delta);
-			DiplomacyManager.getManager().getDiplomacyBrain(thirdFaction.getId()).reportDiplomacyEvent(
-					agentFaction.getId(), repResult2.delta);
+			if (repResult2 != null)
+				DiplomacyManager.getManager().getDiplomacyBrain(thirdFaction.getId()).reportDiplomacyEvent(
+						agentFaction.getId(), repResult2.delta);
 		}
 		else
 		{
 			DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
 					thirdFaction.getId(), repResult.delta);
 		}
-	}
-	
+	}	
+
 	@Override
-	protected String getEventId() {
-		return "exerelin_agent_lower_relations";
+	public String getActionDefId() {
+		return "lowerRelations";
 	}
-	
+
 	@Override
-	protected float getAlertLevel() {
-		return 0;
+	protected CovertActionIntel reportEvent(ExerelinReputationAdjustmentResult repResult) {
+		return null;
 	}
-	
 }

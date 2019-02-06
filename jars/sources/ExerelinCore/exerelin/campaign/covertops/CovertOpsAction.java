@@ -7,35 +7,40 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.intel.agents.AgentIntel;
+import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
-import java.util.HashMap;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
 
-public abstract class CovertOpsBase {
+public abstract class CovertOpsAction {
 	
 	public static final ExerelinReputationAdjustmentResult NO_EFFECT = new ExerelinReputationAdjustmentResult(0);
 	
-	protected Map<String, Object> params = null;
-	protected MarketAPI market = null;
-	protected FactionAPI agentFaction = null;
-	protected FactionAPI targetFaction = null;
+	protected Map<String, Object> params;
+	protected MarketAPI market;
+	protected AgentIntel agentIntel;
+	protected FactionAPI agentFaction;
+	protected FactionAPI targetFaction;
 	protected boolean playerInvolved = false;
-	protected CovertActionResult result = null;
+	protected CovertActionResult result;
+	protected ExerelinReputationAdjustmentResult repResult;
 	
-	public CovertOpsBase(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params)
+	public CovertOpsAction(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, 
+			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params)
 	{
+		this.agentIntel = agentIntel;
 		this.market = market;
 		this.agentFaction = agentFaction;
 		this.targetFaction = targetFaction;
@@ -43,75 +48,40 @@ public abstract class CovertOpsBase {
 		this.params = params;
 	}
 	
-	protected static Object getConfigValue(String key)
-	{
-		if (key == null) return null;
-		Map<String, Object> conf = CovertOpsManager.getConfig();
-		if (!conf.containsKey(key)) return null;
-		return conf.get(key);
+	public abstract String getActionDefId();
+	
+	public CovertActionDef getDef() {
+		return CovertOpsManager.getDef(getActionDefId());
 	}
 	
-	protected static float getConfigFloat(String key)
-	{
-		Object result = getConfigValue(key);
-		if (result == null) return 0;
-		if (result instanceof String)
-		{
-			return Float.parseFloat((String)result);
-		}
-		return (float)(double)result;
+	public FactionAPI getAgentFaction() {
+		return agentFaction;
 	}
 	
+	public FactionAPI getTargetFaction() {
+		return targetFaction;
+	}
+	    
 	/**
 	 * Rolls a success/failure and detected/undetected result for the covert action.
-	 * @param sChance Success chance
-	 * @param sDetectChance Config key for chance of detection if attack succeeded
-	 * @param fDetectChance Config key for chance of detection if attack failed; 
-	 * @param playerInvolved Was this covert action done by the player?
-	 * @return
-	 */
-	protected CovertActionResult covertActionRoll(String sChance, String sDetectChance, String fDetectChance, boolean playerInvolved)
-    {
-        return covertActionRoll(
-			getConfigFloat(sChance), 
-			getConfigFloat(sDetectChance), 
-			getConfigFloat(fDetectChance),
-			false, null, playerInvolved
-		);
-    }
-	
-    protected CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean playerInvolved)
-    {
-        return covertActionRoll(sChance, sDetectChance, fDetectChance, false, null, playerInvolved);
-    }
-    
-	/**
-	 * Rolls a success/failure and detected/undetected result for the covert action.
-	 * @param sChance Success chance
-	 * @param sDetectChance Chance of detection if attack succeeded
-	 * @param fDetectChance Chance of detection if attack failed
 	 * @param useAlertLevel If true, modifies success chance by the market's alert level
-	 * @param playerInvolved Was this covert action done by the player?
 	 * @return
 	 */
-    protected CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean useAlertLevel, MarketAPI market, boolean playerInvolved)
+    protected CovertActionResult covertActionRoll(boolean useAlertLevel)
     {
+		CovertActionDef def = getDef();
         CovertActionResult result = null;
         
-        if (useAlertLevel)
-        {
+		float sChance = def.successChance;
+		float sDetectChance = def.detectionChance;
+		float fDetectChance = def.detectionChanceFail;
+		
+        if (useAlertLevel) {
             sChance *= (1 - CovertOpsManager.getAlertLevel(market));
         }
-        
-        if (playerInvolved)
-        {
-            CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-            if (!playerFleet.isTransponderOn())
-            {
-                sDetectChance *= 0.5f;
-                fDetectChance *= 0.75f;
-            }
-        }
+		
+		// TODO: modify using agent level
+		int agentLevel = agentIntel != null ? agentIntel.getLevel() : 2;
             
         if (Math.random() < sChance)
         {
@@ -126,46 +96,66 @@ public abstract class CovertOpsBase {
         return result;
     }
 	
-	public abstract CovertActionResult rollSuccess();
-	
 	public CovertActionResult execute()
 	{
-		result = rollSuccess();
+		result = covertActionRoll(true);
 				
 		if (result.isSucessful())
 			onSuccess();
 		else
 			onFailure();
 		
-		if (market != null) CovertOpsManager.modifyAlertLevel(market, getAlertLevel());
+		if (market != null) CovertOpsManager.modifyAlertLevel(market, getAlertLevelIncrease());
 		return result;
 	}
 	
-	public CovertActionResult getResult()
-	{
+	public CovertActionResult getResult()	{
 		return result;
 	}
 	
-	public void setResult(CovertActionResult result)
-	{
+	public ExerelinReputationAdjustmentResult getReputationResult() {
+		return repResult;
+	}
+	
+	public void setResult(CovertActionResult result) {
 		this.result = result;
+	}
+	
+	public void advance(float days) {
+		
 	}
 	
 	protected abstract void onSuccess();
 	
 	protected abstract void onFailure();
 	
+	protected ExerelinReputationAdjustmentResult adjustRepIfDetected(
+			RepLevel ensureAtBest, RepLevel limit)
+	{
+		if (result.isDetected())
+		{
+			ExerelinReputationAdjustmentResult repResult = adjustRelationsFromDetection(
+					agentFaction, targetFaction, ensureAtBest, null, limit, false);
+			DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
+					agentFaction.getId(), repResult.delta);
+			
+			return repResult;
+		}
+		else return NO_EFFECT;
+	}
+	
+	protected ExerelinReputationAdjustmentResult adjustRelationsFromDetection(FactionAPI faction1, 
+			FactionAPI faction2, RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit, boolean useNPCMult)
+	{
+		float effectMin = -getDef().repLossOnDetect.two;
+		float effectMax = -getDef().repLossOnDetect.one;
+		return adjustRelations(faction1, faction2, effectMin, effectMax, ensureAtBest, ensureAtWorst, limit, useNPCMult);
+	}
+	
 	protected ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, 
 			float effectMin, float effectMax, RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit,
 			boolean useNPCMult)
 	{
-		if (effectMin > effectMax)
-		{
-			float temp = effectMax;
-			effectMax = effectMin;
-			effectMin = temp;
-		}
-		
 		float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
 		if (!playerInvolved && useNPCMult) effect *= NPC_EFFECT_MULT;
 		ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(
@@ -208,43 +198,14 @@ public abstract class CovertOpsBase {
 	}
 	
 	/**
-	 * Creates a covert ops event for the intel screen, and alters diplomacy disposition 
+	 * Creates a covert ops intel item for the intel screen, and alters diplomacy disposition 
 	 * of the target towards the agent's faction.
 	 * @param repResult
+	 * @return 
 	 */
-	protected void reportEvent(ExerelinReputationAdjustmentResult repResult)
-	{
-		if (Math.abs(repResult.delta) < 0.01f && !playerInvolved)
-			return;
-		
-		Map<String, Object> params = makeEventParams(repResult);
-		reportEvent(params);
-		
-		if (result.isDetected())
-			DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
-					agentFaction.getId(), repResult.delta);
+	protected abstract CovertActionIntel reportEvent(ExerelinReputationAdjustmentResult repResult);
+	
+	public float getAlertLevelIncrease() {
+		return getDef().alertLevelIncrease;
 	}
-	
-	/**
-	 * Creates a covert ops event for the intel screen.
-	 * @param params
-	 */
-	protected void reportEvent(Map<String, Object> params)
-	{
-		//Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);
-	}
-	
-	protected abstract float getAlertLevel();
-	
-	protected abstract String getEventId();
-	
-	protected Map<String, Object> makeEventParams(ExerelinReputationAdjustmentResult repResult)
-    {
-        HashMap<String, Object> eventParams = new HashMap<>();
-        eventParams.put("agentFaction", agentFaction);
-		eventParams.put("result", result);
-        eventParams.put("playerInvolved", playerInvolved);
-		eventParams.put("repResult", repResult);
-        return eventParams;
-    }
 }

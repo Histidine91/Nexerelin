@@ -9,9 +9,11 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.covertops.*;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -38,13 +41,13 @@ import org.json.JSONObject;
  */
 public class CovertOpsManager extends BaseCampaignEventListener implements EveryFrameScript {
     
-    protected enum CovertActionType {
-        RAISE_RELATIONS,
-        LOWER_RELATIONS,
-        DESTABILIZE_MARKET,
-        SABOTAGE_RESERVE,
-        DESTROY_FOOD,
-        INSTIGATE_REBELLION,
+    public static class CovertActionType {
+        public static final String RAISE_RELATIONS = "raiseRelations";
+        public static final String LOWER_RELATIONS = "lowerRelations";
+        public static final String DESTABILIZE_MARKET = "destabilizeMarket";
+        public static final String SABOTAGE_INDUSTRY = "sabotageIndustry";
+        public static final String DESTROY_COMMODITY_STOCKS = "destroyStocks";
+        public static final String INSTIGATE_REBELLION = "instigateRebellion";
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);
@@ -55,11 +58,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final float NPC_EFFECT_MULT = 1.5f;
     public static final List<String> DISALLOWED_FACTIONS;
      
-    protected static Map<String, Object> config;
-       
-    private static float baseInterval = 45f;
-    private float interval = baseInterval;
-    private final IntervalUtil intervalUtil;
+    public static final List<CovertActionDef> actionDefs = new ArrayList<>();
+	public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
+      
+    protected static float baseInterval = 45f;
+    protected float interval = baseInterval;
+    protected final IntervalUtil intervalUtil;
     
     static {
         String[] factions = {Factions.NEUTRAL, Factions.PLAYER, Factions.INDEPENDENT};    //{"templars", "independent"};
@@ -75,14 +79,41 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     private static void loadSettings() throws IOException, JSONException {
         JSONObject configJson = Global.getSettings().getMergedJSONForMod(CONFIG_FILE, ExerelinConstants.MOD_ID);
                 
-        config = ExerelinUtils.jsonToMap(configJson);
+        //config = ExerelinUtils.jsonToMap(configJson);
         //baseInterval = (float)(double)config.get("eventFrequency");   // ClassCastException
         baseInterval = (float)configJson.optDouble("eventFrequency", 15f);
+		JSONObject actionsJson = configJson.getJSONObject("actions");
+		Iterator<String> keys = actionsJson.sortedKeys();
+		while (keys.hasNext()) {
+			String id = keys.next();
+			JSONObject defJson = actionsJson.getJSONObject(id);
+			
+			CovertActionDef def = new CovertActionDef();
+			def.id = id;
+			def.name = defJson.getString("name");
+			def.successChance = (float)defJson.optDouble("successChance");
+			def.detectionChance = (float)defJson.optDouble("detectionChance");
+			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail");
+			def.repLossOnDetect = new Pair<>((float)defJson.optDouble("repLossOnDetectionMin"), 
+					(float)defJson.optDouble("repLossOnDetectionMax"));
+			def.effect = new Pair<>((float)defJson.optDouble("effectMin"), 
+					(float)defJson.optDouble("effectMax"));
+			def.xp = (float)defJson.optDouble("xp");
+			def.alertLevelIncrease = (float)defJson.optDouble("alertLevelIncrease");
+			
+			actionDefs.add(def);
+			actionDefsById.put(id, def);
+		}
     }
     
+	@Deprecated
     public static Map<String, Object> getConfig() {
-        return config;
+        return null;
     }
+	
+	public static CovertActionDef getDef(String id) {
+		return actionDefsById.get(id);
+	}
 
     public CovertOpsManager()
     {
@@ -97,7 +128,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         WeightedRandomPicker<FactionAPI> agentFactionPicker = new WeightedRandomPicker();
         WeightedRandomPicker<FactionAPI> targetFactionPicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
-        WeightedRandomPicker<CovertActionType> actionPicker = new WeightedRandomPicker();
+        WeightedRandomPicker<String> actionPicker = new WeightedRandomPicker();
         
         List<FactionAPI> factions = new ArrayList<>();
         for( String factionId : SectorManager.getLiveFactionIdsCopy())
@@ -108,11 +139,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         actionPicker.add(CovertActionType.RAISE_RELATIONS, 1.2f);
         actionPicker.add(CovertActionType.LOWER_RELATIONS, 1.5f);
         actionPicker.add(CovertActionType.DESTABILIZE_MARKET, 1.25f);
-        actionPicker.add(CovertActionType.SABOTAGE_RESERVE, 1.25f);
-        //actionPicker.add(CovertActionType.DESTROY_FOOD, 1.25f);
+        actionPicker.add(CovertActionType.SABOTAGE_INDUSTRY, 1.25f);
+        actionPicker.add(CovertActionType.DESTROY_COMMODITY_STOCKS, 1.25f);
         actionPicker.add(CovertActionType.INSTIGATE_REBELLION, 0.25f);
         
-        CovertActionType actionType = actionPicker.pick();
+        String actionType = actionPicker.pick();
         
         int factionCount = 0;
         for (FactionAPI faction: factions)
@@ -133,7 +164,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         if (factionCount < 2) return;
         
         FactionAPI agentFaction = agentFactionPicker.pick();
-        log.info("Trying action: " + actionType.name());
+        log.info("\tTrying action: " + actionType);
         
         factionCount = 0;
         for (FactionAPI faction: factions)
@@ -171,8 +202,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 weight *= (1 + dominance*2);
             }
             else if (actionType == CovertActionType.DESTABILIZE_MARKET 
-                    || actionType == CovertActionType.DESTROY_FOOD
-                    || actionType == CovertActionType.SABOTAGE_RESERVE)
+                    || actionType == CovertActionType.DESTROY_COMMODITY_STOCKS
+                    || actionType == CovertActionType.SABOTAGE_INDUSTRY)
             {
                 if (repLevel == RepLevel.INHOSPITABLE) weight = 1f;
                 else if (repLevel == RepLevel.HOSTILE) weight = 3f;
@@ -198,7 +229,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             factionCount++;
         }
         
-        log.info("Number of target factions: " + factionCount);
+        log.info("\tNumber of target factions: " + factionCount);
         if (factionCount < 1 || (actionType == CovertActionType.LOWER_RELATIONS && factionCount < 2)) 
             return;
         
@@ -207,7 +238,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         if (factionCount >= 2)
             thirdFaction = targetFactionPicker.pickAndRemove();
 
-        log.info("Target faction: " + targetFaction.getDisplayName());
+        log.info("\tTarget faction: " + targetFaction.getDisplayName());
         
         for (MarketAPI market:markets)
         {
@@ -215,18 +246,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             {
                 float weight = 1;
                 // rebellion special handling
-                if (actionType == CovertActionType.INSTIGATE_REBELLION)
+                if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
                 {
                     if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
                         continue;
                     
                     if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
                         weight *= 4;
-                }
-                else if (actionType == CovertActionType.SABOTAGE_RESERVE)
-                {
-                    if (ResponseFleetManager.getReserveSize(market) < 5)
-                        continue;
                 }
                 marketPicker.add(market, weight);
             }
@@ -235,35 +261,37 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         MarketAPI market = marketPicker.pick();
         if (market == null)
         {
-            log.info("No market available");
+            log.info("\tNo market available");
             return;
         }
         
         // do stuff
-        if (actionType == CovertActionType.RAISE_RELATIONS)
-        {
-            agentRaiseRelations(market, agentFaction, targetFaction, false);
-        }
-        else if (actionType == CovertActionType.LOWER_RELATIONS)
-        {
-            agentLowerRelations(market, agentFaction, targetFaction, thirdFaction, false);
-        }
-        else if (actionType == CovertActionType.DESTABILIZE_MARKET)
-        {
-            agentDestabilizeMarket(market, agentFaction, targetFaction, false);
-        }
-        else if (actionType == CovertActionType.SABOTAGE_RESERVE)
-        {
-            saboteurSabotageReserve(market, agentFaction, targetFaction, false);
-        }
-        else if (actionType == CovertActionType.DESTROY_FOOD)
-        {
-            saboteurDestroyFood(market, agentFaction, targetFaction, false);
-        }
-        else if (actionType == CovertActionType.INSTIGATE_REBELLION)
-        {
-            instigateRebellion(market, agentFaction, targetFaction, false);
-        }
+		log.info("\tLaunching covert action: " + actionType);
+		switch (actionType) {
+			case CovertActionType.RAISE_RELATIONS:
+				new RaiseRelations(null, market, agentFaction, targetFaction, false, null).execute();
+				break;
+			case CovertActionType.LOWER_RELATIONS:
+				Map<String, Object> params = new HashMap<>();
+				//params.put("thirdFaction", thirdFaction);
+				new LowerRelations(null, market, agentFaction, targetFaction, thirdFaction, false, params).execute();
+				break;
+			case CovertActionType.DESTABILIZE_MARKET:
+				new DestabilizeMarket(null, market, agentFaction, targetFaction, false, null).execute();
+				break;
+			case CovertActionType.SABOTAGE_INDUSTRY:
+				new SabotageIndustry(null, market, null, agentFaction, targetFaction, false, null).execute();
+				break;
+			case CovertActionType.DESTROY_COMMODITY_STOCKS:
+				// TODO pick commodity
+				new DestroyCommodityStocks(null, market, Commodities.FOOD, agentFaction, targetFaction, false, null).execute();
+				break;
+			case CovertActionType.INSTIGATE_REBELLION:
+				new InstigateRebellion(null, market, agentFaction, targetFaction, false, null).execute();
+				break;
+			default:
+				break;
+		}
     }
 
     @Override
@@ -322,44 +350,6 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         SecurityAlertEvent event = (SecurityAlertEvent)eventSuper;
         return event.getAlertLevel();
     }
-        
-    public static CovertActionResult agentRaiseRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
-    {
-        log.info("Agent trying to raise relations");
-        return new RaiseRelations(market, agentFaction, targetFaction, playerInvolved, null).execute();
-    }
-    
-    public static CovertActionResult agentLowerRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved)
-    {
-        log.info("Agent trying to lower relations");
-        Map<String, Object> params = new HashMap<>();
-        params.put("thirdFaction", thirdFaction);
-        return new LowerRelations(market, agentFaction, targetFaction, playerInvolved, params).execute();
-    }
-    
-    public static CovertActionResult agentDestabilizeMarket(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
-    {
-        log.info("Agent trying to destablize market");
-        return new DestabilizeMarket(market, agentFaction, targetFaction, playerInvolved, null).execute();
-    }
-    
-    public static CovertActionResult saboteurSabotageReserve(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
-    {
-        log.info("Saboteur attacking reserve fleet");
-        return new SabotageReserve(market, agentFaction, targetFaction, playerInvolved, null).execute();
-    }    
-    
-    public static CovertActionResult saboteurDestroyFood(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
-    {
-        log.info("Saboteur destroying food");
-        return new DestroyFood(market, agentFaction, targetFaction, playerInvolved, null).execute();
-    }
-    
-    public static CovertActionResult instigateRebellion(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
-    {
-        log.info("Instigating rebellion");
-        return new InstigateRebellion(market, agentFaction, targetFaction, playerInvolved, null).execute();
-    }
     
     // TODO
     public static void checkForWarmongerPenalty()
@@ -383,15 +373,25 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         SUCCESS, SUCCESS_DETECTED, FAILURE, FAILURE_DETECTED;
         
-        public boolean isSucessful()
-        {
+        public boolean isSucessful() {
             return this == SUCCESS || this == SUCCESS_DETECTED;
         }
         
-        public boolean isDetected()
-        {
+        public boolean isDetected() {
             return this == SUCCESS_DETECTED || this == FAILURE_DETECTED;
         }
     }
+	
+	public static class CovertActionDef {
+		public String id;
+		public String name;
+		public float successChance;
+		public float detectionChance;
+		public float detectionChanceFail;
+		public float xp;
+		public float alertLevelIncrease;
+		public Pair<Float, Float> effect;
+		public Pair<Float, Float> repLossOnDetect;
+	}
     
 }

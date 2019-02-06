@@ -31,6 +31,7 @@
 		"target":"target",
 		"unknown":"unknown",
 		"vote":"vote",
+		"you":"you",
 		"yourFleet":"your fleet",
 
 		"true":"true",
@@ -169,7 +170,7 @@
 		"voteQuestionLine":"How does $myFaction vote?",
 		"voteConfirm":"Confirm vote?"
 	},
-	"exerelin_agents":{
+	"nex_agents":{
 		"alertLevel":"alert level",
 		"reserveSize":"response fleet size",
 		"rebellionStatus":"rebellion by $faction",
@@ -179,17 +180,74 @@
 		"stationPoints":"station construction progress",
 
 		"agent":"agent",
+		"agents":"agents",
 		"saboteur":"saboteur",
 		"verbSuccess":"completed",
 		"verbFailed":"failed",
-
+		"recruited":"recruited",
+		
+		"lost":"lost",
+		
+		"personIntelTitle":"Agent: $name",
+		"personIntelTitleLevelUp":"Level Up",
+		"personIntelBullet1":"Currently on $market",
+		"personIntelLevelUp":"Now at level %s",
+		"personIntelDescName":"$name is a level %s agent.",
+		"personIntelDescLost":"%s has been captured or killed.",
+		"personIntelDescLocation":"$name is currently $onOrAt $market, a $faction market in the $location.",
+		"personIntelDescLocationHyper":"$lastName is currently $onOrAt $market, a $faction market in hyperspace.",
+		"personIntelDescXP":"Current XP: %s (%s to next level)",
+		"personIntelDescXPMax":"Current XP: %s",
+		"personIntelDescCurrentAction":"Current action: %s (%s $daysStr remaining)",
+		"personIntelDescIdle":"Currently idle.",
+		"personIntelHeaderLocalReport":"Local report",
+		"personIntelDescLocalReport1":"%s is a size %s market, of stability %s.",
+		"personIntelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
+		"personIntelHeaderLastMessage":"Last message",
+		
 		"resourcesNeeded":"resources needed (available)",
 
 		"resultSuccess":"Your $agentType has $resultVerb their mission.",
 		"resultSuccessDetected":"Your $agentType has $resultVerb their mission, but was detected in the process.",
 		"resultFailure":"Your $agentType has $resultVerb in their mission.",
 		"resultFailureDetected":"Your $agentType has $resultVerb in their mission and was caught!",
-
+	},
+	"nex_agentActions":{
+		"intelDesc_raiseRelations_success":"An agent from $theAgentFaction has subverted the $faction political process to improve relations with their own faction.",
+		"intelDesc_raiseRelations_successPlayer":"Your agent $agentName has successfully subverted the $faction political process to improve relations with $theAgentFaction.",
+		"intelDesc_raiseRelations_failure":"An agent from $theAgentFaction failed to subvert the $faction political process to improve relations with their own faction. Fortunately, their attempts at manipulation went unnoticed.",
+		"intelDesc_raiseRelations_failurePlayer":"Your agent $agentName failed to subvert the $faction political process to improve relations with $theAgentFaction. Fortunately, their attempts at manipulation went undetected.",
+		"intelDesc_raiseRelations_failureDetected":"An agent from $theAgentFaction was discovered attempting to manipulate the $faction political process to improve relations with their own faction. Instead, their meddling has caused the opposite effect.",
+		"intelDesc_raiseRelations_failureDetectedPlayer":"Your agent $agentName was discovered attempting to manipulate the $faction political process to improve relations with $theAgentFaction. They are not amused.",
+		
+		"intelDesc_lowerRelations_success":"An agent from $theAgentFaction has subverted the $faction political process to turn it against $theThirdFaction.",
+		"intelDesc_lowerRelations_successPlayer":"Your agent $agentName has subverted the $faction political process to turn it against $theThirdFaction.",
+		"intelDesc_lowerRelations_failure":"An agent from $theAgentFaction failed to subvert the $faction political process to turn it against $theThirdFaction. Fortunately, their attempts at manipulation went unnoticed.",
+		"intelDesc_lowerRelations_failurePlayer":"Your agent $agentName failed to subvert the $faction political process to turn it against $theThirdFaction. Fortunately, their attempts at manipulation went unnoticed.",
+		"intelDesc_lowerRelations_failureDetected":"An agent from $theAgentFaction was discovered attempting to manipulate the $faction political process to turn it against $theThirdFaction. Ironically, their actions have turned the two would-be enemies against their own faction instead.",
+		"intelDesc_lowerRelations_failureDetectedPlayer":"Your agent $agentName was discovered attempting to manipulate the $faction political process to turn it against $theThirdFaction. $TheAgentFaction will not thank you for turning both factions against them.",
+		
+		"intelDesc_destabilize_success":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
+		"intelDesc_destabilize_successPlayer":"Your agent $agentName has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
+		"intelDesc_destabilize_successDetected":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
+		"intelDesc_destabilize_successDetectedPlayer":"An attempt by a $agentFaction agent to cause chaos $onOrAt $market has been thwarted. $Faction authorities have been unable to identify the party responsible, however.",
+		"intelDesc_destabilize_failure":"$Faction security has thwarted your agent $agentName's attempts to cause chaos $onOrAt $market. Fortunately, they have been unable to conclusively link you to the crime.",
+		"intelDesc_destabilize_failurePlayer":"Your agent $agentName failed to subvert the $faction political process to improve relations with $theAgentFaction. Fortunately, their attempts at manipulation went undetected.",
+		"intelDesc_destabilize_failureDetected":"An $agentFaction operative was captured while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
+		"intelDesc_destabilize_failureDetectedPlayer":"Your agent $agentName was discovered while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
+		
+		# TODO
+		"intelDesc_sabotageIndustry_success":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
+		"intelDesc_sabotageIndustry_successPlayer":"Your agent $agentName has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
+		"intelDesc_sabotageIndustry_successDetected":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
+		"intelDesc_sabotageIndustry_successDetectedPlayer":"An attempt by a $agentFaction agent to cause chaos $onOrAt $market has been thwarted. $Faction authorities have been unable to identify the party responsible, however.",
+		"intelDesc_sabotageIndustry_failure":"$Faction security has thwarted your agent $agentName's attempts to cause chaos $onOrAt $market. Fortunately, they have been unable to conclusively link you to the crime.",
+		"intelDesc_sabotageIndustry_failurePlayer":"Your agent $agentName failed to subvert the $faction political process to improve relations with $theAgentFaction. Fortunately, their attempts at manipulation went undetected.",
+		"intelDesc_sabotageIndustry_failureDetected":"An $agentFaction operative was captured while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
+		"intelDesc_sabotageIndustry_failureDetectedPlayer":"Your agent $agentName was discovered while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
+		
+		# TODO
+		
 		"destabilizeText1":"poisoned the water supply",
 		"destabilizeText2":"fired into a crowd at a public venue",
 		"destabilizeText3":"assassinated a local government official",
@@ -199,6 +257,7 @@
 		"destabilizeText7":"torched a storage depot",
 		"destabilizeText8":"poisoned patients at a clinic"
 	},
+	
 	"nex_baseStrike":{
 		"strike":"strike mission",
 		"theStrike":"the strike mission",
