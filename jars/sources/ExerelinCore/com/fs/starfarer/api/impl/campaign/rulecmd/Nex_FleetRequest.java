@@ -325,9 +325,9 @@ public class Nex_FleetRequest extends PaginatedOptions {
 			String key = isInvasion ? "infoTargetStrengthGround" : "infoTargetStrength";
 			Map<String, String> sub = new HashMap<>();
 			
-			String defStr = String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
+			String defStr = String.format("%.0f", InvasionFleetManager.estimateDefensiveStrength(null, 
 					faction, target.getStarSystem(), 0));
-			String defStrGround =  String.format("%.1f", InvasionRound.getDefenderStrength(target, 1));
+			String defStrGround =  String.format("%.0f", InvasionRound.getDefenderStrength(target, 1));
 			sub.put("$space", defStr);
 			if (isInvasion) sub.put("$ground", defStrGround);
 			
