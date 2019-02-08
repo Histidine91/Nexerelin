@@ -33,10 +33,11 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 		
 		Nex_MarketCMD cmd = new Nex_MarketCMD(market.getPrimaryEntity());
 		Industry toDisrupt = pickIndustryToDisrupt(market);
+		// disrupt industries
 		if (toDisrupt != null)
 			cmd.doIndustryRaid(intel.getFaction(), raidStr, toDisrupt, 0.4f);
-		else
-			cmd.doGenericRaid(intel.getFaction(), raidStr, maxPenalty);
+		// stability damage
+		cmd.doGenericRaid(intel.getFaction(), raidStr, maxPenalty);
 	}
 	
 	protected Industry pickIndustryToDisrupt(MarketAPI market) {
