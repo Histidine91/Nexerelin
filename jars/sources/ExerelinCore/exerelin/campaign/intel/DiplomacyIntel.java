@@ -67,8 +67,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
-		addFactionNamePara(info, initPad, tc, getFaction(factionId1));
-		addFactionNamePara(info, pad, tc, getFaction(factionId2));
+		ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, getFaction(factionId1));
+		ExerelinUtilsFaction.addFactionNamePara(info, pad, tc, getFaction(factionId2));
 		
 		String relation = NexUtilsReputation.getRelationStr(storedRelation);
 		Color relColor = NexUtilsReputation.getRelColor(storedRelation);
@@ -180,11 +180,6 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		return array;
 	}
 	*/
-	
-	protected static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
-		String name = faction.getDisplayName();
-		info.addPara(name, pad, color, faction.getBaseUIColor(), name);
-	}
 
 	@Override
 	public String getSmallDescriptionTitle() {

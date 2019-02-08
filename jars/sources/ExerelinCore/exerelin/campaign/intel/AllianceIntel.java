@@ -83,8 +83,8 @@ public class AllianceIntel extends BaseIntelPlugin {
 		if (updateType != null) {
 			switch (updateType) {
 				case FORMED:
-					addFactionNamePara(info, initPad, tc, faction1);
-					addFactionNamePara(info, pad, tc, faction2);
+					ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, faction1);
+					ExerelinUtilsFaction.addFactionNamePara(info, pad, tc, faction2);
 
 					sub1 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
 					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPointShort", 
@@ -120,11 +120,6 @@ public class AllianceIntel extends BaseIntelPlugin {
 			str = StringHelper.substituteToken(str, "$size", sub2);
 			info.addPara(str, initPad, tc, hl, sub1, sub2);
 		}
-	}
-
-	protected static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
-		String name = faction.getDisplayName();
-		info.addPara(name, pad, color, faction.getBaseUIColor(), name);
 	}
 
 	@Override

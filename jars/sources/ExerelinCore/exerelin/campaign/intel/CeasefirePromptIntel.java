@@ -57,7 +57,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
-		addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+		ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
 	}
 	
 	// text sidebar
@@ -135,11 +135,6 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 				info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 			}
 		}
-	}
-	
-	protected static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
-		String name = faction.getDisplayName();
-		info.addPara(name, pad, color, faction.getBaseUIColor(), name);
 	}
 	
 	@Override

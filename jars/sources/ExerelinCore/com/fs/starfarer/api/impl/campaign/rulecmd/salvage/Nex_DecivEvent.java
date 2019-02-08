@@ -45,7 +45,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		Exchange goods for bombing a target
 	*/
 	
-	public static final float EVENT_CHANCE = 1;	//0.25f;
+	public static final float EVENT_CHANCE = 0.35f;
 	public static final float EVENT_TIME = 60;
 	public static final String EVENT_TYPE_BARTER = "barter";
 	public static final String EVENT_TYPE_REFUGEES = "refugees";
@@ -338,8 +338,10 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		int giveAmount = Math.round(baseAmount * giveMult * suppliesBasePrice/giveBasePrice);
 		int takeAmount = Math.round(baseAmount * takeMult * suppliesBasePrice/takeBasePrice);
 		
-		log.info("Giving " + giveAmount + " " + commodityGive + " (price mult " + (suppliesBasePrice/giveBasePrice) + ")");
-		log.info("Taking " + takeAmount + " " + commodityTake + " (price mult " + (suppliesBasePrice/takeBasePrice) + ")");
+		log.info("Giving " + giveAmount + " " + commodityGive + " worth " + giveAmount * giveBasePrice 
+				+ " credits (price mult " + (suppliesBasePrice/giveBasePrice) + ")");
+		log.info("Taking " + takeAmount + " " + commodityTake + " worth " + takeAmount * takeBasePrice 
+				+ " credits (price mult " + (suppliesBasePrice/takeBasePrice) + ")");
 		
 		setMem(MEM_KEY_GIVE_ID, commodityGive);
 		setMem(MEM_KEY_GIVE_COUNT, giveAmount);
@@ -358,6 +360,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		
 		float baseAmount = Global.getSector().getPlayerFleet().getCargo().getMaxCapacity();
 		baseAmount = Math.min(baseAmount, 1000);
+		if (baseAmount < 100) baseAmount = 100;
 		baseAmount = (int)(baseAmount/100) * 10;
 		baseAmount *= 0.25f * MathUtils.getRandomNumberInRange(2, 8);
 		

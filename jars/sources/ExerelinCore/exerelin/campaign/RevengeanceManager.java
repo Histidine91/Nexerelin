@@ -45,9 +45,12 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			new Integer[][] {{50, 0}, {100, 0}, {150, 0}, {200, 1}, {275, 1}, {350, 1}, {450, 2}}
 	);
 	// after all stages are used up, spawn new vengeance fleets per this many points
-	public static final float ADDITIONAL_STAGE_INTERVAL = 75;	
-	// this + ADDITIONAL_STAGE_INTERVAL should not be too far from the points required for last stage
-	public static final float ADDITIONAL_STAGE_OFFSET = 0;
+	public static final float ADDITIONAL_STAGE_INTERVAL = 75;
+	
+	// after last preset stage is reached, and we want first interval-based stage,
+	// total stage number will equal (current vengeance points + offset)/ADDITIONAL_STAGE_INTERVAL
+	// make sure the first interval stage isn't too far or close to last preset stage's points
+	public static final float ADDITIONAL_STAGE_OFFSET = 0;	//-FLEET_STAGES.get(FLEET_STAGES.size() - 1)[0];
 	
 	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;
 	
