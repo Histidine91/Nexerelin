@@ -116,6 +116,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return fp;
 	}
 	
+	public MarketAPI getMarketFrom() {
+		return from;
+	}
+	
 	@Override
 	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
 		log.info("Notifying raid ended: " + status + ", " + outcome);

@@ -72,7 +72,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
-	public static final float DEFENSE_ESTIMATION_MULT = 0.9f;
+	public static final float DEFENSE_ESTIMATION_MULT = 0.8f;
 	public static final float BASE_INVASION_COST = 750f;	// for reference, Jangala at start of game is around 975
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
@@ -189,7 +189,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		strength *= fleetSizeMult;
 		
 		if (variability > 0)
-			strength *= 1 - variability + random.nextGaussian() * variability;
+			strength *= 1 + random.nextGaussian() * variability;
 		
 		strength *= DEFENSE_ESTIMATION_MULT;
 		

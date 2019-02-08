@@ -94,7 +94,7 @@ public abstract class NexAssembleStage extends AssembleStage {
 		}
 		
 		MarketAPI market = sources.get(currSource);
-		if (!market.isInEconomy() || !market.getPrimaryEntity().isAlive()) {
+		if (!market.isInEconomy() || !market.getPrimaryEntity().isAlive() || !market.hasSpaceport()) {
 			sources.remove(market);
 			return;
 		}

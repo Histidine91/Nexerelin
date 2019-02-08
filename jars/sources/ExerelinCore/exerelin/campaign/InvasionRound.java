@@ -53,6 +53,13 @@ public class InvasionRound {
 		log.info(str);
 	}
 	
+	public static float getRandomDamageMult(Random random) {
+		float mult = (float)(1f + random.nextGaussian() * 0.25f);
+		if (mult < 0.2f) mult = 0.2f;
+		if (mult > 1.8f) mult = 1.8f;
+		return mult;
+	}
+	
 	public static InvasionRoundResult execute(CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr, Random random)
 	{
 		printDebug("Executing invasion round of " + defender.getName());
@@ -60,8 +67,8 @@ public class InvasionRound {
 		if (fleet != null)
 			marines = fleet.getCargo().getMarines();
 		
-		float atkDam = (atkStr - defStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
-		float defDam = (defStr - atkStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
+		float atkDam = (atkStr - defStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * getRandomDamageMult(random);
+		float defDam = (defStr - atkStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * getRandomDamageMult(random);
 		if (atkDam < 0) atkDam = 0;
 		if (defDam < 0) defDam = 0;
 		
@@ -102,12 +109,16 @@ public class InvasionRound {
 		if (toDisrupt != null)
 		{
 			float dur = toDisrupt.getBuildTime() * StarSystemGenerator.getNormalRandom(random, 0.75f, 1.25f);
-			dur += toDisrupt.getDisruptedDays();
-			dur = Math.min(dur, toDisrupt.getBuildTime() * 4);
-			toDisrupt.setDisrupted(dur);
-			result.disrupted = toDisrupt;
-			result.disruptionLength = dur;
-			printDebug("\t" + toDisrupt.getCurrentName() + " disrupted for " + dur + " days");
+			float damMult = Math.min(0.5f + 0.5f * atkDam/defDam, 1);
+			dur *= damMult;
+			//if (dur > 5) {
+				dur += toDisrupt.getDisruptedDays();
+				dur = Math.min(dur, toDisrupt.getBuildTime() * 4);
+				toDisrupt.setDisrupted(dur);
+				result.disrupted = toDisrupt;
+				result.disruptionLength = dur;
+				printDebug("\t" + toDisrupt.getCurrentName() + " disrupted for " + dur + " days");
+			//}
 		}
 		
 		ExerelinUtilsMarket.reportInvasionRound(result, fleet, defender, atkStr, defStr);
@@ -339,7 +350,9 @@ public class InvasionRound {
 		if (stabilityPenalty > 6) stabilityPenalty = 6;
 		if (!success) stabilityPenalty /= 2;
 		
-		stabilityPenalty = Math.min(stabilityPenalty, UNREST_DO_NOT_EXCEED - RecentUnrest.getPenalty(market));
+		int maxUnrest = Math.min(rounds * 2, UNREST_DO_NOT_EXCEED);
+		
+		stabilityPenalty = Math.min(stabilityPenalty, maxUnrest - RecentUnrest.getPenalty(market));
 		return Math.round(stabilityPenalty);
 	}
 	

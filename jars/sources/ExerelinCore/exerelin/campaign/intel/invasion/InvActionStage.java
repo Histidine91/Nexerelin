@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetActionDelegate;
@@ -146,6 +147,10 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	// call NPC invade method, await results
 	@Override
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
+		// no double raiding
+		if (fleet != null && !fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+			return;
+		
 		log.info("Resolving invasion action against " + market.getName() + ": " + (fleet == null));
 		
 		removeMilScripts();
@@ -203,6 +208,9 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				giveReturnOrdersToStragglers(getRoutes());
 			}
 		}
+		
+		if (fleet != null)
+			fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_RAIDER);
 	}
 	
 	protected void autoresolve() {
