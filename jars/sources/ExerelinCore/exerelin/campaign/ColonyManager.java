@@ -89,7 +89,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			{
 				if (market.getPlanetEntity() == null && market.getSize() >= MAX_STATION_SIZE) 
 				{
-					market.setImmigrationClosed(true);
+					//market.setImmigrationClosed(true);
 				}
 				playerFactionSize += market.getSize();
 			}

@@ -855,10 +855,12 @@ public class RebellionEvent extends BaseEventPlugin {
 		SectorEntityToken target = Global.getSector().getEntityById("jangala");
 		if (target != null)
 		{
+			/*
 			InstigateRebellion rebel = new InstigateRebellion(target.getMarket(), 
 					Global.getSector().getFaction(Factions.TRITACHYON), target.getFaction(), false, null);
 			rebel.setResult(CovertOpsManager.CovertActionResult.SUCCESS_DETECTED);
 			rebel.onSuccess();
+			*/
 		}
 	}
 	
