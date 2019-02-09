@@ -1,3 +1,5 @@
 {
-
+	"nex_security_alert":{
+		"script":"exerelin.campaign.events.covertops.SecurityAlertEvent"
+	},
 }

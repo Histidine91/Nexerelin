@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
@@ -17,9 +18,7 @@ import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class DiplomacyIntel extends BaseIntelPlugin {
@@ -48,7 +47,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		isPeace = reputation.wasHostile && !reputation.isHostile;
 	}
 	
-	protected FactionAPI getFaction(String id)
+	protected static FactionAPI getFaction(String id)
 	{
 		return Global.getSector().getFaction(id);
 	}
@@ -89,9 +88,9 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		
 		info.addImages(width, 96, opad, opad, faction1.getLogo(), faction2.getLogo());
 		
-		Map<String, String> replace = new HashMap<>();
-		replace.put("$market", market.getName());
-		replace.put("$onOrAt", market.getOnOrAt());
+		List<Pair<String, String>> replace = new ArrayList<>();
+		replace.add(new Pair<>("$market", market.getName()));
+		replace.add(new Pair<>("$onOrAt", market.getOnOrAt()));
 		
 		StringHelper.addFactionNameTokensCustom(replace, "faction", faction1);
 		StringHelper.addFactionNameTokensCustom(replace, "otherFaction", faction2);
@@ -121,31 +120,48 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 				Alignment.MID, opad);
 		
 		// display relationship change from event, and relationship following event
-		Color deltaColor = reputation.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
-		String delta = (int)Math.abs(reputation.delta * 100) + "";
-		String newRel = NexUtilsReputation.getRelationStr(storedRelation);
-		String fn1 = ExerelinUtilsFaction.getFactionShortName(factionId1);
-		String fn2 = ExerelinUtilsFaction.getFactionShortName(factionId2);
-		String str = StringHelper.getString("exerelin_diplomacy", reputation.delta > 0 ?
-				"intelRepResultPositive" : "intelRepResultNegative");
-		str = StringHelper.substituteToken(str, "$faction1", fn1);
-		str = StringHelper.substituteToken(str, "$faction2", fn2);
-		str = StringHelper.substituteToken(str, "$deltaAbs", delta);
-		str = StringHelper.substituteToken(str, "$newRelationStr", newRel);
-		
-		LabelAPI para = info.addPara(str, opad);
-		para.setHighlight(fn1, fn2, delta, newRel);
-		para.setHighlightColors(faction1.getBaseUIColor(), faction2.getBaseUIColor(), 
-				deltaColor, NexUtilsReputation.getRelColor(storedRelation));
+		addRelationshipChangePara(info, factionId1, factionId2, storedRelation, reputation, opad);
 		
 		// days ago
 		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 		
 		// display current relationship
 		String currRel = NexUtilsReputation.getRelationStr(faction1, faction2);
-		str = StringHelper.getString("exerelin_diplomacy", "intelRepCurrent");
+		String str = StringHelper.getString("exerelin_diplomacy", "intelRepCurrent");
 		str = StringHelper.substituteToken(str, "$relationStr", currRel);
-		info.addPara(str, opad, faction1.getRelColor(factionId2), currRel);		
+		info.addPara(str, opad, faction1.getRelColor(factionId2), currRel);
+	}
+	
+	/**
+	 * Creates a paragraph detailing the effect of a relationship change between two factions.
+	 * @param info
+	 * @param relations The final relationship after the change.
+	 * @param adjustResult
+	 * @param pad Padding.
+	 */
+	public static void addRelationshipChangePara(TooltipMakerAPI info, 
+			String factionId1, String factionId2, float relations,
+			ExerelinReputationAdjustmentResult adjustResult, float pad)
+	{
+		FactionAPI faction1 = getFaction(factionId1);
+		FactionAPI faction2 = getFaction(factionId2);
+		
+		Color deltaColor = adjustResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		String delta = (int)Math.abs(adjustResult.delta * 100) + "";
+		String newRel = NexUtilsReputation.getRelationStr(relations);
+		String fn1 = ExerelinUtilsFaction.getFactionShortName(factionId1);
+		String fn2 = ExerelinUtilsFaction.getFactionShortName(factionId2);
+		String str = StringHelper.getString("exerelin_diplomacy", adjustResult.delta > 0 ?
+				"intelRepResultPositive" : "intelRepResultNegative");
+		str = StringHelper.substituteToken(str, "$faction1", fn1);
+		str = StringHelper.substituteToken(str, "$faction2", fn2);
+		str = StringHelper.substituteToken(str, "$deltaAbs", delta);
+		str = StringHelper.substituteToken(str, "$newRelationStr", newRel);
+		
+		LabelAPI para = info.addPara(str, pad);
+		para.setHighlight(fn1, fn2, delta, newRel);
+		para.setHighlightColors(faction1.getBaseUIColor(), faction2.getBaseUIColor(), 
+				deltaColor, NexUtilsReputation.getRelColor(relations));
 	}
 	
 	/*

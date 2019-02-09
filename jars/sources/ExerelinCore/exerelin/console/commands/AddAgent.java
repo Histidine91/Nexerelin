@@ -27,7 +27,7 @@ public class AddAgent implements BaseCommand {
 		}
 		
         PersonAPI agent = Global.getSector().getPlayerFaction().createRandomPerson();
-		AgentIntel intel = new AgentIntel(agent, level);
+		AgentIntel intel = new AgentIntel(agent, Global.getSector().getPlayerFaction(), level);
 		intel.setMarket(Global.getSector().getEconomy().getMarketsCopy().get(0));
 		intel.init();
         Console.showMessage("Added level " + level + " agent " + agent.getNameString());

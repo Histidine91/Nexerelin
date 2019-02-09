@@ -11,10 +11,12 @@
 			"successChance":0.7,
 			"detectionChance":0,	# it logically won't work if you get found out
 			"detectionChanceFail":0.25,
-			"effectMin":0.08,
-			"effectMax":0.14,
+			"effectMin":0.10,
+			"effectMax":0.15,
 			"repLossOnDetectionMin":0.1,
 			"repLossOnDetectionMax":0.15,
+			"baseCost":20000,
+			"costScaling":false,
 			"xp":250,
 		},
 		"lowerRelations":{
@@ -27,17 +29,22 @@
 			"effectMax":0.2,
 			"repLossOnDetectionMin":0.1,
 			"repLossOnDetectionMax":0.15,
+			"baseCost":40000,
+			"costScaling":false,
 			"xp":250,
 		},
-		"destabilize":{
+		"destabilizeMarket":{
 			"name":"Destabilize Market",
 			"time":30,
 			"successChance":0.65,
 			"detectionChance":0.35,
 			"detectionChanceFail":0.5,
+			"effectMin":2,
+			"effectMax":2,
 			"repLossOnDetectionMin":0.15,
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.2,
+			"baseCost":5000,
 			"xp":500,
 		},
 		"sabotageIndustry":{
@@ -51,9 +58,10 @@
 			"repLossOnDetectionMin":0.25,
 			"repLossOnDetectionMax":0.3,
 			"alertLevelIncrease":0.4,
+			"baseCost":20000,
 			"xp":1500,
 		},
-		"destroyStocks":{
+		"destroyCommodities":{
 			"name":"Destroy Commodity Stocks",
 			"time":30,
 			"successChance":0.65,
@@ -64,6 +72,7 @@
 			"repLossOnDetectionMin":0.15,
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.15,
+			"baseCost":5000,
 			"xp":500,
 		},
 		"stealBlueprints":{
@@ -75,6 +84,7 @@
 			"repLossOnDetectionMin":0.15,
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.4,
+			"baseCost":20000,
 			"xp":1500,
 		},
 		"infiltrateCell":{
@@ -86,6 +96,7 @@
 			"repLossOnDetectionMin":0.2,
 			"repLossOnDetectionMax":0.25,
 			"alertLevelIncrease":0,
+			"baseCost":5000,
 			"xp":500,
 		},
 		"instigateRebellion":{
@@ -97,6 +108,7 @@
 			"repLossOnDetectionMin":0.3,
 			"repLossOnDetectionMax":0.35,
 			"alertLevelIncrease":0.5,
+			"baseCost":50000,
 			"xp":2000,
 		},
 	},

@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,6 +84,15 @@ public class StringHelper {
 		return toModify;
 	}
 	
+	public static String substituteTokens(String toModify, List<Pair<String, String>> replacements)
+	{
+		for (Pair<String, String> tmp : replacements)
+		{
+			toModify = substituteToken(toModify, tmp.one, tmp.two);
+		}
+		return toModify;
+	}
+	
 	public static String getStringAndSubstituteToken(String category, String id, String token, String replace)
 	{
 		return getStringAndSubstituteToken(category, id, token, replace, false);
@@ -104,10 +114,21 @@ public class StringHelper {
 		return getStringAndSubstituteToken("general", id, token, replace, ucFormToo);
 	}
 	
+	public static String getStringAndSubstituteTokens(String category, String id, List<Pair<String,String>> replacements)
+	{
+		String str = getString(category, id);
+		return substituteTokens(str, replacements);
+	}
+	
 	public static String getStringAndSubstituteTokens(String category, String id, Map<String, String> replacements)
 	{
 		String str = getString(category, id);
 		return substituteTokens(str, replacements);
+	}
+	
+	public static String getStringAndSubstituteTokens(String id, List<Pair<String,String>> replacements)
+	{
+		return getStringAndSubstituteTokens("general", id, replacements);
 	}
 	
 	public static String getStringAndSubstituteTokens(String id, Map<String, String> replacements)
@@ -242,24 +263,31 @@ public class StringHelper {
 		return str;
 	}
 	
+	// old version, scheduled for removal
+	@Deprecated
 	public static void addFactionNameTokensCustom(Map<String, String> tokens, String str, FactionAPI faction) {
+		return;
+	}
+	
+	public static void addFactionNameTokensCustom(List<Pair<String, String>> tokens, String str, FactionAPI faction) {
 		if (faction != null) {
 			String factionName = faction.getEntityNamePrefix();
 			if (factionName == null || factionName.isEmpty()) {
 				factionName = faction.getDisplayName();
 			}
 			String strUc = Misc.ucFirst(str);
-			tokens.put("$" + str, factionName);
-			tokens.put("$" + strUc, Misc.ucFirst(factionName));
-			tokens.put("$the" + strUc, faction.getDisplayNameWithArticle());
-			tokens.put("$The" + strUc, Misc.ucFirst(faction.getDisplayNameWithArticle()));
 			
-			tokens.put("$" + str + "Long", faction.getDisplayNameLong());
-			tokens.put("$" + strUc + "Long", Misc.ucFirst(faction.getDisplayNameLong()));
-			tokens.put("$the" + strUc + "Long", faction.getDisplayNameLongWithArticle());
-			tokens.put("$The" + strUc + "Long", Misc.ucFirst(faction.getDisplayNameLongWithArticle()));
+			tokens.add(new Pair<>("$" + str + "Long", faction.getDisplayNameLong()));
+			tokens.add(new Pair<>("$" + strUc + "Long", Misc.ucFirst(faction.getDisplayNameLong())));
+			tokens.add(new Pair<>("$the" + strUc + "Long", faction.getDisplayNameLongWithArticle()));
+			tokens.add(new Pair<>("$The" + strUc + "Long", Misc.ucFirst(faction.getDisplayNameLongWithArticle())));
 			
-			tokens.put("$" + str + "IsOrAre", faction.getDisplayNameIsOrAre());
+			tokens.add(new Pair<>("$" + str + "IsOrAre", faction.getDisplayNameIsOrAre()));
+			
+			tokens.add(new Pair<>("$" + str, factionName));
+			tokens.add(new Pair<>("$" + strUc, Misc.ucFirst(factionName)));
+			tokens.add(new Pair<>("$the" + strUc, faction.getDisplayNameWithArticle()));
+			tokens.add(new Pair<>("$The" + strUc, Misc.ucFirst(faction.getDisplayNameWithArticle())));
 		}
 	}
 }

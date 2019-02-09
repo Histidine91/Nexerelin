@@ -4,7 +4,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
-import exerelin.campaign.covertops.InstigateRebellion;
+import exerelin.campaign.intel.agents.InstigateRebellion;
 import exerelin.campaign.events.covertops.AgentDestabilizeMarketEvent;
 import exerelin.campaign.events.covertops.AgentLowerRelationsEvent;
 import exerelin.campaign.events.covertops.CovertOpsEventBase;

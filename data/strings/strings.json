@@ -182,7 +182,7 @@
 		"agent":"agent",
 		"agents":"agents",
 		"saboteur":"saboteur",
-		"verbSuccess":"completed",
+		"verbSuccess":"success",
 		"verbFailed":"failed",
 		"recruited":"recruited",
 		
@@ -205,14 +205,11 @@
 		"personIntelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
 		"personIntelHeaderLastMessage":"Last message",
 		
-		"resourcesNeeded":"resources needed (available)",
-
-		"resultSuccess":"Your $agentType has $resultVerb their mission.",
-		"resultSuccessDetected":"Your $agentType has $resultVerb their mission, but was detected in the process.",
-		"resultFailure":"Your $agentType has $resultVerb in their mission.",
-		"resultFailureDetected":"Your $agentType has $resultVerb in their mission and was caught!",
 	},
 	"nex_agentActions":{
+		"unknownFaction":"unknown faction",
+		"anUnknownFaction":"an unknown faction",
+	
 		"intelDesc_raiseRelations_success":"An agent from $theAgentFaction has subverted the $faction political process to improve relations with their own faction.",
 		"intelDesc_raiseRelations_successPlayer":"Your agent $agentName has successfully subverted the $faction political process to improve relations with $theAgentFaction.",
 		"intelDesc_raiseRelations_failure":"An agent from $theAgentFaction failed to subvert the $faction political process to improve relations with their own faction. Fortunately, their attempts at manipulation went unnoticed.",
@@ -227,26 +224,35 @@
 		"intelDesc_lowerRelations_failureDetected":"An agent from $theAgentFaction was discovered attempting to manipulate the $faction political process to turn it against $theThirdFaction. Ironically, their actions have turned the two would-be enemies against their own faction instead.",
 		"intelDesc_lowerRelations_failureDetectedPlayer":"Your agent $agentName was discovered attempting to manipulate the $faction political process to turn it against $theThirdFaction. $TheAgentFaction will not thank you for turning both factions against them.",
 		
-		"intelDesc_destabilize_success":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
-		"intelDesc_destabilize_successPlayer":"Your agent $agentName has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
-		"intelDesc_destabilize_successDetected":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
-		"intelDesc_destabilize_successDetectedPlayer":"An attempt by a $agentFaction agent to cause chaos $onOrAt $market has been thwarted. $Faction authorities have been unable to identify the party responsible, however.",
-		"intelDesc_destabilize_failure":"$Faction security has thwarted your agent $agentName's attempts to cause chaos $onOrAt $market. Fortunately, they have been unable to conclusively link you to the crime.",
-		"intelDesc_destabilize_failurePlayer":"Your agent $agentName failed to subvert the $faction political process to improve relations with $theAgentFaction. Fortunately, their attempts at manipulation went undetected.",
-		"intelDesc_destabilize_failureDetected":"An $agentFaction operative was captured while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
-		"intelDesc_destabilize_failureDetectedPlayer":"Your agent $agentName was discovered while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
+		"intelDesc_destabilizeMarket_success":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
+		"intelDesc_destabilizeMarket_successPlayer":"Your agent $agentName has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
+		"intelDesc_destabilizeMarket_successDetected":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
+		"intelDesc_destabilizeMarket_successDetectedPlayer":"Your agent has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
+		"intelDesc_destabilizeMarket_failure":"An attempt by a $agentFaction agent to cause chaos $onOrAt $market has been thwarted. $Faction authorities have been unable to identify the party responsible, however.",
+		"intelDesc_destabilizeMarket_failurePlayer":"$Faction security has thwarted your agent $agentName's attempts to cause chaos $onOrAt $market. Fortunately, they have been unable to conclusively link you to the crime.",
+		"intelDesc_destabilizeMarket_failureDetected":"An $agentFaction operative was captured while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
+		"intelDesc_destabilizeMarket_failureDetectedPlayer":"Your agent $agentName was discovered while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
 		
-		# TODO
-		"intelDesc_sabotageIndustry_success":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
-		"intelDesc_sabotageIndustry_successPlayer":"Your agent $agentName has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
-		"intelDesc_sabotageIndustry_successDetected":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
-		"intelDesc_sabotageIndustry_successDetectedPlayer":"An attempt by a $agentFaction agent to cause chaos $onOrAt $market has been thwarted. $Faction authorities have been unable to identify the party responsible, however.",
-		"intelDesc_sabotageIndustry_failure":"$Faction security has thwarted your agent $agentName's attempts to cause chaos $onOrAt $market. Fortunately, they have been unable to conclusively link you to the crime.",
-		"intelDesc_sabotageIndustry_failurePlayer":"Your agent $agentName failed to subvert the $faction political process to improve relations with $theAgentFaction. Fortunately, their attempts at manipulation went undetected.",
-		"intelDesc_sabotageIndustry_failureDetected":"An $agentFaction operative was captured while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
-		"intelDesc_sabotageIndustry_failureDetectedPlayer":"Your agent $agentName was discovered while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
+		"intelDesc_sabotageIndustry_success":"An agent from $theAgentFaction has sabotaged the $industry $onOrAt $market. $Faction investigators have no leads on the crime.",
+		"intelDesc_sabotageIndustry_successPlayer":"Your agent $agentName has sabotaged the $industry $onOrAt $market, and made it look like an accident.",
+		"intelDesc_sabotageIndustry_successDetected":"An agent from $theAgentFaction has sabotaged the $industry $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
+		"intelDesc_sabotageIndustry_successDetectedPlayer":"Your agent $agentName has sabotaged the $industry $onOrAt $market. $Faction intelligence has traced the attack back to $theAgentFaction.",
+		"intelDesc_sabotageIndustry_failure":"An attempt by a $agentFaction agent to sabotage the $industry $onOrAt $market has been thwarted. $Faction authorities have been unable to identify the party responsible, however.",
+		"intelDesc_sabotageIndustry_failurePlayer":"$Faction security has thwarted your agent $agentName's attempt to sabotage the $industry $onOrAt $market. Fortunately, $theFaction has not been able to determine who was responsible.",
+		"intelDesc_sabotageIndustry_failureDetected":"$TheFaction has seized an agent sent by the $agentFaction to sabotage the $industry $onOrAt $market. $TheFaction is regarding this as a hostile act.",
+		"intelDesc_sabotageIndustry_failureDetectedPlayer":"Your agent $agentName has been caught attempting to sabotage the $industry $onOrAt $market. $TheFaction is expected to respond forcefully.",
 		
-		# TODO
+		"intelDesc_destroyCommodities_success":"An $agentFaction agent has destroyed a stockpile of $commodity $onOrAt $market. $Faction investigators are finding themselves stumped.",
+		"intelDesc_destroyCommodities_successPlayer":"Your agent $agentName has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities have their suspicions, but are unable to find any real evidence of $agentFaction involvement.",
+		"intelDesc_destroyCommodities_successDetected":"An agent has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities accuse $theAgentFaction of the crime.",
+		"intelDesc_destroyCommodities_successDetectedPlayer":"Your agent $agentNamehas destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities have identified $theAgentFaction as responsible for the attack.",
+		"intelDesc_destroyCommodities_failure":"Attempts by an agent of $agentFaction to destroy $commodity stocked $onOrAt $market have failed. $Faction authorities have been unable to determine who was responsible, however.",
+		"intelDesc_destroyCommodities_failurePlayer":"Your agent $agentName has failed in their attempt to $commodity stocked $onOrAt $market. Fortunately, $theFaction has not traced the crime back to $agentFaction.",
+		"intelDesc_destroyCommodities_failureDetected":"$TheFaction has arrested a agent of $agentFaction attempting to destroy stocks of $commodity $onOrAt $market.",
+		"intelDesc_destroyCommodities_failureDetectedPlayer":"$TheFaction counterintelligence has stopped your $agentName in an attempt to destroy $commodity stockpiled $onOrAt $market.",
+		
+		# TODO		
+		# infiltrate pather cell
 		
 		"destabilizeText1":"poisoned the water supply",
 		"destabilizeText2":"fired into a crowd at a public venue",
@@ -255,7 +261,21 @@
 		"destabilizeText5":"bombed a habitation module",
 		"destabilizeText6":"released nerve gas into a recreational area",
 		"destabilizeText7":"torched a storage depot",
-		"destabilizeText8":"poisoned patients at a clinic"
+		"destabilizeText8":"poisoned patients at a clinic",
+		
+		"intelResultHeader":"Results",
+		"intelBulletTarget":"Target: %s",
+		
+		"intelDesc_agentLost":"Agent $agentName has been captured or killed.",
+		"intelDesc_gainedXP":"$agentName gained %s XP.",
+		"intelDesc_gainedXPAndLeveledUp":"$agentName gained %s XP and has reached level %s.",
+		"intelDesc_agentExfiltrate":"$agentName is escaping to $market.",
+		
+		"destabilizeEffect":"Stability reduced by %s",
+		"industryDisruptEffect":"$industry disrupted for %s days",
+		"commodityLossEffect":"Availability of %s reduced by %s.",
+		"commodityLossEffectShort":"Availability reduced by %s",
+		"commodityDestroyModDesc":"Agent sabotage",
 	},
 	
 	"nex_baseStrike":{

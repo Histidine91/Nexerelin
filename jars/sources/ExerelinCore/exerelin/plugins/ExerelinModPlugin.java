@@ -28,7 +28,6 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
@@ -82,15 +81,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         Global.getLogger(this.getClass()).info("Applying Nexerelin to existing game");
         
         SectorAPI sector = Global.getSector();
-        InvasionFleetManager im = InvasionFleetManager.create();
-        AllianceManager am = AllianceManager.create();
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
-        sector.addScript(im);
+        sector.addScript(InvasionFleetManager.create());
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManagerV2.create());
-        //sector.addScript(CovertOpsManager.create());
-        sector.addScript(am);
+        sector.addScript(CovertOpsManager.create());
+        sector.addScript(AllianceManager.create());
         new ColonyManager().init();
         new RevengeanceManager().init();
         
@@ -152,14 +149,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        RevengeanceManager rvng = RevengeanceManager.getManager();
-        if (rvng != null && !Global.getSector().getListenerManager().hasListener(rvng))
-        {
-            Global.getLogger(this.getClass()).info("Registering revengeance manager as listener");
-            Global.getSector().getListenerManager().addListener(rvng);
-        }
-        
-        replaceScript(Global.getSector(), CovertOpsManager.class, null);
+        if (CovertOpsManager.getManager() == null)
+            Global.getSector().addScript(CovertOpsManager.create());
     }
     
     protected void addEventIfNeeded(String eventId)

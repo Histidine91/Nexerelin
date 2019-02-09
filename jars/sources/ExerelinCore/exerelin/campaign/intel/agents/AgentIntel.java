@@ -15,7 +15,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.covertops.CovertOpsAction;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -35,7 +34,8 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	protected PersonAPI agent;
 	protected MarketAPI market;
-	protected CovertOpsAction currentAction, lastAction;
+	protected FactionAPI faction;
+	protected CovertActionIntel currentAction, lastAction;
 	protected float daysToExecute;
 	protected float daysToExecuteRemaining;
 	protected int level;
@@ -46,9 +46,10 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected boolean wantLevelUpNotification = false;
 	
 	
-	public AgentIntel(PersonAPI agent, int level) {
+	public AgentIntel(PersonAPI agent, FactionAPI faction, int level) {
 		this.agent = agent;
 		this.level = level;
+		this.faction = faction;
 		xp = XP_LEVELS[level - 1];
 	}
 	
@@ -57,12 +58,12 @@ public class AgentIntel extends BaseIntelPlugin {
 		Global.getSector().addScript(this);
 	}
 	
-	public void gainXP(float xp) {
+	public void gainXP(int xp) {
 		this.xp += xp;
 		int newLevel = getLevelForCurrentXP();
 		if (newLevel > level) {
 			level = newLevel;
-			// TODO level up notification
+			this.sendUpdateIfPlayerHasIntel(UPDATE_LEVEL_UP, false);
 		}
 	}
 	
@@ -89,6 +90,14 @@ public class AgentIntel extends BaseIntelPlugin {
 		this.market = market;
 	}
 	
+	public PersonAPI getAgent() {
+		return agent;
+	}
+	
+	public void notifyActionCompleted() {
+		
+	}
+	
 	@Override
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
 		Color c = getTitleColor(mode);
@@ -101,7 +110,6 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		bullet(info);
 		
-		// TODO: add information
 		if (listInfoParam == UPDATE_RECRUITED) {
 			
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
