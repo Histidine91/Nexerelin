@@ -384,12 +384,12 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
-		addVengeanceForMarketAttack(market, market.getSize(), 1);
+		addVengeanceForMarketAttack(market, market.getSize(), 0.75f);
 	}
 
 	@Override
 	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, Industry industry) {
-		addVengeanceForMarketAttack(market, market.getSize(), 1);
+		addVengeanceForMarketAttack(market, market.getSize(), 0.75f);
 	}
 
 	@Override
