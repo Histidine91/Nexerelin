@@ -33,6 +33,8 @@ import org.apache.log4j.Logger;
 
 public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
+	public static final String MEM_KEY_INVASION_ATTEMPTED = "$nex_invasionAttempted";
+	
 	public static Logger log = Global.getLogger(InvActionStage.class);
 	
 	protected MarketAPI target;
@@ -41,12 +43,22 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	protected boolean gaveOrders = true; // will be set to false in updateRoutes()
 	protected float untilAutoresolve = 30f;
 	
+	OffensiveFleetIntel offFltIntel;
+	
 	public InvActionStage(OffensiveFleetIntel invasion, MarketAPI target) {
 		super(invasion);
 		this.target = target;
 		playerTargeted = target.isPlayerOwned();
+		offFltIntel = invasion;
 		
 		untilAutoresolve = 15f + 5f * (float) Math.random();
+	}
+	
+	protected Object readResolve() {
+		if (offFltIntel == null)
+			offFltIntel = (OffensiveFleetIntel)intel;
+		
+		return this;
 	}
 	
 
@@ -100,6 +112,37 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 	}
 	
+	protected void checkIfInvasionFailed() {
+		// check if all invasion fleets have failed
+		if (offFltIntel.getOutcome() != null)
+			return;
+		
+		List<RouteData> routes = getRoutes();
+		boolean anyRaidersRemaining = false;
+		for (RouteData route : routes)
+		{
+			if (route.getActiveFleet() == null || !route.getActiveFleet().getMemoryWithoutUpdate()
+					.getBoolean(MEM_KEY_INVASION_ATTEMPTED))
+			{
+				anyRaidersRemaining = true;
+				break;
+			}
+		}
+		if (!anyRaidersRemaining) {
+			if (target.getFaction() != intel.getFaction()) {
+				if (target.getFaction().isHostileTo(intel.getFaction())) {
+					offFltIntel.setOutcome(OffensiveOutcome.FAIL);
+					status = RaidStageStatus.FAILURE;
+					log.info("Invasion failed, no raiders remaining");
+				} else {
+					offFltIntel.setOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
+					status = RaidStageStatus.FAILURE;
+				}
+				offFltIntel.sendOutcomeUpdate();
+			}
+		}
+	}
+	
 	@Override
 	protected void updateStatus() {
 		abortIfNeededBasedOnFP(true);
@@ -110,6 +153,8 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			autoresolve();
 			return;
 		}
+		
+		checkIfInvasionFailed();
 	}
 	
 	// same as parent, but also set correct outcome
@@ -121,7 +166,8 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		boolean enoughMadeIt = enoughMadeIt(routes, stragglers);
 		//enoughMadeIt = false;
 		if (!enoughMadeIt) {
-			((OffensiveFleetIntel)intel).setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+			log.info("Not enough made it, fail");
+			offFltIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 			status = RaidStageStatus.FAILURE;
 			if (giveReturnOrders) {
 				giveReturnOrdersToStragglers(routes);
@@ -148,16 +194,17 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	@Override
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
 		// no double raiding
-		if (fleet != null && !fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+		if (fleet != null && fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_INVASION_ATTEMPTED)) {
+			log.warn(fleet.getName() + " is attempting invasion twice");
+			
 			return;
+		}
 		
 		log.info("Resolving invasion action against " + market.getName() + ": " + (fleet == null));
 		
 		removeMilScripts();
 		
 		InvasionIntel intel = ((InvasionIntel)this.intel);
-		
-		status = RaidStageStatus.SUCCESS;
 		
 		float atkStrength = (InvasionIntel.USE_REAL_MARINES && fleet != null) ? 
 				InvasionRound.getAttackerStrength(fleet) 
@@ -197,6 +244,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		if (success)
 		{
 			intel.setOutcome(OffensiveOutcome.SUCCESS);
+			status = RaidStageStatus.SUCCESS;
 		}
 		
 		// when FAILURE, gets sent by RaidIntel
@@ -210,7 +258,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 		
 		if (fleet != null)
-			fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_RAIDER);
+			fleet.getMemoryWithoutUpdate().set(MEM_KEY_INVASION_ATTEMPTED, true);
 	}
 	
 	protected void autoresolve() {
@@ -321,8 +369,9 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 
 	@Override
 	public boolean canRaid(CampaignFleetAPI fleet, MarketAPI market) {
-		OffensiveFleetIntel intel = ((OffensiveFleetIntel)this.intel);
-		if (intel.getOutcome() != null) return false;
+		if (offFltIntel.getOutcome() != null) return false;
+		if (fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_INVASION_ATTEMPTED)) return false;
+		
 		return market == target;
 	}
 	
