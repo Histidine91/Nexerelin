@@ -303,8 +303,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, limit, false);
     }
     
-    // TODO: refactor/test if all that duplicate handling for player vs. aligned faction is really needed
-
     /**
      * Complicated stuff for setting relationships between two factions
      * Checks relationship bounds, etc.
@@ -325,8 +323,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         float before = faction1.getRelationship(faction2.getId());
         boolean wasHostile = faction1.isHostileTo(faction2);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
-        FactionAPI playerFaction = sector.getPlayerFleet().getFaction();
         String faction1Id = faction1.getId();
         String faction2Id = faction2.getId();
         

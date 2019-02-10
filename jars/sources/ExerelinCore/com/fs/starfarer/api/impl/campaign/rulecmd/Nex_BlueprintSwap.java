@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.input.Keyboard;
 
-// TODO:
+
 public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	public static final String POINTS_KEY = "$nex_BPSwapPoints";

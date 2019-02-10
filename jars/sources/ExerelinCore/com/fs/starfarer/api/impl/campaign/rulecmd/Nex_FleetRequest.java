@@ -203,7 +203,6 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	protected float updateCost() {
 		cost = fp * ExerelinConfig.fleetRequestCostPerFP;
 		if (fleetType == FleetType.INVASION) {
-			// TODO
 			float mult = 1 + 2 * (float)marines/InvasionIntel.MAX_MARINES;
 			cost *= mult;
 		}

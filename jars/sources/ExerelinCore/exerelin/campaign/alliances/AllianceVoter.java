@@ -177,21 +177,6 @@ public class AllianceVoter {
 		NexUtilsReputation.syncFactionRelationshipsToPlayer();
 	}
 	
-	protected static Map<String, Object> getEventParams(Alliance alliance, VoteResult result, 
-			String otherFactionId, Alliance otherAlliance, boolean isWar)
-	{
-		Map<String, Object> params = new HashMap<>();
-		params.put("allianceId", alliance.uuId);
-		params.put("result", result);
-		params.put("isWar", isWar);
-		if (otherAlliance != null)
-			params.put("otherParty", otherAlliance.uuId);
-		else
-			params.put("otherParty", otherFactionId);
-		params.put("otherPartyIsAlliance", otherAlliance != null);
-		return params;
-	}
-	
 	/**
 	 * Decide whether the alliance should declare war on/make peace with the other faction (and possibly their allies, if any)
 	 * @param alliance

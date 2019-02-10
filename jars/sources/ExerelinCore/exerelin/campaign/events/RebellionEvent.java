@@ -29,7 +29,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.covertops.InstigateRebellion;
+import exerelin.campaign.intel.agents.InstigateRebellion;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.fleets.SuppressionFleetAI;
@@ -45,10 +45,7 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-/* TODO:
-	Random rebellion event
-	Rebel suppression fleets
-*/
+@Deprecated
 public class RebellionEvent extends BaseEventPlugin {
 	
 	public static final float MAX_DAYS = 180;

@@ -273,9 +273,9 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		String str = getDef().name;
 		if (result != null) { 
 			if (result.isSucessful())
-				str += " - " + StringHelper.getString("nex_agents", "verbSuccess");
+				str += " - " + StringHelper.getString("nex_agents", "verbSuccess", true);
 			else
-				str += " - " + StringHelper.getString("nex_agents", "verbFailed");
+				str += " - " + StringHelper.getString("nex_agents", "verbFailed", true);
 		}
 		
 		return str;
