@@ -35,6 +35,10 @@
         {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"], "weight":0.5},
     ],
     
+    "startSpecialItems":[
+        [["midline_package", ""]],
+    ],
+    
     "industrySeeds":[
         {"id":"orbitalworks", "mult":0.1},
         {"id":"fuelprod", "mult":0.1},

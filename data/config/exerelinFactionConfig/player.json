@@ -15,5 +15,9 @@
     "startShipsTradeLarge":[["venture_Balanced", "tarsus_Standard", "shepherd_Frontier"]],
     "startShipsCarrierSmall":[["drover_Strike", "monitor_Escort", "vigilance_AP"]],
     "startShipsCarrierLarge":[["heron_Strike", "sunder_Assault", "brawler_Elite"]],
-    "startShipsSuper":[["hyperion_Attack"]]
+    "startShipsSuper":[["hyperion_Attack"]],
+    
+    "startSpecialItems":[
+        [["low_tech_package", ""], ["midline_package", ""], ["high_tech_package", ""]],
+    ]
 }

@@ -30,6 +30,10 @@
     "startShipsCarrierLarge":[["mora_Assault", "enforcer_Escort", "lasher_Strike"]],
     #"startShipsGrandFleet":[["onslaught_xiv_Elite"]],
     
+    "startSpecialItems":[
+        [["low_tech_package", ""]],
+    ],
+    
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"]},
         {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"], "weight":0.5},

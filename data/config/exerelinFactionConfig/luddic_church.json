@@ -35,6 +35,10 @@
     ],
     "startShipsTradeLarge":[["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"]],
     "startShipsCarrierSmall":[["condor_Attack", "lasher_luddic_church_Standard", "hound_luddic_church_Standard"]],
+    
+    "startSpecialItems":[
+        [["LC_package", ""]],
+    ],
 
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"]},

@@ -19,4 +19,8 @@
     "startShipsTradeSmall":[["junk_pirates_octopus_Standard", "junk_pirates_stoatB_Standard"]],
     "startShipsCombatLarge":[["junk_pirates_dugong_Standard", "junk_pirates_boxer_Fighter", "junk_pirates_clementine_Wingclipper"]],
     "startShipsTradeLarge":[["junk_pirates_goat_Standard", "junk_pirates_scythe_Assault", "junk_pirates_stoatA_Standard"]],
+    
+    "startSpecialItems":[
+        [["junk_pirates_asp_bp", ""]],
+    ],
 }

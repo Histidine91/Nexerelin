@@ -42,6 +42,10 @@
     "startShipsCarrierLarge":[["swp_eos_sta", "ssp_arachne_art", "brawler_tritachyon_Standard"]],
     "startShipsSuper":[["hyperion_Attack"]],
     
+    "startSpecialItems":[
+        [["high_tech_package", ""]],
+    ],
+    
     "defenceStations":[
         {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"]},
     ],

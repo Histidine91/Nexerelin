@@ -37,6 +37,10 @@
       ["heron_Strike", "sunder_Assault", "centurion_Starting"]
     ],
     
+    "startSpecialItems":[
+        [["midline_package", ""]],
+    ],
+    
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.5},
         {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"]},

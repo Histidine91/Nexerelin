@@ -1,10 +1,7 @@
 {
     "playableFaction":true,
-    
     "rebelFleetSuffix":"Splinter Group",
-    
     "directoryUseShortName":true,
-
     "logisticsFleetName":"Supply Convoy",
     
     "alignments":{
@@ -18,4 +15,8 @@
     "startShipsTradeSmall":[["pack_ridgeback_Standard", "pack_schnauzer_caomarelo_Standard", "pack_samoyed_Support"]],
     "startShipsCombatLarge":[["pack_mastiff_Assault", "pack_pitbull_rothund_Standard", "pack_bedlington_canebianco_Standard"]],
     "startShipsTradeLarge":[["pack_mastiff_Standard", "pack_labrador_Standard", "pack_samoyed_caomarelo_Standard"]],
+    
+    "startSpecialItems":[
+        [["junk_pirates_pack_bp", ""]],
+    ],
 }

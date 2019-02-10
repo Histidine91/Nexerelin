@@ -1,8 +1,10 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -13,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
@@ -136,6 +139,7 @@ public class ExerelinFactionConfig
     public List<String> miningVariantsOrWings = new ArrayList<>();
     
     public Map<StartFleetType, StartFleetSet> startShips = new HashMap<>();
+	public List<SpecialItemSet> startSpecialItems = new ArrayList<>();
     
     // set defaults
     static {
@@ -303,7 +307,8 @@ public class ExerelinFactionConfig
                 }
             }
             loadVengeanceNames(settings);
-            
+			
+			loadStartSpecialItems(settings);
             loadStartShips(settings);
             
             // industry
@@ -346,9 +351,10 @@ public class ExerelinFactionConfig
                 }
             }
             
-        } catch(IOException | JSONException ex)
+        } catch (IOException | JSONException ex)
         {
             log.error("Failed to load faction config for " + factionId + ": " + ex);
+			throw new RuntimeException(ex);
         }
         
         if (miningVariantsOrWings.isEmpty())
@@ -641,6 +647,30 @@ public class ExerelinFactionConfig
         if (settings.has("vengeanceFleetNamesSingle"))
             vengeanceFleetNamesSingle = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNamesSingle"));
     }
+	
+	protected void loadStartSpecialItems(JSONObject settings) throws JSONException
+	{
+		if (!settings.has("startSpecialItems"))
+			return;
+		
+		//CargoAPI tester = Global.getFactory().createCargo(false);
+		JSONArray allItemsJson = settings.getJSONArray("startSpecialItems");
+		for (int i = 0; i < allItemsJson.length(); i++)
+		{
+			SpecialItemSet set = new SpecialItemSet();
+			JSONArray itemsJson = allItemsJson.getJSONArray(i);
+			for (int j = 0; j < itemsJson.length(); j++)
+			{
+				JSONArray itemJson = itemsJson.getJSONArray(j);
+				Pair<String, String> item = new Pair<>(itemJson.getString(0), itemJson.getString(1));
+				set.items.add(item);
+				
+				// validate item existence - disabled, doesn't actually detect invalid IDs
+				//tester.addSpecial(new SpecialItemData(item.one, item.two), 1);
+			}
+			startSpecialItems.add(set);
+		}
+	}
     
     protected void loadStartShips(JSONObject settings) throws JSONException
     {
@@ -1077,6 +1107,21 @@ public class ExerelinFactionConfig
 		{
 			this.weight = weight;
 			this.industryIds = industryIds;
+		}
+	}
+	
+	public static class SpecialItemSet {
+		List<Pair<String, String>> items = new ArrayList<>();
+		
+		public void pickItemsAndAddToCargo(CargoAPI cargo, Random random) {
+			WeightedRandomPicker<Pair<String, String>> picker = new WeightedRandomPicker<>(random);
+			for (Pair<String, String> item : items) {
+				picker.add(item);
+			}
+			Pair<String, String> item = picker.pick();
+			if (item != null) {
+				cargo.addSpecial(new SpecialItemData(item.one, item.two), 1);
+			}
 		}
 	}
 	

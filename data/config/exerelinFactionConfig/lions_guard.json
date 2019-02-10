@@ -25,4 +25,8 @@
     ],
     "startShipsCarrierSmall":[["ssp_vortex_sta", "tempest_Attack", "brawler_lions_guard_eli"]],
     "startShipsCarrierLarge":[["heron_lions_guard_eli", "medusa_Attack", "ssp_hecate_sta"]],
+    
+    "startSpecialItems":[
+        [["midline_package", ""], ["high_tech_package", ""]],
+    ],
 }

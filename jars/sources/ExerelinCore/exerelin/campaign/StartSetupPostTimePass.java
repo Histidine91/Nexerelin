@@ -24,6 +24,7 @@ import data.scripts.world.templars.TEM_Antioch;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinFactionConfig.SpecialItemSet;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
@@ -42,6 +43,8 @@ public class StartSetupPostTimePass {
 		
 		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
+		final String selectedFactionId = factionId;	// can't be changed by config
+		
 		FactionAPI myFaction = sector.getFaction(factionId);
 		boolean isPlayer = myFaction.isPlayerFaction();
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
@@ -162,13 +165,15 @@ public class StartSetupPostTimePass {
 			new GalatianAcademyStipend();
 		}
 		
-		// Starting blueprints placeholder
-		if (factionId.equals(Factions.PLAYER) && !SectorManager.getFreeStart()) {
-			List<String> blueprints = Arrays.asList(new String[] {
-				"low_tech_package", "midline_package", "high_tech_package"
-			});
-			String bp = ExerelinUtils.getRandomListElement(blueprints, StarSystemGenerator.random);
-			playerFleet.getCargo().addSpecial(new SpecialItemData(bp, ""), 1);
+		// Starting blueprints
+		if (selectedFactionId.equals(Factions.PLAYER) && SectorManager.getFreeStart()) {
+			// no free special items on free start
+		}
+		else {
+			for (SpecialItemSet set : conf.startSpecialItems) {
+				set.pickItemsAndAddToCargo(Global.getSector().getPlayerFleet().getCargo(), 
+						StarSystemGenerator.random);
+			}
 		}
 	}
 	

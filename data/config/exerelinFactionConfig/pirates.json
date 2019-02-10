@@ -42,6 +42,10 @@
     "startShipsCarrierLarge":[["colossus3_Pirate", "enforcer_d_pirates_Strike", "hound_d_pirates_Standard"]],
     "startShipsSuper":[["ssp_venomx_str"]],
     
+    "startSpecialItems":[
+        [["pirate_package", ""]],
+    ],
+    
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"]},
     ],
