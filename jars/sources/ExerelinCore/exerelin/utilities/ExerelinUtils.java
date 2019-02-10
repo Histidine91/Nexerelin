@@ -96,7 +96,10 @@ public class ExerelinUtils
 	
 	public static void addDevModeDialogOptions(InteractionDialogAPI dialog)
 	{
-		DevMenuOptions.addOptions(dialog);
+		if (Global.getSettings().isDevMode())
+		{
+			DevMenuOptions.addOptions(dialog);
+		}
 	}
 
 	public static String[] JSONArrayToStringArray(JSONArray jsonArray)
@@ -110,7 +113,7 @@ public class ExerelinUtils
             }
             return ret;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Global.getLogger(ExerelinFactionConfig.class).warn(e);
             return new String[]{};
