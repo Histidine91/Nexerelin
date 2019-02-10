@@ -65,7 +65,6 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	public static final String MEM_KEY_PERSON = MEM_KEY_PREFIX + "person";
 	public static final String MEM_KEY_EVENT_SEEN_BEFORE = MEM_KEY_PREFIX + "seenBefore";
 	
-	public static final WeightedRandomPicker<String> eventTypePicker = new WeightedRandomPicker<>();
 	public static final WeightedRandomPicker<String> givePicker = new WeightedRandomPicker<>();
 	public static final WeightedRandomPicker<String> takePicker = new WeightedRandomPicker<>();
 	
@@ -74,10 +73,6 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	protected MemoryAPI memory;
 	
 	static {
-		eventTypePicker.add(EVENT_TYPE_BARTER, 10);
-		eventTypePicker.add(EVENT_TYPE_REFUGEES, 2.5f);
-		eventTypePicker.add(EVENT_TYPE_BOMB, 2.5f);
-		
 		givePicker.add(Commodities.SUPPLIES, 1f);
 		givePicker.add(Commodities.FUEL, 1f);
 		givePicker.add(Commodities.FOOD, 0.5f);
@@ -288,6 +283,10 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 			setMem(MEM_KEY_HAS_EVENT, false);
 			return;
 		}
+		WeightedRandomPicker<String> eventTypePicker = new WeightedRandomPicker<>();
+		eventTypePicker.add(EVENT_TYPE_BARTER, 10);
+		eventTypePicker.add(EVENT_TYPE_REFUGEES, 2.5f * market.getHazardValue());
+		eventTypePicker.add(EVENT_TYPE_BOMB, 3f);
 		
 		String type = eventTypePicker.pick();
 		switch (type) {
