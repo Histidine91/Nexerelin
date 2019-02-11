@@ -361,7 +361,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		raidStr *= Math.max(0.25f, 0.5f + Math.min(1f, Misc.getShipQuality(source)));
 		
 		float pts = faction.getDoctrine().getOfficerQuality();
-		fp *= 1f + (pts - 1f) / 4f;
+		raidStr *= 1f + (pts - 1f) / 4f;
 		
 		return raidStr;
 	}
