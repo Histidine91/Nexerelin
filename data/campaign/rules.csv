@@ -317,85 +317,6 @@ nex_factionDirectoryList7,DialogOptionSelected,$option == nex_factionDirectoryLi
 nex_factionDirectoryPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_printFactionMarkets_""",Nex_FactionDirectory print,,,
 #END MARKET DIRECTORY OPTIONS,,,,,,
 ,,,,,,
-#START AGENT OPTIONS,,,,,,
-ExerelinMarketAgentOption,Nex_HostileAction,,"SetEnabled exerelinUseAgent true
-SetShortcut exerelinUseAgent A",,2:exerelinUseAgent:Deploy an agent,
-ExerelinMarketAgentOptionNoAgents,Nex_HostileAction,!HasItem agent score:10,"SetTooltip exerelinUseAgent ""You have no agents!""
-SetEnabled exerelinUseAgent false",,,
-ExerelinMarketAgentOptionNotAllowed,Nex_HostileAction,!FactionAllowAgentActions $faction.id score:20,"SetTooltip exerelinUseAgent""$TheFaction cannot be infiltrated.""
-SetEnabled exerelinUseAgent false",,,
-#ExerelinMarketAgentOptionNoSneak,Nex_HostileAction,"$tradeMode == NONE
-ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseAgent ""The port is closed to you, and $faction patrols nearby prevent agent insertion.""
-SetEnabled exerelinUseAgent false",,,
-ExerelinMarketAgentOptionAlertLevelMaxed,Nex_HostileAction,"HasItem agent
-$market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
-SetEnabled exerelinUseAgent false",,,
-ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"$menuState = agent 0
-GetNumSpecialPeople
-ShowVisual ""graphics/illustrations/quartermaster.jpg""
-FireAll ExerelinAgentOption",,,
-ExerelinAgentOptionNumAgents,ExerelinAgentOption,,SetTextHighlights $numAgents,You have $numAgents agent(s) to deploy.,,
-ExerelinAgentOptionListGatherIntel,ExerelinAgentOption,,"SetTooltip exerelinAgentGatherIntel ""Gets the market's current stability, reserve fleet and security alert level, and uncovers information on any ongoing rebellions.""
-SetShortcut exerelinAgentGatherIntel I",,exerelinAgentGatherIntel:Gather intel,
-ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations ""Influence $theFaction to like your faction more. If it fails, there is a chance they will turn more hostile instead.""
-SetShortcut exerelinAgentRaiseRelations R",,exerelinAgentRaiseRelations:Raise relations,
-ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations ""Influence $theFaction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.""
-SetShortcut exerelinAgentLowerRelations L",,exerelinAgentLowerRelations:Lower relations,
-ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket ""Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.""
-SetShortcut exerelinAgentDestabilizeMarket D",,exerelinAgentDestabilizeMarket:Destabilize market,
-ExerelinAgentOptionListBack,ExerelinAgentOption,,SetShortcut nex_hostileActionMenu ESCAPE,,nex_hostileActionMenu:Back,
-,,,,,,
-ExerelinAgentGatherIntel,DialogOptionSelected,$option == exerelinAgentGatherIntel,"AgentGatherIntel true
-FireBest ExerelinAgentPostDeploy",,,
-ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
-FireBest ExerelinAgentPostDeploy",,,
-ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRelations,"AgentLowerRelations
-FireBest ExerelinAgentPostDeploy",,,
-ExerelinAgentDestabilizeMarket,DialogOptionSelected,$option == exerelinAgentDestabilizeMarket,"AgentDestabilizeMarket
-FireBest ExerelinAgentPostDeploy",,,
-ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
-FireAll ExerelinAgentOption",,,
-ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent score:10,"$menuState = exerelinSpecial
-FireAll Nex_HostileAction",You have no more agents to deploy.,,
-ExerelinAgentAfterDeployAlertLevelMaxed,ExerelinAgentPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = exerelinSpecial
-FireAll Nex_HostileAction",Security is too tight for further agent insertions.,,
-#END AGENT OPTIONS,,,,,,
-,,,,,,
-#START SABOTEUR OPTIONS,,,,,,
-ExerelinMarketSaboteurOption,Nex_HostileAction,,"SetEnabled exerelinUseSaboteur true
-SetShortcut exerelinUseSaboteur S",,3:exerelinUseSaboteur:Deploy a saboteur,
-ExerelinMarketSaboteurOptionNoSaboteurs,Nex_HostileAction,!HasItem saboteur,"SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
-SetEnabled exerelinUseSaboteur false",,,
-ExerelinMarketSaboteurOptionNotAllowed,Nex_HostileAction,!FactionAllowAgentActions $faction.id score:20,"SetTooltip exerelinUseSaboteur ""$TheFaction cannot be infiltrated.""
-SetEnabled exerelinUseSaboteur false",,,
-#ExerelinMarketSaboteurOptionNoSneak,Nex_HostileAction,"$tradeMode == NONE
-ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseSaboteur ""The port is closed to you, and $faction patrols nearby prevent saboteur insertion.""
-SetEnabled exerelinUseSaboteur false",,,
-ExerelinMarketSaboteurOptionAlertLevelMaxed,Nex_HostileAction,"HasItem saboteur
-$market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
-SetEnabled exerelinUseSaboteur false",,,
-ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"$menuState = saboteur 0
-GetNumSpecialPeople
-ShowVisual ""graphics/illustrations/cargo_loading.jpg""
-FireAll ExerelinSaboteurOption",,,
-ExerelinSaboteurOptionNumSaboteurs,ExerelinSaboteurOption,,SetTextHighlights $numSaboteurs,You have $numSaboteurs saboteur(s) to deploy.,,
-ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurSabotageReserve ""Sabotages the reserve fleet on $market, weakening its ability to respond to invasions. Needless to say, this will be considered a hostile act if discovered.""
-SetShortcut exerelinSaboteurSabotageReserve S",,exerelinSaboteurSabotageReserve:Sabotage reserve fleet,
-ExerelinSaboteurOptionListDestroyFood,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurDestroyFood ""Destroys a large amount of food on $market, possibly provoking a destabilizing crisis.""
-SetShortcut exerelinSaboteurDestroyFood F",,exerelinSaboteurDestroyFood:Destroy food stockpiles,
-ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,SetShortcut nex_hostileActionMenu ESCAPE,,nex_hostileActionMenu:Back,
-ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
-FireBest ExerelinSaboteurPostDeploy",,,
-ExerelinSaboteurDestroyFood,DialogOptionSelected,$option == exerelinSaboteurDestroyFood,"SaboteurDestroyFood
-FireBest ExerelinSaboteurPostDeploy",,,
-ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
-FireAll ExerelinSaboteurOption",,,
-ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur score:10,"$menuState = exerelinSpecial
-FireAll Nex_HostileAction",You have no more saboteurs to deploy.,,
-ExerelinSaboteurAfterDeployAlertLevelMaxed,ExerelinSaboteurPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = exerelinSpecial
-FireAll Nex_HostileAction",Security is too tight for further saboteur insertions.,,
-#END SABOTEUR OPTIONS,,,,,,
-,,,,,,
 #START PRISONER OPTIONS,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""","SetEnabled exerelinUsePrisoner true
@@ -833,16 +754,16 @@ nex_marketTransferPostDialogLeave,DialogOptionSelected,$option == nex_transferMa
 #END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
 #START REBELLION OPTIONS,,,,,,
-nex_instigateRebellion,Nex_HostileAction,,,,6:nex_instigateRebellion:Instigate a rebellion,
-nex_instigateRebellionNoSneak,Nex_HostileAction,$tradeMode == NONE,"SetTooltip nex_instigateRebellion ""You currently do not have access to $market to insert the needed assets.""
+#nex_instigateRebellion,Nex_HostileAction,,,,6:nex_instigateRebellion:Instigate a rebellion,
+#nex_instigateRebellionNoSneak,Nex_HostileAction,$tradeMode == NONE,"SetTooltip nex_instigateRebellion ""You currently do not have access to $market to insert the needed assets.""
 SetEnabled nex_instigateRebellion false",,,
-nex_instigateRebellionAlreadyOngoing,Nex_HostileAction,Nex_RebellionActions isOngoing,"SetTooltip nex_instigateRebellion ""A rebellion is already in progress on $market.""
+#nex_instigateRebellionAlreadyOngoing,Nex_HostileAction,Nex_RebellionActions isOngoing,"SetTooltip nex_instigateRebellion ""A rebellion is already in progress on $market.""
 SetEnabled nex_instigateRebellion false",,,
-nex_instigateRebellionInit,DialogOptionSelected,$option == nex_instigateRebellion,"Nex_InstigateRebellion init
+#nex_instigateRebellionInit,DialogOptionSelected,$option == nex_instigateRebellion,"Nex_InstigateRebellion init
 SetShortcut nex_instigateRebellionProceed RETURN
 SetShortcut nex_hostileActionMenu ESCAPE","You can attempt to start a rebellion on $market. This will always succeed but will cost a significant amount of resources, and $theFaction will turn hostile if your actions are discovered.","nex_instigateRebellionProceed:Proceed
 nex_hostileActionMenu:Cancel",
-nex_instigateRebellionProceed,DialogOptionSelected,$option == nex_instigateRebellionProceed,"Nex_InstigateRebellion proceed
+#nex_instigateRebellionProceed,DialogOptionSelected,$option == nex_instigateRebellionProceed,"Nex_InstigateRebellion proceed
 FireAll Nex_HostileAction",,,
 ,,,,,,
 nex_supplyCounterInsurgencyOption,PopulateOptions,"Nex_IsBaseOfficial admin
