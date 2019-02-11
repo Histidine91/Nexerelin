@@ -178,13 +178,14 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 			cargo.removeCommodity(takeId, takeNum);
 			AddRemoveCommodity.addCommodityLossText(takeId, takeNum, dialog.getTextPanel());
 		}
+		dialog.getInteractionTarget().setActivePerson(null);
 		
 		setMem(MEM_KEY_HAS_EVENT, false);
 	}
 	
 	protected void decline(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
 	{
-		// do nothing?
+		dialog.getInteractionTarget().setActivePerson(null);
 	}
 	
 	/**
