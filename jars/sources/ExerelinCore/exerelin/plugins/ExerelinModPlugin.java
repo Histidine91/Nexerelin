@@ -86,7 +86,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(InvasionFleetManager.create());
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManagerV2.create());
-        sector.addScript(CovertOpsManager.create());
+        //sector.addScript(CovertOpsManager.create());
         sector.addScript(AllianceManager.create());
         new ColonyManager().init();
         new RevengeanceManager().init();
@@ -149,8 +149,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        if (CovertOpsManager.getManager() == null)
-            Global.getSector().addScript(CovertOpsManager.create());
+        //if (CovertOpsManager.getManager() == null)
+        //    Global.getSector().addScript(CovertOpsManager.create());
     }
     
     protected void addEventIfNeeded(String eventId)
