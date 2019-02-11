@@ -463,6 +463,16 @@ public class DiplomacyBrain {
 		return false;
 	}
 	
+	public RepLevel getMaxRepForOpportunisticWar() {
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		float niceness = conf.alignments.get(Alignment.DIPLOMATIC) - conf.alignments.get(Alignment.MILITARIST);
+		if (niceness >= 1f)
+			return RepLevel.HOSTILE;	//effectively disabled (we'd already be at war)
+		else if (niceness >= 0.5f)
+			return RepLevel.INHOSPITABLE;
+		return RepLevel.SUSPICIOUS;
+	}
+	
 	public boolean checkWar()
 	{
 		long lastWar = DiplomacyManager.getManager().getLastWarTimestamp();
@@ -487,17 +497,19 @@ public class DiplomacyBrain {
 			}
 		});
 		
+		RepLevel maxRep = getMaxRepForOpportunisticWar();
+		
 		for (DispositionEntry disposition : dispositionsList)
 		{
 			String otherFactionId = disposition.factionId;
 			if (otherFactionId.equals(this.factionId)) continue;
 			log.info("Checking vs. " + otherFactionId + ": " + disposition.disposition.getModifiedValue()
-					+ ", " + faction.isAtWorst(otherFactionId, RepLevel.NEUTRAL));
+					+ ", " + faction.isAtBest(otherFactionId, maxRep));
 			
 			if (!SectorManager.isFactionAlive(otherFactionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) continue;
 			if (ceasefires.containsKey(otherFactionId)) continue;
-			if (faction.isAtWorst(otherFactionId, RepLevel.NEUTRAL)) continue;	// relations aren't bad enough yet
+			if (!faction.isAtBest(otherFactionId, maxRep)) continue;	// relations aren't bad enough yet
 			if (faction.isHostileTo(otherFactionId)) continue;	// already at war
 			if (disposition.disposition.getModifiedValue() > MAX_DISPOSITION_FOR_WAR) continue;
 			
