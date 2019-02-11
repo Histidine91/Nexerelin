@@ -289,7 +289,7 @@ public class AllianceVoter {
 		}
 		
 		// if we're the friend, auto-vote yes
-		if (factionId.equals(friendId)) return Vote.YES;	
+		if (factionId.equals(friendId)) return Vote.YES;
 		
 		FactionAPI us = Global.getSector().getFaction(factionId);
 		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
@@ -307,6 +307,11 @@ public class AllianceVoter {
 				if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
 					return Vote.NO;
 			}
+		}
+		
+		// refuse to declare war if we're friendly or better with the target
+		if (isWar && us.isAtWorst(otherFactionId, RepLevel.FRIENDLY)) {
+			return Vote.NO;
 		}
 		
 		float friendRelationship = us.getRelationship(friendId);
@@ -416,6 +421,11 @@ public class AllianceVoter {
 		float hawkishness = usConf.alignments.get(Alignment.MILITARIST);
 		float diplomaticness = usConf.alignments.get(Alignment.DIPLOMATIC);
 		float friendRelationship = us.getRelationship(friendId);
+		
+		// if war vote, and we're friendly to target and like the target more than the triggering friend, defy
+		if (isWar && us.isAtWorst(otherFactionId, RepLevel.FRIENDLY) 
+				&& us.getRelationship(otherFactionId) > friendRelationship)
+			return true;
 		
 		float totalPoints = BASE_POINTS + friendRelationship*100;
 		float hawkPoints = hawkishness * HAWKISHNESS_POINTS;
