@@ -860,18 +860,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //market.getTariff().modifyFlat("generator", Global.getSector().getFaction(newOwnerId).getTariffFraction());    
         
         // (un)apply free port if needed
-        ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
-        boolean wantFreePort = true;
-        if (!sectorManager.corvusMode)
-        {
-            wantFreePort = newOwnerConfig.freeMarket;
-        }
-        else
-        {
-            wantFreePort = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket")
-                    || (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
-        }
-        market.setFreePort(wantFreePort);
+        ColonyManager.updateFreePortSetting(market);
         
         ExerelinUtilsMarket.setTariffs(market);
         

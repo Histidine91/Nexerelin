@@ -22,6 +22,9 @@ import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
+import static exerelin.campaign.SectorManager.sectorManager;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
@@ -108,6 +111,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
 					Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING);
 				}
+				
+				updateFreePortSetting(market);
 			}
 			
 		}
@@ -144,6 +149,24 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			intel.setIcon(Global.getSector().getPlayerFaction().getCrest());
 			Global.getSector().getCampaignUI().addMessage(intel, CommMessageAPI.MessageClickAction.COLONY_INFO);
 		}
+	}
+	
+	public static void updateFreePortSetting(MarketAPI market)
+	{
+		ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		boolean wantFreePort = true;
+		if (!sectorManager.corvusMode)
+		{
+			wantFreePort = newOwnerConfig.freeMarket;
+		}
+		else
+		{
+			wantFreePort = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket")
+					|| (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
+		}
+		// needs forcible toggle because if it's already enabled it won't do anything
+		market.setFreePort(false);
+		market.setFreePort(wantFreePort);
 	}
 	
 	protected String getString(String id) {
