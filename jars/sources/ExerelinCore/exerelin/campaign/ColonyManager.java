@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -153,6 +154,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	public static void updateFreePortSetting(MarketAPI market)
 	{
+		if (market.getFaction().isPlayerFaction()) return;	// let player decide
+		
 		ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		boolean wantFreePort = true;
 		if (!sectorManager.corvusMode)
@@ -165,8 +168,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					|| (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
 		}
 		// needs forcible toggle because if it's already enabled it won't do anything
-		market.setFreePort(false);
-		market.setFreePort(wantFreePort);
+		if (wantFreePort == true) {
+			market.setFreePort(wantFreePort);
+			if (!market.hasCondition(Conditions.FREE_PORT));
+				market.addCondition(Conditions.FREE_PORT);
+		}
+		else
+			market.setFreePort(false);
+		
 	}
 	
 	protected String getString(String id) {
