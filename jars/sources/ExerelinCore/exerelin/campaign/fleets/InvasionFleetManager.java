@@ -11,8 +11,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
-import com.fs.starfarer.api.impl.campaign.econ.impl.MilitaryBase;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -36,6 +35,7 @@ import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.Arrays;
@@ -72,8 +72,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
-	public static final float DEFENSE_ESTIMATION_MULT = 0.8f;
-	public static final float BASE_INVASION_COST = 750f;	// for reference, Jangala at start of game is around 975
+	public static final float PATROL_ESTIMATION_MULT = 0.75f;
+	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
+	public static final float BASE_INVASION_COST = 600f;	// for reference, Jangala at start of game is around 500
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
@@ -191,7 +192,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (variability > 0)
 			strength *= 1 + random.nextGaussian() * variability;
 		
-		strength *= DEFENSE_ESTIMATION_MULT;
+		strength *= PATROL_ESTIMATION_MULT;
 		
 		return strength;
 	}
@@ -225,25 +226,85 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target,
 			float variability, boolean countAllHostile)
 	{
-		//return 100 + target.getSize() * 40;
-		
 		FactionAPI targetFaction = target.getFaction();
 		StarSystemAPI system = target.getStarSystem();
 		
 		float defenderStr = estimateDefensiveStrength(attacker, 
 				countAllHostile ? null : targetFaction, 
 				system, variability);
-		float defensiveStr = defenderStr + WarSimScript.getStationStrength(
-				targetFaction, system, target.getPrimaryEntity()) * 0.5f;
+		log.info("\tPatrol strength: " + defenderStr);
 		
-		log.info("Estimated strength required for invasion: " + defensiveStr);
+		float stationStr = 0;
+		CampaignFleetAPI station = Misc.getStationFleet(target);
+		if (station != null) {
+			stationStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, false);
+			float officerStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, true) - stationStr;
+			stationStr += officerStr * 0.5f;
+			stationStr *= 0.5f;
+		}
+		
+		log.info("\tStation strength: " + stationStr);
+		
+		float defensiveStr = defenderStr + stationStr;
+		defensiveStr *= DEFENCE_ESTIMATION_MULT;
+		log.info("\tModified total defense strength: " + defensiveStr);
+		
+		float strFromSize = target.getSize() * target.getSize() * 3;
+		log.info("\tMarket size modifier: " + strFromSize);
+		defensiveStr += strFromSize;
 		
 		defensiveStr *= GENERAL_SIZE_MULT;
 		
 		if (defensiveStr > MAX_INVASION_SIZE)
 			defensiveStr = MAX_INVASION_SIZE;
 		
+		log.info("\tWanted fleet size: " + defensiveStr);
 		return Math.max(defensiveStr, 30);
+	}
+	
+	// retained for comparison purposes
+	@Deprecated
+	public static float getWantedFleetSizeOld(FactionAPI attacker, MarketAPI target,
+			float variability, boolean countAllHostile)
+	{
+		FactionAPI targetFaction = target.getFaction();
+		StarSystemAPI system = target.getStarSystem();
+		
+		float defenderStr = estimateDefensiveStrength(attacker, 
+				countAllHostile ? null : targetFaction, 
+				system, variability);
+		log.info("\tPatrol strength: " + defenderStr);
+		
+		float stationStr = 0;
+		CampaignFleetAPI station = Misc.getStationFleet(target);
+		if (station != null) {
+			stationStr = station.getFleetData().getEffectiveStrength();
+			stationStr *= 0.5f;
+		}
+		
+		log.info("\tStation strength: " + stationStr);
+		
+		float defensiveStr = defenderStr + stationStr;
+		
+		defensiveStr *= GENERAL_SIZE_MULT;
+		
+		if (defensiveStr > MAX_INVASION_SIZE)
+			defensiveStr = MAX_INVASION_SIZE;
+		
+		log.info("\tWanted fleet size: " + defensiveStr);
+		return Math.max(defensiveStr, 30);
+	}
+	
+	public static void debugFleetSizes() {
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			log.info("Testing old inv. size for market " + market.getName());
+			float old = getWantedFleetSizeOld(null, market, 0, false);
+			
+			log.info("Testing new inv. size for market " + market.getName());
+			float nu = getWantedFleetSize(null, market, 0, false);
+			
+			log.info("Difference: " + (nu - old));
+		}
 	}
 	
 	public static float getOrganizeTime(float fp) {

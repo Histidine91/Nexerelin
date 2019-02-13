@@ -14,6 +14,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.util.Misc;
 import data.scripts.util.DS_Defs;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
@@ -164,6 +165,14 @@ public class ExerelinUtilsFleet
         power += flatBonus;
         return power;
     }
+	
+	public static float getFleetStrength(CampaignFleetAPI fleet, boolean withHull, boolean withQuality, boolean withCaptain) {
+		float str = 0;
+		for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
+			str += Misc.getMemberStrength(member, withHull, withQuality, withCaptain);
+		}
+		return str;
+	};
     
     public static float getPlayerLevelFPBonus()
     {
