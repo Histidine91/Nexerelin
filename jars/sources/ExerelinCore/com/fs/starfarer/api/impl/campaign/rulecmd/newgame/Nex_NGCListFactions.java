@@ -56,7 +56,7 @@ public class Nex_NGCListFactions extends BaseCommandPlugin {
 						text = text + " (" + conf.difficultyString + ")";
 					}
 					
-					opts.addOption(text, optId);
+					opts.addOption(text, optId, faction.getBaseUIColor(), null);
 					if (conf.ngcTooltip != null)
 					{
 						opts.setTooltip(optId, conf.ngcTooltip);
