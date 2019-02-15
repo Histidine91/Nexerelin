@@ -55,7 +55,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
 	));
 	public static final int MAX_STATION_SIZE = 6;
-	public static final int MAX_NPC_COLONY_SIZE = 3;
+	public static final int MAX_NPC_COLONY_SIZE = 0;
 	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 209;
 	
 	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
@@ -129,7 +129,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			index = i;
 		}
 		Global.getSector().getPlayerStats().getAdminNumber().modifyFlat("nex_population_size", 
-					bonusAdminLevel, getString("globalPopulation", true));
+					index, getString("globalPopulation", true));
 		if (index > bonusAdminLevel) {
 			bonusAdminLevel = index;
 			Global.getLogger(this.getClass()).info("Reached bonus level " + index + " from market size " + playerFactionSize);
