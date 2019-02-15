@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
@@ -151,6 +152,24 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         //if (CovertOpsManager.getManager() == null)
         //    Global.getSector().addScript(CovertOpsManager.create());
+        
+        // fix free port overdose
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            if (!market.isFreePort()) continue;
+            if (market.getFaction().isPlayerFaction()) continue;
+            int numFreePorts = 0;
+            for (MarketConditionAPI cond : market.getConditions()) {
+                if (cond.getId().equals(Conditions.FREE_PORT)) {
+                    numFreePorts++;
+                }
+            }
+            if (numFreePorts > 1) {
+                Global.getLogger(this.getClass()).info("Fixing free ports for market " + market.getName() + ": " + numFreePorts);
+                market.removeCondition(Conditions.FREE_PORT);
+            }
+            
+        }
     }
     
     protected void addEventIfNeeded(String eventId)

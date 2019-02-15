@@ -170,7 +170,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		// needs forcible toggle because if it's already enabled it won't do anything
 		if (wantFreePort == true) {
 			market.setFreePort(wantFreePort);
-			if (!market.hasCondition(Conditions.FREE_PORT));
+			if (!market.hasCondition(Conditions.FREE_PORT))
 				market.addCondition(Conditions.FREE_PORT);
 		}
 		else
