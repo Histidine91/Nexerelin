@@ -3,8 +3,11 @@ package exerelin.campaign.intel.agents;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -51,8 +54,19 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected float relation;
 	protected int xpGain = -1;
 	protected int newLevel = -1;
+	protected float daysRemaining;
 	protected MarketAPI agentEscapeDest;
 	
+	/**
+	 *
+	 * @param agent Agent executing the covert action (null for NPC actions)
+	 * @param market Target market. Usually the market the agent is on, but 
+	 * for {@code Travel} this is the destination market.
+	 * @param agentFaction Faction conducting the covert action.
+	 * @param targetFaction
+	 * @param playerInvolved
+	 * @param params
+	 */
 	public CovertActionIntel(AgentIntel agent, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params)
 	{
@@ -65,6 +79,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	public void init() {
+		daysRemaining = getTimeNeeded();
+	}
+	
+	public void activate() {
+		init();
 		Global.getSector().addScript(this);
 	}
 	
@@ -72,14 +91,26 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return repResult;
 	}
 	
+	public void setMarket(MarketAPI market) {
+		this.market = market;
+	}
+	
 	public void setResult(CovertActionResult result) {
 		this.result = result;
 	}
 	
-	public abstract String getActionDefId();
+	public abstract String getDefId();
 	
 	public CovertOpsManager.CovertActionDef getDef() {
-		return CovertOpsManager.getDef(getActionDefId());
+		return CovertOpsManager.getDef(getDefId());
+	}	
+	
+	public String getActionName(boolean uppercase) {
+		String name = getDef().name;
+		if (!uppercase) {
+			name = Misc.ucFirst(name.toLowerCase());
+		}
+		return name;
 	}
 	
 	public FactionAPI getAgentFaction() {
@@ -94,16 +125,28 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return playerInvolved;
 	}
 	
-	public float getPositiveChanceForLevel(float baseChance) {
+	public float getTimeNeeded() {
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
-		float failChance = 1 - baseChance;
-		failChance *= 1 - 0.15f * (level - 1);
-		return 1 - failChance;
+		float time = getDef().time * 1 - 0.1f * (level - 1);
+		
+		if (getDef().costScaling) {
+			time *= 1 + 0.25f * (market.getSize() - 3);
+		}
+		if (CovertOpsManager.DEBUG_MODE)
+			time *= 0.1f;
+		
+		return time;
 	}
 	
-	public float getNegativeChanceForLevel(float baseChance) {
+	public int getCost() {
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
-		return baseChance * (1 - 0.15f * (level - 1));
+		int cost = Math.round(getDef().baseCost * 1 - 0.1f * (level - 1));
+		
+		if (getDef().costScaling) {
+			cost *= Math.pow(2, market.getSize() - 3);
+		}
+		
+		return cost;
 	}
 	
 	public float getEffectMultForLevel() {
@@ -111,54 +154,113 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		float mult = 1 + 0.2f * (level - 1);
 		return mult;
 	}
+	
+	protected MutableStat getSuccessChance() {
+		CovertOpsManager.CovertActionDef def = getDef();
+		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		
+		// base chance
+		float base = def.successChance * 100;
+		MutableStat stat = new MutableStat(0);
+		stat.modifyFlat("baseChance", base, StringHelper.getString("nex_agentActions", "baseChance", true));
+		
+		// level
+		float failChance = 100 - base;
+		float failChanceNew = failChance * (1 - 0.15f * (level - 1));
+		float diff = failChance - failChanceNew;
+		stat.modifyFlat("agentLevel", diff, StringHelper.getString("nex_agents", "agentLevel", true));
+		
+		// buildings
+		if (def.useIndustrySecurity) {
+			for (Industry ind : market.getIndustries()) {
+				float mult = CovertOpsManager.getIndustrySuccessMult(ind);
+				if (mult != 1)
+					stat.modifyMult(ind.getId(), mult, ind.getNameForModifier());
+			}
+		}
+		
+		
+		// alert level
+		if (def.useAlertLevel) {
+            float mult = 1 - CovertOpsManager.getAlertLevel(market);
+			stat.modifyMult("alertLevel", mult, StringHelper.getString("nex_agents", "alertLevel", true));
+        }
+		
+		return stat;
+	}
+	
+	protected MutableStat getDetectionChance(boolean fail) {
+		CovertOpsManager.CovertActionDef def = getDef();
+		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		
+		// base chance
+		float base = fail ? def.detectionChance : def.detectionChanceFail;
+		base *= 100;
+		MutableStat stat = new MutableStat(0);
+		stat.modifyFlat("baseChance", base, StringHelper.getString("nex_agentActions", "baseChance", true));
+		
+		// level
+		float detectChance = 100 - base;
+		float failChanceNew = detectChance * (1 - 0.15f * (level - 1));
+		float diff = detectChance - failChanceNew;
+		stat.modifyFlat("agentLevel", diff, StringHelper.getString("nex_agents", "agentLevel", true));
+		
+		// buildings
+		for (Industry ind : market.getIndustries()) {
+			float mult = CovertOpsManager.getIndustryDetectionMult(ind);
+			if (mult != 1)
+				stat.modifyMult(ind.getId(), mult, ind.getNameForModifier());
+		}
+		
+		return stat;
+	}
+	
+	public boolean canAbort() {
+		return true;
+	}
 	    
 	/**
 	 * Rolls a success/failure and detected/undetected result for the covert action.
-	 * @param useAlertLevel If true, modifies success chance by the market's alert level
 	 * @return
 	 */
-    protected CovertActionResult covertActionRoll(boolean useAlertLevel)
+    protected CovertActionResult covertActionRoll()
     {
 		CovertOpsManager.CovertActionDef def = getDef();
         CovertActionResult rollResult = null;
         
-		float sChance = def.successChance;
-		float sDetectChance = def.detectionChance;
-		float fDetectChance = def.detectionChanceFail;
-		
-        if (useAlertLevel) {
-            sChance *= (1 - CovertOpsManager.getAlertLevel(market));
-        }
-		
-		// TODO: modify using security level, special buildings
-		sChance = getPositiveChanceForLevel(sChance);
-		sDetectChance = getNegativeChanceForLevel(sDetectChance);
-		fDetectChance = getNegativeChanceForLevel(fDetectChance);
+		MutableStat sChance = getSuccessChance();
+		MutableStat sDetectChance = getDetectionChance(false);
+		MutableStat fDetectChance = getDetectionChance(true);
             
-        if (Math.random() < sChance)
+        if (Math.random() * 100 < sChance.getModifiedValue())
         {
             rollResult = CovertActionResult.SUCCESS;
-            if (Math.random() < sDetectChance) rollResult = CovertActionResult.SUCCESS_DETECTED;
+            if (Math.random() * 100 < sDetectChance.getModifiedValue())
+				rollResult = CovertActionResult.SUCCESS_DETECTED;
         }
         else
         {
             rollResult = CovertActionResult.FAILURE;
-            if (Math.random() < fDetectChance) rollResult = CovertActionResult.FAILURE_DETECTED;
+            if (Math.random() * 100 < fDetectChance.getModifiedValue())
+				rollResult = CovertActionResult.FAILURE_DETECTED;
         }
         return rollResult;
     }
 	
 	public CovertActionResult execute()
 	{
-		result = covertActionRoll(true);
+		result = covertActionRoll();
 				
 		if (result.isSucessful())
 			onSuccess();
 		else
 			onFailure();
 		
-		if (agent != null)
+		if (agent != null) {
+			gainAgentXP();
 			agent.notifyActionCompleted();
+		}
+			
 		if (market != null) CovertOpsManager.modifyAlertLevel(market, getAlertLevelIncrease());
 		return result;
 	}
@@ -168,8 +270,15 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
-	public void advanceImpl(float days) {
-		super.advanceImpl(days);
+	public void advanceImpl(float amount) {
+		super.advanceImpl(amount);
+		
+		float days = Global.getSector().getClock().convertToDays(amount);
+		if (result == null) {
+			daysRemaining -= days;
+			if (daysRemaining <= 0)
+				execute();
+		}
 	}
 	
 	protected abstract void onSuccess();
@@ -287,12 +396,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		
 		addImages(info, width, opad);
 		addMainDescPara(info, opad);
+		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 		
 		info.addSectionHeading(StringHelper.getString("nex_agentActions", "intelResultHeader"),
 				Alignment.MID, opad);
 		addResultPara(info, opad);
 		addAgentOutcomePara(info, opad);
-		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 	}
 	
 	protected String getDescStringId() {
@@ -322,7 +431,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected List<Pair<String,String>> getStandardReplacements() {
 		List<Pair<String,String>> sub = new ArrayList<>();
 		if (agent != null)
-			sub.add(new Pair("$agent", agent.getAgent().getNameString()));
+			sub.add(new Pair("$agentName", agent.getAgent().getNameString()));
 		if (market != null) {
 			sub.add(new Pair<>("$market", market.getName()));
 			sub.add(new Pair<>("$onOrAt", market.getOnOrAt()));
@@ -382,6 +491,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 					relation, repResult, pad);
 		}
 	}
+	
+	public abstract void addCurrentActionPara(TooltipMakerAPI info, float pad);
+	
+	public void addLastMessagePara(TooltipMakerAPI info, float pad) {}
 	
 	public void addAgentOutcomePara(TooltipMakerAPI info, float pad) {
 		if (agent == null) return;
@@ -446,5 +559,27 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 			if (repResult.isHostile && !repResult.wasHostile) significance = 2;
 		}		
 		return EVENT_ICONS[significance];
+	}
+	
+	public static TooltipMakerAPI.StatModValueGetter chanceStatPrinter(final boolean color) {
+		return new TooltipMakerAPI.StatModValueGetter() {
+			public String getPercentValue(MutableStat.StatMod mod) {
+				String prefix = mod.getValue() > 0 ? "+" : "";
+				return prefix + (int)(mod.getValue()) + "%";
+			}
+			public String getMultValue(MutableStat.StatMod mod) {
+				return Strings.X + "" + Misc.getRoundedValue(mod.getValue());
+			}
+			public String getFlatValue(MutableStat.StatMod mod) {
+				String prefix = mod.getValue() > 0 ? "+" : "";
+				return prefix + String.format("%.0f", mod.getValue()) + "";
+			}
+			public Color getModColor(MutableStat.StatMod mod) {
+				if (!color) return null;
+				if (mod.getValue() < 1) return Misc.getNegativeHighlightColor();
+				if (mod.getValue() > 1) return Misc.getPositiveHighlightColor();
+				return null;
+			}
+		};
 	}
 }

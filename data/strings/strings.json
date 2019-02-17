@@ -23,6 +23,7 @@
 		"marines":"marines",
 		"options":"options",
 		"player":"player",
+		"select":"select",
 		"size":"size",
 		"spoils":"spoils",
 		"stability":"stability",
@@ -61,6 +62,7 @@
 
 		"back":"back",
 		"goBack":"go back",
+		"leave":"leave",
 
 		"yes":"yes",
 		"no":"no",
@@ -171,44 +173,71 @@
 		"voteConfirm":"Confirm vote?"
 	},
 	"nex_agents":{
+		"agentLevel":"agent level",
 		"alertLevel":"alert level",
-		"reserveSize":"response fleet size",
 		"rebellionStatus":"rebellion by $faction",
 		"govtStrength":"government strength",
 		"rebelStrength":"rebel strength",
-		"responseFleetPreview":"response fleet",
-		"stationPoints":"station construction progress",
 
 		"agent":"agent",
 		"agents":"agents",
 		"saboteur":"saboteur",
 		"verbSuccess":"success",
 		"verbFailed":"failed",
-		"recruited":"recruited",
 		
+		"recruited":"recruited",
+		"arrived":"arrived",
 		"lost":"lost",
 		
-		"personIntelTitle":"Agent: $name",
-		"personIntelTitleLevelUp":"Level Up",
-		"personIntelBullet1":"Currently on $market",
-		"personIntelLevelUp":"Now at level %s",
-		"personIntelDescName":"$name is a level %s agent.",
-		"personIntelDescLost":"%s has been captured or killed.",
-		"personIntelDescLocation":"$name is currently $onOrAt $market, a $faction market in the $location.",
-		"personIntelDescLocationHyper":"$lastName is currently $onOrAt $market, a $faction market in hyperspace.",
-		"personIntelDescXP":"Current XP: %s (%s to next level)",
-		"personIntelDescXPMax":"Current XP: %s",
-		"personIntelDescCurrentAction":"Current action: %s (%s $daysStr remaining)",
-		"personIntelDescIdle":"Currently idle.",
-		"personIntelHeaderLocalReport":"Local report",
-		"personIntelDescLocalReport1":"%s is a size %s market, of stability %s.",
-		"personIntelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
-		"personIntelHeaderLastMessage":"Last message",
+		"intelTitle":"Agent: $name",
+		"intelTitleLevelUp":"Level Up",
+		"intelBullet1":"Currently on $market",
+		"intelLevelUp":"Now at level %s",
+		"intelDescName":"$name is a level %s agent.",
+		"intelDescLost":"%s has been captured or killed.",
+		"intelDescLocation":"$name is currently $onOrAt $market, a $faction market in the $location.",
+		"intelDescLocationHyper":"$lastName is currently $onOrAt $market, a $faction market in hyperspace.",
+		"intelDescXP":"Current XP: %s (%s to next level)",
+		"intelDescXPMax":"Current XP: %s",
+		"intelDescCurrAction":"Current action",
+		"intelDescCurrActionDays":"%s $daysStr remaining",
+		"intelDescIdle":"Currently idle.",
+		"intelButtonOrders":"New mission",
+		"intelHeaderLocalReport":"Local report",
+		"intelDescLocalReport1":"%s is a size %s market, of stability %s.",
+		"intelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
+		"intelHeaderLastMessage":"Last message",
+		
+		"barPrompt":"A shady-looking $manOrWoman is sitting in a corner of the bar. $HeOrShe gives you an appraising look.",
+		"barOptionStart":"Walk over to the shady person",
+		"barDialogIntro1":"You walk over to the shady figure, who acknowledges you with a nod.",
+		"barDialogIntro2":"\"Figures you'd notice me eventually. I don't suppose you know what I do?\"",
+		"barDialogExplanation":"\"I'm a $manOrWoman of many tricks, shall we say. I can sniff out a Pather in a crowd at forty paces, or assassinate the governor of a colony, or even take down a core world's spaceport if the odds are right.\"",
+		"barDialogPay":"\"I'll expect a %s credit hiring bonus, and afterwards a starting salary of %s credits per month. Once the initial transfer is complete, I'll be ready for directions within the hour.\"",
+		"barOptionMaxAgents":"\"I can't hire any more agents at the moment.\"",
+		"barOptionNotEnoughCredits":"\"I can't afford that at the moment.\"",
+		"barOptionHire":"Hire",
+		"barOptionDecline":"Decline and walk away",
+		"barDialogHired":"\"Excellent.\" $HeOrShe slides a data chip across the table before getting up and leaving. \"I'll be in touch.\"",
 		
 	},
 	"nex_agentActions":{
 		"unknownFaction":"unknown faction",
 		"anUnknownFaction":"an unknown faction",
+		
+		"baseChance":"base chance for action type",
+		
+		"intelStatus_travel":"Travelling to $market ($status)",
+		"intelStatus_travel0":"departing",
+		"intelStatus_travel1":"in flight",
+		"intelStatus_travel2":"insertion underway",
+		"intelStatus_travel3":"in place",
+		
+		"intelStatus_raiseRelations":"Raising relations",
+		"intelStatus_lowerRelations":"Lowering relations with %s",
+		"intelStatus_destabilizeMarket":"Destabilizing market",
+		"intelStatus_destroyCommodities":"Destroying stockpiles of %s",
+		"intelStatus_sabotageIndustry":"Sabotaging %s",
 	
 		"intelDesc_raiseRelations_success":"An agent from $theAgentFaction has subverted the $faction political process to improve relations with their own faction.",
 		"intelDesc_raiseRelations_successPlayer":"Your agent $agentName has successfully subverted the $faction political process to improve relations with $theAgentFaction.",
@@ -245,11 +274,13 @@
 		"intelDesc_destroyCommodities_success":"An $agentFaction agent has destroyed a stockpile of $commodity $onOrAt $market. $Faction investigators are finding themselves stumped.",
 		"intelDesc_destroyCommodities_successPlayer":"Your agent $agentName has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities have their suspicions, but are unable to find any real evidence of $agentFaction involvement.",
 		"intelDesc_destroyCommodities_successDetected":"An agent has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities accuse $theAgentFaction of the crime.",
-		"intelDesc_destroyCommodities_successDetectedPlayer":"Your agent $agentNamehas destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities have identified $theAgentFaction as responsible for the attack.",
+		"intelDesc_destroyCommodities_successDetectedPlayer":"Your agent $agentName has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities have identified $theAgentFaction as responsible for the attack.",
 		"intelDesc_destroyCommodities_failure":"Attempts by an agent of $agentFaction to destroy $commodity stocked $onOrAt $market have failed. $Faction authorities have been unable to determine who was responsible, however.",
 		"intelDesc_destroyCommodities_failurePlayer":"Your agent $agentName has failed in their attempt to $commodity stocked $onOrAt $market. Fortunately, $theFaction has not traced the crime back to $agentFaction.",
 		"intelDesc_destroyCommodities_failureDetected":"$TheFaction has arrested a agent of $agentFaction attempting to destroy stocks of $commodity $onOrAt $market.",
 		"intelDesc_destroyCommodities_failureDetectedPlayer":"$TheFaction counterintelligence has stopped your $agentName in an attempt to destroy $commodity stockpiled $onOrAt $market.",
+		
+		"intel_lastMessage_travel":"\"Arrived at $market. Awaiting further directions.\"",
 		
 		# TODO		
 		# infiltrate pather cell
@@ -276,6 +307,25 @@
 		"commodityLossEffect":"Availability of %s reduced by %s.",
 		"commodityLossEffectShort":"Availability reduced by %s",
 		"commodityDestroyModDesc":"Agent sabotage",
+		
+		"dialogIntro":"Preparing new mission for agent...",
+		"dialogOption_action":"Action type: $action";
+		"dialogOption_faction":"Faction: $faction";
+		"dialogOption_target":"Target: $target";
+		"dialogIndustryPickerHeader":"Select industry to sabotage",
+		
+		"dialogInfoHeaderTravel":"Travel to %s",
+		"dialogInfoHeaderRaiseRelations":"Raise relations with %s",
+		"dialogInfoHeaderLowerRelations":"Lower relations between %s and %s",
+		"dialogInfoHeaderDestabilizeMarket":"Destabilize %s",
+		"dialogInfoHeaderDestroyCommodities":"Destroy %s stockpiles on %s",
+		"dialogInfoHeaderSabotageIndustry":"Sabotage %s on %s",
+		"dialogInfoSuccessChance":"Success chance: %s",
+		"dialogInfoEffect":"Effect: %s – %s",
+		"dialogInfoTimeNeeded":"Days to complete: %s",
+		"dialogInfoCost":"Cost: %s",
+		"dialogConfirmText":"Initiate mission?",
+		"dialogFinalText":"Mission orders transmitted.",
 	},
 	
 	"nex_baseStrike":{

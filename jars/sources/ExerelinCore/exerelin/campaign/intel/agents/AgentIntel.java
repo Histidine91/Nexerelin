@@ -5,14 +5,18 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -21,6 +25,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.lwjgl.input.Keyboard;
 
 public class AgentIntel extends BaseIntelPlugin {
 	
@@ -28,16 +33,19 @@ public class AgentIntel extends BaseIntelPlugin {
 		0, 1000, 2500, 5000, 10000, 20000
 	};
 	public static final int MAX_LEVEL = XP_LEVELS.length - 1;
+	public static final int BASE_SALARY = 5000;
+	public static final int SALARY_PER_LEVEL = 1250;
+	
 	protected static final Object UPDATE_RECRUITED = new Object();
+	protected static final Object UPDATE_ARRIVED = new Object();
 	protected static final Object UPDATE_LEVEL_UP = new Object();
 	protected static final Object UPDATE_LOST = new Object();
+	protected static final Object BUTTON_ORDERS = new Object();
 	
 	protected PersonAPI agent;
 	protected MarketAPI market;
 	protected FactionAPI faction;
 	protected CovertActionIntel currentAction, lastAction;
-	protected float daysToExecute;
-	protected float daysToExecuteRemaining;
 	protected int level;
 	protected int xp;
 	protected long lastActionTimestamp;
@@ -67,8 +75,16 @@ public class AgentIntel extends BaseIntelPlugin {
 		}
 	}
 	
+	public static int getSalary(int level) {
+		return BASE_SALARY + SALARY_PER_LEVEL * (level - 1);
+	}
+	
 	public int getLevel() {
 		return level;
+	}
+	
+	public boolean isDeadOrDismissed() {
+		return isDead || isDismissed;
 	}
 	
 	public int getLevelForCurrentXP() {
@@ -86,16 +102,31 @@ public class AgentIntel extends BaseIntelPlugin {
 		return (int)(XP_LEVELS[level] - xp);
 	}
 	
+	public MarketAPI getMarket() {
+		return market;
+	}
+	
 	public void setMarket(MarketAPI market) {
 		this.market = market;
+	}
+	
+	public void setCurrentAction(CovertActionIntel currentAction) {
+		this.currentAction = currentAction;
 	}
 	
 	public PersonAPI getAgent() {
 		return agent;
 	}
 	
+	@Override
+	protected void advanceImpl(float amount) {
+		super.advanceImpl(amount);
+	}
+	
 	public void notifyActionCompleted() {
-		
+		lastAction = currentAction;
+		lastActionTimestamp = Global.getSector().getClock().getTimestamp();
+		currentAction = null;
 	}
 	
 	@Override
@@ -112,8 +143,11 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		if (listInfoParam == UPDATE_RECRUITED) {
 			
+		} else if (listInfoParam == UPDATE_ARRIVED) {
+			String marketName = market.getName();
+			info.addPara(marketName, pad, hl, marketName);
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
-			info.addPara(getString("personIntelLevelUp"), pad, hl, level + "");
+			info.addPara(getString("intelLevelUp"), pad, hl, level + "");
 		} else if (listInfoParam == UPDATE_LOST) {
 			
 		}
@@ -142,7 +176,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		info.addImages(width, 128, opad, opad, agent.getPortraitSprite(), faction.getCrest());
 		
 		// agent basic information
-		String str = getString(isDead ? "personIntelDescLost" : "personIntelDescName");
+		String str = getString(isDead ? "intelDescLost" : "intelDescName");
 		str = StringHelper.substituteToken(str, "$name", agent.getNameString());
 		info.addPara(str, opad, h, level + "");
 		
@@ -160,7 +194,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			sub.put("$faction", mktFaction.getDisplayName());
 			if (!isHyper)
 				sub.put("$location", market.getContainingLocation().getNameWithLowercaseType());
-			str = getString(isHyper? "personIntelDescLocationHyperspace" : "personIntelDescLocation");
+			str = getString(isHyper? "intelDescLocationHyperspace" : "intelDescLocation");
 			str = StringHelper.substituteTokens(str, sub);
 			LabelAPI label = info.addPara(str, opad);
 			label.setHighlight(market.getName(), mktFaction.getDisplayName());
@@ -169,27 +203,53 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		// agent level
 		if (level < MAX_LEVEL) {
-			info.addPara(getString("personIntelDescXP"), opad, h, (int)xp + "", getXPToNextLevel() + "");
+			info.addPara(getString("intelDescXP"), opad, h, (int)xp + "", getXPToNextLevel() + "");
 		} else {
 			// no need to display current XP if we're at max anyway
-			//info.addPara(getString("personIntelDescXPMax"), opad, h, level + "");
+			//info.addPara(getString("intelDescXPMax"), opad, h, level + "");
 		}
 		
 		if (currentAction != null) {
-			String daysNum = Math.round(daysToExecuteRemaining) + "";
-			String daysStr = RaidIntel.getDaysString(daysToExecuteRemaining);
-			str = getString("personIntelDescCurrentAction");
+			// current action progress
+			// TODO: add abort button
+			info.addSectionHeading(getString("intelDescCurrAction"), Alignment.MID, opad);
+			currentAction.addCurrentActionPara(info, opad);
+			
+			// success chance
+			if (!currentAction.getDefId().equals(CovertActionType.TRAVEL)) {
+				MutableStat success = currentAction.getSuccessChance();
+				float successF = success.getModifiedValue();
+				Color chanceCol = Misc.getHighlightColor();
+				if (successF >= 70f)
+					chanceCol = Misc.getPositiveHighlightColor();
+				else if (successF <= 40f)
+					chanceCol = Misc.getNegativeHighlightColor();
+
+				String successStr = String.format("%.0f", successF) + "%";
+				info.addPara(StringHelper.getString("nex_agentActions", "dialogInfoSuccessChance"), 
+						opad, chanceCol, successStr);
+			}
+			
+			// time remaining
+			String daysNum = Math.round(currentAction.daysRemaining) + "";
+			String daysStr = RaidIntel.getDaysString(currentAction.daysRemaining);
+			str = getString("intelDescCurrActionDays") + ".";
 			str = StringHelper.substituteToken(str, "$daysStr", daysStr);
 			info.addPara(str, opad, h, daysNum);
 		} else {
-			info.addPara(getString("personIntelDescIdle"), opad, h);
+			// idle message, button for new orders
+			FactionAPI pf = Global.getSector().getPlayerFaction();
+			info.addPara(getString("intelDescIdle"), opad, h);
+			ButtonAPI button = info.addButton(getString("intelButtonOrders"), 
+					BUTTON_ORDERS, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
+			button.setShortcut(Keyboard.KEY_T, true);
 		}
 		
 		if (market != null) {
-			info.addSectionHeading(getString("personIntelHeaderLocalReport"),
-				Alignment.MID, opad);
+			info.addSectionHeading(getString("intelHeaderLocalReport"),	Alignment.MID, opad);
 			
-			str = getString("personIntelDescLocalReport1");
+			str = getString("intelDescLocalReport1");
 			String marketName = market.getName();
 			String sizeStr = market.getSize() + "";
 			String stabStr = (int)market.getStabilityValue() + "";
@@ -197,7 +257,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			label.setHighlight(marketName, sizeStr, stabStr);
 			label.setHighlightColors(market.getFaction().getBaseUIColor(), h, h);
 			
-			str = getString("personIntelDescLocalReport2");
+			str = getString("intelDescLocalReport2");
 			String spaceStr =  String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
 					market.getFaction(), market.getStarSystem(), 0));
 			String groundStr = String.format("%.1f", InvasionRound.getDefenderStrength(market, 1));
@@ -205,19 +265,28 @@ public class AgentIntel extends BaseIntelPlugin {
 		}
 		
 		if (lastAction != null) {
-			info.addSectionHeading(getString("personIntelDescLastMessage"),
+			info.addSectionHeading(getString("intelHeaderLastMessage"),
 				Alignment.MID, opad);
-			
+			lastAction.addLastMessagePara(info, opad);
 			info.addPara(Misc.getAgoStringForTimestamp(lastActionTimestamp) + ".", opad);
 		}
 	}
 	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_ORDERS) {
+			ui.showDialog(null, new AgentOrdersDialog(this, ui));
+		}
+	}
+	
 	protected String getName() {
-		String str = StringHelper.getStringAndSubstituteToken("nex_agents", "personIntelTitle", "$name", agent.getNameString());
+		String str = StringHelper.getStringAndSubstituteToken("nex_agents", "intelTitle", "$name", agent.getNameString());
 		if (listInfoParam == UPDATE_RECRUITED) {
 			str += " - " + getString("recruited", true);
+		} else if (listInfoParam == UPDATE_ARRIVED) {
+			str += " - " + getString("intelTitleLevelUp");
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
-			str += " - " + getString("personIntelTitleLevelUp");
+			str += " - " + getString("intelTitleLevelUp");
 		} else if (listInfoParam == UPDATE_LOST) {
 			str += " - " + getString("lost", true);
 		}
@@ -243,11 +312,11 @@ public class AgentIntel extends BaseIntelPlugin {
 		return tags;
 	}
 	
-	protected String getString(String id) {
+	public static String getString(String id) {
 		return getString(id, false);
 	}
 	
-	protected String getString(String id, boolean ucFirst) {
+	public static String getString(String id, boolean ucFirst) {
 		return StringHelper.getString("nex_agents", id, ucFirst);
 	}
 }

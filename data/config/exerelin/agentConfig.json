@@ -1,9 +1,22 @@
 {
 	"eventFrequency":15,	#15
 	
+	"industrySuccessMods":{
+		"lionsguard":-0.25,
+		"6emebureau":-0.4,
+		"SCY_incom":-0.4,
+	},
+	"industryDetectionMods":{
+		"lionsguard":0.5,
+		"6emebureau":1,
+		"SCY_incom":1,
+	},
+	
 	"actions":{
 		"travel":{
 			"name":"Travel",
+			"costScaling":false,
+			"useAlertLevel":false,
 		},
 		"raiseRelations":{
 			"name":"Raise Relations",
@@ -11,6 +24,8 @@
 			"successChance":0.7,
 			"detectionChance":0,	# it logically won't work if you get found out
 			"detectionChanceFail":0.25,
+			"useAlertLevel":false,
+			"useIndustrySecurity":false,
 			"effectMin":0.10,
 			"effectMax":0.15,
 			"repLossOnDetectionMin":0.1,
@@ -25,6 +40,8 @@
 			"successChance":0.65,
 			"detectionChance":0,
 			"detectionChanceFail":0.35,
+			"useAlertLevel":false,
+			"useIndustrySecurity":false,
 			"effectMin":0.15,
 			"effectMax":0.2,
 			"repLossOnDetectionMin":0.1,
@@ -35,7 +52,7 @@
 		},
 		"destabilizeMarket":{
 			"name":"Destabilize Market",
-			"time":30,
+			"time":20,
 			"successChance":0.65,
 			"detectionChance":0.35,
 			"detectionChanceFail":0.5,
@@ -49,7 +66,7 @@
 		},
 		"sabotageIndustry":{
 			"name":"Sabotage Industry",
-			"time":60,
+			"time":40,
 			"successChance":0.5,
 			"detectionChance":0.4,
 			"detectionChanceFail":0.65,
@@ -63,7 +80,7 @@
 		},
 		"destroyCommodities":{
 			"name":"Destroy Commodity Stocks",
-			"time":30,
+			"time":20,
 			"successChance":0.65,
 			"detectionChance":0.2,
 			"detectionChanceFail":0.4,
@@ -85,14 +102,14 @@
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.4,
 			"baseCost":20000,
+			"costScaling":false,
 			"xp":1500,
 		},
 		"infiltrateCell":{
-			"time":75,
+			"time":20,
 			"name":"Infiltrate Pather Cell",
-			"successChance": 0.8,
-			"detectionChance":0.2,
-			"detectionChanceFail":0.4,
+			"successChance":0.8,
+			"useAlertLevel":false,
 			"repLossOnDetectionMin":0.2,
 			"repLossOnDetectionMax":0.25,
 			"alertLevelIncrease":0,
@@ -100,15 +117,15 @@
 			"xp":500,
 		},
 		"instigateRebellion":{
-			"time":90,
+			"time":40,
 			"name":"Instigate Rebellion",
-			"successChance": 0.5,
+			"successChance":0.5,
 			"detectionChance":0.3,
 			"detectionChanceFail":0.6,
 			"repLossOnDetectionMin":0.3,
 			"repLossOnDetectionMax":0.35,
 			"alertLevelIncrease":0.5,
-			"baseCost":50000,
+			"baseCost":5000,
 			"xp":2000,
 		},
 	},

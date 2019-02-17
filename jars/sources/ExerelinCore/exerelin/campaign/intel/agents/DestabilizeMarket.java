@@ -69,6 +69,12 @@ public class DestabilizeMarket extends CovertActionIntel {
 	}
 	
 	@Override
+	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
+		String action = StringHelper.getString("nex_agentActions", "intelStatus_destabilizeMarket");
+		info.addPara(action, pad);
+	}
+	
+	@Override
 	protected List<Pair<String, String>> getStandardReplacements() {
 		List<Pair<String, String>> sub = super.getStandardReplacements();
 		String actionName = StringHelper.getString("nex_agentActions", "destabilizeText" + NUM_LINES);
@@ -78,7 +84,7 @@ public class DestabilizeMarket extends CovertActionIntel {
 	}
 
 	@Override
-	public String getActionDefId() {
+	public String getDefId() {
 		return "destabilizeMarket";
 	}
 }

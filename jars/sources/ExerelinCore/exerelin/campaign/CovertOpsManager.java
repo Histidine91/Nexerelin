@@ -12,12 +12,14 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
@@ -27,6 +29,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
+import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -50,27 +53,35 @@ import org.json.JSONObject;
 public class CovertOpsManager extends BaseCampaignEventListener implements EveryFrameScript {
     
     public static class CovertActionType {
+		public static final String TRAVEL = "travel";
         public static final String RAISE_RELATIONS = "raiseRelations";
         public static final String LOWER_RELATIONS = "lowerRelations";
         public static final String DESTABILIZE_MARKET = "destabilizeMarket";
         public static final String SABOTAGE_INDUSTRY = "sabotageIndustry";
-        public static final String DESTROY_COMMODITY_STOCKS = "destroyStocks";
+        public static final String DESTROY_COMMODITY_STOCKS = "destroyCommodities";
         public static final String INSTIGATE_REBELLION = "instigateRebellion";
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);
     
-    private static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
-    private static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
-    @Deprecated public static final float NPC_EFFECT_MULT = 1f;
+    public static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
+    public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
+	public static final boolean DEBUG_MODE = false;
+	
+    public static final float NPC_EFFECT_MULT = 1f;	 
     public static final List<String> DISALLOWED_FACTIONS;
      
     public static final List<CovertActionDef> actionDefs = new ArrayList<>();
 	public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
-      
+	public static final Map<String, Float> industrySuccessMods = new HashMap<>();
+	public static final Map<String, Float> industryDetectionMods = new HashMap<>();
+    
     protected static float baseInterval = 45f;
     protected float interval = baseInterval;
     protected final IntervalUtil intervalUtil;
+	
+	protected Map<MarketAPI, MutableStat> marketSuccessMods = new HashMap<>();
+	protected Map<MarketAPI, MutableStat> marketDetectionMods = new HashMap<>();
     
     static {
         String[] factions = {Factions.NEUTRAL, Factions.PLAYER, Factions.INDEPENDENT};    //{"templars", "independent"};
@@ -79,7 +90,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         try {
             loadSettings();
         } catch (IOException | JSONException | NullPointerException ex) {
-            log.error(ex);
+            //log.error(ex);
+			throw new RuntimeException(ex);
         }
     }
     
@@ -88,7 +100,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 
         //config = ExerelinUtils.jsonToMap(configJson);
         //baseInterval = (float)(double)config.get("eventFrequency");   // ClassCastException
-        baseInterval = 1;	//(float)configJson.optDouble("eventFrequency", 15f);
+        baseInterval = (float)configJson.optDouble("eventFrequency", 15f);
 		JSONObject actionsJson = configJson.getJSONObject("actions");
 		Iterator<String> keys = actionsJson.sortedKeys();
 		while (keys.hasNext()) {
@@ -101,27 +113,65 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.successChance = (float)defJson.optDouble("successChance");
 			def.detectionChance = (float)defJson.optDouble("detectionChance");
 			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail");
+			def.useAlertLevel = defJson.optBoolean("useAlertLevel", true);
+			def.useIndustrySecurity = defJson.optBoolean("useIndustrySecurity", true);
 			def.repLossOnDetect = new Pair<>((float)defJson.optDouble("repLossOnDetectionMin"), 
 					(float)defJson.optDouble("repLossOnDetectionMax"));
 			def.effect = new Pair<>((float)defJson.optDouble("effectMin"), 
 					(float)defJson.optDouble("effectMax"));
-			def.baseCost = (float)defJson.optDouble("baseCost");
+			def.baseCost = defJson.optInt("baseCost");
 			def.costScaling = defJson.optBoolean("costScaling", true);
+			def.time = (float)defJson.optDouble("time");
 			def.xp = defJson.optInt("xp");
 			def.alertLevelIncrease = (float)defJson.optDouble("alertLevelIncrease");
 			
 			actionDefs.add(def);
 			actionDefsById.put(id, def);
 		}
-    }
-    
-	@Deprecated
-    public static Map<String, Object> getConfig() {
-        return null;
+		
+		JSONObject indSuccess = configJson.getJSONObject("industrySuccessMods");
+		keys = indSuccess.sortedKeys();
+		while (keys.hasNext()) {
+			String industryId = keys.next();
+			industrySuccessMods.put(industryId, (float)indSuccess.getDouble(industryId));
+		}
+		
+		JSONObject indDetect = configJson.getJSONObject("industryDetectionMods");
+		keys = indDetect.sortedKeys();
+		while (keys.hasNext()) {
+			String industryId = keys.next();
+			industryDetectionMods.put(industryId, (float)indDetect.getDouble(industryId));
+		}
     }
 	
 	public static CovertActionDef getDef(String id) {
 		return actionDefsById.get(id);
+	}
+	
+	public static float getIndustryMult(Industry ind, Map<String, Float> map) {
+		String id = ind.getId();
+		if (!map.containsKey(id))
+			return 1;
+		
+		float mod = map.get(id);
+		log.info("Getting mod for industry " + id + ": " + mod);
+		for (MutableCommodityQuantity commodity : ind.getAllDemand()) {
+			CommodityOnMarketAPI data = ind.getMarket().getCommodityData(commodity.getCommodityId());
+			float met = (float)data.getAvailable()/(float)data.getMaxDemand();
+			if (met > 1) met = 1;
+			mod *= met;
+			log.info("Modifiying by demand met: " + data.getId() + "," + met + ", " + mod);
+		}
+		
+		return 1 + mod;
+	}
+	
+	public static float getIndustrySuccessMult(Industry ind) {
+		return getIndustryMult(ind, industrySuccessMods);
+	}
+	
+	public static float getIndustryDetectionMult(Industry ind) {
+		return getIndustryMult(ind, industryDetectionMods);
 	}
 
     public CovertOpsManager()
@@ -129,6 +179,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         super(true);
         intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
     }
+	
+	public int getMaxAgents() {
+		return 2;	// TODO
+	}
     
     public void handleNpcCovertActions()
     {
@@ -296,7 +350,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				break;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
 				String commodityId = pickCommodityToDestroy(market);
-				intel = new DestroyCommodityStocks(null, market, commodityId, agentFaction, targetFaction, false, null);
+				if (commodityId != null)
+					intel = new DestroyCommodityStocks(null, market, commodityId, agentFaction, targetFaction, false, null);
 				break;
 			case CovertActionType.INSTIGATE_REBELLION:
 				intel = new InstigateRebellion(null, market, agentFaction, targetFaction, false, null);
@@ -305,7 +360,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				break;
 		}
 		if (intel != null) {
-			intel.init();
+			intel.activate();
 			intel.execute();
 		}
     }
@@ -325,6 +380,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		for (CommodityOnMarketAPI commodity : market.getCommoditiesCopy()) {
 			if (commodity.isNonEcon() || commodity.isIllegal()) continue;
+			if (commodity.isPersonnel()) continue;
+			if (commodity.getAvailable() < 2) continue;
 			picker.add(commodity.getId(), commodity.getAvailable());
 		}
 		return picker.pick();
@@ -340,8 +397,21 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         handleNpcCovertActions();
         
         interval = getCovertWarfareInterval();
+		if (DEBUG_MODE) interval = 2;
         intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
     }
+	
+	public MutableStat getSuccessMod(MarketAPI market) {
+		if (!marketSuccessMods.containsKey(market))
+			marketSuccessMods.put(market, new MutableStat(0));
+		return marketSuccessMods.get(market);
+	}
+	
+	public MutableStat getDetectionMod(MarketAPI market) {
+		if (!marketDetectionMods.containsKey(market))
+			marketDetectionMods.put(market, new MutableStat(0));
+		return marketDetectionMods.get(market);
+	}
     
     @Override
     public boolean isDone()
@@ -404,6 +474,16 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		data.put(MANAGER_MAP_KEY, manager);
         return manager;
     }
+	
+	public static List<AgentIntel> getAgents() {
+		List<AgentIntel> agents = new ArrayList<>();
+		for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(AgentIntel.class)) {
+			AgentIntel intel = (AgentIntel)iip;
+			if (intel.isDeadOrDismissed()) continue;
+			agents.add(intel);
+		}
+		return agents;
+	}
     
     public static enum CovertActionResult
     {
@@ -424,8 +504,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		public float successChance;
 		public float detectionChance;
 		public float detectionChanceFail;
-		public float baseCost;
+		public boolean useAlertLevel;
+		public boolean useIndustrySecurity;
+		public int baseCost;
 		public boolean costScaling;
+		public float time;
 		public int xp;
 		public float alertLevelIncrease;
 		public Pair<Float, Float> effect;

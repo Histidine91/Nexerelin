@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.util.Misc;
@@ -33,6 +34,7 @@ import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
+import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
@@ -87,7 +89,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(InvasionFleetManager.create());
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManagerV2.create());
-        //sector.addScript(CovertOpsManager.create());
+        sector.addScript(CovertOpsManager.create());
         sector.addScript(AllianceManager.create());
         new ColonyManager().init();
         new RevengeanceManager().init();
@@ -172,13 +174,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
     }
     
-    protected void addEventIfNeeded(String eventId)
-    {
-        if (!Global.getSector().getEventManager().isOngoing(null, eventId)) {
-            Global.getSector().getEventManager().startEvent(null, eventId, null);
-        }
-    }
-    
     protected void addScriptsAndEventsIfNeeded() {
         SectorAPI sector = Global.getSector();
         if (!sector.hasScript(ConquestMissionCreator.class)) {
@@ -202,6 +197,11 @@ public class ExerelinModPlugin extends BaseModPlugin
         addEventIfNeeded("nex_rebellion_creator");
         //addEventIfNeeded("nex_trade_info");
         */
+		
+		BarEventManager bar = BarEventManager.getInstance();
+		if (bar != null && !bar.hasEventCreator(AgentBarEventCreator.class)) {
+			bar.addEventCreator(new AgentBarEventCreator());
+		}
     }
     
     @Override
@@ -215,7 +215,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         DiplomacyManager.create();
         InvasionFleetManager.create();
         ResponseFleetManager.create();
-        //CovertOpsManager.create();
         AllianceManager.create();
         
         addScriptsAndEventsIfNeeded();

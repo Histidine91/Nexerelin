@@ -3,10 +3,12 @@ package exerelin.campaign.intel.agents;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.campaign.intel.agents.CovertActionIntel;
+import exerelin.utilities.StringHelper;
 import java.util.Map;
 
 public class InstigateRebellion extends CovertActionIntel {
@@ -30,9 +32,14 @@ public class InstigateRebellion extends CovertActionIntel {
 		adjustRepIfDetected(RepLevel.INHOSPITABLE, null);
 		reportEvent();
 	}
+	
+	@Override
+	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
+		// TODO
+	}
 
 	@Override
-	public String getActionDefId() {
+	public String getDefId() {
 		return "instigateRebellion";
 	}
 }

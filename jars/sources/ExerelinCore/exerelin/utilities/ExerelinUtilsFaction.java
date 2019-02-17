@@ -99,6 +99,10 @@ public class ExerelinUtilsFaction {
     
     public static String getFactionShortName(FactionAPI faction)
     {
+		if (faction.isPlayerFaction() && !Misc.isPlayerFactionSetUp()) {
+			return StringHelper.getString("player");
+		}
+		
         String name = faction.getEntityNamePrefix();
         if (name == null || name.isEmpty())
             name = faction.getDisplayName();

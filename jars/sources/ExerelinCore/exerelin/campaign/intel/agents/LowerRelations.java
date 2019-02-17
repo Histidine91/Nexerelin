@@ -39,6 +39,10 @@ public class LowerRelations extends CovertActionIntel {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
 		this.thirdFaction = thirdFaction;
 	}
+	
+	public void setThirdFaction(FactionAPI thirdFaction) {
+		this.thirdFaction = thirdFaction;
+	}
 
 	@Override
 	public void onSuccess() {
@@ -120,6 +124,12 @@ public class LowerRelations extends CovertActionIntel {
 	}
 	
 	@Override
+	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
+		String action = StringHelper.getString("nex_agentActions", "intelStatus_lowerRelations");
+		info.addPara(action, pad, thirdFaction.getBaseUIColor(), thirdFaction.getDisplayName());
+	}
+	
+	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)
@@ -136,7 +146,7 @@ public class LowerRelations extends CovertActionIntel {
 	}
 
 	@Override
-	public String getActionDefId() {
+	public String getDefId() {
 		return "lowerRelations";
 	}
 }

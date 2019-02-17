@@ -4,7 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
@@ -63,9 +65,15 @@ public class RaiseRelations extends CovertActionIntel {
 			info.addPara(str, pad, color, relColor, relString);
 		}
 	}
+	
+	@Override
+	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
+		String action = StringHelper.getString("nex_agentActions", "intelStatus_raiseRelations");
+		info.addPara(action, pad);
+	}
 
 	@Override
-	public String getActionDefId() {
+	public String getDefId() {
 		return "raiseRelations";
 	}	
 }

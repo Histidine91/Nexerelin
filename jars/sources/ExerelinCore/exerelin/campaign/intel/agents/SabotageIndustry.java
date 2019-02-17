@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,14 @@ public class SabotageIndustry extends CovertActionIntel {
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
 		this.industry = industry;
+	}
+	
+	public void setIndustry(Industry industry) {
+		this.industry = industry;
+	}
+	
+	public Industry getIndustry() {
+		return industry;
 	}
 	
 	@Override
@@ -67,6 +76,12 @@ public class SabotageIndustry extends CovertActionIntel {
 	}
 	
 	@Override
+	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
+		String action = StringHelper.getString("nex_agentActions", "intelStatus_sabotageIndustry");
+		info.addPara(action, pad, Misc.getHighlightColor(), industry.getCurrentName());
+	}
+	
+	@Override
 	protected List<Pair<String, String>> getStandardReplacements() {
 		List<Pair<String, String>> sub = super.getStandardReplacements();
 		sub.add(new Pair<>("$industry", industry.getCurrentName()));
@@ -75,7 +90,7 @@ public class SabotageIndustry extends CovertActionIntel {
 	}
 
 	@Override
-	public String getActionDefId() {
+	public String getDefId() {
 		return "sabotageIndustry";
 	}
 }

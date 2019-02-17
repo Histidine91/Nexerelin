@@ -26,7 +26,17 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
 		this.commodityId = commodityId;
-		commodityName = market.getCommodityData(commodityId).getCommodity().getName().toLowerCase();
+		commodityName = getCommodityName();
+	}
+	
+	public void setCommodity(String commodityId) {
+		this.commodityId = commodityId;
+		commodityName = getCommodityName();
+	}
+	
+	public String getCommodityName() {
+		if (commodityId == null) return null;
+		return market.getCommodityData(commodityId).getCommodity().getName().toLowerCase();
 	}
 
 	@Override
@@ -78,6 +88,12 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	}
 	
 	@Override
+	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
+		String action = StringHelper.getString("nex_agentActions", "intelStatus_destroyCommodities");
+		info.addPara(action, pad, Misc.getHighlightColor(), commodityName);
+	}
+	
+	@Override
 	protected List<Pair<String, String>> getStandardReplacements() {
 		List<Pair<String, String>> sub = super.getStandardReplacements();
 		sub.add(new Pair<>("$commodity", commodityName));
@@ -86,7 +102,7 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	}
 
 	@Override
-	public String getActionDefId() {
+	public String getDefId() {
 		return "destroyCommodities";
 	}
 	
