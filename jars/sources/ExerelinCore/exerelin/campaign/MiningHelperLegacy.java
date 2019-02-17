@@ -91,8 +91,11 @@ public class MiningHelperLegacy {
 				"templars",
 				"exigency",
 				"exipirated",
+				// not really needed since it should filter out all not-in-intel-tab factions
 				Factions.DERELICT,
-				Factions.REMNANTS
+				Factions.REMNANTS,
+				Factions.POOR,
+				Factions.NEUTRAL,
 		}
 	));
 	
@@ -591,23 +594,28 @@ public class MiningHelperLegacy {
 		WeightedRandomPicker<FighterWingSpecAPI> picker = new WeightedRandomPicker();
 		for (FactionAPI faction : factions)
 		{
+			if (!faction.isShowInIntelTab()) continue;
 			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
 			
 			for (String role : ROLES_FOR_FIGHTERS) 
 			{
-				List<ShipRolePick> picks = faction.pickShip(role, ShipPickParams.priority());
-				for (ShipRolePick pick : picks) {
-					FleetMemberType type = FleetMemberType.SHIP;
-					if (pick.isFighterWing()) continue;
+				try {
+					List<ShipRolePick> picks = faction.pickShip(role, ShipPickParams.priority());
+					for (ShipRolePick pick : picks) {
+						FleetMemberType type = FleetMemberType.SHIP;
+						if (pick.isFighterWing()) continue;
 
-					FleetMemberAPI member = Global.getFactory().createFleetMember(type, pick.variantId);
-					for (String wingId : member.getVariant().getFittedWings()) {
-						if (restrictedShips.contains(wingId)) continue;
-						FighterWingSpecAPI spec = Global.getSettings().getFighterWingSpec(wingId);
-						if (spec.getTags().contains(Tags.WING_NO_SELL)) continue;
-						
-						picker.add(spec, 6 - spec.getTier());
+						FleetMemberAPI member = Global.getFactory().createFleetMember(type, pick.variantId);
+						for (String wingId : member.getVariant().getFittedWings()) {
+							if (restrictedShips.contains(wingId)) continue;
+							FighterWingSpecAPI spec = Global.getSettings().getFighterWingSpec(wingId);
+							if (spec.getTags().contains(Tags.WING_NO_SELL)) continue;
+
+							picker.add(spec, 6 - spec.getTier());
+						}
 					}
+				} catch (NullPointerException npex) {
+					// role doesn't exist, do nothing
 				}
 			}
 		}
@@ -640,6 +648,7 @@ public class MiningHelperLegacy {
 		WeightedRandomPicker<HullModSpecAPI> hullmodPicker = new WeightedRandomPicker<>();
 		for (FactionAPI faction : factions)
 		{
+			if (!faction.isShowInIntelTab()) continue;
 			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
 			
 			for (String id : faction.getKnownHullMods()) {
