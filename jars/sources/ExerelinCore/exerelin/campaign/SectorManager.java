@@ -896,7 +896,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // prompt player to name faction if needed
         if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp()) {
             //Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
-            newOwner.setDisplayNameOverride(StringHelper.getString("player", true));
             Global.getSector().addTransientScript(new PlayerFactionSetupNag());
         }
         

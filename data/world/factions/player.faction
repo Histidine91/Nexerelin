@@ -1,4 +1,9 @@
 {
+	#"displayName":"Your",	# your mom
+	#"displayNameWithArticle":"Your",
+	"displayName":"player",
+	"displayNameWithArticle":"the player",
+	
 	"ranks":{
 		"posts":{
 			"administrator":{"name":"Secretary"},

@@ -202,7 +202,7 @@ public class ExerelinUtilsFaction {
     }
 	
 	public static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
-		String name = faction.getDisplayName();
+		String name = Misc.ucFirst(faction.getDisplayName());
 		info.addPara(name, pad, color, faction.getBaseUIColor(), name);
 	}
 }
