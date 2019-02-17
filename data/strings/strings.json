@@ -885,6 +885,9 @@
 		"intelScreen":"Intel screen",
 		"directoryOptions":"Directory options",
 		
+		"creditsAvailable":"You have %s credits available.",
+		"resourcesNeeded":"resources needed (available)",
+		
 		"alreadyKnown":"known",
 
 		"deliverCommodities":"Deliver $num $commodity",

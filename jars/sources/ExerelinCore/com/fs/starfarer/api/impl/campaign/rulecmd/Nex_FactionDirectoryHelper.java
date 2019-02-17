@@ -25,6 +25,17 @@ public class Nex_FactionDirectoryHelper {
 	public static final int PREFERED_ENTRIES_PER_GROUPING = 6;
 	public static final int MAX_GROUPINGS = 7;
 	
+	public static final Comparator<FactionAPI> NAME_COMPARATOR = new Comparator<FactionAPI>()
+	{
+		@Override
+		public int compare(FactionAPI f1, FactionAPI f2)
+		{
+			String n1 = Nex_FactionDirectoryHelper.getFactionDisplayName(f1);
+			String n2 = Nex_FactionDirectoryHelper.getFactionDisplayName(f2);
+			return n1.compareTo(n2);
+		}
+	};
+	
 	protected static List<FactionListGrouping> ngcFactions = new ArrayList<>();
 	
 	protected static Map<String, String> nameCache = new HashMap<>();
@@ -50,16 +61,7 @@ public class Nex_FactionDirectoryHelper {
 		}
 		
 		// order by name
-		Collections.sort(factions, new Comparator<FactionAPI>()
-		{
-			@Override
-			public int compare(FactionAPI f1, FactionAPI f2)
-			{
-				String n1 = getFactionDisplayName(f1);
-				String n2 = getFactionDisplayName(f2);
-				return n1.compareTo(n2);
-			}
-		});
+		Collections.sort(factions, NAME_COMPARATOR);
 		
 		// count the number of groupings we'll have
 		int numGroupings = (int)Math.ceil(factions.size()/(double)PREFERED_ENTRIES_PER_GROUPING);
@@ -163,6 +165,9 @@ public class Nex_FactionDirectoryHelper {
 	
 	public static String getFactionDisplayName(FactionAPI faction)
 	{
+		if (faction.isPlayerFaction())
+			return faction.getDisplayName();
+		
 		String factionId = faction.getId();
 		if (nameCache.containsKey(factionId))
 			return nameCache.get(factionId);

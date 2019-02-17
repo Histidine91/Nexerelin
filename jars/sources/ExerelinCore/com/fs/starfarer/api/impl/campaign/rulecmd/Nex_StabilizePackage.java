@@ -131,7 +131,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	}
 	
 	protected ResourceCostPanelAPI makeCostPanel(TextPanelAPI text, Color color, Color color2) {
-		ResourceCostPanelAPI cost = text.addCostPanel(Misc.ucFirst(StringHelper.getString("exerelin_agents", "resourcesNeeded")), 
+		ResourceCostPanelAPI cost = text.addCostPanel(Misc.ucFirst(StringHelper.getString("exerelin_misc", "resourcesNeeded")), 
 				67, color, color2);
 		cost.setNumberOnlyMode(true);
 		cost.setWithBorder(false);

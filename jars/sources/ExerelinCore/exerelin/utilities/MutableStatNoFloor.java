@@ -7,6 +7,7 @@ import java.util.HashMap;
 /**
  * Almost identical to MutableStat except removes the floor in recompute()
  */
+@Deprecated
 public class MutableStatNoFloor extends MutableStat 
 {	
 //	private HashMap<String, StatMod> flatMods = new HashMap<String, StatMod>();

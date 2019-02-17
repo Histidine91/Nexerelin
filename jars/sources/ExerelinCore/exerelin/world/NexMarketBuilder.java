@@ -57,7 +57,6 @@ import org.json.JSONObject;
  *	free stations in ring or orbiting gas giant should have gas extraction
 */
 
-// TODO: overhaul pending
 @SuppressWarnings("unchecked")
 public class NexMarketBuilder
 {

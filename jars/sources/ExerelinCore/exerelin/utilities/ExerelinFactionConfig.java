@@ -102,7 +102,7 @@ public class ExerelinFactionConfig
     public float tariffMult = 1;
     
     public List<IndustrySeed> industrySeeds = new ArrayList<>();
-    public Map<String, Float> industrySpawnMults = new HashMap<>();    // TODO: load this
+    public Map<String, Float> industrySpawnMults = new HashMap<>();
     public List<BonusSeed> bonusSeeds = new ArrayList<>();
     
     // invasions and stuff

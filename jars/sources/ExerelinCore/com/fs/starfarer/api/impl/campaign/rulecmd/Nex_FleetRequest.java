@@ -437,16 +437,7 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		factionsSet.remove(PlayerFactionStore.getPlayerFaction());
 		
 		List<FactionAPI> factions = new ArrayList<>(factionsSet);
-		Collections.sort(factions, new Comparator<FactionAPI>()
-		{
-			@Override
-			public int compare(FactionAPI f1, FactionAPI f2)
-			{
-				String n1 = Nex_FactionDirectoryHelper.getFactionDisplayName(f1);
-				String n2 = Nex_FactionDirectoryHelper.getFactionDisplayName(f2);
-				return n1.compareTo(n2);
-			}
-		});
+		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR);
 		
 		if (!factions.isEmpty())
 			setFaction(factions.get(0).getId());
@@ -789,14 +780,14 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		return StringHelper.getString("nex_fleetRequest", id, ucFirst);
 	}
 	
-	protected static Comparator<MarketAPI> marketComparatorSize = new Comparator<MarketAPI>() {
+	public static final Comparator<MarketAPI> marketComparatorSize = new Comparator<MarketAPI>() {
 		public int compare(MarketAPI m1, MarketAPI m2) {
 			if (m1.getSize() != m2.getSize())
 				return Integer.compare(m1.getSize(), m2.getSize());
 			return m1.getName().compareTo(m2.getName());
 		}};
 	
-	protected static Comparator<MarketAPI> marketComparatorName = new Comparator<MarketAPI>() {
+	public static final Comparator<MarketAPI> marketComparatorName = new Comparator<MarketAPI>() {
 		public int compare(MarketAPI m1, MarketAPI m2) {
 			return m1.getName().compareTo(m2.getName());
 		}};
