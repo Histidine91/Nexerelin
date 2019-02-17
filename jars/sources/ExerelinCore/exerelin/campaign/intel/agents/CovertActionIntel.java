@@ -54,6 +54,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected float relation;
 	protected int xpGain = -1;
 	protected int newLevel = -1;
+	protected float days;
+	protected float cost;
 	protected float daysRemaining;
 	protected MarketAPI agentEscapeDest;
 	
@@ -84,6 +86,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public void activate() {
 		init();
+		days = daysRemaining;
+		cost = getCost();
 		Global.getSector().addScript(this);
 	}
 	
@@ -127,7 +131,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public float getTimeNeeded() {
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
-		float time = getDef().time * 1 - 0.1f * (level - 1);
+		float time = getDef().time;
+		time *= 1 - 0.1f * (level - 1);
 		
 		if (getDef().costScaling) {
 			time *= 1 + 0.25f * (market.getSize() - 3);
@@ -149,6 +154,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return cost;
 	}
 	
+	public int getAbortRefund() {
+		float daysLeftMult = daysRemaining/days;
+		if (days - daysRemaining <= 1) daysLeftMult = 1;
+		
+		return Math.round(cost * daysLeftMult);
+	}
+	
 	public float getEffectMultForLevel() {
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
 		float mult = 1 + 0.2f * (level - 1);
@@ -158,10 +170,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected MutableStat getSuccessChance() {
 		CovertOpsManager.CovertActionDef def = getDef();
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		MutableStat stat = new MutableStat(0);
 		
 		// base chance
 		float base = def.successChance * 100;
-		MutableStat stat = new MutableStat(0);
+		if (base <= 0) return stat;
 		stat.modifyFlat("baseChance", base, StringHelper.getString("nex_agentActions", "baseChance", true));
 		
 		// level
@@ -179,7 +192,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 			}
 		}
 		
-		
 		// alert level
 		if (def.useAlertLevel) {
             float mult = 1 - CovertOpsManager.getAlertLevel(market);
@@ -192,18 +204,19 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected MutableStat getDetectionChance(boolean fail) {
 		CovertOpsManager.CovertActionDef def = getDef();
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		MutableStat stat = new MutableStat(0);
 		
 		// base chance
 		float base = fail ? def.detectionChance : def.detectionChanceFail;
+		if (base <= 0) return stat;
 		base *= 100;
-		MutableStat stat = new MutableStat(0);
+		
 		stat.modifyFlat("baseChance", base, StringHelper.getString("nex_agentActions", "baseChance", true));
 		
 		// level
-		float detectChance = 100 - base;
-		float failChanceNew = detectChance * (1 - 0.15f * (level - 1));
-		float diff = detectChance - failChanceNew;
-		stat.modifyFlat("agentLevel", diff, StringHelper.getString("nex_agents", "agentLevel", true));
+		float levelMult = 1 - 0.15f * (level - 1);
+		if (levelMult < 1)
+			stat.modifyMult("agentLevel", levelMult, StringHelper.getString("nex_agents", "agentLevel", true));
 		
 		// buildings
 		for (Industry ind : market.getIndustries()) {
@@ -217,6 +230,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public boolean canAbort() {
 		return true;
+	}
+	
+	public void abort() {
+		int refund = getAbortRefund();
+		Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
+		endImmediately();
 	}
 	    
 	/**
@@ -418,6 +437,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return id;
 	}
 	
+	/**
+	 * Is the agent faction known to the player? 
+	 * (for whether to conceal some information in report)
+	 * @return
+	 */
 	protected boolean isAgentFactionKnown() {
 		if (playerInvolved) return true;
 		if (agentFaction.isPlayerFaction()) return true;
@@ -452,6 +476,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return sub;
 	}
 	
+	/**
+	 * Adds images to the top of the intel description panel.
+	 * @param info
+	 * @param width
+	 * @param pad
+	 */
 	public void addImages(TooltipMakerAPI info, float width, float pad) {
 		String crest1 = isAgentFactionKnown() ? agentFaction.getCrest() : 
 				Global.getSector().getFaction(Factions.INDEPENDENT).getCrest();
@@ -498,7 +528,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public void addAgentOutcomePara(TooltipMakerAPI info, float pad) {
 		if (agent == null) return;
-		String lastName = agent.getAgent().getName().getLast();
+		String name = agent.getAgent().getName().getFullName();
 		Color hl = Misc.getHighlightColor();
 		String str;
 		
@@ -511,18 +541,18 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		
 		if (newLevel > -1) {
 			str = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
-					"intelDesc_gainedXPAndLeveledUp", "$agentName", lastName);
+					"intelDesc_gainedXPAndLeveledUp", "$agentName", name);
 			info.addPara(str, pad, hl, xpGain + "", newLevel + "");
 		}
 		else if (xpGain > 0) {
 			str = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
-					"intelDesc_gainedXP", "$agentName", lastName);
+					"intelDesc_gainedXP", "$agentName", name);
 			info.addPara(str, pad, hl, xpGain + "");
 		}
 		
 		if (agentEscapeDest != null) {
 			str = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
-					"intelDesc_agentExfiltrate", "$agentName", lastName);
+					"intelDesc_agentExfiltrate", "$agentName", name);
 			info.addPara(str, pad, market.getFaction().getBaseUIColor(), agentEscapeDest.getName());
 		}
 	}

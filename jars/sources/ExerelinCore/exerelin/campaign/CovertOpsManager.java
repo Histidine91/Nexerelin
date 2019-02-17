@@ -16,6 +16,8 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MonthlyReport;
+import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
@@ -23,6 +25,7 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -36,6 +39,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +72,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
 	public static final boolean DEBUG_MODE = false;
 	
-    public static final float NPC_EFFECT_MULT = 1f;	 
+    public static final float NPC_EFFECT_MULT = 1f;
+	public static final int MAX_AGENTS = 2;
     public static final List<String> DISALLOWED_FACTIONS;
      
     public static final List<CovertActionDef> actionDefs = new ArrayList<>();
@@ -178,10 +183,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         super(true);
         intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
+		Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents").modifyFlat("base", MAX_AGENTS - 1);
     }
 	
-	public int getMaxAgents() {
-		return 2;	// TODO
+	public MutableStat getMaxAgents() {
+		return Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents");
 	}
     
     public void handleNpcCovertActions()
@@ -424,6 +430,36 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         return false;
     }
+	
+	// Agent salaries
+	@Override
+	public void reportEconomyTick(int iterIndex) {
+		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
+		float f = 1f / numIter;
+		
+		//CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		MonthlyReport report = SharedData.getData().getCurrentReport();
+		
+		FDNode marketsNode = report.getNode(MonthlyReport.OUTPOSTS);
+		marketsNode.name = StringHelper.getString("colonies", true);
+		marketsNode.custom = MonthlyReport.OUTPOSTS;
+		marketsNode.tooltipCreator = report.getMonthlyReportTooltip();
+		
+		FDNode agentsNode = report.getNode(marketsNode, MonthlyReport.ADMIN);
+		agentsNode.name = StringHelper.getString("nex_agents", "agents", true);
+		agentsNode.custom = "node_id_nex_agents";
+		agentsNode.tooltipCreator = report.getMonthlyReportTooltip();
+		
+		for (AgentIntel agent : getAgents()) {
+			int salary = AgentIntel.getSalary(agent.getLevel());
+			if (salary <= 0) continue;
+			
+			FDNode aNode = report.getNode(agentsNode, agent.getAgent().getId()); 
+			aNode.name = agent.getAgent().getName().getFullName();
+			aNode.upkeep += salary * f;
+			aNode.custom = agent;
+		}
+	}
     
     public float getCovertWarfareInterval()
     {

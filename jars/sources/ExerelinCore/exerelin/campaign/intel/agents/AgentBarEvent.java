@@ -6,9 +6,11 @@ import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.FullName.Gender;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BaseBarEventWithPerson;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
@@ -97,11 +99,13 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		Color hl = Misc.getHighlightColor();
 		String str;
 		
+		int salary = AgentIntel.getSalary(level);
+		int hiringBonus = salary * 4;
+		
 		options.clearOptions();
 		
 		switch (option) {
 			case INIT:
-				text.addPara(optionText);
 				text.addPara(getString("barDialogIntro1"));
 				text.addPara(getString("barDialogIntro2"));
 
@@ -114,16 +118,16 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				text.addPara(str);
 			case HIRE_OFFER:
 				text.setFontSmallInsignia();
-				str = getString("personIntelDescName");
+				text.addPara(StringHelper.HR);
+				str = getString("intelDescName");
 				str = StringHelper.substituteToken(str, "$name", person.getNameString());
 				text.addPara(str, hl, level + "");
+				text.addPara(StringHelper.HR);
 				text.setFontInsignia();
 				
-				int salary = AgentIntel.getSalary(level);
-				int hiringBonus = salary * 4;
 				String salaryStr = Misc.getWithDGS(salary);
 				String bonusStr = Misc.getWithDGS(hiringBonus);
-				str = StringHelper.getString("barDialogPay");
+				str = getString("barDialogPay");
 				
 				text.addPara(str, hl, bonusStr, salaryStr);
 				
@@ -133,7 +137,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				boolean enough = credits >= hiringBonus;
 				text.addPara(str, enough? Misc.getHighlightColor() : Misc.getNegativeHighlightColor(), creditsStr);
 				
-				if (CovertOpsManager.getAgents().size() >= CovertOpsManager.getManager().getMaxAgents())
+				if (CovertOpsManager.getAgents().size() >= CovertOpsManager.getManager().getMaxAgents().getModifiedValue())
 				{
 					options.addOption(getString("barOptionMaxAgents"), OptionId.CANCEL);
 				} 
@@ -149,8 +153,11 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				str = getString("barDialogHired");
 				str = StringHelper.substituteToken(str, "$heOrShe", getHeOrShe());
 				str = StringHelper.substituteToken(str, "$HeOrShe", Misc.ucFirst(getHeOrShe()));
-				
 				text.addPara(str);
+				
+				Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(hiringBonus);
+				AddRemoveCommodity.addCreditsLossText(hiringBonus, text);
+				
 				BarEventManager.getInstance().notifyWasInteractedWith(this);
 				addIntel();
 				options.addOption(StringHelper.getString("leave", true), OptionId.HIRE_DONE);
@@ -167,12 +174,13 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		TextPanelAPI text = dialog.getTextPanel();
 		AgentIntel intel = new AgentIntel(person, Global.getSector().getPlayerFaction(), level);
 		intel.init();
+		intel.setMarket(market);
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, text);
 	}
 
 	@Override
 	protected String getPersonFaction() {
-		return market.getFactionId();
+		return Factions.INDEPENDENT;
 	}
 	
 	@Override

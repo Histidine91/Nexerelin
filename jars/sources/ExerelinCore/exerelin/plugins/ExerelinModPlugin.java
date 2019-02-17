@@ -152,25 +152,12 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        //if (CovertOpsManager.getManager() == null)
-        //    Global.getSector().addScript(CovertOpsManager.create());
-        
-        // fix free port overdose
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-        {
-            if (!market.isFreePort()) continue;
-            if (market.getFaction().isPlayerFaction()) continue;
-            int numFreePorts = 0;
-            for (MarketConditionAPI cond : market.getConditions()) {
-                if (cond.getId().equals(Conditions.FREE_PORT)) {
-                    numFreePorts++;
-                }
-            }
-            if (numFreePorts > 1) {
-                Global.getLogger(this.getClass()).info("Fixing free ports for market " + market.getName() + ": " + numFreePorts);
-                market.removeCondition(Conditions.FREE_PORT);
-            }
-            
+    }
+    
+    protected void addBarEvents() {
+        BarEventManager bar = BarEventManager.getInstance();
+        if (bar != null && !bar.hasEventCreator(AgentBarEventCreator.class)) {
+            bar.addEventCreator(new AgentBarEventCreator());
         }
     }
     
@@ -197,11 +184,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         addEventIfNeeded("nex_rebellion_creator");
         //addEventIfNeeded("nex_trade_info");
         */
-		
-		BarEventManager bar = BarEventManager.getInstance();
-		if (bar != null && !bar.hasEventCreator(AgentBarEventCreator.class)) {
-			bar.addEventCreator(new AgentBarEventCreator());
-		}
+        
+        addBarEvents();
     }
     
     @Override
@@ -316,6 +300,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
+        
+        addBarEvents();
     }
     
     @Override

@@ -30,17 +30,19 @@ import org.lwjgl.input.Keyboard;
 public class AgentIntel extends BaseIntelPlugin {
 	
 	public static final int[] XP_LEVELS = new int[] {
-		0, 1000, 2500, 5000, 10000, 20000
+		0, 2000, 5000, 10000, 20000, 40000
 	};
 	public static final int MAX_LEVEL = XP_LEVELS.length - 1;
 	public static final int BASE_SALARY = 5000;
-	public static final int SALARY_PER_LEVEL = 1250;
+	public static final int SALARY_PER_LEVEL = 2500;
 	
 	protected static final Object UPDATE_RECRUITED = new Object();
 	protected static final Object UPDATE_ARRIVED = new Object();
 	protected static final Object UPDATE_LEVEL_UP = new Object();
 	protected static final Object UPDATE_LOST = new Object();
-	protected static final Object BUTTON_ORDERS = new Object();
+	protected static final String BUTTON_ORDERS = "orders";
+	protected static final String BUTTON_ABORT = "abort";
+	protected static final String BUTTON_DISMISS = "dismiss";
 	
 	protected PersonAPI agent;
 	protected MarketAPI market;
@@ -164,6 +166,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		Color h = Misc.getHighlightColor();
 		FactionAPI faction = Global.getSector().getFaction(Factions.INDEPENDENT);
+		FactionAPI pf = Global.getSector().getPlayerFaction();
 		
 		if (Misc.isPlayerFactionSetUp()) {
 			faction = Global.getSector().getPlayerFaction();
@@ -176,11 +179,14 @@ public class AgentIntel extends BaseIntelPlugin {
 		info.addImages(width, 128, opad, opad, agent.getPortraitSprite(), faction.getCrest());
 		
 		// agent basic information
-		String str = getString(isDead ? "intelDescLost" : "intelDescName");
+		String key = "intelDescName";
+		if (isDead) key = "intelDescLost";
+		else if (isDismissed) key = "intelDescDismissed";
+		String str = getString(key);
 		str = StringHelper.substituteToken(str, "$name", agent.getNameString());
 		info.addPara(str, opad, h, level + "");
 		
-		if (isDead) return;
+		if (isDead || isDismissed) return;
 		
 		// agent location
 		if (market != null) {
@@ -236,9 +242,16 @@ public class AgentIntel extends BaseIntelPlugin {
 			str = getString("intelDescCurrActionDays") + ".";
 			str = StringHelper.substituteToken(str, "$daysStr", daysStr);
 			info.addPara(str, opad, h, daysNum);
+			
+			// abort button
+			if (currentAction.canAbort()) {
+				ButtonAPI button = info.addButton(StringHelper.getString("abort", true), 
+					BUTTON_ABORT, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
+				//button.setShortcut(Keyboard.KEY_T, true);
+			}
 		} else {
 			// idle message, button for new orders
-			FactionAPI pf = Global.getSector().getPlayerFaction();
 			info.addPara(getString("intelDescIdle"), opad, h);
 			ButtonAPI button = info.addButton(getString("intelButtonOrders"), 
 					BUTTON_ORDERS, pf.getBaseUIColor(), pf.getDarkUIColor(),
@@ -270,25 +283,64 @@ public class AgentIntel extends BaseIntelPlugin {
 			lastAction.addLastMessagePara(info, opad);
 			info.addPara(Misc.getAgoStringForTimestamp(lastActionTimestamp) + ".", opad);
 		}
+		
+		// dismiss button
+		ButtonAPI button = info.addButton(StringHelper.getString("dismiss", true), 
+					BUTTON_DISMISS, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
 	}
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_ORDERS) {
 			ui.showDialog(null, new AgentOrdersDialog(this, ui));
+		} else if (buttonId == BUTTON_ABORT) {
+			currentAction.abort();
+			currentAction = null;
+		} else if (buttonId == BUTTON_DISMISS) {
+			if (currentAction != null)
+				currentAction.abort();
+			currentAction = null;
+			lastAction = null;
+			isDismissed = true;
+			//sendUpdateIfPlayerHasIntel(UPDATE_DISMISSED, false);
+			endAfterDelay();
+		}
+		super.buttonPressConfirmed(buttonId, ui);
+	}
+	
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		return buttonId != BUTTON_ORDERS;
+	}
+	
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		if (buttonId == BUTTON_ABORT) {
+			int credits = currentAction.getAbortRefund();
+			String creditsStr = Misc.getWithDGS(credits);
+			String str = getString("intelPromptAbort");
+			
+			prompt.addPara(str, 0, Misc.getHighlightColor(), creditsStr);
+		} else if (buttonId == BUTTON_DISMISS) {
+			String str = getString("intelPromptDismiss");
+			str = StringHelper.substituteToken(str, "$agentName", agent.getNameString());
+			prompt.addPara(str, 0);
 		}
 	}
 	
 	protected String getName() {
 		String str = StringHelper.getStringAndSubstituteToken("nex_agents", "intelTitle", "$name", agent.getNameString());
-		if (listInfoParam == UPDATE_RECRUITED) {
+		if (isDead) {
+			str += " - " + getString("lost", true);
+		} else if (isDismissed) {
+			str += " - " + getString("dismissed", true);
+		} else if (listInfoParam == UPDATE_RECRUITED) {
 			str += " - " + getString("recruited", true);
 		} else if (listInfoParam == UPDATE_ARRIVED) {
 			str += " - " + getString("intelTitleLevelUp");
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
 			str += " - " + getString("intelTitleLevelUp");
-		} else if (listInfoParam == UPDATE_LOST) {
-			str += " - " + getString("lost", true);
 		}
 		return str;
 	}

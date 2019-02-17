@@ -6,6 +6,8 @@
 		"base":"base",
 		"cabal":"Cabal",
 		"close":"close",
+		"colony":"colony",
+		"colonies":"colonies",
 		"conquest":"conquest",
 		"continue":"continue",
 		"credits":"credits",
@@ -42,6 +44,7 @@
 		"successful":"successful",
 		"failed":"failed",
 		"over":"over",
+		"abort":"abort",
 		"pass":"pass",
 		"fail":"fail",
 
@@ -62,6 +65,7 @@
 
 		"back":"back",
 		"goBack":"go back",
+		"dismiss":"dismiss",
 		"leave":"leave",
 
 		"yes":"yes",
@@ -188,13 +192,15 @@
 		"recruited":"recruited",
 		"arrived":"arrived",
 		"lost":"lost",
+		"dismissed":"dismissed",
 		
 		"intelTitle":"Agent: $name",
 		"intelTitleLevelUp":"Level Up",
 		"intelBullet1":"Currently on $market",
 		"intelLevelUp":"Now at level %s",
 		"intelDescName":"$name is a level %s agent.",
-		"intelDescLost":"%s has been captured or killed.",
+		"intelDescLost":"Agent $name has been captured or killed.",
+		"intelDescDismissed":"Agent $name has been dismissed from your service.",
 		"intelDescLocation":"$name is currently $onOrAt $market, a $faction market in the $location.",
 		"intelDescLocationHyper":"$lastName is currently $onOrAt $market, a $faction market in hyperspace.",
 		"intelDescXP":"Current XP: %s (%s to next level)",
@@ -207,19 +213,23 @@
 		"intelDescLocalReport1":"%s is a size %s market, of stability %s.",
 		"intelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
 		"intelHeaderLastMessage":"Last message",
+		"intelPromptAbort":"Aborting the mission now will refund %s credits. Proceed?",
+		"intelPromptDismiss":"Really dismiss $agentName from service?",
 		
 		"barPrompt":"A shady-looking $manOrWoman is sitting in a corner of the bar. $HeOrShe gives you an appraising look.",
 		"barOptionStart":"Walk over to the shady person",
-		"barDialogIntro1":"You walk over to the shady figure, who acknowledges you with a nod.",
-		"barDialogIntro2":"\"Figures you'd notice me eventually. I don't suppose you know what I do?\"",
-		"barDialogExplanation":"\"I'm a $manOrWoman of many tricks, shall we say. I can sniff out a Pather in a crowd at forty paces, or assassinate the governor of a colony, or even take down a core world's spaceport if the odds are right.\"",
+		"barDialogIntro1":"You approach the shady figure, who acknowledges you with a nod.",
+		"barDialogIntro2":"\"Figured you'd notice me eventually. I don't suppose you know what I do?\"",
+		"barDialogExplanation":"\"I'm a $manOrWoman of many tricks, shall we say. I can sniff out a Pather in a crowd at forty paces, or assassinate the governor of a colony, or even take down a core world's spaceport if the odds are right I think an enterprising starfarer like you will have no problem finding a use for such... talents.\"",
 		"barDialogPay":"\"I'll expect a %s credit hiring bonus, and afterwards a starting salary of %s credits per month. Once the initial transfer is complete, I'll be ready for directions within the hour.\"",
+		#"barDialogPay":"\"I'll expect a %s credit hiring bonus. Once the initial transfer is complete, I'll be ready for directions within the hour.\"",
 		"barOptionMaxAgents":"\"I can't hire any more agents at the moment.\"",
 		"barOptionNotEnoughCredits":"\"I can't afford that at the moment.\"",
 		"barOptionHire":"Hire",
 		"barOptionDecline":"Decline and walk away",
 		"barDialogHired":"\"Excellent.\" $HeOrShe slides a data chip across the table before getting up and leaving. \"I'll be in touch.\"",
 		
+		"skillBonusAgents":"maximum agents",
 	},
 	"nex_agentActions":{
 		"unknownFaction":"unknown faction",
@@ -281,6 +291,7 @@
 		"intelDesc_destroyCommodities_failureDetectedPlayer":"$TheFaction counterintelligence has stopped your $agentName in an attempt to destroy $commodity stockpiled $onOrAt $market.",
 		
 		"intel_lastMessage_travel":"\"Arrived at $market. Awaiting further directions.\"",
+		"intel_lastMessage_raiseRelations_success":"\"$TheFaction likes us rather more now.\"",
 		
 		# TODO		
 		# infiltrate pather cell
