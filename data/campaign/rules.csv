@@ -540,7 +540,7 @@ nex_decivEvent_greetingFirstTimeContinue,DialogOptionSelected,$option == nex_dec
 ,,,,,,
 nex_decivEvent_barterGeneric,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""",SetTextHighlights $nex_decivEvent_takeName $nex_decivEvent_giveName,"""Now, we happen to be in need of some $nex_decivEvent_takeName. In return, we can give you some $nex_decivEvent_giveName. Interested?""
 OR
-""Let's make a trade, spacer. In exchange for some $nex_decivEvent_takeName, you give us $nex_decivEvent_giveName. How about that?""",,
+""Let's make a trade, spacer. You give us $nex_decivEvent_takeName, in exchange for some $nex_decivEvent_giveName. How about that?""",,
 nex_decivEvent_barterRareOre,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
 $market.nex_decivEvent_giveItem == ""rare_ore""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeName,"""I've got an offer for you. We've got a decent stockpile of $nex_decivEvent_giveName, but not the refining facilities to process it. At the same time, we could use some $nex_decivEvent_takeName. Would you be interested in a trade?""",,
 nex_decivEvent_barterRareMetals,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
