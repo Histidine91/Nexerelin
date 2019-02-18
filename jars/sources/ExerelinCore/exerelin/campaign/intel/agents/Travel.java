@@ -3,12 +3,12 @@ package exerelin.campaign.intel.agents;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Map;
@@ -18,9 +18,9 @@ public class Travel extends CovertActionIntel {
 	public static final float DAYS_PER_LY = 0.5f;
 	
 	protected float timeElapsed;
-	protected float departTime;
-	protected float travelTime;
-	protected float arriveTime;
+	protected MutableStat departTime;
+	protected MutableStat travelTime;
+	protected MutableStat arriveTime;
 	// 0 = at starting market, preparing to leave
 	// 1 = travelling between markets
 	// 2 = at destination market, preparing to insert
@@ -30,23 +30,26 @@ public class Travel extends CovertActionIntel {
 	public Travel(AgentIntel agent, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agent, market, agentFaction, targetFaction, playerInvolved, params);
-		
 	}
 	
 	@Override
 	public void init() {
+		Global.getLogger(this.getClass()).info("Initting travel action");
 		getTimeNeeded(true);
 	}
 	
 	public float getTimeNeeded(boolean resetVars) {
+		Global.getLogger(this.getClass()).info("wololo " + resetVars);
 		if (market == null) return 0;
 		
-		float departTime = getDepartOrArriveTime(agent.getMarket(), true);
-		float travelTime = getTravelTime(agent.getMarket(), market);
-		float arriveTime = getDepartOrArriveTime(market, false);
-		float days = departTime + travelTime + arriveTime;
+		MutableStat departTime = getDepartOrArriveTime(agent.getMarket(), true);
+		MutableStat travelTime = getTravelTime(agent.getMarket(), market);
+		MutableStat arriveTime = getDepartOrArriveTime(market, false);
+		float days = departTime.getModifiedValue() + travelTime.getModifiedValue() 
+				+ arriveTime.getModifiedValue();
 		
 		if (resetVars) {
+			Global.getLogger(this.getClass()).info("Setting time stats");
 			this.departTime = departTime;
 			this.travelTime = travelTime;
 			this.arriveTime = arriveTime;
@@ -61,36 +64,82 @@ public class Travel extends CovertActionIntel {
 		return getTimeNeeded(false);
 	}
 	
-	protected float getDepartOrArriveTime(MarketAPI market, boolean departing) {
-		if (market == null) return 0;
+	public MutableStat getDepartTime() {
+		return departTime;
+	}
+	
+	public MutableStat getTravelTime() {
+		return travelTime;
+	}
+	
+	public MutableStat getArriveTime() {
+		return arriveTime;
+	}
+	
+	protected MutableStat getDepartOrArriveTime(MarketAPI market, boolean departing) {
+		MutableStat time = new MutableStat(0);
+		if (market == null) return time;
+		
+		String str = StringHelper.getString("nex_agentActions", "travelTimeStatBase");
+		String departureOrArrival = StringHelper.getString(departing ? "departure" : "arrival");
+		str = StringHelper.substituteToken(str, "$departureOrArrival", departureOrArrival);
 		
 		float baseTime = 2;
 		float penalty = 0;
-		if (!market.isInEconomy()) {	// market decivilized
-			if (!departing) return 1;
-			
-			baseTime = 0;
-			penalty = 15;
+		boolean deciv = false;
+		boolean unfriendly = false;
+		
+		// market decivilized
+		if (!market.isInEconomy()) {
+			deciv = true;
+			if (!departing) {
+				baseTime = 1;
+			} else {
+				baseTime = 0;
+				penalty = 12;
+			}
 		}
+		// unfriendly market
 		else {
 			switch (market.getFaction().getRelationshipLevel(Factions.PLAYER)) {
 				case SUSPICIOUS:
 					penalty = 2;
+					unfriendly = true;
 					break;
 				case INHOSPITABLE:
 					penalty = 4;
+					unfriendly = true;
 					break;
+				case HOSTILE:
 				case VENGEFUL:
 					penalty = 7;
+					unfriendly = true;
 					break;
 			}
+			if (market.isFreePort()) penalty = 0;
 		}
+		
+		time.modifyFlat("base", baseTime, str);
+		
+		// reduce penalty based on agent level
 		if (penalty > 0) {
 			int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
 			penalty *= 1 - 0.15f * (level - 1);
 		}
 		
-		return baseTime + penalty;
+		if (deciv && departing) {
+			str = StringHelper.getString("nex_agentActions", "travelTimeStatDeciv");
+			time.modifyFlat("departDeciv", penalty, str);
+		}
+		if (unfriendly) {
+			str = StringHelper.getString("nex_agentActions", "travelTimeStatRepLevel");
+			String sub = market.getFaction().getRelationshipLevel(Factions.PLAYER).getDisplayName().toLowerCase();
+			//if (market.isFreePort()) sub = StringHelper.getString("freePort");	// doesn't display anyway in this case
+			str = StringHelper.substituteToken(str, "$repLevel", sub);
+			time.modifyFlat("security", penalty, str);
+		}
+		
+		return time;
 	}
 	
 	// can't abort once we've departed the planet
@@ -99,31 +148,43 @@ public class Travel extends CovertActionIntel {
 		return status == 0;
 	}
 	
-	protected float getTravelTime(MarketAPI one, MarketAPI two) {
+	protected MutableStat getTravelTime(MarketAPI one, MarketAPI two) {
+		MutableStat stat = new MutableStat(0);
+		float time = 0;
+		String distStr = "??";
 		if (one == null || two == null)
-			return 15;
-		float dist = Misc.getDistanceLY(one.getLocationInHyperspace(), two.getLocationInHyperspace());
-		return dist * DAYS_PER_LY;
+			time = 15;
+		else {
+			float dist = Misc.getDistanceLY(one.getLocationInHyperspace(), two.getLocationInHyperspace());
+			time = dist * DAYS_PER_LY;
+			distStr = String.format("%.1f", dist);
+		}
+		String desc = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
+				"travelTimeStatTravel", "$dist", distStr);
+		stat.modifyFlat("distance", time, desc);
+		
+		return stat;
 	}
 	
 	@Override
 	public void setMarket(MarketAPI market) {
 		super.setMarket(market);
-		getTimeNeeded();
+		getTimeNeeded(true);
 	}
 	
 	@Override
 	public void advanceImpl(float amount) {
 		float days = Global.getSector().getClock().convertToDays(amount);
 		timeElapsed += days;
-		if (status == 0 && timeElapsed > departTime) {
+		if (status == 0 && timeElapsed > departTime.modified) {
 			status = 1;
 			agent.setMarket(null);
 		}
-		else if (status == 1 && timeElapsed > departTime + travelTime) {
+		else if (status == 1 && timeElapsed > departTime.modified + travelTime.modified) {
 			status = 2;
 		}
-		else if (status == 2 && timeElapsed > departTime + travelTime + arriveTime) {
+		else if (status == 2 && timeElapsed > departTime.modified 
+				+ travelTime.modified + arriveTime.modified) {
 			status = 3;	// done
 		}
 		super.advanceImpl(amount);

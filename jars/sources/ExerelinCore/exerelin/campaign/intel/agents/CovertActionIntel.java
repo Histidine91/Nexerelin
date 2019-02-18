@@ -148,7 +148,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		int cost = Math.round(getDef().baseCost * 1 - 0.1f * (level - 1));
 		
 		if (getDef().costScaling) {
-			cost *= Math.pow(2, market.getSize() - 3);
+			cost *= Math.max(market.getSize() - 3, 1);
 		}
 		
 		return cost;
@@ -602,7 +602,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 			}
 			public String getFlatValue(MutableStat.StatMod mod) {
 				String prefix = mod.getValue() > 0 ? "+" : "";
-				return prefix + String.format("%.0f", mod.getValue()) + "";
+				int numDigits = 0;	//mod.getValue() == (int)mod.getValue() ? 0 : 1;
+				return prefix + String.format("%." + numDigits + "f", mod.getValue()) + "";
 			}
 			public Color getModColor(MutableStat.StatMod mod) {
 				if (!color) return null;

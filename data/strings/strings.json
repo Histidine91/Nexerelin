@@ -19,6 +19,7 @@
 		"faction":"faction",
 		"force":"force",
 		"theForce":"the force",
+		"freePort":"free port",
 		"intelReport":"intel report",
 		"level":"level",
 		"marine":"marine",
@@ -112,6 +113,9 @@
 		"outmatched":"outmatched",
 		"evenlyMatched":"evenly matched",
 		"superior":"superior",
+		
+		"departure":"departure",
+		"arrival":"arrival",
 		
 		"none":"none",
 	},
@@ -212,6 +216,7 @@
 		"intelHeaderLocalReport":"Local report",
 		"intelDescLocalReport1":"%s is a size %s market, of stability %s.",
 		"intelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
+		"intelDescLocalReport3":"Security alert level: %s",
 		"intelHeaderLastMessage":"Last message",
 		"intelPromptAbort":"Aborting the mission now will refund %s credits. Proceed?",
 		"intelPromptDismiss":"Really dismiss $agentName from service?",
@@ -266,7 +271,7 @@
 		"intelDesc_destabilizeMarket_success":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
 		"intelDesc_destabilizeMarket_successPlayer":"Your agent $agentName has $actionLine $onOrAt $market. $Faction investigators are appealing to the public to come forward with information on the attack.",
 		"intelDesc_destabilizeMarket_successDetected":"An agent from $theAgentFaction has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
-		"intelDesc_destabilizeMarket_successDetectedPlayer":"Your agent has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
+		"intelDesc_destabilizeMarket_successDetectedPlayer":"Your agent $agentName has $actionLine $onOrAt $market. $Faction authorities have found evidence of $agentFaction involvement.",
 		"intelDesc_destabilizeMarket_failure":"An attempt by a $agentFaction agent to cause chaos $onOrAt $market has been thwarted. $Faction authorities have been unable to identify the party responsible, however.",
 		"intelDesc_destabilizeMarket_failurePlayer":"$Faction security has thwarted your agent $agentName's attempts to cause chaos $onOrAt $market. Fortunately, they have been unable to conclusively link you to the crime.",
 		"intelDesc_destabilizeMarket_failureDetected":"An $agentFaction operative was captured while attempting to destabilize $market. $Faction intelligence is reported to be planning reprisals.",
@@ -337,6 +342,11 @@
 		"dialogInfoCost":"Cost: %s",
 		"dialogConfirmText":"Initiate mission?",
 		"dialogFinalText":"Mission orders transmitted.",
+		
+		"travelTimeStatBase":"Base $departureOrArrival time",
+		"travelTimeStatDeciv":"Acquiring transport (decivilized)",
+		"travelTimeStatRepLevel":"Penetrating security ($repLevel)",
+		"travelTimeStatTravel":"Distance: $dist LY",
 	},
 	
 	"nex_baseStrike":{

@@ -16,6 +16,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
@@ -136,6 +137,8 @@ public class AgentIntel extends BaseIntelPlugin {
 		Color c = getTitleColor(mode);
 
 		info.addPara(getName(), c, 0);
+		
+		if (isDead || isDismissed) return;
 
 		Color tc = getBulletColorForMode(mode);
 		Color hl = Misc.getHighlightColor();
@@ -147,11 +150,13 @@ public class AgentIntel extends BaseIntelPlugin {
 			
 		} else if (listInfoParam == UPDATE_ARRIVED) {
 			String marketName = market.getName();
-			info.addPara(marketName, pad, hl, marketName);
+			info.addPara(marketName, pad, tc, hl, marketName);
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
 			info.addPara(getString("intelLevelUp"), pad, hl, level + "");
 		} else if (listInfoParam == UPDATE_LOST) {
 			
+		} else {
+			info.addPara(StringHelper.getString("level", true) + " " + level, pad, tc, hl, level + "");
 		}
 	}
 	
@@ -259,6 +264,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			button.setShortcut(Keyboard.KEY_T, true);
 		}
 		
+		// local report
 		if (market != null) {
 			info.addSectionHeading(getString("intelHeaderLocalReport"),	Alignment.MID, opad);
 			
@@ -275,6 +281,13 @@ public class AgentIntel extends BaseIntelPlugin {
 					market.getFaction(), market.getStarSystem(), 0));
 			String groundStr = String.format("%.1f", InvasionRound.getDefenderStrength(market, 1));
 			info.addPara(str, opad, h, spaceStr, groundStr);
+			
+			float alertLevel = CovertOpsManager.getAlertLevel(market);
+			if (alertLevel > 0) {
+				str = getString("intelDescLocalReport3");
+				String alertLevelStr = String.format("%.0f", CovertOpsManager.getAlertLevel(market) * 100) + "%";
+				info.addPara(str, opad, alertLevel > 0.4 ? Misc.getNegativeHighlightColor() : h, alertLevelStr);
+			}
 		}
 		
 		if (lastAction != null) {

@@ -275,15 +275,19 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			
 			String successStr = String.format("%.0f", successF) + "%";
 			text.addPara(getString("dialogInfoSuccessChance"), chanceCol, successStr);
-			TooltipMakerAPI info = text.beginTooltip();
-			info.setParaSmallInsignia();
-			info.addStatModGrid(350, 50, 10, 0, success, true, chanceStatPrinter(true));
-			text.addTooltip();
+			printStat(success, true);
 		}
 		
 		// time and cost
 		String days = String.format("%.0f", action.getTimeNeeded());
 		text.addPara(getString("dialogInfoTimeNeeded"), hl, days);
+		if (actionId.equals(CovertActionType.TRAVEL)) {
+			Travel travel = (Travel)action;
+			printStat(travel.getDepartTime(), false);
+			printStat(travel.getTravelTime(), false);
+			printStat(travel.getArriveTime(), false);
+		}
+		
 		int cost = action.getCost();
 		if (cost > 0) {
 			String costDGS = Misc.getDGSCredits(cost);
@@ -292,6 +296,17 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 		
 		text.setFontInsignia();
+	}
+	
+	protected void printStat(MutableStat stat, boolean color) {
+		if (stat == null) {
+			return;
+		}
+			
+		TooltipMakerAPI info = text.beginTooltip();
+		info.setParaSmallInsignia();
+		info.addStatModGrid(350, 50, 10, 0, stat, true, chanceStatPrinter(color));
+		text.addTooltip();
 	}
 	
 	protected void setHighlights(String str1, String str2, Color col1, Color col2) {
@@ -419,6 +434,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			case CovertActionType.TRAVEL:
 				for (Object marketRaw : targets) {
 					MarketAPI market = (MarketAPI)marketRaw;
+					// don't overcomplicate it by displaying distance etc.
+					// we presume the player already knows where they want to send the agent
 					optionsList.add(new Pair<String, Object>(market.getName(), market));
 				}
 				break;
@@ -430,6 +447,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				}
 				break;
 			case CovertActionType.SABOTAGE_INDUSTRY:
+				addBackOption();	// fallback in case player closes menu by pressing Escape
 				List<Industry> industries = new ArrayList<>();
 				for (Object obj : targets)
 					industries.add((Industry)obj);
@@ -525,10 +543,16 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		final int offset = (currentPage - 1) * ENTRIES_PER_PAGE,
 				max = Math.min(offset + ENTRIES_PER_PAGE, optionsList.size()),
 				numPages = 1 + ((optionsList.size() - 1) / ENTRIES_PER_PAGE);
+		
 		for (int x = offset, y = 1; x < max; x++, y++)
 		{
 			Pair<String, Object> entry = optionsList.get(x);
-			options.addOption(entry.one, entry.two);
+			if (lastSelectedMenu == Menu.FACTION) {
+				options.addOption(entry.one, entry.two, ((FactionAPI)entry.two).getBaseUIColor(), null);
+			}
+			else
+				options.addOption(entry.one, entry.two);
+			
 		}
 		
 		if (currentPage > 1)
