@@ -189,6 +189,8 @@ public class AllianceIntel extends BaseIntelPlugin {
 			if (count >= 8) break;
 		}
 		
+		if (count <= 0) return;
+		
 		// use two rows for crests if alliance has > 4 members
 		int rows = 1;
 		int row1Num = count, row2Num = 0; 
