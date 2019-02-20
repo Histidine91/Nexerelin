@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
@@ -24,6 +26,7 @@ public class PrisonerRansom extends AgentActionBase {
 		int ransomValue = (int)(ExerelinConfig.prisonerBaseRansomValue + ExerelinConfig.prisonerRansomValueIncrementPerLevel * (level - 1));
 		Global.getSector().getPlayerFleet().getCargo().getCredits().add(ransomValue);
 		StatsTracker.getStatsTracker().notifyPrisonersRansomed(1);
+		memoryMap.get(MemKeys.LOCAL).set("$ransomValue", Misc.getWithDGS(ransomValue), 0);
 		return true;
 	}
 }

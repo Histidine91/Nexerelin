@@ -16,8 +16,6 @@ public class GetPrisonerValue extends BaseCommandPlugin {
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		if (dialog == null) return false;
-		
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
 		int ransomValue = (int)(ExerelinConfig.prisonerBaseRansomValue + ExerelinConfig.prisonerRansomValueIncrementPerLevel * (level - 1));
 		int slaveValue = (int)(ExerelinConfig.prisonerBaseSlaveValue + ExerelinConfig.prisonerSlaveValueIncrementPerLevel * (level - 1));
