@@ -15,7 +15,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
@@ -26,7 +25,6 @@ import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.SectorManager.sectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
@@ -121,7 +119,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 		
 	protected void updatePlayerBonusAdmins(int playerFactionSize) {	
-		int index = 0;
+		int index = bonusAdminLevel;
 		for (int i=bonusAdminLevel + 1; i <BONUS_ADMIN_LEVELS.length; i++) {
 			int sizeNeeded =BONUS_ADMIN_LEVELS[i];
 			if (playerFactionSize < sizeNeeded)
