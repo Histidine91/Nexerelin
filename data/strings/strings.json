@@ -253,6 +253,7 @@
 		"intelStatus_destabilizeMarket":"Destabilizing market",
 		"intelStatus_destroyCommodities":"Destroying stockpiles of %s",
 		"intelStatus_sabotageIndustry":"Sabotaging %s",
+		"intelStatus_infiltrateCell":"Infiltrating Luddic cell",
 	
 		"intelDesc_raiseRelations_success":"An agent from $theAgentFaction has subverted the $faction political process to improve relations with their own faction.",
 		"intelDesc_raiseRelations_successPlayer":"Your agent $agentName has successfully subverted the $faction political process to improve relations with $theAgentFaction.",
@@ -295,6 +296,11 @@
 		"intelDesc_destroyCommodities_failureDetected":"$TheFaction has arrested a agent of $agentFaction attempting to destroy stocks of $commodity $onOrAt $market.",
 		"intelDesc_destroyCommodities_failureDetectedPlayer":"$TheFaction counterintelligence has stopped your $agentName in an attempt to destroy $commodity stockpiled $onOrAt $market.",
 		
+		"intelDesc_infiltrateCell_success":"$AgentFaction intelligence has broken up a $faction cell on $market, a success cheered by the population.",
+		"intelDesc_infiltrateCell_successPlayer":"Your agent $agentName has infiltrated and broken up a $faction cell on $market. They won't be a problem any longer, at least for a while.",
+		"intelDesc_infiltrateCell_failure":"An $agentFaction agent has failed to penetrate a $faction cell on $market. Terrorist activity continues.",
+		"intelDesc_infiltrateCell_failurePlayer":"Your agent $agentName has failed to infiltrate a $faction cell on $market. They're fortunate to be alive.",
+		
 		"intel_lastMessage_travel":"\"Arrived at $market. Awaiting further directions.\"",
 		"intel_lastMessage_raiseRelations_success":"\"$TheFaction likes us rather more now.\"",
 		
@@ -312,6 +318,7 @@
 		
 		"intelResultHeader":"Results",
 		"intelBulletTarget":"Target: %s",
+		"intelBulletBaseLoc":"Base in %s",
 		
 		"intelDesc_agentLost":"Agent $agentName has been captured or killed.",
 		"intelDesc_gainedXP":"$agentName gained %s XP.",
@@ -323,6 +330,8 @@
 		"commodityLossEffect":"Availability of %s reduced by %s.",
 		"commodityLossEffectShort":"Availability reduced by %s",
 		"commodityDestroyModDesc":"Agent sabotage",
+		"cellBaseLocation":"The cell was supported from $baseName, a base in the $location.",
+
 		
 		"dialogIntro":"Preparing new mission for agent...",
 		"dialogOption_action":"Action type: $action";

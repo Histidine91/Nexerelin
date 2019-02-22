@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
@@ -187,11 +188,6 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					setIndustryToSabotage((Industry)targets.get(0));
 				break;
 		}
-	}
-	
-	protected void addActionOption(String actionId) {
-		CovertActionDef def = CovertOpsManager.getDef(actionId);
-		options.addOption(Misc.ucFirst(def.name.toLowerCase()), def);
 	}
 	
 	protected void setTravelDestination(MarketAPI market) {
@@ -375,6 +371,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				action.init();
 				getTargets();
 				break;
+			case CovertActionType.INFILTRATE_CELL:
+				FactionAPI targetFaction = Global.getSector().getFaction(Factions.LUDDIC_PATH);
+				
+				action = new InfiltrateCell(agent, market, agentFaction, targetFaction, true, null);
+				action.init();
+				printActionInfo();
+				break;
 		}
 	}
 	
@@ -391,15 +394,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		options.clearOptions();
 		
 		if (lastSelectedMenu == Menu.ACTION_TYPE) {			
-			addActionOption(CovertActionType.TRAVEL);
-			if (canConductLocalActions()) {
-				addActionOption(CovertActionType.RAISE_RELATIONS);
-				addActionOption(CovertActionType.LOWER_RELATIONS);
-				addActionOption(CovertActionType.DESTABILIZE_MARKET);
-				addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
-				addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
-			}
-			addBackOption();
+			populateActionOptions();
 		}
 		else if (lastSelectedMenu == Menu.FACTION) {
 			populateFactionOptions();
@@ -410,6 +405,27 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		else {
 			populateMainMenuOptions();
 		}
+	}
+	
+	protected void addActionOption(String actionId) {
+		CovertActionDef def = CovertOpsManager.getDef(actionId);
+		optionsList.add(new Pair<String, Object>(Misc.ucFirst(def.name.toLowerCase()), def));
+	}
+	
+	protected void populateActionOptions() {
+		optionsList.clear();
+		addActionOption(CovertActionType.TRAVEL);
+		if (canConductLocalActions()) {
+			addActionOption(CovertActionType.RAISE_RELATIONS);
+			addActionOption(CovertActionType.LOWER_RELATIONS);
+			addActionOption(CovertActionType.DESTABILIZE_MARKET);
+			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
+			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
+		}
+		if (agent.getMarket() != null && agent.getMarket().hasCondition(Conditions.PATHER_CELLS))
+			addActionOption(CovertActionType.INFILTRATE_CELL);
+		
+		showPaginatedMenu();
 	}
 	
 	/**
@@ -527,6 +543,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		} else {
 			options.addOptionConfirmation(Menu.CONFIRM, getString("dialogConfirmText"), 
 					StringHelper.getString("yes", true), StringHelper.getString("no", true));
+			options.setShortcut(Menu.CONFIRM, Keyboard.KEY_RETURN,
+				false, false, false, true);
+			
 		}
 		options.addOption(StringHelper.getString("cancel", true), Menu.CANCEL);
 		options.setShortcut(Menu.CANCEL, Keyboard.KEY_ESCAPE,
@@ -540,9 +559,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected void showPaginatedMenu()
 	{
 		options.clearOptions();
-		final int offset = (currentPage - 1) * ENTRIES_PER_PAGE,
+		int offset = (currentPage - 1) * ENTRIES_PER_PAGE,
 				max = Math.min(offset + ENTRIES_PER_PAGE, optionsList.size()),
 				numPages = 1 + ((optionsList.size() - 1) / ENTRIES_PER_PAGE);
+		
+		if (currentPage > max) {
+			currentPage = max;
+			offset = (currentPage - 1) * ENTRIES_PER_PAGE;
+		}
 		
 		for (int x = offset, y = 1; x < max; x++, y++)
 		{
@@ -660,69 +684,75 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
 		}
 		
-		if (optionData == Menu.NEXT_PAGE) {
-			currentPage++;
-			showPaginatedMenu();
-			return;
-		} else if (optionData == Menu.PREVIOUS_PAGE) {
-			currentPage--;
-			showPaginatedMenu();
-			return;
-		}
-		
-		Menu lastSelectedMenuTemp = lastSelectedMenu;
-		lastSelectedMenu = null;
-				
-		// covert action type selected
-		if (optionData instanceof CovertActionDef) {
-			prepAction((CovertActionDef)optionData);
+		try {
+			if (optionData == Menu.NEXT_PAGE) {
+				currentPage++;
+				showPaginatedMenu();
+				return;
+			} else if (optionData == Menu.PREVIOUS_PAGE) {
+				currentPage--;
+				showPaginatedMenu();
+				return;
+			}
+
+			Menu lastSelectedMenuTemp = lastSelectedMenu;
+			lastSelectedMenu = null;
+
+			// covert action type selected
+			if (optionData instanceof CovertActionDef) {
+				prepAction((CovertActionDef)optionData);
+				populateOptions();
+				return;
+			}
+			// faction selected
+			else if (optionData instanceof FactionAPI) {
+				selectFaction((FactionAPI)optionData);
+				populateOptions();
+				return;
+			}
+			// travel destination 
+			else if (optionData instanceof MarketAPI) {
+				setTravelDestination((MarketAPI)optionData);
+				populateOptions();
+				return;
+			}
+			// commodity to destroy
+			else if (lastSelectedMenuTemp == Menu.TARGET && optionData instanceof String) {
+				setCommodityToDestroy((String)optionData);
+				populateOptions();
+				return;
+			}
+
+			if (optionData == Menu.ACTION_TYPE)	{
+				lastSelectedMenu = Menu.ACTION_TYPE;
+			} else if (optionData == Menu.FACTION) {
+				lastSelectedMenu = Menu.FACTION;
+			} else if (optionData == Menu.TARGET) {
+				lastSelectedMenu = Menu.TARGET;
+			} else if (optionData == Menu.BACK) {
+				// do nothing except populate options
+			} else if (optionData == Menu.CONFIRM) {
+				proceed();
+				options.clearOptions();
+				options.addOption(StringHelper.getString("done", true), Menu.DONE);
+				options.setShortcut(Menu.DONE, Keyboard.KEY_RETURN,
+						false, false, false, true);
+				return;
+			} else if (optionData == Menu.CANCEL) {
+				dialog.dismissAsCancel();
+				return;
+			} else if (optionData == Menu.DONE) {
+				dialog.dismiss();
+				return;
+			}
 			populateOptions();
-			return;
-		}
-		// faction selected
-		else if (optionData instanceof FactionAPI) {
-			selectFaction((FactionAPI)optionData);
-			populateOptions();
-			return;
-		}
-		// travel destination 
-		else if (optionData instanceof MarketAPI) {
-			setTravelDestination((MarketAPI)optionData);
-			populateOptions();
-			return;
-		}
-		// commodity to destroy
-		else if (lastSelectedMenuTemp == Menu.TARGET && optionData instanceof String) {
-			setCommodityToDestroy((String)optionData);
-			populateOptions();
-			return;
-		}
 		
-		
-		
-		if (optionData == Menu.ACTION_TYPE)	{
-			lastSelectedMenu = Menu.ACTION_TYPE;
-		} else if (optionData == Menu.FACTION) {
-			lastSelectedMenu = Menu.FACTION;
-		} else if (optionData == Menu.TARGET) {
-			lastSelectedMenu = Menu.TARGET;
-		} else if (optionData == Menu.BACK) {
-			// do nothing except populate options
-		} else if (optionData == Menu.CONFIRM) {
-			proceed();
-			options.clearOptions();
-			options.addOption(StringHelper.getString("done", true), Menu.DONE);
-			options.setShortcut(Menu.DONE, Keyboard.KEY_RETURN,
+		} catch (Exception ex) {
+			log.error(ex, ex);
+			options.addOption(StringHelper.getString("cancel", true), Menu.CANCEL);
+			options.setShortcut(Menu.CANCEL, Keyboard.KEY_ESCAPE,
 					false, false, false, true);
-			return;
-		} else if (optionData == Menu.CANCEL) {
-			dialog.dismissAsCancel();
-			return;
-		} else if (optionData == Menu.DONE) {
-			dialog.dismiss();
-			return;
 		}
-		populateOptions();
 	}
 
 	@Override

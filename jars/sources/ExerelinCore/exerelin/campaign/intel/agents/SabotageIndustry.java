@@ -77,7 +77,7 @@ public class SabotageIndustry extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = StringHelper.getString("nex_agentActions", "intelStatus_sabotageIndustry");
+		String action = getString("intelStatus_sabotageIndustry");
 		info.addPara(action, pad, Misc.getHighlightColor(), industry.getCurrentName());
 	}
 	

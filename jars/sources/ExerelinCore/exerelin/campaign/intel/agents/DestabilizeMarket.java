@@ -55,14 +55,14 @@ public class DestabilizeMarket extends CovertActionIntel {
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		super.addBulletPoints(info, color, initPad, pad);
 		if (result != null && result.isSucessful())
-			info.addPara(StringHelper.getString("nex_agentActions", "destabilizeEffect"), pad, 
-					color, Misc.getHighlightColor(), stabilityLoss + "");
+			info.addPara(getString("destabilizeEffect"), pad, color, 
+					Misc.getHighlightColor(), stabilityLoss + "");
 	}
 	
 	@Override
 	public void addResultPara(TooltipMakerAPI info, float pad) {
 		if (result != null && result.isSucessful())
-			info.addPara(StringHelper.getString("nex_agentActions", "destabilizeEffect") + ".",
+			info.addPara(getString("destabilizeEffect") + ".",
 					pad, Misc.getHighlightColor(), stabilityLoss + "");
 		
 		super.addResultPara(info, pad);
@@ -70,14 +70,14 @@ public class DestabilizeMarket extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = StringHelper.getString("nex_agentActions", "intelStatus_destabilizeMarket");
+		String action = getString("intelStatus_destabilizeMarket");
 		info.addPara(action, pad);
 	}
 	
 	@Override
 	protected List<Pair<String, String>> getStandardReplacements() {
 		List<Pair<String, String>> sub = super.getStandardReplacements();
-		String actionName = StringHelper.getString("nex_agentActions", "destabilizeText" + NUM_LINES);
+		String actionName = getString("destabilizeText" + NUM_LINES);
 		sub.add(new Pair<>("$actionLine", actionName));
 		
 		return sub;

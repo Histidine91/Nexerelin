@@ -20,7 +20,7 @@
 		},
 		"raiseRelations":{
 			"name":"Raise Relations",
-			"time":30,
+			"time":45,
 			"successChance":0.7,
 			"detectionChance":0,	# it logically won't work if you get found out
 			"detectionChanceFail":0.25,
@@ -36,7 +36,7 @@
 		},
 		"lowerRelations":{
 			"name":"Lower Relations",
-			"time":45,
+			"time":60,
 			"successChance":0.65,
 			"detectionChance":0,
 			"detectionChanceFail":0.35,
@@ -52,7 +52,7 @@
 		},
 		"destabilizeMarket":{
 			"name":"Destabilize Market",
-			"time":20,
+			"time":25,
 			"successChance":0.65,
 			"detectionChance":0.35,
 			"detectionChanceFail":0.5,
@@ -61,7 +61,7 @@
 			"repLossOnDetectionMin":0.15,
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.2,
-			"baseCost":20000,
+			"baseCost":25000,
 			"xp":500,
 		},
 		"sabotageIndustry":{
@@ -80,7 +80,7 @@
 		},
 		"destroyCommodities":{
 			"name":"Destroy Commodity Stocks",
-			"time":20,
+			"time":25,
 			"successChance":0.65,
 			"detectionChance":0.2,
 			"detectionChanceFail":0.4,
@@ -89,7 +89,7 @@
 			"repLossOnDetectionMin":0.15,
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.15,
-			"baseCost":20000,
+			"baseCost":25000,
 			"xp":500,
 		},
 		"stealBlueprints":{
@@ -106,14 +106,14 @@
 			"xp":1500,
 		},
 		"infiltrateCell":{
-			"time":20,
-			"name":"Infiltrate Pather Cell",
-			"successChance":0.8,
+			"time":30,
+			"name":"Infiltrate Luddic Cell",
+			"successChance":0.75,
 			"useAlertLevel":false,
 			"repLossOnDetectionMin":0.2,
 			"repLossOnDetectionMax":0.25,
 			"alertLevelIncrease":0,
-			"baseCost":20000,
+			"baseCost":30000,
 			"xp":500,
 		},
 		"instigateRebellion":{

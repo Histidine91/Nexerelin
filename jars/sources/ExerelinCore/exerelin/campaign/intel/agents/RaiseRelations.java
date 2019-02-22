@@ -68,7 +68,7 @@ public class RaiseRelations extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = StringHelper.getString("nex_agentActions", "intelStatus_raiseRelations");
+		String action = getString("intelStatus_raiseRelations");
 		info.addPara(action, pad);
 	}
 

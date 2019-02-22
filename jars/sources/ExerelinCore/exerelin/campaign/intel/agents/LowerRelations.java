@@ -125,7 +125,7 @@ public class LowerRelations extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = StringHelper.getString("nex_agentActions", "intelStatus_lowerRelations");
+		String action = getString("intelStatus_lowerRelations");
 		info.addPara(action, pad, thirdFaction.getBaseUIColor(), thirdFaction.getDisplayName());
 	}
 	

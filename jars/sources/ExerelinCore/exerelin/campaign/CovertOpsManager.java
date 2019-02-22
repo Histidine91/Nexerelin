@@ -57,36 +57,37 @@ import org.json.JSONObject;
 public class CovertOpsManager extends BaseCampaignEventListener implements EveryFrameScript {
     
     public static class CovertActionType {
-		public static final String TRAVEL = "travel";
+        public static final String TRAVEL = "travel";
         public static final String RAISE_RELATIONS = "raiseRelations";
         public static final String LOWER_RELATIONS = "lowerRelations";
         public static final String DESTABILIZE_MARKET = "destabilizeMarket";
         public static final String SABOTAGE_INDUSTRY = "sabotageIndustry";
         public static final String DESTROY_COMMODITY_STOCKS = "destroyCommodities";
         public static final String INSTIGATE_REBELLION = "instigateRebellion";
+        public static final String INFILTRATE_CELL = "infiltrateCell";
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);
     
     public static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
-	public static final boolean DEBUG_MODE = true;
-	
+    public static final boolean DEBUG_MODE = true;
+    
     public static final float NPC_EFFECT_MULT = 1f;
-	public static final int MAX_AGENTS = 2;
+    public static final int MAX_AGENTS = 2;
     public static final List<String> DISALLOWED_FACTIONS;
      
     public static final List<CovertActionDef> actionDefs = new ArrayList<>();
-	public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
-	public static final Map<String, Float> industrySuccessMods = new HashMap<>();
-	public static final Map<String, Float> industryDetectionMods = new HashMap<>();
+    public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
+    public static final Map<String, Float> industrySuccessMods = new HashMap<>();
+    public static final Map<String, Float> industryDetectionMods = new HashMap<>();
     
     protected static float baseInterval = 45f;
     protected float interval = baseInterval;
     protected final IntervalUtil intervalUtil;
-	
-	protected Map<MarketAPI, MutableStat> marketSuccessMods = new HashMap<>();
-	protected Map<MarketAPI, MutableStat> marketDetectionMods = new HashMap<>();
+    
+    protected Map<MarketAPI, MutableStat> marketSuccessMods = new HashMap<>();
+    protected Map<MarketAPI, MutableStat> marketDetectionMods = new HashMap<>();
     
     static {
         String[] factions = {Factions.NEUTRAL, Factions.PLAYER, Factions.INDEPENDENT};    //{"templars", "independent"};
@@ -96,7 +97,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             loadSettings();
         } catch (IOException | JSONException | NullPointerException ex) {
             //log.error(ex);
-			throw new RuntimeException(ex);
+            throw new RuntimeException(ex);
         }
     }
     

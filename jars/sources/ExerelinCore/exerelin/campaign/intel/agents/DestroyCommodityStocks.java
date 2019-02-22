@@ -52,7 +52,7 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 		
 		// apply availability loss
 		CommodityOnMarketAPI commodity = market.getCommodityData(commodityId);
-		String desc = StringHelper.getString("nex_agentActions", "commodityDestroyModDesc");
+		String desc = getString("commodityDestroyModDesc");
 		commodity.getAvailableStat().addTemporaryModFlat(duration, commodityId, desc, -effect);
 		
 		adjustRepIfDetected(RepLevel.INHOSPITABLE, null);
@@ -71,8 +71,8 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 		super.addBulletPoints(info, color, initPad, pad);
 		if (result != null && result.isSucessful())
 		{
-			info.addPara(exerelin.utilities.StringHelper.getString("nex_agentActions", "commodityLossEffectShort"), 
-					pad, color, Misc.getHighlightColor(), effect + "");
+			info.addPara(getString("commodityLossEffectShort"), pad, color, 
+					Misc.getHighlightColor(), effect + "");
 		}
 			
 	}
@@ -81,15 +81,15 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	public void addResultPara(TooltipMakerAPI info, float pad) {
 		if (result != null && result.isSucessful())
 		{
-			info.addPara(exerelin.utilities.StringHelper.getString("nex_agentActions", "commodityLossEffect"), pad, 
-					Misc.getHighlightColor(), commodityName, effect + "");
+			info.addPara(getString("commodityLossEffect"), pad, Misc.getHighlightColor(), 
+					commodityName, effect + "");
 		}
 		super.addResultPara(info, pad);
 	}
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = StringHelper.getString("nex_agentActions", "intelStatus_destroyCommodities");
+		String action = getString("intelStatus_destroyCommodities");
 		info.addPara(action, pad, Misc.getHighlightColor(), commodityName);
 	}
 	

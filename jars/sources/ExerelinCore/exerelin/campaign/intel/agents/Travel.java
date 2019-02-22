@@ -80,7 +80,7 @@ public class Travel extends CovertActionIntel {
 		MutableStat time = new MutableStat(0);
 		if (market == null) return time;
 		
-		String str = StringHelper.getString("nex_agentActions", "travelTimeStatBase");
+		String str = getString("travelTimeStatBase");
 		String departureOrArrival = StringHelper.getString(departing ? "departure" : "arrival");
 		str = StringHelper.substituteToken(str, "$departureOrArrival", departureOrArrival);
 		
@@ -128,11 +128,11 @@ public class Travel extends CovertActionIntel {
 		}
 		
 		if (deciv && departing) {
-			str = StringHelper.getString("nex_agentActions", "travelTimeStatDeciv");
+			str = getString("travelTimeStatDeciv");
 			time.modifyFlat("departDeciv", penalty, str);
 		}
 		if (unfriendly) {
-			str = StringHelper.getString("nex_agentActions", "travelTimeStatRepLevel");
+			str = getString("travelTimeStatRepLevel");
 			String sub = market.getFaction().getRelationshipLevel(Factions.PLAYER).getDisplayName().toLowerCase();
 			//if (market.isFreePort()) sub = StringHelper.getString("freePort");	// doesn't display anyway in this case
 			str = StringHelper.substituteToken(str, "$repLevel", sub);
@@ -200,14 +200,14 @@ public class Travel extends CovertActionIntel {
 	
 	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {		
-		info.addPara(StringHelper.getString("nex_agentActions", "intelBulletTarget"), 
-				initPad, color, market.getFaction().getBaseUIColor(), market.getName());
+		info.addPara(getString("intelBulletTarget"), 
+				initPad, color, market.getTextColorForFactionOrPlanet(), market.getName());
 	}
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = StringHelper.getString("nex_agentActions", "intelStatus_travel");
-		String statusStr = StringHelper.getString("nex_agentActions", "intelStatus_travel" + status);
+		String action = getString("intelStatus_travel");
+		String statusStr = getString("intelStatus_travel" + status);
 		action = StringHelper.substituteToken(action, "$market", market.getName());
 		action = StringHelper.substituteToken(action, "$status", statusStr);
 		

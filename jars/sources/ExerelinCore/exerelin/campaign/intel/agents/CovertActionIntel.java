@@ -175,7 +175,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		// base chance
 		float base = def.successChance * 100;
 		if (base <= 0) return stat;
-		stat.modifyFlat("baseChance", base, StringHelper.getString("nex_agentActions", "baseChance", true));
+		stat.modifyFlat("baseChance", base, getString("baseChance", true));
 		
 		// level
 		float failChance = 100 - base;
@@ -211,7 +211,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (base <= 0) return stat;
 		base *= 100;
 		
-		stat.modifyFlat("baseChance", base, StringHelper.getString("nex_agentActions", "baseChance", true));
+		stat.modifyFlat("baseChance", base, getString("baseChance", true));
 		
 		// level
 		float levelMult = 1 - 0.15f * (level - 1);
@@ -393,8 +393,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (afKnown)
 			ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
 		
-		info.addPara(StringHelper.getString("nex_agentActions", "intelBulletTarget"), 
-				afKnown ? pad : initPad, color, targetFaction.getBaseUIColor(), market.getName());
+		info.addPara(getString("intelBulletTarget"), afKnown ? pad : initPad, color, 
+				targetFaction.getBaseUIColor(), market.getName());
 	}
 	
 	protected String getName() {
@@ -417,8 +417,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		addMainDescPara(info, opad);
 		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 		
-		info.addSectionHeading(StringHelper.getString("nex_agentActions", "intelResultHeader"),
-				Alignment.MID, opad);
+		info.addSectionHeading(getString("intelResultHeader"), Alignment.MID, opad);
 		addResultPara(info, opad);
 		addAgentOutcomePara(info, opad);
 	}
@@ -464,8 +463,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (isAgentFactionKnown())
 			StringHelper.addFactionNameTokensCustom(sub, "agentFaction", agentFaction);
 		else {
-			String unknownFaction = StringHelper.getString("nex_agentActions", "unknownFaction");
-			String anUnknownFaction = StringHelper.getString("nex_agentActions", "anUnknownFaction");
+			String unknownFaction = getString("unknownFaction");
+			String anUnknownFaction = getString("anUnknownFaction");
 			sub.add(new Pair<>("$agentFaction", unknownFaction));
 			sub.add(new Pair<>("$theAgentFaction", anUnknownFaction));
 			sub.add(new Pair<>("$AgentFaction", Misc.ucFirst(unknownFaction)));
@@ -585,10 +584,20 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		int significance = 0;
 		if (result != null) {
 			if (result.isDetected()) significance = 1;
+		}
+		if (repResult != null) {
 			if (repResult.wasHostile && !repResult.isHostile) significance = 1;
 			if (repResult.isHostile && !repResult.wasHostile) significance = 2;
-		}		
+		}
 		return EVENT_ICONS[significance];
+	}
+	
+	public static String getString(String id) {
+		return getString(id, false);
+	}
+	
+	public static String getString(String id, boolean ucFirst) {
+		return StringHelper.getString("nex_agentActions", id, ucFirst);
 	}
 	
 	public static TooltipMakerAPI.StatModValueGetter chanceStatPrinter(final boolean color) {
