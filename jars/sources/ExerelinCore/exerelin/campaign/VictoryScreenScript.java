@@ -115,12 +115,12 @@ public class VictoryScreenScript implements EveryFrameScript
 		
 		private void printCredits()
 		{
-			String category = "exerelin_credits";
+			String category = "nex_credits";
 			printCreditLine("Zaphide", StringHelper.getString(category, "contribution_zaphide"));
 			printCreditLine("Histidine", StringHelper.getString(category, "contribution_histidine"));
 			printCreditLine("Dark.Revenant", StringHelper.getString(category, "contribution_darkRevenant"));
 			printCreditLine("LazyWizard", StringHelper.getString(category, "contribution_lazyWizard"));
-			printCreditLine("Psiyon", StringHelper.getString(category, "contribution_psiyon"));
+			printCreditLine("Soren", StringHelper.getString(category, "contribution_soren"));
 			printCreditLine("Tartiflette", StringHelper.getString(category, "contribution_tartiflette"));
 			printCreditLine("The SS mod community", StringHelper.getString(category, "contribution_ssModCommunity"));
 			printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString(category, "contribution_fractalSoftworks"));

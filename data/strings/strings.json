@@ -400,12 +400,12 @@
 		"bonusAdminIntelBullet2":"Bonus admins: %s",
 		"bonusAdminIntelBullet3":"Next admin at size %s",
 	},
-	"exerelin_credits":{
+	"nex_credits":{
 		"contribution_zaphide":"The original Exerelin",
 		"contribution_histidine":"Update for Starsector 0.65 and later",
 		"contribution_darkRevenant":"Much coding help; compatibility with SS+ and descendant mods",
-		"contribution_lazyWizard":"Omnifactory, Console Commands, Version Checker",
-		"contribution_psiyon":"Backgrounds",
+		"contribution_lazyWizard":"Version Checker, Console Commands, other code",
+		"contribution_soren":"Player flags",
 		"contribution_tartiflette":"Prism Freeport",
 		"contribution_ssModCommunity":"Various tips, pointers and feedback",
 		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector"
