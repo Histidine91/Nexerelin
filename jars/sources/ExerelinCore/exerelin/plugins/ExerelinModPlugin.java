@@ -89,7 +89,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(InvasionFleetManager.create());
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManagerV2.create());
-        sector.addScript(CovertOpsManager.create());
+        //sector.addScript(CovertOpsManager.create());
         sector.addScript(AllianceManager.create());
         new ColonyManager().init();
         new RevengeanceManager().init();
@@ -157,7 +157,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     protected void addBarEvents() {
         BarEventManager bar = BarEventManager.getInstance();
         if (bar != null && !bar.hasEventCreator(AgentBarEventCreator.class)) {
-            bar.addEventCreator(new AgentBarEventCreator());
+            //bar.addEventCreator(new AgentBarEventCreator());
         }
     }
     
