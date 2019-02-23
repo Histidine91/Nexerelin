@@ -32,6 +32,7 @@ import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
@@ -168,6 +169,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         if (!sector.hasScript(NexEventProbabilityManager.class)) {
             //sector.addScript(new NexEventProbabilityManager());
+        }
+        if (!sector.hasScript(FactionBountyManager.class)) {
+            sector.addScript(new FactionBountyManager());
         }
         
         /*

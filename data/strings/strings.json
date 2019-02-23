@@ -378,6 +378,21 @@
 		"satBombWarningAllHostile":"An atrocity of this scale can not be hidden, but any factions that would be dismayed by such actions are already hostile to you.",
 		"satBombWarningVengeful":"Due to their hatred of $theFaction, the following factions can be expected to overlook your crime:",
 	},
+	"nex_bounties":{
+		"factionBountyIntel_title":"Faction Bounty",
+		"factionBountyIntel_titleEnded":"Bounty Ended",
+		"factionBountyIntel_desc1":"%s authorities have posted a bounty on all hostile fleets across the Sector.",
+		"factionBountyIntel_desc2":"Likely triggered by %s activity.",
+		"factionBountyIntel_desc3":"Payment depends on the number and size of ships destroyed. Standing with $theFaction may also improve.",
+		"factionBountyIntel_desc4":"$TheFaction $isOrAre currently hostile to:",
+		"factionBountyIntel_desc4NoHostile":"$TheFaction $isOrAre not currently hostile to any major factions.",
+		"factionBountyIntel_descResult1":"Most recent bounty:",
+		"factionBountyIntel_descResult2":"%s received",
+		"factionBountyIntel_descResult3":"%s share based on damage dealt",
+		"factionBountyIntel_descEnded":"This bounty is no longer on offer.",
+		
+		
+	},
 	"nex_colonies":{
 		"globalPopulation":"global population",
 		"bonusAdminIntelTitle":"Growth: Admin Unlocked",
