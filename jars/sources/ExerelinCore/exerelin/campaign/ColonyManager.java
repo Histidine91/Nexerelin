@@ -82,6 +82,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * Clamps player station population, increments NPC population size, and adds bonus admins if needed.
 	 */
 	protected void updateMarkets() {
+		
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
 		int playerFactionSize = 0;
 		boolean allowGrowth = Global.getSector().getClock().getCycle() >= MIN_CYCLE_FOR_NPC_GROWTH;
@@ -167,12 +168,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		// needs forcible toggle because if it's already enabled it won't do anything
 		if (wantFreePort == true) {
-			market.setFreePort(wantFreePort);
+			//market.setFreePort(wantFreePort);
 			if (!market.hasCondition(Conditions.FREE_PORT))
 				market.addCondition(Conditions.FREE_PORT);
 		}
 		else
-			market.setFreePort(false);
+			market.removeCondition(Conditions.FREE_PORT);
+			//market.setFreePort(false);
 		
 	}
 	
