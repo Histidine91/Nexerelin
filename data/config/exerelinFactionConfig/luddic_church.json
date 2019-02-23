@@ -15,7 +15,7 @@
     "alignments":{
         "corporate":-0.5,
         "technocratic":-1,
-        "militarist":0.5,
+        #"militarist":0.5,
         "ideological":1,
     },
     
@@ -38,6 +38,7 @@
     
     "startSpecialItems":[
         [["LC_package", ""]],
+        [["low_tech_package", ""]],
     ],
 
     "defenceStations":[
