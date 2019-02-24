@@ -167,8 +167,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					|| (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
 		}
 		// needs forcible toggle because if it's already enabled it won't do anything
-		if (wantFreePort == true) {
-			//market.setFreePort(wantFreePort);
+		// also check if free port condition already exists so we don't add it twice
+		if (wantFreePort == true && !market.hasCondition(Conditions.FREE_PORT)) {
+			market.setFreePort(wantFreePort);
 			if (!market.hasCondition(Conditions.FREE_PORT))
 				market.addCondition(Conditions.FREE_PORT);
 		}

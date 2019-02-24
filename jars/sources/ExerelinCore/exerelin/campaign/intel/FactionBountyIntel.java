@@ -193,7 +193,7 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 			
 			float repFP = (int)(fpDestroyed * battle.getPlayerInvolvementFraction());
 			ReputationAdjustmentResult rep = Global.getSector().adjustPlayerReputation(
-							new RepActionEnvelope(RepActions.SYSTEM_BOUNTY_REWARD, new Float(repFP), null, null, true, false), 
+							new RepActionEnvelope(RepActions.COMMISSION_BOUNTY_REWARD, repFP, null, null, true, false), 
 							faction.getId());
 			latestResult = new FactionBountyResult(payment, battle.getPlayerInvolvementFraction(), rep);
 			sendUpdateIfPlayerHasIntel(latestResult, false);
@@ -235,9 +235,7 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 				addDays(info, "remaining", duration - elapsedDays, tc);
 			} else {
 				if (!isEnding()) {
-					info.addPara("Faction: " + faction.getDisplayName(), initPad, tc,
-								 faction.getBaseUIColor(), faction.getDisplayName());
-					info.addPara("%s base reward per frigate", 0f, tc, h, Misc.getDGSCredits(baseBounty));
+					info.addPara("%s base reward per frigate", initPad, tc, h, Misc.getDGSCredits(baseBounty));
 					addDays(info, "remaining", duration - elapsedDays, tc);
 				}
 			}

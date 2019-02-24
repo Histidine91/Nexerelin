@@ -508,6 +508,8 @@ public class DiplomacyBrain {
 			
 			if (!SectorManager.isFactionAlive(otherFactionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) continue;
+			if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
+				continue;
 			if (ceasefires.containsKey(otherFactionId)) continue;
 			if (!faction.isAtBest(otherFactionId, maxRep)) continue;	// relations aren't bad enough yet
 			if (faction.isHostileTo(otherFactionId)) continue;	// already at war
