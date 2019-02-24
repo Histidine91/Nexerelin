@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
@@ -68,8 +67,14 @@ public class RaiseRelations extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = getString("intelStatus_raiseRelations");
+		String action = getActionString("intelStatus_raiseRelations");
 		info.addPara(action, pad);
+	}
+	
+	@Override
+	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
+		String action = getActionString("intelStatus_raiseRelations", true);
+		info.addPara(action, pad, color, Misc.getHighlightColor(), Math.round(daysRemaining) + "");
 	}
 
 	@Override

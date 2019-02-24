@@ -70,7 +70,8 @@ public class SabotageIndustry extends CovertActionIntel {
 		{
 			String industryName = industry.getCurrentName();
 			info.addPara(exerelin.utilities.StringHelper.getStringAndSubstituteToken("nex_agentActions", 
-					"industryDisruptEffect", "$industry", industryName) + ".", pad, Misc.getHighlightColor(), (int)disruptTime + "");
+					"industryDisruptEffect", "$industry", industryName) + ".", pad, 
+					Misc.getHighlightColor(), (int)disruptTime + "");
 		}
 		super.addResultPara(info, pad);
 	}
@@ -79,6 +80,13 @@ public class SabotageIndustry extends CovertActionIntel {
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getString("intelStatus_sabotageIndustry");
 		info.addPara(action, pad, Misc.getHighlightColor(), industry.getCurrentName());
+	}
+	
+	@Override
+	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
+		String action = getActionString("intelStatus_sabotageIndustry", true);
+		info.addPara(action, pad, color, Misc.getHighlightColor(), 
+				industry.getCurrentName(), Math.round(daysRemaining) + "");
 	}
 	
 	@Override

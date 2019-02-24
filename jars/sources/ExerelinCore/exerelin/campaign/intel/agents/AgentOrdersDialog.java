@@ -136,12 +136,12 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		switch (action.getDefId()) {
 			case CovertActionType.TRAVEL:
-				List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(thirdFaction.getId(), true);
-				if (markets.isEmpty()) return targets;
+				List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(thirdFaction.getId(), false);
 				
 				Collections.sort(markets, Nex_FleetRequest.marketComparatorName);
 				for (MarketAPI market : markets) {
 					if (market == agent.getMarket()) continue;
+					if (market.isHidden()) continue;
 					targets.add(market);
 				}
 				break;
@@ -172,7 +172,21 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	}
 	
 	protected void autopickTargetIfNeeded() {
-		if (targets.isEmpty()) return;
+		if (targets.isEmpty()) {
+			switch (action.getDefId()) {
+				case CovertActionType.TRAVEL:
+					setTravelDestination(null);
+					break;
+				case CovertActionType.DESTROY_COMMODITY_STOCKS:
+					setCommodityToDestroy(null);
+					break;
+				case CovertActionType.SABOTAGE_INDUSTRY:
+					setIndustryToSabotage(null);
+					break;
+			}
+			optionsList.clear();	// tells the main menu to disable the target menu
+			return;
+		}
 		
 		switch (action.getDefId()) {
 			case CovertActionType.TRAVEL:
@@ -535,6 +549,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				if (id.equals(CovertActionType.TRAVEL) && thirdFaction == null) {
 					options.setEnabled(Menu.TARGET, false);
 				}
+				if (optionsList.isEmpty()) {
+					options.setEnabled(Menu.TARGET, false);
+				}
 			}
 		}
 		options.addOption(StringHelper.getString("confirm", true), Menu.CONFIRM);
@@ -558,11 +575,17 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	 */
 	protected void showPaginatedMenu()
 	{
+		if (optionsList.isEmpty()) {
+			addBackOption();
+			return;
+		}
+			
+		
 		options.clearOptions();
 		int offset = (currentPage - 1) * ENTRIES_PER_PAGE,
 				max = Math.min(offset + ENTRIES_PER_PAGE, optionsList.size()),
 				numPages = 1 + ((optionsList.size() - 1) / ENTRIES_PER_PAGE);
-		
+				
 		if (currentPage > max) {
 			currentPage = max;
 			offset = (currentPage - 1) * ENTRIES_PER_PAGE;
@@ -748,6 +771,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			populateOptions();
 		
 		} catch (Exception ex) {
+			text.addPara(ex.toString());
 			log.error(ex, ex);
 			options.addOption(StringHelper.getString("cancel", true), Menu.CANCEL);
 			options.setShortcut(Menu.CANCEL, Keyboard.KEY_ESCAPE,

@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -40,7 +41,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	};
 	
 	public static final ExerelinReputationAdjustmentResult NO_EFFECT = new ExerelinReputationAdjustmentResult(0);
-	public static final boolean ALWAYS_REPORT = true;	// debug
+	public static final boolean ALWAYS_REPORT = false;	// debug
 	public static final int DEFAULT_AGENT_LEVEL = 2;
 	
 	protected Map<String, Object> params;
@@ -355,7 +356,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected boolean shouldReportEvent() {
 		return ALWAYS_REPORT 
 				|| playerInvolved
-				|| result.isSucessful()
+				|| agentFaction == PlayerFactionStore.getPlayerFaction()
+				//|| result != null && result.isDetected()
 				|| repResult != null && repResult != NO_EFFECT
 				|| Global.getSettings().isDevMode();
 	}
@@ -515,7 +517,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	 * @param pad Padding.
 	 */
 	public void addResultPara(TooltipMakerAPI info, float pad) {
-		if (repResult != null && repResult != NO_EFFECT) {
+		if (repResult != null && repResult.delta != 0) {
 			DiplomacyIntel.addRelationshipChangePara(info, agentFaction.getId(), targetFaction.getId(), 
 					relation, repResult, pad);
 		}
@@ -523,7 +525,34 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public abstract void addCurrentActionPara(TooltipMakerAPI info, float pad);
 	
-	public void addLastMessagePara(TooltipMakerAPI info, float pad) {}
+	public abstract void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad);
+	
+	public String getActionString(String strId) {
+		return getActionString(strId, false);
+	}
+	
+	public String getActionString(String strId, boolean withTime) {
+		String action = getString(strId);
+		if (withTime) {
+			String daysNum = Math.round(daysRemaining) + "";
+			String daysStr = RaidIntel.getDaysString(daysRemaining);
+			String daysLeftStr = StringHelper.getString("nex_agents", "intelDescCurrActionDaysShort");
+			daysLeftStr = StringHelper.substituteToken(daysLeftStr, "$daysStr", daysStr);
+			daysLeftStr = String.format(daysLeftStr, daysNum);
+			
+			action += " (" + daysLeftStr + ")";
+		}
+		
+		return action;
+	}
+	
+	public void addLastMessagePara(TooltipMakerAPI info, float pad) {
+		String str = StringHelper.getString("nex_agentActions", "intel_lastMessage_" 
+				+ getDefId() + "_" + (result.isSucessful() ? "success" : "failure"));
+		str = StringHelper.substituteTokens(str, getStandardReplacements());
+		
+		info.addPara(str, pad);
+	}
 	
 	public void addAgentOutcomePara(TooltipMakerAPI info, float pad) {
 		if (agent == null) return;

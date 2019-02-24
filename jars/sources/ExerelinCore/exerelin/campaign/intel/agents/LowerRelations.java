@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -125,8 +125,16 @@ public class LowerRelations extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = getString("intelStatus_lowerRelations");
+		String action = getActionString("intelStatus_lowerRelations");
 		info.addPara(action, pad, thirdFaction.getBaseUIColor(), thirdFaction.getDisplayName());
+	}
+	
+	@Override
+	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
+		String action = getActionString("intelStatus_lowerRelationsLong", true);
+		LabelAPI label = info.addPara(action, pad, color, Misc.getHighlightColor(), thirdFaction.getDisplayName());
+		label.setHighlight(thirdFaction.getDisplayName(), Math.round(daysRemaining) + "");
+		label.setHighlightColors(thirdFaction.getBaseUIColor(), Misc.getHighlightColor());
 	}
 	
 	@Override

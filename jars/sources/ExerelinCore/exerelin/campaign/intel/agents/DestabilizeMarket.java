@@ -70,8 +70,14 @@ public class DestabilizeMarket extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = getString("intelStatus_destabilizeMarket");
+		String action = getActionString("intelStatus_destabilizeMarket");
 		info.addPara(action, pad);
+	}
+	
+	@Override
+	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
+		String action = getActionString("intelStatus_destabilizeMarket", true);
+		info.addPara(action, pad, color, Misc.getHighlightColor(), Math.round(daysRemaining) + "");
 	}
 	
 	@Override

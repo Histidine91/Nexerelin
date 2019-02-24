@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.agents;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -164,6 +163,12 @@ public class InfiltrateCell extends CovertActionIntel {
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getString("intelStatus_infiltrateCell");
 		info.addPara(action, pad, targetFaction.getBaseUIColor(), targetFaction.getDisplayName());
+	}
+	
+	@Override
+	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
+		String action = getActionString("intelStatus_infiltrateCell", true);
+		info.addPara(action, pad, color, Misc.getHighlightColor(), Math.round(daysRemaining) + "");
 	}
 	
 

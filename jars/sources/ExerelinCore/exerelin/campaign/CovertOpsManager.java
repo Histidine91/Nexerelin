@@ -71,7 +71,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
     
     public static final float NPC_EFFECT_MULT = 1f;
     public static final int MAX_AGENTS = 2;
@@ -117,8 +117,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.id = id;
 			def.name = defJson.getString("name");
 			def.successChance = (float)defJson.optDouble("successChance");
-			def.detectionChance = (float)defJson.optDouble("detectionChance");
-			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail");
+			def.detectionChance = (float)defJson.optDouble("detectionChance", 0);
+			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail", 0);
 			def.useAlertLevel = defJson.optBoolean("useAlertLevel", true);
 			def.useIndustrySecurity = defJson.optBoolean("useIndustrySecurity", true);
 			def.repLossOnDetect = new Pair<>((float)defJson.optDouble("repLossOnDetectionMin"), 
@@ -449,7 +449,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		FDNode agentsNode = report.getNode(marketsNode, MonthlyReport.ADMIN);
 		agentsNode.name = StringHelper.getString("nex_agents", "agents", true);
 		agentsNode.custom = "node_id_nex_agents";
-		agentsNode.tooltipCreator = report.getMonthlyReportTooltip();
+		agentsNode.icon = Global.getSettings().getSpriteName("income_report", "officers");
+		//agentsNode.tooltipCreator = report.getMonthlyReportTooltip();	// TODO get own tooltip creator
 		
 		for (AgentIntel agent : getAgents()) {
 			int salary = AgentIntel.getSalary(agent.getLevel());
@@ -459,6 +460,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			aNode.name = agent.getAgent().getName().getFullName();
 			aNode.upkeep += salary * f;
 			aNode.custom = agent;
+			aNode.icon = agent.getAgent().getPortraitSprite();
 		}
 	}
     

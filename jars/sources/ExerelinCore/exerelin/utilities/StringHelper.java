@@ -271,10 +271,7 @@ public class StringHelper {
 	
 	public static void addFactionNameTokensCustom(List<Pair<String, String>> tokens, String str, FactionAPI faction) {
 		if (faction != null) {
-			String factionName = faction.getEntityNamePrefix();
-			if (factionName == null || factionName.isEmpty()) {
-				factionName = faction.getDisplayName();
-			}
+			String factionName = faction.getDisplayName();
 			String strUc = Misc.ucFirst(str);
 			
 			tokens.add(new Pair<>("$" + str + "Long", faction.getDisplayNameLong()));

@@ -6,9 +6,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
-import exerelin.campaign.intel.agents.AgentIntel;
-import exerelin.campaign.intel.agents.CovertActionIntel;
-import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.Map;
 
 public class InstigateRebellion extends CovertActionIntel {
@@ -35,6 +33,11 @@ public class InstigateRebellion extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
+		// TODO
+	}
+	
+	@Override
+	public void addCurrentActionBullet(TooltipMakerAPI arg0, Color color, float arg1) {
 		// TODO
 	}
 

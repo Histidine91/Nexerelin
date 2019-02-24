@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
@@ -34,12 +35,10 @@ public class Travel extends CovertActionIntel {
 	
 	@Override
 	public void init() {
-		Global.getLogger(this.getClass()).info("Initting travel action");
 		getTimeNeeded(true);
 	}
 	
 	public float getTimeNeeded(boolean resetVars) {
-		Global.getLogger(this.getClass()).info("wololo " + resetVars);
 		if (market == null) return 0;
 		
 		MutableStat departTime = getDepartOrArriveTime(agent.getMarket(), true);
@@ -49,7 +48,6 @@ public class Travel extends CovertActionIntel {
 				+ arriveTime.getModifiedValue();
 		
 		if (resetVars) {
-			Global.getLogger(this.getClass()).info("Setting time stats");
 			this.departTime = departTime;
 			this.travelTime = travelTime;
 			this.arriveTime = arriveTime;
@@ -206,7 +204,7 @@ public class Travel extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = getString("intelStatus_travel");
+		String action = getActionString("intelStatus_travel");
 		String statusStr = getString("intelStatus_travel" + status);
 		action = StringHelper.substituteToken(action, "$market", market.getName());
 		action = StringHelper.substituteToken(action, "$status", statusStr);
@@ -215,10 +213,13 @@ public class Travel extends CovertActionIntel {
 	}
 	
 	@Override
-	public void addLastMessagePara(TooltipMakerAPI info, float pad) {
-		String str = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
-				"intel_lastMessage_travel", "$market", market.getName());
-		info.addPara(str, pad);
+	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
+		String action = getActionString("intelStatus_travelShort", true);
+		action = StringHelper.substituteToken(action, "$market", market.getName());
+		String daysLeft = Math.round(daysRemaining) + "";
+		LabelAPI label = info.addPara(action, pad, color, Misc.getHighlightColor(), daysLeft);
+		label.setHighlight(market.getName(), daysLeft);
+		label.setHighlightColors(market.getTextColorForFactionOrPlanet(), Misc.getHighlightColor());
 	}
 	
 	@Override

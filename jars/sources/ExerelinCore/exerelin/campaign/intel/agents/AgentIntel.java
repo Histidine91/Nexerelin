@@ -157,6 +157,11 @@ public class AgentIntel extends BaseIntelPlugin {
 			
 		} else {
 			info.addPara(StringHelper.getString("level", true) + " " + level, pad, tc, hl, level + "");
+			if (market != null)
+				info.addPara(market.getName(), 0, tc, market.getTextColorForFactionOrPlanet(), 
+						market.getName());
+			if (currentAction != null)
+				currentAction.addCurrentActionBullet(info, tc, 0);
 		}
 	}
 	
@@ -205,7 +210,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			sub.put("$faction", mktFaction.getDisplayName());
 			if (!isHyper)
 				sub.put("$location", market.getContainingLocation().getNameWithLowercaseType());
-			str = getString(isHyper? "intelDescLocationHyperspace" : "intelDescLocation");
+			str = getString(isHyper? "intelDescLocationHyper" : "intelDescLocation");
 			str = StringHelper.substituteTokens(str, sub);
 			LabelAPI label = info.addPara(str, opad);
 			label.setHighlight(market.getName(), mktFaction.getDisplayName());

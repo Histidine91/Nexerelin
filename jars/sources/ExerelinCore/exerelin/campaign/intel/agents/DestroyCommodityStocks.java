@@ -9,7 +9,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
-import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
@@ -89,9 +88,17 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
-		String action = getString("intelStatus_destroyCommodities");
+		String action = getActionString("intelStatus_destroyCommodities", false);
 		info.addPara(action, pad, Misc.getHighlightColor(), commodityName);
 	}
+	
+	@Override
+	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
+		String action = getActionString("intelStatus_destroyCommodities", true);
+		info.addPara(action, pad, color, Misc.getHighlightColor(), 
+				commodityName, Math.round(daysRemaining) + "");
+	}
+	
 	
 	@Override
 	protected List<Pair<String, String>> getStandardReplacements() {
