@@ -28,6 +28,9 @@ public class AbandonedStation extends BaseLandmarkDef {
 				return false;
 			}
 		}
+		if (entity.getMarket() == null || entity.getMarket().isPlanetConditionMarketOnly())
+			return false;
+		
 		return true;
 	}
 	
