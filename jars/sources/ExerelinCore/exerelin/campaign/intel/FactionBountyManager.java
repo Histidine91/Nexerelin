@@ -7,6 +7,7 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
@@ -83,6 +84,9 @@ public class FactionBountyManager extends BaseEventManager {
 		List<String> liveFactions = SectorManager.getLiveFactionIdsCopy();
 		WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>();
 		for (String factionId : liveFactions) {
+			if (factionId.equals(Factions.PLAYER))
+				continue;
+			
 			// pirates don't issue bounties
 			if (ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction)
 				continue;
