@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
@@ -711,8 +712,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		else
 			dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
 		
-		if (tempInvasion.success)
+		if (tempInvasion.success) {
+			((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 			FireAll.fire(null, dialog, memoryMap, "PopulateOptions");
+		}
+		
 		else
 			dialog.dismiss();
 	}
