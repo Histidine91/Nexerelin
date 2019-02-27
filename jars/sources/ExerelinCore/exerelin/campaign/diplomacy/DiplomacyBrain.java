@@ -366,6 +366,10 @@ public class DiplomacyBrain {
 	protected boolean tryMakePeace(String enemyId, float ourWeariness)
 	{
 		FactionAPI enemy = Global.getSector().getFaction(enemyId);
+		// don't diplo with player if they're commissioned with someone else
+		if (enemy.isPlayerFaction() && enemy != PlayerFactionStore.getPlayerFaction())
+			return false;
+		
 		boolean enemyIsPlayer = Nex_IsFactionRuler.isRuler(enemyId);
 		float enemyWeariness = DiplomacyManager.getWarWeariness(enemyId, true);
 		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + ExerelinConfig.minWarWearinessForPeace);
@@ -506,6 +510,9 @@ public class DiplomacyBrain {
 			log.info("Checking vs. " + otherFactionId + ": " + disposition.disposition.getModifiedValue()
 					+ ", " + faction.isAtBest(otherFactionId, maxRep));
 			
+			// don't diplo with player if they're commissioned with someone else
+			if (otherFactionId.equals(Factions.PLAYER) && !otherFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
+				continue;
 			if (!SectorManager.isFactionAlive(otherFactionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) continue;
 			if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
