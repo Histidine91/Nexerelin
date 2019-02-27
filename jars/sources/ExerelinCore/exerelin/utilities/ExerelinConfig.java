@@ -83,6 +83,7 @@ public class ExerelinConfig
     public static float minWarWearinessForPeace = 5000f;
     public static float warWearinessCeasefireReduction = 3000f;
     public static float warWearinessPeaceTreatyReduction = 6000f;
+	public static boolean acceptCeasefiresOnTimeout = false;
     
     // Followers faction
     public static boolean followersAgents = false;
@@ -179,6 +180,7 @@ public class ExerelinConfig
             minWarWearinessForPeace = (float)settings.optDouble("minWarWearinessForPeace", minWarWearinessForPeace);
             warWearinessCeasefireReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             warWearinessPeaceTreatyReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
+			acceptCeasefiresOnTimeout = settings.optBoolean("acceptCeasefiresOnTimeout", acceptCeasefiresOnTimeout);
             
             followersAgents = settings.optBoolean("followersAgents", followersAgents);
             followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);

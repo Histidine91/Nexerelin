@@ -44,6 +44,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 	}
 	
 	public void init() {
+		this.setImportant(true);
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
 	}
@@ -137,6 +138,21 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 		}
 	}
 	
+	public void accept() {
+		String eventId = isPeaceTreaty ? "peace_treaty" : "ceasefire";
+		float reduction = isPeaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
+
+		FactionAPI faction = getFactionForUIColors();
+		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
+
+		repResult = DiplomacyManager.createDiplomacyEvent(faction, player, eventId, null);
+		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
+		DiplomacyManager.getManager().modifyWarWeariness(Factions.PLAYER, -reduction);
+		storedRelation = faction.getRelationship(Factions.PLAYER);
+		Global.getSoundPlayer().playUISound("ui_rep_raise", 1, 1);
+		state = 1;
+	}
+	
 	@Override
 	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
 		prompt.addPara(StringHelper.getString("exerelin_diplomacy", "intelCeasefireConfirm"), 0);
@@ -150,18 +166,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_ACCEPT) {
-			String eventId = isPeaceTreaty ? "peace_treaty" : "ceasefire";
-			float reduction = isPeaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
-			
-			FactionAPI faction = getFactionForUIColors();
-			FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
-			
-			repResult = DiplomacyManager.createDiplomacyEvent(faction, player, eventId, null);
-			DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
-			DiplomacyManager.getManager().modifyWarWeariness(Factions.PLAYER, -reduction);
-			storedRelation = faction.getRelationship(Factions.PLAYER);
-			Global.getSoundPlayer().playUISound("ui_rep_raise", 1, 1);
-			state = 1;
+			accept();
 		}
 		else if (buttonId == BUTTON_REJECT) {
 			state = -1;
