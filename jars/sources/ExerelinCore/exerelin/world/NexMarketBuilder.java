@@ -19,11 +19,14 @@ import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.ColonyManager;
+import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import exerelin.campaign.SectorManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.BonusSeed;
+import exerelin.utilities.ExerelinFactionConfig.DefenceStationSet;
 import exerelin.utilities.ExerelinFactionConfig.IndustrySeed;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -292,9 +295,11 @@ public class NexMarketBuilder
 	}
 	
 	public static void addIndustry(MarketAPI market, String id, boolean instant) {
-		market.addIndustry(id);
-		if (!instant) {
-			market.getIndustry(id).startBuilding();
+		if (instant) {
+			market.addIndustry(id);
+		}
+		else {
+			ColonyManager.getManager().queueIndustry(market, id, QueueType.NEW);
 		}
 	}
 		
@@ -308,9 +313,8 @@ public class NexMarketBuilder
 			if (size > 6) market.addIndustry(Industries.MEGAPORT);
 			else market.addIndustry(Industries.SPACEPORT);
 		} else {
-			market.addIndustry(Industries.SPACEPORT);
-			if (size > 6) market.getIndustry(Industries.SPACEPORT).startUpgrading();
-			else market.getIndustry(Industries.SPACEPORT).startBuilding();
+			ColonyManager.getManager().queueIndustry(market, Industries.SPACEPORT, QueueType.NEW);
+			if (size > 6) ColonyManager.getManager().queueIndustry(market, Industries.SPACEPORT, QueueType.UPGRADE);
 		}
 	}
 	
@@ -322,6 +326,13 @@ public class NexMarketBuilder
 	 */
 	public static void addMilitaryStructures(ProcGenEntity entity, boolean instant, Random random)
 	{
+		ColonyManager colMan = ColonyManager.getManager();
+		if (colMan == null && !instant) {
+			// queue system broken, we can do nothing
+			log.error("Attempt to queue structure construction without a colony manager");
+			return;
+		}
+		
 		MarketAPI market = entity.market;
 		int marketSize = market.getSize();
 		
@@ -343,7 +354,11 @@ public class NexMarketBuilder
 			if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
 			if (roll > req)
 			{
-				addIndustry(market, Industries.MILITARYBASE, instant);
+				if (instant) addIndustry(market, Industries.MILITARYBASE, instant);
+				else {
+					colMan.queueIndustry(market, Industries.PATROLHQ, QueueType.NEW);
+					colMan.queueIndustry(market, Industries.PATROLHQ, QueueType.UPGRADE);
+				}
 				haveBase = true;
 			}
 				
@@ -358,8 +373,10 @@ public class NexMarketBuilder
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
 			float req = MILITARY_BASE_CHANCE;
 			if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
-			if (roll > req)
+			if (roll > req) {
 				addIndustry(market, Industries.PATROLHQ, instant);
+			}
+				
 		}
 		
 		// add ground defenses
@@ -377,14 +394,11 @@ public class NexMarketBuilder
 				sizeForGun -=1;
 			}
 			if (marketSize > sizeForHeavyGun) {
-				if (market.hasIndustry(Industries.GROUNDDEFENSES)) 
-				{
-					market.getIndustry(Industries.GROUNDDEFENSES).startUpgrading();
-					if (instant)
-						market.getIndustry(Industries.GROUNDDEFENSES).finishBuildingOrUpgrading();
+				if (instant) addIndustry(market, Industries.HEAVYBATTERIES, instant);
+				else {
+					colMan.queueIndustry(market, Industries.GROUNDDEFENSES, QueueType.NEW);
+					colMan.queueIndustry(market, Industries.GROUNDDEFENSES, QueueType.UPGRADE);
 				}
-				else
-					addIndustry(market, Industries.HEAVYBATTERIES, instant);
 			}
 			else if (marketSize > sizeForGun)
 				addIndustry(market, Industries.GROUNDDEFENSES, instant);
@@ -423,11 +437,22 @@ public class NexMarketBuilder
 			
 			if (sizeIndex >= 0)
 			{
-				String station = ExerelinConfig.getExerelinFactionConfig(market.getFactionId())
-						.getRandomDefenceStation(random, sizeIndex);
-				if (station != null) {
-					//log.info("Adding station: " + station);
-					addIndustry(market, station, instant);
+				ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+				if (instant) {
+					String station = conf.getRandomDefenceStation(random, sizeIndex);
+					if (station != null) {
+						//log.info("Adding station: " + station);
+						addIndustry(market, station, instant);
+					}
+				}
+				else {
+					DefenceStationSet set = conf.getRandomDefenceStationSet(random);
+					if (set != null) {
+						colMan.queueIndustry(market, set.industryIds.get(0), QueueType.NEW);
+						for (int i=0; i<sizeIndex;i++) {
+							colMan.queueIndustry(market, set.industryIds.get(i), QueueType.UPGRADE);
+						}
+					}
 				}
 			}
 		}

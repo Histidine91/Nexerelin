@@ -22,6 +22,7 @@ import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import static exerelin.campaign.SectorManager.sectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -34,11 +35,15 @@ import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 /**
  * Handles assorted colony-related functions.
@@ -46,6 +51,7 @@ import java.util.Set;
 public class ColonyManager extends BaseCampaignEventListener implements EveryFrameScript,
 		EconomyTickListener, InvasionListener
 {
+	public static Logger log = Global.getLogger(ColonyManager.class);
 	
 	public static final String PERSISTENT_KEY = "nex_colonyManager";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
@@ -60,10 +66,17 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		0, 10, 25, 50, 80, 120
 	};
 	
+	protected Map<MarketAPI, LinkedList<QueuedIndustry>> npcConstructionQueues = new HashMap<>();
 	protected int bonusAdminLevel = 0;
 	
 	public ColonyManager() {
 		super(true);
+	}
+	
+	protected Object readResolve() {
+		if (npcConstructionQueues == null)
+			npcConstructionQueues = new HashMap<>();
+		return this;
 	}
 	
 	protected boolean hasBaseOfficial(MarketAPI market)
@@ -131,7 +144,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					index, getString("globalPopulation", true));
 		if (index > bonusAdminLevel) {
 			bonusAdminLevel = index;
-			Global.getLogger(this.getClass()).info("Reached bonus level " + index + " from market size " + playerFactionSize);
+			log.info("Reached bonus level " + index + " from market size " + playerFactionSize);
 			
 			Color hl = Misc.getHighlightColor();
 			Color textColor =  Misc.getTextColor();
@@ -173,10 +186,85 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (!market.hasCondition(Conditions.FREE_PORT))
 				market.addCondition(Conditions.FREE_PORT);
 		}
-		else
+		else {
+			market.setFreePort(false);
 			market.removeCondition(Conditions.FREE_PORT);
-			//market.setFreePort(false);
+		}		
+	}
+	
+	public static boolean isBuildingAnything(MarketAPI market) {
+		for (Industry ind : market.getIndustries()) {
+			if (ind.isBuilding() && !ind.isUpgrading())
+				return true;
+		}
+		return false;
+	}
+	
+	protected void processNPCConstruction() {
+		Iterator<MarketAPI> iter = npcConstructionQueues.keySet().iterator();
+		while (iter.hasNext()) {
+			MarketAPI market = iter.next();
+			processNPCConstruction(market);
+		}
+	}
+	
+	protected void processNPCConstruction(MarketAPI market) {
+		if (isBuildingAnything(market))
+			return;
 		
+		log.info("Processing NPC construction queue for " + market.getName());
+		LinkedList<QueuedIndustry> queue = npcConstructionQueues.get(market);
+		LinkedList<QueuedIndustry> queueCopy = new LinkedList<>(queue);
+		for (QueuedIndustry item : queueCopy) {
+			log.info("\tChecking industry queue: " + item.industry + ", " + item.type.toString());
+			
+			// already has that industry
+			if (market.hasIndustry(item.industry)) {
+				// queued item is a new build that is unneeded, remove and continue
+				if (item.type == QueueType.NEW) {
+					removeItemFromQueue(item, queue);
+					continue;
+				}
+				// is an upgrade, start upgrade if possible
+				// if not, move on to next item in queue
+				else if (item.type == QueueType.UPGRADE) {
+					Industry ind = market.getIndustry(item.industry);
+					if (ind.canUpgrade()) {
+						market.getIndustry(item.industry).startUpgrading();
+						removeItemFromQueue(item, queue);
+					}
+					else continue;
+				}
+			}
+			else {
+				// new build
+				if (item.type == QueueType.NEW) {
+					market.addIndustry(item.industry);
+					market.getIndustry(item.industry).startBuilding();
+					removeItemFromQueue(item, queue);
+					break;	// no further action once construction is underway
+				}
+				// trying to upgrade nonexistent structure
+				// maybe this will become available once existing constructions/upgrades are finished;
+				// in the meantime, let's move on to next item in queue
+				else if (item.type == QueueType.UPGRADE) {
+					continue;
+				}
+			}
+		}
+	}
+	
+	protected void removeItemFromQueue(QueuedIndustry toRemove, LinkedList<QueuedIndustry> queue) {
+		queue.remove(toRemove);
+	}
+	
+	public void queueIndustry(MarketAPI market, String industry, QueueType type) {
+		if (!npcConstructionQueues.containsKey(market))
+			npcConstructionQueues.put(market, new LinkedList<QueuedIndustry>());
+		
+		LinkedList<QueuedIndustry> queue = npcConstructionQueues.get(market);
+		queue.add(new QueuedIndustry(industry, type));
+		log.info("Queued industry: " + industry + ", " + type.toString());
 	}
 	
 	protected String getString(String id) {
@@ -221,6 +309,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void reportEconomyTick(int iterIndex) {
 		updateMarkets();
+		processNPCConstruction();
 	}
 
 	@Override
@@ -246,8 +335,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, 
 			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
-		if (oldOwner.isPlayerFaction())
+		npcConstructionQueues.remove(market);
+		if (oldOwner.isPlayerFaction()) {
 			buildIndustries(market);
+			processNPCConstruction(market);
+		}
+			
 	}
 	
 	public static void buildIndustry(MarketAPI market, String id) {
@@ -326,5 +419,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static ColonyManager getManager()
 	{
 		return (ColonyManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
+	}
+	
+	public static class QueuedIndustry {
+		
+		public String industry;
+		public QueueType type;
+		
+		public QueuedIndustry(String industry, QueueType type) {
+			this.industry = industry;
+			this.type = type;
+		}
+		
+		public static enum QueueType { NEW, UPGRADE }
 	}
 }

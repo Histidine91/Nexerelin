@@ -579,8 +579,7 @@ public class ExerelinFactionConfig
         return picker.pick();
     }
     
-    public String getRandomDefenceStation(Random rand, int sizeIndex)
-    {
+    public DefenceStationSet getRandomDefenceStationSet(Random rand) {
         if (defenceStations.isEmpty()) return null;
         WeightedRandomPicker<DefenceStationSet> picker = new WeightedRandomPicker<>(rand);
         for (DefenceStationSet set : defenceStations)
@@ -591,6 +590,12 @@ public class ExerelinFactionConfig
         if (set == null) return null;
         if (set.industryIds.isEmpty()) return null;
         
+        return set;
+    }
+    
+    public String getRandomDefenceStation(Random rand, int sizeIndex)
+    {
+        DefenceStationSet set = getRandomDefenceStationSet(rand);
         sizeIndex = Math.min(sizeIndex, set.industryIds.size() - 1);
         return set.industryIds.get(sizeIndex);
     }
