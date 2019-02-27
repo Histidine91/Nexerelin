@@ -505,6 +505,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         {
             JSONObject row = csv.getJSONObject(x);
             restrictedWeapons.add(row.getString("id"));
+			restrictedBlueprints.add(row.getString("id"));
         }
 
         // Restricted ships
@@ -514,6 +515,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         {
             JSONObject row = csv.getJSONObject(x);
             restrictedShips.add(row.getString("id"));
+			restrictedBlueprints.add(row.getString("id"));
         }
         
         csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
