@@ -35,9 +35,7 @@ public class DestabilizeMarket extends CovertActionIntel {
 		
 		String reason = StringHelper.getString("exerelin_marketConditions", "agentDestabilization");
 		if (isAgentFactionKnown())
-			reason = agentFaction.getDisplayName() + " " + reason;
-		else
-			reason = Misc.lcFirst(reason);
+			reason = agentFaction.getDisplayName() + " " + Misc.lcFirst(reason);
 		
 		RecentUnrest.get(market).add(stabilityLoss, reason);
 		

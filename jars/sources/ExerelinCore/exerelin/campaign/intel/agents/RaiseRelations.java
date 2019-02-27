@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
@@ -18,6 +19,14 @@ public class RaiseRelations extends CovertActionIntel {
 	public RaiseRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
+	}
+	
+	@Override
+	protected CovertOpsManager.CovertActionResult covertActionRoll() {
+		CovertOpsManager.CovertActionResult result = super.covertActionRoll();
+		if (result == CovertOpsManager.CovertActionResult.SUCCESS_DETECTED)
+			result = CovertOpsManager.CovertActionResult.SUCCESS;
+		return result;
 	}
 
 	@Override

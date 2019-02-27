@@ -314,8 +314,8 @@
 		"intel_lastMessage_sabotageIndustry_failure":"\"I have failed to disrupt the $industry on $market. I am sorry.\"",
 		"intel_lastMessage_destroyCommodities_success":"\"Hopefully $theFaction didn't need all those $commodity on $market anyway. Ha.\"",
 		"intel_lastMessage_destroyCommodities_failure":"\"We were unable to destroy the $commodity stockpiles on $market.\"",
-		"intel_lastMessage_inflitrateCell_success":"\"The $faction cell on $market is no more. Death take them all.\"",
-		"intel_lastMessage_inflitrateCell_failure":"\"Infiltration of $faction cell on $market... has failed.\"",
+		"intel_lastMessage_infiltrateCell_success":"\"The $faction cell on $market is no more. Death take them all.\"",
+		"intel_lastMessage_infiltrateCell_failure":"\"Infiltration of $faction cell on $market... has failed.\"",
 		
 		"destabilizeText1":"poisoned the water supply",
 		"destabilizeText2":"fired into a crowd at a public venue",

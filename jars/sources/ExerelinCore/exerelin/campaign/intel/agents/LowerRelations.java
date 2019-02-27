@@ -10,6 +10,8 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.intel.DiplomacyIntel;
@@ -42,6 +44,14 @@ public class LowerRelations extends CovertActionIntel {
 	
 	public void setThirdFaction(FactionAPI thirdFaction) {
 		this.thirdFaction = thirdFaction;
+	}
+	
+	@Override
+	protected CovertOpsManager.CovertActionResult covertActionRoll() {
+		CovertActionResult result = super.covertActionRoll();
+		if (result == CovertActionResult.SUCCESS_DETECTED)
+			result = CovertActionResult.SUCCESS;
+		return result;
 	}
 
 	@Override
@@ -131,7 +141,7 @@ public class LowerRelations extends CovertActionIntel {
 	
 	@Override
 	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
-		String action = getActionString("intelStatus_lowerRelationsLong", true);
+		String action = getActionString("intelStatus_lowerRelations", true);
 		LabelAPI label = info.addPara(action, pad, color, Misc.getHighlightColor(), thirdFaction.getDisplayName());
 		label.setHighlight(thirdFaction.getDisplayName(), Math.round(daysRemaining) + "");
 		label.setHighlightColors(thirdFaction.getBaseUIColor(), Misc.getHighlightColor());

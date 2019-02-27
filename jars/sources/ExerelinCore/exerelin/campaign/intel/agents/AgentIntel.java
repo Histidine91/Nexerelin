@@ -175,15 +175,8 @@ public class AgentIntel extends BaseIntelPlugin {
 		float opad = 10f;
 		
 		Color h = Misc.getHighlightColor();
-		FactionAPI faction = Global.getSector().getFaction(Factions.INDEPENDENT);
+		FactionAPI faction = updateAgentDisplayedFaction();
 		FactionAPI pf = Global.getSector().getPlayerFaction();
-		
-		if (Misc.isPlayerFactionSetUp()) {
-			faction = Global.getSector().getPlayerFaction();
-		}
-		else if (!PlayerFactionStore.getPlayerFaction().isPlayerFaction()) {
-			faction = PlayerFactionStore.getPlayerFaction();
-		}
 				
 		// images
 		info.addImages(width, 128, opad, opad, agent.getPortraitSprite(), faction.getCrest());
@@ -373,6 +366,19 @@ public class AgentIntel extends BaseIntelPlugin {
 		if (market != null)
 			return market.getPrimaryEntity();
 		return null;
+	}
+	
+	public FactionAPI updateAgentDisplayedFaction() {
+		FactionAPI faction = Global.getSector().getFaction(Factions.INDEPENDENT);
+		
+		if (Misc.isPlayerFactionSetUp()) {
+			faction = Global.getSector().getPlayerFaction();
+		}
+		else if (!PlayerFactionStore.getPlayerFaction().isPlayerFaction()) {
+			faction = PlayerFactionStore.getPlayerFaction();
+		}
+		agent.setFaction(faction.getId());
+		return faction;
 	}
 	
 	@Override

@@ -1,7 +1,7 @@
 {
 	tips:[
 		"[Nexerelin] Covert actions (except raise/lower relations) will temporarily raise the target market's security level, deterring further agent use.",
-		"[Nexerelin] As agents level up, their chances of success increase and time taken for actions decreases.",
+		"[Nexerelin] As agents level up, their chances of success and effects increase, and time taken for actions decreases.",
 		"[Nexerelin] Markets with the Free Port condition have halved tariffs.",
 		"[Nexerelin] Planets are more dangerous to mine than moons, but deplete slower and regenerate faster.",
 		"[Nexerelin] Asteroids have low mining output, but are fairly safe and require no surveying.",
