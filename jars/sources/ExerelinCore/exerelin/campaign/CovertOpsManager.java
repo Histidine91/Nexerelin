@@ -116,20 +116,20 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			CovertActionDef def = new CovertActionDef();
 			def.id = id;
 			def.name = defJson.getString("name");
-			def.successChance = (float)defJson.optDouble("successChance");
+			def.successChance = (float)defJson.optDouble("successChance", 0);
 			def.detectionChance = (float)defJson.optDouble("detectionChance", 0);
 			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail", 0);
 			def.useAlertLevel = defJson.optBoolean("useAlertLevel", true);
 			def.useIndustrySecurity = defJson.optBoolean("useIndustrySecurity", true);
-			def.repLossOnDetect = new Pair<>((float)defJson.optDouble("repLossOnDetectionMin"), 
-					(float)defJson.optDouble("repLossOnDetectionMax"));
-			def.effect = new Pair<>((float)defJson.optDouble("effectMin"), 
-					(float)defJson.optDouble("effectMax"));
+			def.repLossOnDetect = new Pair<>((float)defJson.optDouble("repLossOnDetectionMin", 0), 
+					(float)defJson.optDouble("repLossOnDetectionMax", 0));
+			def.effect = new Pair<>((float)defJson.optDouble("effectMin", 0), 
+					(float)defJson.optDouble("effectMax", 0));
 			def.baseCost = defJson.optInt("baseCost");
 			def.costScaling = defJson.optBoolean("costScaling", true);
-			def.time = (float)defJson.optDouble("time");
+			def.time = (float)defJson.optDouble("time", 0);
 			def.xp = defJson.optInt("xp");
-			def.alertLevelIncrease = (float)defJson.optDouble("alertLevelIncrease");
+			def.alertLevelIncrease = (float)defJson.optDouble("alertLevelIncrease", 0);
 			
 			actionDefs.add(def);
 			actionDefsById.put(id, def);
@@ -160,13 +160,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			return 1;
 		
 		float mod = map.get(id);
-		log.info("Getting mod for industry " + id + ": " + mod);
+		//log.info("Getting mod for industry " + id + ": " + mod);
 		for (MutableCommodityQuantity commodity : ind.getAllDemand()) {
 			CommodityOnMarketAPI data = ind.getMarket().getCommodityData(commodity.getCommodityId());
 			float met = (float)data.getAvailable()/(float)data.getMaxDemand();
 			if (met > 1) met = 1;
 			mod *= met;
-			log.info("Modifiying by demand met: " + data.getId() + "," + met + ", " + mod);
+			//log.info("Modifiying by demand met: " + data.getId() + ", " + met + ", " + mod);
 		}
 		
 		return 1 + mod;
@@ -473,6 +473,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public static void modifyAlertLevel(MarketAPI market, float amount)
     {
+        if (amount == 0) return;
+        
         SectorAPI sector = Global.getSector();
         CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "nex_security_alert");
         if (eventSuper == null) 

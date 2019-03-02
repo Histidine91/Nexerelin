@@ -349,7 +349,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		} else if (listInfoParam == UPDATE_RECRUITED) {
 			str += " - " + getString("recruited", true);
 		} else if (listInfoParam == UPDATE_ARRIVED) {
-			str += " - " + getString("intelTitleLevelUp");
+			str += " - " + getString("intelTitleArrived");
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
 			str += " - " + getString("intelTitleLevelUp");
 		}
