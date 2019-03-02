@@ -16,6 +16,9 @@
     "prisonerLootChancePer10Fp": 0.025,
     
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
+	
+	"agentBaseSalary":4000,
+	"agentSalaryPerLevel":2000,
     
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false

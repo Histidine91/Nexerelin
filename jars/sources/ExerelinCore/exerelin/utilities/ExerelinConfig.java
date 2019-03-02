@@ -41,8 +41,11 @@ public class ExerelinConfig
     public static float prisonerSlaveValueIncrementPerLevel = 400f;
     public static float prisonerSlaveRepValue = -0.02f;
     public static float prisonerLootChancePer10Fp = 0.025f;
-    
     public static float crewLootMult = 0.02f;
+	
+	// Agents
+	public static int agentBaseSalary = 4000;
+	public static int agentSalaryPerLevel = 2000;
 
     public static String[] builtInFactions = new String[]{};
     public static String[] supportedModFactions = new String[]{};
@@ -147,6 +150,9 @@ public class ExerelinConfig
             prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp", prisonerLootChancePer10Fp);
             prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue", prisonerSlaveRepValue);
             crewLootMult = (float)settings.optDouble("crewLootMult", crewLootMult);
+			
+			agentBaseSalary = settings.optInt("agentBaseSalary", agentBaseSalary);
+			agentSalaryPerLevel = settings.optInt("agentSalaryPerLevel", agentSalaryPerLevel);
             
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
 			retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);

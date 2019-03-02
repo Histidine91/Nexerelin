@@ -21,6 +21,7 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -34,8 +35,6 @@ public class AgentIntel extends BaseIntelPlugin {
 		0, 2000, 5000, 10000, 20000, 40000
 	};
 	public static final int MAX_LEVEL = XP_LEVELS.length - 1;
-	public static final int BASE_SALARY = 5000;
-	public static final int SALARY_PER_LEVEL = 2500;
 	
 	protected static final Object UPDATE_RECRUITED = new Object();
 	protected static final Object UPDATE_ARRIVED = new Object();
@@ -79,7 +78,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	}
 	
 	public static int getSalary(int level) {
-		return BASE_SALARY + SALARY_PER_LEVEL * (level - 1);
+		return ExerelinConfig.agentBaseSalary + ExerelinConfig.agentSalaryPerLevel * (level - 1);
 	}
 	
 	public int getLevel() {

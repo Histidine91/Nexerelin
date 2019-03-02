@@ -549,7 +549,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				if (id.equals(CovertActionType.TRAVEL) && thirdFaction == null) {
 					options.setEnabled(Menu.TARGET, false);
 				}
-				if (optionsList.isEmpty()) {
+				if (optionsList.isEmpty() && !id.equals(CovertActionType.SABOTAGE_INDUSTRY)) {
 					options.setEnabled(Menu.TARGET, false);
 				}
 			}
