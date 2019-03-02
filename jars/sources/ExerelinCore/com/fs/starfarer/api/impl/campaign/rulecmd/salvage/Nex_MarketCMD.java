@@ -144,8 +144,14 @@ public class Nex_MarketCMD extends MarketCMD {
 			{
 				options.setEnabled(INVADE, false);
 				options.setTooltip(INVADE, StringHelper.getString("exerelin_invasion", "invadeHasStation"));
+				tempInvasion.canInvade = false;
 			}
-				
+			else if (getRaidCooldown() > 0) {
+				if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+					options.setEnabled(INVADE, false);
+					tempInvasion.canInvade = false;
+				}
+			}
 		}
 		// instead we just show the other options _after_ the invade option
 		// ...no, because it clears our option panel
@@ -401,6 +407,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		if (!tempInvasion.success)
 			applyDefenderIncreaseFromRaid(market);
+		
+		// cooldown
+		setRaidCooldown(getRaidCooldownMax());
 		
 		// unrest
 		// note that this is for GUI only, actual impact is caused in InvasionRound
