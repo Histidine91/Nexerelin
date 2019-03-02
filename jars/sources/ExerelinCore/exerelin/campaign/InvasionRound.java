@@ -304,7 +304,8 @@ public class InvasionRound {
 			RecentUnrest.get(market).add(stabilityPenalty, reason);
 		}
 		
-		// trash resource availability
+		// trash resource availability — doesn't seem to do anything in current form
+		/*
 		WeightedRandomPicker<CommodityOnMarketAPI> picker = new WeightedRandomPicker<>();
 		for (CommodityOnMarketAPI commodity : market.getAllCommodities())
 		{
@@ -316,6 +317,9 @@ public class InvasionRound {
 			CommodityOnMarketAPI commodity = picker.pick();
 			commodity.addTradeModMinus("invasion_" + Misc.genUID(), -1, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
 		}
+		*/
+		market.reapplyConditions();
+		market.reapplyIndustries();
 		
 		// XP
 		if (playerInvolved)
