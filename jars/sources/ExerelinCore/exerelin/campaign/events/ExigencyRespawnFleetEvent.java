@@ -18,7 +18,7 @@ import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
 import exerelin.utilities.ExerelinUtils;
 
-
+@Deprecated
 public class ExigencyRespawnFleetEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(ExigencyRespawnFleetEvent.class);
@@ -52,12 +52,14 @@ public class ExigencyRespawnFleetEvent extends BaseEventPlugin {
 		ExerelinUtils.advanceIntervalDays(interval, amount);
 		if (interval.intervalElapsed())
 		{
+			/*
 			InvasionFleetData fleetData = SectorManager.spawnRespawnFleet(fakeMarket.getFaction(), fakeMarket, true);
 			if (fleetData == null) return;
 			Tasserus.getAnomalyPlugin().createBigPulse(Math.min(1f, fleetData.fleet.getFleetSizeCount() / 10f), false);
 			giveInitialAssignment(fleetData);
 			
 			interval.setInterval(ExerelinConfig.factionRespawnInterval * 1.6f, ExerelinConfig.factionRespawnInterval * 2.4f);
+			*/
 		}
 	}
 

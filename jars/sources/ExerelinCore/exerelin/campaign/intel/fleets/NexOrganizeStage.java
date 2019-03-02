@@ -97,4 +97,13 @@ public class NexOrganizeStage extends OrganizeStage {
 	protected String getRaidString() {
 		return offFltIntel.getActionName();
 	}
+	
+	@Override
+	protected void updateStatus() {
+		super.updateStatus();
+		if (!market.isInEconomy()) {
+			status = RaidStageStatus.FAILURE;
+			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
+		}
+	}
 }

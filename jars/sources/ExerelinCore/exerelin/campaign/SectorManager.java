@@ -36,18 +36,18 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
-import exerelin.campaign.events.WarmongerEvent;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
-import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
 import exerelin.campaign.intel.FactionInsuranceIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
-import exerelin.utilities.StringHelper;
+import exerelin.campaign.intel.RespawnBaseIntel;
+import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -480,13 +480,51 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
-    public static InvasionFleetData spawnRespawnFleet(FactionAPI respawnFaction, MarketAPI sourceMarket, boolean useOriginLoc)
+    public static RespawnInvasionIntel spawnRespawnFleet(FactionAPI respawnFaction, MarketAPI sourceMarket) {
+        return spawnRespawnFleet(respawnFaction, sourceMarket, false);
+    }
+    
+    /**
+     * Creates a respawn fleet intel item.
+     * If no market is available to spawn from, it generates a hidden base. Will not
+     * create the respawn intel in this case, unless {@code proceedAfterSpawningBase} is true.
+     * @param respawnFaction
+     * @param sourceMarket
+     * @param proceedAfterSpawningBase
+     * @return
+     */
+    public static RespawnInvasionIntel spawnRespawnFleet(FactionAPI respawnFaction, 
+            MarketAPI sourceMarket, boolean proceedAfterSpawningBase)
     {
         SectorAPI sector = Global.getSector();
         String respawnFactionId = respawnFaction.getId();
         
         WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+        
+        if (sourceMarket == null)
+        {
+            List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(respawnFactionId);
+            if (markets.isEmpty()) {
+                // create a base to spawn respawn fleets from
+                RespawnBaseIntel base = RespawnBaseIntel.generateBase(respawnFactionId);
+                if (base != null && proceedAfterSpawningBase) {
+                    markets.add(base.getMarket());
+                }
+                else
+                    return null;
+            }
+            
+            for (MarketAPI market : markets) {
+                if (!market.hasSpaceport()) continue;
+                sourcePicker.add(market, InvasionFleetManager.getMarketWeightForInvasionSource(market));
+            }
+            sourceMarket = sourcePicker.pick();
+        }
+        
+        if (sourceMarket == null) {
+            return null;
+        }
         
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         for (MarketAPI market : markets) 
@@ -500,10 +538,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             boolean wasOriginalOwner = ExerelinUtilsMarket.wasOriginalOwner(market, respawnFactionId);
             if (wasOriginalOwner)
                 weight *= 10;
-            else
-			{
-                if (market.hasIndustry(Industries.HIGHCOMMAND)) weight *= 0.1f;
-			}
+            if (!market.getFaction().isHostileTo(respawnFaction))
+				//weight *= 0.001f;
+				continue;
+				
             targetPicker.add(market, weight);
         }
         MarketAPI targetMarket = targetPicker.pick();
@@ -511,26 +549,27 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             return null;
         }
         
-        if (sourceMarket == null)
-        {
-            for (MarketAPI market : markets) 
-            {
-                FactionAPI marketFaction = market.getFaction();
-                float weight = 100;
-                if (market == targetMarket) continue;
-                if (marketFaction.isHostileTo(respawnFaction)) weight = 0.0001f;
-                sourcePicker.add(market, weight);
-            }
-
-            sourceMarket = sourcePicker.pick();
-        }
-        
-        if (sourceMarket == null) {
-            return null;
-        }
-        
         //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());
-        return null;	//InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket, useOriginLoc);
+        RespawnInvasionIntel intel = (RespawnInvasionIntel)InvasionFleetManager.getManager().generateInvasionOrRaidFleet(sourceMarket, targetMarket, 
+                InvasionFleetManager.EventType.RESPAWN, 1);
+		if (intel != null) {
+		}
+		return intel;
+    }
+    
+    public int getNumRespawns(String factionId) {
+        if (!factionRespawnCounts.containsKey(factionId)) {
+            int base = -1;
+            if (factionIdsAtStart.contains(factionId))
+                base = 0;
+            factionRespawnCounts.put(factionId, base);
+        }
+        return factionRespawnCounts.get(factionId);
+    }
+    
+    public void incrementNumRespawns(String factionId) {
+        int num = getNumRespawns(factionId);
+        factionRespawnCounts.put(factionId, num + 1);
     }
     
     public void handleFactionRespawn()
@@ -560,11 +599,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (maxRespawns >= 0)
             {
                 // note: zero maxRespawns means new factions can still enter, but factions that got knocked out can't return
-                int count = -1;
-                if (factionRespawnCounts.containsKey(factionId))
-                    count = factionRespawnCounts.get(factionId);
-                else if (factionIdsAtStart.contains(factionId))
-                    count++;
+                int count = getNumRespawns(factionId);
                 if (count >= maxRespawns)
                     continue;
             }
@@ -575,7 +610,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionAPI respawnFaction = factionPicker.pick();
         if (respawnFaction == null) return;
         
-        spawnRespawnFleet(respawnFaction, null, false);
+        RespawnInvasionIntel intel = spawnRespawnFleet(respawnFaction, null);
+        if (intel != null) {
+            incrementNumRespawns(respawnFaction.getId());
+        }
     }
     
     public static void setShowFactionInIntelTab(String factionId, boolean show)

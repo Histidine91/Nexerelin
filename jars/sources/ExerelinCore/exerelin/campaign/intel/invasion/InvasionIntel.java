@@ -106,6 +106,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		marinesPerFleet = marines;
 	}
 	
+	protected String getDescString() {
+		return StringHelper.getString("exerelin_invasion", "intelDesc");
+	}
 	
 	// intel long description in intel screen
 	@Override
@@ -128,7 +131,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		String strDesc = getRaidStrDesc();
 		
-		String string = StringHelper.getString("exerelin_invasion", "intelDesc");
+		String string = getDescString();
 		String attackerName = attacker.getDisplayNameWithArticle();
 		String defenderName = defender.getDisplayNameWithArticle();
 		Map<String, String> sub = new HashMap<>();

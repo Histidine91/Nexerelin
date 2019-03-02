@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.fleets;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -147,4 +148,13 @@ public abstract class NexAssembleStage extends AssembleStage {
 		return fp;
 	}
 	
+	@Override
+	public boolean isSourceKnown() {
+		MarketAPI market = offFltIntel.getMarketFrom();
+		if (market.isHidden()) {
+			return !market.getPrimaryEntity().isDiscoverable() || Global.getSettings().isDevMode();
+		}
+		
+		return true;
+	}
 }

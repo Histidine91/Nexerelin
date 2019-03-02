@@ -1,14 +1,17 @@
 package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
+import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
@@ -22,6 +25,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
 
@@ -47,6 +51,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	public static enum OffensiveOutcome {
 		TASK_FORCE_DEFEATED,
+		NOT_ENOUGH_REACHED,
 		MARKET_NO_LONGER_EXISTS,
 		SUCCESS,
 		FAIL,
@@ -118,6 +123,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	public MarketAPI getMarketFrom() {
 		return from;
+	}
+	
+	public MarketAPI getTarget() {
+		return target;
 	}
 	
 	@Override
@@ -218,6 +227,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 				break;
 			case TASK_FORCE_DEFEATED:
 			case FAIL:
+			case NOT_ENOUGH_REACHED:
 				key = "bulletFailed";
 				break;
 			case MARKET_NO_LONGER_EXISTS:

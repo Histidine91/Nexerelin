@@ -31,6 +31,7 @@ import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -79,6 +80,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
+	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -317,158 +319,52 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return mult;
 	}
 	
-	/*
-	public static InvasionFleetData spawnRespawnFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean useOriginLocation)
-	{
-		float defenderStrength = InvasionRound.getDefenderStrength(targetMarket, 1f);
-		float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, false);
-		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + (originMarket.getSize() + 2));
-		maxFPbase *= 0.8f;
-		
-		float maxFP = maxFPbase + ExerelinUtilsFleet.getPlayerLevelFPBonus();
-		maxFP *= MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f);
-		
-		String name = getFleetName("exerelinRespawnFleet", faction.getId(), maxFP);
-		
-		LocationAPI spawnLoc = Global.getSector().getHyperspace();
-		if (useOriginLocation)
-			spawnLoc = originMarket.getContainingLocation();
-		else if (Global.getSector().getStarSystems().size() == 1)	// one-star start; target will be inaccessible from hyper
-		{
-			SectorEntityToken entity = originMarket.getPrimaryEntity();
-			spawnLoc = entity.getContainingLocation();
+	public static float getMarketWeightForInvasionSource(MarketAPI market) {
+		//marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
+		//if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
+		//		continue;
+		float weight = 1;	 //marineStockpile;
+		if (market.hasIndustry(Industries.PATROLHQ)) {
+			weight *= 1.2f;
 		}
-		
-		FleetSpawnParams params = new FleetSpawnParams();
-		params.name = name;
-		params.fleetType = "exerelinRespawnFleet";
-		params.faction = faction;
-		params.fp = (int)maxFP;
-		params.qualityOverride = 1;
-		params.originMarket = originMarket;
-		params.targetMarket = targetMarket;
-		params.spawnLoc = spawnLoc;
-		params.jumpToOrigin = false;
-		params.noWait = true;
-		//params.aiClass = RespawnFleetAI.class.getName();
-		params.numMarines = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
-		
-		InvasionFleetData fleetData = spawnFleet(params);
-		if (fleetData == null) return null;
-		if (useOriginLocation)
-		{
-			Vector2f originLoc = originMarket.getPrimaryEntity().getLocation();
-			fleetData.fleet.setLocation(originLoc.x, originLoc.y);
+		if (market.hasIndustry(Industries.MILITARYBASE)) {
+			weight *= 1.5f;
 		}
-		else {
-			float distance = RESPAWN_FLEET_SPAWN_DISTANCE;
-			float angle = MathUtils.getRandomNumberInRange(0, 359);
-			fleetData.fleet.setLocation((float)Math.cos(angle) * distance, (float)Math.sin(angle) * distance);
+		if (market.hasIndustry(Industries.HIGHCOMMAND)) {
+			weight *= 2;
 		}
-		log.info("\tSpawned respawn fleet " + fleetData.fleet.getNameWithFaction() + " of size " + maxFP);
-		return fleetData;
+		if (market.hasIndustry(Industries.MEGAPORT)) {
+			weight *= 1.5f;
+		}
+		if (market.hasIndustry(Industries.HEAVYINDUSTRY)) {
+			weight *= 1.2f;
+		}
+		if (market.hasIndustry(Industries.ORBITALWORKS)) {
+			weight *= 1.5f;
+		}
+		if (market.hasIndustry(Industries.WAYSTATION)) {
+			weight *= 1.2f;
+		}
+		weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
+		
+		return weight;
 	}
 	
-	public static InvasionFleetData spawnDefenceFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean noWander, boolean noWait)
+	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, EventType type)
 	{
-		int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
-		float qf = originMarket.getShipQualityFactor();
-		qf = Math.max(qf+0.1f, 0.4f);
-		
-		String name = getFleetName("exerelinDefenseFleet", faction.getId(), maxFP);
-		
-		FleetSpawnParams params = new FleetSpawnParams();
-		params.name = name;
-		params.fleetType = "exerelinDefenseFleet";
-		params.faction = faction;
-		params.fp = maxFP;
-		params.qualityOverride = qf;
-		params.originMarket = originMarket;
-		params.targetMarket = targetMarket;
-		params.noWander = noWander;
-		params.noWait = noWait;
-		//params.aiClass = InvasionSupportFleetAI.class.getName();
-		
-		InvasionFleetData fleetData = spawnFleet(params);
-		log.info("\tSpawned defence fleet " + fleetData.fleet.getNameWithFaction() + " of size " + maxFP);
-		return fleetData;
-	}
-	
-	public static InvasionFleetData spawnSupportFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean noWander, boolean noWait)
-	{
-		int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
-		float qf = originMarket.getShipQualityFactor();
-		qf = Math.max(qf+0.1f, 0.4f);
-		
-		String name = getFleetName("exerelinInvasionSupportFleet", faction.getId(), maxFP);
-
-		FleetSpawnParams params = new FleetSpawnParams();
-		params.name = name;
-		params.fleetType = "exerelinInvasionSupportFleet";
-		params.faction = faction;
-		params.fp = maxFP;
-		params.qualityOverride = qf;
-		params.originMarket = originMarket;
-		params.targetMarket = targetMarket;
-		params.noWander = true;
-		params.noWait = noWait;
-		//params.aiClass = InvasionSupportFleetAI.class.getName();
-		
-		InvasionFleetData fleetData = spawnFleet(params);
-		log.info("\tSpawned strike fleet " + fleetData.fleet.getNameWithFaction() + " of size " + maxFP);
-		return fleetData;
-	}
-	
-	public static InvasionFleetData spawnInvasionFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket,
-			float marineMult, boolean noWait)
-	{
-		return spawnInvasionFleet(faction, originMarket, targetMarket, marineMult, 1, noWait);
-	}
-	
-	public static InvasionFleetData spawnInvasionFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, 
-			float marineMult, float fpMult, boolean noWait)
-	{
-		float defenderStrength = InvasionRound.getDefenderStrength(targetMarket, 0.5f);
-		
-		int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * fpMult);
-		float qf = originMarket.getShipQualityFactor();
-		qf = Math.max(qf+0.2f, 0.6f);
-		
-		String name = getFleetName("exerelinInvasionFleet", faction.getId(), maxFP);
-				
-		FleetSpawnParams params = new FleetSpawnParams();
-		params.name = name;
-		params.fleetType = "exerelinInvasionFleet";
-		params.faction = faction;
-		params.fp = maxFP;
-		params.qualityOverride = qf;
-		params.originMarket = originMarket;
-		params.targetMarket = targetMarket;
-		params.noWait = noWait;
-		//params.aiClass = InvasionFleetAI.class.getName();
-		params.numMarines = (int)(defenderStrength * marineMult);
-		
-		InvasionFleetData fleetData = spawnFleet(params);
-		log.info("\tSpawned invasion fleet " + fleetData.fleet.getNameWithFaction() + " of size " + maxFP);
-		return fleetData;
-	}
-	*/
-	
-	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, boolean raid)
-	{
-		return generateInvasionOrRaidFleet(faction, targetFaction, raid, 1);
+		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1);
 	}
 	
 	/**
 	 * Try to create an invasion fleet or raid fleet.
 	 * @param faction The faction launching an invasion
 	 * @param targetFaction
-	 * @param raid
+	 * @param type
 	 * @param sizeMult
 	 * @return The invasion fleet intel, if one was created
 	 */
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
-			boolean raid, float sizeMult)
+			EventType type, float sizeMult)
 	{
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -486,33 +382,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			if	( market.getFactionId().equals(factionId) && market.hasSpaceport() && market.getSize() >= 3 )
 			{
-				//marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
-				//if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
-				//		continue;
-				float weight = 1;	 //marineStockpile;
-				if (market.hasIndustry(Industries.PATROLHQ)) {
-					weight *= 1.2f;
-				}
-				if (market.hasIndustry(Industries.MILITARYBASE)) {
-					weight *= 1.5f;
-				}
-				if (market.hasIndustry(Industries.HIGHCOMMAND)) {
-					weight *= 2;
-				}
-				if (market.hasIndustry(Industries.MEGAPORT)) {
-					weight *= 1.5f;
-				}
-				if (market.hasIndustry(Industries.HEAVYINDUSTRY)) {
-					weight *= 1.2f;
-				}
-				if (market.hasIndustry(Industries.ORBITALWORKS)) {
-					weight *= 1.5f;
-				}
-				if (market.hasIndustry(Industries.WAYSTATION)) {
-					weight *= 1.2f;
-				}
-				weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
-				sourcePicker.add(market, weight);
+				sourcePicker.add(market, getMarketWeightForInvasionSource(market));
 			}
 		}
 		MarketAPI originMarket = sourcePicker.pick();
@@ -583,32 +453,53 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		//log.info("\tTarget: " + targetMarket.getName());
 		
-		// FIXME
-		float fp = getWantedFleetSize(faction, targetMarket, 0.2f, false);
+		return generateInvasionOrRaidFleet(originMarket, targetMarket, type, sizeMult);
+	}
+	
+	public OffensiveFleetIntel generateInvasionOrRaidFleet(MarketAPI origin, MarketAPI target, 
+			EventType type, float sizeMult) {
+		FactionAPI faction = origin.getFaction();
+		String factionId = faction.getId();
+		
+		float fp = getWantedFleetSize(faction, target, 0.2f, false);
 		float organizeTime = getOrganizeTime(fp);
 		fp *= InvasionFleetManager.getInvasionSizeMult(factionId);
-		if (raid)
+		if (type == EventType.RAID)
 			fp *= RAID_SIZE_MULT;
-		else
+		else if (type == EventType.RESPAWN)
+			fp *= RESPAWN_SIZE_MULT;
+		
+		if (type != EventType.RAID)
 			organizeTime *= 1.25f;
 		
 		// okay, assemble battlegroup
-		if (!raid)
-		{
-			log.info("Spawning invasion fleet for " + faction.getDisplayName() + "; source " + originMarket.getName() + "; target " + targetMarket.getName());
-			InvasionIntel intel = new InvasionIntel(faction, originMarket, targetMarket, fp, organizeTime);
-			intel.init();
-			activeIntel.add(intel);
-			return intel;
+		switch (type) {
+			case RESPAWN:
+			{
+				log.info("Spawning respawn fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
+				RespawnInvasionIntel intel = new RespawnInvasionIntel(faction, origin, target, fp, organizeTime);
+				intel.init();
+				activeIntel.add(intel);
+				return intel;
+			}
+			case INVASION:
+			{
+				log.info("Spawning invasion fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
+				InvasionIntel intel = new InvasionIntel(faction, origin, target, fp, organizeTime);
+				intel.init();
+				activeIntel.add(intel);
+				return intel;
+			}
+			case RAID:
+			{
+				// raid
+				log.info("Spawning raid fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
+				NexRaidIntel intel = new NexRaidIntel(faction, origin, target, fp, organizeTime);
+				intel.init();
+				return intel;
+			}
 		}
-		else
-		{
-			// raid
-			log.info("Spawning raid fleet for " + faction.getDisplayName() + "; source " + originMarket.getName() + "; target " + targetMarket.getName());
-			NexRaidIntel intel = new NexRaidIntel(faction, originMarket, targetMarket, fp, organizeTime);
-			intel.init();
-			return intel;
-		}
+		return null;
 	}
 	
 	protected float getCommodityPoints(MarketAPI market, String commodity) {
@@ -761,7 +652,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				// okay, we can invade or raid
 				// invasions and raids alternate
 				boolean shouldRaid = shouldRaid(factionId);
-				OffensiveFleetIntel intel = generateInvasionOrRaidFleet(faction, null, shouldRaid);
+				OffensiveFleetIntel intel = generateInvasionOrRaidFleet(faction, null, 
+						shouldRaid ? EventType.RAID : EventType.INVASION);
 				if (intel != null)
 				{
 					counter -= getInvasionPointReduction(pointsRequired, intel);
@@ -790,7 +682,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
 		if (templarInvasionPoints >= req)
 		{
-			InvasionIntel intel = (InvasionIntel)generateInvasionOrRaidFleet(Global.getSector().getFaction("templars"), null, false);
+			InvasionIntel intel = (InvasionIntel)generateInvasionOrRaidFleet(Global.getSector().getFaction("templars"), null, 
+					EventType.INVASION);
 			if (intel != null) templarInvasionPoints -= getInvasionPointReduction(req, intel);
 			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
 		}
@@ -802,7 +695,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				picker.add(factionId, ExerelinUtilsFaction.getFactionMarketSizeSum(factionId));
 			}
 			FactionAPI faction = Global.getSector().getFaction(picker.pick());
-			InvasionIntel intel = (InvasionIntel)generateInvasionOrRaidFleet(faction, Global.getSector().getFaction("templars"), false, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
+			InvasionIntel intel = (InvasionIntel)generateInvasionOrRaidFleet(faction, Global.getSector().getFaction("templars"), 
+					EventType.INVASION, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
 			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
 			if (intel != null) templarCounterInvasionPoints -= getInvasionPointReduction(req, intel);
 		}
@@ -1004,6 +898,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return false;
 	}
 	
+	public enum EventType { INVASION, RAID, RESPAWN };
+	
+	@Deprecated
 	public static class InvasionFleetData
 	{
 		public CampaignFleetAPI fleet;
@@ -1021,22 +918,5 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		{
 			this.fleet = fleet;
 		}
-	}
-	
-	public static class FleetSpawnParams
-	{
-		public String name = "Fleet";
-		public String fleetType = "genericFleet";
-		public int fp = 0;
-		public float qualityOverride = -1;
-		public FactionAPI faction;
-		public MarketAPI originMarket;
-		public MarketAPI targetMarket;
-		public LocationAPI spawnLoc;
-		public boolean noWait = false;
-		public boolean jumpToOrigin = true;
-		public boolean noWander = false; // only used by strike and patrol fleets ATM
-		public int numMarines = 0;
-		//public String aiClass;
 	}
 }

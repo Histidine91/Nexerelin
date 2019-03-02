@@ -83,11 +83,11 @@ nex_NGCListOptionEnableRandomStartRelationshipsPirate,ExerelinNGCFactionOptions,
 !$randomStartRelationshipsPirate",,,exerelinNGCEnableRandomStartRelationshipsPirate:Enable random relationships for pirate factions,
 nex_NGCListOptionDisableRandomStartRelationshipsPirate,ExerelinNGCFactionOptions,"$randomStartRelationships
 $randomStartRelationshipsPirate",,,exerelinNGCDisableRandomStartRelationshipsPirate:Disable random relationships for pirate factions,
-#ExerelinNGCListOptionEnableRespawnFactions,ExerelinNGCFactionOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
-#ExerelinNGCListOptionDisableRespawnFactions,ExerelinNGCFactionOptions,$respawnFactions,,,exerelinNGCDisableRespawnFactions:Disable faction respawning,
-#ExerelinNGCListOptionEnableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
+nex_NGCListOptionEnableRespawnFactions,ExerelinNGCFactionOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
+nex_NGCListOptionDisableRespawnFactions,ExerelinNGCFactionOptions,$respawnFactions,,,exerelinNGCDisableRespawnFactions:Disable faction respawning,
+nex_NGCListOptionEnableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
 $onlyRespawnStartingFactions",,,exerelinNGCEnableRespawnAllFactions:Enable respawning of factions not present at start,
-#ExerelinNGCListOptionDisableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
+nex_NGCListOptionDisableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
 !$onlyRespawnStartingFactions",,,exerelinNGCDisableRespawnAllFactions:Disable respawning of factions not present at start,
 nex_NGCListOptionEnableFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
 !$useFactionWeights","SetTooltip nex_NGCEnableUseFactionWeights ""If enabled, certain factions (e.g. Hegemony, Persean League) will start the game with more markets than others.""",,nex_NGCEnableUseFactionWeights:Enable faction spawning weights,

@@ -384,7 +384,7 @@
 	},
 	"nex_bombardment":{
 		"satBombWarning":"An atrocity of this scale can not be hidden, and will make the following factions hostile:",
-		"satBombWarningSmall":"An atrocity of this scale can not be hidden. $market is sufficiently low-populated that the reputational impacts will be limited, but the following factions will nevertheless be angry:",
+		"satBombWarningSmall":"An atrocity of this scale can not be hidden. $market is sufficiently low-populated and/or remote that the reputational impacts will be limited, but the following factions will nevertheless be angry:",
 		"satBombWarningAllHostile":"An atrocity of this scale can not be hidden, but any factions that would be dismayed by such actions are already hostile to you.",
 		"satBombWarningVengeful":"Due to their hatred of $theFaction, the following factions can be expected to overlook your crime:",
 	},
@@ -400,8 +400,6 @@
 		"factionBountyIntel_descResult2":"%s received",
 		"factionBountyIntel_descResult3":"%s share based on damage dealt",
 		"factionBountyIntel_descEnded":"This bounty is no longer on offer.",
-		
-		
 	},
 	"nex_colonies":{
 		"globalPopulation":"global population",
@@ -652,17 +650,24 @@
 		"forceIsOrAre":"is",	# if invasionForce is singular, this should be singular too, else both should be plural
 		"forceHasOrHave":"has",	# same
 		
+		"respawnInvasion":"resurgence",
+		"theRespawnInvasion":"the resurgence",
+		"respawnInvasionForce":"resurgence force",
+		"theRespawnInvasionForce":"the resurgence force",
+		
 		"invadeHasStation":"The orbital station must be destroyed before an invasion is possible.",
 		
 		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc.",
+		"intelDescRespawn":"Remnants of the $theFaction have gathered to invade $market in the $location, held by $theTargetFaction, in a bid to revive their power. The invasion forces are projected to be $strDesc.",
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
 		"intelOutcomeNoLongerHostile":"As $target's current faction is not currently hostile, the invasion has been cancelled.",
 		"intelOutcomeNoLongerExists":"$target has been destroyed by another hostile party. There is nothing left to invade.",
 		
 		"intelStageAction":"The invasion force is currently in-system.",
 		"intelStageActionSuccess":"The invasion force has conquered $market.",
+		"intelStageActionInsufficientReached":"The invasion forces have failed to reach $location in adequate strength. The invasion is aborted.",
 		"intelStageActionDefeatedGround":"The invasion forces have been repelled by the ground defenses of $market.",
-		"intelStageActionDefeatedSpace":"The invasion force has been defeated by the defenders of of $market.",
+		"intelStageActionDefeatedSpace":"The invasion force has been defeated by the defenders of $market.",
 		"intelStageActionAborted":"The invasion has been aborted.",
 		
 		"invasionStrength":"invasion strength",
@@ -881,6 +886,8 @@
 		
 		"stageOrganizeRemnant":"$TheAction is currently being planned at a base in the $location.",
 		
+		"intelStageActionInsufficientReached":"The invasion forces have failed to reach $location in adequate strength. The invasion is aborted.",
+		
 		"conditionPenalties":"%s stability, %s accessibility.",
 		"conditionListHeader":"The following hostile factions have active raids in the system:",
 	},
@@ -892,6 +899,12 @@
 		"hardMode":"Starfarer Mode",
 		"randomizeRelationships":"Randomize faction relationships",
 		"randomizeRelationshipsPirate":"Randomize relationships for pirate factions"
+	},
+	"nex_respawn":{
+		"baseIntelDesc":"Remnants of $theFaction have established a base in the $location. They likely intend to use it as a staging point for their great re-entry into the Sector.",
+		"baseIntelDescUnknown":"You have not yet discovered the exact location or capabilities of this base.",
+		"baseIntelTitle":"$faction Resurgent Base",
+		"marketName":"Resurgent Base",
 	},
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
@@ -1012,6 +1025,12 @@
 		"blueprintSwapPurchased":"Acquired $name blueprint",
 		"blueprintSwapGainedPoints":"Gained $points points",
 		"blueprintSwapLostPoints":"Lost $points points",
+		
+		"hiddenBaseSupply":"Underground procurement",
+		"hiddenBaseDevelopmentLevel":"Development level",
+		"hiddenBaseDiscovered":"discovered",
+		"hiddenBaseAbandoned":"abandoned",
+		"hiddenBaseLocationUnknown":"Exact Location Unknown",
 
 		"errorLazyLib":"Nexerelin requires LazyLib to function!\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0",
 		"errorOfficerMaxLevel":"Officer max level in config is over 29 (current: $currMax)\nThis risks a hang during gameplay.\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.",
