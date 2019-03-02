@@ -32,6 +32,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -492,6 +493,12 @@ public class Nex_FleetRequest extends PaginatedOptions {
 			}
 			else if (intel instanceof LuddicPathBaseIntel) {
 				LuddicPathBaseIntel base = (LuddicPathBaseIntel)intel;
+				if (faction != null && base.getMarket().getFaction() != faction) 
+					continue;
+				markets.add(base.getMarket());
+			}
+			else if (intel instanceof RespawnBaseIntel) {
+				RespawnBaseIntel base = (RespawnBaseIntel)intel;
 				if (faction != null && base.getMarket().getFaction() != faction) 
 					continue;
 				markets.add(base.getMarket());
