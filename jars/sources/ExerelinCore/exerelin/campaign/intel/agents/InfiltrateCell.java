@@ -18,6 +18,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.intel.DiplomacyIntel;
 import static exerelin.campaign.intel.agents.CovertActionIntel.DEFAULT_AGENT_LEVEL;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -43,6 +44,8 @@ public class InfiltrateCell extends CovertActionIntel {
 	@Override
 	public void onSuccess() {
 		removeLuddicCell();
+		int size = market.getSize();
+		this.adjustRelations(agentFaction, market.getFaction(), size, size, null, null, null, false);
 		//adjustRepIfDetected(RepLevel.INHOSPITABLE, null);
 		reportEvent();
 	}
@@ -156,7 +159,10 @@ public class InfiltrateCell extends CovertActionIntel {
 			label.setHighlight(baseName, locStrShort);
 			label.setHighlightColors(targetFaction.getBaseUIColor(), Misc.getHighlightColor());
 		}
-		super.addResultPara(info, pad);
+		if (repResult != null && repResult.delta != 0) {
+			DiplomacyIntel.addRelationshipChangePara(info, agentFaction.getId(), market.getFaction().getId(), 
+					relation, repResult, pad);
+		}
 	}
 	
 	@Override
@@ -170,7 +176,6 @@ public class InfiltrateCell extends CovertActionIntel {
 		String action = getActionString("intelStatus_infiltrateCell", true);
 		info.addPara(action, pad, color, Misc.getHighlightColor(), Math.round(daysRemaining) + "");
 	}
-	
 
 	@Override
 	public String getDefId() {
