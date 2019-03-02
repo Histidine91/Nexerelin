@@ -101,17 +101,16 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		}
 		
 		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
-			addArrivedBullet(info, tc, initPad);
+			addArrivedBullet(info, tc, 0);
 			return;
 		}
 		
 		if (outcome != null) {
-			addOutcomeBullet(info, tc, initPad);
+			addOutcomeBullet(info, tc, 0);
 		} else {
-			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
+			info.addPara(system.getNameWithLowercaseType(), tc, 0);
 		}
-		initPad = 0f;
-		addETABullet(info, tc, h, initPad);
+		addETABullet(info, tc, h, 0);
 		
 		unindent(info);
 	}

@@ -2,13 +2,13 @@ package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
+import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.NexTravelStage;
 import java.util.List;
 
-public class RemnantRaidTravelStage extends TravelStage {
+public class RemnantRaidTravelStage extends NexTravelStage {
 
-	public RemnantRaidTravelStage(RaidIntel raid, SectorEntityToken from, SectorEntityToken to, boolean requireNearTarget) {
+	public RemnantRaidTravelStage(OffensiveFleetIntel raid, SectorEntityToken from, SectorEntityToken to, boolean requireNearTarget) {
 		super(raid, from, to, requireNearTarget);
 	}
 	

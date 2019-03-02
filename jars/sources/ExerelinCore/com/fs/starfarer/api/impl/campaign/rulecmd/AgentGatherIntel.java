@@ -1,6 +1,5 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
@@ -17,7 +15,6 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.utilities.StringHelper;
-import exerelin.campaign.fleets.ResponseFleetManager;
 import java.awt.Color;
 
 // TODO: probably useless now
