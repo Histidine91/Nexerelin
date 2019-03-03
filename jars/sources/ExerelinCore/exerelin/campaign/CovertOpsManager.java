@@ -105,8 +105,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         JSONObject configJson = Global.getSettings().getMergedJSONForMod(CONFIG_FILE, ExerelinConstants.MOD_ID);
                 
         //config = ExerelinUtils.jsonToMap(configJson);
-        //baseInterval = (float)(double)config.get("eventFrequency");   // ClassCastException
-        baseInterval = (float)configJson.optDouble("eventFrequency", 15f);
+        baseInterval = (float)configJson.optDouble("eventFrequency", 45f);
 		JSONObject actionsJson = configJson.getJSONObject("actions");
 		Iterator<String> keys = actionsJson.sortedKeys();
 		while (keys.hasNext()) {

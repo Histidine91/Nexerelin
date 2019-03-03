@@ -149,7 +149,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			
 		} else if (listInfoParam == UPDATE_ARRIVED) {
 			String marketName = market.getName();
-			info.addPara(marketName, pad, tc, hl, marketName);
+			info.addPara(marketName, pad, tc, market.getTextColorForFactionOrPlanet(), marketName);
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
 			info.addPara(getString("intelLevelUp"), pad, hl, level + "");
 		} else if (listInfoParam == UPDATE_LOST) {
