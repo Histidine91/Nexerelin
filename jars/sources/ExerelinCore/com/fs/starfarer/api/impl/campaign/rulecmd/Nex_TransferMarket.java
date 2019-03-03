@@ -51,7 +51,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				for (FactionAPI faction : group.factions)
 				{
 					String optKey = SELECT_FACTION_PREFIX + faction.getId();
-					opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), optKey);
+					opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), optKey, faction.getColor(), null);
 					String warningString = StringHelper.getStringAndSubstituteToken("exerelin_markets", "transferMarketWarning", 
 							"$market", dialog.getInteractionTarget().getMarket().getName());
 					warningString = StringHelper.substituteFactionTokens(warningString, faction);

@@ -148,6 +148,13 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 			return;
 		}
 		
+		String stationType = pickStationType();
+		if (stationType == null) {
+			log.info("No station industry available to spawn");
+			endImmediately();
+			return;
+		}
+		
 		market.setName(name);
 		entity.setName(name);
 		
@@ -166,7 +173,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		market.reapplyIndustries();
 		
 		Global.getSector().getEconomy().addMarket(market, true);
-		market.addIndustry(pickStationType());	// down here so it doesn't break something if the station spawn aborts
+		market.addIndustry(stationType);	// down here so it doesn't break something if the station spawn aborts
 		
 		log.info(String.format("Added respawn base in [%s] for faction %s", system.getName(), market.getFaction().getDisplayName()));
 		
