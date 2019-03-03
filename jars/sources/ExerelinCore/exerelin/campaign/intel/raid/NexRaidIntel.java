@@ -3,6 +3,7 @@ package exerelin.campaign.intel.raid;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
@@ -184,7 +185,9 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		// we don't need the variability involved in this
 		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
 		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
-			params.ignoreMarketFleetSizeMult = true; 
+			params.ignoreMarketFleetSizeMult = true;
+		
+		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();

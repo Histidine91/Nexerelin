@@ -18,9 +18,11 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -35,6 +37,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public static final Object OUTCOME_UPDATE = new Object();
 	public static final boolean DEBUG_MODE = true;
 	public static final boolean INTEL_ALWAYS_VISIBLE = true;
+	public static final float ALLY_GEAR_CHANCE = 0.5f;
 	
 	public static Logger log = Global.getLogger(OffensiveFleetIntel.class);
 	
@@ -374,5 +377,39 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		raidStr *= 1f + (pts - 1f) / 4f;
 		
 		return raidStr;
+	}
+	
+	// same as superclass, except with randomly using ally factions
+	@Override
+	public CampaignFleetAPI spawnFleet(RouteManager.RouteData route) {
+		
+		Random random = route.getRandom();
+		
+		MarketAPI market = route.getMarket();
+		String factionId = market.getFactionId();
+		// TODO randomly use ally faction
+		Alliance alliance = AllianceManager.getFactionAlliance(factionId);
+		if (alliance != null && random.nextFloat() < ALLY_GEAR_CHANCE) {
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+			picker.addAll(alliance.getMembersCopy());
+			factionId = picker.pick();
+			log.info("Using allied gear from faction " + factionId);
+		}
+		
+		CampaignFleetAPI fleet = createFleet(factionId, route, market, null, random);
+		
+		if (fleet == null || fleet.isEmpty()) return null;
+		fleet.setFaction(market.getFactionId(), true);	// also changed from super
+		
+		//fleet.addEventListener(this);
+		
+		market.getContainingLocation().addEntity(fleet);
+		fleet.setFacing((float) Math.random() * 360f);
+		// this will get overridden by the patrol assignment AI, depending on route-time elapsed etc
+		fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().x);
+		
+		fleet.addScript(createAssignmentAI(fleet, route));
+		
+		return fleet;
 	}
 }

@@ -3,6 +3,7 @@ package exerelin.campaign.intel.invasion;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
@@ -81,7 +82,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
 		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
-		if (marinesPerFleet > MAX_MARINES) {
+		if (marinesPerFleet < 100) {
+			marinesPerFleet = 100;
+		}
+		else if (marinesPerFleet > MAX_MARINES) {
 			log.info("Capping marines at " + MAX_MARINES + " (was " + marinesPerFleet + ")");
 			marinesPerFleet = MAX_MARINES;
 		}
@@ -237,6 +241,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
 		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
 			params.ignoreMarketFleetSizeMult = true;
+		
+		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();
