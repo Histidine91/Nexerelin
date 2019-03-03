@@ -191,8 +191,7 @@ public class Travel extends CovertActionIntel {
 	@Override
 	public CovertOpsManager.CovertActionResult execute() {
 		result = CovertActionResult.SUCCESS;
-		agent.setMarket(market);
-		agent.notifyActionCompleted();
+		onSuccess();
 		return result;
 	}
 	
@@ -231,6 +230,7 @@ public class Travel extends CovertActionIntel {
 	protected void onSuccess() {
 		agent.setMarket(market);
 		agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ARRIVED, false);
+		agent.notifyActionCompleted();
 	}
 
 	@Override

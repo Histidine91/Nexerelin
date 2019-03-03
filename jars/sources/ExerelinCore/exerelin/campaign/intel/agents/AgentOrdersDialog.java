@@ -298,11 +298,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			printStat(travel.getArriveTime(), false);
 		}
 		
-		int cost = action.getCost();
-		if (cost > 0) {
-			String costDGS = Misc.getDGSCredits(cost);
+		MutableStat cost = action.getCostStat();
+		int costInt = cost.getModifiedInt();
+		if (costInt > 0) {
+			String costDGS = Misc.getDGSCredits(costInt);
 			text.addPara(getString("dialogInfoCost"), hasEnoughCredits() ? hl : 
 					Misc.getNegativeHighlightColor(), costDGS);
+			printStat(cost, true);
 		}
 		
 		text.setFontInsignia();
@@ -329,8 +331,15 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected void addEffectPara(int decimalPlaces, float valueMult) {
 		String effectStr = getString("dialogInfoEffect");
 		float mult = action.getEffectMultForLevel();
+		
 		float eff1 = action.getDef().effect.one * mult * valueMult;
 		float eff2 = action.getDef().effect.two * mult * valueMult;
+		if (action.getDefId().equals(CovertActionType.SABOTAGE_INDUSTRY) && industryToSabotage != null)
+		{
+			// show disrupt time delta instead of absolute final time?
+			// think about this later
+		}
+		
 		String str1 = String.format("%." + decimalPlaces + "f", eff1);
 		String str2 = String.format("%." + decimalPlaces + "f", eff2);
 		
@@ -399,6 +408,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		thirdFaction = faction;
 		if (action.getDefId().equals(CovertActionType.LOWER_RELATIONS)) {
 			((LowerRelations)action).setThirdFaction(thirdFaction);
+			//printActionInfo();	// meh, don't need to tell player that they've changed target faction
 		}
 		
 		getTargets();

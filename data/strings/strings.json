@@ -199,6 +199,7 @@
 		"dismissed":"dismissed",
 		
 		"intelTitle":"Agent: $name",
+		"intelTitleArrived":"Arrived",
 		"intelTitleLevelUp":"Level Up",
 		"intelBullet1":"Currently on $market",
 		"intelLevelUp":"Now at level %s",
@@ -242,6 +243,10 @@
 		"anUnknownFaction":"an unknown faction",
 		
 		"baseChance":"base chance for action type",
+		
+		"costBase":"base cost",
+		"costLevelMult":"agent level",
+		"costSizeMult":"market size",
 		
 		"intelStatus_travel":"Travelling to $market ($status)",
 		"intelStatus_travelShort":"Travelling to $market",
@@ -364,7 +369,7 @@
 		
 		"travelTimeStatBase":"Base $departureOrArrival time",
 		"travelTimeStatDeciv":"Acquiring transport (decivilized)",
-		"travelTimeStatRepLevel":"Penetrating security ($repLevel)",
+		"travelTimeStatRepLevel":"Bypassing security ($repLevel)",
 		"travelTimeStatTravel":"Distance: $dist LY",
 	},
 	
@@ -447,7 +452,7 @@
 		
 		"intelCeasefireTitle":"Ceasefire Offer",
 		"intelPeaceTreatyTitle":"Peace Treaty Offer",
-		"intelCeasefireDesc":"$TheFaction $isOrAre offering an $ceasefireOrPeaceTreaty to end the ongoing hostilities. In the absence of further overt hostile actions, this will run for at least $days days and until further diplomatic events occur.",
+		"intelCeasefireDesc":"$TheFaction $isOrAre offering a $ceasefireOrPeaceTreaty to end the ongoing hostilities. In the absence of further overt hostile actions, this will run for at least $days days and until further diplomatic events occur.",
 		"intelCeasefireDescTime":"You have $timeLeft $days to accept or reject the offer.",
 		"intelCeasefireDescResult":"You have $acceptedOrRejected the offer.",
 		"intelCeasefireConfirm":"Confirm?",

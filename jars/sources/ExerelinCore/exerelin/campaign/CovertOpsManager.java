@@ -155,6 +155,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	public static float getIndustryMult(Industry ind, Map<String, Float> map) {
+		if (!ind.isFunctional()) return 1;
+		
 		String id = ind.getId();
 		if (!map.containsKey(id))
 			return 1;

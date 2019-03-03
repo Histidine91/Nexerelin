@@ -145,11 +145,22 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	public int getCost() {
+		return getCostStat().getModifiedInt();
+	}
+	
+	public MutableStat getCostStat() {
+		MutableStat cost = new MutableStat(0);
+		
+		int baseCost = getDef().baseCost;
+		cost.modifyFlat("base", baseCost, getString("costBase", true));
+		
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
-		int cost = Math.round(getDef().baseCost * 1 - 0.1f * (level - 1));
+		float levelMult = 1 - 0.1f * (level - 1);
+		//cost.modifyMult("levelMult", baseCost, getString("costLevelMult", true));
 		
 		if (getDef().costScaling) {
-			cost *= Math.max(market.getSize() - 3, 1);
+			int sizeMult = Math.max(market.getSize() - 3, 1);
+			cost.modifyMult("sizeMult", sizeMult, getString("costSizeMult", true));
 		}
 		
 		return cost;
