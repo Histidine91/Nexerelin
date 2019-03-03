@@ -5,9 +5,6 @@ import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.intel.agents.InstigateRebellion;
-import exerelin.campaign.events.covertops.AgentDestabilizeMarketEvent;
-import exerelin.campaign.events.covertops.AgentLowerRelationsEvent;
-import exerelin.campaign.events.covertops.CovertOpsEventBase;
 import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.FactionBountyEvent;
 import exerelin.campaign.events.RebellionEvent;
@@ -15,27 +12,33 @@ import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.intel.VengeanceFleetIntel;
-import exerelin.campaign.events.covertops.SaboteurDestroyFoodEvent;
-import exerelin.campaign.events.covertops.SaboteurSabotageReserveEvent;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.campaign.events.WarmongerEvent;
-import exerelin.campaign.events.covertops.InstigateRebellionEvent;
 import exerelin.campaign.fleets.DefenceFleetAI;
-import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.fleets.InvasionSupportFleetAI;
 import exerelin.campaign.fleets.MiningFleetAI;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.MiningFleetManagerV2.MiningFleetData;
 import exerelin.campaign.fleets.RespawnFleetAI;
-import exerelin.campaign.fleets.ResponseFleetAI;
 import exerelin.campaign.fleets.SuppressionFleetAI;
+import exerelin.campaign.intel.AllianceIntel;
+import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.campaign.intel.DiplomacyIntel;
+import exerelin.campaign.intel.FactionBountyIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionIntel;
+import exerelin.campaign.intel.RespawnBaseIntel;
+import exerelin.campaign.intel.agents.AgentIntel;
+import exerelin.campaign.intel.agents.DestabilizeMarket;
+import exerelin.campaign.intel.agents.DestroyCommodityStocks;
+import exerelin.campaign.intel.agents.InfiltrateCell;
+import exerelin.campaign.intel.agents.LowerRelations;
+import exerelin.campaign.intel.agents.RaiseRelations;
+import exerelin.campaign.intel.agents.SabotageIndustry;
+import exerelin.campaign.intel.agents.Travel;
 import exerelin.campaign.intel.fleets.NexAssembleStage;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
@@ -43,10 +46,12 @@ import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.invasion.InvAssembleStage;
 import exerelin.campaign.intel.invasion.InvOrganizeStage;
+import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import exerelin.campaign.intel.raid.NexRaidIntel;
+import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.campaign.missions.ConquestMission;
 import exerelin.campaign.missions.ConquestMissionEvent;
 import exerelin.campaign.submarkets.Nex_BlackMarketPlugin;
@@ -75,7 +80,6 @@ public class XStreamConfig {
 		x.alias("MiningFltAI", MiningFleetAI.class);
 		x.alias("MiningFltData", MiningFleetManagerV2.MiningFleetData.class);
 		x.alias("SuppressFltAI", SuppressionFleetAI.class);
-		x.alias("InvasionFltData", InvasionFleetManager.InvasionFleetData.class);
 		x.alias("VengFltIntl", VengeanceFleetIntel.class);
 		
 		x.alias("DiploIntl", DiplomacyIntel.class);
@@ -89,19 +93,10 @@ public class XStreamConfig {
 		
 		// events
 		// most of these will be deleted eventually
-		x.alias("AgntDestabilizeMrktEvnt", AgentDestabilizeMarketEvent.class);
-		x.alias("AgntLowerRelationsEvnt", AgentLowerRelationsEvent.class);
-		x.alias("AllyVoteRslt", AllianceVoter.VoteResult.class);
-		x.alias("CovertOpsEvnt", CovertOpsEventBase.class);
 		x.alias("ExiRespawnFltEvnt", ExigencyRespawnFleetEvent.class);
-		x.alias("FactionBntyEvnt", FactionBountyEvent.class);
-		x.alias("FactionBntyEvntKey", FactionBountyEvent.FactionBountyPairKey.class);
 		x.alias("InstgtRbl", InstigateRebellion.class);
-		x.alias("InstgtRblEvnt", InstigateRebellionEvent.class);
 		x.alias("RebelEvnt", RebellionEvent.class);
 		x.alias("RebelEvntCreator", RebellionEventCreator.class);
-		x.alias("SbtrDestroyFoodEvnt", SaboteurDestroyFoodEvent.class);
-		x.alias("SbtrSabotageReserveEvnt", SaboteurSabotageReserveEvent.class);
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
 		x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);
 		x.alias("SuperweaponEvnt", SuperweaponEvent.class);
@@ -113,6 +108,7 @@ public class XStreamConfig {
 		// intel
 		x.alias("NexRaidCond", RaidCondition.class);
 		x.alias("NexPunExIntl", Nex_PunitiveExpeditionIntel.class);
+		x.alias("NexFctnBntyIntl", FactionBountyIntel.class);
 		
 		// raids and such
 		x.alias("NexRaidIntl", NexRaidIntel.class);
@@ -129,11 +125,12 @@ public class XStreamConfig {
 		x.alias("NexInvOrgStg", InvOrganizeStage.class);
 		x.alias("NexInvAssmblStg", InvAssembleStage.class);
 		x.alias("NexInvActStg", InvActionStage.class);
+		x.alias("NexRspwnIntl", RespawnInvasionIntel.class);
+		x.alias("NexRspwnBaseIntl", RespawnBaseIntel.class);
 		
 		// Remnant raids
-		// not worthwhile tbh; there'll be at most one of each at a time pretty much
-		/*
 		x.alias("NexRemRaidIntl", RemnantRaidIntel.class);
+		/*
 		x.alias("NexRemRaidOrgStg", RemnantRaidOrganizeStage.class);
 		x.alias("NexRemRaidAssmblStg", RemnantRaidAssembleStage.class);
 		x.alias("NexRemRaidTrvlStg", RemnantRaidTravelStage.class);
@@ -141,9 +138,24 @@ public class XStreamConfig {
 		x.alias("NexRemRaidRetStg", RemnantRaidReturnStage.class);
 		*/
 		
+		// agents
+		x.alias("NexAgntIntl", AgentIntel.class);
+		x.alias("NexAgntActTrvl", Travel.class);
+		x.alias("NexAgntActDstb", DestabilizeMarket.class);
+		x.alias("NexAgntActDstrCmmdty", DestroyCommodityStocks.class);
+		x.alias("NexAgntActInfltrtCell", InfiltrateCell.class);
+		x.alias("NexAgntActLowerRel", LowerRelations.class);
+		x.alias("NexAgntActRaiseRel", RaiseRelations.class);
+		x.alias("NexAgntActSbtgInd", SabotageIndustry.class);
+		
+		// alliances
+		x.alias("NexAlliance", Alliance.class);
+		x.alias("NexAllyIntl", AllianceIntel.class);
+		x.alias("NexAllyVoteIntl", AllianceVoteIntel.class);
+		x.alias("AllyVoteRslt", AllianceVoter.VoteResult.class);
+		
 		// misc
 		x.alias("NexRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);
-		x.alias("NexAlliance", Alliance.class);
 		x.alias("DiploBrain", DiplomacyBrain.class);
 		x.alias("DiploDspsEntry", DiplomacyBrain.DispositionEntry.class);
 		
@@ -208,25 +220,6 @@ public class XStreamConfig {
 		x.aliasAttribute(SuperweaponEvent.class, "avgRepLoss", "avgRep");
 		x.aliasAttribute(SuperweaponEvent.class, "wasPlayer", "plyr");
 		
-		// Agent events
-		// AgentDestabilizeMarketEvent
-		x.aliasAttribute(AgentDestabilizeMarketEvent.class, "stabilityPenalty", "stbLoss");
-				
-		// CovertOpsEventBase
-		x.aliasAttribute(CovertOpsEventBase.class, "agentFaction", "af");
-		x.aliasAttribute(CovertOpsEventBase.class, "result", "rslt");
-		x.aliasAttribute(CovertOpsEventBase.class, "playerInvolved", "plyr");
-		x.aliasAttribute(CovertOpsEventBase.class, "repResult", "rep");
-		
-		// InstigateRebellionEvent
-		x.aliasAttribute(InstigateRebellionEvent.class, "timeframe", "time");
-		
-		// SaboteurDestroyFoodEvent
-		x.aliasAttribute(SaboteurDestroyFoodEvent.class, "foodDestroyed", "food");
-		
-		// SaboteurSabotageReserveEvent
-		x.aliasAttribute(SaboteurSabotageReserveEvent.class, "reserveDamage", "dmg");
-		
 		// SecurityAlertEvent
 		x.aliasAttribute(SecurityAlertEvent.class, "elapsedDays", "days");
 		x.aliasAttribute(SecurityAlertEvent.class, "alertLevel", "alrt");
@@ -237,7 +230,7 @@ public class XStreamConfig {
 		x.aliasAttribute(ConquestMission.class, "bonusDuration", "dur2");
 		x.aliasAttribute(ConquestMission.class, "baseReward", "pay1");
 		x.aliasAttribute(ConquestMission.class, "bonusReward", "pay2");
-				
+		
 		// ConquestMissionEvent
 		x.aliasAttribute(ConquestMissionEvent.class, "mission", "msn");
 		x.aliasAttribute(ConquestMissionEvent.class, "elapsedDays", "elpsd");
@@ -249,7 +242,7 @@ public class XStreamConfig {
 		x.aliasAttribute(DefenceFleetAI.class, "daysTotal", "days");
 		x.aliasAttribute(DefenceFleetAI.class, "fleet", "flt");
 		x.aliasAttribute(DefenceFleetAI.class, "orderedReturn", "ret");
-				
+		
 		// MiningFleetAI
 		x.aliasAttribute(MiningFleetAI.class, "daysTotal", "days");
 		x.aliasAttribute(MiningFleetAI.class, "miningDailyProgress", "prog");
@@ -268,7 +261,7 @@ public class XStreamConfig {
 		// RespawnFleetAI
 		x.aliasAttribute(RespawnFleetAI.class, "captureSuccessful", "cap");
 		x.aliasAttribute(RespawnFleetAI.class, "forceHostile", "hstl");
-				
+		
 		// ExerelinReputationAdjustmentResult
 		x.aliasAttribute(ExerelinReputationAdjustmentResult.class, "wasHostile", "hstl1");
 		x.aliasAttribute(ExerelinReputationAdjustmentResult.class, "isHostile", "hstl2");
