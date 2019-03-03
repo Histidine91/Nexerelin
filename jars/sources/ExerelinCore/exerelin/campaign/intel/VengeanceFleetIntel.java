@@ -4,6 +4,7 @@ import exerelin.campaign.RevengeanceManager;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
@@ -590,6 +591,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                                                 finalBonus // qualityMod
                                                 );
         params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
+        params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
         fleet = ExerelinUtilsFleet.customCreateFleet(getFaction(), params);
 
         if (fleet == null)
