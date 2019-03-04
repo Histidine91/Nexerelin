@@ -99,7 +99,7 @@ public class InfiltrateCell extends CovertActionIntel {
 		
 		boolean sleeper = cellIntel.getSleeperTimeout() > 0;
 		if (!sleeper) base = LuddicPathCellsIntel.getClosestBase(market);
-		if (base.isEnding() || base.isEnded())
+		if (base != null && (base.isEnding() || base.isEnded()))
 			base = null;
 		
 		// TODO: kill cell, locate base

@@ -30,7 +30,7 @@
 			"effectMax":0.15,
 			"repLossOnDetectionMin":0.1,
 			"repLossOnDetectionMax":0.15,
-			"baseCost":20000,
+			"baseCost":30000,
 			"costScaling":false,
 			"xp":250,
 		},

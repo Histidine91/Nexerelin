@@ -15,6 +15,8 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
 import static exerelin.campaign.intel.agents.AgentIntel.getString;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -45,6 +47,9 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 	
 	@Override
 	public boolean shouldShowAtMarket(MarketAPI market) {
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		if (!conf.allowAgentActions)
+			return false;
 		return super.shouldShowAtMarket(market);
 	}
 	

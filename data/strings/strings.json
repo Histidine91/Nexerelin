@@ -207,7 +207,7 @@
 		"intelDescLost":"Agent $name has been captured or killed.",
 		"intelDescDismissed":"Agent $name has been dismissed from your service.",
 		"intelDescLocation":"$name is currently $onOrAt $market, a $faction market in the $location.",
-		"intelDescLocationHyper":"$lastName is currently $onOrAt $market, a $faction market in hyperspace.",
+		"intelDescLocationHyper":"$name is currently $onOrAt $market, a $faction market in hyperspace.",
 		"intelDescXP":"Current XP: %s (%s to next level)",
 		"intelDescXPMax":"Current XP: %s",
 		"intelDescCurrAction":"Current action",
