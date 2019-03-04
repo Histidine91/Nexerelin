@@ -153,6 +153,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
+        if (CovertOpsManager.getManager() == null) {
+            Global.getSector().addScript(CovertOpsManager.create());
+        }
+        
         // fix free port overdose
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
