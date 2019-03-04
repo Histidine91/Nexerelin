@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.VengeanceFleetIntel;
@@ -24,8 +25,10 @@ import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.NexUtilsMath;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 
 /**
@@ -51,6 +54,10 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	// total stage number will equal (current vengeance points + offset)/ADDITIONAL_STAGE_INTERVAL
 	// make sure the first interval stage isn't too far or close to last preset stage's points
 	public static final float ADDITIONAL_STAGE_OFFSET = 0;	//-FLEET_STAGES.get(FLEET_STAGES.size() - 1)[0];
+	
+	public static final Set<String> IGNORED_FLEET_TYPES = new HashSet<>(Arrays.asList(new String[]{
+		"vengeanceFleet", "exerelinInvasionFleet", "exerelinStrikeFleet"
+	}));
 	
 	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;
 	
@@ -245,7 +252,10 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		{
 			String factionId = killedFleet.getFaction().getId();
 			if (!enemies.contains(factionId)) continue;
-			if (ExerelinUtilsFleet.getFleetType(killedFleet).equals("vengeanceFleet"))
+			String fleetType = ExerelinUtilsFleet.getFleetType(killedFleet);
+			if (IGNORED_FLEET_TYPES.contains(fleetType))
+				continue;
+			if (killedFleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT))
 				continue;
 			
 			List<FleetMemberAPI> killCurrent = killedFleet.getFleetData().getMembersListCopy();
