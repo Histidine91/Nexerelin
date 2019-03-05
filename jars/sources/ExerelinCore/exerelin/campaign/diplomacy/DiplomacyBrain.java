@@ -373,7 +373,7 @@ public class DiplomacyBrain {
 		boolean enemyIsPlayer = Nex_IsFactionRuler.isRuler(enemyId);
 		float enemyWeariness = DiplomacyManager.getWarWeariness(enemyId, true);
 		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + ExerelinConfig.minWarWearinessForPeace);
-		if (enemyIsPlayer) {
+		if (!enemyIsPlayer) {
 			if (enemyWeariness < ExerelinConfig.minWarWearinessForPeace)
 				return false;
 		} else {
