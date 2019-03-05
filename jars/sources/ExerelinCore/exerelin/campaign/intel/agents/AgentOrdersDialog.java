@@ -596,8 +596,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				max = Math.min(offset + ENTRIES_PER_PAGE, optionsList.size()),
 				numPages = 1 + ((optionsList.size() - 1) / ENTRIES_PER_PAGE);
 				
-		if (currentPage > max) {
-			currentPage = max;
+		if (currentPage > numPages) {
+			currentPage = numPages;
 			offset = (currentPage - 1) * ENTRIES_PER_PAGE;
 		}
 		
