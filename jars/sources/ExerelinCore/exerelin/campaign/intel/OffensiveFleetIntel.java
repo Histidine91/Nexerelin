@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -402,6 +403,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		
 		if (fleet == null || fleet.isEmpty()) return null;
 		fleet.setFaction(market.getFactionId(), true);	// also changed from super
+		handleAllyFleetNaming(fleet, factionId, random);
 		
 		//fleet.addEventListener(this);
 		
@@ -413,5 +415,19 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		fleet.addScript(createAssignmentAI(fleet, route));
 		
 		return fleet;
+	}
+	
+	protected void handleAllyFleetNaming(CampaignFleetAPI fleet, String sourceFactionId, Random rand) {
+		if (sourceFactionId.equals(fleet.getFaction().getId()))
+			return;
+		
+		FactionAPI source = Global.getSector().getFaction(sourceFactionId);
+		FactionAPI curr = fleet.getFaction();
+		
+		fleet.setName(fleet.getName() + " (" + Misc.ucFirst(source.getPersonNamePrefix()) + ")");
+		
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			member.setShipName(curr.pickRandomShipName(rand));
+		}
 	}
 }
