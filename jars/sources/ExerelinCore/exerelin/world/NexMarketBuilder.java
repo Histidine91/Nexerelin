@@ -590,7 +590,8 @@ public class NexMarketBuilder
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (config.freeMarket)
 		{
-			market.addCondition(Conditions.FREE_PORT);
+			market.setFreePort(true);
+			//market.addCondition(Conditions.FREE_PORT);
 		}
 		
 		market.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
