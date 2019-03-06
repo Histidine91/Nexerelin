@@ -56,7 +56,7 @@
     "warWearinessPeaceTreatyReduction": 6000,
     "acceptCeasefiresOnTimeout": false,	# if true, when the timer for a ceasefire offer to player expires it accepts instead of rejecting
     
-    "factionRespawnInterval": 90,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
+    "factionRespawnInterval": 120,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
     "maxFactionRespawns": 3,    # factions can launch respawn fleets this many times (not counting initial entry into sector); <0 = unlimited
     
     "warmongerPenalty": 0,   # take reputation hit from starting a war? (may not be supported any longer) 0 = never, 1 = not for followers, 2 = always

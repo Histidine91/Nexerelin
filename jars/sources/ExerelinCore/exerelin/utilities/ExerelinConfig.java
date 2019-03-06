@@ -112,8 +112,8 @@ public class ExerelinConfig
     public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
-    public static float factionRespawnInterval = 90;
-    public static int maxFactionRespawns = 1;
+    public static float factionRespawnInterval = 120;
+    public static int maxFactionRespawns = 3;
     public static boolean countPiratesForVictory = false;
     public static boolean leaveEliminatedFaction = true;
     @Deprecated
