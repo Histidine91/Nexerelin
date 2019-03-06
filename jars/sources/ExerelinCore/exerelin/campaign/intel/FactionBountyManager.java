@@ -19,7 +19,7 @@ import java.util.Map;
 public class FactionBountyManager extends BaseEventManager {
 
 	public static final String KEY = "$nex_factionBountyManager";
-	public static final float MAX_CONCURRENT_MULT = 0.25f;
+	public static final float MAX_CONCURRENT_MULT = 0.2f;
 	
 	public FactionBountyManager() {
 		super();
@@ -104,6 +104,8 @@ public class FactionBountyManager extends BaseEventManager {
 				
 				weight += thisWeight;
 			}
+			weight *= 0.5f;
+			
 			if (weight > 0)
 				picker.add(faction, weight);
 		}
