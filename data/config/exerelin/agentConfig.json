@@ -21,7 +21,7 @@
 		"raiseRelations":{
 			"name":"Raise Relations",
 			"time":45,
-			"successChance":0.7,
+			"successChance":0.6,
 			"detectionChance":0,	# it logically won't work if you get found out
 			"detectionChanceFail":0.25,
 			"useAlertLevel":false,
