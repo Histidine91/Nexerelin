@@ -184,7 +184,10 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 		daysRemaining -= Global.getSector().getClock().convertToDays(amount);
 		
 		if (daysRemaining <= 0) {
-			state = -1;
+			if (ExerelinConfig.acceptCeasefiresOnTimeout)
+				accept();
+			else
+				state = -1;
 			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
 			endAfterDelay();
 		}
