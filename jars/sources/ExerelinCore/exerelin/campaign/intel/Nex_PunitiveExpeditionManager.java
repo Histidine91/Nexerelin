@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,8 +25,12 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	@Override
 	protected void checkExpedition(PunExData curr) {
 		
+		String factionId = curr.faction.getId();
+		if (!SectorManager.isFactionAlive(factionId))
+			return;
+		
 		String playerFactionId = PlayerFactionStore.getPlayerFactionId();
-		if (AllianceManager.areFactionsAllied(playerFactionId, curr.faction.getId()))
+		if (AllianceManager.areFactionsAllied(playerFactionId, factionId))
 			return;
 		
 		super.checkExpedition(curr);
