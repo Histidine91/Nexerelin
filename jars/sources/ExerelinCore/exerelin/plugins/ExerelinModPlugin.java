@@ -238,6 +238,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         //sector.removeScriptsOfClass(FactionHostilityManager.class);
         
         PrismMarket.clearSubmarketCache();
+		
+		ColonyManager.getManager().updatePlayerBonusAdmins();
         
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onGameLoad(newGame);
