@@ -80,6 +80,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 	protected StarSystemAPI system;
 	protected MarketAPI market;
 	protected SectorEntityToken entity;
+	protected boolean destroyed;
 	
 	protected float elapsedDays = 0f;
 	protected float duration = 180f;
@@ -338,14 +339,16 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 	}
 
 
-
 	protected BountyResult result = null;
+	@Override
 	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
 		if (isEnding()) return;
 		
 		//CampaignFleetAPI station = Misc.getStationFleet(market); // null here since it's the skeleton station at this point
 		if (addedListenerTo != null && fleet == addedListenerTo) {
 			Misc.fadeAndExpire(entity);
+			if (reason == FleetDespawnReason.DESTROYED_BY_BATTLE)
+				destroyed = true;
 			endAfterDelay();
 			
 			result = new BountyResult(BountyResultType.END_OTHER, 0, null);
@@ -483,6 +486,8 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		String name = market.getName();
 		if (isEnding()) {
 			//return "Base Abandoned - " + name;
+			if (destroyed)
+				return str + " - " +  StringHelper.getString("exerelin_misc", "hiddenBaseDestroyed", true);
 			return str + " - " +  StringHelper.getString("exerelin_misc", "hiddenBaseAbandoned", true);
 		}
 		if (getListInfoParam() == DISCOVERED_PARAM) {

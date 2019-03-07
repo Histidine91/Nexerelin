@@ -1038,6 +1038,7 @@
 		"hiddenBaseDevelopmentLevel":"Development level",
 		"hiddenBaseDiscovered":"discovered",
 		"hiddenBaseAbandoned":"abandoned",
+		"hiddenBaseDestroyed":"destroyed",
 		"hiddenBaseLocationUnknown":"Exact Location Unknown",
 
 		"errorLazyLib":"Nexerelin requires LazyLib to function!\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0",
