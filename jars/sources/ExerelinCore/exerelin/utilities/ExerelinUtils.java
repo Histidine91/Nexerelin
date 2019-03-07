@@ -3,11 +3,15 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
+import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.DumpMemory;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -201,5 +205,28 @@ public class ExerelinUtils
             Global.getSector().removeListener(listener);
         }
 		loc.removeScriptsOfClass(oldClass);
+	}
+	
+	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(final boolean color, 
+			final int numDigits) {
+		return new TooltipMakerAPI.StatModValueGetter() {
+			public String getPercentValue(MutableStat.StatMod mod) {
+				String prefix = mod.getValue() > 0 ? "+" : "";
+				return prefix + (int)(mod.getValue()) + "%";
+			}
+			public String getMultValue(MutableStat.StatMod mod) {
+				return Strings.X + "" + Misc.getRoundedValue(mod.getValue());
+			}
+			public String getFlatValue(MutableStat.StatMod mod) {
+				String prefix = mod.getValue() > 0 ? "+" : "";
+				return prefix + String.format("%." + numDigits + "f", mod.getValue()) + "";
+			}
+			public Color getModColor(MutableStat.StatMod mod) {
+				if (!color) return null;
+				if (mod.getValue() < 1) return Misc.getNegativeHighlightColor();
+				if (mod.getValue() > 1) return Misc.getPositiveHighlightColor();
+				return null;
+			}
+		};
 	}
 }

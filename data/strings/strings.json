@@ -746,7 +746,10 @@
 		"intelTag":"Captures",
 
 		"transferMarketWarning":"Are you sure you wish to transfer $market to $theFaction?",
-		"transferMarketRep":"At the current stability, transferring $market will earn $repChange reputation with the recipient faction.",
+		"transferMarketRep":"Transferring $market will earn $repChange reputation with the recipient faction.",
+		"transferMarketFactorIndustry":"industry value",
+		"transferMarketFactorStability":"stability",
+		"transferMarketFactorSize":"market size",
 		
 		"stabilizeHeader":"Stabilizing $market will earn $reputation reputation with $theFaction, cost $credits and require the following commodities:",
 		"stabilizeTooltipDisabled":"Insufficient resources.",

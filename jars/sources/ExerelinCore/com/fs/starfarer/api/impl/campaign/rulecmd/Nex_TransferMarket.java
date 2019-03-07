@@ -9,7 +9,9 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
@@ -27,7 +29,8 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 	public static final String FACTION_GROUPS_KEY = "$nex_factionDirectoryGroups";
 	public static final float GROUPS_CACHE_TIME = 0f;
 	public static final String SELECT_FACTION_PREFIX = "nex_transferMarket_";
-	static final int PREFIX_LENGTH = SELECT_FACTION_PREFIX.length();
+	public static final int PREFIX_LENGTH = SELECT_FACTION_PREFIX.length();
+	public static final int VALUE_DIVISOR = 20000;
 		
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
@@ -79,30 +82,51 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 			case "printRepChange":
 				TextPanelAPI text = dialog.getTextPanel();
 				text.setFontSmallInsignia();
-				String repChange = getRepChange(market, true) + "";
+				MutableStat repChange = getRepChange(market);
+				String repChangeStr = String.format("%.1f", repChange.getModifiedValue());
 				String str = StringHelper.getString("exerelin_markets", "transferMarketRep");
-				str = StringHelper.substituteToken(str, "$repChange", repChange);
+				str = StringHelper.substituteToken(str, "$repChange", repChangeStr);
 				str = StringHelper.substituteToken(str, "$market", market.getName() + "");
 				text.addParagraph(str);
-				text.highlightLastInLastPara(repChange, Misc.getHighlightColor());
+				text.highlightLastInLastPara(repChangeStr, Misc.getHighlightColor());
 				//text.addParagraph("Market value: " + getMarketValue(market));
+				
+				TooltipMakerAPI info = text.beginTooltip();
+				info.addStatModGrid(350, 50, 10, 0, repChange, true, ExerelinUtils.getStatModValueGetter(true, 1));
+				text.addTooltip();
+				
 				text.setFontInsignia();
 				return true;
 		}
 		return false;
 	}
 	
-	
-	protected float getRepChange(MarketAPI market, boolean playerFacing)
+	protected MutableStat getRepChange(MarketAPI market)
 	{
-		float repChange = (5 + market.getSize()*5) * ((market.getStabilityValue() + 10) / 20);
-		if (!playerFacing) repChange *= 0.01f;
-		return repChange;
+		MutableStat stat = new MutableStat(0);
+		
+		// market size base
+		float fromSize = market.getSize() * 2;		
+		stat.modifyFlat("marketSize", fromSize, StringHelper.getString("exerelin_markets", 
+				"transferMarketFactorSize", true));
+		
+		// industry
+		float value = getMarketIndustryValue(market) / VALUE_DIVISOR;
+		//value *= market.getSize() - 2;
+		stat.modifyFlat("industry", value, StringHelper.getString("exerelin_markets", 
+				"transferMarketFactorIndustry", true));
+		
+		float fromStability = (market.getStabilityValue() + 10) / 20;
+		stat.modifyMult("stability", fromStability, StringHelper.getString("exerelin_markets", 
+				"transferMarketFactorStability", true));
+		
+		return stat;
 	}
 	
-	protected float getMarketValue(MarketAPI market) {
+	protected float getMarketIndustryValue(MarketAPI market) {
 		float value = 0;
 		for (Industry ind : market.getIndustries()) {
+			//if (!ind.isFunctional()) continue;
 			value += ind.getBuildCost();
 		}
 		return value;
@@ -113,7 +137,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		String oldFactionId = market.getFactionId();
 		FactionAPI newFaction = Global.getSector().getFaction(newFactionId);
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
-		float repChange = getRepChange(market, false);
+		float repChange = getRepChange(market).getModifiedValue() * 0.01f;
 		
 		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, 
 				new ArrayList<>(Arrays.asList(newFactionId)), repChange);
