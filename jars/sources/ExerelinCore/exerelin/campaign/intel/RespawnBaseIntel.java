@@ -83,7 +83,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 	protected boolean destroyed;
 	
 	protected float elapsedDays = 0f;
-	protected float duration = 180f;
+	protected float duration = 360f;
 	
 	//protected BaseBountyData bountyData = null;
 		
