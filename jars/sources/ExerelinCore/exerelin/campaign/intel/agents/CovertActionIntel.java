@@ -639,27 +639,4 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	public static String getString(String id, boolean ucFirst) {
 		return StringHelper.getString("nex_agentActions", id, ucFirst);
 	}
-	
-	public static TooltipMakerAPI.StatModValueGetter chanceStatPrinter(final boolean color) {
-		return new TooltipMakerAPI.StatModValueGetter() {
-			public String getPercentValue(MutableStat.StatMod mod) {
-				String prefix = mod.getValue() > 0 ? "+" : "";
-				return prefix + (int)(mod.getValue()) + "%";
-			}
-			public String getMultValue(MutableStat.StatMod mod) {
-				return Strings.X + "" + Misc.getRoundedValue(mod.getValue());
-			}
-			public String getFlatValue(MutableStat.StatMod mod) {
-				String prefix = mod.getValue() > 0 ? "+" : "";
-				int numDigits = 0;	//mod.getValue() == (int)mod.getValue() ? 0 : 1;
-				return prefix + String.format("%." + numDigits + "f", mod.getValue()) + "";
-			}
-			public Color getModColor(MutableStat.StatMod mod) {
-				if (!color) return null;
-				if (mod.getValue() < 1) return Misc.getNegativeHighlightColor();
-				if (mod.getValue() > 1) return Misc.getPositiveHighlightColor();
-				return null;
-			}
-		};
-	}
 }

@@ -29,9 +29,9 @@ import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import static exerelin.campaign.intel.agents.CovertActionIntel.chanceStatPrinter;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -104,6 +104,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		else {	// travel: can pick any faction that allows agent actions
 			Set<FactionAPI> temp = new HashSet<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+				if (market.isHidden()) continue;
 				temp.add(market.getFaction());
 			}
 			
@@ -317,7 +318,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			
 		TooltipMakerAPI info = text.beginTooltip();
 		info.setParaSmallInsignia();
-		info.addStatModGrid(350, 50, 10, 0, stat, true, chanceStatPrinter(color));
+		info.addStatModGrid(350, 50, 10, 0, stat, true, ExerelinUtils.getStatModValueGetter(color, 0));
 		text.addTooltip();
 	}
 	
