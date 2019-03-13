@@ -9,9 +9,10 @@ import com.fs.starfarer.api.combat.EngagementResultAPI;
 import exerelin.utilities.versionchecker.UpdateInfo.ModInfo;
 import exerelin.utilities.versionchecker.UpdateInfo.VersionFile;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 final class UpdateNotificationScript implements EveryFrameScript
 {
     private float timeUntilWarn = .75f; // Ensures text appears
-    private boolean isUpdateCheckDone = false, hasWarned = false;
+    private boolean isUpdateCheckDone = false, hasWarned = false, isDone = false;
     private transient Future<UpdateInfo> futureUpdateInfo;
     private transient UpdateInfo updateInfo;
     private transient List<ModSpecAPI> unsupportedMods;
@@ -40,7 +41,7 @@ final class UpdateNotificationScript implements EveryFrameScript
     @Override
     public boolean isDone()
     {
-        return false;
+        return isDone;
     }
 
     @Override
@@ -136,7 +137,8 @@ final class UpdateNotificationScript implements EveryFrameScript
                 Log.error("Failed to retrieve mod update info", ex);
                 ui.addMessage("Failed to retrieve mod update info!", Color.RED);
                 ui.addMessage("Check starsector.log for details.", Color.RED);
-                Global.getSector().removeScript(this);
+                Global.getSector().removeTransientScript(this);
+                isDone = true; // Just in case
                 return;
             }
 
