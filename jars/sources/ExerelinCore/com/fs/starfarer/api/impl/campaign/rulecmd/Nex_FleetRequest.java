@@ -27,6 +27,7 @@ import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.MutableValue;
+import data.campaign.intel.bases.KadurBaseIntel;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -502,6 +503,16 @@ public class Nex_FleetRequest extends PaginatedOptions {
 				if (faction != null && base.getMarket().getFaction() != faction) 
 					continue;
 				markets.add(base.getMarket());
+			}
+			else {
+				if (Global.getSettings().getModManager().isModEnabled("kadur_remnant")) {
+					if (intel instanceof KadurBaseIntel) {
+						KadurBaseIntel base = (KadurBaseIntel)intel;
+						if (faction != null && base.getMarket().getFaction() != faction) 
+							continue;
+						markets.add(base.getMarket());
+					}
+				}
 			}
 		}
 		return markets;
