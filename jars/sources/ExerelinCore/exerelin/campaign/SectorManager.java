@@ -1027,7 +1027,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (haveMilitary)
             {
                 market.removeSubmarket(Submarkets.GENERIC_MILITARY);
-                market.addSubmarket("AL_militaryMarket");
+                addOrRemoveSubmarket(market, "AL_militaryMarket", true);
             }
         }
         else if (!newOwnerId.equals("approlight") && oldOwnerId.equals("approlight"))
@@ -1035,7 +1035,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (haveMilitary)
             {
                 if (!newOwnerId.equals("templars"))
-                    market.addSubmarket(Submarkets.GENERIC_MILITARY);
+                    addOrRemoveSubmarket(market, Submarkets.GENERIC_MILITARY, true);
             }
             market.removeSubmarket("AL_militaryMarket");
         }
