@@ -56,7 +56,7 @@ public class MuseumShip extends BaseLandmarkDef {
 			// try to make it a capital or maybe a cruiser, if at all possible
 			rolePicker.add(ShipRoles.CARRIER_LARGE, 2f);
 			rolePicker.add(ShipRoles.COMBAT_CAPITAL, 5f);
-			rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 2f);
+			//rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 2f);
 			rolePicker.add(ShipRoles.CARRIER_MEDIUM, 1f);
 			rolePicker.add(ShipRoles.COMBAT_LARGE, 3f);
 			String role = rolePicker.pick();
