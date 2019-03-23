@@ -27,8 +27,6 @@ public class ExerelinConfig
     public static float forcePiratesInSystemChance = 0.3f;
 
     // Player settings
-    @Deprecated public static float playerBaseSalary = 5000f;
-    @Deprecated public static float playerSalaryIncrementPerLevel = 1000f;
     public static float playerInsuranceMult = 0.8f;
     
     public static float fleetBonusFpPerPlayerLevel = 1f;
@@ -122,7 +120,8 @@ public class ExerelinConfig
     public static boolean officerDeaths = false;
     public static boolean officerDaredevilBonus = true;
     public static boolean corvusModeLandmarks = false;
-	public static int stabilizePackageEffect = 3;
+    public static int stabilizePackageEffect = 3;
+    public static int maxNPCColonySize = 0;
 
     public static void loadSettings()
     {
@@ -136,9 +135,7 @@ public class ExerelinConfig
 
             minimumPlanets = settings.optInt("minimumPlanets");
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
-
-            playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
-            playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);
+            
             playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult", playerInsuranceMult);
             fleetBonusFpPerPlayerLevel = (float)settings.optDouble("fleetBonusFpPerPlayerLevel", fleetBonusFpPerPlayerLevel);
             
@@ -150,12 +147,12 @@ public class ExerelinConfig
             prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp", prisonerLootChancePer10Fp);
             prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue", prisonerSlaveRepValue);
             crewLootMult = (float)settings.optDouble("crewLootMult", crewLootMult);
-			
-			agentBaseSalary = settings.optInt("agentBaseSalary", agentBaseSalary);
-			agentSalaryPerLevel = settings.optInt("agentSalaryPerLevel", agentSalaryPerLevel);
+            
+            agentBaseSalary = settings.optInt("agentBaseSalary", agentBaseSalary);
+            agentSalaryPerLevel = settings.optInt("agentSalaryPerLevel", agentSalaryPerLevel);
             
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
-			retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
+            retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
             fleetRequestCostPerMarine = (float)settings.optDouble("fleetRequestCostPerMarine", fleetRequestCostPerMarine);
             fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);
             invasionFleetSizeMult = (float)settings.optDouble("invasionFleetSizeMult", invasionFleetSizeMult);
@@ -186,7 +183,7 @@ public class ExerelinConfig
             minWarWearinessForPeace = (float)settings.optDouble("minWarWearinessForPeace", minWarWearinessForPeace);
             warWearinessCeasefireReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             warWearinessPeaceTreatyReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
-			acceptCeasefiresOnTimeout = settings.optBoolean("acceptCeasefiresOnTimeout", acceptCeasefiresOnTimeout);
+            acceptCeasefiresOnTimeout = settings.optBoolean("acceptCeasefiresOnTimeout", acceptCeasefiresOnTimeout);
             
             followersAgents = settings.optBoolean("followersAgents", followersAgents);
             followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
@@ -210,7 +207,8 @@ public class ExerelinConfig
             maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
-			stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
+            stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
+            maxNPCColonySize = settings.optInt("maxNPCColonySize", maxNPCColonySize);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             

@@ -87,6 +87,8 @@
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
 	
 	"stabilizePackageEffect": 3,
+	
+	"maxNPCColonySize": 0,	# NPC markets will grow up to this size on their own
 
     # DO NOT TOUCH!
     # to make factions not appear, use the menu options
