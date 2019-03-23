@@ -99,6 +99,8 @@ public class StartSetupPostTimePass {
 				{
 					if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
 						continue;
+					if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
+						continue;
 					picker.add(market.getPrimaryEntity());
 				}
 				entity = picker.pick();

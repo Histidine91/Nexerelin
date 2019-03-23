@@ -884,6 +884,7 @@ public class ExerelinProcGen {
 	{
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		List<SectorEntityToken> toRemove = new ArrayList<>();
+		Set<SectorEntityToken> hyperAnchors = new HashSet<>();
 		for (StarSystemAPI system : systems)
 		{
 			log.info("Cleaning up system " + system.getName());
@@ -906,13 +907,16 @@ public class ExerelinProcGen {
 				system.removeTag(tag);
 			}
 			system.addTag(Tags.THEME_CORE_POPULATED);
+			
+			hyperAnchors.add(system.getHyperspaceAnchor());
 		}
 		for (SectorEntityToken beacon : hyper.getEntitiesWithTag(Tags.WARNING_BEACON))
 		{
-			StarSystemAPI nearest = Misc.getNearestStarSystem(beacon);
-			if (systems.contains(nearest))
+			SectorEntityToken orbitFocus = beacon.getOrbitFocus();
+			if (orbitFocus != null && hyperAnchors.contains(orbitFocus))
 			{
-				//log.info("\tBeacon has nearest star system " + nearest.getBaseName() + ", removing");
+				StarSystemAPI nearest = Misc.getNearestStarSystem(orbitFocus);
+				log.info("\tBeacon orbits a cleaned-up system's hyper anchor (nearest star system " + nearest.getName() + "), removing");
 				toRemove.add(beacon);
 			}
 		}
