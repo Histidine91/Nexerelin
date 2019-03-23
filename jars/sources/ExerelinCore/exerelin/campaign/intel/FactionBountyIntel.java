@@ -20,6 +20,8 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
@@ -28,14 +30,20 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
+import java.util.Arrays;
+import java.util.HashSet;
 import org.lazywizard.lazylib.MathUtils;
 
 // adapted from SystemBountyIntel
 public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScript, FleetEventListener {
 	public static Logger log = Global.getLogger(FactionBountyIntel.class);
+	
+	public static final Set<String> ALWAYS_PAYOUT_FLEETS = new HashSet<>(Arrays.asList(new String[] {
+		FleetTypes.TASK_FORCE, "exerelinInvasionFleet", "exerelinInvasionSupportFleet"
+	}));
 
 	public static final float BOUNTY_MULT = 0.5f;	// of baseSystemBounty
 	public static final float MAX_DURATION = 90;
@@ -93,6 +101,8 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 		int highestWeight = 0;
 		for (String otherId : DiplomacyManager.getFactionsAtWarWithFaction(faction, true, true, false)) {
 			FactionAPI other = Global.getSector().getFaction(otherId);
+			if (ExerelinUtilsFaction.isPirateFaction(otherId))
+				continue;
 			
 			float weight = ExerelinUtilsFaction.getFactionMarketSizeSum(otherId);
 			if (faction.isAtBest(otherId, RepLevel.VENGEFUL))
@@ -157,6 +167,23 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 		}
 		
 	}
+	
+	protected boolean shouldPayout(CampaignFleetAPI fleet) {
+		FactionAPI other = fleet.getFaction();
+		if (!faction.isHostileTo(other.getId())) return false;
+		
+		// no pirates, remnants etc. unless it's a raid fleet or something
+		boolean badFaction = ExerelinUtilsFaction.isPirateFaction(other.getId()) || !other.isShowInIntelTab();
+		
+		if (badFaction) {
+			if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+				return true;
+			String type = ExerelinUtilsFleet.getFleetType(fleet);
+			if (type != null && ALWAYS_PAYOUT_FLEETS.contains(type))
+				return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
@@ -171,12 +198,8 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 		int payment = 0;
 		float fpDestroyed = 0;
 		for (CampaignFleetAPI otherFleet : battle.getNonPlayerSideSnapshot()) {
-			if (!faction.isHostileTo(otherFleet.getFaction())) continue;
-			
-			// no pirates? meh, we still want to give money for LP kills
-			if (ExerelinConfig.getExerelinFactionConfig(otherFleet.getFaction().getId()).pirateFaction) {
-				//continue;
-			}
+			if (!shouldPayout(otherFleet))
+				continue;
 			
 			float bounty = 0;
 			for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
@@ -337,6 +360,8 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 			info.setBulletedListMode(BaseIntelPlugin.INDENT);
 			float initPad = pad;
 			for (FactionAPI other : hostile) {
+				if (ExerelinUtilsFaction.isPirateFaction(other.getId()))
+					continue;
 				info.addPara(Misc.ucFirst(other.getDisplayName()), other.getBaseUIColor(), initPad);
 				initPad = 0f;
 			}
