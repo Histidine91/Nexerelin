@@ -66,6 +66,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	public void init() {
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
+		CovertOpsManager.getManager().addAgent(this);
 	}
 	
 	public void gainXP(int xp) {
@@ -110,6 +111,10 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	public void setMarket(MarketAPI market) {
 		this.market = market;
+	}
+	
+	public CovertActionIntel getCurrentAction() {
+		return currentAction;
 	}
 	
 	public void setCurrentAction(CovertActionIntel currentAction) {
@@ -315,6 +320,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			isDismissed = true;
 			//sendUpdateIfPlayerHasIntel(UPDATE_DISMISSED, false);
 			endAfterDelay();
+			CovertOpsManager.getManager().removeAgent(this);
 		}
 		super.buttonPressConfirmed(buttonId, ui);
 	}

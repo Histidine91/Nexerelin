@@ -44,9 +44,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +73,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
-    public static final boolean DEBUG_MODE = false;
+    public static final boolean DEBUG_MODE = true;
     
     public static final float NPC_EFFECT_MULT = 1f;
     public static final int MAX_AGENTS = 2;
@@ -81,6 +83,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
     public static final Map<String, Float> industrySuccessMods = new HashMap<>();
     public static final Map<String, Float> industryDetectionMods = new HashMap<>();
+	
+	protected Set<AgentIntel> agents = new HashSet<>();
     
     protected static float baseInterval = 45f;
     protected float interval = baseInterval;
@@ -179,6 +183,16 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	
 	public static float getIndustryDetectionMult(Industry ind) {
 		return getIndustryMult(ind, industryDetectionMods);
+	}
+	
+	protected Object readResolve() {
+		if (agents == null) {
+			agents = new HashSet<>();
+			for (AgentIntel agent : getAgentsStatic()) {
+				addAgent(agent);
+			}
+		}
+		return this;
 	}
 
     public CovertOpsManager()
@@ -341,7 +355,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		CovertActionIntel intel = null;
 		switch (actionType) {
 			case CovertActionType.RAISE_RELATIONS:
-				intel = new RaiseRelations(null, market, agentFaction, targetFaction, false, null);
+				intel = new RaiseRelations(null, market, agentFaction, targetFaction, agentFaction, false, null);
 				break;
 			case CovertActionType.LOWER_RELATIONS:
 				Map<String, Object> params = new HashMap<>();
@@ -517,7 +531,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         return manager;
     }
 	
-	public static List<AgentIntel> getAgents() {
+	public static List<AgentIntel> getAgentsStatic() {
 		List<AgentIntel> agents = new ArrayList<>();
 		for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(AgentIntel.class)) {
 			AgentIntel intel = (AgentIntel)iip;
@@ -525,6 +539,18 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			agents.add(intel);
 		}
 		return agents;
+	}
+	
+	public List<AgentIntel> getAgents() {
+		return new ArrayList<>(agents);
+	}
+	
+	public void addAgent(AgentIntel intel) {
+		agents.add(intel);
+	}
+	
+	public void removeAgent(AgentIntel intel) {
+		agents.remove(intel);
 	}
     
     public static enum CovertActionResult

@@ -101,6 +101,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			factionsSet.remove(Global.getSector().getPlayerFaction());
 			factionsSet.remove(agent.getMarket().getFaction());
 		}
+		else if (action.getDefId().equals(CovertActionType.RAISE_RELATIONS)) {
+			for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+				factionsSet.add(Global.getSector().getFaction(factionId));
+			}
+			factionsSet.add(Global.getSector().getFaction(Factions.PLAYER));
+			// don't allow raising relationship of target faction with itself
+			factionsSet.remove(agent.getMarket().getFaction());
+		}
 		else {	// travel: can pick any faction that allows agent actions
 			Set<FactionAPI> temp = new HashSet<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
@@ -362,6 +370,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
 		MarketAPI market = agent.getMarket();
 		FactionAPI mktFaction = market != null ? market.getFaction() : null;
+		if (agentFaction == mktFaction)
+			agentFaction = Global.getSector().getPlayerFaction();
 		
 		switch (def.id) {
 			case CovertActionType.TRAVEL:
@@ -370,8 +380,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				getFactions();
 				break;
 			case CovertActionType.RAISE_RELATIONS:
-				action = new RaiseRelations(agent, market, agentFaction, mktFaction, true, null);
+				action = new RaiseRelations(agent, market, agentFaction, mktFaction, agentFaction, true, null);
 				action.init();
+				getFactions();
+				selectFaction(agentFaction);
 				printActionInfo();
 				break;
 			case CovertActionType.LOWER_RELATIONS:
@@ -410,6 +422,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		if (action.getDefId().equals(CovertActionType.LOWER_RELATIONS)) {
 			((LowerRelations)action).setThirdFaction(thirdFaction);
 			//printActionInfo();	// meh, don't need to tell player that they've changed target faction
+		} else if (action.getDefId().equals(CovertActionType.RAISE_RELATIONS)) {
+			((RaiseRelations)action).setThirdFaction(thirdFaction);
 		}
 		
 		getTargets();
@@ -524,7 +538,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		// target faction and/or target object, if relevant
 		if (action != null) {
 			String id = action.getDefId();
-			if (id.equals(CovertActionType.TRAVEL) || id.equals(CovertActionType.LOWER_RELATIONS))
+			if (id.equals(CovertActionType.TRAVEL) || id.equals(CovertActionType.RAISE_RELATIONS) 
+					|| id.equals(CovertActionType.LOWER_RELATIONS))
 			{
 				str = getString("dialogOption_faction");
 				str = StringHelper.substituteToken(str, "$faction", thirdFaction != null ? 
@@ -590,7 +605,6 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addBackOption();
 			return;
 		}
-			
 		
 		options.clearOptions();
 		int offset = (currentPage - 1) * ENTRIES_PER_PAGE,
@@ -625,11 +639,48 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			options.setShortcut(Menu.NEXT_PAGE, Keyboard.KEY_RIGHT,
 					false, false, false, true);
 		}
+		
+		if (lastSelectedMenu == Menu.ACTION_TYPE) {
+			disableActionOptionsIfNeeded();
+		}
 
 		// Show page number in prompt if multiple pages are present
 		//dialog.setPromptText("Select a mod to go to its forum thread"
 		//		+ (numPages > 1 ? " (page " + currentPage + "/" + numPages + ")" : "") + ":");
 		addBackOption();
+	}
+	
+	protected void disableActionOptionsIfNeeded() {
+		FactionAPI faction = agent.getMarket().getFaction();
+		if (!RaiseRelations.canModifyRelations(faction)) {
+			CovertActionDef raise = CovertOpsManager.getDef(CovertActionType.RAISE_RELATIONS);
+			CovertActionDef lower = CovertOpsManager.getDef(CovertActionType.LOWER_RELATIONS);
+			options.setEnabled(raise, false);
+			options.setEnabled(lower, false);
+			String tooltip = getString("dialogTooltipAlreadyModifyingRelations");
+			options.setTooltip(raise, tooltip);
+			options.setTooltip(lower, tooltip);
+		}
+		else {
+			float cooldown = RaiseRelations.getModifyRelationsCooldown(faction);
+			if (cooldown <= 0) return;
+			
+			CovertActionDef raise = CovertOpsManager.getDef(CovertActionType.RAISE_RELATIONS);
+			CovertActionDef lower = CovertOpsManager.getDef(CovertActionType.LOWER_RELATIONS);
+			options.setEnabled(raise, false);
+			options.setEnabled(lower, false);
+			String tooltip = getString("dialogTooltipModifyingRelationsCooldown");
+			String days = Misc.getAtLeastStringForDays((int)cooldown);//String.format("%.1f", cooldown);
+			tooltip = StringHelper.substituteToken(tooltip, "$cooldown", days);
+			String[] highlights = {days};
+			Color[] colors = {Misc.getHighlightColor()};
+			options.setTooltip(raise, tooltip);
+			options.setTooltipHighlights(raise, highlights);
+			options.setTooltipHighlightColors(raise, colors);
+			options.setTooltip(lower, tooltip);
+			options.setTooltipHighlights(lower, highlights);
+			options.setTooltipHighlightColors(lower, colors);
+		}
 	}
 	
 	protected void addBackOption() {

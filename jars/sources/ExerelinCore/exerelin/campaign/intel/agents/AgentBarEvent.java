@@ -142,7 +142,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				boolean enough = credits >= hiringBonus;
 				text.addPara(str, enough? Misc.getHighlightColor() : Misc.getNegativeHighlightColor(), creditsStr);
 				
-				if (CovertOpsManager.getAgents().size() >= CovertOpsManager.getManager().getMaxAgents().getModifiedValue())
+				if (CovertOpsManager.getManager().getAgents().size() >= CovertOpsManager.getManager().getMaxAgents().getModifiedValue())
 				{
 					options.addOption(getString("barOptionMaxAgents"), OptionId.CANCEL);
 				} 

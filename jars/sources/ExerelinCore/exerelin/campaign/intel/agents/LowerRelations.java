@@ -16,6 +16,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.intel.DiplomacyIntel;
 import static exerelin.campaign.intel.agents.CovertActionIntel.NO_EFFECT;
+import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -67,6 +68,7 @@ public class LowerRelations extends CovertActionIntel {
 					thirdFaction.getId(), repResult.delta);
 
 		reportEvent();
+		applyMemoryCooldown(targetFaction);
 	}
 
 	@Override
@@ -90,6 +92,7 @@ public class LowerRelations extends CovertActionIntel {
 						agentFaction.getId(), repResult2.delta);
 		}
 		reportEvent();
+		applyMemoryCooldown(targetFaction);
 	}
 	
 	@Override

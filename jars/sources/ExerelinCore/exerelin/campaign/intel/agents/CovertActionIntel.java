@@ -206,9 +206,9 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		
 		// alert level
 		if (def.useAlertLevel) {
-            float mult = 1 - CovertOpsManager.getAlertLevel(market);
+			float mult = 1 - CovertOpsManager.getAlertLevel(market);
 			stat.modifyMult("alertLevel", mult, StringHelper.getString("nex_agents", "alertLevel", true));
-        }
+		}
 		
 		return stat;
 	}
@@ -249,37 +249,45 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
 		endImmediately();
 	}
-	    
+		
 	/**
 	 * Rolls a success/failure and detected/undetected result for the covert action.
 	 * @return
 	 */
-    protected CovertActionResult covertActionRoll()
-    {
+	protected CovertActionResult covertActionRoll()
+	{
 		CovertOpsManager.CovertActionDef def = getDef();
-        CovertActionResult rollResult = null;
-        
+		CovertActionResult rollResult = null;
+		
 		MutableStat sChance = getSuccessChance();
 		MutableStat sDetectChance = getDetectionChance(false);
 		MutableStat fDetectChance = getDetectionChance(true);
-            
-        if (Math.random() * 100 < sChance.getModifiedValue())
-        {
-            rollResult = CovertActionResult.SUCCESS;
-            if (Math.random() * 100 < sDetectChance.getModifiedValue())
+			
+		if (Math.random() * 100 < sChance.getModifiedValue())
+		{
+			rollResult = CovertActionResult.SUCCESS;
+			if (Math.random() * 100 < sDetectChance.getModifiedValue())
 				rollResult = CovertActionResult.SUCCESS_DETECTED;
-        }
-        else
-        {
-            rollResult = CovertActionResult.FAILURE;
-            if (Math.random() * 100 < fDetectChance.getModifiedValue())
+		}
+		else
+		{
+			rollResult = CovertActionResult.FAILURE;
+			if (Math.random() * 100 < fDetectChance.getModifiedValue())
 				rollResult = CovertActionResult.FAILURE_DETECTED;
-        }
-        return rollResult;
-    }
+		}
+		return rollResult;
+	}
 	
 	public CovertActionResult execute()
 	{
+		targetFaction = market.getFaction();
+		if (playerInvolved) {
+			agentFaction = PlayerFactionStore.getPlayerFaction();	// in case player changed faction since launching action
+			if (agentFaction == targetFaction) {
+				agentFaction = Global.getSector().getPlayerFaction();
+			}
+		}
+		
 		result = covertActionRoll();
 				
 		if (result.isSucessful())
