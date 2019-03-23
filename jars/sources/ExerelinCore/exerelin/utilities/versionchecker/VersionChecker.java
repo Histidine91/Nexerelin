@@ -1,5 +1,11 @@
 package exerelin.utilities.versionchecker;
 
+import com.fs.starfarer.api.Global;
+import exerelin.utilities.versionchecker.UpdateInfo.ModInfo;
+import exerelin.utilities.versionchecker.UpdateInfo.VersionFile;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -8,20 +14,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadFactory;
-import com.fs.starfarer.api.Global;
-import org.json.JSONException;
-import org.json.JSONObject;
-import exerelin.utilities.versionchecker.UpdateInfo.ModInfo;
-import exerelin.utilities.versionchecker.UpdateInfo.VersionFile;
+import java.util.concurrent.*;
 
 // TEMP: runcode String path = (System.getProperty("user.dir")+"/"+System.getProperty("com.fs.starfarer.settings.paths.mods")); path = path.replace("\\\\", "\\").replace("\\","/");System.out.println(path);
 final class VersionChecker
@@ -84,7 +77,7 @@ final class VersionChecker
 
         // Load JSON from external URL and parse version info from it
         try (InputStream stream = new URL(versionFileURL).openStream();
-                Scanner scanner = new Scanner(stream, "UTF-8").useDelimiter("\\A"))
+             Scanner scanner = new Scanner(stream, "UTF-8").useDelimiter("\\A"))
         {
             return new VersionFile(sanitizeJSON(scanner.next()), true);
 
@@ -112,7 +105,7 @@ final class VersionChecker
 
         // Get latest Starsector version from remote URL
         try (InputStream stream = new URL(VANILLA_UPDATE_URL).openStream();
-                Scanner scanner = new Scanner(stream, "UTF-8").useDelimiter("\\A"))
+             Scanner scanner = new Scanner(stream, "UTF-8").useDelimiter("\\A"))
         {
             return scanner.next();
         }
@@ -181,39 +174,45 @@ final class VersionChecker
         public static void main(String[] args)
         {
             final String[] allVersions = new String[]
-            {
-                "Starsector 0.35a-pre-RC2",
-                "Starsector 0.5a-pre-RC3",
-                "Starsector 0.51a-RC1",
-                "Starsector 0.51a-RC3",
-                "Starsector 0.52a-RC2",
-                "Starsector 0.52.1a-RC4",
-                "Starsector 0.53a-RC4",
-                "Starsector 0.53.1a-RC5",
-                "Starsector 0.54a-RC5",
-                "Starsector 0.54.1a-RC2",
-                "Starsector 0.6a-RC1",
-                "Starsector 0.6a-RC4",
-                "Starsector 0.6.1a-RC2",
-                "Starsector 0.6.2a-RC2",
-                "Starsector 0.6.2a-RC3",
-                "Starsector 0.65a-RC1",
-                "Starsector 0.65.1a-RC1",
-                "Starsector 0.65.2a-RC1",
-                "Starsector 0.7a-RC7",
-                "Starsector 0.7a-RC10",
-                "Starsector 0.7.1a-RC3",
-                "Starsector 0.7.1a-RC4",
-                "Starsector 0.7.1a-RC5",
-                "Starsector 0.7.2a-RC1",
-                "Starsector 0.7.2a-RC2",
-                "Starsector 0.7.2a-RC3",
-                "Starsector 0.8a-RC17",
-                "Starsector 0.8a-RC18",
-                "Starsector 0.8a-RC19",
-                "Starsector 0.8.1a-RC5",
-                "Starsector 0.8.1a-RC6"
-            };
+                    {
+                            "Starsector 0.35a-pre-RC2",
+                            "Starsector 0.5a-pre-RC3",
+                            "Starsector 0.51a-RC1",
+                            "Starsector 0.51a-RC3",
+                            "Starsector 0.52a-RC2",
+                            "Starsector 0.52.1a-RC4",
+                            "Starsector 0.53a-RC4",
+                            "Starsector 0.53.1a-RC5",
+                            "Starsector 0.54a-RC5",
+                            "Starsector 0.54.1a-RC2",
+                            "Starsector 0.6a-RC1",
+                            "Starsector 0.6a-RC4",
+                            "Starsector 0.6.1a-RC2",
+                            "Starsector 0.6.2a-RC2",
+                            "Starsector 0.6.2a-RC3",
+                            "Starsector 0.65a-RC1",
+                            "Starsector 0.65.1a-RC1",
+                            "Starsector 0.65.2a-RC1",
+                            "Starsector 0.7a-RC7",
+                            "Starsector 0.7a-RC10",
+                            "Starsector 0.7.1a-RC3",
+                            "Starsector 0.7.1a-RC4",
+                            "Starsector 0.7.1a-RC5",
+                            "Starsector 0.7.2a-RC1",
+                            "Starsector 0.7.2a-RC2",
+                            "Starsector 0.7.2a-RC3",
+                            "Starsector 0.8a-RC17",
+                            "Starsector 0.8a-RC18",
+                            "Starsector 0.8a-RC19",
+                            "Starsector 0.8.1a-RC5",
+                            "Starsector 0.8.1a-RC6",
+                            "Starsector 0.9a-RC6",
+                            "Starsector 0.9a-RC7",
+                            "Starsector 0.9a-RC8",
+                            "Starsector 0.9a-RC9",
+                            "Starsector 0.9a-RC10",
+
+                    };
 
             // Proper order, all should be true
             System.out.println(" Proper order\n--------------");
@@ -321,7 +320,7 @@ final class VersionChecker
                             + VANILLA_UPDATE_URL + "\"", ex);
                     results.setFailedSSError(ex.getClass().getSimpleName());
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.error("Failed to parse vanilla update data from URL \""
                             + VANILLA_UPDATE_URL + "\"", ex);

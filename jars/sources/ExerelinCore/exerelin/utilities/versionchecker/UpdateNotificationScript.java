@@ -190,6 +190,7 @@ final class UpdateNotificationScript implements EveryFrameScript
             LIST_FAILED,
             PREVIOUS_PAGE,
             NEXT_PAGE,
+            OPEN_ALL_UPDATES,
             RETURN,
             EXIT
         }
@@ -328,7 +329,11 @@ final class UpdateNotificationScript implements EveryFrameScript
                 ModInfo mod = currentList.get(x);
                 VersionFile local = mod.getLocalVersion();
                 options.addOption(local.getName(), local);
-                options.setEnabled(local, local.getThreadURL() != null);
+                options.setEnabled(local, local.getUpdateURL() != null);
+                if (local.getUpdateURL() != null)
+                {
+                    options.setTooltip(local, "URL: " + local.getUpdateURL());
+                }
             }
 
             // Support for multiple pages of options
@@ -428,6 +433,19 @@ final class UpdateNotificationScript implements EveryFrameScript
                     options.addOption("List mods with updates", Menu.LIST_UPDATES);
                     options.setEnabled(Menu.LIST_UPDATES, !hasUpdate.isEmpty());
 
+                    // Only show this option if there are updates available
+                    if (!hasUpdate.isEmpty())
+                    {
+                        options.addOption("Open page for all mods with an update available", Menu.OPEN_ALL_UPDATES);
+
+                        // Launching the browser doesn't work on some Linux distros
+                        if (!Desktop.isDesktopSupported())
+                        {
+                            options.setEnabled(Menu.OPEN_ALL_UPDATES, false);
+                            options.setTooltip(Menu.OPEN_ALL_UPDATES, "Not supported on this OS!");
+                        }
+                    }
+
                     // Only show this option if an update check has actually failed
                     if (!failedCheck.isEmpty())
                     {
@@ -515,6 +533,14 @@ final class UpdateNotificationScript implements EveryFrameScript
                     currentPage++;
                     generateModMenu();
                     break;
+                case OPEN_ALL_UPDATES:
+                    for (ModInfo mod : hasUpdate)
+                    {
+                        openModThread(mod.getLocalVersion());
+                    }
+                    goToMenu(Menu.MAIN_MENU);
+                    options.setEnabled(Menu.OPEN_ALL_UPDATES, false);
+                    break;
                 case RETURN:
                     generateModMenu();
                     break;
@@ -536,6 +562,37 @@ final class UpdateNotificationScript implements EveryFrameScript
             goToMenu(Menu.MAIN_MENU);
         }
 
+        private void openModThread(VersionFile mod)
+        {
+            // Some flavors of Linux don't support the Desktop API without certain libraries installed
+            if (!Desktop.isDesktopSupported())
+            {
+                final StringSelection modUrl = new StringSelection(mod.getUpdateURL());
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(modUrl, modUrl);
+                text.addParagraph("Opening the browser directly is not supported on this OS!\n" +
+                        "The forum thread URL has been copied to the clipboard instead.");
+                return;
+            }
+
+            // Open the mod forum thread in the user's default browser
+            try
+            {
+                final String url = mod.getUpdateURL();
+                if (url != null)
+                {
+                    text.addParagraph("Opening " + mod.getName() + " forum thread...");
+                    options.setEnabled(mod, false);
+                    Desktop.getDesktop().browse(URI.create(url));
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.error("Failed to launch browser: ", ex);
+                text.addParagraph("Failed to launch browser: "
+                        + ex.getMessage(), Color.RED);
+            }
+        }
+
         @Override
         public void optionSelected(String optionText, Object optionData)
         {
@@ -549,31 +606,7 @@ final class UpdateNotificationScript implements EveryFrameScript
             // Option was version data? Launch that mod's forum thread
             else if (optionData instanceof VersionFile)
             {
-                final VersionFile info = (VersionFile) optionData;
-
-                // Some flavors of Linux don't support the Desktop API without certain libraries installed
-                if (!Desktop.isDesktopSupported())
-                {
-                    final StringSelection modUrl = new StringSelection(info.getThreadURL());
-                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(modUrl, modUrl);
-                    text.addParagraph("Opening the browser directly is not supported on this OS!\n" +
-                            "The forum thread URL has been copied to the clipboard instead.");
-                    return;
-                }
-
-                // Open the mod forum thread in the user's default browser
-                try
-                {
-                    text.addParagraph("Opening " + info.getName() + " forum thread...");
-                    options.setEnabled(info, false);
-                    Desktop.getDesktop().browse(URI.create(info.getThreadURL()));
-                }
-                catch (Exception ex)
-                {
-                    Log.error("Failed to launch browser: ", ex);
-                    text.addParagraph("Failed to launch browser: "
-                            + ex.getMessage(), Color.RED);
-                }
+                openModThread((VersionFile) optionData);
             }
         }
 

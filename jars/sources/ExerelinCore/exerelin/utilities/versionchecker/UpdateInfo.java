@@ -1,9 +1,10 @@
 package exerelin.utilities.versionchecker;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 final class UpdateInfo
 {
@@ -146,7 +147,9 @@ final class UpdateInfo
     {
         private static final String MOD_THREAD_FORMAT
                 = "http://fractalsoftworks.com/forum/index.php?topic=%d.0";
-        private final int major, minor, modThreadId;
+        private static final String MOD_NEXUS_FORMAT
+                = "https://www.nexusmods.com/starsector/mods/%d?tab=files";
+        private final int major, minor, modThreadId, modNexusId;
         private final String patch, masterURL, modName;
 
         VersionFile(final JSONObject json, boolean isMaster) throws JSONException
@@ -155,6 +158,7 @@ final class UpdateInfo
             masterURL = (isMaster ? null : json.getString("masterVersionFile"));
             modName = (isMaster ? null : json.optString("modName", "<unknown>"));
             modThreadId = (isMaster ? 0 : (int) json.optDouble("modThreadId", 0));
+            modNexusId = (isMaster ? 0 : (int) json.optDouble("modNexusId", 0));
 
             // Parse version number
             JSONObject modVersion = json.getJSONObject("modVersion");
@@ -212,14 +216,19 @@ final class UpdateInfo
             return masterURL;
         }
 
-        String getThreadURL()
+        String getUpdateURL()
         {
-            if (modThreadId == 0)
+            if (VCModPluginCustom.preferNexus)
             {
-                return null;
+                return (modNexusId == 0 ? modThreadId == 0 ? null
+                        : String.format(MOD_THREAD_FORMAT, modThreadId)
+                        : String.format(MOD_NEXUS_FORMAT, modNexusId));
             }
 
-            return String.format(MOD_THREAD_FORMAT, modThreadId);
+            return (modThreadId == 0 ? modNexusId == 0 ? null
+                    : String.format(MOD_NEXUS_FORMAT, modNexusId)
+                    : String.format(MOD_THREAD_FORMAT, modThreadId));
+
         }
 
         @Override
@@ -248,9 +257,9 @@ final class UpdateInfo
 
             //System.out.println(digit + " | " + str);
             return new String[]
-            {
-                digit.toString(), str
-            };
+                    {
+                            digit.toString(), str
+                    };
         }
 
         private static int comparePatch(String patch, String other)
