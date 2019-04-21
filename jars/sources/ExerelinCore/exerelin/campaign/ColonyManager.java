@@ -344,8 +344,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, 
 			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
-		npcConstructionQueues.remove(market);
-		if (oldOwner.isPlayerFaction()) {
+		LinkedList<QueuedIndustry> existing = npcConstructionQueues.remove(market);
+		if (oldOwner.isPlayerFaction() || existing != null) {
 			buildIndustries(market);
 			processNPCConstruction(market);
 		}
