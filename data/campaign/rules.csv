@@ -109,8 +109,8 @@ SetTooltipHighlights exerelinNGCEnableEasyMode ""50%"" ""50%"" ""500"" ""50%"" "
 ExerelinNGCListOptionDisableEasyMode,ExerelinNGCOtherOptions,$easyMode,"SetTooltip exerelinNGCDisableEasyMode ""- Reduces damage taken by 50%\n- Increases damage dealt by 50%\n- Increases sensor range by 500 units\n- Increases salvage by 50%\n- Reduces level of enemy officers by 50%""
 SetTooltipHighlightColors exerelinNGCDisableEasyMode hColor hColor hColor hColor hColor
 SetTooltipHighlights exerelinNGCDisableEasyMode ""50%"" ""50%"" ""500"" ""50%"" ""50%""",,exerelinNGCDisableEasyMode:Disable vanilla's Easy Mode,
-ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode: halved salary and insurance payments; other factions are more aggressive towards yours""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
-ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode: halved salary and insurance payments; other factions are more aggressive towards yours""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
+ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode: other factions are more aggressive towards yours; halved insurance payments""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
+ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode: other factions are more aggressive towards yours; halved insurance payments""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
 ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,SetShortcut exerelinNGCOptionsBack ESCAPE,,10:exerelinNGCOptionsBack:Back,
 ,,,,,,
 ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorvusMode,"NGCSetCorvusMode true
