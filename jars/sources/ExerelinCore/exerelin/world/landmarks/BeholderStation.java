@@ -18,9 +18,8 @@ import java.util.Set;
 public class BeholderStation extends BaseLandmarkDef {
 	
 	@Override
-	public List<SectorEntityToken> getRandomLocations() {
-		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
-		
+	public List<SectorEntityToken> getEligibleLocations() {
+		List<SectorEntityToken> results = new ArrayList<>();
 		Set<StarSystemAPI> luddicSystems = new HashSet<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
@@ -33,18 +32,15 @@ public class BeholderStation extends BaseLandmarkDef {
 			for (PlanetAPI planet : system.getPlanets())
 			{
 				if (!planet.isGasGiant()) continue;
-				picker.add(planet);
+				results.add(planet);
 			}
 		}
-		List<SectorEntityToken> results = new ArrayList<>();
-		int count = getCount();
-		for (int i=0; i<count; i++)
-		{
-			if (picker.isEmpty()) break;
-			results.add(picker.pickAndRemove());
-		}
-		
 		return results;
+	}
+	
+	@Override
+	protected boolean weighByMarketSize() {
+		return false;
 	}
 		
 	@Override

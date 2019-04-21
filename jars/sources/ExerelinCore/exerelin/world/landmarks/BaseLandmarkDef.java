@@ -19,10 +19,13 @@ public class BaseLandmarkDef extends LandmarkDef {
 	{
 		return true;
 	}
-		
-	@Override
-	public List<SectorEntityToken> getRandomLocations() {
-		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
+	
+	/**
+	 * Gets a list of all {@code SectorEntityToken}s that can have this landmark.
+	 * @return
+	 */
+	public List<SectorEntityToken> getEligibleLocations() {
+		List<SectorEntityToken> results = new ArrayList<>();
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
 		{
 			if (isProcgenOnly() && !system.isProcgen())
@@ -30,12 +33,31 @@ public class BaseLandmarkDef extends LandmarkDef {
 			for (PlanetAPI planet : system.getPlanets())
 			{
 				if (!isApplicableToEntity(planet)) continue;
-				float weight = 1;
-				if (weighByMarketSize() && planet.getMarket() != null)
-					weight = planet.getMarket().getSize();
-				picker.add(planet, weight);
+				results.add(planet);
 			}
 		}
+		
+		return results;
+	}
+	
+	/**
+	 * Gets a list of randomly picked {@code SectorEntityToken}s 
+	 * where the landmark will actually spawn.
+	 * This will usually be a subset of the results of {@code getEligibleLocations()}.
+	 * @return
+	 */
+	@Override
+	public List<SectorEntityToken> getRandomLocations() {
+		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
+		
+		for (SectorEntityToken token : getEligibleLocations())
+		{
+			float weight = 1;
+			if (weighByMarketSize() && token.getMarket() != null)
+				weight = token.getMarket().getSize();
+			picker.add(token, weight);
+		}
+		
 		List<SectorEntityToken> results = new ArrayList<>();
 		int count = getCount();
 		for (int i=0; i<count; i++)

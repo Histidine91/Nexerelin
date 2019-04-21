@@ -8,19 +8,20 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtilsAstro;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class PlagueBeacon extends BaseLandmarkDef {
 	
-	public static final String id = "plague_beacon";
-	
 	protected static final Set<String> ALLOWED_CONDITIONS = new HashSet<>(Arrays.asList(new String[]{
 		Conditions.DECIVILIZED, Conditions.RUINS_SCATTERED, Conditions.RUINS_EXTENSIVE, 
-		Conditions.RUINS_WIDESPREAD, Conditions.RUINS_VAST
+		Conditions.RUINS_WIDESPREAD, Conditions.RUINS_VAST, "US_virus"
 	}));
 	
 	@Override
@@ -37,6 +38,29 @@ public class PlagueBeacon extends BaseLandmarkDef {
 			if (market.hasCondition(cond)) return true;
 		
 		return false;
+	}
+	
+	@Override
+	public List<SectorEntityToken> getRandomLocations() {
+		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
+		
+		for (SectorEntityToken token : getEligibleLocations())
+		{
+			float weight = 1;
+			if (token.getMarket().hasCondition("US_virus"))
+				weight = 10;
+			picker.add(token, weight);
+		}
+		
+		List<SectorEntityToken> results = new ArrayList<>();
+		int count = getCount();
+		for (int i=0; i<count; i++)
+		{
+			if (picker.isEmpty()) break;
+			results.add(picker.pickAndRemove());
+		}
+		
+		return results;
 	}
 	
 	@Override
