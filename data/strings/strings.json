@@ -927,6 +927,24 @@
 		"stabilityPenaltyReport":"Stability penalty: $stability",
 		"commodityDestructionReport":"Average $percent% of commodity stockpiles destroyed"
 	},
+	"nex_tribute":{
+		"cond_immigrationDesc":"Tributary colony",
+		"cond_incomeDesc":"Tribute",
+		
+		"cond_tooltip1":"- Income reduced by %s",
+		"cond_tooltip2":"- Colony growth reduced by %s",
+		"cond_tooltip3":"- Maximum colony size of %s",
+		
+		"intel_title":"Tribute Demand",
+		"intel_desc1":"$TheFaction $hasOrHave sent you a comminique regarding the status of $market in $system, which is claimed by said faction. The text is quite longwinded, but can be readily summarized as \"That's a nice colony you have there, $playerName. It would be a shame if anything were to happen to it.\"",
+		"intel_desc2":"To avert this outcome, $theFaction demands a tribute equal to %s of the colony's gross income. Its population growth will also be reduced by %s, and it cannot exceed size %s.",
+		"intel_descAccepted":"You are currently paying tribute from $market.",
+		"intel_descRejected":"You have refused to pay tribute for $market.",
+		"intel_descOver":"The tribute event is now over.",
+		"intel_descTime":"You have $timeLeft $days to accept or reject the offer.",
+		"intel_dialogConfirm":"Confirm?",
+	},
+	
 	"nex_vengeance":{
 		"vengeanceFleet0":"Hunter Fleet",
 		"vengeanceFleet0Single":"a Hunter Fleet",
