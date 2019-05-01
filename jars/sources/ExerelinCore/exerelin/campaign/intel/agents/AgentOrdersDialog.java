@@ -124,7 +124,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 		
 		List<FactionAPI> factions = new ArrayList<>(factionsSet);
-		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR);
+		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
 		
 		// pick first available faction, if needed
 		if (!factions.isEmpty()) {

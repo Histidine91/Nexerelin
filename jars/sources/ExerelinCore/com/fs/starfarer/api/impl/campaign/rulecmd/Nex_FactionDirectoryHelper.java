@@ -36,6 +36,19 @@ public class Nex_FactionDirectoryHelper {
 		}
 	};
 	
+	public static final Comparator<FactionAPI> NAME_COMPARATOR_PLAYER_FIRST = new Comparator<FactionAPI>()
+	{
+		@Override
+		public int compare(FactionAPI f1, FactionAPI f2)
+		{
+			if (f1.isPlayerFaction()) return -1;
+			if (f2.isPlayerFaction()) return 1;
+			String n1 = Nex_FactionDirectoryHelper.getFactionDisplayName(f1);
+			String n2 = Nex_FactionDirectoryHelper.getFactionDisplayName(f2);
+			return n1.compareTo(n2);
+		}
+	};
+	
 	protected static List<FactionListGrouping> ngcFactions = new ArrayList<>();
 	
 	protected static Map<String, String> nameCache = new HashMap<>();

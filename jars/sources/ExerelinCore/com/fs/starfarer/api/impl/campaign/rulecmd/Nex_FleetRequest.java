@@ -439,7 +439,7 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		factionsSet.remove(PlayerFactionStore.getPlayerFaction());
 		
 		List<FactionAPI> factions = new ArrayList<>(factionsSet);
-		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR);
+		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
 		
 		if (!factions.isEmpty())
 			setFaction(factions.get(0).getId());
