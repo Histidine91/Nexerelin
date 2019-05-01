@@ -191,11 +191,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			market.setFreePort(wantFreePort);
 			if (!market.hasCondition(Conditions.FREE_PORT))
 				market.addCondition(Conditions.FREE_PORT);
+			ExerelinUtilsMarket.setTariffs(market);
 		}
 		else {
 			market.setFreePort(false);
 			market.removeCondition(Conditions.FREE_PORT);
-		}		
+			ExerelinUtilsMarket.setTariffs(market);
+		}
 	}
 	
 	public static boolean isBuildingAnything(MarketAPI market) {
