@@ -217,7 +217,7 @@ public class VictoryScreenScript implements EveryFrameScript
 			message = StringHelper.substituteFactionTokens(message, faction);
 			//message = StringHelper.substituteToken(message, "$clusterName", firstStar);
 			text.addParagraph(message);
-			text.highlightInLastPara(Misc.getHighlightColor(), TheFactionName, theFactionName);
+			text.highlightInLastPara(faction.getBaseUIColor(), factionName);
 			
 			if (victoryType == VictoryType.RETIRED)
 			{

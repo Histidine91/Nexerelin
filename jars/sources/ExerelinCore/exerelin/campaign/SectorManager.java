@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -47,6 +48,7 @@ import exerelin.campaign.intel.FactionInsuranceIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
+import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -794,6 +796,22 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             sectorManager.victoryHasOccured = true;
     }
     
+    /**
+     * Removes any existing victory intel item and unsets {@code victoryHasOccured}.
+     * @return True if game was in victory state, false otherwise.
+     */
+    public boolean clearVictory()
+    {
+        boolean didAnything = victoryHasOccured;
+        for (IntelInfoPlugin vic : Global.getSector().getIntelManager().getIntel(VictoryIntel.class)) {
+            ((VictoryIntel)vic).endImmediately();
+            didAnything = true;
+        }
+        victoryHasOccured = false;
+        
+        return didAnything;
+    }
+    
     public boolean hasVictoryOccured() {
         return victoryHasOccured;
     }
@@ -803,7 +821,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }
     
     /**
-     * Called when a market is transfered to another faction
+     * Called when a market is transferred to another faction
      * @param market
      * @param newOwner
      * @param oldOwner
