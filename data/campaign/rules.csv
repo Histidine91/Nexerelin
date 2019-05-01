@@ -337,7 +337,7 @@ ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $nu
 ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,"$faction.id != ""player""","SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""
 SetShortcut exerelinPrisonerRepatriate P",,exerelinPrisonerRepatriate:Repatriate prisoner,
 ExerelinPrisonerOptionListRansomBase,ExerelinPrisonerOption,,,,exerelinPrisonerRansom:Collect ransom,
-ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,!IsPirateFaction $faction.id,"GetPrisonerValue
+ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,,"GetPrisonerValue
 SetTooltip exerelinPrisonerRansom ""Return a prisoner in exchange for a ransom of $ransomValue credits.""
 SetTooltipHighlightColors exerelinPrisonerRansom buttonShortcut 
 SetTooltipHighlights exerelinPrisonerRansom $ransomValue
