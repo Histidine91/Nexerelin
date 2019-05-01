@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.agents;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -102,10 +103,16 @@ public class InfiltrateCell extends CovertActionIntel {
 		if (base != null && (base.isEnding() || base.isEnded()))
 			base = null;
 		
-		// TODO: kill cell, locate base
-		//market.removeCondition(Conditions.PATHER_CELLS);
+		// kill cell
+		/*
 		cellIntel.endAfterDelay();
 		cellIntel.sendUpdateIfPlayerHasIntel(LuddicPathCellsIntel.UPDATE_DISSOLVED, false);
+		*/
+		// don't kill cell, disrupt instead
+		cellIntel.makeSleeper(Global.getSettings().getFloat("patherCellDisruptionDuration") * 2);
+		cellIntel.sendUpdateIfPlayerHasIntel(LuddicPathCellsIntel.UPDATE_DISRUPTED, false);
+		
+		// locate base
 		if (base != null && base.isHidden())
 			base.makeKnown();
 	}

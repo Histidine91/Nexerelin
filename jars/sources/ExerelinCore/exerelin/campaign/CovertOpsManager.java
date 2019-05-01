@@ -73,7 +73,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
     
     public static final float NPC_EFFECT_MULT = 1f;
     public static final int MAX_AGENTS = 2;
