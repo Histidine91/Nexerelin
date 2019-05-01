@@ -505,11 +505,20 @@ public class Nex_MarketCMD extends MarketCMD {
 			str = StringHelper.substituteToken(str, "$market", marketName);
 			options.addOption(str, INVADE_RESULT_ANDRADA);
 			
-			str = getString("takeForSelfWarning");
-			str = StringHelper.substituteToken(str, "$market", marketName);
-			options.addOptionConfirmation(INVADE_RESULT_ANDRADA, str, 
-					Misc.ucFirst(StringHelper.getString("yes")),
-					Misc.ucFirst(StringHelper.getString("no")));
+			if (!wasPlayerMarket()) {
+				str = getString("takeForSelfWarning");
+				str = StringHelper.substituteToken(str, "$market", marketName);
+				options.addOptionConfirmation(INVADE_RESULT_ANDRADA, str, 
+						Misc.ucFirst(StringHelper.getString("yes")),
+						Misc.ucFirst(StringHelper.getString("no")));
+			}
+			else {
+				str = getString("takeForSelfNoWarning");
+				str = StringHelper.substituteToken(str, "$market", marketName);
+				options.addOptionConfirmation(INVADE_RESULT_ANDRADA, str, 
+						Misc.ucFirst(StringHelper.getString("yes")),
+						Misc.ucFirst(StringHelper.getString("no")));
+			}
 		}
 	}
 	
@@ -702,13 +711,15 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (tempInvasion.tookForSelf && tempInvasion.success)
 		{
 			conqueror = playerFaction;
-			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
-			impact.delta = -0.05f * market.getSize();
-			//impact.ensureAtBest = RepLevel.SUSPICIOUS;
-			impact.limit = RepLevel.INHOSPITABLE;
-			Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
-					CoreReputationPlugin.RepActions.CUSTOM, impact, null, text, true), 
-					PlayerFactionStore.getPlayerFactionId());
+			if (!wasPlayerMarket()) {
+				CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+				impact.delta = -0.05f * market.getSize();
+				//impact.ensureAtBest = RepLevel.SUSPICIOUS;
+				impact.limit = RepLevel.INHOSPITABLE;
+				Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
+						CoreReputationPlugin.RepActions.CUSTOM, impact, null, text, true), 
+						PlayerFactionStore.getPlayerFactionId());
+			}
 		}
 		if (tempInvasion.success)
 			InvasionRound.conquerMarket(market, conqueror, true);
@@ -751,12 +762,15 @@ public class Nex_MarketCMD extends MarketCMD {
 		return 20;
 	}
 	*/
-	
-	// TBD
-	public static void reportInvasionFinished(InteractionDialogAPI dialog, MarketAPI market, TempDataInvasion actionData) {
-		//for (ColonyPlayerHostileActListener x : Global.getSector().getListenerManager().getListeners(ColonyPlayerHostileActListener.class)) {
-		//	x.reportSaturationBombardmentFinished(dialog, market, actionData);
-		//}
+
+	/**
+	 * Was this market originally owned by the player?
+	 * @return
+	 */
+	protected boolean wasPlayerMarket() {
+		String origOwner = ExerelinUtilsMarket.getOriginalOwner(market);
+		boolean originallyPlayer = origOwner == null || origOwner.equals(Factions.PLAYER);
+		return originallyPlayer;
 	}
 	
 	

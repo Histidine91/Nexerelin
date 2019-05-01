@@ -74,6 +74,14 @@ public class ExerelinUtilsMarket {
 				|| market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget"));	// player
 	}
 	
+	public static String getOriginalOwner(MarketAPI market) 
+	{
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		if (mem.contains("$startingFactionId"))
+			return mem.getString("$startingFactionId");
+		return null;
+	}
+	
 	/**
 	 * Did this market originally belong to the specified faction?
 	 * @param market
@@ -82,11 +90,9 @@ public class ExerelinUtilsMarket {
 	 */
 	public static boolean wasOriginalOwner(MarketAPI market, String factionId)
 	{
-		MemoryAPI mem = market.getMemoryWithoutUpdate();
-		if (mem.contains("$startingFactionId"))
-			return mem.getString("$startingFactionId").equals(factionId);
-		
-		return true;
+		String origOwner = getOriginalOwner(market);
+		if (factionId == null) return origOwner == null;
+		return factionId.equals(origOwner);
 	}
 	
 	/**
