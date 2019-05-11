@@ -34,20 +34,8 @@ public abstract class AgentActionBase extends BaseCommandPlugin {
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		List<CargoStackAPI> stacks = cargo.getStacksCopy();
 		boolean agentSpent = false;
-		for (CargoStackAPI stack : stacks)
-		{
-			if (stack.isNull()) continue;
-			if (stack.getCommodityId() != null && stack.getCommodityId().equals(typeId))
-			{
-			if (stack.getSize() < count) return false;
-			stack.subtract(count);
-			agentSpent = true;
-			// hax to prevent zero-stacks
-			if (stack.getSize() < 1)
-				cargo.removeEmptyStacks();
-			break;
-			}
-		}
+		if (cargo.getCommodityQuantity(typeId) < count) return false;
+		cargo.removeCommodity(typeId, count);
 		if (agentSpent) agentType = typeId;
 		return agentSpent;
 	}
