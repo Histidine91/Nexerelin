@@ -1,6 +1,5 @@
 package exerelin.campaign.submarkets;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.submarkets.MilitarySubmarketPlugin;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -10,6 +9,8 @@ import exerelin.utilities.ExerelinUtilsFaction;
 public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	
 	// same as vanilla except sells more weapons/fighters
+	// TODO: not same anymore
+	/*
 	@Override
 	public void updateCargoPrePlayerInteraction() {
 		float seconds = Global.getSector().getClock().convertToSeconds(sinceLastCargoUpdate);
@@ -43,6 +44,7 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 		
 		getCargo().sort();
 	}
+	*/
 	
 	@Override
 	protected boolean hasCommission() {

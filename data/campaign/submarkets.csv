@@ -2,11 +2,11 @@ id,name,faction,desc,script,icon,order
 exerelin_prismMarket,High-End Seller,independent,"Pulls rare, advanced warships and weapons from across the Sector for those who are willing to pay a premium and don't ask too many questions. Preferred clients get better prices.",exerelin.campaign.submarkets.PrismMarket,graphics/SCY/factions/SCY_prismStorage.png,200
 ,,,,,,
 # vanilla override,,,,,,
-open_market,"Open
+#open_market,"Open
 Market",,"The open market. Only legal goods may be traded here, and transactions are subject to tariffs. More goods are available when stability is high.
 
 Selling enough of a commodity will temporarily resolve a shortage.",exerelin.campaign.submarkets.Nex_OpenMarketPlugin,,0
-black_market,"Black
+#black_market,"Black
 Market",pirates,"The black market. Anything and everything can be bought or sold, and there are no tariffs. More goods are available when stability is low.
 
 Selling a commodity will not resolve a shortage.

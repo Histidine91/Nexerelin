@@ -1,14 +1,13 @@
 package exerelin.campaign.submarkets;
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.submarkets.OpenMarketPlugin;
 
+@Deprecated
 public class Nex_OpenMarketPlugin extends OpenMarketPlugin {
 	
 	// same as vanilla except sells more weapons/fighters
+	// TODO: not same anymore
+	/*
 	public void updateCargoPrePlayerInteraction() {
 		float seconds = Global.getSector().getClock().convertToSeconds(sinceLastCargoUpdate);
 		addAndRemoveStockpiledResources(seconds, false, true, true);
@@ -71,4 +70,5 @@ public class Nex_OpenMarketPlugin extends OpenMarketPlugin {
 		
 		getCargo().sort();
 	}
+	*/
 }

@@ -1,15 +1,13 @@
 package exerelin.campaign.submarkets;
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.submarkets.BlackMarketPlugin;
-import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.api.util.WeightedRandomPicker;
 
+@Deprecated
 public class Nex_BlackMarketPlugin extends BlackMarketPlugin {
 	
 	// same as vanilla except sells more weapons/fighters
+	// TODO: not same anymore
+	/*
 	@Override
 	public void updateCargoPrePlayerInteraction() {
 		float seconds = Global.getSector().getClock().convertToSeconds(sinceLastCargoUpdate);
@@ -79,4 +77,5 @@ public class Nex_BlackMarketPlugin extends BlackMarketPlugin {
 		
 		getCargo().sort();
 	}
+	*/
 }
