@@ -357,7 +357,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	// disregard market fleet size mult if needed
 	@Override
-	protected float getRaidFPAdjusted() {
+	public float getRaidFPAdjusted() {
 		if (InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
 			return super.getRaidFPAdjusted();
 				
