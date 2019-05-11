@@ -37,7 +37,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldParams;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldSource;
-import com.fs.starfarer.api.impl.campaign.tutorial.GalatiaMarketScript;
 import com.fs.starfarer.api.util.Misc;
 
 /**
@@ -102,16 +101,20 @@ public class Galatia {
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		market.getTariff().modifyFlat("default_tariff", market.getFaction().getTariffFraction());
+		
+		market.setUseStockpilesForShortages(true);
 		
 		ancyraStation.setMarket(market);
 		ancyra.setMarket(market);
 		
 		market.addSubmarket(Submarkets.LOCAL_RESOURCES);
-		Misc.getLocalResourcesCargo(market).addSupplies(2000f);
-		Misc.getLocalResourcesCargo(market).addFuel(5000f);
+		Misc.getLocalResourcesCargo(market).addSupplies(4000f);
+		Misc.getLocalResourcesCargo(market).addFuel(10000f);
 		//Misc.getLocalResourcesCargo(market).addItems(CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, 500f);
 		Misc.getLocalResourcesCargo(market).addItems(CargoItemType.RESOURCES, Commodities.FOOD, 8000f);
 		//Misc.getLocalResourcesCargo(market).addItems(CargoItemType.RESOURCES, Commodities.DOMESTIC_GOODS, 2000f);
+		
 		
 		market.getMemoryWithoutUpdate().set(MemFlags.MARKET_DO_NOT_INIT_COMM_LISTINGS, true);
 		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_LIGHT_MOD).modifyMult("tut", 0f);
@@ -194,9 +197,10 @@ public class Galatia {
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		market.getTariff().modifyFlat("default_tariff", market.getFaction().getTariffFraction());
 		
 		derinkuyuStation.setMarket(market);
-		derinkuyuStation.addScript(new GalatiaMarketScript(market));
+		//derinkuyuStation.addScript(new GalatiaMarketScript(market));
 		
 		market.setEconGroup(market.getId());
 		Global.getSector().getEconomy().addMarket(market, true);

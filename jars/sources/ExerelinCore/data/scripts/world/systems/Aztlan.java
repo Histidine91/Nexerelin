@@ -25,6 +25,8 @@ public class Aztlan {
 		
 		system.setBackgroundTextureFilename("graphics/backgrounds/background2.jpg");
 		
+		//system.getMemoryWithoutUpdate().set(MusicPlayerPluginImpl.MUSIC_SET_MEM_KEY, "music_combat");
+		
 		PlanetAPI aztlan_star = system.initStar("aztlan", // unique id for this star 
 										    "star_yellow",  // id in planets.json
 										    700f, 		  // radius (in pixels at default zoom)

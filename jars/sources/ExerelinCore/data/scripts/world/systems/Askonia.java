@@ -26,6 +26,8 @@ public class Askonia {
 		
 		system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
 		
+		//system.getMemoryWithoutUpdate().set(MusicPlayerPluginImpl.MUSIC_SET_MEM_KEY, "music_title");
+		
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("askonia", // unique id for this star 
 										 StarTypes.RED_GIANT, // id in planets.json
@@ -210,7 +212,7 @@ public class Askonia {
 				1, 2, // min/max entities to add
 				11750, // radius to start adding at 
 				4, // name offset - next planet will be <system name> <roman numeral of this parameter + 1>
-				false);
+				true);
 				//true); // whether to use custom or system-name based names
 		
 		// generates hyperspace destinations for in-system jump points

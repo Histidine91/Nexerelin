@@ -24,6 +24,8 @@ public class Arcadia {
 		
 		system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
 		
+		//system.getMemoryWithoutUpdate().set(MusicPlayerPluginImpl.MUSIC_SET_MEM_KEY, "music_title");
+		
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("arcadia", // unique id for star
 										 StarTypes.WHITE_DWARF, // id in planets.json
@@ -31,7 +33,7 @@ public class Arcadia {
 										 300); // corona radius, from star edge
 		
 		system.setLightColor(new Color(200, 200, 200)); // light color in entire system, affects all entities
-		star.setCustomDescriptionId("star_white_dwarf");
+		star.setCustomDescriptionId("star_white");
 		
 		
 		PlanetAPI arcadia1 = system.addPlanet("nomios", star, "Nomios", "frozen", 90, 130, 3000, 100);

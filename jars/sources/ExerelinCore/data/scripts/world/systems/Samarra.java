@@ -118,7 +118,7 @@ public class Samarra {
 			system.addRingBand(samarra2, "misc", "rings_ice0", 256f, 3, Color.white, 256f, 850, 30f, Terrain.RING, null);
 			system.addRingBand(samarra2, "misc", "rings_dust0", 256f, 2, Color.white, 256f, 975, 33f, Terrain.RING, null);
 			
-			PlanetAPI samarra2c = system.addPlanet("orthrus", samarra2, "Orthrus", "rocky_ice", 40, 70, 1475, 41);
+			PlanetAPI samarra2c = system.addPlanet("orthrus", samarra2, "Orthrus", "rocky_ice", 40, 70, 1400, 41);
 			// Orthrus Relay - L5 (behind)
 			SectorEntityToken orthrus_relay = system.addCustomEntity("orthrus_relay", // unique id
 					 "Orthrus Relay", // name - if null, defaultName from custom_entities.json will be used
