@@ -74,7 +74,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Ranks.POST_STATION_COMMANDER,
         Ranks.POST_PORTMASTER,
         Ranks.POST_SUPPLY_OFFICER,
-        Ranks.POST_ADMINISTRATOR
+        Ranks.POST_ADMINISTRATOR,
+        //Ranks.FACTION_LEADER	// no maek sense
     });
     
     public static final Set<String> NO_BLACK_MARKET = new HashSet(Arrays.asList(new String[]{
@@ -881,12 +882,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 if (plugin != null)
                     plugin.setPlayerPaidToUnlock(true);
             }
-        }
-        
-        // unassign admin
-        if (oldOwner.isPlayerFaction() && !market.getAdmin().isAICore())
-        {
-            market.setAdmin(null);
         }
         
         updateSubmarkets(market, oldOwnerId, newOwnerId);

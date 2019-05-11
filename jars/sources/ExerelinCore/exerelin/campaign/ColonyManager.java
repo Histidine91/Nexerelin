@@ -17,7 +17,10 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Skills;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
@@ -351,7 +354,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			buildIndustries(market);
 			processNPCConstruction(market);
 		}
-			
+		
+		// reassign admins on market capture
+		reassignAdminIfNeeded(market, oldOwner, newOwner);
 	}
 	
 	public static void buildIndustry(MarketAPI market, String id) {
@@ -425,6 +430,83 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			count++;
 		}
 		return count;
+	}
+	
+	/**
+	 * Sets a person on the market's comm board to be admin, if appropriate.
+	 * @param market
+	 */
+	public static void reassignAdminIfNeeded(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner) {
+		
+		// if player has captured a market, assing player as admin
+		if (newOwner.isPlayerFaction()) {
+			market.setAdmin(Global.getSector().getPlayerPerson());
+			return;
+		}
+		
+		// do nothing if admin is AI core
+		if (market.getAdmin().isAICore()) {
+			return;
+		}
+		
+		// if market was player-controlled or administered by a faction leader, pick a new admin from comm board
+		boolean reassign = oldOwner.isPlayerFaction() || Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())
+				|| hasFactionLeader(market);
+		if (!reassign)
+			return;
+		
+		PersonAPI admin = getBestAdmin(market);
+		if (admin != null)
+		{
+			market.setAdmin(admin);
+		}
+	}
+	
+	public static boolean hasFactionLeader(MarketAPI market) {
+		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
+		{
+			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
+			PersonAPI person = (PersonAPI)dir.getEntryData();
+			if (Ranks.POST_FACTION_LEADER.equals(person.getPostId()))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Gets the person on the market's comm board who should be admin (based on their post).
+	 * @param market
+	 * @return
+	 */
+	public static PersonAPI getBestAdmin(MarketAPI market) {
+		PersonAPI best = null;
+		int bestScore = 0;
+		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
+		{
+			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
+			PersonAPI person = (PersonAPI)dir.getEntryData();
+			int score = getAdminScore(market, person);
+			if (score > bestScore) {
+				best = person;
+				bestScore = score;
+			}
+		}
+		
+		return best;
+	}
+	
+	public static int getAdminScore(MarketAPI market, PersonAPI person) {
+		String postId = person.getPostId();
+		if (postId == null) return -1;
+		
+		if (postId.equals(Ranks.POST_FACTION_LEADER) && person.getFaction() == market.getFaction())
+			return 3;
+		else if (postId.equals(Ranks.POST_STATION_COMMANDER) && market.getPrimaryEntity().hasTag(Tags.STATION))
+			return 2;
+		else if (postId.equals(Ranks.POST_ADMINISTRATOR))
+			return 1;
+		
+		return -1;
 	}
 	
 	public static ColonyManager getManager()
