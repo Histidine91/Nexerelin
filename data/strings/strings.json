@@ -664,7 +664,7 @@
 		"respawnInvasionForce":"resurgence force",
 		"theRespawnInvasionForce":"the resurgence force",
 		
-		"invadeHasStation":"The orbital station must be destroyed before an invasion is possible.",
+		"invadeBlocked":"Any orbital station and interfering fleets must be removed before an invasion is possible.",
 		
 		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc.",
 		"intelDescRespawn":"Remnants of the $theFaction have gathered to invade $market in the $location, held by $theTargetFaction, in a bid to revive their power. The invasion forces are projected to be $strDesc.",

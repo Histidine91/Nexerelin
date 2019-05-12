@@ -139,11 +139,11 @@ public class Nex_MarketCMD extends MarketCMD {
 			options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);	// put back the hotkey
 			*/
 			
-			boolean hasStation = getStationFleet() != null;
-			if (hasStation)
+			//boolean hasStation = getStationFleet() != null;
+			if (!temp.canRaid || !temp.canBombard)
 			{
 				options.setEnabled(INVADE, false);
-				options.setTooltip(INVADE, StringHelper.getString("exerelin_invasion", "invadeHasStation"));
+				options.setTooltip(INVADE, StringHelper.getString("exerelin_invasion", "invadeBlocked"));
 				tempInvasion.canInvade = false;
 			}
 			else if (getRaidCooldown() > 0) {
@@ -602,7 +602,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				picker.add(fighter + id, 1f);
 			}
 			
-			int num = getNumPicks(random, tempInvasion.invasionMult * 0.25f, tempInvasion.invasionMult * 0.5f);
+			int num = getNumPicks(random, tempInvasion.invasionMult + 0.5f, tempInvasion.invasionMult * 0.5f);
 			for (int i = 0; i < num && !picker.isEmpty(); i++) {
 				String id = picker.pickAndRemove();
 				if (id == null) continue;
@@ -631,7 +631,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		
 		// more likely to get at least one modspec, but not likely to get many
-		int num = getNumPicks(random, tempInvasion.invasionMult * 0.5f, tempInvasion.invasionMult * 0.25f);
+		int num = getNumPicks(random, tempInvasion.invasionMult + 0.5f, tempInvasion.invasionMult * 0.25f);
 		for (int i = 0; i < num && !picker.isEmpty(); i++) {
 			String id = picker.pickAndRemove();
 			if (id == null) continue;
@@ -661,7 +661,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		
 		
-		num = getNumPicks(random, tempInvasion.invasionMult * 0.5f, tempInvasion.invasionMult * 0.25f);
+		num = getNumPicks(random, tempInvasion.invasionMult + 0.5f, tempInvasion.invasionMult * 0.25f);
 		if (military || heavyIndustry) {
 			num += Math.round(market.getCommodityData(Commodities.SHIPS).getAvailable() * tempInvasion.invasionMult);
 		}
