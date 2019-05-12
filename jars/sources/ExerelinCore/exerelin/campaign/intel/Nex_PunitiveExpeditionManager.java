@@ -9,19 +9,16 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.MAX_THRESHOLD;
-import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.json.JSONObject;
 
 public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	
-	// don't send punitive expeditions against player if member or ally
+	// don't send punitive expeditions against player if member or ally (or faction is dead)
 	@Override
 	protected void checkExpedition(PunExData curr) {
 		
@@ -37,50 +34,53 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	}
 	
 	// create Nex version of the expedition intel
-	protected void createExpedition(PunExData curr) {
-		
+	// TODO: demand tribute instead of territorial sat bomb
+	@Override
+	public void createExpedition(PunExData curr, Integer fpOverride) {
 		JSONObject json = curr.faction.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA);
 		if (json == null) return;
 		
-		boolean vsCompetitors = json.optBoolean("vsCompetitors", false);
-		boolean vsFreePort = json.optBoolean("vsFreePort", false);
+//		boolean vsCompetitors = json.optBoolean("vsCompetitors", false);
+//		boolean vsFreePort = json.optBoolean("vsFreePort", false);
 		boolean canBombard = json.optBoolean("canBombard", false);
-		boolean territorial = json.optBoolean("territorial", false);
+//		boolean territorial = json.optBoolean("territorial", false);
 		
 		List<PunExReason> reasons = getExpeditionReasons(curr);
-		if (reasons.isEmpty()) return;
+		WeightedRandomPicker<PunExReason> reasonPicker = new WeightedRandomPicker<PunExReason>(curr.random);
+		for (PunExReason r : reasons) {
+			//if (r.type == PunExType.ANTI_COMPETITION) continue;
+			reasonPicker.add(r, r.weight);
+		}
+		PunExReason reason = reasonPicker.pick();
+		if (reason == null) return;
 		
+		
+		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		//for (PunExReason reason : reasons) {
 		
-		MarketAPI target = null;
-		float max = 0f;
 		//WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (!market.isPlayerOwned()) continue;
 			
 			float weight = 0f;
-			for (PunExReason reason : reasons) {
-				if (reason.commodityId != null) {
-					CommodityOnMarketAPI com = market.getCommodityData(reason.commodityId);
-					weight += com.getAvailable();
-				}
+			if (reason.type == PunExType.ANTI_COMPETITION && reason.commodityId != null) {
+				CommodityOnMarketAPI com = market.getCommodityData(reason.commodityId);
+				int share = com.getCommodityMarketData().getExportMarketSharePercent(market);
+//				if (share <= 0 && com.getAvailable() > 0) {
+//					share = 1;
+//				}
+				weight += share * share;
+			} else if (reason.type == PunExType.ANTI_FREE_PORT && market.getId().equals(reason.marketId)) {
+				weight = 1f;
+			} else if (reason.type == PunExType.TERRITORIAL && market.getId().equals(reason.marketId)) {
+				weight = 1f;
 			}
 			
-			if (vsFreePort && market.isFreePort()) {
-				weight += market.getSize();
-			}
-			if (territorial && Misc.getClaimingFaction(market.getPrimaryEntity()) == curr.faction) {
-				weight += 1000f + market.getDaysInExistence();
-			}
-				
-			if (weight > max) {
-				target = market;
-				max = weight;
-			}
-			//picker.add(market, weight);
+			targetPicker.add(market, weight);
 		}
 		
-		if (target == null || max <= 0) return;
+		MarketAPI target = targetPicker.pick();
+		if (target == null) return;
 		
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(null)) {
@@ -93,21 +93,14 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		MarketAPI from = picker.pick();
 		if (from == null) return;
 		
-		Collections.sort(reasons, new Comparator<PunExReason>() {
-			public int compare(PunExReason o1, PunExReason o2) {
-				return (int)Math.signum(o2.weight - o1.weight);
-			}
-		});
-		PunExReason bestReason = reasons.get(0);
-		
 		PunExGoal goal = null;
 		Industry industry = null;
-		if (bestReason.type == PunExType.ANTI_FREE_PORT) {
+		if (reason.type == PunExType.ANTI_FREE_PORT) {
 			goal = PunExGoal.RAID_SPACEPORT;
 			if (canBombard && curr.numSuccesses >= 2) {
 				goal = PunExGoal.BOMBARD;
 			}
-		} else if (bestReason.type == PunExType.TERRITORIAL) {
+		} else if (reason.type == PunExType.TERRITORIAL) {
 			if (canBombard || true) {
 				goal = PunExGoal.BOMBARD;
 			} else {
@@ -115,7 +108,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 			}
 		} else {
 			goal = PunExGoal.RAID_PRODUCTION;
-			if (bestReason.commodityId == null || curr.numSuccesses >= 1) {
+			if (reason.commodityId == null || curr.numSuccesses >= 1) {
 				goal = PunExGoal.RAID_SPACEPORT;
 			}
 			if (canBombard && curr.numSuccesses >= 2) {
@@ -127,16 +120,19 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		
 		if (goal == PunExGoal.RAID_SPACEPORT) {
 			for (Industry temp : target.getIndustries()) {
+				if (temp.getSpec().hasTag(Industries.TAG_UNRAIDABLE)) continue;
 				if (temp.getSpec().hasTag(Industries.TAG_SPACEPORT)) {
 					industry = temp;
 					break;
 				}
 			}
 			if (industry == null) return;
-		} else if (goal == PunExGoal.RAID_PRODUCTION && bestReason.commodityId != null) {
-			max = 0;
+		} else if (goal == PunExGoal.RAID_PRODUCTION && reason.commodityId != null) {
+			int max = 0;
 			for (Industry temp : target.getIndustries()) {
-				int prod = temp.getSupply(bestReason.commodityId).getQuantity().getModifiedInt();
+				if (temp.getSpec().hasTag(Industries.TAG_UNRAIDABLE)) continue;
+				
+				int prod = temp.getSupply(reason.commodityId).getQuantity().getModifiedInt();
 				if (prod > max) {
 					max = prod;
 					industry = temp;
@@ -147,9 +143,14 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		
 		//float fp = from.getSize() * 20 + threshold * 0.5f;
 		float fp = 50 + curr.threshold * 0.5f;
+		fp = Math.max(50, fp - 50);
 		//fp = 500;
-		if (from.getFaction().isHostileTo(target.getFaction())) {
-			fp *= 1.5f;
+//		if (from.getFaction().isHostileTo(target.getFaction())) {
+//			fp *= 1.25f;
+//		}
+		
+		if (fpOverride != null) {
+			fp = fpOverride;
 		}
 		
 
@@ -176,12 +177,16 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		
 		
 		curr.intel = new Nex_PunitiveExpeditionIntel(from.getFaction(), from, target, fp, orgDur,
-												 goal, industry, bestReason);
+												 goal, industry, reason);
 		if (curr.intel.isDone()) {
 			curr.intel = null;
 			return;
 		}
 		
+		if (curr.random.nextFloat() < numSentSinceTimeout * PROB_TIMEOUT_PER_SENT) {
+			timeout = orgDur + MIN_TIMEOUT + curr.random.nextFloat() * (MAX_TIMEOUT - MIN_TIMEOUT);
+		}
+		numSentSinceTimeout++;
 		
 		curr.numAttempts++;
 		curr.anger = 0f;
