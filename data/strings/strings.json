@@ -391,9 +391,9 @@
 		"intelStageActionAborted":"The strike mission has been aborted.",
 	},
 	"nex_bombardment":{
-		"satBombWarning":"An atrocity of this scale can not be hidden, and will make the following factions hostile:",
-		"satBombWarningSmall":"An atrocity of this scale can not be hidden. $market is sufficiently low-populated and/or remote that the reputational impacts will be limited, but the following factions will nevertheless be angry:",
-		"satBombWarningAllHostile":"An atrocity of this scale can not be hidden, but any factions that would be dismayed by such actions are already hostile to you.",
+		"satBombWarning":"An atrocity of this scale cannot be hidden, and will make the following factions hostile:",
+		"satBombWarningSmall":"An atrocity of this scale cannot be hidden. $market is sufficiently low-populated and/or remote that the reputational impacts will be limited, but the following factions will nevertheless be angry:",
+		"satBombWarningAllHostile":"An atrocity of this scale cannot be hidden, but any factions that would be dismayed by such actions are already hostile to you.",
 		"satBombWarningVengeful":"Due to their hatred of $theFaction, the following factions can be expected to overlook your crime:",
 	},
 	"nex_bounties":{

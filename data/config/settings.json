@@ -1,11 +1,8 @@
 {
 	"baseMaxAdmins":2,
 	"colonyOverMaxPenalty":1,
-	"bombardTacticalStability":3,
+	"bombardTacticalStability":1,
 	"accessibilityNoSpaceport":-0.5,	# default -1
-	
-	"maxDisengageSize":50000, # maximum number of supplies-to-recover cost before a fleet can't participate in a disengage-style battle
-	#"maxDisengageFraction":100, # maximum number of supplies-to-recover before a fleet can't disengage, as fraction of current battlesize.
 	
 	"plugins":{
 		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",

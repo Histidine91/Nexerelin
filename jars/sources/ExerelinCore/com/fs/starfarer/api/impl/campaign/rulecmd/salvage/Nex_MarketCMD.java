@@ -18,22 +18,36 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.DebugFlags;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
+import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.TempData;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.addBombardVisual;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDestroyThreshold;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDisruptDuration;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSaturationBombardmentStabilityPenalty;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
@@ -48,6 +62,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +79,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE_RESULT_ANDRADA = "nex_mktInvadeResultAndrada";
 	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
+	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
+	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 0.75f;	// 1/3f;
 	
 	public static Logger log = Global.getLogger(Nex_MarketCMD.class);
 	
@@ -753,6 +770,439 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	public TempData getTempData() {
 		return temp;
+	}
+	
+	public static int getBombardDisruptDuration(BombardType type) {
+		float dur = Global.getSettings().getFloat("bombardDisruptDuration");
+		if (type == BombardType.TACTICAL)
+			dur *= TACTICAL_BOMBARD_DISRUPT_MULT;
+		return (int) dur;
+	}
+	
+	public static int getBombardmentCost(MarketAPI market, CampaignFleetAPI fleet, BombardType type) {
+		float str = getDefenderStr(market);
+		int result = (int) (str * Global.getSettings().getFloat("bombardFuelFraction"));
+		if (result < 2) result = 2;
+		if (fleet != null) {
+			float bomardBonus = Misc.getFleetwideTotalMod(fleet, Stats.FLEET_BOMBARD_COST_REDUCTION, 0f);
+			result -= bomardBonus;
+			if (result < 0) result = 0;
+		}
+		if (type == BombardType.TACTICAL)
+			result *= TACTICAL_BOMBARD_FUEL_MULT;
+		
+		return result;
+	}
+	
+	// Change from vanilla: handle fuel cost differences between tactical and strategic bombardment
+	@Override
+	protected void bombardMenu() {
+		float width = 350;
+		float opad = 10f;
+		float small = 5f;
+		
+		Color h = Misc.getHighlightColor();
+		Color b = Misc.getNegativeHighlightColor();
+		
+		dialog.getVisualPanel().showImagePortion("illustrations", "bombard_prepare", 640, 400, 0, 0, 480, 300);
+
+		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+		
+		float bomardBonus = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_BOMBARD_COST_REDUCTION, 0f);
+		String increasedBombardKey = "core_addedBombard";
+		StatBonus bombardBonusStat = new StatBonus();
+		if (bomardBonus > 0) {
+			bombardBonusStat.modifyFlat(increasedBombardKey, -bomardBonus, "Specialized fleet bombardment capability");
+		}
+		
+		float defenderStr = (int) Math.round(defender.computeEffective(0f));
+		defenderStr -= bomardBonus;
+		if (defenderStr < 0) defenderStr = 0;
+		
+		temp.defenderStr = defenderStr;
+		
+		TooltipMakerAPI info = text.beginTooltip();
+		
+		info.setParaSmallInsignia();
+		
+		String has = faction.getDisplayNameHasOrHave();
+		String is = faction.getDisplayNameIsOrAre();
+		boolean hostile = faction.isHostileTo(Factions.PLAYER);
+		boolean tOn = playerFleet.isTransponderOn();
+		float initPad = 0f;
+		if (!hostile) {
+			if (tOn) {
+				info.addPara(Misc.ucFirst(faction.getDisplayNameWithArticle()) + " " + is + 
+						" not currently hostile. A bombardment is a major enough hostile action that it can't be concealed, " +
+						"regardless of transponder status.",
+						initPad, faction.getBaseUIColor(), faction.getDisplayNameWithArticleWithoutArticle());
+			}
+			initPad = opad;
+		}
+
+		info.addPara("Starship fuel can be easily destabilized, unlocking the destructive " +
+				"potential of the antimatter it contains. Ground defenses can counter " +
+				"a bombardment, though in practice it only means that more fuel is required to achieve " +
+				"the same result.", initPad);
+				
+		
+		if (bomardBonus > 0) {
+			info.addPara("Effective ground defense strength: %s", opad, h, "" + (int)defenderStr);
+		} else {
+			info.addPara("Ground defense strength: %s", opad, h, "" + (int)defenderStr);
+		}
+		info.addStatModGrid(width, 50, opad, small, defender, true, statPrinter(true));
+		if (!bombardBonusStat.isUnmodified()) {
+			info.addStatModGrid(width, 50, opad, 3f, bombardBonusStat, true, statPrinter(false));
+		}
+		
+		text.addTooltip();
+
+//		text.addPara("A tactical bombardment will only hit military targets and costs less fuel. A saturation " +
+//				"bombardment will devastate the whole colony, and only costs marginally more fuel, as the non-military " +
+//				"targets don't have nearly the same degree of hardening.");
+		
+		int costTac = getBombardmentCost(market, playerFleet, BombardType.TACTICAL);
+		int costSat = getBombardmentCost(market, playerFleet, BombardType.SATURATION);
+		temp.bombardCost = costSat;
+		
+		int fuel = (int) playerFleet.getCargo().getFuel();
+		boolean canBombard = fuel > temp.bombardCost;
+		boolean canBombardTac = fuel >= costTac;
+		boolean canBombardSat = fuel >= costSat;
+		
+		/*
+		LabelAPI label = text.addPara("A tactical bombardment requires %s fuel. A saturation bombardment requires %s fuel. " +
+									  "You have %s fuel.",
+				h, "" + costTac, "" + costSat, "" + fuel);
+		label.setHighlight("" + costTac, "" + costSat, "" + fuel);
+		label.setHighlightColors(canBombardTac ? h : b, canBombardSat ? h : b, h);
+		*/
+		
+		LabelAPI label = text.addPara("A bombardment requires %s fuel. " +
+									  "You have %s fuel.",
+				h, "" + temp.bombardCost, "" + fuel);
+		label.setHighlight("" + temp.bombardCost, "" + fuel);
+		label.setHighlightColors(canBombard ? h : b, h);
+
+		options.clearOptions();
+		
+		options.addOption("Prepare a tactical bombardment", BOMBARD_TACTICAL);
+		options.addOption("Prepare a saturation bombardment", BOMBARD_SATURATION);
+		
+		if (DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+			canBombardTac = true;
+			canBombardSat = true;
+		}
+		if (!canBombardTac) {
+			options.setEnabled(BOMBARD_TACTICAL, false);
+			options.setTooltip(BOMBARD_TACTICAL, "Not enough fuel.");
+		}
+		if (!canBombardSat) {
+			options.setEnabled(BOMBARD_SATURATION, false);
+			options.setTooltip(BOMBARD_SATURATION, "Not enough fuel.");
+		}
+
+		options.addOption("Go back", RAID_GO_BACK);
+		options.setShortcut(RAID_GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
+	}
+	
+	// Changes from vanilla: Uses custom disruption time and fuel costs
+	@Override
+	protected void bombardTactical() {
+		
+		temp.bombardType = BombardType.TACTICAL; 
+		temp.bombardCost = getBombardmentCost(market, playerFleet, temp.bombardType);
+		
+		boolean hostile = faction.isHostileTo(Factions.PLAYER);
+		temp.willBecomeHostile.clear();
+		temp.willBecomeHostile.add(faction);
+		
+		float opad = 10f;
+		float small = 5f;
+		
+		Color h = Misc.getHighlightColor();
+		Color b = Misc.getNegativeHighlightColor();
+		
+		
+		int dur = getBombardDisruptDuration(temp.bombardType);
+		
+		List<Industry> targets = new ArrayList<Industry>();
+		for (Industry ind : market.getIndustries()) {
+			if (ind.getSpec().hasTag(Industries.TAG_TACTICAL_BOMBARDMENT)) {
+				if (ind.getDisruptedDays() >= dur * 0.8f) continue;
+				targets.add(ind);
+			}
+		}
+		temp.bombardmentTargets.clear();
+		temp.bombardmentTargets.addAll(targets);
+		
+		if (targets.isEmpty()) {
+			text.addPara(market.getName() + " does not have any undisrupted military targets that would be affected by a tactical bombardment.");
+			addBombardNeverMindOption();
+			return;	
+		}
+		
+		int fuel = (int) playerFleet.getCargo().getFuel();
+		text.addPara("A tactical bombardment will destabilize the colony, and will also disrupt the " +
+				"following military targets for approximately %s days:",
+					 h, "" + dur);
+		
+		TooltipMakerAPI info = text.beginTooltip();
+		
+		info.setParaSmallInsignia();
+		info.setParaFontDefault();
+		
+		info.setBulletedListMode(BaseIntelPlugin.INDENT);
+		float initPad = 0f;
+		for (Industry ind : targets) {
+			//info.addPara(ind.getCurrentName(), faction.getBaseUIColor(), initPad);
+			info.addPara(ind.getCurrentName(), initPad);
+			initPad = 3f;
+		}
+		info.setBulletedListMode(null);
+		
+		text.addTooltip();
+		
+		text.addPara("The bombardment requires %s fuel. " +
+					 "You have %s fuel.",
+					 h, "" + Math.round(temp.bombardCost),
+					 "" + fuel);
+		
+		addBombardConfirmOptions();
+	}
+	
+	// Difference from vanilla: No insta-hostile if target is vengeful or market is small
+	@Override
+	protected void bombardSaturation() {
+		
+		temp.bombardType = BombardType.SATURATION;
+		temp.bombardCost = getBombardmentCost(market, playerFleet, temp.bombardType);
+
+		temp.willBecomeHostile.clear();
+		temp.willBecomeHostile.add(faction);
+		
+		List<FactionAPI> nonHostile = new ArrayList<FactionAPI>();
+		List<FactionAPI> vengeful = new ArrayList<>();
+		for (FactionAPI faction : Global.getSector().getAllFactions()) {
+			if (temp.willBecomeHostile.contains(faction)) continue;
+			
+			if (faction.getCustomBoolean(Factions.CUSTOM_CARES_ABOUT_ATROCITIES)) {
+				if (faction.getRelationshipLevel(market.getFaction()) == RepLevel.VENGEFUL)
+				{
+					vengeful.add(faction);
+				}
+				else {
+					boolean hostile = faction.isHostileTo(Factions.PLAYER);
+					temp.willBecomeHostile.add(faction);
+					if (!hostile) {
+						nonHostile.add(faction);
+					}
+				}
+			}
+		}
+		
+		float opad = 10f;
+		float small = 5f;
+		
+		Color h = Misc.getHighlightColor();
+		Color b = Misc.getNegativeHighlightColor();
+		
+		
+		int dur = getBombardDisruptDuration(temp.bombardType);
+		
+		List<Industry> targets = new ArrayList<Industry>();
+		for (Industry ind : market.getIndustries()) {
+			if (!ind.getSpec().hasTag(Industries.TAG_NO_SATURATION_BOMBARDMENT)) {
+				if (ind.getDisruptedDays() >= dur * 0.8f) continue;
+				targets.add(ind);
+			}
+		}
+		temp.bombardmentTargets.clear();
+		temp.bombardmentTargets.addAll(targets);
+		
+		boolean destroy = market.getSize() <= getBombardDestroyThreshold();
+		
+		int fuel = (int) playerFleet.getCargo().getFuel();
+		if (destroy) {
+			text.addPara("A saturation bombardment of a colony this size will destroy it utterly.");
+		} else {
+			text.addPara("A saturation bombardment will destabilize the colony, reduce its population, " +
+					"and disrupt all operations for a long time.");
+		}		
+
+		if (nonHostile.isEmpty()) {
+			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
+		} else if (market.getSize() <= 3) {
+			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+					"satBombWarningSmall", "$market", market.getName()));
+		} else {
+			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarning"));
+		}
+		
+		if (!nonHostile.isEmpty()) {
+			TooltipMakerAPI info = text.beginTooltip();
+			info.setParaFontDefault();
+			
+			info.setBulletedListMode(BaseIntelPlugin.INDENT);
+			float initPad = 0f;
+			for (FactionAPI fac : nonHostile) {
+				info.addPara(Misc.ucFirst(fac.getDisplayName()), fac.getBaseUIColor(), initPad);
+				initPad = 3f;
+			}
+			info.setBulletedListMode(null);
+			
+			text.addTooltip();
+		}
+		
+		if (!vengeful.isEmpty()) {
+			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+					"satBombWarningVengeful", "$theFaction", faction.getDisplayNameWithArticle()));
+			
+			TooltipMakerAPI info = text.beginTooltip();
+			info.setParaFontDefault();
+			
+			info.setBulletedListMode(BaseIntelPlugin.INDENT);
+			float initPad = 0f;
+			for (FactionAPI fac : vengeful) {
+				info.addPara(Misc.ucFirst(fac.getDisplayName()), fac.getBaseUIColor(), initPad);
+				initPad = 3f;
+			}
+			info.setBulletedListMode(null);
+			
+			text.addTooltip();
+		}
+		
+		text.addPara("The bombardment requires %s fuel. " +
+					 "You have %s fuel.",
+					 h, "" + temp.bombardCost, "" + fuel);
+		
+		addBombardConfirmOptions();
+	}
+	
+	// Changes from vanilla: Custom rep handling for sat bomb; don't pollute habitable worlds
+	protected void bombardConfirm() {
+		
+		if (temp.bombardType == null) {
+			bombardNeverMind();
+			return;
+		}
+		
+		if (temp.bombardType == BombardType.TACTICAL) {
+			dialog.getVisualPanel().showImagePortion("illustrations", "bombard_tactical_result", 640, 400, 0, 0, 480, 300);
+		} else {
+			dialog.getVisualPanel().showImagePortion("illustrations", "bombard_saturation_result", 640, 400, 0, 0, 480, 300);
+		}
+		
+		Random random = getRandom();
+		
+		if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+			if (temp.bombardType == BombardType.TACTICAL) {
+				Misc.increaseMarketHostileTimeout(market, 60f);
+			} else {
+				Misc.increaseMarketHostileTimeout(market, 120f);
+			}
+		}
+		
+		playerFleet.getCargo().removeFuel(temp.bombardCost);
+		AddRemoveCommodity.addCommodityLossText(Commodities.FUEL, temp.bombardCost, text);
+	
+		for (FactionAPI curr : temp.willBecomeHostile) {
+			CustomRepImpact impact = new CustomRepImpact();
+			impact.delta = market.getSize() * -0.01f * 1f;
+			impact.ensureAtBest = RepLevel.HOSTILE;
+			if (temp.bombardType == BombardType.SATURATION) {
+				if (curr == faction) {
+					impact.ensureAtBest = RepLevel.VENGEFUL;
+				}
+				else if (market.getSize() <= 3) {
+					impact.ensureAtBest = RepLevel.NEUTRAL;
+				}
+				impact.delta = market.getSize() * -0.02f * 1f;
+			}
+			Global.getSector().adjustPlayerReputation(
+				new RepActionEnvelope(RepActions.CUSTOM, 
+					impact, null, text, true, true),
+					curr.getId());
+		}
+	
+		int stabilityPenalty = getTacticalBombardmentStabilityPenalty();
+		if (temp.bombardType == BombardType.SATURATION) {
+			stabilityPenalty = getSaturationBombardmentStabilityPenalty();
+		}
+		boolean destroy = temp.bombardType == BombardType.SATURATION && market.getSize() <= getBombardDestroyThreshold();
+		
+		if (stabilityPenalty > 0 && !destroy) {
+			String reason = "Recently bombarded";
+			if (Misc.isPlayerFactionSetUp()) {
+				reason = playerFaction.getDisplayName() + " bombardment";
+			}
+			RecentUnrest.get(market).add(stabilityPenalty, reason);
+			text.addPara("Stability of " + market.getName() + " reduced by %s.",
+					Misc.getHighlightColor(), "" + stabilityPenalty);
+		}
+		
+		if (temp.bombardType == BombardType.SATURATION && market.hasCondition(Conditions.HABITABLE) && !market.hasCondition(Conditions.POLLUTION)) {
+			market.addCondition(Conditions.POLLUTION);
+		}
+		
+		if (!destroy) {
+			for (Industry curr : temp.bombardmentTargets) {
+				int dur = getBombardDisruptDuration(temp.bombardType);
+				dur *= StarSystemGenerator.getNormalRandom(random, 1f, 1.25f);
+				curr.setDisrupted(dur);
+			}
+		}
+		
+		
+		
+		if (temp.bombardType == BombardType.TACTICAL) {
+			text.addPara("Military operations disrupted.");
+			
+			ListenerUtil.reportTacticalBombardmentFinished(dialog, market, temp);
+		} else if (temp.bombardType == BombardType.SATURATION) {
+			if (destroy) {
+				DecivTracker.decivilize(market, true);
+				text.addPara(market.getName() + " destroyed.");
+			} else {
+				int prevSize = market.getSize();
+				CoreImmigrationPluginImpl.reduceMarketSize(market);
+				if (prevSize == market.getSize()) {
+					text.addPara("All operations disrupted.");
+				} else {
+					text.addPara("All operations disrupted. Colony size reduced to %s.", 
+							Misc.getHighlightColor()
+							, "" + market.getSize());
+				}
+				
+				ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
+			}
+		}
+		
+		if (dialog != null && dialog.getPlugin() instanceof RuleBasedDialog) {
+			if (dialog.getInteractionTarget() != null &&
+					dialog.getInteractionTarget().getMarket() != null) {
+				Global.getSector().setPaused(false);
+				dialog.getInteractionTarget().getMarket().getMemoryWithoutUpdate().advance(0.0001f);
+				Global.getSector().setPaused(true);
+			}
+			((RuleBasedDialog) dialog.getPlugin()).updateMemory();
+		}
+		
+		Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), MemFlags.RECENTLY_BOMBARDED, 
+	   			   			  Factions.PLAYER, true, 30f);
+
+		if (destroy) {
+			if (dialog != null && dialog.getPlugin() instanceof RuleBasedDialog) {
+				((RuleBasedDialog) dialog.getPlugin()).updateMemory();
+//				market.getMemoryWithoutUpdate().unset("$tradeMode");
+//				entity.getMemoryWithoutUpdate().unset("$tradeMode");
+			}
+		}
+		
+		addBombardVisual(market.getPrimaryEntity());
+		
+		addBombardContinueOption();
 	}
 	
 	// this was just to debug Tiandong
