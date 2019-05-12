@@ -178,7 +178,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (market.getFaction().isPlayerFaction()) return;	// let player decide
 		
 		ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-		boolean wantFreePort = true;
+		boolean isFreePort = market.isFreePort();
+		boolean wantFreePort;
 		if (!sectorManager.corvusMode)
 		{
 			wantFreePort = newOwnerConfig.freeMarket;
@@ -188,17 +189,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			wantFreePort = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket")
 					|| (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
 		}
-		// needs forcible toggle because if it's already enabled it won't do anything
-		// also check if free port condition already exists so we don't add it twice
-		if (wantFreePort == true && !market.hasCondition(Conditions.FREE_PORT)) {
+		
+		if (isFreePort != wantFreePort) {
 			market.setFreePort(wantFreePort);
-			if (!market.hasCondition(Conditions.FREE_PORT))
-				market.addCondition(Conditions.FREE_PORT);
-			ExerelinUtilsMarket.setTariffs(market);
-		}
-		else {
-			market.setFreePort(false);
-			market.removeCondition(Conditions.FREE_PORT);
 			ExerelinUtilsMarket.setTariffs(market);
 		}
 	}

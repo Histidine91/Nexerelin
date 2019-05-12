@@ -118,7 +118,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
-            market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT));
+            market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
         }
         
         StatsTracker.create();
@@ -323,7 +323,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
-            market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT));
+            market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
         }
         
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
