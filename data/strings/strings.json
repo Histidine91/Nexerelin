@@ -594,6 +594,8 @@
 		"attackingStarSystem":"attacking the $target star system",
 		"attackingAroundStarSystem":"attacking around the $target star system",
 		"movingInToAttack":"moving in to attack $target",
+		"bombarding":"bombarding $target",
+		"movingInToBombard":"moving in to bombard $target",
 		"defending":"defending $target",
 		"patrolling":"patrolling $target",
 		"patrollingStarSystem":"patrolling the $target star system",
@@ -918,6 +920,17 @@
 		"baseIntelDescAbandoned":"This base is no longer operational.",
 		"baseIntelTitle":"$faction Resurgent Base",
 		"marketName":"Resurgent Base",
+	},
+	"nex_satbomb":{
+		"expedition":"expedition",
+		"expeditions":"expeditions",
+		"theExpedition":"the expedition",
+		"expeditionForce":"expedition force",
+		"theExpeditionForce":"the expedition force",
+		"forceIsOrAre":"is",	# if raidForce is singular, this should be singular too, else both should be plural
+		"forceHasOrHave":"have",	# same
+		
+		"intelDesc":"$TheFaction $isOrAre launching a saturation bombardment of $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc.",
 	},
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
