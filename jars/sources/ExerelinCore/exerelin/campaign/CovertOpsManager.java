@@ -21,12 +21,14 @@ import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -48,13 +50,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Creates diplomacy events at regular intervals; handles war weariness
+ * Handles some agent-related stuff
  */
 public class CovertOpsManager extends BaseCampaignEventListener implements EveryFrameScript {
     
@@ -407,6 +410,25 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			picker.add(commodity.getId(), commodity.getAvailable());
 		}
 		return picker.pick();
+	}
+	
+	public static Random getRandom(MarketAPI market) {
+		String key = "$nex_agent_random";
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		Random random = null;
+		if (mem.contains(key)) {
+			random = (Random) mem.get(key);
+		} else {
+			if (market.getPrimaryEntity() != null) {
+				long seed = Misc.getSalvageSeed(market.getPrimaryEntity());
+				seed *= (Global.getSector().getClock().getMonth() + 10);
+				random = new Random(seed);
+			} else {
+				random = new Random();
+			}
+		}
+		
+		return random;
 	}
 
     @Override

@@ -29,6 +29,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -259,20 +260,22 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		CovertOpsManager.CovertActionDef def = getDef();
 		CovertActionResult rollResult = null;
 		
+		Random random = CovertOpsManager.getRandom(market);
+		
 		MutableStat sChance = getSuccessChance();
 		MutableStat sDetectChance = getDetectionChance(false);
 		MutableStat fDetectChance = getDetectionChance(true);
 			
-		if (Math.random() * 100 < sChance.getModifiedValue())
+		if (random.nextFloat() * 100 < sChance.getModifiedValue())
 		{
 			rollResult = CovertActionResult.SUCCESS;
-			if (Math.random() * 100 < sDetectChance.getModifiedValue())
+			if (random.nextFloat() * 100 < sDetectChance.getModifiedValue())
 				rollResult = CovertActionResult.SUCCESS_DETECTED;
 		}
 		else
 		{
 			rollResult = CovertActionResult.FAILURE;
-			if (Math.random() * 100 < fDetectChance.getModifiedValue())
+			if (random.nextFloat() * 100 < fDetectChance.getModifiedValue())
 				rollResult = CovertActionResult.FAILURE_DETECTED;
 		}
 		return rollResult;
