@@ -1063,6 +1063,13 @@
 		"hiddenBaseAbandoned":"abandoned",
 		"hiddenBaseDestroyed":"destroyed",
 		"hiddenBaseLocationUnknown":"Exact Location Unknown",
+		
+		"pirateActivityTitle":"Pirate activity",
+		"pirateActivityPenalty":"%s stability, %s accessibility.",
+		"pirateActivityPenaltyStab":"%s stability",
+		"pirateActivityPenaltyAccess":"%s accessibility.",
+		"pirateActivityPenaltyNone":"No perceptible impact on operations as of yet.",
+		"pirateActivityPenaltyModified":"Impacts reduced due to reputation with pirates (%s).",
 
 		"errorLazyLib":"Nexerelin requires LazyLib to function!\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0",
 		"errorOfficerMaxLevel":"Officer max level in config is over 29 (current: $currMax)\nThis risks a hang during gameplay.\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.",

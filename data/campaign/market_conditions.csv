@@ -8,3 +8,7 @@ Raiding,nex_raid_condition,,TRUE,exerelin.campaign.econ.RaidCondition,"Hostile r
 ,,,,,,,
 #Tribute,nex_tribute,,TRUE,exerelin.campaign.econ.TributeCondition,"$market is paying the locally dominant faction a regular tribute for the right to continue existing. Foreign authorities are keeping tight restrictions on local population growth, to keep the colony at a “manageable” size.",graphics/icons/markets/pirate_moot.png,1003
 ,,,,,,,
+# vanilla override,,,,,,,
+Pirate Activity,pirate_activity,,TRUE,exerelin.campaign.intel.NexPirateActivity,"There have been signs that pirates are targeting shipping and colonies in this system - from port inspectors being pressured to turn a blind eye, to inconsistencies in cargo manifests, to other increased criminal activity.
+
+The pirates most likely have a base somewhere relatively nearby.",graphics/icons/markets/pirate_activity.png,1300
