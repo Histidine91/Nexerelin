@@ -75,6 +75,19 @@ public class RemnantRaidOrganizeStage extends NexOrganizeStage {
 		info.addPara(str, opad, h, "" + days);
 	}
 	
+	// from BaseRaidStage, skips the version in OrganizeStage (which has a market-is-in-economy check)
+	@Override
+	public void advance(float amount) {
+		float days = Misc.getDays(amount);
+		
+		elapsed += days;
+		
+		statusInterval.advance(days);
+		if (statusInterval.intervalElapsed()) {
+			updateStatus();
+		}
+	}
+	
 	@Override
 	public void giveReturnOrdersToStragglers(List<RouteManager.RouteData> stragglers) 
 	{
