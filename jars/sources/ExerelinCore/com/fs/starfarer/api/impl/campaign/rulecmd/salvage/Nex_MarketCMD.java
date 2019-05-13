@@ -80,7 +80,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
-	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 0.75f;	// 1/3f;
+	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
 	
 	public static Logger log = Global.getLogger(Nex_MarketCMD.class);
 	
