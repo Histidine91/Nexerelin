@@ -7,6 +7,9 @@
     # Whether to check if Starsector itself is up to date
     "checkStarsectorVersion":true, # Default: true
 
+    # Whether to launch a mod's Nexus page instead of its forum thread, if available
+    "preferNexusLinks":false, # Default: false
+
     # The maximum number of separate threads to use when checking for updates
     "maxUpdateThreads":8,
 
