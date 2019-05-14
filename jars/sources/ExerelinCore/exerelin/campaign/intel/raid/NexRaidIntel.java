@@ -99,17 +99,18 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 					"bulletTarget", "$targetFaction", other.getDisplayName());
 			info.addPara(str, initPad, tc,
 						 other.getBaseUIColor(), other.getDisplayName());
+			initPad = 0;
 		}
 		
 		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
-			addArrivedBullet(info, tc, 0);
+			addArrivedBullet(info, tc, initPad);
 			return;
 		}
 		
 		if (outcome != null) {
-			addOutcomeBullet(info, tc, 0);
+			addOutcomeBullet(info, tc, initPad);
 		} else {
-			info.addPara(system.getNameWithLowercaseType(), tc, 0);
+			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
 		}
 		addETABullet(info, tc, h, 0);
 		
@@ -163,6 +164,10 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		float combat = myFP;
 		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
 				+ TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
+		
+		if (this instanceof SatBombIntel)
+			tanker *= 2.5f;
+		
 		float transport = 0;
 		float freighter = myFP * (0.1f + random.nextFloat() * 0.05f);
 		

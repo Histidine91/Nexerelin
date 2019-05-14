@@ -47,8 +47,11 @@ public class PlagueBeacon extends BaseLandmarkDef {
 		for (SectorEntityToken token : getEligibleLocations())
 		{
 			float weight = 1;
-			if (token.getMarket().hasCondition("US_virus"))
-				weight = 10;
+			if (token.getMarket().hasCondition("US_virus")) {
+				log.info("Virus found on " + token.getName() + ", " + token.getContainingLocation().getName());
+				weight = 15;
+			}
+			
 			picker.add(token, weight);
 		}
 		
