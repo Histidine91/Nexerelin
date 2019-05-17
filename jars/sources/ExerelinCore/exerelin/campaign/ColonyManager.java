@@ -449,10 +449,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return;
 		
 		PersonAPI admin = getBestAdmin(market);
-		if (admin != null)
-		{
-			market.setAdmin(admin);
-		}
+		market.setAdmin(admin);
 	}
 	
 	public static boolean hasFactionLeader(MarketAPI market) {
