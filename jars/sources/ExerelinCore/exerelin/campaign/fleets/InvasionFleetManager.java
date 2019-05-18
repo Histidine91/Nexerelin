@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -372,16 +373,16 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		// pick a source market
 		for (MarketAPI market : markets) {
+			if (market.getFaction() != faction) continue;
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
 			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
+			if (!market.hasSpaceport()) continue;
+			if (market.getSize() < 3) continue;
 			// markets with ongoing rebellions can't launch invasions
 			if (RebellionEvent.isOngoing(market))
 				continue;
 			
-			if	( market.getFactionId().equals(factionId) && market.hasSpaceport() && market.getSize() >= 3 )
-			{
-				sourcePicker.add(market, getMarketWeightForInvasionSource(market));
-			}
+			sourcePicker.add(market, getMarketWeightForInvasionSource(market));
 		}
 		MarketAPI originMarket = sourcePicker.pick();
 		if (originMarket == null) {

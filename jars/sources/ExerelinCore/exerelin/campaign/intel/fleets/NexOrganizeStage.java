@@ -106,4 +106,17 @@ public class NexOrganizeStage extends OrganizeStage {
 			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
 		}
 	}
+	
+	// from BaseRaidStage, skips the version in OrganizeStage (which cancels raid if source has no military base)
+	@Override
+	public void advance(float amount) {
+		float days = Misc.getDays(amount);
+		
+		elapsed += days;
+		
+		statusInterval.advance(days);
+		if (statusInterval.intervalElapsed()) {
+			updateStatus();
+		}
+	}
 }
