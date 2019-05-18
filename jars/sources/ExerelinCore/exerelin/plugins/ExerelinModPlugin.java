@@ -143,11 +143,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addTransientScript(new ReinitScreenScript());
     }
     
-    protected void refreshTariffs()
+    protected void refreshTariffsAndGrowthRate()
     {
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             ExerelinUtilsMarket.setTariffs(market);
+			ColonyManager.getManager().setNPCGrowthRate(market);
         }
     }
     
@@ -229,7 +230,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         addScriptsAndEventsIfNeeded();
         
         reverseCompatibility();
-        refreshTariffs();
+        refreshTariffsAndGrowthRate();
         
         SectorAPI sector = Global.getSector();
         sector.registerPlugin(new ExerelinCampaignPlugin());
@@ -238,8 +239,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         //sector.removeScriptsOfClass(FactionHostilityManager.class);
         
         PrismMarket.clearSubmarketCache();
-		
-		ColonyManager.getManager().updatePlayerBonusAdmins();
+        
+        ColonyManager.getManager().updatePlayerBonusAdmins();
         
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onGameLoad(newGame);

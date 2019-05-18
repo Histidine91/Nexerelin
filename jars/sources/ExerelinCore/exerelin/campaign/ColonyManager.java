@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -24,6 +25,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
+import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
@@ -54,11 +56,12 @@ import org.apache.log4j.Logger;
  * Handles assorted colony-related functions.
  */
 public class ColonyManager extends BaseCampaignEventListener implements EveryFrameScript,
-		EconomyTickListener, InvasionListener
+		EconomyTickListener, InvasionListener, MarketImmigrationModifier
 {
 	public static Logger log = Global.getLogger(ColonyManager.class);
 	
 	public static final String PERSISTENT_KEY = "nex_colonyManager";
+	public static final String MEMORY_KEY_GROWTH_LIMIT = "$nex_colony_growth_limit";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
@@ -108,33 +111,53 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		{
 			if (market.getFaction().isPlayerFaction()) 
 			{
-				if (market.getPlanetEntity() == null && market.getSize() >= MAX_STATION_SIZE) 
-				{
-					//market.setImmigrationClosed(true);
-				}
 				playerFactionSize += market.getSize();
 			}
 			else 
 			{
-				if (allowGrowth && !market.isHidden() && market.getSize() < MAX_NPC_COLONY_SIZE
-						&& Misc.getMarketSizeProgress(market) >= 1) {
-					CoreImmigrationPluginImpl.increaseMarketSize(market);
-					// intel: copied from CoreImmigrationPluginImpl
-					MessageIntel intel = new MessageIntel("Colony Growth - " + market.getName(), Misc.getBasePlayerColor());
-					intel.addLine(BaseIntelPlugin.BULLET + "Size increased to %s",
-							Misc.getTextColor(), 
-							new String[] {"" + (int)Math.round(market.getSize())},
-							Misc.getHighlightColor());
-					intel.setIcon(market.getFaction().getCrest());
-					intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
-					Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING);
+				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1) 
+				{
+					int maxSize = MAX_NPC_COLONY_SIZE;
+					if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
+						maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
+					
+					if (market.getSize() < maxSize) {
+						CoreImmigrationPluginImpl.increaseMarketSize(market);
+						// intel: copied from CoreImmigrationPluginImpl
+						MessageIntel intel = new MessageIntel("Colony Growth - " + market.getName(), Misc.getBasePlayerColor());
+						intel.addLine(BaseIntelPlugin.BULLET + "Size increased to %s",
+								Misc.getTextColor(), 
+								new String[] {"" + (int)Math.round(market.getSize())},
+								Misc.getHighlightColor());
+						intel.setIcon(market.getFaction().getCrest());
+						intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
+						Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING);
+					}
 				}
-				
 				updateFreePortSetting(market);
 			}
-			
 		}
 		updatePlayerBonusAdmins(playerFactionSize);
+	}
+	
+	public void setNPCGrowthRate(MarketAPI market) {
+		boolean want = !market.getFaction().isPlayerFaction();
+		boolean have = market.getImmigrationModifiers().contains(this);
+		if (want == have) return;
+		
+		if (want)
+		{
+			market.addImmigrationModifier(this);
+		}
+		else 
+		{
+			market.removeImmigrationModifier(this);
+		}
+	}
+	
+	@Override
+	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
+		incoming.getWeight().modifyMult("nex_colonyManager_npcGrowth", 0.5f, "NPC market");
 	}
 	
 	public void updatePlayerBonusAdmins() {
@@ -350,6 +373,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		// reassign admins on market capture
 		reassignAdminIfNeeded(market, oldOwner, newOwner);
+		setNPCGrowthRate(market);
 	}
 	
 	public static void buildIndustry(MarketAPI market, String id) {
