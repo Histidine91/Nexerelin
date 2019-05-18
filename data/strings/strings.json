@@ -814,9 +814,12 @@
 		"ownFaction":"own faction",
 		"freeStart":"free start",
 		"freeStartHard":"free start (hard)",
+		"spacerStart":"spacer start (very hard)",
 		"joinedFaction":"joined $faction",
 		"ownFactionDisabledTooltip":"No planet to spawn from in non-random sector, use free start instead",
 		"freeStartTooltip":"Own faction, but with no starting planet; you're on your own.",
+		"spacerStartTooltip":"A non-combat shuttle, a general lack of resources, and a debt that must be paid. Very difficult start, only intended as a challenge for the starfarer that's seen it all.",
+		
 		"devStart":">> (dev) quick start",
 		"devStartFast":">> (dev) quick start no time pass",
 

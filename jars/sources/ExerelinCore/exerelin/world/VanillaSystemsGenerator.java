@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
+import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.corvus.Corvus;
 import data.scripts.world.systems.AlGebbar;
 import data.scripts.world.systems.Arcadia;
@@ -82,7 +83,8 @@ public class VanillaSystemsGenerator {
 		new Tyle().generate(sector);
 		
 		//TutorialMissionEvent.endGalatiaPortionOfMission();
-		exerelinEndGalatiaPortionOfMission(!ExerelinSetupData.getInstance().hardMode);
+		Global.getLogger(VanillaSystemsGenerator.class).info("Does it work? " + Misc.isSpacerStart());
+		exerelinEndGalatiaPortionOfMission();
 		
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		SectorEntityToken atlanticLabel = hyper.addCustomEntity("atlantic_label_id", null, "atlantic_label", null);
@@ -105,12 +107,8 @@ public class VanillaSystemsGenerator {
 		abyssLabel.setFixedLocation(-65000, -47000);		
 	}
 	
-	public static void exerelinEndGalatiaPortionOfMission(boolean withStipend)
+	public static void exerelinEndGalatiaPortionOfMission()
 	{
-		if (withStipend) {
-			new GalatianAcademyStipend();
-		}
-
 		StarSystemAPI system = Global.getSector().getStarSystem("galatia");
 		PlanetAPI ancyra = (PlanetAPI) system.getEntityById("ancyra");
 		PlanetAPI pontus = (PlanetAPI) system.getEntityById("pontus");

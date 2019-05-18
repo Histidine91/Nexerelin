@@ -163,7 +163,7 @@ public class StartSetupPostTimePass {
 		}
 		
 		// Galatian stipend
-		if (!SectorManager.getCorvusMode() && !SectorManager.getHardMode()) {
+		if (!SectorManager.getHardMode() && !Misc.isSpacerStart()) {
 			new GalatianAcademyStipend();
 		}
 		

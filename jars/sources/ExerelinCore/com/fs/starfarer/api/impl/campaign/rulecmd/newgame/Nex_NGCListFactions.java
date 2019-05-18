@@ -105,6 +105,9 @@ public class Nex_NGCListFactions extends BaseCommandPlugin {
 		opts.setTooltip("nex_NGCFreeStart", StringHelper.getString("exerelin_ngc", "freeStartTooltip"));
 		
 		opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "randomFaction")), "nex_NGCJoinRandomFaction");
+		
+		opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "spacerStart")), "nex_NGCSpacerStart");
+		opts.setTooltip("nex_NGCSpacerStart", StringHelper.getString("exerelin_ngc", "spacerStartTooltip"));
 
 		if (Global.getSettings().isDevMode())
 		{

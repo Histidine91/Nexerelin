@@ -199,6 +199,14 @@ nex_NGCFreeStart,NewGameOptionSelected,$option == nex_NGCFreeStart,"NGCSetPlayer
 NGCSetFreeStart true
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
+nex_NGCSpacerStart,NewGameOptionSelected,$option == nex_NGCSpacerStart,"NGCSetFreeStart true
+NGCSetEasyMode false
+NGCSetPlayerFaction ""player""
+Nex_NGCSpacerStart ""kite_original_Stock""
+NGCAddCredits 2000
+NGCAddCharacterPoints 3
+NGCSetNumStartingOfficers 0
+SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 ,,,,,,
 nex_NGCPickStartingShips,ExerelinNGCStep3,,Nex_NGCStartFleetOptions,Your starting fleet?,,
 nex_NGCStartShipsSolo,NewGameOptionSelected,$option == nex_NGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
