@@ -427,6 +427,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				random = new Random();
 			}
 		}
+		mem.set(key, random, 30f);
 		
 		return random;
 	}
