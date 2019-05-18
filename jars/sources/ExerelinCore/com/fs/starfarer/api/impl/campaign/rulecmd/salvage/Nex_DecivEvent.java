@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
@@ -100,6 +101,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		{
 			case "hasEvent":
 				return hasEvent(market);
+			case "wasCivilized":
+				return wasCivilized(market, memoryMap);
 			case "greet":
 				greet(dialog, memoryMap);
 				break;
@@ -114,6 +117,15 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 				break;
 		}
 		return true;
+	}
+	
+	protected boolean wasCivilized(MarketAPI market, Map<String, MemoryAPI> memoryMap) {
+		if (memoryMap.get(MemKeys.MARKET).getBoolean("$wasCivilized"))
+			return true;
+		if (market.getStarSystem() != null && !market.getStarSystem().isProcgen())
+			return true;
+		
+		return false;
 	}
 	
 	protected void greet(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {

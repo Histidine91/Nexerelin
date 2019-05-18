@@ -522,7 +522,7 @@ Nex_DecivEvent hasEvent
 HostileFleetNearbyAndAware",SetEnabled nex_decivEvent_interact false,"One of the survivors' settlements on the surface is hailing your ship. But with a hostile fleet nearby, it's probably not something you have time to deal with right now.",nex_decivEvent_interact:Answer the hail,
 nex_decivEvent_init,DialogOptionSelected,$option == nex_decivEvent_interact,Nex_DecivEvent greet,"You open a comm link, your comms officer configuring the protocol to interface with whatever jury-rigged system the other party is using.",,
 nex_decivEvent_greetingFirstTime,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
-!$market.wasCivilized",,"""Hello? Is this thing on?
+!Nex_DecivEvent wasCivilized",,"""Hello? Is this thing on?
 
 Oh, hello, stranger! It's been a long time since anyone swung by. Is the Sector still alive? Where'd you get that ship? Did Half-Life 3 finally come out?""
 
@@ -532,7 +532,7 @@ OR
 
 Gods, are we glad to see you! For the longest time we were wondering if there was even anyone else alive out there. My name is $personName, and I can't wait to shake your hand!""",nex_decivEvent_greetingContinue:Continue,
 nex_decivEvent_greetingFirstTimeWasCivilized,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
-$market.wasCivilized",,"""Praise the gods! I was starting to fear we'd never see a ship in the sky again.
+Nex_DecivEvent wasCivilized",,"""Praise the gods! I was starting to fear we'd never see a ship in the sky again.
 
 As you can guess, we've had no contact with the rest of the Sector since... since the previous government fell and everything went to hell here.""
 OR
