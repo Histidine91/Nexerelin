@@ -651,6 +651,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	}
 	
 	protected void disableActionOptionsIfNeeded() {
+		if (CovertOpsManager.DEBUG_MODE) return;
 		FactionAPI faction = agent.getMarket().getFaction();
 		if (!RaiseRelations.canModifyRelations(faction)) {
 			CovertActionDef raise = CovertOpsManager.getDef(CovertActionType.RAISE_RELATIONS);
