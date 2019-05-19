@@ -9,20 +9,27 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.TributeIntel;
 import exerelin.utilities.StringHelper;
 
 public class TributeCondition extends BaseMarketConditionPlugin implements MarketImmigrationModifier {
-	public static final String CONDITION_ID = "nex_tribute_condition";
-	public static final float TRIBUTE_INCOME_FACTOR = 0.25f;
+	public static final String CONDITION_ID = "nex_tribute";
+	public static final float TRIBUTE_INCOME_FACTOR = 0.4f;
 	public static final float TRIBUTE_IMMIGRATION_MULT = 0.5f;
-	public static final float MAX_SIZE = 5;
+	public static final int MAX_SIZE = 5;
 	
 	protected FactionAPI faction;
-		
+	protected TributeIntel intel;
+	
 	@Override
 	public void apply(String id) {
 		market.addTransientImmigrationModifier(this);
 		market.getIncomeMult().modifyMult(id, 1-TRIBUTE_INCOME_FACTOR, getString("cond_incomeDesc"));
+	}
+	
+	public void setup(FactionAPI faction, TributeIntel intel) {
+		this.faction = faction;
+		this.intel = intel;
 	}
 
 	@Override
@@ -39,16 +46,6 @@ public class TributeCondition extends BaseMarketConditionPlugin implements Marke
 	}
 	
 	@Override
-	public void advance(float amount) {
-		if (!market.isInEconomy()) {
-			market.removeSpecificCondition(condition.getIdForPluginModifications());
-		}
-		
-		// TODO: check if system is still controlled by someone else, or grown too large
-		// ...do that in the intel code
-	}
-	
-	@Override
 	public boolean isTransient() {
 		return false;
 	}
@@ -62,9 +59,9 @@ public class TributeCondition extends BaseMarketConditionPlugin implements Marke
 		float small = 5f;
 		float opad = 10f;
 		
-		tooltip.addPara(getString("cond_tooltip1"), opad, n, TRIBUTE_INCOME_FACTOR + "x");
-		tooltip.addPara(getString("cond_tooltip2"), pad, n, TRIBUTE_IMMIGRATION_MULT + "x");
-		tooltip.addPara(getString("cond_tooltip3"), pad, n, MAX_SIZE + "");
+		tooltip.addPara(getString("cond_tooltip1"), opad, h, TRIBUTE_INCOME_FACTOR + "x");
+		tooltip.addPara(getString("cond_tooltip2"), 0, h, TRIBUTE_IMMIGRATION_MULT + "x");
+		tooltip.addPara(getString("cond_tooltip3"), 0, h, MAX_SIZE + "");
 	}
 
 	@Override
@@ -77,10 +74,12 @@ public class TributeCondition extends BaseMarketConditionPlugin implements Marke
 		return true;
 	}
 	
+	/*
 	@Override
 	public String getIconName() {
 		return faction.getCrest();
 	}
+	*/
 	
 	protected String getString(String key) {
 		return StringHelper.getString("nex_tribute", key);

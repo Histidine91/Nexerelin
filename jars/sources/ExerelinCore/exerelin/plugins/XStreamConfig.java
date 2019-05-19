@@ -11,6 +11,7 @@ import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.econ.RaidCondition;
+import exerelin.campaign.econ.TributeCondition;
 import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
@@ -31,6 +32,7 @@ import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
+import exerelin.campaign.intel.TributeIntel;
 import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.campaign.intel.agents.DestabilizeMarket;
 import exerelin.campaign.intel.agents.DestroyCommodityStocks;
@@ -109,6 +111,8 @@ public class XStreamConfig {
 		x.alias("NexRaidCond", RaidCondition.class);
 		x.alias("NexPunExIntl", Nex_PunitiveExpeditionIntel.class);
 		x.alias("NexFctnBntyIntl", FactionBountyIntel.class);
+		x.alias("NexTrbtIntl", TributeIntel.class);
+		x.alias("NexTrbtCond", TributeCondition.class);
 		
 		// raids and such
 		x.alias("NexRaidIntl", NexRaidIntel.class);

@@ -1,19 +1,32 @@
 package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
+import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.COMPETITION_PRODUCTION_MULT;
+import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.FACTION_MUST_BE_IN_TOP_X_PRODUCERS;
+import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.FREE_PORT_SIZE_MULT;
+import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.ILLEGAL_GOODS_MULT;
 import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.MAX_THRESHOLD;
+import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.PLAYER_FRACTION_TO_NOTICE;
+import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.TERRITORIAL_ANGER;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.json.JSONObject;
 
 public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
@@ -29,8 +42,115 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		String playerFactionId = PlayerFactionStore.getPlayerFactionId();
 		if (AllianceManager.areFactionsAllied(playerFactionId, factionId))
 			return;
-		
+				
 		super.checkExpedition(curr);
+	}
+	
+	// don't territorial-attack planets which are paying tribute
+	@Override
+	public List<PunExReason> getExpeditionReasons(PunExData curr) {
+		List<PunExReason> result = new ArrayList<PunExReason>();
+
+		JSONObject json = curr.faction.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA);
+		if (json == null) return result;
+		
+		List<MarketAPI> markets = Misc.getFactionMarkets(curr.faction, null);
+		if (markets.isEmpty()) return result;
+		
+		boolean vsCompetitors = json.optBoolean("vsCompetitors", false);
+		boolean vsFreePort = json.optBoolean("vsFreePort", false);
+		boolean territorial = json.optBoolean("territorial", false);
+		
+		MarketAPI test = markets.get(0);
+		FactionAPI player = Global.getSector().getPlayerFaction();
+		
+		if (vsCompetitors) {
+			for (CommodityOnMarketAPI com : test.getAllCommodities()) {
+				if (com.isNonEcon()) continue;
+				if (curr.faction.isIllegal(com.getId())) continue;
+				
+				CommodityMarketDataAPI cmd = com.getCommodityMarketData();
+				if (cmd.getMarketValue() <= 0) continue;
+				
+				Map<FactionAPI, Integer> shares = cmd.getMarketSharePercentPerFaction();
+				int numHigher = 0;
+				int factionShare = shares.get(curr.faction);
+				if (factionShare <= 0) continue;
+				
+				for (FactionAPI faction : shares.keySet()) {
+					if (curr.faction == faction) continue;
+					if (shares.get(faction) > factionShare) {
+						numHigher++;
+					}
+				}
+				
+				if (numHigher >= FACTION_MUST_BE_IN_TOP_X_PRODUCERS) continue;
+				
+				int playerShare = cmd.getMarketSharePercent(player);
+				float threshold = PLAYER_FRACTION_TO_NOTICE;
+				if (DebugFlags.PUNITIVE_EXPEDITION_DEBUG) {
+					threshold = 0.1f;
+				}
+				if (playerShare < factionShare * threshold || playerShare <= 0) continue;
+				
+				PunExReason reason = new PunExReason(PunExType.ANTI_COMPETITION);
+				reason.weight = (float)playerShare / (float)factionShare * COMPETITION_PRODUCTION_MULT;
+				reason.commodityId = com.getId();
+				result.add(reason);
+			}
+		}
+		
+		if (vsFreePort) {
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(null)) {
+				if (!market.isPlayerOwned()) continue;
+				if (!market.isFreePort()) continue;
+				
+				for (CommodityOnMarketAPI com : test.getAllCommodities()) {
+					if (com.isNonEcon()) continue;
+					if (!curr.faction.isIllegal(com.getId())) continue;
+					
+					CommodityMarketDataAPI cmd = com.getCommodityMarketData();
+					if (cmd.getMarketValue() <= 0) continue;
+					
+					int playerShare = cmd.getMarketSharePercent(player);
+					if (playerShare <= 0) continue;
+					
+					PunExReason reason = new PunExReason(PunExType.ANTI_FREE_PORT);
+					reason.weight = playerShare * ILLEGAL_GOODS_MULT;
+					reason.commodityId = com.getId();
+					reason.marketId = market.getId();
+					result.add(reason);
+				}
+				
+				if (market.isFreePort()) {
+					PunExReason reason = new PunExReason(PunExType.ANTI_FREE_PORT);
+					reason.weight = Math.max(1, market.getSize() - 2) * FREE_PORT_SIZE_MULT;
+					reason.marketId = market.getId();
+					result.add(reason);
+				}
+			}
+		}
+		
+		if (territorial) {
+			int maxSize = MarketCMD.getBombardDestroyThreshold();
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(null)) {
+				if (!market.isPlayerOwned()) continue;
+				if (TributeIntel.hasOngoingIntel(market)) continue;
+				
+				boolean destroy = market.getSize() <= maxSize;
+				if (!destroy) continue;
+				
+				FactionAPI claimedBy = Misc.getClaimingFaction(market.getPrimaryEntity());
+				if (claimedBy != curr.faction) continue;
+				
+				PunExReason reason = new PunExReason(PunExType.TERRITORIAL);
+				reason.weight = TERRITORIAL_ANGER;
+				reason.marketId = market.getId();
+				result.add(reason);
+			}
+		}
+		
+		return result;
 	}
 	
 	// create Nex version of the expedition intel
@@ -53,7 +173,6 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		}
 		PunExReason reason = reasonPicker.pick();
 		if (reason == null) return;
-		
 		
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		//for (PunExReason reason : reasons) {
@@ -81,6 +200,19 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		
 		MarketAPI target = targetPicker.pick();
 		if (target == null) return;
+		
+		if (reason.type == PunExType.TERRITORIAL) {
+			Global.getLogger(this.getClass()).info("Checking territorial expedition for " + target.getName());
+			// check if we should demand tribute from target instead
+			String factionId = curr.faction.getId();
+			if (!TributeIntel.hasRejectedTribute(factionId, target) 
+					&& !curr.faction.isHostileTo(Factions.PLAYER)) {
+				if (!TributeIntel.hasOngoingIntel(target)) {
+					new TributeIntel(factionId, target).init();
+				}
+				return;
+			}
+		}	
 		
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(null)) {

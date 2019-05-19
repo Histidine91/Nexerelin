@@ -2,8 +2,11 @@ package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -13,11 +16,8 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.econ.TributeCondition;
-import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -30,9 +30,12 @@ import org.lazywizard.lazylib.MathUtils;
 public class TributeIntel extends BaseIntelPlugin {
 	
 	public static final Object EXPIRED_UPDATE = new Object();
+	public static final Object CANCELLED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
 	public static final String BUTTON_REJECT = "Reject";
 	public static final String BUTTON_CANCEL = "Cancel";
+	public static final String REJECTION_FACTION_MEM_KEY = "$nex_tributeFaction";
+	public static final float REJECT_REP_PENALTY = 0.05f;
 	
 	public enum TributeStatus {
 		PENDING, ACTIVE, REJECTED, CANCELLED;
@@ -73,7 +76,7 @@ public class TributeIntel extends BaseIntelPlugin {
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
 		ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
-		info.addPara(market.getName(), pad);
+		info.addPara(market.getName(), tc, pad);
 	}
 	
 	// text sidebar
@@ -87,7 +90,7 @@ public class TributeIntel extends BaseIntelPlugin {
 		FactionAPI faction2 = Global.getSector().getFaction(Factions.PLAYER);
 		
 		// image
-		info.addImages(width, 96, opad, opad, faction.getLogo(), faction2.getLogo());
+		info.addImages(width, 128, opad, opad, faction.getCrest(), faction2.getCrest());
 		
 		Map<String, String> replace = new HashMap<>();
 		
@@ -104,19 +107,18 @@ public class TributeIntel extends BaseIntelPlugin {
 		
 		String str = StringHelper.getStringAndSubstituteTokens("nex_tribute", "intel_desc1", replace);
 		LabelAPI label = info.addPara(str, opad);
-		label.setHighlight(factionName);
-		label.setHighlightColors(faction.getBaseUIColor(), Misc.getHighlightColor(), 
-				Misc.getHighlightColor());
+		label.setHighlight(market.getName(), factionName);
+		label.setHighlightColors(h, faction.getBaseUIColor());
 		
 		// second description para
 		replace.clear();
 		replace.put("$theFaction", theFactionName);
 		replace.put("$TheFaction", Misc.ucFirst(theFactionName));		
-		str = StringHelper.getString("nex_tribute", "intel_desc2");
+		str = StringHelper.getStringAndSubstituteTokens("nex_tribute", "intel_desc2", replace);
 		
-		info.addPara(str, opad, Misc.getHighlightColor(), 
-				(TributeCondition.TRIBUTE_INCOME_FACTOR * 100) + "%", 
-				(100 - TributeCondition.TRIBUTE_IMMIGRATION_MULT * 100) + "%",
+		info.addPara(str, opad, h, 
+				Math.round(TributeCondition.TRIBUTE_INCOME_FACTOR * 100) + "%", 
+				Math.round(100 - TributeCondition.TRIBUTE_IMMIGRATION_MULT * 100) + "%",
 				TributeCondition.MAX_SIZE + "");		
 		
 		// report on current status
@@ -128,7 +130,7 @@ public class TributeIntel extends BaseIntelPlugin {
 			replace.put("$timeLeft", days);
 			replace.put("$days", daysStr);
 			str = StringHelper.getStringAndSubstituteTokens("nex_tribute", "intel_descTime", replace);
-			info.addPara(str, opad, Misc.getHighlightColor(), days);
+			info.addPara(str, opad, h, days);
 
 			ButtonAPI button = info.addButton(StringHelper.getString("accept", true), BUTTON_ACCEPT, 
 							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
@@ -139,17 +141,23 @@ public class TributeIntel extends BaseIntelPlugin {
 		} else if (status == TributeStatus.ACTIVE) {
 			// TODO: list tribute status
 			info.addSectionHeading(StringHelper.getString("status", true), Alignment.MID, opad);
-			
+			info.addPara(StringHelper.getStringAndSubstituteToken("nex_tribute", 
+							"intel_descAccepted", "$market", market.getName()), opad);
+			ButtonAPI button = info.addButton(StringHelper.getString("cancel", true), BUTTON_REJECT, 
+							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
+						  (int)(width), 20f, opad);
 		} else {
-			info.addSectionHeading(StringHelper.getString("result", true), Alignment.MID, opad);
+			info.addSectionHeading(StringHelper.getString("result", true), getFactionForUIColors().getBaseUIColor(), 
+					getFactionForUIColors().getDarkUIColor(), Alignment.MID, opad);
 			
 			switch (status) {
 				case REJECTED:
-					info.addPara(StringHelper.getString("nex_tribute", "intel_descRejected"), pad);
+					info.addPara(StringHelper.getStringAndSubstituteToken("nex_tribute", 
+							"intel_descRejected", "$market", market.getName()), opad);
 					break;
 				case CANCELLED:
 				default:
-					info.addPara(StringHelper.getString("nex_tribute", "intel_descOver"), pad);
+					info.addPara(StringHelper.getString("nex_tribute", "intel_descOver"), opad);
 					break;
 			}
 			
@@ -176,14 +184,34 @@ public class TributeIntel extends BaseIntelPlugin {
 	}
 	
 	public void accept() {
-		// TODO: create condition
 		String condId = market.addCondition(TributeCondition.CONDITION_ID);
 		cond = market.getSpecificCondition(condId);
+		((TributeCondition)cond.getPlugin()).setup(getFactionForUIColors(), this);
+		status = TributeStatus.ACTIVE;
+	}
+	
+	public void reject() {
+		market.getMemoryWithoutUpdate().set(REJECTION_FACTION_MEM_KEY, factionId);
+		
+		int size = market.getSize() - 1;
+		if (size < 1) size = 1;
+		repResult = NexUtilsReputation.adjustPlayerReputation(getFactionForUIColors(), -REJECT_REP_PENALTY * size);
+		storedRelation = getFactionForUIColors().getRelationship(Factions.PLAYER);
+		
+		status = TributeStatus.REJECTED;
+		endEvent();
+	}
+	
+	public void cancel() {
+		status = TributeStatus.CANCELLED;
+		market.getMemoryWithoutUpdate().unset(REJECTION_FACTION_MEM_KEY);
+		sendUpdateIfPlayerHasIntel(CANCELLED_UPDATE, false);
+		endEvent();
 	}
 	
 	@Override
 	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
-		prompt.addPara(StringHelper.getString("exerelin_diplomacy", "intel_dialogConfirm"), 0);
+		prompt.addPara(StringHelper.getString("nex_tribute", "intel_dialogConfirm"), 0);
 	}
 	
 	@Override
@@ -197,30 +225,51 @@ public class TributeIntel extends BaseIntelPlugin {
 			accept();
 		}
 		else if (buttonId == BUTTON_REJECT) {
-			status = TributeStatus.REJECTED;
+			reject();
 		}
-		
-		endAfterDelay();
 		super.buttonPressConfirmed(buttonId, ui);
 	}
 	
 	protected void endEvent() {
-		market.removeSpecificCondition(cond.getIdForPluginModifications());
-		status = TributeStatus.CANCELLED;
-		sendUpdateIfPlayerHasIntel(null, false);
+		market.removeCondition(TributeCondition.CONDITION_ID);
+		cond = null;
 		endAfterDelay();
+	}
+	
+	/**
+	 * Checks if the conditions for the market to pay tribute are still valid.
+	 */
+	protected void checkContinueTribute() {
+		if (!market.isInEconomy()) {
+			cancel();
+			return;
+		}
+		
+		if (market.getSize() > TributeCondition.MAX_SIZE) {
+			cancel();
+			return;
+		}
+		
+		if (!market.getFaction().isPlayerFaction()) {
+			cancel();
+			return;
+		}
+		
+		FactionAPI claimingFaction = Misc.getClaimingFaction(market.getPrimaryEntity());
+		if (claimingFaction == null || !claimingFaction.getId().equals(factionId) 
+				|| claimingFaction.isHostileTo(Factions.PLAYER)) {
+			cancel();
+			return;
+		}
 	}
 	
 	@Override
 	protected void advanceImpl(float amount) {
 		if (this.isEnding() || this.isEnded())
 			return;
-		
-		if (!market.isInEconomy() || market.getSize() > TributeCondition.MAX_SIZE) {
-			endEvent();
-		}
-		
+				
 		// TODO: check if system is still controlled by someone else, or grown too large
+		checkContinueTribute();
 		
 		// past here is countdown to accept/reject
 		if (status != TributeStatus.PENDING)
@@ -244,11 +293,13 @@ public class TributeIntel extends BaseIntelPlugin {
 		String str = StringHelper.getString("nex_tribute", "intel_title");
 		if (listInfoParam == EXPIRED_UPDATE)
 			str += " - " + StringHelper.getString("expired");
+		if (listInfoParam == CANCELLED_UPDATE)
+			str += " - " + StringHelper.getString("cancelled");
 		else if (status == TributeStatus.ACTIVE)
 			str += " - " + StringHelper.getString("accepted");
 		else if (status == TributeStatus.REJECTED)
 			str += " - " + StringHelper.getString("rejected");
-		else
+		else if (isEnding() || isEnded())
 			str += " - " + StringHelper.getString("over");
 		
 		return str;
@@ -265,7 +316,8 @@ public class TributeIntel extends BaseIntelPlugin {
 		
 	@Override
 	public String getIcon() {
-		return getFactionForUIColors().getCrest();
+		//return getFactionForUIColors().getCrest();
+		return "graphics/exerelin/icons/intel/lose_credits.png";
 	}
 	
 	@Override
@@ -274,7 +326,39 @@ public class TributeIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
+	public SectorEntityToken getMapLocation(SectorMapAPI map) {
+		return market.getPrimaryEntity();
+	}
+	
+	@Override
 	public FactionAPI getFactionForUIColors() {
 		return Global.getSector().getFaction(factionId);
+	}
+	
+	public static void debug(String factionId, String marketId) {
+		new TributeIntel(factionId, Global.getSector().getEconomy().getMarket(marketId)).init();
+	}
+	
+	/**
+	 * Has player rejected a past tribute demand by {@code factionId} for this market?
+	 * @param factionId
+	 * @param market
+	 * @return 
+	 */
+	public static boolean hasRejectedTribute(String factionId, MarketAPI market) {
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		if (!mem.contains(REJECTION_FACTION_MEM_KEY))
+			return false;
+		return mem.getString(REJECTION_FACTION_MEM_KEY).equals(factionId);
+	}
+	
+	public static boolean hasOngoingIntel(MarketAPI market) {
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(TributeIntel.class)) {
+			TributeIntel ti = (TributeIntel)intel;
+			if (ti.isEnding() || ti.isEnded()) continue;
+			if (ti.market == market)
+				return true;
+		}
+		return false;
 	}
 }
