@@ -46,6 +46,7 @@
     ],
     
     "industrySeeds":[
+        {"id":"heavyindustry", "mult":0.05},
         {"id":"lightindustry", "mult":0.2},
     ],
     
@@ -53,4 +54,8 @@
         "heavyindustry":0,
         "fuelproduction":0,
     },
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_corrupted", "count":1},
+    ],
 }

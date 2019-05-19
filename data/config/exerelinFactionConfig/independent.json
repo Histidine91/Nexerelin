@@ -13,15 +13,16 @@
     "alignments":{
         "diplomatic":0.5,
     },
-	
-	"defenceStations":[
+    
+    "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.5},
         {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"]},
         {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"], "weight":0.5},
     ],
     
     "industrySeeds":[
-	  {"id":"fuelprod", "mult":0.05, "roundUp":false},
-	  {"id":"lightindustry", "mult":0.05, "roundUp":false},
+        {"id":"heavyindustry", "mult":0.05, "roundUp":false},
+        {"id":"fuelprod", "mult":0.05, "roundUp":false},
+        {"id":"lightindustry", "mult":0.05, "roundUp":false},
     ],
 }
