@@ -108,7 +108,8 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 						  (int)(width), 20f, opad);
 		} else {
-			info.addSectionHeading(StringHelper.getString("result", true), Alignment.MID, opad);
+			info.addSectionHeading(StringHelper.getString("result", true), getFactionForUIColors().getBaseUIColor(), 
+					getFactionForUIColors().getDarkUIColor(), Alignment.MID, opad);
 			boolean accepted = state == 1;
 			String acceptOrReject = accepted ? StringHelper.getString("accepted") : StringHelper.getString("rejected");
 			Color hl = accepted ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor();
