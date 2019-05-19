@@ -413,19 +413,15 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	public static Random getRandom(MarketAPI market) {
+		if (true) return new Random();
+		
 		String key = "$nex_agent_random";
 		MemoryAPI mem = market.getMemoryWithoutUpdate();
 		Random random = null;
 		if (mem.contains(key)) {
 			random = (Random) mem.get(key);
 		} else {
-			if (market.getPrimaryEntity() != null) {
-				long seed = Misc.getSalvageSeed(market.getPrimaryEntity());
-				seed *= (Global.getSector().getClock().getMonth() + 10);
-				random = new Random(seed);
-			} else {
-				random = new Random();
-			}
+			random = new Random(Global.getSector().getClock().getTimestamp());
 		}
 		mem.set(key, random, 30f);
 		
