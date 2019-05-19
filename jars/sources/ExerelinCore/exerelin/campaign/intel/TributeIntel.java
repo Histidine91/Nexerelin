@@ -34,7 +34,7 @@ public class TributeIntel extends BaseIntelPlugin {
 	public static final String BUTTON_ACCEPT = "Accept";
 	public static final String BUTTON_REJECT = "Reject";
 	public static final String BUTTON_CANCEL = "Cancel";
-	public static final String REJECTION_FACTION_MEM_KEY = "$nex_tributeFaction";
+	public static final String REJECTION_FACTION_MEM_KEY = "$nex_tributeRefusedFaction";
 	public static final float REJECT_REP_PENALTY = 0.05f;
 	
 	public enum TributeStatus {
@@ -85,6 +85,8 @@ public class TributeIntel extends BaseIntelPlugin {
 		float opad = 10f, pad = 3f;
 		
 		Color h = Misc.getHighlightColor();
+		Color base = getFactionForUIColors().getBaseUIColor();
+		Color dark = getFactionForUIColors().getDarkUIColor();
 		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		FactionAPI faction2 = Global.getSector().getFaction(Factions.PLAYER);
@@ -133,22 +135,19 @@ public class TributeIntel extends BaseIntelPlugin {
 			info.addPara(str, opad, h, days);
 
 			ButtonAPI button = info.addButton(StringHelper.getString("accept", true), BUTTON_ACCEPT, 
-							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
-						  (int)(width), 20f, opad * 3f);
+							base, dark, (int)(width), 20f, opad * 3f);
 			ButtonAPI button2 = info.addButton(StringHelper.getString("reject", true), BUTTON_REJECT, 
 							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 						  (int)(width), 20f, opad);
 		} else if (status == TributeStatus.ACTIVE) {
 			// TODO: list tribute status
-			info.addSectionHeading(StringHelper.getString("status", true), Alignment.MID, opad);
+			info.addSectionHeading(StringHelper.getString("status", true), base, dark, Alignment.MID, opad);
 			info.addPara(StringHelper.getStringAndSubstituteToken("nex_tribute", 
 							"intel_descAccepted", "$market", market.getName()), opad);
 			ButtonAPI button = info.addButton(StringHelper.getString("cancel", true), BUTTON_REJECT, 
-							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
-						  (int)(width), 20f, opad);
+							base, dark, (int)(width), 20f, opad);
 		} else {
-			info.addSectionHeading(StringHelper.getString("result", true), getFactionForUIColors().getBaseUIColor(), 
-					getFactionForUIColors().getDarkUIColor(), Alignment.MID, opad);
+			info.addSectionHeading(StringHelper.getString("result", true), base, dark, Alignment.MID, opad);
 			
 			switch (status) {
 				case REJECTED:
