@@ -1,6 +1,9 @@
 package exerelin.campaign.intel.fleets;
 
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
@@ -8,6 +11,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -101,7 +105,17 @@ public class NexOrganizeStage extends OrganizeStage {
 	@Override
 	protected void updateStatus() {
 		super.updateStatus();
+		boolean fail = false;
+		// fail if market is no longer in economy
 		if (market != null && !market.isInEconomy()) {
+			fail = true;
+		}
+		// fail if spaceport + any present military base are disrupted
+		else if (market != null) {
+			if (!market.hasSpaceport() && !market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY))
+				fail = true;
+		}
+		if (fail) {
 			status = RaidStageStatus.FAILURE;
 			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
 		}
