@@ -129,7 +129,7 @@ public class ExerelinConfig
         {
             System.out.println("Loading exerelinSettings");
 
-            JSONObject settings = Global.getSettings().loadJSON(CONFIG_PATH);
+            JSONObject settings = Global.getSettings().getMergedJSONForMod(CONFIG_PATH, ExerelinConstants.MOD_ID);
             
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
 
