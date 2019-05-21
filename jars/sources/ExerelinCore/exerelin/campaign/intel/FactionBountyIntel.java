@@ -176,7 +176,9 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 		boolean badFaction = ExerelinUtilsFaction.isPirateFaction(other.getId()) || !other.isShowInIntelTab();
 		
 		if (badFaction) {
-			if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+			//if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+			//	return true;
+			if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_WAR_FLEET))
 				return true;
 			String type = ExerelinUtilsFleet.getFleetType(fleet);
 			if (type != null && ALWAYS_PAYOUT_FLEETS.contains(type))
