@@ -375,10 +375,16 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		if (memory.contains(MEM_KEY_SOURCES))
 			return (List<MarketAPI>)memory.get(MEM_KEY_SOURCES);
 		
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> marketsTemp = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
 		String commissioner = PlayerFactionStore.getPlayerFactionId();
 		if (!commissioner.equals(Factions.PLAYER))
-			markets.addAll(ExerelinUtilsFaction.getFactionMarkets(commissioner));
+			marketsTemp.addAll(ExerelinUtilsFaction.getFactionMarkets(commissioner));
+		
+		List<MarketAPI> markets = new ArrayList<>();
+		for (MarketAPI market : marketsTemp) {
+			if (market.hasSpaceport())
+				markets.add(market);
+		}
 		
 		Collections.sort(markets, marketComparatorName);
 		
