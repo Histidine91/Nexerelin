@@ -34,6 +34,7 @@ import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 // Copied from vanilla
+@Deprecated
 public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
 
     private static final float ASTEROID_MAX_DIST = 750f;
@@ -429,7 +430,8 @@ public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
             xPad = 2000f;
             yPad = 3000f;
         }
-
+        
+        /*
         float distanceMod = 1f;
         if (escape) {
             int escapingFP = (playerGoal == FleetGoal.ESCAPE) ? context.getPlayerFleet().getFleetPoints() :
@@ -443,6 +445,7 @@ public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
             distanceMod = Math.max(Math.min(distanceMod, 3f), 1f);
             height += 4000 * (distanceMod - 1f);
         }
+        */
 
         sizeMod = (width / 18000f) * (height / 18000f);
 
@@ -454,8 +457,10 @@ public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
 
         if (escape) {
             addEscapeObjectives(numObjectives);
-            context.setInitialEscapeRange(4000f * distanceMod);
-            context.setFlankDeploymentDistance(8000f);
+            //context.setInitialEscapeRange(4000f * distanceMod);
+            //context.setFlankDeploymentDistance(8000f);
+            context.setInitialEscapeRange(Global.getSettings().getFloat("escapeStartDistance"));
+            context.setFlankDeploymentDistance(Global.getSettings().getFloat("escapeFlankDistance"));
 
             loader.addPlugin(new EscapeRevealPlugin(context));
         } else {
