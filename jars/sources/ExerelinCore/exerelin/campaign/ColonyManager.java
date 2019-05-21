@@ -81,12 +81,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		super(true);
 	}
 	
-	protected Object readResolve() {
-		if (npcConstructionQueues == null)
-			npcConstructionQueues = new HashMap<>();
-		return this;
-	}
-	
 	protected boolean hasBaseOfficial(MarketAPI market)
 	{
 		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
@@ -295,6 +289,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		LinkedList<QueuedIndustry> queue = npcConstructionQueues.get(market);
 		queue.add(new QueuedIndustry(industry, type));
 		log.info("Queued industry: " + industry + ", " + type.toString());
+	}
+	
+	public LinkedList<QueuedIndustry> getConstructionQueue(MarketAPI market) {
+		return npcConstructionQueues.get(market);
 	}
 	
 	protected String getString(String id) {

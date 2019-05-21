@@ -1284,6 +1284,10 @@ CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of cou
 # end commission stuff,,,,,,
 ,,,,,,
 # bla,,,,,,
+nex_getConstructionQueueOpt,PopulateOptions,Nex_IsBaseOfficial admin,,,nex_getConstructionQueue:>> (dev) Get construction queue,
+nex_getConstructionQueue,DialogOptionSelected,$option == nex_getConstructionQueue,Nex_DisplayConstructionQueue,,,
+,,,,,,
+,,,,,,
 ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $market.id == nex_prismFreeport","AddText ""Bright, slick, overusing chrome and opal ornaments, the concourse is quite the unusual sight for a station lost in hyperspace. Wherever the eye looks, every detail spells luxury. On the sides, behind extravagant transparent promenades, the source of all this wealth is offered to the observation of all potential buyers: the menacing and yet reassuring silhouettes of ships from all origins, all pristine looking and advantageously lit. A bit further it's the weapons that are exposed in the same fashion. Holo displays and simulators are available everywhere to help clients to find the perfect tool to fit their needs."" marketFlavorTextColor",,,
 ExerelinFlavorTextMarketFollowers,TradePanelFlavorText,"$global.tradePanelMode == MARKET
