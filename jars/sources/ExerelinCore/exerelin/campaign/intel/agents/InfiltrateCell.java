@@ -44,6 +44,7 @@ public class InfiltrateCell extends CovertActionIntel {
 	
 	@Override
 	public void onSuccess() {
+		targetFaction = Global.getSector().getFaction(Factions.LUDDIC_PATH);
 		removeLuddicCell();
 		int size = market.getSize();
 		this.adjustRelations(agentFaction, market.getFaction(), size, size, null, null, null, false);
@@ -87,6 +88,7 @@ public class InfiltrateCell extends CovertActionIntel {
 
 	@Override
 	public void onFailure() {
+		targetFaction = Global.getSector().getFaction(Factions.LUDDIC_PATH);
 		//adjustRepIfDetected(null, RepLevel.INHOSPITABLE);
 		reportEvent();
 	}

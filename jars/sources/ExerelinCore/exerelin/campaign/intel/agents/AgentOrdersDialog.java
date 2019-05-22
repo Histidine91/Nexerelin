@@ -10,12 +10,15 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
@@ -461,8 +464,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
 			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
 		}
-		if (agent.getMarket() != null && agent.getMarket().hasCondition(Conditions.PATHER_CELLS))
-			addActionOption(CovertActionType.INFILTRATE_CELL);
+		if (agent.getMarket() != null && agent.getMarket().hasCondition(Conditions.PATHER_CELLS)) {
+			MarketConditionAPI cond =agent.getMarket().getCondition(Conditions.PATHER_CELLS);
+			LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
+			LuddicPathCellsIntel cellIntel = cellCond.getIntel();
+			if (cellIntel.getSleeperTimeout() <= 90)
+				addActionOption(CovertActionType.INFILTRATE_CELL);
+		}
 		
 		showPaginatedMenu();
 	}
