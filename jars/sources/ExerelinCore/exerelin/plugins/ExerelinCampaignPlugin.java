@@ -16,6 +16,7 @@ import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
+import exerelin.utilities.ExerelinConfig;
 
 @SuppressWarnings("unchecked")
 // FIXME rename
@@ -93,8 +94,8 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	
 	@Override
 	public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(SectorEntityToken opponent) {
-		if (opponent instanceof CampaignFleetAPI) {
-			//return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
+		if (opponent instanceof CampaignFleetAPI && ExerelinConfig.useCustomBattleCreationPlugin) {
+			return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
 		}
 		return null;
 	}

@@ -104,6 +104,11 @@ public class ExerelinConfig
     public static float revengePointsForMarketCaptureMult = 2f;
     public static float vengeanceFleetSizeMult = 0.8f;
     
+    // Combat
+    public static boolean useCustomBattleCreationPlugin = false;
+    public static boolean officerDeaths = false;
+    public static boolean officerDaredevilBonus = true;
+    
     // Misc
     public static int directoryDialogKey = 44;  // Z
     
@@ -117,8 +122,6 @@ public class ExerelinConfig
     @Deprecated
     public static boolean ownFactionCustomsInspections = false;
     public static boolean useRelationshipBounds = true;
-    public static boolean officerDeaths = false;
-    public static boolean officerDaredevilBonus = true;
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     public static int maxNPCColonySize = 0;
@@ -212,6 +215,7 @@ public class ExerelinConfig
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             
+            useCustomBattleCreationPlugin = settings.optBoolean("useCustomBattleCreationPlugin", useCustomBattleCreationPlugin);
             officerDeaths = settings.optBoolean("officerDeaths", officerDeaths);
             officerDaredevilBonus = settings.optBoolean("officerDaredevilBonus", officerDaredevilBonus);
             

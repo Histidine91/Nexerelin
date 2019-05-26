@@ -83,6 +83,8 @@
     
     "corvusModeLandmarks": false,    # adds some decorative landmarks in non-random Sector (will always be present in random Sector)
     
+    "useCustomBattleCreationPlugin": false,	# affects things like map size and number of objectives
+	
     "officerDeaths": false,	# officer permadeath (may be buggy)
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
 	
