@@ -76,6 +76,14 @@ public class ExerelinUtils
 
 		return list.get(randomIndex);
 	}
+	
+	public static float modifyMapEntry(Map<String, Float> toModify, String key, float delta) {
+		if (!toModify.containsKey(key))
+			toModify.put(key, 0f);
+		float newVal = toModify.get(key) + delta;
+		toModify.put(key, newVal);
+		return newVal;
+	}
 
 	public static MarketAPI getClosestMarket(String factionId)
 	{

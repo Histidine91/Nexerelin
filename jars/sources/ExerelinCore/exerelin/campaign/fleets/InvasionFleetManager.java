@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -17,6 +18,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -31,9 +34,11 @@ import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
+import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -80,6 +85,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
+	public static final float PIRATE_RAGE_INCREMENT = 0.25f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -91,6 +97,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected final List<RaidIntel> activeIntel = new LinkedList();
 	protected HashMap<String, Float> spawnCounter = new HashMap<>();
 	protected HashMap<String, Boolean> nextIsRaid = new HashMap<>();
+	protected HashMap<String, Float> pirateRage = new HashMap<>();
 	
 	protected final IntervalUtil tracker;
 	protected IntervalUtil remnantRaidInterval = new IntervalUtil(300, 390);
@@ -109,11 +116,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	protected Object readResolve() {
-		if (remnantRaidInterval == null) {
-			remnantRaidInterval = new IntervalUtil(300, 390);
-		}
-		if (nextIsRaid == null) {
-			nextIsRaid = new HashMap<>();
+		if (pirateRage == null) {
+			pirateRage = new HashMap<>();
 		}
 		return this;
 	}	
@@ -354,24 +358,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1);
 	}
 	
-	/**
-	 * Try to create an invasion fleet or raid fleet.
-	 * @param faction The faction launching an invasion
-	 * @param targetFaction
-	 * @param type
-	 * @param sizeMult
-	 * @return The invasion fleet intel, if one was created
-	 */
-	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
-			EventType type, float sizeMult)
-	{
-		SectorAPI sector = Global.getSector();
-		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+	public MarketAPI getSourceMarketForFleet(FactionAPI faction, List<MarketAPI> markets) {
 		WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
-		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
-		String factionId = faction.getId();
-		
-		// pick a source market
 		for (MarketAPI market : markets) {
 			if (market.getFaction() != faction) continue;
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
@@ -385,6 +373,27 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			sourcePicker.add(market, getMarketWeightForInvasionSource(market));
 		}
 		MarketAPI originMarket = sourcePicker.pick();
+		return originMarket;
+	}
+	
+	/**
+	 * Try to create an invasion fleet or raid fleet.
+	 * @param faction The faction launching an invasion
+	 * @param targetFaction
+	 * @param type
+	 * @param sizeMult
+	 * @return The invasion fleet intel, if one was created
+	 */
+	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
+			EventType type, float sizeMult)
+	{
+		SectorAPI sector = Global.getSector();
+		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+		
+		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+		String factionId = faction.getId();
+		
+		MarketAPI originMarket = getSourceMarketForFleet(faction, markets);
 		if (originMarket == null) {
 			return null;
 		}
@@ -494,6 +503,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				// raid
 				log.info("Spawning raid fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
 				NexRaidIntel intel = new NexRaidIntel(faction, origin, target, fp, organizeTime);
+				intel.init();
+				return intel;
+			}
+			case BASE_STRIKE:
+			{
+				log.info("Spawning base strike fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
+				BaseStrikeIntel intel = new BaseStrikeIntel(faction, origin, target, fp, organizeTime);
 				intel.init();
 				return intel;
 			}
@@ -701,6 +717,50 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 	}
 	
+	protected void spawnBaseStrikeFleet(FactionAPI faction, PirateBaseIntel base) {
+		MarketAPI source = getSourceMarketForFleet(faction, Global.getSector().getEconomy().getMarketsCopy());
+		if (source == null)
+			return;
+		
+		MarketAPI target = base.getMarket();
+		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1);
+		intel.setImportant(true);	// debug
+		
+		ExerelinUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
+	}
+	
+	/**
+	 * Accumulate the points that lead major factions to launch base strike fleets against pirates.
+	 */
+	protected void processPirateRage() {
+		//boolean pirateInvasions = ExerelinConfig.allowPirateInvasions;
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (!market.hasCondition(Conditions.PIRATE_ACTIVITY))
+				continue;
+			if (market.getFaction().isPlayerFaction()) continue;
+			
+			String factionId = market.getFactionId();
+			if (Factions.INDEPENDENT.equals(factionId)) continue;
+			
+			//if (!pirateInvasions && !ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
+			//	continue;
+			
+			MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
+			PirateActivity plugin = (PirateActivity)cond.getPlugin();
+			
+			float rage = plugin.getIntel().getStabilityPenalty();
+			if (rage > 0) {
+				rage *= PIRATE_RAGE_INCREMENT;
+				float newVal = ExerelinUtils.modifyMapEntry(pirateRage, factionId, rage);
+				//log.info("Incrementing " + rage + " rage from market " + market.getName() + 
+				//		" of faction " + market.getFaction().getDisplayName() + ", now " + newVal);
+				if (newVal > 100) {
+					spawnBaseStrikeFleet(market.getFaction(), plugin.getIntel());
+				}
+			}
+		}
+	}
+	
 	protected float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
 	{
 		float amount = base * Math.max(intel.getFP()/BASE_INVASION_COST, 0.8f);
@@ -857,6 +917,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 		processInvasionPoints();
 		processTemplarInvasionPoints();
+		processPirateRage();
 	}
 	
 	public static void debugRemnantRaidFleet() {
@@ -897,7 +958,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return false;
 	}
 	
-	public enum EventType { INVASION, RAID, RESPAWN };
+	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE };
 	
 	@Deprecated
 	public static class InvasionFleetData
