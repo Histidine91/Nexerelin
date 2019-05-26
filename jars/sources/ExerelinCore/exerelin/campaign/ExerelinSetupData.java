@@ -40,6 +40,8 @@ public class ExerelinSetupData
 	public boolean randomFactionWeights = false;
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
+	
+	public String startScenario = null;
 
 	private ExerelinSetupData()
 	{

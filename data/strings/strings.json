@@ -824,6 +824,9 @@
 		
 		"devStart":">> (dev) quick start",
 		"devStartFast":">> (dev) quick start no time pass",
+		
+		"customScenario":"custom scenario",
+		"customScenarioRemoved":"Custom scenario $name is incompatible with non-random sector and has been disabled",
 
 		"added":"added",
 		#"shipString":"$shipClass-class $designation ($variantName)",

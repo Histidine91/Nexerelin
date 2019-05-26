@@ -821,6 +821,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         victoryHasOccured = bool;
     }
     
+    public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
+            boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
+    {
+        transferMarket(market, newOwner, oldOwner, playerInvolved, isCapture, 
+                factionsToNotify, repChangeStrength, false);
+    }
+    
     /**
      * Called when a market is transferred to another faction
      * @param market
@@ -830,9 +837,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
      * @param isCapture False means transfered peacefully (i.e. player_npc transfer market function)
      * @param factionsToNotify Factions to cause reputation gain with on capture
      * @param repChangeStrength
+     * @param silent If true, suppresses intel notifications and such
      */
     public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
-            boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
+            boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, 
+            float repChangeStrength, boolean silent)
     {
         // forcibly refreshes the market before capture so we can loot their faction-specific goodies once we capture it
         // already did this in InvasionRound
@@ -951,9 +960,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // intel report
-        MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved, 
-            factionsToNotify, repChangeStrength);
-        ExerelinUtils.addExpiringIntel(intel);
+        if (!silent) {
+            MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved, 
+                factionsToNotify, repChangeStrength);
+            ExerelinUtils.addExpiringIntel(intel);
+        }
         
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
@@ -977,7 +988,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (rebEvent != null) rebEvent.marketCaptured(newOwnerId, oldOwnerId);
                 
         // revengeance fleet
-        if (newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(Factions.PLAYER))
+        if (isCapture && newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(Factions.PLAYER))
         {
             RevengeanceManager rvngEvent = RevengeanceManager.getManager();
             if (rvngEvent!= null) 

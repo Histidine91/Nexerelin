@@ -10,6 +10,7 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.StringHelper;
 
 
 public class NGCGetExerelinDefaults extends BaseCommandPlugin {
@@ -33,6 +34,7 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$corvusMode", setupData.corvusMode, 0);
 		map.set("$hardMode", setupData.hardMode, 0);
 		map.set("$randomStartShips", setupData.randomStartShips, 0);
+		map.set("$nex_customScenarioName", StringHelper.getString("none"));
 		
 		map.set("$easyMode", setupData.easyMode, 0);
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");

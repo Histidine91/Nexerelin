@@ -3,4 +3,6 @@
     "corvusCompatible":true,
     "dropPrisoners":false,
 	"noRandomizeRelations":true,
+	"allowAgentActions":false,
+    "allowPrisonerActions":false,
 }

@@ -490,6 +490,7 @@ public class NexMarketBuilder
 		data.market = market;
 		market.setFactionId(factionId);
 		market.setPlanetConditionMarketOnly(false);
+		market.getMemoryWithoutUpdate().set("$nex_randomMarket", true);
 		
 		market.addCondition("population_" + marketSize);
 		if (market.hasCondition(Conditions.DECIVILIZED))
@@ -522,6 +523,8 @@ public class NexMarketBuilder
 				market.addIndustry("lionsguard");
 			else if (factionId.equals("dassault_mikoyan"))
 				market.addIndustry("6emebureau");
+			
+			market.getMemoryWithoutUpdate().set("$nex_procgen_hq", true);
 		}
 		
 		addMilitaryStructures(data, true, random);

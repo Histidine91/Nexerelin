@@ -122,8 +122,9 @@ public class ExerelinUtilsMarket {
 		String factionId = marketFaction.getId();
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		boolean isIndie = factionId.equals(Factions.INDEPENDENT);
+		boolean isDerelict = factionId.equals(Factions.DERELICT);
 		
-		if (config != null && !config.playableFaction && !isIndie)
+		if (config != null && !config.playableFaction && !isIndie && !isDerelict)
 			return false;
 		
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
