@@ -106,6 +106,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected float templarInvasionPoints = 0;
 	protected float templarCounterInvasionPoints = 0;
 	protected int numRemnantRaids = 0;
+	protected int lifetimeInvasions = 0;
+	protected int lifetimeRaids = 0;
 	
 	private static InvasionFleetManager invasionFleetManager;
 	
@@ -677,6 +679,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (intel != null)
 				{
 					counter -= getInvasionPointReduction(pointsRequired, intel);
+					if (shouldRaid) lifetimeRaids++;
+					else lifetimeInvasions++;
 					spawnCounter.put(factionId, counter);
 					nextIsRaid.put(factionId, !shouldRaid);
 				}
@@ -886,6 +890,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		intel.init();
 		numRemnantRaids++;
 		return intel;
+	}
+	
+	public int getNumLifetimeInvasions() {
+		return lifetimeInvasions;
+	}
+	
+	public int getNumLifetimeRaids() {
+		return lifetimeRaids;
 	}
 	
 	@Override
