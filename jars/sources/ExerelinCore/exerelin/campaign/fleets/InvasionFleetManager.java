@@ -922,7 +922,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 		processInvasionPoints();
 		processTemplarInvasionPoints();
-		processPirateRage();
+		//processPirateRage();
 	}
 	
 	public static void debugRemnantRaidFleet() {
