@@ -420,6 +420,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
 				continue;	 // too strong for us
 			*/
+			
+			boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
+			if (factionId.equals(Factions.PLAYER))
+				isPirateFaction = isPirateFaction || ExerelinUtilsFaction.isPirateFaction(
+						PlayerFactionStore.getPlayerFactionId());
 
 			// base weight based on distance
 			float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
@@ -428,7 +433,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 			float weight = 20000.0F / dist;
 			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
-			if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId))
+			if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId) || isPirateFaction)
 				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
 
 			// revanchism
