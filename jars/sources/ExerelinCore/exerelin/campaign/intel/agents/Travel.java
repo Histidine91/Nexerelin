@@ -239,6 +239,11 @@ public class Travel extends CovertActionIntel {
 	}
 	
 	@Override
+	public boolean allowOwnMarket() {
+		return true;
+	}
+	
+	@Override
 	public String getIcon() {
 		return "graphics/icons/intel/stars.png";
 	}

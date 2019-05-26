@@ -204,6 +204,7 @@
 		"intelTitleLevelUp":"Level Up",
 		"intelBullet1":"Currently on $market",
 		"intelLevelUp":"Now at level %s",
+		"intelAborted":"Mission aborted",
 		"intelDescName":"$name is a level %s agent.",
 		"intelDescLost":"Agent $name has been captured or killed.",
 		"intelDescDismissed":"Agent $name has been dismissed from your service.",

@@ -120,6 +120,11 @@ public class InfiltrateCell extends CovertActionIntel {
 	}
 	
 	@Override
+	public boolean allowOwnMarket() {
+		return true;
+	}
+	
+	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)

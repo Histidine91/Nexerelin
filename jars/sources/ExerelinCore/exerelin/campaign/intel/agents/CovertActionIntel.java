@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.Alignment;
@@ -246,8 +245,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	public void abort() {
-		int refund = getAbortRefund();
-		Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
+		if (playerInvolved) {
+			int refund = getAbortRefund();
+			Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
+		}
+		if (agent != null) {
+			agent.currentAction = null;
+		}
 		endImmediately();
 	}
 		
@@ -315,6 +319,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	public void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 		
+		if (!allowOwnMarket() && market.getFaction() == agent.faction)
+		{
+			abort();
+			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
+			return;
+		}
+		
 		float days = Global.getSector().getClock().convertToDays(amount);
 		if (result == null) {
 			daysRemaining -= days;
@@ -329,7 +340,9 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	protected void adjustRepIfDetected(RepLevel ensureAtBest, RepLevel limit)
 	{
-		if (result.isDetected())
+		if (agentFaction == targetFaction)
+			repResult = NO_EFFECT;
+		else if (result.isDetected())
 		{
 			repResult = adjustRelationsFromDetection(
 					agentFaction, targetFaction, ensureAtBest, null, limit, false);
@@ -373,6 +386,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (agent.level > currLevel) {
 			newLevel = agent.level;
 		}
+	}
+	
+	public boolean allowOwnMarket() {
+		return false;
 	}
 	
 	protected boolean shouldReportEvent() {

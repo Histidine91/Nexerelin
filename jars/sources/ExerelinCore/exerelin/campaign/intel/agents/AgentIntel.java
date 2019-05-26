@@ -40,6 +40,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final Object UPDATE_ARRIVED = new Object();
 	protected static final Object UPDATE_LEVEL_UP = new Object();
 	protected static final Object UPDATE_LOST = new Object();
+	protected static final Object UPDATE_ABORTED = new Object();
 	protected static final String BUTTON_ORDERS = "orders";
 	protected static final String BUTTON_ABORT = "abort";
 	protected static final String BUTTON_DISMISS = "dismiss";
@@ -155,6 +156,8 @@ public class AgentIntel extends BaseIntelPlugin {
 		} else if (listInfoParam == UPDATE_ARRIVED) {
 			String marketName = market.getName();
 			info.addPara(marketName, pad, tc, market.getTextColorForFactionOrPlanet(), marketName);
+		} else if (listInfoParam == UPDATE_ABORTED) {
+			info.addPara(getString("intelAborted"), pad);
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
 			info.addPara(getString("intelLevelUp"), pad, hl, level + "");
 		} else if (listInfoParam == UPDATE_LOST) {
@@ -311,7 +314,6 @@ public class AgentIntel extends BaseIntelPlugin {
 			ui.showDialog(null, new AgentOrdersDialog(this, ui));
 		} else if (buttonId == BUTTON_ABORT) {
 			currentAction.abort();
-			currentAction = null;
 		} else if (buttonId == BUTTON_DISMISS) {
 			if (currentAction != null)
 				currentAction.abort();
