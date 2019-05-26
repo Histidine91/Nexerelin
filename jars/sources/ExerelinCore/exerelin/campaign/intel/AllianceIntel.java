@@ -112,7 +112,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 					//info.addPara(str, pad);
 					break;
 			}
-		} else {
+		} else if (!isDissolved) {
 			sub1 = AllianceManager.getAllianceByUUID(allianceId).getMembersCopy().size() + "";
 			sub2 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
 			str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPoint", 
