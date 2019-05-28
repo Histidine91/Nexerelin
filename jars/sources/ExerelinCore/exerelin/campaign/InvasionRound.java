@@ -373,15 +373,14 @@ public class InvasionRound {
 		float repChangeStrength = (market.getSize() - 2) * 0.01f;
 		if (repChangeStrength <= 0) repChangeStrength = 0;
 		
-		for (final MarketAPI otherMarket : markets) {
-			if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
-			//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
-			if (seenFactions.contains(otherMarket.getFactionId())) continue;
+		if (playerInvolved) {
+			for (final MarketAPI otherMarket : markets) {
+				if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
+				//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
+				if (seenFactions.contains(otherMarket.getFactionId())) continue;
 
-			RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
-			seenFactions.add(otherMarket.getFactionId());
-			if (playerInvolved)
-			{
+				RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
+				seenFactions.add(otherMarket.getFactionId());
 				factionsToNotify.add(otherMarket.getFactionId());
 			}
 		}

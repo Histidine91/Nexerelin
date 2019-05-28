@@ -654,6 +654,7 @@
 		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile. An invasion is a major enough hostile action that it can't be concealed, regardless of transponder status.",
 		"takeForSelfWarning":"You can take $market as a personal holding, but this will not please your current faction.\n\nProceed?",
 		"takeForSelfNoWarning":"As $market originally belonged to you (or is otherwise unclaimed), you may take it for yourself without penalty.",
+		"repChangeCooldownMsg":"No reputation gain as this market has already been captured recently",
 		
 		"invasion":"invasion",
 		"invasions":"invasions",

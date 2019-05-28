@@ -22,6 +22,9 @@ import java.util.Set;
 
 public class MarketTransferIntel extends BaseIntelPlugin {
 	
+	public static final String MEMORY_KEY_REP_GAIN_COOLDOWN = "$nex_invasionRepCooldown";
+	public static final float REP_GAIN_COOLDOWN = 90;
+	
 	protected MarketAPI market;
 	protected String oldFactionId;
 	protected String newFactionId;
@@ -45,13 +48,26 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 			TextPanelAPI text = null;
 			if (Global.getSector().getCampaignUI().getCurrentInteractionDialog() != null)
 				text = Global.getSector().getCampaignUI().getCurrentInteractionDialog().getTextPanel();
-			for (String factionId : factionsToNotify) {
-				float thisRep = repChange;
-				if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId))
-					repChange *= 0.5f;
-				
-				FactionAPI faction = Global.getSector().getFaction(factionId);
-				NexUtilsReputation.adjustPlayerReputation(faction, thisRep, null, text);
+			
+			boolean cooldown = market.getMemoryWithoutUpdate().contains(MEMORY_KEY_REP_GAIN_COOLDOWN);
+			if (!isCapture || !cooldown) {
+				for (String factionId : factionsToNotify) {
+					float thisRep = repChange;
+					if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId))
+						repChange *= 0.5f;
+
+					FactionAPI faction = Global.getSector().getFaction(factionId);
+					NexUtilsReputation.adjustPlayerReputation(faction, thisRep, null, text);
+				}
+				market.getMemoryWithoutUpdate().set(MEMORY_KEY_REP_GAIN_COOLDOWN, true, REP_GAIN_COOLDOWN);
+			} else {
+				// TODO
+				if (text != null) {
+					String str = StringHelper.getString("exerelin_invasion", "repChangeCooldownMsg");
+					text.setFontSmallInsignia();
+					text.addPara(str, Misc.getGrayColor());
+					text.setFontInsignia();
+				}
 			}
 		}
 	}
