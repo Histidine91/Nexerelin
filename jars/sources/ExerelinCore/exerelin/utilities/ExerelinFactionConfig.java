@@ -698,7 +698,7 @@ public class ExerelinFactionConfig
      */
     protected void pickShipsAndAddToList(WeightedRandomPicker<String> picker, List<String> list, boolean clear)
     {
-        FactionAPI faction = Global.getSector().getFaction(factionId);
+        FactionAPI faction = Global.getSettings().createBaseFaction(factionId);
         List<ShipRolePick> picks;
         try {
             picks = faction.pickShip(picker.pick(), ShipPickParams.priority(), null, picker.getRandom());
