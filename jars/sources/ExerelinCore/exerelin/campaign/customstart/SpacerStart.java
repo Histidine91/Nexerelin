@@ -29,6 +29,7 @@ public class SpacerStart extends CustomStart {
 		data.addScriptBeforeTimePass(new Script() {
 			public void run() {
 				Global.getSector().getMemoryWithoutUpdate().set("$spacerStart", true);
+				//Global.getSector().getMemoryWithoutUpdate().set("$nex_startLocation", "nomios");
 			}
 		});
 		String vid = "kite_original_Stock";

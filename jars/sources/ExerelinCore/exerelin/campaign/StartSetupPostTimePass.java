@@ -106,6 +106,9 @@ public class StartSetupPostTimePass {
 				entity = picker.pick();
 			}
 		}
+		if (Global.getSector().getMemoryWithoutUpdate().contains("$nex_startLocation")) {
+			entity = Global.getSector().getEntityById(Global.getSector().getMemoryWithoutUpdate().getString("$nex_startLocation"));
+		}
 		
 		if (entity != null)
 		{
