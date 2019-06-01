@@ -34,6 +34,13 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		if (startingVariants == null || startingVariants.isEmpty())
 			startingVariants = factionConf.getStartFleetForType(fleetTypeStr, true);
 		
+		generateFleetFromVariantIds(dialog, data, fleetTypeStr, startingVariants);
+		
+		return true;
+	}
+	
+	public static void generateFleetFromVariantIds(InteractionDialogAPI dialog, 
+			CharacterCreationData data, String fleetTypeStr, List<String> startingVariants) {
 		int crew = 0;
 		int supplies = 0;
 		int machinery = 0;
@@ -51,7 +58,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 				FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
 				crew += (int)Math.min(temp.getNeededCrew() * 1.2f, temp.getMaxCrew());
 				
-				if (fleetTypeStr.equalsIgnoreCase("super"))
+				if ("super".equalsIgnoreCase(fleetTypeStr))
 				{
 					supplies += (int)temp.getCargoCapacity();
 				}
@@ -64,7 +71,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 
 				AddRemoveCommodity.addFleetMemberGainText(temp.getVariant(), dialog.getTextPanel());
 			} catch (RuntimeException rex) {	// probably variant not found
-				Global.getLogger(this.getClass()).error(rex.getMessage());
+				Global.getLogger(NGCAddStartingShipsByFleetType.class).error(rex.getMessage());
 				dialog.getTextPanel().addParagraph(rex.getMessage());
 			}	
 		}
@@ -73,11 +80,9 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		addCargo(data, Commodities.SUPPLIES, supplies, text);
 		addCargo(data, Commodities.HEAVY_MACHINERY, machinery, text);
 		addCargo(data, Commodities.FUEL, fuel, text);
-		
-		return true;
 	}
 	
-	protected void addCargo(CharacterCreationData data, String commodity, int amount, TextPanelAPI text)
+	protected static void addCargo(CharacterCreationData data, String commodity, int amount, TextPanelAPI text)
 	{
 		if (amount <= 0) return;
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, commodity, amount);

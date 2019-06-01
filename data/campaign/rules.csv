@@ -204,14 +204,8 @@ nex_NGCFreeStart,NewGameOptionSelected,$option == nex_NGCFreeStart,"NGCSetPlayer
 NGCSetFreeStart true
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
-nex_NGCSpacerStart,NewGameOptionSelected,$option == nex_NGCSpacerStart,"NGCSetFreeStart true
-NGCSetEasyMode false
-NGCSetPlayerFaction ""player""
-Nex_NGCSpacerStart ""kite_original_Stock""
-NGCAddCredits 2000
-NGCAddCharacterPoints 3
-NGCSetNumStartingOfficers 0
-SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+nex_NGCCustomStart,NewGameOptionSelected,$option == nex_NGCCustomStart,Nex_NGCCustomStart menu,,1:nex_NGCDone:Done,
+nex_NGCCustomStartByTrigger,Nex_NGCCustomStartMenu,,Nex_NGCCustomStart menu,,,
 ,,,,,,
 nex_NGCPickStartingShips,ExerelinNGCStep3,,Nex_NGCStartFleetOptions,Your starting fleet?,,
 nex_NGCStartShipsSolo,NewGameOptionSelected,$option == nex_NGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
@@ -234,6 +228,8 @@ nex_NGCStartShipsGrandFleet,NewGameOptionSelected,$option == nex_NGCFleetGrandFl
 FireBest ExerelinNGCStep4",,,
 ,,,,,,
 nex_NGCStartShipsBack,NewGameOptionSelected,$option == nex_NGCFleetBack,Nex_NGCListFactions listFactions $factionGroup,,,
+,,,,,,
+nex_NGCCustomStartSelection,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomStart_""",Nex_NGCCustomStart select,,,
 ,,,,,,
 nex_NGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and assets?""
 SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCNormalStart:Ensign (20,000 credits, level 1)
@@ -269,6 +265,9 @@ NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartBack,NewGameOptionSelected,$option == nex_NGCStartBack,"NGCClearStartingGear
 FireAll ExerelinNGCStep3",,,
+nex_NGCStartBackToCustomStart,NewGameOptionSelected,"$option == nex_NGCStartBack
+$nex_customStart != null","NGCClearStartingGear
+FireBest Nex_NGCCustomStartMenu",,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,"Nex_NGCFinalize
 NGCDone",,,
 # END NGC OPTIONS,,,,,,

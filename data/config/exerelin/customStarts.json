@@ -1,0 +1,36 @@
+{
+	"config":{
+		"colors":{
+			"easy":[0, 255, 255],
+			"normal":[119, 136, 153],
+			"hard":[255, 210, 0],
+			"very hard":[255, 0, 0]
+		}
+	},
+
+	"starts":[
+		{
+			"id":"spacerStart",
+			"name":"Spacer start",
+			"difficulty":"Very hard",
+			"desc":"A non-combat shuttle, a general lack of resources, and a debt that must be paid. Very difficult start, only intended as a challenge for the starfarer that's seen it all.",
+			"className":"exerelin.campaign.customstart.SpacerStart",
+			#"factionId":"player",	# for display purposes only, actual starting faction is set in script
+			#"requiredModId":"nexerelin",
+		},
+		{
+			"id":"derelictFleet",
+			"name":"Derelict fleet",
+			"difficulty":"Normal",
+			"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
+			"className":"exerelin.campaign.customstart.DerelictFleet",
+		},
+		{
+			"id":"derelictFleet2",
+			"name":"Derelict fleet (large)",
+			"difficulty":"Easy",
+			"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
+			"className":"exerelin.campaign.customstart.DerelictFleet2",
+		},
+	],
+}
