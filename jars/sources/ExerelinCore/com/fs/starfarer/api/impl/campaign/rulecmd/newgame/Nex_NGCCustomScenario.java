@@ -5,30 +5,23 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.StringHelper;
-import exerelin.world.scenarios.StartScenarioManager;
-import exerelin.world.scenarios.StartScenarioManager.StartScenarioDef;
-import java.awt.Color;
+import exerelin.world.scenarios.ScenarioManager;
+import exerelin.world.scenarios.ScenarioManager.StartScenarioDef;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.lwjgl.input.Keyboard;
 
 
-public class Nex_NGCCustomStartScenario extends PaginatedOptions {
+public class Nex_NGCCustomScenario extends PaginatedOptions {
 	
-	public static final String CUSTOM_SCENARIO_OPTION_PREFIX = "nex_NGCCustomStartScenario_";
+	public static final String CUSTOM_SCENARIO_OPTION_PREFIX = "nex_NGCCustomScenario_";
 	public static final int PREFIX_LENGTH = CUSTOM_SCENARIO_OPTION_PREFIX.length();
 	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
 	
@@ -61,7 +54,7 @@ public class Nex_NGCCustomStartScenario extends PaginatedOptions {
 		String currentScenario = ExerelinSetupData.getInstance().startScenario;
 		String scenarioName = StringHelper.getString("none");
 		if (currentScenario != null && !currentScenario.isEmpty()) {
-			scenarioName = StartScenarioManager.getScenarioDef(currentScenario).name;
+			scenarioName = ScenarioManager.getScenarioDef(currentScenario).name;
 		}
 		mem.set("$nex_customScenarioName", scenarioName);
 	}
@@ -116,11 +109,12 @@ public class Nex_NGCCustomStartScenario extends PaginatedOptions {
 		
 		addOption(StringHelper.getString("none", true), CUSTOM_SCENARIO_OPTION_PREFIX + "none");
 		
-		for (StartScenarioDef def : StartScenarioManager.getScenarioDefs())
+		for (StartScenarioDef def : ScenarioManager.getScenarioDefs())
 		{
 			if (corvus && def.randomSectorOnly) continue;
-						
-			String name = def.name;
+			if (def.requiredModId != null && !Global.getSettings().getModManager().isModEnabled(def.requiredModId))
+				continue;
+			
 			String option = CUSTOM_SCENARIO_OPTION_PREFIX + def.id;
 			
 			addOption(def.name, option);

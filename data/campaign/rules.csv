@@ -71,7 +71,7 @@ NGCDoesFactionExist SCY","SetTooltip exerelinNGCEnablePrismMarket ""SCY will cre
 SetTooltip exerelinNGCDisablePrismMarket ""SCY will create its own Prism Freeport in Acheron""
 SetEnabled exerelinNGCEnablePrismMarket false
 SetEnabled exerelinNGCDisablePrismMarket false",,,
-nex_NGCCustomStartScenarioOption,ExerelinNGCSectorOptions,,Nex_NGCCustomStartScenario menuOption,,nex_NGCCustomStartScenarioMenu:Custom scenario – $nex_customScenarioName,
+nex_NGCCustomScenarioOption,ExerelinNGCSectorOptions,,Nex_NGCCustomScenario menuOption,,nex_NGCCustomScenarioMenu:Custom scenario – $nex_customScenarioName,
 ,,,,,,
 nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,Nex_NGCProcessSectorGenerationSliders create,,,
 nex_NewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
@@ -161,8 +161,8 @@ ExerelinNGCEnableHardMode,NewGameOptionSelected,$option==exerelinNGCEnableHardMo
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableHardMode,NewGameOptionSelected,$option==exerelinNGCDisableHardMode,"NGCSetHardMode false
 FireAll ExerelinNGCOtherOptions",,,
-nex_NGCCustomStartScenarioMenu,NewGameOptionSelected,$option==nex_NGCCustomStartScenarioMenu,Nex_NGCCustomStartScenario menu,,,
-nex_NGCCustomStartScenarioSelected,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomStartScenario_""","Nex_NGCCustomStartScenario select
+nex_NGCCustomScenarioMenu,NewGameOptionSelected,$option==nex_NGCCustomScenarioMenu,Nex_NGCCustomScenario menu,,,
+nex_NGCCustomScenarioSelected,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomScenario_""","Nex_NGCCustomScenario select
 FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
 nex_NGCFactionSelection,ExerelinNGCStep2,,Nex_NGCListFactions listGroups,Which faction would you like to join?,,

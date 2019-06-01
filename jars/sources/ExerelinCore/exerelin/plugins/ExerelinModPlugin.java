@@ -42,7 +42,7 @@ import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
-import exerelin.world.scenarios.StartScenarioManager;
+import exerelin.world.scenarios.ScenarioManager;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -220,7 +220,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
         isNewGame = newGame;
         
-        StartScenarioManager.clearScenario();
+        ScenarioManager.clearScenario();
         
         // legacy: assign the static variables referencing the singletons,
         // so the static methods in those classes can get them
@@ -313,14 +313,14 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!SectorManager.getCorvusMode())
             new ExerelinProcGen().generate();
         
-        StartScenarioManager.afterProcGen(Global.getSector());
+        ScenarioManager.afterProcGen(Global.getSector());
     }
     
     @Override
     public void onNewGameAfterEconomyLoad() {
         Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
         
-        StartScenarioManager.afterEconomyLoad(Global.getSector());
+        ScenarioManager.afterEconomyLoad(Global.getSector());
         
         SectorManager.reinitLiveFactions();
         if (SectorManager.getCorvusMode())
@@ -342,7 +342,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGameAfterTimePass() {
         Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
-        StartScenarioManager.afterTimePass(Global.getSector());
+        ScenarioManager.afterTimePass(Global.getSector());
         StartSetupPostTimePass.execute();
     }
     

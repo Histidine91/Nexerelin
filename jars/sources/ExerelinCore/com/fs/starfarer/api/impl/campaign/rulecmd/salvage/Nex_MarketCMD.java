@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
@@ -17,11 +18,14 @@ import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.DebugFlags;
+import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
+import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -39,10 +43,13 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BOMBARD;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.ENGAGE;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.GO_BACK;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RAID;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.TempData;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.addBombardVisual;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDestroyThreshold;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDisruptDuration;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSaturationBombardmentStabilityPenalty;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
@@ -138,9 +145,201 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 	}
 	
+	// same as super method, but adds invade option
 	@Override
 	protected void showDefenses(boolean withText) {
-		super.showDefenses(withText);
+		CampaignFleetAPI primary = getInteractionTargetForFIDPI();
+		CampaignFleetAPI station = getStationFleet();
+		
+		boolean hasNonStation = false;
+		boolean hasStation = station != null;
+		boolean otherWantsToFight = false;
+		BattleAPI b = null;
+		FleetEncounterContext context = null;
+		FleetInteractionDialogPluginImpl plugin = null;
+		
+		boolean ongoingBattle = false;
+		
+		boolean playerOnDefenderSide = false;
+		boolean playerCanNotJoin = false;
+
+		String stationType = "station";
+		
+		StationState state = getStationState();
+		
+		if (market != null) {
+			Global.getSector().getEconomy().tripleStep();
+		}
+		
+		if (primary == null) {
+			if (state == StationState.NONE) {
+				text.addPara("The colony has no orbital station or nearby fleets to defend it.");
+			} else {
+				printStationState();
+				text.addPara("There are no nearby fleets to defend the colony.");
+			}
+		} else {
+			ongoingBattle = primary.getBattle() != null;
+			
+			FleetInteractionDialogPluginImpl.FIDConfig params = new FleetInteractionDialogPluginImpl.FIDConfig();
+			params.justShowFleets = true;
+			params.showPullInText = withText;
+			plugin = new FleetInteractionDialogPluginImpl(params);
+			dialog.setInteractionTarget(primary);
+			plugin.init(dialog);
+			dialog.setInteractionTarget(entity);
+			
+			
+			context = (FleetEncounterContext)plugin.getContext();
+			b = context.getBattle();
+			
+			BattleAPI.BattleSide playerSide = b.pickSide(playerFleet);
+			playerCanNotJoin = playerSide == BattleAPI.BattleSide.NO_JOIN;
+			if (!playerCanNotJoin) {
+				playerOnDefenderSide = b.getSide(playerSide) == b.getSideFor(primary);
+			}
+			if (!ongoingBattle) {
+				playerOnDefenderSide = false;
+			}
+
+			if (playerSide != BattleAPI.BattleSide.NO_JOIN) {
+				//for (CampaignFleetAPI fleet : b.getNonPlayerSide()) {
+				for (CampaignFleetAPI fleet : b.getOtherSide(playerSide)) {
+					if (!fleet.isStationMode()) {
+						hasNonStation = true;
+						break;
+					}
+				}
+			}
+			
+			otherWantsToFight = hasStation || plugin.otherFleetWantsToFight(true);
+			
+			if (withText) {
+				if (hasStation) {
+					String name = "An orbital station";
+					if (station != null) {
+						FleetMemberAPI flagship = station.getFlagship();
+						if (flagship != null) {
+							name = flagship.getVariant().getDesignation().toLowerCase();
+							stationType = name;
+							name = Misc.ucFirst(station.getFaction().getPersonNamePrefixAOrAn()) + " " + 
+									station.getFaction().getPersonNamePrefix() + " " + name;
+						}
+					}
+					text.addPara(name + " dominates the orbit and prevents any " +
+								 "hostile action, aside from a quick raid, unless it is dealt with.");
+					
+					
+					if (hasNonStation) {
+						text.addPara("The defending ships present are, with the support of the station, sufficient to prevent " +
+									 "raiding as well.");
+					}
+				} else if (hasNonStation && otherWantsToFight) {
+					printStationState();
+					text.addPara("Defending ships are present in sufficient strength to prevent any hostile action " +
+					"until they are dealt with.");
+				} else if (hasNonStation && !otherWantsToFight) {
+					printStationState();
+					text.addPara("Defending ships are present, but not in sufficient strength " +
+								 "to want to give battle or prevent any hostile action you might take.");
+				}
+				
+				plugin.printOngoingBattleInfo();
+			}
+		}
+			
+		options.clearOptions();
+		
+		String engageText = "Engage the defenders";
+		
+		if (playerCanNotJoin) {
+			engageText = "Engage the defenders";
+		} else if (playerOnDefenderSide) {
+			if (hasStation && hasNonStation) {
+				engageText = "Aid the " + stationType + " and its defenders";
+			} else if (hasStation) {
+				engageText = "Aid the " + stationType + "";
+			} else {
+				engageText = "Aid the defenders";
+			}
+		} else {
+			if (ongoingBattle) {
+				engageText = "Aid the attacking forces";
+			} else {
+				if (hasStation && hasNonStation) {
+					engageText = "Engage the " + stationType + " and its defenders";
+				} else if (hasStation) {
+					engageText = "Engage the " + stationType + "";
+				} else {
+					engageText = "Engage the defenders";
+				}
+			}
+		}
+		
+		
+		options.addOption(engageText, ENGAGE);
+		
+		
+		temp.canRaid = !hasNonStation || (hasNonStation && !otherWantsToFight);
+		temp.canBombard = (!hasNonStation || (hasNonStation && !otherWantsToFight)) && !hasStation;
+		
+		boolean couldRaidIfNotDebug = temp.canRaid;
+		if (DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+			if (!temp.canRaid || !temp.canBombard) {
+				text.addPara("(DEBUG mode: can raid and bombard anyway)");
+			}
+			temp.canRaid = true;
+			temp.canBombard = true;
+		}
+			
+//		options.addOption("Launch a raid against the colony", RAID);
+//		options.addOption("Consider an orbital bombardment", BOMBARD);
+		options.addOption("Launch a raid against " + market.getName(), RAID);
+		options.addOption("Consider an orbital bombardment of " + market.getName(), BOMBARD);
+		
+		if (!temp.canRaid) {
+			options.setEnabled(RAID, false);
+			options.setTooltip(RAID, "The presence of enemy fleets that are willing to offer battle makes a raid impossible.");
+		}
+		
+		if (!temp.canBombard) {
+			options.setEnabled(BOMBARD, false);
+			options.setTooltip(BOMBARD, "All defenses must be defeated to make a bombardment possible.");
+		}
+		
+		//DEBUG = false;
+		if (temp.canRaid && getRaidCooldown() > 0) {// && couldRaidIfNotDebug) {
+			if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+				options.setEnabled(RAID, false);
+				text.addPara("Your forces will be able to organize another raid within a day or so.");
+				temp.canRaid = false;
+			} else {
+				text.addPara("Your forces will be able to organize another raid within a day or so.");
+				text.addPara("(DEBUG mode: can do it anyway)");
+			}
+			//options.setTooltip(RAID, "Need more time to organize another raid.");
+		}
+		
+		//options.addOption("Launch a raid of the colony", RAID);
+		
+		
+		if (context != null && otherWantsToFight && !playerCanNotJoin) {
+			boolean knows = context.getBattle() != null && context.getBattle().getNonPlayerSide() != null &&
+							context.getBattle().knowsWhoPlayerIs(context.getBattle().getNonPlayerSide());
+			boolean lowImpact = context.isLowRepImpact();
+			FactionAPI nonHostile = plugin.getNonHostileOtherFaction();
+			//if (!playerFleet.getFaction().isHostileTo(otherFleet.getFaction()) && knows && !context.isEngagedInHostilities()) {
+			if (nonHostile != null && knows && !lowImpact && !context.isEngagedInHostilities()) {
+				options.addOptionConfirmation(ENGAGE,
+						"The " + nonHostile.getDisplayNameLong() + 
+						" " + nonHostile.getDisplayNameIsOrAre() + 
+						" not currently hostile, and you have been positively identified. " +
+						"Are you sure you want to engage in open hostilities?", "Yes", "Never mind");
+			}
+		} else if (context == null || playerCanNotJoin || !otherWantsToFight) {
+			options.setEnabled(ENGAGE, false);
+		}
+		
 		if (InvasionRound.canInvade(entity))
 		{
 			options.addOption("Invade the market", INVADE);
@@ -156,23 +355,27 @@ public class Nex_MarketCMD extends MarketCMD {
 			options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);	// put back the hotkey
 			*/
 			
-			//boolean hasStation = getStationFleet() != null;
-			if (!temp.canRaid || !temp.canBombard)
-			{
-				options.setEnabled(INVADE, false);
-				options.setTooltip(INVADE, StringHelper.getString("exerelin_invasion", "invadeBlocked"));
-				tempInvasion.canInvade = false;
-			}
-			else if (getRaidCooldown() > 0) {
+			if (getRaidCooldown() > 0) {
 				if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
 					options.setEnabled(INVADE, false);
 					tempInvasion.canInvade = false;
 				}
 			}
+			else if (!temp.canRaid || !temp.canBombard)
+			{
+				options.setEnabled(INVADE, false);
+				options.setTooltip(INVADE, StringHelper.getString("exerelin_invasion", "invadeBlocked"));
+				tempInvasion.canInvade = false;
+			}
 		}
-		// instead we just show the other options _after_ the invade option
-		// ...no, because it clears our option panel
-		//super.showDefenses(withText);
+		
+		options.addOption("Go back", GO_BACK);
+		options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
+		
+		
+		if (plugin != null) {
+			plugin.cleanUpBattle();
+		}
 	}
 	
 	protected void invadeMenu() {

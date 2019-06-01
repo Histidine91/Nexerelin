@@ -12,8 +12,8 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
-import exerelin.world.scenarios.StartScenarioManager;
-import exerelin.world.scenarios.StartScenarioManager.StartScenarioDef;
+import exerelin.world.scenarios.ScenarioManager;
+import exerelin.world.scenarios.ScenarioManager.StartScenarioDef;
 import java.awt.Color;
 
 
@@ -35,9 +35,9 @@ public class NGCSetCorvusMode extends BaseCommandPlugin {
 		}
 		// disable custom scenario if appropriate
 		if (data.startScenario != null) {
-			StartScenarioDef def = StartScenarioManager.getScenarioDef(data.startScenario);
+			StartScenarioDef def = ScenarioManager.getScenarioDef(data.startScenario);
 			if (setting == true && def.randomSectorOnly) {
-				Nex_NGCCustomStartScenario.selectScenario(memory, null);
+				Nex_NGCCustomScenario.selectScenario(memory, null);
 				String msg = StringHelper.getStringAndSubstituteToken(
 						"exerelin_ngc", "customScenarioRemoved", "$name", def.name);
 				dialog.getTextPanel().setFontSmallInsignia();

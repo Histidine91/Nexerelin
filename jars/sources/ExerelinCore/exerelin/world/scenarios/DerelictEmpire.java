@@ -9,7 +9,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsFaction;
 
-public class DerelictEmpire extends StartScenario {
+public class DerelictEmpire extends Scenario {
 	
 	@Override
 	public void afterEconomyLoad(SectorAPI sector) {

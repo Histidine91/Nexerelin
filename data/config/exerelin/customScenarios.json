@@ -5,6 +5,7 @@
 			"name":"Derelict Empire",
 			"desc":"Eons ago, the exploration drones of the Domain were sent into the Persean Sector to terraform and develop its worlds, make them fitting for human civilization.\n\nBut now that the new owners have arrived, they refuse to give up that which they have created. It shall have to be taken by force.",
 			"className":"exerelin.world.scenarios.DerelictEmpire",
+			#"requiredModId":"nexerelin",
 			"randomSectorOnly":true,
 		},
 	],

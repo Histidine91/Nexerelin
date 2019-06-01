@@ -17,13 +17,13 @@ import org.json.JSONObject;
  * Handles custom scenarios for the starting sector.
  * Examples include "Derelict Empire" where all non-homeworld planets are controlled by derelicts.
  */
-public class StartScenarioManager {
+public class ScenarioManager {
 	
 	public static final String CONFIG_FILE = "data/config/exerelin/customScenarios.json";
 	protected static final List<StartScenarioDef> defs = new ArrayList<>();
 	protected static final Map<String, StartScenarioDef> defsByID = new HashMap<>();
 	
-	protected static StartScenario scenario;
+	protected static Scenario scenario;
 	
 	static {
 		try {
@@ -46,6 +46,7 @@ public class StartScenarioManager {
 			
 			StartScenarioDef def = new StartScenarioDef(id, name, desc, className);
 			def.randomSectorOnly = defJson.optBoolean("randomSectorOnly", true);
+			def.requiredModId = defJson.optString("requiredModId", null);
 			
 			defs.add(def);
 			defsByID.put(id, def);
@@ -62,7 +63,7 @@ public class StartScenarioManager {
 		try {
 			ClassLoader loader = Global.getSettings().getScriptClassLoader();
 			Class<?> clazz = loader.loadClass(def.className);
-			scenario = (StartScenario)clazz.newInstance();
+			scenario = (Scenario)clazz.newInstance();
 			scenario.init();
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
 			//Global.getLogger(StartScenarioManager.class).error("Failed to load scenario " + id, ex);
@@ -104,6 +105,7 @@ public class StartScenarioManager {
 		public String desc;
 		public String className;
 		public boolean randomSectorOnly = true;
+		public String requiredModId;
 		
 		public StartScenarioDef(String id, String name, String desc, String className) {
 			this.id = id;

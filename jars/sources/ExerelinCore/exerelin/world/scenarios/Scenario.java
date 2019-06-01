@@ -3,7 +3,7 @@ package exerelin.world.scenarios;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 
-public abstract class StartScenario {
+public abstract class Scenario {
 	
 	public void onCharacterCreation(CharacterCreationData data) {
 		
