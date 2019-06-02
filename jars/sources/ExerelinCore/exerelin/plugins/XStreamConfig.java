@@ -6,7 +6,6 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.intel.agents.InstigateRebellion;
 import exerelin.campaign.events.ExigencyRespawnFleetEvent;
-import exerelin.campaign.events.FactionBountyEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
@@ -181,13 +180,6 @@ public class XStreamConfig {
 		x.aliasAttribute(Alliance.class, "name", "n");
 		x.aliasAttribute(Alliance.class, "uuId", "id");
 		x.aliasAttribute(Alliance.class, "alignment", "algn");
-		
-		// FactionBountyEvent
-		x.aliasAttribute(FactionBountyEvent.class, "elapsedDays", "days");
-		x.aliasAttribute(FactionBountyEvent.class, "duration", "max");
-		x.aliasAttribute(FactionBountyEvent.class, "baseBounty", "pays");
-		x.aliasAttribute(FactionBountyEvent.class, "lastBounty", "last");
-		x.aliasAttribute(FactionBountyEvent.class, "enemyFaction", "ef");
 		
 		// RebellionEvent
 		x.aliasAttribute(RebellionEvent.class, "stage", "stg");

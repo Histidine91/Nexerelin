@@ -11,7 +11,6 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
-import exerelin.campaign.NexJumpPointInteractionDialogPlugin;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
@@ -107,9 +106,6 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		}
 		if (interactionTarget instanceof AsteroidAPI) {
 			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
-		}
-		if (interactionTarget instanceof JumpPointAPI) {
-			return new PluginPick<InteractionDialogPlugin>(new NexJumpPointInteractionDialogPlugin(), PickPriority.MOD_GENERAL);
 		}
 		return null;
 	}

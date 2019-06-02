@@ -13,8 +13,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.events.FactionBountyEvent;
-import exerelin.campaign.events.FactionBountyEvent.FactionBountyPairKey;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -32,6 +30,7 @@ import org.apache.log4j.Logger;
  Pirate factions are only processed if pirate invasions are enabled
 */
 
+@Deprecated
 public class NexEventProbabilityManager extends BaseCampaignEventListener implements EveryFrameScript {
 
 	public static Logger log = Global.getLogger(NexEventProbabilityManager.class);
@@ -59,6 +58,7 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 	/**
 	 * Advance probability of faction bounty events based on their relationship with each other
 	 */	
+	/*
 	protected void advanceFactionBountyTracker()
 	{
 		CampaignEventManagerAPI eventManager = Global.getSector().getEventManager();
@@ -101,6 +101,7 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 		}
 	}
 	
+	
 	@Override
 	public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
 		CampaignFleetAPI primary1 = battle.getPrimary(battle.getSideOne());
@@ -142,6 +143,7 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 											"" + ep.getProbability()));
 		ep.increaseProbability(increment);
 	}
+	*/
 	
 	@Override
 	public boolean isDone() {
@@ -156,8 +158,8 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 	@Override
 	public void advance(float amount) {
 		ExerelinUtils.advanceIntervalDays(factionBountyInterval, amount);
-		if (factionBountyInterval.intervalElapsed())
-			advanceFactionBountyTracker();
+		//if (factionBountyInterval.intervalElapsed())
+		//	advanceFactionBountyTracker();
 	}
 	
 }
