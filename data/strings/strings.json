@@ -418,6 +418,25 @@
 		"bonusAdminIntelBullet2":"Bonus admins: %s",
 		"bonusAdminIntelBullet3":"Next admin at size %s",
 	},
+	"nex_conquestMission":{
+		"intelTitle":"Conquest Mission",
+		"intelBulletReward":"Current base reward: %s",
+		"intelBulletReward_received":"%s received",
+		"intelBulletTarget":"Held by $targetFaction",
+		"intelDesc1":"$TheFaction desires that another faction conquer $market, currently held by $theOtherFaction, and transfer it to their control.",
+		"intelDesc1Alt":"$TheFaction desires that another faction conquer $market, previously held by $theOtherFaction, and transfer it to their control.",
+		"intelDesc2":"Successful completion will result in a size-based reputation gain (in addition to that from a normal transfer). The credit reward is equal to the shutdown value of the structures and industries $onOrAt $market, plus a bonus based on its size and stability.",
+		"intelDescDuration_pre":"You have ",
+		"intelDescDuration_post":"to complete the mission.",
+		"intelDescDuration_post_short":"to complete",
+		"intelDesc3":"After taking control of $market, talk to local officials to perform the transfer.",
+		
+		"intelDescOutcome_alreadyTaken":"$TheFaction has conquered $market using their own resources. The mission is over.",
+		"intelDescOutcome_noLongerHostile":"$market's current faction is not currently hostile. The mission has been withdrawn.",
+		"intelDescOutcome_noLongerExists":"The mission has been withdrawn as $market has been destroyed.",
+	},
+	
+	
 	"nex_credits":{
 		"contribution_zaphide":"The original Exerelin",
 		"contribution_histidine":"Update for Starsector 0.65 and later",
@@ -803,14 +822,7 @@
 		"crewLost":"crew lost",
 		"machineryLost":"heavy machinery lost"
 	},
-	"exerelin_missions":{
-		"missionBoard":"Mission Board",
-		"conquestMission":"Conquest Mission",
-		"conquer":"conquer $target",
-		"factionBounty":"$faction – $enemyFaction - $bounty",
-		"daysLeft":"$days days left",
-		"over":"over"
-	},
+	
 	"exerelin_ngc":{
 		"factions":"factions",
 		"randomFaction":"random faction",

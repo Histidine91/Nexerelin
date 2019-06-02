@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				"transferMarketFactorSize", true));
 		
 		// industry
-		float value = getMarketIndustryValue(market) / VALUE_DIVISOR;
+		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) / VALUE_DIVISOR;
 		//value *= market.getSize() - 2;
 		stat.modifyFlat("industry", value, StringHelper.getString("exerelin_markets", 
 				"transferMarketFactorIndustry", true));
@@ -121,15 +122,6 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				"transferMarketFactorStability", true));
 		
 		return stat;
-	}
-	
-	protected float getMarketIndustryValue(MarketAPI market) {
-		float value = 0;
-		for (Industry ind : market.getIndustries()) {
-			//if (!ind.isFunctional()) continue;
-			value += ind.getBuildCost();
-		}
-		return value;
 	}
 	
 	public void transferMarket(InteractionDialogAPI dialog, MarketAPI market, String newFactionId)

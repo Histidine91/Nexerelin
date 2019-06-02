@@ -68,6 +68,15 @@ public class ExerelinUtilsMarket {
 		}
 	}
 	
+	public static float getMarketIndustryValue(MarketAPI market) {
+		float value = 0;
+		for (Industry ind : market.getIndustries()) {
+			//if (!ind.isFunctional()) continue;
+			value += ind.getBuildCost();
+		}
+		return value;
+	}
+	
 	public static boolean isMarketBeingInvaded(MarketAPI market)
 	{
 		return market.getMemoryWithoutUpdate().getBoolean("$beingInvaded")	// NPC fleet
