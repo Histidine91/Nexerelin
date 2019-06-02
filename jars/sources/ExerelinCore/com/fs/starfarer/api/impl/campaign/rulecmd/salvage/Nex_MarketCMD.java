@@ -1426,6 +1426,15 @@ public class Nex_MarketCMD extends MarketCMD {
 		return originallyPlayer;
 	}
 	
+	public static void applyDefenderIncreaseFromRaid(MarketAPI market, float mult) {
+		float e = market.getMemoryWithoutUpdate().getExpire(DEFENDER_INCREASE_KEY);
+		e += getRaidDefenderIncreasePerRaid() * mult;
+		float max = getRaidDefenderIncreaseMax();
+		if (e > max) e = max;
+		
+		market.getMemoryWithoutUpdate().set(DEFENDER_INCREASE_KEY, true);
+		market.getMemoryWithoutUpdate().expire(DEFENDER_INCREASE_KEY, e);
+	}
 	
 	public static class TempDataInvasion {
 		public boolean canInvade;

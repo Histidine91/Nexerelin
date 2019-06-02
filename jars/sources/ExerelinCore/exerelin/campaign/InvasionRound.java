@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.StatBonus;
@@ -15,7 +14,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
-import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
@@ -293,6 +291,8 @@ public class InvasionRound {
 		
 		float defStrength = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0);
 		
+		applyGlobalDefenderIncrease(market, attackerFaction, playerInvolved, success);
+		
 		// destabilize
 		int stabilityPenalty = getStabilityPenalty(market, numRounds, success);
 		
@@ -411,6 +411,49 @@ public class InvasionRound {
 		MarketAPI market = entity.getMarket();
 		if (market == null) return false;
 		return ExerelinUtilsMarket.canBeInvaded(market, true);
+	}
+	
+	/**
+	 * Applies the defense-increase-from-raids bonus to markets, following an invasion.
+	 * This affects all markets in the system that are inhospitable or worse to the invader,
+	 * as well as any such markets Sector-wide if they are allied to the target.
+	 * Effect is amplified for same-system and same-faction markets, and on hard mode.
+	 * @param target
+	 * @param attacker
+	 * @param playerInvolved Was this invasion conducted by the player's personal fleet?
+	 * @param successful Was the invasion successful?
+	 */
+	public static void applyGlobalDefenderIncrease(MarketAPI target, FactionAPI attacker, boolean playerInvolved, boolean successful)
+	{
+		boolean hyperspace = target.getContainingLocation().isHyperspace();
+		boolean isPlayerFaction = attacker.isPlayerFaction() || PlayerFactionStore.getPlayerFaction() == attacker;
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(target.getEconGroup())) {
+			if (market == target) continue;
+			
+			if (!market.getFaction().isAtBest(attacker, RepLevel.INHOSPITABLE))
+				continue;
+			
+			boolean shouldAlert = (!hyperspace && market.getContainingLocation() == target.getContainingLocation())
+					|| AllianceManager.areFactionsAllied(market.getFactionId(), target.getFactionId());
+			if (!shouldAlert) continue;
+			
+			float mult = 0.25f;
+			if (market.getFaction().isHostileTo(attacker))
+				mult *= 2f;
+			if (!hyperspace && market.getContainingLocation() == target.getContainingLocation())
+				mult *= 2f;
+			if (successful)
+				mult *= 2f;
+			if (!isPlayerFaction)
+				mult *= 0.75f;
+			else if (SectorManager.getHardMode())
+				mult *= 1.5f;
+			
+			log.info("Increasing defence for market " + market.getName() 
+					+ " (" + market.getFaction().getDisplayName() + "): mult " + mult);
+			
+			Nex_MarketCMD.applyDefenderIncreaseFromRaid(market, mult);
+		}
 	}
 	
 	public static class InvasionRoundResult {
