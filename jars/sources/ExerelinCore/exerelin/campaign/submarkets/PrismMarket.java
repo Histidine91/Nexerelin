@@ -15,7 +15,6 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
-import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -39,8 +38,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -57,6 +58,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
     public static final String BLUEPRINTS_BLACKLIST = "data/config/prism/prism_blueprints_blacklist.csv";
     public static final String FACTION_WHITELIST = "data/config/prism/prism_factions_whitelist.csv";
+	public static final String BLUEPRINTS_VALUES = "data/config/prism/prism_blueprints_values.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     public static final Set<String> DISALLOWED_PREFIXES = new HashSet<>(Arrays.asList(new String[] {
         "tem_"
@@ -69,6 +71,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     protected static Set<String> restrictedShips;
     protected static Set<String> restrictedBlueprints;
     protected static Set<String> allowedFactions;
+	protected static Map<String, Float> blueprintValues;
     
     protected static Set<SubmarketAPI> cachedSubmarkets = null;
     
@@ -76,7 +79,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     static {
         try {
-            setupBlacklists();
+            setupLists();
         } catch (JSONException | IOException ex) {
             log.error(ex);
         }
@@ -478,7 +481,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }
     
     //BLACKLISTS
-    protected static void setupBlacklists() throws JSONException, IOException {
+    protected static void setupLists() throws JSONException, IOException {
 
         // Restricted goods
         restrictedWeapons = new HashSet<>();
@@ -489,6 +492,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
             Factions.HEGEMONY, Factions.TRITACHYON, Factions.PERSEAN, Factions.DIKTAT,
             Factions.INDEPENDENT, Factions.LUDDIC_CHURCH, Factions.LUDDIC_PATH, Factions.LIONS_GUARD
         }));
+		
+		blueprintValues = new HashMap<>();
         
         JSONArray factions = Global.getSettings().getMergedSpreadsheetDataForMod("id", 
                 FACTION_WHITELIST, ExerelinConstants.MOD_ID);
@@ -524,6 +529,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
         {
             JSONObject row = csv.getJSONObject(x);
             restrictedBlueprints.add(row.getString("id"));
+        }
+		
+		csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
+                BLUEPRINTS_VALUES, ExerelinConstants.MOD_ID);
+        for (int x = 0; x < csv.length(); x++)
+        {
+            JSONObject row = csv.getJSONObject(x);
+            blueprintValues.put(row.getString("id"), (float)row.getDouble("value"));
         }
     }
     
@@ -597,6 +610,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static Set<String> getRestrictedBlueprints() {
         return restrictedBlueprints;
     }
+	
+	public static Float getBlueprintValue(String id) {
+		if (blueprintValues.containsKey(id))
+			return blueprintValues.get(id);
+		return null;
+	}
     
     //==========================================================================
     //==========================================================================

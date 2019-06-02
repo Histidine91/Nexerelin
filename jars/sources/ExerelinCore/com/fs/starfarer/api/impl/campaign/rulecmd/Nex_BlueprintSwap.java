@@ -408,7 +408,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(hullId, PurchaseType.SHIP, 
-					hull.getNameWithDesignationWithDashClass(), getBlueprintPointValue(Items.SHIP_BP, hull.getBaseValue(), true));
+					hull.getNameWithDesignationWithDashClass(), 
+					getBlueprintPointValue(Items.SHIP_BP, hullId, hull.getBaseValue(), true));
 			if (hull.hasTag("tiandong_retrofit"))
 				info.isTiandongRetrofit = true;
 			
@@ -421,7 +422,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (playerFaction.knowsWeapon(wingId) || banned.contains(wingId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(wingId, PurchaseType.FIGHTER, 
-					wing.getWingName(), getBlueprintPointValue(Items.FIGHTER_BP, wing.getBaseValue(), true));
+					wing.getWingName(), 
+					getBlueprintPointValue(Items.FIGHTER_BP, wingId, wing.getBaseValue(), true));
 			if (wing.hasTag("tiandong_retrofit"))
 				info.isTiandongRetrofit = true;
 			
@@ -434,7 +436,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (playerFaction.knowsWeapon(weaponId) || banned.contains(weaponId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(weaponId, PurchaseType.WEAPON, 
-					wep.getWeaponName(), getBlueprintPointValue(Items.WEAPON_BP, wep.getBaseValue(), true));
+					wep.getWeaponName(), 
+					getBlueprintPointValue(Items.WEAPON_BP, weaponId, wep.getBaseValue(), true));
 			picker.add(info, 2 * wep.getRarity());
 		}
 		
@@ -491,10 +494,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 				base = Global.getSettings().getWeaponSpec(data.getData()).getBaseValue();
 				break;
 		}
-		points = getBlueprintPointValue(spec.getId(), base, false);
-		
-		if (spec.hasTag("package_bp"))
-			points = spec.getBasePrice() * PRICE_POINT_MULT * 5;
+		points = getBlueprintPointValue(spec.getId(), data.getData(), base, false);
 		
 		points *= stack.getSize();
 		
@@ -504,12 +504,19 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	/**
 	 * Gets the point value of a blueprint based on its sale price.
 	 * @param itemId e.g. "fighter_bp", Items.SHIP_BP
+	 * @param dataId e.g. "onslaught_XIV"
 	 * @param baseCost Base cost of the hull, fighter wing or weapon
 	 * @return
 	 */
-	public static float getBlueprintPointValue(String itemId, float baseCost, boolean isBuy)
+	public static float getBlueprintPointValue(String itemId, String dataId, float baseCost, boolean isBuy)
 	{
+		Float setValue = PrismMarket.getBlueprintValue(itemId);
+		if (setValue != null) return setValue;
+		setValue = PrismMarket.getBlueprintValue(dataId);
+		if (setValue != null) return setValue;
+		
 		SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(itemId);
+		
 		float cost = spec.getBasePrice() + baseCost * Global.getSettings().getFloat("blueprintPriceOriginalItemMult");
 		if (spec.hasTag("tiandong_retrofit_bp"))
 		{
@@ -518,6 +525,9 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		}
 		cost *= PRICE_POINT_MULT;
 		if (isBuy) cost *= ExerelinConfig.prismBlueprintPriceMult;
+		
+		if (spec.hasTag("package_bp"))
+			cost *= 5;
 		
 		// rounding
 		cost = 5 * Math.round(cost/5f);
