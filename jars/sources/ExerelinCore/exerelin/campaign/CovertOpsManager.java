@@ -79,7 +79,6 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final boolean DEBUG_MODE = false;
     
     public static final float NPC_EFFECT_MULT = 1f;
-    public static final int MAX_AGENTS = 2;
     public static final List<String> DISALLOWED_FACTIONS;
      
     public static final List<CovertActionDef> actionDefs = new ArrayList<>();
@@ -189,21 +188,20 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	protected Object readResolve() {
-		if (agents == null) {
-			agents = new HashSet<>();
-			for (AgentIntel agent : getAgentsStatic()) {
-				addAgent(agent);
-			}
-		}
+		updateBaseMaxAgents();
 		return this;
 	}
+	
+	public void updateBaseMaxAgents() {
+		Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents").modifyFlat("base", ExerelinConfig.maxAgents - 1);
+	}
 
-    public CovertOpsManager()
-    {
-        super(true);
-        intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
-		Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents").modifyFlat("base", MAX_AGENTS - 1);
-    }
+	public CovertOpsManager()
+	{
+		super(true);
+		intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
+		updateBaseMaxAgents();
+	}
 	
 	public MutableStat getMaxAgents() {
 		return Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents");

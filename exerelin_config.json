@@ -16,14 +16,15 @@
     "prisonerLootChancePer10Fp": 0.025,
     
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
-	
-	"agentBaseSalary":4000,
-	"agentSalaryPerLevel":2000,
+    
+    "agentBaseSalary":4000,
+    "agentSalaryPerLevel":2000,
+    "maxAgents":2,
     
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
     "fleetRequestCostPerFP": 400,  # used for player-requested fleets
-	"invasionFleetSizeMult": 1,
+    "invasionFleetSizeMult": 1,
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
     "pointsRequiredForInvasionFleet": 18000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
