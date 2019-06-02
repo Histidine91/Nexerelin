@@ -32,6 +32,7 @@ import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import exerelin.campaign.intel.ConquestMissionManager;
 import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
@@ -187,8 +188,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void addScriptsAndEventsIfNeeded() {
         SectorAPI sector = Global.getSector();
-        if (!sector.hasScript(ConquestMissionCreator.class)) {
-            //sector.addScript(new ConquestMissionCreator());
+        if (!sector.hasScript(ConquestMissionManager.class)) {
+            sector.addScript(new ConquestMissionManager());
         }
         if (!sector.hasScript(NexEventProbabilityManager.class)) {
             //sector.addScript(new NexEventProbabilityManager());

@@ -378,32 +378,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return originMarket;
 	}
 	
-	/**
-	 * Try to create an invasion fleet or raid fleet.
-	 * @param faction The faction launching an invasion
-	 * @param targetFaction
-	 * @param type
-	 * @param sizeMult
-	 * @return The invasion fleet intel, if one was created
-	 */
-	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
-			EventType type, float sizeMult)
-	{
-		SectorAPI sector = Global.getSector();
-		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
-		
-		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
+			MarketAPI originMarket, List<MarketAPI> markets) {
 		String factionId = faction.getId();
+		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+		Vector2f originMarketLoc = null;
+		if (originMarket != null) originMarketLoc = originMarket.getLocationInHyperspace();
 		
-		MarketAPI originMarket = getSourceMarketForFleet(faction, markets);
-		if (originMarket == null) {
-			return null;
-		}
-		//log.info("\tStaging from " + originMarket.getName());
-		//marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
-
-		// now we pick a target
-		Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
 		for (MarketAPI market : markets) 
 		{
 			FactionAPI marketFaction = market.getFaction();
@@ -427,13 +408,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (factionId.equals(Factions.PLAYER))
 				isPirateFaction = isPirateFaction || ExerelinUtilsFaction.isPirateFaction(
 						PlayerFactionStore.getPlayerFactionId());
-
+			
+			float weight = 1;
+			
 			// base weight based on distance
-			float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
-			if (dist < 5000.0F) {
-				dist = 5000.0F;
+			if (originMarketLoc != null) {
+				float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
+				if (dist < 5000.0F) {
+					dist = 5000.0F;
+				}
+				weight = 20000.0F / dist;
 			}
-			float weight = 20000.0F / dist;
+			
 			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
 			if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId) || isPirateFaction)
 				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
@@ -463,6 +449,32 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 		}
 		MarketAPI targetMarket = targetPicker.pick();
+		return targetMarket;
+	}
+	
+	/**
+	 * Try to create an invasion fleet or raid fleet.
+	 * @param faction The faction launching an invasion
+	 * @param targetFaction
+	 * @param type
+	 * @param sizeMult
+	 * @return The invasion fleet intel, if one was created
+	 */
+	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
+			EventType type, float sizeMult)
+	{
+		SectorAPI sector = Global.getSector();
+		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+		
+		MarketAPI originMarket = getSourceMarketForFleet(faction, markets);
+		if (originMarket == null) {
+			return null;
+		}
+		//log.info("\tStaging from " + originMarket.getName());
+		//marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
+
+		// now we pick a target
+		MarketAPI targetMarket = getTargetMarketForFleet(faction, targetFaction, originMarket, markets);
 		if (targetMarket == null) {
 			return null;
 		}
