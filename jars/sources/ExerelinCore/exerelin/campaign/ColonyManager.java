@@ -15,12 +15,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
@@ -30,6 +27,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import static exerelin.campaign.SectorManager.sectorManager;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -67,7 +65,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
 	));
 	public static final int MAX_STATION_SIZE = 6;
-	public static final int MAX_NPC_COLONY_SIZE = 0;
 	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 209;
 	
 	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
@@ -111,7 +108,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			{
 				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1) 
 				{
-					int maxSize = MAX_NPC_COLONY_SIZE;
+					int maxSize = ExerelinConfig.maxNPCColonySize;
+					if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+						maxSize = ExerelinConfig.maxNPCNewColonySize;
 					if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
 						maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
 					
@@ -415,7 +414,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * figure out if it should also build military and productive structures.</p>
 	 * @param market
 	 */
-	public static void buildIndustries(MarketAPI market) {		
+	public static void buildIndustries(MarketAPI market) {
+		if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY)) {
+			buildIndustries(market, true, true);
+			return;
+		}
+		
 		// if the spaceport is gone we can guess that player strip-mined the market
 		boolean productive = (!market.hasIndustry(Industries.SPACEPORT) && !market.hasIndustry(Industries.MEGAPORT));
 		boolean military = shouldBuildMilitary(market);

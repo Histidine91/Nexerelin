@@ -126,6 +126,7 @@ public class ExerelinConfig
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     public static int maxNPCColonySize = 0;
+	public static int maxNPCNewColonySize = 5;
 
     public static void loadSettings()
     {
@@ -214,6 +215,7 @@ public class ExerelinConfig
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
             maxNPCColonySize = settings.optInt("maxNPCColonySize", maxNPCColonySize);
+			maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             

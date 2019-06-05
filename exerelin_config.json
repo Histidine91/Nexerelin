@@ -73,7 +73,7 @@
     "enableRevengeFleets": 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
     "revengePointsPerEnemyFP": 0.05,
     "revengePointsForMarketCaptureMult": 2,
-	"vengeanceFleetSizeMult": 0.8,
+    "vengeanceFleetSizeMult": 0.8,
     
     "enableAntioch": true, # adds Antioch for Templars in random mode, replacing their normal worlds
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (random mode only)
@@ -85,13 +85,14 @@
     "corvusModeLandmarks": false,    # adds some decorative landmarks in non-random Sector (will always be present in random Sector)
     
     "useCustomBattleCreationPlugin": false,	# affects things like map size and number of objectives
-	
+    
     "officerDeaths": false,	# officer permadeath (may be buggy)
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
-	
-	"stabilizePackageEffect": 3,
-	
-	"maxNPCColonySize": 0,	# NPC markets will grow up to this size on their own
+    
+    "stabilizePackageEffect": 3,
+    
+    "maxNPCColonySize": 0,	# NPC markets will grow up to this size on their own
+    "maxNPCNewColonySize": 5,	# for new colonies created by colony expedition event
 
     # DO NOT TOUCH!
     # to make factions not appear, use the menu options

@@ -8,11 +8,9 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
-import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
@@ -50,6 +48,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean intelQueuedOrAdded;
 	protected float fp;
 	protected float orgDur;
+	protected boolean reported = false;
 	
 	protected ActionStage action;
 	
@@ -155,7 +154,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	public void sendOutcomeUpdate() {
 		addIntelIfNeeded();
-		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
+		if (!reported) {
+			sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
+			reported = true;
+		}
 	}
 	
 	public void sendEnteredSystemUpdate() {
@@ -193,7 +195,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 				 	 faction.getBaseUIColor(), faction.getDisplayName());
 		initPad = 0f;
 		
-		if (outcome == null)
+		if (outcome == null && !other.isNeutralFaction())
 		{
 			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel",
 					"bulletTarget", "$targetFaction", other.getDisplayName());
@@ -266,7 +268,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public String getName() {
 		String base = StringHelper.getString("nex_fleetIntel", "title");
 		base = StringHelper.substituteToken(base, "$action", getActionName(), true);
-		base = StringHelper.substituteToken(base, "$market", target.getName());
+		base = StringHelper.substituteToken(base, "$market", getTarget().getName());
 		
 		if (isEnding()) {
 			if (outcome == OffensiveOutcome.SUCCESS) {

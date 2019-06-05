@@ -12,6 +12,40 @@
 	
 	"economyExceptionOnMissingMarketEntity":false,
 	
+	"nex_colonyConditionValues":{
+		"ore_sparse":1,
+		"ore_moderate":2.5,
+		"ore_abundant":5,
+		"ore_rich":10,
+		"ore_ultrarich":18,
+		
+		"rare_ore_sparse":1.5,
+		"rare_ore_moderate":4,
+		"rare_ore_abundant":8,
+		"rare_ore_rich":15,
+		"rare_ore_ultrarich":24,
+		
+		"volatiles_trace":2,
+		"volatiles_diffuse":5,
+		"volatiles_abundant":10,
+		"volatiles_plentiful":22,
+		
+		"organics_trace":1,
+		"organics_common":2.5,
+		"organics_abundant":6,
+		"organics_plentiful":15,
+		
+		"farmland_poor":2,
+		"farmland_adequate":6,
+		"farmland_rich":12,
+		"farmland_bountiful":20,
+		"water_surface":6,
+		
+		"habitable":20,
+		"mild_climate":20,
+		
+	},
+	
 	"graphics":{
 		"abilities":{
 			"exerelin_follow_me":"graphics/icons/abilities/something.png",
