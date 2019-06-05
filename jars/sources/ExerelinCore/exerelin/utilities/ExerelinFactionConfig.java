@@ -802,14 +802,11 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.COMBAT_LARGE, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
-            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
             
             rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             
             pickShipsAndAddToList(rolePicker, ships, true);
@@ -820,14 +817,12 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FREIGHTER_LARGE, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 1);
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
-            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 2);
             rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
@@ -837,32 +832,24 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.CARRIER_MEDIUM, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
-            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
         else if (type == StartFleetType.COMBAT_SMALL)
         {
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
-            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 3);
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 2);
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 7);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 2);
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 6);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
@@ -872,14 +859,14 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
             rolePicker.add(ShipRoles.FREIGHTER_SMALL, 2);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
@@ -890,22 +877,19 @@ public class ExerelinFactionConfig
             pickShipsAndAddToList(rolePicker, ships, true);
             
             rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
             
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 2);
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
+            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
         else if (type == StartFleetType.SOLO)
         {
             rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
-            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
         else if (type == StartFleetType.GRAND_FLEET)
