@@ -80,8 +80,11 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	public void addResultPara(TooltipMakerAPI info, float pad) {
 		if (result != null && result.isSucessful())
 		{
-			info.addPara(getString("commodityLossEffect"), pad, Misc.getHighlightColor(), 
+			TooltipMakerAPI item = info.beginImageWithText(getIcon(), 40);
+			item.addPara(getString("commodityLossEffect"), 0, Misc.getHighlightColor(), 
 					commodityName, effect + "");
+			info.addImageWithText(pad);
+			
 		}
 		super.addResultPara(info, pad);
 	}
