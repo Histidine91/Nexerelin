@@ -636,6 +636,9 @@ public class NexMarketBuilder
 			marketsByFactionId.put(factionId, new ArrayList<ProcGenEntity>());
 		marketsByFactionId.get(factionId).add(data);
 		
+		if (!data.starSystem.hasTag(ExerelinProcGen.RANDOM_CORE_SYSTEM_TAG))
+			data.starSystem.addTag(ExerelinProcGen.RANDOM_CORE_SYSTEM_TAG);
+		
 		return market;
 	}
 	

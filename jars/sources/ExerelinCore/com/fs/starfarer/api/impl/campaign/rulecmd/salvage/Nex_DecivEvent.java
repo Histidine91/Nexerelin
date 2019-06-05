@@ -24,6 +24,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -122,7 +123,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	protected boolean wasCivilized(MarketAPI market, Map<String, MemoryAPI> memoryMap) {
 		if (memoryMap.get(MemKeys.MARKET).getBoolean("$wasCivilized"))
 			return true;
-		if (market.getStarSystem() != null && !market.getStarSystem().isProcgen())
+		if (market.getStarSystem() != null && !ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
 			return true;
 		
 		return false;

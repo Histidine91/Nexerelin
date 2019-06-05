@@ -76,6 +76,7 @@ public class ExerelinProcGen {
 	
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	protected static List<String> stationNames = new ArrayList<>();
+	public static final String RANDOM_CORE_SYSTEM_TAG = "nex_random_core_system";
 	
 	public static final List<String> STATION_IMAGES = new ArrayList<>(Arrays.asList(new String[] {
 		"station_side00", "station_side02", "station_side04", "station_jangala_type"

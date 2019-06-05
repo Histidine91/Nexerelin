@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.world.ExerelinProcGen;
 import java.awt.Color;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
@@ -260,5 +261,9 @@ public class ExerelinUtilsAstro {
 			float bandWidthInTexture, int bandIndex, Color color, float bandWidthInEngine, float middleRadius, float orbitPeriodMult) 
 	{
 		return addRingBand(system, focus, category, key, bandWidthInTexture, bandIndex, color, bandWidthInEngine, middleRadius, orbitPeriodMult, false);
+	}
+	
+	public static boolean isCoreSystem(StarSystemAPI system) {
+		return !system.isProcgen() || system.hasTag(ExerelinProcGen.RANDOM_CORE_SYSTEM_TAG);
 	}
 }
