@@ -79,5 +79,6 @@ public class Farming extends IndustryClassGen {
 			id = Industries.AQUACULTURE;
 		
 		NexMarketBuilder.addIndustry(market, id, instant);
+		entity.numProductiveIndustries += 1;
 	}
 }

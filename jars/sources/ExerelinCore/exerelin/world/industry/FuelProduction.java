@@ -1,9 +1,6 @@
 package exerelin.world.industry;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import exerelin.world.ExerelinProcGen;

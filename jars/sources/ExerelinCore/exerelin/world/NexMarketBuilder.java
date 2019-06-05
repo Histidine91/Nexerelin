@@ -269,7 +269,7 @@ public class NexMarketBuilder
 		return size;
 	}
 	
-	protected static int getMaxProductiveIndustries(ProcGenEntity ent)
+	public static int getMaxProductiveIndustries(ProcGenEntity ent)
 	{
 		int max = 4;
 		int size = ent.market.getSize();
@@ -456,6 +456,9 @@ public class NexMarketBuilder
 				}
 			}
 		}
+		
+		if (haveBase)
+			entity.numProductiveIndustries += 1;
 	}
 	
 	// =========================================================================
@@ -660,7 +663,9 @@ public class NexMarketBuilder
 			List<Pair<ProcGenEntity, Float>> ordered = new ArrayList<>();	// float is priority value
 			for (ProcGenEntity entity : entities)
 			{
-				if (entity.market.getIndustries().size() >= 16)
+				if (entity.market.getIndustries().size() >= 12)
+					continue;
+				if (entity.numProductiveIndustries >= getMaxProductiveIndustries(entity))
 					continue;
 				
 				// already present?
