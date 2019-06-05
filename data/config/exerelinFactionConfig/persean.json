@@ -15,6 +15,8 @@
         "ideological":0.5
     },
     
+    "createsColonies":true,
+        
     "startShipsSolo":[["brawler_Elite"]],
     "startShipsCombatSmall":[
       ["ssp_archon_bul", "brawler_Assault", "centurion_Starting"],

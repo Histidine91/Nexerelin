@@ -21,6 +21,9 @@
     
     "freeMarket":true,
     
+    "createsColonies":true,
+    "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
+        
     "startShipsSolo":[["wolf_Starting"]],
     "startShipsCombatSmall":[
       ["ssp_sunder_u_ass", "shade_Assault", "ssp_hecate_sta"],

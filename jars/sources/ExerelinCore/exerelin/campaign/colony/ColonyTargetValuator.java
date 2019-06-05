@@ -8,7 +8,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
@@ -36,10 +37,10 @@ public class ColonyTargetValuator {
 	
 	static {
 		try {
-            loadSettings();
-        } catch (IOException | JSONException | NullPointerException ex) {
-            throw new RuntimeException(ex);
-        }
+			loadSettings();
+		} catch (IOException | JSONException | NullPointerException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	protected static void loadSettings() throws JSONException, IOException {
@@ -53,10 +54,10 @@ public class ColonyTargetValuator {
 		}
 	}
 	
-	public float evaluatePlanet(MarketAPI market, float distance, FactionAPI faction) {
+	public float evaluatePlanet(MarketAPI market, float distanceLY, FactionAPI faction) {
 		List<String> conds = new ArrayList<>();
-		if (ExerelinUtilsMarket.getOriginalOwner(market).equals(faction.getId())
-				&& !market.getStarSystem().isProcgen())
+		if (faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market))
+				&& !ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
 			return 1000;
 		
 		float score = 0;
@@ -76,22 +77,24 @@ public class ColonyTargetValuator {
 		if (hazard < 0.1) hazard = 0.1f;
 		
 		score /= hazard;
-		score *= getDistanceValueMult(distance, faction);
+		score *= getDistanceValueMult(distanceLY, faction);
+		
+		String distStr = String.format("%.1f", distanceLY);
+		String scoreStr = String.format("%.2f", score);
 		
 		log.info("Planet " + market.getName() + " (hazard " + hazard + ") in " 
 				+ market.getStarSystem().getNameWithLowercaseType() + " (dist " 
-				+ distance + ") has score " + score);
+				+ distStr + ") has score " + scoreStr);
 		log.info("\t" + StringHelper.writeStringCollection(conds, false, true));
 		
 		return score;
 	}
 	
-	public boolean prefilterMarket(MarketAPI market, FactionAPI faction) {
-		StarSystemAPI system = market.getStarSystem();
+	public boolean prefilterSystem(StarSystemAPI system, FactionAPI faction) {
 		if (system.hasPulsar()) return false;
 		if (system.isNebula()) return false;
 		
-		if (system.isProcgen()) {
+		if (!ExerelinUtilsAstro.isCoreSystem(system)) {
 			// don't colonize a system with an existing market, unless it's a player market 
 			// and player is commissioned with that faction
 			for (MarketAPI existingMarket : Global.getSector().getEconomy().getMarkets(system)) {
@@ -108,6 +111,19 @@ public class ColonyTargetValuator {
 		return true;
 	}
 	
+	public boolean prefilterMarket(MarketAPI market, FactionAPI faction) {
+		StarSystemAPI system = market.getStarSystem();
+		// don't colonize core world systems except to repopulate decivilized worlds
+		if (ExerelinUtilsAstro.isCoreSystem(system)) {
+			//if (!faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+			//	return false;
+			if (!market.getMemoryWithoutUpdate().getBoolean("$wasCivilized"))
+				return false;
+		}
+		
+		return true;
+	}
+	
 	public float getConditionValue(String conditionId, FactionAPI faction) {
 		if (DEFAULT_CONDITION_VALUES.containsKey(conditionId))
 			return DEFAULT_CONDITION_VALUES.get(conditionId);
@@ -118,12 +134,15 @@ public class ColonyTargetValuator {
 		return 2;
 	}
 	
-	public float getMaxDistance(FactionAPI faction) {
-		// TODO put in faction config?
-		return 30000;
+	public float getMaxDistanceLY(FactionAPI faction) {
+		return ExerelinConfig.getExerelinFactionConfig(faction.getId()).maxColonyDistance;
 	}
 	
 	public float getDistanceValueMult(float distance, FactionAPI faction) {
-		return 2 - (distance/getMaxDistance(faction));
+		return 2 - (distance/getMaxDistanceLY(faction));
+	}
+	
+	public float getMinScore(FactionAPI faction) {
+		return 10;
 	}
 }

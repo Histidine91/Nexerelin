@@ -8,6 +8,9 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -25,12 +28,16 @@ import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import static exerelin.campaign.SectorManager.sectorManager;
+import exerelin.campaign.colony.ColonyTargetValuator;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
@@ -39,6 +46,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +57,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 /**
  * Handles assorted colony-related functions.
@@ -73,6 +82,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	protected Map<MarketAPI, LinkedList<QueuedIndustry>> npcConstructionQueues = new HashMap<>();
 	protected int bonusAdminLevel = 0;
+	protected float colonyExpeditionProgress;
+	protected int numDeadExpeditions;
 	
 	public ColonyManager() {
 		super(true);
@@ -117,8 +128,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					if (market.getSize() < maxSize) {
 						CoreImmigrationPluginImpl.increaseMarketSize(market);
 						// intel: copied from CoreImmigrationPluginImpl
-						MessageIntel intel = new MessageIntel("Colony Growth - " + market.getName(), Misc.getBasePlayerColor());
-						intel.addLine(BaseIntelPlugin.BULLET + "Size increased to %s",
+						MessageIntel intel = new MessageIntel(StringHelper.getString("nex_colonies", "intelGrowthTitle") 
+								+ " - " + market.getName(), Misc.getBasePlayerColor());
+						intel.addLine(BaseIntelPlugin.BULLET + StringHelper.getString("nex_colonies", "intelGrowthBullet"),
 								Misc.getTextColor(), 
 								new String[] {"" + (int)Math.round(market.getSize())},
 								Misc.getHighlightColor());
@@ -309,6 +321,106 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		Global.getSector().getListenerManager().addListener(this);
 	}
 	
+	public void incrementDeadColonyExpeditions() {
+		numDeadExpeditions++;
+	}
+	
+	protected String pickFactionToColonize() {
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			if (!ExerelinConfig.getExerelinFactionConfig(factionId).createsColonies)
+				continue;
+			picker.add(factionId);
+		}
+		return picker.pick();
+	}
+	
+	protected MarketAPI pickColonyExpeditionSource(String factionId) {
+		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+		for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(factionId)) {
+			if (!market.hasSpaceport()) continue;
+			int size = market.getSize();
+			if (size < 5) continue;
+			
+			float weight = size * size * market.getStabilityValue();
+			if (market.hasIndustry(Industries.MEGAPORT)) {
+				weight *= 1.5f;
+			}
+			if (market.hasIndustry(Industries.WAYSTATION)) {
+				weight *= 1.2f;
+			}
+
+			picker.add(market, weight);
+		}
+		return picker.pick();
+	}
+	
+	public static <T extends ColonyTargetValuator> T loadColonyTargetValuator(String factionId)
+	{
+		ColonyTargetValuator valuator = null;
+		String className = ExerelinConfig.getExerelinFactionConfig(factionId).colonyTargetValuator;
+		
+		try {
+			ClassLoader loader = Global.getSettings().getScriptClassLoader();
+			Class<?> clazz = loader.loadClass(className);
+			valuator = (ColonyTargetValuator)clazz.newInstance();
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+			Global.getLogger(IndustryClassGen.class).error("Failed to load colony target valuator " + className, ex);
+		}
+
+		return (T)valuator;
+	}
+	
+	// debug command: runcode exerelin.campaign.ColonyManager.getManager().spawnColonyExpedition();
+	/**
+	 * Spawns a colony expedition for a random faction to a semi-randomly-selected suitable target.
+	 * @return
+	 */
+	public ColonyExpeditionIntel spawnColonyExpedition() {
+		String factionId = pickFactionToColonize();
+		if (factionId == null) return null;
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		
+		MarketAPI source = pickColonyExpeditionSource(factionId);
+		if (source == null) return null;
+		SectorEntityToken anchor;
+		if (source.getContainingLocation().isHyperspace()) anchor = source.getPrimaryEntity();
+		else anchor = source.getStarSystem().getHyperspaceAnchor();
+		
+		ColonyTargetValuator valuator = loadColonyTargetValuator(factionId);
+		
+		WeightedRandomPicker<PlanetAPI> planetPicker = new WeightedRandomPicker<>();
+		float maxDist = valuator.getMaxDistanceLY(faction);
+		float minScore = valuator.getMinScore(faction);
+		for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+			if (!valuator.prefilterSystem(system, faction))
+				continue;
+			
+			float dist = Misc.getDistanceLY(system.getHyperspaceAnchor(), anchor);
+			if (dist > maxDist) continue;
+			
+			for (PlanetAPI planet : system.getPlanets()) {
+				MarketAPI market = planet.getMarket();
+				if (market == null || market.isInEconomy()) continue; 
+				if (!valuator.prefilterMarket(planet.getMarket(), faction)) {
+					continue;
+				}
+				float score = valuator.evaluatePlanet(planet.getMarket(), dist, faction);
+				if (score < minScore) continue;
+				
+				planetPicker.add(planet, score);
+			}
+		}
+		PlanetAPI target = planetPicker.pick();
+		if (target == null) return null;
+		float fp = 20 + 15 * numDeadExpeditions;
+		float organizeTime = InvasionFleetManager.getOrganizeTime(fp + 30) + 30;
+		
+		ColonyExpeditionIntel intel = new ColonyExpeditionIntel(faction, source, target.getMarket(), fp, organizeTime);
+		intel.init();
+		return intel;
+	}
+	
 	// add admin to player faction if needed
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
@@ -331,7 +443,20 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 
 	@Override
-	public void advance(float amount) {}
+	public void advance(float amount) {
+		float days = Global.getSector().getClock().convertToDays(amount);
+		colonyExpeditionProgress += days;
+		float interval = ExerelinConfig.colonyExpeditionInterval;
+		if (days > interval) {
+			ColonyExpeditionIntel intel = spawnColonyExpedition();
+			if (intel != null) {
+				colonyExpeditionProgress = MathUtils.getRandomNumberInRange(-interval * 0.1f, interval * 0.1f);
+			}
+			else {	// failed to spawn, try again in 15 days
+				colonyExpeditionProgress -= 15;
+			}
+		}
+	}
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {

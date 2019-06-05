@@ -19,6 +19,9 @@
         "ideological":1,
     },
     
+    "createsColonies":true,
+    "colonyTargetValuator":"exerelin.campaign.colony.LuddicColonyTargetValuator",
+        
     "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
     "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],

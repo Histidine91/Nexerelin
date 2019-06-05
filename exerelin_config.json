@@ -63,7 +63,7 @@
     "warmongerPenalty": 0,   # take reputation hit from starting a war? (may not be supported any longer) 0 = never, 1 = not for followers, 2 = always
     
     "followersAgents": false,		# does player faction use agents on its own? (default false)
-    "followersDiplomacy": true,		# does player faction participate in diplomacy on its own? (also affects ceasefires!) (default true)
+    "followersDiplomacy": true,		# does player faction participate in diplomacy on its own? (default true)
     "followersInvasions": false,	# does player faction launch invasions on its own? (default false)
     
     "countPiratesForVictory": false,
@@ -93,6 +93,7 @@
     
     "maxNPCColonySize": 0,	# NPC markets will grow up to this size on their own
     "maxNPCNewColonySize": 5,	# for new colonies created by colony expedition event
+	"colonyExpeditionInterval":270,	# days, starts in cycle 207
 
     # DO NOT TOUCH!
     # to make factions not appear, use the menu options

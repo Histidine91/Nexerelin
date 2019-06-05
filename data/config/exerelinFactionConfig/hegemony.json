@@ -15,6 +15,9 @@
         "ideological":0.5,
     },
     
+    "createsColonies":true,
+    "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
+    
     "startShipsSolo":[["lasher_Starting"]],
     "startShipsCombatSmall":[
       ["enforcer_Balanced", "brawler_hegemony_ass", "lasher_CS"],

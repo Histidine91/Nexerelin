@@ -110,6 +110,11 @@ public class ExerelinConfig
     public static boolean officerDeaths = false;
     public static boolean officerDaredevilBonus = true;
     
+    // Colonies
+    public static int maxNPCColonySize = 0;
+    public static int maxNPCNewColonySize = 5;
+    public static float colonyExpeditionInterval = 270;
+    
     // Misc
     public static int directoryDialogKey = 44;  // Z
     
@@ -125,8 +130,7 @@ public class ExerelinConfig
     public static boolean useRelationshipBounds = true;
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
-    public static int maxNPCColonySize = 0;
-	public static int maxNPCNewColonySize = 5;
+    
 
     public static void loadSettings()
     {
@@ -206,6 +210,10 @@ public class ExerelinConfig
             revengePointsForMarketCaptureMult = (float)settings.optDouble("revengeFleetPointsForMarketCaptureMult", revengePointsForMarketCaptureMult);
             vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
             
+            maxNPCColonySize = settings.optInt("maxNPCColonySize", maxNPCColonySize);
+            maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
+            colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
+            
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
             warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
@@ -214,8 +222,6 @@ public class ExerelinConfig
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
-            maxNPCColonySize = settings.optInt("maxNPCColonySize", maxNPCColonySize);
-			maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             

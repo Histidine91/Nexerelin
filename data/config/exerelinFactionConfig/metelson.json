@@ -9,6 +9,9 @@
     "alignments":{
         "corporate":0.5,
     },
+        
+    "createsColonies":true,
+    "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
     "startShipsSolo":[["mi_farin_standard"]],
     "startShipsCombatSmall":[["mi_rastrum_standard", "mi_mite_standard", "mi_wolf_metelson"]],

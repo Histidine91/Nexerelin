@@ -132,6 +132,11 @@ public class ExerelinFactionConfig
     public List<String> vengeanceFleetNames = new ArrayList<>();
     public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
     
+    // colonies
+    public boolean createsColonies = false;
+    public String colonyTargetValuator = "exerelin.campaign.colony.ColonyTargetValuator";
+    public float maxColonyDistance = 18;
+    
     // misc. part 2
     public List<CustomStation> customStations = new ArrayList<>();
     public List<DefenceStationSet> defenceStations = new ArrayList<>();
@@ -222,6 +227,11 @@ public class ExerelinFactionConfig
             
             directoryUseShortName = settings.optBoolean("directoryUseShortName", directoryUseShortName);
             difficultyString = settings.optString("difficultyString", difficultyString);
+            
+            // colonies
+            createsColonies = settings.optBoolean("createsColonies", createsColonies);
+            colonyTargetValuator = settings.optString("colonyTargetValuator", colonyTargetValuator);
+            maxColonyDistance = (float)settings.optDouble("maxColonyDistance", maxColonyDistance);
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));

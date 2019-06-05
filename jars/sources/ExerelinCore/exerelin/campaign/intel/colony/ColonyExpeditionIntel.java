@@ -1,9 +1,9 @@
 package exerelin.campaign.intel.colony;
 
-import exerelin.campaign.intel.invasion.*;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -22,6 +22,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
+import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
+import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -58,14 +61,17 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	
 	public static Logger log = Global.getLogger(ColonyExpeditionIntel.class);
 	
-	protected SectorEntityToken planet;
+	protected PlanetAPI planet;
+	protected String originalName;
+	protected String newName;
 	protected ColonyOutcome colonyOutcome;
 	protected boolean hostileMode = false;
 	protected FactionAPI lastOwner;
 		
 	public ColonyExpeditionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
-		planet = target.getPrimaryEntity();
+		planet = (PlanetAPI)target.getPrimaryEntity();
+		originalName = planet.getName();
 		this.target = null;
 		//targetFaction = null;
 	}
@@ -139,19 +145,21 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (lastOwner != null) defender = lastOwner;
 		String has = attacker.getDisplayNameHasOrHave();
 		String is = attacker.getDisplayNameIsOrAre();
-		String locationName = getTarget().getContainingLocation().getNameWithLowercaseType();
+		String locationName = planet.getContainingLocation().getNameWithLowercaseType();
 		
 		String strDesc = getRaidStrDesc();
 		
 		String string = getDescString();
 		String attackerName = attacker.getDisplayNameWithArticle();
 		String defenderName = defender.getDisplayNameWithArticle();
+		String planetType = Misc.lcFirst(planet.getTypeNameWithLowerCaseWorld());
 		int numFleets = (int) getOrigNumFleets();
 				
 		Map<String, String> sub = new HashMap<>();
 		sub.put("$theFaction", attackerName);
 		sub.put("$TheFaction", Misc.ucFirst(attackerName));
-		sub.put("$market", getTarget().getName());
+		sub.put("$market", planet.getName());
+		sub.put("$planetType", planetType);
 		sub.put("$isOrAre", attacker.getDisplayNameIsOrAre());
 		sub.put("$location", locationName);
 		sub.put("$strDesc", strDesc);
@@ -160,11 +168,11 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		string = StringHelper.substituteTokens(string, sub);
 		
 		LabelAPI label = info.addPara(string, opad);
-		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), getTarget().getName(), 
-				defender.getDisplayNameWithArticleWithoutArticle(), strDesc, numFleets + "");
-		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h, h);
+		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), planet.getName(),
+				planetType, strDesc, numFleets + "");
+		label.setHighlightColors(attacker.getBaseUIColor(), h, planet.getSpec().getPlanetColor(), h, h);
 		
-		if (getTarget().isInEconomy()) {
+		if (getTarget().isInEconomy() && getTarget().getFaction() != attacker) {
 			string = getString("intelDescAlreadyHeld");
 			string = StringHelper.substituteToken(string, "$market", getTarget().getName());
 			string = StringHelper.substituteToken(string, "$theOtherFaction", defenderName, true);
@@ -182,7 +190,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		// write our own status message for certain cancellation cases
 		String targetFactionNameWithArticle = defender.getDisplayNameWithArticle();
 		sub.clear();
-		sub.put("$market", getTarget().getName());
+		sub.put("$market", planet.getName());
 		sub.put("$faction", faction.getDisplayName());
 		sub.put("$theOtherFaction", targetFactionNameWithArticle);
 		sub.put("$TheOtherFaction", Misc.ucFirst(targetFactionNameWithArticle));
@@ -197,13 +205,14 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 					textKey = "intelOutcomeQueueJumpedEarly";
 					break;
 				case INVADE_SUCCESS:
-					textKey = "intelOutcomeInvadeSuccess";
+					textKey = newName = "intelOutcomeInvadeSuccess";
 					break;
 				case INVADE_FAILED:
 					textKey = "intelOutcomeInvadeFailed";
 					break;
 				case SUCCESS:
-					textKey = "intelOutcomeSuccess";
+					textKey = newName != null ? "intelOutcomeSuccessWithRename" : "intelOutcomeSuccess";
+					sub.put("$oldName", originalName);
 					break;
 			}
 			string = StringHelper.getStringAndSubstituteTokens("nex_colonyFleet", textKey, sub);
@@ -301,6 +310,17 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		market.setFactionId(factionId);
 		market.setPlanetConditionMarketOnly(false);
 		market.getMemoryWithoutUpdate().set(MEMORY_KEY_COLONY, true);
+		market.getMemoryWithoutUpdate().set("$startingFactionId", factionId);
+		
+		// rename generic-name worlds
+		if (market.getName().startsWith(planet.getStarSystem().getBaseName() + " ")) {
+			String tag = NameGenData.TAG_PLANET;
+			if (planet.isMoon()) tag = NameGenData.TAG_PLANET;
+			newName = ProcgenUsedNames.pickName(tag, null, null).nameWithRomanSuffixIfAny;
+			market.setName(newName);
+			planet.setName(newName);
+			ProcgenUsedNames.notifyUsed(newName);
+		}
 		
 		if (market.hasCondition(Conditions.DECIVILIZED))
 		{
@@ -367,6 +387,16 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (!getTarget().getFaction().isNeutralFaction())
 			tags.add(getTarget().getFactionId());
 		return tags;
+	}
+	
+	@Override
+	protected void notifyEnded() {
+		super.notifyEnded();
+		// failing at these stages suggests the colony fleet was destroyed
+		if (getFailStage() == 2 || colonyOutcome == ColonyOutcome.INVADE_FAILED 
+				|| colonyOutcome == ColonyOutcome.FAIL) {
+			ColonyManager.getManager().incrementDeadColonyExpeditions();
+		}
 	}
 	
 	public void setColonyOutcome(ColonyOutcome outcome) {

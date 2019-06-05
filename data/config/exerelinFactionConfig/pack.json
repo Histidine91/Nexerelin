@@ -10,6 +10,9 @@
         "ideological":0.5,
     },
     
+    "createsColonies":true,
+    "colonyTargetValuator":"exerelin.campaign.colony.LuddicColonyTargetValuator",
+        
     "startShipsSolo":[["pack_wirefox_Standard"]],
     "startShipsCombatSmall":[["pack_BRT_rothund_Guard", "pack_schnauzer_rothund_Standard", "pack_bedlington_Standard"]],
     "startShipsTradeSmall":[["pack_ridgeback_Standard", "pack_schnauzer_caomarelo_Standard", "pack_samoyed_Support"]],

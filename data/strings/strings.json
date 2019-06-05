@@ -414,6 +414,8 @@
 	},
 	"nex_colonies":{
 		"globalPopulation":"global population",
+		"intelGrowthTitle":"Colony Growth",
+		"intelGrowthBullet":"Size increased to %s",
 		"bonusAdminIntelTitle":"Growth: Admin Unlocked",
 		"bonusAdminIntelBullet1":"Faction size: %s",
 		"bonusAdminIntelBullet2":"Bonus admins: %s",
@@ -429,11 +431,12 @@
 		"raidName":"expedition",
 		"raidNamePossessive":"expedition's",
 		
-		"intelDesc":"$TheFaction $isOrAre sending an expedition to colonize $market in the $location. The flotilla is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr.",
+		"intelDesc":"$TheFaction $isOrAre sending an expedition to colonize $market, a $planetType in the $location. The flotilla is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr.",
 		"intelDescAlreadyHeld":"$market is currently held by $theOtherFaction.",
 		"intelBulletArrivedHostile":"Seizing $market by force",
 		"intelStageAction":"The colony expedition is currently in-system.",
 		"intelOutcomeSuccess":"The expedition has colonized $market.",
+		"intelOutcomeSuccessWithRename":"The expedition has colonized $oldName, which they have renamed to $market.",
 		"intelOutcomeQueueJumpedEarly":"$market has already been colonized by $theOtherFaction. The expedition has been cancelled and its organizers have sent the queue-jumpers a note of protest.",
 		"intelOutcomeQueueJumped":"$market has already been colonized by $theOtherFaction. The would-be settlers are returning to their homes in great sorrow.",
 		#"intelOutcomeQueueFriendly":"$market has already been colonized by $theOtherFaction. The settlers have been absorbed into the new polity."

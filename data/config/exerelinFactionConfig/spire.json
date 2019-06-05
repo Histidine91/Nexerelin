@@ -11,6 +11,9 @@
         "militarist":1,
     },
     
+    "createsColonies":true,
+    "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
+        
     "invasionFleetSizeMod":-0.15,
     "responseFleetSizeMod":-0.15,
     
