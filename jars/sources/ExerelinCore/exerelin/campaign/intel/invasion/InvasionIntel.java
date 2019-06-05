@@ -138,6 +138,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		String string = getDescString();
 		String attackerName = attacker.getDisplayNameWithArticle();
 		String defenderName = defender.getDisplayNameWithArticle();
+		int numFleets = (int) getOrigNumFleets();
+				
 		Map<String, String> sub = new HashMap<>();
 		sub.put("$theFaction", attackerName);
 		sub.put("$TheFaction", Misc.ucFirst(attackerName));
@@ -147,12 +149,14 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		sub.put("$isOrAre", attacker.getDisplayNameIsOrAre());
 		sub.put("$location", locationName);
 		sub.put("$strDesc", strDesc);
+		sub.put("$numFleets", numFleets + "");
+		sub.put("$fleetsStr", numFleets > 1 ? StringHelper.getString("fleets") : StringHelper.getString("fleet"));
 		string = StringHelper.substituteTokens(string, sub);
 		
 		LabelAPI label = info.addPara(string, opad);
 		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), target.getName(), 
-				defender.getDisplayNameWithArticleWithoutArticle(), strDesc);
-		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h);
+				defender.getDisplayNameWithArticleWithoutArticle(), strDesc, numFleets + "");
+		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h, h);
 		
 		if (Global.getSettings().isDevMode()) {
 			float fpRound = Math.round(fp);
@@ -238,7 +242,6 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				);
 		
 		// we don't need the variability involved in this
-		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
 		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
 			params.ignoreMarketFleetSizeMult = true;
 		
@@ -267,7 +270,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PIRATE, true);
 		}
 		
-		String postId = Ranks.POST_PATROL_COMMANDER;
+		String postId = Ranks.POST_FLEET_COMMANDER;
 		String rankId = Ranks.SPACE_CAPTAIN;	//isInvasionFleet ? Ranks.SPACE_ADMIRAL : Ranks.SPACE_COMMANDER;
 		
 		fleet.getCommander().setPostId(postId);

@@ -105,6 +105,7 @@
 
 		"ship":"ship",
 		"fleet":"fleet",
+		"fleets":"fleets",
 		"fighterWing":"fighter wing",
 		"fighterWingShort":"wing",
 		
@@ -386,7 +387,7 @@
 		"forceIsOrAre":"is",	# if strikeForce is singular, this should be singular too, else both should be plural
 		"forceHasOrHave":"has",	# same
 		
-		"intelDesc":"$TheFaction $isOrAre attacking and destroying $market, a $targetFaction base in the $location. The strike forces are projected to be $strDesc.",
+		"intelDesc":"$TheFaction $isOrAre attacking and destroying $market, a $targetFaction base in the $location. The strike forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelStageAction":"The strike force is currently in-system.",
 		"intelStageActionSuccess":"The strike force has succesfully destroyed $market.",
 		"intelStageActionDefeated":"The strike force has been defeated by the defenders of of $market.",
@@ -567,7 +568,7 @@
 	},
 	"nex_fleetIntel":{
 		"title":"$Action: $market",
-		"desc":"$TheFaction $isOrAre $actioning $market in the $location, held by $theTargetFaction. The $forceType $isOrAre projected to be $strDesc.",
+		"desc":"$TheFaction $isOrAre $actioning $market in the $location, held by $theTargetFaction. The $forceType $isOrAre projected to be $strDesc and $isOrAre likely comprised of $numFleets $fleetsStr.",
 		"bulletTarget":"Held by $targetFaction",
 		"bulletArrived":"$ForceType arrived in system",
 		"bulletSuccess":"$Action successful",
@@ -690,8 +691,8 @@
 		
 		"invadeBlocked":"Any orbital station and interfering fleets must be removed before an invasion is possible.",
 		
-		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc.",
-		"intelDescRespawn":"Remnants of the $theFaction have gathered to invade $market in the $location, held by $theTargetFaction, in a bid to revive their power. The invasion forces are projected to be $strDesc.",
+		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
+		"intelDescRespawn":"Remnants of the $theFaction have gathered to invade $market in the $location, held by $theTargetFaction, in a bid to revive their power. The invasion forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
 		"intelOutcomeNoLongerHostile":"As $target's current faction is not currently hostile, the invasion has been cancelled.",
 		"intelOutcomeNoLongerExists":"$target has been destroyed by another hostile party. There is nothing left to invade.",
@@ -953,7 +954,7 @@
 		"forceIsOrAre":"is",	# if raidForce is singular, this should be singular too, else both should be plural
 		"forceHasOrHave":"have",	# same
 		
-		"intelDesc":"$TheFaction $isOrAre launching a saturation bombardment of $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc.",
+		"intelDesc":"$TheFaction $isOrAre launching a saturation bombardment of $market in the $location, held by $theTargetFaction. The task force is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr..",
 	},
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",

@@ -135,6 +135,8 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		String string = StringHelper.getString("nex_baseStrike", "intelDesc");
 		String attackerName = attacker.getDisplayNameWithArticle();
 		String defenderName = defender.getDisplayName();
+		int numFleets = (int) getOrigNumFleets();
+		
 		Map<String, String> sub = new HashMap<>();
 		sub.put("$theFaction", attackerName);
 		sub.put("$TheFaction", Misc.ucFirst(attackerName));
@@ -144,12 +146,14 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		sub.put("$isOrAre", attacker.getDisplayNameIsOrAre());
 		sub.put("$location", locationName);
 		sub.put("$strDesc", strDesc);
+		sub.put("$numFleets", numFleets + "");
+		sub.put("$fleetsStr", numFleets > 1 ? StringHelper.getString("fleets") : StringHelper.getString("fleet"));
 		string = StringHelper.substituteTokens(string, sub);
 		
 		LabelAPI label = info.addPara(string, opad);
 		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), target.getName(), 
-				defender.getDisplayNameWithArticleWithoutArticle(), strDesc);
-		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h);
+				defender.getDisplayNameWithArticleWithoutArticle(), strDesc, numFleets + "");
+		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h, h);
 		
 		if (Global.getSettings().isDevMode()) {
 			float fpRound = Math.round(fp);
