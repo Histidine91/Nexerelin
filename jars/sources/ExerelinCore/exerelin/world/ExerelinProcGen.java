@@ -1139,6 +1139,11 @@ public class ExerelinProcGen {
 		market.getConnectedEntities().add(shanghaiEntity);
 		// TODO: may need to add orbital station industry
 		market.addSubmarket("tiandong_retrofit");
+		market.removeIndustry(Industries.PATROLHQ, null, false);
+		market.removeIndustry(Industries.MILITARYBASE, null, false);
+		market.removeIndustry(Industries.HIGHCOMMAND, null, false);
+		market.addIndustry("tiandong_merchq");
+		
 		toOrbit.addTag("shanghai");
 		shanghaiEntity.addTag("shanghai");
 		shanghaiEntity.addTag("shanghaiStation");

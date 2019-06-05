@@ -425,7 +425,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static boolean shouldBuildMilitary(MarketAPI market) {
 		if (!market.hasIndustry(Industries.PATROLHQ) 
 				&& !market.hasIndustry(Industries.MILITARYBASE) 
-				&& !market.hasIndustry(Industries.HIGHCOMMAND))
+				&& !market.hasIndustry(Industries.HIGHCOMMAND)
+				&& !market.hasIndustry("tiandong_merchq"))
 			return true;
 		if (!market.hasIndustry(Industries.GROUNDDEFENSES) 
 				&& !market.hasIndustry(Industries.HEAVYBATTERIES))

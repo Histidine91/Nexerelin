@@ -346,7 +346,9 @@ public class NexMarketBuilder
 		if (isPirate) sizeForBase -= 1;
 		
 		// add military base if needed
-		boolean haveBase = market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND);
+		boolean haveBase = market.hasIndustry(Industries.MILITARYBASE) 
+				|| market.hasIndustry(Industries.HIGHCOMMAND)
+				|| market.hasIndustry("tiandong_merchq");
 		if (!haveBase && marketSize >= sizeForBase)
 		{
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
