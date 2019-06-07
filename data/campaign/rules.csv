@@ -436,8 +436,7 @@ ExerelinSuperweaponFiredNoneAvailable,ExerelinSuperweaponDialog,!$superweaponSuc
 ,,,,,,
 #START MINING OPTIONS,,,,,,
 nex_openAsteroid,OpenInteractionDialog,"$isAsteroid
-!Nex_IsModActive ""stellar_industrialist""","$menuState = main 0
-ShowDefaultVisual
+!Nex_IsModActive ""stellar_industrialist""","ShowDefaultVisual
 PrintDescription 3
 FireAll PopulateOptions",Your $shipOrFleet approaches the asteroid.,,
 nex_leaveAsteroid,PopulateOptions,"$isAsteroid
@@ -479,8 +478,7 @@ $global.miningFinished score:3","Nex_GetMiningResults 1
 ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"nex_miningPreview:Mine again
 nex_miningBack:Back",
 ,,,,,,
-nex_miningBack,DialogOptionSelected,$option == nex_miningBack,"$menuState = main 0
-FireAll PopulateOptions",,,
+nex_miningBack,DialogOptionSelected,$option == nex_miningBack,FireAll PopulateOptions,,,
 #END MINING OPTIONS,,,,,,
 ,,,,,,
 # fleet requests,,,,,,
