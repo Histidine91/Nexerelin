@@ -1,0 +1,29 @@
+{
+	"entityNamePrefix":"Derelict",
+	"personNamePrefix":"Derelict",
+	"portraits":{
+		"standard_male":[
+			"graphics/portraits/portrait_ai1.png",
+			"graphics/portraits/portrait_ai2.png",
+			"graphics/portraits/portrait_ai3.png",
+		],
+		"standard_female":[
+			"graphics/portraits/portrait_ai1.png",
+			"graphics/portraits/portrait_ai2.png",
+			"graphics/portraits/portrait_ai3.png",
+		],
+	},
+	
+	"custom":{
+		"exemptFromFoodShortages":true,
+		"ignoreTradeWithEnemiesForReputation":true,
+		"postsNoBounties":true,
+		"offerMissionsWhenHostile":false,
+		"punitiveExpeditionData":{
+			"vsCompetitors":false,
+			"vsFreePort":false,
+			"canBombard":true,
+			"territorial":false,
+		},
+	},
+},

@@ -119,7 +119,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
+            if (!market.getMemoryWithoutUpdate().contains("$startingFactionId"))
+                market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
         }
         
@@ -318,7 +319,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
+            if (!market.getMemoryWithoutUpdate().contains("$startingFactionId"))
+                market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
         }
         

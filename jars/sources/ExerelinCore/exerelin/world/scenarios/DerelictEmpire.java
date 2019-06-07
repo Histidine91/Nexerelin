@@ -20,6 +20,8 @@ public class DerelictEmpire extends Scenario {
 			{
 				if (market.getMemoryWithoutUpdate().getBoolean("$nex_procgen_hq")) continue;
 				if (ExerelinUtilsFaction.isPirateFaction(market.getFactionId())) continue;
+				if (market.getFactionId().equals(Factions.INDEPENDENT))
+					continue;
 				
 				SectorManager.transferMarket(market, derelict, market.getFaction(), 
 						false, false, null, 0, true);

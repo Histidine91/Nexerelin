@@ -13,6 +13,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.DisposableFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -303,6 +304,8 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(system))
 		{
 			if (ExerelinUtilsFaction.isPirateOrTemplarFaction(market.getFactionId()))
+				continue;
+			if (market.getFactionId().equals(Factions.DERELICT)) 
 				continue;
 			if (!hasOreFacilities(market) && !hasGasFacilities(market))
 				continue;
