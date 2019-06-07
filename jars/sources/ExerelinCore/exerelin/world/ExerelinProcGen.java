@@ -352,9 +352,9 @@ public class ExerelinProcGen {
 		{
 			float hazard = cond.getGenSpec().getHazard();
 			if (hazard >= 0.5f)
-				return -0.4f;
+				return -0.3f;
 			else if (hazard >= 0.25f)
-				return -0.2f;
+				return -0.15f;
 		}
 		return 0;
 	}
