@@ -12,8 +12,10 @@ public class DerelictFleet2 extends DerelictFleet {
 		ships.add("shepherd_Frontier");
 		FactionAPI faction = Global.getSector().getFaction(Factions.DERELICT);
 		ships.add(getShip(faction, ShipRoles.COMBAT_LARGE));
+		//ships.add(getShip(faction, ShipRoles.COMBAT_LARGE));
 		ships.add(getShip(faction, ShipRoles.COMBAT_MEDIUM));
 		ships.add(getShip(faction, ShipRoles.COMBAT_MEDIUM));
+		ships.add(getShip(faction, ShipRoles.COMBAT_SMALL));
 		ships.add(getShip(faction, ShipRoles.COMBAT_SMALL));
 		ships.add(getShip(faction, ShipRoles.COMBAT_SMALL));
 	}

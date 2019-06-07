@@ -21,14 +21,14 @@
 		{
 			"id":"derelictFleet",
 			"name":"Derelict fleet",
-			"difficulty":"Normal",
+			"difficulty":"Hard",
 			"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
 			"className":"exerelin.campaign.customstart.DerelictFleet",
 		},
 		{
 			"id":"derelictFleet2",
 			"name":"Derelict fleet (large)",
-			"difficulty":"Easy",
+			"difficulty":"Normal",
 			"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
 			"className":"exerelin.campaign.customstart.DerelictFleet2",
 		},

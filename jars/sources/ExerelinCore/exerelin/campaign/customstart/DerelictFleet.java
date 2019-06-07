@@ -61,6 +61,7 @@ public class DerelictFleet extends CustomStart {
 	protected void addDerelicts() {
 		FactionAPI faction = Global.getSector().getFaction(Factions.DERELICT);
 		ships.add(getShip(faction, ShipRoles.COMBAT_MEDIUM));
+		//ships.add(getShip(faction, ShipRoles.COMBAT_MEDIUM));
 		ships.add(getShip(faction, ShipRoles.COMBAT_SMALL));
 		ships.add(getShip(faction, ShipRoles.COMBAT_SMALL));
 	}
