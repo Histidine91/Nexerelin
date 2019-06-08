@@ -1615,6 +1615,14 @@ public class ExerelinProcGen {
 			marketSetup.addFactionBonuses(factionId);
 		}
 		
+		// over-industry warnings
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			int num = Misc.getNumIndustries(market), max = Misc.getMaxIndustries(market);
+			if (num > max) {
+				log.warn(market.getName() + " exceeding industry limit (" + num + "/" + max + ")");
+			}
+		}
+		
 		// end distribution of markets and stations
 	}
 	

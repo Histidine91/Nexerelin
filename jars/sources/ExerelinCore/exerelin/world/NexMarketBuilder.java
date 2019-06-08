@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -268,7 +269,16 @@ public class NexMarketBuilder
 		
 		return size;
 	}
-	
+
+	/**
+	 * Limiter for how many industries a market should have. 
+	 * Complements but does not replace the base game's max industry system.
+	 * One significant difference is that the market builder implementation
+	 * also includes a "null industry" being counted as a productive industry,
+	 * thereby lowering the number of industries on the market.
+	 * @param ent
+	 * @return
+	 */
 	public static int getMaxProductiveIndustries(ProcGenEntity ent)
 	{
 		int max = 4;
@@ -672,6 +682,8 @@ public class NexMarketBuilder
 					continue;
 				if (entity.numProductiveIndustries >= getMaxProductiveIndustries(entity))
 					continue;
+				if (Misc.getNumIndustries(entity.market) >= Misc.getMaxIndustries(entity.market))
+					continue;
 				
 				// already present?
 				if (entity.market.hasIndustry(seed.industryId))
@@ -761,7 +773,8 @@ public class NexMarketBuilder
 		WeightedRandomPicker<IndustryClassGen> picker = new WeightedRandomPicker<>();
 		// add as many industries as we're allowed to
 		int tries = 0;
-		while (entity.numProductiveIndustries < max)
+		while (Misc.getNumIndustries(entity.market) < Misc.getMaxIndustries(entity.market)
+				&& entity.numProductiveIndustries < max)
 		{
 			tries++;
 			if (tries > 50) break;
