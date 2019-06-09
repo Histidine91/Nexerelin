@@ -85,7 +85,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
-	public static final float PIRATE_RAGE_INCREMENT = 0.25f;
+	public static final float PIRATE_RAGE_INCREMENT = 0.04f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -376,6 +376,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		MarketAPI originMarket = sourcePicker.pick();
 		return originMarket;
+	}
+	
+	// TODO
+	protected boolean areTooManyOngoing(MarketAPI market) {
+		return false;
 	}
 	
 	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
@@ -761,7 +766,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (market.getFaction().isPlayerFaction()) continue;
 			
 			String factionId = market.getFactionId();
-			if (Factions.INDEPENDENT.equals(factionId)) continue;
+			if (Factions.INDEPENDENT.equals(factionId) || Factions.DERELICT.equals(factionId)) continue;
+			if (!market.getFaction().isHostileTo(Factions.PIRATES))
+				continue;
 			
 			//if (!pirateInvasions && !ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
 			//	continue;
@@ -946,7 +953,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 		processInvasionPoints();
 		processTemplarInvasionPoints();
-		//processPirateRage();
+		processPirateRage();
 	}
 	
 	public static void debugRemnantRaidFleet() {
