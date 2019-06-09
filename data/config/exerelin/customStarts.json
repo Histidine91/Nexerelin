@@ -32,5 +32,14 @@
 			"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
 			"className":"exerelin.campaign.customstart.DerelictFleet2",
 		},
+		{
+			"id":"cabalPirateStart",
+			"name":"Cabal friends",
+			"difficulty":"Normal",
+			"desc":"You have a certain... friend with benefits in the Starlight Cabal. As a result of this connection, you gained access to better armaments than are available to the more common strain of pirates in the Sector.",
+			"className":"exerelin.campaign.customstart.CabalPirateStart",
+			"factionId":"pirates",	# for display purposes only, actual starting faction is set in script
+			"requiredModId":"underworld",
+		},
 	],
 }
