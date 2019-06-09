@@ -3,6 +3,7 @@ package exerelin.campaign.intel;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
 import com.fs.starfarer.api.util.Pair;
@@ -14,10 +15,13 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 public class ConquestMissionManager extends BaseEventManager {
 
 	public static final String KEY = "nex_ConquestMissionManager";
+	public static final int MIN_PLAYER_LEVEL = 25;
+	public static Logger log = Global.getLogger(ConquestMissionManager.class);
 	
 	public static ConquestMissionManager getInstance() {
 		Object test = Global.getSector().getPersistentData().get(KEY);
@@ -33,27 +37,53 @@ public class ConquestMissionManager extends BaseEventManager {
 	protected int getMinConcurrent() {
 		return 0;
 	}
+	
 	@Override
 	protected int getMaxConcurrent() {
-		return Math.max(getNumWars()/2, 1);
+		/*
+		int numWars = getNumWars();
+		log.info("Number of ongoing wars: " + numWars);
+		int max = numWars/2;
+		if (max < 1) max = 1;
+		else if (max > 3) max = 3;
+		return max;
+		*/
+		return 2;
+	}
+
+	@Override
+	protected float getIntervalRateMult() {
+		return 0.05f;
 	}
 
 	@Override
 	protected EveryFrameScript createEvent() {
+		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
+			return null;
+		
+		log.info("Attempting to create conquest mission event");
 		if ((float) Math.random() < 0.75f) return null;
 		
 		FactionAPI faction = pickSourceFaction();
-		if (faction == null) return null;
+		if (faction == null) {
+			log.info("Failed to pick source faction");
+			return null;
+		}
 		
 		MarketAPI target = InvasionFleetManager.getManager().getTargetMarketForFleet(
 				faction, null, null, Global.getSector().getEconomy().getMarketsCopy());
-		if (target == null) return null;
+		if (target == null) {
+			log.info("Failed to pick target market");
+			return null;
+		}
 		
 		float duration = 45 + target.getSize() * 10;
 		
 		ConquestMissionIntel intel = new ConquestMissionIntel(target, faction, duration);
+		intel.init();
 		if (intel.isDone()) intel = null;
-
+		
+		log.info("Intel successfully created");
 		return intel;
 	}
 	
@@ -68,6 +98,10 @@ public class ConquestMissionManager extends BaseEventManager {
 		}
 		numWars = numWars/2;	// since the preceding loop counts both ends
 		return numWars;
+	}
+	
+	public void cleanup() {
+		active.clear();
 	}
 	
 	protected FactionAPI pickSourceFaction() {

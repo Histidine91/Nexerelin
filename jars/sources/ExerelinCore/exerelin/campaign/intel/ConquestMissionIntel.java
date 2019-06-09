@@ -42,6 +42,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	//protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
 	public ConquestMissionIntel(MarketAPI market, FactionAPI faction, float duration) {
+		Global.getLogger(this.getClass()).info("Instantiating conquest mission");
 		this.market = market;
 		this.faction = faction;
 		this.duration = duration;
@@ -49,10 +50,11 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	}
 	
 	public void init() {
+		Global.getLogger(this.getClass()).info("Initiating conquest mission");
 		Global.getSector().addScript(this);
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
-		Global.getSector().getIntelManager().queueIntel(this);
+		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().getListenerManager().addListener(this);
 	}
 
@@ -298,6 +300,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		String marketName = market.getName();
 		str = StringHelper.substituteFactionTokens(str, faction);
 		str = StringHelper.substituteToken(str, "$market", marketName);
+		str = StringHelper.substituteToken(str, "$location", market.getContainingLocation().getNameWithLowercaseType());
 		str = StringHelper.substituteToken(str, "$theOtherFaction", targetFaction.getDisplayNameWithArticle(), true);
 		
 		LabelAPI label = info.addPara(str, opad, tc);
