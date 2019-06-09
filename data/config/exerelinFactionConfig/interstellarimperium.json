@@ -30,7 +30,8 @@
         "militarist":1,
     },
     
-    "createsColonies":true,
+    # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
+    "colonyExpeditionChance":1.25,	# pax romana
         
     "startShipsSolo":[["ii_decurion_sta"]],
     "startShipsCombatSmall":[["ii_praetorian_sta", "ii_wolf_i_cs", "ii_invictus_sta"]],

@@ -92,7 +92,7 @@ public class ColonyTargetValuator {
 	
 	public boolean prefilterSystem(StarSystemAPI system, FactionAPI faction) {
 		if (system.hasPulsar()) return false;
-		if (system.isNebula()) return false;
+		//if (system.isNebula()) return false;
 		
 		if (!ExerelinUtilsAstro.isCoreSystem(system)) {
 			// don't colonize a system with an existing market, unless it's a player market 

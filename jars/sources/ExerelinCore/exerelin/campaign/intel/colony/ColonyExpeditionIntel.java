@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.intel.punitive.PEAvertInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
@@ -27,6 +28,8 @@ import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -50,6 +53,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
 public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDelegate {
@@ -58,6 +62,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	public static final float INVADE_STRENGTH = 300;
 	public static final float QUEUE_JUMP_REP_PENALTY = 0.15f;
 	public static final float QUEUE_JUMP_REP_PENALTY_EARLY = 0.05f;
+	public static final String BUTTON_AVERT = "BUTTON_CHANGE_ORDERS";
 	
 	public static Logger log = Global.getLogger(ColonyExpeditionIntel.class);
 	
@@ -159,6 +164,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		sub.put("$theFaction", attackerName);
 		sub.put("$TheFaction", Misc.ucFirst(attackerName));
 		sub.put("$market", planet.getName());
+		sub.put("$aOrAn", planet.getSpec().getAOrAn());
 		sub.put("$planetType", planetType);
 		sub.put("$isOrAre", attacker.getDisplayNameIsOrAre());
 		sub.put("$location", locationName);
@@ -170,7 +176,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		LabelAPI label = info.addPara(string, opad);
 		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), planet.getName(),
 				planetType, strDesc, numFleets + "");
-		label.setHighlightColors(attacker.getBaseUIColor(), h, planet.getSpec().getPlanetColor(), h, h);
+		label.setHighlightColors(attacker.getBaseUIColor(), h, planet.getSpec().getIconColor(), h, h);
 		
 		if (getTarget().isInEconomy() && getTarget().getFaction() != attacker) {
 			string = getString("intelDescAlreadyHeld");
@@ -220,10 +226,26 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			return;
 		}
 		
-		
 		for (RaidStage stage : stages) {
 			stage.showStageInfo(info);
 			if (getStageIndex(stage) == failStage) break;
+		}
+		
+		/*
+		if (getCurrentStage() == 0 && !isFailed()) {
+			FactionAPI pf = Global.getSector().getPlayerFaction();
+			ButtonAPI button = info.addButton("Avert", BUTTON_AVERT, 
+				  	pf.getBaseUIColor(), pf.getDarkUIColor(),
+				  (int)(width), 20f, opad * 2f);
+			button.setShortcut(Keyboard.KEY_T, true);
+		}
+		*/
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_AVERT) {
+			//ui.showDialog(null, new PEAvertInteractionDialogPluginImpl(this, ui));
 		}
 	}
 	
@@ -477,5 +499,5 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	}
 	
 	public enum ColonyOutcome { SUCCESS, FAIL, QUEUE_JUMPED, 
-			QUEUE_JUMPED_EARLY, INVADE_SUCCESS, INVADE_FAILED }
+			QUEUE_JUMPED_EARLY, INVADE_SUCCESS, INVADE_FAILED, AVERTED }
 }

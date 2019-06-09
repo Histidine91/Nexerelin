@@ -23,6 +23,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -377,7 +378,10 @@ public class NexMarketBuilder
 		}
 		
 		int sizeForPatrol = 5;
-		if (isMoon || isStation) sizeForPatrol = 4;
+		if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+			sizeForPatrol = 3;
+		else if (isMoon || isStation) 
+			sizeForPatrol = 4;
 		
 		// add patrol HQ if needed
 		if (!haveBase && marketSize >= sizeForPatrol)

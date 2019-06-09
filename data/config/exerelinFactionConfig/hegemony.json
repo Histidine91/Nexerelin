@@ -15,7 +15,8 @@
         "ideological":0.5,
     },
     
-    "createsColonies":true,
+    # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
+    "colonyExpeditionChance":1,	# baseline expansion behaviour
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
     "startShipsSolo":[["lasher_Starting"]],

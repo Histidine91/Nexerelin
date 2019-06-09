@@ -19,7 +19,8 @@
         "ideological":1,
     },
     
-    "createsColonies":true,
+    # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
+    "colonyExpeditionChance":1.5,	# be fruitful and multiply
     "colonyTargetValuator":"exerelin.campaign.colony.LuddicColonyTargetValuator",
         
     "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],

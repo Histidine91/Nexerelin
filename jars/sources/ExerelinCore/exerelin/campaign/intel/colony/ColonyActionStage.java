@@ -44,7 +44,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 	protected boolean playerTargeted = false;
 	protected List<MilitaryResponseScript> scripts = new ArrayList<MilitaryResponseScript>();
 	protected boolean gaveOrders = true; // will be set to false in updateRoutes()
-	protected float untilAutoresolve = 10f;
+	protected float untilAutoresolve = 5f;
 	
 	ColonyExpeditionIntel colonyFleetIntel;
 	
@@ -53,7 +53,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		colonyFleetIntel = colFleet;
 		playerTargeted = getTarget().isPlayerOwned();
 		
-		untilAutoresolve = 10f + 3f * (float) Math.random();
+		untilAutoresolve = 5f;
 	}
 	
 	public MarketAPI getTarget() {
@@ -134,13 +134,14 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 				colonyFleetIntel.setOutcome(OffensiveOutcome.FAIL);
 				colonyFleetIntel.setColonyOutcome(ColonyOutcome.QUEUE_JUMPED);
 				status = RaidStageStatus.FAILURE;
-			} else {	// mark fleets as hostile
+			} else {	// mark fleets as hostile and extend autoresolve time
 				List<RouteData> routes = getRoutes();
 				for (RouteData route : routes)
 				{
 					if (route.getActiveFleet() != null)
 						route.getActiveFleet().getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
 				}
+				untilAutoresolve += 5f + 3f * (float) Math.random();
 			}
 		}
 	}
@@ -272,28 +273,29 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			colonyFleetIntel.setColonyOutcome(ColonyOutcome.QUEUE_JUMPED);
 		}
 		
-		float str = WarSimScript.getFactionStrength(intel.getFaction(), getTarget().getStarSystem());
-		float enemyStr = WarSimScript.getFactionStrength(getTarget().getFaction(), getTarget().getStarSystem());
-		
-		float defensiveStr = enemyStr + WarSimScript.getStationStrength(getTarget().getFaction(), 
-							 getTarget().getStarSystem(), getTarget().getPrimaryEntity());
-		
-		if (defensiveStr >= str) {
-			status = RaidStageStatus.FAILURE;
-			removeMilScripts();
-			giveReturnOrdersToStragglers(getRoutes());
-			
-			colonyFleetIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
-			colonyFleetIntel.setColonyOutcome(ColonyOutcome.INVADE_FAILED);
-			return;
+		if (colonyFleetIntel.hostileMode) {
+			float str = WarSimScript.getFactionStrength(intel.getFaction(), getTarget().getStarSystem());
+			float enemyStr = WarSimScript.getFactionStrength(getTarget().getFaction(), getTarget().getStarSystem());
+
+			float defensiveStr = enemyStr + WarSimScript.getStationStrength(getTarget().getFaction(), 
+								 getTarget().getStarSystem(), getTarget().getPrimaryEntity());
+
+			if (defensiveStr >= str) {
+				status = RaidStageStatus.FAILURE;
+				removeMilScripts();
+				giveReturnOrdersToStragglers(getRoutes());
+
+				colonyFleetIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+				colonyFleetIntel.setColonyOutcome(ColonyOutcome.INVADE_FAILED);
+				return;
+			}
+
+			Industry station = Misc.getStationIndustry(getTarget());
+			if (station != null) {
+				OrbitalStation.disrupt(station);
+			}
 		}
 		
-		Industry station = Misc.getStationIndustry(getTarget());
-		if (station != null) {
-			OrbitalStation.disrupt(station);
-		}
-		
-		// only first fleet performs colonization
 		List<RouteData> routes = getRoutes();
 		for (RouteData route : routes)
 		{

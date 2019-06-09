@@ -10,7 +10,7 @@
         "corporate":0.5,
     },
         
-    "createsColonies":true,
+    "colonyExpeditionChance":1,
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
     "startShipsSolo":[["mi_farin_standard"]],

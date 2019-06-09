@@ -64,6 +64,7 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -1236,7 +1237,9 @@ public class Nex_MarketCMD extends MarketCMD {
 
 		if (nonHostile.isEmpty()) {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
-		} else if (market.getSize() <= 3) {
+		} 
+		else if (market.getSize() <= 3 || market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+		{
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningSmall", "$market", market.getName()));
 		} else {

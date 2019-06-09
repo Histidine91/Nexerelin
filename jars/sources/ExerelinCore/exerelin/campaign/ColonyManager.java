@@ -37,7 +37,6 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
@@ -46,7 +45,6 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,7 +72,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
 	));
 	public static final int MAX_STATION_SIZE = 6;
-	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 209;
+	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 207;
+	public static final int MIN_CYCLE_FOR_EXPEDITIONS = 207;
+	public static final float MAX_EXPEDITION_FP = 300;
 	
 	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
 		0, 10, 25, 50, 80, 120
@@ -328,9 +328,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected String pickFactionToColonize() {
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-			if (!ExerelinConfig.getExerelinFactionConfig(factionId).createsColonies)
+			float chance = ExerelinConfig.getExerelinFactionConfig(factionId).colonyExpeditionChance;
+			if (chance <= 0)
 				continue;
-			picker.add(factionId);
+			picker.add(factionId, chance);
 		}
 		return picker.pick();
 	}
@@ -377,12 +378,19 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * @return
 	 */
 	public ColonyExpeditionIntel spawnColonyExpedition() {
+		log.info("Attempting to spawn colony expedition");
 		String factionId = pickFactionToColonize();
-		if (factionId == null) return null;
+		if (factionId == null) {
+			log.info("Failed to pick faction for expedition");
+			return null;
+		}
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
 		MarketAPI source = pickColonyExpeditionSource(factionId);
-		if (source == null) return null;
+		if (source == null) {
+			log.info("Failed to pick source market for expedition");
+			return null;
+		}
 		SectorEntityToken anchor;
 		if (source.getContainingLocation().isHyperspace()) anchor = source.getPrimaryEntity();
 		else anchor = source.getStarSystem().getHyperspaceAnchor();
@@ -412,8 +420,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			}
 		}
 		PlanetAPI target = planetPicker.pick();
-		if (target == null) return null;
-		float fp = 20 + 15 * numDeadExpeditions;
+		if (target == null) {
+			log.info("Failed to pick target for expedition");
+			return null;
+		}
+		float fp = 30 + 15 * numDeadExpeditions;
+		if (fp > MAX_EXPEDITION_FP) fp = MAX_EXPEDITION_FP;
 		float organizeTime = InvasionFleetManager.getOrganizeTime(fp + 30) + 30;
 		
 		ColonyExpeditionIntel intel = new ColonyExpeditionIntel(faction, source, target.getMarket(), fp, organizeTime);
@@ -444,10 +456,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void advance(float amount) {
+		if (Global.getSector().getClock().getCycle() < MIN_CYCLE_FOR_EXPEDITIONS)
+			return;
+		
 		float days = Global.getSector().getClock().convertToDays(amount);
 		colonyExpeditionProgress += days;
 		float interval = ExerelinConfig.colonyExpeditionInterval;
-		if (days > interval) {
+		if (colonyExpeditionProgress > interval) {
 			ColonyExpeditionIntel intel = spawnColonyExpedition();
 			if (intel != null) {
 				colonyExpeditionProgress = MathUtils.getRandomNumberInRange(-interval * 0.1f, interval * 0.1f);
@@ -456,6 +471,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				colonyExpeditionProgress -= 15;
 			}
 		}
+	}
+	
+	public float getColonyExpeditionProgress() {
+		return colonyExpeditionProgress;
 	}
 
 	@Override
@@ -546,7 +565,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		
 		// if the spaceport is gone we can guess that player strip-mined the market
-		boolean productive = (!market.hasIndustry(Industries.SPACEPORT) && !market.hasIndustry(Industries.MEGAPORT));
+		boolean productive = true;	//(!market.hasIndustry(Industries.SPACEPORT) && !market.hasIndustry(Industries.MEGAPORT));
 		boolean military = shouldBuildMilitary(market);
 		buildIndustries(market, military, productive);
 	}
@@ -580,6 +599,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	/**
 	 * Sets a person on the market's comm board to be admin, if appropriate.
 	 * @param market
+	 * @param oldOwner
+	 * @param newOwner
 	 */
 	public static void reassignAdminIfNeeded(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner) {
 		

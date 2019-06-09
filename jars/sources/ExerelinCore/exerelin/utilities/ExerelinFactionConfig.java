@@ -133,7 +133,7 @@ public class ExerelinFactionConfig
     public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
     
     // colonies
-    public boolean createsColonies = false;
+    public float colonyExpeditionChance = 0;
     public String colonyTargetValuator = "exerelin.campaign.colony.ColonyTargetValuator";
     public float maxColonyDistance = 18;
     
@@ -229,7 +229,7 @@ public class ExerelinFactionConfig
             difficultyString = settings.optString("difficultyString", difficultyString);
             
             // colonies
-            createsColonies = settings.optBoolean("createsColonies", createsColonies);
+            colonyExpeditionChance = (float)settings.optDouble("colonyExpeditionChance", colonyExpeditionChance);
             colonyTargetValuator = settings.optString("colonyTargetValuator", colonyTargetValuator);
             maxColonyDistance = (float)settings.optDouble("maxColonyDistance", maxColonyDistance);
             

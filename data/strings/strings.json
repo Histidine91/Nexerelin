@@ -431,7 +431,7 @@
 		"raidName":"expedition",
 		"raidNamePossessive":"expedition's",
 		
-		"intelDesc":"$TheFaction $isOrAre sending an expedition to colonize $market, a $planetType in the $location. The flotilla is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr.",
+		"intelDesc":"$TheFaction $isOrAre sending an expedition to colonize $market, $aOrAn $planetType in the $location. The flotilla is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr.",
 		"intelDescAlreadyHeld":"$market is currently held by $theOtherFaction.",
 		"intelBulletArrivedHostile":"Seizing $market by force",
 		"intelStageAction":"The colony expedition is currently in-system.",
