@@ -123,7 +123,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	protected boolean wasCivilized(MarketAPI market, Map<String, MemoryAPI> memoryMap) {
 		if (memoryMap.get(MemKeys.MARKET).getBoolean("$wasCivilized"))
 			return true;
-		if (market.getStarSystem() != null && !ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
+		if (market.getStarSystem() != null && ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
 			return true;
 		
 		return false;

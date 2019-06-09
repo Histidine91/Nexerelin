@@ -109,8 +109,8 @@ public class TributeIntel extends BaseIntelPlugin {
 		
 		String str = StringHelper.getStringAndSubstituteTokens("nex_tribute", "intel_desc1", replace);
 		LabelAPI label = info.addPara(str, opad);
-		label.setHighlight(market.getName(), factionName);
-		label.setHighlightColors(h, faction.getBaseUIColor());
+		label.setHighlight(factionName, market.getName());
+		label.setHighlightColors(faction.getBaseUIColor(), h);
 		
 		// second description para
 		replace.clear();

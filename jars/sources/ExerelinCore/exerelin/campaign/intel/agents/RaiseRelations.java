@@ -81,7 +81,7 @@ public class RaiseRelations extends CovertActionIntel {
 	@Override
 	public void addImages(TooltipMakerAPI info, float width, float pad) {
 		String crest1 = isAgentFactionKnown() ? agentFaction.getCrest() : 
-				Global.getSector().getFaction(Factions.INDEPENDENT).getCrest();
+				Global.getSector().getFaction(Factions.NEUTRAL).getCrest();
 		if (agentFaction != thirdFaction) {
 			info.addImages(width, 96, pad, pad, crest1, targetFaction.getCrest(), thirdFaction.getCrest());
 		} else {
