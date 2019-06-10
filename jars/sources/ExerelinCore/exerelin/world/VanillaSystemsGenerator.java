@@ -41,6 +41,7 @@ import data.scripts.world.systems.Westernesse;
 import data.scripts.world.systems.Yma;
 import data.scripts.world.systems.Zagan;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.ExerelinConfig;
 
 public class VanillaSystemsGenerator {
 	public static void generate(SectorAPI sector)
@@ -157,6 +158,8 @@ public class VanillaSystemsGenerator {
 		// forget why this is necessary - workaround for some JANINO issue, I think
 		//Class c = HeavyArmor.class;
 		
+		boolean enhancedRelations = ExerelinConfig.useEnhancedStartRelations;
+		
 		FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
 		FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
 		FactionAPI pirates = sector.getFaction(Factions.PIRATES);
@@ -179,7 +182,10 @@ public class VanillaSystemsGenerator {
 		player.setRelationship(independent.getId(), 0);
 		player.setRelationship(kol.getId(), 0);
 		player.setRelationship(church.getId(), 0);
-		player.setRelationship(path.getId(), RepLevel.HOSTILE);
+		if (enhancedRelations)
+			player.setRelationship(path.getId(), -0.65f);
+		else
+			player.setRelationship(path.getId(), RepLevel.HOSTILE);
 		
 
 		// replaced by hostilities set in CoreLifecyclePluginImpl
@@ -209,12 +215,16 @@ public class VanillaSystemsGenerator {
 		path.setRelationship(hegemony.getId(), RepLevel.HOSTILE);
 		path.setRelationship(diktat.getId(), RepLevel.HOSTILE);
 		path.setRelationship(persean.getId(), RepLevel.HOSTILE);
-		path.setRelationship(church.getId(), RepLevel.COOPERATIVE);
+		if (!enhancedRelations)
+			path.setRelationship(church.getId(), RepLevel.COOPERATIVE);
 		
 		persean.setRelationship(tritachyon.getId(), RepLevel.SUSPICIOUS);
 		persean.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		persean.setRelationship(path.getId(), RepLevel.HOSTILE);
-		persean.setRelationship(diktat.getId(), RepLevel.COOPERATIVE);
+		if (enhancedRelations)
+			persean.setRelationship(diktat.getId(), RepLevel.WELCOMING);
+		else
+			persean.setRelationship(diktat.getId(), RepLevel.COOPERATIVE);
 		
 		player.setRelationship(remnant.getId(), RepLevel.HOSTILE);
 		independent.setRelationship(remnant.getId(), RepLevel.HOSTILE);

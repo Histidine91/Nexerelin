@@ -128,6 +128,7 @@ public class ExerelinConfig
     @Deprecated
     public static boolean ownFactionCustomsInspections = false;
     public static boolean useRelationshipBounds = true;
+    public static boolean useEnhancedStartRelations = true;
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     
@@ -224,6 +225,7 @@ public class ExerelinConfig
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
+            useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
             
             useCustomBattleCreationPlugin = settings.optBoolean("useCustomBattleCreationPlugin", useCustomBattleCreationPlugin);
             officerDeaths = settings.optBoolean("officerDeaths", officerDeaths);
