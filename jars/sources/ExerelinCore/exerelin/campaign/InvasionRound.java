@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -373,7 +374,7 @@ public class InvasionRound {
 		float repChangeStrength = (market.getSize() - 2) * 0.01f;
 		if (repChangeStrength <= 0) repChangeStrength = 0;
 		
-		if (playerInvolved) {
+		if (playerInvolved && !defenderFaction.getId().equals(Factions.DERELICT)) {
 			for (final MarketAPI otherMarket : markets) {
 				if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
 				//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide

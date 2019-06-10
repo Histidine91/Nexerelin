@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -32,6 +33,9 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 	public static final String SELECT_FACTION_PREFIX = "nex_transferMarket_";
 	public static final int PREFIX_LENGTH = SELECT_FACTION_PREFIX.length();
 	public static final int VALUE_DIVISOR = 20000;
+	public static final List<String> NO_TRANSFER_FACTIONS = Arrays.asList(new String[]{
+		Factions.PLAYER, Factions.DERELICT
+	});
 		
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
@@ -156,8 +160,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(
-					Nex_FactionDirectory.ARRAYLIST_PLAYERFACTION, true);
+			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(NO_TRANSFER_FACTIONS, true);
 			groups = Nex_FactionDirectoryHelper.getFactionGroupings(factionsForDirectory);
 			memory.set(FACTION_GROUPS_KEY, groups, GROUPS_CACHE_TIME);
 		}

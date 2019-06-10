@@ -655,6 +655,7 @@ ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseComm
 ExerelinPlayerFactionDiplomacyCheckConditions,ExerelinMarketSpecialInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
 $faction.id != ""player""
+$faction.id != ""derelict""
 $faction.id != $player.factionId
 Nex_IsFactionRuler","$showPlayerFactionDiplomacyOptions = true 0
 $_factionAllianceName = $faction.allianceName 0
