@@ -44,10 +44,10 @@ public class LightIndustry extends IndustryClassGen {
 		
 		// prefer to not be on same planet as heavy industry
 		if (HeavyIndustry.hasHeavyIndustry(market))
-			weight -= 300;
+			weight -= 100;
 		// nor fuel production
 		if (market.hasIndustry(Industries.FUELPROD))
-			weight -= 250;
+			weight -= 75;
 		
 		// hax so this isn't the default choice for little stations
 		if (entity.type == EntityType.STATION && StarSystemGenerator.random.nextBoolean())

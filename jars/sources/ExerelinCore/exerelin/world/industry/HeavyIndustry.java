@@ -23,6 +23,11 @@ public class HeavyIndustry extends IndustryClassGen {
 	public float getWeight(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		
+		// upgrades have max priority
+		if (market.hasIndustry(Industries.HEAVYINDUSTRY) || market.hasIndustry("ms_modularFac")) {
+			return 9999 * market.getSize();
+		}
+		
 		float weight = (25 + market.getSize() * 5) * 2;
 				
 		// bad for high hazard worlds
@@ -30,10 +35,10 @@ public class HeavyIndustry extends IndustryClassGen {
 		
 		// prefer not to be on same planet as fuel production
 		if (market.hasIndustry(Industries.FUELPROD))
-			weight -= 400;
+			weight -= 200;
 		// or light industry
 		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
-			weight -= 250;
+			weight -= 100;
 		
 		return weight;
 	}
@@ -44,7 +49,7 @@ public class HeavyIndustry extends IndustryClassGen {
 		if (market.hasIndustry(Industries.ORBITALWORKS) || market.hasIndustry("ms_massIndustry"))
 			return false;
 		
-		return super.canApply(entity);
+		return true;
 	}
 	
 	@Override

@@ -45,10 +45,10 @@ public class FuelProduction extends IndustryClassGen {
 		
 		// prefer to not be on same planet as heavy industry
 		if (HeavyIndustry.hasHeavyIndustry(market))
-			weight -= 400;
+			weight -= 200;
 		// or light industry for that matter
 		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
-			weight -= 250;
+			weight -= 75;
 		
 		// hax so this isn't the default choice for little stations
 		if (entity.type == ExerelinProcGen.EntityType.STATION && StarSystemGenerator.random.nextBoolean())
