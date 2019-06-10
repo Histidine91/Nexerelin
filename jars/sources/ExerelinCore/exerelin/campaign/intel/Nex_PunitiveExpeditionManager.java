@@ -154,7 +154,8 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	}
 	
 	// create Nex version of the expedition intel
-	// TODO: demand tribute instead of territorial sat bomb
+	// demands tribute instead of territorial sat bomb
+	// also don't launch expeditions against hyperspace markets
 	@Override
 	public void createExpedition(PunExData curr, Integer fpOverride) {
 		JSONObject json = curr.faction.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA);
@@ -180,6 +181,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		//WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (!market.isPlayerOwned()) continue;
+			if (market.getContainingLocation().isHyperspace()) continue;
 			
 			float weight = 0f;
 			if (reason.type == PunExType.ANTI_COMPETITION && reason.commodityId != null) {
