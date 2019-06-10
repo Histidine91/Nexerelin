@@ -169,7 +169,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         int numSurvivors = 0;
         int fp = 0;
-        int crew = 0;
+        float crewRaw = 0;
         int prisoners = 0;
         float contrib = plugin.computePlayerContribFraction();
         List<FleetMemberData> casualties = plugin.getLoserData().getOwnCasualties();
@@ -177,7 +177,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             Status status = member.getStatus();
             if (status == Status.DESTROYED || status == Status.NORMAL) continue;
             fp += member.getMember().getFleetPointCost();
-            crew += member.getMember().getMinCrew();
+            crewRaw += member.getMember().getMinCrew();
             //log.info("Enemy lost: " + member.getMember().getVariant().getFullDesignationWithHullName());
             
             // officers as prisoners
@@ -204,12 +204,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         loot.addCommodity("prisoner", prisoners);
         numSurvivors += prisoners;
         
-        crew = (int)(crew*ExerelinConfig.crewLootMult*MathUtils.getRandomNumberInRange(0.5f, 1.5f));
-        crew += MathUtils.getRandomNumberInRange(-3, 3);
-        crew = (int)(crew * contrib);
-        if (crew > 0) {
-            loot.addCrew(crew);
-            numSurvivors += crew;
+        if (ExerelinConfig.crewLootMult > 0) {
+            crewRaw = crewRaw*MathUtils.getRandomNumberInRange(0.5f, 1.5f) * ExerelinConfig.crewLootMult;
+            crewRaw += MathUtils.getRandomNumberInRange(-3, 3);
+            crewRaw = crewRaw * contrib;
+            int crew = (int)(crewRaw);
+            if (crewRaw > 0) {
+                loot.addCrew(crew);
+                numSurvivors += crew;
+            }
         }
         
         StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(-numSurvivors, loserFactionId);
