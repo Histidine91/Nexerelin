@@ -485,6 +485,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		//log.info("\tTarget: " + targetMarket.getName());
 		
+		// always invade rather than raid derelicts
+		if (targetMarket.getFactionId().equals(Factions.DERELICT) && type == EventType.RAID)
+			type = EventType.INVASION;
+		
 		return generateInvasionOrRaidFleet(originMarket, targetMarket, type, sizeMult);
 	}
 	
@@ -878,7 +882,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				float weight = 20000.0F / dist;
 				
 				// rescue our friends
-				weight *= 1 + HegemonyInspectionManager.getAICoreUseValue(market)/5;
+				if (faction.getId().equals(Factions.REMNANTS)) {
+					weight *= 1 + HegemonyInspectionManager.getAICoreUseValue(market)/5;
+					if (market.hasCondition(Conditions.ROGUE_AI_CORE)) weight *= 3;
+				}
 				
 				// hard mode
 				if (SectorManager.getHardMode())
