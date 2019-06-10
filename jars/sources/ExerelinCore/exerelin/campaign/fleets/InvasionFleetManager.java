@@ -75,6 +75,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	// pirates get this multiplier bonus to their invasion point growth the more enemies they have
 	public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.215f;
 	public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
+	public static final int MAX_SIMULTANEOUS_EVENTS_PER_SYSTEM = 3;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
 	public static final float PATROL_ESTIMATION_MULT = 0.75f;
@@ -85,7 +86,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
-	public static final float PIRATE_RAGE_INCREMENT = 0.04f;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -764,6 +764,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 */
 	protected void processPirateRage() {
 		//boolean pirateInvasions = ExerelinConfig.allowPirateInvasions;
+		float rageIncrement = Global.getSettings().getFloat("nex_pirateRageIncrement");
+		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (!market.hasCondition(Conditions.PIRATE_ACTIVITY))
 				continue;
@@ -782,7 +784,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			float rage = plugin.getIntel().getStabilityPenalty();
 			if (rage > 0) {
-				rage *= PIRATE_RAGE_INCREMENT;
+				rage *= rageIncrement;
 				float newVal = ExerelinUtils.modifyMapEntry(pirateRage, factionId, rage);
 				//log.info("Incrementing " + rage + " rage from market " + market.getName() + 
 				//		" of faction " + market.getFaction().getDisplayName() + ", now " + newVal);

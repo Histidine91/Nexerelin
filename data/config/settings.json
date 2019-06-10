@@ -12,6 +12,9 @@
 	
 	"economyExceptionOnMissingMarketEntity":false,
 	
+	"nex_conquestMissionIntervalRateMult":0.05,
+	"nex_pirateRageIncrement":0.04,
+	
 	"nex_colonyConditionValues":{
 		"ore_sparse":1,
 		"ore_moderate":2.5,

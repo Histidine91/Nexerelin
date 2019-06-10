@@ -53,7 +53,7 @@ public class ConquestMissionManager extends BaseEventManager {
 
 	@Override
 	protected float getIntervalRateMult() {
-		return 0.05f;
+		return Global.getSettings().getFloat("nex_conquestMissionIntervalRateMult");
 	}
 
 	@Override
