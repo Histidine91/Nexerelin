@@ -4,6 +4,8 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.world.ExerelinProcGen;
@@ -265,5 +267,19 @@ public class ExerelinUtilsAstro {
 	
 	public static boolean isCoreSystem(StarSystemAPI system) {
 		return !system.isProcgen() || system.hasTag(ExerelinProcGen.RANDOM_CORE_SYSTEM_TAG);
+	}
+	
+	/**
+	 * Does this star system have a comm relay, or a stable location to put one?
+	 * @param system
+	 * @return
+	 */
+	public static boolean canHaveCommRelay(StarSystemAPI system) {
+		for (SectorEntityToken objective : system.getEntitiesWithTag(Tags.OBJECTIVE))
+		{
+			if (objective.hasTag(Tags.COMM_RELAY) || objective.hasTag(Tags.STABLE_LOCATION))
+				return true;
+		}
+		return false;
 	}
 }

@@ -47,6 +47,9 @@
 		"habitable":20,
 		"mild_climate":20,
 		
+		"US_artificial":10,
+		"US_religious":10,
+		"US_elevator":10,
 	},
 	
 	"graphics":{

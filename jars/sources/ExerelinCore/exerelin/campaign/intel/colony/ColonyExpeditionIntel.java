@@ -20,15 +20,12 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.intel.punitive.PEAvertInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
-import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -53,13 +50,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
 public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public static final String MEMORY_KEY_COLONY = "$nex_npcColony";
-	public static final float INVADE_STRENGTH = 300;
+	public static final float INVADE_STRENGTH = 200;
 	public static final float QUEUE_JUMP_REP_PENALTY = 0.15f;
 	public static final float QUEUE_JUMP_REP_PENALTY_EARLY = 0.05f;
 	public static final String BUTTON_AVERT = "BUTTON_CHANGE_ORDERS";

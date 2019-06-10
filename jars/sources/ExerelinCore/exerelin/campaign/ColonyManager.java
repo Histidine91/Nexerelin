@@ -274,6 +274,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			else {
 				// new build
 				if (item.type == QueueType.NEW) {
+					// check industry limit; if we're over it, remove from queue
+					Industry temp = market.instantiateIndustry(item.industry);
+					if (temp.isIndustry() && Misc.getNumIndustries(market) >= Misc.getMaxIndustries(market)) 
+					{
+						removeItemFromQueue(item, queue);
+						continue;
+					}
+					
 					market.addIndustry(item.industry);
 					market.getIndustry(item.industry).startBuilding();
 					removeItemFromQueue(item, queue);

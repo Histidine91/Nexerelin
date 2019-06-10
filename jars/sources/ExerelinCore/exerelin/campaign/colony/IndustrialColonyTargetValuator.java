@@ -11,7 +11,7 @@ public class IndustrialColonyTargetValuator extends ColonyTargetValuator {
 		
 		if (conditionId.contains("farmland_") || conditionId.equals(Conditions.WATER_SURFACE))
 			value *= 0.75f;
-		if (conditionId.startsWith("ore_") || conditionId.startsWith("rare_ore_"))
+		else if (conditionId.startsWith("ore_") || conditionId.startsWith("rare_ore_"))
 			value *= 1.5f;
 		
 		return value;

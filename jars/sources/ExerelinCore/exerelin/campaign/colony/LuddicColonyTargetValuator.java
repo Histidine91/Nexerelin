@@ -11,7 +11,9 @@ public class LuddicColonyTargetValuator extends ColonyTargetValuator {
 		
 		if (conditionId.contains("farmland_") || conditionId.equals(Conditions.WATER_SURFACE))
 			value *= 1.5f;
-		if (conditionId.startsWith("ore_") || conditionId.startsWith("rare_ore_"))
+		else if (conditionId.equals("US_religious"))
+			value *= 2f;
+		else if (conditionId.startsWith("ore_") || conditionId.startsWith("rare_ore_"))
 			value *= 0.75f;
 		
 		return value;

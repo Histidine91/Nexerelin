@@ -73,6 +73,9 @@ public class ColonyTargetValuator {
 		else if (market.hasCondition(Conditions.LOW_GRAVITY))
 			score *= 1.1f;
 		
+		if (faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+			score += 10;
+		
 		float hazard = market.getHazardValue() * getHazardDivisorMult(faction);
 		if (hazard < 0.1) hazard = 0.1f;
 		
@@ -95,11 +98,13 @@ public class ColonyTargetValuator {
 		//if (system.isNebula()) return false;
 		
 		if (!ExerelinUtilsAstro.isCoreSystem(system)) {
-			// don't colonize a system with an existing market, unless it's a player market 
-			// and player is commissioned with that faction
+			// don't colonize a system with an existing market unless it's ours
+			// also used to be "unless it's a player market and player is commissioned with that faction"
+			// but meh, doesn't sound worthwhile
 			for (MarketAPI existingMarket : Global.getSector().getEconomy().getMarkets(system)) {
 				//if (existingMarket.getFaction().isPlayerFaction() && faction == PlayerFactionStore.getPlayerFaction())
 				//	continue;
+				if (existingMarket.getFaction() == faction) continue;
 				return false;
 			}
 			// don't colonize systems with stations (this is to avoid Remnant stations etc.)
@@ -107,6 +112,8 @@ public class ColonyTargetValuator {
 				if (fleet.isStationMode()) return false;
 			}
 		}
+		if (!ExerelinUtilsAstro.canHaveCommRelay(system))
+			return false;
 		
 		return true;
 	}
