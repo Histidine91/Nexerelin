@@ -807,6 +807,7 @@
 
 		"transferMarketWarning":"Are you sure you wish to transfer $market to $theFaction?",
 		"transferMarketRep":"Transferring $market will earn $repChange reputation with the recipient faction.",
+		"transferMarketOriginalOwner":"$market was originally held by $theFaction, and will give $bonus the reputation if returned to them.",
 		"transferMarketFactorIndustry":"industry value",
 		"transferMarketFactorStability":"stability",
 		"transferMarketFactorSize":"market size",

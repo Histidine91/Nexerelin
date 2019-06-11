@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
@@ -33,6 +34,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 	public static final String SELECT_FACTION_PREFIX = "nex_transferMarket_";
 	public static final int PREFIX_LENGTH = SELECT_FACTION_PREFIX.length();
 	public static final int VALUE_DIVISOR = 20000;
+	public static final float ORIGINAL_OWNER_REP_MULT = 1.5f;
 	public static final List<String> NO_TRANSFER_FACTIONS = Arrays.asList(new String[]{
 		Factions.PLAYER, Factions.DERELICT
 	});
@@ -100,6 +102,19 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				info.addStatModGrid(350, 50, 10, 0, repChange, true, ExerelinUtils.getStatModValueGetter(true, 1));
 				text.addTooltip();
 				
+				String origOwnerId = ExerelinUtilsMarket.getOriginalOwner(market);
+				if (origOwnerId != null && !origOwnerId.equals(Factions.PLAYER)) {
+					FactionAPI origOwner = Global.getSector().getFaction(origOwnerId);
+					str = StringHelper.getString("exerelin_markets", "transferMarketOriginalOwner");
+					str = StringHelper.substituteToken(str, "$market", market.getName() + "");
+					str = StringHelper.substituteToken(str, "$theFaction", origOwner.getDisplayNameWithArticle());
+					String bonus = ORIGINAL_OWNER_REP_MULT + "×";
+					str = StringHelper.substituteToken(str, "$bonus", bonus);
+					LabelAPI para = text.addParagraph(str);
+					para.setHighlight(origOwner.getDisplayNameWithArticleWithoutArticle(), bonus);
+					para.setHighlightColors(origOwner.getBaseUIColor(), Misc.getHighlightColor());
+				}
+				
 				text.setFontInsignia();
 				return true;
 		}
@@ -133,7 +148,10 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		String oldFactionId = market.getFactionId();
 		FactionAPI newFaction = Global.getSector().getFaction(newFactionId);
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
+		
 		float repChange = getRepChange(market).getModifiedValue() * 0.01f;
+		if (newFactionId.equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+			repChange *= ORIGINAL_OWNER_REP_MULT;
 		
 		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, 
 				new ArrayList<>(Arrays.asList(newFactionId)), repChange);
