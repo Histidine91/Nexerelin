@@ -13,6 +13,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -181,6 +182,13 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 	protected void advanceImpl(float amount) {
 		if (this.isEnding() || this.isEnded())
 			return;
+		
+		if (!SectorManager.isFactionAlive(factionId)) {
+			state =-1;
+			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
+			endAfterDelay();
+			return;
+		}
 		
 		daysRemaining -= Global.getSector().getClock().convertToDays(amount);
 		
