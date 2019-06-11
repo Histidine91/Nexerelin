@@ -91,12 +91,14 @@ public class InvasionRound {
 		printDebug("\tFinal defender strength: " + result.defStr);
 		
 		// disruption
+		float bombardDisruptDur = Global.getSettings().getFloat("bombardDisruptDuration");
 		WeightedRandomPicker<Industry> industryPicker = new WeightedRandomPicker<>();
 		for (Industry curr : defender.getIndustries()) {
 			if (curr.canBeDisrupted() && !curr.getSpec().hasTag(Industries.TAG_UNRAIDABLE)) 
 			{
 				float currDisruption = curr.getDisruptedDays();
 				//industryPicker.add(curr, curr.getBuildCost());
+				float maxDisruption = Math.min(curr.getBuildTime() * 4, bombardDisruptDur);
 				if (currDisruption > curr.getBuildTime() * 4)
 					continue;
 				float weight = Math.max(100 - currDisruption, 20);
@@ -113,6 +115,7 @@ public class InvasionRound {
 			//if (dur > 5) {
 				dur += toDisrupt.getDisruptedDays();
 				dur = Math.min(dur, toDisrupt.getBuildTime() * 4);
+				dur = Math.min(dur, bombardDisruptDur);
 				toDisrupt.setDisrupted(dur);
 				result.disrupted = toDisrupt;
 				result.disruptionLength = dur;
