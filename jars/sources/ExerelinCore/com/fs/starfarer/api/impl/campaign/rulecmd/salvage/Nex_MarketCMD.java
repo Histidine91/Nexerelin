@@ -60,6 +60,7 @@ import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
@@ -1286,7 +1287,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardConfirmOptions();
 	}
 	
-	// Changes from vanilla: Custom rep handling for sat bomb; don't pollute habitable worlds
+	// Changes from vanilla: Custom rep handling for sat bomb; don't pollute habitable worlds; 
+	// saturation bombardment affects disposition
+	@Override
 	protected void bombardConfirm() {
 		
 		if (temp.bombardType == null) {
@@ -1312,19 +1315,23 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		playerFleet.getCargo().removeFuel(temp.bombardCost);
 		AddRemoveCommodity.addCommodityLossText(Commodities.FUEL, temp.bombardCost, text);
-	
+		
+		int size = market.getSize();
 		for (FactionAPI curr : temp.willBecomeHostile) {
 			CustomRepImpact impact = new CustomRepImpact();
 			impact.delta = market.getSize() * -0.01f * 1f;
 			impact.ensureAtBest = RepLevel.HOSTILE;
 			if (temp.bombardType == BombardType.SATURATION) {
+				impact.delta = market.getSize() * -0.02f * 1f;
 				if (curr == faction) {
 					impact.ensureAtBest = RepLevel.VENGEFUL;
+					impact.delta *= 2;
 				}
-				else if (market.getSize() <= 3) {
+				else if (size <= 3) {
 					impact.ensureAtBest = RepLevel.NEUTRAL;
 				}
-				impact.delta = market.getSize() * -0.02f * 1f;
+				DiplomacyManager.getManager().getDiplomacyBrain(curr.getId()).reportDiplomacyEvent(
+						PlayerFactionStore.getPlayerFactionId(), impact.delta);
 			}
 			Global.getSector().adjustPlayerReputation(
 				new RepActionEnvelope(RepActions.CUSTOM, 

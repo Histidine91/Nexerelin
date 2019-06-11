@@ -16,7 +16,9 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.econ.TributeCondition;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
@@ -196,6 +198,8 @@ public class TributeIntel extends BaseIntelPlugin {
 		if (size < 1) size = 1;
 		repResult = NexUtilsReputation.adjustPlayerReputation(getFactionForUIColors(), -REJECT_REP_PENALTY * size);
 		storedRelation = getFactionForUIColors().getRelationship(Factions.PLAYER);
+		DiplomacyManager.getManager().getDiplomacyBrain(factionId).reportDiplomacyEvent(
+				PlayerFactionStore.getPlayerFactionId(), -repResult.delta);
 		
 		status = TributeStatus.REJECTED;
 		endEvent();
