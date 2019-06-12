@@ -54,7 +54,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 				for (String factionId : factionsToNotify) {
 					float thisRep = repChange;
 					if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId))
-						repChange *= 0.5f;
+						thisRep *= 0.5f;
 
 					FactionAPI faction = Global.getSector().getFaction(factionId);
 					NexUtilsReputation.adjustPlayerReputation(faction, thisRep, null, text);
