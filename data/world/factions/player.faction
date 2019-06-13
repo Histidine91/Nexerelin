@@ -12,6 +12,10 @@
 	
 	"flags":[
 		{
+			"logo":"graphics/exerelin/factions/persean_league_old_flag.png",
+			"crest":"graphics/exerelin/factions/persean_league_old_crest.png"
+		},
+		{
 			"logo":"graphics/exerelin/factions/Arm_Flag.png",
 			"crest":"graphics/exerelin/factions/Arm_Crest.png"
 		},
