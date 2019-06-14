@@ -55,6 +55,7 @@ public class TributeIntel extends BaseIntelPlugin {
 	protected float daysRemaining = MathUtils.getRandomNumberInRange(14, 21);
 	protected ExerelinReputationAdjustmentResult repResult;
 	protected float storedRelation;
+	protected Long cancelTime;
 	
 	public TributeIntel(String factionId, MarketAPI market)
 	{
@@ -179,7 +180,8 @@ public class TributeIntel extends BaseIntelPlugin {
 						deltaColor, NexUtilsReputation.getRelColor(storedRelation));
 
 				// days ago
-				info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
+				//if (cancelTime != null) 
+				//	info.addPara(Misc.getAgoStringForTimestamp(cancelTime) + ".", opad);
 			}
 		}
 	}
@@ -208,6 +210,7 @@ public class TributeIntel extends BaseIntelPlugin {
 	public void cancel() {
 		status = TributeStatus.CANCELLED;
 		market.getMemoryWithoutUpdate().unset(REJECTION_FACTION_MEM_KEY);
+		cancelTime = Global.getSector().getClock().getTimestamp();
 		sendUpdateIfPlayerHasIntel(CANCELLED_UPDATE, false);
 		endEvent();
 	}

@@ -385,10 +385,10 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		return StringHelper.getString("nex_conquestMission", id);
 	}
 	
-	// runcode exerelin.campaign.intel.ConquestMissionIntel.debug("jangala")
-	public static void debug(String marketId) {
+	// runcode exerelin.campaign.intel.ConquestMissionIntel.debug("jangala", "persean")
+	public static void debug(String marketId, String factionId) {
 		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
-		new ConquestMissionIntel(market, Global.getSector().getFaction(Factions.LUDDIC_PATH), 5).init();
+		new ConquestMissionIntel(market, Global.getSector().getFaction(factionId), 5).init();
 	}
 	
 	public static enum CancelReason { ALREADY_CAPTURED, NOT_IN_ECONOMY, NO_LONGER_HOSTILE, OTHER }
