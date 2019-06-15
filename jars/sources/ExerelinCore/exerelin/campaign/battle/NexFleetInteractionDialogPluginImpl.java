@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutcome;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
@@ -15,6 +16,7 @@ import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -388,18 +390,28 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			// pull in anyone with an assignment on one of our fleets
 			FleetAssignmentDataAPI assignment = fleet.getAI().getCurrentAssignment();
 			if (assignment == null) return true;
-			SectorEntityToken target = assignment.getTarget();
-			if (target != null && target instanceof CampaignFleetAPI)
+			SectorEntityToken assignTarget = assignment.getTarget();
+			if (assignTarget != null && assignTarget instanceof CampaignFleetAPI)
 			{
 				List<CampaignFleetAPI> fleets = battle.getBothSides();
 				for (CampaignFleetAPI inBattle : fleets)
 				{
-					if (inBattle == target)
+					if (inBattle == assignTarget)
 					{
 						// THI merc handling
 						if (fleet.getMemoryWithoutUpdate().contains("$tiandongMercTarget")
 							&& fleet.getMemoryWithoutUpdate().getFleet("$tiandongMercTarget") == inBattle)
 						{
+							// don't let merc join if THI is friendly or better to player, 
+							// and escortee is not alraedy on player side
+							// (as the merc would join _against_ the escortee
+							if (!battle.isOnPlayerSide(inBattle) && 
+									fleet.getFaction().getRelationshipLevel(Factions.PLAYER).isAtWorst(RepLevel.FRIENDLY))
+							{
+								return false;
+							}
+							
+							// add hostile memory keys to merc if escortee is hostile to player
 							if (!inBattle.isFriendlyTo(Global.getSector().getPlayerFleet()))
 							{
 								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE);
