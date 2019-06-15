@@ -84,6 +84,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected int bonusAdminLevel = 0;
 	protected float colonyExpeditionProgress;
 	protected int numDeadExpeditions;
+	protected int numAvertedExpeditions;
+	protected int numColonies;
 	
 	public ColonyManager() {
 		super(true);
@@ -105,7 +107,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * Clamps player station population, increments NPC population size, and adds bonus admins if needed.
 	 */
 	protected void updateMarkets() {
-		
+		numColonies = 0;
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
 		int playerFactionSize = 0;
 		boolean allowGrowth = Global.getSector().getClock().getCycle() >= MIN_CYCLE_FOR_NPC_GROWTH;
@@ -141,6 +143,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				}
 				updateFreePortSetting(market);
 			}
+			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+				numColonies += 1;
 		}
 		updatePlayerBonusAdmins(playerFactionSize);
 	}
@@ -329,8 +333,20 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		Global.getSector().getListenerManager().addListener(this);
 	}
 	
-	public void incrementDeadColonyExpeditions() {
+	public void incrementDeadExpeditions() {
 		numDeadExpeditions++;
+	}
+	
+	public int getNumDeadExpeditions() {
+		return numDeadExpeditions;
+	}
+	
+	public void incrementAvertedExpeditions() {
+		numAvertedExpeditions++;
+	}
+	
+	public int getNumAvertedExpeditions() {
+		return numAvertedExpeditions;
 	}
 	
 	protected String pickFactionToColonize() {
@@ -474,6 +490,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			ColonyExpeditionIntel intel = spawnColonyExpedition();
 			if (intel != null) {
 				colonyExpeditionProgress = MathUtils.getRandomNumberInRange(-interval * 0.1f, interval * 0.1f);
+				colonyExpeditionProgress -= numColonies * Global.getSettings().getFloat("nex_expeditionDelayPerExistingColony");
 			}
 			else {	// failed to spawn, try again in 15 days
 				colonyExpeditionProgress -= 15;
@@ -483,6 +500,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	public float getColonyExpeditionProgress() {
 		return colonyExpeditionProgress;
+	}
+	
+	public int getNumColonies() {
+		return numColonies;
 	}
 
 	@Override

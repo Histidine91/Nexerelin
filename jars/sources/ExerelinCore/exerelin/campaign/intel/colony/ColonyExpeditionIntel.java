@@ -20,12 +20,14 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.intel.punitive.PEAvertInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -50,6 +52,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
 public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDelegate {
@@ -128,18 +131,9 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		}
 	}
 	
-	// intel long description in intel screen
-	@Override
-	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		//super.createSmallDescription(info, width, height);
-		
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
+	public void addInitialDescSection(TooltipMakerAPI info, float initPad) {
 		float opad = 10f;
-		
-		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);
+		Color h = Misc.getHighlightColor();
 		
 		FactionAPI attacker = getFaction();
 		FactionAPI defender = getTarget().getFaction();
@@ -185,19 +179,39 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			addStandardStrengthComparisons(info, getTarget(), defender, true, false, 
 					getString("raidName"), getString("raidNamePossessive"));
 		}
+	}
+	
+	// intel long description in intel screen
+	@Override
+	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		//super.createSmallDescription(info, width, height);
+		
+		Color h = Misc.getHighlightColor();
+		Color g = Misc.getGrayColor();
+		Color tc = Misc.getTextColor();
+		float pad = 3f;
+		float opad = 10f;
+		
+		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);
+		
+		addInitialDescSection(info, opad);
+		
+		FactionAPI attacker = getFaction();
+		FactionAPI defender = getTarget().getFaction();
+		String string;
 		
 		info.addSectionHeading(StringHelper.getString("status", true), 
 				   attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);
 		
 		// write our own status message for certain cancellation cases
 		String targetFactionNameWithArticle = defender.getDisplayNameWithArticle();
-		sub.clear();
+		Map<String, String> sub = new HashMap<>();
 		sub.put("$market", planet.getName());
 		sub.put("$faction", faction.getDisplayName());
 		sub.put("$theOtherFaction", targetFactionNameWithArticle);
 		sub.put("$TheOtherFaction", Misc.ucFirst(targetFactionNameWithArticle));
 		
-		if (colonyOutcome != null && colonyOutcome != ColonyOutcome.FAIL) {
+		if (colonyOutcome != null && colonyOutcome != ColonyOutcome.FAIL && colonyOutcome != ColonyOutcome.AVERTED) {
 			String textKey = "";
 			switch (colonyOutcome) {
 				case QUEUE_JUMPED:
@@ -227,21 +241,19 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			if (getStageIndex(stage) == failStage) break;
 		}
 		
-		/*
 		if (getCurrentStage() == 0 && !isFailed()) {
 			FactionAPI pf = Global.getSector().getPlayerFaction();
-			ButtonAPI button = info.addButton("Avert", BUTTON_AVERT, 
+			ButtonAPI button = info.addButton(StringHelper.getString("avert", true), BUTTON_AVERT, 
 				  	pf.getBaseUIColor(), pf.getDarkUIColor(),
 				  (int)(width), 20f, opad * 2f);
 			button.setShortcut(Keyboard.KEY_T, true);
 		}
-		*/
 	}
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_AVERT) {
-			//ui.showDialog(null, new PEAvertInteractionDialogPluginImpl(this, ui));
+			ui.showDialog(null, new ColonyAvertInteractionDialogPlugin(this, ui));
 		}
 	}
 	
@@ -407,13 +419,17 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		return tags;
 	}
 	
+	// called when event has completed and is preparing to be cleaned up
 	@Override
-	protected void notifyEnded() {
-		super.notifyEnded();
+	protected void notifyEnding() {
+		super.notifyEnding();
 		// failing at these stages suggests the colony fleet was destroyed
 		if (getFailStage() == 2 || colonyOutcome == ColonyOutcome.INVADE_FAILED 
 				|| colonyOutcome == ColonyOutcome.FAIL) {
-			ColonyManager.getManager().incrementDeadColonyExpeditions();
+			ColonyManager.getManager().incrementDeadExpeditions();
+		}
+		else if (colonyOutcome == ColonyOutcome.AVERTED) {
+			ColonyManager.getManager().incrementAvertedExpeditions();
 		}
 	}
 	

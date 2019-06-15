@@ -75,6 +75,7 @@
 		"confirm":"confirm",
 		"proceed":"proceed",
 		"cancel":"cancel",
+		"avert":"avert",
 		"enabled":"enabled",
 		"disabled":"disabled",
 		"accept":"accept",
@@ -85,6 +86,7 @@
 		"declined":"declined",
 		"cancelled":"cancelled",
 		"expired":"expired",
+		"neverMind":"never mind",
 
 		"randomize":"randomize",
 
@@ -377,6 +379,24 @@
 		"travelTimeStatDeciv":"Acquiring transport (decivilized)",
 		"travelTimeStatRepLevel":"Bypassing security ($repLevel)",
 		"travelTimeStatTravel":"Distance: $dist LY",
+	},
+	
+	"nex_avertDialog":{
+		"optionBribe":"Allocate sufficient funds for bribes and other means of disrupting the planning",
+		"optionConnections":"Use your connections to disrupt the planning",
+		"takeAction":"Take the necessary actions",
+		"notEnoughCredits":"Not enough credits.",
+		"notEnoughStanding":"Standing not high enough.",
+		
+		"descStart":"$TheExpeditionName is still in the planning stages, and you have several options at your disposal to ensure it never gets off the ground.",
+		
+		"descBribe":"Sufficient funding allocated to proper official and unofficial actors should ensure that $theExpeditionName does not go beyond the planning stage.",
+		"descBribe2":"A total of %s should be enough to get the job done, and will also ensure that your standing with $theFaction does not suffer.",
+		"descBribe3":"You have %s available.",
+		
+		"descConnections":"You can use your connections to pull a few strings and ensure $theExpeditionName never gets beyond the planning stage.",
+		"descConnections2":"Calling in these favors will reduce your standing with $theFaction by %s points.",
+		"descConnectionsTooLow":"You do not have sufficient connections with $faction officials to stall out this kind of an operation.",
 	},
 	
 	"nex_baseStrike":{
