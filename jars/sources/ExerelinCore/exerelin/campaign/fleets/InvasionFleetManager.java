@@ -18,6 +18,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
@@ -747,12 +750,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 	}
 	
-	protected void spawnBaseStrikeFleet(FactionAPI faction, PirateBaseIntel base) {
+	protected void spawnBaseStrikeFleet(FactionAPI faction, MarketAPI target) {
 		MarketAPI source = getSourceMarketForFleet(faction, Global.getSector().getEconomy().getMarketsCopy());
 		if (source == null)
 			return;
 		
-		MarketAPI target = base.getMarket();
 		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1);
 		intel.setImportant(true);	// debug
 		
@@ -767,8 +769,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float rageIncrement = Global.getSettings().getFloat("nex_pirateRageIncrement");
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (!market.hasCondition(Conditions.PIRATE_ACTIVITY))
-				continue;
 			if (market.getFaction().isPlayerFaction()) continue;
 			
 			String factionId = market.getFactionId();
@@ -779,17 +779,36 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			//if (!pirateInvasions && !ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
 			//	continue;
 			
-			MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
-			PirateActivity plugin = (PirateActivity)cond.getPlugin();
-			
-			float rage = plugin.getIntel().getStabilityPenalty();
-			if (rage > 0) {
-				rage *= rageIncrement;
+			if (market.hasCondition(Conditions.PIRATE_ACTIVITY)) {
+				MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
+				PirateActivity plugin = (PirateActivity)cond.getPlugin();
+
+				float rage = plugin.getIntel().getStabilityPenalty();
+				if (rage > 0) {
+					rage *= rageIncrement;
+					float newVal = ExerelinUtils.modifyMapEntry(pirateRage, factionId, rage);
+					//log.info("Incrementing " + rage + " rage from market " + market.getName() + 
+					//		" of faction " + market.getFaction().getDisplayName() + ", now " + newVal);
+					if (newVal > 100 &&!plugin.getIntel().getName().endsWith("Bounty Posted")) {
+						spawnBaseStrikeFleet(market.getFaction(), plugin.getIntel().getMarket());
+					}
+				}
+			}
+			if (market.hasCondition(Conditions.PATHER_CELLS)) {
+				MarketConditionAPI cond = market.getCondition(Conditions.PATHER_CELLS);
+				LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
+				LuddicPathCellsIntel cellIntel = cellCond.getIntel();
+				LuddicPathBaseIntel base;
+				
+				boolean sleeper = cellIntel.getSleeperTimeout() > 0;
+				if (sleeper) continue;
+				base = LuddicPathCellsIntel.getClosestBase(market);
+				if (base == null) continue;
+				
+				float rage = 1 * rageIncrement;
 				float newVal = ExerelinUtils.modifyMapEntry(pirateRage, factionId, rage);
-				//log.info("Incrementing " + rage + " rage from market " + market.getName() + 
-				//		" of faction " + market.getFaction().getDisplayName() + ", now " + newVal);
-				if (newVal > 100) {
-					spawnBaseStrikeFleet(market.getFaction(), plugin.getIntel());
+				if (newVal > 100 && !base.getName().endsWith("Bounty Posted")) {
+					spawnBaseStrikeFleet(market.getFaction(), base.getMarket());
 				}
 			}
 		}
