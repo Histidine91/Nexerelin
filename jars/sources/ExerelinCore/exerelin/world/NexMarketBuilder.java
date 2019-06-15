@@ -715,7 +715,18 @@ public class NexMarketBuilder
 				Pair<ProcGenEntity, Float> highest = ordered.remove(ordered.size() - 1);
 				log.info("Adding key industry " + gen.getName() + " to market " + highest.one.name
 						+ " (priority " + highest.two + ")");
-				highest.one.market.addIndustry(seed.industryId);
+				String industryId = seed.industryId;
+				MarketAPI market = highest.one.market;
+				market.addIndustry(industryId);
+				if (industryId.equals(Industries.ORBITALWORKS)) {
+					market.removeIndustry(Industries.HEAVYINDUSTRY, null, false);
+					highest.one.numProductiveIndustries -= 1;
+				}
+				else if (industryId.equals("ms_massIndustry")) {
+					market.removeIndustry("ms_modularFac", null, false);
+					highest.one.numProductiveIndustries -= 1;
+				}
+				
 				highest.one.numProductiveIndustries += 1;
 			}
 		}
