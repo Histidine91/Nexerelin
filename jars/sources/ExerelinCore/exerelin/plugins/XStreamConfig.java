@@ -1,7 +1,9 @@
 package exerelin.plugins;
 
+import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.abilities.ai.Nex_SustainedBurnAbilityAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.intel.agents.InstigateRebellion;
@@ -24,11 +26,13 @@ import exerelin.campaign.fleets.RespawnFleetAI;
 import exerelin.campaign.fleets.SuppressionFleetAI;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceVoteIntel;
+import exerelin.campaign.intel.ConquestMissionIntel;
 import exerelin.campaign.intel.DiplomacyIntel;
 import exerelin.campaign.intel.FactionBountyIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
+import exerelin.campaign.intel.NexPirateActivity;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.TributeIntel;
@@ -40,6 +44,7 @@ import exerelin.campaign.intel.agents.LowerRelations;
 import exerelin.campaign.intel.agents.RaiseRelations;
 import exerelin.campaign.intel.agents.SabotageIndustry;
 import exerelin.campaign.intel.agents.Travel;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.NexAssembleStage;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
@@ -77,6 +82,8 @@ public class XStreamConfig {
 		x.alias("MiningFltMngr", MiningFleetManager.class);
 		x.alias("ExePatrolFltMngr", ExerelinPatrolFleetManager.class);
 		*/
+		x.alias("ColonyMngr", ColonyManager.class);
+		x.alias("ColonyMngrQueuedInd", ColonyManager.QueuedIndustry.class);
 		
 		x.alias("MiningFltAI", MiningFleetAI.class);
 		x.alias("MiningFltData", MiningFleetManagerV2.MiningFleetData.class);
@@ -103,15 +110,14 @@ public class XStreamConfig {
 		x.alias("SuperweaponEvnt", SuperweaponEvent.class);
 		x.alias("WarmongerEvnt", WarmongerEvent.class);
 		
-		x.alias("ConquestMission", ConquestMission.class);
-		x.alias("ConquestMissionEvnt", ConquestMissionEvent.class);
-		
 		// intel
 		x.alias("NexRaidCond", RaidCondition.class);
 		x.alias("NexPunExIntl", Nex_PunitiveExpeditionIntel.class);
 		x.alias("NexFctnBntyIntl", FactionBountyIntel.class);
 		x.alias("NexTrbtIntl", TributeIntel.class);
 		x.alias("NexTrbtCond", TributeCondition.class);
+		x.alias("NexConqMssn", ConquestMissionIntel.class);
+		x.alias("NexPirActv", NexPirateActivity.class);
 		
 		// raids and such
 		x.alias("NexRaidIntl", NexRaidIntel.class);
@@ -141,6 +147,9 @@ public class XStreamConfig {
 		x.alias("NexRemRaidRetStg", RemnantRaidReturnStage.class);
 		*/
 		
+		// colony expeditions
+		x.alias("ColonyExpdIntl", ColonyExpeditionIntel.class);	
+		
 		// agents
 		x.alias("NexAgntIntl", AgentIntel.class);
 		x.alias("NexAgntActTrvl", Travel.class);
@@ -161,6 +170,7 @@ public class XStreamConfig {
 		x.alias("NexRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);
 		x.alias("DiploBrain", DiplomacyBrain.class);
 		x.alias("DiploDspsEntry", DiplomacyBrain.DispositionEntry.class);
+		x.alias("NexSBAI", Nex_SustainedBurnAbilityAI.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
