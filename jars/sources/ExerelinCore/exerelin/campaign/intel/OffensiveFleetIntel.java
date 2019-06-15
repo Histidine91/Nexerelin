@@ -46,6 +46,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected OffensiveOutcome outcome;
 	protected boolean isRespawn = false;
 	protected boolean intelQueuedOrAdded;
+	protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
 	protected float fp;
 	protected float orgDur;
 	protected boolean reported = false;
@@ -308,6 +309,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	public void setOutcome(OffensiveOutcome outcome) {
 		this.outcome = outcome;
+	}
+
+	public boolean isPlayerSpawned() {
+		return playerSpawned;
+	}
+	
+	public void setPlayerSpawned(boolean playerSpawned) {
+		this.playerSpawned = playerSpawned;
 	}
 		
 	@Override

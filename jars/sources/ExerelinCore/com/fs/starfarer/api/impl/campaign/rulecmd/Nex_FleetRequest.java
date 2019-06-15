@@ -602,6 +602,7 @@ public class Nex_FleetRequest extends PaginatedOptions {
 				return false;
 		}
 		intel.init();
+		intel.setPlayerSpawned(true);
 		
 		dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
