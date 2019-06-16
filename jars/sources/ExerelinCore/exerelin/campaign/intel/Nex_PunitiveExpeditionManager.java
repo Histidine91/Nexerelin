@@ -2,6 +2,7 @@ package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -182,6 +183,8 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (!market.isPlayerOwned()) continue;
 			if (market.getContainingLocation().isHyperspace()) continue;
+			TributeIntel ti = TributeIntel.getOngoingIntel(market);
+			if (ti != null && ti.getFactionForUIColors() == curr.faction) continue;
 			
 			float weight = 0f;
 			if (reason.type == PunExType.ANTI_COMPETITION && reason.commodityId != null) {

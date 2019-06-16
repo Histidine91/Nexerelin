@@ -365,4 +365,14 @@ public class TributeIntel extends BaseIntelPlugin {
 		}
 		return false;
 	}
+	
+	public static TributeIntel getOngoingIntel(MarketAPI market) {
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(TributeIntel.class)) {
+			TributeIntel ti = (TributeIntel)intel;
+			if (ti.isEnding() || ti.isEnded()) continue;
+			if (ti.market == market)
+				return ti;
+		}
+		return null;
+	}
 }
