@@ -190,7 +190,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		
 		bullet(info);
 		
-		FactionAPI other = target.getFaction();
+		FactionAPI other = targetFaction;
+		if (target != null) other = target.getFaction();	// target is null for colony expeditions
 		if (other == faction) other = targetFaction;
 		
 		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
