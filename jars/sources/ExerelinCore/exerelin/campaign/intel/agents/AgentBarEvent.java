@@ -180,6 +180,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		AgentIntel intel = new AgentIntel(person, Global.getSector().getPlayerFaction(), level);
 		intel.init();
 		intel.setMarket(market);
+		intel.setImportant(true);
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, text);
 	}
 
