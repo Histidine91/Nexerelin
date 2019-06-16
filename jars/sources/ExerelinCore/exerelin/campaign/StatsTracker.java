@@ -15,12 +15,14 @@ import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.TempData;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,10 @@ import org.lazywizard.lazylib.MathUtils;
 public class StatsTracker extends BaseCampaignEventListener implements ColonyPlayerHostileActListener {
     protected static final String TRACKER_MAP_KEY = "exerelin_statsTracker";
     public static Logger log = Global.getLogger(StatsTracker.class);
+    
+    public static final Set<String> NO_ORPHANS_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
+        Factions.DERELICT, Factions.REMNANTS, "spire", "darkspire"
+    }));
     
     protected static StatsTracker tracker;
     
@@ -212,7 +218,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
 
                 // orphans
                 String factionId = member.getCaptain().getFaction().getId();
-                if (factionId.equals("spire") || factionId.equals("darkspire")) continue; // Spire biology is different
+                if (!haveOrphans(factionId)) continue;
                 modifyOrphansMadeByCrewCount((int)(member.getMinCrew()*involvedFraction), factionId);
             }
         }
@@ -278,14 +284,20 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     }
     
     // all guesstimates until TempData becomes actually accessible
+    public int addOrphansFromMilitaryAction(int power) {
+        int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
+        orphansMade += orphans;
+        return orphans;
+    }
     
     @Override
     public void reportRaidForValuablesFinishedBeforeCargoShown(
             InteractionDialogAPI dialog, MarketAPI market, TempData actionData, CargoAPI cargo) {
-        int power = market.getSize() - 2;
-        int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
-        log.info("Making " + orphans + " orphans from raid for valuables");
-        orphansMade += orphans;
+        if (haveOrphans(market.getFactionId())) {
+            int orphans = addOrphansFromMilitaryAction(market.getSize() - 2);
+            log.info("Making " + orphans + " orphans from raid for valuables");
+        }
+        
         
         marketsRaided++;
     }
@@ -293,10 +305,10 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     @Override
     public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
             TempData actionData, Industry industry) {
-        int power = market.getSize() - 2;
-        int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
-        log.info("Making " + orphans + " orphans from raid to disrupt");
-        orphansMade += orphans;
+        if (haveOrphans(market.getFactionId())) {
+            int orphans = addOrphansFromMilitaryAction(market.getSize() - 2);
+            log.info("Making " + orphans + " orphans from raid to disrupt");
+        }
         
         marketsRaided++;
     }
@@ -304,10 +316,10 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     @Override
     public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
             MarketAPI market, TempData actionData) {
-        int power = market.getSize() - 1;
-        int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
-        log.info("Making " + orphans + " orphans from tactical bombardment");
-        orphansMade += orphans;
+        if (haveOrphans(market.getFactionId())) {
+            int orphans = addOrphansFromMilitaryAction(market.getSize() - 1);
+            log.info("Making " + orphans + " orphans from tactical bombardment");
+        }
         
         marketsTacBombarded++;
     }
@@ -315,15 +327,21 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     @Override
     public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
             MarketAPI market, TempData actionData) {
-        int oldSize = market.getSize() + 1;
-        float deaths = ExerelinUtilsMarket.getPopulation(oldSize) - ExerelinUtilsMarket.getPopulation(market.getSize());
-        deaths *= MathUtils.getRandomNumberInRange(0.5f, 1.5f);
-        int orphans = (int)Math.round(Math.sqrt(deaths));
-        
-        log.info("Making " + orphans + " orphans from saturation bombardment");
-        orphansMade += orphans;
+        if (haveOrphans(market.getFactionId())) {
+            int oldSize = market.getSize() + 1;
+            float deaths = ExerelinUtilsMarket.getPopulation(oldSize) - ExerelinUtilsMarket.getPopulation(market.getSize());
+            deaths *= MathUtils.getRandomNumberInRange(0.5f, 1.5f);
+            int orphans = (int)Math.round(Math.sqrt(deaths));
+
+            log.info("Making " + orphans + " orphans from saturation bombardment");
+            orphansMade += orphans;
+        }
         
         marketsSatBombarded++;
+    }
+    
+    public static boolean haveOrphans(String factionId) {
+        return !NO_ORPHANS_FACTIONS.contains(factionId);
     }
     
     public static class DeadOfficerEntry

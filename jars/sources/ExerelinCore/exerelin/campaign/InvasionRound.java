@@ -337,8 +337,7 @@ public class InvasionRound {
 		// make orphans
 		if (playerInvolved)
 		{
-			// Spire biology is different
-			if (!defenderFactionId.equals("spire") &&  !defenderFactionId.equals("darkspire"))
+			if (StatsTracker.haveOrphans(defenderFactionId))
 			{
 				float deathsInflicted = defStrength;
 				float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
