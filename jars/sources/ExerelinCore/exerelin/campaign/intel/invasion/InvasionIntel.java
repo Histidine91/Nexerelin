@@ -128,7 +128,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);
 		
 		FactionAPI attacker = getFaction();
-		FactionAPI defender = targetFaction;
+		FactionAPI defender = target.getFaction();
+		if (defender == attacker) defender = targetFaction;
 		String has = attacker.getDisplayNameHasOrHave();
 		String is = attacker.getDisplayNameIsOrAre();
 		String locationName = target.getContainingLocation().getNameWithLowercaseType();
