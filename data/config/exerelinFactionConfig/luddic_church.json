@@ -39,6 +39,7 @@
     ],
     "startShipsTradeLarge":[["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"]],
     "startShipsCarrierSmall":[["condor_Attack", "lasher_luddic_church_Standard", "hound_luddic_church_Standard"]],
+    "startShipsSuper":[["swp_cathedral_gra"]],
     
     "startSpecialItems":[
         [["LC_package", ""]],
