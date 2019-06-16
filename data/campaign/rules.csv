@@ -759,9 +759,8 @@ nex_marketTransferList7,DialogOptionSelected,$option == nex_transferMarketList7,
 nex_marketTransferExecute,DialogOptionSelected,"Nex_OptionStartsWith ""nex_transferMarket_""","Nex_TransferMarket transfer
 FireAll Nex_MarketPostTransfer",,,
 ,,,,,,
-nex_marketTransferPostDialog,Nex_MarketPostTransfer,,,"""As you command. $market is now in possession of $entity._newFaction.
-
-""Goodbye, chief.""",nex_transferMarketEnd:Cut the comm link and leave,
+nex_marketTransferPostDialog,Nex_MarketPostTransfer,,"AddText ""\""As you command. $market is now in possession of $entity._newFaction.""
+AddText ""\""Goodbye, chief.\""""",,nex_transferMarketEnd:Cut the comm link and leave,
 nex_marketTransferPostDialogLeave,DialogOptionSelected,$option == nex_transferMarketEnd,DismissDialog,,,
 #END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,

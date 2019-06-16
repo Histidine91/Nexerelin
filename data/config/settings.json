@@ -16,6 +16,9 @@
 	"nex_pirateRageIncrement":0.04,
 	"nex_expeditionDelayPerExistingColony":15,
 	
+	"nex_transferMarket_valueDivisor":40000,
+	"nex_transferMarket_originalOwnerMult":1.33,
+	
 	"nex_colonyConditionValues":{
 		"ore_sparse":1,
 		"ore_moderate":2.5,

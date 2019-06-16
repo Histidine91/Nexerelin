@@ -33,8 +33,6 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 	public static final float GROUPS_CACHE_TIME = 0f;
 	public static final String SELECT_FACTION_PREFIX = "nex_transferMarket_";
 	public static final int PREFIX_LENGTH = SELECT_FACTION_PREFIX.length();
-	public static final int VALUE_DIVISOR = 20000;
-	public static final float ORIGINAL_OWNER_REP_MULT = 1.5f;
 	public static final List<String> NO_TRANSFER_FACTIONS = Arrays.asList(new String[]{
 		Factions.PLAYER, Factions.DERELICT
 	});
@@ -108,7 +106,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 					str = StringHelper.getString("exerelin_markets", "transferMarketOriginalOwner");
 					str = StringHelper.substituteToken(str, "$market", market.getName() + "");
 					str = StringHelper.substituteToken(str, "$theFaction", origOwner.getDisplayNameWithArticle());
-					String bonus = ORIGINAL_OWNER_REP_MULT + "×";
+					String bonus = Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult") + "×";
 					str = StringHelper.substituteToken(str, "$bonus", bonus);
 					LabelAPI para = text.addParagraph(str);
 					para.setHighlight(origOwner.getDisplayNameWithArticleWithoutArticle(), bonus);
@@ -131,7 +129,8 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				"transferMarketFactorSize", true));
 		
 		// industry
-		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) / VALUE_DIVISOR;
+		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) 
+				/ Global.getSettings().getFloat("nex_transferMarket_valueDivisor");
 		//value *= market.getSize() - 2;
 		stat.modifyFlat("industry", value, StringHelper.getString("exerelin_markets", 
 				"transferMarketFactorIndustry", true));
@@ -151,7 +150,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		
 		float repChange = getRepChange(market).getModifiedValue() * 0.01f;
 		if (newFactionId.equals(ExerelinUtilsMarket.getOriginalOwner(market)))
-			repChange *= ORIGINAL_OWNER_REP_MULT;
+			repChange *= Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult");
 		
 		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, 
 				new ArrayList<>(Arrays.asList(newFactionId)), repChange);
