@@ -75,6 +75,9 @@ public class ConquestMissionManager extends BaseEventManager {
 		if (target == null) {
 			log.info("Failed to pick target market");
 			return null;
+		} else if (target.getFaction().isPlayerFaction()) {
+			log.info("Target market belongs to player, retry later");
+			return null;
 		}
 		
 		float duration = 45 + target.getSize() * 10;
