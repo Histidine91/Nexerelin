@@ -214,7 +214,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		boolean wantFreePort;
 		if (!sectorManager.corvusMode)
 		{
-			wantFreePort = newOwnerConfig.freeMarket;
+			wantFreePort = newOwnerConfig.freeMarket || market.getId().equals("nex_prismFreeport");
 		}
 		else
 		{
@@ -536,9 +536,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, 
 			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
 		LinkedList<QueuedIndustry> existing = npcConstructionQueues.remove(market);
-		if (oldOwner.isPlayerFaction() || existing != null) {
-			buildIndustries(market);
-			processNPCConstruction(market);
+		if (!newOwner.isPlayerFaction()) {
+			if (oldOwner.isPlayerFaction() || existing != null) {
+				buildIndustries(market);
+				processNPCConstruction(market);
+			}
 		}
 		
 		// reassign admins on market capture
