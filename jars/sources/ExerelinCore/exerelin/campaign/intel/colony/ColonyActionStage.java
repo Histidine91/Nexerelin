@@ -170,7 +170,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		}
 		if (!anyRaidersRemaining) {
 			if (getTarget().getFaction() != intel.getFaction()) {
-				// TODO: determine outcome
+				// colonization failed
 				if (getTarget().getFaction().isHostileTo(intel.getFaction())) {
 					colonyFleetIntel.setOutcome(OffensiveOutcome.FAIL);
 					colonyFleetIntel.setColonyOutcome(ColonyOutcome.FAIL);
@@ -249,7 +249,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		}
 		colonyFleetIntel.lastOwner = market.getFaction();
 		
-		// TODO: try to colonize, if not, invade if allowed
+		// try to colonize, if not, invade if allowed
 		if (!market.isInEconomy()) {
 			colonyFleetIntel.createColony();
 			colonyFleetIntel.colonyOutcome = ColonyOutcome.SUCCESS;

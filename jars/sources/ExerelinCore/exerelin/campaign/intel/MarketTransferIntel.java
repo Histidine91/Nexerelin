@@ -61,7 +61,6 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 				}
 				market.getMemoryWithoutUpdate().set(MEMORY_KEY_REP_GAIN_COOLDOWN, true, REP_GAIN_COOLDOWN);
 			} else {
-				// TODO
 				if (text != null) {
 					String str = StringHelper.getString("exerelin_invasion", "repChangeCooldownMsg");
 					text.setFontSmallInsignia();

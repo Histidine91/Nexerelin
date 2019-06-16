@@ -369,7 +369,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			return;	// don't remake action unnecessarily
 		}
 		
-		// TODO: agent faction should not be commissioning faction if target is also commissioning faction
+		// agent faction should not be commissioning faction if target is also commissioning faction
 		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
 		MarketAPI market = agent.getMarket();
 		FactionAPI mktFaction = market != null ? market.getFaction() : null;

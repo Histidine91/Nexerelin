@@ -403,7 +403,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		
 		MarketAPI market = route.getMarket();
 		String factionId = market.getFactionId();
-		// TODO randomly use ally faction
+		// randomly use an ally faction's fleet if applicable
 		Alliance alliance = AllianceManager.getFactionAlliance(factionId);
 		if (alliance != null && random.nextFloat() < ALLY_GEAR_CHANCE) {
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);

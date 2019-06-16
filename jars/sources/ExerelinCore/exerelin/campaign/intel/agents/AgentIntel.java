@@ -227,7 +227,6 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		if (currentAction != null) {
 			// current action progress
-			// TODO: add abort button
 			info.addSectionHeading(getString("intelDescCurrAction"), Alignment.MID, opad);
 			currentAction.addCurrentActionPara(info, opad);
 			

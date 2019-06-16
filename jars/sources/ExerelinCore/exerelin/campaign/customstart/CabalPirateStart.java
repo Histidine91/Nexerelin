@@ -43,7 +43,6 @@ public class CabalPirateStart extends CustomStart {
 			}
 		});
 		
-		// TODO: check if going back removes start scripts
 		FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4");
 	}
 }

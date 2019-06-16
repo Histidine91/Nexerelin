@@ -143,7 +143,6 @@ public class TributeIntel extends BaseIntelPlugin {
 							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 						  (int)(width), 20f, opad);
 		} else if (status == TributeStatus.ACTIVE) {
-			// TODO: list tribute status
 			info.addSectionHeading(StringHelper.getString("status", true), base, dark, Alignment.MID, opad);
 			info.addPara(StringHelper.getStringAndSubstituteToken("nex_tribute", 
 							"intel_descAccepted", "$market", market.getName()), opad);
@@ -273,8 +272,7 @@ public class TributeIntel extends BaseIntelPlugin {
 	protected void advanceImpl(float amount) {
 		if (this.isEnding() || this.isEnded())
 			return;
-				
-		// TODO: check if system is still controlled by someone else, or grown too large
+		
 		checkContinueTribute();
 		
 		// past here is countdown to accept/reject
