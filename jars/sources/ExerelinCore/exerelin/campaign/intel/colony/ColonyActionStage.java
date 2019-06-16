@@ -228,6 +228,19 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		return StringHelper.getFleetAssignmentString("movingInToColonize", market.getName());
 	}
 	
+	protected boolean anyHostile() {
+		if (getTarget().isInEconomy() && colonyFleetIntel.hostileMode) {
+			return true;
+		}
+		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(getTarget().getContainingLocation()))
+		{
+			if (market.getFaction().isHostileTo(colonyFleetIntel.getFaction())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
 		if (fleet != null && fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_COLONIZATION_ATTEMPTED)) {
@@ -273,6 +286,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			colonyFleetIntel.setColonyOutcome(ColonyOutcome.QUEUE_JUMPED);
 		}
 		
+		//if (anyHostile()) {
 		if (colonyFleetIntel.hostileMode) {
 			float str = WarSimScript.getFactionStrength(intel.getFaction(), getTarget().getStarSystem());
 			float enemyStr = WarSimScript.getFactionStrength(getTarget().getFaction(), getTarget().getStarSystem());
