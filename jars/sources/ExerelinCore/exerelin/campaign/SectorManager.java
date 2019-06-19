@@ -907,15 +907,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
         }
-                
-        // II
-        market.removeCondition("ii_imperialdoctrine");
-        if (newOwnerId.equals("interstellarimperium") && market.getMemoryWithoutUpdate().contains("$startingFactionId")
-                && market.getMemoryWithoutUpdate().getString("$startingFactionId").equals("interstellarimperium"))
-        {
-            if (!market.hasCondition(Conditions.DISSIDENT) && !market.hasCondition(Conditions.LARGE_REFUGEE_POPULATION)) 
-                market.addCondition("ii_imperialdoctrine");
-        }
         
         // tariffs
         

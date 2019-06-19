@@ -543,6 +543,10 @@ public class NexMarketBuilder
 				market.addIndustry("lionsguard");
 			else if (factionId.equals("dassault_mikoyan"))
 				market.addIndustry("6emebureau");
+			else if (factionId.equals("interstellarimperium")) {
+				//market.addIndustry("ii_interstellarbazaar");	// put somewhere else
+				market.addIndustry("ii_imperialguard");
+			}
 			
 			market.getMemoryWithoutUpdate().set("$nex_procgen_hq", true);
 		}
@@ -607,6 +611,10 @@ public class NexMarketBuilder
 					market.addCondition(Conditions.VOLATILES_TRACE);
 				}
 			}
+		}
+		
+		if (factionId.equals("interstellarimperium")) {
+			market.addCondition("ii_imperialdoctrine");
 		}
 				
 		// free port status, tariffs
