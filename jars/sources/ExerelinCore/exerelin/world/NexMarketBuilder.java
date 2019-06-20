@@ -510,7 +510,7 @@ public class NexMarketBuilder
 		market.setFactionId(factionId);
 		market.setPlanetConditionMarketOnly(false);
 		market.getMemoryWithoutUpdate().set("$nex_randomMarket", true);
-		market.getMemoryWithoutUpdate().set("$startingFactionId", factionId);
+		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, factionId);
 		
 		market.addCondition("population_" + marketSize);
 		if (market.hasCondition(Conditions.DECIVILIZED))

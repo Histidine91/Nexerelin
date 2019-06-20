@@ -86,8 +86,8 @@ public class ExerelinUtilsMarket {
 	public static String getOriginalOwner(MarketAPI market) 
 	{
 		MemoryAPI mem = market.getMemoryWithoutUpdate();
-		if (mem.contains("$startingFactionId"))
-			return mem.getString("$startingFactionId");
+		if (mem.contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
+			return mem.getString(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION);
 		return null;
 	}
 	

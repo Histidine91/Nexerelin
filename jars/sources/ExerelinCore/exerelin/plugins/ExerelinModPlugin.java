@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionMan
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
@@ -119,8 +120,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            if (!market.getMemoryWithoutUpdate().contains("$startingFactionId"))
-                market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
+            if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
+                market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, market.getFactionId());
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
         }
         
@@ -319,8 +320,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            if (!market.getMemoryWithoutUpdate().contains("$startingFactionId"))
-                market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
+            if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
+                market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, market.getFactionId());
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
         }
         

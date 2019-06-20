@@ -23,6 +23,7 @@ import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.StringHelper;
@@ -326,8 +327,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		}
 		
 		String factionId = Factions.INDEPENDENT;
-		if (memory.contains("$startingFactionId"))
-			factionId = memory.getString("$startingFactionId");
+		if (memory.contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
+			factionId = memory.getString(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION);
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
 		PersonAPI person = faction.createRandomPerson();

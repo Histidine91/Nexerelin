@@ -33,6 +33,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -340,7 +341,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		market.setFactionId(factionId);
 		market.setPlanetConditionMarketOnly(false);
 		market.getMemoryWithoutUpdate().set(MEMORY_KEY_COLONY, true);
-		market.getMemoryWithoutUpdate().set("$startingFactionId", factionId);
+		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, factionId);
 		
 		// rename generic-name worlds
 		if (market.getName().startsWith(planet.getStarSystem().getBaseName() + " ")) {

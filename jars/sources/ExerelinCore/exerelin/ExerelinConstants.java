@@ -13,4 +13,5 @@ public class ExerelinConstants {
 	@Deprecated public static final String TAG_UNINVADABLE = "nex_uninvadable";
 	public static final String MEMORY_KEY_UNINVADABLE = "$nex_uninvadable";
 	public static final String MEMORY_KEY_VISITED_BEFORE = "$visitedBefore";
+	public static final String MEMKEY_MARKET_STARTING_FACTION = "$startingFactionId";
 }
