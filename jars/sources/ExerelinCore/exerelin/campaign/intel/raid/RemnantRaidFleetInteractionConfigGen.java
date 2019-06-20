@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DataForEncounterSide;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.combat.BattleCreationContext;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -16,7 +12,7 @@ import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.FIDConfig;
 import com.fs.starfarer.api.impl.campaign.ids.Drops;
-import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec;
+import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec.DropData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
 import com.fs.starfarer.api.util.Misc;
 import java.util.ArrayList;
@@ -35,24 +31,26 @@ public class RemnantRaidFleetInteractionConfigGen implements FleetInteractionDia
 
 				CampaignFleetAPI fleet = (CampaignFleetAPI) dialog.getInteractionTarget();
 
-				FleetEncounterContextPlugin.DataForEncounterSide data = context.getDataFor(fleet);
+				DataForEncounterSide data = context.getDataFor(fleet);
 				List<FleetMemberAPI> losses = new ArrayList<FleetMemberAPI>();
-				for (FleetEncounterContextPlugin.FleetMemberData fmd : data.getOwnCasualties()) {
+				for (FleetMemberData fmd : data.getOwnCasualties()) {
 					losses.add(fmd.getMember());
 				}
 
-				List<SalvageEntityGenDataSpec.DropData> dropRandom = new ArrayList<SalvageEntityGenDataSpec.DropData>();
+				List<DropData> dropRandom = new ArrayList<DropData>();
 
-				int [] counts = new int[3];
-				String [] groups = new String [] {Drops.AI_CORES1, Drops.AI_CORES2, Drops.AI_CORES3};
+				int [] counts = new int[5];
+				String [] groups = new String [] {Drops.REM_FRIGATE, Drops.REM_DESTROYER, 
+												  Drops.REM_CRUISER, Drops.REM_CAPITAL,
+												  Drops.GUARANTEED_ALPHA};
+
 				//for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 				for (FleetMemberAPI member : losses) {
 					if (member.isStation()) {
-						counts[2] += 10;
-					}
-
-					if (member.isCapital()) {
-						counts[2] += 2;
+						counts[4] += 1;
+						counts[3] += 1;
+					} else if (member.isCapital()) {
+						counts[3] += 1;
 					} else if (member.isCruiser()) {
 						counts[2] += 1;
 					} else if (member.isDestroyer()) {
@@ -70,13 +68,14 @@ public class RemnantRaidFleetInteractionConfigGen implements FleetInteractionDia
 					int count = counts[i];
 					if (count <= 0) continue;
 
-					SalvageEntityGenDataSpec.DropData d = new SalvageEntityGenDataSpec.DropData();
+					DropData d = new DropData();
 					d.group = groups[i];
 					d.chances = (int) Math.ceil(count * 1f);
 					dropRandom.add(d);
 				}
 
 				Random salvageRandom = new Random(Misc.getSalvageSeed(fleet));
+				//salvageRandom = new Random();
 				CargoAPI extra = SalvageEntity.generateSalvage(salvageRandom, 1f, 1f, 1f, 1f, null, dropRandom);
 				for (CargoStackAPI stack : extra.getStacksCopy()) {
 					salvage.addFromStack(stack);
