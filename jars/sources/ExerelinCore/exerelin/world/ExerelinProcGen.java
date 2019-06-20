@@ -1600,14 +1600,17 @@ public class ExerelinProcGen {
 			createStation(station, factionId, true);
 			populatedSystemsByFaction.get(factionId).add(station.starSystem);
 		}
-		// add industries to each entity
-		marketSetup.addIndustriesToMarkets();
+		// add basic industries to each entity
+		marketSetup.addPrimaryIndustriesToMarkets();
 		
 		// add key industries for each faction
 		for (String factionId : factions)
 		{
 			marketSetup.addKeyIndustriesForFaction(factionId);
 		}
+		
+		// more industries
+		marketSetup.addFurtherIndustriesToMarkets();
 		
 		// add faction bonus items
 		for (String factionId : factions)

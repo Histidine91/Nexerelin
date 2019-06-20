@@ -685,8 +685,9 @@ public class NexMarketBuilder
 			{
 				if (entity.market.getIndustries().size() >= 12)
 					continue;
-				if (entity.numProductiveIndustries >= getMaxProductiveIndustries(entity))
-					continue;
+				// commented out: can lead to no planets being eligible
+				//if (entity.numProductiveIndustries >= getMaxProductiveIndustries(entity))
+				//	continue;
 				if (Misc.getNumIndustries(entity.market) >= Misc.getMaxIndustries(entity.market))
 					continue;
 				
@@ -762,13 +763,20 @@ public class NexMarketBuilder
 		}
 	}
 	
+	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant) {
+		addIndustriesToMarket(entity, instant, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+	
 	/**
-	 * Fills the market with productive industries, up to the permitted number depending on size.
+	 * Fills the market with productive industries, up to the permitted number depending on size. 
 	 * Added industries depend on local market conditions.
 	 * @param entity
 	 * @param instant
+	 * @param minPriority Minimum priority level of the industries that will be eligible to add.
+	 * @param maxPriority Maximum priority level of the industries that will be eligible to add.
 	 */
-	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant)
+	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant, 
+			float minPriority, float maxPriority)
 	{
 		int max = getMaxProductiveIndustries(entity);
 		if (entity.numProductiveIndustries >= max)
@@ -782,6 +790,8 @@ public class NexMarketBuilder
 		{
 			if (gen.isSpecial()) continue;
 			if (!gen.canApply(entity)) continue;
+			if (gen.getPriority() < minPriority) continue;
+			if (gen.getPriority() > maxPriority) continue;
 			
 			availableIndustries.add(gen);
 		}
@@ -795,7 +805,7 @@ public class NexMarketBuilder
 			tries++;
 			if (tries > 50) break;
 			
-			if (entity.market.getIndustries().size() >= 16)
+			if (entity.market.getIndustries().size() >= 12)
 				break;
 			
 			if (availableIndustries.isEmpty())
@@ -818,7 +828,7 @@ public class NexMarketBuilder
 	
 	public void addSpecialIndustries(ProcGenEntity entity)
 	{
-		if (entity.market.getIndustries().size() >= 16) return;
+		if (entity.market.getIndustries().size() >= 12) return;
 		float specialChance = getSpecialIndustryChance(entity);
 		if (random.nextFloat() > specialChance) return;
 		
@@ -840,14 +850,26 @@ public class NexMarketBuilder
 		}
 	}
 	
-	public void addIndustriesToMarkets()
+	// Separate primary industries (farms and mines, which are priority 3 and 2 respectively) from the rest
+	// this is because we always want a farm or mine to be built where available,
+	// but we don't want other industries to be built and potentially use up the industry limit
+	// before we've added heavy industry and fuel production to the best planets
+	
+	public void addPrimaryIndustriesToMarkets()
 	{
 		for (ProcGenEntity ent : markets)
 		{
-			addIndustriesToMarket(ent, true);
+			addIndustriesToMarket(ent, true, 2, Integer.MAX_VALUE);
+		}
+	}
+	
+	public void addFurtherIndustriesToMarkets()
+	{
+		for (ProcGenEntity ent : markets)
+		{
+			addIndustriesToMarket(ent, true, Integer.MIN_VALUE, 2);
 			addSpecialIndustries(ent);
 		}
-			
 	}
 	
 	/**
