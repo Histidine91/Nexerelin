@@ -869,6 +869,42 @@ OR
 
 Anything else?""",,
 ,,,,,,
+# grant autonomy,,,,,,
+nex_grantAutonomyOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial admin
+$faction.id == player
+!Nex_GrantAutonomy isAutonomous",,,nex_grantAutonomy:Grant autonomy,
+nex_revokeAutonomyOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial admin
+$faction.id == player
+Nex_GrantAutonomy isAutonomous",,,nex_revokeAutonomy:Revoke autonomy,
+nex_grantAutonomy,DialogOptionSelected,$option == nex_grantAutonomy,"Nex_GrantAutonomy init
+AddTextSmall ""An autonomous market will not generate income or cost upkeep, or count towards the player's colony or admin limits. Resources cannot be taken from local stockpiles.""
+AddTextSmall ""Exports to this market will generate income for other player markets. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. The player will be billed for local storage.""
+SetTextHighlightColors hColor bad
+SetTextHighlights ""generate income"" ""billed for local storage""
+AddTextSmall ""Revoking autonomy later will cause $nex_revokeAutonomyUnrest points of recent unrest.""
+SetTextHighlightColors bad
+SetTextHighlights $nex_revokeAutonomyUnrest
+Nex_AddOptionConfirmation nex_grantAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""So you wish to grant autonomy to $market?""","nex_grantAutonomy_confirm:Proceed
+nex_grantAutonomy_cancel:Cancel",
+nex_revokeAutonomy,DialogOptionSelected,$option == nex_revokeAutonomy,"Nex_GrantAutonomy init
+AddTextSmall ""An autonomous market will not generate income or cost upkeep, or count towards the player's colony or admin limits. Resources cannot be taken from local stockpiles.""
+
+AddTextSmall ""Exports to this market will generate income for other player markets. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. The player will be billed for local storage.""
+
+SetTextHighlightColors hColor bad
+SetTextHighlights ""generate income"" ""billed for local storage""
+AddTextSmall ""Revoking autonomy will cause $nex_revokeAutonomyUnrest points of recent unrest.""
+SetTextHighlightColors bad
+SetTextHighlights $nex_revokeAutonomyUnrest
+Nex_AddOptionConfirmation nex_revoketAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""This is… quite concerning. Do you wish to reassume direct administration of $market?""","nex_revokeAutonomy_confirm:Proceed
+nex_grantAutonomy_cancel:Cancel",
+nex_grantAutonomyConfirm,DialogOptionSelected,$option == nex_grantAutonomy_confirm,"Nex_GrantAutonomy grant
+FireAll PopulateOptions","""$market is now under autonomous administration. Thank you, $playerName.""",,
+nex_revokeAutonomyConfirm,DialogOptionSelected,$option == nex_revokeAutonomy_confirm,"Nex_GrantAutonomy revoke
+FireAll PopulateOptions","""As you say. $market is now under your direct authority once more, $playerName.""",,
+nex_grantAutonomyCancel,DialogOptionSelected,$option == nex_grantAutonomy_cancel,FireAll PopulateOptions,"""Anything else?""",,
 ,,,,,,
 # other base commander stuff,,,,,,
 #nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin

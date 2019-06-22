@@ -440,6 +440,8 @@
 		"bonusAdminIntelBullet1":"Faction size: %s",
 		"bonusAdminIntelBullet2":"Bonus admins: %s",
 		"bonusAdminIntelBullet3":"Next admin at size %s",
+		
+		"autonomyRevoked":"Autonomy revoked",
 	},
 	
 	"nex_colonyFleet":{
