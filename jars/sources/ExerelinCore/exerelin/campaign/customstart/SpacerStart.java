@@ -71,7 +71,7 @@ public class SpacerStart extends CustomStart {
 				}
 				fleet.getFleetData().setSyncNeeded();
 				
-				new SpacerObligation();
+				new Nex_SpacerObligation();
 			}
 		});
 		
