@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -185,6 +186,8 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			if (!variantId.endsWith("_Hull")) continue;
 			ShipVariantAPI variant = Global.getSettings().getVariant(variantId);
 			if (variant.isFighter()) continue;	// we'll deal fighters separately
+			if (variant.getHints().contains(ShipTypeHints.UNBOARDABLE) && variant.getHints().contains(ShipTypeHints.HIDE_IN_CODEX))
+				continue;
 			if (MiningHelperLegacy.isHidden(variant.getHullSpec().getHullId()) || MiningHelperLegacy.isHidden(variant.getHullSpec().getBaseHullId()))
 				continue;
 			
