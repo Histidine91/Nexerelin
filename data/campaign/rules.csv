@@ -390,50 +390,6 @@ ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem pri
 FireAll ExerelinMarketSpecial",You have no more prisoners.,,
 #END PRISONER OPTIONS,,,,,,
 ,,,,,,
-#START SUPERWEAPON OPTIONS,,,,,,
-ExerelinMarketSuperweaponOption,Nex_HostileAction,"IsValidInvasionTarget
-NGCDoesFactionExist interstellarimperium
-Exerelin_CanUseSuperweapon","SetEnabled exerelinSuperweapon true
-SetShortcut exerelinSuperweapon X",,1:exerelinSuperweapon:Deploy planetbreaker,
-ExerelinMarketSuperweaponOptionNotAvailable,Nex_HostileAction,"IsValidInvasionTarget
-NGCDoesFactionExist interstellarimperium
-!Exerelin_CanUseSuperweapon","SetEnabled exerelinSuperweapon false
-SetTooltip exerelinSuperweapon ""You have no ships capable of performing this action.""",,1:exerelinSuperweapon:Deploy planetbreaker,
-ExerelinSuperweaponPrompt,DialogOptionSelected,$option == exerelinSuperweapon,"$menuState = superweapon 0
-Exerelin_ShowShipVisual $bestSuperweapon
-SetShortcut exerelinSuperweaponProceed RETURN
-SetShortcut exerelinSuperweaponCancel ESCAPE
-Nex_AddOptionConfirmation exerelinSuperweaponProceed ""Confirm superweapon use?"" ""Fire"" ""Abort""","You can use a superweapon on $market to cause massive devastation, clearing the way for an invasion. Expect the enemy to try to stop you.
-
-Be warned of the political repercussions.","1:exerelinSuperweaponProceed:Continue
-2:exerelinSuperweaponCancel:Cancel",
-ExerelinSuperweaponCancel,DialogOptionSelected,$option == exerelinSuperweaponCancel,"ShowDefaultVisual
-FireAll Nex_HostileAction",,,
-,,,,,,
-ExerelinSuperweaponProceed,DialogOptionSelected,$option == exerelinSuperweaponProceed,"CreateWarmongerEvent $faction.id
-AdjustRep $faction.id COMBAT_AGGRESSIVE
-Exerelin_UseSuperweapon
-FireBest ExerelinSuperweaponDialog",,,
-ExerelinSuperweaponPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""superweapon""","$menuState = superweapon 0
-Exerelin_ShowShipVisual $bestSuperweapon
-SetPromptText ""You decide to...""
-SetShortcut exerelinSuperweaponProceed RETURN
-SetShortcut exerelinSuperweaponCancel ESCAPE
-Nex_AddOptionConfirmation exerelinSuperweaponProceed ""Confirm superweapon use?"" ""Fire"" ""Abort""",Your $shipOrFleet neutralizes the defence fleet and is ready to deploy your superweapon.,"1:exerelinSuperweaponProceed:Continue
-2:exerelinSuperweaponCancel:Cancel",
-ExerelinSuperweaponLeave,DialogOptionSelected,$option == exerelinSuperweaponLeave,DismissDialog,,,
-,,,,,,
-ExerelinSuperweaponFired,ExerelinSuperweaponDialog,$superweaponSuccess,"ShowVisual ""graphics/illustrations/facility_explosion.jpg""
-SetShortcut exerelinSuperweaponLeave ESCAPE",,exerelinSuperweaponLeave:Leave,
-ExerelinSuperweaponFiredAscalon,ExerelinSuperweaponDialog,"$id == tem_ascalon score:100
-$superweaponSuccess","ShowDefaultVisual
-SetShortcut exerelinSuperweaponLeave ESCAPE","The missile hits a shield several hundred meters short of the ground and detonates in a brilliant flash. When it clears, the rocky ground beneath is visibly scorched, but no real damage has been inflicted.
-
-In hindsight, trying to bomb a hardened underground installation protected by Templar technology probably wasn't the best idea.",exerelinSuperweaponLeave:Leave,
-ExerelinSuperweaponFiredNoneAvailable,ExerelinSuperweaponDialog,!$superweaponSuccess score:999,FireAll PopulateOptions,Superweapon deployment failed!,,
-,,,,,,
-#END SUPERWEAPON OPTIONS,,,,,,
-,,,,,,
 #START MINING OPTIONS,,,,,,
 nex_openAsteroid,OpenInteractionDialog,"$isAsteroid
 !Nex_IsModActive ""stellar_industrialist""","ShowDefaultVisual
