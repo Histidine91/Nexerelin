@@ -641,8 +641,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return;
 		}
 		
-		// do nothing if admin is AI core
-		if (market.getAdmin().isAICore()) {
+		// do nothing if admin is AI core (unless it's a faction ruler, e.g. II)
+		if (market.getAdmin().isAICore() && !Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())) 
+		{
 			return;
 		}
 		
