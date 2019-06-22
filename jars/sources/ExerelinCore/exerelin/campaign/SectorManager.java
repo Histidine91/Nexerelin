@@ -1125,11 +1125,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager.freeStart;
     }
     
-	@Deprecated
     protected static void expelPlayerFromFaction(boolean silent)
     {
         String oldFactionId = PlayerFactionStore.getPlayerFactionId();
         if (oldFactionId.equals(Factions.PLAYER)) return;
+        
+        ExerelinUtilsFaction.revokeCommission();
 
         SectorAPI sector = Global.getSector();
         FactionAPI newFaction = sector.getFaction(Factions.PLAYER);
@@ -1139,19 +1140,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             PlayerFactionStore.loadIndependentPlayerRelations(true);
         PlayerFactionStore.setPlayerFactionId(Factions.PLAYER);
         NexUtilsReputation.syncFactionRelationshipsToPlayer(Factions.PLAYER);
-        
-        if (!silent)
-        {
-			/*
-            CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
-            if (eventSuper == null) 
-                eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);
-            FactionChangedEvent event = (FactionChangedEvent)eventSuper;
-            
-            MarketAPI market = ExerelinUtils.getClosestMarket(oldFactionId);
-            event.changeIntel(oldFaction, newFaction, "expelled", market.getPrimaryEntity());
-			*/
-        }
     }
         
     public static void reinitLiveFactions()
