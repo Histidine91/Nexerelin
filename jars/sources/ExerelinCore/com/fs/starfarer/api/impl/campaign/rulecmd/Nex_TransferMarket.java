@@ -100,8 +100,21 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				info.addStatModGrid(350, 50, 10, 0, repChange, true, ExerelinUtils.getStatModValueGetter(true, 1));
 				text.addTooltip();
 				
+				String recentOwnerId = getRecentlyCapturedFromId(market);
+				if (recentOwnerId != null && !recentOwnerId.equals(Factions.PLAYER)) {
+					FactionAPI recentOwner = Global.getSector().getFaction(recentOwnerId);
+					str = StringHelper.getString("exerelin_markets", "transferMarketRecentlyCaptured");
+					str = StringHelper.substituteToken(str, "$market", market.getName() + "");
+					str = StringHelper.substituteToken(str, "$theFaction", recentOwner.getDisplayNameWithArticle());
+					String mult = Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult") + "×";
+					str = StringHelper.substituteToken(str, "$mult", mult);
+					LabelAPI para = text.addParagraph(str);
+					para.setHighlight(recentOwner.getDisplayNameWithArticleWithoutArticle(), mult);
+					para.setHighlightColors(recentOwner.getBaseUIColor(), Misc.getNegativeHighlightColor());
+				}
+				
 				String origOwnerId = ExerelinUtilsMarket.getOriginalOwner(market);
-				if (origOwnerId != null && !origOwnerId.equals(Factions.PLAYER)) {
+				if (origOwnerId != null && !origOwnerId.equals(recentOwnerId) && !origOwnerId.equals(Factions.PLAYER)) {
 					FactionAPI origOwner = Global.getSector().getFaction(origOwnerId);
 					str = StringHelper.getString("exerelin_markets", "transferMarketOriginalOwner");
 					str = StringHelper.substituteToken(str, "$market", market.getName() + "");
@@ -149,7 +162,9 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
 		
 		float repChange = getRepChange(market).getModifiedValue() * 0.01f;
-		if (newFactionId.equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+		if (newFactionId.equals(getRecentlyCapturedFromId(market)))
+			repChange *= Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult");
+		else if (newFactionId.equals(ExerelinUtilsMarket.getOriginalOwner(market)))
 			repChange *= Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult");
 		
 		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, 
@@ -158,6 +173,12 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				
 		//ExerelinUtilsReputation.adjustPlayerReputation(newFaction, null, repChange, null, dialog.getTextPanel());	// done in event
 		market.getPrimaryEntity().getMemoryWithoutUpdate().set("$_newFaction", newFaction.getDisplayNameWithArticle(), 0);
+	}
+	
+	public static String getRecentlyCapturedFromId(MarketAPI market) {
+		if (!market.getMemoryWithoutUpdate().contains(SectorManager.MEMORY_KEY_RECENTLY_CAPTURED))
+			return null;
+		return market.getMemoryWithoutUpdate().getString(SectorManager.MEMORY_KEY_RECENTLY_CAPTURED);
 	}
 	
 	/**

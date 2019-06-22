@@ -68,6 +68,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected static SectorManager sectorManager;
 
     protected static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
+    public static final String MEMORY_KEY_RECENTLY_CAPTURED = "$nex_recentlyCapturedFrom";
+    public static final float MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE = 90;
     public static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
         Ranks.POST_BASE_COMMANDER,
         Ranks.POST_OUTPOST_COMMANDER,
@@ -95,7 +97,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }));
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
-    protected List<String> liveFactionIds = new ArrayList<>();
+    protected Set<String> liveFactionIds = new HashSet<>();
     protected Set<String> historicFactionIds = new HashSet<>();
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
     protected Map<FleetMemberAPI, Float[]> insuranceLostMembers = new HashMap<>();    // value is base buy value and number of D mods
@@ -992,6 +994,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
         }
         
+        if (newOwner.isPlayerFaction() && isCapture) {
+            market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED, 
+                    oldOwnerId, MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE);
+        }
+        
         ExerelinUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
                 playerInvolved, isCapture, factionsToNotify, repChangeStrength);
     }
@@ -1151,7 +1158,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return;
         List<String> temp = ExerelinConfig.getFactions(false, false);
-        sectorManager.liveFactionIds = new ArrayList<>();
+        sectorManager.liveFactionIds = new HashSet<>();
         sectorManager.factionIdsAtStart = new ArrayList<>();
         sectorManager.historicFactionIds = new HashSet<>();
         
