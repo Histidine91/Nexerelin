@@ -21,7 +21,6 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -50,6 +49,7 @@ import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
+import exerelin.world.scenarios.DerelictEmpireFleetInteractionConfigGen;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -451,6 +451,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("avgRepChange", sumRepDelta/factionsToNotify.size());
         SlavesSoldEvent event = (SlavesSoldEvent)Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_slaves_sold");
         event.reportSlaveTrade(marketLastSoldSlaves, params);
+    }
+    
+    @Override
+    public void reportFleetSpawned(CampaignFleetAPI fleet) {
+        if (fleet.getFaction().getId().equals(Factions.DERELICT)) {
+            fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
+                   new DerelictEmpireFleetInteractionConfigGen());    
+        }
     }
     
     // regularly refresh live factions
