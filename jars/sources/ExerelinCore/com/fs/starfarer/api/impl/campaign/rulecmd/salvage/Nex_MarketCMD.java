@@ -1388,8 +1388,10 @@ public class Nex_MarketCMD extends MarketCMD {
 							, "" + market.getSize());
 				}
 				
-				ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
+				// move this to outside the if check; see http://fractalsoftworks.com/forum/index.php?topic=15628.msg252000#msg252000
+				// ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
 			}
+			ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
 		}
 		
 		if (dialog != null && dialog.getPlugin() instanceof RuleBasedDialog) {
