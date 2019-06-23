@@ -1040,7 +1040,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (!newOwnerId.equals("templars") && !newOwnerId.equals(Factions.PLAYER))
         {
             if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
-                    || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
+                    || market.hasCondition("tem_avalon") || market.hasIndustry("tiandong_merchq") 
+                    || FORCE_MILITARY_MARKET.contains(market.getId()))
                 haveMilitary = true;
             if (!NO_BLACK_MARKET.contains(market.getId()))
                 haveBlackMarket = true;
