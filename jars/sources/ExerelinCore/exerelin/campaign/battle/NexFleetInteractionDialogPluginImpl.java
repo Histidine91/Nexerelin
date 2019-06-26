@@ -384,9 +384,6 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		
 		if (fleet.getAI() != null)
 		{
-			if (fleet.getAI().wantsToJoin(battle, true)) 
-				return true;
-			
 			// pull in anyone with an assignment on one of our fleets
 			FleetAssignmentDataAPI assignment = fleet.getAI().getCurrentAssignment();
 			if (assignment == null) return true;
@@ -402,17 +399,18 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 						if (fleet.getMemoryWithoutUpdate().contains("$tiandongMercTarget")
 							&& fleet.getMemoryWithoutUpdate().getFleet("$tiandongMercTarget") == inBattle)
 						{
-							// don't let merc join if THI is friendly or better to player, 
-							// and escortee is not alraedy on player side
-							// (as the merc would join _against_ the escortee
-							if (!battle.isOnPlayerSide(inBattle) && 
-									fleet.getFaction().getRelationshipLevel(Factions.PLAYER).isAtWorst(RepLevel.FRIENDLY))
+							// don't let merc join if merc is friendly to player, 
+							// and escortee is not already on player side
+							// (otherwise merc claims to join but doesn't, as it can't pick a side)
+							
+							if (!battle.isOnPlayerSide(inBattle) &&
+									fleet.isFriendlyTo(Global.getSector().getPlayerFleet()))
 							{
 								return false;
 							}
 							
 							// add hostile memory keys to merc if escortee is hostile to player
-							if (!inBattle.isFriendlyTo(Global.getSector().getPlayerFleet()))
+							if (!battle.isOnPlayerSide(inBattle))
 							{
 								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE);
 								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF);
@@ -424,6 +422,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 					}
 				}
 			}
+			if (fleet.getAI().wantsToJoin(battle, true)) 
+				return true;
 		}
 		return false;
 	}
