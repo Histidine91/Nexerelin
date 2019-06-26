@@ -3,10 +3,14 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.Commission;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.missions.Commission.COMMISSION_REQ;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexUtilsReputation;
 
 public class Nex_Commission extends Commission {
 	
@@ -26,6 +30,16 @@ public class Nex_Commission extends Commission {
 			   Ranks.POST_ADMINISTRATOR.equals(person.getPostId()) ||
 			   Ranks.POST_OUTPOST_COMMANDER.equals(person.getPostId());
 	}
+	
+	@Override
+	protected void accept() {
+		if (Misc.getCommissionFactionId() == null) {
+			PlayerFactionStore.saveIndependentPlayerRelations();
+			NexUtilsReputation.syncPlayerRelationshipsToFaction(faction.getId());
+		}
+		super.accept();
+	}
+	
 	
 	@Override
 	protected boolean playerMeetsCriteria() {

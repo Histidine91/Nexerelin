@@ -1237,6 +1237,10 @@ FireBest CMSNTextUnsuited
 Nex_Commission printRequirements",,,
 cmsn_meetsCriteria,DialogOptionSelected,"$option == cmsn_askCommission
 Nex_Commission playerMeetsCriteria",FireBest CMSNTextSuitedPart1,,0:cmsn_continueMeetsReq:Continue,
+cmsn_accept,DialogOptionSelected,$option == cmsn_accept,"FireBest CMSNTextWelcomePart1
+Nex_Commission accept
+FireBest CMSNTextWelcomePart2
+FireAll PopulateOptions",,,
 ,,,,,,
 # Luddic Path commission,,,,,,
 CMSNTextRejectHostile_path,CMSNTextRejectHostile,$faction.id == luddic_path,,"""What is this madness, heathen? If I could slay you in the name of Ludd right now, I would.""",,
