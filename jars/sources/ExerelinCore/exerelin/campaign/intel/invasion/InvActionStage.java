@@ -294,7 +294,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		{
 			status = RaidStageStatus.FAILURE;
 			intel.setOutcome(OffensiveOutcome.FAIL);
-			intel.sendOutcomeUpdate();
 		}
 	}
 	
