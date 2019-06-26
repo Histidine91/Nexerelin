@@ -756,7 +756,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			return;
 		
 		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1);
-		intel.setImportant(true);	// debug
 		
 		ExerelinUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
 	}
