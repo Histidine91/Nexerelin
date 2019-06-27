@@ -415,10 +415,13 @@
 		"intelStageActionAborted":"The strike mission has been aborted.",
 	},
 	"nex_bombardment":{
+		"satBombDesc":"A saturation bombardment will destabilize the colony, reduce its population, and disrupt all operations for a long time.",
+		"satBombDescDestroy":"A saturation bombardment of a colony this size will destroy it utterly.",
 		"satBombWarning":"An atrocity of this scale cannot be hidden, and will make the following factions hostile:",
 		"satBombWarningSmall":"An atrocity of this scale cannot be hidden. $market is sufficiently low-populated and/or remote that the reputational impacts will be limited, but the following factions will nevertheless be angry:",
 		"satBombWarningAllHostile":"An atrocity of this scale cannot be hidden, but any factions that would be dismayed by such actions are already hostile to you.",
 		"satBombWarningVengeful":"Due to their hatred of $theFaction, the following factions can be expected to overlook your crime:",
+		"satBombWarningHidden":"As $market is a hidden and/or transient habitation, its destruction will not attract much, if any, attention from other factions.",
 	},
 	"nex_bounties":{
 		"factionBountyIntel_title":"Faction Bounty",

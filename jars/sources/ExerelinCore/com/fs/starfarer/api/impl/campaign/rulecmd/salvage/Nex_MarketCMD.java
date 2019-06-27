@@ -1187,25 +1187,31 @@ public class Nex_MarketCMD extends MarketCMD {
 		temp.willBecomeHostile.clear();
 		temp.willBecomeHostile.add(faction);
 		
+		boolean hidden = market.isHidden();
+		
 		List<FactionAPI> nonHostile = new ArrayList<FactionAPI>();
 		List<FactionAPI> vengeful = new ArrayList<>();
-		for (FactionAPI faction : Global.getSector().getAllFactions()) {
-			if (temp.willBecomeHostile.contains(faction)) continue;
-			
-			if (faction.getCustomBoolean(Factions.CUSTOM_CARES_ABOUT_ATROCITIES)) {
-				if (faction.getRelationshipLevel(market.getFaction()) == RepLevel.VENGEFUL)
-				{
-					vengeful.add(faction);
-				}
-				else {
-					boolean hostile = faction.isHostileTo(Factions.PLAYER);
-					temp.willBecomeHostile.add(faction);
-					if (!hostile) {
-						nonHostile.add(faction);
+		
+		if (!hidden) {
+			for (FactionAPI faction : Global.getSector().getAllFactions()) {
+				if (temp.willBecomeHostile.contains(faction)) continue;
+
+				if (faction.getCustomBoolean(Factions.CUSTOM_CARES_ABOUT_ATROCITIES)) {
+					if (faction.getRelationshipLevel(market.getFaction()) == RepLevel.VENGEFUL)
+					{
+						vengeful.add(faction);
+					}
+					else {
+						boolean hostile = faction.isHostileTo(Factions.PLAYER);
+						temp.willBecomeHostile.add(faction);
+						if (!hostile) {
+							nonHostile.add(faction);
+						}
 					}
 				}
 			}
 		}
+
 		
 		float opad = 10f;
 		float small = 5f;
@@ -1230,13 +1236,16 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		int fuel = (int) playerFleet.getCargo().getFuel();
 		if (destroy) {
-			text.addPara("A saturation bombardment of a colony this size will destroy it utterly.");
+			text.addPara(StringHelper.getString("nex_bombardment", "satBombDescDestroy"));
 		} else {
-			text.addPara("A saturation bombardment will destabilize the colony, reduce its population, " +
-					"and disrupt all operations for a long time.");
+			text.addPara(StringHelper.getString("nex_bombardment", "satBombDesc"));
 		}		
-
-		if (nonHostile.isEmpty()) {
+		
+		if (hidden) {
+			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+					"satBombWarningHidden", "$market", market.getName()));
+		}
+		else if (nonHostile.isEmpty()) {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
 		} 
 		else if (market.getSize() <= 3 || market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
