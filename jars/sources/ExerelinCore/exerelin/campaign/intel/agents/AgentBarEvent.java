@@ -165,6 +165,9 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				
 				BarEventManager.getInstance().notifyWasInteractedWith(this);
 				addIntel();
+				text.setFontSmallInsignia();
+				text.addPara(getString("barDialogHiredTip"));
+				text.setFontInsignia();
 				options.addOption(StringHelper.getString("leave", true), OptionId.HIRE_DONE);
 				break;
 			case HIRE_DONE:
