@@ -3,11 +3,13 @@
 	
 	"industrySuccessMods":{
 		"lionsguard":-0.25,
+		"brdy_defhq":-0.25,
 		"6emebureau":-0.4,
 		"SCY_incom":-0.4,
 	},
 	"industryDetectionMods":{
 		"lionsguard":0.5,
+		"brdy_defhq":0.5,
 		"6emebureau":1,
 		"SCY_incom":1,
 	},

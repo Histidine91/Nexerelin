@@ -546,7 +546,9 @@ public class NexMarketBuilder
 			else if (factionId.equals("interstellarimperium")) {
 				//market.addIndustry("ii_interstellarbazaar");	// put somewhere else
 				market.addIndustry("ii_imperialguard");
-			}
+			} else if (factionId.equals("blackrock_driveyards"))
+				market.addIndustry("brdy_defhq");
+			
 			
 			market.getMemoryWithoutUpdate().set("$nex_procgen_hq", true);
 		}
