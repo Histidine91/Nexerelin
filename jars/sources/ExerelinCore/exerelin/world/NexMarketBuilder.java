@@ -682,8 +682,11 @@ public class NexMarketBuilder
 		// for each seed, add N industries to factions' markets
 		for (IndustrySeed seed : conf.industrySeeds)
 		{
-			float countRaw = seed.mult * entities.size();
-			int count = (int)(seed.roundUp ? Math.ceil(countRaw) : Math.floor(countRaw));
+			int count = seed.count;
+			if (seed.mult > 0) {
+				float fromMult = seed.mult * entities.size();
+				count += (int)(seed.roundUp ? Math.ceil(fromMult) : Math.floor(fromMult));
+			}
 			
 			if (count == 0) continue;
 			
@@ -799,6 +802,7 @@ public class NexMarketBuilder
 		for (IndustryClassGen gen : industryClassesOrdered)
 		{
 			if (gen.isSpecial()) continue;
+			if (!gen.canAutogen()) continue;
 			if (!gen.canApply(entity)) continue;
 			if (gen.getPriority() < minPriority) continue;
 			if (gen.getPriority() > maxPriority) continue;
@@ -845,8 +849,8 @@ public class NexMarketBuilder
 		WeightedRandomPicker<IndustryClassGen> specialPicker = new WeightedRandomPicker<>();
 		for (IndustryClassGen gen : specialIndustryClasses)
 		{
-			if (!gen.canApply(entity))
-				continue;
+			if (!gen.canAutogen()) continue;
+			if (!gen.canApply(entity)) continue;
 			
 			float weight = gen.getWeight(entity);
 			if (weight <= 0) continue;

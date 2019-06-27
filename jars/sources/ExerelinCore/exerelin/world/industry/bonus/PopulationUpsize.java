@@ -12,11 +12,6 @@ public class PopulationUpsize extends BonusGen {
 	}
 	
 	@Override
-	public boolean canApply(Industry ind, ExerelinProcGen.ProcGenEntity entity) {
-		return true;
-	}
-	
-	@Override
 	public float getPriority(Industry ind, ExerelinProcGen.ProcGenEntity entity) {
 		float priority = entity.market.getSize();
 		if (entity.isHQ) priority *= 10;

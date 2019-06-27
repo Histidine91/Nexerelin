@@ -158,7 +158,7 @@ public class ExerelinFactionConfig
         DefenceStationSet high = new DefenceStationSet(0.5f, Industries.ORBITALSTATION_HIGH, Industries.BATTLESTATION_HIGH, Industries.STARFORTRESS_HIGH);
         DEFAULT_DEFENCE_STATIONS.addAll(Arrays.asList(low, mid, high));
         
-        DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.HEAVYINDUSTRY, 0.1f, true));
+        DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.HEAVYINDUSTRY, 0.1f, 0, true));
         //DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.FUELPROD, 0.1f, true));
         //DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.LIGHTINDUSTRY, 0.1f, true));
     }
@@ -329,9 +329,10 @@ public class ExerelinFactionConfig
                 {
                     JSONObject seedJson = seedsJson.getJSONObject(i);
                     String id = seedJson.getString("id");
-                    float mult = (float)seedJson.getDouble("mult");
+                    int count = seedJson.optInt("count", 0);
+                    float mult = (float)seedJson.optDouble("mult", 0);
                     boolean roundUp = seedJson.optBoolean("roundUp", true);
-                    industrySeeds.add(new IndustrySeed(id, mult, roundUp));
+                    industrySeeds.add(new IndustrySeed(id, mult, count, roundUp));
                 }
             }
             else
@@ -356,7 +357,7 @@ public class ExerelinFactionConfig
                     JSONObject seedJson = seedsJson.getJSONObject(i);
                     String id = seedJson.getString("id");
                     int count = seedJson.optInt("count", 0);
-                    float mult = (float)seedJson.optDouble("mult", -1);
+                    float mult = (float)seedJson.optDouble("mult", 0);
                     bonusSeeds.add(new BonusSeed(id, count, mult));
                 }
             }
@@ -1065,12 +1066,14 @@ public class ExerelinFactionConfig
 	{
 		public String industryId;
 		public float mult;
+		public int count;
 		public boolean roundUp;
 		
-		public IndustrySeed(String industryId, float mult, boolean roundUp)
+		public IndustrySeed(String industryId, float mult, int count, boolean roundUp)
 		{
 			this.industryId = industryId;
 			this.mult = mult;
+			this.count = count;
 			this.roundUp = roundUp;
 		}
 	}

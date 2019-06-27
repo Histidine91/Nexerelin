@@ -66,6 +66,15 @@ public abstract class IndustryClassGen implements Comparable {
 		return true;
 	}
 	
+	/**
+	 * If false, will not appear on its own and must be specified in the faction's industry seeds.
+	 * @return
+	 */
+	public boolean canAutogen()
+	{
+		return true;
+	}
+	
 	public boolean alreadyExists(ProcGenEntity entity)
 	{
 		for (String ind : industryIds)
