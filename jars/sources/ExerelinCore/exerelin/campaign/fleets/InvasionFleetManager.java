@@ -16,13 +16,11 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -772,13 +770,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			String factionId = market.getFactionId();
 			if (Factions.INDEPENDENT.equals(factionId) || Factions.DERELICT.equals(factionId)) continue;
-			if (!market.getFaction().isHostileTo(Factions.PIRATES))
-				continue;
 			
 			//if (!pirateInvasions && !ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
 			//	continue;
 			
-			if (market.hasCondition(Conditions.PIRATE_ACTIVITY)) {
+			if (market.hasCondition(Conditions.PIRATE_ACTIVITY) && market.getFaction().isHostileTo(Factions.PIRATES)) {
 				MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
 				PirateActivity plugin = (PirateActivity)cond.getPlugin();
 
@@ -793,7 +789,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					}
 				}
 			}
-			if (market.hasCondition(Conditions.PATHER_CELLS)) {
+			if (market.hasCondition(Conditions.PATHER_CELLS) && market.getFaction().isHostileTo(Factions.LUDDIC_PATH)) {
 				MarketConditionAPI cond = market.getCondition(Conditions.PATHER_CELLS);
 				LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
 				LuddicPathCellsIntel cellIntel = cellCond.getIntel();
