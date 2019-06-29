@@ -3,6 +3,7 @@ package exerelin.campaign.intel.agents;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -645,6 +646,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		tags.add(agentFaction.getId());
 		tags.add(targetFaction.getId());
 		return tags;
+	}
+	
+	@Override
+	public SectorEntityToken getMapLocation(SectorMapAPI map) {
+		if (market != null)
+			return market.getPrimaryEntity();
+		return null;
 	}
 	
 	@Override
