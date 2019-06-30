@@ -363,6 +363,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (config.freeMarket)
 		{
+			market.getMemoryWithoutUpdate().set("$startingFreeMarket", true);
 			market.setFreePort(true);
 		}
 		
