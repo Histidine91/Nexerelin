@@ -1,5 +1,8 @@
 package exerelin.campaign.submarkets;
 
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
+import com.fs.starfarer.api.impl.campaign.submarkets.BlackMarketPlugin;
 import com.fs.starfarer.api.impl.campaign.submarkets.MilitarySubmarketPlugin;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -45,6 +48,15 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 		getCargo().sort();
 	}
 	*/
+	
+	@Override
+	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+		super.reportPlayerMarketTransaction(transaction);
+		
+		FactionAPI faction = submarket.getFaction();
+		BlackMarketPlugin.delayedLearnBlueprintsFromTransaction(faction, getCargo(), 
+				transaction, 60f + 60 * (float) Math.random());
+	}
 	
 	@Override
 	protected boolean hasCommission() {
