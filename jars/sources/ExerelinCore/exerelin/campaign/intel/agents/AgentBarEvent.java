@@ -47,6 +47,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 	
 	@Override
 	public boolean shouldShowAtMarket(MarketAPI market) {
+		if (market.isHidden()) return false;
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		if (!conf.allowAgentActions)
 			return false;
