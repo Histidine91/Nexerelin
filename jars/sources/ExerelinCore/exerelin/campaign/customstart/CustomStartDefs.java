@@ -61,6 +61,7 @@ public class CustomStartDefs {
 			def.requiredModId = defJson.optString("requiredModId", null);
 			def.difficulty = defJson.optString("difficulty", StringHelper.getString("unknown"));
 			def.factionId = defJson.optString("factionId", Factions.PLAYER);
+			def.randomSector = defJson.optInt("randomSector", 0);
 			//def.configStartingResources = defJson.optBoolean("configStartingResources", true);
 			
 			defs.add(def);
@@ -104,6 +105,7 @@ public class CustomStartDefs {
 		public String factionId = Factions.PLAYER;
 		public String className;
 		public String requiredModId;
+		public int randomSector;
 		//public boolean configStartingResources = true;
 		
 		public CustomStartDef(String id, String name, String desc, String className) {

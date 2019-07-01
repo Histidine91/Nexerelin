@@ -19,6 +19,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 
@@ -28,9 +30,13 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 	public static final int PREFIX_LENGTH = CUSTOM_START_OPTION_PREFIX.length();
 	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
 	
+	public static String tooltipDisabledRandom = StringHelper.getString("exerelin_ngc", "customStartOrScenario_tooltipDisabledInRandom");
+	public static String tooltipDisabledNonRandom = StringHelper.getString("exerelin_ngc", "customStartOrScenario_tooltipDisabledInNonRandom");
+	
 	protected Map<String, String> tooltips = new HashMap<>();
 	protected Map<String, List<String>> highlights = new HashMap<>();
 	protected Map<String, List<Color>> highlightColors = new HashMap<>();
+	protected Set<String> disabled = new HashSet<>();
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
@@ -78,6 +84,10 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			dialog.getOptionPanel().setTooltipHighlightColors(opt, 
 					highlightColors.get(opt).toArray(new Color[0]));
 		}
+		for (String option : disabled)
+		{
+			dialog.getOptionPanel().setEnabled(option, false);
+		}
 		
 		dialog.getOptionPanel().setShortcut("nex_NGCCustomStart", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
@@ -106,7 +116,28 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			if (def.requiredModId != null && !Global.getSettings().getModManager().isModEnabled(def.requiredModId))
 				continue;
 			
+			String option = CUSTOM_START_OPTION_PREFIX + def.id;
+			
+			// check if this custom start is compatible with our current random sector setting
+			boolean disabledRandom = false, disabledNonRandom = false;
+			if (def.randomSector == 1 && corvus) {
+				disabledNonRandom = true;
+				disabled.add(option);
+			}
+			else if (def.randomSector == -1 && !corvus) {
+				disabledRandom = true;
+				disabled.add(option);
+			}
+			
 			StringBuilder tb = new StringBuilder();
+			if (disabledRandom) {
+				tb.append(tooltipDisabledRandom);
+				tb.append("\n\n");
+			}
+			else if (disabledNonRandom) {
+				tb.append(tooltipDisabledNonRandom);
+				tb.append("\n\n");
+			}
 			FactionAPI faction = Global.getSettings().createBaseFaction(def.factionId);
 			String factionName = faction.getDisplayName();
 			tb.append(StringHelper.getString("exerelin_ngc", "customStartTooltipFaction", true) + ": " + factionName);
@@ -116,12 +147,22 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			tb.append("\n\n");
 			tb.append(def.desc);
 			
-			String option = CUSTOM_START_OPTION_PREFIX + def.id;
+			List<String> hl = new ArrayList<>(Arrays.asList(factionName, difficulty));
+			List<Color> hlColors = new ArrayList<>(Arrays.asList(faction.getBaseUIColor(), 
+					CustomStartDefs.getDifficultyColor(difficulty)));
+			// add disabled tooltip if needed
+			if (disabledRandom) {
+				hl.add(0, tooltipDisabledRandom);
+				hlColors.add(0, Misc.getNegativeHighlightColor());
+			} else if (disabledNonRandom) {
+				hl.add(0, tooltipDisabledNonRandom);
+				hlColors.add(0, Misc.getNegativeHighlightColor());
+			}
 			
 			addOption(def.name, option);
 			tooltips.put(option, tb.toString());
-			highlights.put(option, Arrays.asList(factionName, difficulty));
-			highlightColors.put(option, Arrays.asList(faction.getBaseUIColor(), CustomStartDefs.getDifficultyColor(difficulty)));
+			highlights.put(option, hl);
+			highlightColors.put(option, hlColors);
 		}
 	}
 }

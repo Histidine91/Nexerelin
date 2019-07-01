@@ -16,6 +16,8 @@ import exerelin.world.scenarios.ScenarioManager;
 import exerelin.world.scenarios.ScenarioManager.StartScenarioDef;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 
@@ -26,6 +28,7 @@ public class Nex_NGCCustomScenario extends PaginatedOptions {
 	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
 	
 	protected Map<String, String> tooltips = new HashMap<>();
+	protected Set<String> disabled = new HashSet<>();
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
@@ -84,6 +87,12 @@ public class Nex_NGCCustomScenario extends PaginatedOptions {
 		{	
 			dialog.getOptionPanel().setTooltip(tmp.getKey(), tmp.getValue());
 		}
+		for (String option : disabled)
+		{
+			dialog.getOptionPanel().setEnabled(option, false);
+			dialog.getOptionPanel().setTooltipHighlightColors(option, Misc.getNegativeHighlightColor());
+			dialog.getOptionPanel().setTooltipHighlights(option, Nex_NGCCustomStart.tooltipDisabledNonRandom);
+		}
 		
 		dialog.getOptionPanel().setShortcut("exerelinNGCSectorOptions", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
@@ -111,14 +120,19 @@ public class Nex_NGCCustomScenario extends PaginatedOptions {
 		
 		for (StartScenarioDef def : ScenarioManager.getScenarioDefs())
 		{
-			if (corvus && def.randomSectorOnly) continue;
 			if (def.requiredModId != null && !Global.getSettings().getModManager().isModEnabled(def.requiredModId))
 				continue;
 			
 			String option = CUSTOM_SCENARIO_OPTION_PREFIX + def.id;
+			String tooltip = def.desc;
+			
+			if (corvus && def.randomSectorOnly) {
+				disabled.add(option);
+				tooltip = Nex_NGCCustomStart.tooltipDisabledNonRandom	+ "\n\n" + tooltip;
+			}
 			
 			addOption(def.name, option);
-			tooltips.put(option, def.desc);
+			tooltips.put(option, tooltip);
 		}
 	}
 }

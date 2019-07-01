@@ -902,6 +902,9 @@
 		"customStart":"custom start",
 		"customStartTooltipFaction":"Starting faction",
 		"customStartTooltipDifficulty":"Difficulty",
+		
+		"customStartOrScenario_tooltipDisabledInRandom":"Disabled in random sector mode",
+		"customStartOrScenario_tooltipDisabledInNonRandom":"Disabled in non-random sector mode",
 
 		"added":"added",
 		#"shipString":"$shipClass-class $designation ($variantName)",
