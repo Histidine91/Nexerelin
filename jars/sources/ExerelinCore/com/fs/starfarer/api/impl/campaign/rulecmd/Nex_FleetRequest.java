@@ -299,6 +299,10 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		float time = InvasionFleetManager.getOrganizeTime(fp);
 		if (fleetType == FleetType.INVASION)
 			time *= 1.25f;
+		time *= Global.getSettings().getFloat("nex_fleetRequestOrganizeTimeMult");
+		
+		if (time < 0.1f) time = 0.1f;
+		
 		return time;
 	}
 	
