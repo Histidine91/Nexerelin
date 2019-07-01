@@ -188,6 +188,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	protected Object readResolve() {
+		if (agents == null) {
+			agents = new HashSet<>();
+			for (AgentIntel agent : getAgentsStatic()) {
+				addAgent(agent);
+			}
+		}
 		updateBaseMaxAgents();
 		return this;
 	}
