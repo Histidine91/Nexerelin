@@ -107,9 +107,11 @@ public class ColonyTargetValuator {
 				if (existingMarket.getFaction() == faction) continue;
 				return false;
 			}
-			// don't colonize systems with stations (this is to avoid Remnant stations etc.)
+			// don't colonize systems with stations or large fleets (this is to avoid Remnant stations etc.)
 			for (CampaignFleetAPI fleet : system.getFleets()) {
 				if (fleet.isStationMode()) return false;
+				if (fleet.getFaction().isHostileTo(faction) && fleet.getFleetPoints() > 25)
+					return false;
 			}
 		}
 		if (!ExerelinUtilsAstro.canHaveCommRelay(system))
