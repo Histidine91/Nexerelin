@@ -109,7 +109,8 @@ public class InvasionRound {
 		Industry toDisrupt = industryPicker.pick();
 		if (toDisrupt != null)
 		{
-			float dur = toDisrupt.getBuildTime() * StarSystemGenerator.getNormalRandom(random, 0.75f, 1.25f);
+			//float dur = toDisrupt.getBuildTime() * StarSystemGenerator.getNormalRandom(random, 0.75f, 1.25f);
+			float dur = 30 * StarSystemGenerator.getNormalRandom(random, 0.75f, 1.25f);
 			float damMult = Math.min(0.5f + 0.5f * atkDam/defDam, 1);
 			dur *= damMult;
 			//if (dur > 5) {
