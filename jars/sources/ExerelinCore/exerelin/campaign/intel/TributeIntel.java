@@ -282,7 +282,7 @@ public class TributeIntel extends BaseIntelPlugin {
 		daysRemaining -= Global.getSector().getClock().convertToDays(amount);
 		
 		if (daysRemaining <= 0) {
-			status = TributeStatus.REJECTED;
+			reject();
 			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
 			endAfterDelay();
 		}
