@@ -1,2 +1,2 @@
 listenerId,listenerClass,priority
-Nex_ForceMarketUpdateListener,exerelin.console.listeners.ForceMarketUpdateListener,0
+Nex_ForceMarketUpdateListener,exerelin.console.listeners.ForceMarketUpdateListener,-10.7

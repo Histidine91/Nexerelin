@@ -14,6 +14,7 @@ StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,nexerelin
 OpenNexConfig,exerelin.console.commands.OpenNexConfig,"campaign,nexerelin",opennexconfig,Opens a dialog screen to change some Nexerelin settings (as if Nexerelin was added to an existing save).
 AddAgent,exerelin.console.commands.AddAgent,"campaign,nexerelin",addagent [level],Adds an agent for the player.
 ResetVictory,exerelin.console.commands.ResetVictory,"campaign,nexerelin",resetvictory,Removes the existing victory/retirement intel (if one exists) and allows the player to win the game again. Note: This may happen quickly if victory conditions remain met.
+PrintDisposition,exerelin.console.commands.PrintDisposition,"campaign,nexerelin",printdisposition <faction1> <faction2>,Prints the 'disposition' (hidden diplomacy-related value) of faction 1 towards faction 2.
 #,,,,
 # Override default command,,,,
 SetRelation,exerelin.console.commands.SetRelationship,"core,campaign",setrelation all|<faction> [optionalTowardsFaction] <amount>,"Sets the relationship between two factions to the given number. If no second faction is entered, relationship with the player is affected. Arguments range from -100 to 100."

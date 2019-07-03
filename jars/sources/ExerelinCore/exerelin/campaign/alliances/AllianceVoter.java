@@ -10,6 +10,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -313,12 +314,12 @@ public class AllianceVoter {
 		if (isWar && us.isAtWorst(otherFactionId, RepLevel.FRIENDLY)) {
 			return Vote.NO;
 		}
-		
-		float friendRelationship = us.getRelationship(friendId);
-		float otherRelationship = us.getRelationship(otherFactionId);
+		DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(factionId);
+		float friendDisposition = brain.getDisposition(friendId).disposition.getModifiedValue();
+		float otherDisposition = brain.getDisposition(otherFactionId).disposition.getModifiedValue();
 				
 		int factionCount = 0;
-		float otherAllianceRelationshipSum = 0;
+		float otherAllianceDispositionSum = 0;
 		
 		float hawkishness = usConf.alignments.get(Alignment.MILITARIST);
 		float diplomaticness = usConf.alignments.get(Alignment.DIPLOMATIC);
@@ -326,19 +327,20 @@ public class AllianceVoter {
 		for (String otherMember: otherAllianceMembers)
 		{
 			if (otherMember.equals(otherFactionId)) continue;
-			otherAllianceRelationshipSum += us.getRelationship(otherMember);
+			otherAllianceDispositionSum += brain.getDisposition(otherMember).disposition.getModifiedValue();
+			
 			factionCount++;
 		}
 		
 		// from relationships
-		float totalPoints = BASE_POINTS + friendRelationship*100;
-		float otherRelationshipPoints = isWar ? -(otherRelationship + 0.25f)*100 : (otherRelationship + 0.25f)*100;
-		totalPoints += otherRelationshipPoints;
+		float totalPoints = BASE_POINTS + friendDisposition*2f;
+		float otherDispositionPoints = isWar ? -(otherDisposition)*2f : (otherDisposition)*2f;
+		totalPoints += otherDispositionPoints;
 		
-		float otherAllianceRelationshipAvg = (factionCount > 0) ? otherAllianceRelationshipSum/factionCount : 0;
-		float otherAllianceRelationshipPoints = isWar ? -(otherAllianceRelationshipAvg + 0.25f)*50 
-				: (otherAllianceRelationshipAvg + 0.25f)*50;
-		totalPoints += otherAllianceRelationshipPoints;
+		float otherAllianceDispositionAvg = (factionCount > 0) ? otherAllianceDispositionSum/factionCount : 0;
+		float otherAllianceDispositionPoints = isWar ? -(otherAllianceDispositionAvg) * 1f 
+				: (otherAllianceDispositionAvg) * 1f;
+		totalPoints += otherAllianceDispositionPoints;
 		
 		// strength
 		float strengthPoints = (strengthRatio - 1) * 100 * STRENGTH_POINT_MULT;
@@ -374,9 +376,10 @@ public class AllianceVoter {
 		{
 			log.info(us.getDisplayName() + " votes: " + vote);
 			log.info("\tTotal points: " + totalPoints);
-			log.info("\tFriend relationship: " + friendRelationship * 100);
-			log.info("\tOther relationship: " + otherRelationshipPoints);
-			log.info("\tOther alliance relationship: " + otherAllianceRelationshipPoints);
+			log.info("\tBase points: " + BASE_POINTS);
+			log.info("\tFriend disposition: " + friendDisposition * 2f);
+			log.info("\tOther disposition: " + otherDispositionPoints);
+			log.info("\tOther alliance disposition: " + otherAllianceDispositionPoints);
 			log.info("\tStrength points: " + strengthPoints);
 			log.info("\tHawk/dove points: " + hawkPoints);
 			log.info("\tWar weariness points: " + wearinessPoints);

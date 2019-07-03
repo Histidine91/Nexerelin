@@ -267,7 +267,7 @@ public class DiplomacyBrain {
 	{
 		MutableStat disposition = getDisposition(factionId).disposition;
 		
-		boolean isHardMode = isHardMode(factionId);
+		boolean isHardMode = factionId.equals(Factions.PLAYER) && isHardMode(factionId);
 		
 		float dispBase = ExerelinConfig.getExerelinFactionConfig(this.factionId).getDisposition(factionId);
 		if (!DiplomacyManager.isRandomFactionRelationships())
@@ -340,12 +340,13 @@ public class DiplomacyBrain {
 		log.info("\tOur strength: " + ourStrength);
 		log.info("\tTheir strength: " + targetStrength);
 		log.info("\tTheir enemies' strength: " + targetEnemyStrength);
-		log.info("\tExisting enemies' strength " + enemyStrength);
+		log.info("\tExisting enemies' strength: " + enemyStrength);
 		//float netStrength = ourStrength - enemyStrength - (targetStrength - targetEnemyStrength);
 		//if (netStrength < 0) netStrength *= 0.5f;	// make small fry a bit more reckless
 		
 		// existing enemy strength is weighted less, to discourage dogpiles
 		float strRatio = (ourStrength + targetEnemyStrength * 0.5f) / (targetStrength + enemyStrength);
+		log.info("\tStrength ratio: " + strRatio);
 		
 		float militarismMult = ourConf.alignments.get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
 		log.info("\tMilitarism mult: " + militarismMult);
@@ -354,11 +355,13 @@ public class DiplomacyBrain {
 		log.info("\tTarget dominance: " + dominance);
 		
 		float score = (-disposition + dominance);
+		log.info("\tDisposition + dominance score: " + score);
 		if (score > 0) 
 		{
-			score *= militarismMult * strRatio;
+			float mult = militarismMult * strRatio;
+			log.info("\tMilitarism/strength multiplier: " + mult);
+			score *= mult;
 		}
-		score += dominance;
 		log.info("\tTotal score: " + score);
 		return score;
 	}
@@ -502,6 +505,7 @@ public class DiplomacyBrain {
 		});
 		
 		RepLevel maxRep = getMaxRepForOpportunisticWar();
+		log.info("Relationship required for war: " + maxRep);
 		
 		for (DispositionEntry disposition : dispositionsList)
 		{
