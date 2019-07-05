@@ -4,12 +4,13 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
@@ -38,7 +39,7 @@ import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
-import exerelin.campaign.missions.ConquestMissionCreator;
+import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
@@ -83,6 +84,18 @@ public class ExerelinModPlugin extends BaseModPlugin
         return removedAny;
     }
     
+    public static void replaceSubmarket(MarketAPI market, String submarketId) {
+        if (!market.hasSubmarket(submarketId)) return;
+        CargoAPI current = market.getSubmarket(submarketId).getCargo();
+        
+        market.removeSubmarket(submarketId);
+        market.addSubmarket(submarketId);
+        CargoAPI newCargo = market.getSubmarket(submarketId).getCargo();
+        newCargo.clear();
+        newCargo.addAll(current);
+        newCargo.sort();
+    }
+    
     protected void applyToExistingSave()
     {
         Global.getLogger(this.getClass()).info("Applying Nexerelin to existing game");
@@ -107,16 +120,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
         replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         
-        /*
-        // replace patrol handling with our own
-        sector.addScript(new PatrolFleetManagerReplacer());
-        // not sure if this is needed since the replacer should already do it, but just to be safe
-        for (MarketAPI market : sector.getEconomy().getMarketsCopy())
+        for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
         {
-            ExerelinUtils.removeScriptAndListener(market.getPrimaryEntity(), 
-                    PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
+            replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
+            replaceSubmarket(market, Submarkets.SUBMARKET_OPEN);
+            replaceSubmarket(market, Submarkets.GENERIC_MILITARY);
+            replaceSubmarket(market, Submarkets.SUBMARKET_BLACK);
         }
-        */
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
@@ -152,32 +162,19 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             ExerelinUtilsMarket.setTariffs(market);
-			ColonyManager.getManager().setNPCGrowthRate(market);
+            ColonyManager.getManager().setNPCGrowthRate(market);
         }
     }
     
     protected void reverseCompatibility()
     {
-        if (CovertOpsManager.getManager() == null) {
-            Global.getSector().addScript(CovertOpsManager.create());
-        }
-        
-        // fix free port overdose
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
         {
-            if (!market.isFreePort()) continue;
-            if (market.getFaction().isPlayerFaction()) continue;
-            int numFreePorts = 0;
-            for (MarketConditionAPI cond : market.getConditions()) {
-                if (cond.getId().equals(Conditions.FREE_PORT)) {
-                    numFreePorts++;
-                }
-            }
-            if (numFreePorts > 1) {
-                Global.getLogger(this.getClass()).info("Fixing free ports for market " + market.getName() + ": " + numFreePorts);
-                market.removeCondition(Conditions.FREE_PORT);
-                market.addCondition(Conditions.FREE_PORT);
-            }
+            //if (market.isPlayerOwned()) continue;
+            if (market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin() instanceof Nex_LocalResourcesSubmarketPlugin)
+                continue;
+            Global.getLogger(this.getClass()).info("Replacing local storage on " + market.getName());
+            replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
         }
     }
     

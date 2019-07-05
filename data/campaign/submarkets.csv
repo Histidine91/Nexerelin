@@ -21,3 +21,5 @@ Weapons and other military hardware can be bought and sold here even if they're 
 Will buy locally illegal goods as part of a no-questions-asked buyback program.
 
 Selling enough of a commodity will temporarily resolve a shortage.",exerelin.campaign.submarkets.Nex_MilitarySubmarketPlugin,,100
+local_resources,"Resource
+Stockpiles",,,exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin,,200
