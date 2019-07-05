@@ -7,9 +7,13 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.util.Misc;
+import static com.fs.starfarer.api.util.Misc.isMilitary;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
@@ -96,17 +100,17 @@ public class ColonyTargetValuator {
 	public boolean prefilterSystem(StarSystemAPI system, FactionAPI faction) {
 		if (system.hasPulsar()) return false;
 		//if (system.isNebula()) return false;
+		if (system.getPlanets().isEmpty()) return false;
 		
 		if (!ExerelinUtilsAstro.isCoreSystem(system)) {
-			// don't colonize a system with an existing market unless it's ours
+			// don't colonize a system with an existing market unless we control that system
 			// also used to be "unless it's a player market and player is commissioned with that faction"
 			// but meh, doesn't sound worthwhile
-			for (MarketAPI existingMarket : Global.getSector().getEconomy().getMarkets(system)) {
-				//if (existingMarket.getFaction().isPlayerFaction() && faction == PlayerFactionStore.getPlayerFaction())
-				//	continue;
-				if (existingMarket.getFaction() == faction) continue;
-				return false;
+			if (!Global.getSector().getEconomy().getMarkets(system).isEmpty()) {
+				if (ExerelinUtilsFaction.getSystemOwner(system) != faction)
+					return false;
 			}
+			
 			// don't colonize systems with stations or large fleets (this is to avoid Remnant stations etc.)
 			for (CampaignFleetAPI fleet : system.getFleets()) {
 				if (fleet.isStationMode()) return false;

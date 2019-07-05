@@ -10,29 +10,40 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import static com.fs.starfarer.api.util.Misc.isMilitary;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import java.awt.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONObject;
 
 public class ExerelinUtilsFaction {
     
-    @Deprecated
-    public static boolean doesFactionOwnSystem(String factionId, StarSystemAPI system)
+	// same as Misc.getClaimingFaction except doesn't exclude player faction
+    public static FactionAPI getSystemOwner(StarSystemAPI system)
     {
-        for(MarketAPI market : Misc.getMarketsInLocation(system))
-        {
-            if(!market.getFaction().getId().equalsIgnoreCase(factionId)
-                    && !market.getFaction().getId().equalsIgnoreCase(Factions.NEUTRAL)
-                    && !market.getFaction().getId().equalsIgnoreCase(Factions.INDEPENDENT))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        int max = 0;
+		MarketAPI result = null;
+		for (MarketAPI curr : Global.getSector().getEconomy().getMarkets(system)) {
+			if (curr.isHidden()) continue;
+			
+			int score = curr.getSize();
+			if (isMilitary(curr)) score += 10;
+			if (score > max) {
+				JSONObject json = curr.getFaction().getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA);
+				if (json == null) continue;
+				boolean territorial = json.optBoolean("territorial");
+				if (!territorial) continue;
+				
+				max = score;
+				result = curr;
+			}
+		}
+		if (result == null) return null;
+		
+		return result.getFaction();
     }
     
     public static boolean doesFactionExist(String factionId)
