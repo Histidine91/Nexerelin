@@ -49,6 +49,8 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	}
 	*/
 	
+	// not now, Tiandong compatibility is more than I want to do atm
+	/*
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
 		super.reportPlayerMarketTransaction(transaction);
@@ -57,6 +59,7 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 		BlackMarketPlugin.delayedLearnBlueprintsFromTransaction(faction, getCargo(), 
 				transaction, 60f + 60 * (float) Math.random());
 	}
+	*/
 	
 	@Override
 	protected boolean hasCommission() {
