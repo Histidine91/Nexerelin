@@ -61,6 +61,7 @@ import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.campaign.missions.ConquestMission;
 import exerelin.campaign.missions.ConquestMissionEvent;
 import exerelin.campaign.submarkets.Nex_BlackMarketPlugin;
+import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_MilitarySubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_OpenMarketPlugin;
 
@@ -98,6 +99,7 @@ public class XStreamConfig {
 		x.alias("NexOpnMkt", Nex_OpenMarketPlugin.class);
 		x.alias("NexMilSubmkt", Nex_MilitarySubmarketPlugin.class);
 		x.alias("NexBlackMkt", Nex_BlackMarketPlugin.class);
+		x.alias("NexLclRsrcsSubmkt", Nex_LocalResourcesSubmarketPlugin.class);
 		
 		// events
 		// most of these will be deleted eventually

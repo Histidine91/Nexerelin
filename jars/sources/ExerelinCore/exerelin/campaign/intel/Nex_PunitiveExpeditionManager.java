@@ -278,6 +278,20 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 			if (industry == null) return;
 		}
 		
+		// TODO: send agent instead of expedition
+		boolean covertAction = false;
+		if (false) {	//(Global.getSettings().getBoolean("nex_allowReplaceExpeditionWithCovertAction")) {
+			covertAction = Math.random() < 0.5f;
+		}
+		if (covertAction) {
+			if (reason.commodityId != null) {
+			
+			}
+			else if (industry != null) {
+
+			}
+		}
+		
 		//float fp = from.getSize() * 20 + threshold * 0.5f;
 		float fp = 50 + curr.threshold * 0.5f;
 		fp = Math.max(50, fp - 50);
@@ -330,6 +344,36 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		curr.threshold *= 2f;
 		if (curr.threshold > MAX_THRESHOLD) {
 			curr.threshold = MAX_THRESHOLD;
+		}
+	}
+	
+	/**
+	 * Roll to see if we should send an agent to mess the other guy up instead of launching a covert action
+	 * @param faction
+	 * @return
+	 */
+	@Deprecated
+	public static float getCovertActionChance(FactionAPI faction) {
+		switch (faction.getRelationshipLevel(Factions.PLAYER)) {
+			case COOPERATIVE:
+				return 0.65f;
+			case FRIENDLY:
+				return 0.6f;
+			case WELCOMING:
+				return 0.55f;
+			case FAVORABLE:
+			case NEUTRAL:
+				return 0.5f;
+			case SUSPICIOUS:
+				return 0.4f;
+			case INHOSPITABLE:
+				return 0.35f;
+			case HOSTILE:
+				return 0.25f;
+			case VENGEFUL:
+				return 0.2f;
+			default:
+				return 0.5f;
 		}
 	}
 }
