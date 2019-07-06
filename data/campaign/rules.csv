@@ -113,6 +113,12 @@ SetTooltipHighlightColors exerelinNGCDisableEasyMode hColor hColor hColor hColor
 SetTooltipHighlights exerelinNGCDisableEasyMode ""50%"" ""50%"" ""500"" ""50%"" ""50%""",,exerelinNGCDisableEasyMode:Disable vanilla's Easy Mode,
 ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode: other factions are more aggressive towards yours; halved insurance payments""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
 ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode: other factions are more aggressive towards yours; halved insurance payments""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
+nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"SetTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,nex_NGCCycleStartDMods:Starting D-mods — $nex_ngcDModsString,
+nex_NGCCycleStartDMods,NewGameOptionSelected,$option==nex_NGCCycleStartDMods,"Nex_NGCSetOption startingDMods
+AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
+SetTextHighlights  $nex_ngcDModsString
+FireAll ExerelinNGCOtherOptions",,,
+,,,,,,
 ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,SetShortcut exerelinNGCOptionsBack ESCAPE,,10:exerelinNGCOptionsBack:Back,
 ,,,,,,
 ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorvusMode,"NGCSetCorvusMode true
@@ -1266,7 +1272,7 @@ CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of cou
 ,,,,,,
 # bla,,,,,,
 nex_getConstructionQueueOpt,PopulateOptions,"$global.isDevMode
-Nex_IsBaseOfficial admin",,,nex_getConstructionQueue:>> (dev) Get construction queue,
+Nex_IsBaseOfficial admin",,,11:nex_getConstructionQueue:>> (dev) Get construction queue,
 nex_getConstructionQueue,DialogOptionSelected,$option == nex_getConstructionQueue,Nex_DisplayConstructionQueue,,,
 ,,,,,,
 nex_marketPostOpenDerelicts,MarketPostOpen,"$hasMarket

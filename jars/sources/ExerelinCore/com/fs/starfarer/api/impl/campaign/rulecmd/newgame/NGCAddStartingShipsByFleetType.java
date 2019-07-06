@@ -1,6 +1,8 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.Script;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +18,11 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtilsFleet;
 
 
 public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
@@ -35,6 +39,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			startingVariants = factionConf.getStartFleetForType(fleetTypeStr, true);
 		
 		generateFleetFromVariantIds(dialog, data, fleetTypeStr, startingVariants);
+		addStartingDModScript(memoryMap.get(MemKeys.LOCAL));
 		
 		return true;
 	}
@@ -80,6 +85,18 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		addCargo(data, Commodities.SUPPLIES, supplies, text);
 		addCargo(data, Commodities.HEAVY_MACHINERY, machinery, text);
 		addCargo(data, Commodities.FUEL, fuel, text);
+	}
+	
+	public static void addStartingDModScript(MemoryAPI localMem) {
+		CharacterCreationData data = (CharacterCreationData)localMem.get("$characterData");
+		
+		data.addScript(new Script() {
+			public void run() {
+				CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
+				ExerelinUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
+				fleet.getFleetData().syncIfNeeded();
+			}
+		});
 	}
 	
 	protected static void addCargo(CharacterCreationData data, String commodity, int amount, TextPanelAPI text)

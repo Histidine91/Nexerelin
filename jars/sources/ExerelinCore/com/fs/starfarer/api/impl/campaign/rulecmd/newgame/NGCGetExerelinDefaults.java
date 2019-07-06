@@ -41,6 +41,9 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		if (setupData.easyMode)  data.setDifficulty("easy");
 		else data.setDifficulty("normal");
 		
+		String str = ExerelinSetupData.getDModCountText(setupData.dModLevel);
+		map.set("$nex_ngcDModsString", str);
+		
 		return true;
 	}
 }

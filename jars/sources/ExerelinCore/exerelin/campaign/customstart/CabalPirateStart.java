@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.impl.campaign.rulecmd.NGCAddStandardStartingScript;
 import com.fs.starfarer.api.impl.campaign.rulecmd.newgame.NGCAddStartingShipsByFleetType;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.newgame.NGCAddStartingShipsByFleetType.addStartingDModScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import java.util.ArrayList;
@@ -37,11 +38,7 @@ public class CabalPirateStart extends CustomStart {
 		
 		NGCAddStartingShipsByFleetType.generateFleetFromVariantIds(dialog, data, null, ships);
 		
-		data.addScript(new Script() {
-			public void run() {
-				
-			}
-		});
+		addStartingDModScript(memoryMap.get(MemKeys.LOCAL));
 		
 		FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4");
 	}

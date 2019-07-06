@@ -3,6 +3,7 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.StringHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.apache.log4j.Logger;
 @SuppressWarnings("unchecked")
 public class ExerelinSetupData
 {
+	public static final int NUM_DMOD_LEVELS = 4;
+	
 	public static Logger log = Global.getLogger(ExerelinSetupData.class);
 	private static ExerelinSetupData instance = null;
 
@@ -40,6 +43,7 @@ public class ExerelinSetupData
 	public boolean randomFactionWeights = false;
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
+	public int dModLevel = 0;
 	
 	public String startScenario = null;
 
@@ -61,5 +65,9 @@ public class ExerelinSetupData
 
 	public static void resetInstance() {
 		instance = new ExerelinSetupData();
+	}
+	
+	public static String getDModCountText(int level) {
+		return StringHelper.getString("exerelin_ngc", "dModLevel" + level);
 	}
 }

@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.NGCAddStandardStartingScript;
 import com.fs.starfarer.api.impl.campaign.rulecmd.newgame.NGCAddStartingShipsByFleetType;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +43,7 @@ public class DerelictFleet extends CustomStart {
 			public void run() {
 				CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
 				
-				NGCAddStandardStartingScript.adjustStartingHulls(fleet);
+				ExerelinUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
 				
 				fleet.getFleetData().ensureHasFlagship();
 				
@@ -51,6 +52,7 @@ public class DerelictFleet extends CustomStart {
 					member.getRepairTracker().setCR(max);
 				}
 				fleet.getFleetData().setSyncNeeded();
+				fleet.getFleetData().syncIfNeeded();
 			}
 		});
 		

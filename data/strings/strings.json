@@ -232,7 +232,7 @@
 		"barOptionStart":"Walk over to the shady person",
 		"barDialogIntro1":"You approach the shady figure, who acknowledges you with a nod.",
 		"barDialogIntro2":"\"Figured you'd notice me eventually. I don't suppose you know what I do?\"",
-		"barDialogExplanation":"\"I'm a $manOrWoman of many tricks, shall we say. I can sniff out a Pather in a crowd at forty paces, or assassinate the governor of a colony, or even take down a core world's spaceport if the odds are right I think an enterprising starfarer like you will have no problem finding a use for such... talents.\"",
+		"barDialogExplanation":"\"I'm a $manOrWoman of many tricks, shall we say. I can sniff out a Pather in a crowd at forty paces, or assassinate the governor of a colony, or even take down a core world's spaceport if the odds are right. I think an enterprising starfarer like you will have no problem finding a use for such... talents.\"",
 		"barDialogPay":"\"I'll expect a %s credit hiring bonus, and afterwards a starting salary of %s credits per month. Once the initial transfer is complete, I'll be ready for directions within the hour.\"",
 		#"barDialogPay":"\"I'll expect a %s credit hiring bonus. Once the initial transfer is complete, I'll be ready for directions within the hour.\"",
 		"barOptionMaxAgents":"\"I can't hire any more agents at the moment.\"",
@@ -905,6 +905,11 @@
 		
 		"customStartOrScenario_tooltipDisabledInRandom":"Disabled in random sector mode",
 		"customStartOrScenario_tooltipDisabledInNonRandom":"Disabled in non-random sector mode",
+		
+		"dModLevel0":"none",
+		"dModLevel1":"mild",
+		"dModLevel2":"moderate",
+		"dModLevel3":"severe",
 
 		"added":"added",
 		#"shipString":"$shipClass-class $designation ($variantName)",

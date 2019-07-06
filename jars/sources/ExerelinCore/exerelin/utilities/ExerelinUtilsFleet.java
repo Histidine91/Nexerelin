@@ -9,23 +9,31 @@ import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
+import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.util.DS_Defs;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 
 public class ExerelinUtilsFleet
 {
+	public static final float DMOD_INCREASE_CHANCE = 0.4f;
+	public static final float DMOD_REDUCE_CHANCE = 0.25f;
+	
     public static Logger log = Global.getLogger(ExerelinUtilsFleet.class);
    
     /**
@@ -212,4 +220,30 @@ public class ExerelinUtilsFleet
         }
         return false;
     }
+	
+	public static void addDMods(CampaignFleetAPI fleet, int level) {
+		log.info("Adding D-mods to fleet, level " + level);
+		if (level <= 0) return;
+		Random random = new Random(ExerelinUtils.getStartingSeed());
+		
+		
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			// needed to make the effect stick between saves
+			ShipVariantAPI v = member.getVariant().clone();
+			v.setSource(VariantSource.REFIT);
+			v.setHullVariantId(Misc.genUID());
+			member.setVariant(v, false, false);
+			
+			int num = level;
+			if (random.nextFloat() <= DMOD_INCREASE_CHANCE)
+				num++;
+			if (random.nextFloat() <= DMOD_REDUCE_CHANCE)
+				num--;
+			
+			DModManager.addDMods(member, true, num, random);
+		}
+		
+		fleet.getFleetData().setSyncNeeded();
+		fleet.getFleetData().syncIfNeeded();
+	}
 }
