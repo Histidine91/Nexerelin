@@ -466,6 +466,17 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
 		}
+		// retroactive fix for admins not having their faction changed
+		for (CommDirectoryEntryAPI entry : market.getCommDirectory().getEntriesCopy()) {
+			PersonAPI person = (PersonAPI)entry.getEntryData();
+			if (person.getFaction() != market.getFaction() && 
+					SectorManager.POSTS_TO_CHANGE_ON_CAPTURE.contains(person.getPostId()))
+			{
+				log.info("Forcing person " + person.getName().getFullName() 
+						+ " (post " + person.getPost() + ") to correct faction");
+				person.setFaction(market.getFaction().getId());
+			}
+		}
 	}
 	
 	@Override
@@ -635,7 +646,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 */
 	public static void reassignAdminIfNeeded(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner) {
 		
-		// if player has captured a market, assing player as admin
+		// if player has captured a market, assign player as admin
 		if (newOwner.isPlayerFaction() && market.isPlayerOwned()) {
 			market.setAdmin(Global.getSector().getPlayerPerson());
 			return;

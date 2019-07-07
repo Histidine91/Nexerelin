@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
@@ -868,9 +869,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             entity.setFaction(newOwnerId);
         }
-        List<PersonAPI> people = market.getPeopleCopy();
-        for (PersonAPI person : people)
+        
+        // use comm board people instead of market people, 
+        // because some appear on the former but not the latter 
+        // (specifically when a new admin is assigned, old one disappears from the market)
+        // also this won't mess with player-assigned admins
+        for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
         {
+            if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
+            PersonAPI person = (PersonAPI)dir.getEntryData();
             // TODO should probably switch them out completely instead of making them defect
             if (POSTS_TO_CHANGE_ON_CAPTURE.contains(person.getPostId()))
                 person.setFaction(newOwnerId);
