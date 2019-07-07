@@ -728,6 +728,7 @@
 		"proceedConfirmNonHostile":"$TheFaction is not currently hostile, but will be if you launch this task force. Are you sure you wish to do this?",
 	},
 	"exerelin_invasion":{
+		"invadeOpt":"Invade $market",
 		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile. An invasion is a major enough hostile action that it can't be concealed, regardless of transponder status.",
 		"takeForSelfWarning":"You can take $market as a personal holding, but this will not please your current faction.\n\nProceed?",
 		"takeForSelfNoWarning":"As $market originally belonged to you (or is otherwise unclaimed), you may take it for yourself without penalty.",

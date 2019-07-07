@@ -73,6 +73,10 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 			String days = String.format("%.1f", expire);
 			memory.set("$nex_raidCooldownStr", days, 0);
 		}
+		
+		// override vanilla behaviour; used for dialog text on docking 
+		// (player-owned markets won't have the transponder prompt)
+		memory.set("$isPlayerOwned", market.isPlayerOwned() || market.getFaction().isPlayerFaction(), 0);
 	}
 	
 	@Override
