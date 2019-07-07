@@ -360,7 +360,7 @@ public class NexMarketBuilder
 		boolean haveBase = market.hasIndustry(Industries.MILITARYBASE) 
 				|| market.hasIndustry(Industries.HIGHCOMMAND)
 				|| market.hasIndustry("tiandong_merchq");
-		if (!haveBase && marketSize >= sizeForBase)
+		if (!haveBase && marketSize >= sizeForBase && Misc.getNumIndustries(market) < Misc.getMaxIndustries(market))
 		{
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
 			float req = MILITARY_BASE_CHANCE;
