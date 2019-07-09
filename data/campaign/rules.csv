@@ -722,8 +722,10 @@ nex_marketTransferExecute,DialogOptionSelected,"Nex_OptionStartsWith ""nex_trans
 FireAll Nex_MarketPostTransfer",,,
 ,,,,,,
 nex_marketTransferPostDialog,Nex_MarketPostTransfer,,"AddText ""\""As you command. $market is now in possession of $entity._newFaction.""
-AddText ""\""Goodbye, chief.\""""",,nex_transferMarketEnd:Cut the comm link and leave,
-nex_marketTransferPostDialogLeave,DialogOptionSelected,$option == nex_transferMarketEnd,DismissDialog,,,
+AddText ""\""Goodbye, chief.\""""",,nex_transferMarketEnd:Cut the comm link,
+nex_marketTransferPostDialogLeave,DialogOptionSelected,$option == nex_transferMarketEnd,"UpdateMemory
+ShowDefaultVisual
+EndConversation",,,
 #END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
 #START REBELLION OPTIONS,,,,,,
@@ -770,7 +772,9 @@ AddText ""\""Will this be suitable?\""""
 SetShortcut nex_blueprintSwapBuy ""ESCAPE""",,"nex_blueprintSwapConfirmPurchase:Buy this blueprint
 nex_blueprintSwapBuy:Go back",
 nex_blueprintSwapBuyConfirm,DialogOptionSelected,$option == nex_blueprintSwapConfirmPurchase,"Nex_BlueprintSwap confirmPurchase
-Nex_BlueprintSwap getForSale","""Thank you for your business.""",,
+Nex_BlueprintSwap getForSale
+AddTextSmall ""You have $nex_BPSwap_pointsStr points.""
+SetTextHighlights $nex_BPSwap_pointsStr","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
 ,,,,,,
 # stabilization package,,,,,,
