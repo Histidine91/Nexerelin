@@ -39,6 +39,11 @@ public class RaiseRelations extends CovertActionIntel {
 	}
 	
 	@Override
+	public float getTimeNeeded() {
+		return super.getTimeNeeded() + getModifyRelationsCooldown(targetFaction);
+	}
+	
+	@Override
 	protected CovertOpsManager.CovertActionResult covertActionRoll() {
 		CovertOpsManager.CovertActionResult result = super.covertActionRoll();
 		if (result == CovertOpsManager.CovertActionResult.SUCCESS_DETECTED)

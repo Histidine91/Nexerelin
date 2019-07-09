@@ -319,6 +319,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			printStat(cost, true);
 		}
 		
+		if (actionId.equals(CovertActionType.RAISE_RELATIONS) || actionId.equals(CovertActionType.LOWER_RELATIONS)) 
+		{
+			float cooldown = RaiseRelations.getModifyRelationsCooldown(mktFaction);
+			if (cooldown > 0) {
+				text.addPara(getString("dialogInfoModifyingRelationsCooldown"));
+			}
+		}
+		
 		text.setFontInsignia();
 	}
 	
@@ -669,26 +677,6 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			String tooltip = getString("dialogTooltipAlreadyModifyingRelations");
 			options.setTooltip(raise, tooltip);
 			options.setTooltip(lower, tooltip);
-		}
-		else {
-			float cooldown = RaiseRelations.getModifyRelationsCooldown(faction);
-			if (cooldown <= 0) return;
-			
-			CovertActionDef raise = CovertOpsManager.getDef(CovertActionType.RAISE_RELATIONS);
-			CovertActionDef lower = CovertOpsManager.getDef(CovertActionType.LOWER_RELATIONS);
-			options.setEnabled(raise, false);
-			options.setEnabled(lower, false);
-			String tooltip = getString("dialogTooltipModifyingRelationsCooldown");
-			String days = Misc.getAtLeastStringForDays((int)cooldown);//String.format("%.1f", cooldown);
-			tooltip = StringHelper.substituteToken(tooltip, "$cooldown", days);
-			String[] highlights = {days};
-			Color[] colors = {Misc.getHighlightColor()};
-			options.setTooltip(raise, tooltip);
-			options.setTooltipHighlights(raise, highlights);
-			options.setTooltipHighlightColors(raise, colors);
-			options.setTooltip(lower, tooltip);
-			options.setTooltipHighlights(lower, highlights);
-			options.setTooltipHighlightColors(lower, colors);
 		}
 	}
 	

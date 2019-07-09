@@ -361,7 +361,8 @@
 		"dialogIndustryPickerHeader":"Select industry to sabotage",
 		
 		"dialogTooltipAlreadyModifyingRelations":"Another agent is currently already manipulating this faction.",
-		"dialogTooltipModifyingRelationsCooldown":"This faction has already been recently manipulated. It will take $cooldown before further such actions can be executed.",
+		#"dialogTooltipModifyingRelationsCooldown":"This faction has already been recently manipulated. It will take $cooldown before further such actions can be executed.",
+		"dialogInfoModifyingRelationsCooldown":"This faction has already been manipulated in the recent past. Further such actions will take longer.",
 		
 		"dialogInfoHeaderTravel":"Travel to %s",
 		"dialogInfoHeaderRaiseRelations":"Raise relations with %s",
