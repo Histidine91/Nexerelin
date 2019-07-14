@@ -35,6 +35,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -50,7 +51,7 @@ import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
-import exerelin.world.scenarios.DerelictEmpireFleetInteractionConfigGen;
+import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -458,8 +459,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     @Override
     public void reportFleetSpawned(CampaignFleetAPI fleet) {
         if (fleet.getFaction().getId().equals(Factions.DERELICT)) {
-            fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
-                   new DerelictEmpireFleetInteractionConfigGen());    
+            fleet.getMemoryWithoutUpdate().set(EncounterLootHandler.FLEET_MEMORY_KEY, "derelict");
+			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
+                   new RemnantRaidFleetInteractionConfigGen());
         }
     }
     

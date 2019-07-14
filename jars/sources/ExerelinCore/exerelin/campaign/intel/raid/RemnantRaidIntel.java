@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 import exerelin.utilities.StringHelper;
@@ -101,7 +102,8 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		
 		if (faction.getId().equals(Factions.REMNANTS)) {
 			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
-				   new RemnantRaidFleetInteractionConfigGen());		
+				   new RemnantRaidFleetInteractionConfigGen());
+			fleet.getMemoryWithoutUpdate().set(EncounterLootHandler.FLEET_MEMORY_KEY, "remnant");
 		}
 		
 		return fleet;
