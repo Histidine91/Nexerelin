@@ -10,8 +10,6 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.OffensiveFleetIntel;
-import static exerelin.campaign.intel.OffensiveFleetIntel.DEBUG_MODE;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
@@ -103,7 +101,7 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		if (outcome != null) {
 			addOutcomeBullet(info, tc, initPad);
 		} else {
-			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
+			info.addPara(target.getName(), tc, initPad);
 		}
 		initPad = 0f;
 		addETABullet(info, tc, h, initPad);
@@ -129,6 +127,7 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		String has = attacker.getDisplayNameHasOrHave();
 		String is = attacker.getDisplayNameIsOrAre();
 		String locationName = target.getContainingLocation().getNameWithLowercaseType();
+		boolean known = Global.getSettings().isDevMode() || target.getPrimaryEntity().isVisibleToPlayerFleet();
 		
 		String strDesc = getRaidStrDesc();
 		
@@ -151,9 +150,9 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		string = StringHelper.substituteTokens(string, sub);
 		
 		LabelAPI label = info.addPara(string, opad);
-		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), target.getName(), 
-				defender.getDisplayNameWithArticleWithoutArticle(), strDesc, numFleets + "");
-		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h, h);
+		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), 
+				defender.getDisplayNameWithArticleWithoutArticle(), locationName, strDesc, numFleets + "");
+		label.setHighlightColors(attacker.getBaseUIColor(), defender.getBaseUIColor(), h, h, h);
 		
 		if (Global.getSettings().isDevMode()) {
 			float fpRound = Math.round(fp);
@@ -235,9 +234,10 @@ public class BaseStrikeIntel extends NexRaidIntel {
 	
 	@Override
 	public String getName() {
-		String base = StringHelper.getString("nex_fleetIntel", "title");
+		String base = StringHelper.getString("nex_baseStrike", "intelTitle");
 		base = StringHelper.substituteToken(base, "$action", getActionName(), true);
 		base = StringHelper.substituteToken(base, "$market", target.getName());
+		base = StringHelper.substituteToken(base, "$location", target.getContainingLocation().getNameWithTypeIfNebula());
 		
 		if (isEnding()) {
 			if (outcome == OffensiveOutcome.SUCCESS) {

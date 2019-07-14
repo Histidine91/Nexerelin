@@ -409,7 +409,9 @@
 		"forceIsOrAre":"is",	# if strikeForce is singular, this should be singular too, else both should be plural
 		"forceHasOrHave":"has",	# same
 		
+		"intelTitle":"$Action: $location",
 		"intelDesc":"$TheFaction $isOrAre attacking and destroying $market, a $targetFaction base in the $location. The strike forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
+		"intelDescUnknown":"$TheFaction $isOrAre attacking and destroying a $targetFaction base in the $location. The strike forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelStageAction":"The strike force is currently in-system.",
 		"intelStageActionSuccess":"The strike force has succesfully destroyed $market.",
 		"intelStageActionDefeated":"The strike force has been defeated by the defenders of of $market.",
