@@ -449,6 +449,10 @@
 		"bonusAdminIntelBullet3":"Next admin at size %s",
 		
 		"autonomyRevoked":"Autonomy revoked",
+		
+		"npcGrowthMultDesc":"NPC market",
+		"hardModeGrowthMultDesc":"Starfarer mode",
+		"hardModeIncomeMultDesc":"Starfarer mode",
 	},
 	
 	"nex_colonyFleet":{
@@ -994,8 +998,6 @@
 		"forceHasOrHave":"have",	# same		
 		
 		"stageOrganizeRemnant":"$TheAction is currently being planned at a base in the $location.",
-		
-		"intelStageActionInsufficientReached":"The invasion forces have failed to reach $location in adequate strength. The invasion is aborted.",
 		
 		"conditionPenalties":"%s stability, %s accessibility.",
 		"conditionListHeader":"The following hostile factions have active raids in the system:",

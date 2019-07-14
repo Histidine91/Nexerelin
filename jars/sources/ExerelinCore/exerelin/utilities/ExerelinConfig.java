@@ -113,6 +113,8 @@ public class ExerelinConfig
     // Colonies
     public static int maxNPCColonySize = 0;
     public static int maxNPCNewColonySize = 5;
+	public static float hardModeColonyGrowthMult = 0.5f;
+	public static float hardModeColonyIncomeMult = 0.75f;
     public static float colonyExpeditionInterval = 270;
     
     // Misc
@@ -213,6 +215,8 @@ public class ExerelinConfig
             
             maxNPCColonySize = settings.optInt("maxNPCColonySize", maxNPCColonySize);
             maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
+			hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
+			hardModeColonyIncomeMult = (float)settings.optDouble("hardModeColonyIncomeMult", hardModeColonyIncomeMult);
             colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
             
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);

@@ -338,6 +338,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return;
         sectorManager.hardMode = mode;
+		ColonyManager.updateIncome();
     }
     
     public static boolean getHardMode()
@@ -932,6 +933,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // (un)apply free port if needed
         ColonyManager.updateFreePortSetting(market);
+		ColonyManager.updateIncome(market);
         
         ExerelinUtilsMarket.setTariffs(market);
         

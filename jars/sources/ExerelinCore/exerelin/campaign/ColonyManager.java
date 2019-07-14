@@ -35,6 +35,7 @@ import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.utilities.ExerelinConfig;
+import static exerelin.utilities.ExerelinConfig.hardModeColonyGrowthMult;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -117,22 +118,28 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			{
 				playerFactionSize += market.getSize();
 			}
-			else 
+			
+			// handle market growth
+			if (!market.isPlayerOwned())
 			{
 				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1) 
 				{
-					int maxSize = ExerelinConfig.maxNPCColonySize;
-					if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
-						maxSize = ExerelinConfig.maxNPCNewColonySize;
-					if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
+					int maxSize;
+					if (market.getFaction().isPlayerFaction())
+						maxSize = 10;
+					else if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
 						maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
+					else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+						maxSize = ExerelinConfig.maxNPCNewColonySize;
+					else
+						maxSize = ExerelinConfig.maxNPCColonySize;
 					
 					if (market.getSize() < maxSize) {
 						CoreImmigrationPluginImpl.increaseMarketSize(market);
 						// intel: copied from CoreImmigrationPluginImpl
-						MessageIntel intel = new MessageIntel(StringHelper.getString("nex_colonies", "intelGrowthTitle") 
+						MessageIntel intel = new MessageIntel(getString("intelGrowthTitle", false) 
 								+ " - " + market.getName(), Misc.getBasePlayerColor());
-						intel.addLine(BaseIntelPlugin.BULLET + StringHelper.getString("nex_colonies", "intelGrowthBullet"),
+						intel.addLine(BaseIntelPlugin.BULLET + getString("intelGrowthBullet", false),
 								Misc.getTextColor(), 
 								new String[] {"" + (int)Math.round(market.getSize())},
 								Misc.getHighlightColor());
@@ -141,16 +148,16 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING);
 					}
 				}
-				updateFreePortSetting(market);
 			}
+			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 				numColonies += 1;
 		}
 		updatePlayerBonusAdmins(playerFactionSize);
 	}
 	
-	public void setNPCGrowthRate(MarketAPI market) {
-		boolean want = !market.getFaction().isPlayerFaction();
+	public void setGrowthRate(MarketAPI market) {
+		boolean want = !market.getFaction().isPlayerFaction() || SectorManager.getHardMode();
 		boolean have = market.getImmigrationModifiers().contains(this);
 		if (want == have) return;
 		
@@ -166,7 +173,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	@Override
 	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
-		incoming.getWeight().modifyMult("nex_colonyManager_npcGrowth", 0.5f, "NPC market");
+		if (market.getFaction().isPlayerFaction()) {
+			incoming.getWeight().modifyMult("nex_colonyManager_hardModeGrowth", ExerelinConfig.hardModeColonyGrowthMult, 
+					getString("hardModeGrowthMultDesc", false));
+		}
+		else {
+			incoming.getWeight().modifyMult("nex_colonyManager_npcGrowth", Global.getSettings().getFloat("nex_npcColonyGrowthMult"), 
+					getString("npcGrowthMultDesc", false));
+		}
+		
 	}
 	
 	public void updatePlayerBonusAdmins() {
@@ -225,6 +240,25 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (isFreePort != wantFreePort) {
 			market.setFreePort(wantFreePort);
 			ExerelinUtilsMarket.setTariffs(market);
+		}
+	}
+	
+	public static void updateIncome() {
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+		{
+			updateIncome(market);
+		}
+	}
+	
+	public static void updateIncome(MarketAPI market)
+	{
+		if (market.getFaction().isPlayerFaction() && SectorManager.getHardMode())
+		{
+			market.getIncomeMult().modifyMult("nex_hardMode", ExerelinConfig.hardModeColonyIncomeMult, 
+						getString("hardModeIncomeMultDesc"));
+		}
+		else {
+			market.getIncomeMult().unmodify("nex_hardMode");
 		}
 	}
 	
@@ -318,11 +352,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return npcConstructionQueues.get(market);
 	}
 	
-	protected String getString(String id) {
+	protected static String getString(String id) {
 		return getString(id, false);
 	}
 	
-	protected String getString(String id, boolean ucFirst) {
+	protected static String getString(String id, boolean ucFirst) {
 		return StringHelper.getString("nex_colonies", id, ucFirst);
 	}
 	
@@ -556,7 +590,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		// reassign admins on market capture
 		reassignAdminIfNeeded(market, oldOwner, newOwner);
-		setNPCGrowthRate(market);
+		setGrowthRate(market);
 	}
 	
 	public static void buildIndustry(MarketAPI market, String id) {

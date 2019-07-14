@@ -133,6 +133,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
                 market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, market.getFactionId());
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
+			ColonyManager.updateFreePortSetting(market);
         }
         
         StatsTracker.create();
@@ -162,7 +163,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             ExerelinUtilsMarket.setTariffs(market);
-            ColonyManager.getManager().setNPCGrowthRate(market);
+            ColonyManager.getManager().setGrowthRate(market);
         }
     }
     
@@ -244,6 +245,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         PrismMarket.clearSubmarketCache();
         
         ColonyManager.getManager().updatePlayerBonusAdmins();
+        ColonyManager.updateIncome();
         
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onGameLoad(newGame);
