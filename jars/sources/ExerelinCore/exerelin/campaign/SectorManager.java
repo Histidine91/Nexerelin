@@ -91,7 +91,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         "SCY_hephaistosStation",
     }));
     public static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
-        "tiandong_retrofit",
+        "tiandong_retrofit", "ii_ebay"
     }));
     
     public static final Set<String> NO_WARMONGER_FACTIONS = new HashSet(Arrays.asList(new String[]{
