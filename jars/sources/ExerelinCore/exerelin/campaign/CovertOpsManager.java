@@ -85,12 +85,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
     public static final Map<String, Float> industrySuccessMods = new HashMap<>();
     public static final Map<String, Float> industryDetectionMods = new HashMap<>();
-	
-	protected Set<AgentIntel> agents = new HashSet<>();
+    
+    protected Set<AgentIntel> agents = new HashSet<>();
     
     protected static float baseInterval = 45f;
     protected float interval = baseInterval;
     protected final IntervalUtil intervalUtil;
+    protected Random random = new Random();
     
     protected Map<MarketAPI, MutableStat> marketSuccessMods = new HashMap<>();
     protected Map<MarketAPI, MutableStat> marketDetectionMods = new HashMap<>();
@@ -188,6 +189,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	protected Object readResolve() {
+		if (random == null)
+			random = new Random();
+		
 		if (agents == null) {
 			agents = new HashSet<>();
 			for (AgentIntel agent : getAgentsStatic()) {
@@ -417,19 +421,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	public static Random getRandom(MarketAPI market) {
-		if (true) return new Random();
-		
-		String key = "$nex_agent_random";
-		MemoryAPI mem = market.getMemoryWithoutUpdate();
-		Random random = null;
-		if (mem.contains(key)) {
-			random = (Random) mem.get(key);
-		} else {
-			random = new Random(Global.getSector().getClock().getTimestamp());
-		}
-		mem.set(key, random, 30f);
-		
-		return random;
+		return getManager().random;
 	}
 
     @Override
