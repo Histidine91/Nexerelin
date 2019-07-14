@@ -190,6 +190,7 @@ public class TributeIntel extends BaseIntelPlugin {
 		cond = market.getSpecificCondition(condId);
 		((TributeCondition)cond.getPlugin()).setup(getFactionForUIColors(), this);
 		status = TributeStatus.ACTIVE;
+		setImportant(false);
 	}
 	
 	public void reject() {
@@ -204,6 +205,7 @@ public class TributeIntel extends BaseIntelPlugin {
 		
 		status = TributeStatus.REJECTED;
 		endEvent();
+		setImportant(false);
 	}
 	
 	public void cancel() {
@@ -212,6 +214,7 @@ public class TributeIntel extends BaseIntelPlugin {
 		cancelTime = Global.getSector().getClock().getTimestamp();
 		sendUpdateIfPlayerHasIntel(CANCELLED_UPDATE, false);
 		endEvent();
+		setImportant(false);
 	}
 	
 	@Override
