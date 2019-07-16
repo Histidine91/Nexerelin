@@ -24,8 +24,14 @@ public class ImperialBazaar extends IndustryClassGen {
 		return weight;
 	}
 	
+	@Override
 	public void apply(ProcGenEntity entity, boolean instant) {
 		entity.market.addIndustry("ii_interstellarbazaar");
 		super.apply(entity, instant);
+	}
+	
+	@Override
+	public boolean canAutogen() {
+		return false;
 	}
 }
