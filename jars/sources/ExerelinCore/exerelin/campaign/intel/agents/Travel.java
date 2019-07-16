@@ -231,6 +231,7 @@ public class Travel extends CovertActionIntel {
 		agent.setMarket(market);
 		agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ARRIVED, false);
 		agent.notifyActionCompleted();
+		CovertOpsManager.getRandom(market).nextFloat();	// change the next result
 	}
 
 	@Override

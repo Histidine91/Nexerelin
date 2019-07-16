@@ -421,6 +421,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	public static Random getRandom(MarketAPI market) {
+		if (true) return new Random();
 		return getManager().random;
 	}
 
