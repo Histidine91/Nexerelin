@@ -118,6 +118,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			{
 				playerFactionSize += market.getSize();
 			}
+			else
+			{
+				updateFreePortSetting(market);
+			}
 			
 			// handle market growth
 			if (!market.isPlayerOwned())
