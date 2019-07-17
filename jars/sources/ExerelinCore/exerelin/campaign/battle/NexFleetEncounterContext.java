@@ -129,12 +129,13 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			float escapeChance;
 			float recoverableChance;
 			float crewLossMult = member.getStats().getCrewLossMult().getModifiedValue();
+			float baseEscapeChance = Global.getSettings().getFloat("nex_officerBaseEscapeChance");
 			if (result.getDestroyed().contains(member)) {
 				escapeChance = NexUtilsMath.lerp(0.5f, 1f, 1f - crewLossMult);
 				recoverableChance = 0f;
 			} else {
 				escapeChance = NexUtilsMath.lerp(0.5f, 1f, 1f - crewLossMult);
-				recoverableChance = 0.75f;
+				recoverableChance = Global.getSettings().getFloat("nex_officerSurviveChance");
 			}
 
 			boolean isPlayer;
