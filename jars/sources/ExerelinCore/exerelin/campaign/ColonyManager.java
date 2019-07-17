@@ -684,15 +684,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 */
 	public static void reassignAdminIfNeeded(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner) {
 		
-		// if player has captured a market, assign player as admin
-		if (newOwner.isPlayerFaction() && market.isPlayerOwned()) {
-			market.setAdmin(Global.getSector().getPlayerPerson());
-			return;
-		}
-		
 		// do nothing if admin is AI core (unless it's a faction ruler, e.g. II)
 		if (market.getAdmin().isAICore() && !Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())) 
 		{
+			return;
+		}
+		
+		// if player has captured a market, assign player as admin
+		if (newOwner.isPlayerFaction() && market.isPlayerOwned()) {
+			market.setAdmin(Global.getSector().getPlayerPerson());
 			return;
 		}
 		
