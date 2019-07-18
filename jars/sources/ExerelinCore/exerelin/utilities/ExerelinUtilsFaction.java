@@ -2,8 +2,8 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import static com.fs.starfarer.api.util.Misc.isMilitary;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import java.awt.Color;
 
@@ -20,13 +19,13 @@ import java.util.List;
 import org.json.JSONObject;
 
 public class ExerelinUtilsFaction {
-    
+	
 	// same as Misc.getClaimingFaction except doesn't exclude player faction
-    public static FactionAPI getSystemOwner(StarSystemAPI system)
-    {
-        int max = 0;
+	public static FactionAPI getSystemOwner(LocationAPI loc)
+	{
+		int max = 0;
 		MarketAPI result = null;
-		for (MarketAPI curr : Global.getSector().getEconomy().getMarkets(system)) {
+		for (MarketAPI curr : Global.getSector().getEconomy().getMarkets(loc)) {
 			if (curr.isHidden()) continue;
 			
 			int score = curr.getSize();

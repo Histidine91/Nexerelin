@@ -25,6 +25,9 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	}
 	
 	// don't territorial-attack planets which are paying tribute
+	// also, a star system may be claimed by player
 	@Override
 	public List<PunExReason> getExpeditionReasons(PunExData curr) {
 		List<PunExReason> result = new ArrayList<PunExReason>();
@@ -132,6 +136,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 			}
 		}
 		
+		// MODIFIED
 		if (territorial) {
 			int maxSize = MarketCMD.getBombardDestroyThreshold();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(null)) {
@@ -141,7 +146,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 				boolean destroy = market.getSize() <= maxSize;
 				if (!destroy) continue;
 				
-				FactionAPI claimedBy = Misc.getClaimingFaction(market.getPrimaryEntity());
+				FactionAPI claimedBy = ExerelinUtilsFaction.getSystemOwner(market.getStarSystem());
 				if (claimedBy != curr.faction) continue;
 				
 				PunExReason reason = new PunExReason(PunExType.TERRITORIAL);
