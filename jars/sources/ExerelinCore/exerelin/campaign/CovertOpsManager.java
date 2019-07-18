@@ -338,20 +338,21 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         
         for (MarketAPI market:markets)
         {
-            if (market.getFaction() == targetFaction)
+            if (market.getFaction() != targetFaction)
+                continue;
+            if (market.isHidden()) continue;
+            
+            float weight = 1;
+            // rebellion special handling
+            if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
             {
-                float weight = 1;
-                // rebellion special handling
-                if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
-                {
-                    if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
-                        continue;
-                    
-                    if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
-                        weight *= 4;
-                }
-                marketPicker.add(market, weight);
+                if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
+                    continue;
+                
+                if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
+                    weight *= 4;
             }
+            marketPicker.add(market, weight);
         }
         
         MarketAPI market = marketPicker.pick();
