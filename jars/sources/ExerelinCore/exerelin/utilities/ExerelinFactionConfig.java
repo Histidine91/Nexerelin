@@ -40,6 +40,7 @@ public class ExerelinFactionConfig
     public String factionId;
     public boolean playableFaction = true;
     public boolean startingFaction = true;
+    public boolean enabledByDefault = true;
     public boolean corvusCompatible = false;
     public boolean isBuiltIn = false;
     public String spawnAsFactionId = null;
@@ -178,6 +179,7 @@ public class ExerelinFactionConfig
     
             playableFaction = settings.optBoolean("playableFaction", true);
             startingFaction = settings.optBoolean("startingFaction", playableFaction);
+            enabledByDefault = settings.optBoolean("enabledByDefault", startingFaction);
             corvusCompatible = settings.optBoolean("corvusCompatible", false);
             
             pirateFaction = settings.optBoolean("pirateFaction", false);

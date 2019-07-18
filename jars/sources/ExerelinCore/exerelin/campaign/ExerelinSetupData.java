@@ -47,13 +47,14 @@ public class ExerelinSetupData
 	
 	public String startScenario = null;
 
-	private ExerelinSetupData()
+	protected ExerelinSetupData()
 	{
 		List<String> factionIds = ExerelinConfig.getFactions(true, false);
 		factionIds.add(Factions.INDEPENDENT);
 		factionIds.remove(Factions.PLAYER);
-		for (String factionId : factionIds)
-			factions.put(factionId, true);
+		for (String factionId : factionIds) {
+			factions.put(factionId, ExerelinConfig.getExerelinFactionConfig(factionId).enabledByDefault);
+		}
 	}
 
 	public static ExerelinSetupData getInstance() {
