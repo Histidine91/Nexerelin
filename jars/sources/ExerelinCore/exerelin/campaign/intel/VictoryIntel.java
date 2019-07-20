@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager.VictoryType;
+import exerelin.campaign.VictoryScreenScript.CustomVictoryParams;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -19,12 +20,14 @@ public class VictoryIntel extends BaseIntelPlugin {
 	protected String factionId;
 	protected VictoryType type;
 	protected boolean playerWon;
+	protected CustomVictoryParams customparams;
 	
-	public VictoryIntel(String factionId, VictoryType type, boolean playerWon)
+	public VictoryIntel(String factionId, VictoryType type, boolean playerWon, CustomVictoryParams customparams)
 	{
 		this.factionId = factionId;
 		this.type = type;
 		this.playerWon = playerWon;
+		this.customparams = customparams;
 	}
 	
 	// bullet points
@@ -53,8 +56,6 @@ public class VictoryIntel extends BaseIntelPlugin {
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
 		
-		Color h = Misc.getHighlightColor();
-		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
 		info.addImage(faction.getLogo(), width, 128, opad);
@@ -64,6 +65,15 @@ public class VictoryIntel extends BaseIntelPlugin {
 			String str = StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", 
 					"intelDescRetired", "$playerName", Global.getSector().getPlayerPerson().getNameString());
 			info.addPara(str, opad);
+			return;
+		}
+		else if (customparams != null) {
+			info.addPara(customparams.intelText, opad, faction.getBaseUIColor(), 
+				faction.getDisplayNameWithArticleWithoutArticle());
+			
+			if (playerWon)
+				info.addPara(StringHelper.getString("exerelin_victoryScreen", "intelStringYouWon"), opad);
+			
 			return;
 		}
 		
@@ -113,6 +123,8 @@ public class VictoryIntel extends BaseIntelPlugin {
 			case RETIRED:
 				key = "intelTitleRetired";
 				break;
+			case CUSTOM:
+				return customparams.name;
 			default:
 				return StringHelper.getString("victory", true);
 		}

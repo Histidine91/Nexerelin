@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager.VictoryType;
 import exerelin.campaign.StatsTracker.DeadOfficerEntry;
@@ -26,9 +27,10 @@ import java.util.Set;
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
 public class VictoryScreenScript implements EveryFrameScript
 {
-	private boolean isDone = false;
-	private String faction = Factions.PLAYER;
-	private VictoryType victoryType = VictoryType.CONQUEST;
+	protected boolean isDone = false;
+	protected String faction = Factions.PLAYER;
+	protected VictoryType victoryType = VictoryType.CONQUEST;
+	protected CustomVictoryParams customparams;
 
 	public VictoryScreenScript(String faction, VictoryType victoryType)
 	{
@@ -47,7 +49,6 @@ public class VictoryScreenScript implements EveryFrameScript
 	{
 		return true;
 	}
-
 	
 	@Override
 	public void advance(float amount)
@@ -61,28 +62,48 @@ public class VictoryScreenScript implements EveryFrameScript
 
 		if (!isDone)
 		{
-			ui.showInteractionDialog(new VictoryDialog(faction, victoryType), Global.getSector().getPlayerFleet());
+			VictoryDialog dialog = new VictoryDialog(faction, victoryType);
+			dialog.customparams = customparams;
+			ui.showInteractionDialog(dialog, Global.getSector().getPlayerFleet());
 			
 			boolean playerWon = !victoryType.isDefeat() && victoryType != VictoryType.RETIRED;
-			VictoryIntel intel = new VictoryIntel(faction, victoryType, playerWon);
+			if (customparams != null) playerWon = !customparams.isDefeat;
+			VictoryIntel intel = new VictoryIntel(faction, victoryType, playerWon, customparams);
 			Global.getSector().getIntelManager().addIntel(intel);
 			intel.setImportant(true);
 			
 			isDone = true;
 		}
 	}
+	
+	public void setCustomParams(CustomVictoryParams params) {
+		customparams = params;
+	}
+	
+	public static class CustomVictoryParams {
+		public String id;
+		public String name;
+		public String factionId = Factions.PLAYER;
+		public String text;
+		public Highlights highlights;
+		public String intelText;
+		public String image;
+		public String music;
+		public boolean isDefeat;
+	}
 
-	private static class VictoryDialog implements InteractionDialogPlugin
+	protected static class VictoryDialog implements InteractionDialogPlugin
 	{
 		protected boolean officerDeaths = ExerelinConfig.officerDeaths || !StatsTracker.getStatsTracker().deadOfficers.isEmpty();
 		
-		private InteractionDialogAPI dialog;
-		private TextPanelAPI text;
-		private OptionPanelAPI options;
-		private final String factionId;
-		private final VictoryType victoryType;
+		protected InteractionDialogAPI dialog;
+		protected TextPanelAPI text;
+		protected OptionPanelAPI options;
+		protected final String factionId;
+		protected final VictoryType victoryType;
+		protected CustomVictoryParams customparams;
 
-		private enum Menu
+		protected enum Menu
 		{
 			CREDITS,
 			STATS,
@@ -90,7 +111,7 @@ public class VictoryScreenScript implements EveryFrameScript
 			EXIT
 		}
 
-		private VictoryDialog(String factionId, VictoryType victoryType)
+		protected VictoryDialog(String factionId, VictoryType victoryType)
 		{
 			this.factionId = factionId;
 			this.victoryType = victoryType;
@@ -101,19 +122,19 @@ public class VictoryScreenScript implements EveryFrameScript
 			return StringHelper.getString("exerelin_victoryScreen", id);
 		}
 		
-		private void printCreditLine(String name, String contribution)
+		protected void printCreditLine(String name, String contribution)
 		{
 			text.addParagraph(name + ": " + contribution);
 			text.highlightInLastPara(name);
 		}
 			   
-		private void printKeyValueLine(String key, String value)
+		protected void printKeyValueLine(String key, String value)
 		{
 			text.addParagraph(key + ": " + value);
 			text.highlightInLastPara(value);
 		}
 		
-		private void printCredits()
+		protected void printCredits()
 		{
 			String category = "nex_credits";
 			printCreditLine("Zaphide", StringHelper.getString(category, "contribution_zaphide"));
@@ -126,7 +147,7 @@ public class VictoryScreenScript implements EveryFrameScript
 			printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString(category, "contribution_fractalSoftworks"));
 		}
 		
-		private void printStats()
+		protected void printStats()
 		{
 			StatsTracker tracker = StatsTracker.getStatsTracker();
 			//CampaignClockAPI clock = Global.getSector().getClock();
@@ -209,32 +230,59 @@ public class VictoryScreenScript implements EveryFrameScript
 			//String firstStar = SectorManager.getFirstStarName();
 			String message = "";
 			String victoryTypeStr = victoryType.toString().toLowerCase();
+			boolean isDefeat = victoryType.isDefeat() || (customparams != null && customparams.isDefeat);
 			
-			if (victoryTypeStr.startsWith("defeat_") || victoryType == VictoryType.RETIRED)
-				message = getString(victoryTypeStr);
-			else
-				message = getString("victory_" + victoryTypeStr);
-			message = StringHelper.substituteFactionTokens(message, faction);
-			//message = StringHelper.substituteToken(message, "$clusterName", firstStar);
-			text.addParagraph(message);
-			text.highlightInLastPara(faction.getBaseUIColor(), factionName);
+			if (customparams != null) {
+				text.addPara(customparams.text);
+				if (customparams.highlights != null)
+					text.setHighlightsInLastPara(customparams.highlights);
+			}
+			else {
+				if (victoryTypeStr.startsWith("defeat_") || victoryType == VictoryType.RETIRED)
+					message = getString(victoryTypeStr);
+				else
+					message = getString("victory_" + victoryTypeStr);
+				message = StringHelper.substituteFactionTokens(message, faction);
+				//message = StringHelper.substituteToken(message, "$clusterName", firstStar);
+				text.addParagraph(message);
+				text.highlightInLastPara(faction.getBaseUIColor(), factionName);
+			}
 			
-			if (victoryType == VictoryType.RETIRED)
+			// image (and victory string)
+			if (customparams != null)
+			{
+				if (customparams.image != null)
+					dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual(customparams.image, 640, 400));
+				else
+					dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual(isDefeat ? 
+							"graphics/illustrations/space_wreckage.jpg" : "graphics/illustrations/terran_orbit.jpg", 640, 400));
+			}
+			else if (victoryType == VictoryType.RETIRED)
 			{
 				dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/fly_away.jpg", 640, 400));
 			}
-			else if (victoryType != VictoryType.DEFEAT_CONQUEST && victoryType != VictoryType.DEFEAT_DIPLOMATIC)
+			else if (!isDefeat)
 			{
 				victoryTypeStr = victoryTypeStr.replaceAll("_", " ");
 				text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", "youHaveWon", "$victoryType", victoryTypeStr));
 				text.highlightInLastPara(victoryTypeStr);
 				dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/terran_orbit.jpg", 640, 400));
-				Global.getSoundPlayer().playUISound("music_campaign_victory_theme", 1, 1);
 			}
 			else {
 				dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/space_wreckage.jpg", 640, 400));
+			}
+			
+			// music
+			if (customparams != null && customparams.music != null) {
+				Global.getSoundPlayer().playUISound(customparams.music, 1, 1);
+			}
+			else if (!isDefeat) {
+				Global.getSoundPlayer().playUISound("music_campaign_victory_theme", 1, 1);
+			}
+			else if (victoryType != VictoryType.RETIRED) {
 				Global.getSoundPlayer().playUISound("music_campaign_defeat_theme", 1, 1);
 			}
+			
 			
 			options.addOption(Misc.ucFirst(StringHelper.getString("stats")), Menu.STATS);
 			options.addOption(Misc.ucFirst(StringHelper.getString("credits")), Menu.CREDITS);
@@ -299,5 +347,60 @@ public class VictoryScreenScript implements EveryFrameScript
 		{
 			return null;
 		}
+	}
+	
+	// runcode exerelin.campaign.VictoryScreenScript.debug(num)
+	public static void debug(int arg) {
+		SectorManager man = SectorManager.getManager();
+		String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+				+ "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+				+ "Dolor sed viverra ipsum nunc aliquet bibendum enim. In massa tempor nec feugiat. "
+				+ "Nunc aliquet bibendum enim facilisis gravida. Nisl nunc mi ipsum faucibus vitae "
+				+ "aliquet nec ullamcorper. Amet luctus venenatis lectus magna fringilla. "
+				+ "Volutpat maecenas volutpat blandit aliquam etiam erat velit scelerisque in. "
+				+ "Egestas egestas fringilla phasellus faucibus scelerisque eleifend. "
+				+ "Sagittis orci a scelerisque purus semper eget duis. Nulla pharetra diam sit amet nisl suscipit. "
+				+ "Sed adipiscing diam donec adipiscing tristique risus nec feugiat in. Fusce ut placerat orci nulla. "
+				+ "Pharetra vel turpis nunc eget lorem dolor. Tristique senectus et netus et malesuada.\n" 
+				+ "\n"
+				+ "Etiam tempor orci eu lobortis elementum nibh tellus molestie. Neque egestas congue quisque egestas. "
+				+ "Egestas integer eget aliquet nibh praesent tristique. Vulputate mi sit amet mauris. "
+				+ "Sodales neque sodales ut etiam sit. Dignissim suspendisse in est ante in. "
+				+ "Volutpat commodo sed egestas egestas. Felis donec et odio pellentesque diam. "
+				+ "Pharetra vel turpis nunc eget lorem dolor sed viverra. Porta nibh venenatis cras sed felis eget. "
+				+ "Aliquam ultrices sagittis orci a. Dignissim diam quis enim lobortis. Aliquet porttitor lacus "
+				+ "luctus accumsan. Dignissim convallis aenean et tortor at risus viverra adipiscing at.";
+		String qbf = "The quick brown fox jumps over the lazy dog~";
+		CustomVictoryParams params = new CustomVictoryParams();
+		params.id = "bla";
+		params.text = loremIpsum;
+		params.intelText = qbf;
+		params.name = "Custom Victory";
+		Highlights hl = new Highlights();
+		hl.setColors(Misc.getHighlightColor(), Misc.getNegativeHighlightColor(), Misc.getPositiveHighlightColor());
+		hl.setText("Lorem ipsum", "Volutpat maecenas", "Etiam tempor");
+		params.highlights = hl;
+		
+		switch (arg) {
+			case 1:
+				params.image = "graphics/illustrations/bombardment_saturation.jpg";
+				params.factionId = Factions.INDEPENDENT;
+				params.name = "Hax Victory";
+				params.intelText = "The independents have won the game! LOL";
+				break;
+			case 2:
+				params.image = "graphics/illustrations/raid_plunder.jpg";
+				params.isDefeat = true;
+				break;
+			case 3:
+				break;
+			case 4:
+				params.isDefeat = true;
+				break;
+			case 5:
+				params.music = "ui_interdict_off";
+				break;
+		}
+		man.customVictory(params);
 	}
 }

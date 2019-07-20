@@ -31,10 +31,12 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
@@ -807,6 +809,39 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
+    /**
+     * Triggers a custom victory and pops up victory dialog.
+     * @param id Unused.
+     * @param name
+     * @param factionId Winning faction ID (defaults to {@code player}).
+     * @param text Text shown in victory dialog.
+     * @param highlights {@code text} highlights
+     * @param intelText Text shown in intel item.
+     * @param image Optional, image to display in victory screen.
+     * @param music Optional, 'music' to play in victory screen (actually uses a UI sound).
+     * @param isDefeat
+     */
+    public void customVictory(String id, String name, String factionId, String text, 
+            Highlights highlights, String intelText, String image, String music, boolean isDefeat) {
+        CustomVictoryParams params = new CustomVictoryParams();
+        params.id = id;
+        params.name = name;
+        params.factionId = factionId;
+        params.text = text;
+        params.highlights = highlights;
+        params.image = image;
+        params.music = music;
+        params.isDefeat = isDefeat;
+        customVictory(params);
+    }
+    
+    public void customVictory(CustomVictoryParams params) {
+        victoryHasOccured = true;
+        VictoryScreenScript script = new VictoryScreenScript(params.factionId, VictoryType.CUSTOM);
+        script.setCustomParams(params);
+        Global.getSector().addScript(script);
+    }
+    
     public static void retire() 
     {
         Global.getSector().addScript(new VictoryScreenScript(Factions.PLAYER, VictoryType.RETIRED));
@@ -1204,6 +1239,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         DIPLOMATIC_ALLY,
         DEFEAT_CONQUEST,  //not a victory type but who's counting?
         DEFEAT_DIPLOMATIC,
+        CUSTOM,
         RETIRED;
         
         public boolean isConquest()
