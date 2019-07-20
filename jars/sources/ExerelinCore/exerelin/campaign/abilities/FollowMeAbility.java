@@ -35,7 +35,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 		FOLLOW_VALID_FLEET_TYPES.add(FleetTypes.PATROL_MEDIUM);
 		FOLLOW_VALID_FLEET_TYPES.add(FleetTypes.PATROL_LARGE);
 		FOLLOW_VALID_FLEET_TYPES.add("exerelinInvasionSupportFleet");
-		FOLLOW_VALID_FLEET_TYPES.add("exerelinDefenceFleet");
+		FOLLOW_VALID_FLEET_TYPES.add("nex_defenseFleet");
 	}
 	
 	@Override

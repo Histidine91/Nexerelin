@@ -147,7 +147,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (fp <= 75) name = getString("invasionSupportFleetPrefixSmall") + " " + name;
 				else if (fp >= 225) name = getString("invasionSupportFleetPrefixLarge") + " " + name;
 				break;
-			case "exerelinDefenceFleet":
+			case "nex_defenseFleet":
 				name = factionConfig.defenceFleetName;
 				if (fp <= 75) name = getString("defenceFleetPrefixSmall") + " " + name;
 				else if (fp >= 225) name = getString("defenceFleetPrefixLarge") + " " + name;
