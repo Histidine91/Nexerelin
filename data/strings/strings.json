@@ -208,6 +208,7 @@
 		"intelBullet1":"Currently on $market",
 		"intelLevelUp":"Now at level %s",
 		"intelAborted":"Mission aborted",
+		"intelRecovered":"Recovered from injuries",
 		"intelDescName":"$name is a level %s agent.",
 		"intelDescLost":"Agent $name has been captured or killed.",
 		"intelDescDismissed":"Agent $name has been dismissed from your service.",
@@ -261,6 +262,7 @@
 		"intelStatus_travel2":"insertion underway",
 		"intelStatus_travel3":"in place",
 		
+		"intelStatus_injury":"Recovering from injuries",
 		"intelStatus_raiseRelations":"Raising relations with %s",
 		"intelStatus_lowerRelations":"Lowering relations with %s",
 		"intelStatus_destabilizeMarket":"Destabilizing market",
@@ -344,6 +346,7 @@
 		"intelDesc_agentLost":"Agent $agentName has been captured or killed.",
 		"intelDesc_gainedXP":"$agentName gained %s XP.",
 		"intelDesc_gainedXPAndLeveledUp":"$agentName gained %s XP and has reached level %s.",
+		"intelDesc_injured":"$agentName injured for $s days.",
 		"intelDesc_agentExfiltrate":"$agentName is escaping to $market.",
 		
 		"destabilizeEffect":"Stability reduced by %s",

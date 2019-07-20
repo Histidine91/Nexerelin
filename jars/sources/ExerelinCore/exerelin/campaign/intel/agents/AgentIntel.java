@@ -39,6 +39,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final Object UPDATE_RECRUITED = new Object();
 	protected static final Object UPDATE_ARRIVED = new Object();
 	protected static final Object UPDATE_LEVEL_UP = new Object();
+	protected static final Object UPDATE_INJURY_RECOVERED = new Object();
 	protected static final Object UPDATE_LOST = new Object();
 	protected static final Object UPDATE_ABORTED = new Object();
 	protected static final String BUTTON_ORDERS = "orders";
@@ -160,6 +161,8 @@ public class AgentIntel extends BaseIntelPlugin {
 			info.addPara(getString("intelAborted"), pad);
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
 			info.addPara(getString("intelLevelUp"), pad, hl, level + "");
+		} else if (listInfoParam == UPDATE_INJURY_RECOVERED) {
+			info.addPara(getString("intelRecovered"), pad);
 		} else if (listInfoParam == UPDATE_LOST) {
 			
 		} else {

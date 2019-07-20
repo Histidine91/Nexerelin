@@ -1,5 +1,7 @@
 {
 	"eventFrequency":45,
+	"baseInjuryChance":0.4,
+	"baseInjuryChanceFailed":0.6,
 	
 	"industrySuccessMods":{
 		"lionsguard":-0.25,
@@ -20,6 +22,11 @@
 			"costScaling":false,
 			"useAlertLevel":false,
 		},
+		"injury":{
+			"name":"Injury Recovery",
+			"costScaling":false,
+			"useAlertLevel":false,
+		},
 		"raiseRelations":{
 			"name":"Raise Relations",
 			"time":75,
@@ -34,6 +41,7 @@
 			"repLossOnDetectionMax":0.15,
 			"baseCost":40000,
 			"costScaling":false,
+			"injuryChanceMult":0,
 			"xp":250,
 		},
 		"lowerRelations":{
@@ -50,6 +58,7 @@
 			"repLossOnDetectionMax":0.15,
 			"baseCost":40000,
 			"costScaling":false,
+			"injuryChanceMult":0,
 			"xp":250,
 		},
 		"destabilizeMarket":{

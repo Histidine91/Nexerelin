@@ -59,6 +59,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected float days;
 	protected float cost;
 	protected float daysRemaining;
+	protected Float injuryTime;
 	protected MarketAPI agentEscapeDest;
 	
 	/**
@@ -306,10 +307,28 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (agent != null) {
 			gainAgentXP();
 			agent.notifyActionCompleted();
+			rollInjury();			
 		}
 			
 		if (market != null) CovertOpsManager.modifyAlertLevel(market, getAlertLevelIncrease());
 		return result;
+	}
+	
+	public boolean rollInjury() {
+		if (result.isSucessful() && !result.isDetected())
+			return false;
+		
+		float chance = CovertOpsManager.getBaseInjuryChance(result.isSucessful());
+		chance *= getDef().detectionChance;
+		if (CovertOpsManager.getRandom(market).nextFloat() <= chance)
+		{
+			Injury injury = new Injury(agent, agentFaction, targetFaction, playerInvolved, params);
+			agent.setCurrentAction(injury);
+			injury.activate();
+			injuryTime = injury.days;
+			return true;
+		}
+		return false;
 	}
 	
 	public CovertActionResult getResult()	{
@@ -616,6 +635,14 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 			str = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
 					"intelDesc_gainedXP", "$agentName", name);
 			info.addPara(str, pad, hl, xpGain + "");
+		}
+		
+		if (injuryTime != null) {
+			CovertActionIntel injuryAction = agent.currentAction;
+			
+			str = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
+					"intelDesc_injured", "$agentName", name);
+			info.addPara(str, pad, Misc.getNegativeHighlightColor(), Math.round(injuryTime) + "");
 		}
 		
 		if (agentEscapeDest != null) {

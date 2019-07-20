@@ -21,14 +21,12 @@ import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.IntervalUtil;
-import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -85,6 +83,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
     public static final Map<String, Float> industrySuccessMods = new HashMap<>();
     public static final Map<String, Float> industryDetectionMods = new HashMap<>();
+	
+	protected static float baseInjuryChance, baseInjuryChanceFailed;
     
     protected Set<AgentIntel> agents = new HashSet<>();
     
@@ -113,6 +113,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 
         //config = ExerelinUtils.jsonToMap(configJson);
         baseInterval = (float)configJson.optDouble("eventFrequency", 45f);
+		baseInjuryChance = (float)configJson.optDouble("baseInjuryChance", 0);
+		baseInjuryChanceFailed = (float)configJson.optDouble("baseInjuryChanceDetected", 0);
+		
 		JSONObject actionsJson = configJson.getJSONObject("actions");
 		Iterator<String> keys = actionsJson.sortedKeys();
 		while (keys.hasNext()) {
@@ -125,6 +128,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.successChance = (float)defJson.optDouble("successChance", 0);
 			def.detectionChance = (float)defJson.optDouble("detectionChance", 0);
 			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail", 0);
+			def.injuryChanceMult = (float)defJson.optDouble("detectionChanceFail", 1);
 			def.useAlertLevel = defJson.optBoolean("useAlertLevel", true);
 			def.useIndustrySecurity = defJson.optBoolean("useIndustrySecurity", true);
 			def.repLossOnDetect = new Pair<>((float)defJson.optDouble("repLossOnDetectionMin", 0), 
@@ -186,6 +190,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	
 	public static float getIndustryDetectionMult(Industry ind) {
 		return getIndustryMult(ind, industryDetectionMods);
+	}
+	
+	public static float getBaseInjuryChance(boolean success) {
+		if (success) return baseInjuryChance;
+		return baseInjuryChanceFailed;
 	}
 	
 	protected Object readResolve() {
@@ -589,6 +598,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		public float successChance;
 		public float detectionChance;
 		public float detectionChanceFail;
+		public float injuryChanceMult;
 		public boolean useAlertLevel;
 		public boolean useIndustrySecurity;
 		public int baseCost;
