@@ -10,7 +10,7 @@ import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.PREP_S
 import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.WAIT_STAGE;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import java.util.List;
 
 public class RemnantRaidAssembleStage extends NexRaidAssembleStage {

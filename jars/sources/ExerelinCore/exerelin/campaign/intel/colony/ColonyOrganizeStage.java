@@ -2,7 +2,7 @@ package exerelin.campaign.intel.colony;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel.ColonyOutcome;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.utilities.StringHelper;

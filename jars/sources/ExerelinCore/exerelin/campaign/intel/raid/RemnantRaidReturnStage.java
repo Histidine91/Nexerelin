@@ -1,7 +1,7 @@
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
-import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import java.util.List;
 

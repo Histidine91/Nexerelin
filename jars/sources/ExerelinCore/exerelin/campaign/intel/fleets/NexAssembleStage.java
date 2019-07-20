@@ -14,8 +14,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.OffensiveFleetIntel;
-import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 

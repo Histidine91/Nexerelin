@@ -2,7 +2,6 @@ package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.impl.campaign.intel.raid.ReturnStage;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import exerelin.campaign.intel.OffensiveFleetIntel;
 
 public class NexReturnStage extends ReturnStage {
 	

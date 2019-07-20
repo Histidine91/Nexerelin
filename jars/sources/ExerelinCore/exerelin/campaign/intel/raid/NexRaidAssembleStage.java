@@ -3,7 +3,7 @@ package exerelin.campaign.intel.raid;
 import exerelin.campaign.intel.fleets.NexAssembleStage;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import org.lazywizard.lazylib.MathUtils;
 
 public class NexRaidAssembleStage extends NexAssembleStage {

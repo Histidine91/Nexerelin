@@ -27,12 +27,12 @@ import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.MutableValue;
-import data.campaign.intel.bases.KadurBaseIntel;
+import data.scripts.campaign.bases.VayraRaiderBaseIntel;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.invasion.InvasionIntel;
-import exerelin.campaign.intel.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
@@ -515,9 +515,9 @@ public class Nex_FleetRequest extends PaginatedOptions {
 				markets.add(base.getMarket());
 			}
 			else {
-				if (Global.getSettings().getModManager().isModEnabled("kadur_remnant")) {
-					if (intel instanceof KadurBaseIntel) {
-						KadurBaseIntel base = (KadurBaseIntel)intel;
+				if (Global.getSettings().getModManager().isModEnabled("vayrasector")) {
+					if (intel instanceof VayraRaiderBaseIntel) {
+						VayraRaiderBaseIntel base = (VayraRaiderBaseIntel)intel;
 						if (faction != null && base.getMarket().getFaction() != faction) 
 							continue;
 						markets.add(base.getMarket());

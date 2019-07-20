@@ -28,8 +28,8 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetA
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
-import exerelin.campaign.intel.OffensiveFleetIntel;
-import exerelin.campaign.intel.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel.ColonyOutcome;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
