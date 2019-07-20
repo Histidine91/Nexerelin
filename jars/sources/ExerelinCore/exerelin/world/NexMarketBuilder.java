@@ -350,6 +350,7 @@ public class NexMarketBuilder
 		boolean isPirate = ExerelinUtilsFaction.isPirateFaction(market.getFactionId());
 		boolean isMoon = entity.type == EntityType.MOON;
 		boolean isStation = entity.type == EntityType.STATION;
+		boolean newNPCColony = market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY);
 		
 		int sizeForBase = 6;
 		if (isMoon) sizeForBase = 5;
@@ -374,11 +375,10 @@ public class NexMarketBuilder
 				}
 				haveBase = true;
 			}
-				
 		}
 		
 		int sizeForPatrol = 5;
-		if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+		if (newNPCColony)
 			sizeForPatrol = 3;
 		else if (isMoon || isStation) 
 			sizeForPatrol = 4;
@@ -388,11 +388,11 @@ public class NexMarketBuilder
 		{
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
 			float req = MILITARY_BASE_CHANCE;
-			if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
+			if (newNPCColony) req = -1;
+			else if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
 			if (roll > req) {
 				addIndustry(market, Industries.PATROLHQ, instant);
 			}
-				
 		}
 		
 		// add ground defenses

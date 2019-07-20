@@ -611,8 +611,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	/**
-	 * Adds industries to a market. Intended to semi-counter market stripping
-	 * by the player, and will be used later for NPC colonies.
+	 * Adds industries to a market. Used by NPC colonies, and semi-counters 
+	 * market stripping by the player.
 	 * @param market
 	 * @param military Adds military structures.
 	 * @param productive Adds productive industries such as farms and mines.
@@ -632,8 +632,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	/**
-	 * Adds industries to a market. Intended to semi-counter market stripping
-	 * by the player, and will be used later for NPC colonies. 
+	 * Adds industries to a market. Used by NPC colonies, and semi-counters 
+	 * market stripping by the player.
 	 * <p>This overload build spaceports by default (if needed), and tries to automatically
 	 * figure out if it should also build military and productive structures.</p>
 	 * @param market
