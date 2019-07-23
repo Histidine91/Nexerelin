@@ -14,7 +14,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
@@ -26,8 +25,10 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
+import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
+import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -58,7 +59,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		SectorEntityToken gather = from.getPrimaryEntity();
 		
-		addStage(new InvOrganizeStage(this, from, orgDur));
+		addStage(new NexOrganizeStage(this, from, orgDur));
 		
 		float successMult = 0.4f;
 		InvAssembleStage assemble = new InvAssembleStage(this, gather);
@@ -284,7 +285,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	@Override
 	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
-		RaidAssignmentAI raidAI = new RaidAssignmentAI(fleet, route, (InvActionStage)action);
+		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(fleet, route, (InvActionStage)action);
 		return raidAI;
 	}
 	
