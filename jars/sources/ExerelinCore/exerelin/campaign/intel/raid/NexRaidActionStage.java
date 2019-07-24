@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.econ.RaidCondition;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
@@ -78,6 +79,11 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 			targets.add(market);
 		}
 		return targets;
+	}
+	
+	@Override
+	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
+		return OffensiveFleetIntel.enoughMadeIt((NexRaidIntel)intel, abortFP, routes, stragglers);
 	}
 	
 	@Override

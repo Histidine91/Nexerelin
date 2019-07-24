@@ -268,7 +268,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, getTarget());
 		
 		float myFP = extra.fp;
-		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+		if (!useMarketFleetSizeMult)
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
@@ -295,7 +295,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 				0f // qualityMod, won't get used since routes mostly have quality override set
 				);
 		
-		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+		if (!useMarketFleetSizeMult)
 			params.ignoreMarketFleetSizeMult = true;
 		
 		//params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;

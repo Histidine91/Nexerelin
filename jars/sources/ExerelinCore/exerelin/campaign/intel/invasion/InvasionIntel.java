@@ -215,7 +215,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		float myFP = extra.fp;
 		if (!isInvasionFleet) myFP *= 0.75f;
-		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+		if (!useMarketFleetSizeMult)
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
@@ -244,7 +244,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				);
 		
 		// we don't need the variability involved in this
-		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+		if (!useMarketFleetSizeMult)
 			params.ignoreMarketFleetSizeMult = true;
 		
 		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;

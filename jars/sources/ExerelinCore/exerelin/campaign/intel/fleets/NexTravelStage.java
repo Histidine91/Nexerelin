@@ -1,12 +1,15 @@
 package exerelin.campaign.intel.fleets;
 
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.List;
 
 public class NexTravelStage extends TravelStage {
 	
@@ -22,6 +25,11 @@ public class NexTravelStage extends TravelStage {
 			offFltIntel = (OffensiveFleetIntel)intel;
 		
 		return this;
+	}
+	
+	@Override
+	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
+		return OffensiveFleetIntel.enoughMadeIt(offFltIntel, abortFP, routes, stragglers);
 	}
 	
 	@Override

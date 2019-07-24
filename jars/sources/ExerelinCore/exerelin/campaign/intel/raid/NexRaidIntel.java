@@ -189,7 +189,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 				);
 		// we don't need the variability involved in this
 		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
-		if (!InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+		if (!useMarketFleetSizeMult)
 			params.ignoreMarketFleetSizeMult = true;
 		
 		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;

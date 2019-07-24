@@ -50,6 +50,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected float fp;
 	protected float orgDur;
 	protected boolean reported = false;
+	protected boolean useMarketFleetSizeMult = InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT;
 	
 	protected ActionStage action;
 	
@@ -80,6 +81,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	}
 	
 	public void init() {
+	}
+	
+	public void setSilent() {
+		this.intelQueuedOrAdded = true;
+	}
+	
+	public boolean isUsingMarketSizeMult() {
+		return useMarketFleetSizeMult;
 	}
 	
 	protected void queueIntelIfNeeded()
@@ -371,7 +380,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	// disregard market fleet size mult if needed
 	@Override
 	public float getRaidFPAdjusted() {
-		if (InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+		if (useMarketFleetSizeMult)
 			return super.getRaidFPAdjusted();
 				
 		float raidFP = getRaidFP();
@@ -381,7 +390,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public float getRaidStr() {
-		if (InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT)
+		if (useMarketFleetSizeMult)
 			return super.getRaidStr();
 		
 		MarketAPI source = getFirstSource();
@@ -442,5 +451,28 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			member.setShipName(curr.pickRandomShipName(rand));
 		}
+	}
+	
+	// Takes into account the fact that we don't normally use market size mult
+	public static boolean enoughMadeIt(OffensiveFleetIntel intel, float abortFP, 
+			List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
+		float madeItFP = 0;
+		for (RouteManager.RouteData route : routes) {
+			CampaignFleetAPI fleet = route.getActiveFleet();
+			if (fleet != null) {
+				
+				float mult = 1;
+				if (intel.isUsingMarketSizeMult())
+					mult = Misc.getAdjustedFP(1f, route.getMarket());
+				else
+					mult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(intel.faction);
+				
+				if (mult < 1) mult = 1f;
+				madeItFP += fleet.getFleetPoints() / mult;
+			} else {
+				madeItFP += route.getExtra().fp;
+			}
+		}
+		return madeItFP >= abortFP;
 	}
 }

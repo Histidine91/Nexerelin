@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -17,6 +18,8 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class NexAssembleStage extends AssembleStage {
 	
@@ -125,6 +128,11 @@ public abstract class NexAssembleStage extends AssembleStage {
 		maxDays = Math.max(maxDays, prepDays + travelDays);
 		//maxDays = 6f;
 		
+	}
+	
+	@Override
+	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
+		return OffensiveFleetIntel.enoughMadeIt(offFltIntel, abortFP, routes, stragglers);
 	}
 	
 	// same as Misc. version except with "use fleet size mult" check

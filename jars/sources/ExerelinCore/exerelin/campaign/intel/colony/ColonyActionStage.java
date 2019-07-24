@@ -219,6 +219,11 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 	}
 	
 	@Override
+	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
+		return OffensiveFleetIntel.enoughMadeIt(colonyFleetIntel, abortFP, routes, stragglers);
+	}
+	
+	@Override
 	public String getRaidActionText(CampaignFleetAPI fleet, MarketAPI market) {
 		return StringHelper.getFleetAssignmentString("colonizing", market.getName());
 	}
