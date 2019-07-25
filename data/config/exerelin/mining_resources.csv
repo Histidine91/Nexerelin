@@ -1,5 +1,5 @@
 id,ore,rare_ore,organics,volatiles,cache
-asteroid,0.4,,,0.05,
+asteroid,0.4,,,0.01,
 ore_sparse,0.5,,,,
 ore_moderate,1,,,,
 ore_abundant,1.5,,,,

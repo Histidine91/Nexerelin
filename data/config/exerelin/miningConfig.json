@@ -3,7 +3,7 @@
 	"cacheSizeMult":1.0,
 	"baseCacheChance":0.1,
 	"baseAccidentChance":0.25,
-	"xpPerMiningStrength":50,
+	"xpPerMiningStrength":20,
 	"machineryPerMiningStrength":0.4,
 	"baseAccidentCRLoss":0.1,
 	"baseAccidentHullDamage":400.0,
