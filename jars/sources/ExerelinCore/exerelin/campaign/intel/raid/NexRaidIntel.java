@@ -160,6 +160,8 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		float distance = getDistanceToTarget(market);
 		
 		float myFP = extra.fp;
+		if (!useMarketFleetSizeMult)
+			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
 		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
