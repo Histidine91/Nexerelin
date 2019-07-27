@@ -10,6 +10,7 @@ import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,10 +184,16 @@ public class Alliance
 	}
 	
 	public enum Alignment {
-		CORPORATE,
-		TECHNOCRATIC,
-		MILITARIST,
-		DIPLOMATIC,
-		IDEOLOGICAL
+		CORPORATE(new Color(32, 178, 170)),	// Light Sea Green
+		TECHNOCRATIC(Color.CYAN),
+		MILITARIST(Color.RED),
+		DIPLOMATIC(Color.YELLOW),
+		IDEOLOGICAL(Color.GREEN);
+		
+		public final Color color;
+		
+		private Alignment(Color color) {
+			this.color = color;
+		}
 	}
 }

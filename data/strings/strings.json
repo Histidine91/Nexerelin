@@ -135,6 +135,13 @@
 		"allianceListOption":"Alliance list",
 		"theAlliance":"the $alliance",
 		
+		"alignment":"alignment",
+		"alignment_corporate":"corporate",
+		"alignment_technocratic":"technocratic",
+		"alignment_militarist":"militarist",
+		"alignment_diplomatic":"diplomatic",
+		"alignment_ideological":"ideological",
+		
 		"intelDesc":"The $alliance alliance is present in the Sector. It has $numMembers members, with $numMarkets markets of total size $marketSizeSum.",
 		"intelMemberEntry":"$faction: $num markets (total size $size)",
 		"intelDissolvedDesc":"The $alliance alliance has been dissolved. Its members have gone their separate ways.",

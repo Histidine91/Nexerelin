@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -163,6 +164,11 @@ public class AllianceIntel extends BaseIntelPlugin {
 		replace.put("$marketSizeSum", size);
 		str = StringHelper.getStringAndSubstituteTokens("exerelin_alliances", "intelDesc", replace);
 		info.addPara(str, opad, h, alliance.getName(), numMembers, numMarkets, size);
+		
+		String alignmentName = StringHelper.getString("exerelin_alliances", "alignment_" 
+				+ alliance.getAlignment().toString().toLowerCase(Locale.ROOT), true);
+		str = StringHelper.getString("exerelin_alliances", "alignment", true) + ": " + alignmentName;
+		info.addPara(str, opad, alliance.getAlignment().color, alignmentName);
 		
 		str = StringHelper.getString("exerelin_alliances", "intelMembersHeader");
 		info.addSectionHeading(str, Alignment.MID, opad);
