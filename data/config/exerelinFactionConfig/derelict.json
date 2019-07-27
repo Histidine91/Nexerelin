@@ -5,4 +5,6 @@
 	"noRandomizeRelations":true,
 	"allowAgentActions":false,
     "allowPrisonerActions":false,
+	
+	"maxRelationships":{ "default":-0.6 },
 }

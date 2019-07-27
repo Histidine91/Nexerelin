@@ -13,7 +13,6 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
 import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
 import com.fs.starfarer.api.impl.campaign.intel.PersonBountyManager;
-import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionCreator;
 import com.fs.starfarer.api.impl.campaign.intel.SurveyPlanetIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.SystemBountyManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
@@ -24,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
+import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 
 public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	
@@ -95,8 +95,8 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 			sector.addScript(new GenericMissionManager());
 		}
 		GenericMissionManager manager = GenericMissionManager.getInstance();
-		if (!manager.hasMissionCreator(ProcurementMissionCreator.class)) {
-			manager.addMissionCreator(new ProcurementMissionCreator());
+		if (!manager.hasMissionCreator(Nex_ProcurementMissionCreator.class)) {
+			manager.addMissionCreator(new Nex_ProcurementMissionCreator());
 		}
 		if (!manager.hasMissionCreator(AnalyzeEntityIntelCreator.class)) {
 			manager.addMissionCreator(new AnalyzeEntityIntelCreator());

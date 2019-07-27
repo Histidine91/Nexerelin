@@ -11,7 +11,12 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
+import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
+import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager.GenericMissionCreator;
+import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionCreator;
+import com.fs.starfarer.api.impl.campaign.intel.SurveyPlanetIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
@@ -40,6 +45,7 @@ import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
+import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
@@ -47,6 +53,7 @@ import exerelin.world.ExerelinProcGen;
 import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
 import exerelin.world.scenarios.ScenarioManager;
+import java.util.ArrayList;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -84,6 +91,32 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         return removedAny;
     }
+	
+	protected <T extends GenericMissionCreator> boolean replaceMissionCreator(Class toRemove, T toAdd) {
+		boolean removedAny = false;
+		GenericMissionManager manager = GenericMissionManager.getInstance();
+		if (!manager.hasMissionCreator(toRemove))
+			return false;
+        for (GenericMissionCreator creator : new ArrayList<>(manager.getCreators()))
+        {
+            if (toRemove.isInstance(creator))
+            {
+                if (toAdd != null && toAdd.getClass().isInstance(creator))
+                    continue;
+                
+                Global.getLogger(this.getClass()).info("Removing mission creator " + creator.toString() + " | " + toRemove.getCanonicalName());
+                
+                manager.getCreators().remove(creator);
+                
+                if (toAdd != null)
+                    manager.addMissionCreator(toAdd);
+                
+                removedAny = true;
+                break;
+            }
+        }
+        return removedAny;
+	}
     
     public static void replaceSubmarket(MarketAPI market, String submarketId) {
         if (!market.hasSubmarket(submarketId)) return;
@@ -120,6 +153,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         replaceScript(sector, FactionHostilityManager.class, null);
         replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
         replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
+		replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
+        //replaceMissionCreator(AnalyzeEntityIntelCreator.class, new Nex_AnalyzeEntityIntelCreator());
+		//replaceMissionCreator(SurveyPlanetIntelCreator.class, new Nex_SurveyPlanetIntelCreator());
         
         for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
         {

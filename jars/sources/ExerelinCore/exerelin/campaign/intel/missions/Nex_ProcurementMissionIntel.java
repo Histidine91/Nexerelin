@@ -1,0 +1,90 @@
+package exerelin.campaign.intel.missions;
+
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.EconomyAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionIntel;
+import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+// Blocks some factions like derelicts; deliveries increase commodity availability
+public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
+	
+	public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[]{
+		Factions.DERELICT, Factions.REMNANTS
+	}));
+	public static final float TRADE_MULT = 0.25f;
+	
+	public static boolean isFactionAllowed(String factionId) {
+		return !DISALLOWED_FACTIONS.contains(factionId);
+	}
+	
+	// same as vanilla, but excludes some factions
+	@Override
+	protected MarketAPI pickMarket(String commodityId, float quantity, float illegalMult, float min) {
+//		if (true) {
+//			return Global.getSector().getEconomy().getMarket("jangala");
+//		}
+		Global.getSettings().profilerBegin(this.getClass().getSimpleName() + ".pickMarket()");
+		EconomyAPI economy = Global.getSector().getEconomy();
+		
+		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>();
+		
+		for (MarketAPI market : economy.getMarketsCopy()) {
+			if (market.isHidden()) continue;
+			if (market.isPlayerOwned()) continue;
+			if (!isFactionAllowed(market.getFactionId())) continue;
+			
+			//CommodityOnMarketAPI com = market.getCommodityData(commodityId);
+			
+			boolean illegal = market.isIllegal(commodityId);
+			float test = getQuantityAdjustedForMarket(commodityId, quantity, illegalMult, min, market);
+			if (illegal) {
+				test *= illegalMult;
+				if (test < min) test = min;
+			}
+			//if (com.getAverageStockpileAfterDemand() >= minQty) continue;
+			// don't filter on demand - open up more possibilities; may be needed for non-market-condition reasons
+			//if (com.getDemand().getDemandValue() < minQty) continue;
+			
+			if (doNearbyMarketsHave(market, commodityId, test * 0.5f)) continue;
+			
+			float weight = market.getSize();
+			
+			if (market.getFaction().isPlayerFaction()) {
+				weight *= 0.1f;
+			}
+			
+			picker.add(market, weight);
+		}
+		Global.getSettings().profilerEnd();
+		return picker.pick();
+	}
+	
+	@Override
+	public boolean callEvent(String ruleId, final InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
+		String action = params.get(0).getString(memoryMap);
+		
+		boolean illegal = contact.getFaction().isHostileTo(market.getFaction());
+		if (!illegal && action.equals("performDelivery")) {
+			String commodityId = commodity.getId();
+			float qty = quantity * TRADE_MULT;
+			if (qty > 0) {
+				CommodityOnMarketAPI com = market.getCommodityData(commodityId);
+				com.addTradeModPlus("deliver_" + Misc.genUID(), qty, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
+			}
+		}
+		
+		return super.callEvent(ruleId, dialog, params, memoryMap);
+	}
+}
