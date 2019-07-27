@@ -16,8 +16,10 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.intel.defensefleet.DefenseAssignmentAI;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +31,8 @@ public class FollowMeAbility extends BaseDurationAbility {
 	public static final float FOLLOW_DURATION_PASSIVE = 15;
 	public static final float FOLLOW_FETCH_RANGE = 600;
 	public static final Set<String> FOLLOW_VALID_FLEET_TYPES = new HashSet<>();
+	public static final String BUSY_REASON = "nex_followMe";
+	public static final List<String> ALLOWED_BUSY_REASONS = new ArrayList<>();
 	
 	static {
 		FOLLOW_VALID_FLEET_TYPES.add(FleetTypes.PATROL_SMALL);
@@ -36,6 +40,25 @@ public class FollowMeAbility extends BaseDurationAbility {
 		FOLLOW_VALID_FLEET_TYPES.add(FleetTypes.PATROL_LARGE);
 		FOLLOW_VALID_FLEET_TYPES.add("exerelinInvasionSupportFleet");
 		FOLLOW_VALID_FLEET_TYPES.add("nex_defenseFleet");
+		
+		ALLOWED_BUSY_REASONS.add(BUSY_REASON);
+		ALLOWED_BUSY_REASONS.add(DefenseAssignmentAI.BUSY_REASON);
+	}
+	
+	protected boolean isBusyForAllowedReason(CampaignFleetAPI fleet) 
+	{
+		MemoryAPI mem = fleet.getMemoryWithoutUpdate();
+		if (!mem.contains(MemFlags.FLEET_BUSY))
+			return false;
+		
+		for (String reason : ALLOWED_BUSY_REASONS) 
+		{
+			if (Misc.flagHasReason(mem, MemFlags.FLEET_BUSY, reason)) 
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -98,6 +121,8 @@ public class FollowMeAbility extends BaseDurationAbility {
 						
 						//ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION - FOLLOW_DURATION_PASSIVE, null);
 						ai.addAssignmentAtStart(FleetAssignment.ORBIT_PASSIVE, entity, FOLLOW_DURATION_PASSIVE, null);
+						Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), 
+								MemFlags.FLEET_BUSY, BUSY_REASON, true, FOLLOW_DURATION_PASSIVE);
 						
 						//fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, FOLLOW_DURATION);
 						Global.getSector().addPing(fleet, "follow_me_receive");
