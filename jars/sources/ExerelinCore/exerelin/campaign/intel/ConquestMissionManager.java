@@ -110,7 +110,7 @@ public class ConquestMissionManager extends BaseEventManager {
 	
 	protected FactionAPI pickSourceFaction() {
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-		for (Pair<String, Integer> result : getNumWarsByFaction()) {
+		for (Pair<String, Float> result : getNumWeightedWarsByFaction()) {
 			picker.add(result.one, result.two);
 		}
 		String factionId = picker.pick();
@@ -118,18 +118,35 @@ public class ConquestMissionManager extends BaseEventManager {
 		return Global.getSector().getFaction(factionId);
 	}
 	
-	protected List<Pair<String, Integer>> getNumWarsByFaction()
+	protected List<Pair<String, Float>> getNumWeightedWarsByFaction()
 	{
-		List<Pair<String, Integer>> atWar = new ArrayList<>();
+		List<Pair<String, Float>> atWar = new ArrayList<>();
 		List<String> liveFactions = SectorManager.getLiveFactionIdsCopy();
+		FactionAPI player = Global.getSector().getPlayerFaction();
+		
+		// Wars with factions not hostile to player count only 25% as much
+		// If the faction is hostile to player, its war count score is halved
+		
 		for (String factionId : liveFactions)
 		{
 			if (factionId.equals(Factions.PLAYER)) continue;
 			if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(factionId))
 				continue;
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true, false);
-			if (!enemies.isEmpty())
-				atWar.add(new Pair<>(factionId, enemies.size()));
+			if (enemies.isEmpty()) continue;
+			
+			float count = 0;
+			for (String enemyId : enemies) {
+				if (player.isHostileTo(enemyId))
+					count += 1;
+				else
+					count += 0.25f;
+			}
+			
+			if (player.isHostileTo(factionId))
+				count *= 0.5f;
+			
+			atWar.add(new Pair<>(factionId, count));
 		}
 		return atWar;
 	}
