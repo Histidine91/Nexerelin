@@ -1,8 +1,6 @@
 package exerelin.campaign.intel.fleets;
 
-import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.OrganizeStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -10,7 +8,6 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
-import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 

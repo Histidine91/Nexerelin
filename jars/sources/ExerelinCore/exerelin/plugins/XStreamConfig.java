@@ -18,11 +18,9 @@ import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.campaign.events.WarmongerEvent;
-import exerelin.campaign.fleets.DefenceFleetAI;
 import exerelin.campaign.fleets.MiningFleetAI;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.MiningFleetManagerV2.MiningFleetData;
-import exerelin.campaign.fleets.RespawnFleetAI;
 import exerelin.campaign.fleets.SuppressionFleetAI;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceVoteIntel;
@@ -246,10 +244,6 @@ public class XStreamConfig {
 		x.aliasAttribute(ConquestMissionEvent.class, "bonusDaysLeftStr", "daysStr2");
 		
 		// Fleets
-		// DefenceFleetAI
-		x.aliasAttribute(DefenceFleetAI.class, "daysTotal", "days");
-		x.aliasAttribute(DefenceFleetAI.class, "fleet", "flt");
-		x.aliasAttribute(DefenceFleetAI.class, "orderedReturn", "ret");
 		
 		// MiningFleetAI
 		x.aliasAttribute(MiningFleetAI.class, "daysTotal", "days");
@@ -265,10 +259,6 @@ public class XStreamConfig {
 		x.aliasAttribute(MiningFleetData.class, "sourceMarket", "srcM");
 		x.aliasAttribute(MiningFleetData.class, "startingFleetPoints", "strtPt");
 		x.aliasAttribute(MiningFleetData.class, "miningStrength", "str");
-		
-		// RespawnFleetAI
-		x.aliasAttribute(RespawnFleetAI.class, "captureSuccessful", "cap");
-		x.aliasAttribute(RespawnFleetAI.class, "forceHostile", "hstl");
 		
 		// ExerelinReputationAdjustmentResult
 		x.aliasAttribute(ExerelinReputationAdjustmentResult.class, "wasHostile", "hstl1");

@@ -3,11 +3,7 @@ package exerelin.campaign.intel.colony;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetActionTextProvider;
 import com.fs.starfarer.api.campaign.FleetAssignment;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
-import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -46,46 +42,7 @@ public class ColonyExpeditionAssignmentAI extends RouteFleetAssignmentAI impleme
 			checkRaid(amount);
 		}
 	}
-
-	@Override
-	protected String getInSystemActionText(RouteSegment segment) {
-		if (AssembleStage.WAIT_STAGE.equals(segment.custom)) {
-			return StringHelper.getFleetAssignmentString("rendezvous", null);
-		}
-		String s = null;
-		if (delegate != null) s = delegate.getRaidInSystemText(fleet);
-		if (s == null) s = StringHelper.getFleetAssignmentString("onColonyExpedition", null);
-		return s;
-	}
-
-	@Override
-	protected String getEndingActionText(RouteSegment segment) {
-		return super.getEndingActionText(segment);
-	}
-
-	@Override
-	protected String getStartingActionText(RouteSegment segment) {
-		if (AssembleStage.PREP_STAGE.equals(segment.custom)) {
-			String s = null;
-			if (delegate != null) s = delegate.getRaidPrepText(fleet, segment.from);
-			if (s == null) s = StringHelper.getFleetAssignmentString("preparingForShort", null, "missionColony");
-			return s;
-		}
-		if (segment.from == route.getMarket().getPrimaryEntity()) {
-			return StringHelper.getFleetAssignmentString("orbiting", route.getMarket().getName());
-		}
-		
-		String s = null;
-		if (delegate != null) s = delegate.getRaidDefaultText(fleet);
-		if (s == null) s = StringHelper.getFleetAssignmentString("onColonyExpedition", null);
-		return s;
-	}
-
-	@Override
-	protected String getTravelActionText(RouteSegment segment) {
-		return super.getTravelActionText(segment);
-	}
-
+	
 	@Override
 	public String getActionText(CampaignFleetAPI fleet) {
 		FleetAssignmentDataAPI curr = fleet.getCurrentAssignment();
