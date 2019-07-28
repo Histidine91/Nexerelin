@@ -3,6 +3,7 @@
 	"colonyOverMaxPenalty":1,
 	"bombardTacticalStability":1,
 	"accessibilityNoSpaceport":-0.5,	# default -1
+	"industryRefundFraction":0.5,		# default 0.75
 	
 	"plugins":{
 		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",
