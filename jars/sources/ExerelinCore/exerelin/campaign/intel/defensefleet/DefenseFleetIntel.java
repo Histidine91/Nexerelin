@@ -160,6 +160,12 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 			info.addPara(string, opad);
 			return;
 		}
+		else if (outcome == OffensiveOutcome.SUCCESS)
+		{
+			string = StringHelper.getString("nex_defenseFleet", "intelOutcomeSuccess");
+			info.addPara(string, opad);
+			return;
+		}
 		
 		for (RaidStage stage : stages) {
 			stage.showStageInfo(info);

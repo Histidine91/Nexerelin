@@ -21,6 +21,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.StringHelper;
@@ -48,9 +49,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean intelQueuedOrAdded;
 	protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
 	protected float fp;
+	protected float baseFP;
 	protected float orgDur;
-	protected boolean reported = false;
 	protected boolean useMarketFleetSizeMult = InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT;
+	protected boolean requiresSpaceportOrBase = true;
+	
+	protected boolean brawlMode;
+	protected float brawlMult = -1;
 	
 	protected ActionStage action;
 	
@@ -76,6 +81,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		this.from = from;
 		this.target = target;
 		this.fp = fp;
+		baseFP = fp;
 		this.orgDur = orgDur;
 		targetFaction = target.getFaction();
 	}
@@ -89,6 +95,22 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	public boolean isUsingMarketSizeMult() {
 		return useMarketFleetSizeMult;
+	}
+	
+	public boolean isBrawlMode() {
+		return brawlMode;
+	}
+	
+	public void setBrawlMode(boolean brawl) {
+		brawlMode = brawl;
+	}
+	
+	public void setRequiresSpaceportOrBase(boolean requiresSpaceport) {
+		this.requiresSpaceportOrBase = requiresSpaceport;
+	}
+	
+	public boolean isRequiresSpaceportOrBase() {
+		return requiresSpaceportOrBase;
 	}
 	
 	protected void queueIntelIfNeeded()
@@ -164,10 +186,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	public void sendOutcomeUpdate() {
 		addIntelIfNeeded();
-		if (!reported) {
-			sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
-			reported = true;
-		}
+		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
 	}
 	
 	public void sendEnteredSystemUpdate() {
@@ -224,9 +243,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			addOutcomeBullet(info, tc, initPad);
 		} else {
 			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
+			initPad = 0f;
+			addETABullet(info, tc, h, initPad);
 		}
-		initPad = 0f;
-		addETABullet(info, tc, h, initPad);
 		
 		unindent(info);
 	}
@@ -414,7 +433,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		String factionId = market.getFactionId();
 		// randomly use an ally faction's fleet if applicable
 		Alliance alliance = AllianceManager.getFactionAlliance(factionId);
-		if (alliance != null && random.nextFloat() < ALLY_GEAR_CHANCE) {
+		if (brawlMode && random.nextFloat() < Global.getSettings().getFloat("nex_brawlMode_randomFactionGearChance")) 
+		{
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+			picker.addAll(SectorManager.getLiveFactionIdsCopy());
+			factionId = picker.pick();
+			log.info("Brawl mode: Using gear from faction " + factionId);
+		}
+		else if (alliance != null && random.nextFloat() < ALLY_GEAR_CHANCE) {
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 			picker.addAll(alliance.getMembersCopy());
 			factionId = picker.pick();

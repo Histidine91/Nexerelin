@@ -15,7 +15,7 @@ public class InvAssembleStage extends NexAssembleStage {
 	
 	@Override
 	protected String pickNextType() {
-		if (InvasionIntel.NO_STRIKE_FLEETS)
+		if (InvasionIntel.NO_STRIKE_FLEETS && !((InvasionIntel)intel).isBrawlMode())
 			return "exerelinInvasionFleet";
 		
 		int fleetCount = this.getRoutes().size();

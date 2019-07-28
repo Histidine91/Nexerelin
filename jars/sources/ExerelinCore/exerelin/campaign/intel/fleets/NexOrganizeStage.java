@@ -107,7 +107,7 @@ public class NexOrganizeStage extends OrganizeStage {
 			fail = true;
 		}
 		// fail if spaceport + any present military base are disrupted
-		else if (market != null) {
+		else if (market != null && !offFltIntel.requiresSpaceportOrBase) {
 			if (!market.hasSpaceport() && !market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY))
 				fail = true;
 		}

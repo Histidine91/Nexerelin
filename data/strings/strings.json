@@ -530,11 +530,12 @@
 		"theDefense":"the defense",
 		"defenseForce":"defense force",
 		"theDefenseForce":"the defense force",
-		"defenseIsOrAre":"is",
-		"defenseHasOrHave":"has",
+		"forceIsOrAre":"is",
+		"forceHasOrHave":"has",
 		
 		"intelDesc":"$TheFaction $isOrAre dispatching a task force to defend $market in the $location, held by $theTargetFaction. The defense forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelStageAction":"The defense forces are currently in-system.",
+		"intelOutcomeSuccess":"The defense forces have completed their mission.",
 	},
 	
 	"exerelin_diplomacy":{	
@@ -783,6 +784,7 @@
 		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelDescRespawn":"Remnants of the $theFaction have gathered to invade $market in the $location, held by $theTargetFaction, in a bid to revive their power. The invasion forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
+		"intelBrawl":"$TheTargetFaction will likely deploy a large defense force to meet the invasion.",
 		
 		"intelStageAction":"The invasion force is currently in-system.",
 		"intelStageActionSuccess":"The invasion force has conquered $market.",

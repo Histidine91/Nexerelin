@@ -25,6 +25,7 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
+import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
@@ -48,6 +50,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
 	protected int marinesPerFleet = 0;
+	protected DefenseFleetIntel brawlDefIntel;
 		
 	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
@@ -56,6 +59,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	@Override
 	public void init() {
 		log.info("Creating invasion intel");
+		
+		initBrawlMode();
 		
 		SectorEntityToken gather = from.getPrimaryEntity();
 		
@@ -91,6 +96,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			marinesPerFleet = MAX_MARINES;
 		}
 		
+		if (brawlMode) {
+			spawnBrawlDefenseFleet();
+		}
+		
 		/*
 		if (shouldDisplayIntel())
 			queueIntelIfNeeded();
@@ -109,6 +118,33 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public void setMarinesPerFleet(int marines) {
 		marinesPerFleet = marines;
+	}
+	
+	public void initBrawlMode() {
+		if (!Global.getSettings().getBoolean("nex_brawlMode"))
+			return;
+		
+		brawlMode = true;
+		float min = Global.getSettings().getFloat("nex_brawlMode_minMult");
+		float max = Global.getSettings().getFloat("nex_brawlMode_maxMult");
+		brawlMult = MathUtils.getRandomNumberInRange(min, max);
+		log.info("Setting brawl mult: " + brawlMult);
+		
+		fp *= brawlMult;
+	}
+	
+	public void spawnBrawlDefenseFleet() {
+		float eta = getETA();
+		
+		float defFP = baseFP * (brawlMult - 1);
+		defFP *= MathUtils.getRandomNumberInRange(0.8f, 0.9f);
+		
+		log.info("Preparing brawl defense fleet: strength " + defFP + ", ETA " + eta * 0.8f);
+		brawlDefIntel = new DefenseFleetIntel(target.getFaction(), target, target, defFP, eta * 0.8f);
+		brawlDefIntel.setSilent();
+		brawlDefIntel.setRequiresSpaceportOrBase(false);
+		brawlDefIntel.setBrawlMode(true);
+		brawlDefIntel.init();
 	}
 	
 	protected String getDescString() {
@@ -170,6 +206,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		if (outcome == null) {
 			addStandardStrengthComparisons(info, target, targetFaction, true, false, null, null);
+			if (brawlMode) {
+				string = StringHelper.getString("exerelin_invasion", "intelBrawl");
+				string = StringHelper.substituteToken(string, "$theTargetFaction", defenderName, true);
+				info.addPara(string, opad);
+			}
 		}
 		
 		info.addSectionHeading(StringHelper.getString("status", true), 
@@ -208,7 +249,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				
 		RouteManager.OptionalFleetData extra = route.getExtra();
 		
-		// only one fleet is the actual invasion fleet; rest are strike fleets supporting it
+		// idea: only one fleet is the actual invasion fleet; rest are strike fleets supporting it
 		// not sure that'll even work given the spawn/despawn behavior
 		boolean isInvasionFleet = extra.fleetType.equals("exerelinInvasionFleet");
 		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, target);
@@ -273,7 +314,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		}
 		
 		String postId = Ranks.POST_FLEET_COMMANDER;
-		String rankId = Ranks.SPACE_CAPTAIN;	//isInvasionFleet ? Ranks.SPACE_ADMIRAL : Ranks.SPACE_COMMANDER;
+		String rankId = isInvasionFleet ? Ranks.SPACE_ADMIRAL : Ranks.SPACE_CAPTAIN;
 		
 		fleet.getCommander().setPostId(postId);
 		fleet.getCommander().setRankId(rankId);
@@ -401,5 +442,23 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	protected float getBaseDaysAfterEnd() {
 		if (outcome == OffensiveOutcome.SUCCESS) return 15;
 		return 7;
+	}
+	
+	@Override
+	protected void notifyEnding() {
+		log.info("Invasion event ending");
+		super.notifyEnding();
+		if (brawlDefIntel != null && brawlDefIntel.getOutcome() == null) {
+			log.info("Setting outcome for brawl defense, " + outcome.toString());
+			if (outcome == null) return;
+			if (outcome.isFailed()) {
+				brawlDefIntel.setOutcome(OffensiveOutcome.SUCCESS);
+				brawlDefIntel.endAfterDelay();
+				brawlDefIntel.sendOutcomeUpdate();
+			}
+			else {
+				brawlDefIntel.terminateEvent(OffensiveOutcome.FAIL);
+			}
+		}
 	}
 }

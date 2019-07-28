@@ -1,7 +1,7 @@
 package exerelin.campaign.intel.defensefleet;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.PirateRaidActionStage;
@@ -10,7 +10,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
 import java.util.List;
 
 public class DefenseActionStage extends PirateRaidActionStage {
@@ -87,6 +86,11 @@ public class DefenseActionStage extends PirateRaidActionStage {
 	@Override
 	public String getRaidInSystemText(CampaignFleetAPI fleet) {
 		return StringHelper.getFleetAssignmentString("patrollingNoTarget", null);
+	}
+	
+	@Override
+	public String getRaidPrepText(CampaignFleetAPI fleet, SectorEntityToken from) {
+		return StringHelper.getFleetAssignmentString("orbiting", from.getName());
 	}
 	
 	@Override
