@@ -78,7 +78,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final float MAX_EXPEDITION_FP = 300;
 	
 	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
-		0, 10, 25, 50, 80, 120
+		0, 10, 25, 50, 80, 120, 200, 300
 	};
 	
 	protected Map<MarketAPI, LinkedList<QueuedIndustry>> npcConstructionQueues = new HashMap<>();
