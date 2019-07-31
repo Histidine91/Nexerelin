@@ -21,6 +21,7 @@ public class DerelictEmpireFleetInteractionConfigGen implements FleetInteraction
 			public void battleContextCreated(InteractionDialogAPI dialog, BattleCreationContext bcc) {
 				bcc.aiRetreatAllowed = false;
 				//bcc.objectivesAllowed = false;
+				bcc.enemyDeployAll = true;
 			}
 		};
 		return config;
