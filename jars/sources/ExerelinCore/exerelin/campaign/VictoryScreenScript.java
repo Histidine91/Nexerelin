@@ -90,6 +90,36 @@ public class VictoryScreenScript implements EveryFrameScript
 		public String image;
 		public String music;
 		public boolean isDefeat;
+		
+		/**
+		 * Creates params for a custom victory.
+		 * @param id Unused.
+		 * @param name
+		 * @param factionId Winning faction ID (defaults to {@code player}).
+		 * @param text Text shown in victory dialog.
+		 * @param highlights {@code text} highlights
+		 * @param intelText Text shown in intel item.
+		 * @param image Optional, image to display in victory screen.
+		 * @param music Optional, 'music' to play in victory screen (actually uses a UI sound).
+		 * @param isDefeat
+		 */
+		public CustomVictoryParams(String id, String name, String factionId, String text, 
+            Highlights highlights, String intelText, String image, String music, boolean isDefeat)
+		{
+			this.id = id;
+			this.name = name;
+			if (factionId != null)
+				this.factionId = factionId;
+			this.text = text;
+			this.highlights = highlights;
+			this.image = image;
+			this.music = music;
+			this.isDefeat = isDefeat;
+		}
+		
+		public CustomVictoryParams() {
+			
+		}
 	}
 
 	protected static class VictoryDialog implements InteractionDialogPlugin

@@ -809,32 +809,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
-    /**
-     * Triggers a custom victory and pops up victory dialog.
-     * @param id Unused.
-     * @param name
-     * @param factionId Winning faction ID (defaults to {@code player}).
-     * @param text Text shown in victory dialog.
-     * @param highlights {@code text} highlights
-     * @param intelText Text shown in intel item.
-     * @param image Optional, image to display in victory screen.
-     * @param music Optional, 'music' to play in victory screen (actually uses a UI sound).
-     * @param isDefeat
-     */
-    public void customVictory(String id, String name, String factionId, String text, 
-            Highlights highlights, String intelText, String image, String music, boolean isDefeat) {
-        CustomVictoryParams params = new CustomVictoryParams();
-        params.id = id;
-        params.name = name;
-        params.factionId = factionId;
-        params.text = text;
-        params.highlights = highlights;
-        params.image = image;
-        params.music = music;
-        params.isDefeat = isDefeat;
-        customVictory(params);
-    }
-    
     public void customVictory(CustomVictoryParams params) {
         victoryHasOccured = true;
         VictoryScreenScript script = new VictoryScreenScript(params.factionId, VictoryType.CUSTOM);
