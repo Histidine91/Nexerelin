@@ -18,6 +18,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -229,7 +230,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (market.getFaction().isPlayerFaction()) return;	// let player decide
 		
 		ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-		boolean isFreePort = market.isFreePort();
+		// keep the cond check; motherfuckers can't be trusted to have the right settting
+		boolean isFreePort = market.isFreePort() || market.hasCondition(Conditions.FREE_PORT);
 		boolean wantFreePort;
 		if (!sectorManager.corvusMode)
 		{

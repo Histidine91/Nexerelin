@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
@@ -206,6 +207,24 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
+		// fix free port overdose
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            if (!market.isFreePort()) continue;
+            if (market.getFaction().isPlayerFaction()) continue;
+            int numFreePorts = 0;
+            for (MarketConditionAPI cond : market.getConditions()) {
+                if (cond.getId().equals(Conditions.FREE_PORT)) {
+                    numFreePorts++;
+                }
+            }
+            if (numFreePorts > 1) {
+                Global.getLogger(this.getClass()).info("Fixing free ports for market " + market.getName() + ": " + numFreePorts);
+                market.removeCondition(Conditions.FREE_PORT);
+                market.addCondition(Conditions.FREE_PORT);
+            }
+        }
+		
         for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
         {
             //if (market.isPlayerOwned()) continue;
