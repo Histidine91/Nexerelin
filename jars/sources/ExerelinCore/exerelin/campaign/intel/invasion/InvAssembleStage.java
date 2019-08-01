@@ -27,12 +27,15 @@ public class InvAssembleStage extends NexAssembleStage {
 	
 	@Override
 	protected float getFP(String type) {
-		float base = 120f;
+		float base = 150f;
 		if (type.equals("exerelinInvasionFleet"))
 			base = 180f;
 		
 		if (Math.random() < 0.33f)
 			base *= 1.5f;
+		
+		if (((OffensiveFleetIntel)intel).isBrawlMode())
+			base *= 1.25f;
 		
 		base *= MathUtils.getRandomNumberInRange(0.85f, 1.15f);
 		base *= InvasionFleetManager.getInvasionSizeMult(intel.getFaction().getId());
