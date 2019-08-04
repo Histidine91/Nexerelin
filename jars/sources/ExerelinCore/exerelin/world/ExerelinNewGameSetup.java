@@ -97,9 +97,11 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addIndustry(Industries.POPULATION);
 		market.addIndustry("commerce");
 		market.addIndustry(Industries.LIGHTINDUSTRY);
-		market.addIndustry(Industries.MILITARYBASE);
+		//market.addIndustry(Industries.MILITARYBASE);
+		market.addIndustry(Industries.PATROLHQ);
 		market.addIndustry(Industries.MEGAPORT);
 		//market.addIndustry(Industries.HEAVYINDUSTRY);
+		market.addIndustry(Industries.WAYSTATION);
 		market.addIndustry(Industries.HEAVYBATTERIES);
 		market.addIndustry(Industries.STARFORTRESS_HIGH);
 		market.addIndustry(Industries.CRYOSANCTUM);
