@@ -89,7 +89,7 @@ public class DiplomacyBrain {
 	public static final float REVANCHISM_SIZE_MULT = 2;
 	public static final float DOMINANCE_MULT = 25;
 	public static final float DOMINANCE_HARD_MULT = 1.5f;
-	public static final float HARD_MODE_MOD = -25f;
+	public static final float HARD_MODE_MOD = -15f;
 	public static final float MAX_DISPOSITION_FOR_WAR = -15f;
 	public static final float MILITARISM_WAR_MULT = 1;
 	public static final float MAX_WEARINESS_FOR_WAR = 7500f;
