@@ -336,6 +336,7 @@
 		"intel_lastMessage_destroyCommodities_failure":"\"We were unable to destroy the $commodity stockpiles on $market.\"",
 		"intel_lastMessage_infiltrateCell_success":"\"The $faction cell on $market is no more. Death take them all.\"",
 		"intel_lastMessage_infiltrateCell_failure":"\"Infiltration of $faction cell on $market... has failed.\"",
+		"intel_lastMessage_injury_success":"\"Recovered from injuries. Ready for duty once more.\"",
 		
 		"destabilizeText1":"poisoned the water supply",
 		"destabilizeText2":"fired into a crowd at a public venue",
@@ -353,7 +354,7 @@
 		"intelDesc_agentLost":"Agent $agentName has been captured or killed.",
 		"intelDesc_gainedXP":"$agentName gained %s XP.",
 		"intelDesc_gainedXPAndLeveledUp":"$agentName gained %s XP and has reached level %s.",
-		"intelDesc_injured":"$agentName injured for $s days.",
+		"intelDesc_injured":"$agentName injured for %s day(s).",
 		"intelDesc_agentExfiltrate":"$agentName is escaping to $market.",
 		
 		"destabilizeEffect":"Stability reduced by %s",

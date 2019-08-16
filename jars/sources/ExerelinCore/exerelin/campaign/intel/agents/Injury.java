@@ -17,10 +17,6 @@ public class Injury extends CovertActionIntel {
 	}
 	
 	@Override
-	public void init() {
-	}
-	
-	@Override
 	public float getTimeNeeded() {
 		float base = super.getTimeNeeded();
 		return base * MathUtils.getRandomNumberInRange(0.8f, 1.1f);
@@ -29,11 +25,6 @@ public class Injury extends CovertActionIntel {
 	@Override
 	public boolean canAbort() {
 		return false;
-	}
-		
-	@Override
-	public void advanceImpl(float amount) {
-		
 	}
 	
 	@Override
