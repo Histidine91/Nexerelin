@@ -153,15 +153,18 @@ public class DiplomacyBrain {
 			if (ours == 0 || theirs == 0)
 				continue;
 			
-			// both positive, sum
-			if (ours > 0 && theirs > 0)
-				thisDisp = ours + theirs;
-			// both negative, sum and invert
-			else if (ours < 0 && theirs < 0)
-				thisDisp = (ours + theirs) * -1;
-			// opposite signs, get difference
-			else
-				thisDisp = ours - theirs;
+			if (ours > 0) {
+				if (theirs > 0) // both positive, sum as bonus
+					thisDisp = ours + theirs;
+				else			// opposite signs, apply difference as penalty
+					thisDisp = -(ours + Math.abs(theirs));
+			}
+			else {
+				if (theirs < 0)	// both negative, sum as bonus
+					thisDisp = (ours + theirs) * -1;
+				else			// opposite signs, apply difference as penalty
+					thisDisp = -(Math.abs(ours) + theirs);
+			}
 			
 			//log.info("\tAlignment disposition for " + align.toString() +": " + thisDisp);
 			disposition += thisDisp;
