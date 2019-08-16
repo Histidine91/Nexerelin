@@ -105,14 +105,18 @@ $randomFactionWeights",,,nex_NGCDisableRandomFactionWeights:Disable random facti
 ,,,,,,
 ExerelinNGCListOptionEnableRandomStartShips,ExerelinNGCOtherOptions,!$randomStartShips,"SetTooltip exerelinNGCEnableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,exerelinNGCEnableRandomStartShips:Enable random starting ships,
 ExerelinNGCListOptionDisableRandomStartShips,ExerelinNGCOtherOptions,$randomStartShips,"SetTooltip exerelinNGCDisableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,exerelinNGCDisableRandomStartShips:Disable random starting ships,
-ExerelinNGCListOptionEnableEasyMode,ExerelinNGCOtherOptions,!$easyMode,"SetTooltip exerelinNGCEnableEasyMode ""- Reduces damage taken by 50%\n- Increases damage dealt by 50%\n- Increases sensor range by 500 units\n- Increases salvage by 50%\n- Reduces level of enemy officers by 50%""
-SetTooltipHighlightColors exerelinNGCEnableEasyMode hColor hColor hColor hColor hColor
-SetTooltipHighlights exerelinNGCEnableEasyMode ""50%"" ""50%"" ""500"" ""50%"" ""50%""",,exerelinNGCEnableEasyMode:Enable vanilla's Easy Mode,
-ExerelinNGCListOptionDisableEasyMode,ExerelinNGCOtherOptions,$easyMode,"SetTooltip exerelinNGCDisableEasyMode ""- Reduces damage taken by 50%\n- Increases damage dealt by 50%\n- Increases sensor range by 500 units\n- Increases salvage by 50%\n- Reduces level of enemy officers by 50%""
-SetTooltipHighlightColors exerelinNGCDisableEasyMode hColor hColor hColor hColor hColor
-SetTooltipHighlights exerelinNGCDisableEasyMode ""50%"" ""50%"" ""500"" ""50%"" ""50%""",,exerelinNGCDisableEasyMode:Disable vanilla's Easy Mode,
-ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode: other factions are more aggressive towards yours; halved insurance payments""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
-ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode: other factions are more aggressive towards yours; halved insurance payments""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
+ExerelinNGCListOptionEnableEasyMode,ExerelinNGCOtherOptions,!$easyMode,"SetTooltip exerelinNGCEnableEasyMode""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
+SetTooltipHighlightColors exerelinNGCEnableEasyMode hColor hColor hColor
+SetTooltipHighlights exerelinNGCEnableEasyMode ""25%"" ""500"" ""50%""",,exerelinNGCEnableEasyMode:Enable vanilla's Easy Mode,
+ExerelinNGCListOptionDisableEasyMode,ExerelinNGCOtherOptions,$easyMode,"SetTooltip exerelinNGCDisableEasyMode ""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
+SetTooltipHighlightColors exerelinNGCDisableEasyMode hColor hColor hColor
+SetTooltipHighlights exerelinNGCDisableEasyMode ""25%"" ""500"" ""50%""",,exerelinNGCDisableEasyMode:Disable vanilla's Easy Mode,
+ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income \n- 50% lower insurance payments""
+SetTooltipHighlightColors exerelinNGCEnableHardMode hColor hColor hColor 
+SetTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""25%"" ""50%""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
+ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income \n- 50% lower insurance payments""
+SetTooltipHighlightColors exerelinNGCDisableHardMode hColor hColor hColor 
+SetTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""25%"" ""50%""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
 nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"SetTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,nex_NGCCycleStartDMods:Starting D-mods — $nex_ngcDModsString,
 nex_NGCCycleStartDMods,NewGameOptionSelected,$option==nex_NGCCycleStartDMods,"Nex_NGCSetOption startingDMods
 AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
