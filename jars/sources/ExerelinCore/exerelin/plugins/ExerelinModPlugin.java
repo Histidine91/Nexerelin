@@ -326,7 +326,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onApplicationLoad() throws Exception
     {
-        //ExerelinConfig.loadSettings();
+        boolean bla = ExerelinConfig.countPiratesForVictory;	// just loading config class, not doing anything with it
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onApplicationLoad();
         boolean hasLazyLib = Global.getSettings().getModManager().isModEnabled("lw_lazylib");

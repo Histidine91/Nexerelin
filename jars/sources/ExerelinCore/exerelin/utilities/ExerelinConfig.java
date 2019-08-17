@@ -245,7 +245,7 @@ public class ExerelinConfig
         }
         catch(Exception e)
         {
-            log.error("Unable to load settings: " + e.getMessage());
+            throw new RuntimeException("Failed to load config: " + e.getMessage(), e);
         }
 
         // Reset and load faction configuration data
