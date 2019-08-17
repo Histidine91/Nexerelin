@@ -2,7 +2,6 @@ package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -25,8 +24,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +50,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	
 	// don't territorial-attack planets which are paying tribute
 	// also, a star system may be claimed by player
+	// have config option to turn off most punitive expeditions
 	@Override
 	public List<PunExReason> getExpeditionReasons(PunExData curr) {
 		List<PunExReason> result = new ArrayList<PunExReason>();
@@ -65,6 +64,12 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		boolean vsCompetitors = json.optBoolean("vsCompetitors", false);
 		boolean vsFreePort = json.optBoolean("vsFreePort", false);
 		boolean territorial = json.optBoolean("territorial", false);
+		
+		// MODIFIED
+		if (!ExerelinConfig.enablePunitiveExpeditions) {
+			vsCompetitors = false;
+			vsFreePort = false;
+		}
 		
 		MarketAPI test = markets.get(0);
 		FactionAPI player = Global.getSector().getPlayerFaction();

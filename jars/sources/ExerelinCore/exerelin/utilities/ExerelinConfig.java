@@ -133,6 +133,7 @@ public class ExerelinConfig
     public static boolean useEnhancedStartRelations = true;
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
+    public static boolean enablePunitiveExpeditions = true;
     
 
     public static void loadSettings()
@@ -215,8 +216,8 @@ public class ExerelinConfig
             
             maxNPCColonySize = settings.optInt("maxNPCColonySize", maxNPCColonySize);
             maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
-			hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
-			hardModeColonyIncomeMult = (float)settings.optDouble("hardModeColonyIncomeMult", hardModeColonyIncomeMult);
+            hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
+            hardModeColonyIncomeMult = (float)settings.optDouble("hardModeColonyIncomeMult", hardModeColonyIncomeMult);
             colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
             
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
@@ -227,6 +228,7 @@ public class ExerelinConfig
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
+            enablePunitiveExpeditions = settings.optBoolean("enablePunitiveExpeditions", enablePunitiveExpeditions);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
