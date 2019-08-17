@@ -693,6 +693,9 @@ public class DiplomacyBrain {
 		enemyStrength = getFactionEnemyStrength(factionId);
 		updateAllDispositions(days);
 		considerOptions();
+		
+		float time = DiplomacyManager.getBaseInterval();
+		interval.setInterval(time * 0.95f, time * 1.05f);
 	}
 	
 	//==========================================================================

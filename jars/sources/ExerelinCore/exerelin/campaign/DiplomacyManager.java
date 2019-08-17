@@ -232,6 +232,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return baseInterval * (float)Math.pow(0.95, numFactions);
     }
     
+    public static float getBaseInterval() {
+        return baseInterval;
+    }
+    
     protected static void printPlayerHostileStateMessage(FactionAPI faction, boolean isHostile, boolean forAlliance)
     {
         String msg;
