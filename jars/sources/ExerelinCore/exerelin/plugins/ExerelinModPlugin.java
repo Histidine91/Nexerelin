@@ -3,6 +3,7 @@ package exerelin.plugins;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.ModSpecAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
@@ -55,6 +56,7 @@ import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
 import exerelin.world.scenarios.ScenarioManager;
 import java.util.ArrayList;
+import org.apache.log4j.Logger;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -65,6 +67,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     //public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
     public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
     
+    public static Logger log = Global.getLogger(ExerelinModPlugin.class);
     protected static boolean isNewGame = false;
     
     protected <T extends EveryFrameScript> boolean replaceScript(SectorAPI sector, Class toRemove, T toAdd)
@@ -77,7 +80,7 @@ public class ExerelinModPlugin extends BaseModPlugin
                 if (toAdd != null && toAdd.getClass().isInstance(script))
                     continue;
                 
-                Global.getLogger(this.getClass()).info("Removing EveryFrameScript " + script.toString() + " | " + toRemove.getCanonicalName());
+                log.info("Removing EveryFrameScript " + script.toString() + " | " + toRemove.getCanonicalName());
                 
                 sector.removeScript(script);
                 if (script instanceof CampaignEventListener)
@@ -105,7 +108,7 @@ public class ExerelinModPlugin extends BaseModPlugin
                 if (toAdd != null && toAdd.getClass().isInstance(creator))
                     continue;
                 
-                Global.getLogger(this.getClass()).info("Removing mission creator " + creator.toString() + " | " + toRemove.getCanonicalName());
+                log.info("Removing mission creator " + creator.toString() + " | " + toRemove.getCanonicalName());
                 
                 manager.getCreators().remove(creator);
                 
@@ -133,7 +136,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void applyToExistingSave()
     {
-        Global.getLogger(this.getClass()).info("Applying Nexerelin to existing game");
+        log.info("Applying Nexerelin to existing game");
         
         SectorAPI sector = Global.getSector();
         sector.addScript(SectorManager.create());
@@ -219,7 +222,7 @@ public class ExerelinModPlugin extends BaseModPlugin
                 }
             }
             if (numFreePorts > 1) {
-                Global.getLogger(this.getClass()).info("Fixing free ports for market " + market.getName() + ": " + numFreePorts);
+                log.info("Fixing free ports for market " + market.getName() + ": " + numFreePorts);
                 market.removeCondition(Conditions.FREE_PORT);
                 market.addCondition(Conditions.FREE_PORT);
             }
@@ -230,7 +233,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             //if (market.isPlayerOwned()) continue;
             if (market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin() instanceof Nex_LocalResourcesSubmarketPlugin)
                 continue;
-            Global.getLogger(this.getClass()).info("Replacing local storage on " + market.getName());
+            log.info("Replacing local storage on " + market.getName());
             replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
         }
     }
@@ -274,7 +277,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onGameLoad(boolean newGame) {
-        Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
+        log.info("Game load; " + SectorManager.isSectorManagerSaved());
         isNewGame = newGame;
         
         ScenarioManager.clearScenario();
@@ -315,17 +318,18 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void beforeGameSave()
     {
-        Global.getLogger(this.getClass()).info("Before game save");
+        log.info("Before game save");
     }
     
     @Override
     public void afterGameSave() {
-        Global.getLogger(this.getClass()).info("After game save");
+        log.info("After game save");
     }
     
     @Override
     public void onApplicationLoad() throws Exception
     {
+        starsectorVersionCheck();
         boolean bla = ExerelinConfig.countPiratesForVictory;	// just loading config class, not doing anything with it
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onApplicationLoad();
@@ -337,7 +341,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGame() {
-        Global.getLogger(this.getClass()).info("New game");
+        log.info("New game");
         isNewGame = true;
         //ExerelinSetupData.resetInstance();
         //ExerelinCheck.checkModCompatability();
@@ -346,17 +350,17 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onEnabled(boolean wasEnabledBefore) {
-        Global.getLogger(this.getClass()).info("On enabled; " + wasEnabledBefore);
+        log.info("On enabled; " + wasEnabledBefore);
         if (!isNewGame && !wasEnabledBefore)
         {
-            Global.getLogger(this.getClass()).info(!isNewGame + ", " + !wasEnabledBefore);
+            log.info(!isNewGame + ", " + !wasEnabledBefore);
             applyToExistingSave();
         }
     }
     
     @Override
     public void onNewGameAfterProcGen() {
-        Global.getLogger(this.getClass()).info("New game after proc gen; " + isNewGame);
+        log.info("New game after proc gen; " + isNewGame);
         if (!SectorManager.getCorvusMode())
             new ExerelinProcGen().generate();
         
@@ -365,7 +369,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterEconomyLoad() {
-        Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
+        log.info("New game after economy load; " + isNewGame);
         
         ScenarioManager.afterEconomyLoad(Global.getSector());
         
@@ -389,7 +393,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterTimePass() {
-        Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
+        log.info("New game after time pass; " + isNewGame);
         ScenarioManager.afterTimePass(Global.getSector());
         StartSetupPostTimePass.execute();
     }
@@ -397,5 +401,86 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void configureXStream(XStream x) {
         XStreamConfig.configureXStream(x);
+    }
+    
+    /**
+     * Throw a RuntimeException if the current Starsector version is older than the one specified.
+     * See http://fractalsoftworks.com/forum/index.php?topic=15894.0
+     */
+    public static void starsectorVersionCheck() {
+        String message = "";
+
+        try {
+            ModSpecAPI spec = Global.getSettings().getModManager().getModSpec("nexerelin");
+            Version wantedVersion = new Version(0, 9, 1, 8);    //new Version(spec.getGameVersion());
+            Version installedVersion = new Version(Global.getSettings().getVersionString());
+
+            if (installedVersion.isOlderThan(wantedVersion, false)) {
+                message = String.format(StringHelper.getString("exerelin_misc", "errorStarsectorVersion"),
+                        spec.getName(), wantedVersion, installedVersion);
+            }
+            /*
+            else if (installedVersion.isNewerThan(wantedVersion, false)) {
+                message = String.format("\r%s is not up to date for Starsector %s!" +
+                                "\rAn updated version of THI may be available; if not, please wait for a release." +
+                                "\rRequired Version: %s" +
+                                "\rCurrent Version: %s",
+                        spec.getName(), installedVersion, wantedVersion, installedVersion);
+            }
+            */
+        } catch (Exception e) {
+            log.error("Version comparison failed.", e);
+        }
+
+        if(!message.isEmpty()) throw new RuntimeException(message);
+    }
+    
+    static class Version {
+        public final int MAJOR, MINOR, PATCH, RC;
+
+        public Version(String versionStr) {
+            String[] temp = versionStr.replace("Starsector ", "").replace("a", "").split("-RC");
+
+            RC = temp.length > 1 ? Integer.parseInt(temp[1]) : 0;
+
+            temp = temp[0].split("\\.");
+
+            MAJOR = temp.length > 0 ? Integer.parseInt(temp[0]) : 0;
+            MINOR = temp.length > 1 ? Integer.parseInt(temp[1]) : 0;
+            PATCH = temp.length > 2 ? Integer.parseInt(temp[2]) : 0;
+        }
+        
+        public Version(int... version) {
+            MAJOR = version[0];
+            MINOR = version[1];
+            PATCH = version[2];
+            if (version.length > 3)
+                RC = version[3];
+            else
+                RC = 0;
+        }
+
+        public boolean isOlderThan(Version other, boolean ignoreRC) {
+            if(MAJOR < other.MAJOR) return true;
+            if(MINOR < other.MINOR) return true;
+            if(PATCH < other.PATCH) return true;
+            if(!ignoreRC && RC < other.RC) return true;
+
+            return false;
+        }
+        
+        public boolean isNewerThan(Version other, boolean ignoreRC) {
+            if(MAJOR > other.MAJOR) return true;
+            if(MINOR > other.MINOR) return true;
+            if(PATCH > other.PATCH) return true;
+            if(!ignoreRC && RC > other.RC) return true;
+
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d.%d.%d%s-RC%d", MAJOR, MINOR, PATCH, (MAJOR >= 1 ? "" : "a"), RC);
+        }
     }
 }
