@@ -110,7 +110,7 @@ public class DiplomacyBrain {
 	protected Map<String, Float> ceasefires = new HashMap<>();
 	protected List<String> enemies = new ArrayList<>();
 	protected IntervalUtil intervalShort = new IntervalUtil(0.45f, 0.55f);
-	protected IntervalUtil interval = new IntervalUtil(9.5f, 10.5f);
+	protected IntervalUtil interval;
 	protected float ourStrength = 0;
 	protected float enemyStrength = 0;
 	protected float playerCeasefireOfferCooldown = 0;
@@ -122,6 +122,8 @@ public class DiplomacyBrain {
 	{
 		this.factionId = factionId;
 		this.faction = Global.getSector().getFaction(factionId);
+		float time = DiplomacyManager.getBaseInterval();
+		interval = new IntervalUtil(time * 0.95f, time * 1.05f);
 	}
 	
 	//==========================================================================
