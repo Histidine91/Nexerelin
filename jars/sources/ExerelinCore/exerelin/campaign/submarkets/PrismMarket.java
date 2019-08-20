@@ -317,6 +317,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 if (isShipAllowed(member, FP))
                 {
                     member.getRepairTracker().setMothballed(true);
+                    member.getRepairTracker().setCR(0.5f);
                     getCargo().getMothballedShips().addFleetMember(member);
                 } else { 
                     i-=1;
@@ -340,6 +341,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     variantId += "_Hull";
                     member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
                     member.getRepairTracker().setMothballed(true);
+                    member.getRepairTracker().setCR(0.5f);
                     getCargo().getMothballedShips().addFleetMember(member);
                 }
             } catch (RuntimeException rex) {
