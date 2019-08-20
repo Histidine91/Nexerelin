@@ -147,6 +147,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		brawlDefIntel.init();
 	}
 	
+	public DefenseFleetIntel getBrawlDefIntel() {
+		return brawlDefIntel;
+	}
+	
 	protected String getDescString() {
 		return StringHelper.getString("exerelin_invasion", "intelDesc");
 	}
@@ -459,6 +463,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			else {
 				brawlDefIntel.terminateEvent(OffensiveOutcome.FAIL);
 			}
+			brawlDefIntel.giveReturnOrders();
 		}
 	}
 }

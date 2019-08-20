@@ -88,6 +88,10 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		}
 	}
 	
+	public void giveReturnOrders() {
+		action.giveReturnOrdersToStragglers(action.getRoutes());
+	}
+	
 	protected String getDescString() {
 		return StringHelper.getString("nex_defenseFleet", "intelDesc");
 	}

@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -47,6 +48,8 @@ import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
+import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.PrismMarket;
@@ -235,6 +238,15 @@ public class ExerelinModPlugin extends BaseModPlugin
                 continue;
             log.info("Replacing local storage on " + market.getName());
             replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
+        }
+        
+        // retroactive fix for brawl mode defense fleets which are still hanging around
+        for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
+            InvasionIntel invIntel = (InvasionIntel)intel;
+            DefenseFleetIntel defIntel = invIntel.getBrawlDefIntel();
+            if (defIntel != null && (defIntel.isEnding() || defIntel.isEnded())) {
+                defIntel.giveReturnOrders();
+            }
         }
     }
     
