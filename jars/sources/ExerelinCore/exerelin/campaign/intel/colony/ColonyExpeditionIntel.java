@@ -89,6 +89,10 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		return planet.getMarket();
 	}
 	
+	public PlanetAPI getTargetPlanet() {
+		return planet;
+	}
+	
 	@Override
 	public void init() {
 		log.info("Creating colony expedition intel");

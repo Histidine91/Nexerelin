@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
@@ -436,6 +437,16 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return (T)valuator;
 	}
 	
+	public Set<PlanetAPI> getExistingColonyTargets() {
+		Set<PlanetAPI> targets = new HashSet<>();
+		for (IntelInfoPlugin intRaw : Global.getSector().getIntelManager().getIntel(ColonyExpeditionIntel.class)) {
+			ColonyExpeditionIntel intel = (ColonyExpeditionIntel)intRaw;
+			if (intel.isEnding() || intel.isEnded()) continue;
+			targets.add(intel.getTargetPlanet());
+		}
+		return targets;
+	}
+	
 	// debug command: runcode exerelin.campaign.ColonyManager.getManager().spawnColonyExpedition();
 	/**
 	 * Spawns a colony expedition for a random faction to a semi-randomly-selected suitable target.
@@ -459,24 +470,31 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (source.getContainingLocation().isHyperspace()) anchor = source.getPrimaryEntity();
 		else anchor = source.getStarSystem().getHyperspaceAnchor();
 		
+		Set<PlanetAPI> existingTargets = getExistingColonyTargets();
+		
 		ColonyTargetValuator valuator = loadColonyTargetValuator(factionId);
 		
 		WeightedRandomPicker<PlanetAPI> planetPicker = new WeightedRandomPicker<>();
 		float maxDist = valuator.getMaxDistanceLY(faction);
 		float minScore = valuator.getMinScore(faction);
-		for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+		for (StarSystemAPI system : Global.getSector().getStarSystems()) 
+		{
 			if (!valuator.prefilterSystem(system, faction))
 				continue;
 			
 			float dist = Misc.getDistanceLY(system.getHyperspaceAnchor(), anchor);
 			if (dist > maxDist) continue;
 			
-			for (PlanetAPI planet : system.getPlanets()) {
+			for (PlanetAPI planet : system.getPlanets()) 
+			{
+				if (existingTargets.contains(planet)) continue;
+				
 				MarketAPI market = planet.getMarket();
-				if (market == null || market.isInEconomy()) continue; 
+				if (market == null || market.isInEconomy()) continue;
 				if (!valuator.prefilterMarket(planet.getMarket(), faction)) {
 					continue;
 				}
+				
 				float score = valuator.evaluatePlanet(planet.getMarket(), dist, faction);
 				if (score < minScore) continue;
 				
@@ -544,7 +562,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				colonyExpeditionProgress -= numColonies * Global.getSettings().getFloat("nex_expeditionDelayPerExistingColony");
 			}
 			else {	// failed to spawn, try again in 15 days
-				colonyExpeditionProgress -= 15;
+				colonyExpeditionProgress -= Math.min(ExerelinConfig.colonyExpeditionInterval/2, 15);
 			}
 		}
 	}
