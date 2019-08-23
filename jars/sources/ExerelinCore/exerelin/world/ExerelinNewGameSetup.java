@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.MercFleetManagerV2;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
@@ -50,9 +51,10 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	public static final Vector2f SECTOR_CENTER = new Vector2f(0, -6000);
 	public static Logger log = Global.getLogger(ExerelinNewGameSetup.class);
 	
-	protected Random rand = null;
+	protected Random rand = StarSystemGenerator.random;
 	
-	protected void addPrismMarket(SectorAPI sector)
+	// runcode new exerelin.world.ExerelinNewGameSetup().addPrismMarket(Global.getSector(), false);
+	public void addPrismMarket(SectorAPI sector, boolean newGame)
 	{
 		SectorEntityToken prismEntity;
 		
@@ -137,6 +139,18 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		float radius = 400;
 		editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
 		editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
+		
+		// add important people
+		if (!newGame) 
+		{
+			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+					market, Ranks.SPACE_CAPTAIN, Ranks.POST_STATION_COMMANDER, true);
+			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+					market, Ranks.CITIZEN, Ranks.POST_PORTMASTER, true);
+			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+					market, Ranks.SPACE_COMMANDER, Ranks.POST_SUPPLY_OFFICER, true);
+			ColonyManager.reassignAdminIfNeeded(market, market.getFaction(), market.getFaction());
+		}
 	}
 	
 	protected void addAntiochPart1(SectorAPI sector)
@@ -150,7 +164,6 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	public void generate(SectorAPI sector)
 	{
 		log.info("Starting sector generation...");
-		rand = StarSystemGenerator.random;
 		
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = setupData.corvusMode;
@@ -189,7 +202,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		}
 		
 		if (setupData.prismMarketPresent) {
-			addPrismMarket(sector);
+			addPrismMarket(sector, true);
 		}
 		
 		log.info("Adding scripts and plugins");
