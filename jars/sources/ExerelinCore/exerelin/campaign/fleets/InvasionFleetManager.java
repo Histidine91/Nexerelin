@@ -365,6 +365,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
 		for (MarketAPI market : markets) {
 			if (market.getFaction() != faction) continue;
+			if (market.isHidden()) continue;
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
 			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
 			if (!market.hasSpaceport()) continue;
