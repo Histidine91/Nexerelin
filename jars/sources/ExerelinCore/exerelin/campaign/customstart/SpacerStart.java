@@ -11,11 +11,12 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.NGCAddStandardStartingScript;
-import com.fs.starfarer.api.impl.campaign.tutorial.SpacerObligation;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
@@ -52,8 +53,19 @@ public class SpacerStart extends CustomStart {
 		MutableCharacterStatsAPI stats = data.getPerson().getStats();
 		stats.addPoints(3);
 		
+		CampaignFleetAPI tempFleet = FleetFactoryV3.createEmptyFleet(
+				PlayerFactionStore.getPlayerFactionIdNGC(), FleetTypes.PATROL_SMALL, null);
+		tempFleet.getFleetData().addFleetMember(temp);
+		tempFleet.getFleetData().setFlagship(temp);
+		temp.setCaptain(data.getPerson());
+		temp.getRepairTracker().setCR(0.7f);
+		tempFleet.getFleetData().setSyncNeeded();
+		tempFleet.getFleetData().syncIfNeeded();
+		tempFleet.forceSync();
+		
 		// enforce normal difficulty
 		data.setDifficulty("normal");
+		ExerelinSetupData.getInstance().easyMode = false;
 		PlayerFactionStore.setPlayerFactionIdNGC(Factions.PLAYER);
 		ExerelinSetupData.getInstance().freeStart = true;
 		
@@ -75,6 +87,11 @@ public class SpacerStart extends CustomStart {
 			}
 		});
 		
+		dialog.getVisualPanel().showFleetInfo(StringHelper.getString("exerelin_ngc", "playerFleet", true), 
+				tempFleet, null, null);
+		
+		
 		dialog.getOptionPanel().addOption(StringHelper.getString("done", true), "nex_NGCDone");
+		dialog.getOptionPanel().addOption(StringHelper.getString("back", true), "nex_NGCStartBack");
 	}
 }

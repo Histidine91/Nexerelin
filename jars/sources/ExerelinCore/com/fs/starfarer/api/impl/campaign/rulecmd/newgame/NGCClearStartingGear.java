@@ -25,6 +25,8 @@ public class NGCClearStartingGear extends BaseCommandPlugin {
 		data.getScripts().clear();
 		data.getScriptsBeforeTimePass().clear();
 		
+		dialog.getVisualPanel().showPersonInfo(data.getPerson(), true);
+		
 		memoryMap.get(MemKeys.LOCAL).unset("$nex_customStart");
 		
 		return true;

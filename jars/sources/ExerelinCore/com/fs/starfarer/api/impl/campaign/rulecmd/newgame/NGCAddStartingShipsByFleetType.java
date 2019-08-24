@@ -14,15 +14,19 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest.FleetType;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.StringHelper;
 
 
 public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
@@ -51,6 +55,10 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		int machinery = 0;
 		int fuel = 0;
 		
+		CampaignFleetAPI tempFleet = FleetFactoryV3.createEmptyFleet(
+				PlayerFactionStore.getPlayerFactionIdNGC(), FleetTypes.PATROL_SMALL, null);
+		boolean first = true;
+		
 		for (String variantId : startingVariants)
 		{
 			try {
@@ -73,6 +81,15 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 					machinery += (int)temp.getCargoCapacity()/8;
 				}
 				fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
+				
+				temp.getRepairTracker().setCR(0.7f);
+				
+				tempFleet.getFleetData().addFleetMember(temp);
+				if (first) {
+					tempFleet.getFleetData().setFlagship(temp);
+					temp.setCaptain(data.getPerson());
+					first = false;
+				}
 
 				AddRemoveCommodity.addFleetMemberGainText(temp.getVariant(), dialog.getTextPanel());
 			} catch (RuntimeException rex) {	// probably variant not found
@@ -80,11 +97,18 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 				dialog.getTextPanel().addParagraph(rex.getMessage());
 			}	
 		}
+		tempFleet.getFleetData().setSyncNeeded();
+		tempFleet.getFleetData().syncIfNeeded();
+		tempFleet.forceSync();
+		
 		TextPanelAPI text = dialog.getTextPanel();
 		addCargo(data, Commodities.CREW, crew, text);
 		addCargo(data, Commodities.SUPPLIES, supplies, text);
 		addCargo(data, Commodities.HEAVY_MACHINERY, machinery, text);
 		addCargo(data, Commodities.FUEL, fuel, text);
+		
+		dialog.getVisualPanel().showFleetInfo(StringHelper.getString("exerelin_ngc", "playerFleet", true), 
+				tempFleet, null, null);
 	}
 	
 	public static void addStartingDModScript(MemoryAPI localMem) {
