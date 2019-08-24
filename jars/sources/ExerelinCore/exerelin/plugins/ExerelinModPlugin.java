@@ -1,10 +1,8 @@
 package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
-import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.ModSpecAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
@@ -14,13 +12,10 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
-import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
-import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager.GenericMissionCreator;
 import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionCreator;
-import com.fs.starfarer.api.impl.campaign.intel.SurveyPlanetIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.DeliveryBarEventCreator;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.util.Misc;
@@ -31,7 +26,6 @@ import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.FieldOptionsScreenScript;
-import exerelin.campaign.NexEventProbabilityManager;
 import exerelin.campaign.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
@@ -48,6 +42,7 @@ import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
+import exerelin.campaign.intel.bar.NexDeliveryBarEventCreator;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
@@ -58,7 +53,6 @@ import exerelin.world.ExerelinProcGen;
 import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
 import exerelin.world.scenarios.ScenarioManager;
-import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 public class ExerelinModPlugin extends BaseModPlugin
@@ -73,57 +67,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static Logger log = Global.getLogger(ExerelinModPlugin.class);
     protected static boolean isNewGame = false;
     
-    protected <T extends EveryFrameScript> boolean replaceScript(SectorAPI sector, Class toRemove, T toAdd)
-    {
-        boolean removedAny = false;
-        for (EveryFrameScript script : sector.getScripts())
-        {
-            if (toRemove.isInstance(script))
-            {
-                if (toAdd != null && toAdd.getClass().isInstance(script))
-                    continue;
-                
-                log.info("Removing EveryFrameScript " + script.toString() + " | " + toRemove.getCanonicalName());
-                
-                sector.removeScript(script);
-                if (script instanceof CampaignEventListener)
-                    sector.removeListener((CampaignEventListener)script);
-                
-                if (toAdd != null)
-                    sector.addScript(toAdd);
-                
-                removedAny = true;
-                break;
-            }
-        }
-        return removedAny;
-    }
-	
-	protected <T extends GenericMissionCreator> boolean replaceMissionCreator(Class toRemove, T toAdd) {
-		boolean removedAny = false;
-		GenericMissionManager manager = GenericMissionManager.getInstance();
-		if (!manager.hasMissionCreator(toRemove))
-			return false;
-        for (GenericMissionCreator creator : new ArrayList<>(manager.getCreators()))
-        {
-            if (toRemove.isInstance(creator))
-            {
-                if (toAdd != null && toAdd.getClass().isInstance(creator))
-                    continue;
-                
-                log.info("Removing mission creator " + creator.toString() + " | " + toRemove.getCanonicalName());
-                
-                manager.getCreators().remove(creator);
-                
-                if (toAdd != null)
-                    manager.addMissionCreator(toAdd);
-                
-                removedAny = true;
-                break;
-            }
-        }
-        return removedAny;
-	}
+    
     
     public static void replaceSubmarket(MarketAPI market, String submarketId) {
         if (!market.hasSubmarket(submarketId)) return;
@@ -157,12 +101,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
         
         // replace or remove relevant intel items
-        replaceScript(sector, FactionHostilityManager.class, null);
-        replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
-        replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
-		replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
+        ScriptReplacer.replaceScript(sector, FactionHostilityManager.class, null);
+        ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
+        ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
+        ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
         //replaceMissionCreator(AnalyzeEntityIntelCreator.class, new Nex_AnalyzeEntityIntelCreator());
-		//replaceMissionCreator(SurveyPlanetIntelCreator.class, new Nex_SurveyPlanetIntelCreator());
+        //replaceMissionCreator(SurveyPlanetIntelCreator.class, new Nex_SurveyPlanetIntelCreator());
+        ScriptReplacer.replaceBarEventCreator(DeliveryBarEventCreator.class, new NexDeliveryBarEventCreator());
         
         for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
         {
@@ -248,6 +193,8 @@ public class ExerelinModPlugin extends BaseModPlugin
                 defIntel.giveReturnOrders();
             }
         }
+        
+        ScriptReplacer.replaceBarEventCreator(DeliveryBarEventCreator.class, new NexDeliveryBarEventCreator());
     }
     
     protected void addBarEvents() {
@@ -262,21 +209,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!sector.hasScript(ConquestMissionManager.class)) {
             sector.addScript(new ConquestMissionManager());
         }
-        if (!sector.hasScript(NexEventProbabilityManager.class)) {
-            //sector.addScript(new NexEventProbabilityManager());
-        }
         if (!sector.hasScript(FactionBountyManager.class)) {
             sector.addScript(new FactionBountyManager());
         }
         
         /*
-        addEventIfNeeded("exerelin_faction_salary");
-        addEventIfNeeded("exerelin_followers_tax");
         if (ExerelinUtilsFaction.isExiInCorvus()) {
             addEventIfNeeded("exerelin_exigency_respawn");
-        }
-        if (RevengeanceManagerEvent.getOngoingEvent() == null) {
-            sector.getEventManager().startEvent(null, "exerelin_revengeance_manager", null);
         }
         addEventIfNeeded("exerelin_slaves_sold");
         addEventIfNeeded("exerelin_warmonger");
