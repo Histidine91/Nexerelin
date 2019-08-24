@@ -15,6 +15,19 @@ import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
 import com.fs.starfarer.api.impl.campaign.intel.PersonBountyManager;
 import com.fs.starfarer.api.impl.campaign.intel.SurveyPlanetIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.SystemBountyManager;
+import com.fs.starfarer.api.impl.campaign.intel.bar.PortsideBarData;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.CorruptPLClerkSuppliesBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.DeliveryBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.DiktatLobsterBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.LuddicCraftBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.LuddicFarmerBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.MercsOnTheRunBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.PlanetaryShieldBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.QuartermasterCargoSwapBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.ScientistAICoreBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.TriTachLoanBarEventCreator;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.TriTachMajorLoanBarEventCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PlayerRelatedPirateBaseManager;
@@ -23,6 +36,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
+import exerelin.campaign.intel.bar.NexDeliveryBarEventCreator;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 
 public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
@@ -109,6 +123,54 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		
 		if (!sector.hasScript(SmugglingScanScript.class)) {
 			sector.addScript(new SmugglingScanScript());
+		}
+		
+	}
+	
+	// use own bar event creator
+	@Override
+	protected void addBarEvents() {
+		SectorAPI sector = Global.getSector();
+		if (!sector.hasScript(PortsideBarData.class)) {
+			sector.addScript(new PortsideBarData());
+		}
+		if (!sector.hasScript(BarEventManager.class)) {
+			sector.addScript(new BarEventManager());
+		}
+		
+		BarEventManager bar = BarEventManager.getInstance();
+		if (!bar.hasEventCreator(LuddicFarmerBarEventCreator.class)) {
+			bar.addEventCreator(new LuddicFarmerBarEventCreator());
+		}
+		if (!bar.hasEventCreator(LuddicCraftBarEventCreator.class)) {
+			bar.addEventCreator(new LuddicCraftBarEventCreator());
+		}
+		if (!bar.hasEventCreator(DiktatLobsterBarEventCreator.class)) {
+			bar.addEventCreator(new DiktatLobsterBarEventCreator());
+		}
+		if (!bar.hasEventCreator(MercsOnTheRunBarEventCreator.class)) {
+			bar.addEventCreator(new MercsOnTheRunBarEventCreator());
+		}
+		if (!bar.hasEventCreator(CorruptPLClerkSuppliesBarEventCreator.class)) {
+			bar.addEventCreator(new CorruptPLClerkSuppliesBarEventCreator());
+		}
+		if (!bar.hasEventCreator(QuartermasterCargoSwapBarEventCreator.class)) {
+			bar.addEventCreator(new QuartermasterCargoSwapBarEventCreator());
+		}
+		if (!bar.hasEventCreator(TriTachLoanBarEventCreator.class)) {
+			bar.addEventCreator(new TriTachLoanBarEventCreator());
+		}
+		if (!bar.hasEventCreator(TriTachMajorLoanBarEventCreator.class)) {
+			bar.addEventCreator(new TriTachMajorLoanBarEventCreator());
+		}
+		if (!bar.hasEventCreator(ScientistAICoreBarEventCreator.class)) {
+			bar.addEventCreator(new ScientistAICoreBarEventCreator());
+		}
+		if (!bar.hasEventCreator(NexDeliveryBarEventCreator.class)) {
+			bar.addEventCreator(new NexDeliveryBarEventCreator());
+		}
+		if (!bar.hasEventCreator(PlanetaryShieldBarEventCreator.class)) {
+			bar.addEventCreator(new PlanetaryShieldBarEventCreator());
 		}
 		
 	}
