@@ -19,7 +19,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.CovertOpsManager;
-import exerelin.campaign.intel.DiplomacyIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import static exerelin.campaign.intel.agents.CovertActionIntel.DEFAULT_AGENT_LEVEL;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;

@@ -12,7 +12,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.intel.DiplomacyIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;

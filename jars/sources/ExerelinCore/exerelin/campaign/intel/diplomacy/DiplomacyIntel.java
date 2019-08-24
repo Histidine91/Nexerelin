@@ -1,4 +1,4 @@
-package exerelin.campaign.intel;
+package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;

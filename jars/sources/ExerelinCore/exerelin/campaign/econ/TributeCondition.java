@@ -9,7 +9,7 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.TributeIntel;
+import exerelin.campaign.intel.diplomacy.TributeIntel;
 import exerelin.utilities.StringHelper;
 
 public class TributeCondition extends BaseMarketConditionPlugin implements MarketImmigrationModifier {

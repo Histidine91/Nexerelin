@@ -22,7 +22,7 @@ import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.intel.DiplomacyIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;

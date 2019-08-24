@@ -14,7 +14,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.intel.DiplomacyIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import static exerelin.campaign.intel.agents.CovertActionIntel.NO_EFFECT;
 import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
 import exerelin.utilities.ExerelinUtilsFaction;
