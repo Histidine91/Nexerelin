@@ -16,7 +16,6 @@ import exerelin.campaign.econ.TributeCondition;
 import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
-import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.campaign.events.WarmongerEvent;
 import exerelin.campaign.fleets.MiningFleetAI;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
@@ -56,8 +55,6 @@ import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
-import exerelin.campaign.missions.ConquestMission;
-import exerelin.campaign.missions.ConquestMissionEvent;
 import exerelin.campaign.submarkets.Nex_BlackMarketPlugin;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_MilitarySubmarketPlugin;
@@ -107,7 +104,6 @@ public class XStreamConfig {
 		x.alias("RebelEvntCreator", RebellionEventCreator.class);
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
 		x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);
-		x.alias("SuperweaponEvnt", SuperweaponEvent.class);
 		x.alias("WarmongerEvnt", WarmongerEvent.class);
 		
 		// intel
@@ -217,31 +213,9 @@ public class XStreamConfig {
 		x.aliasAttribute(VengeanceFleetIntel.class, "timeSpentLooking", "look");
 		x.aliasAttribute(VengeanceFleetIntel.class, "trackingMode", "trck");
 		
-		// SuperweaponEvent
-		x.aliasAttribute(SuperweaponEvent.class, "elapsedDays", "days");
-		x.aliasAttribute(SuperweaponEvent.class, "stabilityPenalty", "stbLoss");
-		x.aliasAttribute(SuperweaponEvent.class, "lastAttackerFaction", "attkr");
-		x.aliasAttribute(SuperweaponEvent.class, "repPenalty", "rep");
-		x.aliasAttribute(SuperweaponEvent.class, "lastRepEffect", "lastRep");
-		x.aliasAttribute(SuperweaponEvent.class, "avgRepLoss", "avgRep");
-		x.aliasAttribute(SuperweaponEvent.class, "wasPlayer", "plyr");
-		
 		// SecurityAlertEvent
 		x.aliasAttribute(SecurityAlertEvent.class, "elapsedDays", "days");
 		x.aliasAttribute(SecurityAlertEvent.class, "alertLevel", "alrt");
-		
-		// ConquestMission
-		x.aliasAttribute(ConquestMission.class, "target", "tgt");
-		x.aliasAttribute(ConquestMission.class, "baseDuration", "dur1");
-		x.aliasAttribute(ConquestMission.class, "bonusDuration", "dur2");
-		x.aliasAttribute(ConquestMission.class, "baseReward", "pay1");
-		x.aliasAttribute(ConquestMission.class, "bonusReward", "pay2");
-		
-		// ConquestMissionEvent
-		x.aliasAttribute(ConquestMissionEvent.class, "mission", "msn");
-		x.aliasAttribute(ConquestMissionEvent.class, "elapsedDays", "elpsd");
-		x.aliasAttribute(ConquestMissionEvent.class, "daysLeftStr", "daysStr");
-		x.aliasAttribute(ConquestMissionEvent.class, "bonusDaysLeftStr", "daysStr2");
 		
 		// Fleets
 		
