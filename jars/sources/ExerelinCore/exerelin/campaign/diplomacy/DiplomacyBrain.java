@@ -93,8 +93,8 @@ public class DiplomacyBrain {
 	public static final float MAX_DISPOSITION_FOR_WAR = -15f;
 	public static final float MILITARISM_WAR_MULT = 1;
 	public static final float MAX_WEARINESS_FOR_WAR = 7500f;
-	public static final float LIKE_THRESHOLD = 10;
-	public static final float DISLIKE_THRESHOLD = -10;
+	public static final float LIKE_THRESHOLD = 15;
+	public static final float DISLIKE_THRESHOLD = -15;
 	public static final float EVENT_SKIP_CHANCE = 0.5f;
 	public static final float EVENT_CHANCE_EXPONENT_BASE = 0.8f;
 	public static final float CEASEFIRE_LENGTH = 150f;
@@ -277,8 +277,8 @@ public class DiplomacyBrain {
 		float dispBase = ExerelinConfig.getExerelinFactionConfig(this.factionId).getDisposition(factionId);
 		if (!DiplomacyManager.isRandomFactionRelationships())
 			disposition.modifyFlat("base", dispBase, "Base disposition");
-		//else
-		//	disposition.unmodify("base");
+		else
+			disposition.unmodify("base");
 		
 		float dispFromRel = faction.getRelationship(factionId) * RELATIONS_MULT;
 		disposition.modifyFlat("relationship", dispFromRel, "Relationship");
@@ -305,8 +305,8 @@ public class DiplomacyBrain {
 		
 		if (isHardMode)
 			disposition.modifyFlat("hardmode", HARD_MODE_MOD, "Hard mode");
-		//else
-		//	disposition.unmodify("hardmode");
+		else
+			disposition.unmodify("hardmode");
 		
 		disposition.getModifiedValue();
 	}
@@ -614,19 +614,28 @@ public class DiplomacyBrain {
 	public void cacheRevanchism()
 	{
 		revanchismCache.clear();
-		float revanchism = 0;
+		// player has no revanchism
+		if (factionId.equals(Factions.PLAYER))
+			return;
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
-			if (market.getFactionId().equals(this.factionId))
+			String mktFactionId = market.getFactionId();
+			if (mktFactionId.equals(this.factionId))
 				continue;
+			
+			// this market used to belong to us, increment revanchism towards its current owner
 			if (ExerelinUtilsMarket.wasOriginalOwner(market, this.factionId))
 			{
+				float revanchism = 0;
+				if (revanchismCache.containsKey(mktFactionId)) 
+				{
+					revanchism = revanchismCache.get(mktFactionId);
+				}
 				revanchism += market.getSize() * REVANCHISM_SIZE_MULT;
+				revanchismCache.put(mktFactionId, revanchism);
 			}
 		}
-		
-		revanchismCache.put(factionId, revanchism);
 	}
 	
 	public boolean isHardMode(String factionId)
