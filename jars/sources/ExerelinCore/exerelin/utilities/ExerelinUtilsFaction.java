@@ -179,6 +179,14 @@ public class ExerelinUtilsFaction {
         if (config == null) return noConfigFallback;
         return config.corvusCompatible;
     }
+	
+	public static List<FactionAPI> factionIdsToFactions(List<String> factionIds) {
+		List<FactionAPI> factions = new ArrayList<>();
+		for (String factionId : factionIds) {
+			factions.add(Global.getSector().getFaction(factionId));
+		}
+		return factions;
+	}
     
     public static void grantCommission(String factionId)
     {

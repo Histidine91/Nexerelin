@@ -21,6 +21,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -93,6 +94,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected long lastWarTimestamp = 0;
     
     protected Map<String, DiplomacyBrain> diplomacyBrains = new HashMap<>();
+    protected Map<String, DiplomacyProfileIntel> profiles = new HashMap<>();
     
     static {
         String[] factions = {"templars", Factions.INDEPENDENT, Factions.LUDDIC_PATH};
@@ -657,6 +659,32 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return diplomacyBrains.get(factionId);
     }
     
+    public DiplomacyProfileIntel getDiplomacyProfile(String factionId)
+    {
+        return profiles.get(factionId);
+    }
+    
+    public DiplomacyProfileIntel createDiplomacyProfile(String factionId)
+    {
+        // donut double add
+        if (profiles.containsKey(factionId)) {
+            return profiles.get(factionId);
+        }
+        
+        DiplomacyProfileIntel profile = DiplomacyProfileIntel.createEvent(factionId);
+		if (profile == null) return null;
+        profiles.put(factionId, profile);
+        return profile;
+    }
+    
+    public void removeDiplomacyProfile(String factionId) 
+    {
+        if (profiles.containsKey(factionId)) {
+            profiles.get(factionId).endImmediately();
+            profiles.remove(factionId);
+        }
+    }
+    
     public long getLastWarTimestamp() {
         return lastWarTimestamp;
     }
@@ -843,6 +871,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
         for(String otherFactionId : factions)
         {
+            if (factionId.equals(otherFactionId)) continue;
             if (!faction.isAtBest(otherFactionId, rep)) continue;
             if (disallowedFactions.contains(otherFactionId)) continue;
             if (!includePirates && ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
@@ -1150,6 +1179,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             diplomacyBrains = new HashMap<>();
         
         return this;
+    }
+    
+    public void reverseCompatibility() {
+        if (profiles == null) {
+            profiles = new HashMap<>();
+            for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+                createDiplomacyProfile(factionId);
+            }
+        }
     }
     
     

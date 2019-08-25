@@ -37,8 +37,9 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	static final int PREFIX_LENGTH = PRINT_FACTION_OPTION_PREFIX.length();
 	public static final List<String> ARRAYLIST_PLAYERFACTION = Arrays.asList(new String[]{Factions.PLAYER});
 	
-	static final HashMap<Integer, Color> colorByMarketSize = new HashMap<>();
+	public static final HashMap<Integer, Color> colorByMarketSize = new HashMap<>();
 	static {
+		colorByMarketSize.put(1, Color.WHITE);
 		colorByMarketSize.put(2, Color.BLUE);
 		colorByMarketSize.put(3, Color.CYAN);
 		colorByMarketSize.put(4, Color.GREEN);
@@ -47,6 +48,14 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		colorByMarketSize.put(7, Color.PINK);
 		colorByMarketSize.put(8, Color.RED);
 		colorByMarketSize.put(9, Color.MAGENTA);
+		colorByMarketSize.put(10, Color.MAGENTA);
+	}
+	
+	public static final Color getSizeColor(int size) {
+		Color color = Color.GRAY;
+		if (colorByMarketSize.containsKey(size))
+			color = colorByMarketSize.get(size);
+		return color;
 	}
 	
 	@Override
@@ -151,7 +160,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			if (!isExiInCorvus) return;
 		}
 
-		Collections.sort(markets,new MarketComparator());
+		Collections.sort(markets, MARKET_COMPARATOR);
 		//Collections.reverse(markets);
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 
@@ -196,9 +205,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			if (loc instanceof StarSystemAPI)
 					locName = ((StarSystemAPI)loc).getBaseName();
 			int size = market.getSize();
-			Color sizeColor = Color.WHITE;
-			if (colorByMarketSize.containsKey(size))
-					sizeColor = colorByMarketSize.get(size);
+			Color sizeColor = getSizeColor(size);
 
 			String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
 			entry = StringHelper.substituteToken(entry, "$market", marketName);
@@ -238,8 +245,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	/**
 	 * Sorts markets by name of their star system, then by size
 	 */
-	public class MarketComparator implements Comparator<MarketAPI>
-	{
+	public static final Comparator<MarketAPI> MARKET_COMPARATOR = new Comparator<MarketAPI>() {
 		@Override
 		public int compare(MarketAPI market1, MarketAPI market2) {
 
@@ -256,5 +262,12 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			else if (size2 > size1) return 1;
 			else return 0;
 		}
-	}
+	};
+	
+	public static final Comparator<MarketAPI> MARKET_COMPARATOR_SIZE = new Comparator<MarketAPI>() {
+		public int compare(MarketAPI m1, MarketAPI m2) {
+			if (m1.getSize() != m2.getSize())
+				return Integer.compare(m1.getSize(), m2.getSize());
+			return m1.getName().compareTo(m2.getName());
+		}};
 }

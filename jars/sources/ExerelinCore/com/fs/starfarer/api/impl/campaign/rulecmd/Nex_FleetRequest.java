@@ -809,13 +809,6 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		return StringHelper.getString("nex_fleetRequest", id, ucFirst);
 	}
 	
-	public static final Comparator<MarketAPI> marketComparatorSize = new Comparator<MarketAPI>() {
-		public int compare(MarketAPI m1, MarketAPI m2) {
-			if (m1.getSize() != m2.getSize())
-				return Integer.compare(m1.getSize(), m2.getSize());
-			return m1.getName().compareTo(m2.getName());
-		}};
-	
 	public static final Comparator<MarketAPI> marketComparatorName = new Comparator<MarketAPI>() {
 		public int compare(MarketAPI m1, MarketAPI m2) {
 			return m1.getName().compareTo(m2.getName());

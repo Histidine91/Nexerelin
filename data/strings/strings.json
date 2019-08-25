@@ -563,6 +563,39 @@
 		"intelCeasefireDescResult":"You have $acceptedOrRejected the offer.",
 		"intelCeasefireConfirm":"Confirm?",
 	},
+	"nex_diplomacyProfile":{
+		"title":"Diplomacy Profile",
+		"alignments":"alignments",
+		"warWeariness":"war weariness",
+		
+		"claimedMarkets":"$TheFaction has revanchist claims on the following markets: ",
+		"claimedMarketsEntry":"$market (size $size)",
+		"claimedMarketsNone":"$TheFaction does not have revanchist claims on any markets.",
+		
+		"disposition":"Disposition towards $playerFaction: $disp",
+		"dispositionGood":"$TheFaction $isOrAre favourably inclined towards us and will try to cultivate a positive relationship with us.",
+		"dispositionNeutral":"$TheFaction $isOrAre uncertain where they stand with regard to us, and may take positive or negative actions.",
+		"dispositionBad":"$TheFaction $isOrAre unfriendly towards us and will look to pick a fight.",
+		"dispositionWarRisk":"At current relations and disposition, $theFaction may declare war on us if the opportunity arises.",
+		
+		"dispTableHeader":"Dispositions towards other factions",
+		"dispTableOverall":"Overall",
+		"dispTableBase":"Base",
+		"dispTableRelationship":"Relation",
+		"dispTableAlignments":"Alignments",
+		"dispTableMorality":"Morality",
+		"dispTableCommonEnemies":"Common foes",
+		"dispTableRevanchism":"Revanchism",
+		"dispTableDominance":"Dominance",
+		"dispTableRecentEvents":"Recent evnts",
+		"dispTableHardMode":"Difficulty",
+		
+		"wearinessTooHighForWar":"$TheFaction has too much war weariness to deliberately seek out any new wars at present.",
+		"wearinessEnoughForPeace":"$TheFaction may be amenable to negotiating peace with another faction.",
+		
+		"intelTag":"Dipl. profiles",
+	},
+	
 	"exerelin_events":{
 		"agentDestabilizeMarket":"Agent terror attacks on $market",
 		"allianceChanged":"Alliance changed: $alliance",

@@ -1107,15 +1107,19 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void addLiveFactionId(String factionId)
     {
         if (sectorManager == null) return;
-        if (!sectorManager.liveFactionIds.contains(factionId))
+        if (!sectorManager.liveFactionIds.contains(factionId)) {
             sectorManager.liveFactionIds.add(factionId);
+            DiplomacyManager.getManager().createDiplomacyProfile(factionId);
+        }
     }
     
     public static void removeLiveFactionId(String factionId)
     {
         if (sectorManager == null) return;
-        if (sectorManager.liveFactionIds.contains(factionId))
+        if (sectorManager.liveFactionIds.contains(factionId)) {
             sectorManager.liveFactionIds.remove(factionId);
+            DiplomacyManager.getManager().removeDiplomacyProfile(factionId);
+        }
     }
     
     public static ArrayList<String> getLiveFactionIdsCopy()
@@ -1187,6 +1191,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 if (config != null && !config.playableFaction)
                     continue;
                 sectorManager.liveFactionIds.add(factionId);
+                DiplomacyManager.getManager().createDiplomacyProfile(factionId);
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
                 setShowFactionInIntelTab(factionId, true);
@@ -1194,6 +1199,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             else    // no need for showIntelEvenIfDead check, that's done in setShowFactionInIntelTab()
             {
                 setShowFactionInIntelTab(factionId, false);
+                DiplomacyManager.getManager().removeDiplomacyProfile(factionId);
             }
         }
     }

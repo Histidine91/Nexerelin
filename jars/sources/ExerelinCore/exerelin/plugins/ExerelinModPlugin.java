@@ -175,7 +175,7 @@ public class ExerelinModPlugin extends BaseModPlugin
                 market.addCondition(Conditions.FREE_PORT);
             }
         }
-		
+        
         for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
         {
             //if (market.isPlayerOwned()) continue;
@@ -195,6 +195,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         ScriptReplacer.replaceBarEventCreator(DeliveryBarEventCreator.class, new NexDeliveryBarEventCreator());
+        
+        DiplomacyManager.getManager().reverseCompatibility();
     }
     
     protected void addBarEvents() {
