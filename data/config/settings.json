@@ -70,6 +70,8 @@
 		"US_artificial":10,
 		"US_religious":10,
 		"US_elevator":10,
+		
+		"US_shrooms":-10,
 	},
 	
 	"graphics":{
