@@ -80,14 +80,15 @@ public class ExerelinUtilsFaction {
         return false;
     }
     
-	public static int getFactionMarketSizeSum(String factionId)
+    public static int getFactionMarketSizeSum(String factionId)
     {
         return getFactionMarketSizeSum(factionId, false);
     }
-	
+    
     /**
      * Returns the sum of the sizes of the faction's markets
      * @param factionId
+     * @param onlyInvadable
      * @return
      */
     public static int getFactionMarketSizeSum(String factionId, boolean onlyInvadable)
@@ -96,8 +97,12 @@ public class ExerelinUtilsFaction {
         int pop = 0;
         for (MarketAPI market : allMarkets)
         {
-            if (market.getFactionId().equals(factionId) && ExerelinUtilsMarket.canBeInvaded(market, false))
+            if (market.getFactionId().equals(factionId))
+            {
+                if (onlyInvadable && !ExerelinUtilsMarket.canBeInvaded(market, false))
+                    continue;
                 pop += market.getSize();
+            }
         }
         return pop;
     }
