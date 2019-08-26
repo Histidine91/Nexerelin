@@ -12,6 +12,7 @@
     "alignments":{
         "ideological":0.5,
     },
+	"morality":"evil",
     
     "freeMarket":true,
     
