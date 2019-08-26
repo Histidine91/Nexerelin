@@ -96,7 +96,6 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		Color h = Misc.getHighlightColor();
 		
 		Collections.sort(claimed, Nex_FactionDirectory.MARKET_COMPARATOR_SIZE);
-		Collections.reverse(claimed);
 		
 		List<String> highlights = new ArrayList<>();
 		List<Color> highlightColors = new ArrayList<>();

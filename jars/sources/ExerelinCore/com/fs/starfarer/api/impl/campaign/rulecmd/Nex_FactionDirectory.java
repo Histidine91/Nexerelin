@@ -265,9 +265,10 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	};
 	
 	public static final Comparator<MarketAPI> MARKET_COMPARATOR_SIZE = new Comparator<MarketAPI>() {
+		@Override
 		public int compare(MarketAPI m1, MarketAPI m2) {
 			if (m1.getSize() != m2.getSize())
-				return Integer.compare(m1.getSize(), m2.getSize());
+				return Integer.compare(m2.getSize(), m1.getSize());
 			return m1.getName().compareTo(m2.getName());
 		}};
 }
