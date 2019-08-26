@@ -87,6 +87,8 @@ public class DiplomacyBrain {
 	public static final float EVENT_PEACE_MULT = 40f;
 	public static final float EVENT_DECREMENT_PER_DAY = 0.2f;
 	public static final float REVANCHISM_SIZE_MULT = 2;
+	public static final float REVANCHISM_FACTION_MAX = 20;
+	public static final float REVANCHISM_MAX = 50;
 	public static final float DOMINANCE_MULT = 25;
 	public static final float DOMINANCE_HARD_MULT = 1.5f;
 	public static final float HARD_MODE_MOD = -15f;
@@ -100,8 +102,6 @@ public class DiplomacyBrain {
 	public static final float CEASEFIRE_LENGTH = 150f;
 	//public static final float EVENT_AGENT_CHANCE = 0.35f;
 	
-	public static final Map<String, Float> revanchismCache = new HashMap<>();
-	
 	public static Logger log = Global.getLogger(DiplomacyBrain.class);
 	
 	protected String factionId;
@@ -114,6 +114,7 @@ public class DiplomacyBrain {
 	protected float ourStrength = 0;
 	protected float enemyStrength = 0;
 	protected float playerCeasefireOfferCooldown = 0;
+	protected Map<String, Float> revanchismCache = new HashMap<>();
 	
 	//==========================================================================
 	//==========================================================================
@@ -611,12 +612,19 @@ public class DiplomacyBrain {
 		doRandomEvent();
 	}
 	
+	// Total disposition penalty from revanchism for a faction, towards all other factions,
+	// cannot exceed REVANCHISM_FACTION_MAX
+	// if the raw sum does, disposition penalty will be pro-rated among occupier factions
 	public void cacheRevanchism()
 	{
 		revanchismCache.clear();
 		// player has no revanchism
 		if (factionId.equals(Factions.PLAYER))
 			return;
+		
+		Map<String, Float> revanchismTemp = new HashMap<>();
+		Set<String> seenFactions = new HashSet<>();
+		float total = 0;
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
@@ -627,14 +635,32 @@ public class DiplomacyBrain {
 			// this market used to belong to us, increment revanchism towards its current owner
 			if (ExerelinUtilsMarket.wasOriginalOwner(market, this.factionId))
 			{
-				float revanchism = 0;
-				if (revanchismCache.containsKey(mktFactionId)) 
+				float curr = 0;
+				if (revanchismTemp.containsKey(mktFactionId)) 
 				{
-					revanchism = revanchismCache.get(mktFactionId);
+					curr = revanchismTemp.get(mktFactionId);
 				}
-				revanchism += market.getSize() * REVANCHISM_SIZE_MULT;
-				revanchismCache.put(mktFactionId, revanchism);
+				float fromMarket = market.getSize() * REVANCHISM_SIZE_MULT;
+				
+				curr += fromMarket;
+				if (curr > REVANCHISM_FACTION_MAX)
+					curr = REVANCHISM_FACTION_MAX;
+				
+				revanchismTemp.put(mktFactionId, curr);
+				
+				total += fromMarket;
+				
+				seenFactions.add(mktFactionId);
 			}
+		}
+		
+		float mult = 1;
+		if (total > REVANCHISM_MAX) {
+			mult = REVANCHISM_MAX / total;
+		}
+		
+		for (String otherFactionId : seenFactions) {
+			revanchismCache.put(otherFactionId, revanchismTemp.get(otherFactionId) * mult);
 		}
 	}
 	
@@ -739,6 +765,9 @@ public class DiplomacyBrain {
 			ceasefires = new HashMap<>();
 		if (enemies == null)
 			enemies = new ArrayList<>();
+		if (revanchismCache == null)
+			revanchismCache = new HashMap<>();
+		
 		faction = Global.getSector().getFaction(factionId);
 		return this;
 	}

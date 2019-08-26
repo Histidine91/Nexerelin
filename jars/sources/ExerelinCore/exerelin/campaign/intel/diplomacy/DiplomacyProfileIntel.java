@@ -323,6 +323,17 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		}
 		
 		tooltip.addTable("", 0, 3);
+		
+		if (SectorManager.getHardMode()) {
+			FactionAPI playerFaction = PlayerFactionStore.getPlayerFaction();
+			if (faction != playerFaction && SectorManager.isFactionAlive(playerFaction.getId())) {
+				String str = getString("dispFootnoteHardMode");
+				String penalty = DiplomacyBrain.HARD_MODE_MOD + "";
+				str = StringHelper.substituteToken(str, "$penalty", penalty);
+				str = StringHelper.substituteToken(str, "$faction", playerFaction.getDisplayName());
+				tooltip.addPara(str, 10, Misc.getNegativeHighlightColor(), penalty);
+			}
+		}
 	}
 
 	// adapted from Starship Legends' BattleReport
@@ -409,6 +420,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		DiplomacyProfileIntel profile = new DiplomacyProfileIntel(factionId);
 		Global.getSector().getIntelManager().addIntel(profile, true);
+		profile.setNew(false);
 		return profile;
 	}
 }
