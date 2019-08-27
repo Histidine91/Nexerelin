@@ -36,13 +36,13 @@
 	"nex_officerSurviveChance":0.75,	# only if officer does not escape and ship is disabled rather than destroyed
 	
 	"nex_colonyConditionValues":{
-		"ore_sparse":1,
-		"ore_moderate":2.5,
+		#"ore_sparse":1,
+		"ore_moderate":2,	# 2.5,
 		"ore_abundant":5,
 		"ore_rich":10,
 		"ore_ultrarich":18,
 		
-		"rare_ore_sparse":1.5,
+		"rare_ore_sparse":1,	# 1.5,
 		"rare_ore_moderate":4,
 		"rare_ore_abundant":8,
 		"rare_ore_rich":15,

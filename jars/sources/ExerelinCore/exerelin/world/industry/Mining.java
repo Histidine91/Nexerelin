@@ -19,16 +19,16 @@ public class Mining extends IndustryClassGen {
 				
 		for (MarketConditionAPI cond : market.getConditions())
 		{
-			// volatiles are sufficiently rare that we want to make sure there's a source of them
-			// actually screw it, if there's anything even slightly minable, by God we will mine it!
+			// always build mining if there are any mineable conditions
+			// except sparse rare ore and sparse/moderate ore, which have stricter conditions
 			switch (cond.getId())
 			{
-				case Conditions.ORE_SPARSE:
-				case Conditions.RARE_ORE_SPARSE:
+				//case Conditions.ORE_SPARSE:
+				//case Conditions.RARE_ORE_SPARSE:
 				case Conditions.ORGANICS_TRACE:
 				//	weight += 100;
 				//	break;
-				case Conditions.ORE_MODERATE:
+				//case Conditions.ORE_MODERATE:
 				case Conditions.RARE_ORE_MODERATE:
 				case Conditions.ORGANICS_COMMON:
 				//	weight += 250;
@@ -58,6 +58,13 @@ public class Mining extends IndustryClassGen {
 					return 999999;
 			}
 		}
+		
+		// if market has sparse rare ore AND sparse/moderate ore, also build mining
+		if (market.hasCondition(Conditions.RARE_ORE_SPARSE) && 
+				(market.hasCondition(Conditions.ORE_SPARSE) 
+				|| market.hasCondition(Conditions.ORE_MODERATE)))
+			return 999999;
+		
 		return weight;
 	}
 }
