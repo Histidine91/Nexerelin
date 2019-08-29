@@ -42,6 +42,7 @@ import exerelin.campaign.intel.agents.RaiseRelations;
 import exerelin.campaign.intel.agents.SabotageIndustry;
 import exerelin.campaign.intel.agents.Travel;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.campaign.intel.fleets.NexAssembleStage;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
@@ -87,6 +88,7 @@ public class XStreamConfig {
 		x.alias("VengFltIntl", VengeanceFleetIntel.class);
 		
 		x.alias("DiploIntl", DiplomacyIntel.class);
+		x.alias("DiploPrflIntl", DiplomacyProfileIntel.class);
 		x.alias("MktTrnsfrIntl", MarketTransferIntel.class);
 		x.alias("FactionChngIntl", FactionSpawnedOrEliminatedIntel.class);
 		

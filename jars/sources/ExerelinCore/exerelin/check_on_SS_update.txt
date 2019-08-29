@@ -1,0 +1,17 @@
+Files to check on Starsector update, because they significantly modify vanilla code that could change under us.
+Partial list.
+
+- NexCoreLifecyclePlugin
+- NexDeliveryBarEvent
+- NexFleetInteractionDialogPluginImpl
+- NexFleetEncounterContext
+- Nex_MarketCMD
+- Nex_SustainedBurnAbilityAI
+- SSP_BattleCreationPluginImpl
+- Submarket plugins
+
+Do on future SS release:
+- Remove agent/saboteur commodities
+- Remove MutableStatNoFloor
+
+All files in data.scripts.world.corvus and data.scripts.world.systems should be replaced each Starsector version.

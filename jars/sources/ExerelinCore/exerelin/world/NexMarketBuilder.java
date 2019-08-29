@@ -361,6 +361,9 @@ public class NexMarketBuilder
 		boolean haveBase = market.hasIndustry(Industries.MILITARYBASE) 
 				|| market.hasIndustry(Industries.HIGHCOMMAND)
 				|| market.hasIndustry("tiandong_merchq");
+				//|| market.hasIndustry("prv_rb_pirate_2")
+				//|| market.hasIndustry("prv_rb_pirate_3");
+		
 		if (!haveBase && marketSize >= sizeForBase && Misc.getNumIndustries(market) < Misc.getMaxIndustries(market))
 		{
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
@@ -384,7 +387,10 @@ public class NexMarketBuilder
 			sizeForPatrol = 4;
 		
 		// add patrol HQ if needed
-		if (!haveBase && marketSize >= sizeForPatrol)
+		boolean havePatrol = market.hasIndustry(Industries.PATROLHQ);
+				//|| market.hasIndustry("prv_rb_pirate_1");
+		
+		if (!haveBase && !havePatrol && marketSize >= sizeForPatrol)
 		{
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
 			float req = MILITARY_BASE_CHANCE;

@@ -84,7 +84,6 @@ public class VanillaSystemsGenerator {
 		new Tyle().generate(sector);
 		
 		//TutorialMissionEvent.endGalatiaPortionOfMission();
-		Global.getLogger(VanillaSystemsGenerator.class).info("Does it work? " + Misc.isSpacerStart());
 		exerelinEndGalatiaPortionOfMission();
 		
 		LocationAPI hyper = Global.getSector().getHyperspace();
