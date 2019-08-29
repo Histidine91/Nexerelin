@@ -32,7 +32,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
-import static exerelin.campaign.SectorManager.sectorManager;
 import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
@@ -234,7 +233,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		// keep the cond check; motherfuckers can't be trusted to have the right settting
 		boolean isFreePort = market.isFreePort() || market.hasCondition(Conditions.FREE_PORT);
 		boolean wantFreePort;
-		if (!sectorManager.corvusMode)
+		if (!SectorManager.getCorvusMode())
 		{
 			wantFreePort = newOwnerConfig.freeMarket || market.getId().equals("nex_prismFreeport");
 		}
@@ -518,7 +517,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	// add admin to player faction if needed
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
-		if (market.getFaction().isPlayerFaction())
+		if (market.getFaction().isPlayerFaction() && !market.isHidden())
 		{
 			if (hasBaseOfficial(market)) return;
 			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 

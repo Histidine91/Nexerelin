@@ -69,7 +69,6 @@ import org.lazywizard.lazylib.MathUtils;
  */
 public class SectorManager extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(SectorManager.class);
-    protected static SectorManager sectorManager;
 
     protected static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
     public static final String MEMORY_KEY_RECENTLY_CAPTURED = "$nex_recentlyCapturedFrom";
@@ -298,14 +297,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static SectorManager create()
     {
-        Map<String, Object> data = Global.getSector().getPersistentData();
-        sectorManager = (SectorManager)data.get(MANAGER_MAP_KEY);
-        if (sectorManager != null)
-            return sectorManager;
+        SectorManager manager = getManager();
+        if (manager != null)
+            return manager;
         
-        sectorManager = new SectorManager();
-        data.put(MANAGER_MAP_KEY, sectorManager);
-        return sectorManager;
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        manager = new SectorManager();
+        data.put(MANAGER_MAP_KEY, manager);
+        return manager;
     }
     
     public static SectorManager getManager()
@@ -314,40 +313,25 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return (SectorManager)data.get(MANAGER_MAP_KEY);
     }
     
-    public static boolean isSectorManagerSaved()
-    {
-        Map<String, Object> data = Global.getSector().getPersistentData();
-        sectorManager = (SectorManager)data.get(MANAGER_MAP_KEY);
-        if (sectorManager != null)
-            return true;
-        
-        return false;
-    }
-    
     public static void setCorvusMode(boolean mode)
     {
-        if (sectorManager == null) return;
-        sectorManager.corvusMode = mode;
+        getManager().corvusMode = mode;
     }
     
     public static boolean getCorvusMode()
     {
-        if (sectorManager == null) create();    // try to make sure we have an answer for whoever calls this
-        if (sectorManager == null) return false;
-        return sectorManager.corvusMode;
+        return getManager().corvusMode;
     }
     
     public static void setHardMode(boolean mode)
     {
-        if (sectorManager == null) return;
-        sectorManager.hardMode = mode;
+        getManager().hardMode = mode;
 		ColonyManager.updateIncome();
     }
     
     public static boolean getHardMode()
     {
-        if (sectorManager == null) return false;
-        return sectorManager.hardMode;
+        return getManager().hardMode;
     }
     
     @Deprecated
@@ -689,12 +673,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
     {
+        SectorManager manager = getManager();
         String factionId = faction.getId();
-        boolean existedBefore = false;
-        if (sectorManager != null)
-        {
-            existedBefore = sectorManager.historicFactionIds.contains(factionId);
-        }
+        boolean existedBefore = manager.historicFactionIds.contains(factionId);
         
         FactionSpawnedOrEliminatedIntel.EventType type = FactionSpawnedOrEliminatedIntel.EventType.SPAWNED;
         if (existedBefore) type = FactionSpawnedOrEliminatedIntel.EventType.RESPAWNED;
@@ -704,29 +685,29 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         ExerelinUtils.addExpiringIntel(intel);
         
         SectorManager.addLiveFactionId(faction.getId());
-        if (sectorManager != null && !existedBefore)
+        if (manager != null && !existedBefore)
         {
-            sectorManager.historicFactionIds.add(factionId);
+            manager.historicFactionIds.add(factionId);
         }
         
         setShowFactionInIntelTab(factionId, true);
         
         // increment "times respawned" count
-        if (sectorManager != null)
+        if (manager != null)
         {
             int count = 0;
-            if (sectorManager.factionRespawnCounts.containsKey(factionId))
-                count = sectorManager.factionRespawnCounts.get(factionId) + 1;
-            else if (sectorManager.factionIdsAtStart.contains(factionId))
+            if (manager.factionRespawnCounts.containsKey(factionId))
+                count = manager.factionRespawnCounts.get(factionId) + 1;
+            else if (manager.factionIdsAtStart.contains(factionId))
                 count++;
-            sectorManager.factionRespawnCounts.put(factionId, count);
+            manager.factionRespawnCounts.put(factionId, count);
         }
     }
     
     public static void checkForVictory()
     {
-        if (sectorManager == null) return;
-        if (sectorManager.victoryHasOccured) return;
+        SectorManager manager = getManager();
+        if (manager.victoryHasOccured) return;
         //FactionAPI faction = Global.getSector().getFaction(factionId);
         SectorAPI sector = Global.getSector();
         
@@ -760,7 +741,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     victoryType = VictoryType.CONQUEST_ALLY;
                 }
             }
-            sectorManager.victoryHasOccured = true;
+            manager.victoryHasOccured = true;
         }
         else {
             // diplomatic victory
@@ -800,10 +781,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
             
             victorFactionId = winner;
-            sectorManager.victoryHasOccured = true;
+            manager.victoryHasOccured = true;
         }
         
-        if (sectorManager.victoryHasOccured)
+        if (manager.victoryHasOccured)
         {
             Global.getSector().addScript(new VictoryScreenScript(victorFactionId, victoryType));
         }
@@ -819,8 +800,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void retire() 
     {
         Global.getSector().addScript(new VictoryScreenScript(Factions.PLAYER, VictoryType.RETIRED));
-        if (sectorManager != null)
-            sectorManager.victoryHasOccured = true;
+        getManager().victoryHasOccured = true;
     }
     
     /**
@@ -1099,63 +1079,57 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void notifySlavesSold(MarketAPI market, int count)
     {
-        if (sectorManager == null) return;
-        sectorManager.numSlavesRecentlySold += count;
-        sectorManager.marketLastSoldSlaves = market;
+        SectorManager manager = getManager();
+        manager.numSlavesRecentlySold += count;
+        manager.marketLastSoldSlaves = market;
     }
 
     public static void addLiveFactionId(String factionId)
     {
-        if (sectorManager == null) return;
-        if (!sectorManager.liveFactionIds.contains(factionId)) {
-            sectorManager.liveFactionIds.add(factionId);
+        SectorManager manager = getManager();
+        if (!manager.liveFactionIds.contains(factionId)) {
+            manager.liveFactionIds.add(factionId);
             DiplomacyManager.getManager().createDiplomacyProfile(factionId);
         }
     }
     
     public static void removeLiveFactionId(String factionId)
     {
-        if (sectorManager == null) return;
-        if (sectorManager.liveFactionIds.contains(factionId)) {
-            sectorManager.liveFactionIds.remove(factionId);
+        SectorManager manager = getManager();
+        if (manager.liveFactionIds.contains(factionId)) {
+            manager.liveFactionIds.remove(factionId);
             DiplomacyManager.getManager().removeDiplomacyProfile(factionId);
         }
     }
     
     public static ArrayList<String> getLiveFactionIdsCopy()
     {
-        if (sectorManager == null) return new ArrayList<>();
-        return new ArrayList<>(sectorManager.liveFactionIds);
+        return new ArrayList<>(getManager().liveFactionIds);
     }
     
     public static boolean isFactionAlive(String factionId)
     {
-        if (sectorManager == null) return false;
-        return sectorManager.liveFactionIds.contains(factionId);
+        return getManager().liveFactionIds.contains(factionId);
     }
     
     public static void setHomeworld(SectorEntityToken entity)
     {
-        if (sectorManager == null) return;
-        sectorManager.homeworld = entity;
+        getManager().homeworld = entity;
     }
     
     public static SectorEntityToken getHomeworld()
     {
-        if (sectorManager == null) return null;
-        return sectorManager.homeworld;
+        return getManager().homeworld;
     }
     
     public static void setFreeStart(boolean freeStart)
     {
-        if (sectorManager == null) return;
-        sectorManager.freeStart = freeStart;
+        getManager().freeStart = freeStart;
     }
     
     public static boolean getFreeStart()
     {
-        if (sectorManager == null) return false;
-        return sectorManager.freeStart;
+        return getManager().freeStart;
     }
     
     protected static void expelPlayerFromFaction(boolean silent)
@@ -1177,11 +1151,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
     public static void reinitLiveFactions()
     {
-        if (sectorManager == null) return;
+        SectorManager manager = getManager();
         List<String> temp = ExerelinConfig.getFactions(false, false);
-        sectorManager.liveFactionIds = new HashSet<>();
-        sectorManager.factionIdsAtStart = new ArrayList<>();
-        sectorManager.historicFactionIds = new HashSet<>();
+        manager.liveFactionIds = new HashSet<>();
+        manager.factionIdsAtStart = new ArrayList<>();
+        manager.historicFactionIds = new HashSet<>();
         
         for (String factionId : temp)
         {
@@ -1190,10 +1164,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
                 if (config != null && !config.playableFaction)
                     continue;
-                sectorManager.liveFactionIds.add(factionId);
+                manager.liveFactionIds.add(factionId);
                 DiplomacyManager.getManager().createDiplomacyProfile(factionId);
-                sectorManager.factionIdsAtStart.add(factionId);
-                sectorManager.historicFactionIds.add(factionId);
+                manager.factionIdsAtStart.add(factionId);
+                manager.historicFactionIds.add(factionId);
                 setShowFactionInIntelTab(factionId, true);
             }
             else    // no need for showIntelEvenIfDead check, that's done in setShowFactionInIntelTab()
@@ -1206,9 +1180,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void setAllowRespawnFactions(boolean respawn, boolean allowNew)
     {
-        if (sectorManager == null) return;
-        sectorManager.respawnFactions = respawn;
-        sectorManager.onlyRespawnStartingFactions = !allowNew;
+        SectorManager manager = getManager();
+        manager.respawnFactions = respawn;
+        manager.onlyRespawnStartingFactions = !allowNew;
     }
     
     public enum VictoryType

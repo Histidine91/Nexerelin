@@ -230,18 +230,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onGameLoad(boolean newGame) {
-        log.info("Game load; " + SectorManager.isSectorManagerSaved());
+        log.info("Game load");
         isNewGame = newGame;
         
         ScenarioManager.clearScenario();
-        
-        // legacy: assign the static variables referencing the singletons,
-        // so the static methods in those classes can get them
-        SectorManager.create();
-        DiplomacyManager.create();
-        InvasionFleetManager.create();
-        ResponseFleetManager.create();
-        AllianceManager.create();
         
         addScriptsAndEventsIfNeeded();
         

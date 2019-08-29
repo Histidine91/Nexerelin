@@ -46,8 +46,6 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 	private final List<ResponseFleetData> activeFleets = new LinkedList();
 	private final IntervalUtil tracker;
 	
-	private static ResponseFleetManager responseFleetManager;
-	
 	public ResponseFleetManager()
 	{
 		super(true);
@@ -275,30 +273,31 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 	 */
 	public static CampaignFleetAPI requestResponseFleet(MarketAPI market, SectorEntityToken attacker, SectorEntityToken spawnEntity)
 	{
-		if (responseFleetManager == null) return null;
-		return responseFleetManager.spawnResponseFleet(market, attacker, spawnEntity);
+		return getManager().spawnResponseFleet(market, attacker, spawnEntity);
 	}
 	
 	public static float modifyReserveSize(MarketAPI market, float delta)
 	{
-		if (responseFleetManager == null) return 0f;
+		ResponseFleetManager manager = getManager();
+		if (manager == null) return 0f;
 		String marketId = market.getId();
-		if (!responseFleetManager.reserves.containsKey(marketId)) return 0f;
+		if (!manager.reserves.containsKey(marketId)) return 0f;
 		float current = getReserveSize(market);
 		float newValue = current + delta;
 		float max = getMaxReserveSize(market, false);
 		if (newValue < 0) newValue = 0;
 		else if (newValue > max) newValue = max;
-		responseFleetManager.reserves.put(marketId, newValue);
+		manager.reserves.put(marketId, newValue);
 		return newValue - current;
 	}
 	
 	public static float getReserveSize(MarketAPI market)
 	{
-		if (responseFleetManager == null) return -1f;
 		if (market == null) return -1f;
+		ResponseFleetManager manager = getManager();
+		if (manager == null) return -1f;
 		String marketId = market.getId();
-		Map<String, Float> reserves = responseFleetManager.reserves;
+		Map<String, Float> reserves = manager.reserves;
 		if (!reserves.containsKey(marketId))
 		{
 			// probably a fake market, don't save reserves
@@ -363,10 +362,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 	public static ResponseFleetManager getManager()
 	{
 		Map<String, Object> data = Global.getSector().getPersistentData();
-		responseFleetManager = (ResponseFleetManager)data.get(MANAGER_MAP_KEY);
-		if (responseFleetManager != null)
-			return responseFleetManager;
-		return null;
+		ResponseFleetManager manager = (ResponseFleetManager)data.get(MANAGER_MAP_KEY);
+		return manager;
 	}
 	
 	public static ResponseFleetManager create()
@@ -375,9 +372,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		if (saved != null) return saved;
 		
 		Map<String, Object> data = Global.getSector().getPersistentData();
-		responseFleetManager = new ResponseFleetManager();
-		data.put(MANAGER_MAP_KEY, responseFleetManager);
-		return responseFleetManager;
+		ResponseFleetManager manager = new ResponseFleetManager();
+		data.put(MANAGER_MAP_KEY, manager);
+		return manager;
 	}
 	
 	public static class ResponseFleetData

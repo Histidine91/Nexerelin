@@ -110,8 +110,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected int lifetimeInvasions = 0;
 	protected int lifetimeRaids = 0;
 	
-	private static InvasionFleetManager invasionFleetManager;
-	
 	public InvasionFleetManager()
 	{
 		super(true);
@@ -981,29 +979,26 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public static void debugRemnantRaidFleet() {
-		invasionFleetManager.generateRemnantRaidFleet(null,	null, 1);
+		getManager().generateRemnantRaidFleet(null,	null, 1);
 	}
 	
 	public static InvasionFleetManager getManager()
 	{
 		Map<String, Object> data = Global.getSector().getPersistentData();
-		invasionFleetManager = (InvasionFleetManager)data.get(MANAGER_MAP_KEY);
-		if (invasionFleetManager != null)
-			return invasionFleetManager;
-		
-		return null;
+		InvasionFleetManager manager = (InvasionFleetManager)data.get(MANAGER_MAP_KEY);
+		return manager;
 	}
 	
 	public static InvasionFleetManager create()
 	{
-		invasionFleetManager = getManager();
-		if (invasionFleetManager != null)
-			return invasionFleetManager;
+		InvasionFleetManager manager = getManager();
+		if (manager != null)
+			return manager;
 		
 		Map<String, Object> data = Global.getSector().getPersistentData();
-		invasionFleetManager = new InvasionFleetManager();
-		data.put(MANAGER_MAP_KEY, invasionFleetManager);
-		return invasionFleetManager;
+		manager = new InvasionFleetManager();
+		data.put(MANAGER_MAP_KEY, manager);
+		return manager;
 	}
 	
 	@Override
