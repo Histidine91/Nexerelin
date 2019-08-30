@@ -83,6 +83,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
 	public static final float BASE_INVASION_COST = 500f;	// for reference, Jangala at start of game is around 500
 	public static final float MAX_INVASION_SIZE = 2000;
+	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 15;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
@@ -261,8 +262,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		defensiveStr *= GENERAL_SIZE_MULT;
 		
-		if (defensiveStr > MAX_INVASION_SIZE)
-			defensiveStr = MAX_INVASION_SIZE;
+		float max = getMaxInvasionSize(attacker.getId());
+		if (defensiveStr > max)
+			defensiveStr = max;
 		
 		log.info("\tWanted fleet size: " + defensiveStr);
 		return Math.max(defensiveStr, 30);
@@ -545,7 +547,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return null;
 	}
 	
-	protected float getCommodityPoints(MarketAPI market, String commodity) {
+	protected static float getCommodityPoints(MarketAPI market, String commodity) {
 		float pts = market.getCommodityData(commodity).getAvailable();
 		CommoditySourceType source = market.getCommodityData(commodity).getCommodityMarketData().getMarketShareData(market).getSource();
 		if (source == CommoditySourceType.GLOBAL)
@@ -556,26 +558,46 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return pts;
 	}
 	
-	protected float getPointsPerMarketPerTick(MarketAPI market)
-	{
+	protected static float getMarketInvasionCommodityValue(MarketAPI market) {
 		float ships = getCommodityPoints(market, Commodities.SHIPS);
 		float supplies = getCommodityPoints(market, Commodities.SUPPLIES);
 		float marines = getCommodityPoints(market, Commodities.MARINES);
 		
 		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
 		
-		float total = (ships*2 + supplies + marines) * stabilityMult * ExerelinConfig.invasionPointEconomyMult;
-		
-		/*
-		log.info("Processing invasion points from market: " + market.getName());
-		log.info("\tShips available: " + ships);
-		log.info("\tSupplies available: " + supplies);
-		log.info("\tMarines available: " + marines);
-		log.info("\tStability mult: " + stabilityMult);
-		log.info("\tTotal points: " + total);
-		*/
+		float total = (ships*2 + supplies + marines) * stabilityMult;
 		
 		return total;
+	}
+	
+	protected static float getPointsPerMarketPerTick(MarketAPI market)
+	{
+		return getMarketInvasionCommodityValue(market) * ExerelinConfig.invasionPointEconomyMult;
+	}
+	
+	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getMaxInvasionSize("hegemony"));
+
+	/**
+	 * Gets the max invasion size for the specified attacking faction, based on their economy.
+	 * Capped at {@code MAX_INVASION_SIZE}, and returns that value immediately if brawl mode is enabled.
+	 * @param factionId
+	 * @return
+	 */
+	public static float getMaxInvasionSize(String factionId) {
+		if (Global.getSettings().getBoolean("nex_brawlMode")) {
+			return MAX_INVASION_SIZE;
+		}
+		
+		float value = 0;
+		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+		for (MarketAPI market : markets) {
+			value += getMarketInvasionCommodityValue(market);
+		}
+		value *= MAX_INVASION_SIZE_ECONOMY_MULT;
+		if (value > MAX_INVASION_SIZE)
+			value = MAX_INVASION_SIZE;
+		
+		return value;
 	}
 	
 	public boolean shouldRaid(String factionId) {
