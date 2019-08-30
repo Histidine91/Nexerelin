@@ -402,7 +402,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		
 		// hull.hasTag("tiandong_retrofit")
 		for (ShipHullSpecAPI hull : Global.getSettings().getAllShipHullSpecs()) {
-			if (!hull.hasTag("rare_bp") || hull.hasTag(Tags.NO_DROP)) 
+			if (!hull.hasTag("rare_bp") || hull.hasTag(Tags.NO_DROP) || hull.hasTag(Tags.NO_BP_DROP)) 
 				continue;
 			String hullId = hull.getHullId();
 			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
@@ -416,7 +416,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			picker.add(info, 3 * hull.getRarity());
 		}
 		for (FighterWingSpecAPI wing : Global.getSettings().getAllFighterWingSpecs()) {
-			if (!wing.hasTag("rare_bp") || wing.hasTag(Tags.NO_DROP))
+			if (!wing.hasTag("rare_bp") || wing.hasTag(Tags.NO_DROP) || wing.hasTag(Tags.NO_BP_DROP))
 				continue;
 			String wingId = wing.getId();
 			if (playerFaction.knowsWeapon(wingId) || banned.contains(wingId)) continue;
@@ -430,7 +430,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			picker.add(info, 2 * wing.getRarity());
 		}
 		for (WeaponSpecAPI wep : Global.getSettings().getAllWeaponSpecs()) {
-			if (!wep.hasTag("rare_bp") || wep.hasTag(Tags.NO_DROP))
+			if (!wep.hasTag("rare_bp") || wep.hasTag(Tags.NO_DROP) || wep.hasTag(Tags.NO_BP_DROP))
 				continue;
 			String weaponId = wep.getWeaponId();
 			if (playerFaction.knowsWeapon(weaponId) || banned.contains(weaponId)) continue;
