@@ -316,6 +316,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void setCorvusMode(boolean mode)
     {
         getManager().corvusMode = mode;
+		Global.getSector().getMemory().set("$nex_corvusMode", mode);
     }
     
     public static boolean getCorvusMode()
