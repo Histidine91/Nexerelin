@@ -50,6 +50,7 @@ public class ExerelinConfig
     public static String[] supportedModFactions = new String[]{};
     
     // Invasion stuff
+	public static boolean enableInvasions = true;
     public static boolean allowPirateInvasions = false;
     public static boolean retakePirateMarkets = true;
     public static float fleetRequestCostPerMarine = 100f;
@@ -165,6 +166,7 @@ public class ExerelinConfig
             agentSalaryPerLevel = settings.optInt("agentSalaryPerLevel", agentSalaryPerLevel);
             maxAgents = settings.optInt("maxAgents", maxAgents);
             
+			enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
             fleetRequestCostPerMarine = (float)settings.optDouble("fleetRequestCostPerMarine", fleetRequestCostPerMarine);

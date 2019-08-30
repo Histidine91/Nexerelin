@@ -327,8 +327,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			//Global.getSector().getCampaignUI().addMessage(debugStr);
 		}
 		
-		InvasionFleetManager.getManager().generateInvasionOrRaidFleet(revengeFaction, PlayerFactionStore.getPlayerFaction(), 
-				InvasionFleetManager.EventType.INVASION, 1.25f);
+		InvasionFleetManager.EventType type = InvasionFleetManager.EventType.INVASION;
+		if (ExerelinConfig.enableInvasions) {
+			type = InvasionFleetManager.EventType.RAID;
+		}
+			
+		InvasionFleetManager.getManager().generateInvasionOrRaidFleet(revengeFaction, 
+				PlayerFactionStore.getPlayerFaction(), type, 1.25f);
 		
 		return true;
 	}

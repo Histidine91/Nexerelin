@@ -579,6 +579,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public boolean shouldRaid(String factionId) {
+		if (!ExerelinConfig.enableInvasions) return true;
 		if (!nextIsRaid.containsKey(factionId))
 			nextIsRaid.put(factionId, Math.random() > 0.5f);
 		return nextIsRaid.get(factionId);
