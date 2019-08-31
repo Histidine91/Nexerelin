@@ -39,9 +39,9 @@ ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
 FireAll ExerelinNGCOptions",Configure the Sector?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,FireAll ExerelinNGCOptions,,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOptionsDone RETURN,,"exerelinNGCOptionsDone:Proceed
-7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
+ExerelinNewGameOptionsPopulateFaction,ExerelinNGCOptions,!$corvusMode,,,7:exerelinNGCSectorOptions:Sector generation,
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCDisableCorvusMode:Enable random core worlds,
 ,,,,,,
@@ -62,16 +62,16 @@ ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOpt
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
 ,,,,,,
-ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCSectorOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
-ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCSectorOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
-ExerelinNGCEnablePrismMarketOption,ExerelinNGCSectorOptions,!$corvusMode,"SetEnabled exerelinNGCEnablePrismMarket true
+ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
+ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
+ExerelinNGCEnablePrismMarketOption,ExerelinNGCOtherOptions,!$corvusMode,"SetEnabled exerelinNGCEnablePrismMarket true
 SetEnabled exerelinNGCDisablePrismMarket true",,,
-ExerelinNGCDisablePrismMarketOption,ExerelinNGCSectorOptions,"$corvusMode
+ExerelinNGCDisablePrismMarketOption,ExerelinNGCOtherOptions,"$corvusMode
 NGCDoesFactionExist SCY","SetTooltip exerelinNGCEnablePrismMarket ""SCY will create its own Prism Freeport in Acheron""
 SetTooltip exerelinNGCDisablePrismMarket ""SCY will create its own Prism Freeport in Acheron""
 SetEnabled exerelinNGCEnablePrismMarket false
 SetEnabled exerelinNGCDisablePrismMarket false",,,
-nex_NGCCustomScenarioOption,ExerelinNGCSectorOptions,,Nex_NGCCustomScenario menuOption,,nex_NGCCustomScenarioMenu:Custom scenario – $nex_customScenarioName,
+nex_NGCCustomScenarioOption,ExerelinNGCOtherOptions,,Nex_NGCCustomScenario menuOption,,nex_NGCCustomScenarioMenu:Custom scenario – $nex_customScenarioName,
 ,,,,,,
 nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,Nex_NGCProcessSectorGenerationSliders create,,,
 nex_NewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
@@ -117,7 +117,7 @@ SetTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""25%"" ""50%""",,exereli
 ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income \n- 50% lower insurance payments""
 SetTooltipHighlightColors exerelinNGCDisableHardMode hColor hColor hColor 
 SetTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""25%"" ""50%""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
-nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"SetTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,nex_NGCCycleStartDMods:Starting D-mods — $nex_ngcDModsString,
+nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"SetTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,nex_NGCCycleStartDMods:Starting D-mods – $nex_ngcDModsString,
 nex_NGCCycleStartDMods,NewGameOptionSelected,$option==nex_NGCCycleStartDMods,"Nex_NGCSetOption startingDMods
 AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
 SetTextHighlights  $nex_ngcDModsString
@@ -130,11 +130,9 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
-Nex_NGCProcessSectorGenerationSliders save
-FireAll ExerelinNGCSectorOptions",,,
+FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisablePrismMarket,NewGameOptionSelected,$option==exerelinNGCDisablePrismMarket,"NGCSetPrismMarketEnabled false
-Nex_NGCProcessSectorGenerationSliders save
-FireAll ExerelinNGCSectorOptions",,,
+FireAll ExerelinNGCOtherOptions",,,
 nex_NGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
 FireAll ExerelinNGCFactionOptions",,,
 nex_NGCDisableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartRelationships,"NGCSetRandomStartRelationships false
@@ -173,7 +171,7 @@ ExerelinNGCDisableHardMode,NewGameOptionSelected,$option==exerelinNGCDisableHard
 FireAll ExerelinNGCOtherOptions",,,
 nex_NGCCustomScenarioMenu,NewGameOptionSelected,$option==nex_NGCCustomScenarioMenu,Nex_NGCCustomScenario menu,,,
 nex_NGCCustomScenarioSelected,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomScenario_""","Nex_NGCCustomScenario select
-FireAll ExerelinNGCSectorOptions",,,
+FireAll ExerelinNGCOtherOptions",,,
 ,,,,,,
 nex_NGCFactionSelection,ExerelinNGCStep2,,Nex_NGCListFactions listGroups,Which faction would you like to join?,,
 nex_NGCFactionsBackToGroups,NewGameOptionSelected,$option==nex_NGCFactionsBack,Nex_NGCListFactions listGroups,,,

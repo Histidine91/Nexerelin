@@ -94,7 +94,7 @@ public class Nex_NGCCustomScenario extends PaginatedOptions {
 			dialog.getOptionPanel().setTooltipHighlights(option, Nex_NGCCustomStart.tooltipDisabledNonRandom);
 		}
 		
-		dialog.getOptionPanel().setShortcut("exerelinNGCSectorOptions", Keyboard.KEY_ESCAPE, false, false, false, false);
+		dialog.getOptionPanel().setShortcut("exerelinNGCOtherOptions", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	@Override
@@ -103,7 +103,7 @@ public class Nex_NGCCustomScenario extends PaginatedOptions {
 	}
 	
 	protected void generateMenu(String ruleId) {
-		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "exerelinNGCSectorOptions");
+		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "exerelinNGCOtherOptions");
 		addScenarioOptions();
 		
 		showOptions();
