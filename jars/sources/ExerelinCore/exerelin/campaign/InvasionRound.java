@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
@@ -42,6 +43,7 @@ public class InvasionRound {
 	public static final float STR_DEF_MULT = 0;	// what proportion of one side's strength is used to negate other side's attack damage
 	public static final float INSTABILITY_PER_ROUND = 0.75f;
 	public static final int UNREST_DO_NOT_EXCEED = 10;
+	public static final float HEAVY_WEAPONS_MULT = 2.5f;
 	public static final boolean DEBUG_MESSAGES = true;
 	
 	public static Logger log = Global.getLogger(InvasionRound.class);
@@ -62,9 +64,15 @@ public class InvasionRound {
 	public static InvasionRoundResult execute(CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr, Random random)
 	{
 		printDebug("Executing invasion round of " + defender.getName());
-		int marines = 0;
-		if (fleet != null)
+		int marines = 0, mechs = 0;
+		if (fleet != null) {
 			marines = fleet.getCargo().getMarines();
+			mechs = (int)fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS);
+			
+			// don't involve more mechs than can actually contribute to battle
+			int maxMechs = (int)(marines / HEAVY_WEAPONS_MULT);
+			if (mechs > maxMechs) mechs = maxMechs;
+		}
 		
 		float atkDam = (atkStr - defStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * getRandomDamageMult(random);
 		float defDam = (defStr - atkStr * STR_DEF_MULT) * DAMAGE_PER_ROUND_MULT * getRandomDamageMult(random);
@@ -79,8 +87,12 @@ public class InvasionRound {
 		int losses = (int)(marines * defDam/atkStr);
 		if (losses > marines) losses = marines;
 		
+		int lossesMech = (int)(mechs * defDam/atkStr);
+		if (lossesMech > mechs) lossesMech = mechs;
+		
 		InvasionRoundResult result = new InvasionRoundResult();
 		result.losses = losses;
+		result.lossesMech = lossesMech;
 		result.atkDam = atkDam;
 		result.defDam = defDam;
 		result.atkStr = atkStr - defDam;
@@ -145,12 +157,19 @@ public class InvasionRound {
 		float marines = fleet.getCargo().getMarines();
 		float support = Misc.getFleetwideTotalMod(fleet, Stats.FLEET_GROUND_SUPPORT, 0f);
 		if (support > marines) support = marines;
+		float mechs = fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS) * HEAVY_WEAPONS_MULT;
+		if (mechs > marines) mechs = marines;
+		
+		if (!fleet.isPlayerFleet()) {
+			mechs = 0;
+		}
 				
 		StatBonus attackerBase = new StatBonus();
 		//defenderBase.modifyFlatAlways("base", baseDef, "Base value for a size " + market.getSize() + " colony");
 		
 		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
 		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
+		attackerBase.modifyFlatAlways("nex_mechs", mechs, getString("heavyWeaponsOnBoard", true));
 		
 		StatBonus attacker = fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
 		
@@ -248,8 +267,10 @@ public class InvasionRound {
 			attackerStr = result.atkStr;
 			defenderStr = result.defStr;
 			
-			if (fleet != null)
+			if (fleet != null) {
 				fleet.getCargo().removeMarines(result.losses);
+				fleet.getCargo().removeCommodity(Commodities.HAND_WEAPONS, result.lossesMech);
+			}
 			
 			if (attackerStr <= 0 || defenderStr <= 0)
 			{
@@ -466,6 +487,7 @@ public class InvasionRound {
 		public float atkStr = 0;
 		public float defStr = 0;
 		public int losses = 0;
+		public int lossesMech = 0;
 		public Industry disrupted = null;
 		public float disruptionLength = 0;
 	}

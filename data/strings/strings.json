@@ -834,6 +834,7 @@
 		"groundDefStrength":"ground defense strength",
 		"marinesOnBoard":"marines on board",
 		"groundSupportCapability":"fleet capability for ground support",
+		"heavyWeaponsOnBoard":"heavy weapons in cargo",
 		"defenseBonus":"$Faction defense bonus",
 		"defenderPreparedness":"increased defender preparedness",
 		"attackBonus":"$Faction attack bonus",
@@ -854,6 +855,7 @@
 		"attackerStrength":"attacker strength",
 		"defenderStrength":"defender strength",
 		"marinesRemaining":"marines remaining",
+		"mechsRemaining":"heavy armaments remaining",
 		
 		"attackerStrengthRemaining":"Remaining attacker strength: $str ($delta)",
 		"defenderStrengthRemaining":"Remaining defender strength: $str ($delta)",
@@ -1060,7 +1062,7 @@
 		"outpostComplete":"Your new outpost has been completed.",
 		"insufficientResources":"Your $shipOrFleet does not have enough resources to build an outpost.",
 		"commodityStatDesc":"Covert supply",
-		"commodityStatDescCrew":"Automated station",
+		"commodityStatDescUnneeded":"Automated station",
 		"tooltipUpkeep":"Each outpost requires an upkeep of %s credits per month.",
 	},	
 	"exerelin_raid":{		

@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -308,6 +309,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			fleet.getCargo().addMarines(marinesPerFleet);
 			log.info("Adding marines to cargo: " + marinesPerFleet);
 		}
+		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, marinesPerFleet/5);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		if (isInvasionFleet)

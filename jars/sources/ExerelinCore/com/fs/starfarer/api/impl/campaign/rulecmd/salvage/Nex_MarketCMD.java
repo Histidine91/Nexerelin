@@ -387,6 +387,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		float marines = playerFleet.getCargo().getMarines();
 		float support = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_GROUND_SUPPORT, 0f);
 		if (support > marines) support = marines;
+		float mechs = fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS) * InvasionRound.HEAVY_WEAPONS_MULT;
+		if (mechs > marines) mechs = marines;
 		
 		StatBonus attackerBase = new StatBonus(); 
 		StatBonus defenderBase = new StatBonus(); 
@@ -395,6 +397,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
 		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
+		attackerBase.modifyFlatAlways("nex_mechs", mechs, getString("heavyWeaponsOnBoard", true));
 		
 		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(PlayerFactionStore.getPlayerFactionId());
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
@@ -548,12 +551,18 @@ public class Nex_MarketCMD extends MarketCMD {
 		// print things that happened during this round
 		text.setFontSmallInsignia();
 		
-		if (result.losses <= 0) {
+		if (result.losses <= 0 && result.lossesMech <= 0) {
 			text.addPara(getString("noLosses"));
-		} else {
+		}
+		if (result.losses > 0) {
 			playerFleet.getCargo().removeMarines(result.losses);
 			tempInvasion.marinesLost = result.losses;
 			AddRemoveCommodity.addCommodityLossText(Commodities.MARINES, result.losses, text);
+		}
+		if (result.lossesMech > 0) {
+			playerFleet.getCargo().removeCommodity(Commodities.HAND_WEAPONS, result.lossesMech);
+			tempInvasion.mechsLost = result.lossesMech;
+			AddRemoveCommodity.addCommodityLossText(Commodities.HAND_WEAPONS, result.lossesMech, text);
 		}
 		
 		text.setFontSmallInsignia();
@@ -592,6 +601,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		String marinesRemaining = playerFleet.getCargo().getMarines() + "";
 		str = Misc.ucFirst(getString("marinesRemaining")) + ": " + marinesRemaining;
 		text.addPara(str, hl2, marinesRemaining);
+		int mechs = (int)playerFleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS);
+		if (mechs > 0) {
+			str = Misc.ucFirst(getString("mechsRemaining")) + ": " + mechs;
+			text.addPara(str, hl2, mechs + "");
+		}
 		
 		text.setFontInsignia();
 		
@@ -1450,6 +1464,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static class TempDataInvasion {
 		public boolean canInvade;
 		public int marinesLost = 0;
+		public int mechsLost = 0;
 		public int roundNum = 0;
 		public float stabilityPenalty = 0;
 		public boolean success = false;
