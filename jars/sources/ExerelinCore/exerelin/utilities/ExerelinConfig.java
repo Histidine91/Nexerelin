@@ -63,8 +63,6 @@ public class ExerelinConfig
     public static float invasionPointEconomyMult = 0.5f;
     public static float conquestMissionRewardMult = 1f;
     
-    @Deprecated public static float invasionLootMult = 0.05f;
-    
     // Alliances
     public static float allianceGracePeriod = 30;
     public static float allianceFormationInterval = 30f;
@@ -128,14 +126,12 @@ public class ExerelinConfig
     public static int maxFactionRespawns = 3;
     public static boolean countPiratesForVictory = false;
     public static boolean leaveEliminatedFaction = true;
-    @Deprecated
-    public static boolean ownFactionCustomsInspections = false;
     public static boolean useRelationshipBounds = true;
     public static boolean useEnhancedStartRelations = true;
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     public static boolean enablePunitiveExpeditions = true;
-    
+	public static boolean allyVictories = true;	// TODO    
 
     public static void loadSettings()
     {
@@ -178,7 +174,6 @@ public class ExerelinConfig
             invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel ", invasionPointsPerPlayerLevel );
             invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
             conquestMissionRewardMult = (float)settings.optDouble("conquestMissionRewardMult", conquestMissionRewardMult);
-            invasionLootMult = (float)settings.optDouble("invasionLootMult", invasionLootMult);
             
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
@@ -187,7 +182,6 @@ public class ExerelinConfig
             prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);
             prismNumShips = settings.optInt("prismNumShips", prismNumShips);
             prismNumWings = settings.optInt("prismNumWings", prismNumWings);
-            //prismSellBossShips = settings.optBoolean("prismSellBossShips", prismSellBossShips);
             prismNumBossShips = settings.optInt("prismNumBossShips", prismNumBossShips);
             prismRenewBossShips = settings.optBoolean("prismRenewBossShips", prismRenewBossShips);
             prismUseIBBProgressForBossShips = settings.optBoolean("prismUseIBBProgressForBossShips", prismUseIBBProgressForBossShips);
@@ -231,6 +225,7 @@ public class ExerelinConfig
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
             enablePunitiveExpeditions = settings.optBoolean("enablePunitiveExpeditions", enablePunitiveExpeditions);
+			allyVictories = settings.optBoolean("allyVictories", allyVictories);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);

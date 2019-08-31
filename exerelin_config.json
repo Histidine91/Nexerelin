@@ -69,6 +69,7 @@
     "followersDiplomacy": true,		# does player faction participate in diplomacy on its own? (default true)
     "followersInvasions": false,	# does player faction launch invasions on its own? (default false)
     
+	"allyVictories":true,	# player gets victory screen if they are Friendly or Cooperative with actual winner
     "countPiratesForVictory": false,
     "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
     "leaveEliminatedFaction": true, # if our faction is wiped out, leave it

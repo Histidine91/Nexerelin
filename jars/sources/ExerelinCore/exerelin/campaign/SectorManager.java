@@ -734,7 +734,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             victorFactionId = liveFactions.get(0);
             if (!victorFactionId.equals(playerAlignedFactionId))
             {
-                if (sector.getFaction(Factions.PLAYER).isAtBest(victorFactionId, RepLevel.WELCOMING))
+                if (ExerelinConfig.allyVictories && sector.getFaction(Factions.PLAYER).isAtBest(victorFactionId, RepLevel.WELCOMING))
                 {
                     victoryType = VictoryType.DEFEAT_CONQUEST;
                 }
@@ -777,8 +777,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     }
                 }
             }
-            if (winner.equals(playerAlignedFactionId)) victoryType = VictoryType.DIPLOMATIC;
-            else if (playerAlignedFaction.isAtWorst(winner, RepLevel.FRIENDLY)) victoryType = VictoryType.DIPLOMATIC_ALLY;
+			
+            if (winner.equals(playerAlignedFactionId)) 
+				victoryType = VictoryType.DIPLOMATIC;
+            else if (ExerelinConfig.allyVictories && playerAlignedFaction.isAtWorst(winner, RepLevel.FRIENDLY)) 
+				victoryType = VictoryType.DIPLOMATIC_ALLY;
             else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
             
             victorFactionId = winner;
