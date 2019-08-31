@@ -1,8 +1,10 @@
 package exerelin.world.industry;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import java.util.Arrays;
@@ -21,6 +23,16 @@ public class HeavyIndustry extends IndustryClassGen {
 
 	@Override
 	public float getWeight(ProcGenEntity entity) {
+		// special handling for Derelict Empire: make sure capitals always have heavy industry
+		if (Global.getSector().isInNewGameAdvance() 
+				&& "derelict_empire".equals(ExerelinSetupData.getInstance().startScenario)) 
+		{
+			if (entity.isHQ) {
+				//Global.getLogger(this.getClass()).info("Enforcing heavy industry for homeworld " + entity.name + "(" + entity.market.getFactionId() + ")");
+				return 9999;
+			}
+		}
+		
 		MarketAPI market = entity.market;
 		
 		// upgrades have max priority
