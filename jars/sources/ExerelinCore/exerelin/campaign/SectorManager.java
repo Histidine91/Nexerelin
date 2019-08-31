@@ -54,6 +54,7 @@ import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
+import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -907,6 +908,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 if (plugin != null)
                     plugin.setPlayerPaidToUnlock(true);
             }
+        }
+        
+        // handle local resources stockpiles taken
+        if (market.hasSubmarket(Submarkets.LOCAL_RESOURCES)) {
+            Nex_LocalResourcesSubmarketPlugin plugin = (Nex_LocalResourcesSubmarketPlugin)
+                    market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin();
+            plugin.billCargo();
         }
         
         updateSubmarkets(market, oldOwnerId, newOwnerId);
