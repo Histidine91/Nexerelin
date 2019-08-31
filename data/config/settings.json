@@ -35,6 +35,14 @@
 	"nex_officerBaseEscapeChance":0.5,	# modified by crew loss mult
 	"nex_officerSurviveChance":0.75,	# only if officer does not escape and ship is disabled rather than destroyed
 	
+	"nex_playerOutpost_metals":400,
+	"nex_playerOutpost_supplies":50,
+	"nex_playerOutpost_machinery":50,
+	"nex_playerOutpost_crew":80,
+	"nex_playerOutpost_gammacores":2,
+	#"nex_playerOutpost_credits":50000,
+	"nex_playerOutpost_upkeep":5000,
+	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,
 		"ore_moderate":2,	# 2.5,

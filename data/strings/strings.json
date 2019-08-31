@@ -1050,6 +1050,18 @@
 		"killedInAction":"killed in action",
 		"rescued":"rescued"
 	},
+	"nex_playerOutpost":{
+		"outposts":"outposts",
+		"outpostProperName":"Outpost",
+		"resourcesAvailable":"Resources required (available)",
+		"resourceConsumeNote":"All resources except crew will be consumed.",
+		"upkeepNote":"Monthly upkeep: %s",
+		"outpostComplete":"Your new outpost has been completed.",
+		"insufficientResources":"Your $shipOrFleet does not have enough resources to build an outpost.",
+		"commodityStatDesc":"Covert supply",
+		"commodityStatDescCrew":"Automated station",
+		"tooltipUpkeep":"Each outpost requires an upkeep of %s credits per month.",
+	},	
 	"exerelin_raid":{		
 		"raid":"raid",
 		"raids":"raids",

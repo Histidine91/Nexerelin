@@ -1233,6 +1233,7 @@ cmsn_meetsCriteria,DialogOptionSelected,"$option == cmsn_askCommission
 Nex_Commission playerMeetsCriteria",FireBest CMSNTextSuitedPart1,,0:cmsn_continueMeetsReq:Continue,
 cmsn_accept,DialogOptionSelected,$option == cmsn_accept,"FireBest CMSNTextWelcomePart1
 Nex_Commission accept
+UpdateMemory
 FireBest CMSNTextWelcomePart2
 FireAll PopulateOptions",,,
 ,,,,,,
@@ -1275,6 +1276,30 @@ CMSNResignConfirmed_pirate,CMSNResignConfirmed,$faction.id == pirates,,"""Fine, 
 CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of course. Once you've tasted freedom, there ain't no going back. Now, ran into any vulnerable convoys lately?""",,
 ,,,,,,
 # end commission stuff,,,,,,
+,,,,,,
+# Outposts,,,,,,
+nex_outpostOption,PopulateOptions,$nex_canMine,,,4:nex_outpostPreview:Construct an outpost,
+nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
+FireAll Nex_OutpostOption
+$menuState = nex_outpost 0",You can build an automated outpost here. It will automatically stock supplies and fuel for you to take.,,
+nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
+SetShortcut nex_outpostBuildStart RETURN
+SetShortcut nex_outpostBack ESCAPE",,"nex_outpostBuildStart:Proceed with construction
+nex_outpostBack:Go back",
+nex_outpostBuildOptionInsufficientResources,Nex_OutpostOption,!$nex_canBuildOutpost,"SetEnabled nex_outpostBuildStart false
+SetTooltip  nex_outpostBuildStar ""You have insufficient resources to build an outpost.""",,,
+nex_outpostBuild,DialogOptionSelected,"$nex_canBuildOutpost
+$option == nex_outpostBuildStart","Nex_PlayerOutpost build
+UpdateMemory
+$tradeMode = OPEN 0
+ShowDefaultVisual",Outpost constructed.,exerelinMarketSpecialBack:Back,
+,,,,,,
+nex_outpostBack,DialogOptionSelected,$option == nex_outpostBack,"$menuState = main 0
+FireAll PopulateOptions",,,
+,,,,,,
+nex_flavorTextMarketOutpost,TradePanelFlavorText,"$global.tradePanelMode == MARKET
+$tag:nex_playerOutpost score:10","AddText ""The station is dark and quiet, lights dimmed to minimize power demand. Warehouse chambers sit beyond great airlocks, their supplies and fuel ready to be drawn on. When your crew stops working, the subtle hum of the standard-spec fusion reactor at the depot's heart can be felt in the deck plates."" marketFlavorTextColor",,,
+nex_outpostDisableBar,PopulateOptions,$tag:nex_playerOutpost,SetEnabled marketVisitBar false,,,
 ,,,,,,
 # bla,,,,,,
 nex_getConstructionQueueOpt,PopulateOptions,"$global.isDevMode
