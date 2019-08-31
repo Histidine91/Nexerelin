@@ -251,7 +251,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         ColonyManager.getManager().updatePlayerBonusAdmins();
         ColonyManager.updateIncome();
         
-        if (!HAVE_VERSION_CHECKER)
+        if (!HAVE_VERSION_CHECKER && Global.getSettings().getBoolean("nex_enableVersionChecker"))
             VCModPluginCustom.onGameLoad(newGame);
         
         if (!Misc.isPlayerFactionSetUp())
@@ -276,7 +276,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         starsectorVersionCheck();
         boolean bla = ExerelinConfig.countPiratesForVictory;	// just loading config class, not doing anything with it
-        if (!HAVE_VERSION_CHECKER)
+        if (!HAVE_VERSION_CHECKER && Global.getSettings().getBoolean("nex_enableVersionChecker"))
             VCModPluginCustom.onApplicationLoad();
         boolean hasLazyLib = Global.getSettings().getModManager().isModEnabled("lw_lazylib");
         if (!hasLazyLib) {

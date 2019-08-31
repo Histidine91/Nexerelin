@@ -13,6 +13,8 @@
 	
 	"economyExceptionOnMissingMarketEntity":false,
 	
+	"nex_enableVersionChecker":true,
+	
 	"nex_conquestMissionIntervalRateMult":0.05,
 	"nex_pirateRageIncrement":0.04,
 	"nex_expeditionDelayPerExistingColony":15,
