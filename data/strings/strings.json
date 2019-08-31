@@ -251,6 +251,7 @@
 		"barDialogHiredTip":"You can find your newly hired agent in the Intel screen, using the Agents tag.",
 		
 		"skillBonusAgents":"maximum agents",
+		"tooltipSalary":"Each agent receives a base salary of %s credits per month, plus %s credits per agent level.",
 	},
 	"nex_agentActions":{
 		"unknownFaction":"unknown faction",

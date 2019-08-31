@@ -26,7 +26,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -491,7 +494,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		agentsNode.name = StringHelper.getString("nex_agents", "agents", true);
 		agentsNode.custom = "node_id_nex_agents";
 		agentsNode.icon = Global.getSettings().getSpriteName("income_report", "officers");
-		//agentsNode.tooltipCreator = report.getMonthlyReportTooltip();	// TODO get own tooltip creator
+		agentsNode.tooltipCreator = AGENT_NODE_TOOLTIP;
 		
 		for (AgentIntel agent : getAgents()) {
 			int salary = AgentIntel.getSalary(agent.getLevel());
@@ -578,6 +581,20 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	public void removeAgent(AgentIntel intel) {
 		agents.remove(intel);
 	}
+	
+	public static final TooltipCreator AGENT_NODE_TOOLTIP = new TooltipCreator() {
+		public boolean isTooltipExpandable(Object tooltipParam) {
+			return false;
+		}
+		public float getTooltipWidth(Object tooltipParam) {
+			return 450;
+		}
+		public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+			tooltip.addPara(StringHelper.getString("nex_agents", "tooltipSalary"), 0,
+				Misc.getHighlightColor(), Misc.getWithDGS(ExerelinConfig.agentBaseSalary), 
+				Misc.getWithDGS(ExerelinConfig.agentSalaryPerLevel));
+		}
+	};
     
     public static enum CovertActionResult
     {
