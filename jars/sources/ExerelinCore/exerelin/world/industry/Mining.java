@@ -16,6 +16,12 @@ public class Mining extends IndustryClassGen {
 	public float getWeight(ProcGenEntity entity) {
 		float weight = 0;
 		MarketAPI market = entity.market;
+		
+		// asteroid belt/field stations will always have mining
+		if (entity.terrain != null) {
+			if (market.hasCondition(Conditions.ORE_SPARSE) || market.hasCondition(Conditions.ORE_MODERATE))
+				return 999999;
+		}
 				
 		for (MarketConditionAPI cond : market.getConditions())
 		{

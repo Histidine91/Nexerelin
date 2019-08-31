@@ -605,18 +605,18 @@ public class NexMarketBuilder
 				if (data.terrain.getType().equals(Terrain.ASTEROID_BELT))
 				{
 					log.info(market.getName() + " is in asteroid belt, adding ore condition");
-					market.addCondition(Conditions.ORE_SPARSE);
-				}
-					
-				if (data.terrain.getType().equals(Terrain.ASTEROID_FIELD))
-				{
-					log.info(market.getName() + " is in asteroid ring, adding ore condition");
 					market.addCondition(Conditions.ORE_MODERATE);
 				}
-				if (data.terrain.getType().equals(Terrain.RING))
+				else if (data.terrain.getType().equals(Terrain.ASTEROID_FIELD))
+				{
+					log.info(market.getName() + " is in asteroid field, adding ore condition");
+					market.addCondition(Conditions.ORE_MODERATE);
+				}
+				else if (data.terrain.getType().equals(Terrain.RING))
 				{
 					log.info(market.getName() + " is in ring, adding volatiles condition");
-					market.addCondition(Conditions.VOLATILES_TRACE);
+					// would be trace, but that produces zero volatiles at size 3
+					market.addCondition(Conditions.VOLATILES_DIFFUSE);
 				}
 			}
 		}

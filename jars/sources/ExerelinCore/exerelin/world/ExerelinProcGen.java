@@ -22,6 +22,8 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.MiscellaneousThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantSeededFleetManager;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantStationFleetManager;
+import com.fs.starfarer.api.impl.campaign.terrain.AsteroidBeltTerrainPlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -70,10 +72,13 @@ public class ExerelinProcGen {
 	public static final float CORE_WIDTH = 15000;
 	public static final float CORE_HEIGHT = 12000;
 	public static final int CORE_RECURSION_MAX_DEPTH = 6;
+	public static final float NEARBY_ENTITY_CHECK_DIST_SQ = 500 * 500;
 	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(
 		Terrain.ASTEROID_BELT, Terrain.ASTEROID_FIELD, Terrain.RING
 	));
-	
+	public static final Set<String> DEFAULT_TERRAIN_NAMES = new HashSet<>(Arrays.asList(
+		"Asteroid Belt", "Asteroid Field", "Ring System"
+	));
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	protected static List<String> stationNames = new ArrayList<>();
 	public static final String RANDOM_CORE_SYSTEM_TAG = "nex_random_core_system";
@@ -489,8 +494,10 @@ public class ExerelinProcGen {
 		for (ProcGenEntity planet: planets)
 		{
 			// already picked before?
-			if (populatedPlanets.contains(planet))
+			if (populatedPlanets.contains(planet)) {
+				//log.info("Planet " + planet.name + " already populated");
 				continue;
+			}
 			
 			float weight = Math.max(planet.desirability + 1, 0.2f);
 			if (populatedSystems.contains(planet.starSystem))
@@ -504,6 +511,7 @@ public class ExerelinProcGen {
 			int numMarketsInSystem = marketsBySystem.get(candidate.starSystem).size();
 			if (numMarketsInSystem >= setupData.maxPlanetsPerSystem)
 			{
+				log.info("Reached max markets for system " + candidate.starSystem.getBaseName());
 				continue;
 			}
 			
@@ -514,8 +522,10 @@ public class ExerelinProcGen {
 				ProcGenEntity primary = procGenEntitiesByToken.get(candidate.primary);
 				if (primary != null)
 				{
-					if (primary.desirability >= candidate.desirability)
+					if (primary.desirability >= candidate.desirability) {
+						log.info("Moon less attractive than primary, skipping: " + candidate.name + ", " + primary.name);
 						continue;
+					}
 					else
 						removePopulatedPlanet(primary);
 				}
@@ -528,6 +538,7 @@ public class ExerelinProcGen {
 				{
 					if (moon.desirability > candidate.desirability)
 					{
+						log.info("Planet less attractive than its moon, skipping: " + candidate.name + ", " + moon.name);
 						shouldSkip = true;
 						break;
 					}
@@ -538,7 +549,7 @@ public class ExerelinProcGen {
 					for (ProcGenEntity moon : populatedMoons) removePopulatedPlanet(moon);
 			}
 			
-			//log.info("Populating planet " + candidate.name + "(desirability " + candidate.desirability + ")");
+			log.info("Populating planet " + candidate.name + "(desirability " + candidate.desirability + ")");
 			populatedPlanets.add(candidate);
 			populatedSystems.add(candidate.starSystem);
 			marketsBySystem.get(candidate.starSystem).add(candidate);
@@ -580,16 +591,34 @@ public class ExerelinProcGen {
 		return false;
 	}
 	
-	public String getStationName(SectorEntityToken target)
+	public String getStationName(SectorEntityToken target, CampaignTerrainAPI terrain)
 	{
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 		picker.addAll(stationNames);
 		String name = target.getName();
-		if (target instanceof CampaignTerrainAPI)
+		
+		// try to name station after the terrain it's in
+		if (terrain != null && terrain.getName() != null && !terrain.getName().isEmpty()
+				&& !DEFAULT_TERRAIN_NAMES.contains(terrain.getName()))
 		{
-			//CampaignTerrainAPI terrain = (CampaignTerrainAPI) target;
-			name = target.getContainingLocation().getName();
+			String[] terrainNames = terrain.getName().split(" ");
+			boolean isL4OrL5 = terrainNames.length >= 2 && 
+					(terrainNames[1].equalsIgnoreCase("L4") || terrainNames[1].equalsIgnoreCase("L5"));
+			
+			if (isL4OrL5) {
+				name = terrainNames[0] + " " + terrainNames[1];
+			}
+			else {
+				for (String terrainName : terrainNames) {
+					if (terrainName.isEmpty()) continue;
+					if (terrainName.equalsIgnoreCase("The")) continue;
+
+					name = terrainName;
+					break;
+				}
+			}
 		}
+		
 		String ret;
 		do
 		{
@@ -615,7 +644,7 @@ public class ExerelinProcGen {
 			data.terrain = (CampaignTerrainAPI)target;
 			data.primary = target.getOrbitFocus();
 		}
-		data.name = getStationName(data.primary);
+		data.name = getStationName(data.primary, data.terrain);
 		if (target instanceof PlanetAPI)
 		{
 			data.planetType = ((PlanetAPI)target).getTypeId();
@@ -623,6 +652,21 @@ public class ExerelinProcGen {
 		alreadyUsedStationNames.add(data.name);
 		
 		return data;
+	}
+	
+	public static boolean isTerrainNearObstruction(SectorEntityToken entity, StarSystemAPI system) {
+		List<SectorEntityToken> toCheck = new ArrayList<>();
+		toCheck.addAll(system.getJumpPoints());
+		toCheck.addAll(system.getPlanets());
+		toCheck.addAll(system.getEntitiesWithTag(Tags.OBJECTIVE));
+		
+		for (SectorEntityToken other : toCheck) {
+			float distSq = MathUtils.getDistanceSquared(entity.getLocation(), other.getLocation());
+			if (distSq < NEARBY_ENTITY_CHECK_DIST_SQ)
+				return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -667,16 +711,25 @@ public class ExerelinProcGen {
 						break;
 					}
 				}
+				if (!allow) continue;
 				
-				float weight = 1;
-				if (planet.isGasGiant()) weight *= 6;	// helps us get volatiles
-				if (allow) picker.add(planet, weight);
+				float weight = 0;
+				if (planet.isGasGiant()) weight = 8;	// helps us get volatiles
+				if (weight > 0)
+					picker.add(planet, weight);
 			}
 			for (CampaignTerrainAPI terrain : system.getTerrainCopy())
 			{
-				if (ALLOWED_STATION_TERRAIN.contains(terrain.getId()))
+				if (terrain.getType().equals(Terrain.ASTEROID_FIELD) 
+						&& isTerrainNearObstruction(terrain, system)) {
+					continue;
+				}
+				
+				SectorEntityToken orbitFocus = terrain.getOrbitFocus();
+				if (orbitFocus == null || !orbitFocus.isStar()) continue;
+				
+				if (ALLOWED_STATION_TERRAIN.contains(terrain.getType()))
 				{
-					log.info(terrain);
 					picker.add(terrain, 2);
 				}
 			}
@@ -1030,13 +1083,31 @@ public class ExerelinProcGen {
 		else if (planet.isGasGiant())
 			orbitRadius += 150;
 		else if (planet.isStar())
-			orbitRadius = (int)station.terrain.getOrbit().computeCurrentLocation().length();
+			orbitRadius += 1000;	// may be terrain; will likely be overriden
 		else
 			orbitRadius += 100;
-
 		float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
-		if (planet.isStar())
-			orbitDays = station.terrain.getOrbit().getOrbitalPeriod();
+		
+		if (station.terrain != null) {
+			switch (station.terrain.getType()) {
+				case Terrain.ASTEROID_BELT:
+					AsteroidBeltTerrainPlugin abt = (AsteroidBeltTerrainPlugin)station.terrain.getPlugin();
+					orbitRadius = (int)abt.params.middleRadius;
+					orbitDays = (abt.params.minOrbitDays + abt.params.maxOrbitDays)/2;
+					break;
+				case Terrain.RING:
+					BaseRingTerrain brt = (BaseRingTerrain)station.terrain.getPlugin();
+					orbitRadius = (int)brt.params.middleRadius;
+					orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
+					break;
+				case Terrain.ASTEROID_FIELD:
+					orbitRadius = (int)Misc.getDistance(station.primary, station.terrain);
+					orbitDays = station.terrain.getCircularOrbitPeriod();
+					angle = Misc.getAngleInDegrees(station.primary.getLocation(), station.terrain.getLocation());
+					break;
+			}
+			//log.info("Trying orbit radius for " + station.terrain.getType() + ": " + orbitRadius);
+		}
 
 		String name = station.name;
 		String id = name.replace(' ','_');
@@ -1361,6 +1432,10 @@ public class ExerelinProcGen {
 		}
 		factionPicker.addAll(factions);
 		
+		if (factionPicker.isEmpty()) {
+			throw new RuntimeException("No factions available for sector generation");
+		}
+		
 		// various Collections we'll be using
 		Map<String, Integer> factionPlanetCount = new HashMap<>();
 		Map<String, Integer> factionStationCount = new HashMap<>();
@@ -1434,7 +1509,7 @@ public class ExerelinProcGen {
 		
 		Collections.shuffle(populatedPlanetsCopy, random);
 		Collections.shuffle(stationsCopy, random);
-		List<ProcGenEntity> unassignedEntities = new ArrayList<>(populatedPlanetsCopy);	// needs to be a List instead of a Set for shuffling
+		List<ProcGenEntity> unassignedEntities = new LinkedList<>(populatedPlanetsCopy);	// needs to be a List instead of a Set for shuffling
 		for (ProcGenEntity station : stationsCopy) {
 			unassignedEntities.add(station);
 		}
@@ -1445,7 +1520,12 @@ public class ExerelinProcGen {
 		for (String factionId : factions)
 		{
 			if (factionId.equals(alignedFactionId)) continue;
-			if (populatedPlanetsCopy.size() <= 0) break;
+			if (populatedPlanetsCopy.size() <= 0) {
+				log.info("No populated planets remaining, break");
+				break;
+			}
+			log.info("Processing faction HQ for " + factionId);
+			
 			ProcGenEntity hq = pickHQ(populatedPlanetsCopy, existingHQs);
 			populatedPlanetsCopy.remove(hq);
 			
