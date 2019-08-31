@@ -1,6 +1,7 @@
 {
     "playableFaction":false,
     "corvusCompatible":true,
+    "enabledByDefault":true,
     "showIntelEvenIfDead":true,
     "noHomeworld":true,
     
