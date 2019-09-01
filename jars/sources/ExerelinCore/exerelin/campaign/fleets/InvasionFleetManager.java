@@ -231,7 +231,21 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target,
-			float variability, boolean countAllHostile)
+			float variability, boolean countAllHostile) {
+		return getWantedFleetSize(attacker, target, variability, countAllHostile, 1);
+	}
+	
+	/**
+	 * Get the desired scaling fleet size for the specified attacker and target.
+	 * @param attacker
+	 * @param target
+	 * @param variability Result will be randomized within a range (1-N) to (1+N).
+	 * @param countAllHostile
+	 * @param maxMult Multiplier for maximum fleet size.
+	 * @return
+	 */
+	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target,
+			float variability, boolean countAllHostile, float maxMult)
 	{
 		FactionAPI targetFaction = target.getFaction();
 		StarSystemAPI system = target.getStarSystem();
@@ -262,7 +276,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		defensiveStr *= GENERAL_SIZE_MULT;
 		
-		float max = getMaxInvasionSize(attacker.getId());
+		float max = getMaxInvasionSize(attacker.getId(), maxMult);
 		if (defensiveStr > max)
 			defensiveStr = max;
 		
@@ -498,10 +512,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			EventType type, float sizeMult) {
 		FactionAPI faction = origin.getFaction();
 		String factionId = faction.getId();
+		float maxMult = type == EventType.RESPAWN ? 5 : 1;
 		
-		float fp = getWantedFleetSize(faction, target, 0.2f, false);
+		float fp = getWantedFleetSize(faction, target, 0.2f, false, maxMult);
 		float organizeTime = getOrganizeTime(fp);
 		fp *= InvasionFleetManager.getInvasionSizeMult(factionId);
+		fp *= sizeMult;
 		if (type == EventType.RAID)
 			fp *= RAID_SIZE_MULT;
 		else if (type == EventType.RESPAWN)
@@ -576,14 +592,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getMaxInvasionSize("hegemony"));
-
 	/**
 	 * Gets the max invasion size for the specified attacking faction, based on their economy.
 	 * Capped at {@code MAX_INVASION_SIZE}, and returns that value immediately if brawl mode is enabled.
 	 * @param factionId
+	 * @param maxMult Multiplier for maximum economy-based size.
 	 * @return
 	 */
-	public static float getMaxInvasionSize(String factionId) {
+	public static float getMaxInvasionSize(String factionId, float maxMult) {
 		if (Global.getSettings().getBoolean("nex_brawlMode")) {
 			return MAX_INVASION_SIZE;
 		}
@@ -593,7 +609,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		for (MarketAPI market : markets) {
 			value += getMarketInvasionCommodityValue(market);
 		}
-		value *= MAX_INVASION_SIZE_ECONOMY_MULT;
+		value *= MAX_INVASION_SIZE_ECONOMY_MULT * maxMult;
+		
 		if (value > MAX_INVASION_SIZE)
 			value = MAX_INVASION_SIZE;
 		
