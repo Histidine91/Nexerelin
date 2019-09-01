@@ -4,12 +4,14 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -160,6 +162,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		String oldFactionId = market.getFactionId();
 		FactionAPI newFaction = Global.getSector().getFaction(newFactionId);
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
+		SectorEntityToken ent = dialog.getInteractionTarget();
 		
 		float repChange = getRepChange(market).getModifiedValue() * 0.01f;
 		if (newFactionId.equals(getRecentlyCapturedFromId(market)))
@@ -170,9 +173,14 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, 
 				new ArrayList<>(Arrays.asList(newFactionId)), repChange);
 		DiplomacyManager.getManager().getDiplomacyBrain(newFactionId).reportDiplomacyEvent(oldFactionId, repChange);
-				
+		
+		// hack for "our interaction target is a station and we just sold it" case
+		if (Entities.STATION_BUILT_FROM_INDUSTRY.equals(ent.getCustomEntityType())) {
+			ent.setFaction(newFactionId);
+		}
+		
 		//ExerelinUtilsReputation.adjustPlayerReputation(newFaction, null, repChange, null, dialog.getTextPanel());	// done in event
-		market.getPrimaryEntity().getMemoryWithoutUpdate().set("$_newFaction", newFaction.getDisplayNameWithArticle(), 0);
+		ent.getMemoryWithoutUpdate().set("$_newFaction", newFaction.getDisplayNameWithArticle(), 0);
 	}
 	
 	public static String getRecentlyCapturedFromId(MarketAPI market) {
