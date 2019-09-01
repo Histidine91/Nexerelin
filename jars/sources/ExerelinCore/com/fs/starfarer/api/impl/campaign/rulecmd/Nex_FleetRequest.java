@@ -18,6 +18,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
@@ -386,8 +387,9 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		
 		List<MarketAPI> markets = new ArrayList<>();
 		for (MarketAPI market : marketsTemp) {
-			if (market.hasSpaceport())
-				markets.add(market);
+			if (!market.hasSpaceport()) continue;
+			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
+			markets.add(market);
 		}
 		
 		Collections.sort(markets, marketComparatorName);

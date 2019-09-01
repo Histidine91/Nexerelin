@@ -31,6 +31,7 @@ import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.NexPirateActivity;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionIntel;
+import exerelin.campaign.intel.PlayerOutpostIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.diplomacy.TributeIntel;
 import exerelin.campaign.intel.agents.AgentIntel;
@@ -116,6 +117,7 @@ public class XStreamConfig {
 		x.alias("NexTrbtCond", TributeCondition.class);
 		x.alias("NexConqMssn", ConquestMissionIntel.class);
 		x.alias("NexPirActv", NexPirateActivity.class);
+		x.alias("NexPlyrOtpst", PlayerOutpostIntel.class);
 		
 		// raids and such
 		x.alias("NexRaidIntl", NexRaidIntel.class);

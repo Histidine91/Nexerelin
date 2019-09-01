@@ -9,9 +9,11 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI.EconomyUpdateListener;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
+import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -36,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdateListener {
+public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdateListener, EconomyTickListener {
 	
 	public static final List<String> STATION_IMAGES = new ArrayList<>(Arrays.asList(new String[] {
 		"station_mining00", "station_side03", "station_side05"
@@ -111,10 +113,13 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		SectorEntityToken toOrbit = target;
 		float orbitRadius = 100;
 		float orbitPeriod = target.getOrbit().getOrbitalPeriod();
+		String name = target.getStarSystem().getBaseName();
+		
 		if (toOrbit instanceof PlanetAPI)
 		{
 			orbitRadius += toOrbit.getRadius();
 			orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitRadius);
+			name = toOrbit.getName();
 		}
 		else if (toOrbit instanceof AsteroidAPI)
 		{
@@ -145,12 +150,12 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		float angle = Misc.getAngleInDegrees(fleet.getLocation(), toOrbit.getLocation()) - 180;
 
 		// FIXME: name based on star system
-		String name = target.getStarSystem().getBaseName() + " " + getString("outpostProperName");
+		name += " " + getString("outpostProperName");
 		String id = "nex_outpost_" + (getOutposts().size() + 1);
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		picker.addAll(STATION_IMAGES);
 		
-		SectorEntityToken outpost = toOrbit.getContainingLocation().addCustomEntity(id, name, picker.pick(), Factions.NEUTRAL);
+		SectorEntityToken outpost = toOrbit.getContainingLocation().addCustomEntity(id, name, picker.pick(), Factions.PLAYER);
 		
 		outpost.setCircularOrbitPointingDown(toOrbit, angle, orbitRadius, orbitPeriod);
 		outpost.addTag("nex_playerOutpost");
@@ -161,10 +166,10 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		market.setPrimaryEntity(outpost);
 		market.addCondition(Conditions.ABANDONED_STATION);
 		market.addIndustry(Industries.POPULATION);
-		market.addIndustry(Industries.SPACEPORT);
+		//market.addIndustry(Industries.SPACEPORT);
 		market.addIndustry(Industries.WAYSTATION);
 		//market.getIndustry(Industries.SPACEPORT).startBuilding();
-		//market.getIndustry(Industries.WAYSTATION).startBuilding();
+		market.getIndustry(Industries.WAYSTATION).startBuilding();
 		
 		market.setHidden(true);
 		market.setPlanetConditionMarketOnly(false);
@@ -179,11 +184,10 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		storage.setPlayerPaidToUnlock(true);
 
 		outpost.setMarket(market);
-		outpost.setFaction(Factions.PLAYER);
 		
 		Global.getSector().getEconomy().addMarket(market, false);
 		Global.getSector().getEconomy().addUpdateListener(this);
-		
+		Global.getSector().getListenerManager().addListener(this);
 		
 		// interaction image
 		picker.clear();
@@ -204,17 +208,19 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		String modId = market.getId();
 		
 		// zero demand for "human" commodities
-		/*
-		if (UNWANTED_COMMODITIES.contains(com.getId())) {
-			Global.getLogger(this.getClass()).info("Nullifying demand for " + com.getId());
-			market.getDemand(com.getDemandClass()).getDemand().modifyMult(modId, 0, getString("commodityStatDescCrew"));
-			com.getDemand().getDemand().modifyMult(modId, 0, getString("commodityStatDescCrew"));
-			return;
+		if (UNWANTED_COMMODITIES.contains(commodityId)) {
+			//Global.getLogger(this.getClass()).info("Nullifying demand for " + com.getId());
+			for (Industry ind : market.getIndustries()) {
+				ind.getDemand(commodityId).getQuantity().modifyMult(modId, 0, getString("commodityStatDescUnneeded"));
+				ind.getSupply(commodityId).getQuantity().modifyMult(modId, 0, getString("commodityStatDescUnneeded"));
+			}
 		}
 		else {
-			market.getDemand(com.getDemandClass()).getDemand().unmodify(modId);
+			for (Industry ind : market.getIndustries()) {
+				ind.getDemand(com.getId()).getQuantity().unmodify(modId);
+				ind.getSupply(commodityId).getQuantity().unmodify(modId);
+			}
 		}
-		*/
 		
 		int curr = 0;
 		
@@ -242,6 +248,19 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 
 	@Override
 	public void economyUpdated() {		
+		
+	}
+
+	@Override
+	public boolean isEconomyListenerExpired() {
+		return isEnded();
+	}
+
+	@Override
+	public void reportEconomyTick(int iterIndex) {
+		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
+		float f = 1f / numIter;
+		
 		//CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		MonthlyReport report = SharedData.getData().getCurrentReport();
 		
@@ -255,12 +274,12 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		outpostNode.custom = "node_id_nex_outposts";
 		outpostNode.icon = "graphics/stations/station_side03.png";
 		outpostNode.tooltipCreator = OUTPOST_NODE_TOOLTIP;
-		outpostNode.upkeep = getUpkeep();
+		outpostNode.upkeep += getUpkeep() * f;
 	}
 
 	@Override
-	public boolean isEconomyListenerExpired() {
-		return isEnded();
+	public void reportEconomyMonthEnd() {
+		
 	}
 	
 	public static final TooltipMakerAPI.TooltipCreator OUTPOST_NODE_TOOLTIP = new TooltipMakerAPI.TooltipCreator() {
