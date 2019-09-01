@@ -110,7 +110,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		market.setFreePort(true);
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
-		market.addSubmarket(Submarkets.GENERIC_MILITARY);
+		//market.addSubmarket(Submarkets.GENERIC_MILITARY);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
