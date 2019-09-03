@@ -638,13 +638,18 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    private void handleMarketCapture(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner)
+    protected void handleMarketCapture(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner)
     {
         String loseFactionId = oldOwner.getId();
         if (!warWeariness.containsKey(loseFactionId)) return;
         float value = (market.getSize()^3) * 5;
         
         warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + value);
+        
+        // update revanchism caches
+        for (Map.Entry<String, DiplomacyBrain> tmp : diplomacyBrains.entrySet()) {
+            tmp.getValue().cacheRevanchism();
+        }
     }
     
     public DiplomacyBrain getDiplomacyBrain(String factionId)

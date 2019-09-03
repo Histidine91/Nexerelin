@@ -78,7 +78,7 @@ Bla
 
 public class DiplomacyBrain {
 	
-	public static final float RELATIONS_MULT = 30f;
+	public static final float RELATIONS_MULT = 25f;
 	public static final float ALIGNMENT_MULT = 2f;
 	public static final float ALIGNMENT_DIPLOMATIC_MULT = 1.5f;
 	public static final float COMMON_ENEMY_MULT = 12.5f;
@@ -87,7 +87,7 @@ public class DiplomacyBrain {
 	public static final float EVENT_PEACE_MULT = 40f;
 	public static final float EVENT_DECREMENT_PER_DAY = 0.2f;
 	public static final float REVANCHISM_SIZE_MULT = 2;
-	public static final float REVANCHISM_FACTION_MAX = 20;
+	public static final float REVANCHISM_FACTION_MAX = 40;
 	public static final float REVANCHISM_MAX = 50;
 	public static final float DOMINANCE_MULT = 25;
 	public static final float DOMINANCE_HARD_MULT = 1.5f;

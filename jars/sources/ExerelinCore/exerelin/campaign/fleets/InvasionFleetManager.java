@@ -447,7 +447,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 
 			// revanchism
 			if (ExerelinUtilsMarket.wasOriginalOwner(market, factionId))
-				weight *= 4;
+				weight *= 5;
 
 			// defender of the faith
 			if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && ExerelinUtilsFaction.isLuddicFaction(factionId))
