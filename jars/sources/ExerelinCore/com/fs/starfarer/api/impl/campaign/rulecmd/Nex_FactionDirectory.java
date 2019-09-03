@@ -7,11 +7,13 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
 import com.fs.starfarer.api.util.Misc;
@@ -51,11 +53,19 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		colorByMarketSize.put(10, Color.MAGENTA);
 	}
 	
-	public static final Color getSizeColor(int size) {
+	public static Color getSizeColor(int size) {
 		Color color = Color.GRAY;
 		if (colorByMarketSize.containsKey(size))
 			color = colorByMarketSize.get(size);
 		return color;
+	}
+	
+	public static boolean hasHeavyIndustry(MarketAPI market) {
+		for (Industry ind : market.getIndustries()) {
+			if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY))
+				return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -218,6 +228,11 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			{
 				anyBase = true;
 				sizeStr += ", " + StringHelper.getString("base");
+			}
+			
+			// Has heavy industry
+			if (hasHeavyIndustry(market)) {
+				sizeStr += ", " + StringHelper.getString("heavyIndustry");
 			}
 			
 			// Cabal
