@@ -328,7 +328,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		}
 		
 		InvasionFleetManager.EventType type = InvasionFleetManager.EventType.INVASION;
-		if (ExerelinConfig.enableInvasions) {
+		if (!ExerelinConfig.enableInvasions) {
 			type = InvasionFleetManager.EventType.RAID;
 		}
 			
