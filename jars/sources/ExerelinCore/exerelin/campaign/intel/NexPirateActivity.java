@@ -1,5 +1,6 @@
 package exerelin.campaign.intel;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -12,6 +13,8 @@ import java.awt.Color;
 
 // same as vanilla, but effects are mitigated by higher reputation with pirates
 public class NexPirateActivity extends PirateActivity {
+	
+	public static final String INTEL_CLASS = "com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivityIntel";
 	
 	public float getStabilityRelationshipModifier() {
 		RepLevel rep = market.getFaction().getRelationshipLevel(Factions.PIRATES);
@@ -41,23 +44,25 @@ public class NexPirateActivity extends PirateActivity {
 		return 1;
 	}
 	
-	public float getAccessibilityPenalty() {
+	public float getAccessibilityPenalty(boolean useModifier) {
 		float accessibility = intel.getAccessibilityPenalty();
-		accessibility *= getAccessibililityRelationshipMult();
+		if (useModifier)
+			accessibility *= getAccessibililityRelationshipMult();
 		return accessibility;
 	}
 	
-	public float getStabilityPenalty() {
+	public float getStabilityPenalty(boolean useModifier) {
 		float stability = intel.getStabilityPenalty();
-		stability += getStabilityRelationshipModifier();
+		if (useModifier)
+			stability += getStabilityRelationshipModifier();
 		if (stability < 0) stability = 0;
 		return stability;
 	}
 	
 	@Override
 	public void apply(String id) {
-		float accessibility = getAccessibilityPenalty();
-		float stability = getStabilityPenalty();
+		float accessibility = getAccessibilityPenalty(true);
+		float stability = getStabilityPenalty(true);
 		String name = StringHelper.getString("exerelin_misc", "pirateActivityTitle");
 		if (accessibility != 0) {
 			market.getAccessibilityMod().modifyFlat(id, -accessibility, name);
@@ -76,8 +81,12 @@ public class NexPirateActivity extends PirateActivity {
 		float small = 5f;
 		float opad = 10f;
 		
-		float accessibility = getAccessibilityPenalty();
-		float stability = getStabilityPenalty();
+		// this is used so it doesn't display relationship modifiers inappropriately
+		// when displayed in PirateActivityIntel's description
+		boolean fromIntelClass = INTEL_CLASS.equals(getCallingClassName(3));
+		
+		float accessibility = getAccessibilityPenalty(!fromIntelClass);
+		float stability = getStabilityPenalty(!fromIntelClass);
 		
 		if (stability != 0 && accessibility != 0) {
 			tooltip.addPara(StringHelper.getString("exerelin_misc", "pirateActivityPenalty"),
@@ -95,12 +104,21 @@ public class NexPirateActivity extends PirateActivity {
 			tooltip.addPara(StringHelper.getString("exerelin_misc", "pirateActivityPenaltyNone"), opad);
 		}
 		
-		FactionAPI fac = market.getFaction();
-		RepLevel rep =fac.getRelationshipLevel(Factions.PIRATES);
-		if (rep.isAtWorst(RepLevel.SUSPICIOUS)) {
-			tooltip.addPara(StringHelper.getString("exerelin_misc", "pirateActivityPenaltyModified"),
-					opad, NexUtilsReputation.getRelColor(fac.getRelationship(Factions.PIRATES)),
-					rep.getDisplayName().toLowerCase());
+		if (!fromIntelClass) {
+			FactionAPI fac = market.getFaction();
+			RepLevel rep = fac.getRelationshipLevel(Factions.PIRATES);
+			if (rep.isAtWorst(RepLevel.SUSPICIOUS)) {
+				tooltip.addPara(StringHelper.getString("exerelin_misc", "pirateActivityPenaltyModified"),
+						opad, NexUtilsReputation.getRelColor(fac.getRelationship(Factions.PIRATES)),
+						rep.getDisplayName().toLowerCase());
+			}
 		}
+	}
+	
+	public static String getCallingClassName(int index)
+	{
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		if (stack.length <= index) return "";
+		return Thread.currentThread().getStackTrace()[index].getClassName();
 	}
 }
