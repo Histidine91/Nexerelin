@@ -1057,6 +1057,7 @@
 	"nex_playerOutpost":{
 		"outposts":"outposts",
 		"outpostProperName":"Outpost",
+		
 		"resourcesAvailable":"Resources required (available)",
 		"resourceConsumeNote":"All resources except crew will be consumed.",
 		"upkeepNote":"Monthly upkeep: %s",
@@ -1065,6 +1066,10 @@
 		"commodityStatDesc":"Covert supply",
 		"commodityStatDescUnneeded":"Automated station",
 		"tooltipUpkeep":"Each outpost requires an upkeep of %s credits per month.",
+		
+		"intelTitle":"Outpost",
+		"intelTitleLost":"lost",
+		"intelDesc":"You have an outpost $name in the $location. It serves as a location for stockpiling of supplies and fuel, and a temporary storage location for salvage.",
 	},	
 	"exerelin_raid":{		
 		"raid":"raid",

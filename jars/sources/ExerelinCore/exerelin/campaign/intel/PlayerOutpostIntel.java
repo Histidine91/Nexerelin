@@ -5,8 +5,10 @@ import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainPlugin;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI.EconomyUpdateListener;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -20,19 +22,24 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidBeltTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +62,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	
 	protected SectorEntityToken outpost;
 	protected MarketAPI market;
+	protected Long timestamp;
 	
 	public static final String OUTPOST_SET_KEY = "nex_playerOutposts";
 		
@@ -107,6 +115,19 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		
 	}
 	
+	protected Object readResolve() {
+		if (outpost == null && market != null)
+			outpost = market.getPrimaryEntity();
+		if (timestamp == null)
+			timestamp = Global.getSector().getClock().getTimestamp();
+		
+		if (!Global.getSector().getIntelManager().hasIntel(this)) {
+			Global.getSector().getIntelManager().addIntel(this, true);
+		}
+		
+		return this;
+	}
+	
 	public SectorEntityToken createOutpost(CampaignFleetAPI fleet, SectorEntityToken target)
 	{
 		// FIXME: orbit period seems too fast
@@ -155,13 +176,13 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		picker.addAll(STATION_IMAGES);
 		
-		SectorEntityToken outpost = toOrbit.getContainingLocation().addCustomEntity(id, name, picker.pick(), Factions.PLAYER);
+		outpost = toOrbit.getContainingLocation().addCustomEntity(id, name, picker.pick(), Factions.PLAYER);
 		
 		outpost.setCircularOrbitPointingDown(toOrbit, angle, orbitRadius, orbitPeriod);
 		outpost.addTag("nex_playerOutpost");
 		
 		// add market
-		market = Global.getFactory().createMarket(id, name, 3);
+		market = Global.getFactory().createMarket(id, name, 2);
 		market.setFactionId(Factions.PLAYER);
 		market.setPrimaryEntity(outpost);
 		market.addCondition(Conditions.ABANDONED_STATION);
@@ -197,6 +218,10 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		outpost.getMemoryWithoutUpdate().set("$nex_outpost_intel", this);
 		
 		registerOutpost(this);
+		
+		Global.getSector().getIntelManager().addIntel(this, true);
+		
+		timestamp = Global.getSector().getClock().getTimestamp();
 		
 		return outpost;
 	}
@@ -236,6 +261,78 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 			int supply = Math.max(1, d - a);
 			com.getAvailableStat().modifyFlat(modId, supply, getString("commodityStatDesc"));
 		}
+	}
+	
+	public boolean isAlive() {
+		return outpost != null && outpost.isAlive() && !isEnding() && !isEnded();
+	}
+	
+	@Override
+	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
+		Color c = getTitleColor(mode);
+		info.addPara(getSmallDescriptionTitle(), c, 0f);
+	}
+	
+	@Override
+	public String getSmallDescriptionTitle() {
+		String str = getString("intelTitle");
+		if (outpost != null) {
+			str = outpost.getName();
+			
+		}
+		if (!isAlive()) {
+			str += " - " + getString("intelTitleLost"); 
+		}
+		return str;
+	}
+	
+	@Override
+	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		float opad = 10f;
+		
+		Color h = Misc.getHighlightColor();
+		Color c = getFactionForUIColors().getBaseUIColor();
+		Color d = getFactionForUIColors().getDarkUIColor();
+		
+		if (outpost != null)
+			info.addImage(outpost.getCustomEntitySpec().getSpriteName(), width, 96, opad);
+		
+		if (!isAlive() || outpost == null) {
+			// TODO: show offline message
+			return;
+		}
+		
+		Map<String, String> replace = new HashMap<>();
+		StarSystemAPI system = outpost.getStarSystem();
+		
+		replace.put("$name", outpost.getName());
+		replace.put("$location", system.getNameWithLowercaseType());
+		
+		//StringHelper.addFactionNameTokensCustom(replace, "otherFaction", faction2);
+		
+		String str = StringHelper.getStringAndSubstituteTokens("nex_playerOutpost", "intelDesc", replace);
+		LabelAPI label = info.addPara(str, opad);
+		label.setHighlight(outpost.getName());
+		label.setHighlightColors(Misc.getHighlightColor());
+		
+		//display stored items
+		if (market != null)
+			Misc.addStorageInfo(info, c, d, market, true, false);
+	}
+	
+	@Override
+	public Set<String> getIntelTags(SectorMapAPI map) {
+		Set<String> tags = super.getIntelTags(map);
+		//tags.add(Factions.PLAYER);
+		tags.add(StringHelper.getString("colonies", true));
+		return tags;
+	}
+	
+	@Override
+	public String getIcon() {
+		if (outpost != null)
+			return outpost.getCustomEntitySpec().getSpriteName();
+		return getFactionForUIColors().getCrest();
 	}
 	
 	public static String getString(String id) {

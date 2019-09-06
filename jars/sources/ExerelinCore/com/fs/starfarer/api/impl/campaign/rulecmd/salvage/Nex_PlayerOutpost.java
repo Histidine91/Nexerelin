@@ -137,6 +137,7 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		dialog.getVisualPanel().showImageVisual(outpost.getCustomInteractionDialogImageVisual());
 		dialog.getTextPanel().addParagraph(PlayerOutpostIntel.getString("outpostComplete"));
 		dialog.setInteractionTarget(outpost);
+		Global.getSector().getIntelManager().addIntelToTextPanel(intel, text);
 		return true;
 	}
 	

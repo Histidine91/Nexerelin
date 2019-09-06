@@ -1279,7 +1279,7 @@ CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of cou
 nex_outpostOption,PopulateOptions,$nex_canMine,,,4:nex_outpostPreview:Construct an outpost,
 nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
 FireAll Nex_OutpostOption
-$menuState = nex_outpost 0",You can build an automated outpost here. It will automatically stock supplies and fuel for you to take.,,
+$menuState = nex_outpost 0","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage (with monthly fee).",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
 SetShortcut nex_outpostBuildStart RETURN
 SetShortcut nex_outpostBack ESCAPE",,"nex_outpostBuildStart:Proceed with construction
