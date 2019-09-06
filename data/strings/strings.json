@@ -264,6 +264,8 @@
 		"costLevelMult":"agent level",
 		"costSizeMult":"market size",
 		
+		"intelButton_goToAgent":"go to agent",
+		
 		"intelStatus_travel":"Travelling to $market ($status)",
 		"intelStatus_travelShort":"Travelling to $market",
 		"intelStatus_travel0":"departing",

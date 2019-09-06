@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -11,6 +12,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -43,6 +46,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public static final ExerelinReputationAdjustmentResult NO_EFFECT = new ExerelinReputationAdjustmentResult(0);
 	public static final boolean ALWAYS_REPORT = false;	// debug
+	public static final String BUTTON_GOTOAGENT = "goToAgent";
 	public static final int DEFAULT_AGENT_LEVEL = 2;
 	
 	protected Map<String, Object> params;
@@ -481,6 +485,25 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		info.addSectionHeading(getString("intelResultHeader"), Alignment.MID, opad);
 		addResultPara(info, opad);
 		addAgentOutcomePara(info, opad);
+		
+		// goto agent button
+		if (agent != null) {
+			ButtonAPI button = info.addButton(getString("intelButton_goToAgent", true), 
+					BUTTON_GOTOAGENT, agent.faction.getBaseUIColor(), agent.faction.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
+		}
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_GOTOAGENT && agent != null) {
+			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, agent);
+		}
+	}
+	
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		return false;
 	}
 	
 	protected String getDescStringId() {
