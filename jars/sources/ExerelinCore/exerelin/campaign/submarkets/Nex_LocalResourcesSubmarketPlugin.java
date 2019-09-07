@@ -28,7 +28,7 @@ public class Nex_LocalResourcesSubmarketPlugin extends LocalResourcesSubmarketPl
 	// special handling for player outposts
 	@Override
 	public int getStockpileLimit(CommodityOnMarketAPI com) {
-		if (market.getMemoryWithoutUpdate().getBoolean(PlayerOutpostIntel.MARKET_MEMORY_FLAG)) {
+		if (market.getMemoryWithoutUpdate().contains(PlayerOutpostIntel.MARKET_MEMORY_FLAG)) {
 			if (PlayerOutpostIntel.UNWANTED_COMMODITIES.contains(com.getId())) {
 				return 0;
 			}
