@@ -5,6 +5,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bar.events.DeliveryBarEventCreat
 
 public class NexDeliveryBarEventCreator extends DeliveryBarEventCreator {
 	
+	@Override
 	public PortsideBarEvent createBarEvent() {
 		return new NexDeliveryBarEvent();
 	}

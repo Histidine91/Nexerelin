@@ -1,7 +1,6 @@
 {
-	"baseMaxAdmins":2,
-	"colonyOverMaxPenalty":1,
-	"bombardTacticalStability":1,
+	"baseMaxAdmins":2,					# default 1
+	"colonyOverMaxPenalty":1,			# default 2
 	"accessibilityNoSpaceport":-0.5,	# default -1
 	"industryRefundFraction":0.5,		# default 0.75
 	

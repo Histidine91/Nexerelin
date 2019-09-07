@@ -560,8 +560,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				colonyExpeditionProgress = MathUtils.getRandomNumberInRange(-interval * 0.1f, interval * 0.1f);
 				colonyExpeditionProgress -= numColonies * Global.getSettings().getFloat("nex_expeditionDelayPerExistingColony");
 			}
-			else {	// failed to spawn, try again in 15 days
-				colonyExpeditionProgress -= Math.min(ExerelinConfig.colonyExpeditionInterval/2, 15);
+			else {	// failed to spawn, try again in 10 days
+				colonyExpeditionProgress -= Math.min(ExerelinConfig.colonyExpeditionInterval/2, 10);
 			}
 		}
 	}
@@ -582,8 +582,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void reportEconomyMonthEnd() {}
-	
-	
 
 	@Override
 	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 

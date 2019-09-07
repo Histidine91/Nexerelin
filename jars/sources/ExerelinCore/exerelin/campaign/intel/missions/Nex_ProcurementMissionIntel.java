@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionIntel;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
@@ -81,10 +82,18 @@ public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
 			float qty = quantity * TRADE_MULT;
 			if (qty > 0) {
 				CommodityOnMarketAPI com = market.getCommodityData(commodityId);
+				log.info("Adding trade mod " + qty + " to market " + market.getName());
 				com.addTradeModPlus("deliver_" + Misc.genUID(), qty, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
 			}
 		}
 		
 		return super.callEvent(ruleId, dialog, params, memoryMap);
+	}
+	
+	// runcode exerelin.campaign.intel.missions.Nex_ProcurementMissionIntel.debug()
+	public static void debug() {
+		MarketAPI market = Global.getSector().getCampaignUI().getCurrentInteractionDialog().getInteractionTarget().getMarket();
+		CommodityOnMarketAPI com = market.getCommodityData(Commodities.SUPPLIES);
+		com.addTradeModPlus("temp_" + Misc.genUID(), 100, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
 	}
 }
