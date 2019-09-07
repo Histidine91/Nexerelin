@@ -151,6 +151,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						intel.setIcon(market.getFaction().getCrest());
 						intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
 						Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING);
+						
+						buildIndustries(market);
 					}
 				}
 			}
