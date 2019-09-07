@@ -13,13 +13,12 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.util.Highlights;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -28,6 +27,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,6 +48,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		Exchange goods for bombing a target
 	*/
 	
+	public static final boolean DEBUG_MODE = false;
 	public static final float EVENT_CHANCE = 0.35f;
 	public static final float EVENT_TIME = 60;
 	public static final String EVENT_TYPE_BARTER = "barter";
@@ -264,21 +265,45 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		}
 		cost.update();
 		
-		int freeSpace = (int)cargo.getSpaceLeft();
-		String fuel = "" + (int)cargo.getFuel();
+		// decide which string to use
+		int freeSpace;
+		String key;
 		
-		String key = isBomb ? "freeSpaceWithFuel" : "freeSpace";
-		String freeSpaceStr = StringHelper.getString("nex_decivEvent", key);
+		switch (giveId) {
+			case Commodities.FUEL:
+				freeSpace = cargo.getFreeFuelSpace();
+				key = "freeSpaceFuel";
+				break;
+			case Commodities.CREW:
+				freeSpace = cargo.getFreeCrewSpace();
+				key = "freeSpaceCrew";
+				break;
+			default:
+				freeSpace = (int)cargo.getSpaceLeft();
+				key = "freeSpace";
+				break;
+		}
+		
+		String fuelStr = "" + (int)cargo.getFuel();
+		String str = StringHelper.getString("nex_decivEvent", key);
+		List<String> highlights = new ArrayList<>();
+		List<Color> highlightColors = new ArrayList<>();
+		highlights.add(freeSpace + "");
+		highlightColors.add(hl);
+		LabelAPI para;
+		
 		if (isBomb) {
-			text.addPara(freeSpaceStr, hl, freeSpace + "", fuel);
-			Highlights h = new Highlights();
-			h.setColors(hl, enough? hl : Misc.getNegativeHighlightColor());
-			h.setText(freeSpace + "", fuel);
-			text.setHighlightsInLastPara(h);
+			str += " " + StringHelper.getString("nex_decivEvent", "fuelAmount");
+			highlights.add(fuelStr);
+			highlightColors.add(enough ? hl : Misc.getNegativeHighlightColor());
+			para = text.addPara(str, hl, freeSpace + "", fuelStr);
 		}
 		else
-			text.addPara(freeSpaceStr, hl, freeSpace + "");
-			
+			para = text.addPara(str, hl, freeSpace + "");
+		
+		para.setHighlight(highlights.toArray(new String[]{}));
+		para.setHighlightColors(highlightColors.toArray(new Color[]{}));
+		
 		return enough;
 	}
 	
@@ -294,7 +319,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	}
 	
 	protected void generateEvent(MarketAPI market) {
-		if (Math.random() > EVENT_CHANCE) {
+		if (!DEBUG_MODE && Math.random() > EVENT_CHANCE) {
 			setMem(MEM_KEY_HAS_EVENT, false);
 			return;
 		}
@@ -414,7 +439,10 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	}
 	
 	protected void setMem(String key, Object value) {
-		setMem(key, value, EVENT_TIME);
+		if (DEBUG_MODE)
+			setMem(key, value, 0.5f);
+		else	
+			setMem(key, value, EVENT_TIME);
 	}
 	
 	protected void setMem(String key, Object value, float time) {
