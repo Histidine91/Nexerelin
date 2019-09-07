@@ -1062,6 +1062,7 @@ public class ExerelinProcGen {
 		spawnCommRelays();
 		surveyPlanets();
 		marketSetup.addCabalSubmarkets();
+		marketSetup.ensureHasSynchrotron();
 		
 		log.info("Cleaning up derelicts/Remnants");
 		cleanupDerelicts(populatedSystems);

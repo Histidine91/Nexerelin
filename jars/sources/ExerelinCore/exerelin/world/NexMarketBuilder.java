@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Misc;
@@ -931,11 +932,7 @@ public class NexMarketBuilder
 				ordered.add(new Pair<>(ind, bonus.getPriority(ind, ent)));
 			}
 			
-			Collections.sort(ordered, new Comparator<Pair<Industry, Float>>() {
-				public int compare(Pair<Industry, Float> p1, Pair<Industry, Float> p2) {
-					return p1.two.compareTo(p2.two);
-				}
-			});
+			Collections.sort(ordered, BONUS_COMPARATOR);
 			
 			for (int i = 0; i < count; i++)
 			{
@@ -950,4 +947,61 @@ public class NexMarketBuilder
 			}
 		}		
 	}
+	
+	public boolean hasSynchrotron() {
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			Industry fuelprod = market.getIndustry(Industries.FUELPROD);
+			if (fuelprod == null) continue;
+			if (fuelprod.getSpecialItem() == null) continue;
+			if (fuelprod.getSpecialItem().getId().equals(Items.SYNCHROTRON))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Gives a synchrotron to the fuel producer on the "most suitable" market in the sector, 
+	 * if the procgenned sector does not already have a synchrotron somewhere.
+	 */
+	public void ensureHasSynchrotron() {
+		BonusGen bonus = bonusesById.get("synchrotron");
+		Pair<Industry, ProcGenEntity> best = null;
+		float bestScore = 0;
+		
+		for (ProcGenEntity market : markets) 
+		{
+			Industry fuelprod = market.market.getIndustry(Industries.FUELPROD);
+			if (fuelprod == null) continue;
+			
+			// someone already has a synchrotron
+			if (fuelprod.getSpecialItem() != null 
+					&& fuelprod.getSpecialItem().getId().equals(Items.SYNCHROTRON))
+			{
+				return;
+			}
+			
+			if (!bonus.canApply(fuelprod, market))
+				continue;
+			
+			float score = bonus.getPriority(fuelprod, market);
+			if (score > bestScore) {
+				bestScore = score;
+				best = new Pair<>(fuelprod, market);
+			}
+		}
+		if (best != null) {
+			log.info("Guaranteeing synchrotron on market " + best.two.name);
+			bonus.apply(best.one, best.two);
+		}
+				
+	}
+	
+	public static final Comparator<Pair<Industry, Float>> BONUS_COMPARATOR 
+			= new Comparator<Pair<Industry, Float>>() 
+	{
+		@Override
+		public int compare(Pair<Industry, Float> p1, Pair<Industry, Float> p2) {
+			return p1.two.compareTo(p2.two);
+		}
+	};
 }
