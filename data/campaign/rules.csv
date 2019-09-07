@@ -1277,9 +1277,12 @@ CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of cou
 ,,,,,,
 # Outposts,,,,,,
 nex_outpostOption,PopulateOptions,$nex_canMine,,,4:nex_outpostPreview:Construct an outpost,
-nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
-FireAll Nex_OutpostOption
-$menuState = nex_outpost 0","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage (with monthly fee).",,
+nex_outpostOptionNearbyHostile,PopulateOptions,"$nex_canMine
+HostileFleetNearbyAndAware","SetEnabled nex_outpostPreview false
+SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movements, making construction of an outpost impossible.""",,,
+nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"$menuState = nex_outpost 0
+Nex_PlayerOutpost buildInfo
+FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage (with monthly fee).",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
 SetShortcut nex_outpostBuildStart RETURN
 SetShortcut nex_outpostBack ESCAPE",,"nex_outpostBuildStart:Proceed with construction
@@ -1291,6 +1294,15 @@ $option == nex_outpostBuildStart","Nex_PlayerOutpost build
 UpdateMemory
 $tradeMode = OPEN 0
 ShowDefaultVisual",Outpost constructed.,exerelinMarketSpecialBack:Back,
+,,,,,,
+nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,8:nex_outpostDismantle:Dismantle outpost,
+nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"$menuState = nex_outpost 0
+Nex_PlayerOutpost dismantleInfo
+Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $market?"" ""Yes"" ""No""","You can dismantle this outpost, recovering the AI core(s) and half the resources used in its creation.
+
+All cargo in Storage will also be recovered. All cargo in Local Resources will be lost.","nex_outpostDismantleConfirm:Proceed
+nex_outpostBack:Go back",
+nex_outpostDismantle,DialogOptionSelected,$option == nex_outpostDismantleConfirm,Nex_PlayerOutpost dismantle,,,
 ,,,,,,
 nex_outpostBack,DialogOptionSelected,$option == nex_outpostBack,"$menuState = main 0
 FireAll PopulateOptions",,,

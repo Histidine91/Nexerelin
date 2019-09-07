@@ -27,6 +27,7 @@
 		"marines":"marines",
 		"options":"options",
 		"player":"player",
+		"salvage":"salvage",
 		"select":"select",
 		"size":"size",
 		"spoils":"spoils",
@@ -1067,6 +1068,7 @@
 		"outpostProperName":"Outpost",
 		
 		"resourcesAvailable":"Resources required (available)",
+		"resourcesRecovered":"Resources recovered",
 		"resourceConsumeNote":"All resources except crew will be consumed.",
 		"upkeepNote":"Monthly upkeep: %s",
 		"outpostComplete":"Your new outpost has been completed.",
@@ -1078,6 +1080,9 @@
 		"intelTitle":"Outpost",
 		"intelTitleLost":"lost",
 		"intelDesc":"You have an outpost $name in the $location. It serves as a location for stockpiling of supplies and fuel, and a temporary storage location for salvage.",
+		"intelDescLost":"The outpost is no longer operational.",
+		"intelButtonScuttle":"scuttle",
+		"intelPromptScuttle":"This will remotely shut down the station. All cargo will be lost.\n\nContinue?",
 	},	
 	"exerelin_raid":{		
 		"raid":"raid",

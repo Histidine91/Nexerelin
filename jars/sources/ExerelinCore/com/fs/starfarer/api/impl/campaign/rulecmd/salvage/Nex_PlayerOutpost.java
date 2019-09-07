@@ -1,6 +1,8 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
@@ -9,6 +11,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -34,13 +37,20 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 				return buildOutpostInfo(dialog.getInteractionTarget(), dialog.getTextPanel(), memoryMap);
 			case "build":
 				return buildOutpost(dialog.getInteractionTarget(), dialog);
+			case "dismantleInfo":
+				dismantleOutpostInfo(dialog.getInteractionTarget(), dialog.getTextPanel());
+				return true;
+			case "dismantle":
+				dismantleOutpost(dialog.getInteractionTarget(), dialog);
 		}
 			
 		return true;
 	}
 	
-	protected ResourceCostPanelAPI makeCostPanel(TextPanelAPI text, Color color, Color color2) {
-        ResourceCostPanelAPI cost = text.addCostPanel(Misc.ucFirst(PlayerOutpostIntel.getString("resourcesAvailable")),
+	protected ResourceCostPanelAPI makeCostPanel(TextPanelAPI text, Color color, Color color2, boolean dismantle) 
+	{
+		String key = dismantle ? "resourcesRecovered" : "resourcesAvailable";
+        ResourceCostPanelAPI cost = text.addCostPanel(Misc.ucFirst(PlayerOutpostIntel.getString(key)),
 			COST_HEIGHT, color, color2);
 		cost.setNumberOnlyMode(true);
 		cost.setWithBorder(false);
@@ -57,6 +67,12 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		}
 		cost.addCost(commodityId, "" + needed + " (" + available + ")", curr);
 		return available >= needed;
+	}
+	
+	protected void addCommodityEntry(ResourceCostPanelAPI cost, String commodityId, int amount)
+	{
+		Color c = Global.getSector().getPlayerFaction().getColor();
+		cost.addCost(commodityId, "" + amount, c);
 	}
 	
 	protected boolean hasResources(String commodityId, int needed)
@@ -79,24 +95,20 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 	 * @return True if outpost can be built, false otherwise.
 	 */
 	protected boolean buildOutpostInfo(SectorEntityToken target, TextPanelAPI text, Map<String, MemoryAPI> memoryMap)
-	{		
-		text.setFontVictor();
+	{
 		text.setFontSmallInsignia();
-
 		text.addParagraph(StringHelper.HR);
-		
-		// FIXME credit costs
 		
 		FactionAPI playerFaction = Global.getSector().getPlayerFaction();
 		Color color = playerFaction.getColor();
 		Color darkColor = playerFaction.getDarkUIColor();
-		ResourceCostPanelAPI cost = makeCostPanel(text, color, darkColor);
+		ResourceCostPanelAPI cost = makeCostPanel(text, color, darkColor, false);
 		boolean enoughMetals = addCostEntry(cost, Commodities.METALS, PlayerOutpostIntel.getMetalsRequired());
 		boolean enoughMachinery = addCostEntry(cost, Commodities.HEAVY_MACHINERY, PlayerOutpostIntel.getMachineryRequired());
 		boolean enoughSupplies = addCostEntry(cost, Commodities.SUPPLIES, PlayerOutpostIntel.getSuppliesRequired());
 		cost.update();
 		
-		cost = makeCostPanel(text, color, darkColor);
+		cost = makeCostPanel(text, color, darkColor, false);
 		boolean enoughCrew = addCostEntry(cost, Commodities.CREW, PlayerOutpostIntel.getCrewRequired());
 		boolean enoughCores = addCostEntry(cost, Commodities.GAMMA_CORE, PlayerOutpostIntel.getGammaCoresRequired());
 		cost.update();
@@ -141,11 +153,46 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		return true;
 	}
 	
-	protected boolean scrapOutpostInfo(SectorEntityToken target, TextPanelAPI text) {
-		return false;
+	protected void dismantleOutpostInfo(SectorEntityToken target, TextPanelAPI text) 
+	{
+		text.setFontSmallInsignia();
+		text.addParagraph(StringHelper.HR);
+		
+		FactionAPI playerFaction = Global.getSector().getPlayerFaction();
+		Color color = playerFaction.getColor();
+		Color darkColor = playerFaction.getDarkUIColor();
+		ResourceCostPanelAPI cost = makeCostPanel(text, color, darkColor, true);
+		addCommodityEntry(cost, Commodities.METALS, PlayerOutpostIntel.getMetalsRequired()/2);
+		addCommodityEntry(cost, Commodities.HEAVY_MACHINERY, PlayerOutpostIntel.getMachineryRequired()/2);
+		//cost.update();
+		
+		//cost = makeCostPanel(text, color, darkColor, true);
+		addCommodityEntry(cost, Commodities.SUPPLIES, PlayerOutpostIntel.getSuppliesRequired()/2);
+		addCommodityEntry(cost, Commodities.GAMMA_CORE, PlayerOutpostIntel.getGammaCoresRequired());
+		cost.update();
+		
+		text.addParagraph(StringHelper.HR);
+		text.setFontInsignia();
 	}
 	
-	protected boolean scrapOutpost(SectorEntityToken target, InteractionDialogAPI dialog) {
-		return false;
+	protected boolean dismantleOutpost(SectorEntityToken target, final InteractionDialogAPI dialog) {
+		final PlayerOutpostIntel intel = (PlayerOutpostIntel)target.getMarket().getMemoryWithoutUpdate()
+				.get(PlayerOutpostIntel.MARKET_MEMORY_FLAG);
+		
+		CargoAPI cargo = intel.getMarket().getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo();
+		cargo.addCommodity(Commodities.METALS, PlayerOutpostIntel.getMetalsRequired()/2);
+		cargo.addCommodity(Commodities.HEAVY_MACHINERY, PlayerOutpostIntel.getMachineryRequired()/2);
+		cargo.addCommodity(Commodities.SUPPLIES, PlayerOutpostIntel.getSuppliesRequired()/2);
+		cargo.addCommodity(Commodities.GAMMA_CORE, PlayerOutpostIntel.getGammaCoresRequired());
+		
+		dialog.getVisualPanel().showLoot(Misc.ucFirst(StringHelper.getString("salvage")),
+				cargo, false, true, true, new CoreInteractionListener() {
+			public void coreUIDismissed() {
+				intel.dismantleOutpost();
+				dialog.dismiss();
+			}
+		});
+		
+		return true;
 	}
 }

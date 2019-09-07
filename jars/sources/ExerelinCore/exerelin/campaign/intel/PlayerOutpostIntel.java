@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainPlugin;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -22,13 +21,14 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidBeltTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -59,6 +59,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	}));
 	public static final String ENTITY_TAG = "nex_playerOutpost";
 	public static final String MARKET_MEMORY_FLAG = "$nex_playerOutpost";
+	public static final String BUTTON_SCUTTLE = "scuttle";
 	
 	protected SectorEntityToken outpost;
 	protected MarketAPI market;
@@ -107,30 +108,36 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	}
 	
 	public static void registerOutpost(PlayerOutpostIntel outpost) {
-		Set<PlayerOutpostIntel> outposts = getOutposts();
-		outposts.add(outpost);
+		getOutposts().add(outpost);
+	}
+	
+	public static void deregisterOutpost(PlayerOutpostIntel outpost) {
+		getOutposts().remove(outpost);
 	}
 	
 	public PlayerOutpostIntel() {
 		
 	}
 	
-	protected Object readResolve() {
-		if (outpost == null && market != null)
-			outpost = market.getPrimaryEntity();
-		if (timestamp == null)
-			timestamp = Global.getSector().getClock().getTimestamp();
-		
-		if (!Global.getSector().getIntelManager().hasIntel(this)) {
-			Global.getSector().getIntelManager().addIntel(this, true);
+	// runcode exerelin.campaign.intel.PlayerOutpostIntel.reverseCompat()
+	public static void reverseCompat() 
+	{
+		for (PlayerOutpostIntel intel : getOutposts()) 
+		{
+			intel.market.getMemoryWithoutUpdate().set(MARKET_MEMORY_FLAG, intel);
+			if (!Global.getSector().getIntelManager().hasIntel(intel)) 
+			{
+				Global.getSector().getIntelManager().addIntel(intel, true);
+			}
 		}
-		
-		return this;
+	}
+	
+	public MarketAPI getMarket() {
+		return market;
 	}
 	
 	public SectorEntityToken createOutpost(CampaignFleetAPI fleet, SectorEntityToken target)
 	{
-		// FIXME: orbit period seems too fast
 		SectorEntityToken toOrbit = target;
 		float orbitRadius = 100;
 		float orbitPeriod = target.getOrbit().getOrbitalPeriod();
@@ -169,8 +176,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 			orbitRadius = Misc.getDistance(fleet.getLocation(), toOrbit.getLocation());
 		}
 		float angle = Misc.getAngleInDegrees(fleet.getLocation(), toOrbit.getLocation()) - 180;
-
-		// FIXME: name based on star system
+		
 		name += " " + getString("outpostProperName");
 		String id = "nex_outpost_" + (getOutposts().size() + 1);
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
@@ -196,7 +202,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		market.setPlanetConditionMarketOnly(false);
 		market.setEconGroup(market.getId());
 		market.getMemoryWithoutUpdate().set(DecivTracker.NO_DECIV_KEY, true);
-		market.getMemoryWithoutUpdate().set(MARKET_MEMORY_FLAG, true);
+		market.getMemoryWithoutUpdate().set(MARKET_MEMORY_FLAG, this);
 		
 		market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);	// not doing this makes market condition tooltips fail to appear
 		market.addSubmarket(Submarkets.LOCAL_RESOURCES);
@@ -215,7 +221,6 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		picker.addAll(INTERACTION_IMAGES);
 		outpost.setInteractionImage("illustrations", picker.pick());
 		outpost.setCustomDescriptionId("nex_playerOutpost");
-		outpost.getMemoryWithoutUpdate().set("$nex_outpost_intel", this);
 		
 		registerOutpost(this);
 		
@@ -224,6 +229,17 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		timestamp = Global.getSector().getClock().getTimestamp();
 		
 		return outpost;
+	}
+	
+	public void dismantleOutpost() {
+		Global.getSector().getEconomy().removeMarket(market);
+		Global.getSector().getEconomy().removeUpdateListener(this);
+		Global.getSector().getListenerManager().removeListener(this);
+		
+		Misc.fadeAndExpire(outpost);
+		deregisterOutpost(this);
+		
+		endAfterDelay();
 	}
 	
 	@Override
@@ -281,7 +297,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 			
 		}
 		if (!isAlive()) {
-			str += " - " + getString("intelTitleLost"); 
+			str += " - " + getString("intelTitleLost", true); 
 		}
 		return str;
 	}
@@ -297,8 +313,8 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		if (outpost != null)
 			info.addImage(outpost.getCustomEntitySpec().getSpriteName(), width, 96, opad);
 		
-		if (!isAlive() || outpost == null) {
-			// TODO: show offline message
+		if (!isAlive()) {
+			info.addPara(getString("intelDescLost"), opad);
 			return;
 		}
 		
@@ -315,9 +331,30 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		label.setHighlight(outpost.getName());
 		label.setHighlightColors(Misc.getHighlightColor());
 		
+		// scuttle button
+		ButtonAPI button = info.addButton(getString("intelButtonScuttle", true), 
+					BUTTON_SCUTTLE, c, d, (int)(width), 20f, opad * 2f);
+		
 		//display stored items
 		if (market != null)
 			Misc.addStorageInfo(info, c, d, market, true, false);
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		dismantleOutpost();
+		super.buttonPressConfirmed(buttonId, ui);
+	}
+	
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		return true;
+	}
+	
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		String str = getString("intelPromptScuttle");
+		prompt.addPara(str, 0);
 	}
 	
 	@Override
@@ -333,6 +370,12 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		if (outpost != null)
 			return outpost.getCustomEntitySpec().getSpriteName();
 		return getFactionForUIColors().getCrest();
+	}
+	
+	@Override
+	public SectorEntityToken getMapLocation(SectorMapAPI map) {
+		if (isAlive()) return outpost;
+		return null;
 	}
 	
 	public static String getString(String id) {
