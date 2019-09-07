@@ -582,6 +582,12 @@
 		"dispositionBad":"$TheFaction $isOrAre unfriendly towards us and will look to pick a fight.",
 		"dispositionWarRisk":"At current relations and disposition, $theFaction may declare war on us if the opportunity arises.",
 		
+		"morality":"morality",
+		"morality_good":"good",
+		"morality_neutral":"neutral",
+		"morality_amoral":"amoral",
+		"morality_evil":"evil",
+		
 		"dispTableHeader":"Dispositions towards other factions",
 		"dispTableOverall":"Overall",
 		"dispTableBase":"Base",

@@ -21,6 +21,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinFactionConfig.Morality;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -353,9 +354,18 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		outer.addSectionHeading(getSmallDescriptionTitle(), faction.getBaseUIColor(), 
 				faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
 		
-		// flag and basic info (alignments, revanchist claims)
+		// flag and basic info (alignments, morality, revanchist claims)
 		TooltipMakerAPI flagAndBasicInfo = outer.beginImageWithText(faction.getLogo(), 128);
 		generateAlignmentPara(flagAndBasicInfo, 0);
+		
+		// morality
+		Morality moral = ExerelinConfig.getExerelinFactionConfig(faction.getId()).morality;
+		String moralId = moral.toString();
+		String moralStr = getString("morality_" + moralId.toLowerCase(), true);
+		
+		String str = getString("morality", true) + ": " + moralStr;
+		flagAndBasicInfo.addPara(str, opad, moral.color, moralStr);
+		
 		generateClaimedMarketsPara(flagAndBasicInfo, opad);
 		
 		// end flag and basic info

@@ -21,6 +21,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import java.awt.Color;
 import java.io.IOException;
 import org.json.JSONObject;
 import java.util.*;
@@ -1139,5 +1140,16 @@ public class ExerelinFactionConfig
 		}
 	}
 	
-	public static enum Morality {GOOD, NEUTRAL, AMORAL, EVIL}
+	public static enum Morality {
+		GOOD(Color.CYAN), 
+		NEUTRAL(Color.GREEN), 
+		AMORAL(Color.ORANGE), 
+		EVIL(Color.RED);
+		
+		public final Color color;
+		
+		private Morality(Color color) {
+			this.color = color;
+		}
+	}
 }
