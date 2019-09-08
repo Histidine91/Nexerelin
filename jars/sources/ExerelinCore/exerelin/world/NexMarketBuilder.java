@@ -534,11 +534,15 @@ public class NexMarketBuilder
 		{
 			if (factionId.equals(Factions.PLAYER)) {
 				market.addIndustry(Industries.MILITARYBASE);
-				market.addIndustry(ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 1));
+				String stationId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 1);
+				if (stationId != null)
+					market.addIndustry(stationId);
 			}
 			else {
 				market.addIndustry(Industries.HIGHCOMMAND);
-				market.addIndustry(ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 2));
+				String stationId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 2);
+				if (stationId != null)
+					market.addIndustry(stationId);
 			}
 			
 			if (data == procGen.getHomeworld()) 

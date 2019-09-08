@@ -610,6 +610,7 @@ public class ExerelinFactionConfig
     public String getRandomDefenceStation(Random rand, int sizeIndex)
     {
         DefenceStationSet set = getRandomDefenceStationSet(rand);
+        if (set == null || set.industryIds.isEmpty()) return null;
         sizeIndex = Math.min(sizeIndex, set.industryIds.size() - 1);
         return set.industryIds.get(sizeIndex);
     }
