@@ -896,6 +896,7 @@
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
+		"marketDirectoryEntryDistOnly":"$market  ($distance LY)",
 		"marketDirectoryHidden":"$num hidden markets",
 		"hasBaseTip":"has military base",
 		

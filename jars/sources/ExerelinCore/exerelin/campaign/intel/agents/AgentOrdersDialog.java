@@ -503,11 +503,24 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		switch (action.getDefId()) {
 			case CovertActionType.TRAVEL:
-				for (Object marketRaw : targets) {
+				for (Object marketRaw : targets) 
+				{
 					MarketAPI market = (MarketAPI)marketRaw;
 					// don't overcomplicate it by displaying distance etc.
 					// we presume the player already knows where they want to send the agent
-					optionsList.add(new Pair<String, Object>(market.getName(), market));
+					
+					// changed my mind, distance is pretty important in random sector
+					String name;
+					if (agent.market != null) {
+						float dist = Misc.getDistanceLY(agent.market.getLocationInHyperspace(), market.getLocationInHyperspace());
+						name = StringHelper.getString("exerelin_markets", "marketDirectoryEntryDistOnly");
+						name = StringHelper.substituteToken(name, "$market", market.getName());
+						name = StringHelper.substituteToken(name, "$distance", String.format("%.1f", dist));
+					}
+					else
+						name = market.getName();
+					
+					optionsList.add(new Pair<String, Object>(name, market));
 				}
 				break;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
