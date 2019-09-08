@@ -482,11 +482,11 @@ nex_fleetRequest_proceed,DialogOptionSelected,$option == nex_fleetRequest_procee
 nex_decivEvent_opt,PopulateOptions,"$market.isPlanetConditionMarketOnly
 $market.mc:decivilized score:100
 Nex_DecivEvent hasEvent
-!HostileFleetNearbyAndAware",,One of the survivors' settlements on the surface is hailing your ship.,nex_decivEvent_interact:Answer the hail,
+!HostileFleetNearbyAndAware",,One of the survivors' settlements on the surface is hailing your ship.,8:nex_decivEvent_interact:Answer the hail,
 nex_decivEvent_opthostileFleetNearby,PopulateOptions,"$market.isPlanetConditionMarketOnly
 $market.mc:decivilized score:100
 Nex_DecivEvent hasEvent
-HostileFleetNearbyAndAware",SetEnabled nex_decivEvent_interact false,"One of the survivors' settlements on the surface is hailing your ship. But with a hostile fleet nearby, it's probably not something you have time to deal with right now.",nex_decivEvent_interact:Answer the hail,
+HostileFleetNearbyAndAware",SetEnabled nex_decivEvent_interact false,"One of the survivors' settlements on the surface is hailing your ship. But with a hostile fleet nearby, it's probably not something you have time to deal with right now.",8:nex_decivEvent_interact:Answer the hail,
 nex_decivEvent_init,DialogOptionSelected,$option == nex_decivEvent_interact,Nex_DecivEvent greet,"You open a comm link, your comms officer configuring the protocol to interface with whatever jury-rigged system the other party is using.",,
 nex_decivEvent_greetingFirstTime,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
 !Nex_DecivEvent wasCivilized",,"""Hello? Is this thing on?
@@ -1276,7 +1276,7 @@ CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of cou
 # end commission stuff,,,,,,
 ,,,,,,
 # Outposts,,,,,,
-nex_outpostOption,PopulateOptions,$nex_canMine,,,4:nex_outpostPreview:Construct an outpost,
+nex_outpostOption,PopulateOptions,$nex_canMine,,,7:nex_outpostPreview:Construct an outpost,
 nex_outpostOptionNearbyHostile,PopulateOptions,"$nex_canMine
 HostileFleetNearbyAndAware","SetEnabled nex_outpostPreview false
 SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movements, making construction of an outpost impossible.""",,,
@@ -1295,7 +1295,7 @@ UpdateMemory
 $tradeMode = OPEN 0
 ShowDefaultVisual",Outpost constructed.,exerelinMarketSpecialBack:Back,
 ,,,,,,
-nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,8:nex_outpostDismantle:Dismantle outpost,
+nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,13:nex_outpostDismantle:Dismantle outpost,
 nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"$menuState = nex_outpost 0
 Nex_PlayerOutpost dismantleInfo
 Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $market?"" ""Yes"" ""No""","You can dismantle this outpost, recovering the AI core(s) and half the resources used in its creation.
