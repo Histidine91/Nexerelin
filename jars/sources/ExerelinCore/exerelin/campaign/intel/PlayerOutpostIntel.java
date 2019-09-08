@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -162,12 +163,12 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 			else if (asteroidSource instanceof CampaignTerrainAPI) 
 			{
 				CampaignTerrainPlugin terrain = ((CampaignTerrainAPI)asteroidSource).getPlugin();
-				if (terrain instanceof AsteroidBeltTerrainPlugin)
+				if (terrain.getTerrainId().equals(Terrain.ASTEROID_BELT))
 				{
 					toOrbit = asteroidSource.getOrbitFocus();
 					orbitPeriod = target.getOrbit().getOrbitalPeriod();
 				}
-				else if (terrain instanceof AsteroidFieldTerrainPlugin)
+				else if (terrain.getTerrainId().equals(Terrain.ASTEROID_FIELD))
 				{
 					toOrbit = asteroidSource;
 					orbitPeriod = target.getOrbit().getOrbitalPeriod();
