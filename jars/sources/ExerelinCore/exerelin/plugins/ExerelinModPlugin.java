@@ -33,6 +33,7 @@ import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.battle.EncounterLootHandler;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
@@ -258,6 +259,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             sector.addTransientScript(new PlayerFactionSetupNag());
         
         sector.addTransientListener(new EncounterLootHandler());
+        EconomyInfoHelper.createInstance();
     }
     
     @Override
