@@ -81,7 +81,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         try {
             setupLists();
         } catch (JSONException | IOException ex) {
-            log.error(ex);
+            throw new RuntimeException(ex);
         }
     }
     

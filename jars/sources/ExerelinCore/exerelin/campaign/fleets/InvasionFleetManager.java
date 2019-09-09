@@ -824,7 +824,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					float newVal = ExerelinUtils.modifyMapEntry(pirateRage, factionId, rage);
 					//log.info("Incrementing " + rage + " rage from market " + market.getName() + 
 					//		" of faction " + market.getFaction().getDisplayName() + ", now " + newVal);
-					if (newVal > 100 &&!plugin.getIntel().getName().endsWith("Bounty Posted")) {
+					if (newVal > 100) {
 						spawnBaseStrikeFleet(market.getFaction(), plugin.getIntel().getMarket());
 					}
 				}

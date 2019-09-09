@@ -24,6 +24,7 @@ import exerelin.campaign.fleets.SuppressionFleetAI;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.campaign.intel.ConquestMissionIntel;
+import exerelin.campaign.intel.ConquestMissionManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.FactionBountyIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
@@ -115,6 +116,7 @@ public class XStreamConfig {
 		x.alias("NexFctnBntyIntl", FactionBountyIntel.class);
 		x.alias("NexTrbtIntl", TributeIntel.class);
 		x.alias("NexTrbtCond", TributeCondition.class);
+		x.alias("NexConqMssnMan", ConquestMissionManager.class);	// this will let me change its package later
 		x.alias("NexConqMssn", ConquestMissionIntel.class);
 		x.alias("NexPirActv", NexPirateActivity.class);
 		x.alias("NexPlyrOtpst", PlayerOutpostIntel.class);
