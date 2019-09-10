@@ -87,9 +87,13 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			CommodityMarketDataAPI data = com.getCommodityMarketData();
 			marketSharesByCommodity.put(commodityId, data.getMarketSharePercentPerFaction());
 			
-			for (MarketAPI producer : data.getMarkets()) {
+			for (MarketAPI producer : data.getMarkets()) 
+			{
+				// don't count illegal production
 				if (producer.getCommodityData(commodityId).isIllegal())
 					continue;
+				
+				// make sure supply is local
 				CommoditySourceType source = data.getMarketShareData(producer).getSource();
 				if (source != CommoditySourceType.LOCAL)
 					continue;
@@ -108,6 +112,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				
 				int output = producer.getCommodityData(commodityId).getAvailable();
 				
+				// create and store producer entry
 				ProducerEntry entry = new ProducerEntry(commodityId, factionId, producer, output);
 				producersByCommodity.get(commodityId).add(entry);
 				producersByFaction.get(factionId).add(entry);
@@ -137,6 +142,12 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction("hegemony");
+	/**
+	 * Gets a map of all commodities the specified faction produces 
+	 * and their highest output in that faction.
+	 * @param factionId
+	 * @return
+	 */
 	public Map<String, Integer> getCommoditiesProducedByFaction(String factionId) {
 		if (!factionProductionByFaction.containsKey(factionId))
 			return null;
@@ -153,6 +164,13 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getProducers("hegemony", "metals", 0);
+	/**
+	 * Gets a list of all markets of the specified faction producing the specified commodity.
+	 * @param factionId
+	 * @param commodityId
+	 * @param min Minimum amount of production to be considered.
+	 * @return
+	 */
 	public List<ProducerEntry> getProducers(String factionId, String commodityId, int min) {
 		List<ProducerEntry> results = new ArrayList<>();
 		logInfo(factionId + " producers of " + commodityId + ":");
@@ -167,6 +185,14 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getCompetingProducers("hegemony", "metals", 0);
+
+	/**
+	 * Gets a list of all markets NOT of the specified faction producing the specified commodity.
+	 * @param factionId
+	 * @param commodityId
+	 * @param min Minimum amount of production to be considered.
+	 * @return
+	 */
 	public List<ProducerEntry> getCompetingProducers(String factionId, String commodityId, int min) {
 		List<ProducerEntry> results = new ArrayList<>();
 		logInfo("Competitors with " + factionId + " for " + commodityId + ":");
@@ -180,7 +206,36 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		return results;
 	}
 	
+	/**
+	 * Gets a list of all producers which compete with the specified faction 
+	 * in any commodity the faction supplies.
+	 * @param factionId
+	 * @param min Minimum amount of production to be considered. 
+	 * Applies both to the list of commodities to be checked, 
+	 * and the producers to be returned.
+	 * @return
+	 */
+	public List<ProducerEntry> getCompetingProducers(String factionId, int min) {
+		List<ProducerEntry> results = new ArrayList<>();
+		Map<String, Integer> ourProduction = factionProductionByFaction.get(factionId);
+		Set<String> commodities = ourProduction.keySet();
+		for (String commodityId : commodities) {
+			if (ourProduction.get(commodityId) < min)
+				continue;
+			results.addAll(getCompetingProducers(factionId, commodityId, min));
+		}
+		
+		return results;
+	}
+	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getCompetingProducerFactions("hegemony", "metals");
+	/**
+	 * Gets all factions that compete with the specified faction in the specified commodity, 
+	 * and their market share of that commodity.
+	 * @param factionId
+	 * @param commodityId
+	 * @return
+	 */
 	public List<Pair<FactionAPI, Integer>> getCompetingProducerFactions(String factionId, String commodityId) {
 		List<Pair<FactionAPI, Integer>> results = new ArrayList<>();
 		logInfo("Competitors with " + factionId + " for " + commodityId + ":");
@@ -230,10 +285,10 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	}
 	
 	public static class ProducerEntry {
-		String commodityId;
-		String factionId;
-		MarketAPI market;
-		int output;
+		public String commodityId;
+		public String factionId;
+		public MarketAPI market;
+		public int output;
 		
 		public ProducerEntry(String commodityId, String factionId, MarketAPI market, int output)
 		{

@@ -53,14 +53,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		untilAutoresolve = 15f + 5f * (float) Math.random();
 	}
-	
-	protected Object readResolve() {
-		if (offFltIntel == null)
-			offFltIntel = (OffensiveFleetIntel)intel;
-		
-		return this;
-	}
-	
 
 	@Override
 	public void advance(float amount) {

@@ -12,6 +12,7 @@ import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.econ.RaidCondition;
+import exerelin.campaign.econ.ReinforcedDefenses;
 import exerelin.campaign.econ.TributeCondition;
 import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
@@ -58,10 +59,13 @@ import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
+import exerelin.campaign.intel.satbomb.SatBombActionStage;
+import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.campaign.submarkets.Nex_BlackMarketPlugin;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_MilitarySubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_OpenMarketPlugin;
+import exerelin.campaign.submarkets.Nex_StoragePlugin;
 
 public class XStreamConfig {
 	
@@ -99,6 +103,7 @@ public class XStreamConfig {
 		x.alias("NexMilSubmkt", Nex_MilitarySubmarketPlugin.class);
 		x.alias("NexBlackMkt", Nex_BlackMarketPlugin.class);
 		x.alias("NexLclRsrcsSubmkt", Nex_LocalResourcesSubmarketPlugin.class);
+		x.alias("NexStoreSubmkt", Nex_StoragePlugin.class);
 		
 		// events
 		// most of these will be deleted eventually
@@ -130,6 +135,8 @@ public class XStreamConfig {
 		x.alias("NexRaidAssmblStg", NexRaidAssembleStage.class);
 		x.alias("NexRaidActStg", NexRaidActionStage.class);
 		x.alias("NexBaseStrkIntl", BaseStrikeIntel.class);
+		x.alias("NexSatBombIntl", SatBombIntel.class);
+		x.alias("NexSatBombActStg", SatBombActionStage.class);
 		
 		// invasions
 		x.alias("NexInvIntl", InvasionIntel.class);
@@ -150,7 +157,7 @@ public class XStreamConfig {
 		*/
 		
 		// colony expeditions
-		x.alias("ColonyExpdIntl", ColonyExpeditionIntel.class);	
+		x.alias("ColonyExpdIntl", ColonyExpeditionIntel.class);
 		
 		// agents
 		x.alias("NexAgntIntl", AgentIntel.class);
@@ -173,6 +180,7 @@ public class XStreamConfig {
 		x.alias("DiploBrain", DiplomacyBrain.class);
 		x.alias("DiploDspsEntry", DiplomacyBrain.DispositionEntry.class);
 		x.alias("NexSBAI", Nex_SustainedBurnAbilityAI.class);
+		x.alias("NexReinDefCond", ReinforcedDefenses.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);

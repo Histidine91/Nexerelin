@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -22,6 +23,8 @@ import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
+import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
+import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -147,6 +150,12 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
 		
 		return fleet;
+	}
+	
+	@Override
+	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
+		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(fleet, route, (InvActionStage)action);
+		return raidAI;
 	}
 	
 	// intel long description in intel screen

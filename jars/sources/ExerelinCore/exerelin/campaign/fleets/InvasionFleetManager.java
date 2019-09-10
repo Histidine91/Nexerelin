@@ -47,6 +47,7 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -100,7 +101,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public static Logger log = Global.getLogger(InvasionFleetManager.class);
 	
-	protected final List<RaidIntel> activeIntel = new LinkedList();
+	protected final List<OffensiveFleetIntel> activeIntel = new LinkedList();
 	protected HashMap<String, Float> spawnCounter = new HashMap<>();
 	protected HashMap<String, Boolean> nextIsRaid = new HashMap<>();
 	protected HashMap<String, Float> pirateRage = new HashMap<>();
@@ -1013,6 +1014,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public int getNumLifetimeRaids() {
 		return lifetimeRaids;
+	}
+	
+	public List<OffensiveFleetIntel> getActiveIntelCopy() {
+		return new ArrayList<>(activeIntel);
 	}
 	
 	@Override

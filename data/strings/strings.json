@@ -314,13 +314,13 @@
 		"intelDesc_sabotageIndustry_failureDetected":"An agent sent by the $agentFaction to sabotage the $industry $onOrAt $market was seized by authorities. $TheFaction is regarding this as a hostile act.",
 		"intelDesc_sabotageIndustry_failureDetectedPlayer":"Your agent $agentName has been caught attempting to sabotage the $industry $onOrAt $market. $TheFaction is expected to respond forcefully.",
 		
-		"intelDesc_destroyCommodities_success":"An $agentFaction agent has destroyed a stockpile of $commodity $onOrAt $market. $Faction investigators are finding themselves stumped.",
+		"intelDesc_destroyCommodities_success":"A $agentFaction agent has destroyed a stockpile of $commodity $onOrAt $market. $Faction investigators are finding themselves stumped.",
 		"intelDesc_destroyCommodities_successPlayer":"Your agent $agentName has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities have their suspicions, but are unable to find any real evidence of $agentFaction involvement.",
 		"intelDesc_destroyCommodities_successDetected":"A $agentFaction agent has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities accuse $theAgentFaction of the crime.",
 		"intelDesc_destroyCommodities_successDetectedPlayer":"Your agent $agentName has destroyed a stockpile of $commodity $onOrAt $market. $Faction authorities have identified $theAgentFaction as responsible for the attack.",
 		"intelDesc_destroyCommodities_failure":"Attempts by an agent of $agentFaction to destroy $commodity stocked $onOrAt $market have failed. $Faction authorities have been unable to determine who was responsible, however.",
 		"intelDesc_destroyCommodities_failurePlayer":"Your agent $agentName has failed in their attempt to $commodity stocked $onOrAt $market. Fortunately, $theFaction has not traced the crime back to $agentFaction.",
-		"intelDesc_destroyCommodities_failureDetected":"$An agent of $agentFaction was arrested by $faction authorities while attempting to destroy stocks of $commodity $onOrAt $market.",
+		"intelDesc_destroyCommodities_failureDetected":"An agent of $theAgentFaction was arrested by $faction authorities while attempting to destroy stocks of $commodity $onOrAt $market.",
 		"intelDesc_destroyCommodities_failureDetectedPlayer":"$TheFaction counterintelligence has stopped your $agentName in an attempt to destroy $commodity stockpiled $onOrAt $market.",
 		
 		"intelDesc_infiltrateCell_success":"$AgentFaction intelligence has broken up a $faction cell on $market, a success cheered by the population.",

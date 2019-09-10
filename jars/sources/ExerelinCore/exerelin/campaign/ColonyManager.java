@@ -302,7 +302,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				}
 			}
 		}
-		log.info("Applying storage rebate: " + rebate);
+		//log.info("Applying storage rebate: " + rebate);
 		
 		if (rebate <= 0) return;
 		

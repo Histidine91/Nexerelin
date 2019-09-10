@@ -144,7 +144,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (getDef().costScaling) {
 			time *= 1 + 0.25f * (market.getSize() - 3);
 		}
-		if (CovertOpsManager.DEBUG_MODE)
+		if (CovertOpsManager.isDebugMode())
 			time *= 0.1f;
 		
 		return time;

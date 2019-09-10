@@ -261,7 +261,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             sector.addTransientScript(new PlayerFactionSetupNag());
         
         sector.addTransientListener(new EncounterLootHandler());
-        //EconomyInfoHelper.createInstance();
+        EconomyInfoHelper.createInstance();
     }
     
     @Override

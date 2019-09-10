@@ -24,6 +24,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -33,10 +34,17 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.EconomyInfoHelper.ProducerEntry;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.campaign.intel.agents.CovertActionIntel;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -80,19 +88,19 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final boolean DEBUG_MODE = false;
     
     public static final float NPC_EFFECT_MULT = 1f;
-    public static final List<String> DISALLOWED_FACTIONS;
+    public static final Set<String> DISALLOWED_FACTIONS;
      
     public static final List<CovertActionDef> actionDefs = new ArrayList<>();
     public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
     public static final Map<String, Float> industrySuccessMods = new HashMap<>();
     public static final Map<String, Float> industryDetectionMods = new HashMap<>();
-	
-	protected static float baseInjuryChance, baseInjuryChanceFailed;
+    
+    protected static float baseInjuryChance, baseInjuryChanceFailed;
     
     protected Set<AgentIntel> agents = new HashSet<>();
     
-    protected static float baseInterval = 45f;
-    protected float interval = baseInterval;
+    protected static float baseInterval;
+    protected float interval;
     protected final IntervalUtil intervalUtil;
     protected Random random = new Random();
     
@@ -101,7 +109,17 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     static {
         String[] factions = {Factions.NEUTRAL, Factions.PLAYER, Factions.INDEPENDENT};    //{"templars", "independent"};
-        DISALLOWED_FACTIONS = Arrays.asList(factions);
+        DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(factions));
+        
+        for (FactionAPI faction: Global.getSector().getAllFactions())
+        {
+            String factionId = faction.getId();
+            ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+            if (!factionConf.allowAgentActions) 
+                DISALLOWED_FACTIONS.add(factionId);
+            if (ExerelinUtilsFaction.isPirateFaction(factionId)) // pirates aren't targeted for covert warfare
+                DISALLOWED_FACTIONS.add(factionId);
+        }
         
         try {
             loadSettings();
@@ -200,6 +218,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		return baseInjuryChanceFailed;
 	}
 	
+	public static boolean isDebugMode() {
+		return DEBUG_MODE;
+	}
+	
 	protected Object readResolve() {
 		if (random == null)
 			random = new Random();
@@ -221,6 +243,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	public CovertOpsManager()
 	{
 		super(true);
+		interval = getCovertWarfareInterval();
 		intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
 		updateBaseMaxAgents();
 	}
@@ -228,21 +251,155 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	public MutableStat getMaxAgents() {
 		return Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents");
 	}
+	
+	public WeightedRandomPicker<FactionAPI> generateTargetFactionPicker(String actionType, 
+			FactionAPI agentFaction, List<FactionAPI> factions) 
+	{
+		WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>(random);
+		int factionCount = 0;
+		DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(agentFaction.getId());
+				
+		for (FactionAPI faction: factions)
+		{
+			if (faction == agentFaction) continue;
+			String factionId = faction.getId();
+			if (DISALLOWED_FACTIONS.contains(factionId)) continue;
+			
+			RepLevel repLevel = faction.getRelationshipLevel(agentFaction);
+			float dominance = DiplomacyManager.getDominanceFactor(faction.getId());
+			float disposition = brain.getDisposition(factionId).disposition.getModifiedValue();
+			
+			float weight = 1f;
+			switch (actionType) {
+				case CovertActionType.RAISE_RELATIONS:
+					switch (repLevel) {
+						case FAVORABLE:
+						case WELCOMING:
+							weight = 1f;
+							break;
+						case NEUTRAL:
+							weight = 1.5f;
+							break;
+						case SUSPICIOUS:
+							weight = 2f;
+							break;
+						case INHOSPITABLE:
+							weight = 3f;
+							break;
+						default:
+							continue;
+					}
+					if (disposition < DiplomacyBrain.DISLIKE_THRESHOLD)
+						weight *= 0.5f;
+					
+					weight *= (1.25f - dominance);
+					break;
+
+				case CovertActionType.LOWER_RELATIONS:
+					switch (repLevel) {
+						case FAVORABLE:
+							weight = 0.25f;
+							break;
+						case NEUTRAL:
+							weight = 1f;
+							break;
+						case SUSPICIOUS:
+							weight = 1.5f;
+							break;
+						case INHOSPITABLE:
+							weight = 2f;
+							break;
+						case HOSTILE:
+							weight = 2.5f;
+							break;
+						case VENGEFUL:
+							weight = 3f;
+							break;
+						default:
+							continue;
+					}
+					if (disposition > DiplomacyBrain.LIKE_THRESHOLD)
+						weight *= 0.5f;
+					
+					weight *= (1 + dominance*2);
+					break;
+				
+				case CovertActionType.DESTROY_COMMODITY_STOCKS:
+				case CovertActionType.SABOTAGE_INDUSTRY:
+					// we shouldn't be here; these have their own handling
+					break;
+
+				case CovertActionType.DESTABILIZE_MARKET:
+					switch (repLevel) {
+						case INHOSPITABLE:
+							weight = 1f;
+							break;
+						case HOSTILE:
+							weight = 3f;
+							break;
+						case VENGEFUL:
+							weight = 5f;
+							break;
+						default:
+							continue;
+					}
+					weight *= (1 + dominance);
+					break;
+
+				case CovertActionType.INSTIGATE_REBELLION:
+					switch (repLevel) {
+						case INHOSPITABLE:
+							weight = 1;
+							break;
+						case HOSTILE:
+							weight = 3;
+							break;
+						case VENGEFUL:
+							weight = 5;
+							break;
+						default:
+							continue;
+					}
+					weight *= (1 + dominance);
+					break;
+
+				default:
+					break;
+			}
+			if (weight <= 0) continue;
+			
+			// economic weighting
+			if (actionType.equals(CovertActionType.DESTROY_COMMODITY_STOCKS) 
+					|| actionType.equals(CovertActionType.SABOTAGE_INDUSTRY))
+			{
+				weight *= EconomyInfoHelper.getInstance().getCompetitionFactor(agentFaction.getId(), factionId);
+			}
+			
+			if (ExerelinUtilsFaction.isPirateFaction(factionId))
+				weight *= 0.25f;	// reduces factions constantly targeting pirates for covert action
+			
+			if (weight <= 0) continue;
+			picker.add(faction, weight);
+			factionCount++;
+		}
+		
+		log.info("\tNumber of target factions: " + factionCount);
+		return picker;
+	}
     
     public void handleNpcCovertActions()
     {
+        if (Global.getSector().isInNewGameAdvance())
+            return;
+        
         log.info("Starting covert warfare event creation");
         SectorAPI sector = Global.getSector();
-        WeightedRandomPicker<FactionAPI> agentFactionPicker = new WeightedRandomPicker();
-        WeightedRandomPicker<FactionAPI> targetFactionPicker = new WeightedRandomPicker();
-        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
-        WeightedRandomPicker<String> actionPicker = new WeightedRandomPicker();
+        WeightedRandomPicker<FactionAPI> agentFactionPicker = new WeightedRandomPicker(random);
+        WeightedRandomPicker<String> actionPicker = new WeightedRandomPicker(random);
         
         List<FactionAPI> factions = new ArrayList<>();
         for( String factionId : SectorManager.getLiveFactionIdsCopy())
             factions.add(sector.getFaction(factionId));
-        
-        List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 
         actionPicker.add(CovertActionType.RAISE_RELATIONS, 1.2f);
         actionPicker.add(CovertActionType.LOWER_RELATIONS, 1.5f);
@@ -272,132 +429,52 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         if (factionCount < 2) return;
         
         FactionAPI agentFaction = agentFactionPicker.pick();
+        log.info("\tAgent faction: " + agentFaction.getDisplayName());
         log.info("\tTrying action: " + actionType);
         
-        factionCount = 0;
-        for (FactionAPI faction: factions)
-        {
-            String factionId = faction.getId();
-            ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
-            if (factionConf != null && !factionConf.allowAgentActions) continue;
-            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;  // pirates aren't targeted for covert warfare
-            if (DISALLOWED_FACTIONS.contains(faction.getId())) continue;
-            if (faction == agentFaction) continue;
-            
-            RepLevel repLevel = faction.getRelationshipLevel(agentFaction);
-            float dominance = DiplomacyManager.getDominanceFactor(faction.getId());
-            float weight = 1f;
-            if (actionType.equals(CovertActionType.RAISE_RELATIONS))
-            {
-                if (repLevel == RepLevel.FAVORABLE || repLevel == RepLevel.WELCOMING) weight = 1f;
-                else if (repLevel == RepLevel.NEUTRAL) weight = 1.5f;
-                else if (repLevel == RepLevel.SUSPICIOUS) weight = 2f;
-                else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
-                else continue;
-                
-                weight *= (1.25f - dominance);
-            }
-            else if (actionType.equals(CovertActionType.LOWER_RELATIONS))
-            {
-                if (repLevel == RepLevel.FAVORABLE) weight = 0.25f;
-                else if (repLevel == RepLevel.NEUTRAL) weight = 1f;
-                else if (repLevel == RepLevel.SUSPICIOUS) weight = 1.5f;
-                else if (repLevel == RepLevel.INHOSPITABLE) weight = 2f;
-                else if (repLevel == RepLevel.HOSTILE) weight = 2.5f;
-                else if (repLevel == RepLevel.VENGEFUL) weight = 3f;
-                else continue;
-                
-                weight *= (1 + dominance*2);
-            }
-            else if (actionType.equals(CovertActionType.DESTABILIZE_MARKET)
-                    || actionType.equals(CovertActionType.DESTROY_COMMODITY_STOCKS)
-                    || actionType.equals(CovertActionType.SABOTAGE_INDUSTRY))
-            {
-                if (repLevel == RepLevel.INHOSPITABLE) weight = 1f;
-                else if (repLevel == RepLevel.HOSTILE) weight = 3f;
-                else if (repLevel == RepLevel.VENGEFUL) weight = 5f;
-                else continue;
-                
-                weight *= (1 + dominance);
-            }
-            else if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
-            {
-                if (repLevel == RepLevel.INHOSPITABLE) weight = 1;
-                else if (repLevel == RepLevel.HOSTILE) weight = 3;
-                else if (repLevel == RepLevel.VENGEFUL) weight = 5;
-                else continue;
-                
-                weight *= (1 + dominance);
-            }
-            if (ExerelinUtilsFaction.isPirateFaction(factionId))
-                weight *= 0.25f;    // reduces factions constantly targeting pirates for covert action
-            
-            if (weight <= 0) continue;
-            targetFactionPicker.add(faction, weight);
-            factionCount++;
-        }
-        
-        log.info("\tNumber of target factions: " + factionCount);
-        if (factionCount < 1 || (actionType.equals(CovertActionType.LOWER_RELATIONS) && factionCount < 2)) 
-            return;
-        
-        FactionAPI targetFaction = targetFactionPicker.pickAndRemove();
-        FactionAPI thirdFaction = null;
-        if (factionCount >= 2)
-            thirdFaction = targetFactionPicker.pickAndRemove();
-
-        log.info("\tTarget faction: " + targetFaction.getDisplayName());
-        
-        for (MarketAPI market:markets)
-        {
-            if (market.getFaction() != targetFaction)
-                continue;
-            if (market.isHidden()) continue;
-            
-            float weight = 1;
-            // rebellion special handling
-            if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
-            {
-                if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
-                    continue;
-                
-                if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
-                    weight *= 4;
-            }
-            marketPicker.add(market, weight);
-        }
-        
-        MarketAPI market = marketPicker.pick();
-        if (market == null)
-        {
-            log.info("\tNo market available");
+        Map<String, Object> targetData = pickTarget(agentFaction, factions, actionType);
+        if (targetData == null) {
+            log.info("\tFailed to find target data for covert action");
             return;
         }
+        
+        FactionAPI targetFaction = (FactionAPI)targetData.get("targetFaction");
+        MarketAPI market = (MarketAPI)targetData.get("market");
+        if (targetFaction == null || market == null) 
+            return;
         
         // do stuff
-		log.info("\tLaunching covert action: " + actionType);
 		CovertActionIntel intel = null;
 		switch (actionType) {
 			case CovertActionType.RAISE_RELATIONS:
 				intel = new RaiseRelations(null, market, agentFaction, targetFaction, agentFaction, false, null);
 				break;
 			case CovertActionType.LOWER_RELATIONS:
-				Map<String, Object> params = new HashMap<>();
-				//params.put("thirdFaction", thirdFaction);
-				intel = new LowerRelations(null, market, agentFaction, targetFaction, thirdFaction, false, params);
+				FactionAPI thirdFaction = (FactionAPI)targetData.get("thirdFaction");
+				if (thirdFaction == null) {
+					log.info("\tNo third faction to lower relations with");
+					return;
+				}
+				intel = new LowerRelations(null, market, agentFaction, targetFaction, thirdFaction, false, null);
 				break;
 			case CovertActionType.DESTABILIZE_MARKET:
 				intel = new DestabilizeMarket(null, market, agentFaction, targetFaction, false, null);
 				break;
 			case CovertActionType.SABOTAGE_INDUSTRY:
-				Industry target = pickIndustryToSabotage(market);
-				if (target != null)
-					intel = new SabotageIndustry(null, market, target, agentFaction, targetFaction, false, null);
+				Industry target = (Industry)targetData.get("industry");
+				if (target == null) {
+					log.info("\tNo industry to sabotage");
+					return;
+				}
+				intel = new SabotageIndustry(null, market, target, agentFaction, targetFaction, false, null);
 				break;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
-				String commodityId = pickCommodityToDestroy(market);
-				if (commodityId != null)
-					intel = new DestroyCommodityStocks(null, market, commodityId, agentFaction, targetFaction, false, null);
+				String commodityId = (String)targetData.get("commodity");
+				if (commodityId == null) {
+					log.info("\tNo commodity to destroy");
+					return;
+				}
+				intel = new DestroyCommodityStocks(null, market, commodityId, agentFaction, targetFaction, false, null);
 				break;
 			case CovertActionType.INSTIGATE_REBELLION:
 				intel = new InstigateRebellion(null, market, agentFaction, targetFaction, false, null);
@@ -406,31 +483,214 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				break;
 		}
 		if (intel != null) {
+			log.info("\tLaunching covert action: " + actionType);
 			intel.activate();
 			intel.execute();
 		}
-    }
+	}
 	
-	public static Industry pickIndustryToSabotage(MarketAPI market) {
-		WeightedRandomPicker<Industry> picker = new WeightedRandomPicker<>();
-		for (Industry ind : market.getIndustries()) {
-			if (!ind.canBeDisrupted()) continue;
-			if (ind.getSpec().hasTag(Industries.TAG_STATION))
+	/**
+	 * Picks a military structure/industry to sabotage, if we have one or more ongoing invasions or 
+	 * raids against the specified faction.
+	 * @param agentFaction
+	 * @return
+	 */
+	public Industry pickMilitarySabotageTarget(FactionAPI agentFaction) 
+	{
+		WeightedRandomPicker<Industry> picker = new WeightedRandomPicker<>(random); 
+		List<OffensiveFleetIntel> offenses = InvasionFleetManager.getManager().getActiveIntelCopy();
+		
+		for (OffensiveFleetIntel off : offenses)
+		{
+			if (off instanceof DefenseFleetIntel || off instanceof ColonyExpeditionIntel)
 				continue;
-			picker.add(ind, 1);
+			
+			//if (off.getFaction() != agentFaction) continue;
+			
+			
+			if (off.getTarget() == null) continue;
+			FactionAPI targetFaction = off.getTarget().getFaction();
+			if (!targetFaction.isHostileTo(agentFaction))
+				continue;
+			if (DISALLOWED_FACTIONS.contains(targetFaction.getId())) continue;
+			
+			float weight = off.getTarget().getSize();
+			if (off instanceof RaidIntel) weight *= 0.5f;
+			
+			for (Industry ind : off.getTarget().getIndustries()) {
+				String id = ind.getId();
+				if (ind.getSpec().hasTag(Industries.TAG_GROUNDDEFENSES) || id.equals(Industries.PATROLHQ)
+						|| id.equals(Industries.MILITARYBASE) || id.equals(Industries.HIGHCOMMAND))
+					picker.add(ind, weight);
+			}
+		}
+		
+		picker.add(null, 5);
+		return picker.pick();
+	}
+	
+	public ProducerEntry pickEconomicSabotageTarget(FactionAPI agentFaction) {
+		WeightedRandomPicker<ProducerEntry> picker = new WeightedRandomPicker<>(random);
+		Map<String, Integer> commoditiesWeProduce = EconomyInfoHelper.getInstance()
+				.getCommoditiesProducedByFaction(agentFaction.getId());
+		
+		for (ProducerEntry prod : EconomyInfoHelper.getInstance().getCompetingProducers(agentFaction.getId(), 2)) 
+		{
+			if (DISALLOWED_FACTIONS.contains(prod.factionId)) continue;
+			
+			float weight = 1;
+			RepLevel repLevel = agentFaction.getRelationshipLevel(prod.factionId);
+			switch (repLevel) {
+				case NEUTRAL:
+					weight = 0.25f;
+					break;
+				case SUSPICIOUS:
+					weight = 1f;
+					break;
+				case INHOSPITABLE:
+					weight = 2f;
+					break;
+				case HOSTILE:
+					weight = 3f;
+					break;
+				case VENGEFUL:
+					weight = 5f;
+					break;
+				default:
+					continue;
+			}
+			
+			weight *= prod.output;
+			if (commoditiesWeProduce.containsKey(prod.commodityId))
+				weight += commoditiesWeProduce.get(prod.commodityId);
+			
+			picker.add(prod, weight);
 		}
 		return picker.pick();
 	}
 	
-	public static String pickCommodityToDestroy(MarketAPI market) {
-		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-		for (CommodityOnMarketAPI commodity : market.getCommoditiesCopy()) {
-			if (commodity.isNonEcon() || commodity.isIllegal()) continue;
-			if (commodity.isPersonnel()) continue;
-			if (commodity.getAvailable() < 2) continue;
-			picker.add(commodity.getId(), commodity.getAvailable());
+	/**
+	 * Picks an appropriate target for our agent action.
+	 * @param agentFaction
+	 * @param factions
+	 * @param actionType
+	 * @return A {@code HashMap} containing targeting details (faction, market, industry, etc.) as appropriate
+	 */
+	public Map<String, Object> pickTarget(FactionAPI agentFaction, List<FactionAPI> factions, 
+			String actionType) 
+	{
+		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+		Map<String, Object> result = new HashMap<>();
+		boolean isDestroyStocks = actionType.equals(CovertActionType.DESTROY_COMMODITY_STOCKS);
+		boolean isSabotage = actionType.equals(CovertActionType.SABOTAGE_INDUSTRY);
+		
+		// Sabotage industry: Try to destroy military targets to clear way for any invasions/raids we have ongoing
+		if (isSabotage) {
+			Industry ind = pickMilitarySabotageTarget(agentFaction);
+			if (ind != null) {
+				log.info("\tFound military target: " + ind.getCurrentName() 
+						+ " on " + ind.getMarket().getName());
+				result.put("industry", ind);
+				result.put("market", ind.getMarket());
+				result.put("targetFaction", ind.getMarket().getFaction());
+				return result;
+			}
 		}
-		return picker.pick();
+		
+		// Sabotage industry or destroy commodity stocks: Attack competitors
+		if (isDestroyStocks || isSabotage)
+		{
+			ProducerEntry target = pickEconomicSabotageTarget(agentFaction);
+			if (target != null) 
+			{
+				if (isDestroyStocks) {
+					log.info("\tFound commodity to destroy: " + target.commodityId 
+									+ " on " + target.market.getName());
+					result.put("commodity", target.commodityId);
+					result.put("market", target.market);
+					result.put("targetFaction", target.market.getFaction());
+					return result;
+				}
+				else if (isSabotage) 
+				{
+					// kill the spaceport?
+					if (target.market.hasSpaceport() && random.nextFloat() < 0.35f) 
+					{
+						Industry ind = target.market.getIndustry(Industries.MEGAPORT);
+						if (ind == null) ind = target.market.getIndustry(Industries.SPACEPORT);
+						if (ind != null) {
+							log.info("\tSabotaging spaceport on " + target.market.getName());
+							result.put("industry", ind);
+						}
+					}
+					// or find the industry producing this stuff
+					else for (Industry ind : target.market.getIndustries()) 
+					{
+						MutableCommodityQuantity supply = ind.getSupply(target.commodityId);
+						if (supply != null && supply.getQuantity().getModifiedInt() >= target.output)
+						{
+							log.info("\tFound economic target: " + ind.getCurrentName() 
+									+ " on " + ind.getMarket().getName());
+							result.put("industry", ind);
+							break;
+						}
+					}
+					result.put("market", target.market);
+					result.put("targetFaction", target.market.getFaction());
+					return result;
+				}
+			}
+		}
+		
+		// Other action: do whatever seems useful
+		else
+		{
+			FactionAPI targetFaction = null, thirdFaction = null;
+			int factionCount = 0;
+			WeightedRandomPicker<FactionAPI> targetFactionPicker = generateTargetFactionPicker(actionType, agentFaction, factions);
+			factionCount = targetFactionPicker.getItems().size();
+			if (factionCount < 1 || (actionType.equals(CovertActionType.LOWER_RELATIONS) && factionCount < 2))
+			{
+				log.info("\tFailed to find target faction(s)");
+				return null;
+			}
+			
+			targetFaction = targetFactionPicker.pickAndRemove();
+			result.put("targetFaction", targetFaction);
+			if (factionCount >= 2) {
+				thirdFaction = targetFactionPicker.pickAndRemove();
+				result.put("thirdFaction", thirdFaction);
+			}
+
+			log.info("\tTarget faction: " + targetFaction.getDisplayName());
+			
+			WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker(random);
+			for (MarketAPI market: markets)
+			{
+				if (market.getFaction() != targetFaction)
+					continue;
+				if (market.isHidden()) continue;
+
+				float weight = 1;
+				// rebellion special handling
+				if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
+				{
+					if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
+						continue;
+
+					if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
+						weight *= 4;
+				}
+				marketPicker.add(market, weight);
+			}
+			MarketAPI market = marketPicker.pick();
+			if (market == null) {
+				log.warn("\tFailed to find target market");
+			}
+			result.put("market", market);
+		}
+		
+		return result;
 	}
 	
 	public static Random getRandom(MarketAPI market) {
@@ -448,7 +708,6 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         handleNpcCovertActions();
         
         interval = getCovertWarfareInterval();
-		if (DEBUG_MODE) interval = 2;
         intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
     }
 	
@@ -463,18 +722,18 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			marketDetectionMods.put(market, new MutableStat(0));
 		return marketDetectionMods.get(market);
 	}
-    
-    @Override
-    public boolean isDone()
-    {
-        return false;
-    }
-    
-    @Override
-    public boolean runWhilePaused()
-    {
-        return false;
-    }
+	
+	@Override
+	public boolean isDone()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean runWhilePaused()
+	{
+		return false;
+	}
 	
 	// Agent salaries
 	@Override
@@ -510,6 +769,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public float getCovertWarfareInterval()
     {
+        if (DEBUG_MODE) return 2;
         int numFactions = SectorManager.getLiveFactionIdsCopy().size() - 2;
         if (numFactions < 0) numFactions = 0;
         return baseInterval * (float)Math.pow(0.95, numFactions);
@@ -553,12 +813,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     }
 	
 	public static CovertOpsManager create()
-    {
-        Map<String, Object> data = Global.getSector().getPersistentData();
-        CovertOpsManager manager = new CovertOpsManager();
+	{
+		Map<String, Object> data = Global.getSector().getPersistentData();
+		CovertOpsManager manager = new CovertOpsManager();
 		data.put(MANAGER_MAP_KEY, manager);
-        return manager;
-    }
+		return manager;
+	}
 	
 	public static List<AgentIntel> getAgentsStatic() {
 		List<AgentIntel> agents = new ArrayList<>();
@@ -626,5 +886,5 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		public Pair<Float, Float> effect;
 		public Pair<Float, Float> repLossOnDetect;
 	}
-    
+	
 }
