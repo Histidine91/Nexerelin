@@ -911,6 +911,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static void notifyMarketCaptured(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner)
     {
         getManager().handleMarketCapture(market, oldOwner, newOwner);
+        for (DiplomacyBrain brain : getManager().diplomacyBrains.values())
+        {
+            brain.updateAllDispositions(0);
+        }
     }
     
     public static float getWarWeariness(String factionId)
