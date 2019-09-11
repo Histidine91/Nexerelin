@@ -482,11 +482,11 @@ nex_fleetRequest_proceed,DialogOptionSelected,$option == nex_fleetRequest_procee
 nex_decivEvent_opt,PopulateOptions,"$market.isPlanetConditionMarketOnly
 $market.mc:decivilized score:100
 Nex_DecivEvent hasEvent
-!HostileFleetNearbyAndAware",,One of the survivors' settlements on the surface is hailing your ship.,8:nex_decivEvent_interact:Answer the hail,
+!HostileFleetNearbyAndAware",,One of the survivors' settlements on the surface is hailing your ship.,nex_decivEvent_interact:Answer the hail,
 nex_decivEvent_opthostileFleetNearby,PopulateOptions,"$market.isPlanetConditionMarketOnly
 $market.mc:decivilized score:100
 Nex_DecivEvent hasEvent
-HostileFleetNearbyAndAware",SetEnabled nex_decivEvent_interact false,"One of the survivors' settlements on the surface is hailing your ship. But with a hostile fleet nearby, it's probably not something you have time to deal with right now.",8:nex_decivEvent_interact:Answer the hail,
+HostileFleetNearbyAndAware",SetEnabled nex_decivEvent_interact false,"One of the survivors' settlements on the surface is hailing your ship. But with a hostile fleet nearby, it's probably not something you have time to deal with right now.",nex_decivEvent_interact:Answer the hail,
 nex_decivEvent_init,DialogOptionSelected,$option == nex_decivEvent_interact,Nex_DecivEvent greet,"You open a comm link, your comms officer configuring the protocol to interface with whatever jury-rigged system the other party is using.",,
 nex_decivEvent_greetingFirstTime,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
 !Nex_DecivEvent wasCivilized",,"""Hello? Is this thing on?
