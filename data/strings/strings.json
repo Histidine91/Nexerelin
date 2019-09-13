@@ -967,6 +967,7 @@
 	
 	"exerelin_ngc":{
 		"factions":"factions",
+		"mainFactions":"main factions",
 		"randomFaction":"random faction",
 		"ownFaction":"own faction",
 		"freeStart":"free start",
