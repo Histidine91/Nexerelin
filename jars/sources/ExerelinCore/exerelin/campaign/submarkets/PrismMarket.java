@@ -58,7 +58,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
     public static final String BLUEPRINTS_BLACKLIST = "data/config/prism/prism_blueprints_blacklist.csv";
     public static final String FACTION_WHITELIST = "data/config/prism/prism_factions_whitelist.csv";
-	public static final String BLUEPRINTS_VALUES = "data/config/prism/prism_blueprints_values.csv";
+    public static final String BLUEPRINTS_VALUES = "data/config/prism/prism_blueprints_values.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     public static final Set<String> DISALLOWED_PREFIXES = new HashSet<>(Arrays.asList(new String[] {
         "tem_"
@@ -71,7 +71,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     protected static Set<String> restrictedShips;
     protected static Set<String> restrictedBlueprints;
     protected static Set<String> allowedFactions;
-	protected static Map<String, Float> blueprintValues;
+    protected static Map<String, Float> blueprintValues;
     
     protected static Set<SubmarketAPI> cachedSubmarkets = null;
     
@@ -81,7 +81,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
         try {
             setupLists();
         } catch (JSONException | IOException ex) {
-            throw new RuntimeException(ex);
+            log.error(StringHelper.getString("exerelin_misc", "errorPrismLoad"), ex);
+            // causes class to fail to load with a NoClassDefFoundError
+            // throw new RuntimeException();
         }
     }
     
@@ -494,9 +496,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
             Factions.HEGEMONY, Factions.TRITACHYON, Factions.PERSEAN, Factions.DIKTAT,
             Factions.INDEPENDENT, Factions.LUDDIC_CHURCH, Factions.LUDDIC_PATH, Factions.LIONS_GUARD
         }));
-		
-		blueprintValues = new HashMap<>();
         
+        blueprintValues = new HashMap<>();
+        
+        log.info("Loading whitelisted factions");
         JSONArray factions = Global.getSettings().getMergedSpreadsheetDataForMod("id", 
                 FACTION_WHITELIST, ExerelinConstants.MOD_ID);
 
@@ -506,25 +509,28 @@ public class PrismMarket extends BaseSubmarketPlugin {
             log.info("Added to faction whitelist: " + row.getString("id"));
         }
         
+        log.info("Loading blacklisted weapons");
         JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
                 WEAPONS_BLACKLIST, ExerelinConstants.MOD_ID);
         for (int x = 0; x < csv.length(); x++)
         {
             JSONObject row = csv.getJSONObject(x);
             restrictedWeapons.add(row.getString("id"));
-			restrictedBlueprints.add(row.getString("id"));
+            restrictedBlueprints.add(row.getString("id"));
         }
 
         // Restricted ships
+        log.info("Loading blacklisted ships");
         csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
                 SHIPS_BLACKLIST, ExerelinConstants.MOD_ID);
         for (int x = 0; x < csv.length(); x++)
         {
             JSONObject row = csv.getJSONObject(x);
             restrictedShips.add(row.getString("id"));
-			restrictedBlueprints.add(row.getString("id"));
+            restrictedBlueprints.add(row.getString("id"));
         }
         
+        log.info("Loading blacklisted blueprints");
         csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
                 BLUEPRINTS_BLACKLIST, ExerelinConstants.MOD_ID);
         for (int x = 0; x < csv.length(); x++)
@@ -532,8 +538,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
             JSONObject row = csv.getJSONObject(x);
             restrictedBlueprints.add(row.getString("id"));
         }
-		
-		csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
+        
+        log.info("Loading custom blueprint values");
+        csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
                 BLUEPRINTS_VALUES, ExerelinConstants.MOD_ID);
         for (int x = 0; x < csv.length(); x++)
         {
