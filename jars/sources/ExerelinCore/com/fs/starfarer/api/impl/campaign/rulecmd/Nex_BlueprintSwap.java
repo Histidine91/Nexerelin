@@ -419,7 +419,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (!wing.hasTag("rare_bp") || wing.hasTag(Tags.NO_DROP) || wing.hasTag(Tags.NO_BP_DROP))
 				continue;
 			String wingId = wing.getId();
-			if (playerFaction.knowsWeapon(wingId) || banned.contains(wingId)) continue;
+			if (playerFaction.knowsFighter(wingId) || banned.contains(wingId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(wingId, PurchaseType.FIGHTER, 
 					wing.getWingName(), 
