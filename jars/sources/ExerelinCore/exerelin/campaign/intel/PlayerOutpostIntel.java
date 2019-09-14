@@ -123,14 +123,6 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	// runcode exerelin.campaign.intel.PlayerOutpostIntel.reverseCompat()
 	public static void reverseCompat() 
 	{
-		for (PlayerOutpostIntel intel : getOutposts()) 
-		{
-			intel.market.getMemoryWithoutUpdate().set(MARKET_MEMORY_FLAG, intel);
-			if (!Global.getSector().getIntelManager().hasIntel(intel)) 
-			{
-				Global.getSector().getIntelManager().addIntel(intel, true);
-			}
-		}
 	}
 	
 	public MarketAPI getMarket() {
@@ -412,7 +404,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		
 		FDNode outpostNode = report.getNode(marketsNode, "nex_node_id_outposts");
 		outpostNode.name = getString("outposts", true);
-		outpostNode.custom = "node_id_nex_outposts";
+		outpostNode.custom = "nex_node_id_outposts";
 		outpostNode.icon = "graphics/stations/station_side03.png";
 		outpostNode.tooltipCreator = OUTPOST_NODE_TOOLTIP;
 		outpostNode.upkeep += getUpkeep() * f;

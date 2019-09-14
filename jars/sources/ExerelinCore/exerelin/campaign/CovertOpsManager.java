@@ -492,7 +492,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		
 		FDNode agentsNode = report.getNode(marketsNode, "nex_node_id_agents");
 		agentsNode.name = StringHelper.getString("nex_agents", "agents", true);
-		agentsNode.custom = "node_id_nex_agents";
+		agentsNode.custom = "nex_node_id_agents";
 		agentsNode.icon = Global.getSettings().getSpriteName("income_report", "officers");
 		agentsNode.tooltipCreator = AGENT_NODE_TOOLTIP;
 		
