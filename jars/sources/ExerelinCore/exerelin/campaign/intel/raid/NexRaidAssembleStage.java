@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.raid;
 
+import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.campaign.intel.fleets.NexAssembleStage;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -20,6 +21,9 @@ public class NexRaidAssembleStage extends NexAssembleStage {
 	@Override
 	protected float getFP(String type) {
 		float base = 120f;
+		if (intel instanceof SatBombIntel) {
+			base = 180f;
+		}
 		
 		if (Math.random() < 0.33f)
 			base *= 1.5f;

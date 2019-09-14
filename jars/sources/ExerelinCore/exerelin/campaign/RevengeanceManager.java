@@ -17,10 +17,15 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.satbomb.SatBombIntel;
+import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.NexUtilsMath;
 import java.util.Arrays;
@@ -60,6 +65,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}));
 	
 	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;
+	
+	public static final float SAT_BOMB_CHANCE = 1f;	// 0.4f;
 	
 	public static Logger log = Global.getLogger(RevengeanceManager.class);
 	
@@ -179,7 +186,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}
 	
 	/**
-	 * Increments the faction vengeance stage and starts a H/K fleet event
+	 * Increments the faction vengeance stage, and starts a sat bomb or H/K fleet event
 	 * @param factionId
 	 */
 	public void advanceVengeanceStage(String factionId)
@@ -197,6 +204,24 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			factionVengeanceStage.put(factionId, currStage + 1);
 		}
 		
+		generateVengeanceIntel(factionId);
+	}
+	
+	public void generateVengeanceIntel(String factionId) {
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		FactionAPI target = getTargetFactionForVengeance();
+		
+		// see if we want to sat bomb instead of deploying a vengeance fleet
+		boolean satBomb = Math.random() < SAT_BOMB_CHANCE && InvasionFleetManager.canSatBomb(faction, target);
+		if (satBomb) {
+			OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(
+					faction, target, InvasionFleetManager.EventType.SAT_BOMB, 1 + 0.25f * getVengeanceEscalation(factionId));
+			if (intel != null) {
+				((SatBombIntel)intel).setVengeance(true);
+				return;
+			}
+		}
+		
 		MarketAPI source = pickMarketForFactionVengeance(factionId);
 		if (source != null)
 		{
@@ -206,10 +231,11 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			{
 				//Global.getSector().getCampaignUI().addMessage(debugStr);
 			}
-			
+
 			VengeanceFleetIntel vengeance = new VengeanceFleetIntel(factionId, source, getVengeanceEscalation(factionId));
 			vengeance.startEvent();
 		}
+		
 	}
 	
 	public int getCurrentVengeanceStage(String factionId)
@@ -286,6 +312,17 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		return false;
 	}
 	
+	protected FactionAPI getTargetFactionForVengeance() {
+		String factionId = PlayerFactionStore.getPlayerFactionId();
+		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId, true);
+		if (!factionId.equals(Factions.PLAYER)) {
+			markets.addAll(ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER, true));
+		}
+		
+		if (markets.isEmpty()) return Global.getSector().getPlayerFaction();
+		return ExerelinUtils.getRandomListElement(markets).getFaction();
+	}
+	
 	/**
 	 * Make a fleet to conquer one of player faction's markets
 	 * @return True if fleet was successfully created, false otherwise
@@ -327,13 +364,22 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			//Global.getSector().getCampaignUI().addMessage(debugStr);
 		}
 		
+		FactionAPI target = getTargetFactionForVengeance();
+		
+		boolean satBomb = Math.random() < SAT_BOMB_CHANCE && InvasionFleetManager.canSatBomb(revengeFaction, target);
 		InvasionFleetManager.EventType type = InvasionFleetManager.EventType.INVASION;
-		if (!ExerelinConfig.enableInvasions) {
+		if (satBomb) {
+			type = InvasionFleetManager.EventType.SAT_BOMB;
+		}
+		else if (!ExerelinConfig.enableInvasions) {
 			type = InvasionFleetManager.EventType.RAID;
 		}
 			
-		InvasionFleetManager.getManager().generateInvasionOrRaidFleet(revengeFaction, 
-				PlayerFactionStore.getPlayerFaction(), type, 1.25f);
+		OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(
+				revengeFaction, getTargetFactionForVengeance(), type, 1.25f);
+		if (intel != null && satBomb) {
+			((SatBombIntel)intel).setVengeance(true);
+		}
 		
 		return true;
 	}

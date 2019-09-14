@@ -1117,15 +1117,24 @@
 		"marketName":"Resurgent Base",
 	},
 	"nex_satbomb":{
-		"expedition":"expedition",
-		"expeditions":"expeditions",
-		"theExpedition":"the expedition",
-		"expeditionForce":"expedition force",
-		"theExpeditionForce":"the expedition force",
+		"expedition":"saturation bombardment",
+		"expeditions":"saturation bombardments",
+		"theExpedition":"the saturation bombardment",
+		"expeditionForce":"bombardment force",
+		"expeditionForcePossessive":"bombardment force's",
+		"theExpeditionForce":"the bombardment force",
 		"forceIsOrAre":"is",	# if raidForce is singular, this should be singular too, else both should be plural
 		"forceHasOrHave":"have",	# same
 		
-		"intelDesc":"$TheFaction $isOrAre launching a saturation bombardment of $market in the $location, held by $theTargetFaction. The task force is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr..",
+		"intelDesc":"$TheFaction $isOrAre launching a $action of $market in the $location, held by $theTargetFaction. The task force is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr.",
+		"intelDescVengeance":"The planned bombardment is an act of vengeance in response to the depreadations and hostile actions of $playerName.",
+		
+		"intelStageAction":"The task force is currently in-system.",
+		"intelStageActionSuccess":"The task force has bombarded $market.",
+		"intelStageActionInsufficientReached":"The task force has failed to reach $location in adequate strength.",
+		"intelStageActionDefeatedGround":"The task force has been repelled by the ground defenses of $market.",
+		"intelStageActionDefeatedSpace":"The task force has been defeated by the defenders of $market.",
+		"intelStageActionAborted":"The bombardment has been aborted.",
 	},
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",

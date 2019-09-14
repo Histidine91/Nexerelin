@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -29,6 +30,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -37,6 +39,7 @@ import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
+import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -84,6 +87,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float BASE_INVASION_COST = 500f;	// for reference, Jangala at start of game is around 500
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 15;
+	public static final float SAT_BOMB_CHANCE = 0.4f;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
 	public static final float RAID_SIZE_MULT = 0.8f;
@@ -370,6 +374,20 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return weight;
 	}
 	
+	public static boolean canSatBomb(FactionAPI attacker, FactionAPI defender) {
+		if (attacker.getRelationshipLevel(defender) != RepLevel.VENGEFUL)
+			return false;
+		
+		boolean canBombard = attacker.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA)
+				.optBoolean("canBombard", false);
+		if (defender.isPlayerFaction() || PlayerFactionStore.getPlayerFaction() == defender) 
+		{
+			canBombard = canBombard || StatsTracker.getStatsTracker().getMarketsSatBombarded() > 0;
+		}
+		
+		return canBombard;
+	}
+	
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, EventType type)
 	{
 		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1);
@@ -501,8 +519,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		//log.info("\tTarget: " + targetMarket.getName());
 		
+		// sat bomb
+		if (type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE && canSatBomb(faction, targetFaction)) 
+		{
+			type = EventType.SAT_BOMB;
+		}
+		
 		// always invade rather than raid derelicts
-		if (targetMarket.getFactionId().equals(Factions.DERELICT) && type == EventType.RAID)
+		if (targetMarket.getFactionId().equals(Factions.DERELICT) 
+				&& (type == EventType.RAID || type == EventType.SAT_BOMB))
 			type = EventType.INVASION;
 		
 		return generateInvasionOrRaidFleet(originMarket, targetMarket, type, sizeMult);
@@ -546,10 +571,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 			case RAID:
 			{
-				// raid
 				log.info("Spawning raid fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
 				NexRaidIntel intel = new NexRaidIntel(faction, origin, target, fp, organizeTime);
 				intel.init();
+				activeIntel.add(intel);
 				return intel;
 			}
 			case BASE_STRIKE:
@@ -557,6 +582,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				log.info("Spawning base strike fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
 				BaseStrikeIntel intel = new BaseStrikeIntel(faction, origin, target, fp, organizeTime);
 				intel.init();
+				return intel;
+			}
+			case SAT_BOMB:
+			{
+				log.info("Spawning saturation bombardment fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
+				SatBombIntel intel = new SatBombIntel(faction, origin, target, fp, organizeTime);
+				intel.init();
+				activeIntel.add(intel);
 				return intel;
 			}
 		}
@@ -1054,7 +1087,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return false;
 	}
 	
-	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE };
+	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB };
 	
 	@Deprecated
 	public static class InvasionFleetData
