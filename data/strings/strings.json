@@ -926,6 +926,11 @@
 		"stabilizeRecentUnrestEntry":"Stabilization package",
 		"stabilizeEffect":"Stability of $market increased by %s.",
 		
+		"reinforcedDefensesHeader":"You can reinforce the ground defenses of $market for $time days at a cost of $credits and the following commodities:",
+		"reinforcedDefensesTooltipDisabled":"Insufficient resources.",
+		"reinforcedDefensesModDesc":"Reinforced defenses",
+		"reinforcedDefensesTooltip":"%s× defense bonus. %s day(s) remaining.",
+		
 		"remoteCommDirectory":"Remote connection to comm directory",
 
 		"prismNoSale":"No sales/returns",
@@ -1127,7 +1132,7 @@
 		"forceHasOrHave":"have",	# same
 		
 		"intelDesc":"$TheFaction $isOrAre launching a $action of $market in the $location, held by $theTargetFaction. The task force is projected to be $strDesc and is likely comprised of $numFleets $fleetsStr.",
-		"intelDescVengeance":"The planned bombardment is an act of vengeance in response to the depreadations and hostile actions of $playerName.",
+		"intelDescVengeance":"The planned bombardment is an act of vengeance in response to the vile hostile actions of the hated $playerName.",
 		
 		"intelStageAction":"The task force is currently in-system.",
 		"intelStageActionSuccess":"The task force has bombarded $market.",

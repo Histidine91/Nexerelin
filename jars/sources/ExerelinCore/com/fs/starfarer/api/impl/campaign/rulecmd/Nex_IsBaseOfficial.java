@@ -14,6 +14,7 @@ import java.util.Set;
 public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 	
 	public static final Set<String> COMMAND_POSTS = new HashSet<>();
+	public static final Set<String> MILITARY_POSTS = new HashSet<>();
 	public static final Set<String> TRADER_POSTS = new HashSet<>();
 	public static final Set<String> ADMIN_POSTS = new HashSet<>();
 	
@@ -22,6 +23,11 @@ public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 		COMMAND_POSTS.add(Ranks.POST_STATION_COMMANDER);
 		COMMAND_POSTS.add(Ranks.POST_OUTPOST_COMMANDER);
 		COMMAND_POSTS.add(Ranks.POST_PORTMASTER);
+		
+		MILITARY_POSTS.add(Ranks.POST_BASE_COMMANDER);
+		MILITARY_POSTS.add(Ranks.POST_STATION_COMMANDER);
+		MILITARY_POSTS.add(Ranks.POST_OUTPOST_COMMANDER);
+		MILITARY_POSTS.add(Ranks.POST_ADMINISTRATOR);
 		
 		ADMIN_POSTS.add(Ranks.POST_BASE_COMMANDER);
 		ADMIN_POSTS.add(Ranks.POST_STATION_COMMANDER);
@@ -54,6 +60,8 @@ public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 		{
 			case "command":
 				return COMMAND_POSTS.contains(post);
+			case "military":
+				return MILITARY_POSTS.contains(post);
 			case "admin":
 				return ADMIN_POSTS.contains(post);
 			case "trade":
@@ -61,7 +69,8 @@ public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 				return TRADER_POSTS.contains(post);
 			case "any":
 			default:
-				return COMMAND_POSTS.contains(post) || TRADER_POSTS.contains(post) || ADMIN_POSTS.contains(post);
+				return COMMAND_POSTS.contains(post) || MILITARY_POSTS.contains(post) 
+						|| TRADER_POSTS.contains(post) || ADMIN_POSTS.contains(post);
 		}
 	}
 }

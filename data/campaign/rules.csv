@@ -854,6 +854,17 @@ nex_revokeAutonomyConfirm,DialogOptionSelected,$option == nex_revokeAutonomy_con
 FireAll PopulateOptions","""As you say. $market is now under your direct authority once more, $playerName.""",,
 nex_grantAutonomyCancel,DialogOptionSelected,$option == nex_grantAutonomy_cancel,FireAll PopulateOptions,"""Anything else?""",,
 ,,,,,,
+# reinforce defenses,,,,,,
+nex_reinforceDefensesOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial military
+Nex_ReinforceDefenses enabled",,,nex_reinforceDefenses_main:Reinforce ground defenses,
+nex_reinforceDefensesSel,DialogOptionSelected,$option == nex_reinforceDefenses_main,"Nex_ReinforceDefenses init
+SetShortcut nex_reinforceDefenses_cancel ""ESCAPE""","""If you are anticipating an attack, it may be worth readying and reinforcing our garrison.""","nex_reinforceDefenses_proceed:Deploy reinforcements
+nex_reinforceDefenses_cancel:Cancel",
+nex_reinforceDefensesSelConfirm,DialogOptionSelected,$option == nex_reinforceDefenses_proceed,"Nex_ReinforceDefenses proceed
+FireAll PopulateOptions",$PersonRank $personLastName confirms the deployment of troops and materiel. The conversation moves on to other matters.,,
+nex_reinforceDefensesNeverMind,DialogOptionSelected,$option == nex_reinforceDefenses_cancel,FireAll PopulateOptions,,,
+,,,,,,
 # other base commander stuff,,,,,,
 #nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == $player.factionId

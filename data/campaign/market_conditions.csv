@@ -5,7 +5,7 @@ Rebellion,nex_rebellion_condition,,TRUE,exerelin.campaign.econ.RebellionConditio
 - Stability reduced by $stabilityPenalty
 - Increased demand for marines, hand weapons and supplies; sales to $market will strengthen rebels or government depending on channel",graphics/icons/markets/pirate_moot.png,1002
 Raiding,nex_raid_condition,,TRUE,exerelin.campaign.econ.RaidCondition,"Hostile raiding fleets are active in the system, disrupting commerce and other activities.",graphics/icons/markets/pirate_activity.png,1301
-,,,,,,,
+Reinforced Defenses,nex_reinforced_defenses,,TRUE,exerelin.campaign.econ.ReinforcedDefenses,"The ground defenses of $market have been reinforced with personnel and heavy armaments, likely in anticipation of a hostile incursion.",graphics/icons/markets/mercenaries.png,1004
 Tribute,nex_tribute,,TRUE,exerelin.campaign.econ.TributeCondition,"$market is paying the locally dominant faction a regular tribute for the right to continue existing. Foreign authorities are keeping tight restrictions on local population growth, to keep the colony at a ""manageable"" size.
 
 Tribute may be canceled if the player chooses to terminate the agreement, or changing circumstances make it no longer applicable.",graphics/exerelin/icons/intel/lose_credits.png,1003
