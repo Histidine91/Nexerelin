@@ -53,6 +53,8 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 		CommodityOnMarketAPI commodity = market.getCommodityData(commodityId);
 		String desc = getString("commodityDestroyModDesc");
 		commodity.getAvailableStat().addTemporaryModFlat(duration, commodityId, desc, -effect);
+		market.reapplyConditions();
+		market.reapplyIndustries();
 		
 		adjustRepIfDetected(RepLevel.INHOSPITABLE, null);
 		

@@ -97,7 +97,7 @@
 			"detectionChance":0.25,
 			"detectionChanceFail":0.4,
 			"effectMin":2,
-			"effectMax":2,
+			"effectMax":3,
 			"repLossOnDetectionMin":0.15,
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.2,
