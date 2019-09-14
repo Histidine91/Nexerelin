@@ -27,10 +27,12 @@ public class Travel extends CovertActionIntel {
 	// 2 = at destination market, preparing to insert
 	// 3 = embedded at destination market
 	protected int status = 0;
+	protected MarketAPI from;
 	
 	public Travel(AgentIntel agent, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agent, market, agentFaction, targetFaction, playerInvolved, params);
+		from = agent.getMarket();
 	}
 	
 	@Override

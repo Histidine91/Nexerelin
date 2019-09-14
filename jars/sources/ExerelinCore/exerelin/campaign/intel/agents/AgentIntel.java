@@ -24,7 +24,9 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.lwjgl.input.Keyboard;
@@ -374,6 +376,35 @@ public class AgentIntel extends BaseIntelPlugin {
 	public SectorEntityToken getMapLocation(SectorMapAPI map) {
 		if (market != null)
 			return market.getPrimaryEntity();
+		if (currentAction != null && currentAction.getDefId().equals(CovertActionType.TRAVEL))
+		{
+			Travel travel = (Travel)currentAction;
+			if (travel.from != null) {
+				return travel.from.getPrimaryEntity();
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public List<ArrowData> getArrowData(SectorMapAPI map) {
+		if (currentAction != null && currentAction.getDefId().equals(CovertActionType.TRAVEL))
+		{
+			Travel travel = (Travel)currentAction;
+			if (travel.from == null || travel.from.getPrimaryEntity() == null
+					|| travel.market == null || travel.market.getPrimaryEntity() == null) {
+				return null;
+			}
+			
+			List<ArrowData> result = new ArrayList<ArrowData>();
+			ArrowData arrow = new ArrowData(travel.from.getPrimaryEntity(), travel.market.getPrimaryEntity());
+			arrow.color = Global.getSector().getPlayerFaction().getColor();
+			arrow.width = 10f;
+			result.add(arrow);
+			
+			return result;
+		}
+		
 		return null;
 	}
 	
