@@ -14,6 +14,7 @@ Selling a commodity will not resolve a shortage.
 Black market transactions may catch the eye of authorities, resulting in cargo scans and reduced faction standing, unless the trades are carried out with the transponder turned off.
 
 Engaging in legitimate trade as a ""cover"" also reduces the probability of attracting the attention of authorities.",exerelin.campaign.submarkets.Nex_BlackMarketPlugin,graphics/factions/black_market.png,999
+storage,Storage,player,Storage space for ships and cargo.,exerelin.campaign.submarkets.Nex_StoragePlugin,graphics/factions/storage.png,1000
 generic_military,,,"Trade with $theFaction military base.
 
 Weapons and other military hardware can be bought and sold here even if they're illegal on the open market. A commission and better standing with $theFaction results in higher-grade hardware being available.

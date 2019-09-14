@@ -830,9 +830,7 @@ $faction.id == player
 Nex_GrantAutonomy isAutonomous",,,nex_revokeAutonomy:Revoke autonomy,
 nex_grantAutonomy,DialogOptionSelected,$option == nex_grantAutonomy,"Nex_GrantAutonomy init
 AddTextSmall ""An autonomous market will not generate income or cost upkeep, or count towards the player's colony or admin limits.""
-AddTextSmall ""Exports to this market will generate income for other player markets. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. The player will be billed for local storage.""
-SetTextHighlightColors hColor bad
-SetTextHighlights ""generate income"" ""billed for local storage""
+AddTextSmall ""Exports to this market will generate income for other player markets. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses.""
 AddTextSmall ""Revoking autonomy later will cause $nex_revokeAutonomyUnrest points of recent unrest.""
 SetTextHighlightColors bad
 SetTextHighlights $nex_revokeAutonomyUnrest
@@ -840,9 +838,7 @@ Nex_AddOptionConfirmation nex_grantAutonomy_confirm ""Confirm?"" ""Yes"" ""No"""
 nex_grantAutonomy_cancel:Cancel",
 nex_revokeAutonomy,DialogOptionSelected,$option == nex_revokeAutonomy,"Nex_GrantAutonomy init
 AddTextSmall ""An autonomous market will not generate income or cost upkeep, or count towards the player's colony or admin limits.""
-AddTextSmall ""Exports to this market will generate income for other player markets. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. The player will be billed for local storage.""
-SetTextHighlightColors hColor bad
-SetTextHighlights ""generate income"" ""billed for local storage""
+AddTextSmall ""Exports to this market will generate income for other player markets. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses.""
 AddTextSmall ""Revoking autonomy will cause $nex_revokeAutonomyUnrest points of recent unrest.""
 SetTextHighlightColors bad
 SetTextHighlights $nex_revokeAutonomyUnrest
@@ -1293,7 +1289,7 @@ HostileFleetNearbyAndAware","SetEnabled nex_outpostPreview false
 SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movements, making construction of an outpost impossible.""",,,
 nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"$menuState = nex_outpost 0
 Nex_PlayerOutpost buildInfo
-FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage (with monthly fee).",,
+FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage.",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
 SetShortcut nex_outpostBuildStart RETURN
 SetShortcut nex_outpostBack ESCAPE",,"nex_outpostBuildStart:Proceed with construction

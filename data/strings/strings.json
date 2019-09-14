@@ -931,6 +931,9 @@
 		"reinforcedDefensesModDesc":"Reinforced defenses",
 		"reinforcedDefensesTooltip":"%s× defense bonus. %s day(s) remaining.",
 		
+		"storageRebate":"Storage rebate",
+		"storageRebateTooltip":"Storage fees for autonomous colonies and outposts are refunded.",
+		
 		"remoteCommDirectory":"Remote connection to comm directory",
 
 		"prismNoSale":"No sales/returns",

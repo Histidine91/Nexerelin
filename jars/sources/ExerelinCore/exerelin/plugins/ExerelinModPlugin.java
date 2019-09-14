@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.DeliveryBarEventCreator;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
+import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
@@ -48,6 +49,7 @@ import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
+import exerelin.campaign.submarkets.Nex_StoragePlugin;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
@@ -116,6 +118,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             replaceSubmarket(market, Submarkets.SUBMARKET_OPEN);
             replaceSubmarket(market, Submarkets.GENERIC_MILITARY);
             replaceSubmarket(market, Submarkets.SUBMARKET_BLACK);
+            replaceSubmarket(market, Submarkets.SUBMARKET_STORAGE);
         }
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
@@ -159,31 +162,30 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-		// fix free port overdose
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-        {
-            if (!market.isFreePort()) continue;
-            if (market.getFaction().isPlayerFaction()) continue;
-            int numFreePorts = 0;
-            for (MarketConditionAPI cond : market.getConditions()) {
-                if (cond.getId().equals(Conditions.FREE_PORT)) {
-                    numFreePorts++;
-                }
-            }
-            if (numFreePorts > 1) {
-                log.info("Fixing free ports for market " + market.getName() + ": " + numFreePorts);
-                market.removeCondition(Conditions.FREE_PORT);
-                market.addCondition(Conditions.FREE_PORT);
-            }
-        }
-        
+        // replace submarkets
+        // local resources
         for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
         {
             //if (market.isPlayerOwned()) continue;
             if (market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin() instanceof Nex_LocalResourcesSubmarketPlugin)
                 continue;
-            log.info("Replacing local storage on " + market.getName());
+            log.info("Replacing local resources submarket on " + market.getName());
             replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
+        }
+        
+        // storage
+        // too much trouble, since we can't get which ones we've paid to unlock
+        // actually we can, see Misc.playerHasStorageAccess()
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            if (!market.hasSubmarket(Submarkets.SUBMARKET_STORAGE)) continue;
+            if (market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin() instanceof Nex_StoragePlugin)
+                continue;
+            
+            boolean haveAccess = Misc.playerHasStorageAccess(market);
+            log.info("Replacing storage submarket on " + market.getName());
+            replaceSubmarket(market, Submarkets.SUBMARKET_STORAGE);
+            ((StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin()).setPlayerPaidToUnlock(haveAccess);
         }
         
         // retroactive fix for brawl mode defense fleets which are still hanging around

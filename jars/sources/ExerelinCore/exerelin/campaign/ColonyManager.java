@@ -17,6 +17,8 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
+import com.fs.starfarer.api.campaign.econ.MonthlyReport;
+import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -29,6 +31,8 @@ import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
@@ -88,6 +92,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected int numDeadExpeditions;
 	protected int numAvertedExpeditions;
 	protected int numColonies;
+	protected int currIter;
 	
 	public ColonyManager() {
 		super(true);
@@ -268,6 +273,47 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		else {
 			market.getIncomeMult().unmodify("nex_hardMode");
 		}
+	}
+	
+	// see CoreScript
+	/**
+	 * Refunds storage fee for markets that belong to player faction but are not player-controlled.
+	 */
+	protected void processStorageRebate() 
+	{
+		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
+		float f = 1f / numIter;
+		
+		MonthlyReport report = SharedData.getData().getCurrentReport();
+		
+		float storageFraction = Global.getSettings().getFloat("storageFreeFraction");
+		
+		float rebate = 0;
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
+		{			
+			if (!market.isPlayerOwned() && market.getFaction().isPlayerFaction() && Misc.playerHasStorageAccess(market)) {
+				float vc = Misc.getStorageCargoValue(market);
+				float vs = Misc.getStorageShipValue(market);
+				
+				float fc = (int) (vc * storageFraction);
+				float fs = (int) (vs * storageFraction);
+				if (fc > 0 || fs > 0) {
+					rebate += (fc + fs) * f;
+				}
+			}
+		}
+		log.info("Applying storage rebate: " + rebate);
+		
+		if (rebate <= 0) return;
+		
+		FDNode storageNode = report.getNode(MonthlyReport.STORAGE);
+		FDNode node = report.getNode(storageNode, "nex_node_id_storageRebate");
+		node.name = StringHelper.getString("exerelin_markets", "storageRebate");
+		node.custom = "nex_node_id_storageRebate";
+		node.icon = Global.getSettings().getSpriteName("income_report", "generic_income");
+		node.income += rebate;
+		node.tooltipCreator = STORAGE_REBATE_NODE_TOOLTIP;
+		
 	}
 	
 	public static boolean isBuildingAnything(MarketAPI market) {
@@ -516,7 +562,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return intel;
 	}
 	
-	// add admin to player faction if needed
+	// add admin to player market if needed
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
 		if (market.getFaction().isPlayerFaction() && !market.isHidden())
@@ -578,8 +624,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {
+		
+		// workaround: reportEconomyTick is called twice,
+		// since we've added colony manager as a script in sector, and also as a listener
+		// so don't do anything the second time
+		if (currIter == iterIndex)
+			return;
+		
 		updateMarkets();
 		processNPCConstruction();
+		processStorageRebate();
+		
+		currIter = iterIndex;
 	}
 
 	@Override
@@ -789,4 +845,16 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		public static enum QueueType { NEW, UPGRADE }
 	}
+	
+	public static final TooltipMakerAPI.TooltipCreator STORAGE_REBATE_NODE_TOOLTIP = new TooltipMakerAPI.TooltipCreator() {
+		public boolean isTooltipExpandable(Object tooltipParam) {
+			return false;
+		}
+		public float getTooltipWidth(Object tooltipParam) {
+			return 450;
+		}
+		public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+			tooltip.addPara(StringHelper.getString("exerelin_markets", "storageRebateTooltip"), 0);
+		}
+	};
 }
