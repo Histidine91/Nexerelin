@@ -44,22 +44,12 @@ public class StartSetupPostTimePass {
 		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		final String selectedFactionId = factionId;	// can't be changed by config
+		String factionIdForSpawnLoc = factionId;
 		
 		FactionAPI myFaction = sector.getFaction(factionId);
-		boolean isPlayer = myFaction.isPlayerFaction();
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
 		if (SectorManager.getCorvusMode())
 		{
-			// moves player fleet to a suitable location; e.g. Avesta for Association
-			String homeEntity = null;
-			ExerelinCorvusLocations.SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
-			if (spawnPoint != null)
-			{
-				homeEntity = spawnPoint.entityId;
-				if (homeEntity != null)
-					entity = sector.getEntityById(homeEntity);
-			}
-			
 			// check that all factions support Corvus mode; warn player if not
 			int numIncompatibles = 0;
 			for (FactionAPI faction : sector.getAllFactions())
@@ -86,33 +76,6 @@ public class StartSetupPostTimePass {
 				if (sector.getStarSystem("Eos Exodus") != null)
 					sector.removeStarSystem(sector.getStarSystem("Eos Exodus"));
 			}
-			
-			if (ExerelinConfig.enableAntioch && factionId.equals("templars"))
-				entity = TEM_Antioch.getAscalon();
-			else if (!SectorManager.getFreeStart())
-				entity = SectorManager.getHomeworld();
-			else
-			{
-				WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
-				picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
-				for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-				{
-					if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
-						continue;
-					if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
-						continue;
-					picker.add(market.getPrimaryEntity());
-				}
-				entity = picker.pick();
-			}
-		}
-		if (Global.getSector().getMemoryWithoutUpdate().contains("$nex_startLocation")) {
-			entity = Global.getSector().getEntityById(Global.getSector().getMemoryWithoutUpdate().getString("$nex_startLocation"));
-		}
-		
-		if (entity != null)
-		{
-			sendPlayerFleetToLocation(playerFleet, entity);
 		}
 		
 		// assign officers
@@ -149,11 +112,16 @@ public class StartSetupPostTimePass {
 		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
 		{
 			factionId = conf.spawnAsFactionId;
-			if (SectorManager.getFreeStart())	// Blade Breaker start: use BB start relations
+			if (SectorManager.getFreeStart()) {	// Blade Breaker start: use BB start relations
 				NexUtilsReputation.syncFactionRelationshipsToPlayer();
-			else	// Lion's Guard start: use Diktat start relations
+			}
+			else {	// Lion's Guard start: use Diktat start relations
 				NexUtilsReputation.syncPlayerRelationshipsToFaction(factionId);
+				factionIdForSpawnLoc = factionId;
+			}
 		}
+		
+		handleStartLocation(sector, playerFleet, factionIdForSpawnLoc);
 		
 		// commission
 		if (!factionId.equals(Factions.PLAYER)) {
@@ -179,6 +147,66 @@ public class StartSetupPostTimePass {
 				set.pickItemsAndAddToCargo(Global.getSector().getPlayerFleet().getCargo(), 
 						StarSystemGenerator.random);
 			}
+		}
+	}
+	
+	public static void handleStartLocation(SectorAPI sector, CampaignFleetAPI playerFleet, String factionId) 
+	{
+		SectorEntityToken entity = null;
+				
+		if (Global.getSector().getMemoryWithoutUpdate().contains("$nex_startLocation")) {
+			entity = Global.getSector().getEntityById(Global.getSector().getMemoryWithoutUpdate().getString("$nex_startLocation"));
+		}
+		else if (ExerelinSetupData.getInstance().randomStartLocation) {
+			WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
+			picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				if (!market.getFaction().getId().equals(factionId))
+					continue;
+				if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
+					continue;
+				picker.add(market.getPrimaryEntity());
+			}
+			entity = picker.pick();
+		}
+		else if (SectorManager.getCorvusMode())
+		{
+			// moves player fleet to a suitable location; e.g. Avesta for Association
+			String homeEntity = null;
+			ExerelinCorvusLocations.SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
+			if (spawnPoint != null)
+			{
+				homeEntity = spawnPoint.entityId;
+				if (homeEntity != null)
+					entity = sector.getEntityById(homeEntity);
+			}
+		}
+		else {
+			if (ExerelinConfig.enableAntioch && factionId.equals("templars"))
+				entity = TEM_Antioch.getAscalon();
+			else if (!SectorManager.getFreeStart())
+				entity = SectorManager.getHomeworld();
+		}
+		
+		// couldn't find an more suitable start location, pick any market that's not unfriendly to us
+		if (entity == null) {
+			WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
+			picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
+					continue;
+				if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
+					continue;
+				picker.add(market.getPrimaryEntity());
+			}
+			entity = picker.pick();
+		}
+		
+		if (entity != null)
+		{
+			sendPlayerFleetToLocation(playerFleet, entity);
 		}
 	}
 	

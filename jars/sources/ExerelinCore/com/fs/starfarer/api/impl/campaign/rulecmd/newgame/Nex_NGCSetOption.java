@@ -21,6 +21,9 @@ public class Nex_NGCSetOption extends BaseCommandPlugin {
 			case "startingDMods":
 				cycleStartingDMods(memoryMap.get(MemKeys.LOCAL));
 				return true;
+			case "randomStartLocation":
+				toggleRandomStartLocation(memoryMap.get(MemKeys.LOCAL));
+				return true;
 		}
 		return false;
 	}
@@ -33,5 +36,11 @@ public class Nex_NGCSetOption extends BaseCommandPlugin {
 		
 		String str = ExerelinSetupData.getDModCountText(setupData.dModLevel);
 		localMem.set("$nex_ngcDModsString", str);
+	}
+	
+	public static void toggleRandomStartLocation(MemoryAPI localMem) {
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
+		setupData.randomStartLocation = !setupData.randomStartLocation;
+		localMem.set("$randomStartLocation", setupData.randomStartLocation, 0);
 	}
 }

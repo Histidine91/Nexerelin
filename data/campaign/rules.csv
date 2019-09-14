@@ -122,6 +122,8 @@ nex_NGCCycleStartDMods,NewGameOptionSelected,$option==nex_NGCCycleStartDMods,"Ne
 AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
 SetTextHighlights  $nex_ngcDModsString
 FireAll ExerelinNGCOtherOptions",,,
+nex_NGCListOptionEnableRandomStartLocation,ExerelinNGCOtherOptions,!$randomStartLocation,,,nex_NGCToggleRandomStartLocation:Enable random start location,
+nex_NGCListOptionDisableRandomStartLocation,ExerelinNGCOtherOptions,$randomStartLocation,,,nex_NGCToggleRandomStartLocation:Disable random start location,
 ,,,,,,
 ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,SetShortcut exerelinNGCOptionsBack ESCAPE,,10:exerelinNGCOptionsBack:Back,
 ,,,,,,
@@ -168,6 +170,8 @@ FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCEnableHardMode,NewGameOptionSelected,$option==exerelinNGCEnableHardMode,"NGCSetHardMode true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableHardMode,NewGameOptionSelected,$option==exerelinNGCDisableHardMode,"NGCSetHardMode false
+FireAll ExerelinNGCOtherOptions",,,
+nex_NGCToggleRandomStartLocation,NewGameOptionSelected,$option==nex_NGCToggleRandomStartLocation,"Nex_NGCSetOption randomStartLocation
 FireAll ExerelinNGCOtherOptions",,,
 nex_NGCCustomScenarioMenu,NewGameOptionSelected,$option==nex_NGCCustomScenarioMenu,Nex_NGCCustomScenario menu,,,
 nex_NGCCustomScenarioSelected,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomScenario_""","Nex_NGCCustomScenario select

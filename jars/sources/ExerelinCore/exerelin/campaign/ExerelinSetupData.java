@@ -41,6 +41,7 @@ public class ExerelinSetupData
 	public boolean freeStart = false;
 	public boolean useFactionWeights = true;
 	public boolean randomFactionWeights = false;
+	public boolean randomStartLocation = false;
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
 	public int dModLevel = 0;
