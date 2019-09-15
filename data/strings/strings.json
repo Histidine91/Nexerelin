@@ -13,6 +13,7 @@
 		"credits":"credits",
 		"diplomacy":"diplomacy",
 		"diplomatic":"diplomatic",
+		"disruption":"disruption",
 		"done":"done",
 		"expedition":"expedition",
 		"theExpedition":"the expedition",
@@ -542,6 +543,28 @@
 		"intelDesc":"$TheFaction $isOrAre dispatching a task force to defend $market in the $location, held by $theTargetFaction. The defense forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelStageAction":"The defense forces are currently in-system.",
 		"intelOutcomeSuccess":"The defense forces have completed their mission.",
+	},
+	
+	"nex_disruptMission":{
+		"intelTitle":"Disruption Mission: $industry",
+		"intelBulletReward":"Reward: %s",
+		"intelBulletReward_received":"%s received",
+		
+		"intelDesc1":"$TheFaction desires that a third party disrupt the $industry $onOrAt $market, a size $size market held by $theOtherFaction in the $location.",
+		"intelDescReason":"The primary reason for the bounty is",
+		"intelDescReasonMilitary":"the hostilities between $theFaction and $theOtherFaction.",
+		"intelDescReasonEconomic":"the competition posed to $theFaction in the market for $commodity.",
+		"intelDescReasonFreePort":"$market's \"free port\" status, and the concomitant export of illegal goods alongside it being a haven for various undesirables.",
+		"intelDesc3":"The $industry must be disrupted for at least $disruptionTime days to complete the mission.",
+		
+		"intelDescDuration_pre":"You have ",
+		"intelDescDuration_post":"to complete the mission.",
+		"intelDescDuration_post_short":"to complete",
+		
+		"intelDescOutcome_industryRemoved":"The target industry no longer exists $onOrAt $market.",
+		"intelDescOutcome_noLongerHostile":"$market's current faction is not currently hostile. The mission has been withdrawn.",
+		"intelDescOutcome_noLongerExists":"The mission has been withdrawn as $market has been destroyed.",
+		"intelDescOutcome_alreadyDisrupted":"The industry has already been disrupted.",
 	},
 	
 	"exerelin_diplomacy":{	

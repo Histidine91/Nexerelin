@@ -9,7 +9,6 @@ import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
@@ -47,6 +46,7 @@ import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bar.NexDeliveryBarEventCreator;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.campaign.intel.missions.DisruptMissionManager;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_StoragePlugin;
@@ -213,6 +213,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorAPI sector = Global.getSector();
         if (!sector.hasScript(ConquestMissionManager.class)) {
             sector.addScript(new ConquestMissionManager());
+        }
+		if (!sector.hasScript(DisruptMissionManager.class)) {
+            sector.addScript(new DisruptMissionManager());
         }
         if (!sector.hasScript(FactionBountyManager.class)) {
             sector.addScript(new FactionBountyManager());

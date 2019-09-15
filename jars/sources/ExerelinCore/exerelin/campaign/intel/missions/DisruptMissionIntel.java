@@ -1,61 +1,66 @@
-package exerelin.campaign.intel;
+package exerelin.campaign.intel.missions;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.MissionCompletionRep;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.InvasionRound;
-import exerelin.utilities.ExerelinUtilsMarket;
-import exerelin.utilities.InvasionListener;
+import exerelin.campaign.intel.missions.DisruptMissionManager.TargetEntry;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import org.lazywizard.lazylib.MathUtils;
 
-public class ConquestMissionIntel extends BaseMissionIntel implements InvasionListener {
+public class DisruptMissionIntel extends BaseMissionIntel {
 	
-	public static final float SIZE_REWARD_MULT = 5000;
+	public static final RepLevel MAX_REP_LEVEL = RepLevel.FAVORABLE;
+	public static final int MIN_DISRUPT_TIME = 60;
+	public static final int REWARD_MULT = 30000;
 	
 	protected MarketAPI market;
 	protected FactionAPI faction;
-	protected FactionAPI lastTargetFaction;
-	//protected float reward;
-	protected boolean betrayed;
+	protected Industry industry;
+	protected String commodityId;
+	protected TargetReason reason;
+	@Deprecated protected float value;	// meh
+	protected int reward;
 	protected CancelReason cancelReason = null;
 	//protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
-	public ConquestMissionIntel(MarketAPI market, FactionAPI faction, float duration) {
-		Global.getLogger(this.getClass()).info("Instantiating conquest mission");
-		this.market = market;
+	public DisruptMissionIntel(TargetEntry entry, FactionAPI faction, float duration) {
+		Global.getLogger(this.getClass()).info("Instantiating disruption mission");
+		
 		this.faction = faction;
+		market = entry.market;
+		industry = entry.industry;
+		commodityId = entry.commodityId;
+		reason = entry.reason;
+		value = entry.value;
 		this.duration = duration;
-		lastTargetFaction = market.getFaction();
 	}
 	
 	public void init() {
-		Global.getLogger(this.getClass()).info("Initiating conquest mission");
+		Global.getLogger(this.getClass()).info("Initiating disruption mission");
+		reward = calculateReward();
 		Global.getSector().addScript(this);
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
 		Global.getSector().getIntelManager().addIntel(this);
-		Global.getSector().getListenerManager().addListener(this);
 	}
 
 	@Override
@@ -78,28 +83,39 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	}
 
 	@Override
-	public void advanceMission(float arg0) {
-		
+	public void advanceMission(float amount) {
+		if (industry.getDisruptedDays() >= MIN_DISRUPT_TIME) {
+			missionComplete();
+		}
 	}
 	
 	public void checkMarketState() {
 		if (isEnding() || isEnded()) return;
 		
+		// market no longer in economy?
 		if (!market.isInEconomy()) {
 			cancelReason = CancelReason.NOT_IN_ECONOMY;
-			missionCancelled();
-			endMissionWithUpdate(true);
 		}
-		else if (market.getFaction().isPlayerFaction()) {
-			// do nothing, wait for player action
+		// industry no longer exists?
+		else if (industry.getMarket() == null || !market.hasIndustry(industry.getId())) 
+		{
+			cancelReason = CancelReason.INDUSTRY_REMOVED;
 		}
-		else if (market.getFaction() == faction) {
-			cancelReason = CancelReason.ALREADY_CAPTURED;
-			missionCancelled();
-			endMissionWithUpdate(true);
+		// industry disrupted?
+		else if (industry.getDisruptedDays() >= MIN_DISRUPT_TIME && !isAccepted()) {
+			cancelReason = CancelReason.ALREADY_DISRUPTED;
 		}
-		else if (market.getFaction().isAtWorst(faction, RepLevel.SUSPICIOUS)) {
-			cancelReason = CancelReason.NO_LONGER_HOSTILE;
+		// check reputation to see if mission should continue
+		else {
+			RepLevel maxRep = MAX_REP_LEVEL;
+			if (reason == TargetReason.MILITARY)
+				maxRep = RepLevel.HOSTILE;
+			
+			if (!faction.isAtBest(market.getFaction(), maxRep))
+				cancelReason = CancelReason.NO_LONGER_HOSTILE;
+		}
+		
+		if (cancelReason != null) {
 			missionCancelled();
 			endMissionWithUpdate(true);
 		}
@@ -111,8 +127,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	}
 	
 	protected void missionComplete() {
-		int reward = calculateReward(true);
-		float repAmount = 0.02f * market.getSize();
+		float repAmount = 0.01f * market.getSize();
 		if (repAmount < 0.01f) repAmount = 0.01f;
 
 		MissionCompletionRep completionRep = new MissionCompletionRep(repAmount, null, -repAmount, RepLevel.INHOSPITABLE);
@@ -129,13 +144,15 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		endMissionWithUpdate(false);
 	}
 	
-	protected int calculateReward(boolean includeBonus) {
-		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
-		float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_REWARD_MULT);
-		float stabilityMult = (market.getStabilityValue() + 5)/15;
-		if (includeBonus)
-			value += (sizeBonus * stabilityMult);
-		return (int)value;
+	// don't overcomplicate this for now
+	protected int calculateReward() {
+		int reward = market.getSize() * REWARD_MULT;
+		if (industry.getSpec().hasTag(Industries.TAG_MILITARY) 
+				|| industry.getSpec().hasTag(Industries.TAG_COMMAND))
+			reward *= 2;
+		reward *= MathUtils.getRandomNumberInRange(8, 12)/10f;
+		
+		return reward;
 	}
 
 	@Override
@@ -146,13 +163,10 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	@Override
 	protected MissionResult createAbandonedResult(boolean withPenalty) {
 		if (withPenalty) {
-			float repAmount = 0.02f * market.getSize();
+			float repAmount = 0.01f * market.getSize();
 			if (repAmount < 0.01f) repAmount = 0.01f;
 			
-			betrayed = market.getFaction().isPlayerFaction();
-			if (betrayed) repAmount *= 2;
-			
-			MissionCompletionRep completionRep = new MissionCompletionRep(repAmount, RepLevel.WELCOMING, -repAmount, RepLevel.INHOSPITABLE);
+			MissionCompletionRep completionRep = new MissionCompletionRep(repAmount, null, -repAmount, RepLevel.INHOSPITABLE);
 			
 			ReputationAdjustmentResult repF = Global.getSector().adjustPlayerReputation(
 					new RepActionEnvelope(RepActions.MISSION_FAILURE, completionRep,
@@ -168,33 +182,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	@Override
 	protected MissionResult createTimeRanOutFailedResult() {
 		return createAbandonedResult(true);
-	}
-	
-	@Override
-	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
-			Nex_MarketCMD.TempDataInvasion actionData, CargoAPI cargo) {
-	}
-
-	@Override
-	public void reportInvasionRound(InvasionRound.InvasionRoundResult result, 
-			CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr) {
-	}
-
-	@Override
-	public void reportInvasionFinished(CampaignFleetAPI fleet, FactionAPI attackerFaction, 
-			MarketAPI market, float numRounds, boolean success) {
-	}
-
-	@Override
-	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, 
-			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
-		if (market != this.market) return;
-		
-		if (newOwner == faction) {
-			if (playerInvolved) missionComplete();
-		} else if (!newOwner.isPlayerFaction()) {
-			lastTargetFaction = newOwner;
-		}
 	}
 	
 	@Override
@@ -268,7 +255,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 				info.addPara(getString("intelBulletReward"), 
 						initPad, tc,
 						h,
-						Misc.getDGSCredits(calculateReward(false)));
+						Misc.getDGSCredits(reward));
 				addDays(info, getString("intelDescDuration_post_short"), duration - elapsedDays, tc, 0);
 			}
 		}
@@ -286,74 +273,103 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		
 		//info.addImage(commodity.getCommodity().getIconName(), width, 80, opad);
 		
-		boolean taken = market.getFaction() == faction;
-		FactionAPI targetFaction = taken ? lastTargetFaction : market.getFaction();
+		FactionAPI targetFaction = market.getFaction();
 		
-		if (!market.isInEconomy()) {
-			info.addImage(faction.getLogo(), width, 128, opad);
-		} else {
-			info.addImages(width, 128, opad, opad * 2f,
-					   faction.getCrest(),
-					   targetFaction.getCrest());
-		}
+		info.addImages(width, 96, opad, opad * 2f,
+					faction.getCrest(),
+					industry.getCurrentImage());
 		
 		String prefix = faction.getPersonNamePrefix();		
 		
-		String str = taken ? getString("intelDesc1Alt") : getString("intelDesc1");
+		String str = getString("intelDesc1");
 		String marketName = market.getName();
+		String industryName = industry.getCurrentName();
+		
+		
 		str = StringHelper.substituteFactionTokens(str, faction);
-		str = StringHelper.substituteToken(str, "$market", marketName);
-		str = StringHelper.substituteToken(str, "$location", market.getContainingLocation().getNameWithLowercaseType());
-		str = StringHelper.substituteToken(str, "$theOtherFaction", targetFaction.getDisplayNameWithArticle(), true);
-		
-		LabelAPI label = info.addPara(str, opad, tc);
-		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), 
-				marketName, targetFaction.getDisplayNameWithArticleWithoutArticle());
-		label.setHighlightColors(faction.getBaseUIColor(), h, targetFaction.getBaseUIColor());
-		
-		str = getString("intelDesc2");
-		str = StringHelper.substituteToken(str, "$market", marketName);
 		str = StringHelper.substituteToken(str, "$onOrAt", market.getOnOrAt());
-		info.addPara(str, opad, tc);
+		str = StringHelper.substituteToken(str, "$size", market.getSize() + "");
+		str = StringHelper.substituteToken(str, "$location", market.getContainingLocation().getNameWithLowercaseType());
+		
+		Map<String, String> sub = new HashMap<>();
+		sub.put("$industry", industryName);
+		sub.put("$market", marketName);
+		sub.put("$theOtherFaction", targetFaction.getDisplayNameWithArticle());
+		sub.put("$TheOtherFaction", Misc.ucFirst(targetFaction.getDisplayNameWithArticle()));
+		str = StringHelper.substituteTokens(str, sub);
+		
+		LabelAPI label = info.addPara(str, opad);
+		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), industryName,
+				marketName, market.getSize() + "", targetFaction.getDisplayNameWithArticleWithoutArticle());
+		label.setHighlightColors(faction.getBaseUIColor(), h, h, h, targetFaction.getBaseUIColor());
 		
 		addBulletPoints(info, ListInfoMode.IN_DESC);
+				
+		str = getString("intelDescReason");
+		String reasonKey = "intelDescReason";
+		switch (reason) {
+			case ECONOMIC_COMPETITION:
+				reasonKey += "Economic";
+				sub.put("$commodity", Global.getSettings().getCommoditySpec(commodityId).getName().toLowerCase());
+				break;
+			case MILITARY:
+				reasonKey += "Military";
+				break;
+			case FREE_PORT:
+				reasonKey += "FreePort";
+				break;
+		}
+		str += " " + getString(reasonKey);
+		str = StringHelper.substituteFactionTokens(str, faction);
+		str = StringHelper.substituteTokens(str, sub);
+		info.addPara(str, opad);
+		
+		str = getString("intelDesc3");
+		str = StringHelper.substituteToken(str, "$industry", industryName);
+		str = StringHelper.substituteToken(str, "$disruptionTime", MIN_DISRUPT_TIME + "");
+		info.addPara(str, opad, Misc.getHighlightColor(), MIN_DISRUPT_TIME + "");
 		
 		if (isPosted() || isAccepted()) {
 			addGenericMissionState(info);
 			
 			addAcceptOrAbandonButton(info, width);
-			
-			str = getString("intelDesc3");
-			str = StringHelper.substituteToken(str, "$market", marketName);
-			info.addPara(str, opad, g);
-		} else {
-			if (cancelReason == CancelReason.NOT_IN_ECONOMY) {
-				str = getString("intelDescOutcome_noLongerExists");
-				str = StringHelper.substituteToken(str, "$market", marketName);
-				info.addPara(str, opad, g);
-			} else if (cancelReason == CancelReason.NO_LONGER_HOSTILE) {
-				str = getString("intelDescOutcome_noLongerHostile");
-				str = StringHelper.substituteToken(str, "$market", marketName);
-				info.addPara(str, opad, g);
-			} else if (cancelReason == CancelReason.ALREADY_CAPTURED) {
-				str = getString("intelDescOutcome_alreadyTaken");
-				str = StringHelper.substituteToken(str, "$market", marketName);
-				str = StringHelper.substituteFactionTokens(str, faction);
-				info.addPara(str, opad, g);
-			} else {
-				addGenericMissionState(info);
+		} else if (cancelReason != null) {
+			switch (cancelReason) {
+				case NOT_IN_ECONOMY:
+					str = getString("intelDescOutcome_noLongerExists");
+					str = StringHelper.substituteToken(str, "$market", marketName);
+					info.addPara(str, opad, g);
+					break;
+				case NO_LONGER_HOSTILE:
+					str = getString("intelDescOutcome_noLongerHostile");
+					str = StringHelper.substituteToken(str, "$market", marketName);
+					info.addPara(str, opad, g);
+					break;
+				case INDUSTRY_REMOVED:
+					str = getString("intelDescOutcome_industryRemoved");
+					str = StringHelper.substituteToken(str, "$market", marketName);
+					str = StringHelper.substituteToken(str, "$onOrAt", market.getOnOrAt());
+					info.addPara(str, opad, g);
+					break;
+				case ALREADY_DISRUPTED:
+					str = getString("intelDescOutcome_alreadyDisrupted");
+					info.addPara(str, opad, g);
+					break;
 			}
+		} else {
+			addGenericMissionState(info);
 		}
-
 	}
 	
 	@Override
 	public String getSortString() {
-		return StringHelper.getString("conquest", true);
+		return StringHelper.getString("disruption", true);
 	}
 	
 	public String getName() {
-		return getString("intelTitle") + getPostfixForState();
+		String str = getString("intelTitle");
+		str = StringHelper.substituteToken(str, "$industry", industry.getCurrentName());
+		return str + getPostfixForState();
 	}
 	
 	@Override
@@ -385,14 +401,11 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	}
 	
 	protected String getString(String id) {
-		return StringHelper.getString("nex_conquestMission", id);
+		return StringHelper.getString("nex_disruptMission", id);
 	}
 	
-	// runcode exerelin.campaign.intel.ConquestMissionIntel.debug("jangala", "persean")
-	public static void debug(String marketId, String factionId) {
-		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
-		new ConquestMissionIntel(market, Global.getSector().getFaction(factionId), 5).init();
+	public static enum TargetReason {
+		ECONOMIC_COMPETITION, FREE_PORT, MILITARY
 	}
-	
-	public static enum CancelReason { ALREADY_CAPTURED, NOT_IN_ECONOMY, NO_LONGER_HOSTILE, OTHER }
+	public static enum CancelReason { NOT_IN_ECONOMY, NO_LONGER_HOSTILE, INDUSTRY_REMOVED, ALREADY_DISRUPTED, OTHER }
 }
