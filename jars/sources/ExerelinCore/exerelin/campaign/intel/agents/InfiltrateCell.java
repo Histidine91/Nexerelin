@@ -85,6 +85,12 @@ public class InfiltrateCell extends CovertActionIntel {
 					stat.modifyMult(ind.getId(), 1 + bonus, ind.getNameForModifier());
 				}
 			}
+			
+			// AI admin
+			if (market.getAdmin() != null && market.getAdmin().isAICore()) {
+				float bonus = 1 - AI_ADMIN_SUCCESS_MULT;
+				stat.modifyMult("aiAdmin", 1 + bonus, StringHelper.getString("nex_agents", "aiAdmin", true));
+			}
 		}
 		
 		return stat;

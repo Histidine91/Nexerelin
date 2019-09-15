@@ -197,6 +197,7 @@
 	"nex_agents":{
 		"agentLevel":"agent level",
 		"alertLevel":"alert level",
+		"aiAdmin":"AI admin",
 		"rebellionStatus":"rebellion by $faction",
 		"govtStrength":"government strength",
 		"rebelStrength":"rebel strength",

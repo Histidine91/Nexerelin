@@ -48,6 +48,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	public static final boolean ALWAYS_REPORT = false;	// debug
 	public static final String BUTTON_GOTOAGENT = "goToAgent";
 	public static final int DEFAULT_AGENT_LEVEL = 2;
+	public static final float AI_ADMIN_SUCCESS_MULT = 0.75f;
 	
 	protected Map<String, Object> params;
 	protected MarketAPI market;
@@ -214,6 +215,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (def.useAlertLevel) {
 			float mult = 1 - CovertOpsManager.getAlertLevel(market);
 			stat.modifyMult("alertLevel", mult, StringHelper.getString("nex_agents", "alertLevel", true));
+		}
+		
+		// AI admin
+		if (def.useIndustrySecurity) {
+			if (market.getAdmin() != null && market.getAdmin().isAICore()) {
+				stat.modifyMult("aiAdmin", AI_ADMIN_SUCCESS_MULT, StringHelper.getString("nex_agents", "aiAdmin", true));
+			}
 		}
 		
 		return stat;
