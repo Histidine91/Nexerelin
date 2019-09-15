@@ -38,6 +38,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
+import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -997,6 +998,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (marketsRemaining == 1)
         {
             factionRespawned(newOwner, market);
+        }
+        
+        // Update raid condition
+        if (market.hasCondition(RaidCondition.CONDITION_ID)) {
+            ((RaidCondition)market.getCondition(RaidCondition.CONDITION_ID).getPlugin()).refreshRaids();
         }
         
         // rebellion

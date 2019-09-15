@@ -56,15 +56,19 @@ public class RaidCondition extends BaseMarketConditionPlugin {
 		}
 		ExerelinUtils.advanceIntervalDays(interval, amount);
 		if (interval.intervalElapsed()) {
-			List<RaidIntel> toRemove = new LinkedList<>();
-			for (RaidIntel raid : raids) {
-				if (raid.isEnding() || raid.isEnded() || !raid.getFaction().isHostileTo(market.getFaction())) {
-					toRemove.add(raid);
-				}
-			}
-			raids.removeAll(toRemove);
-			checkForRemove();
+			refreshRaids();
 		}
+	}
+	
+	public void refreshRaids() {
+		List<RaidIntel> toRemove = new LinkedList<>();
+		for (RaidIntel raid : raids) {
+			if (raid.isEnding() || raid.isEnded() || !raid.getFaction().isHostileTo(market.getFaction())) {
+				toRemove.add(raid);
+			}
+		}
+		raids.removeAll(toRemove);
+		checkForRemove();
 	}
 	
 	protected void checkForRemove() {
