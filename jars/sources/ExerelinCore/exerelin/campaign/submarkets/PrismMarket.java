@@ -65,6 +65,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }));
     
     public static Logger log = Global.getLogger(PrismMarket.class);
+    
+    static Exception failedLoad = null;
     //protected float minCargoUpdateInterval = 0;    // debugging
     
     protected static Set<String> restrictedWeapons;
@@ -82,8 +84,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
             setupLists();
         } catch (JSONException | IOException ex) {
             log.error(StringHelper.getString("exerelin_misc", "errorPrismLoad"), ex);
-            // causes class to fail to load with a NoClassDefFoundError
+            // note: throwing an exception in static block causes class to fail to load with a NoClassDefFoundError
+            // — and more critically, prevents logging anything useful
             // throw new RuntimeException();
+            failedLoad = ex;
         }
     }
     
@@ -91,8 +95,21 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return IBB_FILE;
     }
     
+    public static void checkLoadFailure() {
+        if (failedLoad != null) {
+            throw new RuntimeException(StringHelper.getString("exerelin_misc", "errorPrismLoad"), failedLoad);
+        }
+    }
+    
+    @Override
+    protected Object readResolve() {
+        checkLoadFailure();
+        return super.readResolve();
+    }
+    
     @Override
     public void init(SubmarketAPI submarket) {
+        checkLoadFailure();
         super.init(submarket);
     }
     
