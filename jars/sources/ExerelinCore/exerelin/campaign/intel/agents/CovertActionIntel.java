@@ -416,6 +416,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return false;
 	}
 	
+	public boolean showSuccessChance() {
+		return true;
+	}
+	
 	protected boolean shouldReportEvent() {
 		return ALWAYS_REPORT 
 				|| playerInvolved

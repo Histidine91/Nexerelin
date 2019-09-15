@@ -236,7 +236,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			currentAction.addCurrentActionPara(info, opad);
 			
 			// success chance
-			if (!currentAction.getDefId().equals(CovertActionType.TRAVEL)) {
+			if (currentAction.showSuccessChance()) {
 				MutableStat success = currentAction.getSuccessChance();
 				float successF = success.getModifiedValue();
 				Color chanceCol = Misc.getHighlightColor();

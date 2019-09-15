@@ -227,6 +227,11 @@ public class Travel extends CovertActionIntel {
 	public String getDefId() {
 		return "travel";
 	}
+	
+	@Override
+	public boolean showSuccessChance() {
+		return false;
+	}
 
 	@Override
 	protected void onSuccess() {

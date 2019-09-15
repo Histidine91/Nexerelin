@@ -631,6 +631,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 					// or find the industry producing this stuff
 					else for (Industry ind : target.market.getIndustries()) 
 					{
+						if (ind.getId().equals(Industries.POPULATION))
+							continue;
+						
 						MutableCommodityQuantity supply = ind.getSupply(target.commodityId);
 						if (supply != null && supply.getQuantity().getModifiedInt() >= target.output)
 						{

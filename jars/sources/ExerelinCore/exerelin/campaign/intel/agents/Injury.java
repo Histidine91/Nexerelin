@@ -53,6 +53,11 @@ public class Injury extends CovertActionIntel {
 	}
 	
 	@Override
+	public boolean showSuccessChance() {
+		return false;
+	}
+	
+	@Override
 	public String getDefId() {
 		return "injury";
 	}
