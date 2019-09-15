@@ -277,7 +277,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 	}
 	
-	// see CoreScript
+	// this basically reverses the CoreScript fee collection; it does the same math
+	// and then reduces the upkeep instead of increasing it
 	/**
 	 * Refunds storage fee for markets that belong to player faction but are not player-controlled.
 	 */
@@ -287,35 +288,27 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		float f = 1f / numIter;
 		
 		MonthlyReport report = SharedData.getData().getCurrentReport();
+		FDNode storageNode = null;
 		
 		float storageFraction = Global.getSettings().getFloat("storageFreeFraction");
 		
-		float rebate = 0;
-		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
-		{			
-			if (!market.isPlayerOwned() && market.getFaction().isPlayerFaction() && Misc.playerHasStorageAccess(market)) {
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (!market.isPlayerOwned() && market.getFaction().isPlayerFaction() 
+					&& Misc.playerHasStorageAccess(market)) {
 				float vc = Misc.getStorageCargoValue(market);
 				float vs = Misc.getStorageShipValue(market);
 				
 				float fc = (int) (vc * storageFraction);
 				float fs = (int) (vs * storageFraction);
 				if (fc > 0 || fs > 0) {
-					rebate += (fc + fs) * f;
+					if (storageNode == null) {
+						storageNode = report.getNode(MonthlyReport.STORAGE);
+					}
+					FDNode mNode = report.getNode(storageNode, market.getId());
+					mNode.upkeep -= (fc + fs) * f;
 				}
 			}
 		}
-		//log.info("Applying storage rebate: " + rebate);
-		
-		if (rebate <= 0) return;
-		
-		FDNode storageNode = report.getNode(MonthlyReport.STORAGE);
-		FDNode node = report.getNode(storageNode, "nex_node_id_storageRebate");
-		node.name = StringHelper.getString("exerelin_markets", "storageRebate");
-		node.custom = "nex_node_id_storageRebate";
-		node.icon = Global.getSettings().getSpriteName("income_report", "generic_income");
-		node.income += rebate;
-		node.tooltipCreator = STORAGE_REBATE_NODE_TOOLTIP;
-		
 	}
 	
 	public static boolean isBuildingAnything(MarketAPI market) {
