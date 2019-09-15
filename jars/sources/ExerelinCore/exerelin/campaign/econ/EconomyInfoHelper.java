@@ -6,9 +6,11 @@ import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +47,8 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		}
 		currInstance = new EconomyInfoHelper();
 		Global.getSector().getListenerManager().addListener(currInstance, true);
-		currInstance.collectEconomicData();
+		
+		currInstance.collectEconomicData(true);
 	}
 	
 	public static EconomyInfoHelper getInstance() {
@@ -62,7 +65,8 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		loggingMode = mode;
 	}
 	
-	public void collectEconomicData() 
+	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().collectEconomicData()
+	public void collectEconomicData(boolean firstRun) 
 	{
 		haveHeavyIndustry.clear();
 		factionProductionByFaction.clear();
@@ -127,17 +131,39 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			}
 		}
 		
-		// determine which factions have heavy industry by whether they produce ships
-		for (FactionAPI faction : Global.getSector().getAllFactions())
-		{
-			String factionId = faction.getId();
-			if (!factionProductionByFaction.containsKey(factionId)) {
-				continue;
+		// determine which factions have heavy industry
+		if (firstRun) {
+			// iterate over all markets
+			// we normally do it by checking whether they produce ships,
+			// but this doesn't seem to pick up all the heavy industries on first run
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				if (market.isHidden()) continue;
+				if (haveHeavyIndustry.contains(market.getFactionId())) 
+					continue;	// already checked this faction
+				for (Industry ind : market.getIndustries()) 
+				{
+					if (!ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY))
+						continue;
+					if (ind.getDisruptedDays() > 15) continue;
+					haveHeavyIndustry.add(market.getFactionId());
+					break;
+				}
 			}
-			if (!factionProductionByFaction.get(factionId).containsKey(Commodities.SHIPS)) {
-				continue;
+		} else {
+			// check whether they produce ships
+			for (FactionAPI faction : Global.getSector().getAllFactions())
+			{
+				String factionId = faction.getId();
+				if (!factionProductionByFaction.containsKey(factionId)) {
+					continue;
+				}
+				if (!factionProductionByFaction.get(factionId).containsKey(Commodities.SHIPS)) {
+					continue;
+				}
+				log.info(factionId + " has heavy industry");
+				haveHeavyIndustry.add(factionId);
 			}
-			haveHeavyIndustry.add(factionId);
 		}
 	}
 	
@@ -167,7 +193,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	}
 	
 	public int getFactionCommodityProduction(String factionId, String commodityId) {
-		Map<String, Integer> ourProduction = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(factionId);
+		Map<String, Integer> ourProduction = getCommoditiesProducedByFaction(factionId);
 		if (!ourProduction.containsKey(commodityId))
 			return 0;
 		return ourProduction.get(commodityId);
@@ -290,7 +316,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {
-		collectEconomicData();
+		collectEconomicData(false);
 	}
 
 	@Override

@@ -37,6 +37,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import exerelin.campaign.colony.ColonyTargetValuator;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -51,6 +52,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -477,6 +479,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			ClassLoader loader = Global.getSettings().getScriptClassLoader();
 			Class<?> clazz = loader.loadClass(className);
 			valuator = (ColonyTargetValuator)clazz.newInstance();
+			valuator.initForFaction(factionId);
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
 			Global.getLogger(IndustryClassGen.class).error("Failed to load colony target valuator " + className, ex);
 		}
@@ -658,9 +661,30 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, 
-			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
+			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) 
+	{
 		LinkedList<QueuedIndustry> existing = npcConstructionQueues.remove(market);
-		if (!newOwner.isPlayerFaction()) {
+		if (!newOwner.isPlayerFaction()) 
+		{			
+			// hax to handle "give small colony with HI away for raiding" exploit
+			// if the faction doesn't really need the industry and can't defend it, remove it
+			float def = InvasionRound.getDefenderStrength(market, 1);
+			if (!isCapture && oldOwner.isPlayerFaction() && EconomyInfoHelper.getInstance().hasHeavyIndustry(newOwner.getId())
+					&& def < 1000) 
+			{
+				log.info("Removing vulnerable heavy industry on " + market.getName());
+				List<String> toRemove = new ArrayList<>();
+				for (Industry ind : market.getIndustries()) {
+					if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY)) {
+						toRemove.add(ind.getId());
+					}
+				}
+				for (String indId : toRemove)
+					market.removeIndustry(indId, null, false);
+				
+				market.reapplyIndustries();
+			}
+			
 			if (oldOwner.isPlayerFaction() || existing != null) {
 				buildIndustries(market);
 				processNPCConstruction(market);
