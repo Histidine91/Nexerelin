@@ -56,6 +56,7 @@ import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
+import exerelin.utilities.ExerelinUtilsAstro;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -863,6 +864,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String newOwnerId = newOwner.getId();
         String oldOwnerId = oldOwner.getId();
         Set<SectorEntityToken> linkedEntities = market.getConnectedEntities();
+		if (market.getPlanetEntity() != null) {
+			linkedEntities.addAll(ExerelinUtilsAstro.getCapturableEntitiesAroundPlanet(market.getPlanetEntity()));
+		}
+		
         for (SectorEntityToken entity : linkedEntities)
         {
             entity.setFaction(newOwnerId);

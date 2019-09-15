@@ -1,5 +1,6 @@
 package exerelin.utilities;
 
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -10,6 +11,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.world.ExerelinProcGen;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
@@ -281,5 +284,20 @@ public class ExerelinUtilsAstro {
 				return true;
 		}
 		return false;
+	}
+	
+	public static List<SectorEntityToken> getCapturableEntitiesAroundPlanet(SectorEntityToken primary) {
+		List<SectorEntityToken> results = new ArrayList<>();
+		for (SectorEntityToken token : primary.getContainingLocation().getAllEntities()) 
+		{
+			if (token.getCustomEntitySpec() == null) continue;
+			if (token.getMarket() != null) continue;
+			if (token instanceof CampaignFleetAPI) continue;
+			if (token.getOrbit() == null || token.getOrbit().getFocus() == null)
+				continue;
+			results.add(token);
+		}
+		
+		return results;
 	}
 }
