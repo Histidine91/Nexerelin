@@ -272,25 +272,29 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			float weight = 1f;
 			switch (actionType) {
 				case CovertActionType.RAISE_RELATIONS:
+					// Use if we want to get closer to this faction
+					if (disposition < DiplomacyBrain.DISLIKE_THRESHOLD)
+						continue;
+					else if (disposition > DiplomacyBrain.LIKE_THRESHOLD)
+						weight *= 2;
+					
 					switch (repLevel) {
 						case FAVORABLE:
 						case WELCOMING:
-							weight = 1f;
+							weight *= 1f;
 							break;
 						case NEUTRAL:
-							weight = 1.5f;
+							weight *= 1.5f;
 							break;
 						case SUSPICIOUS:
-							weight = 2f;
+							weight *= 2f;
 							break;
 						case INHOSPITABLE:
-							weight = 3f;
+							weight *= 3f;
 							break;
 						default:
 							continue;
 					}
-					if (disposition < DiplomacyBrain.DISLIKE_THRESHOLD)
-						weight *= 0.5f;
 					
 					weight *= (1.25f - dominance);
 					break;
@@ -318,6 +322,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 						default:
 							continue;
 					}
+					// this is a bit of a hostile act, try not to do it to people we like
 					if (disposition > DiplomacyBrain.LIKE_THRESHOLD)
 						weight *= 0.5f;
 					
