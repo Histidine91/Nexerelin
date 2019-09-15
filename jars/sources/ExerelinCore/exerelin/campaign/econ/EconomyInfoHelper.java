@@ -152,15 +152,25 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		if (!factionProductionByFaction.containsKey(factionId))
 			return null;
 		
-		logInfo("Faction " + factionId + " produces the following commodities:");
 		Map<String, Integer> result = factionProductionByFaction.get(factionId);
-		for (Map.Entry<String, Integer> tmp : result.entrySet()) {
-			String comId = tmp.getKey();
-			int amount = tmp.getValue();
-			logInfo("  " + amount + " " + comId);
+		
+		if (loggingMode) {
+			logInfo("Faction " + factionId + " produces the following commodities:");
+			for (Map.Entry<String, Integer> tmp : result.entrySet()) {
+				String comId = tmp.getKey();
+				int amount = tmp.getValue();
+				logInfo("  " + amount + " " + comId);
+			}
 		}
 		
 		return result;
+	}
+	
+	public int getFactionCommodityProduction(String factionId, String commodityId) {
+		Map<String, Integer> ourProduction = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(factionId);
+		if (!ourProduction.containsKey(commodityId))
+			return 0;
+		return ourProduction.get(commodityId);
 	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getProducers("hegemony", "metals", 0);
@@ -272,6 +282,10 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			factor += amount1 + amount2;
 		}
 		return factor;
+	}
+	
+	public boolean hasHeavyIndustry(String factionId) {
+		return haveHeavyIndustry.contains(factionId);
 	}
 
 	@Override

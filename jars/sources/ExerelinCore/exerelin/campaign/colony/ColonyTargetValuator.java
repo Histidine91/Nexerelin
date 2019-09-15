@@ -6,11 +6,11 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.util.Misc;
-import static com.fs.starfarer.api.util.Misc.isMilitary;
+import exerelin.ExerelinConstants;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -26,12 +26,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ColonyTargetValuator {
 	
+	public static final String RESOURCES_CSV_PATH = "data/config/exerelin/conditions_to_commodities.csv";
 	protected static final Map<String, Float> DEFAULT_CONDITION_VALUES = new HashMap<>();
+	protected static final Map<String, Float> ORE_CONDITIONS = new HashMap<>();
+	protected static final Map<String, Float> RARE_ORE_CONDITIONS = new HashMap<>();
+	protected static final Map<String, Float> ORGANICS_CONDITIONS = new HashMap<>();
+	protected static final Map<String, Float> VOLATILES_CONDITIONS = new HashMap<>();
+	protected static final Map<String, Float> FOOD_CONDITIONS = new HashMap<>();
+	
 	@Deprecated
 	public static final Set<String> TAGS_DO_NOT_COLONIZE = new HashSet<>(Arrays.asList(new String[] {
 		Tags.THEME_REMNANT_RESURGENT, Tags.THEME_REMNANT_SUPPRESSED, "theme_breakers_suppressed", "theme_breakers_resurgent"
@@ -47,6 +55,16 @@ public class ColonyTargetValuator {
 		}
 	}
 	
+	protected int oreProduction, rareOreProduction, organicsProduction, volatilesProduction, foodProduction;
+	
+	protected static void checkConditionForMap(String conditionId, String columnId,
+			JSONObject row, Map<String, Float> map) 
+	{
+		float amount = (float)row.optDouble(columnId, 0);
+		if (amount >= 0)
+			map.put(conditionId, amount);
+	}
+	
 	protected static void loadSettings() throws JSONException, IOException {
 		JSONObject entriesJson = Global.getSettings().getJSONObject("nex_colonyConditionValues");
 		
@@ -56,6 +74,35 @@ public class ColonyTargetValuator {
 			float value = (float)entriesJson.getDouble(id);
 			DEFAULT_CONDITION_VALUES.put(id, value);
 		}
+		
+		JSONArray resourcesCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", 
+				RESOURCES_CSV_PATH, ExerelinConstants.MOD_ID);
+		for(int x = 0; x < resourcesCsv.length(); x++)
+		{
+			String id = "";
+			try {
+				JSONObject row = resourcesCsv.getJSONObject(x);
+				id = row.getString("id");
+				if (id.isEmpty()) continue;
+				
+				checkConditionForMap(id, "ore", row, ORE_CONDITIONS);
+				checkConditionForMap(id, "rare_ore", row, RARE_ORE_CONDITIONS);
+				checkConditionForMap(id, "organics", row, ORGANICS_CONDITIONS);
+				checkConditionForMap(id, "volatiles", row, VOLATILES_CONDITIONS);
+				checkConditionForMap(id, "food", row, FOOD_CONDITIONS);
+			} catch (JSONException ex) {
+				log.error("Error loading market condition entry " + id, ex);
+			}
+		}
+	}
+	
+	public void initForFaction(String factionId) {
+		EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
+		oreProduction = helper.getFactionCommodityProduction(factionId, Commodities.ORE);
+		rareOreProduction = helper.getFactionCommodityProduction(factionId, Commodities.RARE_ORE);
+		organicsProduction = helper.getFactionCommodityProduction(factionId, Commodities.ORGANICS);
+		volatilesProduction = helper.getFactionCommodityProduction(factionId, Commodities.VOLATILES);
+		foodProduction = helper.getFactionCommodityProduction(factionId, Commodities.FOOD);
 	}
 	
 	public float evaluatePlanet(MarketAPI market, float distanceLY, FactionAPI faction) {
@@ -137,10 +184,43 @@ public class ColonyTargetValuator {
 		return true;
 	}
 	
+	/**
+	 * Conditions have more value if they supply a commodity we're currently lacking in.
+	 * @param conditionId
+	 * @param currProduction
+	 * @param lookup
+	 * @return
+	 */
+	public float getMultiplierForUnavailableResource(String conditionId, int currProduction, 
+			Map<String, Float> lookup) {
+		if (!lookup.containsKey(conditionId))
+			return 1;
+		
+		float strength = lookup.get(conditionId);
+		if (strength <= currProduction)
+			return 1;
+		
+		return strength - currProduction;
+	}
+	
 	public float getConditionValue(String conditionId, FactionAPI faction) {
-		if (DEFAULT_CONDITION_VALUES.containsKey(conditionId))
-			return DEFAULT_CONDITION_VALUES.get(conditionId);
-		return 0;
+		float value = 0;
+		if (DEFAULT_CONDITION_VALUES.containsKey(conditionId)) {
+			value = DEFAULT_CONDITION_VALUES.get(conditionId);
+			
+			value *= getMultiplierForUnavailableResource(conditionId, oreProduction,
+					ORE_CONDITIONS);
+			value *= getMultiplierForUnavailableResource(conditionId, rareOreProduction,
+					RARE_ORE_CONDITIONS);
+			value *= getMultiplierForUnavailableResource(conditionId, organicsProduction,
+					ORGANICS_CONDITIONS);
+			value *= getMultiplierForUnavailableResource(conditionId, volatilesProduction,
+					VOLATILES_CONDITIONS);
+			value *= getMultiplierForUnavailableResource(conditionId, volatilesProduction,
+					FOOD_CONDITIONS);
+		}
+			
+		return value;
 	}
 	
 	public float getHazardDivisorMult(FactionAPI faction) {

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import java.util.Arrays;
@@ -40,6 +41,13 @@ public class HeavyIndustry extends IndustryClassGen {
 			return 9999 * market.getSize();
 		}
 		
+		// prioritise new heavy industry if we don't have any
+		if (!Global.getSector().isInNewGameAdvance()) {
+			if (!EconomyInfoHelper.getInstance().hasHeavyIndustry(market.getFactionId()) 
+					&& market.getSize() >= 4)
+				return 99999;
+		}
+		
 		float weight = (25 + market.getSize() * 5) * 2;
 				
 		// bad for high hazard worlds
@@ -60,6 +68,16 @@ public class HeavyIndustry extends IndustryClassGen {
 		MarketAPI market = entity.market;
 		if (market.hasIndustry(Industries.ORBITALWORKS) || market.hasIndustry("ms_massIndustry"))
 			return false;
+		
+		// don't build heavy industry on new small colonies, they're raid bait
+		if (!Global.getSector().isInNewGameAdvance()) {
+			int minSize = 4;
+			if (EconomyInfoHelper.getInstance().hasHeavyIndustry(market.getFactionId())) {
+				minSize = 5;
+			}
+			if (market.getSize() < minSize)
+				return false;
+		}
 		
 		return true;
 	}

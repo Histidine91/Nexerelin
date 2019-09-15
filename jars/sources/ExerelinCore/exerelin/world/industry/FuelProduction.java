@@ -1,10 +1,16 @@
 package exerelin.world.industry;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import java.util.Map;
 
 public class FuelProduction extends IndustryClassGen {
 
@@ -14,12 +20,16 @@ public class FuelProduction extends IndustryClassGen {
 
 	@Override
 	public float getWeight(ProcGenEntity entity) {
+		boolean newGame = Global.getSector().isInNewGameAdvance();
+		
+		// hax so this isn't the default choice for little stations
+		if (newGame && entity.type == ExerelinProcGen.EntityType.STATION && StarSystemGenerator.random.nextBoolean())
+			return -1;
+		
 		MarketAPI market = entity.market;
 		
 		float weight = 25 + market.getSize() * 5;
 		
-		// don't give bonus for local volatiles; we don't want this thing competing with volatiles mines
-		/*
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			switch (cond.getId())
@@ -38,7 +48,6 @@ public class FuelProduction extends IndustryClassGen {
 					break;
 			}
 		}
-		*/
 		
 		// bad for high hazard worlds
 		weight += (175 - market.getHazardValue()) * 2;
@@ -50,9 +59,12 @@ public class FuelProduction extends IndustryClassGen {
 		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
 			weight -= 75;
 		
-		// hax so this isn't the default choice for little stations
-		if (entity.type == ExerelinProcGen.EntityType.STATION && StarSystemGenerator.random.nextBoolean())
-			weight = -1;
+		// if we're not already producing fuel, prioritise it
+		if (!newGame) {
+			if (EconomyInfoHelper.getInstance().getFactionCommodityProduction(
+					market.getFactionId(), Commodities.FUEL) <= 0)
+				weight *= 2f;
+		}
 		
 		return weight;
 	}

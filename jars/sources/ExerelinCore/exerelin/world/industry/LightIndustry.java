@@ -1,12 +1,16 @@
 package exerelin.world.industry;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import java.util.Map;
 
 public class LightIndustry extends IndustryClassGen {
 
@@ -16,6 +20,12 @@ public class LightIndustry extends IndustryClassGen {
 
 	@Override
 	public float getWeight(ProcGenEntity entity) {
+		boolean newGame = Global.getSector().isInNewGameAdvance();
+		
+		// hax so this isn't the default choice for little stations
+		if (newGame && entity.type == EntityType.STATION && StarSystemGenerator.random.nextBoolean())
+			return -1;
+		
 		MarketAPI market = entity.market;
 		
 		float weight = 25 + market.getSize() * 4;
@@ -49,9 +59,12 @@ public class LightIndustry extends IndustryClassGen {
 		if (market.hasIndustry(Industries.FUELPROD))
 			weight -= 75;
 		
-		// hax so this isn't the default choice for little stations
-		if (entity.type == EntityType.STATION && StarSystemGenerator.random.nextBoolean())
-			weight = -1;
+		// if we're not already producing domestic goods, prioritise it
+		if (!newGame) {
+			if (EconomyInfoHelper.getInstance().getFactionCommodityProduction(
+					market.getFactionId(), Commodities.DOMESTIC_GOODS) <= 0)
+				weight *= 2f;
+		}
 		
 		return weight;
 	}
