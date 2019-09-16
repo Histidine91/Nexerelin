@@ -790,6 +790,7 @@
 		"miningUnload":"unloading cargo and disbanding",
 		"suppressingRebellion":"suppressing rebellion at $target",
 		"wandering":"wandering $target",
+		"operatingIn":"operating in $target",
 
 		"missionStrike":"strike mission",
 		"missionInvasion":"invasion",

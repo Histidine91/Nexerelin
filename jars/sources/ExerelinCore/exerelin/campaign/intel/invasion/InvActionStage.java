@@ -305,9 +305,13 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		List<RouteData> routes = RouteManager.getInstance().getRoutesForSource(intel.getRouteSourceId());
 		for (RouteData route : routes) {
 			if (target.getStarSystem() != null) { // so that fleet may spawn NOT at the target
-				route.addSegment(new RouteSegment(Math.min(5f, untilAutoresolve), target.getStarSystem().getCenter()));
+				RouteSegment segment = new RouteSegment(Math.min(2f, untilAutoresolve), target.getStarSystem().getCenter());
+				segment.custom = target;	// read by RaidAssignmentAINoWander to identify our goal
+				route.addSegment(segment);
 			}
-			route.addSegment(new RouteSegment(1000f, target.getPrimaryEntity()));
+			RouteSegment segment = new RouteSegment(1000f, target.getPrimaryEntity());
+			segment.custom = target;
+			route.addSegment(segment);
 		}
 	}
 	
@@ -378,7 +382,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
 	@Override
 	public String getRaidInSystemText(CampaignFleetAPI fleet) {
-		return StringHelper.getFleetAssignmentString("travellingTo", target.getName());
+		return StringHelper.getFleetAssignmentString("attackingAroundStarSystem", target.getContainingLocation().getNameWithTypeIfNebula());
 	}
 	
 	@Override

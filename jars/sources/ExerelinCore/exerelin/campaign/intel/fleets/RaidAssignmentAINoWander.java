@@ -1,17 +1,19 @@
 package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 
-// vanilla, but replaces some assignment types to keep fleets from wandering off
+// vanilla, but replaces some assignment types and hacks addLocalAssignment to keep fleets from wandering off
 // see http://fractalsoftworks.com/forum/index.php?topic=5061.msg253229#msg253229
 public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	
@@ -27,29 +29,29 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 									current.from, current.getDestination());
 		}
 		if (current.from != null && current.to == null && !current.isFromSystemCenter()) {
-//			if (justSpawned) {
-//				Vector2f loc = Misc.getPointWithinRadius(current.from.getLocation(), 500);
-//				fleet.setLocation(loc.x, loc.y);
-//			}
 			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from, 
 					current.daysMax - current.elapsed, getInSystemActionText(current),
 					goNextScript(current));		
 			return;
 		}
 		
-//		if (justSpawned) {
-//			Vector2f loc = Misc.getPointAtRadius(new Vector2f(), 8000);
-//			fleet.setLocation(loc.x, loc.y);
-//		}
-		
 		SectorEntityToken target = null;
-		if (current.from.getContainingLocation() instanceof StarSystemAPI) {
+		if (current.from.getContainingLocation() instanceof StarSystemAPI) 
+		{
+			// force the fleet to go straight to target instead of pissing around system
+			if (current.custom instanceof MarketAPI) {
+				final MarketAPI market = ((MarketAPI)current.custom);
+				target = market.getPrimaryEntity();
+				fleet.addAssignment(FleetAssignment.DELIVER_MARINES, target, 
+						    10000, getTravelActionText(current));
+				return;
+			}
 			target = ((StarSystemAPI)current.from.getContainingLocation()).getCenter();
 		} else {
 			target = Global.getSector().getHyperspace().createToken(current.from.getLocation().x, current.from.getLocation().y);
 		}
 		
-		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 
+		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, target, 
 						    current.daysMax - current.elapsed, getInSystemActionText(current));
 	}
 	
@@ -128,7 +130,6 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 //			loc = Misc.getPointWithinRadius(loc, 2000f, random);
 //			fleet.setLocation(loc.x, loc.y);
 		}
-		
 		fleet.addAssignment(FleetAssignment.DELIVER_MARINES, current.to, 10000f, getTravelActionText(current), 
 				goNextScript(current));
 		

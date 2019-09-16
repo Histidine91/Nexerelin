@@ -34,6 +34,7 @@ import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
+import exerelin.utilities.debug.FleetAssignmentDebugger;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
@@ -312,6 +313,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, marinesPerFleet/5);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
+		// makes it not piss around the system instead of heading to objective, see http://fractalsoftworks.com/forum/index.php?topic=5061.msg263438#msg263438
+		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_NO_MILITARY_RESPONSE, true);
 		if (isInvasionFleet)
 			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_RAIDER, true);	// needed to do raids
 		
@@ -324,6 +327,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		fleet.getCommander().setPostId(postId);
 		fleet.getCommander().setRankId(rankId);
+		
+		fleet.addScript(new FleetAssignmentDebugger(fleet));
 		
 		log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
 		
