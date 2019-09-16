@@ -37,7 +37,6 @@ public class ColonyExpeditionAssignmentAI extends RouteFleetAssignmentAI impleme
 		
 		checkCapture(amount);
 		
-		// // don't limit raids to RAIDER fleets
 		if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER)) {
 			checkRaid(amount);
 		}

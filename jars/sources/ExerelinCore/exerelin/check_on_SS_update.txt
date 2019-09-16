@@ -8,6 +8,7 @@ Partial list.
 - Nex_MarketCMD
 - Nex_SustainedBurnAbilityAI
 - SSP_BattleCreationPluginImpl
+- InvasionFleetManager.getPatrolCombatFP
 - Submarket plugins
 
 Do on future SS release:

@@ -4,3 +4,7 @@
 /jars/nbproject
 /nbproject
 .idea/
+*.aup
+*.au
+*.xcf
+*.svg

@@ -318,7 +318,6 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			mem.set(MemFlags.FLEET_NO_MILITARY_RESPONSE, true);
 		}
 		
-		mem.set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		mem.set(FleetAIFlags.WANTS_TRANSPONDER_ON, true);
 		
 		if (hostileMode)
