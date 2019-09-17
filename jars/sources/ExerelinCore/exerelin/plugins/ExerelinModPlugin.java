@@ -112,7 +112,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         //replaceMissionCreator(SurveyPlanetIntelCreator.class, new Nex_SurveyPlanetIntelCreator());
         ScriptReplacer.replaceBarEventCreator(DeliveryBarEventCreator.class, new NexDeliveryBarEventCreator());
         
-        for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
             replaceSubmarket(market, Submarkets.SUBMARKET_OPEN);
@@ -164,9 +164,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         // replace submarkets
         // local resources
-        for (MarketAPI market : Misc.getFactionMarkets(Global.getSector().getPlayerFaction()))
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            //if (market.isPlayerOwned()) continue;
+            if (!market.hasSubmarket(Submarkets.LOCAL_RESOURCES)) continue;
             if (market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin() instanceof Nex_LocalResourcesSubmarketPlugin)
                 continue;
             log.info("Replacing local resources submarket on " + market.getName());
@@ -174,8 +174,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         // storage
-        // too much trouble, since we can't get which ones we've paid to unlock
-        // actually we can, see Misc.playerHasStorageAccess()
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             if (!market.hasSubmarket(Submarkets.SUBMARKET_STORAGE)) continue;
