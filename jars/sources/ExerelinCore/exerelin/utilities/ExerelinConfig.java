@@ -27,7 +27,7 @@ public class ExerelinConfig
     public static float forcePiratesInSystemChance = 0.3f;
 
     // Player settings
-    public static float playerInsuranceMult = 0.8f;
+    public static float playerInsuranceMult = 1;
     
     public static float fleetBonusFpPerPlayerLevel = 1f;
     

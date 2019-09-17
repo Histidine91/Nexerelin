@@ -106,7 +106,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected Set<String> liveFactionIds = new HashSet<>();
     protected Set<String> historicFactionIds = new HashSet<>();
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
-    protected Map<FleetMemberAPI, Float[]> insuranceLostMembers = new HashMap<>();    // value is base buy value and number of D mods
+    protected Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // value is base buy value and number of D mods
     
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
@@ -261,6 +261,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         createWarmongerEvent(faction.getId(), fleet);
     }
     
+    // Check losses every engagement round
+    // If we just compared against the snapshot once at battle end, we wouldn't know who was recovered
     protected void checkForInsurance(EngagementResultAPI result)
     {
         EngagementResultForFleetAPI er = result.didPlayerWin() ? result.getWinnerResult() : result.getLoserResult();
@@ -276,8 +278,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 continue;
             if (member.isFighterWing())
                 continue;
-            //log.info("Member " + member.getShipName() + " disabled or destroyed");
-            insuranceLostMembers.put(member, new Float[]{member.getBaseBuyValue(), (float)FactionInsuranceIntel.countDMods(member)});
+            //log.info("Member " + member.getShipName() + " disabled or destroyed");			
+            insuranceLostMembers.put(member, new Integer[]{(int)member.getBaseValue(), FactionInsuranceIntel.countDMods(member)});
         }
     }
     

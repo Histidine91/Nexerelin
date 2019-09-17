@@ -80,7 +80,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			if (member.isFighterWing())
 				continue;
 			log.info("Member " + member.getShipName() + " disabled or destroyed");
-			disabledOrDestroyedMembers.put(member, new Float[]{member.getBaseBuyValue(), (float)FactionInsuranceIntel.countDMods(member)});
+			disabledOrDestroyedMembers.put(member, new Float[]{member.getBaseValue(), (float)FactionInsuranceIntel.countDMods(member)});
 		}
 	}
 

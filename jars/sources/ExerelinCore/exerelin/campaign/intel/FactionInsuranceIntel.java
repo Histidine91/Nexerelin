@@ -10,6 +10,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -22,46 +23,52 @@ import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class FactionInsuranceIntel extends BaseIntelPlugin {
-	private static Logger log = Global.getLogger(FactionInsuranceIntel.class);
-
-	protected static final float HARD_MODE_MULT = 0.5f;
-	protected static final boolean COMPENSATE_DMODS = false;
-	protected static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
-	protected static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
-	protected static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
-	protected static final float BASE_HULL_VALUE_MULT_FOR_DMODS = 0.4f;
-
+	public static Logger log = Global.getLogger(FactionInsuranceIntel.class);
+	
+	public static final boolean DEBUG_MODE = true;	// self-insurance and stuff
+	
+	public static final float HARD_MODE_MULT = 0.5f;
+	public static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
+	public static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
+	public static final float COMPENSATION_PER_DMOD = 0.2f;
+	public static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
+	
+	protected Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers;
+	protected List<InsuranceItem> items = new ArrayList<>();
 	protected boolean paid = true;
 	protected float paidAmount = 0f;
 	protected FactionAPI faction;
 
-	public FactionInsuranceIntel(Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers, List<OfficerDataAPI> deadOfficers) {
-		if (intelValidations()) {
-			paidAmount = calculateAmount(deadOfficers, disabledOrDestroyedMembers);
+	public FactionInsuranceIntel(Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers, 
+			List<OfficerDataAPI> deadOfficers) {
+		if (!intelValidations())
+			return;
+		
+		this.disabledOrDestroyedMembers = disabledOrDestroyedMembers;
+		paidAmount = calculatePayout(deadOfficers, disabledOrDestroyedMembers);
 
-			if (faction.isAtBest("player", RepLevel.SUSPICIOUS))
-			{
-				paidAmount = 0;
-				paid = false;
-			}
-			else paidAmount *= ExerelinConfig.playerInsuranceMult;
+		if (faction.isAtBest("player", RepLevel.SUSPICIOUS))
+		{
+			paid = false;
+		}
 
-			if (SectorManager.getHardMode())
-				paidAmount *= HARD_MODE_MULT;
-
-			log.debug("Amount: " + paidAmount);
-			if(paidAmount > 0) {
+		log.debug("Amount: " + paidAmount);
+		if (paidAmount > 0) {
+			if (paid)
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(paidAmount);
-				Global.getSector().getIntelManager().addIntel(this);
-				Global.getSector().addScript(this);
-				this.endAfterDelay();
-			}
+			
+			Global.getSector().getIntelManager().addIntel(this);
+			Global.getSector().addScript(this);
+			this.endAfterDelay();
 		}
 	}
 
@@ -71,20 +78,18 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	 */
 	protected boolean intelValidations() {
 		//log.info("Validating insurance intel item");
-		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-
 		if (Global.getSector().getMemoryWithoutUpdate().contains("$tutStage"))	{
 			return false;
 		}
 
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		if (alignedFactionId.equals(Factions.PLAYER)) {	// no self insurance
+		if (!DEBUG_MODE && alignedFactionId.equals(Factions.PLAYER)) {	// no self insurance
 			//log.info("Cannot self-insure");
 			return false;
 		}	
 		if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId)) {
 			// assume Exigency is alive on the other side of the wormhole, do nothing
-		} else if (!SectorManager.isFactionAlive(alignedFactionId))	{
+		} else if (!DEBUG_MODE && !SectorManager.isFactionAlive(alignedFactionId))	{
 			//log.info("Faction is not alive");
 			return false;
 		}
@@ -93,52 +98,80 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		return true;
 	}
 
-	protected float calculateAmount(List<OfficerDataAPI> deadOfficers, Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers) {
-		float value = 0f;
+	protected float calculatePayout(List<OfficerDataAPI> deadOfficers, Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers) {
+		float totalPayment = 0f;
+		float mult = ExerelinConfig.playerInsuranceMult;
+		if (SectorManager.getHardMode())
+			mult *= HARD_MODE_MULT;
 
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		List<FleetMemberAPI> fleetCurrent = playerFleet.getFleetData().getMembersListCopy();
-		for (FleetMemberAPI member : playerFleet.getFleetData().getSnapshot()) {
+		for (FleetMemberAPI member : playerFleet.getFleetData().getSnapshot()) 
+		{
+			float amount = 0;
+			
 			// dead, not recovered
 			if (!fleetCurrent.contains(member)) {
-				float amount = member.getBaseBuyValue();
+				amount = member.getBaseValue();
 				if (disabledOrDestroyedMembers.containsKey(member)) {
-					Float[] entry = disabledOrDestroyedMembers.get(member);
+					Integer[] entry = disabledOrDestroyedMembers.get(member);
 					amount = entry[0];
 				}
-				log.info("Insuring lost ship " + member.getShipName() + " for " + amount + ", potentially " + member.getHullSpec().getBaseValue());
-				value += amount;
+				amount *= mult;
+				
+				String text = getString("entryDescLost");
+				InsuranceItem item = new InsuranceItem(member, amount, text);
+				items.add(item);
+				totalPayment += amount;
 			}
-			// dead, recovered; compare "before" to "after" in D mod count and base value
+			// dead, recovered
 			else if (disabledOrDestroyedMembers.containsKey(member)) {
-				Float[] entry = disabledOrDestroyedMembers.get(member);
+				Integer[] entry = disabledOrDestroyedMembers.get(member);
 				float prevValue = entry[0];
-				int dmodsOld = (int) (float) entry[1];
+				int dmodsOld = (int)entry[1];
 				int dmods = countDMods(member);
-
-				float dmodCompensation = 0;
-				if (dmods > dmodsOld && COMPENSATE_DMODS) {
-					dmodCompensation = member.getHullSpec().getBaseValue() * BASE_HULL_VALUE_MULT_FOR_DMODS;
-					if (dmodsOld == 0)
-						dmodCompensation *= DMOD_BASE_COST;
-					dmodCompensation *= Math.pow(DMOD_COST_PER_MOD, dmods - dmodsOld);
-					log.info("Compensation for D-mods: " + dmodCompensation);
+				boolean depristined = dmodsOld == 0 && dmods > 0;
+				boolean dmodsIncreased = !depristined && dmods > dmodsOld;
+				
+				String text = String.format(getString("entryDescRecovered"), dmodsOld, dmods);
+				List<String> highlights = new ArrayList<>();
+				highlights.add(dmodsOld + "");
+				highlights.add(dmods + "");
+				
+				if (depristined) {
+					amount = prevValue;
+					text += "\n" + getString("entryDescNewDHull");
 				}
-
-				float amount = prevValue - member.getBaseBuyValue() + dmodCompensation;
-				log.info("Insuring recovered ship " + member.getShipName() + " for " + amount);
-				value += amount;
+				else if (dmodsIncreased) {
+					int delta = dmods - dmodsOld;
+					float dmodMult = Math.min(delta * COMPENSATION_PER_DMOD, 1);
+					amount = prevValue * dmodMult;
+					String multStr = Math.round(dmodMult * 100) + "%";
+					try {
+						text += "\n" + String.format(getString("entryDescMoreDMods"), multStr);
+						highlights.add(multStr);
+					} catch (FormatFlagsConversionMismatchException ex) {
+						//log.error("wtf " + ex.getFlags() + ", " + ex.getConversion());
+					}
+				}
+				
+				amount *= mult;
+				totalPayment += amount;
+				
+				InsuranceItem item = new InsuranceItem(member, amount, text);
+				item.highlights.addAll(highlights);
+				items.add(item);
 			}
 		}
 		if (deadOfficers != null) {
 			for (OfficerDataAPI deadOfficer : deadOfficers) {
 				float amount = deadOfficer.getPerson().getStats().getLevel() * LIFE_INSURANCE_PER_LEVEL;
 				log.info("Insuring dead officer " + deadOfficer.getPerson().getName().getFullName() + " for " + amount);
-				value += amount;
+				totalPayment += amount;
 			}
 		}
 
-		return value;
+		return totalPayment;
 	}
 
 	public static int countDMods(FleetMemberAPI member) {
@@ -160,7 +193,8 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		float pad = 3f;
 		Color tc = getBulletColorForMode(mode);
 		Color h = Misc.getHighlightColor();
-		info.addPara("%s received", pad, tc, h, Misc.getDGSCredits(paidAmount));
+		if (paid)
+			info.addPara(getString("bulletPayment"), pad, tc, h, Misc.getDGSCredits(paidAmount));
 	}
 
 	@Override
@@ -169,33 +203,102 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	}
 
 	protected String getName() {
-		String str;
-		if (paid) str = "exerelinFactionInsurance";
-		else str = "exerelinFactionInsuranceUnpaid";
-		return StringHelper.getString("exerelin_factions", str);
+		String str = paid ? "title" : "titleUnpaid";
+		return getString(str);
+	}
+	
+	protected boolean showDetails() {
+		return paid && items != null;
+	}
+	
+	@Override
+	public boolean hasSmallDescription() {
+		return !showDetails();
 	}
 
 	@Override
-	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		float opad = 10f;
-		info.addImage(faction.getCrest(), width, 128f, opad);
+	public boolean hasLargeDescription() { 
+		return showDetails();
+	}
+	
+	public void createBaseDescription(TooltipMakerAPI info, float width, float pad) {
+		info.addImage(faction.getCrest(), width, 128f, pad);
 
-		String str;
-		if (paid) str = "exerelinFactionInsuranceDesc";
-		else str = "exerelinFactionInsuranceUnpaidDesc";
+		String str = paid ? "desc" : "descUnpaid";
 
 		Map<String, String> map = new HashMap<>();
-		String paid = Misc.getDGSCredits(paidAmount);
-		map.put("$paid", paid);
+		String payment = Misc.getDGSCredits(paidAmount);
+		map.put("$paid", payment);
 		map.put("$theEmployer", faction.getDisplayNameLongWithArticle());
-		String para = StringHelper.getStringAndSubstituteTokens("exerelin_factions", str, map);
+		String para = StringHelper.getStringAndSubstituteTokens("nex_insurance", str, map);
 
 		Color h = Misc.getHighlightColor();
-		LabelAPI label = info.addPara(para, opad);
-		label.setHighlight(paid, faction.getDisplayNameLongWithArticle());
+		LabelAPI label = info.addPara(para, pad);
+		label.setHighlight(payment, faction.getDisplayNameLongWithArticle());
 		label.setHighlightColors(h, faction.getBaseUIColor());
 		
-		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
+		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", pad);
+	}
+	
+	@Override
+	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		float opad = 10f;
+		createBaseDescription(info, width, opad);
+	}
+	
+	public static int ENTRY_HEIGHT = 80;
+	public static int IMAGE_WIDTH = 80;
+	public static int IMAGE_DESC_GAP = 12;
+	
+	@Override
+	public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
+		float pad = 3;
+		float opad = 10;
+		Color h = Misc.getHighlightColor();
+		
+		TooltipMakerAPI info = panel.createUIElement(width, height, true);
+		createBaseDescription(info, width, opad);
+		
+		info.addSectionHeading(getString("headerBreakdown"), faction.getBaseUIColor(), 
+			faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
+		
+		float mult = ExerelinConfig.playerInsuranceMult;
+		if (SectorManager.getHardMode())
+			mult *= HARD_MODE_MULT;
+		
+		info.addPara(getString("descInsuranceMult"), opad, h, mult + "");
+		
+		// generate list of ships lost
+		float heightPerItem = ENTRY_HEIGHT + opad;
+		float itemPanelHeight = heightPerItem * items.size();
+		CustomPanelAPI itemPanel = panel.createCustomPanel(width, itemPanelHeight, null);
+		float yPos = opad;
+		
+		for (InsuranceItem item : items) {
+			TooltipMakerAPI image = itemPanel.createUIElement(IMAGE_WIDTH, ENTRY_HEIGHT, true);
+			List<FleetMemberAPI> ship = new ArrayList<>();
+			ship.add(item.member);
+			image.addShipList(1, 1, IMAGE_WIDTH, Color.WHITE, ship, 0);
+			
+			TooltipMakerAPI entry = itemPanel.createUIElement(width - IMAGE_WIDTH - IMAGE_DESC_GAP,
+					ENTRY_HEIGHT, true);
+			entry.addPara(item.member.getShipName(), h, 0);
+			String payout = Misc.getDGSCredits(item.payment);
+			entry.addPara(getString("entryDescAmount"), pad, h, payout);
+
+			LabelAPI desc = entry.addPara(item.desc, pad);
+			desc.setHighlight(item.highlights.toArray(new String[0]));
+			desc.setHighlightColor(h);
+			
+			itemPanel.addUIElement(image).inTL(4, yPos);
+			itemPanel.addUIElement(entry).inTL(4 + IMAGE_WIDTH + IMAGE_DESC_GAP, yPos);
+			
+			yPos += ENTRY_HEIGHT + opad;
+			//break;
+		}
+		//info.addPara(getString("descZeroHull"), opad);
+		info.addCustom(itemPanel, 0);
+		panel.addUIElement(info).inTL(0, 0);
 	}
 
 	@Override
@@ -215,5 +318,23 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	protected void notifyEnded() {
 		Global.getSector().getIntelManager().removeIntel(this);
 		Global.getSector().removeScript(this);
+	}
+	
+	protected static String getString(String id) {
+		return StringHelper.getString("nex_insurance", id);
+	}
+	
+	public static class InsuranceItem {
+		
+		public FleetMemberAPI member;
+		public float payment;
+		public String desc;
+		public List<String> highlights = new ArrayList<>();
+		
+		public InsuranceItem(FleetMemberAPI member, float payment, String desc) {
+			this.member = member;
+			this.payment = payment;
+			this.desc = desc;
+		}
 	}
 }

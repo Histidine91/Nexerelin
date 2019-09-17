@@ -667,11 +667,6 @@
 
 		"relationshipLimit":"Relationship between $faction1 and $faction2 limited to $relationship",
 		"repLimit":"Reputation with $faction capped at %s, currently %s",
-
-		"exerelinFactionInsurance":"Insurance Payout",
-		"exerelinFactionInsuranceDesc":"You have received $paid from $theEmployer to help cover your losses in the recent battle.",
-		"exerelinFactionInsuranceUnpaid":"Insurance payout: no payment",
-		"exerelinFactionInsuranceUnpaidDesc":"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments.",
 		
 		"intel_titleEliminated":"Faction Eliminated",
 		"intel_titleSpawned":"Faction Arrives",
@@ -1098,6 +1093,25 @@
 		"killedInAction":"killed in action",
 		"rescued":"rescued"
 	},
+	
+	"nex_insurance":{
+		"title":"Insurance Payout",
+		"desc":"You have received $paid from $theEmployer to help cover your losses in the recent battle.",
+		"titleUnpaid":"Insurance payout: no payment",
+		"descUnpaid":"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments.",
+		"bulletPayment":"%s received",
+		
+		"headerBreakdown":"Breakdown",
+		"descInsuranceMult":"Insurance mult: %s×",
+		"descZeroHull":"Base value assumes zero hull and combat readiness.",
+		
+		"entryDescAmount":"Insured for %s",
+		"entryDescLost":"Ship lost; paying for base value",
+		"entryDescRecovered":"Ship recovered: had %s D-mods, now has %s",
+		"entryDescNewDHull":"New (D) hull: rated as total loss, paying for base value",
+		"entryDescMoreDMods":"D-mod count increased: paying %s of base value",
+	},
+	
 	"nex_playerOutpost":{
 		"outposts":"outposts",
 		"outpostProperName":"Outpost",
