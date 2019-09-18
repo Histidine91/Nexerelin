@@ -310,6 +310,10 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		return factor;
 	}
 	
+	public List<ProducerEntry> getProducersByCommodity(String commodityId) {
+		return producersByCommodity.get(commodityId);
+	}	
+	
 	public boolean hasHeavyIndustry(String factionId) {
 		return haveHeavyIndustry.contains(factionId);
 	}

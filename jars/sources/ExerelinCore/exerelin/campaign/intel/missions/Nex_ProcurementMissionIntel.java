@@ -3,6 +3,7 @@ package exerelin.campaign.intel.missions;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -12,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionIntel;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +30,35 @@ public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
 	
 	public static boolean isFactionAllowed(String factionId) {
 		return !DISALLOWED_FACTIONS.contains(factionId);
+	}
+	
+	// Same as vanilla, but avoids commodities that are not being produced anywhere
+	@Override
+	protected String pickCommodity() {
+		Global.getSettings().profilerBegin(this.getClass().getSimpleName() + ".pickCommodity()");
+		EconomyAPI economy = Global.getSector().getEconomy();
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>();
+		
+		for (String curr : economy.getAllCommodityIds()) {
+			CommoditySpecAPI spec = economy.getCommoditySpec(curr);
+			if (spec.isMeta()) continue;
+			if (spec.hasTag(Commodities.TAG_CREW)) continue;
+			if (spec.hasTag(Commodities.TAG_MARINES)) continue;
+			if (spec.hasTag(Commodities.TAG_NON_ECONOMIC)) continue;
+//			if (spec.getId().equals(Commodities.SUPPLIES)) continue;
+//			if (spec.getId().equals(Commodities.FUEL)) continue;
+
+			// MODIFIED
+			EconomyInfoHelper eih = EconomyInfoHelper.getInstance();
+			if (eih != null && eih.getProducersByCommodity(curr).isEmpty())
+				continue;
+			
+			//float weight = spec.getBasePrice();
+			float weight = 1f;
+			picker.add(curr, weight);
+		}
+		Global.getSettings().profilerEnd();
+		return picker.pick();
 	}
 	
 	// same as vanilla, but excludes some factions
