@@ -173,6 +173,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		if (Global.getSettings().getModManager().isModEnabled("Vast Expanse")) {
 			hyperMap = "data/campaign/terrain/Big_Hyperspace_Map.png";
 		}
+		else if (Global.getSettings().getModManager().isModEnabled("ZGrand Sector")) {
+			hyperMap = "data/campaign/terrain/anon_hyperspace.png";
+		}
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
 			  sector.getHyperspace(), // location to add to
