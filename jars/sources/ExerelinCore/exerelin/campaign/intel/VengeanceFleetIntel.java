@@ -41,22 +41,14 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class VengeanceFleetIntel extends BaseIntelPlugin {
-
-    public static final Map<String, Float> FACTION_ADJUST = new HashMap<>(4);
+    
     public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
         Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
         Factions.SCAVENGERS, Factions.NEUTRAL	//, Factions.LUDDIC_PATH
     }));
-	public static final boolean ALWAYS_SPAWN_ONSITE = true;
+    public static final boolean ALWAYS_SPAWN_ONSITE = true;
 
     public static Logger log = Global.getLogger(VengeanceFleetIntel.class);
-
-    static {
-        FACTION_ADJUST.put(Factions.TRITACHYON, 1.1f);
-        FACTION_ADJUST.put("blackrock_driveyards", 1.15f);
-        FACTION_ADJUST.put("cabal", 1.25f);
-        FACTION_ADJUST.put("templars", 1.5f);
-    }
     
 	protected VengeanceDef def;
 	protected String factionId;
@@ -504,10 +496,6 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;
-        Float mod = FACTION_ADJUST.get(factionId);
-        if (mod == null) {
-            mod = 1f;
-        }
         int capBonus = Math.round(ExerelinUtilsFleet.getPlayerLevelFPBonus());
 		float sizeMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(market.getFaction());
         int combat, freighter, tanker, utility;
@@ -515,7 +503,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         switch (escalationLevel) {
             default:
             case 0:
-                combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod));
+                combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f)));
                 combat = Math.min(120 + capBonus, combat);
                 combat *= sizeMult;
                 freighter = Math.round(combat / 20f);
@@ -525,10 +513,9 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                 break;
             case 1:
                 if (player < 80f) {
-                    combat = Math.round(Math.max(45f, player * MathUtils.getRandomNumberInRange(0.75f, 1f) / mod));
+                    combat = Math.round(Math.max(45f, player * MathUtils.getRandomNumberInRange(0.75f, 1f)));
                 } else {
-                    combat =
-                    Math.round((70f / mod) + (player - 80f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
+                    combat = Math.round(70f + (player - 80f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f));
                 }
                 combat = (int)Math.min(210 + capBonus * 1.5f, combat);
                 combat *= sizeMult;
@@ -539,13 +526,11 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                 break;
             case 2:
                 if (player < 120f) {
-                    combat = Math.round(Math.max(60f, player * MathUtils.getRandomNumberInRange(1f, 1.25f) / mod));
+                    combat = Math.round(Math.max(60f, player * MathUtils.getRandomNumberInRange(1f, 1.25f)));
                 } else if (player < 240f) {
-                    combat = Math.round((135f / mod) + (player - 120f) * MathUtils.getRandomNumberInRange(0.75f, 1f) /
-                    mod);
+                    combat = Math.round(135f + (player - 120f) * MathUtils.getRandomNumberInRange(0.75f, 1f));
                 } else {
-                    combat =
-                    Math.round((240f / mod) + (player - 240f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
+                    combat = Math.round(240f + (player - 240f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f));
                 }
                 combat = Math.min(300 + capBonus * 2, combat);
                 combat *= sizeMult;
