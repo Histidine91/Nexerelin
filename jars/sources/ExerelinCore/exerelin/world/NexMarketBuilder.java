@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.UnderworldModPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
@@ -203,6 +204,7 @@ public class NexMarketBuilder
 		// add Cabal submarkets
 		if (ExerelinModPlugin.HAVE_UNDERWORLD)
 		{
+			if (!UnderworldModPlugin.Module_StarlightCabal) return;
 			List<MarketAPI> cabalCandidates = new ArrayList<>();
 			List<MarketAPI> cabalCandidatesBackup = new ArrayList<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
