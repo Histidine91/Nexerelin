@@ -8,8 +8,8 @@
 
     "startRelationships":{ "tritachyon":-0.6 },
     "maxRelationships":{ "tritachyon":-0.1 },
-    "diplomacyPositiveChance":{ "tritachyon":0.75 },
-    "diplomacyNegativeChance":{ "tritachyon":1.5 },
+    "diplomacyPositiveChance":{ "tritachyon":0.8 },
+    "diplomacyNegativeChance":{ "tritachyon":1.2 },
     "morality":"good",
     
     "alignments":{
