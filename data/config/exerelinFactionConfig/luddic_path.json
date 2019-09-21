@@ -24,6 +24,7 @@
         "militarist":1,
         "ideological":1,
     },
+    "diplomacyTraits":["paranoid", "stalwart", "hates_ai", "anarchist"],
 	"morality":"evil",
     
     "freeMarket":true,

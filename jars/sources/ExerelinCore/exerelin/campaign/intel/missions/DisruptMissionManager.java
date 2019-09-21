@@ -3,6 +3,7 @@ package exerelin.campaign.intel.missions;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
@@ -12,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
 import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.missions.DisruptMissionIntel.TargetReason;
 import exerelin.utilities.ExerelinConfig;
@@ -107,6 +109,16 @@ public class DisruptMissionManager extends BaseEventManager {
 		return Global.getSector().getFaction(factionId);
 	}
 	
+	protected static boolean isRepLowEnough(FactionAPI faction, FactionAPI target, TargetReason reason)
+	{
+		RepLevel required = DisruptMissionIntel.MAX_REP_LEVEL;
+		
+		boolean monopolist = ExerelinConfig.getExerelinFactionConfig(faction.getId())
+				.hasDiplomacyTrait(DiplomacyTraits.TraitIds.MONOPOLIST);
+		if (reason == TargetReason.MILITARY || monopolist) required = RepLevel.VENGEFUL;
+		return faction.getRelationshipLevel(target).isAtWorst(required);
+	}
+	
 	protected static TargetEntry getTarget(FactionAPI faction) 
 	{
 		WeightedRandomPicker<TargetEntry> picker = new WeightedRandomPicker<>();
@@ -132,13 +144,14 @@ public class DisruptMissionManager extends BaseEventManager {
 		{
 			if (market.getFaction() == faction || market.getFaction().isPlayerFaction())
 				continue;
-			if (!faction.isAtBest(market.getFaction(), DisruptMissionIntel.MAX_REP_LEVEL))
-				continue;
 			if (!ExerelinConfig.allowPirateInvasions && 
 					ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
 				continue;
 			
 			boolean hostile = market.getFaction().isHostileTo(faction);
+			boolean canEconomicAttack = isRepLowEnough(faction, market.getFaction(), 
+					TargetReason.ECONOMIC_COMPETITION);
+			
 			boolean freePort = market.isFreePort();
 			int size = market.getSize();
 			
@@ -163,7 +176,7 @@ public class DisruptMissionManager extends BaseEventManager {
 				}
 				
 				// other stuff
-				if (vsCompetitors) {
+				if (vsCompetitors && canEconomicAttack) {
 					for (String commodityId : importantCommodities.keySet()) 
 					{
 						int ours = importantCommodities.get(commodityId);

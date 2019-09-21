@@ -10,6 +10,7 @@
         "diplomatic":0.5,
         "militarist":1,
     },
+	"diplomacyTraits":["selfrighteous", "helps_allies", "law_and_order"],
     
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
         

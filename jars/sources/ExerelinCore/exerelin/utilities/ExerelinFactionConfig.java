@@ -95,6 +95,7 @@ public class ExerelinFactionConfig
     public Map<String, Float> dispositions = new HashMap<>();
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
+    public List<String> diplomacyTraits = new ArrayList<>();
     public boolean noSyncRelations = false;
     public boolean noRandomizeRelations = false;
     
@@ -278,6 +279,11 @@ public class ExerelinFactionConfig
                 diplomacyNegativeChance.put("default", 1f);
             
             loadDispositions(settings);
+            
+            if (settings.has("diplomacyTraits")) {
+                List<String> traitsList = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("diplomacyTraits"));
+                diplomacyTraits.addAll(traitsList);
+            }
             
             noRandomizeRelations = settings.optBoolean("noRandomizeRelations", noRandomizeRelations);
             noSyncRelations = settings.optBoolean("noSyncRelations", noSyncRelations);
@@ -517,6 +523,10 @@ public class ExerelinFactionConfig
         if (dispositions.containsKey(factionId))
             return dispositions.get(factionId);
         return 0;
+    }
+    
+    public boolean hasDiplomacyTrait(String trait) {
+        return diplomacyTraits.contains(trait);
     }
     
     public static boolean canCeasefire(String factionId1, String factionId2)

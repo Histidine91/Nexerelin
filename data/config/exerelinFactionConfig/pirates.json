@@ -12,6 +12,7 @@
     "alignments":{
         "ideological":0.5,
     },
+    "diplomacyTraits":["neutralist", "anarchist"],
 	"morality":"evil",
     
     "freeMarket":true,

@@ -20,6 +20,8 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -587,6 +589,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public void modifyWarWeariness(String factionId, float amount)
     {
+        ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+        if (conf.hasDiplomacyTrait(TraitIds.STALWART))
+            amount *= 0.67;
+        else if (conf.hasDiplomacyTrait(TraitIds.WEAK_WILLED))
+            amount *= 1.5f;
+        
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
         if (alliance != null)
         {
@@ -893,7 +901,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             return false;
     }
     
-    public static List<String> getFactionsAlliedWithFaction(String factionId)
+    public static List<String> getFactionsFriendlyWithFaction(String factionId)
     {
         List<String> allies = new ArrayList<>();
 

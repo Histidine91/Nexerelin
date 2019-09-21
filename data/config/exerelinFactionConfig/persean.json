@@ -14,6 +14,7 @@
         "diplomatic":1,
         "ideological":0.5
     },
+    "diplomacyTraits":["helps_allies", "irredentist", "envious"],
     
     # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
     "colonyExpeditionChance":1.25,	# slightly more expansionist to overcome Hegemony's numerical superiority

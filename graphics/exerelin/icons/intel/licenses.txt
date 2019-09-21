@@ -1,0 +1,31 @@
+white_flag.png
+	CC-BY-SA 2.5, original by Viktorvoigt
+	https://commons.wikimedia.org/wiki/File:White_flag_waving.svg
+	
+police_star.png
+	CC0
+	https://svgsilh.com/image/156650.html
+	
+heartcore.png (heart component)
+	Public domain
+	https://commons.wikimedia.org/wiki/File:Heart_icon_red_hollow.svg
+	
+greeneye.png
+	No license
+	Adapted from https://pixabay.com/illustrations/eye-icon-symbol-look-vision-see-1915454/
+	
+chain_and_ball.png
+	No license
+	Adapted from https://pixabay.com/vectors/prison-ball-chain-caught-captivity-2672328/
+	
+double_exclamation.png
+	Vanilla Starsector, adapted from graphics/icons/intel/events.png
+	
+----------------------
+Made by Tartiflette:
+	peace.png
+	war.png
+	spy4*.png
+	
+Made by Soren:
+	*_Intel.png

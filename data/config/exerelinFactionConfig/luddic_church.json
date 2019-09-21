@@ -18,6 +18,7 @@
         #"militarist":0.5,
         "ideological":1,
     },
+    "diplomacyTraits":["selfrighteous", "hates_ai", "law_and_order", "submissive"],
     
     # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
     "colonyExpeditionChance":1.5,	# be fruitful and multiply

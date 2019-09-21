@@ -14,6 +14,7 @@
         "diplomatic":-0.5,
         "ideological":0.5,
     },
+    "diplomacyTraits":["paranoid", "stalwart", "dislikes_ai", "law_and_order", "envious"],
     
     # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
     "colonyExpeditionChance":1,	# baseline expansion behaviour

@@ -7,6 +7,8 @@
     "rebelFleetSuffix":"Outlaws",
     
     "freeMarket":true,
+	
+	"diplomacyTraits":["anarchist", "temperamental"],
     
     "vengeanceLevelNames":["Grudge", "Vendetta"],
     "vengeanceFleetNames":["Enforcers", "Hit-Fleet"],

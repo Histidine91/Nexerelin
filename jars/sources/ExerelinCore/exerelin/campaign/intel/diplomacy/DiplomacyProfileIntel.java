@@ -19,6 +19,8 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.Morality;
@@ -44,7 +46,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		Factions.PLAYER, Factions.DERELICT
 	}));
 	public static final List<String> DISPOSITION_SOURCE_KEYS = new ArrayList<>(Arrays.asList(new String[] {
-		"overall", "base", "relationship", "alignments", "morality", "events", "commonEnemies", "dominance", "revanchism"
+		"overall", "base", "relationship", "alignments", /*"morality",*/ "events", "commonEnemies", "dominance", "revanchism", "traits"
 	}));
 	
 	protected FactionAPI faction;
@@ -253,12 +255,12 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 				getString("dispTableBase"), cellWidth,
 				getString("dispTableRelationship"), cellWidth,
 				getString("dispTableAlignments"), cellWidth,
-				getString("dispTableMorality"), cellWidth,
+				//getString("dispTableMorality"), cellWidth,
 				getString("dispTableRecentEvents"), cellWidth,
 				getString("dispTableCommonEnemies"), cellWidth,
 				getString("dispTableDominance"), cellWidth,
-				getString("dispTableRevanchism"), cellWidth
-				//getString("dispTableHardMode"), cellWidth
+				getString("dispTableRevanchism"), cellWidth,
+				getString("dispTableTraits"), cellWidth
 		);
 		
 		DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(faction.getId());
@@ -335,6 +337,30 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			}
 		}
 	}
+	
+	public void listTraits(TooltipMakerAPI tooltip, float pad) 
+	{
+		tooltip.addSectionHeading(getString("traitsHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
+				
+		List<String> traits = new ArrayList<>(ExerelinConfig.getExerelinFactionConfig(faction.getId())
+				.diplomacyTraits); //new ArrayList<>();
+		/*
+		for (TraitDef trait : DiplomacyTraits.getTraits()) {
+			traits.add(trait.id);
+		}
+		*/
+		
+		for (String traitId : traits) {
+			TraitDef trait = DiplomacyTraits.getTrait(traitId);
+			if (trait == null)
+				Global.getLogger(this.getClass()).error("Faction " + faction.getDisplayName() + " has invalid trait " + traitId);
+			
+			TooltipMakerAPI entry = tooltip.beginImageWithText(trait.icon, 40);
+			entry.addPara(trait.name, trait.color, 0);
+			entry.addPara(trait.desc, 3);
+			tooltip.addImageWithText(pad);
+		}
+	}
 
 	// adapted from Starship Legends' BattleReport
     @Override
@@ -377,6 +403,9 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		// disposition table
 		createDispositionTable(outer, width, opad);
+		
+		// list traits
+		listTraits(outer, opad);
 		
 		panel.addUIElement(outer).inTL(0, 0);
 	}

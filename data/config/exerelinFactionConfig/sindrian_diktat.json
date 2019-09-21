@@ -16,6 +16,7 @@
         "militarist":1,
         "diplomatic":-1,
     },
+    "diplomacyTraits":["paranoid", "law_and_order", "monopolist", "temperamental"],
     
     "startShipsSolo":[
       ["brawler_lions_guard_eli"],

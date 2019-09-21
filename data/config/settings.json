@@ -109,7 +109,23 @@
 			
 			"spyEvent0":"graphics/exerelin/icons/intel/spy4.png",
 			"spyEvent1":"graphics/exerelin/icons/intel/spy4_amber.png",
-			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png"	
+			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png",
+			
+			# not used directly, just to get the images to load
+			"trait_paranoid":"graphics/exerelin/icons/intel/war.png",
+			"trait_pacifist":"graphics/exerelin/icons/intel/peace.png",
+			"trait_irredentist":"graphics/factions/crest_domain.png",
+			#"trait_stalwart":"graphics/icons/skills/leadership2.png",
+			"trait_weak-willed":"graphics/exerelin/icons/intel/white_flag.png",
+			"trait_temperamental":"graphics/exerelin/icons/intel/double_exclamation.png",
+			"trait_dislikesAI":"graphics/exerelin/icons/intel/bannedcore1.png",
+			"trait_hatesAI":"graphics/exerelin/icons/intel/bannedcore2.png",
+			"trait_likesAI":"graphics/exerelin/icons/intel/heartcore.png",
+			"trait_envious":"graphics/exerelin/icons/intel/greeneye.png",
+			"trait_submissive":"graphics/exerelin/icons/intel/chain_and_ball.png",
+			"trait_neutralist":"graphics/exerelin/icons/intel/swiss_flag.png",
+			"trait_monopolist":"graphics/icons/industry/exports40.png",
+			"trait_lawAndOrder":"graphics/exerelin/icons/intel/police_star.png",
 		},
 	}
 }

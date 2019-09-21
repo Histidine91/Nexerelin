@@ -107,11 +107,7 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 		}
 		// check reputation to see if mission should continue
 		else {
-			RepLevel maxRep = MAX_REP_LEVEL;
-			if (reason == TargetReason.MILITARY)
-				maxRep = RepLevel.HOSTILE;
-			
-			if (!faction.isAtBest(market.getFaction(), maxRep))
+			if (!DisruptMissionManager.isRepLowEnough(faction, faction, reason))
 				cancelReason = CancelReason.NO_LONGER_HOSTILE;
 		}
 		

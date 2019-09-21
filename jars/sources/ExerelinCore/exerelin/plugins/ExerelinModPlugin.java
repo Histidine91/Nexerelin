@@ -262,7 +262,8 @@ public class ExerelinModPlugin extends BaseModPlugin
             sector.addTransientScript(new PlayerFactionSetupNag());
         
         sector.addTransientListener(new EncounterLootHandler());
-        EconomyInfoHelper.createInstance();
+        if (!newGame)
+            EconomyInfoHelper.createInstance();
     }
     
     @Override
@@ -339,6 +340,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
         
         addBarEvents();
+		EconomyInfoHelper.createInstance();
     }
     
     @Override

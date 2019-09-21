@@ -1,0 +1,138 @@
+{	
+	"traits":[
+		{
+			"id":"paranoid",
+			"name":"Paranoid",
+			"desc":"Can opportunistically declare war at Suspicious reputation level.",
+			"icon":"graphics/exerelin/icons/intel/war.png",
+			"color":[128, 0, 128]
+		},
+		#{
+		#	"id":"predatory",
+		#	"name":"Predatory",
+		#	"desc":"Can opportunistically declare war regardless of disposition.",
+		#	"icon":"graphics/icons/markets/pirate_moot.png",
+		#	"color":[255, 32, 32]
+		#},
+		{
+			"id":"pacifist",
+			"name":"Pacifist",
+			"desc":"Will never opportunistically declare war.",
+			"icon":"graphics/exerelin/icons/intel/peace.png",
+			"color":[0, 255, 255]
+		},
+		{
+			"id":"helps_allies",
+			"name":"Helps Allies",
+			"desc":"Disposition penalties towards enemies of our friends/allies. Will always vote yes for an alliance action.",
+			"icon":"graphics/icons/intel/stars.png",
+			"color":[144, 238, 144]
+		},
+		#{
+		#	"id":"rebel",
+		#	"name":"Rebel",
+		#	"desc":"Doubled dominance effect for opportunistic war declaration calculation.",
+		#	"icon":"graphics/icons/markets/dissidents.png",
+		#	"color":[178, 34, 34]
+		#},
+		{
+			"id":"irredentist",
+			"name":"Irredentist",
+			"desc":"+50% disposition penalties from revanchism.",
+			"icon":"graphics/factions/crest_domain.png",
+			"color":[165, 42, 42],
+		},
+		{
+			"id":"stalwart",
+			"name":"Stalwart",
+			"desc":"-33% war weariness gains.",
+			"icon":"graphics/icons/skills/leadership2.png",
+			"color":[173, 163, 156],
+		},
+		{
+			"id":"weak-willed",
+			"name":"Weak-willed",
+			"desc":"+50% war weariness gains.",
+			"icon":"graphics/exerelin/icons/intel/white_flag.png",
+			"color":[255, 255, 153],
+		},
+		{
+			"id":"selfrighteous",
+			"name":"One True Way",
+			"desc":"Doubled disposition effects from alignment.",
+			"color":[255, 204, 102],
+			"icon":"graphics/icons/markets/luddic_majority.png"
+		},
+		{
+			"id":"temperamental",
+			"name":"Temperamental",
+			"desc":"+25% to all disposition effects.",
+			"color":[0, 160, 0],
+			"icon":"graphics/exerelin/icons/intel/double_exclamation.png"
+		},
+		{
+			"id":"dislikes_ai",
+			"name":"Dislikes AI",
+			"desc":"Disposition penalty for use of AI cores.",
+			"color":[255, 128, 0],
+			"icon":"graphics/exerelin/icons/intel/bannedcore1.png"
+		},
+		{
+			"id":"hates_ai",
+			"name":"Hates AI",
+			"desc":"Heavy disposition penalty for use of AI cores.",
+			"color":[255, 40, 40],
+			"icon":"graphics/exerelin/icons/intel/bannedcore2.png"
+		},
+		{
+			"id":"likes_ai",
+			"name":"Likes AI",
+			"desc":"Disposition bonus for use of AI cores.",
+			"color":[255, 128, 128],
+			"icon":"graphics/exerelin/icons/intel/heartcore.png"
+		},
+		{
+			"id":"envious",
+			"name":"Envious",
+			"desc":"+50% disposition penalty from dominance.",
+			"color":[0, 160, 0],
+			"icon":"graphics/exerelin/icons/intel/greeneye.png"
+		},
+		{
+			"id":"submissive",
+			"name":"Submissive",
+			"desc":"Dominance disposition penalty becomes a bonus instead.",
+			"color":[255, 64, 255],
+			"icon":"graphics/exerelin/icons/intel/chain_and_ball.png"
+		},
+		{
+			"id":"neutralist",
+			"name":"Neutralist",
+			"desc":"No disposition penalty from dominance.",
+			"color":[255, 255, 255],
+			"icon":"graphics/exerelin/icons/intel/swiss_flag.png"
+		},
+		{
+			"id":"monopolist",
+			"name":"Monopolist",
+			"desc":"Disposition penalty from economic competition. No relationship limits on targeting other factions for economic sabotage.",
+			"color":[255, 255, 0],
+			"icon":"graphics/icons/industry/exports40.png"
+		},
+		{
+			"id":"law_and_order",
+			"name":"Law & Order",
+			"desc":"Disposition penalty from free ports.",
+			"color":[0, 128, 255],
+			"icon":"graphics/exerelin/icons/intel/police_star.png"
+		},
+		{
+			"id":"anarchist",
+			"name":"Anarchistic",
+			"desc":"Disposition bonus from free ports.",
+			"color":[198, 198, 0],
+			"icon":"graphics/icons/markets/free_port.png"
+		},
+		# vindictive?
+	],
+}

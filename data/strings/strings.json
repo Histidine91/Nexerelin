@@ -624,8 +624,11 @@
 		"dispTableDominance":"Dominance",
 		"dispTableRecentEvents":"Recent evnts",
 		"dispTableHardMode":"Difficulty",
+		"dispTableTraits":"Traits",
 		
 		"dispFootnoteHardMode":"Starfarer mode: $penalty disposition towards $faction",
+		
+		"traitsHeader":"Traits",
 		
 		"wearinessTooHighForWar":"$TheFaction has too much war weariness to deliberately seek out any new wars at present.",
 		"wearinessEnoughForPeace":"$TheFaction may be amenable to negotiating peace with another faction.",

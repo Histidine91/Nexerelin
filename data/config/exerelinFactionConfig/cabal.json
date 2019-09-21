@@ -12,6 +12,7 @@
     "rebelFleetSuffix":"Splinter Group",
     
     "startRelationships":{ "tritachyon":0.1, "templars":-0.1 }, # in Corvus they're also only suspicious with League and Exi but meh
+    "diplomacyTraits":["anarchist"],
     "morality":"evil",
     
     "alignments":{

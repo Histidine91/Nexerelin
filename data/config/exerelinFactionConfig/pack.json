@@ -10,6 +10,8 @@
         "ideological":0.5,
     },
     
+    "diplomacyTraits":["anarchist"],
+    
     "colonyExpeditionChance":0.5,
     "colonyTargetValuator":"exerelin.campaign.colony.LuddicColonyTargetValuator",
         

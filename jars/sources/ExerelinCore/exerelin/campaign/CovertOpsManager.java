@@ -35,6 +35,8 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.EconomyInfoHelper.ProducerEntry;
 import exerelin.campaign.events.RebellionEventCreator;
@@ -512,7 +514,6 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			
 			//if (off.getFaction() != agentFaction) continue;
 			
-			
 			if (off.getTarget() == null) continue;
 			FactionAPI targetFaction = off.getTarget().getFaction();
 			if (!targetFaction.isHostileTo(agentFaction))
@@ -539,6 +540,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		Map<String, Integer> commoditiesWeProduce = EconomyInfoHelper.getInstance()
 				.getCommoditiesProducedByFaction(agentFaction.getId());
 		
+		boolean monopolist = ExerelinConfig.getExerelinFactionConfig(agentFaction.getId())
+				.hasDiplomacyTrait(TraitIds.MONOPOLIST);
 		for (ProducerEntry prod : EconomyInfoHelper.getInstance().getCompetingProducers(agentFaction.getId(), 2)) 
 		{
 			if (DISALLOWED_FACTIONS.contains(prod.factionId)) continue;
@@ -547,7 +550,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			RepLevel repLevel = agentFaction.getRelationshipLevel(prod.factionId);
 			switch (repLevel) {
 				case NEUTRAL:
-					weight = 0.25f;
+					if (monopolist) weight = 0.5f;
+					else weight = 0.25f;
 					break;
 				case SUSPICIOUS:
 					weight = 1f;
@@ -562,7 +566,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 					weight = 5f;
 					break;
 				default:
-					continue;
+					if (monopolist) weight = 0.25f;
+					else continue;
 			}
 			
 			weight *= prod.output;

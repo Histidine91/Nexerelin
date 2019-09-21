@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	Map<String, List<ProducerEntry>> producersByFaction = new HashMap<>();
 	Map<String, List<ProducerEntry>> producersByCommodity = new HashMap<>();
 	Map<String, Map<FactionAPI, Integer>> marketSharesByCommodity = new HashMap<>();
+	Map<MarketAPI, Float> aiCoreUsers = new HashMap<>();
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
@@ -73,6 +75,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		producersByFaction.clear();
 		producersByCommodity.clear();
 		marketSharesByCommodity.clear();
+		aiCoreUsers.clear();
 		
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsInGroup(null);
 		if (markets.isEmpty())
@@ -136,7 +139,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			// iterate over all markets
 			// we normally do it by checking whether they produce ships,
 			// but this doesn't seem to pick up all the heavy industries on first run
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			for (MarketAPI market : markets)
 			{
 				if (market.isHidden()) continue;
 				if (haveHeavyIndustry.contains(market.getFactionId())) 
@@ -163,6 +166,14 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				}
 				log.info(factionId + " has heavy industry");
 				haveHeavyIndustry.add(factionId);
+			}
+		}
+		
+		for (MarketAPI market : markets)
+		{
+			float aiScore = HegemonyInspectionManager.getAICoreUseValue(market);
+			if (aiScore > 0) {
+				aiCoreUsers.put(market, aiScore);
 			}
 		}
 	}
@@ -289,6 +300,8 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	/**
 	 * Gets an integer representing the degree of competition between the two factions in commodity production.
 	 * The return value is equal to the sum of market shares of both factions, for each commodity that faction 1 produces.
+	 * Note: Only counts highest output for each commodity, not its total 
+	 * (i.e. two 5-output markets don't generate more competition than one)
 	 * @param factionId1
 	 * @param factionId2
 	 * @return
@@ -316,6 +329,10 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	
 	public boolean hasHeavyIndustry(String factionId) {
 		return haveHeavyIndustry.contains(factionId);
+	}
+	
+	public Map<MarketAPI, Float> getAICoreUsers() {
+		return aiCoreUsers;
 	}
 
 	@Override

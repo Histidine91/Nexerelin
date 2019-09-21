@@ -8,6 +8,8 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventParams;
@@ -15,6 +17,8 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.CeasefirePromptIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -264,6 +268,108 @@ public class DiplomacyBrain {
 		return 0;
 	}
 	
+	protected void modifyDispositionFromTraits(MutableStat disposition, float delta) {
+		float currTraitScore = 0;
+		if (disposition.getFlatMods().containsKey("traits"))
+			currTraitScore = disposition.getFlatStatMod("traits").getValue();
+		//log.info(factionId + " modifying trait score by " + delta);
+		disposition.modifyFlat("traits", currTraitScore + delta, "Traits");
+	}
+	
+	protected void updateDispositionFromTraits(MutableStat disposition, String factionId) 
+	{
+		Set<String> traits = new HashSet<>(ExerelinConfig.getExerelinFactionConfig(this.factionId).diplomacyTraits);
+		
+		if (traits.contains(TraitIds.IRREDENTIST) && disposition.getFlatMods().containsKey("revanchism")) 
+		{
+			float revanchism = disposition.getFlatStatMod("revanchism").value;
+			disposition.modifyFlat("revanchism", revanchism * 1.5f, "Revanchism");
+		}
+		if (traits.contains(TraitIds.SELFRIGHTEOUS)) {
+			float align = disposition.getFlatStatMod("alignments").value;
+			disposition.modifyFlat("alignments", align * 2, "Alignments");
+		}
+		if (traits.contains(TraitIds.TEMPERAMENTAL)) {
+			disposition.modifyMult("trait_temperamental", 1.25f, "Trait: Temperamental");
+		}
+		
+		boolean dislikesAI = traits.contains(TraitIds.DISLIKES_AI);
+		boolean hatesAI = traits.contains(TraitIds.HATES_AI);
+		boolean likesAI = traits.contains(TraitIds.LIKES_AI);
+		
+		if (dislikesAI || hatesAI || likesAI) {
+			float aiScore = 0;
+			Map<MarketAPI, Float> aiHavers = EconomyInfoHelper.getInstance().getAICoreUsers();
+			for (MarketAPI market : aiHavers.keySet()) {
+				if (market.getFactionId().equals(factionId))
+					aiScore += aiHavers.get(market);
+			}
+			aiScore *= DiplomacyTraits.AI_PENALTY_MULT;
+			if (dislikesAI)
+				aiScore *= 0.5;
+			else if (likesAI)
+				aiScore *= -0.5;
+			
+			modifyDispositionFromTraits(disposition, -aiScore);
+		}
+		
+		if (traits.contains(TraitIds.ENVIOUS)) {
+			float dominance = disposition.getFlatStatMod("dominance").value;
+			disposition.modifyFlat("dominance", dominance * 1.5f, "Dominance");
+		}
+		if (traits.contains(TraitIds.SUBMISSIVE)) {
+			float dominance = disposition.getFlatStatMod("dominance").value;
+			disposition.modifyFlat("dominance", -dominance, "Dominance");
+		}
+		if (traits.contains(TraitIds.NEUTRALIST)) {
+			disposition.unmodifyFlat("dominance");
+		}
+		
+		if (traits.contains(TraitIds.MONOPOLIST)) {
+			float monopolyScore = EconomyInfoHelper.getInstance().getCompetitionFactor(this.factionId, factionId);
+			monopolyScore *= DiplomacyTraits.COMPETITION_PENALTY_MULT;
+			modifyDispositionFromTraits(disposition, -monopolyScore);
+		}
+		
+		if (traits.contains(TraitIds.HELPS_ALLIES)) 
+		{
+			float enemyScore = 0;
+			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, true, true, false);
+			for (String thirdFactionId : enemies) 
+			{
+				if (this.factionId.equals(thirdFactionId)) continue;
+				
+				FactionAPI thirdFaction = Global.getSector().getFaction(thirdFactionId);
+				if (AllianceManager.areFactionsAllied(this.factionId, thirdFactionId))
+					enemyScore += 1;
+				else if (thirdFaction.isAtWorst(this.factionId, RepLevel.FRIENDLY))
+					enemyScore += 0.5f;
+			}
+			enemyScore *= DiplomacyTraits.ENEMY_OF_ALLY_PENALTY_MULT;
+			modifyDispositionFromTraits(disposition, -enemyScore);
+		}
+		
+		boolean lawAndOrder = traits.contains(TraitIds.LAW_AND_ORDER);
+		boolean anarchist = traits.contains(TraitIds.ANARCHIST);
+		
+		if (lawAndOrder || anarchist) {
+			float freeportScore = 0;
+			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+			for (MarketAPI market : markets) {
+				if (market.isFreePort()) freeportScore += market.getSize();
+			}
+			
+			if (lawAndOrder) {
+				freeportScore *= -DiplomacyTraits.FREE_PORT_PENALTY_MULT;
+			}
+			else if (anarchist) {
+				freeportScore *= DiplomacyTraits.FREE_PORT_BONUS_MULT;
+			}
+			modifyDispositionFromTraits(disposition, freeportScore);
+		}
+		
+	}
+	
 	/**
 	 * Update our dispositions towards the specified faction.
 	 * @param factionId
@@ -272,14 +378,15 @@ public class DiplomacyBrain {
 	public void updateDisposition(String factionId, float days)
 	{
 		MutableStat disposition = getDisposition(factionId).disposition;
+		disposition.unmodify();
 		
 		boolean isHardMode = factionId.equals(Factions.PLAYER) && isHardMode(factionId);
 		
 		float dispBase = ExerelinConfig.getExerelinFactionConfig(this.factionId).getDisposition(factionId);
 		if (!DiplomacyManager.isRandomFactionRelationships())
 			disposition.modifyFlat("base", dispBase, "Base disposition");
-		else
-			disposition.unmodify("base");
+		//else
+		//	disposition.unmodify("base");
 		
 		float dispFromRel = faction.getRelationship(factionId) * RELATIONS_MULT;
 		disposition.modifyFlat("relationship", dispFromRel, "Relationship");
@@ -287,8 +394,9 @@ public class DiplomacyBrain {
 		float dispFromAlign = getDispositionFromAlignments(factionId);
 		disposition.modifyFlat("alignments", dispFromAlign, "Alignments");
 		
-		float dispFromMoral = getDispositionFromMorality(factionId);
-		disposition.modifyFlat("morality", dispFromMoral, "Morality");
+		//float dispFromMoral = getDispositionFromMorality(factionId);
+		//disposition.modifyFlat("morality", dispFromMoral, "Morality");
+		disposition.unmodify("morality");
 		
 		float dispFromEnemies = getDispositionFromEnemies(factionId);
 		disposition.modifyFlat("commonEnemies", dispFromEnemies, "Common enemies");
@@ -306,8 +414,10 @@ public class DiplomacyBrain {
 		
 		if (isHardMode)
 			disposition.modifyFlat("hardmode", HARD_MODE_MOD, "Hard mode");
-		else
-			disposition.unmodify("hardmode");
+		//else
+		//	disposition.unmodify("hardmode");
+		
+		updateDispositionFromTraits(disposition, factionId);
 		
 		disposition.getModifiedValue();
 	}
@@ -365,7 +475,7 @@ public class DiplomacyBrain {
 		if (score > 0) 
 		{
 			float mult = militarismMult * strRatio;
-			log.info("\tMilitarism/strength multiplier: " + mult);
+			log.info("\t\tMilitarism/strength multiplier: " + mult);
 			score *= mult;
 		}
 		log.info("\tTotal score: " + score);
@@ -478,12 +588,23 @@ public class DiplomacyBrain {
 	
 	public RepLevel getMaxRepForOpportunisticWar() {
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		
+		/*
 		float niceness = conf.alignments.get(Alignment.DIPLOMATIC) - conf.alignments.get(Alignment.MILITARIST);
 		if (niceness >= 1f)
 			return RepLevel.HOSTILE;	//effectively disabled (we'd already be at war)
 		else if (niceness >= 0.5f)
 			return RepLevel.INHOSPITABLE;
 		return RepLevel.SUSPICIOUS;
+		*/
+		
+		RepLevel required = RepLevel.INHOSPITABLE;
+		if (conf.hasDiplomacyTrait(TraitIds.PARANOID))
+			required = RepLevel.SUSPICIOUS;
+		else if (conf.hasDiplomacyTrait(TraitIds.PACIFIST))
+			required = RepLevel.VENGEFUL;
+		
+		return required;
 	}
 	
 	public boolean checkWar()
@@ -513,6 +634,7 @@ public class DiplomacyBrain {
 		RepLevel maxRep = getMaxRepForOpportunisticWar();
 		log.info("Relationship required for war: " + maxRep);
 		
+		WeightedRandomPicker<String> warPicker = new WeightedRandomPicker<>();
 		for (DispositionEntry disposition : dispositionsList)
 		{
 			String otherFactionId = disposition.factionId;
@@ -535,12 +657,14 @@ public class DiplomacyBrain {
 			float decisionRating = getWarDecisionRating(otherFactionId);
 			if (decisionRating > 40 + MathUtils.getRandomNumberInRange(-5, 5))
 			{
-				DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(otherFactionId), "declare_war", null);
-				return true;
+				warPicker.add(otherFactionId, decisionRating);
 			}
 		}
+		if (warPicker.isEmpty()) return false;
 		
-		return false;
+		DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(warPicker.pick()),
+				"declare_war", null);
+		return true;
 	}
 	
 	public void doRandomEvent()
