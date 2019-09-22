@@ -45,6 +45,9 @@
 	#"nex_playerOutpost_credits":50000,
 	"nex_playerOutpost_upkeep":2500,
 	
+	"nex_hardModeDispositionModifier":-15,
+	"nex_hardModeDominanceMult":1.5,	# when calculating disposition
+	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,
 		"ore_moderate":2,	# 2.5,

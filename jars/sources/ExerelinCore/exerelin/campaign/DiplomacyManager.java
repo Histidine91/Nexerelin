@@ -74,11 +74,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
     public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 3f;
-    public static final float HARD_MODE_DOMINANCE_MOD = 0.5f;
     
     public static final List<String> DO_NOT_RANDOMIZE = Arrays.asList(new String[]{
-		"sector", "domain", "everything"
-	});
+        "sector", "domain", "everything"
+    });
     
     protected Map<String, Float> warWeariness;
     protected static float warWearinessPerInterval = 50f;
@@ -176,6 +175,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (!eventDefsById.containsKey(stage)) return null;
         return eventDefsById.get(stage);
     }
+    
+    public static float getHardModeDispositionMod() {
+        return Global.getSettings().getFloat("nex_hardModeDispositionModifier");
+    }
 
     public DiplomacyManager()
     {
@@ -190,7 +193,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    public static float getDominanceFactor(String factionId)
+	/**
+	 * Returns (sum of market sizes under our control)/(sum of total market sizes in the sector).
+	 * Multiplied by 1.5 (default) for player in Starfarer mode, so can exceed 1.
+	 * "Our control" includes all members of the alliance if the specified faction is in one,
+	 * and the player markets if player is commissioned with that faction.
+	 * @param factionId
+	 * @return
+	 */
+	public static float getDominanceFactor(String factionId)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         int globalSize = 0;
@@ -204,10 +215,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (alliance != null) ourMarkets = alliance.getAllianceMarkets();
         else ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
         //ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+		
+		// If we are commissioned with this faction, add player markets to its list of markets
+		// (unless we're in the same alliance as commissioning faction, to prevent double counting)
+		// although we shouldn't ever be allied and commissioned at the same time anyway?
+		// (dunno if we actually enforce this)
         if (factionId.equals(playerAlignedFactionId) && !playerAlignedFactionId.equals(Factions.PLAYER))
         {
-            // player faction can be in the same alliance so don't count it two times
-            if (!(alliance != null && AllianceManager.getFactionAlliance(Factions.PLAYER) == alliance)) 
+            boolean isAlliedWithCommissioningFaction = alliance != null && AllianceManager.getFactionAlliance(Factions.PLAYER) == alliance;
+            if (!isAlliedWithCommissioningFaction)
             {
                 List<MarketAPI> playerNpcMarkets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
                 ourMarkets.addAll(playerNpcMarkets);
@@ -223,7 +239,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         float dominance = (float)ourSize / globalSize;
         if (SectorManager.getHardMode() && isPlayer)
-            dominance += (1 - dominance) * HARD_MODE_DOMINANCE_MOD;
+            dominance *= Global.getSettings().getFloat("nex_hardModeDominanceMult");
         
         return dominance;
     }

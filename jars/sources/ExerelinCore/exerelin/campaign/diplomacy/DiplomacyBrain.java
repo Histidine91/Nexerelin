@@ -94,8 +94,6 @@ public class DiplomacyBrain {
 	public static final float REVANCHISM_FACTION_MAX = 40;
 	public static final float REVANCHISM_MAX = 50;
 	public static final float DOMINANCE_MULT = 25;
-	public static final float DOMINANCE_HARD_MULT = 1.5f;
-	public static final float HARD_MODE_MOD = -15f;
 	public static final float MAX_DISPOSITION_FOR_WAR = -20;
 	public static final float MILITARISM_WAR_MULT = 1;
 	public static final float MAX_WEARINESS_FOR_WAR = 7500f;
@@ -387,7 +385,7 @@ public class DiplomacyBrain {
 		MutableStat disposition = getDisposition(factionId).disposition;
 		disposition.unmodify();
 		
-		boolean isHardMode = factionId.equals(Factions.PLAYER) && isHardMode(factionId);
+		boolean isHardMode = isHardMode(factionId);
 		
 		float dispBase = ExerelinConfig.getExerelinFactionConfig(this.factionId).getDisposition(factionId);
 		if (!DiplomacyManager.isRandomFactionRelationships())
@@ -416,11 +414,10 @@ public class DiplomacyBrain {
 		disposition.modifyFlat("revanchism", dispFromRevan, "Revanchism");
 		
 		float dispFromDominance = -DiplomacyManager.getDominanceFactor(factionId) * DOMINANCE_MULT;
-		if (isHardMode) dispFromDominance *= DOMINANCE_HARD_MULT;
 		disposition.modifyFlat("dominance", dispFromDominance, "Dominance");
 		
 		if (isHardMode)
-			disposition.modifyFlat("hardmode", HARD_MODE_MOD, "Hard mode");
+			disposition.modifyFlat("hardmode", DiplomacyManager.getHardModeDispositionMod(), "Hard mode");
 		//else
 		//	disposition.unmodify("hardmode");
 		
@@ -795,6 +792,13 @@ public class DiplomacyBrain {
 		}
 	}
 	
+	/**
+	 * Is either the brain's faction or the faction specified in argument 
+	 * the player faction or the player's commissioning faction, 
+	 * and are we in Starfarer mode?
+	 * @param factionId
+	 * @return
+	 */
 	public boolean isHardMode(String factionId)
 	{
 		if (!SectorManager.getHardMode())

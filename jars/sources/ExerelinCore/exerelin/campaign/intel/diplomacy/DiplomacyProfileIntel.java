@@ -330,7 +330,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			FactionAPI playerFaction = PlayerFactionStore.getPlayerFaction();
 			if (faction != playerFaction && SectorManager.isFactionAlive(playerFaction.getId())) {
 				String str = getString("dispFootnoteHardMode");
-				String penalty = DiplomacyBrain.HARD_MODE_MOD + "";
+				String penalty = DiplomacyManager.getHardModeDispositionMod() + "";
 				str = StringHelper.substituteToken(str, "$penalty", penalty);
 				str = StringHelper.substituteToken(str, "$faction", playerFaction.getDisplayName());
 				tooltip.addPara(str, 10, Misc.getNegativeHighlightColor(), penalty);
