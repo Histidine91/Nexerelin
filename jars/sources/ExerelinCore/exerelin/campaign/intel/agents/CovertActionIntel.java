@@ -347,11 +347,21 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return result;
 	}
 	
+	/**
+	 * Returns true if this is NOT an allow-own-market action, and we meet certain conditions. 
+	 * Normally the condition is just "agent faction == market faction", 
+	 * but actions like Raise/Lower Relations should also check for e.g. market faction = third faction.
+	 * @return
+	 */
+	public boolean shouldAbortIfOwnMarket() {
+		return market.getFaction() == agent.faction;
+	}
+	
 	@Override
 	public void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 		
-		if (!allowOwnMarket() && market.getFaction() == agent.faction)
+		if (!allowOwnMarket() && shouldAbortIfOwnMarket())
 		{
 			abort();
 			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);

@@ -53,6 +53,11 @@ public class LowerRelations extends CovertActionIntel {
 	}
 	
 	@Override
+	public boolean shouldAbortIfOwnMarket() {
+		return super.shouldAbortIfOwnMarket() || market.getFaction() == thirdFaction;
+	}
+	
+	@Override
 	protected CovertOpsManager.CovertActionResult covertActionRoll() {
 		CovertActionResult result = super.covertActionRoll();
 		if (result == CovertActionResult.SUCCESS_DETECTED)
