@@ -299,16 +299,16 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	
 	/**
 	 * Gets an integer representing the degree of competition between the two factions in commodity production.
-	 * The return value is equal to the sum of market shares of both factions, for each commodity that faction 1 produces.
-	 * Note: Only counts highest output for each commodity, not its total 
-	 * (i.e. two 5-output markets don't generate more competition than one)
+	 * The return value is equal to (faction 2 share) - (faction 1 share/2), for each commodity that faction 1 produces.
+	 * Only counts commodities where faction 1's share is at least 10% of total.
 	 * @param factionId1
 	 * @param factionId2
 	 * @return
 	 */
 	public int getCompetitionFactor(String factionId1, String factionId2) {
-		int factor = 0;		
+		float factor = 0;		
 		Map<String, Integer> myCommodities = getCommoditiesProducedByFaction(factionId1);
+		FactionAPI faction = Global.getSector().getFaction(factionId1);
 		FactionAPI otherFaction = Global.getSector().getFaction(factionId2);
 		
 		for (Map.Entry<String, Integer> tmp : myCommodities.entrySet()) {
@@ -316,11 +316,14 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			CommoditySpecAPI spec = Global.getSettings().getCommoditySpec(comId);
 			if (spec.isPersonnel()) continue;
 			
-			int amount1 = tmp.getValue();
-			int amount2 = marketSharesByCommodity.get(comId).get(otherFaction);
-			factor += amount1 + amount2;
+			float amount1 = marketSharesByCommodity.get(comId).get(faction);
+			if (amount1 < 10) continue;
+			float amount2 = marketSharesByCommodity.get(comId).get(otherFaction);
+			float amount = amount2 - (amount1/2);
+			if (amount < 0) continue;
+			factor += amount;
 		}
-		return factor;
+		return Math.round(factor);
 	}
 	
 	public List<ProducerEntry> getProducersByCommodity(String commodityId) {

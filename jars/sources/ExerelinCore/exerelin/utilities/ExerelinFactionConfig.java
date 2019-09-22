@@ -21,6 +21,8 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
 import java.awt.Color;
 import java.io.IOException;
 import org.json.JSONObject;
@@ -282,6 +284,13 @@ public class ExerelinFactionConfig
             
             if (settings.has("diplomacyTraits")) {
                 List<String> traitsList = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("diplomacyTraits"));
+                // validate traits
+                for (String traitId : traitsList) {
+                    TraitDef trait = DiplomacyTraits.getTrait(traitId);
+                    if (trait == null)
+                        throw new RuntimeException("Faction " + factionId + " has invalid trait " + traitId);
+                }
+                
                 diplomacyTraits.addAll(traitsList);
             }
             

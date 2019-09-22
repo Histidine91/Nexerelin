@@ -18,13 +18,6 @@ public class DiplomacyTraits {
 	protected static final List<TraitDef> TRAITS = new ArrayList<>();
 	protected static final Map<String, TraitDef> TRAITS_BY_ID = new HashMap<>();
 	
-	// put here because DiplomacyBrain has too many constants already
-	public static final float FREE_PORT_PENALTY_MULT = 0.4f;
-	public static final float FREE_PORT_BONUS_MULT = 0.2f;
-	public static final float ENEMY_OF_ALLY_PENALTY_MULT = 7.5f;
-	public static final float COMPETITION_PENALTY_MULT = 0.04f;
-	public static final float AI_PENALTY_MULT = 0.5f;
-	
 	static {
 		try {
 			loadTraits();

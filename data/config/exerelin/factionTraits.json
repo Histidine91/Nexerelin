@@ -5,7 +5,7 @@
 			"name":"Paranoid",
 			"desc":"Can opportunistically declare war at Suspicious reputation level.",
 			"icon":"graphics/exerelin/icons/intel/war.png",
-			"color":[128, 0, 128]
+			"color":[144, 16, 144]
 		},
 		#{
 		#	"id":"predatory",

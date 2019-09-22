@@ -352,8 +352,6 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		for (String traitId : traits) {
 			TraitDef trait = DiplomacyTraits.getTrait(traitId);
-			if (trait == null)
-				Global.getLogger(this.getClass()).error("Faction " + faction.getDisplayName() + " has invalid trait " + traitId);
 			
 			TooltipMakerAPI entry = tooltip.beginImageWithText(trait.icon, 40);
 			entry.addPara(trait.name, trait.color, 0);

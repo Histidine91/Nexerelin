@@ -96,14 +96,21 @@ public class DiplomacyBrain {
 	public static final float DOMINANCE_MULT = 25;
 	public static final float DOMINANCE_HARD_MULT = 1.5f;
 	public static final float HARD_MODE_MOD = -15f;
-	public static final float MAX_DISPOSITION_FOR_WAR = -15f;
+	public static final float MAX_DISPOSITION_FOR_WAR = -20;
 	public static final float MILITARISM_WAR_MULT = 1;
 	public static final float MAX_WEARINESS_FOR_WAR = 7500f;
 	public static final float LIKE_THRESHOLD = 15;
-	public static final float DISLIKE_THRESHOLD = -15;
+	public static final float DISLIKE_THRESHOLD = -20;
 	public static final float EVENT_SKIP_CHANCE = 0.5f;
 	public static final float EVENT_CHANCE_EXPONENT_BASE = 0.8f;
 	public static final float CEASEFIRE_LENGTH = 150f;
+	
+	// used to be in DiplomacyTraits but that made compiling annoying
+	public static final float FREE_PORT_PENALTY_MULT = 0.4f;
+	public static final float FREE_PORT_BONUS_MULT = 0.2f;
+	public static final float ENEMY_OF_ALLY_PENALTY_MULT = 7.5f;
+	public static final float COMPETITION_PENALTY_MULT = 0.12f;
+	public static final float AI_PENALTY_MULT = 0.5f;
 	//public static final float EVENT_AGENT_CHANCE = 0.35f;
 	
 	public static Logger log = Global.getLogger(DiplomacyBrain.class);
@@ -304,7 +311,7 @@ public class DiplomacyBrain {
 				if (market.getFactionId().equals(factionId))
 					aiScore += aiHavers.get(market);
 			}
-			aiScore *= DiplomacyTraits.AI_PENALTY_MULT;
+			aiScore *= AI_PENALTY_MULT;
 			if (dislikesAI)
 				aiScore *= 0.5;
 			else if (likesAI)
@@ -327,7 +334,7 @@ public class DiplomacyBrain {
 		
 		if (traits.contains(TraitIds.MONOPOLIST)) {
 			float monopolyScore = EconomyInfoHelper.getInstance().getCompetitionFactor(this.factionId, factionId);
-			monopolyScore *= DiplomacyTraits.COMPETITION_PENALTY_MULT;
+			monopolyScore *= COMPETITION_PENALTY_MULT;
 			modifyDispositionFromTraits(disposition, -monopolyScore);
 		}
 		
@@ -345,7 +352,7 @@ public class DiplomacyBrain {
 				else if (thirdFaction.isAtWorst(this.factionId, RepLevel.FRIENDLY))
 					enemyScore += 0.5f;
 			}
-			enemyScore *= DiplomacyTraits.ENEMY_OF_ALLY_PENALTY_MULT;
+			enemyScore *= ENEMY_OF_ALLY_PENALTY_MULT;
 			modifyDispositionFromTraits(disposition, -enemyScore);
 		}
 		
@@ -360,10 +367,10 @@ public class DiplomacyBrain {
 			}
 			
 			if (lawAndOrder) {
-				freeportScore *= -DiplomacyTraits.FREE_PORT_PENALTY_MULT;
+				freeportScore *= -FREE_PORT_PENALTY_MULT;
 			}
 			else if (anarchist) {
-				freeportScore *= DiplomacyTraits.FREE_PORT_BONUS_MULT;
+				freeportScore *= FREE_PORT_BONUS_MULT;
 			}
 			modifyDispositionFromTraits(disposition, freeportScore);
 		}
