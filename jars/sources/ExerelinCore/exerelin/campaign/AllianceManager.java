@@ -9,7 +9,6 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -53,8 +52,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final String ALLIANCE_NAMES_FILE = "data/config/exerelin/allianceNames.json";
     protected static final float MIN_ALIGNMENT_FOR_NEW_ALLIANCE = 1f;
     public static final float MIN_ALIGNMENT_TO_JOIN_ALLIANCE = 0f;
-    protected static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.FRIENDLY.getMin();
-    protected static final float MIN_RELATIONSHIP_TO_STAY = RepLevel.WELCOMING.getMin();
+    public static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.FRIENDLY.getMin();
+    public static final float MIN_RELATIONSHIP_TO_STAY = RepLevel.WELCOMING.getMin();
     protected static final float JOIN_CHANCE_MULT = 0.7f;   // multiplies relationship to get chance to join alliance
     protected static final float JOIN_CHANCE_MULT_PER_MEMBER = 0.8f;
     protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
@@ -157,7 +156,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance == null) return 0;
         float value = 0;
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-        if (config!= null && config.alignments != null)
+        if (config.alignments != null)
         {
             log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.getName());
             //log.info("Alliance alignment: " + alliance.alignment.toString());

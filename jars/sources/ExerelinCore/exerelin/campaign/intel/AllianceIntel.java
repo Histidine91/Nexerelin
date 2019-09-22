@@ -9,7 +9,9 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
@@ -165,12 +167,12 @@ public class AllianceIntel extends BaseIntelPlugin {
 		str = StringHelper.getStringAndSubstituteTokens("exerelin_alliances", "intelDesc", replace);
 		info.addPara(str, opad, h, alliance.getName(), numMembers, numMarkets, size);
 		
-		String alignmentName = StringHelper.getString("exerelin_alliances", "alignment_" 
+		String alignmentName = getString("alignment_" 
 				+ alliance.getAlignment().toString().toLowerCase(Locale.ROOT), true);
-		str = StringHelper.getString("exerelin_alliances", "alignment", true) + ": " + alignmentName;
+		str = getString("alignment", true) + ": " + alignmentName;
 		info.addPara(str, opad, alliance.getAlignment().color, alignmentName);
 		
-		str = StringHelper.getString("exerelin_alliances", "intelMembersHeader");
+		str = getString("intelMembersHeader");
 		info.addSectionHeading(str, Alignment.MID, opad);
 		
 		// print members
@@ -180,6 +182,79 @@ public class AllianceIntel extends BaseIntelPlugin {
 		{
 			printMemberInfo(info, factionId);
 		}
+		
+		printFactionJoinEligibility(info, alliance, opad);
+	}
+	
+	public void printFactionJoinEligibility(TooltipMakerAPI info, Alliance alliance, float pad) 
+	{
+		String str = getString("intelJoinabilityHeader");
+		info.addSectionHeading(str, Alignment.MID, pad);
+		
+		List<String> canJoin = new ArrayList<>();
+		List<String> tooLowRelationship = new ArrayList<>();
+		List<String> wrongAlignment = new ArrayList<>();
+		boolean pirateDiplomacy = ExerelinConfig.allowPirateInvasions;
+		Set<String> members = alliance.getMembersCopy();
+		
+		for (String factionId : SectorManager.getLiveFactionIdsCopy())
+		{
+			if (members.contains(factionId)) continue;
+			if (!pirateDiplomacy && ExerelinUtilsFaction.isPirateFaction(factionId))
+				continue;
+			
+			boolean compatible = ExerelinConfig.ignoreAlignmentForAlliances || 
+					AllianceManager.getAlignmentCompatibilityWithAlliance(factionId, alliance) 
+					> AllianceManager.MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
+			if (!compatible) {
+				wrongAlignment.add(factionId);
+				continue;
+			}
+			FactionAPI faction = Global.getSector().getFaction(factionId);
+			
+			boolean hostile = false;
+			for (String member : alliance.getMembersCopy()) {
+				if (faction.isHostileTo(member)) {
+					hostile = true;
+					break;
+				}
+			}
+			if (hostile) {
+				tooLowRelationship.add(factionId);
+				continue;
+			}
+			
+			boolean enoughAvgRep = alliance.getAverageRelationshipWithFaction(factionId) 
+					>= AllianceManager.MIN_RELATIONSHIP_TO_JOIN;
+			if (!enoughAvgRep) {
+				tooLowRelationship.add(factionId);
+				continue;
+			}
+			canJoin.add(factionId);
+		}
+		
+		printFactionList(info, canJoin, getString("intelCanJoinList"), pad);
+		printFactionList(info, tooLowRelationship, getString("intelTooLowRelationshipList"), pad);
+		printFactionList(info, wrongAlignment, getString("intelWrongAlignmentList"), pad);
+	}
+	
+	public void printFactionList(TooltipMakerAPI info, List<String> factions, String initial, float pad)
+	{
+		if (factions.isEmpty()) return;
+		
+		String str = initial + ": ";
+		List<String> names = new ArrayList<>();
+		List<Color> colors = new ArrayList<>();
+		for (String factionId : factions) {
+			FactionAPI faction = Global.getSector().getFaction(factionId);
+			names.add(faction.getDisplayName());
+			colors.add(faction.getBaseUIColor());
+		}
+		str = str + StringHelper.writeStringCollection(names);
+		
+		LabelAPI label = info.addPara(str, pad);
+		label.setHighlight(names.toArray(new String[]{}));
+		label.setHighlightColors(colors.toArray(new Color[]{}));
 	}
 	
 	public static void printMemberCrests(TooltipMakerAPI info, Alliance alliance, float width, float padding)
@@ -218,7 +293,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		Color hl = Misc.getHighlightColor();
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
-		String str = StringHelper.getString("exerelin_alliances", "intelMemberEntry");
+		String str = getString("intelMemberEntry");
 		String name = Misc.ucFirst(faction.getDisplayName());
 		String num = ExerelinUtilsFaction.getFactionMarkets(factionId).size() + "";
 		String sizeSum = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId) + "";
@@ -243,7 +318,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		else if (listInfoParam != null)
 		{
 			Map<String, Object> params = (Map<String, Object>)listInfoParam;
-			if ((UpdateType)params.get("type") == UpdateType.FORMED);
+			if ((UpdateType)params.get("type") == UpdateType.FORMED)
 				str += " - " + StringHelper.getString("formed", true);
 		}
 		
@@ -283,7 +358,13 @@ public class AllianceIntel extends BaseIntelPlugin {
 		return 30;
 	}
 	
+	public String getString(String id) {
+		return getString(id, false);
+	}
 	
+	public String getString(String id, boolean ucFirst) {
+		return StringHelper.getString("exerelin_alliances", id, ucFirst);
+	}
 	
 	public enum UpdateType {
 		DISSOLVED,

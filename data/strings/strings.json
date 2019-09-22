@@ -160,6 +160,11 @@
 		"intelStrengthPointShort":"Size $size",
 		
 		"intelMembersHeader":"Members",
+		"intelJoinabilityHeader":"Potential members",
+		
+		"intelCanJoinList":"Can join",
+		"intelTooLowRelationshipList":"Higher relations needed",
+		"intelWrongAlignmentList":"Incompatible alignment",
 		
 		"intelVoteTitle":"Alliance Vote: $alliance",
 		"intelVoteBullet":"$warOrPeace with $otherParty: $passOrFail",
