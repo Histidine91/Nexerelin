@@ -779,6 +779,8 @@
 		"onColonyExpedition":"on colony expedition",
 		"defending":"defending $target",
 		"movingToDefend":"moving to defend $target",
+		"deliveringRelief":"delivering relief package to $target",
+		"unloadingRelief":"unloading relief package at $target",
 		"patrolling":"patrolling $target",
 		"patrollingStarSystem":"patrolling the $target star system",
 		"patrollingAroundStarSystem":"patrolling around the $target star system",
@@ -1163,6 +1165,33 @@
 		"hardMode":"Starfarer Mode",
 		"randomizeRelationships":"Randomize faction relationships",
 		"randomizeRelationshipsPirate":"Randomize relationships for pirate factions"
+	},
+	"nex_reliefFleet":{		
+		"intelTitle":"Relief Fleet: $market",
+		
+		"intelDesc":"$TheFaction $isOrAre sending a relief fleet to $market in the $location, held by $theOtherFaction, to address recent unrest.",
+		
+		"intelBulletAssembling":"Launching from $market in $days",
+		"intelBulletETA":"Estimated $days until arrival",
+		"intelBulletAssemblingUnknownLoc":"Launching in $days",
+		"intelBulletLaunched":"Fleet launched from $market",
+		"intelBulletSuccess":"Aid delivered",
+		"intelBulletFailedToSpawn":"Fleet failed to assemble",
+		"intelBulletTargetDestroyed":"Cancelled: Destination destroyed",
+		"intelBulletDefeated":"Fleet defeated",
+		"intelBulletHostile":"Cancelled: Hostile",
+		"intelBulletOver":"Mission over",
+		
+		"intelStatusAssembling":"The aid convoy is being prepared and will launch from $market in $days.",
+		"intelStatusTravelling":"The convoy is travelling to $market.",
+		"intelStatusSuccess":"The convoy has delivered the aid to $market.",
+		"intelStatusFailedToSpawn":"The convoy has failed to assemble at $market.",
+		"intelStatusDefeated":"The convoy has been destroyed or otherwise prevented from reaching its destination.",
+		"intelStatusTargetDestroyed":"$market has been destroyed. Relief is now moot.",
+		"intelStatusHostile":"$TheFaction $isOrAre hostile to $theOtherFaction. The relief convoy has been recalled.",
+		"intelStatusUnknown":"The mission has been called off for unspecified reasons.",
+		
+		"intelStatusUnrestReduction":"Unrest on $market reduced by %s.",
 	},
 	"nex_respawn":{
 		"baseIntelDesc":"Remnants of $theFaction have established a base in the $location. They likely intend to use it as a staging point for their great re-entry into the Sector.",

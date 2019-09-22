@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
@@ -21,6 +22,7 @@ import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -40,8 +42,8 @@ import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.utilities.ExerelinConfig;
-import static exerelin.utilities.ExerelinConfig.hardModeColonyGrowthMult;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -95,6 +97,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected int numAvertedExpeditions;
 	protected int numColonies;
 	protected int currIter;
+	protected int reliefFleetCooldown;
 	
 	public ColonyManager() {
 		super(true);
@@ -118,6 +121,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected void updateMarkets() {
 		numColonies = 0;
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+		List<MarketAPI> needRelief = new ArrayList<>();
+		
 		int playerFactionSize = 0;
 		boolean allowGrowth = Global.getSector().getClock().getCycle() >= MIN_CYCLE_FOR_NPC_GROWTH;
 		for (MarketAPI market : markets) 
@@ -166,8 +171,21 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 				numColonies += 1;
+			
+			if (reliefFleetCooldown <= 0 && !market.isHidden() && RecentUnrest.get(market) != null
+					&& !ExerelinUtilsFaction.isPirateOrTemplarFaction(market.getFactionId())) 
+			{
+				int unrest = RecentUnrest.getPenalty(market);
+				if (unrest >= ExerelinConfig.stabilizePackageEffect + 1 || market.getStabilityValue() <= 1) 
+				{
+					needRelief.add(market);
+				}
+			}
 		}
 		updatePlayerBonusAdmins(playerFactionSize);
+		if (!needRelief.isEmpty()) {
+			processReliefFleetEvent(needRelief);
+		}
 	}
 	
 	public void setGrowthRate(MarketAPI market) {
@@ -558,6 +576,62 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return intel;
 	}
 	
+	public void processReliefFleetEvent(List<MarketAPI> candidates) {
+		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+		for (MarketAPI market : candidates) {
+			int weight = market.getSize() * (int)(10 - market.getStabilityValue());
+			if (weight <= 0) continue;
+			picker.add(market, weight);
+		}
+		MarketAPI target = picker.pick();
+		if (target == null)
+			return;
+		
+		// pick a market to send relief from
+		FactionAPI faction = target.getFaction();
+		picker.clear();
+		
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(target.getEconGroup()))
+		{
+			FactionAPI other = market.getFaction();
+			if (other.isAtBest(faction, RepLevel.SUSPICIOUS))
+				continue;
+			if (market.getSize() < target.getSize() - 1)
+				continue;
+			int weight = market.getSize();
+			if (faction != other) {
+				switch (other.getRelationshipLevel(faction)) {
+					case FAVORABLE:
+						weight *= 1.5f;
+						break;
+					case WELCOMING:
+						weight *= 2;
+						break;
+					case FRIENDLY:
+						weight *= 3;
+						break;
+					case COOPERATIVE:
+						weight *= 4;
+						break;
+				}
+				if (AllianceManager.areFactionsAllied(faction.getId(), other.getId())) {
+					weight *= 4;
+				}
+			}
+			else
+				weight *= 20;
+			
+			picker.add(market, weight);
+		}
+		
+		MarketAPI source = picker.pick();
+		if (source == null)
+			return;
+		
+		ReliefFleetIntelAlt.createEvent(source, target);
+		reliefFleetCooldown += target.getSize() * 2 * 10;
+	}
+	
 	// add admin to player market if needed
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
@@ -592,10 +666,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void advance(float amount) {
+		float days = Global.getSector().getClock().convertToDays(amount);
+		if (reliefFleetCooldown > 0) {
+			reliefFleetCooldown -= days;
+			if (reliefFleetCooldown < 0) reliefFleetCooldown = 0;
+		}
+		
 		if (Global.getSector().getClock().getCycle() < MIN_CYCLE_FOR_EXPEDITIONS)
 			return;
 		
-		float days = Global.getSector().getClock().convertToDays(amount);
 		colonyExpeditionProgress += days;
 		float interval = ExerelinConfig.colonyExpeditionInterval;
 		if (colonyExpeditionProgress > interval) {

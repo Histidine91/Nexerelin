@@ -77,7 +77,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		mem.set("$nex_stabilizePackage_type", getStabilizeMethod(market), 0);
 	}
 	
-	protected int getSizeMult(MarketAPI market)
+	protected static int getSizeMult(MarketAPI market)
 	{
 		return (int)(10 * Math.pow(2, market.getSize() - 3));
 	}
@@ -104,7 +104,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		return RecentUnrest.getPenalty(market) >= min;
 	}
 	
-	protected int getNeededCommodityAmount(MarketAPI market, String commodityId)
+	public static int getNeededCommodityAmount(MarketAPI market, String commodityId)
 	{
 		float mult = 0;
 		switch (commodityId)
@@ -126,7 +126,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		return (int)(getSizeMult(market) * 500);
 	}
 	
-	protected float getReputation(MarketAPI market) {
+	public static float getReputation(MarketAPI market) {
 		return (float)Math.pow(2, market.getSize() - 3) * 0.01f;
 	}
 	
