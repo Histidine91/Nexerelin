@@ -131,10 +131,11 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	
 	protected int calculateReward(boolean includeBonus) {
 		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
-		float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_REWARD_MULT);
-		float stabilityMult = (market.getStabilityValue() + 5)/15;
-		if (includeBonus)
+		if (includeBonus) {
+			float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_REWARD_MULT);
+			float stabilityMult = (market.getStabilityValue() + 5)/15;
 			value += (sizeBonus * stabilityMult);
+		}
 		return (int)value;
 	}
 

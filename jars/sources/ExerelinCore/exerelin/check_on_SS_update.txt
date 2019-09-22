@@ -14,5 +14,10 @@ Partial list.
 Do on future SS release:
 - Remove agent/saboteur commodities
 - Remove MutableStatNoFloor
+- Add "player colonized" listener
+- Move vengeance fleet intel to fleets subpackage
+
+Do when handy:
+- Purge unused imports
 
 All files in data.scripts.world.corvus and data.scripts.world.systems should be replaced each Starsector version.

@@ -712,6 +712,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return getManager().alliancesByFactionId.get(factionId);
     }
     
+    /**
+     * Are these two factions allied? 
+     * Note: will return true if factions are the same.
+     * @param factionId1
+     * @param factionId2
+     * @return
+     */
     public static boolean areFactionsAllied(String factionId1, String factionId2)
     {
         if (factionId1.equals(factionId2)) return true;

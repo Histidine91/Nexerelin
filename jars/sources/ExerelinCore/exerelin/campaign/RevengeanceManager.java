@@ -96,7 +96,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}
 	
 	/**
-	 * Add general vengeance points (for retaliatory invasion)
+	 * Add general vengeance points (for retaliatory invasion and sat bomb fleets)
 	 * @param addedPoints
 	 */
 	public void addPoints(float addedPoints)
@@ -120,7 +120,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}
 	
 	/**
-	 * Add vengeance points for a specific faction (for hunter-killer fleets)
+	 * Add vengeance points for a specific faction (for sat bomb and hunter-killer fleets)
 	 * @param factionId
 	 * @param points
 	 */
@@ -158,7 +158,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}
 	
 	/**
-	 * Having incremented faction vengeance points, see if we should launch a hunter-killer fleet
+	 * Having incremented faction vengeance points, see if we should launch a sat bomb or hunter-killer fleet
 	 * @param factionId
 	 * @param currPts
 	 * @param newPts
@@ -324,7 +324,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}
 	
 	/**
-	 * Make a fleet to conquer one of player faction's markets
+	 * Make a fleet to conquer one of player faction's markets (or potentially sat bomb it)
 	 * @return True if fleet was successfully created, false otherwise
 	 */
 	protected boolean generateCounterInvasionFleet()
@@ -431,6 +431,12 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		return (RevengeanceManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
 	}
 	
+	/**
+	 * Increments vengeance points from raiding or bombarding a market.
+	 * @param market
+	 * @param size
+	 * @param mult Varies based on attack type
+	 */
 	public void addVengeanceForMarketAttack(MarketAPI market, int size, float mult)
 	{
 		float addedPoints = size * size * mult;

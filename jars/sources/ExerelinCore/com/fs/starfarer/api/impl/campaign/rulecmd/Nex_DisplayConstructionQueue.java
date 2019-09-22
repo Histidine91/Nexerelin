@@ -18,9 +18,6 @@ import java.util.LinkedList;
 
 
 public class Nex_DisplayConstructionQueue extends BaseCommandPlugin {
-
-	protected static final String STRING_CATEGORY = "exerelin_mining";
-	protected static final String WING = Misc.ucFirst(StringHelper.getString("fighterWingShort"));
 	public static float COST_HEIGHT = 67;
 	
 	@Override

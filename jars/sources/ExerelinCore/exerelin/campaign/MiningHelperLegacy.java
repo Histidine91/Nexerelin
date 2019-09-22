@@ -580,7 +580,7 @@ public class MiningHelperLegacy {
 				FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, pick.variantId);
 				if (member.getHullSpec().getHints().contains(ShipHullSpecAPI.ShipTypeHints.STATION)) continue;
 				
-				float cost = member.getBaseBuyValue();
+				float cost = member.getBaseValue();
 				shipPicker.add(member, 10000/cost);
 			}
 		}
