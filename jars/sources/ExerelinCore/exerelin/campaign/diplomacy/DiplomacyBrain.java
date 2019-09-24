@@ -285,12 +285,14 @@ public class DiplomacyBrain {
 	{
 		Set<String> traits = new HashSet<>(ExerelinConfig.getExerelinFactionConfig(this.factionId).diplomacyTraits);
 		
-		if (traits.contains(TraitIds.IRREDENTIST) && disposition.getFlatMods().containsKey("revanchism")) 
+		if (traits.contains(TraitIds.IRREDENTIST) && disposition.getFlatMods().containsKey("revanchism")
+				&& disposition.getFlatMods().containsKey("revanchism"))
 		{
 			float revanchism = disposition.getFlatStatMod("revanchism").value;
 			disposition.modifyFlat("revanchism", revanchism * 1.5f, "Revanchism");
 		}
-		if (traits.contains(TraitIds.SELFRIGHTEOUS)) {
+		if (traits.contains(TraitIds.SELFRIGHTEOUS) && disposition.getFlatMods().containsKey("alignments")) 
+		{
 			float align = disposition.getFlatStatMod("alignments").value;
 			disposition.modifyFlat("alignments", align * 2, "Alignments");
 		}
@@ -318,16 +320,19 @@ public class DiplomacyBrain {
 			modifyDispositionFromTraits(disposition, -aiScore);
 		}
 		
-		if (traits.contains(TraitIds.ENVIOUS)) {
-			float dominance = disposition.getFlatStatMod("dominance").value;
-			disposition.modifyFlat("dominance", dominance * 1.5f, "Dominance");
-		}
-		if (traits.contains(TraitIds.SUBMISSIVE)) {
-			float dominance = disposition.getFlatStatMod("dominance").value;
-			disposition.modifyFlat("dominance", -dominance, "Dominance");
-		}
-		if (traits.contains(TraitIds.NEUTRALIST)) {
-			disposition.unmodifyFlat("dominance");
+		if (disposition.getFlatMods().containsKey("dominance"))
+		{
+			if (traits.contains(TraitIds.ENVIOUS)) {
+				float dominance = disposition.getFlatStatMod("dominance").value;
+				disposition.modifyFlat("dominance", dominance * 1.5f, "Dominance");
+			}
+			if (traits.contains(TraitIds.SUBMISSIVE)) {
+				float dominance = disposition.getFlatStatMod("dominance").value;
+				disposition.modifyFlat("dominance", -dominance, "Dominance");
+			}
+			if (traits.contains(TraitIds.NEUTRALIST)) {
+				disposition.unmodifyFlat("dominance");
+			}
 		}
 		
 		if (traits.contains(TraitIds.MONOPOLIST)) {
