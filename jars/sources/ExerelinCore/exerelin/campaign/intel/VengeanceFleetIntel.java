@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
 import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
@@ -287,7 +288,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             return;
         }
 		
-        if (!getFaction().isHostileTo(Factions.PLAYER)) {
+        if (!getFaction().isAtWorst(Factions.PLAYER, RepLevel.NEUTRAL)) {
             endEvent(EndReason.NO_LONGER_HOSTILE);
             return;
         }
