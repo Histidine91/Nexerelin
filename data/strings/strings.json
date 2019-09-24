@@ -89,6 +89,7 @@
 		"declined":"declined",
 		"cancelled":"cancelled",
 		"expired":"expired",
+		"suspended":"suspended",
 		"neverMind":"never mind",
 
 		"randomize":"randomize",
@@ -462,6 +463,21 @@
 		"factionBountyIntel_descResult3":"%s share based on damage dealt",
 		"factionBountyIntel_descEnded":"This bounty is no longer on offer.",
 	},
+	"nex_buyColony":{
+		"intelTitle":"Governorship: $market",
+	
+		"intelDesc":"You have purchased the governorship of $market in the $location from $theFaction.",
+		"intelDescLost":"$market in the $location has been conquered by $theOtherFaction. Your governorship has been suspended.",
+		"intelDescDestroyed":"$market in the $location has been destroyed, and your governorship with it.",
+		"intelDescQuit":"You have resigned the governorship of $market in the $location, held by $theFaction.",
+		"intelDescResignedCommission":"You have resigned your commission with $theFaction, and your governorship of $market has been rescinded.",
+		"intelDescPotentialRefund":"Current refund value: %s",
+		"intelDescRefund":"Refunded %s.",
+		"intelDescNoRefund":"Due to your poor relationship with $theFaction, no refund has been issued.",
+		
+		"dialogCost":"Requires %s credits. You have %s credits.", 
+	},
+	
 	"nex_colonies":{
 		"globalPopulation":"global population",
 		"intelGrowthTitle":"Colony Growth",

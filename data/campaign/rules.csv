@@ -865,15 +865,45 @@ nex_reinforceDefensesSelConfirm,DialogOptionSelected,$option == nex_reinforceDef
 FireAll PopulateOptions",$PersonRank $personLastName confirms the deployment of troops and materiel. The conversation moves on to other matters.,,
 nex_reinforceDefensesNeverMind,DialogOptionSelected,$option == nex_reinforceDefenses_cancel,FireAll PopulateOptions,,,
 ,,,,,,
-# other base commander stuff,,,,,,
-#nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
+# buy colony governorship,,,,,,
+nex_buyColonyOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
-$faction.id != player",,,nex_marketAgentReport:Get intel report,
-#nex_marketAgentReportOptionFollowers,PopulateOptions,"Nex_IsBaseOfficial admin
-$faction.id == player",,,nex_marketAgentReport:Get intel report,
-nex_marketAgentReport,DialogOptionSelected,$option == nex_marketAgentReport,AgentGatherIntel false,,nex_marketAgentReportDone:Done,
-nex_marketAgentReportDone,DialogOptionSelected,$option == nex_marketAgentReportDone,"ShowPersonVisual
-FireAll PopulateOptions",,,
+$faction.id != player
+!$market.nex_isTruePlayerOwned",FireAll Nex_BuyColonyDisableCheck,,nex_buyColony:Purchase governorship of $market,
+nex_buyColonyOptionDisable,Nex_BuyColonyDisableCheck,!Nex_BuyColony canBuy,"SetEnabled nex_buyColony false 
+SetTooltip nex_buyColony ""Requires:\n- Friendly reputation for size 3\n- Cooperative reputation for size 4\nLarger markets may not be purchased.""
+SetTooltipHighlightColors nex_buyColony good hColor good hColor
+SetTooltipHighlights nex_buyColony Friendly 3 Cooperative 4",,,
+nex_cedeColonyOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial admin
+$faction.id == $player.factionId
+$faction.id != player
+$market.nex_isTruePlayerOwned",,,nex_cedeColony:Cede governorship of $market,
+nex_buyColony,DialogOptionSelected,$option == nex_buyColony,"FireBest Nex_BuyColonyPromptDialog
+Nex_BuyColony init
+AddTextSmall ""$market will be placed under your administration. You will collect its revenue and pay its costs, and can build industries and structures on it. Storage is free.""
+AddTextSmall ""You can cede the colony later if you so choose, but will not receive a refund. Your governorship will also be lost if $market is captured by a third party, although should it be retaken you will once again be the administrator. Resigning or losing your commission, on the other hand, results in a permanent revocation.""
+Nex_BuyColony printCostAndProcessOptions
+Nex_AddOptionConfirmation nex_buyColony_confirm ""Confirm?"" ""Yes"" ""No""",,"nex_buyColony_confirm:Proceed
+nex_buyColony_cancel:Cancel",
+nex_cedeColony,DialogOptionSelected,$option == nex_cedeColony,"FireBest Nex_CedeColonyPromptDialog
+Nex_BuyColony init
+AddTextSmall ""You will no longer receive revenue from $market or incur costs, or have any authority over the colony. Storage fees will be collected again.""
+Nex_AddOptionConfirmation nex_cedeColony_confirm ""Confirm?"" ""Yes"" ""No""",,"nex_cedeColony_confirm:Proceed
+nex_buyColony_cancel:Cancel",
+nex_buyColonyPromptDialog_generic,Nex_BuyColonyPromptDialog,,,"""Hmm, perhaps. You have an established reputation, and if you are willing to invest in the development of $market, we could come to a mutually satisfactory arrangement.""",,
+nex_cedeColonyPromptDialog_generic,Nex_CedeColonyPromptDialog,,,"""You do not wish to govern $market any longer? That is entirely acceptable to us, but be warned that you will not receive any recompense for this.""",,
+nex_buyColonyConfirm,DialogOptionSelected,$option == nex_buyColony_confirm,"FireBest Nex_BuyColonyConfirmDialog
+Nex_BuyColony buy
+FireAll PopulateOptions","""$market is now under your administration. Welcome to your new duties, $playerName.""",,
+nex_cedeColonyConfirm,DialogOptionSelected,$option == nex_cedeColony_confirm,"FireBest Nex_CedeColonyConfirmDialog
+Nex_BuyColony cede
+FireAll PopulateOptions","""Confirmed. Control of $market has now reverted to $faction administration.""",,
+nex_buyColonyCancel,DialogOptionSelected,$option == nex_buyColony_cancel,FireAll PopulateOptions,"""Anything else?""",,
+,,,,,,
+,,,,,,
+# other base commander stuff,,,,,,
 ,,,,,,
 #Must be after all other rules with that trigger,,,,,,
 nex_baseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll PopulateOptions,,,

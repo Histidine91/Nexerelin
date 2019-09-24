@@ -868,7 +868,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		
 		// if market was player-controlled or administered by a faction leader, pick a new admin from comm board
-		boolean reassign = oldOwner.isPlayerFaction() || Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())
+		boolean reassign = oldOwner.isPlayerFaction() || market.isPlayerOwned() 
+				|| Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())
 				|| hasFactionLeader(market);
 		if (!reassign)
 			return;

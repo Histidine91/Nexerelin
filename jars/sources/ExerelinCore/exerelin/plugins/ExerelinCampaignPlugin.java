@@ -77,6 +77,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		// override vanilla behaviour; used for dialog text on docking 
 		// (player-owned markets won't have the transponder prompt)
 		memory.set("$isPlayerOwned", market.isPlayerOwned() || market.getFaction().isPlayerFaction(), 0);
+		memory.set("$nex_isTruePlayerOwned", market.isPlayerOwned(), 0);
 	}
 	
 	@Override
