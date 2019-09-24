@@ -47,7 +47,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public static final boolean NO_STRIKE_FLEETS = true;
 	public static final boolean USE_REAL_MARINES = false;
-	public static final int MAX_MARINES = 2500;
+	public static final int MAX_MARINES = 3000;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
@@ -88,7 +88,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		addStage(new NexReturnStage(this));
 		
-		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
+		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.55f);
 		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
 		if (marinesPerFleet < 100) {
 			marinesPerFleet = 100;

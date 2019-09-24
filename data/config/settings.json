@@ -48,6 +48,8 @@
 	"nex_hardModeDispositionModifier":-15,
 	"nex_hardModeDominanceMult":1.5,	# when calculating disposition
 	
+	"nex_invasionBaseDefenseMult":1.25,
+	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,
 		"ore_moderate":2,	# 2.5,

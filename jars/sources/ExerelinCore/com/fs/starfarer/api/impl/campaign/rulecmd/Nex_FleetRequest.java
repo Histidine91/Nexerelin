@@ -72,7 +72,7 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	public static final String TARGET_OPTION_PREFIX = "nex_fleetRequest_setTarget_";
 	public static final String FACTION_OPTION_PREFIX = "nex_fleetRequest_setFaction_";
 	public static final float BAR_WIDTH = 256;
-	public static final float MARINE_COST_MAX_MOD = 2;
+	public static final float MARINE_COST_MAX_MOD = 3;
 	
 	protected MemoryAPI memory;
 	protected String option;
@@ -206,7 +206,7 @@ public class Nex_FleetRequest extends PaginatedOptions {
 	protected float updateCost() {
 		cost = fp * ExerelinConfig.fleetRequestCostPerFP;
 		if (fleetType == FleetType.INVASION) {
-			float mult = 1 + 2 * (float)marines/InvasionIntel.MAX_MARINES;
+			float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
 			cost *= mult;
 		}
 		cost = Math.round(cost);

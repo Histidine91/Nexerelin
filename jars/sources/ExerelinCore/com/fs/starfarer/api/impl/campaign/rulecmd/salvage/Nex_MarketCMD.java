@@ -408,9 +408,12 @@ public class Nex_MarketCMD extends MarketCMD {
 		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		
 		ExerelinFactionConfig defConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-		str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "defendBonus", "$Faction", 
+		str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "defenseBonus", "$Faction", 
 				Misc.ucFirst(market.getFaction().getDisplayName()));
 		defender.modifyMult("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend + 1, str);
+		
+		defender.modifyMult("nex_invasionDefBonusGeneral", Global.getSettings().getFloat("nex_invasionBaseDefenseMult"), 
+				StringHelper.getString("exerelin_invasion", "defenseBonusGeneral"));
 		
 		String increasedDefensesKey = "core_addedDefStr";
 		float added = getDefenderIncreaseValue(market);
