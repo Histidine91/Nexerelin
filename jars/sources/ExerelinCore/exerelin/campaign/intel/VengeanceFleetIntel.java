@@ -288,7 +288,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             return;
         }
 		
-        if (!getFaction().isAtWorst(Factions.PLAYER, RepLevel.NEUTRAL)) {
+        if (getFaction().isAtWorst(Factions.PLAYER, RepLevel.NEUTRAL)) {
             endEvent(EndReason.NO_LONGER_HOSTILE);
             return;
         }
