@@ -53,7 +53,7 @@ import org.lwjgl.input.Keyboard;
 /**
  * Handles fleet requests: spawns fleets with specific origins and objectives based on their targets.
  */
-public class Nex_FleetRequest extends PaginatedOptions {
+public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	
 	public static final String MEM_KEY_TYPE = "$nex_fleetRequest_type";
 	public static final String MEM_KEY_FP = "$nex_fleetRequest_fp";
@@ -707,8 +707,8 @@ public class Nex_FleetRequest extends PaginatedOptions {
 		{
 			String optId = FACTION_OPTION_PREFIX + faction.getId();
 			String text = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
-
 			addOption(text, optId);
+			addColor(optId, faction.getBaseUIColor());
 		}
 		
 		showOptions();
