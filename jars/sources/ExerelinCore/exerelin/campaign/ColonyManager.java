@@ -97,7 +97,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected int numAvertedExpeditions;
 	protected int numColonies;
 	protected int currIter;
-	protected int reliefFleetCooldown;
+	protected float reliefFleetCooldown;
 	
 	public ColonyManager() {
 		super(true);
@@ -593,6 +593,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(target.getEconGroup()))
 		{
+			if (market == target) continue;	// no self-relief
+			
 			FactionAPI other = market.getFaction();
 			if (other.isAtBest(faction, RepLevel.SUSPICIOUS))
 				continue;
@@ -640,17 +642,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (hasBaseOfficial(market)) return;
 			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
-		}
-		// retroactive fix for admins not having their faction changed
-		for (CommDirectoryEntryAPI entry : market.getCommDirectory().getEntriesCopy()) {
-			PersonAPI person = (PersonAPI)entry.getEntryData();
-			if (person.getFaction() != market.getFaction() && 
-					SectorManager.POSTS_TO_CHANGE_ON_CAPTURE.contains(person.getPostId()))
-			{
-				log.info("Forcing person " + person.getName().getFullName() 
-						+ " (post " + person.getPost() + ") to correct faction");
-				person.setFaction(market.getFaction().getId());
-			}
 		}
 	}
 	

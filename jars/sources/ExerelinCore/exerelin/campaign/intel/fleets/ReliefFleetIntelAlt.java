@@ -23,6 +23,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -437,15 +438,17 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 			float rep = Nex_StabilizePackage.getReputation(target);
 			repResult = DiplomacyManager.adjustRelations(getFaction(), getTargetFaction(), rep, null, null, null);
 			relation = getFaction().getRelationship(target.getFactionId());
+			
+			DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(target.getFactionId());
+			if (brain != null) brain.reportDiplomacyEvent(factionId, repResult.delta);
+			brain = DiplomacyManager.getManager().getDiplomacyBrain(factionId);
+			if (brain != null) brain.reportDiplomacyEvent(target.getFactionId(), repResult.delta);
 		}
 		
 		fleet.getCargo().clear();
 		target.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENT, true, STABILIZE_INTERVAL);
 		
-		DiplomacyManager.getManager().getDiplomacyBrain(target.getFactionId()).
-				reportDiplomacyEvent(factionId, repResult.delta);
-		DiplomacyManager.getManager().getDiplomacyBrain(factionId).
-				reportDiplomacyEvent(target.getFactionId(), repResult.delta);
+		
 		
 		endEvent(EndReason.COMPLETE);
 	}
