@@ -67,6 +67,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected Float injuryTime;
 	protected MarketAPI agentEscapeDest;
 	
+	protected boolean started;
+	
 	/**
 	 *
 	 * @param agent Agent executing the covert action (null for NPC actions)
@@ -90,12 +92,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public void init() {
 		daysRemaining = getTimeNeeded();
+		days = daysRemaining;
+		cost = getCost();
 	}
 	
 	public void activate() {
 		init();
-		days = daysRemaining;
-		cost = getCost();
+		started = true;
 		Global.getSector().addScript(this);
 	}
 	
@@ -145,7 +148,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (getDef().costScaling) {
 			time *= 1 + 0.25f * (market.getSize() - 3);
 		}
-		if (CovertOpsManager.isDebugMode())
+		if (CovertOpsManager.isDebugMode() || Global.getSettings().isDevMode())
 			time *= 0.1f;
 		
 		return time;
@@ -262,9 +265,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (playerInvolved) {
 			int refund = getAbortRefund();
 			Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
-		}
-		if (agent != null) {
-			agent.currentAction = null;
 		}
 		endImmediately();
 	}

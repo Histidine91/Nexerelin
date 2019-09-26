@@ -148,6 +148,17 @@ public class Travel extends CovertActionIntel {
 		return status == 0;
 	}
 	
+	// clear queued action (if any)
+	// since the queued action assumes we completed our travel, which we won't now
+	@Override
+	public void abort() {
+		super.abort();
+		if (this == agent.currentAction && agent.nextAction != null) {
+			agent.nextAction.abort();
+			agent.nextAction = null;
+		}
+	}
+	
 	protected MutableStat getTravelTime(MarketAPI one, MarketAPI two) {
 		MutableStat stat = new MutableStat(0);
 		float time = 0;
@@ -206,9 +217,15 @@ public class Travel extends CovertActionIntel {
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getActionString("intelStatus_travel");
-		String statusStr = getString("intelStatus_travel" + status);
+		if (started) {
+			String statusStr = getString("intelStatus_travel" + status);		
+			action = StringHelper.substituteToken(action, "$status", statusStr);
+		} else {
+			action = getActionString("intelStatus_travelShort");
+		}
 		action = StringHelper.substituteToken(action, "$market", market.getName());
-		action = StringHelper.substituteToken(action, "$status", statusStr);
+		
+		
 		
 		info.addPara(action, pad, market.getFaction().getBaseUIColor(), market.getName());
 	}

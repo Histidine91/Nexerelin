@@ -61,7 +61,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected int currentPage = 1;
 	
 	protected AgentIntel agent;
+	protected MarketAPI agentMarket;
 	protected CovertActionIntel action;
+	protected boolean isQueue;
 	protected List<FactionAPI> factions = new ArrayList<>();
 	protected List<Object> targets = new ArrayList<>();
 	protected FactionAPI thirdFaction;	// for travel and lower relations
@@ -82,9 +84,12 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		DONE,
 	}
 	
-	public AgentOrdersDialog(AgentIntel agent, IntelUIAPI ui) {
+	public AgentOrdersDialog(AgentIntel agent, MarketAPI agentMarket, 
+			IntelUIAPI ui, boolean isQueue) {
 		this.agent = agent;
+		this.agentMarket = agentMarket;
 		this.ui = ui;
+		this.isQueue = isQueue;
 	}
 	
 	/**
@@ -102,7 +107,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			// nor the target faction
 			factionsSet.remove(PlayerFactionStore.getPlayerFaction());
 			factionsSet.remove(Global.getSector().getPlayerFaction());
-			factionsSet.remove(agent.getMarket().getFaction());
+			factionsSet.remove(agentMarket.getFaction());
 		}
 		else if (action.getDefId().equals(CovertActionType.RAISE_RELATIONS)) {
 			for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
@@ -110,7 +115,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			}
 			factionsSet.add(Global.getSector().getFaction(Factions.PLAYER));
 			// don't allow raising relationship of target faction with itself
-			factionsSet.remove(agent.getMarket().getFaction());
+			factionsSet.remove(agentMarket.getFaction());
 		}
 		else {	// travel: can pick any faction that allows agent actions
 			Set<FactionAPI> temp = new HashSet<>();
@@ -152,13 +157,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				
 				Collections.sort(markets, Nex_FleetRequest.marketComparatorName);
 				for (MarketAPI market : markets) {
-					if (market == agent.getMarket()) continue;
+					if (market == agentMarket) continue;
 					if (market.isHidden()) continue;
 					targets.add(market);
 				}
 				break;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
-				for (CommodityOnMarketAPI commodity : agent.getMarket().getCommoditiesCopy()) {
+				for (CommodityOnMarketAPI commodity : agentMarket.getCommoditiesCopy()) {
 					if (commodity.isNonEcon() || commodity.isIllegal()) continue;
 					if (commodity.isPersonnel()) continue;
 					if (commodity.getAvailable() < 2) continue;
@@ -167,7 +172,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				}
 				break;
 			case CovertActionType.SABOTAGE_INDUSTRY:
-				for (Industry ind : agent.getMarket().getIndustries()) {
+				for (Industry ind : agentMarket.getIndustries()) {
 					if (!ind.canBeDisrupted()) continue;
 					if (ind.getSpec().hasTag(Industries.TAG_STATION))
 						continue;
@@ -240,9 +245,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		Color hl = Misc.getHighlightColor();
 		String header = "dialogInfoHeader";
-		FactionAPI mktFaction = agent.getMarket() != null ? agent.getMarket().getFaction() 
+		FactionAPI mktFaction = agentMarket != null ? agentMarket.getFaction() 
 				: Global.getSector().getFaction(Factions.NEUTRAL);
-		String mktName = agent.getMarket() != null ? agent.getMarket().getName() : getString("unknownLocation");
+		String mktName = agentMarket != null ? agentMarket.getName() : getString("unknownLocation");
 		String factionName = Nex_FactionDirectoryHelper.getFactionDisplayName(mktFaction);
 		Color factionColor = mktFaction.getBaseUIColor();
 		
@@ -379,7 +384,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		// agent faction should not be commissioning faction if target is also commissioning faction
 		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
-		MarketAPI market = agent.getMarket();
+		MarketAPI market = agentMarket;
 		FactionAPI mktFaction = market != null ? market.getFaction() : null;
 		if (agentFaction == mktFaction)
 			agentFaction = Global.getSector().getPlayerFaction();
@@ -472,8 +477,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
 			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
 		}
-		if (agent.getMarket() != null && agent.getMarket().hasCondition(Conditions.PATHER_CELLS)) {
-			MarketConditionAPI cond =agent.getMarket().getCondition(Conditions.PATHER_CELLS);
+		if (agentMarket != null && agentMarket.hasCondition(Conditions.PATHER_CELLS)) {
+			MarketConditionAPI cond = agentMarket.getCondition(Conditions.PATHER_CELLS);
 			LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
 			LuddicPathCellsIntel cellIntel = cellCond.getIntel();
 			if (cellIntel.getSleeperTimeout() <= 90)
@@ -537,7 +542,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					industries.add((Industry)obj);
 				
 				dialog.showIndustryPicker(getString("dialogIndustryPickerHeader"), 
-						StringHelper.getString("select", true), agent.getMarket(), 
+						StringHelper.getString("select", true), agentMarket, 
 						industries, new IndustryPickerListener() {
 					public void pickedIndustry(Industry industry) {
 						setIndustryToSabotage(industry);
@@ -681,8 +686,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	
 	protected void disableActionOptionsIfNeeded() {
 		if (CovertOpsManager.DEBUG_MODE) return;
-		FactionAPI faction = agent.getMarket().getFaction();
-		if (!RaiseRelations.canModifyRelations(faction)) {
+		FactionAPI faction = agentMarket.getFaction();
+		// 
+		if (!RaiseRelations.canModifyRelations(faction, agent)) {
 			CovertActionDef raise = CovertOpsManager.getDef(CovertActionType.RAISE_RELATIONS);
 			CovertActionDef lower = CovertOpsManager.getDef(CovertActionType.LOWER_RELATIONS);
 			options.setEnabled(raise, false);
@@ -700,9 +706,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	}
 	
 	protected boolean canConductLocalActions() {
-		if (agent.getMarket() == null || !agent.getMarket().isInEconomy())
+		if (agentMarket == null || !agentMarket.isInEconomy())
 			return false;
-		FactionAPI faction = agent.getMarket().getFaction();
+		FactionAPI faction = agentMarket.getFaction();
 		if (faction.isPlayerFaction())
 			return false;
 		if (!ExerelinConfig.getExerelinFactionConfig(faction.getId()).allowAgentActions)
@@ -740,8 +746,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			AddRemoveCommodity.addCreditsLossText(cost, text);
 		}
 		
-		agent.setCurrentAction(action);
-		action.activate();
+		if (isQueue) {
+			agent.setQueuedAction(action);
+		}
+		else {
+			agent.setCurrentAction(action);
+			action.activate();
+		}
+		
 		Global.getSector().getIntelManager().addIntelToTextPanel(action, text);
 		ui.updateUIForItem(agent);
 	}

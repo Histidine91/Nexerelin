@@ -203,8 +203,9 @@ public class RaiseRelations extends CovertActionIntel {
 		return faction.getMemoryWithoutUpdate().getExpire(MEM_KEY_COOLDOWN);
 	}
 	
-	public static boolean canModifyRelations(FactionAPI faction) {
+	public static boolean canModifyRelations(FactionAPI faction, AgentIntel currAgent) {
 		for (AgentIntel agent : CovertOpsManager.getManager().getAgents()) {
+			if (agent == currAgent) continue;
 			if (isAgentModifyingRelations(agent, faction)) return false;
 		}
 		return true;

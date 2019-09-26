@@ -45,13 +45,15 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final Object UPDATE_LOST = new Object();
 	protected static final Object UPDATE_ABORTED = new Object();
 	protected static final String BUTTON_ORDERS = "orders";
+	protected static final String BUTTON_QUEUE_ORDER = "orders2";
+	protected static final String BUTTON_CANCEL_QUEUE = "abortQueue";
 	protected static final String BUTTON_ABORT = "abort";
 	protected static final String BUTTON_DISMISS = "dismiss";
 	
 	protected PersonAPI agent;
 	protected MarketAPI market;
 	protected FactionAPI faction;
-	protected CovertActionIntel currentAction, lastAction;
+	protected CovertActionIntel currentAction, lastAction, nextAction;
 	protected int level;
 	protected int xp;
 	protected long lastActionTimestamp;
@@ -125,6 +127,12 @@ public class AgentIntel extends BaseIntelPlugin {
 		this.currentAction = currentAction;
 	}
 	
+	public void setQueuedAction(CovertActionIntel action) {
+		if (nextAction != null)
+			nextAction.abort();
+		nextAction = action;
+	}
+	
 	public PersonAPI getAgent() {
 		return agent;
 	}
@@ -134,10 +142,20 @@ public class AgentIntel extends BaseIntelPlugin {
 		super.advanceImpl(amount);
 	}
 	
+	protected void pushActionQueue() {
+		if (nextAction != null) {
+			currentAction = nextAction;
+			nextAction = null;
+			currentAction.activate();
+		}
+		else
+			currentAction = null;
+	}
+	
 	public void notifyActionCompleted() {
 		lastAction = currentAction;
 		lastActionTimestamp = Global.getSector().getClock().getTimestamp();
-		currentAction = null;
+		pushActionQueue();
 	}
 	
 	@Override
@@ -269,13 +287,45 @@ public class AgentIntel extends BaseIntelPlugin {
 			info.addPara(getString("intelDescIdle"), opad, h);
 			ButtonAPI button = info.addButton(getString("intelButtonOrders"), 
 					BUTTON_ORDERS, pf.getBaseUIColor(), pf.getDarkUIColor(),
-					(int)(width), 20f, opad * 2f);
+					(int)(width), 20f, opad);
 			button.setShortcut(Keyboard.KEY_T, true);
+		}
+		
+		// TODO
+		if (nextAction != null) {
+			info.addSectionHeading(getString("intelDescNextAction"), Alignment.MID, opad);
+			nextAction.addCurrentActionPara(info, opad);
+			
+			// success chance
+			if (nextAction.showSuccessChance()) {
+				MutableStat success = nextAction.getSuccessChance();
+				float successF = success.getModifiedValue();
+				Color chanceCol = Misc.getHighlightColor();
+				if (successF >= 70f)
+					chanceCol = Misc.getPositiveHighlightColor();
+				else if (successF <= 40f)
+					chanceCol = Misc.getNegativeHighlightColor();
+
+				String successStr = String.format("%.0f", successF) + "%";
+				info.addPara(StringHelper.getString("nex_agentActions", "dialogInfoSuccessChance"), 
+						opad, chanceCol, successStr);
+			}
+			
+			// abort button
+			if (nextAction.canAbort()) {
+				ButtonAPI button = info.addButton(StringHelper.getString("abort", true), 
+					BUTTON_CANCEL_QUEUE, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
+			}
+		} else if (currentAction != null) {
+			ButtonAPI button = info.addButton(getString("intelButtonOrdersQueue"), 
+					BUTTON_QUEUE_ORDER, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad);
 		}
 		
 		// local report
 		if (market != null) {
-			info.addSectionHeading(getString("intelHeaderLocalReport"),	Alignment.MID, opad);
+			info.addSectionHeading(getString("intelHeaderLocalReport"),	Alignment.MID, opad * 2);
 			
 			str = getString("intelDescLocalReport1");
 			String marketName = market.getName();
@@ -315,13 +365,25 @@ public class AgentIntel extends BaseIntelPlugin {
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_ORDERS) {
-			ui.showDialog(null, new AgentOrdersDialog(this, ui));
+			ui.showDialog(null, new AgentOrdersDialog(this, market, ui, false));
+		}else if (buttonId == BUTTON_QUEUE_ORDER) {
+			// If we are travelling somewhere, set that as our market
+			MarketAPI targetMarket = this.market;
+			if (currentAction != null && currentAction instanceof Travel) {
+				targetMarket = ((Travel)currentAction).market;
+			}
+			ui.showDialog(null, new AgentOrdersDialog(this, targetMarket, ui, true));
 		} else if (buttonId == BUTTON_ABORT) {
 			currentAction.abort();
+			pushActionQueue();
+		} else if (buttonId == BUTTON_CANCEL_QUEUE) {
+			nextAction.abort();
+			setQueuedAction(null);
 		} else if (buttonId == BUTTON_DISMISS) {
 			if (currentAction != null)
 				currentAction.abort();
 			currentAction = null;
+			nextAction = null;
 			lastAction = null;
 			isDismissed = true;
 			//sendUpdateIfPlayerHasIntel(UPDATE_DISMISSED, false);
@@ -333,7 +395,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId != BUTTON_ORDERS;
+		return buttonId != BUTTON_ORDERS && buttonId != BUTTON_QUEUE_ORDER;
 	}
 	
 	@Override
@@ -342,6 +404,12 @@ public class AgentIntel extends BaseIntelPlugin {
 			int credits = currentAction.getAbortRefund();
 			String creditsStr = Misc.getWithDGS(credits);
 			String str = getString("intelPromptAbort");
+			
+			prompt.addPara(str, 0, Misc.getHighlightColor(), creditsStr);
+		} else if (buttonId == BUTTON_CANCEL_QUEUE) {
+			int credits = nextAction.getAbortRefund();
+			String creditsStr = Misc.getWithDGS(credits);
+			String str = getString("intelPromptAbortQueued");
 			
 			prompt.addPara(str, 0, Misc.getHighlightColor(), creditsStr);
 		} else if (buttonId == BUTTON_DISMISS) {
