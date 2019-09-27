@@ -634,8 +634,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		Random random = getRandom();
 		InvasionRound.finishInvasion(playerFleet, null, market, tempInvasion.roundNum, tempInvasion.success);
 		
-		if (!tempInvasion.success)
-			applyDefenderIncreaseFromRaid(market);
+		applyDefenderIncreaseFromRaid(market);
 		
 		// cooldown
 		setRaidCooldown(getRaidCooldownMax());

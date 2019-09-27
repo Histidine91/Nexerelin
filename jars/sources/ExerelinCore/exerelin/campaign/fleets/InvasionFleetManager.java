@@ -603,7 +603,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (source == CommoditySourceType.GLOBAL)
 			pts *= 0.75f;
 		else if (source == CommoditySourceType.LOCAL)
-			pts *= 3;
+			pts *= 5;
 		
 		return pts;
 	}
