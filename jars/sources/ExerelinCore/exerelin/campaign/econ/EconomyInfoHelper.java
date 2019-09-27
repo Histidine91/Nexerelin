@@ -205,6 +205,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	
 	public int getFactionCommodityProduction(String factionId, String commodityId) {
 		Map<String, Integer> ourProduction = getCommoditiesProducedByFaction(factionId);
+		if (ourProduction == null) return 0;
 		if (!ourProduction.containsKey(commodityId))
 			return 0;
 		return ourProduction.get(commodityId);
