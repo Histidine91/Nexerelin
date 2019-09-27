@@ -131,6 +131,11 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	
 	protected int calculateReward(boolean includeBonus) {
 		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
+		
+		// meh; this gives incentive to add things to the market before transferring
+		// which is probably not something we want to worry about
+		//value += ExerelinUtilsMarket.getIncomeNetPresentValue(market, 3, 0);
+		
 		if (includeBonus) {
 			float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_REWARD_MULT);
 			float stabilityMult = (market.getStabilityValue() + 5)/15;

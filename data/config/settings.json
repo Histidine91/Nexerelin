@@ -21,7 +21,8 @@
 	
 	"nex_disruptMissionRewardMult":30000,
 	
-	"nex_transferMarket_valueDivisor":50000,
+	"nex_transferMarket_valueDivisor":100000,
+	"nex_transferMarket_incomeDivisor":50000,
 	"nex_transferMarket_originalOwnerMult":1.33,
 	"nex_transferMarket_recentlyCapturedMult":0.2,
 	

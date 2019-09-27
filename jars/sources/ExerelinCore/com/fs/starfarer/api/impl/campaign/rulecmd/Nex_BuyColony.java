@@ -13,21 +13,24 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.intel.BuyColonyIntel;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
 public class Nex_BuyColony extends BaseCommandPlugin {
 	
-	public static final float SIZE_VALUE_MULT = 2500;
+	public static final float SIZE_VALUE_MULT = 5000;
 	
 	// TODO	
 	@Override
@@ -41,8 +44,8 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		switch(arg)
 		{
 			case "init":
-				int value = getValue(market, market.isPlayerOwned(), true);
-				memoryMap.get(MemKeys.LOCAL).set("$nex_colonyPrice", value);
+				//int value = getValue(market, market.isPlayerOwned(), true).getModifiedInt();
+				//memoryMap.get(MemKeys.LOCAL).set("$nex_colonyPrice", value);
 				break;
 			case "canBuy":
 				return canBuy(market);
@@ -69,7 +72,8 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	protected void printCostAndProcessOptions(MarketAPI market, InteractionDialogAPI dialog,
 			MemoryAPI mem) {
 		int credits = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-		int required = (int)mem.getFloat("$nex_colonyPrice");
+		MutableStat cost = getValue(market, market.isPlayerOwned(), true);
+		int required = cost.getModifiedInt();
 		boolean enough = credits >= required;
 		String creditsStr = Misc.getWithDGS(credits);
 		String requiredStr = Misc.getWithDGS(required);
@@ -81,6 +85,11 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		LabelAPI label = text.addPara(str, hl, requiredStr, creditsStr);
 		label.setHighlight(requiredStr, creditsStr);
 		label.setHighlightColors(hl, enough ? hl : Misc.getNegativeHighlightColor());
+		
+		TooltipMakerAPI info = text.beginTooltip();
+		info.addStatModGrid(350, 80, 10, 0, cost, true, ExerelinUtils.getStatModValueGetter(true, 0));
+		text.addTooltip();
+		
 		text.setFontInsignia();
 		
 		if (!enough) {
@@ -99,19 +108,27 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		return false;
 	}
 	
-	public static int getValue(MarketAPI market, boolean isRefund, boolean includeBonus) 
+	public static MutableStat getValue(MarketAPI market, boolean isRefund, boolean includeBonus) 
 	{
+		MutableStat stat = new MutableStat(0);
 		float value = ExerelinUtilsMarket.getMarketIndustryValue(market);
 		if (isRefund)
 			value *= Global.getSettings().getFloat("industryRefundFraction");
+		stat.modifyFlat("industry", value, StringHelper.getString("nex_buyColony", 
+				"costFactorIndustry", true));
+		
+		float income = ExerelinUtilsMarket.getIncomeNetPresentValue(market, 6, isRefund ? 0.1f : 0);
+		stat.modifyFlat("income", income, StringHelper.getString("nex_buyColony", 
+				"costFactorIncome", true));
 		
 		if (includeBonus) {
 			float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_VALUE_MULT);
 			float stabilityMult = (market.getStabilityValue() + 5)/15;
-			value += (sizeBonus * stabilityMult);
+			stat.modifyFlat("sizeAndStability", (sizeBonus * stabilityMult), StringHelper.getString("nex_buyColony", 
+				"costFactorSizeAndStability", true));
 		}
 			
-		return (int)value;
+		return stat;
 	}
 	
 	
@@ -124,7 +141,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		
 		TextPanelAPI text = dialog.getTextPanel();
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		int value = getValue(market, !owned, true);
+		int value = getValue(market, !owned, true).getModifiedInt();
 		if (owned) {	// buying
 			cargo.getCredits().subtract(value);
 			AddRemoveCommodity.addCreditsLossText(value, text);

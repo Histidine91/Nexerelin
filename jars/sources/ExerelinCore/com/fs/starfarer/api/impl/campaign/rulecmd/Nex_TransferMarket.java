@@ -150,6 +150,11 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		stat.modifyFlat("industry", value, StringHelper.getString("exerelin_markets", 
 				"transferMarketFactorIndustry", true));
 		
+		float income = ExerelinUtilsMarket.getIncomeNetPresentValue(market, 6, 0) 
+				/ Global.getSettings().getFloat("nex_transferMarket_incomeDivisor");
+		stat.modifyFlat("income", income, StringHelper.getString("exerelin_markets", 
+				"transferMarketFactorIncome", true));
+		
 		float fromStability = (market.getStabilityValue() + 10) / 20;
 		stat.modifyMult("stability", fromStability, StringHelper.getString("exerelin_markets", 
 				"transferMarketFactorStability", true));

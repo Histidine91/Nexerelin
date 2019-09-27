@@ -478,7 +478,10 @@
 		"intelDescRefund":"Refunded %s.",
 		"intelDescNoRefund":"Due to your poor relationship with $theFaction, no refund has been issued.",
 		
-		"dialogCost":"Requires %s credits. You have %s credits.", 
+		"dialogCost":"Requires %s credits. You have %s credits.",
+		"costFactorIndustry":"industry value",
+		"costFactorIncome":"income",
+		"costFactorSizeAndStability":"market size and stability",
 	},
 	
 	"nex_colonies":{

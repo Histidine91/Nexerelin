@@ -77,6 +77,22 @@ public class ExerelinUtilsMarket {
 		return value;
 	}
 	
+	// see https://en.wikipedia.org/wiki/Net_present_value#Formula
+	public static float getIncomeNetPresentValue(MarketAPI market, int months, float discountRate) 
+	{
+		if (months <= 0) return 0;
+		
+		float netIncome = market.getNetIncome();
+		if (discountRate == 0)
+			return netIncome * months;
+		
+		float x = 1/(1+discountRate);
+		float numerator = 1 - (float)Math.pow(x, months);
+		float denominator = 1 - x;
+		
+		return netIncome * (numerator/denominator);
+	}
+	
 	public static boolean isMarketBeingInvaded(MarketAPI market)
 	{
 		return market.getMemoryWithoutUpdate().getBoolean("$beingInvaded")	// NPC fleet
