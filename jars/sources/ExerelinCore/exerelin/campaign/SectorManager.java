@@ -836,6 +836,31 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         victoryHasOccured = bool;
     }
     
+    /**
+     * Determine the credits to be lost when player loses a market to an invasion.
+     * @param lostMarket
+     * @return
+     */
+    public static final int calcCreditsLost(MarketAPI lostMarket) {
+        List<MarketAPI> markets = Misc.getFactionMarkets(Global.getSector().getPlayerFaction());
+        int mySize = lostMarket.getSize() * lostMarket.getSize();
+        int totalSize = mySize;
+        for (MarketAPI market : markets) {
+            if (!market.isPlayerOwned()) continue;
+            totalSize += market.getSize() * market.getSize();
+        }
+        if (totalSize == 0) return 0;    // div0 protection
+        
+        float mult = (float)mySize/(float)totalSize;
+        log.info("Invasion credit loss size mult: " + mySize + "/" + totalSize);
+        float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+        float lossMult = mult * ExerelinConfig.creditLossOnColonyLossMult;
+        if (SectorManager.getHardMode()) lossMult *= 2;
+        if (lossMult > 0.75f) lossMult = 0.75f;
+        
+        return Math.round(lossMult * credits);
+    }
+    
     public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
             boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
     {
@@ -858,18 +883,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, 
             float repChangeStrength, boolean silent)
     {
-        // forcibly refreshes the market before capture so we can loot their faction-specific goodies once we capture it
-        // already did this in InvasionRound
-        //ExerelinUtilsMarket.forceMarketUpdate(market);
+        boolean wasPlayerOwned = market.isPlayerOwned();
         
         // transfer market and associated entities
         String newOwnerId = newOwner.getId();
         String oldOwnerId = oldOwner.getId();
         Set<SectorEntityToken> linkedEntities = market.getConnectedEntities();
-		if (market.getPlanetEntity() != null) {
-			linkedEntities.addAll(ExerelinUtilsAstro.getCapturableEntitiesAroundPlanet(market.getPlanetEntity()));
-		}
-		
+        if (market.getPlanetEntity() != null) {
+            linkedEntities.addAll(ExerelinUtilsAstro.getCapturableEntitiesAroundPlanet(market.getPlanetEntity()));
+        }
+        
         for (SectorEntityToken entity : linkedEntities)
         {
             entity.setFaction(newOwnerId);
@@ -944,7 +967,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // (un)apply free port if needed
         ColonyManager.updateFreePortSetting(market);
-		ColonyManager.updateIncome(market);
+        ColonyManager.updateIncome(market);
         
         ExerelinUtilsMarket.setTariffs(market);
         
@@ -977,6 +1000,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         market.reapplyConditions();
         market.reapplyIndustries();
         
+        // credits lost
+        Integer creditsLost = null;
+        if (isCapture && oldOwner.isPlayerFaction() && !newOwner.isPlayerFaction() && wasPlayerOwned) 
+        {
+            creditsLost = calcCreditsLost(market);
+            Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(creditsLost);
+        }
+        
         // prompt player to name faction if needed
         if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp()) {
             //Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
@@ -986,7 +1017,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // intel report
         if (!silent) {
             MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved, 
-                factionsToNotify, repChangeStrength);
+                factionsToNotify, repChangeStrength, creditsLost);
             ExerelinUtils.addExpiringIntel(intel);
         }
         

@@ -32,9 +32,11 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 	protected boolean isCapture;
 	protected List<String> factionsToNotify;
 	protected float repChange;
+	protected Integer creditsLost;
 	
 	public MarketTransferIntel(MarketAPI market, String oldFactionId, String newFactionId, 
-			boolean isCapture, boolean isPlayerInvolved, List<String> factionsToNotify, float repChange)
+			boolean isCapture, boolean isPlayerInvolved, List<String> factionsToNotify, 
+			float repChange, Integer creditsLost)
 	{
 		this.market = market;
 		this.oldFactionId = oldFactionId;
@@ -43,6 +45,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		this.isCapture = isCapture;
 		this.factionsToNotify = factionsToNotify;
 		this.repChange = repChange;
+		this.creditsLost = creditsLost;
 		
 		if (isPlayerInvolved) {
 			TextPanelAPI text = null;
@@ -89,6 +92,10 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		
 		addFactionBullet(info, "intelTransferBullet1", newFactionId, tc, initPad);
 		addFactionBullet(info, "intelTransferBullet2", oldFactionId, tc, pad);
+		if (creditsLost != null) {
+			info.addPara(StringHelper.getString("exerelin_markets", "intelCaptureBulletCredits"), 
+					pad, Misc.getHighlightColor(), Misc.getDGSCredits(creditsLost));
+		}
 	}
 	
 	
@@ -150,6 +157,11 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 			para.setHighlight(oldFaction.getDisplayNameWithArticleWithoutArticle(), 
 					marketName, size, newFaction.getDisplayNameWithArticleWithoutArticle());
 			para.setHighlightColors(oldFaction.getBaseUIColor(), h, h, newFaction.getBaseUIColor());
+		}
+		
+		if (creditsLost != null) {
+			info.addPara(StringHelper.getString("exerelin_markets", "intelCaptureDescCredits"),
+					opad, h, Misc.getWithDGS(creditsLost));
 		}
 		
 		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);

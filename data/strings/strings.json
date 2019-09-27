@@ -957,10 +957,12 @@
 		"intelTransferTitle":"Market Transfered - $market",
 		"intelTransferBullet1":"Now under $faction",
 		"intelTransferBullet2":"Previously $faction",
+		"intelCaptureBulletCredits":"Lost %s",
 		
 		"intelCaptureDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from $oldFaction.",
 		"intelCapturePlayerDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from the $oldFaction, under the command of $player.",
 		"intelTransferDesc":"$oldFaction has transfered $market (size $size) in the $location to $newFaction.",
+		"intelCaptureDescCredits":"You have lost %s credits due to looting by the invaders.",
 		"intelTransferFactionSizeHeader":"Current status",
 		"intelTransferFactionSizeEntry":"$faction: $num markets (total size $size)",
 		
@@ -971,6 +973,7 @@
 		"transferMarketOriginalOwner":"$market was originally held by $theFaction, and will give $bonus the reputation if returned to them.",
 		"transferMarketRecentlyCaptured":"$market was recently taken from $theFaction, and will only give $mult the reputation if returned now.",
 		"transferMarketFactorIndustry":"industry value",
+		"transferMarketFactorIncome":"income",
 		"transferMarketFactorStability":"stability",
 		"transferMarketFactorSize":"market size",
 		

@@ -36,8 +36,7 @@
     "baseInvasionPointsPerFaction": 30,
     "invasionPointsPerPlayerLevel": 0.5,
     "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
-    "conquestMissionRewardMult": 1,
-    #"invasionLootMult": 0.05,   # proportion of market's commodities that will be lootable on successful invasion
+    "creditLossOnColonyLossMult": 0.4,
     
     "allianceGracePeriod": 60,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
