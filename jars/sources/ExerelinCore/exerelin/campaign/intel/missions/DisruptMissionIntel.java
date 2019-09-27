@@ -30,7 +30,6 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 	
 	public static final RepLevel MAX_REP_LEVEL = RepLevel.FAVORABLE;
 	public static final int MIN_DISRUPT_TIME = 60;
-	public static final int REWARD_MULT = 30000;
 	
 	protected MarketAPI market;
 	protected FactionAPI faction;
@@ -142,7 +141,7 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 	
 	// don't overcomplicate this for now
 	protected int calculateReward() {
-		int reward = market.getSize() * REWARD_MULT;
+		int reward = (int)(market.getSize() * Global.getSettings().getFloat("nex_disruptMissionRewardMult"));
 		if (industry.getSpec().hasTag(Industries.TAG_MILITARY) 
 				|| industry.getSpec().hasTag(Industries.TAG_COMMAND))
 			reward *= 2;
