@@ -405,24 +405,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
 		
 		StatBonus attacker = playerFleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
-		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		
-		ExerelinFactionConfig defConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-		str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "defenseBonus", "$Faction", 
-				Misc.ucFirst(market.getFaction().getDisplayName()));
-		defender.modifyMult("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend + 1, str);
-		
-		defender.modifyMult("nex_invasionDefBonusGeneral", Global.getSettings().getFloat("nex_invasionBaseDefenseMult"), 
-				StringHelper.getString("exerelin_invasion", "defenseBonusGeneral"));
-		
-		String increasedDefensesKey = "core_addedDefStr";
-		float added = getDefenderIncreaseValue(market);
-		if (added > 0) {
-			defender.modifyFlat(increasedDefensesKey, added, getString("defenderPreparedness", true));
-		}
+		StatBonus defender = InvasionRound.getDefenderStrengthStat(market);
 		
 		float attackerStr = (int) Math.round(attacker.computeEffective(attackerBase.computeEffective(0f)));
-		float defenderStr = (int) Math.round(defender.computeEffective(defenderBase.computeEffective(0f)));
+		float defenderStr = (int) Math.round(defender.computeEffective(0));
 		
 		tempInvasion.attackerStr = attackerStr;
 		tempInvasion.defenderStr = defenderStr;
@@ -458,7 +445,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			info.addStatModGrid(width, 50, opad, small, defender, true, statPrinter(true));
 		//}
 			
-		defender.unmodifyFlat(increasedDefensesKey);
+		defender.unmodifyFlat("core_addedDefStr");
 		
 		text.addTooltip();
 

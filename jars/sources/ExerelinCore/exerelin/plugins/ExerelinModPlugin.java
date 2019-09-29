@@ -9,7 +9,9 @@ import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionCreator;
@@ -198,6 +200,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         ScriptReplacer.replaceBarEventCreator(DeliveryBarEventCreator.class, new NexDeliveryBarEventCreator());
         
         DiplomacyManager.getManager().reverseCompatibility();
+        
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+            defender.unmodify("nex_invasionDefBonus");
+            defender.unmodify("nex_invasionDefBonusGeneral");
+        }
     }
     
     protected void addBarEvents() {
