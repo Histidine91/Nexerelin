@@ -521,7 +521,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//log.info("\tTarget: " + targetMarket.getName());
 		
 		// sat bomb
-		if (type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE && canSatBomb(faction, targetFaction)) 
+		if (type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE && canSatBomb(faction, targetMarket.getFaction())) 
 		{
 			type = EventType.SAT_BOMB;
 		}

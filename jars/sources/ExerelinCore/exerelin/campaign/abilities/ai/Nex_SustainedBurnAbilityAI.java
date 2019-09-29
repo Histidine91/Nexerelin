@@ -121,7 +121,10 @@ public class Nex_SustainedBurnAbilityAI extends SustainedBurnAbilityAI {
 				AbilityPlugin sb = fleet.getAbility(Abilities.SUSTAINED_BURN);
 				
 				if (sb != null && sb.isActive()) {
-					if (!ability.isActive()) ability.activate();
+					if (!ability.isActive()) {
+						ability.activate();
+					}
+					return;
 				}
 			}
 

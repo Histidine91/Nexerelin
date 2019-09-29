@@ -9,7 +9,7 @@
     "alignments":{
         "corporate":1,
     },
-    "diplomacyTraits":["monopolist, neutralist"],
+    "diplomacyTraits":["monopolist", "neutralist"],
     
     "freeMarket":true,
     

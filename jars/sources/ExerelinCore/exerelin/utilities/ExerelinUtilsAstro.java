@@ -292,8 +292,9 @@ public class ExerelinUtilsAstro {
 		{
 			if (token.getCustomEntitySpec() == null) continue;
 			if (token.getMarket() != null) continue;
+			if (token.hasTag(Tags.OBJECTIVE)) continue;
 			if (token instanceof CampaignFleetAPI) continue;
-			if (token.getOrbit() == null || token.getOrbit().getFocus() == null)
+			if (token.getOrbit() == null || token.getOrbit().getFocus() != primary)
 				continue;
 			results.add(token);
 		}
