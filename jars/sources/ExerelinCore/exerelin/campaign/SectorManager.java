@@ -1087,13 +1087,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
      */
     public static void updateSubmarkets(MarketAPI market, String oldOwnerId, String newOwnerId)
     {
-        boolean haveLocalResources = newOwnerId.equals(Factions.PLAYER);
+        boolean isPlayer = newOwnerId.equals(Factions.PLAYER) || market.isPlayerOwned();
+        boolean haveLocalResources = isPlayer;
         boolean haveOpen = false;
         boolean haveMilitary = false;
         boolean haveBlackMarket = false;
         boolean haveTemplar = newOwnerId.equals("templars");
         
-        if (!newOwnerId.equals("templars") && !newOwnerId.equals(Factions.PLAYER))
+        if (!newOwnerId.equals("templars") && !isPlayer)
         {
             if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
                     || market.hasCondition("tem_avalon") || market.hasIndustry("tiandong_merchq") 
@@ -1101,9 +1102,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 haveMilitary = true;
             if (!NO_BLACK_MARKET.contains(market.getId()))
                 haveBlackMarket = true;
-        }        
+        }
         
-        if (!newOwnerId.equals("templars") && (!newOwnerId.equals(Factions.PLAYER) || market.hasIndustry("commerce")))
+        if (!newOwnerId.equals("templars") && (!isPlayer || market.hasIndustry("commerce")))
             haveOpen = true;
         
         addOrRemoveSubmarket(market, Submarkets.LOCAL_RESOURCES, haveLocalResources);

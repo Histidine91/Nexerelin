@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.IntelUIAPI;
@@ -18,6 +19,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
@@ -246,6 +248,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 		else if (status == Status.LOST && newOwner.getId().equals(factionId)) {
 			status = Status.ACTIVE;
 			market.setPlayerOwned(true);
+			SectorManager.updateSubmarkets(market, Factions.PLAYER, Factions.PLAYER);
 			reassignAdmin();
 		}
 	}

@@ -882,7 +882,7 @@ $faction.id != player
 $market.nex_isTruePlayerOwned",,,nex_cedeColony:Cede governorship of $market,
 nex_buyColony,DialogOptionSelected,$option == nex_buyColony,"FireBest Nex_BuyColonyPromptDialog
 Nex_BuyColony init
-AddTextSmall ""$market will be placed under your administration. You will collect its revenue and pay its costs, and can build industries and structures on it. Storage is free.""
+AddTextSmall ""$market will be placed under your administration. You will collect its revenue and pay its costs, and can build industries and structures on it. Storage is free. Your personal ship construction will benefit from $faction industry.""
 AddTextSmall ""You can cede the colony later if you so choose, but will not receive a refund. Your governorship will also be lost if $market is captured by a third party, although should it be retaken you will once again be the administrator. Resigning or losing your commission, on the other hand, results in a permanent revocation.""
 Nex_BuyColony printCostAndProcessOptions
 Nex_AddOptionConfirmation nex_buyColony_confirm ""Confirm?"" ""Yes"" ""No""",,"nex_buyColony_confirm:Proceed

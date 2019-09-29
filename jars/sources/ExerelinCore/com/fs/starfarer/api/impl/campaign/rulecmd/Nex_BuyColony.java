@@ -22,6 +22,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ColonyManager;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.BuyColonyIntel;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -136,6 +137,10 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	public static void setColonyPlayerOwned(MarketAPI market, boolean owned, InteractionDialogAPI dialog) 
 	{
 		market.setPlayerOwned(owned);
+		if (owned)
+			SectorManager.updateSubmarkets(market, Factions.PLAYER, Factions.PLAYER);
+		else
+			SectorManager.updateSubmarkets(market, market.getFactionId(), market.getFactionId());
 		FactionAPI player = Global.getSector().getPlayerFaction();
 		ColonyManager.reassignAdminIfNeeded(market, player, player);
 		
