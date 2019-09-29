@@ -288,6 +288,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!hasLazyLib) {
             throw new RuntimeException(StringHelper.getString("exerelin_misc", "errorLazyLib"));
         }
+        
+        int officerMaxLevel = (int)Global.getSettings().getFloat("officerMaxLevel");
+        //Global.getLogger(this.getClass()).info("wololo officer level: " + officerMaxLevel);
+        if (officerMaxLevel > 29)
+            throw new RuntimeException(StringHelper.getStringAndSubstituteToken(
+                    "exerelin_misc", "errorOfficerMaxLevel", "$currMax", officerMaxLevel + ""));
     }
     
     @Override
