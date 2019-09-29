@@ -2,6 +2,7 @@ package exerelin.console.commands;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
@@ -29,6 +30,7 @@ public class SpawnRespawnFleet implements BaseCommand {
 			List<String> factions = ExerelinConfig.getFactions(true, false);
 			for (String faction : factions)
 			{
+				if (faction.equals(Factions.PLAYER)) continue;
 				if (SectorManager.isFactionAlive(faction)) continue;
 				picker.add(faction);
 			}
@@ -45,9 +47,11 @@ public class SpawnRespawnFleet implements BaseCommand {
 		
 		FactionAPI faction = SpawnInvasionFleet.getFaction(factionId);
 		if (faction == null) return CommandResult.ERROR;
+		
+		Console.showMessage("Attempting to respawn faction " + faction.getDisplayName());
 			
 		// spawn fleet
-		RespawnInvasionIntel intel = SectorManager.spawnRespawnFleet(faction, null, true);
+		RespawnInvasionIntel intel = SectorManager.spawnRespawnFleet(faction, null, true, true);
 		if (intel == null) {
 			Console.showMessage("Unable to spawn fleet");
 			return CommandResult.ERROR;

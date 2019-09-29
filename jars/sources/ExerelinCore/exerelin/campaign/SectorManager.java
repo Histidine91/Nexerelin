@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
@@ -492,21 +493,22 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
-    public static RespawnInvasionIntel spawnRespawnFleet(FactionAPI respawnFaction, MarketAPI sourceMarket) {
-        return spawnRespawnFleet(respawnFaction, sourceMarket, false);
+    public static RespawnInvasionIntel spawnRespawnFleet(FactionAPI respawnFaction, 
+            MarketAPI sourceMarket, boolean fromConsole) {
+        return spawnRespawnFleet(respawnFaction, sourceMarket, false, fromConsole);
     }
     
     /**
-     * Creates a respawn fleet intel item.
-     * If no market is available to spawn from, it generates a hidden base. Will not
-     * create the respawn intel in this case, unless {@code proceedAfterSpawningBase} is true.
+     * Creates a respawn fleet intel item.If no market is available to spawn from, it generates a hidden base.
+     * Will not create the respawn intel in this case, unless {@code proceedAfterSpawningBase} is true.
      * @param respawnFaction
      * @param sourceMarket
      * @param proceedAfterSpawningBase
+     * @param fromConsole If true, prints logging messages to console
      * @return
      */
     public static RespawnInvasionIntel spawnRespawnFleet(FactionAPI respawnFaction, 
-            MarketAPI sourceMarket, boolean proceedAfterSpawningBase)
+            MarketAPI sourceMarket, boolean proceedAfterSpawningBase, boolean fromConsole)
     {
         SectorAPI sector = Global.getSector();
         String respawnFactionId = respawnFaction.getId();
@@ -521,6 +523,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 // create a base to spawn respawn fleets from
                 RespawnBaseIntel base = RespawnBaseIntel.generateBase(respawnFactionId);
                 if (base != null && proceedAfterSpawningBase) {
+                    if (fromConsole)
+                        Console.showMessage("Generating respawn base");
                     markets.add(base.getMarket());
                 }
                 else
@@ -535,6 +539,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         if (sourceMarket == null) {
+            if (fromConsole)
+                Console.showMessage("No source market to launch respawn event");
+            else
+                log.info("No source market to launch respawn event");
             return null;
         }
         
@@ -551,22 +559,26 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (wasOriginalOwner)
                 weight *= 10;
             if (!market.getFaction().isHostileTo(respawnFaction))
-				//weight *= 0.001f;
-				continue;
-				
+                //weight *= 0.001f;
+                continue;
+                
             targetPicker.add(market, weight);
         }
         MarketAPI targetMarket = targetPicker.pick();
         if (targetMarket == null) {
+            if (fromConsole)
+                Console.showMessage("No target for respawn event");
+            else
+                log.info("No target for respawn event");
             return null;
         }
         
         //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());
         RespawnInvasionIntel intel = (RespawnInvasionIntel)InvasionFleetManager.getManager().generateInvasionOrRaidFleet(sourceMarket, targetMarket, 
                 InvasionFleetManager.EventType.RESPAWN, 1);
-		if (intel != null) {
-		}
-		return intel;
+        if (intel != null) {
+        }
+        return intel;
     }
     
     public int getNumRespawns(String factionId) {
@@ -622,7 +634,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionAPI respawnFaction = factionPicker.pick();
         if (respawnFaction == null) return;
         
-        RespawnInvasionIntel intel = spawnRespawnFleet(respawnFaction, null);
+        RespawnInvasionIntel intel = spawnRespawnFleet(respawnFaction, null, false);
         if (intel != null) {
             incrementNumRespawns(respawnFaction.getId());
         }

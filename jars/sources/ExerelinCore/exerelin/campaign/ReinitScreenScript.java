@@ -69,7 +69,7 @@ public class ReinitScreenScript implements EveryFrameScript
 		private TextPanelAPI text;
 		private OptionPanelAPI options;
 		private boolean allowRespawn = SectorManager.getManager().respawnFactions;
-		private boolean allowRespawnNonOriginal = SectorManager.getManager().onlyRespawnStartingFactions;
+		private boolean allowRespawnNonOriginal = !SectorManager.getManager().onlyRespawnStartingFactions;
 		private boolean randomizeRelationships = DiplomacyManager.isRandomFactionRelationships();
 		private boolean randomizeRelationshipsPirate = DiplomacyManager.getManager().randomFactionRelationshipsPirate;
 		private boolean hardMode = SectorManager.getHardMode();
