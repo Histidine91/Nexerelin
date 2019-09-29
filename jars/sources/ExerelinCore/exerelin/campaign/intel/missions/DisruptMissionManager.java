@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
 import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.econ.EconomyInfoHelper;
@@ -122,8 +123,9 @@ public class DisruptMissionManager extends BaseEventManager {
 	
 	protected static TargetEntry getTarget(FactionAPI faction) 
 	{
+		String factionId = faction.getId();
 		WeightedRandomPicker<TargetEntry> picker = new WeightedRandomPicker<>();
-		Map<String, Integer> commodities = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(faction.getId());
+		Map<String, Integer> commodities = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(factionId);
 		Map<String, Integer> importantCommodities = new HashMap<>();
 		//List<ProducerEntry> competitors = EconomyInfoHelper.getInstance().getCompetingProducers(faction.getId(), 3);
 		boolean vsFreePort = false, vsCompetitors = false;
@@ -144,7 +146,7 @@ public class DisruptMissionManager extends BaseEventManager {
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
-			if (market.getFaction() == faction || market.getFaction().isPlayerFaction()
+			if (AllianceManager.areFactionsAllied(factionId, market.getFactionId()) || market.getFaction().isPlayerFaction()
 					|| market.getFaction() == commission)
 				continue;
 			if (!ExerelinConfig.allowPirateInvasions && 

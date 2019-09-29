@@ -259,13 +259,15 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	{
 		WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>(random);
 		int factionCount = 0;
-		DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(agentFaction.getId());
+		String agentFactionId = agentFaction.getId();
+		DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(agentFactionId);
 				
 		for (FactionAPI faction: factions)
 		{
-			if (faction == agentFaction) continue;
 			String factionId = faction.getId();
 			if (DISALLOWED_FACTIONS.contains(factionId)) continue;
+			if (AllianceManager.areFactionsAllied(agentFactionId, factionId))
+				continue;			
 			
 			RepLevel repLevel = faction.getRelationshipLevel(agentFaction);
 			float dominance = DiplomacyManager.getDominanceFactor(faction.getId());
