@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
 import com.fs.starfarer.api.loading.IndustrySpecAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -139,10 +140,12 @@ public class DisruptMissionManager extends BaseEventManager {
 			if (amount < 4) continue;
 			importantCommodities.put(commodityId, amount);
 		}
+		FactionAPI commission = Misc.getCommissionFaction();
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
-			if (market.getFaction() == faction || market.getFaction().isPlayerFaction())
+			if (market.getFaction() == faction || market.getFaction().isPlayerFaction()
+					|| market.getFaction() == commission)
 				continue;
 			if (!ExerelinConfig.allowPirateInvasions && 
 					ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))

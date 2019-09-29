@@ -7,11 +7,13 @@ import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAd
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.MissionCompletionRep;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -141,13 +143,29 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 	
 	// don't overcomplicate this for now
 	protected int calculateReward() {
-		int reward = (int)(market.getSize() * Global.getSettings().getFloat("nex_disruptMissionRewardMult"));
+		int reward = (int)(1 + (market.getSize()/2) * Global.getSettings().getFloat("nex_disruptMissionRewardMult"));
 		if (industry.getSpec().hasTag(Industries.TAG_MILITARY) 
 				|| industry.getSpec().hasTag(Industries.TAG_COMMAND))
 			reward *= 2;
+		
+		float multMod = getDefenderStrengthMult(market) - 1;
+		reward *= 1 + (multMod/4);
+		
 		reward *= MathUtils.getRandomNumberInRange(8, 12)/10f;
 		
+		// round it
+		reward /= 50;
+		reward *= 50;
+		
 		return reward;
+	}
+	
+	public float getDefenderStrengthMult(MarketAPI market)
+	{
+		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);		
+		float mult = defender.getMult();
+		Global.getLogger(this.getClass()).info(market.getName() + " defense mult: " + mult);
+		return mult;
 	}
 
 	@Override
