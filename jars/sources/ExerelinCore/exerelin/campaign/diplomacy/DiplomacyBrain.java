@@ -388,7 +388,13 @@ public class DiplomacyBrain {
 	public void updateDisposition(String factionId, float days)
 	{
 		MutableStat disposition = getDisposition(factionId).disposition;
+		
+		// clear disposition except for recent events
+		Float recent = disposition.getFlatMods().containsKey("events") ? 
+				disposition.getFlatStatMod("events").getValue() : null;
 		disposition.unmodify();
+		if (recent != null)
+			disposition.modifyFlat("events", recent);
 		
 		boolean isHardMode = isHardMode(factionId);
 		
