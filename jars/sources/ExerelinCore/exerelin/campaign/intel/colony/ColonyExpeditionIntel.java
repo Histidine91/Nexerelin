@@ -389,6 +389,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
 		ColonyManager.buildIndustries(market);
+		market.setIncentiveCredits(100000);
 	}
 	
 	public void notifyQueueJumpedEarly() {
