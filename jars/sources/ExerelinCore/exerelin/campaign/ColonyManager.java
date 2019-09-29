@@ -596,6 +596,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (market == target) continue;	// no self-relief
 			
 			FactionAPI other = market.getFaction();
+			if (!ExerelinConfig.getExerelinFactionConfig(other.getId()).playableFaction)
+				continue;
 			if (other.isAtBest(faction, RepLevel.SUSPICIOUS))
 				continue;
 			if (market.getSize() < target.getSize() - 1)
