@@ -1498,6 +1498,10 @@ public class ExerelinProcGen {
 
 				existingHQs.add(homeworld);
 				existingHQsByFaction.put(alignedFactionId, homeworld);
+				
+				if (alignedFactionId.equals(Factions.PLAYER)) {
+					homeMarket.setPlayerOwned(true);
+				}
 			}
 		}
 		

@@ -237,6 +237,8 @@ public class StartSetupPostTimePass {
 					if (plugin != null)
 						plugin.setPlayerPaidToUnlock(true);
 				}
+				if (homeMarket.isPlayerOwned())
+					homeMarket.setAdmin(Global.getSector().getPlayerPerson());
 			}
 		}
 	}
