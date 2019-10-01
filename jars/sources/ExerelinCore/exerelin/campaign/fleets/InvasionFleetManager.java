@@ -389,6 +389,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return canBombard;
 	}
 	
+	public static boolean canSatBomb(FactionAPI attacker, MarketAPI target) 
+	{
+		if (attacker.getId().equals(ExerelinUtilsMarket.getOriginalOwner(target)))
+			return false;
+		
+		return canSatBomb(attacker, target.getFaction());
+	}
+	
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, EventType type)
 	{
 		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1);
@@ -419,7 +427,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
-			MarketAPI originMarket, List<MarketAPI> markets) {
+			MarketAPI originMarket, List<MarketAPI> markets, EventType type) {
 		String factionId = faction.getId();
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
 		Vector2f originMarketLoc = null;
@@ -437,6 +445,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (!marketFaction.isHostileTo(faction)) continue;
 			
 			if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
+			
+			if (type == EventType.SAT_BOMB && faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+				continue;
+			
 			/*
 			float defenderStrength = InvasionRound.GetDefenderStrength(market);
 			float estimateMarinesRequired = defenderStrength * 1.2f;
@@ -514,14 +526,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
 
 		// now we pick a target
-		MarketAPI targetMarket = getTargetMarketForFleet(faction, targetFaction, originMarket, markets);
+		MarketAPI targetMarket = getTargetMarketForFleet(faction, targetFaction, originMarket, 
+				markets, type);
 		if (targetMarket == null) {
 			return null;
 		}
 		//log.info("\tTarget: " + targetMarket.getName());
 		
 		// sat bomb
-		if (type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE && canSatBomb(faction, targetMarket.getFaction())) 
+		// note: don't sat bomb own originally-owned markets
+		if (ExerelinConfig.allowNPCSatBomb && type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE 
+				&& canSatBomb(faction, targetMarket))
 		{
 			type = EventType.SAT_BOMB;
 		}

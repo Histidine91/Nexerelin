@@ -62,6 +62,7 @@ public class ExerelinConfig
     public static float invasionPointsPerPlayerLevel = 0.5f;
     public static float invasionPointEconomyMult = 0.5f;
     public static float creditLossOnColonyLossMult = 0.5f;
+	public static boolean allowNPCSatBomb = true;
     
     // Alliances
     public static float allianceGracePeriod = 30;
@@ -174,6 +175,7 @@ public class ExerelinConfig
             invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel ", invasionPointsPerPlayerLevel );
             invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
             creditLossOnColonyLossMult = (float)settings.optDouble("creditLossOnColonyLossMult", creditLossOnColonyLossMult);
+			allowNPCSatBomb = settings.optBoolean("allowNPCSatBomb", allowNPCSatBomb);
             
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);

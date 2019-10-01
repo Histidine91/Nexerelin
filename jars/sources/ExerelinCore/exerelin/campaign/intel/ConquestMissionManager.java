@@ -12,6 +12,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.InvasionFleetManager.EventType;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
@@ -72,7 +73,8 @@ public class ConquestMissionManager extends BaseEventManager {
 		}
 		
 		MarketAPI target = InvasionFleetManager.getManager().getTargetMarketForFleet(
-				faction, null, null, Global.getSector().getEconomy().getMarketsCopy());
+				faction, null, null, Global.getSector().getEconomy().getMarketsCopy(), 
+				EventType.INVASION);
 		if (target == null) {
 			log.info("Failed to pick target market");
 			return null;

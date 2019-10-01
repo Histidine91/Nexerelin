@@ -212,7 +212,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		FactionAPI target = getTargetFactionForVengeance();
 		
 		// see if we want to sat bomb instead of deploying a vengeance fleet
-		boolean satBomb = Math.random() < SAT_BOMB_CHANCE && InvasionFleetManager.canSatBomb(faction, target);
+		boolean satBomb = ExerelinConfig.allowNPCSatBomb && Math.random() < SAT_BOMB_CHANCE 
+				&& InvasionFleetManager.canSatBomb(faction, target);
 		if (satBomb) {
 			OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(
 					faction, target, InvasionFleetManager.EventType.SAT_BOMB, 1 + 0.25f * getVengeanceEscalation(factionId));
@@ -366,7 +367,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		
 		FactionAPI target = getTargetFactionForVengeance();
 		
-		boolean satBomb = Math.random() < SAT_BOMB_CHANCE && InvasionFleetManager.canSatBomb(revengeFaction, target);
+		boolean satBomb = ExerelinConfig.allowNPCSatBomb && Math.random() < SAT_BOMB_CHANCE 
+				&& InvasionFleetManager.canSatBomb(revengeFaction, target);
 		InvasionFleetManager.EventType type = InvasionFleetManager.EventType.INVASION;
 		if (satBomb) {
 			type = InvasionFleetManager.EventType.SAT_BOMB;

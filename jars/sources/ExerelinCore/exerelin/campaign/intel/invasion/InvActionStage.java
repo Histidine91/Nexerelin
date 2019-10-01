@@ -201,11 +201,9 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		removeMilScripts();
 		
-		InvasionIntel intel = ((InvasionIntel)this.intel);
-		
 		float atkStrength = (InvasionIntel.USE_REAL_MARINES && fleet != null) ? 
 				InvasionRound.getAttackerStrength(fleet) 
-				: InvasionRound.getAttackerStrength(intel.getFaction(), intel.getMarinesPerFleet());
+				: InvasionRound.getAttackerStrength(offFltIntel.getFaction(), ((InvasionIntel)intel).getMarinesPerFleet());
 		float defStrength = InvasionRound.getDefenderStrength(market, 1);
 		
 		log.info("\tStrength ratio: " + atkStrength + " : " + defStrength);
@@ -216,7 +214,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		{
 			//float bombCost = Nex_MarketCMD.getBombardmentCost(market, fleet, BombardType.TACTICAL);
 			float bombCost = Nex_MarketCMD.getBombardmentCost(market, fleet);
-			float maxCost = intel.getRaidFP() / intel.getNumFleets() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
+			float maxCost = offFltIntel.getRaidFP() / offFltIntel.getNumFleets() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
 			if (fleet != null) {
 				maxCost = fleet.getCargo().getMaxFuel() * 0.25f;
 			}
@@ -237,17 +235,17 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 		
 		Global.getLogger(this.getClass()).info("\tInvading target");
-		boolean success = InvasionRound.npcInvade(atkStrength, fleet, intel.getFaction(), market);
+		boolean success = InvasionRound.npcInvade(atkStrength, fleet, offFltIntel.getFaction(), market);
 		if (success)
 		{
-			intel.setOutcome(OffensiveOutcome.SUCCESS);
+			offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
 			status = RaidStageStatus.SUCCESS;
 		}
 		
 		// when FAILURE, gets sent by RaidIntel
-		if (intel.getOutcome() != null) {
+		if (offFltIntel.getOutcome() != null) {
 			if (status == RaidStageStatus.SUCCESS) {
-				intel.sendOutcomeUpdate();
+				offFltIntel.sendOutcomeUpdate();
 			} else {
 				removeMilScripts();
 				giveReturnOrdersToStragglers(getRoutes());
@@ -265,14 +263,13 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), 
 							 target.getStarSystem(), target.getPrimaryEntity());
-		InvasionIntel intel = ((InvasionIntel)this.intel);
 		
 		if (defensiveStr >= str) {
 			status = RaidStageStatus.FAILURE;
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());
 			
-			intel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+			offFltIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 			return;
 		}
 		
@@ -285,12 +282,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		for (RouteData route : routes)
 		{
 			performRaid(route.getActiveFleet(), target);
-			if (intel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
+			if (offFltIntel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
 		}
-		if (intel.getOutcome() != OffensiveOutcome.SUCCESS)
+		if (offFltIntel.getOutcome() != OffensiveOutcome.SUCCESS)
 		{
 			status = RaidStageStatus.FAILURE;
-			intel.setOutcome(OffensiveOutcome.FAIL);
+			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
 		}
 	}
 	
