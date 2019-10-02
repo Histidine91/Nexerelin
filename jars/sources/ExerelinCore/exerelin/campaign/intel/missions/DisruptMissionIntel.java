@@ -1,12 +1,15 @@
 package exerelin.campaign.intel.missions;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.MissionCompletionRep;
@@ -16,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -28,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
 
-public class DisruptMissionIntel extends BaseMissionIntel {
+public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlayerHostileActListener {
 	
 	public static final RepLevel MAX_REP_LEVEL = RepLevel.FAVORABLE;
 	public static final int MIN_DISRUPT_TIME = 60;
@@ -58,10 +62,10 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 	public void init() {
 		Global.getLogger(this.getClass()).info("Initiating disruption mission");
 		reward = calculateReward();
-		Global.getSector().addScript(this);
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
 		Global.getSector().getIntelManager().addIntel(this);
+		Global.getSector().addScript(this);
 	}
 
 	@Override
@@ -85,21 +89,29 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 
 	@Override
 	public void advanceMission(float amount) {
-		if (industry.getDisruptedDays() >= MIN_DISRUPT_TIME) {
-			missionComplete();
-		}
+		
 	}
 	
 	public void checkMarketState() {
 		if (isEnding() || isEnded()) return;
+		
+		if (this.isAccepted() && industry.getDisruptedDays() >= MIN_DISRUPT_TIME) {
+			missionComplete();
+			return;
+		}
 		
 		// market no longer in economy?
 		if (!market.isInEconomy()) {
 			cancelReason = CancelReason.NOT_IN_ECONOMY;
 		}
 		// industry no longer exists?
-		else if (industry.getMarket() == null || !market.hasIndustry(industry.getId())) 
+		else if (industry.getMarket() == null || !market.hasIndustry(industry.getId()) || industry.isHidden())
 		{
+			// count as disrupted if we hold the market
+			if (market.getFaction().isPlayerFaction()) {
+				missionComplete();
+				return;
+			}
 			cancelReason = CancelReason.INDUSTRY_REMOVED;
 		}
 		// industry disrupted?
@@ -108,7 +120,7 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 		}
 		// check reputation to see if mission should continue
 		else {
-			if (!DisruptMissionManager.isRepLowEnough(faction, faction, reason))
+			if (!DisruptMissionManager.isRepLowEnough(faction, market.getFaction(), reason))
 				cancelReason = CancelReason.NO_LONGER_HOSTILE;
 		}
 		
@@ -170,7 +182,7 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 
 	@Override
 	public void missionAccepted() {
-		// nothing needed
+		Global.getSector().getListenerManager().addListener(this);
 	}
 
 	@Override
@@ -415,6 +427,32 @@ public class DisruptMissionIntel extends BaseMissionIntel {
 	
 	protected String getString(String id) {
 		return StringHelper.getString("nex_disruptMission", id);
+	}
+
+	@Override
+	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
+	}
+
+	@Override
+	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
+			MarketCMD.TempData actionData, Industry industry) {
+		if (market == this.market && industry == this.industry)
+			checkMarketState();
+	}
+
+	@Override
+	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {
+		if (market == this.market)
+			checkMarketState();
+	}
+
+	@Override
+	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {
+		if (market == this.market)
+			checkMarketState();
 	}
 	
 	public static enum TargetReason {

@@ -113,12 +113,14 @@ public class DisruptMissionManager extends BaseEventManager {
 	
 	protected static boolean isRepLowEnough(FactionAPI faction, FactionAPI target, TargetReason reason)
 	{
+		if (faction == target) return false;
+		
 		RepLevel required = DisruptMissionIntel.MAX_REP_LEVEL;
 		
 		boolean monopolist = ExerelinConfig.getExerelinFactionConfig(faction.getId())
 				.hasDiplomacyTrait(DiplomacyTraits.TraitIds.MONOPOLIST);
-		if (reason == TargetReason.MILITARY || monopolist) required = RepLevel.VENGEFUL;
-		return faction.getRelationshipLevel(target).isAtWorst(required);
+		if (reason == TargetReason.MILITARY || monopolist) required = RepLevel.COOPERATIVE;
+		return faction.getRelationshipLevel(target).isAtBest(required);
 	}
 	
 	protected static TargetEntry getTarget(FactionAPI faction) 
