@@ -432,11 +432,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             DiplomacyIntel intel = new DiplomacyIntel(event.id, faction1.getId(), faction2.getId(), market, result);
             ExerelinUtils.addExpiringIntel(intel);
             
-            diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
-            diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);
+            if (diplomacyBrains.containsKey(faction1.getId()))
+                diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
+            if (diplomacyBrains.containsKey(faction2.getId()))
+                diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);
         }
-		
-		return result;
+        
+        return result;
     }
     
     public DiplomacyEventDef pickDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, DiplomacyEventParams params)

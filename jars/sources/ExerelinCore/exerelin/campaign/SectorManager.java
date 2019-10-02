@@ -493,6 +493,41 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
+    public static MarketAPI pickRespawnTarget(FactionAPI respawnFaction, List<MarketAPI> markets) 
+    {
+        String respawnFactionId = respawnFaction.getId();
+        WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+        WeightedRandomPicker<MarketAPI> targetPickerBackup = new WeightedRandomPicker();
+        
+        for (MarketAPI market : markets) 
+        {
+            if (market.getFactionId().equals(respawnFactionId))    // could happen with console-spawned respawn fleets
+                continue;
+            if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 4))
+                continue;
+            
+            float weight = market.getSize();
+            boolean wasOriginalOwner = ExerelinUtilsMarket.wasOriginalOwner(market, respawnFactionId);
+            if (wasOriginalOwner)
+                weight *= 10;
+            
+            // prefer to attack hostile factions, but use non-hostile markets as backup
+            if (!market.getFaction().isHostileTo(respawnFaction)) 
+            {
+                if (market.getFaction().isAtWorst(respawnFaction, RepLevel.WELCOMING))
+                    continue;
+                targetPickerBackup.add(market, weight);
+            }
+            else
+                targetPicker.add(market, weight);
+        }
+        
+        if (!targetPicker.isEmpty())
+            return targetPicker.pick();
+        else 
+            return targetPickerBackup.pick();
+    }
+    
     public static RespawnInvasionIntel spawnRespawnFleet(FactionAPI respawnFaction, 
             MarketAPI sourceMarket, boolean fromConsole) {
         return spawnRespawnFleet(respawnFaction, sourceMarket, false, fromConsole);
@@ -514,7 +549,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String respawnFactionId = respawnFaction.getId();
         
         WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
-        WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
         
         if (sourceMarket == null)
         {
@@ -547,30 +581,20 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
-        for (MarketAPI market : markets) 
-        {
-            if (market.getFactionId().equals(respawnFactionId))    // could happen with console-spawned respawn fleets
-                continue;
-            if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 4))
-                continue;
-            
-            float weight = market.getSize();
-            boolean wasOriginalOwner = ExerelinUtilsMarket.wasOriginalOwner(market, respawnFactionId);
-            if (wasOriginalOwner)
-                weight *= 10;
-            if (!market.getFaction().isHostileTo(respawnFaction))
-                //weight *= 0.001f;
-                continue;
-                
-            targetPicker.add(market, weight);
-        }
-        MarketAPI targetMarket = targetPicker.pick();
+        
+        MarketAPI targetMarket = pickRespawnTarget(respawnFaction, markets);
         if (targetMarket == null) {
             if (fromConsole)
                 Console.showMessage("No target for respawn event");
             else
                 log.info("No target for respawn event");
             return null;
+        }
+        
+        // declare war if respawn target is non-hostile
+        if (!targetMarket.getFaction().isHostileTo(respawnFaction)) {
+            DiplomacyManager.createDiplomacyEvent(respawnFaction, targetMarket.getFaction(), 
+                    "declare_war", null);
         }
         
         //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());

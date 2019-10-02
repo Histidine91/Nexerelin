@@ -116,14 +116,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		
 		market.getTariff().modifyFlat("default_tariff", market.getFaction().getTariffFraction());
 		
-		LinkedHashMap<LocationType, Float> weights = new LinkedHashMap<LocationType, Float>();
-		weights.put(LocationType.IN_ASTEROID_BELT, 10f);
-		weights.put(LocationType.IN_ASTEROID_FIELD, 10f);
-		weights.put(LocationType.IN_RING, 10f);
-		weights.put(LocationType.IN_SMALL_NEBULA, 10f);
-		weights.put(LocationType.GAS_GIANT_ORBIT, 10f);
-		weights.put(LocationType.PLANET_ORBIT, 10f);
-		WeightedRandomPicker<EntityLocation> locs = BaseThemeGenerator.getLocations(null, system, null, 100f, weights);
+		WeightedRandomPicker<EntityLocation> locs = getLocsPicker(system);
 		EntityLocation loc = locs.pick();
 		
 		if (loc == null) {
@@ -845,6 +838,9 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 			if (Misc.hasPulsar(system)) continue;
 			if (Misc.getMarketsInLocation(system).size() > 0) continue;
 			
+			if (getLocsPicker(system).isEmpty())
+				continue;
+			
 			float dist = system.getLocation().length();
 			
 			
@@ -867,5 +863,18 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		}
 		
 		return picker.pick();
+	}
+	
+	protected static WeightedRandomPicker<EntityLocation> getLocsPicker(StarSystemAPI system) 
+	{
+		LinkedHashMap<LocationType, Float> weights = new LinkedHashMap<LocationType, Float>();
+		weights.put(LocationType.IN_ASTEROID_BELT, 10f);
+		weights.put(LocationType.IN_ASTEROID_FIELD, 10f);
+		weights.put(LocationType.IN_RING, 10f);
+		weights.put(LocationType.IN_SMALL_NEBULA, 10f);
+		weights.put(LocationType.GAS_GIANT_ORBIT, 10f);
+		weights.put(LocationType.PLANET_ORBIT, 10f);
+		
+		return BaseThemeGenerator.getLocations(null, system, null, 100f, weights);
 	}
 }
