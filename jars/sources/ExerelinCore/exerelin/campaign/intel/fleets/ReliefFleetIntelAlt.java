@@ -288,7 +288,10 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	
 	@Override
 	public String getIcon() {
-		return getFaction().getCrest();
+		//return getFaction().getCrest();
+		if (target.getSize() > 5)
+			return Global.getSettings().getSpriteName("intel", "tradeFleet_valuable");
+		return Global.getSettings().getSpriteName("intel", "tradeFleet_other");
 	}
 	
 	@Override

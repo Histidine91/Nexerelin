@@ -635,7 +635,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return;
 		
 		ReliefFleetIntelAlt.createEvent(source, target);
-		reliefFleetCooldown += target.getSize() * 2 * 10;
+		reliefFleetCooldown += target.getSize() * 2 * 10 * 1.5f;
 	}
 	
 	// add admin to player market if needed
