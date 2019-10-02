@@ -189,7 +189,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	public void setGrowthRate(MarketAPI market) {
-		boolean want = !market.getFaction().isPlayerFaction() || SectorManager.getHardMode();
+		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
+		boolean want = !player || SectorManager.getHardMode();
 		boolean have = market.getImmigrationModifiers().contains(this);
 		if (want == have) return;
 		
@@ -205,7 +206,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	@Override
 	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
-		if (market.getFaction().isPlayerFaction()) {
+		if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
 			incoming.getWeight().modifyMult("nex_colonyManager_hardModeGrowth", ExerelinConfig.hardModeColonyGrowthMult, 
 					getString("hardModeGrowthMultDesc", false));
 		}
@@ -285,7 +286,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	public static void updateIncome(MarketAPI market)
 	{
-		if (market.getFaction().isPlayerFaction() && SectorManager.getHardMode())
+		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
+		if (player && SectorManager.getHardMode())
 		{
 			market.getIncomeMult().modifyMult("nex_hardMode", ExerelinConfig.hardModeColonyIncomeMult, 
 						getString("hardModeIncomeMultDesc"));
