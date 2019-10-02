@@ -648,6 +648,8 @@ public class DiplomacyBrain {
 		
 		RepLevel maxRep = getMaxRepForOpportunisticWar();
 		log.info("Relationship required for war: " + maxRep);
+		if (maxRep.isAtBest(RepLevel.HOSTILE))
+			return false;
 		
 		WeightedRandomPicker<String> warPicker = new WeightedRandomPicker<>();
 		for (DispositionEntry disposition : dispositionsList)

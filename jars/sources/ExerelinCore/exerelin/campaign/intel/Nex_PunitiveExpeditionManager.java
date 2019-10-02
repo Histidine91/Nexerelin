@@ -51,6 +51,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	
 	// don't territorial-attack planets which are paying tribute
 	// also, a star system may be claimed by player
+	// and only check player faction markets for territorial attack
 	// have config option to turn off most punitive expeditions
 	@Override
 	public List<PunExReason> getExpeditionReasons(PunExData curr) {
@@ -145,8 +146,9 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		// MODIFIED
 		if (territorial) {
 			int maxSize = MarketCMD.getBombardDestroyThreshold();
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(null)) {
+			for (MarketAPI market : Misc.getFactionMarkets(player, null)) {
 				if (!market.isPlayerOwned()) continue;
+				if (market.isHidden()) continue;
 				if (TributeIntel.hasOngoingIntel(market)) continue;
 				
 				boolean destroy = market.getSize() <= maxSize;

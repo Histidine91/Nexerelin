@@ -328,8 +328,6 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		fleet.getCommander().setPostId(postId);
 		fleet.getCommander().setRankId(rankId);
 		
-		fleet.addScript(new FleetAssignmentDebugger(fleet));
-		
 		log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
 		
 		return fleet;

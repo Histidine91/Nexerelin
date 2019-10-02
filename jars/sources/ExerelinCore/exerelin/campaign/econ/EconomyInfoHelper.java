@@ -309,6 +309,9 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	public int getCompetitionFactor(String factionId1, String factionId2) {
 		float factor = 0;		
 		Map<String, Integer> myCommodities = getCommoditiesProducedByFaction(factionId1);
+		if (myCommodities == null) return 0;
+		if (getCommoditiesProducedByFaction(factionId2) == null) return 0;
+		
 		FactionAPI faction = Global.getSector().getFaction(factionId1);
 		FactionAPI otherFaction = Global.getSector().getFaction(factionId2);
 		
