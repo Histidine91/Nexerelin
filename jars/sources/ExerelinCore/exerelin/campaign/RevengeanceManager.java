@@ -211,18 +211,6 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		FactionAPI target = getTargetFactionForVengeance();
 		
-		// see if we want to sat bomb instead of deploying a vengeance fleet
-		boolean satBomb = ExerelinConfig.allowNPCSatBomb && Math.random() < SAT_BOMB_CHANCE 
-				&& InvasionFleetManager.canSatBomb(faction, target);
-		if (satBomb) {
-			OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(
-					faction, target, InvasionFleetManager.EventType.SAT_BOMB, 1 + 0.25f * getVengeanceEscalation(factionId));
-			if (intel != null) {
-				((SatBombIntel)intel).setVengeance(true);
-				return;
-			}
-		}
-		
 		MarketAPI source = pickMarketForFactionVengeance(factionId);
 		if (source != null)
 		{
