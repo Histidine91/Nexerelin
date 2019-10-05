@@ -51,7 +51,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	
 	public void init() {
 		Global.getLogger(this.getClass()).info("Initiating conquest mission");
-		Global.getSector().addScript(this);
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
 		Global.getSector().getIntelManager().addIntel(this);
@@ -397,7 +396,9 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	// runcode exerelin.campaign.intel.ConquestMissionIntel.debug("jangala", "persean")
 	public static void debug(String marketId, String factionId) {
 		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
-		new ConquestMissionIntel(market, Global.getSector().getFaction(factionId), 5).init();
+		ConquestMissionIntel intel = new ConquestMissionIntel(market, Global.getSector().getFaction(factionId), 5);
+		intel.init();
+		Global.getSector().addScript(intel);
 	}
 	
 	public static enum CancelReason { ALREADY_CAPTURED, NOT_IN_ECONOMY, NO_LONGER_HOSTILE, OTHER }

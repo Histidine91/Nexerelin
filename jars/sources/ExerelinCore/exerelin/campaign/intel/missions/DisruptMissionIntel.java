@@ -65,7 +65,6 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
 		Global.getSector().getIntelManager().addIntel(this);
-		Global.getSector().addScript(this);
 	}
 
 	@Override
@@ -82,8 +81,7 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 	
 	// not advanceMission because that doesn't advance when mission is in posted state
 	@Override
-	public void advanceImpl(float amount) {
-		super.advanceImpl(amount);
+	public void advanceImpl(float amount) {		
 		checkMarketState();
 	}
 

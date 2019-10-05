@@ -62,11 +62,11 @@ public class DisruptMissionManager extends BaseEventManager {
 		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
 			return null;
 		if ((float) Math.random() < 0.5f) return null;
-		return createEventStatic();
+		return createEventStatic(false);
 	}
 	
-	// runcode exerelin.campaign.intel.missions.DisruptMissionManager.createEventStatic();
-	public static EveryFrameScript createEventStatic() 
+	// runcode exerelin.campaign.intel.missions.DisruptMissionManager.createEventStatic(true);
+	public static EveryFrameScript createEventStatic(boolean isExternal) 
 	{
 		log.info("Attempting to create disruption mission event");
 		
@@ -88,6 +88,8 @@ public class DisruptMissionManager extends BaseEventManager {
 		DisruptMissionIntel intel = new DisruptMissionIntel(target, faction, duration);
 		intel.init();
 		if (intel.isDone()) intel = null;
+		else if (isExternal)
+			Global.getSector().addScript(intel);
 		
 		log.info("Intel successfully created");
 		return intel;
@@ -101,6 +103,7 @@ public class DisruptMissionManager extends BaseEventManager {
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) 
 		{
+			if (factionId.equals(Factions.PLAYER)) continue;
 			if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(factionId))
 				continue;
 			picker.add(factionId);
