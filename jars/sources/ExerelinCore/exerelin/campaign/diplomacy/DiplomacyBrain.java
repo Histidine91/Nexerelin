@@ -701,8 +701,10 @@ public class DiplomacyBrain {
 			if (otherFactionId.equals(factionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId))
 				continue;
-			if (Nex_IsFactionRuler.isRuler(otherFactionId) && !ExerelinConfig.followersDiplomacy)
-				continue;
+			if (Nex_IsFactionRuler.isRuler(otherFactionId)) {
+				if (!ExerelinConfig.followersDiplomacy) continue;
+				if (!otherFactionId.equals(PlayerFactionStore.getPlayerFactionId())) continue;
+			}
 			if (random.nextFloat() < EVENT_SKIP_CHANCE)
 				continue;
 			loopCount++;
