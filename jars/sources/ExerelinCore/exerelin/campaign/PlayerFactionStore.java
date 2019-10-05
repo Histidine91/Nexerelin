@@ -81,6 +81,7 @@ public class PlayerFactionStore {
         data.put(PLAYER_RELATIONS_KEY, storedRelations);
     }
     
+    @Deprecated
     public static void loadIndependentPlayerRelations(boolean retainWithCurrentFaction)
     {
         SectorAPI sector = Global.getSector();

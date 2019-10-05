@@ -709,7 +709,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             expelPlayerFromFaction(true);
         }
         
-        NexUtilsReputation.syncPlayerRelationshipsToFaction();
         checkForVictory();
     }
     
@@ -1231,15 +1230,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (oldFactionId.equals(Factions.PLAYER)) return;
         
         ExerelinUtilsFaction.revokeCommission();
-
-        SectorAPI sector = Global.getSector();
-        FactionAPI newFaction = sector.getFaction(Factions.PLAYER);
-        FactionAPI oldFaction = sector.getFaction(oldFactionId);
-
-        if (!ExerelinUtilsFaction.isPirateFaction(oldFactionId))
-            PlayerFactionStore.loadIndependentPlayerRelations(true);
-        PlayerFactionStore.setPlayerFactionId(Factions.PLAYER);
-        NexUtilsReputation.syncFactionRelationshipsToPlayer(Factions.PLAYER);
     }
         
     public static void reinitLiveFactions()

@@ -181,6 +181,8 @@ public class NexUtilsReputation
 	
 	public static void syncPlayerRelationshipsToFaction(String factionId)
 	{
+		if (factionId.equals(Factions.PLAYER)) return;
+		
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getPlayerFaction();
 		FactionAPI faction = sector.getFaction(factionId);
