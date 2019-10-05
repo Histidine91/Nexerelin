@@ -529,7 +529,7 @@
 		"intelBulletTarget":"Held by $targetFaction",
 		"intelDesc1":"$TheFaction desires that another faction conquer $market in the $location, currently held by $theOtherFaction, and transfer it to their control.",
 		"intelDesc1Alt":"$TheFaction desires that another faction conquer $market in the $location, previously held by $theOtherFaction, and transfer it to their control.",
-		"intelDesc2":"Successful completion will result in a size-based reputation gain (in addition to that from a normal transfer). The credit reward is equal to the shutdown value of the structures and industries $onOrAt $market, plus its six-month income, plus a bonus based on its size and stability.",
+		"intelDesc2":"Successful completion will result in a size-based reputation gain (in addition to that from a normal transfer). The credit reward is equal to the shutdown value of the structures and industries $onOrAt $market, plus its three-month income, plus a bonus based on its size and stability.",
 		"intelDescDuration_pre":"You have ",
 		"intelDescDuration_post":"to complete the mission.",
 		"intelDescDuration_post_short":"to complete",
