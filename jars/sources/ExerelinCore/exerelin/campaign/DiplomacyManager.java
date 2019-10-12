@@ -577,6 +577,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         log.info("Starting diplomacy event creation");
         SectorAPI sector = Global.getSector();
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
+        WeightedRandomPicker<FactionAPI> factionPickerPirate = new WeightedRandomPicker();
         
         List<FactionAPI> factions = new ArrayList<>();
         for( String factionId : SectorManager.getLiveFactionIdsCopy())
@@ -592,14 +593,26 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             }
             
             if (disallowedFactions.contains(faction.getId())) continue;
+            //log.info("\tAdding eligible diplomacy faction: " + faction.getDisplayName());
             factionPicker.add(faction);
+			if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
+				factionPickerPirate.add(faction);
             factionCount++;
         }
-        //log.info("Possible factions: " + factionCount);
         if (factionCount < 2) return;
         
         FactionAPI faction1 = factionPicker.pickAndRemove();
-        FactionAPI faction2 = factionPicker.pickAndRemove();
+        FactionAPI faction2;
+		if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(faction1.getId()))
+		{
+			factionPickerPirate.remove(faction1);
+			if (factionPickerPirate.isEmpty()) return;
+			faction2 = factionPickerPirate.pickAndRemove();
+		}
+		else
+			faction2 = factionPicker.pickAndRemove();
+		
+		if (faction2 == null) return;
         createDiplomacyEvent(faction1, faction2);
     }
     
