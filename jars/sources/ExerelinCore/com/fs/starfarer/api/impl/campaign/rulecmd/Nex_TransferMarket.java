@@ -45,6 +45,9 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		MarketAPI market = dialog.getInteractionTarget().getMarket();
 		switch (arg)
 		{
+			case "hasSpaceport":
+				return market.hasSpaceport();
+			
 			// list faction groupings
 			case "listGroups":
 				listGroups(dialog, memoryMap.get(MemKeys.LOCAL));
