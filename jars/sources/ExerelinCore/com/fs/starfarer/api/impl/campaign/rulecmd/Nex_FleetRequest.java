@@ -643,6 +643,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		opts.addOption(getString("optionFaction") + ": " + factionName, "nex_fleetRequest_selectFaction");
 		
 		String targetName = target == null ? StringHelper.getString("none") : target.getName();
+		if (target != null) {
+			targetName += ", " + target.getContainingLocation().getNameWithTypeIfNebula();
+		}
 		opts.addOption(getString("optionTarget") + ": " + targetName, "nex_fleetRequest_selectTarget");
 		if (faction == null)
 			opts.setEnabled("nex_fleetRequest_selectTarget", false);
