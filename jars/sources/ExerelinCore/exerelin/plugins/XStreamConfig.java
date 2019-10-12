@@ -50,6 +50,7 @@ import exerelin.campaign.intel.fleets.NexAssembleStage;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
+import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.invasion.InvAssembleStage;
 import exerelin.campaign.intel.invasion.InvOrganizeStage;
@@ -125,6 +126,7 @@ public class XStreamConfig {
 		x.alias("NexConqMssn", ConquestMissionIntel.class);
 		x.alias("NexPirActv", NexPirateActivity.class);
 		x.alias("NexPlyrOtpst", PlayerOutpostIntel.class);
+		x.alias("NexRlfFlt", ReliefFleetIntelAlt.class);
 		
 		// raids and such
 		x.alias("NexRaidIntl", NexRaidIntel.class);

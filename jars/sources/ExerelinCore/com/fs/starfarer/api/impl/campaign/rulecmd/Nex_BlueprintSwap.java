@@ -44,10 +44,12 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	public static final String POINTS_KEY = "$nex_BPSwapPoints";
 	public static final String STOCK_ARRAY_KEY = "$nex_BPSwapStock";
+	public static final String ALREADY_SOLD_KEY = "$nex_BPSwapAlreadySold";
 	public static final float STOCK_KEEP_DAYS = 30;
 	public static final int STOCK_COUNT_MIN = 6;
 	public static final int STOCK_COUNT_MAX = 8;
 	public static final float PRICE_POINT_MULT = 0.01f;
+	//public static final float ALREADY_SOLD_MULT = 0.25f;
 	
 	public static final String DIALOG_OPTION_PREFIX = "nex_blueprintSwap_pick_";
 	
@@ -162,16 +164,10 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	protected void selectBPs() {
 		final CargoAPI copy = Global.getFactory().createCargo(false);
-		//copy.addAll(cargo);
 		
-		// note that we remove the blueprints from player cargo for this screen
-		// (we'll put them back afterwards, those that weren't sold)
-		// this fixes the "learn BPs from this screen then still have them afterwards" exploit
-		// ...actually, don't, since it eats our BPs on pressing Escape
 		for (CargoStackAPI stack : playerCargo.getStacksCopy()) {
 			if (isBlueprints(stack)) {
 				copy.addFromStack(stack);
-				//playerCargo.removeStack(stack);
 			}
 		}
 		copy.sort();
@@ -215,7 +211,6 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			
 			@Override
 			public void cancelledCargoSelection() {
-				//playerCargo.addAll(copy);
 			}
 			
 			@Override
@@ -550,6 +545,14 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			data.put(POINTS_KEY, 0f);
 		
 		return (float)data.get(POINTS_KEY);
+	}
+	
+	public static Set<String> getAlreadySold() {
+		Map<String, Object> data = Global.getSector().getPersistentData();
+		if (!data.containsKey(ALREADY_SOLD_KEY))
+			data.put(ALREADY_SOLD_KEY, new HashSet<>());
+		
+		return (HashSet<String>)data.get(ALREADY_SOLD_KEY);
 	}
 	
 	public static boolean hasPrism(MarketAPI market)

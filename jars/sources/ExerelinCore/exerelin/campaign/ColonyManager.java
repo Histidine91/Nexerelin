@@ -152,19 +152,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						maxSize = ExerelinConfig.maxNPCColonySize;
 					
 					if (market.getSize() < maxSize) {
-						CoreImmigrationPluginImpl.increaseMarketSize(market);
-						// intel: copied from CoreImmigrationPluginImpl
-						MessageIntel intel = new MessageIntel(getString("intelGrowthTitle", false) 
-								+ " - " + market.getName(), Misc.getBasePlayerColor());
-						intel.addLine(BaseIntelPlugin.BULLET + getString("intelGrowthBullet", false),
-								Misc.getTextColor(), 
-								new String[] {"" + (int)Math.round(market.getSize())},
-								Misc.getHighlightColor());
-						intel.setIcon(market.getFaction().getCrest());
-						intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
-						Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING);
-						
-						buildIndustries(market);
+						upsizeMarket(market);
 					}
 				}
 			}
@@ -186,6 +174,23 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (!needRelief.isEmpty()) {
 			processReliefFleetEvent(needRelief);
 		}
+	}
+	
+	// runcode exerelin.campaign.ColonyManager.getManager().upsizeMarket(Global.getSector().getEconomy().getMarket("jangala"))
+	public void upsizeMarket(MarketAPI market) {
+		CoreImmigrationPluginImpl.increaseMarketSize(market);
+		// intel: copied from CoreImmigrationPluginImpl
+		MessageIntel intel = new MessageIntel(getString("intelGrowthTitle", false) 
+				+ " - " + market.getName(), Misc.getBasePlayerColor());
+		intel.addLine(BaseIntelPlugin.BULLET + getString("intelGrowthBullet", false),
+				Misc.getTextColor(), 
+				new String[] {"" + (int)Math.round(market.getSize())},
+				Misc.getHighlightColor());
+		intel.setIcon(market.getFaction().getCrest());
+		intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
+		Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING, market);
+		
+		buildIndustries(market);
 	}
 	
 	public void setGrowthRate(MarketAPI market) {

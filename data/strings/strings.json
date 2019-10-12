@@ -1179,7 +1179,7 @@
 		"intelButtonScuttle":"scuttle",
 		"intelPromptScuttle":"This will remotely shut down the station. All cargo will be lost.\n\nContinue?",
 	},	
-	"exerelin_raid":{		
+	"exerelin_raid":{
 		"raid":"raid",
 		"raids":"raids",
 		"theRaid":"the raid",
@@ -1193,7 +1193,7 @@
 		"conditionPenalties":"%s stability, %s accessibility.",
 		"conditionListHeader":"The following hostile factions have active raids in the system:",
 	},
-	"nex_raidDialog":{		
+	"nex_raidDialog":{
 		"expectedSpoilsHeader":"expected spoils",
 		"expectedSpoilsNone":"After careful consideration, there do not appear to be any targets likely to yield much of value.",
 		"expectedSpoils":"The commander of your ground forces designates several warehouses and other locations most likely to yield valuable items.",
