@@ -32,7 +32,7 @@ public class ExerelinConfig
     public static float fleetBonusFpPerPlayerLevel = 1f;
     
     // Prisoners
-    public static float prisonerRepatriateRepValue = 0.05f;
+    public static float prisonerRepatriateRepValue = 0.04f;
     public static float prisonerBaseRansomValue = 2000f;
     public static float prisonerRansomValueIncrementPerLevel = 100f;
     public static float prisonerBaseSlaveValue = 4000f;

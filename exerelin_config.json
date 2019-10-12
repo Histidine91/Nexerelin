@@ -7,7 +7,7 @@
     
     "fleetBonusFpPerPlayerLevel": 1,	# not actually used, except for vengeance fleets
     
-    "prisonerRepatriateRepValue": 0.05,
+    "prisonerRepatriateRepValue": 0.04,
     "prisonerBaseRansomValue": 4000,
     "prisonerRansomValueIncrementPerLevel": 200,
     #"prisonerBaseSlaveValue": 8000,
