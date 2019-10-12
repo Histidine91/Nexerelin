@@ -10,12 +10,12 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
-import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.corvus.Corvus;
 import data.scripts.world.systems.AlGebbar;
 import data.scripts.world.systems.Arcadia;
@@ -40,7 +40,6 @@ import data.scripts.world.systems.Valhalla;
 import data.scripts.world.systems.Westernesse;
 import data.scripts.world.systems.Yma;
 import data.scripts.world.systems.Zagan;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 
 public class VanillaSystemsGenerator {
@@ -104,7 +103,7 @@ public class VanillaSystemsGenerator {
 		cathedralLabel.setFixedLocation(-12700, -12000);
 		coreLabel.setFixedLocation(0, -6000);
 		
-		abyssLabel.setFixedLocation(-65000, -47000);		
+		abyssLabel.setFixedLocation(-65000, -47000);
 	}
 	
 	public static void exerelinEndGalatiaPortionOfMission()
@@ -240,5 +239,63 @@ public class VanillaSystemsGenerator {
 //		independent.setRelationship(pirates.getId(), 0);
 //		independent.setRelationship(independent.getId(), 0);
 //		independent.setRelationship(player.getId(), 0);
+	}
+	
+	protected static MarketAPI getMarket(String marketId) {
+		return Global.getSector().getEconomy().getMarket(marketId);
+	}
+	
+	/*
+		--agreus: ground def
+		--ancyra_market: farmland, farming
+		--tigra_city: ore, mining
+		--eventide: HT battlestation
+		--asher: mid orbital station, heavy batteries (replace ground def)
+		[nah] chalcedon: LT orbital station
+		--eldfell: ground def
+		[nah] athulf: ground def
+		[dunno] fikenhild: mid battlestation (replace mid orbital station) OR military base
+			maybe put the base on athulf instead
+				no, too much upkeep (see planet lore about it being a personal posession of the king that generates revenue)
+		-- volturn OR cruor: patrol HQ
+	*/
+	
+	public static void enhanceVanillaMarkets() {
+		if (!ExerelinConfig.useEnhancedCoreWorlds)
+			return;
+		
+		MarketAPI ancyra = getMarket("ancyra_market");
+		ancyra.addCondition(Conditions.FARMLAND_POOR);
+		ancyra.getCondition(Conditions.FARMLAND_POOR).setSurveyed(true);
+		ancyra.addIndustry(Industries.FARMING);
+		
+		MarketAPI agreus = getMarket("agreus");
+		agreus.addIndustry(Industries.GROUNDDEFENSES);
+		
+		MarketAPI asher = getMarket("asher");
+		asher.addIndustry(Industries.ORBITALSTATION_MID);
+		asher.removeIndustry(Industries.GROUNDDEFENSES, null, false);
+		asher.addIndustry(Industries.HEAVYBATTERIES);
+		
+		//MarketAPI chalcedon = getMarket("chalcedon");
+		//chalcedon.addIndustry(Industries.ORBITALSTATION);
+		
+		MarketAPI eldfell = getMarket("eldfell");
+		eldfell.addIndustry(Industries.GROUNDDEFENSES);
+		
+		MarketAPI eventide = getMarket("eventide");
+		eventide.addIndustry(Industries.BATTLESTATION_HIGH);
+		
+		MarketAPI fikenhild = getMarket("fikenhild");
+		//fikenhild.removeIndustry(Industries.PATROLHQ, null, false);
+		//fikenhild.addIndustry(Industries.MILITARYBASE);
+		
+		MarketAPI volturn = getMarket("volturn");
+		volturn.addIndustry(Industries.PATROLHQ);
+		
+		MarketAPI tigraCity = getMarket("tigra_city");
+		tigraCity.addCondition(Conditions.ORE_MODERATE);
+		tigraCity.getCondition(Conditions.ORE_MODERATE).setSurveyed(true);
+		tigraCity.addIndustry(Industries.MINING);
 	}
 }

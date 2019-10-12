@@ -88,8 +88,9 @@
     
     "factionRuler": false,  # gain same powers over a normal faction as you'd have with followers (probably not fully functional)
     
-    "corvusModeLandmarks": false,    # adds some decorative landmarks in non-random Sector (will always be present in random Sector)
-    "useEnhancedStartRelations": true,	# nicer starting relations between factions in non-random sector; e.g. League and Diktat are now only welcoming instead of cooperative 
+    "corvusModeLandmarks": false,	# adds some decorative landmarks in non-random Sector (will always be present in random Sector)
+    "useEnhancedStartRelations": true,	# nicer starting relations between factions in non-random sector; e.g. League and Diktat are now only welcoming instead of cooperative
+    "useEnhancedCoreWorlds": true,	# increases defenses and/or economic capacity of some core worlds in non-random sector
     
     "useCustomBattleCreationPlugin": false,	# affects things like map size and number of objectives
     

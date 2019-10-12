@@ -57,6 +57,7 @@ import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
+import exerelin.world.VanillaSystemsGenerator;
 import exerelin.world.scenarios.ScenarioManager;
 import org.apache.log4j.Logger;
 
@@ -335,6 +336,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGameAfterEconomyLoad() {
         log.info("New game after economy load; " + isNewGame);
+        
+        if (SectorManager.getCorvusMode()) {
+            VanillaSystemsGenerator.enhanceVanillaMarkets();
+        }
         
         ScenarioManager.afterEconomyLoad(Global.getSector());
         

@@ -129,6 +129,7 @@ public class ExerelinConfig
     public static boolean leaveEliminatedFaction = true;
     public static boolean useRelationshipBounds = true;
     public static boolean useEnhancedStartRelations = true;
+    public static boolean useEnhancedCoreWorlds = true;
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     public static boolean enablePunitiveExpeditions = true;
@@ -227,10 +228,11 @@ public class ExerelinConfig
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
             enablePunitiveExpeditions = settings.optBoolean("enablePunitiveExpeditions", enablePunitiveExpeditions);
-			allyVictories = settings.optBoolean("allyVictories", allyVictories);
+            allyVictories = settings.optBoolean("allyVictories", allyVictories);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
+            useEnhancedCoreWorlds = settings.optBoolean("useEnhancedCoreWorlds", useEnhancedCoreWorlds);
             
             useCustomBattleCreationPlugin = settings.optBoolean("useCustomBattleCreationPlugin", useCustomBattleCreationPlugin);
             officerDeaths = settings.optBoolean("officerDeaths", officerDeaths);
