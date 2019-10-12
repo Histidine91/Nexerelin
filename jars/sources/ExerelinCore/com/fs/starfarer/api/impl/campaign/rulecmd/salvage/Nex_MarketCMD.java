@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
@@ -54,6 +55,7 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSa
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Highlights;
@@ -72,6 +74,8 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +132,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		return true;
 	}
 	
-	private void initForInvasion(SectorEntityToken entity) {
+	protected void initForInvasion(SectorEntityToken entity) {
 		String key = "$nex_MarketCMD_tempInvasion";
 		MemoryAPI mem = market.getMemoryWithoutUpdate();
 		if (mem.contains(key)) {
@@ -1104,8 +1108,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			text.addTooltip();
 		}
 		
-		text.addPara("The bombardment requires %s fuel. " +
-					 "You have %s fuel.",
+		text.addPara(StringHelper.getString("nex_bombardment", "fuelCost"),
 					 h, "" + temp.bombardCost, "" + fuel);
 		
 		addBombardConfirmOptions();
@@ -1170,13 +1173,15 @@ public class Nex_MarketCMD extends MarketCMD {
 		boolean destroy = temp.bombardType == BombardType.SATURATION && market.getSize() <= getBombardDestroyThreshold();
 		
 		if (stabilityPenalty > 0 && !destroy) {
-			String reason = "Recently bombarded";
+			String reason = StringHelper.getString("nex_bombardment", "unrestReason");
 			if (Misc.isPlayerFactionSetUp()) {
-				reason = playerFaction.getDisplayName() + " bombardment";
+				reason = StringHelper.getString("nex_bombardment", "unrestReason"); 
+				reason = String.format(reason, playerFaction.getDisplayName());
 			}
 			RecentUnrest.get(market).add(stabilityPenalty, reason);
-			text.addPara("Stability of " + market.getName() + " reduced by %s.",
-					Misc.getHighlightColor(), "" + stabilityPenalty);
+			String str = StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+					"effectStability", "$market", market.getName());
+			text.addPara(str, Misc.getHighlightColor(), "" + stabilityPenalty);
 		}
 		
 		if (temp.bombardType == BombardType.SATURATION && market.hasCondition(Conditions.HABITABLE) && !market.hasCondition(Conditions.POLLUTION)) {
@@ -1194,20 +1199,21 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		
 		if (temp.bombardType == BombardType.TACTICAL) {
-			text.addPara("Military operations disrupted.");
+			text.addPara(StringHelper.getString("nex_bombardment", "effectMilitaryDisrupt"));
 			
 			ListenerUtil.reportTacticalBombardmentFinished(dialog, market, temp);
 		} else if (temp.bombardType == BombardType.SATURATION) {
 			if (destroy) {
 				DecivTracker.decivilize(market, true);
-				text.addPara(market.getName() + " destroyed.");
+				text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+					"effectMarketDestroyed", "$market", market.getName()));
 			} else {
 				int prevSize = market.getSize();
 				CoreImmigrationPluginImpl.reduceMarketSize(market);
 				if (prevSize == market.getSize()) {
-					text.addPara("All operations disrupted.");
+					text.addPara(StringHelper.getString("nex_bombardment", "effectAllDisrupt"));
 				} else {
-					text.addPara("All operations disrupted. Colony size reduced to %s.", 
+					text.addPara(StringHelper.getString("nex_bombardment", "effectAllDisruptAndDownsize"), 
 							Misc.getHighlightColor()
 							, "" + market.getSize());
 				}
