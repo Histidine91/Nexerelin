@@ -97,8 +97,8 @@
     
     "stabilizePackageEffect": 3,
     
-    "maxNPCColonySize": 0,	# NPC markets will grow up to this size on their own
-    "maxNPCNewColonySize": 5,	# for new colonies created by colony expedition event
+    "maxNPCColonySize": 10,	# NPC markets will grow up to this size on their own
+    "maxNPCNewColonySize": 6,	# for new colonies created by colony expedition event
     "hardModeColonyGrowthMult": 0.5,
     "hardModeColonyIncomeMult": 0.75,
     "colonyExpeditionInterval":270,	# days, starts in cycle 207; also note nex_expeditionDelayPerExistingColony in settings.json

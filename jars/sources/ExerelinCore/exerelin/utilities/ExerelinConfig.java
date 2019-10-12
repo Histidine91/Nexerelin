@@ -111,8 +111,8 @@ public class ExerelinConfig
     public static boolean officerDaredevilBonus = true;
     
     // Colonies
-    public static int maxNPCColonySize = 0;
-    public static int maxNPCNewColonySize = 5;
+    public static int maxNPCColonySize = 10;
+    public static int maxNPCNewColonySize = 6;
 	public static float hardModeColonyGrowthMult = 0.5f;
 	public static float hardModeColonyIncomeMult = 0.75f;
     public static float colonyExpeditionInterval = 270;
