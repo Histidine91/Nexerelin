@@ -56,7 +56,6 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTa
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
@@ -77,9 +76,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
@@ -94,6 +95,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
 	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
+	public static final String MEMORY_KEY_BP_COOLDOWN = "$nex_raid_blueprints_cooldown";
+	public static final String DATA_KEY_BPS_ALREADY_RAIDED = "nex_already_raided_blueprints";
 	
 	public static Logger log = Global.getLogger(Nex_MarketCMD.class);
 	
@@ -680,7 +683,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				result.addCommodity(pick.getId(), quantity);
 			}
 
-			raidSpecialItemsReduced(result, random);
+			raidSpecialItems(result, random, true);
 
 			result.sort();
 
@@ -741,6 +744,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 	}
 	
+	// same as computeRaidValuables except writes to different place
 	protected Map<CommodityOnMarketAPI, Float> computeInvasionValuables() {
 		Map<CommodityOnMarketAPI, Float> result = new HashMap<CommodityOnMarketAPI, Float>();
 		float totalDemand = 0f;
@@ -768,6 +772,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		return result;
 	}
 	
+	// same as getBaseRaidValue except reads tempInvasion instead of temp
 	protected float getBaseInvasionValue() {
 		float targetValue = 0f;
 		for (CommodityOnMarketAPI com : tempInvasion.invasionValuables.keySet()) {
@@ -779,17 +784,40 @@ public class Nex_MarketCMD extends MarketCMD {
 		return targetValue;
 	}
 	
-	/**
-	 * Loot rare items, but not AI cores or stuff like nanoforge/synchrotron
-	 * @param cargo
-	 * @param random
-	 */
-	protected void raidSpecialItemsReduced(CargoAPI cargo, Random random) {
-		float p = tempInvasion.invasionMult * 0.2f;
+	@Override
+	protected void raidSpecialItems(CargoAPI cargo, Random random) {
+		raidSpecialItems(cargo, random, false);
+	}
+	
+	/*
+		Changes from vanilla:
+			Add isInvasionArg
+			Drops blueprints known to player
+			Each blueprint can only be dropped once
+			Filter out NO_BP_DROP blueprints _before_ adding them to picker
+	*/
+	protected void raidSpecialItems(CargoAPI cargo, Random random, boolean isInvasion) 
+	{
+		float mult = isInvasion ? tempInvasion.invasionMult : temp.raidMult;
+		float p = mult * 0.2f;
 		
 		boolean withBP = false;
 		boolean heavyIndustry = false;
 		for (Industry curr : market.getIndustries()) {
+			
+			if (!isInvasion) {
+				String id = curr.getAICoreId();
+				if (id != null && random.nextFloat() < p) {
+					curr.setAICoreId(null);
+					cargo.addCommodity(id, 1);
+				}
+
+				SpecialItemData special = curr.getSpecialItem();
+				if (special != null && random.nextFloat() < p) {
+					curr.setSpecialItem(null);
+					cargo.addSpecial(special, 1);
+				}
+			}
 			if (curr.getSpec().hasTag(Industries.TAG_USES_BLUEPRINTS)) {
 				withBP = true;
 			}
@@ -797,6 +825,15 @@ public class Nex_MarketCMD extends MarketCMD {
 				heavyIndustry = true;
 			}
 		}
+		if (withBP) {
+			boolean bpCooldown = market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_BP_COOLDOWN);
+			if (bpCooldown)
+				withBP = false;
+			else
+				market.getMemoryWithoutUpdate().set(MEMORY_KEY_BP_COOLDOWN, true,
+						Global.getSettings().getFloat("nex_raidBPCooldown"));
+		}
+		
 		market.reapplyIndustries();
 		
 		boolean military = market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY);
@@ -807,37 +844,42 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		// blueprints
 		if (withBP) {
+			Set<String> droppedBefore = getEverRaidedBlueprints();
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>();
 			for (String id : market.getFaction().getKnownShips()) {
-				if (playerFaction.knowsShip(id)) continue;
+				if (droppedBefore.contains(id)) continue;
+				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
 				picker.add(ship + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownWeapons()) {
-				if (playerFaction.knowsWeapon(id)) continue;
+				if (droppedBefore.contains(id)) continue;
+				if (Global.getSettings().getWeaponSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
 				picker.add(weapon + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownFighters()) {
-				if (playerFaction.knowsFighter(id)) continue;
+				if (droppedBefore.contains(id)) continue;
+				if (Global.getSettings().getFighterWingSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
 				picker.add(fighter + id, 1f);
 			}
 			
-			int num = getNumPicks(random, tempInvasion.invasionMult + 0.5f, tempInvasion.invasionMult * 0.5f);
+			//int num = getNumPicks(random, mult * 0.25f, mult * 0.5f);
+			int num = getNumPicks(random, mult + 0.5f, mult * 0.5f);
 			for (int i = 0; i < num && !picker.isEmpty(); i++) {
 				String id = picker.pickAndRemove();
 				if (id == null) continue;
 				
 				if (id.startsWith(ship)) {
 					String specId = id.substring(ship.length());
-					if (Global.getSettings().getHullSpec(specId).hasTag(Tags.NO_BP_DROP)) continue;
 					cargo.addSpecial(new SpecialItemData(Items.SHIP_BP, specId), 1);
+					addEverRaidedBlueprint(specId);
 				} else if (id.startsWith(weapon)) {
 					String specId = id.substring(weapon.length());
-					if (Global.getSettings().getWeaponSpec(specId).hasTag(Tags.NO_BP_DROP)) continue;
 					cargo.addSpecial(new SpecialItemData(Items.WEAPON_BP, specId), 1);
+					addEverRaidedBlueprint(specId);
 				} else if (id.startsWith(fighter)) {
 					String specId = id.substring(fighter.length());
-					if (Global.getSettings().getFighterWingSpec(specId).hasTag(Tags.NO_BP_DROP)) continue;
 					cargo.addSpecial(new SpecialItemData(Items.FIGHTER_BP, specId), 1);
+					addEverRaidedBlueprint(specId);
 				}
 			}
 		}
@@ -850,7 +892,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		
 		// more likely to get at least one modspec, but not likely to get many
-		int num = getNumPicks(random, tempInvasion.invasionMult + 0.5f, tempInvasion.invasionMult * 0.25f);
+		int num = getNumPicks(random, mult + 0.5f, mult * 0.25f);
 		for (int i = 0; i < num && !picker.isEmpty(); i++) {
 			String id = picker.pickAndRemove();
 			if (id == null) continue;
@@ -880,9 +922,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		
 		
-		num = getNumPicks(random, tempInvasion.invasionMult + 0.5f, tempInvasion.invasionMult * 0.25f);
+		num = getNumPicks(random, mult + 0.5f, mult * 0.25f);
 		if (military || heavyIndustry) {
-			num += Math.round(market.getCommodityData(Commodities.SHIPS).getAvailable() * tempInvasion.invasionMult);
+			num += Math.round(market.getCommodityData(Commodities.SHIPS).getAvailable() * mult);
 		}
 		
 		for (int i = 0; i < num && !picker.isEmpty(); i++) {
@@ -895,7 +937,6 @@ public class Nex_MarketCMD extends MarketCMD {
 				cargo.addFighters(id.substring(fighter.length()), 1);
 			}
 		}
-		
 	}
 	
 	/**
@@ -973,6 +1014,147 @@ public class Nex_MarketCMD extends MarketCMD {
 	public TempData getTempData() {
 		return temp;
 	}
+	
+	// Changes from vanilla: Checks blueprint cooldown; externalized strings
+	@Override
+	protected void raidValuable() {
+		temp.raidType = RaidType.VALUABLE;
+		
+		temp.raidValuables = computeRaidValuables();
+		
+		boolean withBP = false;
+		boolean withCores = false;
+		boolean heavyIndustry = false;
+		for (Industry curr : market.getIndustries()) {
+			if (curr.getSpec().hasTag(Industries.TAG_USES_BLUEPRINTS)) {
+				withBP = true;
+			}
+			if (curr.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY)) {
+				heavyIndustry = true;
+			}
+			if (curr.getAICoreId() != null) {
+				withCores = true;
+			}
+		}
+		boolean military = market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY);
+		
+		// prevent an IllegalAccessError
+		final Map<CommodityOnMarketAPI, Float> raidValuablesCopy = new HashMap<>(temp.raidValuables);
+		
+		List<CommodityOnMarketAPI> sorted = new ArrayList<CommodityOnMarketAPI>(temp.raidValuables.keySet());
+		Collections.sort(sorted, new Comparator<CommodityOnMarketAPI>() {
+			public int compare(CommodityOnMarketAPI o1, CommodityOnMarketAPI o2) {
+				return (int) Math.signum(raidValuablesCopy.get(o2) - raidValuablesCopy.get(o1));
+			}
+		});
+		
+		if (sorted.isEmpty()) {
+			text.addPara(StringHelper.getString("nex_raidDialog", "expectedSpoilsNone"));
+			addNeverMindOption();
+			return;
+		}
+		
+		int count = 0;
+		List<String> names = new ArrayList<String>();
+		List<CommodityOnMarketAPI> coms = new ArrayList<CommodityOnMarketAPI>();
+		for (CommodityOnMarketAPI com : sorted) {
+			names.add(com.getCommodity().getLowerCaseName());
+			coms.add(com);
+			count++;
+			if (count >= 5) break;
+		}
+		
+		String list = Misc.getAndJoined(names);
+		
+		text.addPara(StringHelper.getString("nex_raidDialog", "expectedSpoilsNone"));
+		
+		String is = "is";
+		String item = "item";
+		if (names.size() > 1) {
+			is = "are";
+			item = "items";
+		}
+		
+		Color h = Misc.getHighlightColor();
+		float targetValue = getBaseRaidValue();
+		targetValue = Misc.getRounded(targetValue);
+		
+		String [] highlights = new String[names.size() + 1];
+		for (int i = 0; i < names.size(); i++) {
+			if (i == 0) {
+				highlights[i] = Misc.ucFirst(names.get(i));
+			} else {
+				highlights[i] = names.get(i);
+			}
+		}
+		highlights[highlights.length - 1] = Misc.getDGSCredits(targetValue);
+		
+//		heavyIndustry = true;
+//		withBP = true;
+		
+//		text.addPara(Misc.ucFirst(list) + " " + is + " the most likely " + item + 
+//				" to be obtained. The estimated value is projected to be around "
+//				+ highlights[highlights.length - 1] + ".", 
+//				h, highlights);
+		
+		ResourceCostPanelAPI cost = text.addCostPanel(StringHelper.getString("nex_raidDialog", "expectedSpoilsHeader", true), 
+				SalvageEntity.COST_HEIGHT, playerFaction.getBaseUIColor(), playerFaction.getDarkUIColor());
+		//cost.setNumberOnlyMode(true);
+		cost.setWithBorder(false);
+		cost.setAlignment(Alignment.LMID);
+		cost.setComWidthOverride(SalvageEntity.COST_HEIGHT);
+		for (CommodityOnMarketAPI com: coms) {
+			cost.addCost(com.getId(), "");
+		}
+		cost.update();
+		
+		String extra = "";
+		if (temp.shortageMult < 0.75f) {
+			extra = " " + StringHelper.getString("nex_raidDialog", "expectedSpoilsValueReduced");
+		}
+		text.addPara(StringHelper.getString("nex_raidDialog", "expectedSpoilsValue") + " "
+				+ highlights[highlights.length - 1] + "." + extra, 
+				h, highlights[highlights.length - 1]);
+		
+		String weps = StringHelper.getString("nex_raidDialog", "spoilsItemWeapons");
+		String modspecs = StringHelper.getString("nex_raidDialog", "spoilsItemModspecs");
+		String blueprints = StringHelper.getString("nex_raidDialog", "spoilsItemBlueprints");
+		String aiCores = StringHelper.getString("nex_raidDialog", "spoilsItemAICores");
+		
+		if (heavyIndustry && withBP) {
+			text.addPara(StringHelper.getString("nex_raidDialog", "spoilsHIandBP"), h,
+						 weps, modspecs, blueprints);
+		} else if (withBP) {
+			text.addPara(StringHelper.getString("nex_raidDialog", "spoilsBP"), h,
+						 blueprints);
+		} else if (heavyIndustry) {
+			// shouldn't happen in vanilla since heavy industry has the "uses_blueprints" tag
+			text.addPara(StringHelper.getString("nex_raidDialog", "spoilsHI"), h,
+						 weps, modspecs);
+		} else if (military) {
+			text.addPara(StringHelper.getString("nex_raidDialog", "spoilsMilitary"), h,
+						 weps, modspecs);
+		} else {
+		}
+		
+		boolean bpCooldown = market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_BP_COOLDOWN);
+		if (heavyIndustry && withBP && bpCooldown) {
+			String str1 = StringHelper.getString("nex_raidDialog", "spoilsNoBlueprints");
+			String str2 = StringHelper.getString("nex_raidDialog", "spoilsNoBlueprints2");
+			text.addPara(str1 + " " + str2, Misc.getNegativeHighlightColor(), str2);
+		}
+		
+		if (withCores) {
+			text.addPara(StringHelper.getString("nex_raidDialog", "spoilsAICores"), h, aiCores);
+		}
+		
+		
+		text.addPara(StringHelper.getString("nex_raidDialog", "dialogConfirmText"));
+		
+		addConfirmOptions();
+	}
+	
+	
 	
 	public static int getBombardDisruptDuration(BombardType type) {
 		float dur = Global.getSettings().getFloat("bombardDisruptDuration");
@@ -1268,6 +1450,20 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		market.getMemoryWithoutUpdate().set(DEFENDER_INCREASE_KEY, true);
 		market.getMemoryWithoutUpdate().expire(DEFENDER_INCREASE_KEY, e);
+	}
+	
+	public static Set<String> getEverRaidedBlueprints() {
+		Map<String, Object> persistent = Global.getSector().getPersistentData();
+		if (!persistent.containsKey(DATA_KEY_BPS_ALREADY_RAIDED))
+		{
+			persistent.put(DATA_KEY_BPS_ALREADY_RAIDED, new HashSet<String>());
+		}
+		return (Set<String>)persistent.get(DATA_KEY_BPS_ALREADY_RAIDED);
+	}
+	
+	public static void addEverRaidedBlueprint(String bp) {
+		log.info("Adding ever-raided blueprint: " + bp);
+		getEverRaidedBlueprints().add(bp);
 	}
 	
 	public static class TempDataInvasion {

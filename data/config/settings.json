@@ -52,6 +52,7 @@
 	"nex_hardModeDominanceMult":1.5,	# when calculating disposition
 	
 	"nex_invasionBaseDefenseMult":1.25,
+	"nex_raidBPCooldown":60,	# how long before a market can be raided for blueprints again
 	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,

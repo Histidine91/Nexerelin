@@ -1186,13 +1186,37 @@
 		"raidForce":"raiders",
 		"theRaidForce":"the raiders",
 		"forceIsOrAre":"are",	# if raidForce is singular, this should be singular too, else both should be plural
-		"forceHasOrHave":"have",	# same		
+		"forceHasOrHave":"have",	# same
 		
 		"stageOrganizeRemnant":"$TheAction is currently being planned at a base in the $location.",
 		
 		"conditionPenalties":"%s stability, %s accessibility.",
 		"conditionListHeader":"The following hostile factions have active raids in the system:",
 	},
+	"nex_raidDialog":{		
+		"expectedSpoilsHeader":"expected spoils",
+		"expectedSpoilsNone":"After careful consideration, there do not appear to be any targets likely to yield much of value.",
+		"expectedSpoils":"The commander of your ground forces designates several warehouses and other locations most likely to yield valuable items.",
+		"expectedSpoilsValue":"The estimated value of the common commodities obtained is projected to be around ",
+		"expectedSpoilsValueReduced":"The value is lower than it otherwise might be due to the colony suffering from various shortages.",
+
+		"spoilsHIandBP":"In addition, the colony has well-developed heavy industry, increasing the possibility of obtaining some ship weapons and modspecs, as well as blueprints.",
+		"spoilsBP":"In addition, the colony has facilities that make use of blueprints, increasing the possibility of some being obtained.",
+		"spoilsHI":"In addition, the colony has well-developed heavy industry, increasing the possibility of obtaining some ship weapons and modspecs.",
+		"spoilsMilitary":"In addition, the colony has a military presence, increasing the possibility of obtaining some ship weapons and modspecs.",
+		"spoilsAICores":"There are also trace indications of AI cores being used, which might be obtained as well.",
+
+		"spoilsNoBlueprints":"However, the local blueprint facilities have been locked down due to recent raids.",
+		"spoilsNoBlueprints2":"Blueprints cannot be acquired from this raid.",
+
+		"spoilsItemWeapons":"ship weapons",
+		"spoilsItemModspecs":"modspecs",
+		"spoilsItemBlueprints":"blueprints",
+		"spoilsItemAICores":"AI cores",
+
+		"dialogConfirmText":"Your forces are ready to go, awaiting your final confirmation."
+	},
+	
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
 
