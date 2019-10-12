@@ -31,12 +31,13 @@
     "fleetRequestCostPerFP": 400,  # used for player-requested fleets
     "invasionFleetSizeMult": 1,
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
-    "pointsRequiredForInvasionFleet": 20000,    # bigger = longer delay between invasion fleets
+    "pointsRequiredForInvasionFleet": 24000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
     "invasionPointsPerPlayerLevel": 0.5,
     "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
     "creditLossOnColonyLossMult": 0.4,
+	"allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
     
     "allianceGracePeriod": 60,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average

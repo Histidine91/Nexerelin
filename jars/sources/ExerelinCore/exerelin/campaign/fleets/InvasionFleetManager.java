@@ -628,10 +628,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float supplies = getCommodityPoints(market, Commodities.SUPPLIES);
 		float marines = getCommodityPoints(market, Commodities.MARINES);
 		float mechs = getCommodityPoints(market, Commodities.HAND_WEAPONS);
+		float fuel = getCommodityPoints(market, Commodities.FUEL);
 		
 		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
 		
-		float total = (ships*2 + supplies + marines + mechs) * stabilityMult;
+		float total = (ships*2 + supplies + marines + mechs + fuel) * stabilityMult;
 		
 		return total;
 	}
