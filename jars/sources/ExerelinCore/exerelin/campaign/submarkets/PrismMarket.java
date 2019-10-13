@@ -126,8 +126,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
     @Override
     public void updateCargoPrePlayerInteraction() 
     {
-        log.info("Days since update: "+ sinceLastCargoUpdate);
-        if (sinceLastCargoUpdate<30) return;
+        log.info("Days since update: " + sinceLastCargoUpdate);
+        if (sinceLastCargoUpdate < 30) return;
         sinceLastCargoUpdate = 0f;
         
         CargoAPI cargo = getCargo();
@@ -136,7 +136,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         // 50% chance per stack in the cargo to remove that stack
         for (CargoStackAPI s : cargo.getStacksCopy()) {
-            if(Math.random()>0.5f){
+            if (itemGenRandom.nextFloat() > 0.5f) {
                 float qty = s.getSize();
                 cargo.removeItems(s.getType(), s.getData(), qty );
             }
@@ -191,10 +191,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         CargoAPI cargo = getCargo();
         List<String> weaponIds = Global.getSector().getAllWeaponIds();
         
-        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-        if (!Global.getSettings().isDevMode() || true) {
-            picker.setRandom(itemGenRandom);
-        }
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(itemGenRandom);
         
         for (String id : weaponIds) {
             WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(id);
@@ -224,14 +221,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
     protected void addWeapons()
     {
         int present = getCargo().getWeapons().size();
-        float variation=(float)Math.random()*0.5f+0.75f;
+        float variation = (float)itemGenRandom.nextFloat() * 0.5f + 0.75f;
         addRandomWeapons(Math.round(ExerelinConfig.prismMaxWeapons*variation) - present);
     }
     
     protected void addWings()
     {
         CargoAPI cargo = getCargo();
-        WeightedRandomPicker<String> fighterPicker = new WeightedRandomPicker<>();
+        WeightedRandomPicker<String> fighterPicker = new WeightedRandomPicker<>(itemGenRandom);
         for (FighterWingSpecAPI spec : Global.getSettings().getAllFighterWingSpecs()) {
             if (isWingAllowed(spec))
                 fighterPicker.add(spec.getId());
@@ -258,11 +255,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         //remove half the stock (and all boss ships)
         for (FleetMemberAPI member : data.getMembersListCopy()) {
-            if (allBossShips.contains(member.getHullId())) data.removeFleetMember(member);
-            else if (Math.random()>0.5f) data.removeFleetMember(member);                
+            if (allBossShips.contains(member.getHullId())) 
+				data.removeFleetMember(member);
+            else if (itemGenRandom.nextFloat() > 0.5f) 
+				data.removeFleetMember(member);                
         }
 
-        WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
+        WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>(itemGenRandom);
         rolePicker.add(ShipRoles.CIV_RANDOM, 1f);
         rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1f);
         rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 1f);
@@ -281,7 +280,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         rolePicker.add(ShipRoles.CARRIER_MEDIUM, 5f);
         rolePicker.add(ShipRoles.CARRIER_LARGE, 5f);
 
-        WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
+        WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>(itemGenRandom);
         SectorAPI sector = Global.getSector();
         for (String factionId: allowedFactions) {
             FactionAPI faction = sector.getFaction(factionId);
@@ -290,7 +289,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         
         //renew the stock
-        float variation=(float)Math.random()*0.5f+0.75f;
+        float variation=(float)itemGenRandom.nextFloat() * 0.5f + 0.75f;
         int tries = 0;
         for (int i=0; i<ExerelinConfig.prismNumShips*variation; i=cargo.getMothballedShips().getNumMembers()){
             //pick the role and faction
@@ -400,7 +399,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         List<BossShipEntry> validShips = new ArrayList<>();
         List<String> ret = new ArrayList<>();
-        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(itemGenRandom);
         
         int ibbProgress = 999;
         boolean doIBBCheck = ExerelinConfig.prismUseIBBProgressForBossShips && ExerelinModPlugin.HAVE_SWP;

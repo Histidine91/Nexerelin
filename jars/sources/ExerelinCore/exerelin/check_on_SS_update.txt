@@ -16,6 +16,7 @@ Do on future SS release:
 - Remove MutableStatNoFloor
 - Add "player colonized" listener
 - Move vengeance fleet intel to fleets subpackage
+- Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
 
 Do when handy:
 - Purge unused imports

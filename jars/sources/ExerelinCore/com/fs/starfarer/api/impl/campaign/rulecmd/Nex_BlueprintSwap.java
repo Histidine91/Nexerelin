@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
@@ -50,6 +51,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	public static final int STOCK_COUNT_MAX = 8;
 	public static final float PRICE_POINT_MULT = 0.01f;
 	//public static final float ALREADY_SOLD_MULT = 0.25f;
+	public static final String PERSISTENT_RANDOM_KEY = "nex_blueprintSwapRandom";
 	
 	public static final String DIALOG_OPTION_PREFIX = "nex_blueprintSwap_pick_";
 	
@@ -391,7 +393,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	public static List<PurchaseInfo> generateBlueprintStock()
 	{
 		List<PurchaseInfo> blueprints = new ArrayList<>();
-		WeightedRandomPicker<PurchaseInfo> picker = new WeightedRandomPicker<>();
+		Random random = getRandom();
+		WeightedRandomPicker<PurchaseInfo> picker = new WeightedRandomPicker<>(random);
 		FactionAPI playerFaction = Global.getSector().getPlayerFaction();
 		Set<String> banned = PrismMarket.getRestrictedBlueprints();
 		
@@ -402,7 +405,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			String hullId = hull.getHullId();
 			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
 			
-			PurchaseInfo info = new PurchaseInfo(hullId, PurchaseType.SHIP, 
+			PurchaseInfo info = new PurchaseInfo(hullId, PurchaseType.SHIP,
 					hull.getNameWithDesignationWithDashClass(), 
 					getBlueprintPointValue(Items.SHIP_BP, hullId, hull.getBaseValue(), true));
 			if (hull.hasTag("tiandong_retrofit"))
@@ -436,7 +439,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			picker.add(info, 2 * wep.getRarity());
 		}
 		
-		for (int i = 0; i < MathUtils.getRandomNumberInRange(STOCK_COUNT_MIN, STOCK_COUNT_MAX); i++)
+		int num = STOCK_COUNT_MIN + random.nextInt(STOCK_COUNT_MAX - STOCK_COUNT_MIN + 1);
+		for (int i = 0; i < num; i++)
 		{
 			if (picker.isEmpty()) continue;
 			blueprints.add(picker.pickAndRemove());
@@ -559,6 +563,20 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	{
 		// TODO: config for whether SCY prism has this
 		return market.hasSubmarket("exerelin_prismMarket") || market.hasSubmarket("SCY_prismMarket");	// for now
+	}
+	
+	public static Random getRandom() {
+		Map<String, Object> data = Global.getSector().getPersistentData();
+		if (!data.containsKey(PERSISTENT_RANDOM_KEY)) {
+			String seed = "" + Global.getSector().getClock().getCycle()
+					+ Global.getSector().getClock().getMonth()
+					+ Global.getSector().getClock().getDay();
+			
+			data.put(PERSISTENT_RANDOM_KEY, new Random(Long.parseLong(seed)));
+		}
+			
+		
+		return (Random)data.get(PERSISTENT_RANDOM_KEY);
 	}
 	
 	public static class PurchaseInfo implements Comparable<PurchaseInfo>
