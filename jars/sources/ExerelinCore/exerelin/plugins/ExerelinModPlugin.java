@@ -4,12 +4,15 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.ModSpecAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.StatBonus;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
@@ -77,14 +80,30 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     public static void replaceSubmarket(MarketAPI market, String submarketId) {
         if (!market.hasSubmarket(submarketId)) return;
+        
         CargoAPI current = market.getSubmarket(submarketId).getCargo();
+        FleetDataAPI ships = current.getMothballedShips();
+        boolean haveAccess = Misc.playerHasStorageAccess(market);
         
         market.removeSubmarket(submarketId);
         market.addSubmarket(submarketId);
+        SubmarketAPI submarket = market.getSubmarket(submarketId);
+        
+        // migrate cargo
         CargoAPI newCargo = market.getSubmarket(submarketId).getCargo();
         newCargo.clear();
         newCargo.addAll(current);
         newCargo.sort();
+        
+        // move ships to new cargo
+        newCargo.initMothballedShips(submarket.getFaction().getId());
+        for (FleetMemberAPI ship : ships.getMembersListCopy()) {
+            newCargo.getMothballedShips().addFleetMember(ship);
+        }
+        
+        if (submarketId.equals(Submarkets.SUBMARKET_STORAGE)) {
+            ((StoragePlugin)submarket.getPlugin()).setPlayerPaidToUnlock(haveAccess);
+        }
     }
     
     protected void applyToExistingSave()
@@ -183,10 +202,8 @@ public class ExerelinModPlugin extends BaseModPlugin
             if (market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin() instanceof Nex_StoragePlugin)
                 continue;
             
-            boolean haveAccess = Misc.playerHasStorageAccess(market);
             log.info("Replacing storage submarket on " + market.getName());
             replaceSubmarket(market, Submarkets.SUBMARKET_STORAGE);
-            ((StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin()).setPlayerPaidToUnlock(haveAccess);
         }
         
         // retroactive fix for brawl mode defense fleets which are still hanging around
