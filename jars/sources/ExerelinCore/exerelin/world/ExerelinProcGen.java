@@ -947,7 +947,10 @@ public class ExerelinProcGen {
 			
 			for (SectorEntityToken token : system.getAllEntities())
 			{
-				if (token.hasTag(Tags.GATE) || token.hasTag(Tags.DEBRIS_FIELD)) continue;
+				if (token.getMarket() != null)
+					continue;
+				if (token.hasTag(Tags.GATE) || token.hasTag(Tags.DEBRIS_FIELD)
+						|| token.hasTag(Tags.OBJECTIVE)) continue;
 				if (token.getFaction().getId().equals(Factions.DERELICT) 
 						|| token.getFaction().getId().equals(Factions.REMNANTS) 
 						|| token.getFaction().getId().equals("blade_breakers"))
