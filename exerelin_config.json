@@ -17,7 +17,7 @@
     
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
     
-    "playerInsuranceMult": 1,
+    "playerInsuranceMult": 0.8,
     
     "agentBaseSalary":4000,
     "agentSalaryPerLevel":2000,

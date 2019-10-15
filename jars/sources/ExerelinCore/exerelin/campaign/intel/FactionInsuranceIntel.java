@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +33,9 @@ import java.util.Set;
 public class FactionInsuranceIntel extends BaseIntelPlugin {
 	public static Logger log = Global.getLogger(FactionInsuranceIntel.class);
 	
-	public static final boolean DEBUG_MODE = true;	// self-insurance and stuff
+	public static final boolean DEBUG_MODE = false;	// self-insurance and stuff
 	
-	public static final float HARD_MODE_MULT = 0.5f;
+	public static final float HARD_MODE_MULT = 0.625f;
 	public static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
 	public static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
 	public static final float COMPENSATION_PER_DMOD = 0.2f;
