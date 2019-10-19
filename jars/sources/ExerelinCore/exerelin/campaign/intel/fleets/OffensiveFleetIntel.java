@@ -35,7 +35,6 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	public static final Object ENTERED_SYSTEM_UPDATE = new Object();
 	public static final Object OUTCOME_UPDATE = new Object();
-	public static final boolean DEBUG_MODE = true;
 	public static final boolean INTEL_ALWAYS_VISIBLE = true;
 	public static final float ALLY_GEAR_CHANCE = 0.5f;
 	

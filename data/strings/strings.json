@@ -1150,6 +1150,7 @@
 		"headerBreakdown":"Breakdown",
 		"descInsuranceMult":"Insurance mult: %s×",
 		"descZeroHull":"Base value assumes zero hull and combat readiness.",
+		"descBaseValue":"Base value is modified by D-mods already present on the hull.",
 		
 		"entryDescAmount":"Insured for %s",
 		"entryDescLost":"Ship lost; paying for base value",

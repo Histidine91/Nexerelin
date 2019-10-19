@@ -295,7 +295,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			yPos += ENTRY_HEIGHT + opad;
 			//break;
 		}
-		//info.addPara(getString("descZeroHull"), opad);
+		//info.addPara(getString("descBaseValue"), opad);
 		info.addCustom(itemPanel, 0);
 		panel.addUIElement(info).inTL(0, 0);
 	}
