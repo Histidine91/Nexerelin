@@ -266,6 +266,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	public List<ProducerEntry> getCompetingProducers(String factionId, int min) {
 		List<ProducerEntry> results = new ArrayList<>();
 		Map<String, Integer> ourProduction = factionProductionByFaction.get(factionId);
+		if (ourProduction == null) return results;
 		Set<String> commodities = ourProduction.keySet();
 		for (String commodityId : commodities) {
 			if (ourProduction.get(commodityId) < min)
