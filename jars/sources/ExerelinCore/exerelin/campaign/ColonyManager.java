@@ -188,7 +188,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				Misc.getHighlightColor());
 		intel.setIcon(market.getFaction().getCrest());
 		intel.setSound(BaseIntelPlugin.getSoundStandardPosting());
-		Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.NOTHING, market);
+		if (Global.getSettings().getBoolean("nex_showNPCGrowthMessages"))
+			Global.getSector().getCampaignUI().addMessage(intel, 
+					market.isPlayerOwned() ? MessageClickAction.COLONY_INFO : MessageClickAction.NOTHING, 
+					market);
 		
 		buildIndustries(market);
 	}

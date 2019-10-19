@@ -31,6 +31,7 @@
 	"nex_spacerDebtMult":1,
 	
 	"nex_npcColonyGrowthMult":0.5,
+	"nex_showNPCGrowthMessages":true,
 	
 	"nex_brawlMode":false,	# much stronger invasion and raid fleets, with defense fleets spawned to counter them
 	"nex_brawlMode_minMult":2,
