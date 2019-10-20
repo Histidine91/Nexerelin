@@ -56,7 +56,14 @@ public class ExerelinUtilsFleet
         if (config != null && config.miningVariantsOrWings != null && !config.miningVariantsOrWings.isEmpty()) 
             variantId = ExerelinUtils.getRandomListElement(config.miningVariantsOrWings);
         FleetMemberAPI miner = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+        
+        // set correct CR
+        miner.getCrewComposition().setCrew(miner.getNeededCrew());
+        miner.updateStats();
+        miner.getRepairTracker().setCR(miner.getRepairTracker().getMaxCR());
+        
         fleet.getFleetData().addFleetMember(miner);
+        
         return miner;
     }
     

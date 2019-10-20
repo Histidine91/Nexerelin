@@ -187,6 +187,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 			minerFP -= miner.getFleetPointCost();
 			//log.info("Adding miner to fleet: " + miner.getHullId());
 		}
+		fleet.getFleetData().sort();
 		
 		float miningStrength = 0;
 		
