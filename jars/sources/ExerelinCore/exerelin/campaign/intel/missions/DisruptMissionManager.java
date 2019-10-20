@@ -76,7 +76,6 @@ public class DisruptMissionManager extends BaseEventManager {
 			return null;
 		}
 		
-		// FIXME
 		TargetEntry target = getTarget(faction);
 		if (target == null) {
 			log.info("Failed to pick target");
