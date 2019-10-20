@@ -208,6 +208,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (fleetType == FleetType.INVASION) {
 			float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
 			cost *= mult;
+			cost *= 1.25f;	// FIXME balancing placeholder
 		}
 		cost = Math.round(cost);
 		
