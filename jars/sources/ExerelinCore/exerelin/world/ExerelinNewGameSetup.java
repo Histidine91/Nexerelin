@@ -167,14 +167,20 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = setupData.corvusMode;
+		boolean grandSector = Global.getSettings().getModManager().isModEnabled("ZGrand Sector");
 		
 		// use vanilla hyperspace map
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
 		if (Global.getSettings().getModManager().isModEnabled("Vast Expanse")) {
 			hyperMap = "data/campaign/terrain/Big_Hyperspace_Map.png";
 		}
-		else if (Global.getSettings().getModManager().isModEnabled("ZGrand Sector")) {
-			hyperMap = "data/campaign/terrain/anon_hyperspace.png";
+		else if (grandSector) {
+			boolean generateHS = Global.getSettings().getBoolean("GrandSectorBoolHyperstorms");
+			//log.info("Generating Grand Sector hyper map, hyperstorms: " + generateHS);
+			if (generateHS)
+				hyperMap = "data/campaign/terrain/anon_hyperspace.png";
+			else
+				hyperMap = "data/campaign/terrain/clear_skies.png";
 		}
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
@@ -185,6 +191,17 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		if (corvusMode)
 		{
 			VanillaSystemsGenerator.generate(sector);
+			if (grandSector) {
+				// ensure area round stars is clear
+				HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
+				NebulaEditor editor = new NebulaEditor(plugin);
+				float minRadius = plugin.getTileSize() * 2f;
+				for (StarSystemAPI curr : sector.getStarSystems()) {
+					float radius = curr.getMaxRadiusInHyperspace() * 0.5f;
+					editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
+					editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
+				}
+			}
 		}
 		else
 		{
