@@ -37,7 +37,8 @@
     "invasionPointsPerPlayerLevel": 0.5,
     "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
     "creditLossOnColonyLossMult": 0.4,
-	"allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
+    "allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
+    "allowRepeatBlueprintsFromRaid": false,	# if false, each blueprint can only appear in raid loot once
     
     "allianceGracePeriod": 60,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average

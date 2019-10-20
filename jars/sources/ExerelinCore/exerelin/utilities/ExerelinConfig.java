@@ -62,7 +62,8 @@ public class ExerelinConfig
     public static float invasionPointsPerPlayerLevel = 0.5f;
     public static float invasionPointEconomyMult = 0.5f;
     public static float creditLossOnColonyLossMult = 0.5f;
-	public static boolean allowNPCSatBomb = true;
+    public static boolean allowNPCSatBomb = true;
+    public static boolean allowRepeatBlueprintsFromRaid = false;
     
     // Alliances
     public static float allianceGracePeriod = 30;
@@ -164,7 +165,7 @@ public class ExerelinConfig
             agentSalaryPerLevel = settings.optInt("agentSalaryPerLevel", agentSalaryPerLevel);
             maxAgents = settings.optInt("maxAgents", maxAgents);
             
-			enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
+            enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
             fleetRequestCostPerMarine = (float)settings.optDouble("fleetRequestCostPerMarine", fleetRequestCostPerMarine);
@@ -176,7 +177,8 @@ public class ExerelinConfig
             invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel ", invasionPointsPerPlayerLevel );
             invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
             creditLossOnColonyLossMult = (float)settings.optDouble("creditLossOnColonyLossMult", creditLossOnColonyLossMult);
-			allowNPCSatBomb = settings.optBoolean("allowNPCSatBomb", allowNPCSatBomb);
+            allowNPCSatBomb = settings.optBoolean("allowNPCSatBomb", allowNPCSatBomb);
+            allowRepeatBlueprintsFromRaid = settings.optBoolean("allowRepeatBlueprintsFromRaid", allowRepeatBlueprintsFromRaid);
             
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);

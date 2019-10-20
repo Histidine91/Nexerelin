@@ -845,19 +845,20 @@ public class Nex_MarketCMD extends MarketCMD {
 		// blueprints
 		if (withBP) {
 			Set<String> droppedBefore = getEverRaidedBlueprints();
+			boolean allowRepeat = ExerelinConfig.allowRepeatBlueprintsFromRaid;
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>();
 			for (String id : market.getFaction().getKnownShips()) {
-				if (droppedBefore.contains(id)) continue;
+				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
 				picker.add(ship + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownWeapons()) {
-				if (droppedBefore.contains(id)) continue;
+				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getWeaponSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
 				picker.add(weapon + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownFighters()) {
-				if (droppedBefore.contains(id)) continue;
+				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getFighterWingSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
 				picker.add(fighter + id, 1f);
 			}
