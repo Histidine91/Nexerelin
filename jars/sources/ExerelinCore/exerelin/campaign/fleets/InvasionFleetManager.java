@@ -379,6 +379,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (attacker.getRelationshipLevel(defender) != RepLevel.VENGEFUL)
 			return false;
 		
+		if (attacker.getCustom() == null || !attacker.getCustom().has(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA))
+			return false;
+		
 		boolean canBombard = attacker.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA)
 				.optBoolean("canBombard", false);
 		if (defender.isPlayerFaction() || PlayerFactionStore.getPlayerFaction() == defender) 
