@@ -187,7 +187,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	 */
 	public Map<String, Integer> getCommoditiesProducedByFaction(String factionId) {
 		if (!factionProductionByFaction.containsKey(factionId))
-			return null;
+			return new HashMap<>();
 		
 		Map<String, Integer> result = factionProductionByFaction.get(factionId);
 		
@@ -222,6 +222,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	public List<ProducerEntry> getProducers(String factionId, String commodityId, int min) {
 		List<ProducerEntry> results = new ArrayList<>();
 		logInfo(factionId + " producers of " + commodityId + ":");
+		if (!producersByCommodity.containsKey(commodityId)) return results;
 		for (ProducerEntry entry : producersByCommodity.get(commodityId)) {
 			if (!entry.factionId.equals(factionId)) continue;
 			if (entry.output < min) continue;
@@ -244,6 +245,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	public List<ProducerEntry> getCompetingProducers(String factionId, String commodityId, int min) {
 		List<ProducerEntry> results = new ArrayList<>();
 		logInfo("Competitors with " + factionId + " for " + commodityId + ":");
+		if (!producersByCommodity.containsKey(commodityId)) return results;
 		for (ProducerEntry entry : producersByCommodity.get(commodityId)) {
 			if (entry.factionId.equals(factionId)) continue;
 			if (entry.output < min) continue;
@@ -321,9 +323,14 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			CommoditySpecAPI spec = Global.getSettings().getCommoditySpec(comId);
 			if (spec.isPersonnel()) continue;
 			
-			float amount1 = marketSharesByCommodity.get(comId).get(faction);
-			if (amount1 < 10) continue;
-			float amount2 = marketSharesByCommodity.get(comId).get(otherFaction);
+			if (!marketSharesByCommodity.containsKey(comId))
+				continue;
+			
+			Integer amount1 = marketSharesByCommodity.get(comId).get(faction);
+			if (amount1 == null || amount1 < 10) continue;
+			Integer amount2 = marketSharesByCommodity.get(comId).get(otherFaction);
+			if (amount2 == null) continue;
+			
 			float amount = amount2 - (amount1/2);
 			if (amount < 0) continue;
 			factor += amount;
