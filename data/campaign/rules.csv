@@ -790,7 +790,7 @@ nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,Fire
 # stabilization package,,,,,,
 nex_stabilizePackageOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial any
-$faction.id != player",,,"nex_stabilizePackage_main:""I can help with your unrest problem.""",
+$faction.id != player",,,"11:nex_stabilizePackage_main:""I can help with your unrest problem.""",
 nex_stabilizePackageOptionDisabled,PopulateOptions,"$entity.hasMarket
 $faction.id != player
 !Nex_StabilizePackage enabled","SetTooltip nex_stabilizePackage_main ""$market does not require such assistance at present.""
@@ -861,7 +861,7 @@ nex_grantAutonomyCancel,DialogOptionSelected,$option == nex_grantAutonomy_cancel
 # reinforce defenses,,,,,,
 nex_reinforceDefensesOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial military
-Nex_ReinforceDefenses enabled",,,nex_reinforceDefenses_main:Reinforce ground defenses,
+Nex_ReinforceDefenses enabled",,,12:nex_reinforceDefenses_main:Reinforce ground defenses,
 nex_reinforceDefensesSel,DialogOptionSelected,$option == nex_reinforceDefenses_main,"Nex_ReinforceDefenses init
 SetShortcut nex_reinforceDefenses_cancel ""ESCAPE""","""If you are anticipating an attack, it may be worth readying and reinforcing our garrison.""","nex_reinforceDefenses_proceed:Deploy reinforcements
 nex_reinforceDefenses_cancel:Cancel",
@@ -874,7 +874,7 @@ nex_buyColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player
-!$market.nex_isTruePlayerOwned",FireAll Nex_BuyColonyDisableCheck,,nex_buyColony:Purchase governorship of $market,
+!$market.nex_isTruePlayerOwned",FireAll Nex_BuyColonyDisableCheck,,13:nex_buyColony:Purchase governorship of $market,
 nex_buyColonyOptionDisable,Nex_BuyColonyDisableCheck,!Nex_BuyColony canBuy,"SetEnabled nex_buyColony false 
 SetTooltip nex_buyColony ""Requires:\n- Friendly reputation for size 3\n- Cooperative reputation for size 4\nLarger markets may not be purchased.""
 SetTooltipHighlightColors nex_buyColony good hColor good hColor
@@ -1358,7 +1358,7 @@ nex_outpostDisableBar,PopulateOptions,$tag:nex_playerOutpost,SetEnabled marketVi
 ,,,,,,
 # bla,,,,,,
 nex_getConstructionQueueOpt,PopulateOptions,"$global.isDevMode
-Nex_IsBaseOfficial admin",,,11:nex_getConstructionQueue:>> (dev) Get construction queue,
+Nex_IsBaseOfficial admin",,,21:nex_getConstructionQueue:>> (dev) Get construction queue,
 nex_getConstructionQueue,DialogOptionSelected,$option == nex_getConstructionQueue,Nex_DisplayConstructionQueue,,,
 ,,,,,,
 nex_marketPostOpenDerelicts,MarketPostOpen,"$hasMarket
