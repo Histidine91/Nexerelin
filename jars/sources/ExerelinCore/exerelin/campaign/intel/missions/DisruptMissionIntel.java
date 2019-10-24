@@ -83,6 +83,8 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 	@Override
 	public void advanceImpl(float amount) {		
 		checkMarketState();
+		if (!isEnding() && !isEnded())
+			super.advanceImpl(amount);
 	}
 
 	@Override

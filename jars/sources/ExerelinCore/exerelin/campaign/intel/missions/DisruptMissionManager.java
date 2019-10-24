@@ -55,7 +55,8 @@ public class DisruptMissionManager extends BaseEventManager {
 	protected float getIntervalRateMult() {
 		return Global.getSettings().getFloat("nex_disruptMissionIntervalRateMult");
 	}
-
+	
+	// runcode exerelin.campaign.intel.missions.DisruptMissionManager.getInstance().advance(99999);
 	@Override
 	protected EveryFrameScript createEvent() 
 	{
