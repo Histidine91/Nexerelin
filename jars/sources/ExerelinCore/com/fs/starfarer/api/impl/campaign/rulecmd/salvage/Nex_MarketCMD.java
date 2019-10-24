@@ -645,6 +645,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		// reputation impact
 		CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 		impact.delta = market.getSize() * -0.01f * 1f;
+		// not now, we also need to look at requested fleets
+		//impact.ensureAtBest = tempInvasion.success ? RepLevel.VENGEFUL : RepLevel.HOSTILE;
 		impact.ensureAtBest = RepLevel.HOSTILE;
 		Global.getSector().adjustPlayerReputation(
 				new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, 
@@ -846,7 +848,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (withBP) {
 			Set<String> droppedBefore = getEverRaidedBlueprints();
 			boolean allowRepeat = ExerelinConfig.allowRepeatBlueprintsFromRaid;
-			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>();
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
 			for (String id : market.getFaction().getKnownShips()) {
 				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
@@ -886,7 +888,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		
 		// modspecs
-		WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>();
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
 		for (String id : market.getFaction().getKnownHullMods()) {
 			if (playerFaction.knowsHullMod(id) && !DebugFlags.ALLOW_KNOWN_HULLMOD_DROPS) continue;
 			picker.add(id, 1f);
@@ -902,7 +904,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		
 		// weapons and fighters
-		picker = new WeightedRandomPicker<String>();
+		picker = new WeightedRandomPicker<String>(random);
 		for (String id : market.getFaction().getKnownWeapons()) {
 			WeaponSpecAPI w = Global.getSettings().getWeaponSpec(id);
 			if (w.hasTag("no_drop")) continue;
