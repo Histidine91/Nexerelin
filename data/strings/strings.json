@@ -853,6 +853,7 @@
 		"fleetCost":"fleet cost",
 		"fleetCostHelp":"The fleet(s) will cost $credits credits per FP.",
 		"fleetCostHelpMarines":"For invasion fleets, adding marines will multiply the cost, up to $marineMult times the base cost.",
+		"fleetBudget":"fleet request budget",
 		"fleetPoints":"fleet points",
 		"marinesPerFleet":"marines per fleet",
 		"infoDistance":"Distance: $dist LY",
@@ -865,6 +866,7 @@
 		
 		"fleetSpawnMessage":"The task force is being prepared for launch.",
 		"tooltipInsufficientFunds":"Dispatching this task force requires $cost credits. You only have $credits credits.",
+		"tooltipInsufficientFP":"Not enough assets stocked to launch a fleet.",
 		"proceedConfirm":"Confirm launch?",
 		"proceedConfirmNonHostile":"$TheFaction is not currently hostile, but will be if you launch this task force. Are you sure you wish to do this?",
 	},
