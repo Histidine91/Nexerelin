@@ -22,6 +22,7 @@ public class NGCClearStartingGear extends BaseCommandPlugin {
 		data.getStartingCargo().clear();
 		data.clearAdditionalShips();
 		data.getStartingCargo().getCredits().set(0);
+		data.getPerson().getStats().setPoints(0);
 		data.getScripts().clear();
 		data.getScriptsBeforeTimePass().clear();
 		
