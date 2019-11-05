@@ -402,16 +402,19 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 							// don't let merc join if merc is friendly to player, 
 							// and escortee is not already on player side
 							// (otherwise merc claims to join but doesn't, as it can't pick a side)
-							
-							if (!battle.isOnPlayerSide(inBattle) &&
-									fleet.isFriendlyTo(Global.getSector().getPlayerFleet()))
+							// Exception: Always join if escortee is Tiandong
+							if (!battle.isOnPlayerSide(inBattle)
+									&& fleet.isFriendlyTo(Global.getSector().getPlayerFleet())
+									&& !inBattle.getFaction().getId().equals("tiandong"))
 							{
+								//dialog.getTextPanel().addPara("Merc cannot join, not hostile to player");
 								return false;
 							}
-							
-							// add hostile memory keys to merc if escortee is hostile to player
+
+							// Add hostile memory keys to merc if escortee is hostile to player
 							if (!battle.isOnPlayerSide(inBattle))
 							{
+								//dialog.getTextPanel().addPara("Merc enforcing hostile mode");
 								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE);
 								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF);
 								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_LOW_REP_IMPACT);
