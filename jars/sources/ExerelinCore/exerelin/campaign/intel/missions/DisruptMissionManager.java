@@ -169,6 +169,8 @@ public class DisruptMissionManager extends BaseEventManager {
 			{
 				if (ind.getId().equals(Industries.POPULATION))
 					continue;
+				if (!ind.canBeDisrupted())
+					continue;
 				
 				IndustrySpecAPI spec = ind.getSpec();
 				

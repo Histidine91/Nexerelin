@@ -96,6 +96,8 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			
 			for (MarketAPI producer : data.getMarkets()) 
 			{
+				if (producer.isHidden()) continue;
+				
 				// don't count illegal production
 				if (producer.getCommodityData(commodityId).isIllegal())
 					continue;
