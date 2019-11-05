@@ -17,8 +17,10 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
@@ -97,6 +99,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
 	public static final String MEMORY_KEY_BP_COOLDOWN = "$nex_raid_blueprints_cooldown";
 	public static final String DATA_KEY_BPS_ALREADY_RAIDED = "nex_already_raided_blueprints";
+	public static final float BASE_LOOT_SCORE = 3;
 	
 	public static Logger log = Global.getLogger(Nex_MarketCMD.class);
 	
@@ -797,6 +800,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			Drops blueprints known to player
 			Each blueprint can only be dropped once
 			Filter out NO_BP_DROP blueprints _before_ adding them to picker
+			Loot more small and medium weapons
 	*/
 	protected void raidSpecialItems(CargoAPI cargo, Random random, boolean isInvasion) 
 	{
@@ -852,16 +856,19 @@ public class Nex_MarketCMD extends MarketCMD {
 			for (String id : market.getFaction().getKnownShips()) {
 				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
+				if (Global.getSettings().getHullSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(ship + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownWeapons()) {
 				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getWeaponSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
+				if (Global.getSettings().getWeaponSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(weapon + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownFighters()) {
 				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getFighterWingSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
+				if (Global.getSettings().getFighterWingSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(fighter + id, 1f);
 			}
 			
@@ -935,12 +942,49 @@ public class Nex_MarketCMD extends MarketCMD {
 			if (id == null) continue;
 			
 			if (id.startsWith(weapon)) {
-				cargo.addWeapons(id.substring(weapon.length()), 1);
+				int count = 1;
+				WeaponSpecAPI w = Global.getSettings().getWeaponSpec(id);
+				if (w.getSize() == WeaponSize.SMALL)
+					count = 2 + random.nextInt(3);
+				else if (w.getSize() == WeaponSize.MEDIUM)
+					count = 1 + random.nextInt(2);
+				
+				cargo.addWeapons(id.substring(weapon.length()), count);
 			} else if (id.startsWith(fighter)) {
 				cargo.addFighters(id.substring(fighter.length()), 1);
 			}
 		}
 	}
+	
+	/*
+	public float getShipBlueprintSizeValue(String hullId) {
+		ShipHullSpecAPI spec = Global.getSettings().getHullSpec(hullId);
+		float rarity = spec.getRarity();
+		switch (spec.getHullSize()) {
+			case DESTROYER:
+				return 2;
+			case CRUISER:
+				return 3;
+			case CAPITAL_SHIP:
+				return 4;
+			default:
+				return 1;
+		}
+	}
+	
+	public float getWeaponBlueprintSizeValue(String weaponId) {
+		switch (Global.getSettings().getWeaponSpec(weaponId).getSize()) {
+			case SMALL:
+				return 0.75f;
+			case MEDIUM:
+				return 1;
+			case LARGE:
+				return 1.5f;
+			default:
+				return 1;
+		}
+	}
+	*/
 	
 	/**
 	 * Show loot if applicable, cleanup and exit
