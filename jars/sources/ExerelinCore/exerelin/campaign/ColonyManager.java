@@ -85,6 +85,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 207;
 	public static final int MIN_CYCLE_FOR_EXPEDITIONS = 207;
 	public static final float MAX_EXPEDITION_FP = 300;
+	public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
 	
 	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
 		0, 10, 25, 50, 80, 120, 200, 300
@@ -154,6 +155,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					if (market.getSize() < maxSize) {
 						upsizeMarket(market);
 					}
+				}
+				
+				if (market.getFaction().isPlayerFaction()) {
+					processAutonomousColonyIncome(market);
 				}
 			}
 			
@@ -339,6 +344,35 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 	}
 	
+	protected void processAutonomousColonyIncome(MarketAPI market) {
+		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
+		float f = 1f / numIter;
+		
+		MonthlyReport report = SharedData.getData().getCurrentReport();
+		FDNode colonyNode = null;
+		
+		float income = market.getIndustryIncome();
+		float upkeep = market.getIndustryUpkeep();
+		
+		if (income > 0 || upkeep > 0) {
+			if (colonyNode == null) {
+				colonyNode = report.getNode(MonthlyReport.OUTPOSTS);
+			}
+			FDNode mNode = report.getNode(colonyNode, market.getId());
+			mNode.name = market.getName() + " (" + market.getSize() + ")";
+			mNode.custom = market;
+			
+			FDNode subNode = report.getNode(mNode, "autonomous"); 
+			subNode.name = getString("reportAutonomousTax");
+			subNode.tooltipCreator = AUTONOMOUS_INCOME_NODE_TOOLTIP;
+			
+			subNode.income += income * AUTONOMOUS_INCOME_MULT * f;
+			subNode.upkeep += upkeep * AUTONOMOUS_INCOME_MULT * f;
+			subNode.icon = subNode.income >= subNode.upkeep ? "graphics/icons/reports/generic_income.png"
+					: "graphics/icons/reports/generic_expense.png";
+		}
+	}
+	
 	public static boolean isBuildingAnything(MarketAPI market) {
 		for (Industry ind : market.getIndustries()) {
 			if (ind.isBuilding() && !ind.isUpgrading())
@@ -379,6 +413,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				// if not, move on to next item in queue
 				else if (item.type == QueueType.UPGRADE) {
 					Industry ind = market.getIndustry(item.industry);
+					if (ind == null) {
+						removeItemFromQueue(item, queue);
+						continue;
+					}
 					if (ind.canUpgrade()) {
 						market.getIndustry(item.industry).startUpgrading();
 						removeItemFromQueue(item, queue);
@@ -391,6 +429,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				if (item.type == QueueType.NEW) {
 					// check industry limit; if we're over it, remove from queue
 					Industry temp = market.instantiateIndustry(item.industry);
+					if (temp == null) 
+					{
+						removeItemFromQueue(item, queue);
+						continue;
+					}
 					if (temp.isIndustry() && Misc.getNumIndustries(market) >= Misc.getMaxIndustries(market)) 
 					{
 						removeItemFromQueue(item, queue);
@@ -946,7 +989,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		public static enum QueueType { NEW, UPGRADE }
 	}
 	
-	public static final TooltipMakerAPI.TooltipCreator STORAGE_REBATE_NODE_TOOLTIP = new TooltipMakerAPI.TooltipCreator() {
+	public static final TooltipMakerAPI.TooltipCreator AUTONOMOUS_INCOME_NODE_TOOLTIP = new TooltipMakerAPI.TooltipCreator() {
 		public boolean isTooltipExpandable(Object tooltipParam) {
 			return false;
 		}
@@ -954,7 +997,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return 450;
 		}
 		public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-			tooltip.addPara(StringHelper.getString("exerelin_markets", "storageRebateTooltip"), 0);
+			tooltip.addPara(getString("reportAutonomousTaxTooltip"), 0, Misc.getHighlightColor(), 
+					String.format("%.0f", AUTONOMOUS_INCOME_MULT * 100) + "%");
 		}
 	};
 }

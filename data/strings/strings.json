@@ -508,6 +508,8 @@
 		"npcGrowthMultDesc":"NPC market",
 		"hardModeGrowthMultDesc":"Starfarer mode",
 		"hardModeIncomeMultDesc":"Starfarer mode",
+		"reportAutonomousTax":"Autonomous colony tax",
+		"reportAutonomousTaxTooltip":"Autonomous colonies transfer %s of their profit or loss to your faction.",
 	},
 	
 	"nex_colonyFleet":{
@@ -998,9 +1000,6 @@
 		"reinforcedDefensesTooltipDisabled":"Insufficient resources.",
 		"reinforcedDefensesModDesc":"Reinforced defenses",
 		"reinforcedDefensesTooltip":"%s× defense bonus. %s day(s) remaining.",
-		
-		"storageRebate":"Storage rebate",
-		"storageRebateTooltip":"Storage fees for autonomous colonies and outposts are refunded.",
 		
 		"remoteCommDirectory":"Remote connection to comm directory",
 
