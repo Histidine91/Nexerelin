@@ -1058,8 +1058,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			capacity += thisCapacity;
 		}
 		
-		fleetRequestCapacity = capacity;
-		fleetRequestStock += increment * days;
+		fleetRequestCapacity = (int)(capacity * ExerelinConfig.fleetRequestCapMult);
+		fleetRequestStock += increment * days * ExerelinConfig.fleetRequestIncrementMult;
 		if (fleetRequestStock > fleetRequestCapacity)
 			fleetRequestStock = fleetRequestCapacity;
 	}
