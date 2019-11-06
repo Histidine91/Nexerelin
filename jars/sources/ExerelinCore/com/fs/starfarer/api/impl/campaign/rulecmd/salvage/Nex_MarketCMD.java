@@ -942,14 +942,15 @@ public class Nex_MarketCMD extends MarketCMD {
 			if (id == null) continue;
 			
 			if (id.startsWith(weapon)) {
+				String weaponId = id.substring(weapon.length());
 				int count = 1;
-				WeaponSpecAPI w = Global.getSettings().getWeaponSpec(id);
+				WeaponSpecAPI w = Global.getSettings().getWeaponSpec(weaponId);
 				if (w.getSize() == WeaponSize.SMALL)
 					count = 2 + random.nextInt(3);
 				else if (w.getSize() == WeaponSize.MEDIUM)
 					count = 1 + random.nextInt(2);
 				
-				cargo.addWeapons(id.substring(weapon.length()), count);
+				cargo.addWeapons(weaponId, count);
 			} else if (id.startsWith(fighter)) {
 				cargo.addFighters(id.substring(fighter.length()), 1);
 			}
