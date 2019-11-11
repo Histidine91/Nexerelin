@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -188,6 +189,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		}
 		
 		//ExerelinUtilsReputation.adjustPlayerReputation(newFaction, null, repChange, null, dialog.getTextPanel());	// done in event
+		((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 		ent.getMemoryWithoutUpdate().set("$_newFaction", newFaction.getDisplayNameWithArticle(), 0);
 	}
 	
