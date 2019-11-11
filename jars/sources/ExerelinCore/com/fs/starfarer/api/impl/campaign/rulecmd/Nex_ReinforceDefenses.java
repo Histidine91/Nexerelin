@@ -18,7 +18,6 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.econ.ReinforcedDefenses;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;

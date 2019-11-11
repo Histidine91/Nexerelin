@@ -12,7 +12,6 @@ import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.CollectionUtils;
-import org.lazywizard.lazylib.MathUtils;
 
 public class SpawnInvasionFleet implements BaseCommand {
 

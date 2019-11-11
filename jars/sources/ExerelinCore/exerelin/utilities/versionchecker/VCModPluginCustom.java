@@ -1,6 +1,5 @@
 package exerelin.utilities.versionchecker;
 
-import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.ModSpecAPI;
 import exerelin.utilities.versionchecker.UpdateInfo.VersionFile;

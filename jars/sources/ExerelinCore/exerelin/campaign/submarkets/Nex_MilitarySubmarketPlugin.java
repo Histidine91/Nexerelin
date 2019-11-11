@@ -1,8 +1,5 @@
 package exerelin.campaign.submarkets;
 
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
-import com.fs.starfarer.api.impl.campaign.submarkets.BlackMarketPlugin;
 import com.fs.starfarer.api.impl.campaign.submarkets.MilitarySubmarketPlugin;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;

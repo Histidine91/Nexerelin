@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
-import java.util.Map;
 
 public class FuelProduction extends IndustryClassGen {
 

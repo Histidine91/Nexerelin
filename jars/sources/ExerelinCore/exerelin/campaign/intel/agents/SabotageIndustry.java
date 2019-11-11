@@ -8,7 +8,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
-import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;

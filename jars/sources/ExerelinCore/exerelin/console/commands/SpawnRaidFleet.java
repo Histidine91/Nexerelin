@@ -4,7 +4,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import static exerelin.console.commands.SpawnInvasionFleet.getMarket;
-import exerelin.utilities.ExerelinConfig;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.MathUtils;

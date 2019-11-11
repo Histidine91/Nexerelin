@@ -18,7 +18,6 @@ import com.fs.starfarer.api.impl.campaign.intel.SystemBountyManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.PortsideBarData;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.CorruptPLClerkSuppliesBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.DeliveryBarEventCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.DiktatLobsterBarEventCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.LuddicCraftBarEventCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.LuddicFarmerBarEventCreator;

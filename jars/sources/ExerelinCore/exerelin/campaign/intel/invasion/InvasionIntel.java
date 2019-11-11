@@ -34,7 +34,6 @@ import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
-import exerelin.utilities.debug.FleetAssignmentDebugger;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;

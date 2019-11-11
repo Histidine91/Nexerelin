@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.input.Keyboard;
 
 

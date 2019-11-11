@@ -14,7 +14,6 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import exerelin.world.scenarios.ScenarioManager;
 import exerelin.world.scenarios.ScenarioManager.StartScenarioDef;
-import java.awt.Color;
 
 
 public class NGCSetCorvusMode extends BaseCommandPlugin {
