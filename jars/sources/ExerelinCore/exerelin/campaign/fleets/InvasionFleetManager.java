@@ -197,12 +197,20 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		// underestimate large fleet size mults, overestimate small ones
 		float fleetSizeMult = market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).computeEffective(0f);
+		//log.info("  True fleet size mult: " + fleetSizeMult);
 		fleetSizeMult = 1 + (fleetSizeMult - 1) * 0.75f;
+		//log.info("  Estimated fleet size mult: " + fleetSizeMult);
 		
 		strength *= fleetSizeMult;
 		
-		if (variability > 0)
-			strength *= 1 + random.nextGaussian() * variability;
+		if (variability > 0) {
+			float gauss = (float)random.nextGaussian();
+			if (gauss > 3) gauss = 3;
+			if (gauss < -3) gauss = -3;
+			
+			strength *= 1 + gauss * variability;
+		}
+			
 		
 		strength *= PATROL_ESTIMATION_MULT;
 		
@@ -558,7 +566,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		String factionId = faction.getId();
 		float maxMult = type == EventType.RESPAWN ? 5 : 1;
 		
-		float fp = getWantedFleetSize(faction, target, 0.2f, false, maxMult);
+		float fp = getWantedFleetSize(faction, target, 0.1f, false, maxMult);
 		float organizeTime = getOrganizeTime(fp);
 		fp *= InvasionFleetManager.getInvasionSizeMult(factionId);
 		fp *= sizeMult;
