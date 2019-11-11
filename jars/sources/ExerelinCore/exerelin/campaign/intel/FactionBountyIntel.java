@@ -183,8 +183,10 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 			String type = ExerelinUtilsFleet.getFleetType(fleet);
 			if (type != null && ALWAYS_PAYOUT_FLEETS.contains(type))
 				return true;
+			
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	@Override
