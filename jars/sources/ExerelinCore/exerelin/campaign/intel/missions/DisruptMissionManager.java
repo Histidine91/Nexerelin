@@ -151,6 +151,8 @@ public class DisruptMissionManager extends BaseEventManager {
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
+			if (market.isHidden()) continue;
+			
 			if (AllianceManager.areFactionsAllied(factionId, market.getFactionId()) || market.getFaction().isPlayerFaction()
 					|| market.getFaction() == commission)
 				continue;
