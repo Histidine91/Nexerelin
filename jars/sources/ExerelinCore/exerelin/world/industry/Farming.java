@@ -71,7 +71,11 @@ public class Farming extends IndustryClassGen {
 					market.removeCondition(cond);
 				}
 			}
-			market.addCondition(Conditions.VOLTURNIAN_LOBSTER_PENS);
+			
+			// add lobster pens with aquaculture during random sector generation
+			// but not for industries being built on existing colonies
+			if (Global.getSector().isInNewGameAdvance())
+				market.addCondition(Conditions.VOLTURNIAN_LOBSTER_PENS);
 		}
 		
 		String id = Industries.FARMING;
