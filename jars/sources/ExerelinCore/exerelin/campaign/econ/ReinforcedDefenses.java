@@ -36,7 +36,7 @@ public class ReinforcedDefenses extends BaseMarketConditionPlugin {
 		float days = Global.getSector().getClock().convertToDays(amount);
 		timeRemaining -= days;
 		
-		if (days <= 0)
+		if (timeRemaining <= 0)
 			market.removeSpecificCondition(condition.getIdForPluginModifications());
 	}
 	
