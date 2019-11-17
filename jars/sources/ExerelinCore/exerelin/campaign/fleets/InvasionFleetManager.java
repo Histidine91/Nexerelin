@@ -85,6 +85,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
 	public static final float PATROL_ESTIMATION_MULT = 0.7f;
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
+	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
 	public static final float BASE_INVASION_COST = 500f;	// for reference, Jangala at start of game is around 500
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 15;
@@ -273,7 +274,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (station != null) {
 			stationStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, false);
 			float officerStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, true) - stationStr;
-			stationStr += officerStr * 0.5f;
+			stationStr += officerStr * STATION_OFFICER_STRENGTH_MULT;
 			stationStr *= 0.5f;
 		}
 		
