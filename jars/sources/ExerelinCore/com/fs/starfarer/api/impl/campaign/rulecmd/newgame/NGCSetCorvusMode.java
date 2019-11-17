@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import exerelin.world.scenarios.ScenarioManager;
 import exerelin.world.scenarios.ScenarioManager.StartScenarioDef;
@@ -26,12 +25,6 @@ public class NGCSetCorvusMode extends BaseCommandPlugin {
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 		memory.set("$corvusMode", setting, 0);
 		
-		// disable Prism if SCY will create its own
-		if (setting == true && ExerelinConfig.getFactions(false, false).contains("SCY"))
-		{
-			data.prismMarketPresent = false;
-			memory.set("$prismMarketPresent", false, 0);
-		}
 		// disable custom scenario if appropriate
 		if (data.startScenario != null) {
 			StartScenarioDef def = ScenarioManager.getScenarioDef(data.startScenario);
