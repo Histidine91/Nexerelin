@@ -134,7 +134,7 @@ public class Nex_SustainedBurnAbilityAI extends SustainedBurnAbilityAI {
 				distToTarget = Misc.getDistance(target.getLocation(), fleet.getLocation());
 			}
 			// modified from vanilla
-			boolean close = distToTarget < 750;	// 2000;
+			boolean close = distToTarget < 1000;	// 2000;
 
 			if (close && 
 					(curr == FleetAssignment.ORBIT_PASSIVE ||

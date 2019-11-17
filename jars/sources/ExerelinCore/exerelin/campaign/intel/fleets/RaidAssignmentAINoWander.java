@@ -6,11 +6,20 @@ import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.invasion.InvActionStage;
+import static exerelin.campaign.intel.invasion.InvActionStage.MEM_KEY_INVASION_ATTEMPTED;
+import exerelin.utilities.StringHelper;
+import org.lazywizard.lazylib.MathUtils;
 
 // vanilla, but replaces some assignment types and hacks addLocalAssignment to keep fleets from wandering off
 // see http://fractalsoftworks.com/forum/index.php?topic=5061.msg253229#msg253229
@@ -37,13 +46,48 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 		SectorEntityToken target = null;
 		if (current.from.getContainingLocation() instanceof StarSystemAPI) 
 		{
+			CampaignFleetAPI nearbyToHelp = getNearbyNeedsAssist();
+			if (nearbyToHelp != null) {
+				fleet.addAssignmentAtStart(FleetAssignment.INTERCEPT, nearbyToHelp, 1, 
+						StringHelper.getFleetAssignmentString("assisting", nearbyToHelp.getName().toLowerCase()), 
+						null);
+				setTempAssignment();
+				return;
+			}
+			
 			// force the fleet to go straight to target instead of pissing around system
-			if (current.custom instanceof MarketAPI) {
+			if (current.custom instanceof MarketAPI && !fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_INVASION_ATTEMPTED))
+			{
 				final MarketAPI market = ((MarketAPI)current.custom);
 				target = market.getPrimaryEntity();
-				fleet.addAssignment(FleetAssignment.DELIVER_MARINES, target, 
-						    10000, getTravelActionText(current));
-				return;
+				
+				boolean giveOrder = true;
+				
+				FleetAssignmentDataAPI currAssign = fleet.getCurrentAssignment();
+				if (MathUtils.getDistance(fleet, target) <= 300) {
+					//fleet.addFloatingText("Close enough, checking colony action", fleet.getFaction().getBaseUIColor(), 2);
+					checkColonyAction();
+					giveOrder = false;
+				}
+				if (currAssign != null && market.getConnectedEntities().contains(currAssign.getTarget())) 
+				{
+					giveOrder = false;
+				}
+				else if (currAssign != null && currAssign.getCustom() == TEMP_ASSIGNMENT) 
+				{
+					giveOrder = false;
+				}
+				
+				String prev = currAssign != null ? currAssign.getAssignment().toString() : "none";
+				
+				if (giveOrder) {
+					//fleet.addFloatingText("Forcing deliver assignment, previously " + prev, fleet.getFaction().getBaseUIColor(), 2);
+					fleet.clearAssignments();
+					fleet.addAssignment(FleetAssignment.DELIVER_MARINES, target, 
+								0.5f, getTravelActionText(current));
+					setTempAssignment();
+					return;
+				}
 			}
 			target = ((StarSystemAPI)current.from.getContainingLocation()).getCenter();
 		} else {
@@ -52,6 +96,24 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 		
 		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, target, 
 						    current.daysMax - current.elapsed, getInSystemActionText(current));
+	}
+	
+	protected void setTempAssignment() {
+		FleetAssignmentDataAPI currAssign = fleet.getCurrentAssignment();
+		if (currAssign != null) {
+			currAssign.setCustom(TEMP_ASSIGNMENT);
+		}
+	}
+	
+	protected CampaignFleetAPI getNearbyNeedsAssist() {
+		for (CampaignFleetAPI otherFleet : Misc.getNearbyFleets(fleet, 500)) 
+		{
+			if (otherFleet == fleet) continue;
+			if (otherFleet.getFaction() == fleet.getFaction() && otherFleet.getBattle() != null) {
+				return otherFleet;
+			}
+		}
+		return null;
 	}
 	
 	@Override
@@ -145,4 +207,43 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 //		}
 	}
 	
+	// Changes from vanilla: Simplified target check, doesn't stop the action if a nearby friendly fleet is closer to target
+	@Override
+	protected void checkColonyAction() {
+		if (!canTakeAction()) return;
+		
+		MarketAPI closest = ((InvActionStage)delegate).getTarget();
+		if (closest == null) return;
+		float minDist = Misc.getDistance(fleet, closest.getPrimaryEntity());
+		if (minDist > 2000f) return;
+		
+		for (CampaignFleetAPI other : Misc.getNearbyFleets(closest.getPrimaryEntity(), 2000f)) {
+			if (other == fleet) continue;
+			
+			if (other.isHostileTo(fleet)) {
+				SectorEntityToken.VisibilityLevel vis = other.getVisibilityLevelTo(fleet);
+				boolean canSee = vis == SectorEntityToken.VisibilityLevel.COMPOSITION_AND_FACTION_DETAILS || vis == SectorEntityToken.VisibilityLevel.COMPOSITION_DETAILS;
+				if (!canSee && other.getFaction() != fleet.getFaction()) continue;
+				
+				if (other.getAI() instanceof ModularFleetAIAPI) {
+					ModularFleetAIAPI ai = (ModularFleetAIAPI) other.getAI();
+					if (ai.isFleeing()) continue;
+					if (ai.isMaintainingContact()) continue;
+					
+					if (ai.getTacticalModule().getTarget() == fleet) return;
+					
+					MemoryAPI mem = other.getMemoryWithoutUpdate();
+					boolean smuggler = mem.getBoolean(MemFlags.MEMORY_KEY_SMUGGLER);
+					boolean trader = mem.getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET);
+					if (smuggler || trader) continue;
+				}
+				if (other.getFleetPoints() > fleet.getFleetPoints() * 0.25f || other.isStationMode()) {
+					
+					return;
+				}
+			}
+		}
+		
+		giveRaidOrder(closest);
+	}
 }

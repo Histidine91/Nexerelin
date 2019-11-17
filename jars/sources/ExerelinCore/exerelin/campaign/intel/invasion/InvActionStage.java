@@ -52,6 +52,10 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		untilAutoresolve = 15f + 5f * (float) Math.random();
 	}
+	
+	public MarketAPI getTarget() {
+		return target;
+	}
 
 	@Override
 	public void advance(float amount) {

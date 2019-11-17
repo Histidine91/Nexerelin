@@ -801,7 +801,8 @@
 		"scramblingFrom":"scrambling from $target",
 		"orbiting":"orbiting $target",
 		"rendezvous":"waiting at rendezvous point",
-
+		
+		"assisting":"assisting $target",
 		"attacking":"attacking $target",
 		"attackingStarSystem":"attacking the $target star system",
 		"attackingAroundStarSystem":"attacking around the $target star system",
@@ -1003,6 +1004,8 @@
 
 		"prismNoSale":"No sales/returns",
 		"prismRelTooLow":"Requires: $faction - $minRelationship",
+		"prismShipQualityMod":"High-End Seller",
+		"prismShipQualityModLowStability":" - low stability",
 
 		"templarControl":"Templar control"
 	},
