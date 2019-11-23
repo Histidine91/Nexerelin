@@ -131,6 +131,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (market.getFaction().isPlayerFaction()) 
 			{
 				playerFactionSize += market.getSize();
+				
+				setGrowthRate(market);
+				updateIncome(market);
 			}
 			else
 			{
