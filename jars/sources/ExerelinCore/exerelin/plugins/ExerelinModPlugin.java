@@ -31,6 +31,7 @@ import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.FieldOptionsScreenScript;
+import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
@@ -289,6 +290,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addTransientListener(new EncounterLootHandler());
         if (!newGame)
             EconomyInfoHelper.createInstance();
+		
+		sector.getListenerManager().addListener(new MarketDescChanger(), true);
     }
     
     @Override

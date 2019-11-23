@@ -1,0 +1,28 @@
+id,entity,faction,desc id,default
+# this should be a unique string,,,,
+jangala_default,jangala,hegemony,planet_jangala,TRUE
+jangala_independent,jangala,independent,planet_jangala_independent,
+jangala_luddic_church,jangala,luddic_church,planet_jangala_luddic_church,
+jangala_luddic_path,jangala,luddic_path,planet_jangala_luddic_path,
+jangala_persean,jangala,persean,planet_jangala_persean,
+jangala_pirates,jangala,pirates,planet_jangala_pirates,
+jangala_sindrian_diktat,jangala,sindrian_diktat,planet_jangala_sindrian_diktat,
+jangala_tritachyon,jangala,tritachyon,planet_jangala_tritachyon,
+,,,,
+asharu_default,asharu,independent,planet_asharu,TRUE
+asharu_hegemony,asharu,hegemony,planet_asharu_hegemony,
+asharu_luddic_church,asharu,luddic_church,planet_asharu_luddic_church,
+asharu_luddic_path,asharu,luddic_path,planet_asharu_luddic_path,
+asharu_persean,asharu,persean,planet_asharu_persean,
+asharu_pirates,asharu,pirates,planet_asharu_pirates,
+asharu_sindrian_diktat,asharu,sindrian_diktat,planet_asharu_sindrian_diktat,
+asharu_tritachyon,asharu,tritachyon,planet_asharu_tritachyon,
+,,,,
+garnir_default,corvus_IIIa,pirates,planet_barad_a,TRUE
+garnir_hegemony,corvus_IIIa,hegemony,planet_garnir_hegemony,
+garnir_independent,corvus_IIIa,independent,planet_garnir_independent,
+garnir_luddic_church,corvus_IIIa,luddic_church,planet_garnir_luddic_church,
+garnir_luddic_path,corvus_IIIa,luddic_path,planet_garnir_luddic_path,
+garnir_persean,corvus_IIIa,persean,planet_garnir_persean,
+garnir_sindrian_diktat,corvus_IIIa,sindrian_diktat,planet_garnir_sindrian_diktat,
+garnir_tritachyon,corvus_IIIa,tritachyon,planet_garnir_tritachyon,
