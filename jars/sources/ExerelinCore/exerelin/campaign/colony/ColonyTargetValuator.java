@@ -153,16 +153,21 @@ public class ColonyTargetValuator {
 			// don't colonize a system with an existing market unless we control that system
 			// also used to be "unless it's a player market and player is commissioned with that faction"
 			// but meh, doesn't sound worthwhile
-			if (!Global.getSector().getEconomy().getMarkets(system).isEmpty()) {
+			
+			boolean inhabited = !Global.getSector().getEconomy().getMarkets(system).isEmpty();
+			
+			if (inhabited) {
 				if (ExerelinUtilsFaction.getSystemOwner(system) != faction)
 					return false;
 			}
 			
 			// don't colonize systems with stations or large fleets (this is to avoid Remnant stations etc.)
-			for (CampaignFleetAPI fleet : system.getFleets()) {
-				if (fleet.isStationMode()) return false;
-				if (fleet.getFaction().isHostileTo(faction) && fleet.getFleetPoints() > 25)
-					return false;
+			if (!inhabited) {
+				for (CampaignFleetAPI fleet : system.getFleets()) {
+					if (fleet.isStationMode()) return false;
+					if (fleet.getFaction().isHostileTo(faction) && fleet.getFleetPoints() > 25)
+						return false;
+				}
 			}
 		}
 		if (!ExerelinUtilsAstro.canHaveCommRelay(system))
@@ -174,12 +179,14 @@ public class ColonyTargetValuator {
 	public boolean prefilterMarket(MarketAPI market, FactionAPI faction) {
 		StarSystemAPI system = market.getStarSystem();
 		// don't colonize core world systems except to repopulate decivilized worlds
+		/*
 		if (ExerelinUtilsAstro.isCoreSystem(system)) {
 			//if (!faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
 			//	return false;
 			if (!market.getMemoryWithoutUpdate().getBoolean("$wasCivilized"))
 				return false;
 		}
+		*/
 		
 		return true;
 	}
