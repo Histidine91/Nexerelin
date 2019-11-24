@@ -1,5 +1,5 @@
 id,trigger,conditions,script,text,options,notes
-# START NGC OPTIONS,,,,,,
+# NGC options,,,,,,
 ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"$isInIntro = true 0
 $introPage = 1.0 0
 FireBest ExerelinNGCIntroPage",,,override SS+ NGC
@@ -275,9 +275,9 @@ $nex_customStart != null","NGCClearStartingGear
 FireBest Nex_NGCCustomStartMenu",,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,"Nex_NGCFinalize
 NGCDone",,,
-# END NGC OPTIONS,,,,,,
 ,,,,,,
-# special options,,,,,,
+,,,,,,
+# Market special options,,,,,,
 ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,21:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,"$menuState = exerelinSpecial
 FireAll ExerelinMarketSpecialInitialize
@@ -316,10 +316,8 @@ nex_marketHostileInvadeAbortSel,DialogOptionSelected,$option == nex_mktInvadeAbo
 nex_marketHostileInvadeResultSel,DialogOptionSelected,$option == nex_mktInvadeResult,Nex_MarketCMD invadeResult,,,
 nex_marketHostileInvadeResultAndradaSel,DialogOptionSelected,$option == nex_mktInvadeResultAndrada,Nex_MarketCMD invadeResultAndrada,,,
 ,,,,,,
-# end military options,,,,,,
 ,,,,,,
-,,,,,,
-#START MARKET DIRECTORY OPTIONS,,,,,,
+# Market directory options,,,,,,
 nex_factionDirectoryOption,ExerelinMarketSpecial,,SetShortcut nex_factionDirectoryMain D,,7:nex_factionDirectoryMain:Faction directory,
 nex_factionDirectory,DialogOptionSelected,$option == nex_factionDirectoryMain,FireAll ExerelinFactionDirectory,,,
 nex_factionDirectoryByTrigger,ExerelinFactionDirectory,,Nex_FactionDirectory listGroups,Which faction do you want to look up?,,
@@ -333,9 +331,9 @@ nex_factionDirectoryList6,DialogOptionSelected,$option == nex_factionDirectoryLi
 nex_factionDirectoryList7,DialogOptionSelected,$option == nex_factionDirectoryList7,Nex_FactionDirectory listFactions 7,,,
 ,,,,,,
 nex_factionDirectoryPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_printFactionMarkets_""",Nex_FactionDirectory print,,,
-#END MARKET DIRECTORY OPTIONS,,,,,,
 ,,,,,,
-#START PRISONER OPTIONS,,,,,,
+,,,,,,
+# Prisoner options,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""","SetEnabled exerelinUsePrisoner true
 SetShortcut exerelinUsePrisoner P",,4:exerelinUsePrisoner:Prisoner actions,
@@ -399,9 +397,9 @@ ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpe
 FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = exerelinSpecial
 FireAll ExerelinMarketSpecial",You have no more prisoners.,,
-#END PRISONER OPTIONS,,,,,,
 ,,,,,,
-#START MINING OPTIONS,,,,,,
+,,,,,,
+# Mining options,,,,,,
 nex_openAsteroid,OpenInteractionDialog,"$isAsteroid
 !Nex_IsModActive ""stellar_industrialist""","ShowDefaultVisual
 PrintDescription 3
@@ -446,9 +444,9 @@ ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"nex_m
 nex_miningBack:Back",
 ,,,,,,
 nex_miningBack,DialogOptionSelected,$option == nex_miningBack,FireAll PopulateOptions,,,
-#END MINING OPTIONS,,,,,,
 ,,,,,,
-# fleet requests,,,,,,
+,,,,,,
+# Fleet requests,,,,,,
 nex_fleetRequestOpt,ExerelinMarketSpecial,,SetShortcut nex_fleetRequest_main R,,8:nex_fleetRequest_main:Request a fleet,
 nex_fleetRequest,DialogOptionSelected,$option == nex_fleetRequest_main,FireAll Nex_FleetRequest,,,
 nex_fleetRequestByTriggerFirstTime,Nex_FleetRequest,!$nex_fleetRequest_initComplete,"Nex_FleetRequest init
@@ -583,7 +581,7 @@ FireAll PopulateOptions","""Bah, fine. Have it your way, Captain High-and-Mighty
 
 You cut the comm link. The outcome of whatever feud $personName and $hisOrHer neighbors have down there is none of your concern.",,
 ,,,,,,
-## Base commander stuff ##,,,,,,
+# Base commander stuff,,,,,,
 ExerelinConvOfficialGreeting,PickGreeting,"Nex_IsBaseOfficial command
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll PopulateOptions
@@ -623,7 +621,7 @@ SetEnabled aiCores_startTurnIn false",,,
 ,,,,,,
 ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,FireAll ExerelinBaseCommanderOptionsInitialize,"""Anything else?""",,
 ,,,,,,
-#START PLAYER FACTION ALLIANCE OPTIONS,,,,,,
+# Alliance options,,,,,,
 ExerelinPlayerFactionDiplomacyCheckConditions,ExerelinMarketSpecialInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
 $faction.id != ""player""
@@ -703,7 +701,7 @@ ExerelinFormAlliance,DialogOptionSelected,$option == exerelinFormAlliance,"FormA
 FireAll ExerelinMarketSpecialInitialize",,,
 ExerelinLeaveAlliance,DialogOptionSelected,$option == exerelinLeaveAlliance,"LeaveAlliance
 FireAll ExerelinMarketSpecialInitialize",,,
-#END PLAYER FACTION ALLIANCE OPTIONS,,,,,,
+,,,,,,
 ,,,,,,
 # remote comm link,,,,,,
 #nex_remoteCommOption,ExerelinMarketSpecial,,SetShortcut nex_remoteComm R,,8:nex_remoteComm:Open remote comm directory,
@@ -711,7 +709,7 @@ nex_remoteComm,DialogOptionSelected,$option == nex_remoteComm,FireAll Nex_Remote
 nex_remoteCommByTrigger,Nex_RemoteComm,,Nex_RemoteCommDirectory list,Which faction do you want to look up?,,
 nex_remoteCommConnect,DialogOptionSelected,"Nex_OptionStartsWith ""nex_remoteCommDirectory_open_""",Nex_RemoteCommDirectory connect,,,
 ,,,,,,
-#START MARKET TRANSFER OPTIONS,,,,,,
+# Market transfer options,,,,,,
 nex_marketTransferInit,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_IsFactionRuler $faction.id",,,nex_transferMarketMainWithDialog:Transfer this market to another faction,
 nex_marketTransferInitNoSpaceport,PopulateOptions,"Nex_IsBaseOfficial admin
@@ -740,9 +738,9 @@ AddText ""\""Goodbye, chief.\""""",,nex_transferMarketEnd:Cut the comm link,
 nex_marketTransferPostDialogLeave,DialogOptionSelected,$option == nex_transferMarketEnd,"UpdateMemory
 ShowDefaultVisual
 EndConversation",,,
-#END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
-#START REBELLION OPTIONS,,,,,,
+,,,,,,
+# Rebellion options,,,,,,
 #nex_instigateRebellion,Nex_HostileAction,,,,6:nex_instigateRebellion:Instigate a rebellion,
 #nex_instigateRebellionNoSneak,Nex_HostileAction,$tradeMode == NONE,"SetTooltip nex_instigateRebellion ""You currently do not have access to $market to insert the needed assets.""
 SetEnabled nex_instigateRebellion false",,,
@@ -766,9 +764,9 @@ Nex_RebellionActions main
 Nex_RebellionActions printPriceMult",,,
 nex_supplyCounterInsurgencyProceed,DialogOptionSelected,"Nex_OptionStartsWith ""nex_supplyCounterInsurgency_deliver_""",Nex_RebellionActions deliver,,,
 nex_supplyCounterInsurgencyBack,DialogOptionSelected,$option == nex_supplyCounterInsurgencyBack,FireAll PopulateOptions,"""Anything else?""",,
-#END REBELLION OPTIONS,,,,,,
 ,,,,,,
-# blueprint swap options,,,,,,
+,,,,,,
+# Blueprint swap options,,,,,,
 nex_blueprintSwapOption,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_BlueprintSwap hasOption",,,nex_blueprintSwapMenu:Exchange blueprints,
 nex_blueprintSwapMenuSel,DialogOptionSelected,$option == nex_blueprintSwapMenu,FireAll Nex_BlueprintSwapMenu,"""Ah, good. Looking to buy or sell?""",,
@@ -791,7 +789,7 @@ AddTextSmall ""You have $nex_BPSwap_pointsStr points.""
 SetTextHighlights $nex_BPSwap_pointsStr","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
 ,,,,,,
-# stabilization package,,,,,,
+# Stabilization package,,,,,,
 nex_stabilizePackageOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial any
 $faction.id != player",,,"11:nex_stabilizePackage_main:""I can help with your unrest problem.""",
@@ -831,7 +829,7 @@ OR
 
 Anything else?""",,
 ,,,,,,
-# grant autonomy,,,,,,
+# Grant autonomy,,,,,,
 nex_grantAutonomyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == player
@@ -864,7 +862,7 @@ nex_revokeAutonomyConfirm,DialogOptionSelected,$option == nex_revokeAutonomy_con
 FireAll PopulateOptions","""As you say. $market is now under your direct authority once more, $playerName.""",,
 nex_grantAutonomyCancel,DialogOptionSelected,$option == nex_grantAutonomy_cancel,FireAll PopulateOptions,"""Anything else?""",,
 ,,,,,,
-# reinforce defenses,,,,,,
+# Reinforce defenses,,,,,,
 nex_reinforceDefensesOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial military
 Nex_ReinforceDefenses enabled",,,12:nex_reinforceDefenses_main:Reinforce ground defenses,
@@ -875,7 +873,7 @@ nex_reinforceDefensesSelConfirm,DialogOptionSelected,$option == nex_reinforceDef
 FireAll PopulateOptions",$PersonRank $personLastName confirms the deployment of troops and materiel. The conversation moves on to other matters.,,
 nex_reinforceDefensesNeverMind,DialogOptionSelected,$option == nex_reinforceDefenses_cancel,FireAll PopulateOptions,,,
 ,,,,,,
-# buy colony governorship,,,,,,
+# Buy colony governorship,,,,,,
 nex_buyColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
@@ -915,14 +913,14 @@ FireAll PopulateOptions","""Confirmed. Control of $market has now reverted to $f
 nex_buyColonyCancel,DialogOptionSelected,$option == nex_buyColony_cancel,FireAll PopulateOptions,"""Anything else?""",,
 ,,,,,,
 ,,,,,,
-# other base commander stuff,,,,,,
+# Other base commander stuff,,,,,,
 ,,,,,,
 #Must be after all other rules with that trigger,,,,,,
 nex_baseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll PopulateOptions,,,
 nex_marketSpecialInitializationFinished,ExerelinMarketSpecialInitialize,,FireAll ExerelinMarketSpecial,,,
 ,,,,,,
 ,,,,,,
-# START FACTION VENGEANCE DIALOG,,,,,,
+# Faction vengeance dialog,,,,,,
 greetingVengeanceMadStronger,OpenCommLink,"$entity.relativeStrength >= 0
 $entity.escalation == 0
 $entity.fleetType == vengeanceFleet score:100
@@ -1235,9 +1233,9 @@ $entity.weakerThanPlayerButHolding
 $entity.escalation == 2
 $entity.fleetType == vengeanceFleet score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""We have researched you, $playerName. Your weaknesses are analyzed and your advantages nullified. Prepare for termination.""",cutCommLink:Cut the comm link,
-# END FACTION VENGEANCE DIALOG,,,,,,
 ,,,,,,
-# START LANDMARKS,,,,,,
+,,,,,,
+# Landmarks,,,,,,
 nex_museumOpenDialog,OpenInteractionDialog,$tag:nex_museum_ship score:100,"ShowDefaultVisual
 PrintDescription 1
 FireAll Nex_MuseumDialog",Your $shipOrFleet approaches the museum ship.,,
@@ -1263,9 +1261,9 @@ It is not known whether whatever agent prompted the quarantine is still present 
 nex_beaconOpenDialogMemorial,OpenInteractionDialog,"$tag:warning_beacon
 $nex_memorialBeacon","ShowDefaultVisual
 SetShortcut beaconLeave ""ESCAPE""","This autonomous beacon serves as a memorial marker, in remembrance of a battle between the $faction and $nex_memorialFaction2 forces. Its looping message contains a list of the $faction casualties, with the names of their family members and their places of origin. The $nex_memorialFaction2 dead are not listed.",beaconLeave:Leave,
-# END LANDMARKS,,,,,,
 ,,,,,,
-# commission stuff,,,,,,
+,,,,,,
+# Commission stuff,,,,,,
 ,,,,,,
 cmsn_askForCommissionOpt,PopulateOptions,"$isPerson
 Nex_Commission personCanGiveCommission
@@ -1326,7 +1324,7 @@ CMSNResignAskToConfirm_pirate,CMSNResignAskToConfirm,$faction.id == pirates,,"""
 CMSNResignConfirmed_pirate,CMSNResignConfirmed,$faction.id == pirates,,"""Fine, then, I'll inform the boss. See ya on the other end of my guns, sucker!""",,
 CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of course. Once you've tasted freedom, there ain't no going back. Now, ran into any vulnerable convoys lately?""",,
 ,,,,,,
-# end commission stuff,,,,,,
+,,,,,,
 ,,,,,,
 # Outposts,,,,,,
 nex_outpostOption,PopulateOptions,$nex_canMine,,,7:nex_outpostPreview:Construct an outpost,
@@ -1402,7 +1400,7 @@ INTERRUPT
 "" -SERIAL]. This unit has not verified the identity of your fleet. Please engage your transponder and await further instructions.""","turnOnTransponder:Turn your transponder on
 cutCommLink:Cut the comm link",
 ,,,,,,
-# vanilla overrides,,,,,,
+# Vanilla overrides,,,,,,
 sal_printDefaultDefenders,TriggerAutomatedDefenses,,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, new energy signatures are detected near the $shortName.",,
 sal_printDebrisDefenders,TriggerAutomatedDefenses,$customType == debris_field_shared,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, new energy signatures are detected near a larger pieces of debris.",,
 sal_triggerProbeDefenders,TriggerAutomatedDefenses,$customType == derelict_probe,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, several energy signatures are detected coming online inside the probe's hold.",,
@@ -1432,7 +1430,7 @@ $market.ruinsExplored
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $market have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
 ,,,,,,
 ,,,,,,
-#Templar overrides,,,,,,
+# Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket
 $faction.id == templars score:1000
