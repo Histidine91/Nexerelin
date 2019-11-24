@@ -327,6 +327,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		if (market != null) {
 			info.addSectionHeading(getString("intelHeaderLocalReport"),	Alignment.MID, opad * 2);
 			
+			// basic info
 			str = getString("intelDescLocalReport1");
 			String marketName = market.getName();
 			String sizeStr = market.getSize() + "";
@@ -335,17 +336,38 @@ public class AgentIntel extends BaseIntelPlugin {
 			label.setHighlight(marketName, sizeStr, stabStr);
 			label.setHighlightColors(market.getFaction().getBaseUIColor(), h, h);
 			
+			// defensive strength
 			str = getString("intelDescLocalReport2");
 			String spaceStr =  String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
 					market.getFaction(), market.getStarSystem(), 0));
 			String groundStr = String.format("%.1f", InvasionRound.getDefenderStrength(market, 1));
 			info.addPara(str, opad, h, spaceStr, groundStr);
 			
+			// alert level
 			float alertLevel = CovertOpsManager.getAlertLevel(market);
 			if (alertLevel > 0) {
 				str = getString("intelDescLocalReport3");
 				String alertLevelStr = String.format("%.0f", CovertOpsManager.getAlertLevel(market) * 100) + "%";
 				info.addPara(str, opad, alertLevel > 0.4 ? Misc.getNegativeHighlightColor() : h, alertLevelStr);
+			}
+			
+			// potential income
+			if (!market.isPlayerOwned()) {
+				String net = Misc.getDGSCredits(market.getNetIncome());
+				String income = Misc.getDGSCredits(market.getIndustryIncome() + market.getExportIncome(false));
+				String expense = Misc.getDGSCredits(market.getIndustryUpkeep());
+				
+				str = getString("intelDescLocalReport4");
+				str = StringHelper.substituteToken(str, "$net", net);
+				str = StringHelper.substituteToken(str, "$income", income);
+				str = StringHelper.substituteToken(str, "$expenses", expense);
+				label = info.addPara(str, opad);
+				label.setHighlight(net, income, expense);
+				label.setHighlightColors(
+						market.getNetIncome() > 0? h : Misc.getNegativeHighlightColor(),
+						Misc.getPositiveHighlightColor(),
+						Misc.getNegativeHighlightColor()
+				);
 			}
 		}
 		

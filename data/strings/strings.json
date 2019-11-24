@@ -244,6 +244,7 @@
 		"intelDescLocalReport1":"%s is a size %s market, of stability %s.",
 		"intelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
 		"intelDescLocalReport3":"Security alert level: %s",
+		"intelDescLocalReport4":"Predicted income under player control: $net ($income income, $expenses expenses)",
 		"intelHeaderLastMessage":"Last message",
 		"intelPromptAbort":"Aborting the mission now will refund %s credits. Proceed?",
 		"intelPromptAbortQueued":"Cancelling the queued mission will refund %s credits. Proceed?",
