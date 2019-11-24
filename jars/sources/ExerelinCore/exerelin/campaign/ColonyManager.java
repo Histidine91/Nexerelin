@@ -354,7 +354,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		MonthlyReport report = SharedData.getData().getCurrentReport();
 		FDNode colonyNode = null;
 		
-		float income = market.getIndustryIncome();
+		float income = market.getIndustryIncome() + market.getExportIncome(false);
 		float upkeep = market.getIndustryUpkeep();
 		
 		if (income > 0 || upkeep > 0) {
