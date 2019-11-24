@@ -32,6 +32,7 @@ import java.awt.Color;
 public class Nex_BuyColony extends BaseCommandPlugin {
 	
 	public static final float SIZE_VALUE_MULT = 5000;
+	public static final String MEMORY_KEY_NO_BUY = "$nex_unbuyable";
 	
 	// TODO	
 	@Override
@@ -99,6 +100,9 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	}
 	
 	public static boolean canBuy(MarketAPI market) {
+		if (market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_NO_BUY))
+			return false;
+		
 		FactionAPI faction = market.getFaction();
 		int size = market.getSize();
 		if (size <= 3)

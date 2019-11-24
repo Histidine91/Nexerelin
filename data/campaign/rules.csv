@@ -885,6 +885,8 @@ nex_buyColonyOptionDisable,Nex_BuyColonyDisableCheck,!Nex_BuyColony canBuy,"SetE
 SetTooltip nex_buyColony ""Requires:\n- Friendly reputation for size 3\n- Cooperative reputation for size 4\nLarger markets may not be purchased.""
 SetTooltipHighlightColors nex_buyColony good hColor good hColor
 SetTooltipHighlights nex_buyColony Friendly 3 Cooperative 4",,,
+nex_buyColonyOptionDisable2,Nex_BuyColonyDisableCheck,$market.nex_unbuyable score:10,"SetEnabled nex_buyColony false 
+SetTooltip nex_buyColony ""$market cannot be purchased.""",,,
 nex_cedeColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
