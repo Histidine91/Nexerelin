@@ -19,22 +19,23 @@
     "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
     
     "startShipsSolo":[
-      ["brawler_lions_guard_eli"],
+      ["swp_brawler_lions_guard_eli"],
       ["brawler_Elite"]
     ],
     "startShipsCombatSmall":[
-      ["hammerhead_lions_guard_eli", "vigilance_lions_guard_eli", "kite_Standard"],
+      ["swp_hammerhead_lions_guard_eli", "swp_vigilance_lions_guard_eli", "kite_Standard"],
       ["hammerhead_Balanced", "vigilance_AP", "monitor_Escort"]
     ],
     "startShipsTradeSmall":[["tarsus_Standard", "vigilance_Starting", "mercury_PD"]],
     "startShipsCombatLarge":[
-      ["ssp_vulture_sta", "hammerhead_lions_guard_eli", "vigilance_lions_guard_eli"],
+      ["swp_vulture_sta", "swp_hammerhead_lions_guard_eli", "swp_vigilance_lions_guard_eli"],
       ["gryphon_FS", "hammerhead_Elite", "vigilance_FS"]
     ],
-    "startShipsTradeLarge":[["venture_Balanced", "gemini_Standard", "wayfarer_Standard"]],
+    "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "wayfarer_Standard"]],
+    "startShipsExplorerLarge":[["venture_Balanced", "gemini_Standard", "wayfarer_Standard"]],
     "startShipsCarrierSmall":[["drover_Strike", "vigilance_Standard", "brawler_Elite"]],
     "startShipsCarrierLarge":[
-      ["heron_lions_guard_eli", "ssp_archon_bul", "kite_Standard"],
+      ["swp_heron_lions_guard_eli", "swp_archon_att", "kite_Standard"],
       ["heron_Strike", "sunder_Assault", "centurion_Starting"]
     ],
     

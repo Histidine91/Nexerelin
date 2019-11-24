@@ -21,28 +21,28 @@
     "vengeanceFleetNamesSingle":["an Enforcer fleet", "a Hit-Fleet", "a Horde"],
 
     "startShipsSolo":[
-      ["ssp_scythe_bal"],
+      ["uw_scythe_eli"],
       ["cerberus_d_pirates_Shielded"]
     ],
     "startShipsCombatSmall":[
-      ["ssp_boar_sta", "ssp_tiger_rai", "ssp_sidecar_punp"],   # lol Sidecar
+      ["uw_boar_sta", "uw_tiger_wid", "uw_sidecar_cs"],   # lol Sidecar
       ["enforcer_d_pirates_Strike", "buffalo2_FS", "hound_d_pirates_Standard"]
     ],
     "startShipsTradeSmall":[
-      ["mule_d_pirates_Standard", "ssp_venom_sta", "hermes_FS"],
+      ["mule_d_pirates_Standard", "uw_venom_shi", "hermes_FS"],
       ["mule_d_pirates_Standard", "brawler_Assault", "shepherd_Frontier"]
     ],
     "startShipsCombatLarge":[
-      ["ssp_barbarian_balp", "ssp_shark_rai", "ssp_scythe_sta"],
+      ["uw_barbarian_ass", "uw_shark_sta", "uw_scythe_cs"],
       ["falcon_p_Strike", "enforcer_d_pirates_Strike", "lasher_Standard"]
     ],
-    "startShipsTradeLarge":[
-      ["ssp_stalker_sta", "buffalo_pirates_Standard", "ssp_venom_fas"],
+    "startShipsExplorerLarge":[
+      ["uw_stalker_cs", "buffalo_pirates_Standard", "uw_venom_sta"],
       ["venture_Balanced", "buffalo_pirates_Standard", "cerberus_d_pirates_Standard"]
     ],
     "startShipsCarrierSmall":[["condor_Attack", "buffalo2_FS", "lasher_Standard"]],
     "startShipsCarrierLarge":[["colossus3_Pirate", "enforcer_d_pirates_Strike", "hound_d_pirates_Standard"]],
-    "startShipsSuper":[["ssp_venomx_str"]],
+    "startShipsSuper":[["uw_venomx_eli"]],
     
     "startSpecialItems":[
         [["pirate_package", ""]],

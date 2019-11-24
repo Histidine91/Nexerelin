@@ -35,10 +35,11 @@
     ],
     "startShipsTradeSmall":[["tarsus_Standard", "cerberus_Standard", "lasher_CS"]],
     "startShipsCombatLarge":[
-      ["ssp_vulture_sta", "ssp_albatross_art", "kite_Standard"],
-      ["dominator_Support", "enforcer_Outdated", "kite_Interceptor"]
+      ["swp_vulture_sta", "swp_albatross_sta", "kite_Standard"],
+      ["dominator_Support", "enforcer_Outdated", "kite_Support"]
     ],
-    "startShipsTradeLarge":[["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"]],
+     "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "wayfarer_Standard"]],
+    "startShipsExplorerLarge":[["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"]],
     "startShipsCarrierSmall":[["condor_Attack", "lasher_luddic_church_Standard", "hound_luddic_church_Standard"]],
     "startShipsSuper":[["swp_cathedral_gra"]],
     

@@ -714,13 +714,15 @@ public class ExerelinFactionConfig
     {
         getStartShipTypeIfAvailable(settings, "startShipsSolo", StartFleetType.SOLO);
         getStartShipTypeIfAvailable(settings, "startShipsCombatSmall", StartFleetType.COMBAT_SMALL);
-        getStartShipTypeIfAvailable(settings, "startShipsTradeSmall", StartFleetType.TRADE_SMALL);
         getStartShipTypeIfAvailable(settings, "startShipsCombatLarge", StartFleetType.COMBAT_LARGE);
+        getStartShipTypeIfAvailable(settings, "startShipsTradeSmall", StartFleetType.TRADE_SMALL);
         getStartShipTypeIfAvailable(settings, "startShipsTradeLarge", StartFleetType.TRADE_LARGE);
+        getStartShipTypeIfAvailable(settings, "startShipsExplorerSmall", StartFleetType.EXPLORER_SMALL);
+        getStartShipTypeIfAvailable(settings, "startShipsExplorerLarge", StartFleetType.EXPLORER_LARGE);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierSmall", StartFleetType.CARRIER_SMALL);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierLarge", StartFleetType.CARRIER_LARGE);
         getStartShipTypeIfAvailable(settings, "startShipsSuper", StartFleetType.SUPER);
-		getStartShipTypeIfAvailable(settings, "startShipsGrandFleet", StartFleetType.GRAND_FLEET);
+        getStartShipTypeIfAvailable(settings, "startShipsGrandFleet", StartFleetType.GRAND_FLEET);
     }
     
     /**
@@ -830,104 +832,109 @@ public class ExerelinFactionConfig
         
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
         
-        if (type == StartFleetType.COMBAT_LARGE)
-        {
-            rolePicker.add(ShipRoles.COMBAT_LARGE, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            
-            pickShipsAndAddToList(rolePicker, ships, true);
-        }
-        else if (type == StartFleetType.TRADE_LARGE)
-        {
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 1);
-            rolePicker.add(ShipRoles.FREIGHTER_LARGE, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
-            rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-        }
-        else if (type == StartFleetType.CARRIER_LARGE)
-        {
-            rolePicker.add(ShipRoles.CARRIER_MEDIUM, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-        }
-        else if (type == StartFleetType.COMBAT_SMALL)
-        {
-            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 7);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 6);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-        }
-        else if (type == StartFleetType.TRADE_SMALL)
-        {
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
-            rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
-            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
-            rolePicker.add(ShipRoles.FREIGHTER_SMALL, 2);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
-            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-        }
-        else if (type == StartFleetType.CARRIER_SMALL)
-        {
-            rolePicker.add(ShipRoles.CARRIER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-            
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
-            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
-            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
-            pickShipsAndAddToList(rolePicker, ships, true);
-        }
-        else if (type == StartFleetType.SOLO)
-        {
-            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
-            rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
-            pickShipsAndAddToList(rolePicker, ships, true);
-        }
-        else if (type == StartFleetType.GRAND_FLEET)
-        {
-            ships = getShipsFromFleetFactory(100);
+        switch (type) {
+            case COMBAT_LARGE:
+                rolePicker.add(ShipRoles.COMBAT_LARGE, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case TRADE_LARGE:
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 1);
+                rolePicker.add(ShipRoles.FREIGHTER_LARGE, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
+                rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case EXPLORER_LARGE:
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_MEDIUM, 1);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case CARRIER_LARGE:
+                rolePicker.add(ShipRoles.CARRIER_MEDIUM, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case COMBAT_SMALL:
+                rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 7);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 6);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case TRADE_SMALL:
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
+                rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
+                rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
+                rolePicker.add(ShipRoles.FREIGHTER_SMALL, 2);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
+                rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case EXPLORER_SMALL:
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
+                rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
+                rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case CARRIER_SMALL:
+                rolePicker.add(ShipRoles.CARRIER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+                rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
+                rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
+                rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case SOLO:
+                rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+                rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
+                pickShipsAndAddToList(rolePicker, ships, true);
+                break;
+            case GRAND_FLEET:
+                ships = getShipsFromFleetFactory(100);
+                break;
+            default:
+                break;
         }
         
         return ships;
@@ -1150,8 +1157,9 @@ public class ExerelinFactionConfig
 	}
 	
 	public static enum StartFleetType {
-		SOLO, COMBAT_SMALL, TRADE_SMALL,COMBAT_LARGE,TRADE_LARGE, 
-		CARRIER_SMALL, CARRIER_LARGE, SUPER, GRAND_FLEET;
+		SOLO, COMBAT_SMALL, COMBAT_LARGE, TRADE_SMALL, TRADE_LARGE,
+		EXPLORER_SMALL, EXPLORER_LARGE, CARRIER_SMALL, CARRIER_LARGE, 
+		SUPER, GRAND_FLEET;
 		
 		public static StartFleetType getType(String str)
 		{

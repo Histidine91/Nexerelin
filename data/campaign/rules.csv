@@ -219,11 +219,15 @@ nex_NGCStartShipsCombatSmall,NewGameOptionSelected,$option == nex_NGCFleetCombat
 FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsTradeSmall,NewGameOptionSelected,$option == nex_NGCFleetTradeSmall,"NGCAddStartingShipsByFleetType TRADE_SMALL
 FireBest ExerelinNGCStep4",,,
+nex_NGCStartShipsExplorerSmall,NewGameOptionSelected,$option == nex_NGCFleetExplorerSmall,"NGCAddStartingShipsByFleetType EXPLORER_SMALL
+FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsCarrierSmall,NewGameOptionSelected,$option == nex_NGCFleetCarrierSmall,"NGCAddStartingShipsByFleetType CARRIER_SMALL
 FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsCombatLarge,NewGameOptionSelected,$option == nex_NGCFleetCombatLarge,"NGCAddStartingShipsByFleetType COMBAT_LARGE
 FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsTradeLarge,NewGameOptionSelected,$option == nex_NGCFleetTradeLarge,"NGCAddStartingShipsByFleetType TRADE_LARGE
+FireBest ExerelinNGCStep4",,,
+nex_NGCStartShipsExplorerLarge,NewGameOptionSelected,$option == nex_NGCFleetExplorerLarge,"NGCAddStartingShipsByFleetType EXPLORER_LARGE
 FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsCarrierLarge,NewGameOptionSelected,$option == nex_NGCFleetCarrierLarge,"NGCAddStartingShipsByFleetType CARRIER_LARGE
 FireBest ExerelinNGCStep4",,,

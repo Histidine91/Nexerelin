@@ -28,23 +28,27 @@
         
     "startShipsSolo":[["wolf_Starting"]],
     "startShipsCombatSmall":[
-      ["ssp_sunder_u_ass", "shade_Assault", "ssp_hecate_sta"],
+      ["swp_sunder_u_sta", "shade_Assault", "swp_hecate_sta"],
       ["medusa_Attack", "wolf_CS", "brawler_tritachyon_Standard"],
     ],
     "startShipsTradeSmall":[
-      ["mule_Starting", "wolf_CS", "ssp_nautilus_sta"],
+      ["mule_Starting", "wolf_CS", "swp_nautilus_sta"],
       ["mule_Starting", "wolf_CS", "mercury_Standard"],
     ],
     "startShipsCombatLarge":[
-      ["apogee_Balanced", "ssp_beholder_ass", "afflictor_Strike"],
+      ["swp_zenith_ass", "omen_PD"],
+      ["aurora_Assault_Support", "tempest_Attack"],
+    ],
+    "startShipsExplorerLarge":[
+      ["apogee_Balanced", "swp_beholder_cs", "afflictor_Strike"],
       ["apogee_Balanced", "medusa_Attack", "omen_PD"],
     ],
     "startShipsTradeLarge":[
-      ["ssp_circe_fis", "buffalo_tritachyon_Standard", "ssp_nautilus_str"],
+      ["swp_circe_sta", "buffalo_tritachyon_Standard", "swp_nautilus_att"],
       ["starliner_Standard", "buffalo_tritachyon_Standard", "mercury_Standard"],
     ],
-    "startShipsCarrierSmall":[["ssp_vortex_sta", "tempest_Attack", "ssp_hecate_sup"]],
-    "startShipsCarrierLarge":[["swp_eos_sta", "ssp_arachne_art", "brawler_tritachyon_Standard"]],
+    "startShipsCarrierSmall":[["swp_vortex_sta", "tempest_Attack", "swp_hecate_cs"]],
+    "startShipsCarrierLarge":[["swp_eos_sta", "swp_arachne_sta", "brawler_tritachyon_Standard"]],
     "startShipsSuper":[["hyperion_Attack"]],
     
     "startSpecialItems":[

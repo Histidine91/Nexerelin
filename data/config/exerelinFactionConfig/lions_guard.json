@@ -10,27 +10,27 @@
     "responseFleetName":"Guardian Fleet",
     
     "morality":"amoral",
-	
+    
     "startShipsSolo":[
       ["wolf_Starting"],
       ["brawler_lions_guard_eli"]
     ],
     "startShipsCombatSmall":[
       ["shrike_Attack", "shade_Assault", "wolf_CS"],
-      ["ssp_sunder_u_ass", "ssp_hecate_sta", "vigilance_lions_guard_eli"]
+      ["swp_sunder_u_sta", "swp_hecate_sta", "swp_vigilance_lions_guard_eli"]
     ],
     "startShipsCombatLarge":[
       ["falcon_Attack", "shrike_Attack", "omen_PD"],
-	  ["swp_eagle_lions_guard_eli", "hammerhead_lions_guard_eli", "afflictor_Strike"]
+      ["swp_eagle_lions_guard_eli", "swp_hammerhead_lions_guard_eli", "afflictor_Strike"]
     ],
     "startShipsCarrierSmall":[
       ["drover_Strike", "afflictor_Strike", "omen_PD"],
-      ["ssp_vortex_sta", "wolf_CS", "brawler_lions_guard_eli"],
+      ["swp_vortex_sta", "wolf_CS", "swp_brawler_lions_guard_eli"],
     ],
     "startShipsCarrierLarge":[
-	  ["heron_Strike", "hammerhead_Elite", "shade_Assault"],
-	  ["heron_lions_guard_eli", "shrike_Attack", "ssp_hecate_sta"],
-	],
+      ["heron_Strike", "hammerhead_Elite", "shade_Assault"],
+      ["swp_heron_lions_guard_eli", "shrike_Attack", "swp_hecate_sta"],
+    ],
     
     "startSpecialItems":[
         [["midline_package", ""], ["high_tech_package", ""]],
