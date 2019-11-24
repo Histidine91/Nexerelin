@@ -23,14 +23,27 @@ import org.lazywizard.lazylib.MathUtils;
 
 // vanilla, but replaces some assignment types and hacks addLocalAssignment to keep fleets from wandering off
 // see http://fractalsoftworks.com/forum/index.php?topic=5061.msg253229#msg253229
+// Used for invasion and sat bomb fleets
 public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	
 	public RaidAssignmentAINoWander(CampaignFleetAPI fleet, RouteData route, FleetActionDelegate delegate) {
 		super(fleet, route, delegate);
 	}
 	
+	protected boolean allowWander() {
+		if (delegate instanceof WaitStage) {
+			return ((WaitStage)delegate).isAggressive();
+		}
+		return false;
+	}
+	
 	@Override
 	protected void addLocalAssignment(final RouteManager.RouteSegment current, boolean justSpawned) {
+		if (allowWander()) {
+			super.addLocalAssignment(current, justSpawned);
+			return;
+		}
+		
 		if (justSpawned) {
 			float progress = current.getProgress();
 			RouteLocationCalculator.setLocation(fleet, progress, 
@@ -118,6 +131,11 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	
 	@Override
 	protected void addTravelAssignment(final RouteManager.RouteSegment current, boolean justSpawned) {
+		if (allowWander()) {
+			super.addTravelAssignment(current, justSpawned);
+			return;
+		}
+		
 		if (justSpawned) {
 			TravelState state = getTravelState(current);
 			if (state == TravelState.LEAVING_SYSTEM) {
@@ -212,7 +230,11 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	protected void checkColonyAction() {
 		if (!canTakeAction()) return;
 		
-		MarketAPI closest = ((InvActionStage)delegate).getTarget();
+		MarketAPI closest = null;
+		if (delegate instanceof InvActionStage) {
+			closest = ((InvActionStage)delegate).getTarget();
+		}
+		
 		if (closest == null) return;
 		float minDist = Misc.getDistance(fleet, closest.getPrimaryEntity());
 		if (minDist > 2000f) return;

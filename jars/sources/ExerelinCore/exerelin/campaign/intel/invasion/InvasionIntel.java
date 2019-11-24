@@ -54,6 +54,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	protected int marinesPerFleet = 0;
 	protected DefenseFleetIntel brawlDefIntel;
+	protected WaitStage waitStage;
 		
 	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
@@ -87,7 +88,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		action.setAbortFP(fp * successMult);
 		addStage(action);
 		
-		addStage(new WaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS));
+		waitStage = new WaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS, true);
+		addStage(waitStage);
 		
 		addStage(new NexReturnStage(this));
 		
@@ -338,7 +340,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	@Override
 	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
-		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(fleet, route, (InvActionStage)action);
+		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(fleet, route, 
+				outcome == null ? (InvActionStage)action : waitStage);
 		return raidAI;
 	}
 	

@@ -902,6 +902,7 @@
 		"intelBrawl":"$TheTargetFaction will likely deploy a large defense force to meet the invasion.",
 		
 		"intelStageAction":"The invasion force is currently in-system.",
+		"intelStageWait":"The invasion force is defending $market after capturing it.",
 		"intelStageActionSuccess":"The invasion force has conquered $market.",
 		"intelStageActionInsufficientReached":"The invasion forces have failed to reach $location in adequate strength. The invasion is aborted.",
 		"intelStageActionDefeatedGround":"The invasion forces have been repelled by the ground defenses of $market.",

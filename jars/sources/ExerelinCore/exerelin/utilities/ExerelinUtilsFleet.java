@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -16,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.util.DS_Defs;
@@ -251,5 +253,13 @@ public class ExerelinUtilsFleet
 		
 		fleet.getFleetData().setSyncNeeded();
 		fleet.getFleetData().syncIfNeeded();
+	}
+	
+	public static RouteFleetAssignmentAI getRouteAssignmentAI(CampaignFleetAPI fleet) {
+		for (EveryFrameScript script : fleet.getScripts()) {
+			if (script instanceof RouteFleetAssignmentAI)
+				return (RouteFleetAssignmentAI)script;
+		}
+		return null;
 	}
 }
