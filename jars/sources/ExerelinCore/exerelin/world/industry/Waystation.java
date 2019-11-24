@@ -13,6 +13,6 @@ public class Waystation extends IndustryClassGen {
 	public float getWeight(ProcGenEntity entity) {
 		float weight = 2 - entity.market.getAccessibilityMod().computeEffective(0);
 		if (weight < 0) weight = 0.01f;
-		return weight * 2;
+		return weight * 2 * getFactionMult(entity);
 	}
 }

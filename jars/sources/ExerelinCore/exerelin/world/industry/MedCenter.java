@@ -17,6 +17,6 @@ public class MedCenter extends IndustryClassGen {
 	
 	@Override
 	public float getWeight(ProcGenEntity entity) {
-		return 1 + entity.market.getSize() / 5;
+		return (1 + entity.market.getSize() / 5) * getFactionMult(entity);
 	}
 }

@@ -17,7 +17,7 @@ public class ImperialBazaar extends IndustryClassGen {
 	
 	@Override
 	public float getWeight(ProcGenEntity entity) {
-		float weight = entity.market.getSize() * 100;
+		float weight = entity.market.getSize() * 100 * getFactionMult(entity);
 		if (entity.market.hasIndustry(Industries.MILITARYBASE) || entity.market.hasIndustry(Industries.HIGHCOMMAND))
 			weight = weight/2 + 1;
 		

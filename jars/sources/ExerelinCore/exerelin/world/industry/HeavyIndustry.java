@@ -60,6 +60,8 @@ public class HeavyIndustry extends IndustryClassGen {
 		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
 			weight -= 100;
 		
+		weight *= getFactionMult(entity);
+		
 		return weight;
 	}
 	

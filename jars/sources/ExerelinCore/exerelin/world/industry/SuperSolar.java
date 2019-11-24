@@ -26,6 +26,6 @@ public class SuperSolar extends IndustryClassGen {
 		float weight = 5000 / MathUtils.getDistance(entity.entity, entity.entity.getStarSystem().getCenter());
 		if (weight < 0.3) return 0;
 		if (weight > 3) weight = 3;
-		return weight;
+		return weight * getFactionMult(entity);
 	}
 }

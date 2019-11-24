@@ -36,19 +36,20 @@ public class TechMining extends IndustryClassGen {
 	@Override
 	public float getWeight(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
+		float mult = getFactionMult(entity);
 				
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			switch (cond.getId())
 			{
 				case Conditions.RUINS_SCATTERED:
-					return 200;
+					return 200 * mult;
 				case Conditions.RUINS_WIDESPREAD:
-					return 500;
+					return 500 * mult;
 				case Conditions.RUINS_EXTENSIVE:
-					return 1000;
+					return 1000 * mult;
 				case Conditions.RUINS_VAST:
-					return 9000;
+					return 9000 * mult;
 			}
 		}
 		return 0;

@@ -65,6 +65,8 @@ public class LightIndustry extends IndustryClassGen {
 				weight *= 2f;
 		}
 		
+		weight *= getFactionMult(entity);
+		
 		return weight;
 	}
 }

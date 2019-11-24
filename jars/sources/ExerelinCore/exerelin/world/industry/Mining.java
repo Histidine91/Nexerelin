@@ -16,11 +16,12 @@ public class Mining extends IndustryClassGen {
 	public float getWeight(ProcGenEntity entity) {
 		float weight = 0;
 		MarketAPI market = entity.market;
+		float factionMult = getFactionMult(entity);
 		
 		// asteroid belt/field stations will always have mining
 		if (entity.terrain != null) {
 			if (market.hasCondition(Conditions.ORE_SPARSE) || market.hasCondition(Conditions.ORE_MODERATE))
-				return 999999;
+				return 999999 * factionMult;
 		}
 				
 		for (MarketConditionAPI cond : market.getConditions())
@@ -61,7 +62,7 @@ public class Mining extends IndustryClassGen {
 				case Conditions.VOLATILES_DIFFUSE:
 				case Conditions.VOLATILES_ABUNDANT:
 				case Conditions.VOLATILES_PLENTIFUL:
-					return 999999;
+					return 999999 * factionMult;
 			}
 		}
 		
@@ -69,8 +70,8 @@ public class Mining extends IndustryClassGen {
 		if (market.hasCondition(Conditions.RARE_ORE_SPARSE) && 
 				(market.hasCondition(Conditions.ORE_SPARSE) 
 				|| market.hasCondition(Conditions.ORE_MODERATE)))
-			return 999999;
+			return 999999 * factionMult;
 		
-		return weight;
+		return weight * factionMult;
 	}
 }
