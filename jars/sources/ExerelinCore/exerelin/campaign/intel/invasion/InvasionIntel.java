@@ -31,6 +31,7 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
+import exerelin.campaign.intel.fleets.WaitStage;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -47,6 +48,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	public static final boolean NO_STRIKE_FLEETS = true;
 	public static final boolean USE_REAL_MARINES = false;
 	public static final int MAX_MARINES = 3000;
+	public static final int WAIT_AFTER_SUCCESS_DAYS = 90;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
@@ -84,6 +86,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		action = new InvActionStage(this, target);
 		action.setAbortFP(fp * successMult);
 		addStage(action);
+		
+		addStage(new WaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS));
 		
 		addStage(new NexReturnStage(this));
 		
