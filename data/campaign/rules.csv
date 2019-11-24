@@ -347,6 +347,12 @@ ExerelinMarketPrisonerOptionNotAllowed,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
 !FactionAllowPrisonerActions  $faction.id score:20","SetTooltip exerelinUsePrisoner ""$TheFaction have no use for prisoners.""
 SetEnabled exerelinUsePrisoner false",,,
+nex_marketPrisonerOptionRecentlyInvaded,ExerelinMarketSpecial,"$hasMarket
+$faction.nex_recentlyInvaded score:20","Nex_PrisonerAction getCooldown
+SetTooltip exerelinUsePrisoner ""$TheFaction is not currently accepting prisoners due to your recent invasions of their territory. This will last for $nex_recentInvasionCooldown.""
+SetTooltipHighlightColors exerelinUsePrisoner hColor
+SetTooltipHighlights exerelinUsePrisoner $nex_recentInvasionCooldown
+SetEnabled exerelinUsePrisoner false",,,
 ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"$menuState = prisoner 0
 GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
@@ -355,7 +361,7 @@ ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $nu
 ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,"$faction.id != ""player""","SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""
 SetShortcut exerelinPrisonerRepatriate P",,exerelinPrisonerRepatriate:Repatriate prisoner,
 ExerelinPrisonerOptionListRansomBase,ExerelinPrisonerOption,,,,exerelinPrisonerRansom:Collect ransom,
-ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,,"GetPrisonerValue
+ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,,"Nex_PrisonerAction getValue
 SetTooltip exerelinPrisonerRansom ""Return a prisoner in exchange for a ransom of $ransomValue credits.""
 SetTooltipHighlightColors exerelinPrisonerRansom buttonShortcut 
 SetTooltipHighlights exerelinPrisonerRansom $ransomValue
@@ -372,7 +378,7 @@ $player.transponderOn","SetTooltip exerelinPrisonerRansom ""$TheFactionLong are 
 SetEnabled exerelinPrisonerRansom false",,,
 #ExerelinPrisonerOptionListRansomPirates,ExerelinPrisonerOption,IsPirateFaction $faction.id,"SetTooltip exerelinPrisonerRansom ""Pirates do not pay ransom.""
 SetEnabled exerelinPrisonerRansom false",,,
-#ExerelinPrisonerOptionListSellSlave,ExerelinPrisonerOption,$tradeMode != NONE,"GetPrisonerValue
+#ExerelinPrisonerOptionListSellSlave,ExerelinPrisonerOption,$tradeMode != NONE,"Nex_PrisonerAction getValue
 SetTooltip exerelinPrisonerSellSlave ""Sell a prisoner as a slave for $slaveValue credits. This will anger lawful factions.""
 SetTooltipHighlightColors exerelinPrisonerSellSlave buttonShortcut 
 SetTooltipHighlights exerelinPrisonerSellSlave $slaveValue
@@ -381,12 +387,12 @@ SetShortcut exerelinPrisonerSellSlave S",,exerelinPrisonerSellSlave:Sell as slav
 #ExerelinPrisonerOptionListSellSlaveNoMarket,ExerelinPrisonerOption,$tradeMode == NONE,"SetTooltip exerelinPrisonerSellSlave ""You cannot dock with $market to perform this trade.""
 SetEnabled exerelinPrisonerSellSlave false",,exerelinPrisonerSellSlave:Sell as slave,
 ExerelinPrisonerOptionListBack,ExerelinPrisonerOption,,SetShortcut exerelinMarketSpecial ESCAPE,,exerelinMarketSpecial:Back,
-ExerelinPrisonerRepatriate,DialogOptionSelected,$option == exerelinPrisonerRepatriate,"PrisonerRepatriate
+ExerelinPrisonerRepatriate,DialogOptionSelected,$option == exerelinPrisonerRepatriate,"Nex_PrisonerAction repatriate
 FireAll ExerelinPrisonerPostTrade",The prisoner has been repatriated.,,
-ExerelinPrisonerRansom,DialogOptionSelected,$option == exerelinPrisonerRansom,"PrisonerRansom
+ExerelinPrisonerRansom,DialogOptionSelected,$option == exerelinPrisonerRansom,"Nex_PrisonerAction ransom
 SetTextHighlights $ransomValue
 FireAll ExerelinPrisonerPostTrade",The prisoner has been ransomed for $ransomValue credits.,,
-ExerelinPrisonerSellSlave,DialogOptionSelected,$option == exerelinPrisonerSellSlave,"PrisonerSellSlave
+ExerelinPrisonerSellSlave,DialogOptionSelected,$option == exerelinPrisonerSellSlave,"Nex_PrisonerAction sellSlave
 SetTextHighlights $slaveValue
 FireAll ExerelinPrisonerPostTrade",You have sold the prisoner into slavery for $slaveValue credits.,,
 ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpecialPeople
@@ -606,6 +612,11 @@ FireAll ExerelinBaseCommanderOptionsInitialize","""Hello, chief. What can we do 
 ,,,,,,
 aiCores_turnInOptionSelFollowers,DialogOptionSelected,"$option == aiCores_startTurnIn
 $faction.id == player",FireAll PopulateCoresTurnInOptions,"""Good to hear. We can always use more of these things. Standard bounty applies.""",,
+aiCores_turnInOptionRecentlyInvaded,DisableTurnInCoresOptionIfNeeded,$faction.nex_recentlyInvaded score:20,"Nex_PrisonerAction getCooldown
+SetTooltip aiCores_startTurnIn ""$TheFaction is not currently accepting AI cores due to your recent invasions of their territory. This will last for $nex_recentInvasionCooldown.""
+SetTooltipHighlightColors aiCores_startTurnIn hColor
+SetTooltipHighlights aiCores_startTurnIn $nex_recentInvasionCooldown
+SetEnabled aiCores_startTurnIn false",,,
 ,,,,,,
 ,,,,,,
 #ExerelinBaseCommanderInitializeAddDialogs,ExerelinBaseCommanderOptionsInitialize,,<do something>,,,

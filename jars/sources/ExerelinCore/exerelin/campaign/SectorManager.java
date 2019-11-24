@@ -1096,6 +1096,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     oldOwnerId, MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE);
         }
         
+        if ((newOwner.isPlayerFaction() || newOwner == Misc.getCommissionFaction())
+                && isCapture)
+        {
+            oldOwner.getMemoryWithoutUpdate().set("$nex_recentlyInvaded", true, 
+					Global.getSettings().getFloat("nex_aiCoreAndPrisonerCooldownAfterInvasion"));
+        }
+        
         ExerelinUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
                 playerInvolved, isCapture, factionsToNotify, repChangeStrength);
     }
