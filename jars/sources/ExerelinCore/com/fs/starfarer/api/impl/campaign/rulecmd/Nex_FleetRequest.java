@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
@@ -73,13 +74,15 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	public static final String FACTION_OPTION_PREFIX = "nex_fleetRequest_setFaction_";
 	public static final float BAR_WIDTH = 256;
 	public static final float MARINE_COST_MAX_MOD = 3;
+	public static final float MIN_FP = 100;
 	
 	protected MemoryAPI memory;
 	protected String option;
 	protected MarketAPI source;
 	protected FactionAPI faction;
 	protected MarketAPI target;
-	protected float fp;
+	protected int fp;
+	protected int maxFP;
 	protected int marines;
 	protected float cost;
 	protected FleetType fleetType;
@@ -96,6 +99,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		{
 			case "init":
 				initFirstTime();
+				printBudget();
 				printFleetInfo(true, true, true, true);
 				break;
 			case "mainMenu":
@@ -164,6 +168,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			target = getTarget();
 		fp = getFP();
 		marines = getMarines();
+		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
 		
 		updateCost();
 	}
@@ -208,7 +213,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (fleetType == FleetType.INVASION) {
 			float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
 			cost *= mult;
-			cost *= 1.25f;	// FIXME balancing placeholder
 		}
 		cost = Math.round(cost);
 		
@@ -216,14 +220,15 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		return cost;
 	}
 	
-	protected float getFP() {
+	protected int getFP() {
 		if (!memory.contains(MEM_KEY_FP))
 			memory.set(MEM_KEY_FP, 50, 0);
 		
-		return memory.getFloat(MEM_KEY_FP);
+		return (int)memory.getFloat(MEM_KEY_FP);
 	}
 	
-	protected void setFP(float fp) {
+	protected void setFP(int fp) {
+		if (fp > maxFP) fp = maxFP;
 		memory.set(MEM_KEY_FP, fp, 0);
 		this.fp = fp;
 		updateCost();
@@ -270,8 +275,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		addCostHelpPara(dialog.getTextPanel());
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		opts.clearOptions();
+		float max = Math.min(maxFP, 1500);
+		if (max < MIN_FP) max = MIN_FP;
+		
 		opts.addSelector(getString("fleetPoints", true), "fpSelector", Color.cyan, 
-				BAR_WIDTH, 48, 100, 1500, ValueDisplayMode.VALUE, null);
+				BAR_WIDTH, 48, MIN_FP, max, ValueDisplayMode.VALUE, null);
 		opts.setSelectorValue("fpSelector", fp);
 		
 		if (fleetType == FleetType.INVASION) {
@@ -306,6 +314,25 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (time < 0.1f) time = 0.1f;
 		
 		return time;
+	}
+	
+	protected void printBudget() {
+		TextPanelAPI text = dialog.getTextPanel();
+		int capacity = InvasionFleetManager.getManager().getFleetRequestCapacity();
+		String available = maxFP + "";
+		LabelAPI label = text.addPara(getString("fleetBudget", true) + ": " + available
+				+ "/" + capacity);
+		label.setHighlight(available, capacity + "");
+		
+		Color color1;
+		if (maxFP == 0)
+			color1 = Misc.getGrayColor();
+		else if (maxFP < MIN_FP)
+			color1 = Misc.getNegativeHighlightColor();
+		else 
+			color1 = Misc.getHighlightColor();
+		Color color2 = capacity > 0 ? Misc.getHighlightColor() : Misc.getGrayColor();
+		label.setHighlightColors(color1, color2);
 	}
 	
 	protected void printFleetInfo(boolean showCost, boolean showDist, boolean showTime, boolean showStr) {
@@ -610,6 +637,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}
 		intel.init();
 		intel.setPlayerSpawned(true);
+		InvasionFleetManager.getManager().modifyFleetRequestStock(-fp);
+		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
+		setFP(fp);
 		
 		dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
@@ -624,6 +654,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			Global.getSector().adjustPlayerReputation(envelope, faction.getId());
 		}
 		
+		printBudget();
+		generateMainMenu();
+		
 		return true;
 	}
 	
@@ -633,7 +666,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		String fleetTypeName = Misc.ucFirst(getFleetType().getName());
 		opts.addOption(getString("optionFleetType") + ": " + fleetTypeName, "nex_fleetRequest_selectType");
 		
-		String fpStr = String.format("%.0f", fp);
+		String fpStr = fp + "";
 		opts.addOption(getString("optionStrength") + ": " + fpStr, "nex_fleetRequest_strengthMenu");
 		
 		String sourceName = source == null ? StringHelper.getString("none") : source.getName();
@@ -653,7 +686,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		opts.addOption(StringHelper.getString("proceed", true), OPTION_PROCEED);
 		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-		if (cost > credits) {
+		if (maxFP < MIN_FP) {
+			opts.setEnabled("nex_fleetRequest_strengthMenu", false);
+			opts.setEnabled(OPTION_PROCEED, false);
+			String tooltip = getString("tooltipInsufficientFP");
+			opts.setTooltip(OPTION_PROCEED, tooltip);
+		}		
+		else if (cost > credits) {
 			opts.setEnabled(OPTION_PROCEED, false);
 			String tooltip = getString("tooltipInsufficientFunds");
 			String costStr = Misc.getWithDGS(cost);
