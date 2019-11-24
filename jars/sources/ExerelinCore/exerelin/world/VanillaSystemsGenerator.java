@@ -280,8 +280,14 @@ public class VanillaSystemsGenerator {
 		//MarketAPI chalcedon = getMarket("chalcedon");
 		//chalcedon.addIndustry(Industries.ORBITALSTATION);
 		
+		MarketAPI culann = getMarket("culann");
+		culann.getIndustry(Industries.BATTLESTATION_HIGH).setAICoreId("alpha_core");
+		
 		MarketAPI eldfell = getMarket("eldfell");
 		eldfell.addIndustry(Industries.GROUNDDEFENSES);
+		
+		MarketAPI eochu_bres = getMarket("eochu_bres");
+		eochu_bres.getIndustry(Industries.STARFORTRESS_HIGH).setAICoreId("alpha_core");
 		
 		MarketAPI eventide = getMarket("eventide");
 		eventide.addIndustry(Industries.BATTLESTATION_HIGH);
