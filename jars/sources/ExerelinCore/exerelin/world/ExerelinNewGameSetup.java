@@ -168,6 +168,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = setupData.corvusMode;
 		boolean grandSector = Global.getSettings().getModManager().isModEnabled("ZGrand Sector");
+		boolean adjustedSector = Global.getSettings().getModManager().isModEnabled("Adjusted Sector");
 		
 		// use vanilla hyperspace map
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
@@ -182,6 +183,14 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			else
 				hyperMap = "data/campaign/terrain/clear_skies.png";
 		}
+		else if (adjustedSector) {
+			boolean generateHS = Global.getSettings().getBoolean("AdjustedSectorHS");
+			if (generateHS)
+				hyperMap = "data/campaign/terrain/hyperspace_new.png";
+			else
+				hyperMap = "data/campaign/terrain/no_storms.png";
+		}		
+		
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
 			  sector.getHyperspace(), // location to add to
@@ -191,8 +200,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		if (corvusMode)
 		{
 			VanillaSystemsGenerator.generate(sector);
-			if (grandSector) {
+			if (grandSector || adjustedSector) {
 				// ensure area round stars is clear
+				// no need to do it in random sector, since ExerelinCoreSystemGenerator has its own clearer
 				HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
 				NebulaEditor editor = new NebulaEditor(plugin);
 				float minRadius = plugin.getTileSize() * 2f;
