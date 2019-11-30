@@ -50,12 +50,11 @@ public class ExerelinConfig
     public static String[] supportedModFactions = new String[]{};
     
     // Invasion stuff
-    public static boolean enableInvasions = true;
+	public static boolean enableInvasions = true;
     public static boolean allowPirateInvasions = false;
     public static boolean retakePirateMarkets = true;
+    public static float fleetRequestCostPerMarine = 100f;
     public static float fleetRequestCostPerFP = 400f;
-    public static float fleetRequestCapMult = 1;
-    public static float fleetRequestIncrementMult = 1;
     public static float invasionFleetSizeMult = 1;
     public static float invasionGracePeriod = 15;
     public static float pointsRequiredForInvasionFleet = 24000f;
@@ -170,9 +169,8 @@ public class ExerelinConfig
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
+            fleetRequestCostPerMarine = (float)settings.optDouble("fleetRequestCostPerMarine", fleetRequestCostPerMarine);
             fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);
-            fleetRequestCapMult = (float)settings.optDouble("fleetRequestCapMult", fleetRequestCapMult);
-            fleetRequestIncrementMult = (float)settings.optDouble("fleetRequestIncrementMult", fleetRequestIncrementMult);
             invasionFleetSizeMult = (float)settings.optDouble("invasionFleetSizeMult", invasionFleetSizeMult);
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
