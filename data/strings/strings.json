@@ -1289,6 +1289,19 @@
 		"intelStageActionDefeatedSpace":"The task force has been defeated by the defenders of $market.",
 		"intelStageActionAborted":"The bombardment has been aborted.",
 	},
+	"nex_specialForces":{	
+		"intelTitle":"Special Task Group",
+		"intelTag":"Special forces",
+		
+		"intelDesc1":"The $faction special task group $fleetName is present in the Sector.",
+		"intelDesc1NoName":"A $faction special task group is present in the Sector.",
+		"intelDescCommander":"The fleet is known to be commanded by $rank $name, $levelDesc.",
+		"intelDescStr":"The fleet's estimated strength is %s fleet points.",
+		"intelDescAction":"Current action: $action",
+		"intelDescOver":"The $faction special task group $fleetName is no longer operational.",
+		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",
+	},
+	
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
 		"stabilityText":"Planet buster",
