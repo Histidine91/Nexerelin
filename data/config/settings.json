@@ -55,7 +55,7 @@
 	"nex_invasionBaseDefenseMult":1.25,
 	"nex_raidBPCooldown":60,	# how long before a market can be raided for blueprints again
 	
-	"nex_aiCoreAndPrisonerCooldownAfterInvasion":60,	# cannot turn in prisoners or AI cores for this long after a successful invasion of that faction's markets
+	"nex_aiCoreAndPrisonerCooldownAfterInvasion":0,	# cannot turn in prisoners or AI cores for this long after a successful invasion of that faction's markets
 	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,
