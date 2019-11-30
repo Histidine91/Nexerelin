@@ -49,8 +49,11 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 			RouteLocationCalculator.setLocation(fleet, progress, 
 									current.from, current.getDestination());
 		}
+		
+		// This occurs when e.g. dropping into a system and causing the raid fleets to materialize around the target
+		// so needs to be non-passive to keep fleets from sitting around doing nothing
 		if (current.from != null && current.to == null && !current.isFromSystemCenter()) {
-			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from, 
+			fleet.addAssignment(FleetAssignment.ORBIT_AGGRESSIVE, current.from, 
 					current.daysMax - current.elapsed, getInSystemActionText(current),
 					goNextScript(current));		
 			return;
@@ -267,5 +270,12 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 		}
 		
 		giveRaidOrder(closest);
+	}
+	
+	@Override
+	protected void addStartingAssignment(RouteManager.RouteSegment current, boolean justSpawned) 
+	{
+		fleet.addFloatingText("Executing starting assignment: " + justSpawned, fleet.getFaction().getBaseUIColor(), 2);
+		super.addStartingAssignment(current, justSpawned);
 	}
 }
