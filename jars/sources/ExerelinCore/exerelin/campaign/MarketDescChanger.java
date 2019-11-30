@@ -62,12 +62,10 @@ public class MarketDescChanger implements InvasionListener {
 	public static void setEntityDescId(SectorEntityToken entity, String factionId) 
 	{
 		String entityId = entity.getId();
-		log.info("bla " + entityId + ", " + DESCRIPTIONS_BY_ENTITY_ID.containsKey(entityId));
 		if (DESCRIPTIONS_BY_ENTITY_ID.containsKey(entityId))
 		{
 			List<DescUpdateEntry> descs = DESCRIPTIONS_BY_ENTITY_ID.get(entityId);
 			for (DescUpdateEntry desc : descs) {
-				log.info("  Trying desc " + desc.descId + " for " + desc.factionId);
 				if (!desc.factionId.equals(factionId)) continue;
 				entity.setCustomDescriptionId(desc.descId);
 				log.info("Updating entity " + entityId + " description to " + desc.descId);
@@ -103,9 +101,8 @@ public class MarketDescChanger implements InvasionListener {
 	
 	@Override
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
-            boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength) 
+			boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength) 
 	{
-		log.info("wololo " + market.getId());
 		String factionId = newOwner.getId();
 		for (SectorEntityToken linked : market.getConnectedEntities()) {
 			setEntityDescId(linked, factionId);

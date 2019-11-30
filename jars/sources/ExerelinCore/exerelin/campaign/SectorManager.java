@@ -931,10 +931,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             entity.setFaction(newOwnerId);
         }
         
-        // use comm board people instead of market people, 
+        // Use comm board people instead of market people, 
         // because some appear on the former but not the latter 
-        // (specifically when a new admin is assigned, old one disappears from the market)
-        // also this won't mess with player-assigned admins
+        // (specifically when a new market admin is assigned, old one disappears from the market)
+        // Also, this way it won't mess with player-assigned admins
         for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
         {
             if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
