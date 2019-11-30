@@ -281,19 +281,19 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		if (assembling && isMarketKnown()) return market.getPrimaryEntity();
 		return null;
 	}
-    
-    @Override
-    public void advanceImpl(float amount) {
+	
+	@Override
+	public void advanceImpl(float amount) {
 		if (over) {
-            return;
-        }
+			return;
+		}
 		
-        if (getFaction().isAtWorst(Factions.PLAYER, RepLevel.NEUTRAL)) {
-            endEvent(EndReason.NO_LONGER_HOSTILE);
-            return;
-        }
+		if (getFaction().isAtWorst(Factions.PLAYER, RepLevel.INHOSPITABLE)) {
+			endEvent(EndReason.NO_LONGER_HOSTILE);
+			return;
+		}
 		
-        if (assembling) {
+		 if (assembling) {
 			if (!market.getFactionId().equals(factionId))
 				endEvent(EndReason.FAILED_TO_SPAWN);
 			
