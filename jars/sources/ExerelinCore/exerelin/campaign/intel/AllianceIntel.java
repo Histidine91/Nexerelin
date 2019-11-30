@@ -205,7 +205,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 			
 			boolean compatible = ExerelinConfig.ignoreAlignmentForAlliances || 
 					AllianceManager.getAlignmentCompatibilityWithAlliance(factionId, alliance) 
-					> AllianceManager.MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
+					>= AllianceManager.MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
 			if (!compatible) {
 				wrongAlignment.add(factionId);
 				continue;
