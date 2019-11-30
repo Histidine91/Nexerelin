@@ -135,7 +135,8 @@ public class ExerelinConfig
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     public static boolean enablePunitiveExpeditions = true;
-	public static boolean allyVictories = true;	// TODO    
+    public static boolean allyVictories = true;
+    public static boolean updateMarketDescOnCapture = true;
 
     public static void loadSettings()
     {
@@ -233,6 +234,7 @@ public class ExerelinConfig
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
             enablePunitiveExpeditions = settings.optBoolean("enablePunitiveExpeditions", enablePunitiveExpeditions);
             allyVictories = settings.optBoolean("allyVictories", allyVictories);
+            updateMarketDescOnCapture = settings.optBoolean("updateMarketDescOnCapture", updateMarketDescOnCapture);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);

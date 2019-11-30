@@ -290,8 +290,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addTransientListener(new EncounterLootHandler());
         if (!newGame)
             EconomyInfoHelper.createInstance();
-		
-		sector.getListenerManager().addListener(new MarketDescChanger(), true);
+        
+        if (ExerelinConfig.updateMarketDescOnCapture)
+            sector.getListenerManager().addListener(new MarketDescChanger(), true);
     }
     
     @Override
