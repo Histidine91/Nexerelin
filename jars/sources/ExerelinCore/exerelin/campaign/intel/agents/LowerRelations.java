@@ -154,12 +154,20 @@ public class LowerRelations extends CovertActionIntel {
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getActionString("intelStatus_lowerRelations");
+		if (thirdFaction == null) {
+			info.addPara("Error: third faction is null! Abort the action and report this bug", pad);
+			return;
+		}
 		info.addPara(action, pad, thirdFaction.getBaseUIColor(), thirdFaction.getDisplayName());
 	}
 	
 	@Override
 	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
 		String action = getActionString("intelStatus_lowerRelations", true);
+		if (thirdFaction == null) {
+			info.addPara("Error: third faction is null! Abort the action and report this bug", pad, color);
+			return;
+		}
 		LabelAPI label = info.addPara(action, pad, color, Misc.getHighlightColor(), thirdFaction.getDisplayName());
 		label.setHighlight(thirdFaction.getDisplayName(), Math.round(daysRemaining) + "");
 		label.setHighlightColors(thirdFaction.getBaseUIColor(), Misc.getHighlightColor());
