@@ -202,6 +202,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					market);
 		
 		buildIndustries(market);
+		processNPCConstruction(market);
 	}
 	
 	public void setGrowthRate(MarketAPI market) {
