@@ -33,8 +33,7 @@ public class InvAssembleStage extends NexAssembleStage {
 		
 		if (Math.random() < 0.33f)
 			base *= 1.5f;
-		
-		if (((OffensiveFleetIntel)intel).isBrawlMode())
+		else if (((OffensiveFleetIntel)intel).isBrawlMode())
 			base *= 1.25f;
 		
 		base *= MathUtils.getRandomNumberInRange(0.85f, 1.15f);

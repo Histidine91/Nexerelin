@@ -34,9 +34,9 @@
 	"nex_showNPCGrowthMessages":true,
 	
 	"nex_brawlMode":false,	# much stronger invasion and raid fleets, with defense fleets spawned to counter them
-	"nex_brawlMode_minMult":2,
-	"nex_brawlMode_maxMult":4,
-	"nex_brawlMode_randomFactionGearChance":0.6,
+	"nex_brawlMode_minMult":1.5,
+	"nex_brawlMode_maxMult":3,
+	"nex_brawlMode_randomFactionGearChance":0,	# 0.6
 	
 	"nex_officerBaseEscapeChance":0.5,	# modified by crew loss mult
 	"nex_officerSurviveChance":0.75,	# only if officer does not escape and ship is disabled rather than destroyed
