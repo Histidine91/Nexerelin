@@ -157,6 +157,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return fp;
 	}
 	
+	public float getBaseFP() {
+		return baseFP;
+	}
+	
 	public MarketAPI getMarketFrom() {
 		return from;
 	}

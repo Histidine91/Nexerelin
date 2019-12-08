@@ -913,7 +913,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	protected float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
 	{
-		float amount = base * Math.max(intel.getFP()/BASE_INVASION_COST, 0.8f);
+		float amount = base * Math.max(intel.getBaseFP()/BASE_INVASION_COST, 0.8f);
 		log.info("Deducting " + amount + " invasion points for " + intel.getName());
 		return amount;
 	}
