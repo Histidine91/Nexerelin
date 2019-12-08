@@ -118,10 +118,13 @@
 			"nex_invasion":"graphics/exerelin/icons/intel/invasion.png",
 			"nex_satbomb":"graphics/icons/markets/meteor_strike.png",
 			"respawn_base":"graphics/icons/markets/orbital_station.png",
+			"nex_vengeance":"graphics/exerelin/icons/intel/intel_skull.png",
 			
 			"spyEvent0":"graphics/exerelin/icons/intel/spy4.png",
 			"spyEvent1":"graphics/exerelin/icons/intel/spy4_amber.png",
 			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png",
+			
+			
 			
 			# not used directly, just to get the images to load
 			"trait_paranoid":"graphics/exerelin/icons/intel/war.png",

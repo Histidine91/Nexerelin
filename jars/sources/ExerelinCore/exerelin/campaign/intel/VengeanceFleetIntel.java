@@ -263,7 +263,8 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 
 	@Override
 	public String getIcon() {
-		return getFaction().getCrest();
+		//return getFaction().getCrest();
+		return Global.getSettings().getSpriteName("intel", "nex_vengeance");
 	}
 	
 	@Override

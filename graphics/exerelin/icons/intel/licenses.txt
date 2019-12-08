@@ -21,6 +21,10 @@ chain_and_ball.png
 double_exclamation.png
 	Vanilla Starsector, adapted from graphics/icons/intel/events.png
 	
+intel_skull.png
+	Soren/Harmful Mechanic, free for non-commercial use
+	http://fractalsoftworks.com/forum/index.php?topic=11433.0
+	
 ----------------------
 Made by Tartiflette:
 	peace.png
