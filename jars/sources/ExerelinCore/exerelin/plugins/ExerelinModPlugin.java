@@ -53,6 +53,7 @@ import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.missions.DisruptMissionManager;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
+import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_StoragePlugin;
 import exerelin.campaign.submarkets.PrismMarket;
@@ -62,6 +63,7 @@ import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
 import exerelin.world.VanillaSystemsGenerator;
 import exerelin.world.scenarios.ScenarioManager;
+import java.io.IOException;
 import org.apache.log4j.Logger;
 
 public class ExerelinModPlugin extends BaseModPlugin
@@ -72,10 +74,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
     //public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
     public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
+    public static boolean isNexDev = false;
     
     public static Logger log = Global.getLogger(ExerelinModPlugin.class);
     protected static boolean isNewGame = false;
-    
     
     
     public static void replaceSubmarket(MarketAPI market, String submarketId) {
@@ -120,6 +122,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(AllianceManager.create());
         new ColonyManager().init();
         new RevengeanceManager().init();
+        new SpecialForcesManager().init();
         
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
@@ -148,14 +151,13 @@ public class ExerelinModPlugin extends BaseModPlugin
             if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
                 market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, market.getFactionId());
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
-			ColonyManager.updateFreePortSetting(market);
+            ColonyManager.updateFreePortSetting(market);
         }
         
         StatsTracker.create();
         
         SectorManager.setCorvusMode(true);
         SectorManager.reinitLiveFactions();
-        //sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
         NexUtilsReputation.syncFactionRelationshipsToPlayer();
         
         // add Follow Me ability
@@ -317,6 +319,17 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!hasLazyLib) {
             throw new RuntimeException(StringHelper.getString("exerelin_misc", "errorLazyLib"));
         }
+        
+        // Nex dev check
+        try {
+            Global.getSettings().readTextFileFromCommon("nex_dev");
+            isNexDev = true;
+        }
+        catch (IOException ex)
+        {
+            // Do nothing
+        }
+        
         // TODO: toggle to disable this
         /*
         int officerMaxLevel = (int)Global.getSettings().getFloat("officerMaxLevel");

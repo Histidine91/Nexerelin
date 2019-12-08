@@ -38,6 +38,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
+import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -271,6 +272,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(AllianceManager.create());
 		new ColonyManager().init();
 		new RevengeanceManager().init();
+		new SpecialForcesManager().init();
 		
 		StatsTracker.create();
 		

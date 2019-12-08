@@ -1,4 +1,4 @@
-package exerelin.campaign.intel.specialforces;
+package exerelin.campaign.intel.specialforces.namer;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;

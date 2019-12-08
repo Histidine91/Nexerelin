@@ -1,6 +1,8 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
+	
+	"specialForcesMaxFleets":0,
 
     "startShipsSolo":[
       ["swp_alastor_sta"],

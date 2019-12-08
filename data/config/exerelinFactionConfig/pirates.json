@@ -13,12 +13,14 @@
         "ideological":0.5,
     },
     "diplomacyTraits":["neutralist", "anarchist"],
-	"morality":"evil",
+    "morality":"evil",
     
     "freeMarket":true,
     
     "vengeanceFleetNames":["Enforcers", "Hit-Fleet", "Horde"],
     "vengeanceFleetNamesSingle":["an Enforcer fleet", "a Hit-Fleet", "a Horde"],
+    
+    "specialForcesMaxFleets":0,
 
     "startShipsSolo":[
       ["uw_scythe_eli"],

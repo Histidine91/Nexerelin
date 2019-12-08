@@ -27,6 +27,8 @@
     "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
     "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
+	
+	"specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.LuddicNamer",
     
     "startShipsSolo":[["vigilance_Standard"]],
     "startShipsCombatSmall":[

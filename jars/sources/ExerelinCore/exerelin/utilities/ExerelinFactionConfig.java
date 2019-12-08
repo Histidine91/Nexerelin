@@ -120,6 +120,13 @@ public class ExerelinFactionConfig
     public String factionIdForHqResponse = null;
     public boolean raidsFromBases = false;
     
+    // special forces
+    public int specialForcesMaxFleets = 2;
+    public float specialForcesCountMult = 1;	// TODO
+    public float specialForcesPointMult = 1;
+	public float specialForcesSizeMult = 1;
+    public String specialForcesNamerClass = "exerelin.campaign.intel.specialforces.namer.CommanderNamer";
+    
     // misc
     public boolean dropPrisoners = true;
     public boolean noHomeworld = false;	// don't give this faction a HQ in procgen
@@ -233,10 +240,15 @@ public class ExerelinFactionConfig
             directoryUseShortName = settings.optBoolean("directoryUseShortName", directoryUseShortName);
             difficultyString = settings.optString("difficultyString", difficultyString);
             
-            // colonies
             colonyExpeditionChance = (float)settings.optDouble("colonyExpeditionChance", colonyExpeditionChance);
             colonyTargetValuator = settings.optString("colonyTargetValuator", colonyTargetValuator);
             maxColonyDistance = (float)settings.optDouble("maxColonyDistance", maxColonyDistance);
+			
+            specialForcesMaxFleets = settings.optInt("specialForcesMaxFleets", specialForcesMaxFleets);
+			specialForcesCountMult = (float)settings.optDouble("specialForcesCountMult", specialForcesCountMult);
+			specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
+			specialForcesSizeMult = (float)settings.optDouble("specialForcesSizeMult", specialForcesSizeMult);
+            specialForcesNamerClass = settings.optString("specialForcesNamerClass", specialForcesNamerClass);
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));

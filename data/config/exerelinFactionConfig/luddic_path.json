@@ -17,6 +17,8 @@
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
     "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
     
+    "specialForcesMaxFleets":0,
+    
     "alignments":{
         "corporate":-1,
         "technocratic":-1,
@@ -25,7 +27,7 @@
         "ideological":1,
     },
     "diplomacyTraits":["paranoid", "stalwart", "hates_ai", "anarchist"],
-	"morality":"evil",
+    "morality":"evil",
     
     "freeMarket":true,
     

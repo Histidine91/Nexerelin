@@ -66,6 +66,7 @@
 		"and":"and",
 		"on":"on",
 		"at":"at",
+		"of":"of",
 
 		"back":"back",
 		"goBack":"go back",
@@ -830,6 +831,8 @@
 		"movingInToInvade":"moving in to invade $target",
 		"mining":"mining $target",
 		"miningUnload":"unloading cargo and disbanding",
+		"resupplying":"resupplying at $target",
+		"reconstituting":"reconstituting fleet at $target",
 		"suppressingRebellion":"suppressing rebellion at $target",
 		"wandering":"wandering $target",
 		"operatingIn":"operating in $target",
@@ -1144,7 +1147,12 @@
 		"missingInAction":"missing in action",
 		"miaPresumedDead":"MIA, presumed dead",
 		"killedInAction":"killed in action",
-		"rescued":"rescued"
+		"rescued":"rescued",
+		
+		"intelSkillLevel1":"an unremarkable officer",
+		"intelSkillLevel2":"a capable officer",
+		"intelSkillLevel3":"a highly capable officer",
+		"intelSkillLevel4":"an exceptionally capable officer",
 	},
 	
 	"nex_insurance":{
@@ -1294,11 +1302,16 @@
 		
 		"intelDesc1":"The $faction special task group $fleetName is present in the Sector.",
 		"intelDesc1NoName":"A $faction special task group is present in the Sector.",
-		"intelDescCommander":"The fleet is known to be commanded by $rank $name, $levelDesc.",
-		"intelDescStr":"The fleet's estimated strength is %s fleet points.",
+		"intelDescCommander":"The fleet is known to be commanded by $rank $name, $levelDesc in the $flagship.",
+		"intelDescCommanderNoFlagship":"The fleet is known to be commanded by $rank $name, $levelDesc.",
+		"intelDescStr":"The fleet's estimated strength is %s fleet points (damage %s).",
+		"intelDescFleetStatus":"The fleet is physically alive and is currently in the %s.",
 		"intelDescAction":"Current action: $action",
+		"intelDescRouteSegmentInfo":"Route segment: from %s to %s (%s of %s days elapsed)",
 		"intelDescOver":"The $faction special task group $fleetName is no longer operational.",
 		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",
+		
+		"intelButtonDebug":"Debug",
 	},
 	
 	"exerelin_superweapon":{

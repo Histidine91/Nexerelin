@@ -7,4 +7,6 @@
     "allowPrisonerActions":false,
 	
 	"maxRelationships":{ "default":-0.6 },
+	
+	"specialForcesMaxFleets":0,
 }

@@ -1,0 +1,39 @@
+{
+	"numSuffixes":{
+		"st":"st",	# "twenty-first"
+		"nd":"nd",	# "twenty-second"
+		"rd":"rd",	# "twenty-third"
+		"th":"th",	# "twenty-forth" (but also "eleventh"), etc.
+	},
+	
+	"luddic_names1":[
+		"Crown",
+		"Gauntlet",
+		"Lance",
+		"Mace",
+		"Robe",
+		"Rod",
+		"Sword",
+		"Staff",
+		"Spear",
+	],
+	
+	"luddic_names2":[
+		"Charity",
+		"Chastity",
+		"Courage",
+		"Diligence",
+		"Dignity",
+		"Faith",
+		"Fortitude",
+		"Humility",
+		"Justice",
+		"Kindness",
+		"Loyalty",
+		"Patience",
+		"Prudence",
+		"Temperance",
+		"Truth",
+		"Virtue",
+	],
+}

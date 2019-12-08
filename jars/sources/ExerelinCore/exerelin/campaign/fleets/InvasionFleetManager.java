@@ -635,7 +635,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return pts;
 	}
 	
-	protected static float getMarketInvasionCommodityValue(MarketAPI market) {
+	public static float getMarketInvasionCommodityValue(MarketAPI market) {
 		float ships = getCommodityPoints(market, Commodities.SHIPS);
 		float supplies = getCommodityPoints(market, Commodities.SUPPLIES);
 		float marines = getCommodityPoints(market, Commodities.MARINES);

@@ -10,13 +10,15 @@
     
     "morality":"evil",
     
-    "factionIdForHqResponse":"lions_guard",
+    #"factionIdForHqResponse":"lions_guard",	# Guards have no capitals, so this produces weird fleets
 
     "alignments":{
         "militarist":1,
         "diplomatic":-1,
     },
     "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
+	
+	"specialForcesMaxFleets":1,
     
     "startShipsSolo":[
       ["swp_brawler_lions_guard_eli"],
