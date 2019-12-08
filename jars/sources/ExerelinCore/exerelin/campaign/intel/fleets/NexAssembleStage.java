@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -161,5 +162,34 @@ public abstract class NexAssembleStage extends AssembleStage {
 		}
 		
 		return true;
+	}
+	
+	// Same as vanilla, but don't assume it uses fleet size multiplier
+	@Override
+	protected float getLargeSize(boolean limitToSpawnFP) {
+		//if (true) return getFPLarge();
+		//float base = LARGE_SIZE;
+		float mult = 1f;
+		if (!getSources().isEmpty()) {
+			MarketAPI source = getSources().get(0);
+			FactionAPI.ShipPickMode mode = Misc.getShipPickMode(source);
+			float base = source.getFaction().getApproximateMaxFPPerFleet(mode);
+			
+			float numShipsMult = 1;
+			if (offFltIntel.useMarketFleetSizeMult)
+				numShipsMult = source.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).computeEffective(0f);
+			else
+				numShipsMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(offFltIntel.getFaction());
+			
+			if (numShipsMult < 1f) numShipsMult = 1f;
+			mult = 1f / numShipsMult;
+			if (limitToSpawnFP) {
+				return Math.min(spawnFP, base * mult);
+			}
+			return base * mult;
+		} else {
+			return 250f;
+		}
+		
 	}
 }
