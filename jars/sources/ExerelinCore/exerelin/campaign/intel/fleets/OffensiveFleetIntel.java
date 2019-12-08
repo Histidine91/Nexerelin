@@ -461,7 +461,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		market.getContainingLocation().addEntity(fleet);
 		fleet.setFacing((float) Math.random() * 360f);
 		// this will get overridden by the patrol assignment AI, depending on route-time elapsed etc
-		fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().x);
+		fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().y);
 		
 		fleet.addScript(createAssignmentAI(fleet, route));
 		

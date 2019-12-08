@@ -173,6 +173,7 @@ public class VictoryScreenScript implements EveryFrameScript
 			printCreditLine("LazyWizard", StringHelper.getString(category, "contribution_lazyWizard"));
 			printCreditLine("Soren", StringHelper.getString(category, "contribution_soren"));
 			printCreditLine("Tartiflette", StringHelper.getString(category, "contribution_tartiflette"));
+			printCreditLine("Weezer", StringHelper.getString(category, "contribution_weezer"));
 			printCreditLine("The SS mod community", StringHelper.getString(category, "contribution_ssModCommunity"));
 			printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString(category, "contribution_fractalSoftworks"));
 		}
