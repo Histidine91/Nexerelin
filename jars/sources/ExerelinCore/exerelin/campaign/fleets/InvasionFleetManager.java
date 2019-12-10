@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
@@ -116,6 +117,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected int numRemnantRaids = 0;
 	protected int lifetimeInvasions = 0;
 	protected int lifetimeRaids = 0;
+	protected float fleetRequestStock;
+	protected int fleetRequestCapacity;
 	
 	public InvasionFleetManager()
 	{
@@ -1043,6 +1046,60 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public int getNumLifetimeRaids() {
 		return lifetimeRaids;
 	}
+		
+	public void updateFleetRequestStock(float days) {
+		int capacity = 0;
+		float increment = 0;
+		
+		List<MarketAPI> requestable = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		if (Misc.getCommissionFaction() != null) {
+			requestable.addAll(ExerelinUtilsFaction.getFactionMarkets(Misc.getCommissionFactionId()));
+		}
+		for (MarketAPI market : requestable)
+		{
+			boolean playerOwned = market.isPlayerOwned();
+			float thisIncrement = getMarketInvasionCommodityValue(market)/20;
+			if (!playerOwned) thisIncrement *= 0.25f;
+			increment += thisIncrement;
+			
+			float thisCapacity = getFleetRequestCapacity(market);
+			if (!playerOwned) thisCapacity *= 0.25f;
+			capacity += thisCapacity;
+		}
+		
+		fleetRequestCapacity = (int)(capacity * ExerelinConfig.fleetRequestCapMult);
+		fleetRequestStock += increment * days * ExerelinConfig.fleetRequestIncrementMult;
+		if (fleetRequestStock > fleetRequestCapacity)
+			fleetRequestStock = fleetRequestCapacity;
+	}
+	
+	public int getFleetRequestCapacity() {
+		return fleetRequestCapacity;
+	}
+	
+	public float getFleetRequestStock() {
+		return fleetRequestStock;
+	}
+	
+	public void modifyFleetRequestStock(int amount) {
+		fleetRequestStock += amount;
+	}
+	
+	public int getFleetRequestCapacity(MarketAPI market) {
+		int amount = 0;
+		int size = (market.getSize() - 2);
+		for (Industry ind : market.getIndustries()) {
+			if (ind.getSpec().hasTag(Industries.TAG_PATROL))
+				amount += 1;
+			else if (ind.getSpec().hasTag(Industries.TAG_MILITARY))
+				amount += 2 * size;
+			else if (ind.getSpec().hasTag(Industries.TAG_COMMAND))
+				amount += 3 * size;
+		}
+		amount *= 100;
+		
+		return amount;
+	}
 	
 	public List<OffensiveFleetIntel> getActiveIntelCopy() {
 		return new ArrayList<>(activeIntel);
@@ -1055,21 +1112,29 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			return;
 		
 		float days = Global.getSector().getClock().convertToDays(amount);
-	
+		
+		tracker.advance(days);
+		boolean elapsed = this.tracker.intervalElapsed();
+		
+		if (elapsed) {
+			updateFleetRequestStock(tracker.getIntervalDuration());
+		}
+		
+		// if still in invasion grace period, do nothing further
 		if (daysElapsed < ExerelinConfig.invasionGracePeriod)
 		{
 			daysElapsed += days;
 			return;
 		}
 		
+		// advance Remnant raid tracker
 		if (Global.getSector().getClock().getCycle() >= 207) {
 			remnantRaidInterval.advance(days);
 			if (remnantRaidInterval.intervalElapsed())
 				generateRemnantRaidFleet(null, null, 1);
 		}
-		
-		this.tracker.advance(days);
-		if (!this.tracker.intervalElapsed()) {
+				
+		if (!elapsed) {
 			return;
 		}
 		List<RaidIntel> remove = new LinkedList();
