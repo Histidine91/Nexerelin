@@ -525,7 +525,7 @@ public class MiningHelperLegacy {
 		if (useCRMod)
 		{
 			float cr = member.getRepairTracker().getCR();
-			crModifier = cr / 0.6f;
+			crModifier = cr / 0.7f;
 		}
 		
 		ShipVariantAPI variant = member.getVariant();
