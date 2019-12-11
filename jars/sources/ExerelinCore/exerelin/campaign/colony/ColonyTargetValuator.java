@@ -30,6 +30,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Used to determine the relative value of planets as colonization targets, 
+ * for weighting in random selection of a target for a colony expedition.
+ */
 public class ColonyTargetValuator {
 	
 	public static final String RESOURCES_CSV_PATH = "data/config/exerelin/conditions_to_commodities.csv";
@@ -230,6 +234,11 @@ public class ColonyTargetValuator {
 		return value;
 	}
 	
+	/**
+	 * Multiplies the planet's hazard rating, which is then used to divide the planet's score.
+	 * @param faction
+	 * @return
+	 */
 	public float getHazardDivisorMult(FactionAPI faction) {
 		return 2;
 	}

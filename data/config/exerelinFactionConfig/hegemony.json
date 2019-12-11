@@ -19,8 +19,8 @@
     # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
     "colonyExpeditionChance":1,	# baseline expansion behaviour
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
-	
-	"specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.PlanetNamer",
+    
+    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.PlanetNamer",
     
     "startShipsSolo":[["lasher_Starting"]],
     "startShipsCombatSmall":[

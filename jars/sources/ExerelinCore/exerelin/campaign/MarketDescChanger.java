@@ -20,6 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Handles changing of market descriptions when a market is captured.
+ */
 public class MarketDescChanger implements InvasionListener {
 	
 	public static final List<DescUpdateEntry> DESCRIPTIONS = new ArrayList<>();

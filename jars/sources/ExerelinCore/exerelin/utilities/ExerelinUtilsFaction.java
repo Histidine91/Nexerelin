@@ -20,7 +20,11 @@ import org.json.JSONObject;
 
 public class ExerelinUtilsFaction {
 	
-	// same as Misc.getClaimingFaction except doesn't exclude player faction
+	/**
+	 * Same as Misc.getClaimingFaction except doesn't exclude player faction.
+	 * @param loc
+	 * @return
+	 */
 	public static FactionAPI getSystemOwner(LocationAPI loc)
 	{
 		int max = 0;

@@ -125,7 +125,6 @@
 			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png",
 			
 			
-			
 			# not used directly, just to get the images to load
 			"trait_paranoid":"graphics/exerelin/icons/intel/war.png",
 			"trait_pacifist":"graphics/exerelin/icons/intel/peace.png",

@@ -34,6 +34,8 @@ import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 // Copied from vanilla
+// TODO: go through this and make it extend the vanilla plugin, 
+// only containing stuff that's actually modified from vanilla
 public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
 
     private static final float ASTEROID_MAX_DIST = 750f;

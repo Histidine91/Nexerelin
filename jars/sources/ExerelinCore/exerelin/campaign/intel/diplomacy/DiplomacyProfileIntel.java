@@ -445,6 +445,18 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
+	public boolean isHidden() {
+		// Hide pirate diplomacy profiles of pirate factions, unless player is also a pirate?
+		// nah, it does show some important things like revanchist claims
+		/*
+		boolean isPirate = ExerelinUtilsFaction.isPirateFaction(PlayerFactionStore.getPlayerFactionId());
+		if (!isPirate && ExerelinUtilsFaction.isPirateFaction(faction.getId()))
+			return true;
+		*/
+		return false;
+	}
+	
+	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(getString("intelTag"));

@@ -68,7 +68,8 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
- * Handles assorted colony-related functions.
+ * Handles assorted colony-related functions, including NPC colony growth, NPC colony expeditions,
+ * admin bonuses from empire size, and relief fleets.
  */
 public class ColonyManager extends BaseCampaignEventListener implements EveryFrameScript,
 		EconomyTickListener, InvasionListener, MarketImmigrationModifier
@@ -185,7 +186,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	// runcode exerelin.campaign.ColonyManager.getManager().upsizeMarket(Global.getSector().getEconomy().getMarket("jangala"))
-	public void upsizeMarket(MarketAPI market) {
+	/**
+	 * Makes the specified market one size larger (with intel notification), 
+	 * and prompts it to build new industries.
+	 * @param market
+	 */
+	public void upsizeMarket(MarketAPI market) 
+	{
 		CoreImmigrationPluginImpl.increaseMarketSize(market);
 		// intel: copied from CoreImmigrationPluginImpl
 		MessageIntel intel = new MessageIntel(getString("intelGrowthTitle", false) 
@@ -205,6 +212,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		processNPCConstruction(market);
 	}
 	
+	/**
+	 * Sets whether the market should have immigration modifiers applied to it.
+	 * @param market
+	 */
 	public void setGrowthRate(MarketAPI market) {
 		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
 		boolean want = !player || SectorManager.getHardMode();
@@ -301,6 +312,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 	}
 	
+	/**
+	 * Updates the presence or absence of the Starfarer mode income multiplier for the specified market.
+	 * @param market
+	 */
 	public static void updateIncome(MarketAPI market)
 	{
 		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
@@ -348,6 +363,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 	}
 	
+	/**
+	 * Registers income from an autonomous colony in the monthly report.
+	 * @param market
+	 */
 	protected void processAutonomousColonyIncome(MarketAPI market) {
 		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
 		float f = 1f / numIter;
@@ -393,6 +412,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 	}
 	
+	/**
+	 * Starts queued construction/upgrade projects on the market as appropriate.
+	 * @param market
+	 */
 	protected void processNPCConstruction(MarketAPI market) {
 		if (isBuildingAnything(market))
 			return;
@@ -555,6 +578,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return (T)valuator;
 	}
 	
+	/**
+	 * Returns the set of planets for which a colony expedition is already ongoing.
+	 * @return
+	 */
 	public Set<PlanetAPI> getExistingColonyTargets() {
 		Set<PlanetAPI> targets = new HashSet<>();
 		for (IntelInfoPlugin intRaw : Global.getSector().getIntelManager().getIntel(ColonyExpeditionIntel.class)) {

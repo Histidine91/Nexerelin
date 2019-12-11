@@ -608,7 +608,8 @@ public class SpecialForcesRouteAI {
 				&& Global.getSector().getPlayerFleet().getContainingLocation() == market.getContainingLocation())
 			priority *= 3;
 		
-		float def = InvasionFleetManager.estimateDefensiveStrength(market, 0.5f);
+		float def = InvasionFleetManager.estimatePatrolStrength(market, 0.5f) 
+				+ InvasionFleetManager.estimateStationStrength(market);
 		priority *= 100/def;
 		sf.debugMsg("  Patrolling market " + market.getName() + " has priority " 
 				+ String.format("%.1f", priority) + "; defensive rating " + String.format("%.1f", def), true);

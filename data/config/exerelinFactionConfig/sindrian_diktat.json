@@ -5,8 +5,8 @@
     "baseFleetCostMultiplier":1.0,
     
     "rebelFleetSuffix":"Dissidents",
-	
-	"marketSpawnWeight":0.75,
+    
+    "marketSpawnWeight":0.75,
     
     "morality":"evil",
     
@@ -17,8 +17,8 @@
         "diplomatic":-1,
     },
     "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
-	
-	"specialForcesMaxFleets":1,
+    
+    "specialForcesMaxFleets":1,
     
     "startShipsSolo":[
       ["swp_brawler_lions_guard_eli"],

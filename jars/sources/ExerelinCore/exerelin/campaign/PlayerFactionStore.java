@@ -9,6 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
+/**
+ * Stores the selected player faction in new game dialog, and also used mid-campaign
+ * to determine which faction the player belongs to.
+ * The latter's methods are now just a wrapper for Misc.getCommissionFactionId().
+ * 
+ * This class also used to handle restoring player relationships on leaving their faction,
+ * but that behavior is no longer applied.
+ */
 public class PlayerFactionStore {
     private static final String PLAYER_FACTION_ID_KEY = "exerelin_playerFactionId";
     private static final String PLAYER_RELATIONS_KEY = "exerelin_independentPlayerRelations";

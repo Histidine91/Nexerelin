@@ -5,7 +5,8 @@ import com.fs.starfarer.api.combat.StatBonus;
 import java.util.HashMap;
 
 /**
- * Almost identical to MutableStat except removes the floor in recompute()
+ * Almost identical to MutableStat except removes the floor in recompute().
+ * The floor was removed in one of the Starsector updates, so this is no longer needed.
  */
 @Deprecated
 public class MutableStatNoFloor extends MutableStat 

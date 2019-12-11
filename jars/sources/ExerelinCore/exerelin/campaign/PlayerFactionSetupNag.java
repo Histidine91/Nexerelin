@@ -6,6 +6,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 
+/**
+ * If the player faction has been established without being configured (e.g. by capturing a market),
+ * open the faction config dialog as soon as possible.
+ */
 public class PlayerFactionSetupNag implements EveryFrameScript
 {	
 	protected boolean done = false;

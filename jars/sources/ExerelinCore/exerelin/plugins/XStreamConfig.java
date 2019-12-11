@@ -7,7 +7,6 @@ import exerelin.campaign.abilities.ai.Nex_SustainedBurnAbilityAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.intel.agents.InstigateRebellion;
-import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
@@ -108,7 +107,6 @@ public class XStreamConfig {
 		
 		// events
 		// most of these will be deleted eventually
-		x.alias("ExiRespawnFltEvnt", ExigencyRespawnFleetEvent.class);
 		x.alias("InstgtRbl", InstigateRebellion.class);
 		x.alias("RebelEvnt", RebellionEvent.class);
 		x.alias("RebelEvntCreator", RebellionEventCreator.class);

@@ -338,8 +338,9 @@ public class AgentIntel extends BaseIntelPlugin {
 			
 			// defensive strength
 			str = getString("intelDescLocalReport2");
-			String spaceStr =  String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
-					market.getFaction(), market.getStarSystem(), 0));
+			String spaceStr =  String.format("%.1f", InvasionFleetManager.estimatePatrolStrength(null, 
+					market.getFaction(), market.getStarSystem(), 0) 
+					+ InvasionFleetManager.estimateStationStrength(market));
 			String groundStr = String.format("%.1f", InvasionRound.getDefenderStrength(market, 1));
 			info.addPara(str, opad, h, spaceStr, groundStr);
 			

@@ -359,8 +359,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			String key = isInvasion ? "infoTargetStrengthGround" : "infoTargetStrength";
 			Map<String, String> sub = new HashMap<>();
 			
-			String defStr = String.format("%.0f", InvasionFleetManager.estimateDefensiveStrength(null, 
-					faction, target.getStarSystem(), 0));
+			String defStr = String.format("%.0f", InvasionFleetManager.estimatePatrolStrength(null, 
+					faction, target.getStarSystem(), 0) + InvasionFleetManager.estimateStationStrength(target));
 			String defStrGround =  String.format("%.0f", InvasionRound.getDefenderStrength(target, 1));
 			sub.put("$space", defStr);
 			if (isInvasion) sub.put("$ground", defStrGround);
@@ -814,8 +814,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			Highlights hl = new Highlights();
 			Color hlCol = Misc.getHighlightColor();
 			
-			String defStr = String.format("%.1f", InvasionFleetManager.estimateDefensiveStrength(null, 
-					faction, market.getStarSystem(), 0));
+			String defStr = String.format("%.1f", InvasionFleetManager.estimatePatrolStrength(null, 
+					faction, market.getStarSystem(), 0) 
+					+ InvasionFleetManager.estimateStationStrength(target));
 			if (fleetType == FleetType.INVASION) {
 				tooltip = getString("targetEntryGroundTooltip");
 				tooltip = StringHelper.substituteToken(tooltip, "$space", defStr);

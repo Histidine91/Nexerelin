@@ -186,6 +186,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		return actionDefsById.get(id);
 	}
 	
+	/**
+	 * Gets the multiplier for the specified industry in the specified map.
+	 * @param ind
+	 * @param map Map of multipliers by industry. It can contain success multipliers,
+	 * detection chance multipliers, etc.
+	 * @return
+	 */
 	public static float getIndustryMult(Industry ind, Map<String, Float> map) {
 		if (!ind.isFunctional()) return 1;
 		
@@ -253,6 +260,16 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		return Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents");
 	}
 	
+	/**
+	 * Returns a {@code WeightedRandomPicker} of potential target factions for
+	 * the specified agent faction and action type. 
+	 * @param actionType
+	 * @param agentFaction
+	 * @param factions Potential factions to be added to the picker. Which factions
+	 * actually go in (and with what weight) depend on their relationship 
+	 * with the agent faction vs. the action type.
+	 * @return
+	 */
 	public WeightedRandomPicker<FactionAPI> generateTargetFactionPicker(String actionType, 
 			FactionAPI agentFaction, List<FactionAPI> factions) 
 	{
@@ -394,8 +411,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		log.info("\tNumber of target factions: " + factionCount);
 		return picker;
 	}
-    
-    public void handleNpcCovertActions()
+	
+	/**
+	 * Picks a random action, agent faction and target faction(s) to execute. 
+	 * Called at periodic intervals.
+	 */
+	public void handleNpcCovertActions()
     {
         if (Global.getSector().isInNewGameAdvance())
             return;

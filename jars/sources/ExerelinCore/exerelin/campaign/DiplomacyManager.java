@@ -295,6 +295,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         String faction2Id = faction2.getId();
     }
     */
+
+    /**
+     * If the current relationship between two factions is outside the min/max
+     * specified in their Nexerelin faction configs, clamp accordingly.
+     * Will only check max when the specified delta is non-negative, and min 
+     * when the delta is non-positive (i.e. increasing a below-minimum relationship
+     * won't trigger clamping).
+     * @param faction1Id
+     * @param faction2Id
+     * @param delta
+     * @return True if any action was taken, false otherwise.
+     */
+
     
     public static boolean clampRelations(String faction1Id, String faction2Id, float delta)
     {
@@ -441,6 +454,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return result;
     }
     
+    /**
+     * Picks a random diplomacy event to execute between the two specified factions,
+     * obeying the supplied parameters.
+     * @param faction1
+     * @param faction2
+     * @param params
+     * @return
+     */
     public DiplomacyEventDef pickDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, DiplomacyEventParams params)
     {
         DiplomacyEventDef event = null;
@@ -501,7 +522,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (isNegative && params.onlyPositive) continue;
             
             float chance = eventDef.chance;
-			if (chance <= 0) continue;
+            if (chance <= 0) continue;
             if (!getManager().randomFactionRelationships) {
                 if (isNegative) {
                     float mult = ExerelinFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
@@ -525,7 +546,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
                 if (chance <= 0) continue;
             }
-			eventPicker.add(eventDef, chance);
+            eventPicker.add(eventDef, chance);
         }
         if (event == null) event = eventPicker.pick();
         return event;
@@ -536,8 +557,16 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         createDiplomacyEvent(faction1, faction2, null, new DiplomacyEventParams());
     }
     
+    /**
+     * Executes a diplomacy event between the two specified factions.
+     * @param faction1
+     * @param faction2
+     * @param eventId If null, pick a random event.
+     * @param params
+     * @return
+     */
     public static ExerelinReputationAdjustmentResult createDiplomacyEvent(
-			FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params)
+            FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params)
     {        
         String factionId1 = faction1.getId();
         String factionId2 = faction2.getId();
@@ -572,6 +601,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return getManager().doDiplomacyEvent(event, market, faction1, faction2);
     }
     
+    /**
+     * Executes a random diplomacy event between two randomly selected factions.
+     */
     public static void createDiplomacyEvent()
     {
         log.info("Starting diplomacy event creation");
@@ -989,7 +1021,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             faction.setRelationship(otherFactionId, rel);
     }
     
-    // set relationships for hostile-to-all factions (Templars, Dark Spire, infected)
+    /**
+     * Set relationships for hostile-to-all factions (Templars, Dark Spire, infected).
+     * @param factionId The hostile-to-all faction.
+     * @param factionIds The factions with which the {@code factionId} faction 
+     * should have its relationships set.
+     */
     public static void handleHostileToAllFaction(String factionId, List<String> factionIds)
     {
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);

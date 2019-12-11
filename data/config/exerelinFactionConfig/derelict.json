@@ -2,11 +2,11 @@
     "playableFaction":false,
     "corvusCompatible":true,
     "dropPrisoners":false,
-	"noRandomizeRelations":true,
-	"allowAgentActions":false,
+    "noRandomizeRelations":true,
+    "allowAgentActions":false,
     "allowPrisonerActions":false,
-	
-	"maxRelationships":{ "default":-0.6 },
-	
-	"specialForcesMaxFleets":0,
+    
+    "maxRelationships":{ "default":-0.6 },
+    
+    "specialForcesMaxFleets":0,
 }

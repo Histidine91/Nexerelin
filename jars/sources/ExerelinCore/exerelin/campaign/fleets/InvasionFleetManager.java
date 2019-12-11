@@ -32,7 +32,6 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
@@ -62,8 +61,13 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 /**
- * Handles invasion fleets (the ones that capture stations)
- * Originally derived from Dark.Revenant's II_WarFleetManager
+ * Handles invasion, raid and base strike fleets generation.
+ * Originally derived from Dark.Revenant's II_WarFleetManager.
+ * 
+ * How it works: Every ingame day, each faction accumulates "invasion points"
+ * (primarily based on its markets). When it has enough points, it attempts to launch
+ * an invasion or raid against one of its enemies.
+ * The relevant code paths start in {@code advance()}, so look there.
  */
 public class InvasionFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
@@ -127,9 +131,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	protected Object readResolve() {
-		if (pirateRage == null) {
-			pirateRage = new HashMap<>();
-		}
 		return this;
 	}	
 	
@@ -187,7 +188,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return (int) Math.round(combat);
 	}
 	
-	public static float estimateDefensiveStrength(MarketAPI market, float variability) {
+	/**
+	 * Estimates the patrol strength of the specified market.
+	 * @param market
+	 * @param variability Used to multiply the estimated strength by a random Gaussian value.
+	 * @return
+	 */
+	public static float estimatePatrolStrength(MarketAPI market, float variability) {
 		Random random = new Random();
 		float strength = 10 * market.getSize();
 		
@@ -221,7 +228,16 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return strength;
 	}
 	
-	public static float estimateDefensiveStrength(FactionAPI attacker, FactionAPI targetFaction, 
+	/**
+	 * Estimates the patrol strength the specified attacker would face in this star system.
+	 * @param attacker
+	 * @param targetFaction If non-null, only count markets of that faction, 
+	 * else count markets of all factions hostile to the attacker.
+	 * @param system
+	 * @param variability Used to multiply the estimated strength by a random Gaussian value.
+	 * @return
+	 */
+	public static float estimatePatrolStrength(FactionAPI attacker, FactionAPI targetFaction, 
 			StarSystemAPI system, float variability) {
 		float strength = 0f;
 		
@@ -237,10 +253,22 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					continue;
 			}
 			
-			strength += estimateDefensiveStrength(market, variability);
+			strength += InvasionFleetManager.estimatePatrolStrength(market, variability);
 		}
 		
 		return strength;
+	}
+	
+	public static float estimateStationStrength(MarketAPI market) {
+		CampaignFleetAPI station = Misc.getStationFleet(market);
+		float stationStr = 0;
+		if (station != null) {
+			stationStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, false);
+			float officerStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, true) - stationStr;
+			stationStr += officerStr * STATION_OFFICER_STRENGTH_MULT;
+			stationStr *= 0.5f;
+		}
+		return stationStr;
 	}
 	
 	public static float getFactionDoctrineFleetSizeMult(FactionAPI faction) {
@@ -267,20 +295,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		FactionAPI targetFaction = target.getFaction();
 		StarSystemAPI system = target.getStarSystem();
 		
-		float defenderStr = estimateDefensiveStrength(attacker, 
+		float defenderStr = estimatePatrolStrength(attacker, 
 				countAllHostile ? null : targetFaction, 
 				system, variability);
 		log.info("\tPatrol strength: " + defenderStr);
 		
-		float stationStr = 0;
-		CampaignFleetAPI station = Misc.getStationFleet(target);
-		if (station != null) {
-			stationStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, false);
-			float officerStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, true) - stationStr;
-			stationStr += officerStr * STATION_OFFICER_STRENGTH_MULT;
-			stationStr *= 0.5f;
-		}
-		
+		float stationStr = estimateStationStrength(target);		
 		log.info("\tStation strength: " + stationStr);
 		
 		float defensiveStr = defenderStr + stationStr;
@@ -309,7 +329,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		FactionAPI targetFaction = target.getFaction();
 		StarSystemAPI system = target.getStarSystem();
 		
-		float defenderStr = estimateDefensiveStrength(attacker, 
+		float defenderStr = estimatePatrolStrength(attacker, 
 				countAllHostile ? null : targetFaction, 
 				system, variability);
 		log.info("\tPatrol strength: " + defenderStr);
@@ -356,6 +376,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return mult;
 	}
 	
+	/**
+	 * Gets the weighting of the specified market in picking where to launch an invasion or raid from.
+	 * @param market
+	 * @return
+	 */
 	public static float getMarketWeightForInvasionSource(MarketAPI market) {
 		//marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
 		//if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
@@ -627,6 +652,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return null;
 	}
 	
+	/**
+	 * Gets the value of the specified commodity availability on the specified 
+	 * market in contributing to invasion points. Imported commodities are worth less,
+	 * locally manufactured commodities worth more.
+	 * @param market
+	 * @param commodity
+	 * @return
+	 */
 	protected static float getCommodityPoints(MarketAPI market, String commodity) {
 		float pts = market.getCommodityData(commodity).getAvailable();
 		CommoditySourceType source = market.getCommodityData(commodity).getCommodityMarketData().getMarketShareData(market).getSource();
@@ -638,6 +671,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return pts;
 	}
 	
+	/**
+	 * Gets the contribution of the specified market to invasion points, based on its commodity availability.
+	 * @param market
+	 * @return
+	 */
 	public static float getMarketInvasionCommodityValue(MarketAPI market) {
 		float ships = getCommodityPoints(market, Commodities.SHIPS);
 		float supplies = getCommodityPoints(market, Commodities.SUPPLIES);
@@ -683,6 +721,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return value;
 	}
 	
+	/**
+	 * Does the faction want to launch a raid instead of an invasion right now?
+	 * @param factionId
+	 * @return
+	 */
 	public boolean shouldRaid(String factionId) {
 		if (!ExerelinConfig.enableInvasions) return true;
 		if (!nextIsRaid.containsKey(factionId))
@@ -690,6 +733,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return nextIsRaid.get(factionId);
 	}
 	
+	/**
+	 * Generates invasion points for all applicable markets and factions,
+	 * and attempts to generate invasion/raid fleets if the required number
+	 * of points is reached.
+	 */
 	protected void processInvasionPoints()
 	{
 		SectorAPI sector = Global.getSector();
@@ -864,7 +912,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	/**
-	 * Accumulate the points that lead major factions to launch base strike fleets against pirates.
+	 * Accumulate the points that lead major factions to launch base strike fleets against pirates and Luddic Path.
+	 * Points are generated for each market that has pirate activity or a Pather cell.
+	 * When a faction reaches 100 or more points, a strike is launched against the base that pushed it over the limit.
 	 */
 	protected void processPirateRage() {
 		//boolean pirateInvasions = ExerelinConfig.allowPirateInvasions;
@@ -914,6 +964,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 	}
 	
+	/**
+	 * Gets the number of invasion points that should be deducted as a result of launching an invasion or raid.
+	 * @param base
+	 * @param intel
+	 * @return
+	 */
 	protected float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
 	{
 		float amount = base * Math.max(intel.getBaseFP()/BASE_INVASION_COST, 0.8f);
@@ -927,6 +983,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return spawnCounter.get(factionId);
 	}
 	
+	/**
+	 * Finds a base (i.e. a station fleet) to launch Remnant-type raids from. A market is not required.
+	 * @param faction
+	 * @return
+	 */
 	public static CampaignFleetAPI findBase(FactionAPI faction) {
 		WeightedRandomPicker<CampaignFleetAPI> basePicker = new WeightedRandomPicker();
 		Vector2f center = new Vector2f(0, 0);
@@ -949,8 +1010,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	/**
-	 * Try to create a Remnant-style raid fleet.
-	 * Could in principle be used for factions like Blade Breakers too.
+	 * Try to create a Remnant-style raid fleet. Also works for DME's Blade Breakers.
 	 * @param faction The faction launching an invasion
 	 * @param targetFaction
 	 * @param sizeMult
@@ -1047,6 +1107,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return lifetimeRaids;
 	}
 		
+	/**
+	 * Updates the player's fleet request point capacity and increments points.
+	 * @param days
+	 */
 	public void updateFleetRequestStock(float days) {
 		int capacity = 0;
 		float increment = 0;
@@ -1187,6 +1251,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB };
 	
+	// No longer used
+	// only kept around because some classes I'm keeping for reference still reference it
 	@Deprecated
 	public static class InvasionFleetData
 	{
@@ -1199,7 +1265,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		public int marineCount = 0;
 		public boolean noWait = false;
 		public boolean noWander = false;
-		public InvasionFleetEvent event;
 	
 		public InvasionFleetData(CampaignFleetAPI fleet)
 		{

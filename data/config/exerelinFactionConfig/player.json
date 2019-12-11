@@ -1,9 +1,9 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-	
-	"specialForcesMaxFleets":0,
-
+    
+    "specialForcesMaxFleets":0,
+    
     "startShipsSolo":[
       ["swp_alastor_sta"],
       ["centurion_Starting"]

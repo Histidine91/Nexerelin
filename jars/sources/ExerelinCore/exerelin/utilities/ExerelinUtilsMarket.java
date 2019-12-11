@@ -93,6 +93,7 @@ public class ExerelinUtilsMarket {
 		return netIncome * (numerator/denominator);
 	}
 	
+	@Deprecated
 	public static boolean isMarketBeingInvaded(MarketAPI market)
 	{
 		return market.getMemoryWithoutUpdate().getBoolean("$beingInvaded")	// NPC fleet
