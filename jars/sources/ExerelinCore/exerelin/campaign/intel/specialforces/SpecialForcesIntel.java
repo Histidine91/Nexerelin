@@ -294,7 +294,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.REBUILD, 99999);
 		task.market = market;
-		task.setTime(time);
+		task.time = time;
 		//task.params.put("fpToResupply", fpWanted);
 		task.system = market.getStarSystem();
 		routeAI.assignTask(task);
@@ -550,7 +550,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		if (rebuildCheckCooldown > 0)
 			rebuildCheckCooldown -= days;
 		else {
-			if (route.getExtra().damage != null && route.getExtra().damage > 0.5f) {
+			if (route.getExtra().damage != null && route.getExtra().damage > 0.4f) {
 				orderFleetRebuild(false);
 				return;
 			}
@@ -564,6 +564,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	protected void endEvent() {
+		routeAI.resetRoute(route);
 		endAfterDelay();
 		sendUpdateIfPlayerHasIntel(ENDED_UPDATE, false, false);
 	}

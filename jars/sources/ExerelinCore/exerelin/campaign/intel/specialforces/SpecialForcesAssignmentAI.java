@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.specialforces;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
@@ -10,6 +9,8 @@ import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.utilities.StringHelper;
 
 public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
+	
+	public static final Object CUSTOM_DELAY_BEFORE_RAID = new Object();
 	
 	protected SpecialForcesIntel intel;
 	
@@ -85,6 +86,11 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 	{
 		SpecialForcesTask task = intel.routeAI.currentTask;
 		if (task == null) return super.getInSystemActionText(segment);
+		
+		if (intel.route.getCurrent() != null && intel.route.getCurrent().custom == CUSTOM_DELAY_BEFORE_RAID) 
+		{
+			return super.getInSystemActionText(segment);
+		}
 		
 		// "fake" travel action text
 		// is this needed?

@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
 
+/**
+ * Generates special forces fleets for factions.
+ */
 public class SpecialForcesManager implements EveryFrameScript {
 	
 	public static final String PERSISTENT_KEY = "nex_specialForcesManager";
@@ -73,6 +76,10 @@ public class SpecialForcesManager implements EveryFrameScript {
 		return totalPoints;
 	}
 	
+	/**
+	 * Increments SF points for each faction based on its markets, approximately once per ingame day.
+	 * @param days
+	 */
 	protected void processPoints(float days) 
 	{
 		if (Global.getSector().isInNewGameAdvance()) return;
@@ -86,7 +93,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 			if (!liveFactions.contains(factionId)) continue;
 			
 			float points = InvasionFleetManager.getMarketInvasionCommodityValue(market);
-			points *= days * POINT_GENERATION_MULT;
+			points *= days * POINT_GENERATION_MULT * ExerelinConfig.specialForcesPointMult;
 			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 			points *= conf.specialForcesPointMult;
 			
@@ -107,6 +114,11 @@ public class SpecialForcesManager implements EveryFrameScript {
 		}
 	}
 	
+	/**
+	 * Start a special forces intel event once the faction accumulates enough points.
+	 * @param factionId
+	 * @return
+	 */
 	public SpecialForcesIntel generateFleet(String factionId) 
 	{
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();

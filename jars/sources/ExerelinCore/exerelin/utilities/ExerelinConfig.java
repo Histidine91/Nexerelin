@@ -87,7 +87,7 @@ public class ExerelinConfig
     public static float minWarWearinessForPeace = 5000f;
     public static float warWearinessCeasefireReduction = 3000f;
     public static float warWearinessPeaceTreatyReduction = 6000f;
-	public static boolean acceptCeasefiresOnTimeout = false;
+    public static boolean acceptCeasefiresOnTimeout = false;
     
     // Followers faction
     public static boolean followersAgents = false;
@@ -115,9 +115,11 @@ public class ExerelinConfig
     // Colonies
     public static int maxNPCColonySize = 10;
     public static int maxNPCNewColonySize = 6;
-	public static float hardModeColonyGrowthMult = 0.5f;
-	public static float hardModeColonyIncomeMult = 0.75f;
+    public static float hardModeColonyGrowthMult = 0.5f;
+    public static float hardModeColonyIncomeMult = 0.75f;
     public static float colonyExpeditionInterval = 270;
+    
+    public static float specialForcesPointMult = 1;
     
     // Misc
     public static int directoryDialogKey = 44;  // Z
@@ -223,6 +225,8 @@ public class ExerelinConfig
             hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
             hardModeColonyIncomeMult = (float)settings.optDouble("hardModeColonyIncomeMult", hardModeColonyIncomeMult);
             colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
+            
+            specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
             
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);

@@ -37,7 +37,7 @@ public class SpecialForcesRouteAI {
 	
 	public static Logger log = Global.getLogger(SpecialForcesRouteAI.class);
 	
-	public static final float MAX_RAID_ETA_TO_CARE = 75;
+	public static final float MAX_RAID_ETA_TO_CARE = 60;
 	
 	protected SpecialForcesIntel sf;
 	protected SpecialForcesTask currentTask;
@@ -166,9 +166,7 @@ public class SpecialForcesRouteAI {
 		else from = Global.getSector().getHyperspace().createToken(route.getInterpolatedHyperLocation());
 		
 		// get time for assignment, estimate travel time needed
-		float travelTime;
-		Float time = task.getTime();
-		if (time == null) time = 60f;
+		float travelTime = 0;
 		
 		// setup a travel segment and an action segment
 		RouteManager.RouteSegment actionSeg = null, travelSeg = null;
@@ -184,7 +182,7 @@ public class SpecialForcesRouteAI {
 				
 				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
 				travelSeg = new RouteManager.RouteSegment(travelTime, from, destination);
-				actionSeg = new RouteManager.RouteSegment(time, destination);
+				actionSeg = new RouteManager.RouteSegment(task.time, destination);
 				break;
 			case HUNT_PLAYER:
 				// TODO				
@@ -205,9 +203,20 @@ public class SpecialForcesRouteAI {
 				destination = system.getCenter();
 				
 				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
-				travelSeg = new RouteManager.RouteSegment(time + travelTime, destination);
-				actionSeg = new RouteManager.RouteSegment(time, destination);
+				travelSeg = new RouteManager.RouteSegment(task.time + travelTime, destination);
+				actionSeg = new RouteManager.RouteSegment(task.time, destination);
 				break;
+		}
+		
+		// if joining a raid, try to make sure we arrive at the same time as them
+		// instead of showing up super early and potentially getting whacked
+		if (task.type == TaskType.ASSIST_RAID) {
+			float delay = task.raid.getETA() - travelTime;
+			if (delay > 0) {
+				RouteManager.RouteSegment wait = new RouteManager.RouteSegment(task.raid.getETA(), from);
+				wait.custom = SpecialForcesAssignmentAI.CUSTOM_DELAY_BEFORE_RAID;
+				route.addSegment(wait);
+			}
 		}
 		
 		// don't have a travel segment if fleet is already in target system
@@ -238,7 +247,7 @@ public class SpecialForcesRouteAI {
 		if (task.raid instanceof OffensiveFleetIntel) {
 			task.market = ((OffensiveFleetIntel)task.raid).getTarget();
 		}
-		task.setTime(45 + raid.getETA());
+		task.time = 30 + raid.getETA();
 		return task;
 	}
 	
@@ -249,7 +258,7 @@ public class SpecialForcesRouteAI {
 		if (task.raid instanceof OffensiveFleetIntel) {
 			task.market = ((OffensiveFleetIntel)task.raid).getTarget();
 		}
-		task.setTime(45 + raid.getETA());
+		task.time = 30;	// don't add ETA here, apply it as a delay instead
 		return task;
 	}
 	
@@ -316,7 +325,7 @@ public class SpecialForcesRouteAI {
 		// idle
 		if (picker.isEmpty()) {
 			SpecialForcesTask task = new SpecialForcesTask(TaskType.IDLE, 0);
-			task.setTime(15f);
+			task.time = 15;
 			return task;
 		}
 		
@@ -440,7 +449,7 @@ public class SpecialForcesRouteAI {
 			if (!isCloseEnoughForTask()) {
 				sf.route.getSegments().clear();
 				sf.route.setCurrent(null);
-				sf.route.addSegment(new RouteManager.RouteSegment(currentTask.getTime() * 0.5f, 
+				sf.route.addSegment(new RouteManager.RouteSegment(currentTask.time * 0.5f, 
 						currentTask.market.getPrimaryEntity()));
 				return;
 			}
@@ -449,7 +458,7 @@ public class SpecialForcesRouteAI {
 			// spend a few days orbiting the planet, to shake down the new members
 			SpecialForcesTask task = new SpecialForcesTask(TaskType.ASSEMBLE, 100);
 			task.market = currentTask.market;
-			task.setTime(2);
+			task.time = 2;
 			assignTask(task);
 			return;
 		}
@@ -628,7 +637,7 @@ public class SpecialForcesRouteAI {
 		
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.ASSEMBLE, 100);
 		task.market = sf.origin;
-		task.setTime(orbitDays);
+		task.time = orbitDays;
 		assignTask(task);
 	}
 	
@@ -649,6 +658,7 @@ public class SpecialForcesRouteAI {
 		public TaskType type;
 		public float priority;
 		public RaidIntel raid;
+		public float time = 45;	// controls how long the action segment lasts
 		public MarketAPI market;
 		public StarSystemAPI system;
 		public Map<String, Object> params = new HashMap<>();
@@ -656,18 +666,6 @@ public class SpecialForcesRouteAI {
 		public SpecialForcesTask(TaskType type, float priority) {
 			this.type = type;
 			this.priority = priority;
-		}
-		
-		/**
-		 * Gets the time allocated for this task (not counting travel time).
-		 * @return
-		 */
-		public Float getTime() {
-			return (Float)params.get("time");
-		}
-		
-		public void setTime(float time) {
-			params.put("time", (float)time);
 		}
 		
 		/**
