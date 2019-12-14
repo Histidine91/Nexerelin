@@ -18,7 +18,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.intel.VengeanceFleetIntel;
+import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;

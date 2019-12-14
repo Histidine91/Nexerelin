@@ -3,7 +3,7 @@ package exerelin.console.commands;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.RevengeanceManager;
-import exerelin.campaign.intel.VengeanceFleetIntel;
+import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;

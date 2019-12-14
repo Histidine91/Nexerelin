@@ -13,7 +13,7 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.econ.ReinforcedDefenses;
 import exerelin.campaign.econ.TributeCondition;
-import exerelin.campaign.intel.VengeanceFleetIntel;
+import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.events.WarmongerEvent;

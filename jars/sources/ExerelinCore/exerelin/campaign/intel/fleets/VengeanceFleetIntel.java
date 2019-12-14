@@ -1,4 +1,4 @@
-package exerelin.campaign.intel;
+package exerelin.campaign.intel.fleets;
 
 import exerelin.campaign.RevengeanceManager;
 import com.fs.starfarer.api.Global;
