@@ -19,6 +19,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -210,9 +211,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			}
 			String marketName = market.getName();
 			LocationAPI loc = market.getContainingLocation();
-			String locName = loc.getName();
-			if (loc instanceof StarSystemAPI)
-					locName = ((StarSystemAPI)loc).getBaseName();
+			String locName = ExerelinUtilsAstro.getLocationName(loc, true);
 			int size = market.getSize();
 			Color sizeColor = getSizeColor(size);
 

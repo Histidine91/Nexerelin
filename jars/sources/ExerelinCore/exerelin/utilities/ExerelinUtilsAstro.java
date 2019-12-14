@@ -300,4 +300,16 @@ public class ExerelinUtilsAstro {
 		
 		return results;
 	}
+	
+	public static String getLocationName(LocationAPI loc, boolean includeTypeIfStar) {
+		String locName = loc.getName();
+		if (loc instanceof StarSystemAPI)
+		{
+			if (includeTypeIfStar)
+				locName = ((StarSystemAPI)loc).getNameWithLowercaseType();
+			else
+				locName = ((StarSystemAPI)loc).getBaseName();
+		}
+		return locName;
+	}
 }

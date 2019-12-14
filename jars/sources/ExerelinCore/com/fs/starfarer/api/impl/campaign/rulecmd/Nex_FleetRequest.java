@@ -39,6 +39,7 @@ import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -760,9 +761,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	protected String getMarketOptionString(MarketAPI market) {
 		String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
 		LocationAPI loc = market.getContainingLocation();
-		String locName = loc.getName();
-		if (loc instanceof StarSystemAPI)
-				locName = ((StarSystemAPI)loc).getBaseName();
+		String locName = ExerelinUtilsAstro.getLocationName(loc, true);
 			
 		entry = StringHelper.substituteToken(entry, "$market", market.getName());
 		entry = StringHelper.substituteToken(entry, "$location", locName);

@@ -31,6 +31,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.fleets.SuppressionFleetAI;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -788,11 +789,7 @@ public class RebellionEvent extends BaseEventPlugin {
 			addFactionNameTokens(map, "suppress", suppressionFleetSource.getFaction());
 			map.put("$suppressMarket", suppressionFleetSource.getName());
 			LocationAPI containingLoc = suppressionFleetSource.getContainingLocation();
-			String locName = containingLoc.getName();
-			if (containingLoc instanceof StarSystemAPI)
-			{
-				locName = ((StarSystemAPI)containingLoc).getBaseName();
-			}
+			String locName = ExerelinUtilsAstro.getLocationName(containingLoc, false);
 			map.put("$suppressSystem", locName);
 		}
 		
