@@ -266,6 +266,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 			int refund = getAbortRefund();
 			Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
 		}
+		if (agent != null){
+			if (agent.currentAction == this)
+				agent.pushActionQueue();
+			else if (agent.nextAction == this)
+				agent.nextAction = null;
+		}
 		endImmediately();
 	}
 		
@@ -361,8 +367,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	public void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 		
-		if (!allowOwnMarket() && shouldAbortIfOwnMarket())
+		if (!allowOwnMarket() && shouldAbortIfOwnMarket() && canAbort())
 		{
+			abort();
+			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
+			return;
+		}
+		if (!market.isInEconomy() && canAbort()) {
 			abort();
 			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
 			return;
@@ -416,6 +427,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	protected float getXPMult() {
+		if (!getDef().costScaling) return 1;
 		return 0.5f + 0.5f * (market.getSize() - 2);
 	}
 	
