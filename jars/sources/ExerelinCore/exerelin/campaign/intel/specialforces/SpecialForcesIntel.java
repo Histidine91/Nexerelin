@@ -3,7 +3,6 @@ package exerelin.campaign.intel.specialforces;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -29,6 +28,7 @@ import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
@@ -55,6 +55,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	protected static final String BUTTON_DEBUG = "debug";
 	public static final Object ENDED_UPDATE = new Object();
 	public static final Object NEW_ORDERS_UPDATE = new Object();
+	public static final float DAMAGE_TO_REBUILD = 0.4f;
+	public static final float DAMAGE_TO_TERMINATE = 0.9f;
 	
 	protected MarketAPI origin;
 	protected FactionAPI faction;
@@ -64,6 +66,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	protected long spawnSeed = new Random().nextLong();
 	protected String fleetName;
 	protected SpecialForcesRouteAI routeAI;
+	protected IntervalUtil interval = new IntervalUtil(0.2f, 0.3f);
 	
 	// These are preserved between fleet regenerations
 	protected PersonAPI commander;
@@ -98,7 +101,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		routeAI.addInitialTask();
 		generateFlagshipAndCommanderIfNeeded(route);
 		
-		Global.getSector().getIntelManager().queueIntel(this);
+		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
 	}
 	
@@ -254,6 +257,9 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		if (rebuildCheckCooldown > 0 && !force)
 			return;
 		
+		if (routeAI.currentTask.type == TaskType.REBUILD)
+			return;
+		
 		rebuildCheckCooldown = 10;
 		
 		Float damage = route.getExtra().damage;
@@ -368,7 +374,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
 		Color c = getTitleColor(mode);
 		info.addPara(getSmallDescriptionTitle(), c, 0);
-		if (listInfoParam == NEW_ORDERS_UPDATE && routeAI.currentTask != null) {
+		if (isEnding() || isEnded()) return;
+		if (routeAI.currentTask != null) {
 			bullet(info);
 			info.addPara(Misc.ucFirst(routeAI.currentTask.getText()), 3);
 			unindent(info);
@@ -530,18 +537,22 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	protected void advanceImpl(float amount) {	
 		// End event if fleet is dead
 		Float damage = route.getExtra().damage, fp = route.getExtra().fp;
+		if (damage == null) damage = 0f;
+		
 		if (route.getActiveFleet() != null && !route.getActiveFleet().isAlive()) 
 		{
 			log.info("Fleet is dead, ending event");
 			endEvent();
 			return;
 		}
-		else if ((damage != null && damage >= 1) || (fp != null && fp <= 0))
+		/*
+		else if (damage >= 1 || (fp != null && fp <= 0))
 		{
 			log.info("Route has zero FP, ending event");
 			endEvent();
 			return;
 		}
+		*/
 		
 		//log.info("advancing");
 		routeAI.advance(amount);
@@ -549,16 +560,24 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		float days = Global.getSector().getClock().convertToDays(amount);
 		if (rebuildCheckCooldown > 0)
 			rebuildCheckCooldown -= days;
-		else {
-			if (route.getExtra().damage != null && route.getExtra().damage > 0.4f) {
+		else {			
+			if (damage > DAMAGE_TO_TERMINATE) {
+				log.info("Fleet took catastrophic damage, ending event");
+				endEvent();
+				return;
+			}
+			else if (damage > DAMAGE_TO_REBUILD) {
 				orderFleetRebuild(false);
 				return;
 			}
 		}
 		
+		interval.advance(days);
+		if (!interval.intervalElapsed()) return;
 		
-		// If ran out of segments, have AI give us something else to do
-		if (route.isExpired()) {
+		// If ran out of route segments, have AI give us something else to do
+		if (route.getCurrent() != null && SpecialForcesRouteAI.ROUTE_IDLE_SEGMENT.equals(route.getCurrent().custom)) 
+		{
 			routeAI.notifyRouteFinished();
 		}
 	}

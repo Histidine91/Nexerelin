@@ -28,8 +28,8 @@ public class SpecialForcesManager implements EveryFrameScript {
 	
 	public static final String PERSISTENT_KEY = "nex_specialForcesManager";
 	public static final float MAX_POINTS = 350;
-	public static final float POINTS_TO_SPAWN = 300;
-	public static final float POINT_GENERATION_MULT = 0.005f;
+	public static final float POINTS_TO_SPAWN = 250;
+	public static final float POINT_GENERATION_MULT = 0.003f;
 	
 	protected Map<String, Float> factionPoints = new HashMap<>();
 	protected final List<SpecialForcesIntel> activeIntel = new LinkedList();

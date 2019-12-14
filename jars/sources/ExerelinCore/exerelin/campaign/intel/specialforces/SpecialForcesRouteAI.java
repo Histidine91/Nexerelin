@@ -11,6 +11,8 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
+import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -18,6 +20,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -32,12 +35,18 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
+/**
+ * Strategic level AI for special forces fleets. Handles perhaps everything to do with the managed route.
+ */
 public class SpecialForcesRouteAI {
 	
 	public static Logger log = Global.getLogger(SpecialForcesRouteAI.class);
 	
 	public static final float MAX_RAID_ETA_TO_CARE = 60;
+	// can't be a plain Object because when loaded the one in segment will no longer equal the static value
+	public static final String ROUTE_IDLE_SEGMENT = "SF_idleSeg";
 	
 	protected SpecialForcesIntel sf;
 	protected SpecialForcesTask currentTask;
@@ -51,7 +60,7 @@ public class SpecialForcesRouteAI {
 	protected List<RaidIntel> getActiveRaids() {
 		List<RaidIntel> raids = new ArrayList<>();
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel()) 
-		{			
+		{
 			if (!(intel instanceof RaidIntel))
 				continue;
 			
@@ -66,68 +75,125 @@ public class SpecialForcesRouteAI {
 	}
 	
 	/**
-	 * Gets active raid-type events by non-hostile factions against hostile factions.
+	 * Cut player some slack early on: don't join raids against size 3-4 markets.
+	 * (except Starfarer mode)
+	 * @param raid
+	 * @return
+	 */
+	protected boolean shouldShowPlayerMercy(RaidIntel raid) {
+		if (SectorManager.getHardMode()) return false;
+		
+		FactionAPI player = Global.getSector().getPlayerFaction();
+		if (raid instanceof OffensiveFleetIntel) 
+		{
+			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
+			MarketAPI target = ofi.getTarget();
+			if (target != null && target.getFaction() == player
+					&& target.getSize() < 5)
+				return true;
+		} 
+		else if (raid instanceof HegemonyInspectionIntel) 
+		{
+			HegemonyInspectionIntel insp = (HegemonyInspectionIntel)raid;
+			if (insp.getTarget().getSize() < 5)
+				return true;
+		}
+		else {
+			StarSystemAPI sys = raid.getSystem();
+			if (sys != null) 
+			{
+				MarketAPI owner = ExerelinUtilsFaction.getSystemOwningMarket(sys);
+				if (owner != null && owner.getFaction() == player && owner.getSize() < 5)
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean isAssistableFriendlyRaid(RaidIntel raid) {
+		if (!raid.getFaction().equals(sf.faction))
+			return false;
+
+		if (raid instanceof OffensiveFleetIntel) {
+			if (raid instanceof BaseStrikeIntel) return false;
+			if (raid instanceof ColonyExpeditionIntel) return false;
+			
+			return true;
+		}
+		else {	// probably a pirate raid
+			if (raid instanceof PunitiveExpeditionIntel) return false;
+		}
+		if (shouldShowPlayerMercy(raid)) return false;
+		
+		
+		return true;
+	}
+	
+	/**
+	 * Gets active raid-type events by us against hostile factions.
 	 * @return
 	 */
 	protected List<RaidIntel> getActiveRaidsFriendly() {
 		List<RaidIntel> raids = getActiveRaids();
 		List<RaidIntel> raidsFiltered = new ArrayList<>();
 		for (RaidIntel raid : raids) {
-			
-			if (raid.getFaction().isHostileTo(sf.faction))
-				continue;
-			
-			if (raid instanceof OffensiveFleetIntel) {
-				if (raid instanceof BaseStrikeIntel) continue;
-				if (raid instanceof ColonyExpeditionIntel) continue;
-				
-				// Only count the raid if the target is hostile to us
-				OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
-				if (!ofi.getTarget().getFaction().isHostileTo(sf.faction))
-					continue;
-			}
-			else {	// probably a pirate raid
-				// Only count the raid if the target is hostile to us
-				StarSystemAPI targetSys = raid.getSystem();
-				if (targetSys == null) continue;
-				FactionAPI owner = ExerelinUtilsFaction.getSystemOwner(targetSys);
-				if (owner == null || owner.isHostileTo(sf.faction))
-					continue;				
-			}
+			if (!isAssistableFriendlyRaid(raid))
+				continue;			
 			
 			raidsFiltered.add(raid);
 		}
 		return raidsFiltered;
 	}
 	
+	protected boolean hasMarketInSystem(StarSystemAPI system, FactionAPI faction) 
+	{
+		if (system == null) return false;
+		for (MarketAPI market : Misc.getMarketsInLocation(system))
+		{
+			if (market.getFaction() == faction)
+				return true;
+		}
+		return false;
+	}
+	
+	protected boolean isDefendableEnemyRaid(RaidIntel raid) {
+		if (!raid.getFaction().isHostileTo(sf.faction))
+			return false;
+		
+		if (raid instanceof OffensiveFleetIntel) {
+			if (raid instanceof BaseStrikeIntel) return false;
+			if (raid instanceof ColonyExpeditionIntel) return false;
+			
+			// Nex raid, valid if one of the targeted markets is ours
+			if (raid instanceof NexRaidIntel) {
+				if (hasMarketInSystem(raid.getSystem(), sf.faction))
+					return true;
+			}
+
+			// Only count the raid if we are the target
+			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
+			FactionAPI targetFaction = ofi.getTarget().getFaction();
+			if (targetFaction != sf.faction)
+				return false;
+		}
+		else {	// probably a pirate raid
+			// Only count the raid if we have a market in target system
+			if (hasMarketInSystem(raid.getSystem(), sf.faction))
+				return true;			
+		}
+		return false;
+	}
+	
 	/**
-	 * Gets active raid-type events by hostile factions against us or our allies.
+	 * Gets active raid-type events by hostile factions against us.
 	 * @return
 	 */
 	protected List<RaidIntel> getActiveRaidsHostile() {
 		List<RaidIntel> raids = getActiveRaids();
 		List<RaidIntel> raidsFiltered = new ArrayList<>();
 		for (RaidIntel raid : raids) {			
-			if (!raid.getFaction().isHostileTo(sf.faction))
-				continue;
-			
-			if (raid instanceof OffensiveFleetIntel) {
-				if (raid instanceof BaseStrikeIntel) continue;
-				
-				// Only count the raid if the target is an ally of us
-				OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
-				String targetFaction = ofi.getTarget().getFactionId();
-				if (!AllianceManager.areFactionsAllied(targetFaction, sf.faction.getId()))
-					continue;
-			}
-			else {	// probably a pirate raid
-				// Only count the raid if the target is an ally of us
-				StarSystemAPI targetSys = raid.getSystem();
-				if (targetSys == null) continue;
-				FactionAPI owner = ExerelinUtilsFaction.getSystemOwner(targetSys);
-				if (owner == null || !AllianceManager.areFactionsAllied(owner.getId(), sf.faction.getId()))
-					continue;				
-			}
+			if (!isDefendableEnemyRaid(raid))
+				continue;		
 			
 			raidsFiltered.add(raid);
 		}
@@ -158,12 +224,12 @@ public class SpecialForcesRouteAI {
 		else if (task.system != null)
 			sf.debugMsg("  Target: " + task.system.getNameWithLowercaseType(), true);
 		
-		resetRoute(route);
-		
 		CampaignFleetAPI fleet = route.getActiveFleet();	
 		SectorEntityToken from;
 		if (fleet != null) from = fleet.getContainingLocation().createToken(fleet.getLocation());
 		else from = Global.getSector().getHyperspace().createToken(route.getInterpolatedHyperLocation());
+		
+		resetRoute(route);
 		
 		// get time for assignment, estimate travel time needed
 		float travelTime = 0;
@@ -179,8 +245,8 @@ public class SpecialForcesRouteAI {
 			case RAID:
 			case ASSEMBLE:
 				destination = task.market == null ? task.system.getCenter() : task.market.getPrimaryEntity();
-				
 				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
+				sf.debugMsg("Travel time: " + travelTime + "; from " + from.getLocation(), false);
 				travelSeg = new RouteManager.RouteSegment(travelTime, from, destination);
 				actionSeg = new RouteManager.RouteSegment(task.time, destination);
 				break;
@@ -213,7 +279,7 @@ public class SpecialForcesRouteAI {
 		if (task.type == TaskType.ASSIST_RAID) {
 			float delay = task.raid.getETA() - travelTime;
 			if (delay > 0) {
-				RouteManager.RouteSegment wait = new RouteManager.RouteSegment(task.raid.getETA(), from);
+				RouteManager.RouteSegment wait = new RouteManager.RouteSegment(delay, from);
 				wait.custom = SpecialForcesAssignmentAI.CUSTOM_DELAY_BEFORE_RAID;
 				route.addSegment(wait);
 			}
@@ -232,6 +298,11 @@ public class SpecialForcesRouteAI {
 		if (actionSeg != null) {
 			route.addSegment(actionSeg);
 		}
+		
+		// placeholder to keep the route from expiring
+		RouteManager.RouteSegment idle = new RouteManager.RouteSegment(365, destination);
+		idle.custom = ROUTE_IDLE_SEGMENT;
+		route.addSegment(idle);
 		
 		if (fleet != null) {
 			fleet.clearAssignments();
@@ -281,7 +352,6 @@ public class SpecialForcesRouteAI {
 		
 		// TODO: first of all check if we want resupply
 		
-		
 		// check for priority defense missions
 		List<Pair<RaidIntel, Float>> hostileRaids = new ArrayList<>();
 		for (RaidIntel raid : getActiveRaidsHostile()) {
@@ -317,8 +387,10 @@ public class SpecialForcesRouteAI {
 		
 		// Patrol
 		List<MarketAPI> alliedMarkets = getAlliedMarkets();
+		int numMarkets = alliedMarkets.size();
 		for (MarketAPI market : alliedMarkets) {
 			float priority = getPatrolPriority(market);
+			priority /= numMarkets;
 			picker.add(generatePatrolTask(market, priority), priority);
 		}
 		
@@ -370,39 +442,50 @@ public class SpecialForcesRouteAI {
 		return highest;
 	}
 	
+	protected boolean wantNewTask() {
+		TaskType taskType = currentTask == null ? TaskType.IDLE : currentTask.type;
+		
+		if (taskType == TaskType.REBUILD || taskType == TaskType.ASSEMBLE)
+			return false;
+		
+		boolean wantNewTask = false;
+		
+		if (taskType == TaskType.IDLE) {
+			return true;
+		}
+		// We were assigned to assist or defend against a raid, but it's already ended
+		// or otherwise no longer applicable
+		else if (currentTask.raid != null) {
+			RaidIntel raid = currentTask.raid;
+			if (raid.isEnding() || raid.isEnded()) {
+				return true;
+			}
+			else if (taskType == TaskType.ASSIST_RAID && !isAssistableFriendlyRaid(raid)) 
+			{
+				return true;
+			}
+			else if (taskType == TaskType.DEFEND_RAID && !isDefendableEnemyRaid(raid))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Check if we should be doing something else.
 	 */
 	public void updateTaskIfNeeded() 
 	{
-		sf.debugMsg("Checking " + sf.getFleetNameForDebugging() + " for task change", false);
-		TaskType taskType = currentTask == null ? TaskType.IDLE : currentTask.type;
+		//sf.debugMsg("Checking " + sf.getFleetNameForDebugging() + " for task change", false);
+		boolean wantNewTask = wantNewTask();
 		
-		if (taskType == TaskType.REBUILD || taskType == TaskType.ASSEMBLE)
-			return;
-		
-		boolean wantNewTask = false;
-		
-		if (taskType == TaskType.IDLE) {
-			wantNewTask = true;
-		}
-		// We were assigned to help or defend against a raid, but it's already ended
-		else if (currentTask != null && (taskType == TaskType.ASSIST_RAID 
-				|| taskType == TaskType.DEFEND_RAID)) {
-			RaidIntel raid = currentTask.raid;
-			
-			if (raid != null) 
-			{
-				if (raid.isEnding() || raid.isEnded())
-				{
-					wantNewTask = true;
-				}
-			}
-		}
-		
-		if (!wantNewTask) 
+		// don't want a new task, but check if there's a defend task we should divert to
+		if (!wantNewTask)
 		{
-			// check if there's a defend task we should divert to
+			TaskType taskType = currentTask == null ? null : currentTask.type;
+			
 			if (taskType == TaskType.RAID 
 				|| taskType == TaskType.ASSIST_RAID
 				|| taskType == TaskType.HUNT_PLAYER
@@ -415,6 +498,7 @@ public class SpecialForcesRouteAI {
 				}
 			}
 		}
+		// want a new task
 		else {
 			SpecialForcesTask task = pickTask(false);
 			if (task != null) {
@@ -437,6 +521,7 @@ public class SpecialForcesRouteAI {
 	
 	public void notifyRouteFinished() {
 		sf.debugMsg("Route finished, looking for new task", false);
+		Vector2f currLoc = sf.route.getInterpolatedHyperLocation();
 		
 		if (currentTask == null) {
 			pickTask(false);
@@ -678,9 +763,9 @@ public class SpecialForcesRouteAI {
 				case RAID:
 					return "raiding " + market.getName();
 				case ASSIST_RAID:
-					return "assisting raid " + raid.getName();
+					return "assisting " + raid.getName();
 				case DEFEND_RAID:
-					return "defending vs. raid " + raid.getName();
+					return "defending vs. " + raid.getName();
 				case PATROL:
 					return "patrolling " + (market != null? market.getName() : system.getNameWithLowercaseType());
 				case REBUILD:

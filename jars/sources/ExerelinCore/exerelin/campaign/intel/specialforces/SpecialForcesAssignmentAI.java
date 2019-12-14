@@ -2,6 +2,7 @@ package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
@@ -27,7 +28,11 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		if (gaveReturnAssignments == null && (intel.isEnding() || intel.isEnded())) 
 		{
 			fleet.clearAssignments();
-			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, intel.origin.getPrimaryEntity(), 1000f,
+			SectorEntityToken origin = intel.origin.getPrimaryEntity();
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, origin, 1000f,
+								StringHelper.getFleetAssignmentString("returningTo", origin.getName()));
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, intel.origin.getPrimaryEntity(), 3);
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, origin, 1000f,
 								StringHelper.getFleetAssignmentString("returningTo", intel.origin.getName()));
 			gaveReturnAssignments = true;
 			return;
@@ -41,6 +46,11 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 	@Override
 	protected void addLocalAssignment(RouteManager.RouteSegment current, boolean justSpawned) 
 	{
+		if (intel == null) {	// giveInitialAssignments() gets called in superclass constructor, so this may not have been set yet
+			super.addLocalAssignment(current, justSpawned);
+			return;
+		}
+		
 		SpecialForcesTask task = intel.routeAI.currentTask;
 		if (task == null) {
 			super.addLocalAssignment(current, justSpawned);
@@ -84,6 +94,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 	@Override
 	protected String getInSystemActionText(RouteManager.RouteSegment segment) 
 	{
+		if (intel == null) return super.getInSystemActionText(segment);
 		SpecialForcesTask task = intel.routeAI.currentTask;
 		if (task == null) return super.getInSystemActionText(segment);
 		

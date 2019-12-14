@@ -20,13 +20,7 @@ import org.json.JSONObject;
 
 public class ExerelinUtilsFaction {
 	
-	/**
-	 * Same as Misc.getClaimingFaction except doesn't exclude player faction.
-	 * @param loc
-	 * @return
-	 */
-	public static FactionAPI getSystemOwner(LocationAPI loc)
-	{
+	public static MarketAPI getSystemOwningMarket(LocationAPI loc) {
 		int max = 0;
 		MarketAPI result = null;
 		for (MarketAPI curr : Global.getSector().getEconomy().getMarkets(loc)) {
@@ -44,6 +38,18 @@ public class ExerelinUtilsFaction {
 				result = curr;
 			}
 		}
+		
+		return result;
+	}
+	
+	/**
+	 * Same as Misc.getClaimingFaction except doesn't exclude player faction.
+	 * @param loc
+	 * @return
+	 */
+	public static FactionAPI getSystemOwner(LocationAPI loc)
+	{
+		MarketAPI result = getSystemOwningMarket(loc);
 		if (result == null) return null;
 		
 		return result.getFaction();
