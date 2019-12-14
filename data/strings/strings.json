@@ -115,6 +115,9 @@
 		"fleets":"fleets",
 		"fighterWing":"fighter wing",
 		"fighterWingShort":"wing",
+		"destroyer":"destroyer",
+		"cruiser":"cruiser",
+		"capitalShip":"capital ship",
 		
 		"unknownLocation":"unknown location",
 		"anUnknownLocation":"an unknown location",
@@ -277,8 +280,11 @@
 		"costBase":"base cost",
 		"costLevelMult":"agent level",
 		"costSizeMult":"market size",
+		"costShipBase":"base ship price",
+		"costShipGeneralMult":"theft multiplier",
 		
 		"intelButton_goToAgent":"go to agent",
+		"intelButton_procureShipSetDestination":"set delivery destination",
 		
 		"intelStatus_travel":"Travelling to $market ($status)",
 		"intelStatus_travelShort":"Travelling to $market",
@@ -294,7 +300,8 @@
 		"intelStatus_destroyCommodities":"Destroying stockpiles of %s",
 		"intelStatus_sabotageIndustry":"Sabotaging %s",
 		"intelStatus_infiltrateCell":"Infiltrating Luddic cell",
-	
+		"intelStatus_procureShip":"Procuring $ship, delivering to $market",
+		
 		"intelDesc_raiseRelations_success":"An agent from $theAgentFaction has subverted the $faction political process to improve relations with their own faction.",
 		"intelDesc_raiseRelations_successPlayer":"Your agent $agentName has successfully subverted the $faction political process to improve relations with $theThirdFaction.",
 		"intelDesc_raiseRelations_failure":"An agent from $theAgentFaction failed to subvert the $faction political process to improve relations with their own faction. Fortunately, their attempts at manipulation went unnoticed.",
@@ -341,6 +348,15 @@
 		"intelDesc_infiltrateCell_failure":"An $agentFaction agent has failed to penetrate a $faction cell on $market. Terrorist activity continues.",
 		"intelDesc_infiltrateCell_failurePlayer":"Your agent $agentName has failed to infiltrate a $faction cell on $market. They're fortunate to be alive — such cells have a short way with traitors.",
 		
+		"intelDesc_procureShip_success":"A $agentFaction agent has arranged the illegal purchase of a $ship from $market. $Faction investigators have failed to detect the crime.",
+		"intelDesc_procureShip_successPlayer":"Your agent $agentName has 'bought' a $ship $onOrAt $market. $Faction authorities have not appeared to notice the disappearance.",
+		"intelDesc_procureShip_successDetected":"A $agentFaction agent has arranged the illegal purchase of a $ship from $market. $Faction have determined $theAgentFaction was responsible.",
+		"intelDesc_procureShip_successDetectedPlayer":"Your agent $agentName has 'bought' a $ship $onOrAt $market. $Faction authorities have identified $theAgentFaction involvement.",
+		"intelDesc_procureShip_failure":"An $agentFaction agent $onOrAt $market failed to illegally procure a $ship. $Faction investigators were unable to determine the responsible party.",
+		"intelDesc_procureShip_failurePlayer":"Your agent $agentName has failed to illegally procure a $ship $onOrAt $market. Fortunately, they were able to destroy evidence of $agentFaction responsibility.",
+		"intelDesc_procureShip_failureDetected":"An attempt by an agent of $agentFaction to illegally procure a $ship $orOnAt market was thwarted by by $faction authorities.",
+		"intelDesc_procureShip_failureDetectedPlayer":"$Faction authorities have stopped an attempt by $agentName to illegally procure a $ship $onOrAt $market. They will not be pleased with $theAgentFaction.",
+		
 		"intel_lastMessage_travel_success":"\"Arrived at $market. Awaiting further directions.\"",
 		"intel_lastMessage_raiseRelations_success":"\"$TheFaction likes us rather more now.\"",
 		"intel_lastMessage_raiseRelations_failure":"\"Political interference with $theFaction was unsuccessful.\"",
@@ -354,6 +370,8 @@
 		"intel_lastMessage_destroyCommodities_failure":"\"We were unable to destroy the $commodity stockpiles on $market.\"",
 		"intel_lastMessage_infiltrateCell_success":"\"The $faction cell on $market is no more. Death take them all.\"",
 		"intel_lastMessage_infiltrateCell_failure":"\"Infiltration of $faction cell on $market... has failed.\"",
+		"intel_lastMessage_procureShip_success":"\"We now have a shiny new $ship.\"",
+		"intel_lastMessage_procureShip_failure":"\"Failed to procure a $ship at $market.\"",
 		"intel_lastMessage_injury_success":"\"Recovered from injuries. Ready for duty once more.\"",
 		
 		"destabilizeText1":"poisoned the water supply",
@@ -381,17 +399,26 @@
 		"commodityLossEffectShort":"Availability reduced by %s",
 		"commodityDestroyModDesc":"Agent sabotage",
 		"cellBaseLocation":"The cell was supported from $baseName, a base in the $location.",
-
+		"shipDeliveryInfoShort":"Delivering to $market in $time day(s)",
+		"shipDeliveryInfoCompleteShort":"Delivered to %s",
+		"shipDeliveryInfo":"$shipName, $shipClass will be delivered to $market in $time day(s).",
+		"shipDeliveryInfoComplete":"$shipName, $shipClass delivered to $market.",
 		
 		"dialogIntro":"Preparing new mission for agent...",
 		"dialogOption_action":"Action type: $action";
 		"dialogOption_faction":"Faction: $faction";
 		"dialogOption_target":"Target: $target";
 		"dialogIndustryPickerHeader":"Select industry to sabotage",
+		"dialogShipPickerHeader":"Ship to procure",
 		
 		"dialogTooltipAlreadyModifyingRelations":"Another agent is currently already manipulating this faction.",
 		#"dialogTooltipModifyingRelationsCooldown":"This faction has already been recently manipulated. It will take $cooldown before further such actions can be executed.",
 		"dialogInfoModifyingRelationsCooldown":"This faction has already been manipulated in the recent past. Further such actions will take longer.",
+		
+		"dialogProcureShipIntro":"A single ship can be procured from a faction, but persuading officials to \"lose\" a military-grade warship through a judicious combination of bribes, blackmail and forgery requires an expense considerably in excess of the market price. It should only be used for hulls which have proven difficult to obtain through other channels.",
+		"dialogProcureShipIntro2":"Ship will have a random variant and be subject to D-mods.",
+		"dialogProcureShipIntro3":"If the attempt fails, %s of the action cost will be refunded.",
+		"dialogProcureShipDestinationIntro":"Select a planet or station to deliver the ship to. It will be placed in storage upon arrival.",
 		
 		"dialogInfoHeaderTravel":"Travel to %s",
 		"dialogInfoHeaderRaiseRelations":"Raise relations with %s",
@@ -399,6 +426,7 @@
 		"dialogInfoHeaderDestabilizeMarket":"Destabilize %s",
 		"dialogInfoHeaderDestroyCommodities":"Destroy %s stockpiles on %s",
 		"dialogInfoHeaderSabotageIndustry":"Sabotage %s on %s",
+		"dialogInfoHeaderProcureShip":"Procure %s",
 		"dialogInfoSuccessChance":"Success chance: %s",
 		"dialogInfoEffect":"Effect: %s – %s",
 		"dialogInfoTimeNeeded":"Days to complete: %s",
@@ -410,6 +438,8 @@
 		"travelTimeStatDeciv":"Acquiring transport (decivilized)",
 		"travelTimeStatRepLevel":"Bypassing security ($repLevel)",
 		"travelTimeStatTravel":"Distance: $dist LY",
+		
+		"procureShipStatChanceMult":"Ship size",
 	},
 	
 	"nex_avertDialog":{

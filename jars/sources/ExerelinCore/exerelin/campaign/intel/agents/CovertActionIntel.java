@@ -258,7 +258,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	public boolean canAbort() {
-		return true;
+		return result == null;
 	}
 	
 	public void abort() {

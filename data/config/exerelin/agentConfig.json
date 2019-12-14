@@ -141,5 +141,19 @@
 			"baseCost":50000,
 			"xp":2000,
 		},
+		"procureShip":{
+			"time":30,
+			"name":"Procure Ship",
+			"successChance":0.75,
+			"detectionChance":0.3,
+			"detectionChanceFail":0.5,
+			"repLossOnDetectionMin":0.03,	# multiplied in code
+			"repLossOnDetectionMax":0.06,	# multiplied in code
+			"alertLevelIncrease":0.2,		# multiplied in code
+			#"baseCost":50000,	# handled in code
+			"costScaling":false,
+			"injuryChanceMult":0,
+			"xp":500,	# multiplied in code
+		},
 	},
 }

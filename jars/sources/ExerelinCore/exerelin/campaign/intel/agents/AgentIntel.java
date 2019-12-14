@@ -45,9 +45,10 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final Object UPDATE_LOST = new Object();
 	protected static final Object UPDATE_ABORTED = new Object();
 	protected static final String BUTTON_ORDERS = "orders";
+	protected static final String BUTTON_ABORT = "abort";
 	protected static final String BUTTON_QUEUE_ORDER = "orders2";
 	protected static final String BUTTON_CANCEL_QUEUE = "abortQueue";
-	protected static final String BUTTON_ABORT = "abort";
+	
 	protected static final String BUTTON_DISMISS = "dismiss";
 	
 	protected PersonAPI agent;
@@ -275,6 +276,14 @@ public class AgentIntel extends BaseIntelPlugin {
 			str = StringHelper.substituteToken(str, "$daysStr", daysStr);
 			info.addPara(str, opad, h, daysNum);
 			
+			if (currentAction.getDefId().equals(CovertActionType.PROCURE_SHIP))
+			{
+				info.addButton(StringHelper.getString("nex_agentActions", 
+						"intelButton_procureShipSetDestination", true), 
+					ProcureShip.BUTTON_CHANGE_DESTINATION, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
+			}
+			
 			// abort button
 			if (currentAction.canAbort()) {
 				ButtonAPI button = info.addButton(StringHelper.getString("abort", true), 
@@ -389,7 +398,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_ORDERS) {
 			ui.showDialog(null, new AgentOrdersDialog(this, market, ui, false));
-		}else if (buttonId == BUTTON_QUEUE_ORDER) {
+		} else if (buttonId == BUTTON_QUEUE_ORDER) {
 			// If we are travelling somewhere, set that as our market
 			MarketAPI targetMarket = this.market;
 			if (currentAction != null && currentAction instanceof Travel) {
@@ -402,6 +411,8 @@ public class AgentIntel extends BaseIntelPlugin {
 		} else if (buttonId == BUTTON_CANCEL_QUEUE) {
 			nextAction.abort();
 			setQueuedAction(null);
+		} else if (buttonId == ProcureShip.BUTTON_CHANGE_DESTINATION) {
+			ui.showDialog(null, new ProcureShipDestinationDialog(this, (ProcureShip)currentAction, market, ui));
 		} else if (buttonId == BUTTON_DISMISS) {
 			if (currentAction != null)
 				currentAction.abort();
@@ -418,7 +429,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId != BUTTON_ORDERS && buttonId != BUTTON_QUEUE_ORDER;
+		return buttonId == BUTTON_ABORT || buttonId == BUTTON_CANCEL_QUEUE || buttonId == BUTTON_DISMISS;
 	}
 	
 	@Override

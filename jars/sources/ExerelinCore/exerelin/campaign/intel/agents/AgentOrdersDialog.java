@@ -2,6 +2,7 @@ package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
 import com.fs.starfarer.api.campaign.IndustryPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
@@ -14,6 +15,10 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -32,6 +37,7 @@ import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -40,6 +46,7 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +77,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected MarketAPI travelDest;
 	protected String commodityToDestroy;
 	protected Industry industryToSabotage;
+	protected FleetMemberAPI shipToProcure;
 
 	protected enum Menu
 	{
@@ -180,6 +188,21 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					//log.info("Adding industry target: " + ind.getCurrentName());
 				}
 				break;
+			case CovertActionType.PROCURE_SHIP:
+				for (String hullId : agentMarket.getFaction().getKnownShips()) {
+					ShipHullSpecAPI spec = Global.getSettings().getHullSpec(hullId);
+					if (spec.getTags().contains(ShipTypeHints.UNBOARDABLE))
+						continue;
+					if (PrismMarket.getRestrictedShips().contains(hullId))
+						continue;
+					
+					List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(hullId);
+					String variantId = ExerelinUtils.getRandomListElement(variants);
+					FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+					targets.add(member);
+				}
+				Collections.sort(targets, PROCURE_SHIP_COMPARATOR);
+				break;
 		}
 		
 		this.targets = targets;
@@ -239,6 +262,12 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		printActionInfo();
 	}
 	
+	protected void setShipToProcure(FleetMemberAPI ship) {
+		shipToProcure = ship;
+		((ProcureShip)action).setShip(ship);
+		printActionInfo();
+	}
+	
 	protected void printActionInfo() {
 		if (!canProceed())
 			return;
@@ -287,7 +316,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				text.addPara(getString(header + "SabotageIndustry"), hl, industryName, mktName);
 				setHighlights(industryName, mktName, hl, factionColor);
 				addEffectPara(0, 1);
-				break;	
+				break;
+			case CovertActionType.PROCURE_SHIP:
+				String shipName = shipToProcure.getHullSpec().getNameWithDesignationWithDashClass();
+				text.addPara(getString(header + "ProcureShip"), hl, shipName);
+				break;
 		}
 		
 		// print chance of success
@@ -430,6 +463,18 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				action.init();
 				printActionInfo();
 				break;
+			case CovertActionType.PROCURE_SHIP:
+				action = new ProcureShip(agent, market, null, agentFaction, mktFaction, true, null);
+				action.init();
+				
+				text.setFontSmallInsignia();
+				text.addPara(getString("dialogProcureShipIntro"));
+				text.addPara(getString("dialogProcureShipIntro2"));
+				text.addPara(getString("dialogProcureShipIntro3"), Misc.getHighlightColor(), 
+						(int)(ProcureShip.FAILURE_REFUND_MULT * 100) + "%");
+				text.setFontInsignia();
+				getTargets();
+				break;
 		}
 	}
 	
@@ -476,6 +521,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addActionOption(CovertActionType.DESTABILIZE_MARKET);
 			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
 			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
+			addActionOption(CovertActionType.PROCURE_SHIP);
 		}
 		if (agentMarket != null && agentMarket.hasCondition(Conditions.PATHER_CELLS)) {
 			MarketConditionAPI cond = agentMarket.getCondition(Conditions.PATHER_CELLS);
@@ -555,6 +601,32 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					}
 				});
 				return;
+			case CovertActionType.PROCURE_SHIP:
+				addBackOption();	// fallback in case player closes menu by pressing Escape
+				List<FleetMemberAPI> ships = new ArrayList<>();
+				for (Object obj : targets) {
+					ships.add((FleetMemberAPI)obj);
+				}
+				
+				dialog.showFleetMemberPickerDialog(getString("dialogShipPickerHeader"), 
+						StringHelper.getString("confirm", true),
+						StringHelper.getString("cancel", true),
+						5, 9, 96, // 3, 7, 58 or so
+						true, false, ships, 
+						new FleetMemberPickerListener() {
+							public void pickedFleetMembers(List<FleetMemberAPI> members) {
+								if (members != null && !members.isEmpty()) {
+									setShipToProcure(members.get(0));
+								}
+								lastSelectedMenu = null;
+								populateOptions();
+							}
+							public void cancelledFleetMemberPicking() {
+								lastSelectedMenu = null;
+								populateOptions();
+							}
+						});
+				return;
 		}
 		
 		showPaginatedMenu();
@@ -585,7 +657,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			}
 				
 			if (id.equals(CovertActionType.TRAVEL) || id.equals(CovertActionType.DESTROY_COMMODITY_STOCKS)
-					|| id.equals(CovertActionType.SABOTAGE_INDUSTRY)) 
+					|| id.equals(CovertActionType.SABOTAGE_INDUSTRY) || id.equals(CovertActionType.PROCURE_SHIP)) 
 			{
 				str = getString("dialogOption_target");
 				String target = null;
@@ -602,18 +674,25 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 						target = industryToSabotage != null? 
 								industryToSabotage.getCurrentName() : none;
 						break;
+					case CovertActionType.PROCURE_SHIP:
+						target = shipToProcure != null?
+								shipToProcure.getHullSpec().getNameWithDesignationWithDashClass() : none;
 				}
 				
 				str = StringHelper.substituteToken(str, "$target", target);
 				options.addOption(str, Menu.TARGET);
+				// Disable target button if no targets available
 				if (id.equals(CovertActionType.TRAVEL) && thirdFaction == null) {
 					options.setEnabled(Menu.TARGET, false);
 				}
-				if (optionsList.isEmpty() && !id.equals(CovertActionType.SABOTAGE_INDUSTRY)) {
+				if (optionsList.isEmpty() && !id.equals(CovertActionType.SABOTAGE_INDUSTRY)
+						&& !id.equals(CovertActionType.PROCURE_SHIP)) {
 					options.setEnabled(Menu.TARGET, false);
 				}
 			}
 		}
+		
+		// Confirm option
 		options.addOption(StringHelper.getString("confirm", true), Menu.CONFIRM);
 		if (!canProceed() || !hasEnoughCredits()) {
 			options.setEnabled(Menu.CONFIRM, false);
@@ -622,8 +701,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					StringHelper.getString("yes", true), StringHelper.getString("no", true));
 			options.setShortcut(Menu.CONFIRM, Keyboard.KEY_RETURN,
 				false, false, false, true);
-			
 		}
+		
+		// Cancel option
 		options.addOption(StringHelper.getString("cancel", true), Menu.CANCEL);
 		options.setShortcut(Menu.CANCEL, Keyboard.KEY_ESCAPE,
 				false, false, false, true);
@@ -729,6 +809,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				return commodityToDestroy != null;
 			case CovertActionType.SABOTAGE_INDUSTRY:
 				return industryToSabotage != null;
+			case CovertActionType.PROCURE_SHIP:
+				return shipToProcure != null;
 		}
 		return true;
 	}
@@ -788,7 +870,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	public void optionSelected(String optionText, Object optionData)
 	{
 		if (optionText != null) {
-				text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
+			text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
 		}
 		
 		try {
@@ -889,4 +971,18 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	{
 		return null;
 	}
+	
+	public static final Comparator PROCURE_SHIP_COMPARATOR = new Comparator<Object>() {
+		@Override
+		public int compare(Object obj1, Object obj2) {
+			FleetMemberAPI fm1 = (FleetMemberAPI)obj1;
+			FleetMemberAPI fm2 = (FleetMemberAPI)obj2;
+			
+			int compare = fm1.getHullSpec().getHullSize().compareTo(fm2.getHullSpec().getHullSize());
+			if (compare != 0) return -compare;
+			
+			compare = Float.compare(fm1.getBaseDeploymentCostSupplies(), fm2.getBaseDeploymentCostSupplies());
+			return -compare;
+		}
+	};
 }

@@ -113,12 +113,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
         super.init(submarket);
     }
     
-    public static Set getRestrictedShips()
+    public static Set<String> getRestrictedShips()
     {
         return new HashSet<>(restrictedShips);
     }
     
-    public static Set getRestrictedWeapons()
+    public static Set<String> getRestrictedWeapons()
     {
         return new HashSet<>(restrictedWeapons);
     }
