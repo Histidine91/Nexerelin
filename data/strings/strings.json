@@ -1190,6 +1190,7 @@
 	"nex_insurance":{
 		"title":"Insurance Payout",
 		"desc":"You have received $paid from $theEmployer to help cover your losses in the recent battle.",
+		"factionGalatian":"the Galatian Academy",
 		"titleUnpaid":"Insurance payout: no payment",
 		"descUnpaid":"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments.",
 		"bulletPayment":"%s received",

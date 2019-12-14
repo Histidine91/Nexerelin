@@ -4,11 +4,13 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -48,13 +50,15 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 
 	public FactionInsuranceIntel(Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers, 
 			List<OfficerDataAPI> deadOfficers) {
-		if (!intelValidations())
+		if (!intelValidations()) {
+			endImmediately();
 			return;
+		}
 		
 		this.disabledOrDestroyedMembers = disabledOrDestroyedMembers;
 		paidAmount = calculatePayout(deadOfficers, disabledOrDestroyedMembers);
 
-		if (faction.isAtBest("player", RepLevel.SUSPICIOUS))
+		if (faction.isAtBest(Factions.PLAYER, RepLevel.SUSPICIOUS))
 		{
 			paid = false;
 		}
@@ -69,7 +73,13 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			this.endAfterDelay();
 		}
 	}
-
+	
+	protected boolean hasGalatianStipend() {
+		List<GalatianAcademyStipend> stipends = Global.getSector().getListenerManager()
+				.getListeners(GalatianAcademyStipend.class);
+		return !stipends.isEmpty();
+	}
+	
 	/**
 	 * Check if we should actually pay insurance.
 	 * @return
@@ -81,7 +91,14 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		}
 
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		if (!DEBUG_MODE && alignedFactionId.equals(Factions.PLAYER)) {	// no self insurance
+		// no self-insurance, but can have insurance from Galatian stipend
+		if (!DEBUG_MODE && alignedFactionId.equals(Factions.PLAYER)) {
+			
+			if (hasGalatianStipend()) {
+				faction = Global.getSector().getFaction(Factions.INDEPENDENT);
+				return true;
+			}			
+			
 			//log.info("Cannot self-insure");
 			return false;
 		}	
@@ -223,16 +240,19 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		info.addImage(faction.getCrest(), width, 128f, pad);
 
 		String str = paid ? "desc" : "descUnpaid";
+		boolean galatian = faction.getId().equals(Factions.INDEPENDENT);
+		String employer = galatian ? StringHelper.getString("nex_insurance", "factionGalatian") 
+				: faction.getDisplayNameLongWithArticle();
 
 		Map<String, String> map = new HashMap<>();
 		String payment = Misc.getDGSCredits(paidAmount);
 		map.put("$paid", payment);
-		map.put("$theEmployer", faction.getDisplayNameLongWithArticle());
+		map.put("$theEmployer", employer);
 		String para = StringHelper.getStringAndSubstituteTokens("nex_insurance", str, map);
 
 		Color h = Misc.getHighlightColor();
 		LabelAPI label = info.addPara(para, pad);
-		label.setHighlight(payment, faction.getDisplayNameLongWithArticle());
+		label.setHighlight(payment, employer);
 		label.setHighlightColors(h, faction.getBaseUIColor());
 		
 		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", pad);
