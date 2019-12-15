@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetActionDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -48,13 +49,13 @@ public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
 			return;
 		}
 		
+		maxDays = time;
 		List<RouteManager.RouteData> routes = RouteManager.getInstance().getRoutesForSource(intel.getRouteSourceId());
 		for (RouteManager.RouteData route : routes) {
 			route.addSegment(new RouteManager.RouteSegment(0.1f, token, 
 					aggressive ? null : AssembleStage.WAIT_STAGE));
 			route.addSegment(new RouteManager.RouteSegment(time, token, 
 					aggressive ? null : AssembleStage.WAIT_STAGE));
-			maxDays = time;
 			
 			// update fleet delegate
 			CampaignFleetAPI fleet = route.getActiveFleet();
@@ -63,11 +64,14 @@ public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
 				ai.setDelegate(this);
 			}
 		}
-	}	
+	}
 	
 	@Override
 	protected void updateStatus() {
 		abortIfNeededBasedOnFP(true);
+		if (elapsed > maxDays) {
+			status = RaidIntel.RaidStageStatus.SUCCESS;
+		}
 	}
 	
 	@Override
