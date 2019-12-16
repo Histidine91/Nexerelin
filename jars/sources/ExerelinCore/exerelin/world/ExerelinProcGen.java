@@ -28,11 +28,13 @@ import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.AL_ChaosCrackFleetManager;
+/*
 import data.scripts.campaign.ExigencyCommRelayAdder;
 import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
 import data.scripts.world.exipirated.ExipiratedAvestaMovement;
 import data.scripts.world.exipirated.ExipiratedCollectorFleetManager;
 import data.scripts.world.exipirated.ExipiratedPatrolFleetManager;
+*/
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
@@ -1148,8 +1150,10 @@ public class ExerelinProcGen {
 		return newStation;
 	}
 	
+	@Deprecated
 	protected void addAvestaStation(SectorAPI sector, StarSystemAPI system)
 	{
+		/*
 		SectorEntityToken avesta;
 		
 		if (ExerelinSetupData.getInstance().numSystems == 1)
@@ -1201,6 +1205,7 @@ public class ExerelinProcGen {
 		avesta.addScript(new ExipiratedPatrolFleetManager(market));
 		avesta.addScript(new ExipiratedCollectorFleetManager(market));
 		avesta.addScript(new ExigencyCommRelayAdder());
+		*/
 	}
 	
 	protected void addShanghai(MarketAPI market)
