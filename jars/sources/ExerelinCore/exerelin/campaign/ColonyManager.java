@@ -161,7 +161,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					}
 				}
 				
-				if (market.getFaction().isPlayerFaction()) {
+				if (market.getFaction().isPlayerFaction() && !market.isHidden()) {
 					processAutonomousColonyIncome(market);
 				}
 			}
