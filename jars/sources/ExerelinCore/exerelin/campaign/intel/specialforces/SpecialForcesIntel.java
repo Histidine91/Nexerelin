@@ -59,6 +59,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public static final float DAMAGE_TO_TERMINATE = 0.9f;
 	
 	protected MarketAPI origin;
+	protected MarketAPI lastSpawnedFrom;	// updated when fleet rebuilds
 	protected FactionAPI faction;
 	protected float startingFP;		// as stored in route extra data
 	protected float trueStartingFP;	// from actually generated fleet; reset on fleet rebuild
@@ -87,6 +88,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		this.origin = origin;
 		this.faction = faction;
 		this.startingFP = startingFP;
+		lastSpawnedFrom = origin;
 	}
 	
 	public void init(PersonAPI commander) {
@@ -103,6 +105,11 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
+	}
+	
+	protected Object readResolve() {
+		if (lastSpawnedFrom == null) lastSpawnedFrom = origin;
+		return this;
 	}
 	
 	// Create fleet and add to star system/hyperspace when player is near
@@ -143,7 +150,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		float fp = thisRoute.getExtra().fp * (1 - damage) * conf.specialForcesSizeMult;
 		
 		FleetParamsV3 params = new FleetParamsV3(
-				origin,
+				lastSpawnedFrom,
 				null, // locInHyper
 				factionId,
 				thisRoute.getQualityOverride(), // qualityOverride
@@ -257,7 +264,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		if (rebuildCheckCooldown > 0 && !force)
 			return;
 		
-		if (routeAI.currentTask.type == TaskType.REBUILD)
+		if (routeAI.currentTask != null && routeAI.currentTask.type == TaskType.REBUILD)
 			return;
 		
 		rebuildCheckCooldown = 10;
@@ -306,7 +313,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		routeAI.assignTask(task);
 	}
 	
-	public void executeRebuildOrder() {
+	public void executeRebuildOrder(MarketAPI market) {
+		lastSpawnedFrom = market;
 		Float damage = route.getExtra().damage;
 		if (damage == null) damage = 0f;
 		float fp = damage * startingFP;
@@ -373,11 +381,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	@Override
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
 		Color c = getTitleColor(mode);
+		Color tc = getBulletColorForMode(mode);
 		info.addPara(getSmallDescriptionTitle(), c, 0);
 		if (isEnding() || isEnded()) return;
 		if (routeAI.currentTask != null) {
 			bullet(info);
-			info.addPara(Misc.ucFirst(routeAI.currentTask.getText()), 3);
+			info.addPara(Misc.ucFirst(routeAI.currentTask.getText()), tc, 3);
 			unindent(info);
 		}
 	}
@@ -657,6 +666,13 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			orderFleetRebuild(true);
 			// TODO: maybe chance of commander being killed?
 		}
+		
+		/*
+			NOTE: this causes calculation errors if a fleet is damage, despawned, then respawned
+			e.g. if it loses half its FP, despawns, then respawns, trueStartingFP will now be half its original value
+			If half this reduced fleet is then lost, damage is only 0.5 even though the fleet is now 1/4 its original size
+			But I don't know how to fix this
+		*/
 		float healthMult = ((float)fleet.getFleetPoints()/(float)trueStartingFP);
 		route.getExtra().damage = 1 - 1 * healthMult;
 	}

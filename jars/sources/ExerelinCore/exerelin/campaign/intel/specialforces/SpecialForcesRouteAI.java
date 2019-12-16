@@ -539,7 +539,7 @@ public class SpecialForcesRouteAI {
 				return;
 			}
 			
-			sf.executeRebuildOrder();
+			sf.executeRebuildOrder(currentTask.market);
 			// spend a few days orbiting the planet, to shake down the new members
 			SpecialForcesTask task = new SpecialForcesTask(TaskType.ASSEMBLE, 100);
 			task.market = currentTask.market;
