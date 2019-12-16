@@ -872,7 +872,11 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 			
 			//int num = getNumPicks(random, mult * 0.25f, mult * 0.5f);
-			int num = getNumPicks(random, mult + 0.5f, mult * 0.5f);
+			int num = getNumPicksDiminishing(random, 
+					mult + 0.5f, 
+					mult * Global.getSettings().getFloat("nex_raidBPInitialExtraMult"),
+					Global.getSettings().getFloat("nex_raidBPIterationMult")
+			);
 			for (int i = 0; i < num && !picker.isEmpty(); i++) {
 				String id = picker.pickAndRemove();
 				if (id == null) continue;
@@ -1477,6 +1481,29 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardVisual(market.getPrimaryEntity());
 		
 		addBombardContinueOption();
+	}
+	
+	/**
+	 * Like {@code getNumPicks}, but with stronger falloff effect.
+	 * This allows a higher initial pMore to start with.
+	 * @param random
+	 * @param pAny
+	 * @param pMore
+	 * @param diminishFactor
+	 * @return
+	 */
+	protected int getNumPicksDiminishing(Random random, float pAny, float pMore, 
+			float diminishFactor) 
+	{
+		if (random.nextFloat() >= pAny) return 0;
+		
+		int result = 1;
+		for (int i = 0; i < 10; i++) {
+			if (random.nextFloat() >= pMore) break;
+			result++;
+			pMore *= diminishFactor;
+		}
+		return result;
 	}
 
 	/**
