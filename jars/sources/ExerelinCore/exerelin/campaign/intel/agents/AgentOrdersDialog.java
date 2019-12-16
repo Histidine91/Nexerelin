@@ -982,7 +982,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			if (compare != 0) return -compare;
 			
 			compare = Float.compare(fm1.getBaseDeploymentCostSupplies(), fm2.getBaseDeploymentCostSupplies());
-			return -compare;
+			if (compare != 0) return -compare;
+			
+			compare = fm1.getHullSpec().getHullName().compareTo(fm2.getHullSpec().getHullName());
+			return compare;
 		}
 	};
 }

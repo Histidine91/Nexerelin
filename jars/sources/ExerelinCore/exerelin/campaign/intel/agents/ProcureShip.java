@@ -43,7 +43,6 @@ import org.lazywizard.lazylib.MathUtils;
 public class ProcureShip extends CovertActionIntel {
 	
 	public static final float FAILURE_REFUND_MULT = 0.75f;
-	public static final float COST_MULT = 1.25f;
 	public static final String BUTTON_CHANGE_DESTINATION = "changeDestination";
 	
 	protected FleetMemberAPI ship;
@@ -204,7 +203,7 @@ public class ProcureShip extends CovertActionIntel {
 		MutableStat cost = new MutableStat(0);
 		if (ship == null) return cost;
 		cost.modifyFlat("base", ship.getBaseBuyValue(), getString("costShipBase", true));
-		cost.modifyMult("generalMult", COST_MULT, getString("costShipGeneralMult", true));
+		cost.modifyMult("generalMult", getDef().baseCost, getString("costShipGeneralMult", true));
 		
 		return cost;
 	}

@@ -161,7 +161,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	public MutableStat getCostStat() {
 		MutableStat cost = new MutableStat(0);
 		
-		int baseCost = getDef().baseCost;
+		float baseCost = getDef().baseCost;
 		cost.modifyFlat("base", baseCost, getString("costBase", true));
 		
 		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;

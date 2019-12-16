@@ -158,7 +158,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 					(float)defJson.optDouble("repLossOnDetectionMax", 0));
 			def.effect = new Pair<>((float)defJson.optDouble("effectMin", 0), 
 					(float)defJson.optDouble("effectMax", 0));
-			def.baseCost = defJson.optInt("baseCost");
+			def.baseCost = (float)defJson.optDouble("baseCost");
 			def.costScaling = defJson.optBoolean("costScaling", true);
 			def.time = (float)defJson.optDouble("time", 0);
 			def.xp = defJson.optInt("xp");
@@ -914,7 +914,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		public float injuryChanceMult;
 		public boolean useAlertLevel;
 		public boolean useIndustrySecurity;
-		public int baseCost;
+		public float baseCost;
 		public boolean costScaling;
 		public float time;
 		public int xp;

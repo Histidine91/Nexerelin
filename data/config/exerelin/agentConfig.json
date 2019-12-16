@@ -43,7 +43,7 @@
 			"baseCost":40000,
 			"costScaling":false,
 			"injuryChanceMult":0,
-			"xp":250,
+			"xp":400,
 		},
 		"lowerRelations":{
 			"name":"Lower Relations",
@@ -60,7 +60,7 @@
 			"baseCost":40000,
 			"costScaling":false,
 			"injuryChanceMult":0,
-			"xp":250,
+			"xp":400,
 		},
 		"destabilizeMarket":{
 			"name":"Destabilize Market",
@@ -103,7 +103,7 @@
 			"alertLevelIncrease":0.2,
 			"baseCost":25000,
 			"costScaling":false,
-			"xp":750,
+			"xp":1000,
 		},
 		"stealBlueprints":{
 			"name":"Steal Blueprints",
@@ -150,7 +150,7 @@
 			"repLossOnDetectionMin":0.03,	# multiplied in code
 			"repLossOnDetectionMax":0.06,	# multiplied in code
 			"alertLevelIncrease":0.2,		# multiplied in code
-			#"baseCost":50000,	# handled in code
+			"baseCost":1.5,					# used as multiplier for ship cost
 			"costScaling":false,
 			"injuryChanceMult":0,
 			"xp":500,	# multiplied in code
