@@ -3,6 +3,7 @@ package exerelin.campaign.diplomacy;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -19,6 +20,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.CeasefirePromptIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.Morality;
@@ -579,6 +581,14 @@ public class DiplomacyBrain {
 			}
 		});
 		
+		// list everyone we're currently trying to invade, don't bother making peace with them
+		Set<String> currInvasionTargets = new HashSet<>();
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
+			InvasionIntel inv = (InvasionIntel)intel;
+			if (inv.getFaction() != faction) continue;
+			currInvasionTargets.add(inv.getTarget().getFactionId());
+		}
+		
 		/*
 		List<CampaignEventPlugin> events = Global.getSector().getEventManager().getOngoingEvents();
 		for (CampaignEventPlugin event : events)
@@ -590,7 +600,9 @@ public class DiplomacyBrain {
 		int tries = 3;
 		for (String enemyId : enemiesLocal)
 		{
-			// TODO: check if we have invasion fleet en route first?
+			if (currInvasionTargets.contains(enemyId))
+				continue;
+			
 			boolean success = tryMakePeace(enemyId, ourWeariness);
 			if (success) return true;
 			tries--;
