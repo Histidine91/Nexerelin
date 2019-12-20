@@ -3,7 +3,9 @@ package exerelin.campaign.intel.specialforces;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -123,10 +125,19 @@ public class SpecialForcesManager implements EveryFrameScript {
 	{
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
 		FactionAPI faction = Global.getSector().getFaction(factionId);
+		
+		// don't spawn special forces fleet if player is hostile and in-system
+		LocationAPI playerLoc = null;
+		if (faction.isHostileTo(Factions.PLAYER)) {
+			playerLoc = Global.getSector().getPlayerFleet().getContainingLocation();
+		}
+		
 		for (MarketAPI market : Misc.getFactionMarkets(faction)) {
 			if (market.isHidden()) continue;
 			if (!market.hasSpaceport()) continue;
 			if (!market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY))
+				continue;
+			if (market.getContainingLocation() == playerLoc)
 				continue;
 			
 			picker.add(market, market.getSize() * market.getSize());

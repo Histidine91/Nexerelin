@@ -250,6 +250,19 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		trueStartingFP = fleet.getFleetPoints();
 	}
 	
+	protected boolean checkRebuild(float damage) {
+		if (damage > DAMAGE_TO_TERMINATE) {
+			log.info("Fleet took catastrophic damage, ending event");
+			endEvent();
+			return true;
+		}
+		else if (damage > DAMAGE_TO_REBUILD || flagship == null) {
+			orderFleetRebuild(false);
+			return true;
+		}
+		return false;
+	}
+	
 	protected void syncFleet(CampaignFleetAPI fleet) {
 		fleet.getFleetData().sort();
 		fleet.getFleetData().setSyncNeeded();
@@ -571,15 +584,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		if (rebuildCheckCooldown > 0)
 			rebuildCheckCooldown -= days;
 		else {			
-			if (damage > DAMAGE_TO_TERMINATE) {
-				log.info("Fleet took catastrophic damage, ending event");
-				endEvent();
-				return;
-			}
-			else if (damage > DAMAGE_TO_REBUILD) {
-				orderFleetRebuild(false);
-				return;
-			}
+			boolean chk = checkRebuild(damage);
+			if (chk) return;
 		}
 		
 		interval.advance(days);
@@ -667,12 +673,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle)
 	{
 		log.info("Fleet " + fleet.getName() + " in battle");
-		List<FleetMemberAPI> losses = Misc.getSnapshotMembersLost(fleet);
-		if (losses.contains(flagship)) {
-			flagship = null;
-			orderFleetRebuild(true);
-			// TODO: maybe chance of commander being killed?
-		}
 		
 		/*
 			NOTE: this causes calculation errors if a fleet is damage, despawned, then respawned
@@ -680,8 +680,19 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			If half this reduced fleet is then lost, damage is only 0.5 even though the fleet is now 1/4 its original size
 			But I don't know how to fix this
 		*/
+		
 		float healthMult = ((float)fleet.getFleetPoints()/(float)trueStartingFP);
-		route.getExtra().damage = 1 - 1 * healthMult;
+		float damage = 1 - 1 * healthMult;
+		route.getExtra().damage = damage;
+		
+		List<FleetMemberAPI> losses = Misc.getSnapshotMembersLost(fleet);
+		if (losses.contains(flagship)) {
+			flagship = null;
+			// TODO: maybe chance of commander being killed?
+		}
+		if (!losses.isEmpty()) {
+			checkRebuild(damage);
+		}
 	}
 	
 	public String pickFleetName(CampaignFleetAPI fleet, MarketAPI origin, PersonAPI commander)
