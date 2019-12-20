@@ -73,9 +73,9 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 		getMarkets();
 		
 		if (markets.isEmpty())
-			destination = null;
+			setDestination(null);
 		else
-			destination = markets.get(0);
+			setDestination(markets.get(0));
 	}
 	
 	protected void loadFactions() {
@@ -261,7 +261,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 			}
 			// travel destination 
 			else if (optionData instanceof MarketAPI) {
-				destination = (MarketAPI)optionData;
+				setDestination((MarketAPI)optionData);
 				currentMenu = null;
 				populateOptions();
 				return;
@@ -290,6 +290,12 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 			options.setShortcut(Menu.CANCEL, Keyboard.KEY_ESCAPE,
 					false, false, false, true);
 		}
+	}
+	
+	protected void setDestination(MarketAPI market) {
+		destination = market;
+		if (destination != null)
+			dialog.getVisualPanel().showPlanetInfo(destination.getPrimaryEntity());
 	}
 	
 	protected void proceed() {
