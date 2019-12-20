@@ -729,6 +729,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
 		}
+		if (SectorManager.shouldHaveMilitarySubmarket(market))
+		{
+			SectorManager.addOrRemoveMilitarySubmarket(market, market.getFactionId(), true);
+		}
 	}
 	
 	@Override

@@ -1116,7 +1116,40 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.addSubmarket(submarketId);
             market.getSubmarket(submarketId).getCargo();    // force cargo to generate if needed; fixes military submarket crash
         }
+    }
+    
+    public static boolean shouldHaveMilitarySubmarket(MarketAPI market) 
+    {
+        String factionId = market.getFactionId();
+        return shouldHaveMilitarySubmarket(market, factionId, 
+                factionId.equals(Factions.PLAYER) || market.isPlayerOwned());
+    }
+    
+    public static boolean shouldHaveMilitarySubmarket(MarketAPI market, String factionId, 
+            boolean isPlayer) {
+        if (isPlayer) return false;
+        if (factionId.equals("templars")) return false;
         
+        return market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
+                || market.hasCondition("tem_avalon") || market.hasIndustry("tiandong_merchq") 
+                || FORCE_MILITARY_MARKET.contains(market.getId());
+    }
+    
+    public static void addOrRemoveMilitarySubmarket(MarketAPI market, String factionId, 
+            boolean haveMilitary) {
+        
+        // handling for ApproLight custom military submarket
+        // if market is AL-held, remove any regular military submarket if present and add AL version
+        // if not, do the reverse
+        // (this assumes we want any kind of military base OFC, if not remove both
+        String wanted = Submarkets.GENERIC_MILITARY, unwanted = "AL_militaryMarket";
+        if (factionId.equals("approlight")) {
+            wanted = unwanted;
+            unwanted = Submarkets.GENERIC_MILITARY;
+        }
+        
+        addOrRemoveSubmarket(market, wanted, haveMilitary);
+        addOrRemoveSubmarket(market, unwanted, false);
     }
     
     /**
@@ -1130,16 +1163,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         boolean isPlayer = newOwnerId.equals(Factions.PLAYER) || market.isPlayerOwned();
         boolean haveLocalResources = isPlayer;
         boolean haveOpen = false;
-        boolean haveMilitary = false;
+        boolean haveMilitary = shouldHaveMilitarySubmarket(market, newOwnerId, isPlayer);
         boolean haveBlackMarket = false;
         boolean haveTemplar = newOwnerId.equals("templars");
         
         if (!newOwnerId.equals("templars") && !isPlayer)
         {
-            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
-                    || market.hasCondition("tem_avalon") || market.hasIndustry("tiandong_merchq") 
-                    || FORCE_MILITARY_MARKET.contains(market.getId()))
-                haveMilitary = true;
             if (!NO_BLACK_MARKET.contains(market.getId()))
                 haveBlackMarket = true;
         }
@@ -1151,27 +1180,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         addOrRemoveSubmarket(market, Submarkets.SUBMARKET_OPEN, haveOpen);
         addOrRemoveSubmarket(market, Submarkets.SUBMARKET_BLACK, haveBlackMarket);
         addOrRemoveSubmarket(market, "tem_templarmarket", haveTemplar);
-        
-        // handle ApproLight special market
-        if (newOwnerId.equals("approlight") && !oldOwnerId.equals("approlight"))
-        {
-            if (haveMilitary)
-            {
-                market.removeSubmarket(Submarkets.GENERIC_MILITARY);
-                addOrRemoveSubmarket(market, "AL_militaryMarket", true);
-            }
-        }
-        else if (!newOwnerId.equals("approlight") && oldOwnerId.equals("approlight"))
-        {
-            if (haveMilitary)
-            {
-                if (!newOwnerId.equals("templars"))
-                    addOrRemoveSubmarket(market, Submarkets.GENERIC_MILITARY, true);
-            }
-            market.removeSubmarket("AL_militaryMarket");
-        }
-        else
-            addOrRemoveSubmarket(market, Submarkets.GENERIC_MILITARY, haveMilitary);
+        addOrRemoveMilitarySubmarket(market, newOwnerId, haveMilitary);
     }
     
     public static void notifySlavesSold(MarketAPI market, int count)
