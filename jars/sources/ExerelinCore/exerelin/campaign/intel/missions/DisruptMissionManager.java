@@ -173,6 +173,8 @@ public class DisruptMissionManager extends BaseEventManager {
 					continue;
 				if (!ind.canBeDisrupted())
 					continue;
+				if (ind.isDisrupted())
+					continue;
 				
 				IndustrySpecAPI spec = ind.getSpec();
 				
