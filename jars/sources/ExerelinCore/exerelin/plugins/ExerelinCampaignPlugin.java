@@ -11,11 +11,14 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
+import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
 // FIXME rename
@@ -41,6 +44,21 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		if (entity instanceof AsteroidAPI)
 		{
 			memory.set("$isAsteroid", true, 0);
+		}
+		
+		if (entity instanceof CampaignFleetAPI) {
+			CampaignFleetAPI fleet = (CampaignFleetAPI)entity;
+			String type = ExerelinUtilsFleet.getFleetType(fleet);
+			if (SpecialForcesIntel.FLEET_TYPE.equals(type))
+			{
+				memory.set("$useVengeanceGreeting", true, 0);
+				memory.set("$escalation", 
+						RevengeanceManager.getManager().getVengeanceEscalation(fleet.getFaction().getId()), 
+						0);
+			}
+			else if ("vengeanceFleet".equals(type)) {
+				memory.set("$useVengeanceGreeting", true, 0);
+			}
 		}
 	}
 	

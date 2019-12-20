@@ -930,7 +930,7 @@ nex_marketSpecialInitializationFinished,ExerelinMarketSpecialInitialize,,FireAll
 # Faction vengeance dialog,,,,,,
 greetingVengeanceMadStronger,OpenCommLink,"$entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$playerName, $theFactionLong $factionIsOrAre not going to suffer you any longer.""
 OR
 ""Your time has come, $playerName.""
@@ -939,7 +939,7 @@ OR
 greetingVengeanceMadWeakerDefiant,OpenCommLink,"$entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$playerName, $theFactionLong $factionIsOrAre not going to suffer you any longer.""
 OR
 ""Your time has come, $playerName.""
@@ -947,7 +947,7 @@ OR
 ""$TheFactionLong sends their regards, $playerName.""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadStronger,OpenCommLink,"$entity.relativeStrength >= 0
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong signed your death warrant, $playerName. Prepare to die.""
 OR
 ""This is the end for you, $playerName. $TheFactionLong wills it.""
@@ -956,7 +956,7 @@ OR
 greetingVengeanceRavingMadWeakerDefiant,OpenCommLink,"$entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong signed your death warrant, $playerName. Prepare to die.""
 OR
 ""This is the end for you, $playerName. $TheFactionLong wills it.""
@@ -964,7 +964,7 @@ OR
 ""We've come here to kill you, $playerName. Die in the name of $theFactionLong!""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadStronger,OpenCommLink,"$entity.relativeStrength >= 0
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""There is no escape for you now, $playerName. $TheFactionLong will hunt you to the ends of the sector!""
 OR
 ""It's over! You die here, $playerName. $TheFactionLong will never give up!""
@@ -973,7 +973,7 @@ OR
 greetingVengeanceStarkRavingMadWeakerDefiant,OpenCommLink,"$entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""There is no escape for you now, $playerName. $TheFactionLong will hunt you to the ends of the sector!""
 OR
 ""It's over! You die here, $playerName. $TheFactionLong will never give up!""
@@ -982,7 +982,7 @@ OR
 greetingVengeanceMadStrongerPirates,OpenCommLink,"$faction.id == pirates
 $entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You've made some powerful enemies, $playerName. This is goodbye.""
 OR
 ""This is the end for you!""
@@ -992,7 +992,7 @@ greetingVengeanceMadWeakerDefiantPirates,OpenCommLink,"$faction.id == pirates
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You've made some powerful enemies, $playerName. This is goodbye.""
 OR
 ""This is the end for you!""
@@ -1001,7 +1001,7 @@ OR
 greetingVengeanceRavingMadStrongerPirates,OpenCommLink,"$faction.id == pirates
 $entity.relativeStrength >= 0
 $entity.escalation >= 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""The Boss sends his regards, you son of a bitch!""
 OR
 ""You've crossed us for the last time. Time to die!""
@@ -1011,7 +1011,7 @@ greetingVengeanceRavingMadWeakerDefiantPirates,OpenCommLink,"$faction.id == pira
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation >= 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""The Boss sends his regards, you son of a bitch!""
 OR
 ""You've crossed us for the last time. Time to die!""
@@ -1020,7 +1020,7 @@ OR
 greetingVengeanceMadStrongerCabal,OpenCommLink,"$faction.id == cabal
 $entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Heresy of this magnitude is answerable with death. Farewell!""
 OR
 ""Hahahahaha! Die!""",cutCommLink:Cut the comm link,
@@ -1028,14 +1028,14 @@ greetingVengeanceMadWeakerDefiantCabal,OpenCommLink,"$faction.id == cabal
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Heresy of this magnitude is answerable with death. Farewell!""
 OR
 ""Hahahahaha! Die!""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadStrongerCabal,OpenCommLink,"$faction.id == cabal
 $entity.relativeStrength >= 0
 $entity.escalation >= 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong is here to take your head, $playerName. There is no escape!""
 OR
 ""I'll kill you! I'll kill you to DEATH!""",cutCommLink:Cut the comm link,
@@ -1043,14 +1043,14 @@ greetingVengeanceRavingMadWeakerDefiantCabal,OpenCommLink,"$faction.id == cabal
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation >= 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong is here to take your head, $playerName. There is no escape!""
 OR
 ""I'll kill you! I'll kill you to DEATH!""",cutCommLink:Cut the comm link,
 greetingVengeanceMadStrongerLuddicChurch,OpenCommLink,"$faction.id == luddic_church
 $entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong has not forgotten your sins, $playerName. Prepare to be destroyed!""
 OR
 ""Prepare for death, blasphemer!""",cutCommLink:Cut the comm link,
@@ -1058,14 +1058,14 @@ greetingVengeanceMadWeakerDefiantLuddicChurch,OpenCommLink,"$faction.id == luddi
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong has not forgotten your sins, $playerName. Prepare to be destroyed!""
 OR
 ""Prepare for death, blasphemer!""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadStrongerLuddicChurch,OpenCommLink,"$faction.id == luddic_church
 $entity.relativeStrength >= 0
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You are past redemption! The inquisition has come for you, heretic.""
 OR
 ""Be banished to the pit you came from, spawn of Mammon!""",cutCommLink:Cut the comm link,
@@ -1073,14 +1073,14 @@ greetingVengeanceRavingMadWeakerDefiantLuddicChurch,OpenCommLink,"$faction.id ==
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You are past redemption! The inquisition has come for you, heretic.""
 OR
 ""Be banished to the pit you came from, spawn of Mammon!""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadStrongerLuddicChurch,OpenCommLink,"$faction.id == luddic_church
 $entity.relativeStrength >= 0
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Burn in Hell, demon! The followers of Ludd shall strike you down!""
 OR
 ""Your Faustian schemes end here.""",cutCommLink:Cut the comm link,
@@ -1088,14 +1088,14 @@ greetingVengeanceStarkRavingMadWeakerDefiantLuddicChurch,OpenCommLink,"$faction.
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Burn in Hell, demon! The followers of Ludd shall strike you down!""
 OR
 ""Your Faustian schemes end here.""",cutCommLink:Cut the comm link,
 greetingVengeanceMadStrongerLuddicPath,OpenCommLink,"$faction.id == luddic_path
 $entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong has not forgotten your sins, $playerName. Prepare to be destroyed!""
 OR
 ""Prepare for death, blasphemer!""",cutCommLink:Cut the comm link,
@@ -1103,14 +1103,14 @@ greetingVengeanceMadWeakerDefiantLuddicPath,OpenCommLink,"$faction.id == luddic_
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong has not forgotten your sins, $playerName. Prepare to be destroyed!""
 OR
 ""Prepare for death, blasphemer!""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadStrongerLuddicPath,OpenCommLink,"$faction.id == luddic_path
 $entity.relativeStrength >= 0
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You are past redemption! Begone, in the name of the Path!.""
 OR
 ""Be banished to the pit you came from, spawn of Mammon!""",cutCommLink:Cut the comm link,
@@ -1118,14 +1118,14 @@ greetingVengeanceRavingMadWeakerDefiantLuddicPath,OpenCommLink,"$faction.id == l
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You are past redemption! Begone, in the name of the Path!.""
 OR
 ""Be banished to the pit you came from, spawn of Mammon!""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadStrongerLuddicPath,OpenCommLink,"$faction.id == luddic_path
 $entity.relativeStrength >= 0
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Burn in Hell, demon! The followers of Ludd shall strike you down!""
 OR
 ""In the name of the one true Path, we shall annihilate you! Thy name shall be purged from the very stars!""",cutCommLink:Cut the comm link,
@@ -1133,58 +1133,58 @@ greetingVengeanceStarkRavingMadWeakerDefiantLuddicPath,OpenCommLink,"$faction.id
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Burn in Hell, demon! The followers of Ludd shall strike you down!""
 OR
 ""In the name of the one true Path, we shall annihilate you! Thy name shall be purged from the very stars!""",cutCommLink:Cut the comm link,
 greetingVengeanceMadStrongerAhriman,OpenCommLink,"$faction.id == exipirated
 $entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You've made some powerful enemies, $playerName. This is goodbye.""",cutCommLink:Cut the comm link,
 greetingVengeanceMadWeakerDefiantAhriman,OpenCommLink,"$faction.id == exipirated
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You've made some powerful enemies, $playerName. This is goodbye.""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadStrongerAhriman,OpenCommLink,"$faction.id == exipirated
 $entity.relativeStrength >= 0
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""We're going to make an example of you, $playerName; don't fuck with $theFactionLong!""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadWeakerDefiantAhriman,OpenCommLink,"$faction.id == exipirated
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""We're going to make an example of you, $playerName; don't fuck with $theFactionLong!""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadStrongerAhriman,OpenCommLink,"$faction.id == exipirated
 $entity.relativeStrength >= 0
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""The Associates have deemed you unworthy of life. Your pain shall be legendary!""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadWeakerDefiantAhriman,OpenCommLink,"$faction.id == exipirated
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""The Associates have deemed you unworthy of life. Your pain shall be legendary!""",cutCommLink:Cut the comm link,
 greetingVengeanceMadStrongerTemplars,OpenCommLink,"$faction.id == templars
 $entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Your life ends now, blasphemer.""",cutCommLink:Cut the comm link,
 greetingVengeanceMadWeakerDefiantTemplars,OpenCommLink,"$faction.id == templars
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Your life ends now, blasphemer.""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadStrongerTemplars,OpenCommLink,"$faction.id == templars
 $entity.relativeStrength >= 0
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Heretic, you have been chosen for destruction. Die in the name of $theFactionLong!""
 OR
 ""Be cleansed from the holy stars, foul creature!""",cutCommLink:Cut the comm link,
@@ -1192,53 +1192,53 @@ greetingVengeanceRavingMadWeakerDefiantTemplars,OpenCommLink,"$faction.id == tem
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""Heretic, you have been chosen for destruction. Die in the name of $theFactionLong!""
 OR
 ""Be cleansed from the holy stars, foul creature!""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadStrongerTemplars,OpenCommLink,"$faction.id == templars
 $entity.relativeStrength >= 0
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"The $faction $personRank stares you down, completely silent as $hisOrHer $otherShipOrFleet prepares to annihilate you.",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadWeakerDefiantTemplars,OpenCommLink,"$faction.id == templars
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"The $faction $personRank stares you down, completely silent as $hisOrHer $otherShipOrFleet prepares to annihilate you.",cutCommLink:Cut the comm link,
 greetingVengeanceMadStrongerExigency,OpenCommLink,"$faction.id == exigency
 $entity.relativeStrength >= 0
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You are a navigational hazard. Perish.""",cutCommLink:Cut the comm link,
 greetingVengeanceMadWeakerDefiantExigency,OpenCommLink,"$faction.id == exigency
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 0
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""You are a navigational hazard. Perish.""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadStrongerExigency,OpenCommLink,"$faction.id == exigency
 $entity.relativeStrength >= 0
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""By order of $theFactionLong, you are hereby stripped of your right to live.""",cutCommLink:Cut the comm link,
 greetingVengeanceRavingMadWeakerDefiantExigency,OpenCommLink,"$faction.id == exigency
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 1
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""By order of $theFactionLong, you are hereby stripped of your right to live.""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadStrongerExigency,OpenCommLink,"$faction.id == exigency
 $entity.relativeStrength >= 0
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""We have researched you, $playerName. Your weaknesses are analyzed and your advantages nullified. Prepare for termination.""",cutCommLink:Cut the comm link,
 greetingVengeanceStarkRavingMadWeakerDefiantExigency,OpenCommLink,"$faction.id == exigency
 $entity.relativeStrength < 0
 $entity.weakerThanPlayerButHolding
 $entity.escalation == 2
-$entity.fleetType == vengeanceFleet score:100
+$entity.useVengeanceGreeting score:100
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""We have researched you, $playerName. Your weaknesses are analyzed and your advantages nullified. Prepare for termination.""",cutCommLink:Cut the comm link,
 ,,,,,,
 ,,,,,,

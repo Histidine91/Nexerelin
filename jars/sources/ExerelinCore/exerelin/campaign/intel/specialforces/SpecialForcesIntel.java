@@ -52,6 +52,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public static Logger log = Global.getLogger(SpecialForcesIntel.class);
 	
 	public static final String SOURCE_ID = "nex_specialForces";
+	public static final String FLEET_TYPE = "nex_specialForces";
 	protected static final String BUTTON_DEBUG = "debug";
 	public static final Object ENDED_UPDATE = new Object();
 	public static final Object NEW_ORDERS_UPDATE = new Object();
@@ -97,7 +98,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		OptionalFleetData extra = new OptionalFleetData(origin);
 		extra.factionId = faction.getId();
 		extra.fp = startingFP;
-		extra.fleetType = "nex_specialForces";
+		extra.fleetType = FLEET_TYPE;
 		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
 		routeAI = new SpecialForcesRouteAI(this);
 		routeAI.addInitialTask();
@@ -154,7 +155,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				null, // locInHyper
 				factionId,
 				thisRoute.getQualityOverride(), // qualityOverride
-				"nex_specialForces",
+				FLEET_TYPE,
 				fp, // combatPts
 				fp * 0.25f, // freighterPts 
 				fp * 0.25f, // tankerPts
@@ -194,7 +195,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			fleetName = pickFleetName(fleet, origin, commander);
 		}
 		
-		fleet.setName(faction.getFleetTypeName("nex_specialForces") + " – " + fleetName);
+		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
 		fleet.setNoFactionInName(true);
 		
 		fleet.addEventListener(new SFFleetEventListener(this));
