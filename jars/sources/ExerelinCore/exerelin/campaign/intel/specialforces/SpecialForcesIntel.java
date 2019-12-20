@@ -584,6 +584,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		interval.advance(days);
 		if (!interval.intervalElapsed()) return;
 		
+		if (route.isExpired()) {
+			log.info("Route expired, ending event");
+			endEvent();
+			return;
+		}
+		
 		// If ran out of route segments, have AI give us something else to do
 		if (route.getCurrent() != null && SpecialForcesRouteAI.ROUTE_IDLE_SEGMENT.equals(route.getCurrent().custom)) 
 		{
