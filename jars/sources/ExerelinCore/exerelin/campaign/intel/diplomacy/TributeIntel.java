@@ -338,6 +338,11 @@ public class TributeIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
+	public String getCommMessageSound() {
+		return getSoundColonyThreat();
+	}
+	
+	@Override
 	public FactionAPI getFactionForUIColors() {
 		return Global.getSector().getFaction(factionId);
 	}

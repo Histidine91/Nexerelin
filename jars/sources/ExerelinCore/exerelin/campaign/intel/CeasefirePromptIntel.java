@@ -228,6 +228,11 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 		tags.add(Factions.PLAYER);
 		return tags;
 	}
+	
+	@Override
+	public String getCommMessageSound() {
+		return getSoundColonyThreat();
+	}
 		
 	@Override
 	public String getIcon() {
