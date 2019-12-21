@@ -1132,9 +1132,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		
 		fleetRequestCapacity = (int)(capacity * ExerelinConfig.fleetRequestCapMult);
-		fleetRequestStock += increment * days * ExerelinConfig.fleetRequestIncrementMult;
-		if (fleetRequestStock > fleetRequestCapacity)
-			fleetRequestStock = fleetRequestCapacity;
+		float newStock = fleetRequestCapacity + increment * days * ExerelinConfig.fleetRequestIncrementMult;
+		if (newStock > fleetRequestCapacity)
+			newStock = fleetRequestCapacity;
+		
+		fleetRequestStock = Math.max(fleetRequestStock, newStock);	// doesn't decrease if we lose capacity suppliers
 	}
 	
 	public int getFleetRequestCapacity() {
@@ -1153,6 +1155,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		int amount = 0;
 		int size = (market.getSize() - 2);
 		for (Industry ind : market.getIndustries()) {
+			if (ind.isDisrupted()) continue;
+			
 			if (ind.getSpec().hasTag(Industries.TAG_PATROL))
 				amount += 1;
 			else if (ind.getSpec().hasTag(Industries.TAG_MILITARY))
