@@ -209,6 +209,12 @@ public class SpecialForcesRouteAI {
 		route.setCurrent(null);
 	}
 	
+	protected void addIdleSegment(RouteData route, SectorEntityToken destination) {
+		RouteManager.RouteSegment idle = new RouteManager.RouteSegment(365, destination);
+		idle.custom = ROUTE_IDLE_SEGMENT;
+		route.addSegment(idle);
+	}
+	
 	/**
 	 * Set task as current, updating routes and the like.
 	 * @param task
@@ -300,9 +306,7 @@ public class SpecialForcesRouteAI {
 		}
 		
 		// placeholder to keep the route from expiring
-		RouteManager.RouteSegment idle = new RouteManager.RouteSegment(365, destination);
-		idle.custom = ROUTE_IDLE_SEGMENT;
-		route.addSegment(idle);
+		addIdleSegment(route, destination);
 		
 		if (fleet != null) {
 			fleet.clearAssignments();
@@ -530,12 +534,14 @@ public class SpecialForcesRouteAI {
 		
 		if (currentTask.type == TaskType.REBUILD) 
 		{
+			sf.debugMsg("Attempting fleet rebuild", false);
 			// Not close enough, wait a while longer
 			if (!isCloseEnoughForTask()) {
 				sf.route.getSegments().clear();
 				sf.route.setCurrent(null);
 				sf.route.addSegment(new RouteManager.RouteSegment(currentTask.time * 0.5f, 
 						currentTask.market.getPrimaryEntity()));
+				addIdleSegment(sf.route, currentTask.market.getPrimaryEntity());
 				return;
 			}
 			

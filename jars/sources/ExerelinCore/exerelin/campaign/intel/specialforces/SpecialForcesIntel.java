@@ -275,11 +275,17 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	 * @param force
 	 */
 	public void orderFleetRebuild(boolean force) {
-		if (rebuildCheckCooldown > 0 && !force)
+		if (rebuildCheckCooldown > 0 && !force) {
+			debugMsg("On cooldown, force: " + force, false);
 			return;
+		}
+			
 		
-		if (routeAI.currentTask != null && routeAI.currentTask.type == TaskType.REBUILD)
+		if (routeAI.currentTask != null && routeAI.currentTask.type == TaskType.REBUILD) {
+			debugMsg("Already have reconstitution order", false);
 			return;
+		}
+			
 		
 		rebuildCheckCooldown = 10;
 		
