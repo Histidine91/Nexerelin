@@ -154,15 +154,9 @@ public class ColonyTargetValuator {
 		if (system.getPlanets().isEmpty()) return false;
 		boolean inhabited = !Global.getSector().getEconomy().getMarkets(system).isEmpty();
 		
-		if (!ExerelinUtilsAstro.isCoreSystem(system)) {
-			// don't colonize a system with an existing market unless we control that system
-			// also used to be "unless it's a player market and player is commissioned with that faction"
-			// but meh, doesn't sound worthwhile
-			
-			if (inhabited) {
-				if (ExerelinUtilsFaction.getSystemOwner(system) != faction)
-					return false;
-			}
+		if (inhabited) {
+			if (ExerelinUtilsFaction.getSystemOwner(system) != faction)
+				return false;
 		}
 		
 		// don't colonize systems with stations or large fleets (this is to avoid Remnant stations etc.)
