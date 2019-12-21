@@ -1140,7 +1140,11 @@
 		"fleetSuper":"Super ship",
 		"fleetGrandFleet":"Grand fleet",
 		"fleetRandomReroll":"[Reroll random ships]",
-		"fleetCycle":"[Cycle fleets]"
+		"fleetCycle":"[Cycle fleets]",
+		
+		"startingLevelTitle":"Starting level",
+		"startingCreditsTitle":"Starting credits (000)",
+		"startingOfficersTitle":"Starting officers",
 	},
 	"exerelin_officers":{
 		"officer":"officer",

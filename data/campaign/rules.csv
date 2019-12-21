@@ -241,37 +241,42 @@ nex_NGCStartShipsBack,NewGameOptionSelected,$option == nex_NGCFleetBack,Nex_NGCL
 nex_NGCCustomStartSelection,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomStart_""",Nex_NGCCustomStart select,,,
 ,,,,,,
 nex_NGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and assets?""
-SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCNormalStart:Ensign (20,000 credits, level 1)
-nex_NGCEasyStart:Lieutenant (75,000 credits, level 6, one officer)
-nex_NGCEasyStart2:Commander (250,000 credits, level 16, two officers)
-nex_NGCStartBack:Go back",
+Nex_NGCStartResources createOptions
+SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartEnsign:Ensign (20,000 credits, level 1)
+nex_NGCStartLieutenant:Lieutenant (75,000 credits, level 6, one officer)
+nex_NGCStartCommander:Commander (250,000 credits, level 16, two officers)
+nex_NGCCustomResourcesStart:Custom...",
 nex_NGCFinalizeSuper,ExerelinNGCStep4,$option == nex_NGCFleetSuper,"AddText ""Starting experience and assets?""
-SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCSuperStart:Agent (20,000 credits, level 1)
-nex_NGCSuperStart2:Special Agent (75,000 credits, level 6)
-nex_NGCStartBack:Go back",
-nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCNormalStart,"NGCAddCredits 20000
+Nex_NGCStartResources createOptions
+SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartAgent:Agent (20,000 credits, level 1)
+nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 6)
+nex_NGCCustomResourcesStart:Custom...",
+nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCStartEnsign,"NGCAddCredits 20000
 NGCAddCharacterPoints 3
 NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
-nex_NGCEasyStart,NewGameOptionSelected,$option == nex_NGCEasyStart,"NGCAddCredits 75000
+nex_NGCStartLieutenant,NewGameOptionSelected,$option == nex_NGCStartLieutenant,"NGCAddCredits 75000
 NGCAddCharacterPoints 3
-NGCAddXP 31500
+Nex_NGCAddLevel 6
 NGCSetNumStartingOfficers 1
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
-nex_NGCEasyStart2,NewGameOptionSelected,$option == nex_NGCEasyStart2,"NGCAddCredits 250000
+nex_NGCStartCommander,NewGameOptionSelected,$option == nex_NGCStartCommander,"NGCAddCredits 250000
 NGCAddCharacterPoints 3
-NGCAddXP 214500
+Nex_NGCAddLevel 16
 NGCSetNumStartingOfficers 2
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
-nex_NGCSuperStart,NewGameOptionSelected,$option == nex_NGCSuperStart,"NGCAddCredits 20000
+nex_NGCStartAgent,NewGameOptionSelected,$option == nex_NGCStartAgent,"NGCAddCredits 20000
 NGCAddCharacterPoints 3
 NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
-nex_NGCSuperStart2,NewGameOptionSelected,$option == nex_NGCSuperStart2,"NGCAddCredits 75000
+nex_NGCStartSpecialAgent,NewGameOptionSelected,$option == nex_NGCStartSpecialAgent,"NGCAddCredits 75000
 NGCAddCharacterPoints 3
-NGCAddXP 31500
+Nex_NGCAddLevel 6
 NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+nex_NGCStartCustomResources,NewGameOptionSelected,$option == nex_NGCCustomResourcesStart,"Nex_NGCStartResources save
+NGCAddCharacterPoints 3
+SetShortcut nex_NGCDone RETURN",,,
 nex_NGCStartBack,NewGameOptionSelected,$option == nex_NGCStartBack,"NGCClearStartingGear
 FireAll ExerelinNGCStep3",,,
 nex_NGCStartBackToCustomStart,NewGameOptionSelected,"$option == nex_NGCStartBack
