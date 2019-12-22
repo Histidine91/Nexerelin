@@ -221,6 +221,9 @@ public class SpecialForcesRouteAI {
 	 */
 	public void assignTask(SpecialForcesTask task) 
 	{
+		if (task.type == TaskType.IDLE && currentTask != null && currentTask.type == TaskType.IDLE)
+			return;
+		
 		RouteData route = sf.route;
 		currentTask = task;
 		sf.debugMsg("Assigning task of type " + task.type + "; priority " 
