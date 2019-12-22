@@ -71,6 +71,7 @@ public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
 		abortIfNeededBasedOnFP(true);
 		if (elapsed > maxDays) {
 			status = RaidIntel.RaidStageStatus.SUCCESS;
+			giveReturnOrdersToStragglers(getRoutes());
 		}
 	}
 	

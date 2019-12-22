@@ -91,7 +91,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		waitStage = new WaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS, true);
 		addStage(waitStage);
 		
-		addStage(new NexReturnStage(this));
+		//addStage(new NexReturnStage(this));	// sending fleets home is handled by wait stage
 		
 		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.55f);
 		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);

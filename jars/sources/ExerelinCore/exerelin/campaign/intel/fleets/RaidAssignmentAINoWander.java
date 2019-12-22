@@ -273,6 +273,13 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	}
 	
 	@Override
+	protected void giveRaidOrder(MarketAPI target) {
+		if (target.getFaction() == fleet.getFaction())
+			return;
+		super.giveRaidOrder(target);
+	}
+	
+	@Override
 	protected void addStartingAssignment(RouteManager.RouteSegment current, boolean justSpawned) 
 	{
 		fleet.addFloatingText("Executing starting assignment: " + justSpawned, fleet.getFaction().getBaseUIColor(), 2);

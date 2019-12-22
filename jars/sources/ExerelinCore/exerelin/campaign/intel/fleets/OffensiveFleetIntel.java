@@ -304,7 +304,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		base = StringHelper.substituteToken(base, "$action", getActionName(), true);
 		base = StringHelper.substituteToken(base, "$market", getTarget().getName());
 		
-		if (isEnding()) {
+		if (isEnding() || outcome != null) {
 			if (outcome == OffensiveOutcome.SUCCESS) {
 				return base + " - " + StringHelper.getString("successful", true);
 			}

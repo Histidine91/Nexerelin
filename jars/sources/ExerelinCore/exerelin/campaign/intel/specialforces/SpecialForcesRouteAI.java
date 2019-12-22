@@ -117,6 +117,7 @@ public class SpecialForcesRouteAI {
 		if (raid instanceof OffensiveFleetIntel) {
 			if (raid instanceof BaseStrikeIntel) return false;
 			if (raid instanceof ColonyExpeditionIntel) return false;
+			if (((OffensiveFleetIntel)raid).getOutcome() != null) return false;
 			
 			return true;
 		}
@@ -169,9 +170,11 @@ public class SpecialForcesRouteAI {
 				if (hasMarketInSystem(raid.getSystem(), sf.faction))
 					return true;
 			}
-
-			// Only count the raid if we are the target
+			
 			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
+			if (ofi.getOutcome() != null) return false;
+			
+			// Only count the raid if we are the target
 			FactionAPI targetFaction = ofi.getTarget().getFaction();
 			if (targetFaction != sf.faction)
 				return false;

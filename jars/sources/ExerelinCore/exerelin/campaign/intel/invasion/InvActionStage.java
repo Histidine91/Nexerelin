@@ -42,7 +42,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	protected boolean gaveOrders = true; // will be set to false in updateRoutes()
 	protected float untilAutoresolve = 30f;
 	
-	OffensiveFleetIntel offFltIntel;
+	protected OffensiveFleetIntel offFltIntel;
 	
 	public InvActionStage(OffensiveFleetIntel invasion, MarketAPI target) {
 		super(invasion);
@@ -193,10 +193,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	// call NPC invade method, await results
 	@Override
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
+		if (offFltIntel.getOutcome() != null)
+			return;
+		
 		// no double raiding
 		if (fleet != null && fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_INVASION_ATTEMPTED)) {
 			log.warn(fleet.getName() + " is attempting invasion twice");
-			
 			return;
 		}
 		
@@ -243,6 +245,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		{
 			offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
 			status = RaidStageStatus.SUCCESS;
+			//offFltIntel.endAfterDelay();	// can't end now, it breaks the subsequent wait stage
 		}
 		
 		// when FAILURE, gets sent by RaidIntel

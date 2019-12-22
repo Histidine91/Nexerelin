@@ -21,6 +21,9 @@ public class SatBombActionStage extends InvActionStage {
 	
 	@Override
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
+		if (offFltIntel.getOutcome() != null)
+			return;
+		
 		float cost = Nex_MarketCMD.getBombardmentCost(market, fleet);
 		//float maxCost = intel.getAssembleStage().getOrigSpawnFP() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
 		float maxCost = intel.getRaidFP() / intel.getNumFleets() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
