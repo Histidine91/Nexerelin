@@ -85,6 +85,7 @@
     "vengeanceFleetSizeMult": 0.8,
     
     "specialForcesPointMult": 1,	# rate at which factions spawn special task groups
+    "specialForcesSizeMult": 1,
     
     "enableAntioch": true, # adds Antioch for Templars in random mode, replacing their normal worlds
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (random mode only)

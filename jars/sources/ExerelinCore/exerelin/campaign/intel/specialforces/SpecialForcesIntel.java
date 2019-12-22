@@ -108,9 +108,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		Global.getSector().addScript(this);
 	}
 	
-	protected Object readResolve() {
-		if (lastSpawnedFrom == null) lastSpawnedFrom = origin;
-		return this;
+	public RouteData getRoute() {
+		return route;
+	}
+	
+	public SpecialForcesRouteAI getRouteAI() {
+		return routeAI;
 	}
 	
 	// Create fleet and add to star system/hyperspace when player is near
@@ -148,7 +151,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		Float damage = thisRoute.getExtra().damage;
 		if (damage == null) damage = 0f;		
-		float fp = thisRoute.getExtra().fp * (1 - damage) * conf.specialForcesSizeMult;
+		float fp = thisRoute.getExtra().fp * (1 - damage) * conf.specialForcesSizeMult
+				* ExerelinConfig.specialForcesSizeMult;
 		
 		FleetParamsV3 params = new FleetParamsV3(
 				lastSpawnedFrom,
@@ -227,8 +231,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		if (fleet == null)
 			return;
 		
-		generateFlagshipAndCommanderIfNeeded(route);
-		
 		spawnSeed = new Random().nextLong();
 		CampaignFleetAPI temp = createFleetFromParams(route, spawnSeed);
 		if (temp == null) return;
@@ -251,6 +253,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	protected boolean checkRebuild(float damage) {
+		//log.info("Checking if " + fleetName + " needs rebuild");
 		if (damage > DAMAGE_TO_TERMINATE) {
 			log.info("Fleet took catastrophic damage, ending event");
 			endEvent();
@@ -274,23 +277,19 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	 * Orders the task group to go to a suitable market to rebuild the fleet.
 	 * @param force
 	 */
-	public void orderFleetRebuild(boolean force) {
+	public void orderFleetRebuild(boolean force) {		
 		if (rebuildCheckCooldown > 0 && !force) {
-			debugMsg("On cooldown, force: " + force, false);
 			return;
 		}
-			
+		rebuildCheckCooldown = 10;
 		
 		if (routeAI.currentTask != null && routeAI.currentTask.type == TaskType.REBUILD) {
 			debugMsg("Already have reconstitution order", false);
 			return;
 		}
-			
-		
-		rebuildCheckCooldown = 10;
 		
 		Float damage = route.getExtra().damage;
-		if (damage == null || damage <= 0) {
+		if ((damage == null || damage <= 0) && flagship != null) {
 			debugMsg("Fleet is undamaged and needs no reconstitution", false);
 			return;
 		}
@@ -305,7 +304,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			
 			float dist = Misc.getDistance(loc, market.getLocationInHyperspace());
 			if (dist < 2000) dist = 2000;
-			if (dist > 25000) return;
+			if (dist > 25000) continue;
 			float weight = market.getSize() * market.getSize();
 			weight *= (market.getStabilityValue() + 5)/15;
 			weight *= 2000/dist;
@@ -340,6 +339,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		float fp = damage * startingFP;
 		
 		route.getExtra().damage = 0f;
+		generateFlagshipAndCommanderIfNeeded(route);
 		if (route.getActiveFleet() != null) {
 			rebuildFleet();
 		}

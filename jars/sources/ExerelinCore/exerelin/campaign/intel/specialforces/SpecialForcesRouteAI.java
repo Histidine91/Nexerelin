@@ -360,8 +360,6 @@ public class SpecialForcesRouteAI {
 	{
 		sf.debugMsg("Picking task for " + sf.getFleetNameForDebugging(), false);
 		
-		// TODO: first of all check if we want resupply
-		
 		// check for priority defense missions
 		List<Pair<RaidIntel, Float>> hostileRaids = new ArrayList<>();
 		for (RaidIntel raid : getActiveRaidsHostile()) {
@@ -540,9 +538,10 @@ public class SpecialForcesRouteAI {
 		
 		if (currentTask.type == TaskType.REBUILD) 
 		{
-			sf.debugMsg("Attempting fleet rebuild", false);
+			sf.debugMsg("Attempting to rebuild fleet " + sf.getFleetNameForDebugging(), false);
 			// Not close enough, wait a while longer
 			if (!isCloseEnoughForTask()) {
+				sf.debugMsg("Not close enough, retrying", true);
 				sf.route.getSegments().clear();
 				sf.route.setCurrent(null);
 				sf.route.addSegment(new RouteManager.RouteSegment(currentTask.time * 0.5f, 

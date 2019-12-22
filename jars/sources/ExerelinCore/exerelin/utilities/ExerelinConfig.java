@@ -120,6 +120,7 @@ public class ExerelinConfig
     public static float colonyExpeditionInterval = 270;
     
     public static float specialForcesPointMult = 1;
+    public static float specialForcesSizeMult = 1;
     
     // Misc
     public static int directoryDialogKey = 44;  // Z
@@ -228,6 +229,7 @@ public class ExerelinConfig
             colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
             
             specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
+            specialForcesSizeMult = (float)settings.optDouble("specialForcesPointMult", specialForcesSizeMult);
             
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
