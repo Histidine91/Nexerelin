@@ -91,8 +91,12 @@ public class ProcureShip extends CovertActionIntel {
 		return market;
 	}
 	
-	public void setDestinationMarket(MarketAPI market) {
+	public void setDestination(MarketAPI market) {
 		destination = market;
+	}
+	
+	public MarketAPI getDestination() {
+		return destination;
 	}
 	
 	public int getMemberSizeMult() {

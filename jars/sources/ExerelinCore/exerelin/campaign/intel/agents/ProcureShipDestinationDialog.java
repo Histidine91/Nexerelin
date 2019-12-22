@@ -299,7 +299,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	}
 	
 	protected void proceed() {
-		action.destination = destination;
+		action.setDestination(destination);
 		ui.updateUIForItem(agent);
 		dialog.dismiss();
 	}

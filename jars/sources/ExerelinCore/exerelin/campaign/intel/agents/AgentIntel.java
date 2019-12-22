@@ -412,7 +412,8 @@ public class AgentIntel extends BaseIntelPlugin {
 			nextAction.abort();
 			setQueuedAction(null);
 		} else if (buttonId == ProcureShip.BUTTON_CHANGE_DESTINATION) {
-			ui.showDialog(null, new ProcureShipDestinationDialog(this, (ProcureShip)currentAction, market, ui));
+			ProcureShip procure = (ProcureShip)currentAction;
+			ui.showDialog(null, new ProcureShipDestinationDialog(this, procure, procure.destination, ui));
 		} else if (buttonId == BUTTON_DISMISS) {
 			if (currentAction != null)
 				currentAction.abort();
