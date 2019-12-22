@@ -191,9 +191,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			case CovertActionType.PROCURE_SHIP:
 				for (String hullId : agentMarket.getFaction().getKnownShips()) {
 					ShipHullSpecAPI spec = Global.getSettings().getHullSpec(hullId);
-					if (spec.getTags().contains(ShipTypeHints.UNBOARDABLE))
+					if (spec.getHints().contains(ShipTypeHints.UNBOARDABLE))
 						continue;
 					if (PrismMarket.getRestrictedShips().contains(hullId))
+						continue;
+					if (CovertOpsManager.getStealShipCostMult(hullId) <= 0)
 						continue;
 					
 					List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(hullId);
@@ -375,7 +377,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			
 		TooltipMakerAPI info = text.beginTooltip();
 		info.setParaSmallInsignia();
-		info.addStatModGrid(350, 50, 10, 0, stat, true, ExerelinUtils.getStatModValueGetter(color, 0));
+		info.addStatModGrid(360, 60, 10, 0, stat, true, ExerelinUtils.getStatModValueGetter(color, 0));
 		text.addTooltip();
 	}
 	

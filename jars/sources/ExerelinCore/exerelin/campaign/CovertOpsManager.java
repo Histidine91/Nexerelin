@@ -63,6 +63,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -87,6 +88,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
+	public static final String CONFIG_FILE_STEALSHIP = "data/config/exerelin/agent_steal_ship_config.csv";
     public static final boolean DEBUG_MODE = false;
     
     public static final float NPC_EFFECT_MULT = 1f;
@@ -96,6 +98,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
     public static final Map<String, Float> industrySuccessMods = new HashMap<>();
     public static final Map<String, Float> industryDetectionMods = new HashMap<>();
+	public static final Map<String, Float> stealShipCostMults = new HashMap<>();
     
     protected static float baseInjuryChance, baseInjuryChanceFailed;
     
@@ -181,6 +184,15 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			String industryId = keys.next();
 			industryDetectionMods.put(industryId, (float)indDetect.getDouble(industryId));
 		}
+		
+		JSONArray stealShipJson = Global.getSettings().getMergedSpreadsheetDataForMod("hull id", 
+				CONFIG_FILE_STEALSHIP, ExerelinConstants.MOD_ID);
+		for (int i=0; i<stealShipJson.length(); i++) {
+			JSONObject row = stealShipJson.getJSONObject(i);
+			String hullId = row.getString("hull id");
+			float costMult = (float)row.getDouble("cost mult");
+			stealShipCostMults.put(hullId, costMult);
+		}
     }
 	
 	public static CovertActionDef getDef(String id) {
@@ -225,6 +237,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	public static float getBaseInjuryChance(boolean success) {
 		if (success) return baseInjuryChance;
 		return baseInjuryChanceFailed;
+	}
+	
+	public static float getStealShipCostMult(String hullId) {
+		Float mult = stealShipCostMults.get(hullId);
+		if (mult == null) return 1f;
+		return mult;
 	}
 	
 	public static boolean isDebugMode() {

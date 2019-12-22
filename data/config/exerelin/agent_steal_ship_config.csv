@@ -1,0 +1,4 @@
+hull id,cost mult
+#<0 cost mult means disable,
+#my_fancy_ship,1.5
+#do_not_steal,-1

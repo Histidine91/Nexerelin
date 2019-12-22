@@ -27,6 +27,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import static com.fs.starfarer.api.util.Misc.random;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
@@ -204,6 +205,8 @@ public class ProcureShip extends CovertActionIntel {
 		if (ship == null) return cost;
 		cost.modifyFlat("base", ship.getBaseBuyValue(), getString("costShipBase", true));
 		cost.modifyMult("generalMult", getDef().baseCost, getString("costShipGeneralMult", true));
+		cost.modifyMult("hullMult", CovertOpsManager.getStealShipCostMult(ship.getHullId()), 
+				StringHelper.getString("hull", true) + ": " + ship.getHullSpec().getHullName());
 		
 		return cost;
 	}
