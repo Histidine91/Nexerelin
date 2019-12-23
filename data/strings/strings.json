@@ -539,6 +539,7 @@
 		"autonomyRevoked":"Autonomy revoked",
 		
 		"npcGrowthMultDesc":"NPC market",
+		"npcFreePortGrowthModDesc":"Free port NPC offset",
 		"hardModeGrowthMultDesc":"Starfarer mode",
 		"hardModeIncomeMultDesc":"Starfarer mode",
 		"reportAutonomousTax":"Autonomous colony tax",

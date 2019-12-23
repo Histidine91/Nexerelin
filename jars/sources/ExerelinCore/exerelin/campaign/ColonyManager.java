@@ -17,11 +17,13 @@ import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -87,6 +89,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final int MIN_CYCLE_FOR_EXPEDITIONS = 207;
 	public static final float MAX_EXPEDITION_FP = 300;
 	public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
+	public static final float NPC_FREE_PORT_GROWTH_REDUCTION_MULT = 0.5f;
 	
 	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
 		0, 10, 25, 50, 80, 120, 200, 300
@@ -241,8 +244,34 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		else {
 			incoming.getWeight().modifyMult("nex_colonyManager_npcGrowth", Global.getSettings().getFloat("nex_npcColonyGrowthMult"), 
 					getString("npcGrowthMultDesc", false));
+			// lower benefit of free port on NPC growth
+			float freePortGrowth = getFreePortGrowthBonus(market);
+			if (freePortGrowth > 0)
+			{
+				float penalty = Math.round(-freePortGrowth * NPC_FREE_PORT_GROWTH_REDUCTION_MULT * 2)/2;
+				incoming.getWeight().modifyFlat("nex_colonyManager_npcGrowth_freePort", penalty, 
+						getString("npcFreePortGrowthModDesc"));
+			}
 		}
+	}
+	
+	/**
+	 * Gets the vanilla bonus (if any) which this market has from being a free port.
+	 * Make sure this matches {@code getImmigrationBonus()} in {@code FreeMarket} class
+	 * @param market
+	 * @return
+	 */
+	protected float getFreePortGrowthBonus(MarketAPI market) {
+		MarketConditionAPI cond = market.getCondition(Conditions.FREE_PORT);
+		if (cond == null) return 0;
 		
+		FreeMarket plugin = (FreeMarket)cond.getPlugin();
+		float growth = FreeMarket.MIN_GROWTH + plugin.getDaysActive() 
+				/ FreeMarket.MAX_DAYS * (FreeMarket.MAX_GROWTH - FreeMarket.MIN_GROWTH);
+		growth = Math.round(growth);
+		if (growth > FreeMarket.MAX_GROWTH) growth = FreeMarket.MAX_GROWTH;
+		if (growth < 1) growth = 1;
+		return growth;
 	}
 	
 	public void updatePlayerBonusAdmins() {
