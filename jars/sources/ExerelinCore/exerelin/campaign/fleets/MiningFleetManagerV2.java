@@ -32,6 +32,7 @@ import org.lazywizard.lazylib.MathUtils;
 public class MiningFleetManagerV2 extends DisposableFleetManager
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
+	public static final String MEMORY_KEY_NO_MINING_FLEETS = "$nex_noMiningFleets";
 	
 	protected static final float POINT_INCREMENT_PERIOD = 1;
 	protected static final float GAS_FLEET_CHANCE = 0.4f;
@@ -308,6 +309,9 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 				continue;
 			if (market.getFactionId().equals(Factions.DERELICT)) 
 				continue;
+			if (market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_NO_MINING_FLEETS))
+				continue;
+			
 			if (!hasOreFacilities(market) && !hasGasFacilities(market))
 				continue;
 			picker.add(market, market.getSize());
