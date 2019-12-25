@@ -32,13 +32,13 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -452,7 +452,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (!market.hasSpaceport()) continue;
 			if (market.getSize() < 3) continue;
 			// markets with ongoing rebellions can't launch invasions
-			if (RebellionEvent.isOngoing(market))
+			if (RebellionIntel.isOngoing(market))
 				continue;
 			
 			sourcePicker.add(market, getMarketWeightForInvasionSource(market));
@@ -533,8 +533,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 
 			// help ongoing rebellions
-			RebellionEvent event = RebellionEvent.getOngoingEvent(market);
-			if (event != null && !faction.isHostileTo(event.getRebelFactionId()))
+			RebellionIntel rebel = RebellionIntel.getOngoingEvent(market);
+			if (rebel != null && !faction.isHostileTo(rebel.getRebelFactionId()))
 				weight *= 5;
 
 			targetPicker.add(market, weight);

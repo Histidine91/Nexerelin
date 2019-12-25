@@ -15,7 +15,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.events.RebellionEvent;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.NexUtilsReputation;
@@ -54,7 +54,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				addOptions(dialog);
 				break;
 			case "isOngoing":
-				return RebellionEvent.isOngoing(dialog.getInteractionTarget().getMarket());
+				return RebellionIntel.isOngoing(dialog.getInteractionTarget().getMarket());
 		}
 		return true;
 	}
@@ -114,23 +114,23 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 		switch (commodity)
 		{
 			case Commodities.SUPPLIES:
-				valueMult = RebellionEvent.VALUE_SUPPLIES;
+				valueMult = RebellionIntel.VALUE_SUPPLIES;
 				break;
 			case Commodities.HAND_WEAPONS:
-				valueMult = RebellionEvent.VALUE_WEAPONS;
+				valueMult = RebellionIntel.VALUE_WEAPONS;
 				break;
 			case Commodities.MARINES:
-				valueMult = RebellionEvent.VALUE_MARINES;
+				valueMult = RebellionIntel.VALUE_MARINES;
 				break;
 		}
 		float points = amount * valueMult;
-		float rep = points * 0.01f / RebellionEvent.getSizeMod(market) * DELIVERY_REP_MULT;
+		float rep = points * 0.01f / RebellionIntel.getSizeMod(market) * DELIVERY_REP_MULT;
 		
 		NexUtilsReputation.adjustPlayerReputation(market.getFaction(), dialog.getInteractionTarget().getActivePerson(), 
 				rep, rep * 1.5f, null, dialog.getTextPanel());
 		
 		// modify event strength
-		RebellionEvent event = RebellionEvent.getOngoingEvent(market);
+		RebellionIntel event = RebellionIntel.getOngoingEvent(market);
 		if (event != null)
 		{
 			event.modifyPoints(points, false);

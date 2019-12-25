@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.Status;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -54,6 +55,7 @@ import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.utilities.ExerelinUtilsAstro;
 import java.util.ArrayList;
@@ -1201,6 +1203,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         addOrRemoveSubmarket(market, Submarkets.SUBMARKET_BLACK, haveBlackMarket);
         addOrRemoveSubmarket(market, "tem_templarmarket", haveTemplar);
         addOrRemoveMilitarySubmarket(market, newOwnerId, haveMilitary);
+    }
+    
+    @Override
+    public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+        for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(RebellionIntel.class))
+        {
+            RebellionIntel rebel = (RebellionIntel)intel;
+            rebel.reportPlayerMarketTransaction(transaction);
+        }
     }
     
     public static void notifySlavesSold(MarketAPI market, int count)

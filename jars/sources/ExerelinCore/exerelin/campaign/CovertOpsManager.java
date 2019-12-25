@@ -38,7 +38,7 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.EconomyInfoHelper.ProducerEntry;
-import exerelin.campaign.events.RebellionEventCreator;
+import exerelin.campaign.intel.rebellion.RebellionEventCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.agents.AgentIntel;

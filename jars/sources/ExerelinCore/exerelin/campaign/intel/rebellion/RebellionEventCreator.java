@@ -1,4 +1,4 @@
-package exerelin.campaign.events;
+package exerelin.campaign.intel.rebellion;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -33,14 +33,14 @@ public class RebellionEventCreator extends BaseEventPlugin {
 	Map<String, Float> rebellionPoints = new HashMap<>();
 	protected IntervalUtil interval = new IntervalUtil(1,1);
 	
-	public static RebellionEvent createRebellion(MarketAPI market, String factionId, boolean report)
+	public static RebellionIntel createRebellion(MarketAPI market, String factionId, boolean report)
 	{
 		SectorAPI sector = Global.getSector();
-		if (RebellionEvent.isOngoing(market))
+		if (RebellionIntel.isOngoing(market))
 			return null;
 		
 		float prepTime = market.getSize() * 2 * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
-		if (RebellionEvent.DEBUG_MODE) prepTime = 1;
+		if (RebellionIntel.DEBUG_MODE) prepTime = 1;
 		
 		Map<String, Object> eventParams = new HashMap<>();
 		eventParams.put("rebelFactionId", factionId);
@@ -63,9 +63,9 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		list.add(toAdd);
 	}
 	
-	public static RebellionEvent createRebellion(MarketAPI market, boolean report)
+	public static RebellionIntel createRebellion(MarketAPI market, boolean report)
 	{
-		if (RebellionEvent.isOngoing(market))
+		if (RebellionIntel.isOngoing(market))
 			return null;
 		FactionAPI faction = market.getFaction();
 		boolean allowPirates = ExerelinConfig.retakePirateMarkets;		
@@ -198,7 +198,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		if (market.getFactionId().equals(Factions.INDEPENDENT))
 			return;
 		
-		if (RebellionEvent.isOngoing(market))
+		if (RebellionIntel.isOngoing(market))
 			return;
 		
 		float points = getRebellionIncrement(market) * days;

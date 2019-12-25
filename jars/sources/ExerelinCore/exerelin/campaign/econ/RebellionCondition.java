@@ -2,12 +2,12 @@ package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
-import exerelin.campaign.events.RebellionEvent;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.StringHelper;
 import java.util.Map;
 
 public class RebellionCondition extends BaseMarketConditionPlugin {
-	protected RebellionEvent event = null;
+	protected RebellionIntel event = null;
 	
 	// FIXME: diagnose the underlying issue!
 	protected boolean refetchEventIfNeeded()
@@ -15,7 +15,7 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 		if (event == null)	// try regetting
 		{
 			Global.getLogger(this.getClass()).warn("Event is null, re-fetching");
-			event = RebellionEvent.getOngoingEvent(market);
+			event = RebellionIntel.getOngoingEvent(market);
 		}
 		return event != null;
 	}
@@ -40,8 +40,8 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 		{
 			int penalty = event.getStabilityPenalty();
 			tokens.put("$stabilityPenalty", "" + penalty);
-			RebellionEvent.addFactionNameTokens(tokens, "rebel", 
-					Global.getSector().getFaction(event.getRebelFactionId()));
+			//RebellionIntel.addFactionNameTokens(tokens, "rebel", 
+			//		Global.getSector().getFaction(event.getRebelFactionId()));
 		}
 		
 
@@ -50,8 +50,8 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Global.getLogger(this.getClass()).info("Setting param, " + (param != null && param instanceof RebellionEvent));
-		event = (RebellionEvent) param;
+		Global.getLogger(this.getClass()).info("Setting param, " + (param != null && param instanceof RebellionIntel));
+		event = (RebellionIntel) param;
 	}
 	
 	@Override

@@ -4,8 +4,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import exerelin.campaign.events.RebellionEvent;
-import exerelin.campaign.events.RebellionEventCreator;
+import exerelin.campaign.intel.rebellion.RebellionEventCreator;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import java.awt.Color;
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class InstigateRebellion extends CovertActionIntel {
 
 	@Override
 	public void onSuccess() {
-		RebellionEvent event = RebellionEventCreator.createRebellion(market, agentFaction.getId(), false);
+		RebellionIntel event = RebellionEventCreator.createRebellion(market, agentFaction.getId(), false);
 		if (event == null) return;
 		
 		adjustRepIfDetected(RepLevel.HOSTILE, null);

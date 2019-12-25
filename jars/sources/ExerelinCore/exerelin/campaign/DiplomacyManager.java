@@ -1197,6 +1197,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     
                     for (Map.Entry<String, Float> entry : factionConfig.startRelationships.entrySet())
                     {
+						if (factionId.equals(entry.getKey())) continue;
                         faction.setRelationship(entry.getKey(), entry.getValue());
                     }
                 }

@@ -7,8 +7,6 @@ import exerelin.campaign.abilities.ai.Nex_SustainedBurnAbilityAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.intel.agents.InstigateRebellion;
-import exerelin.campaign.events.RebellionEvent;
-import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.econ.ReinforcedDefenses;
@@ -20,7 +18,7 @@ import exerelin.campaign.events.WarmongerEvent;
 import exerelin.campaign.fleets.MiningFleetAI;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.MiningFleetManagerV2.MiningFleetData;
-import exerelin.campaign.fleets.SuppressionFleetAI;
+import exerelin.campaign.intel.rebellion.SuppressionFleetAI;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.campaign.intel.ConquestMissionIntel;
@@ -59,6 +57,8 @@ import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
+import exerelin.campaign.intel.rebellion.RebellionEventCreator;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.intel.satbomb.SatBombActionStage;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.campaign.submarkets.Nex_BlackMarketPlugin;
@@ -108,7 +108,6 @@ public class XStreamConfig {
 		// events
 		// most of these will be deleted eventually
 		x.alias("InstgtRbl", InstigateRebellion.class);
-		x.alias("RebelEvnt", RebellionEvent.class);
 		x.alias("RebelEvntCreator", RebellionEventCreator.class);
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
 		x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);
@@ -201,23 +200,22 @@ public class XStreamConfig {
 		x.aliasAttribute(Alliance.class, "uuId", "id");
 		x.aliasAttribute(Alliance.class, "alignment", "algn");
 		
-		// RebellionEvent
-		x.aliasAttribute(RebellionEvent.class, "stage", "stg");
-		x.aliasAttribute(RebellionEvent.class, "suppressionFleetCountdown", "fltCntdwn");
-		x.aliasAttribute(RebellionEvent.class, "govtFactionId", "govt");
-		x.aliasAttribute(RebellionEvent.class, "rebelFactionId", "rebs");
-		x.aliasAttribute(RebellionEvent.class, "govtStrength", "gStr");
-		x.aliasAttribute(RebellionEvent.class, "rebelStrength", "rStr");
-		x.aliasAttribute(RebellionEvent.class, "govtTradePoints", "gTrd");
-		x.aliasAttribute(RebellionEvent.class, "rebelTradePoints", "rTrd");
-		x.aliasAttribute(RebellionEvent.class, "suppressionFleet", "flt");
-		x.aliasAttribute(RebellionEvent.class, "suppressionFleetSource", "fltSrc");
-		x.aliasAttribute(RebellionEvent.class, "suppressionFleetWarning", "fltWarn");
-		x.aliasAttribute(RebellionEvent.class, "intensity", "intns");
-		x.aliasAttribute(RebellionEvent.class, "delay", "dly");
-		x.aliasAttribute(RebellionEvent.class, "stabilityPenalty", "stbLoss");
-		x.aliasAttribute(RebellionEvent.class, "result", "rslt");
-		x.aliasAttribute(RebellionEvent.class, "conditionToken", "cond");
+		// RebellionIntel
+		x.aliasAttribute(RebellionIntel.class, "suppressionFleetCountdown", "fltCntdwn");
+		x.aliasAttribute(RebellionIntel.class, "govtFactionId", "govt");
+		x.aliasAttribute(RebellionIntel.class, "rebelFactionId", "rebs");
+		x.aliasAttribute(RebellionIntel.class, "govtStrength", "gStr");
+		x.aliasAttribute(RebellionIntel.class, "rebelStrength", "rStr");
+		x.aliasAttribute(RebellionIntel.class, "govtTradePoints", "gTrd");
+		x.aliasAttribute(RebellionIntel.class, "rebelTradePoints", "rTrd");
+		x.aliasAttribute(RebellionIntel.class, "suppressionFleet", "flt");
+		x.aliasAttribute(RebellionIntel.class, "suppressionFleetSource", "fltSrc");
+		x.aliasAttribute(RebellionIntel.class, "suppressionFleetWarning", "fltWarn");
+		x.aliasAttribute(RebellionIntel.class, "intensity", "intns");
+		x.aliasAttribute(RebellionIntel.class, "delay", "dly");
+		x.aliasAttribute(RebellionIntel.class, "stabilityPenalty", "stbLoss");
+		x.aliasAttribute(RebellionIntel.class, "result", "rslt");
+		x.aliasAttribute(RebellionIntel.class, "conditionToken", "cond");
 		
 		// VengeanceFleetIntel
 		x.aliasAttribute(VengeanceFleetIntel.class, "daysLeft", "days");

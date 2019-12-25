@@ -13,7 +13,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.events.RebellionEvent;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -68,9 +68,9 @@ public class AgentGatherIntel extends AgentActionBase {
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "alertLevel")) + ": " + alertLevel + "%");
 		text.highlightFirstInLastPara("" + alertLevel, getColorFromScale(alertLevel, 100, true));
 		
-		if (RebellionEvent.isOngoing(market))
+		if (RebellionIntel.isOngoing(market))
 		{
-			RebellionEvent rebellion = RebellionEvent.getOngoingEvent(market);
+			RebellionIntel rebellion = RebellionIntel.getOngoingEvent(market);
 			float govtStrength = rebellion.getGovtStrength();
 			float rebelStrength = rebellion.getRebelStrength();
 			FactionAPI rebelFaction = rebellion.getRebelFaction();
