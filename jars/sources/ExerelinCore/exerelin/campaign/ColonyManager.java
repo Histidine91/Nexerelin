@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionProductionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -806,6 +807,34 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public int getNumColonies() {
 		return numColonies;
 	}
+	
+	/**
+	 * Resets player gathering point if we no longer own the current one.
+	 * @param market The market whose ownership recently changed.
+	 */
+	public void checkGatheringPoint(MarketAPI market) {
+		FactionAPI pf = Global.getSector().getPlayerFaction();
+		FactionProductionAPI prod = pf.getProduction();
+		
+		MarketAPI gatheringPoint = prod.getGatheringPoint();
+		if (gatheringPoint == market && !market.isPlayerOwned()) {
+			// FIXME: pick new gathering point
+			prod.setGatheringPoint(pickNewGatheringPoint());
+		}
+	}
+	
+	protected MarketAPI pickNewGatheringPoint() {
+		MarketAPI largest = null;
+		int largestSize = 0;
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (!market.isPlayerOwned()) continue;
+			if (market.getSize() > largestSize) {
+				largest = market;
+				largestSize = market.getSize();
+			}
+		}
+		return largest;
+	}
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {
@@ -876,6 +905,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		// reassign admins on market capture
 		reassignAdminIfNeeded(market, oldOwner, newOwner);
 		setGrowthRate(market);
+		
+		checkGatheringPoint(market);
 	}
 	
 	public static void buildIndustry(MarketAPI market, String id) {

@@ -147,6 +147,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 	public void cancel(Status newStatus) {
 		market.setPlayerOwned(false);
 		reassignAdmin();
+		ColonyManager.getManager().checkGatheringPoint(market);
 		status = newStatus;
 		endAfterDelay();
 		this.sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
@@ -244,6 +245,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 			status = Status.LOST;
 			market.setPlayerOwned(false);
 			reassignAdmin();
+			ColonyManager.getManager().checkGatheringPoint(market);
 		}
 		else if (status == Status.LOST && newOwner.getId().equals(factionId)) {
 			status = Status.ACTIVE;

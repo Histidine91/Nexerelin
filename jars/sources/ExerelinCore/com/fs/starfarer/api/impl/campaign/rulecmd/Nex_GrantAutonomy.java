@@ -46,6 +46,7 @@ public class Nex_GrantAutonomy extends BaseCommandPlugin {
 	
 	public static void grantAutonomy(MarketAPI market) {
 		market.setPlayerOwned(false);
+		ColonyManager.getManager().checkGatheringPoint(market);
 		FactionAPI player = Global.getSector().getPlayerFaction();
 		ColonyManager.reassignAdminIfNeeded(market, player, player);
 	}
