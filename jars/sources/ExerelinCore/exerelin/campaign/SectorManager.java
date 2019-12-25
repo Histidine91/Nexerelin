@@ -34,6 +34,7 @@ import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.VayraModPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
@@ -101,13 +102,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static final Set<String> NO_WARMONGER_FACTIONS = new HashSet(Arrays.asList(new String[]{
         Factions.DERELICT, Factions.REMNANTS, Factions.NEUTRAL
     }));
+	
+	public static final Set<String> DO_NOT_RESPAWN_FACTIONS = new HashSet<>();
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
     protected Set<String> liveFactionIds = new HashSet<>();
     protected Set<String> historicFactionIds = new HashSet<>();
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
     protected Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // value is base buy value and number of D mods
-    
+	
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
     protected boolean onlyRespawnStartingFactions = false;
@@ -124,6 +127,21 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected final IntervalUtil respawnIntervalUtil;
     
     protected IntervalUtil liveFactionCheckUtil = new IntervalUtil(0.5f,0.5f);
+	
+	static {
+		// Disable respawning of Vayra's factions if they're disabled in their config
+		if (Global.getSettings().getModManager().isModEnabled("vayrasector")) {
+			if (!VayraModPlugin.POPULAR_FRONT_ENABLED) {
+				DO_NOT_RESPAWN_FACTIONS.add("communist_clouds");
+			}
+			if (!VayraModPlugin.COLONIAL_FACTIONS_ENABLED) {
+				DO_NOT_RESPAWN_FACTIONS.add("almighty_dollar");
+				DO_NOT_RESPAWN_FACTIONS.add("ashen_keepers");
+				DO_NOT_RESPAWN_FACTIONS.add("science_fuckers");
+				DO_NOT_RESPAWN_FACTIONS.add("warhawk_republic");
+			}
+		}
+	}
 
     public SectorManager()
     {
@@ -638,6 +656,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (factionId.equals(Factions.PLAYER)) continue;
             if (factionId.equals(Factions.INDEPENDENT)) continue;
+			if (DO_NOT_RESPAWN_FACTIONS.contains(factionId)) continue;
             ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (config != null && !config.playableFaction) continue;
             
