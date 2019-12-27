@@ -1346,6 +1346,7 @@
 		"intelDescStr":"The fleet's estimated strength is %s fleet points (damage %s).",
 		"intelDescFleetStatus":"The fleet is physically alive and is currently in the %s.",
 		"intelDescAction":"Current action: $action",
+		"intelDescActionPriority":"Priority: %s",
 		"intelDescRouteSegmentInfo":"Route segment: from %s to %s (%s of %s days elapsed)",
 		"intelDescOver":"The $faction special task group $fleetName is no longer operational.",
 		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",

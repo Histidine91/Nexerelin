@@ -62,8 +62,13 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));
 				break;
-			case PATROL:
 			case DEFEND_RAID:
+				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, current.from,
+						current.daysMax - current.elapsed, getInSystemActionText(current),
+						goNextScript(current));
+				break;
+			case PATROL:
+			case DEFEND_VS_PLAYER:
 				fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, current.from,
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));
@@ -121,6 +126,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						fleet.getContainingLocation().getName());
 			case DEFEND_RAID:
 			case PATROL:
+			case DEFEND_VS_PLAYER:
 				return StringHelper.getFleetAssignmentString("patrollingStarSystem", 
 						fleet.getContainingLocation().getName());
 			case REBUILD:

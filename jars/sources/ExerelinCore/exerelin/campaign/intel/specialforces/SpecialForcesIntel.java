@@ -546,7 +546,11 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			bullet(info);
 			info.addPara(str, 3, h, from, to, elapsed, max);
 			unindent(info);
-		}		
+		}
+		if (routeAI.currentTask != null) {
+			str = getString("intelDescActionPriority");
+			info.addPara(str, opad, h, String.format("%.1f", routeAI.currentTask.priority));
+		}
 		
 		str = getString("intelDescDebug");
 		info.addPara(str, Misc.getGrayColor(), opad);

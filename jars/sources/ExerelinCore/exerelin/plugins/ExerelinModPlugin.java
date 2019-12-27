@@ -43,6 +43,7 @@ import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
+import exerelin.campaign.fleets.PlayerInSystemTracker;
 import exerelin.campaign.intel.ConquestMissionManager;
 import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
@@ -295,6 +296,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (ExerelinConfig.updateMarketDescOnCapture)
             sector.getListenerManager().addListener(new MarketDescChanger(), true);
+        
+        sector.addTransientScript(new PlayerInSystemTracker());
     }
     
     @Override

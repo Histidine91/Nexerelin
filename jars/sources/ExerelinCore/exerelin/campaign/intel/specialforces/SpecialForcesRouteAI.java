@@ -3,6 +3,7 @@ package exerelin.campaign.intel.specialforces;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
@@ -11,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -22,6 +24,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.PlayerInSystemTracker;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -29,6 +32,7 @@ import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +49,12 @@ public class SpecialForcesRouteAI {
 	public static Logger log = Global.getLogger(SpecialForcesRouteAI.class);
 	
 	public static final float MAX_RAID_ETA_TO_CARE = 60;
+	// only defend against player if they're at least this strong
+	public static final float MIN_PLAYER_STR_TO_DEFEND = 300;
+	public static final float PLAYER_STR_DIVISOR = 400;
+	// don't defend against player attacking a location more than this many light-years away
+	public static final float MAX_PLAYER_DISTANCE_TO_DEFEND = 10;
+	
 	// can't be a plain Object because when loaded the one in segment will no longer equal the static value
 	public static final String ROUTE_IDLE_SEGMENT = "SF_idleSeg";
 	
@@ -55,6 +65,11 @@ public class SpecialForcesRouteAI {
 	
 	public SpecialForcesRouteAI(SpecialForcesIntel sf) {
 		this.sf = sf;
+	}
+	
+	public TaskType getCurrentTaskType() {
+		if (currentTask != null) return currentTask.type;
+		return null;
 	}
 	
 	protected List<RaidIntel> getActiveRaids() {
@@ -219,6 +234,21 @@ public class SpecialForcesRouteAI {
 	}
 	
 	/**
+	 * Get a {@code SectorEntityToken} for the task's route segment to originate from.
+	 * @return
+	 */
+	protected SectorEntityToken getRouteFrom() {
+		SectorEntityToken from;
+		CampaignFleetAPI fleet = sf.route.getActiveFleet();
+		if (fleet != null) {
+			from = fleet.getContainingLocation().createToken(fleet.getLocation());
+		}
+		else from = Global.getSector().getHyperspace().createToken(sf.route.getInterpolatedHyperLocation());
+		
+		return from;
+	}
+	
+	/**
 	 * Set task as current, updating routes and the like.
 	 * @param task
 	 */
@@ -237,9 +267,7 @@ public class SpecialForcesRouteAI {
 			sf.debugMsg("  Target: " + task.system.getNameWithLowercaseType(), true);
 		
 		CampaignFleetAPI fleet = route.getActiveFleet();	
-		SectorEntityToken from;
-		if (fleet != null) from = fleet.getContainingLocation().createToken(fleet.getLocation());
-		else from = Global.getSector().getHyperspace().createToken(route.getInterpolatedHyperLocation());
+		SectorEntityToken from = getRouteFrom();
 		
 		resetRoute(route);
 		
@@ -252,6 +280,7 @@ public class SpecialForcesRouteAI {
 		switch (task.type) {
 			case REBUILD:
 			case DEFEND_RAID:
+			case DEFEND_VS_PLAYER:
 			case ASSIST_RAID:
 			case PATROL:
 			case RAID:
@@ -350,6 +379,34 @@ public class SpecialForcesRouteAI {
 		return task;
 	}
 	
+	public SpecialForcesTask generateDefendVsPlayerTask(LocationAPI loc, float priority) {
+		SpecialForcesTask task = new SpecialForcesTask(TaskType.DEFEND_VS_PLAYER, priority);
+		
+		task.market = getLargestMarketInSystem(loc, sf.faction);
+		task.system = task.market.getStarSystem();
+		
+		return task;
+	}
+	
+	public static MarketAPI getLargestMarketInSystem(LocationAPI loc, FactionAPI faction) {
+		List<MarketAPI> all = Global.getSector().getEconomy().getMarkets(loc);
+		if (all.isEmpty()) return null;
+		MarketAPI largest = all.get(0);
+		int largestSize = 0;
+		
+		for (MarketAPI market : all)
+		{
+			if (market.getFaction() != faction)
+				continue;
+			int size = market.getSize();
+			if (size > largestSize) {
+				largest = market;
+				largestSize = size;
+			}
+		}
+		return largest;
+	}
+	
 	/**
 	 * Picks a task for the task force to do.
 	 * @param priorityDefenseOnly Only check for any urgent defense tasks that 
@@ -360,21 +417,35 @@ public class SpecialForcesRouteAI {
 	{
 		sf.debugMsg("Picking task for " + sf.getFleetNameForDebugging(), false);
 		
-		// check for priority defense missions
+		boolean isBusy = currentTask != null && currentTask.type.isBusyTask();
+		
+		// check for priority defense against player operating in one of our systems
+		if (getCurrentTaskType() != TaskType.DEFEND_VS_PLAYER) {
+			LocationAPI loc = Global.getSector().getPlayerFleet().getContainingLocation();
+			float priority = getDefendVsPlayerPriority(loc);
+			float toBeat = currentTask.priority;
+			if (isBusy) toBeat *= 2;
+			//sf.debugMsg("Priority defense task comparison: " + priority + " / " + toBeat, false);
+			
+			if (currentTask == null || toBeat < priority) {
+				SpecialForcesTask task = generateDefendVsPlayerTask(loc, priority);
+				return task;
+			}
+		}
+		
+		// check for priority raid defense missions
 		List<Pair<RaidIntel, Float>> hostileRaids = new ArrayList<>();
 		for (RaidIntel raid : getActiveRaidsHostile()) {
 			if (raid.getETA() > MAX_RAID_ETA_TO_CARE) continue;
 			hostileRaids.add(new Pair<>(raid, getRaidDefendPriority(raid)));
 		}
 		
-		boolean isBusy = currentTask != null && currentTask.type.isBusyTask();
-		
 		Pair<RaidIntel, Float> priorityDefense = pickPriorityDefendTask(hostileRaids, isBusy);
 		if (priorityDefense != null) {
 			SpecialForcesTask task = generateRaidDefenseTask(priorityDefense.one, priorityDefense.two);
 			return task;
 		}
-		
+				
 		// no high priority defense, look for another task
 		if (priorityDefenseOnly)
 			return null;
@@ -496,7 +567,7 @@ public class SpecialForcesRouteAI {
 			
 			if (taskType == TaskType.RAID 
 				|| taskType == TaskType.ASSIST_RAID
-				|| taskType == TaskType.HUNT_PLAYER
+				|| taskType == TaskType.DEFEND_VS_PLAYER
 				|| taskType == TaskType.PATROL) 
 			{
 				SpecialForcesTask task = pickTask(true);
@@ -713,6 +784,38 @@ public class SpecialForcesRouteAI {
 	}
 	
 	/**
+	 * Gets the priority for defending one of our star systems if player is present.
+	 * @param loc
+	 * @return
+	 */
+	public float getDefendVsPlayerPriority(LocationAPI loc) {
+		if (loc.isHyperspace()) return 0;
+		if (!sf.faction.isHostileTo(Factions.PLAYER))
+			return 0;
+		if (!PlayerInSystemTracker.hasFactionSeenPlayer(loc, sf.faction.getId()))
+			return 0;
+		
+		float playerStr = ExerelinUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
+		if (playerStr < MIN_PLAYER_STR_TO_DEFEND) return 0;
+		
+		// don't bother if too far away
+		float distLY = Misc.getDistanceLY(loc.getLocation(), getRouteFrom().getLocationInHyperspace());
+		if (distLY > MAX_PLAYER_DISTANCE_TO_DEFEND) return 0;
+		
+		float priority = 0;
+		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(loc))
+		{
+			if (market.getFaction() != sf.faction) continue;
+			priority += getPatrolPriority(market);
+		}
+		priority *= playerStr / PLAYER_STR_DIVISOR;
+		
+		sf.debugMsg("  Defending " + loc.getName() + " from player has priority " 
+				+ String.format("%.1f", priority), false);
+		return priority;
+	}
+	
+	/**
 	 * A raid must have at least this much defend priority for the special forces unit to be tasked
 	 * to defend against it. Required priority will be increased if we already have another task.
 	 * @param isBusy True if we're checking whether to cancel an existing busy-type assignment.
@@ -739,7 +842,8 @@ public class SpecialForcesRouteAI {
 	}
 	
 	public enum TaskType {
-		RAID, PATROL, ASSIST_RAID, DEFEND_RAID, REBUILD, HUNT_PLAYER, ASSEMBLE, IDLE;
+		RAID, PATROL, ASSIST_RAID, DEFEND_RAID, REBUILD, 
+		DEFEND_VS_PLAYER, HUNT_PLAYER, ASSEMBLE, IDLE;
 		
 		/**
 		 * Returns true for tasks we don't like to "put down", 
@@ -747,7 +851,8 @@ public class SpecialForcesRouteAI {
 		 * @return
 		 */
 		public boolean isBusyTask() {
-			return this == RAID || this == ASSIST_RAID || this == DEFEND_RAID;
+			return this == RAID || this == ASSIST_RAID || this == DEFEND_RAID
+					|| this == DEFEND_VS_PLAYER;
 		}
 	}
 	
@@ -779,6 +884,8 @@ public class SpecialForcesRouteAI {
 					return "defending vs. " + raid.getName();
 				case PATROL:
 					return "patrolling " + (market != null? market.getName() : system.getNameWithLowercaseType());
+				case DEFEND_VS_PLAYER:
+					return "defending vs. player in " + Global.getSector().getPlayerFleet().getContainingLocation().getName();
 				case REBUILD:
 					return "reconstituting fleet at " + market.getName();
 				case ASSEMBLE:
