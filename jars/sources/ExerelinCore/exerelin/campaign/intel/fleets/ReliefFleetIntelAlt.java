@@ -408,7 +408,9 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		source.getPrimaryEntity().getContainingLocation().addEntity(fleet);
 		fleet.setLocation(source.getPrimaryEntity().getLocation().x, source.getPrimaryEntity().getLocation().y);
 		
-		fleet.addScript(new ReliefFleetAI(fleet, this));
+		ReliefFleetAI script = new ReliefFleetAI(fleet, this);
+		fleet.addScript(script);
+		script.giveInitialAssignment();
 		
 		// add cargo
 		int food = Nex_StabilizePackage.getNeededCommodityAmount(target, Commodities.FOOD);
