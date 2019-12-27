@@ -1,2 +1,3 @@
-id,faction,ibbNum,stage
-# intentionally left blank,,,
+id,faction,num,stage,HVB id
+# hull ID,faction or mod ID required,"IBB stage number
+Prism will prefer displaying ships closer to the last-completed stage num",IBB stage,Vayra's Sector HVB id

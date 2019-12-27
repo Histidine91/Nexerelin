@@ -30,6 +30,8 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
 import data.scripts.campaign.intel.SWP_IBBTracker;
+import data.scripts.campaign.intel.VayraUniqueBountyManager;
+import data.scripts.campaign.intel.VayraUniqueBountyManager.UniqueBountyData;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
@@ -374,6 +376,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
      */
     public Set<String> getAllBossShips() {
         Set<String> bossShips = new HashSet<>();
+        // Load IBB list from config
         try {
             JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), ExerelinConstants.MOD_ID);
             for(int i = 0; i < config.length(); i++) {
@@ -388,11 +391,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
         } catch (IOException | JSONException ex) {
             log.error(ex);
         }
+        
         return bossShips;
     }
     
     /**
-     * Gets a limited number of boss ships to add to the market stocks
+     * Gets a limited number of boss ships to add to the market stocks.
      * @return
      */
     public List<String> getBossShips() {
@@ -415,9 +419,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 
                 if (!canLoadShips(factionId)) continue;
                 
-                int ibbNum = row.getInt("ibbNum");
+                int ibbNum = row.optInt("ibbNum");
                 String stage = row.optString("stage");
-                validShips.add(new BossShipEntry(hullId, ibbNum, stage));    
+                String hvbID = row.optString("HVB id");
+                validShips.add(new BossShipEntry(hullId, ibbNum, stage, hvbID));    
                 
                 if (ibbNum > highestIBBNum) 
                     highestIBBNum = ibbNum;
@@ -428,8 +433,11 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 ibbProgress = highestIBBNum;
             
             for (BossShipEntry entry : validShips) {
+                log.info("Trying boss ship " + entry.id);
                 boolean proceed = true;
                 String stageStr = entry.stage;
+                
+                // Check if we've completed the IBB (if applicable)
                 if (doIBBCheck && stageStr != null && !stageStr.isEmpty()) {
                     try {
                         // FIXME: update IBB stage check when IBB is updated
@@ -443,9 +451,25 @@ public class PrismMarket extends BaseSubmarketPlugin {
                         //proceed = false;
                     }
                 }
+                
+                // Check if we've completed the HVB (if applicable)
+                if (doIBBCheck && entry.hvbID != null && !entry.hvbID.isEmpty()) {
+                    try {
+                        List<String> spentBounties = (List<String>)Global.getSector().getMemoryWithoutUpdate().get("$vayra_uniqueBountiesSpent");  
+                        if (spentBounties != null && !spentBounties.contains(entry.hvbID)) {
+                            log.info("HVB not completed for " + entry.hvbID);
+                            proceed = false;
+                        }
+                        
+                    } catch (IllegalArgumentException | NullPointerException | NoClassDefFoundError ex) {
+                        log.error("Failed to check HVB completion for " + entry.id, ex);
+                        //proceed = false;
+                    }
+                }
+                
                 if (!proceed) continue;
                 
-                //ignore already bought IBB
+                //ignore already bought boss ships
                 if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
                 {
                     log.info("Ship " + entry.id + " already acquired");
@@ -464,8 +488,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         } catch (IOException | JSONException ex) {
             log.error(ex);
         }
-        // How many IBB available
-        log.info("IBB ships available: " + picker.getItems().size() + ", " + ExerelinConfig.prismNumBossShips);
+        
+        log.info("IBB/HVB ships available: " + picker.getItems().size() + ", " + ExerelinConfig.prismNumBossShips);
         for (int i=0; i<ExerelinConfig.prismNumBossShips; i++) {
             if (picker.isEmpty()) break;
             ret.add(picker.pickAndRemove());
@@ -495,7 +519,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
      * @return
      */
     public boolean canLoadShips(String factionOrModId) {
-        if (factionOrModId == null) return true;
+        if (factionOrModId == null || factionOrModId.isEmpty()) return true;
         if (factionOrModId.equals("ssp")) return ExerelinModPlugin.HAVE_SWP;    // legacy
         return Global.getSector().getFaction(factionOrModId) != null || Global.getSettings().getModManager().isModEnabled(factionOrModId);
     }
@@ -769,10 +793,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
         public String id;
         @Deprecated public int ibbNum;
         public String stage;
-        public BossShipEntry(String id, int ibbNum, String stage) {
+		public String hvbID;
+        public BossShipEntry(String id, int ibbNum, String stage, String hvbID) {
             this.id = id;
             this.ibbNum = ibbNum;
             this.stage = stage;
+			this.hvbID = hvbID;
         }
     }
 }
