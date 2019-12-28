@@ -1,6 +1,8 @@
 {
     "directoryDialogKey": 44,   # integer, default 44 (Z)
     
+    "ceasefireNotificationPopup": true,
+    
     "minimumPlanets": 3,
     #"minimumStations": 3,
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market

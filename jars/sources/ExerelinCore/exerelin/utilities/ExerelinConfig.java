@@ -124,6 +124,7 @@ public class ExerelinConfig
     
     // Misc
     public static int directoryDialogKey = 44;  // Z
+    public static boolean ceasefireNotificationPopup = true;
     
     public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;
@@ -253,6 +254,8 @@ public class ExerelinConfig
             officerDaredevilBonus = settings.optBoolean("officerDaredevilBonus", officerDaredevilBonus);
             
             corvusModeLandmarks = settings.optBoolean("corvusModeLandmarks", corvusModeLandmarks);
+            
+            ceasefireNotificationPopup = settings.optBoolean("ceasefireNotificationPopup", ceasefireNotificationPopup);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

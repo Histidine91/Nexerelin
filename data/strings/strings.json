@@ -130,6 +130,9 @@
 		"departure":"departure",
 		"arrival":"arrival",
 		
+		"ceasefire":"ceasefire",
+		"peaceTreaty":"peace treaty",
+		
 		"none":"none",
 	},
 
@@ -665,6 +668,10 @@
 		"intelCeasefireDescTime":"You have $timeLeft $days to accept or reject the offer.",
 		"intelCeasefireDescResult":"You have $acceptedOrRejected the offer.",
 		"intelCeasefireConfirm":"Confirm?",
+		"dialogCeasefireTitle":"|| Priority Notification ||",
+		"dialogCeasefireText":"You have received a $ceasefireOrPeaceTreaty offer from $theFaction. A response is required in $timeLeft $days.",
+		"dialogCeasefireText2":"You can disable this popup in the %s settings file.",
+		"dialogCeasefireOptionGotoIntel":"Open intel screen",
 	},
 	"nex_diplomacyProfile":{
 		"title":"Diplomacy Profile",

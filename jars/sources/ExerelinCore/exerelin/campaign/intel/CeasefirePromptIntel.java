@@ -1,7 +1,12 @@
 package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -15,6 +20,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.ui.PopupDialogScript;
+import exerelin.campaign.ui.PopupDialogScript.PopupDialog;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
@@ -24,8 +31,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.input.Keyboard;
 
-public class CeasefirePromptIntel extends BaseIntelPlugin {
+public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog,
+		CoreInteractionListener {
 	
 	public static final Object EXPIRED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
@@ -48,6 +57,8 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 		this.setImportant(true);
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
+		if (ExerelinConfig.ceasefireNotificationPopup)
+			Global.getSector().addScript(new PopupDialogScript(this));
 	}
 	
 	// bullet points
@@ -78,7 +89,8 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 		
 		String factionName = faction.getDisplayNameWithArticle();
 		String days = Math.round(DiplomacyBrain.CEASEFIRE_LENGTH) + "";
-		String cfOrPt = isPeaceTreaty ? "peace treaty" : "ceasefire";
+		String cfOrPt = isPeaceTreaty ? StringHelper.getString("peaceTreaty") 
+				: StringHelper.getString("ceasefire");
 		replace.put("$days", days);
 		replace.put("$ceasefireOrPeaceTreaty", cfOrPt);
 		replace.put("$theFaction", factionName);
@@ -248,4 +260,66 @@ public class CeasefirePromptIntel extends BaseIntelPlugin {
 	public FactionAPI getFactionForUIColors() {
 		return Global.getSector().getFaction(factionId);
 	}
+
+	@Override
+	public void populateOptions(OptionPanelAPI opts) {
+		opts.addOption(StringHelper.getString("exerelin_diplomacy", "dialogCeasefireOptionGotoIntel"), "goto");
+		opts.addOption(StringHelper.getString("close", true), "close");
+		opts.setShortcut("close", Keyboard.KEY_ESCAPE, false, false, false, false);
+	}
+
+	@Override
+	public void init(InteractionDialogAPI dialog) {
+		FactionAPI faction = getFactionForUIColors();
+		TextPanelAPI text = dialog.getTextPanel();
+		
+		text.addPara(StringHelper.getString("exerelin_diplomacy", "dialogCeasefireTitle"), 
+				Misc.getHighlightColor());
+		
+		Map<String, String> replace = new HashMap<>();
+		
+		String factionName = faction.getDisplayNameWithArticle();
+		String days = Math.round(DiplomacyBrain.CEASEFIRE_LENGTH) + "";
+		String cfOrPt = isPeaceTreaty ? StringHelper.getString("peaceTreaty") 
+				: StringHelper.getString("ceasefire");
+		days = Math.round(daysRemaining) + "";
+		String daysStr = getDaysString(daysRemaining);
+		replace.put("$timeLeft", days);
+		replace.put("$days", daysStr);
+		replace.put("$ceasefireOrPeaceTreaty", cfOrPt);
+		replace.put("$theFaction", factionName);
+		replace.put("$TheFaction", Misc.ucFirst(factionName));
+		
+		String str = StringHelper.getStringAndSubstituteTokens("exerelin_diplomacy", "dialogCeasefireText", replace);
+		LabelAPI label = text.addPara(str);
+		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), 
+				cfOrPt, days);
+		label.setHighlightColors(faction.getBaseUIColor(), Misc.getHighlightColor(), 
+				Misc.getHighlightColor());
+		
+		text.setFontSmallInsignia();
+		str = StringHelper.getString("exerelin_diplomacy", "dialogCeasefireText2");
+		dialog.getTextPanel().addPara(str, Color.CYAN, ExerelinConfig.CONFIG_PATH);
+		text.setFontInsignia();
+	}
+
+	@Override
+	public void optionSelected(InteractionDialogAPI dialog, Object optionData) {
+		String opt = (String)optionData;
+		if ("goto".equals(opt)) {
+			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, null, this);
+			// jump to the correct intel item - doesn't work
+			//Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, this);
+		}
+		else if ("close".equals(opt)) {
+			dialog.dismiss();
+		}
+	}
+
+	@Override
+	public void coreUIDismissed() {
+		Global.getSector().getCampaignUI().getCurrentInteractionDialog().dismiss();
+	}
+	
+	// runcode new exerelin.campaign.intel.CeasefirePromptIntel("pirates", false).init()
 }
