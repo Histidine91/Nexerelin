@@ -236,7 +236,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         boolean isPlayer = factionId.equals(playerAlignedFactionId) || (alliance != null && alliance == AllianceManager.getFactionAlliance(playerAlignedFactionId));
         
         float dominance = (float)ourSize / globalSize;
-        if (SectorManager.getHardMode() && isPlayer)
+        if (SectorManager.getManager().isHardMode() && isPlayer)
             dominance *= Global.getSettings().getFloat("nex_hardModeDominanceMult");
         
         return dominance;
@@ -1248,6 +1248,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static boolean isRandomFactionRelationships()
     {
         return getManager().randomFactionRelationships;
+    }
+    
+     public boolean isRandomPirateFactionRelationships()
+    {
+        return randomFactionRelationshipsPirate;
     }
     
     protected Object readResolve()

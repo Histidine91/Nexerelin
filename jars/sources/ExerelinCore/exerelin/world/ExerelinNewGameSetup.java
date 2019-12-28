@@ -126,8 +126,6 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);	// not doing this makes market condition tooltips fail to appear
 		sector.getEconomy().addMarket(market, true);
 		
-		//prismEntity.removeTag(Tags.STATION);	// workaround http://fractalsoftworks.com/forum/index.php?topic=12548.msg213678#msg213678
-		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
 		//prismEntity.setInteractionImage("illustrations", "space_bar");
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
@@ -280,9 +278,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				setupData.randomStartRelationshipsPirate);
 		DiplomacyManager.initFactionRelationships(false);
 		
-		SectorManager.setCorvusMode(corvusMode);
-		SectorManager.setHardMode(setupData.hardMode);
-		SectorManager.setFreeStart(setupData.freeStart);
+		SectorManager.getManager().setCorvusMode(corvusMode);
+		SectorManager.getManager().setHardMode(setupData.hardMode);
+		SectorManager.getManager().setFreeStart(setupData.freeStart);
 				
 		log.info("Finished sector generation");
 	}

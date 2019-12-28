@@ -1,7 +1,7 @@
 package exerelin.console.commands;
 
 import com.fs.starfarer.api.Global;
-import exerelin.campaign.ReinitScreenScript;
+import exerelin.campaign.ui.ReinitScreenScript;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;

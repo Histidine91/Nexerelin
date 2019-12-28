@@ -1,4 +1,4 @@
-package exerelin.campaign;
+package exerelin.campaign.ui;
 
 import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
@@ -16,7 +16,9 @@ import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.SectorManager.VictoryType;
+import exerelin.campaign.StatsTracker;
 import exerelin.campaign.StatsTracker.DeadOfficerEntry;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -24,10 +26,8 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Set;
 
-// adapted from UpdateNotificationScript in LazyWizard's Version Checker
-public class VictoryScreenScript implements EveryFrameScript
+public class VictoryScreenScript extends DelayedDialogScreenScript
 {
-	protected boolean isDone = false;
 	protected String faction = Factions.PLAYER;
 	protected VictoryType victoryType = VictoryType.CONQUEST;
 	protected CustomVictoryParams customparams;
@@ -37,43 +37,18 @@ public class VictoryScreenScript implements EveryFrameScript
 		this.faction = faction;
 		this.victoryType = victoryType;
 	}
-
-	@Override
-	public boolean isDone()
-	{
-		return isDone;
-	}
-
-	@Override
-	public boolean runWhilePaused()
-	{
-		return true;
-	}
 	
 	@Override
-	public void advance(float amount)
-	{
-		// Don't do anything while in a menu/dialog
-		CampaignUIAPI ui = Global.getSector().getCampaignUI();
-		if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog() || Global.getCurrentState() == GameState.TITLE)
-		{
-			return;
-		}
+	protected void showDialog() {
+		VictoryDialog dialog = new VictoryDialog(faction, victoryType);
+		dialog.customparams = customparams;
+		Global.getSector().getCampaignUI().showInteractionDialog(dialog, null);
 
-		if (!isDone)
-		{
-			VictoryDialog dialog = new VictoryDialog(faction, victoryType);
-			dialog.customparams = customparams;
-			ui.showInteractionDialog(dialog, Global.getSector().getPlayerFleet());
-			
-			boolean playerWon = !victoryType.isDefeat() && victoryType != VictoryType.RETIRED;
-			if (customparams != null) playerWon = !customparams.isDefeat;
-			VictoryIntel intel = new VictoryIntel(faction, victoryType, playerWon, customparams);
-			Global.getSector().getIntelManager().addIntel(intel);
-			intel.setImportant(true);
-			
-			isDone = true;
-		}
+		boolean playerWon = !victoryType.isDefeat() && victoryType != VictoryType.RETIRED;
+		if (customparams != null) playerWon = !customparams.isDefeat;
+		VictoryIntel intel = new VictoryIntel(faction, victoryType, playerWon, customparams);
+		Global.getSector().getIntelManager().addIntel(intel);
+		intel.setImportant(true);
 	}
 	
 	public void setCustomParams(CustomVictoryParams params) {
@@ -124,7 +99,7 @@ public class VictoryScreenScript implements EveryFrameScript
 
 	protected static class VictoryDialog implements InteractionDialogPlugin
 	{
-		protected boolean officerDeaths = ExerelinConfig.officerDeaths || !StatsTracker.getStatsTracker().deadOfficers.isEmpty();
+		protected boolean officerDeaths = ExerelinConfig.officerDeaths || !StatsTracker.getStatsTracker().getDeadOfficers().isEmpty();
 		
 		protected InteractionDialogAPI dialog;
 		protected TextPanelAPI text;

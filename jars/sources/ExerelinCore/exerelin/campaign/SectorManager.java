@@ -1,5 +1,7 @@
 package exerelin.campaign;
 
+import exerelin.campaign.ui.PlayerFactionSetupNag;
+import exerelin.campaign.ui.VictoryScreenScript;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
@@ -37,10 +39,9 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.VayraModPlugin;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.VictoryScreenScript.CustomVictoryParams;
+import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.RaidCondition;
-import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinConfig;
@@ -111,7 +112,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected Set<String> liveFactionIds = new HashSet<>();
     protected Set<String> historicFactionIds = new HashSet<>();
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
-    protected Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // value is base buy value and number of D mods
+    protected Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // array contains base value and number of D-mods
 	
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
@@ -320,6 +321,44 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return false;
     }
     
+    public boolean isHardMode() {
+        return hardMode;
+    }
+    
+    public void setHardMode(boolean mode)
+    {
+        hardMode = mode;
+        ColonyManager.updateIncome();
+    }
+    
+    public boolean isCorvusMode() {
+        return corvusMode;
+    }
+    
+    public void setCorvusMode(boolean mode)
+    {
+        corvusMode = mode;
+        Global.getSector().getMemory().set("$nex_corvusMode", mode);
+    }
+    
+    public boolean isFreeStart()
+    {
+        return freeStart;
+    }
+    
+    public void setFreeStart(boolean freeStart)
+    {
+        this.freeStart = freeStart;
+    }
+    
+    public boolean isRespawnFactions() {
+        return respawnFactions;
+    }
+
+    public boolean isOnlyRespawnStartingFactions() {
+        return onlyRespawnStartingFactions;
+    }
+    
     public static SectorManager create()
     {
         SectorManager manager = getManager();
@@ -338,23 +377,22 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return (SectorManager)data.get(MANAGER_MAP_KEY);
     }
     
-    public static void setCorvusMode(boolean mode)
-    {
-        getManager().corvusMode = mode;
-		Global.getSector().getMemory().set("$nex_corvusMode", mode);
-    }
-    
+    /**
+     * Use {@code SectorManager.getManager().isCorvusMode()} instead.
+     * @return
+     * @deprecated
+     */
+    @Deprecated
     public static boolean getCorvusMode()
     {
         return getManager().corvusMode;
     }
     
-    public static void setHardMode(boolean mode)
-    {
-        getManager().hardMode = mode;
-		ColonyManager.updateIncome();
-    }
-    
+    /**
+     * Use {@code SectorManager.getManager().isHardMode()} instead.
+     * @return
+     * @deprecated
+     */
     public static boolean getHardMode()
     {
         return getManager().hardMode;
@@ -1098,10 +1136,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             ((RaidCondition)market.getCondition(RaidCondition.CONDITION_ID).getPlugin()).refreshRaids();
         }
         
-        // rebellion
-        RebellionEvent rebEvent = RebellionEvent.getOngoingEvent(market);
-        if (rebEvent != null) rebEvent.marketCaptured(newOwnerId, oldOwnerId);
-                
         // revengeance fleet
         if (isCapture && newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(Factions.PLAYER))
         {
@@ -1257,16 +1291,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static SectorEntityToken getHomeworld()
     {
         return getManager().homeworld;
-    }
-    
-    public static void setFreeStart(boolean freeStart)
-    {
-        getManager().freeStart = freeStart;
-    }
-    
-    public static boolean getFreeStart()
-    {
-        return getManager().freeStart;
     }
     
     protected static void expelPlayerFromFaction(boolean silent)

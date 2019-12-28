@@ -1,4 +1,4 @@
-package exerelin.campaign;
+package exerelin.campaign.ui;
 
 import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
@@ -161,7 +161,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 			}
 			else if (optionData == Menu.INTEL_SCREEN)
 			{
-				dialog.getVisualPanel().showCore(CoreUITabId.INTEL, Global.getSector().getPlayerFleet(), this);
+				dialog.getVisualPanel().showCore(CoreUITabId.INTEL, null, this);
 			}
 			else if (optionData == Menu.EXIT)
 			{

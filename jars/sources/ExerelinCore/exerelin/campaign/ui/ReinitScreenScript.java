@@ -1,10 +1,7 @@
-package exerelin.campaign;
+package exerelin.campaign.ui;
 
 import java.util.Map;
-import com.fs.starfarer.api.EveryFrameScript;
-import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
@@ -13,68 +10,32 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.StringHelper;
 
-// adapted from UpdateNotificationScript in LazyWizard's Version Checker
 /**
  * When adding Nexerelin into an existing save, run this to reconfigure some options
  */
-public class ReinitScreenScript implements EveryFrameScript
+public class ReinitScreenScript extends DelayedDialogScreenScript
 {
-	private static final float DAYS_TO_WAIT = 0.1f;
-	private boolean isDone = false;
-	private float timer = 0;
-
-	public ReinitScreenScript()
-	{
-
-	}
-
 	@Override
-	public boolean isDone()
-	{
-		return isDone;
+	protected void showDialog() {
+		Global.getSector().getCampaignUI().showInteractionDialog(new ReinitDialog(), null);
 	}
 
-	@Override
-	public boolean runWhilePaused()
+	protected static class ReinitDialog implements InteractionDialogPlugin, CoreInteractionListener
 	{
-		return true;
-	}
+		protected InteractionDialogAPI dialog;
+		protected TextPanelAPI text;
+		protected OptionPanelAPI options;
+		protected boolean allowRespawn = SectorManager.getManager().isRespawnFactions();
+		protected boolean allowRespawnNonOriginal = !SectorManager.getManager().isOnlyRespawnStartingFactions();
+		protected boolean randomizeRelationships = DiplomacyManager.isRandomFactionRelationships();
+		protected boolean randomizeRelationshipsPirate = DiplomacyManager.getManager().isRandomPirateFactionRelationships();
+		protected boolean hardMode = SectorManager.getManager().isHardMode();
 
-	
-	@Override
-	public void advance(float amount)
-	{
-		// Don't do anything while in a menu/dialog
-		CampaignUIAPI ui = Global.getSector().getCampaignUI();
-		if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog() || Global.getCurrentState() == GameState.TITLE)
-		{
-			return;
-		}
-		
-		timer += Global.getSector().getClock().convertToDays(amount);
-		if (timer < DAYS_TO_WAIT) return;
-		
-		if (!isDone)
-		{
-			ui.showInteractionDialog(new ReinitDialog(), Global.getSector().getPlayerFleet());
-			isDone = true;
-		}
-	}
-
-	private static class ReinitDialog implements InteractionDialogPlugin, CoreInteractionListener
-	{
-		private InteractionDialogAPI dialog;
-		private TextPanelAPI text;
-		private OptionPanelAPI options;
-		private boolean allowRespawn = SectorManager.getManager().respawnFactions;
-		private boolean allowRespawnNonOriginal = !SectorManager.getManager().onlyRespawnStartingFactions;
-		private boolean randomizeRelationships = DiplomacyManager.isRandomFactionRelationships();
-		private boolean randomizeRelationshipsPirate = DiplomacyManager.getManager().randomFactionRelationshipsPirate;
-		private boolean hardMode = SectorManager.getHardMode();
-
-		private enum Menu
+		protected enum Menu
 		{
 			OPTION_RESPAWN,
 			OPTION_RESPAWN_NON_ORIGINAL,
@@ -84,7 +45,7 @@ public class ReinitScreenScript implements EveryFrameScript
 			DONE
 		}
 
-		private void populateOptions()
+		protected void populateOptions()
 		{
 			options.clearOptions();
 			
@@ -155,7 +116,7 @@ public class ReinitScreenScript implements EveryFrameScript
 			else if (optionData == Menu.DONE)
 			{
 				SectorManager.setAllowRespawnFactions(allowRespawn, allowRespawnNonOriginal);
-				SectorManager.setHardMode(hardMode);
+				SectorManager.getManager().setHardMode(hardMode);
 				if (randomizeRelationships)
 				{
 					DiplomacyManager.setRandomFactionRelationships(randomizeRelationships, randomizeRelationshipsPirate);

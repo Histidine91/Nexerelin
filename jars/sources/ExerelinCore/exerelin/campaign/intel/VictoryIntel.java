@@ -8,7 +8,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager.VictoryType;
-import exerelin.campaign.VictoryScreenScript.CustomVictoryParams;
+import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;

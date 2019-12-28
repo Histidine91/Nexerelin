@@ -1,10 +1,11 @@
-package exerelin.campaign;
+package exerelin.campaign.ui;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.SectorManager;
 
 /**
  * If the player faction has been established without being configured (e.g. by capturing a market),

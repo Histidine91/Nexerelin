@@ -1,11 +1,13 @@
 package exerelin.campaign.alliances;
 
+import exerelin.campaign.ui.DelayedDialogScreenScript;
 import exerelin.campaign.*;
 import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
@@ -20,15 +22,11 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
-// adapted from UpdateNotificationScript in LazyWizard's Version Checker
 /**
  * Prompts player to do an alliance vote
  */
-public class AllianceVoteScreenScript implements EveryFrameScript
+public class AllianceVoteScreenScript extends DelayedDialogScreenScript
 {
-	protected static final float DAYS_TO_WAIT = 0.1f;
-	protected boolean isDone = false;
-	protected float timer = 0;
 	protected String factionId1, factionId2;
 	protected boolean isWar;
 
@@ -40,36 +38,15 @@ public class AllianceVoteScreenScript implements EveryFrameScript
 	}
 
 	@Override
-	public boolean isDone()
-	{
-		return isDone;
-	}
-
-	@Override
 	public boolean runWhilePaused()
 	{
 		return true;
 	}
 
-	
 	@Override
-	public void advance(float amount)
-	{
-		// Don't do anything while in a menu/dialog
-		CampaignUIAPI ui = Global.getSector().getCampaignUI();
-		if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog())
-		{
-			return;
-		}
-		
-		timer += Global.getSector().getClock().convertToDays(amount);
-		if (timer < DAYS_TO_WAIT) return;
-		
-		if (!isDone)
-		{
-			ui.showInteractionDialog(new AllianceVoteDialog(factionId1, factionId2, isWar), Global.getSector().getPlayerFleet());
-			isDone = true;
-		}
+	protected void showDialog() {
+		Global.getSector().getCampaignUI().showInteractionDialog(
+				new AllianceVoteDialog(factionId1, factionId2, isWar), null);
 	}
 
 	protected static class AllianceVoteDialog implements InteractionDialogPlugin, CoreInteractionListener
@@ -96,6 +73,7 @@ public class AllianceVoteScreenScript implements EveryFrameScript
 			String no = Misc.ucFirst(StringHelper.getString("no"));
 			options.addOption(yes, Vote.YES);
 			options.addOption(no, Vote.NO);
+			options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), CoreUITabId.INTEL);
 			options.addOption(Misc.ucFirst(StringHelper.getString("abstain")), Vote.ABSTAIN);
 			
 			for (Vote opt : Vote.values())
@@ -211,6 +189,10 @@ public class AllianceVoteScreenScript implements EveryFrameScript
 		{
 			if (optionText != null) {
 					text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
+			}
+			if (optionData.equals(CoreUITabId.INTEL)) {
+				dialog.getVisualPanel().showCore(CoreUITabId.INTEL, Global.getSector().getPlayerFleet(), this);
+				return;
 			}
 			
 			Alliance alliance = AllianceManager.getFactionAlliance(playerFactionId);

@@ -30,11 +30,11 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.FieldOptionsScreenScript;
+import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
-import exerelin.campaign.PlayerFactionSetupNag;
+import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
-import exerelin.campaign.ReinitScreenScript;
+import exerelin.campaign.ui.ReinitScreenScript;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
@@ -157,7 +157,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         StatsTracker.create();
         
-        SectorManager.setCorvusMode(true);
+        SectorManager.getManager().setCorvusMode(true);
         SectorManager.reinitLiveFactions();
         NexUtilsReputation.syncFactionRelationshipsToPlayer();
         

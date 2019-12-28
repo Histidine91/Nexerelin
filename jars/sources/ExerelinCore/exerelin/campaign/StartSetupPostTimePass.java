@@ -103,13 +103,15 @@ public class StartSetupPostTimePass {
 			member.setShipName(myFaction.pickRandomShipName());
 		}
 		
+		boolean freeStart = SectorManager.getManager().isFreeStart();
+		
 		// spawn as a different faction if config says we should
 		// for Blade Breakers etc.
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
 		{
 			factionId = conf.spawnAsFactionId;
-			if (SectorManager.getFreeStart()) {	// Blade Breaker start: use BB start relations
+			if (freeStart) {	// Blade Breaker start: use BB start relations
 				NexUtilsReputation.syncFactionRelationshipsToPlayer();
 			}
 			else {	// Lion's Guard start: use Diktat start relations
@@ -126,17 +128,17 @@ public class StartSetupPostTimePass {
 		}
 		
 		// make own faction start's first market player-owned
-		else if (!SectorManager.getCorvusMode() && !SectorManager.getFreeStart() && entity != null) {
+		else if (!SectorManager.getManager().isCorvusMode() && !freeStart && entity != null) {
 			entity.getMarket().setPlayerOwned(true);
 		}
 		
 		// Galatian stipend
-		if (!SectorManager.getHardMode() && !Misc.isSpacerStart()) {
+		if (!SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()) {
 			new GalatianAcademyStipend();
 		}
 		
 		// Starting blueprints
-		if (selectedFactionId.equals(Factions.PLAYER) && SectorManager.getFreeStart()) {
+		if (selectedFactionId.equals(Factions.PLAYER) && freeStart) {
 			// no free special items on free start
 		}
 		else {
@@ -182,7 +184,7 @@ public class StartSetupPostTimePass {
 		else {
 			if (ExerelinConfig.enableAntioch && factionId.equals("templars"))
 				entity = TEM_Antioch.getAscalon();
-			else if (!SectorManager.getFreeStart())
+			else if (!SectorManager.getManager().isFreeStart())
 				entity = SectorManager.getHomeworld();
 		}
 		
@@ -221,7 +223,7 @@ public class StartSetupPostTimePass {
 		Vector2f loc = entity.getLocation();
 		playerFleet.setLocation(loc.x, loc.y);
 		
-		if (!SectorManager.getFreeStart())
+		if (!SectorManager.getManager().isFreeStart())
 		{
 			// unlock storage
 			MarketAPI homeMarket = entity.getMarket();
