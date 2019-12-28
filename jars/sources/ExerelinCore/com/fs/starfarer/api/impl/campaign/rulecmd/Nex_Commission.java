@@ -2,11 +2,14 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.Commission;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.missions.Commission.COMMISSION_REQ;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.NexUtilsReputation;
@@ -21,6 +24,9 @@ public class Nex_Commission extends Commission {
 		
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(person.getFaction().getId());
 		if (!conf.playableFaction) return false;
+		
+		Alliance ally = AllianceManager.getFactionAlliance(Factions.PLAYER);
+		if (ally != null) return false;
 		
 		//if (Misc.getCommissionFactionId() != null) return false;
 		
