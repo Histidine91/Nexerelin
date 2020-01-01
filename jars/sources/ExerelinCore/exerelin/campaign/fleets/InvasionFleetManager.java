@@ -517,7 +517,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
 
 			// revanchism
-			if (ExerelinUtilsMarket.wasOriginalOwner(market, factionId))
+			if (type != EventType.RAID && ExerelinUtilsMarket.wasOriginalOwner(market, factionId))
 				weight *= 5;
 
 			// defender of the faith
@@ -534,7 +534,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 
 			// help ongoing rebellions
 			RebellionIntel rebel = RebellionIntel.getOngoingEvent(market);
-			if (rebel != null && !faction.isHostileTo(rebel.getRebelFactionId()))
+			if (rebel != null && !faction.isHostileTo(rebel.getRebelFaction()))
 				weight *= 5;
 
 			targetPicker.add(market, weight);
@@ -1051,6 +1051,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			if (EXCEPTION_LIST.contains(marketFactionId) && targetFaction != marketFaction) continue;
 			if (targetFaction != null && targetFaction != marketFaction)
+				continue;
+			
+			// non-hard mode mercy for new player colonies
+			// TODO: replace with expiring memory key when we get colonization listener
+			if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction() && market.getSize() < 4)
 				continue;
 			
 			if	(marketFaction.isHostileTo(faction)) 
