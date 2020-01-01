@@ -21,8 +21,8 @@
     
     "playerInsuranceMult": 0.8,
     
-    "agentBaseSalary":4000,
-    "agentSalaryPerLevel":2000,
+    "agentBaseSalary":2000,
+    "agentSalaryPerLevel":1000,
     "maxAgents":2,
     
     # Invasion stuff

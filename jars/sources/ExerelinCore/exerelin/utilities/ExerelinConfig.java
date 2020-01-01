@@ -42,8 +42,8 @@ public class ExerelinConfig
     public static float crewLootMult = 0.02f;
     
     // Agents
-    public static int agentBaseSalary = 4000;
-    public static int agentSalaryPerLevel = 2000;
+    public static int agentBaseSalary = 2000;
+    public static int agentSalaryPerLevel = 1000;
     public static int maxAgents = 2;
 
     public static String[] builtInFactions = new String[]{};
