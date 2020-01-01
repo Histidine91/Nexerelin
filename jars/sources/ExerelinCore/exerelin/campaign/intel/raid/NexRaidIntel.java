@@ -13,6 +13,8 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -25,6 +27,9 @@ import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
@@ -95,10 +100,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		
 		if (outcome == null)
 		{
-			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel",
-					"bulletTarget", "$targetFaction", other.getDisplayName());
-			info.addPara(str, initPad, tc,
-						 other.getBaseUIColor(), other.getDisplayName());
+			writeRaidTargetsBullet(info, tc, initPad);
 			initPad = 0;
 		}
 		
@@ -115,6 +117,31 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		addETABullet(info, tc, h, 0);
 		
 		unindent(info);
+	}
+	
+	protected void writeRaidTargetsBullet(TooltipMakerAPI info, Color tc, float pad) {
+		List<MarketAPI> targets = ((NexRaidActionStage)action).getTargets();
+		List<FactionAPI> targetFactions = new ArrayList<>();
+		for (MarketAPI target : targets) {
+			if (targetFactions.contains(target.getFaction())) continue;
+			targetFactions.add(target.getFaction());
+		}
+		
+		Collections.sort(targetFactions, Nex_FactionDirectoryHelper.NAME_COMPARATOR);
+		List<String> factionNames = new ArrayList<>();
+		List<Color> colors = new ArrayList<>();
+		for (FactionAPI faction : targetFactions) {
+			factionNames.add(faction.getDisplayName());
+			colors.add(faction.getBaseUIColor());
+		}
+		
+		String concat = StringHelper.writeStringCollection(factionNames, false, true);
+		
+		String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel",
+					"bulletTargetRaid", "$factions", concat);
+		LabelAPI label = info.addPara(str, tc, pad);
+		label.setHighlight(factionNames.toArray(new String[0]));
+		label.setHighlightColors(colors.toArray(new Color[0]));
 	}
 	
 	@Override
@@ -229,7 +256,26 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
 			terminateEvent(OffensiveOutcome.FAIL);
 		}
+		else if (!doesSystemHaveHostileMarkets()) {
+			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
+		}
 	}
+	
+	public boolean doesSystemHaveHostileMarkets() {
+		// speedup: try not to get markets-in-location unless we have to
+		if (target.getFaction().isHostileTo(faction)) return true;
+		
+		// original target no longer hostile, see if there's another one we can target
+		for (MarketAPI potentialTarget : ((NexRaidActionStage)action).getTargets())
+		{
+			target = potentialTarget;
+			targetFaction = potentialTarget.getFaction();
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 	@Override
 	public String getSortString() {

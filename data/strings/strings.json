@@ -800,6 +800,7 @@
 		"title":"$Action: $market",
 		"desc":"$TheFaction $isOrAre $actioning $market in the $location, held by $theTargetFaction. The $forceType $isOrAre projected to be $strDesc and $isOrAre likely comprised of $numFleets $fleetsStr.",
 		"bulletTarget":"Held by $targetFaction",
+		"bulletTargetRaid":"Targeting $factions",
 		"bulletArrived":"$ForceType arrived in system",
 		"bulletSuccess":"$Action successful",
 		"bulletFailed":"$Action failed",
