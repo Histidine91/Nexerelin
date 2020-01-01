@@ -23,7 +23,7 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 	
 	public SuppressionFleetAI(CampaignFleetAPI fleet, SuppressionFleetData data)
 	{
-		super(fleet, data.sourceMarket, data.targetMarket, 150);
+		super(fleet, data.source, data.target, 150);
 		this.data = data;
 	}
 	
@@ -33,7 +33,7 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 		if (orderedReturn)
 			return;
 		
-		if (data.event.isEnding() || data.event.isEnded())
+		if (data.intel.isEnding() || data.intel.isEnded())
 		{
 			giveStandDownOrders();  // rebellion over; go home
 			return;
@@ -44,7 +44,7 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 		if (!interval.intervalElapsed()) return;
 		
 		// target market got captured under us, or we're otherwise no longer allied to it
-		if (!AllianceManager.areFactionsAllied(fleet.getFaction().getId(), data.targetMarket.getFactionId()))
+		if (!AllianceManager.areFactionsAllied(fleet.getFaction().getId(), data.target.getFactionId()))
 		{
 			giveStandDownOrders();
 			return;
@@ -53,25 +53,25 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 	
 	@Override
 	protected void giveGoToAssignment() {
-		MarketAPI market = data.targetMarket;
-			String marketName = market.getName();
-			
-			// TODO: maybe damage rebels for every day it's in orbit?
-			this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 
-					1000, StringHelper.getFleetAssignmentString("travellingTo", marketName));
-			this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
-					3, StringHelper.getFleetAssignmentString("suppressingRebellion", marketName), getDeliveryScript());
-			this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
-					60, StringHelper.getFleetAssignmentString("suppressingRebellion", marketName));
+		MarketAPI market = data.target;
+		String marketName = market.getName();
+
+		// TODO: maybe damage rebels for every day it's in orbit?
+		fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 
+				1000, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
+				3, StringHelper.getFleetAssignmentString("suppressingRebellion", marketName), 
+				getDeliveryScript());
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
+				7, StringHelper.getFleetAssignmentString("orbiting", marketName), standDownScript);
 	}
 	
 	@Override
-	protected void giveInitialAssignment()
-	{
-		if (data.noWait) return;
+	protected void giveInitialAssignment() {
 		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
-		this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, data.source, daysToOrbit, 
-				StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionSuppression"));
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, data.source.getPrimaryEntity(), 
+				daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", 
+				data.source.getPrimaryEntity().getName(), "missionSuppression"));
 	}
 	
 	@Override
@@ -82,6 +82,8 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 			//log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " standing down");
 			orderedReturn = true;
 			fleet.clearAssignments();
+			if (data == data.intel.suppressionFleet)
+				data.intel.suppressionFleet = null;
 			
 			boolean despawningAtTarget = false;
 			if (data.target.getFaction() == data.fleet.getFaction())
@@ -95,13 +97,14 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 					despawningAtTarget = true;
 				}
 			}
-			final SectorEntityToken destination = despawningAtTarget ? data.target : data.source;
+			final SectorEntityToken destination = despawningAtTarget ? data.target.getPrimaryEntity() : 
+					data.source.getPrimaryEntity();
 			
-			this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, 
+			fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, 
 					StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
-			this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), 
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), 
 					StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
-			this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
 		}
 	}
 	
@@ -110,9 +113,17 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 		return new Script() {
 			@Override
 			public void run() {
-				data.event.suppressionFleetArrived(data);
+				Global.getLogger(this.getClass()).info("wololo suppressing");
+				data.intel.suppressionFleetArrived(data);
 			}
 		};
 	}
+	
+	protected Script standDownScript = new Script() {
+		public void run() {
+			Global.getLogger(this.getClass()).info("wololo standing down");
+			giveStandDownOrders();
+		}
+	};
 }
 

@@ -762,18 +762,43 @@ nex_hostileActionMenu:Cancel",
 #nex_instigateRebellionProceed,DialogOptionSelected,$option == nex_instigateRebellionProceed,"Nex_InstigateRebellion proceed
 FireAll Nex_HostileAction",,,
 ,,,,,,
+nex_supplyInsurgencyGreeting,PickGreeting,$nex_rebel_representative,"ShowPersonVisual
+FireAll Nex_InsurgencyCheckRep","After a short wait, your connection request is accepted.
+
+""Yes?""","nex_supplyInsurgency:""I can provide your rebellion with some useful materiel.""
+0:cutCommLink:Cut the comm link",
+nex_supplyInsurgencyGreeting_TooLowRep,Nex_InsurgencyCheckRep,!Nex_RebellionActions enoughRepToSupply,"SetTooltip nex_supplyInsurgency ""$TheFaction simply do not trust you to supply them.""
+SetEnabled nex_supplyInsurgency false",,,
+nex_supplyInsurgencyGreeting_NeedTOff,PickGreeting,"$nex_rebel_representative
+$player.transponderOn
+$hostileToMarket score:100",ShowPersonVisual,"After a short wait, your connection request is accepted.
+
+""What do you want? I have no business with you.""
+
+On the balance of things, perhaps waltzing into port with your transponder on and broadcasting your identity, in order to get in touch with an underworld figure, wasn't the best idea you've ever had.",0:cutCommLink:Cut the comm link,
+nex_supplyInsurgencyGreeting_Player,PickGreeting,"$nex_rebel_representative
+$market.nex_isTruePlayerOwned",ShowPersonVisual,"Your connection request goes unanswered, even after waiting for several minutes. Which makes sense, if you think about it for a while.",0:cutCommLink:Cut the comm link,
+nex_supplyInsurgency,DialogOptionSelected,$option == nex_supplyInsurgency,"AddText ""\""Well, well. For our glorious cause, we will gladly take any supplies, hand weapons or marines you possess, paying market rates. $TheFaction will remember you, when the revolution is triumphant.\""""
+Nex_RebellionActions main
+Nex_RebellionActions printPriceMult",,,
+nex_supplyInsurgencyProceed,DialogOptionSelected,"Nex_OptionStartsWith ""nex_supplyInsurgency_deliver_""",Nex_RebellionActions deliver,,,
+nex_supplyInsurgencyBack,DialogOptionSelected,$option == nex_supplyInsurgencyBack,"ShowDefaultVisual
+EndConversation",,,
+,,,,,,
 nex_supplyCounterInsurgencyOption,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_RebellionActions isOngoing",,,"nex_supplyCounterInsurgency:""I can help with your rebellion problem.""",
 nex_supplyCounterInsurgencyOptionTooLowRep,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_RebellionActions isOngoing
-!RepIsAtWorst $faction.id INHOSPITABLE","SetTooltip nex_supplyCounterInsurgency ""$TheFaction simply do not trust you to supply them.""
+!Nex_RebellionActions enoughRepToSupply","SetTooltip nex_supplyCounterInsurgency ""$TheFaction simply do not trust you to supply them.""
 SetEnabled nex_supplyCounterInsurgency false",,,
-nex_supplyCounterInsurgency,DialogOptionSelected,$option == nex_supplyCounterInsurgency,"AddText ""Indeed? We could make good use of any supplies, hand weapons or marines you possess, purchased at market rates. And the gratitude of $theFaction, once the dust settles.""
+nex_supplyCounterInsurgency,DialogOptionSelected,$option == nex_supplyCounterInsurgency,"AddText ""\""Indeed? We could make good use of any supplies, hand weapons or marines you possess, purchased at market rates. And the gratitude of $theFaction, once the dust settles.\""""
 Nex_RebellionActions main
 Nex_RebellionActions printPriceMult",,,
-nex_supplyCounterInsurgencyProceed,DialogOptionSelected,"Nex_OptionStartsWith ""nex_supplyCounterInsurgency_deliver_""",Nex_RebellionActions deliver,,,
+nex_supplyCounterInsurgencyPlayer,DialogOptionSelected,"$option == nex_supplyCounterInsurgency
+$market.nex_isTruePlayerOwned","AddText ""\""That would be good. Some supplies, heavy armaments and marines would make putting down the rebellion much easier.\""""
+AddTextSmall ""As this is your own market, you will not be paid for the materiel you supply.""
+Nex_RebellionActions main",,,
 nex_supplyCounterInsurgencyBack,DialogOptionSelected,$option == nex_supplyCounterInsurgencyBack,FireAll PopulateOptions,"""Anything else?""",,
-,,,,,,
 ,,,,,,
 # Blueprint swap options,,,,,,
 nex_blueprintSwapOption,PopulateOptions,"Nex_IsBaseOfficial admin

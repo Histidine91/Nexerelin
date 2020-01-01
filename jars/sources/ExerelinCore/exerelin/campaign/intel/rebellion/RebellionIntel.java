@@ -1,55 +1,86 @@
 package exerelin.campaign.intel.rebellion;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
+import com.fs.starfarer.api.characters.ImportantPeopleAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
+import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class RebellionIntel extends BaseIntelPlugin {
+public class RebellionIntel extends BaseIntelPlugin implements InvasionListener, 
+		FleetEventListener {
 	
 	public static final String COMMODITY_STAT_MOD_ID = "nex_rebellion";
+	public static final Set<String> ALLOWED_SUBMARKETS = new HashSet<>(Arrays.asList(new String[] {
+		//"AL_militaryMarket", Submarkets.GENERIC_MILITARY, Submarkets.SUBMARKET_OPEN,
+		Submarkets.SUBMARKET_BLACK
+	}));
 	
 	public static final float MAX_DAYS = 180;
 	public static final float VALUE_WEAPONS = 0.5f;
 	public static final float VALUE_SUPPLIES = 0.1f;
 	public static final float VALUE_MARINES = 0.25f;
 	//public static final float VALUE_PER_CREDIT = 0.01f * 0.01f;
-	public static final float REP_MULT = 1.5f;
-	public static final float REBEL_TRADE_MULT = 2f;
+	public static final float REP_MULT = 1f;
 	public static final float STRENGTH_CHANGE_MULT = 0.25f;
 	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
-	public static final int MAX_STABILITY_PENALTY = 4;
-	public static final int MAX_FINAL_UNREST = 3;
+	public static final int MAX_STABILITY_PENALTY = 5;
+	public static final int MAX_FINAL_UNREST = 4;
+	public static final boolean USE_REBEL_REP = false;
 	
 	public static final boolean DEBUG_MODE = false;
 	
@@ -57,12 +88,13 @@ public class RebellionIntel extends BaseIntelPlugin {
 	
 	protected MarketAPI market;
 	protected boolean started = false;
-	protected float age = 0;
+	protected float elapsed = 0;
 	protected float suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
 	protected IntervalUtil disruptInterval = new IntervalUtil(30, 42);
 	
-	protected String govtFactionId = null;	// for token substition, if market is liberated
-	protected String rebelFactionId = null;
+	protected FactionAPI govtFaction;
+	protected FactionAPI rebelFaction;
+	protected FactionAPI liberatorFaction;
 	protected float govtStrength = 1;
 	protected float rebelStrength = 1;
 	protected float govtTradePoints = 0;
@@ -71,27 +103,59 @@ public class RebellionIntel extends BaseIntelPlugin {
 	protected SuppressionFleetData suppressionFleet = null;
 	protected MarketAPI suppressionFleetSource = null;
 	protected boolean suppressionFleetWarning = false;
+	protected Boolean suppressionFleetSuccess = null;
+	protected Long suppressionFleetTimestamp;
+	
+	protected Industry lastIndustryDisrupted;
+	protected float disruptTime;
+	protected Long disruptionTimestamp;
 	
 	protected float intensity = 0;
-	protected int rebellionLevel = 0;	// TODO: not actually set yet
-	protected float delay = 0;
+	protected float commodityFactor = 0;
 	protected int stabilityPenalty = 1;
+	protected UpdateParam lastUpdate;
+	protected Long lastUpdateTimestamp;
 	protected RebellionResult result = null;
 	protected ExerelinReputationAdjustmentResult repResultGovt;
 	protected ExerelinReputationAdjustmentResult repResultRebel;
 	
-	protected String conditionToken = null;
+	protected String conditionToken;
+	protected PersonAPI rebelRep;
 	
 	protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
-	public void init() {
-		
-		govtFactionId = market.getFactionId();
+	public RebellionIntel(MarketAPI market, FactionAPI rebelFaction, float delay) {
+		this.market = market;
+		this.rebelFaction = rebelFaction;
+		elapsed = -delay;
+	}
+	
+	public void init(boolean instant) {
+		govtFaction = market.getFaction();
 		setInitialStrengths();
 		if (DEBUG_MODE)
 		{
 			suppressionFleetCountdown = 2;
 		}
+		if (instant) elapsed = 0;
+		
+		if (USE_REBEL_REP) {
+			ImportantPeopleAPI ip = Global.getSector().getImportantPeople();
+			rebelRep = rebelFaction.createRandomPerson();
+			rebelRep.setPostId("nex_rebel_representative");
+			rebelRep.setRankId(Ranks.AGENT);
+			rebelRep.getMemoryWithoutUpdate().set("$nex_rebel_representative", true);
+			market.getCommDirectory().addPerson(rebelRep);
+			market.addPerson(rebelRep);
+			ip.getData(rebelRep).getLocation().setMarket(market);
+			ip.checkOutPerson(rebelRep, "nex_rebel_representative");
+		}		
+		
+		conditionToken = market.addCondition("nex_rebellion_condition");
+		Global.getSector().getListenerManager().addListener(this);
+		Global.getSector().getIntelManager().addIntel(this, true);
+		Global.getSector().addScript(this);
+		sendUpdate(UpdateParam.PREP);
 	}
 	
 	public static float getSizeMod(int size)
@@ -139,9 +203,20 @@ public class RebellionIntel extends BaseIntelPlugin {
 		rebelStrength = strength;
 	}
 	
-	public float getDelay()
-	{
-		return delay;
+	public boolean areDetailsKnownToPlayer() {
+		//if (isEnding() || isEnded()) return true;
+		if (result == RebellionResult.REBEL_VICTORY) return true;
+		if (Global.getSettings().isDevMode()) return true;
+		if (rebelFaction.isPlayerFaction() || rebelFaction == Misc.getCommissionFaction())
+			return true;
+		
+		// TODO: check for agents
+		for (AgentIntel intel : CovertOpsManager.getManager().getAgents()) {
+			if (intel.getMarket() == market)
+				return true;
+		}
+		
+		return false;
 	}
 	
 	protected float updateConflictIntensity()
@@ -150,12 +225,13 @@ public class RebellionIntel extends BaseIntelPlugin {
 		currIntensity /= getSizeMod(market);
 		
 		// counteracts intensity bleeding as belligerents' strength wears down
-		float age = (int)(this.age/3);
+		float age = (int)(this.elapsed/3);
 		if (age < 0) age = 0;
 		currIntensity += Math.sqrt(age);
 		
 		if (!started) currIntensity *= 0.5f;
 		this.intensity = currIntensity;
+		
 		debugMessage("  Conflict intensity: " + currIntensity);
 		return currIntensity;
 	}
@@ -206,41 +282,79 @@ public class RebellionIntel extends BaseIntelPlugin {
 		debugMessage("  Updated force strengths: " + govtStrength + ", " + rebelStrength);
 	}
 	
+	protected boolean checkVictory() 
+	{
+		if (govtStrength <= 0)
+		{
+			if (rebelStrength > intensity)	// rebel win
+			{
+				endEvent(RebellionResult.REBEL_VICTORY);
+				return true;
+			}
+			else	// mutual annihilation
+			{
+				endEvent(RebellionResult.MUTUAL_ANNIHILATION);
+				return true;
+			}
+		}
+		else if (rebelStrength <= 0)
+		{
+			if (govtStrength > intensity)	// government win
+			{
+				endEvent(RebellionResult.GOVERNMENT_VICTORY);
+				return true;
+			}
+			else	// mutual annihilation
+			{
+				endEvent(RebellionResult.MUTUAL_ANNIHILATION);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected void fastResolve() {
+		int tries = 0;
+		while (tries < 250) {
+			battleRound();
+			boolean ended = checkVictory();
+			if (ended) return;
+			tries++;
+		}
+	}
+	
+	protected void updateCommodityFactor() {
+		float level = (govtStrength + rebelStrength) * 0.25f;
+		level /= getSizeMod(market);
+		
+		commodityFactor = Math.round(level * 100)/100;
+		if (commodityFactor > 5)
+			commodityFactor = 5;
+	}
+	
 	protected void updateCommodityDemand()
 	{
 		String modId = COMMODITY_STAT_MOD_ID;
 		if (result != null)
 		{
-			market.getCommodityData(Commodities.MARINES).getAvailableStat().unmodify(modId);
-			market.getCommodityData(Commodities.HAND_WEAPONS).getAvailableStat().unmodify(modId);
-			market.getCommodityData(Commodities.SUPPLIES).getAvailableStat().unmodify(modId);
+			market.getCommodityData(Commodities.MARINES).getPlayerPriceMod().unmodify(modId);
+			market.getCommodityData(Commodities.HAND_WEAPONS).getPlayerPriceMod().unmodify(modId);
+			market.getCommodityData(Commodities.SUPPLIES).getPlayerPriceMod().unmodify(modId);
 			return;
 		}
 		
-		int size = market.getSize();
-		if (size < 3) size = 3;
+		updateCommodityFactor();
 		
-		market.getCommodityData(Commodities.MARINES).getAvailableStat().modifyFlat(modId, -rebellionLevel);
-		market.getCommodityData(Commodities.HAND_WEAPONS).getAvailableStat().modifyFlat(modId, -rebellionLevel);
-		market.getCommodityData(Commodities.SUPPLIES).getAvailableStat().modifyFlat(modId, -rebellionLevel);
-	}
-	
-	/**
-	 * Roll a random chance for newly spawned patrol to join rebel faction.
-	 * @return
-	 */
-	protected boolean shouldTransferPatrol()
-	{
-		float chance = 0.2f + 0.8f * getNormalizedStrength(true);
-		return Math.random() < chance;
-	}
-	
-	public String getRebelFactionId() {
-		return rebelFactionId;
+		float priceMult = 1 + (commodityFactor/6);
+		String desc = getString("commodityPriceDesc");
+		
+		market.getCommodityData(Commodities.MARINES).getPlayerPriceMod().modifyMult(modId, priceMult, desc);
+		market.getCommodityData(Commodities.HAND_WEAPONS).getPlayerPriceMod().modifyMult(modId, priceMult, desc);
+		market.getCommodityData(Commodities.SUPPLIES).getPlayerPriceMod().modifyMult(modId, priceMult, desc);
 	}
 	
 	public FactionAPI getRebelFaction() {
-		return Global.getSector().getFaction(rebelFactionId);
+		return rebelFaction;
 	}
 	
 	public int getStabilityPenalty() {
@@ -259,16 +373,54 @@ public class RebellionIntel extends BaseIntelPlugin {
 	
 	/**
 	 * Applies recent unrest instability once the rebellion ends.
-	 * @param result
-	 * @param amount
 	 */
-	protected void applyFinalInstability(RebellionResult result, int amount)
+	protected void applyFinalInstability()
 	{
 		if (result == RebellionResult.OTHER) return;
 		
+		int amount = stabilityPenalty;
 		if (amount > MAX_FINAL_UNREST) amount = MAX_FINAL_UNREST;
 		
-		//RecentUnrest.get(market).add(stabilityPenalty, getString("rebellion"));
+		String desc = getString("unrestDesc");
+		RecentUnrest.get(market).add(amount, desc);
+	}
+	
+	protected Industry pickIndustryToDisrupt() {
+		WeightedRandomPicker<Industry> picker = new WeightedRandomPicker<>();
+		for (Industry ind : market.getIndustries()) {
+			if (!ind.canBeDisrupted()) continue;
+			if (ind.getDisruptedDays() > 15) continue;
+			if (ind.getSpec().hasTag(Industries.TAG_UNRAIDABLE))
+				continue;
+			if (ind.getSpec().hasTag(Industries.TAG_SPACEPORT))
+				continue;
+			picker.add(ind);
+		}
+		return picker.pick();
+	}
+	
+	protected void attemptIndustryDisruption() {
+		Industry ind = pickIndustryToDisrupt();
+		if (ind == null) return;
+		
+		float random = MathUtils.getRandomNumberInRange(0.25f, 1.75f);
+		float atkStr = rebelStrength * (0.25f + random);
+		random = MathUtils.getRandomNumberInRange(0.25f, 1.75f);
+		float defStr = govtStrength * (0.25f + random);
+		
+		disruptionTimestamp = Global.getSector().getClock().getTimestamp();
+		lastIndustryDisrupted = ind;
+		
+		float disruptTime = 15 * (atkStr/defStr);
+		if (disruptTime < 30) {
+			this.disruptTime = 0;
+			
+			sendUpdate(UpdateParam.INDUSTRY_DISRUPT_FAIL);
+			return;
+		}
+		this.disruptTime = Math.round(disruptTime);
+		ind.setDisrupted(disruptTime + ind.getDisruptedDays());
+		sendUpdate(UpdateParam.INDUSTRY_DISRUPTED);
 	}
 	
 	/**
@@ -279,61 +431,96 @@ public class RebellionIntel extends BaseIntelPlugin {
 	{
 		if (result == RebellionResult.OTHER) return;
 		
-		final FactionAPI govt = Global.getSector().getFaction(govtFactionId);
-		final FactionAPI rebs = Global.getSector().getFaction(rebelFactionId);
+		float rebelTradePointsFloored = Math.max(rebelTradePoints, 0);
+		float govtTradePointsFloored = Math.max(govtTradePoints, 0);
 		
-		float netRebelTradePoints = rebelTradePoints - govtTradePoints;
+		float netRebelTradePoints = rebelTradePointsFloored - govtTradePointsFloored;
 		
 		if (netRebelTradePoints > 0)
 		{
 			final float rep = netRebelTradePoints/getSizeMod(market) * 0.01f * REP_MULT;
 			debugMessage("  Rebel trade rep: " + rep);
-			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebs, rep, null, null);
-			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govt, -rep*1.5f, null, null);
+			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebelFaction, rep, null, null);
+			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govtFaction, -rep*1.5f, null, null);
 		}
 		else if (netRebelTradePoints < 0)
 		{
 			final float rep = netRebelTradePoints/getSizeMod(market) * 0.01f * REP_MULT;
 			debugMessage("  Government trade rep: " + rep);
-			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebs, -rep*1.5f, null, null);
-			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govt, rep, null, null);
+			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebelFaction, -rep*1.5f, null, null);
+			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govtFaction, rep, null, null);
 		}
 	}
 	
-	/**
-	 * Callin for when a market is captured by an invasion fleet.
-	 * Checks if should end rebellion (continue it if new owner is also hostile)
-	 * @param oldOwnerId
-	 * @param newOwnerId
-	 */
-	public void marketCaptured(String newOwnerId, String oldOwnerId)
+	@Override
+	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
+			boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
 	{
 		if (result != null) return;
-		FactionAPI newOwner = Global.getSector().getFaction(newOwnerId);
-		if (newOwner.isAtWorst(rebelFactionId, RepLevel.SUSPICIOUS))
+		if (newOwner.isAtWorst(rebelFaction, RepLevel.SUSPICIOUS))
 		{
-			if (started) endEvent(RebellionResult.LIBERATED);
+			if (started) {
+				liberatorFaction = newOwner;
+				endEvent(RebellionResult.LIBERATED);
+			}
 			else endEvent(RebellionResult.OTHER);
 		}
 		else
 		{
-			govtFactionId = newOwnerId;
+			govtFaction = newOwner;
 		}
+	}
+	
+	@Override
+	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
+			Nex_MarketCMD.TempDataInvasion actionData, CargoAPI cargo) {
+	}
+
+	@Override
+	public void reportInvasionRound(InvasionRound.InvasionRoundResult result, 
+			CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr) {
+	}
+
+	@Override
+	public void reportInvasionFinished(CampaignFleetAPI fleet, FactionAPI attackerFaction, 
+			MarketAPI market, float numRounds, boolean success) {
+	}
+	
+	@Override
+	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, 
+			FleetDespawnReason reason, Object param) {
+		if (suppressionFleet != null && suppressionFleet.fleet == fleet 
+				&& reason != FleetDespawnReason.REACHED_DESTINATION
+				&& reason != FleetDespawnReason.PLAYER_FAR_AWAY) {
+			suppressionFleetDefeated(suppressionFleet);
+		}
+	}
+
+	@Override
+	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, 
+			BattleAPI battle) {
+	}
+	
+	public void sendUpdate(UpdateParam param) 
+	{
+		lastUpdate = (UpdateParam)listInfoParam;
+		lastUpdateTimestamp = Global.getSector().getClock().getTimestamp();
+		sendUpdateIfPlayerHasIntel(param, false);
 	}
 	
 	public void endEvent(RebellionResult result)
 	{
-		if (result != null) return;
+		if (this.result != null) return;
 		this.result = result;
 		updateCommodityDemand();
 		market.removeSpecificCondition(conditionToken);
 		
-		applyFinalInstability(result, stabilityPenalty);
+		applyFinalInstability();
 		applyReputationChange();
 		
 		// transfer market depending on rebellion outcome
 		if (result == RebellionResult.REBEL_VICTORY)
-			SectorManager.transferMarket(market, Global.getSector().getFaction(rebelFactionId), market.getFaction(), 
+			SectorManager.transferMarket(market, rebelFaction, market.getFaction(), 
 					false, true, null, 0);
 		else if (result == RebellionResult.MUTUAL_ANNIHILATION)
 			SectorManager.transferMarket(market, Global.getSector().getFaction(Factions.PIRATES), market.getFaction(), 
@@ -343,76 +530,67 @@ public class RebellionIntel extends BaseIntelPlugin {
 			RebellionEventCreator.incrementRebellionPointsStatic(market, -100);
 		
 		// report event
-		String reportStage = null;
-		switch (result) {
-			case REBEL_VICTORY:
-				reportStage = "end_rebel_win";
-				break;
-			case GOVERNMENT_VICTORY:
-				reportStage = "end_govt_win";
-				break;
-			case LIBERATED:
-				reportStage = "end_liberated";
-				if (AllianceManager.areFactionsAllied(market.getFactionId(), rebelFactionId))
-					reportStage = "end_liberated_ally";
-				break;
-			case PEACE:
-				reportStage = "end_peace";
-				break;
-			case MUTUAL_ANNIHILATION:
-				reportStage = "end_mutual_annihilation";
-				break;
-			case TIME_EXPIRED:
-				reportStage = "end_timeout";
-				break;
-		}
 		endAfterDelay();
-		if (reportStage != null)
-			sendUpdateIfPlayerHasIntel(reportStage, false);
+		sendUpdate(UpdateParam.END);
+	}
+	
+	@Override
+	protected void notifyEnding() {
+		Global.getSector().getListenerManager().removeListener(this);
+		if (rebelRep != null) {
+			market.removePerson(rebelRep);
+			market.getCommDirectory().removePerson(rebelRep);
+			Global.getSector().getImportantPeople().returnPerson(rebelRep, "nex_rebel_representative");
+			Global.getSector().getImportantPeople().removePerson(rebelRep);
+		}
 	}
 	
 	public void suppressionFleetArrived(SuppressionFleetData data)
 	{
+		if (isEnding() || isEnded()) return;
 		if (suppressionFleet == data)
 		{
-			sendUpdateIfPlayerHasIntel("suppression_fleet_arrived", false);
+			suppressionFleetSuccess = true;
 			suppressionFleet = null;
 			suppressionFleetSource = null;
-			int marines = data.fleet.getCargo().getMarines();
-			//ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.MARINES, marines);
-			data.fleet.getCargo().removeMarines(marines);
-			govtStrength += marines * VALUE_MARINES;
+			suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
+			sendUpdate(UpdateParam.FLEET_ARRIVED);
+			float str = data.fleet.getMemoryWithoutUpdate().getFloat("$nex_rebellion_suppr_payload");
+			govtStrength += str * VALUE_MARINES;
 			rebelStrength *= 0.75f;	// morale loss + bombardment
 		}
 	}
 	
 	public void suppressionFleetDefeated(SuppressionFleetData data)
 	{
+		if (isEnding() || isEnded()) return;
 		if (suppressionFleet == data)
 		{
-			sendUpdateIfPlayerHasIntel("suppression_fleet_defeated", false);
+			suppressionFleetSuccess = false;
 			suppressionFleet = null;
 			suppressionFleetSource = null;
+			sendUpdate(UpdateParam.FLEET_DEFEATED);
 			// morale boost
 			rebelStrength *= 1.2f;
 			govtStrength *= 0.75f;
 		}
 	}
 	
-	protected SuppressionFleetData getSuppressionFleet(MarketAPI sourceMarket)
+	protected SuppressionFleetData createSuppressionFleet(MarketAPI sourceMarket)
 	{
 		String factionId = sourceMarket.getFactionId();
-		float fp = (int)(getSizeMod(market) * 1.5f);
-		if (market.hasIndustry(Industries.HIGHCOMMAND))
+		float fp = (int)(getSizeMod(market) * 6f);
+		if (sourceMarket.hasIndustry(Industries.HIGHCOMMAND))
 			fp *= 1.25f;
-		if (market.hasIndustry(Industries.MILITARYBASE))
+		if (sourceMarket.hasIndustry(Industries.MILITARYBASE))
 			fp *= 1.1f;
-		if (market.hasIndustry(Industries.MEGAPORT))
+		if (sourceMarket.hasIndustry(Industries.MEGAPORT))
 			fp *= 1.1f;
 		
 		String name = getFleetName("nex_suppressionFleet", factionId, fp);
 		
-		int numMarines = (int)((rebelStrength * 2 - govtStrength));
+		int str = (int)(rebelStrength * 2 - govtStrength);
+		int numMarines = (int)(str * 2 / VALUE_MARINES);
 		
 		float distance = ExerelinUtilsMarket.getHyperspaceDistance(sourceMarket, market);
 		int tankerFP = (int)(fp * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
@@ -424,7 +602,7 @@ public class RebellionIntel extends BaseIntelPlugin {
 				fp*0.85f, // combat
 				fp*0.1f, // freighters
 				tankerFP,		// tankers
-				numMarines/200,		// personnel transports
+				numMarines/100,		// personnel transports
 				0,		// liners
 				fp*0.05f,	// utility
 				0);	// quality mod
@@ -432,25 +610,25 @@ public class RebellionIntel extends BaseIntelPlugin {
 		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(sourceMarket.getFaction(), fleetParams);
 		if (fleet == null) return null;
 		
-		fleet.getCargo().addMarines(numMarines);
+		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(numMarines/2.5f));
+		fleet.getMemoryWithoutUpdate().set("$nex_rebellion_suppr_payload", str);
 		fleet.setName(name);
 		fleet.setAIMode(true);
 		
 		SuppressionFleetData data = new SuppressionFleetData(fleet);
 		data.startingFleetPoints = fleet.getFleetPoints();
-		data.sourceMarket = sourceMarket;
-		data.source = sourceMarket.getPrimaryEntity();
-		data.targetMarket = market;
-		data.target = market.getPrimaryEntity();
-		data.marineCount = numMarines;
-		data.event = this;
+		data.source = sourceMarket;
+		data.target = market;
+		data.intel = this;
 		
 		sourceMarket.getContainingLocation().addEntity(fleet);
 		SectorEntityToken entity = sourceMarket.getPrimaryEntity();
 		fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
 		
 		// add AI script
-		fleet.addScript(new SuppressionFleetAI(fleet, data));
+		SuppressionFleetAI script = new SuppressionFleetAI(fleet, data);
+		fleet.addScript(script);
+		script.giveInitialAssignment();
 		
 		log.info("\tSpawned suppression fleet " + data.fleet.getNameWithFaction() + " of size " + fp);
 		return data;
@@ -462,10 +640,10 @@ public class RebellionIntel extends BaseIntelPlugin {
 		Vector2f targetLoc = market.getLocationInHyperspace();
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
 		List<MarketAPI> markets;
-		if (AllianceManager.getFactionAlliance(govtFactionId) != null)
-			markets = AllianceManager.getFactionAlliance(govtFactionId).getAllianceMarkets();
+		if (AllianceManager.getFactionAlliance(govtFaction.getId()) != null)
+			markets = AllianceManager.getFactionAlliance(govtFaction.getId()).getAllianceMarkets();
 		else
-			markets = ExerelinUtilsFaction.getFactionMarkets(govtFactionId);
+			markets = ExerelinUtilsFaction.getFactionMarkets(govtFaction.getId());
 		for (MarketAPI maybeSource : markets)
 		{
 			if (maybeSource == this.market)
@@ -480,7 +658,7 @@ public class RebellionIntel extends BaseIntelPlugin {
 			float weight = 20000.0f / dist;
 			weight *= maybeSource.getSize();
 			
-			if (!govtFactionId.equals(maybeSource.getFactionId()))
+			if (govtFaction != maybeSource.getFaction())
 				weight /= 2;
 				
 			if (market.hasIndustry(Industries.MILITARYBASE))
@@ -500,11 +678,12 @@ public class RebellionIntel extends BaseIntelPlugin {
 	 */
 	protected void spawnSuppressionFleet()
 	{
-		SuppressionFleetData data = getSuppressionFleet(suppressionFleetSource);
+		SuppressionFleetData data = createSuppressionFleet(suppressionFleetSource);
 		suppressionFleet = data;
-		sendUpdateIfPlayerHasIntel("suppression_fleet_launched", false);
+		sendUpdate(UpdateParam.FLEET_SPAWNED);
 		govtStrength *= 1.2f;	// morale boost
 		suppressionFleetWarning = false;
+		suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
 	}
 	
 	// =========================================================================
@@ -519,8 +698,8 @@ public class RebellionIntel extends BaseIntelPlugin {
 		
 		if (started)
 		{
-			age += days;
-			if (age > MAX_DAYS)
+			elapsed += days;
+			if (elapsed > MAX_DAYS)
 			{
 				endEvent(RebellionResult.TIME_EXPIRED);
 				return;
@@ -532,52 +711,57 @@ public class RebellionIntel extends BaseIntelPlugin {
 				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
 				{
 					suppressionFleetSource = pickSuppressionFleetSource();
-					// no markets to launch fleet from, reset countdown
+					// no markets to launch fleet from, delay countdown and check again later
 					if (suppressionFleetSource == null)
-						suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+						suppressionFleetCountdown += SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.2f, 0.3f);
 					else
 					{
-						sendUpdateIfPlayerHasIntel("suppression_fleet_warning", false);
+						sendUpdate(UpdateParam.FLEET_PREP);
+						suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
 						suppressionFleetWarning = true;
 					}
 				}
-				if (suppressionFleetCountdown < 0)
+				
+				// block suppression fleet launch if source market is no longer controlled
+				if (suppressionFleetSource != null && !AllianceManager.areFactionsAllied(
+							suppressionFleetSource.getFactionId(), govtFaction.getId()))
 				{
-					// don't spawn suppression fleet if the source market was lost in the meantime
-					if (suppressionFleetSource != null && AllianceManager.areFactionsAllied(
-							suppressionFleetSource.getFactionId(), govtFactionId))
-						spawnSuppressionFleet();
-					else
-						suppressionFleetSource = null;
+					suppressionFleetSource = null;
+					suppressionFleetTimestamp = null;
 					suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-					
+				}
+				
+				if (suppressionFleetCountdown < 0 && suppressionFleetSource != null)
+				{
+					spawnSuppressionFleet();
+					suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 				}
 			}
 		}
 		else
 		{
-			age += days;
-			if (age > 0)
+			elapsed += days;
+			if (elapsed > 0)
 			{
 				started = true;
-				sendUpdateIfPlayerHasIntel("start", false);
+				sendUpdate(UpdateParam.START);
 			}
 		}
 		
 		if (started) {
 			disruptInterval.advance(days);
 			if (disruptInterval.intervalElapsed()) {
-				// TODO: industry disruption
+				attemptIndustryDisruption();
 			}
 		}
 		
 		interval.advance(days);
 		if (!interval.intervalElapsed()) return;
 		
-		debugMessage("Updating rebellion on " + market.getName() + ": day " + (int)age);
+		debugMessage("Updating rebellion on " + market.getName() + ": day " + (int)elapsed);
 		
 		// check if factions involved are still at war
-		if (market.getFaction().isAtWorst(rebelFactionId, RepLevel.SUSPICIOUS))
+		if (market.getFaction().isAtWorst(rebelFaction, RepLevel.SUSPICIOUS))
 		{
 			//endEvent(RebellionResult.PEACE);
 			//return;
@@ -589,68 +773,10 @@ public class RebellionIntel extends BaseIntelPlugin {
 			gatherStrength();
 		
 		updateConflictIntensity();
-		updateCommodityDemand();
 		updateStabilityPenalty();
+		updateCommodityDemand();
 		
-		if (govtStrength <= 0)
-		{
-			if (rebelStrength > intensity)	// rebel win
-			{
-				endEvent(RebellionResult.REBEL_VICTORY);
-			}
-			else	// mutual annihilation
-			{
-				endEvent(RebellionResult.MUTUAL_ANNIHILATION);
-			}
-		}
-		else if (rebelStrength < 0)
-		{
-			if (govtStrength > intensity)	// government win
-			{
-				endEvent(RebellionResult.GOVERNMENT_VICTORY);
-			}
-			else	// mutual annihilation
-			{
-				endEvent(RebellionResult.MUTUAL_ANNIHILATION);
-			}
-		}
-	}
-	
-	// Patrol defection
-	/*
-	@Override
-	public void reportFleetSpawned(CampaignFleetAPI fleet) 
-	{
-		if (age < 0) return;
-		if (ended) return;
-		if (fleet.getFaction() != market.getFaction())
-			return;
-		
-		MemoryAPI mem = fleet.getMemoryWithoutUpdate();
-		if (!mem.contains(MemFlags.MEMORY_KEY_SOURCE_MARKET))
-			return;
-		String marketId = mem.getString(MemFlags.MEMORY_KEY_SOURCE_MARKET);
-		MarketAPI sourceMarket = Global.getSector().getEconomy().getMarket(marketId);
-		if (sourceMarket != market) return;
-		
-		if (!sourceMarket.getFaction().isHostileTo(rebelFactionId))
-			return;
-		
-		String fleetType = ExerelinUtilsFleet.getFleetType(fleet);
-		if (fleetType.equals(FleetTypes.PATROL_SMALL) || fleetType.equals(FleetTypes.PATROL_MEDIUM) || fleetType.equals(FleetTypes.PATROL_LARGE))
-		{
-			if (shouldTransferPatrol())
-				fleet.setFaction(rebelFactionId, true);
-		}
-	}
-	*/
-	
-	public void reportFleetDespawned(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
-		if (suppressionFleet != null && fleet == suppressionFleet.fleet)
-		{
-			suppressionFleet = null;
-			suppressionFleetSource = null;
-		}
+		checkVictory();
 	}
 	
 	public float getNetCommoditySold(PlayerMarketTransaction transaction, String commodityId)
@@ -660,15 +786,17 @@ public class RebellionIntel extends BaseIntelPlugin {
 	
 	public void modifyPoints(float points, boolean rebels)
 	{
+		boolean addTradePoints = !market.isPlayerOwned();
+		
 		if (rebels)
 		{
 			rebelStrength += points;
-			rebelTradePoints += points;			
+			if (addTradePoints) rebelTradePoints += points;			
 		}
 		else
 		{
 			govtStrength += points;
-			govtTradePoints += points;
+			if (addTradePoints) govtTradePoints += points;
 		}
 	}
 	
@@ -679,6 +807,9 @@ public class RebellionIntel extends BaseIntelPlugin {
 		if (transaction.getMarket() != market)
 			return;
 		debugMessage("Reporting player transaction");
+		
+		if (!ALLOWED_SUBMARKETS.contains(transaction.getSubmarket().getSpecId()))
+			return;
 		
 		float points = 0;
 		
@@ -698,10 +829,335 @@ public class RebellionIntel extends BaseIntelPlugin {
 		
 		modifyPoints(points, forRebels);
 	}
+	
+	// bullet points
+	@Override
+	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
+		Color c = getTitleColor(mode);
+		Color h = Misc.getHighlightColor();
+		info.addPara(getName(), c, 0f);
+		bullet(info);
+		
+		float initPad = 3, pad = 0;
+		
+		boolean known = areDetailsKnownToPlayer();
+		ExerelinUtilsFaction.addFactionNamePara(info, initPad, c, govtFaction);
+		if (known) ExerelinUtilsFaction.addFactionNamePara(info, pad, c, rebelFaction);
+		
+		// If event is completed, print result
+		if (result != null) {
+			switch (result) {
+				case GOVERNMENT_VICTORY:
+					info.addPara(getString("intelBulletGovtVictory"), c, pad);
+					break;
+				case REBEL_VICTORY:
+					info.addPara(getString("intelBulletRebelVictory"), c, pad);
+					break;
+				case LIBERATED:
+					String str = getString("intelBulletLiberated");
+					String name = liberatorFaction.getDisplayName();
+					str = StringHelper.substituteToken(str, "$faction", name);
+					info.addPara(str, pad, c, liberatorFaction.getBaseUIColor(), name);
+					break;
+				case MUTUAL_ANNIHILATION:
+					info.addPara(getString("intelBulletMutualAnnihilation"), c, pad);
+					break;
+				case TIME_EXPIRED:
+					info.addPara(getString("intelBulletExpired"), c, pad);
+					break;
+			}
+			// also print rep changes, if this is an update
+			if (listInfoParam != null) {
+				CoreReputationPlugin.addAdjustmentMessage(repResultGovt.delta, govtFaction, null, 
+						null, null, info, c, false, pad);
+				CoreReputationPlugin.addAdjustmentMessage(repResultRebel.delta, rebelFaction, null, 
+						null, null, info, c, false, pad);
+			}
+			
+			return;
+		}
+		
+		if (!started)
+			info.addPara(getString("intelBulletPrep"), c, pad);
+		
+		// If this is an update, print that
+		String str;
+		if (listInfoParam != null) {
+			switch ((UpdateParam)listInfoParam) {
+				case START:
+					info.addPara(getString("intelBulletStart"), c, pad);
+					break;
+				case FLEET_PREP:
+					str = getString("intelBulletFleetPrep");
+					info.addPara(str, pad, c, suppressionFleetSource.getFaction().getBaseUIColor(), 
+							suppressionFleetSource.getName());
+					break;
+				case FLEET_SPAWNED:
+					str = getString("intelBulletFleetLaunched");
+					info.addPara(str, pad, c, suppressionFleetSource.getFaction().getBaseUIColor(), 
+							suppressionFleetSource.getName());
+					break;
+				case FLEET_ARRIVED:
+					info.addPara(getString("intelBulletFleetArrived"), c, pad);
+					break;
+				case FLEET_DEFEATED:
+					info.addPara(getString("intelBulletFleetDefeated"), pad);
+					break;
+				case INDUSTRY_DISRUPTED:
+					str = getString("intelBulletIndustryDisrupt");
+					info.addPara(str, pad, c, h, lastIndustryDisrupted.getCurrentName(), 
+							Math.round(disruptTime) + "");
+					break;
+				case INDUSTRY_DISRUPT_FAIL:
+					str = getString("intelBulletIndustryDisruptFail");
+					info.addPara(str, pad, c, h, lastIndustryDisrupted.getCurrentName());
+					break;
+			}
+		}
+	}
+	
+	@Override
+	public String getSmallDescriptionTitle() {
+		return getName();
+	}
+	
+	// sidebar text description
+	@Override
+	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		float opad = 10f;
+		Color hl = Misc.getHighlightColor();
+		Color govtColor = govtFaction.getBaseUIColor();
+		Color rebColor = rebelFaction.getBaseUIColor();
+		boolean known = areDetailsKnownToPlayer();
+		
+		info.addImages(width, 128, opad, opad, 
+				known ? rebelFaction.getCrest() : Global.getSector().getFaction(Factions.NEUTRAL).getCrest(),
+				govtFaction.getCrest());
+		
+		List<Pair<String, String>> sub = new ArrayList<>();
+		sub.add(new Pair<>("$govtFaction", govtFaction.getDisplayName()));
+		sub.add(new Pair<>("$theGovtFaction", govtFaction.getDisplayNameWithArticle()));
+		sub.add(new Pair<>("$rebelFaction", rebelFaction.getDisplayName()));
+		sub.add(new Pair<>("$theRebelFaction", rebelFaction.getDisplayNameWithArticle()));
+		sub.add(new Pair<>("$onOrAt", market.getOnOrAt()));
+		sub.add(new Pair<>("$market", market.getName()));
+		
+		String govtName = govtFaction.getDisplayNameWithArticleWithoutArticle();
+		String rebName = rebelFaction.getDisplayNameWithArticleWithoutArticle();
+		
+		// basic description
+		String str;
+		if (!started) str = getString("intelDescPrep");
+		else str = getString("intelDesc");
+		str = StringHelper.substituteTokens(str, sub, true);
+		LabelAPI label = info.addPara(str, opad);
+		label.setHighlight(govtName, market.getName());
+		label.setHighlightColors(govtColor, hl);
+		
+		// tell player they can sell guns to affect the rebellion
+		if (result == null) {
+			str =  market.isPlayerOwned() ? getString("intelDesc2Player") : getString("intelDesc2");
+			info.addPara(str, opad);
+		}
+		
+		// rebellion result
+		if (result != null) {
+			info.addSectionHeading(getString("intelHeaderResult"), Alignment.MID, opad);
+			boolean liberatorIsRebel = liberatorFaction == rebelFaction;
+			String id;
+			switch (result) {
+				case GOVERNMENT_VICTORY:
+					id = "intelDescResultGovtVictory";
+					break;
+				case REBEL_VICTORY:
+					id = "intelDescResultRebelVictory";
+					break;
+				case LIBERATED:
+					sub.add(new Pair<>("$liberatorFaction", liberatorFaction.getDisplayName()));
+					sub.add(new Pair<>("$theLiberatorFaction", liberatorFaction.getDisplayNameWithArticle()));
+					id = "intelDescResultLiberated";
+					if (liberatorIsRebel) id += "Ally";
+					break;
+				case TIME_EXPIRED:
+					id = "intelDescResultExpired";
+					break;
+				case DECIVILIZED:
+				case MUTUAL_ANNIHILATION:
+					id = "intelDescResultDecivilized";
+					break;
+				default:
+					id = "intelDescResultOther";
+					break;
+			}
+			str = getString(id);
+			str = StringHelper.substituteTokens(str, sub, true);
+			
+			label = info.addPara(str, opad);
+			if (result == RebellionResult.LIBERATED) {
+				if (liberatorIsRebel) {
+					label.setHighlight(rebName);
+					label.setHighlightColors(rebColor);
+				} else {
+					label.setHighlight(liberatorFaction.getDisplayNameWithArticleWithoutArticle(), rebName);
+					label.setHighlightColors(liberatorFaction.getBaseUIColor(), rebColor);
+				}
+			}
+			else if (result == RebellionResult.REBEL_VICTORY) {
+				label.setHighlight(rebName);
+				label.setHighlightColors(rebColor);
+			}
+			
+			// reputation from trade
+			if (repResultGovt != null && repResultRebel != null) {
+				info.addSectionHeading(getString("intelHeaderTrade"), Alignment.MID, opad);
+				
+				float netForGov = repResultGovt.delta - repResultRebel.delta;
+				id = netForGov >= 0 ? "intelDescTradeGovt" : "intelDescTradeRebels";
+				str = getString(id);
+				str = StringHelper.substituteTokens(str, sub, true);
+				label = info.addPara(str, opad);
+				if (netForGov >= 0) {
+					label.setHighlight(govtName, rebName);
+					label.setHighlightColors(govtColor, rebColor);
+				} else {
+					label.setHighlight(rebName, govtName);
+					label.setHighlightColors(rebColor, govtColor);
+				}
+				
+				bullet(info);
+				CoreReputationPlugin.addAdjustmentMessage(repResultGovt.delta, govtFaction, null, 
+						null, null, info, Misc.getTextColor(), false, 3);
+				CoreReputationPlugin.addAdjustmentMessage(repResultRebel.delta, rebelFaction, null, 
+						null, null, info, Misc.getTextColor(), false, 3);
+				unindent(info);
+			}
+			return;
+		}
+		
+		// rebellion details, if ongoing
+		info.addSectionHeading(getString("intelHeaderDetails"), Alignment.MID, opad);
+		if (!known) {
+			str = getString("intelDescNoDetails");
+			str = StringHelper.substituteTokens(str, sub);
+			info.addPara(str, opad);
+		}
+		else {
+			str = getString("intelDescDetailFaction");
+			str = StringHelper.substituteTokens(str, sub);
+			info.addPara(str, opad, rebColor, rebName);
+			
+			Color govtStrColor = hl, rebStrColor = hl;
+			if (govtStrength > rebelStrength * 1.25f) {
+				govtStrColor = Misc.getPositiveHighlightColor();
+				rebStrColor = Misc.getNegativeHighlightColor();
+			}
+			else if (rebelStrength > govtStrength * 1.25f) {
+				govtStrColor = Misc.getNegativeHighlightColor();
+				rebStrColor = Misc.getPositiveHighlightColor();
+			}
+			str = getString("intelDescDetailGovtStrength");
+			info.addPara(str, opad, govtStrColor, String.format("%.0f", govtStrength));
+			str = getString("intelDescDetailRebelStrength");
+			info.addPara(str, opad, rebStrColor, String.format("%.0f", rebelStrength));
+			
+			str = getString("intelDescDetailStability");
+			info.addPara(str, opad, hl, stabilityPenalty + "");
+		}
+		
+		boolean showSuppressionFleet = suppressionFleetTimestamp != null;
+		
+		// Details on suppression fleet, if present
+		if (showSuppressionFleet) {
+			info.addSectionHeading(getString("intelHeaderFleet"), Alignment.MID, opad);
+			FactionAPI suppr;
+			if (suppressionFleetSource != null) suppr = suppressionFleetSource.getFaction();
+			else if (suppressionFleet != null) suppr = suppressionFleet.fleet.getFaction();
+			else suppr = govtFaction;
+			
+			List<Pair<String, String>> subFleet = new ArrayList<>();
+			subFleet.add(new Pair<>("$suppressFaction", suppr.getDisplayName()));
+			subFleet.add(new Pair<>("$theSuppressFaction", suppr.getDisplayNameWithArticle()));
+			if (suppressionFleetSource != null) {
+				subFleet.add(new Pair<>("$suppressOnOrAt", suppressionFleetSource.getOnOrAt()));
+				subFleet.add(new Pair<>("$suppressMarket", suppressionFleetSource.getName()));
+			}			
+			subFleet.add(new Pair<>("$onOrAt", market.getOnOrAt()));
+			subFleet.add(new Pair<>("$market", market.getName()));
+			
+			if (suppressionFleetWarning || suppressionFleet != null) {
+				str = getString(suppressionFleetWarning ? "intelDescFleetPrep" : "intelDescFleetLaunched");
+				str = StringHelper.substituteTokens(str, subFleet);
+				label = info.addPara(str, opad);
+				if (suppressionFleetWarning) {
+					label.setHighlight(suppr.getDisplayNameWithArticleWithoutArticle(), suppressionFleetSource.getName());
+					label.setHighlightColors(suppr.getBaseUIColor(), hl);
+				} else {
+					label.setHighlight(suppressionFleetSource.getName());
+					label.setHighlightColors(suppr.getBaseUIColor());
+				}
+			}
+			else {	// fleet arrived or defeated
+				str = getString(suppressionFleetSuccess == true ? "intelDescFleetArrived" 
+						: "intelDescFleetDefeated");
+				str = StringHelper.substituteTokens(str, subFleet);
+				label = info.addPara(str, opad);
+				label.setHighlight(suppr.getDisplayNameWithArticleWithoutArticle());
+				label.setHighlightColors(suppr.getBaseUIColor());
+			}
+			
+			info.addPara(Misc.getAgoStringForTimestamp(suppressionFleetTimestamp) + ".", opad);
+		}
+		
+		// Industry disruption
+		if (lastIndustryDisrupted != null) {
+			info.addSectionHeading(getString("intelHeaderDisrupt"), Alignment.MID, opad);
+			if (disruptTime > 0) {
+				str = getString("intelDescDisruptSuccess");
+				str = StringHelper.substituteToken(str, "$market", market.getName());
+				info.addPara(str, opad, hl, lastIndustryDisrupted.getCurrentName(), 
+						Math.round(disruptTime) + "");
+			}
+			else {
+				str = getString("intelDescDisruptFailure");
+				str = StringHelper.substituteToken(str, "$market", market.getName());
+				info.addPara(str, opad, hl, lastIndustryDisrupted.getCurrentName());
+			}
+			if (disruptionTimestamp != null)
+				info.addPara(Misc.getAgoStringForTimestamp(disruptionTimestamp) + ".", opad);
+		}
+		
+		// Devmode: fast resolve action
+		if (Global.getSettings().isDevMode() && !isEnding() && !isEnded()) {
+			ButtonAPI button = info.addButton("Fast resolve", "bla", 
+					getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
+					(int)(width), 20f, opad * 3f);
+		}
+		
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		fastResolve();
+		ui.updateUIForItem(this);
+	}
+	
+	@Override
+	public Set<String> getIntelTags(SectorMapAPI map) {
+		Set<String> tags = super.getIntelTags(map);
+		tags.add(govtFaction.getId());
+		if (areDetailsKnownToPlayer()) {
+			tags.add(rebelFaction.getId());
+		}
+		if (lastUpdate == UpdateParam.FLEET_PREP || lastUpdate == UpdateParam.FLEET_SPAWNED)
+		{
+			tags.add(Tags.INTEL_FLEET_DEPARTURES);
+		}
+		return tags;
+	}
 		
 	@Override
 	public String getIcon() {
-		return "graphics/icons/intel/faction_conflict.png";
+		return Global.getSettings().getSpriteName("intel", "nex_rebellion");
 	}
 	
 	@Override
@@ -710,19 +1166,38 @@ public class RebellionIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
+	public List<ArrowData> getArrowData(SectorMapAPI map) {
+		if (suppressionFleetSource == null) return null;
+		
+		List<ArrowData> result = new ArrayList<ArrowData>();
+		ArrowData arrow = new ArrowData(suppressionFleetSource.getPrimaryEntity(), market.getPrimaryEntity());
+		arrow.color = suppressionFleetSource.getFaction().getBaseUIColor();
+		result.add(arrow);
+
+		return result;
+	}
+	
+	@Override
 	public FactionAPI getFactionForUIColors() {
-		return market.getFaction();
+		return govtFaction;
+	}
+	
+	protected String getName() {
+		String str = getString("intelTitle");
+		str = StringHelper.substituteToken(str, "$market", market.getName());
+		if (result == RebellionResult.REBEL_VICTORY)
+			str += " - " + StringHelper.getString("successful", true);
+		else if (result == RebellionResult.GOVERNMENT_VICTORY)
+			str += " - " + StringHelper.getString("failed", true);
+		else if (isEnding() || isEnded())
+			str += " - " + StringHelper.getString("over", true);
+		return str;
 	}
 	
 	// TODO
-	public String getName() {
-		String name = StringHelper.getStringAndSubstituteToken("exerelin_events", "rebellion", "$market", market.getName());
-		return name;
-	}
-	
-	// TODO
-	public String getString() {
-		return null;
+	protected String getString(String id)
+	{
+		return StringHelper.getString("nex_rebellion", id);
 	}
 	
 	protected void debugMessage(String message)
@@ -731,57 +1206,57 @@ public class RebellionIntel extends BaseIntelPlugin {
 		//Global.getSector().getCampaignUI().addMessage(message);
 	}
 	
-	//runcode exerelin.campaign.events.RebellionEvent.startDebugEvent()
+	//runcode exerelin.campaign.intel.rebellion.RebellionIntel.startDebugEvent()
 	public static void startDebugEvent()
 	{
 		SectorEntityToken target = Global.getSector().getEntityById("jangala");
 		if (target != null)
 		{
+			FactionAPI rebel = Global.getSector().getFaction(Factions.PERSEAN);
 			/*
 			InstigateRebellion rebel = new InstigateRebellion(target.getMarket(), 
 					Global.getSector().getFaction(Factions.TRITACHYON), target.getFaction(), false, null);
 			rebel.setResult(CovertOpsManager.CovertActionResult.SUCCESS_DETECTED);
 			rebel.onSuccess();
 			*/
+			RebellionIntel intel = new RebellionIntel(target.getMarket(), rebel, 7);
+			intel.init(false);
 		}
 	}
 	
 	public static RebellionIntel getOngoingEvent(MarketAPI market)
 	{
-		CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(
-			new CampaignEventTarget(market), "nex_rebellion");
-		if (eventSuper != null)
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(RebellionIntel.class))
 		{
-			RebellionIntel event = (RebellionIntel)eventSuper;
-			return event;
+			RebellionIntel reb = (RebellionIntel)intel;
+			if (reb.market == market) return reb;
 		}
 		return null;
 	}
 	
 	public static boolean isOngoing(MarketAPI market)
 	{
-		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(RebellionIntel.class))
-		{
-			RebellionIntel reb = (RebellionIntel)intel;
-			if (reb.market == market) return true;
-		}
-		return false;
+		return getOngoingEvent(market) != null;
 	}
 	
-	public static class SuppressionFleetData extends InvasionFleetManager.InvasionFleetData {
-		public RebellionIntel event;
+	public static class SuppressionFleetData {
+		public CampaignFleetAPI fleet;
+		public MarketAPI source;
+		public MarketAPI target;
+		public float startingFleetPoints;
+		public RebellionIntel intel;
 		
 		public SuppressionFleetData(CampaignFleetAPI fleet) {
-			super(fleet);
+			this.fleet = fleet;
 		}
-		
 	}
 	
 	protected enum UpdateParam {
-		PREP, START, FLEET_SPAWNED, FLEET_ARRIVED, FLEET_DEFEATED, END
+		PREP, START, FLEET_PREP, FLEET_SPAWNED, FLEET_ARRIVED, FLEET_DEFEATED, 
+		INDUSTRY_DISRUPTED, INDUSTRY_DISRUPT_FAIL, END
 	}
 	
 	protected enum RebellionResult {
-		PEACE, GOVERNMENT_VICTORY, REBEL_VICTORY, MUTUAL_ANNIHILATION, TIME_EXPIRED, LIBERATED, DECIVILIZED, OTHER
+		GOVERNMENT_VICTORY, REBEL_VICTORY, MUTUAL_ANNIHILATION, TIME_EXPIRED, LIBERATED, DECIVILIZED, OTHER
 	}
 }

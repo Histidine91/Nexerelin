@@ -75,6 +75,9 @@ public class NexUtilsReputation
 	{
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
+		
+		if (faction == player) return new ExerelinReputationAdjustmentResult(0);
+		
 		boolean wasHostile = player.isHostileTo(faction);
 		ReputationAdjustmentResult result;
 		

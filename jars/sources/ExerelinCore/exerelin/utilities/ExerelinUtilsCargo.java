@@ -33,21 +33,7 @@ public class ExerelinUtilsCargo
         if (market.hasSubmarket(Submarkets.GENERIC_MILITARY))
             cargoMilitary = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
         
-        if (commodityID.equals("agent") || commodityID.equals("saboteur"))
-        {
-            if (cargoMilitary != null)
-            {
-                cargoOpen.addCommodity(commodityID, amountToAdd * 0.02f);
-                cargoMilitary.addCommodity(commodityID, amountToAdd * 0.11f);
-                cargoBlack.addCommodity(commodityID, amountToAdd * 0.02f);
-            }
-            else
-            {
-                cargoOpen.addCommodity(commodityID, amountToAdd * 0.04f);
-                cargoBlack.addCommodity(commodityID, amountToAdd * 0.11f);
-            }
-        }
-        else if(!market.isIllegal(commodity))
+        if(!market.isIllegal(commodity))
             cargoOpen.addCommodity(commodityID, amountToAdd * 0.15f);
         else if (commodityID.equals("hand_weapons") && cargoMilitary != null)
         {

@@ -187,7 +187,6 @@ public class XStreamConfig {
 		configureXStreamAttributes(x);
 	}
 	
-	// todo: new aliases
 	public static void configureXStreamAttributes(com.thoughtworks.xstream.XStream x)
 	{
 		// these don't seem to actually work, need to apply on a per-class basis
@@ -202,17 +201,14 @@ public class XStreamConfig {
 		
 		// RebellionIntel
 		x.aliasAttribute(RebellionIntel.class, "suppressionFleetCountdown", "fltCntdwn");
-		x.aliasAttribute(RebellionIntel.class, "govtFactionId", "govt");
-		x.aliasAttribute(RebellionIntel.class, "rebelFactionId", "rebs");
 		x.aliasAttribute(RebellionIntel.class, "govtStrength", "gStr");
 		x.aliasAttribute(RebellionIntel.class, "rebelStrength", "rStr");
 		x.aliasAttribute(RebellionIntel.class, "govtTradePoints", "gTrd");
 		x.aliasAttribute(RebellionIntel.class, "rebelTradePoints", "rTrd");
 		x.aliasAttribute(RebellionIntel.class, "suppressionFleet", "flt");
-		x.aliasAttribute(RebellionIntel.class, "suppressionFleetSource", "fltSrc");
 		x.aliasAttribute(RebellionIntel.class, "suppressionFleetWarning", "fltWarn");
 		x.aliasAttribute(RebellionIntel.class, "intensity", "intns");
-		x.aliasAttribute(RebellionIntel.class, "delay", "dly");
+		x.aliasAttribute(RebellionIntel.class, "elapsed", "elpsd");
 		x.aliasAttribute(RebellionIntel.class, "stabilityPenalty", "stbLoss");
 		x.aliasAttribute(RebellionIntel.class, "result", "rslt");
 		x.aliasAttribute(RebellionIntel.class, "conditionToken", "cond");

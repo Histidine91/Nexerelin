@@ -212,9 +212,6 @@
 		"agentLevel":"agent level",
 		"alertLevel":"alert level",
 		"aiAdmin":"AI admin",
-		"rebellionStatus":"rebellion by $faction",
-		"govtStrength":"government strength",
-		"rebelStrength":"rebel strength",
 
 		"agent":"agent",
 		"agents":"agents",
@@ -722,26 +719,8 @@
 	},
 	
 	"exerelin_events":{
-		"agentDestabilizeMarket":"Agent terror attacks on $market",
-		"allianceChanged":"Alliance changed: $alliance",
-		"allianceFormed":"Alliance formed: $alliance",
-		"allianceDissolved":"Alliance dissolved: $alliance",
-		"allianceVote":"Alliance vote",
-		"covertOps":"$agentFaction covert action against $targetFaction",
-		"diplomacy":"$faction – $otherFaction diplomatic event",
-		"factionChanged":"Faction changed",
-		"factionEliminated":"$faction driven from Sector",
-		"factionRespawned":"$faction arrives in Sector",
-		"factionSalary":"Faction salary payment",
-		"followersTax":"Tax collection",
-		"insurance":"Ship loss insurance",
-		"invasionFleet":"$faction invasion fleet update",
-		"rebellion":"Rebellion on $market",
-		"revengeanceFleetEvent":"Revenge Fleet",
 		"securityAlert":"Security alert on $market",
 		"slaveTrade":"Slave trade on $market",
-		"superweapon":"Superweapon used on $market!",
-		"victory":"$faction victory",
 		"warmonger":"Warmonger reputation penalty",
 		
 	},
@@ -1283,7 +1262,63 @@
 
 		"dialogConfirmText":"Your forces are ready to go, awaiting your final confirmation."
 	},
-	
+	"nex_rebellion":{
+		"intelTitle":"Rebellion: $market",
+		
+		"intelDescPrep":"A rebellion is reportedly formenting against $govtFaction authorities $onOrAt $market. While no overt warfare has broken out yet, a large quantity of weapons are reportedly being stockpiled.",
+		"intelDesc":"Widespread rebellion has broken out against $theGovtFaction government $onOrAt $market.",
+		"intelDesc2":"Delivering supplies, marines and arms to a base official, or selling them on the black market, may influence the outcome of the rebellion.",
+		"intelDesc2Player":"You may wish to speak to local officials on supplies of materiel for government forces.",
+		
+		"intelHeaderDetails":"Details",
+		"intelDescNoDetails":"You lack detailed information about the rebellion. An agent $onOrAt $market might be able to discover more.",
+		"intelDescDetailFaction":"The rebels are being sponsored by $theRebelFaction.",
+		"intelDescDetailGovtStrength":"Government strength: %s",
+		"intelDescDetailRebelStrength":"Rebel strength: %s",
+		"intelDescDetailStability":"Stability reduced by %s while rebellion is ongoing.",
+		
+		#"intelHeaderRecentUpdates":"Recent updates",
+		
+		"intelHeaderFleet":"Suppression fleet",
+		"intelDescFleetPrep":"$TheSuppressFaction is readying a fleet $suppressOnOrAt $suppressMarket to suppress the rebellion $onOrAt $market.",
+		"intelDescFleetLaunched":"A fleet has launched from $suppressMarket to suppress the rebellion $onOrAt $market.",
+		"intelDescFleetArrived":"The $suppressFaction suppression fleet has arrived and reinforced the government $onOrAt $market. This is expected to place the rebellion at a grave disadvantage.",
+		"intelDescFleetDefeated":"The $suppressFaction suppression fleet dispatched to $market has been turned back with heavy losses. The news has demoralized government forces and emboldened the rebels.",
+		
+		"intelHeaderDisrupt":"Industry disruption",
+		"intelDescDisruptSuccess":"Rebel forces have recently disrupted the %s on $market for %s days.",
+		"intelDescDisruptFailure":"Rebel forces have recently failed to disrupt the %s on $market.",
+		
+		"intelHeaderResult":"Results",
+		"intelDescResultGovtVictory":"$GovtFaction government forces have suppressed the rebellion. Most of its leaders have been executed or have fled elsewhere.",
+		"intelDescResultRebelVictory":"The rebels have succeeded in overthrowing the $govtFaction authorities. The new leadership has aligned itself with $theRebelFaction.",
+		"intelDescResultPeace":"With the rapprochement between $theGovtFaction and $theRebelFaction, the government and rebels $onOrAt $market have also ended their conflict.",
+		"intelDescResultLiberated":"$LiberatorFaction forces have removed the $govtFaction government $onOrAt $market from power, and forged an understanding with the $rebelFaction-backed rebels.",
+		"intelDescResultLiberatedAlly":"$LiberatorFaction forces have removed the $govtFaction government $onOrAt $market from power, hailed by their rebel allies.",
+		"intelDescResultExpired":"Weary of the prolonged fighting $onOrAt $market, $govtFaction government and rebel forces have agreed to a ceasefire and a reconciliation process.",
+		"intelDescResultDecivilized":"Both $govtFaction government and rebel forces have fallen apart. $market has descended into anarchy and warlordism.",
+		"intelDescResultOther":"The rebellion is now over.",
+		
+		"intelHeaderTrade":"Trade impacts",
+		"intelDescTradeGovt":"You supplied fresh troops and/or materiel to government forces $onOrAt $market during the rebellion. This has earned you a positive reputation with $theGovtFaction, less so with the $rebelFaction rebels.",
+		"intelDescTradeRebels":"You supplied fresh troops and/or materiel to the $rebelFaction rebels $onOrAt $market during the rebellion. This interference has not gone unnoticed by $govtFaction authorities.",
+		
+		"intelBulletPrep":"In preparation",
+		"intelBulletStart":"Rebellion launched",
+		"intelBulletFleetPrep":"Suppression fleet to launch from %s",
+		"intelBulletFleetLaunched":"Suppression fleet launched from %s",
+		"intelBulletFleetArrived":"Suppression fleet arrived",
+		"intelBulletFleetDefeated":"Suppression fleet defeated",
+		"intelBulletIndustryDisrupt":"Disrupted %s for %s days",
+		"intelBulletIndustryDisruptFail":"Failed to disrupt %s",
+		"intelBulletGovtVictory":"Government victory",
+		"intelBulletRebelVictory":"Rebel victory",
+		"intelBulletLiberated":"Liberated by $faction",
+		"intelBulletMutualAnnihilation":"Fall into anarchy",
+		"intelBulletExpired":"Ended in ceasefire",
+		
+		"commodityPriceDesc":"Rebellion",
+	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
 
@@ -1490,6 +1525,7 @@
 
 		"counterInsurgencyRep":"At your current relationship with $theFaction, payment for deliveries is $mult of current per-unit price.",
 		"counterInsurgencyRepFixed":"Payment for deliveries is $mult of current per-unit price.",
+		"counterInsurgencyCredits":"Credit value: %s",
 
 		"aiCoresSelect":"Select AI cores to turn in",
 		"aiCoresMsg1":"Compared to dealing with other factions, turning AI cores in to $faction will result in:",

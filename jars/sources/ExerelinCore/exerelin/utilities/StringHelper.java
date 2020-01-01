@@ -75,20 +75,30 @@ public class StringHelper {
 		return toModify.replaceAll("\\"+token, replace);
 	}
 	
-	public static String substituteTokens(String toModify, Map<String, String> replacements)
+	public static String substituteTokens(String toModify, Map<String, String> replacements) 
+	{
+		return substituteTokens(toModify, replacements, true);
+	}
+	
+	public static String substituteTokens(String toModify, Map<String, String> replacements, boolean ucFormToo)
 	{
 		for (Map.Entry<String, String> tmp : replacements.entrySet())
 		{
-			toModify = substituteToken(toModify, tmp.getKey(), tmp.getValue());
+			toModify = substituteToken(toModify, tmp.getKey(), tmp.getValue(), ucFormToo);
 		}
 		return toModify;
 	}
 	
 	public static String substituteTokens(String toModify, List<Pair<String, String>> replacements)
 	{
+		return substituteTokens(toModify, replacements, true);
+	}
+	
+	public static String substituteTokens(String toModify, List<Pair<String, String>> replacements, boolean ucFormToo)
+	{
 		for (Pair<String, String> tmp : replacements)
 		{
-			toModify = substituteToken(toModify, tmp.one, tmp.two);
+			toModify = substituteToken(toModify, tmp.one, tmp.two, ucFormToo);
 		}
 		return toModify;
 	}

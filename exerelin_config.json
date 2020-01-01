@@ -100,7 +100,7 @@
     "useEnhancedStartRelations": true,	# nicer starting relations between factions in non-random sector; e.g. League and Diktat are now only welcoming instead of cooperative
     "useEnhancedCoreWorlds": true,	# increases defenses and/or economic capacity of some core worlds in non-random sector
     
-    "useCustomBattleCreationPlugin": false,	# affects things like map size and number of objectives
+    "useCustomBattleCreationPlugin": true,	# affects things like map size and number of objectives
     
     "officerDeaths": false,	# officer permadeath (may be buggy)
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
