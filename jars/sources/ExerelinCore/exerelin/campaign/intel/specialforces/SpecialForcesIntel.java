@@ -534,6 +534,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		info.addPara(str, opad, h, actionStr);
 		
 		RouteSegment segment = route.getCurrent();
+		bullet(info);
 		if (segment != null) {
 			str = getString("intelDescRouteSegmentInfo");
 			String none = "<" + StringHelper.getString("none") + ">";
@@ -543,14 +544,14 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			String elapsed = String.format("%.1f", segment.elapsed);
 			String max = String.format("%.1f", segment.daysMax);
 			
-			bullet(info);
+			
 			info.addPara(str, 3, h, from, to, elapsed, max);
-			unindent(info);
 		}
 		if (routeAI.currentTask != null) {
 			str = getString("intelDescActionPriority");
 			info.addPara(str, opad, h, String.format("%.1f", routeAI.currentTask.priority));
 		}
+		unindent(info);
 		
 		str = getString("intelDescDebug");
 		info.addPara(str, Misc.getGrayColor(), opad);
@@ -558,7 +559,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		ButtonAPI button = info.addButton(getString("intelButtonDebug"), 
 					BUTTON_DEBUG, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
-			button.setShortcut(Keyboard.KEY_D, true);
+		//button.setShortcut(Keyboard.KEY_D, true);
 	}
 	
 	@Override

@@ -423,11 +423,11 @@ public class SpecialForcesRouteAI {
 		if (getCurrentTaskType() != TaskType.DEFEND_VS_PLAYER) {
 			LocationAPI loc = Global.getSector().getPlayerFleet().getContainingLocation();
 			float priority = getDefendVsPlayerPriority(loc);
-			float toBeat = currentTask.priority;
+			float toBeat = currentTask != null ? currentTask.priority : 0;
 			if (isBusy) toBeat *= 2;
 			//sf.debugMsg("Priority defense task comparison: " + priority + " / " + toBeat, false);
 			
-			if (currentTask == null || toBeat < priority) {
+			if (toBeat < priority) {
 				SpecialForcesTask task = generateDefendVsPlayerTask(loc, priority);
 				return task;
 			}
@@ -791,9 +791,9 @@ public class SpecialForcesRouteAI {
 	public float getDefendVsPlayerPriority(LocationAPI loc) {
 		if (loc.isHyperspace()) return 0;
 		if (!sf.faction.isHostileTo(Factions.PLAYER))
-			return 0;
+			return -1;
 		if (!PlayerInSystemTracker.hasFactionSeenPlayer(loc, sf.faction.getId()))
-			return 0;
+			return -1;
 		
 		float playerStr = ExerelinUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
 		if (playerStr < MIN_PLAYER_STR_TO_DEFEND) return 0;
