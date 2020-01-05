@@ -123,7 +123,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 
 		setMissionResult(new MissionResult(reward, repF));
 		setMissionState(MissionState.COMPLETED);
-			
+		
 		endMissionWithUpdate(false);
 	}
 	
@@ -137,6 +137,8 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			float stabilityMult = (market.getStabilityValue() + 5)/15;
 			value += (sizeBonus * stabilityMult);
 		}
+		
+		if (value < 0) value = 0;
 		return (int)value;
 	}
 
