@@ -417,8 +417,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (attacker.getCustom() == null || !attacker.getCustom().has(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA))
 			return false;
 		
-		boolean canBombard = attacker.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA)
+		boolean canBombard = false;
+		if (attacker.getCustom() != null && attacker.getCustom().has(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA))
+		{
+			canBombard = attacker.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA)
 				.optBoolean("canBombard", false);
+		}
+		
 		if (defender.isPlayerFaction() || PlayerFactionStore.getPlayerFaction() == defender) 
 		{
 			canBombard = canBombard || StatsTracker.getStatsTracker().getMarketsSatBombarded() > 0;
