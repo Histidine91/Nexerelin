@@ -467,11 +467,16 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
-			MarketAPI originMarket, List<MarketAPI> markets, EventType type) {
+			Vector2f originLoc, List<MarketAPI> markets, EventType type) {
+		return getTargetMarketForFleet(faction, targetFaction, originLoc,
+				markets, type, false);
+	}
+	
+	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
+			Vector2f originLoc, List<MarketAPI> markets, EventType type, boolean isRemnantRaid) 
+	{
 		String factionId = faction.getId();
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
-		Vector2f originMarketLoc = null;
-		if (originMarket != null) originMarketLoc = originMarket.getLocationInHyperspace();
 		
 		for (MarketAPI market : markets) 
 		{
@@ -484,10 +489,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			if (!marketFaction.isHostileTo(faction)) continue;
 			
-			if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
+			if (!isRemnantRaid && !ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
 			
 			if (type == EventType.SAT_BOMB && faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
 				continue;
+			
+			if (isRemnantRaid) {
+				// non-hard mode mercy for new player colonies
+				// TODO: replace with an expiring memory key when we get colonization listener
+				if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction() && market.getSize() < 4)
+					continue;
+			}
+			
 			
 			/*
 			float defenderStrength = InvasionRound.GetDefenderStrength(market);
@@ -495,6 +508,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
 				continue;	 // too strong for us
 			*/
+			
+			// Tiandong can't invade Point Mogui
+			if (factionId.equals("tiandong") && market.getId().equals("tiandong_mogui_market"))
+				continue;
 			
 			boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
 			if (factionId.equals(Factions.PLAYER))
@@ -504,8 +521,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			float weight = 1;
 			
 			// base weight based on distance
-			if (originMarketLoc != null) {
-				float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
+			if (originLoc != null) {
+				float dist = Misc.getDistance(market.getLocationInHyperspace(), originLoc);
 				if (dist < 5000.0F) {
 					dist = 5000.0F;
 				}
@@ -523,7 +540,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			// defender of the faith
 			if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && ExerelinUtilsFaction.isLuddicFaction(factionId))
 				weight *= 4;
-
+			
+			// Remnants "rescue" their friends
+			if (faction.getId().equals(Factions.REMNANTS)) {
+				weight *= 1 + HegemonyInspectionManager.getAICoreUseValue(market)/5;
+				if (market.hasCondition(Conditions.ROGUE_AI_CORE)) weight *= 3;
+			}
+			
 			// hard mode
 			if (SectorManager.getHardMode())
 			{
@@ -566,8 +589,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
 
 		// now we pick a target
-		MarketAPI targetMarket = getTargetMarketForFleet(faction, targetFaction, originMarket, 
-				markets, type);
+		MarketAPI targetMarket = getTargetMarketForFleet(faction, targetFaction, 
+				originMarket.getLocationInHyperspace(), markets, type);
 		if (targetMarket == null) {
 			return null;
 		}
@@ -1031,7 +1054,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
-		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
 		String factionId = faction.getId();
 		
 		// pick a source base
@@ -1040,51 +1062,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			return null;
 		
 		// now we pick a target
-		Vector2f originMarketLoc = base.getLocationInHyperspace();
-		for (MarketAPI market : markets) 
-		{
-			if (market.getContainingLocation().isHyperspace()) continue;
-			if (market.isHidden()) continue;
-			
-			FactionAPI marketFaction = market.getFaction();
-			String marketFactionId = marketFaction.getId();
-			
-			if (EXCEPTION_LIST.contains(marketFactionId) && targetFaction != marketFaction) continue;
-			if (targetFaction != null && targetFaction != marketFaction)
-				continue;
-			
-			// non-hard mode mercy for new player colonies
-			// TODO: replace with expiring memory key when we get colonization listener
-			if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction() && market.getSize() < 4)
-				continue;
-			
-			if	(marketFaction.isHostileTo(faction)) 
-			{
-				// base weight based on distance
-				float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
-				if (dist < 5000.0F) {
-					dist = 5000.0F;
-				}
-				float weight = 20000.0F / dist;
-				
-				// rescue our friends
-				if (faction.getId().equals(Factions.REMNANTS)) {
-					weight *= 1 + HegemonyInspectionManager.getAICoreUseValue(market)/5;
-					if (market.hasCondition(Conditions.ROGUE_AI_CORE)) weight *= 3;
-				}
-				
-				// hard mode
-				if (SectorManager.getHardMode())
-				{
-					if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
-							|| marketFactionId.equals(Factions.PLAYER))
-						weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
-				}
-				
-				targetPicker.add(market, weight);
-			}
-		}
-		MarketAPI targetMarket = targetPicker.pick();
+		MarketAPI targetMarket = getTargetMarketForFleet(faction, null, base.getLocationInHyperspace(), 
+				markets, EventType.RAID, true);
 		if (targetMarket == null) {
 			return null;
 		}
