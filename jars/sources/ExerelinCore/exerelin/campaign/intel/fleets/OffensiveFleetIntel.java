@@ -429,11 +429,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	// same as superclass, except with randomly using ally factions
 	@Override
 	public CampaignFleetAPI spawnFleet(RouteManager.RouteData route) {
-		
 		Random random = route.getRandom();
 		
 		MarketAPI market = route.getMarket();
-		String factionId = market.getFactionId();
+		String factionId = faction.getId();
 		// randomly use an ally faction's fleet if applicable
 		Alliance alliance = AllianceManager.getFactionAlliance(factionId);
 		if (brawlMode && random.nextFloat() < Global.getSettings().getFloat("nex_brawlMode_randomFactionGearChance")) 
@@ -453,7 +452,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		CampaignFleetAPI fleet = createFleet(factionId, route, market, null, random);
 		
 		if (fleet == null || fleet.isEmpty()) return null;
-		fleet.setFaction(market.getFactionId(), true);	// also changed from super
+		fleet.setFaction(faction.getId(), true);	// added here, not in super
 		handleAllyFleetNaming(fleet, factionId, random);
 		
 		//fleet.addEventListener(this);
