@@ -129,6 +129,7 @@
 			"nex_satbomb":"graphics/icons/markets/meteor_strike.png",
 			"respawn_base":"graphics/icons/markets/orbital_station.png",
 			"nex_vengeance":"graphics/exerelin/icons/intel/intel_skull.png",
+			"nex_rebellion":"graphics/exerelin/icons/intel/rebellion.png",
 			
 			"spyEvent0":"graphics/exerelin/icons/intel/spy4.png",
 			"spyEvent1":"graphics/exerelin/icons/intel/spy4_amber.png",

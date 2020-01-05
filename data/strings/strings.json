@@ -977,6 +977,7 @@
 		
 		"noLosses":"Your forces have not suffered any losses.",
 		"stabilityReduced":"Stability of $market reduced by %s.",
+		"rebellion":"Ongoing guerilla activity against your occupation remains and will have to be subdued.",
 		
 		"endMsgLoot":"The invasion forces captured a quantity of various items, as well as some credits.",
 		"endMsgNoLoot":"The invasion did not lead to the capture of a meaningful quantity of goods.",

@@ -56,6 +56,7 @@ import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
+import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.utilities.ExerelinUtilsAstro;
@@ -1145,6 +1146,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 float sizeSq = market.getSize() * market.getSize();
                 rvngEvent.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult);
             }
+        }
+        
+        // rebellion
+        if (isCapture && !ExerelinUtilsMarket.getOriginalOwner(market).equals(newOwner.getId())
+                && !RebellionIntel.isOngoing(market))
+        {
+            RebellionIntel rebel = RebellionCreator.getInstance().createRebellion(market, oldOwnerId, true);
         }
         
         if (newOwner.isPlayerFaction() && isCapture) {

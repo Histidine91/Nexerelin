@@ -68,6 +68,7 @@ import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -654,6 +655,13 @@ public class Nex_MarketCMD extends MarketCMD {
 				new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, 
 					impact, null, text, true, true),
 					faction.getId());
+		
+		// report rebellion
+		RebellionIntel rebel = RebellionIntel.getOngoingEvent(market);
+		if (rebel != null) {
+			text.addPara(getString("rebellion"));
+			Global.getSector().getIntelManager().addIntelToTextPanel(rebel, text);
+		}
 		
 		// handle loot
 		String contText = null;

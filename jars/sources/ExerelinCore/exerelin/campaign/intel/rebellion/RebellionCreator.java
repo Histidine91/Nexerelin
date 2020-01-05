@@ -46,7 +46,7 @@ public class RebellionCreator implements EveryFrameScript {
 		return (RebellionCreator)Global.getSector().getPersistentData().get(PERSISTENT_DATA_KEY);
 	}
 	
-	public RebellionIntel createRebellion(MarketAPI market, String factionId)
+	public RebellionIntel createRebellion(MarketAPI market, String factionId, boolean instant)
 	{
 		if (RebellionIntel.isOngoing(market))
 			return null;
@@ -54,9 +54,9 @@ public class RebellionCreator implements EveryFrameScript {
 		float prepTime = market.getSize() * 2 * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		if (RebellionIntel.DEBUG_MODE) prepTime = 1;
 		
-		FactionAPI rebel = Global.getSector().getFaction(Factions.PERSEAN);
+		FactionAPI rebel = Global.getSector().getFaction(factionId);
 		RebellionIntel intel = new RebellionIntel(market, rebel, prepTime);
-		intel.init(false);
+		intel.init(instant);
 		
 		return intel;
 	}
@@ -67,7 +67,7 @@ public class RebellionCreator implements EveryFrameScript {
 		list.add(toAdd);
 	}
 	
-	public RebellionIntel createRebellion(MarketAPI market)
+	public RebellionIntel createRebellion(MarketAPI market, boolean instant)
 	{
 		if (RebellionIntel.isOngoing(market))
 			return null;
@@ -109,7 +109,7 @@ public class RebellionCreator implements EveryFrameScript {
 		String enemyId = enemyPicker.pick();
 		if (enemyId == null)
 			return null;
-		return createRebellion(market, enemyId);
+		return createRebellion(market, enemyId, instant);
 	}
 	
 	/**
@@ -165,7 +165,7 @@ public class RebellionCreator implements EveryFrameScript {
 		}
 		if (currPoints >= 100)
 		{
-			createRebellion(market);
+			createRebellion(market, false);
 			currPoints = 0;
 		}
 		market.getMemoryWithoutUpdate().set(MEMORY_KEY_REBELLION_POINTS, currPoints);

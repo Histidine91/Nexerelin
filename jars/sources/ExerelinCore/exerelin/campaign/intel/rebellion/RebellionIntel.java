@@ -137,7 +137,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		{
 			suppressionFleetCountdown = 2;
 		}
-		if (instant) elapsed = 0;
+		if (instant) {
+			elapsed = 0;
+			started = true;
+		}
 		
 		if (USE_REBEL_REP) {
 			ImportantPeopleAPI ip = Global.getSector().getImportantPeople();
@@ -155,7 +158,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		Global.getSector().getListenerManager().addListener(this);
 		Global.getSector().getIntelManager().addIntel(this, true);
 		Global.getSector().addScript(this);
-		sendUpdate(UpdateParam.PREP);
+		if (!instant)
+			sendUpdate(UpdateParam.PREP);
+		else
+			sendUpdate(UpdateParam.START);
 	}
 	
 	public static float getSizeMod(int size)
@@ -693,6 +699,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public void advanceImpl(float amount) 
 	{
 		if (result != null) return;
+		if (!market.isInEconomy()) {
+			endEvent(RebellionResult.DECIVILIZED);
+			return;
+		}
 		
 		float days = Global.getSector().getClock().convertToDays(amount);
 		
@@ -868,10 +878,12 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			}
 			// also print rep changes, if this is an update
 			if (listInfoParam != null) {
-				CoreReputationPlugin.addAdjustmentMessage(repResultGovt.delta, govtFaction, null, 
-						null, null, info, c, false, pad);
-				CoreReputationPlugin.addAdjustmentMessage(repResultRebel.delta, rebelFaction, null, 
-						null, null, info, c, false, pad);
+				if (repResultGovt != null)
+					CoreReputationPlugin.addAdjustmentMessage(repResultGovt.delta, govtFaction, null, 
+							null, null, info, c, false, pad);
+				if (repResultRebel != null)
+					CoreReputationPlugin.addAdjustmentMessage(repResultRebel.delta, rebelFaction, null, 
+							null, null, info, c, false, pad);
 			}
 			
 			return;
@@ -1218,7 +1230,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			rebel.setResult(CovertOpsManager.CovertActionResult.SUCCESS_DETECTED);
 			rebel.onSuccess();
 			*/
-			RebellionCreator.getInstance().createRebellion(target.getMarket());
+			RebellionCreator.getInstance().createRebellion(target.getMarket(), false);
 		}
 	}
 	
