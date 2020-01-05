@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
@@ -55,9 +56,8 @@ public class InvasionRound {
 	}
 	
 	public static float getRandomDamageMult(Random random) {
-		float mult = (float)(1f + random.nextGaussian() * 0.25f);
-		if (mult < 0.2f) mult = 0.2f;
-		if (mult > 1.8f) mult = 1.8f;
+		float gauss = ExerelinUtils.getBoundedGaussian(random, -3.2f, 3.2f);
+		float mult = (float)(1f + gauss * 0.25f);
 		return mult;
 	}
 	

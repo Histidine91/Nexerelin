@@ -215,9 +215,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		strength *= fleetSizeMult;
 		
 		if (variability > 0) {
-			float gauss = (float)random.nextGaussian();
-			if (gauss > 3) gauss = 3;
-			if (gauss < -3) gauss = -3;
+			float gauss = ExerelinUtils.getBoundedGaussian(random, -3, 3);
 			
 			strength *= 1 + gauss * variability;
 		}

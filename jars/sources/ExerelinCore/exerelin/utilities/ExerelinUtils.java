@@ -39,6 +39,11 @@ public class ExerelinUtils
 		interval.advance(days);
 	}
 	
+	/**
+	 * Adds an intel item that "ends" as soon as it starts (e.g. notification messages).
+	 * @param <T>
+	 * @param intel
+	 */
 	public static <T extends BaseIntelPlugin> void addExpiringIntel(T intel)
 	{
 		Global.getSector().getIntelManager().addIntel(intel);
@@ -74,6 +79,21 @@ public class ExerelinUtils
 		int randomIndex = rand.nextInt(list.size());
 
 		return list.get(randomIndex);
+	}
+	
+	/**
+	 * Generates a gaussian value using the provided {@code Random} (equivalent to
+	 * calling {@code nextGaussian()}, then clamps it to between {@code min} and {@code max}.
+	 * @param random
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static float getBoundedGaussian(Random random, float min, float max) {
+		float gauss = (float)random.nextGaussian();
+		if (gauss > max) gauss = max;
+		if (gauss < min) gauss = min;
+		return gauss;
 	}
 	
 	public static float modifyMapEntry(Map<String, Float> toModify, String key, float delta) {
