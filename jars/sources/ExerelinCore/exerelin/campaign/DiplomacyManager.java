@@ -838,6 +838,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (!this.intervalUtil.intervalElapsed()) {
             return;
         }
+        
+        if (Global.getSector().isInNewGameAdvance())
+            return;
+        
         createDiplomacyEvent();
         interval = getDiplomacyInterval();
         intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
