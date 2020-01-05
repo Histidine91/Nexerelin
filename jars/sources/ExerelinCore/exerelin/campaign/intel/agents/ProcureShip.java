@@ -12,6 +12,8 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
+import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.DefaultFleetInflaterParams;
@@ -130,9 +132,10 @@ public class ProcureShip extends CovertActionIntel {
 		return RepLevel.FAVORABLE;
 	}
 	
-	@Deprecated
 	public boolean isLegal() {
-		return false;
+		if (ship == null) return false;
+		return ship.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN);
+		//return false;
 		//return targetFaction.getRelationshipLevel(agentFaction).isAtWorst(getRequiredLevelForLegal());
 	}
 	
@@ -167,6 +170,10 @@ public class ProcureShip extends CovertActionIntel {
 		return ExerelinUtils.getRandomListElement(variants);
 	}
 	
+	/**
+	 * Create a derelict of the purchased ship around the destination market, if it's decivilized
+	 * when the delivery is made.
+	 */
 	protected void createDerelict() {
 		SectorEntityToken toOrbit = destination.getPrimaryEntity();
 		String variantId = getRandomVariantId();
@@ -202,17 +209,30 @@ public class ProcureShip extends CovertActionIntel {
 		this.sendUpdateIfPlayerHasIntel(null, false, false);
 	}
 	
-	// TODO: better ships cost more?
 	@Override
 	public MutableStat getCostStat() {
 		MutableStat cost = new MutableStat(0);
 		if (ship == null) return cost;
+		
 		cost.modifyFlat("base", ship.getBaseBuyValue(), getString("costShipBase", true));
-		cost.modifyMult("generalMult", getDef().baseCost, getString("costShipGeneralMult", true));
+		
+		if (!isLegal())
+			cost.modifyMult("generalMult", getDef().baseCost, getString("costShipGeneralMult", true));
+		else
+			cost.modifyMult("generalMult", 1 + market.getTariff().getModifiedValue(), 
+					getString("costShipGeneralMultLegal", true));
+		
 		cost.modifyMult("hullMult", CovertOpsManager.getStealShipCostMult(ship.getHullId()), 
 				StringHelper.getString("hull", true) + ": " + ship.getHullSpec().getHullName());
 		
 		return cost;
+	}
+	
+	@Override
+	public float getTimeNeeded() {
+		float time = super.getTimeNeeded();
+		if (isLegal()) time /= 2;
+		return time;
 	}
 	
 	// lower success rates for better ships
@@ -220,7 +240,7 @@ public class ProcureShip extends CovertActionIntel {
 	protected MutableStat getSuccessChance() {
 		if (isLegal()) {
 			MutableStat stat = new MutableStat(0);
-			stat.modifyFlat("base", 100, "Legal purchase");
+			stat.modifyFlat("base", 100, getString("procureShipStatChanceLegal"));
 			return stat;
 		}
 		
@@ -246,6 +266,7 @@ public class ProcureShip extends CovertActionIntel {
 	
 	@Override
 	protected MutableStat getDetectionChance(boolean fail) {
+		if (isLegal()) return new MutableStat(0);
 		return super.getDetectionChance(fail);
 	}
 	

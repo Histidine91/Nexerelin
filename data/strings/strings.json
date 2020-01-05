@@ -286,6 +286,7 @@
 		"costSizeMult":"market size",
 		"costShipBase":"base ship price",
 		"costShipGeneralMult":"theft multiplier",
+		"costShipGeneralMultLegal":"tariff",
 		
 		"intelButton_goToAgent":"go to agent",
 		"intelButton_procureShipSetDestination":"set delivery destination",
@@ -444,6 +445,7 @@
 		"travelTimeStatTravel":"Distance: $dist LY",
 		
 		"procureShipStatChanceMult":"Ship size",
+		"procureShipStatChanceLegal":"Legal purchase",
 	},
 	
 	"nex_avertDialog":{
