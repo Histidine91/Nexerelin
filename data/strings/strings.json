@@ -1497,6 +1497,9 @@
 		"aiCoresRep":"Reputation gain",
 		"aiCoresMsg2":"If you turn in the selected AI cores, you will receive a %s bounty and your standing with $faction will improve by %s points.",
 		
+		"aiCoreStashMsg":"%s AI core(s) on %s have been hidden away from the new, hostile authorities",
+		"aiCoreRestoreMsg":"%s AI core(s) on %s have resurfaced under the new, more tolerant authorities",
+		
 		"blueprintSwapSelect":"Select blueprints to trade in",
 		"blueprintSwapMsg":"The selected blueprints are worth $points points.",
 		"blueprintSwapPurchaseOption":"$name ($points pts)",

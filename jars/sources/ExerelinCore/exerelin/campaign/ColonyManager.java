@@ -30,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
@@ -37,11 +38,13 @@ import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import exerelin.campaign.colony.ColonyTargetValuator;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
@@ -81,6 +84,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	public static final String PERSISTENT_KEY = "nex_colonyManager";
 	public static final String MEMORY_KEY_GROWTH_LIMIT = "$nex_colony_growth_limit";
+	public static final String MEMORY_KEY_STASHED_CORES = "$nex_stashed_ai_cores";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
@@ -835,6 +839,106 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		return largest;
 	}
+	
+	public void printCoreStashMessage(String str, int numCores, MarketAPI market) {
+		InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+		Color hl = Misc.getHighlightColor();
+		Color marketColor = market.getFaction().getBaseUIColor();
+		
+		if (dialog != null) {
+			str += ".";
+			LabelAPI label = dialog.getTextPanel().addPara(str, Misc.getHighlightColor(), 
+					numCores + "", market.getName());
+			label.setHighlight(numCores + "", market.getName());
+			label.setHighlightColors(hl, marketColor);
+		}
+		else {
+			Global.getSector().getCampaignUI().addMessage(str, Misc.getTextColor(), 
+					numCores + "", market.getName(), hl, marketColor);
+		}
+	}
+	
+	/**
+	 * Uninstall AI cores from industries and store them in memory.
+	 * @param market
+	 */
+	public void stashCores(MarketAPI market) {
+		Map<String, String> industriesToCores;
+		if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORES))
+			industriesToCores = (Map<String, String>)(market.getMemoryWithoutUpdate()
+					.get(MEMORY_KEY_STASHED_CORES));
+		else
+			industriesToCores = new HashMap<>();
+		
+		int numStashed = 0;
+		for (Industry ind : market.getIndustries()) {
+			String indId = ind.getId();
+			if (industriesToCores.containsKey(indId)) continue;
+			String aiId = ind.getAICoreId();
+			
+			if (aiId != null ) {
+				industriesToCores.put(indId, aiId);
+				ind.setAICoreId(null);
+				numStashed++;
+			}
+		}
+		market.getMemoryWithoutUpdate().set(MEMORY_KEY_STASHED_CORES, industriesToCores);
+		printCoreStashMessage(StringHelper.getString("exerelin_misc", "aiCoreStashMsg"), 
+				numStashed, market);		
+	}
+	
+	/**
+	 * Restore AI cores from memory and reassign them to industries.
+	 * @param market
+	 */
+	public void restoreCores(MarketAPI market) {
+		if (!market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORES))
+			return;
+		
+		Map<String, String> industriesToCores = (Map<String, String>)(market
+				.getMemoryWithoutUpdate().get(MEMORY_KEY_STASHED_CORES));
+		
+		int numRestored = 0;
+		for (Industry ind : market.getIndustries()) {
+			String indId = ind.getId();
+			if (!industriesToCores.containsKey(indId)) continue;
+			
+			String currAI = ind.getAICoreId();
+			String wantedAI = industriesToCores.get(indId);
+			
+			// If industry already has an AI core installed, put the stashed one in storage
+			// else, assign it to the industry
+			if (currAI == null)
+				ind.setAICoreId(wantedAI);
+			else
+				market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addCommodity(wantedAI, 1);
+			numRestored++;
+		}
+		market.getMemoryWithoutUpdate().unset(MEMORY_KEY_STASHED_CORES);
+		printCoreStashMessage(StringHelper.getString("exerelin_misc", "aiCoreRestoreMsg"),  
+				numRestored, market);
+	}
+	
+	public boolean doesFactionAllowAI(FactionAPI faction) {
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
+		if (conf.hasDiplomacyTrait(TraitIds.HATES_AI)) return false;
+		return true;
+	}
+	
+	/**
+	 * Check if the AI cores on this market should be stashed following market capture.
+	 * TODO: Handle AI admin as well.
+	 * @param market
+	 * @param oldOwner
+	 * @param newOwner
+	 */
+	public void coreStashCheck(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner)
+	{
+		//boolean oldAllowsAI = doesFactionAllowAI(oldOwner);
+		boolean newAllowsAI = doesFactionAllowAI(newOwner);
+		if (!newAllowsAI) stashCores(market);
+		else restoreCores(market);
+	}
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {
@@ -907,6 +1011,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		setGrowthRate(market);
 		
 		checkGatheringPoint(market);
+		
+		coreStashCheck(market, oldOwner, newOwner);
 	}
 	
 	public static void buildIndustry(MarketAPI market, String id) {
