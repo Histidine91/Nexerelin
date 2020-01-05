@@ -54,6 +54,7 @@ import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.missions.DisruptMissionManager;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
+import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_StoragePlugin;
@@ -114,16 +115,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         log.info("Applying Nexerelin to existing game");
         
         SectorAPI sector = Global.getSector();
-        sector.addScript(SectorManager.create());
-        sector.addScript(DiplomacyManager.create());
-        sector.addScript(InvasionFleetManager.create());
-        //sector.addScript(ResponseFleetManager.create());
-        sector.addScript(MiningFleetManagerV2.create());
-        sector.addScript(CovertOpsManager.create());
-        sector.addScript(AllianceManager.create());
-        new ColonyManager().init();
-        new RevengeanceManager().init();
-        new SpecialForcesManager().init();
+        addScripts();
         
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
@@ -236,27 +228,30 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
     }
     
-    protected void addScriptsAndEventsIfNeeded() {
+    public static void addScripts() {
         SectorAPI sector = Global.getSector();
-        if (!sector.hasScript(ConquestMissionManager.class)) {
-            sector.addScript(new ConquestMissionManager());
-        }
-		if (!sector.hasScript(DisruptMissionManager.class)) {
-            sector.addScript(new DisruptMissionManager());
-        }
-        if (!sector.hasScript(FactionBountyManager.class)) {
-            sector.addScript(new FactionBountyManager());
-        }
+        sector.addScript(SectorManager.create());
+        sector.addScript(DiplomacyManager.create());
+        sector.addScript(InvasionFleetManager.create());
+        //sector.addScript(ResponseFleetManager.create());
+        sector.addScript(MiningFleetManagerV2.create());
+        sector.addScript(CovertOpsManager.create());
+        sector.addScript(AllianceManager.create());
+        new ColonyManager().init();
+        new RevengeanceManager().init();
+        new SpecialForcesManager().init();
+        RebellionCreator.generate();
         
-        /*
-        if (ExerelinUtilsFaction.isExiInCorvus()) {
-            addEventIfNeeded("exerelin_exigency_respawn");
+        sector.addScript(new ConquestMissionManager());
+        sector.addScript(new DisruptMissionManager());
+        sector.addScript(new FactionBountyManager());
+    }
+    
+    // Stuff here should be moved to new game once it is expected that no existing saves lack them
+    protected void addScriptsAndEventsIfNeeded() {
+        if (!Global.getSector().hasScript(RebellionCreator.class)) {
+            RebellionCreator.generate();
         }
-        addEventIfNeeded("exerelin_slaves_sold");
-        addEventIfNeeded("exerelin_warmonger");
-        addEventIfNeeded("nex_rebellion_creator");
-        //addEventIfNeeded("nex_trade_info");
-        */
         
         addBarEvents();
     }

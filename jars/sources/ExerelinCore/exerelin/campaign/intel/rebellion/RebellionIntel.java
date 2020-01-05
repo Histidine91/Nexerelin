@@ -527,7 +527,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 					false, true, null, 0);
 		
 		if (result != RebellionResult.OTHER)
-			RebellionEventCreator.incrementRebellionPointsStatic(market, -100);
+			RebellionCreator.getInstance().incrementRebellionPoints(market, -100);
 		
 		// report event
 		endAfterDelay();
@@ -1212,15 +1212,13 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		SectorEntityToken target = Global.getSector().getEntityById("jangala");
 		if (target != null)
 		{
-			FactionAPI rebel = Global.getSector().getFaction(Factions.PERSEAN);
 			/*
 			InstigateRebellion rebel = new InstigateRebellion(target.getMarket(), 
 					Global.getSector().getFaction(Factions.TRITACHYON), target.getFaction(), false, null);
 			rebel.setResult(CovertOpsManager.CovertActionResult.SUCCESS_DETECTED);
 			rebel.onSuccess();
 			*/
-			RebellionIntel intel = new RebellionIntel(target.getMarket(), rebel, 7);
-			intel.init(false);
+			RebellionCreator.getInstance().createRebellion(target.getMarket());
 		}
 	}
 	

@@ -261,16 +261,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			//sector.addScript(new BountyPirateFleetManager());
 		}
 		
-		sector.addScript(SectorManager.create());
-		sector.addScript(DiplomacyManager.create());
-		sector.addScript(InvasionFleetManager.create());
-		//sector.addScript(ResponseFleetManager.create());
-		sector.addScript(MiningFleetManagerV2.create());
-		sector.addScript(CovertOpsManager.create());
-		sector.addScript(AllianceManager.create());
-		new ColonyManager().init();
-		new RevengeanceManager().init();
-		new SpecialForcesManager().init();
+		ExerelinModPlugin.addScripts();
 		
 		StatsTracker.create();
 		

@@ -106,17 +106,18 @@
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
     
     "stabilizePackageEffect": 3,
+    "rebellionMult": 1,	# higher mult means unrest will boil over into rebellion more quickly
     
     "maxNPCColonySize": 10,	# NPC markets will grow up to this size on their own
     "maxNPCNewColonySize": 6,	# for new colonies created by colony expedition event
     "hardModeColonyGrowthMult": 0.5,
     "hardModeColonyIncomeMult": 0.75,
-    "colonyExpeditionInterval":270,	# days, starts in cycle 207; also note nex_expeditionDelayPerExistingColony in settings.json
+    "colonyExpeditionInterval": 270,	# days, starts in cycle 207; also note nex_expeditionDelayPerExistingColony in settings.json
     
-    "enablePunitiveExpeditions":true,	# if false, vs. competitor and free port expeditions will not happen (territorial ones still will)
-    "autoResistAIInspections":true,		# default to resisting Hegemony AI inspections
+    "enablePunitiveExpeditions": true,	# if false, vs. competitor and free port expeditions will not happen (territorial ones still will)
+    "autoResistAIInspections": true,		# default to resisting Hegemony AI inspections
     
-    "updateMarketDescOnCapture":true,	# change market descriptions to reflect new controlling factions (only affects some markets, in non-random sector)
+    "updateMarketDescOnCapture": true,	# change market descriptions to reflect new controlling factions (only affects some markets, in non-random sector)
 
     # DO NOT TOUCH!
     # to make factions not appear, use the menu options

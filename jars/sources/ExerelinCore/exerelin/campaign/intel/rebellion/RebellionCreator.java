@@ -1,12 +1,11 @@
 package exerelin.campaign.intel.rebellion;
 
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -18,43 +17,48 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
 
-// Periodically starts rebellions on suitably restive planets
-public class RebellionEventCreator extends BaseEventPlugin {
+/**
+ * Periodically starts rebellions on suitably restive planets.
+ */
+public class RebellionCreator implements EveryFrameScript {
 	
+	public static final String MEMORY_KEY_REBELLION_POINTS = "$nex_rebellionPoints";
+	public static final String PERSISTENT_DATA_KEY = "nex_rebellionCreator";
 	public static final float REBELLION_POINT_MULT = 0.2f;
 	public static final float HARD_MODE_MULT = 1.25f;
-	public static final float HARD_MODE_STABILITY_MODIFIER = -1;
+	public static final float HARD_MODE_STABILITY_MODIFIER = -2;
+	public static final float MAX_ONGOING = 4;
 	
-	Map<String, Float> rebellionPoints = new HashMap<>();
 	protected IntervalUtil interval = new IntervalUtil(1,1);
+	protected transient int numOngoing;
 	
-	public static RebellionIntel createRebellion(MarketAPI market, String factionId, boolean report)
+	public static RebellionCreator generate() {
+		RebellionCreator creator = new RebellionCreator();
+		Global.getSector().getPersistentData().put(PERSISTENT_DATA_KEY, creator);
+		Global.getSector().addScript(creator);
+		return creator;
+	}
+	
+	public static RebellionCreator getInstance() {
+		return (RebellionCreator)Global.getSector().getPersistentData().get(PERSISTENT_DATA_KEY);
+	}
+	
+	public RebellionIntel createRebellion(MarketAPI market, String factionId)
 	{
-		SectorAPI sector = Global.getSector();
 		if (RebellionIntel.isOngoing(market))
 			return null;
 		
 		float prepTime = market.getSize() * 2 * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		if (RebellionIntel.DEBUG_MODE) prepTime = 1;
 		
-		Map<String, Object> eventParams = new HashMap<>();
-		eventParams.put("rebelFactionId", factionId);
-		eventParams.put("delay", prepTime);
+		FactionAPI rebel = Global.getSector().getFaction(Factions.PERSEAN);
+		RebellionIntel intel = new RebellionIntel(market, rebel, prepTime);
+		intel.init(false);
 		
-		/*
-		RebellionEvent event = (RebellionEvent)sector.getEventManager().startEvent(new CampaignEventTarget(market), "nex_rebellion", eventParams);
-		
-		if (report)
-			event.reportStage("before_start");
-		
-		return event;
-		*/
-		return null;
+		return intel;
 	}
 	
 	protected static void addToListIfNotPresent(List<String> list, String toAdd)
@@ -63,7 +67,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		list.add(toAdd);
 	}
 	
-	public static RebellionIntel createRebellion(MarketAPI market, boolean report)
+	public RebellionIntel createRebellion(MarketAPI market)
 	{
 		if (RebellionIntel.isOngoing(market))
 			return null;
@@ -74,12 +78,12 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		List<String> enemies = DiplomacyManager.getFactionsOfAtBestRepWithFaction(market.getFaction(), 
 				RepLevel.INHOSPITABLE, allowPirates, false, false);
 		
-		if (allowPirates)
+		if (allowPirates && faction.isHostileTo(Factions.INDEPENDENT))
 		{
-			if (faction.isHostileTo(Factions.INDEPENDENT))
-				addToListIfNotPresent(enemies, Factions.INDEPENDENT);
+			addToListIfNotPresent(enemies, Factions.INDEPENDENT);
 		}
 		
+		String originalOwner = ExerelinUtilsMarket.getOriginalOwner(market);
 		for (String candidate : enemies)
 		{
 			float weight = 1;
@@ -89,6 +93,8 @@ public class RebellionEventCreator extends BaseEventPlugin {
 			//	weight += 1;
 			if (candidate.equals(Factions.INDEPENDENT))
 				weight += 2;
+			if (candidate.equals(originalOwner))
+				weight += 10;
 			if (market.hasCondition(Conditions.LUDDIC_MAJORITY))
 			{
 				if (candidate.equals(Factions.LUDDIC_PATH))
@@ -103,7 +109,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		String enemyId = enemyPicker.pick();
 		if (enemyId == null)
 			return null;
-		return createRebellion(market, enemyId, report);
+		return createRebellion(market, enemyId);
 	}
 	
 	/**
@@ -113,74 +119,56 @@ public class RebellionEventCreator extends BaseEventPlugin {
 	 */
 	protected float getRebellionIncrement(MarketAPI market)
 	{
-		int stability = (int)market.getStabilityValue();
+		int effectiveStability = (int)market.getStabilityValue();
 		int size = market.getSize();
 		String factionId = market.getFactionId();
-		boolean hardModePenalty = SectorManager.getHardMode() 
+		boolean hardModePenalty = SectorManager.getManager().isHardMode()
 				&& (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals(Factions.PLAYER));
 		
 		if (market.hasCondition(Conditions.DISSIDENT))
-			stability -= 1;
-		if (!ExerelinUtilsMarket.isWithOriginalOwner(market))
-			stability -= 1;		
+			effectiveStability -= 1;
+		if (ExerelinUtilsMarket.isWithOriginalOwner(market))
+			effectiveStability += 1;
+		else
+			effectiveStability -= 2;		
 		if (hardModePenalty)
-			stability -= HARD_MODE_STABILITY_MODIFIER;
+			effectiveStability -= HARD_MODE_STABILITY_MODIFIER;
 		
-		int requiredThreshold = Math.min(size - 1, 4);
+		int requiredThreshold = Math.min(size - 1, 5);
 		if (requiredThreshold < 0) requiredThreshold = 0;
 		
-		float points = (requiredThreshold - stability);
+		float points = (requiredThreshold - effectiveStability)/2;
 		if (points > 2) points = 2;
 		else if (points < -2) points = -2;
-		points *= REBELLION_POINT_MULT;
+		points *= REBELLION_POINT_MULT * ExerelinConfig.rebellionMult;
 		if (hardModePenalty && points > 0) points *= HARD_MODE_MULT;
 		return points;		
 	}
 	
 	public float getRebellionPoints(MarketAPI market)
 	{
-		float points = 0;
-		if (rebellionPoints.containsKey(market.getId()))
-			points = rebellionPoints.get(market.getId());
+		Float points = market.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_REBELLION_POINTS);
 		return points;
-	}
-	
-	public static float getRebellionPointsStatic(MarketAPI market)
-	{
-		CampaignEventPlugin event = Global.getSector().getEventManager().getOngoingEvent(
-					null, "nex_rebellion_creator");
-		if (event != null)
-			return ((RebellionEventCreator)event).getRebellionPoints(market);
-		return 0;
 	}
 	
 	protected void incrementRebellionPoints(MarketAPI market, float points)
 	{
 		String marketId = market.getId();
 		float currPoints = getRebellionPoints(market);
+		if (currPoints == 0 && points <= 0) return;
 		
 		currPoints += points;
-		/*
 		if (currPoints <= 0)
 		{
-			rebellionPoints.remove(marketId);
+			market.getMemoryWithoutUpdate().unset(MEMORY_KEY_REBELLION_POINTS);
 			return;
 		}
-		*/
 		if (currPoints >= 100)
 		{
-			createRebellion(market, true);
+			createRebellion(market);
 			currPoints = 0;
 		}
-		rebellionPoints.put(marketId, currPoints);
-	}
-	
-	public static void incrementRebellionPointsStatic(MarketAPI market, float points)
-	{
-		CampaignEventPlugin event = Global.getSector().getEventManager().getOngoingEvent(
-					null, "nex_rebellion_creator");
-		if (event == null) return;
-		((RebellionEventCreator)event).incrementRebellionPoints(market, points);
+		market.getMemoryWithoutUpdate().set(MEMORY_KEY_REBELLION_POINTS, currPoints);
 	}
 	
 	protected void processMarket(MarketAPI market, float days)
@@ -189,24 +177,20 @@ public class RebellionEventCreator extends BaseEventPlugin {
 			return;
 		if (market.getFactionId().equals("templars"))
 			return;
-		if (market.hasCondition(Conditions.DECIVILIZED))
-			return;
-		
-		if (ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
-			return;
-		
 		if (market.getFactionId().equals(Factions.INDEPENDENT))
 			return;
-		
+		if (ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
+			return;
 		if (RebellionIntel.isOngoing(market))
 			return;
 		
 		float points = getRebellionIncrement(market) * days;
 		if (points > 0)
 		{
-			int div = Global.getSector().getEventManager().getNumOngoing("nex_rebellion") + 1;
-			points /= div;
+			float ongoingMult = 1 - (numOngoing/MAX_ONGOING);
+			points *= ongoingMult;
 		}
+		if (points != 0) return;
 		
 		incrementRebellionPoints(market, points);
 	}
@@ -216,6 +200,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		ExerelinUtils.advanceIntervalDays(interval, amount);
 		if (!interval.intervalElapsed()) return;
 		
+		numOngoing = Global.getSector().getIntelManager().getIntelCount(RebellionIntel.class, true);
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
 			processMarket(market, interval.getElapsed());
@@ -226,9 +211,9 @@ public class RebellionEventCreator extends BaseEventPlugin {
 	public boolean isDone() {
 		return false;
 	}
-	
+
 	@Override
-	public CampaignEventCategory getEventCategory() {
-		return CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
+	public boolean runWhilePaused() {
+		return false;
 	}
 }

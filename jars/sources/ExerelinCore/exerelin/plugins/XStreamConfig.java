@@ -57,7 +57,7 @@ import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
-import exerelin.campaign.intel.rebellion.RebellionEventCreator;
+import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.intel.satbomb.SatBombActionStage;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
@@ -108,7 +108,7 @@ public class XStreamConfig {
 		// events
 		// most of these will be deleted eventually
 		x.alias("InstgtRbl", InstigateRebellion.class);
-		x.alias("RebelEvntCreator", RebellionEventCreator.class);
+		x.alias("RebelEvntCreator", RebellionCreator.class);
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
 		x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);
 		x.alias("WarmongerEvnt", WarmongerEvent.class);

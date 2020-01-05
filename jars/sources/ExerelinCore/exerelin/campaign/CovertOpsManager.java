@@ -38,7 +38,7 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.EconomyInfoHelper.ProducerEntry;
-import exerelin.campaign.intel.rebellion.RebellionEventCreator;
+import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.agents.AgentIntel;
@@ -730,7 +730,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				// rebellion special handling
 				if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
 				{
-					if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
+					if (RebellionCreator.getInstance().getRebellionPoints(market) < 50)
 						continue;
 
 					if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
