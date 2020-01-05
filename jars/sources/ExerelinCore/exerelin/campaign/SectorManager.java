@@ -99,6 +99,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_hephaistosStation",
     }));
+    public static final Set<String> NO_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
+        "uw_arigato"
+    }));
     public static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
         "tiandong_retrofit", "ii_ebay"
     }));
@@ -106,15 +109,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static final Set<String> NO_WARMONGER_FACTIONS = new HashSet(Arrays.asList(new String[]{
         Factions.DERELICT, Factions.REMNANTS, Factions.NEUTRAL
     }));
-	
-	public static final Set<String> DO_NOT_RESPAWN_FACTIONS = new HashSet<>();
+    
+    public static final Set<String> DO_NOT_RESPAWN_FACTIONS = new HashSet<>();
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
     protected Set<String> liveFactionIds = new HashSet<>();
     protected Set<String> historicFactionIds = new HashSet<>();
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
     protected Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // array contains base value and number of D-mods
-	
+    
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
     protected boolean onlyRespawnStartingFactions = false;
@@ -1164,7 +1167,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 && isCapture)
         {
             oldOwner.getMemoryWithoutUpdate().set("$nex_recentlyInvaded", true, 
-					Global.getSettings().getFloat("nex_aiCoreAndPrisonerCooldownAfterInvasion"));
+                    Global.getSettings().getFloat("nex_aiCoreAndPrisonerCooldownAfterInvasion"));
         }
         
         ExerelinUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
@@ -1193,6 +1196,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             boolean isPlayer) {
         if (isPlayer) return false;
         if (factionId.equals("templars")) return false;
+        if (NO_MILITARY_MARKET.contains(market.getId())) return false;
         
         return market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
                 || market.hasCondition("tem_avalon") || market.hasIndustry("tiandong_merchq") 
