@@ -81,14 +81,15 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         public static final String DESTROY_COMMODITY_STOCKS = "destroyCommodities";
         public static final String INSTIGATE_REBELLION = "instigateRebellion";
         public static final String INFILTRATE_CELL = "infiltrateCell";
-		public static final String PROCURE_SHIP = "procureShip";
+        public static final String PROCURE_SHIP = "procureShip";
+        public static final String FIND_PIRATE_BASE = "findPirateBase";
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);
     
     public static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     public static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
-	public static final String CONFIG_FILE_STEALSHIP = "data/config/exerelin/agent_steal_ship_config.csv";
+    public static final String CONFIG_FILE_STEALSHIP = "data/config/exerelin/agent_steal_ship_config.csv";
     public static final boolean DEBUG_MODE = false;
     
     public static final float NPC_EFFECT_MULT = 1f;
@@ -98,7 +99,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static final Map<String, CovertActionDef> actionDefsById = new HashMap<>();
     public static final Map<String, Float> industrySuccessMods = new HashMap<>();
     public static final Map<String, Float> industryDetectionMods = new HashMap<>();
-	public static final Map<String, Float> stealShipCostMults = new HashMap<>();
+    public static final Map<String, Float> stealShipCostMults = new HashMap<>();
     
     protected static float baseInjuryChance, baseInjuryChanceFailed;
     

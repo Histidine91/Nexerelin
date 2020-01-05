@@ -24,6 +24,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
@@ -326,7 +328,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 		
 		// print chance of success
-		if (!actionId.equals(CovertActionType.TRAVEL)) {
+		if (!actionId.equals(CovertActionType.TRAVEL) && !actionId.equals(CovertActionType.FIND_PIRATE_BASE)) {
 			MutableStat success = action.getSuccessChance();
 			float successF = success.getModifiedValue();
 			Color chanceCol = hl;
@@ -477,6 +479,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				text.setFontInsignia();
 				getTargets();
 				break;
+			case CovertActionType.FIND_PIRATE_BASE:
+				action = new FindPirateBase(agent, market, agentFaction, true, null);
+				action.init();
+				printActionInfo();
+				break;
 		}
 	}
 	
@@ -531,6 +538,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			LuddicPathCellsIntel cellIntel = cellCond.getIntel();
 			if (cellIntel.getSleeperTimeout() <= 90)
 				addActionOption(CovertActionType.INFILTRATE_CELL);
+		}
+		if (agentMarket != null && agentMarket.hasCondition(Conditions.PIRATE_ACTIVITY)) {
+			MarketConditionAPI cond = agentMarket.getCondition(Conditions.PIRATE_ACTIVITY);
+			PirateActivity activityCond = (PirateActivity)(cond.getPlugin());
+			PirateBaseIntel baseIntel = activityCond.getIntel();
+			if (!baseIntel.isEnding() && !baseIntel.isEnded() && !baseIntel.isPlayerVisible())
+				addActionOption(CovertActionType.FIND_PIRATE_BASE);
 		}
 		
 		showPaginatedMenu();

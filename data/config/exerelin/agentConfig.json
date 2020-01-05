@@ -155,5 +155,11 @@
 			"injuryChanceMult":0,
 			"xp":500,	# multiplied in code
 		},
+		"findPirateBase":{
+			"name":"Find pirate base",
+			"time":2,
+			"costScaling":false,
+			"useAlertLevel":false,
+		},
 	},
 }

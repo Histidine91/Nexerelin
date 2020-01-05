@@ -306,6 +306,7 @@
 		"intelStatus_sabotageIndustry":"Sabotaging %s",
 		"intelStatus_infiltrateCell":"Infiltrating Luddic cell",
 		"intelStatus_procureShip":"Procuring $ship, delivering to $market",
+		"intelStatus_findPirateBase":"Finding pirate base",
 		
 		"intelDesc_raiseRelations_success":"An agent from $theAgentFaction has subverted the $faction political process to improve relations with their own faction.",
 		"intelDesc_raiseRelations_successPlayer":"Your agent $agentName has successfully subverted the $faction political process to improve relations with $theThirdFaction.",
@@ -378,6 +379,7 @@
 		"intel_lastMessage_procureShip_success":"\"We now have a shiny new $ship.\"",
 		"intel_lastMessage_procureShip_failure":"\"Failed to procure a $ship at $market.\"",
 		"intel_lastMessage_injury_success":"\"Recovered from injuries. Ready for duty once more.\"",
+		"intel_lastMessage_findPirateBase_success":"\"Found the base supporting the pirate activity on $market.\"",
 		
 		"destabilizeText1":"poisoned the water supply",
 		"destabilizeText2":"fired into a crowd at a public venue",
