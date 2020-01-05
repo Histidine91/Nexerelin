@@ -10,15 +10,17 @@ Partial list.
 - SSP_BattleCreationPluginImpl
 - InvasionFleetManager.getPatrolCombatFP
 - Submarket plugins
+- Colony manager: getFreePortGrowthBonus()
+- Everything that uses Industries.TAG_UNRAIDABLE
 
 Do on future SS release:
 - Remove agent/saboteur commodities
 - Remove MutableStatNoFloor
 - Add "player colonized" listener
-- Move vengeance fleet intel to fleets subpackage
 - Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
 
 Do when handy:
-- Purge unused imports
+- Refactor: getExerelinFactionConfig() -> getFactionConfig() (deprecate old)
+- SectorManager: getHardMode, getCorvusMode -> isHardMode, isCorvusMode (deprecate old)
 
 All files in data.scripts.world.corvus and data.scripts.world.systems should be replaced each Starsector version.

@@ -425,22 +425,6 @@ public class InvasionRound {
 		
 		// perform actual transfer
 		SectorManager.transferMarket(market, attackerFaction, defenderFaction, playerInvolved, true, factionsToNotify, repChangeStrength);
-		
-		// revengeance
-		/*
-		if (attackerFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
-		{
-			RevengeanceManagerEvent rvng = RevengeanceManagerEvent.getOngoingEvent();
-			if (rvng!= null) 
-			{
-				float sizeSq = market.getSize() * market.getSize();
-				float mult = 0.25f;
-				rvng.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
-				if (playerInvolved) 
-					rvng.addFactionPoints(defenderFactionId, sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
-			}
-		}
-		*/
 	}
 	
 	public static boolean canInvade(SectorEntityToken entity)

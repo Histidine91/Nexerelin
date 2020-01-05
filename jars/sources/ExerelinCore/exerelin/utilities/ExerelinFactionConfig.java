@@ -51,10 +51,6 @@ public class ExerelinFactionConfig
    
     public boolean pirateFaction = false;
     public boolean isPirateNeutral = false;
-    @Deprecated
-    public boolean spawnPatrols = false;    // only used for factions set to not spawn patrols in .faction file
-    @Deprecated
-    public boolean spawnPiratesAndMercs = false;    // ditto
     
     // 0 = not hostile
     // 1 = inhospitable to player, hostile to everyone else
@@ -194,7 +190,6 @@ public class ExerelinFactionConfig
             
             pirateFaction = settings.optBoolean("pirateFaction", false);
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
-            spawnPatrols = settings.optBoolean("spawnPatrols", true);
             hostileToAll = settings.optInt("hostileToAll", hostileToAll);
             spawnAsFactionId = settings.optString("spawnAsFactionId", spawnAsFactionId);
             freeStart = settings.optBoolean("freeStart", false);

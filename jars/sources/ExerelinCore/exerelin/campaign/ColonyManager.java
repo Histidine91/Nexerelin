@@ -841,6 +841,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	public void printCoreStashMessage(String str, int numCores, MarketAPI market) {
+		if (numCores <= 0) return;
 		InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
 		Color hl = Misc.getHighlightColor();
 		Color marketColor = market.getFaction().getBaseUIColor();

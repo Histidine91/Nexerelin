@@ -1,5 +1,5 @@
 {
-	"miningProductionMult":2.3,
+	"miningProductionMult":2.3,	# default is 2.3
 	"cacheSizeMult":1.0,
 	"baseCacheChance":0.1,
 	"baseAccidentChance":0.25,
