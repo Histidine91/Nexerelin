@@ -222,15 +222,17 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		return outpost;
 	}
 	
-	public void dismantleOutpost() {
+	public void endEvent() {
 		Global.getSector().getEconomy().removeMarket(market);
 		Global.getSector().getEconomy().removeUpdateListener(this);
 		Global.getSector().getListenerManager().removeListener(this);
-		
-		Misc.fadeAndExpire(outpost);
 		deregisterOutpost(this);
-		
 		endAfterDelay();
+	}
+	
+	public void dismantleOutpost() {
+		endEvent();		
+		Misc.fadeAndExpire(outpost);
 	}
 	
 	@Override
@@ -384,11 +386,16 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 
 	@Override
 	public boolean isEconomyListenerExpired() {
-		return isEnded();
+		return isEnding() || isEnded();
 	}
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {
+		if (market.getFaction().isNeutralFaction()) {	// abandoned
+			endEvent();
+			return;
+		}
+		
 		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
 		float f = 1f / numIter;
 		
