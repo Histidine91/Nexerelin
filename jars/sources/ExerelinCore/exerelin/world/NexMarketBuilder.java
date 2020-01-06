@@ -704,6 +704,11 @@ public class NexMarketBuilder
 			if (count == 0) continue;
 			
 			IndustryClassGen gen = industryClassesByIndustryId.get(seed.industryId);
+			if (gen == null) {
+				// FIXME: throw a suitable error?
+				throw new RuntimeException("Failed to find industry class generator for " + seed.industryId 
+						+ " added by faction " + factionId);
+			}
 			
 			// order entities by reverse priority, highest priority markets get the industries
 			List<Pair<ProcGenEntity, Float>> ordered = new ArrayList<>();	// float is priority value

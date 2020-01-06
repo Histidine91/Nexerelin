@@ -95,6 +95,7 @@ public abstract class IndustryClassGen implements Comparable {
 	/**
 	 * Adds the industry to the entity's market.
 	 * Multi-industry classes should override this method to specify exactly which industry gets added.
+	 * Not used for faction industry seeds, those add the industry by ID directly.
 	 * @param entity
 	 * @param instant If false, industry starts construction
 	 */
