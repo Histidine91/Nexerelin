@@ -142,10 +142,10 @@
 			"xp":2000,
 		},
 		"procureShip":{
-			"time":30,
+			"time":40,
 			"name":"Procure Ship",
 			"successChance":0.75,
-			"detectionChance":0.3,
+			"detectionChance":0.4,
 			"detectionChanceFail":0.5,
 			"repLossOnDetectionMin":0.03,	# multiplied in code
 			"repLossOnDetectionMax":0.06,	# multiplied in code
