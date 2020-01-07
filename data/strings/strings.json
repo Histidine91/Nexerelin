@@ -1272,8 +1272,9 @@
 		"intelDesc2Player":"You may wish to speak to local officials on supplies of materiel for government forces.",
 		
 		"intelHeaderDetails":"Details",
-		"intelDescNoDetails":"You lack detailed information about the rebellion. An agent $onOrAt $market might be able to discover more.",
+		"intelDescIncompleteDetails":"You lack complete information about the rebellion. Placing one or more agents $onOrAt $market may reveal more details.",
 		"intelDescDetailFaction":"The rebels are being sponsored by $theRebelFaction.",
+		"intelDescDetailFactionUnknown":"an unknown party",
 		"intelDescDetailGovtStrength":"Government strength: %s",
 		"intelDescDetailRebelStrength":"Rebel strength: %s",
 		"intelDescDetailStability":"Stability reduced by %s while rebellion is ongoing.",
@@ -1318,7 +1319,10 @@
 		"intelBulletMutualAnnihilation":"Fall into anarchy",
 		"intelBulletExpired":"Ended in ceasefire",
 		
+		"intelTag":"Rebellions",
+		
 		"commodityPriceDesc":"Rebellion",
+		"unrestDesc":"Recent rebellion",
 	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",

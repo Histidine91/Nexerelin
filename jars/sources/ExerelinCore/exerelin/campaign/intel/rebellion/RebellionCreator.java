@@ -134,7 +134,7 @@ public class RebellionCreator implements EveryFrameScript {
 		if (hardModePenalty)
 			effectiveStability -= HARD_MODE_STABILITY_MODIFIER;
 		
-		int requiredThreshold = Math.min(size - 1, 5);
+		int requiredThreshold = 4;
 		if (requiredThreshold < 0) requiredThreshold = 0;
 		
 		float points = (requiredThreshold - effectiveStability)/2;
@@ -153,7 +153,6 @@ public class RebellionCreator implements EveryFrameScript {
 	
 	protected void incrementRebellionPoints(MarketAPI market, float points)
 	{
-		String marketId = market.getId();
 		float currPoints = getRebellionPoints(market);
 		if (currPoints == 0 && points <= 0) return;
 		

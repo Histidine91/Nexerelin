@@ -75,11 +75,17 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final float VALUE_SUPPLIES = 0.1f;
 	public static final float VALUE_MARINES = 0.25f;
 	//public static final float VALUE_PER_CREDIT = 0.01f * 0.01f;
-	public static final float REP_MULT = 1f;
+	public static final float REP_MULT = 0.1f;
+	public static final float MAX_REP = 0.2f;
 	public static final float STRENGTH_CHANGE_MULT = 0.25f;
 	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
 	public static final int MAX_STABILITY_PENALTY = 5;
 	public static final int MAX_FINAL_UNREST = 4;
+	
+	public static final int DETAIL_LEVEL_TO_KNOW_FACTION = 2;
+	public static final int DETAIL_LEVEL_FOR_STRENGTH_COLORS = 3;
+	public static final int DETAIL_LEVEL_FOR_STRENGTH_VALUES = 5;
+	
 	public static final boolean USE_REBEL_REP = false;
 	
 	public static final boolean DEBUG_MODE = false;
@@ -187,6 +193,22 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		rebelStrength = (3 + (10 - stability)) * sizeMult;
 	}
 	
+	/**
+	 * Sets different values. 
+	 * Not based on stability (to avoid perverse incentives), and lowers government strength 
+	 * if government faction is player, so player has to spend resources to put down the rebellion.
+	 * @param isPlayer
+	 */
+	public void setInitialStrengthsAfterInvasion(boolean isPlayer)
+	{
+		float sizeMult = getSizeMod(market);
+		if (isPlayer)
+			govtStrength = 5 * sizeMult;
+		else
+			govtStrength = 10 * sizeMult;
+		rebelStrength = 6 * sizeMult;
+	}
+	
 	protected float getNormalizedStrength(boolean rebel)
 	{
 		float numerator = rebel ? rebelStrength : govtStrength;
@@ -209,20 +231,23 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		rebelStrength = strength;
 	}
 	
-	public boolean areDetailsKnownToPlayer() {
+	public int getDetailLevel() {
 		//if (isEnding() || isEnded()) return true;
-		if (result == RebellionResult.REBEL_VICTORY) return true;
-		if (Global.getSettings().isDevMode()) return true;
+		if (result == RebellionResult.REBEL_VICTORY) return 100;
+		if (Global.getSettings().isDevMode()) return 100;
+		
+		int level = 0;
+		
 		if (rebelFaction.isPlayerFaction() || rebelFaction == Misc.getCommissionFaction())
-			return true;
+			level = DETAIL_LEVEL_TO_KNOW_FACTION;
 		
 		// TODO: check for agents
 		for (AgentIntel intel : CovertOpsManager.getManager().getAgents()) {
 			if (intel.getMarket() == market)
-				return true;
+				level += intel.getLevel();
 		}
 		
-		return false;
+		return level;
 	}
 	
 	protected float updateConflictIntensity()
@@ -441,17 +466,17 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		float govtTradePointsFloored = Math.max(govtTradePoints, 0);
 		
 		float netRebelTradePoints = rebelTradePointsFloored - govtTradePointsFloored;
+		float rep = (float)Math.sqrt(netRebelTradePoints) * market.getSize() * 0.01f * REP_MULT;
+		if (rep > MAX_REP) rep = MAX_REP;
 		
 		if (netRebelTradePoints > 0)
 		{
-			final float rep = netRebelTradePoints/getSizeMod(market) * 0.01f * REP_MULT;
 			debugMessage("  Rebel trade rep: " + rep);
 			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebelFaction, rep, null, null);
 			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govtFaction, -rep*1.5f, null, null);
 		}
 		else if (netRebelTradePoints < 0)
 		{
-			final float rep = netRebelTradePoints/getSizeMod(market) * 0.01f * REP_MULT;
 			debugMessage("  Government trade rep: " + rep);
 			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebelFaction, -rep*1.5f, null, null);
 			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govtFaction, rep, null, null);
@@ -850,9 +875,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		
 		float initPad = 3, pad = 0;
 		
-		boolean known = areDetailsKnownToPlayer();
+		int knownLevel = getDetailLevel();
 		ExerelinUtilsFaction.addFactionNamePara(info, initPad, c, govtFaction);
-		if (known) ExerelinUtilsFaction.addFactionNamePara(info, pad, c, rebelFaction);
+		if (knownLevel >= DETAIL_LEVEL_TO_KNOW_FACTION) 
+			ExerelinUtilsFaction.addFactionNamePara(info, pad, c, rebelFaction);
 		
 		// If event is completed, print result
 		if (result != null) {
@@ -940,10 +966,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		Color hl = Misc.getHighlightColor();
 		Color govtColor = govtFaction.getBaseUIColor();
 		Color rebColor = rebelFaction.getBaseUIColor();
-		boolean known = areDetailsKnownToPlayer();
+		int knownLevel = getDetailLevel();
+		boolean knowFaction = knownLevel >= DETAIL_LEVEL_TO_KNOW_FACTION;
 		
 		info.addImages(width, 128, opad, opad, 
-				known ? rebelFaction.getCrest() : Global.getSector().getFaction(Factions.NEUTRAL).getCrest(),
+				knowFaction ? rebelFaction.getCrest() : Global.getSector().getFaction(Factions.NEUTRAL).getCrest(),
 				govtFaction.getCrest());
 		
 		List<Pair<String, String>> sub = new ArrayList<>();
@@ -1048,33 +1075,51 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		
 		// rebellion details, if ongoing
 		info.addSectionHeading(getString("intelHeaderDetails"), Alignment.MID, opad);
-		if (!known) {
-			str = getString("intelDescNoDetails");
+		if (knownLevel < 5) {
+			str = getString("intelDescIncompleteDetails");
 			str = StringHelper.substituteTokens(str, sub);
 			info.addPara(str, opad);
 		}
-		else {
+		if (knownLevel > 0) {
 			str = getString("intelDescDetailFaction");
-			str = StringHelper.substituteTokens(str, sub);
-			info.addPara(str, opad, rebColor, rebName);
+			if (knowFaction) {
+				str = StringHelper.substituteTokens(str, sub);
+				info.addPara(str, opad, rebColor, rebName);
+			}
+			else {
+				String unk = getString("intelDescDetailFactionUnknown");
+				str = StringHelper.substituteToken(str, "$theRebelFaction", unk);
+				info.addPara(str, opad, hl, unk);
+			}
+			
+			String govtStr = "???";
+			String rebStr = "???";
+			if (knownLevel >= DETAIL_LEVEL_FOR_STRENGTH_VALUES) {
+				govtStr = String.format("%.0f", govtStrength);
+				rebStr = String.format("%.0f", rebelStrength);
+			}
 			
 			Color govtStrColor = hl, rebStrColor = hl;
-			if (govtStrength > rebelStrength * 1.25f) {
-				govtStrColor = Misc.getPositiveHighlightColor();
-				rebStrColor = Misc.getNegativeHighlightColor();
+			if (knownLevel >= DETAIL_LEVEL_FOR_STRENGTH_COLORS)
+			{
+				if (govtStrength > rebelStrength * 1.25f) {
+					govtStrColor = Misc.getPositiveHighlightColor();
+					rebStrColor = Misc.getNegativeHighlightColor();
+				}
+				else if (rebelStrength > govtStrength * 1.25f) {
+					govtStrColor = Misc.getNegativeHighlightColor();
+					rebStrColor = Misc.getPositiveHighlightColor();
+				}
 			}
-			else if (rebelStrength > govtStrength * 1.25f) {
-				govtStrColor = Misc.getNegativeHighlightColor();
-				rebStrColor = Misc.getPositiveHighlightColor();
-			}
-			str = getString("intelDescDetailGovtStrength");
-			info.addPara(str, opad, govtStrColor, String.format("%.0f", govtStrength));
-			str = getString("intelDescDetailRebelStrength");
-			info.addPara(str, opad, rebStrColor, String.format("%.0f", rebelStrength));
 			
-			str = getString("intelDescDetailStability");
-			info.addPara(str, opad, hl, stabilityPenalty + "");
+			str = getString("intelDescDetailGovtStrength");
+			info.addPara(str, opad, govtStrColor, govtStr);
+			str = getString("intelDescDetailRebelStrength");
+			info.addPara(str, opad, rebStrColor, rebStr);
 		}
+		
+		str = getString("intelDescDetailStability");
+			info.addPara(str, opad, hl, stabilityPenalty + "");
 		
 		boolean showSuppressionFleet = suppressionFleetTimestamp != null;
 		
@@ -1157,13 +1202,18 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(govtFaction.getId());
-		if (areDetailsKnownToPlayer()) {
+		if (getDetailLevel() > DETAIL_LEVEL_TO_KNOW_FACTION) {
 			tags.add(rebelFaction.getId());
 		}
 		if (lastUpdate == UpdateParam.FLEET_PREP || lastUpdate == UpdateParam.FLEET_SPAWNED)
 		{
 			tags.add(Tags.INTEL_FLEET_DEPARTURES);
 		}
+		if (govtFaction.isPlayerFaction() || govtFaction == Misc.getCommissionFaction())
+		{
+			tags.add(Tags.INTEL_COLONIES);
+		}
+		tags.add(getString("intelTag"));
 		return tags;
 	}
 		

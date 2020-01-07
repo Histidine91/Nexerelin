@@ -656,13 +656,6 @@ public class Nex_MarketCMD extends MarketCMD {
 					impact, null, text, true, true),
 					faction.getId());
 		
-		// report rebellion
-		RebellionIntel rebel = RebellionIntel.getOngoingEvent(market);
-		if (rebel != null) {
-			text.addPara(getString("rebellion"));
-			Global.getSector().getIntelManager().addIntelToTextPanel(rebel, text);
-		}
-		
 		// handle loot
 		String contText = null;
 		
@@ -1042,6 +1035,13 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		if (tempInvasion.success)
 			InvasionRound.conquerMarket(market, conqueror, true);
+		
+		// report rebellion
+		RebellionIntel rebel = RebellionIntel.getOngoingEvent(market);
+		if (rebel != null) {
+			text.addPara(getString("rebellion"));
+			Global.getSector().getIntelManager().addIntelToTextPanel(rebel, text);
+		}
 		
 		//FireAll.fire(null, dialog, memoryMap, "MarketPostOpen");
 		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$menuState", "main", 0);
