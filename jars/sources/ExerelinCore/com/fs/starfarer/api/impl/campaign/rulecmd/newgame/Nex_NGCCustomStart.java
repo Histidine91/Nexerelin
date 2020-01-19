@@ -139,7 +139,7 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 				tb.append("\n\n");
 			}
 			FactionAPI faction = Global.getSettings().createBaseFaction(def.factionId);
-			String factionName = faction.getDisplayName();
+			String factionName = Misc.ucFirst(faction.getDisplayName());
 			tb.append(StringHelper.getString("exerelin_ngc", "customStartTooltipFaction", true) + ": " + factionName);
 			tb.append("\n\n");
 			String difficulty = Misc.ucFirst(def.difficulty);
