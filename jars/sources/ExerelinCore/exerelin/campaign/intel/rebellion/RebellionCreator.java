@@ -84,6 +84,12 @@ public class RebellionCreator implements EveryFrameScript {
 		}
 		
 		String originalOwner = ExerelinUtilsMarket.getOriginalOwner(market);
+		if (SectorManager.getManager().isRespawnFactions() && 
+				SectorManager.getManager().getNumRespawns(originalOwner) < ExerelinConfig.maxFactionRespawns) 
+		{
+			addToListIfNotPresent(enemies, originalOwner);
+		}
+		
 		for (String candidate : enemies)
 		{
 			float weight = 1;

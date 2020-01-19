@@ -79,6 +79,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final float MAX_REP = 0.2f;
 	public static final float STRENGTH_CHANGE_MULT = 0.25f;
 	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
+	public static final float REBEL_ORIGINAL_OWNER_STR_MULT = 1.25f;
 	public static final int MAX_STABILITY_PENALTY = 5;
 	public static final int MAX_FINAL_UNREST = 4;
 	
@@ -166,8 +167,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		Global.getSector().addScript(this);
 		if (!instant)
 			sendUpdate(UpdateParam.PREP);
-		else
-			sendUpdate(UpdateParam.START);
+		else {
+			//sendUpdate(UpdateParam.START);	// leave it silent
+		}
+			
 	}
 	
 	public static float getSizeMod(int size)
@@ -191,6 +194,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		float sizeMult = getSizeMod(market);
 		govtStrength = (6 + stability * 1.25f) * sizeMult;
 		rebelStrength = (3 + (10 - stability)) * sizeMult;
+		if (rebelFaction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+			rebelStrength *= REBEL_ORIGINAL_OWNER_STR_MULT;
 	}
 	
 	/**
@@ -206,7 +211,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			govtStrength = 5 * sizeMult;
 		else
 			govtStrength = 10 * sizeMult;
-		rebelStrength = 6 * sizeMult;
+		rebelStrength = 6 * sizeMult * MathUtils.getRandomNumberInRange(0.9f, 1.2f);
 	}
 	
 	protected float getNormalizedStrength(boolean rebel)
