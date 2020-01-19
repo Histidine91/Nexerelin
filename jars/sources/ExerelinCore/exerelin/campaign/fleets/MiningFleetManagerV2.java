@@ -162,10 +162,13 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		if (maxFP < 50) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixSmall") + " " + name;
 		else if (maxFP > 100) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixLarge") + " " + name;
 		
+		float freighterFP = maxFP*0.3f;
+		if (isGasMiningFleet) freighterFP *= 0.5f;	// to prevent fleets from having huge volatiles loads
+		
 		//log.info("Trying to create mining fleet of size " + maxFP + ", target " + target.getName());
 		FleetParamsV3 params = new FleetParamsV3(origin, "exerelinMiningFleet", 
 				maxFP/4, // combat
-				maxFP*0.45f, // freighters
+				freighterFP,
 				0,		// tankers
 				0,		// personnel transports
 				0,		// liners
