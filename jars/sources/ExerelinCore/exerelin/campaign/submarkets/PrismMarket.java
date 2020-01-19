@@ -30,8 +30,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
 import data.scripts.campaign.intel.SWP_IBBTracker;
-import data.scripts.campaign.intel.VayraUniqueBountyManager;
-import data.scripts.campaign.intel.VayraUniqueBountyManager.UniqueBountyData;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
@@ -406,7 +404,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(itemGenRandom);
         
         int ibbProgress = 999;
-        boolean doIBBCheck = ExerelinConfig.prismUseIBBProgressForBossShips && ExerelinModPlugin.HAVE_SWP;
+        boolean checkBossCompletion = ExerelinConfig.prismUseIBBProgressForBossShips;
+        boolean haveVayra = Global.getSettings().getModManager().isModEnabled("vayrasector");
         int highestIBBNum = 0;
         
         try {
@@ -438,7 +437,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 String stageStr = entry.stage;
                 
                 // Check if we've completed the IBB (if applicable)
-                if (doIBBCheck && stageStr != null && !stageStr.isEmpty()) {
+                if (checkBossCompletion && ExerelinModPlugin.HAVE_SWP 
+                        && stageStr != null && !stageStr.isEmpty()) {
                     try {
                         // FIXME: update IBB stage check when IBB is updated
                         FamousBountyStage stage = FamousBountyStage.valueOf(stageStr);
@@ -453,7 +453,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
                 
                 // Check if we've completed the HVB (if applicable)
-                if (doIBBCheck && entry.hvbID != null && !entry.hvbID.isEmpty()) {
+                if (checkBossCompletion && haveVayra && entry.hvbID != null && !entry.hvbID.isEmpty()) 
+                {
                     try {
                         List<String> spentBounties = (List<String>)Global.getSector().getMemoryWithoutUpdate().get("$vayra_uniqueBountiesSpent");  
                         if (spentBounties != null && !spentBounties.contains(entry.hvbID)) {
@@ -585,6 +586,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         for (int x = 0; x < csv.length(); x++)
         {
             JSONObject row = csv.getJSONObject(x);
+            String id = row.getString("id");
+            if (id == null || id.isEmpty()) continue;    // otherwise empty rows crash it
             blueprintValues.put(row.getString("id"), (float)row.getDouble("value"));
         }
     }
@@ -791,14 +794,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
     //List IBBs and their progress
     public static class BossShipEntry {
         public String id;
-        @Deprecated public int ibbNum;
+        public int ibbNum;    // Used for preferential appearance of IBBs closer to the highest one we've completed
         public String stage;
-		public String hvbID;
+        public String hvbID;
         public BossShipEntry(String id, int ibbNum, String stage, String hvbID) {
             this.id = id;
             this.ibbNum = ibbNum;
             this.stage = stage;
-			this.hvbID = hvbID;
+            this.hvbID = hvbID;
         }
     }
 }

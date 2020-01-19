@@ -191,6 +191,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		for (int i=0; i<stealShipJson.length(); i++) {
 			JSONObject row = stealShipJson.getJSONObject(i);
 			String hullId = row.getString("hull id");
+			if (hullId == null || hullId.isEmpty()) continue;
 			float costMult = (float)row.getDouble("cost mult");
 			stealShipCostMults.put(hullId, costMult);
 		}
