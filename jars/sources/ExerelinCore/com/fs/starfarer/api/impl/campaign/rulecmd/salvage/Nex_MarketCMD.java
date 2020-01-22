@@ -185,10 +185,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		if (primary == null) {
 			if (state == StationState.NONE) {
-				text.addPara("The colony has no orbital station or nearby fleets to defend it.");
+				text.addPara(StringHelper.getString("nex_militaryOptions", "noStation"));
 			} else {
 				printStationState();
-				text.addPara("There are no nearby fleets to defend the colony.");
+				text.addPara(StringHelper.getString("nex_militaryOptions", "noFleets"));
 			}
 		} else {
 			ongoingBattle = primary.getBattle() != null;
@@ -228,7 +228,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			
 			if (withText) {
 				if (hasStation) {
-					String name = "An orbital station";
+					String name = StringHelper.getString("nex_militaryOptions", "stationNameGeneric");
 					if (station != null) {
 						FleetMemberAPI flagship = station.getFlagship();
 						if (flagship != null) {
@@ -238,22 +238,18 @@ public class Nex_MarketCMD extends MarketCMD {
 									station.getFaction().getPersonNamePrefix() + " " + name;
 						}
 					}
-					text.addPara(name + " dominates the orbit and prevents any " +
-								 "hostile action, aside from a quick raid, unless it is dealt with.");
-					
+					text.addPara(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+							"hasStation", "$stationName", name));
 					
 					if (hasNonStation) {
-						text.addPara("The defending ships present are, with the support of the station, sufficient to prevent " +
-									 "raiding as well.");
+						text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetWithStation"));
 					}
 				} else if (hasNonStation && otherWantsToFight) {
 					printStationState();
-					text.addPara("Defending ships are present in sufficient strength to prevent any hostile action " +
-					"until they are dealt with.");
+					text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleet"));
 				} else if (hasNonStation && !otherWantsToFight) {
 					printStationState();
-					text.addPara("Defending ships are present, but not in sufficient strength " +
-								 "to want to give battle or prevent any hostile action you might take.");
+					text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetTooSmall"));
 				}
 				
 				plugin.printOngoingBattleInfo();
@@ -262,31 +258,32 @@ public class Nex_MarketCMD extends MarketCMD {
 			
 		options.clearOptions();
 		
-		String engageText = "Engage the defenders";
+		String engageText = StringHelper.getString("nex_militaryOptions", "optionEngage");
 		
 		if (playerCanNotJoin) {
-			engageText = "Engage the defenders";
+			//engageText = "Engage the defenders";
 		} else if (playerOnDefenderSide) {
 			if (hasStation && hasNonStation) {
-				engageText = "Aid the " + stationType + " and its defenders";
+				engageText = StringHelper.getString("nex_militaryOptions", "optionAidStationAndDefenders");
 			} else if (hasStation) {
-				engageText = "Aid the " + stationType + "";
+				engageText = StringHelper.getString("nex_militaryOptions", "optionAidStation");
 			} else {
-				engageText = "Aid the defenders";
+				engageText = StringHelper.getString("nex_militaryOptions", "optionAidDefenders");
 			}
 		} else {
 			if (ongoingBattle) {
-				engageText = "Aid the attacking forces";
+				engageText = StringHelper.getString("nex_militaryOptions", "optionAidAttackers");
 			} else {
 				if (hasStation && hasNonStation) {
-					engageText = "Engage the " + stationType + " and its defenders";
+					engageText = StringHelper.getString("nex_militaryOptions", "optionEngageStationAndDefenders");
 				} else if (hasStation) {
-					engageText = "Engage the " + stationType + "";
+					engageText = StringHelper.getString("nex_militaryOptions", "optionEngageStation");
 				} else {
-					engageText = "Engage the defenders";
+					engageText = StringHelper.getString("nex_militaryOptions", "optionEngageDefenders");
 				}
 			}
 		}
+		engageText = StringHelper.substituteToken(engageText, "$stationType", stationType);
 		
 		
 		options.addOption(engageText, ENGAGE);
@@ -306,27 +303,29 @@ public class Nex_MarketCMD extends MarketCMD {
 			
 //		options.addOption("Launch a raid against the colony", RAID);
 //		options.addOption("Consider an orbital bombardment", BOMBARD);
-		options.addOption("Launch a raid against " + market.getName(), RAID);
-		options.addOption("Consider an orbital bombardment of " + market.getName(), BOMBARD);
+		options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+							"optionRaid", "$market", market.getName()), RAID);
+		options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+							"optionBombard", "$market", market.getName()), BOMBARD);
 		
 		if (!temp.canRaid) {
 			options.setEnabled(RAID, false);
-			options.setTooltip(RAID, "The presence of enemy fleets that are willing to offer battle makes a raid impossible.");
+			options.setTooltip(RAID, StringHelper.getString("nex_militaryOptions", "cannotRaid"));
 		}
 		
 		if (!temp.canBombard) {
 			options.setEnabled(BOMBARD, false);
-			options.setTooltip(BOMBARD, "All defenses must be defeated to make a bombardment possible.");
+			options.setTooltip(BOMBARD, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
 		}
 		
 		//DEBUG = false;
 		if (temp.canRaid && getRaidCooldown() > 0) {// && couldRaidIfNotDebug) {
 			if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
 				options.setEnabled(RAID, false);
-				text.addPara("Your forces will be able to organize another raid within a day or so.");
+				text.addPara(StringHelper.getString("nex_militaryOptions", "raidCooldown"));
 				temp.canRaid = false;
 			} else {
-				text.addPara("Your forces will be able to organize another raid within a day or so.");
+				text.addPara(StringHelper.getString("nex_militaryOptions", "raidCooldown"));
 				text.addPara("(DEBUG mode: can do it anyway)");
 			}
 			//options.setTooltip(RAID, "Need more time to organize another raid.");
@@ -342,11 +341,14 @@ public class Nex_MarketCMD extends MarketCMD {
 			FactionAPI nonHostile = plugin.getNonHostileOtherFaction();
 			//if (!playerFleet.getFaction().isHostileTo(otherFleet.getFaction()) && knows && !context.isEngagedInHostilities()) {
 			if (nonHostile != null && knows && !lowImpact && !context.isEngagedInHostilities()) {
+				String text = StringHelper.getString("nex_militaryOptions", "nonHostileWarning");
+				text = StringHelper.substituteToken(text, "$faction", nonHostile.getDisplayNameLong());
+				text = StringHelper.substituteToken(text, "$isOrAre", nonHostile.getDisplayNameIsOrAre());
+				
 				options.addOptionConfirmation(ENGAGE,
-						"The " + nonHostile.getDisplayNameLong() + 
-						" " + nonHostile.getDisplayNameIsOrAre() + 
-						" not currently hostile, and you have been positively identified. " +
-						"Are you sure you want to engage in open hostilities?", "Yes", "Never mind");
+						text, 
+						StringHelper.getString("yes", true), 
+						StringHelper.getString("neverMind", true));
 			}
 		} else if (context == null || playerCanNotJoin || !otherWantsToFight) {
 			options.setEnabled(ENGAGE, false);
@@ -371,7 +373,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		}
 		
-		options.addOption("Go back", GO_BACK);
+		options.addOption(StringHelper.getString("goBack", true), GO_BACK);
 		options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
 		
 		

@@ -1205,6 +1205,34 @@
 		"entryDescMoreDMods":"D-mod count increased: paying %s of base value",
 	},
 	
+	"nex_militaryOptions":{
+		"noStation":"The colony has no orbital station or nearby fleets to defend it.",
+		"noFleets":"There are no nearby fleets to defend the colony.",
+		
+		"stationNameGeneric":"An orbital station",
+		"hasStation":"$stationName dominates the orbit and prevents any hostile action, aside from a quick raid, unless it is dealt with.",
+		"hasFleetWithStation":"The defending ships present are, with the support of the station, sufficient to prevent raiding as well.",
+		"hasFleet":"Defending ships are present in sufficient strength to prevent any hostile action until they are dealt with.",
+		"hasFleetTooSmall":"Defending ships are present, but not in sufficient strength to want to give battle or prevent any hostile action you might take.",
+		
+		"optionEngage":"Engage the defenders",
+		"optionAidStation":"Aid the $stationType",
+		"optionAidStationAndDefenders":"Aid the $stationType and its defenders",
+		"optionAidDefenders":"Aid the defenders",
+		"optionAidAttackers":"Aid the attacking forces",
+		"optionEngageStation":"Engage the $stationType",
+		"optionEngageStationAndDefenders":"Engage the $stationType and its defenders",
+		"optionEngageDefenders":"Engage the defenders",
+		
+		"optionRaid":"Launch a raid against $market",
+		"optionBombard":"Consider an orbital bombardment of $market",
+		"cannotRaid":"The presence of enemy fleets that are willing to offer battle makes a raid impossible.",
+		"cannotBombard":"All defenses must be defeated to make a bombardment possible.",
+		"raidCooldown":"Your forces will be able to organize another raid within a day or so.",
+		
+		"nonHostileWarning":"The $faction $isOrAre not currently hostile, and you have been positively identified. Are you sure you want to engage in open hostilities?",
+	},
+	
 	"nex_playerOutpost":{
 		"outposts":"outposts",
 		"outpostProperName":"Outpost",
