@@ -47,7 +47,6 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
-import static exerelin.world.ExerelinNewGameSetup.log;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,6 +93,8 @@ public class ExerelinProcGen {
 		Tags.THEME_REMNANT, Tags.THEME_REMNANT_DESTROYED, Tags.THEME_REMNANT_MAIN, Tags.THEME_REMNANT_RESURGENT, Tags.THEME_REMNANT_SECONDARY, Tags.THEME_REMNANT_SUPPRESSED,
 		"theme_breakers", "theme_breakers_main", "theme_breakers_secondary", "theme_breakers_destroyed", "theme_breakers_suppressed", "theme_breakers_resurgent"
 	}));
+	
+	public static Logger log = Global.getLogger(ExerelinProcGen.class);
 	
 	protected Set<String> factionIds = new HashSet<>();
 	protected List<StarSystemAPI> systems = new ArrayList<>();
@@ -258,6 +260,7 @@ public class ExerelinProcGen {
 			return false;
 		
 		int numDesirables = 0;
+		int numSystems = 0;
 		for (StarSystemAPI system : systems)
 		{
 			int count = 0;
@@ -268,8 +271,9 @@ public class ExerelinProcGen {
 				numDesirables++;
 				if (count >= setupData.maxPlanetsPerSystem) break; 
 			}
+			if (count > 0) numSystems++;
 		}
-		return numDesirables >= setupData.numPlanets;
+		return numDesirables >= setupData.numPlanets && numSystems > setupData.numSystems;
 	}
 	
 	/**
