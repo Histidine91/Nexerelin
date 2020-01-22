@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
@@ -464,7 +465,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      */
     public DiplomacyEventDef pickDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, DiplomacyEventParams params)
     {
-        DiplomacyEventDef event = null;
         String factionId1 = faction1.getId();
         String factionId2 = faction2.getId();
         
@@ -479,7 +479,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             log.info("Dominance factor: " + dominance);
         }
         
-        WeightedRandomPicker<DiplomacyEventDef> eventPicker = new WeightedRandomPicker();
+        List<Pair<DiplomacyEventDef, Float>> validEvents = new ArrayList<>();
+        float sumChancesPositive = 0;
+        float sumChancesNegative = 0;
+        
         for (DiplomacyEventDef eventDef: eventDefs)
         {
             if (params.random != eventDef.random)
@@ -546,10 +549,28 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
                 if (chance <= 0) continue;
             }
-            eventPicker.add(eventDef, chance);
+            
+            validEvents.add(new Pair<>(eventDef, chance));
+            if (isNegative) sumChancesNegative += chance;
+            else sumChancesPositive += chance;
         }
-        if (event == null) event = eventPicker.pick();
-        return event;
+        
+        WeightedRandomPicker<DiplomacyEventDef> eventPicker = new WeightedRandomPicker();
+        
+        // normalize chances and add to picker
+        for (Pair<DiplomacyEventDef, Float> validEvent : validEvents) {
+            DiplomacyEventDef event = validEvent.one;
+            float chance = validEvent.two;
+            
+            boolean isNegative = (event.maxRepChange + event.minRepChange)/2 < 0;
+            if (isNegative) chance /= sumChancesNegative;
+            else chance /= sumChancesPositive;
+            
+            eventPicker.add(event, chance);
+        }
+        
+        
+        return eventPicker.pick();
     }
     
     public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2)
