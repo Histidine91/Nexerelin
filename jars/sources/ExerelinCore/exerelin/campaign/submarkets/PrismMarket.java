@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -30,6 +31,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
 import data.scripts.campaign.intel.SWP_IBBTracker;
+import data.scripts.campaign.intel.VayraUniqueBountyManager;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
@@ -378,7 +380,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
         try {
             JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), ExerelinConstants.MOD_ID);
             for(int i = 0; i < config.length(); i++) {
-            
                 JSONObject row = config.getJSONObject(i);
                 String hullId = row.getString("id");
                 String factionId = row.optString("faction");
@@ -391,6 +392,22 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         
         return bossShips;
+    }
+    
+    public boolean isHVBCompleted(String id) {
+        try {
+            if (VayraUniqueBountyManager.getInstance().hasCurrentBounty(id))
+                return false;    // bounty is ongoing
+            
+            MemoryAPI memory = Global.getSector().getMemory();
+            List<String> spentBounties = (List<String>) memory.get("$vayra_uniqueBountiesSpent");
+            if (spentBounties == null) return false;
+            // bounty still available for spawning, i.e. not completed
+            if (!spentBounties.contains(id)) return false;
+            
+            return true;
+        } catch (Throwable t) {}
+        return true;
     }
     
     /**
@@ -456,8 +473,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 if (checkBossCompletion && haveVayra && entry.hvbID != null && !entry.hvbID.isEmpty()) 
                 {
                     try {
-                        List<String> spentBounties = (List<String>)Global.getSector().getMemoryWithoutUpdate().get("$vayra_uniqueBountiesSpent");  
-                        if (spentBounties != null && !spentBounties.contains(entry.hvbID)) {
+                        if (!isHVBCompleted(entry.hvbID)) {
                             log.info("HVB not completed for " + entry.hvbID);
                             proceed = false;
                         }
