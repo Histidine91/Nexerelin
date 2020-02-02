@@ -28,10 +28,10 @@ import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
-import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.campaign.intel.fleets.WaitStage;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -83,7 +83,6 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		travel.setAbortFP(fp * successMult);
 		addStage(travel);
 		
-		
 		action = new InvActionStage(this, target);
 		action.setAbortFP(fp * successMult);
 		addStage(action);
@@ -118,6 +117,17 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		*/
 		addIntelIfNeeded();
 	}
+	
+	/*
+	@Override
+	public void setOutcome(OffensiveOutcome outcome) {
+		super.setOutcome(outcome);
+		// don't wait for WaitStage to finish
+		// normal return stage doesn't need it since it completes immediately
+		// ... no don't do this, this stops the current stage from advance()ing
+		endAfterDelay();	
+	}
+	*/
 		
 	public int getMarinesPerFleet() {
 		return marinesPerFleet;
@@ -148,7 +158,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		log.info("Preparing brawl defense fleet: strength " + defFP + ", ETA " + eta * 0.8f);
 		brawlDefIntel = new DefenseFleetIntel(target.getFaction(), target, target, defFP, eta * 0.8f);
-		brawlDefIntel.setSilent();
+		if (!ExerelinModPlugin.isNexDev)
+			brawlDefIntel.setSilent();
 		brawlDefIntel.setRequiresSpaceportOrBase(false);
 		brawlDefIntel.setBrawlMode(true);
 		brawlDefIntel.init();
@@ -156,6 +167,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public DefenseFleetIntel getBrawlDefIntel() {
 		return brawlDefIntel;
+	}
+	
+	@Override
+	public boolean shouldMakeImportantIfTargetingPlayer() {
+		return true;
 	}
 	
 	protected String getDescString() {
@@ -251,6 +267,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		for (RaidStage stage : stages) {
 			stage.showStageInfo(info);
 			if (getStageIndex(stage) == failStage) break;
+		}
+		
+		if (ExerelinModPlugin.isNexDev && (isEnding() || isEnded())) {
+			info.addPara("The event is now over.", opad);
 		}
 	}
 	

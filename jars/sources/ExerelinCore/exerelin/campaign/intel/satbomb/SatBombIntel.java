@@ -83,6 +83,11 @@ public class SatBombIntel extends OffensiveFleetIntel {
 	}
 	
 	@Override
+	public boolean shouldMakeImportantIfTargetingPlayer() {
+		return true;
+	}
+	
+	@Override
 	public CampaignFleetAPI createFleet(String factionId, RouteManager.RouteData route, MarketAPI market, Vector2f locInHyper, Random random) {
 		if (random == null) random = new Random();
 				

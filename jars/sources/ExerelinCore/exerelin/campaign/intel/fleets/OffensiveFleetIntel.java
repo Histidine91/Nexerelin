@@ -112,6 +112,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return requiresSpaceportOrBase;
 	}
 	
+	public boolean shouldMakeImportantIfTargetingPlayer() {
+		return false;
+	}
+	
 	protected void queueIntelIfNeeded()
 	{
 		if (intelQueuedOrAdded) return;
@@ -125,7 +129,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected void addIntelIfNeeded()
 	{
 		if (intelQueuedOrAdded) return;
-		if (targetFaction.isPlayerFaction() || targetFaction == PlayerFactionStore.getPlayerFaction())
+		if (shouldMakeImportantIfTargetingPlayer() 
+				&& (targetFaction.isPlayerFaction() || targetFaction == PlayerFactionStore.getPlayerFaction()))
 			setImportant(true);
 		Global.getSector().getIntelManager().addIntel(this);
 		intelQueuedOrAdded = true;
