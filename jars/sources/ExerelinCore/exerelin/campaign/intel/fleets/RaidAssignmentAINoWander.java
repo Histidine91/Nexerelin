@@ -282,7 +282,7 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	@Override
 	protected void addStartingAssignment(RouteManager.RouteSegment current, boolean justSpawned) 
 	{
-		fleet.addFloatingText("Executing starting assignment: " + justSpawned, fleet.getFaction().getBaseUIColor(), 2);
+		//fleet.addFloatingText("Executing starting assignment: " + justSpawned, fleet.getFaction().getBaseUIColor(), 2);
 		super.addStartingAssignment(current, justSpawned);
 	}
 }
