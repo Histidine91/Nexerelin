@@ -155,6 +155,17 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 	
 	// don't overcomplicate this for now
 	protected int calculateReward() {
+		int amount = calculateBaseReward(market, industry);
+		amount *= MathUtils.getRandomNumberInRange(8, 12)/10f;
+		
+		// round it
+		amount /= 50;
+		amount *= 50;
+		
+		return amount;
+	}
+	
+	public static int calculateBaseReward(MarketAPI market, Industry industry) {
 		int reward = (int)(1 + (market.getSize()/2) * Global.getSettings().getFloat("nex_disruptMissionRewardMult"));
 		if (industry.getSpec().hasTag(Industries.TAG_MILITARY) 
 				|| industry.getSpec().hasTag(Industries.TAG_COMMAND))
@@ -163,20 +174,14 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		float multMod = getDefenderStrengthMult(market) - 1;
 		reward *= 1 + (multMod/4);
 		
-		reward *= MathUtils.getRandomNumberInRange(8, 12)/10f;
-		
-		// round it
-		reward /= 50;
-		reward *= 50;
-		
 		return reward;
 	}
 	
-	public float getDefenderStrengthMult(MarketAPI market)
+	public static float getDefenderStrengthMult(MarketAPI market)
 	{
 		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);		
 		float mult = defender.getMult();
-		Global.getLogger(this.getClass()).info(market.getName() + " defense mult: " + mult);
+		//Global.getLogger(DisruptMissionIntel.class).info(market.getName() + " defense mult: " + mult);
 		return mult;
 	}
 

@@ -29,6 +29,7 @@ public class DisruptMissionManager extends BaseEventManager {
 
 	public static final String KEY = "nex_DisruptMissionManager";
 	public static final int MIN_PLAYER_LEVEL = 15;
+	public static final int MAX_REWARD = 1200*1000;
 	public static Logger log = Global.getLogger(DisruptMissionManager.class);
 	
 	public static DisruptMissionManager getInstance() {
@@ -174,6 +175,9 @@ public class DisruptMissionManager extends BaseEventManager {
 				if (!ind.canBeDisrupted())
 					continue;
 				if (ind.isDisrupted())
+					continue;
+				
+				if (DisruptMissionIntel.calculateBaseReward(market, ind) > MAX_REWARD)
 					continue;
 				
 				IndustrySpecAPI spec = ind.getSpec();
