@@ -463,8 +463,12 @@ ShowVisual ""graphics/illustrations/hound_hangar.jpg""",You can dispatch a fleet
 nex_fleetRequestByTrigger,Nex_FleetRequest,,"Nex_FleetRequest mainMenu
 SetShortcut nex_fleetRequestCancel ""ESCAPE""",,,
 ,,,,,,
-nex_fleetRequest_selectTypeMenu,DialogOptionSelected,$option == nex_fleetRequest_selectType,"SetTooltip nex_fleetRequest_setType_basestrike ""Sends a task force to destroy a concealed pirate or Luddic Path base. The base's star system must be known. Will not earn bounty rewards.""",,"nex_fleetRequest_setType_invasion:Invasion
+nex_fleetRequest_selectTypeMenu,DialogOptionSelected,$option == nex_fleetRequest_selectType,"SetTooltip nex_fleetRequest_setType_basestrike ""Sends a task force to destroy a concealed pirate or Luddic Path base. The base's star system must be known. Will not earn bounty rewards.""
+SetTooltip nex_fleetRequest_setType_defense ""Patrols the target market's system. Once arrived, will remain on station for 150 days.""
+SetTooltipHighlightColors nex_fleetRequest_setType_defense hColor
+SetTooltipHighlights nex_fleetRequest_setType_defense 150",,"nex_fleetRequest_setType_invasion:Invasion
 nex_fleetRequest_setType_basestrike:Base strike
+nex_fleetRequest_setType_defense:Defense
 nex_fleetRequest_main:Back",
 nex_fleetRequest_selectType,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setType_""","Nex_FleetRequest setType
 FireAll Nex_FleetRequest",,,

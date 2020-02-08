@@ -30,12 +30,14 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.MutableValue;
 import data.scripts.campaign.bases.VayraRaiderBaseIntel;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
+import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -470,14 +472,28 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				factionsSet.add(market.getFaction());
 			}
 		}
+		else if (fleetType == FleetType.DEFENSE) {
+			factionsSet.add(Global.getSector().getPlayerFaction());
+			factionsSet.add(PlayerFactionStore.getPlayerFaction());
+			
+			String pfid = PlayerFactionStore.getPlayerFactionId();
+			for (FactionAPI faction : Global.getSector().getAllFactions())
+			{
+				if (AllianceManager.areFactionsAllied(faction.getId(), Factions.PLAYER)
+						|| AllianceManager.areFactionsAllied(faction.getId(), pfid))
+					factionsSet.add(faction);
+			}
+		}
 		else {
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 				factionsSet.add(market.getFaction());
 			}
 		}
 		
-		factionsSet.remove(Global.getSector().getPlayerFaction());
-		factionsSet.remove(PlayerFactionStore.getPlayerFaction());
+		if (fleetType != FleetType.DEFENSE) {
+			factionsSet.remove(Global.getSector().getPlayerFaction());
+			factionsSet.remove(PlayerFactionStore.getPlayerFaction());
+		}
 		
 		List<FactionAPI> factions = new ArrayList<>(factionsSet);
 		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
@@ -633,6 +649,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				intel = new BaseStrikeIntel(attacker, source, target, fp, timeToLaunch);
 				break;
 			case DEFENSE:
+				intel = new DefenseFleetIntel(attacker, source, target, fp, timeToLaunch);
+				break;
 			default:
 				return false;
 		}
