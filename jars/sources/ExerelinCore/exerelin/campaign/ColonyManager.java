@@ -5,11 +5,13 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionProductionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -26,6 +28,7 @@ import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -100,6 +103,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		0, 10, 25, 50, 80, 120, 200, 300
 	};
 	
+	public static final Map<String, Float> SURVEY_DATA_VALUES = new HashMap<>();
+	
 	protected Map<MarketAPI, LinkedList<QueuedIndustry>> npcConstructionQueues = new HashMap<>();
 	protected int bonusAdminLevel = 0;
 	protected float colonyExpeditionProgress;
@@ -108,6 +113,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected int numColonies;
 	protected int currIter;
 	protected float reliefFleetCooldown;
+	
+	static {
+		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_1, 1f);
+		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_2, 2f);
+		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_3, 5f);
+		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_4, 10f);
+		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_5, 25f);
+	}
 	
 	public ColonyManager() {
 		super(true);
@@ -317,7 +330,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	public static void updateFreePortSetting(MarketAPI market)
 	{
-		if (market.getFaction().isPlayerFaction()) return;	// let player decide
+		if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) return;	// let player decide
 		
 		ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		// keep the cond check; motherfuckers can't be trusted to have the right settting
@@ -564,6 +577,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return numAvertedExpeditions;
 	}
 	
+	protected float getSurveyDataDaysValue(String commodityId) {
+		if (commodityId == null) return 0;
+		
+		if (SURVEY_DATA_VALUES.containsKey(commodityId))
+			return SURVEY_DATA_VALUES.get(commodityId);
+		
+		return 0;
+	}
+	
 	protected String pickFactionToColonize() {
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
@@ -767,6 +789,22 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		{
 			SectorManager.addOrRemoveMilitarySubmarket(market, market.getFactionId(), true);
 		}
+	}
+	
+	@Override
+	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+		float net = 0;
+		
+		for (CargoStackAPI stack : transaction.getSold().getStacksCopy()) {
+			net += getSurveyDataDaysValue(stack.getCommodityId()) * stack.getSize();
+		}
+		for (CargoStackAPI stack : transaction.getBought().getStacksCopy()) {
+			net -= getSurveyDataDaysValue(stack.getCommodityId()) * stack.getSize();
+		}
+		if (net != 0)
+			log.info("Colony expedition progress from selling survey data: " + net);
+		
+		colonyExpeditionProgress += net;
 	}
 	
 	@Override
@@ -1144,7 +1182,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 */
 	public static PersonAPI getBestAdmin(MarketAPI market) {
 		PersonAPI best = null;
-		int bestScore = 0;
+		int bestScore = -1;
 		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
 		{
 			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
@@ -1165,8 +1203,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		if (postId.equals(Ranks.POST_FACTION_LEADER) && person.getFaction() == market.getFaction())
 			return 3;
-		else if (postId.equals(Ranks.POST_STATION_COMMANDER) && market.getPrimaryEntity().hasTag(Tags.STATION))
-			return 2;
+		else if (postId.equals(Ranks.POST_STATION_COMMANDER)) 
+		{
+			if (market.getPrimaryEntity().hasTag(Tags.STATION))
+				return 2;
+			return 0;
+		}
 		else if (postId.equals(Ranks.POST_ADMINISTRATOR))
 			return 1;
 		
