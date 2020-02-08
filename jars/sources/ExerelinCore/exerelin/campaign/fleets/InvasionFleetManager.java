@@ -32,6 +32,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -46,6 +48,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -522,6 +525,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 						PlayerFactionStore.getPlayerFactionId());
 			
 			float weight = 1;
+			
+			weight *= getLowProfileMult(marketFactionId);
 			
 			// base weight based on distance
 			if (originLoc != null) {
@@ -1154,6 +1159,22 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		amount *= 100;
 		
 		return amount;
+	}
+	
+	public float getLowProfileMult(String factionId) {
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		if (!conf.hasDiplomacyTrait(TraitIds.LOWPROFILE))
+			return 1;
+		
+		int empireSize = EconomyInfoHelper.getInstance().getCachedEmpireSize(factionId);
+		int minSize = 5, maxSize = 25;
+		float minMult = 0.5f, maxMult = 0.9f;
+		if (empireSize <= minSize) return minMult;
+		else if (empireSize >= maxSize) return maxMult;
+		else {
+			float alpha = (empireSize - minSize)/(maxSize - minSize);
+			return NexUtilsMath.lerp(minMult, maxMult, alpha);
+		}
 	}
 	
 	public List<OffensiveFleetIntel> getActiveIntelCopy() {

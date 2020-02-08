@@ -91,6 +91,6 @@ public class DiplomacyTraits {
 		public static final String MONOPOLIST		= "monopolist";
 		public static final String LAW_AND_ORDER	= "law_and_order";
 		public static final String ANARCHIST		= "anarchist";
-
+		public static final String LOWPROFILE		= "lowprofile";
 	}
 }

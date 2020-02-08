@@ -133,6 +133,13 @@
 			"color":[198, 198, 0],
 			"icon":"graphics/icons/markets/free_port.png"
 		},
+		{
+			"id":"lowprofile",
+			"name":"Low Profile",
+			"desc":"Markets less likely to be targeted for raids/invasions, if the attacker has multiple enemies. Effect diminishes with empire size.",
+			"color":[160, 160, 176],
+			"icon":"graphics/portraits/bgs/bg03.png"
+		},		
 		# vindictive?
 	],
 }

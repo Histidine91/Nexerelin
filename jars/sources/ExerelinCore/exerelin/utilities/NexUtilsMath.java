@@ -37,7 +37,14 @@ public class NexUtilsMath {
 	{
 		return Math.floor(num + 0.5f);
 	}
-		
+	
+	/**
+	 * Linear interpolation between x and y.
+	 * @param x
+	 * @param y
+	 * @param alpha How "far along" the line between x and y the value is.
+	 * @return
+	 */
 	public static float lerp(float x, float y, float alpha) {
 		return (1f - alpha) * x + alpha * y;
 	}

@@ -29,15 +29,16 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	
 	protected static EconomyInfoHelper currInstance;
 	
-	Set<String> haveHeavyIndustry = new HashSet<>();
+	protected Set<String> haveHeavyIndustry = new HashSet<>();
 	
 	// for each faction, store map of commodity ID and its best output
-	Map<String, Map<String, Integer>> factionProductionByFaction = new HashMap<>();
+	protected Map<String, Map<String, Integer>> factionProductionByFaction = new HashMap<>();
 	
-	Map<String, List<ProducerEntry>> producersByFaction = new HashMap<>();
-	Map<String, List<ProducerEntry>> producersByCommodity = new HashMap<>();
-	Map<String, Map<FactionAPI, Integer>> marketSharesByCommodity = new HashMap<>();
-	Map<MarketAPI, Float> aiCoreUsers = new HashMap<>();
+	protected Map<String, List<ProducerEntry>> producersByFaction = new HashMap<>();
+	protected Map<String, List<ProducerEntry>> producersByCommodity = new HashMap<>();
+	protected Map<String, Map<FactionAPI, Integer>> marketSharesByCommodity = new HashMap<>();
+	protected Map<MarketAPI, Float> aiCoreUsers = new HashMap<>();
+	protected Map<String, Integer> empireSizeCache = new HashMap<>();
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
@@ -76,6 +77,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		producersByCommodity.clear();
 		marketSharesByCommodity.clear();
 		aiCoreUsers.clear();
+		empireSizeCache.clear();
 		
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsInGroup(null);
 		if (markets.isEmpty())
@@ -178,6 +180,22 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				aiCoreUsers.put(market, aiScore);
 			}
 		}
+	}
+	
+	protected void incrementEmpireSize(String factionId, MarketAPI market) {
+		int size = 0;
+		if (empireSizeCache.containsKey(factionId))
+			size = empireSizeCache.get(factionId);
+		
+		size += market.getSize();
+		empireSizeCache.put(factionId, size);
+	}
+	
+	public int getCachedEmpireSize(String factionId) {
+		if (empireSizeCache.containsKey(factionId))
+			return empireSizeCache.get(factionId);
+		
+		return 0;
 	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction("hegemony");

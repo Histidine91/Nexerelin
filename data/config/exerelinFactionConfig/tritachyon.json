@@ -18,7 +18,7 @@
         "corporate":1,
         "technocratic":1,
     },
-    "diplomacyTraits":["monopolist", "weak-willed", "anarchist"],
+    "diplomacyTraits":["monopolist", "weak-willed", "anarchist", "lowprofile"],
     
     "freeMarket":true,
     
