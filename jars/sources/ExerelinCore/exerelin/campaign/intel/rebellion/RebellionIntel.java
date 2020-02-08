@@ -492,6 +492,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
 			boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
 	{
+		if (this.market != market) return;
 		if (result != null) return;
 		if (newOwner.isAtWorst(rebelFaction, RepLevel.SUSPICIOUS))
 		{

@@ -942,7 +942,7 @@
 		"groundSupportCapability":"fleet capability for ground support",
 		"heavyWeaponsOnBoard":"heavy armaments in cargo",
 		"defenseBonus":"$Faction defense bonus",
-		"defenseBonusGeneral":"Natural invasion resistance",
+		"defenseBonusGeneral":"Strength mult vs. invasions",
 		"defenderPreparedness":"increased defender preparedness",
 		"attackBonus":"$Faction attack bonus",
 		"defendBonus":"$Faction defense bonus",

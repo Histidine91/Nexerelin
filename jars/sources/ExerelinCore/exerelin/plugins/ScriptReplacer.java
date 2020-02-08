@@ -1,17 +1,23 @@
 package exerelin.plugins;
 
 import com.fs.starfarer.api.EveryFrameScript;
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SpecialItemData;
+import com.fs.starfarer.api.campaign.econ.Industry;
+import com.fs.starfarer.api.campaign.econ.InstallableIndustryItemPlugin;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
 import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager.GenericMissionCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager.GenericBarEventCreator;
 import static exerelin.plugins.ExerelinModPlugin.log;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScriptReplacer {
-	public static <T extends EveryFrameScript> boolean replaceScript(SectorAPI sector, Class toRemove, T toAdd)
+    public static <T extends EveryFrameScript> boolean replaceScript(SectorAPI sector, Class toRemove, T toAdd)
     {
         boolean removedAny = false;
         for (EveryFrameScript script : sector.getScripts())
@@ -87,5 +93,23 @@ public class ScriptReplacer {
             }
         }
         return removedAny;
+	}
+	
+	public static void replaceIndustry(String industry) {
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
+		{
+			if (!market.hasIndustry(industry))
+				continue;
+			
+			Industry old = market.getIndustry(industry);
+			String aiCore = old.getAICoreId();
+			List<SpecialItemData> installedItems = old.getVisibleInstalledItems();
+			market.removeIndustry(industry, null, false);
+			market.addIndustry(industry);
+			Industry novus = market.getIndustry(industry);
+			novus.setAICoreId(aiCore);
+			if (!installedItems.isEmpty())
+				novus.setSpecialItem(installedItems.get(0));
+		}
 	}
 }

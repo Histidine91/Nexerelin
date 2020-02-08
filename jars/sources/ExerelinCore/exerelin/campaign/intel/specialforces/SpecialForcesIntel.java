@@ -549,7 +549,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		}
 		if (routeAI.currentTask != null) {
 			str = getString("intelDescActionPriority");
-			info.addPara(str, opad, h, String.format("%.1f", routeAI.currentTask.priority));
+			info.addPara(str, 3, h, String.format("%.1f", routeAI.currentTask.priority));
 		}
 		unindent(info);
 		

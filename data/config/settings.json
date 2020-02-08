@@ -33,7 +33,7 @@
 	"nex_npcColonyGrowthMult":0.5,
 	"nex_showNPCGrowthMessages":true,
 	
-	"nex_brawlMode":false,	# much stronger invasion and raid fleets, with defense fleets spawned to counter them
+	"nex_brawlMode":false,	# much stronger invasion fleets, with defense fleets spawned to counter them
 	"nex_brawlMode_minMult":1.5,
 	"nex_brawlMode_maxMult":3,
 	"nex_brawlMode_randomFactionGearChance":0,	# 0.6
@@ -151,6 +151,7 @@
 			"trait_neutralist":"graphics/exerelin/icons/intel/swiss_flag.png",
 			"trait_monopolist":"graphics/icons/industry/exports40.png",
 			"trait_lawAndOrder":"graphics/exerelin/icons/intel/police_star.png",
+			"trait_lowProfile":"graphics/portraits/bgs/bg03.png",
 		},
 	}
 }
