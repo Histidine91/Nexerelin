@@ -16,4 +16,8 @@
 	"nex_sfx_deciv_bomb":[
 		{"file":"sounds/nexerelin/sfx_interface/explosion_01.ogg","pitch":1,"volume":1.0},
 	],
+	
+	"nex_alarm":[
+		{"file":"sounds/nexerelin/sfx_interface/alarm.wav","pitch":1,"volume":1.0}
+	]
 }

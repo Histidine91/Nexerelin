@@ -474,6 +474,14 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	}
 	
 	@Override
+	public String getCommMessageSound() {
+		if (isPlayerTargeted() && !isSendingUpdate()) {
+			return "nex_alarm";
+		}
+		return super.getCommMessageSound();
+	}
+	
+	@Override
 	protected float getBaseDaysAfterEnd() {
 		if (outcome == OffensiveOutcome.SUCCESS) return 15;
 		return 7;

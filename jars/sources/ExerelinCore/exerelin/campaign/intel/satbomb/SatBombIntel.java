@@ -288,6 +288,14 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		return Global.getSettings().getSpriteName("intel", "nex_satbomb");
 	}
 	
+	@Override
+	public String getCommMessageSound() {
+		if (isPlayerTargeted()) {
+			return "nex_alarm";
+		}
+		return super.getCommMessageSound();
+	}
+	
 	public static void createDebugEvent(MarketAPI source, MarketAPI dest, float fp, float orgDur){
 		SatBombIntel intel = new SatBombIntel(source.getFaction(), source, dest, fp, orgDur);
 		intel.init();

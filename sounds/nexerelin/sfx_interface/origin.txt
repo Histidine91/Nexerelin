@@ -3,3 +3,6 @@ battle.wav is a mashup of two sounds, both from projects licensed as (GPL v2 or 
 - Argh_heavy_machinegun.wav from xenoargh's Merc Squad
 
 explosion_01.ogg is just the file of the same name from Starsector, converted to stereo
+
+alarm.wav - SoundBible (http://soundbible.com/2056-Missile-Alert.html)
+	CC-BY
