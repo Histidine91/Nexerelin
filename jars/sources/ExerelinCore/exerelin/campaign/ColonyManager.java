@@ -734,6 +734,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(target.getEconGroup()))
 		{
 			if (market == target) continue;	// no self-relief
+			if (market.getFaction().isPlayerFaction()) continue;
 			
 			FactionAPI other = market.getFaction();
 			if (!ExerelinConfig.getExerelinFactionConfig(other.getId()).playableFaction)
