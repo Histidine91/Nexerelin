@@ -548,6 +548,12 @@ public class SpecialForcesRouteAI {
 				return true;
 			}
 		}
+		// defending vs. player in system, but player already left
+		else if (taskType == TaskType.DEFEND_VS_PLAYER 
+				&& Global.getSector().getPlayerFleet().getContainingLocation() != currentTask.system) 
+		{
+			return true;
+		}
 		
 		return false;
 	}
@@ -557,6 +563,9 @@ public class SpecialForcesRouteAI {
 	 */
 	public void updateTaskIfNeeded() 
 	{
+		if (sf.route.getActiveFleet() != null && sf.route.getActiveFleet().getBattle() != null)
+			return;
+		
 		//sf.debugMsg("Checking " + sf.getFleetNameForDebugging() + " for task change", false);
 		boolean wantNewTask = wantNewTask();
 		
