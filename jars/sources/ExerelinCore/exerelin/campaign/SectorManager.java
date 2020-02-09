@@ -1152,7 +1152,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // rebellion
-        if (isCapture && !ExerelinUtilsMarket.getOriginalOwner(market).equals(newOwner.getId())
+        if (isCapture && !newOwner.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market))
                 && !RebellionIntel.isOngoing(market))
         {
             RebellionIntel rebel = RebellionCreator.getInstance().createRebellion(market, oldOwnerId, true);
