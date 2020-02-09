@@ -1,81 +1,35 @@
 package exerelin.campaign.submarkets;
 
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.submarkets.BlackMarketPlugin;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 
 @Deprecated
 public class Nex_BlackMarketPlugin extends BlackMarketPlugin {
 	
-	// same as vanilla except sells more weapons/fighters
-	// TODO: not same anymore
-	/*
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		float seconds = Global.getSector().getClock().convertToSeconds(sinceLastCargoUpdate);
-		addAndRemoveStockpiledResources(seconds, false, true, true);
-		sinceLastCargoUpdate = 0f;
-
+		super.updateCargoPrePlayerInteraction();
 		
 		if (okToUpdateShipsAndWeapons()) {
-			sinceSWUpdate = 0f;
-			float stability = market.getStabilityValue();
-			
-			pruneWeapons(0f);
+			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
+			int weapons = 4 + Math.max(0, market.getSize() - 3) + (Misc.isMilitary(market) ? 5 : 0);
+			int fighters = 2 + Math.max(0, (market.getSize() - 3) / 2) + (Misc.isMilitary(market) ? 2 : 0);
+
+			// just kidding, it's only 50% more
+			//weapons /= 2;
+			//fighters /= 2;
+
 			WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<String>();
-			factionPicker.add(market.getFactionId(), 15f - stability);
+			factionPicker.add(market.getFactionId(), 15f - market.getStabilityValue());
 			factionPicker.add(Factions.INDEPENDENT, 4f);
 			factionPicker.add(submarket.getFaction().getId(), 6f);
-			addWeapons(9, 13, 3, factionPicker);
-			addFighters(4, 7, 3, factionPicker);
+
+			addWeapons(weapons, weapons + 1, 3, factionPicker);
+			addFighters(fighters, fighters + 1, 3, factionPicker);
 			
-			float sMult = Math.max(0.1f, 1f - stability / 10f);
-			getCargo().getMothballedShips().clear();
-			float pOther = 0.1f;
-			addShips(market.getFactionId(),
-					40f * sMult, // combat
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // freighter 
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // tanker
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // transport
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // liner
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // utilityPts
-					null,
-					0f, // qualityMod
-					null,
-					null);
-			FactionDoctrineAPI doctrineOverride = submarket.getFaction().getDoctrine().clone();
-			doctrineOverride.setWarships(3);
-			doctrineOverride.setPhaseShips(2);
-			doctrineOverride.setCarriers(2);
-			doctrineOverride.setCombatFreighterProbability(1f);
-			doctrineOverride.setShipSize(5);
-			addShips(submarket.getFaction().getId(),
-					70f, // combat
-					10f, // freighter 
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // tanker
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // transport
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // liner
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // utilityPts
-					//0.8f,
-					Math.min(1f, Misc.getShipQuality(market, market.getFactionId()) + 0.5f),
-					0f, // qualityMod
-					null,
-					doctrineOverride);
-			addShips(Factions.INDEPENDENT,
-					15f + 15f * sMult, // combat
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // freighter 
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // tanker
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // transport
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // liner
-					itemGenRandom.nextFloat() > pOther ? 0f : 10f, // utilityPts
-					//0.8f,
-					Math.min(1f, Misc.getShipQuality(market, market.getFactionId()) + 0.5f),
-					0f, // qualityMod
-					null,
-					null);
-			
-			addHullMods(4, 1 + itemGenRandom.nextInt(3));
+			getCargo().sort();
 		}
-		
-		getCargo().sort();
 	}
-	*/
 }

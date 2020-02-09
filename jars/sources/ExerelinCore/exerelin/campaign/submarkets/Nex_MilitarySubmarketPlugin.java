@@ -8,43 +8,24 @@ import exerelin.utilities.ExerelinUtilsFaction;
 // TODO: should also sell relevant package blueprints
 public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	
-	// same as vanilla except sells more weapons/fighters
-	// TODO: not same anymore
-	/*
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		float seconds = Global.getSector().getClock().convertToSeconds(sinceLastCargoUpdate);
-		addAndRemoveStockpiledResources(seconds, false, true, true);
-		sinceLastCargoUpdate = 0f;
-		
+		super.updateCargoPrePlayerInteraction();
 		if (okToUpdateShipsAndWeapons()) {
-			sinceSWUpdate = 0f;
-			
-			pruneWeapons(0f);
-			addWeapons(12, 16, 3, submarket.getFaction().getId());
-			addFighters(6, 8, 3, market.getFactionId());
+			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
+			int weapons = 4 + Math.max(0, market.getSize() - 3) * 2;
+			int fighters = 2 + Math.max(0, market.getSize() - 3);
 
-			float stability = market.getStabilityValue();
-			float sMult = Math.max(0.1f, stability / 10f);
-			getCargo().getMothballedShips().clear();
-			addShips(submarket.getFaction().getId(),
-					200f * sMult, // combat
-					15f, // freighter 
-					10f, // tanker
-					20f, // transport
-					10f, // liner
-					10f, // utilityPts
-					null, // qualityOverride
-					0f, // qualityMod
-					null,
-					null);
-				
-			addHullMods(4, 2 + itemGenRandom.nextInt(4));
+			// just kidding, it's only 50% more
+			//weapons /= 2;
+			//fighters /= 2;
+
+			addWeapons(weapons, weapons + 1, 0, market.getFactionId());
+			addFighters(fighters, fighters + 1, 0, market.getFactionId());
+			
+			getCargo().sort();
 		}
-		
-		getCargo().sort();
 	}
-	*/
 	
 	// not now, Tiandong compatibility is more than I want to do atm
 	/*
