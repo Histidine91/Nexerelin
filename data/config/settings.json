@@ -2,7 +2,7 @@
 	"baseMaxAdmins":2,					# default 1
 	"colonyOverMaxPenalty":1,			# default 2
 	"accessibilityNoSpaceport":-0.5,	# default -1
-	"industryRefundFraction":0.5,		# default 0.75
+	"industryRefundFraction":0.4,		# default 0.75
 	
 	"plugins":{
 		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",
