@@ -65,7 +65,7 @@
 	"nex_raidBPInitialExtraMult":1,		# vanilla code assumes 0.5
 	"nex_raidBPIterationMult":0.5,		# vanilla code assumes 1
 	
-	"nex_aiCoreAndPrisonerCooldownAfterInvasion":0,	# cannot turn in prisoners or AI cores for this long after a successful invasion of that faction's markets
+	"nex_aiCoreAndPrisonerCooldownAfterInvasion":61,	# cannot turn in prisoners or AI cores for this long after a successful invasion of that faction's markets
 	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,
