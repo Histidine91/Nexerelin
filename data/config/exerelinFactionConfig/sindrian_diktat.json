@@ -19,6 +19,7 @@
     "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
     
     "specialForcesMaxFleets":1,
+    #"specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.FactionListNamer",
     
     "startShipsSolo":[
       ["swp_brawler_lions_guard_eli"],
