@@ -291,11 +291,13 @@ public class ExerelinFactionConfig
             if (settings.has("diplomacyTraits")) {
                 List<String> traitsList = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("diplomacyTraits"));
                 // validate traits
+                /*
                 for (String traitId : traitsList) {
                     TraitDef trait = DiplomacyTraits.getTrait(traitId);
                     if (trait == null)
                         throw new RuntimeException("Faction " + factionId + " has invalid trait " + traitId);
                 }
+                */
                 
                 diplomacyTraits.addAll(traitsList);
             }
