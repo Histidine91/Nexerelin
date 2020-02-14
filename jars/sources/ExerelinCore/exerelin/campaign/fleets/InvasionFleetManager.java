@@ -486,6 +486,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		for (MarketAPI market : markets) 
 		{
+			// likely to crash in 0.9.1a
+			if (market.getContainingLocation().isHyperspace())
+				continue;
+			
 			FactionAPI marketFaction = market.getFaction();
 			String marketFactionId = marketFaction.getId();
 			
