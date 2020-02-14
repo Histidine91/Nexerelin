@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
+import com.fs.starfarer.api.campaign.econ.ImmigrationPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -32,6 +33,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import static com.fs.starfarer.api.util.Misc.getImmigrationPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.SectorManager;
@@ -361,6 +363,15 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			market.addCondition(Conditions.DECIVILIZED_SUBPOP);
 		}
 		market.addIndustry(Industries.POPULATION);
+		
+		// set growth level to 50%
+		ImmigrationPlugin plugin = getImmigrationPlugin(market);
+		float min = plugin.getWeightForMarketSize(market.getSize());
+		float max = plugin.getWeightForMarketSize(market.getSize() + 1);
+		market.getPopulation().setWeight((min+max)/2);
+		
+		// try to prevent instant size 4
+		market.getMemoryWithoutUpdate().set("$nex_delay_growth", true, 5);
 		
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (config.freeMarket)

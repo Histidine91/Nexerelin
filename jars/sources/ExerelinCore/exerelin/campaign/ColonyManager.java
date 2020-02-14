@@ -165,7 +165,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			// handle market growth
 			if (!market.isPlayerOwned())
 			{
-				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1) 
+				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1 &&
+						!market.getMemoryWithoutUpdate().getBoolean("$nex_delay_growth")) 
 				{
 					int maxSize;
 					if (market.getFaction().isPlayerFaction())
