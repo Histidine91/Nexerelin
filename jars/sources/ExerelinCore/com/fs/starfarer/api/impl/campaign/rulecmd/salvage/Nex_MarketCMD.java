@@ -320,12 +320,18 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		//DEBUG = false;
 		if (temp.canRaid && getRaidCooldown() > 0) {// && couldRaidIfNotDebug) {
+			String daysStr = Misc.getStringForDays((int)Math.ceil(getRaidCooldown()));
+			String str = StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+					"raidCooldown", "$cooldown", daysStr); 
+			
 			if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
 				options.setEnabled(RAID, false);
-				text.addPara(StringHelper.getString("nex_militaryOptions", "raidCooldown"));
+				text.addPara(str);
+				text.highlightFirstInLastPara(daysStr, Misc.getHighlightColor());
 				temp.canRaid = false;
 			} else {
-				text.addPara(StringHelper.getString("nex_militaryOptions", "raidCooldown"));
+				text.addPara(str);
+				text.highlightFirstInLastPara(daysStr, Misc.getHighlightColor());
 				text.addPara("(DEBUG mode: can do it anyway)");
 			}
 			//options.setTooltip(RAID, "Need more time to organize another raid.");
