@@ -19,7 +19,6 @@ public class Nex_GrantAutonomy extends BaseCommandPlugin {
 	
 	public static final int REVOKE_UNREST = 2;
 	
-	// TODO	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;

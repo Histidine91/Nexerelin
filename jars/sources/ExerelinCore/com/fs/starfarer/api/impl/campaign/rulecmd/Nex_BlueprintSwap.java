@@ -560,8 +560,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	public static boolean hasPrism(MarketAPI market)
 	{
-		// TODO: config for whether SCY prism has this
-		return market.hasSubmarket("exerelin_prismMarket") || market.hasSubmarket("SCY_prismMarket");	// for now
+		return market.hasSubmarket("exerelin_prismMarket") || market.hasSubmarket("SCY_prismMarket");
 	}
 	
 	public static Random getRandom() {

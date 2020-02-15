@@ -34,7 +34,6 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	public static final float SIZE_VALUE_MULT = 5000;
 	public static final String MEMORY_KEY_NO_BUY = "$nex_unbuyable";
 	
-	// TODO	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;

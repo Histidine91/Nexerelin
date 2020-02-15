@@ -300,7 +300,6 @@ public class AgentIntel extends BaseIntelPlugin {
 			button.setShortcut(Keyboard.KEY_T, true);
 		}
 		
-		// TODO
 		if (nextAction != null) {
 			info.addSectionHeading(getString("intelDescNextAction"), Alignment.MID, opad);
 			nextAction.addCurrentActionPara(info, opad);

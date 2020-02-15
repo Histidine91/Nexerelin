@@ -37,7 +37,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	protected final List<SpecialForcesIntel> activeIntel = new LinkedList();
 	protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
-	// TODO
+	// TODO: maybe also limit to number of markets
 	public int getMaxFleets(String factionId) {
 		return ExerelinConfig.getExerelinFactionConfig(factionId).specialForcesMaxFleets;
 	}
@@ -197,5 +197,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	@Override
 	public boolean runWhilePaused() {
 		return false;
-	}	
+	}
+	// debug code
+	// runcode exerelin.campaign.intel.specialforces.SpecialForcesManager.getManager().generateFleet("sindrian_diktat")
 }

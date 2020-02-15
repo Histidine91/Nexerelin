@@ -40,6 +40,7 @@ import data.scripts.world.systems.Valhalla;
 import data.scripts.world.systems.Westernesse;
 import data.scripts.world.systems.Yma;
 import data.scripts.world.systems.Zagan;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 
 public class VanillaSystemsGenerator {
@@ -295,6 +296,9 @@ public class VanillaSystemsGenerator {
 		MarketAPI fikenhild = getMarket("fikenhild");
 		//fikenhild.removeIndustry(Industries.PATROLHQ, null, false);
 		//fikenhild.addIndustry(Industries.MILITARYBASE);
+		
+		MarketAPI mazalot = getMarket("mazalot");
+		//mazalot.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.LUDDIC_CHURCH);
 		
 		MarketAPI volturn = getMarket("volturn");
 		volturn.addIndustry(Industries.PATROLHQ);
