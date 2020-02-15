@@ -5,7 +5,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -18,6 +17,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.List;
+import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
@@ -84,7 +84,7 @@ public class RebellionCreator implements EveryFrameScript {
 		}
 		
 		String originalOwner = ExerelinUtilsMarket.getOriginalOwner(market);
-		if (SectorManager.getManager().isRespawnFactions() && 
+		if (SectorManager.getManager().isRespawnFactions() && !SectorManager.isFactionAlive(originalOwner) &&
 				SectorManager.getManager().getNumRespawns(originalOwner) < ExerelinConfig.maxFactionRespawns) 
 		{
 			addToListIfNotPresent(enemies, originalOwner);
@@ -92,6 +92,8 @@ public class RebellionCreator implements EveryFrameScript {
 		
 		for (String candidate : enemies)
 		{
+			if (candidate.equals(market.getFactionId())) continue;
+			
 			float weight = 1;
 			if (faction.isAtBest(candidate, RepLevel.VENGEFUL))
 				weight += 2;
@@ -140,8 +142,7 @@ public class RebellionCreator implements EveryFrameScript {
 		if (hardModePenalty)
 			effectiveStability -= HARD_MODE_STABILITY_MODIFIER;
 		
-		int requiredThreshold = 4;
-		if (requiredThreshold < 0) requiredThreshold = 0;
+		int requiredThreshold = 5;
 		
 		float points = (requiredThreshold - effectiveStability)/2;
 		if (points > 2) points = 2;
@@ -195,7 +196,7 @@ public class RebellionCreator implements EveryFrameScript {
 			float ongoingMult = 1 - (numOngoing/MAX_ONGOING);
 			points *= ongoingMult;
 		}
-		if (points != 0) return;
+		if (points == 0) return;
 		
 		incrementRebellionPoints(market, points);
 	}
@@ -220,5 +221,17 @@ public class RebellionCreator implements EveryFrameScript {
 	@Override
 	public boolean runWhilePaused() {
 		return false;
+	}
+	
+	// runcode exerelin.campaign.intel.rebellion.RebellionCreator.printRebellionPoints();
+	public static void printRebellionPoints() {
+		RebellionCreator instance = RebellionCreator.getInstance();
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+		{
+			Float points = instance.getRebellionPoints(market);
+			if (points != 0) {
+				Console.showMessage("  " + market.getName() + ": " + points);
+			}
+		}
 	}
 }

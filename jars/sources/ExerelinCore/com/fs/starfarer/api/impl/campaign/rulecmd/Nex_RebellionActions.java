@@ -22,6 +22,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
+import org.lwjgl.input.Keyboard;
 
 
 public class Nex_RebellionActions extends BaseCommandPlugin {
@@ -107,7 +108,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 		AddRemoveCommodity.addCommodityLossText(commodity, (int)amount, dialog.getTextPanel());
 		
 		// handle credits payment
-		if (!market.isPlayerOwned()) {
+		if (!market.isPlayerOwned() && !market.getFaction().isPlayerFaction()) {
 			float basePrice = market.getDemandPrice(commodity, amount, true);
 			int payment = (int)(basePrice * getRewardMult(market.getFactionId()));
 			cargo.getCredits().add(payment);
@@ -160,7 +161,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 		String optId = OPT_PREFIX + commodity + idSuffix;
 		opts.addOption(getDeliverString(commodity, amount), optId);
 		
-		if (!market.isPlayerOwned()) {
+		if (!market.isPlayerOwned() && !market.getFaction().isPlayerFaction()) {
 			float basePrice = market.getDemandPrice(commodity, amount, true);
 			int payment = (int)(basePrice * getRewardMult(market.getFactionId()));
 			String paymentStr = Misc.getDGSCredits(payment);
@@ -186,13 +187,18 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				addDeliverOption(dialog, commodity, 100, ":100");
 			if (have >= 500)
 				addDeliverOption(dialog, commodity, 500, ":500");
-			if (have >= 1 && have != 20 && have != 100 && have != 500)
+			if (have >= 1 && have != 20 && have != 100 && have < 500)
 				addDeliverOption(dialog, commodity, have, ":all");
 		}
-		if (isRebel(dialog))
+		if (isRebel(dialog)) {
 			opts.addOption(Misc.ucFirst(StringHelper.getString("leave")), "nex_supplyInsurgencyBack");
-		else
+			opts.setShortcut("nex_supplyInsurgencyBack", Keyboard.KEY_ESCAPE, false, false, false, false);
+		}
+		else {
 			opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_supplyCounterInsurgencyBack");
+			opts.setShortcut("nex_supplyCounterInsurgencyBack", Keyboard.KEY_ESCAPE, false, false, false, false);
+		}
+			
 		
 		ExerelinUtils.addDevModeDialogOptions(dialog);
 	}

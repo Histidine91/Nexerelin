@@ -77,7 +77,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	//public static final float VALUE_PER_CREDIT = 0.01f * 0.01f;
 	public static final float REP_MULT = 0.1f;
 	public static final float MAX_REP = 0.2f;
-	public static final float STRENGTH_CHANGE_MULT = 0.25f;
+	public static final float STRENGTH_CHANGE_MULT = 0.15f;	// damage done per round
 	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
 	public static final float REBEL_ORIGINAL_OWNER_STR_MULT = 1.25f;
 	public static final int MAX_STABILITY_PENALTY = 5;
@@ -246,7 +246,6 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (rebelFaction.isPlayerFaction() || rebelFaction == Misc.getCommissionFaction())
 			level = DETAIL_LEVEL_TO_KNOW_FACTION;
 		
-		// TODO: check for agents
 		for (AgentIntel intel : CovertOpsManager.getManager().getAgents()) {
 			if (intel.getMarket() == market)
 				level += intel.getLevel();
@@ -381,7 +380,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		
 		updateCommodityFactor();
 		
-		float priceMult = 1 + (commodityFactor/6);
+		float priceMult = 1 + (commodityFactor/8);
 		String desc = getString("commodityPriceDesc");
 		
 		market.getCommodityData(Commodities.MARINES).getPlayerPriceMod().modifyMult(modId, priceMult, desc);
@@ -746,7 +745,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				return;
 			}
 			
-			if (govtStrength < rebelStrength * 1.25f && suppressionFleet == null)
+			if (govtStrength < rebelStrength * 1.25f && suppressionFleet == null 
+					&& !market.getFaction().isPlayerFaction())
 			{
 				suppressionFleetCountdown -= days;
 				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
@@ -875,6 +875,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	@Override
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
 		Color c = getTitleColor(mode);
+		Color tc = getBulletColorForMode(mode);
 		Color h = Misc.getHighlightColor();
 		info.addPara(getName(), c, 0f);
 		bullet(info);
@@ -890,71 +891,71 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (result != null) {
 			switch (result) {
 				case GOVERNMENT_VICTORY:
-					info.addPara(getString("intelBulletGovtVictory"), c, pad);
+					info.addPara(getString("intelBulletGovtVictory"), tc, pad);
 					break;
 				case REBEL_VICTORY:
-					info.addPara(getString("intelBulletRebelVictory"), c, pad);
+					info.addPara(getString("intelBulletRebelVictory"), tc, pad);
 					break;
 				case LIBERATED:
 					String str = getString("intelBulletLiberated");
 					String name = liberatorFaction.getDisplayName();
 					str = StringHelper.substituteToken(str, "$faction", name);
-					info.addPara(str, pad, c, liberatorFaction.getBaseUIColor(), name);
+					info.addPara(str, pad, tc, liberatorFaction.getBaseUIColor(), name);
 					break;
 				case MUTUAL_ANNIHILATION:
-					info.addPara(getString("intelBulletMutualAnnihilation"), c, pad);
+					info.addPara(getString("intelBulletMutualAnnihilation"), tc, pad);
 					break;
 				case TIME_EXPIRED:
-					info.addPara(getString("intelBulletExpired"), c, pad);
+					info.addPara(getString("intelBulletExpired"), tc, pad);
 					break;
 			}
 			// also print rep changes, if this is an update
 			if (listInfoParam != null) {
 				if (repResultGovt != null)
 					CoreReputationPlugin.addAdjustmentMessage(repResultGovt.delta, govtFaction, null, 
-							null, null, info, c, false, pad);
+							null, null, info, tc, false, pad);
 				if (repResultRebel != null)
 					CoreReputationPlugin.addAdjustmentMessage(repResultRebel.delta, rebelFaction, null, 
-							null, null, info, c, false, pad);
+							null, null, info, tc, false, pad);
 			}
 			
 			return;
 		}
 		
 		if (!started)
-			info.addPara(getString("intelBulletPrep"), c, pad);
+			info.addPara(getString("intelBulletPrep"), tc, pad);
 		
 		// If this is an update, print that
 		String str;
 		if (listInfoParam != null) {
 			switch ((UpdateParam)listInfoParam) {
 				case START:
-					info.addPara(getString("intelBulletStart"), c, pad);
+					info.addPara(getString("intelBulletStart"), tc, pad);
 					break;
 				case FLEET_PREP:
 					str = getString("intelBulletFleetPrep");
-					info.addPara(str, pad, c, suppressionFleetSource.getFaction().getBaseUIColor(), 
+					info.addPara(str, pad, tc, suppressionFleetSource.getFaction().getBaseUIColor(), 
 							suppressionFleetSource.getName());
 					break;
 				case FLEET_SPAWNED:
 					str = getString("intelBulletFleetLaunched");
-					info.addPara(str, pad, c, suppressionFleetSource.getFaction().getBaseUIColor(), 
+					info.addPara(str, pad, tc, suppressionFleetSource.getFaction().getBaseUIColor(), 
 							suppressionFleetSource.getName());
 					break;
 				case FLEET_ARRIVED:
-					info.addPara(getString("intelBulletFleetArrived"), c, pad);
+					info.addPara(getString("intelBulletFleetArrived"), tc, pad);
 					break;
 				case FLEET_DEFEATED:
-					info.addPara(getString("intelBulletFleetDefeated"), pad);
+					info.addPara(getString("intelBulletFleetDefeated"), tc, pad);
 					break;
 				case INDUSTRY_DISRUPTED:
 					str = getString("intelBulletIndustryDisrupt");
-					info.addPara(str, pad, c, h, lastIndustryDisrupted.getCurrentName(), 
+					info.addPara(str, pad, tc, h, lastIndustryDisrupted.getCurrentName(), 
 							Math.round(disruptTime) + "");
 					break;
 				case INDUSTRY_DISRUPT_FAIL:
 					str = getString("intelBulletIndustryDisruptFail");
-					info.addPara(str, pad, c, h, lastIndustryDisrupted.getCurrentName());
+					info.addPara(str, pad, tc, h, lastIndustryDisrupted.getCurrentName());
 					break;
 			}
 		}
@@ -1295,7 +1296,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(RebellionIntel.class))
 		{
 			RebellionIntel reb = (RebellionIntel)intel;
-			if (reb.market == market) return reb;
+			if (!reb.isEnding() && !reb.isEnded() && reb.market == market) return reb;
 		}
 		return null;
 	}
