@@ -10,7 +10,7 @@ import exerelin.utilities.ExerelinConfig;
 
 public class Nex_HegemonyInspectionManager extends HegemonyInspectionManager {
 	
-	// Hegemony won't inspect if player is member or allied
+	// Hegemony won't inspect if player is allied
 	@Override
 	protected void checkInspection() {
 		
@@ -25,11 +25,26 @@ public class Nex_HegemonyInspectionManager extends HegemonyInspectionManager {
 	}
 	
 	@Override
+	public void advance(float amount) {
+		super.advance(amount);
+		
+		// kill the inspection event if source market is hostile to hegemony
+		if (intel != null && !intel.isEnding() && !intel.isEnded() 
+				&& intel.getCurrentStage() <= 1
+				&& !intel.getFrom().getFactionId().equals(Factions.HEGEMONY)) 
+		{
+			intel.forceFail(true);
+		}
+	}
+	
+	@Override
 	public void createInspection() {
 		super.createInspection();
 		if (intel != null && ExerelinConfig.autoResistAIInspections) {
 			intel.setOrders(HegemonyInspectionIntel.AntiInspectionOrders.RESIST);
+			intel.sendUpdateIfPlayerHasIntel(null, false);
 		}
 	}
-
+	
+	// runcode exerelin.campaign.intel.Nex_HegemonyInspectionManager.getInstance().createInspection();
 }
