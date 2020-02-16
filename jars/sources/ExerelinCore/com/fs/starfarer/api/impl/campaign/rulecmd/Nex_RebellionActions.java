@@ -22,10 +22,13 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 
-public class Nex_RebellionActions extends BaseCommandPlugin {
+public class Nex_RebellionActions extends PaginatedOptions {
 	
 	public static final String OPT_PREFIX = "nex_supplyInsurgency_deliver_";
 	public static final int PREFIX_LENGTH = OPT_PREFIX.length();
@@ -38,6 +41,8 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 		Commodities.MARINES,
 	};
 	
+	public static Map<String, String[]> tooltips = new HashMap<>();
+	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
@@ -47,6 +52,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 		switch(arg)
 		{
 			case "main":
+				initPaginatedDialog(dialog, memoryMap);
 				addOptions(dialog);
 				break;
 			case "printPriceMult":
@@ -54,6 +60,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				break;
 			case "deliver":
 				deliverCommodities(dialog, memoryMap.get(MemKeys.LOCAL).getString("$option"));
+				initPaginatedDialog(dialog, memoryMap);
 				addOptions(dialog);
 				break;
 			case "isOngoing":
@@ -62,6 +69,14 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				return enoughRepToSupply(dialog);
 		}
 		return true;
+	}
+	
+	public void initPaginatedDialog(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
+	{
+		this.dialog = dialog;  
+		this.memoryMap = memoryMap;
+		originalPlugin = dialog.getPlugin();
+		dialog.setPlugin(this); 
 	}
 	
 	public void printPriceMult(InteractionDialogAPI dialog)
@@ -159,7 +174,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		
 		String optId = OPT_PREFIX + commodity + idSuffix;
-		opts.addOption(getDeliverString(commodity, amount), optId);
+		addOption(getDeliverString(commodity, amount), optId);
 		
 		if (!market.isPlayerOwned() && !market.getFaction().isPlayerFaction()) {
 			float basePrice = market.getDemandPrice(commodity, amount, true);
@@ -167,16 +182,37 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 			String paymentStr = Misc.getDGSCredits(payment);
 			String tooltip = StringHelper.getString("exerelin_misc", "counterInsurgencyCredits");
 			tooltip = String.format(tooltip, paymentStr);
-			opts.setTooltip(optId, tooltip);
-			opts.setTooltipHighlights(optId, paymentStr);
-			opts.setTooltipHighlightColors(optId, Misc.getHighlightColor());
+			String[] tooltipHolder = new String[] {tooltip, paymentStr};
+			tooltips.put(optId, tooltipHolder);
+		}
+	}
+	
+	public void addTooltipsAndHotkeys(InteractionDialogAPI dialog) {
+		OptionPanelAPI opts = dialog.getOptionPanel();
+		Color color = Misc.getHighlightColor();
+		for (Map.Entry<String, String[]> tmp : tooltips.entrySet()) {
+			String id = tmp.getKey();
+			String tooltip = tmp.getValue()[0];
+			String hl = tmp.getValue()[1];
+			opts.setTooltip(id, tooltip);
+			opts.setTooltipHighlights(id, hl);
+			opts.setTooltipHighlightColors(id, color);
+		}
+		
+		// also hotkeys
+		if (isRebel(dialog)) {
+			dialog.getOptionPanel().setShortcut("nex_supplyInsurgencyBack", 
+					Keyboard.KEY_ESCAPE, false, false, false, false);
+		}
+		else {
+			dialog.getOptionPanel().setShortcut("nex_supplyCounterInsurgencyBack", 
+					Keyboard.KEY_ESCAPE, false, false, false, false);
 		}
 	}
 	
 	public void addOptions(InteractionDialogAPI dialog) 
 	{
-		OptionPanelAPI opts = dialog.getOptionPanel();
-		opts.clearOptions();
+		tooltips.clear();
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		for (String commodity : COMMODITIES)
 		{
@@ -191,15 +227,13 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				addDeliverOption(dialog, commodity, have, ":all");
 		}
 		if (isRebel(dialog)) {
-			opts.addOption(Misc.ucFirst(StringHelper.getString("leave")), "nex_supplyInsurgencyBack");
-			opts.setShortcut("nex_supplyInsurgencyBack", Keyboard.KEY_ESCAPE, false, false, false, false);
+			addOptionAllPages(Misc.ucFirst(StringHelper.getString("leave")), "nex_supplyInsurgencyBack");
 		}
 		else {
-			opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_supplyCounterInsurgencyBack");
-			opts.setShortcut("nex_supplyCounterInsurgencyBack", Keyboard.KEY_ESCAPE, false, false, false, false);
+			addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "nex_supplyCounterInsurgencyBack");
 		}
-			
-		
+		showOptions();
+		addTooltipsAndHotkeys(dialog);		
 		ExerelinUtils.addDevModeDialogOptions(dialog);
 	}
 	
