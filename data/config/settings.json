@@ -69,6 +69,8 @@
 	
 	"nex_aiCoreAndPrisonerCooldownAfterInvasion":61,	# cannot turn in prisoners or AI cores for this long after a successful invasion of that faction's markets
 	
+	"nex_bonusAdminLevels":[0, 10, 25, 50, 80, 120, 200, 300],
+	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,
 		"ore_moderate":2,	# 2.5,

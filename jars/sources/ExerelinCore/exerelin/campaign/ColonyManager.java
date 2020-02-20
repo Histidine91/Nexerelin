@@ -54,6 +54,7 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
@@ -74,6 +75,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
@@ -99,9 +101,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
 	public static final float NPC_FREE_PORT_GROWTH_REDUCTION_MULT = 0.5f;
 	
-	public static final int[] BONUS_ADMIN_LEVELS = new int[] {
-		0, 10, 25, 50, 80, 120, 200, 300
-	};
+	public static final int[] BONUS_ADMIN_LEVELS;
 	
 	public static final Map<String, Float> SURVEY_DATA_VALUES = new HashMap<>();
 	
@@ -120,6 +120,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_3, 5f);
 		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_4, 10f);
 		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_5, 25f);
+		
+		try {
+			JSONArray adminLevels = Global.getSettings().getJSONArray("nex_bonusAdminLevels");
+			
+			BONUS_ADMIN_LEVELS = new int[adminLevels.length()];
+			for (int i=0; i<adminLevels.length(); i++) {
+				BONUS_ADMIN_LEVELS[i] = adminLevels.getInt(i);
+			}
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		
 	}
 	
 	public ColonyManager() {
