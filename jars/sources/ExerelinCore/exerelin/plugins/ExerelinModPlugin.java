@@ -219,6 +219,11 @@ public class ExerelinModPlugin extends BaseModPlugin
             defender.unmodify("nex_invasionDefBonus");
             defender.unmodify("nex_invasionDefBonusGeneral");
         }
+        
+        if (SpecialForcesManager.getManager() == null) {
+            new SpecialForcesManager().init();
+        }
+            
     }
     
     protected void addBarEvents() {
@@ -320,8 +325,14 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         // Nex dev check
         try {
-            Global.getSettings().readTextFileFromCommon("nex_dev");
-            isNexDev = true;
+            String str = Global.getSettings().readTextFileFromCommon("nex_dev");
+            if (str != null && !str.isEmpty()) {
+                log.info("Nex dev mode on: " + str);
+                isNexDev = true;
+            }
+            else {
+                log.info("Nex dev mode off");
+            }
         }
         catch (IOException ex)
         {
