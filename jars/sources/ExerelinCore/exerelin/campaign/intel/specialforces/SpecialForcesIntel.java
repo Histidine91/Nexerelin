@@ -173,6 +173,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		params.officerNumberMult = 1.5f;
 		params.random = new Random(seed);
 		params.ignoreMarketFleetSizeMult = true;
+		params.modeOverride = FactionAPI.ShipPickMode.PRIORITY_THEN_ALL;
 		//params.doNotPrune = true;
 		
 		return FleetFactoryV3.createFleet(params);
@@ -187,6 +188,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	{
 		CampaignFleetAPI fleet = createFleetFromParams(thisRoute, spawnSeed);
 		if (fleet == null) return null;
+		
+		fleet.setFaction(faction.getId(), true);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		

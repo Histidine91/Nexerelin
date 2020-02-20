@@ -10,7 +10,7 @@
     
     "morality":"evil",
     
-    #"factionIdForHqResponse":"lions_guard",	# Guards have no capitals, so this produces weird fleets
+    "factionIdForHqResponse":"lions_guard",	# Guards have no capitals, so this produces weird fleets	# yes they do, you just did something wrong
 
     "alignments":{
         "militarist":1,
