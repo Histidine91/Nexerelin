@@ -61,6 +61,9 @@
 		"victory":"victory",
 		"defeat":"defeat",
 		
+		"attacker":"attacker",
+		"defender":"defender",
+		
 		"formed":"formed",
 		"dissolved":"dissolved",
 
@@ -983,6 +986,26 @@
 		"endMsgNoLoot":"The invasion did not lead to the capture of a meaningful quantity of goods.",
 		"endMsgDefeat":"Your invasion has been defeated.",
 	},
+	"nex_invasion2":{
+		"intelTitle":"Surface Battle: $market",
+		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
+		"intelDesc_round":"Day %s",
+		"intelDesc_strengthHeaderAttacker":"Attacker strength",
+		"intelDesc_strengthHeaderDefender":"Defender strength",
+		"intelDesc_strength":"Strength mult: %s",
+		"intelDesc_strength_noFleetSupport":"No fleet support",
+		
+		"industryPanel_header_industry":"Industry",
+		"industryPanel_header_heldBy":"Held by",
+		"industryPanel_header_attacker":"Attacking forces",
+		"industryPanel_header_defender":"Defending forces",
+		
+		"troopNameMarine":"Marines",
+		"troopNameMech":"Heavy Arms",
+		"troopNameMilitia":"Militia",
+		"troopNameRebel":"Rebels",
+	},
+	
 	"exerelin_landmarks":{
 		"abandonedStation":"Abandoned Station",
 		"beholderStation":"Beholder Station",
