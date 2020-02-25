@@ -63,6 +63,7 @@ public class RebellionCreator implements EveryFrameScript {
 	
 	protected static void addToListIfNotPresent(List<String> list, String toAdd)
 	{
+		if (toAdd == null) return;
 		if (list.contains(toAdd)) return;
 		list.add(toAdd);
 	}
