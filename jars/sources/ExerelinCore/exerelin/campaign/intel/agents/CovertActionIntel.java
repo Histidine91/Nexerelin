@@ -663,6 +663,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	public void addLastMessagePara(TooltipMakerAPI info, float pad) {
+		if (result == null)
+			return;
 		String str = StringHelper.getString("nex_agentActions", "intel_lastMessage_" 
 				+ getDefId() + "_" + (result.isSucessful() ? "success" : "failure"));
 		str = StringHelper.substituteTokens(str, getStandardReplacements());
