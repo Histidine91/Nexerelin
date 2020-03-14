@@ -662,6 +662,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         RespawnInvasionIntel intel = (RespawnInvasionIntel)InvasionFleetManager.getManager().generateInvasionOrRaidFleet(sourceMarket, targetMarket, 
                 InvasionFleetManager.EventType.RESPAWN, 1);
         if (intel != null) {
+            respawnFaction.getMemoryWithoutUpdate().set("$nex_respawn_cooldown", true, 
+                    Global.getSettings().getFloat("nex_faction_respawn_cooldown"));
         }
         return intel;
     }
@@ -700,7 +702,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (factionId.equals(Factions.PLAYER)) continue;
             if (factionId.equals(Factions.INDEPENDENT)) continue;
-			if (DO_NOT_RESPAWN_FACTIONS.contains(factionId)) continue;
+            if (DO_NOT_RESPAWN_FACTIONS.contains(factionId)) continue;
+            
+            FactionAPI faction = Global.getSector().getFaction(factionId);
+            if (faction.getMemoryWithoutUpdate().contains("$nex_respawn_cooldown")) continue;
+            
             ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (config != null && !config.playableFaction) continue;
             
