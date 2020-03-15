@@ -10,7 +10,8 @@
     
     "morality":"evil",
     
-    "factionIdForHqResponse":"lions_guard",	# Guards have no capitals, so this produces weird fleets	# yes they do, you just did something wrong
+    "factionIdForHqResponse":"lions_guard",
+    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.DiktatNamer",
 
     "alignments":{
         "militarist":1,

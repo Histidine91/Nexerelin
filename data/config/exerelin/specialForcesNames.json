@@ -39,7 +39,7 @@
 		"Wisdom",
 	],
 	
-	"tt_names":[
+	"factionNames_tritachyon":[
 		"Archimedes",
 		"Averroes",
 		"Babbage",
@@ -80,5 +80,51 @@
 		"Sina",
 		"Turing",
 		"Venn",
+	],
+	
+	"diktat_nameFormat":"$one $preposition $two",
+	
+	# commented out all the silly ones
+	"diktat_names1":[
+		"Leader",
+		"Dictator",
+		"Crusher",
+		"Enforcer",
+		#"Anonymity",
+		"Radiance",
+		"Brilliance",
+		#"Cup",
+		"Evocation",
+		"Refinement",
+		#"Specialty",
+		"Consideration",
+		"Violence",
+		"Vice",
+		"Perfection",
+		"Supremacy",
+	],
+	"diktat_names2":[
+		"Domination",
+		#"Soup in a Cup",
+		"Doctrine",
+		"Fortitude",
+		"Conviction",
+		"Enlightenment",
+		#"Status Quo",
+		#"Free and Fair Elections",
+		#"Cup in a Soup",
+		"Action",
+		"Constitution",
+		"Prosperity",
+		"Fear",
+		"Wrath",
+	],
+	"diktat_prepositions":[
+		"in",
+		"of",
+		"with",
+		#"of le",
+		#"la",
+		#"von",
 	],
 }

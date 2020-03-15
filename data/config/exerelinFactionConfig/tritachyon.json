@@ -26,7 +26,7 @@
     "colonyExpeditionChance":0.75,	# not really their kind of thing...? I guess
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
-    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.TriTachyonNamer",
+    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.FactionListNamer",
         
     "startShipsSolo":[["wolf_Starting"]],
     "startShipsCombatSmall":[
