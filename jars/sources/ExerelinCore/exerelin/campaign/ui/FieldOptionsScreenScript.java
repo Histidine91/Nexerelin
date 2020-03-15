@@ -74,7 +74,9 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 			DIRECTORY,
 			FLEET_REQUEST,
 			REMOTE_COMM,
+			REMOTE_SUSPEND_AUTONOMY,
 			INTEL_SCREEN,
+			//COLONY_SCREEN,
 			EXIT
 		}
 
@@ -98,6 +100,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 			options.addOption(StringHelper.getString("exerelin_factions", "factionDirectoryOption"), Menu.DIRECTORY);
 			options.addOption(StringHelper.getString("nex_fleetRequest", "fleetRequest", true), Menu.FLEET_REQUEST);
 			//options.addOption(StringHelper.getString("exerelin_markets", "remoteCommDirectory"), Menu.REMOTE_COMM);
+			options.addOption(StringHelper.getString("exerelin_markets", "remoteSuspendAutonomy"), Menu.REMOTE_SUSPEND_AUTONOMY);
 			options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), Menu.INTEL_SCREEN);
 			options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
 			options.setShortcut(Menu.INTEL_SCREEN, Keyboard.KEY_E, false, false, false, true);
@@ -131,7 +134,8 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 				text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
 			}
 			
-			if (optionData == Menu.DIRECTORY || optionData == Menu.FLEET_REQUEST || optionData == Menu.REMOTE_COMM) 
+			if (optionData == Menu.DIRECTORY || optionData == Menu.FLEET_REQUEST 
+					|| optionData == Menu.REMOTE_COMM || optionData == Menu.REMOTE_SUSPEND_AUTONOMY) 
 			{
 				FleetInteractionDialogPluginImpl.inConversation = true;
 
@@ -140,7 +144,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 				optionsDialogDelegate.init(dialog);
 
 				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
-				mem.set("$specialDialog", true, 0);
+				mem.set("$nex_specialDialog", true, 0);
 			}
 
 			if (optionData == Menu.INIT)
@@ -158,6 +162,10 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 			else if (optionData == Menu.REMOTE_COMM)
 			{
 				optionsDialogDelegate.fireAll("Nex_RemoteComm");
+			}
+			else if (optionData == Menu.REMOTE_SUSPEND_AUTONOMY)
+			{
+				optionsDialogDelegate.fireAll("Nex_RemoteSuspendAutonomy");
 			}
 			else if (optionData == Menu.INTEL_SCREEN)
 			{

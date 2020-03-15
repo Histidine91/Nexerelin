@@ -1,0 +1,96 @@
+package com.fs.starfarer.api.impl.campaign.rulecmd;
+
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignUIAPI.CoreUITradeMode;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.CoreUITabId;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.lwjgl.input.Keyboard;
+
+public class Nex_RemoteSuspendAutonomy extends PaginatedOptions implements CoreInteractionListener {
+	
+	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
+	public static final String OPTION_PREFIX = "nex_suspendAutonomyRemote_";
+	public static final int PREFIX_LENGTH = OPTION_PREFIX.length();
+	
+	protected boolean special;	// from special menu (i.e. FieldOptionsScreenScript)
+	
+	@Override
+	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+		String arg = params.get(0).getString(memoryMap);
+		
+		switch (arg)
+		{
+			case "menu":
+				optionsPerPage = 5;
+				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
+				special = memoryMap.get(MemKeys.LOCAL).getBoolean("$nex_specialDialog");
+				listOptions();
+				showOptions();
+				return true;
+			case "select":
+				String marketId = memoryMap.get(MemKeys.LOCAL).getString("$option").substring(PREFIX_LENGTH);
+				MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
+				Nex_GrantAutonomy.suspendAutonomy(market);
+				dialog.getVisualPanel().showCore(CoreUITabId.OUTPOSTS, null, this);
+				return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void optionSelected(String optionText, Object optionData) {
+		if (optionData.equals("continueCutComm")) {
+			// since we can't exit a paginated option dialog nested in FieldOptionsScreenScript's dialog the normal way
+			dialog.dismissAsCancel();
+			return;
+		}
+		
+		super.optionSelected(optionText, optionData);
+	}
+	
+	@Override
+	public void showOptions() {
+		super.showOptions();
+		String exitOpt = "exerelinMarketSpecial";
+		if (special)
+			exitOpt = "continueCutComm";	
+		dialog.getOptionPanel().setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
+	}
+	
+	public void listOptions() {
+		options.clear();
+		
+		String exitOpt = "exerelinMarketSpecial";
+		if (special)
+			exitOpt = "continueCutComm";
+		addOptionAllPages(StringHelper.getString("back", true), exitOpt);
+		
+		for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER)) {
+			if (market.isPlayerOwned()) continue;
+			
+			String name = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
+			name = StringHelper.substituteToken(name, "$market", market.getName());
+			name = StringHelper.substituteToken(name, "$size", market.getSize() + "");
+			name = StringHelper.substituteToken(name, "$location", market.getContainingLocation().getNameWithTypeIfNebula());
+			addOption(name, OPTION_PREFIX + market.getId());
+		}
+	}
+
+	@Override
+	public void coreUIDismissed() {
+		
+	}
+}

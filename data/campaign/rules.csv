@@ -871,11 +871,13 @@ Anything else?""",,
 nex_grantAutonomyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == player
-!Nex_GrantAutonomy isAutonomous",,,nex_grantAutonomy:Grant autonomy,
+!Nex_GrantAutonomy isAutonomous
+!$market.nex_autonomySuspended",,,nex_grantAutonomy:Grant autonomy,
 nex_revokeAutonomyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == player
-Nex_GrantAutonomy isAutonomous",,,nex_revokeAutonomy:Revoke autonomy,
+Nex_GrantAutonomy isAutonomous
+!$market.nex_autonomySuspended",,,nex_revokeAutonomy:Revoke autonomy,
 nex_grantAutonomy,DialogOptionSelected,$option == nex_grantAutonomy,"Nex_GrantAutonomy init
 AddTextSmall ""An autonomous market will only generate 20% of its usual profit or loss, and will not count towards the player's colony or admin limits. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. Tech-mining will not produce items.""
 SetTextHighlightColors hColor
@@ -899,6 +901,19 @@ FireAll PopulateOptions","""$market is now under autonomous administration. Than
 nex_revokeAutonomyConfirm,DialogOptionSelected,$option == nex_revokeAutonomy_confirm,"Nex_GrantAutonomy revoke
 FireAll PopulateOptions","""As you say. $market is now under your direct authority once more, $playerName.""",,
 nex_grantAutonomyCancel,DialogOptionSelected,$option == nex_grantAutonomy_cancel,FireAll PopulateOptions,"""Anything else?""",,
+,,,,,,
+nex_suspendAutonomyOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial admin
+$faction.id == player
+Nex_GrantAutonomy isAutonomous","SetTooltip nex_suspendAutonomy ""Temporarily removes the autonomous state from the colony, allowing you to build or remove industries and add/remove special objects. Colony reverts to being autonomous after undocking. There is no stability penalty.""",,nex_suspendAutonomy:Take temporary control of colony,
+nex_suspendAutonomy,DialogOptionSelected,$option == nex_suspendAutonomy,"Nex_GrantAutonomy suspend
+FireAll PopulateOptions","Autonomy suspended. Perform the desired operations $onOrAt $market, then undock once complete.",,
+,,,,,,
+nex_suspendAutonomyRemoteOption,ExerelinMarketSpecial,,,,8:nex_suspendAutonomyRemote:Take temporary control of autonomous colonies,
+nex_suspendAutonomyRemoteMenu,DialogOptionSelected,$option == nex_suspendAutonomyRemote,FireAll Nex_RemoteSuspendAutonomy,,,
+nex_suspendAutonomyRemoteMenuByTrigger,Nex_RemoteSuspendAutonomy,,Nex_RemoteSuspendAutonomy menu,"Temporarily removes the autonomous state from the selected colony, allowing you to build or remove industries and add/remove special objects. Colony reverts to being autonomous after undocking. There is no stability penalty.",,
+nex_suspendAutonomyRemote,DialogOptionSelected,Nex_OptionStartsWith nex_suspendAutonomyRemote_,Nex_RemoteSuspendAutonomy select,,,
+,,,,,,
 ,,,,,,
 # Reinforce defenses,,,,,,
 nex_reinforceDefensesOption,PopulateOptions,"$entity.hasMarket

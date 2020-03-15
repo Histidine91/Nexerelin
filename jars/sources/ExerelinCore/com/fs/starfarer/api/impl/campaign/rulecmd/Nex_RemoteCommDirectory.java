@@ -63,7 +63,7 @@ public class Nex_RemoteCommDirectory extends PaginatedOptions {
 	{
 		this.dialog = dialog;  
 		this.memoryMap = memoryMap;
-		special = memoryMap.get(MemKeys.LOCAL).getBoolean("$isSpecial");
+		special = memoryMap.get(MemKeys.LOCAL).getBoolean("$nex_specialDialog");
 	}
 	
 	@Override

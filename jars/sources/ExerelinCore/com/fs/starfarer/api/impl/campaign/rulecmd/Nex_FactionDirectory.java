@@ -115,7 +115,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	 */
 	public static void listGroups(InteractionDialogAPI dialog, MemoryAPI memory)
 	{
-		boolean special = memory.getBoolean("$specialDialog");
+		boolean special = memory.getBoolean("$nex_specialDialog");
 		
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		opts.clearOptions();

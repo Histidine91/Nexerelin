@@ -1056,6 +1056,7 @@
 		"reinforcedDefensesTooltip":"%s× defense bonus. %s day(s) remaining.",
 		
 		"remoteCommDirectory":"Remote connection to comm directory",
+		"remoteSuspendAutonomy":"Take temporary control of autonomous colonies",
 
 		"prismNoSale":"No sales/returns",
 		"prismRelTooLow":"Requires: $faction - $minRelationship",
