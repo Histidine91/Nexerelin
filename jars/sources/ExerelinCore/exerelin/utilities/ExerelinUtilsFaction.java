@@ -29,11 +29,6 @@ public class ExerelinUtilsFaction {
 			int score = curr.getSize();
 			if (isMilitary(curr)) score += 10;
 			if (score > max) {
-				JSONObject json = curr.getFaction().getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA);
-				if (json == null) continue;
-				boolean territorial = json.optBoolean("territorial");
-				if (!territorial) continue;
-				
 				max = score;
 				result = curr;
 			}
