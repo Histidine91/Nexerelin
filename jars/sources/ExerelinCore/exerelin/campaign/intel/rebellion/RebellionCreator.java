@@ -93,6 +93,7 @@ public class RebellionCreator implements EveryFrameScript {
 		
 		for (String candidate : enemies)
 		{
+			if (candidate.equals(Factions.PLAYER)) continue;
 			if (candidate.equals(market.getFactionId())) continue;
 			
 			float weight = 1;
