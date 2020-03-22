@@ -969,7 +969,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	// sidebar text description
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		float opad = 10f;
+		float pad = 3, opad = 10f;
 		Color hl = Misc.getHighlightColor();
 		Color govtColor = govtFaction.getBaseUIColor();
 		Color rebColor = rebelFaction.getBaseUIColor();
@@ -1086,6 +1086,18 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			str = getString("intelDescIncompleteDetails");
 			str = StringHelper.substituteTokens(str, sub);
 			info.addPara(str, opad);
+			
+			bullet(info);
+			str = getString("intelDescIncompleteDetails2");
+			info.addPara(str, pad, hl, DETAIL_LEVEL_TO_KNOW_FACTION + "",
+					DETAIL_LEVEL_FOR_STRENGTH_COLORS + "", 
+					DETAIL_LEVEL_FOR_STRENGTH_VALUES + "");
+			if (rebelFaction.isPlayerFaction() || rebelFaction == Misc.getCommissionFaction())
+			{
+				str = getString("intelDescIncompleteDetails3");
+				info.addPara(str, pad, hl, DETAIL_LEVEL_TO_KNOW_FACTION + "");
+			}
+			unindent(info);
 		}
 		if (knownLevel > 0) {
 			str = getString("intelDescDetailFaction");

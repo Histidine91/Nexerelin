@@ -1325,7 +1325,9 @@
 		"intelDesc2Player":"You may wish to speak to local officials on supplies of materiel for government forces.",
 		
 		"intelHeaderDetails":"Details",
-		"intelDescIncompleteDetails":"You lack complete information about the rebellion. Placing one or more agents $onOrAt $market may reveal more details.",
+		"intelDescIncompleteDetails":"You lack complete information about the rebellion. Placing agents $onOrAt $market may reveal more details.",
+		"intelDescIncompleteDetails2":"New information is available at agent levels %s, %s and %s. Multiple agents have their levels sum up.",
+		"intelDescIncompleteDetails3":"As your faction is the rebel sponsor, additional information is available (equivalent to a level %s agent).",
 		"intelDescDetailFaction":"The rebels are being sponsored by $theRebelFaction.",
 		"intelDescDetailFactionUnknown":"an unknown party",
 		"intelDescDetailGovtStrength":"Government strength: %s",
