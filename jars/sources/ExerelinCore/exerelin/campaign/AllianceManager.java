@@ -701,15 +701,34 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         return getManager().alliancesByName.get(allianceName);
     }
-	
-	public static Alliance getAllianceByUUID(String id)
-	{
-        return getManager().alliancesById.get(id);
-	}
     
+    public static Alliance getAllianceByUUID(String id)
+    {
+        return getManager().alliancesById.get(id);
+    }
+    
+    /**
+     * Gets the alliance this faction belongs to, if any. 
+     * @param factionId
+     * @return
+     */
     public static Alliance getFactionAlliance(String factionId)
     {
         return getManager().alliancesByFactionId.get(factionId);
+    }
+    
+    /**
+     * Gets the alliance the player or their commissioning faction belong to, if any.
+     * @param allowInherit If false, do not check commissioning faction's alliance.
+     * @return
+     */
+    public static Alliance getPlayerAlliance(boolean allowInherit) {
+        Alliance alliance = getFactionAlliance(Factions.PLAYER);
+        if (alliance == null && allowInherit && Misc.getCommissionFactionId() != null)
+        {
+            alliance = getFactionAlliance(Misc.getCommissionFactionId());
+        }
+        return alliance;
     }
     
     /**

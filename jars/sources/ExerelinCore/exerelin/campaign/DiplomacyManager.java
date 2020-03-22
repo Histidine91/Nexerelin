@@ -214,19 +214,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (alliance != null) ourMarkets = alliance.getAllianceMarkets();
         else ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
         //ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
-		
-		// If we are commissioned with this faction, add player markets to its list of markets
-		// (unless we're in the same alliance as commissioning faction, to prevent double counting)
-		// although we shouldn't ever be allied and commissioned at the same time anyway?
-		// (dunno if we actually enforce this)
-        if (factionId.equals(playerAlignedFactionId) && !playerAlignedFactionId.equals(Factions.PLAYER))
+        
+        // If we are commissioned with this faction, add player markets to its list of markets
+        if (factionId.equals(Misc.getCommissionFactionId()))
         {
-            boolean isAlliedWithCommissioningFaction = alliance != null && AllianceManager.getFactionAlliance(Factions.PLAYER) == alliance;
-            if (!isAlliedWithCommissioningFaction)
-            {
-                List<MarketAPI> playerNpcMarkets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
-                ourMarkets.addAll(playerNpcMarkets);
-            }
+            List<MarketAPI> playerMarkets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+            ourMarkets.addAll(playerMarkets);
         }
         
         int ourSize = 0;
