@@ -794,20 +794,20 @@ public class NexMarketBuilder
 		}
 	}
 	
-	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant) {
-		addIndustriesToMarket(entity, instant, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant, Random random) {
+		addIndustriesToMarket(entity, instant, Integer.MIN_VALUE, Integer.MAX_VALUE, random);
 	}
 	
 	/**
-	 * Fills the market with productive industries, up to the permitted number depending on size. 
-	 * Added industries depend on local market conditions.
+	 * Fills the market with productive industries, up to the permitted number depending on size.Added industries depend on local market conditions.
 	 * @param entity
 	 * @param instant
 	 * @param minPriority Minimum priority level of the industries that will be eligible to add.
 	 * @param maxPriority Maximum priority level of the industries that will be eligible to add.
+	 * @param random
 	 */
 	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant, 
-			float minPriority, float maxPriority)
+			float minPriority, float maxPriority, Random random)
 	{
 		int max = getMaxProductiveIndustries(entity);
 		if (entity.numProductiveIndustries >= max)
@@ -828,7 +828,7 @@ public class NexMarketBuilder
 			availableIndustries.add(gen);
 		}
 		
-		WeightedRandomPicker<IndustryClassGen> picker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<IndustryClassGen> picker = new WeightedRandomPicker<>(random);
 		// add as many industries as we're allowed to
 		int tries = 0;
 		while (Misc.getNumIndustries(entity.market) < Misc.getMaxIndustries(entity.market)
@@ -864,7 +864,7 @@ public class NexMarketBuilder
 		float specialChance = getSpecialIndustryChance(entity);
 		if (random.nextFloat() > specialChance) return;
 		
-		WeightedRandomPicker<IndustryClassGen> specialPicker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<IndustryClassGen> specialPicker = new WeightedRandomPicker<>(random);
 		for (IndustryClassGen gen : specialIndustryClasses)
 		{
 			if (!gen.canAutogen()) continue;
@@ -891,7 +891,7 @@ public class NexMarketBuilder
 	{
 		for (ProcGenEntity ent : markets)
 		{
-			addIndustriesToMarket(ent, true, 2, Integer.MAX_VALUE);
+			addIndustriesToMarket(ent, true, 2, Integer.MAX_VALUE, random);
 		}
 	}
 	
@@ -899,7 +899,7 @@ public class NexMarketBuilder
 	{
 		for (ProcGenEntity ent : markets)
 		{
-			addIndustriesToMarket(ent, true, Integer.MIN_VALUE, 2);
+			addIndustriesToMarket(ent, true, Integer.MIN_VALUE, 2, random);
 			addSpecialIndustries(ent);
 		}
 	}

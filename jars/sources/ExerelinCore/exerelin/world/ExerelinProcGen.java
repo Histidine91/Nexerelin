@@ -830,7 +830,7 @@ public class ExerelinProcGen {
 				log.info("Creating comm relay for system " + system.getName());
 				
 				relay = system.addCustomEntity(system.getId() + "_relay", // unique id
-					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
+					system.getBaseName() + " " + StringHelper.getString("relay", true), // name - if null, defaultName from custom_entities.json will be used
 					"comm_relay", // type of object, defined in custom_entities.json
 					capital.entity.getFaction().getId()); // faction
 				
@@ -840,7 +840,7 @@ public class ExerelinProcGen {
 				if (random.nextBoolean()) lp = 5;
 				
 				SectorEntityToken capEntity = capital.entity;
-				if (capital.type == EntityType.STATION)
+				if (capital.type == EntityType.STATION && capital.terrain == null)
 					capEntity = capEntity.getOrbitFocus();
 				if (capEntity instanceof PlanetAPI && ((PlanetAPI)capEntity).isMoon()) 
 					capEntity = capEntity.getOrbitFocus();
@@ -854,7 +854,7 @@ public class ExerelinProcGen {
 					ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
 						lp, startAngle, orbitRadius, 0, capEntity.getOrbit().getOrbitalPeriod(), 
 						false, 0, 1, 1, 0);
-					log.info("Placing relay at Lagrange point of " + capEntity.getName());
+					log.info("Placing relay at Lagrange point of " + capEntity.getName() + ", distance " + orbitRadius);
 					
 					// check for overlap with other entities
 					
@@ -1399,8 +1399,7 @@ public class ExerelinProcGen {
 		if (ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction || factionId.equals(Factions.INDEPENDENT))
 			return candidates.get(0);
 		
-		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>();
-		picker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>(random);
 		
 		// crash safety
 		Vector2f hqLoc;

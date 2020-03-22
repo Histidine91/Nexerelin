@@ -1099,7 +1099,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (military)
 			NexMarketBuilder.addMilitaryStructures(entity, false, random);
 		if (productive)
-			NexMarketBuilder.addIndustriesToMarket(entity, false);
+			NexMarketBuilder.addIndustriesToMarket(entity, false, random);
 	}
 	
 	/**
