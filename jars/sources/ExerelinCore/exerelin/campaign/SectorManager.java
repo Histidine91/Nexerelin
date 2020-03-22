@@ -30,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -255,7 +256,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
         if (!battle.isPlayerInvolved()) return;
         FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(insuranceLostMembers, null);
-		insuranceLostMembers.clear();
+        insuranceLostMembers.clear();
+        
+        handleCommissionPay(battle);
     }
     
     @Override
@@ -470,6 +473,37 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // TODO
         //WarmongerEvent event = WarmongerEvent.getOngoingEvent();
         //if (event != null) event.reportEvent(location, params);
+    }
+    
+    // Commission bounties aren't actually payed in Starsector 0.9.1-RC10 in spite of the notification. This fixes that.
+    // TODO - Remove this once the bug is fixed
+    public void handleCommissionPay(BattleAPI battle) 
+    {
+        if (!battle.isPlayerInvolved()) return;
+        // Ruth has her own copy of the bugfix
+        if (Global.getSettings().getModManager().isModEnabled("sun_ruthless_sector"))
+            return;
+        
+        FactionCommissionIntel intel = Misc.getCommissionIntel();
+        if (intel == null || intel.isEnded() || intel.isEnding()) return;
+
+        int payment = 0;
+        for (CampaignFleetAPI otherFleet : battle.getNonPlayerSideSnapshot()) {
+            if (!intel.getFactionForUIColors().isHostileTo(otherFleet.getFaction())) continue;
+
+            float bounty = 0;
+            for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
+                float mult = Misc.getSizeNum(loss.getHullSpec().getHullSize());
+                bounty += mult * Global.getSettings().getFloat("factionCommissionBounty");
+            }
+
+            payment += (int) (bounty * battle.getPlayerInvolvementFraction());
+        }
+
+        if (payment > 0) {
+            log.info("Commission bounty: paying " + payment + " credits");
+            Global.getSector().getPlayerFleet().getCargo().getCredits().add(payment);
+        }
     }
     
     public void handleSlaveTradeRep()
