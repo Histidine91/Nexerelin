@@ -807,6 +807,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+		if (transaction.getSubmarket().getPlugin().isFreeTransfer())
+			return;
+		
 		float net = 0;
 		
 		for (CargoStackAPI stack : transaction.getSold().getStacksCopy()) {
