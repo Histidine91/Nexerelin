@@ -202,6 +202,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					
 					List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(hullId);
 					String variantId = ExerelinUtils.getRandomListElement(variants);
+					if (variantId == null) variantId = hullId + "_Hull";
 					FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
 					targets.add(member);
 				}

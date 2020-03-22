@@ -167,7 +167,9 @@ public class ProcureShip extends CovertActionIntel {
 	
 	public String getRandomVariantId() {
 		List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(ship.getHullId());
-		return ExerelinUtils.getRandomListElement(variants);
+		String variantId = ExerelinUtils.getRandomListElement(variants);
+		if (variantId == null) variantId = ship.getHullId() + "_Hull";
+		return variantId;
 	}
 	
 	/**
