@@ -4,5 +4,5 @@ battle.wav is a mashup of two sounds, both from projects licensed as (GPL v2 or 
 
 explosion_01.ogg is just the file of the same name from Starsector, converted to stereo
 
-alarm.wav - SoundBible (http://soundbible.com/2056-Missile-Alert.html)
+alarm.wav - SoundBible (http://soundbible.com/2056-Missile-Alert.html), modified by Soren
 	CC-BY
