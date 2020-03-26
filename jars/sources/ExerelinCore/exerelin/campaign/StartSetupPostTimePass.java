@@ -47,24 +47,7 @@ public class StartSetupPostTimePass {
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
 		if (SectorManager.getCorvusMode())
 		{
-			// check that all factions support Corvus mode; warn player if not
-			int numIncompatibles = 0;
-			for (FactionAPI faction : sector.getAllFactions())
-			{
-				if (!ExerelinUtilsFaction.isCorvusCompatible(faction.getId(), true))
-				{
-					Global.getLogger(StartSetupPostTimePass.class).warn("Faction " + faction.getDisplayName() + " does not support non-random sector mode!");
-					numIncompatibles++;
-				}
-			}
-			if (numIncompatibles > 0)
-			{
-				Color color = Misc.getHighlightColor();
-				Color color2 = Color.RED;
-				CampaignUIAPI ui = sector.getCampaignUI();
-				ui.addMessage("You are using " + numIncompatibles + " mod faction(s) that do not support non-random sector mode!", color, numIncompatibles+"", null, color2, null);
-				ui.addMessage("See starsector.log for details", color);
-			}
+			
 		}
 		else 
 		{
