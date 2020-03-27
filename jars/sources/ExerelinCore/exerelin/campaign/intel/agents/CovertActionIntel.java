@@ -307,7 +307,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public CovertActionResult execute()
 	{
-		targetFaction = market.getFaction();
+		if (targetFaction == null)
+			targetFaction = market.getFaction();
 		if (playerInvolved) {
 			agentFaction = PlayerFactionStore.getPlayerFaction();	// in case player changed faction since launching action
 			if (agentFaction == targetFaction) {
