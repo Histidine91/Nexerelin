@@ -1056,6 +1056,9 @@
 		"reinforcedDefensesModDesc":"Reinforced defenses",
 		"reinforcedDefensesTooltip":"%s× defense bonus. %s day(s) remaining.",
 		
+		"donateAdminNoSkills":"unskilled",
+		"donateAdminConfirm":"Confirm admin transfer?",
+		
 		"remoteCommDirectory":"Remote connection to comm directory",
 		"remoteSuspendAutonomy":"Take temporary control of autonomous colonies",
 

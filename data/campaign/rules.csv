@@ -916,15 +916,26 @@ nex_suspendAutonomyRemote,DialogOptionSelected,Nex_OptionStartsWith nex_suspendA
 ,,,,,,
 ,,,,,,
 # Reinforce defenses,,,,,,
-nex_reinforceDefensesOption,PopulateOptions,"$entity.hasMarket
+#nex_reinforceDefensesOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial military
 Nex_ReinforceDefenses enabled",,,12:nex_reinforceDefenses_main:Reinforce ground defenses,
-nex_reinforceDefensesSel,DialogOptionSelected,$option == nex_reinforceDefenses_main,"Nex_ReinforceDefenses init
+#nex_reinforceDefensesSel,DialogOptionSelected,$option == nex_reinforceDefenses_main,"Nex_ReinforceDefenses init
 SetShortcut nex_reinforceDefenses_cancel ""ESCAPE""","""If you are anticipating an attack, it may be worth readying and reinforcing our garrison.""","nex_reinforceDefenses_proceed:Deploy reinforcements
 nex_reinforceDefenses_cancel:Cancel",
-nex_reinforceDefensesSelConfirm,DialogOptionSelected,$option == nex_reinforceDefenses_proceed,"Nex_ReinforceDefenses proceed
+#nex_reinforceDefensesSelConfirm,DialogOptionSelected,$option == nex_reinforceDefenses_proceed,"Nex_ReinforceDefenses proceed
 FireAll PopulateOptions",$PersonRank $personLastName confirms the deployment of troops and materiel. The conversation moves on to other matters.,,
-nex_reinforceDefensesNeverMind,DialogOptionSelected,$option == nex_reinforceDefenses_cancel,FireAll PopulateOptions,,,
+#nex_reinforceDefensesNeverMind,DialogOptionSelected,$option == nex_reinforceDefenses_cancel,FireAll PopulateOptions,,,
+,,,,,,
+# Donate admin,,,,,,
+nex_donateAdminOption,PopulateOptions,"$entity.hasMarket
+Nex_IsBaseOfficial military
+Nex_DonateAdmin isEnabled",,,13:nex_donateAdmin:Donate admin,
+nex_donateAdmin,DialogOptionSelected,$option == nex_donateAdmin,Nex_DonateAdmin list,"""You wish to appoint your own administrator for $market, then?""
+
+This will install the selected admin at this autonomous colony. The admin will be permanently removed from your party.",,
+nex_donateAdminConfirm,DialogOptionSelected,Nex_OptionStartsWith nex_donateAdmin_select_,Nex_DonateAdmin transfer,"""Acknowledged. Goodbye, $playerName.""",cutCommLink:Cut the comm link,
+nex_donateAdminNeverMind,DialogOptionSelected,$option == nex_donateAdmin_cancel,FireAll PopulateOptions,,,
+,,,,,,
 ,,,,,,
 # Buy colony governorship,,,,,,
 nex_buyColonyOption,PopulateOptions,"$entity.hasMarket
