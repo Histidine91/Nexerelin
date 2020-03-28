@@ -574,6 +574,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected void notifyEnding() {
 		Global.getSector().getListenerManager().removeListener(this);
 		if (rebelRep != null) {
+			Global.getSector().getImportantPeople().removePerson(rebelRep);
 			market.removePerson(rebelRep);
 			market.getCommDirectory().removePerson(rebelRep);
 			Global.getSector().getImportantPeople().returnPerson(rebelRep, "nex_rebel_representative");

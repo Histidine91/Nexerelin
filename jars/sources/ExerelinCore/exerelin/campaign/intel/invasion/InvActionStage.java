@@ -263,7 +263,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	}
 	
 	protected void autoresolve() {
-		Global.getLogger(this.getClass()).info("Autoresolving invasion action");
+		Global.getLogger(this.getClass()).info("Autoresolving invasion action vs. " + target.getId());
 		float str = WarSimScript.getFactionStrength(intel.getFaction(), target.getStarSystem());
 		float enemyStr = WarSimScript.getFactionStrength(target.getFaction(), target.getStarSystem());
 		

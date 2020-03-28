@@ -371,6 +371,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		// make sure intel is up-to-date
 		DiplomacyManager.getManager().getDiplomacyBrain(faction.getId()).updateAllDispositions(0);
 		
+		// holder for all other elements
 		TooltipMakerAPI outer = panel.createUIElement(width, height, true);
 		//CustomPanelAPI inner = panel.createCustomPanel(width, 1024, null);
 		//outer.addCustom(inner, 0);
