@@ -1229,7 +1229,7 @@
 		"entryDescAmount":"Insured for %s",
 		"entryDescLost":"Ship lost; paying for base value",
 		"entryDescRecovered":"Ship recovered: had %s D-mods, now has %s",
-		"entryDescNewDHull":"New (D) hull: rated as total loss, paying for base value",
+		"entryDescNewDHull":"New (D) hull: paying %s of base value",
 		"entryDescMoreDMods":"D-mod count increased: paying %s of base value",
 	},
 	

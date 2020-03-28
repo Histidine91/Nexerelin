@@ -72,8 +72,10 @@
 	
 	"nex_bonusAdminLevels":[0, 10, 25, 50, 80, 120, 200, 300],
 	
+	"nex_insurance_newDHullMult":0.2,
+	
 	"nex_colonyConditionValues":{
-		#"ore_sparse":1,
+		#"ore_sparse":1,	# worthless
 		"ore_moderate":2,	# 2.5,
 		"ore_abundant":5,
 		"ore_rich":10,

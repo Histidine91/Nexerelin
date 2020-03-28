@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -146,7 +145,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 				int dmodsOld = (int)entry[1];
 				int dmods = countDMods(member);
 				boolean depristined = dmodsOld == 0 && dmods > 0;
-				boolean dmodsIncreased = !depristined && dmods > dmodsOld;
+				boolean dmodsIncreased = dmods > dmodsOld;
 				
 				String text = String.format(getString("entryDescRecovered"), dmodsOld, dmods);
 				List<String> highlights = new ArrayList<>();
@@ -154,13 +153,17 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 				highlights.add(dmods + "");
 				
 				if (depristined) {
-					amount = prevValue;
-					text += "\n" + getString("entryDescNewDHull");
+					float depristineMult = Global.getSettings().getFloat("nex_insurance_newDHullMult");
+					amount += prevValue * depristineMult;
+					String multStr = Math.round(depristineMult * 100) + "%";
+										
+					text += "\n" + String.format(getString("entryDescNewDHull"), multStr);
+					highlights.add(multStr);
 				}
-				else if (dmodsIncreased) {
+				if (dmodsIncreased) {
 					int delta = dmods - dmodsOld;
 					float dmodMult = Math.min(delta * COMPENSATION_PER_DMOD, 1);
-					amount = prevValue * dmodMult;
+					amount += prevValue * dmodMult;
 					String multStr = Math.round(dmodMult * 100) + "%";
 					try {
 						text += "\n" + String.format(getString("entryDescMoreDMods"), multStr);
