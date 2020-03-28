@@ -87,7 +87,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		action.setAbortFP(fp * successMult);
 		addStage(action);
 		
-		waitStage = new WaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS, true);
+		waitStage = new InvWaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS, true);
 		addStage(waitStage);
 		
 		//addStage(new NexReturnStage(this));	// sending fleets home is handled by wait stage
