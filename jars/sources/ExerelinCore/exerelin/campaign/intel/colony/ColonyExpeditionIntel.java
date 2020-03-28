@@ -10,10 +10,12 @@ import com.fs.starfarer.api.campaign.econ.ImmigrationPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -21,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
@@ -458,6 +461,30 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		return colonyOutcome;
 	}
 	
+	/**
+	 * Check if colony fleet has enough crew capacity to execute its mission.
+	 */
+	public void checkCrewCapacity() {
+		int crew = 0;
+		BaseRaidStage stage = (BaseRaidStage)stages.get(getCurrentStage());
+		CampaignFleetAPI fleet = null;
+		if (stage != null) {
+			for (RouteData route : stage.getRoutes()) {
+				CampaignFleetAPI routeFleet = route.getActiveFleet();
+				if (routeFleet == null) continue;
+				if (!ExerelinUtilsFleet.getFleetType(routeFleet).equals("nex_colonyFleet"))
+					continue;
+				
+				fleet = routeFleet;
+				crew += fleet.getCargo().getMaxPersonnel();
+			}
+		}
+		if (fleet != null && crew > 0 && crew < 1000) {
+			log.info("Colony fleet " + fleet.getNameWithFaction() + " has insufficient crew to proceed");
+			terminateEvent(OffensiveOutcome.FAIL);
+		}
+	}
+	
 	// don't terminate on target-not-in-economy, etc.
 	@Override
 	public void checkForTermination() {
@@ -466,7 +493,10 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		// source captured before launch
 		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
 			terminateEvent(OffensiveOutcome.FAIL);
+			return;
 		}
+		
+		checkCrewCapacity();
 	}
 	
 	@Override
