@@ -739,9 +739,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 					StringHelper.getString("yes", true), StringHelper.getString("no", true));
 		}
 		
-		
 		String exitOpt = "exerelinMarketSpecial";
-		if (memory.getBoolean("$specialDialog"))
+		if (memory.getBoolean("$nex_specialDialog"))
 			exitOpt = "continueCutComm";		
 		opts.addOption(Misc.ucFirst(StringHelper.getString("cancel")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
