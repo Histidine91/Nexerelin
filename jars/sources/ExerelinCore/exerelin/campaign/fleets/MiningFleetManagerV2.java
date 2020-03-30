@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.DisposableFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
@@ -41,16 +42,43 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 	
 	protected float timer = 0;
 	protected float daysElapsed = 0;
+	
+	protected boolean hasOreCondition(MarketAPI market) {
+		List<MarketConditionAPI> conds = market.getConditions();
+		for (MarketConditionAPI cond : conds) {
+			if (cond.getId().startsWith("ore_") || cond.getId().startsWith("rare_ore_"))
+				return true;
+		}
+		return false;
+	}
+	
+	protected boolean hasVolatilesCondition(MarketAPI market) {
+		List<MarketConditionAPI> conds = market.getConditions();
+		for (MarketConditionAPI cond : conds) {
+			if (cond.getId().startsWith("volatiles_"))
+				return true;
+		}
+		return false;
+	}
 		
 	protected boolean hasOreFacilities(MarketAPI market)
 	{
-		return market.hasIndustry(Industries.MINING) || market.hasIndustry(Industries.REFINING)
-				|| market.hasCondition("aiw_inorganic_populace");
+		if (market.hasIndustry(Industries.REFINING)	|| market.hasCondition("aiw_inorganic_populace"))
+			return true;
+		
+		if (market.hasIndustry(Industries.MINING) && hasOreCondition(market)) 
+			return true;
+		
+		return false;
 	}
 	
 	protected boolean hasGasFacilities(MarketAPI market)
 	{
-		return market.hasIndustry(Industries.MINING) || market.hasIndustry(Industries.FUELPROD);
+		if (market.hasIndustry(Industries.FUELPROD)) return true;
+		if (market.hasIndustry(Industries.MINING) && hasVolatilesCondition(market)) 
+			return true;
+		
+		return false;
 	}
 	
 	protected boolean isOreMineable(SectorEntityToken entity)
