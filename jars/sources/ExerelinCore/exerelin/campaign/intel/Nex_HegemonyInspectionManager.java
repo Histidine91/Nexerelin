@@ -40,7 +40,9 @@ public class Nex_HegemonyInspectionManager extends HegemonyInspectionManager {
 	@Override
 	public void createInspection() {
 		super.createInspection();
-		if (intel != null && ExerelinConfig.autoResistAIInspections) {
+		if (intel != null && ExerelinConfig.autoResistAIInspections 
+				&& intel.getOrders() != HegemonyInspectionIntel.AntiInspectionOrders.RESIST) 
+		{
 			intel.setOrders(HegemonyInspectionIntel.AntiInspectionOrders.RESIST);
 			intel.sendUpdateIfPlayerHasIntel(null, false);
 		}
