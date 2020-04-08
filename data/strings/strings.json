@@ -413,9 +413,9 @@
 		"shipDeliveryInfoComplete":"$shipName, $shipClass delivered to $market.",
 		
 		"dialogIntro":"Preparing new mission for agent...",
-		"dialogOption_action":"Action type: $action";
-		"dialogOption_faction":"Faction: $faction";
-		"dialogOption_target":"Target: $target";
+		"dialogOption_action":"Action type: $action",
+		"dialogOption_faction":"Faction: $faction",
+		"dialogOption_target":"Target: $target",
 		"dialogIndustryPickerHeader":"Select industry to sabotage",
 		"dialogShipPickerHeader":"Ship to procure",
 		

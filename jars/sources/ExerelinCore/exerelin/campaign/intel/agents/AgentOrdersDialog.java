@@ -903,6 +903,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 
 			Menu lastSelectedMenuTemp = lastSelectedMenu;
 			lastSelectedMenu = null;
+			currentPage = 1;
 
 			// covert action type selected
 			if (optionData instanceof CovertActionDef) {
