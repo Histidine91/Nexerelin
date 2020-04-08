@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
@@ -177,15 +178,19 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		Color hl = Misc.getHighlightColor();
 
 		int numMarkets = markets.size();
+		int totalSize = 0;
+		for (MarketAPI market : markets) totalSize += market.getSize();
 		if (isExiInCorvus) numMarkets++;
 
 		String str = StringHelper.getString("exerelin_factions", "numMarkets");
 		str = StringHelper.substituteFactionTokens(str, faction);
 		str = StringHelper.substituteToken(str, "$numMarkets", numMarkets + "");
+		str = StringHelper.substituteToken(str, "$size", totalSize + "");
 		
 		// print total number of markets
-		text.addParagraph(str);
-		text.highlightInLastPara(hl, "" + numMarkets);
+		LabelAPI label = text.addParagraph(str);
+		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), numMarkets + "", totalSize + "");
+		label.setHighlightColors(faction.getBaseUIColor(), hl, hl);
 		text.setFontSmallInsignia();
 		text.addParagraph(StringHelper.HR);
 
