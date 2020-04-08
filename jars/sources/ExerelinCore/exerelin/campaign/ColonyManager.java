@@ -97,7 +97,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final int MAX_STATION_SIZE = 6;
 	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 207;
 	public static final int MIN_CYCLE_FOR_EXPEDITIONS = 207;
-	public static final float MAX_EXPEDITION_FP = 300;
+	public static final float MAX_EXPEDITION_FP = 600;
 	public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
 	public static final float NPC_FREE_PORT_GROWTH_REDUCTION_MULT = 0.5f;
 	
@@ -720,7 +720,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			log.info("Failed to pick target for expedition");
 			return null;
 		}
-		float fp = 30 + 15 * numDeadExpeditions;
+		float fp = 80 + 30 * numDeadExpeditions;
 		if (fp > MAX_EXPEDITION_FP) fp = MAX_EXPEDITION_FP;
 		float organizeTime = InvasionFleetManager.getOrganizeTime(fp + 30) + 30;
 		
