@@ -3,14 +3,12 @@ package exerelin.campaign.submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.OpenMarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 
-@Deprecated
 public class Nex_OpenMarketPlugin extends OpenMarketPlugin {
 	
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		super.updateCargoPrePlayerInteraction();
-		
 		if (okToUpdateShipsAndWeapons()) {
+			super.updateCargoPrePlayerInteraction();
 			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
 			int weapons = 2 + Math.max(0, market.getSize() - 3) + (Misc.isMilitary(market) ? 5 : 0);
 			int fighters = 1 + Math.max(0, (market.getSize() - 3) / 2) + (Misc.isMilitary(market) ? 2 : 0);
@@ -23,6 +21,9 @@ public class Nex_OpenMarketPlugin extends OpenMarketPlugin {
 			addFighters(fighters, fighters + 1, 0, market.getFactionId());
 			
 			getCargo().sort();
+		}
+		else {
+			super.updateCargoPrePlayerInteraction();
 		}
 	}
 }
