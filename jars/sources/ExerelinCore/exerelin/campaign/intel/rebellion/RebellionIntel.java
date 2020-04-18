@@ -447,13 +447,17 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		lastIndustryDisrupted = ind;
 		
 		float disruptTime = 15 * (atkStr/defStr);
+		if (disruptTime > 90) disruptTime = 90;
+		log.info("Rolled disruption time: " + disruptTime);
 		if (disruptTime < 30) {
 			this.disruptTime = 0;
 			
+			log.info("  Transmitting disruption failure");
 			sendUpdate(UpdateParam.INDUSTRY_DISRUPT_FAIL);
 			return;
 		}
 		this.disruptTime = Math.round(disruptTime);
+		log.info("  Transmitting disruption success: " + this.disruptTime);
 		ind.setDisrupted(disruptTime + ind.getDisruptedDays());
 		sendUpdate(UpdateParam.INDUSTRY_DISRUPTED);
 	}
