@@ -33,6 +33,7 @@ import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
@@ -40,7 +41,9 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
@@ -272,6 +275,18 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		SectorManager.getManager().setCorvusMode(corvusMode);
 		SectorManager.getManager().setHardMode(setupData.hardMode);
 		SectorManager.getManager().setFreeStart(setupData.freeStart);
+		
+		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
+		{
+			factionId = conf.spawnAsFactionId;
+		}
+		
+		// commission
+		if (!factionId.equals(Factions.PLAYER)) {
+			ExerelinUtilsFaction.grantCommission(factionId);
+		}
 				
 		log.info("Finished sector generation");
 	}

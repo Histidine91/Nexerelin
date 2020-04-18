@@ -106,10 +106,10 @@ public class StartSetupPostTimePass {
 		handleStartLocation(sector, playerFleet, factionIdForSpawnLoc);
 		
 		// commission
+		// now handled in ExerelinNewGameSetup
 		if (!factionId.equals(Factions.PLAYER)) {
-			ExerelinUtilsFaction.grantCommission(factionId);
+			//ExerelinUtilsFaction.grantCommission(factionId);
 		}
-		
 		// make own faction start's first market player-owned
 		else if (!SectorManager.getManager().isCorvusMode() && !freeStart && entity != null) {
 			entity.getMarket().setPlayerOwned(true);

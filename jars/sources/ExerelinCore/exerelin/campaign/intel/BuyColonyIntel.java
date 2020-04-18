@@ -154,7 +154,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 	}
 	
 	/**
-	 * Checks if the conditions for the market to pay tribute are still valid.
+	 * Checks if the conditions for the market to be governed are still valid.
 	 */
 	protected void checkCancel() {
 		if (!market.isInEconomy()) {
