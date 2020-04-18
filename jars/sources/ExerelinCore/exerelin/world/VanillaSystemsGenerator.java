@@ -262,7 +262,7 @@ public class VanillaSystemsGenerator {
 	*/
 	
 	public static void enhanceVanillaMarkets() {
-		if (!ExerelinConfig.useEnhancedCoreWorlds)
+		if (!ExerelinConfig.useEnhancedCoreWorlds || Global.getSettings().getModManager().isModEnabled("archeus"))
 			return;
 		
 		MarketAPI ancyra = getMarket("ancyra_market");
