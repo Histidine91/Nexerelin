@@ -44,7 +44,7 @@ import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.PlayerInSystemTracker;
-import exerelin.campaign.intel.ConquestMissionManager;
+import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;

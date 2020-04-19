@@ -1,4 +1,4 @@
-package exerelin.campaign.intel;
+package exerelin.campaign.intel.missions;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -31,6 +31,7 @@ import java.util.Set;
 public class ConquestMissionIntel extends BaseMissionIntel implements InvasionListener {
 	
 	public static final float SIZE_REWARD_MULT = 5000;
+	public static final Object TIME_EXTENDED = new Object();	// FIXME
 	
 	protected MarketAPI market;
 	protected FactionAPI faction;
@@ -198,6 +199,12 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			if (playerInvolved) missionComplete();
 		} else if (!newOwner.isPlayerFaction()) {
 			lastTargetFaction = newOwner;
+		} else {
+			// time extension if no spaceport, since you can't transfer it while not having spaceport
+			if (!market.hasSpaceport()) {
+				duration += 30;
+				// TODO: report time extension
+			}
 		}
 	}
 	

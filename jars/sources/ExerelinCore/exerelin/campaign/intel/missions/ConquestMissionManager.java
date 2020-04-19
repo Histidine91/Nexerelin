@@ -1,4 +1,4 @@
-package exerelin.campaign.intel;
+package exerelin.campaign.intel.missions;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
