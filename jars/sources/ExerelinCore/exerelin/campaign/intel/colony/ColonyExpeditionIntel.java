@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -336,6 +337,10 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		
 		fleet.getCommander().setPostId(postId);
 		fleet.getCommander().setRankId(rankId);
+		
+		fleet.getCargo().addSupplies(250);
+		fleet.getCargo().addCommodity(Commodities.HEAVY_MACHINERY, 125);
+		fleet.getCargo().addCommodity(Commodities.FOOD, 100);
 		
 		log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
 		
