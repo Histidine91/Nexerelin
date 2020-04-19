@@ -942,7 +942,7 @@ nex_buyColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player
-!$market.nex_isTruePlayerOwned",FireAll Nex_BuyColonyDisableCheck,,13:nex_buyColony:Purchase governorship of $market,
+!$market.nex_isTruePlayerOwned",FireBest Nex_BuyColonyDisableCheck,,13:nex_buyColony:Purchase governorship of $market,
 nex_buyColonyOptionDisable,Nex_BuyColonyDisableCheck,!Nex_BuyColony canBuy,"SetEnabled nex_buyColony false 
 SetTooltip nex_buyColony ""Requires:\n- Friendly reputation for size 3\n- Cooperative reputation for size 4\nLarger markets may not be purchased.""
 SetTooltipHighlightColors nex_buyColony good hColor good hColor
