@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class MuseumShip extends BaseLandmarkDef {
 	@Override
 	public void createAt(SectorEntityToken entity)
 	{
-		FactionAPI faction = entity.getFaction();
+		FactionAPI faction = Global.getSector().getFaction(getNonDerelictFaction(entity.getMarket()));
 		
 		for (int i=0; i<MAX_TRIES; i++)
 		{
@@ -79,7 +80,9 @@ public class MuseumShip extends BaseLandmarkDef {
 			ship.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);
 			
 			// tags etc.
-			ship.setFaction(faction.getId());
+			// note: entity faction can differ from the one we used to pick the ship type,
+			// e.g. with Derelict Empire
+			ship.setFaction(entity.getFaction().getId());
 			ship.setInteractionImage("illustrations", "terran_orbit");
 			
 			String name = faction.pickRandomShipName();	//Global.getSettings().getVariant(variantId).getHullSpec().getHullName();

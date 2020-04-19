@@ -4,7 +4,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -111,5 +114,15 @@ public class BaseLandmarkDef extends LandmarkDef {
 	
 	protected boolean isProcgenOnly() {
 		return false;
+	}
+	
+	public String getNonDerelictFaction(MarketAPI market) {
+		String factionId = market.getFactionId();
+		if (factionId.equals(Factions.DERELICT))
+		{
+			String origOwnerId = ExerelinUtilsMarket.getOriginalOwner(market);
+			if (origOwnerId != null) factionId = origOwnerId;
+		}
+		return factionId;
 	}
 }

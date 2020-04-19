@@ -61,7 +61,7 @@ public class GraveyardWithMemorial extends BaseLandmarkDef {
 		
 		for (MarketAPI market : markets)
 		{
-			String factionId = market.getFactionId();
+			String factionId = getNonDerelictFaction(market);
 			if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId))
 				continue;
 			if (!enemiesOfFactions.containsKey(factionId))
