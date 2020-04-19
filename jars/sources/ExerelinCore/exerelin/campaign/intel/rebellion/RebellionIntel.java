@@ -281,6 +281,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		debugMessage("  Stability: " + stability);
 		debugMessage("  Initial force strengths: " + govtStrength + ", " + rebelStrength);
 		
+		// safety
+		if (govtStrength < 0) govtStrength = 0;
+		if (rebelStrength < 0) rebelStrength = 0;
+		
 		float strG = (float)Math.sqrt(govtStrength);
 		float strR = (float)Math.sqrt(rebelStrength);
 		
