@@ -1,5 +1,6 @@
 package exerelin.campaign.econ;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
@@ -14,17 +15,23 @@ import exerelin.utilities.StringHelper;
 
 public class TributeCondition extends BaseMarketConditionPlugin implements MarketImmigrationModifier {
 	public static final String CONDITION_ID = "nex_tribute";
-	public static final float TRIBUTE_INCOME_FACTOR = 0.4f;
-	public static final float TRIBUTE_IMMIGRATION_MULT = 0.5f;
 	public static final int MAX_SIZE = 5;
 	
 	protected FactionAPI faction;
 	protected TributeIntel intel;
 	
+	public static float getIncomePenalty() {
+		return Global.getSettings().getFloat("nex_tributeIncomePenalty");
+	}
+	
+	public static float getImmigrationMult() {
+		return Global.getSettings().getFloat("nex_tributePopulationMult");
+	}
+	
 	@Override
 	public void apply(String id) {
 		market.addTransientImmigrationModifier(this);
-		market.getIncomeMult().modifyMult(id, 1-TRIBUTE_INCOME_FACTOR, getString("cond_incomeDesc"));
+		market.getIncomeMult().modifyMult(id, 1-getIncomePenalty(), getString("cond_incomeDesc"));
 	}
 	
 	public void setup(FactionAPI faction, TributeIntel intel) {
@@ -40,7 +47,7 @@ public class TributeCondition extends BaseMarketConditionPlugin implements Marke
 	
 	@Override
 	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
-		float mult = TRIBUTE_IMMIGRATION_MULT;
+		float mult = getImmigrationMult();
 		if (market.getSize() >= MAX_SIZE) mult = 0;
 		incoming.getWeight().modifyMult(getModId(), mult, getString("cond_immigrationDesc"));
 	}
@@ -59,8 +66,8 @@ public class TributeCondition extends BaseMarketConditionPlugin implements Marke
 		float small = 5f;
 		float opad = 10f;
 		
-		tooltip.addPara(getString("cond_tooltip1"), opad, h, TRIBUTE_INCOME_FACTOR + "x");
-		tooltip.addPara(getString("cond_tooltip2"), 0, h, TRIBUTE_IMMIGRATION_MULT + "x");
+		tooltip.addPara(getString("cond_tooltip1"), opad, h, getIncomePenalty() + "x");
+		tooltip.addPara(getString("cond_tooltip2"), 0, h, getImmigrationMult() + "x");
 		tooltip.addPara(getString("cond_tooltip3"), 0, h, MAX_SIZE + "");
 	}
 

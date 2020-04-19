@@ -122,8 +122,8 @@ public class TributeIntel extends BaseIntelPlugin {
 		str = StringHelper.getStringAndSubstituteTokens("nex_tribute", "intel_desc2", replace);
 		
 		info.addPara(str, opad, h, 
-				Math.round(TributeCondition.TRIBUTE_INCOME_FACTOR * 100) + "%", 
-				Math.round(100 - TributeCondition.TRIBUTE_IMMIGRATION_MULT * 100) + "%",
+				Math.round(TributeCondition.getIncomePenalty() * 100) + "%", 
+				Math.round(100 - TributeCondition.getImmigrationMult() * 100) + "%",
 				TributeCondition.MAX_SIZE + "");		
 		
 		// report on current status

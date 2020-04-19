@@ -5,12 +5,6 @@
 	"industryRefundFraction":0.4,		# default 0.75
 	#"raidCooldownDays":3,				# default 1
 	
-	"plugins":{
-		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",
-		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
-		#"newGameSectorProcGen":"exerelin.world.ExerelinSectorProcGen",
-	},
-	
 	"economyExceptionOnMissingMarketEntity":false,
 	
 	"nex_enableVersionChecker":true,
@@ -27,6 +21,9 @@
 	"nex_transferMarket_incomeDivisor":50000,
 	"nex_transferMarket_originalOwnerMult":1.33,
 	"nex_transferMarket_recentlyCapturedMult":0.2,
+	
+	"nex_tributeIncomePenalty":0.4,
+	"nex_tributePopulationMult":0.5,
 	
 	"nex_fleetRequestOrganizeTimeMult":1,
 	
@@ -111,6 +108,12 @@
 		"US_elevator":10,
 		
 		"US_shrooms":-10,
+	},
+	
+	"plugins":{
+		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",
+		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
+		#"newGameSectorProcGen":"exerelin.world.ExerelinSectorProcGen",
 	},
 	
 	"graphics":{
