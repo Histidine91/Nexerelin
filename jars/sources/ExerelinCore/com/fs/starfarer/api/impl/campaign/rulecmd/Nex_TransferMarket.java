@@ -137,7 +137,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		return false;
 	}
 	
-	protected MutableStat getRepChange(MarketAPI market)
+	public static MutableStat getRepChange(MarketAPI market)
 	{
 		MutableStat stat = new MutableStat(0);
 		

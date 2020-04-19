@@ -15,23 +15,31 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_TransferMarket;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import org.lwjgl.input.Keyboard;
 
 public class ConquestMissionIntel extends BaseMissionIntel implements InvasionListener {
 	
 	public static final float SIZE_REWARD_MULT = 5000;
-	public static final Object TIME_EXTENDED = new Object();	// FIXME
+	public static final String BUTTON_TRANSFER = "BUTTON_TRANSFER";
 	
 	protected MarketAPI market;
 	protected FactionAPI faction;
@@ -142,6 +150,22 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		if (value < 0) value = 0;
 		return (int)value;
 	}
+	
+	protected void transferViaButton() {
+		String oldFactionId = market.getFactionId();
+		String factionId = faction.getId();
+		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
+		
+		float repChange = Nex_TransferMarket.getRepChange(market).getModifiedValue() * 0.01f;
+		if (factionId.equals(Nex_TransferMarket.getRecentlyCapturedFromId(market)))
+			repChange *= Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult");
+		else if (factionId.equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+			repChange *= Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult");
+		
+		SectorManager.transferMarket(market, faction, oldFaction, true, false, 
+				new ArrayList<>(Arrays.asList(factionId)), repChange);
+		DiplomacyManager.getManager().getDiplomacyBrain(factionId).reportDiplomacyEvent(oldFactionId, repChange);
+	}
 
 	@Override
 	public void missionAccepted() {
@@ -199,12 +223,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			if (playerInvolved) missionComplete();
 		} else if (!newOwner.isPlayerFaction()) {
 			lastTargetFaction = newOwner;
-		} else {
-			// time extension if no spaceport, since you can't transfer it while not having spaceport
-			if (!market.hasSpaceport()) {
-				duration += 30;
-				// TODO: report time extension
-			}
 		}
 	}
 	
@@ -337,6 +355,14 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			str = getString("intelDesc3");
 			str = StringHelper.substituteToken(str, "$market", marketName);
 			info.addPara(str, opad, g);
+			
+			Global.getLogger(this.getClass()).info("wololo " + isAccepted() + ", " + market.getFactionId());
+			if (isAccepted() && market.getFaction().isPlayerFaction()) {
+				ButtonAPI button = info.addButton(getString("intelButtonTransfer"), BUTTON_TRANSFER, 
+						faction.getBaseUIColor(), faction.getDarkUIColor(),
+					  (int)(width), 20f, opad * 2f);
+				button.setShortcut(Keyboard.KEY_T, true);
+			}
 		} else {
 			if (cancelReason == CancelReason.NOT_IN_ECONOMY) {
 				str = getString("intelDescOutcome_noLongerExists");
@@ -355,7 +381,26 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 				addGenericMissionState(info);
 			}
 		}
-
+	}
+	
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		if (buttonId == BUTTON_TRANSFER) {
+			String str = getString("intelDialogConfirm");
+			str = StringHelper.substituteFactionTokens(str, faction);
+			prompt.addPara(str, 0, faction.getBaseUIColor(), faction.getDisplayNameWithArticleWithoutArticle());
+		}
+		else super.createConfirmationPrompt(buttonId, prompt);
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_TRANSFER) {
+			transferViaButton();
+			ui.updateUIForItem(this);
+			return;
+		}
+		super.buttonPressConfirmed(buttonId, ui);
 	}
 	
 	@Override
@@ -399,7 +444,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		return StringHelper.getString("nex_conquestMission", id);
 	}
 	
-	// runcode exerelin.campaign.intel.ConquestMissionIntel.debug("jangala", "persean")
+	// runcode exerelin.campaign.intel.missions.ConquestMissionIntel.debug("jangala", "persean")
 	public static void debug(String marketId, String factionId) {
 		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
 		ConquestMissionIntel intel = new ConquestMissionIntel(market, Global.getSector().getFaction(factionId), 5);

@@ -587,11 +587,14 @@
 		"intelDescDuration_pre":"You have ",
 		"intelDescDuration_post":"to complete the mission.",
 		"intelDescDuration_post_short":"to complete",
-		"intelDesc3":"After taking control of $market, talk to local officials to perform the transfer.",
+		"intelDesc3":"After taking control of $market, talk to local officials or use the button in this intel display to perform the transfer.",
 		
 		"intelDescOutcome_alreadyTaken":"$TheFaction has conquered $market using their own resources. The mission is over.",
 		"intelDescOutcome_noLongerHostile":"$market's current faction is not currently hostile. The mission has been withdrawn.",
 		"intelDescOutcome_noLongerExists":"The mission has been withdrawn as $market has been destroyed.",
+		
+		"intelButtonTransfer":"Transfer",
+		"intelDialogConfirm":"Confirm transfer to $theFaction?",
 	},
 	
 	"nex_credits":{
