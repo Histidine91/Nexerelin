@@ -78,7 +78,13 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptions implements CoreI
 			exitOpt = "continueCutComm";
 		addOptionAllPages(StringHelper.getString("back", true), exitOpt);
 		
-		for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER)) {
+		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		if (Misc.getCommissionFaction() != null && Nex_IsFactionRuler.isRuler(Misc.getCommissionFactionId()))
+		{
+			markets.addAll(Misc.getFactionMarkets(Misc.getCommissionFaction()));
+		}
+		
+		for (MarketAPI market : markets) {
 			if (market.isPlayerOwned()) continue;
 			
 			String name = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");

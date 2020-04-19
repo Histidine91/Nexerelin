@@ -1069,8 +1069,10 @@
 		"prismRelTooLow":"Requires: $faction - $minRelationship",
 		"prismShipQualityMod":"High-End Seller",
 		"prismShipQualityModLowStability":" - low stability",
-
-		"templarControl":"Templar control"
+		
+		"storageFreeTooltip":"$market is under your control, and there are no storage fees or expenses.",
+		
+		"templarControl":"Templar control",
 	},
 	"exerelin_marketConditions":{
 		"marketAttacked":"Market attacked",

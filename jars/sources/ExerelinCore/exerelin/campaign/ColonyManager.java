@@ -39,6 +39,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -405,7 +406,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		float storageFraction = Global.getSettings().getFloat("storageFreeFraction");
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (!market.isPlayerOwned() && market.getFaction().isPlayerFaction() 
+			if (!market.isPlayerOwned() && Nex_IsFactionRuler.isRuler(market.getFactionId()) 
 					&& Misc.playerHasStorageAccess(market)) {
 				float vc = Misc.getStorageCargoValue(market);
 				float vs = Misc.getStorageShipValue(market);
@@ -791,6 +792,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	// add admin to player market if needed
+	// also adds military submarkets to places that should have them
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
 		if (market.getFaction().isPlayerFaction() && !market.isHidden())

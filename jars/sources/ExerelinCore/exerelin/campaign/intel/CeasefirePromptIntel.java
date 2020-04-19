@@ -18,6 +18,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.ui.PopupDialogScript;
@@ -46,6 +47,8 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	protected float daysRemaining = MathUtils.getRandomNumberInRange(14, 21);
 	protected ExerelinReputationAdjustmentResult repResult;
 	protected float storedRelation;
+	
+	//runcode new exerelin.campaign.intel.CeasefirePromptIntel("luddic_church", false).init();
 	
 	public CeasefirePromptIntel(String factionId, boolean isPeaceTreaty)
 	{
@@ -81,7 +84,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		Color h = Misc.getHighlightColor();
 		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
-		FactionAPI faction2 = Global.getSector().getFaction(Factions.PLAYER);
+		FactionAPI faction2 = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 		
 		info.addImages(width, 96, opad, opad, faction.getLogo(), faction2.getLogo());
 		
@@ -157,12 +160,12 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		float reduction = isPeaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
 
 		FactionAPI faction = getFactionForUIColors();
-		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
+		FactionAPI player = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 
 		repResult = DiplomacyManager.createDiplomacyEvent(faction, player, eventId, null);
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
-		DiplomacyManager.getManager().modifyWarWeariness(Factions.PLAYER, -reduction);
-		storedRelation = faction.getRelationship(Factions.PLAYER);
+		DiplomacyManager.getManager().modifyWarWeariness(PlayerFactionStore.getPlayerFactionId(), -reduction);
+		storedRelation = faction.getRelationship(PlayerFactionStore.getPlayerFactionId());
 		Global.getSoundPlayer().playUISound("ui_rep_raise", 1, 1);
 		state = 1;
 	}
@@ -237,7 +240,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(StringHelper.getString("diplomacy", true));
 		tags.add(factionId);
-		tags.add(Factions.PLAYER);
+		tags.add(PlayerFactionStore.getPlayerFactionId());
 		return tags;
 	}
 	

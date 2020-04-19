@@ -102,6 +102,9 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		if (market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_NO_BUY))
 			return false;
 		
+		if (Nex_IsFactionRuler.isRuler(market.getFactionId()))
+			return true;
+		
 		FactionAPI faction = market.getFaction();
 		int size = market.getSize();
 		if (size <= 3)
