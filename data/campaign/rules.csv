@@ -180,6 +180,7 @@ nex_NGCListFactions4,NewGameOptionSelected,$option==nex_NGCListFactions4,Nex_NGC
 nex_NGCListFactions5,NewGameOptionSelected,$option==nex_NGCListFactions5,Nex_NGCListFactions listFactions 5,,,
 nex_NGCListFactions6,NewGameOptionSelected,$option==nex_NGCListFactions6,Nex_NGCListFactions listFactions 6,,,
 nex_NGCListFactions7,NewGameOptionSelected,$option==nex_NGCListFactions7,Nex_NGCListFactions listFactions 7,,,
+nex_NGCListFactions8,NewGameOptionSelected,$option==nex_NGCListFactions8,Nex_NGCListFactions listFactions 8,,,
 ,,,,,,
 nex_NGCJoinFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCJoinFaction_""","Nex_NGCSetFactionFromJoinOption
 FireAll ExerelinNGCStep3",,,
@@ -338,6 +339,7 @@ nex_factionDirectoryList4,DialogOptionSelected,$option == nex_factionDirectoryLi
 nex_factionDirectoryList5,DialogOptionSelected,$option == nex_factionDirectoryList5,Nex_FactionDirectory listFactions 5,,,
 nex_factionDirectoryList6,DialogOptionSelected,$option == nex_factionDirectoryList6,Nex_FactionDirectory listFactions 6,,,
 nex_factionDirectoryList7,DialogOptionSelected,$option == nex_factionDirectoryList7,Nex_FactionDirectory listFactions 7,,,
+nex_factionDirectoryList8,DialogOptionSelected,$option == nex_factionDirectoryList8,Nex_FactionDirectory listFactions 8,,,
 ,,,,,,
 nex_factionDirectoryPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_printFactionMarkets_""",Nex_FactionDirectory print,,,
 ,,,,,,
@@ -742,6 +744,7 @@ nex_marketTransferList4,DialogOptionSelected,$option == nex_transferMarketList4,
 nex_marketTransferList5,DialogOptionSelected,$option == nex_transferMarketList5,Nex_TransferMarket listFactions 5,,,
 nex_marketTransferList6,DialogOptionSelected,$option == nex_transferMarketList6,Nex_TransferMarket listFactions 6,,,
 nex_marketTransferList7,DialogOptionSelected,$option == nex_transferMarketList7,Nex_TransferMarket listFactions 7,,,
+nex_marketTransferList8,DialogOptionSelected,$option == nex_transferMarketList8,Nex_TransferMarket listFactions 8,,,
 ,,,,,,
 nex_marketTransferExecute,DialogOptionSelected,"Nex_OptionStartsWith ""nex_transferMarket_""","Nex_TransferMarket transfer
 FireAll Nex_MarketPostTransfer",,,
