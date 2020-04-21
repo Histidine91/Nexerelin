@@ -945,7 +945,7 @@ nex_buyColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player
-!$market.nex_isTruePlayerOwned",FireBest Nex_BuyColonyDisableCheck,,13:nex_buyColony:Purchase governorship of $market,
+!Nex_BuyColony isPlayerOwned",FireBest Nex_BuyColonyDisableCheck,,13:nex_buyColony:Purchase governorship of $market,
 nex_buyColonyOptionDisable,Nex_BuyColonyDisableCheck,!Nex_BuyColony canBuy,"SetEnabled nex_buyColony false 
 SetTooltip nex_buyColony ""Requires:\n- Friendly reputation for size 3\n- Cooperative reputation for size 4\nLarger markets may not be purchased.""
 SetTooltipHighlightColors nex_buyColony good hColor good hColor
@@ -959,7 +959,7 @@ nex_cedeColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player
-$market.nex_isTruePlayerOwned",,,nex_cedeColony:Cede governorship of $market,
+Nex_BuyColony isPlayerOwned",,,nex_cedeColony:Cede governorship of $market,
 nex_buyColony,DialogOptionSelected,$option == nex_buyColony,"FireBest Nex_BuyColonyPromptDialog
 Nex_BuyColony init
 AddTextSmall ""$market will be placed under your administration. You will collect its revenue and pay its costs, and can build industries and structures on it. Storage is free. Your personal ship construction will benefit from $faction industry.""

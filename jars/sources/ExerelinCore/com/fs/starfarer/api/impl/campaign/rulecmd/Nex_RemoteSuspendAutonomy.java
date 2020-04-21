@@ -13,12 +13,13 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
-public class Nex_RemoteSuspendAutonomy extends PaginatedOptions implements CoreInteractionListener {
+public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus implements CoreInteractionListener {
 	
 	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
 	public static final String OPTION_PREFIX = "nex_suspendAutonomyRemote_";
@@ -79,8 +80,12 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptions implements CoreI
 		addOptionAllPages(StringHelper.getString("back", true), exitOpt);
 		
 		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		boolean colorize = false;
+		
+		// allow suspending autonomy of commissioning faction's markets as well, in faction ruler mode
 		if (Misc.getCommissionFaction() != null && Nex_IsFactionRuler.isRuler(Misc.getCommissionFactionId()))
 		{
+			colorize = true;
 			markets.addAll(Misc.getFactionMarkets(Misc.getCommissionFaction()));
 		}
 		
@@ -91,7 +96,9 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptions implements CoreI
 			name = StringHelper.substituteToken(name, "$market", market.getName());
 			name = StringHelper.substituteToken(name, "$size", market.getSize() + "");
 			name = StringHelper.substituteToken(name, "$location", market.getContainingLocation().getNameWithTypeIfNebula());
-			addOption(name, OPTION_PREFIX + market.getId());
+			String id = OPTION_PREFIX + market.getId();
+			addOption(name, id);
+			if (colorize) addColor(id, market.getFaction().getBaseUIColor());
 		}
 	}
 

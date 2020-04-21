@@ -65,7 +65,8 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 				if (intel != null) intel.cancel(BuyColonyIntel.Status.QUIT);
 				break;
 			case "isPlayerOwned":
-				return !market.isPlayerOwned();
+				return market.isPlayerOwned() && !market.getMemoryWithoutUpdate()
+						.contains(ColonyManager.MEMORY_KEY_RULER_TEMP_OWNERSHIP);
 		}
 		return true;
 	}
@@ -73,7 +74,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	protected void printCostAndProcessOptions(MarketAPI market, InteractionDialogAPI dialog,
 			MemoryAPI mem) {
 		int credits = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-		MutableStat cost = getValue(market, market.isPlayerOwned(), true);
+		MutableStat cost = getValue(market, false, true);
 		int required = cost.getModifiedInt();
 		boolean enough = credits >= required;
 		String creditsStr = Misc.getWithDGS(credits);
@@ -138,8 +139,6 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		return stat;
 	}
 	
-	
-	// TODO: add intel
 	public static void setColonyPlayerOwned(MarketAPI market, boolean owned, InteractionDialogAPI dialog) 
 	{
 		market.setPlayerOwned(owned);
@@ -152,7 +151,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		
 		TextPanelAPI text = dialog.getTextPanel();
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		int value = getValue(market, !owned, true).getModifiedInt();
+		int value = getValue(market, false, true).getModifiedInt();
 		if (owned) {	// buying
 			cargo.getCredits().subtract(value);
 			AddRemoveCommodity.addCreditsLossText(value, text);
@@ -166,6 +165,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 			//cargo.getCredits().add(value);
 			//AddRemoveCommodity.addCreditsGainText(value, text);
 		}
+		market.getMemoryWithoutUpdate().unset(ColonyManager.MEMORY_KEY_RULER_TEMP_OWNERSHIP);
 		((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 	}
 }

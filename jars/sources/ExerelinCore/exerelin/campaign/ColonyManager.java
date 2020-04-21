@@ -25,6 +25,7 @@ import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
@@ -91,6 +92,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final String PERSISTENT_KEY = "nex_colonyManager";
 	public static final String MEMORY_KEY_GROWTH_LIMIT = "$nex_colony_growth_limit";
 	public static final String MEMORY_KEY_STASHED_CORES = "$nex_stashed_ai_cores";
+	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP = "$nex_ruler_temp_owner";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
@@ -793,6 +795,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	// add admin to player market if needed
 	// also adds military submarkets to places that should have them
+	// handles temporary governorship in ruler mode
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
 		if (market.getFaction().isPlayerFaction() && !market.isHidden())
@@ -804,6 +807,28 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (SectorManager.shouldHaveMilitarySubmarket(market))
 		{
 			SectorManager.addOrRemoveMilitarySubmarket(market, market.getFactionId(), true);
+		}
+		
+		if (!market.isPlayerOwned() && market.getFaction() == Misc.getCommissionFaction()
+				&& Nex_IsFactionRuler.isRuler(market.getFactionId())
+				&& !market.getMemoryWithoutUpdate().contains(MEMORY_KEY_RULER_TEMP_OWNERSHIP))
+		{
+			market.setPlayerOwned(true);
+			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RULER_TEMP_OWNERSHIP, market.getAdmin(), 0);
+		}
+	}
+	
+	@Override
+	public void reportPlayerClosedMarket(MarketAPI market) {
+		if (market.isPlayerOwned())
+		{
+			MemoryAPI mem = market.getMemoryWithoutUpdate();
+			if (!mem.contains(MEMORY_KEY_RULER_TEMP_OWNERSHIP)) return;
+			
+			PersonAPI admin = (PersonAPI)mem.get(MEMORY_KEY_RULER_TEMP_OWNERSHIP);
+			market.setAdmin(admin);
+			market.setPlayerOwned(false);
+			mem.unset(MEMORY_KEY_RULER_TEMP_OWNERSHIP);
 		}
 	}
 	
