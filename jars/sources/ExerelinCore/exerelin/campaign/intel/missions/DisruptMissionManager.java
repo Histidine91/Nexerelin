@@ -164,6 +164,8 @@ public class DisruptMissionManager extends BaseEventManager {
 			boolean hostile = market.getFaction().isHostileTo(faction);
 			boolean canEconomicAttack = isRepLowEnough(faction, market.getFaction(), 
 					TargetReason.ECONOMIC_COMPETITION);
+			boolean canFreePortAttack = isRepLowEnough(faction, market.getFaction(), 
+					TargetReason.FREE_PORT);
 			
 			boolean freePort = market.isFreePort();
 			int size = market.getSize();
@@ -184,7 +186,7 @@ public class DisruptMissionManager extends BaseEventManager {
 				
 				// spaceport
 				if (spec.hasTag(Industries.TAG_SPACEPORT)) {
-					if (freePort && vsFreePort) {
+					if (freePort && vsFreePort && canFreePortAttack) {
 						picker.add(new TargetEntry(market, ind, null, TargetReason.FREE_PORT, 5), 
 								size * 2);
 					}
