@@ -52,14 +52,14 @@ public class DestabilizeMarket extends CovertActionIntel {
 	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		super.addBulletPoints(info, color, initPad, pad);
-		if (result != null && result.isSucessful())
+		if (result != null && result.isSuccessful())
 			info.addPara(getString("destabilizeEffect"), pad, color, 
 					Misc.getHighlightColor(), stabilityLoss + "");
 	}
 	
 	@Override
 	public void addResultPara(TooltipMakerAPI info, float pad) {
-		if (result != null && result.isSucessful())
+		if (result != null && result.isSuccessful())
 			info.addPara(getString("destabilizeEffect") + ".",
 					pad, Misc.getHighlightColor(), stabilityLoss + "");
 		

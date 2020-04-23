@@ -433,6 +433,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		return picker;
 	}
 	
+	// runcode exerelin.campaign.CovertOpsManager.getManager().handleNpcCovertActions();
 	/**
 	 * Picks a random action, agent faction and target faction(s) to execute. 
 	 * Called at periodic intervals.
@@ -916,7 +917,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         SUCCESS, SUCCESS_DETECTED, FAILURE, FAILURE_DETECTED;
         
-        public boolean isSucessful() {
+        public boolean isSuccessful() {
             return this == SUCCESS || this == SUCCESS_DETECTED;
         }
         

@@ -55,7 +55,7 @@ public class SabotageIndustry extends CovertActionIntel {
 	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		super.addBulletPoints(info, color, initPad, pad);
-		if (result != null && result.isSucessful())
+		if (result != null && result.isSuccessful())
 		{
 			String industryName = industry.getCurrentName();
 			info.addPara(exerelin.utilities.StringHelper.getStringAndSubstituteToken("nex_agentActions", 
@@ -65,7 +65,7 @@ public class SabotageIndustry extends CovertActionIntel {
 	
 	@Override
 	public void addResultPara(TooltipMakerAPI info, float pad) {
-		if (result != null && result.isSucessful())
+		if (result != null && result.isSuccessful())
 		{
 			String industryName = industry.getCurrentName();
 			info.addPara(exerelin.utilities.StringHelper.getStringAndSubstituteToken("nex_agentActions", 

@@ -83,7 +83,7 @@ public class RaiseRelations extends CovertActionIntel {
 	
 	@Override
 	protected boolean isAgentFactionKnown() {
-		if (result != null && result.isSucessful())
+		if (result != null && result.isSuccessful())
 			return true;
 		return super.isAgentFactionKnown();
 	}
@@ -130,7 +130,7 @@ public class RaiseRelations extends CovertActionIntel {
 	
 	@Override
 	public void addResultPara(TooltipMakerAPI info, float pad) {
-		if (result.isSucessful()) {
+		if (result.isSuccessful()) {
 			DiplomacyIntel.addRelationshipChangePara(info, targetFaction.getId(), thirdFaction.getId(), 
 					relation, repResult, pad);
 		}
@@ -180,7 +180,7 @@ public class RaiseRelations extends CovertActionIntel {
 		boolean first = true;
 		if (result != null)
 		{
-			if (result.isSucessful()) {
+			if (result.isSuccessful()) {
 				ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
 				first = false;
 			}

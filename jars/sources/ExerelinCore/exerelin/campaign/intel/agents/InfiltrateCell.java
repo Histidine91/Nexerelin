@@ -143,7 +143,7 @@ public class InfiltrateCell extends CovertActionIntel {
 		info.addPara(getString("intelBulletTarget"), afKnown ? pad : initPad, color, 
 				market.getFaction().getBaseUIColor(), market.getName());
 	
-		if (result != null && result.isSucessful() && base != null 
+		if (result != null && result.isSuccessful() && base != null 
 				&& base.getEntity() != null)
 		{
 			LocationAPI loc = base.getEntity().getContainingLocation();
@@ -166,7 +166,7 @@ public class InfiltrateCell extends CovertActionIntel {
 	
 	@Override
 	public void addResultPara(TooltipMakerAPI info, float pad) {
-		if (result != null && result.isSucessful() && base != null 
+		if (result != null && result.isSuccessful() && base != null 
 				&& base.getEntity() != null)
 		{
 			String str = getString("cellBaseLocation");

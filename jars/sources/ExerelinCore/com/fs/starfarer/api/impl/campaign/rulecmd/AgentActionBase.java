@@ -50,7 +50,7 @@ public abstract class AgentActionBase extends BaseCommandPlugin {
 			str = StringHelper.substituteToken(str, "$agentType", StringHelper.getString(STRING_CATEGORY, agentType));
 			String verb = StringHelper.getString(STRING_CATEGORY, "verbSuccess");
 			Color color = Misc.getHighlightColor();
-			if (!result.isSucessful())
+			if (!result.isSuccessful())
 			{
 				verb = StringHelper.getString(STRING_CATEGORY, "verbFailed");
 				color = Misc.getNegativeHighlightColor();

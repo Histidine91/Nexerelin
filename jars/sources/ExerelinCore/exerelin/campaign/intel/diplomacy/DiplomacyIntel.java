@@ -3,6 +3,7 @@ package exerelin.campaign.intel.diplomacy;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -13,6 +14,8 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -45,6 +48,17 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		
 		isWar = !reputation.wasHostile && reputation.isHostile;
 		isPeace = reputation.wasHostile && !reputation.isHostile;
+	}
+	
+	public void addEvent() {
+		boolean notify = shouldNotify();
+		if (!notify && ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("Suppressed diplomacy notification " 
+					+ getName() + " due to filter level");
+		}
+		Global.getSector().getIntelManager().addIntel(this, !notify);
+		Global.getSector().addScript(this);
+		endAfterDelay();
 	}
 	
 	protected static FactionAPI getFaction(String id)
@@ -135,6 +149,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	/**
 	 * Creates a paragraph detailing the effect of a relationship change between two factions.
 	 * @param info
+	 * @param factionId1
+	 * @param factionId2
 	 * @param relations The final relationship after the change.
 	 * @param adjustResult
 	 * @param pad Padding.
@@ -162,6 +178,26 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		para.setHighlight(fn1, fn2, delta, newRel);
 		para.setHighlightColors(faction1.getBaseUIColor(), faction2.getBaseUIColor(), 
 				deltaColor, NexUtilsReputation.getRelColor(relations));
+	}
+	
+	/**
+	 * If false, don't add to intel notification section on main GUI.
+	 * @return
+	 */
+	public boolean shouldNotify() {
+		if (isWar || isPeace) return true;
+		
+		int filterLevel = ExerelinConfig.diplomacyEventFilterLevel;
+		
+		if (Factions.PLAYER.equals(factionId1) || Factions.PLAYER.equals(factionId2))
+			return filterLevel <= 1;
+		String commFacId = Misc.getCommissionFactionId();
+		if (commFacId != null) {
+			if (commFacId.equals(factionId1) || commFacId.equals(factionId2))
+				return filterLevel <= 1;
+		}
+				
+		return filterLevel <= 0;
 	}
 	
 	/*

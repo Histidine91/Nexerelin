@@ -2,6 +2,11 @@
     "directoryDialogKey": 44,   # integer, default 44 (Z)
     
     "ceasefireNotificationPopup": true,
+    # 0 = no filter, 1 = popup only events affecting player/commissioner faction, 2 = filter out all events
+    # war/peace events are always shown
+    "diplomacyEventFilterLevel":0,
+    # more or less the same as above
+    "agentEventFilterLevel":0,
     
     "minimumPlanets": 3,
     #"minimumStations": 3,

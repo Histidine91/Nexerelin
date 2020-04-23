@@ -25,7 +25,7 @@ public class ExerelinConfig
     // System Generation settings
     public static int minimumPlanets = 3;
     public static float forcePiratesInSystemChance = 0.3f;
-
+    
     // Player settings
     public static float playerInsuranceMult = 0.8f;
     
@@ -125,6 +125,8 @@ public class ExerelinConfig
     // Misc
     public static int directoryDialogKey = 44;  // Z
     public static boolean ceasefireNotificationPopup = true;
+    public static int diplomacyEventFilterLevel = 0;
+    public static int agentEventFilterLevel = 0;
     
     public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;
@@ -258,6 +260,8 @@ public class ExerelinConfig
             corvusModeLandmarks = settings.optBoolean("corvusModeLandmarks", corvusModeLandmarks);
             
             ceasefireNotificationPopup = settings.optBoolean("ceasefireNotificationPopup", ceasefireNotificationPopup);
+            diplomacyEventFilterLevel = settings.optInt("diplomacyEventFilterLevel", diplomacyEventFilterLevel);
+            agentEventFilterLevel = settings.optInt("agentEventFilterLevel", agentEventFilterLevel);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

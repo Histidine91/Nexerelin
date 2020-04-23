@@ -349,7 +349,7 @@ public class ProcureShip extends CovertActionIntel {
 	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		super.addBulletPoints(info, color, initPad, pad);
-		if (result != null && result.isSucessful()) {
+		if (result != null && result.isSuccessful()) {
 			String destName = destination.getName();
 			
 			if (delivered) {
@@ -371,7 +371,7 @@ public class ProcureShip extends CovertActionIntel {
 	
 	@Override
 	public void addResultPara(TooltipMakerAPI info, float pad) {	
-		if (result != null && result.isSucessful()) {
+		if (result != null && result.isSuccessful()) {
 			String name = ship.getShipName();
 			String hullName = ship.getHullSpec().getNameWithDesignationWithDashClass();
 			String destName = destination.getName();

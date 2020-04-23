@@ -437,7 +437,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             log.info("Transmitting event: " + event.name);
             
             DiplomacyIntel intel = new DiplomacyIntel(event.id, faction1.getId(), faction2.getId(), market, result);
-            ExerelinUtils.addExpiringIntel(intel);
+            //ExerelinUtils.addExpiringIntel(intel);
+            intel.addEvent();
             
             if (diplomacyBrains.containsKey(faction1.getId()))
                 diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);

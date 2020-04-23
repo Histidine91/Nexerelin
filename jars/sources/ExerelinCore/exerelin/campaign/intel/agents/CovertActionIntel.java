@@ -26,6 +26,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -318,7 +320,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		
 		result = covertActionRoll();
 				
-		if (result.isSucessful())
+		if (result.isSuccessful())
 			onSuccess();
 		else
 			onFailure();
@@ -334,10 +336,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	public boolean rollInjury() {
-		if (result.isSucessful() && !result.isDetected())
+		if (result.isSuccessful() && !result.isDetected())
 			return false;
 		
-		float chance = CovertOpsManager.getBaseInjuryChance(result.isSucessful());
+		float chance = CovertOpsManager.getBaseInjuryChance(result.isSuccessful());
 		chance *= getDef().detectionChance;
 		if (CovertOpsManager.getRandom(market).nextFloat() <= chance)
 		{
@@ -456,14 +458,53 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 				|| playerInvolved
 				|| agentFaction == PlayerFactionStore.getPlayerFaction()
 				//|| result != null && result.isDetected()
-				|| repResult != null && repResult != NO_EFFECT
+				|| (result != null && result.isSuccessful())
+				|| (repResult != null && repResult != NO_EFFECT)
 				|| Global.getSettings().isDevMode();
+	}
+	
+	protected boolean affectsPlayerRep() {
+		if (repResult == null || repResult == NO_EFFECT)
+			return false;
+		
+		FactionAPI cf = Misc.getCommissionFaction();
+		return agentFaction == cf || agentFaction.isPlayerFaction()
+				|| targetFaction == cf || targetFaction.isPlayerFaction();
+	}
+	
+	protected int getNotifyLevel() {
+		int level = 0;
+		if (affectsPlayerRep())
+		{
+			level += 1;
+		}
+		
+		return level;
+	}
+	
+	protected boolean shouldNotify() {
+		if (ALWAYS_REPORT || playerInvolved || Global.getSettings().isDevMode()) 
+			return true;
+		if (repResult != null && (repResult.isHostile != repResult.wasHostile))
+			return true;
+		if (result != null && result.isSuccessful()
+				&& (targetFaction.isPlayerFaction() || targetFaction == Misc.getCommissionFaction()))
+			return true;
+		
+		int maxLevelToNotify = getNotifyLevel();
+		
+		return ExerelinConfig.agentEventFilterLevel <= maxLevelToNotify;
 	}
 	
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
 		if (shouldReportEvent()) {
-			Global.getSector().getIntelManager().addIntel(this);
+			boolean notify = shouldNotify();
+			Global.getSector().getIntelManager().addIntel(this, !notify);
+			if (!notify && ExerelinModPlugin.isNexDev) {
+				Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification " 
+						+ getName() + " due to filter level", Misc.getHighlightColor());
+			}
 		}
 		endAfterDelay();
 	}
@@ -500,7 +541,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	protected String getName() {
 		String str = getDef().name;
 		if (result != null) { 
-			if (result.isSucessful())
+			if (result.isSuccessful())
 				str += " - " + StringHelper.getString("nex_agents", "verbSuccess", true);
 			else
 				str += " - " + StringHelper.getString("nex_agents", "verbFailed", true);
@@ -543,7 +584,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	protected String getDescStringId() {
 		String id = "intelDesc_" + getDef().id + "_";
-		if (result.isSucessful())
+		if (result.isSuccessful())
 			id += "success";
 		else
 			id += "failure";
@@ -667,7 +708,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (result == null)
 			return;
 		String str = StringHelper.getString("nex_agentActions", "intel_lastMessage_" 
-				+ getDefId() + "_" + (result.isSucessful() ? "success" : "failure"));
+				+ getDefId() + "_" + (result.isSuccessful() ? "success" : "failure"));
 		str = StringHelper.substituteTokens(str, getStandardReplacements());
 		
 		info.addPara(str, pad);

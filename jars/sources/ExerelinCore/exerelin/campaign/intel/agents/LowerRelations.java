@@ -106,6 +106,23 @@ public class LowerRelations extends CovertActionIntel {
 	}
 	
 	@Override
+	protected boolean affectsPlayerRep() {
+		if (repResult2 != null && thirdFaction != null && 
+				(thirdFaction.isPlayerFaction() || thirdFaction == Misc.getCommissionFaction()))
+		{
+			return true;
+		}
+		return super.affectsPlayerRep();
+	}
+	
+	@Override
+	protected boolean shouldNotify() {
+		if (repResult2 != null && repResult2.wasHostile != repResult2.isHostile)
+			return true;
+		return super.shouldNotify();
+	}
+	
+	@Override
 	public void addImages(TooltipMakerAPI info, float width, float pad) {
 		String crest1 = isAgentFactionKnown() ? agentFaction.getCrest() : 
 				Global.getSector().getFaction(Factions.NEUTRAL).getCrest();
@@ -134,7 +151,7 @@ public class LowerRelations extends CovertActionIntel {
 	
 	@Override
 	public void addResultPara(TooltipMakerAPI info, float pad) {
-		if (result.isSucessful()) {
+		if (result.isSuccessful()) {
 			DiplomacyIntel.addRelationshipChangePara(info, targetFaction.getId(), thirdFaction.getId(), 
 					relation, repResult, pad);
 		}
