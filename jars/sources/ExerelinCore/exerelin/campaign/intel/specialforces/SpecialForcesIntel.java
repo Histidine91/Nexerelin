@@ -620,8 +620,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	protected void endEvent() {
 		routeAI.resetRoute(route);
-		endAfterDelay();
-		sendUpdateIfPlayerHasIntel(ENDED_UPDATE, false, false);
+		if (!isEnding() && !isEnded()) {
+			endAfterDelay();
+			sendUpdateIfPlayerHasIntel(ENDED_UPDATE, false, false);
+		}
 	}
 	
 	@Override
