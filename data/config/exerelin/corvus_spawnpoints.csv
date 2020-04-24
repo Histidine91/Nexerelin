@@ -2,10 +2,12 @@ faction,system,entityID
 #machine name,#human name,#machine name
 ,,
 hegemony,Corvus,jangala
+#hegemony,Aztlan,chicomoztoc
 tritachyon,Hybrasil,culann
 sindrian_diktat,Askonia,sindria
 lions_guard,Askonia,sindria
 luddic_church,Eos Exodus,tartessus
+#luddic_church,Canaan,asher
 luddic_path,Kumari Kandam,chalcedon
 persean,Thule,kazeron
 pirates,Yma,qaras

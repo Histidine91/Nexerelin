@@ -50,6 +50,10 @@ public class ExerelinCorvusLocations {
         return new HashMap<>(SYSTEM_CAPITALS);
     }
     
+    public static Map<String, SpawnPointEntry> getFactionSpawnPointsCopy() {
+        return new HashMap<>(SPAWN_POINTS);
+    }
+    
     public static SpawnPointEntry getFactionSpawnPoint(String factionId)
     {
         if (SPAWN_POINTS.containsKey(factionId))

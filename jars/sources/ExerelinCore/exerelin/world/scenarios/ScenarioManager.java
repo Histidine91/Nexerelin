@@ -45,7 +45,7 @@ public class ScenarioManager {
 			String className = defJson.getString("className");
 			
 			StartScenarioDef def = new StartScenarioDef(id, name, desc, className);
-			def.randomSectorOnly = defJson.optBoolean("randomSectorOnly", true);
+			def.randomSectorOnly = defJson.optBoolean("randomSectorOnly");
 			def.requiredModId = defJson.optString("requiredModId", null);
 			
 			defs.add(def);
@@ -104,7 +104,7 @@ public class ScenarioManager {
 		public String name;
 		public String desc;
 		public String className;
-		public boolean randomSectorOnly = true;
+		public boolean randomSectorOnly = false;
 		public String requiredModId;
 		
 		public StartScenarioDef(String id, String name, String desc, String className) {
