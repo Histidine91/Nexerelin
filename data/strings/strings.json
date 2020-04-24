@@ -597,6 +597,10 @@
 		"intelDialogConfirm":"Confirm transfer to $theFaction?",
 	},
 	
+	"nex_console":{
+		"msg_configReload":"exerelin_config.json reloaded. The Sector configuration screen will appear when you close the console.",
+	},
+	
 	"nex_credits":{
 		"contribution_zaphide":"The original Exerelin",
 		"contribution_histidine":"Update for Starsector 0.65 and later",
