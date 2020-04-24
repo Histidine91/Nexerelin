@@ -282,13 +282,15 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 			if (customparams != null && customparams.music != null) {
 				Global.getSoundPlayer().playUISound(customparams.music, 1, 1);
 			}
+			else if (victoryType == VictoryType.RETIRED) {
+				// do nothing
+			}
 			else if (!isDefeat) {
 				Global.getSoundPlayer().playUISound("music_campaign_victory_theme", 1, 1);
 			}
-			else if (victoryType != VictoryType.RETIRED) {
+			else {
 				Global.getSoundPlayer().playUISound("music_campaign_defeat_theme", 1, 1);
 			}
-			
 			
 			options.addOption(Misc.ucFirst(StringHelper.getString("stats")), Menu.STATS);
 			options.addOption(Misc.ucFirst(StringHelper.getString("credits")), Menu.CREDITS);
