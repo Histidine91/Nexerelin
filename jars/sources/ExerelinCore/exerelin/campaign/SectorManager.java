@@ -1087,6 +1087,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         updateSubmarkets(market, oldOwnerId, newOwnerId);
         
+        // Faction ruler mode
+        // Do this after updating submarkets so they're not the wrong submarkets
+        if (playerInvolved && newOwnerId.equals(Misc.getCommissionFactionId()) && Nex_IsFactionRuler.isRuler(newOwnerId)) 
+        {
+            market.setPlayerOwned(true);
+            market.getMemoryWithoutUpdate().set(ColonyManager.MEMORY_KEY_RULER_TEMP_OWNERSHIP, market.getAdmin(), 0);
+        }
+        
         // Templar stuff
         if (newOwnerId.equals("templars") && !oldOwnerId.equals("templars"))
         {
