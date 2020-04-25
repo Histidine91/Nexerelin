@@ -30,6 +30,7 @@ public class SatBombActionStage extends InvActionStage {
 		if (fleet != null) {
 			maxCost = fleet.getCargo().getMaxFuel() * 0.25f;
 		}
+		log.info(String.format("Attempting sat bomb: %s fuel available, %s cost", maxCost, cost));
 		
 		if (cost <= maxCost) {
 			new Nex_MarketCMD(market.getPrimaryEntity()).doBombardment(intel.getFaction(), BombardType.SATURATION);
@@ -37,6 +38,10 @@ public class SatBombActionStage extends InvActionStage {
 			status = RaidIntel.RaidStageStatus.SUCCESS;
 			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
 			intel.sendOutcomeUpdate();
+		}
+		else {
+			if (fleet != null)
+				fleet.getMemoryWithoutUpdate().set(MEM_KEY_INVASION_ATTEMPTED, true);
 		}
 	}
 	
