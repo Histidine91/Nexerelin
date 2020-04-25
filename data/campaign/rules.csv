@@ -48,7 +48,8 @@ ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetToolti
 ExerelinNewGameFactionConfig,ExerelinNGCFactionOptions,,"SetEnabled nex_NGCFactionToggleMenu true
 SetShortcut exerelinNGCOptionsBack ESCAPE",,"nex_NGCFactionToggleMenu:Enable/disable factions
 9:exerelinNGCOptionsBack:Back",
-ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,SetEnabled nex_NGCFactionToggleMenu false,,,
+ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,"SetEnabled nex_NGCFactionToggleMenu false
+SetTooltip nex_NGCFactionToggleMenu ""Only works with random core worlds setting.""",,,
 ,,,,,,
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:exerelinNGCDevStart:>> (dev) quick start
 100:exerelinNGCDevStartFast:>> (dev) quick start no time pass",
@@ -933,9 +934,9 @@ FireAll PopulateOptions",$PersonRank $personLastName confirms the deployment of 
 nex_donateAdminOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial military
 Nex_DonateAdmin isEnabled",,,13:nex_donateAdmin:Donate admin,
-nex_donateAdmin,DialogOptionSelected,$option == nex_donateAdmin,Nex_DonateAdmin list,"""You wish to appoint your own administrator for $market, then?""
-
-This will install the selected admin at this autonomous colony. The admin will be permanently removed from your party.",,
+nex_donateAdmin,DialogOptionSelected,$option == nex_donateAdmin,"Nex_DonateAdmin list
+AddTextSmall ""This will install the selected admin at this autonomous colony. The admin will be permanently removed from your party.""
+SetTextHighlights ""permanently removed""","""You wish to appoint your own administrator for $market, then?""",,
 nex_donateAdminConfirm,DialogOptionSelected,Nex_OptionStartsWith nex_donateAdmin_select_,Nex_DonateAdmin transfer,"""Acknowledged. Goodbye, $playerName.""",cutCommLink:Cut the comm link,
 nex_donateAdminNeverMind,DialogOptionSelected,$option == nex_donateAdmin_cancel,FireAll PopulateOptions,,,
 ,,,,,,
