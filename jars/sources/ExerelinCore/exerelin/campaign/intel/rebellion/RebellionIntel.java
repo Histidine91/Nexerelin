@@ -836,17 +836,21 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	
 	public void modifyPoints(float points, boolean rebels)
 	{
-		boolean addTradePoints = !market.isPlayerOwned();
+		boolean addTradePoints = !market.isPlayerOwned() && !market.getFaction().isPlayerFaction();
 		
 		if (rebels)
 		{
 			rebelStrength += points;
-			if (addTradePoints) rebelTradePoints += points;			
+			if (addTradePoints) rebelTradePoints += points;
+			if (rebelStrength < 0) rebelStrength = 0;
+			if (rebelTradePoints < 0) rebelTradePoints = 0;
 		}
 		else
 		{
 			govtStrength += points;
 			if (addTradePoints) govtTradePoints += points;
+			if (govtStrength < 0) govtStrength = 0;
+			if (govtTradePoints < 0) govtTradePoints = 0;
 		}
 	}
 	
