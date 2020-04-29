@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.campaign.intel.PlayerOutpostIntel;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -91,6 +92,8 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus implements C
 		
 		for (MarketAPI market : markets) {
 			if (market.isPlayerOwned()) continue;
+			if (market.getMemoryWithoutUpdate().contains(PlayerOutpostIntel.MARKET_MEMORY_FLAG))
+				continue;
 			
 			String name = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
 			name = StringHelper.substituteToken(name, "$market", market.getName());
