@@ -265,7 +265,9 @@ public class TributeIntel extends BaseIntelPlugin {
 		
 		FactionAPI claimingFaction = Misc.getClaimingFaction(market.getPrimaryEntity());
 		if (claimingFaction == null || !claimingFaction.getId().equals(factionId) 
-				|| claimingFaction.isHostileTo(Factions.PLAYER)) {
+				|| claimingFaction.isHostileTo(Factions.PLAYER) 
+				|| claimingFaction == Misc.getCommissionFaction()) 
+		{
 			cancel();
 			return;
 		}
