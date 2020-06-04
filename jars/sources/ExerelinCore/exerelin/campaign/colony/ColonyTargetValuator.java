@@ -37,6 +37,7 @@ import org.json.JSONObject;
 public class ColonyTargetValuator {
 	
 	public static final String RESOURCES_CSV_PATH = "data/config/exerelin/conditions_to_commodities.csv";
+	public static final String MEM_KEY_NO_COLONIZE = "$nex_do_not_colonize";
 	protected static final Map<String, Float> DEFAULT_CONDITION_VALUES = new HashMap<>();
 	protected static final Map<String, Float> ORE_CONDITIONS = new HashMap<>();
 	protected static final Map<String, Float> RARE_ORE_CONDITIONS = new HashMap<>();
@@ -149,6 +150,9 @@ public class ColonyTargetValuator {
 	}
 	
 	public boolean prefilterSystem(StarSystemAPI system, FactionAPI faction) {
+		if (system.getMemoryWithoutUpdate().getBoolean(MEM_KEY_NO_COLONIZE))
+			return false;
+		
 		if (system.hasPulsar()) return false;
 		//if (system.isNebula()) return false;
 		if (system.getPlanets().isEmpty()) return false;
@@ -175,7 +179,7 @@ public class ColonyTargetValuator {
 	}
 	
 	public boolean prefilterMarket(MarketAPI market, FactionAPI faction) {
-		StarSystemAPI system = market.getStarSystem();
+		//StarSystemAPI system = market.getStarSystem();
 		// don't colonize core world systems except to repopulate decivilized worlds
 		/*
 		if (ExerelinUtilsAstro.isCoreSystem(system)) {
@@ -185,6 +189,9 @@ public class ColonyTargetValuator {
 				return false;
 		}
 		*/
+		if (!faction.isNeutralFaction()) return false;
+		if (market.getMemoryWithoutUpdate().getBoolean(MEM_KEY_NO_COLONIZE))
+			return false;
 		
 		return true;
 	}
