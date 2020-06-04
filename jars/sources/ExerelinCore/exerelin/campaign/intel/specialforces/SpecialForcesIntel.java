@@ -280,7 +280,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	 * Orders the task group to go to a suitable market to rebuild the fleet.
 	 * @param force
 	 */
-	public void orderFleetRebuild(boolean force) {		
+	public void orderFleetRebuild(boolean force) {
 		if (rebuildCheckCooldown > 0 && !force) {
 			return;
 		}
@@ -292,7 +292,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		}
 		
 		Float damage = route.getExtra().damage;
-		if ((damage == null || damage <= 0) && flagship != null) {
+		if (damage == null) damage = 0f;
+		if (damage <= 0 && flagship != null) {
 			debugMsg("Fleet is undamaged and needs no reconstitution", false);
 			return;
 		}
