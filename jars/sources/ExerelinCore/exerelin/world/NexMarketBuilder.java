@@ -333,6 +333,33 @@ public class NexMarketBuilder
 	}
 	
 	/**
+	 * Gets the market's current orbital station and its level.
+	 * @param market
+	 * @return {@code Pair} of the station's {@code Industry} and its level (1-3).
+	 */
+	public static Pair<Industry, Integer> getCurrentStationAndTier(MarketAPI market) {
+		Industry best = null;
+		int bestLevel = 0;
+		for (Industry ind : market.getIndustries()) {
+			if (!ind.getSpec().hasTag(Industries.TAG_STATION))
+				continue;
+			
+			int level = 1;
+			if (ind.getSpec().hasTag(Industries.TAG_STARFORTRESS))
+				level = 3;
+			else if (ind.getSpec().hasTag(Industries.TAG_STARFORTRESS))
+				level = 2;
+			
+			if (level > bestLevel) {
+				best = ind;
+				bestLevel = level;
+			}
+		}
+		if (best == null) return null;
+		return new Pair<>(best, bestLevel);
+	}
+	
+	/**
 	 * Adds patrol/military bases, ground defenses and defense stations as appropriate to the market.
 	 * @param entity
 	 * @param instant
@@ -462,20 +489,33 @@ public class NexMarketBuilder
 			
 			if (sizeIndex >= 0)
 			{
-				ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-				if (instant) {
-					String station = conf.getRandomDefenceStation(random, sizeIndex);
-					if (station != null) {
-						//log.info("Adding station: " + station);
-						addIndustry(market, station, instant);
+				// look for an existing station and see if we should upgrade it
+				Pair<Industry, Integer> currStation = getCurrentStationAndTier(market);
+				if (currStation != null) {
+					if (sizeIndex + 1 > currStation.two)
+					{
+						Industry station = currStation.one;
+						station.startUpgrading();
+						if (instant) station.finishBuildingOrUpgrading();
 					}
 				}
+				// no station, add one
 				else {
-					DefenceStationSet set = conf.getRandomDefenceStationSet(random);
-					if (set != null) {
-						colMan.queueIndustry(market, set.industryIds.get(0), QueueType.NEW);
-						for (int i=0; i<sizeIndex;i++) {
-							colMan.queueIndustry(market, set.industryIds.get(i), QueueType.UPGRADE);
+					ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+					if (instant) {
+						String station = conf.getRandomDefenceStation(random, sizeIndex);
+						if (station != null) {
+							//log.info("Adding station: " + station);
+							addIndustry(market, station, instant);
+						}
+					}
+					else {
+						DefenceStationSet set = conf.getRandomDefenceStationSet(random);
+						if (set != null) {
+							colMan.queueIndustry(market, set.industryIds.get(0), QueueType.NEW);
+							for (int i=0; i<sizeIndex;i++) {
+								colMan.queueIndustry(market, set.industryIds.get(i), QueueType.UPGRADE);
+							}
 						}
 					}
 				}
