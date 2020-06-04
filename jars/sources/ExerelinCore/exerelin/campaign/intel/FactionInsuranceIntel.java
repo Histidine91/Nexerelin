@@ -56,8 +56,9 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		
 		this.disabledOrDestroyedMembers = disabledOrDestroyedMembers;
 		paidAmount = calculatePayout(deadOfficers, disabledOrDestroyedMembers);
-
-		if (faction.isAtBest(Factions.PLAYER, RepLevel.SUSPICIOUS))
+		
+		// mostly for Galatian stipend insurance; commission will be terminated if you get to Suspicious
+		if (faction.isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
 		{
 			paid = false;
 		}
@@ -100,7 +101,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			
 			//log.info("Cannot self-insure");
 			return false;
-		}	
+		}
 		if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId)) {
 			// assume Exigency is alive on the other side of the wormhole, do nothing
 		} else if (!DEBUG_MODE && !SectorManager.isFactionAlive(alignedFactionId))	{
