@@ -288,6 +288,7 @@
 		"costShipBase":"base ship price",
 		"costShipGeneralMult":"theft multiplier",
 		"costShipGeneralMultLegal":"tariff",
+		"costShipGeneralMultLegal2":"service fee",
 		
 		"intelButton_goToAgent":"go to agent",
 		"intelButton_procureShipSetDestination":"set delivery destination",

@@ -29,10 +29,13 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import static com.fs.starfarer.api.util.Misc.random;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -62,7 +65,7 @@ public class ProcureShip extends CovertActionIntel {
 	}
 	
 	/**
-	 * Picks a random destination market to send the ship: first the player's 
+	 * Picks an appropriate destination market to send the ship: first the player's 
 	 * current gathering point, then the nearest market where player has storage access, 
 	 * then the market where the agent action is taking place.
 	 * @return
@@ -114,10 +117,6 @@ public class ProcureShip extends CovertActionIntel {
 		}
 	}
 	
-	// TODO: cost multiplier if ship is not available at current relationship,
-	// maybe rarity cost multiplier,
-	// guarantee success if ship available at current relationship
-	
 	/**
 	 * Should match {@code getRequiredLevelAssumingLegal} in MilitarySubmarketPlugin.java.
 	 * @return
@@ -132,11 +131,29 @@ public class ProcureShip extends CovertActionIntel {
 		return RepLevel.FAVORABLE;
 	}
 	
+	protected boolean hasCommission() {
+		if (!targetFaction.getCustomBoolean(Factions.CUSTOM_OFFERS_COMMISSIONS)) return true;
+		
+		String cfId = ExerelinUtilsFaction.getCommissionFactionId();
+		String afId = agentFaction.getId();
+		String tgtId = targetFaction.getId();
+		Global.getLogger(this.getClass()).info(cfId + ", " + afId + ", " + tgtId);
+		
+		if (AllianceManager.areFactionsAllied(afId, tgtId)) return true;
+		if (cfId != null) {
+			if (AllianceManager.areFactionsAllied(cfId, tgtId)) return true;
+		}
+		
+		return false;
+	}
+	
 	public boolean isLegal() {
 		if (ship == null) return false;
-		return ship.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN);
-		//return false;
-		//return targetFaction.getRelationshipLevel(agentFaction).isAtWorst(getRequiredLevelForLegal());
+		if (ship.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN)) return true;
+		if (!targetFaction.getRelationshipLevel(agentFaction).isAtWorst(getRequiredLevelForLegal()))
+			return false;
+		
+		return hasCommission();
 	}
 	
 	public void setShip(FleetMemberAPI ship) {
@@ -218,11 +235,15 @@ public class ProcureShip extends CovertActionIntel {
 		
 		cost.modifyFlat("base", ship.getBaseBuyValue(), getString("costShipBase", true));
 		
-		if (!isLegal())
+		if (!isLegal()) {
 			cost.modifyMult("generalMult", getDef().baseCost, getString("costShipGeneralMult", true));
-		else
-			cost.modifyMult("generalMult", 1 + market.getTariff().getModifiedValue(), 
+		}
+		else {
+			cost.modifyMult("tariff", 1 + market.getTariff().getModifiedValue(), 
 					getString("costShipGeneralMultLegal", true));
+			cost.modifyMult("serviceFee", 1 + getDef().baseCost * 0.1f, 
+					getString("costShipGeneralMultLegal2", true));
+		}
 		
 		cost.modifyMult("hullMult", CovertOpsManager.getStealShipCostMult(ship.getHullId()), 
 				StringHelper.getString("hull", true) + ": " + ship.getHullSpec().getHullName());
