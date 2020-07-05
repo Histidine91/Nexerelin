@@ -26,7 +26,7 @@ public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
 	public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[]{
 		Factions.DERELICT, Factions.REMNANTS
 	}));
-	public static final float TRADE_MULT = 0.25f;
+	public static final float TRADE_MULT = 0.5f;
 	
 	public static boolean isFactionAllowed(String factionId) {
 		return !DISALLOWED_FACTIONS.contains(factionId);
