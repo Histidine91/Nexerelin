@@ -295,6 +295,8 @@ public class ExerelinUtilsAstro {
 			if (token instanceof CampaignFleetAPI) continue;
 			if (token.getOrbit() == null || token.getOrbit().getFocus() != primary)
 				continue;
+			if (token.getFaction() != primary.getFaction())
+				continue;
 			results.add(token);
 		}
 		
