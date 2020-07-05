@@ -193,7 +193,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		float stability = market.getStabilityValue();
 		float sizeMult = getSizeMod(market);
 		govtStrength = (6 + stability * 1.25f) * sizeMult;
-		rebelStrength = (3 + (10 - stability)) * sizeMult;
+		rebelStrength = (3 + (10 - stability) * 1.25f) * sizeMult * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		if (rebelFaction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
 			rebelStrength *= REBEL_ORIGINAL_OWNER_STR_MULT;
 	}
