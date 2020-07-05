@@ -285,8 +285,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 * Get the desired scaling fleet size for the specified attacker and target.
 	 * @param attacker
 	 * @param target
-	 * @param variability Result will be randomized within a range (1-N) to (1+N).
-	 * @param countAllHostile
+	 * @param variability Used to multiply the estimated strength by a random Gaussian value.
+	 * @param countAllHostile Count patrols only from markets belonging to the 
+	 * target faction, or all that are hostile to the attacker?
 	 * @param maxMult Multiplier for maximum fleet size.
 	 * @return
 	 */
@@ -540,6 +541,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				}
 				weight = 20000.0F / dist;
 			}
+			
+			// modifier for defense strength (prefer weaker targets, proportional to size)
+			float defStr = getWantedFleetSize(faction, market, 1.1f, false);
+			weight *= 10000/defStr;
+			weight *= market.getSize();
 			
 			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
 			if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId) || isPirateFaction)
