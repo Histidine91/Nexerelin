@@ -440,7 +440,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 String hvbID = row.optString("HVB id");
                 validShips.add(new BossShipEntry(hullId, ibbNum, stage, hvbID));    
                 
-                if (ibbNum > highestIBBNum) 
+                if (ibbNum > highestIBBNum)
                     highestIBBNum = ibbNum;
             }
                 
@@ -519,9 +519,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return new ArrayList<>(alreadyBoughtShips);
     }
     
-    public void addAlreadyBoughtShip(String baseHullId)
+    public void addAlreadyBoughtShip(String hullId)
     {
-        alreadyBoughtShips.add(baseHullId);
+        alreadyBoughtShips.add(hullId);
     }
     
     public void setAlreadyBoughtShips(Collection<String> baseHullIds)
@@ -648,8 +648,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
             PrismMarket prism = (PrismMarket)sub.getPlugin();
             for (FleetMemberAPI ship : ships)
             {
-                //log.info("Adding ship " + ship.getHullSpec().getBaseHullId() + " to Prism already-bought list");
-                prism.addAlreadyBoughtShip(ship.getHullSpec().getBaseHullId());
+                //log.info("Adding ship " + ship.getHullSpec().getHullId() + " to Prism already-bought list");
+                prism.addAlreadyBoughtShip(ship.getHullSpec().getHullId());
             }
         }
     }
