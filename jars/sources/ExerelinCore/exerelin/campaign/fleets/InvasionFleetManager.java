@@ -99,7 +99,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 15;
 	public static final float SAT_BOMB_CHANCE = 0.4f;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
-	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 1;
+	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	
