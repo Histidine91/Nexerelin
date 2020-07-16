@@ -582,25 +582,23 @@ public class DiplomacyBrain {
 		});
 		
 		// list everyone we're currently trying to invade, don't bother making peace with them
-		Set<String> currInvasionTargets = new HashSet<>();
+		Set<String> factionsInvadingOrInvaded = new HashSet<>();
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
 			InvasionIntel inv = (InvasionIntel)intel;
-			if (inv.getFaction() != faction) continue;
-			currInvasionTargets.add(inv.getTarget().getFactionId());
+			if (inv.getFaction() == faction) {
+				factionsInvadingOrInvaded.add(inv.getTarget().getFactionId());
+			}
+			// also don't make peace with someone currently trying to invade us (assume they refuse)
+			// unless that faction is player, player might fall for it
+			else if (inv.getTarget().getFaction() == faction && !inv.getFaction().isPlayerFaction()) {
+				factionsInvadingOrInvaded.add(inv.getTarget().getFactionId());
+			}
 		}
-		
-		/*
-		List<CampaignEventPlugin> events = Global.getSector().getEventManager().getOngoingEvents();
-		for (CampaignEventPlugin event : events)
-		{
-			
-		}
-		*/
 		
 		int tries = 3;
 		for (String enemyId : enemiesLocal)
 		{
-			if (currInvasionTargets.contains(enemyId))
+			if (factionsInvadingOrInvaded.contains(enemyId))
 				continue;
 			
 			boolean success = tryMakePeace(enemyId, ourWeariness);
