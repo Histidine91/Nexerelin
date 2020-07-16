@@ -45,18 +45,6 @@ public class StartSetupPostTimePass {
 		
 		FactionAPI myFaction = sector.getFaction(factionId);
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
-		if (SectorManager.getCorvusMode())
-		{
-			
-		}
-		else 
-		{
-			if (ExerelinConfig.enableAntioch)
-			{
-				if (sector.getStarSystem("Eos Exodus") != null)
-					sector.removeStarSystem(sector.getStarSystem("Eos Exodus"));
-			}
-		}
 		
 		// assign officers
 		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;

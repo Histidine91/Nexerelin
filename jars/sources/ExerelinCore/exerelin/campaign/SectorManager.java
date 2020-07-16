@@ -1296,7 +1296,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         addOrRemoveSubmarket(market, Submarkets.LOCAL_RESOURCES, haveLocalResources);
         addOrRemoveSubmarket(market, Submarkets.SUBMARKET_OPEN, haveOpen);
         addOrRemoveSubmarket(market, Submarkets.SUBMARKET_BLACK, haveBlackMarket);
-        addOrRemoveSubmarket(market, "tem_templarmarket", haveTemplar);
+        //addOrRemoveSubmarket(market, "tem_templarmarket", haveTemplar);
         addOrRemoveMilitarySubmarket(market, newOwnerId, haveMilitary);
     }
     

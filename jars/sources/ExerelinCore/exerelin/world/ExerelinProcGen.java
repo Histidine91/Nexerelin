@@ -1304,8 +1304,6 @@ public class ExerelinProcGen {
 	protected void addAntiochPart2(SectorAPI sector)
 	{
 		TEM_Antioch.generatePt2(sector);
-		StarSystemAPI system = sector.createStarSystem("Eos Exodus");	// workaround CTD in Antioch script
-		system.getLocation().set(999999, 999999);
 	}
 	
 	protected void handleHQSpecials(SectorAPI sector, String factionId, ProcGenEntity data)
@@ -1632,7 +1630,7 @@ public class ExerelinProcGen {
 			{
 				if (populatedPlanetsCopy.isEmpty()) break;
 				
-				ProcGenEntity habitable = pickRandomMarketCloseToHQ(factionId, populatedPlanetsCopy, 
+				ProcGenEntity habitable = pickMarketCloseToHQ(factionId, populatedPlanetsCopy, 
 						existingHQsByFaction.get(factionId), populatedSystemsByFaction.get(factionId));
 				populatedPlanetsCopy.remove(habitable);
 				unassignedEntities.remove(habitable);
@@ -1668,7 +1666,7 @@ public class ExerelinProcGen {
 			int numStations = (int)(remainingStations * (factionShare.get(factionId)/totalShare) + 0.5);
 			for (int i=factionStationCount.get(factionId);i<numStations;i++)
 			{
-				ProcGenEntity station = pickRandomMarketCloseToHQ(factionId, stationsCopy, 
+				ProcGenEntity station = pickMarketCloseToHQ(factionId, stationsCopy, 
 						existingHQsByFaction.get(factionId), populatedSystemsByFaction.get(factionId));
 				stationsCopy.remove(station);
 				unassignedEntities.remove(station);

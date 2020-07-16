@@ -16,9 +16,9 @@ public class ExerelinUtilsCargo
         
         if (market.getFactionId().equals("templars"))
         {
-            CargoAPI cargoTemplars = market.getSubmarket("tem_templarmarket").getCargo();
-            cargoTemplars.addCommodity(commodityID, amountToAdd * 0.2f);
-            return;
+            //CargoAPI cargoTemplars = market.getSubmarket("tem_templarmarket").getCargo();
+            //cargoTemplars.addCommodity(commodityID, amountToAdd * 0.2f);
+            //return;
         }
         if (market.getSubmarket(Submarkets.SUBMARKET_OPEN) == null)    // some weirdo mod
         {
