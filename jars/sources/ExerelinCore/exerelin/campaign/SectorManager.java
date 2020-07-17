@@ -1098,11 +1098,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // Templar stuff
         if (newOwnerId.equals("templars") && !oldOwnerId.equals("templars"))
         {
-            if (!market.hasCondition("exerelin_templar_control")) market.addCondition("exerelin_templar_control");
+            //if (!market.hasCondition("exerelin_templar_control")) market.addCondition("exerelin_templar_control");
         }
         else if (!newOwnerId.equals("templars") && oldOwnerId.equals("templars"))
         {
-            if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
+            //if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
         }
         
         // tariffs
