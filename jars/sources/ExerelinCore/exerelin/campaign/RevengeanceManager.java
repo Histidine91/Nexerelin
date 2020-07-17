@@ -43,9 +43,6 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	public static final boolean DEBUG_MODE = false;
 	public static final String PERSISTENT_KEY = "nex_revengeanceManager";
 	
-	// controls frequency of spawning counter-invasion fleets
-	public static final float POINTS_TO_SPAWN = 125;
-	
 	// each entry in the array represents a fleet
 	// first number is vengeance points needed, second is escalation level (0-2)
 	public static final List<Integer[]> FLEET_STAGES = Arrays.asList(
@@ -111,10 +108,11 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		{
 			Global.getSector().getCampaignUI().addMessage(debugStr);
 		}
-		if (points >= POINTS_TO_SPAWN)
+		float pointsToSpawn = Global.getSettings().getFloat("nex_counterInvasionPointsToSpawn");
+		if (points >= pointsToSpawn)
 		{
 			boolean success = generateCounterInvasionFleet();
-			if (success) points -= POINTS_TO_SPAWN;
+			if (success) points -= pointsToSpawn;
 		}
 	}
 	
