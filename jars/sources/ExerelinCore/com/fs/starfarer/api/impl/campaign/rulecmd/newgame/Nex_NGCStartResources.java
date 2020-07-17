@@ -13,8 +13,12 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -33,17 +37,20 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		String arg = params.get(0).getString(memoryMap);
 		switch (arg) {
 			case "createOptions":
-				createSliders(dialog.getOptionPanel());
+				createSliders(dialog.getOptionPanel(), memoryMap);
 				return true;
 			case "save":
 				saveValues(dialog.getOptionPanel(), dialog.getTextPanel(), memoryMap.get(MemKeys.LOCAL));
+				return true;
+			case "reroll":
+				rerollRandomShips(memoryMap);
 				return true;
 			default:
 				return false;
 		}
 	}
 	
-	protected void createSliders(OptionPanelAPI opts)
+	protected void createSliders(OptionPanelAPI opts, Map<String, MemoryAPI> memoryMap)
 	{
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
@@ -61,6 +68,11 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 				0, 4,	// min, max
 				ValueDisplayMode.VALUE, null);
 		opts.setSelectorValue("startOfficersSelector", data.numStartingOfficers);
+		
+		if (memoryMap.get(MemKeys.LOCAL).getBoolean("$randomStartShips")) {
+			opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
+					"fleetRandomReroll")), "nex_NGCStep4FleetReroll");
+		}
 		
 		opts.addOption(StringHelper.getString("back", true), "nex_NGCStartBack");
 	}
@@ -93,5 +105,14 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		
 		opts.clearOptions();
 		opts.addOption(StringHelper.getString("done", true), "nex_NGCDone");
+	}
+	
+	protected void rerollRandomShips(Map<String, MemoryAPI> memoryMap) {
+		String fleetTypeStr = memoryMap.get(MemKeys.LOCAL).getString("$nex_lastSelectedFleetType");
+		
+		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(
+				PlayerFactionStore.getPlayerFactionIdNGC());
+		List<String> startingVariants = factionConf.getStartFleetForType(fleetTypeStr, false);
+		memoryMap.get(MemKeys.LOCAL).set("$startShips_" + fleetTypeStr, startingVariants);
 	}
 }

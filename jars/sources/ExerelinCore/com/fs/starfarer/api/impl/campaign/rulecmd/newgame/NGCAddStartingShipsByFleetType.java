@@ -44,6 +44,8 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		generateFleetFromVariantIds(dialog, data, fleetTypeStr, startingVariants);
 		addStartingDModScript(memoryMap.get(MemKeys.LOCAL));
 		
+		memoryMap.get(MemKeys.LOCAL).set("$nex_lastSelectedFleetType", fleetTypeStr);
+		
 		return true;
 	}
 	

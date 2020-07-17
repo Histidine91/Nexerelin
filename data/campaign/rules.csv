@@ -253,6 +253,23 @@ Nex_NGCStartResources createOptions
 SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartAgent:Agent (20,000 credits, level 1)
 nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 6)
 nex_NGCCustomResourcesStart:Custom...",
+nex_NGCStep4Reroll,NewGameOptionSelected,$option == nex_NGCStep4FleetReroll,"NGCClearStartingGear
+Nex_NGCStartResources reroll
+NGCAddStartingShipsByFleetType $nex_lastSelectedFleetType
+Nex_NGCStartResources createOptions
+SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartEnsign:Ensign (20,000 credits, level 1)
+nex_NGCStartLieutenant:Lieutenant (75,000 credits, level 6, one officer)
+nex_NGCStartCommander:Commander (250,000 credits, level 16, two officers)
+nex_NGCCustomResourcesStart:Custom...",
+nex_NGCStep4RerollSuper,NewGameOptionSelected,"$option == nex_NGCStep4FleetReroll
+$nex_lastSelectedFleetType == SUPER","NGCClearStartingGear
+Nex_NGCStartResources reroll
+NGCAddStartingShipsByFleetType $nex_lastSelectedFleetType
+Nex_NGCStartResources createOptions
+SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartAgent:Agent (20,000 credits, level 1)
+nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 6)
+nex_NGCCustomResourcesStart:Custom...",
+,,,,,,
 nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCStartEnsign,"NGCAddCredits 20000
 NGCAddCharacterPoints 3
 NGCSetNumStartingOfficers 0
