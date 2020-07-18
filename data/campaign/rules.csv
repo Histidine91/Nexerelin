@@ -58,6 +58,8 @@ ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone
 ,,,,,,
 nex_NGCFactionToggleMenu,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu,Nex_NGCFactionToggle listFactions,,,
 nex_NGCToggleFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCToggleFaction_""",Nex_NGCFactionToggle toggle,,,
+nex_NGCFactionToggleMenuLeave,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu_leave,"Nex_NGCFactionToggle processRecommendedSize
+FireAll ExerelinNGCFactionOptions",,,
 ,,,,,,
 ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOptions,FireAll ExerelinNGCSectorOptions,,,
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
@@ -67,11 +69,14 @@ ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPres
 ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
 nex_NGCCustomScenarioOption,ExerelinNGCOtherOptions,,Nex_NGCCustomScenario menuOption,,nex_NGCCustomScenarioMenu:Custom scenario – $nex_customScenarioName,
 ,,,,,,
-nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,Nex_NGCProcessSectorGenerationSliders create,,,
+nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,"Nex_NGCProcessSectorGenerationSliders create
+$nex_ngcSectorGenSlidersSeen = true",,,
 nex_NewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
 SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack:Back,
 nex_NewGameSectorConfigBack,NewGameOptionSelected,$option==exerelinNGCSectorOptionsBack,"Nex_NGCProcessSectorGenerationSliders save
 FireAll ExerelinNGCOptions",,,
+nex_NewGameSectorConfigReset,NewGameOptionSelected,$option==exerelinNGCSectorOptionsReset,"Nex_NGCProcessSectorGenerationSliders reset
+FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
 nex_NGCListOptionEnableRandomStartRelationships,ExerelinNGCFactionOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
 nex_NGCListOptionDisableRandomStartRelationships,ExerelinNGCFactionOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
@@ -124,6 +129,7 @@ ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,SetShortcut exerelinNGCOpti
 ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorvusMode,"NGCSetCorvusMode true
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
+Nex_NGCFactionToggle processRecommendedSize
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
 FireAll ExerelinNGCOtherOptions",,,

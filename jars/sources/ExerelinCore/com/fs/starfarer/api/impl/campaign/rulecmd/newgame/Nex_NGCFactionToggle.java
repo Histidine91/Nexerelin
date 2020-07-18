@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -10,6 +11,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,9 +53,55 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 				init(ruleId, dialog, memoryMap);
 				
 				return true;
+			
+			case "processRecommendedSize":
+				handleRecommendedSectorSize(dialog.getTextPanel(), 
+						memoryMap.get(MemKeys.LOCAL).getBoolean("$nex_ngcSectorGenSlidersSeen"));
+				return true;
 		}
 		
 		return false;
+	}
+	
+	// If player has seen sector generation sliders, print recommended settings
+	// If not, modify the settings directly and notify player
+	protected void handleRecommendedSectorSize(TextPanelAPI text, boolean seenSliders) {
+		ExerelinSetupData data = ExerelinSetupData.getInstance();
+		int count = 0;
+		float expectedStations = 0;
+		float expectedPlanets = 0;
+		for (Map.Entry<String, Boolean> tmp : data.factions.entrySet()) {
+			if (tmp.getValue() == false) continue;
+			String factionId = tmp.getKey();
+			if (factionId.equals(Factions.INDEPENDENT)) continue;
+			
+			count++;
+			float mult = ExerelinConfig.getExerelinFactionConfig(factionId).marketSpawnWeight;
+			expectedStations += 1f * mult;
+			expectedPlanets += 3f * mult;
+		}
+		
+		if (expectedPlanets < 8) expectedPlanets = 8;
+		if (expectedStations < 4) expectedStations = 4;
+		
+		int expectedSystems = (int)Math.ceil(Math.max(count * 1.2f, count + 3));
+		
+		Color hl = Misc.getHighlightColor();
+		String key = seenSliders ? "recommendedSizeMsg2Alt" : "recommendedSizeMsg2";
+		
+		text.setFontSmallInsignia();
+		text.addPara(StringHelper.getString("exerelin_ngc", "recommendedSizeMsg1"),  hl, count + "");
+		text.addPara(StringHelper.getString("exerelin_ngc", key),  hl, 
+					expectedSystems + "", 
+					Math.round(expectedPlanets) + "", 
+					Math.round(expectedStations) + "");
+		text.setFontInsignia();
+		
+		if (!seenSliders) {
+			data.numSystems = expectedSystems;
+			data.numPlanets = (int)Math.ceil(expectedPlanets);
+			data.numStations = (int)Math.ceil(expectedStations);
+		}
 	}
 	
 	protected void init(String ruleId, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap)
@@ -61,7 +109,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 		//optionsPerPage = 6;
 		super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 		listFactions();
-		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "exerelinNGCFactionOptions");
+		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "nex_NGCFactionToggleMenu_leave");
 		currPage = lastPage;
 		showOptions();
 	}
@@ -92,7 +140,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 	public void showOptions() {
 		super.showOptions();
 		dialog.getOptionPanel().setTooltip(RANDOMIZE_OPT, StringHelper.getString("exerelin_ngc", "randomizeFactionsTooltip"));
-		dialog.getOptionPanel().setShortcut("exerelinNGCFactionOptions", Keyboard.KEY_ESCAPE, false, false, false, false);
+		dialog.getOptionPanel().setShortcut("nex_NGCFactionToggleMenu_leave", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	/**

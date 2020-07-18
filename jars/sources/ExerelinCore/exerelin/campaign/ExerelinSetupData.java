@@ -19,7 +19,7 @@ public class ExerelinSetupData
 	public static final int NUM_DMOD_LEVELS = 4;
 	
 	public static Logger log = Global.getLogger(ExerelinSetupData.class);
-	private static ExerelinSetupData instance = null;
+	protected static ExerelinSetupData instance = null;
 
 	// Sector Generation Defaults
 	public int numSystems = 16;
@@ -48,7 +48,7 @@ public class ExerelinSetupData
 	
 	public String startScenario = null;
 
-	protected ExerelinSetupData()
+	public ExerelinSetupData()
 	{
 		List<String> factionIds = ExerelinConfig.getFactions(true, false);
 		factionIds.add(Factions.INDEPENDENT);

@@ -77,6 +77,7 @@
 		"goBack":"go back",
 		"dismiss":"dismiss",
 		"leave":"leave",
+		"reset":"reset",
 
 		"yes":"yes",
 		"no":"no",
@@ -1159,6 +1160,10 @@
 		"maxPlanetsTitle":"Maximum inhabited planets per system",
 		"maxMarketsTitle":"Maximum inhabited planets + stations per system",
 		"randomizeFactionsTooltip":"Every faction has a 50% chance to be enabled (except independents, which will not be toggled from their current setting).",
+		
+		"recommendedSizeMsg1":"Non-independent factions enabled: %s",
+		"recommendedSizeMsg2":"Auto-configuring sector size: %s systems, %s planets, %s stations",
+		"recommendedSizeMsg2Alt":"Recommended sector size: %s systems, %s planets, %s stations",
 
 		"fleetSolo":"Solo frigate",
 		"fleetCombatSmall":"Combat (small)",

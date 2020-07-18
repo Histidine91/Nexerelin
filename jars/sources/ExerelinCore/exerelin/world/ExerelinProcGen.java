@@ -1346,6 +1346,9 @@ public class ExerelinProcGen {
 		if (ent == null) ent = candidate.primary;
 		for (ProcGenEntity hq : existingHQs)
 		{
+			if (ent.getContainingLocation() == hq.entity.getContainingLocation())
+				return 0.0001f;
+			
 			float distSq = MathUtils.getDistanceSquared(ent.getLocationInHyperspace(), hq.entity.getLocationInHyperspace());
 			score += Math.pow(distSq, 0.25f);
 		}
@@ -1354,7 +1357,8 @@ public class ExerelinProcGen {
 	
 	/**
 	 * Picks a planet that is as far from existing HQ planets as possible.
-	 * Uses most-square-roots approach.
+	 * Uses most-square-roots approach, and applies a minimum score for planets 
+	 * sharing a system with an existing HQ.
 	 * @param candidates Possible planets for a HQ
 	 * @param existingHQs
 	 * @return
@@ -1391,6 +1395,7 @@ public class ExerelinProcGen {
 	 * @param alreadyPresent List of star systems where we already have a presence
 	 * @return
 	 */
+	@Deprecated
 	protected ProcGenEntity pickRandomMarketCloseToHQ(String factionId, List<ProcGenEntity> candidates, 
 			ProcGenEntity hq, Collection<LocationAPI> alreadyPresent)
 	{
@@ -1425,6 +1430,47 @@ public class ExerelinProcGen {
 			picker.add(candidate, weight);
 		}
 		return picker.pick();
+	}
+	
+	protected ProcGenEntity pickMarketCloseToHQ(String factionId, List<ProcGenEntity> candidates, 
+			ProcGenEntity hq, Collection<LocationAPI> alreadyPresent)
+	{
+		if (ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction || factionId.equals(Factions.INDEPENDENT))
+			return candidates.get(0);
+		
+		// crash safety
+		Vector2f hqLoc;
+		if (hq == null)
+			hqLoc = new Vector2f(0, 0);
+		else 
+			hqLoc = hq.entity.getContainingLocation().getLocation();
+		
+		
+		ProcGenEntity best = null;
+		float bestScore = 0;
+		
+		for (ProcGenEntity candidate : candidates)
+		{
+			Vector2f loc = candidate.starSystem.getLocation();
+			
+			float score = 20000/MathUtils.getDistance(loc, hqLoc);
+			score = (float)Math.sqrt(score);
+			
+			if (alreadyPresent.contains(candidate.starSystem))
+			{
+				float existingCount = countMarketsInSystemForFaction(candidate.starSystem, factionId);
+				//log.info("System " + candidate.starSystem.getBaseName() + " already has " + existingCount + " markets for " + factionId);
+				float existingMult = 4 - existingCount;
+				if (existingMult < 0.5) existingMult = 0.5f;
+				score *= existingMult;
+			}
+			
+			if (score > bestScore) {
+				bestScore = score;
+				best = candidate;
+			}
+		}
+		return best;
 	}
 	
 	/**
