@@ -29,7 +29,7 @@ public class FactionListNamer implements SpecialForcesNamer {
 			name = ExerelinUtils.getRandomListElement(ExerelinUtils.JSONArrayToArrayList(names));
 		}
 		catch (IOException | JSONException ex) {
-			
+			Global.getLogger(this.getClass()).info("Failed to load special forces name list for faction " + fleet.getFaction().getId(), ex);
 		}
 		
 		return name;
