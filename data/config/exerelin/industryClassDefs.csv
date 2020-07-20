@@ -1,16 +1,22 @@
-id,name,class,priority,special,requiredMod
-farming,Farming,exerelin.world.industry.Farming,2,,
-mining,Mining,exerelin.world.industry.Mining,3,,
-techmining,Tech-Mining,exerelin.world.industry.TechMining,1,,
-refining,Refining,exerelin.world.industry.Refining,1,,
-lightindustry,Light Industry,exerelin.world.industry.LightIndustry,1,,
-heavyindustry,Heavy Industry,exerelin.world.industry.HeavyIndustry,1,,
-fuelproduction,Fuel Production,exerelin.world.industry.FuelProduction,1,,
-none,No Industry,exerelin.world.industry.NullIndustry,1,,
-militarybase,Military Base,exerelin.world.industry.MilitaryBase,0,,
-commerce,Commerce,exerelin.world.industry.Commerce,,TRUE,
-waystation,Waystation,exerelin.world.industry.Waystation,,TRUE,
-cryosanctum,Cryosanctum,exerelin.world.industry.Cryosanctum,,TRUE,
-ms_medCenter,Med Center,exerelin.world.industry.MedCenter,,TRUE,shadow_ships
-ms_supersolar,Massive Solar Collectors,exerelin.world.industry.SuperSolar,,TRUE,shadow_ships
-ii_interstellarbazaar,Interstellar Bazaar,exerelin.world.industry.ImperialBazaar,,TRUE,Imperium
+id,name,class,priority,special,requiredMod,notes
+farming,Farming,exerelin.world.industry.Farming,2,,,
+mining,Mining,exerelin.world.industry.Mining,3,,,
+techmining,Tech-Mining,exerelin.world.industry.TechMining,1,,,
+refining,Refining,exerelin.world.industry.Refining,1,,,
+lightindustry,Light Industry,exerelin.world.industry.LightIndustry,1,,,
+heavyindustry,Heavy Industry,exerelin.world.industry.HeavyIndustry,1,,,
+fuelproduction,Fuel Production,exerelin.world.industry.FuelProduction,1,,,
+none,No Industry,exerelin.world.industry.NullIndustry,1,,,
+militarybase,Military Base,exerelin.world.industry.MilitaryBase,0,,,
+commerce,Commerce,exerelin.world.industry.Commerce,,TRUE,,
+waystation,Waystation,exerelin.world.industry.Waystation,,TRUE,,
+cryosanctum,Cryosanctum,exerelin.world.industry.Cryosanctum,,TRUE,,
+ms_medCenter,Med Center,exerelin.world.industry.MedCenter,,TRUE,shadow_ships,
+ms_supersolar,Massive Solar Collectors,exerelin.world.industry.SuperSolar,,TRUE,shadow_ships,
+ii_interstellarbazaar,Interstellar Bazaar,exerelin.world.industry.ImperialBazaar,,TRUE,Imperium,
+#deconomics_AdAssem,Variable Assembler,exerelin.world.industry.deconomics.VariableAssembler,,TRUE,deconomics,breaks if added at game start
+deconomics_ScrapYard,Salvage Yards,exerelin.world.industry.deconomics.SalvageYards,1,,deconomics,
+deconomics_pirateHaven,Privateer Base,exerelin.world.industry.deconomics.PrivateerBase,,TRUE,deconomics,
+deconomics_dryDock,Restoration Docks,exerelin.world.industry.deconomics.RestorationDocks,,TRUE,deconomics,
+deconomics_Academy,Academy,exerelin.world.industry.deconomics.Academy,,TRUE,deconomics,
+deconomics_senate,Senate,exerelin.world.industry.deconomics.Senate,,TRUE,deconomics,
