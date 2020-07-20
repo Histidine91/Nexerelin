@@ -457,7 +457,7 @@ public class NexMarketBuilder
 		}
 		
 		// add stations
-		if (!entity.isHQ && !haveStation(market))	// already added for HQs
+		if (!entity.isHQ)	// already added for HQs
 		{
 			int size1 = 4, size2 = 6, size3 = 8;
 			if (isStation)

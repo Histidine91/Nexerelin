@@ -492,6 +492,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		for (QueuedIndustry item : queueCopy) {
 			log.info("\tChecking industry queue: " + item.industry + ", " + item.type.toString());
 			
+			// Station double addition preventer
+			if (item.type == QueueType.NEW) {
+				Industry temp = market.instantiateIndustry(item.industry);
+				if (temp.getSpec().hasTag(Industries.TAG_STATION) && NexMarketBuilder.haveStation(market)) {
+					removeItemFromQueue(item, queue);
+					continue;
+				}
+			}
+			
 			// already has that industry
 			if (market.hasIndustry(item.industry)) {
 				// queued item is a new build that is unneeded, remove and continue
