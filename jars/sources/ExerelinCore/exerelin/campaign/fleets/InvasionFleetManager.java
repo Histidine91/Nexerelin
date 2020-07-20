@@ -920,11 +920,16 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
 		
 		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
+		boolean shouldRaid = shouldRaid("templars");
+		EventType type = shouldRaid ? EventType.RAID : EventType.INVASION;
 		if (templarInvasionPoints >= req)
 		{
-			InvasionIntel intel = (InvasionIntel)generateInvasionOrRaidFleet(Global.getSector().getFaction("templars"), null, 
-					EventType.INVASION);
-			if (intel != null) templarInvasionPoints -= getInvasionPointReduction(req, intel);
+			OffensiveFleetIntel intel = generateInvasionOrRaidFleet(Global.getSector().getFaction("templars"), null, 
+					type);
+			if (intel != null) {
+				templarInvasionPoints -= getInvasionPointReduction(req, intel);
+				nextIsRaid.put("templars", !shouldRaid);
+			}
 			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
 		}
 		if (templarCounterInvasionPoints >= req)
@@ -934,11 +939,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			{
 				picker.add(factionId, ExerelinUtilsFaction.getFactionMarketSizeSum(factionId));
 			}
-			FactionAPI faction = Global.getSector().getFaction(picker.pick());
-			InvasionIntel intel = (InvasionIntel)generateInvasionOrRaidFleet(faction, Global.getSector().getFaction("templars"), 
-					EventType.INVASION, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
+			String factionId = picker.pick();
+			FactionAPI faction = Global.getSector().getFaction(factionId);
+			shouldRaid = shouldRaid(factionId);
+			type = shouldRaid ? EventType.RAID : EventType.INVASION;
+			
+			OffensiveFleetIntel intel = generateInvasionOrRaidFleet(faction, Global.getSector().getFaction("templars"), 
+					type, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
 			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
-			if (intel != null) templarCounterInvasionPoints -= getInvasionPointReduction(req, intel);
+			if (intel != null) {
+				templarCounterInvasionPoints -= getInvasionPointReduction(req, intel);
+				nextIsRaid.put(factionId, !shouldRaid);
+			}
 		}
 	}
 	

@@ -86,16 +86,6 @@ public class ExerelinUtilsFleet
         
         if (fleet == null) return null;
         
-        if (faction.getId().equals("templars"))
-        {
-            if (ExerelinModPlugin.HAVE_DYNASECTOR)
-            {
-                fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DEBRIS_CHANCE).modifyMult("tem_spawner_nex", 0.5f);
-                fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0.25f);
-                fleet.getStats().getDynamic().getMod(DS_Defs.STAT_FLEET_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0f);
-            }
-            fleet.getCargo().addCommodity("tem_fluxcore", MathUtils.getRandomNumberInRange(total * 2, total * 3));
-        }
         return fleet;
     }
     

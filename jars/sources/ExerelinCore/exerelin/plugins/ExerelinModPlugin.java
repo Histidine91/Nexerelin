@@ -179,51 +179,15 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // replace submarkets
-        // local resources
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-        {
-            if (!market.hasSubmarket(Submarkets.LOCAL_RESOURCES)) continue;
-            if (market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin() instanceof Nex_LocalResourcesSubmarketPlugin)
-                continue;
-            log.info("Replacing local resources submarket on " + market.getName());
-            replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
-        }
-        
-        // storage
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-        {
-            if (!market.hasSubmarket(Submarkets.SUBMARKET_STORAGE)) continue;
-            if (market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin() instanceof Nex_StoragePlugin)
-                continue;
-            
-            log.info("Replacing storage submarket on " + market.getName());
-            replaceSubmarket(market, Submarkets.SUBMARKET_STORAGE);
-        }
-        
-        // retroactive fix for brawl mode defense fleets which are still hanging around
-        for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
-            InvasionIntel invIntel = (InvasionIntel)intel;
-            DefenseFleetIntel defIntel = invIntel.getBrawlDefIntel();
-            if (defIntel != null && (defIntel.isEnding() || defIntel.isEnded())) {
-                defIntel.giveReturnOrders();
-            }
-        }
-        
-        ScriptReplacer.replaceBarEventCreator(DeliveryBarEventCreator.class, new NexDeliveryBarEventCreator());
-        
-        DiplomacyManager.getManager().reverseCompatibility();
-        
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-            StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
-            defender.unmodify("nex_invasionDefBonus");
-            defender.unmodify("nex_invasionDefBonusGeneral");
-        }
-        
         if (SpecialForcesManager.getManager() == null) {
             new SpecialForcesManager().init();
         }
-            
+        
+        if (Global.getSector().getFaction("templars") != null) {
+            for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets("templars")) {
+                SectorManager.updateSubmarkets(market, "templars", "templars");
+            }
+        }
     }
     
     protected void addBarEvents() {

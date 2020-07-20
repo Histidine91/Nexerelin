@@ -1244,7 +1244,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static boolean shouldHaveMilitarySubmarket(MarketAPI market, String factionId, 
             boolean isPlayer) {
         if (isPlayer) return false;
-        if (factionId.equals("templars")) return false;
+        //if (factionId.equals("templars")) return false;
         if (NO_MILITARY_MARKET.contains(market.getId())) return false;
         
         return market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
@@ -1290,7 +1290,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 haveBlackMarket = true;
         }
         
-        if (!newOwnerId.equals("templars") && (!isPlayer || market.hasIndustry("commerce")))
+        if (!isPlayer || market.hasIndustry("commerce"))
             haveOpen = true;
         
         addOrRemoveSubmarket(market, Submarkets.LOCAL_RESOURCES, haveLocalResources);
