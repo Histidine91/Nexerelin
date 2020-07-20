@@ -269,6 +269,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 				continue;
 			if (killedFleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT))
 				continue;
+			if (killedFleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_NO_REP_IMPACT))
+				continue;
 			
 			List<FleetMemberAPI> killCurrent = killedFleet.getFleetData().getMembersListCopy();
 			for (FleetMemberAPI member : killedFleet.getFleetData().getSnapshot()) {

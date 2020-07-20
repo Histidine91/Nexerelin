@@ -362,7 +362,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		// rename generic-name worlds
 		if (market.getName().startsWith(planet.getStarSystem().getBaseName() + " ")) {
 			String tag = NameGenData.TAG_PLANET;
-			if (planet.isMoon()) tag = NameGenData.TAG_PLANET;
+			if (planet.isMoon()) tag = NameGenData.TAG_MOON;
 			newName = ProcgenUsedNames.pickName(tag, null, null).nameWithRomanSuffixIfAny;
 			market.setName(newName);
 			planet.setName(newName);

@@ -283,6 +283,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE)) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean("$Cabal_extortionAskedFor")) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT)) return;
+        if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_NO_REP_IMPACT)) return;
         if (!result.getBattle().isPlayerPrimary()) return;
         if (!fleet.knowsWhoPlayerIs()) return;
         
