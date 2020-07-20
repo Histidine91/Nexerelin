@@ -745,9 +745,11 @@ public class NexMarketBuilder
 			
 			IndustryClassGen gen = industryClassesByIndustryId.get(seed.industryId);
 			if (gen == null) {
-				// FIXME: throw a suitable error?
-				throw new RuntimeException("Failed to find industry class generator for " + seed.industryId 
-						+ " added by faction " + factionId);
+				//throw new RuntimeException("Failed to find industry class generator for " + seed.industryId 
+				//		+ " added by faction " + factionId);
+				log.info(String.format("Industry class generator for %s (added by faction %s) not found, skipping",
+						seed.industryId, factionId));
+				continue;
 			}
 			
 			// order entities by reverse priority, highest priority markets get the industries
