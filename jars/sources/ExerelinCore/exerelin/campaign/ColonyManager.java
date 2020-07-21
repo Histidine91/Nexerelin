@@ -140,19 +140,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public ColonyManager() {
 		super(true);
 	}
-	
-	protected boolean hasBaseOfficial(MarketAPI market)
-	{
-		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
-		{
-			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
-			PersonAPI person = (PersonAPI)dir.getEntryData();
-			if (NEEDED_OFFICIALS.contains(person.getPostId()))
-				return true;
-		}
-		return false;
-	}
-	
+		
 	/**
 	 * Clamps player station population, increments NPC population size, and adds bonus admins if needed.
 	 */
@@ -802,6 +790,95 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		reliefFleetCooldown += target.getSize() * 2 * 10 * 1.5f;
 	}
 	
+	/**
+	 * Generates an official in the specified post for the specified market, if needed. 
+	 * If an official is already present in that post, update their rank.
+	 * @param market
+	 * @param rankId Optional.
+	 * @param postId
+	 * @param postsPresent Set of posts already found on the market before adding/updating. 
+	 * If a new official is added, their post is added to this set.
+	 */
+	public void addOrUpdateOfficial(MarketAPI market, String rankId, String postId, 
+			Set<String> postsPresent) 
+	{
+		if (postsPresent.contains(postId) && rankId != null) {
+			PersonAPI person = ExerelinUtilsMarket.getPerson(market, postId);
+			if (person != null && !rankId.equals(person.getRankId()))
+				person.setRankId(rankId);
+			return;
+		}
+		ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+					market, rankId, postId, true);
+		postsPresent.add(postId);
+	}
+	
+	/**
+	 * Adds base officials to the market based on the industries present. 
+	 * If the relevant officials are already present, updates their ranks. 
+	 * Behavior should match {@code CoreLifeCyclePluginImpl.createInitialPeople()}.
+	 * @param market
+	 */
+	public void addOrUpdateOfficials(MarketAPI market) {
+		Set<String> officialsPresent = new HashSet<>();
+		
+		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
+		{
+			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
+			PersonAPI person = (PersonAPI)dir.getEntryData();
+			if (person.getFaction() != market.getFaction()) continue;
+			if (!NEEDED_OFFICIALS.contains(person.getPostId())) continue;
+			officialsPresent.add(person.getPostId());
+		}
+		
+		// Base commander
+		boolean havePerson = !officialsPresent.isEmpty();
+		if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND)) {
+			String rankId = Ranks.GROUND_MAJOR;
+			if (market.getSize() >= 6) {
+				rankId = Ranks.GROUND_GENERAL;
+			} else if (market.getSize() >= 4) {
+				rankId = Ranks.GROUND_COLONEL;
+			}
+			addOrUpdateOfficial(market, rankId, Ranks.POST_BASE_COMMANDER, officialsPresent);
+			havePerson = true;
+		}
+		
+		// Station commander
+		boolean hasStation = false;
+		for (Industry curr : market.getIndustries()) {
+			if (curr.getSpec().hasTag(Industries.TAG_STATION)) {
+				hasStation = true;
+				break;
+			}
+		}
+		if (hasStation) {
+			String rankId = Ranks.SPACE_COMMANDER;
+			if (market.getSize() >= 6) {
+				rankId = Ranks.SPACE_ADMIRAL;
+			} else if (market.getSize() >= 4) {
+				rankId = Ranks.SPACE_CAPTAIN;
+			}
+			addOrUpdateOfficial(market, rankId, Ranks.POST_STATION_COMMANDER, officialsPresent);
+			havePerson = true;
+		}
+		
+		// Portmaster
+		if (market.hasSpaceport()) {
+			addOrUpdateOfficial(market, null, Ranks.POST_PORTMASTER, officialsPresent);
+			havePerson = true;
+		}
+		
+		// Supply officer
+		if (havePerson) {
+			addOrUpdateOfficial(market, Ranks.SPACE_COMMANDER, Ranks.POST_SUPPLY_OFFICER, officialsPresent);
+			havePerson = true;
+		}
+		
+		// Adminsitrator
+		addOrUpdateOfficial(market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, officialsPresent);
+	}
+	
 	// add admin to player market if needed
 	// also adds military submarkets to places that should have them
 	// handles temporary governorship in ruler mode
@@ -809,9 +886,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public void reportPlayerOpenedMarket(MarketAPI market) {
 		if (market.getFaction().isPlayerFaction() && !market.isHidden())
 		{
-			if (hasBaseOfficial(market)) return;
-			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
-					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
+			addOrUpdateOfficials(market);
 		}
 		if (SectorManager.shouldHaveMilitarySubmarket(market))
 		{
