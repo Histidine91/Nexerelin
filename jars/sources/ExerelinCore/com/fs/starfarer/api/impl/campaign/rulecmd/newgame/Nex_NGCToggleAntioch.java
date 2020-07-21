@@ -11,15 +11,14 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 
 
-public class NGCSetNumSystems extends BaseCommandPlugin {
+public class Nex_NGCToggleAntioch extends BaseCommandPlugin {
 	 
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
-		int num = (int)params.get(0).getFloat(memoryMap);
-		setupData.numSystems = num;
+		boolean setting = params.get(0).getBoolean(memoryMap);
+		ExerelinSetupData.getInstance().randomAntiochEnabled = setting;
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-		memory.set("$numSystems", num, 0);
+		memory.set("$nex_ascalonInRandom", setting, 0);
 		return true;
 	}
 }
