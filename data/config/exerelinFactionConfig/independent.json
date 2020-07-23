@@ -8,6 +8,8 @@
     "directoryUseShortName":true,
     
     "rebelFleetSuffix":"Rebels",
+	
+	"marketSpawnWeight":2,
     
     "noRandomizeRelations":true,
     
