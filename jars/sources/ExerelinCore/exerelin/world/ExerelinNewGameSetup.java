@@ -13,10 +13,12 @@ import com.fs.starfarer.api.impl.campaign.fleets.DisposablePirateFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.MercFleetManagerV2;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
@@ -24,6 +26,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.StarCoronaTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
@@ -39,6 +42,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.StringHelper;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -47,6 +51,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 {
 	//protected float numOmnifacs = 0;
 	public static final Vector2f SECTOR_CENTER = new Vector2f(0, -6000);
+	public static final Vector2f PRISM_LOC = new Vector2f(-8005, -3785);
 	public static Logger log = Global.getLogger(ExerelinNewGameSetup.class);
 	
 	protected Random rand = StarSystemGenerator.random;
@@ -58,7 +63,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		if (ExerelinSetupData.getInstance().numSystems == 1)
 		{
-			// FIXME
+			// FIXME 
 			SectorEntityToken toOrbit = Global.getSector().getEntityById("jangala");	//null;
 			float radius = toOrbit.getRadius();
 			float orbitDistance = radius + 150;
@@ -73,11 +78,16 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
 			prismEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtilsAstro.getRandomAngle(rand), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
+		else if (newGame && !ExerelinConfig.prismInHyperspace)
+		{
+			prismEntity = generatePrismInOwnSystem();
+		}
 		else
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
 			prismEntity = hyperspace.addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(-8005, -4385), ExerelinUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(PRISM_LOC), ExerelinUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
+			clearDeepHyper(prismEntity, 400);
 		}
 		
 		prismEntity.addTag(ExerelinConstants.TAG_UNINVADABLE);
@@ -103,7 +113,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		//market.addIndustry(Industries.HEAVYINDUSTRY);
 		market.addIndustry(Industries.WAYSTATION);
 		market.addIndustry(Industries.HEAVYBATTERIES);
-		market.addIndustry(Industries.STARFORTRESS_HIGH);
+		market.addIndustry(Industries.STARFORTRESS_HIGH);	// Arrays.asList(new String[]{Commodities.ALPHA_CORE}));
 		//market.addIndustry(Industries.CRYOSANCTUM);
 		
 		market.setFreePort(true);
@@ -127,14 +137,6 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		//prismEntity.setInteractionImage("illustrations", "space_bar");
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
 		
-		// deep hyperspace removal (copypasted from UW)
-		HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
-		NebulaEditor editor = new NebulaEditor(plugin);
-
-		float minRadius = plugin.getTileSize() * 2f;
-		float radius = 400;
-		editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
-		editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
 		
 		// add important people
 		if (!newGame) 
@@ -147,6 +149,70 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 					market, Ranks.SPACE_COMMANDER, Ranks.POST_SUPPLY_OFFICER, true);
 			ColonyManager.reassignAdminIfNeeded(market, market.getFaction(), market.getFaction());
 		}
+	}
+	
+	public SectorEntityToken generatePrismInOwnSystem() {
+		int dist = 1050;
+		int orbitPeriod = 361;
+		
+		String name = StringHelper.getString("nex_world", "prismSystem_name");
+		StarSystemAPI system = Global.getSector().createStarSystem(name);
+		system.setAge(StarAge.YOUNG);
+		system.getLocation().set(PRISM_LOC);
+		ProcgenUsedNames.notifyUsed(name);
+		system.setType(StarSystemGenerator.StarSystemType.NEBULA);
+		
+		// temporarily create a "star"
+		PlanetAPI star = system.initStar("nex_prism_center", "nebula_center_young", 0, 0);
+		star.setSkipForJumpPointAutoGen(true);
+		star.addTag(Tags.AMBIENT_LS);
+		StarSystemGenerator.addSystemwideNebula(system, StarAge.YOUNG);
+		
+		// jump point
+		JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("nex_prism_jump", 
+				StringHelper.getString("nex_world", "prismSystem_jumpName"));
+		jumpPoint.setStandardWormholeToHyperspaceVisual();
+		system.addEntity(jumpPoint);
+		
+		// remove the star
+		system.removeEntity(star);
+		StarCoronaTerrainPlugin coronaPlugin = Misc.getCoronaFor(star);
+		if (coronaPlugin != null) {
+			system.removeEntity(coronaPlugin.getEntity());
+		}
+		system.setStar(null);
+		SectorEntityToken center = system.initNonStarCenter();
+		center.addTag(Tags.AMBIENT_LS);
+		jumpPoint.setCircularOrbit(center, 0, dist, orbitPeriod);
+		
+		system.autogenerateHyperspaceJumpPoints(true, false);
+		
+		system.setStar(star);
+		
+		clearDeepHyper(system.getHyperspaceAnchor(), 250);
+		
+		// comm relay
+		SectorEntityToken relay = system.addCustomEntity("nex_prism_relay", null, 
+				Entities.COMM_RELAY_MAKESHIFT, Factions.INDEPENDENT);
+		int period2 = (int)Math.round(Math.pow(2, 3/2) * orbitPeriod);
+		relay.setCircularOrbitPointingDown(star, 105, dist*2, period2);
+		
+		// station
+		name = StringHelper.getString("nex_world", "prismSystem_stationName");
+		SectorEntityToken prism = system.addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", Factions.INDEPENDENT);
+		prism.setCircularOrbitWithSpin(center, 240, dist, orbitPeriod, 30, 30);
+		
+		return prism;
+	}
+	
+	protected void clearDeepHyper(SectorEntityToken entity, float radius) {
+		// deep hyperspace removal (copypasted from UW)
+		HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
+		NebulaEditor editor = new NebulaEditor(plugin);
+
+		float minRadius = plugin.getTileSize() * 2f;
+		editor.clearArc(entity.getLocation().x, entity.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
+		editor.clearArc(entity.getLocation().x, entity.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
 	}
 	
 	protected void addAntiochPart1(SectorAPI sector)
@@ -193,6 +259,14 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
 			  4, 4, Terrain.HYPERSPACE, StarAge.ANY); // number of cells in texture
 		
+		// make Prism before core systems, unless we're in random sector with one system
+		// in which case we'll need to populate that system and then put Prism in it
+		// FIXME: this is not actually implemented
+		boolean prismBeforeSystems = corvusMode || ExerelinSetupData.getInstance().numSystems > 1;
+		if (setupData.prismMarketPresent && prismBeforeSystems) {
+			addPrismMarket(sector, true);
+		}
+		
 		if (corvusMode)
 		{
 			VanillaSystemsGenerator.generate(sector);
@@ -225,11 +299,12 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			if (ExerelinConfig.enableAntioch && (setupData.factions.containsKey("templars") 
 					&& setupData.factions.get("templars")))
 				addAntiochPart1(sector);
+			
+			if (setupData.prismMarketPresent && !prismBeforeSystems) {
+				addPrismMarket(sector, true);
+			}
 		}
 		
-		if (setupData.prismMarketPresent) {
-			addPrismMarket(sector, true);
-		}
 		
 		log.info("Adding scripts and plugins");
 		sector.registerPlugin(new CoreCampaignPluginImpl());

@@ -1589,6 +1589,12 @@
 		
 		"intelStringYouWon":"You have won the game!"
 	},
+	
+	"nex_world":{
+		"prismSystem_name":"Sitnalta",	# 'Atlantis backwards' because I have no imagination
+		"prismSystem_jumpName":"Twilight Gate",
+		"prismSystem_stationName":"Prism Freeport",
+	},
 
 	"exerelin_misc":{
 		"intelScreen":"Intel screen",

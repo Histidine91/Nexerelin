@@ -56,6 +56,7 @@
     "baseTariffMult": 0.6,  # 1.0 = base tariff (usually 30%)
     "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
     
+	"prismInHyperspace": false,	# if false, Prism will get its own star system (but not if added midgame)
     "prismMaxWeapons": 27,
     "prismNumShips": 14,
     "prismNumWings": 6,

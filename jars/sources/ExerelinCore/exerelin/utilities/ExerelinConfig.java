@@ -72,6 +72,7 @@ public class ExerelinConfig
     public static boolean ignoreAlignmentForAlliances = false;
     
     // Prism Freeport
+	public static boolean prismInHyperspace = false;
     public static int prismMaxWeapons = 27;
     public static int prismNumShips = 14;
     public static int prismNumWings = 6;
@@ -195,6 +196,7 @@ public class ExerelinConfig
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
             
+			prismInHyperspace = settings.optBoolean("prismInHyperspace", prismInHyperspace);
             prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);
             prismNumShips = settings.optInt("prismNumShips", prismNumShips);
             prismNumWings = settings.optInt("prismNumWings", prismNumWings);
