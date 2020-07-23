@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
@@ -202,6 +201,12 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 			state =-1;
 			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
 			endAfterDelay();
+			return;
+		}
+		
+		// auto-accept if already non-hostile
+		if (!Global.getSector().getPlayerFaction().isHostileTo(factionId)) {
+			accept();
 			return;
 		}
 		

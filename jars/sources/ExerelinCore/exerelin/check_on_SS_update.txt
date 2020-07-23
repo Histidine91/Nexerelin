@@ -18,6 +18,7 @@ Do on future SS release:
 - Remove MutableStatNoFloor
 - Add "player colonized" listener
 - Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
+- Move CeasefirePromptIntel to diplomacy package
 
 Do when handy:
 - Refactor: getExerelinFactionConfig() -> getFactionConfig() (deprecate old)
