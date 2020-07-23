@@ -140,7 +140,7 @@ public class StartSetupPostTimePass {
 			}
 			entity = picker.pick();
 		}
-		else if (SectorManager.getManager().isCorvusMode())
+		else if (SectorManager.getCorvusMode())
 		{
 			// moves player fleet to a suitable location; e.g. Avesta for Association
 			String homeEntity = null;
@@ -153,7 +153,7 @@ public class StartSetupPostTimePass {
 			}
 		}
 		else {
-			if (ExerelinSetupData.getInstance().randomAntiochEnabled && factionId.equals("templars"))
+			if (ExerelinConfig.enableAntioch && factionId.equals("templars"))
 				entity = TEM_Antioch.getAscalon();
 			else if (!SectorManager.getManager().isFreeStart())
 				entity = SectorManager.getHomeworld();

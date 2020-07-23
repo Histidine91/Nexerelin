@@ -1482,8 +1482,7 @@ public class ExerelinProcGen {
 		// faction picker
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(random);
 		List<String> factions = new ArrayList<>(factionIds);
-		boolean antioch = ExerelinSetupData.getInstance().randomAntiochEnabled;
-		if (antioch)
+		if (ExerelinConfig.enableAntioch)
 		{
 			factions.remove("templars");
 		}
@@ -1534,7 +1533,7 @@ public class ExerelinProcGen {
 		pickHomeworld();
 		if (!ExerelinSetupData.getInstance().freeStart)	// (true)
 		{
-			if (alignedFactionId.equals("templars") && antioch)
+			if (alignedFactionId.equals("templars") && ExerelinConfig.enableAntioch)
 			{
 				// do nothing, Ascalon will be our only world
 			}
@@ -1562,7 +1561,7 @@ public class ExerelinProcGen {
 		}
 		
 		// Antioch
-		if (antioch && factionIds.contains("templars"))
+		if (ExerelinConfig.enableAntioch && factionIds.contains("templars"))
 		{
 			addAntiochPart2(sector);
 			factionPlanetCount.put(alignedFactionId, 1);

@@ -222,7 +222,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			SectorEntityToken coreLabel = Global.getSector().getHyperspace().addCustomEntity("core_label_id", null, "core_label", null);
 			coreLabel.setFixedLocation(SECTOR_CENTER.getX(), SECTOR_CENTER.getY());
 			
-			if (ExerelinSetupData.getInstance().randomAntiochEnabled && (setupData.factions.containsKey("templars") 
+			if (ExerelinConfig.enableAntioch && (setupData.factions.containsKey("templars") 
 					&& setupData.factions.get("templars")))
 				addAntiochPart1(sector);
 		}
