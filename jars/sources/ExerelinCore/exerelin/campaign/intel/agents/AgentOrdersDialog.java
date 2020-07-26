@@ -30,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
 import com.fs.starfarer.api.ui.IntelUIAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
@@ -274,10 +275,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	}
 	
 	protected void printActionInfo() {
-		if (!canProceed())
+		if (!hasSpecifiedTarget())
 			return;
 		
-		Color hl = Misc.getHighlightColor();
+		Color hl = Misc.getHighlightColor(), neg = Misc.getNegativeHighlightColor();
 		String header = "dialogInfoHeader";
 		FactionAPI mktFaction = agentMarket != null ? agentMarket.getFaction() 
 				: Global.getSector().getFaction(Factions.NEUTRAL);
@@ -326,6 +327,19 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				String shipName = shipToProcure.getHullSpec().getNameWithDesignationWithDashClass();
 				text.addPara(getString(header + "ProcureShip"), hl, shipName);
 				break;
+			case CovertActionType.INSTIGATE_REBELLION:
+				text.addPara(getString(header + "InstigateRebellion"), factionColor, mktName);
+				
+				int stability = (int)agentMarket.getStabilityValue(), required = InstigateRebellion.MAX_STABILITY;
+				String stabilityStr = getString("dialogInfoRebellionStability");
+				LabelAPI label = text.addPara(stabilityStr, hl, stability + "", required + "");
+				label.setHighlight(stability + "", required + "");
+				label.setHighlightColors(stability > required ? neg : hl, hl);
+				
+				String effectStr = getString("dialogInfoEffectRebellion");
+				float strMult = action.getEffectMultForLevel();
+				text.addPara(effectStr, strMult < 1 ? neg : hl, String.format("%.2f", strMult));
+				break;
 		}
 		
 		// print chance of success
@@ -336,7 +350,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			if (successF >= 70f)
 				chanceCol = Misc.getPositiveHighlightColor();
 			else if (successF <= 40f)
-				chanceCol = Misc.getNegativeHighlightColor();
+				chanceCol = neg;
 			
 			String successStr = String.format("%.0f", successF) + "%";
 			text.addPara(getString("dialogInfoSuccessChance"), chanceCol, successStr);
@@ -391,8 +405,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		text.setHighlightsInLastPara(high);
 	}
 	
-	protected void addEffectPara(int decimalPlaces, float valueMult) {
-		String effectStr = getString("dialogInfoEffect");
+	protected void addEffectPara(int decimalPlaces, float valueMult) 
+	{
 		float mult = action.getEffectMultForLevel();
 		
 		float eff1 = action.getDef().effect.one * mult * valueMult;
@@ -403,6 +417,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			// think about this later
 		}
 		
+		String effectStr = getString("dialogInfoEffect");
 		String str1 = String.format("%." + decimalPlaces + "f", eff1);
 		String str2 = String.format("%." + decimalPlaces + "f", eff2);
 		
@@ -485,6 +500,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				action.init();
 				printActionInfo();
 				break;
+			case CovertActionType.INSTIGATE_REBELLION:				
+				action = new InstigateRebellion(agent, market, agentFaction, mktFaction, true, null);
+				action.init();
+				printActionInfo();
+				break;
 		}
 	}
 	
@@ -532,6 +552,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
 			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
 			addActionOption(CovertActionType.PROCURE_SHIP);
+			addActionOption(CovertActionType.INSTIGATE_REBELLION);
 		}
 		if (agentMarket != null && agentMarket.hasCondition(Conditions.PATHER_CELLS)) {
 			MarketConditionAPI cond = agentMarket.getCondition(Conditions.PATHER_CELLS);
@@ -814,7 +835,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		return true;
 	}
 	
-	protected boolean canProceed() {
+	protected boolean hasSpecifiedTarget() {
 		if (action == null) return false;
 		
 		switch (action.getDefId()) {
@@ -829,6 +850,15 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			case CovertActionType.PROCURE_SHIP:
 				return shipToProcure != null;
 		}
+		return true;
+	}
+	
+	protected boolean canProceed() {
+		if (!hasSpecifiedTarget()) return false;
+		if (action.getDefId().equals(CovertActionType.INSTIGATE_REBELLION)) {
+			return agentMarket.getStabilityValue() <= InstigateRebellion.MAX_STABILITY;
+		}
+		
 		return true;
 	}
 	

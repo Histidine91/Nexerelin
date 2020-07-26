@@ -139,7 +139,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	
 	public void init(boolean instant) {
 		govtFaction = market.getFaction();
-		setInitialStrengths();
+		setInitialStrengths(instant);
 		if (DEBUG_MODE)
 		{
 			suppressionFleetCountdown = 2;
@@ -188,7 +188,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		return getSizeMod(market.getSize());
 	}
 	
-	protected void setInitialStrengths()
+	protected void setInitialStrengths(boolean instant)
 	{
 		float stability = market.getStabilityValue();
 		float sizeMult = getSizeMod(market);
@@ -196,6 +196,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		rebelStrength = (3 + (10 - stability) * 1.25f) * sizeMult * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		if (rebelFaction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
 			rebelStrength *= REBEL_ORIGINAL_OWNER_STR_MULT;
+		
+		if (instant) {
+			govtStrength *= 1.5f;
+			rebelStrength *= 1.5f;
+		}
 	}
 	
 	/**

@@ -171,7 +171,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		//cost.modifyMult("levelMult", baseCost, getString("costLevelMult", true));
 		
 		if (getDef().costScaling) {
-			int sizeMult = Math.max(market.getSize() - 3, 1);
+			float sizeMult = Math.max(market.getSize() - 3, 0.5f);
 			cost.modifyMult("sizeMult", sizeMult, getString("costSizeMult", true));
 		}
 		
