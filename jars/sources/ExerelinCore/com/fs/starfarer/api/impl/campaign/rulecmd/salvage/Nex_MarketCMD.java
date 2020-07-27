@@ -105,26 +105,9 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String DATA_KEY_BPS_ALREADY_RAIDED = "nex_already_raided_blueprints";
 	public static final float BASE_LOOT_SCORE = 3;
 	
-	public static final Set<String> NO_RAID_BPS = new HashSet<>();
-	
 	public static Logger log = Global.getLogger(Nex_MarketCMD.class);
 	
 	protected TempDataInvasion tempInvasion = new TempDataInvasion();
-	
-	static {
-		try {
-			JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id", "data/config/exerelin/raid_bp_blacklist.csv", "nexerelin");
-			for (int i=0; i < csv.length(); i++) {
-				JSONObject row = csv.getJSONObject(i);
-				String id = row.getString("id");
-				if (!id.isEmpty()) NO_RAID_BPS.add(id);
-			}
-		}
-		catch (IOException | JSONException ex) {
-			log.warn("Failed to load blueprint raid blacklist", ex);
-		}
-		
-	}
 	
 	public Nex_MarketCMD() {
 		
@@ -887,7 +870,6 @@ public class Nex_MarketCMD extends MarketCMD {
 			for (String id : market.getFaction().getKnownShips()) {
 				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
-				if (NO_RAID_BPS.contains(id)) continue;
 				if (onlyUnlearned && player.knowsShip(id)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(ship + id, 1f);
@@ -895,7 +877,6 @@ public class Nex_MarketCMD extends MarketCMD {
 			for (String id : market.getFaction().getKnownWeapons()) {
 				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getWeaponSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
-				if (NO_RAID_BPS.contains(id)) continue;
 				if (onlyUnlearned && player.knowsWeapon(id)) continue;
 				if (Global.getSettings().getWeaponSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(weapon + id, 1f);
@@ -903,7 +884,6 @@ public class Nex_MarketCMD extends MarketCMD {
 			for (String id : market.getFaction().getKnownFighters()) {
 				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getFighterWingSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
-				if (NO_RAID_BPS.contains(id)) continue;
 				if (onlyUnlearned && player.knowsFighter(id)) continue;
 				if (Global.getSettings().getFighterWingSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(fighter + id, 1f);

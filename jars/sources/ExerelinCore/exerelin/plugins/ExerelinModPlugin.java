@@ -8,14 +8,13 @@ import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
-import com.fs.starfarer.api.combat.StatBonus;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
@@ -50,14 +49,10 @@ import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bar.NexDeliveryBarEventCreator;
-import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
-import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.missions.DisruptMissionManager;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
-import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
-import exerelin.campaign.submarkets.Nex_StoragePlugin;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
@@ -67,6 +62,9 @@ import exerelin.world.VanillaSystemsGenerator;
 import exerelin.world.scenarios.ScenarioManager;
 import java.io.IOException;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -311,6 +309,8 @@ public class ExerelinModPlugin extends BaseModPlugin
             throw new RuntimeException(StringHelper.getStringAndSubstituteToken(
                     "exerelin_misc", "errorOfficerMaxLevel", "$currMax", officerMaxLevel + ""));
         */
+        
+        loadRaidBPBlocker();
     }
     
     @Override
@@ -367,7 +367,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
         
         addBarEvents();
-		EconomyInfoHelper.createInstance();
+        EconomyInfoHelper.createInstance();
     }
     
     @Override
@@ -380,6 +380,24 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void configureXStream(XStream x) {
         XStreamConfig.configureXStream(x);
+    }
+    
+    public void loadRaidBPBlocker() {
+        
+        try {
+            JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id", "data/config/exerelin/raid_bp_blacklist.csv", "nexerelin");
+            for (int i=0; i < csv.length(); i++) {
+                JSONObject row = csv.getJSONObject(i);
+                String id = row.getString("id");
+                if (!id.isEmpty() && !id.startsWith("#")) {
+                    ShipHullSpecAPI hull = Global.getSettings().getHullSpec(id);
+                    if (hull != null) hull.addTag(Tags.NO_BP_DROP);
+                }
+            }
+        }
+        catch (IOException | JSONException ex) {
+            log.warn("Failed to load blueprint raid blacklist", ex);
+        }
     }
     
     /**
