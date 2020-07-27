@@ -1,13 +1,23 @@
 package exerelin.campaign.diplomacy;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.DiplomacyManager;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtilsMath;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +25,7 @@ import org.json.JSONObject;
 public class DiplomacyTraits {
 	
 	public static final String DEF_PATH = "data/config/exerelin/factionTraits.json";
+	public static final String MEM_KEY_RANDOM_TRAITS = "$nex_random_diplomacy_traits";
 	protected static final List<TraitDef> TRAITS = new ArrayList<>();
 	protected static final Map<String, TraitDef> TRAITS_BY_ID = new HashMap<>();
 	
@@ -40,10 +51,79 @@ public class DiplomacyTraits {
 			if (colorJson != null) {
 				color = new int[] {colorJson.getInt(0), colorJson.getInt(1), colorJson.getInt(2)};
 			}
+			
 			TraitDef trait = new TraitDef(id, name, desc, icon, color);
+			
+			if (entryJson.has("incompatible")) {
+				JSONArray incompatJson = entryJson.getJSONArray("incompatible");
+				trait.incompatibilities.addAll(ExerelinUtils.JSONArrayToArrayList(incompatJson));
+			}
+			
 			TRAITS.add(trait);
 			TRAITS_BY_ID.put(id, trait);
 		}
+	}
+	
+	/**
+	 * Generates a random set of diplomacy traits for a faction, without conflicting traits 
+	 * (e.g.it won't have Likes AI and Dislikes AI at the same time).
+	 * @param random
+	 * @return
+	 */
+	public static List<String> generateRandomTraits(Random random) 
+	{
+		if (random == null) random = new Random();
+		
+		List<String> picks = new ArrayList<>();
+		
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+		for (TraitDef trait : TRAITS) {
+			picker.add(trait.id);
+		}
+		int count = 3 + NexUtilsMath.randomNextIntInclusive(random, 3);
+		for (int i=0; i<count; i++) {
+			picks.add(picker.pickAndRemove());
+			if (picker.isEmpty()) break;
+		}
+		
+		// remove any traits that conflict with each other
+		// traits picked earlier get priority
+		Iterator<String> iter = picks.iterator();
+		Set<String> toRemove = new HashSet<>();
+		while (iter.hasNext()) 
+		{
+			String trait = iter.next();
+			// Did an earlier trait specify that this one should be removed?
+			if (toRemove.contains(trait)) {
+				iter.remove();
+				continue;
+			}
+			
+			TraitDef def = getTrait(trait);
+			toRemove.addAll(def.incompatibilities);
+		}
+		
+		return picks;
+	}
+	
+	public static List<String> getFactionTraits(String factionId) {
+		if (ExerelinConfig.allowRandomDiplomacyTraits && DiplomacyManager.isRandomFactionRelationships()
+				&& ExerelinConfig.getExerelinFactionConfig(factionId).allowRandomDiplomacyTraits) 
+		{
+			MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+			if (!mem.contains(MEM_KEY_RANDOM_TRAITS)) {
+				mem.set(MEM_KEY_RANDOM_TRAITS, generateRandomTraits(null));
+			}
+			return (List<String>)mem.get(MEM_KEY_RANDOM_TRAITS);
+		}
+		
+		List<String> traits = new ArrayList<>(ExerelinConfig.getExerelinFactionConfig(factionId).diplomacyTraits);
+		
+		return traits;
+	}
+	
+	public static boolean hasTrait(String factionId, String trait) {
+		return getFactionTraits(factionId).contains(trait);
 	}
 	
 	public static List<TraitDef> getTraits() {
@@ -60,6 +140,7 @@ public class DiplomacyTraits {
 		public final String desc;
 		public final String icon;
 		public final Color color;
+		public final Set<String> incompatibilities = new HashSet<>();
 		
 		public TraitDef(String id, String name, String desc, String icon, int[] color) {
 			this.id = id;

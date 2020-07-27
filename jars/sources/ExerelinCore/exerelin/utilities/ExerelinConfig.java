@@ -136,6 +136,7 @@ public class ExerelinConfig
     public static int maxFactionRespawns = 3;
     public static boolean countPiratesForVictory = false;
     public static boolean leaveEliminatedFaction = true;
+    public static boolean allowRandomDiplomacyTraits = true;
     public static boolean useRelationshipBounds = true;
     public static boolean useEnhancedStartRelations = true;
     public static boolean useEnhancedCoreWorlds = true;
@@ -251,6 +252,7 @@ public class ExerelinConfig
             allyVictories = settings.optBoolean("allyVictories", allyVictories);
             updateMarketDescOnCapture = settings.optBoolean("updateMarketDescOnCapture", updateMarketDescOnCapture);
             
+            allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
             useEnhancedCoreWorlds = settings.optBoolean("useEnhancedCoreWorlds", useEnhancedCoreWorlds);

@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
@@ -129,7 +130,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             eventDef.name = eventDefJson.getString("name");
             //log.info("Adding diplomacy event " + eventDef.name);
             eventDef.id = eventDefJson.getString("stage");
-			eventDef.desc = eventDefJson.getString("desc");
+            eventDef.desc = eventDefJson.getString("desc");
             eventDef.random = eventDefJson.optBoolean("random", true);
             
             eventDef.minRepChange = (float)eventDefJson.getDouble("minRepChange");
@@ -192,15 +193,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-	/**
-	 * Returns (sum of market sizes under our control)/(sum of total market sizes in the sector).
-	 * Multiplied by 1.5 (default) for player in Starfarer mode, so can exceed 1.
-	 * "Our control" includes all members of the alliance if the specified faction is in one,
-	 * and the player markets if player is commissioned with that faction.
-	 * @param factionId
-	 * @return
-	 */
-	public static float getDominanceFactor(String factionId)
+    /**
+     * Returns (sum of market sizes under our control)/(sum of total market sizes in the sector).
+     * Multiplied by 1.5 (default) for player in Starfarer mode, so can exceed 1.
+     * "Our control" includes all members of the alliance if the specified faction is in one,
+     * and the player markets if player is commissioned with that faction.
+     * @param factionId
+     * @return
+     */
+    public static float getDominanceFactor(String factionId)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         int globalSize = 0;
@@ -642,33 +643,33 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (disallowedFactions.contains(faction.getId())) continue;
             //log.info("\tAdding eligible diplomacy faction: " + faction.getDisplayName());
             factionPicker.add(faction);
-			if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
-				factionPickerPirate.add(faction);
+            if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
+                factionPickerPirate.add(faction);
             factionCount++;
         }
         if (factionCount < 2) return;
         
         FactionAPI faction1 = factionPicker.pickAndRemove();
         FactionAPI faction2;
-		if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(faction1.getId()))
-		{
-			factionPickerPirate.remove(faction1);
-			if (factionPickerPirate.isEmpty()) return;
-			faction2 = factionPickerPirate.pickAndRemove();
-		}
-		else
-			faction2 = factionPicker.pickAndRemove();
-		
-		if (faction2 == null) return;
+        if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(faction1.getId()))
+        {
+            factionPickerPirate.remove(faction1);
+            if (factionPickerPirate.isEmpty()) return;
+            faction2 = factionPickerPirate.pickAndRemove();
+        }
+        else
+            faction2 = factionPicker.pickAndRemove();
+        
+        if (faction2 == null) return;
         createDiplomacyEvent(faction1, faction2);
     }
     
     public void modifyWarWeariness(String factionId, float amount)
     {
-        ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-        if (conf.hasDiplomacyTrait(TraitIds.STALWART))
+        List<String> traits = DiplomacyTraits.getFactionTraits(factionId);
+        if (traits.contains(TraitIds.STALWART))
             amount *= 0.67;
-        else if (conf.hasDiplomacyTrait(TraitIds.WEAK_WILLED))
+        else if (traits.contains(TraitIds.WEAK_WILLED))
             amount *= 1.5f;
         
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
@@ -757,7 +758,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         
         DiplomacyProfileIntel profile = DiplomacyProfileIntel.createEvent(factionId);
-		if (profile == null) return null;
+        if (profile == null) return null;
         profiles.put(factionId, profile);
         return profile;
     }
@@ -1121,7 +1122,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
         boolean randomize = manager.randomFactionRelationships;
         
-        if (SectorManager.getCorvusMode() && !randomize)
+        if (SectorManager.getManager().isCorvusMode() && !randomize)
         {
             // load vanilla relationships
             VanillaSystemsGenerator.initFactionRelationships(sector);
@@ -1134,7 +1135,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             {
                 random.setSeed(ExerelinUtils.getStartingSeed());
             }
-            else random.setSeed(Misc.genRandomSeed());
             
             // first make everyone neutral to each other (for midgame reset)
             if (midgameReset)
@@ -1208,6 +1208,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         }
                     }
                     handleHostileToAllFaction(factionId, factionIds);
+                    
+                    // randomize diplomacy traits
+                    if (ExerelinConfig.allowRandomDiplomacyTraits && conf.allowRandomDiplomacyTraits) 
+                    {
+                        faction.getMemoryWithoutUpdate().set(DiplomacyTraits.MEM_KEY_RANDOM_TRAITS, 
+                                DiplomacyTraits.generateRandomTraits(random));
+                    }
                 }
 
                 else    // start hostile with hated factions, friendly with liked ones (from config)
@@ -1216,7 +1223,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     
                     for (Map.Entry<String, Float> entry : factionConfig.startRelationships.entrySet())
                     {
-						if (factionId.equals(entry.getKey())) continue;
+                        if (factionId.equals(entry.getKey())) continue;
                         faction.setRelationship(entry.getKey(), entry.getValue());
                     }
                 }

@@ -35,6 +35,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.EconomyInfoHelper.ProducerEntry;
@@ -584,8 +585,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		Map<String, Integer> commoditiesWeProduce = EconomyInfoHelper.getInstance()
 				.getCommoditiesProducedByFaction(agentFaction.getId());
 		
-		boolean monopolist = ExerelinConfig.getExerelinFactionConfig(agentFaction.getId())
-				.hasDiplomacyTrait(TraitIds.MONOPOLIST);
+		boolean monopolist = DiplomacyTraits.hasTrait(agentFaction.getId(), TraitIds.MONOPOLIST);
 		for (ProducerEntry prod : EconomyInfoHelper.getInstance().getCompetingProducers(agentFaction.getId(), 2)) 
 		{
 			if (DISALLOWED_FACTIONS.contains(prod.factionId)) continue;

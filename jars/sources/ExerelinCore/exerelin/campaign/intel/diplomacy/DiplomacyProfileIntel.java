@@ -341,8 +341,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	{
 		tooltip.addSectionHeading(getString("traitsHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
 				
-		List<String> traits = new ArrayList<>(ExerelinConfig.getExerelinFactionConfig(faction.getId())
-				.diplomacyTraits); 
+		List<String> traits = DiplomacyTraits.getFactionTraits(faction.getId()); 
 		// display all traits (for screenshots or such)
 		/*
 		traits = //new ArrayList<>();

@@ -49,6 +49,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import exerelin.campaign.colony.ColonyTargetValuator;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -1087,9 +1088,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	public boolean doesFactionAllowAI(FactionAPI faction) {
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
-		if (conf.hasDiplomacyTrait(TraitIds.HATES_AI)) return false;
-		return true;
+		return !DiplomacyTraits.hasTrait(faction.getId(), TraitIds.HATES_AI);
 	}
 	
 	/**

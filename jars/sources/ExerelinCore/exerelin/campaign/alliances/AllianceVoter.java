@@ -11,6 +11,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -292,7 +293,7 @@ public class AllianceVoter {
 		if (factionId.equals(friendId)) return Vote.YES;
 		
 		// Helps Allies traits
-		if (ExerelinConfig.getExerelinFactionConfig(factionId).hasDiplomacyTrait(TraitIds.HELPS_ALLIES))
+		if (DiplomacyTraits.hasTrait(factionId, TraitIds.HELPS_ALLIES))
 			return Vote.YES;
 		
 		FactionAPI us = Global.getSector().getFaction(factionId);

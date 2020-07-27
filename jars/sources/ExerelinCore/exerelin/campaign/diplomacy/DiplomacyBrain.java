@@ -284,7 +284,7 @@ public class DiplomacyBrain {
 	
 	protected void updateDispositionFromTraits(MutableStat disposition, String factionId) 
 	{
-		Set<String> traits = new HashSet<>(ExerelinConfig.getExerelinFactionConfig(this.factionId).diplomacyTraits);
+		Set<String> traits = new HashSet<>(DiplomacyTraits.getFactionTraits(factionId));
 		
 		if (traits.contains(TraitIds.IRREDENTIST) && disposition.getFlatMods().containsKey("revanchism")
 				&& disposition.getFlatMods().containsKey("revanchism"))
@@ -623,9 +623,10 @@ public class DiplomacyBrain {
 		*/
 		
 		RepLevel required = RepLevel.INHOSPITABLE;
-		if (conf.hasDiplomacyTrait(TraitIds.PARANOID))
+		List<String> traits = DiplomacyTraits.getFactionTraits(factionId);
+		if (traits.contains(TraitIds.PARANOID))
 			required = RepLevel.SUSPICIOUS;
-		else if (conf.hasDiplomacyTrait(TraitIds.PACIFIST))
+		else if (traits.contains(TraitIds.PACIFIST))
 			required = RepLevel.VENGEFUL;
 		
 		return required;

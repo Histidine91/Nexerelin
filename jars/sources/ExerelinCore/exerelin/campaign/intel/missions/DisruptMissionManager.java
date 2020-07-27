@@ -121,8 +121,7 @@ public class DisruptMissionManager extends BaseEventManager {
 		
 		RepLevel required = DisruptMissionIntel.MAX_REP_LEVEL;
 		
-		boolean monopolist = ExerelinConfig.getExerelinFactionConfig(faction.getId())
-				.hasDiplomacyTrait(DiplomacyTraits.TraitIds.MONOPOLIST);
+		boolean monopolist = DiplomacyTraits.hasTrait(faction.getId(), DiplomacyTraits.TraitIds.MONOPOLIST);
 		if (reason == TargetReason.MILITARY || monopolist) required = RepLevel.COOPERATIVE;
 		return faction.getRelationshipLevel(target).isAtBest(required);
 	}

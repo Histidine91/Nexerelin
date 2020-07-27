@@ -32,6 +32,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -1184,8 +1185,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public float getLowProfileMult(String factionId) {
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		if (!conf.hasDiplomacyTrait(TraitIds.LOWPROFILE))
+		if (!DiplomacyTraits.hasTrait(factionId, TraitIds.LOWPROFILE))
 			return 1;
 		
 		int empireSize = EconomyInfoHelper.getInstance().getCachedEmpireSize(factionId);

@@ -5,7 +5,8 @@
 			"name":"Paranoid",
 			"desc":"Can opportunistically declare war at Suspicious reputation level.",
 			"icon":"graphics/exerelin/icons/intel/war.png",
-			"color":[144, 16, 144]
+			"color":[144, 16, 144],
+			"incompatible":["pacifist"]	# used when generating randomized diplomacy traits
 		},
 		#{
 		#	"id":"predatory",
@@ -19,7 +20,8 @@
 			"name":"Pacifist",
 			"desc":"Will never opportunistically declare war.",
 			"icon":"graphics/exerelin/icons/intel/peace.png",
-			"color":[0, 255, 255]
+			"color":[0, 255, 255],
+			"incompatible":["paranoid"]
 		},
 		{
 			"id":"helps_allies",
@@ -48,6 +50,7 @@
 			"desc":"-33% war weariness gains.",
 			"icon":"graphics/icons/skills/leadership2.png",
 			"color":[173, 163, 156],
+			"incompatible":["weak-willed"]
 		},
 		{
 			"id":"weak-willed",
@@ -55,6 +58,7 @@
 			"desc":"+50% war weariness gains.",
 			"icon":"graphics/exerelin/icons/intel/white_flag.png",
 			"color":[255, 255, 153],
+			"incompatible":["stalwart"]
 		},
 		{
 			"id":"selfrighteous",
@@ -75,42 +79,48 @@
 			"name":"Dislikes AI",
 			"desc":"Disposition penalty for use of AI cores.",
 			"color":[255, 128, 0],
-			"icon":"graphics/exerelin/icons/intel/bannedcore1.png"
+			"icon":"graphics/exerelin/icons/intel/bannedcore1.png",
+			"incompatible":["hates_ai", "likes_ai"]
 		},
 		{
 			"id":"hates_ai",
 			"name":"Hates AI",
 			"desc":"Heavy disposition penalty for use of AI cores.",
 			"color":[255, 40, 40],
-			"icon":"graphics/exerelin/icons/intel/bannedcore2.png"
+			"icon":"graphics/exerelin/icons/intel/bannedcore2.png",
+			"incompatible":["dislikes_ai", "likes_ai"]
 		},
 		{
 			"id":"likes_ai",
 			"name":"Likes AI",
 			"desc":"Disposition bonus for use of AI cores.",
 			"color":[255, 128, 128],
-			"icon":"graphics/exerelin/icons/intel/heartcore.png"
+			"icon":"graphics/exerelin/icons/intel/heartcore.png",
+			"incompatible":["hates_ai", "dislikes_ai"]
 		},
 		{
 			"id":"envious",
 			"name":"Envious",
 			"desc":"+50% disposition penalty from dominance.",
 			"color":[0, 160, 0],
-			"icon":"graphics/exerelin/icons/intel/greeneye.png"
+			"icon":"graphics/exerelin/icons/intel/greeneye.png",
+			"incompatible":["submissive", "neutralist"]
 		},
 		{
 			"id":"submissive",
 			"name":"Submissive",
 			"desc":"Dominance disposition penalty becomes a bonus instead.",
 			"color":[255, 64, 255],
-			"icon":"graphics/exerelin/icons/intel/chain_and_ball.png"
+			"icon":"graphics/exerelin/icons/intel/chain_and_ball.png",
+			"incompatible":["envious", "neutralist"]
 		},
 		{
 			"id":"neutralist",
 			"name":"Neutralist",
 			"desc":"No disposition penalty from dominance.",
 			"color":[255, 255, 255],
-			"icon":"graphics/exerelin/icons/intel/swiss_flag.png"
+			"icon":"graphics/exerelin/icons/intel/swiss_flag.png",
+			"incompatible":["envious", "submissive"]
 		},
 		{
 			"id":"monopolist",
@@ -124,14 +134,16 @@
 			"name":"Law & Order",
 			"desc":"Disposition penalty from free ports.",
 			"color":[0, 128, 255],
-			"icon":"graphics/exerelin/icons/intel/police_star.png"
+			"icon":"graphics/exerelin/icons/intel/police_star.png",
+			"incompatible":["anarchist"]
 		},
 		{
 			"id":"anarchist",
 			"name":"Anarchistic",
 			"desc":"Disposition bonus from free ports.",
 			"color":[198, 198, 0],
-			"icon":"graphics/icons/markets/free_port.png"
+			"icon":"graphics/icons/markets/free_port.png",
+			"incompatible":["law_and_order"]
 		},
 		{
 			"id":"lowprofile",

@@ -20,8 +20,6 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
-import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
 import java.awt.Color;
 import java.io.IOException;
 import org.json.JSONObject;
@@ -93,6 +91,7 @@ public class ExerelinFactionConfig
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
     public List<String> diplomacyTraits = new ArrayList<>();
+    public boolean allowRandomDiplomacyTraits = true;
     public boolean noSyncRelations = false;
     public boolean noRandomizeRelations = false;
     
@@ -302,6 +301,7 @@ public class ExerelinFactionConfig
                 diplomacyTraits.addAll(traitsList);
             }
             
+            allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
             noRandomizeRelations = settings.optBoolean("noRandomizeRelations", noRandomizeRelations);
             noSyncRelations = settings.optBoolean("noSyncRelations", noSyncRelations);
             
@@ -542,13 +542,9 @@ public class ExerelinFactionConfig
         return 0;
     }
     
-    public boolean hasDiplomacyTrait(String trait) {
-        return diplomacyTraits.contains(trait);
-    }
-    
     public static boolean canCeasefire(String factionId1, String factionId2)
     {
-		if (DiplomacyManager.isRandomFactionRelationships()) return true;
+        if (DiplomacyManager.isRandomFactionRelationships()) return true;
         if (ExerelinConfig.useRelationshipBounds && getMaxRelationship(factionId1, factionId2) < -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;
