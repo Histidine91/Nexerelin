@@ -694,11 +694,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		float minScore = valuator.getMinScore(faction);
 		for (StarSystemAPI system : Global.getSector().getStarSystems()) 
 		{
-			if (!valuator.prefilterSystem(system, faction))
+			//log.info("Trying system " + system.getBaseName());
+			if (!valuator.prefilterSystem(system, faction)) {
+				//log.info("Filtering system " + system.getBaseName());
 				continue;
+			}
+				
 			
 			float dist = Misc.getDistanceLY(system.getHyperspaceAnchor(), anchor);
-			if (dist > maxDist) continue;
+			if (dist > maxDist) {
+				//log.info("System too far: " + system.getBaseName());
+				continue;
+			}
 			
 			for (PlanetAPI planet : system.getPlanets()) 
 			{
@@ -707,12 +714,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				MarketAPI market = planet.getMarket();
 				if (market == null || market.isInEconomy()) continue;
 				if (!valuator.prefilterMarket(planet.getMarket(), faction)) {
+					//log.info("Filtering planet " + planet.getMarket().getName());
 					continue;
 				}
 				
 				float score = valuator.evaluatePlanet(planet.getMarket(), dist, faction);
 				if (score < minScore) continue;
 				
+				//log.info("  Adding planet " + planet);
 				planetPicker.add(planet, score);
 			}
 		}

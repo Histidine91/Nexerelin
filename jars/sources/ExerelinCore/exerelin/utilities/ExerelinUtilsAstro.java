@@ -1,5 +1,6 @@
 package exerelin.utilities;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -276,12 +277,10 @@ public class ExerelinUtilsAstro {
 	 * @param system
 	 * @return
 	 */
-	public static boolean canHaveCommRelay(StarSystemAPI system) {
-		for (SectorEntityToken objective : system.getEntitiesWithTag(Tags.OBJECTIVE))
-		{
-			if (objective.hasTag(Tags.COMM_RELAY) || objective.hasTag(Tags.STABLE_LOCATION))
-				return true;
-		}
+	public static boolean canHaveCommRelay(StarSystemAPI system) {		
+		if (!system.getEntitiesWithTag(Tags.COMM_RELAY).isEmpty()) return true;
+		if (!system.getEntitiesWithTag(Tags.STABLE_LOCATION).isEmpty()) return true;
+		
 		return false;
 	}
 	

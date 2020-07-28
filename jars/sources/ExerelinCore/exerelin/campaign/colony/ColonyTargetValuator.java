@@ -159,21 +159,26 @@ public class ColonyTargetValuator {
 		boolean inhabited = !Global.getSector().getEconomy().getMarkets(system).isEmpty();
 		
 		if (inhabited) {
-			if (ExerelinUtilsFaction.getSystemOwner(system) != faction)
+			if (ExerelinUtilsFaction.getSystemOwner(system) != faction) {
+				//log.info(system.getName() + " controlled by someone else");
 				return false;
+			}
 		}
 		
 		// don't colonize systems with stations or large fleets (this is to avoid Remnant stations etc.)
 		if (!inhabited) {
 			for (CampaignFleetAPI fleet : system.getFleets()) {
+				//log.info(system.getName() + " has fleet " + fleet.getName());
 				if (fleet.isStationMode()) return false;
 				if (fleet.getFaction().isHostileTo(faction) && fleet.getFleetPoints() > 25)
 					return false;
 			}
 		}
 		
-		if (!ExerelinUtilsAstro.canHaveCommRelay(system))
+		if (!ExerelinUtilsAstro.canHaveCommRelay(system)) {
+			//log.info(system.getName() + " cannot have comm relay");
 			return false;
+		}
 		
 		return true;
 	}
@@ -189,9 +194,12 @@ public class ColonyTargetValuator {
 				return false;
 		}
 		*/
-		if (!faction.isNeutralFaction()) return false;
-		if (market.getMemoryWithoutUpdate().getBoolean(MEM_KEY_NO_COLONIZE))
+		if (!market.getFaction().isNeutralFaction()) {
 			return false;
+		}
+		if (market.getMemoryWithoutUpdate().getBoolean(MEM_KEY_NO_COLONIZE)) {
+			return false;
+		}
 		
 		return true;
 	}
