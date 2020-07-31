@@ -188,6 +188,8 @@ nex_NGCListFactions5,NewGameOptionSelected,$option==nex_NGCListFactions5,Nex_NGC
 nex_NGCListFactions6,NewGameOptionSelected,$option==nex_NGCListFactions6,Nex_NGCListFactions listFactions 6,,,
 nex_NGCListFactions7,NewGameOptionSelected,$option==nex_NGCListFactions7,Nex_NGCListFactions listFactions 7,,,
 nex_NGCListFactions8,NewGameOptionSelected,$option==nex_NGCListFactions8,Nex_NGCListFactions listFactions 8,,,
+nex_NGCListFactions9,NewGameOptionSelected,$option==nex_NGCListFactions9,Nex_NGCListFactions listFactions 9,,,
+nex_NGCListFactions10,NewGameOptionSelected,$option==nex_NGCListFactions10,Nex_NGCListFactions listFactions 10,,,
 ,,,,,,
 nex_NGCJoinFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCJoinFaction_""","Nex_NGCSetFactionFromJoinOption
 FireAll ExerelinNGCStep3",,,
@@ -364,6 +366,8 @@ nex_factionDirectoryList5,DialogOptionSelected,$option == nex_factionDirectoryLi
 nex_factionDirectoryList6,DialogOptionSelected,$option == nex_factionDirectoryList6,Nex_FactionDirectory listFactions 6,,,
 nex_factionDirectoryList7,DialogOptionSelected,$option == nex_factionDirectoryList7,Nex_FactionDirectory listFactions 7,,,
 nex_factionDirectoryList8,DialogOptionSelected,$option == nex_factionDirectoryList8,Nex_FactionDirectory listFactions 8,,,
+nex_factionDirectoryList9,DialogOptionSelected,$option == nex_factionDirectoryList9,Nex_FactionDirectory listFactions 9,,,
+nex_factionDirectoryList10,DialogOptionSelected,$option == nex_factionDirectoryList10,Nex_FactionDirectory listFactions 10,,,
 ,,,,,,
 nex_factionDirectoryPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_printFactionMarkets_""",Nex_FactionDirectory print,,,
 ,,,,,,
