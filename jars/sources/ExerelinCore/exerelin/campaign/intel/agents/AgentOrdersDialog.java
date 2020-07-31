@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.IndustryPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -38,6 +39,7 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.submarkets.PrismMarket;
@@ -45,6 +47,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -282,6 +285,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		String header = "dialogInfoHeader";
 		FactionAPI mktFaction = agentMarket != null ? agentMarket.getFaction() 
 				: Global.getSector().getFaction(Factions.NEUTRAL);
+		FactionAPI tgtFaction = action.getTargetFaction();
 		String mktName = agentMarket != null ? agentMarket.getName() : getString("unknownLocation");
 		String factionName = Nex_FactionDirectoryHelper.getFactionDisplayName(mktFaction);
 		Color factionColor = mktFaction.getBaseUIColor();
@@ -296,18 +300,62 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				break;
 			case CovertActionType.DESTABILIZE_MARKET:
 				text.addPara(getString(header + "DestabilizeMarket"), factionColor, mktName);
-				addEffectPara(0, 1);
+				addEffectPara(0, 1);				
 				break;
 			case CovertActionType.RAISE_RELATIONS:
 				text.addPara(getString(header + "RaiseRelations"), factionColor, factionName);
 				addEffectPara(0, 100);
+				
+				// print max relationship if applicable
+				if (!DiplomacyManager.isRandomFactionRelationships()) 
+				{
+					float max = ExerelinFactionConfig.getMaxRelationship(action.getTargetFaction().getId(),
+							thirdFaction.getId());
+					if (max < 1) {
+						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
+						str = StringHelper.substituteToken(str, "$faction1", 
+								ExerelinUtilsFaction.getFactionShortName(tgtFaction));
+						str = StringHelper.substituteToken(str, "$faction2", 
+								ExerelinUtilsFaction.getFactionShortName(thirdFaction));
+						String maxStr = NexUtilsReputation.getRelationStr(max);
+						str = StringHelper.substituteToken(str, "$relationship", maxStr);
+						text.addPara(str, NexUtilsReputation.getRelColor(max), maxStr);
+					}
+				}
+				// print current relationship
+				text.addPara(StringHelper.getString("exerelin_factions", "relationshipCurr"), 
+						tgtFaction.getRelColor(thirdFaction.getId()), 
+						NexUtilsReputation.getRelationStr(tgtFaction, thirdFaction));
 				break;
+				
 			case CovertActionType.LOWER_RELATIONS:
 				String thirdName = Nex_FactionDirectoryHelper.getFactionDisplayName(thirdFaction);
 				
 				text.addPara(getString(header + "LowerRelations"), hl, factionName, thirdName);
 				setHighlights(factionName, thirdName, factionColor, thirdFaction.getBaseUIColor());
 				addEffectPara(0, 100);
+				
+				// print min relationship if applicable
+				if (!DiplomacyManager.isRandomFactionRelationships()) 
+				{
+					float min = ExerelinFactionConfig.getMinRelationship(action.getTargetFaction().getId(),
+							thirdFaction.getId());
+					if (min > -1) {
+						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
+						str = StringHelper.substituteToken(str, "$faction1", 
+								ExerelinUtilsFaction.getFactionShortName(tgtFaction));
+						str = StringHelper.substituteToken(str, "$faction2", 
+								ExerelinUtilsFaction.getFactionShortName(thirdFaction));
+						String minStr = NexUtilsReputation.getRelationStr(min);
+						str = StringHelper.substituteToken(str, "$relationship", minStr);
+						text.addPara(str, NexUtilsReputation.getRelColor(min), minStr);
+					}
+				}
+				// print current relationship
+				text.addPara(StringHelper.getString("exerelin_factions", "relationshipCurr"),
+						tgtFaction.getRelColor(thirdFaction.getId()), 
+						NexUtilsReputation.getRelationStr(tgtFaction, thirdFaction));
+				
 				break;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
 				String commodityName = ((DestroyCommodityStocks)action).getCommodityName();
@@ -452,14 +500,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				action = new RaiseRelations(agent, market, agentFaction, mktFaction, agentFaction, true, null);
 				action.init();
 				getFactions();
-				selectFaction(agentFaction);
-				printActionInfo();
+				//selectFaction(agentFaction);
+				//printActionInfo();
 				break;
 			case CovertActionType.LOWER_RELATIONS:
 				action = new LowerRelations(agent, market, agentFaction, mktFaction, null, true, null);
 				action.init();
 				getFactions();
-				printActionInfo();
+				//printActionInfo();
 				break;
 			case CovertActionType.DESTABILIZE_MARKET:
 				action = new DestabilizeMarket(agent, market, agentFaction, mktFaction, true, null);
@@ -512,9 +560,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		thirdFaction = faction;
 		if (action.getDefId().equals(CovertActionType.LOWER_RELATIONS)) {
 			((LowerRelations)action).setThirdFaction(thirdFaction);
-			//printActionInfo();	// meh, don't need to tell player that they've changed target faction
+			printActionInfo();
 		} else if (action.getDefId().equals(CovertActionType.RAISE_RELATIONS)) {
 			((RaiseRelations)action).setThirdFaction(thirdFaction);
+			printActionInfo();
 		}
 		
 		getTargets();

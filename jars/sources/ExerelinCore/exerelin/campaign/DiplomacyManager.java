@@ -302,8 +302,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      * @param delta
      * @return True if any action was taken, false otherwise.
      */
-
-    
     public static boolean clampRelations(String faction1Id, String faction2Id, float delta)
     {
         if (getManager().randomFactionRelationships)
@@ -321,6 +319,28 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (delta <= 0 && min > curr)
         {
             faction1.setRelationship(faction2Id, min);
+            return true;
+        }
+        return false;
+    }
+    
+    public static boolean isOutsideRepBounds(String faction1Id, String faction2Id, float delta) 
+    {
+        if (getManager().randomFactionRelationships)
+            return false;
+        
+        FactionAPI faction1 = Global.getSector().getFaction(faction1Id);
+        float curr = faction1.getRelationship(faction2Id);
+        float max = ExerelinFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+        float min = ExerelinFactionConfig.getMinRelationship(faction1Id, faction2Id);
+        if (delta >= 0 && curr > max)
+        {
+            log.info("Factions " + faction1Id + " and " + faction2Id + " are above their maximum relations");
+            return true;
+        }
+        if (delta <= 0 && curr < min)
+        {
+            log.info("Factions " + faction1Id + " and " + faction2Id + " are below their minimum relations");
             return true;
         }
         return false;
@@ -346,14 +366,18 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      */
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit, boolean isAllianceAction)
-    {   
-        SectorAPI sector = Global.getSector();
-        
+    {
         float before = faction1.getRelationship(faction2.getId());
         boolean wasHostile = faction1.isHostileTo(faction2);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         String faction1Id = faction1.getId();
         String faction2Id = faction2.getId();
+        
+        // Do nothing if we're outside relationship bounds (to prevent clamping from sending us "backwards")
+        if (isOutsideRepBounds(faction1Id, faction2Id, delta)) 
+        {
+            return new ExerelinReputationAdjustmentResult(0, wasHostile, wasHostile);
+        }
         
         if (limit != null)
             faction1.adjustRelationship(faction2Id, delta, limit);
@@ -372,6 +396,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         clampRelations(faction1Id, faction2Id, delta);
         float after = faction1.getRelationship(faction2Id);
         delta = after - before;
+        
         //log.info("Relationship delta: " + delta);
         boolean isHostile = faction1.isHostileTo(faction2);
         

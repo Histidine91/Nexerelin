@@ -222,17 +222,17 @@ public class NexUtilsReputation
 		return standing;
 	}
 	
-	public static Color getRelColor(float rel) 
+	public static Color getRelColor(float rel)
 	{  
 		Color relColor = new Color(125,125,125,255);
-		if (rel > 1) rel = 1;  
-		if (rel < -1) rel = -1;  
+		if (rel > 1) rel = 1;
+		if (rel < -1) rel = -1;
 
-		if (rel > 0) {  
+		if (rel > 0) {
 			relColor = Misc.interpolateColor(relColor, Misc.getPositiveHighlightColor(), Math.max(0.15f, rel));  
-		} else if (rel < 0) {  
+		} else if (rel < 0) {
 			relColor = Misc.interpolateColor(relColor, Misc.getNegativeHighlightColor(), Math.max(0.15f, -rel));  
 		}  
-			return relColor;  
+		return relColor;
 	}  
 }
