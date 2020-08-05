@@ -113,8 +113,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected List<FactionAPI> getFactions() {
 		
 		Set<FactionAPI> factionsSet = new HashSet<>();
-		if (action.getDefId().equals(CovertActionType.LOWER_RELATIONS)) {
+		if (action.getDefId().equals(CovertActionType.LOWER_RELATIONS)) 
+		{
 			for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+				ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+				if (!conf.allowAgentActions) continue;
 				factionsSet.add(Global.getSector().getFaction(factionId));
 			}
 			// don't allow lowering relationship with self or commissioning faction
@@ -123,15 +126,19 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			factionsSet.remove(Global.getSector().getPlayerFaction());
 			factionsSet.remove(agentMarket.getFaction());
 		}
-		else if (action.getDefId().equals(CovertActionType.RAISE_RELATIONS)) {
+		else if (action.getDefId().equals(CovertActionType.RAISE_RELATIONS)) 
+		{
 			for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+				ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+				if (!conf.allowAgentActions) continue;
 				factionsSet.add(Global.getSector().getFaction(factionId));
 			}
 			factionsSet.add(Global.getSector().getFaction(Factions.PLAYER));
 			// don't allow raising relationship of target faction with itself
 			factionsSet.remove(agentMarket.getFaction());
 		}
-		else {	// travel: can pick any faction that allows agent actions
+		else // travel: can pick any faction that allows agent actions
+		{	
 			Set<FactionAPI> temp = new HashSet<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 				if (market.isHidden()) continue;
@@ -890,6 +897,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		switch (action.getDefId()) {
 			case CovertActionType.TRAVEL:
 				return travelDest != null;
+			case CovertActionType.RAISE_RELATIONS:
 			case CovertActionType.LOWER_RELATIONS:
 				return thirdFaction != null;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:

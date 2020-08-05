@@ -189,7 +189,12 @@ public class RaiseRelations extends CovertActionIntel {
 				first = false;
 			}
 		}
-		
+		else {
+			if (agentFaction != thirdFaction) {
+				ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
+				first = false;
+			}
+		}
 		ExerelinUtilsFaction.addFactionNamePara(info, first ? initPad : pad, color, targetFaction);
 		
 		if (repResult != null && repResult != NO_EFFECT) {
