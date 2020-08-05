@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainPlugin;
+import com.fs.starfarer.api.campaign.OrbitAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -131,7 +132,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	{
 		SectorEntityToken toOrbit = target;
 		float orbitRadius = 100;
-		float orbitPeriod = target.getOrbit().getOrbitalPeriod();
+		float orbitPeriod = 60;	//target.getOrbit().getOrbitalPeriod();
 		String name = target.getStarSystem().getBaseName();
 		
 		if (toOrbit instanceof PlanetAPI)
@@ -152,20 +153,23 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 			}
 			else if (asteroidSource instanceof CampaignTerrainAPI) 
 			{
+				OrbitAPI targOrbit = target.getOrbit();
 				CampaignTerrainPlugin terrain = ((CampaignTerrainAPI)asteroidSource).getPlugin();
 				if (terrain.getTerrainId().equals(Terrain.ASTEROID_BELT))
 				{
 					toOrbit = asteroidSource.getOrbitFocus();
-					orbitPeriod = target.getOrbit().getOrbitalPeriod();
+					if (targOrbit != null) orbitPeriod = targOrbit.getOrbitalPeriod();
 				}
 				else if (terrain.getTerrainId().equals(Terrain.ASTEROID_FIELD))
 				{
 					toOrbit = asteroidSource;
-					orbitPeriod = target.getOrbit().getOrbitalPeriod();
+					if (targOrbit != null) orbitPeriod = targOrbit.getOrbitalPeriod();
 				}
 			}
 			orbitRadius = Misc.getDistance(fleet.getLocation(), toOrbit.getLocation());
 		}
+		if (toOrbit == null) toOrbit = target;	// safety
+		
 		float angle = Misc.getAngleInDegrees(fleet.getLocation(), toOrbit.getLocation()) - 180;
 		
 		name += " " + getString("outpostProperName");
