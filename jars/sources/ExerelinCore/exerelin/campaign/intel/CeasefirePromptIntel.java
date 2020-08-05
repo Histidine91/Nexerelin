@@ -207,6 +207,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		// auto-accept if already non-hostile
 		if (!Global.getSector().getPlayerFaction().isHostileTo(factionId)) {
 			accept();
+			endAfterDelay();
 			return;
 		}
 		
