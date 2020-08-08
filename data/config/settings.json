@@ -164,5 +164,9 @@
 			"trait_lawAndOrder":"graphics/exerelin/icons/intel/police_star.png",
 			"trait_lowProfile":"graphics/portraits/bgs/bg03.png",
 		},
+		
+		"ui":{
+			"nex_mining":"graphics/exerelin/icons/hammer_and_pick.png"
+		},
 	}
 }

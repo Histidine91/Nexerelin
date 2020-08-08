@@ -454,6 +454,9 @@ nex_miningOptionUnsurveyed,PopulateOptions,"$nex_canMine
 !$isAsteroid
 $market.surveyLevel != FULL","SetTooltip nex_miningPreview ""You need to survey the planet first!""
 SetEnabled nex_miningPreview false",,,
+nex_miningOptionCooldown,PopulateOptions,"$nex_canMine
+$player.nex_miningCooldown","SetTooltip nex_miningPreview ""On cooldown, please wait a day before mining again.""
+SetEnabled nex_miningPreview false",,,
 ,,,,,,
 nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"$menuState = nex_mining 0
 Nex_PrintMiningInfo planet
@@ -474,16 +477,12 @@ FireAll nex_miningOption",,,
 nex_miningListTools,DialogOptionSelected,$option == nex_miningListTools,"Nex_PrintMiningInfo tools
 FireAll nex_miningOption",,,
 nex_miningStart,DialogOptionSelected,"$nex_canMine
-$option == nex_miningStart","Wait $global.miningWait 1.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
-MakePlayerImmediatelyAttackable",,,
-nex_miningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
-nex_miningComplete,OpenInteractionDialog,"$nex_canMine
-$global.miningFinished score:3","Nex_GetMiningResults 1
-ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"nex_miningPreview:Mine again
-nex_miningBack:Back",
+$option == nex_miningStart","$player.nex_miningCooldown = true 1
+Nex_GetMiningResults 1
+ShowDefaultVisual",,nex_miningLeave:Leave,
 ,,,,,,
 nex_miningBack,DialogOptionSelected,$option == nex_miningBack,FireAll PopulateOptions,,,
-,,,,,,
+nex_miningLeave,DialogOptionSelected,$option == nex_miningLeave,DismissDialog,,,
 ,,,,,,
 # Fleet requests,,,,,,
 nex_fleetRequestOpt,ExerelinMarketSpecial,,SetShortcut nex_fleetRequest_main R,,8:nex_fleetRequest_main:Request a fleet,

@@ -31,6 +31,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
+import exerelin.campaign.MiningCooldownDrawer;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ui.ReinitScreenScript;
@@ -262,6 +263,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             sector.getListenerManager().addListener(new MarketDescChanger(), true);
         
         sector.addTransientScript(new PlayerInSystemTracker());
+		sector.addTransientScript(new MiningCooldownDrawer());
     }
     
     @Override
