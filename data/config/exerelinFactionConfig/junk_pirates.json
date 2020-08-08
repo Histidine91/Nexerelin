@@ -23,6 +23,6 @@
     "startShipsTradeLarge":[["junk_pirates_goat_Standard", "junk_pirates_scythe_Assault", "junk_pirates_stoatA_Standard"]],
     
     "startSpecialItems":[
-        [["junk_pirates_asp_bp", ""]],
+        [["junk_pirates_junk_bp", ""]],
     ],
 }
