@@ -570,7 +570,7 @@ $market.nex_decivEvent_giveItem == ""crew""",SetTextHighlights $nex_decivEvent_t
 Dealing in slaves — as this offer surely is — tends to be frowned on under most moral systems. On the other hand, the captives may be considerably better off on your $shipOrFleet than with… this person.",,
 nex_decivEvent_refugees,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""refugees""",SetTextHighlights $nex_decivEvent_giveCount,"""Please help us, good starfarer. Me and my friends, we've been stranded on this world for... for far too long. A few more months here and we'll be dead, or worse.
 
-Let us come abroad your $shipOrFleet. There are $nex_decivEvent_giveCount of us, all willing to work our passage off this place.""
+Let us come aboard your $shipOrFleet. There are $nex_decivEvent_giveCount of us, all willing to work our passage off this place.""
 OR
 ""I beg you for a favor, $playerName. This place, $market, it's no place to live. Not with the total collapse of society, with every meal possibly our last, with packs of raiders and looters seizing everything — and everyone — they can get their hands on.
 
@@ -598,7 +598,7 @@ $market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent accept
 ShowDefaultVisual
 FireAll PopulateOptions","""Thank you so much! We'll come abroad right away.""
 
-You cut the comm link and dispatch a shuttle to the surface of $market to pick up your new  crewmembers. Hopefully they'll fit in well… and won't bring abroad some horrible new pox hitherto unknown to the Sector.",,
+You cut the comm link and dispatch a shuttle to the surface of $market to pick up your new crewmembers. Hopefully they'll fit in well… and won't bring aboard some horrible new pox hitherto unknown to the Sector.",,
 nex_decivEvent_declineRefugees,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent decline
 ShowDefaultVisual
