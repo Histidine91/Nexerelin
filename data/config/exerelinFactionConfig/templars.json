@@ -30,6 +30,7 @@
         "diplomatic":-1,
         "ideological":1,
     },
+    "diplomacyTraits":["paranoid", "stalwart", "irredentist", "law_and_order", "temperamental"],
     
     "invasionStrengthBonusAttack":0.1,
     "invasionStrengthBonusDefend":0.2,
