@@ -43,6 +43,7 @@ import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.PlayerInSystemTracker;
+import exerelin.campaign.fleets.VultureFleetManager;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
@@ -202,6 +203,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(InvasionFleetManager.create());
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManagerV2.create());
+		sector.addScript(VultureFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(AllianceManager.create());
         new ColonyManager().init();

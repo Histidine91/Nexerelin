@@ -18,6 +18,8 @@ import exerelin.campaign.events.WarmongerEvent;
 import exerelin.campaign.fleets.MiningFleetAI;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.MiningFleetManagerV2.MiningFleetData;
+import exerelin.campaign.fleets.VultureFleetAI;
+import exerelin.campaign.fleets.VultureFleetManager.VultureFleetData;
 import exerelin.campaign.intel.rebellion.SuppressionFleetAI;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceVoteIntel;
@@ -232,7 +234,6 @@ public class XStreamConfig {
 		x.aliasAttribute(MiningFleetAI.class, "miningDailyProgress", "prog");
 		x.aliasAttribute(MiningFleetAI.class, "fleet", "flt");
 		x.aliasAttribute(MiningFleetAI.class, "orderedReturn", "ret");
-		x.aliasAttribute(MiningFleetAI.class, "unloaded", "unld");
 		
 		// MiningFleetData
 		x.aliasAttribute(MiningFleetData.class, "fleet", "flt");
@@ -241,6 +242,17 @@ public class XStreamConfig {
 		x.aliasAttribute(MiningFleetData.class, "sourceMarket", "srcM");
 		x.aliasAttribute(MiningFleetData.class, "startingFleetPoints", "strtPt");
 		x.aliasAttribute(MiningFleetData.class, "miningStrength", "str");
+		
+		// VultureFleetAI
+		x.aliasAttribute(VultureFleetAI.class, "daysTotal", "days");
+		x.aliasAttribute(VultureFleetAI.class, "fleet", "flt");
+		x.aliasAttribute(VultureFleetAI.class, "orderedReturn", "ret");
+		
+		// VultureFleetData
+		x.aliasAttribute(VultureFleetData.class, "fleet", "flt");
+		x.aliasAttribute(VultureFleetData.class, "source", "src");
+		x.aliasAttribute(VultureFleetData.class, "target", "tgt");
+		x.aliasAttribute(VultureFleetData.class, "startingFleetPoints", "strtPt");
 		
 		// ExerelinReputationAdjustmentResult
 		x.aliasAttribute(ExerelinReputationAdjustmentResult.class, "wasHostile", "hstl1");
