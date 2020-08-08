@@ -284,7 +284,7 @@ public class DiplomacyBrain {
 	
 	protected void updateDispositionFromTraits(MutableStat disposition, String factionId) 
 	{
-		Set<String> traits = new HashSet<>(DiplomacyTraits.getFactionTraits(factionId));
+		Set<String> traits = new HashSet<>(DiplomacyTraits.getFactionTraits(this.factionId));
 		
 		if (traits.contains(TraitIds.IRREDENTIST) && disposition.getFlatMods().containsKey("revanchism")
 				&& disposition.getFlatMods().containsKey("revanchism"))
@@ -372,6 +372,8 @@ public class DiplomacyBrain {
 			
 			if (lawAndOrder) {
 				freeportScore *= -FREE_PORT_PENALTY_MULT;
+				//log.info(String.format("Freeport score for %s against %s: %s (multiplier %s)", 
+				//		this.factionId, factionId, freeportScore, -FREE_PORT_PENALTY_MULT));
 			}
 			else if (anarchist) {
 				freeportScore *= FREE_PORT_BONUS_MULT;
