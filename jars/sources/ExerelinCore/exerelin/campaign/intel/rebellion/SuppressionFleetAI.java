@@ -113,7 +113,6 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 		return new Script() {
 			@Override
 			public void run() {
-				Global.getLogger(this.getClass()).info("wololo suppressing");
 				data.intel.suppressionFleetArrived(data);
 			}
 		};
@@ -121,7 +120,6 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 	
 	protected Script standDownScript = new Script() {
 		public void run() {
-			Global.getLogger(this.getClass()).info("wololo standing down");
 			giveStandDownOrders();
 		}
 	};

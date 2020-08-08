@@ -65,7 +65,7 @@ public class Nex_GrantAutonomy extends BaseCommandPlugin {
 		market.getMemoryWithoutUpdate().unset(MEMORY_KEY_SUSPEND);
 	}
 	
-	public static void suspendAutonomy(MarketAPI market) {
+	public static void suspendAutonomy(final MarketAPI market) {
 		market.setPlayerOwned(true);
 		
 		// already suspended autonomy?
@@ -73,16 +73,15 @@ public class Nex_GrantAutonomy extends BaseCommandPlugin {
 			return;
 		market.getMemoryWithoutUpdate().set(MEMORY_KEY_SUSPEND, true);
 		
-		final MarketAPI marketF = market; 
 		DelayedActionScript script = new DelayedActionScript(0) {
 			public void doAction() {
-				if (marketF.isPlayerOwned() && marketF.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_SUSPEND))
+				if (market.isPlayerOwned() && market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_SUSPEND))
 				{
-					marketF.setPlayerOwned(false);
-					marketF.getMemoryWithoutUpdate().unset(MEMORY_KEY_SUSPEND);
+					market.setPlayerOwned(false);
+					market.getMemoryWithoutUpdate().unset(MEMORY_KEY_SUSPEND);
 					// in case player messed with admin assignment
 					FactionAPI player = Global.getSector().getPlayerFaction();
-					ColonyManager.reassignAdminIfNeeded(marketF, player, player);
+					ColonyManager.reassignAdminIfNeeded(market, player, player);
 				}
 			}
 		};

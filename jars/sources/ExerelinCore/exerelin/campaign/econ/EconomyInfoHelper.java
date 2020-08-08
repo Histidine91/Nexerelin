@@ -168,7 +168,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				if (!factionProductionByFaction.get(factionId).containsKey(Commodities.SHIPS)) {
 					continue;
 				}
-				log.info(factionId + " has heavy industry");
+				//log.info(factionId + " has heavy industry");
 				haveHeavyIndustry.add(factionId);
 			}
 		}
