@@ -885,8 +885,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			havePerson = true;
 		}
 		
-		// Adminsitrator
-		addOrUpdateOfficial(market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, officialsPresent);
+		// Administrator
+		if (!havePerson) {
+			addOrUpdateOfficial(market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, officialsPresent);
+			havePerson = true;
+		}
 	}
 	
 	// add admin to player market if needed

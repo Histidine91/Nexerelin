@@ -121,8 +121,11 @@ public class Nex_DonateAdmin extends PaginatedOptions {
 	public static void transfer(AdminData admin, MarketAPI market) {
 		ImportantPeopleAPI ip = Global.getSector().getImportantPeople();
 		
+		String post = Ranks.POST_ADMINISTRATOR;
+		if (market.getPlanetEntity() == null) post = Ranks.POST_STATION_COMMANDER;
+		
 		PersonAPI currAdmin = market.getAdmin();
-		if (Ranks.POST_ADMINISTRATOR.equals(currAdmin.getPostId()))
+		if (post.equals(currAdmin.getPostId()))
 		{
 			market.removePerson(currAdmin);
 			market.getCommDirectory().removePerson(currAdmin);
@@ -133,7 +136,7 @@ public class Nex_DonateAdmin extends PaginatedOptions {
 			admin.getMarket().setAdmin(Global.getSector().getPlayerPerson());
 		
 		PersonAPI newAdmin = admin.getPerson();
-		newAdmin.setPostId(Ranks.POST_ADMINISTRATOR);
+		newAdmin.setPostId(post);
 		market.setAdmin(newAdmin);
 		market.addPerson(newAdmin);
 		market.getCommDirectory().addPerson(newAdmin);
