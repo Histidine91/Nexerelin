@@ -204,7 +204,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(InvasionFleetManager.create());
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManagerV2.create());
-		sector.addScript(VultureFleetManager.create());
+        //sector.addScript(VultureFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(AllianceManager.create());
         new ColonyManager().init();
@@ -263,7 +263,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             sector.getListenerManager().addListener(new MarketDescChanger(), true);
         
         sector.addTransientScript(new PlayerInSystemTracker());
-		sector.addTransientScript(new MiningCooldownDrawer());
+        //sector.addTransientScript(new MiningCooldownDrawer());
     }
     
     @Override
