@@ -286,6 +286,9 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		}
 		rebuildCheckCooldown = 10;
 		
+		if (route.getActiveFleet() != null && route.getActiveFleet().getBattle() != null)
+			return;
+		
 		if (routeAI.currentTask != null && routeAI.currentTask.type == TaskType.REBUILD) {
 			debugMsg("Already have reconstitution order", false);
 			return;
@@ -680,6 +683,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	@Override
 	public boolean shouldRepeat(RouteData route) {
 		return false;
+	}
+	
+	@Override
+	protected void notifyEnding() {
+		faction.getMemoryWithoutUpdate().set(SpecialForcesManager.MEM_KEY_RESPAWN_DELAY, 
+				true, SpecialForcesManager.RESPAWN_DELAY);
 	}
 
 	@Override

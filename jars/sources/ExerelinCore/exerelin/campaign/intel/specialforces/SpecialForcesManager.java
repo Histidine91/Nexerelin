@@ -29,9 +29,11 @@ import org.lazywizard.lazylib.MathUtils;
 public class SpecialForcesManager implements EveryFrameScript {
 	
 	public static final String PERSISTENT_KEY = "nex_specialForcesManager";
-	public static final float MAX_POINTS = 350;
+	public static final float MAX_POINTS = 300;
 	public static final float POINTS_TO_SPAWN = 250;
-	public static final float POINT_GENERATION_MULT = 0.003f;
+	public static final float POINT_GENERATION_MULT = 0.002f;
+	public static final int RESPAWN_DELAY = 30;
+	public static final String MEM_KEY_RESPAWN_DELAY = "$nex_specialForcesRespawnDelay";
 	
 	protected Map<String, Float> factionPoints = new HashMap<>();
 	protected final List<SpecialForcesIntel> activeIntel = new LinkedList();
@@ -107,6 +109,9 @@ public class SpecialForcesManager implements EveryFrameScript {
 			float points = getPoints(factionId);
 			if (points >= POINTS_TO_SPAWN && countActiveFleetsForFaction(factionId) < getMaxFleets(factionId)) 
 			{
+				if (Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().contains(MEM_KEY_RESPAWN_DELAY))
+					continue;
+				
 				SpecialForcesIntel intel = generateFleet(factionId);
 				if (intel != null) {
 					activeIntel.add(intel);

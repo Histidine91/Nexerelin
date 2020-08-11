@@ -177,6 +177,7 @@ public class SpecialForcesRouteAI {
 			return false;
 		
 		if (raid instanceof OffensiveFleetIntel) {
+			//sf.debugMsg("Testing raid intel " + raid.getName(), false);
 			if (raid instanceof BaseStrikeIntel) return false;
 			if (raid instanceof ColonyExpeditionIntel) return false;
 			
@@ -187,12 +188,18 @@ public class SpecialForcesRouteAI {
 			}
 			
 			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
-			if (ofi.getOutcome() != null) return false;
+			if (ofi.getOutcome() != null) {
+				//sf.debugMsg("  Outcome already happened", true);
+				return false;
+			}
 			
 			// Only count the raid if we are the target
 			FactionAPI targetFaction = ofi.getTarget().getFaction();
-			if (targetFaction != sf.faction)
+			if (targetFaction != sf.faction){
+				//sf.debugMsg("  Wrong faction: " + targetFaction.getId() + ", " + sf.faction.getId(), true);
 				return false;
+			}
+			return true;
 		}
 		else {	// probably a pirate raid
 			// Only count the raid if we have a market in target system
@@ -439,6 +446,7 @@ public class SpecialForcesRouteAI {
 			if (raid.getETA() > MAX_RAID_ETA_TO_CARE) continue;
 			hostileRaids.add(new Pair<>(raid, getRaidDefendPriority(raid)));
 		}
+		sf.debugMsg("Hostile raid count: " + hostileRaids.size(), false);
 		
 		Pair<RaidIntel, Float> priorityDefense = pickPriorityDefendTask(hostileRaids, isBusy);
 		if (priorityDefense != null) {
