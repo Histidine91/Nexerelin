@@ -301,17 +301,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float defenderStr = estimatePatrolStrength(attacker, 
 				countAllHostile ? null : targetFaction, 
 				system, variability);
-		log.info("\tPatrol strength: " + defenderStr);
+		//log.info("\tPatrol strength: " + defenderStr);
 		
 		float stationStr = estimateStationStrength(target);		
-		log.info("\tStation strength: " + stationStr);
+		//log.info("\tStation strength: " + stationStr);
 		
 		float defensiveStr = defenderStr + stationStr;
 		defensiveStr *= DEFENCE_ESTIMATION_MULT;
-		log.info("\tModified total defense strength: " + defensiveStr);
+		//log.info("\tModified total defense strength: " + defensiveStr);
 		
 		float strFromSize = target.getSize() * target.getSize() * 3;
-		log.info("\tMarket size modifier: " + strFromSize);
+		//log.info("\tMarket size modifier: " + strFromSize);
 		defensiveStr += strFromSize;
 		
 		defensiveStr *= GENERAL_SIZE_MULT;
@@ -320,7 +320,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (defensiveStr > max)
 			defensiveStr = max;
 		
-		log.info("\tWanted fleet size: " + defensiveStr);
+		log.info("\tWanted fleet size vs. " + target.getName() + ": " + defensiveStr);
 		return Math.max(defensiveStr, 30);
 	}
 	
