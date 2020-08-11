@@ -15,7 +15,9 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -164,22 +166,36 @@ public abstract class NexAssembleStage extends AssembleStage {
 		return true;
 	}
 	
+	protected float getBaseSize() {
+		float base = 120f;
+		if (offFltIntel instanceof InvasionIntel || offFltIntel instanceof ColonyExpeditionIntel) 
+		{
+			base = 180;
+		}
+		if (offFltIntel.isBrawlMode())
+			base *= 1.25f;
+		
+		base *= (3.5f/3);	// account for 33% chance of 50% larger fleet
+				
+		return base;
+	}
+	
 	// Same as vanilla, but don't assume it uses fleet size multiplier
+	// and get a different base size
 	@Override
 	protected float getLargeSize(boolean limitToSpawnFP) {
-		//if (true) return getFPLarge();
-		//float base = LARGE_SIZE;
 		float mult = 1f;
 		if (!getSources().isEmpty()) {
 			MarketAPI source = getSources().get(0);
 			FactionAPI.ShipPickMode mode = Misc.getShipPickMode(source);
-			float base = source.getFaction().getApproximateMaxFPPerFleet(mode);
+			//float base = source.getFaction().getApproximateMaxFPPerFleet(mode);
+			float base = getBaseSize();
 			
 			float numShipsMult = 1;
 			if (offFltIntel.useMarketFleetSizeMult)
 				numShipsMult = source.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).computeEffective(0f);
-			else
-				numShipsMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(offFltIntel.getFaction());
+			//else
+			//	numShipsMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(offFltIntel.getFaction());
 			
 			if (numShipsMult < 1f) numShipsMult = 1f;
 			mult = 1f / numShipsMult;

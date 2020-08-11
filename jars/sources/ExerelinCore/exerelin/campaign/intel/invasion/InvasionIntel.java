@@ -223,7 +223,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				defender.getDisplayNameWithArticleWithoutArticle(), strDesc, numFleets + "");
 		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h, h);
 		
-		if (Global.getSettings().isDevMode()) {
+		if (Global.getSettings().isDevMode() || ExerelinModPlugin.isNexDev) {
 			float fpRound = Math.round(fp);
 			float baseFP = Math.round(InvasionFleetManager.getWantedFleetSize(getFaction(), target, 0, false, 9999));
 			info.addPara("DEBUG: The invasion's starting FP is " + fpRound 
@@ -465,6 +465,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		String compare = StringHelper.getString("nex_fleetIntel", "strCompare");
 		compare = StringHelper.substituteToken(compare, "$theAction", getActionNameWithArticle(), true);
 		info.addPara(compare + " " + outcomeDesc, opad, h, spaceStr, groundStr);
+		
+		printFleetCountDebug(info);
 	}
 		
 	@Override

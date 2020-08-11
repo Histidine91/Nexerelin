@@ -24,6 +24,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -487,6 +488,29 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			member.setShipName(curr.pickRandomShipName(rand));
 		}
+	}
+	
+	@Override
+	public void addStandardStrengthComparisons(TooltipMakerAPI info, MarketAPI target, FactionAPI targetFaction, boolean withGround, boolean withBombard, String raid, String raids) {
+		super.addStandardStrengthComparisons(info, target, targetFaction, withGround, withBombard, raid, raids);
+		printFleetCountDebug(info);
+	}
+	
+	public void printFleetCountDebug(TooltipMakerAPI info) {
+		if (ExerelinModPlugin.isNexDev) {
+			int predicted = (int)Math.round(getOrigNumFleets());
+			int actual = getRouteCount();
+			String str = String.format("DEBUG: Expected routes %s, actual %s", predicted, actual);
+			
+			info.addPara(str, 10, Misc.getHighlightColor(), predicted + "", actual + "");
+		}
+	}
+	
+	protected int getRouteCount() {
+		int currStage = getCurrentStage();
+		BaseRaidStage stage = (BaseRaidStage) stages.get(currStage);
+		
+		return stage.getRoutes().size();
 	}
 	
 	// Takes into account the fact that we don't normally use market size mult
