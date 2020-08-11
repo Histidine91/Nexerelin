@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
@@ -77,7 +78,9 @@ public class ConquestMissionManager extends BaseEventManager {
 		if (target == null) {
 			log.info("Failed to pick target market");
 			return null;
-		} else if (target.getFaction().isPlayerFaction()) {
+		} 
+		else if (target.getFaction().isPlayerFaction() || target.getFaction() == Misc.getCommissionFaction()) 
+		{
 			log.info("Target market belongs to player, retry later");
 			return null;
 		}
