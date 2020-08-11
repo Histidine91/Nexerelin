@@ -62,13 +62,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		TASK_FORCE_DEFEATED,
 		NOT_ENOUGH_REACHED,
 		MARKET_NO_LONGER_EXISTS,
+		RETREAT_BEFORE_ACTION,
 		SUCCESS,
 		FAIL,
 		NO_LONGER_HOSTILE,
 		OTHER;
 		
 		public boolean isFailed() {
-			return this == TASK_FORCE_DEFEATED || this == FAIL;
+			return this == TASK_FORCE_DEFEATED || this == FAIL || this == RETREAT_BEFORE_ACTION;
 		}
 	}
 	
@@ -176,7 +177,6 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
-		log.info("Notifying raid ended: " + status + ", " + outcome);
 		if (outcome == null) {
 			if (status == RaidStageStatus.SUCCESS)
 				outcome = OffensiveOutcome.SUCCESS;
@@ -276,6 +276,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			case FAIL:
 			case NOT_ENOUGH_REACHED:
 				key = "bulletFailed";
+				break;
+			case RETREAT_BEFORE_ACTION:
+				key = "bulletRetreated";
 				break;
 			case MARKET_NO_LONGER_EXISTS:
 				key = "bulletNoLongerExists";

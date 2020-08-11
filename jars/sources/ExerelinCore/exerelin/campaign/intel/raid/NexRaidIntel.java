@@ -276,6 +276,15 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		return false;
 	}
 	
+	public boolean shouldRetreatIfOvermatched() {
+		if (faction.getDoctrine().getAggression() == 5)
+			return false;
+		
+		if (faction.getCustomBoolean(Factions.CUSTOM_FIGHT_TO_THE_LAST))
+			return false;
+		
+		return true;
+	}
 	
 	@Override
 	public String getSortString() {

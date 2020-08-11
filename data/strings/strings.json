@@ -816,6 +816,7 @@
 		"bulletArrived":"$ForceType arrived in system",
 		"bulletSuccess":"$Action successful",
 		"bulletFailed":"$Action failed",
+		"bulletRetreated":"$ForceType retreated before action",
 		"bulletNoLongerExists":"$Action aborted: target destroyed",
 		"bulletNoLongerHostile":"$Action aborted: no longer hostile",
 		"bulletCancelled":"$Action cancelled",
@@ -844,6 +845,7 @@
 		"stageActionDefeatedGround":"$TheForceType $hasOrHave been repelled by the ground defenses of $market.",
 		"stageActionDefeatedSpace":"$TheForceType $hasOrHave been defeated by the defenders of of $market.",
 		"stageActionAborted":"$TheAction $hasOrHave been aborted.",
+		"stageActionRetreated":"The defenses of the $location have caused $theForceType to retreat without a fight. $TheAction is now over.",
 	},
 	"exerelin_fleetAssignments":{
 		"preparingFor":"preparing for $missionType at $target",
