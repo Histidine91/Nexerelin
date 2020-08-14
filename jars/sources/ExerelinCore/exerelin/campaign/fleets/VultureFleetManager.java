@@ -43,6 +43,7 @@ import org.lazywizard.lazylib.MathUtils;
 public class VultureFleetManager extends DisposableFleetManager
 {
 	public static final String MANAGER_MAP_KEY = "nex_vultureFleetManager";
+	public static final String MEM_KEY_FLEET_COUNT_CACHE = "$nex_vultureFleetCountCache";
 	public static final boolean DEBUG_MODE = false;
 	
 	public static Logger log = Global.getLogger(VultureFleetManager.class);
@@ -278,9 +279,16 @@ public class VultureFleetManager extends DisposableFleetManager
 
 	@Override
 	protected int getDesiredNumFleetsForSpawnLocation() {
+		MemoryAPI mem = currSpawnLoc.getMemoryWithoutUpdate();
+		if (mem.contains(MEM_KEY_FLEET_COUNT_CACHE))
+			return (int)mem.getFloat(MEM_KEY_FLEET_COUNT_CACHE);
+		
+		//Global.getSector().getCampaignUI().addMessage("Querying num spawn vulture fleets");
 		float scavengeScore = getScavengeScore(currSpawnLoc);
 		int num = (int)(scavengeScore/1200);
 		if (num > 3) num = 3;
+		mem.set(MEM_KEY_FLEET_COUNT_CACHE, num, 2);
+		
 		return num;
 	}
 
