@@ -95,8 +95,10 @@ public class FactionBountyManager extends BaseEventManager {
 			if (already.contains(faction)) continue;
 			
 			// weight based on number of enemies this faction has
+			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, true, false);
 			float weight = 0;
-			for (String enemyId : DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, true, false))
+			int count = enemies.size();
+			for (String enemyId : enemies)
 			{
 				float thisWeight = 8;
 				if (faction.isAtBest(enemyId, RepLevel.VENGEFUL))
@@ -104,7 +106,10 @@ public class FactionBountyManager extends BaseEventManager {
 				
 				weight += thisWeight;
 			}
-			weight *= 0.5f;
+			if (ExerelinConfig.getExerelinFactionConfig(factionId).hostileToAll >= 1)
+				weight /= (count * 0.5f);
+			else
+				weight *= 0.5f;
 			
 			if (weight > 0)
 				picker.add(faction, weight);
