@@ -36,6 +36,7 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$randomStartShips", setupData.randomStartShips, 0);
 		map.set("$randomStartLocation", setupData.randomStartLocation, 0);
 		map.set("$nex_customScenarioName", StringHelper.getString("none"));
+		map.set("$nex_antiochInRandom", setupData.randomAntiochEnabled, 0);
 		
 		map.set("$easyMode", setupData.easyMode, 0);
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");

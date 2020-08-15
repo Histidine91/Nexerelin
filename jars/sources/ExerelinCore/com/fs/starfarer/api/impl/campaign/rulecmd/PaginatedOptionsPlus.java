@@ -67,12 +67,22 @@ public class PaginatedOptionsPlus extends PaginatedOptions {
 		
 		opts.clearOptions();  
 
-		int maxPages = (int) Math.ceil((float)options.size() / (float)optionsPerPage);  
+		int maxPages = (int) Math.ceil((float)options.size() / (float)optionsPerPage);
+		boolean singlePageMode = false;
+		// Use the space for the back/forward buttons to fit more options instead, if we can
+		if (options.size() + optionsAllPages.size() <= optionsPerPage + 2) {
+			maxPages = 1;
+			singlePageMode = true;
+		}
+		
 		if (currPage > maxPages - 1) currPage = maxPages - 1;  
 		if (currPage < 0) currPage = 0;
 
-		int start = currPage * optionsPerPage;  
-		for (int i = start; i < start + optionsPerPage; i++) {  
+		int start = currPage * optionsPerPage;
+		int end = start + optionsPerPage;
+		if (singlePageMode) end = optionsPerPage + 2;
+		
+		for (int i = start; i < end; i++) {  
 			if (i >= options.size()) {  
 				if (maxPages > 1 && withSpacers) {
 					opts.addOption("", "spacer" + i);  

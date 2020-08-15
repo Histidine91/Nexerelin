@@ -125,7 +125,10 @@ nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOption
 Nex_DynamicPaginatedOptions addTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,,
 nex_NGCListOptionEnableRandomStartLocation,ExerelinNGCOtherOptions,!$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Enable random start location""",,,
 nex_NGCListOptionDisableRandomStartLocation,ExerelinNGCOtherOptions,$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Disable random start location""",,,
-,,,,,,
+nex_NGCListOptionEnableAntioch,ExerelinNGCOtherOptions,"NGCDoesFactionExist templars
+!$nex_antiochInRandom","Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomAntioch ""Enable Antioch with random core worlds""",,,
+nex_NGCListOptionDisableAntioch,ExerelinNGCOtherOptions,"NGCDoesFactionExist templars
+$nex_antiochInRandom","Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomAntioch ""Disable Antioch with random core worlds""",,,
 nex_NGCOtherOptionsBack,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOptions addOptionAllPages exerelinNGCOptionsBack Back
 Nex_DynamicPaginatedOptions addShortcut exerelinNGCOptionsBack ESCAPE",,,
 nex_NGCOtherOptions_show,ExerelinNGCOtherOptions,,Nex_DynamicPaginatedOptions show,,,
@@ -180,6 +183,8 @@ AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
 SetTextHighlights  $nex_ngcDModsString
 FireAll ExerelinNGCOtherOptions",,,
 nex_NGCToggleRandomStartLocation,NewGameOptionSelected,$option==nex_NGCToggleRandomStartLocation,"Nex_NGCSetOption randomStartLocation
+FireAll ExerelinNGCOtherOptions",,,
+nex_NGCToggleRandomAntioch,NewGameOptionSelected,$option==nex_NGCToggleRandomAntioch,"Nex_NGCSetOption randomAntioch
 FireAll ExerelinNGCOtherOptions",,,
 nex_NGCCustomScenarioMenu,NewGameOptionSelected,$option==nex_NGCCustomScenarioMenu,Nex_NGCCustomScenario menu,,,
 nex_NGCCustomScenarioSelected,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomScenario_""","Nex_NGCCustomScenario select

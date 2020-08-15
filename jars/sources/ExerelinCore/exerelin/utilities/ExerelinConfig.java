@@ -99,7 +99,6 @@ public class ExerelinConfig
     public static boolean enableAvesta = true;    // Association
     //public static boolean enableShanghai = true;    // Tiandong
     public static boolean enableUnos = true;    // ApproLight
-    public static boolean enableAntioch = true;	// Templars
     public static boolean factionRuler = false;
     
     // Revengeance fleets
@@ -197,7 +196,7 @@ public class ExerelinConfig
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
             
-			prismInHyperspace = settings.optBoolean("prismInHyperspace", prismInHyperspace);
+            prismInHyperspace = settings.optBoolean("prismInHyperspace", prismInHyperspace);
             prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);
             prismNumShips = settings.optInt("prismNumShips", prismNumShips);
             prismNumWings = settings.optInt("prismNumWings", prismNumWings);
@@ -221,7 +220,6 @@ public class ExerelinConfig
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             //enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             enableUnos = settings.optBoolean("enableUnos", enableUnos);
-            enableAntioch = settings.optBoolean("enableAntioch", enableAntioch);
             factionRuler = settings.optBoolean("factionRuler", factionRuler);
             
             enableRevengeFleets = settings.optInt("enableRevengeFleets", enableRevengeFleets);

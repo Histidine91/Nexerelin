@@ -10,7 +10,6 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.StringHelper;
 
 
 public class Nex_NGCSetOption extends BaseCommandPlugin {
@@ -18,14 +17,17 @@ public class Nex_NGCSetOption extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String arg = params.get(0).getString(memoryMap);
+		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
 		
 		switch (arg) {
 			case "startingDMods":
-				cycleStartingDMods(memoryMap.get(MemKeys.LOCAL));
+				cycleStartingDMods(local);
 				return true;
 			case "randomStartLocation":
-				toggleRandomStartLocation(dialog.getTextPanel(), memoryMap.get(MemKeys.LOCAL));
+				toggleRandomStartLocation(dialog.getTextPanel(), local);
 				return true;
+			case "randomAntioch":
+				toggleRandomAntioch(dialog.getTextPanel(), local);
 		}
 		return false;
 	}
@@ -53,5 +55,12 @@ public class Nex_NGCSetOption extends BaseCommandPlugin {
 		*/
 
 		localMem.set("$randomStartLocation", setupData.randomStartLocation, 0);
+	}
+	
+	public static void toggleRandomAntioch(TextPanelAPI text, MemoryAPI localMem) {
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
+		boolean value = !setupData.randomAntiochEnabled;
+		setupData.randomAntiochEnabled = value;
+		localMem.set("$nex_antiochInRandom", value, 0);
 	}
 }
