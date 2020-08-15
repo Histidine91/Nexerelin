@@ -1,17 +1,22 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION_NEXT_PAGE;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION_PREV_PAGE;
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PaginatedOptionsPlus extends PaginatedOptions {
 	
 	protected Map<String, String> optionTooltips = new HashMap<>();
 	protected Map<String, Color> optionColors = new HashMap<>();
+	protected Map<String, List<String>> tooltipHighlights = new HashMap<>();
+	protected Map<String, List<Color>> tooltipHighlightColors = new HashMap<>();
+	protected Map<String, Integer> optionShortcuts = new HashMap<>();
 	
 	public void addColor(String id, Color color) {  
 		optionColors.put(id, color);
@@ -21,50 +26,77 @@ public class PaginatedOptionsPlus extends PaginatedOptions {
 		optionTooltips.put(id, tooltip);
 	}
 	
-	// Same as superclass, excepts colors dialog options and adds tooltips as appropriate
+	public void addHighlights(String id, List<String> highlights) {
+		tooltipHighlights.put(id, highlights);
+	}
+	
+	public void addHighlightColors(String id, List<Color> colors) {
+		tooltipHighlightColors.put(id, colors);
+	}
+	
+	public void addShortcut(String id, int code) {
+		optionShortcuts.put(id, code);
+	}
+	
+	protected void processOption(PaginatedOption option) {
+		OptionPanelAPI opts = dialog.getOptionPanel();
+		String optId = option.id;
+		String tooltip = optionTooltips.containsKey(optId) ? optionTooltips.get(optId) : null; 
+		
+		if (optionColors.containsKey(optId))
+			opts.addOption(option.text, optId, optionColors.get(optId), tooltip);  
+		else {
+			opts.addOption(option.text, optId);
+			opts.setTooltip(optId, tooltip);
+		}
+		if (tooltipHighlights.containsKey(optId)) {
+			opts.setTooltipHighlights(optId, tooltipHighlights.get(optId).toArray(new String[0]));
+		}
+		if (tooltipHighlightColors.containsKey(optId)) {
+			opts.setTooltipHighlightColors(optId, tooltipHighlightColors.get(optId).toArray(new Color[0]));
+		}
+		
+		if (optionShortcuts.containsKey(optId)) {
+			opts.setShortcut(optId, optionShortcuts.get(optId), false, false, false, false);
+		}
+	}
+	
 	@Override
-	public void showOptions() {  
-		dialog.getOptionPanel().clearOptions();  
+	public void showOptions() {
+		OptionPanelAPI opts = dialog.getOptionPanel();
+		
+		opts.clearOptions();  
 
 		int maxPages = (int) Math.ceil((float)options.size() / (float)optionsPerPage);  
 		if (currPage > maxPages - 1) currPage = maxPages - 1;  
-		if (currPage < 0) currPage = 0;  
+		if (currPage < 0) currPage = 0;
 
 		int start = currPage * optionsPerPage;  
 		for (int i = start; i < start + optionsPerPage; i++) {  
 			if (i >= options.size()) {  
 				if (maxPages > 1 && withSpacers) {
-					dialog.getOptionPanel().addOption("", "spacer" + i);  
-					dialog.getOptionPanel().setEnabled("spacer" + i, false);  
+					opts.addOption("", "spacer" + i);  
+					opts.setEnabled("spacer" + i, false);  
 				}  
-			} else {  
-				PaginatedOption option = options.get(i);
-				String tooltip = optionTooltips.containsKey(option.id) ? optionTooltips.get(option.id) : null; 
-				
-				if (optionColors.containsKey(option.id))
-					dialog.getOptionPanel().addOption(option.text, option.id, optionColors.get(option.id), tooltip);  
-				else {
-					dialog.getOptionPanel().addOption(option.text, option.id);
-					dialog.getOptionPanel().setTooltip(option.id, tooltip);
-				}
-					
-			}  
+			} else {
+				processOption(options.get(i));
+			} 
 		}
 
 		if (maxPages > 1) {  
-			dialog.getOptionPanel().addOption(getPreviousPageText(), OPTION_PREV_PAGE);  
-			dialog.getOptionPanel().addOption(getNextPageText(), OPTION_NEXT_PAGE);  
+			opts.addOption(getPreviousPageText(), OPTION_PREV_PAGE);  
+			opts.addOption(getNextPageText(), OPTION_NEXT_PAGE);  
 
 			if (currPage >= maxPages - 1) {  
-				dialog.getOptionPanel().setEnabled(OPTION_NEXT_PAGE, false);  
+				opts.setEnabled(OPTION_NEXT_PAGE, false);  
 			}  
 			if (currPage <= 0) {  
-				dialog.getOptionPanel().setEnabled(OPTION_PREV_PAGE, false);  
+				opts.setEnabled(OPTION_PREV_PAGE, false);  
 			}  
 		}
 
 		for (PaginatedOption option : optionsAllPages) {  
-			dialog.getOptionPanel().addOption(option.text, option.id);
+			processOption(option);
 		}
 
 		if (Global.getSettings().isDevMode()) {  

@@ -101,30 +101,34 @@ nex_NGCListOptionDisableRandomFactionWeights,ExerelinNGCFactionOptions,"!$corvus
 $useFactionWeights
 $randomFactionWeights",,,nex_NGCDisableRandomFactionWeights:Disable random faction spawning weights,
 ,,,,,,
+ExerelinNGCListOptionEnableRandomStartShips,ExerelinNGCOtherOptions,!$randomStartShips,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableRandomStartShips ""Enable random starting ships""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,,
+ExerelinNGCListOptionDisableRandomStartShips,ExerelinNGCOtherOptions,$randomStartShips,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableRandomStartShips ""Disable random starting ships""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,,
+ExerelinNGCListOptionEnableEasyMode,ExerelinNGCOtherOptions,!$easyMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableEasyMode ""Enable vanilla's Easy Mode""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableEasyMode""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
+Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCEnableEasyMode hColor hColor hColor
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableEasyMode ""25%"" ""500"" ""50%""",,,
+ExerelinNGCListOptionDisableEasyMode,ExerelinNGCOtherOptions,$easyMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableEasyMode ""Disable vanilla's Easy Mode""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableEasyMode ""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
+Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCDisableEasyMode hColor hColor hColor
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableEasyMode ""25%"" ""500"" ""50%""",,,
+ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableHardMode ""Enable Starfarer Mode""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 37.5% lower insurance payments\n- 100% higher vengeance point generation""
+Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCEnableHardMode hColor hColor hColor hColor
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""25%"" ""37.5%"" ""100%""",,,
+ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableHardMode ""Disable Starfarer Mode""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableHardMode""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 37.5% lower insurance payments\n- 100% higher vengeance point generation""
+Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCDisableHardMode hColor hColor hColor hColor
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""25%"" ""37.5%"" ""100%""",,,
+nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOptions addOption nex_NGCCycleStartDMods ""Starting D-mods – $nex_ngcDModsString""
+Nex_DynamicPaginatedOptions addTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,,
+nex_NGCListOptionEnableRandomStartLocation,ExerelinNGCOtherOptions,!$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Enable random start location""",,,
+nex_NGCListOptionDisableRandomStartLocation,ExerelinNGCOtherOptions,$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Disable random start location""",,,
 ,,,,,,
-ExerelinNGCListOptionEnableRandomStartShips,ExerelinNGCOtherOptions,!$randomStartShips,"SetTooltip exerelinNGCEnableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,exerelinNGCEnableRandomStartShips:Enable random starting ships,
-ExerelinNGCListOptionDisableRandomStartShips,ExerelinNGCOtherOptions,$randomStartShips,"SetTooltip exerelinNGCDisableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,exerelinNGCDisableRandomStartShips:Disable random starting ships,
-ExerelinNGCListOptionEnableEasyMode,ExerelinNGCOtherOptions,!$easyMode,"SetTooltip exerelinNGCEnableEasyMode""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
-SetTooltipHighlightColors exerelinNGCEnableEasyMode hColor hColor hColor
-SetTooltipHighlights exerelinNGCEnableEasyMode ""25%"" ""500"" ""50%""",,exerelinNGCEnableEasyMode:Enable vanilla's Easy Mode,
-ExerelinNGCListOptionDisableEasyMode,ExerelinNGCOtherOptions,$easyMode,"SetTooltip exerelinNGCDisableEasyMode ""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
-SetTooltipHighlightColors exerelinNGCDisableEasyMode hColor hColor hColor
-SetTooltipHighlights exerelinNGCDisableEasyMode ""25%"" ""500"" ""50%""",,exerelinNGCDisableEasyMode:Disable vanilla's Easy Mode,
-ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 37.5% lower insurance payments\n- 100% higher vengeance point generation""
-SetTooltipHighlightColors exerelinNGCEnableHardMode hColor hColor hColor hColor
-SetTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""25%"" ""37.5%"" ""100%""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
-ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 37.5% lower insurance payments\n- 100% higher vengeance point generation""
-SetTooltipHighlightColors exerelinNGCDisableHardMode hColor hColor hColor hColor
-SetTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""25%"" ""37.5%"" ""100%""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
-nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"SetTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,nex_NGCCycleStartDMods:Starting D-mods – $nex_ngcDModsString,
-nex_NGCCycleStartDMods,NewGameOptionSelected,$option==nex_NGCCycleStartDMods,"Nex_NGCSetOption startingDMods
-AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
-SetTextHighlights  $nex_ngcDModsString
-FireAll ExerelinNGCOtherOptions",,,
-nex_NGCListOptionEnableRandomStartLocation,ExerelinNGCOtherOptions,!$randomStartLocation,,,nex_NGCToggleRandomStartLocation:Enable random start location,
-nex_NGCListOptionDisableRandomStartLocation,ExerelinNGCOtherOptions,$randomStartLocation,,,nex_NGCToggleRandomStartLocation:Disable random start location,
-,,,,,,
-ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,SetShortcut exerelinNGCOptionsBack ESCAPE,,10:exerelinNGCOptionsBack:Back,
+nex_NGCOtherOptionsBack,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOptions addOptionAllPages exerelinNGCOptionsBack Back
+Nex_DynamicPaginatedOptions addShortcut exerelinNGCOptionsBack ESCAPE",,,
+nex_NGCOtherOptions_show,ExerelinNGCOtherOptions,,Nex_DynamicPaginatedOptions show,,,
 ,,,,,,
 ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorvusMode,"NGCSetCorvusMode true
 FireAll ExerelinNGCOptions",,,
@@ -170,6 +174,10 @@ FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCEnableHardMode,NewGameOptionSelected,$option==exerelinNGCEnableHardMode,"NGCSetHardMode true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableHardMode,NewGameOptionSelected,$option==exerelinNGCDisableHardMode,"NGCSetHardMode false
+FireAll ExerelinNGCOtherOptions",,,
+nex_NGCCycleStartDMods,NewGameOptionSelected,$option==nex_NGCCycleStartDMods,"Nex_NGCSetOption startingDMods
+AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
+SetTextHighlights  $nex_ngcDModsString
 FireAll ExerelinNGCOtherOptions",,,
 nex_NGCToggleRandomStartLocation,NewGameOptionSelected,$option==nex_NGCToggleRandomStartLocation,"Nex_NGCSetOption randomStartLocation
 FireAll ExerelinNGCOtherOptions",,,
