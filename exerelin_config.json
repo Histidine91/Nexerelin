@@ -99,7 +99,6 @@
     
     "enableAntioch": true, # adds Antioch for Templars in random mode, replacing their normal worlds
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (random mode only)
-    "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (random mode only)
     "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (random mode only)
     
     "factionRuler": false,  # gain same powers over a normal faction as you'd have with followers (probably not fully functional)

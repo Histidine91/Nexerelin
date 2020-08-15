@@ -1310,7 +1310,7 @@ public class ExerelinProcGen {
 	{
 		if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
 			addAvestaStation(sector, data.starSystem);
-		if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
+		if (factionId.equals("tiandong"))
 			addShanghai(data.market);
 		if (factionId.equals("approlight"))
 		{

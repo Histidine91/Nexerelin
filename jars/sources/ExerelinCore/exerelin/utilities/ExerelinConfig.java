@@ -97,7 +97,7 @@ public class ExerelinConfig
     
     // Faction special stuff
     public static boolean enableAvesta = true;    // Association
-    public static boolean enableShanghai = true;    // Tiandong
+    //public static boolean enableShanghai = true;    // Tiandong
     public static boolean enableUnos = true;    // ApproLight
     public static boolean enableAntioch = true;	// Templars
     public static boolean factionRuler = false;
@@ -219,7 +219,7 @@ public class ExerelinConfig
             followersInvasions = settings.optBoolean("followersInvasions", followersInvasions);
             
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
-            enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
+            //enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             enableUnos = settings.optBoolean("enableUnos", enableUnos);
             enableAntioch = settings.optBoolean("enableAntioch", enableAntioch);
             factionRuler = settings.optBoolean("factionRuler", factionRuler);
