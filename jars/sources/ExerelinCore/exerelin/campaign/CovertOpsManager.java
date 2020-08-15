@@ -458,7 +458,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         actionPicker.add(CovertActionType.DESTABILIZE_MARKET, 1.25f);
         actionPicker.add(CovertActionType.SABOTAGE_INDUSTRY, 1.25f);
         actionPicker.add(CovertActionType.DESTROY_COMMODITY_STOCKS, 1.25f);
-        //actionPicker.add(CovertActionType.INSTIGATE_REBELLION, 0.25f);
+        actionPicker.add(CovertActionType.INSTIGATE_REBELLION, 0.25f);
         
         String actionType = actionPicker.pick();
         
@@ -733,6 +733,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
 				{
 					if (RebellionCreator.getInstance().getRebellionPoints(market) < 50)
+						continue;
+					if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
 						continue;
 
 					if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
