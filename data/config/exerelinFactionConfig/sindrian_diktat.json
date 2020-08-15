@@ -10,17 +10,15 @@
     
     "morality":"evil",
     
-    "factionIdForHqResponse":"lions_guard",
-    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.DiktatNamer",
-
     "alignments":{
         "militarist":1,
         "diplomatic":-1,
     },
     "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
-    
+
+    "factionIdForHqResponse":"lions_guard",
+    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.DiktatNamer",   
     "specialForcesMaxFleets":1,
-    #"specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.FactionListNamer",
     
     "startShipsSolo":[
       ["swp_brawler_lions_guard_eli"],

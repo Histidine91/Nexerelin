@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.StringHelper;
 
 
 public class Nex_NGCSetOption extends BaseCommandPlugin {
@@ -22,7 +24,7 @@ public class Nex_NGCSetOption extends BaseCommandPlugin {
 				cycleStartingDMods(memoryMap.get(MemKeys.LOCAL));
 				return true;
 			case "randomStartLocation":
-				toggleRandomStartLocation(memoryMap.get(MemKeys.LOCAL));
+				toggleRandomStartLocation(dialog.getTextPanel(), memoryMap.get(MemKeys.LOCAL));
 				return true;
 		}
 		return false;
@@ -38,9 +40,18 @@ public class Nex_NGCSetOption extends BaseCommandPlugin {
 		localMem.set("$nex_ngcDModsString", str);
 	}
 	
-	public static void toggleRandomStartLocation(MemoryAPI localMem) {
+	public static void toggleRandomStartLocation(TextPanelAPI text, MemoryAPI localMem) {
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		setupData.randomStartLocation = !setupData.randomStartLocation;
+		
+		/*
+		String str = String.format(StringHelper.getString("exerelin_ngc", "randomStartLocation_msg"),
+				StringHelper.getString(setupData.randomStartLocation ? "enabled" : "disabled"));
+		text.setFontSmallInsignia();
+		text.addPara(str);
+		text.setFontInsignia();
+		*/
+
 		localMem.set("$randomStartLocation", setupData.randomStartLocation, 0);
 	}
 }

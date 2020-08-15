@@ -1159,6 +1159,8 @@
 		"customStartOrScenario_tooltipDisabledInRandom":"Disabled in random sector mode",
 		"customStartOrScenario_tooltipDisabledInNonRandom":"Disabled in non-random sector mode",
 		
+		#"randomStartLocation_msg":"Random start location %s",
+		
 		"dModLevel0":"none",
 		"dModLevel1":"mild",
 		"dModLevel2":"moderate",
