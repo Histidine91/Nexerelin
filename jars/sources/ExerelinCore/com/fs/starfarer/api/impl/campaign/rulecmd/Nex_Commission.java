@@ -9,6 +9,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.intel.Nex_FactionCommissionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.NexUtilsReputation;
@@ -40,8 +41,12 @@ public class Nex_Commission extends Commission {
 		if (Misc.getCommissionFactionId() == null) {
 			PlayerFactionStore.saveIndependentPlayerRelations();
 			NexUtilsReputation.syncPlayerRelationshipsToFaction(faction.getId());
+			
+			Nex_FactionCommissionIntel intel = new Nex_FactionCommissionIntel(faction);
+			intel.missionAccepted();
+			intel.sendUpdate(Nex_FactionCommissionIntel.UPDATE_PARAM_ACCEPTED, dialog.getTextPanel());
+			intel.makeRepChanges(dialog);
 		}
-		super.accept();
 	}
 	
 	

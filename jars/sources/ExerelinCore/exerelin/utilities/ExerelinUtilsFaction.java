@@ -12,11 +12,10 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import static com.fs.starfarer.api.util.Misc.isMilitary;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.intel.Nex_FactionCommissionIntel;
 import java.awt.Color;
-
 import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONObject;
 
 public class ExerelinUtilsFaction {
 	
@@ -207,7 +206,7 @@ public class ExerelinUtilsFaction {
             return;    // already have commission
         
         revokeCommission();
-        FactionCommissionIntel intel = new FactionCommissionIntel(faction);
+        FactionCommissionIntel intel = new Nex_FactionCommissionIntel(faction);
         intel.missionAccepted();
         intel.makeRepChanges(null);
     }
