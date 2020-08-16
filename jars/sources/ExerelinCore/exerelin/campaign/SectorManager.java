@@ -115,7 +115,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
     protected Set<String> liveFactionIds = new HashSet<>();
-    protected Set<String> historicFactionIds = new HashSet<>();
+    protected Set<String> historicFactionIds = new HashSet<>();    // factions that have ever been present in the Sector
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
     protected Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // array contains base value and number of D-mods
     
@@ -1324,6 +1324,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             manager.liveFactionIds.add(factionId);
             DiplomacyManager.getManager().createDiplomacyProfile(factionId);
         }
+    }
+    
+    public List<String> getStartingFactionIdsCopy() {
+        return new ArrayList<>(factionIdsAtStart);
     }
     
     public static void removeLiveFactionId(String factionId)

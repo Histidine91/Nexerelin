@@ -23,12 +23,12 @@ public class NGCClearStartingGear extends BaseCommandPlugin {
 		data.clearAdditionalShips();
 		data.getStartingCargo().getCredits().set(0);
 		data.getPerson().getStats().setPoints(0);
-		data.getScripts().clear();
-		data.getScriptsBeforeTimePass().clear();
+		//data.getScripts().clear();
+		//data.getScriptsBeforeTimePass().clear();
 		
 		dialog.getVisualPanel().showPersonInfo(data.getPerson(), true);
 		
-		memoryMap.get(MemKeys.LOCAL).unset("$nex_customStart");
+		//memoryMap.get(MemKeys.LOCAL).unset("$nex_customStart");
 		
 		return true;
 	}

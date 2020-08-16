@@ -8,6 +8,7 @@ import java.util.Map;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
@@ -51,6 +52,9 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			case "select":
 				selectCustomStart(dialog, memoryMap);
 				return true;
+			case "unset":
+				unsetCustomStart(memoryMap);
+				return true;
 		}
 		
 		return false;
@@ -67,6 +71,15 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 		memoryMap.get(MemKeys.LOCAL).set("$nex_customStart", startId);
 		CustomStartDefs.loadCustomStart(startId, dialog, memoryMap);
 		// no need to decide whether to go to starting level/resources dialog or straight to completion; let the custom start code handle it
+	}
+	
+	public static void unsetCustomStart(Map<String, MemoryAPI> memoryMap) {
+		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
+		
+		data.getScripts().clear();
+		data.getScriptsBeforeTimePass().clear();
+		
+		memoryMap.get(MemKeys.LOCAL).unset("$nex_customStart");
 	}
 	
 	@Override
@@ -89,7 +102,7 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			dialog.getOptionPanel().setEnabled(option, false);
 		}
 		
-		dialog.getOptionPanel().setShortcut("nex_NGCCustomStart", Keyboard.KEY_ESCAPE, false, false, false, false);
+		dialog.getOptionPanel().setShortcut("nex_NGCFactionsBack", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	@Override

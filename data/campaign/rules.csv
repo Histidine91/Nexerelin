@@ -260,6 +260,9 @@ nex_NGCStartShipsGrandFleet,NewGameOptionSelected,$option == nex_NGCFleetGrandFl
 FireBest ExerelinNGCStep4",,,
 ,,,,,,
 nex_NGCStartShipsBack,NewGameOptionSelected,$option == nex_NGCFleetBack,Nex_NGCListFactions listFactions $factionGroup,,,
+nex_NGCStartShipsBackToCustomStart,NewGameOptionSelected,"$option == nex_NGCFleetBack
+$nex_customStart != null","Nex_NGCCustomStart unset
+Nex_NGCCustomStart menu",,,
 ,,,,,,
 nex_NGCCustomStartSelection,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomStart_""",Nex_NGCCustomStart select,,,
 ,,,,,,
@@ -318,9 +321,12 @@ nex_NGCStartCustomResources,NewGameOptionSelected,$option == nex_NGCCustomResour
 NGCAddCharacterPoints 3
 SetShortcut nex_NGCDone RETURN",,,
 nex_NGCStartBack,NewGameOptionSelected,$option == nex_NGCStartBack,"NGCClearStartingGear
+unset $nex_lastSelectedFleetType
 FireAll ExerelinNGCStep3",,,
 nex_NGCStartBackToCustomStart,NewGameOptionSelected,"$option == nex_NGCStartBack
-$nex_customStart != null","NGCClearStartingGear
+$nex_customStart != null
+Nex_IsNull $nex_lastSelectedFleetType","NGCClearStartingGear
+Nex_NGCCustomStart unset
 FireBest Nex_NGCCustomStartMenu",,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,"Nex_NGCFinalize
 NGCDone",,,

@@ -1564,6 +1564,12 @@
 		"intelStatusNoLongerHostile":"$TheFaction $isOrAre no longer hostile. The vengeance mission has been terminated.",
 		"intelStatusUnknown":"The mission has been called off for unspecified reasons.",
 	},
+	"nex_victory":{
+		"apostate_name":"Victory: The Apostate",
+		"apostate_text":"Once you were denounced as an apostate. Once your sentence was to be burned at the heart of a miniature star, an object lesson to all who would turn their back on the faith.\n\nBut now you live, and the Knights Templar who once hunted you relentlessly as a traitor are gone.\n\nYet even now, will you, or the Sector, ever know peace? Only time will tell. For now, a new page in history is turning.",
+		"apostate_intelText":"You have survived, and the Templars who hunted you as an apostate are not. This is your triumph.",
+	},
+	
 	"exerelin_victoryScreen":{
 		#"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
 		"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the Sector!",

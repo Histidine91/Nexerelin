@@ -2,13 +2,13 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
@@ -25,9 +25,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.SpecialItemSet;
 import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
-import java.awt.Color;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -35,6 +33,7 @@ public class StartSetupPostTimePass {
 	
 	public static void execute()
 	{
+		Global.getLogger(StartSetupPostTimePass.class).info("Running start setup post time pass");
 		SectorAPI sector = Global.getSector();
 		if (Global.getSector().isInNewGameAdvance()) return;
 		
@@ -79,9 +78,18 @@ public class StartSetupPostTimePass {
 		// spawn as a different faction if config says we should
 		// for Blade Breakers etc.
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
+		String spawnAsFactionId = null;
+		if (sector.getMemoryWithoutUpdate().contains("$nex_spawnAsFaction"))
 		{
-			factionId = conf.spawnAsFactionId;
+			spawnAsFactionId = sector.getMemoryWithoutUpdate().getString("$nex_spawnAsFaction");
+		}
+		else if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
+		{
+			spawnAsFactionId = conf.spawnAsFactionId;
+		}
+		
+		if (spawnAsFactionId != null) {
+			factionId = spawnAsFactionId;
 			if (freeStart) {	// Blade Breaker start: use BB start relations
 				NexUtilsReputation.syncFactionRelationshipsToPlayer();
 			}
@@ -123,9 +131,12 @@ public class StartSetupPostTimePass {
 	public static void handleStartLocation(SectorAPI sector, CampaignFleetAPI playerFleet, String factionId) 
 	{
 		SectorEntityToken entity = null;
-				
-		if (Global.getSector().getMemoryWithoutUpdate().contains("$nex_startLocation")) {
-			entity = Global.getSector().getEntityById(Global.getSector().getMemoryWithoutUpdate().getString("$nex_startLocation"));
+		
+		MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
+		if (mem.contains("$nex_startLocation")) {
+			if (mem.get("$nex_startLocation") != null) {
+				entity = Global.getSector().getEntityById(mem.getString("$nex_startLocation"));
+			}
 		}
 		else if (ExerelinSetupData.getInstance().randomStartLocation) {
 			WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
