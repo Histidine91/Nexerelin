@@ -8,10 +8,10 @@
     
     "marketSpawnWeight":0.75,
      
-    "startRelationships":{ "hegemony": -0.3, "luddic_church":-0.6, "cabal":0.1 },
-    "maxRelationships":{ "luddic_church":-0.1 },
-    "diplomacyPositiveChance":{ "luddic_church":0.8 },
-    "diplomacyNegativeChance":{ "luddic_church":1.2 },
+    "startRelationships":{ "hegemony": -0.3, "luddic_church":-0.6, "luddic_path":-0.8, "cabal":0.1 },
+    "maxRelationships":{ "luddic_church":-0.1, "luddic_path":-0.4 },
+    "diplomacyPositiveChance":{ "luddic_church":0.8, "luddic_path":0.4 },
+    "diplomacyNegativeChance":{ "luddic_church":1.2, "luddic_path":2.0 },
     "morality":"amoral",
     
     "alignments":{

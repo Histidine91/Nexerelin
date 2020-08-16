@@ -18,8 +18,8 @@
     "defenceFleetName":"Defens",
     "stationName":"Fortin",
     
-    "factionsLiked":[],
-    "factionsDisliked":[],
+    "startRelationships":{ "luddic_church":-0.8, "luddic_path":-0.8 },
+    "maxRelationships":{ "luddic_church":-0.4, "luddic_path":-0.4 },
     "morality":"evil",
     
     "allowAgentActions":false,
@@ -35,7 +35,7 @@
     "invasionStrengthBonusAttack":0.1,
     "invasionStrengthBonusDefend":0.2,
     #"invasionFleetSizeMod":-0.15,
-    "invasionPointMult":0.3,
+    "invasionPointMult":0.7,
     
     "dropPrisoners":false,
     
@@ -46,4 +46,5 @@
     "startShipsSolo":[["tem_martyr_sal"]],
     "startShipsCombatSmall":[["tem_jesuit_est", "tem_martyr_def"]],
     "startShipsCombatLarge":[["tem_crusader_est", "tem_jesuit_sal"]],
+    "startShipsSuper":[["tem_paladin_ati"], ["tem_chevalier_sal", "tem_martyr_def"]],
 }
