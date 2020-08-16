@@ -44,12 +44,10 @@ public class VultureFleetAI implements EveryFrameScript
 	
 	protected final VultureFleetData data;
 	
-	protected float daysTotal = 0.0F;
-	protected float miningDailyProgress = 0;
+	protected float daysTotal;
 	protected final CampaignFleetAPI fleet;
 	protected boolean orderedReturn = false;
-	protected boolean unloaded = false;
-	//protected EveryFrameScript broadcastScript;
+	protected CampaignFleetAPI following;
 	
 	public VultureFleetAI(CampaignFleetAPI fleet, VultureFleetData data)
 	{
@@ -102,10 +100,9 @@ public class VultureFleetAI implements EveryFrameScript
 		// no orders, let's scavenge something
 		// but first check if we have something to scavenge
 		if (data.target == null || !data.target.isAlive()) {
-			data.target = VultureFleetManager.getRandomScavengable(fleet.getContainingLocation());
+			data.target = VultureFleetManager.getClosestScavengable(fleet.getLocation(), fleet.getContainingLocation());
 			if (data.target == null) {
-				log.info(fleet.getName() + ": No target found, ending mission");
-				giveStandDownOrders();
+				checkIdle();
 				return;
 			}
 		}
@@ -113,10 +110,26 @@ public class VultureFleetAI implements EveryFrameScript
 		SectorEntityToken target = data.target;
 		String tgtName = target.getName().toLowerCase();
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, target, 30, StringHelper.getFleetAssignmentString("movingToScavenge", tgtName));
-		// TODO scavenge
-		fleet.addAssignment(FleetAssignment.HOLD, target, 0.5f, StringHelper.getFleetAssignmentString("scavenging", tgtName), 
+		fleet.addAssignment(FleetAssignment.HOLD, target, 0.25f, StringHelper.getFleetAssignmentString("scavenging", tgtName), 
 				getScavengeScript(target));
-		fleet.addAssignment(FleetAssignment.HOLD, target, 0.25f);
+		//fleet.addAssignment(FleetAssignment.HOLD, target, 0.05f);
+	}
+	
+	protected void checkIdle() {
+		if (!VultureFleetManager.hasOngoingRaids(data.source.getContainingLocation())) 
+		{
+			log.info(fleet.getName() + ": No target found and no ongoing raids, going home");
+			giveStandDownOrders();
+			return;
+		}
+		if (following == null || !following.isAlive()) {
+			following = VultureFleetManager.getRandomRaidFleet(fleet);
+		}
+		
+		if (following != null) {
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, following, 0.34f);
+		}
+		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, fleet, 0.34f);
 	}
 	
 	// From ScavengeAbility.java:
@@ -140,7 +153,7 @@ public class VultureFleetAI implements EveryFrameScript
 	
 	protected void printCargo(CargoAPI cargo) {
 		for (CargoStackAPI stack : cargo.getStacksCopy()) {
-			log.info(fleet.getName() + " -- Loading cargo: " + stack.getDisplayName() + ", " + stack.getSize());
+			log.info(fleet.getName() + " loading cargo: " + stack.getDisplayName() + ", " + stack.getSize());
 		}
 	}
 	
@@ -201,7 +214,7 @@ public class VultureFleetAI implements EveryFrameScript
 		}
 		
 		takeExtraSalvage(memory, salvage);
-		printCargo(salvage);
+		//printCargo(salvage);
 		
 		fleet.getCargo().addAll(salvage);
 		
@@ -278,6 +291,15 @@ public class VultureFleetAI implements EveryFrameScript
 		};
 	}
 	
+	public Script getDefenderTagScript(final SectorEntityToken target) {
+		return new Script() {
+			public void run() {
+				target.getMemoryWithoutUpdate().set("$nex_vultureSalvaging", fleet, 0.25f);
+				target.getMemoryWithoutUpdate().set("$hasDefenders", true, 0.25f);
+			}
+		};
+	}
+	
 	@Override
 	public boolean isDone()
 	{
@@ -293,7 +315,7 @@ public class VultureFleetAI implements EveryFrameScript
 	protected void giveInitialAssignment()
 	{
 		if (data.noWait) return;
-		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
+		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet)/2;
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source.getPrimaryEntity(), 
 				daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionVulture"));
 	}
@@ -316,7 +338,7 @@ public class VultureFleetAI implements EveryFrameScript
 			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
 			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), 
 					StringHelper.getFleetAssignmentString("miningUnload", null),
-					MiningFleetAI.getUnloadScript(fleet, data.source));
+					MiningFleetAI.getUnloadScript(fleet, data.source, true));
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
 		}
 	}

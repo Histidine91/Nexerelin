@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
@@ -22,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageSpecialInteraction.SalvageSpecialData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
@@ -39,12 +41,13 @@ import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 public class VultureFleetManager extends DisposableFleetManager
 {
 	public static final String MANAGER_MAP_KEY = "nex_vultureFleetManager";
 	public static final String MEM_KEY_FLEET_COUNT_CACHE = "$nex_vultureFleetCountCache";
-	public static final boolean DEBUG_MODE = false;
+	public static final boolean DEBUG_MODE = true;
 	
 	public static Logger log = Global.getLogger(VultureFleetManager.class);
 	
@@ -56,7 +59,7 @@ public class VultureFleetManager extends DisposableFleetManager
 	public CampaignFleetAPI spawnVultureFleet(MarketAPI origin)
 	{
 		log.info("Trying vulture fleet for market " + origin.getName());
-		SectorEntityToken target = getRandomScavengable(origin.getContainingLocation());
+		SectorEntityToken target = getClosestScavengable(origin.getLocation(), origin.getContainingLocation());
 		
 		if (target == null) {
 			log.info("  No scavenge target found");
@@ -164,17 +167,27 @@ public class VultureFleetManager extends DisposableFleetManager
 		return temp.getDeploymentPointsCost();
 	}
 	
-	public static SectorEntityToken getRandomScavengable(LocationAPI loc) {
-		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
-		for (SectorEntityToken entity : getDerelictShips(loc)) {
-			picker.add(entity);
-		}
+	public static SectorEntityToken getClosestScavengable(Vector2f fleetLoc, LocationAPI loc) 
+	{
+		SectorEntityToken closest = null;
+		double closestDistSq = 999999999d;
 		
+		for (SectorEntityToken entity : getDerelictShips(loc)) {
+			float distSq = MathUtils.getDistanceSquared(fleetLoc, entity.getLocation());
+			if (distSq < closestDistSq) {
+				closestDistSq = distSq;
+				closest = entity;
+			}
+		}
 		// debris field
 		for (CampaignTerrainAPI terrain : getDebrisFields(loc)) {
-			picker.add(terrain);
+			float distSq = MathUtils.getDistance(fleetLoc, terrain.getLocation());
+			if (distSq < closestDistSq) {
+				closestDistSq = distSq;
+				closest = terrain;
+			}
 		}
-		return picker.pick();
+		return closest;
 	}
 	
 	public static float getShipScavengeScore(SectorEntityToken entity) {
@@ -276,20 +289,70 @@ public class VultureFleetManager extends DisposableFleetManager
 		
 		return score;
 	}
-
+	
+	public static boolean hasOngoingRaids(LocationAPI loc) {
+		List<IntelInfoPlugin> raids = Global.getSector().getIntelManager().getIntel(RaidIntel.class);
+		for (IntelInfoPlugin intel : raids) {
+			RaidIntel raid = (RaidIntel)intel;
+			if (raid.getSystem() != loc)
+				continue;
+			// only ongoing raids
+			if (raid.getStageIndex(raid.getActionStage()) != raid.getCurrentStage()) {
+				continue;
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public static CampaignFleetAPI getRandomRaidFleet(CampaignFleetAPI scav) 
+	{
+		WeightedRandomPicker<CampaignFleetAPI> picker = new WeightedRandomPicker<>();
+		for (CampaignFleetAPI fleet : scav.getContainingLocation().getFleets()) 
+		{
+			if (fleet.isHostileTo(scav)) continue;
+			if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+				picker.add(fleet);
+		}
+		return picker.pick();
+	}
+	
 	@Override
 	protected int getDesiredNumFleetsForSpawnLocation() {
+		
+		// Based on number of raids happening
+		List<IntelInfoPlugin> raids = Global.getSector().getIntelManager().getIntel(RaidIntel.class);
+		float raidFactor = 0;
+		for (IntelInfoPlugin intel : raids) {
+			RaidIntel raid = (RaidIntel)intel;
+			if (raid.isEnding() || raid.isEnded()) continue;
+			if (raid.getSystem() != currSpawnLoc) continue;
+			// only ongoing raids
+			if (raid.getStageIndex(raid.getActionStage()) != raid.getCurrentStage()) {
+				continue;
+			}
+			raidFactor += raid.getOrigNumFleets()/3;
+		}
+		int numFromRaids = Math.round(raidFactor);
+		if (numFromRaids > 3) numFromRaids = 3;
+		
+		if (numFromRaids > 0) return numFromRaids;
+		
+		// Old debris field system
+		// Too reactive, we want to spawn the vultures before debris shows up
+		// But it's also needed to deal with salvage that occurs without a raid (e.g. patrols fighting each other)
+		int numFromSalvage = 0;
 		MemoryAPI mem = currSpawnLoc.getMemoryWithoutUpdate();
 		if (mem.contains(MEM_KEY_FLEET_COUNT_CACHE))
-			return (int)mem.getFloat(MEM_KEY_FLEET_COUNT_CACHE);
-		
-		//Global.getSector().getCampaignUI().addMessage("Querying num spawn vulture fleets");
-		float scavengeScore = getScavengeScore(currSpawnLoc);
-		int num = (int)(scavengeScore/1200);
-		if (num > 3) num = 3;
-		mem.set(MEM_KEY_FLEET_COUNT_CACHE, num, 2);
-		
-		return num;
+			numFromSalvage = (int)mem.getFloat(MEM_KEY_FLEET_COUNT_CACHE);
+		else {
+			//Global.getSector().getCampaignUI().addMessage("Querying num spawn vulture fleets");
+			float scavengeScore = getScavengeScore(currSpawnLoc);
+			numFromSalvage = (int)(scavengeScore/1200);
+			if (numFromSalvage > 3) numFromSalvage = 3;
+			mem.set(MEM_KEY_FLEET_COUNT_CACHE, raidFactor, 2);
+		}
+		return Math.max(numFromRaids, numFromSalvage);
 	}
 
 	@Override

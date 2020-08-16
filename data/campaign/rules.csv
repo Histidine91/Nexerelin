@@ -1506,7 +1506,6 @@ INTERRUPT
 scanning. are you omega?
 
 You interpret this as a request to turn your transponder on.
-
 OR
 The comms crackle and whine as a frantic pattern of interweaving lines takes shape. 
 
@@ -1516,6 +1515,18 @@ INTERRUPT
 
 "" -SERIAL]. This unit has not verified the identity of your fleet. Please engage your transponder and await further instructions.""","turnOnTransponder:Turn your transponder on
 cutCommLink:Cut the comm link",
+,,,,,,
+nex_sal_hasVultureDefenders,DialogOptionSelected,"$option == salExplore
+!$hasDefenders
+Nex_VultureScavenger hasNearby",FireBest TriggerVultureDefenses,,,
+nex_sal_triggerVultureDefenders,TriggerVultureDefenses,,Nex_VultureScavenger battle,"The nearby scavengers move to interfere with your $shipOrFleet. With their notorious territoriality, you'll have to fight them if you want any of the salvage.",,
+nex_greetingVultureDefending,OpenCommLink,"$entity.fleetType == nex_vultureFleet
+$entity.nex_isVultureDefending score:10",$entity.ignorePlayerCommRequests = true 1,"""Back off, buddy! We were here first!""
+OR
+""We have claimed this salvage. Find your own pickings.""
+OR
+""This salvage does not belong to you. You'll have to fight us for it.""",cutCommLink:Cut the comm link,
+,,,,,,
 ,,,,,,
 # Vanilla overrides,,,,,,
 sal_printDefaultDefenders,TriggerAutomatedDefenses,,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, new energy signatures are detected near the $shortName.",,
