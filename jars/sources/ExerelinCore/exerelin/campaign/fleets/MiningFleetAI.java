@@ -205,12 +205,14 @@ public class MiningFleetAI implements EveryFrameScript
 			SectorEntityToken destination = data.source;
 			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
 			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), 
-					StringHelper.getFleetAssignmentString("miningUnload", null), getUnloadScript(fleet, data.sourceMarket));
+					StringHelper.getFleetAssignmentString("miningUnload", null), 
+					getUnloadScript(fleet, data.sourceMarket, false));
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
 		}
 	}
 	
-	public static Script getUnloadScript(final CampaignFleetAPI fleet, final MarketAPI market) 
+	public static Script getUnloadScript(final CampaignFleetAPI fleet, final MarketAPI market, 
+			final boolean allowSupplies) 
 	{
 		return new Script() {
 			public void run() {
@@ -218,9 +220,10 @@ public class MiningFleetAI implements EveryFrameScript
 				List<CargoStackAPI> cargoStacks = cargo.getStacksCopy();
 				for (CargoStackAPI stack : cargoStacks)
 				{
-					if (stack.isCommodityStack() && !stack.isSupplyStack())
+					if (stack.isCommodityStack() && (allowSupplies || !stack.isSupplyStack()))
 					{
-						ExerelinUtilsCargo.addCommodityStockpile(market, stack.getCommodityId(), stack.getSize());
+						ExerelinUtilsCargo.addCommodityStockpile(market, stack.getCommodityId(),
+								Math.round(stack.getSize()/2));
 						cargo.removeCommodity(stack.getCommodityId(), stack.getSize());
 					}
 				}
