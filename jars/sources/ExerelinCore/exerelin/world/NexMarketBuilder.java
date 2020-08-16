@@ -347,7 +347,7 @@ public class NexMarketBuilder
 			int level = 1;
 			if (ind.getSpec().hasTag(Industries.TAG_STARFORTRESS))
 				level = 3;
-			else if (ind.getSpec().hasTag(Industries.TAG_STARFORTRESS))
+			else if (ind.getSpec().hasTag(Industries.TAG_BATTLESTATION))
 				level = 2;
 			
 			if (level > bestLevel) {
@@ -462,7 +462,7 @@ public class NexMarketBuilder
 			int size1 = 4, size2 = 6, size3 = 8;
 			if (isStation)
 			{
-				size1 = 0; 
+				size1 -= 2; 
 				size2 -= 2; 
 				size3 -= 2;
 			}
@@ -478,6 +478,7 @@ public class NexMarketBuilder
 				size2 -= 1; 
 				size3 -= 1;
 			}
+			//log.info(String.format("Size %s, needed: %s, %s, %s", marketSize, size1, size2, size3));
 			
 			int sizeIndex = -1;
 			if (marketSize > size3)
@@ -492,6 +493,7 @@ public class NexMarketBuilder
 				// look for an existing station and see if we should upgrade it
 				Pair<Industry, Integer> currStation = getCurrentStationAndTier(market);
 				if (currStation != null) {
+					//log.info("Size index " + sizeIndex + ", curent size " + currStation.two);
 					if (sizeIndex + 1 > currStation.two)
 					{
 						Industry station = currStation.one;
