@@ -23,6 +23,7 @@ import exerelin.campaign.fleets.VultureFleetManager.VultureFleetData;
 import exerelin.campaign.intel.rebellion.SuppressionFleetAI;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceVoteIntel;
+import exerelin.campaign.intel.BuyColonyIntel;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
@@ -54,6 +55,7 @@ import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.invasion.InvAssembleStage;
 import exerelin.campaign.intel.invasion.InvOrganizeStage;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
+import exerelin.campaign.intel.missions.Nex_ProcurementMissionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
@@ -63,6 +65,8 @@ import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.intel.satbomb.SatBombActionStage;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
+import exerelin.campaign.intel.specialforces.SpecialForcesAssignmentAI;
+import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.campaign.submarkets.Nex_BlackMarketPlugin;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.campaign.submarkets.Nex_MilitarySubmarketPlugin;
@@ -160,6 +164,10 @@ public class XStreamConfig {
 		// colony expeditions
 		x.alias("ColonyExpdIntl", ColonyExpeditionIntel.class);
 		
+		// special forces
+		x.alias("NexSFIntl", SpecialForcesIntel.class);
+		x.alias("NexSFAssgnAI", SpecialForcesAssignmentAI.class);
+		
 		// agents
 		x.alias("NexAgntIntl", AgentIntel.class);
 		x.alias("NexAgntActTrvl", Travel.class);
@@ -182,6 +190,8 @@ public class XStreamConfig {
 		x.alias("DiploDspsEntry", DiplomacyBrain.DispositionEntry.class);
 		x.alias("NexSBAI", Nex_SustainedBurnAbilityAI.class);
 		x.alias("NexReinDefCond", ReinforcedDefenses.class);
+		x.alias("NexPrcrMssnIntl", Nex_ProcurementMissionIntel.class);
+		x.alias("NexBuyColIntl", BuyColonyIntel.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
