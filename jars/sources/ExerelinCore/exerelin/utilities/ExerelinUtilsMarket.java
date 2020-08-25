@@ -68,11 +68,25 @@ public class ExerelinUtilsMarket {
 		}
 	}
 	
+	// runcode Console.showMessage(exerelin.utilities.ExerelinUtilsMarket.getMarketIndustryValue(market));
 	public static float getMarketIndustryValue(MarketAPI market) {
 		float value = 0;
 		for (Industry ind : market.getIndustries()) {
 			//if (!ind.isFunctional()) continue;
 			value += ind.getBuildCost();
+			
+			String aiCoreId = ind.getAICoreId();
+			if (aiCoreId != null) {
+				try {
+					value += Global.getSettings().getCommoditySpec(aiCoreId).getBasePrice();
+				} catch (Exception ex) {
+					Global.getLogger(ExerelinUtilsMarket.class).warn("Failed to get commodity value of AI core " + aiCoreId, ex);
+				}
+			}
+			if (ind.getSpecialItem() != null) {
+				String id = ind.getSpecialItem().getId();
+				value += Global.getSettings().getSpecialItemSpec(id).getBasePrice();
+			}
 		}
 		return value;
 	}
