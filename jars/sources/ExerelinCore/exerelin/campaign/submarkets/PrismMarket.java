@@ -293,12 +293,11 @@ public class PrismMarket extends BaseSubmarketPlugin {
         //renew the stock
         float variation=(float)itemGenRandom.nextFloat() * 0.5f + 0.75f;
         int tries = 0;
-        for (int i=0; i<ExerelinConfig.prismNumShips*variation; i=cargo.getMothballedShips().getNumMembers()){
+        int target = Math.round(ExerelinConfig.prismNumShips*variation);
+        for (int i=0; i<target; i=cargo.getMothballedShips().getNumMembers()){
             //pick the role and faction
             List<ShipRolePick> picks = null;
-            int tries2 = 0;
             do {
-                tries2++;
                 FactionAPI faction = factionPicker.pick();
                 String role = rolePicker.pick();
                 //pick the random ship
@@ -345,7 +344,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             }
             tries++;
             //log.info("Add ship try " + tries);
-            if (tries > 40) break;
+            if (tries > 40 + target) break;
         }
         
         //add some IBBs
