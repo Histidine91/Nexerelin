@@ -1236,9 +1236,9 @@ public class ExerelinProcGen {
 		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
 	}
 	
-	protected void addChaosCrack(StarSystemAPI system)
+	protected void addChaosRift(StarSystemAPI system)
 	{
-		SectorEntityToken chaosCrack = system.addCustomEntity("chaosCrack", StringHelper.getString("Agustin", "chaosCrack"), "Chaos_Crack_type", "approlight");
+		SectorEntityToken chaosCrack = system.addCustomEntity("chaosCrack", null, "Chaos_Crack_type", "approlight");
 		chaosCrack.getLocation().set(-10000f, 12000f);
 		chaosCrack.addScript(new AL_ChaosCrackFleetManager(chaosCrack));
 		SectorEntityToken prime_field1 = system.addTerrain(Terrain.MAGNETIC_FIELD,
@@ -1316,7 +1316,7 @@ public class ExerelinProcGen {
 		{
 			if (ExerelinConfig.enableUnos)
 				addUnos(data.market);
-			addChaosCrack(data.starSystem);	// TODO: give it its own option?
+			addChaosRift(data.starSystem);	// TODO: give it its own option?
 			data.market.removeSubmarket(Submarkets.GENERIC_MILITARY);
 			data.market.addSubmarket("AL_militaryMarket");
 		}
