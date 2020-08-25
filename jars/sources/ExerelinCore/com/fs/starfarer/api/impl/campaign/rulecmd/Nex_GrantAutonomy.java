@@ -71,7 +71,7 @@ public class Nex_GrantAutonomy extends BaseCommandPlugin {
 		// already suspended autonomy?
 		if (market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_SUSPEND))
 			return;
-		market.getMemoryWithoutUpdate().set(MEMORY_KEY_SUSPEND, true);
+		market.getMemoryWithoutUpdate().set(MEMORY_KEY_SUSPEND, true, 0.01f);
 		
 		DelayedActionScript script = new DelayedActionScript(0) {
 			public void doAction() {
