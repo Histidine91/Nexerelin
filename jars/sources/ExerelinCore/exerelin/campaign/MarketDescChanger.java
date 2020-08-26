@@ -39,7 +39,9 @@ public class MarketDescChanger implements InvasionListener {
 			JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id", CSV_PATH, ExerelinConstants.MOD_ID);
 			for (int i = 0; i < csv.length(); i++) {
 				JSONObject row = csv.getJSONObject(i);
-				log.info("Adding captured planet desc row " + row.getString("id"));
+				String id = row.getString("id");
+				if (id == null || id.isEmpty()) continue;
+				log.info("Adding captured planet desc row " + id);
 				
 				String entityId = row.getString("entity");
 				String factionId = row.getString("faction");
