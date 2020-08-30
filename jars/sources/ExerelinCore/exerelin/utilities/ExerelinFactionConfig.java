@@ -485,6 +485,7 @@ public class ExerelinFactionConfig
     
     public static float getMaxRelationship(String factionId1, String factionId2)
     {
+        if (!ExerelinConfig.useRelationshipBounds) return 1;
         float max1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getMaxRelationship(factionId2);
         float max2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getMaxRelationship(factionId1);
         return Math.min(max1, max2);
@@ -492,6 +493,7 @@ public class ExerelinFactionConfig
     
     public static float getMinRelationship(String factionId1, String factionId2)
     {
+        if (!ExerelinConfig.useRelationshipBounds) return -1;
         float min1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getMinRelationship(factionId2);
         float min2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getMinRelationship(factionId1);
         return Math.max(min1, min2);
@@ -545,7 +547,7 @@ public class ExerelinFactionConfig
     public static boolean canCeasefire(String factionId1, String factionId2)
     {
         if (DiplomacyManager.isRandomFactionRelationships()) return true;
-        if (ExerelinConfig.useRelationshipBounds && getMaxRelationship(factionId1, factionId2) < -0.5) return false;
+        if (getMaxRelationship(factionId1, factionId2) < -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;
     }

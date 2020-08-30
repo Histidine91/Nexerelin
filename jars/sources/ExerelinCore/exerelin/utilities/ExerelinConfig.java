@@ -70,9 +70,10 @@ public class ExerelinConfig
     public static float allianceGracePeriod = 30;
     public static float allianceFormationInterval = 30f;
     public static boolean ignoreAlignmentForAlliances = false;
+    public static float predefinedAllianceNameChance = 0.5f;
     
     // Prism Freeport
-	public static boolean prismInHyperspace = false;
+    public static boolean prismInHyperspace = false;
     public static int prismMaxWeapons = 27;
     public static int prismNumShips = 14;
     public static int prismNumWings = 6;
@@ -195,6 +196,7 @@ public class ExerelinConfig
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
+            predefinedAllianceNameChance = (float)settings.optDouble("usePredefinedAllianceNames", predefinedAllianceNameChance);
             
             prismInHyperspace = settings.optBoolean("prismInHyperspace", prismInHyperspace);
             prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);

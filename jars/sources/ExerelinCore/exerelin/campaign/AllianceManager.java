@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -64,6 +65,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
     protected static Map<Alignment, List<String>> alliancePrefixesByAlignment = new HashMap<>();
     protected static List<String> allianceNameCommonPrefixes;
+	
+	// This stores pre-defined alliance names for certain faction pairings
+	// first value in array = faction ID 1, second value = faction ID 2, third value = name
+	// Allowed names for an alliance are insensitive to the order in which the founder IDs are specified
+	protected static List<String[]> staticAllianceNames = new ArrayList<>();
     
     protected final Set<Alliance> alliances = new HashSet<>();
     protected final Map<String, Alliance> alliancesByName = new HashMap<>();
@@ -87,14 +93,15 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         this.tracker = new IntervalUtil(interval * 0.8f, interval * 1.2f);
     }
     
-    private static void loadAllianceNames()
+    protected static void loadAllianceNames()
     {
         try {
             JSONObject nameConfig = Global.getSettings().getMergedJSONForMod(ALLIANCE_NAMES_FILE, ExerelinConstants.MOD_ID);
             JSONObject namesByAlignment = nameConfig.getJSONObject("namesByAlignment");
             JSONObject namePrefixes = nameConfig.getJSONObject("prefixes");
             JSONArray namePrefixesCommon = namePrefixes.getJSONArray("common");
-            allianceNameCommonPrefixes = ExerelinUtils.JSONArrayToArrayList(namePrefixesCommon);
+            
+			allianceNameCommonPrefixes = ExerelinUtils.JSONArrayToArrayList(namePrefixesCommon);
             for (Alignment alignment : Alignment.values())
             {
                 List<String> names =  ExerelinUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
@@ -102,8 +109,29 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 List<String> prefixes = ExerelinUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
                 alliancePrefixesByAlignment.put(alignment, prefixes);
             }
+			
+			JSONObject staticNames = nameConfig.getJSONObject("staticNames");
+			//log.info("Loading static alliance names");
+			Iterator<String> keys = staticNames.sortedKeys();
+			while (keys.hasNext()) 
+			{
+				String factionId1 = (String)keys.next();
+				JSONObject namesLevel2 = staticNames.getJSONObject(factionId1);
+				log.info("Loading static alliance names");
+				
+				Iterator<String> keys2 = namesLevel2.sortedKeys();
+				while (keys2.hasNext()) {
+					String factionId2 = (String)keys2.next();
+					List<String> namesLevel3 = ExerelinUtils.JSONArrayToArrayList(namesLevel2.getJSONArray(factionId2));
+					for (String allianceName : namesLevel3) {
+						String[] nameEntry = new String[]{factionId1, factionId2, allianceName};
+						staticAllianceNames.add(nameEntry);
+					}
+				}
+			}
+			
         } catch (JSONException | IOException ex) {
-                Global.getLogger(AllianceManager.class).log(Level.ERROR, ex);
+            Global.getLogger(AllianceManager.class).log(Level.ERROR, ex);
         }
     }
     
@@ -203,6 +231,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         // generate alliance name
         if (name == null || name.isEmpty())
         {
+        	name = generateStaticAllianceName(member1, member2);
+        }
+		if (name == null || name.isEmpty())
+        {
         	name = generateAllianceName(namePrefixes, type);
         }
         
@@ -252,8 +284,26 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 		}
 		return namePrefixes;
 	}
-
-    private static String generateAllianceName(List<String> namePrefixes, Alignment type) {
+	
+	public static String generateStaticAllianceName(String factionId1, String factionId2) 
+	{
+		if (DiplomacyManager.isRandomFactionRelationships())
+			return null;
+		if (ExerelinConfig.predefinedAllianceNameChance < Math.random())
+			return null;
+		
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+		for (String[] entry : staticAllianceNames) {
+			if (entry[0].equals(factionId1) && entry[1].equals(factionId2))
+				picker.add(entry[2]);
+			else if (entry[0].equals(factionId2) && entry[1].equals(factionId1))
+				picker.add(entry[2]);
+		}
+		
+		return picker.pick();
+	}
+	
+    public static String generateAllianceName(List<String> namePrefixes, Alignment type) {
     	String name;
 		boolean validName;
 		int tries = 0;

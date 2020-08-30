@@ -14,5 +14,82 @@
 		"militarist": ["Dragon", "Fury", "Guardian", "Thunder", "Titan"],
 		"diplomatic": ["Freedom", "Phoenix"],
 		"ideological": ["Dragon", "Phoenix", "Eternal", "Free", "Renaissance"]
-	}
+	},
+	
+	# pre-defined names for each founding faction pair
+	# actual naming is insensitive to faction order, so each founding pair has two possible starting names
+	"staticNames":{
+		"hegemony":{
+			"luddic_church":["Golden Federation"],
+			"luddic_path":["Zealous Federation"],
+			"persean":["United Galactic Nations"],
+			"sindrian_diktat":["Core Union"],
+			"tritachyon":["Advancement Foundation"],
+			"independent":["Domain Defense Pact"],
+			"pirates":["Emergency Council"],
+		},
+		"independent":{
+			"hegemony":["Captain’s Guild"],
+			"luddic_church":["Agrarian Guild"],
+			"luddic_path":["Outer Worlds Alliance"],
+			"persean":["Commerce Guild"],
+			"sindrian_diktat":["Welfare Bloc"],
+			"tritachyon":["Persean Trade Association"],
+			"pirates":["Freedom Initiative"],
+		},
+		"luddic_church":{
+			"hegemony":["Galactic Federation"],
+			"luddic_path":["Righteous Council"],
+			"persean":["Verdant Alliance"],
+			"sindrian_diktat":["Green Lion Society"],
+			"tritachyon":["Prosperity Agreement"],
+			"independent":["Pilgrim Delegation"],
+			"pirates":["Void Crusade"],
+		},
+		"luddic_path":{
+			"hegemony":["Divine Mandate"],
+			"luddic_church":["Holy Starpath"],
+			"persean":["Entente Cordiale"],
+			"sindrian_diktat":["Covenant of Strength"],
+			"tritachyon":["Armament Accord"],
+			"independent":["Independent Colonial Confederation"],
+			"pirates":["Aggression Pact"],
+		},
+		"persean":{
+			"hegemony":["Golden League"],
+			"luddic_church":["Divine League"],
+			"luddic_path":["League of Truth"],
+			"sindrian_diktat":["Core Cooperative"],
+			"tritachyon":["Prosperity Foundation"],
+			"independent":["United Solar Systems"],
+			"pirates":["Free Market Initiative"],
+		},
+		"pirates":{
+			"hegemony":["Iron Brotherhood"],
+			"luddic_church":["Neo-Inquisition"],
+			"luddic_path":["Blood Pact"],
+			"persean":["Crimson League"],
+			"sindrian_diktat":["Security Without Borders"],
+			"tritachyon":["Central Command"],
+			"independent":["League of Planets"],
+		},
+		"sindrian_diktat":{
+			"hegemony":["Glorious Union"],
+			"luddic_church":["Pact of Purpose"],
+			"luddic_path":["Path of Deliverance"],
+			"persean":["Freedom Council"],
+			"tritachyon":["Syndicated Solutions"],
+			"independent":["Trade League"],
+			"pirates":["Eternal Revolutionary Council"],
+		},
+		"tritachyon":{
+			"hegemony":["Solarius Protocol"],
+			"luddic_church":["Development Convention"],
+			"luddic_path":["Infernium Concordat"],
+			"persean":["Sunrise Coalition"],
+			"sindrian_diktat":["Glimmering Consortium"],
+			"independent":["Persean Trade Association"],
+			"pirates":["Self-Determination Combine"],
+		}
+	},
 }
