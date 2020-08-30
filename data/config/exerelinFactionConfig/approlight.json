@@ -1,12 +1,15 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
+    
     "rebelFleetSuffix":"Splinter Group",
-	
+    
     "startRelationships":{
         "immortallight":-0.6,
+        "fob":0.75,
     },
+    "minRelationships":{"fob":0.51},
+    
     "morality":"amoral",
     
     "alignments":{

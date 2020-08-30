@@ -46,5 +46,8 @@
     "startShipsSolo":[["tem_martyr_sal"]],
     "startShipsCombatSmall":[["tem_jesuit_est", "tem_martyr_def"]],
     "startShipsCombatLarge":[["tem_crusader_est", "tem_jesuit_sal"]],
-    "startShipsSuper":[["tem_paladin_ati"], ["tem_chevalier_sal", "tem_martyr_def"]],
+    "startShipsSuper":[
+        ["tem_paladin_est"],
+        ["tem_chevalier_est", "tem_martyr_def"]
+    ],
 }
