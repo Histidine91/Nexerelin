@@ -74,7 +74,6 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -85,9 +84,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 
 public class Nex_MarketCMD extends MarketCMD {
@@ -1254,7 +1250,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		return result;
 	}
 	
-	// Difference from vanilla: No insta-hostile if target is vengeful or market is small
+	// Difference from vanilla: No insta-hostile if third party is vengeful against target faction
+	// or market is small
 	@Override
 	protected void bombardSaturation() {
 		
@@ -1372,8 +1369,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardConfirmOptions();
 	}
 	
-	// Changes from vanilla: Custom rep handling for sat bomb; don't pollute habitable worlds; 
+	// Changes from vanilla: Custom rep handling for sat bomb; 
+	// tactical bombardment doesn't pollute habitable worlds; 
 	// saturation bombardment affects disposition
+	// Also fix sat bomb reporting
 	@Override
 	protected void bombardConfirm() {
 		
