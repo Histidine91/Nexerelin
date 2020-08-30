@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.NexMarketBuilder;
 
 public class Refining extends IndustryClassGen {
 
@@ -17,7 +18,7 @@ public class Refining extends IndustryClassGen {
 
 	@Override
 	public float getWeight(ProcGenEntity entity) {
-		float weight = 250;
+		float weight = 200;
 		MarketAPI market = entity.market;
 				
 		for (MarketConditionAPI cond : market.getConditions())
@@ -26,23 +27,23 @@ public class Refining extends IndustryClassGen {
 			{
 				case Conditions.ORE_SPARSE:
 				case Conditions.RARE_ORE_SPARSE:
-					weight += 25;
+					weight += 20;
 					break;
 				case Conditions.ORE_MODERATE:
 				case Conditions.RARE_ORE_MODERATE:
-					weight += 75;
+					weight += 50;
 					break;
 				case Conditions.ORE_ABUNDANT:
 				case Conditions.RARE_ORE_ABUNDANT:
-					weight += 100;
+					weight += 75;
 					break;
 				case Conditions.ORE_RICH:
 				case Conditions.RARE_ORE_RICH:
-					weight += 150;
+					weight += 100;
 					break;
 				case Conditions.ORE_ULTRARICH:
 				case Conditions.RARE_ORE_ULTRARICH:
-					weight += 200;
+					weight += 150;
 					break;
 			}
 		}
@@ -56,6 +57,8 @@ public class Refining extends IndustryClassGen {
 					market.getFactionId(), Commodities.METALS) <= 0)
 				weight *= 2f;
 		}
+		
+		weight *= getCountWeightModifier(4);
 		
 		weight *= getFactionMult(entity);
 		

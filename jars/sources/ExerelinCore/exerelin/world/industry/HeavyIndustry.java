@@ -48,7 +48,7 @@ public class HeavyIndustry extends IndustryClassGen {
 				return 99999;
 		}
 		
-		float weight = (25 + market.getSize() * 5) * 2;
+		float weight = 20 + market.getSize() * 4;
 				
 		// bad for high hazard worlds
 		weight += (150 - market.getHazardValue()) * 2;
@@ -59,6 +59,8 @@ public class HeavyIndustry extends IndustryClassGen {
 		// or light industry
 		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
 			weight -= 100;
+		
+		weight *= getCountWeightModifier(9);
 		
 		weight *= getFactionMult(entity);
 		
@@ -99,11 +101,18 @@ public class HeavyIndustry extends IndustryClassGen {
 			if (instant) ind.finishBuildingOrUpgrading();
 		}
 		else {
-			String id = Industries.HEAVYINDUSTRY;
-			if (market.getFactionId().equals("shadow_industry"))
-				id = "ms_modularFac";
+			boolean upgrade = false;
+			if (Global.getSector().isInNewGameAdvance()) {
+				//upgrade = Math.random() < 0.25f;
+			}
 			
-			NexMarketBuilder.addIndustry(market, id, instant);
+			String id;
+			if (market.getFactionId().equals("shadow_industry"))
+				id = upgrade ? "ms_massIndustry" : "ms_modularFac";
+			else
+				id = upgrade ? Industries.ORBITALWORKS : Industries.HEAVYINDUSTRY;
+			
+			NexMarketBuilder.addIndustry(market, id, this.id, instant);
 		}
 		
 		entity.numProductiveIndustries += 1;

@@ -92,6 +92,21 @@ public abstract class IndustryClassGen implements Comparable {
 		return false;
 	}
 	
+	public float getCountWeightModifier(float divisorMult) {
+		int existingCount = NexMarketBuilder.countIndustries(this.id);
+		if (existingCount == 0) return 2;
+		
+		int numMarkets = Global.getSector().getEconomy().getNumMarkets();
+		float countMult = numMarkets/(float)(existingCount + 1);
+		countMult /= divisorMult;
+		if (countMult > 2) countMult = 2;
+		
+		//Global.getLogger(this.getClass()).info(String.format("Current %s count: %s; "
+		//		+ "num markets: %s; mult: %s", this.id, existingCount, numMarkets, countMult));
+		
+		return countMult;
+	}
+	
 	/**
 	 * Adds the industry to the entity's market.
 	 * Multi-industry classes should override this method to specify exactly which industry gets added.
@@ -101,7 +116,7 @@ public abstract class IndustryClassGen implements Comparable {
 	 */
 	public void apply(ProcGenEntity entity, boolean instant) {
 		String id = industryIds.toArray(new String[0])[0];
-		NexMarketBuilder.addIndustry(entity.market, id, instant);
+		NexMarketBuilder.addIndustry(entity.market, id, this.id, instant);
 		entity.numProductiveIndustries += 1;
 	}
 	

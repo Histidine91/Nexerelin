@@ -10,6 +10,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.NexMarketBuilder;
 
 public class FuelProduction extends IndustryClassGen {
 
@@ -27,29 +28,29 @@ public class FuelProduction extends IndustryClassGen {
 		
 		MarketAPI market = entity.market;
 		
-		float weight = 25 + market.getSize() * 5;
+		float weight = 20 + market.getSize() * 4;
 		
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			switch (cond.getId())
 			{
 				case Conditions.VOLATILES_TRACE:
-					priority += 20;
+					priority += 10;
 					break;
 				case Conditions.VOLATILES_DIFFUSE:
-					priority += 50;
+					priority += 25;
 					break;
 				case Conditions.VOLATILES_ABUNDANT:
-					priority += 75;
+					priority += 50;
 					break;
 				case Conditions.VOLATILES_PLENTIFUL:
-					priority += 100;
+					priority += 75;
 					break;
 			}
 		}
 		
 		// bad for high hazard worlds
-		weight += (175 - market.getHazardValue()) * 2;
+		weight += (150 - market.getHazardValue()) * 2;
 		
 		// prefer to not be on same planet as heavy industry
 		if (HeavyIndustry.hasHeavyIndustry(market))
@@ -65,8 +66,10 @@ public class FuelProduction extends IndustryClassGen {
 				weight *= 2f;
 		}
 		
-		weight *= getFactionMult(entity);
+		weight *= getCountWeightModifier(9);
 		
+		weight *= getFactionMult(entity);
+				
 		return weight;
 	}
 }

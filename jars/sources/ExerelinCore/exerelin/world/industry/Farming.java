@@ -82,7 +82,7 @@ public class Farming extends IndustryClassGen {
 		if (com.fs.starfarer.api.impl.campaign.econ.impl.Farming.AQUA_PLANETS.contains(entity.planetType))
 			id = Industries.AQUACULTURE;
 		
-		NexMarketBuilder.addIndustry(market, id, instant);
+		NexMarketBuilder.addIndustry(market, id, this.id, instant);
 		entity.numProductiveIndustries += 1;
 	}
 }

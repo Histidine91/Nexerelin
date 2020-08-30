@@ -9,7 +9,6 @@ public class NullIndustry extends IndustryClassGen {
 		super((String)null);
 	}
 	
-	// light industry, heavy industry and fuel production are generally about 400 weight
 	@Override
 	public float getWeight(ProcGenEntity entity) {
 		int size = entity.market.getSize();

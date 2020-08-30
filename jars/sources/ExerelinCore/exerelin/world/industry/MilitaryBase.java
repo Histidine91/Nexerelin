@@ -19,6 +19,9 @@ public class MilitaryBase extends IndustryClassGen {
 	public boolean canApply(ProcGenEntity entity) {
 		if (entity.market.hasIndustry(Industries.HIGHCOMMAND))
 			return false;
+		if (entity.market.hasIndustry(Industries.MILITARYBASE))
+			return entity.market.getSize() >= 6;
+		
 		return true;
 	}
 
@@ -39,13 +42,13 @@ public class MilitaryBase extends IndustryClassGen {
 			return;
 		}
 		// build military base directly
-		NexMarketBuilder.addIndustry(entity.market, Industries.MILITARYBASE, instant);
+		NexMarketBuilder.addIndustry(entity.market, Industries.MILITARYBASE, this.id, instant);
 		entity.numProductiveIndustries += 1;
 	}
 	
 	@Override
 	public float getWeight(ProcGenEntity entity) {
-		return (2 + entity.market.getSize() / 2) * getFactionMult(entity);
+		return (2 + entity.market.getSize() / 2) * 10 * getFactionMult(entity);
 	}
 	
 	@Override

@@ -106,6 +106,8 @@ public class NexMarketBuilder
 	protected List<ProcGenEntity> markets = new ArrayList<>();
 	protected Map<String, List<ProcGenEntity>> marketsByFactionId = new HashMap<>();
 	
+	protected Map<String, Integer> currIndustryCounts = new HashMap<>();
+	
 	protected final ExerelinProcGen procGen;
 	protected final Random random;
 	
@@ -189,6 +191,11 @@ public class NexMarketBuilder
 	{
 		this.procGen = procGen;
 		random = procGen.getRandom();
+		Global.getSector().getMemoryWithoutUpdate().set("$nex_marketBuilder", this, 0);
+	}
+	
+	public static NexMarketBuilder getInstance() {
+		return (NexMarketBuilder)Global.getSector().getMemoryWithoutUpdate().get("$nex_marketBuilder");
 	}
 		
 	// =========================================================================
@@ -308,13 +315,51 @@ public class NexMarketBuilder
 		return false;
 	}
 	
-	public static void addIndustry(MarketAPI market, String id, boolean instant) {
+	/**
+	 * Gets the number of industries with the specified generator ID present in the sector or generated thus far.
+	 * @param id The {@code IndustryClassGen} ID of the industries to count.
+	 * @return
+	 */
+	public static int countIndustries(String id) {
+		NexMarketBuilder instance = getInstance();
+		if (instance != null) {
+			Integer count = instance.currIndustryCounts.get(id);
+			if (count == null) count = 0;
+			return count;
+		}
+		else {
+			int count = 0;
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				for (Industry ind : market.getIndustries()) {
+					IndustryClassGen gen = industryClassesByIndustryId.get(ind.getSpec().getId());
+					if (gen != null && gen.getId().equals(id))
+						count++;
+				}
+			}
+			return count;
+		}
+	}
+	
+	protected void incrementIndustryCount(String id) {
+		int count = countIndustries(id);
+		currIndustryCounts.put(id, count + 1);
+	}
+	
+	public static void addIndustry(MarketAPI market, String id, String idForIncrement, boolean instant) {
 		if (instant) {
 			market.addIndustry(id);
 		}
 		else {
 			ColonyManager.getManager().queueIndustry(market, id, QueueType.NEW);
 		}
+		if (getInstance() != null && idForIncrement != null) {
+			getInstance().incrementIndustryCount(idForIncrement);
+		}
+	}
+	
+	public static void addIndustry(MarketAPI market, String id, boolean instant) {
+		addIndustry(market, id, null, instant);
 	}
 		
 	public static void addSpaceportOrMegaport(MarketAPI market, EntityType type, boolean instant, Random random)
@@ -626,7 +671,7 @@ public class NexMarketBuilder
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
 				shade.setCustomDescriptionId("stellar_shade");
 				
-				((PlanetAPI)entity).getSpec().setRotation(0);	// planet don't spin
+				//((PlanetAPI)entity).getSpec().setRotation(0);	// planet don't spin
 			}
 		}
 		else {
@@ -793,7 +838,7 @@ public class NexMarketBuilder
 						+ " (priority " + highest.two + ")");
 				String industryId = seed.industryId;
 				MarketAPI market = highest.one.market;
-				market.addIndustry(industryId);
+				addIndustry(market, industryId, gen.getId(), true);
 				if (industryId.equals(Industries.ORBITALWORKS)) {
 					market.removeIndustry(Industries.HEAVYINDUSTRY, null, false);
 					highest.one.numProductiveIndustries -= 1;
@@ -933,7 +978,10 @@ public class NexMarketBuilder
 	
 	public void addPrimaryIndustriesToMarkets()
 	{
-		for (ProcGenEntity ent : markets)
+		List<ProcGenEntity> marketsCopy = new ArrayList<>(markets);
+		Collections.shuffle(marketsCopy, random);
+		
+		for (ProcGenEntity ent : marketsCopy)
 		{
 			addIndustriesToMarket(ent, true, 2, Integer.MAX_VALUE, random);
 		}
@@ -941,7 +989,10 @@ public class NexMarketBuilder
 	
 	public void addFurtherIndustriesToMarkets()
 	{
-		for (ProcGenEntity ent : markets)
+		List<ProcGenEntity> marketsCopy = new ArrayList<>(markets);
+		Collections.shuffle(marketsCopy, random);
+		
+		for (ProcGenEntity ent : marketsCopy)
 		{
 			addIndustriesToMarket(ent, true, Integer.MIN_VALUE, 2, random);
 			addSpecialIndustries(ent);
