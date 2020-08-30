@@ -47,7 +47,7 @@ public class VultureFleetManager extends DisposableFleetManager
 {
 	public static final String MANAGER_MAP_KEY = "nex_vultureFleetManager";
 	public static final String MEM_KEY_FLEET_COUNT_CACHE = "$nex_vultureFleetCountCache";
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	
 	public static Logger log = Global.getLogger(VultureFleetManager.class);
 	
@@ -59,7 +59,11 @@ public class VultureFleetManager extends DisposableFleetManager
 	public CampaignFleetAPI spawnVultureFleet(MarketAPI origin)
 	{
 		log.info("Trying vulture fleet for market " + origin.getName());
-		SectorEntityToken target = getClosestScavengable(origin.getLocation(), origin.getContainingLocation());
+		Vector2f from = origin.getLocation();
+		if (Global.getSector().getPlayerFleet().getContainingLocation() == origin.getContainingLocation())
+			from = Global.getSector().getPlayerFleet().getLocation();
+		
+		SectorEntityToken target = getClosestScavengable(from, origin.getContainingLocation());
 		
 		if (target == null) {
 			log.info("  No scavenge target found");
@@ -101,6 +105,7 @@ public class VultureFleetManager extends DisposableFleetManager
 		fleet.setFaction(Factions.INDEPENDENT, true);
 		fleet.setAIMode(true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SCAVENGER, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_TRADE_FLEET, true);
 		Misc.makeLowRepImpact(fleet, "scav");
 		
 		//float machineryToTake = Math.min(machineryRequired * 1.25f, origin.getCommodityData(Commodities.HEAVY_MACHINERY).getStockpile());
@@ -110,8 +115,12 @@ public class VultureFleetManager extends DisposableFleetManager
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		
 		boolean noWait = true;
-		if (playerFleet != null && playerFleet.getContainingLocation() == entity.getContainingLocation())
-			noWait = !MathUtils.isWithinRange(target, playerFleet, playerFleet.getMaxSensorRangeToDetect(fleet) + getInSystemCullRange());
+		if (playerFleet != null && playerFleet.getContainingLocation() == entity.getContainingLocation()) 
+		{
+			log.info("Player fleet could detect " + fleet.getName() + " from " + playerFleet.getMaxSensorRangeToDetect(fleet) + " away");
+			noWait = !MathUtils.isWithinRange(target, playerFleet, playerFleet.getMaxSensorRangeToDetect(fleet)/2 + getInSystemCullRange());
+		}
+		
 		
 		if (DEBUG_MODE) noWait = true;
 		
@@ -132,14 +141,15 @@ public class VultureFleetManager extends DisposableFleetManager
 		fleet.addScript(ai);
 		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
 		Global.getSector().getCampaignUI().addMessage("Spawned vulture fleet in " 
-				+ origin.getContainingLocation() + " from " + origin.getName());
+				+ origin.getContainingLocation() + " from " + origin.getName() 
+				+ ", translocation: " + noWait);
 		
 		return fleet;
 	}
 	
 	@Override
 	protected String getActionInsideText(StarSystemAPI system) {
-		return "scavenging";
+		return "debug me";
 	}
 	
 	public static VultureFleetManager create()
@@ -305,13 +315,17 @@ public class VultureFleetManager extends DisposableFleetManager
 		return false;
 	}
 	
-	public static CampaignFleetAPI getRandomRaidFleet(CampaignFleetAPI scav) 
+	public static CampaignFleetAPI getRandomFleetToFollow(CampaignFleetAPI scav) 
 	{
 		WeightedRandomPicker<CampaignFleetAPI> picker = new WeightedRandomPicker<>();
 		for (CampaignFleetAPI fleet : scav.getContainingLocation().getFleets()) 
 		{
 			if (fleet.isHostileTo(scav)) continue;
-			if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+			if (fleet.getBattle() != null)
+				picker.add(fleet, 4);
+			else if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
+				picker.add(fleet);
+			else if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_PATROL_FLEET))
 				picker.add(fleet);
 		}
 		return picker.pick();
@@ -390,7 +404,7 @@ public class VultureFleetManager extends DisposableFleetManager
 	
 	@Override
 	public float getSpawnRateMult() {
-		return super.getSpawnRateMult() * 5f;
+		return super.getSpawnRateMult() * 8f;
 	}
 	
 	public static class VultureFleetData

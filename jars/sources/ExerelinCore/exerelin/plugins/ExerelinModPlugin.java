@@ -31,7 +31,6 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
-import exerelin.campaign.MiningCooldownDrawer;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ui.ReinitScreenScript;
@@ -204,7 +203,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(InvasionFleetManager.create());
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManagerV2.create());
-        //sector.addScript(VultureFleetManager.create());
+        sector.addScript(VultureFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(AllianceManager.create());
         new ColonyManager().init();

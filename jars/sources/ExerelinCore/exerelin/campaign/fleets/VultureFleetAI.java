@@ -46,8 +46,9 @@ public class VultureFleetAI implements EveryFrameScript
 	
 	protected float daysTotal;
 	protected final CampaignFleetAPI fleet;
-	protected boolean orderedReturn = false;
+	protected boolean orderedReturn;
 	protected CampaignFleetAPI following;
+	protected boolean loadedAny;
 	
 	public VultureFleetAI(CampaignFleetAPI fleet, VultureFleetData data)
 	{
@@ -116,14 +117,8 @@ public class VultureFleetAI implements EveryFrameScript
 	}
 	
 	protected void checkIdle() {
-		if (!VultureFleetManager.hasOngoingRaids(data.source.getContainingLocation())) 
-		{
-			log.info(fleet.getName() + ": No target found and no ongoing raids, going home");
-			giveStandDownOrders();
-			return;
-		}
 		if (following == null || !following.isAlive()) {
-			following = VultureFleetManager.getRandomRaidFleet(fleet);
+			following = VultureFleetManager.getRandomFleetToFollow(fleet);
 		}
 		
 		if (following != null) {
@@ -219,6 +214,8 @@ public class VultureFleetAI implements EveryFrameScript
 		fleet.getCargo().addAll(salvage);
 		
 		Misc.fadeAndExpire(entity);
+		
+		loadedAny = true;
 	}
 	
 	// based on ShipRecoverySpecial.addExtraSalvageFromUnrecoveredShips
