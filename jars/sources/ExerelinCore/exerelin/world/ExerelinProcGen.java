@@ -665,6 +665,7 @@ public class ExerelinProcGen {
 		toCheck.addAll(system.getJumpPoints());
 		toCheck.addAll(system.getPlanets());
 		toCheck.addAll(system.getEntitiesWithTag(Tags.OBJECTIVE));
+		toCheck.addAll(system.getEntitiesWithTag(Tags.STABLE_LOCATION));
 		
 		for (SectorEntityToken other : toCheck) {
 			float distSq = MathUtils.getDistanceSquared(entity.getLocation(), other.getLocation());

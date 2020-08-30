@@ -20,6 +20,7 @@ import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG_REQUIRES_NEBULA;
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.getNormalRandom;
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.random;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.ThemeGenContext;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -31,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
 
-// same as vanilla except with moar planets + always custom names
+// same as vanilla except with moar planets + always custom names, and adds more gates + objectives
 public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 	
 	public static final float SKIP_GIANT_OR_DWARF_CHANCE = 0.45f;
@@ -169,6 +170,9 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 				system.setConstellation(c);
 			}
 		//}
+		ThemeGenContext context = new ThemeGenContext();
+		context.constellations.add(c);
+		new RandomCoreThemePsuedoGenerator().generateForSector(context, -1f);
 		
 		return c;
 	}
@@ -370,6 +374,18 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		// GenContext context, int numOrbits, boolean addingMoons, boolean addMoons, boolean parentIsMoon, boolean nothingOk
 		GenResult result = addOrbitingEntities(context, numOrbits, false, true, false, false);
 		result.context = context;
+		return result;
+	}
+	
+	@Override
+	protected boolean addStars(String id) {
+		boolean result = super.addStars(id);
+		
+		// avoid putting stars and jump points close enough to be cooked
+		if (system.getStar() != null && centerRadius == system.getStar().getRadius()) {
+			//centerRadius += system.getStar().getSpec().getCoronaSize();
+		}
+				
 		return result;
 	}
 }
