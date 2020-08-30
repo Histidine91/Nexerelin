@@ -106,8 +106,15 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		if (Nex_IsFactionRuler.isRuler(market.getFactionId()))
 			return true;
 		
-		FactionAPI faction = market.getFaction();
 		int size = market.getSize();
+		
+		// always enable governorship for player-founded colonies (if they're size 3)
+		if (ExerelinUtilsMarket.getOriginalOwner(market) == null && size <= 3) 
+		{
+			return true;
+		}
+		
+		FactionAPI faction = market.getFaction();
 		if (size <= 3)
 			return faction.isAtWorst(Factions.PLAYER, RepLevel.FRIENDLY);
 		else if (size == 4)
@@ -119,6 +126,15 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	public static MutableStat getValue(MarketAPI market, boolean isRefund, boolean includeBonus) 
 	{
 		MutableStat stat = new MutableStat(0);
+		
+		// (practically) free for size 3 player-founded colonies
+		if (ExerelinUtilsMarket.getOriginalOwner(market) == null && market.getSize() <= 3) 
+		{
+			stat.modifyFlat("playerFounded", 1, StringHelper.getString("nex_buyColony", 
+				"costFactorPlayerFounded", true));
+			return stat;
+		}
+		
 		float value = ExerelinUtilsMarket.getMarketIndustryValue(market);
 		if (isRefund)
 			value *= Global.getSettings().getFloat("industryRefundFraction");

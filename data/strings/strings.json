@@ -550,6 +550,7 @@
 		"costFactorIndustry":"industry value",
 		"costFactorIncome":"income",
 		"costFactorSizeAndStability":"market size and stability",
+		"costFactorPlayerFounded":"player-founded colony",
 	},
 	
 	"nex_colonies":{
