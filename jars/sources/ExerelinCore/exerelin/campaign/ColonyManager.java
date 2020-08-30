@@ -154,10 +154,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		boolean allowGrowth = Global.getSector().getClock().getCycle() >= MIN_CYCLE_FOR_NPC_GROWTH;
 		for (MarketAPI market : markets) 
 		{
-			if (market.getFaction().isPlayerFaction()) 
+			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned())
 			{
 				playerFactionSize += market.getSize();
-				
+			}
+			
+			if (market.getFaction().isPlayerFaction()) 
+			{
 				setGrowthRate(market);
 				updateIncome(market);
 			}
