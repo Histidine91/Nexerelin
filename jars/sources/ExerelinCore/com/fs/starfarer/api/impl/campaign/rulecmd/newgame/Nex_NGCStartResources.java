@@ -19,6 +19,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinFactionConfig.StartFleetType;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -69,9 +70,14 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 				ValueDisplayMode.VALUE, null);
 		opts.setSelectorValue("startOfficersSelector", data.numStartingOfficers);
 		
-		if (memoryMap.get(MemKeys.LOCAL).getBoolean("$randomStartShips")) {
-			opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
-					"fleetRandomReroll")), "nex_NGCStep4FleetReroll");
+		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
+		if (local.getBoolean("$randomStartShips") && local.contains("$nex_lastSelectedFleetType")) 
+		{
+			StartFleetType type = StartFleetType.getType(local.getString("$nex_lastSelectedFleetType"));
+			if (type != StartFleetType.SUPER) {
+				opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
+						"fleetRandomReroll")), "nex_NGCStep4FleetReroll");
+			}
 		}
 		
 		opts.addOption(StringHelper.getString("back", true), "nex_NGCStartBack");
