@@ -702,7 +702,7 @@ ExerelinJoinAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOpt
 $faction.isInAlliance","SetEnabled exerelinJoinAlliance true
 Nex_AddOptionConfirmation exerelinJoinAlliance ""Are you sure you want your faction to join alliance $_factionAllianceName?"" ""Yes"" ""No""",,exerelinJoinAlliance:Join alliance $_factionAllianceName,
 ExerelinJoinAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
-!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinAlliance ""The $_factionAllianceName do not trust you enough yet.""
+!Nex_Alliance enoughRep $player.factionId $faction.allianceId","SetTooltip exerelinJoinAlliance ""The $_factionAllianceName do not trust you enough yet.""
 SetEnabled exerelinJoinAlliance false",,,
 ExerelinJoinAllianceSwitchOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 $player.isInAlliance
@@ -714,7 +714,7 @@ ExerelinJoinAllianceSwitchOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFact
 $player.isInAlliance
 $faction.isInAlliance
 $faction.allianceId != $player.allianceId
-!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinAlliance ""The $_factionAllianceName do not trust you enough yet.\nTo join alliance $_factionAllianceName your faction would leave $_playerAllianceName.""
+!Nex_Alliance enoughRep $player.factionId $faction.allianceId","SetTooltip exerelinJoinAlliance ""The $_factionAllianceName do not trust you enough yet.\nTo join alliance $_factionAllianceName your faction would leave $_playerAllianceName.""
 SetEnabled exerelinJoinAlliance false",,,
 ,,,,,,
 ExerelinInviteToAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
@@ -723,7 +723,7 @@ $faction.allianceId != $player.allianceId","SetEnabled exerelinInviteToAlliance 
 Nex_AddOptionConfirmation exerelinInviteToAlliance ""Are you sure you want to invite $theFaction to join alliance $_playerAllianceName?"" ""Yes"" ""No""",,exerelinInviteToAlliance:Invite $theFaction to join alliance $_playerAllianceName,
 ExerelinInviteToAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !$faction.isInAlliance
-!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinInviteToAlliance ""$TheFaction do not trust you enough yet.""
+!Nex_Alliance enoughRep $faction.id $player.allianceId","SetTooltip exerelinInviteToAlliance ""$TheFaction do not trust the $_playerAllianceName enough yet.""
 SetEnabled exerelinInviteToAlliance false",,,
 ExerelinInviteToAllianceOptionAlreadyInAlliance,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 $faction.isInAlliance
@@ -731,7 +731,7 @@ $faction.allianceId != $player.allianceId","SetTooltip exerelinInviteToAlliance 
 SetEnabled exerelinInviteToAlliance false",,,
 ExerelinInviteToAllianceOptionIncompatible,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !$faction.isInAlliance
-!IsAllianceAlignmentCompatible $faction.id","SetTooltip exerelinInviteToAlliance ""$TheFaction cannot endorse the goals of the $_playerAllianceName.""
+!Nex_Alliance isAlignmentCompatible $faction.id $player.allianceId","SetTooltip exerelinInviteToAlliance ""$TheFaction cannot endorse the goals of the $_playerAllianceName.""
 SetEnabled exerelinInviteToAlliance false",,,
 ,,,,,,
 ExerelinFormAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
@@ -755,13 +755,13 @@ $faction.allianceId == $player.allianceId","$_factionAllianceName = $faction.all
 $_playerAllianceName = $player.allianceName 0
 Nex_AddOptionConfirmation exerelinLeaveAlliance ""Are you sure you want your faction to leave alliance $_playerAllianceName?"" ""Yes"" ""No""",,exerelinLeaveAlliance:Leave alliance $_factionAllianceName,
 ,,,,,,
-ExerelinJoinAlliance,DialogOptionSelected,$option == exerelinJoinAlliance,"JoinAlliance $faction.allianceId
+ExerelinJoinAlliance,DialogOptionSelected,$option == exerelinJoinAlliance,"Nex_Alliance join
 FireAll ExerelinMarketSpecialInitialize",,,
-ExerelinInviteToAlliance,DialogOptionSelected,$option == exerelinInviteToAlliance,"InviteToAlliance $faction.id
+ExerelinInviteToAlliance,DialogOptionSelected,$option == exerelinInviteToAlliance,"Nex_Alliance invite
 FireAll ExerelinMarketSpecialInitialize",,,
-ExerelinFormAlliance,DialogOptionSelected,$option == exerelinFormAlliance,"FormAlliance $faction.id
+ExerelinFormAlliance,DialogOptionSelected,$option == exerelinFormAlliance,"Nex_Alliance form
 FireAll ExerelinMarketSpecialInitialize",,,
-ExerelinLeaveAlliance,DialogOptionSelected,$option == exerelinLeaveAlliance,"LeaveAlliance
+ExerelinLeaveAlliance,DialogOptionSelected,$option == exerelinLeaveAlliance,"Nex_Alliance leave
 FireAll ExerelinMarketSpecialInitialize",,,
 ,,,,,,
 ,,,,,,
