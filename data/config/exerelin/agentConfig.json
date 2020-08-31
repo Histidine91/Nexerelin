@@ -74,7 +74,7 @@
 			"repLossOnDetectionMax":0.2,
 			"alertLevelIncrease":0.2,
 			"baseCost":20000,
-			"xp":500,
+			"xp":750,
 		},
 		"sabotageIndustry":{
 			"name":"Sabotage Industry",
@@ -127,7 +127,7 @@
 			"repLossOnDetectionMax":0.25,
 			"alertLevelIncrease":0,
 			"baseCost":20000,
-			"xp":500,
+			"xp":600,
 		},
 		"instigateRebellion":{
 			"time":75,
