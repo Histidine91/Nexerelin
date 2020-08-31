@@ -19,5 +19,25 @@
 		"scaleNameWithZoom":false,
 		"tags":["station","comm_relay"],
 		"layers":[STATIONS], # what layer(s) to render in. See CampaignEngineLayers.java for possible values
-		},
+	},
+	
+	"nex_mining_gui_dummy":{
+		"defaultName":"Mining GUI dummy", # used if name=null in addCustomEntity()
+		"defaultRadius":0, # used if radius<0 in addCustomEntity()
+		"icon":"graphics/ui/s_icon16.png",
+		"iconWidth":0,
+		"iconHeight":0,
+		"sprite":"graphics/ui/s_icon16.png",
+		"spriteWidth":0,
+		"spriteHeight":0,
+		"renderShadow":false,
+		"useLightColor":false,
+		"showInCampaign":true,
+		"showIconOnMap":false,
+		"showNameOnMap":false,
+		"scaleNameWithZoom":false,
+		#"tags":[],
+		"layers":[TERRAIN_8], # what layer(s) to render in. See CampaignEngineLayers.java for possible values
+		"pluginClass":"exerelin.campaign.MiningCooldownDrawer",
+	},
 }

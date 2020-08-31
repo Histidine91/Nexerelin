@@ -1,57 +1,67 @@
 package exerelin.campaign;
 
-import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignEngineLayers;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CampaignUIAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ViewportAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
+import com.fs.starfarer.api.impl.campaign.BaseCustomEntityPlugin;
 import java.awt.Color;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
-public class MiningCooldownDrawer implements EveryFrameScript {
+public class MiningCooldownDrawer extends BaseCustomEntityPlugin {
 	
+	public static final String MEMORY_KEY_ENTITY = "$nex_miningCooldownDrawer";
 	public static final int BAR_WIDTH = 128;
 	public static final int BAR_HEIGHT = 16;
 	public static final int ICON_WIDTH = 32;
 	public static final String ICON_PATH = "graphics/exerelin/icons/hammer_and_pick.png";
 	public static final Color BAR_COLOR = new Color(240, 244, 159, 255);
 	public static final Color FILL_COLOR = new Color(107, 179, 80, 255);
-
-	@Override
-	public boolean isDone() {
-		return false;
-	}
-
-	@Override
-	public boolean runWhilePaused() {
-		return true;
-	}
-
-	@Override
-	public void advance(float amount) {
-		if (Global.getCurrentState() == GameState.TITLE)
-			return;
-		if (Global.getSector().getPlayerFleet() == null)
-			return;
-		CampaignUIAPI ui = Global.getSector().getCampaignUI();
-		if (ui.isShowingDialog() || ui.isShowingMenu())
-			return;
-		
-		drawCooldownBar();
-	}
-	
+			
 	public void glSetColor(Color color) {
 		GL11.glColor4f(color.getRed()/255f, color.getGreen()/255f, 
 				color.getBlue()/255f, color.getAlpha()/255f);
 	}
 	
+	public static SectorEntityToken create() {
+		//Global.getLogger(MiningCooldownDrawer.class).info("Creating entity");
+		if (getEntity() != null && getEntity().isAlive()) {
+			//Global.getSector().getCampaignUI().addMessage("Warning: Mining cooldown GUI entity already exists", Color.RED);
+			remove();
+		}
+		
+		return Global.getSector().getPlayerFleet().getContainingLocation()
+				.addCustomEntity("nex_mining_gui_dummy", null, "nex_mining_gui_dummy", null);
+	}
+	
+	public static SectorEntityToken getEntity() {
+		return Global.getSector().getMemoryWithoutUpdate().getEntity(MEMORY_KEY_ENTITY);
+	}
+	
+	public static void remove() {
+		SectorEntityToken entity = getEntity();
+		if (entity != null) {
+			entity.getContainingLocation().removeEntity(entity);
+			//Global.getSector().getMemoryWithoutUpdate().unset(MEMORY_KEY_ENTITY);
+		}
+	}
+	
+	@Override
+	public void init(SectorEntityToken entity, Object pluginParams) {
+		super.init(entity, pluginParams);
+		Global.getSector().getMemoryWithoutUpdate().set(MEMORY_KEY_ENTITY, entity);
+	}
+	
 	// most of this was copypasta'd from Common Radar, I have virtually no idea how to OpenGL
-	public void drawCooldownBar() {
+	public void drawCooldownBar(ViewportAPI view) {
 		MemoryAPI mem = Global.getSector().getCharacterData().getMemoryWithoutUpdate();
 		if (!mem.contains("$nex_miningCooldown"))
 			return;
@@ -74,8 +84,7 @@ public class MiningCooldownDrawer implements EveryFrameScript {
 		
 		// Draw bar
 		CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
-		Vector2f loc = fleet.getLocation();
-		ViewportAPI view = Global.getSector().getViewport();		
+		Vector2f loc = fleet.getLocation();	
 		float x = view.convertWorldXtoScreenX(loc.x);
 		float y = view.convertWorldYtoScreenY(loc.y + fleet.getRadius() + 20) + 8;
 		
@@ -122,5 +131,38 @@ public class MiningCooldownDrawer implements EveryFrameScript {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glPopMatrix();
         GL11.glPopAttrib();
+	}
+	
+	@Override
+	public void render(CampaignEngineLayers layer, ViewportAPI viewport) {
+		//entity.addFloatingText("bla", Color.white, 0.3f);
+		if (Global.getCurrentState() == GameState.TITLE)
+			return;
+		if (Global.getSector().getPlayerFleet() == null)
+			return;
+		CampaignUIAPI ui = Global.getSector().getCampaignUI();
+		if (ui.isShowingDialog() || ui.isShowingMenu())
+			return;
+		drawCooldownBar(viewport);
+	}
+	
+	@Override
+	public float getRenderRange() {
+		return 1000000;
+	}
+	
+	@Override
+	public void advance(float amount) {
+		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+		if (player == null) return;
+		
+		LocationAPI curr = Global.getSector().getCurrentLocation();
+		if (curr != entity.getContainingLocation()) {
+			entity.getContainingLocation().removeEntity(entity);
+			curr.addEntity(entity);
+		}
+		else {
+			//entity.setLocation(player.getLocation().getX(), player.getLocation().getY());
+		}
 	}
 }
