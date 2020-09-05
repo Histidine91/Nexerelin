@@ -419,6 +419,9 @@ FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $numPrisoners,You have $numPrisoners prisoner(s).,,
 ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,"$faction.id != ""player""","SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""
 SetShortcut exerelinPrisonerRepatriate P",,exerelinPrisonerRepatriate:Repatriate prisoner,
+ExerelinPrisonerOptionListRepatriateMaxRep,ExerelinPrisonerOption,"$faction.id != ""player""
+Nex_PrisonerAction isAtMaxRep","SetTooltip exerelinPrisonerRepatriate ""Your reputation with $theFaction is already at the maximum level.""
+SetEnabled exerelinPrisonerRepatriate false",,,
 ExerelinPrisonerOptionListRansomBase,ExerelinPrisonerOption,,,,exerelinPrisonerRansom:Collect ransom,
 ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,,"Nex_PrisonerAction getValue
 SetTooltip exerelinPrisonerRansom ""Return a prisoner in exchange for a ransom of $ransomValue credits.""

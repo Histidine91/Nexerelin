@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
@@ -45,9 +46,12 @@ public class NexUtilsReputation
 		if (text != null)
 		{
 			text.setFontSmallInsignia();
-			text.addParagraph(str, Misc.getGrayColor());
-			if (highlight != null)
-				text.highlightFirstInLastPara(highlight, highlightColor);
+			LabelAPI label = text.addParagraph(str, Misc.getGrayColor());
+			if (highlight != null) {
+				label.setHighlight(highlight);
+				label.setHighlightColor(highlightColor);
+				//text.highlightFirstInLastPara(highlight, highlightColor);
+			}
 			text.setFontInsignia();
 		}
 		else

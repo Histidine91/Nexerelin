@@ -17,6 +17,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.NexUtilsReputation;
 
 public class Nex_PrisonerAction extends AgentActionBase {
@@ -47,6 +48,8 @@ public class Nex_PrisonerAction extends AgentActionBase {
 				local.set("$ransomValue", Misc.getWithDGS(ransomValue), 0);
 				local.set("$slaveValue", Misc.getWithDGS(slaveValue), 0);
 				break;
+			case "isAtMaxRep":
+				return isAtMaxRep(dialog.getInteractionTarget());
 		}
 		return true;
 	}
@@ -91,5 +94,14 @@ public class Nex_PrisonerAction extends AgentActionBase {
 	
 	protected boolean usePrisoner() {
 		return useSpecialPerson("prisoner", 1);
+	}
+	
+	protected boolean isAtMaxRep(SectorEntityToken target) {
+		FactionAPI faction1 = PlayerFactionStore.getPlayerFaction();
+		FactionAPI faction2 = target.getFaction();
+		float max = ExerelinFactionConfig.getMaxRelationship(faction1.getId(), faction2.getId());
+		float curr = faction1.getRelationship(faction2.getId()); 
+		//Global.getLogger(this.getClass()).info(String.format("Current: %s, max: %s", curr, max));
+		return max - curr <= 0.001f;	// floating point bullshit
 	}
 }
