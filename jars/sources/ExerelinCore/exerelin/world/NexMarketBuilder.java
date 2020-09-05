@@ -646,8 +646,11 @@ public class NexMarketBuilder
 			else if (factionId.equals("interstellarimperium")) {
 				//market.addIndustry("ii_interstellarbazaar");	// put somewhere else
 				market.addIndustry("ii_imperialguard");
-			} else if (factionId.equals("blackrock_driveyards"))
+			}
+			else if (factionId.equals("blackrock_driveyards"))
 				market.addIndustry("brdy_defhq");
+			else if (factionId.equals("scalartech"))
+				market.addSubmarket("tahlan_stdfmarket");
 			
 			
 			market.getMemoryWithoutUpdate().set("$nex_procgen_hq", true);
