@@ -422,6 +422,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
             NexUtilsReputation.syncPlayerRelationshipsToFaction();
+        else if (faction1Id.equals(Factions.PLAYER) || faction2Id.equals(Factions.PLAYER))
+            NexUtilsReputation.syncFactionRelationshipsToPlayer();
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
@@ -430,7 +432,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (playerIsHostile2 != playerWasHostile2)
             printPlayerHostileStateMessage(faction2, playerIsHostile2, false);
         
-        // TODO: display specific reputation change in message field if it affects player
+        // TODO: display specific reputation change in message field if it affects player?
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
         {
             
