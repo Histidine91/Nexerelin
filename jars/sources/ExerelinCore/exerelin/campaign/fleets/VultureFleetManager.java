@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class VultureFleetManager extends DisposableFleetManager
@@ -114,18 +115,22 @@ public class VultureFleetManager extends DisposableFleetManager
 		entity.getContainingLocation().addEntity(fleet);
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		
-		boolean noWait = true;
+		boolean onTheSpot = true;	// Try to spawn the vulture fleet right on top of the scavengable if we can
+		float searchRange = 0;
 		if (playerFleet != null && playerFleet.getContainingLocation() == entity.getContainingLocation()) 
 		{
-			log.info("Player fleet could detect " + fleet.getName() + " from " + playerFleet.getMaxSensorRangeToDetect(fleet) + " away");
-			noWait = !MathUtils.isWithinRange(target, playerFleet, playerFleet.getMaxSensorRangeToDetect(fleet)/2 + getInSystemCullRange());
+			searchRange = playerFleet.getMaxSensorRangeToDetect(fleet)*0.75f;
+			//log.info("Player fleet could detect " + fleet.getName() + " from " + playerFleet.getMaxSensorRangeToDetect(fleet) + " away");
+			onTheSpot = !MathUtils.isWithinRange(target, playerFleet, searchRange);
 		}
+				
+		if (DEBUG_MODE) onTheSpot = true;
 		
-		
-		if (DEBUG_MODE) noWait = true;
-		
-		if (!noWait) {
-			fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
+		if (!onTheSpot) {
+			// Pick the position closest to target and outside player view distance
+			float angle = VectorUtils.getAngle(playerFleet.getLocation(), target.getLocation());
+			Vector2f pos = MathUtils.getPointOnCircumference(playerFleet.getLocation(), searchRange, angle);
+			fleet.setLocation(pos.x, pos.y);
 		}
 		else {
 			fleet.setLocation(target.getLocation().x, target.getLocation().y);
@@ -135,14 +140,16 @@ public class VultureFleetManager extends DisposableFleetManager
 		data.startingFleetPoints = fleet.getFleetPoints();
 		data.source = origin;
 		data.target = target;
-		data.noWait = noWait;
+		data.noWait = true;
 		
 		VultureFleetAI ai = new VultureFleetAI(fleet, data);
 		fleet.addScript(ai);
 		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
+		/*
 		Global.getSector().getCampaignUI().addMessage("Spawned vulture fleet in " 
 				+ origin.getContainingLocation() + " from " + origin.getName() 
-				+ ", translocation: " + noWait);
+				+ ", translocation: " + !onTheSpot);
+		*/
 		
 		return fleet;
 	}
@@ -191,7 +198,7 @@ public class VultureFleetManager extends DisposableFleetManager
 		}
 		// debris field
 		for (CampaignTerrainAPI terrain : getDebrisFields(loc)) {
-			float distSq = MathUtils.getDistance(fleetLoc, terrain.getLocation());
+			float distSq = MathUtils.getDistanceSquared(fleetLoc, terrain.getLocation());
 			if (distSq < closestDistSq) {
 				closestDistSq = distSq;
 				closest = terrain;
