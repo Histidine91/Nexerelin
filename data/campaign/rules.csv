@@ -65,9 +65,12 @@ ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOpt
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
 ,,,,,,
-ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
-ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
-nex_NGCCustomScenarioOption,ExerelinNGCOtherOptions,,Nex_NGCCustomScenario menuOption,,nex_NGCCustomScenarioMenu:Custom scenario – $nex_customScenarioName,
+ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPresent,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnablePrismMarket ""Enable Prism Freeport""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,,
+ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisablePrismMarket ""Disable Prism Freeport""
+Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
+nex_NGCCustomScenarioOption,ExerelinNGCOtherOptions,,"Nex_NGCCustomScenario menuOption
+Nex_DynamicPaginatedOptions addOption nex_NGCCustomScenarioMenu ""Custom scenario – $nex_customScenarioName""",,,
 ,,,,,,
 nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,"Nex_NGCProcessSectorGenerationSliders create
 $nex_ngcSectorGenSlidersSeen = true",,,
