@@ -132,6 +132,10 @@ public class ExerelinUtils
 			DevMenuOptions.addOptions(dialog);
 		}
 	}
+	
+	public static boolean isNonPlaytestDevMode() {
+		return Global.getSettings().isDevMode() && !Global.getSettings().getBoolean("playtestingMode");
+	}
 
 	public static String[] JSONArrayToStringArray(JSONArray jsonArray)
     {

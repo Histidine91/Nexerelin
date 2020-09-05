@@ -18,6 +18,7 @@ import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGG
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
+import exerelin.utilities.ExerelinUtils;
 import java.util.List;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
@@ -132,7 +133,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 	}
 	
 	public boolean isSourceKnown() {
-		if (Global.getSettings().isDevMode()) return true;
+		if (ExerelinUtils.isNonPlaytestDevMode()) return true;
 		if (getFaction().getRelationshipLevel(Factions.PLAYER).isAtWorst(RepLevel.FRIENDLY))
 			return true;
 		return getBase().isVisibleToPlayerFleet();

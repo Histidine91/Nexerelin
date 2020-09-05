@@ -28,6 +28,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -150,7 +151,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (getDef().costScaling) {
 			time *= 1 + 0.25f * (market.getSize() - 3);
 		}
-		if (CovertOpsManager.isDebugMode() || Global.getSettings().isDevMode())
+		if (CovertOpsManager.isDebugMode() || ExerelinUtils.isNonPlaytestDevMode())
 			time *= 0.1f;
 		
 		return time;
@@ -483,7 +484,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	protected boolean shouldNotify() {
-		if (ALWAYS_REPORT || playerInvolved || Global.getSettings().isDevMode()) 
+		if (ALWAYS_REPORT || playerInvolved || ExerelinUtils.isNonPlaytestDevMode()) 
 			return true;
 		if (repResult != null && (repResult.isHostile != repResult.wasHostile))
 			return true;
@@ -606,7 +607,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		if (agentFaction.isPlayerFaction()) return true;
 		if (agentFaction == PlayerFactionStore.getPlayerFaction()) return true;
 		if (result != null && result.isDetected()) return true;
-		if (Global.getSettings().isDevMode()) return true;
+		if (ExerelinUtils.isNonPlaytestDevMode()) return true;
 		
 		return false;
 	}

@@ -37,6 +37,7 @@ import exerelin.campaign.intel.specialforces.namer.SpecialForcesNamer;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -672,7 +673,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	@Override
 	public boolean isHidden() {
-		return !Global.getSettings().isDevMode() && !ExerelinModPlugin.isNexDev;
+		return !ExerelinUtils.isNonPlaytestDevMode() && !ExerelinModPlugin.isNexDev;
 	}
 
 	@Override

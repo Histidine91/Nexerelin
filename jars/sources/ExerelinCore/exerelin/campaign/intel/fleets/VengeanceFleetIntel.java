@@ -27,6 +27,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -249,7 +250,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 	
 	protected boolean isMarketKnown()
 	{
-		if (Global.getSettings().isDevMode()) return true;
+		if (ExerelinUtils.isNonPlaytestDevMode()) return true;
 		return market.getPrimaryEntity().isVisibleToPlayerFleet();
 	}
 	
