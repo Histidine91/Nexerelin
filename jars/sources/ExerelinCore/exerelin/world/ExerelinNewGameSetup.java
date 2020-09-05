@@ -50,7 +50,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 {
 	//protected float numOmnifacs = 0;
-	public static final Vector2f SECTOR_CENTER = new Vector2f(0, -6000);
+	public static final Vector2f SECTOR_CENTER = new Vector2f(-4000, -6000);
 	public static final Vector2f PRISM_LOC = new Vector2f(-8005, -3785);
 	public static Logger log = Global.getLogger(ExerelinNewGameSetup.class);
 	
@@ -262,7 +262,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		// make Prism before core systems, unless we're in random sector with one system
 		// in which case we'll need to populate that system and then put Prism in it
 		// FIXME: this is not actually implemented
-		boolean prismBeforeSystems = corvusMode || ExerelinSetupData.getInstance().numSystems > 1;
+		boolean prismBeforeSystems = corvusMode || setupData.numSystems > 1;
 		if (setupData.prismMarketPresent && prismBeforeSystems) {
 			addPrismMarket(sector, true);
 		}
@@ -271,7 +271,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		{
 			VanillaSystemsGenerator.generate(sector);
 			if (grandSector || adjustedSector) {
-				// ensure area round stars is clear
+				// ensure area around stars is clear
 				// no need to do it in random sector, since ExerelinCoreSystemGenerator has its own clearer
 				HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
 				NebulaEditor editor = new NebulaEditor(plugin);
