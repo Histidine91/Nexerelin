@@ -1,5 +1,5 @@
 {
-	"masterVersionFile":"https://bitbucket.org/Histidine/exerelin/downloads/nexerelin.version",
+	"masterVersionFile":"https://raw.githubusercontent.com/Histidine91/SS-Nexerelin/master/nexerelin.version",
 	"modName":"Nexerelin",
 	"modThreadId":9175,
 	"modNexusId":28,
@@ -7,7 +7,7 @@
 	{
 		"major":0,
 		"minor":9,
-		"patch":6g
+		"patch":7
 	},
 	"starsectorVersion":"0.9.1a"
 }

@@ -2,10 +2,10 @@
 
 Nexerelin is a mod for the game [Starsector](http://fractalsoftworks.com). It implements 4X-style gameplay with faction wars, diplomacy and planetary conquest.
 
-Current release version: v0.9.6g
+Current release version: v0.9.6x (beta release)
 
 ### Setup instructions ###
-Check out the repo to Starsector/mods/Exerelin (or some other folder name) and it can be played immediately. 
+Check out the repo to Starsector/mods/Nexerelin (or some other folder name) and it can be played immediately. 
 
 If you want to build Nexerelin locally, follow the steps below.
 Intellij and Eclipse forks are currently the most popular Java IDE out there.
@@ -17,8 +17,9 @@ Download and unzip them somewhere on your computer, you can download them to the
 This is just so the jar files contained in those mods can be loaded by nexerelin java classes.
 
 You will also need to use jdk1.7 to compile the jar; starsector is currently using jdk1.7.0.79 but anything newer than that would work as well. i.e. 1.7.0.80 and not java 8, 9, etc.
-Since jdk 7 is end of life, oracle requires users to create an account before dling it.
-There is a link to the bugmenot website in this reddit post if you are too lazy to create a new oracle account:
+Depending on your IDE, you may not actually need to download or install JDK 1.7 except for profiling purposes. Simply use a newer JDK and set your project in your IDE to use Java 7.
+If you need JDK 7: Since it's past end of life, Oracle requires users to create an account before dling it.
+There is a link to the bugmenot website in this Reddit post if you are too lazy to create a new Oracle account:
 [https://www.reddit.com/r/java/comments/6ag6qk/oracle_not_allowing_jdk_downloads_without_an/](https://www.reddit.com/r/java/comments/6ag6qk/oracle_not_allowing_jdk_downloads_without_an/)
 
 Download Intellij community edition (which is free unless you somehow want to spend money on the pro edition), just google search it.
