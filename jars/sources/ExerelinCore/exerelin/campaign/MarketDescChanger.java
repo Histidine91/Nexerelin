@@ -30,6 +30,7 @@ public class MarketDescChanger implements InvasionListener {
 	public static final String CSV_PATH = "data/config/exerelin/captured_planet_descs.csv";
 	
 	public static Logger log = Global.getLogger(MarketDescChanger.class);
+	public static MarketDescChanger currInstance;
 	public static boolean loadedDefs = false;
 		
 	public static void loadDefs() {
@@ -46,6 +47,7 @@ public class MarketDescChanger implements InvasionListener {
 				String entityId = row.getString("entity");
 				String factionId = row.getString("faction");
 				String descId = row.getString("desc id");
+				if (descId.isEmpty()) descId = null;
 				boolean isDefault = row.optBoolean("default", false);
 				
 				DescUpdateEntry desc = new DescUpdateEntry(entityId, factionId, descId, isDefault);
@@ -62,6 +64,15 @@ public class MarketDescChanger implements InvasionListener {
 	
 	public MarketDescChanger() {
 		loadDefs();
+	}
+	
+	public MarketDescChanger registerInstance() {
+		currInstance = this;
+		return this;
+	}
+	
+	public static MarketDescChanger getInstance() {
+		return currInstance;
 	}
 	
 	public static void setEntityDescId(SectorEntityToken entity, String factionId) 

@@ -259,8 +259,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!newGame)
             EconomyInfoHelper.createInstance();
         
-        if (ExerelinConfig.updateMarketDescOnCapture)
-            sector.getListenerManager().addListener(new MarketDescChanger(), true);
+        if (ExerelinConfig.updateMarketDescOnCapture) {
+            sector.getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
+        }
         
         sector.addTransientScript(new PlayerInSystemTracker());
         //sector.addTransientScript(new MiningCooldownDrawer());

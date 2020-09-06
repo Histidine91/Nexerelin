@@ -40,6 +40,7 @@ import com.fs.starfarer.api.util.Misc;
 import static com.fs.starfarer.api.util.Misc.getImmigrationPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
+import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
@@ -412,6 +413,10 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
 		ColonyManager.buildIndustries(market);
 		market.setIncentiveCredits(100000);
+		
+		// planet desc change
+		MarketDescChanger.getInstance().reportMarketTransfered(market, faction,
+				Global.getSector().getFaction(Factions.NEUTRAL), false, false, null, 0);
 	}
 	
 	public void notifyQueueJumpedEarly() {
