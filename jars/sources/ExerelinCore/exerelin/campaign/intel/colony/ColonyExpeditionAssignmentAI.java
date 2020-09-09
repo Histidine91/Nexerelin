@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.StringHelper;
+import org.lazywizard.lazylib.MathUtils;
 
 // by Vayra, modded with external strings + some other stuff
 public class ColonyExpeditionAssignmentAI extends RouteFleetAssignmentAI implements FleetActionTextProvider {
@@ -66,6 +67,9 @@ public class ColonyExpeditionAssignmentAI extends RouteFleetAssignmentAI impleme
 			ColonyActionStage action = (ColonyActionStage)delegate;
 			if (fleet.getContainingLocation() != action.getTarget().getContainingLocation())
 				return;
+			
+			float dist = MathUtils.getDistance(fleet, action.getTarget().getPrimaryEntity());
+			if (dist > 2000) return;
 			
 			giveRaidOrder(action.getTarget());
 		}

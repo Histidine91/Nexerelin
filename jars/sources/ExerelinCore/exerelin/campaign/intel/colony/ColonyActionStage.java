@@ -34,6 +34,7 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel.ColonyOutcome;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 public class ColonyActionStage extends ActionStage implements FleetActionDelegate {
 	
@@ -252,6 +253,11 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			log.warn(fleet.getName() + " is attempting colonization twice");
 			return;
 		}
+		if (fleet != null && MathUtils.getDistance(fleet, market.getPrimaryEntity()) > 300) {
+			log.warn(fleet.getName() + " attempting colonization while too far away");
+			return;
+		}
+		
 		colonyFleetIntel.lastOwner = market.getFaction();
 		
 		// try to colonize, if not, invade if allowed
