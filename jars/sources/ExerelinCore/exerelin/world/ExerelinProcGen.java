@@ -1239,7 +1239,7 @@ public class ExerelinProcGen {
 	
 	protected void addChaosRift(StarSystemAPI system)
 	{
-		SectorEntityToken chaosCrack = system.addCustomEntity("chaosCrack", null, "Chaos_Crack_type", "approlight");
+		SectorEntityToken chaosCrack = system.addCustomEntity("chaosCrack", null, "Chaos_Crack_type", Factions.NEUTRAL);
 		chaosCrack.getLocation().set(-10000f, 12000f);
 		chaosCrack.addScript(new AL_ChaosCrackFleetManager(chaosCrack));
 		SectorEntityToken prime_field1 = system.addTerrain(Terrain.MAGNETIC_FIELD,
