@@ -103,9 +103,10 @@ public class Nex_DynamicPaginatedOptions extends PaginatedOptionsPlus {
 		String optId = params.get(1).getString(memoryMap);
 		String keyName = params.get(2).getString(memoryMap);
 		int code = Global.getSettings().getCodeFor(keyName);
+		//Global.getLogger(this.getClass()).info(String.format("wololo %s, %s, %s", optId, keyName, code));
 		if (code == -1) return false;
 		
-		addShortcut(optId, code);
+		optionShortcutsSt.put(optId, code);
 		return true;
 	}
 	
