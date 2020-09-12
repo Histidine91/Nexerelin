@@ -58,10 +58,11 @@ public class TwoWayTravelFleetAI implements EveryFrameScript
 		interval.advance(days);
 		if (!interval.intervalElapsed()) return;
 		
-		FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
+		FleetAssignmentDataAPI assignment = fleet.getAI().getCurrentAssignment();
 		if (assignment != null)
 		{
-			float fp = this.fleet.getFleetPoints();
+			float fp = fleet.getFleetPoints();
+			
 			if (fp < fleet.getMemoryWithoutUpdate().getFloat("$startingFP") * fpMultToWithdraw) {
 				onFleetDefeat();
 				return;

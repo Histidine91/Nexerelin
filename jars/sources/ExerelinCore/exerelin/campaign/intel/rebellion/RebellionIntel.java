@@ -606,6 +606,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
 			sendUpdate(UpdateParam.FLEET_ARRIVED);
 			float str = data.fleet.getMemoryWithoutUpdate().getFloat("$nex_rebellion_suppr_payload");
+			govtStrength *= 1.1f;
 			govtStrength += str * VALUE_MARINES;
 			rebelStrength *= 0.75f;	// morale loss + bombardment
 		}
@@ -662,6 +663,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		
 		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(numMarines/2.5f));
 		fleet.getMemoryWithoutUpdate().set("$nex_rebellion_suppr_payload", str);
+		fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
 		fleet.setName(name);
 		fleet.setAIMode(true);
 		
@@ -723,6 +725,19 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		return source;
 	}
 	
+	protected void prepSuppressionFleet() {
+		suppressionFleetSource = pickSuppressionFleetSource();
+		// no markets to launch fleet from, delay countdown and check again later
+		if (suppressionFleetSource == null)
+			suppressionFleetCountdown += SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.2f, 0.3f);
+		else
+		{
+			sendUpdate(UpdateParam.FLEET_PREP);
+			suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
+			suppressionFleetWarning = true;
+		}
+	}
+	
 	/**
 	 * Spawns a fleet full of marines from another market to help crush the rebellion
 	 */
@@ -731,7 +746,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		SuppressionFleetData data = createSuppressionFleet(suppressionFleetSource);
 		suppressionFleet = data;
 		sendUpdate(UpdateParam.FLEET_SPAWNED);
-		govtStrength *= 1.2f;	// morale boost
+		//govtStrength *= 1.2f;	// morale boost
 		suppressionFleetWarning = false;
 		suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
 	}
@@ -765,16 +780,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				suppressionFleetCountdown -= days;
 				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
 				{
-					suppressionFleetSource = pickSuppressionFleetSource();
-					// no markets to launch fleet from, delay countdown and check again later
-					if (suppressionFleetSource == null)
-						suppressionFleetCountdown += SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.2f, 0.3f);
-					else
-					{
-						sendUpdate(UpdateParam.FLEET_PREP);
-						suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
-						suppressionFleetWarning = true;
-					}
+					prepSuppressionFleet();
 				}
 				
 				// block suppression fleet launch if source market is no longer controlled
@@ -1222,16 +1228,28 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		
 		// Devmode: fast resolve action
 		if (Global.getSettings().isDevMode() && !isEnding() && !isEnded()) {
-			ButtonAPI button = info.addButton("Fast resolve", "bla", 
+			ButtonAPI button = info.addButton("Fast resolve", "fastResolve", 
 					getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 					(int)(width), 20f, opad * 3f);
+			button = info.addButton("Spawn suppression fleet", "spawnSuppressionFleet", 
+					getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
+					(int)(width), 20f, opad);
 		}
 		
 	}
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
-		fastResolve();
+		switch ((String)buttonId) {
+			case "fastResolve":
+				fastResolve();
+				break;
+			case "spawnSuppressionFleet":
+				prepSuppressionFleet();
+				spawnSuppressionFleet();
+				break;
+		}
+		
 		ui.updateUIForItem(this);
 	}
 	

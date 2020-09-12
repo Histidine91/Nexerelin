@@ -52,6 +52,12 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 	}
 	
 	@Override
+	protected void onFleetDefeat() {
+		super.onFleetDefeat();
+		data.intel.suppressionFleetDefeated(data);
+	}
+	
+	@Override
 	protected void giveGoToAssignment() {
 		MarketAPI market = data.target;
 		String marketName = market.getName();
