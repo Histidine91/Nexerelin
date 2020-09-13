@@ -219,6 +219,10 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			if (member.getCaptain().isDefault()) {
 				continue;
 			}
+			if (member.getCaptain().getMemoryWithoutUpdate().getBoolean("$nex_noOfficerDeath")) 
+			{
+				continue;
+			}
 
 			OfficerDataAPI officer = battle.getSourceFleet(member).getFleetData().getOfficerData(member.getCaptain());
 			if (officer == null) {
@@ -230,10 +234,10 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			float crewLossMult = member.getStats().getCrewLossMult().getModifiedValue();
 			float baseEscapeChance = Global.getSettings().getFloat("nex_officerBaseEscapeChance");
 			if (result.getDestroyed().contains(member)) {
-				escapeChance = NexUtilsMath.lerp(0.5f, 1f, 1f - crewLossMult);
+				escapeChance = NexUtilsMath.lerp(baseEscapeChance, 1f, 1f - crewLossMult);
 				recoverableChance = 0f;
 			} else {
-				escapeChance = NexUtilsMath.lerp(0.5f, 1f, 1f - crewLossMult);
+				escapeChance = NexUtilsMath.lerp(baseEscapeChance, 1f, 1f - crewLossMult);
 				recoverableChance = Global.getSettings().getFloat("nex_officerSurviveChance");
 			}
 
