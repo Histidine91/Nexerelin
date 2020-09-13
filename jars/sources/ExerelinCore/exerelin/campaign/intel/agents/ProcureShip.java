@@ -301,6 +301,9 @@ public class ProcureShip extends CovertActionIntel {
 	
 	@Override
 	protected float getXPMult() {
+		if (isLegal()) {
+			return super.getXPMult() * 0.5f;
+		}
 		return super.getXPMult() * getMemberSizeMult();
 	}
 	
