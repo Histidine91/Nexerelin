@@ -57,7 +57,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	public static final float ADDITIONAL_STAGE_OFFSET = 0;	//-FLEET_STAGES.get(FLEET_STAGES.size() - 1)[0];
 	
 	public static final Set<String> IGNORED_FLEET_TYPES = new HashSet<>(Arrays.asList(new String[]{
-		"vengeanceFleet", "exerelinInvasionFleet", "exerelinStrikeFleet", "exerelinInvasionSupportFleet"
+		"vengeanceFleet", "exerelinInvasionFleet", "exerelinStrikeFleet", "exerelinInvasionSupportFleet",
+		"nex_satBombFleet"
 	}));
 	
 	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;

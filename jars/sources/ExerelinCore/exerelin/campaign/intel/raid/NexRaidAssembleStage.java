@@ -15,6 +15,7 @@ public class NexRaidAssembleStage extends NexAssembleStage {
 	
 	@Override
 	protected String pickNextType() {
+		if (intel instanceof SatBombIntel) return "nex_satBombFleet";
 		return "exerelinInvasionSupportFleet";
 	}
 	

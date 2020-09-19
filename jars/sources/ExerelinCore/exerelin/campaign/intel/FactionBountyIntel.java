@@ -42,7 +42,7 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 	public static Logger log = Global.getLogger(FactionBountyIntel.class);
 	
 	public static final Set<String> ALWAYS_PAYOUT_FLEETS = new HashSet<>(Arrays.asList(new String[] {
-		FleetTypes.TASK_FORCE, "exerelinInvasionFleet", "exerelinInvasionSupportFleet"
+		FleetTypes.TASK_FORCE, "exerelinInvasionFleet", "exerelinInvasionSupportFleet", "nex_satBombFleet"
 	}));
 
 	public static final float BOUNTY_MULT = 0.5f;	// of baseSystemBounty

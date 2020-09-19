@@ -53,6 +53,7 @@ public class DSFleetUtilsProxy {
 			case "exerelinInvasionSupportFleet":
 			case "exerelinDefenseFleet":
 			case "nex_suppressionFleet":
+			case "nex_satBombFleet":
 				randomizeVariants(fleet, factionId, extendedTheme, qualityFactor, 0f, theme, 
 						getArchetypeWeights(DS_Defs.FleetStyle.MILITARY, factionId), false, r);
 				break;
