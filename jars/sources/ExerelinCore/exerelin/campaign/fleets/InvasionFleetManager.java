@@ -97,7 +97,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
 	public static final float BASE_INVASION_COST = 500f;	// for reference, Jangala at start of game is around 500
 	public static final float MAX_INVASION_SIZE = 2000;
-	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 15;
+	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 6f;
 	public static final float SAT_BOMB_CHANCE = 0.4f;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
@@ -738,7 +738,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return getMarketInvasionCommodityValue(market) * ExerelinConfig.invasionPointEconomyMult;
 	}
 	
-	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getMaxInvasionSize("hegemony"));
+	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getMaxInvasionSize("hegemony"), 1);
 	/**
 	 * Gets the max invasion size for the specified attacking faction, based on their economy.
 	 * Capped at {@code MAX_INVASION_SIZE}, and returns that value immediately if brawl mode is enabled.
