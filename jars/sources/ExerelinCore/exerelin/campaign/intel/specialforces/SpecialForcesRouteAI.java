@@ -446,7 +446,7 @@ public class SpecialForcesRouteAI {
 			if (raid.getETA() > MAX_RAID_ETA_TO_CARE) continue;
 			hostileRaids.add(new Pair<>(raid, getRaidDefendPriority(raid)));
 		}
-		sf.debugMsg("Hostile raid count: " + hostileRaids.size(), false);
+		//sf.debugMsg("Hostile raid count: " + hostileRaids.size(), false);
 		
 		Pair<RaidIntel, Float> priorityDefense = pickPriorityDefendTask(hostileRaids, isBusy);
 		if (priorityDefense != null) {
