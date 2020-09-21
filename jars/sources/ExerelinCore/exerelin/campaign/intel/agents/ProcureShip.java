@@ -10,11 +10,13 @@ import com.fs.starfarer.api.campaign.FleetInflater;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
-import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.DefaultFleetInflaterParams;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
@@ -32,15 +34,19 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.submarkets.PrismMarket;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
@@ -50,6 +56,10 @@ public class ProcureShip extends CovertActionIntel {
 	
 	public static final float FAILURE_REFUND_MULT = 0.75f;
 	public static final String BUTTON_CHANGE_DESTINATION = "changeDestination";
+	public static final List<String> ALLOWED_SUBMARKETS = new ArrayList<>(Arrays.asList(new String[] {
+		Submarkets.SUBMARKET_OPEN, Submarkets.SUBMARKET_BLACK, 
+		Submarkets.GENERIC_MILITARY, "AL_militaryMarket"
+	}));
 	
 	protected FleetMemberAPI ship;
 	protected Float timeToDeliver = null;
@@ -165,6 +175,8 @@ public class ProcureShip extends CovertActionIntel {
 	 * Mostly copied from CoreScript's {@code doCustomProduction()}.
 	 */
 	public void prepShipForDelivery() {
+		if (ship.isFighterWing()) return;
+		
 		CampaignFleetAPI tempFleet = Global.getFactory().createEmptyFleet(Factions.PLAYER, "temp", true);
 		tempFleet.setCommander(Global.getSector().getPlayerPerson());
 		DefaultFleetInflaterParams p = new DefaultFleetInflaterParams();
@@ -194,6 +206,10 @@ public class ProcureShip extends CovertActionIntel {
 	 * when the delivery is made.
 	 */
 	protected void createDerelict() {
+		if (ship.isFighterWing()) {	// TODO
+			return;
+		}
+		
 		SectorEntityToken toOrbit = destination.getPrimaryEntity();
 		String variantId = getRandomVariantId();
 		DerelictShipEntityPlugin.DerelictShipData params = new DerelictShipEntityPlugin.DerelictShipData(
@@ -217,7 +233,10 @@ public class ProcureShip extends CovertActionIntel {
 	protected void deliver() {
 		delivered = true;
 		if (destination.getSubmarket(Submarkets.SUBMARKET_STORAGE) != null) {
-			destination.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().getMothballedShips().addFleetMember(ship);
+			if (ship.isFighterWing())
+				destination.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addFighters(ship.getHullId(), 1);
+			else
+				destination.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().getMothballedShips().addFleetMember(ship);
 		} 
 		// if no storage, add as derelict around market
 		else if (destination.getPrimaryEntity() != null) 
@@ -489,5 +508,50 @@ public class ProcureShip extends CovertActionIntel {
 		}
 		
 		return null;
+	}
+	
+	public static List<FleetMemberAPI> getEligibleTargets(MarketAPI market) {
+		List<FleetMemberAPI> targets = new ArrayList<>();
+		Set<String> hullsToCheck = new HashSet<>();
+		
+		boolean allShips = ExerelinConfig.agentStealAllShips;
+		if (allShips) {
+			hullsToCheck.addAll(market.getFaction().getKnownShips());
+		}
+		else {
+			for (SubmarketAPI submarket : market.getSubmarketsCopy()) {
+				if (!ALLOWED_SUBMARKETS.contains(submarket.getSpecId()))
+					continue;
+				
+				Global.getLogger(ProcureShip.class).info("Checking submarket " + submarket.getSpecId());
+				submarket.getPlugin().updateCargoPrePlayerInteraction();	// make them refresh their cargo if needed
+				
+				for (FleetMemberAPI member : submarket.getCargo().getMothballedShips().getMembersListCopy()) 
+				{
+					String hullId = member.getHullSpec().getDParentHullId();
+					if (hullId == null) hullId = member.getHullSpec().getHullId();
+					Global.getLogger(ProcureShip.class).info(" Adding ship " + hullId);
+					hullsToCheck.add(hullId);
+				}
+			}
+		}
+		
+		for (String hullId : hullsToCheck) {
+			ShipHullSpecAPI spec = Global.getSettings().getHullSpec(hullId);
+			if (spec.getHints().contains(ShipTypeHints.UNBOARDABLE))
+				continue;
+			if (PrismMarket.getRestrictedShips().contains(hullId))
+				continue;
+			if (CovertOpsManager.getStealShipCostMult(hullId) <= 0)
+				continue;
+
+			List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(hullId);
+			String variantId = ExerelinUtils.getRandomListElement(variants);
+			if (variantId == null) variantId = hullId + "_Hull";
+			FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+			targets.add(member);
+		}
+		
+		return targets;
 	}
 }

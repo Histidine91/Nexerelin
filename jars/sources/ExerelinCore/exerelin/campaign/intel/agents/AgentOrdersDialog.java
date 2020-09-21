@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.IndustryPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -16,10 +15,7 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.combat.MutableStat;
-import com.fs.starfarer.api.combat.ShipHullSpecAPI;
-import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -42,7 +38,6 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -202,21 +197,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				}
 				break;
 			case CovertActionType.PROCURE_SHIP:
-				for (String hullId : agentMarket.getFaction().getKnownShips()) {
-					ShipHullSpecAPI spec = Global.getSettings().getHullSpec(hullId);
-					if (spec.getHints().contains(ShipTypeHints.UNBOARDABLE))
-						continue;
-					if (PrismMarket.getRestrictedShips().contains(hullId))
-						continue;
-					if (CovertOpsManager.getStealShipCostMult(hullId) <= 0)
-						continue;
-					
-					List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(hullId);
-					String variantId = ExerelinUtils.getRandomListElement(variants);
-					if (variantId == null) variantId = hullId + "_Hull";
-					FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
-					targets.add(member);
-				}
+				targets.addAll(ProcureShip.getEligibleTargets(agentMarket));
 				Collections.sort(targets, PROCURE_SHIP_COMPARATOR);
 				break;
 		}

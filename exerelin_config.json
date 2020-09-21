@@ -29,6 +29,7 @@
     "agentBaseSalary":2000,
     "agentSalaryPerLevel":1000,
     "maxAgents":2,
+    "agentStealAllShips":true,	# true = can steal all ships known to faction, false = only what's for sale on that particular market at that moment
     
     # Invasion stuff
     # most of these are also used by raids
