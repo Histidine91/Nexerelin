@@ -138,9 +138,12 @@ public class NexUtilsReputation
 		FactionAPI factionToSync = sector.getFaction(factionIdToSync);
 		
 		float relationship = playerFaction.getRelationship(otherFactionId);
+		float relationshipOld = factionToSync.getRelationship(otherFactionId);
 		factionToSync.setRelationship(otherFactionId, relationship);
 		DiplomacyManager.clampRelations(factionIdToSync, otherFactionId, 0);
-		AllianceManager.remainInAllianceCheck(factionIdToSync, otherFactionId);
+		
+		if (relationship < relationshipOld)
+			AllianceManager.remainInAllianceCheck(factionIdToSync, otherFactionId);
 	}
 	
 	// re-set our faction's relations to match our own

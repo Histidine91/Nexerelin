@@ -417,7 +417,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             getManager().setLastWarTimestamp(Global.getSector().getClock().getTimestamp());
         }
         
-        if (!isAllianceAction)
+        if (!isAllianceAction && delta < 0)
             AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
