@@ -92,16 +92,20 @@ public class VultureFleetAI implements EveryFrameScript
 				return;
 			}
 			
-			if (data.target == null || !data.target.isAlive()) {
+			if (data.target != null && !data.target.isAlive()) {
 				data.target = null;
 			}
-			return;
+			
+			if (data.target != null) {
+				return;	// if we have a target already, don't bother running the rest of the AI script
+			}
 		}
 		
 		// no orders, let's scavenge something
 		// but first check if we have something to scavenge
 		if (data.target == null || !data.target.isAlive()) {
-			data.target = VultureFleetManager.getClosestScavengable(fleet.getLocation(), fleet.getContainingLocation());
+			data.target = VultureFleetManager.getClosestScavengable(fleet.getLocation(), 
+					fleet.getContainingLocation(), fleet);
 			if (data.target == null) {
 				checkIdle();
 				return;
@@ -110,21 +114,31 @@ public class VultureFleetAI implements EveryFrameScript
 		
 		SectorEntityToken target = data.target;
 		String tgtName = target.getName().toLowerCase();
-		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, target, 30, StringHelper.getFleetAssignmentString("movingToScavenge", tgtName));
+		fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 30, StringHelper.getFleetAssignmentString("movingToScavenge", tgtName));
 		fleet.addAssignment(FleetAssignment.HOLD, target, 0.25f, StringHelper.getFleetAssignmentString("scavenging", tgtName), 
 				getScavengeScript(target));
 		//fleet.addAssignment(FleetAssignment.HOLD, target, 0.05f);
 	}
 	
-	protected void checkIdle() {
+	protected void checkIdle() 
+	{
+		// don't hang around if no raids and nothing to collect
+		if (!VultureFleetManager.hasOngoingRaids(fleet.getContainingLocation()))
+		{
+			giveStandDownOrders();
+			return;
+		}
+		
 		if (following == null || !following.isAlive()) {
 			following = VultureFleetManager.getRandomFleetToFollow(fleet);
 		}
 		
 		if (following != null) {
-			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, following, 0.34f);
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, following, 2f);
 		}
-		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, fleet, 0.34f);
+		else {
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, data.source.getPrimaryEntity(), 2f);
+		}
 	}
 	
 	// From ScavengeAbility.java:

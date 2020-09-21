@@ -28,6 +28,8 @@
 	
 	"nex_fleetRequestOrganizeTimeMult":1,
 	
+	"nex_vultureSpawnRateMult":1,	# unsure what this actually does tbh
+	
 	"nex_spacerDebtMult":1,
 	
 	"nex_npcColonyGrowthMult":0.5,

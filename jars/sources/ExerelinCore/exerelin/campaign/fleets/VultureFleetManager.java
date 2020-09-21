@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
+import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -33,9 +35,11 @@ import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.Debri
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldSource;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -48,6 +52,7 @@ public class VultureFleetManager extends DisposableFleetManager
 {
 	public static final String MANAGER_MAP_KEY = "nex_vultureFleetManager";
 	public static final String MEM_KEY_FLEET_COUNT_CACHE = "$nex_vultureFleetCountCache";
+	public static final int CHECK_HOSTILE_FLEET_RANGE_SQ = 1000 * 1000;
 	public static final boolean DEBUG_MODE = false;
 	
 	public static Logger log = Global.getLogger(VultureFleetManager.class);
@@ -64,7 +69,7 @@ public class VultureFleetManager extends DisposableFleetManager
 		if (Global.getSector().getPlayerFleet().getContainingLocation() == origin.getContainingLocation())
 			from = Global.getSector().getPlayerFleet().getLocation();
 		
-		SectorEntityToken target = getClosestScavengable(from, origin.getContainingLocation());
+		SectorEntityToken target = getClosestScavengable(from, origin.getContainingLocation(), null);
 		
 		if (target == null) {
 			log.info("  No scavenge target found");
@@ -72,12 +77,11 @@ public class VultureFleetManager extends DisposableFleetManager
 		}
 		
 		FactionAPI faction = Global.getSector().getFaction(Factions.SCAVENGERS);
-		int marketSize = origin.getSize();
-		int maxFP = (int)(Math.pow(marketSize, 1.5f) * 5);
 		
 		Random random = new Random();
 		
 		// Medium scavenger fleet, plus more combat ships and minus some unnecessary stuff
+		// FIXME: make it not so random?
 		int combat = 4 + random.nextInt(5);
 		int freighter = 4 + random.nextInt(5);
 		int utility = 2 + random.nextInt(3);
@@ -85,6 +89,8 @@ public class VultureFleetManager extends DisposableFleetManager
 		combat *= 8f;	// more than normal scav
 		freighter *= 3f;
 		utility *= 2f;	// more than normal scav
+		
+		int total = combat + freighter + utility;
 		
 		//log.info("Trying to create mining fleet of size " + maxFP + ", target " + target.getName());
 		FleetParamsV3 params = new FleetParamsV3(origin, origin.getLocationInHyperspace(),
@@ -144,12 +150,14 @@ public class VultureFleetManager extends DisposableFleetManager
 		
 		VultureFleetAI ai = new VultureFleetAI(fleet, data);
 		fleet.addScript(ai);
-		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
-		/*
-		Global.getSector().getCampaignUI().addMessage("Spawned vulture fleet in " 
-				+ origin.getContainingLocation() + " from " + origin.getName() 
-				+ ", translocation: " + !onTheSpot);
-		*/
+		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + total);
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("Spawned vulture fleet in " 
+					+ origin.getContainingLocation() + " from " + origin.getName() 
+					+ ", translocation: " + !onTheSpot);
+		}
+		
+		
 		
 		return fleet;
 	}
@@ -184,12 +192,58 @@ public class VultureFleetManager extends DisposableFleetManager
 		return temp.getDeploymentPointsCost();
 	}
 	
-	public static SectorEntityToken getClosestScavengable(Vector2f fleetLoc, LocationAPI loc) 
+	// runcode exerelin.campaign.fleets.VultureFleetManager.getDangerousFleetsInSystem(Global.getSector().getCurrentLocation(), null)
+	/**
+	 * Lists fleet that are hostile to indies and that (if the specific vulture 
+	 * fleet is defined) the vultures can't beat in a fight.
+	 * @param loc
+	 * @param vulture
+	 * @return
+	 */
+	public static List<CampaignFleetAPI> getDangerousFleetsInSystem(LocationAPI loc, 
+			CampaignFleetAPI vulture) 
+	{
+		List<CampaignFleetAPI> fleets = new ArrayList<>();
+		ModularFleetAIAPI ai = null;
+		if (vulture != null) {
+			ai = (ModularFleetAIAPI)vulture.getAI();
+			if (ai == null) return fleets;
+		}
+		
+		// count a fleet if it's hostile to indies
+		// if our fleet is defined, also only count the other fleet if we can't beat it in a fight
+		for (CampaignFleetAPI fleet : loc.getFleets()) {
+			if (!fleet.getFaction().isHostileTo(Factions.INDEPENDENT)) continue;
+			
+			if (ai != null && ai.getTacticalModule().pickEncounterOption(null, fleet) 
+					== EncounterOption.ENGAGE) {
+				continue;
+			}
+			
+			fleets.add(fleet);
+		}
+		log.info("Dangerous fleet count: " + fleets.size());
+		
+		return fleets;
+	}
+	
+	public static CampaignFleetAPI getFleetCloseToTarget(Vector2f targetLoc, LocationAPI loc, Collection<CampaignFleetAPI> fleets) 
+	{
+		for (CampaignFleetAPI fleet : fleets) {
+			float distSq = MathUtils.getDistanceSquared(fleet.getLocation(), targetLoc);
+			if (distSq < CHECK_HOSTILE_FLEET_RANGE_SQ)
+				return fleet;
+		}
+		return null;
+	}
+	
+	public static SectorEntityToken getClosestScavengable(Vector2f fleetLoc, LocationAPI loc, 
+			CampaignFleetAPI vulture) 
 	{
 		SectorEntityToken closest = null;
 		double closestDistSq = 999999999d;
 		
-		for (SectorEntityToken entity : getDerelictShips(loc)) {
+		for (SectorEntityToken entity : getDerelictShips(loc, vulture)) {
 			float distSq = MathUtils.getDistanceSquared(fleetLoc, entity.getLocation());
 			if (distSq < closestDistSq) {
 				closestDistSq = distSq;
@@ -197,7 +251,7 @@ public class VultureFleetManager extends DisposableFleetManager
 			}
 		}
 		// debris field
-		for (CampaignTerrainAPI terrain : getDebrisFields(loc)) {
+		for (CampaignTerrainAPI terrain : getDebrisFields(loc, vulture)) {
 			float distSq = MathUtils.getDistanceSquared(fleetLoc, terrain.getLocation());
 			if (distSq < closestDistSq) {
 				closestDistSq = distSq;
@@ -245,12 +299,17 @@ public class VultureFleetManager extends DisposableFleetManager
 	}
 	
 	/**
-	 * Gets the derelict ships present in the location. Will not grab ships with no expiry.
+	 * Gets the derelict ships present in the location.Will not grab ships with 
+	 * no expiry, or with nearby fleets that could threaten the vulture fleet.
 	 * @param loc
+	 * @param vulture
 	 * @return
 	 */
-	public static List<SectorEntityToken> getDerelictShips(LocationAPI loc) {
+	public static List<SectorEntityToken> getDerelictShips(LocationAPI loc, CampaignFleetAPI vulture) 
+	{
 		List<SectorEntityToken> results = new ArrayList<>();
+		List<CampaignFleetAPI> hostileFleets = getDangerousFleetsInSystem(loc, vulture);
+		
 		for (SectorEntityToken entity : loc.getEntitiesWithTag(Tags.SALVAGEABLE)) 
 		{
 			if (!entity.hasTag(Tags.EXPIRES)) continue;
@@ -258,6 +317,12 @@ public class VultureFleetManager extends DisposableFleetManager
 				continue;
 			if (!(entity.getCustomPlugin() instanceof DerelictShipEntityPlugin))
 				continue;
+			CampaignFleetAPI nearbyHostile = getFleetCloseToTarget(entity.getLocation(), loc, hostileFleets);
+			if (nearbyHostile != null) {
+				log.info("Entity " + entity.getName() + " has unfriendly fleet " 
+						+ nearbyHostile.getNameWithFactionKeepCase() + " nearby, skip");
+				continue;
+			}
 			results.add(entity);
 		}
 		return results;
@@ -266,16 +331,26 @@ public class VultureFleetManager extends DisposableFleetManager
 	/**
 	 * Gets the debris fields in the location which are valid targets for scavenging. 
 	 * Will not include permanent debris fields, or those generated from any source 
-	 * other than combat.
+	 * other than combat, or those with hostile-to-independents fleets nearby.
 	 * @param loc
+	 * @param vulture
 	 * @return
 	 */
-	public static List<CampaignTerrainAPI> getDebrisFields(LocationAPI loc) {
+	public static List<CampaignTerrainAPI> getDebrisFields(LocationAPI loc, CampaignFleetAPI vulture)
+	{
 		List<CampaignTerrainAPI> results = new ArrayList<>();
+		List<CampaignFleetAPI> hostileFleets = getDangerousFleetsInSystem(loc, vulture);
+		
 		for (CampaignTerrainAPI terrain : loc.getTerrainCopy()) {
 			if (!terrain.getType().equals(Terrain.DEBRIS_FIELD)) continue;
 			DebrisFieldParams params = ((DebrisFieldTerrainPlugin)terrain.getPlugin()).getParams();
 			if (params.lastsDays > 60 || params.source != DebrisFieldSource.BATTLE) continue;
+			CampaignFleetAPI nearbyHostile = getFleetCloseToTarget(terrain.getLocation(), loc, hostileFleets);
+			if (nearbyHostile != null) {
+				log.info("Debris field has unfriendly fleet " 
+						+ nearbyHostile.getNameWithFactionKeepCase() + " nearby, skip");
+				continue;
+			}
 			results.add(terrain);
 		}
 		return results;
@@ -291,14 +366,15 @@ public class VultureFleetManager extends DisposableFleetManager
 		float score = 0;
 		
 		// floating wrecks
-		for (SectorEntityToken entity : getDerelictShips(loc)) 
+		for (SectorEntityToken entity : getDerelictShips(loc, null)) 
 		{
 			float shipValue = getShipScavengeScore(entity);
 			score += shipValue;
 		}
 		
 		// debris field
-		for (CampaignTerrainAPI terrain : getDebrisFields(loc)) {
+		for (CampaignTerrainAPI terrain : getDebrisFields(loc, null)) 
+		{
 			DebrisFieldTerrainPlugin debris = (DebrisFieldTerrainPlugin)terrain.getPlugin();
 			float value = getDebrisScavengeScore(terrain, debris.getParams());		
 			score += value;
@@ -346,6 +422,7 @@ public class VultureFleetManager extends DisposableFleetManager
 		float raidFactor = 0;
 		for (IntelInfoPlugin intel : raids) {
 			RaidIntel raid = (RaidIntel)intel;
+			if (raid.getFaction().isHostileTo(Factions.INDEPENDENT)) continue;
 			if (raid.isEnding() || raid.isEnded()) continue;
 			if (raid.getSystem() != currSpawnLoc) continue;
 			// only ongoing raids
@@ -409,9 +486,11 @@ public class VultureFleetManager extends DisposableFleetManager
 		return 30f;
 	}
 	
+
 	@Override
-	public float getSpawnRateMult() {
-		return super.getSpawnRateMult() * 8f;
+	protected void updateSpawnRateMult() {
+		super.updateSpawnRateMult();
+		spawnRateMult *= 5f * Global.getSettings().getFloat("nex_vultureSpawnRateMult");
 	}
 	
 	public static class VultureFleetData
