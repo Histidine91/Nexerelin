@@ -99,6 +99,7 @@ public class Nex_PrisonerAction extends AgentActionBase {
 	protected boolean isAtMaxRep(SectorEntityToken target) {
 		FactionAPI faction1 = PlayerFactionStore.getPlayerFaction();
 		FactionAPI faction2 = target.getFaction();
+		if (faction1 == faction2) faction1 = Global.getSector().getPlayerFaction();
 		float max = ExerelinFactionConfig.getMaxRelationship(faction1.getId(), faction2.getId());
 		float curr = faction1.getRelationship(faction2.getId()); 
 		//Global.getLogger(this.getClass()).info(String.format("Current: %s, max: %s", curr, max));
