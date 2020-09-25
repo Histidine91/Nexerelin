@@ -450,8 +450,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         WeightedRandomPicker<String> actionPicker = new WeightedRandomPicker(random);
         
         List<FactionAPI> factions = new ArrayList<>();
-        for( String factionId : SectorManager.getLiveFactionIdsCopy())
-            factions.add(sector.getFaction(factionId));
+        for( String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			factions.add(sector.getFaction(factionId));
+		}
+            
 
         actionPicker.add(CovertActionType.RAISE_RELATIONS, 1.2f);
         actionPicker.add(CovertActionType.LOWER_RELATIONS, 1.5f);
@@ -474,8 +476,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                     !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
             ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (factionConf != null && !factionConf.allowAgentActions) continue;
+			
+			float chance = 1;
+			if (DiplomacyTraits.hasTrait(factionId, TraitIds.DEVIOUS))
+				chance = 1.5f;
             
-            agentFactionPicker.add(faction);
+            agentFactionPicker.add(faction, chance);
             factionCount++;
         }
         if (factionCount < 2) return;

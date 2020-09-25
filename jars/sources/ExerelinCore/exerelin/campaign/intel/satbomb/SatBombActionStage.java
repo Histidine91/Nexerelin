@@ -23,17 +23,27 @@ public class SatBombActionStage extends InvActionStage {
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
 		if (offFltIntel.getOutcome() != null)
 			return;
+		// TODO
+		boolean vicBioBomb = false;	//intel.getFaction().getId().equals("vic");
 		
 		float cost = Nex_MarketCMD.getBombardmentCost(market, fleet);
 		//float maxCost = intel.getAssembleStage().getOrigSpawnFP() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
 		float maxCost = intel.getRaidFP() / intel.getNumFleets() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
 		if (fleet != null) {
-			maxCost = fleet.getCargo().getMaxFuel() * 0.25f;
+			if (vicBioBomb)	// bio sat bomb
+				maxCost = fleet.getCargo().getMaxCapacity() * 0.25f;
+			else maxCost = fleet.getCargo().getMaxFuel() * 0.25f;
 		}
 		log.info(String.format("Attempting sat bomb: %s fuel available, %s cost", maxCost, cost));
 		
 		if (cost <= maxCost) {
-			new Nex_MarketCMD(market.getPrimaryEntity()).doBombardment(intel.getFaction(), BombardType.SATURATION);
+			if (vicBioBomb) {
+				//VIC_FactionVBomb.doBombardment(fleet.getFaction(), market);
+			}
+			else {
+				new Nex_MarketCMD(market.getPrimaryEntity()).doBombardment(intel.getFaction(), BombardType.SATURATION);
+			}
+			
 			SatBombIntel intel = ((SatBombIntel)this.intel);
 			status = RaidIntel.RaidStageStatus.SUCCESS;
 			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);

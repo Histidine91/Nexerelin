@@ -25,6 +25,7 @@ import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
@@ -51,6 +52,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	public static final boolean ALWAYS_REPORT = false;	// debug
 	public static final String BUTTON_GOTOAGENT = "goToAgent";
 	public static final int DEFAULT_AGENT_LEVEL = 2;
+	public static final int DEFAULT_AGENT_LEVEL_DEVIOUS = 4;
 	public static final float AI_ADMIN_SUCCESS_MULT = 0.75f;
 	
 	protected Map<String, Object> params;
@@ -143,8 +145,19 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		return playerInvolved;
 	}
 	
+	/**
+	 * Gets the level of the current agent, or the appropriate level for NPC actions based on the faction.
+	 * @return
+	 */
+	public int getLevel() {
+		if (agent != null) return agent.getLevel();
+		if (DiplomacyTraits.getFactionTraits(agentFaction.getId()).contains(DiplomacyTraits.TraitIds.DEVIOUS))
+			return DEFAULT_AGENT_LEVEL_DEVIOUS;
+		return DEFAULT_AGENT_LEVEL;
+	}
+	
 	public float getTimeNeeded() {
-		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		int level = getLevel();
 		float time = getDef().time;
 		time *= 1 - 0.1f * (level - 1);
 		
@@ -167,7 +180,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		float baseCost = getDef().baseCost;
 		cost.modifyFlat("base", baseCost, getString("costBase", true));
 		
-		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		int level = getLevel();
 		float levelMult = 1 - 0.1f * (level - 1);
 		//cost.modifyMult("levelMult", baseCost, getString("costLevelMult", true));
 		
@@ -187,14 +200,14 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	}
 	
 	public float getEffectMultForLevel() {
-		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		int level = getLevel();
 		float mult = 1 + 0.2f * (level - 1);
 		return mult;
 	}
 	
 	protected MutableStat getSuccessChance() {
 		CovertOpsManager.CovertActionDef def = getDef();
-		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		int level = getLevel();
 		MutableStat stat = new MutableStat(0);
 		
 		// base chance
@@ -235,7 +248,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	protected MutableStat getDetectionChance(boolean fail) {
 		CovertOpsManager.CovertActionDef def = getDef();
-		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		int level = getLevel();
 		MutableStat stat = new MutableStat(0);
 		
 		// base chance

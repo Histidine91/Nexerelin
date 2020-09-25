@@ -123,7 +123,7 @@ public class Travel extends CovertActionIntel {
 		
 		// reduce penalty based on agent level
 		if (penalty > 0) {
-			int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+			int level = getLevel();
 			penalty *= 1 - 0.15f * (level - 1);
 		}
 		

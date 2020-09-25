@@ -59,7 +59,7 @@ public class InfiltrateCell extends CovertActionIntel {
 	@Override
 	protected MutableStat getSuccessChance() {
 		CovertOpsManager.CovertActionDef def = getDef();
-		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		int level = getLevel();
 		MutableStat stat = new MutableStat(0);
 		
 		// base chance

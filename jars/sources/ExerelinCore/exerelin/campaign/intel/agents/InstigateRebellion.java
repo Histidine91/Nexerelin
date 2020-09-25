@@ -33,7 +33,7 @@ public class InstigateRebellion extends CovertActionIntel {
 	
 	@Override
 	public float getEffectMultForLevel() {
-		int level = agent != null ? agent.getLevel() : DEFAULT_AGENT_LEVEL;
+		int level = getLevel();
 		float mult = 0.7f + 0.15f * (level - 1);
 		return mult;
 	}

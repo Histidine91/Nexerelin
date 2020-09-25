@@ -29,6 +29,7 @@ intel_skull.png
 Made by Tartiflette:
 	peace.png
 	war.png
+	spy.png
 	spy4*.png
 	
 Made by Soren:

@@ -166,6 +166,7 @@
 			"trait_monopolist":"graphics/icons/industry/exports40.png",
 			"trait_lawAndOrder":"graphics/exerelin/icons/intel/police_star.png",
 			"trait_lowProfile":"graphics/portraits/bgs/bg03.png",
+			"trait_devious":"graphics/exerelin/icons/intel/spy.png",
 		},
 		
 		"ui":{

@@ -151,7 +151,14 @@
 			"desc":"Markets less likely to be targeted for raids/invasions, if the attacker has multiple enemies. Effect diminishes with empire size.",
 			"color":[160, 160, 176],
 			"icon":"graphics/portraits/bgs/bg03.png"
-		},		
+		},
+		{
+			"id":"devious",
+			"name":"Devious",
+			"desc":"Agent actions have increased chance of execution, success rate and effect.",
+			"color":[96, 128, 144],
+			"icon":"graphics/exerelin/icons/intel/spy.png"
+		}
 		# vindictive?
 	],
 }
