@@ -42,6 +42,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -589,7 +590,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
 			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
 			addActionOption(CovertActionType.PROCURE_SHIP);
-			addActionOption(CovertActionType.INSTIGATE_REBELLION);
+			if (ExerelinUtilsMarket.canBeInvaded(agentMarket, true))
+				addActionOption(CovertActionType.INSTIGATE_REBELLION);
 		}
 		if (agentMarket != null && agentMarket.hasCondition(Conditions.PATHER_CELLS)) {
 			MarketConditionAPI cond = agentMarket.getCondition(Conditions.PATHER_CELLS);

@@ -732,6 +732,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				// rebellion special handling
 				if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
 				{
+					if (!ExerelinUtilsMarket.canBeInvaded(market, false))
+						continue;
 					if (RebellionCreator.getInstance().getRebellionPoints(market) < 50)
 						continue;
 					if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
