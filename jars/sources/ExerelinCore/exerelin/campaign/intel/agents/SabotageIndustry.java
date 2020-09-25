@@ -34,8 +34,9 @@ public class SabotageIndustry extends CovertActionIntel {
 	
 	@Override
 	public void onSuccess() {
-		float effectMin = getDef().effect.one;
-		float effectMax = getDef().effect.two;
+		float mult = getEffectMultForLevel();
+		float effectMin = getDef().effect.one * mult;
+		float effectMax = getDef().effect.two * mult;
 		float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
 		if (!playerInvolved) effect *= NPC_EFFECT_MULT;
 
