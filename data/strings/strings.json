@@ -724,6 +724,8 @@
 		"morality_amoral":"amoral",
 		"morality_evil":"evil",
 		
+		"stabilizationCommodity":"Stabilization commodity: %s",
+		
 		"dispTableHeader":"Dispositions towards other factions",
 		"dispTableOverall":"Overall",
 		"dispTableBase":"Base",

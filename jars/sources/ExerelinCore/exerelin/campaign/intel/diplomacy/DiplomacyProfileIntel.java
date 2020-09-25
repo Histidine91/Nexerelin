@@ -2,7 +2,9 @@ package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
@@ -360,6 +362,18 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			tooltip.addImageWithText(pad);
 		}
 	}
+	
+	public void generateStabilizeCommodityPara(TooltipMakerAPI tooltip, Morality moral, float pad) {
+		CommoditySpecAPI commodity;
+		if (moral == Morality.GOOD || moral == Morality.NEUTRAL) {
+			commodity = Global.getSettings().getCommoditySpec(Commodities.FOOD);
+		} else {
+			commodity = Global.getSettings().getCommoditySpec(Commodities.HAND_WEAPONS);
+		}
+		TooltipMakerAPI tooltip2 = tooltip.beginImageWithText(commodity.getIconName(), 24);
+		tooltip2.addPara(getString("stabilizationCommodity"), 0, Misc.getHighlightColor(), commodity.getLowerCaseName());
+		tooltip.addImageWithText(pad);
+	}
 
 	// adapted from Starship Legends' BattleReport
     @Override
@@ -390,9 +404,10 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		String moralStr = getString("morality_" + moralId.toLowerCase(), true);
 		
 		String str = getString("morality", true) + ": " + moralStr;
-		flagAndBasicInfo.addPara(str, opad, moral.color, moralStr);
+		//flagAndBasicInfo.addPara(str, opad, moral.color, moralStr);
 		
 		generateClaimedMarketsPara(flagAndBasicInfo, opad);
+		generateStabilizeCommodityPara(flagAndBasicInfo, moral, opad);
 		
 		// end flag and basic info
 		outer.addImageWithText(pad);
