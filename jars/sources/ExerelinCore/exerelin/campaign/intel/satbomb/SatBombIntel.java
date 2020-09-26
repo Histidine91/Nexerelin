@@ -17,6 +17,7 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
@@ -100,11 +101,28 @@ public class SatBombIntel extends OffensiveFleetIntel {
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
-		float tanker = myFP * (0.4f + random.nextFloat() * 0.2f)
-				+ TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
-		
+		float tanker = TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
 		float transport = 0;
 		float freighter = myFP * (0.1f + random.nextFloat() * 0.05f);
+		
+		// Prometheus is 12 FP and has 2500 fuel
+		// so estimate we need 12 FP of fuel for each point of ground defense the target has
+		float defenderStrength = InvasionRound.getDefenderStrength(target, 1f);
+		float bonus = (defenderStrength/2500) * 12 * (1.5f + random.nextFloat() * 0.5f);
+		float maxBonus = myFP * (0.4f + random.nextFloat() * 0.2f);
+		
+		// no, fuck it, I can't get the values right
+		//log.info("Sat bomb: Desired bonus " + bonus + ", max " + maxBonus);
+		//if (bonus > maxBonus) bonus = maxBonus;
+		bonus = maxBonus;
+		
+		boolean vicBioBomb = faction.getId().equals("vic");
+		if (vicBioBomb) {
+			freighter += bonus;
+		} else {
+			tanker += bonus;
+		}
+		
 		
 		float totalFp = combat + tanker + transport + freighter;
 		

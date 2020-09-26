@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.VIC_FactionVBomb;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BombardType;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -24,7 +25,7 @@ public class SatBombActionStage extends InvActionStage {
 		if (offFltIntel.getOutcome() != null)
 			return;
 		// TODO
-		boolean vicBioBomb = false;	//intel.getFaction().getId().equals("vic");
+		boolean vicBioBomb = intel.getFaction().getId().equals("vic");
 		
 		float cost = Nex_MarketCMD.getBombardmentCost(market, fleet);
 		//float maxCost = intel.getAssembleStage().getOrigSpawnFP() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
@@ -38,7 +39,7 @@ public class SatBombActionStage extends InvActionStage {
 		
 		if (cost <= maxCost) {
 			if (vicBioBomb) {
-				//VIC_FactionVBomb.doBombardment(fleet.getFaction(), market);
+				new VIC_FactionVBomb().doBombardment(intel.getFaction(), market);
 			}
 			else {
 				new Nex_MarketCMD(market.getPrimaryEntity()).doBombardment(intel.getFaction(), BombardType.SATURATION);
