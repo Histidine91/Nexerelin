@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -124,8 +125,12 @@ public class RaidCondition extends BaseMarketConditionPlugin {
 		return null;
 	}
 	
-	public static void addOrUpdateConditionsForMarkets(LocationAPI loc, RaidIntel raid) {
-		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(loc)) {
+	public static void addOrUpdateConditionsForMarkets(LocationAPI loc, RaidIntel raid) 
+	{
+		// copy to new array to avoid concurrent modification
+		List<MarketAPI> markets = new ArrayList<>(Global.getSector().getEconomy().getMarkets(loc));
+		
+		for (MarketAPI market : markets) {
 			addOrUpdateConditionForMarket(market, raid);
 		}
 	}
