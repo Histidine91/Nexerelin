@@ -939,6 +939,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker();
 			for (String factionId : enemies)
 			{
+				if (factionId.equals(Factions.PLAYER) && !ExerelinConfig.followersInvasions)
+					continue;
 				picker.add(factionId, ExerelinUtilsFaction.getFactionMarketSizeSum(factionId));
 			}
 			String factionId = picker.pick();
