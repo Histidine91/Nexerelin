@@ -400,7 +400,7 @@ public class ExerelinFactionConfig
         }
     }
     
-    void fillRelationshipMap(JSONObject factionSettings, Map<String, Float> map, String configKey)
+    protected void fillRelationshipMap(JSONObject factionSettings, Map<String, Float> map, String configKey)
     {
         try {
             if (!factionSettings.has(configKey)) return;
@@ -418,6 +418,8 @@ public class ExerelinFactionConfig
 				for (FactionAPI faction : Global.getSector().getAllFactions())
 				{
 					String thisId = faction.getId();
+					if (thisId.equals(factionId)) continue;
+					
 					if (!map.containsKey(thisId))
 						map.put(thisId, def);
 				}
