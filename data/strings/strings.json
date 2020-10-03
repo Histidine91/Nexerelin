@@ -1468,8 +1468,11 @@
 	},
 	"nex_satbomb":{
 		"expedition":"saturation bombardment",
+		"expeditionVic":"virus bombardment",
 		"expeditions":"saturation bombardments",
+		"expeditionsVic":"virus bombardments",
 		"theExpedition":"the saturation bombardment",
+		"theExpeditionsVic":"the virus bombardments",
 		"expeditionForce":"bombardment force",
 		"expeditionForcePossessive":"bombardment force's",
 		"theExpeditionForce":"the bombardment force",

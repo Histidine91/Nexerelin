@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -88,6 +89,10 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		return true;
 	}
 	
+	public boolean isVicVirusBomb() {
+		return faction.getId().equals("vic");
+	}
+	
 	@Override
 	public CampaignFleetAPI createFleet(String factionId, RouteManager.RouteData route, MarketAPI market, Vector2f locInHyper, Random random) {
 		if (random == null) random = new Random();
@@ -116,8 +121,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		//if (bonus > maxBonus) bonus = maxBonus;
 		bonus = maxBonus;
 		
-		boolean vicBioBomb = faction.getId().equals("vic");
-		if (vicBioBomb) {
+		if (isVicVirusBomb()) {
 			freighter += bonus;
 		} else {
 			tanker += bonus;
@@ -171,6 +175,12 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		
 		fleet.getCommander().setPostId(postId);
 		fleet.getCommander().setRankId(rankId);
+		
+		
+		if (isVicVirusBomb()) {
+			float payload = Math.min(defenderStrength/2, fleet.getCargo().getMaxCapacity()/2);
+			fleet.getCargo().addCommodity(Commodities.ORGANICS, payload);
+		}
 		
 		log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
 		
@@ -273,12 +283,16 @@ public class SatBombIntel extends OffensiveFleetIntel {
 	
 	@Override
 	public String getActionName() {
-		return StringHelper.getString("nex_satbomb", "expedition");
+		String id = "expedition";
+		if (isVicVirusBomb()) id += "Vic";
+		return StringHelper.getString("nex_satbomb", id);
 	}
 	
 	@Override
 	public String getActionNameWithArticle() {
-		return StringHelper.getString("nex_satbomb", "theExpedition");
+		String id = "theExpedition";
+		if (isVicVirusBomb()) id += "Vic";
+		return StringHelper.getString("nex_satbomb", id);
 	}
 	
 	@Override
@@ -303,6 +317,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 			
 	@Override
 	public String getIcon() {
+		if (isVicVirusBomb()) return "VIC/graphics/hullmods/vic_VBombHmod.png";
 		return Global.getSettings().getSpriteName("intel", "nex_satbomb");
 	}
 	

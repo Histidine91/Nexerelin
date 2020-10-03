@@ -45,6 +45,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
+import com.fs.starfarer.api.impl.campaign.rulecmd.VIC_MarketCMD;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BOMBARD;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.ENGAGE;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.GO_BACK;
@@ -133,6 +134,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			invadeResult(false);
 		} else if (command.equals("invadeResultAndrada")) {
 			invadeResult(true);
+		} else if (command.equals(VIC_MarketCMD.VBombMenu)) {
+			new VIC_MarketCMD().execute(ruleId, dialog, params, memoryMap);
 		}
 		
 		return true;
@@ -155,6 +158,17 @@ public class Nex_MarketCMD extends MarketCMD {
 			tempInvasion.invasionLoot = null;
 			tempInvasion.invasionValuables = null;
 		}
+	}
+	
+	protected boolean canVirusBomb() {
+		for (FleetMemberAPI shipToCheck : Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy())
+		{
+			if (shipToCheck.getVariant().hasHullMod(VIC_MarketCMD.MOD_TO_CHECK))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	// same as super method, but adds invade option
@@ -307,6 +321,10 @@ public class Nex_MarketCMD extends MarketCMD {
 							"optionRaid", "$market", market.getName()), RAID);
 		options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
 							"optionBombard", "$market", market.getName()), BOMBARD);
+		if (canVirusBomb()) {
+			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+							"optionBombardVirus", "$market", market.getName()), VIC_MarketCMD.VBombMenu);
+		}
 		
 		if (!temp.canRaid) {
 			options.setEnabled(RAID, false);
@@ -316,6 +334,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (!temp.canBombard) {
 			options.setEnabled(BOMBARD, false);
 			options.setTooltip(BOMBARD, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
+			options.setEnabled(VIC_MarketCMD.VBombMenu, false);
+			options.setTooltip(VIC_MarketCMD.VBombMenu, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
 		}
 		
 		//DEBUG = false;
