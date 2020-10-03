@@ -6,7 +6,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 public class Academy extends IndustryClassGen {
 
 	public Academy() {
-		super("deconomics_Academy");
+		super("IndEvo_Academy");
 	}
 	
 	@Override

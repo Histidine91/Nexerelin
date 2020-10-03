@@ -7,7 +7,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 public class RestorationDocks extends IndustryClassGen {
 
 	public RestorationDocks() {
-		super("deconomics_dryDock");
+		super("IndEvo_dryDock");
 	}
 	
 	@Override

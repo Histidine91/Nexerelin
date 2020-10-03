@@ -7,7 +7,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 public class PrivateerBase extends IndustryClassGen {
 
 	public PrivateerBase() {
-		super("deconomics_pirateHaven");
+		super("IndEvo_pirateHaven");
 	}
 	
 	@Override

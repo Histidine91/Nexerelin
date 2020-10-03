@@ -6,7 +6,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 public class Senate extends IndustryClassGen {
 
 	public Senate() {
-		super("deconomics_senate");
+		super("IndEvo_senate");
 	}
 	
 	@Override

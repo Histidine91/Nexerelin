@@ -6,7 +6,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 public class VariableAssembler extends IndustryClassGen {
 
 	public VariableAssembler() {
-		super("deconomics_AdAssem");
+		super("IndEvo_AdAssem");
 	}
 	
 	@Override

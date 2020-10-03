@@ -13,7 +13,7 @@ import exerelin.world.NexMarketBuilder;
 public class SalvageYards extends IndustryClassGen {
 
 	public SalvageYards() {
-		super("deconomics_ScrapYard");
+		super("IndEvo_ScrapYard");
 	}
 	
 	@Override

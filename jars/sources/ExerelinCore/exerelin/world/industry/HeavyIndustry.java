@@ -71,7 +71,7 @@ public class HeavyIndustry extends IndustryClassGen {
 	public boolean canApply(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		if (market.hasIndustry(Industries.ORBITALWORKS) || market.hasIndustry("ms_massIndustry")
-				|| market.hasIndustry("deconomics_ScrapYard"))
+				|| market.hasIndustry("IndEvo_ScrapYard"))
 			return false;
 		
 		// don't build heavy industry on new small colonies, they're raid bait
