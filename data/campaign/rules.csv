@@ -1564,36 +1564,21 @@ $market.ruinsExplored
 ,,,,,,
 ,,,,,,
 # Templar overrides,,,,,,
-ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999
-$hasMarket
-$faction.id == templars score:1000
-RepIsAtWorst $faction.id WELCOMING","$menuState = main 0
-$tradeMode = OPEN 0
-FireAll PopulateOptions",,,
-ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"!$doesFakeVariableExist score:999
-$hasMarket
+ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"$hasMarket
 $faction.id == templars score:1000
 RepIsAtBest $faction.id SUSPICIOUS
 $market.id != tem_ascalon","$marketLeaveTooltip = ""$TheFaction do not trade with outsiders."" 0
 $menuState = main 0
 $tradeMode = NONE 0
 FireAll PopulateOptions","The only communication you can get from the port is: ""Begone from this holy land, heathen. Thy cleansing shall yet come.""",,
-ExerelinMarketPostOpenTemplarsUntrustworthy,MarketPostOpen,"!$doesFakeVariableExist score:999
-$hasMarket
+ExerelinMarketPostOpenTemplarsUntrustworthy,MarketPostOpen,"$hasMarket
 $faction.id == templars score:1000
 RepIsAtBest $faction.id FAVORABLE
-RepIsAtWorst $faction.id NEUTRAL","$marketLeaveTooltip = ""$TheFaction does not trust you enough."" 0
+RepIsAtWorst $faction.id NEUTRAL
+$market.id != tem_ascalon","$marketLeaveTooltip = ""$TheFaction does not trust you enough."" 0
 $menuState = main 0
 $tradeMode = NONE 0
 FireAll PopulateOptions","While $theFaction $factionIsOrAre $relAdjective towards you, they do not trust you enough to grant you docking access at $market. You are issued a stern order to leave the system.",,
-ExerelinMarketPostOpenTemplarsHostileAscalon,MarketPostOpen,"!$doesFakeVariableExist score:999
-$hasMarket
-$faction.id == templars score:1000
-RepIsAtBest $faction.id SUSPICIOUS
-$market.id == tem_ascalon","$marketLeaveTooltip = ""$TheFaction do not trade with outsiders."" 0
-$menuState = main 0
-$tradeMode = NONE 0
-FireAll PopulateOptions","Your scanners pick up a massive energy signature manifesting on $entityName, followed by a high-power burst transmission from below: ""Come no further, lest the light of judgment be called upon you to ascend thy soul, in flames, to the great star above.""",,
 ,,,,,,
 # Tiandong overrides,,,,,,
 ExerelinTiandongSetExteriorImageShanghai,PopulateOptions,"$hasMarket
