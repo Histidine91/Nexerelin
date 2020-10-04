@@ -125,7 +125,8 @@ public class VultureFleetManager extends DisposableFleetManager
 		float searchRange = 0;
 		if (playerFleet != null && playerFleet.getContainingLocation() == entity.getContainingLocation()) 
 		{
-			searchRange = playerFleet.getMaxSensorRangeToDetect(fleet)*0.75f;
+			searchRange = playerFleet.getMaxSensorRangeToDetect(fleet)*1f;
+			if (searchRange < 1000) searchRange = 1000;
 			//log.info("Player fleet could detect " + fleet.getName() + " from " + playerFleet.getMaxSensorRangeToDetect(fleet) + " away");
 			onTheSpot = !MathUtils.isWithinRange(target, playerFleet, searchRange);
 		}
