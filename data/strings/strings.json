@@ -620,15 +620,24 @@
 	},
 	
 	"nex_credits":{
-		"contribution_zaphide":"The original Exerelin",
-		"contribution_histidine":"Update for Starsector 0.65 and later",
-		"contribution_darkRevenant":"Much coding help; compatibility with SS+ and descendant mods",
-		"contribution_lazyWizard":"Version Checker, Console Commands, other code",
-		"contribution_soren":"Player flags",
-		"contribution_tartiflette":"Prism Freeport",
-		"contribution_weezer":"Captured market descriptions",
-		"contribution_ssModCommunity":"Various tips, pointers and feedback",
-		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector"
+		"name1":"Zaphide",
+		"contrib1":"The original Exerelin",
+		"name2":"Histidine",
+		"contrib2":"Update for Starsector 0.65 and later",
+		"name3":"Dark.Revenant",
+		"contrib3":"Much coding help; compatibility with SS+ and descendant mods",
+		"name4":"LazyWizard",
+		"contrib4":"Version Checker, Console Commands, other code",
+		"name5":"Soren",
+		"contrib5":"Player flags",
+		"name6":"Tartiflette",
+		"contrib6":"Prism Freeport",
+		"name7":"Weezer, Mace",
+		"contrib7":"Captured market descriptions",
+		"name8":"The SS mod community",
+		"contrib8":"Various tips, pointers and feedback",
+		"name9":"Alex, David, Stian, Ivaylo",
+		"contrib9":"The Fractal Softworks team that made Starsector"
 	},
 	
 	"nex_decivEvent":{

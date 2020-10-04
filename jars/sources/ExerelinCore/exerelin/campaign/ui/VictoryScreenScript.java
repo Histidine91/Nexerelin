@@ -139,18 +139,15 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 			text.highlightInLastPara(value);
 		}
 		
+		protected String getCreditsString(String id) {
+			return StringHelper.getString("nex_credits", id);
+		}
+		
 		protected void printCredits()
 		{
-			String category = "nex_credits";
-			printCreditLine("Zaphide", StringHelper.getString(category, "contribution_zaphide"));
-			printCreditLine("Histidine", StringHelper.getString(category, "contribution_histidine"));
-			printCreditLine("Dark.Revenant", StringHelper.getString(category, "contribution_darkRevenant"));
-			printCreditLine("LazyWizard", StringHelper.getString(category, "contribution_lazyWizard"));
-			printCreditLine("Soren", StringHelper.getString(category, "contribution_soren"));
-			printCreditLine("Tartiflette", StringHelper.getString(category, "contribution_tartiflette"));
-			printCreditLine("Weezer", StringHelper.getString(category, "contribution_weezer"));
-			printCreditLine("The SS mod community", StringHelper.getString(category, "contribution_ssModCommunity"));
-			printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString(category, "contribution_fractalSoftworks"));
+			for (int i=1; i<=9; i++) {
+				printCreditLine(getCreditsString("name" + i), getCreditsString("contrib" + i));
+			}
 		}
 		
 		protected void printStats()
