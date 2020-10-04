@@ -420,10 +420,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (!isAllianceAction && delta < 0)
             AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         
-        if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
-            NexUtilsReputation.syncPlayerRelationshipsToFaction();
-        else if (faction1Id.equals(Factions.PLAYER) || faction2Id.equals(Factions.PLAYER))
+        if (faction1Id.equals(Factions.PLAYER) || faction2Id.equals(Factions.PLAYER))
             NexUtilsReputation.syncFactionRelationshipsToPlayer();
+        else if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
+            NexUtilsReputation.syncPlayerRelationshipsToFaction();
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
