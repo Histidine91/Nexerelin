@@ -51,8 +51,8 @@ SetShortcut exerelinNGCOptionsBack ESCAPE",,"nex_NGCFactionToggleMenu:Enable/dis
 ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,"SetEnabled nex_NGCFactionToggleMenu false
 SetTooltip nex_NGCFactionToggleMenu ""Only works with random core worlds setting.""",,,
 ,,,,,,
-ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:exerelinNGCDevStart:>> (dev) quick start
-100:exerelinNGCDevStartFast:>> (dev) quick start no time pass",
+ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:nex_NGCDevStart:>> (dev) quick start
+100:nex_NGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
