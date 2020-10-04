@@ -14,3 +14,4 @@ Tribute may be canceled if the player chooses to terminate the agreement, or cha
 Pirate Activity,pirate_activity,,TRUE,exerelin.campaign.intel.NexPirateActivity,"There have been signs that pirates are targeting shipping and colonies in this system - from port inspectors being pressured to turn a blind eye, to inconsistencies in cargo manifests, to other increased criminal activity.
 
 The pirates most likely have a base somewhere relatively nearby.",graphics/icons/markets/pirate_activity.png,1300
+Comm Relay (hidden),comm_relay,,TRUE,exerelin.campaign.econ.NexCommRelayCondition,"Hidden condition, does not need icon.",,
