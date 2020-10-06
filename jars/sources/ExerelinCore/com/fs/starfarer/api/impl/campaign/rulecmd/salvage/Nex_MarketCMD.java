@@ -134,7 +134,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			invadeResult(false);
 		} else if (command.equals("invadeResultAndrada")) {
 			invadeResult(true);
-		} else if (command.equals(VIC_MarketCMD.VBombMenu)) {
+		} else if (hasVIC() && command.equals(VIC_MarketCMD.VBombMenu))
+		{
 			new VIC_MarketCMD().execute(ruleId, dialog, params, memoryMap);
 		}
 		
@@ -160,7 +161,12 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 	}
 	
+	protected boolean hasVIC() {
+		return Global.getSettings().getModManager().isModEnabled("vic");
+	}
+	
 	protected boolean canVirusBomb() {
+		if (!hasVIC()) return false;
 		for (FleetMemberAPI shipToCheck : Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy())
 		{
 			if (shipToCheck.getVariant().hasHullMod(VIC_MarketCMD.MOD_TO_CHECK))
@@ -334,8 +340,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (!temp.canBombard) {
 			options.setEnabled(BOMBARD, false);
 			options.setTooltip(BOMBARD, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
-			options.setEnabled(VIC_MarketCMD.VBombMenu, false);
-			options.setTooltip(VIC_MarketCMD.VBombMenu, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
+			if (canVirusBomb()) {
+				options.setEnabled(VIC_MarketCMD.VBombMenu, false);
+				options.setTooltip(VIC_MarketCMD.VBombMenu, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
+			}
 		}
 		
 		//DEBUG = false;
