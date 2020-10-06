@@ -1197,7 +1197,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				}
 			}
 			else {	// fleet arrived or defeated
-				str = getString(suppressionFleetSuccess == true ? "intelDescFleetArrived" 
+				str = getString(Boolean.TRUE.equals(suppressionFleetSuccess) ? "intelDescFleetArrived" 
 						: "intelDescFleetDefeated");
 				str = StringHelper.substituteTokens(str, subFleet);
 				label = info.addPara(str, opad);
