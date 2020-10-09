@@ -46,8 +46,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	public static final String STOCK_ARRAY_KEY = "$nex_BPSwapStock";
 	public static final String ALREADY_SOLD_KEY = "$nex_BPSwapAlreadySold";
 	public static final float STOCK_KEEP_DAYS = 30;
-	public static final int STOCK_COUNT_MIN = 6;
-	public static final int STOCK_COUNT_MAX = 8;
+	public static final int STOCK_COUNT_MIN = 7;
+	public static final int STOCK_COUNT_MAX = 10;
 	public static final float PRICE_POINT_MULT = 0.01f;
 	//public static final float ALREADY_SOLD_MULT = 0.25f;
 	public static final String PERSISTENT_RANDOM_KEY = "nex_blueprintSwapRandom";
@@ -61,7 +61,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	// Things that count as blueprints for trade-in
 	public static final Set<String> ALLOWED_IDS = new HashSet<>(Arrays.asList(new String[] {
 		Items.SHIP_BP, Items.WEAPON_BP, Items.FIGHTER_BP, "industry_bp",
-		"tiandong_retrofit_bp", "tiandong_retrofit_fighter_bp"
+		"tiandong_retrofit_bp", "tiandong_retrofit_fighter_bp", "roider_retrofit_bp"
 	}));
 	
 	protected CampaignFleetAPI playerFleet;
@@ -401,14 +401,20 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		for (ShipHullSpecAPI hull : Global.getSettings().getAllShipHullSpecs()) {
 			if (!hull.hasTag("rare_bp") || hull.hasTag(Tags.NO_DROP) || hull.hasTag(Tags.NO_BP_DROP)) 
 				continue;
+			
 			String hullId = hull.getHullId();
 			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(hullId, PurchaseType.SHIP,
 					hull.getNameWithDesignationWithDashClass(), 
 					getBlueprintPointValue(Items.SHIP_BP, hullId, hull.getBaseValue(), true));
-			if (hull.hasTag("tiandong_retrofit"))
-				info.isTiandongRetrofit = true;
+			if (hull.hasTag("tiandong_retrofit")) {
+				info.itemId = "tiandong_retrofit_bp";
+			} else if (hull.hasTag("roider_retrofit")) {
+				info.itemId = "roider_retrofit_bp";
+			} else {
+				info.itemId = Items.SHIP_BP;
+			}				
 			
 			picker.add(info, 3 * hull.getRarity());
 		}
@@ -421,8 +427,11 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			PurchaseInfo info = new PurchaseInfo(wingId, PurchaseType.FIGHTER, 
 					wing.getWingName(), 
 					getBlueprintPointValue(Items.FIGHTER_BP, wingId, wing.getBaseValue(), true));
-			if (wing.hasTag("tiandong_retrofit"))
-				info.isTiandongRetrofit = true;
+			if (wing.hasTag("tiandong_retrofit")) {
+				info.itemId = "tiandong_retrofit_fighter_bp";
+			} else {
+				info.itemId = Items.FIGHTER_BP;
+			}
 			
 			picker.add(info, 2 * wing.getRarity());
 		}
@@ -435,6 +444,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			PurchaseInfo info = new PurchaseInfo(weaponId, PurchaseType.WEAPON, 
 					wep.getWeaponName(), 
 					getBlueprintPointValue(Items.WEAPON_BP, weaponId, wep.getBaseValue(), true));
+			info.itemId = Items.WEAPON_BP;
 			picker.add(info, 2 * wep.getRarity());
 		}
 		
@@ -482,6 +492,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		{
 			case Items.SHIP_BP:
 			case "tiandong_retrofit_bp":
+			case "roider_retrofit_bp":
 				base = Global.getSettings().getHullSpec(data.getData()).getBaseValue();
 				break;
 			case Items.FIGHTER_BP:
@@ -516,9 +527,9 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(itemId);
 		
 		float cost = spec.getBasePrice() + baseCost * Global.getSettings().getFloat("blueprintPriceOriginalItemMult");
-		if (spec.hasTag("tiandong_retrofit_bp"))
+		if (spec.hasTag("tiandong_retrofit_bp") || itemId.equals("roider_retrofit_bp"))
 		{
-			log.info(spec.getName() + " is retrofit, halving cost");
+			//log.info(spec.getName() + " is retrofit, halving cost");
 			cost *= 0.5f;
 		}
 		cost *= PRICE_POINT_MULT;
@@ -579,11 +590,11 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	public static class PurchaseInfo implements Comparable<PurchaseInfo>
 	{
-		String id;
-		PurchaseType type;
-		String name;
-		float cost;
-		boolean isTiandongRetrofit = false;
+		public String id;
+		public String itemId;
+		public PurchaseType type;
+		public String name;
+		public float cost;
 		
 		public PurchaseInfo(String id, PurchaseType type, String name, float cost)
 		{
@@ -595,13 +606,11 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		
 		public String getItemId()
 		{
-			switch (type)
-			{
+			if (itemId != null) return itemId;
+			switch (type) {
 				case SHIP:
-					if (isTiandongRetrofit) return "tiandong_retrofit_bp";
 					return Items.SHIP_BP;
 				case FIGHTER:
-					if (isTiandongRetrofit) return "tiandong_retrofit_fighter_bp";
 					return Items.FIGHTER_BP;
 				case WEAPON:
 					return Items.WEAPON_BP;
