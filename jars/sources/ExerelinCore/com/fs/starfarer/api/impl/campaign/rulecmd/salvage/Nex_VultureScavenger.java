@@ -7,6 +7,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
@@ -46,6 +47,8 @@ public class Nex_VultureScavenger extends BaseCommandPlugin {
 	
 	public CampaignFleetAPI getNearby(SectorEntityToken target) 
 	{
+		if (target instanceof PlanetAPI) return null;
+		
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		for (CampaignFleetAPI fleet : target.getContainingLocation().getFleets())
 		{
