@@ -117,7 +117,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 			{
 				String factionId1 = (String)keys.next();
 				JSONObject namesLevel2 = staticNames.getJSONObject(factionId1);
-				log.info("Loading static alliance names");
 				
 				Iterator<String> keys2 = namesLevel2.sortedKeys();
 				while (keys2.hasNext()) {
