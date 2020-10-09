@@ -41,7 +41,10 @@ public class InstigateRebellion extends CovertActionIntel {
 	@Override
 	public void onSuccess() {
 		RebellionIntel event = RebellionCreator.getInstance().createRebellion(market, agentFaction.getId(), true);
-		if (event == null) return;
+		if (event == null) {
+			endAfterDelay();
+			return;
+		}
 		
 		event.setRebelStrength(event.getRebelStrength() * getEffectMultForLevel());
 		

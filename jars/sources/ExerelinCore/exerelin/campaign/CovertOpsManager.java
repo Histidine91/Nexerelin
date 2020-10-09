@@ -47,6 +47,7 @@ import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -743,6 +744,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 					if (RebellionCreator.getInstance().getRebellionPoints(market) < 50)
 						continue;
 					if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
+						continue;
+					if (RebellionIntel.isOngoing(market))
 						continue;
 
 					if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
