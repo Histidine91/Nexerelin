@@ -471,6 +471,8 @@ public class NexMarketBuilder
 			float req = MILITARY_BASE_CHANCE;
 			if (newNPCColony) req = -1;
 			else if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
+			// new game seeding: if we have the size for base but didn't get one, enforce patrol HQ at least
+			else if (Global.getSector().isInNewGameAdvance() && marketSize >= sizeForBase) req -=1;
 			if (roll > req) {
 				addIndustry(market, Industries.PATROLHQ, instant);
 			}
