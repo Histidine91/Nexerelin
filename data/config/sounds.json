@@ -1,7 +1,7 @@
 {
 	"music_campaign_victory_theme":{
 		"sounds":[
-			{"file":"sounds/nexerelin/music/Posthumus_Regnum_Finale.ogg","pitch":1.0,"volume":1.0},
+			{"file":"sounds/nexerelin/music/Posthumus_Regnum_Finale.ogg","pitch":1.0,"volume":0.8},
 		],
 	},
 	"music_campaign_defeat_theme":{
