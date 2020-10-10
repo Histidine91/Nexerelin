@@ -17,16 +17,20 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.lwjgl.input.Keyboard;
@@ -54,6 +58,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected PersonAPI agent;
 	protected MarketAPI market;
 	protected FactionAPI faction;
+	protected Set<Specialization> specializations = new HashSet<>();
 	protected CovertActionIntel currentAction, lastAction, nextAction;
 	protected int level;
 	protected int xp;
@@ -74,6 +79,11 @@ public class AgentIntel extends BaseIntelPlugin {
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
 		CovertOpsManager.getManager().addAgent(this);
+	}
+	
+	protected Object readResolve() {
+		if (specializations == null) specializations = new HashSet<>();
+		return this;
 	}
 	
 	public void gainXP(int xp) {
@@ -110,6 +120,30 @@ public class AgentIntel extends BaseIntelPlugin {
 		if (level >= MAX_LEVEL)
 			return 0;
 		return (int)(XP_LEVELS[level] - xp);
+	}
+	
+	public void addSpecialization(Specialization spec) {
+		specializations.add(spec);
+	}
+	
+	public void removeSpecialization(Specialization spec) {
+		specializations.remove(spec);
+	}
+	
+	public Set<Specialization> getSpecializationsCopy() {
+		return new HashSet<>(specializations);
+	}
+	
+	public List<String> getSpecializationNames() {
+		List<String> names = new ArrayList<>();
+		for (Specialization spec : specializations) {
+			names.add(spec.getName());
+		}
+		return names;
+	}
+	
+	public boolean canStealShip() {
+		return !ExerelinConfig.useAgentSpecializations || specializations.isEmpty() || specializations.contains(Specialization.NEGOTIATOR);
 	}
 	
 	public MarketAPI getMarket() {
@@ -204,6 +238,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
+		float pad = 3f;
 		
 		Color h = Misc.getHighlightColor();
 		FactionAPI faction = updateAgentDisplayedFaction();
@@ -221,6 +256,16 @@ public class AgentIntel extends BaseIntelPlugin {
 		info.addPara(str, opad, h, level + "");
 		
 		if (isDead || isDismissed) return;
+		
+		// specialization
+		if (ExerelinConfig.useAgentSpecializations && !specializations.isEmpty()) {
+			str = getString("intelDescSpecialization");
+			info.addPara(str, opad, h, StringHelper.writeStringCollection(getSpecializationNames()));
+			bullet(info);
+			str = getString("intelDescActionList");
+			info.addPara(str, pad, Misc.getButtonTextColor(), StringHelper.writeStringCollection(getAllowedActionNames(true)));
+			unindent(info);
+		}
 		
 		// agent location
 		if (market != null) {
@@ -530,11 +575,53 @@ public class AgentIntel extends BaseIntelPlugin {
 		return tags;
 	}
 	
+	public List<String> getAllowedActionNames(boolean toLower) {
+		List<String> names = new ArrayList<>();
+		for (CovertActionDef def : CovertOpsManager.getAllowedActionsForAgent(this))
+		{
+			if (!def.listInIntel) continue;
+			String name = def.name;
+			if (toLower) name = name.toLowerCase();
+			names.add(name);
+		}
+		return names;
+	}
+	
 	public static String getString(String id) {
 		return getString(id, false);
 	}
 	
 	public static String getString(String id, boolean ucFirst) {
 		return StringHelper.getString("nex_agents", id, ucFirst);
+	}
+	
+	
+	public static enum Specialization {
+		NEGOTIATOR, SABOTEUR, HYBRID;
+		
+		public static Specialization pickRandomSpecialization() {
+			return (Specialization)ExerelinUtils.getRandomArrayElement(Specialization.values());
+		}
+		
+		public String getName() {
+			String str = this.toString().toLowerCase(Locale.ENGLISH);
+			return StringHelper.getString("nex_agents", "specialization_" + str);
+		}
+		
+		public List<CovertActionDef> getAllowedActions() {
+			return CovertOpsManager.getAllowedActionsForSpecialization(this);
+		}
+		
+		public List<String> getAllowedActionNames(boolean toLower) {
+			List<String> names = new ArrayList<>();
+			for (CovertActionDef def : CovertOpsManager.getAllowedActionsForSpecialization(this))
+			{
+				if (!def.listInIntel) continue;
+				String name = def.name;
+				if (toLower) name = name.toLowerCase();
+				names.add(name);
+			}
+			return names;
+		}
 	}
 }

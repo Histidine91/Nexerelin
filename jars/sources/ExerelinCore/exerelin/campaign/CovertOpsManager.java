@@ -43,6 +43,7 @@ import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.agents.AgentIntel;
+import exerelin.campaign.intel.agents.AgentIntel.Specialization;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
@@ -57,10 +58,12 @@ import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -169,6 +172,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.time = (float)defJson.optDouble("time", 0);
 			def.xp = defJson.optInt("xp");
 			def.alertLevelIncrease = (float)defJson.optDouble("alertLevelIncrease", 0);
+			def.listInIntel = defJson.optBoolean("listInIntel", true);
+			if (defJson.has("specializations")) {
+				def.addSpecializations(ExerelinUtils.JSONArrayToArrayList(defJson.getJSONArray("specializations")));
+			}			
 			
 			actionDefs.add(def);
 			actionDefsById.put(id, def);
@@ -201,6 +208,29 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	
 	public static CovertActionDef getDef(String id) {
 		return actionDefsById.get(id);
+	}
+	
+	public static List<CovertActionDef> getAllowedActionsForSpecialization(Specialization spec)
+	{
+		List<CovertActionDef> results = new ArrayList<>();
+		for (CovertActionDef action : actionDefs) {
+			if (action.isCompatibleWithSpecialization(spec)) {
+				//log.info(spec + " allows action " + action.name);
+				results.add(action);
+			}
+				
+		}
+		return results;
+	}
+	
+	public static List<CovertActionDef> getAllowedActionsForAgent(AgentIntel agent)
+	{
+		List<CovertActionDef> results = new ArrayList<>();
+		for (CovertActionDef action : actionDefs) {
+			if (action.canAgentExecute(agent))
+				results.add(action);
+		}
+		return results;
 	}
 	
 	/**
@@ -955,6 +985,34 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		public float alertLevelIncrease;
 		public Pair<Float, Float> effect;
 		public Pair<Float, Float> repLossOnDetect;
+		public Set<Specialization> specializations = new HashSet<>();
+		public boolean listInIntel;
+		
+		public void addSpecializations(Collection<String> specs) {
+			for (String spec : specs) {
+				try {
+					Specialization spec2 = Specialization.valueOf(spec.toUpperCase(Locale.ENGLISH));
+					log.info("Adding specialization for " + this.name + ": " + spec2.toString());
+					specializations.add(spec2);
+				} catch (Exception ex) {
+					throw new RuntimeException("Failed to load agent action specializations", ex);
+				}
+			}
+		}
+		
+		public boolean canAgentExecute(AgentIntel agent) {
+			if (agent.getSpecializationsCopy().isEmpty()) return true;
+			for (Specialization spec : agent.getSpecializationsCopy()) {
+				if (isCompatibleWithSpecialization(spec))
+					return true;
+			}
+			return false;
+		}
+		
+		public boolean isCompatibleWithSpecialization(Specialization spec) {
+			if (specializations.isEmpty()) return true;
+			return specializations.contains(spec);
+		}
 	}
 	
 }

@@ -19,12 +19,14 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import org.lwjgl.input.Keyboard;
 
 public class AgentBarEvent extends BaseBarEventWithPerson {
 	
 	protected static final WeightedRandomPicker<Integer> picker = new WeightedRandomPicker<>();
 	
 	protected int level = 1;
+	protected AgentIntel.Specialization spec = null;
 	
 	public static enum OptionId {
 		INIT,
@@ -45,12 +47,27 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		super();
 	}
 	
+	public static boolean isAtMaxAgents() {
+		return CovertOpsManager.getManager().getAgents().size() >= CovertOpsManager.getManager().getMaxAgents().getModifiedValue();
+	}
+	
 	@Override
 	public boolean shouldShowAtMarket(MarketAPI market) {
 		if (market.isHidden()) return false;
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		if (!conf.allowAgentActions)
 			return false;
+		
+		// doesn't work as intended since it's called every time the bar is opened
+		/*
+		if (isAtMaxAgents() && Math.random() < 0.5f) {
+			if (ExerelinModPlugin.isNexDev) {
+				Global.getSector().getCampaignUI().addMessage("Agent bar spawn blocked due to being at max agents");
+			}
+			//return false;
+		}
+		*/
+		
 		return super.shouldShowAtMarket(market);
 	}
 	
@@ -59,6 +76,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		if (this.market == market) return;
 		super.regen(market);
 		level = picker.pick();
+		spec = AgentIntel.Specialization.pickRandomSpecialization();
 		
 		Global.getLogger(this.getClass()).info("Generated agent at " + market.getName() + " bar");
 	}
@@ -119,15 +137,40 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				options.addOption(StringHelper.getString("no", true), OptionId.EXPLANATION);
 				break;
 			case EXPLANATION:
-				str = getString("barDialogExplanation");
+				String key = "barDialogExplanation";
+				switch (spec) {
+					case NEGOTIATOR:
+						key += "Negotiator";
+						break;
+					case SABOTEUR:
+						key += "Saboteur";
+						break;
+					case HYBRID:
+						key += "Hybrid";
+						break;
+				}
+				
+				str = getString(key);
 				str = StringHelper.substituteToken(str, "$manOrWoman", getManOrWoman());
 				text.addPara(str);
+				// fall through to next case
 			case HIRE_OFFER:
 				text.setFontSmallInsignia();
 				text.addPara(StringHelper.HR);
+				
 				str = getString("intelDescName");
 				str = StringHelper.substituteToken(str, "$name", person.getNameString());
 				text.addPara(str, hl, level + "");
+				
+				if (ExerelinConfig.useAgentSpecializations) {
+					str = getString("intelDescSpecialization");
+					text.addPara(str, hl, spec.getName());
+
+					str = getString("intelDescActionList");
+					text.addPara(str, Misc.getButtonTextColor(), StringHelper.writeStringCollection(spec.getAllowedActionNames(true)));
+				}
+				
+				
 				text.addPara(StringHelper.HR);
 				text.setFontInsignia();
 				
@@ -143,7 +186,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				boolean enough = credits >= hiringBonus;
 				text.addPara(str, enough? Misc.getHighlightColor() : Misc.getNegativeHighlightColor(), creditsStr);
 				
-				if (CovertOpsManager.getManager().getAgents().size() >= CovertOpsManager.getManager().getMaxAgents().getModifiedValue())
+				if (isAtMaxAgents())
 				{
 					options.addOption(getString("barOptionMaxAgents"), OptionId.CANCEL);
 				} 
@@ -153,7 +196,9 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				else {
 					options.addOption(getString("barOptionHire"), OptionId.HIRE_CONFIRM);
 					options.addOption(getString("barOptionDecline"), OptionId.CANCEL);
+					options.setShortcut(OptionId.HIRE_CONFIRM, Keyboard.KEY_RETURN, false, false, false, false);
 				}
+				options.setShortcut(OptionId.CANCEL, Keyboard.KEY_ESCAPE, false, false, false, false);
 				break;
 			case HIRE_CONFIRM:
 				str = getString("barDialogHired");
@@ -165,7 +210,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				AddRemoveCommodity.addCreditsLossText(hiringBonus, text);
 				
 				BarEventManager.getInstance().notifyWasInteractedWith(this);
-				addIntel();
+				addIntel(spec);
 				text.setFontSmallInsignia();
 				text.addPara(getString("barDialogHiredTip"));
 				text.setFontInsignia();
@@ -179,9 +224,10 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		}
 	}
 
-	protected void addIntel() {
+	protected void addIntel(AgentIntel.Specialization spec) {
 		TextPanelAPI text = dialog.getTextPanel();
 		AgentIntel intel = new AgentIntel(person, Global.getSector().getPlayerFaction(), level);
+		if (spec != null) intel.addSpecialization(spec);
 		intel.init();
 		intel.setMarket(market);
 		intel.setImportant(true);

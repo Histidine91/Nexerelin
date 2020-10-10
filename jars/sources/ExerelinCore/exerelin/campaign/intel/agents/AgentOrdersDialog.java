@@ -198,7 +198,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				}
 				break;
 			case CovertActionType.PROCURE_SHIP:
-				targets.addAll(ProcureShip.getEligibleTargets(agentMarket));
+				targets.addAll(ProcureShip.getEligibleTargets(agentMarket, (ProcureShip)action));
 				Collections.sort(targets, PROCURE_SHIP_COMPARATOR);
 				break;
 		}
@@ -529,6 +529,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				text.addPara(getString("dialogProcureShipIntro2"));
 				text.addPara(getString("dialogProcureShipIntro3"), Misc.getHighlightColor(), 
 						(int)(ProcureShip.FAILURE_REFUND_MULT * 100) + "%");
+				if (!agent.canStealShip()) {
+					text.addPara(getString("dialogProcureShipIntroSpecialization"), Misc.getHighlightColor(), 
+							AgentIntel.Specialization.NEGOTIATOR.getName());
+				}
 				text.setFontInsignia();
 				getTargets();
 				break;
@@ -577,6 +581,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	
 	protected void addActionOption(String actionId) {
 		CovertActionDef def = CovertOpsManager.getDef(actionId);
+		if (ExerelinConfig.useAgentSpecializations && !def.canAgentExecute(agent)) {
+			return;
+		}
 		optionsList.add(new Pair<String, Object>(Misc.ucFirst(def.name.toLowerCase()), def));
 	}
 	

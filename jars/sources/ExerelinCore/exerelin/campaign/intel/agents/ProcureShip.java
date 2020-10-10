@@ -129,11 +129,12 @@ public class ProcureShip extends CovertActionIntel {
 	
 	/**
 	 * Should match {@code getRequiredLevelAssumingLegal} in MilitarySubmarketPlugin.java.
+	 * @param spec
 	 * @return
 	 */
-	public RepLevel getRequiredLevelForLegal() {
-		int fp = ship.getFleetPointCost();
-		HullSize size = ship.getHullSpec().getHullSize();
+	public RepLevel getRequiredLevelForLegal(ShipHullSpecAPI spec) {
+		int fp = spec.getFleetPoints();
+		HullSize size = spec.getHullSize();
 
 		if (size == HullSize.CAPITAL_SHIP || fp > 15) return RepLevel.COOPERATIVE;
 		if (size == HullSize.CRUISER || fp > 10) return RepLevel.FRIENDLY;
@@ -159,8 +160,12 @@ public class ProcureShip extends CovertActionIntel {
 	
 	public boolean isLegal() {
 		if (ship == null) return false;
-		if (ship.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN)) return true;
-		if (!targetFaction.getRelationshipLevel(agentFaction).isAtWorst(getRequiredLevelForLegal()))
+		return isLegal(ship.getHullSpec());
+	}
+	
+	public boolean isLegal(ShipHullSpecAPI spec) {
+		if (spec.getHints().contains(ShipTypeHints.CIVILIAN)) return true;
+		if (!targetFaction.getRelationshipLevel(agentFaction).isAtWorst(getRequiredLevelForLegal(spec)))
 			return false;
 		
 		return hasCommission();
@@ -510,7 +515,8 @@ public class ProcureShip extends CovertActionIntel {
 		return null;
 	}
 	
-	public static List<FleetMemberAPI> getEligibleTargets(MarketAPI market) {
+	public static List<FleetMemberAPI> getEligibleTargets(MarketAPI market, ProcureShip action) 
+	{
 		List<FleetMemberAPI> targets = new ArrayList<>();
 		Set<String> hullsToCheck = new HashSet<>();
 		
@@ -543,6 +549,8 @@ public class ProcureShip extends CovertActionIntel {
 			if (PrismMarket.getRestrictedShips().contains(hullId))
 				continue;
 			if (CovertOpsManager.getStealShipCostMult(hullId) <= 0)
+				continue;
+			if (action.agent != null && !action.isLegal(spec) && !action.agent.canStealShip())
 				continue;
 
 			List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(hullId);

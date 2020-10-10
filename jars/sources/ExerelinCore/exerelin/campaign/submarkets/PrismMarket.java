@@ -640,10 +640,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
      */
     public static void recordShipsOwned(List<FleetMemberAPI> ships)
     {
+        //log.info("Recording owned ships");
         cacheSubmarketsIfNeeded();
         //Global.getSector().getCampaignUI().addMessage("Adding ship " + hullId + " to Prism already-bought list", Color.GREEN);
         for (SubmarketAPI sub : cachedSubmarkets)
         {
+            //log.info("  Recording owned ships for " + sub.toString());
             PrismMarket prism = (PrismMarket)sub.getPlugin();
             for (FleetMemberAPI ship : ships)
             {

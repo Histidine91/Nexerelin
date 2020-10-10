@@ -239,6 +239,8 @@
 		"intelDescName":"$name is a level %s agent.",
 		"intelDescLost":"Agent $name has been captured or killed.",
 		"intelDescDismissed":"Agent $name has been dismissed from your service.",
+		"intelDescSpecialization":"Specialization: %s",
+		"intelDescActionList":"Available actions: %s",
 		"intelDescLocation":"$name is currently $onOrAt $market, a $faction market in the $location.",
 		"intelDescLocationHyper":"$name is currently $onOrAt $market, a $faction market in hyperspace.",
 		"intelDescXP":"Current XP: %s (%s to next level)",
@@ -264,7 +266,12 @@
 		"barOptionStart":"Walk over to the shady person",
 		"barDialogIntro1":"You approach the shady figure, who acknowledges you with a nod.",
 		"barDialogIntro2":"\"Figured you'd notice me eventually. I don't suppose you know what I do?\"",
+		
 		"barDialogExplanation":"\"I'm a $manOrWoman of many tricks, shall we say. I can sniff out a Pather in a crowd at forty paces, or assassinate the governor of a colony, or even take down a core world's spaceport if the odds are right. I think an enterprising starfarer like you will have no problem finding a use for such... talents.\"",
+		"barDialogExplanationNegotiator":"\"Ever wanted to win friends and influence people? I can do that on your behalf. Lobby a few planetary officials to take a more favorable view of your latest activities... or start a vicious libel campaign against someone you don't like. Maybe even persuade an entire planetary population to rise in revolt.\"",
+		"barDialogExplanationSaboteur":"\"You want to watch a world burn, I'm your $manOrWoman. Torch someone's fully stocked warehouse of luxury goods? Cause chaos with a public shooting? Sabotage a planetary spaceport? I can do all that, with a little prep work and funding.\"",
+		"barDialogExplanationHybrid":"\"I've got a range of talents you might find useful. Whether it's under-the-table deals with a senator, exposing a nefarious Pather plot, or sending an organics storage tank up in flames, if something needs to be done untraceably, you've come to the right $manOrWoman.\"",
+		
 		"barDialogPay":"\"I'll expect a %s credit hiring bonus, and afterwards a starting salary of %s credits per month. Once the initial transfer is complete, I'll be ready for directions within the hour.\"",
 		#"barDialogPay":"\"I'll expect a %s credit hiring bonus. Once the initial transfer is complete, I'll be ready for directions within the hour.\"",
 		"barOptionMaxAgents":"\"I can't hire any more agents at the moment.\"",
@@ -276,6 +283,10 @@
 		
 		"skillBonusAgents":"maximum agents",
 		"tooltipSalary":"Each agent receives a base salary of %s credits per month, plus %s credits per agent level.",
+		
+		"specialization_negotiator":"Negotiator",
+		"specialization_saboteur":"Saboteur",
+		"specialization_hybrid":"Hybrid",
 	},
 	"nex_agentActions":{
 		"unknownFaction":"unknown faction",
@@ -440,6 +451,7 @@
 		"dialogProcureShipIntro":"A single ship can be procured from a faction, but persuading officials to \"lose\" a military-grade warship through a judicious combination of bribes, blackmail and forgery requires an expense considerably in excess of the market price. It should only be used for hulls which have proven difficult to obtain through other channels.",
 		"dialogProcureShipIntro2":"Ship will have a random variant and be subject to D-mods. Not all ships known to the faction may be available.",
 		"dialogProcureShipIntro3":"If the attempt fails, %s of the action cost will be refunded.",
+		"dialogProcureShipIntroSpecialization":"%s specialization is required to procure non-legal ships.",
 		"dialogProcureShipDestinationIntro":"Select a planet or station to deliver the ship to. It will be placed in storage upon arrival.",
 		
 		"dialogInfoHeaderTravel":"Travel to %s",

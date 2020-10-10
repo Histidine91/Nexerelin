@@ -45,7 +45,8 @@ public class ExerelinConfig
     public static int agentBaseSalary = 2000;
     public static int agentSalaryPerLevel = 1000;
     public static int maxAgents = 2;
-	public static boolean agentStealAllShips = false;
+    public static boolean agentStealAllShips = true;
+    public static boolean useAgentSpecializations = true;
 
     public static String[] builtInFactions = new String[]{};
     public static String[] supportedModFactions = new String[]{};
@@ -177,7 +178,8 @@ public class ExerelinConfig
             agentBaseSalary = settings.optInt("agentBaseSalary", agentBaseSalary);
             agentSalaryPerLevel = settings.optInt("agentSalaryPerLevel", agentSalaryPerLevel);
             maxAgents = settings.optInt("maxAgents", maxAgents);
-			agentStealAllShips = settings.optBoolean("agentStealAllShips", agentStealAllShips);
+            agentStealAllShips = settings.optBoolean("agentStealAllShips", agentStealAllShips);
+            useAgentSpecializations = settings.optBoolean("useAgentSpecializations", useAgentSpecializations);
             
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
