@@ -1,0 +1,3 @@
+id,name,short,desc,cost,isBonus,spritePath,effectPlugin,extra1,extra2
+nex_diversity,Fleet Diversity,We are all unique,"When multiple (non-mothballed) ships have the same base hull ID, -%s combat readiness for each duplicate",1,FALSE,graphics/exerelin/icons/ungp/diversity.png,exerelin.ungp.FleetDiversity,,
+#nex_agentDetection,SNAAAAAKE!,Agents easily compromised,Agents have a %s higher detection chance and %s higher injury chance,0,FALSE,graphics/exerelin/icons/ungp/snake.png,exerelin.ungp.AgentDetection,,

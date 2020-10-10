@@ -81,6 +81,13 @@ public class ExerelinUtils
 		return list.get(randomIndex);
 	}
 	
+	public static <T> void modifyMapEntry(Map<T, Integer> map, T key, int amount) {
+		int curr = 0;
+		if (map.containsKey(key))
+			curr = map.get(key);
+		map.put(key, curr + amount);
+	}
+	
 	/**
 	 * Generates a gaussian value using the provided {@code Random} (equivalent to
 	 * calling {@code nextGaussian()}, then clamps it to between {@code min} and {@code max}.
