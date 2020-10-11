@@ -88,6 +88,13 @@ public class ExerelinUtils
 		map.put(key, curr + amount);
 	}
 	
+	public static <T> void modifyMapEntry(Map<T, Float> map, T key, float amount) {
+		float curr = 0;
+		if (map.containsKey(key))
+			curr = map.get(key);
+		map.put(key, curr + amount);
+	}
+	
 	/**
 	 * Generates a gaussian value using the provided {@code Random} (equivalent to
 	 * calling {@code nextGaussian()}, then clamps it to between {@code min} and {@code max}.

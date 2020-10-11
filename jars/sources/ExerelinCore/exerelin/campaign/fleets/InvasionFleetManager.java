@@ -446,6 +446,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return canSatBomb(attacker, target.getFaction());
 	}
 	
+	public void modifySpawnCounter(String factionId, float amount) {
+		ExerelinUtils.modifyMapEntry(spawnCounter, factionId, amount);
+	}
+	
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, EventType type)
 	{
 		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1);
@@ -1027,7 +1031,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 * @param intel
 	 * @return
 	 */
-	protected float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
+	public float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
 	{
 		float amount = base * Math.max(intel.getBaseFP()/BASE_INVASION_COST, 0.8f);
 		log.info("Deducting " + amount + " invasion points for " + intel.getName());
@@ -1117,6 +1121,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return intel;
 	}
 	
+	// FIXME: doesn't count counter-invasions and doesn't track sat bombs
 	public int getNumLifetimeInvasions() {
 		return lifetimeInvasions;
 	}
