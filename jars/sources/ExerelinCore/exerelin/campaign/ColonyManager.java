@@ -57,7 +57,6 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
@@ -459,7 +458,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return false;
 	}
 	
-	protected void processNPCConstruction() {
+	public void processNPCConstruction() {
 		Iterator<MarketAPI> iter = npcConstructionQueues.keySet().iterator();
 		while (iter.hasNext()) {
 			MarketAPI market = iter.next();
@@ -471,7 +470,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * Starts queued construction/upgrade projects on the market as appropriate.
 	 * @param market
 	 */
-	protected void processNPCConstruction(MarketAPI market) {
+	public void processNPCConstruction(MarketAPI market) {
 		if (isBuildingAnything(market))
 			return;
 		

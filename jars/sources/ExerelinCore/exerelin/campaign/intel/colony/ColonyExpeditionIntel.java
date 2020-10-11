@@ -349,8 +349,14 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	}
 	
 	public void createColony() {
-		log.info("Colonizing market " + getTarget().getName() + ", " + getTarget().getId());
-		MarketAPI market = getTarget();
+		createColonyStatic(getTarget(), planet, faction, false);
+		newName = getTarget().getName();
+	}
+	
+	public static void createColonyStatic(MarketAPI market, PlanetAPI planet, 
+			FactionAPI faction, boolean fromDeciv) 
+	{
+		log.info("Colonizing market " + market.getName() + ", " + market.getId());
 		String factionId = faction.getId();
 		
 		market.setSize(3);
@@ -364,7 +370,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (market.getName().startsWith(planet.getStarSystem().getBaseName() + " ")) {
 			String tag = NameGenData.TAG_PLANET;
 			if (planet.isMoon()) tag = NameGenData.TAG_MOON;
-			newName = ProcgenUsedNames.pickName(tag, null, null).nameWithRomanSuffixIfAny;
+			String newName = ProcgenUsedNames.pickName(tag, null, null).nameWithRomanSuffixIfAny;
 			market.setName(newName);
 			planet.setName(newName);
 			ProcgenUsedNames.notifyUsed(newName);
@@ -378,13 +384,15 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		market.addIndustry(Industries.POPULATION);
 		
 		// set growth level to 50%
-		ImmigrationPlugin plugin = getImmigrationPlugin(market);
-		float min = plugin.getWeightForMarketSize(market.getSize());
-		float max = plugin.getWeightForMarketSize(market.getSize() + 1);
-		market.getPopulation().setWeight((min+max)/2);
-		
-		// try to prevent instant size 4
-		market.getMemoryWithoutUpdate().set("$nex_delay_growth", true, 5);
+		if (!faction.isPlayerFaction()) {
+			ImmigrationPlugin plugin = getImmigrationPlugin(market);
+			float min = plugin.getWeightForMarketSize(market.getSize());
+			float max = plugin.getWeightForMarketSize(market.getSize() + 1);
+			market.getPopulation().setWeight((min+max)/2);
+
+			// try to prevent instant size 4
+			market.getMemoryWithoutUpdate().set("$nex_delay_growth", true, 5);
+		}
 		
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (config.freeMarket)
@@ -409,10 +417,17 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		Global.getSector().getEconomy().addMarket(market, true);
 		market.getPrimaryEntity().setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
-		ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+		if (!fromDeciv) {
+			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
+			market.setIncentiveCredits(100000);
+		}
+		if (fromDeciv) {
+			market.addIndustry(Industries.SPACEPORT);
+		}
+		
 		ColonyManager.buildIndustries(market);
-		market.setIncentiveCredits(100000);
+		ColonyManager.getManager().processNPCConstruction(market);
 		
 		// planet desc change
 		MarketDescChanger.getInstance().reportMarketTransfered(market, faction,

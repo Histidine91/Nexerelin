@@ -654,11 +654,13 @@
 	
 	"nex_decivEvent":{
 		"costPanelHeader":"Trading $commodity1 for $commodity2: amount (available)",
+		"costPanelHeaderColony":"Colony revival: resources needed (available)",
 		"costPanelHeaderBomb":"Bombing reward: $commodity",
 		"fuelAmount":"You have %s fuel.",
 		"freeSpace":"Your fleet's holds can accommodate an additional %s units of cargo.",
 		"freeSpaceFuel":"Your fleet's fuel tanks can hold an additional %s units of fuel.",
 		"freeSpaceCrew":"Your fleet's crew quarters can accommodate an additional %s personnel.",
+		"exploreRuins":"There are local ruins you should explore first.",
 	},
 	
 	"nex_defenseFleet":{

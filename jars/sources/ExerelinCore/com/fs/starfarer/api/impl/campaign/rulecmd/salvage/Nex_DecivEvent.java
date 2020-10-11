@@ -5,12 +5,16 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
+import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -23,8 +27,10 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -46,14 +52,20 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		Crew ask to be taken away
 	
 		Exchange goods for bombing a target
+	
+		Form new autonomous colony
 	*/
 	
 	public static final boolean DEBUG_MODE = false;
 	public static final float EVENT_CHANCE = 0.35f;
 	public static final float EVENT_TIME = 60;
+	public static final int SUPPLIES_TO_COLONIZE = 100;
+	public static final int MACHINERY_TO_COLONIZE = 50;
+	public static final float COLONY_REP_VALUE = 0.07f;
 	public static final String EVENT_TYPE_BARTER = "barter";
 	public static final String EVENT_TYPE_REFUGEES = "refugees";
 	public static final String EVENT_TYPE_BOMB = "bomb";
+	public static final String EVENT_TYPE_FOUNDCOLONY = "foundColony";
 	public static final String MEM_KEY_PREFIX = "$nex_decivEvent_";
 	public static final String MEM_KEY_HAS_EVENT = MEM_KEY_PREFIX + "hasEvent";
 	public static final String MEM_KEY_TYPE = MEM_KEY_PREFIX + "type";
@@ -139,10 +151,12 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		
 		// copy some variables to local memory (for text substitution)
 		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
-		String giveId = memory.getString(MEM_KEY_GIVE_ID);
-		int giveNum = (int)memory.getLong(MEM_KEY_GIVE_COUNT);
-		local.set(MEM_KEY_GIVE_NAME, getCommodityName(giveId), 0);
-		local.set(MEM_KEY_GIVE_COUNT, giveNum, 0);
+		if (memory.contains(MEM_KEY_GIVE_ID)) {
+			String giveId = memory.getString(MEM_KEY_GIVE_ID);
+			int giveNum = (int)memory.getLong(MEM_KEY_GIVE_COUNT);
+			local.set(MEM_KEY_GIVE_NAME, getCommodityName(giveId), 0);
+			local.set(MEM_KEY_GIVE_COUNT, giveNum, 0);
+		}
 		
 		if (memory.contains(MEM_KEY_TAKE_ID)) {
 			String takeId = memory.getString(MEM_KEY_TAKE_ID);
@@ -160,16 +174,24 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		FireBest.fire(null, dialog, memoryMap, "Nex_DecivEvent_OfferText");
 		
 		String type = memory.getString(MEM_KEY_TYPE);
-		
-		boolean enough = makeCostPanel(dialog.getTextPanel());			
+		boolean enough = makeCostPanel(dialog.getTextPanel());		
 		
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		opts.clearOptions();
 		opts.addOption(StringHelper.getString("accept", true), "nex_decivEvent_accept");
 		opts.addOption(StringHelper.getString("decline", true), "nex_decivEvent_decline");
-		if (!enough) {
+		
+		// require player to survey planet and explore any ruins first?
+		if (type.equals(EVENT_TYPE_FOUNDCOLONY) && CoreCampaignPluginImpl.hasUnexploredRuins(dialog.getInteractionTarget().getMarket())) 
+		{
+			opts.setEnabled("nex_decivEvent_accept", false);
+			// FIXME localize
+			opts.setTooltip("nex_decivEvent_accept", StringHelper.getString("nex_decivEvent", "exploreRuins"));
+		}
+		else if (!enough) {
 			opts.setEnabled("nex_decivEvent_accept", false);
 		}
+		
 		ExerelinUtils.addDevModeDialogOptions(dialog);
 	}
 	
@@ -181,10 +203,13 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		int takeNum = (int)memory.getLong(MEM_KEY_TAKE_COUNT);
 		
 		String type = memory.getString(MEM_KEY_TYPE);
-		if (type.equals(EVENT_TYPE_BOMB)) {
+		if (type.equals(EVENT_TYPE_FOUNDCOLONY)) {
+			foundColony(dialog);
+			return;
+		}		
+		else if (type.equals(EVENT_TYPE_BOMB)) {
 			Global.getSoundPlayer().playUISound("nex_sfx_deciv_bomb", 1, 1);
 		}
-			
 		
 		CargoAPI cargo = getPlayerCargo();
 		cargo.addCommodity(giveId, giveNum);
@@ -201,6 +226,39 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	protected void decline(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
 	{
 		dialog.getInteractionTarget().setActivePerson(null);
+	}
+	
+	protected void foundColony(InteractionDialogAPI dialog) {
+		CargoAPI cargo = getPlayerCargo();
+		cargo.removeCommodity(Commodities.SUPPLIES, SUPPLIES_TO_COLONIZE);
+		AddRemoveCommodity.addCommodityLossText(Commodities.SUPPLIES, SUPPLIES_TO_COLONIZE, dialog.getTextPanel());
+		cargo.removeCommodity(Commodities.HEAVY_MACHINERY, MACHINERY_TO_COLONIZE);
+		AddRemoveCommodity.addCommodityLossText(Commodities.HEAVY_MACHINERY, MACHINERY_TO_COLONIZE, dialog.getTextPanel());
+		
+		MarketAPI market = dialog.getInteractionTarget().getMarket();
+		PlanetAPI planet = market.getPlanetEntity();
+		FactionAPI faction = Global.getSector().getFaction(Factions.INDEPENDENT);
+		
+		ColonyExpeditionIntel.createColonyStatic(market, planet, faction, true);
+		
+		PersonAPI person = getPerson(market);
+		
+		NexUtilsReputation.adjustPlayerReputation(faction, getPerson(market), COLONY_REP_VALUE,
+						COLONY_REP_VALUE * 1.5f, null, dialog.getTextPanel());
+		ImportantPeopleAPI ip = Global.getSector().getImportantPeople();
+		
+		// set the person you talked to as the admin
+		person.setPostId(Ranks.POST_ADMINISTRATOR);
+		market.getCommDirectory().addPerson(person);
+		market.addPerson(person);
+		ip.addPerson(person);
+		ip.getData(person).getLocation().setMarket(market);
+		ip.checkOutPerson(person, "permanent_staff");
+		market.setAdmin(person);
+		
+		dialog.getInteractionTarget().setActivePerson(null);
+		setMem(MEM_KEY_HAS_EVENT, false);
+		((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 	}
 	
 	/**
@@ -241,6 +299,9 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 				header = StringHelper.getString("nex_decivEvent", "costPanelHeaderBomb");
 				header = StringHelper.substituteToken(header, "$commodity", getCommodityName(giveId));
 				break;
+			case EVENT_TYPE_FOUNDCOLONY:
+				header = StringHelper.getString("nex_decivEvent", "costPanelHeaderColony");
+				break;
 			case EVENT_TYPE_BARTER:
 			default:
 				header = StringHelper.getString("nex_decivEvent", "costPanelHeader");
@@ -254,11 +315,25 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		cost.setWithBorder(false);
 		cost.setAlignment(Alignment.LMID);
 		
+		if (type.equals(EVENT_TYPE_FOUNDCOLONY)) {
+			int haveSupplies = (int)cargo.getSupplies();
+			int haveMachinery = (int)cargo.getCommodityQuantity(Commodities.HEAVY_MACHINERY);
+			boolean enoughS = haveSupplies >  SUPPLIES_TO_COLONIZE;
+			cost.addCost(Commodities.SUPPLIES, SUPPLIES_TO_COLONIZE + " (" + haveSupplies + ")",
+				enoughS ? color : Misc.getNegativeHighlightColor());
+			boolean enoughM = haveMachinery > MACHINERY_TO_COLONIZE;
+			cost.addCost(Commodities.HEAVY_MACHINERY, MACHINERY_TO_COLONIZE + " (" + haveMachinery + ")",
+				enoughM ? color : Misc.getNegativeHighlightColor());
+			
+			cost.update();
+			return enoughS && enoughM;
+		}
+		
 		cost.addCost(giveId, "" + giveNum, color);
 		if (type.equals(EVENT_TYPE_BARTER)) {
 			int have = (int)cargo.getCommodityQuantity(takeId);
 			enough = have >= takeNum;
-			cost.addCost(takeId, "" + takeNum + " (" + have + ")",
+			cost.addCost(takeId, takeNum + " (" + have + ")",
 				enough ? color : Misc.getNegativeHighlightColor());
 		} else if (isBomb) {
 			enough = takeNum <= cargo.getFuel();
@@ -327,6 +402,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		eventTypePicker.add(EVENT_TYPE_BARTER, 10);
 		eventTypePicker.add(EVENT_TYPE_REFUGEES, 2.5f * market.getHazardValue());
 		eventTypePicker.add(EVENT_TYPE_BOMB, 3f);
+		if (market.getPlanetEntity() != null)
+			eventTypePicker.add(EVENT_TYPE_FOUNDCOLONY, 1.25f/market.getHazardValue());
 		
 		String type = eventTypePicker.pick();
 		switch (type) {
@@ -338,6 +415,9 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 				break;
 			case EVENT_TYPE_BOMB:
 				setupBombEvent();
+				break;
+			case EVENT_TYPE_FOUNDCOLONY:
+				setupColonyEvent();
 				break;
 		}
 		setMem(MEM_KEY_TYPE, type);
@@ -432,6 +512,10 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		
 		setMem(MEM_KEY_GIVE_ID, Commodities.CREW);
 		setMem(MEM_KEY_GIVE_COUNT, num);
+	}
+	
+	protected void setupColonyEvent() {
+		// no action needed?
 	}
 	
 	protected String getCommodityName(String commodityId) {
