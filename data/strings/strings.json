@@ -672,7 +672,7 @@
 		"forceHasOrHave":"has",
 		
 		"intelDesc":"$TheFaction $isOrAre dispatching a task force to defend $market in the $location, held by $theTargetFaction. The defense forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
-		"intelStageAction":"The defense forces are currently in-system.",
+		"intelStageAction":"The defense forces are currently in-system and will remain for %s more day(s).",
 		"intelOutcomeSuccess":"The defense forces have completed their mission.",
 	},
 	
@@ -1318,6 +1318,7 @@
 		
 		"optionRaid":"Launch a raid against $market",
 		"optionBombard":"Consider an orbital bombardment of $market",
+		"optionBombardVirus":"Consider an viral bombardment of $market",
 		"cannotRaid":"The presence of enemy fleets that are willing to offer battle makes a raid impossible.",
 		"cannotBombard":"All defenses must be defeated to make a bombardment possible.",
 		"raidCooldown":"Your forces will be able to organize another raid within $cooldown.",

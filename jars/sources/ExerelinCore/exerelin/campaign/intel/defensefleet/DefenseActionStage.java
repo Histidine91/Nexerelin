@@ -110,7 +110,8 @@ public class DefenseActionStage extends PirateRaidActionStage {
 		if (curr < index) return;
 		
 		if (status == RaidIntel.RaidStageStatus.ONGOING && curr == index) {
-			info.addPara(StringHelper.getString("nex_defenseFleet", "intelStageAction"), opad);
+			info.addPara(StringHelper.getString("nex_defenseFleet", "intelStageAction"), 
+					opad, Misc.getHighlightColor(), (int)dwellTime + "");
 			return;
 		}
 		
