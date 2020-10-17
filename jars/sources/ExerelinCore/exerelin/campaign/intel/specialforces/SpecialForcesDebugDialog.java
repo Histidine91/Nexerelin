@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 		//options.addOption("Check fleet status", Options.CHECK_FLEET_STATUS);
 		options.addOption("Reconstitute fleet", Options.REBUILD);
 		//options.addOption("Validate route segment", Options.VALIDATE_ROUTE);
+		options.addOption("Generate new name", Options.GENERATE_NAME);
 		options.addOption("Delete fleet and refund points", Options.DELETE);
 		options.addOption("Exit", Options.EXIT);
 		options.setShortcut(Options.EXIT, Keyboard.KEY_ESCAPE, false, false, false, false);
@@ -61,6 +63,7 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 		if (optionText != null)
 			text.addPara(optionText);
 		
+		CampaignFleetAPI fleet = intel.route.getActiveFleet();
 		switch ((Options)optionData) {
 			case CHECK_TASKS:
 				intel.routeAI.updateTaskIfNeeded();
@@ -98,7 +101,6 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 				text.setFontInsignia();
 				break;
 			case CHECK_FLEET_STATUS:
-				CampaignFleetAPI fleet = intel.route.getActiveFleet();
 				if (fleet == null) {
 					text.addPara("Fleet entity is not active");
 				}
@@ -116,6 +118,16 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 								hl, member.getShipName());
 					}
 					text.setFontInsignia();
+				}
+				break;
+			case GENERATE_NAME:
+				if (intel.route.getActiveFleet() != null) {
+					intel.fleetName = intel.pickFleetName(fleet, intel.route.getMarket(), intel.commander);
+					fleet.setName(intel.faction.getFleetTypeName(FLEET_TYPE) + " – " + intel.fleetName);
+					text.addPara("New fleet name: " + intel.fleetName);
+				}
+				else {
+					text.addPara("Fleet not currently available for naming");
 				}
 				break;
 			case DELETE:
@@ -177,6 +189,6 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 	
 	protected enum Options {
 		CHECK_TASKS, PICK_NEW_TASK, PATROL_RANDOM, RESET_ROUTE_LOCATION, REBUILD, 
-		VALIDATE_ROUTE, CHECK_FLEET_STATUS, DELETE, EXIT
+		GENERATE_NAME, VALIDATE_ROUTE, CHECK_FLEET_STATUS, DELETE, EXIT
 	}
 }

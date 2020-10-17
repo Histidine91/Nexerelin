@@ -732,12 +732,28 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			ClassLoader loader = Global.getSettings().getScriptClassLoader();
 			Class<?> clazz = loader.loadClass(className);
 			SpecialForcesNamer namer = (SpecialForcesNamer)clazz.newInstance();
-			name = namer.getFleetName(fleet, origin, commander);
+			
+			boolean allow = false;
+			int tries = 0;
+			while (allow == false && tries < 25) {
+				name = namer.getFleetName(fleet, origin, commander);
+				allow = name != null && !hasDuplicateName(name);
+				tries++;
+			}
 		} catch (Throwable t) {
 			log.error("Failed to load special forces namer " + className, t);
 		}
 
 		return name;
+	}
+	
+	protected boolean hasDuplicateName(String name) {
+		for (SpecialForcesIntel intel : SpecialForcesManager.getManager().activeIntel)
+		{
+			if (name.equals(intel.fleetName))
+				return true;
+		}
+		return false;
 	}
 	
 	public String getFleetNameForDebugging() {
