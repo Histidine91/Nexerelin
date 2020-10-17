@@ -11,11 +11,13 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
 import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -25,6 +27,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.ungp.VengeanceBuff;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -483,6 +486,10 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 						Math.round((20f + distance) * MathUtils.getRandomNumberInRange(2f, 2.5f))));
 				break;
 		}
+		if (Global.getSector().getMemoryWithoutUpdate().contains(VengeanceBuff.MEMORY_KEY)) {
+			duration *= VengeanceBuff.SEARCH_TIME_MULT;
+		}
+		
         daysLeft = duration;
 		
         Global.getSector().getIntelManager().addIntel(this);
@@ -503,6 +510,15 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		float sizeMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(market.getFaction());
         int combat, freighter, tanker, utility;
         float bonus;
+		
+		boolean buffRule = false;
+		if (Global.getSector().getMemoryWithoutUpdate().contains(VengeanceBuff.MEMORY_KEY)) {
+			float vengMult = Global.getSector().getMemoryWithoutUpdate().getFloat(VengeanceBuff.MEMORY_KEY);
+			sizeMult *= (1 + vengMult);
+			log.info("Buffing vengeance fleet by " + vengMult);
+			buffRule = true;
+		}
+		
         switch (escalationLevel) {
             default:
             case 0:
@@ -584,6 +600,16 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 
         if (fleet == null)
             return null;
+		
+		PersonAPI commander = fleet.getCommander();
+		if (commander == null) {
+			Global.getSector().getCampaignUI().addMessage("Vengeance commander null, nani the fuck");
+			return null;
+		}
+		if (buffRule) {
+			commander.getStats().setSkillLevel(Skills.NAVIGATION, 3);
+			commander.getStats().setSkillLevel("sensors", 3);
+		}
 
         //fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
         fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
@@ -592,30 +618,29 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         switch (escalationLevel) {
             default:
             case 0:
-                
                 if (total > 500) {
-                    fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
-                    fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
+                    commander.setRankId(Ranks.SPACE_ADMIRAL);
+                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
                 } else if (total > 250) {
-                    fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_CAPTAIN);
-                    fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
+                    commander.setRankId(Ranks.SPACE_CAPTAIN);
+                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
                 } else {
-                    fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_COMMANDER);
-                    fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
+                    commander.setRankId(Ranks.SPACE_COMMANDER);
+                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
                 }
                 break;
             case 1:
                 if (total > 500) {
-                    fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
-                    fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
+                    commander.setRankId(Ranks.SPACE_ADMIRAL);
+                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
                 } else {
-                    fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_CAPTAIN);
-                    fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
+                    commander.setRankId(Ranks.SPACE_CAPTAIN);
+                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
                 }
                 break;
             case 2:
-                fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
-                fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
+                commander.setRankId(Ranks.SPACE_ADMIRAL);
+                commander.setPostId(Ranks.POST_FLEET_COMMANDER);
                 break;
         }
         if (ALWAYS_SPAWN_ONSITE || playerFleet.getContainingLocation() != market.getContainingLocation()) {

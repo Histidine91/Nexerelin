@@ -1,3 +1,4 @@
 id,name,short,desc,cost,isBonus,spritePath,effectPlugin,extra1,extra2
-nex_diversity,Fleet Diversity,We are all unique,"When multiple (non-mothballed) ships have the same base hull ID, -%s combat readiness for each duplicate",1,FALSE,graphics/exerelin/icons/ungp/diversity.png,exerelin.ungp.FleetDiversity,,
-#nex_agentDetection,SNAAAAAKE!,Agents easily compromised,Agents have a %s higher detection chance and %s higher injury chance,0,FALSE,graphics/exerelin/icons/ungp/snake.png,exerelin.ungp.AgentDetection,,
+nex_diversity,Fleet Diversity,We are all unique,"When multiple (non-mothballed) ships have the same base hull ID, -%s combat readiness for each duplicate [Nexerelin]",1,FALSE,graphics/exerelin/icons/ungp/diversity.png,exerelin.ungp.FleetDiversity,,
+#nex_agentDetection,SNAAAAAKE!,Agents easily compromised,Agents have a %s higher detection chance and %s higher injury chance [Nexerelin],0,FALSE,graphics/exerelin/icons/ungp/snake.png,exerelin.ungp.AgentDetection,,
+nex_vengeance,Erinyes Protocol,More dangerous vengeance fleets,"Vengeance fleets are %s larger, hunt player for %s longer, and have the %s and %s skills [Nexerelin]",0,FALSE,graphics/exerelin/icons/ungp/dagger2.png,exerelin.ungp.VengeanceBuff,,
