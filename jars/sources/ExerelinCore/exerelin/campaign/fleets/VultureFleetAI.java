@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -216,7 +217,7 @@ public class VultureFleetAI implements EveryFrameScript
 		if (!isDebris && recovData != null && !recovData.ships.isEmpty()) {
 			salvage = Global.getFactory().createCargo(false);
 			PerShipData shipData = recovData.ships.get(0);
-			addStuffFromShip(salvage, shipData);
+			addStuffFromShip(salvage, shipData, entity);
 		}
 		else {
 			salvage = SalvageEntity.generateSalvage(random, 1, 1, 1, 1, dropValue, dropRandom);
@@ -241,17 +242,18 @@ public class VultureFleetAI implements EveryFrameScript
 		if (es != null) extra = es.cargo;
 		
 		for (PerShipData ship : ships) {
-			addStuffFromShip(extra, ship);
+			addStuffFromShip(extra, ship, entity);
 		}
 		BaseSalvageSpecial.setExtraSalvage(extra, entity.getMemoryWithoutUpdate(), 0);
 	}
 	
 	// based on ShipRecoverySpecial.addStuffFromMember
-	protected void addStuffFromShip(CargoAPI cargo, PerShipData shipData) {
+	protected void addStuffFromShip(CargoAPI cargo, PerShipData shipData, SectorEntityToken entity) 
+	{
 		FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, shipData.variantId);
 		new ShipRecoverySpecialNPC().prepareMember(member, shipData);
 		
-		if (shouldRecover(member)) {
+		if (shouldRecover(member, entity)) {
 			addShipToFleet(member, shipData);
 			return;
 		}
@@ -288,9 +290,9 @@ public class VultureFleetAI implements EveryFrameScript
 		fleet.getFleetData().syncIfNeeded();
 	}
 	
-	// TODO
-	protected boolean shouldRecover(FleetMemberAPI member) {
-		return true;
+	protected boolean shouldRecover(FleetMemberAPI member, SectorEntityToken entity) {
+		if (member.getHullSpec().getHints().contains(ShipTypeHints.UNBOARDABLE)) return false;
+		return Misc.isShipRecoverable(member, fleet, false, false, Misc.getSalvageSeed(entity), 1);
 	}
 	
 	public Script getScavengeScript(final SectorEntityToken target) {
