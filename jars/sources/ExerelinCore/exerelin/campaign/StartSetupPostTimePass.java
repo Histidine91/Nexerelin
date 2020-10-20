@@ -129,6 +129,30 @@ public class StartSetupPostTimePass {
 		}
 	}
 	
+	public static SectorEntityToken pickRandomStartLocation(String factionId, boolean ownFactionOnly) {
+		SectorEntityToken entity = null;
+		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<SectorEntityToken> pickerBackup = new WeightedRandomPicker<>();
+		picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+		{
+			if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
+				continue;
+			if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
+				continue;
+			float weight = market.getSize();
+			
+			if (market.getFactionId().equals(factionId))
+				picker.add(market.getPrimaryEntity(), weight);
+			if (!ownFactionOnly)
+				pickerBackup.add(market.getPrimaryEntity(), weight);
+		}
+		entity = picker.pick();
+		if (entity == null) return pickerBackup.pick();
+		
+		return entity;
+	}
+	
 	public static void handleStartLocation(SectorAPI sector, CampaignFleetAPI playerFleet, String factionId) 
 	{
 		SectorEntityToken entity = null;
@@ -140,17 +164,7 @@ public class StartSetupPostTimePass {
 			}
 		}
 		else if (ExerelinSetupData.getInstance().randomStartLocation) {
-			WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
-			picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-			{
-				if (!market.getFaction().getId().equals(factionId))
-					continue;
-				if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
-					continue;
-				picker.add(market.getPrimaryEntity());
-			}
-			entity = picker.pick();
+			entity = pickRandomStartLocation(factionId, false);
 		}
 		else if (SectorManager.getManager().isCorvusMode())
 		{
@@ -173,17 +187,7 @@ public class StartSetupPostTimePass {
 		
 		// couldn't find an more suitable start location, pick any market that's not unfriendly to us
 		if (entity == null) {
-			WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
-			picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-			{
-				if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
-					continue;
-				if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
-					continue;
-				picker.add(market.getPrimaryEntity());
-			}
-			entity = picker.pick();
+			entity = pickRandomStartLocation(factionId, false);
 		}
 		
 		if (entity != null)
