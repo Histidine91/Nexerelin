@@ -28,6 +28,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -268,20 +269,24 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		String name = info.name;
 		float cost = info.cost;
 		boolean alreadyHas = false;
+		String designType = "";
 		FactionAPI player = Global.getSector().getPlayerFaction();
 		
 		switch (info.type) {
 			case SHIP:
 				ShipHullSpecAPI hull = Global.getSettings().getHullSpec(id);
 				alreadyHas = player.knowsShip(id);
+				designType = hull.getManufacturer();
 				break;
 			case FIGHTER:
 				FighterWingSpecAPI wing = Global.getSettings().getFighterWingSpec(id);
 				alreadyHas = player.knowsFighter(id);
+				designType = wing.getVariant().getHullSpec().getManufacturer();
 				break;
 			case WEAPON:
 				WeaponSpecAPI wep = Global.getSettings().getWeaponSpec(id);
 				alreadyHas = player.knowsWeapon(id);
+				designType = wep.getManufacturer();
 				break;
 			default:
 				return;
@@ -291,6 +296,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		String str = StringHelper.getString("exerelin_misc", "blueprintSwapPurchaseOption");
 		str = StringHelper.substituteToken(str, "$name", name);
 		str = StringHelper.substituteToken(str, "$points", (int)cost + "");
+		str = StringHelper.substituteToken(str, "$designType", designType);
 		
 		if (alreadyHas)
 		{
@@ -314,25 +320,34 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	protected void showBlueprintInfoAndPreparePurchase(int index, TextPanelAPI text)
 	{
 		Description desc;
+		String designType = "";
 		toPurchase = getBlueprintStock(market.getMemoryWithoutUpdate()).get(index);
 		switch (toPurchase.type) {
 			case SHIP:
 				ShipHullSpecAPI hull = Global.getSettings().getHullSpec(toPurchase.id);
 				desc = Global.getSettings().getDescription(hull.getDescriptionId(), Description.Type.SHIP);
+				designType = hull.getManufacturer();
 				break;
 			case FIGHTER:
 				FighterWingSpecAPI wing = Global.getSettings().getFighterWingSpec(toPurchase.id);
 				desc = Global.getSettings().getDescription(wing.getVariant().getHullSpec().getDescriptionId(), Description.Type.SHIP);
+				designType = wing.getVariant().getHullSpec().getManufacturer();
 				break;
 			case WEAPON:
 				WeaponSpecAPI wep = Global.getSettings().getWeaponSpec(toPurchase.id);
 				desc = Global.getSettings().getDescription(wep.getWeaponId(), Description.Type.WEAPON);
+				designType = wep.getManufacturer();
 				break;
 			default:
 				return;
 		}
+		Color hl = Misc.getBasePlayerColor();
+		if (!designType.isEmpty()) {
+			hl = Global.getSettings().getDesignTypeColor(designType);
+		}
 		
 		text.setFontSmallInsignia();
+		text.addPara(StringHelper.getString("designType", true) + ": " + designType, hl, designType);
 		text.addPara(desc.getText1FirstPara());
 		text.setFontInsignia();
 	}
