@@ -670,6 +670,12 @@ OR
 ""Please, won't you reconsider?""
 
 It takes a while before $personName gives up $hisOrHer attempts to cajole you into changing your mind and you can cut the comm link.",,
+nex_decivEvent_declineColonyLater,DialogOptionSelected,"$option == nex_decivEvent_decline
+$market.hasRuins
+!$market.ruinsExplored
+$market.nex_decivEvent_type == ""foundColony""","Nex_DecivEvent decline
+ShowDefaultVisual
+FireAll PopulateOptions","""Got things to do first? We understand. Let us know when you're done.""",,
 ,,,,,,
 ,,,,,,
 # Base commander stuff,,,,,,
