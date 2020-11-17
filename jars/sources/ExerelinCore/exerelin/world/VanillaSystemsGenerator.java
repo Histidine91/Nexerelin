@@ -283,6 +283,7 @@ public class VanillaSystemsGenerator {
 		
 		MarketAPI culann = getMarket("culann");
 		culann.getIndustry(Industries.BATTLESTATION_HIGH).setAICoreId("alpha_core");
+		culann.getIndustry(Industries.MILITARYBASE).setAICoreId("alpha_core");
 		
 		MarketAPI eldfell = getMarket("eldfell");
 		eldfell.addIndustry(Industries.GROUNDDEFENSES);
