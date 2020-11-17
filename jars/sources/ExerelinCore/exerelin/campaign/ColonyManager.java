@@ -691,7 +691,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		ColonyTargetValuator valuator = loadColonyTargetValuator(factionId);
 		
-		WeightedRandomPicker<PlanetAPI> planetPicker = new WeightedRandomPicker<>();
+		//WeightedRandomPicker<PlanetAPI> planetPicker = new WeightedRandomPicker<>();
+		PlanetAPI best = null;
+		float bestScore = 0;
 		float maxDist = valuator.getMaxDistanceLY(faction);
 		float minScore = valuator.getMinScore(faction);
 		for (StarSystemAPI system : Global.getSector().getStarSystems()) 
@@ -701,7 +703,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				//log.info("Filtering system " + system.getBaseName());
 				continue;
 			}
-				
 			
 			float dist = Misc.getDistanceLY(system.getHyperspaceAnchor(), anchor);
 			if (dist > maxDist) {
@@ -723,11 +724,16 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				float score = valuator.evaluatePlanet(planet.getMarket(), dist, faction);
 				if (score < minScore) continue;
 				
+				score *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+				
 				//log.info("  Adding planet " + planet);
-				planetPicker.add(planet, score);
+				if (score > bestScore) {
+					bestScore = score;
+					best = planet;
+				}
 			}
 		}
-		PlanetAPI target = planetPicker.pick();
+		PlanetAPI target = best;
 		if (target == null) {
 			log.info("Failed to pick target for expedition");
 			return null;

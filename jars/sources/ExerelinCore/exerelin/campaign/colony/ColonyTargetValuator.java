@@ -113,7 +113,7 @@ public class ColonyTargetValuator {
 	public float evaluatePlanet(MarketAPI market, float distanceLY, FactionAPI faction) {
 		List<String> conds = new ArrayList<>();
 		if (faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market))
-				&& !ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
+				&& ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
 			return 1000;
 		
 		float score = 0;
@@ -137,6 +137,11 @@ public class ColonyTargetValuator {
 		
 		score /= hazard;
 		score *= getDistanceValueMult(distanceLY, faction);
+		
+		if (ExerelinUtilsFaction.getSystemOwner(market.getContainingLocation()) == faction) 
+		{
+			score *= 10;
+		}
 		
 		String distStr = String.format("%.1f", distanceLY);
 		String scoreStr = String.format("%.2f", score);
@@ -236,7 +241,7 @@ public class ColonyTargetValuator {
 					ORGANICS_CONDITIONS);
 			value *= getMultiplierForUnavailableResource(conditionId, volatilesProduction,
 					VOLATILES_CONDITIONS);
-			value *= getMultiplierForUnavailableResource(conditionId, volatilesProduction,
+			value *= getMultiplierForUnavailableResource(conditionId, foodProduction,
 					FOOD_CONDITIONS);
 		}
 			
