@@ -69,6 +69,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	public static final String MEM_KEY_TARGETS = "$nex_fleetRequest_targets";
 	public static final String MEM_KEY_TARGET = "$nex_fleetRequest_target";
 	public static final String MEM_KEY_COST = "$nex_fleetRequest_cost";
+	public static final String MEM_KEY_BASE_STRIKE_TARGET = "$nex_canBaseStrike";
 	public static final String OPTION_MAIN = "nex_fleetRequest_main";
 	public static final String OPTION_PROCEED = "nex_fleetRequest_proceed";
 	public static final String TYPE_OPTION_PREFIX = "nex_fleetRequest_setType_";
@@ -572,6 +573,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				}
 			}
 		}
+		// memory key check
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
+		{
+			if (market.getMemoryWithoutUpdate().getBoolean(MEM_KEY_BASE_STRIKE_TARGET))
+				markets.add(market);
+		}
+		
 		return markets;
 	}
 	
