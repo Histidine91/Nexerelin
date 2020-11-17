@@ -59,7 +59,7 @@ public class ExerelinConfig
     public static float fleetRequestCapMult = 1;
     public static float fleetRequestIncrementMult = 1;
     public static float invasionFleetSizeMult = 1;
-    public static float invasionGracePeriod = 15;
+    public static float invasionGracePeriod = 90;
     public static float pointsRequiredForInvasionFleet = 24000f;
     public static float baseInvasionPointsPerFaction = 30f;
     public static float invasionPointsPerPlayerLevel = 0.5f;
@@ -69,7 +69,7 @@ public class ExerelinConfig
     public static boolean allowRepeatBlueprintsFromRaid = false;
     
     // Alliances
-    public static float allianceGracePeriod = 30;
+    public static float allianceGracePeriod = 120;
     public static float allianceFormationInterval = 30f;
     public static boolean ignoreAlignmentForAlliances = false;
     public static float predefinedAllianceNameChance = 0.5f;
