@@ -15,7 +15,9 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.Nex_FactionCommissionIntel;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ExerelinUtilsFaction {
 	
@@ -71,6 +73,14 @@ public class ExerelinUtilsFaction {
                 ret.add(market);
         }
         return ret;
+    }
+    
+    public static Set<LocationAPI> getLocationsWithFactionPresence(String factionId) {
+        Set<LocationAPI> results = new HashSet<>();
+        for (MarketAPI market : getFactionMarkets(factionId)) {
+            results.add(market.getContainingLocation());
+        }
+        return results;
     }
     
     public static boolean hasAnyMarkets(String factionId)

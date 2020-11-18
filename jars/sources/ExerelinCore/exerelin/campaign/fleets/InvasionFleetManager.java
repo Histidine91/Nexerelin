@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -490,6 +491,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	{
 		String factionId = faction.getId();
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+		Set<LocationAPI> systemsWeHavePresenceIn = ExerelinUtilsFaction.getLocationsWithFactionPresence(factionId);
 		
 		for (MarketAPI market : markets) 
 		{
@@ -556,10 +558,28 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
 			if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId) || isPirateFaction)
 				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
-
-			// revanchism
-			if (type != EventType.RAID && ExerelinUtilsMarket.wasOriginalOwner(market, factionId))
-				weight *= 5;
+			
+			boolean haveHeavyIndustry = ExerelinUtilsMarket.hasHeavyIndustry(market);
+			boolean revanchist = ExerelinUtilsMarket.wasOriginalOwner(market, factionId)
+					&& type == EventType.INVASION;
+			
+			// revanchism, prioritise heavy industry
+			if (haveHeavyIndustry) {
+				if (revanchist) {
+					weight *= 80f;
+				}
+				else {
+					weight = 5f;
+				}
+			} else if (revanchist) {
+				weight *= 5f;
+			}
+			
+			// focus on cleaning up systems we already have
+			if (systemsWeHavePresenceIn.contains(market.getContainingLocation())) 
+			{
+				weight *= 10f;
+			}	
 
 			// defender of the faith
 			if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && ExerelinUtilsFaction.isLuddicFaction(factionId))

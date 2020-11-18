@@ -227,6 +227,16 @@ public class ExerelinUtilsMarket {
 		return false;
 	}
 	
+	public static boolean hasHeavyIndustry(MarketAPI market) {
+		for (Industry ind : market.getIndustries()) 
+		{
+			if (!ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY))
+				continue;
+			return true;
+		}
+		return false;
+	}
+	
 	public static PersonAPI getPerson(MarketAPI market, String postId)
 	{
 		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
