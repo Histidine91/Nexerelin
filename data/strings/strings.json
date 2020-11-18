@@ -564,6 +564,7 @@
 		"costFactorIncome":"income",
 		"costFactorSizeAndStability":"market size and stability",
 		"costFactorPlayerFounded":"player-founded colony",
+		"costFactorRecentlyCapturedByPlayer":"recently captured by player",
 	},
 	
 	"nex_colonies":{

@@ -81,6 +81,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 
     protected static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
     public static final String MEMORY_KEY_RECENTLY_CAPTURED = "$nex_recentlyCapturedFrom";
+	public static final String MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER = "$nex_recentlyCapturedByPlayer";
     public static final float MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE = 90;
     public static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
         Ranks.POST_BASE_COMMANDER,
@@ -1233,6 +1234,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             oldOwner.getMemoryWithoutUpdate().set("$nex_recentlyInvaded", true, 
                     Global.getSettings().getFloat("nex_aiCoreAndPrisonerCooldownAfterInvasion"));
         }
+		
+		if (playerInvolved) {
+			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER, true, 60);
+		}
         
         ExerelinUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
                 playerInvolved, isCapture, factionsToNotify, repChangeStrength);

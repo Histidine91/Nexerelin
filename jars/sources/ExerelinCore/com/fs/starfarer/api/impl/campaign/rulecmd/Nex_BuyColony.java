@@ -108,11 +108,16 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		
 		int size = market.getSize();
 		
-		// always enable governorship for player-founded colonies (if they're size 3)
+		// always enable governorship for player-founded colonies (if they're size 3 or lower)
 		if (ExerelinUtilsMarket.getOriginalOwner(market) == null && size <= 3) 
 		{
 			return true;
 		}
+		// enable for markets freshly captured by player
+		if (market.getMemoryWithoutUpdate().getBoolean(SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER))
+		{
+			return true;
+		}		
 		
 		FactionAPI faction = market.getFaction();
 		if (size <= 3)
@@ -150,6 +155,12 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 			float stabilityMult = (market.getStabilityValue() + 5)/15;
 			stat.modifyFlat("sizeAndStability", (sizeBonus * stabilityMult), StringHelper.getString("nex_buyColony", 
 				"costFactorSizeAndStability", true));
+		}
+		
+		if (market.getMemoryWithoutUpdate().getBoolean(SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER))
+		{
+			stat.modifyMult("recentlyCapturedByPlayer", 0.5f, StringHelper.getString("nex_buyColony", 
+				"costFactorRecentlyCapturedByPlayer", true));
 		}
 			
 		return stat;
