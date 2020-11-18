@@ -95,8 +95,9 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	/**
 	 * Add general vengeance points (for retaliatory invasion and sat bomb fleets)
 	 * @param addedPoints
+	 * @param fromFactionId
 	 */
-	public void addPoints(float addedPoints)
+	public void addPoints(float addedPoints, String fromFactionId)
 	{
 		if (!isRevengeanceEnabled()) return;
 		
@@ -112,7 +113,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		float pointsToSpawn = Global.getSettings().getFloat("nex_counterInvasionPointsToSpawn");
 		if (points >= pointsToSpawn)
 		{
-			boolean success = generateCounterInvasionFleet();
+			boolean success = generateCounterInvasionFleet(fromFactionId);
 			if (success) points -= pointsToSpawn;
 		}
 	}
@@ -285,7 +286,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		float points = recentFpKilled * ExerelinConfig.revengePointsPerEnemyFP;
 		if (points > 0)
 		{
-			addPoints(points);
+			addPoints(points, battle.getNonPlayerCombined().getFaction().getId());
 			addFactionPoints(killedFleets.get(0).getFaction().getId(), points * 2f);
 		}
 	}
@@ -314,9 +315,10 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	
 	/**
 	 * Make a fleet to conquer one of player faction's markets (or potentially sat bomb it)
+	 * @param triggeringFactionId The ID of the faction the player most recently committed a hostile act against.
 	 * @return True if fleet was successfully created, false otherwise
 	 */
-	protected boolean generateCounterInvasionFleet()
+	protected boolean generateCounterInvasionFleet(String triggeringFactionId)
 	{
 		log.info("Trying to generate counter-invasion fleet");
 		
@@ -337,7 +339,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			// only allow Templars to send counter-invasion fleet if we have no other enemies
 			if (enemyId.equals("templars") && enemies.size() > 1)
 				continue;
-			attackerPicker.add(enemyId);
+			// don't pick factions hostile to the guys we just pissed off
+			if (sector.getFaction(enemyId).isHostileTo(triggeringFactionId))
+				continue;
+			
+			float weight = enemyId.equals(triggeringFactionId) ? 3 : 1;
+			
+			attackerPicker.add(enemyId, weight);
 		}
 		String revengeFactionId = attackerPicker.pick();
 		if (revengeFactionId == null || revengeFactionId.isEmpty())
@@ -436,13 +444,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	public void addVengeanceForMarketAttack(MarketAPI market, int size, float mult)
 	{
 		float addedPoints = size * size * mult;
+		String factionId = market.getFactionId();
 		log.info("Adding vengeance points for market attack: " + market.getName() + ", " + addedPoints + " (mult " + mult + ")");
-		addPoints(addedPoints/2);
+		addPoints(addedPoints/2, factionId);
 		addFactionPoints(market.getFactionId(), addedPoints);
 		
 		// war weariness too
 		// not really the right place for it, but saves us having to add its own listener
-		String factionId = market.getFactionId();
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, addedPoints * 5);
 	}
 

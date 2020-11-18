@@ -60,6 +60,7 @@ import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinUtilsAstro;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,6 +189,19 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (liveFactionCheckUtil.intervalElapsed())
         {
             recheckLiveFactions();
+        }
+    }
+    
+    @Override
+    public void reportFleetDespawned(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
+        if (!ExerelinModPlugin.isNexDev)
+            return;
+        
+        if (fleet.isStationMode()) {
+            String str = String.format("Despawning fleet %s in %s: %s", fleet.getNameWithFactionKeepCase(), fleet.getContainingLocation().getNameWithLowercaseType(),
+                    reason);
+            
+            Global.getSector().getCampaignUI().addMessage(str);
         }
     }
     
@@ -1178,7 +1192,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // faction respawn event if needed
-        marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(newOwner.getId(), true).size();
+        marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(newOwnerId, true).size();
         if (marketsRemaining == 1)
         {
             factionRespawned(newOwner, market);
@@ -1196,7 +1210,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (rvngEvent!= null) 
             {
                 float sizeSq = market.getSize() * market.getSize();
-                rvngEvent.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult);
+                rvngEvent.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult, oldOwnerId);
             }
         }
         
