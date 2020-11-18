@@ -719,6 +719,7 @@ SetEnabled aiCores_startTurnIn false",,,
 ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,FireAll ExerelinBaseCommanderOptionsInitialize,"""Anything else?""",,
 ,,,,,,
 # Alliance options,,,,,,
+ExerelinPlayerFactionDiplomacyPreCheck,ExerelinMarketSpecialInitialize,,unset $showPlayerFactionDiplomacyOptions,,,
 ExerelinPlayerFactionDiplomacyCheckConditions,ExerelinMarketSpecialInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
 $faction.id != ""player""
