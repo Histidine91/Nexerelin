@@ -319,7 +319,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 			
 	@Override
 	public String getIcon() {
-		if (isVicVirusBomb()) return "VIC/graphics/hullmods/vic_VBombHmod.png";
+		if (isVicVirusBomb()) return Global.getSettings().getSpriteName("nex_vicVbombing", "nex_vicVbombingIcon");
 		return Global.getSettings().getSpriteName("intel", "nex_satbomb");
 	}
 	
