@@ -614,6 +614,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         //fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
         fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
         fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
         fleet.setName(def.getFleetName(factionId, escalationLevel));
         switch (escalationLevel) {
             default:

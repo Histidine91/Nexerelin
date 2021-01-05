@@ -333,6 +333,8 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (hostileMode)
 			mem.set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
 		
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
+		
 		String postId = Ranks.POST_PATROL_COMMANDER;
 		String rankId = Ranks.SPACE_CAPTAIN;	//isInvasionFleet ? Ranks.SPACE_ADMIRAL : Ranks.SPACE_COMMANDER;
 		

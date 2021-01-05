@@ -233,6 +233,7 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_RAIDER, true);
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
 		
 		String postId = Ranks.POST_FLEET_COMMANDER;
 		String rankId = Ranks.SPACE_CAPTAIN;	//isInvasionFleet ? Ranks.SPACE_ADMIRAL : Ranks.SPACE_COMMANDER;

@@ -347,6 +347,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PIRATE, true);
 		}
 		
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
+		
 		String postId = Ranks.POST_FLEET_COMMANDER;
 		String rankId = isInvasionFleet ? Ranks.SPACE_ADMIRAL : Ranks.SPACE_CAPTAIN;
 		

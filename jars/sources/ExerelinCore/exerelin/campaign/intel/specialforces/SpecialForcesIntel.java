@@ -193,6 +193,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		fleet.setFaction(faction.getId(), true);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
 		
 		replaceCommander(fleet, false);
 		injectFlagship(fleet);
