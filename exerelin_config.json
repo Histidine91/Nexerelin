@@ -42,7 +42,7 @@
     "fleetRequestIncrementMult":1,
     "invasionFleetSizeMult": 1,
     "invasionGracePeriod": 90,  # factions won't accumulate invasion points for this many days at start
-    "pointsRequiredForInvasionFleet": 24000,    # bigger = longer delay between invasion fleets
+    "pointsRequiredForInvasionFleet": 27000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
     "invasionPointsPerPlayerLevel": 0.5,
