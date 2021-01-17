@@ -138,7 +138,7 @@ public class RaiseRelations extends CovertActionIntel {
 			DiplomacyIntel.addRelationshipChangePara(info, agentFaction.getId(), targetFaction.getId(), 
 					relation, repResult, pad);
 		}
-		else if (repResult != null && repResult != NO_EFFECT) {
+		else if (repResult != null && repResult.delta != 0) {
 			// show warning message
 			info.addPara("This is an error, a relationship change has been set when it should not have been: " 
 					+ repResult.delta, pad);
@@ -197,7 +197,7 @@ public class RaiseRelations extends CovertActionIntel {
 		}
 		ExerelinUtilsFaction.addFactionNamePara(info, first ? initPad : pad, color, targetFaction);
 		
-		if (repResult != null && repResult != NO_EFFECT) {
+		if (repResult != null && repResult.delta != 0) {
 			String relString = NexUtilsReputation.getRelationStr(relation);
 			Color relColor = NexUtilsReputation.getRelColor(relation);
 			String str = StringHelper.getStringAndSubstituteToken("exerelin_diplomacy", "intelRepCurrentShort",

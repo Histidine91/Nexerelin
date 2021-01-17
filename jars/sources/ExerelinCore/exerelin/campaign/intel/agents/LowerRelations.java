@@ -161,7 +161,7 @@ public class LowerRelations extends CovertActionIntel {
 			DiplomacyIntel.addRelationshipChangePara(info, agentFaction.getId(), targetFaction.getId(), 
 					relation2, repResult, pad);
 		}
-		else if (repResult != null && repResult != NO_EFFECT) {
+		else if (repResult != null && repResult.delta != 0) {
 			// show warning message
 			info.addPara("This is an error, a relationship change has been set when it should not have been: " 
 					+ repResult.delta, pad);
