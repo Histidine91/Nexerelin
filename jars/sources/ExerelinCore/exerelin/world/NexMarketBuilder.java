@@ -624,7 +624,7 @@ public class NexMarketBuilder
 		if (data.isHQ)
 		{
 			if (factionId.equals(Factions.PLAYER)) {
-				market.addIndustry(Industries.MILITARYBASE);
+				market.addIndustry(Industries.PATROLHQ);
 				String stationId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 1);
 				if (stationId != null)
 					market.addIndustry(stationId);

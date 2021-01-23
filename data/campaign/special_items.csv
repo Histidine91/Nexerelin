@@ -1,0 +1,2 @@
+name,id,tags,rarity,base price,stack size,cargo space,icon,sound id,sound id drop,plugin,plugin params,desc,order
+Faction Setup Item,nex_factionSetupItem,nex_factionSetup,,1,1000,1,,ui_chip_pickup,ui_modspec_drop,exerelin.world.factionsetup.FactionSetupItemPlugin,,Fake item for new game faction setup configuration.,1000

@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
+import exerelin.campaign.ui.OwnFactionSetupScript;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -118,8 +119,10 @@ public class StartSetupPostTimePass {
 		}
 		
 		// Starting blueprints
-		if (selectedFactionId.equals(Factions.PLAYER) && freeStart) {
-			// no free special items on free start
+		if (selectedFactionId.equals(Factions.PLAYER)) {
+			if (!freeStart) {
+				Global.getSector().addScript(new OwnFactionSetupScript());
+			}
 		}
 		else {
 			for (SpecialItemSet set : conf.startSpecialItems) {

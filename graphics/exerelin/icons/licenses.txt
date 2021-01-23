@@ -1,3 +1,9 @@
 hammer_and_pick.png
 	Public domain
 	https://commons.wikimedia.org/wiki/File:Schlaegel_und_Eisen_nach_DIN_21800.svg
+	
+plant.png
+population.png
+	Modified from originals from Freepik (https://www.flaticon.com/authors/freepik), free to use with attribution
+	https://www.flaticon.com/free-icon/growing-plant_25207
+	https://www.flaticon.com/free-icon/user_1077063

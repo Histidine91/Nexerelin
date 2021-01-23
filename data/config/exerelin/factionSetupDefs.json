@@ -1,0 +1,96 @@
+{	
+	"items":[
+		{
+			"id":"population_upsize",
+			"name":"Population Upsize",
+			"desc":"Increases the size of your starting planet by one level.",
+			"cost":20,
+			"sprite":"graphics/exerelin/icons/population.png",
+			"className":"exerelin.world.factionsetup.PopulationUpsize",
+		},
+		{
+			"id":"military_base",
+			"name":"Military Base",
+			"desc":"Adds a %s to your starting planet.",
+			"cost":15,
+			"params": {	# tries upgrading first, if the industry doesn't exist then it adds
+				"upgrade":"patrolhq",
+				"add":"militarybase",
+			},
+			"className":"exerelin.world.factionsetup.AddOrUpgradeIndustry",
+		},
+		{
+			"id":"heavy_industry",
+			"name":"Heavy Industry",
+			"desc":"Adds a %s to your starting planet, or upgrades it if it already exists.",
+			"cost":20,
+			"params": {
+				"upgrade":"heavyindustry",
+				"add":"heavyindustry",
+			},
+			"className":"exerelin.world.factionsetup.AddOrUpgradeIndustry",
+		},
+		{
+			"id":"resource_farming",
+			"name":"Soil Fertilization",
+			"desc":"Upgrades the %s resource level on your starting planet by one. If none exists, will add %s for a %s higher cost. Does nothing on water-surface worlds that rely on aquaculture.",
+			"cost":20,
+			"params": {
+				"type":"farming",	# hardcoded references in class
+				"resourceName":"Farming",
+			},
+			"className":"exerelin.world.factionsetup.ResourceUpgrade",
+		},
+		{
+			"id":"resource_ore",
+			"name":"Ore Prospecting",
+			"desc":"Upgrades the %s resource level on your starting planet by one. If none exists, will add %s for a %s higher cost.",
+			"cost":15,
+			"params": {
+				"type":"ore",
+			},
+			"className":"exerelin.world.factionsetup.ResourceUpgrade",
+		},
+		{
+			"id":"resource_rare_ore",
+			"name":"Transplutonics Prospecting",
+			"desc":"Upgrades the %s resource level on your starting planet by one. If none exists, will add %s for a %s higher cost.",
+			"cost":25,
+			"params": {
+				"type":"rare_ore",
+			},
+			"className":"exerelin.world.factionsetup.ResourceUpgrade",
+		},
+		{
+			"id":"resource_organics",
+			"name":"Organics Prospecting",
+			"desc":"Upgrades the %s resource level on your starting planet by one. If none exists, will add %s for a %s higher cost.",
+			"cost":20,
+			"params": {
+				"type":"organics",
+			},
+			"className":"exerelin.world.factionsetup.ResourceUpgrade",
+		},
+		{
+			"id":"resource_volatiles",
+			"name":"Volatiles Prospecting",
+			"desc":"Upgrades the %s resource level on your starting planet by one. If none exists, will add %s for a %s higher cost.",
+			"cost":35,
+			"params": {
+				"type":"volatiles",	# hardcoded references in class
+			},
+			"className":"exerelin.world.factionsetup.ResourceUpgrade",
+		},
+		{
+			"id":"ai_cores",
+			"name":"AI Core Pack",
+			"desc":"A bag of %s× %s, %s× %s, and %s× %s.",
+			"params": {
+				"commodities":["alpha_core", "beta_core", "gamma_core"],
+				"counts":[1, 2, 5]
+			},
+			"cost":30,
+			"className":"exerelin.world.factionsetup.AddCommodities",
+		},
+	],
+}

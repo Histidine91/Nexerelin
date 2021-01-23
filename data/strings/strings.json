@@ -803,6 +803,17 @@
 		"intel_descWon":"With the defeat of $theFaction, your $playerFaction reigns supreme over the Sector. Congratulations!",
 		"intel_descLost":"With your faction beaten and scattered, you are on your own with whatever allies you still have or can cobble up. It may be time to find greener pastures elsewhere.",
 	},
+	
+	"nex_factionSetup":{
+		"dialogIntro1":"Welcome, Leader %s of %s",
+		"dialogIntro2":"Your faction dwells on the world of %s. You may enhance its starting resources in this menu. This decision is permanent once confirmed, so choose wisely.",
+	
+		"pickerHeader":"Select faction starting bonuses",
+		"pickerFancyText":"Loading database...",
+		"pickerCost":"Current cost: %s/%s",
+		"pickerTip":"There is no penalty to exceeding the point limit, other than having cheated not only the game but yourself.",
+	},
+	
 	"exerelin_fleets":{
 		"invasionFleetName":"Invasion Fleet",
 		"invasionFleetPrefixSmall":"Small",

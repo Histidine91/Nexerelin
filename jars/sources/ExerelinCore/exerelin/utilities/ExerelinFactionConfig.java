@@ -1151,7 +1151,7 @@ public class ExerelinFactionConfig
 	}
 	
 	public static class SpecialItemSet {
-		List<Pair<String, String>> items = new ArrayList<>();
+		public List<Pair<String, String>> items = new ArrayList<>();
 		
 		public void pickItemsAndAddToCargo(CargoAPI cargo, Random random) {
 			WeightedRandomPicker<Pair<String, String>> picker = new WeightedRandomPicker<>(random);
