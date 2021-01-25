@@ -40,4 +40,11 @@
 		"layers":[TERRAIN_8], # what layer(s) to render in. See CampaignEngineLayers.java for possible values
 		"pluginClass":"exerelin.campaign.MiningCooldownDrawer",
 	},
+	
+	"nav_buoy":{
+		"pluginClass":"exerelin.campaign.entities.Nex_NavBuoyEntityPlugin",
+	},
+	"sensor_array":{
+		"pluginClass":"exerelin.campaign.entities.Nex_SensorArrayEntityPlugin",
+	},
 }
