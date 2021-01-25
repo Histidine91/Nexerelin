@@ -143,6 +143,7 @@ public class StartSetupPostTimePass {
 				continue;
 			if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
 				continue;
+			if (market.isHidden()) continue;
 			float weight = market.getSize();
 			
 			if (market.getFactionId().equals(factionId))
