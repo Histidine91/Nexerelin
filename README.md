@@ -26,10 +26,9 @@ Download Intellij community edition (which is free unless you somehow want to sp
 All the folder paths mentioned below should be full folder path.
 Intellij has built-in git support so i would just clone Nexerelin via Intellij.
  - After starting intellij, do File > New > Project from Version Control > Git
- - Paste the url in the box, it should be similar to this but with your account id: https://OneOutOfMany@bitbucket.org/Histidine/exerelin.git
+ - Paste the url in the box, something like https://github.com/Histidine91/Nexerelin.git
  - You can hit the test button to see if there is any connection issue.
- - Change the directory to be the starsector/mod directory. Usually I recommend separating out source folder and deployment folder,
- - but this will make you life easier without having to set up a configuration to copy files over to the starsector/mod to deploy the changes.
+ - Change the directory to be the starsector/mod directory. Usually I recommend separating out source folder and deployment folder, but this will make you life easier without having to set up a configuration to copy files over to the starsector/mod to deploy the changes.
 
 Source Control:
  - VCS for intellij is on the botton right corner. Click on that git ... and select some (remote/local) branch to check it out.
