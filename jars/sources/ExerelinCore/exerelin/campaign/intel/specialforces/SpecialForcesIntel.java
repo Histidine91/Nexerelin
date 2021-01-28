@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -14,6 +15,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
@@ -223,8 +226,24 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			if (temp == null) return;
 			
 			if (commander == null) commander = temp.getCommander();
-			if (flagship == null) flagship = temp.getFlagship();
+			if (flagship == null) 
+				flagship = pickFlagship();
+			if (flagship == null)
+				flagship = temp.getFlagship();
 		}
+	}
+	
+	protected FleetMemberAPI pickFlagship() {
+		String factionId = faction.getId();
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		if (conf.factionIdForHqResponse != null) 
+			factionId = conf.factionIdForHqResponse;
+		
+		String variantId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomSpecialForcesFlagship(route.getRandom());
+		if (variantId == null) return null;
+		FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+		member.setShipName(faction.pickRandomShipName());
+		return member;
 	}
 	
 	/**

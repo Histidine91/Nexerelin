@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.io.IOException;
 import org.json.JSONObject;
 import java.util.*;
+import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,8 +120,9 @@ public class ExerelinFactionConfig
     public int specialForcesMaxFleets = 2;
     public float specialForcesCountMult = 1;	// TODO
     public float specialForcesPointMult = 1;
-	public float specialForcesSizeMult = 1;
+    public float specialForcesSizeMult = 1;
     public String specialForcesNamerClass = "exerelin.campaign.intel.specialforces.namer.CommanderNamer";
+    public Map<String, Float> specialForcesFlagshipVariants = new HashMap<>();
     
     // misc
     public boolean dropPrisoners = true;
@@ -237,12 +239,21 @@ public class ExerelinFactionConfig
             colonyExpeditionChance = (float)settings.optDouble("colonyExpeditionChance", colonyExpeditionChance);
             colonyTargetValuator = settings.optString("colonyTargetValuator", colonyTargetValuator);
             maxColonyDistance = (float)settings.optDouble("maxColonyDistance", maxColonyDistance);
-			
+            
             specialForcesMaxFleets = settings.optInt("specialForcesMaxFleets", specialForcesMaxFleets);
-			specialForcesCountMult = (float)settings.optDouble("specialForcesCountMult", specialForcesCountMult);
-			specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
-			specialForcesSizeMult = (float)settings.optDouble("specialForcesSizeMult", specialForcesSizeMult);
+            specialForcesCountMult = (float)settings.optDouble("specialForcesCountMult", specialForcesCountMult);
+            specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
+            specialForcesSizeMult = (float)settings.optDouble("specialForcesSizeMult", specialForcesSizeMult);
             specialForcesNamerClass = settings.optString("specialForcesNamerClass", specialForcesNamerClass);
+            if (settings.has("specialForcesFlagshipVariants")) {
+                JSONObject flagJson = settings.getJSONObject("specialForcesFlagshipVariants");
+                Iterator<String> keys = flagJson.sortedKeys();
+                while (keys.hasNext()) {
+                    String variantId = keys.next();
+                    float weight = (float)flagJson.getDouble(variantId);
+                    specialForcesFlagshipVariants.put(variantId, weight);
+                }
+            }
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
@@ -552,6 +563,17 @@ public class ExerelinFactionConfig
         if (getMaxRelationship(factionId1, factionId2) < -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;
+    }
+    
+    public String getRandomSpecialForcesFlagship(Random rand) {
+        if (specialForcesFlagshipVariants.isEmpty())
+            return null;
+        if (rand == null) rand = new Random();
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(rand);
+        for (String variantId : specialForcesFlagshipVariants.keySet()) {
+            picker.add(variantId, specialForcesFlagshipVariants.get(variantId));
+        }
+        return picker.pick();
     }
     
     protected void loadCustomStations(JSONObject factionSettings) throws JSONException
