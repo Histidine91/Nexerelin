@@ -38,6 +38,7 @@ import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.utilities.ExerelinConfig;
@@ -78,6 +79,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	public static final String FACTION_OPTION_PREFIX = "nex_fleetRequest_setFaction_";
 	public static final float BAR_WIDTH = 256;
 	public static final float MARINE_COST_MAX_MOD = 3;
+	public static final float RELIEF_COST_MULT = 2;
 	public static final float MIN_FP = 100;
 	
 	protected MemoryAPI memory;
@@ -213,11 +215,19 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	}
 	
 	protected float updateCost() {
-		cost = fp * ExerelinConfig.fleetRequestCostPerFP;
-		if (fleetType == FleetType.INVASION) {
-			float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
-			cost *= mult;
+		if (fleetType == FleetType.RELIEF) {
+			if (target != null) cost = Nex_StabilizePackage.getNominalCost(target);
+			else cost = 0;
+			cost *= RELIEF_COST_MULT;
 		}
+		else {
+			cost = fp * ExerelinConfig.fleetRequestCostPerFP;
+			if (fleetType == FleetType.INVASION) {
+				float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
+				cost *= mult;
+			}
+		}
+		
 		cost = Math.round(cost);
 		
 		memory.set(MEM_KEY_COST, cost, 0);
@@ -485,13 +495,23 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 					factionsSet.add(faction);
 			}
 		}
+		else if (fleetType == FleetType.RELIEF) {
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				FactionAPI faction = market.getFaction();
+				if (faction.isPlayerFaction()) continue;
+				if (faction.isHostileTo(Factions.PLAYER)) continue;
+				if (!Nex_StabilizePackage.isAllowed(market)) continue;
+				factionsSet.add(faction);
+			}
+		}
 		else {
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 				factionsSet.add(market.getFaction());
 			}
 		}
 		
-		if (fleetType != FleetType.DEFENSE) {
+		if (fleetType.isAggressive()) {
 			factionsSet.remove(Global.getSector().getPlayerFaction());
 			factionsSet.remove(PlayerFactionStore.getPlayerFaction());
 		}
@@ -524,7 +544,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	protected void setTarget(String marketId) {
 		if (marketId == null)
 			setTarget((MarketAPI)null);
-		setTarget(Global.getSector().getEconomy().getMarket(marketId));
+		else
+			setTarget(Global.getSector().getEconomy().getMarket(marketId));
 	}
 	
 	protected void setTarget(MarketAPI market) {
@@ -535,6 +556,12 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}
 		memory.set(MEM_KEY_TARGET, market.getId(), 0);
 		target = market;
+		if (fleetType == FleetType.RELIEF) {
+			if (source != null && target != null)
+				fp = new ReliefFleetIntelAlt(source, target).calcFP();
+			updateCost();
+			printFleetInfo(true, false, false, false);
+		}
 	}
 	
 	public static List<MarketAPI> getHiddenBases(FactionAPI faction) {
@@ -597,6 +624,14 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			case BASESTRIKE:
 				markets = getHiddenBases(faction);
 				break;
+			case RELIEF:
+				List<MarketAPI> factionMarkets = ExerelinUtilsFaction.getFactionMarkets(faction.getId(), false);
+				markets = new ArrayList<>();
+				for (MarketAPI market : factionMarkets) {
+					if (Nex_StabilizePackage.isAllowed(market))
+						markets.add(market);
+				}
+				break;
 			case DEFENSE:
 			case RAID:
 			default:
@@ -630,7 +665,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (oldType != null && oldType != type) {
 			resetFactions();
 			updateCost();
-			printFleetInfo(true, false, false, true);
+			
+			if (fleetType == FleetType.RELIEF) {
+				
+			}
+			else {
+				printFleetInfo(true, false, false, true);
+			}
 		}
 	}
 	
@@ -644,35 +685,44 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		FactionAPI attacker = source.getFaction();	//PlayerFactionStore.getPlayerFaction();
 		float timeToLaunch = getTimeToLaunch();
-		OffensiveFleetIntel intel;
-		switch (fleetType) {
-			case INVASION:
-				intel = new InvasionIntel(attacker, source, target, fp, timeToLaunch);
-				((InvasionIntel)intel).setMarinesPerFleet((int)(marines));
-				break;
-			case RAID:
-				intel = new NexRaidIntel(attacker, source, target, fp, timeToLaunch);
-				break;
-			case BASESTRIKE:
-				intel = new BaseStrikeIntel(attacker, source, target, fp, timeToLaunch);
-				break;
-			case DEFENSE:
-				intel = new DefenseFleetIntel(attacker, source, target, fp, timeToLaunch);
-				break;
-			default:
-				return false;
+		
+		if (fleetType == FleetType.RELIEF) {
+			ReliefFleetIntelAlt intel = ReliefFleetIntelAlt.createEvent(source, target);
+			setFP(intel.calcFP());
+			dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
+			Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
 		}
-		intel.init();
-		intel.setPlayerSpawned(true);
+		else {
+			OffensiveFleetIntel intel;
+			switch (fleetType) {
+				case INVASION:
+					intel = new InvasionIntel(attacker, source, target, fp, timeToLaunch);
+					((InvasionIntel)intel).setMarinesPerFleet((int)(marines));
+					break;
+				case RAID:
+					intel = new NexRaidIntel(attacker, source, target, fp, timeToLaunch);
+					break;
+				case BASESTRIKE:
+					intel = new BaseStrikeIntel(attacker, source, target, fp, timeToLaunch);
+					break;
+				case DEFENSE:
+					intel = new DefenseFleetIntel(attacker, source, target, fp, timeToLaunch);
+					break;
+				default:
+					return false;
+			}
+			intel.init();
+			intel.setPlayerSpawned(true);
+			setFP(fp);
+			dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
+			Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
+		}
+		
 		InvasionFleetManager.getManager().modifyFleetRequestStock(-fp);
 		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
-		setFP(fp);
-		
-		dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
-		Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
-		
+				
 		// make hostile if needed
-		if (fleetType != FleetType.DEFENSE && !faction.isHostileTo(Factions.PLAYER)) {
+		if (fleetType.isAggressive() && !faction.isHostileTo(Factions.PLAYER)) {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = 0;
 			impact.ensureAtBest = RepLevel.HOSTILE;
@@ -695,6 +745,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		String fpStr = fp + "";
 		opts.addOption(getString("optionStrength") + ": " + fpStr, "nex_fleetRequest_strengthMenu");
+		opts.setEnabled("nex_fleetRequest_strengthMenu", fleetType != FleetType.RELIEF);
 		
 		String sourceName = source == null ? StringHelper.getString("none") : source.getName();
 		opts.addOption(getString("optionSource") + ": " + sourceName, "nex_fleetRequest_selectSource");
@@ -735,7 +786,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}
 		else {
 			String confirmMessage;
-			if (fleetType != FleetType.DEFENSE && !faction.isHostileTo(Factions.PLAYER)) {
+			if (fleetType.isAggressive() && !faction.isHostileTo(Factions.PLAYER)) {
 				confirmMessage = getString("proceedConfirmNonHostile");
 				confirmMessage = StringHelper.substituteToken(confirmMessage, "$TheFaction", 
 						Misc.ucFirst(faction.getDisplayNameWithArticle()));
@@ -885,7 +936,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}};
 	
 	public enum FleetType {
-		INVASION, BASESTRIKE, RAID, DEFENSE;
+		INVASION, BASESTRIKE, RAID, DEFENSE, RELIEF;
 		
 		public static FleetType getTypeFromString(String str) {
 			return FleetType.valueOf(StringHelper.flattenToAscii(str.toUpperCase(Locale.ROOT)));
@@ -893,6 +944,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		public String getName() {
 			return getString("fleetType_" + StringHelper.flattenToAscii(toString().toLowerCase(Locale.ROOT)));
+		}
+		
+		public boolean isAggressive() {
+			return this != FleetType.DEFENSE && this != FleetType.RELIEF;
 		}
 	}
 }

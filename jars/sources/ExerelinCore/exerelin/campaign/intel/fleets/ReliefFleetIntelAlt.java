@@ -369,6 +369,26 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 			endEvent(EndReason.TARGET_DESTROYED);
 	}
 	
+	/**
+	 * Used only to generate an estimate of the fleet's FP for external code. 
+	 * Should be a copy of the code from <code>spawnFleet</code>.
+	 * @return
+	 */
+	public int calcFP() {
+		float dist = ExerelinUtilsMarket.getHyperspaceDistance(source, target);
+		int freighter = (int)Math.max(Math.ceil(cargoSize/60f) * 2, 5);
+		int combat = 5 + freighter * 2;
+		if (target.hasCondition(Conditions.PIRATE_ACTIVITY)) {
+			combat = Math.min(combat, 30);
+		}
+		int utility = freighter/4;
+		int total = freighter + combat + utility;
+		int tanker = Math.round(total * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * dist/10000);
+		total += tanker;
+		
+		return total;
+	}
+	
 	protected CampaignFleetAPI spawnFleet()
 	{
 		float dist = ExerelinUtilsMarket.getHyperspaceDistance(source, target);
@@ -381,7 +401,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		}
 		int utility = freighter/4;
 		int total = freighter + combat + utility;
-		int tanker = Math.round(total * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST);
+		int tanker = Math.round(total * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * dist/10000);
 		total += tanker;
 				
 		FleetParamsV3 params = new FleetParamsV3(source, // source
@@ -468,10 +488,11 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		return Math.round(eta);
 	}
 	
-	public static void createEvent(MarketAPI source, MarketAPI dest) 
+	public static ReliefFleetIntelAlt createEvent(MarketAPI source, MarketAPI dest) 
 	{
 		ReliefFleetIntelAlt intel = new ReliefFleetIntelAlt(source, dest);
 		intel.init();
+		return intel;
 	}
 	
 	public enum EndReason {

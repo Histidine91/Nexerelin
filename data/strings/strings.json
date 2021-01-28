@@ -953,6 +953,7 @@
 		"fleetType_basestrike":"base strike",
 		"fleetType_raid":"raid",
 		"fleetType_defense":"defense",
+		"fleetType_relief":"relief",
 		
 		"fleetCost":"fleet cost",
 		"fleetCostHelp":"The fleet(s) will cost $credits credits per FP.",
@@ -1245,6 +1246,7 @@
 		"startingCreditsTitle":"Starting credits (000)",
 		"startingOfficersTitle":"Starting officers",
 	},
+	
 	"exerelin_officers":{
 		"officer":"officer",
 		"officers":"officers",

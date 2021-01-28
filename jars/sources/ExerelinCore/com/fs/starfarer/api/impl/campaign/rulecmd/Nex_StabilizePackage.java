@@ -77,19 +77,19 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		mem.set("$nex_stabilizePackage_type", getStabilizeMethod(market), 0);
 	}
 	
-	protected static int getSizeMult(MarketAPI market)
+	public static int getSizeMult(MarketAPI market)
 	{
 		return (int)(10 * Math.pow(2, market.getSize() - 3));
 	}
 	
-	protected String getStabilizeMethod(MarketAPI market) {
+	public static String getStabilizeMethod(MarketAPI market) {
 		Morality moral = ExerelinConfig.getExerelinFactionConfig(market.getFactionId()).morality;
 		if (moral == Morality.AMORAL || moral == Morality.EVIL)
 			return "repression";
 		return "relief";
 	}
 	
-	protected List<String> getCommodityTypes(MarketAPI market) {
+	public static List<String> getCommodityTypes(MarketAPI market) {
 		List<String> commodities = COMMODITIES_RELIEF;
 		String type = getStabilizeMethod(market);
 		if (type.equals("repression"))
@@ -122,8 +122,18 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		return (int)(getSizeMult(market) * mult);
 	}
 	
-	protected int getNeededCredits(MarketAPI market) {
+	public static int getNeededCredits(MarketAPI market) {
 		return (int)(getSizeMult(market) * 500);
+	}
+	
+	public static int getNominalCost(MarketAPI market) {
+		int credits = getNeededCredits(market);
+		List<String> commodities = getCommodityTypes(market);
+		for (String commodity : commodities) {
+			int count = getNeededCommodityAmount(market, commodity);
+			credits += count * Global.getSettings().getCommoditySpec(commodity).getBasePrice();
+		}
+		return credits;
 	}
 	
 	public static float getReputation(MarketAPI market) {
