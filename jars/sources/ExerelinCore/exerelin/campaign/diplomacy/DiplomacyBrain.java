@@ -588,12 +588,14 @@ public class DiplomacyBrain {
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
 			InvasionIntel inv = (InvasionIntel)intel;
 			if (inv.getFaction() == faction) {
+				//log.info(String.format("  %s don't ceasefire with %s, we're invading them", factionId, inv.getTarget().getFactionId()));
 				factionsInvadingOrInvaded.add(inv.getTarget().getFactionId());
 			}
 			// also don't make peace with someone currently trying to invade us (assume they refuse)
 			// unless that faction is player, player might fall for it
 			else if (inv.getTarget().getFaction() == faction && !inv.getFaction().isPlayerFaction()) {
-				factionsInvadingOrInvaded.add(inv.getTarget().getFactionId());
+				//log.info(String.format("  %s don't ceasefire with %s, they're invading us", factionId, inv.getFaction().getId()));
+				factionsInvadingOrInvaded.add(inv.getFaction().getId());
 			}
 		}
 		
