@@ -638,6 +638,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				markets = ExerelinUtilsFaction.getFactionMarkets(faction.getId(), false);
 				break;
 		}
+		List<MarketAPI> toRemove = new ArrayList<>();
+		for (MarketAPI market : markets) {
+			if (market.getContainingLocation().isHyperspace()) {
+				toRemove.add(market);
+			}
+		}
+		markets.removeAll(toRemove);
 		
 		Collections.sort(markets, marketComparatorName);
 		
