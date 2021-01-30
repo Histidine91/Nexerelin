@@ -180,7 +180,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		
 		
 		if (isVicVirusBomb()) {
-			float payload = Math.min(defenderStrength/2, fleet.getCargo().getMaxCapacity()/2);
+			float payload = Math.min(defenderStrength/8, fleet.getCargo().getMaxCapacity()/8);
 			fleet.getCargo().addCommodity(Commodities.ORGANICS, payload);
 		}
 		
