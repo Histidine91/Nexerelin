@@ -196,8 +196,11 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	public static int countDMods(FleetMemberAPI member) {
 		int dmods = 0;
 		for (String mod : member.getVariant().getPermaMods()) {
-			if (Global.getSettings().getHullModSpec(mod).hasTag("dmod"))
+			if (Global.getSettings().getHullModSpec(mod).hasTag("dmod") 
+					&& !member.getVariant().getSuppressedMods().contains(mod)) {
+				//log.info("  -" + mod);
 				dmods++;
+			}
 		}
 		log.info("Fleet member " + member.getShipName() + " has " + dmods + " D-mods");
 		return dmods;
@@ -297,6 +300,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		float yPos = opad;
 		
 		for (InsuranceItem item : items) {
+			//log.info("Ship " + item.member.getShipName() + " has " + countDMods(item.member) + " D-mods");
 			TooltipMakerAPI image = itemPanel.createUIElement(IMAGE_WIDTH, ENTRY_HEIGHT, true);
 			List<FleetMemberAPI> ship = new ArrayList<>();
 			ship.add(item.member);
