@@ -222,7 +222,11 @@ public class AgentIntel extends BaseIntelPlugin {
 		} else if (listInfoParam == UPDATE_LOST) {
 			
 		} else {
-			info.addPara(StringHelper.getString("level", true) + " " + level, pad, tc, hl, level + "");
+			String str = StringHelper.getString("level", true) + " " + level;
+			if (!specializations.isEmpty()) {
+				str += " " + StringHelper.writeStringCollection(getSpecializationNames());
+			}
+			info.addPara(str, pad, tc, hl, level + "");
 			if (market != null)
 				info.addPara(market.getName(), 0, tc, market.getTextColorForFactionOrPlanet(), 
 						market.getName());
