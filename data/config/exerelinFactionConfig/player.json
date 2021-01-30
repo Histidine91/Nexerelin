@@ -21,6 +21,6 @@
     "startShipsSuper":[["hyperion_Attack"]],
     
     "startSpecialItems":[
-        [["low_tech_package", ""], ["midline_package", ""], ["high_tech_package", ""]],
+        [["low_tech_package", ""], ["midline_package", ""], ["high_tech_package", ""], ["XIV_package", ""]],
     ]
 }

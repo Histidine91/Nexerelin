@@ -76,7 +76,7 @@ public class OwnFactionSetupScript extends DelayedDialogScreenScript
 		{
 			CargoAPI copy = Global.getFactory().createCargo(false);
 			//copy.addAll(cargo);
-			for (FactionSetupHandler.FactionSetupItemDef def : FactionSetupHandler.defs) {
+			for (FactionSetupHandler.FactionSetupItemDef def : FactionSetupHandler.DEFS) {
 				SpecialItemData special = new SpecialItemData("nex_factionSetupItem", def.id);
 				copy.addSpecial(special, def.count);
 			}
