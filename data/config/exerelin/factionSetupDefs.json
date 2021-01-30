@@ -17,7 +17,7 @@
 		"military_base":{
 			"name":"Military Base",
 			"desc":"Adds a %s to your starting planet.",
-			"cost":15,
+			"cost":20,
 			"params": {	# tries upgrading first, if the industry doesn't exist then it adds
 				"upgrade":"patrolhq",
 				"add":"militarybase",
@@ -94,7 +94,7 @@
 				"commodities":["alpha_core", "beta_core", "gamma_core"],
 				"counts":[1, 2, 5]
 			},
-			"cost":30,
+			"cost":25,
 			"className":"exerelin.world.factionsetup.AddCommodities",
 			"sortOrder":9,
 		},

@@ -86,7 +86,7 @@ public class OwnFactionSetupScript extends DelayedDialogScreenScript
 			dialog.showCargoPickerDialog(getString("pickerHeader"), 
 					Misc.ucFirst(StringHelper.getString("confirm")), 
 					Misc.ucFirst(StringHelper.getString("cancel")),
-							true, width, copy, new CargoPickerListener() {
+							false, width, copy, new CargoPickerListener() {
 				public void pickedCargo(CargoAPI cargo) {
 					FactionSetupHandler.clearSelectedItems();
 					cargo.sort();
