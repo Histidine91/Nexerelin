@@ -253,6 +253,7 @@
 		"intelButtonOrders":"New mission",
 		"intelDescNextAction":"Queued action",
 		"intelButtonOrdersQueue":"Queue mission",
+		"intelButtonOrdersRepeat":"Repeat last mission",
 		"intelHeaderLocalReport":"Local report",
 		"intelDescLocalReport1":"%s is a size %s market, of stability %s.",
 		"intelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",
@@ -261,6 +262,7 @@
 		"intelHeaderLastMessage":"Last message",
 		"intelPromptAbort":"Aborting the mission now will refund %s credits. Proceed?",
 		"intelPromptAbortQueued":"Cancelling the queued mission will refund %s credits. Proceed?",
+		"intelPromptRepeat":"Repeating action %s will cost %s credits. Proceed?",
 		"intelPromptDismiss":"Really dismiss $agentName from service?",
 		
 		"barPrompt":"A shady-looking $manOrWoman is sitting in a corner of the bar. $HeOrShe gives you an appraising look.",

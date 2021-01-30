@@ -50,6 +50,11 @@ public class DestabilizeMarket extends CovertActionIntel {
 	}
 	
 	@Override
+	public boolean canRepeat() {
+		return true;
+	}
+	
+	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		super.addBulletPoints(info, color, initPad, pad);
 		if (result != null && result.isSuccessful())

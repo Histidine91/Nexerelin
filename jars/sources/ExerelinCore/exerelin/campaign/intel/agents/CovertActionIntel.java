@@ -40,7 +40,7 @@ import java.util.Random;
 import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
 
-public abstract class CovertActionIntel extends BaseIntelPlugin {
+public abstract class CovertActionIntel extends BaseIntelPlugin implements Cloneable {
 	
 	public static final String[] EVENT_ICONS = new String[]{
 		"graphics/exerelin/icons/intel/spy4.png",
@@ -105,6 +105,19 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 		init();
 		started = true;
 		Global.getSector().addScript(this);
+	}
+	
+	public void reset() {
+		result = null;
+		repResult  = null;
+		relation = 0;
+		xpGain = -1;
+		newLevel = -1;
+		injuryTime = null;
+		agentEscapeDest = null;
+		ending = false;
+		ended = false;
+		init();
 	}
 	
 	public ExerelinReputationAdjustmentResult getReputationResult() {
@@ -289,6 +302,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 				agent.nextAction = null;
 		}
 		endImmediately();
+	}
+	
+	public boolean canRepeat() {
+		return false;
 	}
 		
 	/**
@@ -816,5 +833,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin {
 	
 	public static String getString(String id, boolean ucFirst) {
 		return StringHelper.getString("nex_agentActions", id, ucFirst);
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		CovertActionIntel self = (CovertActionIntel)super.clone();
+		self.reset();
+		
+		return self;
 	}
 }

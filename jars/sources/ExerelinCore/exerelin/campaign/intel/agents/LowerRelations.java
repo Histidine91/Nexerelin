@@ -48,6 +48,13 @@ public class LowerRelations extends CovertActionIntel {
 	}
 	
 	@Override
+	public void reset() {
+		relation2 = 0;
+		repResult2 = null;
+		super.reset();
+	}
+	
+	@Override
 	public float getTimeNeeded() {
 		return super.getTimeNeeded() + RaiseRelations.getModifyRelationsCooldown(targetFaction);
 	}
@@ -113,6 +120,12 @@ public class LowerRelations extends CovertActionIntel {
 			return true;
 		}
 		return super.affectsPlayerRep();
+	}
+	
+	@Override
+	public boolean canRepeat() {
+		if (agent.getMarket() == null) return false;
+		return RaiseRelations.canModifyRelations(agent.getMarket().getFaction(), agent);
 	}
 	
 	@Override

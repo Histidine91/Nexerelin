@@ -52,6 +52,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final String BUTTON_ABORT = "abort";
 	protected static final String BUTTON_QUEUE_ORDER = "orders2";
 	protected static final String BUTTON_CANCEL_QUEUE = "abortQueue";
+	protected static final String BUTTON_REPEAT_ACTION = "repeat";
 	
 	protected static final String BUTTON_DISMISS = "dismiss";
 	
@@ -343,6 +344,17 @@ public class AgentIntel extends BaseIntelPlugin {
 					BUTTON_ORDERS, pf.getBaseUIColor(), pf.getDarkUIColor(),
 					(int)(width), 20f, opad);
 			button.setShortcut(Keyboard.KEY_T, true);
+			// repeat button
+			try {
+				if (lastAction != null && lastAction.canRepeat()) {
+					button = info.addButton(getString("intelButtonOrdersRepeat"), 
+					BUTTON_REPEAT_ACTION, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad);
+					button.setShortcut(Keyboard.KEY_R, true);
+				}
+			} catch (Exception ex) {
+				info.addPara("Error displaying repeat action button: " + ex.toString(), 3);
+			}
 		}
 		
 		if (nextAction != null) {
@@ -455,6 +467,15 @@ public class AgentIntel extends BaseIntelPlugin {
 		} else if (buttonId == BUTTON_CANCEL_QUEUE) {
 			nextAction.abort();
 			setQueuedAction(null);
+		} else if (buttonId == BUTTON_REPEAT_ACTION) {
+			// TODO
+			try {
+				currentAction = (CovertActionIntel)lastAction.clone();
+				Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(currentAction.cost);
+				currentAction.activate();
+			} catch (CloneNotSupportedException ex) {
+				Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
+			}
 		} else if (buttonId == ProcureShip.BUTTON_CHANGE_DESTINATION) {
 			ProcureShip procure = (ProcureShip)currentAction;
 			ui.showDialog(null, new ProcureShipDestinationDialog(this, procure, procure.destination, ui));
@@ -474,7 +495,8 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId == BUTTON_ABORT || buttonId == BUTTON_CANCEL_QUEUE || buttonId == BUTTON_DISMISS;
+		return buttonId == BUTTON_ABORT || buttonId == BUTTON_CANCEL_QUEUE 
+				|| buttonId == BUTTON_REPEAT_ACTION || buttonId == BUTTON_DISMISS;
 	}
 	
 	@Override
@@ -491,7 +513,18 @@ public class AgentIntel extends BaseIntelPlugin {
 			String str = getString("intelPromptAbortQueued");
 			
 			prompt.addPara(str, 0, Misc.getHighlightColor(), creditsStr);
-		} else if (buttonId == BUTTON_DISMISS) {
+		} else if (buttonId == BUTTON_REPEAT_ACTION) {
+			try {
+				CovertActionIntel temp = (CovertActionIntel)lastAction.clone();
+				String creditsStr = Misc.getWithDGS(temp.cost);
+				String str = getString("intelPromptRepeat");
+				prompt.addPara(str, 0, Misc.getHighlightColor(), lastAction.getActionName(true), creditsStr);				
+			} catch (CloneNotSupportedException ex) {
+				Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
+			}
+			
+		}
+		else if (buttonId == BUTTON_DISMISS) {
 			String str = getString("intelPromptDismiss");
 			str = StringHelper.substituteToken(str, "$agentName", agent.getNameString());
 			prompt.addPara(str, 0);

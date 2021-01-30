@@ -68,6 +68,11 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	}
 	
 	@Override
+	public boolean canRepeat() {
+		return agent.getMarket().getCommodityData(this.commodityId) != null;
+	}
+	
+	@Override
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		super.addBulletPoints(info, color, initPad, pad);
 		if (result != null && result.isSuccessful())
