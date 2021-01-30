@@ -93,6 +93,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final int MAX_SIMULTANEOUS_EVENTS_PER_SYSTEM = 3;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
+	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
 	public static final float PATROL_ESTIMATION_MULT = 0.7f;
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
 	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
@@ -469,6 +470,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (RebellionIntel.isOngoing(market))
 				continue;
 			
+			// handling for invasions by player autonomous colonies
+			if (market.getFaction().isPlayerFaction() && !ExerelinConfig.followersInvasions && market.isPlayerOwned())
+			{
+				continue;
+			}
+			
 			sourcePicker.add(market, getMarketWeightForInvasionSource(market));
 		}
 		MarketAPI originMarket = sourcePicker.pick();
@@ -827,11 +834,23 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		{
 			String factionId = market.getFactionId();
 			if (EXCEPTION_LIST.contains(factionId)) continue;
+			
+			if (market.isHidden()) continue;
+			
+			float mult = 1;
+			
+			if (factionId.equals(Factions.PLAYER) && !ExerelinConfig.followersInvasions) {
+				if (market.isPlayerOwned()) {
+					continue;
+				}
+				else mult *= PLAYER_AUTONOMOUS_POINT_MULT;
+			}
+			
 			if (!pointsPerFaction.containsKey(factionId))
 				pointsPerFaction.put(factionId, 0f);
 			
 			float currPoints = pointsPerFaction.get(factionId);
-			float addedPoints = getPointsPerMarketPerTick(market);
+			float addedPoints = getPointsPerMarketPerTick(market) * mult;
 			
 			currPoints += addedPoints;
 			pointsPerFaction.put(factionId, currPoints);
@@ -846,7 +865,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (EXCEPTION_LIST.contains(factionId)) continue;
 			FactionAPI faction = sector.getFaction(factionId);
 			if (faction.isNeutralFaction()) continue;
-			if (faction.isPlayerFaction() && !ExerelinConfig.followersInvasions) continue;
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 			if (!config.playableFaction) continue;
 			
@@ -895,9 +913,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				pointsPerFaction.put(factionId, 0f);
 			
 			float counter = getSpawnCounter(factionId);
-			float oldCounter = counter;
-			float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
-			increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
+			float increment = pointsPerFaction.get(factionId);
+			if (!faction.isPlayerFaction() || ExerelinConfig.followersInvasions) {
+				increment += ExerelinConfig.baseInvasionPointsPerFaction;
+				increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
+			}
+			
 			increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 			increment *= config.invasionPointMult;
 			increment *= ongoingMod;
@@ -1058,6 +1079,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return amount;
 	}
 	
+	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getManager().getSpawnCounter("player"));
 	public float getSpawnCounter(String factionId) {
 		if (!spawnCounter.containsKey(factionId))
 			spawnCounter.put(factionId, 0f);
