@@ -442,7 +442,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public static boolean canSatBomb(FactionAPI attacker, MarketAPI target) 
 	{
-		if (!attacker.isHostileTo(ExerelinUtilsMarket.getOriginalOwner(target)))
+		String origOwner = ExerelinUtilsMarket.getOriginalOwner(target);
+		if (origOwner != null && !attacker.isHostileTo(origOwner))
 			return false;
 		
 		return canSatBomb(attacker, target.getFaction());
