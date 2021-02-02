@@ -87,7 +87,7 @@ public class BaseStrikeIntel extends NexRaidIntel {
 
 				else if (ExerelinModPlugin.isNexDev)
 				{
-					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
+					Global.getSector().getCampaignUI().addMessage("Base Strike intel from "
 							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
 				}
 				break;
