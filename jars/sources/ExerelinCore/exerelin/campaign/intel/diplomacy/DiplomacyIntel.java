@@ -54,7 +54,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 
 	@Override
 	public void endAfterDelay() {
-		if (Global.getSettings().isDevMode()){
+		if (ExerelinModPlugin.isNexDev){
 			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in DiplomacyIntel called");
 		}
 		if (!seenByPlayer) {

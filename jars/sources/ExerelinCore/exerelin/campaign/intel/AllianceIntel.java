@@ -11,6 +11,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -48,7 +49,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		}
 		else {
 			Global.getSector().getIntelManager().queueIntel(this);
-			if (Global.getSettings().isDevMode()){
+			if (ExerelinModPlugin.isNexDev){
 				Global.getSector().getCampaignUI().addMessage("queueIntel() called in AllianceIntel");
 			}
 		}

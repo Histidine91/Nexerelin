@@ -60,9 +60,9 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		this.duration = duration;
 	}
 
-	public void LocationOfDisruptMarket() {
+/*	public void LocationOfDisruptMarket() {
 		Global.getSector().getCampaignUI().addMessage("Location of disruption mission is " + market.getContainingLocation().getNameWithLowercaseType());
-	}
+	} */
 
 	public void init() {
 		Global.getLogger(this.getClass()).info("Initiating disruption mission");

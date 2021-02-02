@@ -71,7 +71,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		
 		addStage(new NexReturnStage(this));
 
-		if (Global.getSettings().isDevMode())
+		if (ExerelinModPlugin.isNexDev)
 			Global.getSector().getCampaignUI().addMessage("init() called in NexRaidIntel");
 
 		int nexIntelQueued = ExerelinConfig.nexIntelQueued;

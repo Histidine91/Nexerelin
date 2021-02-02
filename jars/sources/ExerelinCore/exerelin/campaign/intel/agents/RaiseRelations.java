@@ -14,6 +14,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
@@ -119,38 +120,38 @@ public class RaiseRelations extends CovertActionIntel {
 	@Override
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
-//		if (Global.getSettings().isDevMode()) {
+		if (ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage("reportEvent() called in RaiseRelations");
 			if (shouldReportEvent()){
 				Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ RaiseRelations TRUE;if intel doesn't display, something bad happened.");
 			}
-//		}
-		if (shouldReportEvent() ) {
+		}
+		if (shouldReportEvent()) {
 			boolean notify = shouldNotify();
 			if (ExerelinConfig.nexIntelQueued <= 1) {
 				if (ExerelinConfig.nexIntelQueued <= 0
-						||	affectsPlayerRep()
-						||	playerInvolved
-						||	agentFaction == PlayerFactionStore.getPlayerFaction()
-						||	targetFaction.isPlayerFaction()
-						||	targetFaction == Misc.getCommissionFaction()
-						||	thirdFaction == Misc.getCommissionFaction()
-						|| 	thirdFaction == PlayerFactionStore.getPlayerFaction()) {
+					||	affectsPlayerRep()
+					||	playerInvolved
+					||	agentFaction == PlayerFactionStore.getPlayerFaction()
+					||	targetFaction.isPlayerFaction()
+					||	targetFaction == Misc.getCommissionFaction()
+					||	thirdFaction == Misc.getCommissionFaction()
+					||	thirdFaction.isPlayerFaction()){
 					Global.getSector().getIntelManager().addIntel(this, !notify);
+
+					if (!notify && ExerelinModPlugin.isNexDev) {
+						Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
+								+ getName() + " due to filter level", Misc.getHighlightColor());
+					}
 				}
-				else Global.getSector().getIntelManager().queueIntel(this, 30);  // this should do the job
+				else Global.getSector().getIntelManager().queueIntel(this);
+				//TODO: make it so if an agent action makes 2 factions hostile, add it
 			}
-	/*		else if (agentFaction == PlayerFactionStore.getPlayerFaction())
-				Global.getSector().getIntelManager().addIntel(this);*/
 
-			else Global.getSector().getIntelManager().queueIntel(this, 30);
+			else Global.getSector().getIntelManager().queueIntel(this);
 
-			if (!notify && Global.getSettings().isDevMode()/*ExerelinModPlugin.isNexDev*/) {
-				Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
-						+ getName() + " due to filter level", Misc.getHighlightColor());
-			}
+			endAfterDelay();
 		}
-		endAfterDelay();
 	}
 
 	@Override

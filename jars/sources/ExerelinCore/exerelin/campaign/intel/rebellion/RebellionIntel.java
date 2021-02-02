@@ -152,8 +152,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			market.addPerson(rebelRep);
 			ip.getData(rebelRep).getLocation().setMarket(market);
 			ip.checkOutPerson(rebelRep, "nex_rebel_representative");
-		}		
-		//TODO: queue rebellion intel
+		}
 		conditionToken = market.addCondition("nex_rebellion_condition");
 		Global.getSector().getListenerManager().addListener(this);
 		int nexIntelQueued = ExerelinConfig.nexIntelQueued;

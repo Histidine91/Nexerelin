@@ -26,6 +26,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
@@ -60,7 +61,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		this.faction = faction;
 		this.duration = duration;
 		lastTargetFaction = market.getFaction();
-		if (Global.getSettings().isDevMode()){
+		if (ExerelinModPlugin.isNexDev){
 			locationOfConquestMarket();
 		}
 	}

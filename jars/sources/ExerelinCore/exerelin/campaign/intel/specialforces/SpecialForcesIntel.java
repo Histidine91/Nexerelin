@@ -34,6 +34,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.campaign.intel.specialforces.namer.SpecialForcesNamer;
@@ -108,9 +109,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		routeAI.addInitialTask();
 		generateFlagshipAndCommanderIfNeeded(route);
 
-		if (ExerelinConfig.nexIntelQueued >= 0) {
+		if (ExerelinConfig.nexIntelQueued <= 1) {
 			Global.getSector().getIntelManager().addIntel(this);
 		}
+
 		else {
 			Global.getSector().getIntelManager().queueIntel(this);
 		}

@@ -560,13 +560,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
-//		if (Global.getSettings().isDevMode()) {
+		if (ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage("reportEvent() called in CovertActionIntel");
 			if (shouldReportEvent()){
 				Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() TRUE;if intel doesn't display, something bad happened.");
 			}
-	//	}
-		if (shouldReportEvent() ) {
+		}
+		if (shouldReportEvent()) { //TODO: make it so if an agent action makes 2 factions hostile, add it
 			boolean notify = shouldNotify();
 			if (ExerelinConfig.nexIntelQueued <= 1) {
 				if (ExerelinConfig.nexIntelQueued <= 0
@@ -576,12 +576,14 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 					||	targetFaction.isPlayerFaction()
 					||	targetFaction == Misc.getCommissionFaction()) {
 					Global.getSector().getIntelManager().addIntel(this, !notify);
+
+					if (!notify && ExerelinModPlugin.isNexDev) {
+						Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
+								+ getName() + " due to filter level", Misc.getHighlightColor());
+					}
 				}
 				else Global.getSector().getIntelManager().queueIntel(this);
-				//TODO: make it so if an agent action makes 2 factions hostile, add it
 			}
-	/*		else if (agentFaction == PlayerFactionStore.getPlayerFaction())
-				Global.getSector().getIntelManager().addIntel(this);*/
 
 			else Global.getSector().getIntelManager().queueIntel(this);
 
