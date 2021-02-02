@@ -107,8 +107,13 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		routeAI = new SpecialForcesRouteAI(this);
 		routeAI.addInitialTask();
 		generateFlagshipAndCommanderIfNeeded(route);
-		
-		Global.getSector().getIntelManager().addIntel(this);
+
+		if (ExerelinConfig.nexIntelQueued >= 0) {
+			Global.getSector().getIntelManager().addIntel(this);
+		}
+		else {
+			Global.getSector().getIntelManager().queueIntel(this);
+		}
 		Global.getSector().addScript(this);
 	}
 	

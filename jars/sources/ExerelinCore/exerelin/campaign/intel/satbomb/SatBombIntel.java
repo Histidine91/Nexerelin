@@ -29,6 +29,9 @@ import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
+
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -72,8 +75,29 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		addStage(action);
 		
 		addStage(new NexReturnStage(this));
-		
-		addIntelIfNeeded();
+
+		int nexIntelQueued = ExerelinConfig.nexIntelQueued; //TODO: sat bombs are extreme. some players might want it added but everything else queued, do that?
+		switch (nexIntelQueued) {
+
+			case 0:
+
+			case 1:
+
+				addIntelIfNeeded();
+				break;
+
+			case 2:
+
+				queueIntelIfNeeded();
+				break;
+
+			default:
+
+				addIntelIfNeeded();
+				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in SatBombIntel, " +
+						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
+						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
+		}
 	}
 	
 	public boolean isVengeance() {

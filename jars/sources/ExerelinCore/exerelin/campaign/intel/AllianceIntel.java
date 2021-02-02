@@ -43,7 +43,15 @@ public class AllianceIntel extends BaseIntelPlugin {
 		this.faction2 = faction2;
 		this.allianceId = allianceId;
 		this.allianceName = allianceName;
-		Global.getSector().getIntelManager().addIntel(this, true);
+		if (ExerelinConfig.nexIntelQueued <= 0 || ExerelinConfig.nexIntelQueued == 1) {
+			Global.getSector().getIntelManager().addIntel(this, true);
+		}
+		else {
+			Global.getSector().getIntelManager().queueIntel(this);
+			if (Global.getSettings().isDevMode()){
+				Global.getSector().getCampaignUI().addMessage("queueIntel() called in AllianceIntel");
+			}
+		}
 		Map<String, Object> params = new HashMap<>();
 		params.put("type", UpdateType.FORMED);
 		this.sendUpdateIfPlayerHasIntel(params, false);

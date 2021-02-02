@@ -130,6 +130,8 @@ public class ExerelinConfig
     public static boolean ceasefireNotificationPopup = true;
     public static int diplomacyEventFilterLevel = 0;
     public static int agentEventFilterLevel = 0;
+    public static int nexIntelQueued = 0;
+    public static boolean queuedNexMissions = false;
     
     public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;
@@ -270,6 +272,8 @@ public class ExerelinConfig
             ceasefireNotificationPopup = settings.optBoolean("ceasefireNotificationPopup", ceasefireNotificationPopup);
             diplomacyEventFilterLevel = settings.optInt("diplomacyEventFilterLevel", diplomacyEventFilterLevel);
             agentEventFilterLevel = settings.optInt("agentEventFilterLevel", agentEventFilterLevel);
+            nexIntelQueued = settings.optInt("nexIntelQueued", nexIntelQueued);
+            queuedNexMissions = settings.optBoolean("queuedNexMissions", queuedNexMissions);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

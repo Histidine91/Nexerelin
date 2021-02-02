@@ -7,7 +7,11 @@
     "diplomacyEventFilterLevel":0,
     # more or less the same as above
     "agentEventFilterLevel":0,
-    
+	# 0 = standard behavior, most intel delivered instantly, 1 = important intel delivered instantly, 2 = almost no intel delivered instantly
+    "nexIntelQueued":0,
+	#if false, missions are added. if true, missions are delivered when near the target system.
+	"queuedNexMissions":false,
+	
     "minimumPlanets": 3,
     #"minimumStations": 3,
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market

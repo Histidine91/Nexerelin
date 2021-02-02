@@ -37,20 +37,13 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.AllianceManager;
-import exerelin.campaign.CovertOpsManager;
-import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.InvasionRound;
-import exerelin.campaign.SectorManager;
+import exerelin.campaign.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.intel.agents.AgentIntel;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
-import exerelin.utilities.ExerelinUtilsMarket;
-import exerelin.utilities.InvasionListener;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.*;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -160,15 +153,51 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			ip.getData(rebelRep).getLocation().setMarket(market);
 			ip.checkOutPerson(rebelRep, "nex_rebel_representative");
 		}		
-		
+		//TODO: queue rebellion intel
 		conditionToken = market.addCondition("nex_rebellion_condition");
 		Global.getSector().getListenerManager().addListener(this);
-		Global.getSector().getIntelManager().addIntel(this, true);
+		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		switch (nexIntelQueued) {
+
+			case 0:
+
+				Global.getSector().getIntelManager().addIntel(this, true);
+				break;
+
+			case 1:
+
+				if (govtFaction == Misc.getCommissionFaction()
+					|| rebelFaction == Misc.getCommissionFaction()
+					|| govtFaction == PlayerFactionStore.getPlayerFaction()
+					|| rebelFaction == PlayerFactionStore.getPlayerFaction()){
+					Global.getSector().getIntelManager().addIntel(this, true);
+				}
+
+				else Global.getSector().getIntelManager().queueIntel(this);
+				break;
+
+			case 2:
+
+				if (rebelFaction == PlayerFactionStore.getPlayerFaction()) {
+					Global.getSector().getIntelManager().addIntel(this, true);
+				}
+
+				else
+				Global.getSector().getIntelManager().queueIntel(this);
+				break;
+
+			default:
+
+				Global.getSector().getIntelManager().addIntel(this, true);
+				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in RebellionIntel, " +
+						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
+						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
+		}
 		Global.getSector().addScript(this);
 		if (!instant)
 			sendUpdate(UpdateParam.PREP);
 		else {
-			//sendUpdate(UpdateParam.START);	// leave it silent
+			//sendUpdate(UpdateParam.START);	// leave it silent //TODO: dear god how am i going to implement this
 		}
 			
 	}

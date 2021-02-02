@@ -14,9 +14,12 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import static exerelin.campaign.intel.agents.CovertActionIntel.NO_EFFECT;
 import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
+
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -70,6 +73,43 @@ public class LowerRelations extends CovertActionIntel {
 		if (result == CovertActionResult.SUCCESS_DETECTED)
 			result = CovertActionResult.SUCCESS;
 		return result;
+	}
+
+	@Override
+	protected void reportEvent() {
+		timestamp = Global.getSector().getClock().getTimestamp();
+//		if (Global.getSettings().isDevMode()) {
+		Global.getSector().getCampaignUI().addMessage("reportEvent() called in LowerRelations");
+		if (shouldReportEvent()){
+			Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ LowerRelations TRUE;if intel doesn't display, something bad happened.");
+		}
+//		}
+		if (shouldReportEvent() ) {
+			boolean notify = shouldNotify();
+			if (ExerelinConfig.nexIntelQueued <= 1) {
+				if (ExerelinConfig.nexIntelQueued <= 0
+						||	affectsPlayerRep()
+						||	playerInvolved
+						||	agentFaction == PlayerFactionStore.getPlayerFaction()
+						||	targetFaction.isPlayerFaction()
+						||	targetFaction == Misc.getCommissionFaction()
+						||	thirdFaction == Misc.getCommissionFaction()
+						|| 	thirdFaction == PlayerFactionStore.getPlayerFaction()) {
+					Global.getSector().getIntelManager().addIntel(this, !notify);
+				}
+				else Global.getSector().getIntelManager().queueIntel(this, 30);  // this should do the job
+			}
+	/*		else if (agentFaction == PlayerFactionStore.getPlayerFaction())
+				Global.getSector().getIntelManager().addIntel(this);*/
+
+			else Global.getSector().getIntelManager().queueIntel(this, 30);
+
+			if (!notify && Global.getSettings().isDevMode()/*ExerelinModPlugin.isNexDev*/) {
+				Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
+						+ getName() + " due to filter level", Misc.getHighlightColor());
+			}
+		}
+		endAfterDelay();
 	}
 
 	@Override

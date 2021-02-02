@@ -34,7 +34,9 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	protected float storedRelation;
 	protected boolean isWar;
 	protected boolean isPeace;
-	
+	private boolean seenByPlayer = false;
+	private boolean shouldEndWhenSeen = false;
+
 	public DiplomacyIntel(String eventId, String factionId1, String factionId2, MarketAPI market, ExerelinReputationAdjustmentResult reputation)
 	{
 		this.eventId = eventId;
@@ -42,24 +44,64 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		this.factionId2 = factionId2;
 		this.market = market;
 		this.reputation = reputation;
-		
+
 		FactionAPI faction1 = getFaction(factionId1);
 		storedRelation = faction1.getRelationship(factionId2);
-		
+
 		isWar = !reputation.wasHostile && reputation.isHostile;
 		isPeace = reputation.wasHostile && !reputation.isHostile;
 	}
-	
+
+	@Override
+	public void endAfterDelay() {
+		if (Global.getSettings().isDevMode()){
+			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in DiplomacyIntel called");
+		}
+		if (!seenByPlayer) {
+			shouldEndWhenSeen = true;
+			return; //
+		}
+		super.endAfterDelay();
+	}
+
+	@Override
+	public void reportMadeVisibleToPlayer() {
+		seenByPlayer = true;
+		if (shouldEndWhenSeen) {
+			endAfterDelay();
+		}
+		//	Global.getSector().getCampaignUI().addMessage("reportMadeVisibleToPlayer() called in DiplomacyIntel");
+	}
+
 	public void addEvent() {
 		boolean notify = shouldNotify();
+		String commFacId = Misc.getCommissionFactionId();
 		if (!notify && ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage("Suppressed diplomacy notification " 
 					+ getName() + " due to filter level");
 		}
-		Global.getSector().getIntelManager().addIntel(this, !notify);
+		if (ExerelinConfig.nexIntelQueued<=0 || ExerelinConfig.nexIntelQueued==1) {
+			if 		(ExerelinConfig.nexIntelQueued<=0 ||
+					isWar ||
+					isPeace ||
+					Factions.PLAYER.equals(factionId1) ||
+					Factions.PLAYER.equals(factionId2) ||
+					commFacId.equals(factionId1) ||
+					commFacId.equals(factionId2)) {
+				Global.getSector().getIntelManager().addIntel(this, !notify);
+			}
+			else {
+				Global.getSector().getIntelManager().queueIntel(this);
+			}
+		}
+		else {
+			Global.getSector().getIntelManager().queueIntel(this);
+		}
 		Global.getSector().addScript(this);
 		endAfterDelay();
 	}
+	//if nexIntelQueued is less or equal to 0, all intel will be added. if nexIntelQueued is 1, only the referenced
+	//intel will be added. if nexIntelQueued is 2 or higher, all intel will be queued.
 	
 	protected static FactionAPI getFaction(String id)
 	{

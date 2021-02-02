@@ -24,6 +24,8 @@ import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
+
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -69,8 +71,11 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		addStage(action);
 		
 		addStage(new NexReturnStage(this));
-		
+
+		if ((ExerelinConfig.nexIntelQueued <= 0) || (ExerelinConfig.nexIntelQueued == 1 && playerSpawned))
 		addIntelIfNeeded();
+		else
+		queueIntelIfNeeded();
 	}
 	
 	@Override

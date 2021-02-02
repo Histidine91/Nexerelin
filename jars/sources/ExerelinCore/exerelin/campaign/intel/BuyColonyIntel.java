@@ -49,7 +49,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 		this.market = market;
 	}
 	
-	public void init() {
+	public void init() { //to my knowledge only the player can buy colonies, queueIntel not needed
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().getListenerManager().addListener(this);
 		Global.getSector().addScript(this);
