@@ -7,9 +7,11 @@
     "diplomacyEventFilterLevel":0,
     # more or less the same as above
     "agentEventFilterLevel":0,
-	# 0 = standard behavior, most intel delivered instantly, 1 = important intel delivered instantly, 2 = almost no intel delivered instantly
+	# 0 = standard behavior, most intel delivered instantly, 
+	# 1 = important intel delivered instantly, rest added when near comm relay
+	# 2 = almost no intel delivered instantly, rest added when near comm relay
     "nexIntelQueued":0,
-	#if false, missions are added. if true, missions are delivered when near the target system.
+	#if false, missions are added directly. if true, missions are delivered when near the target system.
 	"queuedNexMissions":false,
 	
     "minimumPlanets": 3,

@@ -163,7 +163,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 
 	@Override
 	public void endAfterDelay() {
-		if (Global.getSettings().isDevMode()) {
+		if (ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in CovertActionIntel called");
 		}
 		if (!seenByPlayer) {
@@ -175,7 +175,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 
 	@Override
 	public void reportMadeVisibleToPlayer() {
-		if (Global.getSettings().isDevMode()) {
+		if (ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage("reportMadeVisibleToPlayer() in CovertActionIntel called");
 		}
 		seenByPlayer = true;
