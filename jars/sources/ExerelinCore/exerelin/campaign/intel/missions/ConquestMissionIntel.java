@@ -70,6 +70,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		Global.getLogger(this.getClass()).info("Initiating conquest mission");
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
+		setPostingRangeLY(9999999999f); //considering only having conquest have a posting range, a lot more rare than disrupt missions
 		boolean queuedNexMissions = ExerelinConfig.queuedNexMissions;
 
 		if (queuedNexMissions) {

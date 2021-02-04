@@ -69,6 +69,7 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		reward = calculateReward();
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
+		setPostingRangeLY(9999999999f);
 		boolean queuedNexMissions = ExerelinConfig.queuedNexMissions;
 
 		if (queuedNexMissions) {
