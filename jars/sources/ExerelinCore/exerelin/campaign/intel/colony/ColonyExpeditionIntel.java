@@ -137,7 +137,8 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 
 			case 2:
 
-				queueIntelIfNeeded();
+				Global.getSector().getIntelManager().queueIntel(this);
+				intelQueuedOrAdded = true;
 				break;
 
 			default:

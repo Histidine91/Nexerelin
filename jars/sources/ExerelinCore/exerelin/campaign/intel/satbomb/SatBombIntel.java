@@ -88,7 +88,8 @@ public class SatBombIntel extends OffensiveFleetIntel {
 
 			case 2:
 
-				queueIntelIfNeeded();
+				Global.getSector().getIntelManager().queueIntel(this);
+				intelQueuedOrAdded = true;
 				break;
 
 			default:

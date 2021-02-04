@@ -138,8 +138,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				if (playerSpawned)
 					addIntelIfNeeded();
 
-				else if (shouldDisplayIntel())
-					queueIntelIfNeeded();
+				else if (shouldDisplayIntel()) {
+					Global.getSector().getIntelManager().queueIntel(this);
+					intelQueuedOrAdded = true;
+				}
 
 				else if (ExerelinModPlugin.isNexDev)
 				{
@@ -535,6 +537,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	@Override
 	protected void notifyEnding() {
 		log.info("Invasion event ending");
+		sendOutcomeUpdate();
 		super.notifyEnding();
 		if (brawlDefIntel != null && brawlDefIntel.getOutcome() == null) {
 			log.info("Setting outcome for brawl defense, " + outcome.toString());

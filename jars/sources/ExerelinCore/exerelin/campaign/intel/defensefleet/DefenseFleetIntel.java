@@ -74,8 +74,10 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 
 		if ((ExerelinConfig.nexIntelQueued <= 0) || (ExerelinConfig.nexIntelQueued == 1 && playerSpawned))
 		addIntelIfNeeded();
-		else
-		queueIntelIfNeeded();
+		else {
+			Global.getSector().getIntelManager().queueIntel(this);
+			intelQueuedOrAdded = true;
+		}
 	}
 	
 	@Override

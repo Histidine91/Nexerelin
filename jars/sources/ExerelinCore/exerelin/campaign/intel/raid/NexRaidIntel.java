@@ -102,8 +102,10 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 				if (playerSpawned)
 					addIntelIfNeeded();
 
-				else if (shouldDisplayIntel())
-					queueIntelIfNeeded();
+				else if (shouldDisplayIntel()) {
+					Global.getSector().getIntelManager().queueIntel(this);
+					intelQueuedOrAdded = true;
+				}
 
 				else if (ExerelinModPlugin.isNexDev)
 				{

@@ -99,8 +99,10 @@ public class RemnantRaidIntel extends NexRaidIntel {
 
 			case 2:
 
-				if (shouldDisplayIntel())
-					queueIntelIfNeeded();
+				if (shouldDisplayIntel()) {
+					Global.getSector().getIntelManager().queueIntel(this);
+					intelQueuedOrAdded = true;
+				}
 
 				else if (ExerelinModPlugin.isNexDev)
 				{
