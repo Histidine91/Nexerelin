@@ -196,7 +196,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (!instant)
 			sendUpdate(UpdateParam.PREP);
 		else {
-			//sendUpdate(UpdateParam.START);	// leave it silent //TODO: dear god how am i going to implement this
+			//sendUpdate(UpdateParam.START);	// leave it silent //TODO: niko-dear god how am i going to implement this
 		}
 			
 	}

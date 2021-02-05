@@ -497,6 +497,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	protected void notifyEnding() {
 		super.notifyEnding();
 		// failing at these stages suggests the colony fleet was destroyed
+		sendOutcomeUpdate();
 		if (getFailStage() == 2 || colonyOutcome == ColonyOutcome.INVADE_FAILED 
 				|| colonyOutcome == ColonyOutcome.FAIL) {
 			ColonyManager.getManager().incrementDeadExpeditions();

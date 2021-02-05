@@ -329,7 +329,16 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		
 		return true;
 	}
-	
+
+	@Override
+	protected void notifyEnding() {
+		sendOutcomeUpdate();
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("notifyEnding() called in NexRaidIntel");
+		}
+		super.notifyEnding();
+	}
+
 	@Override
 	public String getSortString() {
 		//return StringHelper.getString("exerelin_raid", "raid", true);
