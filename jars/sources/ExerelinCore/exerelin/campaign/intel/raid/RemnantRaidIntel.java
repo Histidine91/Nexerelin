@@ -15,9 +15,14 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
+
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
+
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.util.List;
 import java.util.Random;
@@ -68,17 +73,51 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		addStage(action);
 		
 		addStage(new RemnantRaidReturnStage(this));
-		
-		/*
-		if (shouldDisplayIntel())
-			queueIntelIfNeeded();
-		else if (DEBUG_MODE)
-		{
-			Global.getSector().getCampaignUI().addMessage("Remnant raid intel from " 
-					+ base.getContainingLocation().getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+
+		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		switch (nexIntelQueued) {
+
+			case 0:
+
+				addIntelIfNeeded();
+				break;
+
+			case 1:
+
+				if ((isPlayerTargeted() || targetFaction == Misc.getCommissionFaction()))
+					addIntelIfNeeded();
+
+				else if (shouldDisplayIntel())
+					queueIntelIfNeeded();
+
+				else if (ExerelinModPlugin.isNexDev)
+				{
+					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
+							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+				}
+				break;
+
+			case 2:
+
+				if (shouldDisplayIntel()) {
+					Global.getSector().getIntelManager().queueIntel(this);
+					intelQueuedOrAdded = true;
+				}
+
+				else if (ExerelinModPlugin.isNexDev)
+				{
+					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
+							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+				}
+				break;
+
+			default:
+
+				addIntelIfNeeded();
+				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in RemnantRaidIntel, " +
+						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
+						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
-		*/
-		addIntelIfNeeded();
 	}
 	
 	@Override

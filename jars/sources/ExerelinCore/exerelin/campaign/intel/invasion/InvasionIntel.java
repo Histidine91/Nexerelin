@@ -105,19 +105,62 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		if (brawlMode) {
 			spawnBrawlDefenseFleet();
 		}
-		
-		/*
-		if (shouldDisplayIntel())
-			queueIntelIfNeeded();
-		else if (DEBUG_MODE)
-		{
-			Global.getSector().getCampaignUI().addMessage("Invasion intel from " 
-					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("init called in InvasionIntel");
 		}
-		*/
-		addIntelIfNeeded();
+
+		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		switch (nexIntelQueued) {
+
+			case 0:
+
+				addIntelIfNeeded();
+				break;
+
+			case 1:
+
+				if ((isPlayerTargeted() || playerSpawned || targetFaction == Misc.getCommissionFaction()) || faction == Misc.getCommissionFaction())
+					addIntelIfNeeded();
+
+				else if (shouldDisplayIntel())
+					queueIntelIfNeeded();
+
+				else if (ExerelinModPlugin.isNexDev)
+				{
+					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
+							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+				}
+				break;
+
+			case 2:
+
+				if (playerSpawned)
+					addIntelIfNeeded();
+
+				else if (shouldDisplayIntel()) {
+					Global.getSector().getIntelManager().queueIntel(this);
+					intelQueuedOrAdded = true;
+				}
+
+				else if (ExerelinModPlugin.isNexDev)
+				{
+					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
+							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+				}
+				break;
+
+			default:
+
+				addIntelIfNeeded();
+				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in InvasionIntel, " +
+					"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
+					"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
+		}
 	}
-	
+
+
+
 	/*
 	@Override
 	public void setOutcome(OffensiveOutcome outcome) {
@@ -494,6 +537,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	@Override
 	protected void notifyEnding() {
 		log.info("Invasion event ending");
+		sendOutcomeUpdate();
 		super.notifyEnding();
 		if (brawlDefIntel != null && brawlDefIntel.getOutcome() == null) {
 			log.info("Setting outcome for brawl defense, " + outcome.toString());

@@ -25,6 +25,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.missions.DisruptMissionManager.TargetEntry;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -58,13 +59,26 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		value = entry.value;
 		this.duration = duration;
 	}
-	
+
+/*	public void LocationOfDisruptMarket() {
+		Global.getSector().getCampaignUI().addMessage("Location of disruption mission is " + market.getContainingLocation().getNameWithLowercaseType());
+	} */
+
 	public void init() {
 		Global.getLogger(this.getClass()).info("Initiating disruption mission");
 		reward = calculateReward();
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
-		Global.getSector().getIntelManager().addIntel(this);
+		setPostingRangeLY(9999999999f);
+		boolean queuedNexMissions = ExerelinConfig.queuedNexMissions;
+
+		if (queuedNexMissions) {
+			Global.getSector().getIntelManager().queueIntel(this);
+		}
+		else {
+			Global.getSector().getIntelManager().addIntel(this);
+		}
+		Global.getSector().getListenerManager().addListener(this);
 	}
 
 	@Override

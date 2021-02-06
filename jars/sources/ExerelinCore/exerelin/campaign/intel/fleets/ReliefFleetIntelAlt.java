@@ -23,6 +23,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
@@ -351,7 +352,37 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	}
 		
 	public void init() {		
-		Global.getSector().getIntelManager().addIntel(this);
+		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		switch (nexIntelQueued) {
+
+			case 0:
+
+				Global.getSector().getIntelManager().addIntel(this);
+				break;
+
+			case 1:
+
+				if 	(targetFactionId.equals(PlayerFactionStore.getPlayerFactionId())
+					||factionId.equals(PlayerFactionStore.getPlayerFactionId()))
+					{
+					Global.getSector().getIntelManager().queueIntel(this);
+					}
+
+				else Global.getSector().getIntelManager().addIntel(this);
+				break;
+
+			case 2:
+
+				Global.getSector().getIntelManager().queueIntel(this);
+				break;
+
+			default:
+
+				Global.getSector().getIntelManager().addIntel(this);
+				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in ReliefFleetIntel, " +
+						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
+						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
+		}
 		Global.getSector().addScript(this);
 	}
 	

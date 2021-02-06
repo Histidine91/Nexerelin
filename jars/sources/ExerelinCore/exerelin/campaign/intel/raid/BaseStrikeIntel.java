@@ -14,6 +14,9 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
+
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -49,19 +52,55 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		action = new BaseStrikeActionStage(this, target);
 		action.setAbortFP(fp * successMult);
 		addStage(action);
-		
+
 		addStage(new NexReturnStage(this));
-		
-		/*
-		if (shouldDisplayIntel())
+
+/*		if ((shouldDisplayIntel()) && (ExerelinConfig.nexIntelQueued >= 2))
 			queueIntelIfNeeded();
-		else if (DEBUG_MODE)
+
+		else if ((ExerelinConfig.nexIntelQueued <= 0) || (ExerelinConfig.nexIntelQueued == 1 && isPlayerTargeted()))
+			addIntelIfNeeded();
+
+		else if (ExerelinModPlugin.isNexDev)
 		{
-			Global.getSector().getCampaignUI().addMessage("Base strike intel from " 
+			Global.getSector().getCampaignUI().addMessage("Invasion intel from "
 					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+		} */
+
+		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		switch (nexIntelQueued){
+
+			case 0:
+
+				addIntelIfNeeded();
+				break;
+
+			case 1:
+
+			case 2:
+
+				if (playerSpawned)
+					addIntelIfNeeded();
+
+				else if (shouldDisplayIntel()) {
+					Global.getSector().getIntelManager().queueIntel(this);
+					intelQueuedOrAdded = true;
+				}
+
+				else if (ExerelinModPlugin.isNexDev)
+				{
+					Global.getSector().getCampaignUI().addMessage("Base Strike intel from "
+							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+				}
+				break;
+
+			default:
+
+				addIntelIfNeeded();
+				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in BaseStrikeIntel, " +
+						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
+						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
-		*/
-		addIntelIfNeeded();
 	}
 	
 	// Same as OffensiveFleetIntel's one

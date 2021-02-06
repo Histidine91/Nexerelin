@@ -157,6 +157,32 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	public boolean isPlayerInvolved() {
 		return playerInvolved;
 	}
+
+	private boolean seenByPlayer = false;
+	private boolean shouldEndWhenSeen = false;
+
+	@Override
+	public void endAfterDelay() {
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in CovertActionIntel called");
+		}
+		if (!seenByPlayer) {
+			shouldEndWhenSeen = true;
+			return; // don't do anything if not seen by player
+		}
+		super.endAfterDelay(); // whatever other code normally goes there
+	}
+
+	@Override
+	public void reportMadeVisibleToPlayer() {
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("reportMadeVisibleToPlayer() in CovertActionIntel called");
+		}
+		seenByPlayer = true;
+		if (shouldEndWhenSeen) {
+			endAfterDelay();
+		}
+	}
 	
 	/**
 	 * Gets the level of the current agent, or the appropriate level for NPC actions based on the faction.
@@ -394,14 +420,19 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	 * @return
 	 */
 	public boolean shouldAbortIfOwnMarket() {
-		return market.getFaction() == agent.faction;
+		if (agent != null && (market.getFaction() == agent.faction)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	@Override
 	public void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 		
-		if (!allowOwnMarket() && shouldAbortIfOwnMarket() && canAbort())
+		if (agent != null && !allowOwnMarket() && shouldAbortIfOwnMarket() && canAbort())
 		{
 			abort();
 			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
@@ -529,15 +560,35 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
-		if (shouldReportEvent()) {
-			boolean notify = shouldNotify();
-			Global.getSector().getIntelManager().addIntel(this, !notify);
-			if (!notify && ExerelinModPlugin.isNexDev) {
-				Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification " 
-						+ getName() + " due to filter level", Misc.getHighlightColor());
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("reportEvent() called in CovertActionIntel");
+			if (shouldReportEvent()){
+				Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() TRUE;if intel doesn't display, something bad happened.");
 			}
 		}
-		endAfterDelay();
+		if (shouldReportEvent()) { //TODO: make it so if an agent action makes 2 factions hostile, add it
+			boolean notify = shouldNotify();
+			if (ExerelinConfig.nexIntelQueued <= 1) {
+				if (ExerelinConfig.nexIntelQueued <= 0
+					||	affectsPlayerRep()
+					||	playerInvolved
+					||	agentFaction == PlayerFactionStore.getPlayerFaction()
+					||	targetFaction.isPlayerFaction()
+					||	targetFaction == Misc.getCommissionFaction()) {
+					Global.getSector().getIntelManager().addIntel(this, !notify);
+
+					if (!notify && ExerelinModPlugin.isNexDev) {
+						Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
+								+ getName() + " due to filter level", Misc.getHighlightColor());
+					}
+				}
+				else Global.getSector().getIntelManager().queueIntel(this);
+			}
+
+			else Global.getSector().getIntelManager().queueIntel(this);
+
+			endAfterDelay();
+		}
 	}
 	
 	public float getAlertLevelIncrease() {

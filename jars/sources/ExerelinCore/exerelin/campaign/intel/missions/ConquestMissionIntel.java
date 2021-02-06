@@ -26,6 +26,8 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
@@ -48,6 +50,10 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	protected boolean betrayed;
 	protected CancelReason cancelReason = null;
 	//protected IntervalUtil interval = new IntervalUtil(1, 1);
+
+	public void locationOfConquestMarket() {
+		Global.getSector().getCampaignUI().addMessage("Location of conquest mission is " + market.getContainingLocation().getNameWithLowercaseType());
+	}
 	
 	public ConquestMissionIntel(MarketAPI market, FactionAPI faction, float duration) {
 		Global.getLogger(this.getClass()).info("Instantiating conquest mission");
@@ -55,13 +61,24 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		this.faction = faction;
 		this.duration = duration;
 		lastTargetFaction = market.getFaction();
+		if (ExerelinModPlugin.isNexDev){
+			locationOfConquestMarket();
+		}
 	}
 	
 	public void init() {
 		Global.getLogger(this.getClass()).info("Initiating conquest mission");
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
-		Global.getSector().getIntelManager().addIntel(this);
+		setPostingRangeLY(9999999999f); //considering only having conquest have a posting range, a lot more rare than disrupt missions
+		boolean queuedNexMissions = ExerelinConfig.queuedNexMissions;
+
+		if (queuedNexMissions) {
+			Global.getSector().getIntelManager().queueIntel(this);
+		}
+		else {
+			Global.getSector().getIntelManager().addIntel(this);
+		}
 		Global.getSector().getListenerManager().addListener(this);
 	}
 

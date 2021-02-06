@@ -11,6 +11,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -43,7 +44,15 @@ public class AllianceIntel extends BaseIntelPlugin {
 		this.faction2 = faction2;
 		this.allianceId = allianceId;
 		this.allianceName = allianceName;
-		Global.getSector().getIntelManager().addIntel(this, true);
+		if (ExerelinConfig.nexIntelQueued <= 0 || ExerelinConfig.nexIntelQueued == 1) {
+			Global.getSector().getIntelManager().addIntel(this, true);
+		}
+		else {
+			Global.getSector().getIntelManager().queueIntel(this);
+			if (ExerelinModPlugin.isNexDev){
+				Global.getSector().getCampaignUI().addMessage("queueIntel() called in AllianceIntel");
+			}
+		}
 		Map<String, Object> params = new HashMap<>();
 		params.put("type", UpdateType.FORMED);
 		this.sendUpdateIfPlayerHasIntel(params, false);

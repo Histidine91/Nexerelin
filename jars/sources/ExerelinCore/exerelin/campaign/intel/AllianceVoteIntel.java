@@ -46,7 +46,7 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 	}
 	
 	// bullet points
-	@Override
+	@Override //TODO: find how this is added/queued
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
 		/*
 		Format:

@@ -46,6 +46,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.NexTravelStage;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -124,7 +125,29 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		addStage(action);
 		
 		addStage(new ColonyReturnStage(this));
-		addIntelIfNeeded();
+		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		switch (nexIntelQueued) {
+
+			case 0:
+
+			case 1:
+
+				addIntelIfNeeded();
+				break;
+
+			case 2:
+
+				Global.getSector().getIntelManager().queueIntel(this);
+				intelQueuedOrAdded = true;
+				break;
+
+			default:
+
+				addIntelIfNeeded();
+				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in ColonyExpeditionIntel, " +
+						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
+						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
+		}
 	}
 	
 	protected String getDescString() {
@@ -474,6 +497,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	protected void notifyEnding() {
 		super.notifyEnding();
 		// failing at these stages suggests the colony fleet was destroyed
+		sendOutcomeUpdate();
 		if (getFailStage() == 2 || colonyOutcome == ColonyOutcome.INVADE_FAILED 
 				|| colonyOutcome == ColonyOutcome.FAIL) {
 			ColonyManager.getManager().incrementDeadExpeditions();
