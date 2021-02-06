@@ -1,12 +1,13 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
-import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptionsPlus;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.Random;
 import org.lwjgl.input.Keyboard;
 
-public class Nex_NGCFactionToggle extends PaginatedOptions {
+public class Nex_NGCFactionToggle extends PaginatedOptionsPlus {
 	
 	public static final String TOGGLE_FACTION_OPTION_PREFIX = "nex_NGCToggleFaction_";
 	public static final int OPT_LENGTH = TOGGLE_FACTION_OPTION_PREFIX.length();
@@ -172,6 +173,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 			String text = getText(factionId, data);
 
 			addOption(text, optId);
+			addColor(optId, Global.getSector().getFaction(factionId).getBaseUIColor());
 		}
 		addOption(Misc.ucFirst(StringHelper.getString("randomize")), RANDOMIZE_OPT);
 	}

@@ -1,5 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
+import com.fs.starfarer.api.Global;
 import java.util.List;
 import java.util.Map;
 
@@ -45,16 +46,22 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 	protected void createSliders(OptionPanelAPI opts)
 	{
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
+		int maxSystems = Global.getSettings().getInt("nex_randomSector_maxSystems");
+		int maxPlanets = Global.getSettings().getInt("nex_randomSector_maxPlanets");
+		int maxStations = Global.getSettings().getInt("nex_randomSector_maxStations");
 		
-		opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector", Color.YELLOW, BAR_WIDTH, 48, 4, 48, ValueDisplayMode.VALUE, 
+		opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector", 
+				Color.YELLOW, BAR_WIDTH, 48, 4, maxSystems, ValueDisplayMode.VALUE, 
 				getString("populatedSystemsTooltip"));
 		opts.setSelectorValue("systemCountSelector", data.numSystems);
 		
-		opts.addSelector(getString("populatedPlanetsTitle"), "planetCountSelector", Color.GREEN, BAR_WIDTH, 48, 8, 80, ValueDisplayMode.VALUE, 
+		opts.addSelector(getString("populatedPlanetsTitle"), "planetCountSelector", 
+				Color.GREEN, BAR_WIDTH, 48, 8, maxPlanets, ValueDisplayMode.VALUE, 
 				getString("populatedPlanetsTooltip"));
 		opts.setSelectorValue("planetCountSelector", data.numPlanets);
 		
-		opts.addSelector(getString("stationsTitle"), "stationCountSelector", Color.GRAY, BAR_WIDTH, 48, 4, 80, ValueDisplayMode.VALUE, 
+		opts.addSelector(getString("stationsTitle"), "stationCountSelector", 
+				Color.GRAY, BAR_WIDTH, 48, 4, maxStations, ValueDisplayMode.VALUE, 
 				getString("stationsTooltip"));
 		opts.setSelectorValue("stationCountSelector", data.numStations);
 		

@@ -113,6 +113,11 @@
 		"US_shrooms":-10,
 	},
 	
+	# these control the allowed slider length
+	"nex_randomSector_maxSystems":48,
+	"nex_randomSector_maxPlanets":80,
+	"nex_randomSector_maxStations":80,
+	
 	"nex_factionSetupNumFont":"graphics/fonts/insignia21LTaa.fnt",
 	
 	"plugins":{
