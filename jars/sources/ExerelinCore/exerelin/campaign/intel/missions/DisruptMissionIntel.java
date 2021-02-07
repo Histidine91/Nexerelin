@@ -114,6 +114,12 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 			return;
 		}
 		
+		// count as disrupted if issuing faction owns the market
+		if (market.getFaction() == faction) {
+			missionComplete();
+			return;
+		}
+		
 		// market no longer in economy?
 		if (!market.isInEconomy()) {
 			cancelReason = CancelReason.NOT_IN_ECONOMY;
