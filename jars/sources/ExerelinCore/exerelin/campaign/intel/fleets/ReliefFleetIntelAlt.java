@@ -10,6 +10,7 @@ import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
@@ -356,28 +357,25 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		switch (nexIntelQueued) {
 
 			case 0:
-
 				Global.getSector().getIntelManager().addIntel(this);
 				break;
 
 			case 1:
-
-				if 	(targetFactionId.equals(PlayerFactionStore.getPlayerFactionId())
-					||factionId.equals(PlayerFactionStore.getPlayerFactionId()))
+				if 	(factionId.equals(Factions.PLAYER)
+							||targetFactionId.equals(Factions.PLAYER)
+							||targetFactionId.equals(PlayerFactionStore.getPlayerFactionId())
+							||factionId.equals(PlayerFactionStore.getPlayerFactionId()))
 					{
-					Global.getSector().getIntelManager().queueIntel(this);
+						Global.getSector().getIntelManager().addIntel(this);
 					}
-
-				else Global.getSector().getIntelManager().addIntel(this);
+				else Global.getSector().getIntelManager().queueIntel(this);
 				break;
-
+				
 			case 2:
-
 				Global.getSector().getIntelManager().queueIntel(this);
 				break;
-
+				
 			default:
-
 				Global.getSector().getIntelManager().addIntel(this);
 				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in ReliefFleetIntel, " +
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
