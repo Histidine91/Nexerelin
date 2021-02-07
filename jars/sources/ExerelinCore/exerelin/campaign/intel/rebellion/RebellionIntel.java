@@ -241,10 +241,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	{
 		float sizeMult = getSizeMod(market);
 		if (isPlayer)
-			govtStrength = 5 * sizeMult;
-		else
 			govtStrength = 10 * sizeMult;
-		rebelStrength = 6 * sizeMult * MathUtils.getRandomNumberInRange(0.9f, 1.2f);
+		else
+			govtStrength = 15 * sizeMult;
+		rebelStrength = 12 * sizeMult * MathUtils.getRandomNumberInRange(0.9f, 1.2f);
 	}
 	
 	protected float getNormalizedStrength(boolean rebel)
