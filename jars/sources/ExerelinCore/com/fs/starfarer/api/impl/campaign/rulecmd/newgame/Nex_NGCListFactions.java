@@ -113,12 +113,21 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 		}
 		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "exerelinNGCOptionsBack");
 				
-		showAndProcessGroupOptions(dialog.getOptionPanel(), groups);
+		showOptions();
 	}
 	
-	public void showAndProcessGroupOptions(OptionPanelAPI opts, List<FactionListGrouping> groups) 
-	{
+	@Override
+	public void showOptions() {
 		super.showOptions();
+		
+		OptionPanelAPI opts = dialog.getOptionPanel();
+		if (ExerelinSetupData.getInstance().corvusMode)
+		{
+			opts.setTooltip("nex_NGCJoinOwnFaction", StringHelper.getString("exerelin_ngc", "ownFactionDisabledTooltip"));
+			opts.setEnabled("nex_NGCJoinOwnFaction", false);
+		}
+		
+		List<FactionListGrouping> groups = Nex_FactionDirectoryHelper.getNGCFactionGroupings(true);
 		int groupNum = 0;
 		for (FactionListGrouping group : groups)
 		{
@@ -127,12 +136,6 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 			opts.setTooltip(optionId, group.tooltip);
 			opts.setTooltipHighlights(optionId, group.getFactionNames().toArray(new String[0]));
 			opts.setTooltipHighlightColors(optionId, group.getTooltipColors().toArray(new Color[0]));
-		}
-		
-		if (ExerelinSetupData.getInstance().corvusMode)
-		{
-			opts.setTooltip("nex_NGCJoinOwnFaction", StringHelper.getString("exerelin_ngc", "ownFactionDisabledTooltip"));
-			opts.setEnabled("nex_NGCJoinOwnFaction", false);
 		}
 		
 		opts.setShortcut("exerelinNGCOptionsBack", Keyboard.KEY_ESCAPE, false, false, false, false);
