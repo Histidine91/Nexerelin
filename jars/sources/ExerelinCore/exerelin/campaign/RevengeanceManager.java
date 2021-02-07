@@ -378,12 +378,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		if (intel != null && satBomb) {
 			((SatBombIntel)intel).setVengeance(true);
 		}
-		
-		// counter-invasions draw on the same points needed for invasions, but at half the normal rate
-		float cost = InvasionFleetManager.getManager().
-				getInvasionPointReduction(ExerelinConfig.pointsRequiredForInvasionFleet, intel);
-		cost *= INVASION_POINT_COST_MULTIPLIER;
-		InvasionFleetManager.getManager().modifySpawnCounter(revengeFactionId, -cost);
+		if (intel != null) {
+			// counter-invasions draw on the same points needed for invasions, but at half the normal rate
+			float cost = InvasionFleetManager.getManager().
+					getInvasionPointReduction(ExerelinConfig.pointsRequiredForInvasionFleet, intel);
+			cost *= INVASION_POINT_COST_MULTIPLIER;
+			InvasionFleetManager.getManager().modifySpawnCounter(revengeFactionId, -cost);
+		}
 		
 		return true;
 	}
