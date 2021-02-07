@@ -298,8 +298,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				// print max relationship if applicable
 				if (!DiplomacyManager.isRandomFactionRelationships()) 
 				{
-					float max = ExerelinFactionConfig.getMaxRelationship(action.getTargetFaction().getId(),
-							thirdFaction.getId());
+					String other = thirdFaction.getId();
+					if (other.equals(Factions.PLAYER))
+						other = PlayerFactionStore.getPlayerFactionId();
+					
+					float max = ExerelinFactionConfig.getMaxRelationship(action.getTargetFaction().getId(),	other);
 					if (max < 1) {
 						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 						str = StringHelper.substituteToken(str, "$faction1", 
@@ -327,8 +330,12 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				// print min relationship if applicable
 				if (!DiplomacyManager.isRandomFactionRelationships()) 
 				{
+					String other = thirdFaction.getId();
+					if (other.equals(Factions.PLAYER))
+						other = PlayerFactionStore.getPlayerFactionId();
+					
 					float min = ExerelinFactionConfig.getMinRelationship(action.getTargetFaction().getId(),
-							thirdFaction.getId());
+							other);
 					if (min > -1) {
 						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 						str = StringHelper.substituteToken(str, "$faction1", 
