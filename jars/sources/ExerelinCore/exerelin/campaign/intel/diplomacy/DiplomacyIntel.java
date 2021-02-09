@@ -55,7 +55,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	@Override
 	public void endAfterDelay() {
 		if (ExerelinModPlugin.isNexDev){
-			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in DiplomacyIntel called");
+			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in DiplomacyIntel called: " + this.getName());
 		}
 		if (!seenByPlayer) {
 			shouldEndWhenSeen = true;
@@ -76,12 +76,13 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	public void addEvent() {
 		boolean notify = shouldNotify();
 		String commFacId = Misc.getCommissionFactionId();
+		if (commFacId == null) commFacId = "";
 		if (!notify && ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage("Suppressed diplomacy notification " 
 					+ getName() + " due to filter level");
 		}
 		if (ExerelinConfig.nexIntelQueued<=0 || ExerelinConfig.nexIntelQueued==1) {
-			if 		(ExerelinConfig.nexIntelQueued<=0 ||
+			if (ExerelinConfig.nexIntelQueued<=0 ||
 					isWar ||
 					isPeace ||
 					Factions.PLAYER.equals(factionId1) ||
