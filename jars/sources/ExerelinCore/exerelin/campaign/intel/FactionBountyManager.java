@@ -83,6 +83,8 @@ public class FactionBountyManager extends BaseEventManager {
 		
 		List<String> liveFactions = SectorManager.getLiveFactionIdsCopy();
 		WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>();
+		boolean allowEnemies = Global.getSettings().getBoolean("nex_factionBounty_issuedByEnemies");
+		
 		for (String factionId : liveFactions) {
 			if (factionId.equals(Factions.PLAYER))
 				continue;
@@ -93,6 +95,7 @@ public class FactionBountyManager extends BaseEventManager {
 			
 			FactionAPI faction = Global.getSector().getFaction(factionId);
 			if (already.contains(faction)) continue;
+			if (!allowEnemies && faction.isHostileTo(Factions.PLAYER)) continue;
 			
 			// weight based on number of enemies this faction has
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, true, false);
@@ -138,6 +141,8 @@ public class FactionBountyManager extends BaseEventManager {
 		FactionBountyManager manager = new FactionBountyManager();
 		data.put(KEY, manager);
 	}
+	
+	// runcode exerelin.campaign.intel.FactionBountyManager.getInstance().addOrResetBounty(Global.getSector().getFaction("hegemony"))
 }
 
 
