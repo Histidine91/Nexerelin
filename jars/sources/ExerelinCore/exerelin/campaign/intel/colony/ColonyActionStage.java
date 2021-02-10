@@ -266,7 +266,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			colonyFleetIntel.colonyOutcome = ColonyOutcome.SUCCESS;
 			colonyFleetIntel.setOutcome(OffensiveOutcome.SUCCESS);
 			status = RaidStageStatus.SUCCESS;
-			colonyFleetIntel.sendOutcomeUpdate();
+			//colonyFleetIntel.sendOutcomeUpdate();	// auto-sent in notifyEnding()
 		}
 		else {
 			Global.getLogger(this.getClass()).info("\tColonists invading target");
@@ -276,7 +276,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 				colonyFleetIntel.setOutcome(OffensiveOutcome.SUCCESS);
 				colonyFleetIntel.colonyOutcome = ColonyOutcome.INVADE_SUCCESS;
 				status = RaidStageStatus.SUCCESS;
-				colonyFleetIntel.sendOutcomeUpdate();
+				//colonyFleetIntel.sendOutcomeUpdate();	// auto-sent in notifyEnding()
 			}
 			else {
 				colonyFleetIntel.colonyOutcome = ColonyOutcome.INVADE_FAILED;

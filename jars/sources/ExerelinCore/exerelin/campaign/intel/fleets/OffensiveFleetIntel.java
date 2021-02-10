@@ -192,6 +192,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
 		}
 	}
+	
+	@Override
+	public boolean shouldSendUpdate() {
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage(this.getName() + ": shouldSendUpdate() returning false");
+		}
+		return false;	// fuck off, we'll handle event ending notifications ourselves
+	}
 
 	public void sendOutcomeUpdate() {
 		addIntelIfNeeded();
