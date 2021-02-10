@@ -544,8 +544,10 @@ public class NexMarketBuilder
 					if (sizeIndex + 1 > currStation.two)
 					{
 						Industry station = currStation.one;
-						station.startUpgrading();
-						if (instant) station.finishBuildingOrUpgrading();
+						if (station.getSpec().getUpgrade() != null) {
+							station.startUpgrading();
+							if (instant) station.finishBuildingOrUpgrading();
+						}
 					}
 				}
 				// no station, add one
