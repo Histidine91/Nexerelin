@@ -101,7 +101,8 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	protected static boolean isAllowed(MarketAPI market) {
 		if (market.isPlayerOwned()) return false;
 		int min = Math.min(ExerelinConfig.stabilizePackageEffect, 3);
-		return RecentUnrest.getPenalty(market) >= min;
+		float recentUnrest = RecentUnrest.getPenalty(market);
+		return recentUnrest >= min || (recentUnrest >= 1 && market.getStabilityValue() == 0);
 	}
 	
 	public static int getNeededCommodityAmount(MarketAPI market, String commodityId)
