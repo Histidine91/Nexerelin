@@ -25,6 +25,9 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 		if (refetchEventIfNeeded())
 			market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
 					StringHelper.getString("exerelin_marketConditions", "rebellion"));
+		
+		if (event == null)	// refetch failed
+			market.removeSpecificCondition(this.getModId());
 	}
 		
 	@Override
