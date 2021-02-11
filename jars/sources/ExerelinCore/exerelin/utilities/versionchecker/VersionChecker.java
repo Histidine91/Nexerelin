@@ -67,7 +67,7 @@ final class VersionChecker
         if (!Global.getSettings().isDevMode()
                 && versionFileURL.trim().toLowerCase().startsWith("file:"))
         {
-            Log.error("Local URLs are not allowed unless devmode is enabled: \""
+            Log.warn("Local URLs are not allowed unless devmode is enabled: \""
                     + versionFileURL + "\"");
             return "local URLs are not allowed unless devmode is enabled: \""
                     + versionFileURL + "\"";
@@ -84,17 +84,17 @@ final class VersionChecker
         }
         catch (MalformedURLException ex)
         {
-            Log.error("Invalid master version file URL \"" + versionFileURL + "\"", ex);
+            Log.warn("Invalid master version file URL \"" + versionFileURL + "\"", ex);
             return "invalid master version file URL \"" + versionFileURL + "\"";
         }
         catch (IOException ex)
         {
-            Log.error("Failed to load master version file from URL \"" + versionFileURL + "\"", ex);
+            Log.warn("Failed to load master version file from URL \"" + versionFileURL + "\"", ex);
             return "failed to load master version file from URL \"" + versionFileURL + "\"";
         }
         catch (JSONException ex)
         {
-            Log.error("Malformed JSON in remote version file at URL \"" + versionFileURL + "\"", ex);
+            Log.warn("Malformed JSON in remote version file at URL \"" + versionFileURL + "\"", ex);
             return "malformed JSON in remote version file at URL \"" + versionFileURL + "\"";
         }
     }
@@ -316,13 +316,13 @@ final class VersionChecker
                 }
                 catch (IOException ex)
                 {
-                    Log.error("Failed to load vanilla update data from URL \""
+                    Log.warn("Failed to load vanilla update data from URL \""
                             + VANILLA_UPDATE_URL + "\"", ex);
                     results.setFailedSSError(ex.getClass().getSimpleName());
                 }
                 catch (Exception ex)
                 {
-                    Log.error("Failed to parse vanilla update data from URL \""
+                    Log.warn("Failed to parse vanilla update data from URL \""
                             + VANILLA_UPDATE_URL + "\"", ex);
                     results.setFailedSSError(ex.getClass().getSimpleName());
                 }

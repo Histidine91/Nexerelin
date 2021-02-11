@@ -134,7 +134,7 @@ final class UpdateNotificationScript implements EveryFrameScript
             }
             catch (Exception ex)
             {
-                Log.error("Failed to retrieve mod update info", ex);
+                Log.warn("Failed to retrieve mod update info", ex);
                 ui.addMessage("Failed to retrieve mod update info!", Color.RED);
                 ui.addMessage("Check starsector.log for details.", Color.RED);
                 Global.getSector().removeTransientScript(this);
@@ -490,7 +490,7 @@ final class UpdateNotificationScript implements EveryFrameScript
                     }
                     catch (IOException ex)
                     {
-                        Log.error("Failed to launch browser: ", ex);
+                        Log.warn("Failed to launch browser: ", ex);
                         text.addParagraph("Failed to launch browser: "
                                 + ex.getMessage(), Color.RED);
                     }
@@ -505,7 +505,7 @@ final class UpdateNotificationScript implements EveryFrameScript
                     }
                     catch (IOException ex)
                     {
-                        Log.error("Failed to launch browser: ", ex);
+                        Log.warn("Failed to launch browser: ", ex);
                         text.addParagraph("Failed to launch browser: "
                                 + ex.getMessage(), Color.RED);
                     }
@@ -587,7 +587,7 @@ final class UpdateNotificationScript implements EveryFrameScript
             }
             catch (Exception ex)
             {
-                Log.error("Failed to launch browser: ", ex);
+                Log.warn("Failed to launch browser: ", ex);
                 text.addParagraph("Failed to launch browser: "
                         + ex.getMessage(), Color.RED);
             }
