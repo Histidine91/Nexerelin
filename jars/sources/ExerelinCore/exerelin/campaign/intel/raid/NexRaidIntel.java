@@ -78,44 +78,26 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		switch (nexIntelQueued) {
 
 			case 0:
-
 				addIntelIfNeeded();
 				break;
 
 			case 1:
-
 				if ((isPlayerTargeted() || playerSpawned || targetFaction == Misc.getCommissionFaction())) //TODO all intel has the problem of not updating without active comm relays and not queueing the update
 					addIntelIfNeeded();
-
 				else if (shouldDisplayIntel())
 					queueIntelIfNeeded();
-
-				else if (ExerelinModPlugin.isNexDev)
-				{
-					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
-							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-				}
 				break;
 
 			case 2:
-
 				if (playerSpawned)
 					addIntelIfNeeded();
-
 				else if (shouldDisplayIntel()) {
 					Global.getSector().getIntelManager().queueIntel(this);
 					intelQueuedOrAdded = true;
 				}
-
-				else if (ExerelinModPlugin.isNexDev)
-				{
-					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
-							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-				}
 				break;
 
 			default:
-
 				addIntelIfNeeded();
 				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in NexRaidIntel, " +
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
@@ -328,15 +310,6 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			return false;
 		
 		return true;
-	}
-
-	@Override
-	protected void notifyEnding() {
-		sendOutcomeUpdate();
-		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("notifyEnding() called in NexRaidIntel");
-		}
-		super.notifyEnding();
 	}
 
 	@Override

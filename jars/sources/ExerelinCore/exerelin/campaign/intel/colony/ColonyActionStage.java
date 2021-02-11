@@ -181,7 +181,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 					colonyFleetIntel.setOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
 					status = RaidStageStatus.FAILURE;
 				}
-				colonyFleetIntel.sendOutcomeUpdate();
+				//offFltIntel.sendOutcomeUpdate();	// don't send for failure, advanceImpl() handles that
 			}
 		}
 	}
@@ -266,7 +266,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			colonyFleetIntel.colonyOutcome = ColonyOutcome.SUCCESS;
 			colonyFleetIntel.setOutcome(OffensiveOutcome.SUCCESS);
 			status = RaidStageStatus.SUCCESS;
-			//colonyFleetIntel.sendOutcomeUpdate();	// auto-sent in notifyEnding()
+			colonyFleetIntel.sendOutcomeUpdate();
 		}
 		else {
 			Global.getLogger(this.getClass()).info("\tColonists invading target");
@@ -276,7 +276,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 				colonyFleetIntel.setOutcome(OffensiveOutcome.SUCCESS);
 				colonyFleetIntel.colonyOutcome = ColonyOutcome.INVADE_SUCCESS;
 				status = RaidStageStatus.SUCCESS;
-				//colonyFleetIntel.sendOutcomeUpdate();	// auto-sent in notifyEnding()
+				colonyFleetIntel.sendOutcomeUpdate();
 			}
 			else {
 				colonyFleetIntel.colonyOutcome = ColonyOutcome.INVADE_FAILED;
@@ -330,7 +330,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		{
 			status = RaidStageStatus.FAILURE;
 			colonyFleetIntel.setOutcome(OffensiveOutcome.FAIL);
-			colonyFleetIntel.sendOutcomeUpdate();
+			//offFltIntel.sendOutcomeUpdate();	// don't send for failure, advanceImpl() handles that
 		}
 	}
 	

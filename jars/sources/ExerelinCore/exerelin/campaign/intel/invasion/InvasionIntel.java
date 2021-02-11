@@ -114,44 +114,26 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		switch (nexIntelQueued) {
 
 			case 0:
-
 				addIntelIfNeeded();
 				break;
 
 			case 1:
-
 				if ((isPlayerTargeted() || playerSpawned || targetFaction == Misc.getCommissionFaction()) || faction == Misc.getCommissionFaction())
 					addIntelIfNeeded();
-
 				else if (shouldDisplayIntel())
 					queueIntelIfNeeded();
-
-				else if (ExerelinModPlugin.isNexDev)
-				{
-					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
-							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-				}
 				break;
 
 			case 2:
-
 				if (playerSpawned)
 					addIntelIfNeeded();
-
 				else if (shouldDisplayIntel()) {
 					Global.getSector().getIntelManager().queueIntel(this);
 					intelQueuedOrAdded = true;
 				}
-
-				else if (ExerelinModPlugin.isNexDev)
-				{
-					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
-							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-				}
 				break;
 
 			default:
-
 				addIntelIfNeeded();
 				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in InvasionIntel, " +
 					"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
@@ -537,7 +519,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	@Override
 	protected void notifyEnding() {
 		log.info("Invasion event ending");
-		sendOutcomeUpdate();
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("notifyEnding() called in InvasionIntel " + getName() + ", " + (getPlayerVisibleTimestamp() == null));
+		}
 		super.notifyEnding();
 		if (brawlDefIntel != null && brawlDefIntel.getOutcome() == null) {
 			log.info("Setting outcome for brawl defense, " + outcome.toString());

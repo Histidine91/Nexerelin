@@ -127,22 +127,17 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		addStage(new ColonyReturnStage(this));
 		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
-
 			case 0:
-
 			case 1:
-
 				addIntelIfNeeded();
 				break;
 
 			case 2:
-
 				Global.getSector().getIntelManager().queueIntel(this);
 				intelQueuedOrAdded = true;
 				break;
 
 			default:
-
 				addIntelIfNeeded();
 				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in ColonyExpeditionIntel, " +
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
@@ -497,7 +492,6 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	protected void notifyEnding() {
 		super.notifyEnding();
 		// failing at these stages suggests the colony fleet was destroyed
-		sendOutcomeUpdate();
 		if (getFailStage() == 2 || colonyOutcome == ColonyOutcome.INVADE_FAILED 
 				|| colonyOutcome == ColonyOutcome.FAIL) {
 			ColonyManager.getManager().incrementDeadExpeditions();

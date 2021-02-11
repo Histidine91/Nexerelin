@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.raid;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -208,5 +209,15 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 		}
 		
 		super.showStageInfo(info);
+		
+		int curr = intel.getCurrentStage();
+		int index = intel.getStageIndex(this);
+		if (status == RaidIntel.RaidStageStatus.ONGOING && curr == index) {
+			
+			if (Global.getSettings().isDevMode()) {
+				info.addPara("DEBUG: Raid ends in %s days", 10, Misc.getHighlightColor(), 
+						String.format("%.1f", maxDays - elapsed));
+			}
+		}
 	}
 }

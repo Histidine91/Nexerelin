@@ -55,30 +55,14 @@ public class BaseStrikeIntel extends NexRaidIntel {
 
 		addStage(new NexReturnStage(this));
 
-/*		if ((shouldDisplayIntel()) && (ExerelinConfig.nexIntelQueued >= 2))
-			queueIntelIfNeeded();
-
-		else if ((ExerelinConfig.nexIntelQueued <= 0) || (ExerelinConfig.nexIntelQueued == 1 && isPlayerTargeted()))
-			addIntelIfNeeded();
-
-		else if (ExerelinModPlugin.isNexDev)
-		{
-			Global.getSector().getCampaignUI().addMessage("Invasion intel from "
-					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-		} */
-
 		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
-		switch (nexIntelQueued){
-
+		switch (nexIntelQueued) {
 			case 0:
-
 				addIntelIfNeeded();
 				break;
 
 			case 1:
-
 			case 2:
-
 				if (playerSpawned)
 					addIntelIfNeeded();
 
@@ -86,16 +70,9 @@ public class BaseStrikeIntel extends NexRaidIntel {
 					Global.getSector().getIntelManager().queueIntel(this);
 					intelQueuedOrAdded = true;
 				}
-
-				else if (ExerelinModPlugin.isNexDev)
-				{
-					Global.getSector().getCampaignUI().addMessage("Base Strike intel from "
-							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-				}
 				break;
 
 			default:
-
 				addIntelIfNeeded();
 				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in BaseStrikeIntel, " +
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +

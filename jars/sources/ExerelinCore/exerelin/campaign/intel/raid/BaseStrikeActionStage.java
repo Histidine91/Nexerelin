@@ -25,7 +25,7 @@ public class BaseStrikeActionStage extends InvActionStage {
 			status = RaidIntel.RaidStageStatus.SUCCESS;
 			BaseStrikeIntel intel = (BaseStrikeIntel)this.intel;
 			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
-			//intel.sendOutcomeUpdate();	// auto-sent in notifyEnding()
+			intel.sendOutcomeUpdate();
 		}
 		
 		super.updateStatus();
@@ -94,7 +94,7 @@ public class BaseStrikeActionStage extends InvActionStage {
 		// base killed; we're done 
 		status = RaidIntel.RaidStageStatus.SUCCESS;
 		intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
-		//intel.sendOutcomeUpdate();	// auto-sent in notifyEnding()
+		intel.sendOutcomeUpdate();
 	}
 	
 	

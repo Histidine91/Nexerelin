@@ -24,6 +24,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -47,6 +48,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected OffensiveOutcome outcome;
 	protected boolean isRespawn = false;
 	protected boolean intelQueuedOrAdded;
+	protected boolean outcomeUpdateSent;
 	protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
 	protected float fp;
 	protected float baseFP;
@@ -178,6 +180,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
+		if (ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage("notifyRaidEnded() called for " + getName());
+		}
 		if (outcome == null) {
 			if (status == RaidStageStatus.SUCCESS)
 				outcome = OffensiveOutcome.SUCCESS;
@@ -195,15 +200,24 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public boolean shouldSendUpdate() {
-		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage(this.getName() + ": shouldSendUpdate() returning false");
-		}
-		return false;	// fuck off, we'll handle event ending notifications ourselves
+		// FIXME: super version always sends updates if player is targeted,
+		// maybe we should also make it obey NexIntelQueued level 2?
+		
+		if (this.outcome != null)
+			return true;
+		return super.shouldSendUpdate();
 	}
 
 	public void sendOutcomeUpdate() {
+		if (outcomeUpdateSent) {
+			if (ExerelinModPlugin.isNexDev) {
+				Global.getSector().getCampaignUI().addMessage("sendOutcomeUpdate() called twice for " + getName());
+			}
+			return;
+		}
 		addIntelIfNeeded();
 		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
+		outcomeUpdateSent = true;
 	}
 	
 	public void sendEnteredSystemUpdate() {
@@ -213,7 +227,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public void sendUpdateIfPlayerHasIntel(Object listInfoParam, boolean onlyIfImportant, boolean sendIfHidden) {
-		if (listInfoParam == UPDATE_RETURNING) {
+		if (listInfoParam == UPDATE_RETURNING && !(action instanceof NexRaidActionStage)) {
 			// we're using sendOutcomeUpdate() to send an end-of-event update instead
 			return;
 		}

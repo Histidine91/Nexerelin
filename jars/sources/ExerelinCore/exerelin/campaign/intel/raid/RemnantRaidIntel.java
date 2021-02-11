@@ -78,41 +78,22 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		switch (nexIntelQueued) {
 
 			case 0:
-
 				addIntelIfNeeded();
 				break;
-
 			case 1:
-
 				if ((isPlayerTargeted() || targetFaction == Misc.getCommissionFaction()))
 					addIntelIfNeeded();
-
 				else if (shouldDisplayIntel())
 					queueIntelIfNeeded();
-
-				else if (ExerelinModPlugin.isNexDev)
-				{
-					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
-							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-				}
 				break;
-
 			case 2:
-
 				if (shouldDisplayIntel()) {
 					Global.getSector().getIntelManager().queueIntel(this);
 					intelQueuedOrAdded = true;
 				}
-
-				else if (ExerelinModPlugin.isNexDev)
-				{
-					Global.getSector().getCampaignUI().addMessage("Invasion intel from "
-							+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
-				}
 				break;
 
 			default:
-
 				addIntelIfNeeded();
 				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in RemnantRaidIntel, " +
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +

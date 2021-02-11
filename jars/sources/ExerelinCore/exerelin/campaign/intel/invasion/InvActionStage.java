@@ -133,7 +133,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 					offFltIntel.setOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
 					status = RaidStageStatus.FAILURE;
 				}
-				offFltIntel.sendOutcomeUpdate();
+				//offFltIntel.sendOutcomeUpdate();	// don't send for failure, advanceImpl() handles that
 			}
 		}
 	}
