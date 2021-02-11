@@ -36,6 +36,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	protected boolean isPeace;
 	private boolean seenByPlayer = false;
 	private boolean shouldEndWhenSeen = false;
+	protected Long timestampActual = Global.getSector().getClock().getTimestamp();
 
 	public DiplomacyIntel(String eventId, String factionId1, String factionId2, MarketAPI market, ExerelinReputationAdjustmentResult reputation)
 	{
@@ -180,7 +181,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		addRelationshipChangePara(info, factionId1, factionId2, storedRelation, reputation, opad);
 		
 		// days ago
-		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
+		if (timestampActual != null)
+			info.addPara(Misc.getAgoStringForTimestamp(timestampActual) + ".", opad);
 		
 		// display current relationship
 		String currRel = NexUtilsReputation.getRelationStr(faction1, faction2);

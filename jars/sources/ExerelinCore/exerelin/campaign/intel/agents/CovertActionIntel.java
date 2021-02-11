@@ -71,6 +71,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	protected float daysRemaining;
 	protected Float injuryTime;
 	protected MarketAPI agentEscapeDest;
+	protected Long timestampActual;
 	
 	protected boolean started;
 	
@@ -387,6 +388,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 			agent.notifyActionCompleted();
 			rollInjury();			
 		}
+		
+		timestampActual = Global.getSector().getClock().getTimestamp();
 			
 		if (market != null) CovertOpsManager.modifyAlertLevel(market, getAlertLevelIncrease());
 		return result;
@@ -638,7 +641,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		
 		addImages(info, width, opad);
 		addMainDescPara(info, opad);
-		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
+		if (timestampActual != null) 
+			info.addPara(Misc.getAgoStringForTimestamp(timestampActual) + ".", opad);
 		
 		info.addSectionHeading(getString("intelResultHeader"), Alignment.MID, opad);
 		addResultPara(info, opad);
