@@ -89,13 +89,21 @@ public class SpecialForcesRouteAI {
 		return raids;
 	}
 	
+	// runcode exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.debugMercy();
+	public static void debugMercy() {
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(OffensiveFleetIntel.class)) {
+			OffensiveFleetIntel raid = (OffensiveFleetIntel)intel;
+			log.info(raid.getName() + ": " + shouldShowPlayerMercy(raid));
+		}
+	}
+	
 	/**
 	 * Cut player some slack early on: don't join raids against size 3-4 markets.
 	 * (except Starfarer mode)
 	 * @param raid
 	 * @return
 	 */
-	protected boolean shouldShowPlayerMercy(RaidIntel raid) {
+	public static boolean shouldShowPlayerMercy(RaidIntel raid) {
 		if (SectorManager.getHardMode()) return false;
 		
 		FactionAPI player = Global.getSector().getPlayerFaction();
@@ -133,14 +141,11 @@ public class SpecialForcesRouteAI {
 			if (raid instanceof BaseStrikeIntel) return false;
 			if (raid instanceof ColonyExpeditionIntel) return false;
 			if (((OffensiveFleetIntel)raid).getOutcome() != null) return false;
-			
-			return true;
 		}
 		else {	// probably a pirate raid
 			if (raid instanceof PunitiveExpeditionIntel) return false;
 		}
 		if (shouldShowPlayerMercy(raid)) return false;
-		
 		
 		return true;
 	}

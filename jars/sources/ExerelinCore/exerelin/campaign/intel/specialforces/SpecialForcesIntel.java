@@ -35,6 +35,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.PlayerFactionStore;
+import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.campaign.intel.specialforces.namer.SpecialForcesNamer;
@@ -104,6 +105,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		extra.factionId = faction.getId();
 		extra.fp = startingFP;
 		extra.fleetType = FLEET_TYPE;
+		extra.strength = getAdjustedStrength(startingFP, origin);
 		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
 		routeAI = new SpecialForcesRouteAI(this);
 		routeAI.addInitialTask();
