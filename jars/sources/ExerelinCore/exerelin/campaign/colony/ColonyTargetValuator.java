@@ -140,7 +140,7 @@ public class ColonyTargetValuator {
 		
 		if (ExerelinUtilsFaction.getSystemOwner(market.getContainingLocation()) == faction) 
 		{
-			score *= 10;
+			score *= 2;
 		}
 		
 		String distStr = String.format("%.1f", distanceLY);
