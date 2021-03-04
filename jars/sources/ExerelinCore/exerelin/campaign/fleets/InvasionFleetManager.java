@@ -577,7 +577,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					weight *= 80f;
 				}
 				else {
-					weight = 5f;
+					weight *= 5f;
 				}
 			} else if (revanchist) {
 				weight *= 5f;
