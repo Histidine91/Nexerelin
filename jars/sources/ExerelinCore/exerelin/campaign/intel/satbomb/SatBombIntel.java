@@ -131,9 +131,9 @@ public class SatBombIntel extends OffensiveFleetIntel {
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
-		float tanker = TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
+		float tanker = myFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
 		float transport = 0;
-		float freighter = myFP * (0.1f + random.nextFloat() * 0.05f);
+		float freighter = myFP * (0.2f + random.nextFloat() * 0.1f);
 		
 		// Prometheus is 12 FP and has 2500 fuel
 		// so estimate we need 12 FP of fuel for each point of ground defense the target has

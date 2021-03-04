@@ -87,7 +87,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		action.setAbortFP(fp * successMult);
 		addStage(action);
 		
-		waitStage = new InvWaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS, true);
+		// aggressive = false so invasion fleets stay orbiting the planet and only move if their buddies are under attack
+		waitStage = new InvWaitStage(this, target.getPrimaryEntity(), WAIT_AFTER_SUCCESS_DAYS, false);
 		addStage(waitStage);
 		
 		//addStage(new NexReturnStage(this));	// sending fleets home is handled by wait stage
@@ -317,9 +318,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		float combat = myFP;
 		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
-				+ TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
+				+ myFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
 		float transport = isInvasionFleet ? marinesPerFleet/100 : 0;
-		float freighter = myFP * (0.1f + random.nextFloat() * 0.05f);
+		float freighter = myFP * (0.2f + random.nextFloat() * 0.1f);
 		
 		if (isInvasionFleet) freighter *= 2;
 		

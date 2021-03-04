@@ -216,10 +216,10 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		
 		float combat = myFP;
 		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
-				+ TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
+				+ myFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
 		
 		float transport = 0;
-		float freighter = myFP * (0.1f + random.nextFloat() * 0.05f);
+		float freighter = myFP * (0.2f + random.nextFloat() * 0.1f);
 		
 		float totalFp = combat + tanker + transport + freighter;
 		

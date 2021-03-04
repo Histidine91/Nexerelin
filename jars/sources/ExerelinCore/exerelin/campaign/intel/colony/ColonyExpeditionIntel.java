@@ -305,10 +305,10 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		
 		float combat = myFP/2;
 		float tanker = myFP/2 * (0.1f + random.nextFloat() * 0.05f)
-				+ TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
+				+ myFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
 		float liner = isColonyFleet ? 25 : 0;
 		float transport = isColonyFleet ? 10: 0;
-		float freighter = 15 + myFP/2 * (0.1f + random.nextFloat() * 0.05f);
+		float freighter = 15 + myFP/2 * (0.2f + random.nextFloat() * 0.1f);
 		
 		float totalFp = combat + tanker + transport + liner + freighter;
 		
