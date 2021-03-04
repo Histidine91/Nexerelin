@@ -10,6 +10,7 @@
     
     "alignments":{
         "technocratic":-0.5,
+        "hierarchial":1,
         "militarist":1,
         "diplomatic":-0.5,
         "ideological":0.5,
@@ -21,6 +22,7 @@
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.PlanetNamer",
+    #"specialForcesFlagshipVariants":{ "paragon_Elite":1, "astral_Strike":0.5 },
     
     "startShipsSolo":[["lasher_Starting"]],
     "startShipsCombatSmall":[

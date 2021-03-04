@@ -187,6 +187,7 @@ public class Alliance
 		CORPORATE(new Color(32, 178, 170)),	// Light Sea Green
 		TECHNOCRATIC(Color.CYAN),
 		MILITARIST(Color.RED),
+		HIERARCHIAL(Color.MAGENTA),
 		DIPLOMATIC(Color.YELLOW),
 		IDEOLOGICAL(Color.GREEN);
 		

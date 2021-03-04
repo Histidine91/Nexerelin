@@ -10,6 +10,7 @@
     "difficultyString":"hard",
     
     "alignments":{
+        "hierarchial":-1,
         "ideological":0.5,
     },
     "diplomacyTraits":["neutralist", "anarchist"],

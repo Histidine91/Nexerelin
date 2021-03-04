@@ -156,6 +156,7 @@
 		"alignment":"alignment",
 		"alignment_corporate":"corporate",
 		"alignment_technocratic":"technocratic",
+		"alignment_hierarchial":"hierarchial",
 		"alignment_militarist":"militarist",
 		"alignment_diplomatic":"diplomatic",
 		"alignment_ideological":"ideological",

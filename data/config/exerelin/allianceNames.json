@@ -3,6 +3,7 @@
 	"namesByAlignment":{
 		"corporate": ["Consortium", "Conglomerate", "Industries", "Guild", "Trade Union"],
 		"technocratic": ["Research", "Academy", "Institute", "Engineering", "Laboratories", "Technologies", "Dynamics"],
+		"hierarchial":["Order", "Empire", "Dominion", "Authority", "Power"],
 		"militarist": ["Pact", "Alliance", "Empire", "Axis", "Dominion"],
 		"diplomatic": ["League", "Federation", "Confederacy", "Coalition", "Cooperative", "Union"],
 		"ideological": ["Brotherhood", "Clan", "Fellowship", "Sodality", "Order"],
@@ -11,8 +12,9 @@
 		"common": ["Northern", "Southern", "Eastern", "Western", "Central", "Stellar", "Interstellar", "Darkstar", "Solar", "Nebula", "Outland", "Far Reach", "Unified", "United", "Superior", "Integrated"],
 		"corporate": ["Advanced", "Consolidated", "Future", "Femtotech", "General"],
 		"technocratic": ["Advanced", "Consolidated", "Future", "Femtotech", "General"],
+		"hierarchial":["Iron", "Steel", "Titan", "United"],
 		"militarist": ["Dragon", "Fury", "Guardian", "Thunder", "Titan"],
-		"diplomatic": ["Freedom", "Phoenix"],
+		"diplomatic": ["Freedom", "Phoenix", "Liberty"],
 		"ideological": ["Dragon", "Phoenix", "Eternal", "Free", "Renaissance"]
 	},
 	

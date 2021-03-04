@@ -23,6 +23,7 @@
         "corporate":-1,
         "technocratic":-1,
         "diplomatic":-1,
+        "hierarchial":-0.5,
         "militarist":1,
         "ideological":1,
     },
