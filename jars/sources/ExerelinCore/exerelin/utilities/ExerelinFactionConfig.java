@@ -559,7 +559,9 @@ public class ExerelinFactionConfig
     
     public static boolean canCeasefire(String factionId1, String factionId2)
     {
-        if (DiplomacyManager.isRandomFactionRelationships()) return true;
+        // remove relationship bound clamp if both sides have random relations
+        if (DiplomacyManager.haveRandomRelationships(factionId1, factionId2)) return true;
+        
         if (getMaxRelationship(factionId1, factionId2) < -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;

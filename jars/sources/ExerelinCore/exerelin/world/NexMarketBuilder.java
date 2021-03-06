@@ -292,6 +292,9 @@ public class NexMarketBuilder
 	 */
 	public static int getMaxProductiveIndustries(ProcGenEntity ent)
 	{
+		// disallow going over industry limit when taking both Heavy Industry and Military Base upgrades
+		if (ent.isHQ && ent.entity.getFaction().isPlayerFaction()) return 1;
+		
 		int max = 4;
 		int size = ent.market.getSize();
 		if (size <= 4) max = 1;

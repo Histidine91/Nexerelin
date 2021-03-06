@@ -277,6 +277,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		FactionAPI tgtFaction = action.getTargetFaction();
 		String mktName = agentMarket != null ? agentMarket.getName() : getString("unknownLocation");
 		String factionName = Nex_FactionDirectoryHelper.getFactionDisplayName(mktFaction);
+		String other = thirdFaction != null ? thirdFaction.getId() : "";
 		Color factionColor = mktFaction.getBaseUIColor();
 		
 		String actionId = action.getDefId();
@@ -296,12 +297,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				addEffectPara(0, 100);
 				
 				// print max relationship if applicable
-				if (!DiplomacyManager.isRandomFactionRelationships()) 
+				if (other.equals(Factions.PLAYER))
+					other = PlayerFactionStore.getPlayerFactionId();
+				if (!DiplomacyManager.haveRandomRelationships(action.getTargetFaction().getId(), other)) 
 				{
-					String other = thirdFaction.getId();
-					if (other.equals(Factions.PLAYER))
-						other = PlayerFactionStore.getPlayerFactionId();
-					
 					float max = ExerelinFactionConfig.getMaxRelationship(action.getTargetFaction().getId(),	other);
 					if (max < 1) {
 						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
@@ -328,12 +327,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				addEffectPara(0, 100);
 				
 				// print min relationship if applicable
-				if (!DiplomacyManager.isRandomFactionRelationships()) 
+				if (other.equals(Factions.PLAYER))
+					other = PlayerFactionStore.getPlayerFactionId();
+				
+				if (!DiplomacyManager.haveRandomRelationships(action.getTargetFaction().getId(), other)) 
 				{
-					String other = thirdFaction.getId();
-					if (other.equals(Factions.PLAYER))
-						other = PlayerFactionStore.getPlayerFactionId();
-					
 					float min = ExerelinFactionConfig.getMinRelationship(action.getTargetFaction().getId(),
 							other);
 					if (min > -1) {

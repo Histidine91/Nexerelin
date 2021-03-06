@@ -88,9 +88,9 @@ public class NexUtilsReputation
 		// clamp to configs' min/max relationships
 		float deltaBase = delta;
 		boolean clamp = false;
-		if (!DiplomacyManager.isRandomFactionRelationships())
+		String myFactionId = PlayerFactionStore.getPlayerFactionId();
+		if (!DiplomacyManager.haveRandomRelationships(myFactionId, faction.getId()))
 		{
-			String myFactionId = PlayerFactionStore.getPlayerFactionId();
 			delta = getClampedRelationshipDelta(myFactionId, faction.getId(), delta);
 			clamp = deltaBase > 0 && delta < deltaBase || deltaBase < 0 && delta > deltaBase;
 		}

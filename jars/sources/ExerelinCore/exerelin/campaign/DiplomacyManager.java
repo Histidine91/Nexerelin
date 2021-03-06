@@ -1291,6 +1291,22 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
+    /**
+     * Do these two factions have randomized relationships with each other?
+     * @param factionId1
+     * @param factionId2
+     * @return False if random relations are disabled or either faction is set to non-randomized relations, true otherwise.
+     */
+    public static boolean haveRandomRelationships(String factionId1, String factionId2) 
+    {
+        if (!DiplomacyManager.isRandomFactionRelationships()) return false;
+        if (ExerelinConfig.getExerelinFactionConfig(factionId1).noRandomizeRelations) 
+            return false;
+        if (ExerelinConfig.getExerelinFactionConfig(factionId2).noRandomizeRelations) 
+            return false;
+        return true;
+    }
+    
     public static void setRandomFactionRelationships(boolean random, boolean pirate)
     {
         DiplomacyManager manager = getManager();

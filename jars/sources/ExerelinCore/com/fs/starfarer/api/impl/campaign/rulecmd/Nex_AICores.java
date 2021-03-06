@@ -118,9 +118,9 @@ public class Nex_AICores extends AICores {
 				panel.addPara(str, 	opad * 1f, Misc.getHighlightColor(),
 						Misc.getWithDGS(bounty) + Strings.C, "" + (int) repChange);
 				
-				if (!DiplomacyManager.isRandomFactionRelationships())
+				FactionAPI myFaction = PlayerFactionStore.getPlayerFaction();
+				if (!DiplomacyManager.haveRandomRelationships(faction.getId(), myFaction.getId()))
 				{
-					FactionAPI myFaction = PlayerFactionStore.getPlayerFaction();
 					String shortName = ExerelinUtilsFaction.getFactionShortName(faction);
 					float maxRep = ExerelinFactionConfig.getMaxRelationship(faction.getId(), myFaction.getId());
 					if (maxRep < 1)

@@ -300,7 +300,7 @@ public class AllianceVoter {
 		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		
 		// don't bother calculating vote if we like/hate them forever
-		if (!DiplomacyManager.isRandomFactionRelationships())
+		if (!DiplomacyManager.haveRandomRelationships(factionId, otherFactionId))
 		{
 			if (isWar)
 			{
@@ -409,7 +409,7 @@ public class AllianceVoter {
 		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		
 		// if we like/hate them forever, defy a vote that would require us to break this
-		if (!DiplomacyManager.isRandomFactionRelationships())
+		if (!DiplomacyManager.haveRandomRelationships(factionId, otherFactionId))
 		{
 			if (isWar)
 			{

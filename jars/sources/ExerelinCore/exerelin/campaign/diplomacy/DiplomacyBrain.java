@@ -403,7 +403,7 @@ public class DiplomacyBrain {
 		boolean isHardMode = isHardMode(factionId);
 		
 		float dispBase = ExerelinConfig.getExerelinFactionConfig(this.factionId).getDisposition(factionId);
-		if (!DiplomacyManager.isRandomFactionRelationships())
+		if (!DiplomacyManager.haveRandomRelationships(this.factionId, factionId))
 			disposition.modifyFlat("base", dispBase, "Base disposition");
 		//else
 		//	disposition.unmodify("base");
