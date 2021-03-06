@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
@@ -504,8 +505,6 @@ public class DiplomacyBrain {
 	{
 		FactionAPI enemy = Global.getSector().getFaction(enemyId);
 		// don't diplo with player if they're commissioned with someone else
-		if (enemy.isPlayerFaction() && enemy != PlayerFactionStore.getPlayerFaction())
-			return false;
 		
 		boolean enemyIsPlayer = Nex_IsFactionRuler.isRuler(enemyId);
 		float enemyWeariness = DiplomacyManager.getWarWeariness(enemyId, true);
@@ -603,6 +602,11 @@ public class DiplomacyBrain {
 		for (String enemyId : enemiesLocal)
 		{
 			if (factionsInvadingOrInvaded.contains(enemyId))
+				continue;
+			if (!ExerelinFactionConfig.canCeasefire(factionId, enemyId))
+				continue;
+			// don't diplomacy with a commissioned player
+			if (enemyId.equals(Factions.PLAYER) && Misc.getCommissionFaction() != null)
 				continue;
 			
 			boolean success = tryMakePeace(enemyId, ourWeariness);
