@@ -237,8 +237,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					market.isPlayerOwned() ? MessageClickAction.COLONY_INFO : MessageClickAction.NOTHING, 
 					market);
 		
-		buildIndustries(market);
-		processNPCConstruction(market);
+		if (!market.isPlayerOwned()) {
+			buildIndustries(market);
+			processNPCConstruction(market);
+		}
 	}
 	
 	/**
