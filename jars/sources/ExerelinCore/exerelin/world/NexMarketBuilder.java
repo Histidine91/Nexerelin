@@ -636,7 +636,8 @@ public class NexMarketBuilder
 			}
 			else {
 				market.addIndustry(Industries.HIGHCOMMAND);
-				String stationId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 2);
+				// best station faction has, if it has a tier 4 station use that
+				String stationId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 4);
 				if (stationId != null)
 					market.addIndustry(stationId);
 			}
