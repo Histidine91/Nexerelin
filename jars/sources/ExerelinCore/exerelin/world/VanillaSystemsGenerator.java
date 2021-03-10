@@ -245,22 +245,7 @@ public class VanillaSystemsGenerator {
 	protected static MarketAPI getMarket(String marketId) {
 		return Global.getSector().getEconomy().getMarket(marketId);
 	}
-	
-	/*
-		--agreus: ground def
-		--ancyra_market: farmland, farming
-		--tigra_city: ore, mining
-		--eventide: HT battlestation
-		--asher: mid orbital station, heavy batteries (replace ground def)
-		[nah] chalcedon: LT orbital station
-		--eldfell: ground def
-		[nah] athulf: ground def
-		[dunno] fikenhild: mid battlestation (replace mid orbital station) OR military base
-			maybe put the base on athulf instead
-				no, too much upkeep (see planet lore about it being a personal posession of the king that generates revenue)
-		-- volturn OR cruor: patrol HQ
-	*/
-	
+		
 	public static void enhanceVanillaMarkets() {
 		if (!ExerelinConfig.useEnhancedCoreWorlds || Global.getSettings().getModManager().isModEnabled("archeus"))
 			return;
@@ -284,6 +269,12 @@ public class VanillaSystemsGenerator {
 		MarketAPI culann = getMarket("culann");
 		culann.getIndustry(Industries.BATTLESTATION_HIGH).setAICoreId("alpha_core");
 		culann.getIndustry(Industries.MILITARYBASE).setAICoreId("alpha_core");
+		
+		MarketAPI derinkuyu = getMarket("derinkuyu_market");
+		derinkuyu.addCondition(Conditions.ORE_SPARSE);
+		derinkuyu.getCondition(Conditions.ORE_SPARSE).setSurveyed(true);
+		derinkuyu.addCondition(Conditions.RARE_ORE_SPARSE);
+		derinkuyu.getCondition(Conditions.RARE_ORE_SPARSE).setSurveyed(true);
 		
 		MarketAPI eldfell = getMarket("eldfell");
 		eldfell.addIndustry(Industries.GROUNDDEFENSES);
