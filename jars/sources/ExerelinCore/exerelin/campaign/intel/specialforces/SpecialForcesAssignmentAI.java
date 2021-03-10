@@ -123,12 +123,12 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			case RAID:
 			case ASSIST_RAID:
 				return StringHelper.getFleetAssignmentString("attackingAroundStarSystem", 
-						fleet.getContainingLocation().getName());
+						fleet.getContainingLocation().getNameWithLowercaseType());
 			case DEFEND_RAID:
 			case PATROL:
 			case DEFEND_VS_PLAYER:
 				return StringHelper.getFleetAssignmentString("patrollingStarSystem", 
-						fleet.getContainingLocation().getName());
+						fleet.getContainingLocation().getNameWithLowercaseType());
 			case REBUILD:
 				return StringHelper.getFleetAssignmentString("reconstituting", 
 						task.market.getName());
