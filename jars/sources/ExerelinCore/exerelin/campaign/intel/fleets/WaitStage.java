@@ -16,6 +16,8 @@ import exerelin.utilities.StringHelper;
 import java.util.List;
 
 public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
+		
+	public static final String ROUTE_CUSTOM_NO_WANDER = "noWander";
 	
 	protected OffensiveFleetIntel offFltIntel;
 	protected SectorEntityToken token;
@@ -53,9 +55,9 @@ public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
 		List<RouteManager.RouteData> routes = RouteManager.getInstance().getRoutesForSource(intel.getRouteSourceId());
 		for (RouteManager.RouteData route : routes) {
 			route.addSegment(new RouteManager.RouteSegment(0.1f, token, 
-					aggressive ? null : AssembleStage.WAIT_STAGE));
+					aggressive ? null : ROUTE_CUSTOM_NO_WANDER));
 			route.addSegment(new RouteManager.RouteSegment(time, token, 
-					aggressive ? null : AssembleStage.WAIT_STAGE));
+					aggressive ? null : ROUTE_CUSTOM_NO_WANDER));
 			
 			// update fleet delegate
 			CampaignFleetAPI fleet = route.getActiveFleet();
@@ -123,6 +125,6 @@ public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
 	
 	protected String getCommonActionText() {
 		if (aggressive) return StringHelper.getFleetAssignmentString("defending", token.getName());
-		return StringHelper.getFleetAssignmentString("rendezvous", null);
+		return StringHelper.getFleetAssignmentString("orbiting", token.getName());
 	}
 }

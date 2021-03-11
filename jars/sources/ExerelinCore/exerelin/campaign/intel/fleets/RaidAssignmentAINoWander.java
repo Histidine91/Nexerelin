@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
@@ -14,11 +15,14 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import static exerelin.campaign.intel.invasion.InvActionStage.MEM_KEY_INVASION_ATTEMPTED;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 
 // vanilla, but replaces some assignment types and hacks addLocalAssignment to keep fleets from wandering off
@@ -26,8 +30,17 @@ import org.lazywizard.lazylib.MathUtils;
 // Used for invasion and sat bomb fleets
 public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	
+	protected transient IntervalUtil assistCheckInterval = new IntervalUtil(0.15f, 0.15f);
+	
 	public RaidAssignmentAINoWander(CampaignFleetAPI fleet, RouteData route, FleetActionDelegate delegate) {
 		super(fleet, route, delegate);
+	}
+	
+	protected Object readResolve() {
+		if (assistCheckInterval == null) {
+			assistCheckInterval = new IntervalUtil(0.15f, 0.15f);
+		}
+		return this;
 	}
 	
 	protected boolean allowWander() {
@@ -35,6 +48,24 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 			return ((WaitStage)delegate).isAggressive();
 		}
 		return false;
+	}
+	
+	@Override
+	public void advance(float amount) {
+		super.advance(amount);
+		
+		assistCheckInterval.advance(amount);
+		if (assistCheckInterval.intervalElapsed()) {
+			//fleet.addFloatingText("Checking assist", fleet.getFaction().getBaseUIColor(), 2);
+			CampaignFleetAPI nearbyToHelp = getNearbyNeedsAssist();
+			if (nearbyToHelp != null) {
+				fleet.addAssignmentAtStart(FleetAssignment.INTERCEPT, nearbyToHelp, 1, 
+						StringHelper.getFleetAssignmentString("assisting", nearbyToHelp.getName().toLowerCase()), 
+						null);
+				setTempAssignment();
+				return;
+			}
+		}
 	}
 	
 	@Override
@@ -48,6 +79,15 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 			float progress = current.getProgress();
 			RouteLocationCalculator.setLocation(fleet, progress, 
 									current.from, current.getDestination());
+		}
+		
+		// used for invasion fleets hanging around market after capturing it
+		if (current.custom.equals(WaitStage.ROUTE_CUSTOM_NO_WANDER)) {
+			
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from, 
+					current.daysMax - current.elapsed, getInSystemActionText(current),
+					goNextScript(current));
+			return;
 		}
 		
 		// This occurs when e.g. dropping into a system and causing the raid fleets to materialize around the target
@@ -122,10 +162,20 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	}
 	
 	protected CampaignFleetAPI getNearbyNeedsAssist() {
+		if (fleet.getBattle() != null) return null;	// already in our own battle
+		if (fleet.getAI().getCurrentAssignmentType() == FleetAssignment.INTERCEPT) return null;	// already assisting?
 		for (CampaignFleetAPI otherFleet : Misc.getNearbyFleets(fleet, 500)) 
 		{
 			if (otherFleet == fleet) continue;
-			if (otherFleet.getFaction() == fleet.getFaction() && otherFleet.getBattle() != null) {
+			if (otherFleet.getFaction() != fleet.getFaction()) continue;
+			BattleAPI otherBattle = otherFleet.getBattle();
+			if (otherBattle != null) {
+				boolean aiWantAssist = fleet.getAI().wantsToJoin(otherBattle, otherBattle.isPlayerInvolved());
+				if (!aiWantAssist) {
+					//fleet.addFloatingText("No assistance wanted", fleet.getFaction().getBaseUIColor(), 1);
+					continue;
+				}
+				
 				return otherFleet;
 			}
 		}
