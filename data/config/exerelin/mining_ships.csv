@@ -1,11 +1,2 @@
 id,strength,hidden
-mining_drone,0.5,
-drone_borer,0,TRUE
-crig,4,
-SCY_telchine,32,
-brdy_gonodactylus,25,
-mi_rastrum,6,
-junk_pirates_the_reaper,160,
-maqiubiqiu,4,
-diableavionics_laminar,5,
-ms_dromedary_drone,2,
+#deprecated; use modSettings.json instead,,

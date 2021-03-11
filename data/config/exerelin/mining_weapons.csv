@@ -1,6 +1,2 @@
 id,strength,hidden
-miningblaster,10,
-mininglaser,1.5,
-hammer,1.5,
-hammerrack,20,
-hammer_single,0.75,
+#deprecated; use modSettings.json instead,,

@@ -33,6 +33,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -195,6 +196,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			industryDetectionMods.put(industryId, (float)indDetect.getDouble(industryId));
 		}
 		
+		// load ship stealing config
+		// legacy CSV method
 		JSONArray stealShipJson = Global.getSettings().getMergedSpreadsheetDataForMod("hull id", 
 				CONFIG_FILE_STEALSHIP, ExerelinConstants.MOD_ID);
 		for (int i=0; i<stealShipJson.length(); i++) {
@@ -203,6 +206,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			if (hullId == null || hullId.isEmpty()) continue;
 			float costMult = (float)row.getDouble("cost mult");
 			stealShipCostMults.put(hullId, costMult);
+		}
+		// modconfig method
+		Map<String, Float> stealMults = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "agent_steal_ship_mults");
+		for (String hullId : stealMults.keySet()) {
+			float mult = stealMults.get(hullId);
+			stealMults.put(hullId, mult);
 		}
     }
 	

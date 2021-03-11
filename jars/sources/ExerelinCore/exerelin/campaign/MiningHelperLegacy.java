@@ -36,6 +36,7 @@ import com.fs.starfarer.api.loading.HullModSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.StringHelper;
@@ -145,11 +146,9 @@ public class MiningHelperLegacy {
 			planetExhaustionMult = (float)config.optDouble("planetExhaustionMult", planetExhaustionMult);
 			planetRenewMult = (float)config.optDouble("planetRenewMult", planetRenewMult);
 			
-			// use Nex directory files as fallback
-			//loadMiningShips(MINING_SHIP_DEFS_NEX);
-			//loadMiningWeapons(MINING_WEAPON_DEFS_NEX);
-			loadMiningShips(MINING_SHIP_DEFS);
-			loadMiningWeapons(MINING_WEAPON_DEFS);
+			loadMiningShips();
+			loadMiningWeapons();
+			loadHiddenTools();
 			
 			JSONArray resourcesCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", RESOURCE_DEFS, ExerelinConstants.MOD_ID);
 			for(int x = 0; x < resourcesCsv.length(); x++)
@@ -183,10 +182,12 @@ public class MiningHelperLegacy {
 		accidentPicker.add(AccidentType.MACHINERY_LOSS, 2f);
 	}
 	
-	public static void loadMiningShips(String path)
+	public static void loadMiningShips()
 	{
+		// Legacy CSV system
 		try {
-			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, ExerelinConstants.MOD_ID);
+			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod(
+					"id", MINING_SHIP_DEFS, ExerelinConstants.MOD_ID);
 			for(int x = 0; x < miningShipsCsv.length(); x++)
 			{
 				String shipId = "<unknown>";
@@ -209,12 +210,21 @@ public class MiningHelperLegacy {
 		} catch (RuntimeException rex) {
 			// file not found, do nothing
 		}
+		
+		// new MagicLib system
+		Map<String, Float> strengths = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "mining_ship_strengths");
+		for (String shipId : strengths.keySet()) {
+			float str = strengths.get(shipId);
+			miningShips.put(shipId, str);
+		}
 	}
 	
-	public static void loadMiningWeapons(String path)
+	public static void loadMiningWeapons()
 	{
+		// Legacy CSV system
 		try {
-			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, ExerelinConstants.MOD_ID);
+			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod(
+					"id", MINING_WEAPON_DEFS, ExerelinConstants.MOD_ID);
 			for(int x = 0; x < miningWeaponsCsv.length(); x++)
 			{
 				String weaponId = "<unknown>";
@@ -237,6 +247,18 @@ public class MiningHelperLegacy {
 		} catch (RuntimeException rex) {
 			// file not found, do nothing
 		}
+		
+		// new MagicLib system
+		Map<String, Float> strengths = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "mining_weapon_strengths");
+		for (String weaponId : strengths.keySet()) {
+			float str = strengths.get(weaponId);
+			miningWeapons.put(weaponId, str);
+		}
+	}
+	
+	public static void loadHiddenTools() {
+		List<String> hidden = MagicSettings.getList(ExerelinConstants.MOD_ID, "mining_hidden_ships_and_weapons");
+		hiddenTools.addAll(hidden);
 	}
 		
 	public static void initCacheDefs()
