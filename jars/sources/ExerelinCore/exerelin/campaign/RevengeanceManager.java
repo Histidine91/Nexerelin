@@ -369,7 +369,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		if (satBomb) {
 			type = InvasionFleetManager.EventType.SAT_BOMB;
 		}
-		else if (!ExerelinConfig.enableInvasions) {
+		else if (!ExerelinConfig.enableInvasions || !ExerelinConfig.getExerelinFactionConfig(revengeFactionId).canInvade) 
+		{
 			type = InvasionFleetManager.EventType.RAID;
 		}
 			

@@ -106,6 +106,7 @@ public class ExerelinFactionConfig
     public List<BonusSeed> bonusSeeds = new ArrayList<>();
     
     // invasions and stuff
+    public boolean canInvade = true;
     public float invasionStrengthBonusAttack = 0;	// marines
     public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;	// ships
@@ -216,6 +217,7 @@ public class ExerelinFactionConfig
             marketSpawnWeight = (float)settings.optDouble("marketSpawnWeight", marketSpawnWeight);
             tariffMult = (float)settings.optDouble("tariffMult", tariffMult);
             
+			canInvade = settings.optBoolean("canInvade", canInvade);
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
