@@ -1315,6 +1315,7 @@
 		"entryDescRecovered":"Ship recovered: had %s D-mods, now has %s",
 		"entryDescNewDHull":"New (D) hull: paying %s of base value",
 		"entryDescMoreDMods":"D-mod count increased: paying %s of base value",
+		"entryDescFraud":"Fraud suspected; payment witheld",
 	},
 	
 	"nex_militaryOptions":{

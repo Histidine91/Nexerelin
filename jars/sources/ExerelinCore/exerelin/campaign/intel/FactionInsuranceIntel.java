@@ -41,7 +41,6 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	public static final float COMPENSATION_PER_DMOD = 0.2f;
 	public static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
 	
-	protected Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers;
 	protected List<InsuranceItem> items = new ArrayList<>();
 	protected boolean paid = true;
 	protected float paidAmount = 0f;
@@ -54,7 +53,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			return;
 		}
 		
-		this.disabledOrDestroyedMembers = disabledOrDestroyedMembers;
+		if (deadOfficers == null) deadOfficers = new ArrayList<>();
 		paidAmount = calculatePayout(deadOfficers, disabledOrDestroyedMembers);
 		
 		// mostly for Galatian stipend insurance; commission will be terminated if you get to Suspicious
@@ -64,7 +63,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		}
 
 		log.debug("Amount: " + paidAmount);
-		if (paidAmount > 0) {
+		if (!disabledOrDestroyedMembers.isEmpty() || !deadOfficers.isEmpty()) {
 			if (paid)
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(paidAmount);
 			
@@ -89,6 +88,9 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		if (Global.getSector().getMemoryWithoutUpdate().contains("$tutStage"))	{
 			return false;
 		}
+		
+		if (ExerelinConfig.playerInsuranceMult <= 0)
+			return false;
 
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		// no self-insurance, but can have insurance from Galatian stipend
@@ -123,25 +125,42 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		List<FleetMemberAPI> fleetCurrent = playerFleet.getFleetData().getMembersListCopy();
 		for (FleetMemberAPI member : playerFleet.getFleetData().getSnapshot()) 
 		{
+			Integer[] entry = disabledOrDestroyedMembers.get(member);
+			if (entry == null) continue;
+			
 			float amount = 0;
+			float cr = entry[2]/100;
+			float crMult = 1;
+			if (Global.getSettings().getBoolean("nex_insuranceFraudCheck")) 
+			{
+				if (cr < 0.2f && !member.getRepairTracker().isMothballed() && !member.getRepairTracker().isCrashMothballed()) 
+				{
+					crMult = 0;	// cr/0.4f;
+				}
+				else if (cr < 0.5f) {
+					//crMult = cr/0.5f;
+				}
+			}			
 			
 			// dead, not recovered
 			if (!fleetCurrent.contains(member)) {
 				amount = member.getBaseValue();
 				if (disabledOrDestroyedMembers.containsKey(member)) {
-					Integer[] entry = disabledOrDestroyedMembers.get(member);
 					amount = entry[0];
 				}
 				amount *= mult;
-				
 				String text = getString("entryDescLost");
+				
+				if (crMult < 1) {
+					text += "\n" + getString("entryDescFraud");
+					amount *= crMult;
+				}
+				
 				InsuranceItem item = new InsuranceItem(member, amount, text);
 				items.add(item);
-				totalPayment += amount;
 			}
 			// dead, recovered
-			else if (disabledOrDestroyedMembers.containsKey(member)) {
-				Integer[] entry = disabledOrDestroyedMembers.get(member);
+			else {
 				float prevValue = entry[0];
 				int dmodsOld = (int)entry[1];
 				int dmods = countDMods(member);
@@ -175,12 +194,18 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 				}
 				
 				amount *= mult;
-				totalPayment += amount;
+				
+				if (crMult < 1) {
+					text += "\n" + getString("entryDescFraud");
+					amount *= crMult;
+				}
 				
 				InsuranceItem item = new InsuranceItem(member, amount, text);
 				item.highlights.addAll(highlights);
 				items.add(item);
 			}
+			
+			totalPayment += amount;
 		}
 		if (deadOfficers != null) {
 			for (OfficerDataAPI deadOfficer : deadOfficers) {
@@ -309,8 +334,10 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			TooltipMakerAPI entry = itemPanel.createUIElement(width - IMAGE_WIDTH - IMAGE_DESC_GAP,
 					ENTRY_HEIGHT, true);
 			entry.addPara(item.member.getShipName(), h, 0);
-			String payout = Misc.getDGSCredits(item.payment);
-			entry.addPara(getString("entryDescAmount"), pad, h, payout);
+			if (item.payment > 0) {
+				String payout = Misc.getDGSCredits(item.payment);
+				entry.addPara(getString("entryDescAmount"), pad, h, payout);
+			}
 
 			LabelAPI desc = entry.addPara(item.desc, pad);
 			desc.setHighlight(item.highlights.toArray(new String[0]));
@@ -353,6 +380,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	public static class InsuranceItem {
 		
 		public FleetMemberAPI member;
+		public OfficerDataAPI officer;
 		public float payment;
 		public String desc;
 		public List<String> highlights = new ArrayList<>();

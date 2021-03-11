@@ -43,6 +43,8 @@
 	"nex_officerBaseEscapeChance":0.5,	# modified by crew loss mult
 	"nex_officerSurviveChance":0.75,	# only if officer does not escape and ship is disabled rather than destroyed
 	
+	"nex_insuranceFraudCheck":true,
+	
 	"nex_playerOutpost_metals":400,
 	"nex_playerOutpost_supplies":75,
 	"nex_playerOutpost_machinery":50,
