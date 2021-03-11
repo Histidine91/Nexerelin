@@ -1565,6 +1565,13 @@ OR
 OR
 ""This salvage does not belong to you. You'll have to fight us for it.""",cutCommLink:Cut the comm link,
 ,,,,,,
+marketOpenNotOriginalOwner,OpenInteractionDialog,"$hasMarket
+$market.startingFactionId != null
+$faction.id != $market.startingFactionId","ShowDefaultVisual
+Nex_PrintOriginalOwner
+PrintDescription 3
+FireBest MarketPostOpen",Your $shipOrFleet approaches $entityName.,,
+,,,,,,
 ,,,,,,
 # Vanilla overrides,,,,,,
 sal_printDefaultDefenders,TriggerAutomatedDefenses,,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, new energy signatures are detected near the $shortName.",,

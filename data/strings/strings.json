@@ -1143,6 +1143,8 @@
 		"storageFreeTooltip":"$market is under your control, and there are no storage fees or expenses.",
 		
 		"templarControl":"Templar control",
+		
+		"originalOwner":"Originally held by %s",
 	},
 	"exerelin_marketConditions":{
 		"marketAttacked":"Market attacked",
