@@ -56,7 +56,8 @@ public class FleetDiversity extends UNGP_BaseRuleEffect implements UNGP_PlayerFl
 		for (FleetMemberAPI member : members) {
 			String buffId = rule.getBuffID();
 			
-            int count = counts.get(member.getHullSpec().getBaseHullId());
+            Integer count = counts.get(member.getHullSpec().getBaseHullId());
+			if (count == null) count = 0;
 			if (count <= 1) {
 				member.getBuffManager().removeBuff(buffId);
 				continue;
