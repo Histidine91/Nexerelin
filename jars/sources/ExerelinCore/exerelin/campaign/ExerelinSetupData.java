@@ -27,6 +27,7 @@ public class ExerelinSetupData
 	public int numStations = 12;
 	public int maxPlanetsPerSystem = 3;
 	public int maxMarketsPerSystem = 4;	// includes stations
+	public int randomColonies = 0;
 	public Map<String, Boolean> factions = new HashMap<>();
 
 	// Game defaults

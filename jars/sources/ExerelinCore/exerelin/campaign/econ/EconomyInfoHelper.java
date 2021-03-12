@@ -42,9 +42,10 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
-	 * Creates and stores an instance of the economy info helper. Should be called on every game load.
+	 * Creates and stores an instance of the economy info helper.Should be called on every game load.
+	 * @return 
 	 */
-	public static void createInstance() {
+	public static EconomyInfoHelper createInstance() {
 		if (currInstance != null) {
 			Global.getSector().getListenerManager().removeListener(currInstance);
 		}
@@ -52,6 +53,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		Global.getSector().getListenerManager().addListener(currInstance, true);
 		
 		currInstance.collectEconomicData(true);
+		return currInstance;
 	}
 	
 	public static EconomyInfoHelper getInstance() {

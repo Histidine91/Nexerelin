@@ -121,6 +121,10 @@
 	"nex_randomSector_maxSystems":48,
 	"nex_randomSector_maxPlanets":80,
 	"nex_randomSector_maxStations":80,
+	# pushes everything this far away from a specified sector center (_not_ [0, 0]).
+	# not really recommended, likely to mess with the generation in undesirable ways if significant values are used
+	"nex_expandCoreLength":0,
+	"nex_expandCoreMult":1,
 	
 	"nex_factionSetupNumFont":"graphics/fonts/insignia21LTaa.fnt",
 	

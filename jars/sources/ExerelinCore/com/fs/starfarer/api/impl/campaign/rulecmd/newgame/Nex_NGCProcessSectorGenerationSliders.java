@@ -46,45 +46,56 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 	protected void createSliders(OptionPanelAPI opts)
 	{
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
-		int maxSystems = Global.getSettings().getInt("nex_randomSector_maxSystems");
-		int maxPlanets = Global.getSettings().getInt("nex_randomSector_maxPlanets");
-		int maxStations = Global.getSettings().getInt("nex_randomSector_maxStations");
 		
-		opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector", 
-				Color.YELLOW, BAR_WIDTH, 48, 4, maxSystems, ValueDisplayMode.VALUE, 
-				getString("populatedSystemsTooltip"));
-		opts.setSelectorValue("systemCountSelector", data.numSystems);
-		
-		opts.addSelector(getString("populatedPlanetsTitle"), "planetCountSelector", 
-				Color.GREEN, BAR_WIDTH, 48, 8, maxPlanets, ValueDisplayMode.VALUE, 
-				getString("populatedPlanetsTooltip"));
-		opts.setSelectorValue("planetCountSelector", data.numPlanets);
-		
-		opts.addSelector(getString("stationsTitle"), "stationCountSelector", 
-				Color.GRAY, BAR_WIDTH, 48, 4, maxStations, ValueDisplayMode.VALUE, 
-				getString("stationsTooltip"));
-		opts.setSelectorValue("stationCountSelector", data.numStations);
-		
-		opts.addSelector(getString("maxPlanetsTitle"), "planetMaxSelector", Color.CYAN, BAR_WIDTH, 48, 1, 5, ValueDisplayMode.VALUE, null);
-		opts.setSelectorValue("planetMaxSelector", data.maxPlanetsPerSystem);
-		
-		opts.addSelector(getString("maxMarketsTitle"), "marketMaxSelector", Color.orange, BAR_WIDTH, 48, 1, 8, ValueDisplayMode.VALUE, null);
-		opts.setSelectorValue("marketMaxSelector", data.maxMarketsPerSystem);
-		
-		opts.addOption(StringHelper.getString("reset", true), "exerelinNGCSectorOptionsReset");
+		if (!data.corvusMode) {
+			int maxSystems = Global.getSettings().getInt("nex_randomSector_maxSystems");
+			int maxPlanets = Global.getSettings().getInt("nex_randomSector_maxPlanets");
+			int maxStations = Global.getSettings().getInt("nex_randomSector_maxStations");
+
+			opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector", 
+					Color.YELLOW, BAR_WIDTH, 48, 4, maxSystems, ValueDisplayMode.VALUE, 
+					getString("populatedSystemsTooltip"));
+			opts.setSelectorValue("systemCountSelector", data.numSystems);
+
+			opts.addSelector(getString("populatedPlanetsTitle"), "planetCountSelector", 
+					Color.GREEN, BAR_WIDTH, 48, 8, maxPlanets, ValueDisplayMode.VALUE, 
+					getString("populatedPlanetsTooltip"));
+			opts.setSelectorValue("planetCountSelector", data.numPlanets);
+
+			opts.addSelector(getString("stationsTitle"), "stationCountSelector", 
+					Color.GRAY, BAR_WIDTH, 48, 4, maxStations, ValueDisplayMode.VALUE, 
+					getString("stationsTooltip"));
+			opts.setSelectorValue("stationCountSelector", data.numStations);
+
+			opts.addSelector(getString("maxPlanetsTitle"), "planetMaxSelector", Color.CYAN, BAR_WIDTH, 48, 1, 5, ValueDisplayMode.VALUE, null);
+			opts.setSelectorValue("planetMaxSelector", data.maxPlanetsPerSystem);
+
+			opts.addSelector(getString("maxMarketsTitle"), "marketMaxSelector", Color.orange, BAR_WIDTH, 48, 1, 8, ValueDisplayMode.VALUE, null);
+			opts.setSelectorValue("marketMaxSelector", data.maxMarketsPerSystem);
+
+			opts.addOption(StringHelper.getString("reset", true), "exerelinNGCSectorOptionsReset");
+		}
+		else {
+			opts.addSelector(getString("randomColoniesTitle"), "randomColoniesSelector", 
+					Color.YELLOW, BAR_WIDTH, 48, 0, 50, ValueDisplayMode.VALUE, 
+					getString("randomColoniesTooltip"));
+			opts.setSelectorValue("randomColoniesSelector", data.randomColonies);
+		}
 	}
 	
 	protected void saveValues(OptionPanelAPI opts)
 	{
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
-		if (data.corvusMode) return;
-		
-		data.numSystems = Math.round(opts.getSelectorValue("systemCountSelector"));
-		data.numPlanets = Math.round(opts.getSelectorValue("planetCountSelector"));
-		data.numStations = Math.round(opts.getSelectorValue("stationCountSelector"));
-		data.maxPlanetsPerSystem = Math.round(opts.getSelectorValue("planetMaxSelector"));
-		data.maxMarketsPerSystem = Math.round(opts.getSelectorValue("marketMaxSelector"));
+		if (data.corvusMode) {
+			data.randomColonies = Math.round(opts.getSelectorValue("randomColoniesSelector"));
+		} else {
+			data.numSystems = Math.round(opts.getSelectorValue("systemCountSelector"));
+			data.numPlanets = Math.round(opts.getSelectorValue("planetCountSelector"));
+			data.numStations = Math.round(opts.getSelectorValue("stationCountSelector"));
+			data.maxPlanetsPerSystem = Math.round(opts.getSelectorValue("planetMaxSelector"));
+			data.maxMarketsPerSystem = Math.round(opts.getSelectorValue("marketMaxSelector"));
+		}
 	}
 	
 	protected void resetValues() {

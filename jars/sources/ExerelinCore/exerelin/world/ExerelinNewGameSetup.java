@@ -238,7 +238,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		clearDeepHyper(system.getHyperspaceAnchor(), 350);
 	}
 	
-	protected void clearDeepHyper(SectorEntityToken entity, float radius) {
+	public static void clearDeepHyper(SectorEntityToken entity, float radius) {
 		// deep hyperspace removal (copypasted from UW)
 		HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
 		NebulaEditor editor = new NebulaEditor(plugin);

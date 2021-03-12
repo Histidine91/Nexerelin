@@ -52,6 +52,8 @@ public class ColonyTargetValuator {
 	
 	protected static Logger log = Global.getLogger(ColonyTargetValuator.class);
 	
+	protected boolean silent = false;
+	
 	static {
 		try {
 			loadSettings();
@@ -103,11 +105,16 @@ public class ColonyTargetValuator {
 	
 	public void initForFaction(String factionId) {
 		EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
+		if (helper == null) helper = EconomyInfoHelper.createInstance();
 		oreProduction = helper.getFactionCommodityProduction(factionId, Commodities.ORE);
 		rareOreProduction = helper.getFactionCommodityProduction(factionId, Commodities.RARE_ORE);
 		organicsProduction = helper.getFactionCommodityProduction(factionId, Commodities.ORGANICS);
 		volatilesProduction = helper.getFactionCommodityProduction(factionId, Commodities.VOLATILES);
 		foodProduction = helper.getFactionCommodityProduction(factionId, Commodities.FOOD);
+	}
+	
+	public void setSilent(boolean silent) {
+		this.silent = silent;
 	}
 	
 	public float evaluatePlanet(MarketAPI market, float distanceLY, FactionAPI faction) {
@@ -143,13 +150,16 @@ public class ColonyTargetValuator {
 			score *= 2;
 		}
 		
-		String distStr = String.format("%.1f", distanceLY);
-		String scoreStr = String.format("%.2f", score);
+		if (!silent) {
+			String distStr = String.format("%.1f", distanceLY);
+			String scoreStr = String.format("%.2f", score);
+
+			log.info("Planet " + market.getName() + " (hazard " + hazard + ") in " 
+					+ market.getStarSystem().getNameWithLowercaseType() + " (dist " 
+					+ distStr + ") has score " + scoreStr);
+			log.info("\t" + StringHelper.writeStringCollection(conds, false, true));
+		}
 		
-		log.info("Planet " + market.getName() + " (hazard " + hazard + ") in " 
-				+ market.getStarSystem().getNameWithLowercaseType() + " (dist " 
-				+ distStr + ") has score " + scoreStr);
-		log.info("\t" + StringHelper.writeStringCollection(conds, false, true));
 		
 		return score;
 	}

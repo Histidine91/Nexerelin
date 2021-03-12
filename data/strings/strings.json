@@ -1227,6 +1227,8 @@
 		"stationsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
 		"maxPlanetsTitle":"Maximum inhabited planets per system",
 		"maxMarketsTitle":"Maximum inhabited planets + stations per system",
+		"randomColoniesTitle":"Extra colonies at start",
+		"randomColoniesTooltip":"Follows the same selection rules as midgame colony expeditions.",
 		"randomizeFactionsTooltip":"Every faction has a 50% chance to be enabled (except independents, which will not be toggled from their current setting).",
 		
 		"recommendedSizeMsg1":"Non-independent factions enabled: %s",

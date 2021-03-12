@@ -605,8 +605,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return 0;
 	}
 	
-	protected String pickFactionToColonize() {
-		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+	protected String pickFactionToColonize(Random random) 
+	{
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
 			float chance = ExerelinConfig.getExerelinFactionConfig(factionId).colonyExpeditionChance;
 			if (chance <= 0)
@@ -616,8 +617,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return picker.pick();
 	}
 	
-	protected MarketAPI pickColonyExpeditionSource(String factionId) {
-		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+	protected MarketAPI pickColonyExpeditionSource(String factionId, Random random) 
+	{
+		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>(random);
 		for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(factionId)) {
 			if (!market.hasSpaceport()) continue;
 			int size = market.getSize();
@@ -636,63 +638,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return picker.pick();
 	}
 	
-	public static <T extends ColonyTargetValuator> T loadColonyTargetValuator(String factionId)
+	protected PlanetAPI pickColonyExpeditionTarget(String factionId, SectorEntityToken anchor, boolean silent) 
 	{
-		ColonyTargetValuator valuator = null;
-		String className = ExerelinConfig.getExerelinFactionConfig(factionId).colonyTargetValuator;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			valuator = (ColonyTargetValuator)clazz.newInstance();
-			valuator.initForFaction(factionId);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(IndustryClassGen.class).error("Failed to load colony target valuator " + className, ex);
-		}
-
-		return (T)valuator;
-	}
-	
-	/**
-	 * Returns the set of planets for which a colony expedition is already ongoing.
-	 * @return
-	 */
-	public Set<PlanetAPI> getExistingColonyTargets() {
-		Set<PlanetAPI> targets = new HashSet<>();
-		for (IntelInfoPlugin intRaw : Global.getSector().getIntelManager().getIntel(ColonyExpeditionIntel.class)) {
-			ColonyExpeditionIntel intel = (ColonyExpeditionIntel)intRaw;
-			if (intel.isEnding() || intel.isEnded()) continue;
-			targets.add(intel.getTargetPlanet());
-		}
-		return targets;
-	}
-	
-	// debug command: runcode exerelin.campaign.ColonyManager.getManager().spawnColonyExpedition();
-	/**
-	 * Spawns a colony expedition for a random faction to a semi-randomly-selected suitable target.
-	 * @return
-	 */
-	public ColonyExpeditionIntel spawnColonyExpedition() {
-		log.info("Attempting to spawn colony expedition");
-		String factionId = pickFactionToColonize();
-		if (factionId == null) {
-			log.info("Failed to pick faction for expedition");
-			return null;
-		}
+		Set<PlanetAPI> existingTargets = getExistingColonyTargets();
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
-		MarketAPI source = pickColonyExpeditionSource(factionId);
-		if (source == null) {
-			log.info("Failed to pick source market for expedition");
-			return null;
-		}
-		SectorEntityToken anchor;
-		if (source.getContainingLocation().isHyperspace()) anchor = source.getPrimaryEntity();
-		else anchor = source.getStarSystem().getHyperspaceAnchor();
-		
-		Set<PlanetAPI> existingTargets = getExistingColonyTargets();
-		
 		ColonyTargetValuator valuator = loadColonyTargetValuator(factionId);
+		if (silent) valuator.setSilent(true);
 		
 		//WeightedRandomPicker<PlanetAPI> planetPicker = new WeightedRandomPicker<>();
 		PlanetAPI best = null;
@@ -736,11 +688,72 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				}
 			}
 		}
-		PlanetAPI target = best;
+		
+		return best;
+	}
+	
+	public static <T extends ColonyTargetValuator> T loadColonyTargetValuator(String factionId)
+	{
+		ColonyTargetValuator valuator = null;
+		String className = ExerelinConfig.getExerelinFactionConfig(factionId).colonyTargetValuator;
+		
+		try {
+			ClassLoader loader = Global.getSettings().getScriptClassLoader();
+			Class<?> clazz = loader.loadClass(className);
+			valuator = (ColonyTargetValuator)clazz.newInstance();
+			valuator.initForFaction(factionId);
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+			Global.getLogger(IndustryClassGen.class).error("Failed to load colony target valuator " + className, ex);
+		}
+
+		return (T)valuator;
+	}
+	
+	/**
+	 * Returns the set of planets for which a colony expedition is already ongoing.
+	 * @return
+	 */
+	public Set<PlanetAPI> getExistingColonyTargets() {
+		Set<PlanetAPI> targets = new HashSet<>();
+		for (IntelInfoPlugin intRaw : Global.getSector().getIntelManager().getIntel(ColonyExpeditionIntel.class)) {
+			ColonyExpeditionIntel intel = (ColonyExpeditionIntel)intRaw;
+			if (intel.isEnding() || intel.isEnded()) continue;
+			targets.add(intel.getTargetPlanet());
+		}
+		return targets;
+	}
+	
+	// debug command: runcode exerelin.campaign.ColonyManager.getManager().spawnColonyExpedition();
+	/**
+	 * Spawns a colony expedition for a random faction to a semi-randomly-selected suitable target.
+	 * @return The colony expedition intel, if successfully created.
+	 */
+	public ColonyExpeditionIntel spawnColonyExpedition() 
+	{
+		Random random = new Random();
+		log.info("Attempting to spawn colony expedition");
+		String factionId = pickFactionToColonize(random);
+		if (factionId == null) {
+			log.info("Failed to pick faction for expedition");
+			return null;
+		}
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		
+		MarketAPI source = pickColonyExpeditionSource(factionId, random);
+		if (source == null) {
+			log.info("Failed to pick source market for expedition");
+			return null;
+		}
+		SectorEntityToken anchor;
+		if (source.getContainingLocation().isHyperspace()) anchor = source.getPrimaryEntity();
+		else anchor = source.getStarSystem().getHyperspaceAnchor();
+		
+		PlanetAPI target = pickColonyExpeditionTarget(factionId, anchor, false);
 		if (target == null) {
 			log.info("Failed to pick target for expedition");
 			return null;
 		}
+		
 		float fp = 80 + 30 * numDeadExpeditions;
 		if (fp > MAX_EXPEDITION_FP) fp = MAX_EXPEDITION_FP;
 		float organizeTime = InvasionFleetManager.getOrganizeTime(fp + 30) + 30;
@@ -748,6 +761,40 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		ColonyExpeditionIntel intel = new ColonyExpeditionIntel(faction, source, target.getMarket(), fp, organizeTime);
 		intel.init();
 		return intel;
+	}
+	
+	/**
+	 * Like {@code spawnColonyExpedition}, but creates the colony instantly instead of sending an expedition.
+	 * @param random
+	 * @return
+	 */
+	public boolean generateInstantColony(Random random) 
+	{
+		log.info("Attempting to generate instant colony");
+		String factionId = pickFactionToColonize(random);
+		if (factionId == null) {
+			//log.info("Failed to pick faction for colony");
+			return false;
+		}
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		
+		MarketAPI source = pickColonyExpeditionSource(factionId, random);
+		if (source == null) {
+			//log.info("Failed to pick source market for colony");
+			return false;
+		}
+		SectorEntityToken anchor;
+		if (source.getContainingLocation().isHyperspace()) anchor = source.getPrimaryEntity();
+		else anchor = source.getStarSystem().getHyperspaceAnchor();
+		
+		PlanetAPI target = pickColonyExpeditionTarget(factionId, anchor, true);
+		if (target == null) {
+			log.info("Failed to pick target for colony");
+			return false;
+		}
+		
+		ColonyExpeditionIntel.createColonyStatic(target.getMarket(), target, faction, false);
+		return true;
 	}
 	
 	public void processReliefFleetEvent(List<MarketAPI> candidates) {

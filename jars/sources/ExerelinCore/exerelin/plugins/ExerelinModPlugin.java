@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
@@ -22,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bar.events.DeliveryBarEventCreat
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
@@ -29,6 +31,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.MiningCooldownDrawer;
@@ -51,22 +54,27 @@ import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bar.NexDeliveryBarEventCreator;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.missions.DisruptMissionManager;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
+import exerelin.world.ExerelinNewGameSetup;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
 import exerelin.world.VanillaSystemsGenerator;
 import exerelin.world.scenarios.ScenarioManager;
 import java.io.IOException;
+import java.util.Random;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lazywizard.lazylib.VectorUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -226,6 +234,43 @@ public class ExerelinModPlugin extends BaseModPlugin
         addBarEvents();
     }
     
+    protected void expandSector() {
+        // Sector expander
+        float expandLength = Global.getSettings().getFloat("nex_expandCoreLength");
+        float expandMult = Global.getSettings().getFloat("nex_expandCoreMult");
+        Vector2f center = new Vector2f(ExerelinNewGameSetup.SECTOR_CENTER);
+        
+        if (expandLength == 0 && expandMult == 1)
+            return;
+        
+        if (expandLength != 0) {
+            for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+                Vector2f loc = system.getLocation();
+                Vector2f fromCenter = new Vector2f(loc.x - center.x, loc.y - center.y);
+                Vector2f fromCenterNew = new Vector2f();
+                fromCenterNew = VectorUtils.resize(fromCenter, fromCenter.length() + expandLength, fromCenterNew);
+                loc.translate(fromCenterNew.x - fromCenter.x, fromCenterNew.y - fromCenter.y);
+                //if (expandLength < 0) VectorUtils.rotate(loc, 180);
+            }
+        }
+        if (expandMult != 1) {
+            for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+                Vector2f loc = system.getLocation();
+                Vector2f fromCenter = new Vector2f(loc.x - center.x, loc.y - center.y);
+                Vector2f fromCenterNew = new Vector2f(fromCenter);
+                fromCenterNew.scale(expandMult);
+                loc.translate(fromCenterNew.x - fromCenter.x, fromCenterNew.y - fromCenter.y);
+                if (expandMult < 0) VectorUtils.rotate(loc, 180);
+            }
+        }
+        Global.getSector().getHyperspace().updateAllOrbits();
+        for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+            HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
+            ExerelinNewGameSetup.clearDeepHyper(system.getHyperspaceAnchor(), 
+                    system.getMaxRadiusInHyperspace() + plugin.getTileSize() * 2);
+        }
+    }
+    
     @Override
     public void onGameLoad(boolean newGame) {
         log.info("Game load");
@@ -259,7 +304,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!newGame)
             EconomyInfoHelper.createInstance();
         
-        if (ExerelinConfig.updateMarketDescOnCapture) {
+        if (ExerelinConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
             sector.getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
         }
         
@@ -355,10 +400,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (SectorManager.getCorvusMode()) {
             VanillaSystemsGenerator.enhanceVanillaMarkets();
         }
+		
+        expandSector();
         
         ScenarioManager.afterEconomyLoad(Global.getSector());
         
         SectorManager.reinitLiveFactions();
+        
         if (SectorManager.getCorvusMode())
         {
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
@@ -382,6 +430,26 @@ public class ExerelinModPlugin extends BaseModPlugin
         log.info("New game after time pass; " + isNewGame);
         ScenarioManager.afterTimePass(Global.getSector());
         StartSetupPostTimePass.execute();
+        
+        // generate random additional colonies
+        // note: faction picking relies on live faction list having been generated
+        if (ExerelinSetupData.getInstance().corvusMode) {
+            if (ExerelinConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
+                Global.getSector().getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
+            }
+            
+            int count = ExerelinSetupData.getInstance().randomColonies;
+            int tries = 0;
+            Random random = new Random(ExerelinUtils.getStartingSeed());
+            while (true) {
+                boolean success = ColonyManager.getManager().generateInstantColony(random);
+                if (success)
+                    count--;
+                tries++;
+                if (count <= 0 || tries >= 1000)
+                    break;
+            }
+        }
     }
     
     @Override
