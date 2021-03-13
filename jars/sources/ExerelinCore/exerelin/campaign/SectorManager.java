@@ -22,6 +22,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -119,7 +120,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected Set<String> liveFactionIds = new HashSet<>();
     protected Set<String> historicFactionIds = new HashSet<>();    // factions that have ever been present in the Sector
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
-    protected Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // array contains base value and number of D-mods
+    protected transient Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // array contains base value, number of D-mods, and CR
+    protected transient List<OfficerDataAPI> insuranceLostOfficers = new ArrayList<>();
     
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
@@ -152,6 +154,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 			}
 		}
 	}
+    
+    protected Object readResolve() {
+        insuranceLostMembers = new HashMap<>();
+        insuranceLostOfficers = new ArrayList<>();
+        return this;
+    }
 
     public SectorManager()
     {
@@ -270,8 +278,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     @Override
     public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
         if (!battle.isPlayerInvolved()) return;
-        FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(insuranceLostMembers, null);
+        FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(insuranceLostMembers, insuranceLostOfficers);
         insuranceLostMembers.clear();
+        insuranceLostOfficers.clear();
         
         handleCommissionPay(battle);
     }
@@ -322,9 +331,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 continue;
             if (member.isFighterWing())
                 continue;
-            //log.info("Member " + member.getShipName() + " disabled or destroyed");			
-            insuranceLostMembers.put(member, new Integer[]{(int)member.getBaseValue(), FactionInsuranceIntel.countDMods(member)});
+            //log.info("Member " + member.getShipName() + " disabled or destroyed");
+            insuranceLostMembers.put(member, new Integer[]{
+                (int)member.getBaseValue(), 
+                FactionInsuranceIntel.countDMods(member), 
+                (int)Math.round(member.getRepairTracker().getBaseCR() * 100)
+            });
         }
+    }
+    
+    public void addInsuredOfficers(List<OfficerDataAPI> officers) {
+        insuranceLostOfficers.addAll(officers);
     }
     
     @Override

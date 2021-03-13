@@ -129,8 +129,9 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			if (entry == null) continue;
 			
 			float amount = 0;
-			float cr = entry[2]/100;
+			float cr = entry[2]/100f;
 			float crMult = 1;
+			log.info("  " + member.getShipName() + " has CR " + cr);
 			if (Global.getSettings().getBoolean("nex_insuranceFraudCheck")) 
 			{
 				if (cr < 0.2f && !member.getRepairTracker().isMothballed() && !member.getRepairTracker().isCrashMothballed()) 
@@ -212,6 +213,12 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 				float amount = deadOfficer.getPerson().getStats().getLevel() * LIFE_INSURANCE_PER_LEVEL;
 				log.info("Insuring dead officer " + deadOfficer.getPerson().getName().getFullName() + " for " + amount);
 				totalPayment += amount;
+				int level = deadOfficer.getPerson().getStats().getLevel();
+				String text = String.format(getString("entryDescOfficerLevel"), level);
+				
+				InsuranceItem item = new InsuranceItem(deadOfficer, amount, text);
+				item.highlights.add(level + "");
+				items.add(item);
 			}
 		}
 
@@ -327,13 +334,21 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		for (InsuranceItem item : items) {
 			//log.info("Ship " + item.member.getShipName() + " has " + countDMods(item.member) + " D-mods");
 			TooltipMakerAPI image = itemPanel.createUIElement(IMAGE_WIDTH, ENTRY_HEIGHT, true);
-			List<FleetMemberAPI> ship = new ArrayList<>();
-			ship.add(item.member);
-			image.addShipList(1, 1, IMAGE_WIDTH, Color.WHITE, ship, 0);
+			
+			String name;
+			if (item.member != null) {
+				List<FleetMemberAPI> ship = new ArrayList<>();
+				ship.add(item.member);
+				name = item.member.getShipName();
+				image.addShipList(1, 1, IMAGE_WIDTH, Color.WHITE, ship, 0);
+			} else {
+				image.addImage(item.officer.getPerson().getPortraitSprite(), IMAGE_WIDTH-8, 0);
+				name = item.officer.getPerson().getNameString();
+			}
 			
 			TooltipMakerAPI entry = itemPanel.createUIElement(width - IMAGE_WIDTH - IMAGE_DESC_GAP,
 					ENTRY_HEIGHT, true);
-			entry.addPara(item.member.getShipName(), h, 0);
+			entry.addPara(name, h, 0);
 			if (item.payment > 0) {
 				String payout = Misc.getDGSCredits(item.payment);
 				entry.addPara(getString("entryDescAmount"), pad, h, payout);
@@ -387,6 +402,12 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		
 		public InsuranceItem(FleetMemberAPI member, float payment, String desc) {
 			this.member = member;
+			this.payment = payment;
+			this.desc = desc;
+		}
+		
+		public InsuranceItem(OfficerDataAPI officer, float payment, String desc) {
+			this.officer = officer;
 			this.payment = payment;
 			this.desc = desc;
 		}
