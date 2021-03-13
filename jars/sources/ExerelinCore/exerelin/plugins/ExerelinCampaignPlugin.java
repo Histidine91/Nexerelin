@@ -83,7 +83,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	
 	@Override
 	public void updateMarketFacts(MarketAPI market, MemoryAPI memory) {
-		memory.set("$reserveSize", ResponseFleetManager.getReserveSize(market), 0);
+		//memory.set("$reserveSize", ResponseFleetManager.getReserveSize(market), 0);
 		memory.set("$alertLevel", CovertOpsManager.getAlertLevel(market), 0);
 		if (memory.contains("$nex_recentlyRaided"))
 		{

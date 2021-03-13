@@ -68,6 +68,7 @@ public class NexDeliveryBarEvent extends DeliveryBarEvent {
 			if (other.getEconGroup() != null && !other.getEconGroup().equals(market.getEconGroup())) continue;
 			
 			if (other.getStarSystem() == null) continue;
+			//if (other.getStarSystem() == market.getStarSystem()) continue;
 			
 			//WeightedRandomPicker<T>
 			for (CommodityOnMarketAPI com : commodities) {

@@ -14,9 +14,10 @@ Partial list.
 - Everything that uses Industries.TAG_UNRAIDABLE
 
 Do on future SS release:
+- ExerelinConfig/ExerelinFactionConfig: Shorten class/method names
 - Remove agent/saboteur commodities
 - Remove MutableStatNoFloor
-- Add "player colonized" listener
+- Use "player colonized" and deciv listeners
 - Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
 - Move CeasefirePromptIntel to diplomacy package
 
