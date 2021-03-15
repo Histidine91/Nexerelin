@@ -75,7 +75,7 @@ public class Nex_VultureScavenger extends BaseCommandPlugin {
 				CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
 				if (ai == null) continue;
 				EncounterOption option = ai.pickEncounterOption(null, player, true);
-				if (option == EncounterOption.DISENGAGE || option == EncounterOption.HOLD_VS_STRONGER)
+				if (option != EncounterOption.ENGAGE)
 					continue;
 				
 				return fleet;
