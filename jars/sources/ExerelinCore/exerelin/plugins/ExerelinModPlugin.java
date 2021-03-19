@@ -196,6 +196,8 @@ public class ExerelinModPlugin extends BaseModPlugin
                 SectorManager.updateSubmarkets(market, "templars", "templars");
             }
         }
+        
+        SectorManager.getManager().reverseCompatibility();
     }
     
     protected void addBarEvents() {

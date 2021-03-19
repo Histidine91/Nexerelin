@@ -184,6 +184,10 @@
 			"trait_devious":"graphics/exerelin/icons/intel/spy.png",
 		},
 		
+		"misc":{
+			"nex_ironbank_logo":"graphics/exerelin/icons/ironbank.png",
+		},
+		
 		"ui":{
 			"nex_mining":"graphics/exerelin/icons/hammer_and_pick.png",
 			"nex_plant":"graphics/exerelin/icons/plant.png",

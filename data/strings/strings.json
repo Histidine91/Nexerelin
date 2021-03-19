@@ -1301,24 +1301,62 @@
 	
 	"nex_insurance":{
 		"title":"Insurance Payout",
+		"titleV2":"Ship Insurance",
+		"titleV2Expire":"Ship Insurance – Policies Expired",
 		"desc":"You have received $paid from $theEmployer to help cover your losses in the recent battle.",
 		"factionGalatian":"the Galatian Academy",
 		"titleUnpaid":"Insurance payout: no payment",
 		"descUnpaid":"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments.",
 		"bulletPayment":"%s received",
+		"bulletExpiredAndOthers":"...and %s other ships",
 		
+		"headerTitle":"Insurance management",
 		"headerBreakdown":"Breakdown",
 		"descInsuranceMult":"Insurance mult: %s×",
-		"descZeroHull":"Base value assumes zero hull and combat readiness.",
-		"descBaseValue":"Base value is modified by D-mods already present on the hull.",
+		"descPremiumMult":"Premium mult: %s×",
+		"descLifetimePremiums":"Total lifetime premiums",
+		"descLifetimeClaims":"Total lifetime claims",
+		"descHistoryTime":"Claims from past %s days",
 		
-		"entryDescAmount":"Insured for %s",
+		"tabFleet":"Fleet",
+		"tabClaims":"Claims",
+		"tabHelp":"Help",
+		
+		"helpPara1Title":"Insurance basics",
+		"helpPara1-1":"Each insurance policy covers one ship. The insurance policy lasts for %s days or until the ship is lost, whichever occurs first.",
+		"helpPara1-2":"The insured amount is %s× of the ship's base price at policy purchase time. The base premium is %s of the insured amount, modified by the premium multiplier.",
+		"helpPara1-3":"The policy term time ticks down only when the ship is present in the player fleet. A policy can be renewed %s days before it lapses, extending its term by %s days.",
+
+		"helpPara2Title":"Claims payment",
+		"helpPara2-1":"A claim is automatically and immediately paid out on the policy when the ship is disabled or destroyed in combat.",
+		"helpPara2-2":"For a total ship loss, the insured amount is paid out in full. For a ship receiving D-mods following recovery, %s of the insured amount is paid for each D-mod added, plus %s if the ship had no D-mods previously.", 
+		"helpPara2-3":"For a ship recovered without any additional D-mods, no claim is processed and the policy remains in force.",
+
+		"helpPara3Title":"Premiums",
+		"helpPara3-1":"Insurance premiums are paid up front in full and will not be refunded under any circumstances.",
+		"helpPara3-2":"The insurance premium multiplier ranges from %s× to %s×. It increases when claims are paid and decreases for every %s days that elapse on the policy.",
+		"helpPara3-3":"The multiplier formula is: %s + (claims - annualized premiums)/%s",
+		
+		"helpFooter":"Copyright © c.%s FeBSure. All rights reserved.",
+		
+		"entryDescAmount":"Insured for %s on $day-$month-$year",
+		"entryDescPotentialAmount":"Can insure for %s",
+		"entryDescAmountPaid":"Paid out %s on $day-$month-$year",
+		"entryDescPremium":"Premium: %s",
+		"entryDescDaysRemaining":"%s day(s) remaining",
 		"entryDescLost":"Ship lost; paying for base value",
 		"entryDescRecovered":"Ship recovered: had %s D-mods, now has %s",
 		"entryDescNewDHull":"New (D) hull: paying %s of base value",
 		"entryDescMoreDMods":"D-mod count increased: paying %s of base value",
 		"entryDescOfficerLevel":"Level %s officer",
 		"entryDescFraud":"Fraud suspected; payment witheld",
+		
+		"buttonInsureAll":"Insure all",
+		"confirmPromptInsureAll":"This will insure %s ship(s) for %s, paying %s in premiums. You have %s credits. Confirm?",
+		"confirmPromptInsureAllNoShips":"No ships are eligible for insurance.",
+		"confirmPromptInsureAllNotEnoughCredits":"Insuring %s ship(s) for %s would require %s in premiums. You currently only have %s credits.",
+		
+		"intelTag":"Insurance",
 	},
 	
 	"nex_militaryOptions":{
