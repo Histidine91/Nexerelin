@@ -1,8 +1,10 @@
 package exerelin.campaign.intel;
 
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.PunExGoal;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.PunExReason;
@@ -42,5 +44,14 @@ public class Nex_PunitiveExpeditionIntel extends PunitiveExpeditionIntel {
 	protected void failedAtStage(RaidStage stage) {
 		BaseRaidStage stage2 = (BaseRaidStage)stage;
 		stage2.giveReturnOrdersToStragglers(stage2.getRoutes());
+	}
+	
+
+	@Override
+	public CampaignFleetAPI spawnFleet(RouteManager.RouteData route) {
+		// Fix bug if source market is captured after fleet leaves, by enforcing the faction
+		CampaignFleetAPI fleet = super.spawnFleet(route);
+		fleet.setFaction(this.faction.getId());
+		return fleet;
 	}
 }
