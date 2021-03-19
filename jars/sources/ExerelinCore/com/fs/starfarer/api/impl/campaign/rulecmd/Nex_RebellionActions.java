@@ -131,6 +131,7 @@ public class Nex_RebellionActions extends PaginatedOptions {
 		}
 		
 		ExerelinUtilsCargo.addCommodityStockpile(market, commodity, amount);
+		Global.getSector().getEconomy().nextStep();
 		
 		// impact on rebellion strength
 		float valueMult = 0.02f;
