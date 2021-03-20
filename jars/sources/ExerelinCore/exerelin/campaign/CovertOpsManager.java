@@ -655,9 +655,15 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				case VENGEFUL:
 					weight = 5f;
 					break;
-				default:
-					if (monopolist) weight = 0.25f;
+				case FAVORABLE:
+				case WELCOMING:
+					if (monopolist) {
+						weight = 0.25f;
+						break;
+					}
 					else continue;
+				default:
+					continue;
 			}
 			
 			weight *= prod.output;

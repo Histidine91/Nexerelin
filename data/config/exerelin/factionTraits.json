@@ -125,7 +125,7 @@
 		{
 			"id":"monopolist",
 			"name":"Monopolist",
-			"desc":"Disposition penalty from economic competition. No relationship limits on targeting other factions for economic sabotage.",
+			"desc":"Disposition penalty from economic competition. Looser relationship limits on targeting other factions for economic sabotage.",
 			"color":[255, 255, 0],
 			"icon":"graphics/icons/industry/exports40.png"
 		},
