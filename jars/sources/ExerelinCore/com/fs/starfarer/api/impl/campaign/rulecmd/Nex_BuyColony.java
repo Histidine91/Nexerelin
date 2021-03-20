@@ -122,7 +122,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		FactionAPI faction = market.getFaction();
 		if (size <= 3)
 			return faction.isAtWorst(Factions.PLAYER, RepLevel.FRIENDLY);
-		else if (size == 4)
+		else if (size <= Global.getSettings().getInt("nex_governorship_maxSize"))
 			return faction.isAtWorst(Factions.PLAYER, RepLevel.COOPERATIVE);
 		
 		return false;

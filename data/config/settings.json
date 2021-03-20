@@ -26,6 +26,8 @@
 	"nex_tributeIncomePenalty":0.4,
 	"nex_tributePopulationMult":0.5,
 	
+	"nex_governorship_maxSize":6,	# tooltip will not be updated to reflect changes to this
+	
 	"nex_fleetRequestOrganizeTimeMult":1,
 	
 	"nex_vultureSpawnRateMult":1,	# unsure what this actually does tbh
