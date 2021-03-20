@@ -8,12 +8,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import static com.fs.starfarer.api.impl.campaign.econ.ResourceDepositsCondition.BASE_MODIFIER;
-import static com.fs.starfarer.api.impl.campaign.econ.ResourceDepositsCondition.BASE_ZERO;
 import static com.fs.starfarer.api.impl.campaign.econ.ResourceDepositsCondition.COMMODITY;
 import static com.fs.starfarer.api.impl.campaign.econ.ResourceDepositsCondition.INDUSTRY;
 import static com.fs.starfarer.api.impl.campaign.econ.ResourceDepositsCondition.MODIFIER;
-import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -81,6 +78,11 @@ public class ResourceUpgrade extends FactionSetupItem {
 		String type = (String)getDef().params.get("type");
 		
 		List<String> conds = CONDITION_IDS.get(type);
+		// already has highest-level condition, do nothing
+		if (home.hasCondition(conds.get(conds.size() - 1))) {
+			return;
+		}
+		
 		for (int i=conds.size()-2; i>=0; i--) {
 			String currCond = conds.get(i);
 			if (home.hasCondition(currCond)) {
