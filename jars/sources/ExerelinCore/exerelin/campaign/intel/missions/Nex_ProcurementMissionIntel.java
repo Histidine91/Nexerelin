@@ -110,9 +110,11 @@ public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
 		boolean illegal = contact.getFaction().isHostileTo(market.getFaction());
 		if (!illegal && action.equals("performDelivery")) {
 			String commodityId = commodity.getId();
+			CommodityOnMarketAPI com = market.getCommodityData(commodityId);
 			float qty = quantity * TRADE_MULT;
+			float deficit = com.getDeficitQuantity();
+			if (qty > deficit) qty = deficit;
 			if (qty > 0) {
-				CommodityOnMarketAPI com = market.getCommodityData(commodityId);
 				log.info("Adding trade mod " + qty + " to market " + market.getName());
 				com.addTradeModPlus("deliver_" + Misc.genUID(), qty, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
 			}
@@ -125,6 +127,7 @@ public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
 	public static void debug() {
 		MarketAPI market = Global.getSector().getCampaignUI().getCurrentInteractionDialog().getInteractionTarget().getMarket();
 		CommodityOnMarketAPI com = market.getCommodityData(Commodities.SUPPLIES);
-		com.addTradeModPlus("temp_" + Misc.genUID(), 100, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
+		log.info("wololo " + com.getDeficitQuantity());
+		//com.addTradeModPlus("temp_" + Misc.genUID(), 100, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
 	}
 }
