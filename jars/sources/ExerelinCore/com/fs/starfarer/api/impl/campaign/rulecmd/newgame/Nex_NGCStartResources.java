@@ -88,12 +88,6 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		CharacterCreationData charData = (CharacterCreationData) mem.get("$characterData");
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		
-		Global.getLogger(this.getClass()).info(String.format("wololo: %s, %s, %s", 
-				opts.hasSelector("startLevelSelector"),
-				opts.hasSelector("startCreditsSelector"),
-				opts.hasSelector("startOfficersSelector")
-		));
-		
 		int level = Math.round(opts.getSelectorValue("startLevelSelector"));
 		long xp = Global.getSettings().getLevelupPlugin().getXPForLevel(level);
 		int credits = Math.round(opts.getSelectorValue("startCreditsSelector")) * 1000;

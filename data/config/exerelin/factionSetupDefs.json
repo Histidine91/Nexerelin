@@ -3,6 +3,7 @@
 		"LC_package":10,
 		#"high_tech_package":-1,	# cost <0 disables
 		"XIV_package":200,
+		"missile_package":15,
 	},
 
 	"items":{

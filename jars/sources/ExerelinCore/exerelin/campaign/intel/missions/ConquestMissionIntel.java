@@ -373,7 +373,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			str = StringHelper.substituteToken(str, "$market", marketName);
 			info.addPara(str, opad, g);
 			
-			Global.getLogger(this.getClass()).info("wololo " + isAccepted() + ", " + market.getFactionId());
 			if (isAccepted() && market.getFaction().isPlayerFaction()) {
 				ButtonAPI button = info.addButton(getString("intelButtonTransfer"), BUTTON_TRANSFER, 
 						faction.getBaseUIColor(), faction.getDarkUIColor(),
