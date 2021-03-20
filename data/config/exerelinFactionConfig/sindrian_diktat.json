@@ -53,8 +53,8 @@
     ],
     
     "industrySeeds":[
-        {"id":"orbitalworks", "mult":0.1},
         {"id":"fuelprod", "mult":0.2},
+        {"id":"orbitalworks", "mult":0.1},
     ],
     
     "bonusSeeds":[

@@ -277,8 +277,8 @@ public class ExerelinProcGen {
 	}
 	
 	/**
-	 * Get systems close to the Sector's center
-	 * Widens search if number of systems/planets contained is less than number of systems/planets wanted
+	 * Get systems close to the Sector's center. 
+	 * Widens search if number of systems/planets contained is less than number of systems/planets wanted.
 	 * @param width Width of search area
 	 * @param height Height of search area
 	 * @param recursionDepth How many times this method has recursed; if too high, stop expanding search area
@@ -489,8 +489,8 @@ public class ExerelinProcGen {
 	}
 	
 	/**
-	 * Fills the populatedPlanets list with planets
-	 * Will skip a star system if it already has too many populated planets
+	 * Fills the populatedPlanets list with planets. 
+	 * Will skip a star system if it already has too many populated planets.
 	 * @param picker Random picker
 	 * @param planets List of candidate planets to be populated
 	 */
@@ -509,6 +509,7 @@ public class ExerelinProcGen {
 			if (populatedSystems.contains(planet.starSystem))
 				weight *= 99;	// strongly prefer already inhabited systems
 			picker.add(planet, weight);
+			//log.info("  Added planet " + planet.name + " to picker");
 		}
 		
 		while (populatedPlanets.size() < setupData.numPlanets && !picker.isEmpty())
@@ -555,7 +556,7 @@ public class ExerelinProcGen {
 					for (ProcGenEntity moon : populatedMoons) removePopulatedPlanet(moon);
 			}
 			
-			log.info("Populating planet " + candidate.name + "(desirability " + candidate.desirability + ")");
+			log.info("Populating planet " + candidate.name + " (desirability " + candidate.desirability + ")");
 			populatedPlanets.add(candidate);
 			populatedSystems.add(candidate.starSystem);
 			marketsBySystem.get(candidate.starSystem).add(candidate);
@@ -580,11 +581,16 @@ public class ExerelinProcGen {
 		}
 		
 		log.info("Picking habitable planets: " + habitablePlanets.size());
-		pickPopulatedPlanets(picker, habitablePlanets);
+		List<ProcGenEntity> habitablePlanetsList = new ArrayList<>(habitablePlanets);
+		Collections.sort(habitablePlanetsList, DESIRABILITY_COMPARATOR);
+		pickPopulatedPlanets(picker, habitablePlanetsList);
+		
 		log.info("Picking other desirable planets: " + desirableNotHabitable.size());
+		Collections.sort(desirableNotHabitable, DESIRABILITY_COMPARATOR);
 		pickPopulatedPlanets(picker, desirableNotHabitable);
-		//pickPopulatedPlanets(picker, desirablePlanets);
+		
 		log.info("Picking undesirable planets: " + notDesirable.size());
+		Collections.sort(notDesirable, DESIRABILITY_COMPARATOR);
 		pickPopulatedPlanets(picker, notDesirable);
 	}
 	
@@ -669,8 +675,11 @@ public class ExerelinProcGen {
 		
 		for (SectorEntityToken other : toCheck) {
 			float distSq = MathUtils.getDistanceSquared(entity.getLocation(), other.getLocation());
-			if (distSq < NEARBY_ENTITY_CHECK_DIST_SQ)
+			if (distSq < NEARBY_ENTITY_CHECK_DIST_SQ) {
+				log.info(String.format("  Rejecting terrain %s due to nearby %s", entity.getName(), other.getName()));
 				return true;
+			}
+				
 		}
 		
 		return false;
@@ -683,7 +692,16 @@ public class ExerelinProcGen {
 	protected void prepFreeStations()
 	{
 		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
-		for (StarSystemAPI system : populatedSystems)
+		
+		List<StarSystemAPI> popSystemsList = new ArrayList<>(populatedSystems);
+		Collections.sort(popSystemsList, new Comparator<StarSystemAPI>() {
+			@Override
+			public int compare(StarSystemAPI one, StarSystemAPI two) {
+				return one.getName().compareTo(two.getName());
+			}
+		});
+		
+		for (StarSystemAPI system : popSystemsList)
 		{
 			for (PlanetAPI planet : system.getPlanets())
 			{
@@ -711,9 +729,18 @@ public class ExerelinProcGen {
 				for (PlanetAPI maybeNearbyPlanet : system.getPlanets())
 				{
 					ProcGenEntity entity = procGenEntitiesByToken.get(maybeNearbyPlanet);
-					if (entity != null && populatedPlanets.contains(entity) && 
-							MathUtils.isWithinRange(planet, maybeNearbyPlanet, 2000))
+					if (entity == null) continue;
+					if (!populatedPlanets.contains(entity)) continue;
+					
+					if (maybeNearbyPlanet == planet)
 					{
+						//log.info("  Blocking populated planet " + planet.getName());
+						allow = false;
+						break;
+					}
+					if (MathUtils.isWithinRange(planet, maybeNearbyPlanet, 2000))
+					{
+						log.info("  Blocking " + planet.getName() + " due to nearby populated planet: " + maybeNearbyPlanet.getName());
 						allow = false;
 						break;
 					}
@@ -741,6 +768,7 @@ public class ExerelinProcGen {
 				}
 			}
 		}
+		log.info("  Picker length: " + picker.getItems().size());
 		
 		int count = 0;
 		while (count < setupData.numStations && !picker.isEmpty())
@@ -776,21 +804,15 @@ public class ExerelinProcGen {
 	protected ProcGenEntity pickHomeworld()
 	{
 		List<ProcGenEntity> candidates = new ArrayList<>(populatedPlanets);
-		Collections.sort(candidates, new Comparator<ProcGenEntity>() {
-				public int compare(ProcGenEntity e1, ProcGenEntity e2) {
-					float desirability1 = e1.desirability;
-					float desirability2 = e2.desirability;
-
-					if (desirability1 > desirability2) return -1;
-					else if (desirability2 > desirability1) return 1;
-					else return 0;
-				}});
+		Collections.sort(candidates, DESIRABILITY_COMPARATOR);
 		
 		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>(random);
 		for (int i=0; i<candidates.size(); i++)
 		{
 			if (i == 5) break;
-			picker.add(candidates.get(i));
+			ProcGenEntity candidate = candidates.get(i);
+			log.info("Adding homeworld candidate " + candidate.name + ", desirability " + candidate.desirability);
+			picker.add(candidate);
 		}
 		homeworld = picker.pick();
 		return homeworld;
@@ -1011,6 +1033,7 @@ public class ExerelinProcGen {
 	protected void init()
 	{
 		random = StarSystemGenerator.random;
+		//random = new Random(ExerelinUtils.getStartingSeed());
 		marketSetup = new NexMarketBuilder(this);
 		setupData = ExerelinSetupData.getInstance();
 		factionIds = getStartingFactions();
@@ -1063,11 +1086,17 @@ public class ExerelinProcGen {
 		log.info("Picking populated planets");
 		pickPopulatedPlanets();
 		renameSystems();
+		
+		List<String> popNames = new ArrayList<>();
+		for (ProcGenEntity ent : populatedPlanets) popNames.add(ent.name);
+		log.info("Populated planets (" + populatedPlanets.size() + "): " + popNames);
+		
 		log.info("Preparing stations");
 		prepFreeStations();
 		
 		log.info("Populating sector");
 		populateSector(Global.getSector());
+		
 		setCapitals();
 		spawnCommRelays();
 		surveyPlanets();
@@ -1569,9 +1598,13 @@ public class ExerelinProcGen {
 			factionPlanetCount.put(alignedFactionId, 1);
 		}
 		
+		Collections.sort(populatedPlanetsCopy, DESIRABILITY_COMPARATOR);
 		Collections.shuffle(populatedPlanetsCopy, random);
 		Collections.shuffle(stationsCopy, random);
-		List<ProcGenEntity> unassignedEntities = new LinkedList<>(populatedPlanetsCopy);	// needs to be a List instead of a Set for shuffling
+		
+		// This is the list of entities to add markets to
+		// needs to be a List instead of a Set for shuffling
+		List<ProcGenEntity> unassignedEntities = new LinkedList<>(populatedPlanetsCopy);
 		for (ProcGenEntity station : stationsCopy) {
 			unassignedEntities.add(station);
 		}
@@ -1611,7 +1644,6 @@ public class ExerelinProcGen {
 		}
 		
 		// ensure pirate presence in most star systems
-		
 		if (!pirateFactions.isEmpty())
 		{
 			WeightedRandomPicker<String> piratePicker = new WeightedRandomPicker<>(random);
@@ -1742,6 +1774,7 @@ public class ExerelinProcGen {
 			createStation(station, factionId, true);
 			populatedSystemsByFaction.get(factionId).add(station.starSystem);
 		}
+		
 		// add basic industries to each entity
 		marketSetup.addPrimaryIndustriesToMarkets();
 		
@@ -1818,18 +1851,13 @@ public class ExerelinProcGen {
 		return f1/f2;
 	}
 	
-	protected Comparator<ProcGenEntity> sortByMarketPointsUsed = new Comparator<ProcGenEntity>() {
+	protected static final Comparator<ProcGenEntity> DESIRABILITY_COMPARATOR = new Comparator<ProcGenEntity>() {
 		public int compare(ProcGenEntity e1, ProcGenEntity e2) {
-			//if (e1.marketPoints == 0)
-			//	throw new ArithmeticException("Fuck you, entity " + e1.name + " has zero market points");
-			//if (e2.marketPoints == 0)
-			//	throw new ArithmeticException("Fuck you, entity " + e2.name + " has zero market points");
-			
-			float spendPercent1 = divideWithDiv0Protection(e1.marketPointsSpent, e1.marketPoints);
-			float spendPercent2 = divideWithDiv0Protection(e2.marketPointsSpent, e2.marketPoints);
+			float desirability1 = e1.desirability;
+			float desirability2 = e2.desirability;
 
-			if (spendPercent1 > spendPercent2) return -1;
-			else if (spendPercent2 > spendPercent1) return 1;
-			else return 0;
+			if (desirability1 > desirability2) return -1;
+			else if (desirability2 > desirability1) return 1;
+			else return e1.name.compareTo(e2.name);
 		}};
 }

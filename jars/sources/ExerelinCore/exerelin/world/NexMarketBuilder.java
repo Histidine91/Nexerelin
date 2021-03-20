@@ -787,6 +787,8 @@ public class NexMarketBuilder
 		if (!marketsByFactionId.containsKey(factionId))
 			return;
 		
+		log.info("Adding key industries for faction " + factionId);
+		
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		List<ProcGenEntity> entities = marketsByFactionId.get(factionId);
 		
@@ -832,7 +834,10 @@ public class NexMarketBuilder
 				// this industry isn't usable on this market
 				if (!gen.canApply(entity))
 					continue;
-				ordered.add(new Pair<>(entity, gen.getWeight(entity)));
+				
+				float weight = gen.getWeight(entity);
+				//log.info("  Entity " + entity.name + " has weight " + weight);
+				ordered.add(new Pair<>(entity, weight));
 			}
 			
 			Collections.sort(ordered, new Comparator<Pair<ProcGenEntity, Float>>() {
@@ -845,7 +850,7 @@ public class NexMarketBuilder
 			{
 				if (ordered.isEmpty()) break;
 				Pair<ProcGenEntity, Float> highest = ordered.remove(ordered.size() - 1);
-				log.info("Adding key industry " + gen.getName() + " to market " + highest.one.name
+				log.info("  Adding key industry " + gen.getName() + " to market " + highest.one.name
 						+ " (priority " + highest.two + ")");
 				String industryId = seed.industryId;
 				MarketAPI market = highest.one.market;
@@ -909,6 +914,7 @@ public class NexMarketBuilder
 	public static void addIndustriesToMarket(ProcGenEntity entity, boolean instant, 
 			float minPriority, float maxPriority, Random random)
 	{
+		log.info("Adding industries to market " + entity.name);
 		int max = getMaxProductiveIndustries(entity);
 		if (entity.numProductiveIndustries >= max)
 			return;
@@ -919,11 +925,27 @@ public class NexMarketBuilder
 		List<IndustryClassGen> availableIndustries = new ArrayList<>();
 		for (IndustryClassGen gen : industryClassesOrdered)
 		{
-			if (gen.isSpecial()) continue;
-			if (!gen.canAutogen()) continue;
-			if (!gen.canApply(entity)) continue;
-			if (gen.getPriority() < minPriority) continue;
-			if (gen.getPriority() > maxPriority) continue;
+			//log.info("\tTesting industry for availability: " + gen.getName());
+			if (gen.isSpecial()) {
+				//log.info("\t- Special, cancel");
+				continue;
+			}
+			if (!gen.canAutogen()) {
+				//log.info("\t- Cannot autogen, cancel");
+				continue;
+			}
+			if (!gen.canApply(entity)) {
+				//log.info("\t- Cannot apply, cancel");
+				continue;
+			}
+			if (gen.getPriority() < minPriority) {
+				//log.info("\t- Priority too low, cancel");
+				continue;
+			}
+			if (gen.getPriority() > maxPriority) {
+				//log.info("\t- Priority too high, cancel");
+				continue;
+			}
 			
 			availableIndustries.add(gen);
 		}

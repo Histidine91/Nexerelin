@@ -25,8 +25,8 @@
     ],
     
     "industrySeeds":[
-        {"id":"heavyindustry", "mult":0.05},
         {"id":"fuelprod", "mult":0.05, "roundUp":false},
+        {"id":"heavyindustry", "mult":0.05},
         {"id":"lightindustry", "mult":0.05, "roundUp":false},
     ],
     

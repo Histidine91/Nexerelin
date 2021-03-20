@@ -28,23 +28,23 @@ public class FuelProduction extends IndustryClassGen {
 		
 		MarketAPI market = entity.market;
 		
-		float weight = 20 + market.getSize() * 4;
+		float weight = market.getSize() * 8;
 		
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			switch (cond.getId())
 			{
 				case Conditions.VOLATILES_TRACE:
-					priority += 10;
+					weight += 5;
 					break;
 				case Conditions.VOLATILES_DIFFUSE:
-					priority += 25;
+					weight += 10;
 					break;
 				case Conditions.VOLATILES_ABUNDANT:
-					priority += 50;
+					weight += 15;
 					break;
 				case Conditions.VOLATILES_PLENTIFUL:
-					priority += 75;
+					weight += 20;
 					break;
 			}
 		}
