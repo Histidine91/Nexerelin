@@ -209,7 +209,7 @@ public class ColonyTargetValuator {
 				return false;
 		}
 		*/
-		if (!market.getFaction().isNeutralFaction()) {
+		if (market.getFaction() == null || !market.getFaction().isNeutralFaction()) {
 			return false;
 		}
 		if (market.getMemoryWithoutUpdate().getBoolean(MEM_KEY_NO_COLONIZE)) {
