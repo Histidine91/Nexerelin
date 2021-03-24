@@ -345,7 +345,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			}
 		}
 		
-		if (prism != null) {
+		if (prism != null && prism.getStarSystem() != null) {
 			validateLocation(sector, prism.getStarSystem(), PRISM_LOC);
 		}		
 		
