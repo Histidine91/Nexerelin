@@ -40,7 +40,6 @@ import data.scripts.world.systems.Valhalla;
 import data.scripts.world.systems.Westernesse;
 import data.scripts.world.systems.Yma;
 import data.scripts.world.systems.Zagan;
-import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 
 public class VanillaSystemsGenerator {
