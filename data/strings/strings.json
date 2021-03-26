@@ -1381,6 +1381,7 @@
 		"optionRaid":"Launch a raid against $market",
 		"optionBombard":"Consider an orbital bombardment of $market",
 		"optionBombardVirus":"Consider an viral bombardment of $market",
+		"optionBombardTitan":"Consider the obliteration of $market (Titan strike)",
 		"cannotRaid":"The presence of enemy fleets that are willing to offer battle makes a raid impossible.",
 		"cannotBombard":"All defenses must be defeated to make a bombardment possible.",
 		"raidCooldown":"Your forces will be able to organize another raid within $cooldown.",

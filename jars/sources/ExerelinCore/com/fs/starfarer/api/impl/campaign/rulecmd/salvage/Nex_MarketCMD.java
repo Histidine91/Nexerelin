@@ -165,6 +165,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		return Global.getSettings().getModManager().isModEnabled("vic");
 	}
 	
+	protected boolean hasII() {
+		return Global.getSettings().getModManager().isModEnabled("Imperium");
+	}
+	
 	protected boolean canVirusBomb() {
 		if (!hasVIC()) return false;
 		for (FleetMemberAPI shipToCheck : Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy())
@@ -175,6 +179,29 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		}
 		return false;
+	}
+	
+	protected boolean canTitanBomb() {
+		if (!hasII()) return false;
+		// in II 2.4.0, the option to TITAN bomb is added by that mod
+		if ("2.4.0".equals(Global.getSettings().getModManager().getModSpec("Imperium").getVersion()))
+			return false;
+		
+        if (playerFleet == null) {
+            return false;
+        }
+
+        for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
+			String hullId = member.getHullSpec().getDParentHullId();
+			if (hullId == null) hullId = member.getHullSpec().getHullId();
+			log.info("Testing hull id " + hullId);
+			
+            if (hullId != null && hullId.contentEquals("ii_olympus")) {
+                return true;
+            }
+        }
+
+        return false;
 	}
 	
 	// same as super method, but adds invade option
@@ -327,9 +354,15 @@ public class Nex_MarketCMD extends MarketCMD {
 							"optionRaid", "$market", market.getName()), RAID);
 		options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
 							"optionBombard", "$market", market.getName()), BOMBARD);
-		if (canVirusBomb()) {
+		
+		boolean canVB = canVirusBomb(), canTB = canTitanBomb();
+		if (canVB) {
 			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
 							"optionBombardVirus", "$market", market.getName()), VIC_MarketCMD.VBombMenu);
+		}
+		if (canTB) {
+			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+							"optionBombardTitan", "$market", market.getName()), "iiTitanStrikeMenu");
 		}
 		
 		if (!temp.canRaid) {
@@ -340,9 +373,13 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (!temp.canBombard) {
 			options.setEnabled(BOMBARD, false);
 			options.setTooltip(BOMBARD, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
-			if (canVirusBomb()) {
+			if (canVB) {
 				options.setEnabled(VIC_MarketCMD.VBombMenu, false);
 				options.setTooltip(VIC_MarketCMD.VBombMenu, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
+			}
+			if (canTB) {
+				options.setEnabled("iiTitanStrikeMenu", false);
+				options.setTooltip("iiTitanStrikeMenu", StringHelper.getString("nex_militaryOptions", "cannotBombard"));
 			}
 		}
 		
