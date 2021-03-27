@@ -100,7 +100,8 @@ public class MiningHelperLegacy {
 		}
 	));
 	
-	public static final float MAX_EXHAUSTION = 0.9f; 
+	public static final float MAX_EXHAUSTION = 0.9f;
+	public static final float HAZARD_TO_DANGER_MULT = 0.6f;
 	
 	protected static float miningProductionMult = 2f;
 	protected static float cacheSizeMult = 1;
@@ -115,6 +116,7 @@ public class MiningHelperLegacy {
 	protected static float planetExhaustionMult = 0.75f;
 	protected static float planetRenewMult = 1.25f;
 	protected static float xpPerMiningStrength = 10;
+	protected static float maxXPPerMine = 1500;
 	protected static float machineryPerMiningStrength = 0.4f;
 	
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
@@ -136,6 +138,7 @@ public class MiningHelperLegacy {
 			baseCacheChance = (float)config.optDouble("baseCacheChance", baseCacheChance);
 			baseAccidentChance = (float)config.optDouble("baseAccidentChance", baseAccidentChance);
 			xpPerMiningStrength = (float)config.optDouble("xpPerMiningStrength", xpPerMiningStrength);
+			maxXPPerMine = (float)config.optDouble("xpPerMiningStrength", maxXPPerMine);
 			machineryPerMiningStrength = (float)config.optDouble("machineryPerMiningStrength", machineryPerMiningStrength);
 			
 			baseAccidentCRLoss = (float)config.optDouble("baseAccidentCRLoss", baseAccidentCRLoss);
@@ -446,8 +449,9 @@ public class MiningHelperLegacy {
 		}
 		*/
 		
-		// subtract base 100% hazard
+		// subtract base 100% hazard, then reduce the remainder
 		val -= 1;
+		val *= HAZARD_TO_DANGER_MULT;
 		if (val < 0) val = 0;
 		
 		return val;
@@ -939,7 +943,8 @@ public class MiningHelperLegacy {
 		
 		if (isPlayer)
 		{
-			float xp = strength * xpPerMiningStrength;
+			float xp = 50 + strength * xpPerMiningStrength;
+			xp = Math.max(xp, maxXPPerMine);
 			fleet.getCommander().getStats().addXP((long) xp);
 			fleet.getCommander().getStats().levelUpIfNeeded();
 			
