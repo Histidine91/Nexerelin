@@ -122,7 +122,7 @@ public class Nex_VultureScavenger extends BaseCommandPlugin {
 				
 				if (plugin.getContext() instanceof FleetEncounterContext) {
 					FleetEncounterContext context = (FleetEncounterContext) plugin.getContext();
-					if (context.didPlayerWinEncounter()) {
+					if (context.didPlayerWinMostRecentBattleOfEncounter()) {
 						
 						SDMParams p = new SDMParams();
 						p.entity = entity;

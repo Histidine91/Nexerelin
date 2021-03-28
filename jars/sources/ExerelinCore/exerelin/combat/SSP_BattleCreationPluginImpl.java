@@ -88,8 +88,10 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         float amt = getStarFactor(playerFleet);
         return amt >= 0.6f;
     }
-
-    public static float countNearbyAsteroids(CampaignFleetAPI playerFleet) {
+	
+	// calculation differs from vanilla, unsure of implications
+	@Override
+    protected float countNearbyAsteroids(CampaignFleetAPI playerFleet) {
         float numAsteroidsWithinRange = 0;
         float closest = Float.MAX_VALUE;
         LocationAPI loc = playerFleet.getContainingLocation();
@@ -189,7 +191,7 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         return minDist;
     }
 
-    protected static List<NearbyPlanetData> getNearbyPlanets(CampaignFleetAPI playerFleet) {
+    protected List<NearbyPlanetData> getNearbyPlanets(CampaignFleetAPI playerFleet) {
         LocationAPI loc = playerFleet.getContainingLocation();
         List<NearbyPlanetData> result = new ArrayList<>(10);
         if (loc instanceof StarSystemAPI) {
@@ -963,17 +965,6 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         NearbyJumpPointData(Vector2f offset, JumpPointAPI jumpPoint) {
             this.offset = offset;
             this.jumpPoint = jumpPoint;
-        }
-    }
-
-    protected static class NearbyPlanetData {
-
-        final Vector2f offset;
-        final PlanetAPI planet;
-
-        NearbyPlanetData(Vector2f offset, PlanetAPI planet) {
-            this.offset = offset;
-            this.planet = planet;
         }
     }
 }

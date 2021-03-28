@@ -244,10 +244,11 @@ public class VultureFleetAI implements EveryFrameScript
 		for (PerShipData ship : ships) {
 			addStuffFromShip(extra, ship, entity);
 		}
-		BaseSalvageSpecial.setExtraSalvage(extra, entity.getMemoryWithoutUpdate(), 0);
+		BaseSalvageSpecial.addExtraSalvage(extra, entity.getMemoryWithoutUpdate(), 0);
 	}
 	
 	// based on ShipRecoverySpecial.addStuffFromMember
+	// 095UPD: addStuffFromMember no longer exists, look into this
 	protected void addStuffFromShip(CargoAPI cargo, PerShipData shipData, SectorEntityToken entity) 
 	{
 		FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, shipData.variantId);

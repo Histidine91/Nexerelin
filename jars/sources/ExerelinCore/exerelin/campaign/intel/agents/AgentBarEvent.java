@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.FullName.Gender;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -19,6 +20,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
 public class AgentBarEvent extends BaseBarEventWithPerson {
@@ -82,8 +84,8 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 	}
 	
 	@Override
-	public void addPromptAndOption(InteractionDialogAPI dialog) {
-		super.addPromptAndOption(dialog);
+	public void addPromptAndOption(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		super.addPromptAndOption(dialog, memoryMap);
 		
 		regen(dialog.getInteractionTarget().getMarket());
 		
@@ -101,8 +103,8 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 	}
 	
 	@Override
-	public void init(InteractionDialogAPI dialog) {
-		super.init(dialog);
+	public void init(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		super.init(dialog, memoryMap);
 		
 		done = false;
 		

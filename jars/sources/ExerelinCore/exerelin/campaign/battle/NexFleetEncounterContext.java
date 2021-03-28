@@ -113,7 +113,8 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 					wingProb = 1f;
 				}
 				
-				prepareShipForRecovery(data.getMember(), false, true, weaponProb, wingProb, getSalvageRandom());
+				boolean own = false;	// can assume this is an enemy IBB
+				prepareShipForRecovery(data.getMember(), own, true, !own, weaponProb, wingProb, getSalvageRandom());
 				
 				result.add(data.getMember());
 				recoveredTypes.add(SWP_Util.getNonDHullId(data.getMember().getHullSpec()));

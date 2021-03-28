@@ -87,6 +87,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
+@Deprecated
 public class Nex_MarketCMD extends MarketCMD {
 	
 	public static final String INVADE = "nex_mktInvade";

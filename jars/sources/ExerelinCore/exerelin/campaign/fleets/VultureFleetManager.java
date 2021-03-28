@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -33,6 +34,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldParams;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.DebrisFieldSource;
+import com.fs.starfarer.api.loading.HullModSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.plugins.ExerelinModPlugin;
@@ -555,9 +557,35 @@ public class VultureFleetManager extends DisposableFleetManager
 				DModManager.addDMods(member, true, dmods, random);
 			}
 
+			if (shipData.sModProb > 0 && random.nextFloat() < shipData.sModProb) {
+				int num = 1;
+				float r = random.nextFloat();
+				if (r > 0.85f) {
+					num = 3;
+				} else if (num > 0.5f) {
+					num = 2;
+				}
+
+				WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
+				for (String id : variant.getHullMods()) {
+					HullModSpecAPI spec = Global.getSettings().getHullModSpec(id);
+					if (spec.isHidden()) continue;
+					if (spec.isHiddenEverywhere()) continue;
+					if (spec.hasTag(Tags.HULLMOD_DMOD)) continue;
+					if (variant.getPermaMods().contains(spec.getId())) continue;
+					picker.add(id, spec.getCapitalCost());
+				}
+				for (int i = 0; i < num && !picker.isEmpty(); i++) {
+					String id = picker.pickAndRemove();
+					variant.addPermaMod(id, true);
+					//variant.getPermaMods().add(id);
+				}
+			}
+
+
 			if (shipData.pruneWeapons) {
 				float retain = getFighterWeaponRetainProb(shipData.condition);
-				FleetEncounterContext.prepareShipForRecovery(member, false, false, retain, retain, random);
+				FleetEncounterContext.prepareShipForRecovery(member, false, false, false, retain, retain, random);
 				member.getVariant().autoGenerateWeaponGroups();
 			}
 		}

@@ -182,7 +182,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		opts.addOption(StringHelper.getString("decline", true), "nex_decivEvent_decline");
 		
 		// require player to survey planet and explore any ruins first?
-		if (type.equals(EVENT_TYPE_FOUNDCOLONY) && CoreCampaignPluginImpl.hasUnexploredRuins(dialog.getInteractionTarget().getMarket())) 
+		if (type.equals(EVENT_TYPE_FOUNDCOLONY) && Misc.hasUnexploredRuins(dialog.getInteractionTarget().getMarket())) 
 		{
 			opts.setEnabled("nex_decivEvent_accept", false);
 			// FIXME localize
