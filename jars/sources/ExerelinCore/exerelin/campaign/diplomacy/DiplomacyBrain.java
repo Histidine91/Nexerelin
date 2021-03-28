@@ -20,7 +20,7 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
-import exerelin.campaign.intel.CeasefirePromptIntel;
+import exerelin.campaign.intel.diplomacy.CeasefirePromptIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
