@@ -964,9 +964,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float templarDominance = DiplomacyManager.getDominanceFactor("templars");
 		float perLevelPoints = Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.invasionPointsPerPlayerLevel;
 		
+		// Templars invading and raiding others
 		templarInvasionPoints += (100 + perLevelPoints) 
 			* ExerelinConfig.getExerelinFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
-		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
 		
 		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
 		boolean shouldRaid = shouldRaid("templars");
@@ -981,6 +981,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
 		}
+		
+		// Others invading and raiding Templars
+		if (!Global.getSettings().getBoolean("nex_invade_and_raid_templars")) return;
+		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
 		if (templarCounterInvasionPoints >= req)
 		{
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker();
