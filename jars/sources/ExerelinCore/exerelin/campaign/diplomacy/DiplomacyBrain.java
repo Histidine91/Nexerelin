@@ -27,7 +27,6 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.Morality;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
-import exerelin.utilities.MutableStatNoFloor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -989,7 +988,7 @@ public class DiplomacyBrain {
 	public static class DispositionEntry
 	{
 		public String factionId;
-		public MutableStatNoFloor disposition = new MutableStatNoFloor(0);
+		public MutableStat disposition = new MutableStat(0);
 		
 		public DispositionEntry(String factionId)
 		{
