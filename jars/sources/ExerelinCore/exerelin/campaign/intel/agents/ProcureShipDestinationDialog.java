@@ -15,8 +15,8 @@ import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import static exerelin.campaign.intel.agents.AgentOrdersDialog.getString;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,7 +91,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	
 	protected void getMarkets() {
 		markets = new ArrayList<>();
-		List<MarketAPI> factionMarkets = ExerelinUtilsFaction.getFactionMarkets(faction.getId(), false);
+		List<MarketAPI> factionMarkets = NexUtilsFaction.getFactionMarkets(faction.getId(), false);
 				
 		Collections.sort(factionMarkets, Nex_FleetRequest.marketComparatorName);
 		for (MarketAPI market : factionMarkets) {
@@ -132,7 +132,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 			// we presume the player already knows where they want to send the agent
 
 			// changed my mind, distance is pretty important in random sector
-			String name = market.getName() + ", " + ExerelinUtilsAstro.getLocationName(market.getContainingLocation(), false);
+			String name = market.getName() + ", " + NexUtilsAstro.getLocationName(market.getContainingLocation(), false);
 			optionsList.add(new Pair<String, Object>(name, market));
 		}
 		showPaginatedMenu();

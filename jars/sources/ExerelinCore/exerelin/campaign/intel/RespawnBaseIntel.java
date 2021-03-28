@@ -48,8 +48,8 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import java.util.Random;
@@ -205,7 +205,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		}
 		
 		if (stations.isEmpty()) {
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			return conf.getRandomDefenceStation(new Random(), 0);
 		}
 		else

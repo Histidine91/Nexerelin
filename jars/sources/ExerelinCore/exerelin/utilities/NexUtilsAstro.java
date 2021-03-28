@@ -17,7 +17,7 @@ import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
 
-public class ExerelinUtilsAstro {
+public class NexUtilsAstro {
 	
 	/**
 	 * Gets the orbital period for an object around a stellar object of the specified radius and density,

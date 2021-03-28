@@ -46,11 +46,11 @@ import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.campaign.intel.FactionInsuranceIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.InsuranceIntelV2;
@@ -63,7 +63,7 @@ import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.NexUtilsAstro;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -175,7 +175,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //SectorManager.reinitLiveFactions();
         respawnFactions = ExerelinSetupData.getInstance().respawnFactions;
         onlyRespawnStartingFactions = ExerelinSetupData.getInstance().onlyRespawnStartingFactions;
-        respawnInterval = ExerelinConfig.factionRespawnInterval;
+        respawnInterval = NexConfig.factionRespawnInterval;
         respawnIntervalUtil = new IntervalUtil(respawnInterval * 0.75F, respawnInterval * 1.25F);
         
         // Templars don't normally post bounties, but they do here
@@ -193,16 +193,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         if (respawnFactions){
-            ExerelinUtils.advanceIntervalDays(respawnIntervalUtil, amount);
+            NexUtils.advanceIntervalDays(respawnIntervalUtil, amount);
             if (respawnIntervalUtil.intervalElapsed()) {
                 handleFactionRespawn();
                 
-                respawnInterval = ExerelinConfig.factionRespawnInterval;
+                respawnInterval = NexConfig.factionRespawnInterval;
                 respawnIntervalUtil.setInterval(respawnInterval * 0.75F, respawnInterval * 1.25F);
             }
         }
         
-        ExerelinUtils.advanceIntervalDays(liveFactionCheckUtil, amount);
+        NexUtils.advanceIntervalDays(liveFactionCheckUtil, amount);
         if (liveFactionCheckUtil.intervalElapsed())
         {
             recheckLiveFactions();
@@ -228,7 +228,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         CampaignFleetAPI loser = plugin.getLoser();
         if (loser == null) return;
         String loserFactionId = loser.getFaction().getId();
-        ExerelinFactionConfig loserConfig = ExerelinConfig.getExerelinFactionConfig(loserFactionId);
+        NexFactionConfig loserConfig = NexConfig.getFactionConfig(loserFactionId);
         if (loserConfig != null && loserConfig.dropPrisoners == false)
             return;
         
@@ -259,7 +259,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // old random prisoner drops
         for (int i=0; i<fp; i += 10)
         {
-            if (Math.random() < ExerelinConfig.prisonerLootChancePer10Fp)
+            if (Math.random() < NexConfig.prisonerLootChancePer10Fp)
             {
                 prisoners++;
             }
@@ -269,8 +269,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         loot.addCommodity("prisoner", prisoners);
         numSurvivors += prisoners;
         
-        if (ExerelinConfig.crewLootMult > 0) {
-            crewRaw = crewRaw*MathUtils.getRandomNumberInRange(0.5f, 1.5f) * ExerelinConfig.crewLootMult;
+        if (NexConfig.crewLootMult > 0) {
+            crewRaw = crewRaw*MathUtils.getRandomNumberInRange(0.5f, 1.5f) * NexConfig.crewLootMult;
             crewRaw += MathUtils.getRandomNumberInRange(-3, 3);
             crewRaw = crewRaw * contrib;
             int crew = (int)(crewRaw);
@@ -453,7 +453,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     @Deprecated
     public static void createWarmongerEvent(String targetFactionId, SectorEntityToken location)
     {
-        if (ExerelinConfig.warmongerPenalty == 0) return;
+        if (NexConfig.warmongerPenalty == 0) return;
         if (NO_WARMONGER_FACTIONS.contains(targetFactionId)) return;
         
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
@@ -471,7 +471,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (factionId.equals(targetFactionId)) continue;
             //if (factionId.equals(Factions.PLAYER)) continue;
             if (targetFaction.isHostileTo(factionId)) continue;
-            if (Nex_IsFactionRuler.isRuler(factionId)  && ExerelinConfig.warmongerPenalty <= 1) 
+            if (Nex_IsFactionRuler.isRuler(factionId)  && NexConfig.warmongerPenalty <= 1) 
                 continue;
             
             float loss = 0;
@@ -553,7 +553,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public void handleSlaveTradeRep()
     {
-        if (ExerelinConfig.prisonerSlaveRepValue > 0) return;
+        if (NexConfig.prisonerSlaveRepValue > 0) return;
         
         LocationAPI loc = marketLastSoldSlaves.getPrimaryEntity().getContainingLocation();
         List<MarketAPI> markets = Misc.getMarketsInLocation(loc);
@@ -610,7 +610,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             String factionId = market.getFactionId();
             if (newLive.contains(factionId))
                 continue;
-            if (!ExerelinUtilsMarket.canBeInvaded(market, false))
+            if (!NexUtilsMarket.canBeInvaded(market, false))
                 continue;
             newLive.add(factionId);
             factionMarkets.put(factionId, market);
@@ -627,7 +627,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (oldLive.contains(factionId))
                 continue;
-            if (!ExerelinConfig.getExerelinFactionConfig(factionId).playableFaction)
+            if (!NexConfig.getFactionConfig(factionId).playableFaction)
                 continue;
             factionRespawned(Global.getSector().getFaction(factionId), factionMarkets.get(factionId));
         }
@@ -643,11 +643,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (market.getFactionId().equals(respawnFactionId))    // could happen with console-spawned respawn fleets
                 continue;
-            if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 4))
+            if (!NexUtilsMarket.shouldTargetForInvasions(market, 4))
                 continue;
             
             float weight = market.getSize();
-            boolean wasOriginalOwner = ExerelinUtilsMarket.wasOriginalOwner(market, respawnFactionId);
+            boolean wasOriginalOwner = NexUtilsMarket.wasOriginalOwner(market, respawnFactionId);
             if (wasOriginalOwner)
                 weight *= 10;
             
@@ -692,7 +692,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         if (sourceMarket == null)
         {
-            List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(respawnFactionId);
+            List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(respawnFactionId);
             if (markets.isEmpty()) {
                 // create a base to spawn respawn fleets from
                 RespawnBaseIntel base = RespawnBaseIntel.generateBase(respawnFactionId);
@@ -774,7 +774,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<String> factionIds = factionIdsAtStart;
         if (!onlyRespawnStartingFactions)
         {
-            factionIds = ExerelinConfig.getFactions(true, false);
+            factionIds = NexConfig.getFactions(true, false);
         }
         
         for(String factionId : factionIds)
@@ -786,11 +786,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             FactionAPI faction = Global.getSector().getFaction(factionId);
             if (faction.getMemoryWithoutUpdate().contains("$nex_respawn_cooldown")) continue;
             
-            ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+            NexFactionConfig config = NexConfig.getFactionConfig(factionId);
             if (config != null && !config.playableFaction) continue;
             
             // check if this faction has used up all its respawn chances
-            int maxRespawns = ExerelinConfig.maxFactionRespawns;
+            int maxRespawns = NexConfig.maxFactionRespawns;
             if (maxRespawns >= 0)
             {
                 // note: zero maxRespawns means new factions can still enter, but factions that got knocked out can't return
@@ -816,10 +816,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (factionId.equals(Factions.PLAYER))
             return;    // do nothing
         
-        if (!show && ExerelinUtilsFaction.isExiInCorvus(factionId)) // don't hide Exi in Corvus mode
+        if (!show && NexUtilsFaction.isExiInCorvus(factionId)) // don't hide Exi in Corvus mode
             return;
         
-        ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+        NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
         if (conf != null && !conf.showIntelEvenIfDead)
         {
             FactionAPI faction = Global.getSector().getFaction(factionId);
@@ -842,7 +842,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionSpawnedOrEliminatedIntel intel = new FactionSpawnedOrEliminatedIntel(defeatedId, 
             FactionSpawnedOrEliminatedIntel.EventType.ELIMINATED,
             market, false, defeated == playerFaction);
-        ExerelinUtils.addExpiringIntel(intel);
+        NexUtils.addExpiringIntel(intel);
         
         //String defeatedId = defeated.getId();
         //DiplomacyManager.resetFactionRelationships(defeatedId);
@@ -850,8 +850,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         setShowFactionInIntelTab(defeated.getId(), false);
         
         // player leaves faction on defeat
-        if (defeated == playerFaction && ExerelinConfig.leaveEliminatedFaction 
-                && !ExerelinUtilsFaction.isExiInCorvus(defeatedId) && !defeatedId.equals(Factions.PLAYER))
+        if (defeated == playerFaction && NexConfig.leaveEliminatedFaction 
+                && !NexUtilsFaction.isExiInCorvus(defeatedId) && !defeatedId.equals(Factions.PLAYER))
         {
             expelPlayerFromFaction(true);
         }
@@ -870,7 +870,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         FactionSpawnedOrEliminatedIntel intel = new FactionSpawnedOrEliminatedIntel(factionId, 
             type, market, false, false);
-        ExerelinUtils.addExpiringIntel(intel);
+        NexUtils.addExpiringIntel(intel);
         
         SectorManager.addLiveFactionId(faction.getId());
         if (manager != null && !existedBefore)
@@ -910,7 +910,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (String factionId : getLiveFactionIdsCopy())
         {
             // don't count pirate factions unless config says so or we belong to it
-            if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.countPiratesForVictory && !factionId.equals(playerAlignedFactionId))
+            if (NexUtilsFaction.isPirateFaction(factionId) && !NexConfig.countPiratesForVictory && !factionId.equals(playerAlignedFactionId))
             {
                 liveFactions.remove(factionId);
             }
@@ -921,7 +921,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             victorFactionId = liveFactions.get(0);
             if (!victorFactionId.equals(playerAlignedFactionId))
             {
-                if (ExerelinConfig.allyVictories && sector.getFaction(Factions.PLAYER).isAtBest(victorFactionId, RepLevel.WELCOMING))
+                if (NexConfig.allyVictories && sector.getFaction(Factions.PLAYER).isAtBest(victorFactionId, RepLevel.WELCOMING))
                 {
                     victoryType = VictoryType.DEFEAT_CONQUEST;
                 }
@@ -956,7 +956,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             {
                 for (String factionId : eligibleWinners)
                 {
-                    int pop = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId);
+                    int pop = NexUtilsFaction.getFactionMarketSizeSum(factionId);
                     if (pop > largestPopulation)
                     {
                         winner = factionId;
@@ -967,7 +967,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 			
             if (winner.equals(playerAlignedFactionId)) 
 				victoryType = VictoryType.DIPLOMATIC;
-            else if (ExerelinConfig.allyVictories && playerAlignedFaction.isAtWorst(winner, RepLevel.FRIENDLY)) 
+            else if (NexConfig.allyVictories && playerAlignedFaction.isAtWorst(winner, RepLevel.FRIENDLY)) 
 				victoryType = VictoryType.DIPLOMATIC_ALLY;
             else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
             
@@ -1036,7 +1036,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         float mult = (float)mySize/(float)totalSize;
         log.info("Invasion credit loss size mult: " + mySize + "/" + totalSize);
         float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-        float lossMult = mult * ExerelinConfig.creditLossOnColonyLossMult;
+        float lossMult = mult * NexConfig.creditLossOnColonyLossMult;
         if (SectorManager.getHardMode()) lossMult *= 2;
         if (lossMult > 0.75f) lossMult = 0.75f;
         
@@ -1072,7 +1072,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String oldOwnerId = oldOwner.getId();
         Set<SectorEntityToken> linkedEntities = market.getConnectedEntities();
         if (market.getPlanetEntity() != null) {
-            linkedEntities.addAll(ExerelinUtilsAstro.getCapturableEntitiesAroundPlanet(market.getPlanetEntity()));
+            linkedEntities.addAll(NexUtilsAstro.getCapturableEntitiesAroundPlanet(market.getPlanetEntity()));
         }
         
         for (SectorEntityToken entity : linkedEntities)
@@ -1159,7 +1159,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         ColonyManager.updateFreePortSetting(market);
         ColonyManager.updateIncome(market);
         
-        ExerelinUtilsMarket.setTariffs(market);
+        NexUtilsMarket.setTariffs(market);
         
         // set submarket factions
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
@@ -1208,13 +1208,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (!silent) {
             MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved, 
                 factionsToNotify, repChangeStrength, creditsLost);
-            ExerelinUtils.addExpiringIntel(intel);
+            NexUtils.addExpiringIntel(intel);
         }
         
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
         
-        int marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId(), true).size();
+        int marketsRemaining = NexUtilsFaction.getFactionMarkets(oldOwner.getId(), true).size();
         log.info("Faction " + oldOwner.getDisplayName() + " has " + marketsRemaining + " markets left");
         if (marketsRemaining == 0)
         {
@@ -1222,7 +1222,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // faction respawn event if needed
-        marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(newOwnerId, true).size();
+        marketsRemaining = NexUtilsFaction.getFactionMarkets(newOwnerId, true).size();
         if (marketsRemaining == 1)
         {
             factionRespawned(newOwner, market);
@@ -1240,12 +1240,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (rvngEvent!= null) 
             {
                 float sizeSq = market.getSize() * market.getSize();
-                rvngEvent.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult, oldOwnerId);
+                rvngEvent.addPoints(sizeSq * NexConfig.revengePointsForMarketCaptureMult, oldOwnerId);
             }
         }
         
         // rebellion
-        if (isCapture && !newOwner.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market))
+        if (isCapture && !newOwner.getId().equals(NexUtilsMarket.getOriginalOwner(market))
                 && !RebellionIntel.isOngoing(market))
         {
             RebellionIntel rebel = RebellionCreator.getInstance().createRebellion(market, oldOwnerId, true);
@@ -1268,7 +1268,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER, true, 60);
 		}
         
-        ExerelinUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
+        NexUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
                 playerInvolved, isCapture, factionsToNotify, repChangeStrength);
     }
     
@@ -1412,22 +1412,22 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String oldFactionId = PlayerFactionStore.getPlayerFactionId();
         if (oldFactionId.equals(Factions.PLAYER)) return;
         
-        ExerelinUtilsFaction.revokeCommission();
+        NexUtilsFaction.revokeCommission();
     }
         
     public static void reinitLiveFactions()
     {
         SectorManager manager = getManager();
-        List<String> temp = ExerelinConfig.getFactions(false, false);
+        List<String> temp = NexConfig.getFactions(false, false);
         manager.liveFactionIds = new HashSet<>();
         manager.factionIdsAtStart = new ArrayList<>();
         manager.historicFactionIds = new HashSet<>();
         
         for (String factionId : temp)
         {
-            if (!ExerelinUtilsFaction.getFactionMarkets(factionId, true).isEmpty())
+            if (!NexUtilsFaction.getFactionMarkets(factionId, true).isEmpty())
             {
-                ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+                NexFactionConfig config = NexConfig.getFactionConfig(factionId);
                 if (config != null && !config.playableFaction)
                     continue;
                 manager.liveFactionIds.add(factionId);

@@ -13,7 +13,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsThemeGenerator;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import static exerelin.world.landmarks.BaseLandmarkDef.log;
 import java.awt.Color;
@@ -39,7 +39,7 @@ public class GraveyardWithMemorial extends BaseLandmarkDef {
 			return false;
 		
 		String factionId = entity.getFaction().getId();
-		return !ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId) && !ExerelinUtilsFaction.isFactionHostileToAll(factionId);
+		return !NexUtilsFaction.isPirateOrTemplarFaction(factionId) && !NexUtilsFaction.isFactionHostileToAll(factionId);
 	}
 	
 	@Override
@@ -62,7 +62,7 @@ public class GraveyardWithMemorial extends BaseLandmarkDef {
 		for (MarketAPI market : markets)
 		{
 			String factionId = getNonDerelictFaction(market);
-			if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId))
+			if (NexUtilsFaction.isPirateOrTemplarFaction(factionId))
 				continue;
 			if (!enemiesOfFactions.containsKey(factionId))
 			{
@@ -142,8 +142,8 @@ public class GraveyardWithMemorial extends BaseLandmarkDef {
 		beacon.setName(StringHelper.getString("exerelin_landmarks", "memorialBeacon"));
 		beacon.setCustomDescriptionId("nex_memorial_beacon");
 		beacon.getMemoryWithoutUpdate().set("$nex_memorialBeacon", true);
-		beacon.getMemoryWithoutUpdate().set("$nex_memorialFaction1", ExerelinUtilsFaction.getFactionShortName(factions[0]));
-		beacon.getMemoryWithoutUpdate().set("$nex_memorialFaction2", ExerelinUtilsFaction.getFactionShortName(factions[1]));
+		beacon.getMemoryWithoutUpdate().set("$nex_memorialFaction1", NexUtilsFaction.getFactionShortName(factions[0]));
+		beacon.getMemoryWithoutUpdate().set("$nex_memorialFaction2", NexUtilsFaction.getFactionShortName(factions[1]));
 		beacon.setDiscoverable(true);
 		
 		Misc.setWarningBeaconGlowColor(beacon, BEACON_COLOR);

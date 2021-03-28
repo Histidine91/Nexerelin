@@ -17,8 +17,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -89,7 +89,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			return false;
 		}
 		
-		if (ExerelinConfig.playerInsuranceMult <= 0)
+		if (NexConfig.playerInsuranceMult <= 0)
 			return false;
 
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -104,7 +104,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			//log.info("Cannot self-insure");
 			return false;
 		}
-		if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId)) {
+		if (NexUtilsFaction.isExiInCorvus(alignedFactionId)) {
 			// assume Exigency is alive on the other side of the wormhole, do nothing
 		} else if (!DEBUG_MODE && !SectorManager.isFactionAlive(alignedFactionId))	{
 			//log.info("Faction is not alive");
@@ -117,7 +117,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 
 	protected float calculatePayout(List<OfficerDataAPI> deadOfficers, Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers) {
 		float totalPayment = 0f;
-		float mult = ExerelinConfig.playerInsuranceMult;
+		float mult = NexConfig.playerInsuranceMult;
 		if (SectorManager.getHardMode())
 			mult *= HARD_MODE_MULT;
 
@@ -319,7 +319,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		info.addSectionHeading(getString("headerBreakdown"), faction.getBaseUIColor(), 
 			faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
 		
-		float mult = ExerelinConfig.playerInsuranceMult;
+		float mult = NexConfig.playerInsuranceMult;
 		if (SectorManager.getHardMode())
 			mult *= HARD_MODE_MULT;
 		

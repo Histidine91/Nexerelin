@@ -47,10 +47,10 @@ import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFleet;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -125,7 +125,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		addStage(action);
 		
 		addStage(new ColonyReturnStage(this));
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 			case 0:
 			case 1:
@@ -294,7 +294,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		RouteManager.OptionalFleetData extra = route.getExtra();
 		
 		boolean isColonyFleet = extra.fleetType.equals("nex_colonyFleet");
-		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, getTarget());
+		float distance = NexUtilsMarket.getHyperspaceDistance(market, getTarget());
 		
 		float myFP = extra.fp;
 		if (!useMarketFleetSizeMult)
@@ -414,7 +414,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			market.getMemoryWithoutUpdate().set("$nex_delay_growth", true, 5);
 		}
 		
-		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig config = NexConfig.getFactionConfig(factionId);
 		if (config.freeMarket)
 		{
 			market.getMemoryWithoutUpdate().set("$startingFreeMarket", true);
@@ -422,7 +422,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		}
 		
 		market.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
-		ExerelinUtilsMarket.setTariffs(market);
+		NexUtilsMarket.setTariffs(market);
 					
 		// submarkets
 		SectorManager.updateSubmarkets(market, Factions.NEUTRAL, factionId);
@@ -438,7 +438,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		market.getPrimaryEntity().setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
 		if (!fromDeciv) {
-			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
 			market.setIncentiveCredits(100000);
 		}
@@ -466,7 +466,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	
 	@Override
 	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
-		if (ExerelinUtilsFleet.getFleetType(fleet).equals("nex_colonyFleet")) {
+		if (NexUtilsFleet.getFleetType(fleet).equals("nex_colonyFleet")) {
 			log.info("Adding colony expedition AI to fleet");
 			ColonyExpeditionAssignmentAI ai = new ColonyExpeditionAssignmentAI(fleet, route, (ColonyActionStage)action);
 			return ai;
@@ -520,7 +520,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			for (RouteData route : stage.getRoutes()) {
 				CampaignFleetAPI routeFleet = route.getActiveFleet();
 				if (routeFleet == null) continue;
-				if (!ExerelinUtilsFleet.getFleetType(routeFleet).equals("nex_colonyFleet"))
+				if (!NexUtilsFleet.getFleetType(routeFleet).equals("nex_colonyFleet"))
 					continue;
 				
 				fleet = routeFleet;

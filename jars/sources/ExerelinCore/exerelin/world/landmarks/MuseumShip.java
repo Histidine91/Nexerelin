@@ -15,9 +15,9 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipCondition;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class MuseumShip extends BaseLandmarkDef {
 			return false;
 		
 		String factionId = entity.getFaction().getId();
-		return !ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId) && !ExerelinUtilsFaction.isFactionHostileToAll(factionId);
+		return !NexUtilsFaction.isPirateOrTemplarFaction(factionId) && !NexUtilsFaction.isFactionHostileToAll(factionId);
 	}
 	
 	@Override
@@ -75,9 +75,9 @@ public class MuseumShip extends BaseLandmarkDef {
 			
 			// orbit
 			float orbitRadius = entity.getRadius() + 100;
-			float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
+			float orbitPeriod = NexUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
 			//ship.setCircularOrbitWithSpin(entity, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod, 20, 30);
-			ship.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);
+			ship.setCircularOrbitPointingDown(entity, NexUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);
 			
 			// tags etc.
 			// note: entity faction can differ from the one we used to pick the ship type,

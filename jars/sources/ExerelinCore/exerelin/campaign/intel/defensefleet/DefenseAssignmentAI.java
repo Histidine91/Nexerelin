@@ -14,7 +14,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -163,7 +163,7 @@ public class DefenseAssignmentAI extends RaidAssignmentAI {
 				if (dist < 5000) dist = 5000;
 				float distMult = 20000/dist;
 				
-				float value = ExerelinUtilsMarket.getMarketIndustryValue(market) * market.getSize();
+				float value = NexUtilsMarket.getMarketIndustryValue(market) * market.getSize();
 				
 				//float existingDef = Misc.getNearbyFleets(market.getPrimaryEntity(), 1000);
 				

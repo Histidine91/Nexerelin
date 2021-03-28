@@ -22,11 +22,11 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinFactionConfig.Morality;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.Morality;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		List<MarketAPI> claimed = new ArrayList<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (market.getFaction() != faction 
-					&& faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market))) 
+					&& faction.getId().equals(NexUtilsMarket.getOriginalOwner(market))) 
 			{
 				claimed.add(market);
 			}
@@ -131,7 +131,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	
 	protected LabelAPI generateAlignmentPara(TooltipMakerAPI tooltip, float pad) {
 		List<Pair<Alignment, Float>> alignments = new ArrayList<>();
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
+		NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
 		
 		for (Map.Entry<Alignment, Float> tmp : conf.alignments.entrySet())
 		{
@@ -232,7 +232,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		tooltip.addPara(str, pad, wearinessColor, wearinessStr);
 		
 		tooltip.setBulletedListMode(BULLET);
-		if (weariness >= ExerelinConfig.minWarWearinessForPeace) {
+		if (weariness >= NexConfig.minWarWearinessForPeace) {
 			str = getString("wearinessEnoughForPeace");
 			str = StringHelper.substituteToken(str, "$theFaction", faction.getDisplayNameWithArticle(), true);
 			tooltip.addPara(str, 3);
@@ -265,18 +265,18 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		);
 		
 		DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(faction.getId());
-		boolean pirate = ExerelinConfig.getExerelinFactionConfig(faction.getId()).pirateFaction;
-		List<FactionAPI> factions = ExerelinUtilsFaction.factionIdsToFactions(SectorManager.getLiveFactionIdsCopy());
+		boolean pirate = NexConfig.getFactionConfig(faction.getId()).pirateFaction;
+		List<FactionAPI> factions = NexUtilsFaction.factionIdsToFactions(SectorManager.getLiveFactionIdsCopy());
 		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
 		
 		for (FactionAPI otherFaction : factions) {
 			if (otherFaction == faction) continue;
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(otherFaction.getId());
+			NexFactionConfig conf = NexConfig.getFactionConfig(otherFaction.getId());
 			if (!conf.playableFaction || conf.disableDiplomacy) continue;
 			
 			// normally pirates can't have diplomacy with non-pirates
 			// so don't show cross-piracy disposition
-			if ((pirate != conf.pirateFaction) && !ExerelinConfig.allowPirateInvasions) 
+			if ((pirate != conf.pirateFaction) && !NexConfig.allowPirateInvasions) 
 			{
 				continue;
 			}
@@ -399,7 +399,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		generateAlignmentPara(flagAndBasicInfo, 0);
 		
 		// morality
-		Morality moral = ExerelinConfig.getExerelinFactionConfig(faction.getId()).morality;
+		Morality moral = NexConfig.getFactionConfig(faction.getId()).morality;
 		String moralId = moral.toString();
 		String moralStr = getString("morality_" + moralId.toLowerCase(), true);
 		

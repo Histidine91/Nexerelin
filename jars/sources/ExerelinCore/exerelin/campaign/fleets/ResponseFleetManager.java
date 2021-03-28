@@ -14,9 +14,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.ExerelinConstants;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -74,13 +74,13 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		
 		String factionId = origin.getFactionId();
 		String fleetFactionId = factionId;
-		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-		ExerelinFactionConfig fleetFactionConfig = null;
+		NexFactionConfig factionConfig = NexConfig.getFactionConfig(factionId);
+		NexFactionConfig fleetFactionConfig = null;
 		
 		if (factionConfig.factionIdForHqResponse != null && origin.hasIndustry(Industries.HIGHCOMMAND))
 		{
 			fleetFactionId = factionConfig.factionIdForHqResponse;
-			fleetFactionConfig = ExerelinConfig.getExerelinFactionConfig(fleetFactionId);
+			fleetFactionConfig = NexConfig.getFactionConfig(fleetFactionId);
 		}
 		
 		String name = "";
@@ -109,7 +109,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 				0.15f);	// quality mod
 		fleetParams.random = getRandom();
 		
-		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(Global.getSector().getFaction(fleetFactionId), fleetParams);
+		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(Global.getSector().getFaction(fleetFactionId), fleetParams);
 		if (fleet == null) return null;
 		
 		fleet.setFaction(factionId, true);
@@ -210,13 +210,13 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		if (market.hasIndustry(Industries.MEGAPORT)) size += baseSize * 0.1;
 		
 		
-		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		NexFactionConfig factionConfig = NexConfig.getFactionConfig(market.getFactionId());
 		if (factionConfig != null)
 		{
 			size += baseSize * factionConfig.responseFleetSizeMod;
 		}
 		
-		size += ExerelinUtilsFleet.getPlayerLevelFPBonus();
+		size += NexUtilsFleet.getPlayerLevelFPBonus();
 		
 		return size;
 	}
@@ -241,7 +241,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 			//if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) increment += baseIncrement * 0.1f;
 			if (market.hasIndustry(Industries.HIGHCOMMAND)) increment += baseIncrement * 0.25f;
 			
-			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+			NexFactionConfig factionConfig = NexConfig.getFactionConfig(market.getFactionId());
 			if (factionConfig != null)
 			{
 				increment += baseIncrement * factionConfig.responseFleetSizeMod;

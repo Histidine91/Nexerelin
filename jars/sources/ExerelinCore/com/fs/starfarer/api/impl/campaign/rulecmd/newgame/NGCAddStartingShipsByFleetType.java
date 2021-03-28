@@ -22,9 +22,9 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 
 
@@ -36,7 +36,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		
 		String fleetTypeStr = params.get(0).getString(memoryMap);
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
-		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(PlayerFactionStore.getPlayerFactionIdNGC());
+		NexFactionConfig factionConf = NexConfig.getFactionConfig(PlayerFactionStore.getPlayerFactionIdNGC());
 		List<String> startingVariants = (List<String>)memoryMap.get(MemKeys.LOCAL).get("$startShips_" + fleetTypeStr);
 		if (startingVariants == null || startingVariants.isEmpty())
 			startingVariants = factionConf.getStartFleetForType(fleetTypeStr, true);
@@ -118,7 +118,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		data.addScript(new Script() {
 			public void run() {
 				CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
-				ExerelinUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
+				NexUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
 				fleet.getFleetData().syncIfNeeded();
 			}
 		});

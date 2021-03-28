@@ -25,8 +25,8 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		if (ExerelinModPlugin.isNexDev)
 			Global.getSector().getCampaignUI().addMessage("init() called in NexRaidIntel");
 
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 
 			case 0:
@@ -199,7 +199,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 	}
 	
 	protected float getDistanceToTarget(MarketAPI market) {
-		return ExerelinUtilsMarket.getHyperspaceDistance(market, target);
+		return NexUtilsMarket.getHyperspaceDistance(market, target);
 	}
 	
 	@Override

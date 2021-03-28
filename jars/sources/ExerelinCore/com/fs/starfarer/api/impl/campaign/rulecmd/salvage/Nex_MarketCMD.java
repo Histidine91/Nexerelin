@@ -70,9 +70,9 @@ import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -482,7 +482,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
 		attackerBase.modifyFlatAlways("nex_mechs", mechs, getString("heavyWeaponsOnBoard", true));
 		
-		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(PlayerFactionStore.getPlayerFactionId());
+		NexFactionConfig atkConf = NexConfig.getFactionConfig(PlayerFactionStore.getPlayerFactionId());
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
 				Misc.ucFirst(fleet.getFaction().getDisplayName()));
 		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
@@ -780,7 +780,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				contText = getString("invasionSpoils");
 			}
 
-			ExerelinUtilsMarket.reportInvadeLoot(dialog, market, tempInvasion, tempInvasion.invasionLoot);
+			NexUtilsMarket.reportInvadeLoot(dialog, market, tempInvasion, tempInvasion.invasionLoot);
 		}
 		else
 		{
@@ -924,7 +924,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		// blueprints
 		if (withBP) {
 			Set<String> droppedBefore = getEverRaidedBlueprints();
-			boolean allowRepeat = ExerelinConfig.allowRepeatBlueprintsFromRaid;
+			boolean allowRepeat = NexConfig.allowRepeatBlueprintsFromRaid;
 			boolean onlyUnlearned = Global.getSettings().getBoolean("nex_raidBPOnlyUnlearned");
 			FactionAPI player = Global.getSector().getPlayerFaction();
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
@@ -1600,7 +1600,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	 * @return
 	 */
 	protected boolean wasPlayerMarket() {
-		String origOwner = ExerelinUtilsMarket.getOriginalOwner(market);
+		String origOwner = NexUtilsMarket.getOriginalOwner(market);
 		boolean originallyPlayer = origOwner == null || origOwner.equals(Factions.PLAYER);
 		return originallyPlayer;
 	}

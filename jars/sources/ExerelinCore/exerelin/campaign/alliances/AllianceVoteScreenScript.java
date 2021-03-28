@@ -18,7 +18,7 @@ import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.alliances.AllianceVoter.Vote;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -113,7 +113,7 @@ public class AllianceVoteScreenScript extends DelayedDialogScreenScript
 				hl.setColors(facColor, facColor, facColor, facColor);
 				text.setHighlightsInLastPara(hl);
 				
-				String size = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId) + "";
+				String size = NexUtilsFaction.getFactionMarketSizeSum(factionId) + "";
 				str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", 
 						"voteNoAllysLine2", "$factionSize", size);
 				text.addParagraph("  " + str);
@@ -132,7 +132,7 @@ public class AllianceVoteScreenScript extends DelayedDialogScreenScript
 			for (String memberId : ally.getMembersCopy())
 			{
 				String name = Misc.ucFirst(getFactionName(memberId, false));
-				String size = ExerelinUtilsFaction.getFactionMarketSizeSum(memberId) + "";
+				String size = NexUtilsFaction.getFactionMarketSizeSum(memberId) + "";
 				text.addParagraph("  " + name + ": " + size);
 				text.highlightInLastPara(name, size);
 				text.setHighlightColorsInLastPara(Global.getSector().getFaction(memberId).getBaseUIColor(), hlColor);

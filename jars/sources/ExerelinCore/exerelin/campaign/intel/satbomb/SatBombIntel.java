@@ -31,8 +31,8 @@ import exerelin.campaign.intel.raid.NexRaidAssembleStage;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -76,7 +76,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		
 		addStage(new NexReturnStage(this));
 
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued; //TODO: sat bombs are extreme. some players might want it added but everything else queued, do that?
+		int nexIntelQueued = NexConfig.nexIntelQueued; //TODO: sat bombs are extreme. some players might want it added but everything else queued, do that?
 		switch (nexIntelQueued) {
 
 			case 0:
@@ -124,7 +124,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 				
 		RouteManager.OptionalFleetData extra = route.getExtra();
 		
-		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, target);
+		float distance = NexUtilsMarket.getHyperspaceDistance(market, target);
 		
 		float myFP = extra.fp;
 		if (!useMarketFleetSizeMult)

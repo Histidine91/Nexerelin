@@ -7,20 +7,20 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
 
-import static exerelin.utilities.ExerelinUtils.JSONArrayToStringArray;
+import static exerelin.utilities.NexUtils.JSONArrayToStringArray;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class ExerelinConfig
+public class NexConfig
 {
     public static final String CONFIG_PATH = "exerelin_config.json";
     public static final String MOD_FACTION_LIST_PATH = "data/config/exerelinFactionConfig/mod_factions.csv";
     
-    public static Logger log = Global.getLogger(ExerelinConfig.class);
-    public static List<ExerelinFactionConfig> exerelinFactionConfigs;
-    public static ExerelinFactionConfig defaultConfig;
+    public static Logger log = Global.getLogger(NexConfig.class);
+    public static List<NexFactionConfig> exerelinFactionConfigs;
+    public static NexFactionConfig defaultConfig;
    
     // System Generation settings
     public static int minimumPlanets = 3;
@@ -285,22 +285,22 @@ public class ExerelinConfig
         }
 
         // Reset and load faction configuration data
-        if(ExerelinConfig.exerelinFactionConfigs != null)
-            ExerelinConfig.exerelinFactionConfigs.clear();
-        ExerelinConfig.exerelinFactionConfigs = new ArrayList<>();
+        if(NexConfig.exerelinFactionConfigs != null)
+            NexConfig.exerelinFactionConfigs.clear();
+        NexConfig.exerelinFactionConfigs = new ArrayList<>();
 
         for(String factionId : builtInFactions) {
-            ExerelinFactionConfig conf = new ExerelinFactionConfig(factionId);
+            NexFactionConfig conf = new NexFactionConfig(factionId);
             conf.isBuiltIn = true;
-            ExerelinConfig.exerelinFactionConfigs.add(conf);
+            NexConfig.exerelinFactionConfigs.add(conf);
             if (factionId.equals(Factions.NEUTRAL))
                 defaultConfig = conf;
         }
 
         for(String factionId : supportedModFactions)
         {
-            if (ExerelinUtilsFaction.doesFactionExist(factionId))
-                ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
+            if (NexUtilsFaction.doesFactionExist(factionId))
+                NexConfig.exerelinFactionConfigs.add(new NexFactionConfig(factionId));
         }
     }
 	
@@ -325,26 +325,26 @@ public class ExerelinConfig
         }
     }
 
-    public static ExerelinFactionConfig getExerelinFactionConfig(String factionId)
+    public static NexFactionConfig getFactionConfig(String factionId)
     {
-        return getExerelinFactionConfig(factionId, true);
+        return getFactionConfig(factionId, true);
     }
 	
-	public static ExerelinFactionConfig getExerelinFactionConfig(String factionId, boolean useDefault)
+	public static NexFactionConfig getFactionConfig(String factionId, boolean useDefault)
     {
-        for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
+        for(NexFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
         {
-            if(exerelinFactionConfig.factionId.equalsIgnoreCase(factionId))
+            if (exerelinFactionConfig.factionId.equalsIgnoreCase(factionId))
                 return exerelinFactionConfig;
         }
 		if (useDefault)
 		{
-			Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + " not found, using default");
+			Global.getLogger(NexConfig.class).warn("Faction config " + factionId + " not found, using default");
 			return defaultConfig;
 		}
         else
 		{
-			Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + " not found");
+			Global.getLogger(NexConfig.class).warn("Faction config " + factionId + " not found");
 			return null;
 		}
     }
@@ -354,7 +354,7 @@ public class ExerelinConfig
     {
         List<String> customRebels = new ArrayList<>();
 
-        for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
+        for(NexFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
         {
             if(!exerelinFactionConfig.customRebelFaction.isEmpty())
                 customRebels.add(exerelinFactionConfig.customRebelFaction);
@@ -367,12 +367,12 @@ public class ExerelinConfig
     {
         List<String> factions = new ArrayList<>();
 
-        for (ExerelinFactionConfig config : exerelinFactionConfigs) {
+        for (NexFactionConfig config : exerelinFactionConfigs) {
             if (onlyPlayable && !config.playableFaction)
                 continue;
             if (onlyStartable && !config.startingFaction)
                 continue;
-            if (ExerelinUtilsFaction.doesFactionExist(config.factionId))
+            if (NexUtilsFaction.doesFactionExist(config.factionId))
             {
                 factions.add(config.factionId);
             }

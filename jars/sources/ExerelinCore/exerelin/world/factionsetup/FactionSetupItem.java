@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.world.factionsetup.FactionSetupHandler.FactionSetupItemDef;
 import java.awt.Color;
 import java.util.List;
@@ -79,7 +79,7 @@ public abstract class FactionSetupItem {
 	}
 	
 	protected MarketAPI getPlayerHome() {
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
 		if (!markets.isEmpty()) return markets.get(0);
 		return null;
 	}

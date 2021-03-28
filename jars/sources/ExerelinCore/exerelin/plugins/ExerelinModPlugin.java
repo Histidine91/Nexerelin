@@ -180,7 +180,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            ExerelinUtilsMarket.setTariffs(market);
+            NexUtilsMarket.setTariffs(market);
             ColonyManager.getManager().setGrowthRate(market);
         }
     }
@@ -192,7 +192,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         if (Global.getSector().getFaction("templars") != null) {
-            for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets("templars")) {
+            for (MarketAPI market : NexUtilsFaction.getFactionMarkets("templars")) {
                 SectorManager.updateSubmarkets(market, "templars", "templars");
             }
         }
@@ -306,7 +306,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!newGame)
             EconomyInfoHelper.createInstance();
         
-        if (ExerelinConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
+        if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
             sector.getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
         }
         
@@ -331,7 +331,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onApplicationLoad() throws Exception
     {
         starsectorVersionCheck();
-        boolean bla = ExerelinConfig.countPiratesForVictory;	// just loading config class, not doing anything with it
+        boolean bla = NexConfig.countPiratesForVictory;	// just loading config class, not doing anything with it
         if (!HAVE_VERSION_CHECKER && Global.getSettings().getBoolean("nex_enableVersionChecker"))
             VCModPluginCustom.onApplicationLoad();
         boolean hasLazyLib = Global.getSettings().getModManager().isModEnabled("lw_lazylib");
@@ -436,13 +436,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         // generate random additional colonies
         // note: faction picking relies on live faction list having been generated
         if (ExerelinSetupData.getInstance().corvusMode) {
-            if (ExerelinConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
+            if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
                 Global.getSector().getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
             }
             
             int count = ExerelinSetupData.getInstance().randomColonies;
             int tries = 0;
-            Random random = new Random(ExerelinUtils.getStartingSeed());
+            Random random = new Random(NexUtils.getStartingSeed());
             while (true) {
                 boolean success = ColonyManager.getManager().generateInstantColony(random);
                 if (success)

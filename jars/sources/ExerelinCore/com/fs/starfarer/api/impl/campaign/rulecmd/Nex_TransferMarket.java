@@ -19,8 +19,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_transferMarketMain");
 				opts.setShortcut("nex_transferMarketMain", Keyboard.KEY_ESCAPE, false, false, false, false);
 				
-				ExerelinUtils.addDevModeDialogOptions(dialog);
+				NexUtils.addDevModeDialogOptions(dialog);
 				
 				return true;
 			
@@ -102,7 +102,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				//text.addParagraph("Market value: " + getMarketValue(market));
 				
 				TooltipMakerAPI info = text.beginTooltip();
-				info.addStatModGrid(350, 50, 10, 0, repChange, true, ExerelinUtils.getStatModValueGetter(true, 1));
+				info.addStatModGrid(350, 50, 10, 0, repChange, true, NexUtils.getStatModValueGetter(true, 1));
 				text.addTooltip();
 				
 				String recentOwnerId = getRecentlyCapturedFromId(market);
@@ -118,7 +118,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 					para.setHighlightColors(recentOwner.getBaseUIColor(), Misc.getNegativeHighlightColor());
 				}
 				
-				String origOwnerId = ExerelinUtilsMarket.getOriginalOwner(market);
+				String origOwnerId = NexUtilsMarket.getOriginalOwner(market);
 				if (origOwnerId != null && !origOwnerId.equals(recentOwnerId) && !origOwnerId.equals(Factions.PLAYER)) {
 					FactionAPI origOwner = Global.getSector().getFaction(origOwnerId);
 					str = StringHelper.getString("exerelin_markets", "transferMarketOriginalOwner");
@@ -147,13 +147,13 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				"transferMarketFactorSize", true));
 		
 		// industry
-		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) 
+		float value = NexUtilsMarket.getMarketIndustryValue(market) 
 				/ Global.getSettings().getFloat("nex_transferMarket_valueDivisor");
 		//value *= market.getSize() - 2;
 		stat.modifyFlat("industry", value, StringHelper.getString("exerelin_markets", 
 				"transferMarketFactorIndustry", true));
 		
-		float income = ExerelinUtilsMarket.getIncomeNetPresentValue(market, 6, 0) 
+		float income = NexUtilsMarket.getIncomeNetPresentValue(market, 6, 0) 
 				/ Global.getSettings().getFloat("nex_transferMarket_incomeDivisor");
 		stat.modifyFlat("income", income, StringHelper.getString("exerelin_markets", 
 				"transferMarketFactorIncome", true));
@@ -175,7 +175,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		float repChange = getRepChange(market).getModifiedValue() * 0.01f;
 		if (newFactionId.equals(getRecentlyCapturedFromId(market)))
 			repChange *= Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult");
-		else if (newFactionId.equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+		else if (newFactionId.equals(NexUtilsMarket.getOriginalOwner(market)))
 			repChange *= Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult");
 		
 		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, 
@@ -235,6 +235,6 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		opts.addOption(Misc.ucFirst(StringHelper.getString("back")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
 		
-		ExerelinUtils.addDevModeDialogOptions(dialog);
+		NexUtils.addDevModeDialogOptions(dialog);
 	}
 }

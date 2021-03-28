@@ -12,7 +12,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +90,7 @@ public class FactionBountyManager extends BaseEventManager {
 				continue;
 			
 			// pirates don't issue bounties
-			if (ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction)
+			if (NexConfig.getFactionConfig(factionId).pirateFaction)
 				continue;
 			
 			FactionAPI faction = Global.getSector().getFaction(factionId);
@@ -109,7 +109,7 @@ public class FactionBountyManager extends BaseEventManager {
 				
 				weight += thisWeight;
 			}
-			if (ExerelinConfig.getExerelinFactionConfig(factionId).hostileToAll >= 1)
+			if (NexConfig.getFactionConfig(factionId).hostileToAll >= 1)
 				weight /= (count * 0.5f);
 			else
 				weight *= 0.5f;

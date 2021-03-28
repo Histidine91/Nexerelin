@@ -36,8 +36,8 @@ import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin.Debri
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsFleet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -105,7 +105,7 @@ public class VultureFleetManager extends DisposableFleetManager
 				utility,
 				0);	// quality mod
 		
-		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(faction, params);
+		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(faction, params);
 		if (fleet == null)
 			return null;
 		
@@ -461,7 +461,7 @@ public class VultureFleetManager extends DisposableFleetManager
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(system))
 		{
-			if (ExerelinUtilsFaction.isPirateOrTemplarFaction(market.getFactionId()))
+			if (NexUtilsFaction.isPirateOrTemplarFaction(market.getFactionId()))
 				continue;
 			if (market.getFaction().isHostileTo(Factions.INDEPENDENT)) 
 				continue;

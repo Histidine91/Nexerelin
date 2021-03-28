@@ -17,7 +17,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.defensefleet.DefenseAssignmentAI;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -95,7 +95,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 				{
 					if (!fleet.knowsWhoPlayerIs()) continue;
 					MemoryAPI mem = fleet.getMemoryWithoutUpdate();
-					String type = ExerelinUtilsFleet.getFleetType(fleet);
+					String type = NexUtilsFleet.getFleetType(fleet);
 					if (!FOLLOW_VALID_FLEET_TYPES.contains(type)) continue;
 					if (mem.contains(MemFlags.FLEET_BUSY)) continue;
 					if (fleet.getBattle() != null) continue;

@@ -32,8 +32,8 @@ import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.campaign.intel.fleets.WaitStage;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -111,7 +111,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			Global.getSector().getCampaignUI().addMessage("init called in InvasionIntel");
 		}
 
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 
 			case 0:
@@ -309,7 +309,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		// idea: only one fleet is the actual invasion fleet; rest are strike fleets supporting it
 		// not sure that'll even work given the spawn/despawn behavior
 		boolean isInvasionFleet = extra.fleetType.equals("exerelinInvasionFleet");
-		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, target);
+		float distance = NexUtilsMarket.getHyperspaceDistance(market, target);
 		
 		float myFP = extra.fp;
 		if (!isInvasionFleet) myFP *= 0.75f;
@@ -443,7 +443,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		float defenderStr = WarSimScript.getFactionStrength(targetFaction, system);
 		float defensiveStr = defenderStr + WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
 		
-		float invasionGroundStr = marinesPerFleet * (1 + ExerelinConfig.getExerelinFactionConfig(faction.getId())
+		float invasionGroundStr = marinesPerFleet * (1 + NexConfig.getFactionConfig(faction.getId())
 				.invasionStrengthBonusAttack);
 		invasionGroundStr *= 1 + (getNumFleets() - 1)/2;
 		

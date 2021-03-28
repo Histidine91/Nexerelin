@@ -161,7 +161,7 @@ public class StringHelper {
 	public static String substituteFactionTokens(String str, FactionAPI faction)
 	{
 		Map<String, String> replacements = new HashMap<>();
-		String name = ExerelinUtilsFaction.getFactionShortName(faction);
+		String name = NexUtilsFaction.getFactionShortName(faction);
 		String theName = faction.getDisplayNameWithArticle();
 		replacements.put("$faction", name);
 		replacements.put("$Faction", Misc.ucFirst(name));
@@ -178,7 +178,7 @@ public class StringHelper {
 	public static Highlights getFactionHighlights(FactionAPI faction)
 	{
 		Highlights hl = new Highlights();
-		String name = ExerelinUtilsFaction.getFactionShortName(faction);
+		String name = NexUtilsFaction.getFactionShortName(faction);
 		String theName = faction.getDisplayNameWithArticle();
 		hl.setText(theName, Misc.ucFirst(theName), name, Misc.ucFirst(name));
 		

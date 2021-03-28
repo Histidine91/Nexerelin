@@ -25,8 +25,8 @@ import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -72,7 +72,7 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		
 		addStage(new NexReturnStage(this));
 
-		if ((ExerelinConfig.nexIntelQueued <= 0) || (ExerelinConfig.nexIntelQueued == 1 && playerSpawned))
+		if ((NexConfig.nexIntelQueued <= 0) || (NexConfig.nexIntelQueued == 1 && playerSpawned))
 			addIntelIfNeeded();
 		else {
 			Global.getSector().getIntelManager().queueIntel(this);
@@ -190,7 +190,7 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 				
 		RouteManager.OptionalFleetData extra = route.getExtra();
 		
-		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, target);
+		float distance = NexUtilsMarket.getHyperspaceDistance(market, target);
 		
 		float myFP = extra.fp;
 		if (!useMarketFleetSizeMult)

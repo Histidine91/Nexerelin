@@ -31,8 +31,8 @@ import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsFleet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,7 +125,7 @@ public class SpecialForcesRouteAI {
 			StarSystemAPI sys = raid.getSystem();
 			if (sys != null) 
 			{
-				MarketAPI owner = ExerelinUtilsFaction.getSystemOwningMarket(sys);
+				MarketAPI owner = NexUtilsFaction.getSystemOwningMarket(sys);
 				if (owner != null && owner.getFaction() == player && owner.getSize() < 5)
 					return true;
 			}
@@ -503,7 +503,7 @@ public class SpecialForcesRouteAI {
 			alliedMarkets = AllianceManager.getFactionAlliance(factionId).getAllianceMarkets();
 		}
 		else
-			alliedMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+			alliedMarkets = NexUtilsFaction.getFactionMarkets(factionId);
 		
 		return alliedMarkets;
 	}
@@ -817,7 +817,7 @@ public class SpecialForcesRouteAI {
 		if (!PlayerInSystemTracker.hasFactionSeenPlayer(loc, sf.faction.getId()))
 			return -1;
 		
-		float playerStr = ExerelinUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
+		float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
 		if (playerStr < MIN_PLAYER_STR_TO_DEFEND) return 0;
 		
 		// don't bother if too far away

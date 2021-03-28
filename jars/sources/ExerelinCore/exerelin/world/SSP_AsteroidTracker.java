@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.util.IntervalUtil;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -31,7 +31,7 @@ public class SSP_AsteroidTracker implements EveryFrameScript {
 
     @Override
     public void advance(float amount) {
-        ExerelinUtils.advanceIntervalDays(interval, amount);
+        NexUtils.advanceIntervalDays(interval, amount);
         if (interval.intervalElapsed()) {
             float scale = 1f / (Global.getSector().getClock().getSecondsPerDay() * INTERVAL);
             CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();

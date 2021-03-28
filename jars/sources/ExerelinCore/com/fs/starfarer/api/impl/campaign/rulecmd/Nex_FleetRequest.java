@@ -41,9 +41,9 @@ import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -221,7 +221,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			cost *= RELIEF_COST_MULT;
 		}
 		else {
-			cost = fp * ExerelinConfig.fleetRequestCostPerFP;
+			cost = fp * NexConfig.fleetRequestCostPerFP;
 			if (fleetType == FleetType.INVASION) {
 				float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
 				cost *= mult;
@@ -267,7 +267,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	 */
 	protected void addCostHelpPara(TextPanelAPI text) {
 		text.setFontSmallInsignia();
-		String fpCost = Math.round(ExerelinConfig.fleetRequestCostPerFP) + "";
+		String fpCost = Math.round(NexConfig.fleetRequestCostPerFP) + "";
 		String marineCost = (MARINE_COST_MAX_MOD + 1) + "";
 		String str = StringHelper.getStringAndSubstituteToken("nex_fleetRequest", 
 				"fleetCostHelp", "$credits", fpCost);
@@ -422,10 +422,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (memory.contains(MEM_KEY_SOURCES))
 			return (List<MarketAPI>)memory.get(MEM_KEY_SOURCES);
 		
-		List<MarketAPI> marketsTemp = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> marketsTemp = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
 		String commissioner = PlayerFactionStore.getPlayerFactionId();
 		if (!commissioner.equals(Factions.PLAYER))
-			marketsTemp.addAll(ExerelinUtilsFaction.getFactionMarkets(commissioner));
+			marketsTemp.addAll(NexUtilsFaction.getFactionMarkets(commissioner));
 		
 		List<MarketAPI> markets = new ArrayList<>();
 		for (MarketAPI market : marketsTemp) {
@@ -619,13 +619,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		List<MarketAPI> markets;
 		switch (fleetType) {
 			case INVASION:
-				markets = ExerelinUtilsFaction.getFactionMarkets(faction.getId(), true);
+				markets = NexUtilsFaction.getFactionMarkets(faction.getId(), true);
 				break;
 			case BASESTRIKE:
 				markets = getHiddenBases(faction);
 				break;
 			case RELIEF:
-				List<MarketAPI> factionMarkets = ExerelinUtilsFaction.getFactionMarkets(faction.getId(), false);
+				List<MarketAPI> factionMarkets = NexUtilsFaction.getFactionMarkets(faction.getId(), false);
 				markets = new ArrayList<>();
 				for (MarketAPI market : factionMarkets) {
 					if (Nex_StabilizePackage.isAllowed(market))
@@ -635,7 +635,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			case DEFENSE:
 			case RAID:
 			default:
-				markets = ExerelinUtilsFaction.getFactionMarkets(faction.getId(), false);
+				markets = NexUtilsFaction.getFactionMarkets(faction.getId(), false);
 				break;
 		}
 		List<MarketAPI> toRemove = new ArrayList<>();
@@ -844,7 +844,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	protected String getMarketOptionString(MarketAPI market) {
 		String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
 		LocationAPI loc = market.getContainingLocation();
-		String locName = ExerelinUtilsAstro.getLocationName(loc, true);
+		String locName = NexUtilsAstro.getLocationName(loc, true);
 			
 		entry = StringHelper.substituteToken(entry, "$market", market.getName());
 		entry = StringHelper.substituteToken(entry, "$location", locName);

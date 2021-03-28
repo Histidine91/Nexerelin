@@ -30,12 +30,12 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 
-public class ExerelinUtilsFleet
+public class NexUtilsFleet
 {
 	public static final float DMOD_INCREASE_CHANCE = 0.4f;
 	public static final float DMOD_REDUCE_CHANCE = 0.25f;
 	
-    public static Logger log = Global.getLogger(ExerelinUtilsFleet.class);
+    public static Logger log = Global.getLogger(NexUtilsFleet.class);
    
     /**
      * Used by Starsector Plus/DynaSector to create customized fleets
@@ -53,9 +53,9 @@ public class ExerelinUtilsFleet
     public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
     {
         String variantId = "shepherd_Frontier";
-        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
+        NexFactionConfig config = NexConfig.getFactionConfig(fleet.getFaction().getId());
         if (config != null && config.miningVariantsOrWings != null && !config.miningVariantsOrWings.isEmpty()) 
-            variantId = ExerelinUtils.getRandomListElement(config.miningVariantsOrWings);
+            variantId = NexUtils.getRandomListElement(config.miningVariantsOrWings);
         FleetMemberAPI miner = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
         
         // set correct CR
@@ -182,7 +182,7 @@ public class ExerelinUtilsFleet
     
     public static float getPlayerLevelFPBonus()
     {
-        return Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+        return Global.getSector().getPlayerPerson().getStats().getLevel() * NexConfig.fleetBonusFpPerPlayerLevel;
     }
     
     public static List<CampaignFleetAPI> getAllFleetsInSector()
@@ -222,7 +222,7 @@ public class ExerelinUtilsFleet
 	public static void addDMods(CampaignFleetAPI fleet, int level) {
 		log.info("Adding D-mods to fleet, level " + level);
 		if (level <= 0) return;
-		Random random = new Random(ExerelinUtils.getStartingSeed());
+		Random random = new Random(NexUtils.getStartingSeed());
 		
 		
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {

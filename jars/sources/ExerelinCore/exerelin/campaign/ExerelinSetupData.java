@@ -2,7 +2,7 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 
 import java.util.HashMap;
@@ -52,11 +52,11 @@ public class ExerelinSetupData
 
 	public ExerelinSetupData()
 	{
-		List<String> factionIds = ExerelinConfig.getFactions(true, false);
+		List<String> factionIds = NexConfig.getFactions(true, false);
 		factionIds.add(Factions.INDEPENDENT);
 		factionIds.remove(Factions.PLAYER);
 		for (String factionId : factionIds) {
-			factions.put(factionId, ExerelinConfig.getExerelinFactionConfig(factionId).enabledByDefault);
+			factions.put(factionId, NexConfig.getFactionConfig(factionId).enabledByDefault);
 		}
 	}
 

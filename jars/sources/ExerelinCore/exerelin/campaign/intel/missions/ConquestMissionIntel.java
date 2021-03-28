@@ -27,8 +27,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -71,7 +71,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
 		setPostingRangeLY(9999999999f); //considering only having conquest have a posting range, a lot more rare than disrupt missions
-		boolean queuedNexMissions = ExerelinConfig.queuedNexMissions;
+		boolean queuedNexMissions = NexConfig.queuedNexMissions;
 
 		if (queuedNexMissions) {
 			Global.getSector().getIntelManager().queueIntel(this);
@@ -154,9 +154,9 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	}
 	
 	protected int calculateReward(boolean includeBonus) {
-		float value = ExerelinUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
+		float value = NexUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
 		
-		value += ExerelinUtilsMarket.getIncomeNetPresentValue(market, 3, 0);
+		value += NexUtilsMarket.getIncomeNetPresentValue(market, 3, 0);
 		
 		if (includeBonus) {
 			float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_REWARD_MULT);
@@ -176,7 +176,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		float repChange = Nex_TransferMarket.getRepChange(market).getModifiedValue() * 0.01f;
 		if (factionId.equals(Nex_TransferMarket.getRecentlyCapturedFromId(market)))
 			repChange *= Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult");
-		else if (factionId.equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+		else if (factionId.equals(NexUtilsMarket.getOriginalOwner(market)))
 			repChange *= Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult");
 		
 		SectorManager.transferMarket(market, faction, oldFaction, true, false, 

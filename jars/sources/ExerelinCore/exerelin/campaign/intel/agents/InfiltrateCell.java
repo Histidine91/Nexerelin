@@ -21,7 +21,7 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import static exerelin.campaign.intel.agents.CovertActionIntel.DEFAULT_AGENT_LEVEL;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -138,7 +138,7 @@ public class InfiltrateCell extends CovertActionIntel {
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)
-			ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
+			NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
 		
 		info.addPara(getString("intelBulletTarget"), afKnown ? pad : initPad, color, 
 				market.getFaction().getBaseUIColor(), market.getName());

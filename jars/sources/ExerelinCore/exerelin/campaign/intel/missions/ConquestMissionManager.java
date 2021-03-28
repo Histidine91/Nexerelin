@@ -13,8 +13,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.EventType;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -101,7 +101,7 @@ public class ConquestMissionManager extends BaseEventManager {
 		for (String factionId : liveFactions)
 		{
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, 
-					ExerelinConfig.allowPirateInvasions, true, false);
+					NexConfig.allowPirateInvasions, true, false);
 			numWars += enemies.size();
 		}
 		numWars = numWars/2;	// since the preceding loop counts both ends
@@ -134,9 +134,9 @@ public class ConquestMissionManager extends BaseEventManager {
 		for (String factionId : liveFactions)
 		{
 			if (factionId.equals(Factions.PLAYER)) continue;
-			if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(factionId))
+			if (!NexConfig.allowPirateInvasions && NexUtilsFaction.isPirateFaction(factionId))
 				continue;
-			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true, false);
+			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, NexConfig.allowPirateInvasions, true, false);
 			if (enemies.isEmpty()) continue;
 			
 			float count = 0;

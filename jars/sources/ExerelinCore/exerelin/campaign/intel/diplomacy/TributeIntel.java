@@ -20,7 +20,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.econ.TributeCondition;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -78,7 +78,7 @@ public class TributeIntel extends BaseIntelPlugin {
 
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
-		ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
 		info.addPara(market.getName(), tc, pad);
 	}
 	
@@ -167,7 +167,7 @@ public class TributeIntel extends BaseIntelPlugin {
 				Color deltaColor = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 				String delta = (int)Math.abs(repResult.delta * 100) + "";
 				String newRel = NexUtilsReputation.getRelationStr(storedRelation);
-				String fn = ExerelinUtilsFaction.getFactionShortName(factionId);
+				String fn = NexUtilsFaction.getFactionShortName(factionId);
 				str = StringHelper.getString("exerelin_diplomacy", "intelRepResultNegativePlayer");
 				str = StringHelper.substituteToken(str, "$faction", fn);
 				str = StringHelper.substituteToken(str, "$deltaAbs", delta);

@@ -16,7 +16,7 @@ import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.lwjgl.input.Keyboard;
 
@@ -54,7 +54,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 			return;
 		}
 		
-		if (Keyboard.isKeyDown(ExerelinConfig.directoryDialogKey))
+		if (Keyboard.isKeyDown(NexConfig.directoryDialogKey))
 		{
 			Global.getSector().getCampaignUI().showInteractionDialog(new FactionDirectoryDialog(), Global.getSector().getPlayerFleet());
 		}

@@ -19,9 +19,9 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Arrays;
@@ -95,7 +95,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_factionDirectoryMain");
 				opts.setShortcut("nex_factionDirectoryMain", Keyboard.KEY_ESCAPE, false, false, false, false);
 				
-				ExerelinUtils.addDevModeDialogOptions(dialog);
+				NexUtils.addDevModeDialogOptions(dialog);
 				
 				return true;
 				
@@ -153,7 +153,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		opts.addOption(Misc.ucFirst(StringHelper.getString("back")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
 		
-		ExerelinUtils.addDevModeDialogOptions(dialog);
+		NexUtils.addDevModeDialogOptions(dialog);
 	}
 	
 	    
@@ -164,8 +164,8 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	 */
 	public void printFactionMarkets(TextPanelAPI text, String factionId) 
 	{
-		boolean isExiInCorvus = ExerelinUtilsFaction.isExiInCorvus(factionId);
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+		boolean isExiInCorvus = NexUtilsFaction.isExiInCorvus(factionId);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
 		if (markets.isEmpty())
 		{
 			if (!isExiInCorvus) return;
@@ -216,7 +216,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			}
 			String marketName = market.getName();
 			LocationAPI loc = market.getContainingLocation();
-			String locName = ExerelinUtilsAstro.getLocationName(loc, true);
+			String locName = NexUtilsAstro.getLocationName(loc, true);
 			int size = market.getSize();
 			Color sizeColor = getSizeColor(size);
 

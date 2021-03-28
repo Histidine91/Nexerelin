@@ -7,7 +7,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class IsAllianceAlignmentCompatible extends BaseCommandPlugin {
 		if (!playerFactionId.equals(Factions.PLAYER)) {
 			return false;
 		}
-		if (ExerelinConfig.ignoreAlignmentForAlliances) return true;
+		if (NexConfig.ignoreAlignmentForAlliances) return true;
 		
 		Alliance alliance = AllianceManager.getFactionAlliance(playerFactionId);
 		String factionId = params.get(0).getString(memoryMap);

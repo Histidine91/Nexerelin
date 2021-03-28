@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.Collections;
 import java.util.Comparator;
@@ -77,7 +77,7 @@ public class Nex_RemoteCommDirectory extends PaginatedOptions {
 	}
 	
 	protected void addOptions() {
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
 		Collections.sort(markets, new Comparator<MarketAPI>() {
 			@Override
 			public int compare(MarketAPI m1, MarketAPI m2) {

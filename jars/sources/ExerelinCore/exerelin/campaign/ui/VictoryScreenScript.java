@@ -21,7 +21,7 @@ import exerelin.campaign.SectorManager.VictoryType;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.StatsTracker.DeadOfficerEntry;
 import exerelin.campaign.intel.VictoryIntel;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Set;
@@ -99,7 +99,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 
 	protected static class VictoryDialog implements InteractionDialogPlugin
 	{
-		protected boolean officerDeaths = ExerelinConfig.officerDeaths || !StatsTracker.getStatsTracker().getDeadOfficers().isEmpty();
+		protected boolean officerDeaths = NexConfig.officerDeaths || !StatsTracker.getStatsTracker().getDeadOfficers().isEmpty();
 		
 		protected InteractionDialogAPI dialog;
 		protected TextPanelAPI text;

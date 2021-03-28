@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.world.ExerelinCorvusLocations;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +29,7 @@ public class DerelictEmpire extends Scenario {
 			if (corvus || market.getMemoryWithoutUpdate().getBoolean("$nex_randomMarket"))
 			{
 				if (market.getMemoryWithoutUpdate().getBoolean("$nex_procgen_hq")) continue;
-				if (ExerelinUtilsFaction.isPirateFaction(market.getFactionId())) continue;
+				if (NexUtilsFaction.isPirateFaction(market.getFactionId())) continue;
 				if (market.getFactionId().equals(Factions.INDEPENDENT))
 					continue;
 				Global.getLogger(this.getClass()).info(String.format(

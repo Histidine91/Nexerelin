@@ -15,7 +15,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.impl.campaign.rulecmd.newgame.NGCAddStartingShipsByFleetType;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +42,7 @@ public class DerelictFleet extends CustomStart {
 			public void run() {
 				CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
 				
-				ExerelinUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
+				NexUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
 				
 				fleet.getFleetData().ensureHasFlagship();
 				

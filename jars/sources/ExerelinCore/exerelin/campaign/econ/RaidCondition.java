@@ -11,7 +11,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,7 +55,7 @@ public class RaidCondition extends BaseMarketConditionPlugin {
 		if (!market.isInEconomy()) {
 			market.removeSpecificCondition(condition.getIdForPluginModifications());
 		}
-		ExerelinUtils.advanceIntervalDays(interval, amount);
+		NexUtils.advanceIntervalDays(interval, amount);
 		if (interval.intervalElapsed()) {
 			refreshRaids();
 		}

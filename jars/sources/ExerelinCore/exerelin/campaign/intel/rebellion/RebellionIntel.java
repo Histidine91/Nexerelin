@@ -155,7 +155,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 		conditionToken = market.addCondition("nex_rebellion_condition");
 		Global.getSector().getListenerManager().addListener(this);
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 
 			case 0:
@@ -222,7 +222,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		float sizeMult = getSizeMod(market);
 		govtStrength = (6 + stability * 1.25f) * sizeMult;
 		rebelStrength = (3 + (10 - stability) * 1.25f) * sizeMult * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
-		if (rebelFaction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+		if (rebelFaction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
 			rebelStrength *= REBEL_ORIGINAL_OWNER_STR_MULT;
 		
 		if (instant) {
@@ -671,7 +671,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		int str = (int)(rebelStrength * 2 - govtStrength);
 		int numMarines = (int)(str * 2 / VALUE_MARINES);
 		
-		float distance = ExerelinUtilsMarket.getHyperspaceDistance(sourceMarket, market);
+		float distance = NexUtilsMarket.getHyperspaceDistance(sourceMarket, market);
 		int tankerFP = (int)(fp * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
 		//fp -= tankerFP;
 				
@@ -686,7 +686,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				fp*0.05f,	// utility
 				0);	// quality mod
 		
-		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(sourceMarket.getFaction(), fleetParams);
+		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(sourceMarket.getFaction(), fleetParams);
 		if (fleet == null) return null;
 		
 		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(numMarines/2.5f));
@@ -723,7 +723,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (AllianceManager.getFactionAlliance(govtFaction.getId()) != null)
 			markets = AllianceManager.getFactionAlliance(govtFaction.getId()).getAllianceMarkets();
 		else
-			markets = ExerelinUtilsFaction.getFactionMarkets(govtFaction.getId());
+			markets = NexUtilsFaction.getFactionMarkets(govtFaction.getId());
 		for (MarketAPI maybeSource : markets)
 		{
 			if (maybeSource == this.market)
@@ -935,9 +935,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		float initPad = 3, pad = 0;
 		
 		int knownLevel = getDetailLevel();
-		ExerelinUtilsFaction.addFactionNamePara(info, initPad, c, govtFaction);
+		NexUtilsFaction.addFactionNamePara(info, initPad, c, govtFaction);
 		if (knownLevel >= DETAIL_LEVEL_TO_KNOW_FACTION) 
-			ExerelinUtilsFaction.addFactionNamePara(info, pad, c, rebelFaction);
+			NexUtilsFaction.addFactionNamePara(info, pad, c, rebelFaction);
 		
 		// If event is completed, print result
 		if (result != null) {

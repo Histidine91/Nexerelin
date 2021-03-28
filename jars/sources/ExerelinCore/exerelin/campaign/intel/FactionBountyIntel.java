@@ -30,8 +30,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -101,10 +101,10 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 		int highestWeight = 0;
 		for (String otherId : DiplomacyManager.getFactionsAtWarWithFaction(faction, true, true, false)) {
 			FactionAPI other = Global.getSector().getFaction(otherId);
-			if (ExerelinUtilsFaction.isPirateFaction(otherId))
+			if (NexUtilsFaction.isPirateFaction(otherId))
 				continue;
 			
-			float weight = ExerelinUtilsFaction.getFactionMarketSizeSum(otherId);
+			float weight = NexUtilsFaction.getFactionMarketSizeSum(otherId);
 			if (faction.isAtBest(otherId, RepLevel.VENGEFUL))
 				weight *= 4f;
 			weight *= MathUtils.getRandomNumberInRange(0.8f, 1.2f);
@@ -173,14 +173,14 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 		if (!faction.isHostileTo(other.getId())) return false;
 		
 		// no pirates, remnants etc. unless it's a raid fleet or something
-		boolean badFaction = ExerelinUtilsFaction.isPirateFaction(other.getId()) || !other.isShowInIntelTab();
+		boolean badFaction = NexUtilsFaction.isPirateFaction(other.getId()) || !other.isShowInIntelTab();
 		
 		if (badFaction) {
 			//if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER))
 			//	return true;
 			if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_WAR_FLEET))
 				return true;
-			String type = ExerelinUtilsFleet.getFleetType(fleet);
+			String type = NexUtilsFleet.getFleetType(fleet);
 			if (type != null && ALWAYS_PAYOUT_FLEETS.contains(type))
 				return true;
 			
@@ -289,7 +289,7 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 	}
 	
 	public String getName() {
-		String name = ExerelinUtilsFaction.getFactionShortName(faction);
+		String name = NexUtilsFaction.getFactionShortName(faction);
 		if (isEnding()) {
 			return getString("factionBountyIntel_titleEnded") + " - " + name;
 		}
@@ -364,7 +364,7 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 			info.setBulletedListMode(BaseIntelPlugin.INDENT);
 			float initPad = pad;
 			for (FactionAPI other : hostile) {
-				if (ExerelinUtilsFaction.isPirateFaction(other.getId()))
+				if (NexUtilsFaction.isPirateFaction(other.getId()))
 					continue;
 				info.addPara(Misc.ucFirst(other.getDisplayName()), other.getBaseUIColor(), initPad);
 				initPad = 0f;

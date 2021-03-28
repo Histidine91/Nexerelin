@@ -28,8 +28,8 @@ import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -137,7 +137,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	protected boolean wasCivilized(MarketAPI market, Map<String, MemoryAPI> memoryMap) {
 		if (memoryMap.get(MemKeys.MARKET).getBoolean("$wasCivilized"))
 			return true;
-		if (market.getStarSystem() != null && ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
+		if (market.getStarSystem() != null && NexUtilsAstro.isCoreSystem(market.getStarSystem()))
 			return true;
 		
 		return false;
@@ -192,7 +192,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 			opts.setEnabled("nex_decivEvent_accept", false);
 		}
 		
-		ExerelinUtils.addDevModeDialogOptions(dialog);
+		NexUtils.addDevModeDialogOptions(dialog);
 	}
 	
 	protected void accept(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 

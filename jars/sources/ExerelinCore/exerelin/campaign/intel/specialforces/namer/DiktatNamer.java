@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import exerelin.ExerelinConstants;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ public class DiktatNamer implements SpecialForcesNamer {
 			JSONArray names1 = json.getJSONArray("diktat_names1");
 			JSONArray names2 = json.getJSONArray("diktat_names2");
 			JSONArray prepos = json.getJSONArray("diktat_prepositions");
-			NAMES_FIRST.addAll(ExerelinUtils.JSONArrayToArrayList(names1));
-			NAMES_SECOND.addAll(ExerelinUtils.JSONArrayToArrayList(names2));
-			PREPOSITIONS.addAll(ExerelinUtils.JSONArrayToArrayList(prepos));
+			NAMES_FIRST.addAll(NexUtils.JSONArrayToArrayList(names1));
+			NAMES_SECOND.addAll(NexUtils.JSONArrayToArrayList(names2));
+			PREPOSITIONS.addAll(NexUtils.JSONArrayToArrayList(prepos));
 			FORMAT = json.getString("diktat_nameFormat");
 		}
 		catch (IOException | JSONException ex) {
@@ -41,9 +41,9 @@ public class DiktatNamer implements SpecialForcesNamer {
 
 	@Override
 	public String getFleetName(CampaignFleetAPI fleet, MarketAPI origin, PersonAPI commander) {
-		String one = ExerelinUtils.getRandomListElement(NAMES_FIRST);
-		String two = ExerelinUtils.getRandomListElement(NAMES_SECOND);
-		String prepos = ExerelinUtils.getRandomListElement(PREPOSITIONS);
+		String one = NexUtils.getRandomListElement(NAMES_FIRST);
+		String two = NexUtils.getRandomListElement(NAMES_SECOND);
+		String prepos = NexUtils.getRandomListElement(PREPOSITIONS);
 		
 		String name = StringHelper.substituteToken(FORMAT, "$one", one);
 		name = StringHelper.substituteToken(name, "$preposition", prepos);

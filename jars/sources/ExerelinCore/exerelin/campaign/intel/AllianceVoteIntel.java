@@ -11,7 +11,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 			otherPartyCol = Misc.getHighlightColor();
 		}
 		else {
-			otherParty = ExerelinUtilsFaction.getFactionShortName(otherPartyId);
+			otherParty = NexUtilsFaction.getFactionShortName(otherPartyId);
 			otherPartyCol = Global.getSector().getFaction(otherPartyId).getBaseUIColor();
 		}
 		Map<String, String> sub = new HashMap<>();
@@ -159,7 +159,7 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 		
 		for (String factionId : voters)
 		{
-			String name = ExerelinUtilsFaction.getFactionShortName(factionId);
+			String name = NexUtilsFaction.getFactionShortName(factionId);
 			highlights.add(name);
 			colors.add(Global.getSector().getFaction(factionId).getBaseUIColor());
 			factionNames.add(name);
@@ -188,7 +188,7 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 		List<Color> hlColors = new ArrayList<>();
 		for (String defier : result.defied)
 		{
-			defiers.add(ExerelinUtilsFaction.getFactionShortName(defier));
+			defiers.add(NexUtilsFaction.getFactionShortName(defier));
 			hlColors.add(Global.getSector().getFaction(defier).getBaseUIColor());
 		}
 		str = StringHelper.substituteToken(str, "$defying", StringHelper.writeStringCollection(defiers, true, true));

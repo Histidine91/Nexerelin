@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import exerelin.ExerelinConstants;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class LuddicNamer implements SpecialForcesNamer {
 			JSONObject json = Global.getSettings().getMergedJSONForMod(FILE_PATH, ExerelinConstants.MOD_ID);
 			JSONArray names1 = json.getJSONArray("luddic_names1");
 			JSONArray names2 = json.getJSONArray("luddic_names2");
-			NAMES_FIRST.addAll(ExerelinUtils.JSONArrayToArrayList(names1));
-			NAMES_SECOND.addAll(ExerelinUtils.JSONArrayToArrayList(names2));
+			NAMES_FIRST.addAll(NexUtils.JSONArrayToArrayList(names1));
+			NAMES_SECOND.addAll(NexUtils.JSONArrayToArrayList(names2));
 		}
 		catch (IOException | JSONException ex) {
 			throw new RuntimeException("Failed to load Luddic special forces namer", ex);
@@ -39,8 +39,8 @@ public class LuddicNamer implements SpecialForcesNamer {
 
 	@Override
 	public String getFleetName(CampaignFleetAPI fleet, MarketAPI origin, PersonAPI commander) {
-		String one = ExerelinUtils.getRandomListElement(NAMES_FIRST);
-		String two = ExerelinUtils.getRandomListElement(NAMES_SECOND);
+		String one = NexUtils.getRandomListElement(NAMES_FIRST);
+		String two = NexUtils.getRandomListElement(NAMES_SECOND);
 		return one + " " + StringHelper.getString("of") + " " + two;
 	}
 }

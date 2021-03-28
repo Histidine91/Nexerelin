@@ -15,8 +15,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -128,8 +128,8 @@ public class RaiseRelations extends CovertActionIntel {
 		}
 		if (shouldReportEvent()) {
 			boolean notify = shouldNotify();
-			if (ExerelinConfig.nexIntelQueued <= 1) {
-				if (ExerelinConfig.nexIntelQueued <= 0
+			if (NexConfig.nexIntelQueued <= 1) {
+				if (NexConfig.nexIntelQueued <= 0
 					||	affectsPlayerRep()
 					||	playerInvolved
 					||	agentFaction == PlayerFactionStore.getPlayerFaction()
@@ -227,21 +227,21 @@ public class RaiseRelations extends CovertActionIntel {
 		if (result != null)
 		{
 			if (result.isSuccessful()) {
-				ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
+				NexUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
 				first = false;
 			}
 			else if (result.isDetected() || isAgentFactionKnown()) {
-				ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
+				NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
 				first = false;
 			}
 		}
 		else {
 			if (agentFaction != thirdFaction) {
-				ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
+				NexUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
 				first = false;
 			}
 		}
-		ExerelinUtilsFaction.addFactionNamePara(info, first ? initPad : pad, color, targetFaction);
+		NexUtilsFaction.addFactionNamePara(info, first ? initPad : pad, color, targetFaction);
 		
 		if (repResult != null && repResult.delta != 0) {
 			String relString = NexUtilsReputation.getRelationStr(relation);

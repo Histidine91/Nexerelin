@@ -22,11 +22,11 @@ import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.diplomacy.CeasefirePromptIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinFactionConfig.Morality;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.Morality;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -152,8 +152,8 @@ public class DiplomacyBrain {
 	
 	public float getDispositionFromAlignments(String factionId)
 	{
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		ExerelinFactionConfig ourConf = ExerelinConfig.getExerelinFactionConfig(this.factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
+		NexFactionConfig ourConf = NexConfig.getFactionConfig(this.factionId);
 		float disposition = 0;
 		
 		//log.info("Checking alignments for factions: " + factionId + ", " + this.factionId);
@@ -194,8 +194,8 @@ public class DiplomacyBrain {
 	
 	public float getDispositionFromMorality(String factionId)
 	{
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		ExerelinFactionConfig ourConf = ExerelinConfig.getExerelinFactionConfig(this.factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
+		NexFactionConfig ourConf = NexConfig.getFactionConfig(this.factionId);
 		
 		Morality us = ourConf.morality;
 		Morality them = conf.morality;
@@ -365,7 +365,7 @@ public class DiplomacyBrain {
 		
 		if (lawAndOrder || anarchist) {
 			float freeportScore = 0;
-			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+			List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
 			for (MarketAPI market : markets) {
 				if (market.isFreePort()) freeportScore += market.getSize();
 			}
@@ -401,7 +401,7 @@ public class DiplomacyBrain {
 		
 		boolean isHardMode = isHardMode(factionId);
 		
-		float dispBase = ExerelinConfig.getExerelinFactionConfig(this.factionId).getDisposition(factionId);
+		float dispBase = NexConfig.getFactionConfig(this.factionId).getDisposition(factionId);
 		if (!DiplomacyManager.haveRandomRelationships(this.factionId, factionId))
 			disposition.modifyFlat("base", dispBase, "Base disposition");
 		//else
@@ -464,7 +464,7 @@ public class DiplomacyBrain {
 	public float getWarDecisionRating(String enemyId)
 	{
 		log.info("Considering war declaration by " + this.factionId + " against " + enemyId);
-		ExerelinFactionConfig ourConf = ExerelinConfig.getExerelinFactionConfig(this.factionId);
+		NexFactionConfig ourConf = NexConfig.getFactionConfig(this.factionId);
 		
 		float disposition = getDisposition(enemyId).disposition.getModifiedValue();
 		log.info("\tDisposition: " + disposition);
@@ -507,9 +507,9 @@ public class DiplomacyBrain {
 		
 		boolean enemyIsPlayer = Nex_IsFactionRuler.isRuler(enemyId);
 		float enemyWeariness = DiplomacyManager.getWarWeariness(enemyId, true);
-		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + ExerelinConfig.minWarWearinessForPeace);
+		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + NexConfig.minWarWearinessForPeace);
 		if (!enemyIsPlayer) {
-			if (enemyWeariness < ExerelinConfig.minWarWearinessForPeace)
+			if (enemyWeariness < NexConfig.minWarWearinessForPeace)
 				return false;
 		} else {
 			if (playerCeasefireOfferCooldown > 0)
@@ -528,7 +528,7 @@ public class DiplomacyBrain {
 		sumWeariness += eventsMod;
 		
 		// roll chance for peace
-		float divisor = ExerelinConfig.warWearinessDivisor + ExerelinConfig.warWearinessDivisorModPerLevel 
+		float divisor = NexConfig.warWearinessDivisor + NexConfig.warWearinessDivisorModPerLevel 
 				* Global.getSector().getPlayerPerson().getStats().getLevel();
 		if (Math.random() > sumWeariness / divisor)
 			return false;
@@ -546,7 +546,7 @@ public class DiplomacyBrain {
 			return true;
 		}
 		String eventId = peaceTreaty ? "peace_treaty" : "ceasefire";
-		float reduction = peaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
+		float reduction = peaceTreaty ? NexConfig.warWearinessPeaceTreatyReduction : NexConfig.warWearinessCeasefireReduction;
 		
 		DiplomacyManager.createDiplomacyEvent(faction, enemy, eventId, null);
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
@@ -557,7 +557,7 @@ public class DiplomacyBrain {
 	public boolean checkPeace()
 	{
 		if (enemies.isEmpty()) return false;
-		if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
+		if (NexUtilsFaction.isPirateFaction(factionId) && !NexConfig.allowPirateInvasions)
 			return false;
 		
 		long lastWar = DiplomacyManager.getManager().getLastWarTimestamp();
@@ -566,7 +566,7 @@ public class DiplomacyBrain {
 		
 		float ourWeariness = DiplomacyManager.getWarWeariness(factionId, true);
 		log.info("Checking peace for faction " + faction.getDisplayName() + ": weariness " + ourWeariness);
-		if (ourWeariness < ExerelinConfig.minWarWearinessForPeace)
+		if (ourWeariness < NexConfig.minWarWearinessForPeace)
 			return false;
 		
 		List<String> enemiesLocal = new ArrayList<>(this.enemies);		
@@ -602,7 +602,7 @@ public class DiplomacyBrain {
 		{
 			if (factionsInvadingOrInvaded.contains(enemyId))
 				continue;
-			if (!ExerelinFactionConfig.canCeasefire(factionId, enemyId))
+			if (!NexFactionConfig.canCeasefire(factionId, enemyId))
 				continue;
 			// don't diplomacy with a commissioned player
 			if (enemyId.equals(Factions.PLAYER) && Misc.getCommissionFaction() != null)
@@ -618,7 +618,7 @@ public class DiplomacyBrain {
 	}
 	
 	public RepLevel getMaxRepForOpportunisticWar() {
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		
 		/*
 		float niceness = conf.alignments.get(Alignment.DIPLOMATIC) - conf.alignments.get(Alignment.MILITARIST);
@@ -646,7 +646,7 @@ public class DiplomacyBrain {
 			return false;
 		
 		log.info("Checking war for faction " + faction.getDisplayName());
-		if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
+		if (NexUtilsFaction.isPirateOrTemplarFaction(factionId) && !NexConfig.allowPirateInvasions)
 			return false;
 		
 		float ourWeariness = DiplomacyManager.getWarWeariness(factionId, true);
@@ -681,7 +681,7 @@ public class DiplomacyBrain {
 				continue;
 			if (!SectorManager.isFactionAlive(otherFactionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) continue;
-			if (ExerelinUtilsFaction.isPirateFaction(otherFactionId) && !ExerelinConfig.allowPirateInvasions)
+			if (NexUtilsFaction.isPirateFaction(otherFactionId) && !NexConfig.allowPirateInvasions)
 				continue;
 			if (ceasefires.containsKey(otherFactionId)) continue;
 			if (!faction.isAtBest(otherFactionId, maxRep)) continue;	// relations aren't bad enough yet
@@ -719,7 +719,7 @@ public class DiplomacyBrain {
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId))
 				continue;
 			if (Nex_IsFactionRuler.isRuler(otherFactionId)) {
-				if (!ExerelinConfig.followersDiplomacy) continue;
+				if (!NexConfig.followersDiplomacy) continue;
 				if (!otherFactionId.equals(PlayerFactionStore.getPlayerFactionId())) continue;
 			}
 			if (random.nextFloat() < EVENT_SKIP_CHANCE)
@@ -793,7 +793,7 @@ public class DiplomacyBrain {
 				continue;
 			
 			// this market used to belong to us, increment revanchism towards its current owner
-			if (ExerelinUtilsMarket.wasOriginalOwner(market, this.factionId))
+			if (NexUtilsMarket.wasOriginalOwner(market, this.factionId))
 			{
 				float curr = 0;
 				if (revanchismTemp.containsKey(mktFactionId)) 
@@ -970,8 +970,7 @@ public class DiplomacyBrain {
 	
 	public static float getFactionEnemyStrength(String factionId)
 	{
-		Set<String> enemies = new HashSet<>(DiplomacyManager.getFactionsAtWarWithFaction(
-				factionId, ExerelinConfig.allowPirateInvasions, false, true));
+		Set<String> enemies = new HashSet<>(DiplomacyManager.getFactionsAtWarWithFaction(factionId, NexConfig.allowPirateInvasions, false, true));
 		
 		float str = 0;
 		

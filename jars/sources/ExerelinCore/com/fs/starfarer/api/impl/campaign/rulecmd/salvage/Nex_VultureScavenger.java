@@ -22,7 +22,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed.SDM
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed.SalvageDefenderModificationPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
@@ -52,7 +52,7 @@ public class Nex_VultureScavenger extends BaseCommandPlugin {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		for (CampaignFleetAPI fleet : target.getContainingLocation().getFleets())
 		{
-			if ("nex_vultureFleet".equals(ExerelinUtilsFleet.getFleetType(fleet))) 
+			if ("nex_vultureFleet".equals(NexUtilsFleet.getFleetType(fleet))) 
 			{
 				//Global.getLogger(this.getClass()).info("Checking vulture " + fleet.getNameWithFaction());
 				if (fleet.getBattle() != null) {

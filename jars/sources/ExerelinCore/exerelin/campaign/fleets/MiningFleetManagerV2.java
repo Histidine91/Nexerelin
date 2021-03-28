@@ -20,10 +20,10 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.MiningHelperLegacy.MiningReport;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import java.util.Map;
@@ -182,7 +182,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		
 		String name = StringHelper.getString("exerelin_fleets", "miningFleetName");
 		String factionId = origin.getFactionId();
-		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig factionConfig = NexConfig.getFactionConfig(factionId);
 		if (factionConfig != null)
 		{
 			name = factionConfig.asteroidMiningFleetName;
@@ -204,7 +204,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 				-0.25f);	// quality mod
 		
 		//CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP/3);
-		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(faction, params);
+		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(faction, params);
 		if (fleet == null)
 			return null;
 		
@@ -215,7 +215,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		int minerFP = (int)(maxFP * 0.25f + 0.5f);
 		while (minerFP > 0)
 		{
-			FleetMemberAPI miner = ExerelinUtilsFleet.addMiningShipToFleet(fleet);
+			FleetMemberAPI miner = NexUtilsFleet.addMiningShipToFleet(fleet);
 			minerFP -= miner.getFleetPointCost();
 			//log.info("Adding miner to fleet: " + miner.getHullId());
 		}
@@ -336,7 +336,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarkets(system))
 		{
-			if (ExerelinUtilsFaction.isPirateOrTemplarFaction(market.getFactionId()))
+			if (NexUtilsFaction.isPirateOrTemplarFaction(market.getFactionId()))
 				continue;
 			if (market.getFactionId().equals(Factions.DERELICT)) 
 				continue;

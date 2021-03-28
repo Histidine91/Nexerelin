@@ -12,8 +12,8 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -44,7 +44,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		this.faction2 = faction2;
 		this.allianceId = allianceId;
 		this.allianceName = allianceName;
-		if (ExerelinConfig.nexIntelQueued <= 0 || ExerelinConfig.nexIntelQueued == 1) {
+		if (NexConfig.nexIntelQueued <= 0 || NexConfig.nexIntelQueued == 1) {
 			Global.getSector().getIntelManager().addIntel(this, true);
 		}
 		else {
@@ -95,8 +95,8 @@ public class AllianceIntel extends BaseIntelPlugin {
 		if (updateType != null) {
 			switch (updateType) {
 				case FORMED:
-					ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, faction1);
-					ExerelinUtilsFaction.addFactionNamePara(info, pad, tc, faction2);
+					NexUtilsFaction.addFactionNamePara(info, initPad, tc, faction1);
+					NexUtilsFaction.addFactionNamePara(info, pad, tc, faction2);
 
 					sub1 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
 					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPointShort", 
@@ -203,16 +203,16 @@ public class AllianceIntel extends BaseIntelPlugin {
 		List<String> canJoin = new ArrayList<>();
 		List<String> tooLowRelationship = new ArrayList<>();
 		List<String> wrongAlignment = new ArrayList<>();
-		boolean pirateDiplomacy = ExerelinConfig.allowPirateInvasions;
+		boolean pirateDiplomacy = NexConfig.allowPirateInvasions;
 		Set<String> members = alliance.getMembersCopy();
 		
 		for (String factionId : SectorManager.getLiveFactionIdsCopy())
 		{
 			if (members.contains(factionId)) continue;
-			if (!pirateDiplomacy && ExerelinUtilsFaction.isPirateFaction(factionId))
+			if (!pirateDiplomacy && NexUtilsFaction.isPirateFaction(factionId))
 				continue;
 			
-			boolean compatible = ExerelinConfig.ignoreAlignmentForAlliances || 
+			boolean compatible = NexConfig.ignoreAlignmentForAlliances || 
 					AllianceManager.getAlignmentCompatibilityWithAlliance(factionId, alliance) 
 					>= AllianceManager.MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
 			if (!compatible) {
@@ -304,8 +304,8 @@ public class AllianceIntel extends BaseIntelPlugin {
 		
 		String str = getString("intelMemberEntry");
 		String name = Misc.ucFirst(faction.getDisplayName());
-		String num = ExerelinUtilsFaction.getFactionMarkets(factionId).size() + "";
-		String sizeSum = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId) + "";
+		String num = NexUtilsFaction.getFactionMarkets(factionId).size() + "";
+		String sizeSum = NexUtilsFaction.getFactionMarketSizeSum(factionId) + "";
 		Map<String, String> sub = new HashMap<>();
 		sub.put("$faction", name);
 		sub.put("$num", num);

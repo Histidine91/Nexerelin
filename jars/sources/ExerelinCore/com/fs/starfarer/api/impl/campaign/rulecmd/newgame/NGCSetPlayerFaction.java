@@ -15,8 +15,8 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.util.Random;
 
@@ -34,13 +34,13 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 			if (ExerelinSetupData.getInstance().corvusMode)
 			{
-				picker.addAll(ExerelinConfig.getFactions(false, true));
+				picker.addAll(NexConfig.getFactions(false, true));
 			}
 			else
 			{
 				// randomly pick between one of the enabled factions (except independent)
 				Map<String, Boolean> enabledFactions = ExerelinSetupData.getInstance().factions;
-				for (String pickable : ExerelinConfig.getFactions(false, true))
+				for (String pickable : NexConfig.getFactions(false, true))
 				{
 					if (!enabledFactions.containsKey(pickable) || enabledFactions.get(pickable) == true)
 						picker.add(pickable);
@@ -70,7 +70,7 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
 		if (!factionId.equals(Factions.PLAYER))
 		{
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			ExerelinSetupData.getInstance().freeStart = conf.freeStart;
 		}
 		return true;

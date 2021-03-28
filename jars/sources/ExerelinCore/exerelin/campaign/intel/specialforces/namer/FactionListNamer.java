@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import exerelin.ExerelinConstants;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +26,7 @@ public class FactionListNamer implements SpecialForcesNamer {
 		try {
 			JSONObject json = Global.getSettings().getMergedJSONForMod(FILE_PATH, ExerelinConstants.MOD_ID);
 			JSONArray names = json.getJSONArray("factionNames_" + fleet.getFaction().getId());
-			name = ExerelinUtils.getRandomListElement(ExerelinUtils.JSONArrayToArrayList(names));
+			name = NexUtils.getRandomListElement(NexUtils.JSONArrayToArrayList(names));
 		}
 		catch (IOException | JSONException ex) {
 			Global.getLogger(this.getClass()).info("Failed to load special forces name list for faction " + fleet.getFaction().getId(), ex);

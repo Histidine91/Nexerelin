@@ -12,7 +12,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.intel.PlayerOutpostIntel;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus implements C
 			exitOpt = "continueCutComm";
 		addOptionAllPages(StringHelper.getString("back", true), exitOpt);
 		
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
 		boolean colorize = false;
 		
 		// allow suspending autonomy of commissioning faction's markets as well, in faction ruler mode

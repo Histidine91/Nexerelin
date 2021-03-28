@@ -9,7 +9,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
@@ -112,7 +112,7 @@ public class ResponseFleetAI implements EveryFrameScript
 			Script despawnScript = new Script() {
 				@Override
 				public void run() {
-					float points = ExerelinUtilsFleet.getFleetGenPoints(fleet) * RESERVE_RESTORE_EFFICIENCY;
+					float points = NexUtilsFleet.getFleetGenPoints(fleet) * RESERVE_RESTORE_EFFICIENCY;
 					log.info("Response fleet despawning at base " + data.source.getName() + "; can restore " + points + " points");
 					ResponseFleetManager.modifyReserveSize(data.sourceMarket, points);
 				}
@@ -120,7 +120,7 @@ public class ResponseFleetAI implements EveryFrameScript
 			
 			SectorEntityToken destination = data.source;		  
 			this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
-			this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), StringHelper.getFleetAssignmentString("standingDown", null, "missionPatrol"), despawnScript);
+			this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, NexUtilsFleet.getDaysToOrbit(fleet), StringHelper.getFleetAssignmentString("standingDown", null, "missionPatrol"), despawnScript);
 			this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
 		}
 	}

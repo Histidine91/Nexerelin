@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ExerelinUtilsFaction {
+public class NexUtilsFaction {
 	
 	public static MarketAPI getSystemOwningMarket(LocationAPI loc) {
 		int max = 0;
@@ -67,7 +67,7 @@ public class ExerelinUtilsFaction {
         List<MarketAPI> ret = new ArrayList<>();
         for (MarketAPI market : allMarkets)
         {
-            if (onlyInvadable && !ExerelinUtilsMarket.canBeInvaded(market, false))
+            if (onlyInvadable && !NexUtilsMarket.canBeInvaded(market, false))
                 continue;
             if (market.getFactionId().equals(factionId))
                 ret.add(market);
@@ -113,7 +113,7 @@ public class ExerelinUtilsFaction {
         {
             if (market.getFactionId().equals(factionId))
             {
-                if (onlyInvadable && !ExerelinUtilsMarket.canBeInvaded(market, false))
+                if (onlyInvadable && !NexUtilsMarket.canBeInvaded(market, false))
                     continue;
                 pop += market.getSize();
             }
@@ -140,7 +140,7 @@ public class ExerelinUtilsFaction {
     
     public static boolean isPirateFaction(String factionId)
     {
-        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+        NexFactionConfig config = NexConfig.getFactionConfig(factionId);
         if (config == null) return false;
         return config.pirateFaction;
     }
@@ -154,7 +154,7 @@ public class ExerelinUtilsFaction {
     public static boolean isFactionHostileToAll(String factionId)
     {
         if (isPirateFaction(factionId)) return true;
-        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+        NexFactionConfig config = NexConfig.getFactionConfig(factionId);
         if (config == null) return false;
         return config.hostileToAll > 0;
     }
@@ -194,7 +194,7 @@ public class ExerelinUtilsFaction {
     
     public static boolean isCorvusCompatible(String factionId, boolean noConfigFallback)
     {
-        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+        NexFactionConfig config = NexConfig.getFactionConfig(factionId);
         if (config == null) return noConfigFallback;
         return config.corvusCompatible;
     }
@@ -210,7 +210,7 @@ public class ExerelinUtilsFaction {
     public static void grantCommission(String factionId)
     {
         FactionAPI faction = Global.getSector().getFaction(factionId);
-        if (!ExerelinConfig.getExerelinFactionConfig(faction.getId()).playableFaction)
+        if (!NexConfig.getFactionConfig(faction.getId()).playableFaction)
             return;
         if (faction.getId().equals(getCommissionFactionId()))
             return;    // already have commission

@@ -20,7 +20,7 @@ import data.scripts.SWPModPlugin;
 import data.scripts.util.SWP_Util;
 import exerelin.campaign.StatsTracker;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMath;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -194,7 +194,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	}
 
 	protected void calculateAndApplyOfficerLosses(EngagementResultForFleetAPI result, boolean playerInvolved) {
-		if (!ExerelinConfig.officerDeaths) {
+		if (!NexConfig.officerDeaths) {
 			return;
 		}
 		if (!playerInvolved) {
@@ -333,7 +333,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			if (f > 1) f = 1;
 			
 			float bonusMult = 1;
-			if (ExerelinConfig.officerDaredevilBonus) {
+			if (NexConfig.officerDaredevilBonus) {
 				FleetMemberAPI member = oed.sourceFleet.getFleetData().getMemberWithCaptain(person);
 				if (member != null && member.isFrigate()) {
 					bonusMult = FRIGATE_XP_BONUS;

@@ -16,8 +16,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -121,8 +121,8 @@ public class Nex_AICores extends AICores {
 				FactionAPI myFaction = PlayerFactionStore.getPlayerFaction();
 				if (!DiplomacyManager.haveRandomRelationships(faction.getId(), myFaction.getId()))
 				{
-					String shortName = ExerelinUtilsFaction.getFactionShortName(faction);
-					float maxRep = ExerelinFactionConfig.getMaxRelationship(faction.getId(), myFaction.getId());
+					String shortName = NexUtilsFaction.getFactionShortName(faction);
+					float maxRep = NexFactionConfig.getMaxRelationship(faction.getId(), myFaction.getId());
 					if (maxRep < 1)
 					{
 						int maxRepInt = (int)(maxRep * 100f);

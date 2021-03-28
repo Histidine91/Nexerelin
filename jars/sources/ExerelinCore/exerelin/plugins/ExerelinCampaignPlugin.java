@@ -17,8 +17,8 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFleet;
 
 @SuppressWarnings("unchecked")
 // FIXME rename
@@ -48,7 +48,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		
 		if (entity instanceof CampaignFleetAPI) {
 			CampaignFleetAPI fleet = (CampaignFleetAPI)entity;
-			String type = ExerelinUtilsFleet.getFleetType(fleet);
+			String type = NexUtilsFleet.getFleetType(fleet);
 			if (SpecialForcesIntel.FLEET_TYPE.equals(type))
 			{
 				memory.set("$useVengeanceGreeting", true, 0);
@@ -116,7 +116,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	
 	@Override
 	public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(SectorEntityToken opponent) {
-		if (opponent instanceof CampaignFleetAPI && ExerelinConfig.useCustomBattleCreationPlugin) {
+		if (opponent instanceof CampaignFleetAPI && NexConfig.useCustomBattleCreationPlugin) {
 			return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
 		}
 		return null;

@@ -21,10 +21,10 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -101,12 +101,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             JSONObject namePrefixes = nameConfig.getJSONObject("prefixes");
             JSONArray namePrefixesCommon = namePrefixes.getJSONArray("common");
             
-			allianceNameCommonPrefixes = ExerelinUtils.JSONArrayToArrayList(namePrefixesCommon);
+			allianceNameCommonPrefixes = NexUtils.JSONArrayToArrayList(namePrefixesCommon);
             for (Alignment alignment : Alignment.values())
             {
-                List<String> names =  ExerelinUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
+                List<String> names =  NexUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
                 allianceNamesByAlignment.put(alignment, names);
-                List<String> prefixes = ExerelinUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
+                List<String> prefixes = NexUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
                 alliancePrefixesByAlignment.put(alignment, prefixes);
             }
 			
@@ -121,7 +121,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 				Iterator<String> keys2 = namesLevel2.sortedKeys();
 				while (keys2.hasNext()) {
 					String factionId2 = (String)keys2.next();
-					List<String> namesLevel3 = ExerelinUtils.JSONArrayToArrayList(namesLevel2.getJSONArray(factionId2));
+					List<String> namesLevel3 = NexUtils.JSONArrayToArrayList(namesLevel2.getJSONArray(factionId2));
 					for (String allianceName : namesLevel3) {
 						String[] nameEntry = new String[]{factionId1, factionId2, allianceName};
 						staticAllianceNames.add(nameEntry);
@@ -144,8 +144,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         float bestAlignmentValue = 0;
         List<Alignment> bestAlignments = new ArrayList<>();
-        ExerelinFactionConfig config1 = ExerelinConfig.getExerelinFactionConfig(factionId);
-        ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);   
+        NexFactionConfig config1 = NexConfig.getFactionConfig(factionId);
+        NexFactionConfig config2 = NexConfig.getFactionConfig(otherFactionId);   
         for (Alignment alignment : Alignment.values())
         {
             float alignment1 = 0;
@@ -159,7 +159,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 alignment2 = config2.alignments.get(alignment);
             }
             float sum = alignment1 + alignment2;
-            if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
+            if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !NexConfig.ignoreAlignmentForAlliances) continue;
             if (sum > bestAlignmentValue)
             {
                 bestAlignments.clear();
@@ -173,7 +173,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         if (!bestAlignments.isEmpty())
         {
-            return ExerelinUtils.getRandomListElement(bestAlignments);
+            return NexUtils.getRandomListElement(bestAlignments);
         }
         return null;
     }
@@ -182,7 +182,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         if (alliance == null) return 0;
         float value = 0;
-        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+        NexFactionConfig config = NexConfig.getFactionConfig(factionId);
         if (config.alignments != null)
         {
             //log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.getName());
@@ -223,7 +223,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return alliance2;
         }
         
-        if (type == null) type = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());
+        if (type == null) type = (Alignment) NexUtils.getRandomArrayElement(Alignment.values());
         
         List<String> namePrefixes = generateNamePrefixes(member1, member2, type);
         
@@ -266,7 +266,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 			namePrefixes.add("Common");    // just to make it not crash
 		}
 
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(member1);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(member1);
 		for (MarketAPI market : markets)
 		{
 			if (market.getPrimaryEntity().isInHyperspace()) continue;
@@ -274,7 +274,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 			namePrefixes.add(systemName);
 		}
 
-		markets = ExerelinUtilsFaction.getFactionMarkets(member2);
+		markets = NexUtilsFaction.getFactionMarkets(member2);
 		for (MarketAPI market : markets)
 		{
 			if (market.getPrimaryEntity().isInHyperspace()) continue;
@@ -288,7 +288,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 	{
 		if (DiplomacyManager.isRandomFactionRelationships())
 			return null;
-		if (ExerelinConfig.predefinedAllianceNameChance < Math.random())
+		if (NexConfig.predefinedAllianceNameChance < Math.random())
 			return null;
 		
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
@@ -310,9 +310,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 
 		do {
 			tries++;
-			name = ExerelinUtils.getRandomListElement(namePrefixes);
+			name = NexUtils.getRandomListElement(namePrefixes);
 			List<String> alignmentNames = allianceNamesByAlignment.get(type);
-			name = name + " " + ExerelinUtils.getRandomListElement(alignmentNames);
+			name = name + " " + NexUtils.getRandomListElement(alignmentNames);
 
 			validName = !getManager().alliancesByName.containsKey(name);
 		}
@@ -415,7 +415,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         for (String factionId : liveFactionIds)
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
-            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
+            if (NexUtilsFaction.isPirateFaction(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
 			if (Nex_IsFactionRuler.isRuler(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
@@ -424,7 +424,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             {
                 if (alliancesByFactionId.containsKey(otherFactionId)) continue;
                 if (otherFactionId.equals(factionId)) continue;
-                if (ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
+                if (NexUtilsFaction.isPirateFaction(otherFactionId)) continue;
                 if (INVALID_FACTIONS.contains(otherFactionId)) continue;
 				if (Nex_IsFactionRuler.isRuler(otherFactionId)) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
@@ -455,7 +455,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             for (Alliance alliance : alliances)
             {
                 float value = getAlignmentCompatibilityWithAlliance(factionId, alliance);
-                if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
+                if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !NexConfig.ignoreAlignmentForAlliances) continue;
                 
 				if (Math.random() > Math.pow(JOIN_CHANCE_MULT_PER_MEMBER, alliance.getMembersCopy().size() ))
 				{
@@ -498,7 +498,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         float days = Global.getSector().getClock().convertToDays(amount);
     
-        if (daysElapsed < ExerelinConfig.allianceGracePeriod)
+        if (daysElapsed < NexConfig.allianceGracePeriod)
         {
             daysElapsed += days;
             return;
@@ -508,7 +508,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (!this.tracker.intervalElapsed()) {
             return;
         }
-        float interval = ExerelinConfig.allianceFormationInterval;
+        float interval = NexConfig.allianceFormationInterval;
         tracker.setInterval(interval * 0.8f, interval * 1.2f);
         
         tryMakeAlliance();
@@ -664,7 +664,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (!anyChanges) return;    // done here
         
         // report results
-        String party1 = Misc.ucFirst(ExerelinUtilsFaction.getFactionShortName(faction1));
+        String party1 = Misc.ucFirst(NexUtilsFaction.getFactionShortName(faction1));
         String highlight1 = party1;
         if (alliance1 != null) 
         {
@@ -673,7 +673,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         //else if (faction1.getId().equals("player")) party1 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
 
-        String party2 = Misc.ucFirst(ExerelinUtilsFaction.getFactionShortName(faction2));
+        String party2 = Misc.ucFirst(NexUtilsFaction.getFactionShortName(faction2));
         String highlight2 = party2;
         if (alliance2 != null) 
         {

@@ -22,8 +22,8 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.ui.PopupDialogScript;
 import exerelin.campaign.ui.PopupDialogScript.PopupDialog;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -59,7 +59,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		this.setImportant(true);
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
-		if (ExerelinConfig.ceasefireNotificationPopup)
+		if (NexConfig.ceasefireNotificationPopup)
 			Global.getSector().addScript(new PopupDialogScript(this));
 	}
 	
@@ -72,7 +72,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
-		ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
 	}
 	
 	// text sidebar
@@ -137,7 +137,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 				Color deltaColor = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 				String delta = (int)Math.abs(repResult.delta * 100) + "";
 				String newRel = NexUtilsReputation.getRelationStr(storedRelation);
-				String fn = ExerelinUtilsFaction.getFactionShortName(factionId);
+				String fn = NexUtilsFaction.getFactionShortName(factionId);
 				str = StringHelper.getString("exerelin_diplomacy", "intelRepResultPositivePlayer");
 				str = StringHelper.substituteToken(str, "$faction", fn);
 				str = StringHelper.substituteToken(str, "$deltaAbs", delta);
@@ -156,7 +156,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	
 	public void accept() {
 		String eventId = isPeaceTreaty ? "peace_treaty" : "ceasefire";
-		float reduction = isPeaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
+		float reduction = isPeaceTreaty ? NexConfig.warWearinessPeaceTreatyReduction : NexConfig.warWearinessCeasefireReduction;
 
 		FactionAPI faction = getFactionForUIColors();
 		FactionAPI player = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
@@ -214,7 +214,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		daysRemaining -= Global.getSector().getClock().convertToDays(amount);
 		
 		if (daysRemaining <= 0) {
-			if (ExerelinConfig.acceptCeasefiresOnTimeout)
+			if (NexConfig.acceptCeasefiresOnTimeout)
 				accept();
 			else
 				state = -1;
@@ -308,7 +308,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		
 		text.setFontSmallInsignia();
 		str = StringHelper.getString("exerelin_diplomacy", "dialogCeasefireText2");
-		dialog.getTextPanel().addPara(str, Color.CYAN, ExerelinConfig.CONFIG_PATH);
+		dialog.getTextPanel().addPara(str, Color.CYAN, NexConfig.CONFIG_PATH);
 		text.setFontInsignia();
 	}
 

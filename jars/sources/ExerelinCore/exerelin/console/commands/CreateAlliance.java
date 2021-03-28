@@ -4,7 +4,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
@@ -34,7 +34,7 @@ public class CreateAlliance implements BaseCommand {
         String faction1 = tmp[0];
         String faction2 = tmp[1];
 
-        Alignment alignment = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());
+        Alignment alignment = (Alignment) NexUtils.getRandomArrayElement(Alignment.values());
         if (tmp.length == 3)
         {
             try

@@ -14,7 +14,7 @@ import exerelin.campaign.AllianceManager;
 import static exerelin.campaign.AllianceManager.MIN_RELATIONSHIP_TO_STAY;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -74,7 +74,7 @@ public class Nex_Alliance extends BaseCommandPlugin {
 	}
 	
 	public boolean isAlignmentCompatible(String factionId, String allianceId) {
-		if (ExerelinConfig.ignoreAlignmentForAlliances) return true;
+		if (NexConfig.ignoreAlignmentForAlliances) return true;
 		
 		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
 		float compat = AllianceManager.getAlignmentCompatibilityWithAlliance(factionId, alliance);

@@ -3,8 +3,8 @@ package exerelin.world;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import exerelin.ExerelinConstants;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.world.landmarks.LandmarkDef;
 import java.io.IOException;
 import java.util.HashMap;
@@ -88,10 +88,10 @@ public class LandmarkGenerator {
 	
 	public void generate(SectorAPI sector, boolean corvusMode)
 	{
-		if (corvusMode && !ExerelinConfig.corvusModeLandmarks)
+		if (corvusMode && !NexConfig.corvusModeLandmarks)
 			return;
 		
-		Random random = new Random(ExerelinUtils.getStartingSeed());
+		Random random = new Random(NexUtils.getStartingSeed());
 		
 		Iterator<String> iterLandmarks = landmarkDefs.keySet().iterator();
 		while (iterLandmarks.hasNext())

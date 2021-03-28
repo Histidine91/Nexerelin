@@ -20,8 +20,8 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -163,12 +163,12 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	
 	@Override
 	protected List<MarketAPI> getTargets() {
-		boolean pirateInvasions = ExerelinConfig.allowPirateInvasions;
+		boolean pirateInvasions = NexConfig.allowPirateInvasions;
 		List<MarketAPI> targets = new ArrayList<>();
 		for (MarketAPI market : Misc.getMarketsInLocation(system)) {
 			if (!market.getFaction().isHostileTo(intel.getFaction())) continue;
 			if (!pirateInvasions && !(intel instanceof RemnantRaidIntel)
-					&& ExerelinUtilsFaction.isPirateFaction(market.getFactionId())) 
+					&& NexUtilsFaction.isPirateFaction(market.getFactionId())) 
 				continue;
 			targets.add(market);
 		}

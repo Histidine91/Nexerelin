@@ -18,10 +18,10 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,7 +56,7 @@ public class InvasionRound {
 	}
 	
 	public static float getRandomDamageMult(Random random) {
-		float gauss = ExerelinUtils.getBoundedGaussian(random, -3.2f, 3.2f);
+		float gauss = NexUtils.getBoundedGaussian(random, -3.2f, 3.2f);
 		float mult = (float)(1f + gauss * 0.25f);
 		return mult;
 	}
@@ -136,7 +136,7 @@ public class InvasionRound {
 			//}
 		}
 		
-		ExerelinUtilsMarket.reportInvasionRound(result, fleet, defender, atkStr, defStr);
+		NexUtilsMarket.reportInvasionRound(result, fleet, defender, atkStr, defStr);
 		return result;
 	}
 	
@@ -173,7 +173,7 @@ public class InvasionRound {
 		
 		StatBonus attacker = fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
 		
-		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
+		NexFactionConfig atkConf = NexConfig.getFactionConfig(fleet.getFaction().getId());
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
 				Misc.ucFirst(fleet.getFaction().getDisplayName()));
 		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
@@ -189,7 +189,7 @@ public class InvasionRound {
 		
 		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
 		
-		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
+		NexFactionConfig atkConf = NexConfig.getFactionConfig(faction.getId());
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
 				Misc.ucFirst(faction.getDisplayName()));
 		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
@@ -210,7 +210,7 @@ public class InvasionRound {
 		
 		defenderModded.applyMods(defender);
 		
-		ExerelinFactionConfig defConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		NexFactionConfig defConf = NexConfig.getFactionConfig(market.getFactionId());
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "defenseBonus", "$Faction", 
 				Misc.ucFirst(market.getFaction().getDisplayName()));
 		defenderModded.modifyMult("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend + 1, str);
@@ -380,7 +380,7 @@ public class InvasionRound {
 			}
 		}
 		
-		ExerelinUtilsMarket.reportInvasionFinished(fleet, attackerFaction, market, numRounds, success);
+		NexUtilsMarket.reportInvasionFinished(fleet, attackerFaction, market, numRounds, success);
 		
 		log.info( String.format("Invasion of [%s] by " + (fleet == null ? attackerFaction.getDisplayName() : fleet.getNameWithFaction())
 				+ (success ? " successful" : " failed"), market.getName()) );
@@ -432,7 +432,7 @@ public class InvasionRound {
 		if (entity == null) return false;
 		MarketAPI market = entity.getMarket();
 		if (market == null) return false;
-		return ExerelinUtilsMarket.canBeInvaded(market, true);
+		return NexUtilsMarket.canBeInvaded(market, true);
 	}
 	
 	/**

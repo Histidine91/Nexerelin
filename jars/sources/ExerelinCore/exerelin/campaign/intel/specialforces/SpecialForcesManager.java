@@ -12,9 +12,9 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFaction;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -41,7 +41,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	
 	// TODO: maybe also limit to number of markets
 	public int getMaxFleets(String factionId) {
-		return ExerelinConfig.getExerelinFactionConfig(factionId).specialForcesMaxFleets;
+		return NexConfig.getFactionConfig(factionId).specialForcesMaxFleets;
 	}
 	
 	@Override
@@ -66,13 +66,13 @@ public class SpecialForcesManager implements EveryFrameScript {
 	
 	// runcode Console.showMessage(exerelin.campaign.intel.specialforces.SpecialForcesManager.getPointsPerDay("persean") + "");
 	public static float getPointsPerDay(String factionId) {
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
 		float totalPoints = 0;
 		for (MarketAPI market : markets)
 		{
 			float points = InvasionFleetManager.getMarketInvasionCommodityValue(market);
 			points *= POINT_GENERATION_MULT;
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			points *= conf.specialForcesPointMult;
 			
 			totalPoints += points;
@@ -97,8 +97,8 @@ public class SpecialForcesManager implements EveryFrameScript {
 			if (!liveFactions.contains(factionId)) continue;
 			
 			float points = InvasionFleetManager.getMarketInvasionCommodityValue(market);
-			points *= days * POINT_GENERATION_MULT * ExerelinConfig.specialForcesPointMult;
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			points *= days * POINT_GENERATION_MULT * NexConfig.specialForcesPointMult;
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			points *= conf.specialForcesPointMult;
 			
 			incrementPoints(factionId, points);

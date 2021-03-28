@@ -39,12 +39,12 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
@@ -81,9 +81,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				}
 			}
 			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtilsAstro.getRandomAngle(rand), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
+			prismEntity.setCircularOrbitPointingDown(toOrbit, NexUtilsAstro.getRandomAngle(rand), orbitDistance, NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
-		else if (newGame && !ExerelinConfig.prismInHyperspace)
+		else if (newGame && !NexConfig.prismInHyperspace)
 		{
 			prismEntity = generatePrismInOwnSystem();
 		}
@@ -91,7 +91,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
 			prismEntity = hyperspace.addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(PRISM_LOC), ExerelinUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(PRISM_LOC), NexUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
 			clearDeepHyper(prismEntity, 400);
 		}
 		
@@ -130,7 +130,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
-		ExerelinUtilsMarket.setTariffs(market);
+		NexUtilsMarket.setTariffs(market);
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);
 		prismEntity.setMarket(market);
@@ -146,11 +146,11 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		// add important people
 		if (!newGame) 
 		{
-			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.SPACE_CAPTAIN, Ranks.POST_STATION_COMMANDER, true);
-			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_PORTMASTER, true);
-			ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.SPACE_COMMANDER, Ranks.POST_SUPPLY_OFFICER, true);
 			ColonyManager.reassignAdminIfNeeded(market, market.getFaction(), market.getFaction());
 		}
@@ -212,7 +212,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	
 	public void validateLocation(SectorAPI sector, StarSystemAPI system, Vector2f startLoc) 
 	{
-		Random random = new Random(ExerelinUtils.getStartingSeed());
+		Random random = new Random(NexUtils.getStartingSeed());
 		float minDist = 100;
 		try_again:
 		for (int i = 0; i < 100; i++) {
@@ -389,7 +389,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		SectorManager.getManager().setFreeStart(setupData.freeStart);
 		
 		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
 		{
 			factionId = conf.spawnAsFactionId;
@@ -397,7 +397,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		// commission
 		if (!factionId.equals(Factions.PLAYER)) {
-			ExerelinUtilsFaction.grantCommission(factionId);
+			NexUtilsFaction.grantCommission(factionId);
 		}
 				
 		log.info("Finished sector generation");

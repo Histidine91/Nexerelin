@@ -18,8 +18,8 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.missions.DisruptMissionIntel.TargetReason;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -105,7 +105,7 @@ public class DisruptMissionManager extends BaseEventManager {
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) 
 		{
 			if (factionId.equals(Factions.PLAYER)) continue;
-			if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(factionId))
+			if (!NexConfig.allowPirateInvasions && NexUtilsFaction.isPirateFaction(factionId))
 				continue;
 			picker.add(factionId);
 		}
@@ -156,8 +156,8 @@ public class DisruptMissionManager extends BaseEventManager {
 			if (AllianceManager.areFactionsAllied(factionId, market.getFactionId()) || market.getFaction().isPlayerFaction()
 					|| market.getFaction() == commission)
 				continue;
-			if (!ExerelinConfig.allowPirateInvasions && 
-					ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
+			if (!NexConfig.allowPirateInvasions && 
+					NexUtilsFaction.isPirateFaction(market.getFactionId()))
 				continue;
 			
 			boolean hostile = market.getFaction().isHostileTo(faction);

@@ -28,9 +28,9 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -204,7 +204,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		if (getDef().costScaling) {
 			time *= 1 + 0.25f * (market.getSize() - 3);
 		}
-		if (CovertOpsManager.isDebugMode() || ExerelinUtils.isNonPlaytestDevMode())
+		if (CovertOpsManager.isDebugMode() || NexUtils.isNonPlaytestDevMode())
 			time *= 0.1f;
 		
 		return time;
@@ -548,7 +548,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	}
 	
 	protected boolean shouldNotify() {
-		if (ALWAYS_REPORT || playerInvolved || ExerelinUtils.isNonPlaytestDevMode()) 
+		if (ALWAYS_REPORT || playerInvolved || NexUtils.isNonPlaytestDevMode()) 
 			return true;
 		if (repResult != null && (repResult.isHostile != repResult.wasHostile))
 			return true;
@@ -558,7 +558,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		
 		int maxLevelToNotify = getNotifyLevel();
 		
-		return ExerelinConfig.agentEventFilterLevel <= maxLevelToNotify;
+		return NexConfig.agentEventFilterLevel <= maxLevelToNotify;
 	}
 	
 	protected void reportEvent() {
@@ -571,8 +571,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		}
 		if (shouldReportEvent()) { //TODO: make it so if an agent action makes 2 factions hostile, add it
 			boolean notify = shouldNotify();
-			if (ExerelinConfig.nexIntelQueued <= 1) {
-				if (ExerelinConfig.nexIntelQueued <= 0
+			if (NexConfig.nexIntelQueued <= 1) {
+				if (NexConfig.nexIntelQueued <= 0
 					||	affectsPlayerRep()
 					||	playerInvolved
 					||	agentFaction == PlayerFactionStore.getPlayerFaction()
@@ -617,7 +617,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)
-			ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
+			NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
 		
 		info.addPara(getString("intelBulletTarget"), afKnown ? pad : initPad, color, 
 				targetFaction.getBaseUIColor(), market.getName());
@@ -692,7 +692,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		if (agentFaction.isPlayerFaction()) return true;
 		if (agentFaction == PlayerFactionStore.getPlayerFaction()) return true;
 		if (result != null && result.isDetected()) return true;
-		if (ExerelinUtils.isNonPlaytestDevMode()) return true;
+		if (NexUtils.isNonPlaytestDevMode()) return true;
 		
 		return false;
 	}

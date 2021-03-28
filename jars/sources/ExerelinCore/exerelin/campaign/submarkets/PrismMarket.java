@@ -34,7 +34,7 @@ import data.scripts.campaign.intel.SWP_IBBTracker;
 import data.scripts.campaign.intel.VayraUniqueBountyManager;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -224,7 +224,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         int present = getCargo().getWeapons().size();
         float variation = (float)itemGenRandom.nextFloat() * 0.5f + 0.75f;
-        addRandomWeapons(Math.round(ExerelinConfig.prismMaxWeapons*variation) - present);
+        addRandomWeapons(Math.round(NexConfig.prismMaxWeapons*variation) - present);
     }
     
     protected void addWings()
@@ -241,7 +241,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         {
             picks += quantity.getCount();
         }
-        while (!fighterPicker.isEmpty() && picks < ExerelinConfig.prismNumWings) {
+        while (!fighterPicker.isEmpty() && picks < NexConfig.prismNumWings) {
             String id = fighterPicker.pick();        
             cargo.addItems(CargoAPI.CargoItemType.FIGHTER_CHIP, id, 1);
             picks++;
@@ -293,7 +293,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         //renew the stock
         float variation=(float)itemGenRandom.nextFloat() * 0.5f + 0.75f;
         int tries = 0;
-        int target = Math.round(ExerelinConfig.prismNumShips*variation);
+        int target = Math.round(NexConfig.prismNumShips*variation);
         for (int i=0; i<target; i=cargo.getMothballedShips().getNumMembers()){
             //pick the role and faction
             List<ShipRolePick> picks = null;
@@ -420,7 +420,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(itemGenRandom);
         
         int ibbProgress = 999;
-        boolean checkBossCompletion = ExerelinConfig.prismUseIBBProgressForBossShips;
+        boolean checkBossCompletion = NexConfig.prismUseIBBProgressForBossShips;
         boolean haveVayra = Global.getSettings().getModManager().isModEnabled("vayrasector");
         int highestIBBNum = 0;
         
@@ -486,7 +486,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 if (!proceed) continue;
                 
                 //ignore already bought boss ships
-                if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
+                if (!NexConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
                 {
                     log.info("Ship " + entry.id + " already acquired");
                     continue;
@@ -505,8 +505,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
             log.error(ex);
         }
         
-        log.info("IBB/HVB ships available: " + picker.getItems().size() + ", " + ExerelinConfig.prismNumBossShips);
-        for (int i=0; i<ExerelinConfig.prismNumBossShips; i++) {
+        log.info("IBB/HVB ships available: " + picker.getItems().size() + ", " + NexConfig.prismNumBossShips);
+        for (int i=0; i<NexConfig.prismNumBossShips; i++) {
             if (picker.isEmpty()) break;
             ret.add(picker.pickAndRemove());
         }
@@ -731,7 +731,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             default:
                 mult = 1f;
         }
-        return mult * ExerelinConfig.prismTariff;
+        return mult * NexConfig.prismTariff;
     }
     
     @Override

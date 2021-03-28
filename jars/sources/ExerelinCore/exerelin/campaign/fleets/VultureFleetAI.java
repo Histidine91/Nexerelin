@@ -31,7 +31,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.VultureFleetManager.ShipRecoverySpecialNPC;
 import exerelin.campaign.fleets.VultureFleetManager.VultureFleetData;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -328,7 +328,7 @@ public class VultureFleetAI implements EveryFrameScript
 	protected void giveInitialAssignment()
 	{
 		if (data.noWait) return;
-		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet)/2;
+		float daysToOrbit = NexUtilsFleet.getDaysToOrbit(fleet)/2;
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source.getPrimaryEntity(), 
 				daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionVulture"));
 	}
@@ -349,7 +349,7 @@ public class VultureFleetAI implements EveryFrameScript
 			
 			SectorEntityToken destination = data.source.getPrimaryEntity();
 			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
-			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), 
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, NexUtilsFleet.getDaysToOrbit(fleet), 
 					StringHelper.getFleetAssignmentString("miningUnload", null),
 					MiningFleetAI.getUnloadScript(fleet, data.source, true));
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);

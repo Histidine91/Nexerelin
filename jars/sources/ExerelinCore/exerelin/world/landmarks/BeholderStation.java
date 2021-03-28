@@ -6,8 +6,8 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class BeholderStation extends BaseLandmarkDef {
 		Set<StarSystemAPI> luddicSystems = new HashSet<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
-			if (ExerelinUtilsFaction.isLuddicFaction(market.getFactionId()))
+			if (NexUtilsFaction.isLuddicFaction(market.getFactionId()))
 				luddicSystems.add(market.getStarSystem());
 		}
 		
@@ -46,10 +46,10 @@ public class BeholderStation extends BaseLandmarkDef {
 	public void createAt(SectorEntityToken entity)
 	{
 		float orbitRadius = entity.getRadius() + 200;
-		float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
+		float orbitPeriod = NexUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
 		SectorEntityToken beholder_station = entity.getContainingLocation().addCustomEntity("beholder_station", 
 				StringHelper.getString("exerelin_landmarks", "beholderStation"), "station_side05", Factions.LUDDIC_CHURCH);
-		beholder_station.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);		
+		beholder_station.setCircularOrbitPointingDown(entity, NexUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);		
 		beholder_station.setCustomDescriptionId("station_beholder");
 		beholder_station.setInteractionImage("illustrations", "luddic_shrine");
 		beholder_station.addTag("luddicShrine");

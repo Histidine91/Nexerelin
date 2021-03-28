@@ -38,11 +38,11 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -112,7 +112,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		if (action.getDefId().equals(CovertActionType.LOWER_RELATIONS)) 
 		{
 			for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-				ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+				NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 				if (!conf.allowAgentActions) continue;
 				factionsSet.add(Global.getSector().getFaction(factionId));
 			}
@@ -125,7 +125,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		else if (action.getDefId().equals(CovertActionType.RAISE_RELATIONS)) 
 		{
 			for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-				ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+				NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 				if (!conf.allowAgentActions) continue;
 				factionsSet.add(Global.getSector().getFaction(factionId));
 			}
@@ -142,7 +142,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			}
 			
 			for (FactionAPI faction : temp)	{
-				ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
+				NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
 				if (conf.allowAgentActions)
 					factionsSet.add(faction);
 			}
@@ -170,7 +170,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		switch (action.getDefId()) {
 			case CovertActionType.TRAVEL:
-				List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(thirdFaction.getId(), false);
+				List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(thirdFaction.getId(), false);
 				
 				Collections.sort(markets, Nex_FleetRequest.marketComparatorName);
 				for (MarketAPI market : markets) {
@@ -301,13 +301,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					other = PlayerFactionStore.getPlayerFactionId();
 				if (!DiplomacyManager.haveRandomRelationships(action.getTargetFaction().getId(), other)) 
 				{
-					float max = ExerelinFactionConfig.getMaxRelationship(action.getTargetFaction().getId(),	other);
+					float max = NexFactionConfig.getMaxRelationship(action.getTargetFaction().getId(),	other);
 					if (max < 1) {
 						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 						str = StringHelper.substituteToken(str, "$faction1", 
-								ExerelinUtilsFaction.getFactionShortName(tgtFaction));
+								NexUtilsFaction.getFactionShortName(tgtFaction));
 						str = StringHelper.substituteToken(str, "$faction2", 
-								ExerelinUtilsFaction.getFactionShortName(thirdFaction));
+								NexUtilsFaction.getFactionShortName(thirdFaction));
 						String maxStr = NexUtilsReputation.getRelationStr(max);
 						str = StringHelper.substituteToken(str, "$relationship", maxStr);
 						text.addPara(str, NexUtilsReputation.getRelColor(max), maxStr);
@@ -332,14 +332,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				
 				if (!DiplomacyManager.haveRandomRelationships(action.getTargetFaction().getId(), other)) 
 				{
-					float min = ExerelinFactionConfig.getMinRelationship(action.getTargetFaction().getId(),
+					float min = NexFactionConfig.getMinRelationship(action.getTargetFaction().getId(),
 							other);
 					if (min > -1) {
 						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 						str = StringHelper.substituteToken(str, "$faction1", 
-								ExerelinUtilsFaction.getFactionShortName(tgtFaction));
+								NexUtilsFaction.getFactionShortName(tgtFaction));
 						str = StringHelper.substituteToken(str, "$faction2", 
-								ExerelinUtilsFaction.getFactionShortName(thirdFaction));
+								NexUtilsFaction.getFactionShortName(thirdFaction));
 						String minStr = NexUtilsReputation.getRelationStr(min);
 						str = StringHelper.substituteToken(str, "$relationship", minStr);
 						text.addPara(str, NexUtilsReputation.getRelColor(min), minStr);
@@ -436,7 +436,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			
 		TooltipMakerAPI info = text.beginTooltip();
 		info.setParaSmallInsignia();
-		info.addStatModGrid(360, 60, 10, 0, stat, true, ExerelinUtils.getStatModValueGetter(color, 0));
+		info.addStatModGrid(360, 60, 10, 0, stat, true, NexUtils.getStatModValueGetter(color, 0));
 		text.addTooltip();
 	}
 	
@@ -586,7 +586,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	
 	protected void addActionOption(String actionId) {
 		CovertActionDef def = CovertOpsManager.getDef(actionId);
-		if (ExerelinConfig.useAgentSpecializations && !def.canAgentExecute(agent)) {
+		if (NexConfig.useAgentSpecializations && !def.canAgentExecute(agent)) {
 			return;
 		}
 		optionsList.add(new Pair<String, Object>(Misc.ucFirst(def.name.toLowerCase()), def));
@@ -602,7 +602,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
 			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
 			addActionOption(CovertActionType.PROCURE_SHIP);
-			if (ExerelinUtilsMarket.canBeInvaded(agentMarket, true))
+			if (NexUtilsMarket.canBeInvaded(agentMarket, true))
 				addActionOption(CovertActionType.INSTIGATE_REBELLION);
 		}
 		if (agentMarket != null && agentMarket.hasCondition(Conditions.PATHER_CELLS)) {
@@ -880,7 +880,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		FactionAPI faction = agentMarket.getFaction();
 		if (faction.isPlayerFaction())
 			return false;
-		if (!ExerelinConfig.getExerelinFactionConfig(faction.getId()).allowAgentActions)
+		if (!NexConfig.getFactionConfig(faction.getId()).allowAgentActions)
 			return false;
 		
 		return true;

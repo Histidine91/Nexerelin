@@ -10,7 +10,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.intel.fleets.TwoWayTravelFleetAI;
 import exerelin.campaign.intel.rebellion.RebellionIntel.SuppressionFleetData;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -74,7 +74,7 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 	
 	@Override
 	protected void giveInitialAssignment() {
-		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
+		float daysToOrbit = NexUtilsFleet.getDaysToOrbit(fleet);
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, data.source.getPrimaryEntity(), 
 				daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", 
 				data.source.getPrimaryEntity().getName(), "missionSuppression"));
@@ -108,7 +108,7 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 			
 			fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, 
 					StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
-			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), 
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, NexUtilsFleet.getDaysToOrbit(fleet), 
 					StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
 		}

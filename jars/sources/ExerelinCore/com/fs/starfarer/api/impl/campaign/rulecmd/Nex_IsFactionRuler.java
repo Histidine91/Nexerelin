@@ -8,7 +8,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 
 public class Nex_IsFactionRuler extends BaseCommandPlugin {
 	
@@ -29,7 +29,7 @@ public class Nex_IsFactionRuler extends BaseCommandPlugin {
 			return true;
 		
 		if (factionId.equals(PlayerFactionStore.getPlayerFactionId()))		
-			return ExerelinConfig.factionRuler;
+			return NexConfig.factionRuler;
 		
 		return false;
 	}

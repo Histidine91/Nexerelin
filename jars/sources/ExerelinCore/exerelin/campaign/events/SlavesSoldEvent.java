@@ -17,9 +17,9 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinFactionConfig.Morality;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.Morality;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -142,9 +142,9 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 			return 0;
 		
 		float penalty = 0;
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		if (conf.morality == Morality.NEUTRAL) penalty = ExerelinConfig.prisonerSlaveRepValue;
-		else if (conf.morality == Morality.GOOD) penalty = ExerelinConfig.prisonerSlaveRepValue * 2;
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
+		if (conf.morality == Morality.NEUTRAL) penalty = NexConfig.prisonerSlaveRepValue;
+		else if (conf.morality == Morality.GOOD) penalty = NexConfig.prisonerSlaveRepValue * 2;
 		else return 0;
 		
 		return penalty * slaveCount;

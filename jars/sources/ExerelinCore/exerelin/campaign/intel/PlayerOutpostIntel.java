@@ -34,7 +34,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -138,7 +138,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		if (toOrbit instanceof PlanetAPI)
 		{
 			orbitRadius += toOrbit.getRadius();
-			orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitRadius);
+			orbitPeriod = NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitRadius);
 			name = toOrbit.getName();
 		}
 		else if (toOrbit instanceof AsteroidAPI)

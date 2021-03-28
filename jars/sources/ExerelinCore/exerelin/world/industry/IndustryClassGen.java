@@ -1,8 +1,8 @@
 package exerelin.world.industry;
 
 import com.fs.starfarer.api.Global;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import java.util.Arrays;
@@ -63,7 +63,7 @@ public abstract class IndustryClassGen implements Comparable {
 	}
 	
 	protected float getFactionMult(ProcGenEntity entity) {
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(entity.market.getFactionId());
+		NexFactionConfig conf = NexConfig.getFactionConfig(entity.market.getFactionId());
 		return conf.getIndustryTypeMult(id);
 	}
 	

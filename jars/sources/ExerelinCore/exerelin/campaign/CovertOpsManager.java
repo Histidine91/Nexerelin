@@ -50,11 +50,11 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -126,10 +126,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         for (FactionAPI faction: Global.getSector().getAllFactions())
         {
             String factionId = faction.getId();
-            ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+            NexFactionConfig factionConf = NexConfig.getFactionConfig(factionId);
             if (!factionConf.allowAgentActions) 
                 DISALLOWED_FACTIONS.add(factionId);
-            if (ExerelinUtilsFaction.isPirateFaction(factionId)) // pirates aren't targeted for covert warfare
+            if (NexUtilsFaction.isPirateFaction(factionId)) // pirates aren't targeted for covert warfare
                 DISALLOWED_FACTIONS.add(factionId);
         }
         
@@ -175,7 +175,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.alertLevelIncrease = (float)defJson.optDouble("alertLevelIncrease", 0);
 			def.listInIntel = defJson.optBoolean("listInIntel", true);
 			if (defJson.has("specializations")) {
-				def.addSpecializations(ExerelinUtils.JSONArrayToArrayList(defJson.getJSONArray("specializations")));
+				def.addSpecializations(NexUtils.JSONArrayToArrayList(defJson.getJSONArray("specializations")));
 			}			
 			
 			actionDefs.add(def);
@@ -307,7 +307,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 	
 	public void updateBaseMaxAgents() {
-		Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents").modifyFlat("base", ExerelinConfig.maxAgents - 1);
+		Global.getSector().getPlayerStats().getDynamic().getStat("nex_max_agents").modifyFlat("base", NexConfig.maxAgents - 1);
 	}
 
 	public CovertOpsManager()
@@ -462,7 +462,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				weight *= EconomyInfoHelper.getInstance().getCompetitionFactor(agentFaction.getId(), factionId);
 			}
 			
-			if (ExerelinUtilsFaction.isPirateFaction(factionId))
+			if (NexUtilsFaction.isPirateFaction(factionId))
 				weight *= 0.25f;	// reduces factions constantly targeting pirates for covert action
 			
 			if (weight <= 0) continue;
@@ -509,12 +509,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         {
             String factionId = faction.getId();
             if (DISALLOWED_FACTIONS.contains(factionId)) continue;
-            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;  // pirates don't do covert warfare
-            if (!ExerelinConfig.followersAgents && Nex_IsFactionRuler.isRuler(faction.getId()) ) continue;
+            if (NexUtilsFaction.isPirateFaction(factionId)) continue;  // pirates don't do covert warfare
+            if (!NexConfig.followersAgents && Nex_IsFactionRuler.isRuler(faction.getId()) ) continue;
             // don't use player faction as potential source if player is affiliated with another faction
             if (faction.getId().equals(Factions.PLAYER) && 
                     !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
-            ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+            NexFactionConfig factionConf = NexConfig.getFactionConfig(factionId);
             if (factionConf != null && !factionConf.allowAgentActions) continue;
 			
 			float chance = 1;
@@ -784,7 +784,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				// rebellion special handling
 				if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
 				{
-					if (!ExerelinUtilsMarket.canBeInvaded(market, false))
+					if (!NexUtilsMarket.canBeInvaded(market, false))
 						continue;
 					if (RebellionCreator.getInstance().getRebellionPoints(market) < 50)
 						continue;
@@ -793,7 +793,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 					if (RebellionIntel.isOngoing(market))
 						continue;
 
-					if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
+					if (NexUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
 						weight *= 4;
 				}
 				marketPicker.add(market, weight);
@@ -816,7 +816,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     @Override
     public void advance(float amount)
     {
-        ExerelinUtils.advanceIntervalDays(intervalUtil, amount);
+        NexUtils.advanceIntervalDays(intervalUtil, amount);
         if (!this.intervalUtil.intervalElapsed()) {
             return;
         }
@@ -966,8 +966,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		}
 		public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
 			tooltip.addPara(StringHelper.getString("nex_agents", "tooltipSalary"), 0,
-				Misc.getHighlightColor(), Misc.getWithDGS(ExerelinConfig.agentBaseSalary), 
-				Misc.getWithDGS(ExerelinConfig.agentSalaryPerLevel));
+				Misc.getHighlightColor(), Misc.getWithDGS(NexConfig.agentBaseSalary), 
+				Misc.getWithDGS(NexConfig.agentSalaryPerLevel));
 		}
 	};
     

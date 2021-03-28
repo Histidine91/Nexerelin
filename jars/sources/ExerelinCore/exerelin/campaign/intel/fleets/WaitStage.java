@@ -11,7 +11,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetA
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
 			// update fleet delegate
 			CampaignFleetAPI fleet = route.getActiveFleet();
 			if (fleet != null) {
-				RouteFleetAssignmentAI ai = ExerelinUtilsFleet.getRouteAssignmentAI(fleet);
+				RouteFleetAssignmentAI ai = NexUtilsFleet.getRouteAssignmentAI(fleet);
 				ai.setDelegate(this);
 			}
 		}

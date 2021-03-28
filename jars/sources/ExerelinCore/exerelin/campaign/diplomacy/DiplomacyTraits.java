@@ -5,8 +5,8 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
 import java.awt.Color;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class DiplomacyTraits {
 			
 			if (entryJson.has("incompatible")) {
 				JSONArray incompatJson = entryJson.getJSONArray("incompatible");
-				trait.incompatibilities.addAll(ExerelinUtils.JSONArrayToArrayList(incompatJson));
+				trait.incompatibilities.addAll(NexUtils.JSONArrayToArrayList(incompatJson));
 			}
 			
 			TRAITS.add(trait);
@@ -107,8 +107,8 @@ public class DiplomacyTraits {
 	}
 	
 	public static List<String> getFactionTraits(String factionId) {
-		if (ExerelinConfig.allowRandomDiplomacyTraits && DiplomacyManager.isRandomFactionRelationships()
-				&& ExerelinConfig.getExerelinFactionConfig(factionId).allowRandomDiplomacyTraits) 
+		if (NexConfig.allowRandomDiplomacyTraits && DiplomacyManager.isRandomFactionRelationships()
+				&& NexConfig.getFactionConfig(factionId).allowRandomDiplomacyTraits) 
 		{
 			MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
 			if (!mem.contains(MEM_KEY_RANDOM_TRAITS)) {
@@ -117,7 +117,7 @@ public class DiplomacyTraits {
 			return (List<String>)mem.get(MEM_KEY_RANDOM_TRAITS);
 		}
 		
-		List<String> traits = new ArrayList<>(ExerelinConfig.getExerelinFactionConfig(factionId).diplomacyTraits);
+		List<String> traits = new ArrayList<>(NexConfig.getFactionConfig(factionId).diplomacyTraits);
 		
 		return traits;
 	}

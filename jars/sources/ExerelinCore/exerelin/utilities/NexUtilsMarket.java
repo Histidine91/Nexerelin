@@ -27,7 +27,7 @@ import exerelin.campaign.PlayerFactionStore;
 import java.util.Arrays;
 import java.util.List;
 
-public class ExerelinUtilsMarket {
+public class NexUtilsMarket {
 	
 	// use the memory key instead of this wherever possible
 	public static final List<String> NO_INVADE_MARKETS = Arrays.asList(new String[]{"SCY_prismFreeport", "prismFreeport", "prismFreeport_market"});
@@ -55,12 +55,12 @@ public class ExerelinUtilsMarket {
 	public static void setTariffs(MarketAPI market)
 	{
 		String factionId = market.getFactionId();
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
+		market.getTariff().modifyMult("nexerelinMult", NexConfig.baseTariffMult);
 		market.getTariff().modifyMult("nexerelinFactionMult", conf.tariffMult);
 		if (factionId.equals(Factions.PLAYER) || market.hasCondition(Conditions.FREE_PORT))
 		{
-			market.getTariff().modifyMult("nexerelin_freeMarket", ExerelinConfig.freeMarketTariffMult);
+			market.getTariff().modifyMult("nexerelin_freeMarket", NexConfig.freeMarketTariffMult);
 		}
 		else
 		{
@@ -80,7 +80,7 @@ public class ExerelinUtilsMarket {
 				try {
 					value += Global.getSettings().getCommoditySpec(aiCoreId).getBasePrice();
 				} catch (Exception ex) {
-					Global.getLogger(ExerelinUtilsMarket.class).warn("Failed to get commodity value of AI core " + aiCoreId, ex);
+					Global.getLogger(NexUtilsMarket.class).warn("Failed to get commodity value of AI core " + aiCoreId, ex);
 				}
 			}
 			if (ind.getSpecialItem() != null) {
@@ -160,23 +160,23 @@ public class ExerelinUtilsMarket {
 		if (market.isHidden()) return false;
 		FactionAPI marketFaction = market.getFaction();
 		String factionId = marketFaction.getId();
-		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig config = NexConfig.getFactionConfig(factionId);
 		boolean isIndie = factionId.equals(Factions.INDEPENDENT);
 		boolean isDerelict = factionId.equals(Factions.DERELICT);
 		
 		if (config != null && !config.playableFaction && !isIndie && !isDerelict)
 			return false;
 		
-		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
-		boolean isPirate = ExerelinUtilsFaction.isPirateFaction(factionId);
+		boolean allowPirates = NexConfig.allowPirateInvasions;
+		boolean isPirate = NexUtilsFaction.isPirateFaction(factionId);
 		// player markets count as pirate if player has a commission with a pirate faction
 		if (factionId.equals(Factions.PLAYER))
-			isPirate = isPirate || ExerelinUtilsFaction.isPirateFaction(PlayerFactionStore.getPlayerFactionId());
+			isPirate = isPirate || NexUtilsFaction.isPirateFaction(PlayerFactionStore.getPlayerFactionId());
 		
 		if (!allowPirates && (isPirate || isIndie))
 		{
 			// this is the only circumstance when pirate markets can be invaded while allowPirateInvasions is off
-			if (!ExerelinConfig.retakePirateMarkets)
+			if (!NexConfig.retakePirateMarkets)
 				return false;
 			if (isWithOriginalOwner(market))	// was a pirate market all along, can't invade
 				return false;

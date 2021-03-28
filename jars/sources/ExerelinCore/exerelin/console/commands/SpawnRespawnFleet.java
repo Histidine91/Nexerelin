@@ -6,7 +6,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import java.util.List;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
@@ -27,7 +27,7 @@ public class SpawnRespawnFleet implements BaseCommand {
 		if (tmp.length == 0 || tmp[0].isEmpty())
 		{
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-			List<String> factions = ExerelinConfig.getFactions(true, false);
+			List<String> factions = NexConfig.getFactions(true, false);
 			for (String faction : factions)
 			{
 				if (faction.equals(Factions.PLAYER)) continue;

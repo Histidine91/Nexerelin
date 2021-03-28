@@ -41,11 +41,11 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.io.IOException;
@@ -131,7 +131,7 @@ public class ExerelinProcGen {
 			JSONObject planetConfig = Global.getSettings().getMergedJSONForMod(PLANET_NAMES_FILE, ExerelinConstants.MOD_ID);
 			
 			JSONArray stationNames = planetConfig.getJSONArray("stations");
-			ExerelinProcGen.stationNames = ExerelinUtils.JSONArrayToArrayList(stationNames);
+			ExerelinProcGen.stationNames = NexUtils.JSONArrayToArrayList(stationNames);
 		} catch (JSONException | IOException ex) {
 			log.error(ex);
 		}
@@ -193,7 +193,7 @@ public class ExerelinProcGen {
 				allowedImages.add(new String[]{"illustrations", "corporate_lobby"} );
 			}
 			
-			if (ExerelinUtilsFaction.doesFactionExist("citadeldefenders"))
+			if (NexUtilsFaction.doesFactionExist("citadeldefenders"))
 			{
 				allowedImages.add(new String[]{"illustrationz", "streets"} );
 				if (!isStation) allowedImages.add(new String[]{"illustrationz", "twin_cities"} );
@@ -224,7 +224,7 @@ public class ExerelinProcGen {
 			allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
 		if (market.hasCondition(Conditions.LUDDIC_MAJORITY))
 			allowedImages.add(new String[]{"illustrations", "luddic_shrine"} );
-		if (isStation && ExerelinUtilsFaction.doesFactionExist("blackrock_driveyards"))
+		if (isStation && NexUtilsFaction.doesFactionExist("blackrock_driveyards"))
 			allowedImages.add(new String[]{"illustrations", "blackrock_vigil_station"} );
 		
 		//if (isMoon)
@@ -871,10 +871,10 @@ public class ExerelinProcGen {
 				SectorEntityToken systemPrimary = capEntity.getOrbitFocus();
 				if (systemPrimary != null)	// if null, maybe it's a nebula?
 				{
-					float orbitRadius = ExerelinUtilsAstro.getCurrentOrbitRadius(capEntity, systemPrimary);
-					float startAngle = ExerelinUtilsAstro.getCurrentOrbitAngle(capEntity, systemPrimary);
+					float orbitRadius = NexUtilsAstro.getCurrentOrbitRadius(capEntity, systemPrimary);
+					float startAngle = NexUtilsAstro.getCurrentOrbitAngle(capEntity, systemPrimary);
 					
-					ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
+					NexUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
 						lp, startAngle, orbitRadius, 0, capEntity.getOrbit().getOrbitalPeriod(), 
 						false, 0, 1, 1, 0);
 					log.info("Placing relay at Lagrange point of " + capEntity.getName() + ", distance " + orbitRadius);
@@ -892,7 +892,7 @@ public class ExerelinProcGen {
 						{
 							//log.info("Relay overlap with an entity detected, changing Lagrange point");
 							lp = 9 - lp;
-							ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
+							NexUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
 								lp, startAngle, orbitRadius, 0, capEntity.getOrbit().getOrbitalPeriod(), 
 								false, 0, 1, 1, 0);
 							log.info("Placing relay at other Lagrange point of " + capEntity.getName());
@@ -971,8 +971,8 @@ public class ExerelinProcGen {
 		for (StarSystemAPI system : systems)
 		{
 			log.info("Cleaning up system " + system.getName());
-			ExerelinUtils.removeScriptAndListener(system, RemnantStationFleetManager.class, null);
-			ExerelinUtils.removeScriptAndListener(system, RemnantSeededFleetManager.class, null);
+			NexUtils.removeScriptAndListener(system, RemnantStationFleetManager.class, null);
+			NexUtils.removeScriptAndListener(system, RemnantSeededFleetManager.class, null);
 			
 			for (SectorEntityToken token : system.getAllEntities())
 			{
@@ -1115,7 +1115,7 @@ public class ExerelinProcGen {
 	
 	protected SectorEntityToken createStation(ProcGenEntity station, String factionId, boolean freeStation)
 	{
-		float angle = ExerelinUtilsAstro.getRandomAngle(random);
+		float angle = NexUtilsAstro.getRandomAngle(random);
 		int orbitRadius = (int)station.primary.getRadius();
 		PlanetAPI planet = (PlanetAPI)station.primary;
 		if (planet.isMoon())
@@ -1126,7 +1126,7 @@ public class ExerelinProcGen {
 			orbitRadius += 1000;	// may be terrain; will likely be overriden
 		else
 			orbitRadius += 100;
-		float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
+		float orbitDays = NexUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
 		
 		if (station.terrain != null) {
 			switch (station.terrain.getType()) {
@@ -1138,7 +1138,7 @@ public class ExerelinProcGen {
 				case Terrain.RING:
 					BaseRingTerrain brt = (BaseRingTerrain)station.terrain.getPlugin();
 					orbitRadius = (int)brt.params.middleRadius;
-					orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
+					orbitDays = NexUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
 					break;
 				case Terrain.ASTEROID_FIELD:
 					orbitRadius = (int)Misc.getDistance(station.primary, station.terrain);
@@ -1154,9 +1154,9 @@ public class ExerelinProcGen {
 		id = id.toLowerCase();
 		
 		int size = freeStation ? marketSetup.getWantedMarketSize(station, factionId) : planet.getMarket().getSize();
-		String stationImage = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomCustomStation(size, random);
+		String stationImage = NexConfig.getFactionConfig(factionId).getRandomCustomStation(size, random);
 		if (stationImage == null)
-			stationImage = ExerelinUtils.getRandomListElement(STATION_IMAGES);
+			stationImage = NexUtils.getRandomListElement(STATION_IMAGES);
 		
 		SectorEntityToken newStation = station.starSystem.addCustomEntity(id, name, stationImage, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
@@ -1248,7 +1248,7 @@ public class ExerelinProcGen {
 		float radius = toOrbit.getRadius();
 		float orbitDistance = radius + 150;
 		SectorEntityToken shanghaiEntity = toOrbit.getContainingLocation().addCustomEntity("tiandong_shanghai", "Shanghai", "tiandong_shanghai", "tiandong");
-		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtilsAstro.getRandomAngle(random), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
+		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, NexUtilsAstro.getRandomAngle(random), orbitDistance, NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		
 		shanghaiEntity.setMarket(market);
 		market.getConnectedEntities().add(shanghaiEntity);
@@ -1338,13 +1338,13 @@ public class ExerelinProcGen {
 	
 	protected void handleHQSpecials(SectorAPI sector, String factionId, ProcGenEntity data)
 	{
-		if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
+		if (factionId.equals("exipirated") && NexConfig.enableAvesta)
 			addAvestaStation(sector, data.starSystem);
 		if (factionId.equals("tiandong"))
 			addShanghai(data.market);
 		if (factionId.equals("approlight"))
 		{
-			if (ExerelinConfig.enableUnos)
+			if (NexConfig.enableUnos)
 				addUnos(data.market);
 			addChaosRift(data.starSystem);	// TODO: give it its own option?
 			data.market.removeSubmarket(Submarkets.GENERIC_MILITARY);
@@ -1429,7 +1429,7 @@ public class ExerelinProcGen {
 	protected ProcGenEntity pickRandomMarketCloseToHQ(String factionId, List<ProcGenEntity> candidates, 
 			ProcGenEntity hq, Collection<LocationAPI> alreadyPresent)
 	{
-		if (ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction || factionId.equals(Factions.INDEPENDENT))
+		if (NexConfig.getFactionConfig(factionId).pirateFaction || factionId.equals(Factions.INDEPENDENT))
 			return candidates.get(0);
 		
 		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>(random);
@@ -1465,7 +1465,7 @@ public class ExerelinProcGen {
 	protected ProcGenEntity pickMarketCloseToHQ(String factionId, List<ProcGenEntity> candidates, 
 			ProcGenEntity hq, Collection<LocationAPI> alreadyPresent)
 	{
-		if (ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction || factionId.equals(Factions.INDEPENDENT))
+		if (NexConfig.getFactionConfig(factionId).pirateFaction || factionId.equals(Factions.INDEPENDENT))
 			return candidates.get(0);
 		
 		// crash safety
@@ -1540,7 +1540,7 @@ public class ExerelinProcGen {
 			factionStationCount.put(factionId, 0);
 			populatedSystemsByFaction.put(factionId, new HashSet<LocationAPI>());
 			
-			if (ExerelinUtilsFaction.isPirateFaction(factionId))
+			if (NexUtilsFaction.isPirateFaction(factionId))
 				pirateFactions.add(factionId);
 		}
 		
@@ -1556,7 +1556,7 @@ public class ExerelinProcGen {
 		*/
 		
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
-		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(alignedFactionId);
+		NexFactionConfig factionConf = NexConfig.getFactionConfig(alignedFactionId);
 		String spawnAsFactionId = factionConf.spawnAsFactionId;
 		if (spawnAsFactionId != null) alignedFactionId = spawnAsFactionId;
 		
@@ -1624,7 +1624,7 @@ public class ExerelinProcGen {
 			ProcGenEntity hq = pickHQ(populatedPlanetsCopy, existingHQs);
 			populatedPlanetsCopy.remove(hq);
 			
-			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig config = NexConfig.getFactionConfig(factionId);
 			if (!config.noHomeworld)
 				hq.isHQ = true;
 			
@@ -1657,7 +1657,7 @@ public class ExerelinProcGen {
 				if (systemsWithPirates.contains(entity.starSystem))
 					continue;
 				
-				if (random.nextFloat() > ExerelinConfig.forcePiratesInSystemChance) {
+				if (random.nextFloat() > NexConfig.forcePiratesInSystemChance) {
 					systemsWithPirates.add(entity.starSystem);	// don't actually have pirates, but pretend we do to skip over it
 					continue;
 				}
@@ -1695,7 +1695,7 @@ public class ExerelinProcGen {
 				if (setupData.randomFactionWeights) {
 					share = (float)(1 + 0.5f * random.nextGaussian());
 				} else {
-					share = ExerelinConfig.getExerelinFactionConfig(factionId).marketSpawnWeight;
+					share = NexConfig.getFactionConfig(factionId).marketSpawnWeight;
 				}
 			}
 			

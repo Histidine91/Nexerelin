@@ -44,12 +44,12 @@ import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static String getFleetName(String fleetType, String factionId, float fp)
 	{
 		String name = "Fleet";
-		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig factionConfig = NexConfig.getFactionConfig(factionId);
 		
 		switch (fleetType) {
 			case "exerelinInvasionFleet":
@@ -222,7 +222,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		strength *= fleetSizeMult;
 		
 		if (variability > 0) {
-			float gauss = ExerelinUtils.getBoundedGaussian(random, -3, 3);
+			float gauss = NexUtils.getBoundedGaussian(random, -3, 3);
 			
 			strength *= 1 + gauss * variability;
 		}
@@ -268,8 +268,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		CampaignFleetAPI station = Misc.getStationFleet(market);
 		float stationStr = 0;
 		if (station != null) {
-			stationStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, false);
-			float officerStr = ExerelinUtilsFleet.getFleetStrength(station, true, true, true) - stationStr;
+			stationStr = NexUtilsFleet.getFleetStrength(station, true, true, false);
+			float officerStr = NexUtilsFleet.getFleetStrength(station, true, true, true) - stationStr;
 			stationStr += officerStr * STATION_OFFICER_STRENGTH_MULT;
 			stationStr *= 0.5f;
 		}
@@ -377,8 +377,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public static float getInvasionSizeMult(String factionId) {
-		float mult = 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
-		mult *= ExerelinConfig.invasionFleetSizeMult;
+		float mult = 1 + NexConfig.getFactionConfig(factionId).invasionFleetSizeMod;
+		mult *= NexConfig.invasionFleetSizeMult;
 		return mult;
 	}
 	
@@ -442,7 +442,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public static boolean canSatBomb(FactionAPI attacker, MarketAPI target) 
 	{
-		String origOwner = ExerelinUtilsMarket.getOriginalOwner(target);
+		String origOwner = NexUtilsMarket.getOriginalOwner(target);
 		if (origOwner != null && !attacker.isHostileTo(origOwner))
 			return false;
 		
@@ -450,7 +450,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public void modifySpawnCounter(String factionId, float amount) {
-		ExerelinUtils.modifyMapEntry(spawnCounter, factionId, amount);
+		NexUtils.modifyMapEntry(spawnCounter, factionId, amount);
 	}
 	
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, EventType type)
@@ -472,7 +472,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				continue;
 			
 			// handling for invasions by player autonomous colonies
-			if (market.getFaction().isPlayerFaction() && !ExerelinConfig.followersInvasions && market.isPlayerOwned())
+			if (market.getFaction().isPlayerFaction() && !NexConfig.followersInvasions && market.isPlayerOwned())
 			{
 				continue;
 			}
@@ -499,7 +499,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	{
 		String factionId = faction.getId();
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
-		Set<LocationAPI> systemsWeHavePresenceIn = ExerelinUtilsFaction.getLocationsWithFactionPresence(factionId);
+		Set<LocationAPI> systemsWeHavePresenceIn = NexUtilsFaction.getLocationsWithFactionPresence(factionId);
 		
 		for (MarketAPI market : markets) 
 		{
@@ -516,9 +516,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			if (!marketFaction.isHostileTo(faction)) continue;
 			
-			if (!isRemnantRaid && !ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
+			if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
 			
-			if (type == EventType.SAT_BOMB && faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+			if (type == EventType.SAT_BOMB && faction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
 				continue;
 			
 			if (isRemnantRaid) {
@@ -540,9 +540,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (factionId.equals("tiandong") && market.getId().equals("tiandong_mogui_market"))
 				continue;
 			
-			boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
+			boolean isPirateFaction = NexUtilsFaction.isPirateFaction(factionId);
 			if (factionId.equals(Factions.PLAYER))
-				isPirateFaction = isPirateFaction || ExerelinUtilsFaction.isPirateFaction(
+				isPirateFaction = isPirateFaction || NexUtilsFaction.isPirateFaction(
 						PlayerFactionStore.getPlayerFactionId());
 			
 			float weight = 1;
@@ -564,11 +564,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			weight *= market.getSize();
 			
 			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
-			if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId) || isPirateFaction)
+			if (NexUtilsFaction.isFactionHostileToAll(marketFactionId) || isPirateFaction)
 				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
 			
-			boolean haveHeavyIndustry = ExerelinUtilsMarket.hasHeavyIndustry(market);
-			boolean revanchist = ExerelinUtilsMarket.wasOriginalOwner(market, factionId)
+			boolean haveHeavyIndustry = NexUtilsMarket.hasHeavyIndustry(market);
+			boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId)
 					&& type == EventType.INVASION;
 			
 			// revanchism, prioritise heavy industry
@@ -590,7 +590,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}	
 
 			// defender of the faith
-			if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && ExerelinUtilsFaction.isLuddicFaction(factionId))
+			if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && NexUtilsFaction.isLuddicFaction(factionId))
 				weight *= 4;
 			
 			// Remnants "rescue" their friends
@@ -650,7 +650,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		// sat bomb
 		// note: don't sat bomb own originally-owned markets
-		if (ExerelinConfig.allowNPCSatBomb && type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE 
+		if (NexConfig.allowNPCSatBomb && type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE 
 				&& canSatBomb(faction, targetMarket))
 		{
 			type = EventType.SAT_BOMB;
@@ -767,7 +767,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	protected static float getPointsPerMarketPerTick(MarketAPI market)
 	{
-		return getMarketInvasionCommodityValue(market) * ExerelinConfig.invasionPointEconomyMult;
+		return getMarketInvasionCommodityValue(market) * NexConfig.invasionPointEconomyMult;
 	}
 	
 	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getMaxInvasionSize("hegemony"), 1);
@@ -784,7 +784,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		
 		float value = 0;
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
 		for (MarketAPI market : markets) {
 			value += getMarketInvasionCommodityValue(market);
 		}
@@ -802,8 +802,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 * @return
 	 */
 	public boolean shouldRaid(String factionId) {
-		if (!ExerelinConfig.enableInvasions) return true;
-		if (!ExerelinConfig.getExerelinFactionConfig(factionId).canInvade) return true;
+		if (!NexConfig.enableInvasions) return true;
+		if (!NexConfig.getFactionConfig(factionId).canInvade) return true;
 		if (!nextIsRaid.containsKey(factionId))
 			nextIsRaid.put(factionId, Math.random() > 0.5f);
 		return nextIsRaid.get(factionId);
@@ -827,7 +827,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//log.info("Ongoing invasion point mod: " + (- 0.75f * ongoingMod) + " (" + activeIntel.size() + ")");
 		ongoingMod = 1 - 0.75f * ongoingMod;
 		
-		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
+		boolean allowPirates = NexConfig.allowPirateInvasions;
 		
 		// increment points by market
 		if (spawnCounter == null) spawnCounter = new HashMap<>();
@@ -841,7 +841,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			float mult = 1;
 			
-			if (factionId.equals(Factions.PLAYER) && !ExerelinConfig.followersInvasions) {
+			if (factionId.equals(Factions.PLAYER) && !NexConfig.followersInvasions) {
 				if (market.isPlayerOwned()) {
 					continue;
 				}
@@ -867,12 +867,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (EXCEPTION_LIST.contains(factionId)) continue;
 			FactionAPI faction = sector.getFaction(factionId);
 			if (faction.isNeutralFaction()) continue;
-			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig config = NexConfig.getFactionConfig(factionId);
 			if (!config.playableFaction) continue;
 			
-			boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
+			boolean isPirateFaction = NexUtilsFaction.isPirateFaction(factionId);
 			if (factionId.equals(Factions.PLAYER))
-				isPirateFaction = isPirateFaction || ExerelinUtilsFaction.isPirateFaction(
+				isPirateFaction = isPirateFaction || NexUtilsFaction.isPirateFaction(
 						PlayerFactionStore.getPlayerFactionId());
 			if (!allowPirates && isPirateFaction) continue;
 			
@@ -880,7 +880,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, allowPirates, false, false);
 			if (enemies.isEmpty()) continue;
 			
-			if (ExerelinUtilsFaction.isFactionHostileToAll(factionId))
+			if (NexUtilsFaction.isFactionHostileToAll(factionId))
 			{
 				float numWars = enemies.size();
 				numWars = (float)Math.sqrt(numWars);
@@ -891,7 +891,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				for (String enemyId : enemies)
 				{
 					if (EXCEPTION_LIST.contains(factionId)) continue;
-					if (ExerelinUtilsFaction.isFactionHostileToAll(enemyId))
+					if (NexUtilsFaction.isFactionHostileToAll(enemyId))
 					{
 						float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, 
 								allowPirates, true, false).size();
@@ -916,9 +916,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			float counter = getSpawnCounter(factionId);
 			float increment = pointsPerFaction.get(factionId);
-			if (!faction.isPlayerFaction() || ExerelinConfig.followersInvasions) {
-				increment += ExerelinConfig.baseInvasionPointsPerFaction;
-				increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
+			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
+				increment += NexConfig.baseInvasionPointsPerFaction;
+				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel;
 			}
 			
 			increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
@@ -927,7 +927,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			counter += increment;
 			
-			float pointsRequired = ExerelinConfig.pointsRequiredForInvasionFleet;
+			float pointsRequired = NexConfig.pointsRequiredForInvasionFleet;
 			if (counter < pointsRequired)
 			{
 				spawnCounter.put(factionId, counter);
@@ -959,16 +959,16 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (!liveFactionIds.contains("templars")) return;
 		
 		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction("templars", 
-				ExerelinConfig.allowPirateInvasions, false, false);
+				NexConfig.allowPirateInvasions, false, false);
 		if (enemies.isEmpty()) return;
 		float templarDominance = DiplomacyManager.getDominanceFactor("templars");
-		float perLevelPoints = Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.invasionPointsPerPlayerLevel;
+		float perLevelPoints = Global.getSector().getPlayerPerson().getStats().getLevel() * NexConfig.invasionPointsPerPlayerLevel;
 		
 		// Templars invading and raiding others
 		templarInvasionPoints += (100 + perLevelPoints) 
-			* ExerelinConfig.getExerelinFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
+			* NexConfig.getFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
 		
-		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
+		float req = NexConfig.pointsRequiredForInvasionFleet;
 		boolean shouldRaid = shouldRaid("templars");
 		EventType type = shouldRaid ? EventType.RAID : EventType.INVASION;
 		if (templarInvasionPoints >= req)
@@ -990,9 +990,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker();
 			for (String factionId : enemies)
 			{
-				if (factionId.equals(Factions.PLAYER) && !ExerelinConfig.followersInvasions)
+				if (factionId.equals(Factions.PLAYER) && !NexConfig.followersInvasions)
 					continue;
-				picker.add(factionId, ExerelinUtilsFaction.getFactionMarketSizeSum(factionId));
+				picker.add(factionId, NexUtilsFaction.getFactionMarketSizeSum(factionId));
 			}
 			String factionId = picker.pick();
 			FactionAPI faction = Global.getSector().getFaction(factionId);
@@ -1016,7 +1016,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1);
 		
-		ExerelinUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
+		NexUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
 	}
 	
 	/**
@@ -1044,7 +1044,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				float rage = plugin.getIntel().getStabilityPenalty();
 				if (rage > 0) {
 					rage *= rageIncrement;
-					float newVal = ExerelinUtils.modifyMapEntry(pirateRage, factionId, rage);
+					float newVal = NexUtils.modifyMapEntry(pirateRage, factionId, rage);
 					//log.info("Incrementing " + rage + " rage from market " + market.getName() + 
 					//		" of faction " + market.getFaction().getDisplayName() + ", now " + newVal);
 					if (newVal > 100) {
@@ -1064,7 +1064,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (base == null) continue;
 				
 				float rage = 1 * rageIncrement;
-				float newVal = ExerelinUtils.modifyMapEntry(pirateRage, factionId, rage);
+				float newVal = NexUtils.modifyMapEntry(pirateRage, factionId, rage);
 				if (newVal > 100 && !base.getName().endsWith("Bounty Posted")) {
 					spawnBaseStrikeFleet(market.getFaction(), base.getMarket());
 				}
@@ -1131,7 +1131,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
 			for (FactionAPI candidate : Global.getSector().getAllFactions()) 
 			{
-				if (ExerelinConfig.getExerelinFactionConfig(candidate.getId()).raidsFromBases)
+				if (NexConfig.getFactionConfig(candidate.getId()).raidsFromBases)
 					factionPicker.add(candidate);
 			}
 			faction = factionPicker.pick();
@@ -1159,7 +1159,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float mult = Math.min(1 + (numRemnantRaids * 0.25f), 3f);
 		fp *= mult;
 		float organizeTime = getOrganizeTime(fp);
-		fp *= 1 + ExerelinConfig.getExerelinFactionConfig(factionId).invasionFleetSizeMod;
+		fp *= 1 + NexConfig.getFactionConfig(factionId).invasionFleetSizeMod;
 		
 		log.info("Spawning Remnant-style raid fleet for " + faction.getDisplayName() 
 				+ " from base in " + base.getContainingLocation() + "; target " + targetMarket.getName());
@@ -1186,9 +1186,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		int capacity = 0;
 		float increment = 0;
 		
-		List<MarketAPI> requestable = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> requestable = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
 		if (Misc.getCommissionFaction() != null) {
-			requestable.addAll(ExerelinUtilsFaction.getFactionMarkets(Misc.getCommissionFactionId()));
+			requestable.addAll(NexUtilsFaction.getFactionMarkets(Misc.getCommissionFactionId()));
 		}
 		for (MarketAPI market : requestable)
 		{
@@ -1202,8 +1202,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			capacity += thisCapacity;
 		}
 		
-		fleetRequestCapacity = (int)(capacity * ExerelinConfig.fleetRequestCapMult);
-		float newStock = fleetRequestStock + increment * days * ExerelinConfig.fleetRequestIncrementMult;
+		fleetRequestCapacity = (int)(capacity * NexConfig.fleetRequestCapMult);
+		float newStock = fleetRequestStock + increment * days * NexConfig.fleetRequestIncrementMult;
 		if (newStock > fleetRequestCapacity)
 			newStock = fleetRequestCapacity;
 		
@@ -1275,7 +1275,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		
 		// if still in invasion grace period, do nothing further
-		if (daysElapsed < ExerelinConfig.invasionGracePeriod)
+		if (daysElapsed < NexConfig.invasionGracePeriod)
 		{
 			daysElapsed += days;
 			return;

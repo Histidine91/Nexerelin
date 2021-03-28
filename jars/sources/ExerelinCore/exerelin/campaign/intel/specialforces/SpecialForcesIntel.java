@@ -40,9 +40,9 @@ import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesT
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.campaign.intel.specialforces.namer.SpecialForcesNamer;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -111,7 +111,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		routeAI.addInitialTask();
 		generateFlagshipAndCommanderIfNeeded(route);
 
-		if (ExerelinConfig.nexIntelQueued <= 1) {
+		if (NexConfig.nexIntelQueued <= 1) {
 			Global.getSector().getIntelManager().addIntel(this);
 		}
 
@@ -158,14 +158,14 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public CampaignFleetAPI createFleetFromParams(RouteData thisRoute, long seed) 
 	{
 		String factionId = faction.getId();
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		if (conf.factionIdForHqResponse != null) 
 			factionId = conf.factionIdForHqResponse;
 		
 		Float damage = thisRoute.getExtra().damage;
 		if (damage == null) damage = 0f;		
 		float fp = thisRoute.getExtra().fp * (1 - damage) * conf.specialForcesSizeMult
-				* ExerelinConfig.specialForcesSizeMult;
+				* NexConfig.specialForcesSizeMult;
 		
 		FleetParamsV3 params = new FleetParamsV3(
 				lastSpawnedFrom,
@@ -244,11 +244,11 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	protected FleetMemberAPI pickFlagship() {
 		String factionId = faction.getId();
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		if (conf.factionIdForHqResponse != null) 
 			factionId = conf.factionIdForHqResponse;
 		
-		String variantId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomSpecialForcesFlagship(route.getRandom());
+		String variantId = NexConfig.getFactionConfig(factionId).getRandomSpecialForcesFlagship(route.getRandom());
 		if (variantId == null) return null;
 		FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
 		member.setShipName(faction.pickRandomShipName());
@@ -702,7 +702,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	@Override
 	public boolean isHidden() {
-		return !ExerelinUtils.isNonPlaytestDevMode() && !ExerelinModPlugin.isNexDev;
+		return !NexUtils.isNonPlaytestDevMode() && !ExerelinModPlugin.isNexDev;
 	}
 
 	@Override
@@ -755,7 +755,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	{
 		String name = "error";
 		
-		String className = ExerelinConfig.getExerelinFactionConfig(faction.getId()).specialForcesNamerClass;
+		String className = NexConfig.getFactionConfig(faction.getId()).specialForcesNamerClass;
 		
 		try {
 			ClassLoader loader = Global.getSettings().getScriptClassLoader();

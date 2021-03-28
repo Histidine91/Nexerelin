@@ -8,7 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -95,7 +95,7 @@ public class Alliance
 		List<MarketAPI> markets = new ArrayList<>();
 		for (String memberId : members)
 		{
-			List<MarketAPI> factionMarkets = ExerelinUtilsFaction.getFactionMarkets(memberId);
+			List<MarketAPI> factionMarkets = NexUtilsFaction.getFactionMarkets(memberId);
 			markets.addAll(factionMarkets);
 		}
 		return markets;
@@ -131,7 +131,7 @@ public class Alliance
 		int numMarkets = 0;
 		for (String memberId : members)
 		{
-			numMarkets += ExerelinUtilsFaction.getFactionMarkets(memberId).size();
+			numMarkets += NexUtilsFaction.getFactionMarkets(memberId).size();
 		}
 		return numMarkets;
 	}
@@ -141,7 +141,7 @@ public class Alliance
 		int size = 0;
 		for (String memberId : members)
 		{
-			for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(memberId))
+			for (MarketAPI market : NexUtilsFaction.getFactionMarkets(memberId))
 			{
 				size += market.getSize();
 			}

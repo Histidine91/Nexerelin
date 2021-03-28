@@ -3,7 +3,7 @@ package exerelin.campaign.submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.MilitarySubmarketPlugin;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 
 // TODO: should also sell relevant package blueprints
 public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
@@ -44,7 +44,7 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	
 	@Override
 	protected boolean hasCommission() {
-		String commissionFaction = ExerelinUtilsFaction.getCommissionFactionId();
+		String commissionFaction = NexUtilsFaction.getCommissionFactionId();
 		if (commissionFaction != null && AllianceManager.areFactionsAllied(commissionFaction, submarket.getFaction().getId())) {
 			return true;
 		}

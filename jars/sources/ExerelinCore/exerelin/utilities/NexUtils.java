@@ -25,7 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @SuppressWarnings("unchecked")
-public class ExerelinUtils
+public class NexUtils
 {	
 	public static long getStartingSeed()
 	{
@@ -164,7 +164,7 @@ public class ExerelinUtils
         }
         catch (Exception e)
         {
-            Global.getLogger(ExerelinFactionConfig.class).warn(e);
+            Global.getLogger(NexFactionConfig.class).warn(e);
             return new String[]{};
         }
     }

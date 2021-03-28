@@ -18,8 +18,8 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig.Morality;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig.Morality;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -83,7 +83,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	}
 	
 	public static String getStabilizeMethod(MarketAPI market) {
-		Morality moral = ExerelinConfig.getExerelinFactionConfig(market.getFactionId()).morality;
+		Morality moral = NexConfig.getFactionConfig(market.getFactionId()).morality;
 		if (moral == Morality.AMORAL || moral == Morality.EVIL)
 			return "repression";
 		return "relief";
@@ -100,7 +100,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	
 	protected static boolean isAllowed(MarketAPI market) {
 		if (market.isPlayerOwned()) return false;
-		int min = Math.min(ExerelinConfig.stabilizePackageEffect, 3);
+		int min = Math.min(NexConfig.stabilizePackageEffect, 3);
 		float recentUnrest = RecentUnrest.getPenalty(market);
 		return recentUnrest >= min || (recentUnrest >= 1 && market.getStabilityValue() == 0);
 	}
@@ -218,7 +218,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		if (ru != null) {
 			text.setFontSmallInsignia();
 			int before = ru.getPenalty();
-			ru.add(-ExerelinConfig.stabilizePackageEffect, 
+			ru.add(-NexConfig.stabilizePackageEffect, 
 					StringHelper.getString("exerelin_markets", "stabilizeRecentUnrestEntry"));
 			int diff = before - ru.getPenalty();
 			text.addPara(StringHelper.getStringAndSubstituteToken("exerelin_markets",

@@ -20,7 +20,7 @@ import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import exerelin.world.factionsetup.FactionSetupHandler;
 import exerelin.world.factionsetup.FactionSetupItemPlugin;
@@ -66,7 +66,7 @@ public class OwnFactionSetupScript extends DelayedDialogScreenScript
 		
 		protected SectorEntityToken getPlayerHome() {
 			SectorEntityToken playerHome = null;
-			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
+			List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
 			if (!markets.isEmpty()) playerHome = markets.get(0).getPrimaryEntity();
 			
 			return playerHome;

@@ -18,9 +18,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsCargo;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsCargo;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -130,7 +130,7 @@ public class Nex_RebellionActions extends PaginatedOptions {
 			AddRemoveCommodity.addCreditsGainText(payment, dialog.getTextPanel());
 		}
 		
-		ExerelinUtilsCargo.addCommodityStockpile(market, commodity, amount);
+		NexUtilsCargo.addCommodityStockpile(market, commodity, amount);
 		Global.getSector().getEconomy().nextStep();
 		
 		// impact on rebellion strength
@@ -235,7 +235,7 @@ public class Nex_RebellionActions extends PaginatedOptions {
 		}
 		showOptions();
 		addTooltipsAndHotkeys(dialog);		
-		ExerelinUtils.addDevModeDialogOptions(dialog);
+		NexUtils.addDevModeDialogOptions(dialog);
 	}
 	
 	public String getDeliverString(String commodityId, int num)
@@ -260,7 +260,7 @@ public class Nex_RebellionActions extends PaginatedOptions {
 		RebellionIntel rebellion = RebellionIntel.getOngoingEvent(market);
 		if (rebellion == null) return false;
 		FactionAPI faction = isRebel(dialog) ? rebellion.getRebelFaction() : market.getFaction();
-		if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
+		if (NexUtilsFaction.isPirateFaction(faction.getId()))
 			return true;
 		return faction.isAtWorst(Factions.PLAYER, RepLevel.INHOSPITABLE);
 	}

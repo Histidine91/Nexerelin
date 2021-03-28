@@ -9,10 +9,10 @@ import com.fs.starfarer.api.campaign.SpecialItemSpecAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.ExerelinConstants;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinFactionConfig.SpecialItemSet;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.SpecialItemSet;
+import exerelin.utilities.NexUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +66,7 @@ public class FactionSetupHandler {
 				item.sprite = itemJson.optString("sprite");
 				item.className = itemJson.getString("className");
 				if (itemJson.has("params"))
-					item.params = ExerelinUtils.jsonToMap(itemJson.getJSONObject("params"));
+					item.params = NexUtils.jsonToMap(itemJson.getJSONObject("params"));
 				item.sortOrder = (float)itemJson.optDouble("sortOrder", 100);
 				
 				DEFS.add(item);
@@ -88,9 +88,9 @@ public class FactionSetupHandler {
 		List<FactionSetupItemDef> bpsToAddSingle = new ArrayList<>();
 		List<Pair<String, String>> singleBPsToAdd = new ArrayList<>();
 				
-		List<String> factions = ExerelinConfig.getFactions(false, true);
+		List<String> factions = NexConfig.getFactions(false, true);
 		for (String factionId : factions) {
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			for (SpecialItemSet itemSet : conf.startSpecialItems) {
 				for (Pair<String, String> item : itemSet.items) {
 					String id = item.one;

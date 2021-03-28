@@ -28,9 +28,9 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFleet;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -353,7 +353,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	}
 		
 	public void init() {		
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 
 			case 0:
@@ -404,7 +404,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	 * @return
 	 */
 	public int calcFP() {
-		float dist = ExerelinUtilsMarket.getHyperspaceDistance(source, target);
+		float dist = NexUtilsMarket.getHyperspaceDistance(source, target);
 		int freighter = (int)Math.max(Math.ceil(cargoSize/60f) * 2, 5);
 		int combat = 5 + freighter * 2;
 		if (target.hasCondition(Conditions.PIRATE_ACTIVITY)) {
@@ -420,7 +420,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	
 	protected CampaignFleetAPI spawnFleet()
 	{
-		float dist = ExerelinUtilsMarket.getHyperspaceDistance(source, target);
+		float dist = NexUtilsMarket.getHyperspaceDistance(source, target);
 		
 		// Buffalo is 5 FP for 300 cargo, or 60 cargo/FP
 		int freighter = (int)Math.max(Math.ceil(cargoSize/60f) * 2, 5);
@@ -446,7 +446,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		
 		params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source source size
 		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
-		fleet = ExerelinUtilsFleet.customCreateFleet(getFaction(), params);
+		fleet = NexUtilsFleet.customCreateFleet(getFaction(), params);
 
 		if (fleet == null)
 			return null;
@@ -483,7 +483,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		RecentUnrest ru = RecentUnrest.get(target);
 		if (ru != null) {
 			int before = ru.getPenalty();
-			ru.add(-Math.min(before, ExerelinConfig.stabilizePackageEffect), 
+			ru.add(-Math.min(before, NexConfig.stabilizePackageEffect), 
 					StringHelper.getString("exerelin_markets", "stabilizeRecentUnrestEntry"));
 			unrestReduction = before - ru.getPenalty();
 		}

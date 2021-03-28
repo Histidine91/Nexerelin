@@ -15,7 +15,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -94,7 +94,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	
 	protected int calcInsurableAmount(FleetMemberAPI member) {
 		//return calcShipPayout(Math.round(member.getBaseValue()), true, 0, 0);
-		return Math.round(member.getBaseValue() * ExerelinConfig.playerInsuranceMult);
+		return Math.round(member.getBaseValue() * NexConfig.playerInsuranceMult);
 	}
 	
 	protected float calcPremiumMult() {
@@ -591,7 +591,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		TooltipMakerAPI section = info.beginImageWithText("graphics/icons/intel/fleet_log3.png", 32);
 		section.setBulletedListMode("    - ");
 		section.addPara(getString("helpPara1-1"), pad, h, POLICY_TERM + "");
-		section.addPara(getString("helpPara1-2"), pad, h, ExerelinConfig.playerInsuranceMult + "", 
+		section.addPara(getString("helpPara1-2"), pad, h, NexConfig.playerInsuranceMult + "", 
 				toPercent(BASE_PREMIUM_RATIO));
 		section.addPara(getString("helpPara1-3"), pad, h, RENEW_ADVANCE_TIME + "", POLICY_TERM + "");
 		info.addImageWithText(opad);
@@ -671,7 +671,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		info.addSectionHeading(getString("headerTitle"), faction.getBaseUIColor(), 
 			faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
 		
-		float insurMult = ExerelinConfig.playerInsuranceMult;	
+		float insurMult = NexConfig.playerInsuranceMult;	
 		info.addPara(getString("descInsuranceMult"), opad, h, insurMult + "");
 		
 		String premiumMult = String.format("%.2f", calcPremiumMult());

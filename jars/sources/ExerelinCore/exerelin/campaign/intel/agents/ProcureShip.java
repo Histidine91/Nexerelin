@@ -35,10 +35,10 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.submarkets.PrismMarket;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -145,7 +145,7 @@ public class ProcureShip extends CovertActionIntel {
 	protected boolean hasCommission() {
 		if (!targetFaction.getCustomBoolean(Factions.CUSTOM_OFFERS_COMMISSIONS)) return true;
 		
-		String cfId = ExerelinUtilsFaction.getCommissionFactionId();
+		String cfId = NexUtilsFaction.getCommissionFactionId();
 		String afId = agentFaction.getId();
 		String tgtId = targetFaction.getId();
 		Global.getLogger(this.getClass()).info(cfId + ", " + afId + ", " + tgtId);
@@ -201,7 +201,7 @@ public class ProcureShip extends CovertActionIntel {
 	
 	public String getRandomVariantId() {
 		List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(ship.getHullId());
-		String variantId = ExerelinUtils.getRandomListElement(variants);
+		String variantId = NexUtils.getRandomListElement(variants);
 		if (variantId == null) variantId = ship.getHullId() + "_Hull";
 		return variantId;
 	}
@@ -231,8 +231,8 @@ public class ProcureShip extends CovertActionIntel {
 
 		// orbit
 		float orbitRadius = toOrbit.getRadius() + 100;
-		float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitRadius);
-		derelict.setCircularOrbitWithSpin(toOrbit, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod, 20, 30);
+		float orbitPeriod = NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitRadius);
+		derelict.setCircularOrbitWithSpin(toOrbit, NexUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod, 20, 30);
 	}
 	
 	protected void deliver() {
@@ -520,7 +520,7 @@ public class ProcureShip extends CovertActionIntel {
 		List<FleetMemberAPI> targets = new ArrayList<>();
 		Set<String> hullsToCheck = new HashSet<>();
 		
-		boolean allShips = ExerelinConfig.agentStealAllShips;
+		boolean allShips = NexConfig.agentStealAllShips;
 		if (allShips) {
 			hullsToCheck.addAll(market.getFaction().getKnownShips());
 		}
@@ -554,7 +554,7 @@ public class ProcureShip extends CovertActionIntel {
 				continue;
 
 			List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(hullId);
-			String variantId = ExerelinUtils.getRandomListElement(variants);
+			String variantId = NexUtils.getRandomListElement(variants);
 			if (variantId == null) variantId = hullId + "_Hull";
 			FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
 			targets.add(member);

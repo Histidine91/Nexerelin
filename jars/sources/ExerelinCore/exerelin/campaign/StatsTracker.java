@@ -20,7 +20,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.TempData;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.submarkets.PrismMarket;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -329,7 +329,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
             MarketAPI market, TempData actionData) {
         if (haveOrphans(market.getFactionId())) {
             int oldSize = market.getSize() + 1;
-            float deaths = ExerelinUtilsMarket.getPopulation(oldSize) - ExerelinUtilsMarket.getPopulation(market.getSize());
+            float deaths = NexUtilsMarket.getPopulation(oldSize) - NexUtilsMarket.getPopulation(market.getSize());
             deaths *= MathUtils.getRandomNumberInRange(0.5f, 1.5f);
             int orphans = (int)Math.round(Math.sqrt(deaths));
 

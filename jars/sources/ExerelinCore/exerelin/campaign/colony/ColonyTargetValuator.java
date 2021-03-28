@@ -11,10 +11,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.econ.EconomyInfoHelper;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -119,8 +119,8 @@ public class ColonyTargetValuator {
 	
 	public float evaluatePlanet(MarketAPI market, float distanceLY, FactionAPI faction) {
 		List<String> conds = new ArrayList<>();
-		if (faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market))
-				&& ExerelinUtilsAstro.isCoreSystem(market.getStarSystem()))
+		if (faction.getId().equals(NexUtilsMarket.getOriginalOwner(market))
+				&& NexUtilsAstro.isCoreSystem(market.getStarSystem()))
 			return 1000;
 		
 		float score = 0;
@@ -136,7 +136,7 @@ public class ColonyTargetValuator {
 		else if (market.hasCondition(Conditions.LOW_GRAVITY))
 			score *= 1.1f;
 		
-		if (faction.getId().equals(ExerelinUtilsMarket.getOriginalOwner(market)))
+		if (faction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
 			score += 10;
 		
 		float hazard = market.getHazardValue() * getHazardDivisorMult(faction);
@@ -145,7 +145,7 @@ public class ColonyTargetValuator {
 		score /= hazard;
 		score *= getDistanceValueMult(distanceLY, faction);
 		
-		if (ExerelinUtilsFaction.getSystemOwner(market.getContainingLocation()) == faction) 
+		if (NexUtilsFaction.getSystemOwner(market.getContainingLocation()) == faction) 
 		{
 			score *= 2;
 		}
@@ -174,7 +174,7 @@ public class ColonyTargetValuator {
 		boolean inhabited = !Global.getSector().getEconomy().getMarkets(system).isEmpty();
 		
 		if (inhabited) {
-			if (ExerelinUtilsFaction.getSystemOwner(system) != faction) {
+			if (NexUtilsFaction.getSystemOwner(system) != faction) {
 				//log.info(system.getName() + " controlled by someone else");
 				return false;
 			}
@@ -190,7 +190,7 @@ public class ColonyTargetValuator {
 			}
 		}
 		
-		if (!ExerelinUtilsAstro.canHaveCommRelay(system)) {
+		if (!NexUtilsAstro.canHaveCommRelay(system)) {
 			//log.info(system.getName() + " cannot have comm relay");
 			return false;
 		}
@@ -268,7 +268,7 @@ public class ColonyTargetValuator {
 	}
 	
 	public float getMaxDistanceLY(FactionAPI faction) {
-		return ExerelinConfig.getExerelinFactionConfig(faction.getId()).maxColonyDistance;
+		return NexConfig.getFactionConfig(faction.getId()).maxColonyDistance;
 	}
 	
 	public float getDistanceValueMult(float distance, FactionAPI faction) {

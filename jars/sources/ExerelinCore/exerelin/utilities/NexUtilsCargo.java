@@ -6,7 +6,7 @@ import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 
 
-public class ExerelinUtilsCargo
+public class NexUtilsCargo
 {
     public static void addCommodityStockpile(MarketAPI market, String commodityID, float amountToAdd)
     {

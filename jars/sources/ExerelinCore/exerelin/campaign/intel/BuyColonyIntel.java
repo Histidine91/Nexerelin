@@ -20,7 +20,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -64,7 +64,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
-		ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
 	}
 	
 	// text sidebar

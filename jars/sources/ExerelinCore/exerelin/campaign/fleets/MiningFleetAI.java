@@ -17,8 +17,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.fleets.MiningFleetManagerV2.MiningFleetData;
-import exerelin.utilities.ExerelinUtilsCargo;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsCargo;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -184,7 +184,7 @@ public class MiningFleetAI implements EveryFrameScript
 	protected void giveInitialAssignment()
 	{
 		if (data.noWait) return;
-		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
+		float daysToOrbit = NexUtilsFleet.getDaysToOrbit(fleet);
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionMining"));
 	}
 	
@@ -204,7 +204,7 @@ public class MiningFleetAI implements EveryFrameScript
 			
 			SectorEntityToken destination = data.source;
 			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
-			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), 
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, NexUtilsFleet.getDaysToOrbit(fleet), 
 					StringHelper.getFleetAssignmentString("miningUnload", null), 
 					getUnloadScript(fleet, data.sourceMarket, false));
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
@@ -222,7 +222,7 @@ public class MiningFleetAI implements EveryFrameScript
 				{
 					if (stack.isCommodityStack() && (allowSupplies || !stack.isSupplyStack()))
 					{
-						ExerelinUtilsCargo.addCommodityStockpile(market, stack.getCommodityId(),
+						NexUtilsCargo.addCommodityStockpile(market, stack.getCommodityId(),
 								Math.round(stack.getSize()/2));
 						cargo.removeCommodity(stack.getCommodityId(), stack.getSize());
 					}

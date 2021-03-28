@@ -15,8 +15,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -82,8 +82,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 			Global.getSector().getCampaignUI().addMessage("Suppressed diplomacy notification " 
 					+ getName() + " due to filter level");
 		}
-		if (ExerelinConfig.nexIntelQueued<=0 || ExerelinConfig.nexIntelQueued==1) {
-			if (ExerelinConfig.nexIntelQueued<=0 ||
+		if (NexConfig.nexIntelQueued<=0 || NexConfig.nexIntelQueued==1) {
+			if (NexConfig.nexIntelQueued<=0 ||
 					isWar ||
 					isPeace ||
 					Factions.PLAYER.equals(factionId1) ||
@@ -124,8 +124,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
-		ExerelinUtilsFaction.addFactionNamePara(info, initPad, tc, getFaction(factionId1));
-		ExerelinUtilsFaction.addFactionNamePara(info, pad, tc, getFaction(factionId2));
+		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFaction(factionId1));
+		NexUtilsFaction.addFactionNamePara(info, pad, tc, getFaction(factionId2));
 		
 		String relation = NexUtilsReputation.getRelationStr(storedRelation);
 		Color relColor = NexUtilsReputation.getRelColor(storedRelation);
@@ -210,8 +210,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		Color deltaColor = adjustResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		String delta = (int)Math.abs(adjustResult.delta * 100) + "";
 		String newRel = NexUtilsReputation.getRelationStr(relations);
-		String fn1 = ExerelinUtilsFaction.getFactionShortName(factionId1);
-		String fn2 = ExerelinUtilsFaction.getFactionShortName(factionId2);
+		String fn1 = NexUtilsFaction.getFactionShortName(factionId1);
+		String fn2 = NexUtilsFaction.getFactionShortName(factionId2);
 		String str = StringHelper.getString("exerelin_diplomacy", adjustResult.delta > 0 ?
 				"intelRepResultPositive" : "intelRepResultNegative");
 		str = StringHelper.substituteToken(str, "$faction1", fn1);
@@ -232,7 +232,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	public boolean shouldNotify() {
 		if (isWar || isPeace) return true;
 		
-		int filterLevel = ExerelinConfig.diplomacyEventFilterLevel;
+		int filterLevel = NexConfig.diplomacyEventFilterLevel;
 		
 		if (Factions.PLAYER.equals(factionId1) || Factions.PLAYER.equals(factionId2))
 			return filterLevel <= 1;

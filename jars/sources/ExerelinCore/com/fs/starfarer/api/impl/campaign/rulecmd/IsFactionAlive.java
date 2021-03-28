@@ -6,7 +6,7 @@ import java.util.Map;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 
 
 public class IsFactionAlive extends BaseCommandPlugin {
@@ -15,7 +15,7 @@ public class IsFactionAlive extends BaseCommandPlugin {
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
 		
-		return (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0);
+		return (NexUtilsFaction.getFactionMarkets(factionId).size() > 0);
 		
 		// don't use this, since a faction can be dead while still having markets if some of them are tagged as non-invadable
 		//return SectorManager.isFactionAlive(factionId);

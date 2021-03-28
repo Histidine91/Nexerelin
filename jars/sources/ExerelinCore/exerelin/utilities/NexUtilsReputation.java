@@ -28,8 +28,8 @@ public class NexUtilsReputation
 	{
 		if (faction1Id.equals(faction2Id))
 			return delta;
-		float max = ExerelinFactionConfig.getMaxRelationship(faction1Id, faction2Id);
-		float min = ExerelinFactionConfig.getMinRelationship(faction1Id, faction2Id);
+		float max = NexFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+		float min = NexFactionConfig.getMinRelationship(faction1Id, faction2Id);
 		float curr = Global.getSector().getFaction(faction1Id).getRelationship(faction2Id);
 		if (delta > 0 && curr + delta > max)
 			delta = max - curr;
@@ -112,9 +112,9 @@ public class NexUtilsReputation
 		{
 			String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 			str = StringHelper.substituteToken(str, "$faction1", 
-					ExerelinUtilsFaction.getFactionShortName(playerAligned.getId()));
+					NexUtilsFaction.getFactionShortName(playerAligned.getId()));
 			str = StringHelper.substituteToken(str, "$faction2", 
-					ExerelinUtilsFaction.getFactionShortName(faction));
+					NexUtilsFaction.getFactionShortName(faction));
 			String rel = getRelationStr(faction, playerAligned);
 			str = StringHelper.substituteToken(str, "$relationship", rel);
 			printToTextPanelOrCampaignUI(textPanel, str, rel, faction.getRelColor(playerAligned.getId()));
@@ -128,9 +128,9 @@ public class NexUtilsReputation
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
 	{
 		if (factionIdToSync.equals(otherFactionId)) return;
-		if (ExerelinConfig.getExerelinFactionConfig(factionIdToSync).noSyncRelations)
+		if (NexConfig.getFactionConfig(factionIdToSync).noSyncRelations)
 			return;
-		if (ExerelinConfig.getExerelinFactionConfig(otherFactionId).noSyncRelations)
+		if (NexConfig.getFactionConfig(otherFactionId).noSyncRelations)
 			return;
 		
 		SectorAPI sector = Global.getSector();	
@@ -150,7 +150,7 @@ public class NexUtilsReputation
 	// easier than trying to override stuff with all the private classes and such
 	public static void syncFactionRelationshipsToPlayer(String factionId)
 	{
-		if (ExerelinConfig.getExerelinFactionConfig(factionId).noSyncRelations)
+		if (NexConfig.getFactionConfig(factionId).noSyncRelations)
 			return;
 		
 		SectorAPI sector = Global.getSector();	
@@ -179,9 +179,9 @@ public class NexUtilsReputation
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		if (factionId.equals(otherFactionId)) return;
 		
-		if (ExerelinConfig.getExerelinFactionConfig(factionId).noSyncRelations)
+		if (NexConfig.getFactionConfig(factionId).noSyncRelations)
 			return;
-		if (ExerelinConfig.getExerelinFactionConfig(otherFactionId).noSyncRelations)
+		if (NexConfig.getFactionConfig(otherFactionId).noSyncRelations)
 			return;
 		
 		float relationship = faction.getRelationship(otherFactionId);
@@ -195,7 +195,7 @@ public class NexUtilsReputation
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getPlayerFaction();
 		FactionAPI faction = sector.getFaction(factionId);
-		if (ExerelinConfig.getExerelinFactionConfig(factionId).noSyncRelations)
+		if (NexConfig.getFactionConfig(factionId).noSyncRelations)
 			return;
 		
 		for (FactionAPI otherFaction: sector.getAllFactions())

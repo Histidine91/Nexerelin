@@ -11,7 +11,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -56,7 +56,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 			if (!isCapture || !cooldown) {
 				for (String factionId : factionsToNotify) {
 					float thisRep = repChange;
-					if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId))
+					if (NexUtilsFaction.isPirateOrTemplarFaction(factionId))
 						thisRep *= 0.5f;
 
 					FactionAPI faction = Global.getSector().getFaction(factionId);
@@ -179,8 +179,8 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		
 		FactionAPI faction = getFaction(factionId);
 		String factionName = Misc.ucFirst(faction.getDisplayName());
-		String numMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId, true).size() + "";
-		String size = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId, true) + "";
+		String numMarkets = NexUtilsFaction.getFactionMarkets(factionId, true).size() + "";
+		String size = NexUtilsFaction.getFactionMarketSizeSum(factionId, true) + "";
 		
 		Map<String, String> sub = new HashMap<>();
 		sub.put("$faction", factionName);

@@ -22,8 +22,8 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	}
 	
 	public static int getSalary(int level) {
-		return ExerelinConfig.agentBaseSalary + ExerelinConfig.agentSalaryPerLevel * (level - 1);
+		return NexConfig.agentBaseSalary + NexConfig.agentSalaryPerLevel * (level - 1);
 	}
 	
 	public int getLevel() {
@@ -144,7 +144,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	}
 	
 	public boolean canStealShip() {
-		return !ExerelinConfig.useAgentSpecializations || specializations.isEmpty() || specializations.contains(Specialization.NEGOTIATOR);
+		return !NexConfig.useAgentSpecializations || specializations.isEmpty() || specializations.contains(Specialization.NEGOTIATOR);
 	}
 	
 	public MarketAPI getMarket() {
@@ -263,7 +263,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		if (isDead || isDismissed) return;
 		
 		// specialization
-		if (ExerelinConfig.useAgentSpecializations && !specializations.isEmpty()) {
+		if (NexConfig.useAgentSpecializations && !specializations.isEmpty()) {
 			str = getString("intelDescSpecialization");
 			info.addPara(str, opad, h, StringHelper.writeStringCollection(getSpecializationNames()));
 			bullet(info);
@@ -637,7 +637,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		NEGOTIATOR, SABOTEUR, HYBRID;
 		
 		public static Specialization pickRandomSpecialization() {
-			return (Specialization)ExerelinUtils.getRandomArrayElement(Specialization.values());
+			return (Specialization)NexUtils.getRandomArrayElement(Specialization.values());
 		}
 		
 		public String getName() {

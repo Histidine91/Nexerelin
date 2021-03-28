@@ -9,7 +9,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.NexUtilsAstro;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,8 +79,8 @@ public class PlagueBeacon extends BaseLandmarkDef {
 		
 		CustomCampaignEntityAPI beacon = entity.getContainingLocation().addCustomEntity(null, null, Entities.WARNING_BEACON, faction.getId());
 		float orbitRadius = entity.getRadius() + 100;
-		float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
-		beacon.setCircularOrbitWithSpin(entity, ExerelinUtilsAstro.getRandomAngle(), orbitRadius, orbitPeriod, 20, 30);
+		float orbitPeriod = NexUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
+		beacon.setCircularOrbitWithSpin(entity, NexUtilsAstro.getRandomAngle(), orbitRadius, orbitPeriod, 20, 30);
 		beacon.getMemoryWithoutUpdate().set("$nex_plagueBeacon", true);
 		beacon.setDiscoverable(true);
 		

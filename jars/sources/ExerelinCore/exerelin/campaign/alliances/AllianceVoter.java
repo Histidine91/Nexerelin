@@ -14,10 +14,10 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.intel.AllianceVoteIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import java.util.HashSet;
 import java.util.Set;
@@ -127,14 +127,14 @@ public class AllianceVoter {
 			AllianceVoteIntel intel = new AllianceVoteIntel(ally1.uuId, vote1, 
 					ally2 != null ? ally2.uuId: faction2Id, 
 					ally2 != null, isWar);
-			ExerelinUtils.addExpiringIntel(intel);
+			NexUtils.addExpiringIntel(intel);
 		}
 		if (ally2 != null)
 		{
 			AllianceVoteIntel intel = new AllianceVoteIntel(ally2.uuId, vote2, 
 					ally1 != null ? ally1.uuId: faction1Id, 
 					ally1 != null, isWar);
-			ExerelinUtils.addExpiringIntel(intel);
+			NexUtils.addExpiringIntel(intel);
 		}
 		
 		// alliance hates on defiers
@@ -203,7 +203,7 @@ public class AllianceVoter {
 			theirStrength = otherAlliance.getAllianceMarketSizeSum();
 		}
 		else {
-			theirStrength = ExerelinUtilsFaction.getFactionMarketSizeSum(otherFactionId);
+			theirStrength = NexUtilsFaction.getFactionMarketSizeSum(otherFactionId);
 		}
 		if (theirStrength <= 0) theirStrength = 1;
 		float strengthRatio = ourStrength / theirStrength;
@@ -297,19 +297,19 @@ public class AllianceVoter {
 			return Vote.YES;
 		
 		FactionAPI us = Global.getSector().getFaction(factionId);
-		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig usConf = NexConfig.getFactionConfig(factionId);
 		
 		// don't bother calculating vote if we like/hate them forever
 		if (!DiplomacyManager.haveRandomRelationships(factionId, otherFactionId))
 		{
 			if (isWar)
 			{
-				if (ExerelinFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
+				if (NexFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
 					return Vote.NO;
 			}
 			else
 			{
-				if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
+				if (NexFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
 					return Vote.NO;
 			}
 		}
@@ -406,19 +406,19 @@ public class AllianceVoter {
 			String friendId, String otherFactionId)
 	{
 		FactionAPI us = Global.getSector().getFaction(factionId);
-		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig usConf = NexConfig.getFactionConfig(factionId);
 		
 		// if we like/hate them forever, defy a vote that would require us to break this
 		if (!DiplomacyManager.haveRandomRelationships(factionId, otherFactionId))
 		{
 			if (isWar)
 			{
-				if (ExerelinFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
+				if (NexFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
 					return true;
 			}
 			else
 			{
-				if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
+				if (NexFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
 					return true;
 			}
 		}

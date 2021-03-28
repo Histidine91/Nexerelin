@@ -24,9 +24,9 @@ import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			FactionAPI bestFaction = null;
 			for (CampaignFleetAPI fleet : fleets) {
 				float groundMult = fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).computeEffective(1);
-				ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
+				NexFactionConfig atkConf = NexConfig.getFactionConfig(fleet.getFaction().getId());
 				float factionMult = 1 + atkConf.invasionStrengthBonusAttack;
 				
 				if (groundMult > bestGroundMult)
@@ -234,7 +234,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		info.setParaFontDefault();
 		info.addPara(str, 0, hl, String.format("%.2f", strength));
 		info.setParaSmallInsignia();
-		info.addStatModGrid(350, 50, 10, 3, stat, true, ExerelinUtils.getStatModValueGetter(color, 0));
+		info.addStatModGrid(350, 50, 10, 3, stat, true, NexUtils.getStatModValueGetter(color, 0));
 		info.setParaFontDefault();
 	}
 	

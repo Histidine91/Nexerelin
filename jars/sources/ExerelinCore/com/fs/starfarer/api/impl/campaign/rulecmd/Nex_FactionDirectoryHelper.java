@@ -5,9 +5,9 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFaction;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -124,7 +124,7 @@ public class Nex_FactionDirectoryHelper {
 		
 		if (list.isEmpty())
 		{
-			List<String> factions = ExerelinConfig.getFactions(false, true);
+			List<String> factions = NexConfig.getFactions(false, true);
 			if (excludePlayer)
 				factions.remove(Factions.PLAYER);
 			list.addAll(getFactionGroupings(factions));
@@ -148,13 +148,13 @@ public class Nex_FactionDirectoryHelper {
 		List<FactionAPI> allFactions = Global.getSector().getAllFactions();
 		List<String> result = new ArrayList<>();
 		
-		if (ExerelinUtilsFaction.isExiInCorvus("exigency"))
+		if (NexUtilsFaction.isExiInCorvus("exigency"))
 			liveFactions.add("exigency");
 		for (FactionAPI faction : allFactions)
 		{
 			String factionId = faction.getId();
-			boolean allowed = anyPlayable && ExerelinConfig.getExerelinFactionConfig(factionId).playableFaction;
-			allowed = allowed || liveFactions.contains(factionId) || ExerelinUtilsFaction.hasAnyMarkets(factionId) || ExerelinUtilsFaction.isExiInCorvus(factionId);
+			boolean allowed = anyPlayable && NexConfig.getFactionConfig(factionId).playableFaction;
+			allowed = allowed || liveFactions.contains(factionId) || NexUtilsFaction.hasAnyMarkets(factionId) || NexUtilsFaction.isExiInCorvus(factionId);
 			if (allowed)
 				result.add(factionId);
 		}
@@ -186,7 +186,7 @@ public class Nex_FactionDirectoryHelper {
 			return nameCache.get(factionId);
 		
 		String name;
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
+		NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
 		if (conf != null && conf.directoryUseShortName)
 			name = Misc.ucFirst(faction.getDisplayName());
 		else name = Misc.ucFirst(faction.getDisplayNameLong());

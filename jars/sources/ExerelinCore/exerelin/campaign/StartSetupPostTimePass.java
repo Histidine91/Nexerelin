@@ -23,10 +23,10 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.campaign.ui.OwnFactionSetupScript;
 import exerelin.world.ExerelinCorvusLocations;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinFactionConfig.SpecialItemSet;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.SpecialItemSet;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsReputation;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
@@ -79,7 +79,7 @@ public class StartSetupPostTimePass {
 		
 		// spawn as a different faction if config says we should
 		// for Blade Breakers etc.
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		String spawnAsFactionId = null;
 		if (sector.getMemoryWithoutUpdate().contains("$nex_spawnAsFaction"))
 		{
@@ -136,7 +136,7 @@ public class StartSetupPostTimePass {
 		SectorEntityToken entity = null;
 		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
 		WeightedRandomPicker<SectorEntityToken> pickerBackup = new WeightedRandomPicker<>();
-		picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
+		picker.setRandom(new Random(NexUtils.getStartingSeed()));
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
 			if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))

@@ -25,8 +25,8 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.diplomacy.TributeIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +68,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		boolean territorial = json.optBoolean("territorial", false);
 		
 		// MODIFIED
-		if (!ExerelinConfig.enablePunitiveExpeditions) {
+		if (!NexConfig.enablePunitiveExpeditions) {
 			vsCompetitors = false;
 			vsFreePort = false;
 		}
@@ -154,7 +154,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 				boolean destroy = market.getSize() <= maxSize;
 				if (!destroy) continue;
 				
-				FactionAPI claimedBy = ExerelinUtilsFaction.getSystemOwner(market.getStarSystem());
+				FactionAPI claimedBy = NexUtilsFaction.getSystemOwner(market.getStarSystem());
 				if (claimedBy != curr.faction) continue;
 				
 				PunExReason reason = new PunExReason(PunExType.TERRITORIAL);

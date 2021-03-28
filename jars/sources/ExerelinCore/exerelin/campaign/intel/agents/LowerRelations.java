@@ -20,8 +20,8 @@ import static exerelin.campaign.intel.agents.CovertActionIntel.NO_EFFECT;
 import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
 
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -87,8 +87,8 @@ public class LowerRelations extends CovertActionIntel {
 		}
 		if (shouldReportEvent()) {
 			boolean notify = shouldNotify();
-			if (ExerelinConfig.nexIntelQueued <= 1) {
-				if (ExerelinConfig.nexIntelQueued <= 0
+			if (NexConfig.nexIntelQueued <= 1) {
+				if (NexConfig.nexIntelQueued <= 0
 					||	affectsPlayerRep()
 					||	playerInvolved
 					||	agentFaction == PlayerFactionStore.getPlayerFaction()
@@ -247,9 +247,9 @@ public class LowerRelations extends CovertActionIntel {
 	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)
-			ExerelinUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
-		ExerelinUtilsFaction.addFactionNamePara(info, afKnown ? pad : initPad, color, targetFaction);
-		ExerelinUtilsFaction.addFactionNamePara(info, pad, color, thirdFaction);
+			NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
+		NexUtilsFaction.addFactionNamePara(info, afKnown ? pad : initPad, color, targetFaction);
+		NexUtilsFaction.addFactionNamePara(info, pad, color, thirdFaction);
 	}
 	
 	@Override

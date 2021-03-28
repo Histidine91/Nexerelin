@@ -28,10 +28,10 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.ungp.VengeanceBuff;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -253,7 +253,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 	
 	protected boolean isMarketKnown()
 	{
-		if (ExerelinUtils.isNonPlaytestDevMode()) return true;
+		if (NexUtils.isNonPlaytestDevMode()) return true;
 		return market.getPrimaryEntity().isVisibleToPlayerFleet();
 	}
 	
@@ -505,8 +505,8 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			return null;
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-		float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;
-        int capBonus = Math.round(ExerelinUtilsFleet.getPlayerLevelFPBonus());
+		float player = NexUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;
+        int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
 		float sizeMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(market.getFaction());
         int combat, freighter, tanker, utility;
         float bonus;
@@ -571,8 +571,8 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         }
 		*/
         
-        sizeMult = ExerelinConfig.getExerelinFactionConfig(factionId).vengeanceFleetSizeMult;
-		sizeMult *= ExerelinConfig.vengeanceFleetSizeMult;
+        sizeMult = NexConfig.getFactionConfig(factionId).vengeanceFleetSizeMult;
+		sizeMult *= NexConfig.vengeanceFleetSizeMult;
         combat *= sizeMult;
         freighter *= sizeMult;
         tanker *= sizeMult;
@@ -596,7 +596,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
                                                 );
         params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
         params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
-        fleet = ExerelinUtilsFleet.customCreateFleet(getFaction(), params);
+        fleet = NexUtilsFleet.customCreateFleet(getFaction(), params);
 
         if (fleet == null)
             return null;
@@ -807,7 +807,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         {
 			if (faction == null) faction = this.faction;
             String name = "";
-            ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
+            NexFactionConfig conf = NexConfig.getFactionConfig(faction);
             if (conf.vengeanceLevelNames.size() > escalationLevel)
             {
                 name = conf.vengeanceLevelNames.get(escalationLevel);
@@ -831,7 +831,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         {
 			if (faction == null) faction = this.faction;
             String name = "";
-            ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
+            NexFactionConfig conf = NexConfig.getFactionConfig(faction);
             if (conf.vengeanceFleetNames.size() > escalationLevel)
             {
                 name = conf.vengeanceFleetNames.get(escalationLevel);
@@ -855,7 +855,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         {
 			if (faction == null) faction = this.faction;
             String name = "";
-            ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
+            NexFactionConfig conf = NexConfig.getFactionConfig(faction);
             if (conf.vengeanceFleetNamesSingle.size() > escalationLevel)
             {
                 name = conf.vengeanceFleetNamesSingle.get(escalationLevel);

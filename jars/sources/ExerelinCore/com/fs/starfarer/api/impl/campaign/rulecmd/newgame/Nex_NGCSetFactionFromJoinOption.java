@@ -11,8 +11,8 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 
 
 public class Nex_NGCSetFactionFromJoinOption extends BaseCommandPlugin {
@@ -29,7 +29,7 @@ public class Nex_NGCSetFactionFromJoinOption extends BaseCommandPlugin {
 		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
 		if (!factionId.equals(Factions.PLAYER))
 		{
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			ExerelinSetupData.getInstance().freeStart = conf.freeStart;
 		}
 			

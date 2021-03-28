@@ -26,7 +26,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.submarkets.PrismMarket;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -548,7 +548,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			cost *= 0.5f;
 		}
 		cost *= PRICE_POINT_MULT;
-		if (isBuy) cost *= ExerelinConfig.prismBlueprintPriceMult;
+		if (isBuy) cost *= NexConfig.prismBlueprintPriceMult;
 		
 		if (spec.hasTag("package_bp"))
 			cost *= 5;

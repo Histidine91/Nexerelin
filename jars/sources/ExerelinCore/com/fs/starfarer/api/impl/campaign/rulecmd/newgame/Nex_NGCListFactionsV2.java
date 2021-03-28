@@ -15,9 +15,9 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCListFact
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class Nex_NGCListFactionsV2 extends PaginatedOptions {
 	public static void loadOptions() {
 		if (loaded) return;
 		
-		List<String> factionIds = ExerelinConfig.getFactions(false, true);
+		List<String> factionIds = NexConfig.getFactions(false, true);
 		factionIds.remove(Factions.PLAYER);
 		
 		List<FactionAPI> factions = new ArrayList<>();
@@ -60,7 +60,7 @@ public class Nex_NGCListFactionsV2 extends PaginatedOptions {
 		
 		for (FactionAPI faction : factions) {
 			String factionId = faction.getId();
-			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			String optId = JOIN_FACTION_OPTION_PREFIX + factionId;
 			String text = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
 			if (!conf.difficultyString.isEmpty())
@@ -144,7 +144,7 @@ public class Nex_NGCListFactionsV2 extends PaginatedOptions {
 		{
 			opts.addOption(StringHelper.getString("exerelin_ngc", "devStart"), "nex_NGCDevStart");
 			opts.addOption(StringHelper.getString("exerelin_ngc", "devStartFast"), "nex_NGCDevStartFast");
-			ExerelinUtils.addDevModeDialogOptions(dialog);
+			NexUtils.addDevModeDialogOptions(dialog);
 		}
 
 		opts.addOption(StringHelper.getString("back", true), "exerelinNGCOptionsBack");

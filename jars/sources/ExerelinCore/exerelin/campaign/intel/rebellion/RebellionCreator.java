@@ -12,10 +12,10 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import java.util.List;
 import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.MathUtils;
@@ -73,7 +73,7 @@ public class RebellionCreator implements EveryFrameScript {
 		if (RebellionIntel.isOngoing(market))
 			return null;
 		FactionAPI faction = market.getFaction();
-		boolean allowPirates = ExerelinConfig.retakePirateMarkets;		
+		boolean allowPirates = NexConfig.retakePirateMarkets;		
 		
 		WeightedRandomPicker<String> enemyPicker = new WeightedRandomPicker<>();
 		List<String> enemies = DiplomacyManager.getFactionsOfAtBestRepWithFaction(market.getFaction(), 
@@ -84,9 +84,9 @@ public class RebellionCreator implements EveryFrameScript {
 			addToListIfNotPresent(enemies, Factions.INDEPENDENT);
 		}
 		
-		String originalOwner = ExerelinUtilsMarket.getOriginalOwner(market);
+		String originalOwner = NexUtilsMarket.getOriginalOwner(market);
 		if (SectorManager.getManager().isRespawnFactions() && !SectorManager.isFactionAlive(originalOwner) &&
-				SectorManager.getManager().getNumRespawns(originalOwner) < ExerelinConfig.maxFactionRespawns) 
+				SectorManager.getManager().getNumRespawns(originalOwner) < NexConfig.maxFactionRespawns) 
 		{
 			addToListIfNotPresent(enemies, originalOwner);
 		}
@@ -137,7 +137,7 @@ public class RebellionCreator implements EveryFrameScript {
 		
 		if (market.hasCondition(Conditions.DISSIDENT))
 			effectiveStability -= 1;
-		if (ExerelinUtilsMarket.isWithOriginalOwner(market))
+		if (NexUtilsMarket.isWithOriginalOwner(market))
 			effectiveStability += 1;
 		else
 			effectiveStability -= 2;		
@@ -149,7 +149,7 @@ public class RebellionCreator implements EveryFrameScript {
 		float points = (requiredThreshold - effectiveStability)/2;
 		if (points > 2) points = 2;
 		else if (points < -2) points = -2;
-		points *= REBELLION_POINT_MULT * ExerelinConfig.rebellionMult;
+		points *= REBELLION_POINT_MULT * NexConfig.rebellionMult;
 		if (hardModePenalty && points > 0) points *= HARD_MODE_MULT;
 		return points;		
 	}
@@ -181,13 +181,13 @@ public class RebellionCreator implements EveryFrameScript {
 	
 	protected void processMarket(MarketAPI market, float days)
 	{
-		if (!ExerelinUtilsMarket.canBeInvaded(market, false))
+		if (!NexUtilsMarket.canBeInvaded(market, false))
 			return;
 		if (market.getFactionId().equals("templars"))
 			return;
 		if (market.getFactionId().equals(Factions.INDEPENDENT))
 			return;
-		if (ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
+		if (NexUtilsFaction.isPirateFaction(market.getFactionId()))
 			return;
 		if (RebellionIntel.isOngoing(market))
 			return;
@@ -205,7 +205,7 @@ public class RebellionCreator implements EveryFrameScript {
 	
 	@Override
 	public void advance(float amount) {
-		ExerelinUtils.advanceIntervalDays(interval, amount);
+		NexUtils.advanceIntervalDays(interval, amount);
 		if (!interval.intervalElapsed()) return;
 		
 		numOngoing = Global.getSector().getIntelManager().getIntelCount(RebellionIntel.class, true);

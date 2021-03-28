@@ -11,9 +11,9 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.Fac
 import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 				for (FactionAPI faction : group.factions)
 				{
 					String factionId = faction.getId();
-					ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+					NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 					String optId = JOIN_FACTION_OPTION_PREFIX + factionId;
 					String text = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
 					if (!conf.difficultyString.isEmpty())
@@ -72,7 +72,7 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_NGCFactionsBack");
 				opts.setShortcut("nex_NGCFactionsBack", Keyboard.KEY_ESCAPE, false, false, false, false);
 				
-				ExerelinUtils.addDevModeDialogOptions(dialog);
+				NexUtils.addDevModeDialogOptions(dialog);
 				
 				return true;
 		}

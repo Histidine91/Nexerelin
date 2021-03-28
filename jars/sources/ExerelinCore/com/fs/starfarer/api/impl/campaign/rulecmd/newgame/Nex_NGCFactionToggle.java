@@ -10,7 +10,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptionsPlus;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptionsPlus {
 			if (factionId.equals(Factions.INDEPENDENT)) continue;
 			
 			count++;
-			float mult = ExerelinConfig.getExerelinFactionConfig(factionId).marketSpawnWeight;
+			float mult = NexConfig.getFactionConfig(factionId).marketSpawnWeight;
 			expectedStations += 1f * mult;
 			expectedPlanets += 3f * mult;
 		}
@@ -151,7 +151,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptionsPlus {
 	{
 		if (spawnableFactionIds == null)
 		{
-			spawnableFactionIds = ExerelinConfig.getFactions(true, false);
+			spawnableFactionIds = NexConfig.getFactions(true, false);
 			spawnableFactionIds.add(Factions.INDEPENDENT);
 			spawnableFactionIds.remove(Factions.PLAYER);
 			Collections.sort(spawnableFactionIds, new Comparator<String>()

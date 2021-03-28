@@ -6,7 +6,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.ungprules.impl.UNGP_BaseRuleEffect;
 import data.scripts.ungprules.tags.UNGP_PlayerFleetTag;
 import data.scripts.utils.UNGP_BaseBuff;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public class FleetDiversity extends UNGP_BaseRuleEffect implements UNGP_PlayerFl
         final List<FleetMemberAPI> members = fleet.getFleetData().getMembersListCopy();
         for (FleetMemberAPI member : members) {
 			if (member.isMothballed()) continue;
-            ExerelinUtils.modifyMapEntry(counts, member.getHullSpec().getBaseHullId(), 1);
+            NexUtils.modifyMapEntry(counts, member.getHullSpec().getBaseHullId(), 1);
         }
         
 		boolean needsSync = false;

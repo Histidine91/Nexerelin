@@ -40,7 +40,7 @@ import data.scripts.world.systems.Valhalla;
 import data.scripts.world.systems.Westernesse;
 import data.scripts.world.systems.Yma;
 import data.scripts.world.systems.Zagan;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 
 public class VanillaSystemsGenerator {
 	public static void generate(SectorAPI sector)
@@ -156,7 +156,7 @@ public class VanillaSystemsGenerator {
 		// forget why this is necessary - workaround for some JANINO issue, I think
 		//Class c = HeavyArmor.class;
 		
-		boolean enhancedRelations = ExerelinConfig.useEnhancedStartRelations;
+		boolean enhancedRelations = NexConfig.useEnhancedStartRelations;
 		
 		FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
 		FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
@@ -246,7 +246,7 @@ public class VanillaSystemsGenerator {
 	}
 		
 	public static void enhanceVanillaMarkets() {
-		if (!ExerelinConfig.useEnhancedCoreWorlds || Global.getSettings().getModManager().isModEnabled("archeus"))
+		if (!NexConfig.useEnhancedCoreWorlds || Global.getSettings().getModManager().isModEnabled("archeus"))
 			return;
 		
 		MarketAPI ancyra = getMarket("ancyra_market");

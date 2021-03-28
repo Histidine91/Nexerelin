@@ -15,8 +15,8 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
 import static exerelin.campaign.intel.agents.AgentIntel.getString;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import org.lwjgl.input.Keyboard;
@@ -54,7 +54,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 	@Override
 	public boolean shouldShowAtMarket(MarketAPI market) {
 		if (market.isHidden()) return false;
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		NexFactionConfig conf = NexConfig.getFactionConfig(market.getFactionId());
 		if (!conf.allowAgentActions)
 			return false;
 		
@@ -162,7 +162,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 				str = StringHelper.substituteToken(str, "$name", person.getNameString());
 				text.addPara(str, hl, level + "");
 				
-				if (ExerelinConfig.useAgentSpecializations) {
+				if (NexConfig.useAgentSpecializations) {
 					str = getString("intelDescSpecialization");
 					text.addPara(str, hl, spec.getName());
 

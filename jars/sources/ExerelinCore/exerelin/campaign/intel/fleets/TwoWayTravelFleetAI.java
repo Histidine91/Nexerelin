@@ -9,7 +9,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 
 /**
@@ -88,7 +88,7 @@ public class TwoWayTravelFleetAI implements EveryFrameScript
 	
 	protected void giveInitialAssignment()
 	{
-		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
+		float daysToOrbit = NexUtilsFleet.getDaysToOrbit(fleet);
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, source.getPrimaryEntity(), daysToOrbit, 
 				StringHelper.getFleetAssignmentString("orbiting", source.getPrimaryEntity().getName()));
 	}
@@ -112,7 +112,7 @@ public class TwoWayTravelFleetAI implements EveryFrameScript
 			//log.info("Invasion support fleet " + this.fleet.getNameWithFaction() + " standing down");
 			orderedReturn = true;
 			fleet.clearAssignments();
-			float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
+			float daysToOrbit = NexUtilsFleet.getDaysToOrbit(fleet);
 			
 			SectorEntityToken destination = source.getPrimaryEntity();
 			

@@ -2,7 +2,7 @@ package exerelin.console.commands;
 
 import com.fs.starfarer.api.Global;
 import exerelin.campaign.ui.ReinitScreenScript;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
@@ -17,7 +17,7 @@ public class ReloadNexConfig implements BaseCommand {
 			return CommandResult.WRONG_CONTEXT;
 		}
 		
-		ExerelinConfig.loadSettings();
+		NexConfig.loadSettings();
 		Global.getSector().addTransientScript(new ReinitScreenScript());
 				
 		Console.showMessage(StringHelper.getString("nex_console", "msg_configReload"));

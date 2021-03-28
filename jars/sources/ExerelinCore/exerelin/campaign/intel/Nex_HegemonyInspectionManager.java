@@ -12,7 +12,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 
 public class Nex_HegemonyInspectionManager extends HegemonyInspectionManager {
 	
@@ -92,7 +92,7 @@ public class Nex_HegemonyInspectionManager extends HegemonyInspectionManager {
 			threshold = MAX_THRESHOLD;
 		}
 		
-		if (intel != null && ExerelinConfig.autoResistAIInspections 
+		if (intel != null && NexConfig.autoResistAIInspections 
 				&& intel.getOrders() != HegemonyInspectionIntel.AntiInspectionOrders.RESIST) 
 		{
 			intel.setOrders(HegemonyInspectionIntel.AntiInspectionOrders.RESIST);

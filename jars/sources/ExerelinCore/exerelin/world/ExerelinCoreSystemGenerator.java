@@ -24,7 +24,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.ThemeGenContext;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -349,7 +349,7 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		// arbitrary min/max values
 		float min = 4;	//starData.getMinOrbits() + starAgeData.getMinExtraOrbits() + 1;
 		float max = 9;	//starData.getMaxOrbits() + starAgeData.getMaxExtraOrbits() + 3;
-		min = Math.max(min, ExerelinConfig.minimumPlanets);
+		min = Math.max(min, NexConfig.minimumPlanets);
 		max = Math.max(min, max);
 		
 		int numOrbits = (int) Math.round(getNormalRandom(min, max));

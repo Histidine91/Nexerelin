@@ -24,8 +24,8 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.BuyColonyIntel;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -89,7 +89,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		label.setHighlightColors(hl, enough ? hl : Misc.getNegativeHighlightColor());
 		
 		TooltipMakerAPI info = text.beginTooltip();
-		info.addStatModGrid(350, 80, 10, 0, cost, true, ExerelinUtils.getStatModValueGetter(true, 0));
+		info.addStatModGrid(350, 80, 10, 0, cost, true, NexUtils.getStatModValueGetter(true, 0));
 		text.addTooltip();
 		
 		text.setFontInsignia();
@@ -109,7 +109,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		int size = market.getSize();
 		
 		// always enable governorship for player-founded colonies (if they're size 3 or lower)
-		if (ExerelinUtilsMarket.getOriginalOwner(market) == null && size <= 3) 
+		if (NexUtilsMarket.getOriginalOwner(market) == null && size <= 3) 
 		{
 			return true;
 		}
@@ -133,20 +133,20 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		MutableStat stat = new MutableStat(0);
 		
 		// (practically) free for size 3 player-founded colonies
-		if (ExerelinUtilsMarket.getOriginalOwner(market) == null && market.getSize() <= 3) 
+		if (NexUtilsMarket.getOriginalOwner(market) == null && market.getSize() <= 3) 
 		{
 			stat.modifyFlat("playerFounded", 1, StringHelper.getString("nex_buyColony", 
 				"costFactorPlayerFounded", true));
 			return stat;
 		}
 		
-		float value = ExerelinUtilsMarket.getMarketIndustryValue(market);
+		float value = NexUtilsMarket.getMarketIndustryValue(market);
 		if (isRefund)
 			value *= Global.getSettings().getFloat("industryRefundFraction");
 		stat.modifyFlat("industry", value, StringHelper.getString("nex_buyColony", 
 				"costFactorIndustry", true));
 		
-		float income = ExerelinUtilsMarket.getIncomeNetPresentValue(market, 6, isRefund ? 0.1f : 0);
+		float income = NexUtilsMarket.getIncomeNetPresentValue(market, 6, isRefund ? 0.1f : 0);
 		stat.modifyFlat("income", income, StringHelper.getString("nex_buyColony", 
 				"costFactorIncome", true));
 		

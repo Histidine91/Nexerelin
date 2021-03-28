@@ -27,14 +27,14 @@ import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinFactionConfig.BonusSeed;
-import exerelin.utilities.ExerelinFactionConfig.DefenceStationSet;
-import exerelin.utilities.ExerelinFactionConfig.IndustrySeed;
-import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.BonusSeed;
+import exerelin.utilities.NexFactionConfig.DefenceStationSet;
+import exerelin.utilities.NexFactionConfig.IndustrySeed;
+import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.industry.IndustryClassGen;
@@ -273,7 +273,7 @@ public class NexMarketBuilder
 			else size = getSizeFromRotation(PLANET_SIZE_ROTATION, numPlanets);
 		}
 		
-		if (ExerelinUtilsFaction.isPirateFaction(factionId)) {
+		if (NexUtilsFaction.isPirateFaction(factionId)) {
 			size--;
 			if (size < 3) size = 3;
 		}
@@ -425,7 +425,7 @@ public class NexMarketBuilder
 		MarketAPI market = entity.market;
 		int marketSize = market.getSize();
 		
-		boolean isPirate = ExerelinUtilsFaction.isPirateFaction(market.getFactionId());
+		boolean isPirate = NexUtilsFaction.isPirateFaction(market.getFactionId());
 		boolean isMoon = entity.type == EntityType.MOON;
 		boolean isStation = entity.type == EntityType.STATION;
 		boolean newNPCColony = market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY);
@@ -555,7 +555,7 @@ public class NexMarketBuilder
 				}
 				// no station, add one
 				else {
-					ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+					NexFactionConfig conf = NexConfig.getFactionConfig(market.getFactionId());
 					if (instant) {
 						String station = conf.getRandomDefenceStation(random, sizeIndex);
 						if (station != null) {
@@ -630,14 +630,14 @@ public class NexMarketBuilder
 		{
 			if (factionId.equals(Factions.PLAYER)) {
 				market.addIndustry(Industries.PATROLHQ);
-				String stationId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 1);
+				String stationId = NexConfig.getFactionConfig(factionId).getRandomDefenceStation(random, 1);
 				if (stationId != null)
 					market.addIndustry(stationId);
 			}
 			else {
 				market.addIndustry(Industries.HIGHCOMMAND);
 				// best station faction has, if it has a tier 4 station use that
-				String stationId = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 4);
+				String stationId = NexConfig.getFactionConfig(factionId).getRandomDefenceStation(random, 4);
 				if (stationId != null)
 					market.addIndustry(stationId);
 			}
@@ -674,11 +674,11 @@ public class NexMarketBuilder
 				// add mirror/shade
 				LocationAPI system = entity.getContainingLocation();
 				SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", "Stellar Mirror", "stellar_mirror", factionId);
-				mirror.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity) + 180, 
+				mirror.setCircularOrbitPointingDown(entity, NexUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity) + 180, 
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());
 				mirror.setCustomDescriptionId("stellar_mirror");
 				SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", "Stellar Shade", "stellar_shade", factionId);
-				shade.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity), 
+				shade.setCircularOrbitPointingDown(entity, NexUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity), 
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
 				shade.setCustomDescriptionId("stellar_shade");
 				
@@ -731,7 +731,7 @@ public class NexMarketBuilder
 		}
 				
 		// free port status, tariffs
-		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig config = NexConfig.getFactionConfig(factionId);
 		if (config.freeMarket)
 		{
 			market.setFreePort(true);
@@ -739,7 +739,7 @@ public class NexMarketBuilder
 		}
 		
 		market.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
-		ExerelinUtilsMarket.setTariffs(market);
+		NexUtilsMarket.setTariffs(market);
 					
 		// submarkets
 		SectorManager.updateSubmarkets(market, Factions.NEUTRAL, factionId);
@@ -789,7 +789,7 @@ public class NexMarketBuilder
 		
 		log.info("Adding key industries for faction " + factionId);
 		
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		List<ProcGenEntity> entities = marketsByFactionId.get(factionId);
 		
 		// for each seed, add N industries to factions' markets
@@ -920,7 +920,7 @@ public class NexMarketBuilder
 			return;
 		
 		String factionId = entity.market.getFactionId();
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		
 		List<IndustryClassGen> availableIndustries = new ArrayList<>();
 		for (IndustryClassGen gen : industryClassesOrdered)
@@ -1041,7 +1041,7 @@ public class NexMarketBuilder
 		if (!marketsByFactionId.containsKey(factionId))
 			return;
 		
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		List<Industry> industries = new ArrayList<>();
 		for (ProcGenEntity ent : marketsByFactionId.get(factionId))
 		{

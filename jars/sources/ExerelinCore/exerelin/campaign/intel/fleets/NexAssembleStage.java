@@ -18,7 +18,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.campaign.intel.invasion.InvasionIntel;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -161,7 +161,7 @@ public abstract class NexAssembleStage extends AssembleStage {
 	public boolean isSourceKnown() {
 		MarketAPI market = offFltIntel.getMarketFrom();
 		if (market.isHidden()) {
-			return !market.getPrimaryEntity().isDiscoverable() || ExerelinUtils.isNonPlaytestDevMode();
+			return !market.getPrimaryEntity().isDiscoverable() || NexUtils.isNonPlaytestDevMode();
 		}
 		
 		return true;

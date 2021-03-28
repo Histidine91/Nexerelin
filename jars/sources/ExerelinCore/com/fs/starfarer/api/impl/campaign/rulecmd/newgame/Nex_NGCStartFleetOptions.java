@@ -13,8 +13,8 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 		}
 		else if ("nex_NGCFleetCycle".equals(optionData))
 		{
-			ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(
+			NexFactionConfig factionConf = NexConfig.getFactionConfig(
 					PlayerFactionStore.getPlayerFactionIdNGC());
 			factionConf.cycleStartFleets();
 			populate(false);
@@ -123,7 +123,7 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 		
 		boolean anyMultiple = false;
 		
-		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(
+		NexFactionConfig factionConf = NexConfig.getFactionConfig(
 				PlayerFactionStore.getPlayerFactionIdNGC());
 		for (int i=0; i<FLEET_TYPES.length; i++)
 		{

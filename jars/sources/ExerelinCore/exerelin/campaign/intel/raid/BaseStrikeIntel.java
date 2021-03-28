@@ -16,7 +16,7 @@ import exerelin.campaign.intel.fleets.NexTravelStage;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public class BaseStrikeIntel extends NexRaidIntel {
 
 		addStage(new NexReturnStage(this));
 
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 			case 0:
 				addIntelIfNeeded();

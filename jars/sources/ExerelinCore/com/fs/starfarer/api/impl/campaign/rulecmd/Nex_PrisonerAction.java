@@ -16,8 +16,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsReputation;
 
 public class Nex_PrisonerAction extends AgentActionBase {
@@ -42,8 +42,8 @@ public class Nex_PrisonerAction extends AgentActionBase {
 				break;
 			case "getValue":
 				int level = Global.getSector().getPlayerPerson().getStats().getLevel();
-				int ransomValue = (int)(ExerelinConfig.prisonerBaseRansomValue + ExerelinConfig.prisonerRansomValueIncrementPerLevel * (level - 1));
-				int slaveValue = (int)(ExerelinConfig.prisonerBaseSlaveValue + ExerelinConfig.prisonerSlaveValueIncrementPerLevel * (level - 1));
+				int ransomValue = (int)(NexConfig.prisonerBaseRansomValue + NexConfig.prisonerRansomValueIncrementPerLevel * (level - 1));
+				int slaveValue = (int)(NexConfig.prisonerBaseSlaveValue + NexConfig.prisonerSlaveValueIncrementPerLevel * (level - 1));
 				
 				local.set("$ransomValue", Misc.getWithDGS(ransomValue), 0);
 				local.set("$slaveValue", Misc.getWithDGS(slaveValue), 0);
@@ -57,10 +57,10 @@ public class Nex_PrisonerAction extends AgentActionBase {
 	public boolean ransom(MemoryAPI mem, SectorEntityToken target, boolean isSlave) {
 		if (!usePrisoner()) return false;
 		
-		float baseValue = isSlave? ExerelinConfig.prisonerBaseSlaveValue 
-				: ExerelinConfig.prisonerBaseRansomValue;
-		float increment = isSlave? ExerelinConfig.prisonerSlaveValueIncrementPerLevel 
-				: ExerelinConfig.prisonerRansomValueIncrementPerLevel;
+		float baseValue = isSlave? NexConfig.prisonerBaseSlaveValue 
+				: NexConfig.prisonerBaseRansomValue;
+		float increment = isSlave? NexConfig.prisonerSlaveValueIncrementPerLevel 
+				: NexConfig.prisonerRansomValueIncrementPerLevel;
 		String key = isSlave ? "$slaveValue" : "$ransomValue";
 		
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
@@ -83,10 +83,9 @@ public class Nex_PrisonerAction extends AgentActionBase {
 		FactionAPI faction = target.getFaction();
 		TextPanelAPI text = dialog.getTextPanel();
 		
-		NexUtilsReputation.adjustPlayerReputation(faction, target.getActivePerson(), ExerelinConfig.prisonerRepatriateRepValue,
-						ExerelinConfig.prisonerRepatriateRepValue, null, text);
-		DiplomacyManager.getManager().getDiplomacyBrain(faction.getId()).reportDiplomacyEvent(
-						PlayerFactionStore.getPlayerFactionId(), ExerelinConfig.prisonerRepatriateRepValue);
+		NexUtilsReputation.adjustPlayerReputation(faction, target.getActivePerson(), NexConfig.prisonerRepatriateRepValue,
+						NexConfig.prisonerRepatriateRepValue, null, text);
+		DiplomacyManager.getManager().getDiplomacyBrain(faction.getId()).reportDiplomacyEvent(PlayerFactionStore.getPlayerFactionId(), NexConfig.prisonerRepatriateRepValue);
 		StatsTracker.getStatsTracker().notifyPrisonersRepatriated(1);
 		
 		return true;
@@ -100,7 +99,7 @@ public class Nex_PrisonerAction extends AgentActionBase {
 		FactionAPI faction1 = PlayerFactionStore.getPlayerFaction();
 		FactionAPI faction2 = target.getFaction();
 		if (faction1 == faction2) faction1 = Global.getSector().getPlayerFaction();
-		float max = ExerelinFactionConfig.getMaxRelationship(faction1.getId(), faction2.getId());
+		float max = NexFactionConfig.getMaxRelationship(faction1.getId(), faction2.getId());
 		float curr = faction1.getRelationship(faction2.getId()); 
 		//Global.getLogger(this.getClass()).info(String.format("Current: %s, max: %s", curr, max));
 		return max - curr <= 0.001f;	// floating point bullshit

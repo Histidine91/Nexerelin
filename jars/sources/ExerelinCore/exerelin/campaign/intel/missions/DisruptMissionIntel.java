@@ -25,7 +25,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.missions.DisruptMissionManager.TargetEntry;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
@@ -70,7 +70,7 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		initRandomCancel();
 		setPostingLocation(market.getPrimaryEntity());
 		setPostingRangeLY(9999999999f);
-		boolean queuedNexMissions = ExerelinConfig.queuedNexMissions;
+		boolean queuedNexMissions = NexConfig.queuedNexMissions;
 
 		if (queuedNexMissions) {
 			Global.getSector().getIntelManager().queueIntel(this);

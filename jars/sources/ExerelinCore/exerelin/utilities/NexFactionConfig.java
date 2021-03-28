@@ -29,14 +29,14 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class ExerelinFactionConfig
+public class NexFactionConfig
 {
     public static final String[] DEFAULT_MINERS = {"venture_Outdated", "shepherd_Frontier"};
     public static final List<DefenceStationSet> DEFAULT_DEFENCE_STATIONS = new ArrayList<>();
     public static final List<IndustrySeed> DEFAULT_INDUSTRY_SEEDS = new ArrayList<>();
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
-    public static Logger log = Global.getLogger(ExerelinFactionConfig.class);
+    public static Logger log = Global.getLogger(NexFactionConfig.class);
     
     public String factionId;
     public boolean playableFaction = true;
@@ -172,7 +172,7 @@ public class ExerelinFactionConfig
         //DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.LIGHTINDUSTRY, 0.1f, true));
     }
 
-    public ExerelinFactionConfig(String factionId)
+    public NexFactionConfig(String factionId)
     {
         this.factionId = factionId;
         this.loadFactionConfig();
@@ -258,7 +258,7 @@ public class ExerelinFactionConfig
             }
             
             if (settings.has("miningVariantsOrWings"))
-                miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
+                miningVariantsOrWings = Arrays.asList(NexUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
             
             loadDefenceStations(settings);
             
@@ -268,11 +268,11 @@ public class ExerelinFactionConfig
             disableDiplomacy = settings.optBoolean("disableDiplomacy", disableDiplomacy);
             
             if (settings.has("factionsLiked"))
-                factionsLiked = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
+                factionsLiked = NexUtils.JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             if (settings.has("factionsDisliked"))
-                factionsDisliked = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
+                factionsDisliked = NexUtils.JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
             if (settings.has("factionsNeutral"))
-                factionsNeutral = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
+                factionsNeutral = NexUtils.JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
             
             for (String factionId : factionsLiked)
             {
@@ -301,7 +301,7 @@ public class ExerelinFactionConfig
             loadDispositions(settings);
             
             if (settings.has("diplomacyTraits")) {
-                List<String> traitsList = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("diplomacyTraits"));
+                List<String> traitsList = NexUtils.JSONArrayToArrayList(settings.getJSONArray("diplomacyTraits"));
                 // validate traits
                 /*
                 for (String traitId : traitsList) {
@@ -500,17 +500,17 @@ public class ExerelinFactionConfig
     
     public static float getMaxRelationship(String factionId1, String factionId2)
     {
-        if (!ExerelinConfig.useRelationshipBounds) return 1;
-        float max1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getMaxRelationship(factionId2);
-        float max2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getMaxRelationship(factionId1);
+        if (!NexConfig.useRelationshipBounds) return 1;
+        float max1 = NexConfig.getFactionConfig(factionId1).getMaxRelationship(factionId2);
+        float max2 = NexConfig.getFactionConfig(factionId2).getMaxRelationship(factionId1);
         return Math.min(max1, max2);
     }
     
     public static float getMinRelationship(String factionId1, String factionId2)
     {
-        if (!ExerelinConfig.useRelationshipBounds) return -1;
-        float min1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getMinRelationship(factionId2);
-        float min2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getMinRelationship(factionId1);
+        if (!NexConfig.useRelationshipBounds) return -1;
+        float min1 = NexConfig.getFactionConfig(factionId1).getMinRelationship(factionId2);
+        float min2 = NexConfig.getFactionConfig(factionId2).getMinRelationship(factionId1);
         return Math.max(min1, min2);
     }
     
@@ -534,8 +534,8 @@ public class ExerelinFactionConfig
     
     public static float getDiplomacyPositiveChance(String factionId1, String factionId2)
     {
-        float chance1mod = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyPositiveChance(factionId2) - 1;
-        float chance2mod = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyPositiveChance(factionId1) - 1;
+        float chance1mod = NexConfig.getFactionConfig(factionId1).getDiplomacyPositiveChance(factionId2) - 1;
+        float chance2mod = NexConfig.getFactionConfig(factionId2).getDiplomacyPositiveChance(factionId1) - 1;
         if (Math.abs(chance1mod) > Math.abs(chance2mod))
             return chance1mod + 1;
         else
@@ -544,8 +544,8 @@ public class ExerelinFactionConfig
     
     public static float getDiplomacyNegativeChance(String factionId1, String factionId2)
     {
-        float chance1mod = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyNegativeChance(factionId2) - 1;
-        float chance2mod = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyNegativeChance(factionId1) - 1;
+        float chance1mod = NexConfig.getFactionConfig(factionId1).getDiplomacyNegativeChance(factionId2) - 1;
+        float chance2mod = NexConfig.getFactionConfig(factionId2).getDiplomacyNegativeChance(factionId1) - 1;
         if (Math.abs(chance1mod) > Math.abs(chance2mod))
             return chance1mod + 1;
         else
@@ -628,7 +628,7 @@ public class ExerelinFactionConfig
                 defenceStations = DEFAULT_DEFENCE_STATIONS;
                 return;
             }
-            List<String> ids = ExerelinUtils.JSONArrayToArrayList(defJson.getJSONArray("ids"));
+            List<String> ids = NexUtils.JSONArrayToArrayList(defJson.getJSONArray("ids"));
             float weight = (float)defJson.optDouble("weight", 1);
             
             defenceStations.add(new DefenceStationSet(weight, ids));
@@ -677,7 +677,7 @@ public class ExerelinFactionConfig
     
     public List<String> getStartShipList(JSONArray array) throws JSONException
     {
-        List<String> list = ExerelinUtils.JSONArrayToArrayList(array);
+        List<String> list = NexUtils.JSONArrayToArrayList(array);
         if (!isStartingFleetValid(list)) return null;
         return list;
     }
@@ -701,7 +701,7 @@ public class ExerelinFactionConfig
 			{
 				JSONArray fleetJson = allFleets.optJSONArray(i);
 				if (fleetJson == null) continue;
-				List<String> fleet = ExerelinUtils.JSONArrayToArrayList(fleetJson);
+				List<String> fleet = NexUtils.JSONArrayToArrayList(fleetJson);
 				if (!isStartingFleetValid(fleet)) continue;
 				set.addFleet(fleet);
 			}
@@ -714,11 +714,11 @@ public class ExerelinFactionConfig
     protected void loadVengeanceNames(JSONObject settings) throws JSONException
     {
         if (settings.has("vengeanceLevelNames"))
-            vengeanceLevelNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceLevelNames"));
+            vengeanceLevelNames = NexUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceLevelNames"));
         if (settings.has("vengeanceFleetNames"))
-            vengeanceFleetNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNames"));
+            vengeanceFleetNames = NexUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNames"));
         if (settings.has("vengeanceFleetNamesSingle"))
-            vengeanceFleetNamesSingle = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNamesSingle"));
+            vengeanceFleetNamesSingle = NexUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNamesSingle"));
     }
 	
 	protected void loadStartSpecialItems(JSONObject settings) throws JSONException
@@ -1031,7 +1031,7 @@ public class ExerelinFactionConfig
             while (!valid && tries < 10)
             {
                 if (factionId.equals(Factions.PLAYER))    // since player doesn't have ships to randomize
-                    result = ExerelinConfig.getExerelinFactionConfig(Factions.INDEPENDENT)
+                    result = NexConfig.getFactionConfig(Factions.INDEPENDENT)
                             .getRandomStartShipsForType(type);
                 else
                     result = getRandomStartShipsForType(type);

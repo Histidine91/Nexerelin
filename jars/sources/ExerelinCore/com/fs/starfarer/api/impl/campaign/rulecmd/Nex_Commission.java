@@ -10,8 +10,8 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.intel.Nex_FactionCommissionIntel;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsReputation;
 
 public class Nex_Commission extends Commission {
@@ -22,7 +22,7 @@ public class Nex_Commission extends Commission {
 		if (person == null) return false;
 		if (person.getFaction().isPlayerFaction()) return false;
 		
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(person.getFaction().getId());
+		NexFactionConfig conf = NexConfig.getFactionConfig(person.getFaction().getId());
 		if (!conf.playableFaction) return false;
 		
 		Alliance ally = AllianceManager.getPlayerAlliance(false);
@@ -52,7 +52,7 @@ public class Nex_Commission extends Commission {
 	
 	@Override
 	protected boolean playerMeetsCriteria() {
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(person.getFaction().getId());
+		NexFactionConfig conf = NexConfig.getFactionConfig(person.getFaction().getId());
 		if (conf.pirateFaction)
 			return faction.getRelToPlayer().isAtWorst(RepLevel.SUSPICIOUS);
 		
@@ -62,7 +62,7 @@ public class Nex_Commission extends Commission {
 	@Override
 	protected void printRequirements() {
 		RepLevel required = COMMISSION_REQ;
-		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(person.getFaction().getId());
+		NexFactionConfig conf = NexConfig.getFactionConfig(person.getFaction().getId());
 		if (conf.pirateFaction)
 			required = RepLevel.SUSPICIOUS;
 		

@@ -19,13 +19,13 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
-import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.NexConfig;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
-import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsMath;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -266,7 +266,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		{
 			String factionId = killedFleet.getFaction().getId();
 			if (!enemies.contains(factionId)) continue;
-			String fleetType = ExerelinUtilsFleet.getFleetType(killedFleet);
+			String fleetType = NexUtilsFleet.getFleetType(killedFleet);
 			if (IGNORED_FLEET_TYPES.contains(fleetType))
 				continue;
 			if (killedFleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT))
@@ -283,7 +283,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		}
 		
 		recentFpKilled *= involvedFraction;
-		float points = recentFpKilled * ExerelinConfig.revengePointsPerEnemyFP;
+		float points = recentFpKilled * NexConfig.revengePointsPerEnemyFP;
 		if (points > 0)
 		{
 			addPoints(points, battle.getNonPlayerCombined().getFaction().getId());
@@ -296,7 +296,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		int requiredSetting = 2;
 		if (SectorManager.getHardMode()) requiredSetting = 1;
 		log.info("Required revengeance setting: " + requiredSetting);
-		if (requiredSetting <= ExerelinConfig.enableRevengeFleets) {
+		if (requiredSetting <= NexConfig.enableRevengeFleets) {
 			return true;
 		}
 		return false;
@@ -304,13 +304,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	
 	protected FactionAPI getTargetFactionForVengeance() {
 		String factionId = PlayerFactionStore.getPlayerFactionId();
-		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId, true);
+		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId, true);
 		if (!factionId.equals(Factions.PLAYER)) {
-			markets.addAll(ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER, true));
+			markets.addAll(NexUtilsFaction.getFactionMarkets(Factions.PLAYER, true));
 		}
 		
 		if (markets.isEmpty()) return Global.getSector().getPlayerFaction();
-		return ExerelinUtils.getRandomListElement(markets).getFaction();
+		return NexUtils.getRandomListElement(markets).getFaction();
 	}
 	
 	/**
@@ -331,7 +331,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		
 		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(playerAlignedFactionId, 
-				ExerelinConfig.allowPirateInvasions, true, false);
+				NexConfig.allowPirateInvasions, true, false);
 		if (enemies.isEmpty()) return false;
 		
 		for (String enemyId : enemies)
@@ -363,13 +363,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		
 		FactionAPI target = getTargetFactionForVengeance();
 		
-		boolean satBomb = ExerelinConfig.allowNPCSatBomb && Math.random() < SAT_BOMB_CHANCE 
+		boolean satBomb = NexConfig.allowNPCSatBomb && Math.random() < SAT_BOMB_CHANCE 
 				&& InvasionFleetManager.canSatBomb(revengeFaction, target);
 		InvasionFleetManager.EventType type = InvasionFleetManager.EventType.INVASION;
 		if (satBomb) {
 			type = InvasionFleetManager.EventType.SAT_BOMB;
 		}
-		else if (!ExerelinConfig.enableInvasions || !ExerelinConfig.getExerelinFactionConfig(revengeFactionId).canInvade) 
+		else if (!NexConfig.enableInvasions || !NexConfig.getFactionConfig(revengeFactionId).canInvade) 
 		{
 			type = InvasionFleetManager.EventType.RAID;
 		}
@@ -382,7 +382,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		if (intel != null) {
 			// counter-invasions draw on the same points needed for invasions, but at half the normal rate
 			float cost = InvasionFleetManager.getManager().
-					getInvasionPointReduction(ExerelinConfig.pointsRequiredForInvasionFleet, intel);
+					getInvasionPointReduction(NexConfig.pointsRequiredForInvasionFleet, intel);
 			cost *= INVASION_POINT_COST_MULTIPLIER;
 			InvasionFleetManager.getManager().modifySpawnCounter(revengeFactionId, -cost);
 		}

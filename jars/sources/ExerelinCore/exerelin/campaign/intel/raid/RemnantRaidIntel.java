@@ -22,8 +22,8 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import java.util.List;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
@@ -74,7 +74,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		
 		addStage(new RemnantRaidReturnStage(this));
 
-		int nexIntelQueued = ExerelinConfig.nexIntelQueued;
+		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 
 			case 0:
@@ -153,7 +153,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 	}
 	
 	public boolean isSourceKnown() {
-		if (ExerelinUtils.isNonPlaytestDevMode()) return true;
+		if (NexUtils.isNonPlaytestDevMode()) return true;
 		if (getFaction().getRelationshipLevel(Factions.PLAYER).isAtWorst(RepLevel.FRIENDLY))
 			return true;
 		return getBase().isVisibleToPlayerFleet();

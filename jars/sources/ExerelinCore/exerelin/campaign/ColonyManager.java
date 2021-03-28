@@ -55,10 +55,10 @@ import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinProcGen;
@@ -181,9 +181,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					else if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
 						maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
 					else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
-						maxSize = ExerelinConfig.maxNPCNewColonySize;
+						maxSize = NexConfig.maxNPCNewColonySize;
 					else
-						maxSize = ExerelinConfig.maxNPCColonySize;
+						maxSize = NexConfig.maxNPCColonySize;
 					
 					if (market.getSize() < maxSize) {
 						upsizeMarket(market);
@@ -199,10 +199,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				numColonies += 1;
 			
 			if (reliefFleetCooldown <= 0 && !market.isHidden() && RecentUnrest.get(market) != null
-					&& !ExerelinUtilsFaction.isPirateOrTemplarFaction(market.getFactionId())) 
+					&& !NexUtilsFaction.isPirateOrTemplarFaction(market.getFactionId())) 
 			{
 				int unrest = RecentUnrest.getPenalty(market);
-				if (unrest >= ExerelinConfig.stabilizePackageEffect + 1 || market.getStabilityValue() <= 1) 
+				if (unrest >= NexConfig.stabilizePackageEffect + 1 || market.getStabilityValue() <= 1) 
 				{
 					needRelief.add(market);
 				}
@@ -266,7 +266,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
 		if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
-			incoming.getWeight().modifyMult("nex_colonyManager_hardModeGrowth", ExerelinConfig.hardModeColonyGrowthMult, 
+			incoming.getWeight().modifyMult("nex_colonyManager_hardModeGrowth", NexConfig.hardModeColonyGrowthMult, 
 					getString("hardModeGrowthMultDesc", false));
 		}
 		else {
@@ -303,7 +303,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	public void updatePlayerBonusAdmins() {
-		updatePlayerBonusAdmins(ExerelinUtilsFaction.getFactionMarketSizeSum(Factions.PLAYER));
+		updatePlayerBonusAdmins(NexUtilsFaction.getFactionMarketSizeSum(Factions.PLAYER));
 	}
 		
 	public void updatePlayerBonusAdmins(int playerFactionSize) {
@@ -342,7 +342,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	{
 		if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) return;	// let player decide
 		
-		ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		NexFactionConfig newOwnerConfig = NexConfig.getFactionConfig(market.getFactionId());
 		// keep the cond check; motherfuckers can't be trusted to have the right settting
 		boolean isFreePort = market.isFreePort() || market.hasCondition(Conditions.FREE_PORT);
 		boolean wantFreePort;
@@ -358,7 +358,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		if (isFreePort != wantFreePort) {
 			market.setFreePort(wantFreePort);
-			ExerelinUtilsMarket.setTariffs(market);
+			NexUtilsMarket.setTariffs(market);
 		}
 	}
 	
@@ -378,7 +378,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
 		if (player && SectorManager.getHardMode())
 		{
-			market.getIncomeMult().modifyMult("nex_hardMode", ExerelinConfig.hardModeColonyIncomeMult, 
+			market.getIncomeMult().modifyMult("nex_hardMode", NexConfig.hardModeColonyIncomeMult, 
 						getString("hardModeIncomeMultDesc"));
 		}
 		else {
@@ -609,7 +609,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	{
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-			float chance = ExerelinConfig.getExerelinFactionConfig(factionId).colonyExpeditionChance;
+			float chance = NexConfig.getFactionConfig(factionId).colonyExpeditionChance;
 			if (chance <= 0)
 				continue;
 			picker.add(factionId, chance);
@@ -620,7 +620,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected MarketAPI pickColonyExpeditionSource(String factionId, Random random) 
 	{
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>(random);
-		for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(factionId)) {
+		for (MarketAPI market : NexUtilsFaction.getFactionMarkets(factionId)) {
 			if (!market.hasSpaceport()) continue;
 			int size = market.getSize();
 			if (size < 5) continue;
@@ -695,7 +695,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static <T extends ColonyTargetValuator> T loadColonyTargetValuator(String factionId)
 	{
 		ColonyTargetValuator valuator = null;
-		String className = ExerelinConfig.getExerelinFactionConfig(factionId).colonyTargetValuator;
+		String className = NexConfig.getFactionConfig(factionId).colonyTargetValuator;
 		
 		try {
 			ClassLoader loader = Global.getSettings().getScriptClassLoader();
@@ -818,7 +818,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (market.getFaction().isPlayerFaction()) continue;
 			
 			FactionAPI other = market.getFaction();
-			if (!ExerelinConfig.getExerelinFactionConfig(other.getId()).playableFaction)
+			if (!NexConfig.getFactionConfig(other.getId()).playableFaction)
 				continue;
 			if (other.isAtBest(faction, RepLevel.SUSPICIOUS))
 				continue;
@@ -871,12 +871,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			Set<String> postsPresent) 
 	{
 		if (postsPresent.contains(postId) && rankId != null) {
-			PersonAPI person = ExerelinUtilsMarket.getPerson(market, postId);
+			PersonAPI person = NexUtilsMarket.getPerson(market, postId);
 			if (person != null && !rankId.equals(person.getRankId()))
 				person.setRankId(rankId);
 			return;
 		}
-		ExerelinUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+		NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, rankId, postId, true);
 		postsPresent.add(postId);
 	}
@@ -1028,7 +1028,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return;
 		
 		colonyExpeditionProgress += days;
-		float interval = ExerelinConfig.colonyExpeditionInterval;
+		float interval = NexConfig.colonyExpeditionInterval;
 		if (colonyExpeditionProgress > interval) {
 			ColonyExpeditionIntel intel = spawnColonyExpedition();
 			if (intel != null) {
@@ -1036,7 +1036,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				colonyExpeditionProgress -= numColonies * Global.getSettings().getFloat("nex_expeditionDelayPerExistingColony");
 			}
 			else {	// failed to spawn, try again in 10 days
-				colonyExpeditionProgress -= Math.min(ExerelinConfig.colonyExpeditionInterval/2, 10);
+				colonyExpeditionProgress -= Math.min(NexConfig.colonyExpeditionInterval/2, 10);
 			}
 		}
 	}

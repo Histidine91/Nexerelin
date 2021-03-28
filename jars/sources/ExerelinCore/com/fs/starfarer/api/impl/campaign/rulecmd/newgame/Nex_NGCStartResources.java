@@ -17,9 +17,9 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinFactionConfig.StartFleetType;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -110,7 +110,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 	protected void rerollRandomShips(Map<String, MemoryAPI> memoryMap) {
 		String fleetTypeStr = memoryMap.get(MemKeys.LOCAL).getString("$nex_lastSelectedFleetType");
 		
-		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(
+		NexFactionConfig factionConf = NexConfig.getFactionConfig(
 				PlayerFactionStore.getPlayerFactionIdNGC());
 		List<String> startingVariants = factionConf.getStartFleetForType(fleetTypeStr, false);
 		memoryMap.get(MemKeys.LOCAL).set("$startShips_" + fleetTypeStr, startingVariants);
