@@ -53,8 +53,6 @@ import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
-import exerelin.campaign.intel.bar.NexDeliveryBarEventCreator;
-import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.missions.DisruptMissionManager;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
@@ -134,9 +132,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
-        //replaceMissionCreator(AnalyzeEntityIntelCreator.class, new Nex_AnalyzeEntityIntelCreator());
-        //replaceMissionCreator(SurveyPlanetIntelCreator.class, new Nex_SurveyPlanetIntelCreator());
-        ScriptReplacer.replaceBarEventCreator(DeliveryBarEventCreator.class, new NexDeliveryBarEventCreator());
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {

@@ -35,7 +35,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
-import exerelin.campaign.intel.bar.NexDeliveryBarEventCreator;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 
 public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
@@ -164,9 +163,6 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		}
 		if (!bar.hasEventCreator(ScientistAICoreBarEventCreator.class)) {
 			bar.addEventCreator(new ScientistAICoreBarEventCreator());
-		}
-		if (!bar.hasEventCreator(NexDeliveryBarEventCreator.class)) {
-			bar.addEventCreator(new NexDeliveryBarEventCreator());
 		}
 		if (!bar.hasEventCreator(PlanetaryShieldBarEventCreator.class)) {
 			bar.addEventCreator(new PlanetaryShieldBarEventCreator());
