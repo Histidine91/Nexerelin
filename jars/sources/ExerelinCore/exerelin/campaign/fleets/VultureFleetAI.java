@@ -191,6 +191,8 @@ public class VultureFleetAI implements EveryFrameScript
 			if (ships != null) {
 				salvageShipsInDebris(entity, ships);
 			}
+			
+			debris.setScavenged(true);
 		}
 		
 		MemoryAPI memory = entity.getMemoryWithoutUpdate();
@@ -228,7 +230,8 @@ public class VultureFleetAI implements EveryFrameScript
 		
 		fleet.getCargo().addAll(salvage);
 		
-		Misc.fadeAndExpire(entity);
+		if (!isDebris)
+			Misc.fadeAndExpire(entity);
 		
 		loadedAny = true;
 	}

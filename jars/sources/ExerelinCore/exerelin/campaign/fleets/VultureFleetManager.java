@@ -333,8 +333,8 @@ public class VultureFleetManager extends DisposableFleetManager
 	
 	/**
 	 * Gets the debris fields in the location which are valid targets for scavenging. 
-	 * Will not include permanent debris fields, or those generated from any source 
-	 * other than combat, or those with hostile-to-independents fleets nearby.
+	 * Will not include permanent or already-scavenged debris fields, or those generated 
+	 * from any source other than combat, or those with hostile-to-independents fleets nearby.
 	 * @param loc
 	 * @param vulture
 	 * @return
@@ -346,8 +346,13 @@ public class VultureFleetManager extends DisposableFleetManager
 		
 		for (CampaignTerrainAPI terrain : loc.getTerrainCopy()) {
 			if (!terrain.getType().equals(Terrain.DEBRIS_FIELD)) continue;
+			
+			DebrisFieldTerrainPlugin plugin = (DebrisFieldTerrainPlugin)terrain.getPlugin();
+			if (plugin.isScavenged() || plugin.isFadingOut()) continue;
+			
 			DebrisFieldParams params = ((DebrisFieldTerrainPlugin)terrain.getPlugin()).getParams();
 			if (params.lastsDays > 60 || params.source != DebrisFieldSource.BATTLE) continue;
+			
 			CampaignFleetAPI nearbyHostile = getFleetCloseToTarget(terrain.getLocation(), loc, hostileFleets);
 			if (nearbyHostile != null) {
 				log.info("Debris field has unfriendly fleet " 
