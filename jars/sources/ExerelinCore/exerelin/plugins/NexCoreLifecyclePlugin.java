@@ -4,47 +4,60 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.GenericPluginManagerAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.listeners.CoreDiscoverEntityPlugin;
+import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.campaign.AbandonMarketPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreLifecyclePluginImpl;
 import com.fs.starfarer.api.impl.campaign.SmugglingScanScript;
 import com.fs.starfarer.api.impl.campaign.StabilizeMarketPluginImpl;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
+import com.fs.starfarer.api.impl.campaign.econ.impl.Cryorevival;
+import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
+import com.fs.starfarer.api.impl.campaign.graid.StandardGroundRaidObjectivesCreator;
 import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
 import com.fs.starfarer.api.impl.campaign.intel.PersonBountyManager;
 import com.fs.starfarer.api.impl.campaign.intel.SurveyPlanetIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.SystemBountyManager;
-import com.fs.starfarer.api.impl.campaign.intel.bar.PortsideBarData;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.CorruptPLClerkSuppliesBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.DiktatLobsterBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.LuddicCraftBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.LuddicFarmerBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.MercsOnTheRunBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.PlanetaryShieldBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.QuartermasterCargoSwapBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.ScientistAICoreBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.TriTachLoanBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.TriTachMajorLoanBarEventCreator;
-import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PlayerRelatedPirateBaseManager;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
+import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.OmegaOfficerGeneratorPlugin;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantOfficerGeneratorPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
+import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
-import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
+import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
+import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
+import exerelin.campaign.intel.bases.Nex_PlayerRelatedPirateBaseManager;
 
 public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	
-	// don't add hostility event manager; add own versions of punitive expedition manager and Hegemony inspection manager
+	// don't add hostility event manager
+	// add own versions of punitive expedition manager and Hegemony inspection manager
+	// also own versions of base managers
 	@Override
 	protected void addScriptsIfNeeded() {
 		ShipQuality.getInstance();
+		//ConditionManager.getInstance();
 		
 		SectorAPI sector = Global.getSector();
+		
+		ListenerManagerAPI listeners = sector.getListenerManager();
+		if (!listeners.hasListenerOfClass(StandardGroundRaidObjectivesCreator.class)) {
+			listeners.addListener(new StandardGroundRaidObjectivesCreator(), true);
+		}
+		
+		if (!listeners.hasListenerOfClass(Cryorevival.CryosleeperFactor.class)) {
+			listeners.addListener(new Cryorevival.CryosleeperFactor(), true);
+		}
+		if (!listeners.hasListenerOfClass(PopulationAndInfrastructure.CoronalTapFactor.class)) {
+			listeners.addListener(new PopulationAndInfrastructure.CoronalTapFactor(), true);
+		}
+		
 		GenericPluginManagerAPI plugins = sector.getGenericPlugins();
 		if (!plugins.hasPlugin(SalvageGenFromSeed.SalvageDefenderModificationPluginImpl.class)) {
 			plugins.addPlugin(new SalvageGenFromSeed.SalvageDefenderModificationPluginImpl(), true);
@@ -61,8 +74,25 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!plugins.hasPlugin(StabilizeMarketPluginImpl.class)) {
 			plugins.addPlugin(new StabilizeMarketPluginImpl(), true);
 		}
+		if (!plugins.hasPlugin(RemnantOfficerGeneratorPlugin.class)) {
+			plugins.addPlugin(new RemnantOfficerGeneratorPlugin(), true);
+		}
+		if (!plugins.hasPlugin(OmegaOfficerGeneratorPlugin.class)) {
+			plugins.addPlugin(new OmegaOfficerGeneratorPlugin(), true);
+		}
+//		if (!plugins.hasPlugin(PlayerFleetPersonnelTracker.class)) {
+//			plugins.addPlugin(new PlayerFleetPersonnelTracker(), false);
+//		}
+		
+		PlayerFleetPersonnelTracker.getInstance();
 		
 		
+		if (!sector.hasScript(OfficerManagerEvent.class)) {
+			sector.addScript(new OfficerManagerEvent());
+		}
+		if (!sector.hasScript(FieldRepairsScript.class)) {
+			sector.addScript(new FieldRepairsScript());
+		}
 		if (!sector.hasScript(WarSimScript.class)) {
 			sector.addScript(new WarSimScript());
 		}
@@ -73,15 +103,15 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 			sector.addScript(new SystemBountyManager());
 		}
 		
-		if (!sector.hasScript(PirateBaseManager.class)) {
-			sector.addScript(new PirateBaseManager());
+		// MODIFIED
+		if (!sector.hasScript(Nex_PirateBaseManager.class)) {
+			sector.addScript(new Nex_PirateBaseManager());
 		}
-		if (!sector.hasScript(PlayerRelatedPirateBaseManager.class)) {
-			sector.addScript(new PlayerRelatedPirateBaseManager());
+		if (!sector.hasScript(Nex_PlayerRelatedPirateBaseManager.class)) {
+			sector.addScript(new Nex_PlayerRelatedPirateBaseManager());
 		}
-		
-		if (!sector.hasScript(LuddicPathBaseManager.class)) {
-			sector.addScript(new LuddicPathBaseManager());
+		if (!sector.hasScript(Nex_LuddicPathBaseManager.class)) {
+			sector.addScript(new Nex_LuddicPathBaseManager());
 		}
 		if (!sector.hasScript(Nex_HegemonyInspectionManager.class)) {
 			sector.addScript(new Nex_HegemonyInspectionManager());
@@ -93,6 +123,7 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 			sector.addScript(new DecivTracker());
 		}
 		
+		// MODIFIED
 		/*
 		if (!sector.hasScript(FactionHostilityManager.class)) {
 			sector.addScript(new FactionHostilityManager());
@@ -102,14 +133,15 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 			FactionHostilityManager.getInstance().startHostilities(Factions.TRITACHYON, Factions.LUDDIC_CHURCH);
 		}
 		*/
-				
+		
 		if (!sector.hasScript(GenericMissionManager.class)) {
 			sector.addScript(new GenericMissionManager());
 		}
 		GenericMissionManager manager = GenericMissionManager.getInstance();
-		if (!manager.hasMissionCreator(Nex_ProcurementMissionCreator.class)) {
-			manager.addMissionCreator(new Nex_ProcurementMissionCreator());
-		}
+// 		Replaced with bar/contact com.fs.starfarer.api.impl.campaign.missions.ProcurementMission		
+//		if (!manager.hasMissionCreator(ProcurementMissionCreator.class)) {
+//			manager.addMissionCreator(new ProcurementMissionCreator());
+//		}
 		if (!manager.hasMissionCreator(AnalyzeEntityIntelCreator.class)) {
 			manager.addMissionCreator(new AnalyzeEntityIntelCreator());
 		}
@@ -123,50 +155,6 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 			sector.addScript(new SmugglingScanScript());
 		}
 		
-	}
-	
-	// use own bar event creator
-	@Override
-	protected void addBarEvents() {
-		SectorAPI sector = Global.getSector();
-		if (!sector.hasScript(PortsideBarData.class)) {
-			sector.addScript(new PortsideBarData());
-		}
-		if (!sector.hasScript(BarEventManager.class)) {
-			sector.addScript(new BarEventManager());
-		}
-		
-		BarEventManager bar = BarEventManager.getInstance();
-		if (!bar.hasEventCreator(LuddicFarmerBarEventCreator.class)) {
-			bar.addEventCreator(new LuddicFarmerBarEventCreator());
-		}
-		if (!bar.hasEventCreator(LuddicCraftBarEventCreator.class)) {
-			bar.addEventCreator(new LuddicCraftBarEventCreator());
-		}
-		if (!bar.hasEventCreator(DiktatLobsterBarEventCreator.class)) {
-			bar.addEventCreator(new DiktatLobsterBarEventCreator());
-		}
-		if (!bar.hasEventCreator(MercsOnTheRunBarEventCreator.class)) {
-			bar.addEventCreator(new MercsOnTheRunBarEventCreator());
-		}
-		if (!bar.hasEventCreator(CorruptPLClerkSuppliesBarEventCreator.class)) {
-			bar.addEventCreator(new CorruptPLClerkSuppliesBarEventCreator());
-		}
-		if (!bar.hasEventCreator(QuartermasterCargoSwapBarEventCreator.class)) {
-			bar.addEventCreator(new QuartermasterCargoSwapBarEventCreator());
-		}
-		if (!bar.hasEventCreator(TriTachLoanBarEventCreator.class)) {
-			bar.addEventCreator(new TriTachLoanBarEventCreator());
-		}
-		if (!bar.hasEventCreator(TriTachMajorLoanBarEventCreator.class)) {
-			bar.addEventCreator(new TriTachMajorLoanBarEventCreator());
-		}
-		if (!bar.hasEventCreator(ScientistAICoreBarEventCreator.class)) {
-			bar.addEventCreator(new ScientistAICoreBarEventCreator());
-		}
-		if (!bar.hasEventCreator(PlanetaryShieldBarEventCreator.class)) {
-			bar.addEventCreator(new PlanetaryShieldBarEventCreator());
-		}
-		
+		PlaythroughLog.getInstance();
 	}
 }
