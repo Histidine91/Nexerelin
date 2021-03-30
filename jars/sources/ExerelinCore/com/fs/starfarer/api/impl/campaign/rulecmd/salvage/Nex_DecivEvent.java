@@ -14,7 +14,6 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -469,21 +468,34 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	}
 	
 	protected void setupBarterEvent() {
-		String commodityGive = givePicker.pick();
-		String commodityTake = null;
-		do {
-			commodityTake = takePicker.pick();
-		} while (commodityTake == null || commodityTake.equals(commodityGive));
+		int tries = 0;
 		
-		//log.info("Picked commodities: " + commodityGive + ", " + commodityTake);
-		
-		float baseAmount = Global.getSector().getPlayerFleet().getCargo().getMaxCapacity();
-		baseAmount = Math.min(baseAmount, 1000);
-		if (baseAmount < 100) baseAmount = 100;
-		baseAmount = (int)(baseAmount/100) * 10;
-		baseAmount *= 0.25f * MathUtils.getRandomNumberInRange(2, 8);
-		
-		setupCommodities(commodityGive, commodityTake, baseAmount, 1.25f, 1);
+		while (tries < 5) {
+			tries++;
+			
+			String commodityGive = givePicker.pick();
+			String commodityTake = null;
+			do {
+				commodityTake = takePicker.pick();
+			} while (commodityTake == null || commodityTake.equals(commodityGive));
+
+			//log.info("Picked commodities: " + commodityGive + ", " + commodityTake);
+			
+			CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+			float baseAmount = cargo.getMaxCapacity();
+			baseAmount = Math.min(baseAmount, 1000);
+			if (baseAmount < 100) baseAmount = 100;
+			baseAmount = (int)(baseAmount/100) * 10;
+			baseAmount *= 0.25f * MathUtils.getRandomNumberInRange(2, 8);
+
+			setupCommodities(commodityGive, commodityTake, baseAmount, 1.25f, 1);
+			if (cargo.getCommodityQuantity(commodityTake) < (int)memory.getLong(MEM_KEY_TAKE_COUNT))
+			{
+				// we don't have enough of this commodity, try again
+				continue;
+			}
+			break;
+		}
 	}
 	
 	protected void setupBombEvent() {
