@@ -1037,7 +1037,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         log.info("Invasion credit loss size mult: " + mySize + "/" + totalSize);
         float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
         float lossMult = mult * NexConfig.creditLossOnColonyLossMult;
-        if (SectorManager.getHardMode()) lossMult *= 2;
+        if (SectorManager.getManager().isHardMode()) lossMult *= 2;
         if (lossMult > 0.75f) lossMult = 0.75f;
         
         return Math.round(lossMult * credits);

@@ -173,10 +173,10 @@ public class NexUtilsFaction {
      */
     public static boolean isExiInCorvus(String factionId)
     {
-        if (factionId.equals("exigency") && SectorManager.getCorvusMode()) 
+        if (factionId.equals("exigency") && SectorManager.getManager().isCorvusMode()) 
         {
             //List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getPossibleFactions());
-            //return (factions.contains("exigency") && SectorManager.getCorvusMode());
+            //return (factions.contains("exigency") && SectorManager.getManager().isCorvusMode());
             SectorEntityToken tasserus = Global.getSector().getEntityById("exigency_tasserus");
             return tasserus != null;
         }

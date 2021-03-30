@@ -249,7 +249,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 */
 	public void setGrowthRate(MarketAPI market) {
 		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
-		boolean want = !player || SectorManager.getHardMode();
+		boolean want = !player || SectorManager.getManager().isHardMode();
 		boolean have = market.getImmigrationModifiers().contains(this);
 		if (want == have) return;
 		
@@ -346,7 +346,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		// keep the cond check; motherfuckers can't be trusted to have the right settting
 		boolean isFreePort = market.isFreePort() || market.hasCondition(Conditions.FREE_PORT);
 		boolean wantFreePort;
-		if (!SectorManager.getCorvusMode())
+		if (!SectorManager.getManager().isCorvusMode())
 		{
 			wantFreePort = newOwnerConfig.freeMarket || market.getId().equals("nex_prismFreeport");
 		}
@@ -376,7 +376,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static void updateIncome(MarketAPI market)
 	{
 		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
-		if (player && SectorManager.getHardMode())
+		if (player && SectorManager.getManager().isHardMode())
 		{
 			market.getIncomeMult().modifyMult("nex_hardMode", NexConfig.hardModeColonyIncomeMult, 
 						getString("hardModeIncomeMultDesc"));

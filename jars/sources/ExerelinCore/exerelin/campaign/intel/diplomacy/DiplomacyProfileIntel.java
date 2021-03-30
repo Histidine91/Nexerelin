@@ -327,7 +327,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		tooltip.addTable("", 0, 3);
 		
-		if (SectorManager.getHardMode()) {
+		if (SectorManager.getManager().isHardMode()) {
 			FactionAPI playerFaction = PlayerFactionStore.getPlayerFaction();
 			if (faction != playerFaction && SectorManager.isFactionAlive(playerFaction.getId())) {
 				String str = getString("dispFootnoteHardMode");

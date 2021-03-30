@@ -101,7 +101,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	{
 		if (!isRevengeanceEnabled()) return;
 		
-		if (!SectorManager.getHardMode())
+		if (!SectorManager.getManager().isHardMode())
 			addedPoints *= 0.5f;
 		points += addedPoints;
 		String debugStr = "Adding revengeance points: " + addedPoints;
@@ -294,7 +294,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	public static boolean isRevengeanceEnabled()
 	{
 		int requiredSetting = 2;
-		if (SectorManager.getHardMode()) requiredSetting = 1;
+		if (SectorManager.getManager().isHardMode()) requiredSetting = 1;
 		log.info("Required revengeance setting: " + requiredSetting);
 		if (requiredSetting <= NexConfig.enableRevengeFleets) {
 			return true;

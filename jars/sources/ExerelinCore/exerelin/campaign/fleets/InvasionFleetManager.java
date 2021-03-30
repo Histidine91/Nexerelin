@@ -600,7 +600,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 			
 			// hard mode
-			if (SectorManager.getHardMode())
+			if (SectorManager.getManager().isHardMode())
 			{
 				if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
 						|| marketFactionId.equals(Factions.PLAYER))

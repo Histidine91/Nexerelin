@@ -833,7 +833,7 @@ public class DiplomacyBrain {
 	 */
 	public boolean isHardMode(String factionId)
 	{
-		if (!SectorManager.getHardMode())
+		if (!SectorManager.getManager().isHardMode())
 			return false;
 		String myFactionId = PlayerFactionStore.getPlayerFactionId();
 		

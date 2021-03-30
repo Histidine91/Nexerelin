@@ -118,7 +118,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	protected float calculatePayout(List<OfficerDataAPI> deadOfficers, Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers) {
 		float totalPayment = 0f;
 		float mult = NexConfig.playerInsuranceMult;
-		if (SectorManager.getHardMode())
+		if (SectorManager.getManager().isHardMode())
 			mult *= HARD_MODE_MULT;
 
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
@@ -320,7 +320,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
 		
 		float mult = NexConfig.playerInsuranceMult;
-		if (SectorManager.getHardMode())
+		if (SectorManager.getManager().isHardMode())
 			mult *= HARD_MODE_MULT;
 		
 		info.addPara(getString("descInsuranceMult"), opad, h, mult + "");

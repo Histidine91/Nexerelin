@@ -384,7 +384,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGameAfterProcGen() {
         log.info("New game after proc gen; " + isNewGame);
-        if (!SectorManager.getCorvusMode())
+        if (!SectorManager.getManager().isCorvusMode())
             new ExerelinProcGen().generate();
         
         ScenarioManager.afterProcGen(Global.getSector());
@@ -394,7 +394,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterEconomyLoad() {
         log.info("New game after economy load; " + isNewGame);
         
-        if (SectorManager.getCorvusMode()) {
+        if (SectorManager.getManager().isCorvusMode()) {
             VanillaSystemsGenerator.enhanceVanillaMarkets();
         }
 		
@@ -404,7 +404,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         SectorManager.reinitLiveFactions();
         
-        if (SectorManager.getCorvusMode())
+        if (SectorManager.getManager().isCorvusMode())
         {
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
@@ -416,7 +416,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
         }
         
-        new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
+        new LandmarkGenerator().generate(Global.getSector(), SectorManager.getManager().isCorvusMode());
         
         addBarEvents();
         EconomyInfoHelper.createInstance();

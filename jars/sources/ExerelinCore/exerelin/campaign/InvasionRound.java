@@ -468,7 +468,7 @@ public class InvasionRound {
 				mult *= 2f;
 			if (!isPlayerFaction)
 				mult *= 0.75f;
-			else if (SectorManager.getHardMode())
+			else if (SectorManager.getManager().isHardMode())
 				mult *= 1.5f;
 			
 			log.info("Increasing defence for market " + market.getName() 

@@ -104,7 +104,7 @@ public class SpecialForcesRouteAI {
 	 * @return
 	 */
 	public static boolean shouldShowPlayerMercy(RaidIntel raid) {
-		if (SectorManager.getHardMode()) return false;
+		if (SectorManager.getManager().isHardMode()) return false;
 		
 		FactionAPI player = Global.getSector().getPlayerFaction();
 		if (raid instanceof OffensiveFleetIntel) 
