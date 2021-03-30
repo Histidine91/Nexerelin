@@ -117,7 +117,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	@Override
 	public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(SectorEntityToken opponent) {
 		if (opponent instanceof CampaignFleetAPI && NexConfig.useCustomBattleCreationPlugin) {
-			return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
+			//return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
 		}
 		return null;
 	}

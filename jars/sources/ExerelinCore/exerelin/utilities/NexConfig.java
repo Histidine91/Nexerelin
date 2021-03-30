@@ -111,7 +111,7 @@ public class NexConfig
     public static float vengeanceFleetSizeMult = 0.8f;
     
     // Combat
-    public static boolean useCustomBattleCreationPlugin = false;
+    @Deprecated public static boolean useCustomBattleCreationPlugin = false;
     public static boolean officerDeaths = false;
     public static boolean officerDaredevilBonus = true;
     

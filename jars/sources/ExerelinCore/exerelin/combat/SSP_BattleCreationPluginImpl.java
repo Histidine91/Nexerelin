@@ -26,10 +26,12 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
+@Deprecated
 public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
 
     protected static final float ASTEROID_MAX_DIST = 750f;
@@ -45,7 +47,7 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         return playerFleet.getContainingLocation() == Global.getSector().getHyperspace();
     }
 
-    public static boolean isNearbyAsteroids(CampaignFleetAPI playerFleet) {
+    public boolean isNearbyAsteroids(CampaignFleetAPI playerFleet) {
         // More rocks cause more rocks, duh
         float numAsteroidsWithinRange = countNearbyAsteroids(playerFleet);
         if (playerFleet.getContainingLocation() == Global.getSector().getHyperspace()) {
@@ -267,8 +269,12 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
 
     @Override
     public void initBattle(final BattleCreationContext context, MissionDefinitionAPI loader) {
+		
+		super.initBattle(context, loader);
         this.context = context;
         this.loader = loader;
+		Random random = Misc.random;
+		
         objectives = new ArrayList<>(5);
         CampaignFleetAPI playerFleet = context.getPlayerFleet();
         CampaignFleetAPI otherFleet = context.getOtherFleet();
@@ -427,14 +433,14 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
 
         sizeMod = (width / 18000f) * (height / 18000f);
 
-        createMap();
+        createMap(random);
 
         context.setInitialDeploymentBurnDuration(1.5f);
         context.setNormalDeploymentBurnDuration(6f);
         context.setEscapeDeploymentBurnDuration(1.5f);
 
         if (escape) {
-            addEscapeObjectives(numObjectives);
+            addEscapeObjectives(loader, numObjectives, random);
             //context.setInitialEscapeRange(4000f * distanceMod);
             //context.setFlankDeploymentDistance(8000f);
             context.setInitialEscapeRange(Global.getSettings().getFloat("escapeStartDistance") * heightModForEscape);
@@ -443,15 +449,17 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
             loader.addPlugin(new EscapeRevealPlugin(context));
         } else {
             if (withObjectives) {
-                addObjectives(numObjectives);
+                addObjectives(loader, numObjectives, random);
                 context.setStandoffRange(height - 4500f);
             } else {
                 context.setStandoffRange(6000f);
             }
         }
     }
-
-    protected void createMap() {
+	
+	// fuck knows how this differs from vanilla
+	@Override
+    protected void createMap(Random random) {
         loader.initMap(-width / 2f, width / 2f, -height / 2f, height / 2f);
 
         CampaignFleetAPI playerFleet = context.getPlayerFleet();
@@ -605,6 +613,8 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
     }
     
     // Different from vanilla
+	/*
+	@Override
     protected void addMultiplePlanets() {
         float bgWidth = width / 17.5f;
         float bgHeight = height / 17.5f;
@@ -878,7 +888,8 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
                 break;
         }
     }
-
+	*/
+	
     protected void addObjectiveAt(float xMult, float yMult, float xOff, float yOff) {
         String type = pickAny();
         if (objs != null && objs.size() > 0) {
