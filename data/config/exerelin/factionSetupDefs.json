@@ -83,7 +83,7 @@
 			"desc":"Upgrades the %s resource level on your starting planet by one. If none exists, will add %s for a %s higher cost.",
 			"cost":35,
 			"params": {
-				"type":"volatiles",	# hardcoded references in class
+				"type":"volatiles",
 			},
 			"className":"exerelin.world.factionsetup.ResourceUpgrade",
 			"sortOrder":8,
@@ -98,6 +98,16 @@
 			"cost":25,
 			"className":"exerelin.world.factionsetup.AddCommodities",
 			"sortOrder":9,
+		},
+		"janus":{
+			"name":"Janus Device",
+			"desc":"A working first-generation %s. How you got hold of it is a mystery.",
+			"params": {
+				"items":[["janus"]],
+			},
+			"cost":0,
+			"className":"exerelin.world.factionsetup.AddSpecial",
+			"sortOrder":20,
 		},
 	},
 }
