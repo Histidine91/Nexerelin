@@ -681,31 +681,14 @@ FireAll PopulateOptions","""Got things to do first? We understand. Let us know w
 ,,,,,,
 ,,,,,,
 # Base commander stuff,,,,,,
-ExerelinConvOfficialGreeting,PickGreeting,"Nex_IsBaseOfficial command
-!$mpm_isPlayerContact","ShowPersonVisual
+nex_convDefaultGreetingFollowers,PickGreeting,"!$contact_printedFirstReturnGreeting
+Nex_IsBaseOfficial any
+Nex_IsFactionRuler $faction.id","$contact_printedFirstReturnGreeting = true 0
+ShowPersonVisual
 FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
-""This is $rank $local.name, $post. State your business.""",,
-ExerelinConvOfficialGreetingTemplars,PickGreeting,"Nex_IsBaseOfficial command
-$faction.id == ""templars""
-!$mpm_isPlayerContact","ShowPersonVisual
-FireAll PopulateOptions
-FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
-
-""This is $rank $local.name, $post of $entityName. Speak quickly or be purged.""",,
-ExerelinConvOfficialGreetingPirates,PickGreeting,"Nex_IsBaseOfficial command
-IsPirateFaction $faction.id
-!$mpm_isPlayerContact","ShowPersonVisual
-FireAll PopulateOptions
-FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
-
-""Yeah, what is it?""",,
-ExerelinConvOfficialGreetingFollowers,PickGreeting,"Nex_IsBaseOfficial any
-Nex_IsFactionRuler $faction.id
-!$mpm_isPlayerContact","ShowPersonVisual
-FireAll PopulateOptions
-FireAll ExerelinBaseCommanderOptionsInitialize","""Hello, chief. What can we do for you?""",,
+""Hello, chief. What can we do for you?""",,
 ,,,,,,
 aiCores_turnInOptionSelFollowers,DialogOptionSelected,"$option == aiCores_startTurnIn
 $faction.id == player",FireAll PopulateCoresTurnInOptions,"""Good to hear. We can always use more of these things. Standard bounty applies.""",,
