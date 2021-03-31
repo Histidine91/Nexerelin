@@ -56,7 +56,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
 		opts.addSelector(getString("startingLevelTitle"), "startLevelSelector", Color.GREEN, BAR_WIDTH, 48, 
-				1, 20,	// min, max
+				1, 8,	// min, max
 				ValueDisplayMode.VALUE, null);
 		opts.setSelectorValue("startLevelSelector", 1);
 		
@@ -96,6 +96,9 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		
 		charData.getPerson().getStats().addXP(xp);
 		Nex_NGCAddLevel.addXPGainText(xp, text);
+		
+		int storyPoints = (level - 1) * Global.getSettings().getInt("storyPointsPerLevel");
+		charData.getPerson().getStats().addStoryPoints(storyPoints, text, false);
 		
 		charData.getStartingCargo().getCredits().add(credits);
 		AddRemoveCommodity.addCreditsGainText(credits, text);

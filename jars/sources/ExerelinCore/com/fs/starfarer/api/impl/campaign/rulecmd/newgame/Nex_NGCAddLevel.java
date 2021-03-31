@@ -16,7 +16,7 @@ import exerelin.utilities.StringHelper;
 
 public class Nex_NGCAddLevel extends BaseCommandPlugin {
 	
-    @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
 		
@@ -26,7 +26,10 @@ public class Nex_NGCAddLevel extends BaseCommandPlugin {
 		long xp = Global.getSettings().getLevelupPlugin().getXPForLevel(level);
 		data.getPerson().getStats().addXP(xp);
 		addXPGainText(xp, dialog.getTextPanel());
-        
+		
+		int storyPoints = (level - 1) * Global.getSettings().getInt("storyPointsPerLevel");
+		data.getPerson().getStats().addStoryPoints(storyPoints, dialog.getTextPanel(), false);
+		
 		return true;
 	}
 	
