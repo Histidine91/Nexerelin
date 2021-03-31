@@ -2,25 +2,40 @@ Files to check on Starsector update, because they significantly modify vanilla c
 Partial list.
 
 - NexCoreLifecyclePlugin
-- NexDeliveryBarEvent
 - NexFleetInteractionDialogPluginImpl
 - NexFleetEncounterContext
-- Nex_MarketCMD
+- [needs updating] Nex_MarketCMD
 - Nex_SustainedBurnAbilityAI
-- SSP_BattleCreationPluginImpl
+- [deprecated] SSP_BattleCreationPluginImpl
 - InvasionFleetManager.getPatrolCombatFP
 - Submarket plugins
 - Colony manager: getFreePortGrowthBonus()
 - Everything that uses Industries.TAG_UNRAIDABLE
 
-Do on future SS release:
-- ExerelinConfig/ExerelinFactionConfig: Shorten class/method names
-- Remove agent/saboteur commodities
-- Remove MutableStatNoFloor
-- Use "player colonized" and deciv listeners
-- Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
-- Move CeasefirePromptIntel to diplomacy package
+	needs checking:
+	- [updated] Nex_PunitiveExpeditionManager
+	- [no change needed?] NexFleetInteractionDialogPluginImpl
+	- [no change needed?] NexFleetEncounterContext
+	- [no change] Nex_SustainedBurnAbilityAI
+	- [no change] InvasionFleetManager.getPatrolCombatFP
+	- [updated] Submarket plugins
+	- [no change] getFreePortGrowthBonus()
+	- [no change] Industries.TAG_UNRAIDABLE
 
-Do when handy:
-- Refactor: getExerelinFactionConfig() -> getFactionConfig() (deprecate old)
-- SectorManager: getHardMode, getCorvusMode -> isHardMode, isCorvusMode (deprecate old)
+last thing to look at is Nex_MarketCMD
+
+0.95 notes:
+- SSP_BattleCreationPluginImpl looks RIP, it can't access needed variables from the data class
+
+Do on future SS release:
+- [done] ExerelinConfig/ExerelinFactionConfig: Shorten class/method names
+- [done] Remove agent/saboteur commodities
+- [done] Remove MutableStatNoFloor
+- Use "player colonized" and deciv listeners
+	- Deciv listener applications:
+		- Sector manager (faction elimination): useless, we don't know who the previous owner was
+	- Player colonized listener applications:
+		- Faction setup nag script? mehhh
+
+- Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
+- [done] Move CeasefirePromptIntel to diplomacy package

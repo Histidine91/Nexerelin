@@ -97,6 +97,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 				data.getMember().setVariant(variant, false, true);
 				
 				/* Completely fuck this ship up */
+				/*
 				Random dModRandom = new Random(1000000 * data.getMember().getId().hashCode() + Global.getSector().getPlayerBattleSeed());
 				dModRandom = Misc.getRandom(dModRandom.nextLong(), 5);
 				int numDMods = DModManager.getNumDMods(data.getMember().getVariant());
@@ -104,6 +105,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 				if (DModManager.getNumDMods(variant) > 0) {
 					DModManager.setDHull(variant);
 				}
+				*/
 				
 				float weaponProb = Global.getSettings().getFloat("salvageWeaponProb");
 				float wingProb = Global.getSettings().getFloat("salvageWingProb");
@@ -333,6 +335,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			if (f < 0) f = 0;
 			if (f > 1) f = 1;
 			
+			// MODIFIED
 			float bonusMult = 1;
 			if (NexConfig.officerDaredevilBonus) {
 				FleetMemberAPI member = oed.sourceFleet.getFleetData().getMemberWithCaptain(person);

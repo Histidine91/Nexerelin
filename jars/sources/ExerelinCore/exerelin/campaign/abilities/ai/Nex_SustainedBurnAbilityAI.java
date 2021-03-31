@@ -17,7 +17,7 @@ import org.lwjgl.util.vector.Vector2f;
 
 // same as vanilla, except:
 //	use sustained burn if our target is also using sustained burn
-//  minimum distance for SB now 750 (was 2000)
+//  minimum distance for SB now 1000 (was 2000)
 public class Nex_SustainedBurnAbilityAI extends SustainedBurnAbilityAI {
 	private IntervalUtil interval = new IntervalUtil(0.05f, 0.15f);
 
