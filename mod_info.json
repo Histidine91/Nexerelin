@@ -2,10 +2,14 @@
     "id":"nexerelin",
     "name":"Nexerelin",
     "author":"Histidine (original by Zaphide)",
-    "version":"0.9.8x",
+    "version":"0.10",
     "description":"Join a faction and conquer the Sector! Requires LazyLib",
-    "gameVersion":"0.9.1a",
+    "gameVersion":"0.95a-RC10",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
+    "dependencies": [
+        {"id": "lw_lazylib", "name": "LazyLib"},
+        {"id": "MagicLib", "name": "MagicLib"},
+    ],
     "modPlugin":"exerelin.plugins.ExerelinModPlugin",
 }
