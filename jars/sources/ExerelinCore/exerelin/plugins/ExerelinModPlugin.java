@@ -481,22 +481,13 @@ public class ExerelinModPlugin extends BaseModPlugin
 
         try {
             ModSpecAPI spec = Global.getSettings().getModManager().getModSpec("nexerelin");
-            Version wantedVersion = new Version(0, 9, 1, 8);    //new Version(spec.getGameVersion());
+            Version wantedVersion = new Version(0, 95, 0, 11);    //new Version(spec.getGameVersion());
             Version installedVersion = new Version(Global.getSettings().getVersionString());
 
             if (installedVersion.isOlderThan(wantedVersion, false)) {
                 message = String.format(StringHelper.getString("exerelin_misc", "errorStarsectorVersion"),
                         spec.getName(), wantedVersion, installedVersion);
             }
-            /*
-            else if (installedVersion.isNewerThan(wantedVersion, false)) {
-                message = String.format("\r%s is not up to date for Starsector %s!" +
-                                "\rAn updated version of THI may be available; if not, please wait for a release." +
-                                "\rRequired Version: %s" +
-                                "\rCurrent Version: %s",
-                        spec.getName(), installedVersion, wantedVersion, installedVersion);
-            }
-            */
         } catch (Exception e) {
             log.error("Version comparison failed.", e);
         }
