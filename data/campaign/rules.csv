@@ -39,9 +39,9 @@ ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
 FireAll ExerelinNGCOptions",Configure the Sector?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,FireAll ExerelinNGCOptions,,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOptionsDone RETURN,,"exerelinNGCOptionsDone:Proceed
+7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
-ExerelinNewGameOptionsPopulateFaction,ExerelinNGCOptions,!$corvusMode,,,7:exerelinNGCSectorOptions:Sector generation,
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCDisableCorvusMode:Enable random core worlds,
 ,,,,,,
@@ -72,9 +72,9 @@ Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisablePrismMarket ""A trade s
 nex_NGCCustomScenarioOption,ExerelinNGCOtherOptions,,"Nex_NGCCustomScenario menuOption
 Nex_DynamicPaginatedOptions addOption nex_NGCCustomScenarioMenu ""Custom scenario – $nex_customScenarioName""",,,
 ,,,,,,
-nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,"Nex_NGCProcessSectorGenerationSliders create
-$nex_ngcSectorGenSlidersSeen = true",,,
-nex_NewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
+nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,$nex_ngcSectorGenSlidersSeen = true,,,
+nex_NewGameSectorConfig,ExerelinNGCSectorOptions,,"Nex_NGCProcessSectorGenerationSliders create
+SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
 SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack:Back,
 nex_NewGameSectorConfigBack,NewGameOptionSelected,$option==exerelinNGCSectorOptionsBack,"Nex_NGCProcessSectorGenerationSliders save
 FireAll ExerelinNGCOptions",,,
@@ -278,15 +278,15 @@ nex_NGCCustomResourcesStart:Custom...",
 nex_NGCFinalizeSuper,ExerelinNGCStep4,$option == nex_NGCFleetSuper,"AddText ""Starting experience and assets?""
 Nex_NGCStartResources createOptions
 SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartAgent:Agent (20,000 credits, level 1, 4 Story Point)
-nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 6, 24 Story Point)
+nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 5, 20 Story Point)
 nex_NGCCustomResourcesStart:Custom...",
 nex_NGCStep4Reroll,NewGameOptionSelected,$option == nex_NGCStep4FleetReroll,"NGCClearStartingGear
 Nex_NGCStartResources reroll
 NGCAddStartingShipsByFleetType $nex_lastSelectedFleetType
 Nex_NGCStartResources createOptions
-SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartEnsign:Ensign (20,000 credits, level 1)
-nex_NGCStartLieutenant:Lieutenant (75,000 credits, level 5, one officer)
-nex_NGCStartCommander:Commander (250,000 credits, level 10, two officers)
+SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartEnsign:Ensign (20,000 credits, level 1, 4 Story Point)
+nex_NGCStartLieutenant:Lieutenant (75,000 credits, level 5, 20 Story Point, one officer)
+nex_NGCStartCommander:Commander (250,000 credits, level 10, 40 Story Point, two officers)
 nex_NGCCustomResourcesStart:Custom...",
 nex_NGCStep4RerollSuper,NewGameOptionSelected,"$option == nex_NGCStep4FleetReroll
 $nex_lastSelectedFleetType == SUPER","NGCClearStartingGear
@@ -294,7 +294,7 @@ Nex_NGCStartResources reroll
 NGCAddStartingShipsByFleetType $nex_lastSelectedFleetType
 Nex_NGCStartResources createOptions
 SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartAgent:Agent (20,000 credits, level 1, 4 Story Point)
-nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 6, 24 Story Point)
+nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 5, 20 Story Point)
 nex_NGCCustomResourcesStart:Custom...",
 ,,,,,,
 nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCStartEnsign,"NGCAddCredits 20000
@@ -317,7 +317,7 @@ NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartSpecialAgent,NewGameOptionSelected,$option == nex_NGCStartSpecialAgent,"NGCAddCredits 75000
 NGCAddCharacterPoints 3
-Nex_NGCAddLevel 6
+Nex_NGCAddLevel 5
 NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartCustomResources,NewGameOptionSelected,$option == nex_NGCCustomResourcesStart,"Nex_NGCStartResources save
@@ -1564,6 +1564,13 @@ OR
 ""We have claimed this salvage. Find your own pickings.""
 OR
 ""This salvage does not belong to you. You'll have to fight us for it.""",cutCommLink:Cut the comm link,
+,,,,,,
+marketOpenNotOriginalOwner,OpenInteractionDialog,"$hasMarket
+$market.startingFactionId != null
+$faction.id != $market.startingFactionId","ShowDefaultVisual
+Nex_PrintOriginalOwner
+PrintDescription 3
+FireBest MarketPostOpen",Your $shipOrFleet approaches $entityName.,,
 ,,,,,,
 ,,,,,,
 # Vanilla overrides,,,,,,
