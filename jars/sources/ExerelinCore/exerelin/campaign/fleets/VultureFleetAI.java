@@ -244,7 +244,7 @@ public class VultureFleetAI implements EveryFrameScript
 		for (PerShipData ship : ships) {
 			addStuffFromShip(extra, ship, entity);
 		}
-		BaseSalvageSpecial.setExtraSalvage(extra, entity.getMemoryWithoutUpdate(), 0);
+		BaseSalvageSpecial.addExtraSalvage(extra, entity.getMemoryWithoutUpdate(), 0);
 	}
 	
 	// based on ShipRecoverySpecial.addStuffFromMember

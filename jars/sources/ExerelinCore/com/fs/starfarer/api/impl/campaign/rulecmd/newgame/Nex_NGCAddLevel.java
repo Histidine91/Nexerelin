@@ -25,6 +25,7 @@ public class Nex_NGCAddLevel extends BaseCommandPlugin {
 		
 		long xp = Global.getSettings().getLevelupPlugin().getXPForLevel(level);
 		data.getPerson().getStats().addXP(xp);
+		data.getPerson().getStats().addStoryPoints(level * 4);
 		addXPGainText(xp, dialog.getTextPanel());
         
 		return true;

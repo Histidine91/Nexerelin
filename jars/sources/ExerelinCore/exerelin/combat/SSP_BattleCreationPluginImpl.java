@@ -45,7 +45,7 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         return playerFleet.getContainingLocation() == Global.getSector().getHyperspace();
     }
 
-    public static boolean isNearbyAsteroids(CampaignFleetAPI playerFleet) {
+    public boolean isNearbyAsteroids(CampaignFleetAPI playerFleet) {
         // More rocks cause more rocks, duh
         float numAsteroidsWithinRange = countNearbyAsteroids(playerFleet);
         if (playerFleet.getContainingLocation() == Global.getSector().getHyperspace()) {
@@ -89,7 +89,7 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         return amt >= 0.6f;
     }
 
-    public static float countNearbyAsteroids(CampaignFleetAPI playerFleet) {
+    public float countNearbyAsteroids(CampaignFleetAPI playerFleet) {
         float numAsteroidsWithinRange = 0;
         float closest = Float.MAX_VALUE;
         LocationAPI loc = playerFleet.getContainingLocation();
@@ -189,7 +189,7 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         return minDist;
     }
 
-    protected static List<NearbyPlanetData> getNearbyPlanets(CampaignFleetAPI playerFleet) {
+    protected List<BattleCreationPluginImpl.NearbyPlanetData> getNearbyPlanets(CampaignFleetAPI playerFleet) {
         LocationAPI loc = playerFleet.getContainingLocation();
         List<NearbyPlanetData> result = new ArrayList<>(10);
         if (loc instanceof StarSystemAPI) {
@@ -206,7 +206,7 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
                 }
             }
         }
-        return result;
+        return (List<BattleCreationPluginImpl.NearbyPlanetData>)(List<?>) result;
     }
 
     protected static List<NearbyPlanetData> getNearbyStars(CampaignFleetAPI playerFleet) {
@@ -607,7 +607,7 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         float bgWidth = width / 17.5f;
         float bgHeight = height / 17.5f;
 
-        List<NearbyPlanetData> planets = getNearbyPlanets(context.getPlayerFleet());
+        List<NearbyPlanetData> planets = (List<NearbyPlanetData>)(List<?>) getNearbyPlanets(context.getPlayerFleet());
         List<NearbyJumpPointData> jumpPoints = getNearbyJumpPoints(context.getPlayerFleet());
         float closestSquared = Float.MAX_VALUE;
         SectorEntityToken closest = null;
@@ -966,12 +966,13 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         }
     }
 
-    protected static class NearbyPlanetData {
+    protected static class NearbyPlanetData extends BattleCreationPluginImpl.NearbyPlanetData {
 
         final Vector2f offset;
         final PlanetAPI planet;
 
         NearbyPlanetData(Vector2f offset, PlanetAPI planet) {
+            super(offset, planet);
             this.offset = offset;
             this.planet = planet;
         }

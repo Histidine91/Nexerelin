@@ -145,7 +145,7 @@ public class Galatia {
 		Misc.setDefenderOverride(probe, new DefenderDataOverride(Factions.DERELICT, 1f, 2, 2));
 		CargoAPI extraProbeSalvage = Global.getFactory().createCargo(true);
 		extraProbeSalvage.addCommodity(Commodities.GAMMA_CORE, 1);
-		BaseSalvageSpecial.setExtraSalvage(extraProbeSalvage, probe.getMemoryWithoutUpdate(), -1);
+		BaseSalvageSpecial.addExtraSalvage(extraProbeSalvage, probe.getMemoryWithoutUpdate(), -1);
 		
 		system.addRingBand(pontus, "misc", "rings_ice0", 256f, 2, Color.white, 256f, 650, 45, Terrain.RING, null);
 		system.addRingBand(pontus, "misc", "rings_ice0", 256f, 3, Color.white, 256f, 800, 50, Terrain.RING, null);
@@ -302,7 +302,7 @@ public class Galatia {
 		extraSalvage.addCommodity(Commodities.HEAVY_MACHINERY, 10);
 		//extraSalvage.addCommodity(Commodities.RARE_METALS, 10);
 		
-		BaseSalvageSpecial.setExtraSalvage(extraSalvage, debris.getMemoryWithoutUpdate(), -1);
+		BaseSalvageSpecial.addExtraSalvage(extraSalvage, debris.getMemoryWithoutUpdate(), -1);
 		
 		// makes the debris field always visible on map/sensors and not give any xp or notification on being discovered
 		debris.setSensorProfile(null);
@@ -321,7 +321,7 @@ public class Galatia {
 		// need to do manually here.
 		system.setEnteredByPlayer(true);
 		//Misc.setAllPlanetsKnown(system);
-		Misc.setAllPlanetsSurveyed(system);
+		Misc.setAllPlanetsSurveyed(system, false);
 		
 		
 		

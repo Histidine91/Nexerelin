@@ -403,7 +403,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             VanillaSystemsGenerator.enhanceVanillaMarkets();
         }
 		
-        expandSector();
+        //expandSector();
         
         ScenarioManager.afterEconomyLoad(Global.getSector());
         
@@ -486,7 +486,7 @@ public class ExerelinModPlugin extends BaseModPlugin
 
         try {
             ModSpecAPI spec = Global.getSettings().getModManager().getModSpec("nexerelin");
-            Version wantedVersion = new Version(0, 9, 1, 8);    //new Version(spec.getGameVersion());
+            Version wantedVersion = new Version(0, 95, 0, 11);    //new Version(spec.getGameVersion());
             Version installedVersion = new Version(Global.getSettings().getVersionString());
 
             if (installedVersion.isOlderThan(wantedVersion, false)) {

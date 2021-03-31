@@ -409,9 +409,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		String modId = COMMODITY_STAT_MOD_ID;
 		if (result != null)
 		{
-			market.getCommodityData(Commodities.MARINES).getPlayerPriceMod().unmodify(modId);
-			market.getCommodityData(Commodities.HAND_WEAPONS).getPlayerPriceMod().unmodify(modId);
-			market.getCommodityData(Commodities.SUPPLIES).getPlayerPriceMod().unmodify(modId);
+			market.getCommodityData(Commodities.MARINES).getPlayerDemandPriceMod().unmodify(modId);
+			market.getCommodityData(Commodities.HAND_WEAPONS).getPlayerDemandPriceMod().unmodify(modId);
+			market.getCommodityData(Commodities.SUPPLIES).getPlayerDemandPriceMod().unmodify(modId);
 			return;
 		}
 		
@@ -420,9 +420,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		float priceMult = 1 + (commodityFactor/8);
 		String desc = getString("commodityPriceDesc");
 		
-		market.getCommodityData(Commodities.MARINES).getPlayerPriceMod().modifyMult(modId, priceMult, desc);
-		market.getCommodityData(Commodities.HAND_WEAPONS).getPlayerPriceMod().modifyMult(modId, priceMult, desc);
-		market.getCommodityData(Commodities.SUPPLIES).getPlayerPriceMod().modifyMult(modId, priceMult, desc);
+		market.getCommodityData(Commodities.MARINES).getPlayerDemandPriceMod().modifyMult(modId, priceMult, desc);
+		market.getCommodityData(Commodities.HAND_WEAPONS).getPlayerDemandPriceMod().modifyMult(modId, priceMult, desc);
+		market.getCommodityData(Commodities.SUPPLIES).getPlayerDemandPriceMod().modifyMult(modId, priceMult, desc);
 	}
 	
 	public FactionAPI getRebelFaction() {

@@ -824,8 +824,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		targetValue *= tempInvasion.shortageMult;
 		return targetValue;
 	}
-	
-	@Override
+
 	protected void raidSpecialItems(CargoAPI cargo, Random random) {
 		raidSpecialItems(cargo, random, false);
 	}
@@ -947,7 +946,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		
 		// more likely to get at least one modspec, but not likely to get many
-		int num = getNumPicks(random, mult + 0.5f, mult * 0.25f);
+		int num = getNumPicksDiminishing(random, mult + 0.5f, mult * 0.25f, 1f);
 		for (int i = 0; i < num && !picker.isEmpty(); i++) {
 			String id = picker.pickAndRemove();
 			if (id == null) continue;
@@ -977,7 +976,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		
 		
-		num = getNumPicks(random, mult + 0.5f, mult * 0.25f);
+		num = getNumPicksDiminishing(random, mult + 0.5f, mult * 0.25f, 1f);
 		if (military || heavyIndustry) {
 			num += Math.round(market.getCommodityData(Commodities.SHIPS).getAvailable() * mult);
 		}
@@ -1116,6 +1115,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	// Changes from vanilla: Checks blueprint cooldown; externalized strings
+	/*
 	@Override
 	protected void raidValuable() {
 		temp.raidType = RaidType.VALUABLE;
@@ -1253,7 +1253,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		addConfirmOptions();
 	}
-	
+	*/
 	
 	
 	public static int getBombardDisruptDuration(BombardType type) {

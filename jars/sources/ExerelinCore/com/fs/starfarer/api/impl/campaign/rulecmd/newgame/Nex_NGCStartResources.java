@@ -55,12 +55,17 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 	{
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
-		opts.addSelector(getString("startingLevelTitle"), "startLevelSelector", Color.GREEN, BAR_WIDTH, 48, 
-				1, 20,	// min, max
+		opts.addSelector(getString("startingLevelTitle"), "startLevelSelector", Color.YELLOW, BAR_WIDTH, 48,
+				1, 15,	// min, max
 				ValueDisplayMode.VALUE, null);
 		opts.setSelectorValue("startLevelSelector", 1);
+
+		opts.addSelector(getString("startingStoryPointTitle"), "startStoryPointSelector", Color.GREEN, BAR_WIDTH, 48,
+				1, 200,	// min, max
+				ValueDisplayMode.VALUE, null);
+		opts.setSelectorValue("startStoryPointSelector", 4);
 		
-		opts.addSelector(getString("startingCreditsTitle"), "startCreditsSelector", Color.YELLOW, BAR_WIDTH, 48, 
+		opts.addSelector(getString("startingCreditsTitle"), "startCreditsSelector", Color.YELLOW, BAR_WIDTH, 48,
 				0, 300,	// min, max
 				ValueDisplayMode.VALUE, null);
 		opts.setSelectorValue("startCreditsSelector", 20);
@@ -90,6 +95,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		
 		int level = Math.round(opts.getSelectorValue("startLevelSelector"));
 		long xp = Global.getSettings().getLevelupPlugin().getXPForLevel(level);
+		charData.getPerson().getStats().addStoryPoints(Math.round(opts.getSelectorValue("startStoryPointSelector")));
 		int credits = Math.round(opts.getSelectorValue("startCreditsSelector")) * 1000;
 		int officers = Math.round(opts.getSelectorValue("startOfficersSelector"));
 		Global.getLogger(this.getClass()).info(String.format("bla: %s, %s, %s, %s", level, xp, credits, officers));

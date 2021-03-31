@@ -89,7 +89,7 @@ public class Nex_SalvageDefenderInteraction extends SalvageDefenderInteraction {
 				
 				if (plugin.getContext() instanceof FleetEncounterContext) {
 					FleetEncounterContext context = (FleetEncounterContext) plugin.getContext();
-					if (context.didPlayerWinEncounter()) {
+					if (context.didPlayerWinEncounterOutright()) {
 						
 						SalvageGenFromSeed.SDMParams p = new SalvageGenFromSeed.SDMParams();
 						p.entity = entity;

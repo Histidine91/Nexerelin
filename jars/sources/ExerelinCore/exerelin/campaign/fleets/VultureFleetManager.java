@@ -557,7 +557,7 @@ public class VultureFleetManager extends DisposableFleetManager
 
 			if (shipData.pruneWeapons) {
 				float retain = getFighterWeaponRetainProb(shipData.condition);
-				FleetEncounterContext.prepareShipForRecovery(member, false, false, retain, retain, random);
+				FleetEncounterContext.prepareShipForRecovery(member, false, false, false, retain, retain, random);
 				member.getVariant().autoGenerateWeaponGroups();
 			}
 		}
