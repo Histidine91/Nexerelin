@@ -52,6 +52,12 @@ public class FuelProduction extends IndustryClassGen {
 		// bad for high hazard worlds
 		weight += (150 - market.getHazardValue()) * 2;
 		
+		// prefer airless worlds to support our synchrotron
+		if (market.hasCondition(Conditions.NO_ATMOSPHERE))
+			weight *= 2;
+		else
+			weight /= 2;
+		
 		// prefer to not be on same planet as heavy industry
 		if (HeavyIndustry.hasHeavyIndustry(market))
 			weight -= 200;

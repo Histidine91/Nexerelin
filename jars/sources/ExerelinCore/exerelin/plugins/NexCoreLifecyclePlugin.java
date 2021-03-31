@@ -28,6 +28,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantOfficerGenerator
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
@@ -156,5 +157,13 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		}
 		
 		PlaythroughLog.getInstance();
+	}
+	
+	@Override
+	public void markStoryCriticalMarketsEtc() {
+		if (!SectorManager.getManager().isCorvusMode())
+			return;
+		
+		super.markStoryCriticalMarketsEtc();
 	}
 }

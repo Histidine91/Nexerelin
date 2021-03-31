@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -129,6 +130,12 @@ public class StartSetupPostTimePass {
 				set.pickItemsAndAddToCargo(Global.getSector().getPlayerFleet().getCargo(), 
 						StarSystemGenerator.random);
 			}
+		}
+		
+		// gate handling
+		if (!SectorManager.getManager().isCorvusMode()) {
+			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.CAN_SCAN_GATES, true);
+			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.GATES_ACTIVE, true);
 		}
 	}
 	

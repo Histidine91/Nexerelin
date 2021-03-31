@@ -295,7 +295,7 @@ public class ExerelinProcGen {
 			if (Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x) > width) continue;
 			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
 			if (system.hasPulsar()) continue;
-			if (system.getStar().getSpec().isBlackHole()) continue;
+			if (system.getStar() != null && system.getStar().getSpec().isBlackHole()) continue;
 			if (hasForeignMarkets(system)) continue;
 			if (system.getBaseName().equals("Styx")) continue;
 			if (system.getBaseName().equals("Ascalon")) continue;

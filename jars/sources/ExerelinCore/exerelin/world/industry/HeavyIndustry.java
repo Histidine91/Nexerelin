@@ -3,6 +3,7 @@ package exerelin.world.industry;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.econ.EconomyInfoHelper;
@@ -52,6 +53,12 @@ public class HeavyIndustry extends IndustryClassGen {
 				
 		// bad for high hazard worlds
 		weight += (150 - market.getHazardValue()) * 2;
+		
+		// nanoforges cause pollution on habitable worlds, so try to avoid that
+		if (market.hasCondition(Conditions.POLLUTION) || !market.hasCondition(Conditions.HABITABLE))
+			weight *= 2;
+		else
+			weight /= 2;
 		
 		// prefer not to be on same planet as fuel production
 		if (market.hasIndustry(Industries.FUELPROD))

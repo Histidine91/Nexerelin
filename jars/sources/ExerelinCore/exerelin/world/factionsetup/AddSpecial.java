@@ -22,7 +22,8 @@ public class AddSpecial extends FactionSetupItem {
 		for (int i=0; i<entries.size(); i++) {
 			List item = (List)entries.get(0);
 			String id = (String)item.get(0);
-			String param = (String)item.get(1);
+			String param = null;
+			if (item.size() >= 2) param = (String)item.get(1);
 			cargo.addSpecial(new SpecialItemData(id, param), 1);
 		}
 	}
