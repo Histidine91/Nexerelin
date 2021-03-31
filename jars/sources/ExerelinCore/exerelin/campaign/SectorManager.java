@@ -390,7 +390,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public void setCorvusMode(boolean mode)
     {
         corvusMode = mode;
-        Global.getSector().getMemory().set("$nex_corvusMode", mode);
+        Global.getSector().getMemoryWithoutUpdate().set("$nex_corvusMode", mode);
     }
     
     public boolean isFreeStart()
@@ -600,6 +600,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     // regularly refresh live factions
     // since we don't have listeners for decivilization etc.
+	// well now we do, but since markets might up and vanish in other ways, do it anyway
     public void recheckLiveFactions()
     {
         Set<String> newLive = new HashSet<>();
@@ -1263,10 +1264,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             oldOwner.getMemoryWithoutUpdate().set("$nex_recentlyInvaded", true, 
                     Global.getSettings().getFloat("nex_aiCoreAndPrisonerCooldownAfterInvasion"));
         }
-		
-		if (playerInvolved) {
-			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER, true, 60);
-		}
+        
+        if (playerInvolved) {
+            market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER, true, 60);
+        }
+        
+        // valid for mission target?
+        // TODO: add "invalid mission target" faction config tag
         
         NexUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
                 playerInvolved, isCapture, factionsToNotify, repChangeStrength);
