@@ -1,12 +1,11 @@
 {
 	"effectGroups":[
 		{
-			"name":"Level 2",
 			"requiredSkillLevel":2,
 			"effectBasedOnLevel":false,
 			"effects":[
 				{"type":"CHARACTER_STATS", "script":"exerelin.campaign.skills.NexSkills$AgentBonus"},
 			]
-		},	
+		},
 	],
 }
