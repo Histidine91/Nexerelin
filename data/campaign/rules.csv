@@ -1590,6 +1590,7 @@ AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.base
 ,,,,,,
 salRuins_alreadyExplored,PopulateOptions,"$market.hasRuins
 $market.ruinsExplored
+$market.isPlanetConditionMarketOnly
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $market have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
 ,,,,,,
 ,,,,,,
