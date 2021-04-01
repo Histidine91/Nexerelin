@@ -30,6 +30,7 @@
     
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
     
+    "legacyInsurance": false,	# free insurance paid by commissioning faction
     "playerInsuranceMult": 0.8,
     
     "agentBaseSalary":2000,

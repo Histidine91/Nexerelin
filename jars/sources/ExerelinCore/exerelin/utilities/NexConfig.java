@@ -28,6 +28,7 @@ public class NexConfig
     
     // Player settings
     public static float playerInsuranceMult = 0.8f;
+    public static boolean legacyInsurance = false;
     
     public static float fleetBonusFpPerPlayerLevel = 1f;
     
@@ -166,6 +167,7 @@ public class NexConfig
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
             
             playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult", playerInsuranceMult);
+            legacyInsurance = settings.optBoolean("legacyInsurance", legacyInsurance);
             fleetBonusFpPerPlayerLevel = (float)settings.optDouble("fleetBonusFpPerPlayerLevel", fleetBonusFpPerPlayerLevel);
             
             prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue", prisonerRepatriateRepValue);

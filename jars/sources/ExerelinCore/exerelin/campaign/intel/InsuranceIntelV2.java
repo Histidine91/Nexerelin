@@ -6,7 +6,9 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.RepairTrackerAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -14,6 +16,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.MutableValue;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
@@ -44,6 +47,8 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	public static final int RENEW_ADVANCE_TIME = 90;
 	public static final float BASE_PREMIUM_RATIO = 0.1f;	// base premium is 10% of sum assured
 	public static final int PREMIUM_MULT_DENOMINATOR = 100000;	// 100k
+	// don't bother with confirmation if premiums > this * our credits
+	public static final float CURRENT_CREDITS_MULT_FOR_NO_CONFIRM = 0.01f;
 	public static final float BASE_PREMIUM_MULT = 2;
 	public static final float MIN_PREMIUM_MULT = 0.5f;
 	public static final float MAX_PREMIUM_MULT = 10;
@@ -68,6 +73,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	public InsuranceIntelV2() {
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
+		this.setImportant(true);
 	}
 	
 	/*
@@ -104,8 +110,20 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		return mult;
 	}
 	
+	protected int calcPremium(FleetMemberAPI member) {
+		return calcPremium(member, calcPremiumMult());
+	}
+	
 	protected int calcPremium(FleetMemberAPI member, float mult) {
 		return Math.round(calcInsurableAmount(member) * BASE_PREMIUM_RATIO * mult);
+	}
+	
+	protected MutableValue getCreditsMutable() {
+		return Global.getSector().getPlayerFleet().getCargo().getCredits();
+	}
+	
+	public void insureShip(FleetMemberAPI member) {
+		insureShip(member, calcPremiumMult());
 	}
 	
 	public void insureShip(FleetMemberAPI member, float premiumMult) {
@@ -125,7 +143,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		}
 						
 		if (!DISPLAY_ONLY)
-			Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(premium);
+			getCreditsMutable().subtract(premium);
 		
 		lifetimePremiums += premium;
 	}
@@ -152,6 +170,12 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 			if (policy.ttl > RENEW_ADVANCE_TIME)
 				return -1;
 		}
+		RepairTrackerAPI repair = member.getRepairTracker();
+		if (repair.getBaseCR() < repair.getMaxCR())
+			return -1;
+		if (repair.getRemainingRepairTime() > 0)
+			return -1;
+		
 		int premium = calcPremium(member, premiumMult);
 		if (checkCredits && premium > getCredits())
 		{
@@ -189,7 +213,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	}
 	
 	public float getCredits() {
-		return Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+		return getCreditsMutable().get();
 	}
 	
 	public void reportBattle(Map<FleetMemberAPI, Integer[]> disabledOrDestroyedMembers, 
@@ -203,7 +227,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		lifetimeClaims += paidAmount;
 		
 		if (paidAmount > 0 && !DISPLAY_ONLY)
-			Global.getSector().getPlayerFleet().getCargo().getCredits().add(paidAmount);
+			getCreditsMutable().add(paidAmount);
 		
 		if (paidAmount > 0) {
 			sendUpdateIfPlayerHasIntel(paidAmount, false);
@@ -369,6 +393,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	
 	@Override
 	protected void advanceImpl(float amount) {
+		if (NexConfig.legacyInsurance) return;
 		float days = Global.getSector().getClock().convertToDays(amount);
 		updateInterval.advance(days);
 		if (!updateInterval.intervalElapsed()) return;
@@ -439,6 +464,11 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		return true;
 	}
 	
+	@Override
+	public boolean isPlayerVisible() {
+		return !NexConfig.legacyInsurance;
+	}
+	
 	public static int TAB_BUTTON_HEIGHT = 20;
 	public static int TAB_BUTTON_WIDTH = 180;
 	public static int ENTRY_HEIGHT = 80;
@@ -486,6 +516,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		float yPos = opad;
 		
 		float premiumMult = calcPremiumMult();
+		float currCredits = getCredits();
 		
 		info.addButton(getString("buttonInsureAll"), BUTTON_INSURE_ALL, 120, 16, opad);
 		
@@ -513,18 +544,26 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 				String amount = Misc.getDGSCredits(calcInsurableAmount(member));
 				entry.addPara(getString("entryDescPotentialAmount"), 0, h, amount);
 				
-				String premium = Misc.getDGSCredits(calcPremium(member, premiumMult));
-				entry.addPara(getString("entryDescPremium"), 0, h, premium);
+				float premium = calcPremium(member, premiumMult);
+				String premiumStr = Misc.getDGSCredits(premium);
+				entry.addPara(getString("entryDescPremium"), 0, currCredits >= premium ? 
+						h : Misc.getNegativeHighlightColor(), premiumStr);
+				
+				RepairTrackerAPI repair = member.getRepairTracker();
+				if (repair.getBaseCR() < repair.getMaxCR() || repair.getRemainingRepairTime() > 0)
+					entry.addPara("Must be fully repaired to insure", 0);
+				
 			}
 			//itemPanel.addUIElement(entry).inTL(4 + IMAGE_WIDTH + IMAGE_DESC_GAP, yPos);
 			itemPanel.addUIElement(entry).rightOfTop(image, IMAGE_DESC_GAP);
 			
-			/*
 			TooltipMakerAPI buttonHolder = itemPanel.createUIElement(INSURE_BUTTON_WIDTH, 16, false);
-			String name = policy == null ? "Insure" : "Renew";
-			buttonHolder.addButton(name, member, 120, 16, 0);
+			String name = getString(policy == null ? "buttonInsure" : "buttonRenew");
+			ButtonAPI insure = buttonHolder.addButton(name, member, 120, 16, 0);
+			if (canInsure(member, premiumMult, true) == -1) {
+				insure.setEnabled(false);
+			}
 			itemPanel.addUIElement(buttonHolder).inTL(4 + IMAGE_WIDTH + IMAGE_DESC_GAP + ENTRY_WIDTH, yPos);
-			*/
 			
 			yPos += ENTRY_HEIGHT + opad;
 		}
@@ -719,6 +758,21 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 					Misc.getDGSCredits(insureAll[1]), 
 					Misc.getDGSCredits(insureAll[2]), 
 					Misc.getDGSCredits(credits));
+			
+			return;
+		}
+		
+		if (buttonId instanceof FleetMemberAPI) {
+			FleetMemberAPI member = (FleetMemberAPI)buttonId;
+			String key = "confirmPromptInsure";
+			int insureAmount = calcInsurableAmount(member);
+			int premium = this.calcPremium(member);
+			float credits = getCredits();
+			prompt.addPara(getString(key), 0, Misc.getHighlightColor(), 
+					member.getShipName(),
+					Misc.getDGSCredits(insureAmount), 
+					Misc.getDGSCredits(premium), 
+					Misc.getDGSCredits(credits));
 		}
 	}
 	
@@ -727,16 +781,33 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		if (buttonId instanceof Tab) {
 			currentTab = (Tab)buttonId;
 			ui.updateUIForItem(this);
+			return;
 		}
 		if (buttonId == BUTTON_INSURE_ALL) {
 			insureAllShips();
 			ui.updateUIForItem(this);
+			return;
+		}
+		if (buttonId instanceof FleetMemberAPI) {
+			FleetMemberAPI member = (FleetMemberAPI)buttonId;
+			//log.info("Button pressed for " + member.getShipName());
+			insureShip(member);
+			ui.updateUIForItem(this);
+			return;
 		}
 	}
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
 		if (buttonId == BUTTON_INSURE_ALL) return true;
+		
+		if (buttonId instanceof FleetMemberAPI) {
+			int amount = canInsure((FleetMemberAPI)buttonId, true);
+			float currCreds = getCredits();
+			//log.info("lol " + amount + ", " + currCreds * CURRENT_CREDITS_MULT_FOR_NO_CONFIRM);
+			if (amount > currCreds * CURRENT_CREDITS_MULT_FOR_NO_CONFIRM)
+				return true;
+		}
 		
 		return false;
 	}

@@ -1355,7 +1355,10 @@
 		"entryDescOfficerLevel":"Level %s officer",
 		"entryDescFraud":"Fraud suspected; payment witheld",
 		
+		"buttonInsure":"Insure",
+		"buttonRenew":"Renew",
 		"buttonInsureAll":"Insure all",
+		"confirmPromptInsure":"This will insure the %s for %s, paying %s in premiums. You have %s credits. Confirm?",
 		"confirmPromptInsureAll":"This will insure %s ship(s) for %s, paying %s in premiums. You have %s credits. Confirm?",
 		"confirmPromptInsureAllNoShips":"No ships are eligible for insurance.",
 		"confirmPromptInsureAllNotEnoughCredits":"Insuring %s ship(s) for %s would require %s in premiums. You currently only have %s credits.",

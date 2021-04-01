@@ -123,7 +123,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
     protected transient Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // array contains base value, number of D-mods, and CR
     protected transient List<OfficerDataAPI> insuranceLostOfficers = new ArrayList<>();
-    protected InsuranceIntelV2 insurance;    // = new InsuranceIntelV2();
+    protected InsuranceIntelV2 insurance = new InsuranceIntelV2();
     
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
@@ -164,9 +164,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return this;
     }
     
-    public void reverseCompatibility() {
-        // not in readResolve because otherwise it doesn't add the intel to current sector
-        //if (insurance == null) insurance = new InsuranceIntelV2();
+    public InsuranceIntelV2 getInsurance() {
+        return insurance;
     }
 
     public SectorManager()
@@ -286,9 +285,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     @Override
     public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
         if (!battle.isPlayerInvolved()) return;
-        FactionInsuranceIntel legacyInsurance = new FactionInsuranceIntel(insuranceLostMembers, insuranceLostOfficers);
         
-        if (insurance != null)
+        if (NexConfig.legacyInsurance) {
+            FactionInsuranceIntel legacyInsurance = new FactionInsuranceIntel(insuranceLostMembers, insuranceLostOfficers);
+        }
+        else 
             insurance.reportBattle(insuranceLostMembers, insuranceLostOfficers);
         
         insuranceLostMembers.clear();
