@@ -19,20 +19,20 @@
 			#"requiredModId":"nexerelin",
 			#"randomSector":0,	# 0 = works in both; 1 = random only, -1 = non-random only 
 		},
-		{
-			"id":"derelictFleet",
-			"name":"Derelict fleet",
-			"difficulty":"Hard",
-			"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
-			"className":"exerelin.campaign.customstart.DerelictFleet",
-		},
-		{
-			"id":"derelictFleet2",
-			"name":"Derelict fleet (large)",
-			"difficulty":"Normal",
-			"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
-			"className":"exerelin.campaign.customstart.DerelictFleet2",
-		},
+		#{
+		#	"id":"derelictFleet",
+		#	"name":"Derelict fleet",
+		#	"difficulty":"Hard",
+		#	"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
+		#	"className":"exerelin.campaign.customstart.DerelictFleet",
+		#},
+		#{
+		#	"id":"derelictFleet2",
+		#	"name":"Derelict fleet (large)",
+		#	"difficulty":"Normal",
+		#	"desc":"Your ma used to be an expert at stitching together the Domain Explorarium's old drones. Big drones, little drones, square drones, round drones — where others saw only cobbled-together barely-functional scrap, she saw a useful ship.\n\nUnfortunately Ma didn't teach you her skills before she passed on. She did leave you the fleet, though.",
+		#	"className":"exerelin.campaign.customstart.DerelictFleet2",
+		#},
 		{
 			"id":"cabalPirateStart",
 			"name":"Cabal friends",

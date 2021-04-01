@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class DerelictFleet extends CustomStart {
 	
 	protected List<String> ships = new ArrayList<>(Arrays.asList(new String[]{
