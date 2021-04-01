@@ -14,35 +14,49 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import data.scripts.world.corvus.Corvus;
-import data.scripts.world.systems.AlGebbar;
-import data.scripts.world.systems.Arcadia;
-import data.scripts.world.systems.Askonia;
-import data.scripts.world.systems.Aztlan;
-import data.scripts.world.systems.Canaan;
-import data.scripts.world.systems.Duzahk;
-import data.scripts.world.systems.Eos;
-import data.scripts.world.systems.Galatia;
-import data.scripts.world.systems.Hybrasil;
-import data.scripts.world.systems.Isirah;
-import data.scripts.world.systems.KumariKandam;
-import data.scripts.world.systems.Magec;
-import data.scripts.world.systems.Mayasura;
-import data.scripts.world.systems.Naraka;
-import data.scripts.world.systems.Penelope;
-import data.scripts.world.systems.Samarra;
-import data.scripts.world.systems.Thule;
-import data.scripts.world.systems.TiaTaxet;
-import data.scripts.world.systems.Tyle;
-import data.scripts.world.systems.Valhalla;
-import data.scripts.world.systems.Westernesse;
-import data.scripts.world.systems.Yma;
-import data.scripts.world.systems.Zagan;
 import exerelin.utilities.NexConfig;
+import java.util.ArrayList;
+import java.util.List;
+import org.codehaus.janino.ScriptEvaluator;
 
 public class VanillaSystemsGenerator {
+		
+	public static void generateSystemsJanino() {
+		List<String> inputList = new ArrayList<>();
+		String[] sysNames = {"Galatia", "Askonia", "Eos", "Valhalla", "Arcadia", 
+			"Magec", "Aztlan", "Samarra", "Penelope", "Yma", "Hybrasil", "Duzahk", 
+			"TiaTaxet", "Canaan", "AlGebbar", "Isirah", "KumariKandam", "Naraka", 
+			"Thule", "Mayasura", "Zagan", "Westernesse", "Tyle"};
+		
+		inputList.add("import com.fs.starfarer.api.campaign.SectorAPI;\r\n");
+		inputList.add("SectorAPI sector = com.fs.starfarer.api.Global.getSector();\r\n");
+		inputList.add("new data.scripts.world.corvus.Corvus().generate(sector);\r\n");
+		for (String systemName : sysNames) {
+			String entry = "new data.scripts.world.systems." + systemName + "().generate(sector);\r\n";
+			inputList.add(entry);
+		}
+		
+		ScriptEvaluator eval = new ScriptEvaluator();
+		eval.setReturnType(void.class);
+		eval.setParentClassLoader(Global.getSettings().getScriptClassLoader());
+		
+		StringBuilder sb = new StringBuilder();
+		for (String input : inputList) sb.append(input);
+		//Global.getLogger(VanillaSystemsGenerator.class).info("Output: " + sb.toString());
+		try
+		{
+			eval.cook(sb.toString());
+			eval.evaluate(null);
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+	
 	public static void generate(SectorAPI sector)
 	{		
 		//ClassLoader cl = Global.getSettings().getScriptClassLoader();
@@ -57,30 +71,7 @@ public class VanillaSystemsGenerator {
 		
 		initFactionRelationships(sector);
 		
-		new Galatia().generate(sector);
-		new Askonia().generate(sector);
-		new Eos().generate(sector);
-		new Valhalla().generate(sector);
-		new Arcadia().generate(sector);
-		new Magec().generate(sector);
-		new Corvus().generate(sector);
-		new Aztlan().generate(sector);
-		new Samarra().generate(sector);
-		new Penelope().generate(sector);
-		new Yma().generate(sector);
-		new Hybrasil().generate(sector);
-		new Duzahk().generate(sector);
-		new TiaTaxet().generate(sector);
-		new Canaan().generate(sector);
-		new AlGebbar().generate(sector);
-		new Isirah().generate(sector);
-		new KumariKandam().generate(sector);
-		new Naraka().generate(sector);
-		new Thule().generate(sector);
-		new Mayasura().generate(sector);
-		new Zagan().generate(sector);
-		new Westernesse().generate(sector);
-		new Tyle().generate(sector);
+		generateSystemsJanino();
 		
 		//TutorialMissionEvent.endGalatiaPortionOfMission();
 		exerelinEndGalatiaPortionOfMission();
@@ -117,29 +108,33 @@ public class VanillaSystemsGenerator {
 		SectorEntityToken inner = system.getEntityById("galatia_jump_point_alpha");
 		SectorEntityToken fringe = system.getEntityById("galatia_jump_point_fringe");
 		SectorEntityToken relay = system.getEntityById("ancyra_relay");
-
+		
 		relay.getMemoryWithoutUpdate().unset(MemFlags.OBJECTIVE_NON_FUNCTIONAL);
-
+		
 		FactionAPI hegemony = Global.getSector().getFaction(Factions.HEGEMONY);
 		if (hegemony.getRelToPlayer().getRel() < 0) {
 			hegemony.getRelToPlayer().setRel(0);
 		}
-
-		ancyra.getMarket().removeSubmarket(Submarkets.LOCAL_RESOURCES);
-
+		
+		// removing this leaves "supplement from local resources" bonuses active
+		//ancyra.getMarket().removeSubmarket(Submarkets.LOCAL_RESOURCES);
+		
 		Global.getSector().getEconomy().addMarket(ancyra.getMarket(), false);
 		Global.getSector().getEconomy().addMarket(derinkuyu.getMarket(), false);
 		
 		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
 		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.CAN_STABILIZE);
-
+		
 		fringe.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
 		fringe.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.CAN_STABILIZE);
-
+		
 		system.removeTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
-
+		
 		MarketAPI market = ancyra.getMarket();
 		market.getMemoryWithoutUpdate().unset(MemFlags.MARKET_DO_NOT_INIT_COMM_LISTINGS);
+		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_LIGHT_MOD).unmodifyMult("tut");
+		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_MEDIUM_MOD).unmodifyMult("tut");
+		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_HEAVY_MOD).unmodifyMult("tut");
 		market.setEconGroup(null);
 		
 		market = derinkuyu.getMarket();
