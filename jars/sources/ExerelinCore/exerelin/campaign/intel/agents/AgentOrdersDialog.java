@@ -92,6 +92,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		BACK,
 		CONFIRM,
 		CONFIRM_SP,
+		CONFIRM_SP_SUCCESS,
+		CONFIRM_SP_DETECTION,
+		CONFIRM_SP_BOTH,
 		CANCEL,
 		DONE,
 	}
@@ -581,6 +584,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		else if (lastSelectedMenu == Menu.TARGET) {
 			populateTargetOptions();
 		}
+		else if (lastSelectedMenu == Menu.CONFIRM_SP){
+			populateSPOptions();
+		}
 		else {
 			populateMainMenuOptions();
 		}
@@ -592,6 +598,21 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			return;
 		}
 		optionsList.add(new Pair<String, Object>(Misc.ucFirst(def.name.toLowerCase()), def));
+	}
+
+	protected void populateSPOptions() {
+		optionsList.clear();
+
+		options.addOption(getString("dialogSPOptionSuccessText"), Menu.CONFIRM_SP_SUCCESS);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_SUCCESS, "agentOrderSuccess", "ui_char_spent_story_point_combat", null);
+
+		options.addOption(getString("dialogSPOptionDetectionText"), Menu.CONFIRM_SP_DETECTION);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_DETECTION, "agentOrderDetection", "ui_char_spent_story_point_combat", null);
+
+		options.addOption(getString("dialogSPOptionsText"), Menu.CONFIRM_SP_BOTH);
+		SetStoryOption.set(dialog, 2, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", null);
+
+		addBackOption();
 	}
 	
 	protected void populateActionOptions() {
@@ -784,8 +805,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 
 		//Confirm_option_sp
-		options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP);
-		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP, "agentOrder", "ui_char_spent_story_point_combat", null);
+		options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP, Color.GREEN, null);
 		if (!canProceed() || !hasEnoughCredits()) {
 			options.setEnabled(Menu.CONFIRM_SP, false);
 		}
@@ -1030,8 +1050,23 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			} else if (optionData == Menu.BACK) {
 				// do nothing except populate options
 			} else if(optionData == Menu.CONFIRM_SP){
+				lastSelectedMenu = Menu.CONFIRM_SP;
+			} else if(optionData == Menu.CONFIRM_SP_BOTH){
 				action.hasStoryPoint = true;
 				action.getDef().successChance = 1f;
+				action.getDef().detectionChance = 0f;
+				action.getDef().detectionChanceFail = 0f;
+				proceedAfterSelectedOption();
+				return;
+			} else if(optionData == Menu.CONFIRM_SP_SUCCESS){
+				action.hasStoryPoint = true;
+				action.getDef().successChance = 1f;
+				proceedAfterSelectedOption();
+				return;
+			} else if(optionData == Menu.CONFIRM_SP_DETECTION){
+				action.hasStoryPoint = true;
+				action.getDef().detectionChance = 0f;
+				action.getDef().detectionChanceFail = 0f;
 				proceedAfterSelectedOption();
 				return;
 			} else if (optionData == Menu.CONFIRM) {

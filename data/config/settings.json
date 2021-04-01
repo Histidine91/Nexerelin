@@ -138,7 +138,9 @@
 	
 	# Bonus XP values for most story-point-using actions
 	"bonusXP":{
-		"agentOrder":0.5
+		"agentOrderSuccess":0.5,
+		"agentOrderDetection":0.5,
+		"agentOrderBoth":1
 	},
 	
 	"graphics":{
