@@ -250,7 +250,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 
 		MutableStat stat = new MutableStat(0);
 
-		if(hasStoryPoint) stat.modifyFlat("baseChance", 100, getString("baseChance", true));
+		if(hasStoryPoint){
+			stat.modifyFlat("baseChance", 100, getString("baseChance", true));
+			return stat;
+		}
 
 		CovertOpsManager.CovertActionDef def = getDef();
 		int level = getLevel();
