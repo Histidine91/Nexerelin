@@ -26,6 +26,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
+import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -90,6 +91,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		PREVIOUS_PAGE,
 		BACK,
 		CONFIRM,
+		CONFIRM_SP,
 		CANCEL,
 		DONE,
 	}
@@ -780,7 +782,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				}
 			}
 		}
-		
+
+		//Confirm_option_sp
+		options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP, "agentOrder", "ui_char_spent_story_point_combat", null);
+		if (!canProceed() || !hasEnoughCredits()) {
+			options.setEnabled(Menu.CONFIRM_SP, false);
+		}
+
 		// Confirm option
 		options.addOption(StringHelper.getString("confirm", true), Menu.CONFIRM);
 		if (!canProceed() || !hasEnoughCredits()) {
@@ -1020,12 +1029,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				lastSelectedMenu = Menu.TARGET;
 			} else if (optionData == Menu.BACK) {
 				// do nothing except populate options
+			} else if(optionData == Menu.CONFIRM_SP){
+				action.hasStoryPoint = true;
+				action.getDef().successChance = 1f;
+				proceedAfterSelectedOption();
+				return;
 			} else if (optionData == Menu.CONFIRM) {
-				proceed();
-				options.clearOptions();
-				options.addOption(StringHelper.getString("done", true), Menu.DONE);
-				options.setShortcut(Menu.DONE, Keyboard.KEY_RETURN,
-						false, false, false, true);
+				proceedAfterSelectedOption();
 				return;
 			} else if (optionData == Menu.CANCEL) {
 				dialog.dismissAsCancel();
@@ -1043,6 +1053,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			options.setShortcut(Menu.CANCEL, Keyboard.KEY_ESCAPE,
 					false, false, false, true);
 		}
+	}
+
+	protected void proceedAfterSelectedOption(){
+		proceed();
+		options.clearOptions();
+		options.addOption(StringHelper.getString("done", true), Menu.DONE);
+		options.setShortcut(Menu.DONE, Keyboard.KEY_RETURN,
+				false, false, false, true);
 	}
 
 	@Override

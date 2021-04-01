@@ -68,6 +68,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	protected int newLevel = -1;
 	protected float days;
 	protected float cost;
+	protected boolean hasStoryPoint = false;
 	protected float daysRemaining;
 	protected Float injuryTime;
 	protected MarketAPI agentEscapeDest;
@@ -246,9 +247,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	}
 	
 	protected MutableStat getSuccessChance() {
+
+		MutableStat stat = new MutableStat(0);
+
+		if(hasStoryPoint) stat.modifyFlat("baseChance", 100, getString("baseChance", true));
+
 		CovertOpsManager.CovertActionDef def = getDef();
 		int level = getLevel();
-		MutableStat stat = new MutableStat(0);
 		
 		// base chance
 		float base = def.successChance * 100;
@@ -314,6 +319,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	}
 	
 	public boolean canAbort() {
+		if(hasStoryPoint) return false;
 		return result == null;
 	}
 	

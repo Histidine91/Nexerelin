@@ -136,6 +136,11 @@
 		#"newGameSectorProcGen":"exerelin.world.ExerelinSectorProcGen",
 	},
 	
+	# Bonus XP values for most story-point-using actions
+	"bonusXP":{
+		"agentOrder":1
+	},
+	
 	"graphics":{
 		"abilities":{
 			"exerelin_follow_me":"graphics/icons/abilities/something.png",
