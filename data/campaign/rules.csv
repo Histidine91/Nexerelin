@@ -298,30 +298,30 @@ nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 3)
 nex_NGCCustomResourcesStart:Custom...",
 ,,,,,,
 nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCStartEnsign,"NGCAddCredits 20000
-NGCAddCharacterPoints 3
+NGCAddCharacterPoints 1
 NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartLieutenant,NewGameOptionSelected,$option == nex_NGCStartLieutenant,"NGCAddCredits 75000
-NGCAddCharacterPoints 3
+NGCAddCharacterPoints 1
 Nex_NGCAddLevel 3
 NGCSetNumStartingOfficers 1
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartCommander,NewGameOptionSelected,$option == nex_NGCStartCommander,"NGCAddCredits 250000
-NGCAddCharacterPoints 3
+NGCAddCharacterPoints 1
 Nex_NGCAddLevel 6
 NGCSetNumStartingOfficers 2
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartAgent,NewGameOptionSelected,$option == nex_NGCStartAgent,"NGCAddCredits 20000
-NGCAddCharacterPoints 3
+NGCAddCharacterPoints 1
 NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartSpecialAgent,NewGameOptionSelected,$option == nex_NGCStartSpecialAgent,"NGCAddCredits 75000
-NGCAddCharacterPoints 3
+NGCAddCharacterPoints 1
 Nex_NGCAddLevel 3
 NGCSetNumStartingOfficers 0
 SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
 nex_NGCStartCustomResources,NewGameOptionSelected,$option == nex_NGCCustomResourcesStart,"Nex_NGCStartResources save
-NGCAddCharacterPoints 3
+NGCAddCharacterPoints 1
 SetShortcut nex_NGCDone RETURN",,,
 nex_NGCStartBack,NewGameOptionSelected,$option == nex_NGCStartBack,"NGCClearStartingGear
 unset $nex_lastSelectedFleetType
@@ -351,13 +351,17 @@ marketHostileGoBackSel,DialogOptionSelected,$option == mktGoBack,"ShowDefaultVis
 FireAll PopulateOptions",,,
 marketHostileEngageSel,DialogOptionSelected,$option == mktEngage,Nex_MarketCMD engage,,,
 marketHostileRaidSel,DialogOptionSelected,$option == mktRaid,Nex_MarketCMD raidMenu,,,
+marketHostileRaidNonMarket,DialogOptionSelected,$option == mktRaidNonMarket,Nex_MarketCMD raidNonMarket,,,$option == mktRaidNonMarket
 marketHostileRaidGoBackSel,DialogOptionSelected,$option == mktRaidGoBack,Nex_MarketCMD goBackToDefenses,,,
 marketHostileRaidRareSel,DialogOptionSelected,$option == mktRaidRare,Nex_MarketCMD raidRare,,,
 marketHostileRaidValuableSel,DialogOptionSelected,$option == mktRaidValuable,Nex_MarketCMD raidValuable,,,
 marketHostileRaidDisruptSel,DialogOptionSelected,$option == mktRaidDisrupt,Nex_MarketCMD raidDisrupt,,,
 marketHostileRaidConfirmSel,DialogOptionSelected,$option == mktRaidConfirm,Nex_MarketCMD raidConfirm,,,
+marketHostileRaidConfirmContSel,DialogOptionSelected,$option == mktRaidConfirmContinue,Nex_MarketCMD raidConfirmContinue,,,
 marketHostileRaidNeverMindSel,DialogOptionSelected,$option == mktRaidNeverMind,Nex_MarketCMD raidNeverMind,,,
 marketHostileRaidResultSel,DialogOptionSelected,$option == mktRaidResult,Nex_MarketCMD raidResult,,,
+marketHostileRaidPostRaidDefault,PostGroundRaid,,Nex_MarketCMD addContinueToRaidResultOption,,,
+,,,,,,
 ,,,,,,
 marketHostileBombardSel,DialogOptionSelected,$option == mktBombard,Nex_MarketCMD bombardMenu,,,
 marketHostileBombardGoBackSel,DialogOptionSelected,$option == mktBombardGoBack,Nex_MarketCMD goBackToDefenses,,,
