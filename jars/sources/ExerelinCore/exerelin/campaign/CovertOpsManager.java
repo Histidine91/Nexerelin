@@ -500,7 +500,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         actionPicker.add(CovertActionType.DESTABILIZE_MARKET, 1.25f);
         actionPicker.add(CovertActionType.SABOTAGE_INDUSTRY, 1.25f);
         actionPicker.add(CovertActionType.DESTROY_COMMODITY_STOCKS, 1.25f);
-        actionPicker.add(CovertActionType.INSTIGATE_REBELLION, 0.25f);
+        if (RebellionCreator.ENABLE_REBELLIONS)
+            actionPicker.add(CovertActionType.INSTIGATE_REBELLION, 0.25f);
         
         String actionType = actionPicker.pick();
         

@@ -25,6 +25,8 @@ import org.lazywizard.lazylib.MathUtils;
  */
 public class RebellionCreator implements EveryFrameScript {
 	
+	public static final boolean ENABLE_REBELLIONS = false;
+	
 	public static final String MEMORY_KEY_REBELLION_POINTS = "$nex_rebellionPoints";
 	public static final String PERSISTENT_DATA_KEY = "nex_rebellionCreator";
 	public static final float REBELLION_POINT_MULT = 0.2f;
@@ -48,6 +50,8 @@ public class RebellionCreator implements EveryFrameScript {
 	
 	public RebellionIntel createRebellion(MarketAPI market, String factionId, boolean instant)
 	{
+		if (!ENABLE_REBELLIONS) return null;
+		
 		if (RebellionIntel.isOngoing(market))
 			return null;
 		

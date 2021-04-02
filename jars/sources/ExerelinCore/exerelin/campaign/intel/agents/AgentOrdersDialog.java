@@ -39,6 +39,7 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
@@ -632,7 +633,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			addActionOption(CovertActionType.SABOTAGE_INDUSTRY);
 			addActionOption(CovertActionType.DESTROY_COMMODITY_STOCKS);
 			addActionOption(CovertActionType.PROCURE_SHIP);
-			if (NexUtilsMarket.canBeInvaded(agentMarket, true))
+			if (RebellionCreator.ENABLE_REBELLIONS && NexUtilsMarket.canBeInvaded(agentMarket, true))
 				addActionOption(CovertActionType.INSTIGATE_REBELLION);
 		}
 		if (agentMarket != null && agentMarket.hasCondition(Conditions.PATHER_CELLS)) {
