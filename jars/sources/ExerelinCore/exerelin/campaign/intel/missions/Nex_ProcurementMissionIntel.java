@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 // Blocks some factions like derelicts; deliveries increase commodity availability
+@Deprecated
 public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
 	
 	public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[]{
