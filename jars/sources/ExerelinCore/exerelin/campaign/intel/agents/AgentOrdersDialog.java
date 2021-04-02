@@ -481,6 +481,12 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			text.addPara("Doing nothing");
 			return;	// don't remake action unnecessarily
 		}
+		// Allow to printActionInfo for the desired action if the player want to select a new action_type
+		this.factions = null;
+		this.thirdFaction = null;
+		this.industryToSabotage = null;
+		this.travelDest = null;
+		this.commodityToDestroy = null;
 		
 		// agent faction should not be commissioning faction if target is also commissioning faction
 		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
