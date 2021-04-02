@@ -483,6 +483,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 		// Allow to printActionInfo for the desired action if the player want to select a new action_type
 		this.factions = null;
+		this.targets = null;
 		this.thirdFaction = null;
 		this.industryToSabotage = null;
 		this.travelDest = null;
