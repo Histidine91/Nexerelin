@@ -805,9 +805,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 
 		//Confirm_option_sp
-		options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP, Color.GREEN, null);
-		if (!canProceed() || !hasEnoughCredits()) {
-			options.setEnabled(Menu.CONFIRM_SP, false);
+		if(action != null && action.getDefId() != CovertActionType.TRAVEL){
+			options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP, Color.GREEN, null);
+			if (!canProceed() || !hasEnoughCredits()) {
+				options.setEnabled(Menu.CONFIRM_SP, false);
+			}
 		}
 
 		// Confirm option
@@ -1053,20 +1055,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				lastSelectedMenu = Menu.CONFIRM_SP;
 			} else if(optionData == Menu.CONFIRM_SP_BOTH){
 				action.hasStoryPoint = true;
-				action.getDef().successChance = 1f;
-				action.getDef().detectionChance = 0f;
-				action.getDef().detectionChanceFail = 0f;
 				proceedAfterSelectedOption();
 				return;
 			} else if(optionData == Menu.CONFIRM_SP_SUCCESS){
 				action.hasStoryPoint = true;
-				action.getDef().successChance = 1f;
 				proceedAfterSelectedOption();
 				return;
 			} else if(optionData == Menu.CONFIRM_SP_DETECTION){
 				action.hasStoryPoint = true;
-				action.getDef().detectionChance = 0f;
-				action.getDef().detectionChanceFail = 0f;
 				proceedAfterSelectedOption();
 				return;
 			} else if (optionData == Menu.CONFIRM) {
