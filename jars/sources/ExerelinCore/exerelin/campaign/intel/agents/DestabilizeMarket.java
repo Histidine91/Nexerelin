@@ -51,6 +51,7 @@ public class DestabilizeMarket extends CovertActionIntel {
 	
 	@Override
 	public boolean canRepeat() {
+		if (hasStoryPoint) return false;
 		return true;
 	}
 	

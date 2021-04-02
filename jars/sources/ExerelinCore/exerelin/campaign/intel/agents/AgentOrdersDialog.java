@@ -26,6 +26,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
+import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -90,6 +91,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		PREVIOUS_PAGE,
 		BACK,
 		CONFIRM,
+		CONFIRM_SP,
+		CONFIRM_SP_SUCCESS,
+		CONFIRM_SP_DETECTION,
+		CONFIRM_SP_BOTH,
 		CANCEL,
 		DONE,
 	}
@@ -476,6 +481,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			text.addPara("Doing nothing");
 			return;	// don't remake action unnecessarily
 		}
+		// Allow to printActionInfo for the desired action if the player want to select a new action_type
+		this.factions = null;
+		this.targets = null;
+		this.thirdFaction = null;
+		this.industryToSabotage = null;
+		this.travelDest = null;
+		this.commodityToDestroy = null;
 		
 		// agent faction should not be commissioning faction if target is also commissioning faction
 		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
@@ -579,6 +591,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		else if (lastSelectedMenu == Menu.TARGET) {
 			populateTargetOptions();
 		}
+		else if (lastSelectedMenu == Menu.CONFIRM_SP){
+			populateSPOptions();
+		}
 		else {
 			populateMainMenuOptions();
 		}
@@ -590,6 +605,21 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			return;
 		}
 		optionsList.add(new Pair<String, Object>(Misc.ucFirst(def.name.toLowerCase()), def));
+	}
+
+	protected void populateSPOptions() {
+		optionsList.clear();
+
+		options.addOption(getString("dialogSPOptionSuccessText"), Menu.CONFIRM_SP_SUCCESS);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_SUCCESS, "agentOrderSuccess", "ui_char_spent_story_point_combat", null);
+
+		options.addOption(getString("dialogSPOptionDetectionText"), Menu.CONFIRM_SP_DETECTION);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_DETECTION, "agentOrderDetection", "ui_char_spent_story_point_combat", null);
+
+		options.addOption(getString("dialogSPOptionsText"), Menu.CONFIRM_SP_BOTH);
+		SetStoryOption.set(dialog, 2, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", null);
+
+		addBackOption();
 	}
 	
 	protected void populateActionOptions() {
@@ -780,7 +810,15 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				}
 			}
 		}
-		
+
+		//Confirm_option_sp
+		if(action != null && action.getDefId() != CovertActionType.TRAVEL){
+			options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP, Color.GREEN, null);
+			if (!canProceed() || !hasEnoughCredits()) {
+				options.setEnabled(Menu.CONFIRM_SP, false);
+			}
+		}
+
 		// Confirm option
 		options.addOption(StringHelper.getString("confirm", true), Menu.CONFIRM);
 		if (!canProceed() || !hasEnoughCredits()) {
@@ -1020,12 +1058,22 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				lastSelectedMenu = Menu.TARGET;
 			} else if (optionData == Menu.BACK) {
 				// do nothing except populate options
+			} else if(optionData == Menu.CONFIRM_SP){
+				lastSelectedMenu = Menu.CONFIRM_SP;
+			} else if(optionData == Menu.CONFIRM_SP_BOTH){
+				action.hasStoryPoint = true;
+				proceedAfterSelectedOption();
+				return;
+			} else if(optionData == Menu.CONFIRM_SP_SUCCESS){
+				action.hasStoryPoint = true;
+				proceedAfterSelectedOption();
+				return;
+			} else if(optionData == Menu.CONFIRM_SP_DETECTION){
+				action.hasStoryPoint = true;
+				proceedAfterSelectedOption();
+				return;
 			} else if (optionData == Menu.CONFIRM) {
-				proceed();
-				options.clearOptions();
-				options.addOption(StringHelper.getString("done", true), Menu.DONE);
-				options.setShortcut(Menu.DONE, Keyboard.KEY_RETURN,
-						false, false, false, true);
+				proceedAfterSelectedOption();
 				return;
 			} else if (optionData == Menu.CANCEL) {
 				dialog.dismissAsCancel();
@@ -1043,6 +1091,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			options.setShortcut(Menu.CANCEL, Keyboard.KEY_ESCAPE,
 					false, false, false, true);
 		}
+	}
+
+	protected void proceedAfterSelectedOption(){
+		proceed();
+		options.clearOptions();
+		options.addOption(StringHelper.getString("done", true), Menu.DONE);
+		options.setShortcut(Menu.DONE, Keyboard.KEY_RETURN,
+				false, false, false, true);
 	}
 
 	@Override
