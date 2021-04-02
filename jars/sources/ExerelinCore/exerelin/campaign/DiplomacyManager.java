@@ -22,6 +22,7 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
+import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.utilities.NexConfig;
@@ -439,6 +440,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         
         SectorManager.checkForVictory();
+        if (MilestoneTracker.getIntel() != null) {
+            MilestoneTracker.getIntel().reportPlayerReputationChanged(faction1Id);
+            MilestoneTracker.getIntel().reportPlayerReputationChanged(faction2Id);
+        }
+        
         return repResult;
     }
     
@@ -914,8 +920,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
             SectorManager.scheduleExpelPlayerFromFaction();
         */
-
+        
         SectorManager.checkForVictory();
+        
+        if (MilestoneTracker.getIntel() != null)
+            MilestoneTracker.getIntel().reportPlayerReputationChanged(factionId);
     }
   
     @Override

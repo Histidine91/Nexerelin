@@ -50,6 +50,7 @@ import exerelin.campaign.fleets.PlayerInSystemTracker;
 import exerelin.campaign.fleets.VultureFleetManager;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.FactionBountyManager;
+import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
@@ -131,7 +132,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         ScriptReplacer.replaceScript(sector, FactionHostilityManager.class, null);
         ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
-        ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
+        //ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
@@ -151,6 +152,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         StatsTracker.create();
+        new MilestoneTracker().init();
         
         SectorManager.getManager().setCorvusMode(true);
         SectorManager.reinitLiveFactions();
@@ -182,20 +184,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        if (SpecialForcesManager.getManager() == null) {
-            new SpecialForcesManager().init();
-        }
         
-        if (Global.getSector().getFaction("templars") != null) {
-            for (MarketAPI market : NexUtilsFaction.getFactionMarkets("templars")) {
-                SectorManager.updateSubmarkets(market, "templars", "templars");
-            }
-        }
-        
-        SectorManager.getManager().reverseCompatibility();
     }
     
-    protected void addBarEvents() {
+    protected static void addBarEvents() {
         BarEventManager bar = BarEventManager.getInstance();
         if (bar != null && !bar.hasEventCreator(AgentBarEventCreator.class)) {
             bar.addEventCreator(new AgentBarEventCreator());
@@ -220,15 +212,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(new ConquestMissionManager());
         sector.addScript(new DisruptMissionManager());
         sector.addScript(new FactionBountyManager());
+        
+        addBarEvents();
     }
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
     protected void addScriptsAndEventsIfNeeded() {
-        if (!Global.getSector().hasScript(RebellionCreator.class)) {
-            RebellionCreator.generate();
-        }
-        
-        addBarEvents();
     }
     
     protected void expandSector() {

@@ -1366,6 +1366,17 @@
 		"intelTag":"Insurance",
 	},
 	
+	"nex_milestones":{
+		"intelTitle":"Milestone Tracker",
+		"intelTitleAwarded":"Milestone Awarded",
+		"textIntro":"The deeds of the heroic shall be remembered",
+		"headingComplete":"Completed milestones",
+		"headingIncomplete":"Incomplete milestones",
+		
+		"grantMilestone":"Grant milestone",
+		"awardDate":"Awarded on $day-$month-$year",
+	},
+	
 	"nex_militaryOptions":{
 		"noStation":"The colony has no orbital station or nearby fleets to defend it.",
 		"noFleets":"There are no nearby fleets to defend the colony.",
