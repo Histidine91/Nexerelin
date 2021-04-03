@@ -455,6 +455,7 @@
 		"dialogTooltipAlreadyModifyingRelations":"Another agent is currently already manipulating this faction.",
 		#"dialogTooltipModifyingRelationsCooldown":"This faction has already been recently manipulated. It will take $cooldown before further such actions can be executed.",
 		"dialogInfoModifyingRelationsCooldown":"This faction has already been manipulated in the recent past. Further such actions will take longer.",
+		"dialogInfoSabotageIndustryMission":"Warning: agent sabotage may not be considered a legitimate manner of completing industry disruption missions.",
 		
 		"dialogProcureShipIntro":"A single ship can be procured from a faction, but persuading officials to \"lose\" a military-grade warship through a judicious combination of bribes, blackmail and forgery requires an expense considerably in excess of the market price. It should only be used for hulls which have proven difficult to obtain through other channels.",
 		"dialogProcureShipIntro2":"Ship will have a random variant and be subject to D-mods. Not all ships known to the faction may be available.",

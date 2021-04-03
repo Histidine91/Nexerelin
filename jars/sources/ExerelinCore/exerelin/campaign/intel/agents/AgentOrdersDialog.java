@@ -526,6 +526,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				action = new SabotageIndustry(agent, market, null, agentFaction, mktFaction, true, null);
 				action.init();
 				getTargets();
+				
+				text.setFontSmallInsignia();
+				text.addPara(getString("dialogInfoSabotageIndustryMission"));
+				text.setFontInsignia();
+				
 				break;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
 				action = new DestroyCommodityStocks(agent, market, null, agentFaction, mktFaction, true, null);

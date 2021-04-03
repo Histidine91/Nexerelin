@@ -1,0 +1,2 @@
+bar event id,tags,freq,prob,min dur,max dur,min timeout,max timeout,min accepted timeout,max accepted timeout,plugin
+nex_dcom,,2,1,30,40,15,20,60,90,exerelin.campaign.intel.missions.Nex_DisruptIndustry

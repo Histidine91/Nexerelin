@@ -61,6 +61,8 @@ public class DisruptMissionManager extends BaseEventManager {
 	@Override
 	protected EveryFrameScript createEvent() 
 	{
+		if (true) return null;
+		
 		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
 			return null;
 		if ((float) Math.random() < 0.5f) return null;
@@ -78,7 +80,7 @@ public class DisruptMissionManager extends BaseEventManager {
 			return null;
 		}
 		
-		TargetEntry target = getTarget(faction);
+		TargetEntry target = getTarget(faction, 4, 999);
 		if (target == null) {
 			log.info("Failed to pick target");
 			return null;
@@ -126,7 +128,7 @@ public class DisruptMissionManager extends BaseEventManager {
 		return faction.getRelationshipLevel(target).isAtBest(required);
 	}
 	
-	protected static TargetEntry getTarget(FactionAPI faction) 
+	public static TargetEntry getTarget(FactionAPI faction, int minAmount, int maxAmount) 
 	{
 		String factionId = faction.getId();
 		WeightedRandomPicker<TargetEntry> picker = new WeightedRandomPicker<>();
@@ -138,7 +140,7 @@ public class DisruptMissionManager extends BaseEventManager {
 		JSONObject json = faction.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA);
 		if (json != null)
 		{
-			vsFreePort = json.optBoolean("vsFreePort", false);
+			//vsFreePort = json.optBoolean("vsFreePort", false);
 			vsCompetitors = json.optBoolean("vsCompetitors", false);
 		}
 		
@@ -160,7 +162,7 @@ public class DisruptMissionManager extends BaseEventManager {
 					NexUtilsFaction.isPirateFaction(market.getFactionId()))
 				continue;
 			
-			boolean hostile = market.getFaction().isHostileTo(faction);
+			boolean hostile = false;	//market.getFaction().isHostileTo(faction);
 			boolean canEconomicAttack = isRepLowEnough(faction, market.getFaction(), 
 					TargetReason.ECONOMIC_COMPETITION);
 			boolean canFreePortAttack = isRepLowEnough(faction, market.getFaction(), 
@@ -204,6 +206,8 @@ public class DisruptMissionManager extends BaseEventManager {
 						MutableCommodityQuantity quant = ind.getSupply(commodityId);
 						if (quant == null) continue;
 						int theirs = quant.getQuantity().getModifiedInt();
+						if (theirs < minAmount) continue;
+						if (theirs > maxAmount) continue;
 						if (theirs < ours - 1) continue;
 						
 						picker.add(new TargetEntry(market, ind, commodityId, 

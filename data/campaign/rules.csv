@@ -1621,3 +1621,33 @@ ExerelinFlavorTextMarketTiandongShanghai,TradePanelFlavorText,"$global.tradePane
 $faction.id == tiandong
 $tag:shanghai score:5","AddText ""Posh olive-green pillows and scented candles greet you as you enter the grand lobby, a vast entry area for the myriad travellers who journey to Shanghai. A hundred-meter-tall holographic map of the station hovers overhead, illuminating the area in warm light. Ahead, a wide hallway leads to the primary trade center."" marketFlavorTextColor
 AddText ""The hallway opens to a large, open bazaar. While the structure is clearly a large warehouse being used as a flea market, in truth it resembles a small city. Market stalls of every shape and size, trading venues, infotainment booths, concession stands, and even a brothel is littered throughout, creating a haphazard series of streets and alleys. Armed Tiandong agents patrol the makeshift roads, breaking up fights and helping the occasional lost quartermaster."" marketFlavorTextColor",,,
+,,,,,,
+,,,,,,
+# missions,,,,,,
+# disrupt a competitor - raid industry,,,,,,
+nex_dcomBlurb,nex_dcom_blurb,,,"""$TheFaction requires a trustworthy party to neutralize certain assets of our economic competitors.""
+OR
+""$TheFaction has experienced issues of economic competition requiring a… kinetic solution.""",,
+nex_dcomOfferOption,nex_dcom_option,,,,nex_dcom_start:Inquire into the competition issue,
+nex_dcomBlurbBar,nex_dcom_blurbBar,,,"A $nex_dcom_manOrWoman in a finely tailored suit looks up from $nex_dcom_hisOrHer TriPad, surveying the bar's denizens.",,
+nex_dcomOfferOptionBar,nex_dcom_optionBar,,,,nex_dcom_startBar:Go to the $nex_dcom_manOrWoman in the fine suit,
+nex_dcomOfferTextBar,DialogOptionSelected,$option == nex_dcom_startBar,"$missionId = nex_dcom
+SetTextHighlights $nex_dcom_reward $nex_dcom_marines","You walk over to the $nex_dcom_manOrWoman, whose bodyguard acknowledges you with a nod.
+
+""Captain. Sit, please. You may be just the person I'm looking for.""
+
+The suited figure activates a holo-map. ""This $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName is a competitor to $theFaction's business interests. We require a third party to knock it out for $nex_dcom_disruptDays days."" The map shifts, presenting valuable intelligence: estimated garrison stats and deployment disposition. ""The target is $nex_dcom_dist light-years away. I am authorized to release $nex_reward credits on successful completion of this task.""
+
+Judging from the data, $nex_dcom_marines marines would be required to pull off this operation. The $faction $rank leans back and waits for you to make a decision.","contact_acceptBar:Accept
+contact_declineBarNoContinue:Decline",
+nex_dcomOfferTextContact,DialogOptionSelected,$option == nex_dcom_start,"$missionId = nex_dcom
+SetTextHighlights $nex_dcom_marketName $nex_dcom_reward $nex_dcom_marines","""The target is the $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName. We have allocated a sum of $nex_dcom_reward credits for successful execution.""
+
+$HeOrShe pulls up a shared display. The intel is comprehensive: estimated garrison stats and a deployment disposition report. It appears that $nex_dcom_marines marines would be required for this operation.","contact_accept:Accept
+contact_decline:Decline",
+nex_DCOMRaidFinished,DialogOptionSelected,"$market.nex_dcom_raidedTargetIndustry score:1000
+$option == mktRaidResult","unset $market.nex_dcom_raidedTargetIndustry
+$market.nex_dcom_completed = true 0
+Call $market.nex_dcom_ref updateStage","You feel the almost imperceptible vibrations as the assault shuttles return to your $shipOrFleet, their work complete. You listen for a moment to the open broad-comm channel; the line crackles and squeals with the last gasps of electronic warfare hexes distorted through chaff and the warp of fresh plumes of charged particles. It's a familiar sound; you can almost smell it. 
+
+Tactical has casualty reports prepared for review. You acknowledge with a nod and shut off the comms.",mktRaidResult:Continue,
