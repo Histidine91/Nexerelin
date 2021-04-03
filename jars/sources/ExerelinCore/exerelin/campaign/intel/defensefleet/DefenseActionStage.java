@@ -44,11 +44,6 @@ public class DefenseActionStage extends PirateRaidActionStage {
 		if (fleet == null) return false;
 		
 		return !market.getFaction().isHostileTo(fleet.getFaction());
-	}
-	
-	@Override
-	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
-		return OffensiveFleetIntel.enoughMadeIt(defIntel, abortFP, routes, stragglers);
 	}	
 	
 	@Override

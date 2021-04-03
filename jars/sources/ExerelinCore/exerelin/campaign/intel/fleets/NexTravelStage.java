@@ -27,11 +27,6 @@ public class NexTravelStage extends TravelStage {
 	}
 	
 	@Override
-	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
-		return OffensiveFleetIntel.enoughMadeIt(offFltIntel, abortFP, routes, stragglers);
-	}
-	
-	@Override
 	public void showStageInfo(TooltipMakerAPI info) {
 		int curr = intel.getCurrentStage();
 		int index = intel.getStageIndex(this);

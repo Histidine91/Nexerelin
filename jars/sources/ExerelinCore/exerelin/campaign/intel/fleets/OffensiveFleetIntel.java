@@ -534,27 +534,4 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		
 		return stage.getRoutes().size();
 	}
-	
-	// Takes into account the fact that we don't normally use market size mult
-	public static boolean enoughMadeIt(OffensiveFleetIntel intel, float abortFP, 
-			List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
-		float madeItFP = 0;
-		for (RouteManager.RouteData route : routes) {
-			CampaignFleetAPI fleet = route.getActiveFleet();
-			if (fleet != null) {
-				
-				float mult = 1;
-				if (intel.isUsingMarketSizeMult())
-					mult = Misc.getAdjustedFP(1f, route.getMarket());
-				else
-					mult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(intel.faction);
-				
-				if (mult < 1) mult = 1f;
-				madeItFP += fleet.getFleetPoints() / mult;
-			} else {
-				madeItFP += route.getExtra().fp;
-			}
-		}
-		return madeItFP >= abortFP;
-	}
 }

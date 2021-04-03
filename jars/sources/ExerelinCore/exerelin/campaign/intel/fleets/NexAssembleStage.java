@@ -132,11 +132,6 @@ public abstract class NexAssembleStage extends AssembleStage {
 		
 	}
 	
-	@Override
-	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
-		return OffensiveFleetIntel.enoughMadeIt(offFltIntel, abortFP, routes, stragglers);
-	}
-	
 	// same as Misc. version except with "use fleet size mult" check
 	public static float getAdjustedStrength(float fp, MarketAPI market) {
 		fp *= Math.max(0.25f, 0.5f + Math.min(1f, Misc.getShipQuality(market)));

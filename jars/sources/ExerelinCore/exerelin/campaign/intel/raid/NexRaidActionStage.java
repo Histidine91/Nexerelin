@@ -176,11 +176,6 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	}
 	
 	@Override
-	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
-		return OffensiveFleetIntel.enoughMadeIt((NexRaidIntel)intel, abortFP, routes, stragglers);
-	}
-	
-	@Override
 	public void giveReturnOrdersToStragglers(List<RouteManager.RouteData> stragglers) {
 		super.giveReturnOrdersToStragglers(stragglers);
 		RaidCondition.removeRaidFromConditions(system, intel);

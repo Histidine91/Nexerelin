@@ -171,11 +171,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 	}
 	
-	@Override
-	protected boolean enoughMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers) {
-		return OffensiveFleetIntel.enoughMadeIt(offFltIntel, abortFP, routes, stragglers);
-	}
-	
 	// TODO: only primary invasion fleet should have invasion action text
 	// if primary invasion fleets are still a thing
 	@Override
