@@ -68,7 +68,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	protected int newLevel = -1;
 	protected float days;
 	protected float cost;
-	protected boolean hasStoryPoint = false;
+	protected StoryPointUse sp = StoryPointUse.NONE;
 	protected float daysRemaining;
 	protected Float injuryTime;
 	protected MarketAPI agentEscapeDest;
@@ -250,7 +250,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 
 		MutableStat stat = new MutableStat(0);
 
-		if(hasStoryPoint){
+		if (sp.preventFailure()) {
 			stat.modifyFlat("baseChance", 100, getString("baseChance", true));
 			return stat;
 		}
@@ -298,7 +298,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 
 		MutableStat stat = new MutableStat(0);
 
-		if(hasStoryPoint){
+		if (sp.preventDetection()) {
 			stat.modifyFlat("baseChance", 0, getString("baseChance", true));
 			return stat;
 		}
@@ -329,14 +329,36 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	}
 	
 	public boolean canAbort() {
-		if(hasStoryPoint) return false;
 		return result == null;
+	}
+	
+	public void handleStoryPointRefund() {
+		String bonusXPId = null;
+		switch (sp) {
+			case SUCCESS:
+				bonusXPId = "agentOrderSuccess";
+				break;
+			case DETECTION:
+				bonusXPId = "agentOrderDetection";
+				break;
+			case BOTH:
+				bonusXPId = "agentOrderBoth";
+				break;
+			default:
+				return;
+		}
+		float bonusXPFraction = 1 - Global.getSettings().getBonusXP(bonusXPId);
+		if (bonusXPFraction == 0) return;
+		long xpToGrant = Math.round(NexUtils.getBonusXPForSpendingStoryPointBeforeSpendingIt(Global.getSector().getPlayerStats())
+				* bonusXPFraction);
+		Global.getSector().getPlayerStats().addBonusXP(xpToGrant, true, null, true);
 	}
 	
 	public void abort() {
 		if (playerInvolved) {
 			int refund = getAbortRefund();
 			Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
+			handleStoryPointRefund();
 		}
 		if (agent != null){
 			if (agent.currentAction == this)
@@ -912,5 +934,17 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		self.reset();
 		
 		return self;
+	}
+	
+	public static enum StoryPointUse {
+		NONE, SUCCESS, DETECTION, BOTH;
+		
+		public boolean preventDetection() {
+			return this == DETECTION || this == BOTH;
+		}
+		
+		public boolean preventFailure() {
+			return this == SUCCESS || this == BOTH;
+		}
 	}
 }

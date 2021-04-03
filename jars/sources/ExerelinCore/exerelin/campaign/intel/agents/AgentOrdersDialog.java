@@ -39,6 +39,7 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.intel.agents.CovertActionIntel.StoryPointUse;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
@@ -618,7 +619,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_DETECTION, "agentOrderDetection", "ui_char_spent_story_point_combat", null);
 
 		options.addOption(getString("dialogSPOptionsText"), Menu.CONFIRM_SP_BOTH);
-		SetStoryOption.set(dialog, 2, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", null);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", null);
 
 		addBackOption();
 	}
@@ -812,12 +813,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			}
 		}
 
-		//Confirm_option_sp
-		if(action != null && action.getDefId() != CovertActionType.TRAVEL){
-			options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP, Color.GREEN, null);
+		// Confirm_option_sp
+		if (action != null && action.getSuccessChance().getModifiedValue() < 100) {
+			options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP, Misc.getStoryOptionColor(), null);
 			if (!canProceed() || !hasEnoughCredits()) {
 				options.setEnabled(Menu.CONFIRM_SP, false);
 			}
+			options.setTooltip(Menu.CONFIRM_SP, getString("dialogConfirmOptionSPTooltip"));
 		}
 
 		// Confirm option
@@ -1062,15 +1064,15 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			} else if(optionData == Menu.CONFIRM_SP){
 				lastSelectedMenu = Menu.CONFIRM_SP;
 			} else if(optionData == Menu.CONFIRM_SP_BOTH){
-				action.hasStoryPoint = true;
+				action.sp = StoryPointUse.BOTH;
 				proceedAfterSelectedOption();
 				return;
 			} else if(optionData == Menu.CONFIRM_SP_SUCCESS){
-				action.hasStoryPoint = true;
+				action.sp = StoryPointUse.SUCCESS;
 				proceedAfterSelectedOption();
 				return;
 			} else if(optionData == Menu.CONFIRM_SP_DETECTION){
-				action.hasStoryPoint = true;
+				action.sp = StoryPointUse.DETECTION;
 				proceedAfterSelectedOption();
 				return;
 			} else if (optionData == Menu.CONFIRM) {

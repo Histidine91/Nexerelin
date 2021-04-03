@@ -165,7 +165,7 @@ public class LowerRelations extends CovertActionIntel {
 	@Override
 	public boolean canRepeat() {
 		if (agent.getMarket() == null) return false;
-		if (hasStoryPoint) return false;
+		if (sp != StoryPointUse.NONE) return false;
 		return RaiseRelations.canModifyRelations(agent.getMarket().getFaction(), agent);
 	}
 	

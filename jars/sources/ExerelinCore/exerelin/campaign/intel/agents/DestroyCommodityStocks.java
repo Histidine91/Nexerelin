@@ -69,7 +69,7 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	
 	@Override
 	public boolean canRepeat() {
-		if (hasStoryPoint) return false;
+		if (sp != StoryPointUse.NONE) return false;
 		return agent.getMarket().getCommodityData(this.commodityId) != null;
 	}
 	
