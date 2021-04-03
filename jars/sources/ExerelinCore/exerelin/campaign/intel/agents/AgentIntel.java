@@ -9,6 +9,8 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.BaseOptionStoryPointActionDelegate;
+import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.StoryOptionParams;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
@@ -53,6 +55,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final String BUTTON_QUEUE_ORDER = "orders2";
 	protected static final String BUTTON_CANCEL_QUEUE = "abortQueue";
 	protected static final String BUTTON_REPEAT_ACTION = "repeat";
+	protected static final String BUTTON_MASTERY = "mastery";
 	
 	protected static final String BUTTON_DISMISS = "dismiss";
 	
@@ -263,13 +266,31 @@ public class AgentIntel extends BaseIntelPlugin {
 		if (isDead || isDismissed) return;
 		
 		// specialization
-		if (NexConfig.useAgentSpecializations && !specializations.isEmpty()) {
-			str = getString("intelDescSpecialization");
-			info.addPara(str, opad, h, StringHelper.writeStringCollection(getSpecializationNames()));
-			bullet(info);
-			str = getString("intelDescActionList");
-			info.addPara(str, pad, Misc.getButtonTextColor(), StringHelper.writeStringCollection(getAllowedActionNames(true)));
-			unindent(info);
+		if (NexConfig.useAgentSpecializations) {
+			if (!specializations.isEmpty()) {
+				str = getString("intelDescSpecialization");
+				info.addPara(str, opad, h, StringHelper.writeStringCollection(getSpecializationNames()));
+				bullet(info);
+				str = getString("intelDescActionList");
+				info.addPara(str, pad, Misc.getButtonTextColor(), StringHelper.writeStringCollection(getAllowedActionNames(true)));
+				unindent(info);
+				String buttonText = getString("intelButtonUnlockMastery");
+				if (level < MAX_LEVEL)
+					buttonText = String.format(getString("intelButtonUnlockMasteryWithLevel"), MAX_LEVEL + "");
+				
+				// mastery button (imba, disabled)
+				/*
+				ButtonAPI button = info.addButton(buttonText, BUTTON_MASTERY, Misc.getStoryOptionColor(), 
+						Misc.getStoryDarkColor(), width, 20f, opad);
+				if (Global.getSector().getPlayerStats().getStoryPoints() <= 0 || level < MAX_LEVEL) {
+					button.setEnabled(false);
+				}
+				*/
+			}
+			else {
+				//str = getString("intelDescSpecialization");
+				//info.addPara(str, opad, h, getString("specialization_master"));
+			}
 		}
 		
 		// agent location
@@ -483,6 +504,9 @@ public class AgentIntel extends BaseIntelPlugin {
 		} else if (buttonId == ProcureShip.BUTTON_CHANGE_DESTINATION) {
 			ProcureShip procure = (ProcureShip)currentAction;
 			ui.showDialog(null, new ProcureShipDestinationDialog(this, procure, procure.destination, ui));
+		} else if (buttonId == BUTTON_MASTERY) {
+			this.specializations.clear();
+			Global.getSector().getPlayerStats().spendStoryPoints(1, true, null, true, 0, getMasteryLogString());
 		} else if (buttonId == BUTTON_DISMISS) {
 			if (currentAction != null)
 				currentAction.abort();
@@ -500,7 +524,9 @@ public class AgentIntel extends BaseIntelPlugin {
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
 		return buttonId == BUTTON_ABORT || buttonId == BUTTON_CANCEL_QUEUE 
-				|| buttonId == BUTTON_REPEAT_ACTION || buttonId == BUTTON_DISMISS;
+				|| buttonId == BUTTON_REPEAT_ACTION 
+				|| buttonId == BUTTON_MASTERY
+				|| buttonId == BUTTON_DISMISS;
 	}
 	
 	@Override
@@ -526,15 +552,33 @@ public class AgentIntel extends BaseIntelPlugin {
 			} catch (CloneNotSupportedException ex) {
 				Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
 			}
-			
-		}
-		else if (buttonId == BUTTON_DISMISS) {
+		} else if (buttonId == BUTTON_MASTERY) {
+			BaseOptionStoryPointActionDelegate delegate = new BaseOptionStoryPointActionDelegate(null, 
+					getMasteryStoryOptionParams());
+			prompt.addPara(getString("intelPromptUnlockMastery"), 0);
+			prompt.addSpacer(13);
+			delegate.createDescription(prompt);
+		} else if (buttonId == BUTTON_DISMISS) {
 			String str = getString("intelPromptDismiss");
 			str = StringHelper.substituteToken(str, "$agentName", agent.getNameString());
 			prompt.addPara(str, 0);
 		}
 	}
 	
+	@Override
+	public String getConfirmText(Object buttonId) {
+		return super.getConfirmText(buttonId); //To change body of generated methods, choose Tools | Templates.
+	}
+	
+	protected StoryOptionParams getMasteryStoryOptionParams() {
+		return new StoryOptionParams(null, 1, null, "leadership", getMasteryLogString());
+	}
+	
+	protected String getMasteryLogString() {
+		return "Trained agent " + agent.getNameString() + " to master level";
+	}
+	
+	@Override
 	protected String getName() {
 		String str = StringHelper.getStringAndSubstituteToken("nex_agents", "intelTitle", "$name", agent.getNameString());
 		if (isDead) {
