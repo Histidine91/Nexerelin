@@ -1,0 +1,8 @@
+{
+    "playableFaction":false,
+    "corvusCompatible":true,
+    "dropPrisoners":false,
+    "hostileToAll":2,
+    #"startRelationships":{ "tritachyon": 0 },
+    "noRandomizeRelations":true,
+}
