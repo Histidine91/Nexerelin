@@ -16,7 +16,7 @@ public class DerelictEmpire extends Scenario {
 	
 	@Override
 	public void afterEconomyLoad(SectorAPI sector) {
-		FactionAPI derelict = sector.getFaction(Factions.DERELICT);
+		FactionAPI derelict = sector.getFaction("nex_derelict");
 		boolean corvus = SectorManager.getManager().isCorvusMode();		
 		Set<String> corvusSpawnPoints = new HashSet<>();
 		for (ExerelinCorvusLocations.SpawnPointEntry entry : ExerelinCorvusLocations.getFactionSpawnPointsCopy().values())

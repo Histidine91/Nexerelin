@@ -25,7 +25,7 @@ import java.util.Set;
 public class Nex_ProcurementMissionIntel extends ProcurementMissionIntel {
 	
 	public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[]{
-		Factions.DERELICT, Factions.REMNANTS, "templars"
+		Factions.DERELICT, Factions.REMNANTS, "templars", "nex_derelict"
 	}));
 	public static final float TRADE_MULT = 0.5f;
 	

@@ -1510,12 +1510,12 @@ Nex_IsBaseOfficial admin",,,21:nex_getConstructionQueue:>> (dev) Get constructio
 nex_getConstructionQueue,DialogOptionSelected,$option == nex_getConstructionQueue,Nex_DisplayConstructionQueue,,,
 ,,,,,,
 nex_marketPostOpenDerelicts,MarketPostOpen,"$hasMarket
-$faction.id == derelict score:1000","$tradeMode = NONE 0
+$faction.id == nex_derelict score:1000","$tradeMode = NONE 0
 FireBest MarketPostDock","$TheFactionLong $factionIsOrAre in control of this location. They do not interact with humans, except through gunfire.",,
 nex_marketOptionCommDirDerelicts,PopulateOptions,"$hasMarket
 $menuState == main
-$faction.id == derelict score:1000",SetEnabled marketCommDir false,,,
-nex_relLevelDerelict,RelationshipLevelDesc,$faction.id == derelict score:5,,...,,
+$faction.id == nex_derelict score:1000",SetEnabled marketCommDir false,,,
+nex_relLevelDerelict,RelationshipLevelDesc,$faction.id == nex_derelict score:5,,...,,
 ,,,,,,
 ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $market.id == nex_prismFreeport","AddText ""Bright, slick, overusing chrome and opal ornaments, the concourse is quite the unusual sight for a station lost in hyperspace. Wherever the eye looks, every detail spells luxury. On the sides, behind extravagant transparent promenades, the source of all this wealth is offered to the observation of all potential buyers: the menacing and yet reassuring silhouettes of ships from all origins, all pristine looking and advantageously lit. A bit further it's the weapons that are exposed in the same fashion. Holo displays and simulators are available everywhere to help clients to find the perfect tool to fit their needs."" marketFlavorTextColor",,,
