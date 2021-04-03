@@ -1386,6 +1386,7 @@
 		"hasStation":"$stationName dominates the orbit and prevents any hostile action, aside from a quick raid, unless it is dealt with.",
 		"hasFleetWithStation":"The defending ships present are, with the support of the station, sufficient to prevent raiding as well.",
 		"hasFleet":"Defending ships are present in sufficient strength to prevent any hostile action until they are dealt with.",
+		"hasFleetOngoingBattle":"There are defending ships present, but they are currently involved in a battle, and you could take advantage of the distraction to launch a raid.",
 		"hasFleetTooSmall":"Defending ships are present, but not in sufficient strength to want to give battle or prevent any hostile action you might take.",
 		
 		"optionEngage":"Engage the defenders",

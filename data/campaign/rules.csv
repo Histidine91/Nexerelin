@@ -525,8 +525,7 @@ nex_fleetRequest_selectTypeMenu,DialogOptionSelected,$option == nex_fleetRequest
 SetTooltip nex_fleetRequest_setType_defense ""Patrols the target market's system. Once arrived, will remain on station for 150 days.""
 SetTooltip nex_fleetRequest_setType_relief ""Sends a relief fleet to address instability on the target market. Can only target markets not under player control. High cost, scaling with market size.""
 SetTooltipHighlightColors nex_fleetRequest_setType_defense hColor
-SetTooltipHighlights nex_fleetRequest_setType_defense 150",,"nex_fleetRequest_setType_invasion:Invasion
-nex_fleetRequest_setType_basestrike:Base strike
+SetTooltipHighlights nex_fleetRequest_setType_defense 150",,"nex_fleetRequest_setType_basestrike:Base strike
 nex_fleetRequest_setType_defense:Defense
 nex_fleetRequest_setType_relief:Relief
 nex_fleetRequest_main:Back",

@@ -25,7 +25,7 @@ import org.lazywizard.lazylib.MathUtils;
  */
 public class RebellionCreator implements EveryFrameScript {
 	
-	public static final boolean ENABLE_REBELLIONS = false;
+	public static final boolean ENABLE_REBELLIONS = NexConfig.enableInvasions;
 	
 	public static final String MEMORY_KEY_REBELLION_POINTS = "$nex_rebellionPoints";
 	public static final String PERSISTENT_DATA_KEY = "nex_rebellionCreator";

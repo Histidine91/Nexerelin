@@ -181,7 +181,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	
 	protected void initFirstTime() {
 		memory.set("$nex_fleetRequest_initComplete", true, 0);
-		setFleetType(FleetType.INVASION);
+		if (NexConfig.enableInvasions)
+			setFleetType(FleetType.INVASION);
+		else
+			setFleetType(FleetType.BASESTRIKE);
 		setFP(400);
 		setMarines(200);
 		getSources();

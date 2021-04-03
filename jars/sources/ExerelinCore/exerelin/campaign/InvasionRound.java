@@ -84,10 +84,14 @@ public class InvasionRound {
 		printDebug("\tAttacker damage: " + atkDam);
 		printDebug("\tDefender damage: " + defDam);
 		
-		int losses = (int)(marines * defDam/atkStr);
+		float lossMult = 1;
+		if (fleet != null)
+			lossMult = fleet.getCommanderStats().getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT).getModifiedValue();
+		
+		int losses = (int)(marines * defDam/atkStr * lossMult);
 		if (losses > marines) losses = marines;
 		
-		int lossesMech = (int)(mechs * defDam/atkStr);
+		int lossesMech = (int)(mechs * defDam/atkStr * lossMult);
 		if (lossesMech > mechs) lossesMech = mechs;
 		
 		InvasionRoundResult result = new InvasionRoundResult();

@@ -8,7 +8,6 @@ import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
@@ -21,6 +20,8 @@ import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
+import static com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.XP_PER_RAID_MULT;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
@@ -84,7 +85,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-@Deprecated
 public class Nex_MarketCMD extends MarketCMD {
 	
 	public static final String INVADE = "nex_mktInvade";
@@ -96,6 +96,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
 	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
+	public static final float INVASION_XP_MULT = 3;
 	public static final String MEMORY_KEY_BP_COOLDOWN = "$nex_raid_blueprints_cooldown";
 	public static final String DATA_KEY_BPS_ALREADY_RAIDED = "nex_already_raided_blueprints";
 	public static final float BASE_LOOT_SCORE = 3;
@@ -181,25 +182,21 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	protected boolean canTitanBomb() {
 		if (!hasII()) return false;
-		// in II 2.4.0, the option to TITAN bomb is added by that mod
-		if ("2.4.0".equals(Global.getSettings().getModManager().getModSpec("Imperium").getVersion()))
-			return false;
 		
-        if (playerFleet == null) {
-            return false;
-        }
+		if (playerFleet == null) {
+			return false;
+		}
 
-        for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
+		for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
 			String hullId = member.getHullSpec().getDParentHullId();
 			if (hullId == null) hullId = member.getHullSpec().getHullId();
-			log.info("Testing hull id " + hullId);
+			//log.info("Testing hull id " + hullId);
 			
-            if (hullId != null && hullId.contentEquals("ii_olympus")) {
-                return true;
-            }
-        }
-
-        return false;
+			if (hullId != null && hullId.contentEquals("ii_olympus")) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	// same as super method, but adds invade option
@@ -221,6 +218,13 @@ public class Nex_MarketCMD extends MarketCMD {
 		boolean playerCanNotJoin = false;
 
 		String stationType = "station";
+		if (station != null) {
+			FleetMemberAPI flagship = station.getFlagship();
+			if (flagship != null && flagship.getVariant() != null) {
+				String name = flagship.getVariant().getDesignation().toLowerCase();
+				stationType = name;
+			}
+		}
 		
 		StationState state = getStationState();
 		
@@ -237,13 +241,26 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		} else {
 			ongoingBattle = primary.getBattle() != null;
+
+			CampaignFleetAPI pluginFleet = primary;
+			if (ongoingBattle) {
+				BattleAPI.BattleSide playerSide = primary.getBattle().pickSide(playerFleet);
+				CampaignFleetAPI other = primary.getBattle().getPrimary(primary.getBattle().getOtherSide(playerSide));
+				if (other != null) {
+					pluginFleet = other;
+				}
+			}
 			
 			FleetInteractionDialogPluginImpl.FIDConfig params = new FleetInteractionDialogPluginImpl.FIDConfig();
 			params.justShowFleets = true;
 			params.showPullInText = withText;
 			plugin = new FleetInteractionDialogPluginImpl(params);
-			dialog.setInteractionTarget(primary);
+			//dialog.setInteractionTarget(primary);
+			dialog.setInteractionTarget(pluginFleet);
 			plugin.init(dialog);
+//			if (ongoingBattle) {
+//				plugin.setPlayerFleet(primary.getBattle().getPlayerCombined());
+//			}
 			dialog.setInteractionTarget(entity);
 			
 			
@@ -251,6 +268,11 @@ public class Nex_MarketCMD extends MarketCMD {
 			b = context.getBattle();
 			
 			BattleAPI.BattleSide playerSide = b.pickSide(playerFleet);
+			if (playerSide != BattleAPI.BattleSide.NO_JOIN) {
+				if (b.getOtherSideCombined(playerSide).isEmpty()) {
+					playerSide = BattleAPI.BattleSide.NO_JOIN;
+				}
+			}
 			playerCanNotJoin = playerSide == BattleAPI.BattleSide.NO_JOIN;
 			if (!playerCanNotJoin) {
 				playerOnDefenderSide = b.getSide(playerSide) == b.getSideFor(primary);
@@ -259,17 +281,33 @@ public class Nex_MarketCMD extends MarketCMD {
 				playerOnDefenderSide = false;
 			}
 
+			boolean otherHasStation = false;
 			if (playerSide != BattleAPI.BattleSide.NO_JOIN) {
 				//for (CampaignFleetAPI fleet : b.getNonPlayerSide()) {
+				if (station != null) {
+					for (CampaignFleetAPI fleet : b.getSideFor(station)) {
+						if (!fleet.isStationMode()) {
+							hasNonStation = true;
+						}
+					}
+				} else {
+					hasNonStation = true;
+				}
+				
 				for (CampaignFleetAPI fleet : b.getOtherSide(playerSide)) {
 					if (!fleet.isStationMode()) {
-						hasNonStation = true;
-						break;
+						//hasNonStation = true;
+					} else {
+						otherHasStation = true;
 					}
 				}
 			}
 			
-			otherWantsToFight = hasStation || plugin.otherFleetWantsToFight(true);
+			//otherWantsToFight = hasStation || plugin.otherFleetWantsToFight(true);
+			
+			// inaccurate because it doesn't include the station in the "wants to fight" calculation, but, this is tricky
+			// and I don't want to break it right now
+			otherWantsToFight = otherHasStation || plugin.otherFleetWantsToFight(true);
 			
 			if (withText) {
 				if (hasStation) {
@@ -286,8 +324,13 @@ public class Nex_MarketCMD extends MarketCMD {
 					text.addPara(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
 							"hasStation", "$stationName", name));
 					
+					
 					if (hasNonStation) {
-						text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetWithStation"));
+						if (ongoingBattle) {
+							text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetOngoingBattle"));
+						} else {
+							text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetWithStation"));
+						}
 					}
 				} else if (hasNonStation && otherWantsToFight) {
 					printStationState();
@@ -306,7 +349,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		String engageText = StringHelper.getString("nex_militaryOptions", "optionEngage");
 		
 		if (playerCanNotJoin) {
-			//engageText = "Engage the defenders";
+			engageText = "Engage the defenders";
 		} else if (playerOnDefenderSide) {
 			if (hasStation && hasNonStation) {
 				engageText = StringHelper.getString("nex_militaryOptions", "optionAidStationAndDefenders");
@@ -336,6 +379,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		temp.canRaid = !hasNonStation || (hasNonStation && !otherWantsToFight);
 		temp.canBombard = (!hasNonStation || (hasNonStation && !otherWantsToFight)) && !hasStation;
+		//temp.canSurpriseRaid = Misc.getDaysSinceLastRaided(market) < SURPRISE_RAID_TIMEOUT;
 		
 		boolean couldRaidIfNotDebug = temp.canRaid;
 		if (DebugFlags.MARKET_HOSTILITIES_DEBUG) {
@@ -344,6 +388,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 			temp.canRaid = true;
 			temp.canBombard = true;
+			//temp.canSurpriseRaid = true;
 		}
 			
 //		options.addOption("Launch a raid against the colony", RAID);
@@ -353,32 +398,29 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
 							"optionBombard", "$market", market.getName()), BOMBARD);
 		
-		boolean canVB = canVirusBomb(), canTB = canTitanBomb();
-		if (canVB) {
-			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
-							"optionBombardVirus", "$market", market.getName()), VIC_MarketCMD.VBombMenu);
-		}
-		if (canTB) {
-			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
-							"optionBombardTitan", "$market", market.getName()), "iiTitanStrikeMenu");
-		}
-		
 		if (!temp.canRaid) {
 			options.setEnabled(RAID, false);
 			options.setTooltip(RAID, StringHelper.getString("nex_militaryOptions", "cannotRaid"));
 		}
 		
+//		if (!temp.canSurpriseRaid) {
+////			float surpriseRaidDays = (int) (SURPRISE_RAID_TIMEOUT - Misc.getDaysSinceLastRaided(market));
+////			if (surpriseRaidDays > 0) {
+////				surpriseRaidDays = (int) Math.round(surpriseRaidDays);
+////				if (surpriseRaidDays < 1) surpriseRaidDays = 1;
+////				String days = "days";
+////				if (surpriseRaidDays == 1) {
+////					days = "day";
+////				}
+////				//text.addPara("Your ground forces commander estimates that");
+////			}
+//			options.setEnabled(RAID_SURPRISE, false);
+//			options.setTooltip(RAID_SURPRISE, "This colony was raided within the last cycle and its ground defenses are on high alert, making a surprise raid impossible.");
+//		}
+		
 		if (!temp.canBombard) {
 			options.setEnabled(BOMBARD, false);
 			options.setTooltip(BOMBARD, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
-			if (canVB) {
-				options.setEnabled(VIC_MarketCMD.VBombMenu, false);
-				options.setTooltip(VIC_MarketCMD.VBombMenu, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
-			}
-			if (canTB) {
-				options.setEnabled("iiTitanStrikeMenu", false);
-				options.setTooltip("iiTitanStrikeMenu", StringHelper.getString("nex_militaryOptions", "cannotBombard"));
-			}
 		}
 		
 		//DEBUG = false;
@@ -421,9 +463,43 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		} else if (context == null || playerCanNotJoin || !otherWantsToFight) {
 			options.setEnabled(ENGAGE, false);
+			if (!otherWantsToFight) {
+				if (ongoingBattle && playerOnDefenderSide && !otherWantsToFight) {
+					options.setTooltip(ENGAGE, "The attackers are in disarray and not currently attempting to engage the station.");
+				} else {
+					if (playerCanNotJoin) {
+						options.setTooltip(ENGAGE, "You're unable to join this battle.");
+					} else if (primary == null) {
+						options.setTooltip(ENGAGE, "There are no defenders to engage.");
+					} else {
+						options.setTooltip(ENGAGE, "The defenders are refusing to give battle to defend the colony.");
+					}
+				}
+			}
 		}
 		
-		if (InvasionRound.canInvade(entity))
+		boolean canVB = canVirusBomb(), canTB = canTitanBomb();
+		if (canVB) {
+			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+							"optionBombardVirus", "$market", market.getName()), VIC_MarketCMD.VBombMenu);
+		}
+		if (canTB) {
+			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+							"optionBombardTitan", "$market", market.getName()), "iiTitanStrikeMenu");
+		}
+		
+		if (!temp.canBombard) {
+			if (canVB) {
+				options.setEnabled(VIC_MarketCMD.VBombMenu, false);
+				options.setTooltip(VIC_MarketCMD.VBombMenu, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
+			}
+			if (canTB) {
+				options.setEnabled("iiTitanStrikeMenu", false);
+				options.setTooltip("iiTitanStrikeMenu", StringHelper.getString("nex_militaryOptions", "cannotBombard"));
+			}
+		}
+		
+		if (NexConfig.enableInvasions && InvasionRound.canInvade(entity))
 		{
 			options.addOption(StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
 					"invadeOpt", "$market", market.getName()), INVADE);
@@ -786,6 +862,15 @@ public class Nex_MarketCMD extends MarketCMD {
 			contText = StringHelper.substituteToken(getString("invasionFail"), "$market", market.getName());
 		}
 		
+		int marines = Global.getSector().getPlayerFleet().getCargo().getMarines();
+		float total = marines + tempInvasion.marinesLost;
+		float xpGain = 1f - tempInvasion.invasionMult;
+		xpGain *= total;
+		xpGain *= XP_PER_RAID_MULT * INVASION_XP_MULT;
+		if (xpGain < 0) xpGain = 0;
+		PlayerFleetPersonnelTracker.getInstance().getMarineData().addXP(xpGain);
+		PlayerFleetPersonnelTracker.getInstance().update();
+		
 		Global.getSoundPlayer().playUISound("ui_raid_finished", 1f, 1f);
 		
 		addContinueOptionInvasion(contText);
@@ -884,6 +969,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		boolean withBP = false;
 		boolean heavyIndustry = false;
+		
+		// TODO: use performRaid with GroundRaidObjectivePlugins instead of touching industries ourselves
+		// assuming we're even still using this invasion method
+		
 		for (Industry curr : market.getIndustries()) {
 			
 			if (!isInvasion) {
@@ -1041,36 +1130,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 	}
 	
-	/*
-	public float getShipBlueprintSizeValue(String hullId) {
-		ShipHullSpecAPI spec = Global.getSettings().getHullSpec(hullId);
-		float rarity = spec.getRarity();
-		switch (spec.getHullSize()) {
-			case DESTROYER:
-				return 2;
-			case CRUISER:
-				return 3;
-			case CAPITAL_SHIP:
-				return 4;
-			default:
-				return 1;
-		}
-	}
-	
-	public float getWeaponBlueprintSizeValue(String weaponId) {
-		switch (Global.getSettings().getWeaponSpec(weaponId).getSize()) {
-			case SMALL:
-				return 0.75f;
-			case MEDIUM:
-				return 1;
-			case LARGE:
-				return 1.5f;
-			default:
-				return 1;
-		}
-	}
-	*/
-	
 	/**
 	 * Show loot if applicable, cleanup and exit
 	 * @param tookForSelf True if we decided to take the market for ourselves, 
@@ -1170,14 +1229,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	public static int getBombardmentCost(MarketAPI market, CampaignFleetAPI fleet, BombardType type) {
-		float str = getDefenderStr(market);
-		int result = (int) (str * Global.getSettings().getFloat("bombardFuelFraction"));
-		if (result < 2) result = 2;
-		if (fleet != null) {
-			float bomardBonus = Misc.getFleetwideTotalMod(fleet, Stats.FLEET_BOMBARD_COST_REDUCTION, 0f);
-			result -= bomardBonus;
-			if (result < 0) result = 0;
-		}
+		int result = MarketCMD.getBombardmentCost(market, fleet);
 		if (type == BombardType.TACTICAL)
 			result *= TACTICAL_BOMBARD_FUEL_MULT;
 		
@@ -1188,9 +1240,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	// or market is small
 	@Override
 	protected void bombardSaturation() {
-		
 		temp.bombardType = BombardType.SATURATION;
-		temp.bombardCost = getBombardmentCost(market, playerFleet, temp.bombardType);
 
 		temp.willBecomeHostile.clear();
 		temp.willBecomeHostile.add(faction);
@@ -1241,6 +1291,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		temp.bombardmentTargets.addAll(targets);
 		
 		boolean destroy = market.getSize() <= getBombardDestroyThreshold();
+		if (Misc.isStoryCritical(market)) destroy = false;
 		
 		int fuel = (int) playerFleet.getCargo().getFuel();
 		if (destroy) {
@@ -1249,6 +1300,22 @@ public class Nex_MarketCMD extends MarketCMD {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombDesc"));
 		}		
 		
+		
+//		TooltipMakerAPI info = text.beginTooltip();
+//		info.setParaFontDefault();
+//		
+//		info.setBulletedListMode(BaseIntelPlugin.INDENT);
+//		float initPad = 0f;
+//		for (Industry ind : targets) {
+//			//info.addPara(ind.getCurrentName(), faction.getBaseUIColor(), initPad);
+//			info.addPara(ind.getCurrentName(), initPad);
+//			initPad = 3f;
+//		}
+//		info.setBulletedListMode(null);
+//		
+//		text.addTooltip();
+		
+
 		if (hidden) {
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningHidden", "$market", market.getName()));
@@ -1303,10 +1370,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardConfirmOptions();
 	}
 	
-	// Changes from vanilla: Custom rep handling for sat bomb; 
-	// tactical bombardment doesn't pollute habitable worlds; 
+	// Changes from vanilla: Custom rep handling for sat bomb;
 	// saturation bombardment affects disposition
-	// Also fix sat bomb reporting
 	@Override
 	protected void bombardConfirm() {
 		
@@ -1324,12 +1389,28 @@ public class Nex_MarketCMD extends MarketCMD {
 		Random random = getRandom();
 		
 		if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
-			if (temp.bombardType == BombardType.TACTICAL) {
-				Misc.increaseMarketHostileTimeout(market, 60f);
-			} else {
-				Misc.increaseMarketHostileTimeout(market, 120f);
+			float timeout = TACTICAL_BOMBARD_TIMEOUT_DAYS;
+			if (temp.bombardType == BombardType.SATURATION) {
+				timeout = SATURATION_BOMBARD_TIMEOUT_DAYS;
+			}
+			Misc.increaseMarketHostileTimeout(market, timeout);
+			
+			timeout *= 0.7f;
+			
+			for (MarketAPI curr : Global.getSector().getEconomy().getMarkets(market.getContainingLocation())) {
+				if (curr == market) continue;
+				boolean cares = curr.getFaction().getCustomBoolean(Factions.CUSTOM_CARES_ABOUT_ATROCITIES);
+				cares &= temp.bombardType == BombardType.SATURATION;
+				
+				if (curr.getFaction().isNeutralFaction()) continue;
+				if (curr.getFaction().isPlayerFaction()) continue;
+				if (curr.getFaction().isHostileTo(market.getFaction()) && !cares) continue;
+				
+				Misc.increaseMarketHostileTimeout(curr, timeout);
 			}
 		}
+		
+		addMilitaryResponse();
 		
 		playerFleet.getCargo().removeFuel(temp.bombardCost);
 		AddRemoveCommodity.addCommodityLossText(Commodities.FUEL, temp.bombardCost, text);
@@ -1357,11 +1438,17 @@ public class Nex_MarketCMD extends MarketCMD {
 					curr.getId());
 		}
 	
+		int atrocities = (int) Global.getSector().getCharacterData().getMemoryWithoutUpdate().getFloat(MemFlags.PLAYER_ATROCITIES);
+		atrocities++;
+		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MemFlags.PLAYER_ATROCITIES, atrocities);
+		
+		
 		int stabilityPenalty = getTacticalBombardmentStabilityPenalty();
 		if (temp.bombardType == BombardType.SATURATION) {
 			stabilityPenalty = getSaturationBombardmentStabilityPenalty();
 		}
 		boolean destroy = temp.bombardType == BombardType.SATURATION && market.getSize() <= getBombardDestroyThreshold();
+		if (Misc.isStoryCritical(market)) destroy = false;
 		
 		if (stabilityPenalty > 0 && !destroy) {
 			String reason = StringHelper.getString("nex_bombardment", "unrestReason");
@@ -1375,7 +1462,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			text.addPara(str, Misc.getHighlightColor(), "" + stabilityPenalty);
 		}
 		
-		if (temp.bombardType == BombardType.SATURATION && market.hasCondition(Conditions.HABITABLE) && !market.hasCondition(Conditions.POLLUTION)) {
+		if (market.hasCondition(Conditions.HABITABLE) && !market.hasCondition(Conditions.POLLUTION)) {
 			market.addCondition(Conditions.POLLUTION);
 		}
 		
@@ -1409,8 +1496,6 @@ public class Nex_MarketCMD extends MarketCMD {
 							, "" + market.getSize());
 				}
 				
-				// move this to outside the if check; see http://fractalsoftworks.com/forum/index.php?topic=15628.msg252000#msg252000
-				// ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
 			}
 			ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
 		}

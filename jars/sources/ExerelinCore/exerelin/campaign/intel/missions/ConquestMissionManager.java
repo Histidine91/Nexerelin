@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
+@Deprecated
 public class ConquestMissionManager extends BaseEventManager {
 
 	public static final String KEY = "nex_ConquestMissionManager";
@@ -61,6 +62,9 @@ public class ConquestMissionManager extends BaseEventManager {
 	@Override
 	protected EveryFrameScript createEvent() {
 		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
+			return null;
+		
+		if (!NexConfig.enableInvasions)
 			return null;
 		
 		log.info("Attempting to create conquest mission event");
