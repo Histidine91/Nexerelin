@@ -465,7 +465,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (market.isHidden()) continue;
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
 			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
-			if (!market.hasSpaceport()) continue;
+			if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
 			if (market.getSize() < 3) continue;
 			// markets with ongoing rebellions can't launch invasions
 			if (RebellionIntel.isOngoing(market))

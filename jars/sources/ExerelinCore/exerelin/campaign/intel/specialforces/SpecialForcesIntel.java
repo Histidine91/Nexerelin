@@ -40,6 +40,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -333,7 +334,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		for (MarketAPI market : Misc.getFactionMarkets(faction)) {
 			if (market.isHidden()) continue;
-			if (!market.hasSpaceport()) continue;
+			if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
 			
 			
 			float dist = Misc.getDistance(loc, market.getLocationInHyperspace());

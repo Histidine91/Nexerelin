@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -108,7 +109,7 @@ public class NexOrganizeStage extends OrganizeStage {
 		}
 		// fail if spaceport + any present military base are disrupted
 		else if (market != null && offFltIntel.requiresSpaceportOrBase) {
-			if (!market.hasSpaceport() && !market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY))
+			if (!NexUtilsMarket.hasWorkingSpaceport(market) && !market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY))
 				fail = true;
 		}
 		if (fail) {

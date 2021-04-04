@@ -46,7 +46,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		switch (arg)
 		{
 			case "hasSpaceport":
-				return market.hasSpaceport();
+				return NexUtilsMarket.hasWorkingSpaceport(market);
 			
 			// list faction groupings
 			case "listGroups":

@@ -15,6 +15,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -139,7 +140,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 		
 		for (MarketAPI market : Misc.getFactionMarkets(faction)) {
 			if (market.isHidden()) continue;
-			if (!market.hasSpaceport()) continue;
+			if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
 			if (!market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY))
 				continue;
 			if (market.getContainingLocation() == playerLoc)

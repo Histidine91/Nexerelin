@@ -237,6 +237,17 @@ public class NexUtilsMarket {
 		return false;
 	}
 	
+	public static boolean hasWorkingSpaceport(MarketAPI market) {
+		for (Industry ind : market.getIndustries()) 
+		{
+			if (!ind.getSpec().hasTag(Industries.TAG_SPACEPORT))
+				continue;
+			if (ind.isDisrupted()) continue;
+			return true;
+		}
+		return false;
+	}
+	
 	public static PersonAPI getPerson(MarketAPI market, String postId)
 	{
 		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())

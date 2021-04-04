@@ -44,6 +44,7 @@ import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -432,7 +433,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		List<MarketAPI> markets = new ArrayList<>();
 		for (MarketAPI market : marketsTemp) {
-			if (!market.hasSpaceport()) continue;
+			if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
 			markets.add(market);
 		}

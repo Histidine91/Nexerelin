@@ -26,6 +26,7 @@ import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.NexUtilsMath;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -410,7 +411,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 					continue;
 				}
 			}
-			if (!market.hasSpaceport()) continue;
+			if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
 			
 			float weight = market.getSize() * (float) Math.sqrt(NexUtilsMath.lerp(0.25f, 1f, market.getShipQualityFactor()));
 			float mod = 1f;

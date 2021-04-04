@@ -721,7 +721,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				else if (isSabotage) 
 				{
 					// kill the spaceport?
-					if (target.market.hasSpaceport() && random.nextFloat() < 0.35f) 
+					if (NexUtilsMarket.hasWorkingSpaceport(target.market) && random.nextFloat() < 0.35f) 
 					{
 						Industry ind = target.market.getIndustry(Industries.MEGAPORT);
 						if (ind == null) ind = target.market.getIndustry(Industries.SPACEPORT);

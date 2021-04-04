@@ -19,6 +19,7 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -99,7 +100,7 @@ public abstract class NexAssembleStage extends AssembleStage {
 		}
 		
 		MarketAPI market = sources.get(currSource);
-		if (!market.isInEconomy() || !market.getPrimaryEntity().isAlive() || !market.hasSpaceport()) {
+		if (!market.isInEconomy() || !market.getPrimaryEntity().isAlive() || !NexUtilsMarket.hasWorkingSpaceport(market)) {
 			sources.remove(market);
 			return;
 		}

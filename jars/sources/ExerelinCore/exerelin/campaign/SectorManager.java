@@ -708,7 +708,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
             
             for (MarketAPI market : markets) {
-                if (!market.hasSpaceport()) continue;
+                if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
                 sourcePicker.add(market, InvasionFleetManager.getMarketWeightForInvasionSource(market));
             }
             sourceMarket = sourcePicker.pick();
@@ -1248,7 +1248,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // rebellion
         if (isCapture && !newOwner.getId().equals(NexUtilsMarket.getOriginalOwner(market))
-                && !RebellionIntel.isOngoing(market))
+                && !RebellionIntel.isOngoing(market) && !oldOwnerId.equals("nex_derelict"))
         {
             RebellionIntel rebel = RebellionCreator.getInstance().createRebellion(market, oldOwnerId, true);
             rebel.setInitialStrengthsAfterInvasion(playerInvolved);
