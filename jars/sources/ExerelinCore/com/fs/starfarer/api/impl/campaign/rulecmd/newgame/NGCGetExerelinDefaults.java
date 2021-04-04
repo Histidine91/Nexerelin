@@ -10,6 +10,7 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 
 
@@ -42,6 +43,8 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
 		if (setupData.easyMode)  data.setDifficulty("easy");
 		else data.setDifficulty("normal");
+		
+		map.set("$nex_legacyInsurance", NexConfig.legacyInsurance);
 		
 		String str = ExerelinSetupData.getDModCountText(setupData.dModLevel);
 		map.set("$nex_ngcDModsString", str);
