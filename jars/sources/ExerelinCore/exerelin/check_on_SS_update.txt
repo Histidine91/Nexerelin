@@ -34,6 +34,7 @@ Do on future SS release:
 - Use "player colonized" and deciv listeners
 	- Deciv listener applications:
 		- Sector manager (faction elimination): useless, we don't know who the previous owner was
+			- Just use it to run the live faction check
 	- Player colonized listener applications:
 		- Faction setup nag script? mehhh
 

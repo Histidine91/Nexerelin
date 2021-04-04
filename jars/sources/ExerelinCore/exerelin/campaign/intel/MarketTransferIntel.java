@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-//TODO: how the hell is this shit added?
+
 public class MarketTransferIntel extends BaseIntelPlugin {
 	
 	public static final String MEMORY_KEY_REP_GAIN_COOLDOWN = "$nex_invasionRepCooldown";
