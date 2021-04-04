@@ -99,15 +99,16 @@
 			"className":"exerelin.world.factionsetup.AddCommodities",
 			"sortOrder":9,
 		},
-		"janus":{
-			"name":"Janus Device",
-			"desc":"A working first-generation %s. How you got hold of it is a mystery.",
-			"params": {
-				"items":[["janus"]],
-			},
-			"cost":0,
-			"className":"exerelin.world.factionsetup.AddSpecial",
-			"sortOrder":20,
-		},
+		# Janus device now automatically given even in non-faction start, this is just left here as an example
+		#"janus":{
+		#	"name":"Janus Device",
+		#	"desc":"A working first-generation %s. How you got hold of it is a mystery.",
+		#	"params": {
+		#		"items":[["janus"]],
+		#	},
+		#	"cost":0,
+		#	"className":"exerelin.world.factionsetup.AddSpecial",
+		#	"sortOrder":20,
+		#},
 	},
 }

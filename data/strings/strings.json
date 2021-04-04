@@ -1796,6 +1796,8 @@
 		"pirateActivityPenaltyNone":"No perceptible impact on operations as of yet.",
 		"pirateActivityPenaltyModified":"Impacts reduced due to reputation with pirates (%s).",
 		
+		"galatiaStipend":"Stipend from Galatia Academy",
+		
 		"errorStarsectorVersion":"This version of Starsector is too old for %s!\nPlease make sure Starsector is up to date.\nRequired Version: %s\nCurrent Version: %s",
 		"errorLazyLib":"Nexerelin requires LazyLib to function!\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0",
 		"errorOfficerMaxLevel":"Officer max level in config is over 29 (current: $currMax)\nThis risks a hang during gameplay.\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.",

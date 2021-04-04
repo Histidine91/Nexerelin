@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -15,13 +16,14 @@ import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
-import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
+import exerelin.campaign.intel.Nex_GalatianAcademyStipend;
 import exerelin.campaign.ui.OwnFactionSetupScript;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.utilities.NexConfig;
@@ -116,7 +118,7 @@ public class StartSetupPostTimePass {
 		
 		// Galatian stipend
 		if (!SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()) {
-			new GalatianAcademyStipend();
+			new Nex_GalatianAcademyStipend();
 		}
 		
 		// Starting blueprints
@@ -134,6 +136,7 @@ public class StartSetupPostTimePass {
 		
 		// gate handling
 		if (!SectorManager.getManager().isCorvusMode()) {
+			Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
 			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.CAN_SCAN_GATES, true);
 			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.GATES_ACTIVE, true);
 		}
@@ -208,6 +211,9 @@ public class StartSetupPostTimePass {
 		else {	// hyperspace, turn off transponder in case we're hostile to anyone
 			playerFleet.getAbilities().get(Abilities.TRANSPONDER).deactivate();
 		}
+		
+		// insurance popup
+		//SectorManager.getManager().getInsurance().sendUpdateIfPlayerHasIntel(null, false);
 	}
 	
 	/**

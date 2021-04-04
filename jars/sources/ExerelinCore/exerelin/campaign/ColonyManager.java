@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
+import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionProductionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -29,6 +30,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -621,7 +623,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	{
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>(random);
 		for (MarketAPI market : NexUtilsFaction.getFactionMarkets(factionId)) {
-			if (!market.hasSpaceport()) continue;
+			if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
 			int size = market.getSize();
 			if (size < 5) continue;
 			
@@ -970,6 +972,25 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		{
 			market.setPlayerOwned(true);
 			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RULER_TEMP_OWNERSHIP, market.getAdmin(), 0);
+		}
+		
+		// Turn "derelict officers" into normal ones
+		if (market.getFactionId().equals("nex_derelict")) 
+		{
+			for (CommDirectoryEntryAPI entry : market.getCommDirectory().getEntriesCopy())
+			{
+				PersonAPI person = (PersonAPI)entry.getEntryData();
+				String postId = person.getPostId();
+				if (person.getMemoryWithoutUpdate().getBoolean("$nex_derelict_officer_removed")) continue;
+				if (Ranks.POST_FREELANCE_ADMIN.equals(postId) || Ranks.POST_MERCENARY.equals(postId)
+						|| Ranks.POST_OFFICER_FOR_HIRE.equals(postId)) {
+					PersonAPI temp = OfficerManagerEvent.createOfficer(Global.getSector().getPlayerFaction(), 3);
+					person.setPortraitSprite(temp.getPortraitSprite());
+					person.setName(temp.getName());
+					person.getMemoryWithoutUpdate().set("$nex_derelict_officer_removed", true);
+				}
+			}
+			
 		}
 	}
 	

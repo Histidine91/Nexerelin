@@ -13,10 +13,12 @@
 	"crest":"graphics/factions/crest_domain_explorarium.png",
 	"shipNamePrefix":"DSS",
 	
-	"color":[100,100,100,255],
-	"baseUIColor":[155,155,155,255],
+	"color":[105,110,100,255],
+	"baseUIColor":[165,175,155,255],
 	#"darkUIColor":[31,94,112,175],
 	#"gridUIColor":[70,200,255,75],
+	"secondaryUIColor":[166,181,121,255],
+	"secondarySegments":8,
 	
 	"showInIntelTab":false,
 	
@@ -38,29 +40,24 @@
 	# ships the faction gets access to when importing S&W out-of-faction
 	"shipsWhenImporting":{
 		"tags":["derelict"],
-		"hulls":[
-		],
+		"hulls":[],
 	},
 	"knownShips":{
 		"tags":["derelict"],
-		"hulls":[
-		],
+		"hulls":[],
 	},
 	# listing ships here will make the faction mostly use them even if other hulls become available
 	"priorityShips":{
 		"tags":[],
-		"hulls":[
-		],
+		"hulls":[],
 	},
 	"knownFighters":{
 		"tags":["derelict"],
-		"fighters":[
-		],
+		"fighters":[],
 	},
 	"priorityFighters":{
 		"tags":[],
-		"fighters":[
-		],
+		"fighters":[],
 	},
 	"knownWeapons":{
 		"tags":["derelict"],
@@ -124,8 +121,7 @@
 	},
 	"priorityWeapons":{
 		"tags":[],
-		"weapons":[
-		],
+		"weapons":[],
 	},
 	"knownHullMods":{
 		"tags":["base_bp", "derelict"],
@@ -160,8 +156,8 @@
 		"phaseShips":1,
 		
 		"officerQuality":3,
-		"shipQuality":1,
-		"numShips":1,
+		"shipQuality":3,
+		"numShips":3,
 		
 		"shipSize":3,
 		
@@ -173,16 +169,14 @@
 		"autofitRandomizeProbability":0.75,
 
 		"commanderSkillsShuffleProbability":0,
-		"commanderSkills":[
-		],
+		"commanderSkills":[],
 	},
 	"shipRoles":{
 		"derelictMothership":{
 			"station_derelict_survey_mothership_Standard":10,
 		},
 	},
-	"illegalCommodities":[
-	],
+	"illegalCommodities":[],
 	"music":{
 		#"encounter_hostile":"music_default_encounter_hostile",
 		"theme":"music_none",
@@ -206,10 +200,8 @@
 		],
 	},
 	"ranks":{
-		"ranks":{
-		},
-		"posts":{
-		},
+		"ranks":{},
+		"posts":{},
 	},
 	"custom":{
 		"allowsTransponderOffTrade":true, # to prevent cargoscan dialog from "patrols"
