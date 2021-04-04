@@ -154,10 +154,14 @@ public class SpecialForcesManager implements EveryFrameScript {
 			return null;
 		}
 		
-		float fp = POINTS_TO_SPAWN * MathUtils.getRandomNumberInRange(0.95f, 1.05f);
+		float fp = POINTS_TO_SPAWN * MathUtils.getRandomNumberInRange(0.95f, 1.05f) * 0.6f;
 		SpecialForcesIntel intel = new SpecialForcesIntel(origin, faction, fp);
 		intel.init(null);
 		return intel;
+	}
+	
+	public List<SpecialForcesIntel> getActiveIntelCopy() {
+		return new LinkedList<>(activeIntel);
 	}
 	
 	protected int countActiveFleetsForFaction(String factionId) {
@@ -203,6 +207,10 @@ public class SpecialForcesManager implements EveryFrameScript {
 	public boolean runWhilePaused() {
 		return false;
 	}
-	// debug code
-	// runcode exerelin.campaign.intel.specialforces.SpecialForcesManager.getManager().generateFleet("sindrian_diktat")
+	
+	// runcode exerelin.campaign.intel.specialforces.SpecialForcesManager.getManager().spawnDebug("luddic_church");
+	public void spawnDebug(String factionId) {
+		SpecialForcesIntel intel = generateFleet(factionId);
+		activeIntel.add(intel);
+	}
 }

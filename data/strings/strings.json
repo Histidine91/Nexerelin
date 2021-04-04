@@ -1601,7 +1601,9 @@
 		"intelStageActionDefeatedSpace":"The task force has been defeated by the defenders of $market.",
 		"intelStageActionAborted":"The bombardment has been aborted.",
 	},
-	"nex_specialForces":{	
+	"nex_specialForces":{
+		"fleetNameGeneric":"%s task group",
+	
 		"intelTitle":"Special Task Group",
 		"intelTag":"Special forces",
 		
@@ -1618,6 +1620,12 @@
 		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",
 		
 		"intelButtonDebug":"Debug",
+		
+		"bountyBulletLocation":"Target is in the %s",
+		"bountyBulletDestination":"Target is headed to %s in the %s",
+		"bountyBulletUnknown":"Target location details are unknown (this should not happen, please report)",
+		"bountyParaLocation":"The target is located in the %s.",
+		"bountyParaDestination":"The target is headed to %s in the %s.",
 	},
 	
 	"exerelin_superweapon":{

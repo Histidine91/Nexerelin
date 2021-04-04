@@ -1651,3 +1651,10 @@ $market.nex_dcom_completed = true 0
 Call $market.nex_dcom_ref updateStage","You feel the almost imperceptible vibrations as the assault shuttles return to your $shipOrFleet, their work complete. You listen for a moment to the open broad-comm channel; the line crackles and squeals with the last gasps of electronic warfare hexes distorted through chaff and the warp of fresh plumes of charged particles. It's a familiar sound; you can almost smell it. 
 
 Tactical has casualty reports prepared for review. You acknowledge with a nod and shut off the comms.",mktRaidResult:Continue,
+,,,,,,
+Nex_CBSpecialForces,Nex_CBSpecialForcesOfferDesc,,"SetTextHighlightColors $bcb_targetFactionColor h h
+Highlight $bcb_targetFaction $bcb_reward $bcb_days","""This will be a real test of your skills."" $heOrShe focuses the briefing. ""STRATCOM requires neutralization of a high value target: a special task group of the $bcb_targetFaction. The reward is $bcb_reward credits for completion within $bcb_days days."" 
+
+""Be warned: this will not be like other bounties. Such fleets are among the best in the Sector, and they won't stay in one place for you."" 
+
+""We'll try to keep you updated on their movements; the good news is they don't generally leave the core worlds. Of course, that also means you may encounter them with ample $bcb_targetFaction forces backing them up.""",,

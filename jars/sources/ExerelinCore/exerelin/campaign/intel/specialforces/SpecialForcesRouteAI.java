@@ -427,7 +427,7 @@ public class SpecialForcesRouteAI {
 	 */
 	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) 
 	{
-		sf.debugMsg("Picking task for " + sf.getFleetNameForDebugging(), false);
+		sf.debugMsg("Picking task for " + sf.getFleetName(), false);
 		
 		boolean isBusy = currentTask != null && currentTask.type.isBusyTask();
 		
@@ -631,7 +631,7 @@ public class SpecialForcesRouteAI {
 		
 		if (currentTask.type == TaskType.REBUILD) 
 		{
-			sf.debugMsg("Attempting to rebuild fleet " + sf.getFleetNameForDebugging(), false);
+			sf.debugMsg("Attempting to rebuild fleet " + sf.getFleetName(), false);
 			// Not close enough, wait a while longer
 			if (!isCloseEnoughForTask()) {
 				sf.debugMsg("Not close enough, retrying", true);

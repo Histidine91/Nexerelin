@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -16,7 +15,6 @@ import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
-import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
@@ -34,7 +32,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.PlayerFactionStore;
 import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
@@ -50,7 +47,6 @@ import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
 public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpawner 
@@ -182,11 +178,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				0.25f
 		);
 		params.timestamp = thisRoute.getTimestamp();
-		params.officerLevelBonus = 3;
-		params.officerNumberMult = 1.5f;
+		params.officerLevelBonus = 1;
+		params.officerNumberMult = 1.25f;
 		params.random = new Random(seed);
 		params.ignoreMarketFleetSizeMult = true;
 		params.modeOverride = FactionAPI.ShipPickMode.PRIORITY_THEN_ALL;
+		params.averageSMods = 2;
 		//params.doNotPrune = true;
 		
 		return FleetFactoryV3.createFleet(params);
@@ -726,6 +723,26 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 	}
 	
+	/**
+	 * Forces the fleet to generate. Used for e.g. bounties. Doesn't actually assign the active fleet, don't use.
+	 * @param preventAutoDespawn Sets {@code setNoAutoDespawn(true)} on the resulting fleet.
+	 */
+	@Deprecated
+	public void forceSpawn(boolean preventAutoDespawn) {
+		if (route.getActiveFleet() == null)
+			route.getSpawner().spawnFleet(route);
+		if (preventAutoDespawn && route.getActiveFleet() != null) 
+			route.getActiveFleet().setNoAutoDespawn(true);
+	}
+	
+	/**
+	 * Use to revert the effects of {@code forceSpawn(true)}.
+	 */
+	public void allowDespawn() {
+		if (route.getActiveFleet() != null) 
+			route.getActiveFleet().setNoAutoDespawn(null);
+	}
+	
 	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle)
 	{
 		log.info("Fleet " + fleet.getName() + " in battle");
@@ -785,9 +802,9 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		return false;
 	}
 	
-	public String getFleetNameForDebugging() {
+	public String getFleetName() {
 		if (fleetName != null) return fleetName;
-		return faction.getDisplayName() + " task group"; 
+		return String.format(getString("fleetNameGeneric"), faction.getDisplayName());
 	}
 	
 	public void debugMsg(String msg, boolean small) {
@@ -811,7 +828,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		@Override
 		public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) 
 		{
-			
+			fleet.removeEventListener(this);
 		}
 
 		@Override
