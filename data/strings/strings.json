@@ -1694,6 +1694,10 @@
 		"apostate_name":"Victory: The Apostate",
 		"apostate_text":"Once you were denounced as an apostate. Once your sentence was to be burned at the heart of a miniature star, an object lesson to all who would turn their back on the faith.\n\nBut now you live, and the Knights Templar who once hunted you relentlessly as a traitor are gone.\n\nYet even now, will you, or the Sector, ever know peace? Only time will tell. For now, a new page in history is turning.",
 		"apostate_intelText":"You have survived, and the Templars who hunted you as an apostate are not. This is your triumph.",
+		
+		"academy_name":"Story Victory",
+		"academy_text":"In the service of the Galatian Academy, you have travelled far, explored the reaches of the Persean Sector, and discovered wondrous secrets and sciences.\n\nOnly time will tell where all this leads. For now, this chapter of your story, and the Sector, has come to and end. But pages turn yet, with more to be told...",
+		"academy_intelText":"You have completed your Academy assignments, and with them this arc of the play on the Sector's stage. In time, there will be yet more to see.",
 	},
 	
 	"exerelin_victoryScreen":{

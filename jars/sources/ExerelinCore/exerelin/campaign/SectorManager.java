@@ -130,7 +130,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected boolean onlyRespawnStartingFactions = false;
     protected SectorEntityToken homeworld;
     
-    protected boolean corvusMode = false;
+    protected boolean corvusMode = true;
     protected boolean hardMode = false;
     protected boolean freeStart = false;
     

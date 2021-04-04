@@ -28,6 +28,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.AcademyStoryVictoryScript;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
@@ -156,7 +157,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         StatsTracker.create();
         new MilestoneTracker().init();
         
-        SectorManager.getManager().setCorvusMode(true);
         SectorManager.reinitLiveFactions();
         NexUtilsReputation.syncFactionRelationshipsToPlayer();
         
@@ -216,6 +216,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(new FactionBountyManager());
         
         addBarEvents();
+        
+        new AcademyStoryVictoryScript().init();
     }
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
