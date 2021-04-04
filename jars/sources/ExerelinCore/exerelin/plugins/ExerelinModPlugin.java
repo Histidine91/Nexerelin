@@ -155,7 +155,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         StatsTracker.create();
-        new MilestoneTracker().init();
         
         SectorManager.reinitLiveFactions();
         NexUtilsReputation.syncFactionRelationshipsToPlayer();
@@ -214,6 +213,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         //sector.addScript(new ConquestMissionManager());
         //sector.addScript(new DisruptMissionManager());
         sector.addScript(new FactionBountyManager());
+        
+        new MilestoneTracker().init();
         
         addBarEvents();
         
