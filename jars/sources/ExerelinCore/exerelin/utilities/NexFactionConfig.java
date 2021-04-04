@@ -129,6 +129,7 @@ public class NexFactionConfig
     public boolean dropPrisoners = true;
     public boolean noHomeworld = false;	// don't give this faction a HQ in procgen
     public boolean showIntelEvenIfDead = false;	// intel tab
+	public boolean noMissionTarget = false;
     
     public boolean allowAgentActions = true;
     public boolean allowPrisonerActions = true;
@@ -231,6 +232,7 @@ public class NexFactionConfig
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             noHomeworld = settings.optBoolean("noHomeworld", noHomeworld);
             showIntelEvenIfDead = settings.optBoolean("showIntelEvenIfDead", showIntelEvenIfDead);
+			noMissionTarget = settings.optBoolean("noMissionTarget", noMissionTarget);
             
             allowAgentActions = settings.optBoolean("allowAgentActions", allowAgentActions);
             allowPrisonerActions = settings.optBoolean("allowPrisonerActions", allowPrisonerActions);

@@ -1271,7 +1271,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // valid for mission target?
-        // TODO: add "invalid mission target" faction config tag
+        boolean oldAllowMissions = !NexConfig.getFactionConfig(oldOwnerId).noMissionTarget;
+        boolean newAllowMissions = !NexConfig.getFactionConfig(newOwnerId).noMissionTarget;
+        
+        if (oldAllowMissions && !newAllowMissions) {
+            market.setInvalidMissionTarget(true);
+        }
+        else if (!oldAllowMissions && newAllowMissions) {
+            market.setInvalidMissionTarget(null);
+        }
         
         NexUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
                 playerInvolved, isCapture, factionsToNotify, repChangeStrength);
