@@ -3,6 +3,12 @@
 	"industryRefundFraction":0.4,		# default 0.75
 	#"raidCooldownDays":3,				# default 1
 	
+	"pirateBaseBounty1":80000,			# default 40000,
+	"pirateBaseBounty2":100000,			# default 50000,
+	"pirateBaseBounty3":120000,			# default 60000,
+	"pirateBaseBounty4":140000,			# default 70000,
+	"pirateBaseBounty5":180000,			# default 80000,
+	
 	"economyExceptionOnMissingMarketEntity":false,
 	
 	"nex_enableVersionChecker":true,
