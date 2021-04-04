@@ -39,6 +39,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public static final Object OUTCOME_UPDATE = new Object();
 	public static final boolean INTEL_ALWAYS_VISIBLE = true;
 	public static final float ALLY_GEAR_CHANCE = 0.5f;
+	public static final float ROUTE_STRENGTH_MULT = 1.25f;
+	public static final float FP_MULT = 0.8f;
 	
 	public static Logger log = Global.getLogger(OffensiveFleetIntel.class);
 	
@@ -83,7 +85,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		this.delegate = this;
 		this.from = from;
 		this.target = target;
-		this.fp = fp;
+		this.fp = fp * FP_MULT;
 		baseFP = fp;
 		this.orgDur = orgDur;
 		targetFaction = target.getFaction();

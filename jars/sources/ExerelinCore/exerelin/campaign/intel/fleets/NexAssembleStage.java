@@ -118,7 +118,7 @@ public abstract class NexAssembleStage extends AssembleStage {
 		
 		//extra.fp = Misc.getAdjustedFP(fp, market);
 		extra.fp = fp;
-		extra.strength = getAdjustedStrength(fp, market);
+		extra.strength = getAdjustedStrength(fp, market) * OffensiveFleetIntel.ROUTE_STRENGTH_MULT;
 		
 		float prepDays = 3f + 3f * (float) Math.random();
 		float travelDays = RouteLocationCalculator.getTravelDays(market.getPrimaryEntity(), gatheringPoint);

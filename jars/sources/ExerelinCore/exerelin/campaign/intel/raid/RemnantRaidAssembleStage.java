@@ -45,7 +45,7 @@ public class RemnantRaidAssembleStage extends NexRaidAssembleStage {
 		
 		//extra.fp = Misc.getAdjustedFP(fp, market);
 		extra.fp = fp;
-		extra.strength = Misc.getAdjustedStrength(fp, null);
+		extra.strength = Misc.getAdjustedStrength(fp, null) * OffensiveFleetIntel.ROUTE_STRENGTH_MULT;
 		
 		LocationAPI loc = base.getContainingLocation();
 		float quality = 0.25f + (raid.getNumPrevious() * 0.05f);
