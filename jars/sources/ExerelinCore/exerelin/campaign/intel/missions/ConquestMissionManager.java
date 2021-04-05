@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 public class ConquestMissionManager extends BaseEventManager {
 
 	public static final String KEY = "nex_ConquestMissionManager";
-	public static final int MIN_PLAYER_LEVEL = 25;
+	public static final int MIN_PLAYER_LEVEL = 10;
 	public static Logger log = Global.getLogger(ConquestMissionManager.class);
 	
 	public static ConquestMissionManager getInstance() {
