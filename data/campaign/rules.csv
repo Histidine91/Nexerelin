@@ -1606,13 +1606,6 @@ $market.ruinsExplored
 $market.isPlanetConditionMarketOnly
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $market have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
 ,,,,,,
-goToTheGABarEventOption,AddBarEvents,"!$market.isHidden
-$global.daysSinceStart > 365
-!$global.metBaird
-!$global.interactedWithGABarEvent
-$global.nex_corvusMode == true
-RollProbability 0.2","AddBarEvent goToGA_barEvent ""Talk to the distinguished academician"" ""A distinguished, uniformed academician seems to be holding court with a handful of successful-looking ship officers."" highlight",,,
-,,,,,,
 # Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"$hasMarket
 $faction.id == templars score:1000
