@@ -210,7 +210,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         new SpecialForcesManager().init();
         RebellionCreator.generate();
         
-        //sector.addScript(new ConquestMissionManager());
+        sector.addScript(new ConquestMissionManager());
         //sector.addScript(new DisruptMissionManager());
         sector.addScript(new FactionBountyManager());
         

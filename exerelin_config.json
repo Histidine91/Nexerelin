@@ -44,7 +44,7 @@
     
     # if false, replaces NPC invasions (including revenge counter-invasion mechanic) with raids
     # for now, also prevents player invasions
-    "enableInvasions": false,
+    "enableInvasions": true,
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
     "fleetRequestCostPerFP": 400,  # used for player-requested fleets

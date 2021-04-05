@@ -51,7 +51,7 @@
 	"nex_officerBaseEscapeChance":0.5,	# modified by crew loss mult
 	"nex_officerSurviveChance":0.75,	# only if officer does not escape and ship is disabled rather than destroyed
 	
-	"nex_insuranceFraudCheck":true,
+	"nex_insuranceFraudCheck":true,		# legacy insurance only
 	
 	"nex_playerOutpost_metals":400,
 	"nex_playerOutpost_supplies":75,
@@ -64,20 +64,8 @@
 	"nex_hardModeDispositionModifier":-15,
 	"nex_hardModeDominanceMult":1.5,	# when calculating disposition
 	
-	"nex_invasionBaseDefenseMult":1.25,
-	
-	"nex_raidBPCooldown":60,	# how long before a market can be raided for blueprints again
-	"nex_raidBPOnlyUnlearned":false,
-	
-	# these two settings control how many blueprints will drop during a raid
-	# chance of getting first blueprint is always (raid strength mult) + 50%;
-	# chance of second blueprint is (strength mult) * nex_raidBPInitialExtraMult;
-	# for each subsequent roll, the chance of blueprint is multiplied by nex_raidBPIterationMult
-	# so a value of 0.5 halves the chance of the next one for each previous successful roll
-	# you can get up to 11 blueprints, but if any of the rolls fail the sequence stops there
-	"nex_raidBPInitialExtraMult":1,		# vanilla code assumes 0.5
-	"nex_raidBPIterationMult":0.5,		# vanilla code assumes 1
-	
+	"nex_invasionBaseDefenseMult":1.4,
+		
 	"nex_aiCoreAndPrisonerCooldownAfterInvasion":61,	# cannot turn in prisoners or AI cores for this long after a successful invasion of that faction's markets
 	
 	"nex_bonusAdminLevels":[0, 10, 25, 50, 80, 120, 200, 300],
@@ -188,7 +176,7 @@
 			"trait_paranoid":"graphics/exerelin/icons/intel/war.png",
 			"trait_pacifist":"graphics/exerelin/icons/intel/peace.png",
 			"trait_irredentist":"graphics/factions/crest_domain.png",
-			#"trait_stalwart":"graphics/icons/skills/leadership2.png",
+			"trait_stalwart":"graphics/icons/skills/leadership2.png",
 			"trait_weak-willed":"graphics/exerelin/icons/intel/white_flag.png",
 			"trait_temperamental":"graphics/exerelin/icons/intel/double_exclamation.png",
 			"trait_dislikesAI":"graphics/exerelin/icons/intel/bannedcore1.png",
