@@ -1069,6 +1069,9 @@
 		"endMsgLoot":"The invasion forces captured a quantity of various items, as well as some credits.",
 		"endMsgNoLoot":"The invasion did not lead to the capture of a meaningful quantity of goods.",
 		"endMsgDefeat":"Your invasion has been defeated.",
+		
+		"storyCriticalWarning":"$market has an important role to play in the Sector to come. You have the feeling that if you were to proceed successfully with this invasion, the future could be distorted.",
+		"storyCriticalWarningHighlight":"the future could be distorted"
 	},
 	"nex_invasion2":{
 		"intelTitle":"Surface Battle: $market",

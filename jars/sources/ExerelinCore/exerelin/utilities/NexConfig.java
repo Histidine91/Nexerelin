@@ -54,6 +54,7 @@ public class NexConfig
     
     // Invasion stuff
     public static boolean enableInvasions = true;
+    public static boolean allowInvadeStoryCritical = false;
     public static boolean allowPirateInvasions = false;
     public static boolean retakePirateMarkets = true;
     public static float fleetRequestCostPerFP = 400f;
@@ -186,6 +187,7 @@ public class NexConfig
             useAgentSpecializations = settings.optBoolean("useAgentSpecializations", useAgentSpecializations);
             
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
+            allowInvadeStoryCritical = settings.optBoolean("allowInvadeStoryCritical", allowInvadeStoryCritical);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
             fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);

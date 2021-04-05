@@ -167,6 +167,9 @@ public class NexUtilsMarket {
 		if (config != null && !config.playableFaction && !isIndie && !isDerelict)
 			return false;
 		
+		if (!NexConfig.allowInvadeStoryCritical && Misc.isStoryCritical(market))
+			return false;
+		
 		boolean allowPirates = NexConfig.allowPirateInvasions;
 		boolean isPirate = NexUtilsFaction.isPirateFaction(factionId);
 		// player markets count as pirate if player has a commission with a pirate faction
