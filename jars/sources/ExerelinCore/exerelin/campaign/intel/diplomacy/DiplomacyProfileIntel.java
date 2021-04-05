@@ -44,7 +44,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	public static final float WEARINESS_MAX_FOR_COLOR = 10000;
 	public static final float MARGIN = 40;
 	public static final Set<String> NO_PROFILE_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
-		Factions.PLAYER, Factions.DERELICT
+		Factions.PLAYER, Factions.DERELICT, "nex_derelict"
 	}));
 	public static final List<String> DISPOSITION_SOURCE_KEYS = new ArrayList<>(Arrays.asList(new String[] {
 		"overall", "base", "relationship", "alignments", /*"morality",*/ "events", "commonEnemies", "dominance", "revanchism", "traits"

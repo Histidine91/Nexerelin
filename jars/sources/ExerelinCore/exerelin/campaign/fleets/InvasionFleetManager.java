@@ -657,7 +657,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		
 		// always invade rather than raid derelicts
-		if (targetMarket.getFactionId().equals(Factions.DERELICT) 
+		if (targetMarket.getFactionId().equals("nex_derelict") 
 				&& (type == EventType.RAID || type == EventType.SAT_BOMB))
 			type = EventType.INVASION;
 		
@@ -1032,7 +1032,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (market.getFaction().isPlayerFaction()) continue;
 			
 			String factionId = market.getFactionId();
-			if (Factions.INDEPENDENT.equals(factionId) || Factions.DERELICT.equals(factionId)) continue;
+			if (Factions.INDEPENDENT.equals(factionId) || "nex_derelict".equals(factionId)) continue;
 			
 			//if (!pirateInvasions && !ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
 			//	continue;

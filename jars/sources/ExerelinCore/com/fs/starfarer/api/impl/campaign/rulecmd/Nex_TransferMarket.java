@@ -36,7 +36,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 	public static final String SELECT_FACTION_PREFIX = "nex_transferMarket_";
 	public static final int PREFIX_LENGTH = SELECT_FACTION_PREFIX.length();
 	public static final List<String> NO_TRANSFER_FACTIONS = Arrays.asList(new String[]{
-		Factions.PLAYER, Factions.DERELICT
+		Factions.PLAYER, Factions.DERELICT, "nex_derelict"
 	});
 		
 	@Override

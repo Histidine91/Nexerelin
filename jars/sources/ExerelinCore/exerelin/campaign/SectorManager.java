@@ -112,7 +112,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }));
     
     public static final Set<String> NO_WARMONGER_FACTIONS = new HashSet(Arrays.asList(new String[]{
-        Factions.DERELICT, Factions.REMNANTS, Factions.NEUTRAL
+        Factions.DERELICT, Factions.REMNANTS, Factions.NEUTRAL, "nex_derelict"
     }));
     
     public static final Set<String> DO_NOT_RESPAWN_FACTIONS = new HashSet<>();
@@ -592,7 +592,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     @Override
     public void reportFleetSpawned(CampaignFleetAPI fleet) {
-        if (fleet.getFaction().getId().equals(Factions.DERELICT)) {
+        if (fleet.getFaction().getId().equals("nex_derelict")) {
             fleet.getMemoryWithoutUpdate().set(EncounterLootHandler.FLEET_MEMORY_KEY, "derelict");
 			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
                    new RemnantRaidFleetInteractionConfigGen());

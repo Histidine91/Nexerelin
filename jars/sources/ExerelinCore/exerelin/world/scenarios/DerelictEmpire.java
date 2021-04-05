@@ -49,6 +49,7 @@ public class DerelictEmpire extends Scenario {
 		for (FactionAPI faction : Global.getSector().getAllFactions()) {
 			String factionId = faction.getId();
 			if (factionId.equals(Factions.DERELICT)) continue;
+			if (factionId.equals("nex_derelict")) continue;
 			if (factionId.equals(Factions.REMNANTS)) continue;
 			derelict.setRelationship(factionId, DiplomacyManager.STARTING_RELATIONSHIP_HOSTILE);
 		}

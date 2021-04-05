@@ -38,7 +38,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public static Logger log = Global.getLogger(StatsTracker.class);
     
     public static final Set<String> NO_ORPHANS_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
-        Factions.DERELICT, Factions.REMNANTS, "spire", "darkspire"
+        Factions.DERELICT, "nex_derelict", Factions.REMNANTS, "spire", "darkspire"
     }));
     
     protected static StatsTracker tracker;

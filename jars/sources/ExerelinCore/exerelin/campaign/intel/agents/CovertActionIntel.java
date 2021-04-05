@@ -148,6 +148,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		return name;
 	}
 	
+	public AgentIntel getAgent() {
+		return agent;
+	}
+	
 	public FactionAPI getAgentFaction() {
 		return agentFaction;
 	}

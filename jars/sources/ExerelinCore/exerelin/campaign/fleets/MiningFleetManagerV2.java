@@ -338,7 +338,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		{
 			if (NexUtilsFaction.isPirateOrTemplarFaction(market.getFactionId()))
 				continue;
-			if (market.getFactionId().equals(Factions.DERELICT)) 
+			if (market.getFactionId().equals(Factions.DERELICT) || market.getFactionId().equals("nex_derelict")) 
 				continue;
 			if (market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_NO_MINING_FLEETS))
 				continue;

@@ -118,7 +118,7 @@ public class BaseLandmarkDef extends LandmarkDef {
 	
 	public String getNonDerelictFaction(MarketAPI market) {
 		String factionId = market.getFactionId();
-		if (factionId.equals(Factions.DERELICT))
+		if (factionId.equals(Factions.DERELICT) || factionId.equals("nex_derelict"))
 		{
 			String origOwnerId = NexUtilsMarket.getOriginalOwner(market);
 			if (origOwnerId != null) factionId = origOwnerId;

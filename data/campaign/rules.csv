@@ -1539,6 +1539,15 @@ INTERRUPT
 
 "" -SERIAL]. This unit has not verified the identity of your fleet. Please engage your transponder and await further instructions.""","turnOnTransponder:Turn your transponder on
 cutCommLink:Cut the comm link",
+nex_greetingDerelictFriendly,OpenCommLink,"$faction.id == nex_derelict score:1000
+$faction.friendlyToPlayer","$menuState = fleetConvMain 0
+FireAll PopulateOptions","""Domain MINEX clearance accepted, anti-tampering systems have been set to stand-by and will accept target approach for servicing.""",,
+nex_greetingDerelictHostile,OpenCommLink,"$faction.id == nex_derelict score:1000
+$entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""WARNING: This vessel is property of Domain Exploraria and is responding with deadly force to tampering by any means and/or damaging or intrusive signals. Vandalism or destruction of Domain Exploraria property is punishable under the MINEX Establishment Act in addition to colonial polity charters applicable within this volume of Domain territory. This infraction is being recorded.""",cutCommLink:Cut the comm link,
+nex_greetingDerelictNeutral,OpenCommLink,"$faction.id == nex_derelict score:1000
+$faction.neutralToPlayer","$menuState = fleetConvMain 0
+FireAll PopulateOptions","""Citizen of the Domain, this automated drone ship has identified and logged your vessel or habitat in the course of executing its mission parameters. Autonomous vessels of the Domain Exploraria are programmed to response with deadly force to tampering by any means including damaging or intrusive signals. Vandalism or destruction of Domain Exploraria property is punishable under the MINEX Establishment Act in addition to colonial polity charters applicable within this volume of Domain territory.""",,
+,,,,,,
 ,,,,,,
 nex_sal_hasVultureDefenders,DialogOptionSelected,"$option == salExplore
 !$hasDefenders
@@ -1596,6 +1605,12 @@ $market.ruinsExplored
 $market.isPlanetConditionMarketOnly
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $market have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
 ,,,,,,
+goToTheGABarEventOption,AddBarEvents,"!$market.isHidden
+$global.daysSinceStart > 365
+!$global.metBaird
+!$global.interactedWithGABarEvent
+$global.nex_corvusMode == true
+RollProbability 0.2","AddBarEvent goToGA_barEvent ""Talk to the distinguished academician"" ""A distinguished, uniformed academician seems to be holding court with a handful of successful-looking ship officers."" highlight",,,
 ,,,,,,
 # Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"$hasMarket

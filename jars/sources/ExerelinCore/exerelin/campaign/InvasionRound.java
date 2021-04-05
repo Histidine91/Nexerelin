@@ -415,7 +415,7 @@ public class InvasionRound {
 		float repChangeStrength = (market.getSize() - 2) * 0.01f;
 		if (repChangeStrength <= 0) repChangeStrength = 0;
 		
-		if (playerInvolved && !defenderFaction.getId().equals(Factions.DERELICT)) {
+		if (playerInvolved && !defenderFaction.getId().equals("nex_derelict")) {
 			for (final MarketAPI otherMarket : markets) {
 				if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
 				//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide

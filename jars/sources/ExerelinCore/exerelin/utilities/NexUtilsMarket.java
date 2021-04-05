@@ -162,7 +162,7 @@ public class NexUtilsMarket {
 		String factionId = marketFaction.getId();
 		NexFactionConfig config = NexConfig.getFactionConfig(factionId);
 		boolean isIndie = factionId.equals(Factions.INDEPENDENT);
-		boolean isDerelict = factionId.equals(Factions.DERELICT);
+		boolean isDerelict = factionId.equals("nex_derelict");
 		
 		if (config != null && !config.playableFaction && !isIndie && !isDerelict)
 			return false;

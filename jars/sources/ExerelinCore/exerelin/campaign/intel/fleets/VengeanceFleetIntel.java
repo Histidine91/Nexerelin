@@ -49,7 +49,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
     
     public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
         Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
-        Factions.SCAVENGERS, Factions.NEUTRAL	//, Factions.LUDDIC_PATH
+        Factions.SCAVENGERS, Factions.NEUTRAL, "nex_derelict",	//, Factions.LUDDIC_PATH
     }));
     public static final boolean ALWAYS_SPAWN_ONSITE = true;
 

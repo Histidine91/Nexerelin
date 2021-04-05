@@ -973,25 +973,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			market.setPlayerOwned(true);
 			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RULER_TEMP_OWNERSHIP, market.getAdmin(), 0);
 		}
-		
-		// Turn "derelict officers" into normal ones
-		if (market.getFactionId().equals("nex_derelict")) 
-		{
-			for (CommDirectoryEntryAPI entry : market.getCommDirectory().getEntriesCopy())
-			{
-				PersonAPI person = (PersonAPI)entry.getEntryData();
-				String postId = person.getPostId();
-				if (person.getMemoryWithoutUpdate().getBoolean("$nex_derelict_officer_removed")) continue;
-				if (Ranks.POST_FREELANCE_ADMIN.equals(postId) || Ranks.POST_MERCENARY.equals(postId)
-						|| Ranks.POST_OFFICER_FOR_HIRE.equals(postId)) {
-					PersonAPI temp = OfficerManagerEvent.createOfficer(Global.getSector().getPlayerFaction(), 3);
-					person.setPortraitSprite(temp.getPortraitSprite());
-					person.setName(temp.getName());
-					person.getMemoryWithoutUpdate().set("$nex_derelict_officer_removed", true);
-				}
-			}
-			
-		}
 	}
 	
 	@Override
@@ -1270,6 +1251,26 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		checkGatheringPoint(market);
 		
 		coreStashCheck(market, oldOwner, newOwner);
+		
+		// Turn "derelict officers" into normal ones
+		if (oldOwner.getId().equals("nex_derelict")) 
+		{
+			for (CommDirectoryEntryAPI entry : market.getCommDirectory().getEntriesCopy())
+			{
+				PersonAPI person = (PersonAPI)entry.getEntryData();
+				String postId = person.getPostId();
+				//log.info("Checking person " + person.getNameString() + ", " + postId);
+				if (person.getMemoryWithoutUpdate().getBoolean("$nex_derelict_officer_removed")) continue;
+				if (Ranks.POST_FREELANCE_ADMIN.equals(postId) || Ranks.POST_MERCENARY.equals(postId)
+						|| Ranks.POST_OFFICER_FOR_HIRE.equals(postId)) {
+					PersonAPI temp = OfficerManagerEvent.createOfficer(Global.getSector().getPlayerFaction(), 3);
+					person.setPortraitSprite(temp.getPortraitSprite());
+					person.setName(temp.getName());
+					person.getMemoryWithoutUpdate().set("$nex_derelict_officer_removed", true);
+				}
+			}
+			
+		}
 	}
 	
 	public static void buildIndustry(MarketAPI market, String id) {
