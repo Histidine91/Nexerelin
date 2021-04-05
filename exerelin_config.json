@@ -129,7 +129,7 @@
     "stabilizePackageEffect": 3,
     "rebellionMult": 1,	# higher mult means unrest will boil over into rebellion more quickly
     
-    "maxNPCColonySize": 10,	# NPC markets will grow up to this size on their own
+    "maxNPCColonySize": 6,	# NPC markets will grow up to this size on their own
     "maxNPCNewColonySize": 6,	# for new colonies created by colony expedition event
     "hardModeColonyGrowthMult": 0.5,
     "hardModeColonyIncomeMult": 0.9,
