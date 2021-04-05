@@ -440,7 +440,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (!fromDeciv) {
 			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
-			market.setIncentiveCredits(100000);
+			market.setImmigrationIncentivesOn(true);
 		}
 		if (fromDeciv) {
 			market.addIndustry(Industries.SPACEPORT);
