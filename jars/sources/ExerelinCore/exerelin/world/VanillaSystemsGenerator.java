@@ -175,10 +175,8 @@ public class VanillaSystemsGenerator {
 		player.setRelationship(independent.getId(), 0);
 		player.setRelationship(kol.getId(), 0);
 		player.setRelationship(church.getId(), 0);
-		if (enhancedRelations)
-			player.setRelationship(path.getId(), -0.65f);
-		else
-			player.setRelationship(path.getId(), RepLevel.HOSTILE);
+		//player.setRelationship(path.getId(), RepLevel.HOSTILE);
+		player.setRelationship(path.getId(), -0.65f);
 		
 
 		// replaced by hostilities set in CoreLifecyclePluginImpl
