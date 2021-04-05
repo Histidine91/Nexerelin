@@ -119,11 +119,11 @@ Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableEasyMode ""25
 ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableHardMode ""Enable Starfarer Mode""
 Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 100% higher vengeance point generation""
 Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCEnableHardMode hColor hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""25%"" ""100%""",,,
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""10%"" ""100%""",,,
 ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableHardMode ""Disable Starfarer Mode""
 Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableHardMode""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 100% higher vengeance point generation""
 Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCDisableHardMode hColor hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""25%"" ""100%""",,,
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""10%"" ""100%""",,,
 nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOptions addOption nex_NGCCycleStartDMods ""Starting D-mods – $nex_ngcDModsString""
 Nex_DynamicPaginatedOptions addTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,,
 nex_NGCListOptionEnableRandomStartLocation,ExerelinNGCOtherOptions,!$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Enable random start location""",,,

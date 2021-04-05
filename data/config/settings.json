@@ -29,7 +29,7 @@
 	"nex_transferMarket_originalOwnerMult":1.33,
 	"nex_transferMarket_recentlyCapturedMult":0.2,
 	
-	"nex_tributeIncomePenalty":0.4,
+	"nex_tributeIncomePenalty":0.15,
 	"nex_tributePopulationMult":0.5,
 	
 	"nex_governorship_maxSize":6,	# tooltip will not be updated to reflect changes to this
