@@ -153,6 +153,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public boolean isShipAllowed(FleetMemberAPI member, float requiredFP)
     {
         if (member.getHullSpec().isDHull()) return false;
+        if (member.getHullSpec().hasTag(Tags.RESTRICTED)) return false;
         if (member.getFleetPointCost() < requiredFP) return false; //quality check
         if (restrictedShips.contains(member.getHullSpec().getBaseHullId())) return false;
         if (member.getHullSpec().getHints().contains(ShipTypeHints.STATION)) return false;
@@ -165,6 +166,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (spec.getTier() < 2) return false;
         if (spec.getTier() >= 5) return false;
         if (spec.hasTag(Tags.WING_NO_SELL)) return false;
+        if (spec.hasTag(Tags.RESTRICTED)) return false;
         String specId = spec.getId();
         for (String prefix : DISALLOWED_PREFIXES)
         {
@@ -178,6 +180,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public boolean isWeaponAllowed(WeaponSpecAPI spec)
     {
         if (spec.getTier() < 2 || spec.getTier() > 4) return false;
+        if (spec.hasTag(Tags.RESTRICTED)) return false;
         String specId = spec.getWeaponId();
         for (String prefix : DISALLOWED_PREFIXES)
         {
