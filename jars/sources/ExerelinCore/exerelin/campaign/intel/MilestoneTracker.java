@@ -327,11 +327,11 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 				awardMilestone("defeatOmega");
 			}
 			for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
-				if (loss.isCapital()) {
-					awardMilestone("firstCapital");
-				}
 				if (loss.isStation()) {
 					awardMilestone("firstStation");
+				}
+				else if (loss.isCapital()) {	// don't count station as a capital
+					awardMilestone("firstCapital");
 				}
 				if (loss.getHullId().equals("ziggurat")) {
 					awardMilestone("defeatZiggurat");
