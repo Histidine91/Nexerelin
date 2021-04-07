@@ -60,7 +60,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 		}
 	}
 
-	private static class FactionDirectoryDialog implements InteractionDialogPlugin, CoreInteractionListener
+	public static class FactionDirectoryDialog implements InteractionDialogPlugin, CoreInteractionListener
 	{
 		private InteractionDialogAPI dialog;
 		private TextPanelAPI text;
@@ -68,7 +68,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 
 		protected RuleBasedInteractionDialogPluginImpl optionsDialogDelegate;
 
-		private enum Menu
+		public static enum Menu
 		{
 			INIT,
 			DIRECTORY,
@@ -123,8 +123,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 				}
 
 				optionsDialogDelegate.optionSelected(optionText, optionData);
-				if (!FleetInteractionDialogPluginImpl.inConversation || 
-						dialog.getInteractionTarget().getMemoryWithoutUpdate().getString("$option").equals("continueCutComm")) {
+				if (!FleetInteractionDialogPluginImpl.inConversation || optionData == Menu.INIT) {
 					FleetInteractionDialogPluginImpl.inConversation = false;
 					optionSelected(null, Menu.INIT);
 				}
