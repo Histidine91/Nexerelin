@@ -8,41 +8,62 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class GroundUnit {
 	
-	public static final float PANEL_WIDTH = 260, PANEL_HEIGHT = 120;
+	public static final float PANEL_WIDTH = 280, PANEL_HEIGHT = 120;
 	public static final float PADDING_X = 4;
-	public static final float BUTTON_SECTION_WIDTH = 72;
+	public static final float BUTTON_SECTION_WIDTH = 64;
 	
 	public static final float REORGANIZE_AT_MORALE = 0.3f;
 	public static final float BREAK_AT_MORALE = 0.1f;
+	public static final float HEAVY_COUNT_DIVISOR = 8.5f;	// a marine platoon has 8.5x as many marines as a mech platoon has mechs
 	
 	public final String id = Misc.genUID();
 	public int index = 0;
 	public GroundBattleIntel intel;
 	public String name;
-	public int num;
 	public FactionAPI faction;
 	public boolean isPlayer;
 	public boolean isAttacker;
 	public ForceType type;
-	public int marines;
+	public int men;
 	public int heavyArms;
 	public float morale;
 	
-	public Set<String> tags = new HashSet<>();
+	public Map<String, Object> data = new HashMap<>();
 	
+	protected IndustryForBattle location;
+	protected IndustryForBattle dest;
 	
-	public IndustryForBattle location;
-	public IndustryForBattle dest;
+	public GroundUnit(GroundBattleIntel intel, ForceType type, int num) {
+		this.intel = intel;
+		this.type = type;
+		if (type == ForceType.HEAVY) {
+			heavyArms = num;
+			men = num*2;
+		}
+		else {
+			men = num;
+		}
+	}
+	
+	public void setLocation(IndustryForBattle loc) {
+		if (loc == location) return;
+		if (location != null)
+			location.removeUnit(this);
+		location = loc;
+		loc.addUnit(this);
+	}
 	
 	public void addActionText(TooltipMakerAPI info) {
 		Color color = Misc.getTextColor();
 		String text = "Waiting";
-		if (tags.contains("reorganizing")) {
+		if (data.containsKey("reorganizing")) {
 			text = "Reorganizing";
 			color = Misc.getNegativeHighlightColor();
 		}
@@ -53,6 +74,21 @@ public class GroundUnit {
 			text = "Engaged at " + location.ind.getCurrentName();
 		}
 		info.addPara(text, color, 3);
+	}
+	
+	public float getBaseStrength() {
+		int num = type == ForceType.HEAVY ? heavyArms : men;
+		return num * type.strength;
+	}
+	
+	/**
+	 * e.g. two half-companies and one full company will return about the same value.
+	 * @return
+	 */
+	public float getNumUnitEquivalents() {
+		float num = type == ForceType.HEAVY ? heavyArms : men;
+		Global.getLogger(this.getClass()).info("Intel is null? " + intel);
+		return num/intel.unitSize.getAverageSizeForType(type);
 	}
 	
 	public TooltipMakerAPI createUnitCard(CustomPanelAPI parent)
@@ -72,7 +108,7 @@ public class GroundUnit {
 		
 		// number of marines
 		TooltipMakerAPI line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(Commodities.MARINES).getIconName(), 16);
-		line.addPara(marines + "", 0);
+		line.addPara(men + "", 0);
 		stats.addImageWithText(3);
 		
 		// number of heavy arms
@@ -117,7 +153,7 @@ public class GroundUnit {
 	
 	public static enum ForceType {
 		MARINE(Commodities.MARINES, "troopNameMarine", 1), 
-		MECH(Commodities.HAND_WEAPONS, "troopNameMech", 2.5f),
+		HEAVY(Commodities.HAND_WEAPONS, "troopNameMech", 6f),
 		MILITIA(Commodities.CREW, "troopNameMilitia", 0.4f), 
 		REBEL(Commodities.CREW, "troopNameRebel", 0.4f);
 		
@@ -141,7 +177,7 @@ public class GroundUnit {
 		PLATOON(40, 60),
 		COMPANY(120, 200),
 		BATALLION(500, 800),
-		BRIGADE(2000, 3000);
+		REGIMENT(2000, 3500);
 		
 		public int avgSize;
 		public int maxSize;
@@ -149,6 +185,20 @@ public class GroundUnit {
 		private UnitSize(int avgSize, int maxSize) {
 			this.avgSize = avgSize;
 			this.maxSize = maxSize;
+		}
+		
+		public int getAverageSizeForType(ForceType type) {
+			int count = avgSize;
+			if (type == ForceType.HEAVY) count = Math.round(count/GroundUnit.HEAVY_COUNT_DIVISOR);
+			return count;
+		}
+		
+		public String getName() {
+			return getString("unit" + Misc.ucFirst(this.toString()));
+		}
+		
+		public String getNamePlural() {
+			return getString("unit" + Misc.ucFirst(this.toString()) + "Plural");
 		}
 	}
 }

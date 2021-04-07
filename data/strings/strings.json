@@ -1077,8 +1077,8 @@
 		"intelTitle":"Surface Battle: $market",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
 		"intelDesc_round":"Day %s",
-		"intelDesc_strengthHeaderAttacker":"Attacker strength",
-		"intelDesc_strengthHeaderDefender":"Defender strength",
+		"intelDesc_headerAttackerBonus":"Attacker bonuses",
+		"intelDesc_headerDefenderBonus":"Defender bonuses",
 		"intelDesc_strength":"Strength mult: %s",
 		"intelDesc_strength_noFleetSupport":"No fleet support",
 		
@@ -1087,10 +1087,21 @@
 		"industryPanel_header_attacker":"Attacking forces",
 		"industryPanel_header_defender":"Defending forces",
 		
-		"troopNameMarine":"Marines",
-		"troopNameMech":"Heavy Arms",
-		"troopNameMilitia":"Militia",
-		"troopNameRebel":"Rebels",
+		"troopNameMarine":"marine",
+		"troopNameMech":"heavy",
+		"troopNameMilitia":"militia",
+		"troopNameRebel":"rebel",
+		
+		"unitPlatoon":"platoon",
+		"unitPlatoonPlural":"platoons",
+		"unitCompany":"company",
+		"unitCompanyPlural":"companies",
+		"unitBatallion":"batallion",
+		"unitBatallionPlural":"batallions",
+		"unitRegiment":"regiment",
+		"unitRegimentPlural":"regiments",
+		
+		"unitEquivalent":"%s %s equivalent(s)",
 	},
 	
 	"exerelin_landmarks":{
