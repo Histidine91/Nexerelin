@@ -42,6 +42,7 @@
 			"logString":"Defeated the Ziggurat",
 			"points":1,
 			"order":6,
+			"spoiler":true,
 			"image":"graphics/ships/phase/zigguraut.png",
 		},
 		"defeatOmega":{
@@ -50,6 +51,7 @@
 			"logString":"Defeated Omega vessels",
 			"points":2,
 			"order":7,
+			"spoiler":true,
 			"image":"graphics/exerelin/icons/logo_omega.png",
 		},
 		#"trade100k":{
