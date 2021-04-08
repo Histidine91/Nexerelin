@@ -427,7 +427,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 			
 			int count = 0;
 			for (int i=0; i<3; i++) {
-				if (i >= memberIds.size() - 1) break;
+				if (i >= memberIds.size()) break;
 				
 				String id = memberIds.get(i);
 				FleetMemberAPI member = membersById.get(id);
