@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,10 @@ public class GroundBattleSide {
 			militia = 0.75f;
 			marines = 0.25f;
 		}
+		if (intel.market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY)) {
+			militia -= 0.25f;
+			marines += 0.25f;
+		}
 			
 		for (IndustryForBattle ind : intel.industries) {
 			militia += ind.getPlugin().getTroopContribution("militia");
@@ -66,12 +71,14 @@ public class GroundBattleSide {
 	}
 	
 	public void createDefenderUnits(ForceType type, int numTroops) {
-		int sizePerUnit = intel.unitSize.avgSize;
-		int numUnits = (int)Math.ceil(numTroops/sizePerUnit);
+		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
+		int numUnits = (int)((float)numTroops/sizePerUnit);
+		if (numUnits == 0 && numTroops > intel.unitSize.getAverageSizeForType(type)/2) {
+			numUnits = 1;
+		}
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
-			GroundUnit unit = new GroundUnit(intel, type, size);
-			log.info("Generating " + type + " unit of size " + size);
+			GroundUnit unit = new GroundUnit(intel, type, size, units.size());
 			units.add(unit);
 		}
 	}
@@ -89,17 +96,21 @@ public class GroundBattleSide {
 				toAssign.add(unit);
 			}
 		}
+		Collections.shuffle(toAssign);
 		for (GroundUnit unit : toAssign) {
 			if (pickFrom.isEmpty()) {
 				pickFrom.addAll(priority);
 			}
-			unit.location = pickFrom.get(0);
-			log.info(String.format("Adding %s unit to %s", unit.type, unit.location.ind.getCurrentName()));
+			IndustryForBattle loc = pickFrom.get(0);
+			unit.setLocation(loc);
+			log.info(String.format("Adding %s unit to %s", unit.type, loc.ind.getCurrentName()));
 			pickFrom.remove(0);
 		}
 		
-		// assign militia to industries
+		toAssign.clear();
 		pickFrom.clear();
+		
+		// assign militia to industries
 		for (GroundUnit unit : units) {
 			if (unit.type == ForceType.MILITIA) {
 				toAssign.add(unit);
@@ -111,7 +122,7 @@ public class GroundBattleSide {
 			}
 			IndustryForBattle loc = pickFrom.get(0);
 			unit.setLocation(loc);
-			log.info(String.format("Adding %s unit to %s", unit.type, unit.location.ind.getCurrentName()));
+			log.info(String.format("Adding %s unit to %s", unit.type, loc.ind.getCurrentName()));
 			pickFrom.remove(0);
 		}
 	}
@@ -120,7 +131,7 @@ public class GroundBattleSide {
 		int size = intel.market.getSize();
 		float mult = (float)Math.pow(2, size - 1);
 		
-		return mult * 10;
+		return Math.round(mult * 25);
 	}
 	
 	public static int getDefendPriorityFromTags(Industry ind) {

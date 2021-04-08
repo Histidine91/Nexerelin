@@ -60,7 +60,7 @@ public class PlanetNamer implements SpecialForcesNamer {
 		return picker.pick();
 	}
 	
-	protected String getSuffix(int num) {
+	public static String getSuffix(int num) {
 		if (num == 11 || num == 12 || num == 13)
 			return th;
 		

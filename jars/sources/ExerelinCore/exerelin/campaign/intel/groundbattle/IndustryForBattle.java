@@ -1,10 +1,8 @@
 package exerelin.campaign.intel.groundbattle;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IconRenderMode;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -19,6 +17,7 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -79,9 +78,12 @@ public class IndustryForBattle {
 	}
 	
 	
-	public String getNameForIconTooltip(int count) {
-		String displayNum = String.format("%.2f", (float)count/NUM_ICONS_PER_UNIT);
-		String str = String.format(GroundBattleIntel.getString("unitEquivalent"), displayNum, intel.unitSize.getName());
+	public String getIconTooltipPartial(ForceType type, float value) {
+		String displayNum = String.format("%.1f", value);
+		String str = GroundBattleIntel.getString("unitEquivalent");
+		str = StringHelper.substituteToken(str, "$num", displayNum);
+		str = StringHelper.substituteToken(str, "$type", type.getName());
+		str = StringHelper.substituteToken(str, "$unit", intel.unitSize.getNamePlural());
 		return str;
 	}
 
@@ -89,12 +91,14 @@ public class IndustryForBattle {
 			boolean attacker, UIComponentAPI rightOf) 
 	{
 		float pad = 3;
+		final Color hl = Misc.getHighlightColor();
+		
 		TooltipMakerAPI troops = panel.createUIElement(width, HEIGHT, false);
 		MarketAPI market = ind.getMarket();
 		Color hp = Misc.getPositiveHighlightColor();
 		Color hn = Misc.getNegativeHighlightColor();
 		
-		Map<ForceType, Float> strengths = new HashMap<>();
+		final Map<ForceType, Float> strengths = new HashMap<>();
 		
 		// TODO: list units on this location and total strength
 		for (GroundUnit unit : units) {
@@ -104,9 +108,9 @@ public class IndustryForBattle {
 		}
 		
 		troops.beginIconGroup();
-		Iterator<ForceType> iter = strengths.keySet().iterator();
-		while (iter.hasNext()) {
-			final ForceType type = iter.next();
+		List<ForceType> keys = new ArrayList<>(strengths.keySet());
+		Collections.sort(keys);
+		for (ForceType type : keys) {
 			float val = strengths.get(type);
 			int count = Math.round(val * NUM_ICONS_PER_UNIT);
 			if (count <= 0 && val > 0) count = 1;
@@ -114,19 +118,27 @@ public class IndustryForBattle {
 			
 			CommodityOnMarketAPI com = intel.market.getCommodityData(type.commodityId);
 			troops.addIcons(com, count, IconRenderMode.NORMAL);
-			troops.addTooltipToPrevious(new TooltipCreator() {
+		}
+		troops.addIconGroup(40, pad);
+		
+		troops.addTooltipToPrevious(new TooltipCreator() {
 				public boolean isTooltipExpandable(Object tooltipParam) {
 					return false;
 				}
 				public float getTooltipWidth(Object tooltipParam) {
-					return 120;	// FIXME
+					return 240;	// FIXME magic number
 				}
 				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-					tooltip.addPara(getNameForIconTooltip(countFinal), 0f);
+					List<ForceType> keys = new ArrayList<>(strengths.keySet());
+					Collections.sort(keys);
+					for (ForceType type : keys) {
+						float val = strengths.get(type);
+						String tooltipStr = getIconTooltipPartial(type, val);
+						String displayNum = String.format("%.1f", val);
+						tooltip.addPara(tooltipStr, 0f, hl, displayNum);
+					}
 				}
 			}, TooltipLocation.BELOW);
-		}
-		troops.addIconGroup(pad);
 		
 		float strength = 0;
 		for (GroundUnit unit : units) {
@@ -135,6 +147,8 @@ public class IndustryForBattle {
 		}
 		String strengthNum = Math.round(strength) + "";
 		troops.addPara("Strength: %s", pad, Misc.getHighlightColor(), strengthNum);
+		
+		// TODO: show average morale
 		
 		panel.addUIElement(troops).rightOfTop(rightOf, 0);
 		return troops;

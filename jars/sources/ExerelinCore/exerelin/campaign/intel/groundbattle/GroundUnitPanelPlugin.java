@@ -91,7 +91,7 @@ public class GroundUnitPanelPlugin implements CustomUIPanelPlugin {
 		SpriteAPI sprite = Global.getSettings().getSprite(this.sprite);
 		sprite.setAlphaMult(alphaMult * 0.3f);
 		//GL11.glScalef(0.5f, 0.5f, 1);
-		sprite.renderAtCenter(x + w/2, y + h*0.65f);
+		sprite.renderAtCenter(x + w/2, y + h*0.6f);
 		
 		// faction logo
 		sprite = Global.getSettings().getSprite(this.logo);

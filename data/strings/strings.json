@@ -1101,7 +1101,7 @@
 		"unitRegiment":"regiment",
 		"unitRegimentPlural":"regiments",
 		
-		"unitEquivalent":"%s %s equivalent(s)",
+		"unitEquivalent":"$num $type $unit",
 	},
 	
 	"exerelin_landmarks":{

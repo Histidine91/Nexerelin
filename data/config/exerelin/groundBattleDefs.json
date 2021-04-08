@@ -1,0 +1,73 @@
+{
+	"industries":{
+		"grounddefenses":{
+			"strengthMult":1.25,
+			"troopCounts":{
+				"militia":0.5,
+				"marine":0.5,
+				"heavy":0.5,
+			},
+			"enemyLiftCostMult":2,
+			"enemyBombardmentCostMult":2,
+		},
+		"heavybatteries":{
+			"strengthMult":1.5,
+			"troopCounts":{
+				"militia":1,
+				"marine":1,
+				"heavy":1,
+			},
+			"enemyLiftCostMult":3,
+			"tags":["preventBombardment"],
+		},
+		"planetaryshield":{
+			"tags":["preventBombardment"],
+			"enemyLiftCostMult":4,
+		},
+		"patrolhq":{
+			"strengthMult":1.2,
+			"troopCounts":{
+				"marine":0.1,
+			},
+		},
+		"militarybase":{
+			"strengthMult":1.4,
+			"troopCounts":{
+				"militia":0.2,
+				"marine":0.2,
+				"heavy":0.2,
+			},
+		},
+		"highcommand":{
+			"strengthMult":1.5,
+			"troopCounts":{
+				"militia":0.3,
+				"marine":0.3,
+				"heavy":0.3,
+			},
+		},
+		"lionsguard":{
+			"strengthMult":1.5,
+			"troopCounts":{
+				"marine":0.25,
+				"heavy":0.25,
+			},
+		},
+	},
+	"items":{
+		# TODO
+		"drone_replicator":{
+			"troopCounts":{
+				"militia":0.5,
+				"marines":0.5,
+				"heavy":0.25,
+			},
+		},
+	},
+	
+	"natoAlphabet":[
+		"Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", 
+		"Juliett", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", 
+		"Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu"
+	],
+}

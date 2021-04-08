@@ -7,15 +7,15 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
+import exerelin.campaign.intel.specialforces.namer.PlanetNamer;
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class GroundUnit {
 	
-	public static final float PANEL_WIDTH = 280, PANEL_HEIGHT = 120;
+	public static final float PANEL_WIDTH = 220, PANEL_HEIGHT = 120;
+	public static final float TITLE_HEIGHT = 16, LOCATION_SECTION_HEIGHT = 32;
 	public static final float PADDING_X = 4;
 	public static final float BUTTON_SECTION_WIDTH = 64;
 	
@@ -24,7 +24,7 @@ public class GroundUnit {
 	public static final float HEAVY_COUNT_DIVISOR = 8.5f;	// a marine platoon has 8.5x as many marines as a mech platoon has mechs
 	
 	public final String id = Misc.genUID();
-	public int index = 0;
+	public int index;
 	public GroundBattleIntel intel;
 	public String name;
 	public FactionAPI faction;
@@ -40,15 +40,33 @@ public class GroundUnit {
 	protected IndustryForBattle location;
 	protected IndustryForBattle dest;
 	
-	public GroundUnit(GroundBattleIntel intel, ForceType type, int num) {
+	public GroundUnit(GroundBattleIntel intel, ForceType type, int num, int index) {
 		this.intel = intel;
 		this.type = type;
+		this.index = index;
 		if (type == ForceType.HEAVY) {
 			heavyArms = num;
 			men = num*2;
 		}
 		else {
 			men = num;
+		}
+		name = generateName();
+	}
+	
+	public String generateName() {
+		String name = Misc.ucFirst(intel.unitSize.getName());
+		switch (intel.unitSize) {
+			case PLATOON:
+			case COMPANY:
+				int alphabetIndex = this.index % 26;
+				return GBDataManager.NATO_ALPHABET.get(alphabetIndex) + " " + name;
+			case BATALLION:
+				return index + PlanetNamer.getSuffix(index) + " " + name;
+			case REGIMENT:
+				return Global.getSettings().getRoman(index) + " " + name;
+			default:
+				return name + " " + index;
 		}
 	}
 	
@@ -70,6 +88,9 @@ public class GroundUnit {
 		else if (dest != null) {
 			text = "Moving to " + dest.ind.getCurrentName();
 		}
+		else if (location == null) {
+			text = "Awaiting deployment";
+		}
 		else if (location.containsEnemyOf(isAttacker)) {
 			text = "Engaged at " + location.ind.getCurrentName();
 		}
@@ -87,7 +108,6 @@ public class GroundUnit {
 	 */
 	public float getNumUnitEquivalents() {
 		float num = type == ForceType.HEAVY ? heavyArms : men;
-		Global.getLogger(this.getClass()).info("Intel is null? " + intel);
 		return num/intel.unitSize.getAverageSizeForType(type);
 	}
 	
@@ -99,12 +119,13 @@ public class GroundUnit {
 		TooltipMakerAPI cardHolder = parent.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, 
 				new GroundUnitPanelPlugin(faction, commoditySprite, crest));
-		TooltipMakerAPI title = card.createUIElement(PANEL_WIDTH, 16, false);
+		TooltipMakerAPI title = card.createUIElement(PANEL_WIDTH, TITLE_HEIGHT, false);
 		title.addPara(name, faction.getBaseUIColor(), 3);
 		card.addUIElement(title).inTL(0, 0);
 		
 		// begin stats section
-		TooltipMakerAPI stats = card.createUIElement(PANEL_WIDTH - BUTTON_SECTION_WIDTH, PANEL_HEIGHT - 16, false);
+		TooltipMakerAPI stats = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH/2), 
+				PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT, false);
 		
 		// number of marines
 		TooltipMakerAPI line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(Commodities.MARINES).getIconName(), 16);
@@ -130,21 +151,27 @@ public class GroundUnit {
 		line.addPara(moraleStr, moraleColor, 0);
 		stats.addImageWithText(3);
 		
-		// location
-		if (location.ind != null) {
-			line = stats.beginImageWithText(location.ind.getCurrentImage(), 32);
-			addActionText(line);
-			stats.addImageWithText(3);
-		}
-		
 		card.addUIElement(stats).belowLeft(title, 0);
+		
+		TooltipMakerAPI stats2 = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH/2), 
+				PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT, false);
+		
+		card.addUIElement(stats2).rightOfTop(stats, 0);
 		// end stats section
 		
-		// button holder
-		TooltipMakerAPI buttonHolder = card.createUIElement(BUTTON_SECTION_WIDTH, PANEL_HEIGHT - 16, false);
-		buttonHolder.addButton("Move", "wololo", BUTTON_SECTION_WIDTH - 6, 16, 0);
+		// location
+		TooltipMakerAPI loc = card.createUIElement(PANEL_WIDTH, LOCATION_SECTION_HEIGHT, false);
 		
-		card.addUIElement(buttonHolder).rightOfTop(stats, 0);
+		String img = location.ind != null ? location.ind.getCurrentImage() : "graphics/illustrations/free_orbit.jpg";
+		line = loc.beginImageWithText(img, 32);
+		addActionText(line);
+		loc.addImageWithText(3);
+		card.addUIElement(loc).inBL(0, 2);
+		
+		// button holder
+		TooltipMakerAPI buttonHolder = card.createUIElement(BUTTON_SECTION_WIDTH, PANEL_HEIGHT, false);
+		buttonHolder.addButton("Move", "wololo", BUTTON_SECTION_WIDTH - 6, 16, 0);
+		card.addUIElement(buttonHolder).inTR(1, 2);
 		
 		cardHolder.addCustom(card, 0);
 		return cardHolder;
@@ -194,11 +221,11 @@ public class GroundUnit {
 		}
 		
 		public String getName() {
-			return getString("unit" + Misc.ucFirst(this.toString()));
+			return getString("unit" + Misc.ucFirst(toString().toLowerCase()));
 		}
 		
 		public String getNamePlural() {
-			return getString("unit" + Misc.ucFirst(this.toString()) + "Plural");
+			return getString("unit" + Misc.ucFirst(toString().toLowerCase()) + "Plural");
 		}
 	}
 }

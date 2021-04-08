@@ -2,12 +2,14 @@ package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
@@ -86,7 +88,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	protected void generateDebugUnits() 
 	{
 		for (int i=0; i<6; i++) {
-			GroundUnit unit = new GroundUnit(this, ForceType.MARINE, 0);
+			GroundUnit unit = new GroundUnit(this, ForceType.MARINE, 0, i);
 			unit.faction = Global.getSector().getPlayerFaction();
 			unit.isPlayer = true;
 			unit.isAttacker = true;
@@ -110,7 +112,6 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			else if (Math.random() > 0.5f) {
 				unit.dest = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
 			}
-			unit.name = "Company " + (i + 1);
 			
 			playerUnits.add(unit);
 		}
@@ -133,6 +134,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			addIndustry(Industries.POPULATION);
 		}
 		turnNum = 2;
+		playerInvolved = true;
 		
 		generateDebugUnits();
 		
@@ -226,11 +228,46 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
 	}
 	
+	protected String getCommoditySprite(String commodityId) {
+		return Global.getSettings().getCommoditySpec(commodityId).getIconName();
+	}
+	
+	public TooltipMakerAPI addResourceSubpanel(CustomPanelAPI resourcePanel, float width, 
+			TooltipMakerAPI rightOf, String commodity, int amount) 
+	{
+		TooltipMakerAPI subpanel = resourcePanel.createUIElement(width, 32, false);
+		TooltipMakerAPI image = subpanel.beginImageWithText(getCommoditySprite(commodity), 32);
+		image.addPara(amount + "", 0);
+		subpanel.addImageWithText(0);
+		if (rightOf == null)
+			resourcePanel.addUIElement(subpanel).inTL(0, 0);
+		else
+			resourcePanel.addUIElement(subpanel).rightOfTop(rightOf, 0);
+		
+		return subpanel;
+	}
 	
 	public void generateUnitDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
 	{
 		info.addSectionHeading("Available units", Alignment.MID, pad);
 		
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		info.addPara("Resources on fleet", 3);
+		CustomPanelAPI resourcePanel = panel.createCustomPanel(width, 32, null);
+		TooltipMakerAPI resourceSubPanel;
+		
+		int subWidth = 96;
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, null, 
+				Commodities.MARINES, cargo.getMarines());
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+				Commodities.HAND_WEAPONS, (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS));
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+				Commodities.SUPPLIES, (int)cargo.getSupplies());
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+				Commodities.FUEL, (int)cargo.getFuel());
+		
+		info.addCustom(resourcePanel, 3);
+				
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
 		
 		int numCards = 0;
@@ -401,6 +438,10 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	public static class EventLog {
 		
+	}
+	
+	public enum Tab {
+		UNITS, BATTLE, LOG, HELP
 	}
 	
 	public static final Comparator<Industry> INDUSTRY_COMPARATOR = new Comparator<Industry>() {
