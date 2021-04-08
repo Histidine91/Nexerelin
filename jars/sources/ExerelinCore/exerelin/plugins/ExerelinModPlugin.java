@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.ModSpecAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
+import com.fs.starfarer.api.campaign.GenericPluginManagerAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -68,6 +69,7 @@ import exerelin.world.ExerelinProcGen;
 import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
 import exerelin.world.VanillaSystemsGenerator;
+import exerelin.world.scenarios.DerelictEmpireOfficerGeneratorPlugin;
 import exerelin.world.scenarios.ScenarioManager;
 import java.io.IOException;
 import java.util.Random;
@@ -303,6 +305,11 @@ public class ExerelinModPlugin extends BaseModPlugin
         //sector.addTransientScript(new MiningCooldownDrawer());
         if (MiningCooldownDrawer.getEntity() == null) 
             MiningCooldownDrawer.create();
+        
+        GenericPluginManagerAPI plugins = sector.getGenericPlugins();
+        if (!plugins.hasPlugin(DerelictEmpireOfficerGeneratorPlugin.class)) {
+            plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
+        }
     }
     
     @Override
