@@ -984,25 +984,22 @@ public class MiningHelperLegacy {
 		}
 
 		for(CacheResult cacheResult : result.cachesFound){
-			if(cacheResult.def.type == CacheType.COMMODITY) {
-				miningValue += Global.getSector().getEconomy().getCommoditySpec(cacheResult.def.id).getBasePrice() * cacheResult.numItems;
-				continue;
-			}
-			else if(cacheResult.def.type == CacheType.HULLMOD) {
-				miningValue += Global.getSettings().getHullModSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
-				continue;
-			}
-			else if(cacheResult.def.type == CacheType.FRIGATE) {
-				miningValue += Global.getSettings().getHullSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
-				continue;
-			}
-			else if(cacheResult.def.type == CacheType.FIGHTER_WING) {
-				miningValue += Global.getSettings().getFighterWingSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
-				continue;
-			}
-			else if(cacheResult.def.type == CacheType.WEAPON) {
-				miningValue += Global.getSettings().getWeaponSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
-				continue;
+			switch(cacheResult.def.type){
+				case COMMODITY :
+					miningValue += Global.getSector().getEconomy().getCommoditySpec(cacheResult.def.id).getBasePrice() * cacheResult.numItems;
+					break;
+				case HULLMOD :
+					miningValue += Global.getSettings().getHullModSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
+				case FRIGATE :
+					miningValue += Global.getSettings().getHullSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
+				case FIGHTER_WING :
+					miningValue += Global.getSettings().getFighterWingSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
+				case WEAPON :
+					miningValue += Global.getSettings().getWeaponSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
 			}
 		}
 
