@@ -1,0 +1,16 @@
+== Condition types ==
+Magnetic crust: attacker reorganizes after each move due to lack of communications
+
+
+
+== Strength ==
+Marine: 1x
+Mech: 6x
+Militia: 0.4x; 0.7x morale
+
+
+== Faction modifiers ==
+Hegemony: +15% morale
+Luddic Church: +10% marine morale, +20% militia morale (only on Luddic worlds)
+Tri-Tachyon: -10% morale
+Templars: +50% strength

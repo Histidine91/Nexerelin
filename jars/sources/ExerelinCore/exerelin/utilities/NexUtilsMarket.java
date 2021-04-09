@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.PersonImportance;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -19,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
@@ -167,6 +169,9 @@ public class NexUtilsMarket {
 		if (config != null && !config.playableFaction && !isIndie && !isDerelict)
 			return false;
 		
+		if (!NexConfig.allowInvadeStoryCritical && Misc.isStoryCritical(market))
+			return false;
+		
 		boolean allowPirates = NexConfig.allowPirateInvasions;
 		boolean isPirate = NexUtilsFaction.isPirateFaction(factionId);
 		// player markets count as pirate if player has a commission with a pirate faction
@@ -291,6 +296,36 @@ public class NexUtilsMarket {
 		ip.addPerson(person);
 		ip.getData(person).getLocation().setMarket(market);
 		ip.checkOutPerson(person, "permanent_staff");
+		
+		if (postId.equals(Ranks.POST_BASE_COMMANDER) || postId.equals(Ranks.POST_STATION_COMMANDER)
+				|| postId.equals(Ranks.POST_ADMINISTRATOR)) 
+		{
+			if (market.getSize() >= 8) {
+				person.setImportanceAndVoice(PersonImportance.VERY_HIGH, StarSystemGenerator.random);
+			} else if (market.getSize() >= 6) {
+				person.setImportanceAndVoice(PersonImportance.HIGH, StarSystemGenerator.random);
+			} else {
+				person.setImportanceAndVoice(PersonImportance.MEDIUM, StarSystemGenerator.random);
+			}
+		} else if (postId.equals(Ranks.POST_PORTMASTER)) {
+			if (market.getSize() >= 8) {
+				person.setImportanceAndVoice(PersonImportance.HIGH, StarSystemGenerator.random);
+			} else if (market.getSize() >= 6) {
+				person.setImportanceAndVoice(PersonImportance.MEDIUM, StarSystemGenerator.random);
+			} else if (market.getSize() >= 4) {
+				person.setImportanceAndVoice(PersonImportance.LOW, StarSystemGenerator.random);
+			} else {
+				person.setImportanceAndVoice(PersonImportance.VERY_LOW, StarSystemGenerator.random);
+			}
+		} else if (postId.equals(Ranks.POST_SUPPLY_OFFICER)) {
+			if (market.getSize() >= 6) {
+				person.setImportanceAndVoice(PersonImportance.MEDIUM, StarSystemGenerator.random);
+			} else if (market.getSize() >= 4) {
+				person.setImportanceAndVoice(PersonImportance.LOW, StarSystemGenerator.random);
+			} else {
+				person.setImportanceAndVoice(PersonImportance.VERY_LOW, StarSystemGenerator.random);
+			}
+		}	
 		
 		return person;
 	}

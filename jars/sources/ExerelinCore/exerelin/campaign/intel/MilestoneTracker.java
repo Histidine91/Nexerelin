@@ -99,6 +99,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 				def.points = entry.getInt("points");
 				def.logString = entry.optString("logString", null);
 				def.order = (float)entry.optDouble("order", 100);
+				def.spoiler = entry.optBoolean("spoiler", false);
 				
 				defs.add(def);
 				defsById.put(id, def);
@@ -186,13 +187,16 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 			CustomPanelAPI row = panel.createCustomPanel(width, ENTRY_HEIGHT, null);
 			
 			TooltipMakerAPI image = row.createUIElement(IMAGE_HEIGHT, ENTRY_HEIGHT, false);
-			image.addImage(def.image, IMAGE_HEIGHT, IMAGE_HEIGHT, 3);
+			if (complete || !def.spoiler)
+				image.addImage(def.image, IMAGE_HEIGHT, IMAGE_HEIGHT, 3);
 			
 			row.addUIElement(image).inTL(0, 0);
 			
 			TooltipMakerAPI text = row.createUIElement(width * 0.75f - IMAGE_HEIGHT, ENTRY_HEIGHT, false);
 			//text.setParaInsigniaLarge();
-			text.addPara(def.name, titleColor, 0);
+			String name = def.name;
+			if (!complete && def.spoiler) name = "?";
+			text.addPara(name, titleColor, 0);
 			//text.setParaFontDefault();
 			text.addPara(def.desc, 3);
 			if (!complete && ExerelinModPlugin.isNexDev) {
@@ -327,11 +331,11 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 				awardMilestone("defeatOmega");
 			}
 			for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
-				if (loss.isCapital()) {
-					awardMilestone("firstCapital");
-				}
 				if (loss.isStation()) {
 					awardMilestone("firstStation");
+				}
+				else if (loss.isCapital()) {	// don't count station as a capital
+					awardMilestone("firstCapital");
 				}
 				if (loss.getHullId().equals("ziggurat")) {
 					awardMilestone("defeatZiggurat");
@@ -443,6 +447,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 		public String image;
 		public int points;
 		public float order;
+		public boolean spoiler;
 
 		@Override
 		public int compareTo(MilestoneDef other) {

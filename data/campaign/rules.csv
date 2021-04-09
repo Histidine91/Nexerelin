@@ -119,11 +119,11 @@ Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableEasyMode ""25
 ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableHardMode ""Enable Starfarer Mode""
 Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 100% higher vengeance point generation""
 Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCEnableHardMode hColor hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""25%"" ""100%""",,,
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""10%"" ""100%""",,,
 ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableHardMode ""Disable Starfarer Mode""
 Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableHardMode""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 100% higher vengeance point generation""
 Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCDisableHardMode hColor hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""25%"" ""100%""",,,
+Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""10%"" ""100%""",,,
 nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOptions addOption nex_NGCCycleStartDMods ""Starting D-mods – $nex_ngcDModsString""
 Nex_DynamicPaginatedOptions addTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,,
 nex_NGCListOptionEnableRandomStartLocation,ExerelinNGCOtherOptions,!$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Enable random start location""",,,
@@ -1605,13 +1605,6 @@ salRuins_alreadyExplored,PopulateOptions,"$market.hasRuins
 $market.ruinsExplored
 $market.isPlanetConditionMarketOnly
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $market have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
-,,,,,,
-goToTheGABarEventOption,AddBarEvents,"!$market.isHidden
-$global.daysSinceStart > 365
-!$global.metBaird
-!$global.interactedWithGABarEvent
-$global.nex_corvusMode == true
-RollProbability 0.2","AddBarEvent goToGA_barEvent ""Talk to the distinguished academician"" ""A distinguished, uniformed academician seems to be holding court with a handful of successful-looking ship officers."" highlight",,,
 ,,,,,,
 # Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"$hasMarket

@@ -605,7 +605,9 @@ public class MiningHelperLegacy {
 			{				
 				if (restrictedShips.contains(pick.variantId)) continue;
 				FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, pick.variantId);
-				if (member.getHullSpec().getHints().contains(ShipHullSpecAPI.ShipTypeHints.STATION)) continue;
+				ShipHullSpecAPI hull = member.getHullSpec();
+				if (hull.getHints().contains(ShipHullSpecAPI.ShipTypeHints.STATION)) continue;
+				if (hull.hasTag(Tags.RESTRICTED)) continue;
 				
 				float cost = member.getBaseValue();
 				shipPicker.add(member, 10000/cost);
@@ -637,6 +639,7 @@ public class MiningHelperLegacy {
 							if (restrictedShips.contains(wingId)) continue;
 							FighterWingSpecAPI spec = Global.getSettings().getFighterWingSpec(wingId);
 							if (spec.getTags().contains(Tags.WING_NO_SELL)) continue;
+							if (spec.getTags().contains(Tags.RESTRICTED)) continue;
 
 							picker.add(spec, 6 - spec.getTier());
 						}
@@ -661,6 +664,7 @@ public class MiningHelperLegacy {
 			
 			WeaponSpecAPI weapon = Global.getSettings().getWeaponSpec(weaponId);
 			if (weapon.getAIHints().contains(AIHints.SYSTEM)) continue;
+			if (weapon.getTags().contains(Tags.RESTRICTED)) continue;
 			float weight = 10000/weapon.getBaseValue();
 			if (weapon.getSize() == WeaponSize.LARGE) weight *= 4;
 			else if (weapon.getSize() == WeaponSize.MEDIUM) weight *= 2;

@@ -392,7 +392,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 		
 		// print chance of success
-		if (!actionId.equals(CovertActionType.TRAVEL) && !actionId.equals(CovertActionType.FIND_PIRATE_BASE)) {
+		if (action.showSuccessChance()) {
 			MutableStat success = action.getSuccessChance();
 			float successF = success.getModifiedValue();
 			Color chanceCol = hl;
@@ -819,7 +819,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 
 		// Confirm_option_sp
-		if (action != null && action.getSuccessChance().getModifiedValue() < 100) {
+		if (action != null && !(!action.showSuccessChance() || action.getSuccessChance().getModifiedValue() >= 100)) {
 			options.addOption(getString("dialogConfirmOptionSPText"), Menu.CONFIRM_SP, Misc.getStoryOptionColor(), null);
 			if (!canProceed() || !hasEnoughCredits()) {
 				options.setEnabled(Menu.CONFIRM_SP, false);

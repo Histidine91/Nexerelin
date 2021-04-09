@@ -512,21 +512,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			str = StringHelper.substituteToken(str, "$rank", commander.getRank());
 			str = StringHelper.substituteToken(str, "$name", commander.getNameString());
 			
-			// "highly capable officer" etc.
-			int personLevel = commander.getStats().getLevel();
-			int tier;
-			if (personLevel <= 5) {
-				tier = 1;
-			} else if (personLevel <= 10) {
-				tier = 2;
-			} else if (personLevel <= 15) {
-				tier = 3;
-			} else {
-				tier = 4;
-			}
-			str = StringHelper.substituteToken(str, "$levelDesc", StringHelper.getString(
-					"exerelin_officers", "intelSkillLevel" + tier));
-			
 			// Include flagship details if needed
 			if (flagship != null) {
 				String flagshipName = flagship.getShipName();

@@ -2,12 +2,14 @@ package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
@@ -22,12 +24,15 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,17 +50,16 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	public static Logger log = Global.getLogger(GroundBattleIntel.class);
 	
+	protected UnitSize unitSize;
+	
 	protected int turnNum;
 	
 	protected MarketAPI market;
 	protected boolean playerInvolved;
 	
-	protected GroundBattleSide attacker = new GroundBattleSide(true);
-	protected GroundBattleSide defender = new GroundBattleSide(false);
+	protected GroundBattleSide attacker = new GroundBattleSide(this, true);
+	protected GroundBattleSide defender = new GroundBattleSide(this, false);
 	protected List<GroundUnit> playerUnits = new LinkedList<>();
-	
-	protected MutableStat attackerStrength = new MutableStat(1);
-	protected MutableStat defenderStrength = new MutableStat(1);
 	
 	protected MutableStat liftCapacityAtk = new MutableStat(1);
 	protected MutableStat liftCapacityDef = new MutableStat(1);
@@ -69,64 +73,81 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		this.market = market;
 		this.attacker.faction = attacker;
 		this.defender.faction = defender;
+		
+		int size = market.getSize();
+		if (size <= 3)
+			unitSize = UnitSize.PLATOON;
+		else if (size <= 5)
+			unitSize = UnitSize.COMPANY;
+		else if (size <= 7)
+			unitSize = UnitSize.BATALLION;
+		else
+			unitSize = UnitSize.REGIMENT;
 	}
 	
 	protected void generateDebugUnits() 
 	{
 		for (int i=0; i<6; i++) {
-			GroundUnit unit = new GroundUnit();
-			unit.intel = this;
+			GroundUnit unit = new GroundUnit(this, ForceType.MARINE, 0, i);
 			unit.faction = Global.getSector().getPlayerFaction();
 			unit.isPlayer = true;
 			unit.isAttacker = true;
-			unit.type = i >= 4 ? ForceType.MECH : ForceType.MARINE;
+			unit.type = i >= 4 ? ForceType.HEAVY : ForceType.MARINE;
 			
-			if (unit.type == ForceType.MECH) {
+			if (unit.type == ForceType.HEAVY) {
 				unit.heavyArms = MathUtils.getRandomNumberInRange(12, 16);
-				unit.marines = unit.heavyArms * 2;
+				unit.men = unit.heavyArms * 2;
 			} else {
-				unit.marines = MathUtils.getRandomNumberInRange(100, 120);
+				unit.men = MathUtils.getRandomNumberInRange(100, 120);
 				//unit.heavyArms = MathUtils.getRandomNumberInRange(10, 15);
 			}
 			
 			unit.morale = (float)Math.random();
-			unit.location = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
+			IndustryForBattle loc = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
+			unit.setLocation(loc);
 			if (unit.morale < GroundUnit.REORGANIZE_AT_MORALE) {
-				unit.tags.add("reorganizing");
+				if (!unit.data.containsKey("reorganizing"))
+					unit.data.put("reorganizing", 1);
 			}
 			else if (Math.random() > 0.5f) {
 				unit.dest = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
 			}
-			unit.name = "Company " + (i + 1);
 			
 			playerUnits.add(unit);
 		}
+		
+		defender.generateDefenders();
 	}
 	
 	public void initDebug() {
-		attackerStrength = computeAttackerStrength();
-		defenderStrength = computeDefenderStrength();
 		
-		addIndustryDebug(Industries.SPACEPORT, true);
-		addIndustryDebug(Industries.FARMING, false);
-		addIndustryDebug(Industries.MINING, true);
-		addIndustryDebug(Industries.HEAVYBATTERIES, false);
-		addIndustryDebug(Industries.MILITARYBASE, false);
+		List<Industry> mktIndustries = market.getIndustries();
+		Collections.sort(mktIndustries, INDUSTRY_COMPARATOR);
+		for (Industry ind : mktIndustries) {
+			if (ind.getId().equals(Industries.POPULATION)) continue;
+			if (ind.isHidden()) continue;
+			if (ind.getSpec().hasTag(Industries.TAG_STATION)) continue;
+			
+			addIndustry(ind.getId());
+		}
+		if (industries.isEmpty()) {
+			addIndustry(Industries.POPULATION);
+		}
 		turnNum = 2;
+		playerInvolved = true;
 		
 		generateDebugUnits();
 		
 		Global.getSector().getIntelManager().addIntel(this);
 	}
 	
-	public IndustryForBattle addIndustryDebug(String industry, boolean attackerControlled) 
+	public IndustryForBattle addIndustry(String industry) 
 	{
 		Industry ind = market.getIndustry(industry);
-		IndustryForBattle ifi = new IndustryForBattle(this, ind);
-		ifi.heldByDefender = !attackerControlled;
+		IndustryForBattle ifb = new IndustryForBattle(this, ind);
 		
-		industries.add(ifi);
-		return ifi;
+		industries.add(ifb);
+		return ifb;
 	}
 	
 	public GroundBattleSide getSide(boolean isAttacker) {
@@ -169,52 +190,6 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		return fleets;
 	}
 	
-	public MutableStat computeAttackerStrength() {
-		MutableStat stat = new MutableStat(1);
-		List<CampaignFleetAPI> fleets = getAttackerSupportingFleets();
-		if (fleets.isEmpty())
-			stat.modifyMult("no_fleet_support", 0.75f, getString("intelDesc_strength_noFleetSupport"));
-		else {
-			// get best ground support strength and faction invasion mult
-			float bestGroundMult = 0;
-			float bestFactionMult = 0;
-			FactionAPI bestFaction = null;
-			for (CampaignFleetAPI fleet : fleets) {
-				float groundMult = fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).computeEffective(1);
-				NexFactionConfig atkConf = NexConfig.getFactionConfig(fleet.getFaction().getId());
-				float factionMult = 1 + atkConf.invasionStrengthBonusAttack;
-				
-				if (groundMult > bestGroundMult)
-					bestGroundMult = groundMult;
-				if (factionMult > bestFactionMult) {
-					bestFactionMult = factionMult;
-					bestFaction = fleet.getFaction();
-				}
-			}
-			if (bestGroundMult != 1)
-				stat.modifyMult("fleet_support_ground", bestGroundMult, StringHelper.getString(
-						"exerelin_invasion", "groundSupportCapability"));
-			if (bestFaction != null) {
-				String desc = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
-						"attackBonus", "$Faction", bestFaction.getDisplayName());
-				stat.modifyMult("fleet_support_ground", bestFactionMult, StringHelper.getString(
-						"exerelin_invasion", desc));
-			}	
-		}
-		
-		return stat;
-	}
-	
-	// FIXME: doesn't handle flat bonuses
-	public MutableStat computeDefenderStrength() {
-		MutableStat stat = new MutableStat(1);
-		StatBonus defStat = InvasionRound.getDefenderStrengthStat(market);
-		stat.getMultMods().putAll(defStat.getMultBonuses());
-		stat.getPercentMods().putAll(defStat.getPercentBonuses());
-		
-		return stat;		
-	}
-	
 	@Override
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
         String title = getSmallDescriptionTitle();
@@ -253,11 +228,46 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
 	}
 	
+	protected String getCommoditySprite(String commodityId) {
+		return Global.getSettings().getCommoditySpec(commodityId).getIconName();
+	}
+	
+	public TooltipMakerAPI addResourceSubpanel(CustomPanelAPI resourcePanel, float width, 
+			TooltipMakerAPI rightOf, String commodity, int amount) 
+	{
+		TooltipMakerAPI subpanel = resourcePanel.createUIElement(width, 32, false);
+		TooltipMakerAPI image = subpanel.beginImageWithText(getCommoditySprite(commodity), 32);
+		image.addPara(amount + "", 0);
+		subpanel.addImageWithText(0);
+		if (rightOf == null)
+			resourcePanel.addUIElement(subpanel).inTL(0, 0);
+		else
+			resourcePanel.addUIElement(subpanel).rightOfTop(rightOf, 0);
+		
+		return subpanel;
+	}
 	
 	public void generateUnitDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
 	{
 		info.addSectionHeading("Available units", Alignment.MID, pad);
 		
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		info.addPara("Resources on fleet", 3);
+		CustomPanelAPI resourcePanel = panel.createCustomPanel(width, 32, null);
+		TooltipMakerAPI resourceSubPanel;
+		
+		int subWidth = 96;
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, null, 
+				Commodities.MARINES, cargo.getMarines());
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+				Commodities.HAND_WEAPONS, (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS));
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+				Commodities.SUPPLIES, (int)cargo.getSupplies());
+		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+				Commodities.FUEL, (int)cargo.getFuel());
+		
+		info.addCustom(resourcePanel, 3);
+				
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
 		
 		int numCards = 0;
@@ -312,22 +322,6 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		info.addCustom(unitPanel, 3);
 	}
 	
-	public void printStrengthStat(TooltipMakerAPI info, MutableStat stat, boolean color) {
-		float strength = stat.getModifiedValue();
-		String str = getString("intelDesc_strength");
-		
-		Color hl;
-		if (strength > 1) hl = Misc.getPositiveHighlightColor();
-		else if (strength < 1) hl = Misc.getNegativeHighlightColor();
-		else hl = Misc.getHighlightColor();
-		
-		info.setParaFontDefault();
-		info.addPara(str, 0, hl, String.format("%.2f", strength));
-		info.setParaSmallInsignia();
-		info.addStatModGrid(350, 50, 10, 3, stat, true, NexUtils.getStatModValueGetter(color, 0));
-		info.setParaFontDefault();
-	}
-	
 	float itemPanelHeight = 160;
 	public void generateStrengthDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
 	{
@@ -337,14 +331,11 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		TooltipMakerAPI dispAtk = strPanel.createUIElement(width/2, itemPanelHeight, false);
 		TooltipMakerAPI dispDef = strPanel.createUIElement(width/2, itemPanelHeight, false);
 		
-		dispAtk.addSectionHeading(getString("intelDesc_strengthHeaderAttacker"), 
+		dispAtk.addSectionHeading(getString("intelDesc_headerAttackerBonus"), 
 				attacker.faction.getBaseUIColor(), attacker.faction.getDarkUIColor(), Alignment.MID, pad);
-		dispDef.addSectionHeading(getString("intelDesc_strengthHeaderDefender"), 
+		dispDef.addSectionHeading(getString("intelDesc_headerDefenderBonus"), 
 				defender.faction.getBaseUIColor(), defender.faction.getDarkUIColor(), Alignment.MID, pad);
-		
-		printStrengthStat(dispAtk, attackerStrength, true);
-		printStrengthStat(dispDef, defenderStrength, true);
-		
+				
 		strPanel.addUIElement(dispAtk).inLMid(0);
 		strPanel.addUIElement(dispDef).inRMid(0);
 		
@@ -359,14 +350,14 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	public void generateIndustryDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width) {
 		info.beginTable(Global.getSector().getPlayerFaction(), 0,
 				getString("industryPanel_header_industry"), IndustryForBattle.COLUMN_WIDTH_INDUSTRY,
-				getString("industryPanel_header_heldBy"), IndustryForBattle.COLUMN_WIDTH_CONTROLLED_BY,
+				//getString("industryPanel_header_heldBy"), IndustryForBattle.COLUMN_WIDTH_CONTROLLED_BY,
 				getString("industryPanel_header_attacker"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL,
 				getString("industryPanel_header_defender"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL
 		);
 		info.addTable("", 0, 3);
 		
-		for (IndustryForBattle ifi : industries) {
-			ifi.renderPanel(panel, info, width);
+		for (IndustryForBattle ifb : industries) {
+			ifb.renderPanel(panel, info, width);
 		}
 	}
 	
@@ -434,8 +425,8 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	// runcode exerelin.campaign.intel.groundbattle.GroundBattleIntel.createDebugEvent();
 	public static void createDebugEvent() {
-		MarketAPI market = Global.getSector().getEconomy().getMarket("jangala");
-		FactionAPI attacker = Global.getSector().getFaction("tritachyon");
+		MarketAPI market = Global.getSector().getEconomy().getMarket("yesod");
+		FactionAPI attacker = Global.getSector().getFaction("hegemony");
 		FactionAPI defender = market.getFaction();
 		
 		new GroundBattleIntel(market, attacker, defender).initDebug();		
@@ -449,5 +440,14 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		
 	}
 	
+	public enum Tab {
+		UNITS, BATTLE, LOG, HELP
+	}
 	
+	public static final Comparator<Industry> INDUSTRY_COMPARATOR = new Comparator<Industry>() {
+		@Override
+		public int compare(Industry one, Industry two) {
+			return Integer.compare(one.getSpec().getOrder(), two.getSpec().getOrder());
+		}
+	}; 
 }

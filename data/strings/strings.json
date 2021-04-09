@@ -1069,13 +1069,16 @@
 		"endMsgLoot":"The invasion forces captured a quantity of various items, as well as some credits.",
 		"endMsgNoLoot":"The invasion did not lead to the capture of a meaningful quantity of goods.",
 		"endMsgDefeat":"Your invasion has been defeated.",
+		
+		"storyCriticalWarning":"$market has an important role to play in the Sector to come. You have the feeling that if you were to proceed successfully with this invasion, the future could be distorted.",
+		"storyCriticalWarningHighlight":"the future could be distorted"
 	},
 	"nex_invasion2":{
 		"intelTitle":"Surface Battle: $market",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
 		"intelDesc_round":"Day %s",
-		"intelDesc_strengthHeaderAttacker":"Attacker strength",
-		"intelDesc_strengthHeaderDefender":"Defender strength",
+		"intelDesc_headerAttackerBonus":"Attacker bonuses",
+		"intelDesc_headerDefenderBonus":"Defender bonuses",
 		"intelDesc_strength":"Strength mult: %s",
 		"intelDesc_strength_noFleetSupport":"No fleet support",
 		
@@ -1084,10 +1087,21 @@
 		"industryPanel_header_attacker":"Attacking forces",
 		"industryPanel_header_defender":"Defending forces",
 		
-		"troopNameMarine":"Marines",
-		"troopNameMech":"Heavy Arms",
-		"troopNameMilitia":"Militia",
-		"troopNameRebel":"Rebels",
+		"troopNameMarine":"marine",
+		"troopNameMech":"heavy",
+		"troopNameMilitia":"militia",
+		"troopNameRebel":"rebel",
+		
+		"unitPlatoon":"platoon",
+		"unitPlatoonPlural":"platoons",
+		"unitCompany":"company",
+		"unitCompanyPlural":"companies",
+		"unitBatallion":"batallion",
+		"unitBatallionPlural":"batallions",
+		"unitRegiment":"regiment",
+		"unitRegimentPlural":"regiments",
+		
+		"unitEquivalent":"$num $type $unit",
 	},
 	
 	"exerelin_landmarks":{
@@ -1302,11 +1316,6 @@
 		"miaPresumedDead":"MIA, presumed dead",
 		"killedInAction":"killed in action",
 		"rescued":"rescued",
-		
-		"intelSkillLevel1":"an unremarkable officer",
-		"intelSkillLevel2":"a capable officer",
-		"intelSkillLevel3":"a highly capable officer",
-		"intelSkillLevel4":"an exceptionally capable officer",
 	},
 	
 	"nex_insurance":{
@@ -1609,8 +1618,8 @@
 		
 		"intelDesc1":"The $faction special task group $fleetName is present in the Sector.",
 		"intelDesc1NoName":"A $faction special task group is present in the Sector.",
-		"intelDescCommander":"The fleet is known to be commanded by $rank $name, $levelDesc in the $flagship.",
-		"intelDescCommanderNoFlagship":"The fleet is known to be commanded by $rank $name, $levelDesc.",
+		"intelDescCommander":"The fleet is known to be commanded by $rank $name, in the $flagship.",
+		"intelDescCommanderNoFlagship":"The fleet is known to be commanded by $rank $name.",
 		"intelDescStr":"The fleet's estimated strength is %s fleet points (damage %s).",
 		"intelDescFleetStatus":"The fleet is physically alive and is currently in the %s.",
 		"intelDescAction":"Current action: $action",

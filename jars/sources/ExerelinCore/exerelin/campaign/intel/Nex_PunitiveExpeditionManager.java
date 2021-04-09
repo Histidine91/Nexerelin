@@ -203,6 +203,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 		//WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (!market.getFaction().isPlayerFaction()) continue;
+			if (!market.isPlayerOwned()) continue;
 			if (market.isInHyperspace()) continue;
 			TributeIntel ti = TributeIntel.getOngoingIntel(market);
 			if (ti != null && ti.getFactionForUIColors() == curr.faction) continue;

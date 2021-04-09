@@ -41,6 +41,7 @@ import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
+import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
@@ -809,9 +810,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 					StringHelper.getString("yes", true), StringHelper.getString("no", true));
 		}
 		
-		String exitOpt = "exerelinMarketSpecial";
+		Object exitOpt = "exerelinMarketSpecial";
 		if (memory.getBoolean("$nex_specialDialog"))
-			exitOpt = "continueCutComm";		
+			exitOpt = FieldOptionsScreenScript.FactionDirectoryDialog.Menu.INIT;
 		opts.addOption(Misc.ucFirst(StringHelper.getString("cancel")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
 		//ExerelinUtils.addDevModeDialogOptions(dialog, true);

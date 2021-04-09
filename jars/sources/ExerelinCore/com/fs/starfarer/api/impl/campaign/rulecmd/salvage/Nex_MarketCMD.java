@@ -58,6 +58,7 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSa
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
@@ -625,6 +626,16 @@ public class Nex_MarketCMD extends MarketCMD {
 					"" + (int)Math.round(tempInvasion.invasionMult * 100f) + "%");
 		}
 		if (DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+		}
+		
+		if (Misc.isStoryCritical(market)) {
+			text.setFontSmallInsignia();
+			str = getString("storyCriticalWarning");
+			str = StringHelper.substituteToken(str, "$market", market.getName());
+			LabelAPI para = text.addPara(str);
+			para.setHighlight(market.getName(), getString("storyCriticalWarningHighlight"));
+			para.setHighlightColors(market.getFaction().getBaseUIColor(), Global.getSector().getPlayerFaction().getBaseUIColor());
+			text.setFontInsignia();
 		}
 		
 		options.clearOptions();

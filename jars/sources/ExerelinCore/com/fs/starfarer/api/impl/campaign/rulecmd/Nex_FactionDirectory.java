@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -19,6 +18,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ui.FieldOptionsScreenScript.FactionDirectoryDialog;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
@@ -147,9 +147,9 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			opts.addOption(Misc.ucFirst(Global.getSector().getPlayerFaction().getDisplayName()), 
 					PRINT_FACTION_OPTION_PREFIX + Factions.PLAYER);
 		
-		String exitOpt = "exerelinMarketSpecial";
+		Object exitOpt = "exerelinMarketSpecial";
 		if (special)
-			exitOpt = "continueCutComm";		
+			exitOpt = FactionDirectoryDialog.Menu.INIT;
 		opts.addOption(Misc.ucFirst(StringHelper.getString("back")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
 		

@@ -251,7 +251,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 					textKey = "intelOutcomeQueueJumpedEarly";
 					break;
 				case INVADE_SUCCESS:
-					textKey = newName = "intelOutcomeInvadeSuccess";
+					textKey = "intelOutcomeInvadeSuccess";
 					break;
 				case INVADE_FAILED:
 					textKey = "intelOutcomeInvadeFailed";
@@ -369,8 +369,11 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	}
 	
 	public void createColony() {
+		String oldName = getTarget().getName();
 		createColonyStatic(getTarget(), planet, faction, false);
-		newName = getTarget().getName();
+		String newName = getTarget().getName();
+		if (!oldName.equals(newName))
+			this.newName = newName;
 	}
 	
 	public static void createColonyStatic(MarketAPI market, PlanetAPI planet, 
@@ -440,7 +443,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (!fromDeciv) {
 			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
-			market.setIncentiveCredits(100000);
+			market.setImmigrationIncentivesOn(true);
 		}
 		if (fromDeciv) {
 			market.addIndustry(Industries.SPACEPORT);

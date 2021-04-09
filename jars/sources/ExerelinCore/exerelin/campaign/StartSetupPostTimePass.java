@@ -134,11 +134,12 @@ public class StartSetupPostTimePass {
 			}
 		}
 		
-		// gate handling
+		// gate handling and other stuff
 		if (!SectorManager.getManager().isCorvusMode()) {
 			Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
 			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.CAN_SCAN_GATES, true);
 			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.GATES_ACTIVE, true);
+			Global.getSector().getMemoryWithoutUpdate().set("$interactedWithGABarEvent", true);
 		}
 	}
 	

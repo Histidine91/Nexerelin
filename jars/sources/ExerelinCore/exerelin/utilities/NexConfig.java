@@ -54,6 +54,7 @@ public class NexConfig
     
     // Invasion stuff
     public static boolean enableInvasions = true;
+    public static boolean allowInvadeStoryCritical = false;
     public static boolean allowPirateInvasions = false;
     public static boolean retakePirateMarkets = true;
     public static float fleetRequestCostPerFP = 400f;
@@ -117,10 +118,10 @@ public class NexConfig
     public static boolean officerDaredevilBonus = true;
     
     // Colonies
-    public static int maxNPCColonySize = 10;
+    public static int maxNPCColonySize = 6;
     public static int maxNPCNewColonySize = 6;
     public static float hardModeColonyGrowthMult = 0.5f;
-    public static float hardModeColonyIncomeMult = 0.75f;
+    public static float hardModeColonyIncomeMult = 0.9f;
     public static float colonyExpeditionInterval = 270;
     
     public static float specialForcesPointMult = 1;
@@ -186,6 +187,7 @@ public class NexConfig
             useAgentSpecializations = settings.optBoolean("useAgentSpecializations", useAgentSpecializations);
             
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
+            allowInvadeStoryCritical = settings.optBoolean("allowInvadeStoryCritical", allowInvadeStoryCritical);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
             fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);

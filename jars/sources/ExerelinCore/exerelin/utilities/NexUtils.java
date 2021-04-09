@@ -84,18 +84,20 @@ public class NexUtils
 		return list.get(randomIndex);
 	}
 	
-	public static <T> void modifyMapEntry(Map<T, Integer> map, T key, int amount) {
+	public static <T> int modifyMapEntry(Map<T, Integer> map, T key, int amount) {
 		int curr = 0;
 		if (map.containsKey(key))
 			curr = map.get(key);
 		map.put(key, curr + amount);
+		return curr + amount;
 	}
 	
-	public static <T> void modifyMapEntry(Map<T, Float> map, T key, float amount) {
+	public static <T> float modifyMapEntry(Map<T, Float> map, T key, float amount) {
 		float curr = 0;
 		if (map.containsKey(key))
 			curr = map.get(key);
 		map.put(key, curr + amount);
+		return curr + amount;
 	}
 	
 	/**
@@ -111,14 +113,6 @@ public class NexUtils
 		if (gauss > max) gauss = max;
 		if (gauss < min) gauss = min;
 		return gauss;
-	}
-	
-	public static float modifyMapEntry(Map<String, Float> toModify, String key, float delta) {
-		if (!toModify.containsKey(key))
-			toModify.put(key, 0f);
-		float newVal = toModify.get(key) + delta;
-		toModify.put(key, newVal);
-		return newVal;
 	}
 
 	public static MarketAPI getClosestMarket(String factionId)
