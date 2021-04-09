@@ -1005,8 +1005,6 @@ public class MiningHelperLegacy {
 		utility = Math.round(combat / 40f);
 		bonus = 0.1f;
 
-		int total = combat + freighter + tanker + utility;
-
 		final int finalCombat = combat;
 		final int finalFreighter = freighter;
 		final int finalTanker = tanker;
