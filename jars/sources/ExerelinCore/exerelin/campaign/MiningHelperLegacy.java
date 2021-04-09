@@ -64,6 +64,7 @@ public class MiningHelperLegacy {
 	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
 	protected static final String RESOURCE_DEFS = "data/config/exerelin/mining_resources.csv";
 	protected static final String EXHAUSTION_DATA_KEY = "nex_miningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
+	protected static final String MINING_HARASS_KEY = "$nex_mining_harass";
 	
 	public static final boolean DEBUG_MODE = false;
 	
@@ -118,6 +119,9 @@ public class MiningHelperLegacy {
 	protected static float xpPerMiningStrength = 10;
 	protected static float maxXPPerMine = 1500;
 	protected static float machineryPerMiningStrength = 0.4f;
+
+	protected static float miningHarassThreshold = 10000f;
+	protected static boolean enableMiningHarass = true;
 	
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
 	protected static final Map<String, Float> miningShips = new HashMap<>();
@@ -148,6 +152,9 @@ public class MiningHelperLegacy {
 			planetDangerMult = (float)config.optDouble("planetDangerMult", planetDangerMult);
 			planetExhaustionMult = (float)config.optDouble("planetExhaustionMult", planetExhaustionMult);
 			planetRenewMult = (float)config.optDouble("planetRenewMult", planetRenewMult);
+
+			enableMiningHarass = Global.getSettings().getBoolean("nex_enableMiningHarass");
+			miningHarassThreshold = Global.getSettings().getFloat("nex_miningHarassThreshold");
 			
 			loadMiningShips();
 			loadMiningWeapons();
@@ -840,12 +847,14 @@ public class MiningHelperLegacy {
 				fleet.getFleetData().addFleetMember(member);
 				fleet.updateCounts();
 				name = member.getVariant().getFullDesignationWithHullName();
+				def.id = member.getHullId();
 			}
 			else if (def.type == CacheType.FIGHTER_WING)
 			{
 				FighterWingSpecAPI spec = getRandomFighter();
 				fleet.getCargo().addFighters(spec.getId(), 1);
 				name = StringHelper.getStringAndSubstituteToken("exerelin_mining", "LPC", "$fighterName", spec.getVariant().getFullDesignationWithHullName());
+				def.id = spec.getId();
 			}
 			else if (def.type == CacheType.WEAPON)
 			{
@@ -866,12 +875,14 @@ public class MiningHelperLegacy {
 						break;
 					}
 				}
+				def.id = weapon.getWeaponId();
 			}
 			else if (def.type == CacheType.HULLMOD)
 			{
 				HullModSpecAPI mod = getRandomHullmod();
 				fleet.getCargo().addHullmods(mod.getId(), 1);
 				name = StringHelper.getStringAndSubstituteToken("exerelin_mining", "hullmod", "$hullmod", mod.getDisplayName());
+				def.id = mod.getId();
 			}
 			else if (def.type == CacheType.COMMODITY)
 			{
@@ -950,8 +961,54 @@ public class MiningHelperLegacy {
 			
 			applyResourceExhaustion(entity, strength);
 		}
-		
+
+		if(enableMiningHarass){
+			float miningValue = computeMiningValue(result);
+
+			float miningHarass = Global.getSector().getMemoryWithoutUpdate().getFloat(MINING_HARASS_KEY);
+
+			if(miningHarass + miningValue > miningHarassThreshold || DEBUG_MODE ){
+				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, 0);
+				//create hostileFleet
+			}else{
+				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, miningHarass + miningValue);
+			}
+		}
+
 		return result;
+	}
+
+	public static float computeMiningValue(MiningResult result){
+		float miningValue = 0f;
+
+		for (Map.Entry<String, Float> entry : result.report.totalOutput.entrySet()) {
+			miningValue += Global.getSector().getEconomy().getCommoditySpec(entry.getKey()).getBasePrice() * entry.getValue();
+		}
+
+		for(CacheResult cacheResult : result.cachesFound){
+			if(cacheResult.def.type == CacheType.COMMODITY) {
+				miningValue += Global.getSector().getEconomy().getCommoditySpec(cacheResult.def.id).getBasePrice() * cacheResult.numItems;
+				continue;
+			}
+			else if(cacheResult.def.type == CacheType.HULLMOD) {
+				miningValue += Global.getSettings().getHullModSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+				continue;
+			}
+			else if(cacheResult.def.type == CacheType.FRIGATE) {
+				miningValue += Global.getSettings().getHullSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+				continue;
+			}
+			else if(cacheResult.def.type == CacheType.FIGHTER_WING) {
+				miningValue += Global.getSettings().getFighterWingSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+				continue;
+			}
+			else if(cacheResult.def.type == CacheType.WEAPON) {
+				miningValue += Global.getSettings().getWeaponSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+				continue;
+			}
+		}
+
+		return miningValue;
 	}
 	
 	public static void renewResources(float days)
