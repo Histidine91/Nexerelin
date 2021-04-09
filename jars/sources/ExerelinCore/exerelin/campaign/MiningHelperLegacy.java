@@ -223,10 +223,7 @@ public class MiningHelperLegacy {
 		
 		// new MagicLib system
 		Map<String, Float> strengths = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "mining_ship_strengths");
-		for (String shipId : strengths.keySet()) {
-			float str = strengths.get(shipId);
-			miningShips.put(shipId, str);
-		}
+		miningShips.putAll(strengths);
 	}
 	
 	public static void loadMiningWeapons()
@@ -260,10 +257,7 @@ public class MiningHelperLegacy {
 		
 		// new MagicLib system
 		Map<String, Float> strengths = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "mining_weapon_strengths");
-		for (String weaponId : strengths.keySet()) {
-			float str = strengths.get(weaponId);
-			miningWeapons.put(weaponId, str);
-		}
+		miningWeapons.putAll(strengths);
 	}
 	
 	public static void loadHiddenTools() {
