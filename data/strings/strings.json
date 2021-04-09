@@ -1316,11 +1316,6 @@
 		"miaPresumedDead":"MIA, presumed dead",
 		"killedInAction":"killed in action",
 		"rescued":"rescued",
-		
-		"intelSkillLevel1":"an unremarkable officer",
-		"intelSkillLevel2":"a capable officer",
-		"intelSkillLevel3":"a highly capable officer",
-		"intelSkillLevel4":"an exceptionally capable officer",
 	},
 	
 	"nex_insurance":{
@@ -1623,8 +1618,8 @@
 		
 		"intelDesc1":"The $faction special task group $fleetName is present in the Sector.",
 		"intelDesc1NoName":"A $faction special task group is present in the Sector.",
-		"intelDescCommander":"The fleet is known to be commanded by $rank $name, $levelDesc in the $flagship.",
-		"intelDescCommanderNoFlagship":"The fleet is known to be commanded by $rank $name, $levelDesc.",
+		"intelDescCommander":"The fleet is known to be commanded by $rank $name, in the $flagship.",
+		"intelDescCommanderNoFlagship":"The fleet is known to be commanded by $rank $name.",
 		"intelDescStr":"The fleet's estimated strength is %s fleet points (damage %s).",
 		"intelDescFleetStatus":"The fleet is physically alive and is currently in the %s.",
 		"intelDescAction":"Current action: $action",
