@@ -13,6 +13,8 @@
 	
 	"nex_enableVersionChecker":true,
 	
+	"nex_keepSModsForRecoveredShips":true,	# note: only affects enemy ships, friendly ships already keep their mods
+	
 	"nex_conquestMissionIntervalRateMult":0.05,
 	"nex_disruptMissionIntervalRateMult":0.125,
 	"nex_pirateRageIncrement":0.04,

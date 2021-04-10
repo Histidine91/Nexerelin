@@ -14,8 +14,12 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import static com.fs.starfarer.api.impl.campaign.FleetEncounterContext.prepareShipForRecovery;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.SWPModPlugin;
 import data.scripts.util.SWP_Util;
 import exerelin.campaign.StatsTracker;
@@ -39,6 +43,23 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	
 	@Override
 	public List<FleetMemberAPI> getRecoverableShips(BattleAPI battle, CampaignFleetAPI winningFleet, CampaignFleetAPI otherFleet) {
+		// not part of the IBB, just some hax to make S-mods kept
+		
+		
+		if (Global.getSettings().getBoolean("nex_keepSModsForRecoveredShips")) {
+			DataForEncounterSide winnerData = getDataFor(winningFleet);
+			List<FleetMemberData> enemyCasualties = winnerData.getEnemyCasualties();
+			for (FleetMemberData casualty : enemyCasualties) {
+				FleetMemberAPI otherMember = casualty.getMember();
+				ShipVariantAPI variant = otherMember.getVariant();
+				//Global.getLogger(this.getClass()).info("Checking variant for " + otherMember.getShipName() + ": " + variant.getSource());
+				if (variant.getSource() == VariantSource.REFIT) {
+					variant.addTag(Tags.VARIANT_ALWAYS_RETAIN_SMODS_ON_SALVAGE);
+				}
+			}
+		}
+		
+		
 		List<FleetMemberAPI> result = super.getRecoverableShips(battle, winningFleet, otherFleet);
 		
 		if (!ExerelinModPlugin.HAVE_SWP) {
