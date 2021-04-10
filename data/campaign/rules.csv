@@ -2,12 +2,12 @@ id,trigger,conditions,script,text,options,notes
 # NGC options,,,,,,
 ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"$isInIntro = true 0
 $introPage = 1.0 0
-FireBest ExerelinNGCIntroPage",,,override SS+ NGC
+FireAll ExerelinNGCIntroPage",,,override SS+ NGC
 ,,,,,,
 ExerelinNGCIntroNextPage,NewGameOptionSelected,$option==exerelinNGCIntroNextPage,"$introPage++
-FireBest ExerelinNGCIntroPage",,,
+FireAll ExerelinNGCIntroPage",,,
 ExerelinNGCIntroPrevPage,NewGameOptionSelected,$option==exerelinNGCIntroPrevPage,"$introPage--
-FireBest ExerelinNGCIntroPage",,,
+FireAll ExerelinNGCIntroPage",,,
 #introPage needs to be a float,,,,,,
 ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
 $isInIntro","SetShortcut exerelinNGCIntroNextPage RETURN
@@ -33,6 +33,8 @@ $isInIntro",SetShortcut exerelinNGCIntroEnd RETURN,Have fun and please leave any
 exerelinNGCIntroPrevPage:Previous",
 ExerelinNGCIntroEnd,NewGameOptionSelected,$option==exerelinNGCIntroEnd,"$isInIntro = false
 FireAll ExerelinNGCStep1",,,
+ExerelinNGCIntroDevStart,ExerelinNGCIntroPage,$global.isDevMode,,,"99:nex_NGCDevStart:>> (dev) quick start
+100:nex_NGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 ,,,,,,
 ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
@@ -211,14 +213,14 @@ nex_NGCJoinFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCJoinFact
 FireAll ExerelinNGCStep3",,,
 ,,,,,,
 nex_NGCDevStart,NewGameOptionSelected,$option == nex_NGCDevStart,"NGCSetPlayerFaction ""player""
-NGCSetFreeStart false
+NGCSetFreeStart true
 NGCSetWithTimePass false
 NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
 NGCDone",,,
 nex_NGCDevStartFast,NewGameOptionSelected,$option == nex_NGCDevStartFast,"NGCSetPlayerFaction ""player""
-NGCSetFreeStart false
+NGCSetFreeStart true
 NGCSetWithTimePass false
 NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
