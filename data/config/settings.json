@@ -153,6 +153,10 @@
 			"victory_apostate":"graphics/exerelin/illustrations/victory_apostate.jpg",
 		},
 		
+		"characters":{
+			"nex_dissonant":"graphics/exerelin/portraits/dissonant.png",
+		},
+		
 		"intel":{
 			"alliance":"graphics/icons/intel/star.png",
 			"allianceVote":"graphics/icons/intel/stars.png",
@@ -199,6 +203,10 @@
 			"nex_icon_remnant":"graphics/exerelin/icons/logo_remnant.png",
 			"nex_icon_omega":"graphics/exerelin/icons/logo_omega.png",
 			"command_experience":"graphics/icons/skills/command_experience.png"
+		},
+		
+		"raidObjectives":{  # icons displayed at 26x26
+			"beta_core":"graphics/icons/cargo/ai_core_beta.png",
 		},
 		
 		"ui":{

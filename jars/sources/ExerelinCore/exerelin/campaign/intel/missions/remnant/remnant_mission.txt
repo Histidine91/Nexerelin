@@ -1,0 +1,27 @@
+Mission 1
+- AI core possessed by indie world that's bargaining between League, TT and Hegemony for it
+- smash and grab for it
+	- story point option to get the local authority to lower security?
+- bring it back to Remnant contact for money and rep
+	- or defy Remnants and keep core
+
+code to add extraction mission:
+	AddRaidObjective genericIcon "Perform extraction operation"$extr_danger 5000 extrRaidFinished
+	$extr_addedRaidObjective = true 0
+
+Mission 2
+- assassinate Knight of Ludd?
+
+Available free missions
+- (custom) Bounty: patrol, trade fleet, merc, pather, derelict?, salvager?, military-who-hates-cores
+- (custom) System bounty
+	- If we're doing this, why not the disrupt missions?
+- Spysat
+- (custom) Dead drop
+- (custom) Remnant production/Buy Omega weapons
+- Buy AI cores?
+
+TODO: need blurbs and options to display missions
+
+
+Contact name: Midnight Dissonant
