@@ -177,6 +177,8 @@ public class VultureFleetAI implements EveryFrameScript
 	
 	// based on SalvageEntity.performSalvage()
 	protected void performSalvage(SectorEntityToken entity) {
+		if (!entity.isAlive()) return;
+		
 		log.info(fleet.getName() + " salvaging " + entity.getName());
 		boolean isDebris = entity instanceof CampaignTerrainAPI;
 		ShipRecoverySpecialData recovData = ShipRecoverySpecial.getSpecialData(entity, "", VultureFleetManager.DEBUG_MODE, false);
