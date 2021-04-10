@@ -327,14 +327,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onApplicationLoad() throws Exception
     {
-        starsectorVersionCheck();
         boolean bla = NexConfig.countPiratesForVictory;	// just loading config class, not doing anything with it
         if (!HAVE_VERSION_CHECKER && Global.getSettings().getBoolean("nex_enableVersionChecker"))
             VCModPluginCustom.onApplicationLoad();
-        boolean hasLazyLib = Global.getSettings().getModManager().isModEnabled("lw_lazylib");
-        if (!hasLazyLib) {
-            throw new RuntimeException(StringHelper.getString("exerelin_misc", "errorLazyLib"));
-        }
         
         // Nex dev check
         try {
@@ -351,15 +346,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             // Do nothing
         }
-        
-        // TODO: toggle to disable this
-        /*
-        int officerMaxLevel = (int)Global.getSettings().getFloat("officerMaxLevel");
-        //Global.getLogger(this.getClass()).info("wololo officer level: " + officerMaxLevel);
-        if (officerMaxLevel > 29)
-            throw new RuntimeException(StringHelper.getStringAndSubstituteToken(
-                    "exerelin_misc", "errorOfficerMaxLevel", "$currMax", officerMaxLevel + ""));
-        */
         
         loadRaidBPBlocker();
 		RemnantQuestUtils.setupRemnantContactMissions();
@@ -475,78 +461,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         catch (IOException | JSONException ex) {
             log.warn("Failed to load blueprint raid blacklist", ex);
-        }
-    }
-    
-    /**
-     * Throw a RuntimeException if the current Starsector version is older than the one specified.
-     * See http://fractalsoftworks.com/forum/index.php?topic=15894.0
-     */
-    public static void starsectorVersionCheck() {
-        String message = "";
-
-        try {
-            ModSpecAPI spec = Global.getSettings().getModManager().getModSpec("nexerelin");
-            Version wantedVersion = new Version(0, 95, 0, 11);    //new Version(spec.getGameVersion());
-            Version installedVersion = new Version(Global.getSettings().getVersionString());
-
-            if (installedVersion.isOlderThan(wantedVersion, false)) {
-                message = String.format(StringHelper.getString("exerelin_misc", "errorStarsectorVersion"),
-                        spec.getName(), wantedVersion, installedVersion);
-            }
-        } catch (Exception e) {
-            log.error("Version comparison failed.", e);
-        }
-
-        if(!message.isEmpty()) throw new RuntimeException(message);
-    }
-    
-    static class Version {
-        public final int MAJOR, MINOR, PATCH, RC;
-
-        public Version(String versionStr) {
-            String[] temp = versionStr.replace("Starsector ", "").replace("a", "").split("-RC");
-
-            RC = temp.length > 1 ? Integer.parseInt(temp[1]) : 0;
-
-            temp = temp[0].split("\\.");
-
-            MAJOR = temp.length > 0 ? Integer.parseInt(temp[0]) : 0;
-            MINOR = temp.length > 1 ? Integer.parseInt(temp[1]) : 0;
-            PATCH = temp.length > 2 ? Integer.parseInt(temp[2]) : 0;
-        }
-        
-        public Version(int... version) {
-            MAJOR = version[0];
-            MINOR = version[1];
-            PATCH = version[2];
-            if (version.length > 3)
-                RC = version[3];
-            else
-                RC = 0;
-        }
-
-        public boolean isOlderThan(Version other, boolean ignoreRC) {
-            if(MAJOR < other.MAJOR) return true;
-            if(MINOR < other.MINOR) return true;
-            if(PATCH < other.PATCH) return true;
-            if(!ignoreRC && RC < other.RC) return true;
-
-            return false;
-        }
-        
-        public boolean isNewerThan(Version other, boolean ignoreRC) {
-            if(MAJOR > other.MAJOR) return true;
-            if(MINOR > other.MINOR) return true;
-            if(PATCH > other.PATCH) return true;
-            if(!ignoreRC && RC > other.RC) return true;
-
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%d.%d.%d%s-RC%d", MAJOR, MINOR, PATCH, (MAJOR >= 1 ? "" : "a"), RC);
         }
     }
 }
