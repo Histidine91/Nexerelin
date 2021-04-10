@@ -60,6 +60,7 @@ import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.missions.DisruptMissionManager;
 import exerelin.campaign.intel.missions.Nex_CBSpecialForces;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
+import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.campaign.submarkets.PrismMarket;
@@ -361,6 +362,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         */
         
         loadRaidBPBlocker();
+		RemnantQuestUtils.setupRemnantContactMissions();
         
         //MilitaryCustomBounty.CREATORS.clear();
         //MilitaryCustomBounty.CREATORS.add(new Nex_CBSpecialForces());

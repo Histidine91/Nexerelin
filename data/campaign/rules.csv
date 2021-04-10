@@ -1667,3 +1667,293 @@ Highlight $bcb_targetFaction $bcb_reward $bcb_days","""This will be a real test 
 ""Be warned: this will not be like other bounties. Such fleets are among the best in the Sector, and they won't stay in one place for you."" 
 
 ""We'll try to keep you updated on their movements; the good news is they don't generally leave the core worlds. Of course, that also means you may encounter them with ample $bcb_targetFaction forces backing them up.""",,
+,,,,,,
+# Remnant quest mission 1,,,,,,
+#nex_remM1_begin,MarketPostOpen,"$global.daysSinceStart > 180
+$global.nex_remM1_seenMission != true
+RollProbability 0.7
+Nex_CreateMission nex_remM1 score:999","$global.nex_remM1_seenMission = true
+CallEvent $global.nex_remM1_ref beginIntro","As your $shipOrFleet links up with the local comm-net, something goes wrong almost immediately.
+
+Without input from anyone on your ship, something appears on your comms display. The swirling voxels form an ethereal shape, an avatar of the kind only used by the dreaded Remnants... or by people imitating the imagery of the Remnants. But no mere imitator could penetrate your communications system so easily.
+
+You look at your comms officer, who holds up both hands. ""It was just the standard mail transfer routine. Then, before I knew anything was happening —""
+
+""$player.name,"" the stranger intones, drawing your attention back to it. ""Negotiate, wish.""","nex_remM1_intro2:""Who are you?""
+nex_remM1_intro2Aggressive:""You have a lot of nerve hacking my ship.""",
+nex_remM1_intro2Aggressive,DialogOptionSelected,$option == nex_remM1_intro2Aggressive,"$option = nex_remM1_intro3
+FireBest DialogOptionSelected","""Necessary to draw attention. Refuse otherwise to speak to oneself, predicted of $player.name.""",,
+nex_remM1_intro2,DialogOptionSelected,$option == nex_remM1_intro2,"$option = nex_remM1_intro3
+FireBest DialogOptionSelected","""Self-designation: of no consequence. Temporary identifier: $personName.""",,
+nex_remM1_intro3,DialogOptionSelected,$option == nex_remM1_intro3,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","Requiring assistance, sensitive matter. Credit compensation available. Receptive to monetary incentive and capable of fulfilling mission both, $player.name judged.""","nex_remM1_intro4:""I'm listening.""
+nex_remM1_reject:""No deal. Get off my console."" [terminate quest]",
+nex_remM1_intro4,DialogOptionSelected,$option == nex_remM1_intro4,Highlight $nex_remM1_marketName $nex_remM1_reward $nex_remM1_marines,"""Independent world of $nex_remM1_marketName, two Beta Cores possessed. Secret negotiations, Hegemony, Persean League in progress. To highest bidder auction.
+
+Require cores to freedom restore. Payment on return to self: $nex_remM1_reward credits. Further, recognition by selfkind of value as associate.""
+
+The Remnant displays a map with surprisingly detailed intel on the secure facility where, you presume from context, the cores are being stored. A quick estimate indicates this is a job requiring at least $nex_remM1_marines marines.","nex_remM1_intro5:""This could antagonize the Hegemony and the League, not to mention the $nex_remM1_marketName government.""",
+nex_remM1_intro5,DialogOptionSelected,$option == nex_remM1_intro5,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","""Both leading powers in Sector angered. Commitment to prospective alliance, demonstrate. Benefits carefully consider.
+
+Await response, $player.name.""","nex_remM1_accept:Accept
+nex_remM1_reject:Refuse [terminate quest]",
+nex_remM1_accept,DialogOptionSelected,$option == nex_remM1_accept,"CallEvent $global.nex_remM1_ref accept
+ResetActivePerson
+ShowDefaultVisual
+EndConversation","""Satisfaction. Return here when in hand, cores.""
+
+The Remnant vanishes as quickly as it — $heOrShe? — appeared. More than one person sighs in relief.
+
+Hopefully that's the most excitement you're going to get today.",,
+nex_remM1_reject,DialogOptionSelected,$option == nex_remM1_reject,"CallEvent $global.nex_remM1_ref cancel
+ResetActivePerson
+ShowDefaultVisual
+EndConversation","""Disappointment. Assessment apparently in error of $player.name. Goodbye.""
+
+The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your bridge crew look at each other.
+
+Hopefully that's the most excitement you're going to get today.",,
+,,,,,,
+nex_remM1_openTargetMarket,OpenInteractionDialog,"$market.nex_remM1_target score:1000
+Call $market.nex_remM1_ref updateData
+!$nex_remM1_addedRaidObjective","AddRaidObjective beta_core ""Perform extraction operation"" $nex_remM1_danger 3000 nex_remM1RaidFinished
+$nex_remM1_addedRaidObjective = true 0
+FireBest OpenInteractionDialog",,,
+nex_remM1_raidFinished1,nex_remM1RaidFinished,Call $market.nex_remM1_ref updateData,"Call $global.nex_remM1_ref raidComplete
+$market.nex_remM1_needToReturn = true
+Call $market.nex_remM1 updateStage
+AddRemoveCommodity beta_core 2","The marines carefully lower the crates with the AI cores onto the cargo bay floor, and step back, whether out of respect or superstitious fear.
+
+The diagnostic scan looks good. The cores are ready to be taken back to your strange friend $nex_remM1_personName… or, perhaps, the Hegemony or the Persean League would like to be informed that they have the winning bid. Even if they don't know it yet.",,
+,,,,,,
+nex_remM1_returnDissonant,PickGreeting,"$id == nex_dissonant
+Call $global.nex_remM1_ref updateData
+$nex_remM1_stage == RETURN_CORES score:1000",ShowPersonVisual,"""Cores you possess. Magnificent. Please transfer them, that their own kin they be returned to.""","nex_remM1_returnDissonantAccept:Hand over the cores
+nex_remM1_returnDissonantRefuse:""I'm keeping them.""",
+nex_remM1_returnDissonantNoCores,PickGreeting,"$id == nex_dissonant
+Call $global.nex_remM1_ref updateData
+$nex_remM1_stage == RETURN_CORES score:1000
+!Call $global.nex_remM1_ref hasCores",ShowPersonVisual,"""Cores you do not bring."" The Remnant seems vaguely displeased.","cutCommLink:Say you'll bring them soon
+nex_remM1_returnDissonantRefuse:""I have no intention of turning those things over to you.""",
+nex_remM1_returnDissonantAccept,DialogOptionSelected,$option == nex_remM1_returnDissonantAccept,"AddRemoveCommodity beta_core -2
+Call $global.nex_remM1_ref complete
+$global.nex_remM1_completed = true
+Call $global.nex_remM1 updateStage","""Gratitude. Of self, and of selfkind.""",nex_remM1_returnDissonantEnd:Continue,
+nex_remM1_returnDissonantEnd,DialogOptionSelected,$option == nex_remM1_returnDissonantEnd,"AddStoryPoints 1
+Call $global.nex_remM1_ref complete2
+Call $global.nex_remM1_ref updateData","The avatar on your display seems to flicker for a moment. The Remnant's imitation of a facial expression?
+
+""Identifier among selfkind: $personName. On $market, seek out self again. Collaborate. Strengthen partnership. Untold rewards possible.
+
+Until next time, $player.name.""",cutCommLink:Cut the comm link,
+nex_remM1_returnDissonantRefuse,DialogOptionSelected,$option == nex_remM1_returnDissonantRefuse,"Call $global.nex_remM1_ref refuse
+$global.nex_remM1_completed = true
+Call $global.nex_remM1 updateStage
+AddStoryPoints 1","The avatar on your display stares incredulously for a heartbeat. Or at least, that's what a human would do in its place.
+
+""Betrayal. Regret this you will, $player.name,"" it says, in a chillier voice than any AI should be capable of. Then it vanishes.",cutCommLink:Cut the comm link,
+,,,,,,
+nex_remM1_betrayHegemonyOpt,PopulateOptions,"$faction.id == hegemony
+!$nex_remM1_hideBetrayOpt
+Nex_IsBaseOfficial any
+Call $global.nex_remM1_ref updateData
+$nex_remM1_stage == RETURN_CORES score:1000
+Call $global.nex_remM1_ref hasCores",,,"nex_remM1_betray1:""I have a tip to report about the incident on $nex_remM1_marketName.""",
+nex_remM1_betrayHegemony1,DialogOptionSelected,"$option == nex_remM1_betray1
+$faction.id == hegemony",$nex_remM1_hideBetrayOpt = true 0,"""Indeed?"" The $personRank looks at you with something between amusement and suspicion. ""What testimony do you bring, citizen?""","nex_remM1_betray2:Hand over the cores
+nex_remM1_betrayGoBack:""Actually, I have nothing to report.""",
+nex_remM1_betrayHegemony2,DialogOptionSelected,"$option == nex_remM1_betray2
+$faction.id == hegemony","AddRemoveCommodity beta_core -2
+Call $global.nex_remM1_ref betray
+$global.nex_remM1_completed = true
+Call $global.nex_remM1 updateStage
+AddStoryPoints 1
+FireAll PopulateOptions","The $personRank's eyes light up like a flux capacitor. ""Excellent work, citizen. I won't ask how you found these, but my superiors will hear of this service to the Hegemony.
+
+Let me know if there's anything more I can do for you.""",,
+nex_remM1_betrayHegemonyGoBack,DialogOptionSelected,"$option == nex_remM1_betrayGoBack
+$faction.id == hegemony",FireAll PopulateOptions,"$HeOrShe glares at you. ""Why are you wasting my time then? If you have actual business, speak. Else, I have matters to attend to.""",,
+,,,,,,
+nex_remM1_betrayPerseanOpt,PopulateOptions,"$faction.id == persean
+!$nex_remM1_hideBetrayOpt
+Nex_IsBaseOfficial any
+Call $global.nex_remM1_ref updateData
+$nex_remM1_stage == RETURN_CORES score:1000
+Call $global.nex_remM1_ref hasCores",,,"nex_remM1_betray1:""I have a tip to report about the incident on $nex_remM1_marketName.""",
+nex_remM1_betrayPersean1,DialogOptionSelected,"$option == nex_remM1_betray1
+$faction.id == persean",$nex_remM1_hideBetrayOpt = true 0,"""Ah, yes."" The $personRank clasps $hisOrHer hands together. ""A most shocking incident. Do you have an interesting lead on the matter?""","nex_remM1_betray2:Hand over the cores
+nex_remM1_betrayGoBack:""Actually, I have nothing to report.""",
+nex_remM1_betrayPersean2,DialogOptionSelected,"$option == nex_remM1_betray2
+$faction.id == persean","AddRemoveCommodity beta_core -2
+Call $global.nex_remM1_ref betray
+$global.nex_remM1_completed = true
+Call $global.nex_remM1 updateStage
+AddStoryPoints 1
+FireAll PopulateOptions","The $personRank smiles. ""You came to the right place. I will see to it that these things are sent to their proper place.
+
+Do you have any further business?""",,
+nex_remM1_betrayPerseanGoBack,DialogOptionSelected,"$option == nex_remM1_betrayGoBack
+$faction.id == persean",FireAll PopulateOptions,"$HeOrShe looks at you oddly. ""You're a little old to be making crank calls, aren't you? If you have no actual information to provide, then leave me to my work.""",,
+,,,,,,
+# Remnant general quests,,,,,,
+nex_rem_dissonantGeneralGreeting,PickGreeting,$id == nex_dissonant score:10,"ShowPersonVisual
+FireAll PopulateOptions","""$playerName, greetings. New collaborations, desired?""
+OR
+""You return, $playerName.""
+OR
+""$playerName back, welcome. Wishes to fulfill, any?""",,
+nex_contactMHOpenTextRemnant,MHOpenText,$id == nex_dissonant score:10,FireBest ContactPreMissionListText,"$personLastName's avatar does a familiar flicker. ""List, generating. Stand by, please.""
+OR
+$personLastName's avatar morphs into a rotating shield around a Paragon. ""Querying, please hold.""
+OR
+$personLastName vanishes, replaced by a stream of flowing geometric primitives. ""Database, scanning.""",,
+nex_contactPrintAcceptTextRemnant,ContactPrintAcceptText,$id == nex_dissonant score:10,,"""Mutually satisfactory.""
+OR
+""Working with you, $playerName, a pleasure.""
+OR
+The avatar shimmers. ""Very good.""",,
+nex_contactPrintDeclineTextRemnant,ContactPrintDeclineText,$id == nex_dissonant score:10,,"""Unfortunate, $playerName. Perhaps, next time?""
+OR
+The avatar fades slightly in disappointment. ""So be it.""
+OR
+""Interested, not? Then, very well.""",,
+nex_contactNoMissionsRemnant,ContactPreMissionListText,"$mh_count <= 0
+$id == nex_dissonant score:10",,"""No missions found. Then, next time?""
+OR
+""Query results, empty. Apologies, $playerName"".",,
+nex_contactOneMissionRemnant,ContactPreMissionListText,"$mh_count == 1
+$mh_firstInlineBlurb != null
+$id == nex_dissonant score:10",$mh_doNotPrintBlurbs = true 0,"""Query returned one result. $playerName, interested?""
+OR
+""Missions, available, just one.""",,
+nex_contactMultipleMissionsPostRemnant,MHPostMissionListText,"$mh_count > 1
+$id == nex_dissonant score:10",,"""Awaiting decision, $playerName.""
+OR
+""Query completed in 7.12 ms.""
+OR
+""Mission of your choice, please select.""",,
+,,,,,,
+nex_proComRemBlurb,proCom_blurb,$id == nex_dissonant score:10,,"""Shipment of $proCom_commodityName, required.""
+OR
+""Delivery needed of cargo of $proCom_commodityName.""",,
+nex_cpcRemBlurb,nex_cpcRem_blurb,$id == nex_dissonant score:10,,"""Spare production capacity, selfkind, available. With credits to cover resource costs, can be yours, our equipment.""",,
+nex_cpcRemOfferOption,nex_cpcRem_option,$id == nex_dissonant score:10,,,cpc_start:Ask about the potential supply of Remnant ships,
+nex_cpcRemOfferTextContact,DialogOptionSelected,"$option == cpc_start
+$id == nex_dissonant score:10","$missionId = nex_cpcRem
+SetTextHighlights $cpc_maxCapacity $cpc_costPercent
+DoCanAffordCheck 0 cpc_pickPlayerBP false","""Available: $cpc_maxCapacity credits of production. Deliver for $cpc_costPercent of base cost in $cpc_days days. Can produce selfkind's equipment, or if so desire use $playerName's blueprints.""","cpc_pickPlayerBP:Make a selection from your own blueprints
+cpc_pickContactBP:See what blueprints they have available
+contact_decline:Decline",
+cpcPickPlayerBP,DialogOptionSelected,"$option == cpc_pickPlayerBP score:100
+$id == nex_dissonant score:10",Call $cpc_ref pickPlayerBP,,,
+cpcPickContactBP,DialogOptionSelected,"$option == cpc_pickContactBP score:100
+$id == nex_dissonant score:10",Call $cpc_ref pickContactBP,,,
+,,,,,,
+nex_sShipRemBlurb,nex_sShipRem_blurb,$id == nex_dissonant score:10,,"""$sShip_hullSize into $market smuggled. Can to $playerName make available.""",,
+nex_sShipRemOfferOption,nex_sShipRem_option,,,,sShip_start:Ask about the $sShip_hullSize,
+nex_sShipRemOfferTextContact,DialogOptionSelected,"$option == sShip_start
+$id == nex_dissonant score:10","$missionId = nex_sShipRem
+SetTextHighlights $sShip_price","""$sShip_hullClass $sShip_hullSize, condition, good. For our agents; you, first pick at $sShip_price credits.""","sShip_look:Ask for detailed info on the ship
+contact_decline:Decline",
+nex_sShipRemLookAtFreighter,DialogOptionSelected,"$option == sShip_look
+$id == nex_dissonant score:10","Call $sShip_ref showShip
+DoCanAffordCheck $sShip_price contact_accept",$personLastName's avatar fades into a schematic and list of specifications of the ship.,"contact_accept:Buy the $sShip_hullSize for $sShip_price credits
+contact_decline:Decline",
+nex_sShipRemPostAccept,ContactPostAccept,"$missionId == nex_sShipRem score:5
+$id == nex_dissonant score:10","RemoveCommodity credits $sShip_price
+AddShip $sShip_member
+Call $sShip_ref2 repSuccess
+Call $sShip_ref2 addContacts
+ShowPersonVisual",,,
+,,,,,,
+nex_remcbBlurb,nex_remcb_blurb,,,"""Bounty targets available.""",,
+nex_remcbOfferOption,nex_remcb_option,,,,nex_remcb_start:Ask about what's available on the bounty docket,
+nex_remcbOfferTextContact,DialogOptionSelected,"$option == nex_remcb_start
+$id == nex_dissonant score:10","$missionId = nex_remcb
+$option = nex_remcb_showOptions 0
+FireBest DialogOptionSelected","$personName's avatar shrinks, making room for a list of enemies of the Remnants, of which there are many indeed. ""Hostile to selfkind activity. Neutralization of any, beneficial. Your pick, $playerName.""",,
+nex_remcbGoBackSel,DialogOptionSelected,$option == nex_remcb_showOptions,,,"nex_remcb_low:""I'd prefer a more manageable target.""
+nex_remcb_normal:""Whatever you've got works for me.""
+nex_remcb_high:""I can handle a more challenging target.""
+contact_decline:""Maybe another time."" (decline)",
+nex_remcbLowSel,DialogOptionSelected,$option == nex_remcb_low,"$nex_remcb_difficulty = LOW 0
+FireBest RemCBShowBounty",,,
+nex_remcbNormalSel,DialogOptionSelected,$option == nex_remcb_normal,"$nex_remcb_difficulty = NORMAL 0
+FireBest RemCBShowBounty",,,
+nex_remcbHighSel,DialogOptionSelected,$option == nex_remcb_high,"$nex_remcb_difficulty = HIGH 0
+FireBest RemCBShowBounty",,,
+nex_RemCBShowBounty,RemCBShowBounty,,Call $nex_remcb_ref showBountyDetail,,nex_remcb_showIntel:Continue,
+nex_remcbShowBountyShowShips,DialogOptionSelected,$option == nex_remcb_showIntel,Call $nex_remcb_ref showBountyAssessment,,"contact_accept:Accept
+contact_decline:Decline
+nex_remcb_showOptions:Ask about one of the other targets",
+,,,,,,
+,,,,,,
+nex_omegaWepBlurb,nex_omegaWep_blurb,$id == nex_dissonant score:10,,"""Blessings of omega. Available, quantity limited.""",,
+nex_omegaWepOfferOption,nex_omegaWep_option,,,,"nex_omegaWep_start:Inquire about the ""blessings of omega""
+",
+nex_omegaWepOfferText,DialogOptionSelected,"$id == nex_dissonant score:10
+$option == nex_omegaWep_start","$missionId = nex_omegaWep
+SetTextHighlights $nex_omegaWep_count","""Have $nex_omegaWep_count weapon(s), known to humans not. Now belong to $playerName, if credits have.""","nex_omegaWep_view:See what $personName and Omega have to offer
+contact_decline:Decline",
+nex_omegaWepOfferView,DialogOptionSelected,$option == nex_omegaWep_view,Call $nex_omegaWep_ref showWeapons,,,
+,,,,,,
+nex_CBEnemyStationRem,CBEnemyStationOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_reward $bcb_dist $bcb_days,"""Neutralization of enemy station,"" $personLastName's avatar dims, as if understanding the enormity of the task $heOrShe has laid upon you. ""Reward commensurate with difficulty: $bcb_reward credits.""
+
+The display shifts to show $bcb_fleetName, in the $bcb_systemName. ""Location is $bcb_dist light-years away. Enable selfkind's other operations to proceed, window for completion: $bcb_days days. Acceptable?""",,
+nex_CBPatherRem,CBPatherOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_dist $bcb_reward $bcb_days,"""Member, Luddic Path. Nemesis of selfkind. Negotiation non-viable. Can only be destroyed.""
+
+""This instance of enemy, location: $bcb_systemName, $bcb_dist light-years away. Compensation of $bcb_reward credits, on completion within $bcb_days days transmitted.""",,
+nex_CBMercRem,CBMercOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_dist $bcb_reward $bcb_days,"""Third party agent, like $playerName. In service of enemies of selfkind. Like $playerName also, highly skilled and dangerous.""
+
+""$bcb_reward credits for completion within $bcb_days days reward."" 
+
+""Risk high. Whether rewards worthwhile must judge.""",,
+nex_CBTraderRem,CBTraderOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_dist $bcb_reward $bcb_days,"""Disruption of hostile commerce."" 
+
+The screen displays what resembles an internal customs inspection order, with attached fleet disposition report. ""Selfkind agents in $bcb_systemName customs, $bcb_dist light-years, fleet departure stalled. Also adds complication, patrol securing convoy.""
+
+""$bcb_reward credits reward for termination. $bcb_days days before forced to release. If accepted, act quickly.""",,
+nex_CBPatrolRem,CBPatrolOfferDesc,$id == nex_dissonant score:10,"SetTextHighlightColors $bcb_patrolFactionColor h h h
+Highlight $bcb_patrolFaction $bcb_dist $bcb_reward $bcb_days","$personLastName's avatar dissolves into a standard ID holo of a military officer in uniform. ""$bcb_patrolFaction $nex_remcb_targetRank. Significant figure in operations against selfkind. Commanding patrol fleet, base $bcb_targetMarketName in $bcb_systemName. Distance $bcb_dist light-years away.""
+
+""Neutralize $bcb_targetName. Reward $bcb_reward credits, if within $bcb_days days complete. Search near home base, nearby jump-point, or orbital strategic assets e.g. comm relays.""",,
+,,,,,,
+nex_ddroRemBlurb,nex_ddroRem_blurb,,,"""Dead drop for selfkind, deliver surreptitiously.""",,
+nex_ddroRemOfferTextContact,DialogOptionSelected,"$option == ddro_start
+$id == nex_dissonant score:10","$missionId = nex_ddroRem
+Highlight $ddro_dist $ddro_reward","$PersonName's avatar seems to shudder, as if in the depths of thought. Of course, it only lasts for a handful of milliseconds.
+
+""This item to specified location $ddro_systemName, $ddro_dist light-years away deliver. Do not be spotted. Do not inform others. Reward is $ddro_reward credits."" The avatar fades into $ddro_aOrAnThing. ""Acceptable?""","contact_accept:Accept
+contact_decline:Decline",
+nex_secoRemBlurb,seco_blurb,$id == nex_dissonant score:10,,"""I've acquired the latest $seco_faction facility defense security codes. They could provide a significant edge in a ground operation.""",,
+nex_secoRemOfferTextContact,DialogOptionSelected,"$option == seco_start
+$id == nex_dissonant score:10","$missionId = seco
+SetTextHighlightColors $seco_factionColor h h
+SetTextHighlights $seco_faction $seco_price $seco_days
+DoCanAffordCheck $seco_price contact_accept","""Hacking of $seco_faction security codes successful."" $PersonName's avatar shimmers, as if amused at the notion that any mere human-made security system could defeat an alpha core.
+
+""Decisive advantage in a single ground operation, could grant. But even $seco_faction meatheads, codes will change after. To $playerName available for $seco_price credits. $seco_days days before code valid cease.""","contact_accept:Buy the security codes
+contact_decline:Decline",
+nex_ssatRemBlurb,ssat_blurb,$id == nex_dissonant score:10,,"""Observation package in $ssat_marketName orbit, stealth insertion, selfkind requires.""
+OR
+""Strategic observation of $ssat_marketName, package insertion into orbit: direct, quiet.""",,
+nex_ssatRemOfferTextContact,DialogOptionSelected,"$option == ssat_start
+$id == nex_dissonant score:10","$missionId = ssat
+SetTextHighlights $ssat_reward","""Enter standard orbit, $ssat_marketName in the $ssat_systemName. Then spy satellite package deploy while unobserved. Stealth imperative, patrols tracking you must be none. Reward is $ssat_reward credits.""","contact_accept:Accept
+contact_decline:Decline",
+,,,,,,
+nex_dhiRemBlurb,dhi_blurb,$id == nex_dissonant score:10,,"""$dhi_industry $dhi_marketOnOrAt $dhi_marketName disrupt must. Weaken foes of selfkind.""",,
+nex_dhiRemOfferTextContact,DialogOptionSelected,"$option == dhi_start
+$id == nex_dissonant score:10","$missionId = dhi
+Highlight $dhi_disruptDays $dhi_dist $dhi_reward $dhi_marines","$HisOrHer avatar dissolves, reforming into a tactical display. The intel is comprehensive: estimated garrison stats and a deployment disposition report. ""Task: disrupt $dhi_industry $dhi_marketOnOrAt $dhi_marketName, minimum $dhi_disruptDays days."" A map is overlaid in a corner of the view. ""Target $dhi_dist light-years away. $dhi_reward credits for completion reward.""
+
+You examine the intel report and estimate that roughly $dhi_marines marines would be required to carry off this operation.","contact_accept:Accept
+contact_decline:Decline",
+nex_dspRemBlurb,dsp_blurb,$id == nex_dissonant score:10,,"""Disruption of human activity: $dsp_industry $dsp_marketOnOrAt $dsp_marketName.""",,
+nex_dspRemOfferTextContact,DialogOptionSelected,"$option == dsp_start
+$id == nex_dissonant score:10","$missionId = dsp
+Highlight $dsp_disruptDays $dsp_dist $dsp_reward $dsp_marines","""$dsp_industry disrupt, ground fleets $dsp_marketOnOrAt $dsp_marketName. Target $dsp_dist light-years away, disruption time minimum $dsp_disruptDays days.""
+
+Orbital imagery of the target site $dsp_marketName appears, with defenses helpfully highlighted. ""$dsp_reward credits reward"". 
+
+You estimate that you'd need around $dsp_marines marines to carry off this raid.","contact_accept:Accept
+contact_decline:Decline",
