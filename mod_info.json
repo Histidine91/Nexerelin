@@ -4,7 +4,7 @@
     "author":"Histidine (original by Zaphide)",
     "version":"0.10",
     "description":"Join a faction and conquer the Sector! Requires LazyLib",
-    "gameVersion":"0.95a-RC10",
+    "gameVersion":"0.95a-RC12",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
     "dependencies": [
