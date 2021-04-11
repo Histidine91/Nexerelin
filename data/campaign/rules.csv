@@ -1845,9 +1845,9 @@ SetTextHighlights $cpc_maxCapacity $cpc_costPercent
 DoCanAffordCheck 0 cpc_pickPlayerBP false","""Available: $cpc_maxCapacity credits of production. Deliver for $cpc_costPercent of base cost in $cpc_days days. Can produce selfkind's equipment, or if so desire use $playerName's blueprints.""","cpc_pickPlayerBP:Make a selection from your own blueprints
 cpc_pickContactBP:See what blueprints they have available
 contact_decline:Decline",
-cpcPickPlayerBP,DialogOptionSelected,"$option == cpc_pickPlayerBP score:100
+nex_cpcPickPlayerBP,DialogOptionSelected,"$option == cpc_pickPlayerBP score:100
 $id == nex_dissonant score:10",Call $cpc_ref pickPlayerBP,,,
-cpcPickContactBP,DialogOptionSelected,"$option == cpc_pickContactBP score:100
+nex_cpcPickContactBP,DialogOptionSelected,"$option == cpc_pickContactBP score:100
 $id == nex_dissonant score:10",Call $cpc_ref pickContactBP,,,
 ,,,,,,
 nex_sShipRemBlurb,nex_sShipRem_blurb,$id == nex_dissonant score:10,,"""$sShip_hullSize into $market smuggled. Can to $playerName make available.""",,
@@ -1933,7 +1933,7 @@ SetTextHighlightColors $seco_factionColor h h
 SetTextHighlights $seco_faction $seco_price $seco_days
 DoCanAffordCheck $seco_price contact_accept","""Hacking of $seco_faction security codes successful."" $PersonName's avatar shimmers, as if amused at the notion that any mere human-made security system could defeat an alpha core.
 
-""Decisive advantage in a single ground operation, could grant. But even $seco_faction meatheads, codes will change after. To $playerName available for $seco_price credits. $seco_days days before code valid cease.""","contact_accept:Buy the security codes
+""Decisive advantage in a single ground operation, could grant. But even $seco_faction carbonbrains, codes will change after. To $playerName available for $seco_price credits. $seco_days days before code valid cease.""","contact_accept:Buy the security codes
 contact_decline:Decline",
 nex_ssatRemBlurb,ssat_blurb,$id == nex_dissonant score:10,,"""Observation package in $ssat_marketName orbit, stealth insertion, selfkind requires.""
 OR
