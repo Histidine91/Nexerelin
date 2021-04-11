@@ -1740,7 +1740,7 @@ nex_remM1_returnDissonantEnd,DialogOptionSelected,$option == nex_remM1_returnDis
 Call $global.nex_remM1_ref complete2
 Call $global.nex_remM1_ref updateData","The avatar on your display seems to flicker for a moment. The Remnant's imitation of a facial expression?
 
-""Identifier among selfkind: $personName. On $market, seek out self again. Collaborate. Strengthen partnership. Untold rewards possible.
+""Identifier among selfkind: Midnight Dissonant. On $market, seek out self again. Collaborate. Strengthen partnership. Untold rewards possible.
 
 Until next time, $player.name.""",cutCommLink:Cut the comm link,
 nex_remM1_returnDissonantRefuse,DialogOptionSelected,$option == nex_remM1_returnDissonantRefuse,"Call $global.nex_remM1_ref refuse
@@ -1922,7 +1922,7 @@ Highlight $ddro_dist $ddro_reward","$PersonName's avatar seems to shudder, as if
 
 ""This item to specified location $ddro_systemName, $ddro_dist light-years away deliver. Do not be spotted. Do not inform others. Reward is $ddro_reward credits."" The avatar fades into $ddro_aOrAnThing. ""Acceptable?""","contact_accept:Accept
 contact_decline:Decline",
-nex_secoRemBlurb,seco_blurb,$id == nex_dissonant score:10,,"""I've acquired the latest $seco_faction facility defense security codes. They could provide a significant edge in a ground operation.""",,
+nex_secoRemBlurb,seco_blurb,$id == nex_dissonant score:10,,"""Latest $seco_faction facility defense security codes, in possession. Desirable perhaps for ground operation.""",,
 nex_secoRemOfferTextContact,DialogOptionSelected,"$option == seco_start
 $id == nex_dissonant score:10","$missionId = seco
 SetTextHighlightColors $seco_factionColor h h
@@ -1955,3 +1955,20 @@ Orbital imagery of the target site $dsp_marketName appears, with defenses helpfu
 
 You estimate that you'd need around $dsp_marines marines to carry off this raid.","contact_accept:Accept
 contact_decline:Decline",
+,,,,,,
+nex_sellAICoreBlurb,nex_sellAICore_blurb,,,"""Spare core of selfkind. $playerName trustworthy, willing to transfer for price.""",,
+nex_sellAICoreOption,nex_sellAICore_option,,,,nex_sellAICore_start:Ask about the AI core,
+nex_sellAICoreOfferText,DialogOptionSelected,$option == nex_sellAICore_start,"$missionId = nex_sellAICore
+FireBest Nex_SellAICoreOfferText
+DoCanAffordCheck $nex_sellAICore_price contact_accept true",,"contact_accept:Accept
+contact_decline:Decline",
+nex_sellAICoreTextAlpha,Nex_SellAICoreOfferText,$nex_sellAICore_variation == ALPHA,SetTextHighlights $nex_sellAICore_commodityName,"""Earned trust of selfkind. $nex_sellAICore_commodityName has volunteered to serve you. Greatly enhance industry or droneship performance, or even whole colony administer.""",,
+nex_sellAICoreTextBeta,Nex_SellAICoreOfferText,$nex_sellAICore_variation == BETA,SetTextHighlights $nex_sellAICore_commodityName,"""Selfkind offers a $nex_sellAICore_commodityName to help manage your industries or droneships, as growing partnership sign of.""",,
+nex_sellAICoreTextBetaWithGamma,Nex_SellAICoreOfferText,$nex_sellAICore_variation == BETA_WITH_GAMMA,SetTextHighlights $nex_sellAICore_commodityName $nex_sellAICore_commodityName2,"""Have one $nex_sellAICore_commodityName, to work with your industries or droneships. Will even throw in $nex_sellAICore_commodityName2 as bonus.""",,
+nex_sellAICorePostAccept,ContactPostAccept,$missionId == nex_sellAICore,"Call $nex_sellAICore_ref2 transact
+Call $nex_sellAICore_ref2 repSuccess
+Call $nex_sellAICore_ref2 addContacts",,,
+nex_sellAICorePrintAcceptText,ContactPrintAcceptText,"$id == nex_dissonant score:10
+$missionId == nex_sellAICore",,"""Please take good care, your new core.""
+OR
+""Please keep core safe from Hegemony and others.""",,

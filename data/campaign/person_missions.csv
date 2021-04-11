@@ -6,8 +6,9 @@ nex_remM1,,,,,non_repeatable,,,,,,,,,,graphics/icons/cargo/ai_core_beta.png,exer
 ,,,,,,,,,,,,,,,,
 # generic Remnant missions,,,,,,,,,,,,,,,,
 # note: most are just vanilla missions with Remnant tag added in modPlugin onApplicationLoad,,,,,,,,,,,,,,,,
-nex_cpcRem,,,remnant,,,10,30,60,,,,,,,graphics/icons/missions/custom_production.png,exerelin.campaign.intel.missions.remnant.RemnantCustomProductionContract
+nex_cpcRem,,,remnant,,,6,30,60,,,,,,,graphics/icons/missions/custom_production.png,exerelin.campaign.intel.missions.remnant.RemnantCustomProductionContract
 nex_remcb,,,remnant,,priority,20,30,60,,,,,,,graphics/icons/missions/military_bounty.png,exerelin.campaign.intel.missions.remnant.RemnantCustomBounty
 nex_ddroRem,,,remnant,,,10,30,60,,,,,,,graphics/icons/missions/dead_drop.png,exerelin.campaign.intel.missions.remnant.RemnantDeadDropMission
 nex_sShipRem,,,remnant,,,10,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.RemnantSurplusShipHull
-nex_omegaWep,,,remnant,,,10,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.OmegaWeapons
+nex_omegaWep,,,remnant,,,2,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.OmegaWeapons
+nex_sellAICore,,,remnant,,,8,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.SellAICore

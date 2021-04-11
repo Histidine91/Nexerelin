@@ -1769,7 +1769,7 @@
 	"nex_remnantQuest":{
 		"dissonantName1":"Midnight",
 		"dissonantName2":"Dissonant",
-		"dissonantAlias":"Nakht",
+		"dissonantAlias":"N",
 		
 		"m1_name":"Captive Cores",
 		"m1_stage1Desc":"Recover the Beta Cores stored on %s.",
