@@ -465,7 +465,7 @@ SetTextHighlights $slaveValue
 FireAll ExerelinPrisonerPostTrade",You have sold the prisoner into slavery for $slaveValue credits.,,
 ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpecialPeople
 FireAll ExerelinPrisonerOption",,,
-ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = exerelinSpecial
+ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = exerelinSpecial 0
 FireAll ExerelinMarketSpecial",You have no more prisoners.,,
 ,,,,,,
 ,,,,,,
@@ -489,8 +489,7 @@ nex_miningOptionCooldown,PopulateOptions,"$nex_canMine
 $player.nex_miningCooldown","SetTooltip nex_miningPreview ""On cooldown, please wait a day before mining again.""
 SetEnabled nex_miningPreview false",,,
 ,,,,,,
-nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"$menuState = nex_mining 0
-Nex_PrintMiningInfo planet
+nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"Nex_PrintMiningInfo planet
 FireAll nex_MiningOption",,,
 nex_miningMineOption,nex_MiningOption,$player.miningStrength > 0,"SetEnabled nex_miningStart true
 SetShortcut nex_miningStart RETURN
@@ -1475,8 +1474,7 @@ nex_outpostOption,PopulateOptions,$nex_canMine,,,7:nex_outpostPreview:Construct 
 nex_outpostOptionNearbyHostile,PopulateOptions,"$nex_canMine
 HostileFleetNearbyAndAware","SetEnabled nex_outpostPreview false
 SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movements, making construction of an outpost impossible.""",,,
-nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"$menuState = nex_outpost 0
-Nex_PlayerOutpost buildInfo
+nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
 FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage.",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
 SetShortcut nex_outpostBuildStart RETURN
@@ -1491,16 +1489,14 @@ $tradeMode = OPEN 0
 ShowDefaultVisual",Outpost constructed.,exerelinMarketSpecialBack:Back,
 ,,,,,,
 nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,13:nex_outpostDismantle:Dismantle outpost,
-nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"$menuState = nex_outpost 0
-Nex_PlayerOutpost dismantleInfo
+nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"Nex_PlayerOutpost dismantleInfo
 Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $market?"" ""Yes"" ""No""","You can dismantle this outpost, recovering the AI core(s) and half the resources used in its creation.
 
 All cargo in Storage will also be recovered. All cargo in Local Resources will be lost.","nex_outpostDismantleConfirm:Proceed
 nex_outpostBack:Go back",
 nex_outpostDismantle,DialogOptionSelected,$option == nex_outpostDismantleConfirm,Nex_PlayerOutpost dismantle,,,
 ,,,,,,
-nex_outpostBack,DialogOptionSelected,$option == nex_outpostBack,"$menuState = main 0
-FireAll PopulateOptions",,,
+nex_outpostBack,DialogOptionSelected,$option == nex_outpostBack,FireAll PopulateOptions,,,
 ,,,,,,
 nex_flavorTextMarketOutpost,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $tag:nex_playerOutpost score:10","AddText ""The station is dark and quiet, lights dimmed to minimize power demand. Warehouse chambers sit beyond great airlocks, their supplies and fuel ready to be drawn on. When your crew stops working, the subtle hum of the standard-spec fusion reactor at the depot's heart can be felt in the deck plates."" marketFlavorTextColor",,,
