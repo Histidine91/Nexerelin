@@ -25,7 +25,9 @@ import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.StatsTracker;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -434,6 +436,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		timestampActual = Global.getSector().getClock().getTimestamp();
 			
 		if (market != null) CovertOpsManager.modifyAlertLevel(market, getAlertLevelIncrease());
+		
+		if (getSuccessChance().getModifiedValue() <= 100) {
+			StatsTracker.getStatsTracker().notifyAgentActions(1);
+			if (StatsTracker.getStatsTracker().getNumAgentActions() >= 20)
+				MilestoneTracker.getIntel().awardMilestone("agentAction15");
+		}		
+		
 		return result;
 	}
 	

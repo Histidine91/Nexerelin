@@ -51,10 +51,9 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     protected int marketsRaided = 0;
     protected int marketsTacBombarded = 0;
     protected int marketsSatBombarded = 0;
-    protected int agentsUsed = 0;
-    protected int saboteursUsed = 0;
     protected int prisonersRepatriated = 0;
     protected int prisonersRansomed = 0;
+    protected int agentActions = 0;
     @Deprecated protected int slavesSold = 0;
     protected int orphansMade = 0;  // hee hee
     
@@ -96,12 +95,8 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         return marketsSatBombarded;
     }
     
-    public int getAgentsUsed() {
-        return agentsUsed;
-    }
-    
-    public int getSaboteursUsed() {
-        return saboteursUsed;
+    public int getNumAgentActions() {
+        return agentActions;
     }
 
     public int getPrisonersRepatriated() {
@@ -132,14 +127,9 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         orphansMade += num;
     }
 
-    public void notifyAgentsUsed(int num)
+    public void notifyAgentActions(int num)
     {
-        agentsUsed += num;
-    }
-    
-    public void notifySaboteursUsed(int num)
-    {
-        saboteursUsed += num;
+        agentActions += num;
     }
     
     public void notifyPrisonersRepatriated(int num) {
