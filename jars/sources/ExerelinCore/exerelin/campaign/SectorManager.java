@@ -36,6 +36,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -185,11 +186,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     @Override
     public void advance(float amount)
     {
-        if (numSlavesRecentlySold > 0)
-        {
-            handleSlaveTradeRep();
-            numSlavesRecentlySold = 0;
-        }
+        if (TutorialMissionIntel.isTutorialInProgress()) 
+			return;
         
         if (respawnFactions){
             NexUtils.advanceIntervalDays(respawnIntervalUtil, amount);

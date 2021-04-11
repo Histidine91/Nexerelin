@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -495,6 +496,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         if (Global.getSector().isInNewGameAdvance())
             return;
+		if (TutorialMissionIntel.isTutorialInProgress()) 
+			return;
         
         float days = Global.getSector().getClock().convertToDays(amount);
     

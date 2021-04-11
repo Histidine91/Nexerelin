@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.MiningHelperLegacy.MiningReport;
@@ -292,6 +293,8 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 	@Override
 	public void advance(float amount)
 	{
+		if (TutorialMissionIntel.isTutorialInProgress()) 
+			return;
 		super.advance(amount);
 		float days = Global.getSector().getClock().convertToDays(amount);
 		

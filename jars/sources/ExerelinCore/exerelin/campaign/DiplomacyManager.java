@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -869,6 +870,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     @Override
     public void advance(float amount)
     {
+		if (TutorialMissionIntel.isTutorialInProgress()) return;
         float days = Global.getSector().getClock().convertToDays(amount);
     
         daysElapsed += days;

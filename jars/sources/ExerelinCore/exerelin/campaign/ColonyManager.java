@@ -46,6 +46,7 @@ import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -1022,6 +1023,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void advance(float amount) {
+		if (TutorialMissionIntel.isTutorialInProgress()) 
+			return;
+		
 		float days = Global.getSector().getClock().convertToDays(amount);
 		if (reliefFleetCooldown > 0) {
 			reliefFleetCooldown -= days;
@@ -1182,7 +1186,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {
-		
+		if (TutorialMissionIntel.isTutorialInProgress()) 
+			return;
 		// workaround: reportEconomyTick is called twice,
 		// since we've added colony manager as a script in sector, and also as a listener
 		// so don't do anything the second time

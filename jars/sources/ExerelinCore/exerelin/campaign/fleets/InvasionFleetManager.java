@@ -26,6 +26,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -106,7 +107,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	
-	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.25f;
+	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.15f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
 	
 	public static final int MAX_ONGOING_INTEL = 10;
@@ -1266,6 +1267,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public void advance(float amount)
 	{
 		if (Global.getSector().isInNewGameAdvance())
+			return;
+		if (TutorialMissionIntel.isTutorialInProgress()) 
 			return;
 		
 		float days = Global.getSector().getClock().convertToDays(amount);

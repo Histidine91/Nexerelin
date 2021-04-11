@@ -27,6 +27,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -817,6 +818,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     @Override
     public void advance(float amount)
     {
+		if (TutorialMissionIntel.isTutorialInProgress()) 
+			return;
+		
         NexUtils.advanceIntervalDays(intervalUtil, amount);
         if (!this.intervalUtil.intervalElapsed()) {
             return;
@@ -854,6 +858,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	// Agent salaries
 	@Override
 	public void reportEconomyTick(int iterIndex) {
+		if (TutorialMissionIntel.isTutorialInProgress()) return;
+		
 		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
 		float f = 1f / numIter;
 		
