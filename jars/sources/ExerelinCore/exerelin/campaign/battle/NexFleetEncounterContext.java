@@ -43,14 +43,19 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	
 	@Override
 	public List<FleetMemberAPI> getRecoverableShips(BattleAPI battle, CampaignFleetAPI winningFleet, CampaignFleetAPI otherFleet) {
-		// not part of the IBB, just some hax to make S-mods kept
-		
-		
+		// not part of the IBB handling, just some hax to make S-mods kept
 		if (Global.getSettings().getBoolean("nex_keepSModsForRecoveredShips")) {
 			DataForEncounterSide winnerData = getDataFor(winningFleet);
 			List<FleetMemberData> enemyCasualties = winnerData.getEnemyCasualties();
 			for (FleetMemberData casualty : enemyCasualties) {
 				FleetMemberAPI otherMember = casualty.getMember();
+				
+				CampaignFleetAPI fleet = battle.getSourceFleet(otherMember);
+				if (fleet != null && fleet.getMemoryWithoutUpdate().getBoolean("$nex_noKeepSMods")) 
+				{
+					continue;
+				}
+				
 				ShipVariantAPI variant = otherMember.getVariant();
 				//Global.getLogger(this.getClass()).info("Checking variant for " + otherMember.getShipName() + ": " + variant.getSource());
 				if (variant.getSource() == VariantSource.REFIT) {
