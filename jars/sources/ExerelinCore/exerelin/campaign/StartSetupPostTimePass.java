@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -20,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
@@ -31,6 +33,8 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.SpecialItemSet;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsReputation;
+import exerelin.utilities.StringHelper;
+import exerelin.world.VanillaSystemsGenerator;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -41,6 +45,9 @@ public class StartSetupPostTimePass {
 		Global.getLogger(StartSetupPostTimePass.class).info("Running start setup post time pass");
 		SectorAPI sector = Global.getSector();
 		if (Global.getSector().isInNewGameAdvance()) return;
+		
+		if (!TutorialMissionIntel.isTutorialInProgress())
+			VanillaSystemsGenerator.exerelinEndGalatiaPortionOfMission();
 		
 		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
@@ -117,7 +124,8 @@ public class StartSetupPostTimePass {
 		}
 		
 		// Galatian stipend
-		if (!SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()) {
+		if (!TutorialMissionIntel.isTutorialInProgress() && !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()) 
+		{
 			new Nex_GalatianAcademyStipend();
 		}
 		
@@ -172,6 +180,16 @@ public class StartSetupPostTimePass {
 	
 	public static void handleStartLocation(SectorAPI sector, CampaignFleetAPI playerFleet, String factionId) 
 	{
+		if (TutorialMissionIntel.isTutorialInProgress()) {
+			playerFleet.getContainingLocation().removeEntity(playerFleet);
+			StarSystemAPI system = Global.getSector().getStarSystem(StringHelper.getString("exerelin_misc", "systemGalatia"));
+			system.addEntity(playerFleet);
+			Global.getSector().setCurrentLocation(system);
+			Vector2f loc = new Vector2f(1000, -15000);
+			playerFleet.setLocation(loc.x, loc.y);
+			return;
+		}
+		
 		SectorEntityToken entity = null;
 		
 		MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();

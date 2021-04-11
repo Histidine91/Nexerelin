@@ -10,6 +10,14 @@
 
 	"starts":[
 		{
+			"id":"tutorialStart",
+			"name":"Tutorial start",
+			"difficulty":"Normal",
+			"desc":"The tutorial start from the base game. Solve a minor crisis in the Galatia star system.",
+			"className":"exerelin.campaign.customstart.Tutorial",
+			"randomSector":-1,
+		},
+		{
 			"id":"spacerStart",
 			"name":"Spacer start",
 			"difficulty":"Very hard",
