@@ -107,7 +107,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	
-	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.15f;
+	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.1f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
 	
 	public static final int MAX_ONGOING_INTEL = 10;
