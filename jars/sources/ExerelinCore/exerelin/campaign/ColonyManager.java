@@ -26,6 +26,7 @@ import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
+import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
@@ -49,6 +50,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
 import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -87,7 +89,7 @@ import org.lazywizard.lazylib.MathUtils;
  * admin bonuses from empire size, and relief fleets.
  */
 public class ColonyManager extends BaseCampaignEventListener implements EveryFrameScript,
-		EconomyTickListener, InvasionListener, MarketImmigrationModifier
+		EconomyTickListener, InvasionListener, PlayerColonizationListener, MarketImmigrationModifier
 {
 	public static Logger log = Global.getLogger(ColonyManager.class);
 	
@@ -1196,6 +1198,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 	@Override
 	public void reportEconomyMonthEnd() {}
+	
+	@Override
+	public void reportPlayerColonizedPlanet(PlanetAPI market) {
+		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.PLAYER);
+	}
+	
+	@Override
+	public void reportPlayerAbandonedColony(MarketAPI arg0) {}
 
 	@Override
 	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
