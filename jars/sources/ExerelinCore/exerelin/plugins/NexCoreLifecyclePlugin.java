@@ -163,6 +163,10 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	public void markStoryCriticalMarketsEtc() {
 		if (!SectorManager.getManager().isCorvusMode())
 			return;
+		if (Global.getSettings().getBoolean("nex_noStoryCriticalMarkets")) {
+			Global.getSector().getMemoryWithoutUpdate().set("$interactedWithGABarEvent", true);
+			return;
+		}
 		
 		super.markStoryCriticalMarketsEtc();
 	}
