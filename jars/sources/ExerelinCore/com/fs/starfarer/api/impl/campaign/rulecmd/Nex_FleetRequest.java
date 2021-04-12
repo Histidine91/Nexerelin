@@ -645,7 +645,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}
 		List<MarketAPI> toRemove = new ArrayList<>();
 		for (MarketAPI market : markets) {
-			if (market.getContainingLocation().isHyperspace()) {
+			if (market.getContainingLocation() == null) {
+				toRemove.add(market);
+			}
+			else if (market.getContainingLocation().isHyperspace()) {
 				toRemove.add(market);
 			}
 		}

@@ -1158,6 +1158,7 @@ public class ExerelinProcGen {
 		if (stationImage == null)
 			stationImage = NexUtils.getRandomListElement(STATION_IMAGES);
 		
+		log.info("Trying station " + station.name + " for " + factionId + ", image " + stationImage);
 		SectorEntityToken newStation = station.starSystem.addCustomEntity(id, name, stationImage, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
 		station.entity = newStation;
@@ -1173,7 +1174,7 @@ public class ExerelinProcGen {
 		}
 		else
 		{
-			log.info("Adding free station " + station.name + " for " + factionId);
+			log.info("Added free station " + station.name + " for " + factionId);
 			station.market = marketSetup.initMarket(station, factionId, size);
 			//standaloneStations.add(data);
 		}
