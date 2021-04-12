@@ -438,12 +438,12 @@ public class ExerelinModPlugin extends BaseModPlugin
             int count = ExerelinSetupData.getInstance().randomColonies;
             int tries = 0;
             Random random = new Random(NexUtils.getStartingSeed());
-            while (true) {
+            while (count > 0) {
                 boolean success = ColonyManager.getManager().generateInstantColony(random);
                 if (success)
                     count--;
                 tries++;
-                if (count <= 0 || tries >= 1000)
+                if (tries >= 1000)
                     break;
             }
         }
