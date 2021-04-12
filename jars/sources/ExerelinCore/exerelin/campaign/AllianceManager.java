@@ -278,6 +278,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 		for (MarketAPI market : markets)
 		{
 			if (market.getPrimaryEntity().isInHyperspace()) continue;
+			if (market.getContainingLocation() == null) continue;
 			String systemName = ((StarSystemAPI)market.getContainingLocation()).getBaseName();
 			namePrefixes.add(systemName);
 		}
