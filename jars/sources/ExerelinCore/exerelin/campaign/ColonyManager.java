@@ -188,7 +188,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 						maxSize = NexConfig.maxNPCNewColonySize;
 					else
-						maxSize = NexConfig.maxNPCColonySize;
+						maxSize = Global.getSettings().getInt("maxColonySize");
 					
 					if (market.getSize() < maxSize) {
 						upsizeMarket(market);
