@@ -152,6 +152,8 @@ public class StartSetupPostTimePass {
 		{
 			if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
 				continue;
+			if (market.getContainingLocation() == null)
+				continue;
 			if (market.getContainingLocation().hasTag("do_not_respawn_player_in"))
 				continue;
 			if (market.isHidden()) continue;
