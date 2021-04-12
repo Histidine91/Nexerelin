@@ -222,6 +222,15 @@ public class ExerelinModPlugin extends BaseModPlugin
     protected void addScriptsAndEventsIfNeeded() {
     }
     
+    protected void alphaSiteWorkaround() {
+        // workaround for blacksite NPE that some mods have
+        StarSystemAPI sys = Global.getSector().getStarSystem("Unknown Location");
+        if (sys != null && sys.getType() != StarSystemType.NEBULA) {
+            log.info("Fixing secret location");
+            sys.setType(StarSystemType.NEBULA);
+        }
+    }
+    
     protected void expandSector() {
         // Sector expander
         float expandLength = Global.getSettings().getFloat("nex_expandCoreLength");
@@ -305,6 +314,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!plugins.hasPlugin(DerelictEmpireOfficerGeneratorPlugin.class)) {
             plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
         }
+        
+        alphaSiteWorkaround();
     }
     
     @Override
@@ -371,9 +382,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterProcGen() {
         log.info("New game after proc gen; " + isNewGame);
         
-        // workaround for blacksite NPE that some mods have
-        StarSystemAPI sys = Global.getSector().getStarSystem("Unknown Location");
-        if (sys != null) sys.setType(StarSystemType.NEBULA);
+        alphaSiteWorkaround();
         
         if (!SectorManager.getManager().isCorvusMode())
             new ExerelinProcGen().generate();
