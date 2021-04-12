@@ -2,7 +2,6 @@ package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.ModSpecAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.GenericPluginManagerAPI;
@@ -18,12 +17,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
-import com.fs.starfarer.api.impl.campaign.intel.ProcurementMissionCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.DeliveryBarEventCreator;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
-import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.StarSystemType;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
@@ -57,9 +54,6 @@ import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
-import exerelin.campaign.intel.missions.DisruptMissionManager;
-import exerelin.campaign.intel.missions.Nex_CBSpecialForces;
-import exerelin.campaign.intel.missions.Nex_ProcurementMissionCreator;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
@@ -376,6 +370,11 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGameAfterProcGen() {
         log.info("New game after proc gen; " + isNewGame);
+        
+        // workaround for blacksite NPE that some mods have
+        StarSystemAPI sys = Global.getSector().getStarSystem("Unknown Location");
+        if (sys != null) sys.setType(StarSystemType.NEBULA);
+        
         if (!SectorManager.getManager().isCorvusMode())
             new ExerelinProcGen().generate();
         
@@ -389,7 +388,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (SectorManager.getManager().isCorvusMode()) {
             VanillaSystemsGenerator.enhanceVanillaMarkets();
         }
-		
+        
         expandSector();
         
         ScenarioManager.afterEconomyLoad(Global.getSector());
