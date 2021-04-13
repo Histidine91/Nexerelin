@@ -13,6 +13,9 @@
 	
 	"nex_enableVersionChecker":true,
 	
+	"nex_enableMiningHarass":true,
+	"nex_miningHarassThreshold": 10000,
+	
 	"nex_conquestMissionIntervalRateMult":0.05,
 	"nex_disruptMissionIntervalRateMult":0.125,
 	"nex_pirateRageIncrement":0.04,

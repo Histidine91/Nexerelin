@@ -1,16 +1,9 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.AsteroidAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
@@ -23,12 +16,8 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipData;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
@@ -39,22 +28,17 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.submarkets.PrismMarket;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.io.IOException;
+import java.util.*;
 
 // actually now same as the Stellar Industrialist one, except for e.g. file paths
 public class MiningHelperLegacy {
@@ -64,6 +48,7 @@ public class MiningHelperLegacy {
 	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
 	protected static final String RESOURCE_DEFS = "data/config/exerelin/mining_resources.csv";
 	protected static final String EXHAUSTION_DATA_KEY = "nex_miningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
+	protected static final String MINING_HARASS_KEY = "$nex_mining_harass";
 	
 	public static final boolean DEBUG_MODE = false;
 	
@@ -118,6 +103,9 @@ public class MiningHelperLegacy {
 	protected static float xpPerMiningStrength = 10;
 	protected static float maxXPPerMine = 1500;
 	protected static float machineryPerMiningStrength = 0.4f;
+
+	protected static float miningHarassThreshold = 10000f;
+	protected static boolean enableMiningHarass = true;
 	
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
 	protected static final Map<String, Float> miningShips = new HashMap<>();
@@ -148,6 +136,9 @@ public class MiningHelperLegacy {
 			planetDangerMult = (float)config.optDouble("planetDangerMult", planetDangerMult);
 			planetExhaustionMult = (float)config.optDouble("planetExhaustionMult", planetExhaustionMult);
 			planetRenewMult = (float)config.optDouble("planetRenewMult", planetRenewMult);
+
+			enableMiningHarass = Global.getSettings().getBoolean("nex_enableMiningHarass");
+			miningHarassThreshold = Global.getSettings().getFloat("nex_miningHarassThreshold");
 			
 			loadMiningShips();
 			loadMiningWeapons();
@@ -216,10 +207,7 @@ public class MiningHelperLegacy {
 		
 		// new MagicLib system
 		Map<String, Float> strengths = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "mining_ship_strengths");
-		for (String shipId : strengths.keySet()) {
-			float str = strengths.get(shipId);
-			miningShips.put(shipId, str);
-		}
+		miningShips.putAll(strengths);
 	}
 	
 	public static void loadMiningWeapons()
@@ -253,10 +241,7 @@ public class MiningHelperLegacy {
 		
 		// new MagicLib system
 		Map<String, Float> strengths = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "mining_weapon_strengths");
-		for (String weaponId : strengths.keySet()) {
-			float str = strengths.get(weaponId);
-			miningWeapons.put(weaponId, str);
-		}
+		miningWeapons.putAll(strengths);
 	}
 	
 	public static void loadHiddenTools() {
@@ -844,12 +829,14 @@ public class MiningHelperLegacy {
 				fleet.getFleetData().addFleetMember(member);
 				fleet.updateCounts();
 				name = member.getVariant().getFullDesignationWithHullName();
+				def.id = member.getHullId();
 			}
 			else if (def.type == CacheType.FIGHTER_WING)
 			{
 				FighterWingSpecAPI spec = getRandomFighter();
 				fleet.getCargo().addFighters(spec.getId(), 1);
 				name = StringHelper.getStringAndSubstituteToken("exerelin_mining", "LPC", "$fighterName", spec.getVariant().getFullDesignationWithHullName());
+				def.id = spec.getId();
 			}
 			else if (def.type == CacheType.WEAPON)
 			{
@@ -870,12 +857,14 @@ public class MiningHelperLegacy {
 						break;
 					}
 				}
+				def.id = weapon.getWeaponId();
 			}
 			else if (def.type == CacheType.HULLMOD)
 			{
 				HullModSpecAPI mod = getRandomHullmod();
 				fleet.getCargo().addHullmods(mod.getId(), 1);
 				name = StringHelper.getStringAndSubstituteToken("exerelin_mining", "hullmod", "$hullmod", mod.getDisplayName());
+				def.id = mod.getId();
 			}
 			else if (def.type == CacheType.COMMODITY)
 			{
@@ -954,8 +943,125 @@ public class MiningHelperLegacy {
 			
 			applyResourceExhaustion(entity, strength);
 		}
-		
+
+		if(enableMiningHarass){
+			float miningValue = computeMiningValue(result);
+
+			float miningHarass = Global.getSector().getMemoryWithoutUpdate().getFloat(MINING_HARASS_KEY);
+
+			if(miningHarass + miningValue > miningHarassThreshold || DEBUG_MODE ){
+				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, 0);
+				spawnFleet(getHostileFaction());
+			}else{
+				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, miningHarass + miningValue);
+			}
+		}
+
 		return result;
+	}
+
+	public static float computeMiningValue(MiningResult result){
+		float miningValue = 0f;
+
+		for (Map.Entry<String, Float> entry : result.report.totalOutput.entrySet()) {
+			miningValue += Global.getSector().getEconomy().getCommoditySpec(entry.getKey()).getBasePrice() * entry.getValue();
+		}
+
+		for(CacheResult cacheResult : result.cachesFound){
+			switch(cacheResult.def.type){
+				case COMMODITY :
+					miningValue += Global.getSector().getEconomy().getCommoditySpec(cacheResult.def.id).getBasePrice() * cacheResult.numItems;
+					break;
+				case HULLMOD :
+					miningValue += Global.getSettings().getHullModSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
+				case FRIGATE :
+					miningValue += Global.getSettings().getHullSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
+				case FIGHTER_WING :
+					miningValue += Global.getSettings().getFighterWingSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
+				case WEAPON :
+					miningValue += Global.getSettings().getWeaponSpec(cacheResult.def.id).getBaseValue() * cacheResult.numItems;
+					break;
+			}
+		}
+
+		return miningValue;
+	}
+
+	protected static void spawnFleet(FactionAPI faction){
+		int combat, freighter, tanker, utility;
+		float bonus;
+
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		float player = NexUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;
+		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
+
+		combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f)));
+		combat = Math.min(120 + capBonus, combat);
+		freighter = Math.round(combat / 20f);
+		tanker = Math.round(combat / 30f);
+		utility = Math.round(combat / 40f);
+		bonus = 0.1f;
+
+		final int finalCombat = combat;
+		final int finalFreighter = freighter;
+		final int finalTanker = tanker;
+		final int finalUtility = utility;
+
+		final float finalBonus = bonus;
+
+		Vector2f locInHyper = new Vector2f(0,0);
+		FleetParamsV3 params = new FleetParamsV3(locInHyper, // market
+				faction.getId(),
+				0f,
+				FleetTypes.PATROL_MEDIUM,
+				finalCombat, // combatPts
+				finalFreighter, // freighterPts
+				finalTanker, // tankerPts
+				0f, // transportPts
+				0f, // linerPts
+				finalUtility, // utilityPts
+				finalBonus // qualityMod
+		);
+		params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
+		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
+
+		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(faction, params);
+
+		if (fleet == null)
+			return;
+
+		String targetName = StringHelper.getString("yourFleet");
+
+		fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 30,
+				StringHelper.getFleetAssignmentString("intercepting", targetName));
+
+		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, fleet, 30,
+				StringHelper.getFleetAssignmentString("returningTo", "base"));
+
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PURSUE_PLAYER, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+
+		locInHyper = Misc.pickLocationNotNearPlayer(playerFleet.getStarSystem()
+				, playerFleet.getLocation()
+				, Global.getSettings().getMaxSensorRange());
+
+		fleet.setLocation(locInHyper.getX(), locInHyper.getY());
+		playerFleet.getStarSystem().addEntity(fleet);
+	}
+
+	protected static FactionAPI getHostileFaction(){
+		Random random = new Random();
+
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+
+		for(FactionAPI faction : Global.getSector().getAllFactions()){
+			if(faction.isPlayerFaction()) continue;
+			if(faction.isHostileTo(Global.getSector().getPlayerFaction())) picker.add(faction.getId());
+		}
+		return Global.getSector().getFaction(picker.pick());
 	}
 	
 	public static void renewResources(float days)
