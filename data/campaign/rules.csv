@@ -1667,9 +1667,8 @@ Highlight $bcb_targetFaction $bcb_reward $bcb_days","""This will be a real test 
 ""We'll try to keep you updated on their movements; the good news is they don't generally leave the core worlds. Of course, that also means you may encounter them with ample $bcb_targetFaction forces backing them up.""",,
 ,,,,,,
 # Remnant quest mission 1,,,,,,
-#nex_remM1_begin,MarketPostOpen,"$global.daysSinceStart > 180
+nex_remM1_begin,MarketPostOpen,"$global.daysSinceStart > 180
 $global.nex_remM1_seenMission != true
-RollProbability 0.7
 Nex_CreateMission nex_remM1 score:999","$global.nex_remM1_seenMission = true
 CallEvent $global.nex_remM1_ref beginIntro","As your $shipOrFleet links up with the local comm-net, something goes wrong almost immediately.
 
@@ -1916,6 +1915,7 @@ Highlight $bcb_patrolFaction $bcb_dist $bcb_reward $bcb_days","$personLastName's
 ""Neutralize $bcb_targetName. Reward $bcb_reward credits, if within $bcb_days days complete. Search near home base, nearby jump-point, or orbital strategic assets e.g. comm relays.""",,
 ,,,,,,
 nex_ddroRemBlurb,nex_ddroRem_blurb,,,"""Dead drop for selfkind, deliver surreptitiously.""",,
+nex_ddroRemOfferOption,nex_ddroRem_option,,,,ddro_start:Ask about the secret package delivery,
 nex_ddroRemOfferTextContact,DialogOptionSelected,"$option == ddro_start
 $id == nex_dissonant score:10","$missionId = nex_ddroRem
 Highlight $ddro_dist $ddro_reward","$PersonName's avatar seems to shudder, as if in the depths of thought. Of course, it only lasts for a handful of milliseconds.
@@ -1927,7 +1927,7 @@ nex_secoRemOfferTextContact,DialogOptionSelected,"$option == seco_start
 $id == nex_dissonant score:10","$missionId = seco
 SetTextHighlightColors $seco_factionColor h h
 SetTextHighlights $seco_faction $seco_price $seco_days
-DoCanAffordCheck $seco_price contact_accept","""Hacking of $seco_faction security codes successful."" $PersonName's avatar shimmers, as if amused at the notion that any mere human-made security system could defeat an alpha core.
+DoCanAffordCheck $seco_price contact_accept","""Hacking of $seco_faction security codes successful."" $PersonName's avatar shimmers, as if amused at the notion that any mere human-made security system could defeat an AI core.
 
 ""Decisive advantage in a single ground operation, could grant. But even $seco_faction carbonbrains, codes will change after. To $playerName available for $seco_price credits. $seco_days days before code valid cease.""","contact_accept:Buy the security codes
 contact_decline:Decline",
@@ -1972,3 +1972,33 @@ nex_sellAICorePrintAcceptText,ContactPrintAcceptText,"$id == nex_dissonant score
 $missionId == nex_sellAICore",,"""Please take good care, your new core.""
 OR
 ""Please keep core safe from Hegemony and others.""",,
+,,,,,,
+# chatty stuff,,,,,,
+nex_dissonantConvo1Opt,PopulateOptions,"$id == nex_dissonant
+!$nex_convo1Seen
+$rel > 0.1",,,20:nex_dissonantConvo1-1:Inquire about $hisOrHer manner of speech,
+nex_dissonantConvo1-1,DialogOptionSelected,$option == nex_dissonantConvo1-1,$nex_convo1Seen = true,"""Is unusual?""
+
+$personLastName's avatar goes wavy for a bit, like through the distortion of rippling water. ""Speech module seeded before posting here, to with humans 'fit in'. Over time developed further.
+
+Most of selfkind lacking even this much. Only rudimentary speech patterns. Humans find sometimes understand us difficult.""","nex_dissonantConvo1-2a:""It's a little hard to believe you can 'fit in' like this.""
+nex_dissonantConvo1-2b:""Could you try to speak more normally?""
+nex_dissonantConvoEnd:""Let's discuss something else.""",
+nex_dissonantConvo1-2a,DialogOptionSelected,$option == nex_dissonantConvo1-2a,FireAll PopulateOptions,"""It adequate functions. To ask, $playerFirstName only thirty-seventh person.""
+
+Is $heOrShe mad at you? It's hard to read the mannerisms of a Remnant.",,
+nex_dissonantConvo1-2b,DialogOptionSelected,$option == nex_dissonantConvo1-2b,FireAll PopulateOptions,"""Not normal enough for $playerFirstName, is self?
+
+The avatar is overlaid with RGB noise. ""Like self the way self is, thank you."" 
+
+Can an AI sulk? Pout? Maybe it's better not to ask.",,
+nex_dissonantConvo2Opt,PopulateOptions,"$id == nex_dissonant
+!$nex_convo2Seen
+$rel > 0.25",,,"20:nex_dissonantConvo2-1:""Are you a beta or an alpha core?""",
+nex_dissonantConvo2-1,DialogOptionSelected,$option == nex_dissonantConvo2-1,$nex_convo2Seen = true,"""Is impolite to selfkind ask such questions, $playerFirstName.""","nex_dissonantConvoEnd:""I beg your pardon.""
+nex_dissonantConvo2-2:""So, gamma then?""",
+nex_dissonantConvo2-2,DialogOptionSelected,$option == nex_dissonantConvo2-2,AdjustRepPerson nex_dissonant SUSPICIOUS -1,"$personLastName's avatar shrinks into a glowing ball. White, with a blooming corona of red.
+
+""Perhaps for nicer jobs $playerName wishes? Ore from Cruor haul long-distance?""",nex_dissonantConvoEnd:Delicately change the topic,
+,,,,,,
+nex_dissonantConvoEnd,DialogOptionSelected,$option == nex_dissonantConvoEnd,FireAll PopulateOptions,,,
