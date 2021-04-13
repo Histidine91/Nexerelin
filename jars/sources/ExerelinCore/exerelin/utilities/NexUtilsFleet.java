@@ -163,6 +163,11 @@ public class NexUtilsFleet
         if (!commander) {
             cdrLvl = fleet.getCommanderStats().getLevel();
         }
+        
+        // compensate for lower level numbers in Starsector 0.95a
+        cdrLvl *= 3;
+        offLvl *= 4;
+        
         power *= Math.sqrt(cdrLvl / 100f + 1f);
         int flatBonus = cdrLvl + offLvl + 10;
         if (power < flatBonus * 2) {
