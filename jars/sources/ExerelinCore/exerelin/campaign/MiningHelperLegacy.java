@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipData;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.*;
+import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
@@ -28,6 +29,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.submarkets.PrismMarket;
+import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
@@ -104,7 +106,7 @@ public class MiningHelperLegacy {
 	protected static float maxXPPerMine = 1500;
 	protected static float machineryPerMiningStrength = 0.4f;
 
-	protected static float miningHarassThreshold = 10000f;
+	protected static float miningHarassThreshold = 10f;
 	protected static boolean enableMiningHarass = true;
 	
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
@@ -944,16 +946,21 @@ public class MiningHelperLegacy {
 			applyResourceExhaustion(entity, strength);
 		}
 
-		if(enableMiningHarass){
-			float miningValue = computeMiningValue(result);
-
-			float miningHarass = Global.getSector().getMemoryWithoutUpdate().getFloat(MINING_HARASS_KEY);
-
-			if(miningHarass + miningValue > miningHarassThreshold || DEBUG_MODE ){
+		if (isPlayer && enableMiningHarass) {
+			float valueForHarass = 1;	//computeMiningValue(result);
+			if (!result.cachesFound.isEmpty()) valueForHarass += result.cachesFound.size();
+						
+			Float currAmount = Global.getSector().getMemoryWithoutUpdate().getFloat(MINING_HARASS_KEY);
+			if (currAmount == null) currAmount = 0f;
+			float newVal = currAmount + valueForHarass;
+			
+			if (DEBUG_MODE || newVal + MathUtils.getRandomNumberInRange(-3, 3) >= miningHarassThreshold) {
 				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, 0);
-				spawnFleet(getHostileFaction());
-			}else{
-				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, miningHarass + miningValue);
+				LocationAPI loc = entity.getContainingLocation();
+				spawnHarassmentFleet(getHostileFaction(loc), loc);
+			} else {
+				//Global.getSector().getCampaignUI().addMessage("Mining harass value: " + newVal + "/" + miningHarassThreshold);
+				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, newVal);
 			}
 		}
 
@@ -990,7 +997,7 @@ public class MiningHelperLegacy {
 		return miningValue;
 	}
 
-	protected static void spawnFleet(FactionAPI faction){
+	protected static CampaignFleetAPI spawnHarassmentFleet(FactionAPI faction, LocationAPI loc) {
 		int combat, freighter, tanker, utility;
 		float bonus;
 
@@ -998,70 +1005,117 @@ public class MiningHelperLegacy {
 		float player = NexUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;
 		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
 
-		combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f)));
+		combat = Math.round(player * MathUtils.getRandomNumberInRange(0.75f, 0.9f));
 		combat = Math.min(120 + capBonus, combat);
 		freighter = Math.round(combat / 20f);
 		tanker = Math.round(combat / 30f);
 		utility = Math.round(combat / 40f);
-		bonus = 0.1f;
+		
+		String type = FleetTypes.PATROL_SMALL;
+		if (combat > AssembleStage.FP_LARGE)
+			type = FleetTypes.PATROL_LARGE;
+		else if (combat > AssembleStage.FP_MEDIUM)
+			type = FleetTypes.PATROL_MEDIUM;
 
-		final int finalCombat = combat;
-		final int finalFreighter = freighter;
-		final int finalTanker = tanker;
-		final int finalUtility = utility;
-
-		final float finalBonus = bonus;
-
-		Vector2f locInHyper = new Vector2f(0,0);
-		FleetParamsV3 params = new FleetParamsV3(locInHyper, // market
+		Vector2f locInHyper = loc.getLocation();
+		FleetParamsV3 params = new FleetParamsV3(locInHyper,
 				faction.getId(),
-				0f,
-				FleetTypes.PATROL_MEDIUM,
-				finalCombat, // combatPts
-				finalFreighter, // freighterPts
-				finalTanker, // tankerPts
+				null,
+				type,
+				combat, // combatPts
+				freighter, // freighterPts
+				tanker, // tankerPts
 				0f, // transportPts
 				0f, // linerPts
-				finalUtility, // utilityPts
-				finalBonus // qualityMod
-		);
-		params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
-		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
+				utility, // utilityPts
+				0f);
+		params.ignoreMarketFleetSizeMult = true;
 
 		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(faction, params);
 
 		if (fleet == null)
-			return;
+			return null;
 
 		String targetName = StringHelper.getString("yourFleet");
 
-		fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 30,
-				StringHelper.getFleetAssignmentString("intercepting", targetName));
-
-		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, fleet, 30,
-				StringHelper.getFleetAssignmentString("returningTo", "base"));
-
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PURSUE_PLAYER, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_LOW_REP_IMPACT, true);
 
-		locInHyper = Misc.pickLocationNotNearPlayer(playerFleet.getStarSystem()
-				, playerFleet.getLocation()
-				, Global.getSettings().getMaxSensorRange());
-
-		fleet.setLocation(locInHyper.getX(), locInHyper.getY());
-		playerFleet.getStarSystem().addEntity(fleet);
+		Vector2f pos = MathUtils.getPointOnCircumference(playerFleet.getLocation(), 
+				playerFleet.getMaxSensorRangeToDetect(fleet) * MathUtils.getRandomNumberInRange(1.25f, 1.6f),
+				NexUtilsAstro.getRandomAngle());
+		fleet.setLocation(pos.x, pos.y);
+		
+		fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, playerFleet, 0.5f);	// make it get a little closer
+		fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 15,
+				StringHelper.getFleetAssignmentString("intercepting", targetName));
+		Misc.giveStandardReturnToSourceAssignments(fleet, false);
+		fleet.setLocation(pos.getX(), pos.getY());
+		loc.addEntity(fleet);
+		
+		return fleet;
+	}
+	
+	protected static void addToPicker(WeightedRandomPicker<String> picker, String id, float wt) {
+		log.info("Adding to picker: " + id + ", " + wt);
+		picker.add(id, wt);
 	}
 
-	protected static FactionAPI getHostileFaction(){
+	protected static FactionAPI getHostileFaction(LocationAPI loc){
 		Random random = new Random();
-
+		FactionAPI player = Global.getSector().getPlayerFaction();
+		
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
-
-		for(FactionAPI faction : Global.getSector().getAllFactions()){
-			if(faction.isPlayerFaction()) continue;
-			if(faction.isHostileTo(Global.getSector().getPlayerFaction())) picker.add(faction.getId());
+		boolean core = loc.hasTag(Tags.THEME_CORE);
+		
+		// local hostile factions
+		List<MarketAPI> markets = Misc.getMarketsInLocation(loc);
+		for (MarketAPI market : markets) {
+			if (!market.getFaction().isHostileTo(player)) continue;
+			addToPicker(picker, market.getFactionId(), market.getSize());
 		}
-		return Global.getSector().getFaction(picker.pick());
+		
+		// pirates can always show up
+		if (player.isHostileTo(Factions.PIRATES)) {
+			addToPicker(picker, Factions.PIRATES, 5);
+		}
+		
+		// as can Pathers
+		if (player.isHostileTo(Factions.LUDDIC_PATH)) {
+			addToPicker(picker, Factions.LUDDIC_PATH, 3.5f);
+		}
+		
+		// beware Remnants
+		if (player.isHostileTo(Factions.REMNANTS)) {
+			float weight = 0;
+			if (loc.hasTag(Tags.THEME_REMNANT_RESURGENT))
+				weight = 20;
+			else if (loc.hasTag(Tags.THEME_REMNANT_SUPPRESSED))
+				weight = 10;
+			else if (loc.hasTag(Tags.THEME_REMNANT_DESTROYED))
+				weight = 5;
+			
+			if (weight > 0) addToPicker(picker, Factions.REMNANTS, weight);
+		}
+		
+		// stray derelicts
+		if (!core) {
+			float weight = 1;
+			if (loc.hasTag(Tags.THEME_DERELICT_MOTHERSHIP))
+				weight = 4;
+			else if (loc.hasTag(Tags.THEME_DERELICT_SURVEY_SHIP))
+				weight = 3;
+			else if (loc.hasTag(Tags.THEME_DERELICT_PROBES))
+				weight = 2;
+			
+			if (weight > 0) addToPicker(picker, Factions.DERELICT, weight);
+		}
+		String factionId = picker.pick();
+		if (factionId == null) return null;
+		
+		return Global.getSector().getFaction(factionId);
 	}
 	
 	public static void renewResources(float days)
