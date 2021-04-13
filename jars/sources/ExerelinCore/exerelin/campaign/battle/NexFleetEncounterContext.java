@@ -43,14 +43,19 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	
 	@Override
 	public List<FleetMemberAPI> getRecoverableShips(BattleAPI battle, CampaignFleetAPI winningFleet, CampaignFleetAPI otherFleet) {
-		// not part of the IBB, just some hax to make S-mods kept
-		
-		
+		// not part of the IBB handling, just some hax to make S-mods kept
 		if (Global.getSettings().getBoolean("nex_keepSModsForRecoveredShips")) {
 			DataForEncounterSide winnerData = getDataFor(winningFleet);
 			List<FleetMemberData> enemyCasualties = winnerData.getEnemyCasualties();
 			for (FleetMemberData casualty : enemyCasualties) {
 				FleetMemberAPI otherMember = casualty.getMember();
+				
+				CampaignFleetAPI fleet = battle.getSourceFleet(otherMember);
+				if (fleet != null && fleet.getMemoryWithoutUpdate().getBoolean("$nex_noKeepSMods")) 
+				{
+					continue;
+				}
+				
 				ShipVariantAPI variant = otherMember.getVariant();
 				//Global.getLogger(this.getClass()).info("Checking variant for " + otherMember.getShipName() + ": " + variant.getSource());
 				if (variant.getSource() == VariantSource.REFIT) {
@@ -80,13 +85,12 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 		}
 		
 		DataForEncounterSide winnerData = getDataFor(winningFleet);
-		DataForEncounterSide loserData = getDataFor(otherFleet);
-			
+		
 		float playerContribMult = computePlayerContribFraction();
 		List<FleetMemberData> enemyCasualties = winnerData.getEnemyCasualties();
 			
 		for (FleetMemberData data : enemyCasualties) {
-			if (data.getMember().getHullSpec().getHints().contains(ShipHullSpecAPI.ShipTypeHints.UNBOARDABLE)) {
+			if (Misc.isUnboardable(data.getMember())) {
 				continue;
 			}
 			if ((data.getStatus() != Status.DISABLED) && (data.getStatus() != Status.DESTROYED)) {
@@ -100,6 +104,9 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			
 			/* Don't double-add */
 			if (result.contains(data.getMember())) {
+				continue;
+			}
+			if (getStoryRecoverableShips().contains(data.getMember())) {
 				continue;
 			}
 			
@@ -117,16 +124,12 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 				variant.setOriginalVariant(null);
 				data.getMember().setVariant(variant, false, true);
 				
-				/* Completely fuck this ship up */
-				/*
 				Random dModRandom = new Random(1000000 * data.getMember().getId().hashCode() + Global.getSector().getPlayerBattleSeed());
 				dModRandom = Misc.getRandom(dModRandom.nextLong(), 5);
-				int numDMods = DModManager.getNumDMods(data.getMember().getVariant());
-				DModManager.addDMods(data.getMember(), true, 10 - numDMods, dModRandom);
+				DModManager.addDMods(data, false, Global.getSector().getPlayerFleet(), dModRandom);
 				if (DModManager.getNumDMods(variant) > 0) {
 					DModManager.setDHull(variant);
 				}
-				*/
 				
 				float weaponProb = Global.getSettings().getFloat("salvageWeaponProb");
 				float wingProb = Global.getSettings().getFloat("salvageWingProb");
@@ -136,10 +139,9 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 					wingProb = 1f;
 				}
 				
-				boolean own = false;	// can assume this is an enemy IBB
-				prepareShipForRecovery(data.getMember(), own, true, !own, weaponProb, wingProb, getSalvageRandom());
+				prepareShipForRecovery(data.getMember(), false, true, true, weaponProb, wingProb, getSalvageRandom());
 				
-				result.add(data.getMember());
+				getStoryRecoverableShips().add(data.getMember());
 				recoveredTypes.add(SWP_Util.getNonDHullId(data.getMember().getHullSpec()));
 			}
 		}

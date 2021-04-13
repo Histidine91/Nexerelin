@@ -24,6 +24,7 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
@@ -96,6 +97,8 @@ public class AgentIntel extends BaseIntelPlugin {
 		if (newLevel > level) {
 			level = newLevel;
 			this.sendUpdateIfPlayerHasIntel(UPDATE_LEVEL_UP, false);
+			if (newLevel >= 5)
+				MilestoneTracker.getIntel().awardMilestone("agentLevel5");
 		}
 	}
 	

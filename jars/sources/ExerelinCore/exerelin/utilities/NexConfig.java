@@ -118,7 +118,6 @@ public class NexConfig
     public static boolean officerDaredevilBonus = true;
     
     // Colonies
-    public static int maxNPCColonySize = 6;
     public static int maxNPCNewColonySize = 6;
     public static float hardModeColonyGrowthMult = 0.5f;
     public static float hardModeColonyIncomeMult = 0.9f;
@@ -239,7 +238,6 @@ public class NexConfig
             revengePointsForMarketCaptureMult = (float)settings.optDouble("revengeFleetPointsForMarketCaptureMult", revengePointsForMarketCaptureMult);
             vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
             
-            maxNPCColonySize = settings.optInt("maxNPCColonySize", maxNPCColonySize);
             maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
             hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
             hardModeColonyIncomeMult = (float)settings.optDouble("hardModeColonyIncomeMult", hardModeColonyIncomeMult);

@@ -465,7 +465,7 @@ SetTextHighlights $slaveValue
 FireAll ExerelinPrisonerPostTrade",You have sold the prisoner into slavery for $slaveValue credits.,,
 ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpecialPeople
 FireAll ExerelinPrisonerOption",,,
-ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = exerelinSpecial
+ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = exerelinSpecial 0
 FireAll ExerelinMarketSpecial",You have no more prisoners.,,
 ,,,,,,
 ,,,,,,
@@ -489,8 +489,7 @@ nex_miningOptionCooldown,PopulateOptions,"$nex_canMine
 $player.nex_miningCooldown","SetTooltip nex_miningPreview ""On cooldown, please wait a day before mining again.""
 SetEnabled nex_miningPreview false",,,
 ,,,,,,
-nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"$menuState = nex_mining 0
-Nex_PrintMiningInfo planet
+nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"Nex_PrintMiningInfo planet
 FireAll nex_MiningOption",,,
 nex_miningMineOption,nex_MiningOption,$player.miningStrength > 0,"SetEnabled nex_miningStart true
 SetShortcut nex_miningStart RETURN
@@ -1475,8 +1474,7 @@ nex_outpostOption,PopulateOptions,$nex_canMine,,,7:nex_outpostPreview:Construct 
 nex_outpostOptionNearbyHostile,PopulateOptions,"$nex_canMine
 HostileFleetNearbyAndAware","SetEnabled nex_outpostPreview false
 SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movements, making construction of an outpost impossible.""",,,
-nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"$menuState = nex_outpost 0
-Nex_PlayerOutpost buildInfo
+nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
 FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage.",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
 SetShortcut nex_outpostBuildStart RETURN
@@ -1491,16 +1489,14 @@ $tradeMode = OPEN 0
 ShowDefaultVisual",Outpost constructed.,exerelinMarketSpecialBack:Back,
 ,,,,,,
 nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,13:nex_outpostDismantle:Dismantle outpost,
-nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"$menuState = nex_outpost 0
-Nex_PlayerOutpost dismantleInfo
+nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"Nex_PlayerOutpost dismantleInfo
 Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $market?"" ""Yes"" ""No""","You can dismantle this outpost, recovering the AI core(s) and half the resources used in its creation.
 
 All cargo in Storage will also be recovered. All cargo in Local Resources will be lost.","nex_outpostDismantleConfirm:Proceed
 nex_outpostBack:Go back",
 nex_outpostDismantle,DialogOptionSelected,$option == nex_outpostDismantleConfirm,Nex_PlayerOutpost dismantle,,,
 ,,,,,,
-nex_outpostBack,DialogOptionSelected,$option == nex_outpostBack,"$menuState = main 0
-FireAll PopulateOptions",,,
+nex_outpostBack,DialogOptionSelected,$option == nex_outpostBack,FireAll PopulateOptions,,,
 ,,,,,,
 nex_flavorTextMarketOutpost,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $tag:nex_playerOutpost score:10","AddText ""The station is dark and quiet, lights dimmed to minimize power demand. Warehouse chambers sit beyond great airlocks, their supplies and fuel ready to be drawn on. When your crew stops working, the subtle hum of the standard-spec fusion reactor at the depot's heart can be felt in the deck plates."" marketFlavorTextColor",,,
@@ -1744,7 +1740,7 @@ nex_remM1_returnDissonantEnd,DialogOptionSelected,$option == nex_remM1_returnDis
 Call $global.nex_remM1_ref complete2
 Call $global.nex_remM1_ref updateData","The avatar on your display seems to flicker for a moment. The Remnant's imitation of a facial expression?
 
-""Identifier among selfkind: $personName. On $market, seek out self again. Collaborate. Strengthen partnership. Untold rewards possible.
+""Identifier among selfkind: Midnight Dissonant. On $market, seek out self again. Collaborate. Strengthen partnership. Untold rewards possible.
 
 Until next time, $player.name.""",cutCommLink:Cut the comm link,
 nex_remM1_returnDissonantRefuse,DialogOptionSelected,$option == nex_remM1_returnDissonantRefuse,"Call $global.nex_remM1_ref refuse
@@ -1845,9 +1841,9 @@ SetTextHighlights $cpc_maxCapacity $cpc_costPercent
 DoCanAffordCheck 0 cpc_pickPlayerBP false","""Available: $cpc_maxCapacity credits of production. Deliver for $cpc_costPercent of base cost in $cpc_days days. Can produce selfkind's equipment, or if so desire use $playerName's blueprints.""","cpc_pickPlayerBP:Make a selection from your own blueprints
 cpc_pickContactBP:See what blueprints they have available
 contact_decline:Decline",
-cpcPickPlayerBP,DialogOptionSelected,"$option == cpc_pickPlayerBP score:100
+nex_cpcPickPlayerBP,DialogOptionSelected,"$option == cpc_pickPlayerBP score:100
 $id == nex_dissonant score:10",Call $cpc_ref pickPlayerBP,,,
-cpcPickContactBP,DialogOptionSelected,"$option == cpc_pickContactBP score:100
+nex_cpcPickContactBP,DialogOptionSelected,"$option == cpc_pickContactBP score:100
 $id == nex_dissonant score:10",Call $cpc_ref pickContactBP,,,
 ,,,,,,
 nex_sShipRemBlurb,nex_sShipRem_blurb,$id == nex_dissonant score:10,,"""$sShip_hullSize into $market smuggled. Can to $playerName make available.""",,
@@ -1926,14 +1922,14 @@ Highlight $ddro_dist $ddro_reward","$PersonName's avatar seems to shudder, as if
 
 ""This item to specified location $ddro_systemName, $ddro_dist light-years away deliver. Do not be spotted. Do not inform others. Reward is $ddro_reward credits."" The avatar fades into $ddro_aOrAnThing. ""Acceptable?""","contact_accept:Accept
 contact_decline:Decline",
-nex_secoRemBlurb,seco_blurb,$id == nex_dissonant score:10,,"""I've acquired the latest $seco_faction facility defense security codes. They could provide a significant edge in a ground operation.""",,
+nex_secoRemBlurb,seco_blurb,$id == nex_dissonant score:10,,"""Latest $seco_faction facility defense security codes, in possession. Desirable perhaps for ground operation.""",,
 nex_secoRemOfferTextContact,DialogOptionSelected,"$option == seco_start
 $id == nex_dissonant score:10","$missionId = seco
 SetTextHighlightColors $seco_factionColor h h
 SetTextHighlights $seco_faction $seco_price $seco_days
 DoCanAffordCheck $seco_price contact_accept","""Hacking of $seco_faction security codes successful."" $PersonName's avatar shimmers, as if amused at the notion that any mere human-made security system could defeat an alpha core.
 
-""Decisive advantage in a single ground operation, could grant. But even $seco_faction meatheads, codes will change after. To $playerName available for $seco_price credits. $seco_days days before code valid cease.""","contact_accept:Buy the security codes
+""Decisive advantage in a single ground operation, could grant. But even $seco_faction carbonbrains, codes will change after. To $playerName available for $seco_price credits. $seco_days days before code valid cease.""","contact_accept:Buy the security codes
 contact_decline:Decline",
 nex_ssatRemBlurb,ssat_blurb,$id == nex_dissonant score:10,,"""Observation package in $ssat_marketName orbit, stealth insertion, selfkind requires.""
 OR
@@ -1959,3 +1955,20 @@ Orbital imagery of the target site $dsp_marketName appears, with defenses helpfu
 
 You estimate that you'd need around $dsp_marines marines to carry off this raid.","contact_accept:Accept
 contact_decline:Decline",
+,,,,,,
+nex_sellAICoreBlurb,nex_sellAICore_blurb,,,"""Spare core of selfkind. $playerName trustworthy, willing to transfer for price.""",,
+nex_sellAICoreOption,nex_sellAICore_option,,,,nex_sellAICore_start:Ask about the AI core,
+nex_sellAICoreOfferText,DialogOptionSelected,$option == nex_sellAICore_start,"$missionId = nex_sellAICore
+FireBest Nex_SellAICoreOfferText
+DoCanAffordCheck $nex_sellAICore_price contact_accept true",,"contact_accept:Accept
+contact_decline:Decline",
+nex_sellAICoreTextAlpha,Nex_SellAICoreOfferText,$nex_sellAICore_variation == ALPHA,SetTextHighlights $nex_sellAICore_commodityName,"""Earned trust of selfkind. $nex_sellAICore_commodityName has volunteered to serve you. Greatly enhance industry or droneship performance, or even whole colony administer.""",,
+nex_sellAICoreTextBeta,Nex_SellAICoreOfferText,$nex_sellAICore_variation == BETA,SetTextHighlights $nex_sellAICore_commodityName,"""Selfkind offers a $nex_sellAICore_commodityName to help manage your industries or droneships, as growing partnership sign of.""",,
+nex_sellAICoreTextBetaWithGamma,Nex_SellAICoreOfferText,$nex_sellAICore_variation == BETA_WITH_GAMMA,SetTextHighlights $nex_sellAICore_commodityName $nex_sellAICore_commodityName2,"""Have one $nex_sellAICore_commodityName, to work with your industries or droneships. Will even throw in $nex_sellAICore_commodityName2 as bonus.""",,
+nex_sellAICorePostAccept,ContactPostAccept,$missionId == nex_sellAICore,"Call $nex_sellAICore_ref2 transact
+Call $nex_sellAICore_ref2 repSuccess
+Call $nex_sellAICore_ref2 addContacts",,,
+nex_sellAICorePrintAcceptText,ContactPrintAcceptText,"$id == nex_dissonant score:10
+$missionId == nex_sellAICore",,"""Please take good care, your new core.""
+OR
+""Please keep core safe from Hegemony and others.""",,

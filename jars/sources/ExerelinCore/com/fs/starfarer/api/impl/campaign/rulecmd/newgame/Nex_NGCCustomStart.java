@@ -78,6 +78,7 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 		
 		data.getScripts().clear();
 		data.getScriptsBeforeTimePass().clear();
+		data.setWithTimePass(true);
 		
 		memoryMap.get(MemKeys.LOCAL).unset("$nex_customStart");
 	}

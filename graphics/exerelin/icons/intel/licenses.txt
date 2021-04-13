@@ -24,6 +24,14 @@ double_exclamation.png
 intel_skull.png
 	Soren/Harmful Mechanic, free for non-commercial use
 	http://fractalsoftworks.com/forum/index.php?topic=11433.0
+
+gunbarrel.png
+	adapted from work by Matthias Kabel, CC-BY-SA
+	from https://commons.wikimedia.org/wiki/File:Zuege.jpg
+
+tuxedo.png
+	by Kenneth Von Alt, CC-BY
+	https://thenounproject.com/term/tuxedo/2104/
 	
 ----------------------
 Made by Tartiflette:

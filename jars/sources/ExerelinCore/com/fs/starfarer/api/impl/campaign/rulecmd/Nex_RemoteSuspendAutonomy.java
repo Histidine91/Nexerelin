@@ -92,6 +92,7 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus implements C
 		
 		for (MarketAPI market : markets) {
 			if (market.isPlayerOwned()) continue;
+			if (market.getContainingLocation() == null) continue;	// FIXME
 			if (market.getMemoryWithoutUpdate().contains(PlayerOutpostIntel.MARKET_MEMORY_FLAG))
 				continue;
 			

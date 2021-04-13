@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.janino.ScriptEvaluator;
@@ -61,7 +62,7 @@ public class VanillaSystemsGenerator {
 	{		
 		//ClassLoader cl = Global.getSettings().getScriptClassLoader();
 		
-		StarSystemAPI system = sector.createStarSystem("Corvus");
+		StarSystemAPI system = sector.createStarSystem(StringHelper.getString("exerelin_misc", "systemCorvus"));
 		//system.getLocation().set(16000 - 8000, 9000 - 10000);
 		system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
 		
@@ -74,7 +75,7 @@ public class VanillaSystemsGenerator {
 		generateSystemsJanino();
 		
 		//TutorialMissionEvent.endGalatiaPortionOfMission();
-		exerelinEndGalatiaPortionOfMission();
+		//exerelinEndGalatiaPortionOfMission();	// moved handling elsewhere
 		
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		SectorEntityToken atlanticLabel = hyper.addCustomEntity("atlantic_label_id", null, "atlantic_label", null);

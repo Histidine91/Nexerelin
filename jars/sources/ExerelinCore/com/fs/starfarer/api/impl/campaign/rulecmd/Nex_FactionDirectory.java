@@ -210,7 +210,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		int hidden = 0;
 		for (MarketAPI market: markets)
 		{
-			if (market.isHidden()) {
+			if (market.isHidden() || market.getContainingLocation() == null) {
 				hidden++;
 				continue;
 			}

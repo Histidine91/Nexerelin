@@ -12,6 +12,11 @@
 	"economyExceptionOnMissingMarketEntity":false,
 	
 	"nex_enableVersionChecker":true,
+	# if true, locations in Academy quest aren't marked as story-critical, so they can be decivilized and such
+	# (and the "go to Academy" quest doesn't appear)
+	"nex_noStoryCriticalMarkets":false,
+	
+	"nex_keepSModsForRecoveredShips":true,	# note: only affects enemy ships, friendly ships already keep their mods
 	
 	"nex_keepSModsForRecoveredShips":true,	# note: only affects enemy ships, friendly ships already keep their mods
 	
@@ -37,7 +42,7 @@
 	"nex_tributeIncomePenalty":0.15,
 	"nex_tributePopulationMult":0.5,
 	
-	"nex_governorship_maxSize":6,	# tooltip will not be updated to reflect changes to this
+	"nex_governorship_maxSize":4,	# tooltip will not be updated to reflect changes to this
 	
 	"nex_fleetRequestOrganizeTimeMult":0.75,	# default 0.75
 	
@@ -181,6 +186,7 @@
 			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png",
 			
 			
+			
 			# not used directly, just to get the images to load
 			"trait_paranoid":"graphics/exerelin/icons/intel/war.png",
 			"trait_pacifist":"graphics/exerelin/icons/intel/peace.png",
@@ -198,13 +204,21 @@
 			"trait_lawAndOrder":"graphics/exerelin/icons/intel/police_star.png",
 			"trait_lowProfile":"graphics/portraits/bgs/bg03.png",
 			"trait_devious":"graphics/exerelin/icons/intel/spy.png",
+			
+			"nex_milestone_tuxedo":"graphics/exerelin/icons/intel/tuxedo.png",
+			"nex_milestone_gunbarrel":"graphics/exerelin/icons/intel/gunbarrel.png",
 		},
 		
 		"misc":{
 			"nex_ironbank_logo":"graphics/exerelin/icons/ironbank.png",
 			"nex_icon_remnant":"graphics/exerelin/icons/logo_remnant.png",
 			"nex_icon_omega":"graphics/exerelin/icons/logo_omega.png",
-			"command_experience":"graphics/icons/skills/command_experience.png"
+			"command_experience":"graphics/icons/skills/command_experience.png",
+
+		},
+		
+		"raidObjectives":{  # icons displayed at 26x26
+			"beta_core":"graphics/icons/cargo/ai_core_beta.png",
 		},
 		
 		"raidObjectives":{  # icons displayed at 26x26

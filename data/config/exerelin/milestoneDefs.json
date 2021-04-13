@@ -45,6 +45,14 @@
 			"spoiler":true,
 			"image":"graphics/ships/phase/zigguraut.png",
 		},
+		"defeatNexus":{
+			"name":"Ashes of the AI Wars",
+			"desc":"Defeat a Remnant nexus.",
+			"logString":"Defeated a Remnant Nexus",
+			"points":1,
+			"order":6.5,
+			"image":"graphics/ships/remnants/remnant_station1.png"
+		},
 		"defeatOmega":{
 			"name":"Fractal Shipworks",
 			"desc":"Defeat a mysterious angular foe.",
@@ -103,5 +111,28 @@
 			"order":14,
 			"image":"graphics/icons/markets/urbanized_polity.png",
 		},
+		"agentLevel5":{
+			"name":"Elite Beat Agent",
+			"desc":"Get an agent to level 5.",
+			"points":1,
+			"order":15,
+			"image":"graphics/exerelin/icons/intel/tuxedo.png",
+		},
+		"agentAction15":{
+			"name":"Gun Barrel Sequence",
+			"desc":"Complete 15 agent actions (with non-guaranteed success chance).",
+			"points":1,
+			"order":16,
+			"image":"graphics/exerelin/icons/intel/gunbarrel.png",
+		},
+		# CBA to track this, and it's kind of meh
+		#"fleet30":{
+		#	"name":"The More, the Merrier",
+		#	"desc":"Have 30 ships in your fleet",
+		#	"points":1,
+		#	"order":17,
+		#	"image":"graphics/icons/markets/urbanized_polity.png",
+		#},
+		# TODO: invasion milestone (with SpaceLand Battle update)
 	},
 }

@@ -1769,7 +1769,7 @@
 	"nex_remnantQuest":{
 		"dissonantName1":"Midnight",
 		"dissonantName2":"Dissonant",
-		"dissonantAlias":"Nakht",
+		"dissonantAlias":"N",
 		
 		"m1_name":"Captive Cores",
 		"m1_stage1Desc":"Recover the Beta Cores stored on %s.",
@@ -1845,9 +1845,10 @@
 		"deadDropCoordsStr1":"the dead drop coordinates",
 		"deadDropCoordsStr2":"the dead drop coordinates given to you by %s",
 		
-		"errorStarsectorVersion":"This version of Starsector is too old for %s!\nPlease make sure Starsector is up to date.\nRequired Version: %s\nCurrent Version: %s",
-		"errorLazyLib":"Nexerelin requires LazyLib to function!\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0",
-		"errorOfficerMaxLevel":"Officer max level in config is over 29 (current: $currMax)\nThis risks a hang during gameplay.\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.",
 		"errorPrismLoad":"Failed to load Prism High-End Seller configuration defs!\nReport this issue with your modlist.",
+		
+		# used in new game sector generation, tutorial start
+		"systemCorvus":"Corvus",
+		"systemGalatia":"Galatia",
 	},
 }
