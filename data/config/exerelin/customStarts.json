@@ -42,15 +42,6 @@
 		#	"className":"exerelin.campaign.customstart.DerelictFleet2",
 		#},
 		{
-			"id":"cabalPirateStart",
-			"name":"Cabal friends",
-			"difficulty":"Normal",
-			"desc":"You have a certain... friend with benefits in the Starlight Cabal. As a result of this connection, you gained access to better armaments than are available to the more common strain of pirates in the Sector.",
-			"className":"exerelin.campaign.customstart.CabalPirateStart",
-			"factionId":"pirates",
-			"requiredModId":"underworld",
-		},
-		{
 			"id":"templar_apostate",
 			"name":"The Apostate",
 			"difficulty":"Hard",
