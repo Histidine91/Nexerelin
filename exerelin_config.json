@@ -21,11 +21,8 @@
     "fleetBonusFpPerPlayerLevel": 1,	# not actually used, except for vengeance fleets
     
     "prisonerRepatriateRepValue": 0.04,
-    "prisonerBaseRansomValue": 4000,
-    "prisonerRansomValueIncrementPerLevel": 200,
-    #"prisonerBaseSlaveValue": 8000,
-    #"prisonerSlaveValueIncrementPerLevel": 400,
-    #"prisonerSlaveRepValue": -0.02,
+    "prisonerBaseRansomValue": 5000,
+    "prisonerRansomValueIncrementPerLevel": 500,
     "prisonerLootChancePer10Fp": 0.025,
     
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
@@ -56,7 +53,7 @@
     "pointsRequiredForInvasionFleet": 27000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
-    "invasionPointsPerPlayerLevel": 0.5,
+    "invasionPointsPerPlayerLevel": 1.5,
     "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
     "creditLossOnColonyLossMult": 0.4,
     "allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets

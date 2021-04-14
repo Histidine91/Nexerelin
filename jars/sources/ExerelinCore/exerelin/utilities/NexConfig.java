@@ -34,10 +34,10 @@ public class NexConfig
     
     // Prisoners
     public static float prisonerRepatriateRepValue = 0.04f;
-    public static float prisonerBaseRansomValue = 2000f;
-    public static float prisonerRansomValueIncrementPerLevel = 100f;
-    public static float prisonerBaseSlaveValue = 4000f;
-    public static float prisonerSlaveValueIncrementPerLevel = 400f;
+    public static float prisonerBaseRansomValue = 5000f;
+    public static float prisonerRansomValueIncrementPerLevel = 500f;
+    public static float prisonerBaseSlaveValue = 10000f;
+    public static float prisonerSlaveValueIncrementPerLevel = 1000f;
     public static float prisonerSlaveRepValue = -0.02f;
     public static float prisonerLootChancePer10Fp = 0.025f;
     public static float crewLootMult = 0.02f;
@@ -64,7 +64,7 @@ public class NexConfig
     public static float invasionGracePeriod = 90;
     public static float pointsRequiredForInvasionFleet = 27000f;
     public static float baseInvasionPointsPerFaction = 30f;
-    public static float invasionPointsPerPlayerLevel = 0.5f;
+    public static float invasionPointsPerPlayerLevel = 1.5f;
     public static float invasionPointEconomyMult = 0.5f;
     public static float creditLossOnColonyLossMult = 0.5f;
     public static boolean allowNPCSatBomb = true;

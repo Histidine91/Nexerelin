@@ -39,7 +39,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	public static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
 	public static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
 	public static final float COMPENSATION_PER_DMOD = 0.2f;
-	public static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
+	public static final float LIFE_INSURANCE_PER_LEVEL = 5000f;
 	
 	protected List<InsuranceItem> items = new ArrayList<>();
 	protected boolean paid = true;
