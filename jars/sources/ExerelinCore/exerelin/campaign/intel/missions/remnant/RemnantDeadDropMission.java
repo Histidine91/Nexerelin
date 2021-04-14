@@ -7,8 +7,10 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.DeadDropMission;
 import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
+import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
@@ -56,6 +58,7 @@ public class RemnantDeadDropMission extends DeadDropMission {
 		preferSystemInInnerSector();
 		preferSystemUnexplored();
 		preferSystemInDirectionOfOtherMissions();
+		preferSystemTags(ReqMode.ANY, Tags.THEME_REMNANT_DESTROYED, Tags.THEME_DERELICT);
 		
 		system = pickSystem();
 		if (system == null) return false;
@@ -76,7 +79,6 @@ public class RemnantDeadDropMission extends DeadDropMission {
 
 		setCreditReward(CreditReward.HIGH);
 		
-		// FIXME externalize strings
 		String complFactionId = getComplicationFaction();
 		if (complFactionId != null && rollProbability(PROB_COMPLICATIONS)) {
 			triggerComplicationBegin(Stage.DROP_OFF, ComplicationSpawn.APPROACHING_OR_ENTERING,
@@ -137,7 +139,7 @@ public class RemnantDeadDropMission extends DeadDropMission {
 							person.getFaction().getDisplayNameWithArticle()),
 					0,
 					true, ComplicationRepImpact.FULL,
-					DelayedFleetEncounter.TRIGGER_REP_LOSS_MEDIUM, getPerson());
+					DelayedFleetEncounter.TRIGGER_REP_LOSS_MINOR, getPerson());
 			e.triggerSetAdjustStrengthBasedOnQuality(true, getQuality());
 			e.triggerSetPatrol();
 			e.triggerSetStandardAggroInterceptFlags();
