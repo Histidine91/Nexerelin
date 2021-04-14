@@ -51,7 +51,7 @@ public class SpacerStart extends CustomStart {
 		data.getStartingCargo().getCredits().add(2000);
 		AddRemoveCommodity.addCreditsGainText(2000, dialog.getTextPanel());
 		MutableCharacterStatsAPI stats = data.getPerson().getStats();
-		stats.addPoints(3);
+		stats.addPoints(1);
 		
 		CampaignFleetAPI tempFleet = FleetFactoryV3.createEmptyFleet(
 				PlayerFactionStore.getPlayerFactionIdNGC(), FleetTypes.PATROL_SMALL, null);
