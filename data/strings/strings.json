@@ -1075,6 +1075,12 @@
 		"storyCriticalWarning":"$market has an important role to play in the Sector to come. You have the feeling that if you were to proceed successfully with this invasion, the future could be distorted.",
 		"storyCriticalWarningHighlight":"the future could be distorted"
 	},
+	"nex_industry":{
+		"effect_synchrotron":"Increases fuel production output by %s units.",
+		"effect_catalyticCore":"Increases refining production by %s units.",
+		"req_noAtmoOrIsStation":"No planet or no atmosphere",
+	},
+	
 	"nex_invasion2":{
 		"intelTitle":"Surface Battle: $market",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",

@@ -8,12 +8,21 @@ import com.fs.starfarer.api.campaign.GenericPluginManagerAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
+import com.fs.starfarer.api.campaign.econ.InstallableIndustryItemPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.econ.impl.BoostIndustryInstallableItemEffect;
+import com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo;
+import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.CATALYTIC_CORE_BONUS;
+import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.NO_ATMOSPHERE;
+import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.SYNCHROTRON_FUEL_BONUS;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
@@ -23,6 +32,7 @@ import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManag
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.StarSystemType;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
@@ -43,6 +53,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
@@ -231,6 +242,38 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
     }
     
+    public static void modifySynchrotronAndCatCore() {
+        ItemEffectsRepo.ITEM_EFFECTS.put(Items.SYNCHROTRON, new Nex_BoostIndustryInstallableItemEffect(
+                                Items.SYNCHROTRON, SYNCHROTRON_FUEL_BONUS, 0) {
+            @Override
+            protected void addItemDescriptionImpl(Industry industry, TooltipMakerAPI text, SpecialItemData data,
+                                                    InstallableIndustryItemPlugin.InstallableItemDescriptionMode mode, String pre, float pad) {
+                //text.addPara(pre + "Increases fuel production and demand for volatiles by %s.",
+                text.addPara(pre + StringHelper.getString("nex_industry", "effect_synchrotron"),
+                        pad, Misc.getHighlightColor(), "" + SYNCHROTRON_FUEL_BONUS);
+            }
+            @Override
+            public String[] getSimpleReqs(Industry industry) {
+                return new String [] {Nex_BoostIndustryInstallableItemEffect.STATION_OR_NO_ATMO};
+            }
+        });
+        
+        ItemEffectsRepo.ITEM_EFFECTS.put(Items.CATALYTIC_CORE, new Nex_BoostIndustryInstallableItemEffect(
+                                    Items.CATALYTIC_CORE, CATALYTIC_CORE_BONUS, 0) {
+            @Override
+            protected void addItemDescriptionImpl(Industry industry, TooltipMakerAPI text, SpecialItemData data, 
+                                                  InstallableIndustryItemPlugin.InstallableItemDescriptionMode mode, String pre, float pad) {
+                text.addPara(pre + StringHelper.getString("nex_industry", "effect_catalyticCore"),
+                        pad, Misc.getHighlightColor(), 
+                        "" + (int) CATALYTIC_CORE_BONUS);
+            }
+            @Override
+            public String[] getSimpleReqs(Industry industry) {
+                return new String [] {Nex_BoostIndustryInstallableItemEffect.STATION_OR_NO_ATMO};
+            }
+        });
+    }
+    
     protected void expandSector() {
         // Sector expander
         float expandLength = Global.getSettings().getFloat("nex_expandCoreLength");
@@ -353,7 +396,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         loadRaidBPBlocker();
-		RemnantQuestUtils.setupRemnantContactMissions();
+        RemnantQuestUtils.setupRemnantContactMissions();
+        modifySynchrotronAndCatCore();
         
         //MilitaryCustomBounty.CREATORS.clear();
         //MilitaryCustomBounty.CREATORS.add(new Nex_CBSpecialForces());
