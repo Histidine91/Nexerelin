@@ -46,7 +46,7 @@ public class StartSetupPostTimePass {
 		SectorAPI sector = Global.getSector();
 		if (Global.getSector().isInNewGameAdvance()) return;
 		
-		if (!TutorialMissionIntel.isTutorialInProgress())
+		if (SectorManager.getManager().isCorvusMode() && !TutorialMissionIntel.isTutorialInProgress())
 			VanillaSystemsGenerator.exerelinEndGalatiaPortionOfMission();
 		
 		SectorEntityToken entity = null;
