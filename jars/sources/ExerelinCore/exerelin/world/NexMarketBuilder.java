@@ -655,6 +655,8 @@ public class NexMarketBuilder
 				//market.addIndustry("ii_interstellarbazaar");	// put somewhere else
 				market.addIndustry("ii_imperialguard");
 			}
+			else if (factionId.equals("shadow_industry"))
+				market.addIndustry("ms_redwingsCommand");
 			else if (factionId.equals("blackrock_driveyards"))
 				market.addIndustry("brdy_defhq");
 			else if (factionId.equals("scalartech"))
