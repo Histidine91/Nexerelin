@@ -846,7 +846,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	
 	@Override
 	public boolean isHidden() {
-		return !ExerelinModPlugin.isNexDev;
+		return NexConfig.legacyInsurance;
 	}
 
 	@Override
