@@ -49,8 +49,8 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	public static final int PREMIUM_MULT_DENOMINATOR = 100000;	// 100k
 	// don't bother with confirmation if premiums > this * our credits
 	public static final float CURRENT_CREDITS_MULT_FOR_NO_CONFIRM = 0.01f;
-	public static final float BASE_PREMIUM_MULT = 2;
-	public static final float MIN_PREMIUM_MULT = 0.5f;
+	public static final float BASE_PREMIUM_MULT = 1f;
+	public static final float MIN_PREMIUM_MULT = 0.25f;
 	public static final float MAX_PREMIUM_MULT = 10;
 	public static final int CLAIMS_HISTORY_DAYS = 90;
 	
