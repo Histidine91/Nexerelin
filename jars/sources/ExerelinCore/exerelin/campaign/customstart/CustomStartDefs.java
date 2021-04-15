@@ -97,6 +97,16 @@ public class CustomStartDefs {
 		}
 	}
 	
+	public static boolean validateCustomStart(String id) {
+		CustomStartDef def = defsByID.get(id);
+		try {
+			Class.forName(def.className);
+			return true;
+		} catch (ClassNotFoundException ex) {
+			return false;
+		}
+	}
+	
 	public static class CustomStartDef {
 		public final String id;
 		public String name;

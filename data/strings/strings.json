@@ -1235,6 +1235,7 @@
 		
 		"customStartOrScenario_tooltipDisabledInRandom":"Disabled in random sector mode",
 		"customStartOrScenario_tooltipDisabledInNonRandom":"Disabled in non-random sector mode",
+		"customStartOrScenario_tooltipFailedToLoad":"Class load failure, disabled",
 		
 		#"randomStartLocation_msg":"Random start location %s",
 		

@@ -33,6 +33,7 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 	
 	public static String tooltipDisabledRandom = StringHelper.getString("exerelin_ngc", "customStartOrScenario_tooltipDisabledInRandom");
 	public static String tooltipDisabledNonRandom = StringHelper.getString("exerelin_ngc", "customStartOrScenario_tooltipDisabledInNonRandom");
+	public static String tooltipLoadFailure = StringHelper.getString("exerelin_ngc", "customStartOrScenario_tooltipFailedToLoad");
 	
 	protected Map<String, String> tooltips = new HashMap<>();
 	protected Map<String, List<String>> highlights = new HashMap<>();
@@ -143,8 +144,17 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 				disabled.add(option);
 			}
 			
+			boolean valid = CustomStartDefs.validateCustomStart(def.id);
+			if (!valid) {
+				disabled.add(option);
+			}
+			
 			StringBuilder tb = new StringBuilder();
-			if (disabledRandom) {
+			if (!valid) {
+				tb.append(tooltipLoadFailure);
+				tb.append("\n\n");
+			}
+			else if (disabledRandom) {
 				tb.append(tooltipDisabledRandom);
 				tb.append("\n\n");
 			}
@@ -165,7 +175,10 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			List<Color> hlColors = new ArrayList<>(Arrays.asList(faction.getBaseUIColor(), 
 					CustomStartDefs.getDifficultyColor(difficulty)));
 			// add disabled tooltip if needed
-			if (disabledRandom) {
+			if (!valid) {
+				hl.add(0, tooltipLoadFailure);
+				hlColors.add(0, Misc.getNegativeHighlightColor());
+			} else if (disabledRandom) {
 				hl.add(0, tooltipDisabledRandom);
 				hlColors.add(0, Misc.getNegativeHighlightColor());
 			} else if (disabledNonRandom) {
