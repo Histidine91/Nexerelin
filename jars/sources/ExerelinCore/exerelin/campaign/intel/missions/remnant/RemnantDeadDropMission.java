@@ -26,12 +26,6 @@ public class RemnantDeadDropMission extends DeadDropMission {
 	public static float PROB_COMPLICATIONS = 0.75f;
 	public static int ITEM_COUNT = 10;
 	
-	public static enum Stage {
-		DROP_OFF,
-		COMPLETED,
-		FAILED,
-	}
-	
 	public static List<String> ITEMS = new ArrayList<>();
 	
 	static {
