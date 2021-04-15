@@ -58,5 +58,6 @@
     "bonusSeeds":[
         {"id":"population_upsize", "count":1},
         {"id":"nanoforge_pristine", "count":1},
+        {"id":"synchrotron", "count":1},
     ],
 }
