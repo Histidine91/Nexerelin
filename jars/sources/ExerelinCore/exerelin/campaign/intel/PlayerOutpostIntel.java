@@ -204,6 +204,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		StoragePlugin storage = (StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
 		storage.setPlayerPaidToUnlock(true);
+		market.setInvalidMissionTarget(true);
 
 		outpost.setMarket(market);
 		
