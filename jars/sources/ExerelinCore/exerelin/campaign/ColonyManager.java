@@ -198,6 +198,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				if (market.getFaction().isPlayerFaction() && !market.isHidden()) {
 					processAutonomousColonyIncome(market);
 				}
+				
+				// prevent incentive credit debt accumulation on NPC markets
+				market.setIncentiveCredits(0);
 			}
 			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
@@ -245,6 +248,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (!market.isPlayerOwned()) {
 			buildIndustries(market);
 			processNPCConstruction(market);
+			if (market.getSize() >= 5 && market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+			{
+				market.setImmigrationIncentivesOn(null);
+			}
 		}
 	}
 	
