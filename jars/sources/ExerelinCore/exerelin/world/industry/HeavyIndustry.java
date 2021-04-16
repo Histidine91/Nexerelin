@@ -16,11 +16,11 @@ import java.util.Set;
 public class HeavyIndustry extends IndustryClassGen {
 	
 	public static final Set<String> HEAVY_INDUSTRY = new HashSet<>(Arrays.asList(
-		Industries.HEAVYINDUSTRY, Industries.ORBITALWORKS, "ms_modularFac", "ms_massIndustry"));
+		Industries.HEAVYINDUSTRY, Industries.ORBITALWORKS, "ms_modularFac", 
+			"ms_massIndustry", "ms_militaryProduction", "ms_orbitalShipyard"));
 
 	public HeavyIndustry() {
-		super(Industries.HEAVYINDUSTRY, Industries.ORBITALWORKS, 
-				"ms_modularFac", "ms_massIndustry");
+		super(HEAVY_INDUSTRY);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class HeavyIndustry extends IndustryClassGen {
 		MarketAPI market = entity.market;
 		
 		// upgrades have max priority
-		if (market.hasIndustry(Industries.HEAVYINDUSTRY) || market.hasIndustry("ms_modularFac")) {
+		if (market.hasIndustry(Industries.HEAVYINDUSTRY)) {
 			return 9999 * market.getSize();
 		}
 		
@@ -77,7 +77,10 @@ public class HeavyIndustry extends IndustryClassGen {
 	@Override
 	public boolean canApply(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
-		if (market.hasIndustry(Industries.ORBITALWORKS) || market.hasIndustry("ms_massIndustry")
+		if (market.hasIndustry(Industries.ORBITALWORKS) 
+				|| market.hasIndustry("ms_massIndustry")
+				|| market.hasIndustry("ms_militaryProduction")
+				|| market.hasIndustry("ms_orbitalShipyard")
 				|| market.hasIndustry("IndEvo_ScrapYard"))
 			return false;
 		
@@ -103,9 +106,10 @@ public class HeavyIndustry extends IndustryClassGen {
 			if (instant) ind.finishBuildingOrUpgrading();
 		}
 		else if (market.hasIndustry("ms_modularFac")) {
-			Industry ind = market.getIndustry("ms_modularFac");
-			ind.startUpgrading();
-			if (instant) ind.finishBuildingOrUpgrading();
+			// FIXME: figure out how new upgrade system works
+			//Industry ind = market.getIndustry("ms_modularFac");
+			//ind.startUpgrading();
+			//if (instant) ind.finishBuildingOrUpgrading();
 		}
 		else {
 			boolean upgrade = false;
