@@ -1639,16 +1639,18 @@ nex_dcomOfferOption,nex_dcom_option,,,,nex_dcom_start:Inquire into the competiti
 nex_dcomBlurbBar,nex_dcom_blurbBar,,,"A $nex_dcom_manOrWoman in a finely tailored suit looks up from $nex_dcom_hisOrHer TriPad, surveying the bar's denizens.",,
 nex_dcomOfferOptionBar,nex_dcom_optionBar,,,,nex_dcom_startBar:Go to the $nex_dcom_manOrWoman in the fine suit,
 nex_dcomOfferTextBar,DialogOptionSelected,$option == nex_dcom_startBar,"$missionId = nex_dcom
-Highlight $nex_dcom_marketName $nex_dcom_disruptDays $nex_dcom_dist $nex_dcom_reward $nex_dcom_marines","You walk over to the $nex_dcom_manOrWoman, whose bodyguard acknowledges you with a nod.
+SetTextHighlightColors $nex_dcom_targetFactionColor h h h h h
+Highlight $nex_dcom_targetFaction $nex_dcom_marketName $nex_dcom_disruptDays $nex_dcom_dist $nex_dcom_reward $nex_dcom_marines","You walk over to the $nex_dcom_manOrWoman, whose bodyguard acknowledges you with a nod.
 
 ""Captain. Sit, please. You may be just the person I'm looking for.""
 
-The suited figure activates a holo-map. ""This $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName is a competitor to $theFaction's business interests. We require a third party to knock it out for $nex_dcom_disruptDays days."" The map shifts, presenting valuable intelligence: estimated garrison stats and deployment disposition. ""The target is $nex_dcom_dist light-years away. I am authorized to release $nex_dcom_reward credits on successful completion of this task.""
+The suited figure activates a holo-map. ""This $nex_dcom_targetFaction $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName is a competitor to $theFaction's business interests. We require a third party to knock it out for $nex_dcom_disruptDays days."" The map shifts, presenting valuable intelligence: estimated garrison stats and deployment disposition. ""The target is $nex_dcom_dist light-years away. I am authorized to release $nex_dcom_reward credits on successful completion of this task.""
 
 Judging from the data, $nex_dcom_marines marines would be required to pull off this operation. The $faction $rank leans back and waits for you to make a decision.","contact_acceptBar:Accept
 contact_declineBarNoContinue:Decline",
 nex_dcomOfferTextContact,DialogOptionSelected,$option == nex_dcom_start,"$missionId = nex_dcom
-Highlight $nex_dcom_marketName $nex_dcom_dist $nex_dcom_reward $nex_dcom_disruptDays $nex_dcom_marines","""The target is the $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName, $nex_dcom_dist light-years away. We have allocated a sum of $nex_dcom_reward credits should it be disrupted for at least $nex_dcom_disruptDays days.""
+SetTextHighlightColors $nex_dcom_targetFactionColor h h h h h
+Highlight $nex_dcom_targetFaction $nex_dcom_marketName $nex_dcom_dist $nex_dcom_reward $nex_dcom_disruptDays $nex_dcom_marines","""The target is the $nex_dcom_targetFaction $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName, $nex_dcom_dist light-years away. We have allocated a sum of $nex_dcom_reward credits should it be disrupted for at least $nex_dcom_disruptDays days.""
 
 $HeOrShe pulls up a shared display. The intel is comprehensive: estimated garrison stats and a deployment disposition report. It appears that $nex_dcom_marines marines would be required for this operation.","contact_accept:Accept
 contact_decline:Decline",

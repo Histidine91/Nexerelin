@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 	
 	public static Logger log = Global.getLogger(Nex_DisruptIndustry.class);
+	public static final float BASE_MARINES_REQUIRED = 120;
+	public static final float MAX_MULT = 15;
 	
 	protected TargetEntry target;
 	
@@ -74,6 +76,13 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 		return null;
 	}
 	
+	protected void updateInteractionDataImpl() {
+		super.updateInteractionDataImpl();
+		String id = getMissionId();
+		set("$" + id + "_targetFaction", market.getFaction().getDisplayName());
+		set("$" + id + "_targetFactionColor", market.getFaction().getBaseUIColor());
+	}
+	
 	// we'll pick our own target industry
 	@Override
 	protected String[] getTargetIndustries() {
@@ -88,7 +97,17 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
-		return super.create(createdAt, barEvent);
+		boolean createResult = super.create(createdAt, barEvent);
+		if (!createResult) return false;
+		
+		int numMarines = getMarinesRequiredToDisrupt(market, industry, disruptDays);
+		float mult = numMarines/BASE_MARINES_REQUIRED;
+		if (mult < 1) mult = 1;
+		if (mult > MAX_MULT) mult = MAX_MULT;
+		
+		setCreditReward(getRewardTier());
+		setCreditReward(Math.round(creditReward * mult));
+		return true;
 	}
 	
 	@Override
