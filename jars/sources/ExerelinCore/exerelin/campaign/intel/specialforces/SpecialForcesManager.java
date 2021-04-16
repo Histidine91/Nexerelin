@@ -212,6 +212,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	// runcode exerelin.campaign.intel.specialforces.SpecialForcesManager.getManager().spawnDebug("luddic_church");
 	public void spawnDebug(String factionId) {
 		SpecialForcesIntel intel = generateFleet(factionId);
-		activeIntel.add(intel);
+		if (intel != null)
+			activeIntel.add(intel);
 	}
 }
