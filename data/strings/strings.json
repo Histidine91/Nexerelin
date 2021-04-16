@@ -1857,5 +1857,7 @@
 		# used in new game sector generation, tutorial start
 		"systemCorvus":"Corvus",
 		"systemGalatia":"Galatia",
+		
+		"tutorialStartWarning":"Note: Starting above level 2 will cause your XP to be stolen after the first battle. Use the AddXP command in console to get it back."
 	},
 }

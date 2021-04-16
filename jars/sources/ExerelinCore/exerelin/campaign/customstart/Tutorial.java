@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.impl.campaign.tutorial.CampaignTutorialScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.StringHelper;
 import java.util.Map;
 
 public class Tutorial extends CustomStart {
@@ -60,6 +61,9 @@ public class Tutorial extends CustomStart {
 		
 		data.setWithTimePass(false);
 		
+		dialog.getTextPanel().setFontSmallInsignia();
+		dialog.getTextPanel().addPara(StringHelper.getString("exerelin_misc", "tutorialStartWarning"));
+		dialog.getTextPanel().setFontInsignia();
 		FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep3");
 	}
 }
