@@ -437,7 +437,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 			
 		if (market != null) CovertOpsManager.modifyAlertLevel(market, getAlertLevelIncrease());
 		
-		if (getSuccessChance().getModifiedValue() <= 100) {
+		if (playerInvolved && getSuccessChance().getModifiedValue() <= 100) {
 			StatsTracker.getStatsTracker().notifyAgentActions(1);
 			if (StatsTracker.getStatsTracker().getNumAgentActions() >= 20)
 				MilestoneTracker.getIntel().awardMilestone("agentAction15");
