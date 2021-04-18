@@ -997,7 +997,10 @@ public class MiningHelperLegacy {
 		return miningValue;
 	}
 
-	protected static CampaignFleetAPI spawnHarassmentFleet(FactionAPI faction, LocationAPI loc) {
+	protected static CampaignFleetAPI spawnHarassmentFleet(FactionAPI faction, LocationAPI loc) 
+	{
+		if (faction == null) return null;
+		
 		int combat, freighter, tanker, utility;
 		float bonus;
 
