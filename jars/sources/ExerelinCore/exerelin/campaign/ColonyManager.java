@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
-import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionProductionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -19,6 +18,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
+import com.fs.starfarer.api.campaign.econ.ImmigrationPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
@@ -50,6 +50,7 @@ import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import static com.fs.starfarer.api.util.Misc.getImmigrationPlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
@@ -113,6 +114,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	public static final Map<String, Float> SURVEY_DATA_VALUES = new HashMap<>();
 	
+	public transient List<MarketAPI> coloniesToMonitor = new ArrayList<>();
+	
 	protected Map<MarketAPI, LinkedList<QueuedIndustry>> npcConstructionQueues = new HashMap<>();
 	protected int bonusAdminLevel = 0;
 	protected float colonyExpeditionProgress;
@@ -139,7 +142,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-		
+	}
+	
+	protected Object readResolve() {
+		coloniesToMonitor = new ArrayList<>();
+		return this;
 	}
 	
 	public ColonyManager() {
@@ -177,21 +184,29 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			// handle market growth
 			if (!market.isPlayerOwned())
 			{
-				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1 &&
-						!market.getMemoryWithoutUpdate().getBoolean("$nex_delay_growth")) 
+				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1) 
 				{
-					int maxSize;
-					if (market.getFaction().isPlayerFaction())
-						maxSize = 10;
-					else if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
-						maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
-					else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
-						maxSize = NexConfig.maxNPCNewColonySize;
-					else
-						maxSize = Global.getSettings().getInt("maxColonySize");
-					
-					if (market.getSize() < maxSize) {
-						upsizeMarket(market);
+					// workaround for colony near-instant growth in later cycles
+					// if we're still in the grace period, we know it shouldn't have grown, so reset it
+					if (market.getMemoryWithoutUpdate().getBoolean("$nex_delay_growth")) {
+						ImmigrationPlugin plugin = getImmigrationPlugin(market);
+						market.getPopulation().setWeight(plugin.getWeightForMarketSize(market.getSize()));
+						market.getPopulation().normalize();
+					}
+					else {
+						int maxSize;
+						if (market.getFaction().isPlayerFaction())
+							maxSize = 10;
+						else if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
+							maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
+						else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+							maxSize = NexConfig.maxNPCNewColonySize;
+						else
+							maxSize = Global.getSettings().getInt("maxColonySize");
+
+						if (market.getSize() < maxSize) {
+							upsizeMarket(market);
+						}
 					}
 				}
 				

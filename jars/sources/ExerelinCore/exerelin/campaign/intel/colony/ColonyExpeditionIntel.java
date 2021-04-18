@@ -10,7 +10,6 @@ import com.fs.starfarer.api.campaign.econ.ImmigrationPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -46,7 +45,6 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.NexTravelStage;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFleet;
@@ -406,15 +404,13 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		}
 		market.addIndustry(Industries.POPULATION);
 		
-		// set growth level to 50%
+		// set growth level to 0%
 		if (!faction.isPlayerFaction()) {
 			ImmigrationPlugin plugin = getImmigrationPlugin(market);
 			float min = plugin.getWeightForMarketSize(market.getSize());
-			float max = plugin.getWeightForMarketSize(market.getSize() + 1);
-			market.getPopulation().setWeight((min+max)/2);
-
-			// try to prevent instant size 4
-			market.getMemoryWithoutUpdate().set("$nex_delay_growth", true, 5);
+			market.getPopulation().setWeight(min);
+			market.getPopulation().normalize();
+			market.getMemoryWithoutUpdate().set("$nex_delay_growth", true, 10);
 		}
 		
 		NexFactionConfig config = NexConfig.getFactionConfig(factionId);
