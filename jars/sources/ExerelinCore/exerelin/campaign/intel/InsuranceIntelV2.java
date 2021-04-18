@@ -36,7 +36,7 @@ import java.util.Set;
 public class InsuranceIntelV2 extends BaseIntelPlugin {
 	public static Logger log = Global.getLogger(InsuranceIntelV2.class);
 	
-	public static final boolean DISPLAY_ONLY = true;
+	public static final boolean DISPLAY_ONLY = false;
 	public static final boolean INSURE_OFFICERS = false;
 	
 	public static final float COMPENSATION_PER_DMOD = 0.2f;
