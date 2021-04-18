@@ -62,6 +62,11 @@ public class InfiltrateCell extends CovertActionIntel {
 		int level = getLevel();
 		MutableStat stat = new MutableStat(0);
 		
+		if (sp.preventFailure()) {
+			stat.modifyFlat("baseChance", 999, getString("baseChance", true));
+			return stat;
+		}
+		
 		// base chance
 		float base = def.successChance * 100;
 		if (base <= 0) return stat;

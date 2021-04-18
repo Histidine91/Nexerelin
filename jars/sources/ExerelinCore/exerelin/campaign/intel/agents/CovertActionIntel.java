@@ -257,7 +257,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		MutableStat stat = new MutableStat(0);
 
 		if (sp.preventFailure()) {
-			stat.modifyFlat("baseChance", 100, getString("baseChance", true));
+			stat.modifyFlat("baseChance", 999, getString("baseChance", true));
 			return stat;
 		}
 
@@ -439,7 +439,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		
 		if (playerInvolved && getSuccessChance().getModifiedValue() <= 100) {
 			StatsTracker.getStatsTracker().notifyAgentActions(1);
-			if (StatsTracker.getStatsTracker().getNumAgentActions() >= 20)
+			if (StatsTracker.getStatsTracker().getNumAgentActions() >= 15)
 				MilestoneTracker.getIntel().awardMilestone("agentAction15");
 		}		
 		

@@ -292,7 +292,7 @@ public class ProcureShip extends CovertActionIntel {
 		}
 		
 		MutableStat stat = super.getSuccessChance();
-		if (ship == null) return stat;
+		if (ship == null || sp.preventFailure()) return stat;
 		
 		float mult = 1;
 		switch (ship.getHullSpec().getHullSize()) {
