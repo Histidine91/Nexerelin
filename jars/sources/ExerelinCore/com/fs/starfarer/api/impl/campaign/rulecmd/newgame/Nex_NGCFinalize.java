@@ -1,7 +1,9 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
@@ -16,6 +18,12 @@ public class Nex_NGCFinalize extends BaseCommandPlugin {
 		if (data.startScenario != null) {
 			ScenarioManager.prepScenario(data.startScenario);
 		}
+		if ("tutorialStart".equals(memoryMap.get(MemKeys.LOCAL).getString("$nex_customStart"))) 
+		{
+			CharacterCreationData ccd = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
+			ccd.getPerson().getStats().addPoints(-1);
+		}
+		
 		return true;
 	}
 	
