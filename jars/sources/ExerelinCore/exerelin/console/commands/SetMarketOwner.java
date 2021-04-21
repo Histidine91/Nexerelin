@@ -39,6 +39,10 @@ public class SetMarketOwner implements BaseCommand {
         //entitiesToSearch.addAll(sector.getEntitiesWithTag(Tags.STATION));
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
+            if (market.getPrimaryEntity() == null) {
+                Console.showMessage("  Market " + market.getName() + " has no primary entity, this may be a bug");
+                continue;
+            }
             entitiesToSearch.add(market.getPrimaryEntity());
         }
         //Console.showMessage(entitiesToSearch.size() + " valid targets for search found");
