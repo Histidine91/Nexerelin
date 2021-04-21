@@ -1345,6 +1345,7 @@
 		"descLifetimePremiums":"Total lifetime premiums",
 		"descLifetimeClaims":"Total lifetime claims",
 		"descHistoryTime":"Claims from past %s days",
+		"descCurrCredits":"You have %s",
 		
 		"tabFleet":"Fleet",
 		"tabClaims":"Claims",

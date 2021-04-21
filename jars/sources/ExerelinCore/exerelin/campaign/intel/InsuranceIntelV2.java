@@ -721,6 +721,9 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		lifetime = getString("descLifetimeClaims") + ": %s";
 		info.addPara(lifetime, pad, h, Misc.getDGSCredits(lifetimeClaims));
 		
+		String curr = getString("descCurrCredits");
+		info.addPara(curr, pad, h, Misc.getDGSCredits(getCredits()));
+		
 		switch (currentTab) {
 			case FLEET:
 				createFleetView(panel, info, width);
