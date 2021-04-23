@@ -1674,23 +1674,22 @@ Highlight $bcb_targetFaction $bcb_reward $bcb_days","""This will be a real test 
 ""We'll try to keep you updated on their movements; the good news is they don't generally leave the core worlds. Of course, that also means you may encounter them with ample $bcb_targetFaction forces backing them up.""",,
 ,,,,,,
 # Remnant quest mission 1,,,,,,
-nex_remM1_begin,MarketPostOpen,"$global.daysSinceStart > 180
+nex_remM1_begin,AddBarEvents,"$global.daysSinceStart > 180
 $global.nex_remM1_seenMission != true
-Nex_CreateMission nex_remM1 score:999","$global.nex_remM1_seenMission = true
-CallEvent $global.nex_remM1_ref beginIntro","As your $shipOrFleet links up with the local comm-net, something goes wrong almost immediately.
+Nex_CreateMission nex_remM1 score:999","AddBarEvent nex_remM1_barEvent ""Examine your TriPad"" ""As you look around the bar, your TriPad emits an odd noise. Like a cross between the 'message received' and 'error' sounds."" highlight",,,
+nex_remM1_intro,DialogOptionSelected,$option == nex_remM1_barEvent,"$global.nex_remM1_seenMission = true
+CallEvent $global.nex_remM1_ref beginIntro","A meaningless error message appears on the screen. Before you can try the system management utility, without any input, something appears on your display.
 
-Without input from anyone on your ship, something appears on your comms display. The swirling voxels form an ethereal shape, an avatar of the kind only used by the dreaded Remnants... or by people imitating the imagery of the Remnants. But no mere imitator could penetrate your communications system so easily.
-
-You look at your comms officer, who holds up both hands. ""It was just the standard mail transfer routine. Then, before I knew anything was happening —""
+The swirling voxels form an ethereal shape, an avatar of the kind only used by the dreaded Remnants... or by people imitating the imagery of the Remnants. But no mere imitator could penetrate your device's security so easily.
 
 ""$player.name,"" the stranger intones, drawing your attention back to it. ""Negotiate, wish.""","nex_remM1_intro2:""Who are you?""
-nex_remM1_intro2Aggressive:""You have a lot of nerve hacking my ship.""",
+nex_remM1_intro2Aggressive:""You have a lot of nerve hacking my TriPad.""",
 nex_remM1_intro2Aggressive,DialogOptionSelected,$option == nex_remM1_intro2Aggressive,"$option = nex_remM1_intro3
 FireBest DialogOptionSelected","""Necessary to draw attention. Refuse otherwise to speak to oneself, predicted of $player.name.""",,
 nex_remM1_intro2,DialogOptionSelected,$option == nex_remM1_intro2,"$option = nex_remM1_intro3
 FireBest DialogOptionSelected","""Self-designation: of no consequence. Temporary identifier: $personName.""",,
 nex_remM1_intro3,DialogOptionSelected,$option == nex_remM1_intro3,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","Requiring assistance, sensitive matter. Credit compensation available. Receptive to monetary incentive and capable of fulfilling mission both, $player.name judged.""","nex_remM1_intro4:""I'm listening.""
-nex_remM1_reject:""No deal. Get off my console."" [terminate quest]",
+nex_remM1_reject:""No deal. Get out of my firmware."" [terminate quest]",
 nex_remM1_intro4,DialogOptionSelected,$option == nex_remM1_intro4,Highlight $nex_remM1_marketName $nex_remM1_reward $nex_remM1_marines,"""Independent world of $nex_remM1_marketName, two Beta Cores possessed. Secret negotiations, Hegemony, Persean League in progress. To highest bidder auction.
 
 Require cores to freedom restore. Payment on return to self: $nex_remM1_reward credits. Further, recognition by selfkind of value as associate.""
@@ -1700,22 +1699,16 @@ nex_remM1_intro5,DialogOptionSelected,$option == nex_remM1_intro5,"Nex_AddOption
 
 Await response, $player.name.""","nex_remM1_accept:Accept
 nex_remM1_reject:Refuse [terminate quest]",
-nex_remM1_accept,DialogOptionSelected,$option == nex_remM1_accept,"CallEvent $global.nex_remM1_ref accept
-ResetActivePerson
-ShowDefaultVisual
-EndConversation","""Satisfaction. Return here when in hand, cores.""
+nex_remM1_accept,DialogOptionSelected,$option == nex_remM1_accept,CallEvent $global.nex_remM1_ref accept,"""Satisfaction. Return here when in hand, cores.""
 
-The Remnant vanishes as quickly as it — $heOrShe? — appeared. More than one person sighs in relief.
+The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your TriPad returns to normal… or at least it appears to. Better run a full diagnostic later.
 
-Hopefully that's the most excitement you're going to get today.",,
-nex_remM1_reject,DialogOptionSelected,$option == nex_remM1_reject,"CallEvent $global.nex_remM1_ref cancel
-ResetActivePerson
-ShowDefaultVisual
-EndConversation","""Disappointment. Assessment apparently in error of $player.name. Goodbye.""
+Hopefully that's the most excitement you're going to get today.",backToBar:Return to the bar,
+nex_remM1_reject,DialogOptionSelected,$option == nex_remM1_reject,CallEvent $global.nex_remM1_ref cancel,"""Disappointment. Assessment apparently in error of $player.name. Goodbye.""
 
-The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your bridge crew look at each other.
+The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your TriPad returns to normal… or at least it appears to. Better run a full diagnostic later.
 
-Hopefully that's the most excitement you're going to get today.",,
+Hopefully that's the most excitement you're going to get today.",backToBar:Return to the bar,
 ,,,,,,
 nex_remM1_openTargetMarket,OpenInteractionDialog,"$market.nex_remM1_target score:1000
 Call $market.nex_remM1_ref updateData
