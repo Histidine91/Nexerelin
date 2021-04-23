@@ -17,8 +17,8 @@ import org.apache.log4j.Logger;
 public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 	
 	public static Logger log = Global.getLogger(Nex_DisruptIndustry.class);
-	public static final float BASE_MARINES_REQUIRED = 120;
-	public static final float MAX_MULT = 15;
+	@Deprecated public static final float BASE_MARINES_REQUIRED = 120;
+	@Deprecated public static final float MAX_MULT = 15;
 	
 	protected TargetEntry target;
 	
@@ -76,6 +76,7 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 		return null;
 	}
 	
+	@Override
 	protected void updateInteractionDataImpl() {
 		super.updateInteractionDataImpl();
 		String id = getMissionId();
@@ -94,7 +95,8 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 		return CreditReward.HIGH;
 	}
 	
-
+	// no longer need difficulty credit reward, vanilla has that functionality
+	/*
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
 		boolean createResult = super.create(createdAt, barEvent);
@@ -109,6 +111,7 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 		setCreditReward(Math.round(creditReward * mult));
 		return true;
 	}
+	*/
 	
 	@Override
 	public void setCurrentStage(Object next, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
