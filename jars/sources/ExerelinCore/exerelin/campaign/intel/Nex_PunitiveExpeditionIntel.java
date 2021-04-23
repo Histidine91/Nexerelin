@@ -51,7 +51,7 @@ public class Nex_PunitiveExpeditionIntel extends PunitiveExpeditionIntel {
 	public CampaignFleetAPI spawnFleet(RouteManager.RouteData route) {
 		// Fix bug if source market is captured after fleet leaves, by enforcing the faction
 		CampaignFleetAPI fleet = super.spawnFleet(route);
-		fleet.setFaction(this.faction.getId());
+		if (fleet != null) fleet.setFaction(this.faction.getId());
 		return fleet;
 	}
 }
