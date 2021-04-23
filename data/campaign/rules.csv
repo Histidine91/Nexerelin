@@ -77,7 +77,8 @@ Nex_DynamicPaginatedOptions addOption nex_NGCCustomScenarioMenu ""Custom scenari
 nex_NewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,$nex_ngcSectorGenSlidersSeen = true,,,
 nex_NewGameSectorConfig,ExerelinNGCSectorOptions,,"Nex_NGCProcessSectorGenerationSliders create
 SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
-SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack:Back,
+SetShortcut exerelinNGCSectorOptionsBack ESCAPE
+FireAll ExerelinNGCSectorOptionsBack",,,
 nex_NewGameSectorConfigBack,NewGameOptionSelected,$option==exerelinNGCSectorOptionsBack,"Nex_NGCProcessSectorGenerationSliders save
 FireAll ExerelinNGCOptions",,,
 nex_NewGameSectorConfigReset,NewGameOptionSelected,$option==exerelinNGCSectorOptionsReset,"Nex_NGCProcessSectorGenerationSliders reset

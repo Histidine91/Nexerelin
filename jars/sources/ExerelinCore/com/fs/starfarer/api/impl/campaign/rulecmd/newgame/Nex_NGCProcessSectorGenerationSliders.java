@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import org.lwjgl.input.Keyboard;
 
 
 public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
@@ -45,6 +46,7 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 	
 	protected void createSliders(OptionPanelAPI opts)
 	{
+		opts.clearOptions();
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
 		if (!data.corvusMode) {
@@ -81,6 +83,9 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 					getString("randomColoniesTooltip"));
 			opts.setSelectorValue("randomColoniesSelector", data.randomColonies);
 		}
+		
+		opts.addOption(StringHelper.getString("back", true), "exerelinNGCSectorOptionsBack");
+		opts.setShortcut("exerelinNGCSectorOptionsBack", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	protected void saveValues(OptionPanelAPI opts)
