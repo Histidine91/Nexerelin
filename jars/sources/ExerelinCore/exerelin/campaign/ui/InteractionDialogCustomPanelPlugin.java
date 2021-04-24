@@ -3,6 +3,8 @@ package exerelin.campaign.ui;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.ButtonAPI;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,17 +20,28 @@ public class InteractionDialogCustomPanelPlugin extends FramedCustomPanelPlugin 
 		buttons.add(entry);
 	}
 	
+	public void checkButtons() {
+		Iterator<ButtonEntry> iter = buttons.iterator();
+		while (iter.hasNext()) {
+			iter.next().checkButton();
+		}
+	}
+	
+	@Override
+	public void advance(float amount) {
+		checkButtons();
+	}
+	
 	@Override
 	public void processInput(List<InputEventAPI> input) {
+		/*
 		for (InputEventAPI event : input) {
 			if (event.isMouseEvent()) {
-				
-				for (ButtonEntry entry : buttons) {
-					entry.checkButton();
-				}
+				checkButtons();				
 				break;
 			}
 		}
+		*/
 	}
 	
 	public static abstract class ButtonEntry {

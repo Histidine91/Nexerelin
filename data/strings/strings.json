@@ -101,7 +101,8 @@
 		"expired":"expired",
 		"suspended":"suspended",
 		"neverMind":"never mind",
-
+		
+		"random":"random",
 		"randomize":"randomize",
 
 		"previousPage":"previous page",
@@ -1305,6 +1306,9 @@
 		"recommendedSizeMsg1":"Non-independent factions enabled: %s",
 		"recommendedSizeMsg2":"Auto-configuring sector size: %s systems, %s planets, %s stations",
 		"recommendedSizeMsg2Alt":"Recommended sector size: %s systems, %s planets, %s stations",
+		
+		"factionToggleInfo":"Factions set to random will be enabled/disabled on leaving this screen",
+		"factionToggleBtnRandomize":"Randomize all",
 
 		"fleetSolo":"Solo frigate",
 		"fleetCombatSmall":"Combat (small)",

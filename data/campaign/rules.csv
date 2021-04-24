@@ -59,9 +59,10 @@ ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:nex_NGCDevS
 ,,,,,,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
-nex_NGCFactionToggleMenu,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu,Nex_NGCFactionToggle listFactions,,,
-nex_NGCToggleFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCToggleFaction_""",Nex_NGCFactionToggle toggle,,,
-nex_NGCFactionToggleMenuLeave,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu_leave,"Nex_NGCFactionToggle processRecommendedSize
+nex_NGCFactionToggleMenu,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu,"Nex_VisualCustomPanel create true
+Nex_NGCFactionToggleV2 listFactions
+SetShortcut nex_NGCFactionToggleMenu_leave ESCAPE",,nex_NGCFactionToggleMenu_leave:Back,
+nex_NGCFactionToggleMenuLeave,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu_leave,"Nex_NGCFactionToggleV2 processRecommendedSize
 FireAll ExerelinNGCFactionOptions",,,
 ,,,,,,
 ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOptions,FireAll ExerelinNGCSectorOptions,,,

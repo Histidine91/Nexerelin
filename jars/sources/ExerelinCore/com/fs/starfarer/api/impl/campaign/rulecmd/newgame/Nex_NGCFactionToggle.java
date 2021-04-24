@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Random;
 import org.lwjgl.input.Keyboard;
 
+@Deprecated
 public class Nex_NGCFactionToggle extends PaginatedOptionsPlus {
 	
 	public static final String TOGGLE_FACTION_OPTION_PREFIX = "nex_NGCToggleFaction_";

@@ -364,7 +364,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	 * @param buttons List of buttons to which the generated {@code ButtonAPI} should be added.
 	 * @return The {@code TooltipMakerAPI} holding the button.
 	 */
-	public TooltipMakerAPI initRadioButton(String id, String name, boolean checked,
+	public static TooltipMakerAPI initRadioButton(String id, String name, boolean checked,
 			CustomPanelAPI buttonPanel, TooltipMakerAPI rightOf, List<ButtonAPI> buttons) {
 		TooltipMakerAPI holder = buttonPanel.createUIElement(BUTTON_WIDTH, ITEM_HEIGHT, false);
 		FactionAPI faction = Global.getSector().getPlayerFaction();
@@ -404,22 +404,27 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		buttonHolder.addUIElement(checkboxHolder).inTL(0, 0);
 	}
 	
+	public static CustomPanelAPI prepOption(CustomPanelAPI panel, TooltipMakerAPI info, String name,
+			String imagePath, InteractionDialogCustomPanelPlugin plugin, TooltipCreator tooltip) {
+		return prepOption(panel, info, name, imagePath, Global.getSector().getPlayerFaction(), plugin, tooltip);
+	}
+	
 	/**
 	 * Generates a {@code CustomPanelAPI} containing the GUI elements of the option, except the button(s).
 	 * @param panel
 	 * @param info
 	 * @param name
 	 * @param imagePath
+	 * @param factionForColor
 	 * @param plugin
 	 * @param tooltip
 	 * @return A {@code CustomPanelAPI} to which buttons may be added.
 	 */
 	public static CustomPanelAPI prepOption(CustomPanelAPI panel, TooltipMakerAPI info, String name,
-			String imagePath, InteractionDialogCustomPanelPlugin plugin, TooltipCreator tooltip) 
+			String imagePath, FactionAPI factionForColor, InteractionDialogCustomPanelPlugin plugin, TooltipCreator tooltip) 
 	{
 		float pad = 3;
 		float opad = 10;
-		FactionAPI faction = Global.getSector().getPlayerFaction();
 		
 		CustomPanelAPI row = panel.createCustomPanel(ITEM_WIDTH, ITEM_HEIGHT, null);
 		
@@ -432,7 +437,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		// option name
 		TooltipMakerAPI title = row.createUIElement(TEXT_WIDTH, ITEM_HEIGHT, false);
 		title.setParaSmallInsignia();
-		title.addPara(name, pad);
+		title.addPara(name, factionForColor.getBaseUIColor(), pad);
 		if (tooltip != null)
 			title.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
 		row.addUIElement(title).rightOfTop(image, X_PADDING * 4);
