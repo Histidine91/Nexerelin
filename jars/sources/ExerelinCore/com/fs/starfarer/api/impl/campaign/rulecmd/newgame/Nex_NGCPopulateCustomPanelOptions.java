@@ -69,6 +69,8 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		if (!data.corvusMode) {
 			addFactionWeightOptions(panel, info, plugin);
 		}
+		
+		info.addPara(getString("infoCustomPanel"), 10);
 	}
 	
 	public void addRandomRelationsOptions(CustomPanelAPI panel, TooltipMakerAPI info,
@@ -283,8 +285,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 							data.randomStartLocation = button.isChecked();
 						}
 				}, 
-				null
-		);
+				null);
 		
 		addDModOptions(panel, info, plugin);
 		
@@ -295,12 +296,24 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 					plugin, new ButtonEntry() {
 							@Override
 							public void onToggle() {
-								data.randomAntiochEnabled= button.isChecked();
+								data.randomAntiochEnabled = button.isChecked();
 							}
 					}, 
-					null
-			);
-		}		
+					null);
+		}
+		
+		// skip story
+		if (data.corvusMode) {
+			addCheckboxOption(panel, info, getString("optionSkipStory"), "nex_skipStory", 
+					data.skipStory, "graphics/icons/missions/ga_intro.png", 
+					plugin, new ButtonEntry() {
+							@Override
+							public void onToggle() {
+								data.skipStory = button.isChecked();
+							}
+					}, 
+					createTooltip(getString("tooltipSkipStory"), highlights, null));
+		}
 		
 		info.addPara(getString("infoCustomPanel"), 10);
 	}

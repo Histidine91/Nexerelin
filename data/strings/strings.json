@@ -1299,6 +1299,8 @@
 		"optionStartingDMods":"Starting D-mods",
 		"tooltipStartingDMods":"May not apply to all custom starts.",
 		"optionRandomAntioch":"Antioch in random sector",
+		"optionSkipStory":"Skip story",
+		"tooltipSkipStory":"Mark the Academy missions as completed and grant gate travel capability at start",
 		
 		"recommendedSizeMsg1":"Non-independent factions enabled: %s",
 		"recommendedSizeMsg2":"Auto-configuring sector size: %s systems, %s planets, %s stations",

@@ -46,7 +46,9 @@ public class StartSetupPostTimePass {
 		SectorAPI sector = Global.getSector();
 		if (Global.getSector().isInNewGameAdvance()) return;
 		
-		if (SectorManager.getManager().isCorvusMode() && !TutorialMissionIntel.isTutorialInProgress())
+		boolean corvusMode = SectorManager.getManager().isCorvusMode();
+		
+		if (corvusMode && !TutorialMissionIntel.isTutorialInProgress())
 			VanillaSystemsGenerator.exerelinEndGalatiaPortionOfMission();
 		
 		SectorEntityToken entity = null;
@@ -119,7 +121,7 @@ public class StartSetupPostTimePass {
 			//ExerelinUtilsFaction.grantCommission(factionId);
 		}
 		// make own faction start's first market player-owned
-		else if (!SectorManager.getManager().isCorvusMode() && !freeStart && entity != null) {
+		else if (!corvusMode && !freeStart && entity != null) {
 			entity.getMarket().setPlayerOwned(true);
 		}
 		
@@ -143,11 +145,19 @@ public class StartSetupPostTimePass {
 		}
 		
 		// gate handling and other stuff
-		if (!SectorManager.getManager().isCorvusMode()) {
+		if (!corvusMode || ExerelinSetupData.getInstance().skipStory) {
 			Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
-			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.CAN_SCAN_GATES, true);
-			Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.GATES_ACTIVE, true);
-			Global.getSector().getMemoryWithoutUpdate().set("$interactedWithGABarEvent", true);
+			MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
+			mem.set(GateEntityPlugin.CAN_SCAN_GATES, true);
+			mem.set(GateEntityPlugin.GATES_ACTIVE, true);
+			mem.set("$interactedWithGABarEvent", true);
+			
+			if (corvusMode) {
+				mem.set("$gaATG_missionCompleted", true);
+				mem.set("$gaFC_missionCompleted", true);
+				mem.set("$gaKA_missionCompleted", true);
+				mem.set("$gaPZ_missionCompleted", true);
+			}
 		}
 	}
 	

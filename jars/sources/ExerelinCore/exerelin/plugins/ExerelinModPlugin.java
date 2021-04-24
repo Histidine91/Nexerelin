@@ -226,7 +226,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         addBarEvents();
         
-        new AcademyStoryVictoryScript().init();
+        if (!ExerelinSetupData.getInstance().skipStory)
+			new AcademyStoryVictoryScript().init();
     }
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
