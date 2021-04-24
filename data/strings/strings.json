@@ -87,7 +87,9 @@
 		"proceed":"proceed",
 		"cancel":"cancel",
 		"avert":"avert",
+		"enable":"enable",
 		"enabled":"enabled",
+		"disable":"disable",
 		"disabled":"disabled",
 		"accept":"accept",
 		"decline":"decline",
@@ -1263,6 +1265,22 @@
 		"randomColoniesTitle":"Extra colonies at start",
 		"randomColoniesTooltip":"Follows the same selection rules as midgame colony expeditions.",
 		"randomizeFactionsTooltip":"Every faction has a 50% chance to be enabled (except independents, which will not be toggled from their current setting).",
+		
+		"infoCustomPanel":"Mouse over option titles for more information",
+		
+		# migrated from rules.csv
+		"optionPrismFreeport":"Prism Freeport",
+		"tooltipPrismFreeport":"A trade station in the middle of the Sector. Includes a special vendor that sells all kinds of high-end ships for a price.",
+		"optionRandomStartShips":"Random start ships",
+		"tooltipRandomStartShips":"Randomize starting ships based on the selected fleet type and the ships available to the faction",
+		"optionEasyMode":"Easy mode",
+		"tooltipEasyMode":"- Your ships take %s less damage\n- Sensor range increased by %s units\n- Salvage increased by %s",
+		"optionHardMode":"Starfarer mode",
+		"tooltipHardMode":"Hard mode\n- Other factions are more aggressive towards yours\n- %s lower colony growth rate; %s lower colony income\n- %s higher vengeance point generation",
+		"optionRandomStartLocation":"Random start location",
+		"optionStartingDMods":"Starting D-mods",
+		"tooltipStartingDMods":"May not apply to all custom starts.",
+		"optionRandomAntioch":"Antioch in random sector",
 		
 		"recommendedSizeMsg1":"Non-independent factions enabled: %s",
 		"recommendedSizeMsg2":"Auto-configuring sector size: %s systems, %s planets, %s stations",

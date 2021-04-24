@@ -44,6 +44,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	public static final boolean DEBUG_MODE = false;
 	public static final String PERSISTENT_KEY = "nex_revengeanceManager";
 	
+	public static final float HARD_MODE_MULT = 2;
+	
 	// each entry in the array represents a fleet
 	// first number is vengeance points needed, second is escalation level (0-2)
 	public static final List<Integer[]> FLEET_STAGES = Arrays.asList(
@@ -103,7 +105,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		if (!isRevengeanceEnabled()) return;
 		
 		if (!SectorManager.getManager().isHardMode())
-			addedPoints *= 0.5f;
+			addedPoints *= 1/HARD_MODE_MULT;
 		points += addedPoints;
 		String debugStr = "Adding revengeance points: " + addedPoints;
 		log.info(debugStr);

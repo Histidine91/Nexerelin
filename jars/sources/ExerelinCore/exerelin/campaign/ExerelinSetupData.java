@@ -47,6 +47,7 @@ public class ExerelinSetupData
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
 	public int dModLevel = 0;
+	public boolean skipStory = false;
 	
 	public String startScenario = null;
 

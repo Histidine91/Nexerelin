@@ -39,7 +39,8 @@ ExerelinNGCIntroDevStart,ExerelinNGCIntroPage,$global.isDevMode,,,"99:nex_NGCDev
 ,,,,,,
 ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
 FireAll ExerelinNGCOptions",Configure the Sector?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
-ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,FireAll ExerelinNGCOptions,,,
+ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,"Nex_VisualCustomPanel clear
+FireAll ExerelinNGCOptions",,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOptionsDone RETURN,,"exerelinNGCOptionsDone:Proceed
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
@@ -67,10 +68,6 @@ ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOpt
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
 ,,,,,,
-ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPresent,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnablePrismMarket ""Enable Prism Freeport""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,,
-ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisablePrismMarket ""Disable Prism Freeport""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
 nex_NGCCustomScenarioOption,ExerelinNGCOtherOptions,,"Nex_NGCCustomScenario menuOption
 Nex_DynamicPaginatedOptions addOption nex_NGCCustomScenarioMenu ""Custom scenario – $nex_customScenarioName""",,,
 ,,,,,,
@@ -107,34 +104,8 @@ nex_NGCListOptionDisableRandomFactionWeights,ExerelinNGCFactionOptions,"!$corvus
 $useFactionWeights
 $randomFactionWeights",,,nex_NGCDisableRandomFactionWeights:Disable random faction spawning weights,
 ,,,,,,
-ExerelinNGCListOptionEnableRandomStartShips,ExerelinNGCOtherOptions,!$randomStartShips,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableRandomStartShips ""Enable random starting ships""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,,
-ExerelinNGCListOptionDisableRandomStartShips,ExerelinNGCOtherOptions,$randomStartShips,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableRandomStartShips ""Disable random starting ships""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction""",,,
-ExerelinNGCListOptionEnableEasyMode,ExerelinNGCOtherOptions,!$easyMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableEasyMode ""Enable vanilla's Easy Mode""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableEasyMode""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
-Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCEnableEasyMode hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableEasyMode ""25%"" ""500"" ""50%""",,,
-ExerelinNGCListOptionDisableEasyMode,ExerelinNGCOtherOptions,$easyMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableEasyMode ""Disable vanilla's Easy Mode""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableEasyMode ""- Your ships take 25% less damage\n- Sensor range increased by 500 units\n- Salvage increased by 50%""
-Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCDisableEasyMode hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableEasyMode ""25%"" ""500"" ""50%""",,,
-ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCEnableHardMode ""Enable Starfarer Mode""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCEnableHardMode ""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 100% higher vengeance point generation""
-Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCEnableHardMode hColor hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCEnableHardMode ""50%"" ""10%"" ""100%""",,,
-ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"Nex_DynamicPaginatedOptions addOption exerelinNGCDisableHardMode ""Disable Starfarer Mode""
-Nex_DynamicPaginatedOptions addTooltip exerelinNGCDisableHardMode""Hard mode\n- Other factions are more aggressive towards yours\n- 50% lower colony growth rate; 25% lower colony income\n- 100% higher vengeance point generation""
-Nex_DynamicPaginatedOptions addTooltipHighlightColors exerelinNGCDisableHardMode hColor hColor hColor hColor
-Nex_DynamicPaginatedOptions addTooltipHighlights exerelinNGCDisableHardMode ""50%"" ""10%"" ""100%""",,,
-nex_NGCListOptionStartDMods,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOptions addOption nex_NGCCycleStartDMods ""Starting D-mods – $nex_ngcDModsString""
-Nex_DynamicPaginatedOptions addTooltip nex_NGCCycleStartDMods ""May not apply to all custom starts.""",,,
-nex_NGCListOptionEnableRandomStartLocation,ExerelinNGCOtherOptions,!$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Enable random start location""",,,
-nex_NGCListOptionDisableRandomStartLocation,ExerelinNGCOtherOptions,$randomStartLocation,"Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomStartLocation ""Disable random start location""",,,
-nex_NGCListOptionEnableAntioch,ExerelinNGCOtherOptions,"NGCDoesFactionExist templars
-!$nex_antiochInRandom","Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomAntioch ""Enable Antioch with random core worlds""",,,
-nex_NGCListOptionDisableAntioch,ExerelinNGCOtherOptions,"NGCDoesFactionExist templars
-$nex_antiochInRandom","Nex_DynamicPaginatedOptions addOption nex_NGCToggleRandomAntioch ""Disable Antioch with random core worlds""",,,
+nex_NGCAddOtherOptionsMenu,ExerelinNGCOtherOptions,,"Nex_VisualCustomPanel create true
+Nex_NGCPopulateCustomPanelOptions other",,,
 nex_NGCOtherOptionsBack,ExerelinNGCOtherOptions,,"Nex_DynamicPaginatedOptions addOptionAllPages exerelinNGCOptionsBack Back
 Nex_DynamicPaginatedOptions addShortcut exerelinNGCOptionsBack ESCAPE",,,
 nex_NGCOtherOptions_show,ExerelinNGCOtherOptions,,Nex_DynamicPaginatedOptions show,,,
@@ -144,10 +115,6 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
 Nex_NGCFactionToggle processRecommendedSize
 FireAll ExerelinNGCOptions",,,
-ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
-FireAll ExerelinNGCOtherOptions",,,
-ExerelinNGCDisablePrismMarket,NewGameOptionSelected,$option==exerelinNGCDisablePrismMarket,"NGCSetPrismMarketEnabled false
-FireAll ExerelinNGCOtherOptions",,,
 nex_NGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
 FireAll ExerelinNGCFactionOptions",,,
 nex_NGCDisableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartRelationships,"NGCSetRandomStartRelationships false
@@ -172,26 +139,6 @@ ExerelinNGCEnableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCEn
 FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCDisableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnAllFactions,"NGCSetRespawnAllFactions false
 FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCEnableRandomStartShips,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartShips,"NGCSetRandomStartShips true
-FireAll ExerelinNGCOtherOptions",,,
-ExerelinNGCDisableRandomStartShips,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartShips,"NGCSetRandomStartShips false
-FireAll ExerelinNGCOtherOptions",,,
-ExerelinNGCEnableEasyMode,NewGameOptionSelected,$option==exerelinNGCEnableEasyMode,"NGCSetEasyMode true
-FireAll ExerelinNGCOtherOptions",,,
-ExerelinNGCDisableEasyMode,NewGameOptionSelected,$option==exerelinNGCDisableEasyMode,"NGCSetEasyMode false
-FireAll ExerelinNGCOtherOptions",,,
-ExerelinNGCEnableHardMode,NewGameOptionSelected,$option==exerelinNGCEnableHardMode,"NGCSetHardMode true
-FireAll ExerelinNGCOtherOptions",,,
-ExerelinNGCDisableHardMode,NewGameOptionSelected,$option==exerelinNGCDisableHardMode,"NGCSetHardMode false
-FireAll ExerelinNGCOtherOptions",,,
-nex_NGCCycleStartDMods,NewGameOptionSelected,$option==nex_NGCCycleStartDMods,"Nex_NGCSetOption startingDMods
-AddTextSmall ""Set starting D-mod level to $nex_ngcDModsString""
-SetTextHighlights  $nex_ngcDModsString
-FireAll ExerelinNGCOtherOptions",,,
-nex_NGCToggleRandomStartLocation,NewGameOptionSelected,$option==nex_NGCToggleRandomStartLocation,"Nex_NGCSetOption randomStartLocation
-FireAll ExerelinNGCOtherOptions",,,
-nex_NGCToggleRandomAntioch,NewGameOptionSelected,$option==nex_NGCToggleRandomAntioch,"Nex_NGCSetOption randomAntioch
-FireAll ExerelinNGCOtherOptions",,,
 nex_NGCCustomScenarioMenu,NewGameOptionSelected,$option==nex_NGCCustomScenarioMenu,Nex_NGCCustomScenario menu,,,
 nex_NGCCustomScenarioSelected,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomScenario_""","Nex_NGCCustomScenario select
 FireAll ExerelinNGCOtherOptions",,,
