@@ -11,7 +11,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 
-
+@Deprecated
 public class Nex_NGCSetOption extends BaseCommandPlugin {
 	 
 	@Override
@@ -62,5 +62,12 @@ public class Nex_NGCSetOption extends BaseCommandPlugin {
 		boolean value = !setupData.randomAntiochEnabled;
 		setupData.randomAntiochEnabled = value;
 		localMem.set("$nex_antiochInRandom", value, 0);
+	}
+	
+	public static void skipStory(TextPanelAPI text, MemoryAPI localMem) {
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
+		boolean value = !setupData.skipStory;
+		setupData.skipStory = value;
+		localMem.set("$nex_skipStory", value, 0);
 	}
 }

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
+import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -40,6 +41,10 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		String arg = params.get(0).getString(memoryMap);
 		switch (arg)
 		{
+			case "faction":
+				addFactionOptions(memoryMap);
+				return true;
+			
 			case "other":
 				addOtherOptions(memoryMap);
 				return true;		
@@ -49,7 +54,141 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	}
 	
 	public void addFactionOptions(final Map<String, MemoryAPI> memoryMap) {
+		CustomPanelAPI panel = Nex_VisualCustomPanel.getPanel();
+		TooltipMakerAPI info = Nex_VisualCustomPanel.getTooltip();
+		InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
+		final ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
+		// random start relations
+		addRandomRelationsOptions(panel, info, plugin);
+		
+		// faction respawn
+		addFactionRespawnOptions(panel, info, plugin);
+		
+		// faction weights
+		if (!data.corvusMode) {
+			addFactionWeightOptions(panel, info, plugin);
+		}
+	}
+	
+	public void addRandomRelationsOptions(CustomPanelAPI panel, TooltipMakerAPI info,
+			InteractionDialogCustomPanelPlugin plugin) 
+	{
+		int NUM_OPTS = 3;
+		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionRandomRelations"),
+				"graphics/icons/intel/peace.png", plugin, 
+				createTooltip(getString("tooltipRandomRelations"), null, null));
+		
+		final List<ButtonAPI> buttons = new ArrayList<>();
+		TooltipMakerAPI lastHolder = null;
+		final ExerelinSetupData data = ExerelinSetupData.getInstance();
+		
+		for (int i=0; i<NUM_OPTS; i++) {
+			String name = Misc.ucFirst(getString("btnRandomRelations" + i));
+			lastHolder = initRadioButton("nex_randomRelations_" + i, name, i == 0, 
+					buttonPanel, lastHolder, buttons);
+		}
+		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
+		
+		for (int i=0; i<NUM_OPTS; i++) {
+			final int index = i;
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_randomRelations_" + i) 
+			{
+				@Override
+				public void onToggleImpl() {
+					data.randomStartRelationships = index > 0;
+					data.randomStartRelationshipsPirate = index == 2;
+				}
+			};
+			buttonEntries.add(radio);
+		}
+		for (RadioButtonEntry entry : buttonEntries) {
+			entry.buttons = buttonEntries;
+			plugin.addButton(entry);
+		}
+	}
+	
+	public void addFactionRespawnOptions(CustomPanelAPI panel, TooltipMakerAPI info,
+			InteractionDialogCustomPanelPlugin plugin) 
+	{
+		int NUM_OPTS = 3;
+		
+		List<String> highlights = new ArrayList<>();
+		for (int i=0; i<NUM_OPTS; i++) {
+			highlights.add(Misc.ucFirst(getString("btnFactionRespawn" + i)));
+		}
+		TooltipCreator tooltip = createTooltip(String.format(
+				getString("tooltipFactionRespawn"), highlights.toArray()),
+				highlights, null);
+		
+		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionFactionRespawn"),
+				"graphics/exerelin/icons/intel/invasion.png", plugin, tooltip);
+		
+		final List<ButtonAPI> buttons = new ArrayList<>();
+		TooltipMakerAPI lastHolder = null;
+		final ExerelinSetupData data = ExerelinSetupData.getInstance();
+		
+		for (int i=0; i<NUM_OPTS; i++) {
+			String name = Misc.ucFirst(getString("btnFactionRespawn" + i));
+			lastHolder = initRadioButton("nex_factionRespawn_" + i, name, i == 0, 
+					buttonPanel, lastHolder, buttons);
+		}
+		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
+		
+		for (int i=0; i<NUM_OPTS; i++) {
+			final int index = i;
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_factionRespawn_" + i) 
+			{
+				@Override
+				public void onToggleImpl() {
+					data.respawnFactions = index > 0;
+					data.onlyRespawnStartingFactions = index < 2;
+				}
+			};
+			buttonEntries.add(radio);
+		}
+		for (RadioButtonEntry entry : buttonEntries) {
+			entry.buttons = buttonEntries;
+			plugin.addButton(entry);
+		}
+	}
+	
+	public void addFactionWeightOptions(CustomPanelAPI panel, TooltipMakerAPI info,
+			InteractionDialogCustomPanelPlugin plugin) 
+	{
+		int NUM_OPTS = 3;
+		
+		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionFactionWeights"),
+				"graphics/factions/crest_domain.png", plugin, 
+				createTooltip(getString("tooltipFactionWeights"), null, null));
+		
+		final List<ButtonAPI> buttons = new ArrayList<>();
+		TooltipMakerAPI lastHolder = null;
+		final ExerelinSetupData data = ExerelinSetupData.getInstance();
+		
+		for (int i=0; i<NUM_OPTS; i++) {
+			String name = Misc.ucFirst(getString("btnFactionWeights" + i));
+			lastHolder = initRadioButton("nex_factionWeights_" + i, name, i == 1, 
+					buttonPanel, lastHolder, buttons);
+		}
+		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
+		
+		for (int i=0; i<NUM_OPTS; i++) {
+			final int index = i;
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_factionWeights_" + i) 
+			{
+				@Override
+				public void onToggleImpl() {
+					data.useFactionWeights = index > 0;
+					data.randomFactionWeights = index == 2;
+				}
+			};
+			buttonEntries.add(radio);
+		}
+		for (RadioButtonEntry entry : buttonEntries) {
+			entry.buttons = buttonEntries;
+			plugin.addButton(entry);
+		}
 	}
 	
 	public void addOtherOptions(final Map<String, MemoryAPI> memoryMap) {
@@ -172,26 +311,15 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionStartingDMods"),
 			"graphics/hullmods/illadvised.png", plugin,
 			createTooltip(getString("tooltipStartingDMods"), null, null));
-		FactionAPI faction = Global.getSector().getPlayerFaction();
+		
 		final List<ButtonAPI> buttons = new ArrayList<>();
 		TooltipMakerAPI lastHolder = null;
 		final ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
 		for (int i=0; i<ExerelinSetupData.NUM_DMOD_LEVELS; i++) {
 			String name = Misc.ucFirst(ExerelinSetupData.getDModCountText(i));
-			TooltipMakerAPI holder = buttonPanel.createUIElement(BUTTON_WIDTH, ITEM_HEIGHT, false);
-			ButtonAPI button = holder.addAreaCheckbox(name, 
-					"nex_startingDMods_" + i, faction.getBaseUIColor(),	faction.getDarkUIColor(),
-					faction.getBrightUIColor(), BUTTON_WIDTH, ITEM_HEIGHT, 0);
-			button.setChecked(i == 0);
-			buttons.add(button);
-			
-			if (lastHolder == null) {
-				buttonPanel.addUIElement(holder).inTL(0, 0);
-			} else {
-				buttonPanel.addUIElement(holder).rightOfTop(lastHolder, X_PADDING);
-			}
-			lastHolder = holder;
+			lastHolder = initRadioButton("nex_startingDMods_" + i, name, i == 0, 
+					buttonPanel, lastHolder, buttons);
 		}
 		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
 		
@@ -205,13 +333,41 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 					Global.getLogger(this.getClass()).info("D-mod level: " + data.dModLevel);
 				}
 			};
-			radio.button = buttons.get(i);
 			buttonEntries.add(radio);
 		}
 		for (RadioButtonEntry entry : buttonEntries) {
 			entry.buttons = buttonEntries;
 			plugin.addButton(entry);
 		}
+	}
+	
+	/**
+	 *
+	 * @param name
+	 * @param id
+	 * @param checked Is the button checked at start?
+	 * @param buttonPanel
+	 * @param rightOf
+	 * @param buttons List of buttons to which the generated {@code ButtonAPI} should be added.
+	 * @return The {@code TooltipMakerAPI} holding the button.
+	 */
+	public TooltipMakerAPI initRadioButton(String id, String name, boolean checked,
+			CustomPanelAPI buttonPanel, TooltipMakerAPI rightOf, List<ButtonAPI> buttons) {
+		TooltipMakerAPI holder = buttonPanel.createUIElement(BUTTON_WIDTH, ITEM_HEIGHT, false);
+		FactionAPI faction = Global.getSector().getPlayerFaction();
+		
+		ButtonAPI button = holder.addAreaCheckbox(name, 
+				id, faction.getBaseUIColor(),	faction.getDarkUIColor(),
+				faction.getBrightUIColor(), BUTTON_WIDTH, ITEM_HEIGHT, 0);
+		button.setChecked(checked);
+		buttons.add(button);
+		
+		if (rightOf == null) {
+			buttonPanel.addUIElement(holder).inTL(0, 0);
+		} else {
+			buttonPanel.addUIElement(holder).rightOfTop(rightOf, X_PADDING);
+		}
+		return holder;
 	}
 	
 	public static void addCheckboxOption(CustomPanelAPI panel, TooltipMakerAPI info, String name,

@@ -81,28 +81,8 @@ FireAll ExerelinNGCOptions",,,
 nex_NewGameSectorConfigReset,NewGameOptionSelected,$option==exerelinNGCSectorOptionsReset,"Nex_NGCProcessSectorGenerationSliders reset
 FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
-nex_NGCListOptionEnableRandomStartRelationships,ExerelinNGCFactionOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
-nex_NGCListOptionDisableRandomStartRelationships,ExerelinNGCFactionOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
-nex_NGCListOptionEnableRandomStartRelationshipsPirate,ExerelinNGCFactionOptions,"$randomStartRelationships
-!$randomStartRelationshipsPirate",,,exerelinNGCEnableRandomStartRelationshipsPirate:Enable random relationships for pirate factions,
-nex_NGCListOptionDisableRandomStartRelationshipsPirate,ExerelinNGCFactionOptions,"$randomStartRelationships
-$randomStartRelationshipsPirate",,,exerelinNGCDisableRandomStartRelationshipsPirate:Disable random relationships for pirate factions,
-nex_NGCListOptionEnableRespawnFactions,ExerelinNGCFactionOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
-nex_NGCListOptionDisableRespawnFactions,ExerelinNGCFactionOptions,$respawnFactions,,,exerelinNGCDisableRespawnFactions:Disable faction respawning,
-nex_NGCListOptionEnableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
-$onlyRespawnStartingFactions",,,exerelinNGCEnableRespawnAllFactions:Enable respawning of factions not present at start,
-nex_NGCListOptionDisableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
-!$onlyRespawnStartingFactions",,,exerelinNGCDisableRespawnAllFactions:Disable respawning of factions not present at start,
-nex_NGCListOptionEnableFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
-!$useFactionWeights","SetTooltip nex_NGCEnableUseFactionWeights ""If enabled, certain factions (e.g. Hegemony, Persean League) will start the game with more markets than others.""",,nex_NGCEnableUseFactionWeights:Enable faction spawning weights,
-nex_NGCListOptionDisableFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
-$useFactionWeights","SetTooltip nex_NGCDisableUseFactionWeights ""If enabled, certain factions (e.g. Hegemony, Persean League) will start the game with more markets than others.""",,nex_NGCDisableUseFactionWeights:Disable faction spawning weights,
-nex_NGCListOptionEnableRandomFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
-$useFactionWeights
-!$randomFactionWeights",,,nex_NGCEnableRandomFactionWeights:Enable random faction spawning weights,
-nex_NGCListOptionDisableRandomFactionWeights,ExerelinNGCFactionOptions,"!$corvusMode
-$useFactionWeights
-$randomFactionWeights",,,nex_NGCDisableRandomFactionWeights:Disable random faction spawning weights,
+nex_NGCAddFactionOptionsMenu,ExerelinNGCFactionOptions,,"Nex_VisualCustomPanel create true
+Nex_NGCPopulateCustomPanelOptions faction",,,
 ,,,,,,
 nex_NGCAddOtherOptionsMenu,ExerelinNGCOtherOptions,,"Nex_VisualCustomPanel create true
 Nex_NGCPopulateCustomPanelOptions other",,,
@@ -115,30 +95,7 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
 Nex_NGCFactionToggle processRecommendedSize
 FireAll ExerelinNGCOptions",,,
-nex_NGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
-FireAll ExerelinNGCFactionOptions",,,
-nex_NGCDisableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartRelationships,"NGCSetRandomStartRelationships false
-FireAll ExerelinNGCFactionOptions",,,
-nex_NGCEnableRandomStartRelationshipsPirate,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationshipsPirate,"NGCSetRandomStartRelationshipsPirate true
-FireAll ExerelinNGCFactionOptions",,,
-nex_NGCDisableRandomStartRelationshipsPirate,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartRelationshipsPirate,"NGCSetRandomStartRelationshipsPirate false
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCEnableRespawnFactions,NewGameOptionSelected,$option==exerelinNGCEnableRespawnFactions,"NGCSetRespawnFactions true
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCDisableRespawnFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnFactions,"NGCSetRespawnFactions false
-FireAll ExerelinNGCFactionOptions",,,
-nex_NGCEnableUseFactionWeights,NewGameOptionSelected,$option==nex_NGCEnableUseFactionWeights,"Nex_NGCSetUseFactionWeights true
-FireAll ExerelinNGCFactionOptions",,,
-nex_NGCDisableUseFactionWeights,NewGameOptionSelected,$option==nex_NGCDisableRandomFactionWeights,"Nex_NGCSetRandomFactionWeights false
-FireAll ExerelinNGCFactionOptions",,,
-nex_NGCEnableRandomFactionWeights,NewGameOptionSelected,$option==nex_NGCEnableRandomFactionWeights,"Nex_NGCSetRandomFactionWeights true
-FireAll ExerelinNGCFactionOptions",,,
-nex_NGCDisableRandomFactionWeights,NewGameOptionSelected,$option==nex_NGCDisableUseFactionWeights,"Nex_NGCSetUseFactionWeights false
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCEnableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCEnableRespawnAllFactions,"NGCSetRespawnAllFactions true
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCDisableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnAllFactions,"NGCSetRespawnAllFactions false
-FireAll ExerelinNGCFactionOptions",,,
+,,,,,,
 nex_NGCCustomScenarioMenu,NewGameOptionSelected,$option==nex_NGCCustomScenarioMenu,Nex_NGCCustomScenario menu,,,
 nex_NGCCustomScenarioSelected,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomScenario_""","Nex_NGCCustomScenario select
 FireAll ExerelinNGCOtherOptions",,,

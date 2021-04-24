@@ -1268,7 +1268,25 @@
 		
 		"infoCustomPanel":"Mouse over option titles for more information",
 		
+		"btnRandomRelations0":"none",
+		"btnRandomRelations1":"non-pirate",
+		"btnRandomRelations2":"all",
+		
+		"btnFactionWeights0":"none",
+		"btnFactionWeights1":"default",
+		"btnFactionWeights2":"random",
+		
+		"btnFactionRespawn0":"none",
+		"btnFactionRespawn1":"starting",
+		"btnFactionRespawn2":"all",
+		
 		# migrated from rules.csv
+		"optionRandomRelations":"Random starting faction relations",
+		"tooltipRandomRelations":"Will also disable faction relationship clamping, and randomize diplomacy traits",
+		"optionFactionRespawn":"Faction respawn",
+		"tooltipFactionRespawn":"- %s: Do not use faction respawn mechanic.\n- %s: Factions present at the start of the game can respawn.\n- %s: Also allow entry of new factions not present at the start of the game.",
+		"optionFactionWeights":"Use faction weights",
+		"tooltipFactionWeights":"On default settings, certain factions (e.g. Hegemony, Persean League) will start the game with more markets than others.",
 		"optionPrismFreeport":"Prism Freeport",
 		"tooltipPrismFreeport":"A trade station in the middle of the Sector. Includes a special vendor that sells all kinds of high-end ships for a price.",
 		"optionRandomStartShips":"Random start ships",
