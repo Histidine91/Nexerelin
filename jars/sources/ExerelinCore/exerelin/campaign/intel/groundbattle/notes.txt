@@ -15,9 +15,56 @@ Luddic Church: +10% marine morale, +20% militia morale (only on Luddic worlds)
 Tri-Tachyon: -10% morale
 Templars: +50% strength
 
+== Abilities ==
+Bombardment
+- Costs X fuel, where X is a number multiplied by (size ^ 2). Ground Defenses doubles the cost, and Heavy Batteries prevents bombardment.
+- Inflicts damage on enemy units in the location. More effective when used for close support.
+- Disrupts the targeted industry.
+
+Inspire
+- Costs 1 story point.
+- Recovers morale for all units.
+- Requires <skill>
+
+Electronic Warfare
+- Reduces enemy attack capability by 30%, and prevents giving orders. Lasts 1 turn.
+- Costs X supplies, where X is a number multiplied by (size ^ 2).
+- Requires EW skill.
+
+Loot
+- Grabs all special equipment and AI cores on the industry, sending it back to player cargo.
+
+Smash
+- Disrupts an occupied industry. The selected unit is forced to reorganize for 1 turn.
+
+== Stability ==
+Stability multiplier = 1 - (proportion of industries held by attacker)
+- An industry is considered held by attacker if actively occupied by an attacker unit, and was not held by defender immediately prior. Otherwise it is held by the defender.
+
+== Commands ==
+Undeployed:
+	Deploy
+	Resize
+	Disband
+
+Deployed:
+	Move
+	Withdraw
+	Smash
 
 == Todo ==
-- Action resolution
+- View modes
+	Overview
+	Command
+	Log
+	Help
+
+- Condition to plugin map
+- [in progress] Battle log
+- Generate buff list
+	- Hazard
+
+- [in progress] Action resolution
 - Give orders interface
 - Special ability interface
 - AI

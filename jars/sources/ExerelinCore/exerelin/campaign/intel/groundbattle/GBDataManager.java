@@ -40,7 +40,7 @@ public class GBDataManager {
 				
 				IndustryDef def = new IndustryDef(indId);
 				def.strengthMult = (float)jsonIndEntry.optDouble("strengthMult", 1);
-				def.enemyLiftCostMult = (float)jsonIndEntry.optDouble("enemyLiftCostMult", 1);
+				def.enemyLiftCapMult = (float)jsonIndEntry.optDouble("enemyLiftCapMult", 1);
 				def.enemyBombardCostMult = (float)jsonIndEntry.optDouble("enemyBombardmentCostMult", 1);
 				if (jsonIndEntry.has("troopCounts")) {
 					JSONObject jsonTroopCounts = jsonIndEntry.getJSONObject("troopCounts");
@@ -53,6 +53,7 @@ public class GBDataManager {
 				if (jsonIndEntry.has("tags")) {
 					def.tags.addAll(NexUtils.JSONArrayToArrayList(jsonIndEntry.getJSONArray("tags")));
 				}
+				def.plugin = jsonIndEntry.optString("plugin", null);
 				
 				defs.add(def);
 				defsById.put(indId, def);
@@ -75,11 +76,11 @@ public class GBDataManager {
 		public final String industryId;
 		
 		public float strengthMult = 1;
-		public float enemyLiftCostMult = 1;
+		public float enemyLiftCapMult = 1;
 		public float enemyBombardCostMult = 1;
 		public Set<String> tags = new HashSet<>();
 		public Map<String, Float> troopCounts = new HashMap<>();
-		public String pluginClass;
+		public String plugin;
 				
 		public IndustryDef(String industryId) {
 			this.industryId = industryId;

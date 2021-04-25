@@ -10,7 +10,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
-import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.isIndustryTrueDisrupted;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.IndustryForBattlePlugin;
 import exerelin.utilities.NexUtils;
@@ -19,7 +18,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +58,18 @@ public class IndustryForBattle {
 	public Industry getIndustry() {
 		return ind;
 	}
+	
+	public GroundBattleIntel getIntel() {
+		return intel;
+	}
+		
+	public GroundBattleSide getHoldingSide() {
+		return intel.getSide(heldByAttacker);
+	}
+	
+	public GroundBattleSide getNonHoldingSide() {
+		return intel.getSide(!heldByAttacker);
+	}
 
 	public boolean containsEnemyOf(boolean attacker) {
 		for (GroundUnit unit : intel.getSide(!attacker).units) {
@@ -67,6 +77,61 @@ public class IndustryForBattle {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean isContested() {
+		boolean haveAttacker = false;
+		boolean haveDefender = false;
+		for (GroundUnit unit : units) {
+			if (unit.isAttacker) haveAttacker = true;
+			else haveDefender = true;
+		}
+		return haveAttacker && haveDefender;
+	}
+	
+	/**
+	 * Check whether this industry should change hands.
+	 * @return The new owner (may be same as previous owner).
+	 */
+	public boolean updateOwner() {
+		boolean nowHeldByAttacker = this.heldByAttacker;
+		
+		boolean haveAttacker = false;
+		boolean haveDefender = false;
+		boolean autocede = false;	// was this industry held by attackers who then moved on, witout being reoccupied by defenders?
+		for (GroundUnit unit : units) {
+			if (unit.isAttacker) haveAttacker = true;
+			else haveDefender = true;
+		}
+		if (haveAttacker && !haveDefender) {
+			nowHeldByAttacker = true;
+		} else if (!haveAttacker) {
+			nowHeldByAttacker = false;
+			if (!haveDefender) autocede = true;
+		}
+		
+		if (heldByAttacker != nowHeldByAttacker) {
+			// TODO: post log message
+			plugin.unapply();
+			heldByAttacker = nowHeldByAttacker;
+			plugin.apply();
+			
+			if (!autocede) {
+				for (GroundUnit unit : intel.getSide(heldByAttacker).units) {
+					unit.modifyMorale(GBConstants.CAPTURE_MORALE);
+				}
+				for (GroundUnit unit : intel.getSide(!heldByAttacker).units) {
+					unit.modifyMorale(-GBConstants.CAPTURE_MORALE);
+				}
+			}
+			GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_INDUSTRY_CAPTURED, intel.turnNum);
+			lg.params.put("industry", this);
+			lg.params.put("heldByAttacker", heldByAttacker);
+			if (!autocede)
+				lg.params.put("morale", GBConstants.CAPTURE_MORALE);
+			intel.addLogEvent(lg);		
+		}
+		return heldByAttacker;
 	}
 	
 	public void addUnit(GroundUnit unit) {
@@ -77,6 +142,9 @@ public class IndustryForBattle {
 		units.remove(unit);
 	}
 	
+	public boolean isIndustryTrueDisrupted() {
+		return ind.getDisruptedDays() > GroundBattleIntel.DISRUPT_WHEN_CAPTURED_TIME;
+	}
 	
 	public String getIconTooltipPartial(ForceType type, float value) {
 		String displayNum = String.format("%.1f", value);
@@ -143,7 +211,7 @@ public class IndustryForBattle {
 		float strength = 0;
 		for (GroundUnit unit : units) {
 			if (unit.isAttacker != attacker) continue;
-			strength += unit.getBaseStrength();
+			strength += unit.getAttackStrength();
 		}
 		String strengthNum = Math.round(strength) + "";
 		troops.addPara("Strength: %s", pad, Misc.getHighlightColor(), strengthNum);
@@ -156,22 +224,30 @@ public class IndustryForBattle {
 
 	public void renderPanel(CustomPanelAPI panel, TooltipMakerAPI tooltip, float width) {
 		CustomPanelAPI row = panel.createCustomPanel(width, HEIGHT, null);
+		float pad = 3;
 
 		// Industry image and text
 		TooltipMakerAPI ttIndustry = row.createUIElement(COLUMN_WIDTH_INDUSTRY, HEIGHT, false);
 		TooltipMakerAPI sub = ttIndustry.beginImageWithText(ind.getCurrentImage(), 95);
-		String name = ind.getCurrentName();
+		String str = ind.getCurrentName();
 		
-		sub.addPara(name, 0, Misc.getHighlightColor(), ind.getCurrentName());
+		sub.addPara(str, 0, Misc.getHighlightColor(), ind.getCurrentName());
 		
-		if (isIndustryTrueDisrupted(ind)) {
-			name = StringHelper.getString("disrupted", true);
-			sub.addPara(name, Misc.getHighlightColor(), 0);
+		if (isIndustryTrueDisrupted()) {
+			str = StringHelper.getString("disrupted", true);
+			sub.addPara(str, Misc.getHighlightColor(), pad);
+		}
+		float strMult = plugin.getStrengthMult();
+		if (strMult != 1) {
+			str = StringHelper.getString("nex_invasion2", "industryPanel_header_defBonus") + ": %s";
+			sub.addPara(str, pad, strMult > 1 ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor(), 
+					String.format("%.2f×", strMult));
 		}
 		
 		String owner = StringHelper.getString(heldByAttacker ? "attacker" : "defender", true);
 		// TODO: color-code based on relationship of attacker to player
-		sub.addPara("Held by: " + owner, 3, heldByAttacker ? Misc.getPositiveHighlightColor() 
+		str = StringHelper.getString("nex_invasion2", "industryPanel_header_heldBy");
+		sub.addPara(str + ": " + owner, pad, heldByAttacker ? Misc.getPositiveHighlightColor() 
 				: Misc.getNegativeHighlightColor(), owner);
 		
 		ttIndustry.addImageWithText(0);

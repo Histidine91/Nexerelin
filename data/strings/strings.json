@@ -1,5 +1,6 @@
 {
 	"general":{
+		"action":"action",
 		"alliance":"alliance",
 		"alliances":"alliances",
 		"alliance(s)":"alliance(s)",
@@ -14,6 +15,7 @@
 		"designType":"design type",
 		"diplomacy":"diplomacy",
 		"diplomatic":"diplomatic",
+		"disrupted":"disrupted",
 		"disruption":"disruption",
 		"done":"done",
 		"expedition":"expedition",
@@ -1088,15 +1090,50 @@
 		"intelTitle":"Surface Battle: $market",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
 		"intelDesc_round":"Day %s",
-		"intelDesc_headerAttackerBonus":"Attacker bonuses",
-		"intelDesc_headerDefenderBonus":"Defender bonuses",
+		"intelDesc_unitSize":"Unit size: %s (troop count: %s typical, %s max)",
+		"intelDesc_headerAttackerMod":"Attacker modifiers",
+		"intelDesc_headerDefenderMod":"Defender modifiers",
+		"intelDesc_headerCommonMod":"Common modifiers",
 		"intelDesc_strength":"Strength mult: %s",
 		"intelDesc_strength_noFleetSupport":"No fleet support",
 		
+		"btnViewOverview":"Overview",
+		"btnViewCommand":"Command",
+		"btnViewLog":"Log",
+		
+		"unitPanel_header":"Available units",
+		"unitPanel_resources":"Resources on fleet",
+		
 		"industryPanel_header_industry":"Industry",
 		"industryPanel_header_heldBy":"Held by",
+		"industryPanel_header_defBonus":"Defense bonus",
 		"industryPanel_header_attacker":"Attacking forces",
 		"industryPanel_header_defender":"Defending forces",
+		
+		"unitCard_tooltip_marines":"Number of marines in this unit",
+		"unitCard_tooltip_heavyArms":"Number of heavy armaments in this unit",
+		"unitCard_tooltip_morale":"Unit morale",
+		"unitCard_tooltip_morale2":"Unit damage dealt scales from %s to %s at zero to 100%% morale",
+		"unitCard_tooltip_morale3":"At %s morale or lower, unit will be forced to reorganize for 1 turn after combat",
+		"unitCard_tooltip_morale4":"If morale drops to zero, unit will evaporate",
+		"unitCard_tooltip_supplies":"Supplies required to deploy unit",
+		
+		"actionMove":"move",
+		"actionDeploy":"deploy",
+		"actionDisrupt":"disrupt",
+		"actionResize":"resize",
+		"actionWithdraw":"withdraw",
+		"actionDisband":"disband",
+		"actionDeployNotEnoughTooltip":"Deploying this unit would cost %s supplies. You only have %s supplies available.",
+		"actionDeployConfirm":"Deploying this unit will cost %s supplies and take effect immediately.",
+		"actionWithdrawConfirm":"Confirm unit withdrawal? This will take effect during the move phase of the current turn.",
+		"actionDisbandConfirm":"Really disband this unit?",
+		
+		"logHeader":"Battle log",
+		"log_unitLosses":"%s ($unitType) on %s lost %s units, %s morale",
+		"log_unitDestroyed":"%s %s ($unitType) on %s evaporated!",
+		"log_industryCaptured":"%s captured by %s! Morale effect: %s",
+		"log_industryCeded":"%s captured by %s",
 		
 		"troopNameMarine":"marine",
 		"troopNameMech":"heavy",
@@ -1113,6 +1150,8 @@
 		"unitRegimentPlural":"regiments",
 		
 		"unitEquivalent":"$num $type $unit",
+		
+		"stabilityDesc":"Ongoing invasion",
 	},
 	
 	"exerelin_landmarks":{

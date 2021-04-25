@@ -21,6 +21,8 @@ import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsGUI;
+import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import java.util.Map;
 
 public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	
-	public static final float X_PADDING = 2;
+	public static final float X_PADDING = 3;
 	public static final float ITEM_WIDTH = Nex_VisualCustomPanel.PANEL_WIDTH - X_PADDING * 2;
 	public static final float ITEM_HEIGHT = 32;
 	public static final float TEXT_WIDTH = 240;
@@ -406,7 +408,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	
 	public static CustomPanelAPI prepOption(CustomPanelAPI panel, TooltipMakerAPI info, String name,
 			String imagePath, InteractionDialogCustomPanelPlugin plugin, TooltipCreator tooltip) {
-		return prepOption(panel, info, name, imagePath, Global.getSector().getPlayerFaction(), plugin, tooltip);
+		return prepOption(panel, info, name, imagePath, Misc.getTextColor(), plugin, tooltip);
 	}
 	
 	/**
@@ -415,35 +417,26 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	 * @param info
 	 * @param name
 	 * @param imagePath
-	 * @param factionForColor
+	 * @param textColor
 	 * @param plugin
 	 * @param tooltip
 	 * @return A {@code CustomPanelAPI} to which buttons may be added.
 	 */
 	public static CustomPanelAPI prepOption(CustomPanelAPI panel, TooltipMakerAPI info, String name,
-			String imagePath, FactionAPI factionForColor, InteractionDialogCustomPanelPlugin plugin, TooltipCreator tooltip) 
+			String imagePath, Color textColor, InteractionDialogCustomPanelPlugin plugin, 
+			TooltipCreator tooltip) 
 	{
 		float pad = 3;
 		float opad = 10;
 		
-		CustomPanelAPI row = panel.createCustomPanel(ITEM_WIDTH, ITEM_HEIGHT, null);
-		
-		// image
-		TooltipMakerAPI image = row.createUIElement(ITEM_HEIGHT, ITEM_HEIGHT, false);
-		if (imagePath != null) 
-			image.addImage(imagePath, ITEM_HEIGHT, 0);
-		row.addUIElement(image).inTL(0, 0);
-		
-		// option name
-		TooltipMakerAPI title = row.createUIElement(TEXT_WIDTH, ITEM_HEIGHT, false);
-		title.setParaSmallInsignia();
-		title.addPara(name, factionForColor.getBaseUIColor(), pad);
-		if (tooltip != null)
-			title.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
-		row.addUIElement(title).rightOfTop(image, X_PADDING * 4);
-		
+		CustomPanelGenResult panelGen = NexUtilsGUI.addPanelWithFixedWidthImage(panel, 
+				null, ITEM_WIDTH, ITEM_HEIGHT, name, TEXT_WIDTH, X_PADDING * 3, 
+				imagePath, ITEM_HEIGHT, pad, textColor, true, tooltip);
+		CustomPanelAPI row = panelGen.panel;
+		TooltipMakerAPI title = (TooltipMakerAPI)panelGen.elements.get(panelGen.elements.size() - 1);
+				
 		// button holder
-		CustomPanelAPI buttonRow = row.createCustomPanel(ITEM_WIDTH - ITEM_HEIGHT - TEXT_WIDTH - X_PADDING * 6, ITEM_HEIGHT, null);
+		CustomPanelAPI buttonRow = row.createCustomPanel(ITEM_WIDTH - ITEM_HEIGHT - TEXT_WIDTH - X_PADDING * 5, ITEM_HEIGHT, null);
 		row.addComponent(buttonRow).rightOfTop(title, X_PADDING);
 		
 		info.addCustom(row, opad);
@@ -455,26 +448,25 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 			final Collection<String> highlights, final Collection<Color> hlColors) 
 	{
 		return new TooltipCreator() {
-				@Override
-				public boolean isTooltipExpandable(Object tooltipParam) {
-					return false;
-				}
+			@Override
+			public boolean isTooltipExpandable(Object tooltipParam) {
+				return false;
+			}
 
-				@Override
-				public float getTooltipWidth(Object tooltipParam) {
-					return 360;
-				}
+			@Override
+			public float getTooltipWidth(Object tooltipParam) {
+				return 360;
+			}
 
-				@Override
-				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-					LabelAPI label = tooltip.addPara(text, 3);
-					if (highlights != null) {
-						label.setHighlight(highlights.toArray(new String[0]));
-						if (hlColors != null)
-							label.setHighlightColors(hlColors.toArray(new Color[0]));
-					}
-					
+			@Override
+			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+				LabelAPI label = tooltip.addPara(text, 3);
+				if (highlights != null) {
+					label.setHighlight(highlights.toArray(new String[0]));
+					if (hlColors != null)
+						label.setHighlightColors(hlColors.toArray(new Color[0]));
 				}
+			}
 		};
 	}
 	

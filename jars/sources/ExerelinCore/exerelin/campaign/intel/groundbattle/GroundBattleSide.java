@@ -4,6 +4,8 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
@@ -31,10 +33,39 @@ public class GroundBattleSide {
 	protected int marinesLost;
 	protected int heaviesLost;
 	protected Map<String, Object> data = new HashMap<>();
+	protected StatBonus damageDealtMod = new StatBonus();
+	protected StatBonus damageTakenMod = new StatBonus();
+	protected StatBonus moraleDamTakenMod = new StatBonus();
+	protected StatBonus bombardCostMod = new StatBonus();
+	protected MutableStat liftCapacity = new MutableStat(0);
 	
 	public GroundBattleSide(GroundBattleIntel intel, boolean isAttacker) {
 		this.intel = intel;
 		this.isAttacker = isAttacker;
+	}
+	
+	public Map<String, Object> getData() {
+		return data;
+	}	
+
+	public StatBonus getDamageDealtMod() {
+		return damageDealtMod;
+	}
+	
+	public StatBonus getDamageTakenMod() {
+		return damageTakenMod;
+	}
+	
+	public StatBonus getMoraleDamTakenMod() {
+		return moraleDamTakenMod;
+	}
+	
+	public StatBonus getBombardCostMod() {
+		return bombardCostMod;
+	}
+	
+	public MutableStat getLiftCapacity() {
+		return liftCapacity;
 	}
 	
 	public void generateDefenders() {
@@ -55,6 +86,7 @@ public class GroundBattleSide {
 		}
 		
 		float countForSize = getTroopCountForMarketSize();
+		countForSize *= 0.5f + (intel.market.getStabilityValue() / 10f) * 0.75f;
 		
 		militia = Math.round(militia * countForSize * 2.5f);
 		marines = Math.round(marines * countForSize);
@@ -79,6 +111,7 @@ public class GroundBattleSide {
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
 			GroundUnit unit = new GroundUnit(intel, type, size, units.size());
+			unit.faction = intel.market.getFaction();
 			units.add(unit);
 		}
 	}

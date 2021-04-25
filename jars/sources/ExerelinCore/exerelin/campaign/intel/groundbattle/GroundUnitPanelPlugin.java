@@ -43,10 +43,14 @@ public class GroundUnitPanelPlugin extends FramedCustomPanelPlugin {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 		// marine/armored sprite
-		SpriteAPI sprite = Global.getSettings().getSprite(this.sprite);
-		sprite.setAlphaMult(alphaMult * 0.3f);
-		//GL11.glScalef(0.5f, 0.5f, 1);
-		sprite.renderAtCenter(x + w/2, y + h*0.6f);
+		SpriteAPI sprite;
+		
+		if (this.sprite != null) {
+			sprite = Global.getSettings().getSprite(this.sprite);
+			sprite.setAlphaMult(alphaMult * 0.3f);
+			//GL11.glScalef(0.5f, 0.5f, 1);
+			sprite.renderAtCenter(x + w/2, y + h*0.6f);
+		}		
 		
 		// faction logo
 		sprite = Global.getSettings().getSprite(this.logo);

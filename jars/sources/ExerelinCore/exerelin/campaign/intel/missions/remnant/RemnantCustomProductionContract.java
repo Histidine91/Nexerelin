@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract;
 import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.DEALER_MAX_CAPACITY;
 import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.DEALER_MIN_CAPACITY;
 import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.DEALER_MULT;
-import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.MILITARY_MAX_COST_DECREASE;
 import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.PROD_DAYS;
 import static com.fs.starfarer.api.impl.campaign.missions.hub.BaseHubMission.getRoundNumber;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
@@ -19,6 +18,8 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 
 public class RemnantCustomProductionContract extends CustomProductionContract {
+	
+	public static final float COST_MULT = 1.2f;
 	
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
@@ -32,8 +33,14 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 		}
 		
 		market = getPerson().getMarket();
-		if (market == null) return false;
-		if (Misc.getStorage(market) == null) return false;
+		if (market == null) {
+			Global.getLogger(this.getClass()).info("No market");
+			return false;
+		}
+		if (Misc.getStorage(market) == null) {
+			Global.getLogger(this.getClass()).info("No storage on market");
+			return false;
+		}
 		
 		faction = person.getFaction();
 		
@@ -44,7 +51,7 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 						(DEALER_MIN_CAPACITY + (DEALER_MAX_CAPACITY - DEALER_MIN_CAPACITY) * getQuality()));
 		}
 				
-		costMult = 1.2f;	//1f - MILITARY_MAX_COST_DECREASE * getRewardMultFraction();
+		costMult = COST_MULT;	//1f - MILITARY_MAX_COST_DECREASE * getRewardMultFraction();
 		addMilitaryBlueprints();
 		if (ships.isEmpty() && weapons.isEmpty() && fighters.isEmpty()) return false;
 		

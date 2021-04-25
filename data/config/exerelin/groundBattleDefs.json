@@ -1,5 +1,12 @@
 {
 	"industries":{
+		"spaceport":{
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.SpaceportPlugin",
+		},
+		"megaport":{
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.SpaceportPlugin",
+		},
+		
 		"grounddefenses":{
 			"strengthMult":1.25,
 			"troopCounts":{
@@ -7,8 +14,9 @@
 				"marine":0.5,
 				"heavy":0.5,
 			},
-			"enemyLiftCostMult":2,
+			"enemyLiftCapMult":0.5,
 			"enemyBombardmentCostMult":2,
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.GroundDefensesPlugin",
 		},
 		"heavybatteries":{
 			"strengthMult":1.5,
@@ -17,12 +25,13 @@
 				"marine":1,
 				"heavy":1,
 			},
-			"enemyLiftCostMult":3,
+			"enemyLiftCapMult":0.35,
 			"tags":["preventBombardment"],
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.GroundDefensesPlugin",
 		},
 		"planetaryshield":{
 			"tags":["preventBombardment"],
-			"enemyLiftCostMult":4,
+			"enemyLiftCapMult":0.25,
 		},
 		"patrolhq":{
 			"strengthMult":1.2,
@@ -54,16 +63,16 @@
 			},
 		},
 	},
-	"items":{
-		# TODO
-		"drone_replicator":{
-			"troopCounts":{
-				"militia":0.5,
-				"marines":0.5,
-				"heavy":0.25,
-			},
-		},
-	},
+	#"items":{
+	#	# TODO
+	#	"drone_replicator":{
+	#		"troopCounts":{
+	#			"militia":0.5,
+	#			"marines":0.5,
+	#			"heavy":0.25,
+	#		},
+	#	},
+	#},
 	
 	"natoAlphabet":[
 		"Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", 

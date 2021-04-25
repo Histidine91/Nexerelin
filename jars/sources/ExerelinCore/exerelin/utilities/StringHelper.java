@@ -272,6 +272,10 @@ public class StringHelper {
 		}
 		return str;
 	}
+		
+	public static String toPercent(float num) {
+		return String.format("%.0f", num * 100) + "%";
+	}
 	
 	// old version, scheduled for removal
 	@Deprecated

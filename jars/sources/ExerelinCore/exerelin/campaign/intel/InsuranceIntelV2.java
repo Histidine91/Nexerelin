@@ -281,7 +281,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 				if (depristined) {
 					float depristineMult = Global.getSettings().getFloat("nex_insurance_newDHullMult");
 					amount += baseAmount * depristineMult;
-					String multStr = toPercent(depristineMult);
+					String multStr = StringHelper.toPercent(depristineMult);
 										
 					text += "\n" + String.format(getString("entryDescNewDHull"), multStr);
 					highlights.add(multStr);
@@ -290,7 +290,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 					int delta = dmods - dmodsOld;
 					float dmodMult = Math.min(delta * COMPENSATION_PER_DMOD, 1);
 					amount += baseAmount * dmodMult;
-					String multStr = toPercent(dmodMult);
+					String multStr = StringHelper.toPercent(dmodMult);
 					try {
 						text += "\n" + String.format(getString("entryDescMoreDMods"), multStr);
 						highlights.add(multStr);
@@ -498,10 +498,6 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		return image;
 	}
 	
-	protected String toPercent(float num) {
-		return String.format("%.0f", num * 100) + "%";
-	}
-	
 	protected void createFleetView(CustomPanelAPI panel, TooltipMakerAPI info, float width) {
 		float pad = 3;
 		float opad = 10;
@@ -631,7 +627,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		section.setBulletedListMode("    - ");
 		section.addPara(getString("helpPara1-1"), pad, h, POLICY_TERM + "");
 		section.addPara(getString("helpPara1-2"), pad, h, NexConfig.playerInsuranceMult + "", 
-				toPercent(BASE_PREMIUM_RATIO));
+				StringHelper.toPercent(BASE_PREMIUM_RATIO));
 		section.addPara(getString("helpPara1-3"), pad, h, RENEW_ADVANCE_TIME + "", POLICY_TERM + "");
 		info.addImageWithText(opad);
 		
@@ -642,8 +638,8 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		section.setBulletedListMode("    - ");
 		section.addPara(getString("helpPara2-1"), pad);
 		section.addPara(getString("helpPara2-2"), pad, h, 
-				toPercent(COMPENSATION_PER_DMOD), 
-				toPercent(Global.getSettings().getFloat("nex_insurance_newDHullMult")));
+				StringHelper.toPercent(COMPENSATION_PER_DMOD), 
+				StringHelper.toPercent(Global.getSettings().getFloat("nex_insurance_newDHullMult")));
 		section.addPara(getString("helpPara2-3"), pad);
 		info.addImageWithText(opad);
 		unindent(info);
