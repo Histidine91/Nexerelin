@@ -253,7 +253,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		awardMilestone((String)buttonId);
-		ui.recreateIntelUI();
+		ui.updateUIForItem(this);
 	}
 	
 	@Override
