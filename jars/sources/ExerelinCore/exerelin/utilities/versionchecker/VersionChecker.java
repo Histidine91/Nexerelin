@@ -20,7 +20,7 @@ import java.util.concurrent.*;
 final class VersionChecker
 {
     private static final String VANILLA_UPDATE_URL
-            = "https://bitbucket.org/LazyWizard/version-checker/downloads/vanilla.txt";
+            = "https://raw.githubusercontent.com/LazyWizard/version-checker/master/vanilla.txt";
     private static int MAX_THREADS = 12;
 
     static void setMaxThreads(int maxThreads)
