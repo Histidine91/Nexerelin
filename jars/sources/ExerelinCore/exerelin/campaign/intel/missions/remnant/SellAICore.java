@@ -29,6 +29,8 @@ public class SellAICore extends HubMissionWithBarEvent {
 		ALPHA
 	}
 	
+	public static float COST_MULT = 2;
+	
 	protected Variation variation;
 	protected String commodityId;
 	protected String commodityId2;
@@ -101,6 +103,7 @@ public class SellAICore extends HubMissionWithBarEvent {
 		if (commodityId2 != null) {
 			price += Math.round(getSpec(commodityId2).getBasePrice());
 		}
+		price *= COST_MULT;
 		
 		return var;
 	}
@@ -125,6 +128,7 @@ public class SellAICore extends HubMissionWithBarEvent {
 		return super.callEvent(ruleId, dialog, params, memoryMap);
 	}
 	
+	@Override
 	protected void updateInteractionDataImpl() {
 		set("$nex_sellAICore_ref2", this);
 		
