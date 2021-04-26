@@ -341,12 +341,12 @@ public class NexConfig
         }
 		if (useDefault)
 		{
-			Global.getLogger(NexConfig.class).warn("Faction config " + factionId + " not found, using default");
+			//Global.getLogger(NexConfig.class).warn("Faction config " + factionId + " not found, using default");
 			return defaultConfig;
 		}
         else
 		{
-			Global.getLogger(NexConfig.class).warn("Faction config " + factionId + " not found");
+			//Global.getLogger(NexConfig.class).warn("Faction config " + factionId + " not found");
 			return null;
 		}
     }
