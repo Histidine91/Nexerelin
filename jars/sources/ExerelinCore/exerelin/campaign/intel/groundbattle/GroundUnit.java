@@ -1,12 +1,19 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -14,7 +21,10 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
 import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
+import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.campaign.intel.specialforces.namer.PlanetNamer;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -27,8 +37,10 @@ public class GroundUnit {
 	public static final float TITLE_HEIGHT = 16, LOCATION_SECTION_HEIGHT = 32;
 	public static final float PADDING_X = 4;
 	public static final float BUTTON_SECTION_WIDTH = 64;
+	public static final Object BUTTON_NEW_MARINE = new Object();
+	public static final Object BUTTON_NEW_HEAVY = new Object();
 	
-	public static final float HEAVY_COUNT_DIVISOR = 8.5f;	// a marine platoon has 8.5x as many marines as a mech platoon has mechs
+	public static final float HEAVY_COUNT_DIVISOR = 6f;	// a marine platoon has 6x as many marines as a mech platoon has mechs
 	public static final int CREW_PER_MECH = 2;
 		
 	public final String id = Misc.genUID();
@@ -36,33 +48,69 @@ public class GroundUnit {
 	protected GroundBattleIntel intel;
 	protected String name;
 	protected FactionAPI faction;
+	protected CampaignFleetAPI fleet;
 	protected boolean isPlayer;
 	protected boolean isAttacker;
 	protected ForceType type;
-	protected int men;
+	
+	protected int personnel;
 	protected int heavyArms;
 	protected int lossesLastTurn;
 	protected float moraleDeltaLastTurn;
-	protected float morale = 0.8f;
-	protected String currAction;
+	protected float morale = 0.8f;	
 	
 	public Map<String, Object> data = new HashMap<>();
 	
+	protected String currAction;
 	protected IndustryForBattle location;
-	protected IndustryForBattle dest;
+	protected IndustryForBattle destination;
 	
 	public GroundUnit(GroundBattleIntel intel, ForceType type, int num, int index) {
 		this.intel = intel;
 		this.type = type;
 		this.index = index;
+		setSize(num, false);
+		name = generateName();
+	}
+	
+	protected static CargoAPI getCargo() {
+		return Global.getSector().getPlayerFleet().getCargo();
+	}
+	
+	public float setStartingMorale() {
+		float morale = GBConstants.BASE_MORALE;
+		if (isPlayer) {
+			float xp = intel.playerData.xpTracker.data.getXPLevel();
+			morale += xp * GBConstants.XP_MORALE_BONUS;
+		}
+		
+		return morale;
+	}
+	
+	public void setSize(int num, boolean takeFromCargo) {
+		// first return the existing units to cargo
+		if (takeFromCargo) {
+			returnUnitsToCargo();
+		}
+		
 		if (type == ForceType.HEAVY) {
 			heavyArms = num;
-			men = num * CREW_PER_MECH;
+			personnel = num * CREW_PER_MECH;
 		}
 		else {
-			men = num;
+			personnel = num;
 		}
-		name = generateName();
+		// now take the new ones from cargo
+		if (takeFromCargo) {
+			getCargo().removeMarines(personnel);
+			getCargo().removeCommodity(Commodities.HAND_WEAPONS, heavyArms);
+			
+			// move the XP from player cargo to battle player data
+			PlayerFleetPersonnelTracker.transferPersonnel(
+					PlayerFleetPersonnelTracker.getInstance().getMarineData(),
+					intel.playerData.xpTracker.data,
+					personnel, null);
+		}
 	}
 	
 	public String generateName() {
@@ -73,9 +121,9 @@ public class GroundUnit {
 				int alphabetIndex = this.index % 26;
 				return GBDataManager.NATO_ALPHABET.get(alphabetIndex) + " " + name;
 			case BATALLION:
-				return index + PlanetNamer.getSuffix(index) + " " + name;
+				return index + PlanetNamer.getSuffix(index + 1) + " " + name;
 			case REGIMENT:
-				return Global.getSettings().getRoman(index) + " " + name;
+				return Global.getSettings().getRoman(index + 1) + " " + name;
 			default:
 				return name + " " + index;
 		}
@@ -85,6 +133,43 @@ public class GroundUnit {
 		return location;
 	}
 	
+	public IndustryForBattle getDestination() {
+		return destination;
+	}
+	
+	public ForceType getType() {
+		return type;
+	}
+	
+	public boolean isAttacker() {
+		return isAttacker;
+	}
+	
+	/**
+	 * Result is identical to {@code getSize()} for normal units,
+	 * or {@code CREW_PER_MECH} times larger for heavy units.
+	 * @return
+	 */
+	public int getPersonnel() {
+		return personnel;
+	}
+	
+	/**
+	 * Adds the current personnel and heavy armaments in the unit back to player cargo.
+	 */
+	public void returnUnitsToCargo() {
+		getCargo().addMarines(personnel);
+		getCargo().addCommodity(Commodities.HAND_WEAPONS, heavyArms);
+		
+		// move the XP from battle player data to player cargo
+		PlayerFleetPersonnelTracker.transferPersonnel(
+				intel.playerData.xpTracker.data,
+				PlayerFleetPersonnelTracker.getInstance().getMarineData(), 
+				personnel, null);
+		personnel = 0;
+		heavyArms = 0;
+	}
+	
 	public void setLocation(IndustryForBattle newLoc) {
 		if (newLoc == location) return;
 		if (location != null) location.removeUnit(this);
@@ -92,49 +177,114 @@ public class GroundUnit {
 		if (newLoc != null) newLoc.addUnit(this);
 	}
 	
-	public void setDestination(IndustryForBattle dest) {
-		this.dest = dest;
+	public void setDestination(IndustryForBattle destination) {
+		if (destination == location) {
+			cancelMove();
+			return;
+		}
+		this.destination = destination;
 		currAction = null;
+	}
+	
+	public void cancelMove() {
+		destination = null;
+		currAction = null;
+	}
+	
+	public void deploy(IndustryForBattle newLoc, InteractionDialogAPI dialog) {		
+		setLocation(newLoc);
+		int cost = getDeployCost();
+		if (isPlayer) getCargo().removeSupplies(cost);
+		if (dialog != null) {
+			AddRemoveCommodity.addCommodityLossText(Commodities.SUPPLIES, cost, dialog.getTextPanel());
+		}
+		destination = null;
+		float attrition = intel.getSide(isAttacker).dropAttrition.getModifiedValue()/100;
+		if (attrition > 0) {
+			int losses = (int)(this.getSize() * attrition);
+			if (losses > 0) {
+				GroundBattleRoundResolve resolve = new GroundBattleRoundResolve(intel);
+				float morale = resolve.damageUnitMorale(this, losses);
+				resolve.inflictUnitLosses(this, losses);
+				
+				if (isPlayer && dialog != null) {
+					TextPanelAPI text = dialog.getTextPanel();
+					text.setFontSmallInsignia();
+					String moraleStr = StringHelper.toPercent(morale);
+					String str = String.format(getString("deployAttrition"), losses, moraleStr);
+					Color neg = Misc.getNegativeHighlightColor();
+					LabelAPI para = text.addPara(str);
+					para.setHighlight(losses + "", moraleStr);
+					para.setHighlightColors(neg, neg);
+					text.setFontInsignia();
+				}
+			}
+		}
+		if (true || isPlayer) {
+			GroundBattleLog log = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_MOVED, intel.turnNum);
+			log.params.put("unit", this);
+			log.params.put("loc", location);
+			intel.addLogEvent(log);
+		}
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.reportUnitMoved(this, null);
+		}
 	}
 	
 	public void orderWithdrawal() {
 		currAction = GBConstants.ACTION_WITHDRAW;
-		dest = null;
+		destination = null;
 	}
 	
 	public void executeMove() {
+		IndustryForBattle lastLoc = location;
 		if (GBConstants.ACTION_WITHDRAW.equals(currAction)) {
 			setLocation(null);
 			currAction = null;
-			return;
 		}
-		
-		if (dest == null) return;
-		setLocation(dest);
-		dest = null;
+		else {
+			if (destination == null) return;
+			setLocation(destination);
+			destination = null;
+		}
+		if (true || isPlayer) {
+			GroundBattleLog log = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_MOVED, intel.turnNum);
+			log.params.put("unit", this);
+			log.params.put("previous", lastLoc);
+			log.params.put("loc", location);
+			intel.addLogEvent(log);
+		}
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.reportUnitMoved(this, lastLoc);
+		}
 	}
 	
 	public void removeUnit(boolean returnToCargo) 
 	{
 		if (isPlayer && returnToCargo) {
-			Global.getSector().getPlayerFleet().getCargo().addMarines(men);
-			Global.getSector().getPlayerFleet().getCargo().addCommodity(Commodities.HAND_WEAPONS, heavyArms);
+			NexUtils.modifyMapEntry(intel.playerData.getDisbanded(), type, getSize());
+			Global.getLogger(this.getClass()).info("Disbanding " + name + ": " + getSize());
+			int inFleet = intel.countPersonnelFromMap(intel.playerData.getDisbanded());
+			Global.getLogger(this.getClass()).info("Disbanded personnel count: " + getSize());
+			returnUnitsToCargo();
 		}
 		setLocation(null);
 		intel.getSide(isAttacker).units.remove(this);
 		if (isPlayer)
-			intel.playerUnits.remove(this);
+			intel.playerData.getUnits().remove(this);
 		
 		Global.getLogger(this.getClass()).info(String.format("Removed unit %s (%s)", name, type));
 	}
 	
 	public void destroyUnit(float recoverProportion) {
-		if (isPlayer) {
-			Global.getSector().getPlayerFleet().getCargo().addMarines(
-					(int)(men * recoverProportion));
-			Global.getSector().getPlayerFleet().getCargo().addCommodity(
-					Commodities.HAND_WEAPONS, (int)(heavyArms * recoverProportion));
+		if (isPlayer && intel.isPlayerInRange()) {
+			getCargo().addMarines((int)(personnel * recoverProportion));
+			getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(heavyArms * recoverProportion));
 		}
+		GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_DESTROYED, intel.turnNum);
+		lg.params.put("unit", this);
+		lg.params.put("location", this.location);
+		intel.addLogEvent(lg);	
 		removeUnit(false);
 	}
 	
@@ -150,26 +300,53 @@ public class GroundUnit {
 		else data.put("reorganizing", newVal);
 	}
 	
+	public boolean isReorganizing() {
+		return data.containsKey("reorganizing");
+	}
+	
+	public void preventAttack(int turns) {
+		Integer curr = (Integer)data.get("preventAttack");
+		if (curr == null) curr = 0;
+		int newVal = curr + turns;
+		if (newVal <= 0) data.remove("preventAttack");
+		else data.put("preventAttack", newVal);
+	}
+	
+	public boolean isAttackPrevented() {
+		return data.containsKey("preventAttack");
+	}
+	
 	public void addActionText(TooltipMakerAPI info) {
 		Color color = Misc.getTextColor();
-		String text = "Waiting";
-		if (data.containsKey("reorganizing")) {
-			text = "Reorganizing";
+		String strId = "currAction";
+		if (isReorganizing()) {
+			strId += "Reorganizing";
 			color = Misc.getNegativeHighlightColor();
 		}
 		else if (GBConstants.ACTION_WITHDRAW.equals(currAction)) {
-			text = "Withdrawing";
+			strId += "Withdrawing";
 		}
-		else if (dest != null) {
-			text = "Moving to " + dest.ind.getCurrentName();
+		else if (destination != null) {
+			strId += "Moving";
 		}
 		else if (location == null) {
-			text = "Awaiting deployment";
+			strId += "WaitingFleet";
 		}
-		else if (location.containsEnemyOf(isAttacker)) {
-			text = "Engaged at " + location.ind.getCurrentName();
+		else if (location.isContested()) {
+			strId += "Engaged";
 		}
-		info.addPara(text, color, 3);
+		else {
+			strId += "Waiting";
+		}
+		String str = getString(strId);
+		if (destination != null) {
+			str = String.format(str, destination.ind.getCurrentName());
+		}
+		else if (location != null && location.isContested()) {
+			str = String.format(str, location.ind.getCurrentName());
+		}
+		
+		info.addPara(str, color, 3);
 	}
 	
 	/**
@@ -178,16 +355,17 @@ public class GroundUnit {
 	 * @return Delta after clamping.
 	 */
 	public float modifyMorale(float delta) {
-		return modifyMorale(delta, 1);
+		return modifyMorale(delta, 0, 1);
 	}
 	
 	/**
-	 * Clamped to range [0, max].
+	 * Clamped to range [min, max].
 	 * @param delta
+	 * @param min
 	 * @param max
 	 * @return Delta after clamping.
 	 */
-	public float modifyMorale(float delta, float max) {
+	public float modifyMorale(float delta, float min, float max) {
 		float newMorale = morale + delta;
 		if (newMorale > max) newMorale = max;
 		if (newMorale < 0) newMorale = 0;
@@ -207,16 +385,30 @@ public class GroundUnit {
 		return delta;
 	}
 	
+	/**
+	 * Unit size multiplied by the unit type's strength multiplier.
+	 * @return
+	 */
 	public float getBaseStrength() {
 		return getSize() * type.strength;
 	}
 	
 	public int getDeployCost() {
-		return Math.round(getBaseStrength() * GBConstants.SUPPLIES_TO_DEPLOY_MULT);
+		return Math.round(getBaseStrength() * GBConstants.SUPPLIES_TO_DEPLOY_MULT 
+				* intel.getSide(isAttacker).dropCostMod.getMult());
 	}
 	
-	public float getAttackStrength() {
-		
+	protected void modifyAttackStatWithDesc(MutableStat stat, String id, float mult) 
+	{
+		String desc = getString("unitCard_tooltip_atkbreakdown_" + id);
+		stat.modifyMult(id, mult, desc);
+	}
+	
+	/**
+	 * Partial attack stat, before commander bonuses and plugins are applied.
+	 * @return
+	 */
+	public MutableStat getAttackStat() {
 		MutableStat stat = new MutableStat(0);
 		
 		float baseStr = getBaseStrength();
@@ -224,64 +416,111 @@ public class GroundUnit {
 		
 		IndustryForBattle ifb = location;
 		
-		if (ifb.heldByAttacker == isAttacker) 
+		if (ifb != null) 
 		{
-			// apply strength modifiers to defense instead, not attack
-			/*
-			float industryMult = ifb.getPlugin().getStrengthMult();
-			if (industryMult != 1) {
-				stat.modifyMult("industry", industryMult, ifb.ind.getCurrentName());
-			}
-			*/
-		} 
-		else {	// heavy unit bonus on offensive
-			if (type == ForceType.HEAVY) {
-				stat.modifyMult("heavy_offensive", GBConstants.HEAVY_OFFENSIVE_MULT, "Mechanized assault");
+			if (ifb.heldByAttacker == isAttacker) {
+				// apply strength modifiers to defense instead, not attack
+				/*
+				float industryMult = ifb.getPlugin().getStrengthMult();
+				if (industryMult != 1) {
+					stat.modifyMult("industry", industryMult, ifb.ind.getCurrentName());
+				}
+				*/
+			} else {	// heavy unit bonus on offensive
+				modifyAttackStatWithDesc(stat, "heavy_offensive", GBConstants.HEAVY_OFFENSIVE_MULT);
 			}
 		}
 		
 		if (intel.market.getPlanetEntity() == null) {
 			if (type == ForceType.HEAVY) {
-				stat.modifyMult("heavy_cramped", GBConstants.HEAVY_STATION_MULT, "Close quarters");
+				modifyAttackStatWithDesc(stat, "heavy_cramped", GBConstants.HEAVY_STATION_MULT);
 			}
 		}
 		
 		float moraleMult = NexUtilsMath.lerp(1 - GBConstants.MORALE_ATTACK_MOD, 
 				1 + GBConstants.MORALE_ATTACK_MOD, morale);
-		stat.modifyMult("morale", moraleMult, "Morale");
+		modifyAttackStatWithDesc(stat, "morale", moraleMult);
+				
+		if (isReorganizing()) {
+			modifyAttackStatWithDesc(stat, "reorganizing", GBConstants.REORGANIZING_DMG_MULT);
+		}
 		
-		// size modifiers for damage
-		stat.modifyMult("unitSize", intel.unitSize.damMult, "Unit size: " + intel.unitSize.getName());
+		return stat;
+	}
+	
+	public StatBonus getAttackStatBonus() {
+		if (isAttacker) {
+			if (fleet != null) {
+				return fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
+			}
+		}
+		else {
+			return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+		}
+		return null;
+	}
+	
+	public float getAttackStrength() {
+		if (isAttackPrevented()) return 0;
+		
+		MutableStat stat = getAttackStat();
 		
 		float output = stat.getModifiedValue();
 		
-		PersonAPI commander = intel.getCommander(this);
-		if (commander != null) {
-			output = commander.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).computeEffective(output);
+		StatBonus bonus = getAttackStatBonus();
+		if (bonus != null) {
+			output = bonus.computeEffective(output);
 		}
+		
 		output = intel.getSide(isAttacker).damageDealtMod.computeEffective(output);
+		
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			output = plugin.modifyDamageDealt(this, output);
+		}
 		
 		return output;
 	}
 	
-	public float getAdjustedMoraleDamageTaken(float dam) {
+	public float getAdjustedMoraleDamageTaken(float dmg) {
 		float mult = 1;
 		if (isPlayer) {
 			//mult -= GBConstants.MORALE_DAM_XP_REDUCTION_MULT * PlayerFleetPersonnelTracker.getInstance().getMarineData().getXPLevel();
 		}
 		mult /= type.moraleMult;
-		dam = intel.getSide(isAttacker).moraleDamTakenMod.computeEffective(dam);
-		dam *= mult;
-		return dam;
+		dmg = intel.getSide(isAttacker).moraleDamTakenMod.computeEffective(dmg);
+		dmg *= mult;
+		
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			dmg = plugin.modifyMoraleDamageReceived(this, dmg);
+		}
+		
+		return dmg;
+	}
+	
+	public StatBonus getDefenseStatBonus() {
+		if (isAttacker) {
+			if (fleet != null) {
+				return fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT);
+			}
+		}
+		else {
+			return null;
+			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+		}
+		return null;
 	}
 	
 	public float getAdjustedDamageTaken(float dmg) {
 		if (location != null && isAttacker == location.heldByAttacker)
 			dmg *= 1/location.getPlugin().getStrengthMult();
+				
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			dmg = plugin.modifyDamageReceived(this, dmg);
+		}
 		
-		PersonAPI commander = intel.getCommander(this);
-		if (commander != null) {
-			dmg *= commander.getStats().getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT).getModifiedValue();
+		StatBonus bonus = getDefenseStatBonus();
+		if (bonus != null) {
+			dmg = bonus.computeEffective(dmg);
 		}
 		
 		dmg = intel.getSide(isAttacker).damageTakenMod.computeEffective(dmg);
@@ -289,7 +528,7 @@ public class GroundUnit {
 	}
 	
 	public int getSize() {
-		int num = type == ForceType.HEAVY ? heavyArms : men;
+		int num = type == ForceType.HEAVY ? heavyArms : personnel;
 		return num;
 	}
 	
@@ -298,100 +537,144 @@ public class GroundUnit {
 	 * @return
 	 */
 	public float getNumUnitEquivalents() {
-		float num = type == ForceType.HEAVY ? heavyArms : men;
+		float num = type == ForceType.HEAVY ? heavyArms : personnel;
 		return num/intel.unitSize.getAverageSizeForType(type);
 	}
 	
-	public static TooltipMakerAPI createBlankCard(CustomPanelAPI parent) {
+	public static TooltipMakerAPI createBlankCard(CustomPanelAPI parent, UnitSize size) 
+	{
 		FactionAPI faction = Global.getSector().getPlayerFaction();
+		CargoAPI cargo = getCargo();
+		
 		TooltipMakerAPI cardHolder = parent.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, 
 				new GroundUnitPanelPlugin(faction, null, faction.getCrest()));
-				
+		
+		float btnWidth = 160;
+		
 		TooltipMakerAPI buttonHolder = card.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
-		buttonHolder.addButton("Create unit", "bla", 120, 24, 0);
-		card.addUIElement(buttonHolder).inTL(PANEL_WIDTH/2 - 60, PANEL_HEIGHT/2 - 12);
+		ButtonAPI newMarine = buttonHolder.addButton(String.format(getString("btnNewUnitMarine")
+				, size.getName()), BUTTON_NEW_MARINE, btnWidth, 24, 0);
+		if (cargo.getMarines() <= 0) newMarine.setEnabled(false);
+		
+		ButtonAPI newHeavy = buttonHolder.addButton(String.format(getString("btnNewUnitHeavy")
+				, size.getName()), BUTTON_NEW_HEAVY, btnWidth, 24, 0);
+		if (cargo.getMarines() < CREW_PER_MECH || cargo.getCommodityQuantity(Commodities.HAND_WEAPONS) <= 0) 
+			newHeavy.setEnabled(false);
+		
+		card.addUIElement(buttonHolder).inTL((PANEL_WIDTH-btnWidth)/2, PANEL_HEIGHT/2 - 24);
 		cardHolder.addCustom(card, 0);
 		
 		return cardHolder;
 	}
 	
-	public TooltipMakerAPI createUnitCard(CustomPanelAPI parent)
+	public TooltipMakerAPI createUnitCard(CustomPanelAPI parent, boolean forDialog)
 	{
+		float sizeMult = 1, pad = 3;
+		if (forDialog) {
+			sizeMult = 1.5f;
+			pad = 4.5f;
+		}
+		
 		String commoditySprite = Global.getSettings().getCommoditySpec(type.commodityId).getIconName();
 		String crest = faction.getCrest();
 		
-		TooltipMakerAPI cardHolder = parent.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
-		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, 
+		TooltipMakerAPI cardHolder = parent.createUIElement(PANEL_WIDTH * sizeMult, 
+				PANEL_HEIGHT * sizeMult, false);
+		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH * sizeMult, 
+				PANEL_HEIGHT * sizeMult, 
 				new GroundUnitPanelPlugin(faction, commoditySprite, crest));
-		TooltipMakerAPI title = card.createUIElement(PANEL_WIDTH, TITLE_HEIGHT, false);
-		title.addPara(name, faction.getBaseUIColor(), 3);
+		TooltipMakerAPI title = card.createUIElement(PANEL_WIDTH * sizeMult, 
+				TITLE_HEIGHT * sizeMult, false);
+		if (forDialog) title.setParaSmallInsignia();
+		title.addPara(name, faction.getBaseUIColor(), pad);
 		card.addUIElement(title).inTL(0, 0);
 		
 		// begin stats section
-		TooltipMakerAPI stats = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH/2), 
-				PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT, false);
+		TooltipMakerAPI stats = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult, 
+				(PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT) * sizeMult, false);
 		
 		// number of marines
-		TooltipMakerAPI line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(Commodities.MARINES).getIconName(), 16);
-		line.addPara(men + "", 0);
-		stats.addImageWithText(3);
+		TooltipMakerAPI line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(
+				Commodities.MARINES).getIconName(), 16 * sizeMult);
+		line.addPara(personnel + "", 0);
+		stats.addImageWithText(pad);
 		stats.addTooltipToPrevious(createTooltip("marines"), TooltipLocation.BELOW);
 		
 		// number of heavy arms
 		if (heavyArms > 0) {
-			line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(Commodities.HAND_WEAPONS).getIconName(), 16);
+			line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(
+					Commodities.HAND_WEAPONS).getIconName(), 16 * sizeMult);
 			line.addPara(heavyArms + "", 0);
-			stats.addImageWithText(3);
+			stats.addImageWithText(pad);
 			stats.addTooltipToPrevious(createTooltip("heavyArms"), TooltipLocation.BELOW);
 		}
 		else {
-			stats.addSpacer(19);
+			stats.addSpacer(19 * sizeMult);
 		}
 		
 		// morale
-		line = stats.beginImageWithText("graphics/icons/insignia/16x_star_circle.png", 16);
+		line = stats.beginImageWithText("graphics/icons/insignia/16x_star_circle.png", 
+				16 * sizeMult);
 		Color moraleColor = Misc.getHighlightColor();
 		if (morale > .6) moraleColor = Misc.getPositiveHighlightColor();
 		else if (morale < .3) moraleColor = Misc.getNegativeHighlightColor();
 		String moraleStr = Math.round(this.morale * 100) + "%";
 		line.addPara(moraleStr, moraleColor, 0);
-		stats.addImageWithText(3);
+		stats.addImageWithText(pad);
 		stats.addTooltipToPrevious(createTooltip("morale"), TooltipLocation.BELOW);
 		
 		card.addUIElement(stats).belowLeft(title, 0);
 		
-		TooltipMakerAPI stats2 = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH/2), 
-				PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT, false);
-		if (location == null) {
-			line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(Commodities.SUPPLIES).getIconName(), 16);
-			line.addPara(getDeployCost() + "", 0);
-			stats.addImageWithText(3);
-			stats.addTooltipToPrevious(createTooltip("supplies"), TooltipLocation.BELOW);
-		}
+		TooltipMakerAPI stats2 = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult, 
+				(PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT) * sizeMult, false);
 		
+		// attack power;
+		line = stats2.beginImageWithText(Global.getSettings().getSpriteName("misc", 
+				"nex_groundunit_attackpower"), 16 * sizeMult);
+		line.addPara(String.format("%.0f", getAttackStrength()), 0);
+		stats2.addImageWithText(pad);
+		stats2.addTooltipToPrevious(createTooltip("attackPower"), TooltipLocation.BELOW);
 		card.addUIElement(stats2).rightOfTop(stats, 0);
+		
+		// deploy cost
+		if (location == null) {
+			line = stats2.beginImageWithText(Global.getSettings().getCommoditySpec(
+					Commodities.SUPPLIES).getIconName(), 16 * sizeMult);
+			line.addPara(getDeployCost() + "", 0);
+			stats2.addImageWithText(pad);
+			stats2.addTooltipToPrevious(createTooltip("supplies"), TooltipLocation.BELOW);
+		}
+		else {
+			//stats.addSpacer(19);
+		}		
 		// end stats section
 		
 		// location
-		TooltipMakerAPI loc = card.createUIElement(PANEL_WIDTH, LOCATION_SECTION_HEIGHT, false);
+		TooltipMakerAPI loc = card.createUIElement(PANEL_WIDTH * sizeMult, 
+				LOCATION_SECTION_HEIGHT * sizeMult, false);
 		
-		String img = location.ind != null ? location.ind.getCurrentImage() : "graphics/illustrations/free_orbit.jpg";
-		line = loc.beginImageWithText(img, 32);
+		String img = location != null ? location.ind.getCurrentImage() : "graphics/illustrations/free_orbit.jpg";
+		line = loc.beginImageWithText(img, 32 * sizeMult);
 		addActionText(line);
-		loc.addImageWithText(3);
-		card.addUIElement(loc).inBL(0, 2);
+		loc.addImageWithText(pad);
+		card.addUIElement(loc).inBL(0, 2 * sizeMult);
 		
 		// button holder
-		TooltipMakerAPI buttonHolder = card.createUIElement(BUTTON_SECTION_WIDTH, PANEL_HEIGHT, false);
-		buttonHolder.addButton(StringHelper.getString("action"), this, BUTTON_SECTION_WIDTH - 6, 16, 0);
-		card.addUIElement(buttonHolder).inTR(1, 2);
+		if (!forDialog) {
+			TooltipMakerAPI buttonHolder = card.createUIElement(BUTTON_SECTION_WIDTH * sizeMult, 
+				PANEL_HEIGHT * sizeMult, false);
+			buttonHolder.addButton(StringHelper.getString("action", true), this, 
+					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
+			card.addUIElement(buttonHolder).inTR(1 * sizeMult, 2 * sizeMult);
+		}
 		
 		cardHolder.addCustom(card, 0);
 		return cardHolder;
 	}
 	
 	public TooltipCreator createTooltip(final String id) {
+		final GroundUnit unit = this;
 		return new TooltipCreator() {
 			@Override
 			public boolean isTooltipExpandable(Object tooltipParam) {
@@ -419,6 +702,15 @@ public class GroundUnit {
 					tooltip.addPara(str, 0, hl, StringHelper.toPercent(GBConstants.REORGANIZE_AT_MORALE));
 					str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 4);
 					tooltip.addPara(str, 0);
+				} else if (id.equals("attackPower")) {
+					str = getString("unitCard_tooltip_atkbreakdown_header");
+					tooltip.addPara(str, 3); 
+					tooltip.addStatModGrid(360, 60, 10, 3, getAttackStat(), true, NexUtils.getStatModValueGetter(true, 0));
+					StatBonus bonus = unit.getAttackStatBonus();
+					
+					if (bonus != null && !bonus.isUnmodified()) {
+						tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
+					}
 				}
 			}
 		};
@@ -446,6 +738,10 @@ public class GroundUnit {
 		
 		public String getName() {
 			return getString(nameStringId);
+		}
+		
+		public String getCommodityName() {
+			return Global.getSettings().getCommoditySpec(commodityId).getName();
 		}
 	}
 	

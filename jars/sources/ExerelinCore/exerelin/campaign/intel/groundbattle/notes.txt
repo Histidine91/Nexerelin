@@ -1,13 +1,10 @@
 == Condition types ==
 Magnetic crust: attacker reorganizes after each move due to lack of communications, reduced damage
 
-
-
 == Strength ==
 Marine: 1x
 Mech: 6x
 Militia: 0.4x; 0.7x morale
-
 
 == Faction modifiers ==
 Hegemony: +15% morale
@@ -37,35 +34,49 @@ Loot
 Smash
 - Disrupts an occupied industry. The selected unit is forced to reorganize for 1 turn.
 
-== Stability ==
-Stability multiplier = 1 - (proportion of industries held by attacker)
-- An industry is considered held by attacker if actively occupied by an attacker unit, and was not held by defender immediately prior. Otherwise it is held by the defender.
-
-== Commands ==
-Undeployed:
-	Deploy
-	Resize
-	Disband
-
-Deployed:
-	Move
-	Withdraw
-	Smash
-
 == Todo ==
-- View modes
-	Overview
-	Command
-	Log
-	Help
+- Battle generation, elapsing, resolution
+	- XP for marines sent to storage
+	- Bombardment listener
 
 - Condition to plugin map
-- [in progress] Battle log
-- Generate buff list
-	- Hazard
 
-- [in progress] Action resolution
-- Give orders interface
+- Generate buffs
+	- Ground support package
+
+- Andrada etc. options
+
+- [done] Military response script
+- Send reinforcement fleet
+- Summon special forces
+
+- Loot button
+- Smash command
+
+- Help view
+
+- Invasion healthbar in memory
+	- Compare starting garrison strength to final garrison strength
+
 - Special ability interface
 - AI
+
+- Externalize strings: any?
+
+
+- Supply mechanic (probably overcomplicating it)
+- At least change lift cap mult to drop cost mult?
+	- This doesn't do anything against AI though
+	- Maybe instead units take damage when going through defenses?
+	- What does spaceport do, reduce losses?
+	
+	- Idea: Drop damage from defenses, in addition to defenses resulting in higher supply cost to drop
+		- Ground defenses: +0.1
+		- Heavy batteries: +0.2
+		- Planetary shield: x2
+		- EW applies 0.5x drop damage mult?
+		- Spaceport reduces drop costs
+
+- Maybe AI just uses legacy invasion system?
+
 - Invasion fleet -> ground forces conversion

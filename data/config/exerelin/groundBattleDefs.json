@@ -2,9 +2,11 @@
 	"industries":{
 		"spaceport":{
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.SpaceportPlugin",
+			"icon":"graphics/icons/markets/spaceport.png",
 		},
 		"megaport":{
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.SpaceportPlugin",
+			"icon":"graphics/icons/markets/spaceport.png",
 		},
 		
 		"grounddefenses":{
@@ -14,8 +16,9 @@
 				"marine":0.5,
 				"heavy":0.5,
 			},
-			"enemyLiftCapMult":0.5,
+			"enemyDropCostMult":1.5,
 			"enemyBombardmentCostMult":2,
+			"dropAttritionFactor":10,
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.GroundDefensesPlugin",
 		},
 		"heavybatteries":{
@@ -25,13 +28,15 @@
 				"marine":1,
 				"heavy":1,
 			},
-			"enemyLiftCapMult":0.35,
+			"enemyDropCostMult":2,
+			"dropAttritionFactor":20,
 			"tags":["preventBombardment"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.GroundDefensesPlugin",
 		},
 		"planetaryshield":{
 			"tags":["preventBombardment"],
-			"enemyLiftCapMult":0.25,
+			"enemyDropCostMult":2,
+			"dropAttritionMult":2,
 		},
 		"patrolhq":{
 			"strengthMult":1.2,

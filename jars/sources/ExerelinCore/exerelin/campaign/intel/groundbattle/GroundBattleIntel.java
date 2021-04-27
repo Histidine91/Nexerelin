@@ -4,14 +4,26 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -21,13 +33,21 @@ import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.InvasionRound;
+import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
+import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -46,13 +66,12 @@ import org.lazywizard.lazylib.MathUtils;
 // may not actually use this in the end and just go with the "disrupt everything" system
 public class GroundBattleIntel extends BaseIntelPlugin {
 	
-	public static final float MAX_SUPPORT_DIST = 250;
-	public static final int MAX_PLAYER_UNITS = 12;
-	public static final float DISRUPT_WHEN_CAPTURED_TIME = 0.25f;	// days
+	public static int MAX_PLAYER_UNITS = 12;
 	
 	public static final float VIEW_BUTTON_WIDTH = 128;
 	public static final float VIEW_BUTTON_HEIGHT = 24;
 	
+	public static final Object UPDATE_TURN = new Object();
 	public static final Object BUTTON_RESOLVE = new Object();
 	
 	public static Logger log = Global.getLogger(GroundBattleIntel.class);
@@ -60,6 +79,9 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	protected UnitSize unitSize;
 	
 	protected int turnNum;
+	protected BattleOutcome outcome;
+	protected int recentUnrest = 0;
+	protected Float timerForDecision;
 	
 	protected MarketAPI market;
 	protected boolean playerInitiated;
@@ -67,22 +89,24 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	protected GroundBattleSide attacker = new GroundBattleSide(this, true);
 	protected GroundBattleSide defender = new GroundBattleSide(this, false);
-	protected List<GroundUnit> playerUnits = new LinkedList<>();
-	
-	protected MutableStat liftCapacityAtk = new MutableStat(1);
-	protected MutableStat liftCapacityDef = new MutableStat(1);
-	protected float liftCapacityAtkRemaining;
-	protected float liftCapacityDefRemaining;
-	
+	protected GBPlayerData playerData;
+		
 	protected transient ViewMode viewMode;
 	
 	protected List<GroundBattleLog> battleLog = new LinkedList<>();
-	protected transient List<String> rawLog;
+	//protected transient List<String> rawLog;
 	
 	protected List<IndustryForBattle> industries = new ArrayList<>();
-	protected List<GroundBattlePlugin> conditionPlugins = new LinkedList<>();
+	protected List<GroundBattlePlugin> otherPlugins = new LinkedList<>();
 	
 	protected Map<String, Object> data = new HashMap<>();
+	
+	protected IntervalUtil interval = new IntervalUtil(1, 1);
+	protected IntervalUtil intervalShort = new IntervalUtil(0.2f, 0.2f);
+	protected MilitaryResponseScript responseScript;
+	
+	// =========================================================================
+	// setup, getters/setters and other logic
 	
 	public GroundBattleIntel(MarketAPI market, FactionAPI attacker, FactionAPI defender)
 	{
@@ -99,6 +123,8 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			unitSize = UnitSize.BATALLION;
 		else
 			unitSize = UnitSize.REGIMENT;
+		
+		playerData = new GBPlayerData(this);
 	}
 	
 	protected void generateDebugUnits() 
@@ -107,30 +133,34 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			GroundUnit unit = new GroundUnit(this, ForceType.MARINE, 0, i);
 			unit.faction = Global.getSector().getPlayerFaction();
 			unit.isPlayer = true;
-			unit.isAttacker = true;
+			unit.isAttacker = this.playerIsAttacker;
 			unit.type = i >= 4 ? ForceType.HEAVY : ForceType.MARINE;
 			
 			if (unit.type == ForceType.HEAVY) {
 				unit.heavyArms = Math.round(this.unitSize.avgSize / GroundUnit.HEAVY_COUNT_DIVISOR * MathUtils.getRandomNumberInRange(1, 1.4f));
-				unit.men = unit.heavyArms * 2;
+				unit.personnel = unit.heavyArms * 2;
 			} else {
-				unit.men = Math.round(this.unitSize.avgSize * MathUtils.getRandomNumberInRange(1, 1.4f));
+				unit.personnel = Math.round(this.unitSize.avgSize * MathUtils.getRandomNumberInRange(1, 1.4f));
 				//unit.heavyArms = MathUtils.getRandomNumberInRange(10, 15);
 			}
 			
 			IndustryForBattle loc = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
-			unit.setLocation(loc);
+			//unit.setLocation(loc);
 			if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
 				unit.reorganize(1);
 			}
 			else if (Math.random() > 0.5f) {
-				unit.dest = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
+				//unit.dest = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
 			}
 			attacker.units.add(unit);
-			playerUnits.add(unit);
+			playerData.units.add(unit);
 		}
-		
-		defender.generateDefenders();
+	}
+	
+	public void initPlugins() {
+		PlanetHazardPlugin plugin = new PlanetHazardPlugin();
+		plugin.init(this);
+		otherPlugins.add(plugin);
 	}
 	
 	public void init() {
@@ -146,8 +176,23 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		if (industries.isEmpty()) {
 			addIndustry(Industries.POPULATION);
 		}
+		
+		initPlugins();
 		turnNum = 1;
+		
+		reapply();
+	}
+	
+	public void start() {
+		defender.generateDefenders();
+		if (playerInitiated) {
+			autoGeneratePlayerUnits();
+			this.setImportant(true);
+		}
+		
+		addMilitaryResponse();
 		Global.getSector().getIntelManager().addIntel(this);
+		Global.getSector().addScript(this);
 	}
 	
 	public void initDebug() {
@@ -172,11 +217,12 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		List<GroundBattlePlugin> list = new ArrayList<>();
 		for (IndustryForBattle ifb : industries) {
 			if (ifb.getPlugin() == null) {
-				log.info("Null plugin for " + ifb.ind.getId());
+				log.warn("Null plugin for " + ifb.ind.getId());
 				continue;
 			}
 			list.add(ifb.getPlugin());
 		}
+		list.addAll(otherPlugins);
 		
 		// TODO: add other plugins
 		return list;
@@ -188,6 +234,10 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	public List<IndustryForBattle> getIndustries() {
 		return industries;
+	}
+	
+	public UnitSize getUnitSize() {
+		return unitSize;
 	}
 	
 	public IndustryForBattle getIndustryForBattleByIndustry(Industry ind) {
@@ -207,6 +257,14 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	public Boolean isPlayerAttacker() {
 		return playerIsAttacker;
 	}
+	
+	public void setPlayerIsAttacker(Boolean bool) {
+		playerIsAttacker = bool;
+	}
+	
+	public void setPlayerInitiated(boolean playerInitiated) {
+		this.playerInitiated = playerInitiated;
+	}
 		
 	public Boolean isPlayerFriendly(boolean isAttacker) {
 		if (playerIsAttacker == null) return null;
@@ -220,54 +278,52 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		else return Misc.getNegativeHighlightColor();
 	}
 	
-	public PersonAPI getCommander(GroundUnit unit) {
-		if (unit.isPlayer) {
-			// TODO: check for whether player is in command range
-			return Global.getSector().getPlayerPerson();
-		}
-		GroundBattleSide side = getSide(unit.isAttacker);
-		return side.commander;
-	}
-	
 	public List<GroundUnit> getAllUnits() {
 		List<GroundUnit> results = new ArrayList<>(attacker.units);
 		results.addAll(defender.units);
 		return results;
 	}
 	
-	protected boolean canSupportAttacker(FactionAPI faction) {
-		if (faction.isPlayerFaction() && Misc.getCommissionFaction() == attacker)
+	protected boolean canSupport(FactionAPI faction, boolean isAttacker) {
+		FactionAPI supportee = getSide(isAttacker).faction;
+		if (faction.isPlayerFaction() && Misc.getCommissionFaction() == supportee)
 			return true;
-		if (AllianceManager.areFactionsAllied(faction.getId(), attacker.faction.getId()))
+		if (AllianceManager.areFactionsAllied(faction.getId(), supportee.getId()))
 			return true;
 		
 		return false;
 	}
 	
-	protected boolean canSupportAttacker(CampaignFleetAPI fleet) {
+	protected boolean fleetCanSupport(CampaignFleetAPI fleet, boolean isAttacker) 
+	{
 		if (!fleet.isPlayerFleet() && !"exerelinInvasionFleet".equals(
 					fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_FLEET_TYPE)))
 			return false;
 		
-		return canSupportAttacker(fleet.getFaction());
+		return canSupport(fleet.getFaction(), isAttacker);
 	}
 	
 	// TODO
-	protected List<CampaignFleetAPI> getAttackerSupportingFleets() {
+	protected List<CampaignFleetAPI> getSupportingFleets(boolean isAttacker) {
 		List<CampaignFleetAPI> fleets = new ArrayList<>();
 		SectorEntityToken token = market.getPrimaryEntity();
 		for (CampaignFleetAPI fleet : token.getContainingLocation().getFleets()) 
 		{
-			if (!canSupportAttacker(fleet))
+			if (!fleetCanSupport(fleet, isAttacker))
 				continue;			
 			
-			if (MathUtils.getDistance(fleet, token) > MAX_SUPPORT_DIST)
+			if (MathUtils.getDistance(fleet, token) > GBConstants.MAX_SUPPORT_DIST)
 				continue;
 			
 			fleets.add(fleet);
 		}
 		
 		return fleets;
+	}
+	
+	public boolean isPlayerInRange() {
+		return MathUtils.getDistance(Global.getSector().getPlayerFleet(), 
+				market.getPrimaryEntity()) <= GBConstants.MAX_SUPPORT_DIST;
 	}
 	
 	public static void applyTagWithReason(Map<String, Object> data, String tag, String reason) {
@@ -298,22 +354,370 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		if (reasons.isEmpty()) data.remove(tag);
 	}
 	
+	public GroundUnit createPlayerUnit(ForceType type) {
+		int index = 0;
+		if (!playerData.getUnits().isEmpty()) {
+			index = playerData.getUnits().get(playerData.getUnits().size() - 1).index + 1;
+		}
+		GroundUnit unit = new GroundUnit(this, type, 0, index);
+		unit.faction = Global.getSector().getPlayerFaction();
+		unit.isPlayer = true;
+		unit.isAttacker = this.playerIsAttacker;
+		unit.fleet = Global.getSector().getPlayerFleet();
+		
+		int size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.avgSize);
+		unit.setSize(size, true);
+		
+		unit.setStartingMorale();
+		
+		playerData.getUnits().add(unit);
+		getSide(playerIsAttacker).units.add(unit);
+		return unit;
+	}
+	
+	public void autoGeneratePlayerUnits() {
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		int marines = cargo.getMarines();
+		int heavyArms = (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS);
+		
+		// add heavy units
+		int usableHeavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
+		
+		float perUnitSize = (int)(unitSize.maxSize/GroundUnit.HEAVY_COUNT_DIVISOR);
+		int numCreatable = (int)Math.ceil(usableHeavyArms / perUnitSize);
+		numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
+		int numPerUnit = 0;
+		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
+		
+		log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, usableHeavyArms));
+		for (int i=0; i<numCreatable; i++) {
+			GroundUnit unit = createPlayerUnit(ForceType.HEAVY);
+			unit.setSize(numPerUnit, true);
+		}
+		
+		// add marines
+		marines -= usableHeavyArms * GroundUnit.CREW_PER_MECH;
+		int remainingSlots = MAX_PLAYER_UNITS - playerData.getUnits().size();
+		perUnitSize = unitSize.maxSize;
+		numCreatable = (int)Math.ceil(marines / perUnitSize);
+		numCreatable = Math.min(numCreatable, remainingSlots);
+		numPerUnit = 0;
+		if (numCreatable > 0) numPerUnit = marines/numCreatable;
+		
+		log.info(String.format("Can create %s marines, %s units each, have %s marines", numCreatable, numPerUnit, marines));
+		for (int i=0; i<numCreatable; i++) {
+			GroundUnit unit = createPlayerUnit(ForceType.MARINE);
+			unit.setSize(numPerUnit, true);
+		}
+	}
+	
+	public void updateStability() {
+		int total = 0, attacker = 0;
+		for (IndustryForBattle ifb : industries) {
+			total++;
+			if (ifb.heldByAttacker) attacker++;
+		}
+		String desc = getString("stabilityDesc");
+		market.getStability().addTemporaryModFlat(3, "invasion", desc, 
+				-GBConstants.STABILITY_PENALTY_BASE - GBConstants.STABILITY_PENALTY_OCCUPATION * (float)attacker/total);
+	}
+	
+	public void reapply() {
+		for (GroundBattlePlugin plugin : getPlugins()) {
+			plugin.unapply();
+			plugin.apply();
+		}
+		updateStability();
+	}
+	
+	protected int countPersonnelFromMap(Map<ForceType, Integer> map) {
+		int num = 0;
+		for (ForceType type : map.keySet()) {
+			int thisNum = map.get(type);
+			if (type == ForceType.HEAVY)
+				num += thisNum * GroundUnit.CREW_PER_MECH;
+			else
+				num += thisNum;
+		}
+		return num;
+	}
+	
+	public void addXPToDeployedUnits(SubmarketAPI storage) {
+		
+		// calc the number of marines involved
+		int losses = countPersonnelFromMap(playerData.getLosses());
+		int inFleet = countPersonnelFromMap(playerData.getDisbanded());
+		Integer inStorage = playerData.getSentToStorage().get(Commodities.MARINES);
+		if (inStorage == null) inStorage = 0;
+		float total = inFleet + inStorage;
+		if (total == 0) return;
+		
+		// calc XP to apply
+		float sizeFactor = (float)Math.pow(2, market.getSize());
+		float xp = GBConstants.XP_MARKET_SIZE_MULT * sizeFactor;
+		log.info(String.format("%s xp from market size", xp));
+		float xpFromLosses = losses * GBConstants.XP_CASUALTY_MULT;
+		log.info(String.format("%s xp from losses", xpFromLosses));
+		xp += xpFromLosses;
+		xp = Math.min(xp, total/2);
+		
+		// apply the XP
+		// TODO: log this
+		float storageXP = (inStorage/total) * xp;
+		if (storage != null) {
+			log.info("Adding " + storageXP + " XP for " + inStorage + " marines in storage");
+			playerData.xpTracker.data.addXP(storageXP);
+			
+			log.info(String.format("Current playerdata XP: %s/%s", playerData.xpTracker.data.xp,
+					playerData.xpTracker.data.num));
+		}
+		float fleetXP = (inFleet/total) * xp;
+		log.info("Adding " + fleetXP + " XP for " + inFleet + " marines in fleet");
+		PlayerFleetPersonnelTracker.getInstance().getMarineData().addXP(fleetXP);
+	}
+	
+	public void disbandPlayerUnits() {
+		SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+		boolean anyInStorage = false;
+		for (GroundUnit unit : new ArrayList<>(playerData.getUnits())) {
+			// if any player units are on market, send them to storage
+			if (unit.getLocation() != null) {
+				if (storage != null) {
+					storage.getCargo().addCommodity(Commodities.MARINES, unit.personnel);
+					storage.getCargo().addCommodity(Commodities.HAND_WEAPONS, unit.heavyArms);
+					NexUtils.modifyMapEntry(playerData.getSentToStorage(), Commodities.MARINES, unit.personnel);
+					NexUtils.modifyMapEntry(playerData.getSentToStorage(), Commodities.HAND_WEAPONS, unit.heavyArms);
+					unit.removeUnit(false);
+					anyInStorage = true;
+				}
+				else {
+					// no storage? teleport to cargo
+					unit.removeUnit(true);
+				}
+				
+			}
+			// the ones in fleet we disband directly to player cargo
+			else {
+				unit.removeUnit(true);
+			}
+		}
+		addXPToDeployedUnits(storage);
+	}
+	
+	public void handleTransfer() {
+		if (outcome == BattleOutcome.ATTACKER_VICTORY ) {
+			InvasionRound.conquerMarket(market, attacker.getFaction(), playerInitiated);
+			market.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
+			market.getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
+			
+			InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+			if (dialog == null && dialog instanceof RuleBasedDialog) {
+				((RuleBasedDialog)dialog.getPlugin()).updateMemory();
+			}
+		}
+	}
+	
+	public void endBattle(BattleOutcome outcome) {
+		this.outcome = outcome;
+		market.getStability().removeTemporaryMod("invasion");
+		if (outcome == BattleOutcome.ATTACKER_VICTORY || outcome == BattleOutcome.DEFENDER_VICTORY
+				|| outcome == BattleOutcome.PEACE) {
+			recentUnrest = 1 + (turnNum/market.getSize());
+			RecentUnrest.get(market, true).add(recentUnrest, String.format(getString("unrestReason"), 
+					attacker.getFaction().getDisplayName()));
+		}
+		disbandPlayerUnits();
+		if (Boolean.TRUE.equals(playerIsAttacker) && outcome == BattleOutcome.ATTACKER_VICTORY) 
+		{
+			GroundBattleRoundResolve.lootMarket(market);
+		}
+		handleTransfer();
+		
+		responseScript.forceDone();
+		
+		GroundBattleLog log = new GroundBattleLog(this, GroundBattleLog.TYPE_BATTLE_END, turnNum);
+		if (outcome == BattleOutcome.ATTACKER_VICTORY)
+			log.params.put("attackerIsWinner", true);
+		else if (outcome == BattleOutcome.DEFENDER_VICTORY)
+			log.params.put("attackerIsWinner", false);
+		addLogEvent(log);
+		
+		sendUpdateIfPlayerHasIntel(null, false);		
+	}
+	
+	public boolean hasAnyDeployedUnits(boolean attacker) {
+		for (GroundUnit unit : getSide(attacker).getUnits()) {
+			if (unit.getLocation() != null)
+				return true;
+		}
+		return false;
+	}
+	
+	public void checkAnyAttackers() {
+		// any units on ground?
+		if (hasAnyDeployedUnits(true)) return;
+		// guess not, end the battle
+		endBattle(turnNum <= 1 ? BattleOutcome.CANCELLED : BattleOutcome.DEFENDER_VICTORY);
+	}
+	
+	public void checkForVictory() {
+		if (!hasAnyDeployedUnits(false)) {
+			endBattle(BattleOutcome.ATTACKER_VICTORY);
+		}
+	}
+	
+	public void advanceTurn() {
+		reapply();
+		checkAnyAttackers();
+		new GroundBattleRoundResolve(this).resolveRound();
+		checkForVictory();
+		playerData.updateXPTrackerNum();
+		
+		if (outcome != null) {
+			return;
+		}
+		
+		if (playerIsAttacker != null)
+			sendUpdateIfPlayerHasIntel(UPDATE_TURN, false);
+		interval.setElapsed(0);
+		turnNum++;
+	}
+	
+	/**
+	 * Was this market originally owned by the player?
+	 * @return
+	 */
+	protected boolean wasPlayerMarket() {
+		String origOwner = NexUtilsMarket.getOriginalOwner(market);
+		boolean originallyPlayer = origOwner == null || origOwner.equals(Factions.PLAYER);
+		return originallyPlayer;
+	}
+	
+	public void handleAndradaOption() {
+		if (attacker.getFaction().isPlayerFaction()) return;
+		if (!wasPlayerMarket()) {
+			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+			impact.delta = -0.05f * market.getSize();
+			//impact.ensureAtBest = RepLevel.SUSPICIOUS;
+			impact.limit = RepLevel.INHOSPITABLE;
+			Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
+					CoreReputationPlugin.RepActions.CUSTOM, impact, null, null, true), 
+					PlayerFactionStore.getPlayerFactionId());
+		}
+	}
+	
+	public void disruptIndustries() {
+		for (IndustryForBattle ifb : industries) {
+			if (ifb.heldByAttacker) {
+				float currDisruptionTime = ifb.getIndustry().getDisruptedDays();
+				if (currDisruptionTime < GBConstants.DISRUPT_WHEN_CAPTURED_TIME)
+					ifb.getIndustry().setDisrupted(GBConstants.DISRUPT_WHEN_CAPTURED_TIME);
+			}
+		}
+	}
+	
+	protected void addMilitaryResponse() {
+		if (!market.getFaction().getCustomBoolean(Factions.CUSTOM_NO_WAR_SIM)) {
+			MilitaryResponseScript.MilitaryResponseParams params = new MilitaryResponseScript.MilitaryResponseParams(CampaignFleetAIAPI.ActionType.HOSTILE, 
+					"nex_player_invasion_" + market.getId(), 
+					market.getFaction(),
+					market.getPrimaryEntity(),
+					0.75f,
+					900);
+			responseScript = new GBMilitaryResponseScript(params);
+			market.getContainingLocation().addScript(responseScript);
+		}
+		List<CampaignFleetAPI> fleets = market.getContainingLocation().getFleets();
+		for (CampaignFleetAPI other : fleets) {
+			if (other.getFaction() == market.getFaction()) {
+				MemoryAPI mem = other.getMemoryWithoutUpdate();
+				Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, "raidAlarm", true, 1f);
+			}
+		}
+	}
+	
+	@Override
+	protected void advanceImpl(float amount) {
+		float days = Global.getSector().getClock().convertToDays(amount);
+		if (timerForDecision != null) {
+			timerForDecision -= days;
+			if (timerForDecision <= 0) {
+				handleAndradaOption();
+			}
+		}
+		
+		if (outcome != null) {
+			return;
+		}
+		
+		if (!market.isInEconomy()) {
+			endBattle(BattleOutcome.DESTROYED);
+			return;
+		}
+		if (!attacker.getFaction().isHostileTo(defender.getFaction())) {
+			endBattle(BattleOutcome.PEACE);
+			return;
+		}
+		
+		intervalShort.advance(days);
+		if (intervalShort.intervalElapsed()) {
+			disruptIndustries();
+		}
+		
+		interval.advance(days);
+		if (interval.intervalElapsed()) {
+			advanceTurn();
+		}
+	}
+	
+	// =========================================================================
+	// GUI stuff 
+			
 	@Override
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
         String title = getSmallDescriptionTitle();
 
         info.addPara(title, Misc.getBasePlayerColor(), 0f);
 		bullet(info);
-		info.addPara(attacker.faction.getDisplayName(), attacker.faction.getBaseUIColor(), 3);
-		info.addPara(defender.faction.getDisplayName(), defender.faction.getBaseUIColor(), 0);
+		info.addPara(Misc.ucFirst(attacker.faction.getDisplayName()), attacker.faction.getBaseUIColor(), 3);
+		info.addPara(Misc.ucFirst(defender.faction.getDisplayName()), defender.faction.getBaseUIColor(), 0);
+		
+		if (listInfoParam == UPDATE_TURN) {
+			info.addPara(getString("intelDesc_round"), 0, Misc.getHighlightColor(), turnNum + "");
+			if (!playerData.getLossesLastTurn().isEmpty()) {
+				writeLossesLastTurnBullet(info);
+			}
+		}
+		
+		if (outcome != null) {
+			String id = "outcome";
+			switch (outcome) {
+				case ATTACKER_VICTORY:
+					id += "AttackerVictory";
+					break;
+				case DEFENDER_VICTORY:
+					id += "DefenderVictory";
+					break;
+				case PEACE:
+					id += "Peace";
+					break;
+				case DESTROYED:
+					id += "Destroyed";
+					break;
+				case CANCELLED:
+					id += "Cancelled";
+					break;
+				default:
+					id += "Other";
+					break;
+			}
+			info.addPara(getString(id), getBulletColorForMode(mode), 0);
+		}
+		
 		unindent(info);
     }
 	
-	// TODO: market conditions should also be listed here
-	public void generateIntro(CustomPanelAPI outer, TooltipMakerAPI info, float width, float pad) {
-		info.addImages(width, 128, pad, pad, attacker.faction.getLogo(), defender.faction.getLogo());
-		
-		String str = getString("intelDesc_intro");
+	public Map<String, String> getFactionSubs() {
 		Map<String, String> sub = new HashMap<>();
 		sub.put("$attacker", attacker.faction.getDisplayName());
 		sub.put("$theAttacker", attacker.faction.getDisplayNameWithArticle());
@@ -321,6 +725,14 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		sub.put("$theDefender", defender.faction.getDisplayNameWithArticle());
 		sub.put("$market", market.getName());
 		sub.put("$location", market.getContainingLocation().getNameWithLowercaseType());
+		return sub;
+	}
+	
+	public void generateIntro(CustomPanelAPI outer, TooltipMakerAPI info, float width, float pad) {
+		info.addImages(width, 128, pad, pad, attacker.faction.getLogo(), defender.faction.getLogo());
+		
+		String str = getString("intelDesc_intro");
+		Map<String, String> sub = getFactionSubs();
 		
 		str = StringHelper.substituteTokens(str, sub);
 		
@@ -339,7 +751,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
 		
 		if (ExerelinModPlugin.isNexDev) {
-			ButtonAPI button = info.addButton("Resolve round", BUTTON_RESOLVE, 128, 24, pad);
+			ButtonAPI button = info.addButton(getString("btnResolveRound"), BUTTON_RESOLVE, 128, 24, pad);
 		}
 		
 		// view mode buttons
@@ -392,7 +804,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		else if (numPrevious % maxPerRow == 0) {
 			// row filled, place under first card of previous row
 			int rowNum = numPrevious/maxPerRow - 1;
-			TooltipMakerAPI firstOfPrevious = unitCards.get(numCards * rowNum);
+			TooltipMakerAPI firstOfPrevious = unitCards.get(maxPerRow * rowNum);
 			unitPanel.addUIElement(unitCard).belowLeft(firstOfPrevious, 3);
 			//log.info("Placing card in new row");
 		}
@@ -427,10 +839,10 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
 		
 		int numCards = 0;
-		for (GroundUnit unit : playerUnits) {
+		for (GroundUnit unit : playerData.getUnits()) {
 			numCards++;
 		}
-		if (playerUnits.size() < MAX_PLAYER_UNITS)
+		if (playerData.getUnits().size() < MAX_PLAYER_UNITS)
 			numCards++;	// for the "create unit" card
 		
 		int NUM_ROWS = (int)Math.ceil((float)numCards/CARDS_PER_ROW);
@@ -446,16 +858,16 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		List<TooltipMakerAPI> unitCards = new ArrayList<>();
 		
 		try {
-			for (GroundUnit unit : playerUnits) {
-				TooltipMakerAPI unitCard = unit.createUnitCard(unitPanel);
+			for (GroundUnit unit : playerData.getUnits()) {
+				TooltipMakerAPI unitCard = unit.createUnitCard(unitPanel, false);
 				//log.info("Created card for " + unit.name);
 				
 				int numPrevious = unitCards.size();
 				placeCard(unitCard, numCards, numPrevious, unitPanel, unitCards, CARDS_PER_ROW);
 				unitCards.add(unitCard);
 			}
-			if (playerUnits.size() < MAX_PLAYER_UNITS) {
-				TooltipMakerAPI newCard = GroundUnit.createBlankCard(unitPanel);
+			if (playerData.getUnits().size() < MAX_PLAYER_UNITS) {
+				TooltipMakerAPI newCard = GroundUnit.createBlankCard(unitPanel, unitSize);
 				placeCard(newCard, unitCards.size(), unitCards.size(), unitPanel, unitCards, CARDS_PER_ROW);
 			}
 			
@@ -474,7 +886,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		}
 	}
 	
-	static float itemPanelHeight = 200;
+	protected static float itemPanelHeight = 160;
 	public void generateModifiersDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
 	{
 		// Holds the display for each faction, added to 'info'
@@ -542,35 +954,86 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		}		
 	}
 	
-	public void updateStability() {
-		int total = 0, attacker = 0;
-		for (IndustryForBattle ifb : industries) {
-			total++;
-			if (ifb.heldByAttacker) attacker++;
-		}
-		String desc = getString("stabilityDesc");
-		market.getStability().addTemporaryModMult(3, "invasionFlat", desc, -2);
-		market.getStability().addTemporaryModMult(3, "invasion", desc, (float)attacker/total);
-	}
-	
-	public void reapply() {
-		for (GroundBattlePlugin plugin : getPlugins()) {
-			plugin.unapply();
-			plugin.apply();
-		}
-		updateStability();
-	}
-	
-	public void advanceTurn() {
-		reapply();
-		new GroundBattleRoundResolve(this).resolveRound();
-		turnNum++;
-	}
-	
 	public void addLogEvent(GroundBattleLog log) {
 		battleLog.add(log);
 	}
 	
+	public void writeLossesLastTurnBullet(TooltipMakerAPI info) {
+		List<Pair<ForceType, Integer>> lossesSortable = new ArrayList<>();
+		
+		String str = getString("bulletLossesLastTurn");
+		for (ForceType type : playerData.getLossesLastTurn().keySet()) {
+			int thisLoss = playerData.getLossesLastTurn().get(type);
+			lossesSortable.add(new Pair<>(type, thisLoss));
+		}
+		Collections.sort(lossesSortable, new Comparator<Pair<ForceType, Integer>>() {
+			@Override
+			public int compare(Pair<ForceType, Integer> obj1, Pair<ForceType, Integer> obj2) {
+				return obj1.one.compareTo(obj2.one);
+			}
+		});
+		
+		List<String> strings = new ArrayList<>();
+		for (Pair<ForceType, Integer> loss : lossesSortable) {
+			strings.add(loss.two + " " + loss.one.getCommodityName().toLowerCase());
+		}
+		str = String.format(str, StringHelper.writeStringCollection(strings, false, true));
+		info.addPara(str, 0);
+	}
+	
+	@Override
+	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		float pad = 3;
+		float opad = 10;
+		
+		info.addImages(width, 128, pad, pad, attacker.faction.getLogo(), defender.faction.getLogo());
+		if (outcome != null) {
+			String id = "descOutcome";
+			switch (outcome) {
+				case ATTACKER_VICTORY:
+					id += "AttackerVictory";
+					break;
+				case DEFENDER_VICTORY:
+					id += "DefenderVictory";
+					break;
+				case PEACE:
+					id += "Peace";
+					break;
+				case DESTROYED:
+					id += "Destroyed";
+					break;
+				case CANCELLED:
+					id += "Cancelled";
+					break;
+				default:
+					id += "Other";
+					break;
+			}
+			String str = getString(id);
+			str = StringHelper.substituteTokens(str, getFactionSubs());
+			info.addPara(str, opad);
+		}
+		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
+			info.addSectionHeading(StringHelper.getString("exerelin_markets", "intelTransferFactionSizeHeader"),
+				attacker.getFaction().getBaseUIColor(), attacker.getFaction().getDarkUIColor(), Alignment.MID, opad);
+			
+			MarketTransferIntel.addFactionCurrentInfoPara(info, attacker.getFaction().getId(), opad);
+			MarketTransferIntel.addFactionCurrentInfoPara(info, defender.getFaction().getId(), opad);
+		}
+		if (outcome != BattleOutcome.CANCELLED && (playerIsAttacker != null || !playerData.getSentToStorage().isEmpty())) 
+		{
+			info.addSectionHeading(getString("intelDesc_otherNotes"), attacker.getFaction().getBaseUIColor(), 
+					attacker.getFaction().getDarkUIColor(), Alignment.MID, opad);
+			SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+			if (storage != null) {
+				info.addPara(getString("intelDesc_lootAndSurvivors"), opad);
+				info.showCargo(storage.getCargo(), 10, true, opad);
+			} else {
+				info.addPara(getString("intelDesc_lootAndSurvivorsDirect"), opad);
+			}
+		}
+	}
+		
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_RESOLVE) {
@@ -585,6 +1048,17 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		}
 		if (buttonId instanceof GroundUnit) {
 			ui.showDialog(market.getPrimaryEntity(), new UnitOrderDialogPlugin(this, (GroundUnit)buttonId, ui));
+			return;
+		}
+		if (buttonId == GroundUnit.BUTTON_NEW_HEAVY) {
+			createPlayerUnit(ForceType.HEAVY);
+			ui.updateUIForItem(this);
+			return;
+		}
+		if (buttonId == GroundUnit.BUTTON_NEW_MARINE) {
+			createPlayerUnit(ForceType.MARINE);
+			ui.updateUIForItem(this);
+			return;
 		}
 	}
 	
@@ -599,6 +1073,13 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		
 		outer.addSectionHeading(getSmallDescriptionTitle(), faction.getBaseUIColor(), 
 				faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
+		
+		if (outcome != null) {
+			this.createSmallDescription(outer, width, height);
+			generateLogDisplay(outer, panel, width - 14);
+			panel.addUIElement(outer).inTL(0, 0);
+			return;
+		}
 		
 		if (viewMode == null) viewMode = ViewMode.OVERVIEW;
 		
@@ -622,12 +1103,32 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	public String getSmallDescriptionTitle() {
 		String str = getString("intelTitle");
 		str = StringHelper.substituteToken(str, "$market", market.getName());
+		if (outcome != null) {
+			if (outcome == BattleOutcome.ATTACKER_VICTORY)
+				str += " - " + StringHelper.getString("successful", true);
+			else if (outcome == BattleOutcome.DEFENDER_VICTORY)
+				str += " - " + StringHelper.getString("failed", true);
+			else
+				str += " - " + StringHelper.getString("over", true);
+		}
 		return str;
 	}
 	
 	@Override
 	public String getIcon() {
 		return "graphics/icons/markets/mercenaries.png";
+	}
+	
+	@Override
+	public String getCommMessageSound() {
+		if (listInfoParam == UPDATE_TURN)
+			return "nex_sfx_combat";
+		return super.getCommMessageSound();
+	}
+	
+	@Override
+	protected float getBaseDaysAfterEnd() {
+		return 30;
 	}
 		
 	@Override
@@ -650,7 +1151,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
     @Override
     public boolean hasLargeDescription() { 
 		return true; 
-	}	
+	}
 	
 	public static String getString(String id) {
 		return getString(id, false);
@@ -658,6 +1159,19 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	public static String getString(String id, boolean ucFirst) {
 		return StringHelper.getString("nex_invasion2", id, ucFirst);
+	}
+	
+	// =========================================================================
+	// other stuff
+	
+	public static boolean isOngoing(MarketAPI market) {
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GroundBattleIntel.class))
+		{
+			GroundBattleIntel gbi = (GroundBattleIntel)intel;
+			if (gbi.market == market)
+				return true;
+		}
+		return false;
 	}
 	
 	// runcode exerelin.campaign.intel.groundbattle.GroundBattleIntel.createDebugEvent();
@@ -671,6 +1185,10 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	public enum ViewMode {
 		OVERVIEW, COMMAND, LOG, HELP
+	}
+	
+	public enum BattleOutcome {
+		ATTACKER_VICTORY, DEFENDER_VICTORY, PEACE, DESTROYED, CANCELLED, OTHER
 	}
 	
 	public static final Comparator<Industry> INDUSTRY_COMPARATOR = new Comparator<Industry>() {

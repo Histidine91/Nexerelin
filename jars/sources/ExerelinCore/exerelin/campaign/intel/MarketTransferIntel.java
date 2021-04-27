@@ -74,7 +74,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		}
 	}
 	
-	protected FactionAPI getFaction(String id)
+	protected static FactionAPI getFaction(String id)
 	{
 		return Global.getSector().getFaction(id);
 	}
@@ -173,7 +173,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		addFactionCurrentInfoPara(info, oldFactionId, opad);
 	}
 	
-	protected void addFactionCurrentInfoPara(TooltipMakerAPI info, String factionId, float pad)
+	public static void addFactionCurrentInfoPara(TooltipMakerAPI info, String factionId, float pad)
 	{
 		Color h = Misc.getHighlightColor();
 		

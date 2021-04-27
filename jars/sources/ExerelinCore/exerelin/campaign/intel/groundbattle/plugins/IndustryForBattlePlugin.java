@@ -13,13 +13,15 @@ import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBDataManager;
 import exerelin.campaign.intel.groundbattle.GBDataManager.IndustryDef;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.intel.groundbattle.GroundBattleSide;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
-public class IndustryForBattlePlugin implements GroundBattlePlugin {
+public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 	
 	IndustryForBattle indForBattle;
 	protected String defId;
@@ -39,7 +41,7 @@ public class IndustryForBattlePlugin implements GroundBattlePlugin {
 	}
 	
 	public Float getTroopContribution(String type) {
-		if (indForBattle.getIndustry().isDisrupted()) return 0f;
+		//if (indForBattle.getIndustry().isDisrupted()) return 0f;
 		
 		Float num = getDef().troopCounts.get(type);
 		if (num == null) return 0f;
@@ -52,6 +54,9 @@ public class IndustryForBattlePlugin implements GroundBattlePlugin {
 			if (ind.isImproved())
 				num *= 1 + GroundDefenses.IMPROVE_DEFENSE_BONUS;
 		}
+		if (indForBattle.getIndustry().isDisrupted()) {
+			num *= GBConstants.DISRUPTED_TROOP_CONTRIB_MULT;
+		}		
 		
 		return num;
 	}
@@ -80,13 +85,23 @@ public class IndustryForBattlePlugin implements GroundBattlePlugin {
 		GroundBattleSide otherSide = indForBattle.getNonHoldingSide();
 		IndustryDef def = getDef();
 		
-		if (def.enemyLiftCapMult != 1) {
-			otherSide.getLiftCapacity().modifyMult(indForBattle.getIndustry().getId(), def.enemyLiftCapMult, 
+		if (def.enemyDropCostMult != 1) {
+			otherSide.getDropCostMod().modifyMult(indForBattle.getIndustry().getId(), def.enemyDropCostMult, 
 					indForBattle.getIndustry().getCurrentName());
 		}
 		
-		if (def.enemyBombardCostMult != 1) {
-			otherSide.getBombardCostMod().modifyMult(defId, def.enemyBombardCostMult, 
+		if (def.enemyBombardmentCostMult != 1) {
+			otherSide.getBombardmentCostMod().modifyMult(defId, def.enemyBombardmentCostMult, 
+					indForBattle.getIndustry().getCurrentName());
+		}
+		
+		if (def.dropAttritionFactor != 0) {
+			otherSide.getDropAttrition().modifyFlat(defId, def.dropAttritionFactor, 
+					indForBattle.getIndustry().getCurrentName());
+		}
+		
+		if (def.dropAttritionMult != 1) {
+			otherSide.getDropAttrition().modifyMult(defId, def.dropAttritionMult, 
 					indForBattle.getIndustry().getCurrentName());
 		}
 		
@@ -94,6 +109,7 @@ public class IndustryForBattlePlugin implements GroundBattlePlugin {
 			GroundBattleIntel.applyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_BOMBARDMENT, 
 					indForBattle.getIndustry().getId());
 		}
+		//Global.getLogger(this.getClass()).info(defId +" Drop attrition: " + otherSide.getDropAttrition().getModifiedValue());
 	}	
 
 	@Override
@@ -101,28 +117,14 @@ public class IndustryForBattlePlugin implements GroundBattlePlugin {
 		GroundBattleSide otherSide = indForBattle.getNonHoldingSide();
 		IndustryDef def = getDef();
 		
-		if (def.enemyLiftCapMult != 1) {
-			otherSide.getLiftCapacity().unmodify(defId);
-		}
-		
-		if (def.enemyBombardCostMult != 1) {
-			otherSide.getBombardCostMod().unmodify(defId);
-		}
+		otherSide.getDropCostMod().unmodify(defId);
+		otherSide.getBombardmentCostMod().unmodify(defId);
+		otherSide.getDropAttrition().unmodify(defId);
 		
 		if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
 			GroundBattleIntel.unapplyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_BOMBARDMENT, 
 					indForBattle.getIndustry().getId());
 		}
-	}
-
-	@Override
-	public void beforeTurnResolve(int turn) {
-		
-	}
-
-	@Override
-	public void afterTurnResolve(int turn) {
-		
 	}
 
 	@Override
@@ -134,60 +136,57 @@ public class IndustryForBattlePlugin implements GroundBattlePlugin {
 		if (isAttacker == null || indForBattle.heldByAttacker != isAttacker) {
 			return;
 		}
-						
+		
+		if (!hasTooltip()) return;
 		TooltipCreator tt = getModifierTooltip();
-		if (tt == null) return;
 		
 		Industry ind = indForBattle.getIndustry();
+		String icon = getDef().icon == null ? "graphics/icons/industry/local_production2.png" : getDef().icon;
 		CustomPanelGenResult gen = NexUtilsGUI.addPanelWithFixedWidthImage(outer, 
 				null, width, GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT, ind.getCurrentName(), 
 				width - GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT - 8, 8, 
-				"graphics/icons/industry/local_production2.png", GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT, 3, 
+				icon, GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT, 3, 
 				null, true, tt);
 		
 		info.addCustom(gen.panel, pad);
 	}
 	
-	public TooltipCreator getModifierTooltip() {
+	public boolean hasTooltip() {
+		if (indForBattle.isIndustryTrueDisrupted())
+			return false;
+		
 		final IndustryDef def = getDef();
-		// no special features
-		if (def.enemyLiftCapMult == 1 && def.enemyBombardCostMult == 1 
+		if (def.enemyDropCostMult == 1 && def.enemyBombardmentCostMult == 1
+				&& def.dropAttritionFactor == 0
+				&& def.dropAttritionMult == 1
 				&& !def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
-			return null;
+			return false;
+		}
+		return true;
+	}
+	
+	public void processTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+		IndustryDef def = getDef();
+		final Color h = Misc.getHighlightColor();
+		if (def.enemyDropCostMult != 1) {
+			tooltip.addPara("- " + getString("modifierEnemyDropCost"), 0, h, String.format("%.1f", def.enemyDropCostMult));
+		}
+
+		if (def.enemyBombardmentCostMult != 1) {
+			tooltip.addPara("- " + getString("modifierEnemyDropCost"), 0, h, String.format("%.1f", def.enemyBombardmentCostMult));
 		}
 		
-		final Color h = Misc.getHighlightColor();
-		return new TooltipCreator() {
-				@Override
-				public boolean isTooltipExpandable(Object tooltipParam) {
-					return false;
-				}
+		if (def.dropAttritionFactor != 0) {
+			tooltip.addPara("- " + getString("modifierDropAttrition"), 0, h, StringHelper.toPercent(def.dropAttritionFactor/100));
+		}
+		
+		if (def.dropAttritionMult != 1) {
+			tooltip.addPara("- " + getString("modifierDropAttritionMult"), 0, h, String.format("%.1f", def.dropAttritionMult));
+		}
 
-				@Override
-				public float getTooltipWidth(Object tooltipParam) {
-					return 360;
-				}
-
-				@Override
-				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-					if (def.enemyLiftCapMult != 1) {
-						tooltip.addPara("- Enemy lift capacity %s×", 0, h, String.format("%.2f", def.enemyLiftCapMult));
-					}
-
-					if (def.enemyBombardCostMult != 1) {
-						tooltip.addPara("- Enemy bombardment cost %s×", 0, h, String.format("%.2f", def.enemyBombardCostMult));
-					}
-
-					if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
-						tooltip.addPara("- Prevents enemy bombardments", 0);
-					}
-				}
-		};
-	}
-
-	@Override
-	public boolean isDone() {
-		return false;
+		if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
+			tooltip.addPara("- " + getString("modifierPreventBombardment"), 0);
+		}
 	}
 	
 	public static IndustryForBattlePlugin loadPlugin(String defId, IndustryForBattle ind) 

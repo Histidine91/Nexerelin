@@ -1089,17 +1089,25 @@
 	"nex_invasion2":{
 		"intelTitle":"Surface Battle: $market",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
-		"intelDesc_round":"Day %s",
+		"intelDesc_round":"Turn %s",
 		"intelDesc_unitSize":"Unit size: %s (troop count: %s typical, %s max)",
 		"intelDesc_headerAttackerMod":"Attacker modifiers",
 		"intelDesc_headerDefenderMod":"Defender modifiers",
 		"intelDesc_headerCommonMod":"Common modifiers",
 		"intelDesc_strength":"Strength mult: %s",
 		"intelDesc_strength_noFleetSupport":"No fleet support",
+		"intelDesc_otherNotes":"Other notes",
+		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transfered to local storage.",
+		"intelDesc_lootAndSurvivorsDirect":"Surviving units and loot have been returned to fleet cargo.",
+		
+		"bulletLossesLastTurn":"Losses last turn: %s",
 		
 		"btnViewOverview":"Overview",
 		"btnViewCommand":"Command",
 		"btnViewLog":"Log",
+		"btnResolveRound":"Resolve round",
+		"btnNewUnitMarine":"New marine %s",
+		"btnNewUnitHeavy":"New heavy %s",
 		
 		"unitPanel_header":"Available units",
 		"unitPanel_resources":"Resources on fleet",
@@ -1117,6 +1125,13 @@
 		"unitCard_tooltip_morale3":"At %s morale or lower, unit will be forced to reorganize for 1 turn after combat",
 		"unitCard_tooltip_morale4":"If morale drops to zero, unit will evaporate",
 		"unitCard_tooltip_supplies":"Supplies required to deploy unit",
+		"unitCard_tooltip_attackPower":"Attack power under current conditions",
+		"unitCard_tooltip_atkbreakdown_header":"Partial breakdown:",
+		"unitCard_tooltip_atkbreakdown_base":"Base strength",
+		"unitCard_tooltip_atkbreakdown_heavy_offensive":"Mechanized assault",
+		"unitCard_tooltip_atkbreakdown_heavy_cramped":"Close quarters",
+		"unitCard_tooltip_atkbreakdown_morale":"Morale",
+		"unitCard_tooltip_atkbreakdown_reorganizing":"Reorganizing",
 		
 		"actionMove":"move",
 		"actionDeploy":"deploy",
@@ -1124,16 +1139,46 @@
 		"actionResize":"resize",
 		"actionWithdraw":"withdraw",
 		"actionDisband":"disband",
+		"actionCancelMove":"cancel movement",
+		"actionMoveReorganizingTooltip":"Cannot move while reorganizing.",
+		"actionDeployOutOfRange":"Fleet must be within %s units of the target.",
 		"actionDeployNotEnoughTooltip":"Deploying this unit would cost %s supplies. You only have %s supplies available.",
-		"actionDeployConfirm":"Deploying this unit will cost %s supplies and take effect immediately.",
+		"actionDeployInfo":"Deployment will take effect immediately.",
+		"actionDeployInfoAttrition":"Enemy defenses will cause %s damage to this unit during the drop.",
 		"actionWithdrawConfirm":"Confirm unit withdrawal? This will take effect during the move phase of the current turn.",
 		"actionDisbandConfirm":"Really disband this unit?",
 		
+		"currActionReorganizing":"Reorganizing",
+		"currActionWaiting":"Waiting",
+		"currActionWaitingFleet":"Awaiting deployment",
+		"currActionMoving":"Moving to %s",
+		"currActionEngaged":"Engaged at %s",
+		"currActionWithdrawing":"Withdrawing to fleet",
+		
+		"selectorUnitCount":"Unit count",
+		
+		"deployAttrition":"Unit takes ground fire during deployment! %s units lost, %s morale",
+		
+		"dialogIndustryPickerHeader":"Select destination",
+		"dialogNoForces":"You have no forces with which to invade.",
+		"dialogOpenIntel":"Open invasion intel",
+		"dialogGarrisonEstimate":"%s's garrison strength is estimated at:",
+		"dialogPlayerEstimate":"Your available invasion strength is estimated at:",
+		"dialogStrEstimateMilitia":"%s from militia",
+		"dialogStrEstimateMarine":"%s from marines",
+		"dialogStrEstimateHeavy":"%s from heavy units",
+		"dialogEstimateHelp":"The actual outcome of the battle will also be heavily influenced by defense structures, local conditions and the commanders' tactics.",
+		
 		"logHeader":"Battle log",
-		"log_unitLosses":"%s ($unitType) on %s lost %s units, %s morale",
+		"log_unitLosses":"%s ($unitType) on %s lost %s unit(s), %s morale",
 		"log_unitDestroyed":"%s %s ($unitType) on %s evaporated!",
 		"log_industryCaptured":"%s captured by %s! Morale effect: %s",
 		"log_industryCeded":"%s captured by %s",
+		"log_unitMoved":"%s ($unitType) moved from %s to %s",
+		"log_unitDeployed":"%s ($unitType) deployed to %s",
+		"log_unitWithdrawn":"%s ($unitType) withdrawn from %s to fleet",
+		"log_victory":"%s %s wins the battle!",
+		"log_ended":"Battle ended",
 		
 		"troopNameMarine":"marine",
 		"troopNameMech":"heavy",
@@ -1152,6 +1197,34 @@
 		"unitEquivalent":"$num $type $unit",
 		
 		"stabilityDesc":"Ongoing invasion",
+		"unrestReason":"%s invasion",
+		
+		"outcomeAttackerVictory":"Attacker victory",
+		"outcomeDefenderVictory":"Defender victory",
+		"outcomePeace":"Peace",
+		"outcomeDestroyed":"Colony destroyed",
+		"outcomeCancelled":"Cancelled",
+		"outcomeOther":"Event over",
+		
+		"descOutcomeAttackerVictory":"$TheAttacker has conquered $market from $theDefender in a surface battle.",			# amd
+		"descOutcomeDefenderVictory":"$TheAttacker forces on $market were repulsed in a surface battle by $theDefender.",	# amd
+		"descOutcomePeace":"$TheAttacker and $theDefender have made peace, bringing the battle on $market to an end.",		# adm
+		"descOutcomeDestroyed":"$market has been destroyed during the surface battle of $attacker and $defender forces.",	# mad
+		"descOutcomeCancelled":"The attack on $market has been cancelled.",													# m
+		"descOutcomeOther":"The battle between $theAttacker and $theDefender on $market has ended.",						# adm
+		
+		"invasionAlreadyOngoing":"An invasion is already ongoing here.",
+		
+		"modifierHazard":"Hazard Rating",
+		"modifierHazardDesc1":"%s has a current hazard rating of %s.",
+		"modifierHazardDescPos":"Every turn, deployed units recover %s morale, to a maximum of %s.",
+		"modifierHazardDescNeg":"Every turn, deployed units on an industry not controlled by their side lose %s morale, to a minimum of %s.",
+		
+		"modifierEnemyDropCost":"Enemy drop cost %s×",
+		"modifierEnemyBombardmentCost":"Enemy bombardment cost %s×",
+		"modifierDropAttrition":"Drop attrition: Enemies take %s damage on drop",
+		"modifierDropAttritionMult":"Drop attrition multiplier %s×",
+		"modifierPreventBombardment":"Prevents enemy bombardments",
 	},
 	
 	"exerelin_landmarks":{

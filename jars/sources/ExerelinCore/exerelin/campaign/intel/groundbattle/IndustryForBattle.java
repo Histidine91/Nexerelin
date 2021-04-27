@@ -143,7 +143,7 @@ public class IndustryForBattle {
 	}
 	
 	public boolean isIndustryTrueDisrupted() {
-		return ind.getDisruptedDays() > GroundBattleIntel.DISRUPT_WHEN_CAPTURED_TIME;
+		return ind.getDisruptedDays() > GBConstants.DISRUPT_WHEN_CAPTURED_TIME;
 	}
 	
 	public String getIconTooltipPartial(ForceType type, float value) {

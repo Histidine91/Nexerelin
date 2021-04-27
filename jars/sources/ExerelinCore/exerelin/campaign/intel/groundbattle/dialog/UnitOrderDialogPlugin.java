@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.groundbattle.dialog;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.IndustryPickerListener;
 import java.util.Map;
 
@@ -14,13 +15,19 @@ import com.fs.starfarer.api.campaign.VisualPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
+import com.fs.starfarer.api.ui.ValueDisplayMode;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
+import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +39,17 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		
 		// commands for undeployed units
 		DEPLOY,
+		DEPLOY_CONFIRM,
 		RESIZE,
+		RESIZE_CONFIRM,
 		DISBAND,
 		
 		// commands for deployed units
 		MOVE,
 		WITHDRAW,
-		DISRUPT
+		DISRUPT,
+		
+		CANCEL
 	}
 	
 	protected InteractionDialogAPI dialog;
@@ -49,6 +60,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	protected GroundBattleIntel intel;
 	protected GroundUnit unit;
 	protected IntelUIAPI ui;
+	
+	protected IndustryForBattle deployTarget;
 	
 	protected boolean didAnything;
 	
@@ -72,6 +85,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 		dialog.setOptionOnEscape(StringHelper.getString("cancel", true), OptionId.LEAVE);
 		
+		showUnitPanel();
 		optionSelected(null, OptionId.INIT);
 	}
 	
@@ -102,12 +116,22 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			// TODO
 			//options.addOption(getString("actionDisrupt", true), OptionId.DISRUPT, null);
 			
+			if (unit.isReorganizing()) {
+				options.setEnabled(OptionId.MOVE, false);
+				options.setTooltip(OptionId.MOVE, getString("actionMoveReorganizingTooltip"));
+			}
+			
 			options.addOptionConfirmation(OptionId.WITHDRAW, 
 					getString("actionWithdrawConfirm"), 
 					confirm, cancel);
 			options.addOptionConfirmation(OptionId.DISRUPT, 
 					"This will disrupt the %s for %s days, and takes effect immediately. The unit will reorganize for one turn.", 
 					confirm, cancel);
+			
+			if (unit.getDestination() != null) {
+				options.addOption(getString("actionCancelMove", true), OptionId.CANCEL, null);
+			}
+			
 		} else {
 			options.addOption(getString("actionDeploy", true), OptionId.DEPLOY, null);
 			options.addOption(getString("actionResize", true), OptionId.RESIZE, null);
@@ -115,28 +139,107 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			
 			int deployCost = unit.getDeployCost();
 			int currSupplies = getCurrentSupplies();
-			if (deployCost > currSupplies) {
+			if (!intel.isPlayerInRange()) {
+				options.setEnabled(OptionId.DEPLOY, false);
+				options.setTooltip(OptionId.DEPLOY, String.format(getString("actionDeployOutOfRange"),
+						(int)GBConstants.MAX_SUPPORT_DIST));
+			}
+			if (unit.getSize() == 0) {
+				options.setEnabled(OptionId.DEPLOY, false);
+			}
+			else if (deployCost > currSupplies) {
 				options.setEnabled(OptionId.DEPLOY, false);
 				options.setTooltip(OptionId.DEPLOY, String.format(getString("actionDeployNotEnoughTooltip"),
 						deployCost, currSupplies));
 				options.setTooltipHighlights(OptionId.DEPLOY, deployCost + "", currSupplies + "");
 			}
 			
-			options.addOptionConfirmation(OptionId.DEPLOY, 
-					String.format(getString("actionDeployConfirm"),	deployCost), 
-					confirm, cancel);
+			//options.addOptionConfirmation(OptionId.DEPLOY, 
+			//		String.format(getString("actionDeployConfirm"),	deployCost), 
+			//		confirm, cancel);
 			options.addOptionConfirmation(OptionId.DISBAND, 
-					String.format(getString("actionDisbandConfirm"),	deployCost), 
+					String.format(getString("actionDisbandConfirm"), deployCost), 
 					confirm, cancel);
 		}
 		
-		options.addOption("Cancel", OptionId.LEAVE, null);
+		addLeaveOption(false);
+	}
+	
+	protected void addLeaveOption(boolean clear) {
+		if (clear) options.clearOptions();
+		options.addOption(StringHelper.getString("leave", true), OptionId.LEAVE, null);
 		options.setShortcut(OptionId.LEAVE, Keyboard.KEY_ESCAPE, false, false, false, true);
+	}
+	
+	public static int getMaxCountForResize(GroundUnit unit, int curr, int absoluteMax) {
+		ForceType type = unit.getType();
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		int max = absoluteMax;
+		
+		if (unit.getType() == ForceType.HEAVY)
+			max /= GroundUnit.HEAVY_COUNT_DIVISOR;
+		
+		max = Math.min(max, curr + (int)cargo.getCommodityQuantity(type.commodityId));
+		if (unit.getType() == ForceType.HEAVY) {
+			max = Math.min(max, unit.getPersonnel() + cargo.getMarines());
+		}
+		
+		return max;
+	}
+	
+	protected void showResizeScreen() {
+		options.clearOptions();
+		int min = 0;
+		int curr = unit.getSize();
+		int max = getMaxCountForResize(unit, curr, intel.getUnitSize().maxSize);
+		
+		options.addSelector(getString("selectorUnitCount", true), "unitSizeSelector", Color.GREEN, 
+				256, 48, 0, max, ValueDisplayMode.VALUE, null);
+		options.setSelectorValue("unitSizeSelector", curr);
+		
+		options.addOption(StringHelper.getString("confirm", true), OptionId.RESIZE_CONFIRM);
+		options.addOption(StringHelper.getString("back", true), OptionId.INIT, null);
+	}
+	
+	protected void confirmResize() {
+		int wantedSize = (int)options.getSelectorValue("unitSizeSelector");
+		unit.setSize(wantedSize, true);
+		didAnything = true;
+		showUnitPanel();
+		optionSelected(null, OptionId.INIT);
+	}
+	
+	protected void showDeploymentConfirmScreen(IndustryForBattle ifb) {
+		deployTarget = ifb;
+		options.clearOptions();
+		String str = getString("actionDeployInfo");
+		int deployCost = unit.getDeployCost();
+		int currSupplies = getCurrentSupplies();
+		dialog.getTextPanel().addPara(str);
+		boolean canAfford = dialog.getTextPanel().addCostPanel(null,
+					Commodities.SUPPLIES, deployCost, true);
+		
+		float attrition = intel.getSide(unit.isAttacker()).getDropAttrition().getModifiedValue()/100;
+		if (attrition > 0) {
+			str = getString("actionDeployInfoAttrition");
+			dialog.getTextPanel().addPara(str, Misc.getNegativeHighlightColor(), StringHelper.toPercent(attrition));
+		}
+		
+		options.addOption(StringHelper.getString("confirm", true), OptionId.DEPLOY_CONFIRM);
+		options.addOption(StringHelper.getString("back", true), OptionId.INIT, null);
+	}
+	
+	protected void confirmDeploy() {
+		unit.deploy(deployTarget, dialog);
+		showUnitPanel();
+		didAnything = true;
+		addLeaveOption(true);
 	}
 	
 	protected List<Industry> getIndustries() {
 		List<Industry> industries = new ArrayList<>();
 		for (IndustryForBattle ifb : intel.getIndustries()) {
+			if (ifb == unit.getLocation()) continue;
 			industries.add(ifb.getIndustry());
 		}
 		return industries;
@@ -149,11 +252,13 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				industries, new IndustryPickerListener() {
 			@Override
 			public void pickedIndustry(Industry industry) {
-				if (deploy) 
-					unit.setLocation(intel.getIndustryForBattleByIndustry(industry));
-				else
+				if (deploy) {
+					showDeploymentConfirmScreen(intel.getIndustryForBattleByIndustry(industry));
+				}
+				else {
 					unit.setDestination(intel.getIndustryForBattleByIndustry(industry));
-				leave(true);
+					leave(true);
+				}
 			}
 			@Override
 			public void cancelledIndustryPicking() {
@@ -164,12 +269,11 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	public void showUnitPanel() {
 		CustomPanelAPI panel = visual.showCustomPanel(GroundUnit.PANEL_WIDTH, GroundUnit.PANEL_HEIGHT, null);
-		panel.addUIElement(unit.createUnitCard(panel));
+		panel.addUIElement(unit.createUnitCard(panel, true));
 	}
 	
 	public void printInit() {
-		showUnitPanel();
-		addChoiceOptions();
+		deployTarget = null;
 	}
 	
 	@Override
@@ -201,9 +305,23 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		case DEPLOY:
 			selectMoveOrDeployDestination(true);
 			break;
+		case DEPLOY_CONFIRM:
+			confirmDeploy();
+			break;
+		case RESIZE:
+			showResizeScreen();
+			break;
+		case RESIZE_CONFIRM:
+			confirmResize();
+			break;
 		case DISBAND:
 			unit.removeUnit(true);
 			leave(true);
+			break;
+		case CANCEL:
+			unit.cancelMove();
+			showUnitPanel();
+			didAnything = true;
 			break;
 		case LEAVE:
 			leave(didAnything);

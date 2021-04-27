@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.utilities.NexUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,14 +31,16 @@ public class GroundBattleSide {
 	protected FactionAPI faction;
 	protected List<GroundUnit> units = new LinkedList<>();
 	protected PersonAPI commander;
-	protected int marinesLost;
-	protected int heaviesLost;
+	protected float startingStrength;	// set for defender only
+	protected Map<ForceType, Integer> losses = new HashMap<>();
+	protected Map<ForceType, Integer> lossesLastTurn = new HashMap<>();
 	protected Map<String, Object> data = new HashMap<>();
 	protected StatBonus damageDealtMod = new StatBonus();
 	protected StatBonus damageTakenMod = new StatBonus();
 	protected StatBonus moraleDamTakenMod = new StatBonus();
-	protected StatBonus bombardCostMod = new StatBonus();
-	protected MutableStat liftCapacity = new MutableStat(0);
+	protected StatBonus dropCostMod = new StatBonus();
+	protected StatBonus bombardmentCostMod = new StatBonus();
+	protected MutableStat dropAttrition = new MutableStat(0);
 	
 	public GroundBattleSide(GroundBattleIntel intel, boolean isAttacker) {
 		this.intel = intel;
@@ -60,12 +63,42 @@ public class GroundBattleSide {
 		return moraleDamTakenMod;
 	}
 	
-	public StatBonus getBombardCostMod() {
-		return bombardCostMod;
+	public StatBonus getDropCostMod() {
+		return dropCostMod;
 	}
 	
-	public MutableStat getLiftCapacity() {
-		return liftCapacity;
+	public StatBonus getBombardmentCostMod() {
+		return bombardmentCostMod;
+	}
+	
+	public MutableStat getDropAttrition() {
+		return dropAttrition;
+	}
+	
+	public FactionAPI getFaction() {
+		return faction;
+	}
+	
+	public List<GroundUnit> getUnits() {
+		return units;
+	}
+	
+	public Map<ForceType, Integer> getLosses() {
+		return losses;
+	}
+	
+	public Map<ForceType, Integer> getLossesLastTurn() {
+		return lossesLastTurn;
+	}
+	
+	public void reportLosses(GroundUnit unit, int num) {
+		ForceType type = unit.getType();
+		NexUtils.modifyMapEntry(losses, type, num);
+		NexUtils.modifyMapEntry(lossesLastTurn, type, num);
+		if (unit.isPlayer) {
+			NexUtils.modifyMapEntry(intel.playerData.getLosses(), type, num);
+			NexUtils.modifyMapEntry(intel.playerData.getLossesLastTurn(), type, num);
+		}
 	}
 	
 	public void generateDefenders() {
@@ -85,7 +118,7 @@ public class GroundBattleSide {
 			heavies += ind.getPlugin().getTroopContribution("heavy");
 		}
 		
-		float countForSize = getTroopCountForMarketSize();
+		float countForSize = GBUtils.getTroopCountForMarketSize(intel.getMarket());
 		countForSize *= 0.5f + (intel.market.getStabilityValue() / 10f) * 0.75f;
 		
 		militia = Math.round(militia * countForSize * 2.5f);
@@ -100,6 +133,10 @@ public class GroundBattleSide {
 		createDefenderUnits(ForceType.HEAVY, Math.round(heavies));
 		
 		allocateDefenders();
+		
+		for (GroundUnit unit : units) {
+			startingStrength += unit.getBaseStrength();
+		}
 	}
 	
 	public void createDefenderUnits(ForceType type, int numTroops) {
@@ -158,13 +195,6 @@ public class GroundBattleSide {
 			log.info(String.format("Adding %s unit to %s", unit.type, loc.ind.getCurrentName()));
 			pickFrom.remove(0);
 		}
-	}
-	
-	public float getTroopCountForMarketSize() {
-		int size = intel.market.getSize();
-		float mult = (float)Math.pow(2, size - 1);
-		
-		return Math.round(mult * 25);
 	}
 	
 	public static int getDefendPriorityFromTags(Industry ind) {

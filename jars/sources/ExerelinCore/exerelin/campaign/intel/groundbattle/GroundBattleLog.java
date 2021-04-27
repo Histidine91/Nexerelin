@@ -1,6 +1,6 @@
 package exerelin.campaign.intel.groundbattle;
 
-import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -18,8 +18,10 @@ public class GroundBattleLog {
 	public static final float TURN_NUM_WIDTH = 24;
 	
 	public static final String TYPE_UNIT_LOSSES = "unitLosses";
+	public static final String TYPE_UNIT_MOVED = "unitMove";
 	public static final String TYPE_UNIT_DESTROYED = "unitDestroyed";
 	public static final String TYPE_INDUSTRY_CAPTURED = "industryCaptured";
+	public static final String TYPE_BATTLE_END = "victory";
 	
 	public final GroundBattleIntel intel;
 	public final int turn;
@@ -41,15 +43,49 @@ public class GroundBattleLog {
 		LabelAPI label;
 		
 		switch (type) {
+			case TYPE_UNIT_MOVED:
+				loc = (IndustryForBattle)params.get("loc");
+				{
+					String unitName = unit.name;
+					IndustryForBattle prev = (IndustryForBattle)params.get("previous");
+					if (loc == null)
+						str = String.format(getString("log_unitWithdrawn"), unitName, prev.ind.getCurrentName());
+					else if (prev == null)
+						str = String.format(getString("log_unitDeployed"), unitName, loc.ind.getCurrentName());
+					else
+						str = String.format(getString("log_unitMoved"), unitName, 
+								prev.ind.getCurrentName(), loc.ind.getCurrentName());
+					str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
+					
+					label = tooltip.addPara(str, 0);
+					if (loc == null) {
+						label.setHighlight(unitName, prev.ind.getCurrentName());
+						label.setHighlightColors(unit.faction.getBaseUIColor(), h);
+					}
+					else if (prev == null) {
+						label.setHighlight(unitName, loc.ind.getCurrentName());
+						label.setHighlightColors(unit.faction.getBaseUIColor(), h);
+					}
+					else {
+						label.setHighlight(unitName, loc.ind.getCurrentName(), prev.ind.getCurrentName());
+						label.setHighlightColors(unit.faction.getBaseUIColor(), h, h);
+					}
+				}				
+				break;
+			
 			case TYPE_UNIT_LOSSES:
-				str = getString("log_unitLosses");
-				str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
-				loc = (IndustryForBattle)params.get("location");
-				label = tooltip.addPara(str, 0, h, unit.name, 
-						loc != null ? loc.ind.getCurrentName() : "<unknown location>",
-						(int)params.get("losses") + "", 
-						String.format("%.0f", -(float)params.get("morale") * 100) + "%");
-				label.setHighlightColors(unit.faction.getBaseUIColor(), h, h, h);
+				{
+					float morale = (float)params.get("morale");
+					str = getString("log_unitLosses");
+					str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
+					loc = (IndustryForBattle)params.get("location");
+					label = tooltip.addPara(str, 0, h, unit.name, 
+							loc != null ? loc.ind.getCurrentName() : "<unknown location>",
+							(int)params.get("losses") + "", 
+							String.format("%.0f", -morale * 100) + "%");
+					label.setHighlightColors(unit.faction.getBaseUIColor(), h, h, 
+							morale < -0.2 ? Misc.getNegativeHighlightColor() : h);
+				}
 				break;
 			
 			case TYPE_UNIT_DESTROYED:
@@ -65,7 +101,7 @@ public class GroundBattleLog {
 				break;
 				
 			case TYPE_INDUSTRY_CAPTURED:
-				Float morale = (float)params.get("morale");
+				Float morale = (Float)params.get("morale");
 				boolean heldByAttacker = (boolean)params.get("heldByAttacker");
 				side = StringHelper.getString(heldByAttacker ? "attacker" : "defender");
 				loc = (IndustryForBattle)params.get("industry");
@@ -82,7 +118,21 @@ public class GroundBattleLog {
 					label = tooltip.addPara(str, 0, h, locStr, side, moraleStr);
 					label.setHighlight(locStr, side, moraleStr);
 					label.setHighlightColors(h, pc, pc);
-				}				
+				}
+				break;
+			case TYPE_BATTLE_END:
+				Boolean isAttacker = (Boolean)params.get("attackerIsWinner");
+				if (isAttacker != null) {
+					str = getString("log_victory");
+					String victorStr = StringHelper.getString(isAttacker ? "attacker" : "defender", true);
+					FactionAPI winner = intel.getSide(isAttacker).getFaction();
+					label = tooltip.addPara(str, 0, h, victorStr, winner.getDisplayName());
+					label.setHighlight(victorStr, winner.getDisplayName());
+					label.setHighlightColors(pc, winner.getBaseUIColor());
+				} else {
+					str = getString("log_ended");
+					tooltip.addPara(str, 0);
+				}
 				
 				break;
 		}
@@ -114,6 +164,10 @@ public class GroundBattleLog {
 				return intel.getHighlightColorForSide(!unit.isAttacker);
 			case TYPE_INDUSTRY_CAPTURED:
 				return intel.getHighlightColorForSide((boolean)params.get("heldByAttacker"));
+			case TYPE_BATTLE_END:
+				Boolean isAttacker = (Boolean)params.get("attackerIsWinner");
+				if (isAttacker != null) return intel.getHighlightColorForSide(isAttacker);
+				return Misc.getBasePlayerColor();
 			default:
 				return Misc.getBasePlayerColor();
 		}

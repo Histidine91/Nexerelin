@@ -2,6 +2,8 @@ package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import exerelin.campaign.intel.groundbattle.GroundUnit;
+import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 
 public interface GroundBattlePlugin {
 	
@@ -16,6 +18,32 @@ public interface GroundBattlePlugin {
 	public void beforeTurnResolve(int turn);
 	
 	public void afterTurnResolve(int turn);
+	
+	public void reportUnitMoved(GroundUnit unit, IndustryForBattle previousLoc);
+	
+	/**
+	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.
+	 * @param unit
+	 * @param dmg The incoming damage value.
+	 * @return The new damage value.
+	 */
+	public float modifyDamageDealt(GroundUnit unit, float dmg);
+	
+	/**
+	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.
+	 * @param unit
+	 * @param dmg The incoming damage value.
+	 * @return The new damage value.
+	 */
+	public float modifyDamageReceived(GroundUnit unit, float dmg);
+	
+	/**
+	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.
+	 * @param unit
+	 * @param dmg The incoming damage value.
+	 * @return The new damage value.
+	 */
+	public float modifyMoraleDamageReceived(GroundUnit unit, float dmg);
 	
 	/**
 	 * Generates an entry for the intel's modifier display.Should have an icon, name and tooltip.

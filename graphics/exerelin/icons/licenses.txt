@@ -7,3 +7,6 @@ population.png
 	Modified from originals from Freepik (https://www.flaticon.com/authors/freepik), free to use with attribution
 	https://www.flaticon.com/free-icon/growing-plant_25207
 	https://www.flaticon.com/free-icon/user_1077063
+	
+red_diamond.png
+	Modified from Starsector's danger3.png

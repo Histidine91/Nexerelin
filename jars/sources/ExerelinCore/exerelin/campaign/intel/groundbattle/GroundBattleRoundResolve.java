@@ -1,12 +1,22 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.utilities.NexUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -26,10 +36,17 @@ public class GroundBattleRoundResolve {
 	public void resolveRound() {
 		// attack, resolve moves, attack again
 		// then check who holds each industry
-		// update morale
+		// update morale and such
 		for (GroundUnit unit : intel.getAllUnits()) {
 			unit.lossesLastTurn = 0;
 			unit.moraleDeltaLastTurn = 0;
+		}
+		intel.getSide(true).getLossesLastTurn().clear();
+		intel.getSide(false).getLossesLastTurn().clear();
+		intel.playerData.getLossesLastTurn().clear();
+		
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.beforeTurnResolve(intel.turnNum);
 		}
 		
 		for (IndustryForBattle ifb : intel.industries) {
@@ -46,15 +63,21 @@ public class GroundBattleRoundResolve {
 		
 		processUnitsAfterRound();
 		updateIndustries();
+		processUnitsAfterRound2();
+		
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.afterTurnResolve(intel.turnNum);
+		}
 	}
 	
 	public void processUnitsAfterRound() {
 		for (GroundUnit unit : intel.getAllUnits()) {
 			unit.reorganize(-1);
+			unit.preventAttack(-1);
 			
 			IndustryForBattle lastLocation = unit.location;
 			
-			if (unit.isPlayer) {
+			if (unit.isPlayer && unit.lossesLastTurn > 0) {
 				GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_LOSSES, intel.turnNum);
 				lg.params.put("unit", unit);
 				lg.params.put("losses", unit.lossesLastTurn);
@@ -63,32 +86,30 @@ public class GroundBattleRoundResolve {
 				intel.addLogEvent(lg);				
 			}
 			
-			boolean destroyed = false;
 			if (unit.getSize() <= 0) {	// ded
 				unit.destroyUnit(0);
-				destroyed = true;
-			}			
-			if (unit.lossesLastTurn > 0 && unit.morale < GBConstants.BREAK_AT_MORALE) {
-				// TODO: try to rout unit before evaporating it
-				unit.destroyUnit(0.5f);
-				destroyed = true;
-			}
-			else if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
-				unit.reorganize(1);
-			}
-			
-			if (destroyed) {
-				GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_DESTROYED, intel.turnNum);
-				lg.params.put("unit", unit);
-				lg.params.put("location", lastLocation);
-				intel.addLogEvent(lg);	
 			}
 		}
+	}
+	
+	public void processUnitsAfterRound2() {
+		
 		for (GroundUnit unit : intel.getAllUnits()) {
-			if (unit.location.isContested()) {
+			if (unit.location != null && unit.location.isContested()) {
 				unit.modifyMorale(-GBConstants.MORALE_LOSS_FROM_COMBAT);
 			} else {
-				unit.modifyMorale(GBConstants.MORALE_RECOVERY_OUT_OF_COMBAT, 0.8f);
+				unit.modifyMorale(GBConstants.MORALE_RECOVERY_OUT_OF_COMBAT, 0, 0.65f);
+			}
+			
+			// was in combat, morale too low, not withdrawn
+			if (unit.lossesLastTurn > 0 && unit.morale < GBConstants.BREAK_AT_MORALE && unit.location != null) 
+			{
+				// TODO: try to rout unit before evaporating it
+				unit.destroyUnit(0.5f);
+			}
+			else if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
+				log.info(String.format("  Unit %s reorganizing due to low morale: %s morale", unit.name, unit.morale));
+				unit.reorganize(1);
 			}
 		}
 	}
@@ -183,23 +204,29 @@ public class GroundBattleRoundResolve {
 		
 		Map<ForceType, Integer> toModify = unit.isAttacker ? atkLosses : defLosses;
 		
-		if (unit.type == ForceType.HEAVY) {
+		boolean heavy = unit.type == ForceType.HEAVY;
+		if (heavy) {
 			unit.heavyArms -= kills;
-			unit.men -= kills * GroundUnit.CREW_PER_MECH;
+			unit.personnel -= kills * GroundUnit.CREW_PER_MECH;
 			if (unit.heavyArms < 0) unit.heavyArms = 0;
-			if (unit.men < 0) unit.men = 0;
+			if (unit.personnel < 0) unit.personnel = 0;
 		}
 		else {
-			unit.men -= kills;
-			if (unit.men < 0) unit.men = 0;
+			unit.personnel -= kills;
+			if (unit.personnel < 0) unit.personnel = 0;
 		}
 		unit.lossesLastTurn += kills;
 		
 		NexUtils.modifyMapEntry(toModify, unit.type, kills);
-		if (unit.isPlayer)
+		if (unit.isPlayer) {
 			NexUtils.modifyMapEntry(playerLosses, unit.type, kills);
+			intel.playerData.xpTracker.data.remove(heavy ? kills * 
+					GroundUnit.CREW_PER_MECH : kills, true);
+		}
 		
 		log.info(String.format("    Unit %s (%s) took %s losses", unit.name, unit.type.toString(), kills));
+		
+		intel.getSide(unit.isAttacker).reportLosses(unit, kills);
 	}
 	
 	public float getAttackStrengthOnIndustry(IndustryForBattle ifb, boolean attacker) 
@@ -209,11 +236,104 @@ public class GroundBattleRoundResolve {
 			if (unit.isAttacker != attacker) continue;
 			float contrib = unit.getAttackStrength();
 			contrib *= GBConstants.BASE_DAMAGE_MULT;
+			contrib *= intel.unitSize.damMult;
 			log.info(String.format("    Unit %s (%s) contributing attack strength: %.2f", 
 					unit.name, unit.type.toString(), contrib));
 			str += contrib;
 		}
 		
 		return str;
+	}
+	
+	public static float computeShortageMult(MarketAPI market) {
+		float totalDemand = 0f;
+		float totalShortage = 0f;
+		for (CommodityOnMarketAPI com : market.getAllCommodities()) {
+			if (com.isPersonnel()) continue;
+			if (com.getCommodity().hasTag(Commodities.TAG_META)) continue;
+			
+			int a = com.getAvailable();			
+			float max = com.getMaxDemand();
+			totalDemand += max;
+			totalShortage += Math.max(0, max - a);
+		}
+		float mult = 1f;
+		if (totalShortage > 0 && totalDemand > 0) {
+			mult = Math.max(0, totalDemand - totalShortage) / totalDemand;
+		}
+		return mult;
+	}
+	
+	public static Map<CommodityOnMarketAPI, Float> computeInvasionValuables(MarketAPI market) 
+	{
+		Map<CommodityOnMarketAPI, Float> result = new HashMap<>();
+		for (CommodityOnMarketAPI com : market.getAllCommodities()) {
+			if (com.isPersonnel()) continue;
+			if (com.getCommodity().hasTag(Commodities.TAG_META)) continue;
+			
+			int a = com.getAvailable();
+			if (a > 0) {
+				float num = BaseIndustry.getSizeMult(a) * com.getCommodity().getEconUnit() * 0.5f;
+				result.put(com, num);
+			}
+		}
+		
+		return result;
+	}
+	
+	public static float getBaseInvasionValue(MarketAPI market, Map<CommodityOnMarketAPI, Float> valuables) {
+		float targetValue = 0f;
+		for (CommodityOnMarketAPI com : valuables.keySet()) {
+			targetValue += valuables.get(com) * com.getCommodity().getBasePrice();
+		}
+		targetValue *= 0.1f;
+		targetValue *= computeShortageMult(market);
+		return targetValue;
+	}
+	
+	public static void lootMarket(MarketAPI market) {
+		Map<CommodityOnMarketAPI, Float> valuables = computeInvasionValuables(market);
+		Random random = new Random();
+		WeightedRandomPicker<CommodityOnMarketAPI> picker = new WeightedRandomPicker<CommodityOnMarketAPI>(random);
+		CargoAPI result = Global.getFactory().createCargo(true);
+		
+		for (CommodityOnMarketAPI com : valuables.keySet()) {
+			picker.add(com, valuables.get(com));
+		}
+		float targetValue = getBaseInvasionValue(market, valuables);
+		
+		//float chunks = 10f;
+		float chunks = valuables.size();
+		if (chunks > 6) chunks = 6;
+		for (int i = 0; i < chunks; i++) {
+			float chunkValue = targetValue * 1f / chunks;
+			float randMult = StarSystemGenerator.getNormalRandom(random, 0.5f, 1.5f);
+			chunkValue *= randMult;
+
+			CommodityOnMarketAPI pick = picker.pick();
+			int quantity = (int) (chunkValue / pick.getCommodity().getBasePrice());
+			if (quantity <= 0) continue;
+
+			// handled in InvasionRound
+			//pick.addTradeModMinus("invasion_" + Misc.genUID(), -quantity, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
+
+			result.addCommodity(pick.getId(), quantity);
+		}
+
+		//raidSpecialItems(result, random, true);
+
+		result.sort();
+
+		float credits = (int)(targetValue * 0.1f * StarSystemGenerator.getNormalRandom(random, 0.5f, 1.5f));
+		if (credits < 0) credits = 2;
+
+		//result.clear();
+		
+		Global.getSector().getPlayerFleet().getCargo().getCredits().add(credits);
+		if (market.getSubmarket(Submarkets.SUBMARKET_STORAGE) != null) {
+			market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addAll(result);
+		}
+
+		//NexUtilsMarket.reportInvadeLoot(dialog, market, tempInvasion, tempInvasion.invasionLoot);
 	}
 }
