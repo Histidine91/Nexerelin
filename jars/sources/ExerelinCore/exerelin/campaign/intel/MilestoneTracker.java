@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyInteractionListener;
@@ -127,7 +128,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 			log.error("Milestone " + id + " does not exist");
 			return;
 		}
-		Global.getSector().getPlayerStats().addStoryPoints(def.points);
+		
 		CampaignClockAPI clock = Global.getSector().getClock();
 		Integer[] date = new Integer[] {clock.getDay(), clock.getMonth(), clock.getCycle()};
 		completedMilestones.put(id, date);
@@ -136,6 +137,11 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 			PlaythroughLog.getInstance().addEntry(def.logString, true);
 		}
 		
+		TextPanelAPI text = null;
+		if (Global.getSector().getCampaignUI().getCurrentInteractionDialog() != null) {
+			//text = Global.getSector().getCampaignUI().getCurrentInteractionDialog().getTextPanel();
+		}
+		Global.getSector().getPlayerStats().addStoryPoints(def.points, text, false);
 		this.sendUpdateIfPlayerHasIntel(id, false);
 	}
 	
