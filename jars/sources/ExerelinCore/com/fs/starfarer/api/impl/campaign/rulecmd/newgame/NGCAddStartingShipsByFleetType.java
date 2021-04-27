@@ -114,12 +114,14 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 	
 	public static void addStartingDModScript(MemoryAPI localMem) {
 		CharacterCreationData data = (CharacterCreationData)localMem.get("$characterData");
-		
 		data.addScript(new Script() {
 			public void run() {
 				CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
+				if (fleet.getMemoryWithoutUpdate().contains("$nex_addedStartingDMods"))
+					return;
 				NexUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
 				fleet.getFleetData().syncIfNeeded();
+				fleet.getMemoryWithoutUpdate().set("$nex_addedStartingDMods", true, 5);
 			}
 		});
 	}

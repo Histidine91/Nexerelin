@@ -333,7 +333,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		
 		for (int i=0; i<ExerelinSetupData.NUM_DMOD_LEVELS; i++) {
 			String name = Misc.ucFirst(ExerelinSetupData.getDModCountText(i));
-			lastHolder = initRadioButton("nex_startingDMods_" + i, name, i == 0, 
+			lastHolder = initRadioButton("nex_startingDMods_" + i, name, i == ExerelinSetupData.getInstance().dModLevel, 
 					buttonPanel, lastHolder, buttons);
 		}
 		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
