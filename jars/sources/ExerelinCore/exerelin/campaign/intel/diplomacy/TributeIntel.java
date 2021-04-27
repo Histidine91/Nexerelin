@@ -263,7 +263,7 @@ public class TributeIntel extends BaseIntelPlugin {
 			return;
 		}
 		
-		FactionAPI claimingFaction = Misc.getClaimingFaction(market.getPrimaryEntity());
+		FactionAPI claimingFaction = NexUtilsFaction.getSystemOwner(market.getStarSystem());
 		if (claimingFaction == null || !claimingFaction.getId().equals(factionId) 
 				|| claimingFaction.isHostileTo(Factions.PLAYER) 
 				|| claimingFaction == Misc.getCommissionFaction()) 

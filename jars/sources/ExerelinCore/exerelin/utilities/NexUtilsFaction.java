@@ -24,12 +24,16 @@ public class NexUtilsFaction {
 	public static MarketAPI getSystemOwningMarket(LocationAPI loc) {
 		int max = 0;
 		MarketAPI result = null;
-		for (MarketAPI curr : Global.getSector().getEconomy().getMarkets(loc)) {
+		List<MarketAPI> markets = Global.getSector().getEconomy().getMarkets(loc);
+		for (MarketAPI curr : markets) {
 			if (curr.isHidden()) continue;
 			
 			int score = curr.getSize();
+			for (MarketAPI other : markets) {
+				if (other != curr && other.getFaction() == curr.getFaction()) score++;
+			}
 			if (isMilitary(curr)) score += 10;
-			if (score > max) {
+			if (score > max) {				
 				max = score;
 				result = curr;
 			}
