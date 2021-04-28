@@ -293,7 +293,8 @@ public class NexMarketBuilder
 	public static int getMaxProductiveIndustries(ProcGenEntity ent)
 	{
 		// disallow going over industry limit when taking both Heavy Industry and Military Base upgrades
-		if (ent.isHQ && ent.entity.getFaction().isPlayerFaction()) return 1;
+		// nah, since there's now a stability penalty for over-industry, we can let the player worry about it
+		//if (ent.isHQ && ent.entity.getFaction().isPlayerFaction()) return 1;
 		
 		int max = 4;
 		int size = ent.market.getSize();
@@ -675,14 +676,15 @@ public class NexMarketBuilder
 			{
 				// add mirror/shade
 				LocationAPI system = entity.getContainingLocation();
-				SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", "Stellar Mirror", "stellar_mirror", factionId);
+				SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", null, "stellar_mirror", factionId);
 				mirror.setCircularOrbitPointingDown(entity, NexUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity) + 180, 
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());
 				mirror.setCustomDescriptionId("stellar_mirror");
-				SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", "Stellar Shade", "stellar_shade", factionId);
+				SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", null, "stellar_shade", factionId);
 				shade.setCircularOrbitPointingDown(entity, NexUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity), 
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
 				shade.setCustomDescriptionId("stellar_shade");
+				market.addCondition(Conditions.SOLAR_ARRAY);
 				
 				//((PlanetAPI)entity).getSpec().setRotation(0);	// planet don't spin
 			}
