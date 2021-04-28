@@ -1470,6 +1470,8 @@ Nex_PrintOriginalOwner
 PrintDescription 3
 FireBest MarketPostOpen",Your $shipOrFleet approaches $entityName.,,
 ,,,,,,
+nex_continueCutCommDebug,DialogOptionSelected,$option == continueCutComm,DismissDialog,,,
+,,,,,,
 ,,,,,,
 # Vanilla overrides,,,,,,
 sal_printDefaultDefenders,TriggerAutomatedDefenses,,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, new energy signatures are detected near the $shortName.",,
