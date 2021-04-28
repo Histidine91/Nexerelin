@@ -54,7 +54,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
     //public static final int NUMBER_OF_SHIPS = 16;
     //public static final int MAX_WEAPONS = 27;
-    public static final RepLevel MIN_STANDING = RepLevel.NEUTRAL;
+    public static RepLevel MIN_STANDING = RepLevel.VENGEFUL;
     public static final String IBB_FILE = "data/config/prism/prism_boss_ships.csv";
     public static final String SHIPS_BLACKLIST = "data/config/prism/prism_ships_blacklist.csv";
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
