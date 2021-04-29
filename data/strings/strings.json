@@ -866,9 +866,9 @@
 
 		"fleetRelationship":"$faction $isOrAre $relationship.",
 
-		"supportingYourForces":"supporting your forces",
-		"joiningTheEnemy":"joining the enemy",
-		"supportingOpposingSide":"supporting the opposing side"
+		"supportingYourForces":"supporting your forces.",
+		"joiningTheEnemy":"joining the enemy.",
+		"supportingOpposingSide":"supporting the opposing side."
 	},
 	"nex_fleetIntel":{
 		"title":"$Action: $market",

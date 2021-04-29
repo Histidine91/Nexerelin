@@ -495,12 +495,15 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 					if (!config.straightToEngage && config.showPullInText) {
 						if (b.getSide(playerSide) == b.getSideFor(closest)) {
 							textPanel.addParagraph(
-									Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": supporting your forces.");//, FRIEND_COLOR);
+									Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": " 
+										+ StringHelper.getString("exerelin_fleets", "supportingYourForces"));//, FRIEND_COLOR);
 						} else {
 							if (hostile) {
-								textPanel.addParagraph(Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": supporting the enemy.");//, ENEMY_COLOR);
+								textPanel.addParagraph(Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": " 
+										+ StringHelper.getString("exerelin_fleets", "joiningTheEnemy"));//, ENEMY_COLOR);
 							} else {
-								textPanel.addParagraph(Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": supporting the opposing side.");
+								textPanel.addParagraph(Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": " 
+										+ StringHelper.getString("exerelin_fleets", "supportingOpposingSide"));
 							}
 						}
 						textPanel.highlightFirstInLastPara(closest.getNameWithFactionKeepCase() + ":", closest.getFaction().getBaseUIColor());
@@ -521,12 +524,15 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				//if (b.isPlayerSide(b.getSideFor(fleet))) {
 				if (!config.straightToEngage && config.showPullInText) {
 					if (b.getSide(playerSide) == b.getSideFor(fleet)) {
-						textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": supporting your forces.");//, FRIEND_COLOR);
+						textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
+								+ StringHelper.getString("exerelin_fleets", "supportingYourForces"));//, FRIEND_COLOR);
 					} else {
 						if (hostile) {
-							textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": joining the enemy.");//, ENEMY_COLOR);
+							textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
+								+ StringHelper.getString("exerelin_fleets", "joiningTheEnemy"));//, ENEMY_COLOR);
 						} else {
-							textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": supporting the opposing side.");
+							textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
+								+ StringHelper.getString("exerelin_fleets", "supportingOpposingSide"));
 						}
 					}
 					textPanel.highlightFirstInLastPara(fleet.getNameWithFactionKeepCase() + ":", fleet.getFaction().getBaseUIColor());
