@@ -45,6 +45,10 @@ public class GroundBattleSide {
 	public GroundBattleSide(GroundBattleIntel intel, boolean isAttacker) {
 		this.intel = intel;
 		this.isAttacker = isAttacker;
+		
+		if (!isAttacker) {
+			commander = intel.getMarket().getAdmin();
+		}
 	}
 	
 	public Map<String, Object> getData() {

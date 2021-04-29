@@ -1,7 +1,9 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 
@@ -9,13 +11,22 @@ public interface GroundBattlePlugin {
 	
 	public static final float MODIFIER_ENTRY_HEIGHT = 32;
 	
-	public void init();
+	public void init(GroundBattleIntel intel);
 	
 	public void apply();
 	
 	public void unapply();
 	
+	public void advance(float days);
+	
 	public void beforeTurnResolve(int turn);
+	
+	/**
+	 * Called twice per turn, before each combat resolution.
+	 * @param turn
+	 * @param numThisTurn Is this the first or second combat event this turn?
+	 */
+	public void beforeCombatResolve(int turn, int numThisTurn);
 	
 	public void afterTurnResolve(int turn);
 	
@@ -27,7 +38,7 @@ public interface GroundBattlePlugin {
 	 * @param dmg The incoming damage value.
 	 * @return The new damage value.
 	 */
-	public float modifyDamageDealt(GroundUnit unit, float dmg);
+	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg);
 	
 	/**
 	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.

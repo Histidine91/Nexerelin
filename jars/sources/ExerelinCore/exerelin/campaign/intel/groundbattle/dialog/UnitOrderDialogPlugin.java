@@ -121,6 +121,12 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				options.setTooltip(OptionId.MOVE, getString("actionMoveReorganizingTooltip"));
 			}
 			
+			if (!intel.isPlayerInRange()) {
+				options.setEnabled(OptionId.WITHDRAW, false);
+				options.setTooltip(OptionId.WITHDRAW, String.format(getString("actionDeployOutOfRange"),
+						(int)GBConstants.MAX_SUPPORT_DIST));
+			}
+			
 			options.addOptionConfirmation(OptionId.WITHDRAW, 
 					getString("actionWithdrawConfirm"), 
 					confirm, cancel);
@@ -130,6 +136,9 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			
 			if (unit.getDestination() != null) {
 				options.addOption(getString("actionCancelMove", true), OptionId.CANCEL, null);
+			}
+			else if (GBConstants.ACTION_WITHDRAW.equals(unit.getCurrAction())) {
+				options.addOption(getString("actionCancelWithdraw", true), OptionId.CANCEL, null);
 			}
 			
 		} else {
@@ -144,7 +153,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				options.setTooltip(OptionId.DEPLOY, String.format(getString("actionDeployOutOfRange"),
 						(int)GBConstants.MAX_SUPPORT_DIST));
 			}
-			if (unit.getSize() == 0) {
+			else if (unit.getSize() == 0) {
 				options.setEnabled(OptionId.DEPLOY, false);
 			}
 			else if (deployCost > currSupplies) {
@@ -321,6 +330,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		case CANCEL:
 			unit.cancelMove();
 			showUnitPanel();
+			addChoiceOptions();
 			didAnything = true;
 			break;
 		case LEAVE:

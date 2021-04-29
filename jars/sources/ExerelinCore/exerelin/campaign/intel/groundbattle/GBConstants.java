@@ -31,4 +31,7 @@ public class GBConstants {
 	
 	public static float XP_MARKET_SIZE_MULT = 4f;
 	public static float XP_CASUALTY_MULT = 0.2f;
+	
+	public static float BASE_GARRISON_SIZE = 25;
+	public static float EXTERNAL_BOMBARDMENT_DAMAGE = 0.75f;
 }

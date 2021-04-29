@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
@@ -420,6 +421,39 @@ public class NexUtilsMarket {
 		for (InvasionListener x : Global.getSector().getListenerManager().getListeners(InvasionListener.class)) {
 			x.reportMarketTransfered(market, newOwner, oldOwner, playerInvolved, 
 					isCapture, factionsToNotify, repChangeStrength);
+		}
+	}
+	
+	// TODO
+	public static void reportNPCGenericRaid(MarketAPI market, MarketCMD.TempData actionData) 
+	{
+		for (ColonyNPCHostileActListener x : Global.getSector().getListenerManager().getListeners(ColonyNPCHostileActListener.class)) 
+		{
+			x.reportNPCGenericRaid(market, actionData);
+		}
+	}
+	
+	public static void reportNPCIndustryRaid(MarketAPI market, MarketCMD.TempData actionData, Industry industry)
+	{
+		for (ColonyNPCHostileActListener x : Global.getSector().getListenerManager().getListeners(ColonyNPCHostileActListener.class)) 
+		{
+			x.reportNPCIndustryRaid(market, actionData, industry);
+		}
+	}
+	
+	public static void reportNPCTacticalBombardment(MarketAPI market, MarketCMD.TempData actionData) 
+	{
+		for (ColonyNPCHostileActListener x : Global.getSector().getListenerManager().getListeners(ColonyNPCHostileActListener.class)) 
+		{
+			x.reportNPCTacticalBombardment(market, actionData);
+		}
+	}
+	
+	public static void reportNPCSaturationBombardment(MarketAPI market, MarketCMD.TempData actionData)
+	{
+		for (ColonyNPCHostileActListener x : Global.getSector().getListenerManager().getListeners(ColonyNPCHostileActListener.class)) 
+		{
+			x.reportNPCSaturationBombardment(market, actionData);
 		}
 	}
 }

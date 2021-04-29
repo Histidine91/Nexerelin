@@ -35,16 +35,19 @@ Smash
 - Disrupts an occupied industry. The selected unit is forced to reorganize for 1 turn.
 
 == Todo ==
-- Battle generation, elapsing, resolution
-	- XP for marines sent to storage
-	- Bombardment listener
+- [test] Unit routing
 
-- Condition to plugin map
+- Attrition sound
 
 - Generate buffs
-	- Ground support package
+	- Faction buffs
+	- Commanders
 
 - Andrada etc. options
+
+- Rebels
+
+- Condition to plugin map
 
 - [done] Military response script
 - Send reinforcement fleet

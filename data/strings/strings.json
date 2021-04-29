@@ -146,6 +146,9 @@
 		"ceasefire":"ceasefire",
 		"peaceTreaty":"peace treaty",
 		
+		"tacticalBombardment":"tactical bombardment",
+		"saturationBombardment":"saturation bombardment",
+		
 		"none":"none",
 	},
 
@@ -1132,6 +1135,7 @@
 		"unitCard_tooltip_atkbreakdown_heavy_cramped":"Close quarters",
 		"unitCard_tooltip_atkbreakdown_morale":"Morale",
 		"unitCard_tooltip_atkbreakdown_reorganizing":"Reorganizing",
+		"unitCard_tooltip_atkbreakdown_disabled":"Attack disabled",
 		
 		"actionMove":"move",
 		"actionDeploy":"deploy",
@@ -1140,6 +1144,7 @@
 		"actionWithdraw":"withdraw",
 		"actionDisband":"disband",
 		"actionCancelMove":"cancel movement",
+		"actionCancelWithdraw":"cancel withdrawal",
 		"actionMoveReorganizingTooltip":"Cannot move while reorganizing.",
 		"actionDeployOutOfRange":"Fleet must be within %s units of the target.",
 		"actionDeployNotEnoughTooltip":"Deploying this unit would cost %s supplies. You only have %s supplies available.",
@@ -1149,6 +1154,7 @@
 		"actionDisbandConfirm":"Really disband this unit?",
 		
 		"currActionReorganizing":"Reorganizing",
+		"currActionShocked":"Shocked",
 		"currActionWaiting":"Waiting",
 		"currActionWaitingFleet":"Awaiting deployment",
 		"currActionMoving":"Moving to %s",
@@ -1175,10 +1181,15 @@
 		"log_industryCaptured":"%s captured by %s! Morale effect: %s",
 		"log_industryCeded":"%s captured by %s",
 		"log_unitMoved":"%s ($unitType) moved from %s to %s",
+		"log_unitRouted":"%s ($unitType) retreated from %s to %s",
 		"log_unitDeployed":"%s ($unitType) deployed to %s",
 		"log_unitWithdrawn":"%s ($unitType) withdrawn from %s to fleet",
+		"log_tacbomb":"%s! Severe damage to units at locations: $industries",
+		"log_satbomb":"%s!! Severe damage to units at all locations",
 		"log_victory":"%s %s wins the battle!",
 		"log_ended":"Battle ended",
+		"log_xp_storage":"%s marines in storage earned %s XP",
+		"log_xp_fleet":"%s marines in fleet earned %s XP",
 		
 		"troopNameMarine":"marine",
 		"troopNameMech":"heavy",
@@ -1225,6 +1236,10 @@
 		"modifierDropAttrition":"Drop attrition: Enemies take %s damage on drop",
 		"modifierDropAttritionMult":"Drop attrition multiplier %s×",
 		"modifierPreventBombardment":"Prevents enemy bombardments",
+		
+		"modifierGroundSupport":"Ground Support",
+		"modifierGroundSupportDesc1":"Ground support is charged over time from nearby fleets each turn, and distributed proportionally to units that are engaged with the enemy. Fleets must be within %s units of the target to contribute.",
+		"modifierGroundSupportDesc2":"Current support charge: %s",
 	},
 	
 	"exerelin_landmarks":{

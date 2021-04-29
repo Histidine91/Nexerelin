@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.groundbattle;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -10,6 +11,7 @@ import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GroundBattleLog {
@@ -19,9 +21,12 @@ public class GroundBattleLog {
 	
 	public static final String TYPE_UNIT_LOSSES = "unitLosses";
 	public static final String TYPE_UNIT_MOVED = "unitMove";
+	public static final String TYPE_UNIT_ROUTED = "unitRouted";
 	public static final String TYPE_UNIT_DESTROYED = "unitDestroyed";
 	public static final String TYPE_INDUSTRY_CAPTURED = "industryCaptured";
+	public static final String TYPE_EXTERNAL_BOMBARDMENT = "externalBombardment";
 	public static final String TYPE_BATTLE_END = "victory";
+	public static final String TYPE_XP_GAINED = "gainXP";
 	
 	public final GroundBattleIntel intel;
 	public final int turn;
@@ -44,7 +49,8 @@ public class GroundBattleLog {
 		
 		switch (type) {
 			case TYPE_UNIT_MOVED:
-				loc = (IndustryForBattle)params.get("loc");
+			case TYPE_UNIT_ROUTED:
+				loc = (IndustryForBattle)params.get("location");
 				{
 					String unitName = unit.name;
 					IndustryForBattle prev = (IndustryForBattle)params.get("previous");
@@ -53,8 +59,8 @@ public class GroundBattleLog {
 					else if (prev == null)
 						str = String.format(getString("log_unitDeployed"), unitName, loc.ind.getCurrentName());
 					else
-						str = String.format(getString("log_unitMoved"), unitName, 
-								prev.ind.getCurrentName(), loc.ind.getCurrentName());
+						str = String.format(getString(type.equals(TYPE_UNIT_ROUTED) ? "log_unitRouted": "log_unitMoved"), 
+								unitName, prev.ind.getCurrentName(), loc.ind.getCurrentName());
 					str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
 					
 					label = tooltip.addPara(str, 0);
@@ -120,6 +126,23 @@ public class GroundBattleLog {
 					label.setHighlightColors(h, pc, pc);
 				}
 				break;
+			case TYPE_EXTERNAL_BOMBARDMENT:
+				{
+					boolean isSaturation = params.containsKey("isSaturation") && (boolean)params.get("isSaturation");
+					str = getString(isSaturation ? "log_satbomb" : "log_tacbomb");
+					String type = StringHelper.getString(isSaturation ? "saturationBombardment" 
+							: "tacticalBombardment", true);
+					if (!isSaturation) {
+						List<String> names = (List<String>)params.get("industries");
+						str = StringHelper.substituteToken(str, "$industries", 
+								StringHelper.writeStringCollection(names, false, true));
+					}
+					tooltip.addPara(str, 0, isSaturation ? 
+							Misc.getNegativeHighlightColor() : h, type);
+				}
+				
+				break;
+				
 			case TYPE_BATTLE_END:
 				Boolean isAttacker = (Boolean)params.get("attackerIsWinner");
 				if (isAttacker != null) {
@@ -133,7 +156,6 @@ public class GroundBattleLog {
 					str = getString("log_ended");
 					tooltip.addPara(str, 0);
 				}
-				
 				break;
 		}
 	}
@@ -159,6 +181,8 @@ public class GroundBattleLog {
 		IndustryForBattle ind = (IndustryForBattle)params.get("industry");
 		switch (type) {
 			case TYPE_UNIT_LOSSES:
+			case TYPE_UNIT_ROUTED:
+			case TYPE_EXTERNAL_BOMBARDMENT:
 				return Misc.getBallisticMountColor();
 			case TYPE_UNIT_DESTROYED:
 				return intel.getHighlightColorForSide(!unit.isAttacker);

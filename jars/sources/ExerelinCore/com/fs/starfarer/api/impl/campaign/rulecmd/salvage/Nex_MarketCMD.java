@@ -56,6 +56,7 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -551,7 +552,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		GroundBattleIntel intel = prepIntel();
 		
-		float[] strEst = GBUtils.estimateDefenderStrength(intel);
+		float[] strEst = GBUtils.estimateDefenderStrength(intel, true);
 		int precision = intel.getUnitSize().avgSize/5;
 		
 		info = text.beginTooltip();
@@ -700,7 +701,6 @@ public class Nex_MarketCMD extends MarketCMD {
 				}
 			}
 		}
-
 		
 		float opad = 10f;
 		float small = 5f;
@@ -955,6 +955,29 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardVisual(market.getPrimaryEntity());
 		
 		addBombardContinueOption();
+	}
+	
+	@Override
+	public void doGenericRaid(FactionAPI faction, float attackerStr, float maxPenalty) {
+		super.doGenericRaid(faction, attackerStr, maxPenalty);
+		NexUtilsMarket.reportNPCGenericRaid(market, temp);
+	}
+	
+	@Override
+	public boolean doIndustryRaid(FactionAPI faction, float attackerStr, Industry industry, float durMult) {
+		boolean result = super.doIndustryRaid(faction, attackerStr, industry, durMult);
+		NexUtilsMarket.reportNPCIndustryRaid(market, temp, industry);
+		return result;
+	}
+	
+	@Override
+	public void doBombardment(FactionAPI faction, BombardType type) {
+		super.doBombardment(faction, type);
+		if (type == BombardType.TACTICAL) {
+			NexUtilsMarket.reportNPCTacticalBombardment(market, temp);
+		} else {
+			NexUtilsMarket.reportNPCSaturationBombardment(market, temp);
+		}
 	}
 	
 	/**

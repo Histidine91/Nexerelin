@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
@@ -23,7 +22,6 @@ import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.campaign.intel.specialforces.namer.PlanetNamer;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
@@ -129,12 +127,20 @@ public class GroundUnit {
 		}
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public IndustryForBattle getLocation() {
 		return location;
 	}
 	
 	public IndustryForBattle getDestination() {
 		return destination;
+	}
+	
+	public String getCurrAction() {
+		return currAction;
 	}
 	
 	public ForceType getType() {
@@ -191,6 +197,30 @@ public class GroundUnit {
 		currAction = null;
 	}
 	
+	public void inflictAttrition(float amount, GroundBattleRoundResolve resolve, 
+			InteractionDialogAPI dialog) 
+	{
+		if (resolve == null)
+			resolve = new GroundBattleRoundResolve(intel);
+		int losses = (int)(this.getSize() * amount);
+		if (losses > 0) {
+			float morale = resolve.damageUnitMorale(this, losses);
+			resolve.inflictUnitLosses(this, losses);
+			
+			if (isPlayer && dialog != null) {
+				TextPanelAPI text = dialog.getTextPanel();
+				text.setFontSmallInsignia();
+				String moraleStr = StringHelper.toPercent(morale);
+				String str = String.format(getString("deployAttrition"), losses, moraleStr);
+				Color neg = Misc.getNegativeHighlightColor();
+				LabelAPI para = text.addPara(str);
+				para.setHighlight(losses + "", moraleStr);
+				para.setHighlightColors(neg, neg);
+				text.setFontInsignia();
+			}
+		}
+	}
+	
 	public void deploy(IndustryForBattle newLoc, InteractionDialogAPI dialog) {		
 		setLocation(newLoc);
 		int cost = getDeployCost();
@@ -201,29 +231,15 @@ public class GroundUnit {
 		destination = null;
 		float attrition = intel.getSide(isAttacker).dropAttrition.getModifiedValue()/100;
 		if (attrition > 0) {
-			int losses = (int)(this.getSize() * attrition);
-			if (losses > 0) {
-				GroundBattleRoundResolve resolve = new GroundBattleRoundResolve(intel);
-				float morale = resolve.damageUnitMorale(this, losses);
-				resolve.inflictUnitLosses(this, losses);
-				
-				if (isPlayer && dialog != null) {
-					TextPanelAPI text = dialog.getTextPanel();
-					text.setFontSmallInsignia();
-					String moraleStr = StringHelper.toPercent(morale);
-					String str = String.format(getString("deployAttrition"), losses, moraleStr);
-					Color neg = Misc.getNegativeHighlightColor();
-					LabelAPI para = text.addPara(str);
-					para.setHighlight(losses + "", moraleStr);
-					para.setHighlightColors(neg, neg);
-					text.setFontInsignia();
-				}
-			}
+			Global.getLogger(this.getClass()).info(String.format(
+					"%s receiving %s attrition during deployment", 
+					toString(), StringHelper.toPercent(attrition)));
+			inflictAttrition(attrition, null, dialog);
 		}
 		if (true || isPlayer) {
 			GroundBattleLog log = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_MOVED, intel.turnNum);
 			log.params.put("unit", this);
-			log.params.put("loc", location);
+			log.params.put("location", location);
 			intel.addLogEvent(log);
 		}
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
@@ -239,8 +255,10 @@ public class GroundUnit {
 	public void executeMove() {
 		IndustryForBattle lastLoc = location;
 		if (GBConstants.ACTION_WITHDRAW.equals(currAction)) {
-			setLocation(null);
-			currAction = null;
+			if (intel.isPlayerInRange()) {
+				setLocation(null);
+				currAction = null;
+			}
 		}
 		else {
 			if (destination == null) return;
@@ -251,7 +269,7 @@ public class GroundUnit {
 			GroundBattleLog log = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_MOVED, intel.turnNum);
 			log.params.put("unit", this);
 			log.params.put("previous", lastLoc);
-			log.params.put("loc", location);
+			log.params.put("location", location);
 			intel.addLogEvent(log);
 		}
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
@@ -319,7 +337,11 @@ public class GroundUnit {
 	public void addActionText(TooltipMakerAPI info) {
 		Color color = Misc.getTextColor();
 		String strId = "currAction";
-		if (isReorganizing()) {
+		if (isReorganizing() && isAttackPrevented()) {
+			strId += "Shocked";
+			color = Misc.getNegativeHighlightColor();
+		}
+		else if (isReorganizing()) {
 			strId += "Reorganizing";
 			color = Misc.getNegativeHighlightColor();
 		}
@@ -405,14 +427,19 @@ public class GroundUnit {
 	}
 	
 	/**
-	 * Partial attack stat, before commander bonuses and plugins are applied.
+	 * Partial attack stat, before fleet/market bonuses are applied.
 	 * @return
 	 */
 	public MutableStat getAttackStat() {
 		MutableStat stat = new MutableStat(0);
 		
+		if (isAttackPrevented()) {
+			stat.modifyMult("disabled", 0, getString("unitCard_tooltip_atkbreakdown_disabled"));
+			return stat;
+		}
+		
 		float baseStr = getBaseStrength();
-		stat.modifyFlat("base", baseStr, "Base strength");
+		stat.modifyFlat("base", baseStr, getString("unitCard_tooltip_atkbreakdown_base"));
 		
 		IndustryForBattle ifb = location;
 		
@@ -444,6 +471,10 @@ public class GroundUnit {
 		if (isReorganizing()) {
 			modifyAttackStatWithDesc(stat, "reorganizing", GBConstants.REORGANIZING_DMG_MULT);
 		}
+				
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.modifyDamageDealt(this, stat);
+		}
 		
 		return stat;
 	}
@@ -473,10 +504,6 @@ public class GroundUnit {
 		}
 		
 		output = intel.getSide(isAttacker).damageDealtMod.computeEffective(output);
-		
-		for (GroundBattlePlugin plugin : intel.getPlugins()) {
-			output = plugin.modifyDamageDealt(this, output);
-		}
 		
 		return output;
 	}
@@ -706,8 +733,13 @@ public class GroundUnit {
 					str = getString("unitCard_tooltip_atkbreakdown_header");
 					tooltip.addPara(str, 3); 
 					tooltip.addStatModGrid(360, 60, 10, 3, getAttackStat(), true, NexUtils.getStatModValueGetter(true, 0));
-					StatBonus bonus = unit.getAttackStatBonus();
 					
+					StatBonus bonus = unit.getAttackStatBonus();
+					if (bonus != null && !bonus.isUnmodified()) {
+						tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
+					}
+					
+					bonus = intel.getSide(isAttacker).getDamageDealtMod();
 					if (bonus != null && !bonus.isUnmodified()) {
 						tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
 					}
@@ -716,6 +748,10 @@ public class GroundUnit {
 		};
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Unit %s (%s)", name, type.toString());
+	}
 	
 	public static enum ForceType {
 		MARINE(Commodities.MARINES, "troopNameMarine", 1, 1), 

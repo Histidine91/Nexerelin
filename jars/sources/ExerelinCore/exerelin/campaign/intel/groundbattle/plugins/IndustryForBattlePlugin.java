@@ -25,13 +25,9 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 	
 	IndustryForBattle indForBattle;
 	protected String defId;
-	
-	@Override
-	public void init() {
 		
-	}
-	
 	public void init(String defId, IndustryForBattle ind) {
+		init(ind.getIntel());
 		this.defId = defId;
 		this.indForBattle = ind;
 	}

@@ -19,13 +19,8 @@ public class PlanetHazardPlugin extends BaseGroundBattlePlugin {
 	public static float MIN_MORALE = 0.4f;
 	public static float MAX_MORALE = 0.7f;
 	
-	protected GroundBattleIntel intel;
 	protected transient String marketCondition;
-	
-	public void init(GroundBattleIntel intel) {
-		this.intel = intel;
-	}
-	
+		
 	@Override
 	public void afterTurnResolve(int turn) {
 		damageUnits(intel.getAllUnits());

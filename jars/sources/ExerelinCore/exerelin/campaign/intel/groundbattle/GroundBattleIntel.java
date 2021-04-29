@@ -3,6 +3,7 @@ package exerelin.campaign.intel.groundbattle;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -13,9 +14,10 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelAtEntity;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
@@ -26,6 +28,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -43,9 +46,12 @@ import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
+import exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ColonyNPCHostileActListener;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -64,9 +70,11 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 // may not actually use this in the end and just go with the "disrupt everything" system
-public class GroundBattleIntel extends BaseIntelPlugin {
+public class GroundBattleIntel extends BaseIntelPlugin implements 
+		ColonyPlayerHostileActListener, ColonyNPCHostileActListener {
 	
 	public static int MAX_PLAYER_UNITS = 12;
+	public static final boolean ALWAYS_RETURN_TO_FLEET = false;
 	
 	public static final float VIEW_BUTTON_WIDTH = 128;
 	public static final float VIEW_BUTTON_HEIGHT = 24;
@@ -84,11 +92,12 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	protected Float timerForDecision;
 	
 	protected MarketAPI market;
+	protected InvasionIntel intel;
 	protected boolean playerInitiated;
 	protected Boolean playerIsAttacker;
 	
-	protected GroundBattleSide attacker = new GroundBattleSide(this, true);
-	protected GroundBattleSide defender = new GroundBattleSide(this, false);
+	protected GroundBattleSide attacker;
+	protected GroundBattleSide defender;
 	protected GBPlayerData playerData;
 		
 	protected transient ViewMode viewMode;
@@ -111,8 +120,6 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	public GroundBattleIntel(MarketAPI market, FactionAPI attacker, FactionAPI defender)
 	{
 		this.market = market;
-		this.attacker.faction = attacker;
-		this.defender.faction = defender;
 		
 		int size = market.getSize();
 		if (size <= 3)
@@ -123,6 +130,11 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			unitSize = UnitSize.BATALLION;
 		else
 			unitSize = UnitSize.REGIMENT;
+		
+		this.attacker = new GroundBattleSide(this, true);
+		this.defender = new GroundBattleSide(this, false);
+		this.attacker.faction = attacker;
+		this.defender.faction = defender;
 		
 		playerData = new GBPlayerData(this);
 	}
@@ -158,11 +170,18 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	}
 	
 	public void initPlugins() {
-		PlanetHazardPlugin plugin = new PlanetHazardPlugin();
-		plugin.init(this);
-		otherPlugins.add(plugin);
+		PlanetHazardPlugin hazard = new PlanetHazardPlugin();
+		hazard.init(this);
+		otherPlugins.add(hazard);
+		
+		FleetSupportPlugin fSupport = new FleetSupportPlugin();
+		fSupport.init(this);
+		otherPlugins.add(fSupport);
 	}
 	
+	/**
+	 * Should be called after relevant parameters are set.
+	 */
 	public void init() {
 		List<Industry> mktIndustries = new ArrayList<>(market.getIndustries());
 		Collections.sort(mktIndustries, INDUSTRY_COMPARATOR);
@@ -176,6 +195,11 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		if (industries.isEmpty()) {
 			addIndustry(Industries.POPULATION);
 		}
+		
+		if (playerInitiated) {
+			attacker.commander = Global.getSector().getPlayerPerson();
+		}
+		defender.commander = market.getAdmin();
 		
 		initPlugins();
 		turnNum = 1;
@@ -193,14 +217,18 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		addMilitaryResponse();
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
+		Global.getSector().getListenerManager().addListener(this);
+		
+		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
+		{
+			x.reportBattleStarted(this);
+		}
 	}
 	
 	public void initDebug() {
-		init();
-		
 		playerInitiated = true;
 		playerIsAttacker = true;
-		
+		init();
 		generateDebugUnits();
 	}
 	
@@ -215,6 +243,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	
 	public List<GroundBattlePlugin> getPlugins() {
 		List<GroundBattlePlugin> list = new ArrayList<>();
+		list.addAll(otherPlugins);
 		for (IndustryForBattle ifb : industries) {
 			if (ifb.getPlugin() == null) {
 				log.warn("Null plugin for " + ifb.ind.getId());
@@ -222,9 +251,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			}
 			list.add(ifb.getPlugin());
 		}
-		list.addAll(otherPlugins);
 		
-		// TODO: add other plugins
 		return list;
 	}
 	
@@ -271,6 +298,10 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		return (playerIsAttacker == isAttacker);
 	}
 	
+	public void setIntel(InvasionIntel intel) {
+		this.intel = intel;
+	}
+	
 	public Color getHighlightColorForSide(boolean isAttacker) {
 		Boolean friendly = isPlayerFriendly(isAttacker);
 		if (friendly == null) return Misc.getHighlightColor();
@@ -294,17 +325,18 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		return false;
 	}
 	
-	protected boolean fleetCanSupport(CampaignFleetAPI fleet, boolean isAttacker) 
+	public boolean fleetCanSupport(CampaignFleetAPI fleet, boolean isAttacker) 
 	{
-		if (!fleet.isPlayerFleet() && !"exerelinInvasionFleet".equals(
-					fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_FLEET_TYPE)))
-			return false;
+		if (fleet.isPlayerFleet()) {
+			return isAttacker == playerIsAttacker;
+		}
+		MemoryAPI mem = fleet.getMemory();
+		if (mem.contains(MemFlags.MEMORY_KEY_TRADE_FLEET)) return false;
 		
 		return canSupport(fleet.getFaction(), isAttacker);
 	}
 	
-	// TODO
-	protected List<CampaignFleetAPI> getSupportingFleets(boolean isAttacker) {
+	public List<CampaignFleetAPI> getSupportingFleets(boolean isAttacker) {
 		List<CampaignFleetAPI> fleets = new ArrayList<>();
 		SectorEntityToken token = market.getPrimaryEntity();
 		for (CampaignFleetAPI fleet : token.getContainingLocation().getFleets()) 
@@ -375,6 +407,12 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		return unit;
 	}
 	
+	/**
+	 * Creates units for player based on available marines and heavy armaments.
+	 * Attempts to create the minimum number of units that will hold 100% of 
+	 * player forces of each type, then distributes marines and heavy arms equally
+	 * between each.
+	 */
 	public void autoGeneratePlayerUnits() {
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		int marines = cargo.getMarines();
@@ -442,8 +480,12 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		return num;
 	}
 	
-	public void addXPToDeployedUnits(SubmarketAPI storage) {
-		
+	/**
+	 * Post-battle XP for player units, both those moved to fleet and to local storage.
+	 * @param storage
+	 */
+	public void addXPToDeployedUnits(SubmarketAPI storage) 
+	{
 		// calc the number of marines involved
 		int losses = countPersonnelFromMap(playerData.getLosses());
 		int inFleet = countPersonnelFromMap(playerData.getDisbanded());
@@ -464,25 +506,42 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		// apply the XP
 		// TODO: log this
 		float storageXP = (inStorage/total) * xp;
-		if (storage != null) {
+		if (storage != null && storageXP > 0) {
 			log.info("Adding " + storageXP + " XP for " + inStorage + " marines in storage");
+			if (playerData.xpTracker.data.num <= 0)
+				playerData.xpTracker.data.num = storage.getCargo().getMarines();
 			playerData.xpTracker.data.addXP(storageXP);
 			
-			log.info(String.format("Current playerdata XP: %s/%s", playerData.xpTracker.data.xp,
+			PersonnelAtEntity atLocation = PlayerFleetPersonnelTracker.getInstance().getDroppedOffAt(
+					Commodities.MARINES, market.getPrimaryEntity(), storage, true);
+			
+			atLocation.data.num = playerData.xpTracker.data.num;
+			atLocation.data.xp = playerData.xpTracker.data.xp;
+			//PlayerFleetPersonnelTracker.getInstance().update();
+			
+			log.info(String.format("Current playerdata XP: %s/%s", atLocation.data.xp,
 					playerData.xpTracker.data.num));
+			log.info(String.format("Current atLocation XP: %s/%s", atLocation.data.xp,
+					atLocation.data.num));
 		}
 		float fleetXP = (inFleet/total) * xp;
-		log.info("Adding " + fleetXP + " XP for " + inFleet + " marines in fleet");
-		PlayerFleetPersonnelTracker.getInstance().getMarineData().addXP(fleetXP);
+		if (fleetXP > 0) {
+			log.info("Adding " + fleetXP + " XP for " + inFleet + " marines in fleet");
+			PlayerFleetPersonnelTracker.getInstance().getMarineData().addXP(fleetXP);
+		}
 	}
 	
+	/**
+	 * Breaks up player units after the battle ends.
+	 */
 	public void disbandPlayerUnits() {
 		SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+		
 		boolean anyInStorage = false;
 		for (GroundUnit unit : new ArrayList<>(playerData.getUnits())) {
 			// if any player units are on market, send them to storage
 			if (unit.getLocation() != null) {
-				if (storage != null) {
+				if (storage != null && !ALWAYS_RETURN_TO_FLEET) {
 					storage.getCargo().addCommodity(Commodities.MARINES, unit.personnel);
 					storage.getCargo().addCommodity(Commodities.HAND_WEAPONS, unit.heavyArms);
 					NexUtils.modifyMapEntry(playerData.getSentToStorage(), Commodities.MARINES, unit.personnel);
@@ -542,7 +601,12 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			log.params.put("attackerIsWinner", false);
 		addLogEvent(log);
 		
-		sendUpdateIfPlayerHasIntel(null, false);		
+		sendUpdateIfPlayerHasIntel(null, false);
+
+		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
+		{
+			x.reportBattleEnded(this);
+		}		
 	}
 	
 	public boolean hasAnyDeployedUnits(boolean attacker) {
@@ -566,10 +630,22 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		}
 	}
 	
-	public void advanceTurn() {
+	public void advanceTurn(boolean force) {
+		if (force) {
+			doShortIntervalStuff(interval.getIntervalDuration() - interval.getElapsed());
+		}
+		
 		reapply();
 		checkAnyAttackers();
+		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
+		{
+			x.reportBattleBeforeTurn(this, turnNum);
+		}
 		new GroundBattleRoundResolve(this).resolveRound();
+		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
+		{
+			x.reportBattleAfterTurn(this, turnNum);
+		}
 		checkForVictory();
 		playerData.updateXPTrackerNum();
 		
@@ -593,6 +669,10 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		return originallyPlayer;
 	}
 	
+	/**
+	 * If the player decides to keep the market for themselves rather than 
+	 * transferring it to commissioning faction.
+	 */
 	public void handleAndradaOption() {
 		if (attacker.getFaction().isPlayerFaction()) return;
 		if (!wasPlayerMarket()) {
@@ -606,6 +686,9 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		}
 	}
 	
+	/**
+	 * Briefly, periodically disrupt all industries occupied by attacker.
+	 */
 	public void disruptIndustries() {
 		for (IndustryForBattle ifb : industries) {
 			if (ifb.heldByAttacker) {
@@ -636,6 +719,27 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		}
 	}
 	
+	public void reportExternalBombardment(IndustryForBattle ifb) {
+		if (ifb == null) return;
+		InteractionDialogAPI dialog = null;	//Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+		for (GroundUnit unit : ifb.units) {
+			unit.inflictAttrition(GBConstants.EXTERNAL_BOMBARDMENT_DAMAGE, null, dialog);
+			unit.reorganize(1);
+			unit.preventAttack(1);
+		}
+		reapply();
+	}
+	
+	public void doShortIntervalStuff(float days) {
+		disruptIndustries();
+		for (GroundBattlePlugin plugin : getPlugins()) {
+			plugin.advance(days);
+		}
+	}
+	
+	// =========================================================================
+	// callins
+	
 	@Override
 	protected void advanceImpl(float amount) {
 		float days = Global.getSector().getClock().convertToDays(amount);
@@ -661,13 +765,67 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 		
 		intervalShort.advance(days);
 		if (intervalShort.intervalElapsed()) {
-			disruptIndustries();
+			doShortIntervalStuff(intervalShort.getElapsed());
 		}
 		
 		interval.advance(days);
 		if (interval.intervalElapsed()) {
-			advanceTurn();
+			advanceTurn(false);
 		}
+	}
+
+	@Override
+	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {}
+
+	@Override
+	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
+			MarketCMD.TempData actionData, Industry industry) {}
+
+	@Override
+	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {
+		List<Industry> industries = actionData.bombardmentTargets;
+		List<String> indNames = new ArrayList<>();
+		for (Industry industry : industries) {
+			reportExternalBombardment(getIndustryForBattleByIndustry(industry));
+			indNames.add(industry.getCurrentName());
+		}
+		
+		GroundBattleLog log = new GroundBattleLog(this, GroundBattleLog.TYPE_EXTERNAL_BOMBARDMENT, turnNum);
+		log.params.put("isSaturation", false);
+		log.params.put("industries", indNames);
+		addLogEvent(log);
+	}
+
+	@Override
+	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {
+		List<Industry> industries = actionData.bombardmentTargets;
+		for (Industry industry : industries) {
+			reportExternalBombardment(getIndustryForBattleByIndustry(industry));
+		}
+		GroundBattleLog log = new GroundBattleLog(this, GroundBattleLog.TYPE_EXTERNAL_BOMBARDMENT, turnNum);
+		log.params.put("isSaturation", true);
+		addLogEvent(log);
+	}
+	
+	@Override
+	public void reportNPCGenericRaid(MarketAPI market, MarketCMD.TempData actionData) {}
+
+	@Override
+	public void reportNPCIndustryRaid(MarketAPI market, MarketCMD.TempData actionData, Industry industry) {}
+
+	@Override
+	public void reportNPCTacticalBombardment(MarketAPI market, MarketCMD.TempData actionData) 
+	{
+		reportTacticalBombardmentFinished(null, market, actionData);
+	}
+
+	@Override
+	public void reportNPCSaturationBombardment(MarketAPI market, MarketCMD.TempData actionData) 
+	{
+		reportSaturationBombardmentFinished(null, market, actionData);
 	}
 	
 	// =========================================================================
@@ -901,12 +1059,12 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 			TooltipMakerAPI dispDef = strPanel.createUIElement(subWidth, itemPanelHeight, true);
 			strPanel.addUIElement(dispDef).inTR(0, 0);
 
-			FactionAPI player = Global.getSector().getPlayerFaction();
+			FactionAPI neutral = Global.getSector().getFaction(Factions.NEUTRAL);
 
 			dispAtk.addSectionHeading(getString("intelDesc_headerAttackerMod"), 
 					attacker.faction.getBaseUIColor(), attacker.faction.getDarkUIColor(), Alignment.MID, pad);
 			dispCom.addSectionHeading(getString("intelDesc_headerCommonMod"), 
-					player.getBaseUIColor(), player.getDarkUIColor(), Alignment.MID, pad);
+					neutral.getBaseUIColor(), neutral.getDarkUIColor(), Alignment.MID, pad);
 			dispDef.addSectionHeading(getString("intelDesc_headerDefenderMod"),
 					defender.faction.getBaseUIColor(), defender.faction.getDarkUIColor(), Alignment.MID, pad);
 			
@@ -1037,7 +1195,7 @@ public class GroundBattleIntel extends BaseIntelPlugin {
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_RESOLVE) {
-			advanceTurn();
+			advanceTurn(true);
 			ui.updateUIForItem(this);
 			return;
 		}

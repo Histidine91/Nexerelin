@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
@@ -11,13 +6,15 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 
-/**
- *
- * @author Histidine
- */
 public class GBUtils {
 	
-	public static float[] estimateDefenderStrength(GroundBattleIntel intel) {
+	/**
+	 * Estimates the strength of the militia, marines and heavy units in the planetary garrison.
+	 * @param intel
+	 * @param useHealth If true, will take into account garrison damage from recent invasions.
+	 * @return
+	 */
+	public static float[] estimateDefenderStrength(GroundBattleIntel intel, boolean useHealth) {
 		float militia = 1, marines = 0, heavies = 0;
 		if (intel.market.getSize() >= 5) {
 			militia = 0.75f;
@@ -62,6 +59,6 @@ public class GBUtils {
 		int size = market.getSize();
 		float mult = (float)Math.pow(2, size - 1);
 		
-		return Math.round(mult * 25);
+		return Math.round(mult * GBConstants.BASE_GARRISON_SIZE);
 	}
 }

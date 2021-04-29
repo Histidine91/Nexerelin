@@ -49,6 +49,10 @@ public class GroundBattleRoundResolve {
 			plugin.beforeTurnResolve(intel.turnNum);
 		}
 		
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.beforeCombatResolve(intel.turnNum, 1);
+		}
+		
 		for (IndustryForBattle ifb : intel.industries) {
 			resolveCombatOnIndustry(ifb);
 		}
@@ -57,13 +61,19 @@ public class GroundBattleRoundResolve {
 			unit.executeMove();
 		}
 		
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.beforeCombatResolve(intel.turnNum, 2);
+		}
+		
 		for (IndustryForBattle ifb : intel.industries) {
 			resolveCombatOnIndustry(ifb);
 		}
 		
 		processUnitsAfterRound();
-		updateIndustries();
+		updateIndustryOwners();
 		processUnitsAfterRound2();
+		updateIndustryOwners();
+		intel.disruptIndustries();
 		
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			plugin.afterTurnResolve(intel.turnNum);
@@ -114,7 +124,35 @@ public class GroundBattleRoundResolve {
 		}
 	}
 	
-	public void updateIndustries() {
+	public IndustryForBattle tryRoutUnit(GroundUnit unit) {
+		WeightedRandomPicker<IndustryForBattle> picker = new WeightedRandomPicker<>();
+		for (IndustryForBattle ifb : intel.getIndustries()) {
+			if (ifb.isContested()) continue;
+			if (ifb == unit.getLocation()) continue;
+			float weight = 1;
+			if (unit.getDestination() == ifb)
+				weight = 2;
+			picker.add(ifb, weight);
+		}
+		IndustryForBattle selected = picker.pick();
+		if (selected != null) {
+			IndustryForBattle previous = unit.getLocation();
+			unit.inflictAttrition(0.5f, this, null);
+			unit.setLocation(selected);
+			GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_ROUTED, intel.turnNum);
+			lg.params.put("unit", this);
+			lg.params.put("location", selected);
+			lg.params.put("previous", previous);
+			intel.addLogEvent(lg);
+			return selected;
+		}			
+		else {
+			unit.destroyUnit(0.5f);
+			return null;
+		}
+	}
+	
+	public void updateIndustryOwners() {
 		for (IndustryForBattle ifb : intel.industries) {
 			ifb.updateOwner();
 		}
@@ -193,8 +231,8 @@ public class GroundBattleRoundResolve {
 		moraleDmg = unit.getAdjustedMoraleDamageTaken(moraleDmg);
 		float moraleDmgClamped = unit.modifyMorale(-moraleDmg);
 		
-		log.info(String.format("    Unit %s (%s) took %.2f morale damage, now has %.2f", 
-				unit.name, unit.type.toString(), moraleDmg, unit.morale));
+		log.info(String.format("    Unit %s took %.2f morale damage, now has %.2f", 
+				unit.toString(), moraleDmg, unit.morale));
 		
 		return moraleDmgClamped;
 	}
