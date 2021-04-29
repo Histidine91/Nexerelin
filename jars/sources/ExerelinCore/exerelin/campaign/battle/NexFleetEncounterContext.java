@@ -249,6 +249,9 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			{
 				continue;
 			}
+			if (Misc.isUnremovable(member.getCaptain())) {
+				continue;
+			}
 
 			OfficerDataAPI officer = battle.getSourceFleet(member).getFleetData().getOfficerData(member.getCaptain());
 			if (officer == null) {

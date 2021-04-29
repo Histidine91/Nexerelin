@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
@@ -25,8 +26,10 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -61,6 +64,24 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		super(params);
 		this.config = params;
 		context = new NexFleetEncounterContext();
+	}
+	
+	@Override
+	protected void restoreOrigCaptains() {
+		if (origCaptains != null) {
+			List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
+			Set<PersonAPI> noRestore = new HashSet<>();
+			for (OfficerDataAPI officer : lostOfficers) {
+				noRestore.add(officer.getPerson());
+			}
+			
+			for (FleetMemberAPI member : origCaptains.keySet()) {
+				PersonAPI captain = origCaptains.get(member);
+				if (captain != null && !noRestore.contains(captain)) {
+					member.setCaptain(captain);
+				}
+			}
+		}
 	}
 
 	@Override
