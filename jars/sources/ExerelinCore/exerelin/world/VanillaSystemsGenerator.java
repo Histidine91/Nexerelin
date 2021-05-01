@@ -112,11 +112,6 @@ public class VanillaSystemsGenerator {
 		
 		relay.getMemoryWithoutUpdate().unset(MemFlags.OBJECTIVE_NON_FUNCTIONAL);
 		
-		FactionAPI hegemony = Global.getSector().getFaction(Factions.HEGEMONY);
-		if (hegemony.getRelToPlayer().getRel() < 0) {
-			hegemony.getRelToPlayer().setRel(0);
-		}
-		
 		// removing this leaves "supplement from local resources" bonuses active
 		//ancyra.getMarket().removeSubmarket(Submarkets.LOCAL_RESOURCES);
 		
