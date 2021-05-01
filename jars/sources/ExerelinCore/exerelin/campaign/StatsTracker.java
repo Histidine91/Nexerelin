@@ -274,8 +274,15 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     }
     
     // all guesstimates until TempData becomes actually accessible
-    public int addOrphansFromMilitaryAction(int power) {
+    public int addOrphansFromMilitaryAction(int power, float raidMult) {
         int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
+        if (raidMult < 0) {
+            
+        }
+        else {
+            float contestedFactor = 0.5f - Math.abs(0.5f - raidMult);
+            orphans = orphans * 2 * Math.round(contestedFactor);
+        }
         orphansMade += orphans;
         return orphans;
     }
@@ -284,7 +291,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public void reportRaidForValuablesFinishedBeforeCargoShown(
             InteractionDialogAPI dialog, MarketAPI market, TempData actionData, CargoAPI cargo) {
         if (haveOrphans(market.getFactionId())) {
-            int orphans = addOrphansFromMilitaryAction(market.getSize() - 2);
+            int orphans = addOrphansFromMilitaryAction(market.getSize() - 2, actionData.raidMult);
             log.info("Making " + orphans + " orphans from raid for valuables");
         }
         
@@ -296,7 +303,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
             TempData actionData, Industry industry) {
         if (haveOrphans(market.getFactionId())) {
-            int orphans = addOrphansFromMilitaryAction(market.getSize() - 2);
+            int orphans = addOrphansFromMilitaryAction(market.getSize() - 2, actionData.raidMult);
             log.info("Making " + orphans + " orphans from raid to disrupt");
         }
         
@@ -307,7 +314,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
             MarketAPI market, TempData actionData) {
         if (haveOrphans(market.getFactionId())) {
-            int orphans = addOrphansFromMilitaryAction(market.getSize() - 1);
+            int orphans = addOrphansFromMilitaryAction(market.getSize() - 1, -1);
             log.info("Making " + orphans + " orphans from tactical bombardment");
         }
         
