@@ -212,8 +212,8 @@ public class LowerRelations extends CovertActionIntel {
 		else if (result.isDetected()) {
 			DiplomacyIntel.addRelationshipChangePara(info, agentFaction.getId(), targetFaction.getId(), 
 					relation, repResult, pad);
-			DiplomacyIntel.addRelationshipChangePara(info, agentFaction.getId(), targetFaction.getId(), 
-					relation2, repResult, pad);
+			DiplomacyIntel.addRelationshipChangePara(info, agentFaction.getId(), thirdFaction.getId(), 
+					relation2, repResult2, pad);
 		}
 		else if (repResult != null && repResult.delta != 0) {
 			// show warning message
