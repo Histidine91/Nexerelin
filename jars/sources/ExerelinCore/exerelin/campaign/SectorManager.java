@@ -1249,7 +1249,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 && !RebellionIntel.isOngoing(market) && !oldOwnerId.equals("nex_derelict"))
         {
             RebellionIntel rebel = RebellionCreator.getInstance().createRebellion(market, oldOwnerId, true);
-            rebel.setInitialStrengthsAfterInvasion(playerInvolved);
+            if (rebel != null) rebel.setInitialStrengthsAfterInvasion(playerInvolved);
         }
         
         if (newOwner.isPlayerFaction() && isCapture) {
