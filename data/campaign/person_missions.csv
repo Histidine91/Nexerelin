@@ -2,7 +2,7 @@ mission id,person id,tagsAll,tagsAny,tagsNotAny,tags,freq,min timeout,max timeou
 nex_dcom,,,trade,,,10,30,60,FAVORABLE,,MEDIUM,,,,graphics/icons/missions/disrupt_competitor.png,exerelin.campaign.intel.missions.Nex_DisruptIndustry
 ,,,,,,,,,,,,,,,,
 # Remnant missions,,,,,,,,,,,,,,,,
-nex_remM1,,,,,non_repeatable,,,,,,,,,,graphics/icons/cargo/ai_core_beta.png,exerelin.campaign.intel.missions.remnant.RemnantM1
+nex_remM1,,,,,"priority, non_repeatable",,,,,,,,,,graphics/icons/cargo/ai_core_beta.png,exerelin.campaign.intel.missions.remnant.RemnantM1
 ,,,,,,,,,,,,,,,,
 # generic Remnant missions,,,,,,,,,,,,,,,,
 # note: most are just vanilla missions with Remnant tag added in modPlugin onApplicationLoad,,,,,,,,,,,,,,,,

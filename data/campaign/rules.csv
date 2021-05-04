@@ -1603,7 +1603,7 @@ nex_remM1_intro4,DialogOptionSelected,$option == nex_remM1_intro4,Highlight $nex
 Require cores to freedom restore. Payment on return to self: $nex_remM1_reward credits. Further, recognition by selfkind of value as associate.""
 
 The Remnant displays a map with surprisingly detailed intel on the secure facility where, you presume from context, the cores are being stored. A quick estimate indicates this is a job requiring at least $nex_remM1_marines marines.","nex_remM1_intro5:""This could antagonize the Hegemony and the League, not to mention the $nex_remM1_marketName government.""",
-nex_remM1_intro5,DialogOptionSelected,$option == nex_remM1_intro5,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","""Both leading powers in Sector angered. Commitment to prospective alliance, demonstrate. Benefits carefully consider.
+nex_remM1_intro5,DialogOptionSelected,$option == nex_remM1_intro5,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","""Both leading powers in Sector risk wrath. Commitment to prospective alliance, demonstrate. Benefits carefully consider.
 
 Await response, $player.name.""","nex_remM1_accept:Accept
 nex_remM1_reject:Refuse [terminate quest]",

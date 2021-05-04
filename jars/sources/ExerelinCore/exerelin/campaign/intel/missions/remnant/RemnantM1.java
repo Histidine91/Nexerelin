@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RaidDangerLe
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.SpecialContactIntel;
 import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 import java.util.List;
 import java.util.Map;
@@ -176,13 +177,14 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 			case "complete":
 				BaseMissionHub.set(dissonant, new BaseMissionHub(dissonant));
 				dissonant.getMemoryWithoutUpdate().set(BaseMissionHub.NUM_BONUS_MISSIONS, 1);
-				
 				dissonant.getMemoryWithoutUpdate().set("$nex_remM1_completed", true);
 				((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 				return true;
 			case "complete2":
 				dissonant.getName().setFirst(getString("dissonantName1"));
 				dissonant.getName().setLast(getString("dissonantName2"));
+				SpecialContactIntel intel = new SpecialContactIntel(dissonant, dissonant.getMarket());
+				Global.getSector().getIntelManager().addIntel(intel, false, dialog.getTextPanel());
 				return true;
 			case "betray":
 				PersonAPI person = dialog.getInteractionTarget().getActivePerson();

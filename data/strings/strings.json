@@ -656,6 +656,15 @@
 		"msg_configReload":"exerelin_config.json reloaded. The Sector configuration screen will appear when you close the console.",
 	},
 	
+	"nex_contacts":{
+		"nameSpecialContact":"Special Contact",
+		"intelDesc":"$name is $postArticle $postName, and can be found $onOrAt $market, a size $size colony controlled by $theFaction.",
+		"intelDescDeciv1":"$name was $postArticle $postName $onOrAt $market, a colony controlled by $theFaction.",
+		"intelDescDeciv2":"This colony has decivilized, and you've since lost contact with $himOrHer.",
+		"intelDescLastVisit":"Last visited: %s.",
+		"intelDescSpecial":"This is a special contact, who does not count towards the contact limit and cannot be prioritized, suspended or deleted.",
+	},
+	
 	"nex_credits":{
 		"name1":"Zaphide",
 		"contrib1":"The original Exerelin",

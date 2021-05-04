@@ -1,0 +1,7 @@
+{
+	"remnant":{
+		"name":"Remnant",
+		"sort":60,
+		#"color":"cyan",	# needs to be an RBGA color code AFAIK
+	},
+}
