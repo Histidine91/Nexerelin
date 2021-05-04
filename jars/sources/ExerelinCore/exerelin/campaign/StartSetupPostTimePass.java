@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -20,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.Misc;
@@ -134,6 +136,13 @@ public class StartSetupPostTimePass {
 		// Starting blueprints
 		if (selectedFactionId.equals(Factions.PLAYER)) {
 			if (!freeStart) {
+				// clear player debt from colony being unprofitable during new game time pass (if any)
+				MonthlyReport report = SharedData.getData().getPreviousReport();
+				// TODO: maybe do the thing SCC said and give player money instead?
+				if (report != null) {
+					report.setDebt(0);
+					report.setPreviousDebt(0);
+				}
 				Global.getSector().addScript(new OwnFactionSetupScript());
 			}
 		}
