@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class RemnantCustomProductionContract extends CustomProductionContract {
 	
-	public static final float COST_MULT = 1.2f;
+	public static final float COST_MULT = 1.4f;
 	
 	static {
 		//PROD_DAYS = 1;

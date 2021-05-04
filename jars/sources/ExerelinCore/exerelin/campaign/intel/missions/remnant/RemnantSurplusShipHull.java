@@ -19,7 +19,7 @@ import com.fs.starfarer.api.util.Misc;
 
 public class RemnantSurplusShipHull extends SurplusShipHull {
 
-	public static float BASE_PRICE_MULT = 0.8f;
+	public static float BASE_PRICE_MULT_REM = 1f;
 	
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
@@ -71,10 +71,10 @@ public class RemnantSurplusShipHull extends SurplusShipHull {
 		member.getCrewComposition().setCrew(100000);
 		member.getRepairTracker().setCR(0.7f);
 		
-		if (BASE_PRICE_MULT == 1f) {
+		if (BASE_PRICE_MULT_REM == 1f) {
 			price = (int) Math.round(variant.getHullSpec().getBaseValue());
 		} else {
-			price = getRoundNumber(variant.getHullSpec().getBaseValue() * BASE_PRICE_MULT);
+			price = getRoundNumber(variant.getHullSpec().getBaseValue() * BASE_PRICE_MULT_REM);
 		}
 		
 		setRepFactionChangesTiny();
