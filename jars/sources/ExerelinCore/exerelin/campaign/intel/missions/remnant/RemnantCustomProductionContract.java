@@ -1,8 +1,10 @@
 package exerelin.campaign.intel.missions.remnant;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PersonImportance;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
@@ -16,19 +18,26 @@ import static com.fs.starfarer.api.impl.campaign.missions.hub.BaseHubMission.get
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
+import java.util.Map;
 
 public class RemnantCustomProductionContract extends CustomProductionContract {
 	
 	public static final float COST_MULT = 1.2f;
 	
+	static {
+		//PROD_DAYS = 1;
+	}
+	
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
 		//genRandom = Misc.random;
+		//Global.getLogger(this.getClass()).info("Trying Remnant production contract");
 		
 		PersonAPI person = getPerson();
 		if (person == null) return false;
 		
 		if (!setPersonMissionRef(person, "$cpc_ref")) {
+			Global.getLogger(this.getClass()).info("Mission ref already exists");
 			return false;
 		}
 		
@@ -57,6 +66,7 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 		
 		setStartingStage(Stage.WAITING);
 		setSuccessStage(Stage.COMPLETED);
+		//setSuccessStage(Stage.DELIVERED);	// doing it this way prevents double reporting, but loses the "delivered to" bullet point
 		setFailureStage(Stage.FAILED);
 		setNoAbandon();
 		
@@ -64,7 +74,15 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 		setStageOnMarketDecivilized(Stage.FAILED, market);
 		
 		return true;
-		
+	}
+	
+	// see https://fractalsoftworks.com/forum/index.php?topic=21461.msg324415#msg324415
+	// note that it causes double notification on completion
+	public void setCurrentStage(Object next, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		super.setCurrentStage(next, dialog, memoryMap);
+		if (currentStage == Stage.DELIVERED) {
+			endSuccess(dialog, memoryMap);
+		}
 	}
 	
 	@Override
