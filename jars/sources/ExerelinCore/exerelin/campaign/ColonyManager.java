@@ -203,6 +203,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 							maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
 						else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 							maxSize = NexConfig.maxNPCNewColonySize;
+						else if (market.getPlanetEntity() == null)
+							maxSize = Global.getSettings().getInt("nex_stationMaxSize");
 						else
 							maxSize = Global.getSettings().getInt("maxColonySize");
 
@@ -287,7 +289,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 */
 	public void setGrowthRate(MarketAPI market) {
 		boolean player = market.getFaction().isPlayerFaction() || market.isPlayerOwned();
-		boolean want = !player || SectorManager.getManager().isHardMode();
+		boolean want = true;	//!player || SectorManager.getManager().isHardMode();
 		boolean have = market.getImmigrationModifiers().contains(this);
 		if (want == have) return;
 		
@@ -318,6 +320,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				incoming.getWeight().modifyFlat("nex_colonyManager_npcGrowth_freePort", penalty, 
 						getString("npcFreePortGrowthModDesc"));
 			}
+		}
+		if (market.getPlanetEntity() == null) {
+			incoming.getWeight().modifyMult("nex_colonyManager_stationGrowth", Global.getSettings().getFloat("nex_stationGrowthMult"), 
+					getString("stationGrowthMultDesc", false));
 		}
 	}
 	

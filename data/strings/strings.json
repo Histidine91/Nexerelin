@@ -603,6 +603,7 @@
 		
 		"npcGrowthMultDesc":"NPC market",
 		"npcFreePortGrowthModDesc":"Free port NPC offset",
+		"stationGrowthMultDesc":"Station-only colony",
 		"hardModeGrowthMultDesc":"Starfarer mode",
 		"hardModeIncomeMultDesc":"Starfarer mode",
 		"reportAutonomousTax":"Autonomous colony tax",

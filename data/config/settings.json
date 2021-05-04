@@ -49,6 +49,8 @@
 	"nex_spacerDebtMult":1,
 	
 	"nex_npcColonyGrowthMult":0.5,
+	"nex_stationGrowthMult":1,
+	"nex_stationMaxSize":6,
 	"nex_showNPCGrowthMessages":true,
 	
 	"nex_brawlMode":false,	# much stronger invasion fleets, with defense fleets spawned to counter them
