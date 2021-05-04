@@ -390,8 +390,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		else
 		{
-			wantFreePort = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket")
-					|| (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
+			if (market.getMemoryWithoutUpdate().contains("$startingFreeMarket"))
+				wantFreePort = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket");
+			else wantFreePort = (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
 		}
 		
 		if (isFreePort != wantFreePort) {
