@@ -4,18 +4,24 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CoreUITabId;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.StatBonus;
+import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
+import static com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.XP_PER_RAID_MULT;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
@@ -24,16 +30,22 @@ import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
+import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
+import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
 import com.fs.starfarer.api.impl.campaign.rulecmd.VIC_MarketCMD;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BOMBARD;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.ENGAGE;
@@ -44,22 +56,30 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.addBo
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDestroyThreshold;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSaturationBombardmentStabilityPenalty;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;
+import com.fs.starfarer.api.loading.FighterWingSpecAPI;
+import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +114,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	public Nex_MarketCMD(SectorEntityToken entity) {
 		super(entity);
+		initForInvasion(entity);
 	}
 	
 	@Override
@@ -103,20 +124,36 @@ public class Nex_MarketCMD extends MarketCMD {
 		String command = params.get(0).getString(memoryMap);
 		if (command == null) return false;
 		
+		initForInvasion(dialog.getInteractionTarget());
+		
 		if (command.equals("invadeMenu")) {
+			//invadeMenuV2();
 			invadeMenu();
 		} else if (command.equals("invadeConfirm")) {
-			//invadeRunRound();
-			invadeInit();
-		} else if (command.equals("invadeConfirm2")) {
-			//invadeRunRound();
-			//invadeGoToIntel();
+			invadeRunRound();
+			//invadeInitV2();
+		} else if (command.equals("invadeAbort")) {
+			invadeFinish();
+		} else if (command.equals("invadeResult")) {
+			invadeResult(false);
+		} else if (command.equals("invadeResultAndrada")) {
+			invadeResult(true);
 		} else if (hasVIC() && command.equals(VIC_MarketCMD.VBombMenu))
 		{
 			new VIC_MarketCMD().execute(ruleId, dialog, params, memoryMap);
 		}
 		
 		return true;
+	}
+	
+	protected void initForInvasion(SectorEntityToken entity) {
+		String key = "$nex_MarketCMD_tempInvasion";
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		if (mem.contains(key)) {
+			tempInvasion = (TempDataInvasion) mem.get(key);
+		} else {
+			mem.set(key, tempInvasion, 0f);
+		}
 	}
 	
 	@Override
@@ -517,6 +554,133 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	protected void invadeMenu() {
+		tempInvasion.invasionValuables = computeInvasionValuables();
+		CampaignFleetAPI fleet = playerFleet;
+		
+		float width = 350;
+		float opad = 10f;
+		float small = 5f;
+		
+		Color h = Misc.getHighlightColor();
+		
+//		dialog.getVisualPanel().showPlanetInfo(market.getPrimaryEntity());
+//		dialog.getVisualPanel().finishFadeFast();
+		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
+
+		float marines = playerFleet.getCargo().getMarines();
+		float support = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_GROUND_SUPPORT, 0f);
+		if (support > marines) support = marines;
+		float mechs = fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS) * InvasionRound.HEAVY_WEAPONS_MULT;
+		if (mechs > marines) mechs = marines;
+		
+		StatBonus attackerBase = new StatBonus(); 
+		StatBonus defenderBase = new StatBonus(); 
+		
+		//defenderBase.modifyFlatAlways("base", baseDef, "Base value for a size " + market.getSize() + " colony");
+		
+		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
+		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
+		attackerBase.modifyFlatAlways("nex_mechs", mechs, getString("heavyWeaponsOnBoard", true));
+		
+		NexFactionConfig atkConf = NexConfig.getFactionConfig(PlayerFactionStore.getPlayerFactionId());
+		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
+				Misc.ucFirst(fleet.getFaction().getDisplayName()));
+		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
+		
+		StatBonus attacker = playerFleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
+		
+		StatBonus defender = InvasionRound.getDefenderStrengthStat(market);
+		
+		float attackerStr = (int) Math.round(attacker.computeEffective(attackerBase.computeEffective(0f)));
+		float defenderStr = (int) Math.round(defender.computeEffective(0));
+		
+		tempInvasion.attackerStr = attackerStr;
+		tempInvasion.defenderStr = defenderStr;
+		
+		TooltipMakerAPI info = text.beginTooltip();
+		
+		info.setParaSmallInsignia();
+		
+		String is = faction.getDisplayNameIsOrAre();
+		boolean hostile = faction.isHostileTo(Factions.PLAYER);
+		float initPad = 0f;
+		if (!hostile) {
+			str = getString("nonHostileWarning");
+			str = StringHelper.substituteToken(str, "$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
+			str = StringHelper.substituteToken(str, "$isOrAre", is);
+			info.addPara(str, initPad, faction.getBaseUIColor(), faction.getDisplayNameWithArticleWithoutArticle());
+			initPad = opad;
+		}
+		
+		float sep = small;
+		sep = 3f;
+		str = Misc.ucFirst(getString("invasionStrength"));
+		info.addPara(str + ": %s", initPad, h, "" + (int)attackerStr);
+		info.addStatModGrid(width, 50, opad, small, attackerBase, true, statPrinter(false));
+		if (!attacker.isUnmodified()) {
+			info.addStatModGrid(width, 50, opad, sep, attacker, true, statPrinter(true));
+		}
+		
+		str = Misc.ucFirst(getString("groundDefStrength"));
+		info.addPara(str + ": %s", opad, h, "" + (int)defenderStr);
+		//info.addStatModGrid(width, 50, opad, small, defenderBase, true, statPrinter());
+		//if (!defender.isUnmodified()) {
+			info.addStatModGrid(width, 50, opad, small, defender, true, statPrinter(true));
+		//}
+			
+		defender.unmodifyFlat("core_addedDefStr");
+		
+		text.addTooltip();
+
+		boolean hasForces = true;
+		tempInvasion.invasionMult = attackerStr / Math.max(1f, (attackerStr + defenderStr));
+		
+		if (tempInvasion.invasionMult < 0.25f) {
+			text.addPara(getString("insufficientForces"));
+			hasForces = false;
+		} else {
+			Color eColor = h;
+			if (tempInvasion.invasionMult < FAIL_THRESHOLD_INVASION) {
+				eColor = Misc.getNegativeHighlightColor();
+				//temp.canFail = true;
+			} else if (tempInvasion.invasionMult >= 0.8f) {
+				eColor = Misc.getPositiveHighlightColor();
+			}
+			text.addPara(Misc.ucFirst(getString("forceBalance")) + ": %s",
+					eColor,
+					"" + (int)Math.round(tempInvasion.invasionMult * 100f) + "%");
+		}
+		if (DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+		}
+		
+		if (Misc.isStoryCritical(market)) {
+			text.setFontSmallInsignia();
+			str = getString("storyCriticalWarning");
+			str = StringHelper.substituteToken(str, "$market", market.getName());
+			LabelAPI para = text.addPara(str);
+			para.setHighlight(market.getName(), getString("storyCriticalWarningHighlight"));
+			para.setHighlightColors(market.getFaction().getBaseUIColor(), Global.getSector().getPlayerFaction().getBaseUIColor());
+			text.setFontInsignia();
+		}
+		
+		options.clearOptions();
+		
+		options.addOption(getString("invasionProceed"), INVADE_CONFIRM);
+		
+		// FIXME: magic number
+		if (!hasForces) {
+			String pct = 25 + "%";
+			str = StringHelper.substituteToken(getString("insufficientForcesTooltip"), "$percent", pct);
+			options.setTooltip(INVADE_CONFIRM, str);
+			options.setEnabled(INVADE_CONFIRM, false);
+			options.setTooltipHighlightColors(INVADE_CONFIRM, h);
+		}
+			
+		options.addOption(Misc.ucFirst(StringHelper.getString("goBack")), INVADE_GO_BACK);
+		options.setShortcut(INVADE_GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
+	}
+	
+	protected void invadeMenuV2() {
 		CampaignFleetAPI fleet = playerFleet;
 		
 		float width = 350;
@@ -615,7 +779,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.setShortcut(INVADE_GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
 	}
 	
-	protected void invadeInit() {
+	protected void invadeInitV2() {
 				
 		CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 		impact.delta = market.getSize() * -0.01f * 1f;
@@ -642,7 +806,572 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		options.addOption(StringHelper.getString("nex_invasion2", "dialogOpenIntel"), "nex_mktInvadeConfirm2");
 	}
+	
+	protected void invadeRunRound() 
+	{
+		MarketAPI market = dialog.getInteractionTarget().getMarket();
+		dialog.getVisualPanel().showImagePortion("illustrations", "raid_disrupt_result", 640, 400, 0, 0, 480, 300);
 		
+		tempInvasion.roundNum += 1;
+		if (tempInvasion.roundNum == 1)
+		{
+			if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+				Misc.increaseMarketHostileTimeout(market, 30f);
+			}
+
+			setRaidCooldown(getRaidCooldownMax());
+			
+			
+			Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), "$nex_recentlyInvaded", 
+								   Factions.PLAYER, true, 60f);
+		}
+		
+		InvasionRoundResult result = InvasionRound.execute(playerFleet, market, 
+				tempInvasion.attackerStr, tempInvasion.defenderStr, getRandom());
+		tempInvasion.stabilityPenalty += InvasionRound.INSTABILITY_PER_ROUND;		
+		tempInvasion.attackerStr = Math.max(result.atkStr, 0);
+		tempInvasion.defenderStr = Math.max(result.defStr, 0);
+				
+		//losses = random.nextInt(marines / 2);
+		String roundResultMsg = "";
+		if (tempInvasion.defenderStr <= 0)
+		{
+			roundResultMsg = getString("roundResult_win");
+			tempInvasion.success = true;
+		}
+		else if (tempInvasion.attackerStr <= 0)
+		{
+			roundResultMsg = getString("roundResult_lose");
+		}
+		else if (result.atkDam > result.defDam * 2)
+		{
+			roundResultMsg = getString("roundResult_good");
+		}
+		else if (result.atkDam >= result.defDam)
+		{
+			roundResultMsg = getString("roundResult_ok");
+		}
+		else
+		{
+			roundResultMsg = getString("roundResult_bad");
+		}
+		roundResultMsg = StringHelper.substituteToken(roundResultMsg, "$market", market.getName());
+		text.addPara(roundResultMsg);
+		
+		// print things that happened during this round
+		text.setFontSmallInsignia();
+		
+		if (result.losses <= 0 && result.lossesMech <= 0) {
+			text.addPara(getString("noLosses"));
+		}
+		if (result.losses > 0) {
+			playerFleet.getCargo().removeMarines(result.losses);
+			tempInvasion.marinesLost = result.losses;
+			AddRemoveCommodity.addCommodityLossText(Commodities.MARINES, result.losses, text);
+		}
+		if (result.lossesMech > 0) {
+			playerFleet.getCargo().removeCommodity(Commodities.HAND_WEAPONS, result.lossesMech);
+			tempInvasion.mechsLost = result.lossesMech;
+			AddRemoveCommodity.addCommodityLossText(Commodities.HAND_WEAPONS, result.lossesMech, text);
+		}
+		
+		text.setFontSmallInsignia();
+		// disruption
+		if (result.disrupted != null)
+		{
+			String name = result.disrupted.getSpec().getName();
+			String durStr = Math.round(result.disruptionLength) + "";
+			String str = getString("industryDisruption");
+			str = StringHelper.substituteToken(str, "$industry", name);
+			str = StringHelper.substituteToken(str, "$days", durStr);
+			text.addPara(str, Misc.getHighlightColor(), name, durStr);
+		}
+		
+		Color hl = tempInvasion.attackerStr > tempInvasion.defenderStr ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor();
+		Color hl2 = Misc.getHighlightColor();
+		String as = (int)tempInvasion.attackerStr + "";
+		String ds = (int)tempInvasion.defenderStr + "";
+		String ad = (int)-result.atkDam + "";
+		String dd = (int)-result.defDam + "";
+		
+		String str = getString("attackerStrengthRemaining");
+		str = StringHelper.substituteToken(str, "$str", as);
+		str = StringHelper.substituteToken(str, "$delta", dd);
+		text.addPara(str);
+		Highlights h = new Highlights();
+		h.setColors(hl, result.atkDam >= result.defDam ? hl2 : Misc.getNegativeHighlightColor());
+		h.setText(as, dd);
+		text.setHighlightsInLastPara(h);
+		
+		str = getString("defenderStrengthRemaining");
+		str = StringHelper.substituteToken(str, "$str", ds);
+		str = StringHelper.substituteToken(str, "$delta", ad);
+		text.addPara(str, hl2, ds, ad);
+		
+		String marinesRemaining = playerFleet.getCargo().getMarines() + "";
+		str = Misc.ucFirst(getString("marinesRemaining")) + ": " + marinesRemaining;
+		text.addPara(str, hl2, marinesRemaining);
+		int mechs = (int)playerFleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS);
+		if (mechs > 0) {
+			str = Misc.ucFirst(getString("mechsRemaining")) + ": " + mechs;
+			text.addPara(str, hl2, mechs + "");
+		}
+		
+		text.setFontInsignia();
+		
+		if (tempInvasion.success || tempInvasion.attackerStr <= 0)
+		{
+			invadeFinish();
+		}
+		else
+		{
+			if (tempInvasion.roundNum == 1)
+				Global.getSoundPlayer().playUISound("nex_sfx_combat", 1f, 1f);
+			options.clearOptions();
+			// options: continue or leave
+			options.addOption(getString("invasionContinue"), INVADE_CONFIRM);
+			options.addOption(getString("invasionAbort"), INVADE_ABORT);
+		}
+	}
+	
+	/**
+	 * Finish the invasion, apply final effects
+	 */
+	protected void invadeFinish() {
+		Random random = getRandom();
+		InvasionRound.finishInvasion(playerFleet, null, market, tempInvasion.roundNum, tempInvasion.success);
+		
+		applyDefenderIncreaseFromRaid(market);
+		
+		// cooldown
+		setRaidCooldown(getRaidCooldownMax());
+		
+		// unrest
+		// note that this is for GUI only, actual impact is caused in InvasionRound
+		int stabilityPenalty = InvasionRound.getStabilityPenalty(market, tempInvasion.roundNum, tempInvasion.success);
+		
+		if (stabilityPenalty > 0) {
+			text.addPara(StringHelper.substituteToken(getString("stabilityReduced"), 
+					"$market", market.getName()), Misc.getHighlightColor(), "" + stabilityPenalty);
+		}
+		
+		// reputation impact
+		CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+		impact.delta = market.getSize() * -0.01f * 1f;
+		// not now, we also need to look at requested fleets
+		//impact.ensureAtBest = tempInvasion.success ? RepLevel.VENGEFUL : RepLevel.HOSTILE;
+		impact.ensureAtBest = RepLevel.HOSTILE;
+		Global.getSector().adjustPlayerReputation(
+				new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, 
+					impact, null, text, true, true),
+					faction.getId());
+		
+		// handle loot
+		String contText = null;
+		
+		float targetValue = getBaseInvasionValue();
+		CargoAPI result = Global.getFactory().createCargo(true);
+		
+		// loot
+		if (tempInvasion.success)
+		{
+			WeightedRandomPicker<CommodityOnMarketAPI> picker = new WeightedRandomPicker<CommodityOnMarketAPI>(random);
+			for (CommodityOnMarketAPI com : tempInvasion.invasionValuables.keySet()) {
+				picker.add(com, tempInvasion.invasionValuables.get(com));
+			}
+
+			//float chunks = 10f;
+			float chunks = tempInvasion.invasionValuables.size();
+			if (chunks > 6) chunks = 6;
+			for (int i = 0; i < chunks; i++) {
+				float chunkValue = targetValue * 1f / chunks;
+				float randMult = StarSystemGenerator.getNormalRandom(random, 0.5f, 1.5f);
+				chunkValue *= randMult;
+
+				CommodityOnMarketAPI pick = picker.pick();
+				int quantity = (int) (chunkValue / pick.getCommodity().getBasePrice());
+				if (quantity <= 0) continue;
+				
+				// handled in InvasionRound
+				//pick.addTradeModMinus("invasion_" + Misc.genUID(), -quantity, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
+
+				result.addCommodity(pick.getId(), quantity);
+			}
+
+			//raidSpecialItems(result, random, true);
+
+			result.sort();
+
+			tempInvasion.invasionLoot = result;
+
+			tempInvasion.invasionCredits = (int)(targetValue * 0.1f * StarSystemGenerator.getNormalRandom(random, 0.5f, 1.5f));
+			if (tempInvasion.invasionCredits < 2) tempInvasion.invasionCredits = 2;
+
+			//result.clear();
+			if (result.isEmpty()) {
+				text.addPara(getString("endMsgNoLoot"));
+			} else {
+				text.addPara(getString("endMsgLoot"));
+				AddRemoveCommodity.addCreditsGainText(tempInvasion.invasionCredits, text);
+				playerFleet.getCargo().getCredits().add(tempInvasion.invasionCredits);
+				contText = getString("invasionSpoils");
+			}
+
+			NexUtilsMarket.reportInvadeLoot(dialog, market, tempInvasion, tempInvasion.invasionLoot);
+		}
+		else
+		{
+			text.addPara(getString("endMsgDefeat"));
+			contText = StringHelper.substituteToken(getString("invasionFail"), "$market", market.getName());
+		}
+		
+		int marines = Global.getSector().getPlayerFleet().getCargo().getMarines();
+		float total = marines + tempInvasion.marinesLost;
+		float xpGain = 1f - tempInvasion.invasionMult;
+		xpGain *= total;
+		xpGain *= XP_PER_RAID_MULT * INVASION_XP_MULT;
+		if (xpGain < 0) xpGain = 0;
+		PlayerFleetPersonnelTracker.getInstance().getMarineData().addXP(xpGain);
+		PlayerFleetPersonnelTracker.getInstance().update();
+		
+		Global.getSoundPlayer().playUISound("ui_raid_finished", 1f, 1f);
+		
+		addContinueOptionInvasion(contText);
+	}
+	
+	protected void addContinueOptionInvasion(String text) {
+		if (text == null) text = Misc.ucFirst(StringHelper.getString("continue"));
+		options.clearOptions();
+		options.addOption(text, INVADE_RESULT);
+		
+		if (tempInvasion.success && playerFaction != PlayerFactionStore.getPlayerFaction())
+		{
+			String str = getString("invasionTakeForSelf");
+			String marketName = market.getName();
+			str = StringHelper.substituteToken(str, "$market", marketName);
+			options.addOption(str, INVADE_RESULT_ANDRADA);
+			
+			if (!wasPlayerMarket()) {
+				str = getString("takeForSelfWarning");
+				str = StringHelper.substituteToken(str, "$market", marketName);
+				options.addOptionConfirmation(INVADE_RESULT_ANDRADA, str, 
+						Misc.ucFirst(StringHelper.getString("yes")),
+						Misc.ucFirst(StringHelper.getString("no")));
+			}
+			else {
+				str = getString("takeForSelfNoWarning");
+				str = StringHelper.substituteToken(str, "$market", marketName);
+				options.addOptionConfirmation(INVADE_RESULT_ANDRADA, str, 
+						Misc.ucFirst(StringHelper.getString("yes")),
+						Misc.ucFirst(StringHelper.getString("no")));
+			}
+		}
+	}
+	
+	// same as computeRaidValuables except writes to different place
+	protected Map<CommodityOnMarketAPI, Float> computeInvasionValuables() {
+		Map<CommodityOnMarketAPI, Float> result = new HashMap<CommodityOnMarketAPI, Float>();
+		float totalDemand = 0f;
+		float totalShortage = 0f;
+		for (CommodityOnMarketAPI com : market.getAllCommodities()) {
+			if (com.isPersonnel()) continue;
+			if (com.getCommodity().hasTag(Commodities.TAG_META)) continue;
+			
+			int a = com.getAvailable();
+			if (a > 0) {
+				float num = BaseIndustry.getSizeMult(a) * com.getCommodity().getEconUnit() * 0.5f;
+				result.put(com, num);
+			}
+			
+			float max = com.getMaxDemand();
+			totalDemand += max;
+			totalShortage += Math.max(0, max - a);
+		}
+		
+		tempInvasion.shortageMult = 1f;
+		if (totalShortage > 0 && totalDemand > 0) {
+			tempInvasion.shortageMult = Math.max(0, totalDemand - totalShortage) / totalDemand;
+		}
+		
+		return result;
+	}
+	
+	// same as getBaseRaidValue except reads tempInvasion instead of temp
+	protected float getBaseInvasionValue() {
+		float targetValue = 0f;
+		for (CommodityOnMarketAPI com : tempInvasion.invasionValuables.keySet()) {
+			targetValue += tempInvasion.invasionValuables.get(com) * com.getCommodity().getBasePrice();
+		}
+		targetValue *= 0.1f;
+		targetValue *= tempInvasion.invasionMult;
+		targetValue *= tempInvasion.shortageMult;
+		return targetValue;
+	}
+	
+	// just to allow it to compile
+	@Deprecated
+	public int getNumPicks(Random random, float f1, float f2) {
+		return 1;
+	}
+	
+	/* 
+		TODO: Compare with superclass's output from raids and see if the following are still required:
+			Drop blueprints known to player
+			Only drop each blueprint once
+			Filter out NO_BP_DROP blueprints _before_ adding them to picker
+			Loot more small and medium weapons
+		
+		Vanilla no longer has a raidSpecialItems method;
+		We're keeping this one around for now in case we want it for invasions
+	*/
+	@Deprecated
+	protected void raidSpecialItems(CargoAPI cargo, Random random, boolean isInvasion) 
+	{
+		float mult = isInvasion ? tempInvasion.invasionMult : temp.raidMult;
+		float p = mult * 0.2f;
+		
+		boolean withBP = false;
+		boolean heavyIndustry = false;
+		
+		// TODO: use performRaid with GroundRaidObjectivePlugins instead of touching industries ourselves
+		// assuming we're even still using this invasion method
+		
+		for (Industry curr : market.getIndustries()) {
+			
+			if (!isInvasion) {
+				String id = curr.getAICoreId();
+				if (id != null && random.nextFloat() < p) {
+					curr.setAICoreId(null);
+					cargo.addCommodity(id, 1);
+				}
+
+				SpecialItemData special = curr.getSpecialItem();
+				if (special != null && random.nextFloat() < p) {
+					curr.setSpecialItem(null);
+					cargo.addSpecial(special, 1);
+				}
+			}
+			if (curr.getSpec().hasTag(Industries.TAG_USES_BLUEPRINTS)) {
+				withBP = true;
+			}
+			if (curr.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY)) {
+				heavyIndustry = true;
+			}
+		}
+		if (withBP) {
+			boolean bpCooldown = market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_BP_COOLDOWN);
+			if (bpCooldown)
+				withBP = false;
+			else
+				market.getMemoryWithoutUpdate().set(MEMORY_KEY_BP_COOLDOWN, true,
+						Global.getSettings().getFloat("nex_raidBPCooldown"));
+		}
+		
+		market.reapplyIndustries();
+		
+		boolean military = market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY);
+		
+		String ship =    "MarketCMD_ship____";
+		String weapon =  "MarketCMD_weapon__";
+		String fighter = "MarketCMD_fighter_";
+		
+		// blueprints
+		if (withBP) {
+			Set<String> droppedBefore = getEverRaidedBlueprints();
+			boolean allowRepeat = NexConfig.allowRepeatBlueprintsFromRaid;
+			boolean onlyUnlearned = Global.getSettings().getBoolean("nex_raidBPOnlyUnlearned");
+			FactionAPI player = Global.getSector().getPlayerFaction();
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
+			for (String id : market.getFaction().getKnownShips()) {
+				if (!allowRepeat && droppedBefore.contains(id)) continue;
+				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
+				if (onlyUnlearned && player.knowsShip(id)) continue;
+				if (Global.getSettings().getHullSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
+				picker.add(ship + id, 1f);
+			}
+			for (String id : market.getFaction().getKnownWeapons()) {
+				if (!allowRepeat && droppedBefore.contains(id)) continue;
+				if (Global.getSettings().getWeaponSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
+				if (onlyUnlearned && player.knowsWeapon(id)) continue;
+				if (Global.getSettings().getWeaponSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
+				picker.add(weapon + id, 1f);
+			}
+			for (String id : market.getFaction().getKnownFighters()) {
+				if (!allowRepeat && droppedBefore.contains(id)) continue;
+				if (Global.getSettings().getFighterWingSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
+				if (onlyUnlearned && player.knowsFighter(id)) continue;
+				if (Global.getSettings().getFighterWingSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
+				picker.add(fighter + id, 1f);
+			}
+			
+			//int num = getNumPicks(random, mult * 0.25f, mult * 0.5f);
+			int num = getNumPicksDiminishing(random, 
+					mult + 0.5f, 
+					mult * Global.getSettings().getFloat("nex_raidBPInitialExtraMult"),
+					Global.getSettings().getFloat("nex_raidBPIterationMult")
+			);
+			for (int i = 0; i < num && !picker.isEmpty(); i++) {
+				String id = picker.pickAndRemove();
+				if (id == null) continue;
+				
+				if (id.startsWith(ship)) {
+					String specId = id.substring(ship.length());
+					cargo.addSpecial(new SpecialItemData(Items.SHIP_BP, specId), 1);
+					addEverRaidedBlueprint(specId);
+				} else if (id.startsWith(weapon)) {
+					String specId = id.substring(weapon.length());
+					cargo.addSpecial(new SpecialItemData(Items.WEAPON_BP, specId), 1);
+					addEverRaidedBlueprint(specId);
+				} else if (id.startsWith(fighter)) {
+					String specId = id.substring(fighter.length());
+					cargo.addSpecial(new SpecialItemData(Items.FIGHTER_BP, specId), 1);
+					addEverRaidedBlueprint(specId);
+				}
+			}
+		}
+		
+		// modspecs
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
+		for (String id : market.getFaction().getKnownHullMods()) {
+			if (playerFaction.knowsHullMod(id) && !DebugFlags.ALLOW_KNOWN_HULLMOD_DROPS) continue;
+			picker.add(id, 1f);
+		}
+		
+		// more likely to get at least one modspec, but not likely to get many
+		int num = getNumPicks(random, mult + 0.5f, mult * 0.25f);
+		for (int i = 0; i < num && !picker.isEmpty(); i++) {
+			String id = picker.pickAndRemove();
+			if (id == null) continue;
+			cargo.addSpecial(new SpecialItemData(Items.MODSPEC, id), 1);
+		}
+		
+		
+		// weapons and fighters
+		picker = new WeightedRandomPicker<String>(random);
+		for (String id : market.getFaction().getKnownWeapons()) {
+			WeaponSpecAPI w = Global.getSettings().getWeaponSpec(id);
+			if (w.hasTag("no_drop")) continue;
+			if (w.getAIHints().contains(WeaponAPI.AIHints.SYSTEM)) continue;
+			
+			if (!military && !heavyIndustry && 
+					(w.getTier() > 1 || w.getSize() == WeaponAPI.WeaponSize.LARGE)) continue;
+			
+			picker.add(weapon + id, w.getRarity());
+		}
+		for (String id : market.getFaction().getKnownFighters()) {
+			FighterWingSpecAPI f = Global.getSettings().getFighterWingSpec(id);
+			if (f.hasTag(Tags.WING_NO_DROP)) continue;
+			
+			if (!military && !heavyIndustry && f.getTier() > 0) continue;
+			
+			picker.add(fighter + id, f.getRarity());
+		}
+		
+		
+		num = getNumPicks(random, mult + 0.5f, mult * 0.25f);
+		if (military || heavyIndustry) {
+			num += Math.round(market.getCommodityData(Commodities.SHIPS).getAvailable() * mult);
+		}
+		
+		for (int i = 0; i < num && !picker.isEmpty(); i++) {
+			String id = picker.pickAndRemove();
+			if (id == null) continue;
+			
+			if (id.startsWith(weapon)) {
+				String weaponId = id.substring(weapon.length());
+				int count = 1;
+				WeaponSpecAPI w = Global.getSettings().getWeaponSpec(weaponId);
+				if (w.getSize() == WeaponSize.SMALL)
+					count = 2 + random.nextInt(3);
+				else if (w.getSize() == WeaponSize.MEDIUM)
+					count = 1 + random.nextInt(2);
+				
+				cargo.addWeapons(weaponId, count);
+			} else if (id.startsWith(fighter)) {
+				cargo.addFighters(id.substring(fighter.length()), 1);
+			}
+		}
+	}
+	
+	/**
+	 * Show loot if applicable, cleanup and exit
+	 * @param tookForSelf True if we decided to take the market for ourselves, 
+	 * instead of turning it over to commissioning faction
+	 * Note: this is always false if we have no commission
+	 */
+	protected void invadeResult(boolean tookForSelf)
+	{
+		tempInvasion.tookForSelf = tookForSelf;
+		
+		if (tempInvasion.invasionLoot != null) {
+			if (tempInvasion.invasionLoot.isEmpty()) {
+				finishedInvade();
+			} else {
+				invadeShowLoot();
+			}
+			return;
+		} else {
+			finishedInvade();
+		}
+	}
+	
+	protected void finishedInvade() {
+		clearTemp();
+		//showDefenses(true);
+	
+		new ShowDefaultVisual().execute(null, dialog, Misc.tokenize(""), memoryMap);
+		
+		FactionAPI conqueror = PlayerFactionStore.getPlayerFaction();
+		if (tempInvasion.tookForSelf && tempInvasion.success)
+		{
+			conqueror = playerFaction;
+			if (!wasPlayerMarket()) {
+				CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+				impact.delta = -0.05f * market.getSize();
+				//impact.ensureAtBest = RepLevel.SUSPICIOUS;
+				impact.limit = RepLevel.INHOSPITABLE;
+				Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
+						CoreReputationPlugin.RepActions.CUSTOM, impact, null, text, true), 
+						PlayerFactionStore.getPlayerFactionId());
+			}
+		}
+		if (tempInvasion.success)
+			InvasionRound.conquerMarket(market, conqueror, true);
+		
+		// report rebellion
+		RebellionIntel rebel = RebellionIntel.getOngoingEvent(market);
+		if (rebel != null) {
+			text.addPara(getString("rebellion"));
+			Global.getSector().getIntelManager().addIntelToTextPanel(rebel, text);
+		}
+		
+		//FireAll.fire(null, dialog, memoryMap, "MarketPostOpen");
+		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$menuState", "main", 0);
+		if (market.isPlanetConditionMarketOnly()) {
+			dialog.getInteractionTarget().getMemoryWithoutUpdate().unset("$hasMarket");
+		}
+		else
+			dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
+		
+		if (tempInvasion.success) {
+			((RuleBasedDialog)dialog.getPlugin()).updateMemory();
+			FireAll.fire(null, dialog, memoryMap, "PopulateOptions");
+		}
+		
+		else
+			dialog.dismiss();
+	}
+	
+	protected void invadeShowLoot() {
+		dialog.getVisualPanel().showLoot(Misc.ucFirst(StringHelper.getString("spoils")),
+				tempInvasion.invasionLoot, false, true, true, new CoreInteractionListener() {
+			public void coreUIDismissed() {
+				//dialog.dismiss();
+				finishedInvade();
+			}
+		});
+	}
+	
 	public TempData getTempData() {
 		return temp;
 	}
@@ -652,7 +1381,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	protected void raidValuable() {
 		super.raidValuable();
 	}
-		
+	
+	
 	public static int getBombardDisruptDuration(BombardType type) {
 		float dur = Global.getSettings().getFloat("bombardDisruptDuration");
 		if (type == BombardType.TACTICAL)
@@ -1001,6 +1731,16 @@ public class Nex_MarketCMD extends MarketCMD {
 			pMore *= diminishFactor;
 		}
 		return result;
+	}
+
+	/**
+	 * Was this market originally owned by the player?
+	 * @return
+	 */
+	protected boolean wasPlayerMarket() {
+		String origOwner = NexUtilsMarket.getOriginalOwner(market);
+		boolean originallyPlayer = origOwner == null || origOwner.equals(Factions.PLAYER);
+		return originallyPlayer;
 	}
 	
 	public static void applyDefenderIncreaseFromRaid(MarketAPI market, float mult) {
