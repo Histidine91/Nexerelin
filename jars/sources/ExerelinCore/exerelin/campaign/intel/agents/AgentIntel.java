@@ -491,7 +491,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			ui.showDialog(null, new AgentOrdersDialog(this, targetMarket, ui, true));
 		} else if (buttonId == BUTTON_ABORT) {
 			currentAction.abort();
-			pushActionQueue();
+			//pushActionQueue();	// handled by action class
 		} else if (buttonId == BUTTON_CANCEL_QUEUE) {
 			nextAction.abort();
 			setQueuedAction(null);
