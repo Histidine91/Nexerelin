@@ -216,6 +216,10 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		else
 		{
 			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(NO_TRANSFER_FACTIONS, true);
+			if (SectorManager.getManager().isCorvusMode()) {
+				factionsForDirectory.remove("al_ars");	// Society shouldn't be given markets in normal sector
+			}
+			
 			groups = Nex_FactionDirectoryHelper.getFactionGroupings(factionsForDirectory);
 			memory.set(FACTION_GROUPS_KEY, groups, GROUPS_CACHE_TIME);
 		}
