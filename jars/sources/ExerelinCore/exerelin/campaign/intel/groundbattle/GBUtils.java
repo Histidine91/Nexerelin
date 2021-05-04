@@ -5,8 +5,11 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import org.apache.log4j.Logger;
 
 public class GBUtils {
+	
+	public static Logger log = Global.getLogger(GBUtils.class);
 	
 	/**
 	 * Estimates the strength of the militia, marines and heavy units in the planetary garrison.
@@ -34,13 +37,28 @@ public class GBUtils {
 		float countForSize = getTroopCountForMarketSize(intel.getMarket());
 		countForSize *= 0.5f + (intel.market.getStabilityValue() / 10f) * 0.75f;
 		
-		militia = Math.round(militia * countForSize * 2.5f);
-		marines = Math.round(marines * countForSize);
-		heavies = Math.round(heavies * countForSize / GroundUnit.HEAVY_COUNT_DIVISOR);
+		float health = 1;
+		if (useHealth) {
+			health = 1 - GBUtils.getGarrisonDamageMemory(intel.getMarket());
+		}
+		
+		militia = Math.round(militia * countForSize * 2.5f * health);
+		marines = Math.round(marines * countForSize * health);
+		heavies = Math.round(heavies * countForSize / GroundUnit.HEAVY_COUNT_DIVISOR * health);
 		
 		return new float[] {militia * GroundUnit.ForceType.MILITIA.strength,
 				marines * GroundUnit.ForceType.MARINE.strength,
 				heavies * GroundUnit.ForceType.HEAVY.strength};
+	}
+	
+	public static float estimateTotalDefenderStrength(GroundBattleIntel intel, boolean useHealth) 
+	{
+		float str = 0;
+		float[] strByType = estimateDefenderStrength(intel, useHealth);
+		for (float thisStr: strByType) {
+			str += thisStr;
+		}
+		return str;
 	}
 	
 	public static float[] estimatePlayerStrength() {
@@ -60,5 +78,24 @@ public class GBUtils {
 		float mult = (float)Math.pow(2, size - 1);
 		
 		return Math.round(mult * GBConstants.BASE_GARRISON_SIZE);
+	}
+	
+	public static float getGarrisonDamageMemory(MarketAPI market) {
+		if (!market.getMemoryWithoutUpdate().contains(GBConstants.MEMKEY_GARRISON_DAMAGE)) 
+			return 0;
+		float damage = market.getMemoryWithoutUpdate().getFloat(GBConstants.MEMKEY_GARRISON_DAMAGE);
+		return damage;
+	}
+	
+	public static void setGarrisonDamageMemory(MarketAPI market, float damage) {
+		if (damage <= 0) {
+			market.getMemoryWithoutUpdate().unset(GBConstants.MEMKEY_GARRISON_DAMAGE);
+			log.info("Unsetting garrison damage for " + market.getName());
+		}			
+		else {
+			market.getMemoryWithoutUpdate().set(GBConstants.MEMKEY_GARRISON_DAMAGE, damage);
+			log.info("Setting garrison damage for " + market.getName() + ": " + String.format("%.3f", damage));
+		}
+			
 	}
 }

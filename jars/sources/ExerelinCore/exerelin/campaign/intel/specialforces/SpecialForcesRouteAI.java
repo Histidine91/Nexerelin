@@ -27,6 +27,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.PlayerInSystemTracker;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
@@ -296,6 +297,7 @@ public class SpecialForcesRouteAI {
 			case ASSIST_RAID:
 			case PATROL:
 			case RAID:
+			case COUNTER_GROUND_BATTLE:
 			case ASSEMBLE:
 				destination = task.market == null ? task.system.getCenter() : task.market.getPrimaryEntity();
 				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
@@ -391,6 +393,12 @@ public class SpecialForcesRouteAI {
 		return task;
 	}
 	
+	public SpecialForcesTask generateCounterGroundBattleTask(MarketAPI market, float priority) {
+		SpecialForcesTask task = generatePatrolTask(market, priority);
+		task.type = TaskType.COUNTER_GROUND_BATTLE;
+		return task;
+	}
+	
 	public SpecialForcesTask generateDefendVsPlayerTask(LocationAPI loc, float priority) {
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.DEFEND_VS_PLAYER, priority);
 		
@@ -430,6 +438,22 @@ public class SpecialForcesRouteAI {
 		sf.debugMsg("Picking task for " + sf.getFleetName(), false);
 		
 		boolean isBusy = currentTask != null && currentTask.type.isBusyTask();
+		
+		// check for priority counter-ground-battle tasks
+		if (getCurrentTaskType() != TaskType.COUNTER_GROUND_BATTLE) {
+			for (GroundBattleIntel gbi : GroundBattleIntel.getOngoing()) {
+				MarketAPI market = gbi.getMarket();
+				float priority = this.getCounterGroundBattlePriority(market);
+				float toBeat = currentTask != null ? currentTask.priority : 0;
+				if (isBusy) toBeat *= 2;
+				//sf.debugMsg("Priority defense task comparison: " + priority + " / " + toBeat, false);
+
+				if (toBeat < priority) {
+					SpecialForcesTask task = generateCounterGroundBattleTask(market, priority);
+					return task;
+				}
+			}
+		}
 		
 		// check for priority defense against player operating in one of our systems
 		if (getCurrentTaskType() != TaskType.DEFEND_VS_PLAYER) {
@@ -560,6 +584,11 @@ public class SpecialForcesRouteAI {
 			{
 				return true;
 			}
+		}
+		else if (taskType == TaskType.COUNTER_GROUND_BATTLE
+				&& !GroundBattleIntel.isOngoing(currentTask.market)) 
+		{
+			return true;
 		}
 		// defending vs. player in system, but player already left
 		else if (taskType == TaskType.DEFEND_VS_PLAYER 
@@ -837,6 +866,17 @@ public class SpecialForcesRouteAI {
 		return priority;
 	}
 	
+	public float getCounterGroundBattlePriority(MarketAPI market) {
+		float distLY = Misc.getDistanceLY(market.getLocationInHyperspace(), getRouteFrom().getLocationInHyperspace());
+		float travelTime = distLY/2;
+		
+		// estimate that battle will last (size ^ 2)/2 days
+		float battleLength = (float)Math.pow(market.getSize(), 2)/2;
+		if (battleLength < travelTime) return 0;
+		
+		return getRaidDefendPriority(market) * 1.5f;
+	}
+	
 	/**
 	 * A raid must have at least this much defend priority for the special forces unit to be tasked
 	 * to defend against it. Required priority will be increased if we already have another task.
@@ -864,8 +904,8 @@ public class SpecialForcesRouteAI {
 	}
 	
 	public enum TaskType {
-		RAID, PATROL, ASSIST_RAID, DEFEND_RAID, REBUILD, 
-		DEFEND_VS_PLAYER, HUNT_PLAYER, ASSEMBLE, IDLE;
+		RAID, PATROL, ASSIST_RAID, DEFEND_RAID, REBUILD, DEFEND_VS_PLAYER,
+		HUNT_PLAYER, COUNTER_GROUND_BATTLE, ASSEMBLE, IDLE;
 		
 		/**
 		 * Returns true for tasks we don't like to "put down", 
@@ -874,7 +914,7 @@ public class SpecialForcesRouteAI {
 		 */
 		public boolean isBusyTask() {
 			return this == RAID || this == ASSIST_RAID || this == DEFEND_RAID
-					|| this == DEFEND_VS_PLAYER;
+					|| this == DEFEND_VS_PLAYER || this == COUNTER_GROUND_BATTLE;
 		}
 	}
 	
@@ -904,6 +944,8 @@ public class SpecialForcesRouteAI {
 					return "assisting " + raid.getName();
 				case DEFEND_RAID:
 					return "defending vs. " + raid.getName();
+				case COUNTER_GROUND_BATTLE:
+					return "countering ground battle at " + market.getName();
 				case PATROL:
 					return "patrolling " + (market != null? market.getName() : system.getNameWithLowercaseType());
 				case DEFEND_VS_PLAYER:

@@ -40,7 +40,6 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		
 		String arg = params.get(0).getString(memoryMap);
 		MarketAPI market = dialog.getInteractionTarget().getMarket();
-		BuyColonyIntel intel;
 		
 		switch(arg)
 		{
@@ -54,14 +53,11 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 				printCostAndProcessOptions(market, dialog, memoryMap.get(MemKeys.LOCAL));
 				break;
 			case "buy":
-				setColonyPlayerOwned(market, true, dialog);
-				intel = new BuyColonyIntel(market.getFactionId(), market);
-				intel.init();
-				Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
+				buy(market, dialog);
 				break;
 			case "cede":
 				setColonyPlayerOwned(market, false, dialog);
-				intel = BuyColonyIntel.getOngoingIntel(market);
+				BuyColonyIntel intel = BuyColonyIntel.getOngoingIntel(market);
 				if (intel != null) intel.cancel(BuyColonyIntel.Status.QUIT);
 				break;
 			case "isPlayerOwned":
@@ -166,6 +162,13 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		return stat;
 	}
 	
+	public static void buy(MarketAPI market, InteractionDialogAPI dialog) {
+		setColonyPlayerOwned(market, true, dialog);
+		BuyColonyIntel intel = new BuyColonyIntel(market.getFactionId(), market);
+		intel.init();
+		if (dialog != null)
+			Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
+	}	
 	public static void setColonyPlayerOwned(MarketAPI market, boolean owned, InteractionDialogAPI dialog) 
 	{
 		market.setPlayerOwned(owned);
@@ -176,13 +179,10 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		FactionAPI player = Global.getSector().getPlayerFaction();
 		ColonyManager.reassignAdminIfNeeded(market, player, player);
 		
-		TextPanelAPI text = dialog.getTextPanel();
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		int value = getValue(market, false, true).getModifiedInt();
 		if (owned) {	// buying
 			cargo.getCredits().subtract(value);
-			AddRemoveCommodity.addCreditsLossText(value, text);
-			
 			// unlock storage
 			if (market.getSubmarket(Submarkets.SUBMARKET_STORAGE) != null) {
 				((StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE)
@@ -192,7 +192,12 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 			//cargo.getCredits().add(value);
 			//AddRemoveCommodity.addCreditsGainText(value, text);
 		}
+		if (dialog != null) {
+			TextPanelAPI text = dialog.getTextPanel();
+			AddRemoveCommodity.addCreditsLossText(value, text);
+			((RuleBasedDialog)dialog.getPlugin()).updateMemory();
+		}
 		market.getMemoryWithoutUpdate().unset(ColonyManager.MEMORY_KEY_RULER_TEMP_OWNERSHIP);
-		((RuleBasedDialog)dialog.getPlugin()).updateMemory();
+		
 	}
 }

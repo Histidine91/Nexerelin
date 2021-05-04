@@ -3,6 +3,7 @@ package exerelin.campaign.intel.groundbattle;
 public class GBConstants {
 	
 	public static final String TAG_PREVENT_BOMBARDMENT = "preventBombardment";
+	public static final String MEMKEY_GARRISON_DAMAGE = "$nex_garrisonDamage";
 	
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";
@@ -27,11 +28,12 @@ public class GBConstants {
 	public static float DISRUPT_WHEN_CAPTURED_TIME = 0.25f;
 	
 	public static float SUPPLIES_TO_DEPLOY_MULT = 0.25f;
-	public static float MAX_SUPPORT_DIST = 250;
+	public static float MAX_SUPPORT_DIST = 300;
 	
 	public static float XP_MARKET_SIZE_MULT = 4f;
 	public static float XP_CASUALTY_MULT = 0.2f;
 	
 	public static float BASE_GARRISON_SIZE = 25;
 	public static float EXTERNAL_BOMBARDMENT_DAMAGE = 0.75f;
+	public static float INVASION_HEALTH_MONTHS_TO_RECOVER = 3;
 }

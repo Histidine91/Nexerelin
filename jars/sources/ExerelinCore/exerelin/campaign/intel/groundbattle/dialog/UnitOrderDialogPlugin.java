@@ -240,9 +240,17 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	protected void confirmDeploy() {
 		unit.deploy(deployTarget, dialog);
-		showUnitPanel();
-		didAnything = true;
-		addLeaveOption(true);
+		float attrition = intel.getSide(unit.isAttacker()).getDropAttrition().getModifiedValue();
+		if (attrition > 0) {
+			// TODO: get a stereo sound for this
+			//Global.getSoundPlayer().playUISound("hellbore_fire", 1.2f, 1);
+			showUnitPanel();
+			didAnything = true;
+			addLeaveOption(true);
+		} else {
+			leave(true);
+		}
+	
 	}
 	
 	protected List<Industry> getIndustries() {

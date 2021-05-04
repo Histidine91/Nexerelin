@@ -114,11 +114,11 @@ public class GroundBattleRoundResolve {
 			// was in combat, morale too low, not withdrawn
 			if (unit.lossesLastTurn > 0 && unit.morale < GBConstants.BREAK_AT_MORALE && unit.location != null) 
 			{
-				// TODO: try to rout unit before evaporating it
-				unit.destroyUnit(0.5f);
+				log.info(String.format("  Trying to rout %s due to low morale: %s", unit.name, unit.morale));
+				tryRoutUnit(unit);
 			}
 			else if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
-				log.info(String.format("  Unit %s reorganizing due to low morale: %s morale", unit.name, unit.morale));
+				log.info(String.format("  Unit %s reorganizing due to low morale: %s", unit.name, unit.morale));
 				unit.reorganize(1);
 			}
 		}
@@ -127,6 +127,7 @@ public class GroundBattleRoundResolve {
 	public IndustryForBattle tryRoutUnit(GroundUnit unit) {
 		WeightedRandomPicker<IndustryForBattle> picker = new WeightedRandomPicker<>();
 		for (IndustryForBattle ifb : intel.getIndustries()) {
+			if (ifb.heldByAttacker != unit.isAttacker) continue;
 			if (ifb.isContested()) continue;
 			if (ifb == unit.getLocation()) continue;
 			float weight = 1;
@@ -136,11 +137,12 @@ public class GroundBattleRoundResolve {
 		}
 		IndustryForBattle selected = picker.pick();
 		if (selected != null) {
+			log.info(String.format("  Unit %s retreating to %s", unit.name, selected.ind.getCurrentName()));
 			IndustryForBattle previous = unit.getLocation();
 			unit.inflictAttrition(0.5f, this, null);
 			unit.setLocation(selected);
 			GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_ROUTED, intel.turnNum);
-			lg.params.put("unit", this);
+			lg.params.put("unit", unit);
 			lg.params.put("location", selected);
 			lg.params.put("previous", previous);
 			intel.addLogEvent(lg);
@@ -329,7 +331,7 @@ public class GroundBattleRoundResolve {
 		return targetValue;
 	}
 	
-	public static void lootMarket(MarketAPI market) {
+	public static CargoAPI lootMarket(MarketAPI market) {
 		Map<CommodityOnMarketAPI, Float> valuables = computeInvasionValuables(market);
 		Random random = new Random();
 		WeightedRandomPicker<CommodityOnMarketAPI> picker = new WeightedRandomPicker<CommodityOnMarketAPI>(random);
@@ -364,6 +366,7 @@ public class GroundBattleRoundResolve {
 
 		float credits = (int)(targetValue * 0.1f * StarSystemGenerator.getNormalRandom(random, 0.5f, 1.5f));
 		if (credits < 0) credits = 2;
+		result.getCredits().add(credits);
 
 		//result.clear();
 		
@@ -373,5 +376,6 @@ public class GroundBattleRoundResolve {
 		}
 
 		//NexUtilsMarket.reportInvadeLoot(dialog, market, tempInvasion, tempInvasion.invasionLoot);
+		return result;
 	}
 }

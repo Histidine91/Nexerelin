@@ -9,6 +9,8 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelData;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelRank;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
@@ -158,6 +160,10 @@ public class GroundUnit {
 	 */
 	public int getPersonnel() {
 		return personnel;
+	}
+	
+	public float getMorale() {
+		return morale;
 	}
 	
 	/**
@@ -479,10 +485,46 @@ public class GroundUnit {
 		return stat;
 	}
 	
+	// 
+
+	/**
+	 * Hack to replace fleet marine XP bonus with the local XP bonus.
+	 * @param stats
+	 * @param attackPower True to get modifier to attack power, false to get reduction to casualties.
+	 */
+	public void substituteLocalXPBonus(StatBonus stats, boolean attackPower) {
+		PersonnelData data = intel.playerData.xpTracker.data;
+		String id = "marineXP";
+		float effectBonus = PlayerFleetPersonnelTracker.getInstance().getMarineEffectBonus(data);
+		float casualtyReduction = PlayerFleetPersonnelTracker.getInstance().getMarineLossesReductionPercent(data);
+		//Global.getLogger(this.getClass()).info(String.format("XP %s translating to %s effect bonus, %s casualty red.", data.xp, effectBonus, casualtyReduction));
+		PersonnelRank rank = data.getRank();
+		if (attackPower) {
+			if (effectBonus > 0) {
+			//stats.getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).modifyMult(id, 1f + effectBonus * 0.01f, rank.name + " marines");
+				stats.modifyPercent(id, effectBonus, rank.name + " " + StringHelper.getString("marines"));
+			} else {
+				//stats.getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).unmodifyMult(id);
+				stats.unmodifyPercent(id);
+			}
+		}
+		else {
+			if (casualtyReduction > 0) {
+				stats.modifyMult(id, 1f - casualtyReduction * 0.01f, rank.name + " " + StringHelper.getString("marines"));
+			} else {
+				stats.unmodifyMult(id);
+			}
+		}
+	}
+	
 	public StatBonus getAttackStatBonus() {
 		if (isAttacker) {
-			if (fleet != null) {
-				return fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
+			if (fleet != null && intel.isFleetInRange(fleet)) {
+				StatBonus bonus = NexUtils.cloneStatBonus(fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD));
+				if (isPlayer) {
+					substituteLocalXPBonus(bonus, true);
+				}
+				return bonus;
 			}
 		}
 		else {
@@ -519,15 +561,17 @@ public class GroundUnit {
 		
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			dmg = plugin.modifyMoraleDamageReceived(this, dmg);
-		}
-		
+		}		
 		return dmg;
 	}
 	
 	public StatBonus getDefenseStatBonus() {
 		if (isAttacker) {
 			if (fleet != null) {
-				return fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT);
+				StatBonus bonus = NexUtils.cloneStatBonus(fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT));
+				if (isPlayer) {
+					substituteLocalXPBonus(bonus, false);
+				}
 			}
 		}
 		else {

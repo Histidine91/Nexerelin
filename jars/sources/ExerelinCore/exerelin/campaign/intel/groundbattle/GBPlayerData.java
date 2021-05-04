@@ -1,5 +1,7 @@
 package exerelin.campaign.intel.groundbattle;
 
+import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelAtEntity;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -18,12 +20,16 @@ public class GBPlayerData {
 	protected Map<String, Integer> sentToStorage = new HashMap<>();
 	protected List<GroundUnit> units = new LinkedList<>();	
 	protected PersonnelAtEntity xpTracker;
+	protected CargoAPI loot;
+	protected ReputationAdjustmentResult andradaRepChange;
+	protected Float andradaRepAfter;
+	protected Float governorshipPrice;
 	
 	public GBPlayerData(GroundBattleIntel intel) {
 		this.intel = intel;
 		xpTracker = PlayerFleetPersonnelTracker.getInstance().getDroppedOffAt(
 				Commodities.MARINES, intel.market.getPrimaryEntity(), 
-				intel.market.getSubmarket(Submarkets.SUBMARKET_STORAGE), true);
+				null, true);
 	}
 	
 	public List<GroundUnit> getUnits() {
@@ -44,6 +50,14 @@ public class GBPlayerData {
 	
 	public Map<String, Integer> getSentToStorage() {
 		return sentToStorage;
+	}
+	
+	public CargoAPI getLoot() {
+		return loot;
+	}
+	
+	public void setLoot(CargoAPI loot) {
+		this.loot = loot;
 	}
 	
 	public void updateXPTrackerNum() {

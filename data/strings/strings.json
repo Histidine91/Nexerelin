@@ -1102,6 +1102,12 @@
 		"intelDesc_otherNotes":"Other notes",
 		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transfered to local storage.",
 		"intelDesc_lootAndSurvivorsDirect":"Surviving units and loot have been returned to fleet cargo.",
+		"intelDesc_localStorage":"Local storage",
+		"intelDesc_postVictoryOptions":"Having taken control of $market, you have a number of options.",
+		"intelDesc_postVictoryOptionsTime":"You have %s day(s) left to make a decision.",
+		"intelDesc_postVictoryOptionsNoBuy":"Governorship of this location is unavailable.",
+		"intelDesc_andrada":"You have seized control of $market for your personal rule. $TheFaction is less than pleased at this act of insubordination.",
+		"intelDesc_governorship":"You have purchased governorship of $market for %s.",
 		
 		"bulletLossesLastTurn":"Losses last turn: %s",
 		
@@ -1111,6 +1117,9 @@
 		"btnResolveRound":"Resolve round",
 		"btnNewUnitMarine":"New marine %s",
 		"btnNewUnitHeavy":"New heavy %s",
+		"btnAndrada":"Take over $market",
+		"btnGovernorship":"Purchase governorship",
+		"btnGovernorshipConfirmPrompt":"You can purchase governorship of $market for %s. You have %s credits.",
 		
 		"unitPanel_header":"Available units",
 		"unitPanel_resources":"Resources on fleet",

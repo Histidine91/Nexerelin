@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
@@ -16,6 +17,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelAtEntity;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
@@ -28,6 +30,8 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_BuyColony;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
@@ -42,6 +46,7 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
@@ -81,6 +86,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public static final Object UPDATE_TURN = new Object();
 	public static final Object BUTTON_RESOLVE = new Object();
+	public static final Object BUTTON_ANDRADA = new Object();
+	public static final Object BUTTON_GOVERNORSHIP = new Object();
 	
 	public static Logger log = Global.getLogger(GroundBattleIntel.class);
 	
@@ -354,7 +361,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public boolean isPlayerInRange() {
-		return MathUtils.getDistance(Global.getSector().getPlayerFleet(), 
+		return isFleetInRange(Global.getSector().getPlayerFleet());
+	}
+	
+	public boolean isFleetInRange(CampaignFleetAPI fleet) {
+		return MathUtils.getDistance(fleet, 
 				market.getPrimaryEntity()) <= GBConstants.MAX_SUPPORT_DIST;
 	}
 	
@@ -427,10 +438,15 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		int numPerUnit = 0;
 		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
 		
-		log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, usableHeavyArms));
-		for (int i=0; i<numCreatable; i++) {
-			GroundUnit unit = createPlayerUnit(ForceType.HEAVY);
-			unit.setSize(numPerUnit, true);
+		if (market.getPlanetEntity() == null) {
+			log.info("Non-planetary market, skipping generation of heavy units");
+			usableHeavyArms = 0;
+		} else {
+			log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, usableHeavyArms));
+			for (int i=0; i<numCreatable; i++) {
+				GroundUnit unit = createPlayerUnit(ForceType.HEAVY);
+				unit.setSize(numPerUnit, true);
+			}	
 		}
 		
 		// add marines
@@ -504,30 +520,27 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		xp = Math.min(xp, total/2);
 		
 		// apply the XP
-		// TODO: log this
-		float storageXP = (inStorage/total) * xp;
-		if (storage != null && storageXP > 0) {
-			log.info("Adding " + storageXP + " XP for " + inStorage + " marines in storage");
-			if (playerData.xpTracker.data.num <= 0)
-				playerData.xpTracker.data.num = storage.getCargo().getMarines();
-			playerData.xpTracker.data.addXP(storageXP);
-			
-			PersonnelAtEntity atLocation = PlayerFleetPersonnelTracker.getInstance().getDroppedOffAt(
-					Commodities.MARINES, market.getPrimaryEntity(), storage, true);
-			
-			atLocation.data.num = playerData.xpTracker.data.num;
-			atLocation.data.xp = playerData.xpTracker.data.xp;
-			//PlayerFleetPersonnelTracker.getInstance().update();
-			
-			log.info(String.format("Current playerdata XP: %s/%s", atLocation.data.xp,
-					playerData.xpTracker.data.num));
-			log.info(String.format("Current atLocation XP: %s/%s", atLocation.data.xp,
-					atLocation.data.num));
-		}
+		// TODO: log this		
 		float fleetXP = (inFleet/total) * xp;
 		if (fleetXP > 0) {
 			log.info("Adding " + fleetXP + " XP for " + inFleet + " marines in fleet");
 			PlayerFleetPersonnelTracker.getInstance().getMarineData().addXP(fleetXP);
+		}
+		
+		float storageXP = (inStorage/total) * xp;
+		if (storage != null && storageXP > 0) {
+			// hack to make it apply XP properly: clear existing instance
+			PlayerFleetPersonnelTracker.getInstance().reportCargoScreenOpened();
+			
+			log.info("Adding " + storageXP + " XP for " + inStorage + " marines in storage");
+			//playerData.xpTracker.data.num = storage.getCargo().getMarines();
+			//playerData.xpTracker.data.addXP(storageXP);
+			
+			PersonnelAtEntity local = PlayerFleetPersonnelTracker.getInstance().getDroppedOffAt(
+				Commodities.MARINES, market.getPrimaryEntity(), 
+				market.getSubmarket(Submarkets.SUBMARKET_STORAGE), true);
+			local.data.num = storage.getCargo().getMarines();
+			local.data.addXP(storageXP);
 		}
 	}
 	
@@ -544,6 +557,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				if (storage != null && !ALWAYS_RETURN_TO_FLEET) {
 					storage.getCargo().addCommodity(Commodities.MARINES, unit.personnel);
 					storage.getCargo().addCommodity(Commodities.HAND_WEAPONS, unit.heavyArms);
+					if (playerData.getLoot() != null) {
+						playerData.getLoot().addCommodity(Commodities.MARINES, unit.personnel);
+						playerData.getLoot().addCommodity(Commodities.HAND_WEAPONS, unit.heavyArms);
+					}
 					NexUtils.modifyMapEntry(playerData.getSentToStorage(), Commodities.MARINES, unit.personnel);
 					NexUtils.modifyMapEntry(playerData.getSentToStorage(), Commodities.HAND_WEAPONS, unit.heavyArms);
 					unit.removeUnit(false);
@@ -572,6 +589,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
 			if (dialog == null && dialog instanceof RuleBasedDialog) {
 				((RuleBasedDialog)dialog.getPlugin()).updateMemory();
+				FireAll.fire(null, dialog, dialog.getPlugin().getMemoryMap(), "PopulateOptions");
 			}
 		}
 	}
@@ -585,11 +603,34 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			RecentUnrest.get(market, true).add(recentUnrest, String.format(getString("unrestReason"), 
 					attacker.getFaction().getDisplayName()));
 		}
-		disbandPlayerUnits();
+		
 		if (Boolean.TRUE.equals(playerIsAttacker) && outcome == BattleOutcome.ATTACKER_VICTORY) 
 		{
-			GroundBattleRoundResolve.lootMarket(market);
+			playerData.setLoot(GroundBattleRoundResolve.lootMarket(market));
+			
 		}
+		if (playerInitiated && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
+		{
+			timerForDecision = 7f;
+		}
+		
+		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
+			// reset to 25% health?
+			GBUtils.setGarrisonDamageMemory(market, 0.75f);
+		}
+		else if (outcome != BattleOutcome.DESTROYED) {
+			float currStrength = defender.getBaseStrength();
+			float strRatio = currStrength/defender.currNormalBaseStrength;
+			GBUtils.setGarrisonDamageMemory(market, 1 - strRatio);
+		}
+		
+		for (IndustryForBattle ifb : industries) {
+			if (!ifb.isIndustryTrueDisrupted())
+				ifb.ind.setDisrupted(0);
+		}
+		
+		disbandPlayerUnits();
+		
 		handleTransfer();
 		
 		responseScript.forceDone();
@@ -606,7 +647,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
 			x.reportBattleEnded(this);
-		}		
+		}
+		
+		endAfterDelay();
 	}
 	
 	public boolean hasAnyDeployedUnits(boolean attacker) {
@@ -675,14 +718,29 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 */
 	public void handleAndradaOption() {
 		if (attacker.getFaction().isPlayerFaction()) return;
+		SectorManager.transferMarket(market, Global.getSector().getPlayerFaction(), 
+				market.getFaction(), true, false, new ArrayList<String>(), 0, true);
+		
 		if (!wasPlayerMarket()) {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = -0.05f * market.getSize();
 			//impact.ensureAtBest = RepLevel.SUSPICIOUS;
 			impact.limit = RepLevel.INHOSPITABLE;
-			Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
+			ReputationAdjustmentResult result = Global.getSector().adjustPlayerReputation(
+					new CoreReputationPlugin.RepActionEnvelope(
 					CoreReputationPlugin.RepActions.CUSTOM, impact, null, null, true), 
 					PlayerFactionStore.getPlayerFactionId());
+			playerData.andradaRepChange = result;
+			playerData.andradaRepAfter = Global.getSector().getPlayerFaction().getRelationship(PlayerFactionStore.getPlayerFactionId());
+		}
+	}
+	
+	public void handleGovernorshipPurchase() {
+		MutableStat cost = Nex_BuyColony.getValue(market, false, true);
+		int curr = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+		if (curr > cost.getModifiedValue()) {
+			Nex_BuyColony.buy(market, null);
+			playerData.governorshipPrice = cost.getModifiedValue();
 		}
 	}
 	
@@ -746,7 +804,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (timerForDecision != null) {
 			timerForDecision -= days;
 			if (timerForDecision <= 0) {
-				handleAndradaOption();
+				timerForDecision = null;
 			}
 		}
 		
@@ -1139,8 +1197,36 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addPara(str, 0);
 	}
 	
-	@Override
-	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+	public void addPostVictoryButtons(CustomPanelAPI outer, TooltipMakerAPI info, float width) 
+	{
+		float pad = 3, opad = 10;
+		String str = StringHelper.substituteToken(getString("intelDesc_postVictoryOptions"), "$market", market.getName());
+		info.addPara(str, opad);
+		
+		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
+		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH * 2, 
+				VIEW_BUTTON_HEIGHT, false);
+		str = StringHelper.substituteToken(getString("btnAndrada"), "$market", market.getName());
+		btnHolder1.addButton(str, BUTTON_ANDRADA, VIEW_BUTTON_WIDTH * 2, VIEW_BUTTON_HEIGHT, 0);
+		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
+		
+		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH * 2, 
+				VIEW_BUTTON_HEIGHT, false);
+		ButtonAPI btn = btnHolder2.addButton(getString("btnGovernorship"), 
+				BUTTON_GOVERNORSHIP, VIEW_BUTTON_WIDTH * 2, VIEW_BUTTON_HEIGHT, 0);
+		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
+		info.addCustom(buttonRow, opad);
+		
+		if (market.getMemoryWithoutUpdate().getBoolean(Nex_BuyColony.MEMORY_KEY_NO_BUY)) {
+			btn.setEnabled(false);
+			info.addPara(getString("intelDesc_postVictoryOptionsNoBuy"), 3);
+		}
+		
+		str = getString("intelDesc_postVictoryOptionsTime");
+		info.addPara(str, opad, Misc.getHighlightColor(), String.format("%.0f", timerForDecision));
+	}
+	
+	public void generatePostBattleDisplay(CustomPanelAPI outer, TooltipMakerAPI info, float width, float height) {
 		float pad = 3;
 		float opad = 10;
 		
@@ -1178,17 +1264,74 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			MarketTransferIntel.addFactionCurrentInfoPara(info, attacker.getFaction().getId(), opad);
 			MarketTransferIntel.addFactionCurrentInfoPara(info, defender.getFaction().getId(), opad);
 		}
+		
+		info.addSectionHeading(getString("intelDesc_otherNotes"), attacker.getFaction().getBaseUIColor(), 
+					attacker.getFaction().getDarkUIColor(), Alignment.MID, opad);
+		
 		if (outcome != BattleOutcome.CANCELLED && (playerIsAttacker != null || !playerData.getSentToStorage().isEmpty())) 
 		{
-			info.addSectionHeading(getString("intelDesc_otherNotes"), attacker.getFaction().getBaseUIColor(), 
-					attacker.getFaction().getDarkUIColor(), Alignment.MID, opad);
 			SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
 			if (storage != null) {
 				info.addPara(getString("intelDesc_lootAndSurvivors"), opad);
-				info.showCargo(storage.getCargo(), 10, true, opad);
+				if (playerData.getLoot() != null) {
+					info.showCargo(playerData.getLoot(), 10, true, opad);
+				}					
+				else {
+					info.addPara(getString("intelDesc_localStorage"), opad);
+					info.showCargo(storage.getCargo(), 10, true, opad);
+				}
 			} else {
 				info.addPara(getString("intelDesc_lootAndSurvivorsDirect"), opad);
 			}
+		}
+		FactionAPI commission = Misc.getCommissionFaction();
+		if (playerInitiated && outcome == BattleOutcome.ATTACKER_VICTORY && commission != null) 
+		{
+			// Andrada and governorship buttons here
+			if (playerData.andradaRepChange != null) {
+				String str = getString("intelDesc_andrada");
+				str = StringHelper.substituteToken(str, "$market", market.getName());
+				str = StringHelper.substituteFactionTokens(str, commission);
+				info.addPara(str, opad);
+				CoreReputationPlugin.addAdjustmentMessage(playerData.andradaRepChange.delta, 
+						commission, null, null, null, info, Misc.getTextColor(), true, 3);
+			} else if (playerData.governorshipPrice != null) {
+				String str = getString("intelDesc_governorship");
+				str = StringHelper.substituteToken(str, "$market", market.getName());
+				info.addPara(str, opad, Misc.getHighlightColor(), Misc.getDGSCredits(playerData.governorshipPrice));
+			} else if (timerForDecision != null) {
+				addPostVictoryButtons(outer, info, width);
+			}
+		}
+	}
+	
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		return buttonId == BUTTON_ANDRADA || buttonId == BUTTON_GOVERNORSHIP;
+	}
+	
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		String str;
+		if (buttonId == BUTTON_ANDRADA) {
+			if (wasPlayerMarket()) {
+				str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "takeForSelfNoWarning",
+						"$market", market.getName());
+			} else {
+				str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "takeForSelfWarning",
+						"$market", market.getName());
+			}
+			prompt.addPara(str, 0);
+			return;
+		}
+		if (buttonId == BUTTON_GOVERNORSHIP) {
+			MutableStat cost = Nex_BuyColony.getValue(market, false, true);
+			str = getString("btnGovernorshipConfirmPrompt");
+			str = StringHelper.substituteToken(str, "$market", market.getName());
+			int curr = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+			Color hl = cost.getModifiedValue() > curr ? Misc.getNegativeHighlightColor() : Misc.getHighlightColor();
+			prompt.addPara(str, 0, hl, Misc.getDGSCredits(cost.getModifiedValue()), Misc.getDGSCredits(curr));
+			prompt.addStatModGrid(480, 80, 100, 10, cost, true, NexUtils.getStatModValueGetter(true, 0));
 		}
 	}
 		
@@ -1218,6 +1361,16 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			ui.updateUIForItem(this);
 			return;
 		}
+		if (buttonId == BUTTON_ANDRADA) {
+			handleAndradaOption();
+			ui.updateUIForItem(this);
+			return;
+		}
+		if (buttonId == BUTTON_GOVERNORSHIP) {
+			handleGovernorshipPurchase();
+			ui.updateUIForItem(this);
+			return;
+		}
 	}
 	
 	// adapted from Starship Legends' BattleReport
@@ -1233,7 +1386,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
 		
 		if (outcome != null) {
-			this.createSmallDescription(outer, width, height);
+			generatePostBattleDisplay(panel, outer, width, height);
 			generateLogDisplay(outer, panel, width - 14);
 			panel.addUIElement(outer).inTL(0, 0);
 			return;
@@ -1326,10 +1479,21 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GroundBattleIntel.class))
 		{
 			GroundBattleIntel gbi = (GroundBattleIntel)intel;
-			if (gbi.market == market)
+			if (gbi.market == market && !gbi.isEnding() && !gbi.isEnded())
 				return true;
 		}
 		return false;
+	}
+	
+	public static List<GroundBattleIntel> getOngoing() {
+		List<GroundBattleIntel> results = new ArrayList<>();
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GroundBattleIntel.class))
+		{
+			GroundBattleIntel gbi = (GroundBattleIntel)intel;
+			if (!gbi.isEnding() && !gbi.isEnded())
+				results.add(gbi);
+		}
+		return results;
 	}
 	
 	// runcode exerelin.campaign.intel.groundbattle.GroundBattleIntel.createDebugEvent();

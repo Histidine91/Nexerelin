@@ -31,7 +31,7 @@ public class GroundBattleSide {
 	protected FactionAPI faction;
 	protected List<GroundUnit> units = new LinkedList<>();
 	protected PersonAPI commander;
-	protected float startingStrength;	// set for defender only
+	protected float currNormalBaseStrength;	// set for defender only
 	protected Map<ForceType, Integer> losses = new HashMap<>();
 	protected Map<ForceType, Integer> lossesLastTurn = new HashMap<>();
 	protected Map<String, Object> data = new HashMap<>();
@@ -106,28 +106,10 @@ public class GroundBattleSide {
 	}
 	
 	public void generateDefenders() {
-		float militia = 1, marines = 0, heavies = 0;
-		if (intel.market.getSize() >= 5) {
-			militia = 0.75f;
-			marines = 0.25f;
-		}
-		if (intel.market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY)) {
-			militia -= 0.25f;
-			marines += 0.25f;
-		}
-			
-		for (IndustryForBattle ind : intel.industries) {
-			militia += ind.getPlugin().getTroopContribution("militia");
-			marines += ind.getPlugin().getTroopContribution("marine");
-			heavies += ind.getPlugin().getTroopContribution("heavy");
-		}
-		
-		float countForSize = GBUtils.getTroopCountForMarketSize(intel.getMarket());
-		countForSize *= 0.5f + (intel.market.getStabilityValue() / 10f) * 0.75f;
-		
-		militia = Math.round(militia * countForSize * 2.5f);
-		marines = Math.round(marines * countForSize);
-		heavies = Math.round(heavies * countForSize / GroundUnit.HEAVY_COUNT_DIVISOR);
+		float[] strengths = GBUtils.estimateDefenderStrength(intel, true);
+		float militia = strengths[0];
+		float marines = strengths[1];
+		float heavies = strengths[2];
 		
 		log.info(String.format("Available troops: %s militia, %s marines, %s heavy", militia, marines, heavies));
 		
@@ -138,15 +120,21 @@ public class GroundBattleSide {
 		
 		allocateDefenders();
 		
+		currNormalBaseStrength = GBUtils.estimateTotalDefenderStrength(intel, false);
+	}
+	
+	public float getBaseStrength() {
+		float str = 0;
 		for (GroundUnit unit : units) {
-			startingStrength += unit.getBaseStrength();
+			str += unit.getBaseStrength();
 		}
+		return str;
 	}
 	
 	public void createDefenderUnits(ForceType type, int numTroops) {
 		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
 		int numUnits = (int)((float)numTroops/sizePerUnit);
-		if (numUnits == 0 && numTroops > intel.unitSize.getAverageSizeForType(type)/2) {
+		if (numUnits == 0 && numTroops > 1) {	//intel.unitSize.getAverageSizeForType(type)/2) {
 			numUnits = 1;
 		}
 		for (int i=0; i<numUnits; i++) {

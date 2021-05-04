@@ -2,6 +2,7 @@ package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
@@ -202,7 +203,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	 */
 	public static void addRelationshipChangePara(TooltipMakerAPI info, 
 			String factionId1, String factionId2, float relations,
-			ExerelinReputationAdjustmentResult adjustResult, float pad)
+			ReputationAdjustmentResult adjustResult, float pad)
 	{
 		FactionAPI faction1 = getFaction(factionId1);
 		FactionAPI faction2 = getFaction(factionId2);

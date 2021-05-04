@@ -61,6 +61,8 @@ import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
+import exerelin.campaign.intel.groundbattle.GBConstants;
+import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
@@ -216,6 +218,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				
 				// prevent incentive credit debt accumulation on NPC markets
 				market.setIncentiveCredits(0);
+				
+				// garrison damage recovery
+				float garDamage = GBUtils.getGarrisonDamageMemory(market);
+				if (garDamage > 0) {
+					float numTicksPerMonth = Global.getSettings().getFloat("economyIterPerMonth");
+					float recoveryFactor = 1/(numTicksPerMonth*GBConstants.INVASION_HEALTH_MONTHS_TO_RECOVER);
+					garDamage -= recoveryFactor;
+					GBUtils.setGarrisonDamageMemory(market, garDamage);
+				}
 			}
 			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))

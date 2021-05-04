@@ -42,7 +42,7 @@
 		#"color":"textNeutralColor",
 		"useFactionColor":true,
 		"width":12,
-		"range":300,	# adds a fudge factor for entity size
+		"range":350,	# adds a fudge factor for entity size
 		"duration":1,
 		"invert":true,
 		

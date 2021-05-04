@@ -1,10 +1,6 @@
 == Condition types ==
 Magnetic crust: attacker reorganizes after each move due to lack of communications, reduced damage
-
-== Strength ==
-Marine: 1x
-Mech: 6x
-Militia: 0.4x; 0.7x morale
+Dust storm: reduced attack power for everyone?
 
 == Faction modifiers ==
 Hegemony: +15% morale
@@ -21,7 +17,7 @@ Bombardment
 Inspire
 - Costs 1 story point.
 - Recovers morale for all units.
-- Requires <skill>
+- Requires 2 points in Leadership
 
 Electronic Warfare
 - Reduces enemy attack capability by 30%, and prevents giving orders. Lasts 1 turn.
@@ -35,15 +31,11 @@ Smash
 - Disrupts an occupied industry. The selected unit is forced to reorganize for 1 turn.
 
 == Todo ==
-- [test] Unit routing
-
 - Attrition sound
 
 - Generate buffs
 	- Faction buffs
 	- Commanders
-
-- Andrada etc. options
 
 - Rebels
 
@@ -51,7 +43,7 @@ Smash
 
 - [done] Military response script
 - Send reinforcement fleet
-- Summon special forces
+- [test] Summon special forces
 
 - Loot button
 - Smash command

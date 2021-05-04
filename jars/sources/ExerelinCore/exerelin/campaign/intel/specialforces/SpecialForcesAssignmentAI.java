@@ -63,6 +63,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						goNextScript(current));
 				break;
 			case DEFEND_RAID:
+			case COUNTER_GROUND_BATTLE:
 				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, current.from,
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));

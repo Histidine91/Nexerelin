@@ -5,6 +5,8 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.MutableStat.StatMod;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
@@ -12,7 +14,6 @@ import com.fs.starfarer.api.plugins.LevelupPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.loading.scripts.ScriptStore;
 import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -290,6 +291,20 @@ public class NexUtils
             Global.getSector().removeListener(listener);
         }
 		loc.removeScriptsOfClass(oldClass);
+	}
+	
+	public static StatBonus cloneStatBonus(StatBonus orig) {
+		StatBonus clone = new StatBonus();
+		for (StatMod stat : orig.getFlatBonuses().values()) {
+			orig.modifyFlat(stat.source, stat.value, stat.desc);
+		}
+		for (StatMod stat : orig.getMultBonuses().values()) {
+			orig.modifyMult(stat.source, stat.value, stat.desc);
+		}
+		for (StatMod stat : orig.getPercentBonuses().values()) {
+			orig.modifyPercent(stat.source, stat.value, stat.desc);
+		}
+		return clone;
 	}
 	
 	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(final boolean color, 
