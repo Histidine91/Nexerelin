@@ -306,8 +306,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
 		if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
-			incoming.getWeight().modifyMult("nex_colonyManager_hardModeGrowth", NexConfig.hardModeColonyGrowthMult, 
-					getString("hardModeGrowthMultDesc", false));
+			if (SectorManager.getManager().isHardMode()) {
+				incoming.getWeight().modifyMult("nex_colonyManager_hardModeGrowth", NexConfig.hardModeColonyGrowthMult, 
+						getString("hardModeGrowthMultDesc", false));
+			}
 		}
 		else {
 			incoming.getWeight().modifyMult("nex_colonyManager_npcGrowth", Global.getSettings().getFloat("nex_npcColonyGrowthMult"), 
