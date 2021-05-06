@@ -73,6 +73,8 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		}
 		
 		info.addPara(getString("infoCustomPanel"), 10);
+		
+		Nex_VisualCustomPanel.addTooltipToPanel();
 	}
 	
 	public void addRandomRelationsOptions(CustomPanelAPI panel, TooltipMakerAPI info,
@@ -318,6 +320,8 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		}
 		
 		info.addPara(getString("infoCustomPanel"), 10);
+		
+		Nex_VisualCustomPanel.addTooltipToPanel();
 	}
 	
 	public void addDModOptions(CustomPanelAPI panel, TooltipMakerAPI info,

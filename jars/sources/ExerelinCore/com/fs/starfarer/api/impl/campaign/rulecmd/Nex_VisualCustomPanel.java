@@ -65,6 +65,13 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 		
 		//tooltip.setForceProcessInput(true);
 					
+		//panel.addUIElement(tooltip);	// do this later, so the tooltip correctly gets its scrollbar
+	}
+	
+	/**
+	 * Call this after all desired elements have been added to the tooltip; otherwise the scrollbar may not cover all elements.
+	 */
+	public static void addTooltipToPanel() {
 		panel.addUIElement(tooltip);
 	}
 }

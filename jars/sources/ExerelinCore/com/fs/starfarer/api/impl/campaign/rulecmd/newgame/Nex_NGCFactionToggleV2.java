@@ -144,6 +144,8 @@ public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 				FireBest.fire(null, dialog, memoryMap, "NewGameOptionSelected");
 			}
 		});
+		
+		Nex_VisualCustomPanel.addTooltipToPanel();
 	}
 	
 	public void randomizeFactions(ExerelinSetupData data) {
