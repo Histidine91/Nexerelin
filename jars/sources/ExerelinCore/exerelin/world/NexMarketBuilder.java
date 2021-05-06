@@ -294,7 +294,7 @@ public class NexMarketBuilder
 	{
 		// disallow going over industry limit when taking both Heavy Industry and Military Base upgrades
 		// nah, since there's now a stability penalty for over-industry, we can let the player worry about it
-		//if (ent.isHQ && ent.entity.getFaction().isPlayerFaction()) return 1;
+		if (ent.isHQ && ent.entity.getFaction().isPlayerFaction()) return 2;
 		
 		int max = 4;
 		int size = ent.market.getSize();
