@@ -45,9 +45,14 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 	
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
-		// if already accepted by the player, abort
+		// if already accepted by the player? it's a zombie, kill it
+		// this happens if we see the option in the bar but don't pick it, causing the previous global reference to hang around forever
+		
 		if (!setGlobalReference("$nex_remM1_ref")) {
-			return false;
+			RemnantM1 existing = (RemnantM1)Global.getSector().getMemoryWithoutUpdate().get("$nex_remM1_ref");
+			existing.abort();
+			setGlobalReference("$nex_remM1_ref");
+			//return false;
 		}
 		
 		// if Prism Freeport exists, the mission must be created there
@@ -86,11 +91,6 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		danger = RaidDangerLevel.HIGH;
 		if (market == null) {
 			log.info("Failed to find market");
-			return false;
-		}
-		
-		if (!setMarketMissionRef(market, "$nex_remM1_ref")) {
-			log.info("Mission ref already set");
 			return false;
 		}
 		
@@ -159,6 +159,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				updateInteractionData(dialog, memoryMap);
 				return false;
 			case "accept":
+				setMarketMissionRef(market, "$nex_remM1_ref");
 				accept(dialog, memoryMap);
 				return true;
 			case "cancel":
@@ -217,7 +218,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				dissonant.getMarket().getCommDirectory().removePerson(dissonant);
 				dissonant.getMarket().removePerson(dissonant);
 				dissonant.getMemoryWithoutUpdate().set("$nex_remM1_failed", true);
-				return false;
+				return false;				
 			default:
 				break;
 		}
