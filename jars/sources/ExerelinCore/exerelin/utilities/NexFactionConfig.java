@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -503,6 +504,17 @@ public class NexFactionConfig
     public static float getMaxRelationship(String factionId1, String factionId2)
     {
         if (!NexConfig.useRelationshipBounds) return 1;
+        if (factionId1 == null || factionId2 == null) return 1;
+        
+        if (factionId1.equals(Factions.PLAYER)) {
+            if (factionId2.equals(Misc.getCommissionFactionId()))
+                return 1;
+        }
+        else if (factionId2.equals(Factions.PLAYER)) {
+            if (factionId1.equals(Misc.getCommissionFactionId()))
+                return 1;
+        }
+        
         float max1 = NexConfig.getFactionConfig(factionId1).getMaxRelationship(factionId2);
         float max2 = NexConfig.getFactionConfig(factionId2).getMaxRelationship(factionId1);
         return Math.min(max1, max2);

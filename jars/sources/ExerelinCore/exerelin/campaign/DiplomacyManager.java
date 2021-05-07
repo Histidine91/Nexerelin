@@ -1124,6 +1124,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.equals(Factions.PLAYER))
             selectedFactionId = conf.spawnAsFactionId;
         
+        boolean corvus = SectorManager.getManager().isCorvusMode();
+        
         FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
         log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
 
@@ -1160,7 +1162,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
         boolean randomize = manager.randomFactionRelationships;
         
-        if (SectorManager.getManager().isCorvusMode() && !randomize)
+        if (corvus && !randomize)
         {
             // load vanilla relationships
             VanillaSystemsGenerator.initFactionRelationships(sector);
