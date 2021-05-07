@@ -196,18 +196,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						market.getPopulation().normalize();
 					}
 					else {
-						int maxSize;
-						if (market.getFaction().isPlayerFaction())
-							maxSize = 10;
-						else if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
+						int maxSize = Global.getSettings().getInt("maxColonySize");
+						if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
 							maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
 						else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 							maxSize = NexConfig.maxNPCNewColonySize;
 						else if (market.getPlanetEntity() == null)
 							maxSize = Global.getSettings().getInt("nex_stationMaxSize");
-						else
-							maxSize = Global.getSettings().getInt("maxColonySize");
-
+						
 						if (market.getSize() < maxSize) {
 							upsizeMarket(market);
 						}
@@ -258,7 +254,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 */
 	public void upsizeMarket(MarketAPI market) 
 	{
+		int oldSize = market.getSize();		
 		CoreImmigrationPluginImpl.increaseMarketSize(market);
+		int newSize = market.getSize();
+		if (newSize <= oldSize) return;	// failed to upsize
+		
 		// intel: copied from CoreImmigrationPluginImpl
 		MessageIntel intel = new MessageIntel(getString("intelGrowthTitle", false) 
 				+ " - " + market.getName(), Misc.getBasePlayerColor());
