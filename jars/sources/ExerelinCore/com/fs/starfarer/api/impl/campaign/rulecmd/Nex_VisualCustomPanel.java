@@ -54,7 +54,7 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 		return false;
 	}
 	
-	public void createPanel(InteractionDialogAPI dialog, boolean replace) {
+	public static void createPanel(InteractionDialogAPI dialog, boolean replace) {
 		if (!replace && tooltip != null)
 			return;
 		

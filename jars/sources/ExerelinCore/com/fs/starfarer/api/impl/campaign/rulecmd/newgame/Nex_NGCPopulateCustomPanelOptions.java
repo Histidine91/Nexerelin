@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
-import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -289,7 +288,8 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 							data.randomStartLocation = button.isChecked();
 						}
 				}, 
-				null);
+				createTooltip(getString("tooltipRandomStartLocation"), 
+						null, null));
 		
 		addDModOptions(panel, info, plugin);
 		
@@ -464,7 +464,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 
 			@Override
 			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-				LabelAPI label = tooltip.addPara(text, 3);
+				LabelAPI label = tooltip.addPara(text, 0);
 				if (highlights != null) {
 					label.setHighlight(highlights.toArray(new String[0]));
 					if (hlColors != null)
