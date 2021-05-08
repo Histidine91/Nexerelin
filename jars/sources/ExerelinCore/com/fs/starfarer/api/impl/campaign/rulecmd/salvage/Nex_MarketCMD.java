@@ -1535,7 +1535,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	// saturation bombardment affects disposition
 	@Override
 	protected void bombardConfirm() {
-		
+		super.bombardConfirm();
 		if (temp.bombardType == null) {
 			bombardNeverMind();
 			return;
@@ -1599,10 +1599,11 @@ public class Nex_MarketCMD extends MarketCMD {
 					curr.getId());
 		}
 	
-		int atrocities = (int) Global.getSector().getCharacterData().getMemoryWithoutUpdate().getFloat(MemFlags.PLAYER_ATROCITIES);
-		atrocities++;
-		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MemFlags.PLAYER_ATROCITIES, atrocities);
-		
+		if (temp.bombardType == BombardType.SATURATION) {
+			int atrocities = (int) Global.getSector().getCharacterData().getMemoryWithoutUpdate().getFloat(MemFlags.PLAYER_ATROCITIES);
+			atrocities++;
+			Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MemFlags.PLAYER_ATROCITIES, atrocities);
+		}		
 		
 		int stabilityPenalty = getTacticalBombardmentStabilityPenalty();
 		if (temp.bombardType == BombardType.SATURATION) {
