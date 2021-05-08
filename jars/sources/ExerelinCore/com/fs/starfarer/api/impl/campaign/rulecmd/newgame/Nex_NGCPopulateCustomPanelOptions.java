@@ -88,9 +88,14 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		TooltipMakerAPI lastHolder = null;
 		final ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
+		// determine which button should be highlighted
+		int reqIndex = 0;
+		if (data.randomStartRelationships) {
+			reqIndex = !data.randomStartRelationshipsPirate ? 1 : 2;
+		}
 		for (int i=0; i<NUM_OPTS; i++) {
 			String name = Misc.ucFirst(getString("btnRandomRelations" + i));
-			lastHolder = initRadioButton("nex_randomRelations_" + i, name, i == 0, 
+			lastHolder = initRadioButton("nex_randomRelations_" + i, name, i == reqIndex, 
 					buttonPanel, lastHolder, buttons);
 		}
 		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
@@ -133,9 +138,14 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		TooltipMakerAPI lastHolder = null;
 		final ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
+		// determine which button should be highlighted
+		int reqIndex = 0;
+		if (data.respawnFactions) {
+			reqIndex = data.onlyRespawnStartingFactions ? 1 : 2;
+		}
 		for (int i=0; i<NUM_OPTS; i++) {
 			String name = Misc.ucFirst(getString("btnFactionRespawn" + i));
-			lastHolder = initRadioButton("nex_factionRespawn_" + i, name, i == 0, 
+			lastHolder = initRadioButton("nex_factionRespawn_" + i, name, i == reqIndex, 
 					buttonPanel, lastHolder, buttons);
 		}
 		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
@@ -171,9 +181,13 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		TooltipMakerAPI lastHolder = null;
 		final ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
+		int reqIndex = 0;
+		if (data.useFactionWeights) {
+			reqIndex = data.randomFactionWeights? 2 : 1;
+		}		
 		for (int i=0; i<NUM_OPTS; i++) {
 			String name = Misc.ucFirst(getString("btnFactionWeights" + i));
-			lastHolder = initRadioButton("nex_factionWeights_" + i, name, i == 1, 
+			lastHolder = initRadioButton("nex_factionWeights_" + i, name, i == reqIndex, 
 					buttonPanel, lastHolder, buttons);
 		}
 		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
