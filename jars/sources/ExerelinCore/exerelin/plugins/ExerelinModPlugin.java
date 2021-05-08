@@ -65,6 +65,7 @@ import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
+import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
@@ -227,11 +228,14 @@ public class ExerelinModPlugin extends BaseModPlugin
         addBarEvents();
         
         if (!ExerelinSetupData.getInstance().skipStory)
-			new AcademyStoryVictoryScript().init();
+            new AcademyStoryVictoryScript().init();
     }
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
     protected void addScriptsAndEventsIfNeeded() {
+        if (MercSectorManager.getInstance() == null) {
+            new MercSectorManager().init();
+        }
     }
     
     protected void alphaSiteWorkaround() {

@@ -1,0 +1,48 @@
+{
+	# by default, the AIM representative appears on markets of all factions neutral or better to independents
+	# add faction IDs here to override
+	"enabledFactions":[],
+	"disabledFactions":[],
+	
+	"companiesForHire":3,	# at a time
+	"valueDifferencePaymentMult":0.8,	# pay this much for any base buy value the ships lose over the course of the contract
+	
+	"companies":{
+		# Example merc company. Note that these settings are provided for convenience;
+		# alternatively, you can have the script do pretty much anything with the fleet or its requirements.
+		"sampleMercCompany":{
+			"name":"The Swordmasters",
+			"desc":"A generic company of guns for hire.",
+			"logo":"graphics/icons/missions/military_bounty.png",
+			"feeUpfront":50000,
+			"feeMonthly":2500,
+			"faction":"independent",	# used for default logo, min rep with player, min rep with hosting faction
+			"minRep":"SUSPICIOUS",
+			"minLevel":3,	# player level
+			"ships":[
+				["eagle_Balanced"],
+				["sunder_Assault", "hammerhead_Balanced"], # one of these ships is randomly picked
+				["brawler_Elite"],
+			],
+			"extraFP":10,	# added to fleet after regular ships are generated
+			"officers":[	# added to ships in order
+				{
+					# leave tags unspecified to auto-generate
+					"firstName":"Ann",	
+					"lastName":"Rowe",
+					"gender":"f",
+					"level":4,
+					"portrait":"graphics/portraits/portrait_league08.png",
+					#"rankId":"",
+					#"voice":"soldier",	# could be used for picking generic dialog texts, not sure if I want to bother writing those yet
+					#"skills":{},	# if specified, overrides whatever skills the officer was generated with based on level
+				}
+			],
+			"noAutofit":false,
+			"averageSMods":1,	# requires autofit to take effect
+			#"plugin":"",
+			#"requiredMods":[],
+			"pickChance":1,
+		},
+	}
+}

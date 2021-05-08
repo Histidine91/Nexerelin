@@ -1932,4 +1932,67 @@ nex_dissonantConvo2-2,DialogOptionSelected,"$option == nex_dissonantConvo2-2","A
 nex_dissonantConvoEnd,DialogOptionSelected,"$option == nex_dissonantConvoEnd","FireAll PopulateOptions",,,
 "#END chatty stuff",,,,,,
 "#END missions",,,,,,
+,,,,,,
+# Merc hiring,,,,,,
+nex_convMercRepGreeting,PickGreeting,"$nex_isAIMRep score:10","$contact_printedFirstReturnGreeting = true 0
+ShowPersonVisual
+FireAll PopulateOptions","""Welcome to the Association of Interstellar Mercenaries. How may we meet your needs today?""
+OR
+""AIM: Don't trust your life to a freelancer, we've got your back. What can we do for you?""",,
+nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10",,,"nex_mercViewHires:View mercs for hire
+nex_mercViewHelp:Inquire about AIM's terms and conditions",
+nex_mercViewHiresOptionSel,DialogOptionSelected,"$option == nex_mercViewHires","Nex_MercHire init
+FireBest Nex_MercViewHiresResult","""A moment, please."" The $manOrWoman makes a few quick presses on $hisOrHer TriPad.",,
+nex_mercViewHiresResult,Nex_MercViewHiresResult,"$nex_mercsForHire_count > 0","Nex_MercHire showOptions","""Right, we have some good people available. Take a look and see if they catch your fancy.""",,
+nex_mercViewHiresResultEmpty,Nex_MercViewHiresResult,"$nex_mercsForHire_count == 0","FireAll PopulateOptions
+SetEnabled nex_mercViewHires false","""Sorry, looks like nobody's available. Maybe next time, eh?""
+OR
+""Apologies, but we have no companies available at this time.""",,
+nex_mercViewHiresResultAlreadyOngoing,Nex_MercViewHiresResult,"$nex_mercContractOngoing == true score:10","FireAll PopulateOptions
+SetEnabled nex_mercViewHires false","""Ah, wait. It says here you already have an ongoing contract with an AIM-registered company. Association policy forbids multiple ongoing contracts, I'm afraid.""",,
+nex_mercViewHiresRestart,DialogOptionSelected,"$option == nex_mercViewHires_backToList","unset $nex_selectedMercCompany
+Nex_MercHire showOptions",,,
+nex_mercViewSelected,DialogOptionSelected,"Nex_OptionStartsWith nex_viewMerc_","Nex_MercHire view","""Sure. Let me just bring up the company information...""","nex_mercOffer:Offer to hire
+nex_mercViewHires_backToList:Look at another company",
+nex_mercOffer,DialogOptionSelected,"$option == nex_mercOffer","Nex_VisualCustomPanel clear
+ShowPersonVisual
+Nex_MercHire displayCommander
+FireBest Nex_MercMeetBlurb
+SetStoryOption nex_mercHire 1 nex_hireMerc general ""Hired the mercenary company $nex_selectedMercCompanyName""","""Good choice. I'll arrange for you to speak with the company's commander.""
+
+After a brief delay, a new face appears on your display.","nex_mercHire:Confirm hire
+nex_mercHireCancel:Change your mind",
+nex_mercHire,DialogOptionSelected,"$option == nex_mercHire","Nex_MercHire hire
+FireBest Nex_MercHireBlurb
+ShowDefaultVisual
+EndConversation DO_NOT_FIRE
+FireAll PopulateOptions",,,
+nex_mercHireCancel,DialogOptionSelected,"$option == nex_mercHireCancel","$option = nex_mercViewHires_backToList
+FireBest DialogOptionSelected","The company commander makes an expression of annoyance before disconnecting.
+
+""No? Perhaps you didn't like their face?""
+
+You return to examining the list of available companies for hire.",,
+nex_mercViewHelp,DialogOptionSelected,"$option == nex_mercViewHelp","AddTextSmall "" - Hiring a mercenary company requires 1 story point. Only one company may be under contract at a time to a single employer.""
+Highlight 1
+SetTextHighlightColors story
+AddTextSmall "" - Contracts run for 365 days and are non-renewable.""
+Highlight 365
+AddTextSmall "" - The employer is responsible for upkeep, maintenance and crewing of the provided ships. The minimal amount of crew needed to operate the provided ships will be supplied by AIM at the start of the contract, and removed when it ends.""
+AddTextSmall "" - Ships that come with an officer may not have their officer changed. The employer may place their own officers on other ships at their discretion.""
+AddTextSmall "" - When the company is returned to AIM, if the value of the remaining ships is less than their value at the time of contract signing (due to losses, battle damage, or any other cause), the employer will pay 80% of the difference.""
+Highlight 80%","""Sure thing. Let me send it over...""
+
+You examine the document on your screen. It's got a lot of legalese, but the key points are as follows:","nex_mercViewHires:View mercs for hire
+cutCommLink:Cut the comm link",
+nex_mercRepGoBack,DialogOptionSelected,"$option == nex_mercRepBack","Nex_VisualCustomPanel clear
+ShowPersonVisual
+FireAll PopulateOptions",,,
+nex_mercMeetBlurbGeneric,Nex_MercMeetBlurb,,,"""Good day, captain. I'm sure we can come to an mutually beneficial agreement.""
+OR
+""So you require some extra firepower? You'll be pleased with what we can offer.""",,
+nex_mercHireBlurbGeneric,Nex_MercHireBlurb,,,"The contract is swiftly concluded, and you cut the comm link after the regular exchange of pleasantries. 
+
+Not long after, the mercenary unit joins your $shipOrFleet. You're ready to go whenever.",,
+"#END Merc hiring",,,,,,
 

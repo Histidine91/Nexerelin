@@ -1580,6 +1580,19 @@
 		"intelTag":"Insurance",
 	},
 	
+	"nex_mercs":{
+		"intel_title":"Mercenary Company: %s",
+		"intel_tag":"Mercenaries",
+		"intel_bullet_daysRemaining":"%s day(s) remaining",
+		"intel_desc_feeUpfront":"Retainer fee",
+		"intel_desc_feeMonthly":"Monthly fee",
+		"intel_desc_baseValue":"Ship value: %s starting, %s current (difference %s)",
+		"intel_desc_daysRemaining":"The contract will run for another %s day(s).",
+		
+		"intel_desc_para1":"The mercenary company %s is under contract to $playerName.",
+		"intel_desc_para2":"",
+	},
+	
 	"nex_milestones":{
 		"intelTitle":"Milestone Tracker",
 		"intelTitleAwarded":"Milestone Awarded",
