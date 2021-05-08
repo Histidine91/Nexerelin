@@ -47,7 +47,7 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 				tooltip = null;
 				plugin = null;
 				CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
-				dialog.getVisualPanel().showPersonInfo(data.getPerson(), true);
+				if (data != null) dialog.getVisualPanel().showPersonInfo(data.getPerson(), true);
 				return true;
 		}
 				
