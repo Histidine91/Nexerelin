@@ -30,6 +30,9 @@ public class MercDataManager {
 	
 	public static int companiesForHire;
 	public static float valueDifferencePaymentMult;
+	public static float feeUpfrontMult;
+	public static float feeMonthlyMult;
+	public static float feeUpfrontRefundMult;
 	
 	static {
 		loadDefs();
@@ -59,7 +62,14 @@ public class MercDataManager {
 		for (int i=0; i<shipsJson.length(); i++) {
 			JSONArray rowJson = shipsJson.getJSONArray(i);
 			List<String> row = NexUtils.JSONArrayToArrayList(rowJson);
-			results.add(row);
+			
+			// validate ships
+			List<String> toAdd = new ArrayList<>();
+			for (String variantId : row) {
+				if (Global.getSettings().doesVariantExist(variantId))
+					toAdd.add(variantId);
+			}
+			results.add(toAdd);
 		}
 		return results;
 	}
@@ -78,18 +88,24 @@ public class MercDataManager {
 			OfficerDef def = new OfficerDef();
 			def.firstName = thisJson.optString("firstName", null);
 			def.lastName = thisJson.optString("lastName", null);
-			String genderStr = thisJson.optString("gender", "n").toLowerCase();
-			if (genderStr.equals("m")) {
-				def.gender = Gender.MALE;
-			} else if (genderStr.equals("f")) {
-				def.gender = Gender.FEMALE;
-			} else {
-				def.gender = Gender.ANY;
+			if (thisJson.has("gender")) {
+				String genderStr = thisJson.optString("gender", "n").toLowerCase();
+				if (genderStr.equals("m")) {
+					def.gender = Gender.MALE;
+				} else if (genderStr.equals("f")) {
+					def.gender = Gender.FEMALE;
+				} else {
+					def.gender = Gender.ANY;
+				}
 			}
+			
 			def.level = thisJson.optInt("level", 1);
 			def.portrait = thisJson.optString("portrait", null);
 			def.rankId = thisJson.optString("rankId", null);
 			def.voice = thisJson.optString("voice", null);
+			def.persistentId = thisJson.optString("persistentId", null);
+			def.aiCoreId = thisJson.optString("aiCoreId", null);
+			
 			if (thisJson.has("skills")) {
 				def.skills = new HashMap<>();
 				JSONObject skillsJson = thisJson.getJSONObject("skills");
@@ -117,6 +133,9 @@ public class MercDataManager {
 			// constant stuff
 			companiesForHire = jsonBase.optInt("companiesForHire", 3);
 			valueDifferencePaymentMult = (float)jsonBase.optDouble("valueDifferencePaymentMult", 0.8f);
+			feeUpfrontMult = (float)jsonBase.optDouble("feeUpfrontMult", 1);
+			feeMonthlyMult = (float)jsonBase.optDouble("feeMonthlyMult", 1);
+			feeUpfrontRefundMult = (float)jsonBase.optDouble("feeUpfrontRefundMult", 1);
 			
 			List<String> enabled = NexUtils.JSONArrayToArrayList(jsonBase.getJSONArray("enabledFactions"));
 			List<String> disabled = NexUtils.JSONArrayToArrayList(jsonBase.getJSONArray("disabledFactions"));
@@ -146,9 +165,13 @@ public class MercDataManager {
 				def.name = entryJson.getString("name");
 				def.desc = entryJson.getString("desc");
 				def.logo = entryJson.optString("logo", null);
-				def.feeUpfront = entryJson.optInt("feeUpfront");
-				def.feeMonthly = entryJson.optInt("feeMonthly");
+				def.feeUpfront = Math.round(entryJson.optInt("feeUpfront") * feeUpfrontMult);
+				def.feeMonthly = Math.round(entryJson.optInt("feeMonthly") * feeMonthlyMult);
 				def.factionId = entryJson.optString("faction", Factions.INDEPENDENT);
+				if (Global.getSector().getFaction(def.factionId) == null) {
+					throw new RuntimeException("  Invalid faction for merc company " + id);
+				}
+				
 				if (entryJson.has("minRep"))
 					def.minRep = RepLevel.valueOf(entryJson.getString("minRep").toUpperCase());
 				def.minLevel = entryJson.optInt("minLevel");
@@ -156,6 +179,8 @@ public class MercDataManager {
 				// load ships
 				def.ships.addAll(getShipList(entryJson));
 				def.extraFP = entryJson.optInt("extraFP");
+				if (entryJson.has("doctrineSizeOverride"))
+					def.doctrineSizeOverride = entryJson.getInt("doctrineSizeOverride");
 				
 				// FIXME: load officers
 				def.officers.addAll(getOfficerList(entryJson));
@@ -165,8 +190,16 @@ public class MercDataManager {
 					def.averageSMods = entryJson.getInt("averageSMods");
 				
 				def.plugin = entryJson.optString("plugin", null);
-				
 				def.pickChance = (float)entryJson.optDouble("pickChance", 1);
+				
+				if (entryJson.has("miscData")) {
+					JSONObject miscJson = entryJson.getJSONObject("miscData");
+					Iterator iterMisc = miscJson.keys();
+					while (iterMisc.hasNext()) {
+						String miscKey = (String)iterMisc.next();
+						def.miscData.put(miscKey, miscJson.get(miscKey));
+					}
+				}
 				
 				companyDefs.put(id, def);
 			}
@@ -200,11 +233,13 @@ public class MercDataManager {
 		public int minLevel;
 		public List<List<String>> ships = new ArrayList<>();
 		public int extraFP;
+		public Integer doctrineSizeOverride;
 		public List<OfficerDef> officers = new ArrayList<>();
 		public boolean noAutofit;
 		public Integer averageSMods;
 		public String plugin;	// make this the actual plugin instance instead?
 		public float pickChance;
+		public Map<String, Object> miscData = new HashMap<>();
 		public List<String> requiredMods = new ArrayList<>();
 		
 		public FactionAPI getFaction() {
@@ -230,5 +265,7 @@ public class MercDataManager {
 		public String rankId;
 		public String voice;
 		public Map<String, Integer> skills;	// null if not set
+		public String aiCoreId;
+		public String persistentId;
 	}
 }

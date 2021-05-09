@@ -1590,14 +1590,16 @@ $market.nex_dcom_completed = true 0
 Call $market.nex_dcom_ref updateStage","You feel the almost imperceptible vibrations as the assault shuttles return to your $shipOrFleet, their work complete. You listen for a moment to the open broad-comm channel; the line crackles and squeals with the last gasps of electronic warfare hexes distorted through chaff and the warp of fresh plumes of charged particles. It's a familiar sound; you can almost smell it. 
 
 Tactical has casualty reports prepared for review. You acknowledge with a nod and shut off the comms.","mktRaidResult:Continue",
+"#END disrupt a competitor - raid industry",,,,,,
 ,,,,,,
+# special forces bounty,,,,,,
 Nex_CBSpecialForces,Nex_CBSpecialForcesOfferDesc,,"SetTextHighlightColors $bcb_targetFactionColor h h
 Highlight $bcb_targetFaction $bcb_reward $bcb_days","""This will be a real test of your skills."" $heOrShe focuses the briefing. ""STRATCOM requires neutralization of a high value target: a special task group of the $bcb_targetFaction. The reward is $bcb_reward credits for completion within $bcb_days days."" 
 
 ""Be warned: this will not be like other bounties. Such fleets are among the best in the Sector, and they won't stay in one place for you."" 
 
 ""We'll try to keep you updated on their movements; the good news is they don't generally leave the core worlds. Of course, that also means you may encounter them with ample $bcb_targetFaction forces backing them up.""",,
-"#END disrupt a competitor - raid industry",,,,,,
+"#END special forces bounty",,,,,,
 ,,,,,,
 # Remnant quest mission 1,,,,,,
 nex_remM1_begin,AddBarEvents,"$global.daysSinceStart > 180
@@ -1939,8 +1941,17 @@ ShowPersonVisual
 FireAll PopulateOptions","""Welcome to the Association of Interstellar Mercenaries. How may we meet your needs today?""
 OR
 ""AIM: Don't trust your life to a freelancer, we've got your back. What can we do for you?""",,
+nex_convMercRepGreetingDebt,PickGreeting,"$nex_isAIMRep score:10
+$player.nex_mercsUnpaid > 0 score:10","$contact_printedFirstReturnGreeting = true 0
+ShowPersonVisual
+FireAll PopulateOptions","""Welcome... oh, it's the debtor."" 
+
+$HeOrShe folds $hisOrHer arms. ""No service till you pay off your debt.""",,
 nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10",,,"nex_mercViewHires:View mercs for hire
 nex_mercViewHelp:Inquire about AIM's terms and conditions",
+nex_mercRepOptionsDebt,PopulateOptions,"$nex_isAIMRep score:10
+$player.nex_mercsUnpaid > 0","SetEnabled nex_mercViewHires false
+SetEnabled nex_mercViewHelp false",,,
 nex_mercViewHiresOptionSel,DialogOptionSelected,"$option == nex_mercViewHires","Nex_MercHire init
 FireBest Nex_MercViewHiresResult","""A moment, please."" The $manOrWoman makes a few quick presses on $hisOrHer TriPad.",,
 nex_mercViewHiresResult,Nex_MercViewHiresResult,"$nex_mercsForHire_count > 0","Nex_MercHire showOptions","""Right, we have some good people available. Take a look and see if they catch your fancy.""",,
@@ -1950,15 +1961,25 @@ OR
 ""Apologies, but we have no companies available at this time.""",,
 nex_mercViewHiresResultAlreadyOngoing,Nex_MercViewHiresResult,"$nex_mercContractOngoing == true score:10","FireAll PopulateOptions
 SetEnabled nex_mercViewHires false","""Ah, wait. It says here you already have an ongoing contract with an AIM-registered company. Association policy forbids multiple ongoing contracts, I'm afraid.""",,
-nex_mercViewHiresRestart,DialogOptionSelected,"$option == nex_mercViewHires_backToList","unset $nex_selectedMercCompany
+nex_mercViewHiresRestart,DialogOptionSelected,"$option == nex_mercViewHires_backToList","unset $nex_mercCompanyId
+unset $nex_mercCompanyName
+unset $nex_mercCompanyHireCount
+unset $nex_mercCompanyFactionId
+unset $nex_mercInsulted
 Nex_MercHire showOptions",,,
-nex_mercViewSelected,DialogOptionSelected,"Nex_OptionStartsWith nex_viewMerc_","Nex_MercHire view","""Sure. Let me just bring up the company information...""","nex_mercOffer:Offer to hire
+nex_mercViewSelected,DialogOptionSelected,"Nex_OptionStartsWith nex_viewMerc_","Nex_MercHire view
+SetShortcut nex_mercOffer RETURN
+SetShortcut nex_mercViewHires_backToList ESCAPE","""Sure. Let me just bring up the company information...""
+OR
+""That one, eh? Alright, here's the info.""","nex_mercOffer:Offer to hire
 nex_mercViewHires_backToList:Look at another company",
 nex_mercOffer,DialogOptionSelected,"$option == nex_mercOffer","Nex_VisualCustomPanel clear
 ShowPersonVisual
 Nex_MercHire displayCommander
 FireBest Nex_MercMeetBlurb
-SetStoryOption nex_mercHire 1 nex_hireMerc general ""Hired the mercenary company $nex_selectedMercCompanyName""","""Good choice. I'll arrange for you to speak with the company's commander.""
+SetStoryOption nex_mercHire 1 nex_hireMerc general ""Hired the mercenary company $nex_mercCompanyName""
+SetShortcut nex_mercHire RETURN
+SetShortcut nex_mercHireCancel ESCAPE","""Good choice. I'll arrange for you to speak with the company's commander.""
 
 After a brief delay, a new face appears on your display.","nex_mercHire:Confirm hire
 nex_mercHireCancel:Change your mind",
@@ -1974,10 +1995,10 @@ FireBest DialogOptionSelected","The company commander makes an expression of ann
 
 You return to examining the list of available companies for hire.",,
 nex_mercViewHelp,DialogOptionSelected,"$option == nex_mercViewHelp","AddTextSmall "" - Hiring a mercenary company requires 1 story point. Only one company may be under contract at a time to a single employer.""
-Highlight 1
 SetTextHighlightColors story
-AddTextSmall "" - Contracts run for 365 days and are non-renewable.""
-Highlight 365
+Highlight 1
+AddTextSmall "" - Contracts run for 365 days and are non-renewable. The player pays an upfront fee (50% of which is refunded on contract completion) and a monthly fee.""
+Highlight 365 50%
 AddTextSmall "" - The employer is responsible for upkeep, maintenance and crewing of the provided ships. The minimal amount of crew needed to operate the provided ships will be supplied by AIM at the start of the contract, and removed when it ends.""
 AddTextSmall "" - Ships that come with an officer may not have their officer changed. The employer may place their own officers on other ships at their discretion.""
 AddTextSmall "" - When the company is returned to AIM, if the value of the remaining ships is less than their value at the time of contract signing (due to losses, battle damage, or any other cause), the employer will pay 80% of the difference.""
@@ -1988,11 +2009,129 @@ cutCommLink:Cut the comm link",
 nex_mercRepGoBack,DialogOptionSelected,"$option == nex_mercRepBack","Nex_VisualCustomPanel clear
 ShowPersonVisual
 FireAll PopulateOptions",,,
+,,,,,,
+nex_mercLeaving_initial,MarketPostDock,"$tradeMode != NONE
+Nex_MercHire checkLeave score:1000",,"As your $shipOrFleet docks at $entity.name, you receive a high-priority call from one of the mercenary officers in your employment.
+","nex_mercLeave_answer:Accept the comm request",
+nex_mercLeaving_openComm,DialogOptionSelected,"$option == nex_mercLeave_answer","FireBest Nex_MercsLeavingGreeting",,,
+nex_mercLeaving_options,Nex_MercLeavingOptions,"$nex_mercNetPaymentVal >= 0","SetTextHighlightColors good bad good
+Highlight $nex_mercRetainerRefundStr $nex_mercValueDiffStr $nex_mercNetPaymentStr","The partial refund of your retainer fee is $nex_mercRetainerRefundStr. Under the terms of the contract, you are liable for a payment of $nex_mercValueDiffStr credits due to ship damage and/or losses. You will receive a net $nex_mercNetPaymentStr.","nex_mercLeaving_letGo:Wish them well in their future endeavors
+nex_mercLeaving_letGoJerk:Tell them off for their disloyalty",
+nex_mercLeaving_optionsPay,Nex_MercLeavingOptions,"$nex_mercNetPaymentVal < 0","SetTextHighlightColors good bad bad h
+Highlight $nex_mercRetainerRefundStr $nex_mercValueDiffStr $nex_mercNetPaymentStr $player.creditsStrC","The partial refund of your retainer fee is $nex_mercRetainerRefundStr. Under the terms of the contract, you are liable for a payment of $nex_mercValueDiffStr credits due to ship damage and/or losses. You will have to pay a net $nex_mercNetPaymentStr. You have $player.creditsStrC.","nex_mercLeaving_letGo:Make the payment and wish them well in their future endeavors
+nex_mercLeaving_letGoRefusePay:Refuse to pay",
+nex_mercLeaving_letGoOpt,DialogOptionSelected,"$option == nex_mercLeaving_letGo","$nex_mercLetGoType = normal 0
+FireBest Nex_MercLetGoBlurb
+Nex_MercHire processPayment
+CallEvent $nex_mercContract_ref endEvent $market.id",,"nex_mercLeaving_continue:Continue",
+nex_mercLeaving_letGoOptJerk,DialogOptionSelected,"$option == nex_mercLeaving_letGoJerk","$nex_mercLetGoType = jerk 0
+FireBest Nex_MercLetGoBlurb
+Nex_MercHire processPayment
+$player.wasJerkToMerc = true 1000
+Nex_MercHire reportInsult
+CallEvent $nex_mercContract_ref endEvent $market.id",,"nex_mercLeaving_continue:Continue",
+nex_mercLeaving_letGoOptRefusePay,DialogOptionSelected,"$option == nex_mercLeaving_letGoRefusePay","$nex_mercLetGoType = refusePay 0
+FireBest Nex_MercLetGoBlurb
+Nex_MercHire reportNonPayment $nex_mercNetPaymentVal
+CallEvent $nex_mercContract_ref endEvent $market.id
+$player.wasJerkToMerc = true 1000",,"nex_mercLeaving_continue:Continue",
+nex_mercLeaving_continue,DialogOptionSelected,"$option == nex_mercLeaving_continue","ShowDefaultVisual
+EndConversation DO_NOT_FIRE
+FireBest MarketPostDock",,,
+,,,,,,
+# blurbs,,,,,,
 nex_mercMeetBlurbGeneric,Nex_MercMeetBlurb,,,"""Good day, captain. I'm sure we can come to an mutually beneficial agreement.""
 OR
 ""So you require some extra firepower? You'll be pleased with what we can offer.""",,
+nex_mercMeetBlurbGenericInsulted,Nex_MercMeetBlurb,"$nex_mercInsulted score:5","SetEnabled nex_mercHire false","The mercenary officer takes one look at you and stiffens in recognition.
+
+""No. We will not work for one who spits on us.""
+OR
+The mercenary officer takes one look at you and halts. $nex_MercHeOrShe glares coldly at you through the screen.
+
+""You've got a lot of nerve even showing your face here, after the last time we met.""",,
 nex_mercHireBlurbGeneric,Nex_MercHireBlurb,,,"The contract is swiftly concluded, and you cut the comm link after the regular exchange of pleasantries. 
 
 Not long after, the mercenary unit joins your $shipOrFleet. You're ready to go whenever.",,
+nex_mercMeetBlurbSteiner,Nex_MercMeetBlurb,"$nex_mercCompanyId == steinerGuards",,"""Good day, captain. House Steiner is ready to serve, for the right price.""",,
+nex_mercMeetBlurbSteinerInsulted,Nex_MercMeetBlurb,"$nex_mercCompanyId == steinerGuards
+$nex_mercInsulted score:5","SetEnabled nex_mercHire false","The $nex_mercRank stares at you, $nex_mercHisOrHer eye twitching. A brief interval later, $nex_mercHisOrHer lip curls into a sneer.
+
+""Ah, the honorless dog returns. Have you come to grovel before House Steiner? Or do you wish to name your seconds?""",,
+nex_mercHireBlurbSteiner,Nex_MercHireBlurb,"$nex_mercCompanyId == steinerGuards",,"""An excellent choice, captain. We can depart within the hour.""
+
+The Steiner unit joins your $shipOrFleet on schedule. It's definitely an impressive iron fist.",,
+nex_mercMeetBlurbVolturn,Nex_MercMeetBlurb,"$nex_mercCompanyId == menFromVolturn",,"""Auroch listen.""
+OR
+""From Volturn we come. Crack some heads.""",,
+nex_mercMeetBlurbVolturnInsulted,Nex_MercMeetBlurb,"$nex_mercCompanyId == menFromVolturn
+$nex_mercInsulted score:5","SetEnabled nex_mercHire false","The Man from Volturn stops. His expression is almost completely hidden by the paper plate, but his lip curls and his eyes are hard as battle steel.
+
+""Auroch amused. Perhaps one day we settle this. With our hands.""",,
+nex_mercHireBlurbVolturn,Nex_MercHireBlurb,"$nex_mercCompanyId == menFromVolturn",,"""Auroch approve. We join your fleet.""
+
+The mercenary company soon joins your $shipOrFleet. There's certainly no lack of enthusiasm among these boys.
+OR
+""We go. Your enemies we crush.""
+
+The mercenary company soon joins your $shipOrFleet. They're definitely itching for a good fight.",,
+nex_mercMeetBlurbLuddic,Nex_MercMeetBlurb,"$nex_mercCompanyFactionId == luddic_church",,"""Blessings upon you, fellow traveller. We stand ready to assist your journey.""
+OR
+""The way of Ludd is difficult, but righteous. Let us aid each other on this.""",,
+nex_mercHireBlurbLuddic,Nex_MercHireBlurb,"$nex_mercCompanyFactionId == luddic_church",,"""Blessings be with you.""
+
+The Luddic officer says a prayer before disconnecting. Their ships soon join yours, ready for their next pilgrimage.",,
+,,,,,,
+nex_mercLeaving_checkGeneric,Nex_MercsLeavingGreeting,,"ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""Hello, captain. Our term of service has concluded, hopefully to everyone's satisfaction. As per our contract, we will be taking our leave of you now.""",,
+nex_mercLeaving_checkGenericDebt,Nex_MercsLeavingGreeting,"$player.inDebt score:5","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""Hello, captain. I regret to inform you that due to your failure to meet the contracted payment schedule, we must terminate our agreement. We of the $nex_mercCompanyName will be taking our leave now.""",,
+nex_mercLeaving_letGoBlurbGeneric,Nex_MercLetGoBlurb,,"AdjustRepActivePerson COOPERATIVE 3","You accept $hisOrHer decision professionally and, after exchanging a few pleasantries, cut the comm link.",,
+nex_mercLeaving_letGoBlurbJerkGeneric,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5","AdjustRepActivePerson INHOSPITABLE -5","The $personRank stares coldly at you for the duration of your tirade. Finally, $heOrShe says: ""The Association will hear of this. Good day, captain.""
+
+The comm link is cut before you can think of a further threat.",,
+nex_mercLeaving_letGoBlurbRefusePayGeneric,Nex_MercLetGoBlurb,"$nex_mercLetGoType == refusePay score:5","AdjustRepActivePerson INHOSPITABLE -3","The $personRank stares at you, incredulously at first, then with cold fury. At length, $heOrShe says: ""The Association will hear of this. Good day, captain.""
+
+The comm link is cut before you can say anything more.",,
+nex_mercLeaving_checkVolturn,Nex_MercsLeavingGreeting,"$nex_mercCompanyId == menFromVolturn","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""We men of Volturn, our job done. We leave now.""
+OR
+""Contract completed. Auroch satisfied. Men of Volturn now leave.""",,
+nex_mercLeaving_checkVolturnDebt,Nex_MercsLeavingGreeting,"$player.inDebt score:5
+$nex_mercCompanyId == menFromVolturn","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""Payment schedule not met. Auroch displeased. Men of Volturn depart, find better employer.""",,
+nex_mercLeaving_letGoBlurbJerkVolturn,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
+$nex_mercCompanyId == menFromVolturn","AdjustRepActivePerson INHOSPITABLE -5","The Man from Volturn listens to your tirade for all of six seconds. Then $heOrShe growls, and cuts the comm link.",,
+nex_mercLeaving_letGoBlurbRefusePayVolturn,Nex_MercLetGoBlurb,"$nex_mercLetGoType == refusePay score:5
+$nex_mercCompanyId == menFromVolturn","AdjustRepActivePerson INHOSPITABLE -3","The Man from Volturn stares at you, rage building in $hisOrHer eyes.
+
+""Auroch remember this next time we meet. AIM remember too.""
+
+The comm link is cut before you have a chance to respond.",,
+nex_mercLeaving_letGoBlurbJerkSteiner,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
+$nex_mercCompanyId == steinerGuards","AdjustRepActivePerson INHOSPITABLE -8","The $personRank turns puce less than six seconds into your rant. At twelve seconds, $heOrShe slams a fist on $hisOrHer console.
+
+""Were we still on Eventide, captain, I would demand satisfaction this very instant. But I see I can expect no better from an honourless dog like yourself. Farewell!""
+
+The comm link is cut before you can say anything further.",,
+nex_mercLeaving_letGoBlurbRefusePaySteiner,Nex_MercLetGoBlurb,"$nex_mercLetGoType == refusePay score:5
+$nex_mercCompanyId == steinerGuards","AdjustRepActivePerson INHOSPITABLE -5","The $personRank stares at you, incredulously at first, then with cold fury.
+
+""House Steiner remembers those who try to cheat it, $playerName. There will come a time when you rue the day you took us for fools.""
+
+The comm link is cut before you have a chance to respond.",,
+nex_mercLeaving_checkLuddic,Nex_MercsLeavingGreeting,"$personFaction.id == luddic_church","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""Blessings upon you, friend. Our contract has been completed satisfactorily, and so we depart for our next pilgrimage.""",,
+nex_mercLeaving_checkLuddicDebt,Nex_MercsLeavingGreeting,"$player.inDebt score:5
+$personFaction.id == luddic_church","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""Hello, captain. I regret to say that while the poor are blessed by Ludd, man cannot live on godliness alone. As such, your delayed payments leave us no choice but to end our agreement.""",,
+nex_mercLeaving_letGoBlurbLuddic,Nex_MercLetGoBlurb,"$personFaction.id == luddic_church","AdjustRepActivePerson COOPERATIVE 3","""Blessings of Ludd be upon you.""",,
+nex_mercLeaving_letGoBlurbJerkLuddic,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
+$personFaction.id == luddic_church","AdjustRepActivePerson INHOSPITABLE -5","The $personRank stares coldly at you for the duration of your tirade. ""Woe be upon those who place themselves above the Way of Ludd,"" $heOrShe finally says. ""I will pray for your soul"", $heOrShe quickly adds.",,
+nex_mercLeaving_letGoBlurbRefusePayLuddic,Nex_MercLetGoBlurb,"$nex_mercLetGoType == refusePay score:5
+$personFaction.id == luddic_church","AdjustRepActivePerson INHOSPITABLE -2","The $personRank listens to your 'explanation' with a frown. Then $heOrShe shakes $hisOrHer head, more in sorrow than anger.
+
+""Your refusal to pay lawfully owed debts leads you to the sin of Mammon, friend $playerName,"" $heOrShe says. ""Repent, and find Ludd's forgiveness.""",,
+"#END blurbs",,,,,,
 "#END Merc hiring",,,,,,
 

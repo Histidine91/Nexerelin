@@ -307,6 +307,15 @@ public class NexUtils
 		return clone;
 	}
 	
+	public static boolean objectToBoolean(Object val) {
+		if (val == null) return false;
+		if (val instanceof String)
+			return Boolean.parseBoolean((String)val);
+		else if (val instanceof Boolean)
+			return (Boolean)val;
+		return false;
+	}
+	
 	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(final boolean color, 
 			final int numDigits) {
 		return new TooltipMakerAPI.StatModValueGetter() {

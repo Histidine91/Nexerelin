@@ -1,4 +1,6 @@
 {
+	# protip: runcode exerelin.campaign.intel.merc.MercDataManager.loadDefs();
+	
 	# by default, the AIM representative appears on markets of all factions neutral or better to independents
 	# add faction IDs here to override
 	"enabledFactions":[],
@@ -6,43 +8,292 @@
 	
 	"companiesForHire":3,	# at a time
 	"valueDifferencePaymentMult":0.8,	# pay this much for any base buy value the ships lose over the course of the contract
+	"feeUpfrontMult":1,
+	"feeMonthlyMult":2,
+	"feeUpfrontRefundMult":0.5,	# on contract completion
 	
 	"companies":{
 		# Example merc company. Note that these settings are provided for convenience;
 		# alternatively, you can have the script do pretty much anything with the fleet or its requirements.
-		"sampleMercCompany":{
-			"name":"The Swordmasters",
-			"desc":"A generic company of guns for hire.",
-			"logo":"graphics/icons/missions/military_bounty.png",
-			"feeUpfront":50000,
-			"feeMonthly":2500,
-			"faction":"independent",	# used for default logo, min rep with player, min rep with hosting faction
-			"minRep":"SUSPICIOUS",
-			"minLevel":3,	# player level
+		#"sampleMercCompany":{
+		#	"name":"The Swordmasters",
+		#	"desc":"A generic company of guns for hire.",
+		#	"logo":"graphics/icons/missions/military_bounty.png",
+		#	"feeUpfront":50000,
+		#	"feeMonthly":2500,
+		#	"faction":"independent",	# used for default logo, min rep with player, min rep with hosting faction
+		#	"minRep":"SUSPICIOUS",
+		#	"minLevel":3,	# player level
+		#	"ships":[
+		#		["eagle_Balanced"],
+		#		["sunder_Assault", "hammerhead_Balanced"], # one of these ships is randomly picked
+		#		["brawler_Elite"],
+		#	],
+		#	"extraFP":10,	# added to fleet after regular ships are generated
+		#	"doctrineSizeOverride":4,	# overrides faction doctrine setting for ship size
+		#	"officers":[	# added to ships in order
+		#		{
+		#			# leave tags unspecified to auto-generate
+		#			"firstName":"Ann",	
+		#			"lastName":"Rowe",
+		#			"gender":"f",
+		#			"level":4,
+		#			"portrait":"graphics/portraits/portrait_league08.png",
+		#			"rankId":"spaceCommander",
+		#			#"voice":"soldier",	# could be used for picking generic dialog texts, not sure if I want to bother writing those yet
+		#			#"skills":{},	# if specified, overrides whatever skills the officer was generated with based on level
+		#			"persistentId":"nex_sampleCommander",	# if set, officer will be reused on next hire instead of being recreated
+		#		}
+		#	],
+		#	"noAutofit":false,
+		#	"averageSMods":1,	# requires autofit to take effect
+		#	#"plugin":"",
+		#	#"requiredMods":[],
+		#	"pickChance":1,
+		#	"miscData":{},
+		#},
+		
+		"steinerGuards":{
+			"name":"Steiner Life Guards",
+			"desc":"A \"recon element\" from the personal guard of House Steiner of Eventide. The joke is funny to everyone, except their enemies.",
+			"feeUpfront":160000,
+			"feeMonthly":4000,
+			"faction":"hegemony",
+			"minRep":"NEUTRAL",
+			"minLevel":7,
 			"ships":[
-				["eagle_Balanced"],
-				["sunder_Assault", "hammerhead_Balanced"], # one of these ships is randomly picked
-				["brawler_Elite"],
+				["onslaught_Elite"],
+				["enforcer_Assault", "enforcer_Balanced", "enforcer_CS", "enforcer_Elite"],
 			],
-			"extraFP":10,	# added to fleet after regular ships are generated
-			"officers":[	# added to ships in order
+			"officers":[
 				{
-					# leave tags unspecified to auto-generate
-					"firstName":"Ann",	
-					"lastName":"Rowe",
-					"gender":"f",
-					"level":4,
-					"portrait":"graphics/portraits/portrait_league08.png",
-					#"rankId":"",
-					#"voice":"soldier",	# could be used for picking generic dialog texts, not sure if I want to bother writing those yet
-					#"skills":{},	# if specified, overrides whatever skills the officer was generated with based on level
+					"level":6,
+					"rankId":"spaceCommander",
+					"voice":"soldier",
+				},
+				{
+					"level":5,
+					"voice":"soldier",
 				}
 			],
-			"noAutofit":false,
-			"averageSMods":1,	# requires autofit to take effect
-			#"plugin":"",
-			#"requiredMods":[],
-			"pickChance":1,
+			"averageSMods":1,
+			"miscData":{
+				"angeredByInsults":true,
+			},
 		},
+		
+		"trigun":{
+			"name":"TriGun Services",
+			"desc":"Got a pirate problem? TriGun™ Services is here to help. Your enemies won't even see us coming. We can kill them in over seven hundred ways, and that's just with our lasers! TriGun™ is a wholly owned subsidiary of the Tri-Tachyon Corporation.",
+			"feeUpfront":90000,
+			"feeMonthly":2250,
+			"faction":"tritachyon",
+			"minRep":"INHOSPITABLE",
+			"minLevel":5,
+			"ships":[
+				["fury_attack", "fury_support", "harbinger_Strike", "hyperion_Attack", "hyperion_Strike",],
+				["shade_Assault", "omen_PD", "shrike_Attack", "shrike_Support"],
+			],
+			"extraFP":6,
+			"officers":[	# added to ships in order
+				{
+					"level":4,
+					"rankId":"spaceCommander",
+				},
+			],
+			"averageSMods":2,
+		},
+		
+		"westernesseKingsOwn":{
+			"name":"Westernesse King's Own",
+			"desc":"Foreign mercenaries retained — and hired out — by the King of Westernesse. The unit is defined as much by its foreign nature wherever it goes, and its loyalty to whoever its current official employer is, as by its fighting skill.",
+			"feeUpfront":100000,
+			"feeMonthly":2500,
+			"faction":"persean",
+			"minRep":"SUSPICIOUS",
+			"minLevel":5,
+			"ships":[
+				["heron_Attack", "heron_Strike"],
+				["drover_Strike"],
+			],
+			"extraFP":10,
+			"officers":[	# added to ships in order
+				{
+					"level":5,
+					"rankId":"spaceCommander",
+				},
+				{
+					"level":4,
+				},
+				{
+					"level":4,
+				},
+			],
+			"averageSMods":1,
+			"miscData":{
+				"angeredByInsults":true,
+			},
+		},
+		
+		"menFromVolturn":{
+			"name":"Men from Volturn",
+			"desc":"Lumpenproles from the underbellies of Volturn's oceanic habitats. Such people find their way into a Diktat military as a means of escape, or simply for a larger supply of heads to break.",
+			"feeUpfront":60000,
+			"feeMonthly":1500,
+			"faction":"sindrian_diktat",
+			"minRep":"SUSPICIOUS",
+			"minLevel":3,
+			"ships":[
+				["hammerhead_Balanced", "hammerhead_support", "enforcer_Assault", "enforcer_Balanced", "enforcer_CS", "sunder_Assault", "sunder_CS"],
+			],
+			"extraFP":20,
+			"officers":[
+				{
+					"firstName":"Nameless",	
+					"lastName":"Auroch",
+					"gender":"m",
+					"level":4,
+					"portrait":"graphics/portraits/characters/volta.png",
+					"rankId":"spaceCommander",
+					"persistentId":"nex_manFromVolturn",	# if set, officer will be reused on next hire instead of being recreated
+				},
+				{
+					"level":3,
+				},
+				{
+					"level":3,
+				},
+			],
+			"miscData":{
+				"angeredByInsults":true,
+			},
+		},
+		
+		"pilgrimsGrace":{
+			"name":"Pilgrim's Grace",
+			"desc":"Part of a Luddic organization dedicated to charity and evangelism. Oriented for a support role rather than combat.",
+			"feeUpfront":60000,
+			"feeMonthly":1500,
+			"faction":"luddic_church",
+			"minRep":"SUSPICIOUS",
+			"minLevel":3,
+			"ships":[
+				["venture_Exploration"],
+				["wayfarer_Standard"],
+				["buffalo_luddic_church_Standard"],
+			],
+			"officers":[
+				{
+					"level":3,
+					"rankId":"spaceCommander",
+				},
+			],
+		},
+		
+		"dorasSurvey":{
+			"name":"Dora's Surveyor Corps",
+			"desc":"A spinoff of Ibrahim Interstellar Transport and Salvage, Dora's is where you turn to for one of those deep-space surveying expeditions.",
+			"feeUpfront":70000,
+			"feeMonthly":1750,
+			"faction":"independent",
+			"minRep":"SUSPICIOUS",
+			"minLevel":3,
+			"ships":[
+				["apogee_Balanced"],
+				["shepherd_Frontier"],
+			],
+			"extraFP":5,
+			"officers":[
+				{
+					"level":4,
+					"rankId":"spaceCommander",
+				},
+				{
+					"level":3,
+				},
+			],
+		},
+		
+		"theJokers":{
+			"name":"The Jokers",
+			"desc":"It's unclear whether this is an actual mercenary company or a gaggle of random ship captains with no formal organization. One thing is for sure: no two fleets hired out under AIM auspices are quite the same.",
+			"logo":"graphics/fx/question_mark.png",
+			"feeUpfront":90000,
+			"feeMonthly":2250,
+			"faction":"independent",
+			"minLevel":5,
+			"extraFP":30,
+			"doctrineSizeOverride":4,
+			"officers":[
+				{
+					"level":4,
+					"rankId":"spaceCommander",
+				},
+				{
+					"level":4,
+				},
+				{
+					"level":4,
+				},
+			],
+			"averageSMods":0,
+		},
+		
+		"dickerson":{
+			"name":"Enfants de Dicker",
+			"desc":"Scions of the notorious Dickerson pirate clan, eager to prove themselves through copious violence at a profit.",
+			"feeUpfront":70000,
+			"feeMonthly":1750,
+			"faction":"pirates",
+			"minLevel":3,
+			"extraFP":30,
+			"doctrineSizeOverride":5,
+			"officers":[
+				{
+					"lastName":"Dickerson",
+					"portrait":"graphics/uw/portraits/uw_dickerson_extended_family.png",
+					"level":4,
+					"rankId":"spaceCommander",
+				},
+				{
+					"lastName":"Dickerson",
+					"portrait":"graphics/uw/portraits/uw_dickerson_extended_family.png",
+					"level":3,
+				},
+				{
+					"lastName":"Dickerson",
+					"portrait":"graphics/uw/portraits/uw_dickerson_extended_family.png",
+					"level":3,
+				},
+			],
+			"requiredMods":["underworld"],
+			"miscData":{
+				"angeredByInsults":true,
+				"ignoreMarketRelationship":true,
+			},
+		},
+		
+		# disabled, we don't want people stripping it for its weapons (also it kind of rekts the lore)
+		#"endbringer":{
+		#	"name":"The Bringer of End",
+		#	"desc":"This completely outworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",
+		#	"feeUpfront":120000,
+		#	"feeMonthly":12000,	# more since you're not paying officer salaries
+		#	"faction":"omega",
+		#	"minLevel":15,
+		#	"ships":[
+		#		["facet_Shieldbreaker", "facet_Attack", "facet_Attack2", "facet_Defense", "facet_Missile"],
+		#	],
+		#	"officers":[
+		#		{
+		#			"firstName":"Platinum",
+		#			"lastName":"Endbringer",
+		#			"level":9,
+		#			"rankId":"spaceCaptain",
+		#			"aiCoreId":"omega_core",
+		#		},
+		#	],
+		#	#"plugin":"",
+		#},
 	}
 }

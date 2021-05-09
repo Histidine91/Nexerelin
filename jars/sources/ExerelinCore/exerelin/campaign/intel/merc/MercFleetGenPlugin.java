@@ -3,6 +3,7 @@ package exerelin.campaign.intel.merc;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
+import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FleetInflater;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
@@ -19,6 +20,7 @@ import com.fs.starfarer.api.plugins.OfficerLevelupPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercDataManager.OfficerDef;
+import exerelin.utilities.NexUtils;
 import java.util.List;
 import java.util.Random;
 
@@ -47,8 +49,14 @@ public class MercFleetGenPlugin {
 					0, 0, 0, 0, 0, // freighter, tanker, transport, liner, utility
 					0	// qualityMod
 			);
+			params.factionId = def.factionId;
 			params.mode = ShipPickMode.PRIORITY_THEN_ALL;
 			params.officerNumberMult = 0;
+			if (def.doctrineSizeOverride != null) {
+				FactionDoctrineAPI copy = def.getFaction().getDoctrine().clone();
+				copy.setShipSize(def.doctrineSizeOverride);
+				params.doctrineOverride = copy;
+			}
 			CampaignFleetAPI extra = FleetFactoryV3.createFleet(params);
 			extra.getFleetData().sort();
 			for (FleetMemberAPI member : extra.getFleetData().getMembersListCopy()) {
@@ -62,13 +70,12 @@ public class MercFleetGenPlugin {
 			if (i >= ships.size()) break;
 			FleetMemberAPI member = ships.get(i);
 			PersonAPI officer = createOfficer(def.officers.get(i), member);
-			fleet.getFleetData().addOfficer(officer);
-			member.setCaptain(officer);
+			addOfficer(fleet, member, officer);
 		}
 		
 		if (!def.noAutofit) {
 			DefaultFleetInflaterParams p = new DefaultFleetInflaterParams();
-			p.quality = 1;
+			p.quality = 1.25f;
 			if (def.averageSMods != null) {
 				p.averageSMods = def.averageSMods;
 			}
@@ -87,12 +94,32 @@ public class MercFleetGenPlugin {
 		return fleet;
 	}
 	
+	public void addOfficer(CampaignFleetAPI fleet, FleetMemberAPI member, PersonAPI officer) 
+	{
+		fleet.getFleetData().addOfficer(officer);
+		member.setCaptain(officer);
+	}
+	
 	public PersonAPI createOfficer(OfficerDef def, FleetMemberAPI member) {
+		
+		// if persistent person, try to get already existing copy
+		if (def.persistentId != null) {
+			PersonAPI important = Global.getSector().getImportantPeople().getPerson(def.persistentId);
+			if (important != null) return important;
+		}
+		
 		SkillPickPreference pref = SkillPickPreference.GENERIC;
 		if (member.isCarrier()) pref = SkillPickPreference.CARRIER;
 		else if (member.isPhaseShip()) pref = SkillPickPreference.PHASE;
-		PersonAPI person = OfficerManagerEvent.createOfficer(intel.getDef().getFaction(), 
+		PersonAPI person; 
+		
+		if (def.aiCoreId != null) {
+			person = Misc.getAICoreOfficerPlugin(def.aiCoreId).createPerson(
+					def.aiCoreId, intel.getDef().factionId, new Random());
+		} else {
+			person = OfficerManagerEvent.createOfficer(intel.getDef().getFaction(), 
 				def.level, pref, new Random());
+		}		
 		
 		person.setPostId(Ranks.POST_MERCENARY);
 		if (def.firstName != null) person.getName().setFirst(def.firstName);
@@ -101,6 +128,10 @@ public class MercFleetGenPlugin {
 		if (def.portrait != null) person.setPortraitSprite(def.portrait);
 		if (def.rankId != null) person.setRankId(def.rankId);
 		if (def.voice != null) person.setVoice(def.voice);
+		if (def.persistentId != null) {
+			person.setId(def.persistentId);
+			Global.getSector().getImportantPeople().addPerson(person);
+		}
 		
 		OfficerLevelupPlugin plugin = (OfficerLevelupPlugin) Global.getSettings().getPlugin("officerLevelUp");
 		person.getStats().setLevel(def.level);
@@ -117,6 +148,7 @@ public class MercFleetGenPlugin {
 			}
 		}
 		
+		
 		Misc.setMercenary(person, true);
 		Misc.setUnremovable(person, true);
 		
@@ -125,8 +157,13 @@ public class MercFleetGenPlugin {
 	
 	public boolean isAvailableAt(MarketAPI market) {
 		MercCompanyDef def = intel.getDef();
-		if (market.getFaction().isHostileTo(def.factionId))
+		
+		Global.getLogger(this.getClass()).info("Trying availability for company " + def.id);
+		boolean ignoreMarketRelationship = NexUtils.objectToBoolean(def.miscData.get("ignoreMarketRelationship"));
+		if (!ignoreMarketRelationship && market.getFaction().isHostileTo(def.factionId)) {
+			Global.getLogger(this.getClass()).info("  Hostile to market, unable to spawn");
 			return false;
+		}
 		
 		if (def.minRep != null) {
 			if (!Global.getSector().getPlayerFaction().isAtWorst(def.factionId, def.minRep)) 
@@ -134,7 +171,18 @@ public class MercFleetGenPlugin {
 				return false;
 			}
 		}
+		if (Global.getSector().getPlayerPerson().getStats().getLevel() < def.minLevel)
+			return false;
+		
 		return true;
+	}
+	
+	public void accept() {
+		
+	}
+	
+	public void endEvent() {
+		
 	}
 	
 	

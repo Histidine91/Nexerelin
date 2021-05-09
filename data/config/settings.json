@@ -163,6 +163,7 @@
 		
 		"characters":{
 			"nex_dissonant":"graphics/exerelin/portraits/dissonant.png",
+			"volta":"graphics/portraits/characters/volta.png",
 		},
 		
 		"intel":{

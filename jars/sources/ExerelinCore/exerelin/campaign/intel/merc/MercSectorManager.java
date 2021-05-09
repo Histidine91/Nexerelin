@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.utilities.NexUtils;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class MercSectorManager implements ColonyInteractionListener, EconomyTickListener {
 	
+	public static final boolean DEBUG_MODE = true;
 	public static final String DATA_KEY = "nex_mercSectorManager";
 	public static final int STAY_AT_MARKET_TIME = 10;	// in economyTicks
 	
@@ -41,15 +43,26 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 		return (MercSectorManager)Global.getSector().getPersistentData().get(DATA_KEY);
 	}
 	
-	public void reportMercShown(String id, MarketAPI market) 
+	public int getNumTimesHired(String id) {
+		Integer i = numTimesHired.get(id);
+		if (i == null) return 0;
+		return i;
+	}
+	
+	public void updateCurrentLocation(String id, MarketAPI market, int time) 
 	{
 		Pair<MarketAPI, Integer> current = currentLocations.get(id);
 		if (current == null) {
-			currentLocations.put(id, new Pair<>(market, STAY_AT_MARKET_TIME));
+			currentLocations.put(id, new Pair<>(market, time));
 			return;
 		}
 		current.one = market;
-		current.two = STAY_AT_MARKET_TIME;
+		current.two = time;
+	}
+	
+	public void reportMercShown(String id, MarketAPI market) 
+	{
+		updateCurrentLocation(id, market, STAY_AT_MARKET_TIME);
 	}
 	
 	public void reportMercHired(String id, MarketAPI market) {
@@ -57,19 +70,40 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 		NexUtils.modifyMapEntry(numTimesHired, id, 1);
 	}
 	
+	public void reportMercLeft(String id, MarketAPI market) {
+		updateCurrentLocation(id, null, STAY_AT_MARKET_TIME);
+	}
+	
 	public List<MercContractIntel> getAvailableHires(MarketAPI market) {
 		
-		// TODO: check availability
+		WeightedRandomPicker<MercContractIntel> picker = new WeightedRandomPicker<>();
 		
 		List<MercContractIntel> results = new ArrayList<>();
 		for (MercCompanyDef def : MercDataManager.getAllDefs()) {
-			Global.getLogger(this.getClass()).info("Testing merc company " + def.id);
-			MercContractIntel intel = new MercContractIntel(def.id);
+			String id = def.id;
+			
+			// check whether the merc company is somewhere else
+			if (!DEBUG_MODE && currentLocations.containsKey(id) && currentLocations.get(id).one != market) 
+			{
+				continue;
+			}
+			//Global.getLogger(this.getClass()).info("Testing merc company " + def.id);
+			MercContractIntel intel = new MercContractIntel(id);
 			intel.init(market);
-			results.add(intel);
-			reportMercShown(def.id, market);
-			if (results.size() > MercDataManager.companiesForHire) break;
+			if (intel.getOfferedFleet() == null) continue;	// not valid at this location
+			
+			picker.add(intel, def.pickChance);
 		}
+		
+		float max = DEBUG_MODE ? 6 : MercDataManager.companiesForHire;
+		while (!picker.isEmpty()) {
+			MercContractIntel intel = picker.pickAndRemove();
+			results.add(intel);
+			reportMercShown(intel.getDef().id, market);
+			
+			if (results.size() >= max) break;
+		}
+		
 		return results;
 	}
 	
@@ -117,8 +151,12 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 	
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
+		int reqSize = 6;
+		if (market.getFactionId().equals(Factions.INDEPENDENT))
+			reqSize--;
+		
 		boolean enabled = MercDataManager.allowAtFaction(market.getFactionId())
-				&& (market.getSize() >= 6 || Misc.isMilitary(market));
+				&& (market.getSize() >= reqSize || Misc.isMilitary(market));
 		
 		if (enabled) {
 			addRepresentativeToMarket(market);
@@ -138,7 +176,17 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 
 	@Override
 	public void reportEconomyTick(int numIter) {
-		// TODO: increment merc status here
+		List<String> toRemove = new ArrayList<>();
+		for (String companyId : currentLocations.keySet()) {
+			Pair<MarketAPI, Integer> entry = currentLocations.get(companyId);
+			entry.two = entry.two - 1;
+			if (entry.two <= 0) {
+				toRemove.add(companyId);
+			}
+		}
+		for (String companyId : toRemove) {
+			currentLocations.remove(companyId);
+		}
 	}
 
 	@Override

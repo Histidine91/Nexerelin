@@ -1584,13 +1584,23 @@
 		"intel_title":"Mercenary Company: %s",
 		"intel_tag":"Mercenaries",
 		"intel_bullet_daysRemaining":"%s day(s) remaining",
+		"intel_bullet_contractExpired":"Contract expired",
 		"intel_desc_feeUpfront":"Retainer fee",
 		"intel_desc_feeMonthly":"Monthly fee",
 		"intel_desc_baseValue":"Ship value: %s starting, %s current (difference %s)",
 		"intel_desc_daysRemaining":"The contract will run for another %s day(s).",
+		"intel_desc_daysExpired":"The contract period has expired, and the company will leave upon return to a suitable location.",
+		"intel_desc_ships":"Current ships",
+		"intel_desc_shipsMissing":"Lost or missing ships",
 		
 		"intel_desc_para1":"The mercenary company %s is under contract to $playerName.",
-		"intel_desc_para2":"",
+		"intel_desc_paraEnded":"Your contract with the mercenary company %s has ended.",
+		
+		"dialog_officerLevels":"Officer levels: [%s]",
+		"dialog_lesserShips":"The company includes %s other ships of lesser significance.",
+		"dialog_debtIncurred":"Incurred %s debt",
+		
+		"reportNode_name":"Mercenary contract: %s",
 	},
 	
 	"nex_milestones":{
