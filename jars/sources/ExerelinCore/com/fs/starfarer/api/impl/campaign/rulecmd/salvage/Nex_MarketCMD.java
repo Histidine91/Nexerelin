@@ -1550,7 +1550,6 @@ public class Nex_MarketCMD extends MarketCMD {
 	// saturation bombardment affects disposition
 	@Override
 	protected void bombardConfirm() {
-		super.bombardConfirm();
 		if (temp.bombardType == null) {
 			bombardNeverMind();
 			return;
