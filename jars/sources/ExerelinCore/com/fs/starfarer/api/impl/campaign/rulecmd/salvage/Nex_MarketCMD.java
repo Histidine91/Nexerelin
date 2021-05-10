@@ -3,8 +3,10 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -129,9 +131,14 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (command.equals("invadeMenu")) {
 			//invadeMenuV2();
 			invadeMenu();
+		} else if (command.equals("invadeMenuV2")) {
+			invadeMenuV2();
 		} else if (command.equals("invadeConfirm")) {
 			invadeRunRound();
-			//invadeInitV2();
+		} else if (command.equals("invadeConfirmV2")) {
+			invadeInitV2();
+		} else if (command.equals("openIntel")) {
+			openInvasionIntel();
 		} else if (command.equals("invadeAbort")) {
 			invadeFinish();
 		} else if (command.equals("invadeResult")) {
@@ -515,7 +522,7 @@ public class Nex_MarketCMD extends MarketCMD {
 					tempInvasion.canInvade = false;
 				}
 			} 
-			else if (GroundBattleIntel.isOngoing(market))
+			else if (GroundBattleIntel.getOngoing(market) != null)
 			{
 				options.setEnabled(INVADE, false);
 				options.setTooltip(INVADE, StringHelper.getString("nex_invasion2", "invasionAlreadyOngoing"));
@@ -797,14 +804,22 @@ public class Nex_MarketCMD extends MarketCMD {
 		intel.start();
 		
 		if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
-			Misc.increaseMarketHostileTimeout(market, 30f);
+			Misc.increaseMarketHostileTimeout(market, 60f);
 		}
 
 		Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), "$nex_recentlyInvaded", 
 							   Factions.PLAYER, true, 60f);
 		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "NONE", 0);
+	}
+	
+	protected void openInvasionIntel() {
+		GroundBattleIntel intel = GroundBattleIntel.getOngoing(market);
 		
-		options.addOption(StringHelper.getString("nex_invasion2", "dialogOpenIntel"), "nex_mktInvadeConfirm2");
+		dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, new CoreInteractionListener(){
+			@Override
+			public void coreUIDismissed() {}
+		});
+		Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
 	}
 	
 	protected void invadeRunRound() 

@@ -24,6 +24,11 @@ Electronic Warfare
 - Costs X supplies, where X is a number multiplied by (size ^ 2).
 - Requires EW skill.
 
+Close Air Support
+- Applies damage to target based on total OP of fighters in fleet.
+- Loses supplies and crew based on enemy ground defenses.
+- Requires Fighter Uplink skill.
+
 Loot
 - Grabs all special equipment and AI cores on the industry, sending it back to player cargo.
 
@@ -31,7 +36,15 @@ Smash
 - Disrupts an occupied industry. The selected unit is forced to reorganize for 1 turn.
 
 == Todo ==
-- Attrition sound
+- Limit moves per turn
+- Merge command
+- [test] Loot button
+- Smash command
+- [test] Log: report total losses at battle end
+- [test] Orphans made
+- Attrition sound (meh, needs a set of stereo sounds)
+- Help view
+- AI
 
 - Generate buffs
 	- Faction buffs
@@ -45,16 +58,9 @@ Smash
 - Send reinforcement fleet
 - [test] Summon special forces
 
-- Loot button
-- Smash command
-
-- Help view
-
-- Invasion healthbar in memory
-	- Compare starting garrison strength to final garrison strength
 
 - Special ability interface
-- AI
+
 
 - Externalize strings: any?
 

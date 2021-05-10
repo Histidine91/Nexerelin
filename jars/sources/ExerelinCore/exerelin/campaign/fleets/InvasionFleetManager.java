@@ -40,6 +40,7 @@ import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
@@ -548,6 +549,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (factionId.equals(Factions.PLAYER))
 				isPirateFaction = isPirateFaction || NexUtilsFaction.isPirateFaction(
 						PlayerFactionStore.getPlayerFactionId());
+			
+			if (type == EventType.INVASION && GroundBattleIntel.getOngoing(market) != null)
+				continue;
 			
 			float weight = 1;
 			

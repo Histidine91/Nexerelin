@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.groundbattle;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -10,6 +11,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.IndustryForBattlePlugin;
 import exerelin.utilities.NexUtils;
@@ -154,25 +156,33 @@ public class IndustryForBattle {
 		str = StringHelper.substituteToken(str, "$unit", intel.unitSize.getNamePlural());
 		return str;
 	}
+	
+	public boolean isMoraleKnown(boolean attacker) {
+		return Global.getSettings().isDevMode() || intel.playerIsAttacker == attacker;	// TODO: agent intel
+	}
 
 	public TooltipMakerAPI renderForcePanel(CustomPanelAPI panel, float width, 
 			boolean attacker, UIComponentAPI rightOf) 
 	{
 		float pad = 3;
-		final Color hl = Misc.getHighlightColor();
-		
 		TooltipMakerAPI troops = panel.createUIElement(width, HEIGHT, false);
 		MarketAPI market = ind.getMarket();
+		final Color hl = Misc.getHighlightColor();
 		Color hp = Misc.getPositiveHighlightColor();
 		Color hn = Misc.getNegativeHighlightColor();
 		
 		final Map<ForceType, Float> strengths = new HashMap<>();
 		
-		// TODO: list units on this location and total strength
+		// display units present here
+		boolean any = false;
 		for (GroundUnit unit : units) {
 			if (unit.isAttacker != attacker) continue;
-			
+			any = true;
 			NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
+		}
+		if (!any) {	// nothing to display, quit now
+			panel.addUIElement(troops).rightOfTop(rightOf, 0);
+			return troops;
 		}
 		
 		troops.beginIconGroup();
@@ -208,15 +218,32 @@ public class IndustryForBattle {
 				}
 			}, TooltipLocation.BELOW);
 		
+		// strength
 		float strength = 0;
 		for (GroundUnit unit : units) {
 			if (unit.isAttacker != attacker) continue;
 			strength += unit.getAttackStrength();
 		}
 		String strengthNum = Math.round(strength) + "";
-		troops.addPara("Strength: %s", pad, Misc.getHighlightColor(), strengthNum);
+		troops.addPara(GroundBattleIntel.getString("intelDesc_strength"), pad, hl, strengthNum);
 		
-		// TODO: show average morale
+		// morale
+		if (isMoraleKnown(attacker)) {
+			float totalUnits = 0;	// denominator
+			float totalMorale = 0;	// numerator
+			for (GroundUnit unit : units) {
+				if (unit.isAttacker != attacker) continue;
+				float unitSize = unit.getNumUnitEquivalents();
+				totalUnits += unitSize;
+				totalMorale += unit.morale * unitSize;
+			}
+			if (totalUnits > 0) {
+				float avgMorale = totalMorale/totalUnits;
+				Color h = avgMorale > 0.45f ? hl : hn;
+				troops.addPara(GroundBattleIntel.getString("intelDesc_moraleAvg"), pad, 
+					h, StringHelper.toPercent(avgMorale));
+			}
+		}
 		
 		panel.addUIElement(troops).rightOfTop(rightOf, 0);
 		return troops;
@@ -249,6 +276,15 @@ public class IndustryForBattle {
 		str = StringHelper.getString("nex_invasion2", "industryPanel_header_heldBy");
 		sub.addPara(str + ": " + owner, pad, heldByAttacker ? Misc.getPositiveHighlightColor() 
 				: Misc.getNegativeHighlightColor(), owner);
+		
+		if (heldByAttacker && intel.playerIsAttacker) {
+			boolean haveLootables = ind.getAICoreId() != null || ind.getSpecialItem() != null;
+			if (haveLootables) {
+				sub.addButton(GroundBattleIntel.getString("btnLoot"), 
+						new Pair<String, IndustryForBattle> ("loot", this),
+						64, 24, pad);
+			}
+		}
 		
 		ttIndustry.addImageWithText(0);
 

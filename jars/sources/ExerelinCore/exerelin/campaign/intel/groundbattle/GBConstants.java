@@ -8,6 +8,8 @@ public class GBConstants {
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";
 	
+	public static int BASE_MOVES_PER_TURN = 3;
+	
 	public static float BASE_MORALE = 0.8f;
 	public static float BASE_DAMAGE_MULT = 0.1f;
 	public static float MORALE_ATTACK_MOD = 0.15f;

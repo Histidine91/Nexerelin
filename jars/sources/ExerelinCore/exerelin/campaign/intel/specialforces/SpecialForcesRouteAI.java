@@ -586,7 +586,7 @@ public class SpecialForcesRouteAI {
 			}
 		}
 		else if (taskType == TaskType.COUNTER_GROUND_BATTLE
-				&& !GroundBattleIntel.isOngoing(currentTask.market)) 
+				&& GroundBattleIntel.getOngoing(currentTask.market) == null) 
 		{
 			return true;
 		}

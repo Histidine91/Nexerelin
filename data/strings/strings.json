@@ -1107,8 +1107,8 @@
 		"intelDesc_headerAttackerMod":"Attacker modifiers",
 		"intelDesc_headerDefenderMod":"Defender modifiers",
 		"intelDesc_headerCommonMod":"Common modifiers",
-		"intelDesc_strength":"Strength mult: %s",
-		"intelDesc_strength_noFleetSupport":"No fleet support",
+		"intelDesc_strength":"Strength: %s",
+		"intelDesc_moraleAvg":"Average morale: %s",
 		"intelDesc_otherNotes":"Other notes",
 		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transfered to local storage.",
 		"intelDesc_lootAndSurvivorsDirect":"Surviving units and loot have been returned to fleet cargo.",
@@ -1130,6 +1130,8 @@
 		"btnAndrada":"Take over $market",
 		"btnGovernorship":"Purchase governorship",
 		"btnGovernorshipConfirmPrompt":"You can purchase governorship of $market for %s. You have %s credits.",
+		"btnLoot":"Loot",
+		"btnLootConfirmPrompt":"This will send the special items on this industry to your fleet. Proceed?",
 		
 		"unitPanel_header":"Available units",
 		"unitPanel_resources":"Resources on fleet",
@@ -1206,6 +1208,7 @@
 		"log_tacbomb":"%s! Severe damage to units at locations: $industries",
 		"log_satbomb":"%s!! Severe damage to units at all locations",
 		"log_victory":"%s %s wins the battle!",
+		"log_lossesFinal":"Final player losses: %s marines, %s heavy armaments",
 		"log_ended":"Battle ended",
 		"log_xp_storage":"%s marines in storage earned %s XP",
 		"log_xp_fleet":"%s marines in fleet earned %s XP",
@@ -1250,11 +1253,13 @@
 		"modifierHazardDescPos":"Every turn, deployed units recover %s morale, to a maximum of %s.",
 		"modifierHazardDescNeg":"Every turn, deployed units on an industry not controlled by their side lose %s morale, to a minimum of %s.",
 		
+		"modifierDropCost":"%s drop costs",
 		"modifierEnemyDropCost":"Enemy drop cost %s×",
 		"modifierEnemyBombardmentCost":"Enemy bombardment cost %s×",
 		"modifierDropAttrition":"Drop attrition: Enemies take %s damage on drop",
 		"modifierDropAttritionMult":"Drop attrition multiplier %s×",
 		"modifierPreventBombardment":"Prevents enemy bombardments",
+		"modifierMovementPointsPerTurn":"+%s movement points per turn",
 		
 		"modifierGroundSupport":"Ground Support",
 		"modifierGroundSupportDesc1":"Ground support is charged over time from nearby fleets each turn, and distributed proportionally to units that are engaged with the enemy. Fleets must be within %s units of the target to contribute.",
@@ -1594,7 +1599,7 @@
 		"intel_desc_shipsMissing":"Lost or missing ships",
 		
 		"intel_desc_para1":"The mercenary company %s is under contract to $playerName.",
-		"intel_desc_paraEnded":"Your contract with the mercenary company %s has ended.",
+		"intel_desc_paraEnded":"Your contract with the mercenary company %s has ended, although fees will continue to be paid until the company leaves your fleet.",
 		
 		"dialog_officerLevels":"Officer levels: [%s]",
 		"dialog_lesserShips":"The company includes %s other ships of lesser significance.",

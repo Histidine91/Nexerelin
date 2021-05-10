@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.groundbattle;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -18,6 +17,7 @@ public class GroundBattleLog {
 	
 	public static final float ROW_HEIGHT = 24;
 	public static final float TURN_NUM_WIDTH = 24;
+	public static final float LOG_PADDING = 2;
 	
 	public static final String TYPE_UNIT_LOSSES = "unitLosses";
 	public static final String TYPE_UNIT_MOVED = "unitMove";
@@ -27,6 +27,7 @@ public class GroundBattleLog {
 	public static final String TYPE_EXTERNAL_BOMBARDMENT = "externalBombardment";
 	public static final String TYPE_BATTLE_END = "victory";
 	public static final String TYPE_XP_GAINED = "gainXP";
+	public static final String TYPE_LOSS_REPORT = "lossReport";
 	
 	public final GroundBattleIntel intel;
 	public final int turn;
@@ -63,7 +64,7 @@ public class GroundBattleLog {
 								unitName, prev.ind.getCurrentName(), loc.ind.getCurrentName());
 					str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
 					
-					label = tooltip.addPara(str, 0);
+					label = tooltip.addPara(str, LOG_PADDING);
 					if (loc == null) {
 						label.setHighlight(unitName, prev.ind.getCurrentName());
 						label.setHighlightColors(unit.faction.getBaseUIColor(), h);
@@ -85,7 +86,7 @@ public class GroundBattleLog {
 					str = getString("log_unitLosses");
 					str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
 					loc = (IndustryForBattle)params.get("location");
-					label = tooltip.addPara(str, 0, h, unit.name, 
+					label = tooltip.addPara(str, LOG_PADDING, h, unit.name, 
 							loc != null ? loc.ind.getCurrentName() : "<unknown location>",
 							(int)params.get("losses") + "", 
 							String.format("%.0f", -morale * 100) + "%");
@@ -100,7 +101,7 @@ public class GroundBattleLog {
 				side = Misc.ucFirst(StringHelper.getString(unit.isAttacker ? "attacker" : "defender"));
 				loc = (IndustryForBattle)params.get("location");
 				locStr = loc != null ? loc.ind.getCurrentName() : "<unknown location>";
-				label = tooltip.addPara(str, 0, h, side, unit.name, locStr);
+				label = tooltip.addPara(str, LOG_PADDING, h, side, unit.name, locStr);
 				//label.setHighlight(side, unit.name, locStr);
 				//Global.getLogger(this.getClass()).info("Unit faction: " + unit.faction);
 				label.setHighlightColors(pc, unit.faction.getBaseUIColor(), h);
@@ -115,13 +116,13 @@ public class GroundBattleLog {
 				
 				if (morale == null) {
 					str = getString("log_industryCeded");
-					label = tooltip.addPara(str, 0, h, locStr, side);
+					label = tooltip.addPara(str, LOG_PADDING, h, locStr, side);
 					label.setHighlight(locStr, side);
 					label.setHighlightColors(h, pc);
 				} else {
 					str = getString("log_industryCaptured");
 					String moraleStr = String.format("%.0f", morale * 100) + "%";
-					label = tooltip.addPara(str, 0, h, locStr, side, moraleStr);
+					label = tooltip.addPara(str, LOG_PADDING, h, locStr, side, moraleStr);
 					label.setHighlight(locStr, side, moraleStr);
 					label.setHighlightColors(h, pc, pc);
 				}
@@ -137,7 +138,7 @@ public class GroundBattleLog {
 						str = StringHelper.substituteToken(str, "$industries", 
 								StringHelper.writeStringCollection(names, false, true));
 					}
-					tooltip.addPara(str, 0, isSaturation ? 
+					tooltip.addPara(str, LOG_PADDING, isSaturation ? 
 							Misc.getNegativeHighlightColor() : h, type);
 				}
 				
@@ -149,12 +150,23 @@ public class GroundBattleLog {
 					str = getString("log_victory");
 					String victorStr = StringHelper.getString(isAttacker ? "attacker" : "defender", true);
 					FactionAPI winner = intel.getSide(isAttacker).getFaction();
-					label = tooltip.addPara(str, 0, h, victorStr, winner.getDisplayName());
+					label = tooltip.addPara(str, LOG_PADDING, h, victorStr, winner.getDisplayName());
 					label.setHighlight(victorStr, winner.getDisplayName());
 					label.setHighlightColors(pc, winner.getBaseUIColor());
 				} else {
 					str = getString("log_ended");
-					tooltip.addPara(str, 0);
+					tooltip.addPara(str, LOG_PADDING);
+				}
+				break;
+				
+			case TYPE_LOSS_REPORT:
+				{
+					Integer marinesLost = (Integer)params.get("marinesLost");
+					Integer heavyArmsLost = (Integer)params.get("heavyArmsLost");
+					if (marinesLost == null) marinesLost = 0;
+					if (heavyArmsLost == null) heavyArmsLost = 0;
+					str = getString("log_lossesFinal");
+					tooltip.addPara(str, LOG_PADDING, h, marinesLost + "", heavyArmsLost + "");
 				}
 				break;
 		}

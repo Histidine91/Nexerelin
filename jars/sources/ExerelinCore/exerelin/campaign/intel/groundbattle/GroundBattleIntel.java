@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -52,6 +53,7 @@ import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin;
+import exerelin.campaign.intel.groundbattle.plugins.GeneralPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -177,6 +179,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void initPlugins() {
+		GeneralPlugin general = new GeneralPlugin();
+		general.init(this);
+		otherPlugins.add(general);
+		
 		PlanetHazardPlugin hazard = new PlanetHazardPlugin();
 		hazard.init(this);
 		otherPlugins.add(hazard);
@@ -641,6 +647,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		else if (outcome == BattleOutcome.DEFENDER_VICTORY)
 			log.params.put("attackerIsWinner", false);
 		addLogEvent(log);
+		
+		if (playerIsAttacker != null) {
+			log = new GroundBattleLog(this, GroundBattleLog.TYPE_LOSS_REPORT, turnNum);
+			log.params.put("marinesLost", countPersonnelFromMap(playerData.getLosses()));
+			log.params.put("heavyArmsLost", playerData.getLosses().get(ForceType.HEAVY));
+			addLogEvent(log);
+		}
 		
 		sendUpdateIfPlayerHasIntel(null, false);
 
@@ -1332,6 +1345,35 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			Color hl = cost.getModifiedValue() > curr ? Misc.getNegativeHighlightColor() : Misc.getHighlightColor();
 			prompt.addPara(str, 0, hl, Misc.getDGSCredits(cost.getModifiedValue()), Misc.getDGSCredits(curr));
 			prompt.addStatModGrid(480, 80, 100, 10, cost, true, NexUtils.getStatModValueGetter(true, 0));
+			return;
+		}
+		
+		if (buttonId instanceof Pair) {
+			try {
+				Pair pair = (Pair)buttonId;
+				String action = (String)pair.one;
+				if (pair.two instanceof IndustryForBattle) {
+					IndustryForBattle ifb = (IndustryForBattle)pair.two;
+					switch (action) {
+						case "loot":
+							str = getString("btnLootConfirmPrompt");
+							prompt.addPara(str, 0);
+							String aiCore = ifb.getIndustry().getAICoreId();
+							SpecialItemData special = ifb.getIndustry().getSpecialItem();
+							// TODO: print item info
+							if (aiCore != null)
+								prompt.addPara(" - " + Global.getSettings().getCommoditySpec(aiCore).getName(), 0);
+							if (special != null) {
+								str = Global.getSettings().getSpecialItemSpec(special.getId()).getName();
+								prompt.addPara(" - " + str, 0);
+							}
+								
+							break;
+					}
+				}
+			} catch (Exception ex) {
+				// do nothing?
+			}
 		}
 	}
 		
@@ -1370,6 +1412,26 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			handleGovernorshipPurchase();
 			ui.updateUIForItem(this);
 			return;
+		}
+		
+		if (buttonId instanceof Pair) {
+			try {
+				Pair pair = (Pair)buttonId;
+				String action = (String)pair.one;
+				if (pair.two instanceof IndustryForBattle) {
+					IndustryForBattle ifb = (IndustryForBattle)pair.two;
+					switch (action) {
+						case "loot":
+							String aiCore = ifb.getIndustry().getAICoreId();
+							SpecialItemData special = ifb.getIndustry().getSpecialItem();
+							// TODO: add stuff to cargo and play sound
+							
+							break;
+					}
+				}
+			} catch (Exception ex) {
+				// do nothing?
+			}
 		}
 	}
 	
@@ -1475,14 +1537,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	// =========================================================================
 	// other stuff
 	
-	public static boolean isOngoing(MarketAPI market) {
+	public static GroundBattleIntel getOngoing(MarketAPI market) {
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GroundBattleIntel.class))
 		{
 			GroundBattleIntel gbi = (GroundBattleIntel)intel;
 			if (gbi.market == market && !gbi.isEnding() && !gbi.isEnded())
-				return true;
+				return gbi;
 		}
-		return false;
+		return null;
 	}
 	
 	public static List<GroundBattleIntel> getOngoing() {

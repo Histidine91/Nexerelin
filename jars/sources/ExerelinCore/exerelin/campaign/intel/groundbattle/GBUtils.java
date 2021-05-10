@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import org.apache.log4j.Logger;
 
 public class GBUtils {
@@ -12,12 +13,27 @@ public class GBUtils {
 	public static Logger log = Global.getLogger(GBUtils.class);
 	
 	/**
-	 * Estimates the strength of the militia, marines and heavy units in the planetary garrison.
+	 * Estimates the combat strength of the militia, marines and heavy units in the planetary garrison.
 	 * @param intel
 	 * @param useHealth If true, will take into account garrison damage from recent invasions.
 	 * @return
 	 */
 	public static float[] estimateDefenderStrength(GroundBattleIntel intel, boolean useHealth) {
+		float[] counts = estimateDefenderCounts(intel, useHealth);
+		return new float[] {
+			counts[0] * ForceType.MILITIA.strength,
+			counts[1] * ForceType.MARINE.strength, 
+			counts[2] * ForceType.HEAVY.strength,
+		};
+	}
+	
+	/**
+	 * Estimates the numbers of the militia, marines and heavy units in the planetary garrison.
+	 * @param intel
+	 * @param useHealth If true, will take into account garrison damage from recent invasions.
+	 * @return
+	 */
+	public static float[] estimateDefenderCounts(GroundBattleIntel intel, boolean useHealth) {
 		float militia = 1, marines = 0, heavies = 0;
 		if (intel.market.getSize() >= 5) {
 			militia = 0.75f;
@@ -46,9 +62,7 @@ public class GBUtils {
 		marines = Math.round(marines * countForSize * health);
 		heavies = Math.round(heavies * countForSize / GroundUnit.HEAVY_COUNT_DIVISOR * health);
 		
-		return new float[] {militia * GroundUnit.ForceType.MILITIA.strength,
-				marines * GroundUnit.ForceType.MARINE.strength,
-				heavies * GroundUnit.ForceType.HEAVY.strength};
+		return new float[] {militia, marines, heavies};
 	}
 	
 	public static float estimateTotalDefenderStrength(GroundBattleIntel intel, boolean useHealth) 
@@ -69,8 +83,8 @@ public class GBUtils {
 		
 		int remainingMarines = marines - heavyArms * GroundUnit.CREW_PER_MECH;
 		
-		return new float[] {remainingMarines * GroundUnit.ForceType.MARINE.strength,
-				heavyArms * GroundUnit.ForceType.HEAVY.strength};
+		return new float[] {remainingMarines * ForceType.MARINE.strength,
+				heavyArms * ForceType.HEAVY.strength};
 	}
 	
 	public static float getTroopCountForMarketSize(MarketAPI market) {

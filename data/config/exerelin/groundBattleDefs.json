@@ -34,7 +34,7 @@
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.GroundDefensesPlugin",
 		},
 		"planetaryshield":{
-			"tags":["preventBombardment"],
+			"tags":["preventBombardment", "preventEW", "preventInspire", "preventCAS"],
 			"enemyDropCostMult":2,
 			"dropAttritionMult":2,
 		},

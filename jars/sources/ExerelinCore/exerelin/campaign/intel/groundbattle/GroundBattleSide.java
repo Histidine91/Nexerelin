@@ -8,6 +8,7 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import exerelin.campaign.StatsTracker;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.utilities.NexUtils;
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class GroundBattleSide {
 	protected StatBonus dropCostMod = new StatBonus();
 	protected StatBonus bombardmentCostMod = new StatBonus();
 	protected MutableStat dropAttrition = new MutableStat(0);
+	protected MutableStat movementPointsPerTurn = new MutableStat(0);
+	protected int movementPointsUsedThisTurn = 0;
 	
 	public GroundBattleSide(GroundBattleIntel intel, boolean isAttacker) {
 		this.intel = intel;
@@ -79,6 +82,10 @@ public class GroundBattleSide {
 		return dropAttrition;
 	}
 	
+	public MutableStat getMovementPointsPerTurn() {
+		return movementPointsPerTurn;
+	}
+	
 	public FactionAPI getFaction() {
 		return faction;
 	}
@@ -103,13 +110,23 @@ public class GroundBattleSide {
 			NexUtils.modifyMapEntry(intel.playerData.getLosses(), type, num);
 			NexUtils.modifyMapEntry(intel.playerData.getLossesLastTurn(), type, num);
 		}
+		
+		// orphans made by player
+		if (intel.playerIsAttacker != null) {
+			if (intel.playerIsAttacker != unit.isAttacker) {
+				int casualties = num;
+				if (unit.getType() == ForceType.HEAVY) casualties *= 2;
+				if (intel.playerIsAttacker) casualties *= 2;	// include estimated civilian fatalities
+				StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(casualties, unit.faction.getId());
+			}
+		}
 	}
 	
 	public void generateDefenders() {
-		float[] strengths = GBUtils.estimateDefenderStrength(intel, true);
-		float militia = strengths[0];
-		float marines = strengths[1];
-		float heavies = strengths[2];
+		float[] counts = GBUtils.estimateDefenderCounts(intel, true);
+		float militia = counts[0];
+		float marines = counts[1];
+		float heavies = counts[2];
 		
 		log.info(String.format("Available troops: %s militia, %s marines, %s heavy", militia, marines, heavies));
 		
@@ -211,7 +228,7 @@ public class GroundBattleSide {
 		int value = getDefendPriorityFromTags(ind);
 		INDUSTRY_DEFEND_PRIORITY.put(id, value);
 		return value;
-	}	
+	}
 	
 	public static final Comparator<IndustryForBattle> PRIORITY_SORT = new Comparator<IndustryForBattle>() {
 		@Override

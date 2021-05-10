@@ -3,12 +3,15 @@ package exerelin.campaign.intel.groundbattle.plugins;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleSide;
 
 public class SpaceportPlugin extends IndustryForBattlePlugin {
 	
 	public static float DROP_COST_MULT = 0.5f;
 	public static float DROP_COST_MULT_MEGAPORT = 0.25f;
+	//public static int MOVE_POINTS = 2;
+	//public static int MOVE_POINTS_MEGAPORT = 3;
 	
 	@Override
 	public void apply() {
@@ -17,8 +20,8 @@ public class SpaceportPlugin extends IndustryForBattlePlugin {
 		if (indForBattle.isIndustryTrueDisrupted()) return;
 		
 		GroundBattleSide ourSide = indForBattle.getHoldingSide();
-		ourSide.getDropCostMod().modifyMult(defId, getDropCostMult(), indForBattle.getIndustry().getCurrentName());
-		
+		String name = indForBattle.getIndustry().getCurrentName();
+		ourSide.getDropCostMod().modifyMult(defId, getDropCostMult(), name);		
 	}
 	
 	@Override
@@ -42,6 +45,7 @@ public class SpaceportPlugin extends IndustryForBattlePlugin {
 	@Override
 	public void processTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
 		super.processTooltip(tooltip, expanded, tooltipParam);
-		tooltip.addPara("- %s drop costs", 0, Misc.getHighlightColor(), String.format("%.1f×", getDropCostMult()));
+		tooltip.addPara("- " + GroundBattleIntel.getString("modifierDropCost"), 
+				0, Misc.getHighlightColor(), String.format("%.1f×", getDropCostMult()));
 	}
 }

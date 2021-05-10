@@ -30,6 +30,14 @@ public class GroundBattleAI {
 		return results;
 	}
 	
+	protected List<IndustryForBattle> getThreatenedIndustries(List<IndustryForBattle> toCheck) {
+		List<IndustryForBattle> results = new ArrayList<>();
+		for (IndustryForBattle ifb : toCheck) {
+			// TODO
+		}
+		return results;
+	}
+	
 	protected List<GroundUnit> getAvailableUnits() {
 		List<GroundUnit> results = new ArrayList<>();
 		for (GroundUnit unit : side.getUnits()) {
@@ -40,7 +48,27 @@ public class GroundBattleAI {
 		return results;
 	}
 	
+	
+	
+	public void giveOrders() {
+		List<GroundUnit> available = getAvailableUnits();
+		List<IndustryForBattle> contested = getIndustriesWithEnemyPresence();
+		
+		//for ()
+	}
+			
 	protected boolean canUnleashMilitia() {
 		return intel.turnNum > 15 + intel.getMarket().getSize() * 4;
+	}
+	
+	public static class IFBStrengthRecord {
+		public IndustryForBattle industry;
+		public float ourStr;
+		public float theirStr;
+		
+		public IFBStrengthRecord(IndustryForBattle industry, float ourStr, float theirStr) {
+			
+		}
+		
 	}
 }
