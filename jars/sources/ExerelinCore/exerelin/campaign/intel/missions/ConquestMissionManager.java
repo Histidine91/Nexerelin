@@ -89,7 +89,7 @@ public class ConquestMissionManager extends BaseEventManager {
 			return null;
 		}
 		
-		float duration = 45 + target.getSize() * 10;
+		float duration = 90 + target.getSize() * 20;
 		
 		ConquestMissionIntel intel = new ConquestMissionIntel(target, faction, duration);
 		intel.init();
