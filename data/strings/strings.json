@@ -276,7 +276,9 @@
 		"intelPromptUnlockMastery":"Freed from the constraints of specialization, a Master-level operative can perform any action type.",
 		"intelPromptAbort":"Aborting the mission now will refund %s credits. Proceed?",
 		"intelPromptAbortQueued":"Cancelling the queued mission will refund %s credits. Proceed?",
-		"intelPromptRepeat":"Repeating action %s will cost %s credits. Proceed?",
+		"intelPromptRepeat":"Repeating action %s will cost %s credits. You have %s credits. Proceed?",
+		"intelPromptRepeatNotEnoughCredits":"Repeating action %s will cost %s credits. You only have %s credits.",
+		
 		"intelPromptDismiss":"Really dismiss $agentName from service?",
 		
 		"barPrompt":"A shady-looking $manOrWoman is sitting in a corner of the bar. $HeOrShe gives you an appraising look.",
