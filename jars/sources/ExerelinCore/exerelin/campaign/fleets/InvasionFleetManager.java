@@ -279,7 +279,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public static float getFactionDoctrineFleetSizeMult(FactionAPI faction) {
-		return 1 + (faction.getDoctrine().getNumShips() - 1) * 0.25f;
+		return 1 + (faction.getDoctrine().getNumShips() - 1) * 0.125f;
 	}
 	
 	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target,

@@ -962,6 +962,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	
 	protected boolean hasEnoughCredits() {
 		if (action == null) return false;
+		if (action.getCost() <= 0) return true;
 		return Global.getSector().getPlayerFleet().getCargo().getCredits().get() >= action.getCost();
 	}
 	

@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
@@ -121,6 +122,9 @@ public class Nex_RebellionActions extends PaginatedOptions {
 		// transfer cargo
 		cargo.removeCommodity(commodity, amount);
 		AddRemoveCommodity.addCommodityLossText(commodity, (int)amount, dialog.getTextPanel());
+		if (commodity.equals(Commodities.MARINES)) {
+			PlayerFleetPersonnelTracker.getInstance().getMarineData().numMayHaveChanged(cargo.getMarines(), true);
+		}
 		
 		// handle credits payment
 		if (!market.isPlayerOwned() && !market.getFaction().isPlayerFaction()) {

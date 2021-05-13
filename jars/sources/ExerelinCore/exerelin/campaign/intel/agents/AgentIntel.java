@@ -18,6 +18,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.MutableValue;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
@@ -496,9 +497,12 @@ public class AgentIntel extends BaseIntelPlugin {
 			nextAction.abort();
 			setQueuedAction(null);
 		} else if (buttonId == BUTTON_REPEAT_ACTION) {
-			// TODO
 			try {
-				currentAction = (CovertActionIntel)lastAction.clone();
+				CovertActionIntel repeat = (CovertActionIntel)lastAction.clone();
+				MutableValue currCredits = Global.getSector().getPlayerFleet().getCargo().getCredits();
+				if (currCredits.get() < repeat.cost)
+					return;
+				currentAction = repeat;
 				Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(currentAction.cost);
 				currentAction.activate();
 			} catch (CloneNotSupportedException ex) {
@@ -534,6 +538,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	@Override
 	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		Color h = Misc.getHighlightColor();
 		if (buttonId == BUTTON_ABORT) {
 			int credits = currentAction.getAbortRefund();
 			String creditsStr = Misc.getWithDGS(credits);
@@ -550,8 +555,15 @@ public class AgentIntel extends BaseIntelPlugin {
 			try {
 				CovertActionIntel temp = (CovertActionIntel)lastAction.clone();
 				String creditsStr = Misc.getWithDGS(temp.cost);
-				String str = getString("intelPromptRepeat");
-				prompt.addPara(str, 0, Misc.getHighlightColor(), lastAction.getActionName(true), creditsStr);				
+				int currCreds = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+				String currCredsStr = Misc.getWithDGS(currCreds);
+				boolean enough = temp.cost <= 0 || currCreds >= temp.cost;
+				String str = getString("intelPromptRepeat" + (enough ? "" : "NotEnoughCredits"));
+				LabelAPI label = prompt.addPara(str, 0, h, lastAction.getActionName(true), creditsStr, currCredsStr);
+				if (!enough) {
+					Color neg = Misc.getNegativeHighlightColor();
+					label.setHighlightColors(h, neg, neg);
+				}
 			} catch (CloneNotSupportedException ex) {
 				Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
 			}
@@ -569,8 +581,17 @@ public class AgentIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
-	public String getConfirmText(Object buttonId) {
-		return super.getConfirmText(buttonId); //To change body of generated methods, choose Tools | Templates.
+	public String getCancelText(Object buttonId) {
+		if (buttonId == BUTTON_REPEAT_ACTION) {
+			try {
+				CovertActionIntel temp = (CovertActionIntel)lastAction.clone();
+				int currCreds = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+				boolean enough = temp.cost <= 0 || currCreds >= temp.cost;
+				if (!enough) return null;
+			} catch (CloneNotSupportedException ex) {}
+		}
+		
+		return super.getCancelText(buttonId);
 	}
 	
 	protected StoryOptionParams getMasteryStoryOptionParams() {
