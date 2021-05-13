@@ -87,7 +87,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	
 	protected MemoryAPI memory;
 	
-	static {
+	public static void reloadPickers() {
+		givePicker.clear();
 		givePicker.add(Commodities.SUPPLIES, 1f);
 		givePicker.add(Commodities.FUEL, 1f);
 		givePicker.add(Commodities.FOOD, 0.5f);
@@ -95,6 +96,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		givePicker.add(Commodities.RARE_METALS, 0.2f);
 		givePicker.add(Commodities.CREW, 0.5f);
 		
+		takePicker.clear();
 		takePicker.add(Commodities.SUPPLIES, 2f);
 		takePicker.add(Commodities.METALS, 1f);
 		takePicker.add(Commodities.HAND_WEAPONS, 1.25f);
@@ -456,10 +458,12 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		int giveAmount = Math.round(baseAmount * giveMult * suppliesBasePrice/giveBasePrice);
 		int takeAmount = Math.round(baseAmount * takeMult * suppliesBasePrice/takeBasePrice);
 		
+		/*
 		log.info("Giving " + giveAmount + " " + commodityGive + " worth " + giveAmount * giveBasePrice 
 				+ " credits (price mult " + (suppliesBasePrice/giveBasePrice) + ")");
 		log.info("Taking " + takeAmount + " " + commodityTake + " worth " + takeAmount * takeBasePrice 
 				+ " credits (price mult " + (suppliesBasePrice/takeBasePrice) + ")");
+		*/
 		
 		setMem(MEM_KEY_GIVE_ID, commodityGive);
 		setMem(MEM_KEY_GIVE_COUNT, giveAmount);
@@ -469,19 +473,27 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	
 	protected void setupBarterEvent() {
 		int tries = 0;
-		
-		while (tries < 5) {
+		boolean lastTry = false;
+		reloadPickers();
+		while (true) {
 			tries++;
+			if (tries >= 10) lastTry = true;
 			
 			String commodityGive = givePicker.pick();
 			String commodityTake = null;
 			do {
-				commodityTake = takePicker.pick();
+				if (takePicker.isEmpty()) reloadPickers();
+				commodityTake = takePicker.pickAndRemove();
 			} while (commodityTake == null || commodityTake.equals(commodityGive));
 
 			//log.info("Picked commodities: " + commodityGive + ", " + commodityTake);
 			
 			CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+			if (cargo.getCommodityQuantity(commodityTake) <= 0 && !lastTry) 
+			{
+				// we don't have this commodity, try again
+				continue;
+			}
 			float baseAmount = cargo.getMaxCapacity();
 			baseAmount = Math.min(baseAmount, 1000);
 			if (baseAmount < 100) baseAmount = 100;
@@ -489,11 +501,12 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 			baseAmount *= 0.25f * MathUtils.getRandomNumberInRange(2, 8);
 
 			setupCommodities(commodityGive, commodityTake, baseAmount, 1.25f, 1);
-			if (cargo.getCommodityQuantity(commodityTake) < (int)memory.getLong(MEM_KEY_TAKE_COUNT))
+			if (cargo.getCommodityQuantity(commodityTake) < (int)memory.getLong(MEM_KEY_TAKE_COUNT) && !lastTry)
 			{
 				// we don't have enough of this commodity, try again
 				continue;
 			}
+			log.info("Picked barter commodity after " + tries + " tries");
 			break;
 		}
 	}
