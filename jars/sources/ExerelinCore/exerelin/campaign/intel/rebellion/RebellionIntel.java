@@ -204,7 +204,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static float getSizeMod(int size)
 	{
 		return (float)Math.pow(2, size - 2);
-	}	
+	}
 	
 	/**
 	 * Gets an exponent-of-two value based on the market size.
@@ -267,6 +267,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	
 	public void setRebelStrength(float strength) {
 		rebelStrength = strength;
+	}
+	
+	public boolean isStarted() {
+		return started;
 	}
 	
 	public int getDetailLevel() {
@@ -1357,10 +1361,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		//Global.getSector().getCampaignUI().addMessage(message);
 	}
 	
-	//runcode exerelin.campaign.intel.rebellion.RebellionIntel.startDebugEvent()
-	public static void startDebugEvent()
+	//runcode exerelin.campaign.intel.rebellion.RebellionIntel.startDebugEvent("corvus_IIIa")
+	public static void startDebugEvent(String id)
 	{
-		SectorEntityToken target = Global.getSector().getEntityById("jangala");
+		SectorEntityToken target = Global.getSector().getEntityById(id);
 		if (target != null)
 		{
 			/*

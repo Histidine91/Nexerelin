@@ -41,6 +41,7 @@ import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -88,6 +89,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public static final Object UPDATE_TURN = new Object();
 	public static final Object BUTTON_RESOLVE = new Object();
+	public static final Object BUTTON_AUTO_MOVE = new Object();
+	public static final Object BUTTON_AUTO_MOVE_TOGGLE = new Object();
+	public static final Object BUTTON_DEBUG_AI = new Object();
 	public static final Object BUTTON_ANDRADA = new Object();
 	public static final Object BUTTON_GOVERNORSHIP = new Object();
 	
@@ -196,6 +200,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * Should be called after relevant parameters are set.
 	 */
 	public void init() {
+		turnNum = 1;
+		
 		List<Industry> mktIndustries = new ArrayList<>(market.getIndustries());
 		Collections.sort(mktIndustries, INDUSTRY_COMPARATOR);
 		for (Industry ind : mktIndustries) {
@@ -215,7 +221,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		defender.commander = market.getAdmin();
 		
 		initPlugins();
-		turnNum = 1;
 		
 		reapply();
 	}
@@ -311,7 +316,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return (playerIsAttacker == isAttacker);
 	}
 	
-	public void setIntel(InvasionIntel intel) {
+	public int getTurnNum() {
+		return turnNum;
+	}
+	
+	public void setInvasionIntel(InvasionIntel intel) {
 		this.intel = intel;
 	}
 	
@@ -502,6 +511,22 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return num;
 	}
 	
+	public void runAI(boolean isAttacker, boolean isPlayer) {
+		GroundBattleAI ai = new GroundBattleAI(this, isAttacker, isPlayer);
+		ai.giveOrders();
+	}
+	
+	public void runAI() {
+		if (playerIsAttacker != null) {
+			if (playerData.autoMoveAtEndTurn)
+				runAI(playerIsAttacker, true);
+			runAI(!playerIsAttacker, false);		
+		} else {
+			runAI(true, false);
+			runAI(false, false);
+		}
+	}
+	
 	/**
 	 * Post-battle XP for player units, both those moved to fleet and to local storage.
 	 * @param storage
@@ -613,7 +638,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (Boolean.TRUE.equals(playerIsAttacker) && outcome == BattleOutcome.ATTACKER_VICTORY) 
 		{
 			playerData.setLoot(GroundBattleRoundResolve.lootMarket(market));
-			
 		}
 		if (playerInitiated && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
 		{
@@ -693,6 +717,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		reapply();
 		checkAnyAttackers();
+		runAI();
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
 			x.reportBattleBeforeTurn(this, turnNum);
@@ -713,6 +738,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			sendUpdateIfPlayerHasIntel(UPDATE_TURN, false);
 		interval.setElapsed(0);
 		turnNum++;
+		reapply();
 	}
 	
 	/**
@@ -799,6 +825,22 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			unit.preventAttack(1);
 		}
 		reapply();
+	}
+	
+	public void loot(IndustryForBattle ifb) {
+		String aiCore = ifb.getIndustry().getAICoreId();
+		SpecialItemData special = ifb.getIndustry().getSpecialItem();
+		// TODO: add stuff to cargo and play sound
+		if (aiCore != null) {
+			Global.getSector().getPlayerFleet().getCargo().addCommodity(aiCore, 1);
+			ifb.getIndustry().setAICoreId(null);
+		}
+		if (special != null) {
+			Global.getSector().getPlayerFleet().getCargo().addSpecial(special, 1);
+			ifb.getIndustry().setSpecialItem(null);
+		}		
+		
+		Global.getSoundPlayer().playUISound("ui_cargo_special_military_drop", 1, 1);
 	}
 	
 	public void doShortIntervalStuff(float days) {
@@ -959,6 +1001,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void generateIntro(CustomPanelAPI outer, TooltipMakerAPI info, float width, float pad) {
 		info.addImages(width, 128, pad, pad, attacker.faction.getLogo(), defender.faction.getLogo());
+				
+		FactionAPI fc = getFactionForUIColors();
+		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
 		
 		String str = getString("intelDesc_intro");
 		Map<String, String> sub = getFactionSubs();
@@ -980,27 +1025,48 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
 		
 		if (ExerelinModPlugin.isNexDev) {
-			ButtonAPI button = info.addButton(getString("btnResolveRound"), BUTTON_RESOLVE, 128, 24, pad);
+			CustomPanelAPI buttonDebugRow = outer.createCustomPanel(width, 24, null);
+			
+			TooltipMakerAPI btnHolder1 = buttonDebugRow.createUIElement(160, 
+				VIEW_BUTTON_HEIGHT, false);
+			btnHolder1.addButton(getString("btnResolveRound"), BUTTON_RESOLVE, base, bg, 160, 24, 0);
+			buttonDebugRow.addUIElement(btnHolder1).inTL(0, 0);
+			
+			TooltipMakerAPI btnHolder2 = buttonDebugRow.createUIElement(160, 
+				VIEW_BUTTON_HEIGHT, false);
+			btnHolder2.addButton(getString("btnAIDebug"), BUTTON_DEBUG_AI, base, bg, 160, 24, 0);
+			buttonDebugRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
+			
+			info.addCustom(buttonDebugRow, 3);
 		}
 		
 		// view mode buttons
 		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
 		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder1.addButton(getString("btnViewOverview"), ViewMode.OVERVIEW, VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
+		btnHolder1.addButton(getString("btnViewOverview"), ViewMode.OVERVIEW, base, bg, 
+				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
 		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
 		
 		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder2.addButton(getString("btnViewCommand"), ViewMode.COMMAND, VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
+		btnHolder2.addButton(getString("btnViewCommand"), ViewMode.COMMAND, base, bg, 
+				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
 		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
 		
 		TooltipMakerAPI btnHolder3 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder3.addButton(getString("btnViewLog"), ViewMode.LOG, VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
+		btnHolder3.addButton(getString("btnViewLog"), ViewMode.LOG, base, bg, 
+				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
 		buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
 		
-		info.addCustom(buttonRow, 0);
+		TooltipMakerAPI btnHolder4 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
+				VIEW_BUTTON_HEIGHT, false);
+		btnHolder4.addButton(getString("btnViewHelp"), ViewMode.HELP, base, bg, 
+				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
+		buttonRow.addUIElement(btnHolder4).rightOfTop(btnHolder3, 4);
+		
+		info.addCustom(buttonRow, 3);
 	}
 	
 	protected String getCommoditySprite(String commodityId) {
@@ -1044,15 +1110,54 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 	}
 	
-	public void generateUnitDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
+	public void generateUnitDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float opad) 
 	{
-		info.addSectionHeading(getString("unitPanel_header"), Alignment.MID, pad);
+		float pad = 3;
+		info.addSectionHeading(getString("unitPanel_header"), Alignment.MID, opad);
 		
+		// movement points display
+		TooltipMakerAPI movementPoints = info.beginImageWithText(Global.getSettings().
+				getCommoditySpec(Commodities.SUPPLIES).getIconName(), 24);
+		int maxPoints = getSide(playerIsAttacker).getMovementPointsPerTurn().getModifiedInt();
+		int available = maxPoints - getSide(playerIsAttacker).getMovementPointsSpent().getModifiedInt();
+		Color h = Misc.getHighlightColor();
+		if (available <= 0) h = Misc.getNegativeHighlightColor();
+		else if (available >= maxPoints) h = Misc.getPositiveHighlightColor();
+		
+		String str = getString("unitPanel_movementPoints") + ": %s / %s";
+		movementPoints.addPara(str, pad, h, available + "", maxPoints + "");
+		
+		info.addImageWithText(pad);
+		info.addTooltipToPrevious(new TooltipCreator() {
+			@Override
+			public boolean isTooltipExpandable(Object tooltipParam) {
+					return false;
+				}
+				public float getTooltipWidth(Object tooltipParam) {
+					return 400;	// FIXME magic number
+				}
+				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+					Color h = Misc.getHighlightColor();
+		
+					String str = getString("unitPanel_movementPoints_tooltip1");
+					tooltip.addPara(str, 0);
+
+					str = getString("unitPanel_movementPoints_tooltip2");
+					tooltip.addPara(str, 3);
+
+					tooltip.addStatModGrid(360, 60, 10, 3, getSide(playerIsAttacker).getMovementPointsPerTurn(), 
+							true, NexUtils.getStatModValueGetter(true, 0));
+							
+				}			
+		}, TooltipMakerAPI.TooltipLocation.BELOW);
+		
+		// cargo display
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		info.addPara(getString("unitPanel_resources"), 3);
-		CustomPanelAPI resourcePanel = panel.createCustomPanel(width, 32, null);
-		TooltipMakerAPI resourceSubPanel;
+		info.addPara(getString("unitPanel_resources"), pad);
 		
+		CustomPanelAPI resourcePanel = panel.createCustomPanel(width, 32, null);
+		
+		TooltipMakerAPI resourceSubPanel;
 		int subWidth = 96;
 		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, null, 
 				Commodities.MARINES, cargo.getMarines());
@@ -1063,8 +1168,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
 				Commodities.FUEL, (int)cargo.getFuel());
 		
-		info.addCustom(resourcePanel, 3);
-				
+		info.addCustom(resourcePanel, pad);
+		
+		// unit cards
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
 		
 		int numCards = 0;
@@ -1078,7 +1184,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		//log.info("Number of rows: " + NUM_ROWS);
 		//log.info("Cards per row: " + CARDS_PER_ROW);
 		
-		CustomPanelAPI unitPanel = panel.createCustomPanel(width, NUM_ROWS * (GroundUnit.PANEL_HEIGHT + 3), null);
+		CustomPanelAPI unitPanel = panel.createCustomPanel(width, NUM_ROWS * (GroundUnit.PANEL_HEIGHT + pad), null);
 		
 		//TooltipMakerAPI test = unitPanel.createUIElement(64, 64, true);
 		//test.addPara("wololo", 0);
@@ -1104,7 +1210,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			log.error("Failed to display cards", ex);
 		}
 				
-		info.addCustom(unitPanel, 3);
+		info.addCustom(unitPanel, pad);
 	}
 	
 	public void populateModifiersDisplay(CustomPanelAPI outer, TooltipMakerAPI disp, 
@@ -1117,7 +1223,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	protected static float itemPanelHeight = 160;
 	public void generateModifiersDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
-	{
+	{		
 		// Holds the display for each faction, added to 'info'
 		CustomPanelAPI strPanel = panel.createCustomPanel(width, itemPanelHeight, null);
 		
@@ -1150,6 +1256,36 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addCustom(strPanel, pad);
 	}
 	
+	public void generateCommandDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width, float pad) 
+	{
+		float opad = 10;
+		FactionAPI fc = getFactionForUIColors();
+		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
+		info.addSectionHeading(getString("commandPanel_header1"), base, bg,  Alignment.MID, opad);
+		
+		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
+		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(160, 
+				VIEW_BUTTON_HEIGHT, false);
+		btnHolder1.addButton(getString("btnRunPlayerAI"), BUTTON_AUTO_MOVE,	base,
+				bg, 160, VIEW_BUTTON_HEIGHT, 0);
+		String tooltipStr = getString("btnRunPlayerAI_tooltip");
+		TooltipCreator tt = NexUtils.createSimpleTextTooltip(tooltipStr, 360);
+		btnHolder1.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
+		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
+		
+		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(240, 
+				VIEW_BUTTON_HEIGHT, false);
+		ButtonAPI check = btnHolder2.addAreaCheckbox(getString("btnTogglePlayerAI"), BUTTON_AUTO_MOVE_TOGGLE, 
+				base, bg, fc.getBrightUIColor(),
+				240, VIEW_BUTTON_HEIGHT, 0);
+		check.setChecked(playerData.autoMoveAtEndTurn);
+		btnHolder2.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
+		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);		
+		
+		info.addCustom(buttonRow, 0);
+		
+	}
+	
 	public void generateIndustryDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width) 
 	{
 		info.beginTable(Global.getSector().getPlayerFaction(), 0,
@@ -1158,18 +1294,21 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				getString("industryPanel_header_attacker"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL,
 				getString("industryPanel_header_defender"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL
 		);
-		info.addTable("", 0, 3);
+		info.addTable("", 0, 10);
+		info.addSpacer(4);
 		
 		for (IndustryForBattle ifb : industries) {
 			ifb.renderPanel(panel, info, width);
 		}
 	}
 	
-	static float logPanelHeight = 240;
 	public void generateLogDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width) 
 	{
 		info.addSectionHeading(getString("logHeader"), Alignment.MID, 10);
 		try {
+			float logPanelHeight = 240;
+			//if (this.outcome != null) // endgame display
+			//	logPanelHeight = 600;
 			CustomPanelAPI logPanel = outer.createCustomPanel(width, logPanelHeight, null);
 			TooltipMakerAPI scroll = logPanel.createUIElement(width, logPanelHeight, true);
 			for (int i=battleLog.size() - 1; i>=0; i--) {
@@ -1181,6 +1320,69 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		} catch (Exception ex) {
 			log.error("Failed to create log display", ex);
 		}		
+	}
+	
+	protected void generateHelpDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width)
+	{
+		float opad = 10;
+		float pad = 3;
+		Color h = Misc.getHighlightColor();
+		String bullet = " - ";
+		
+		info.addSectionHeading(getString("helpHeader"), Alignment.MID, opad);
+		
+		info.setParaInsigniaLarge();
+		info.addPara(getString("helpPara1Title"), opad);
+		info.setParaFontDefault();
+		TooltipMakerAPI section = info.beginImageWithText("graphics/exerelin/icons/intel/invasion.png", 32);
+		section.setBulletedListMode(bullet);
+		section.addPara(getString("helpPara1-1"), pad);
+		section.addPara(getString("helpPara1-2"), pad);
+		section.addPara(getString("helpPara1-3"), pad);
+		section.addPara(getString("helpPara1-4"), pad);
+		info.addImageWithText(pad);
+		
+		CustomPanelAPI help2Holder = outer.createCustomPanel(width, 123, null);
+		TooltipMakerAPI help2Text = help2Holder.createUIElement(500, 123, false);
+		help2Text.setParaInsigniaLarge();
+		help2Text.addPara(getString("helpPara2Title"), 0);
+		help2Text.setParaFontDefault();
+		section = help2Text.beginImageWithText("graphics/icons/cargo/supplies.png", 32);
+		section.setBulletedListMode(bullet);
+		section.addPara(getString("helpPara2-1"), pad);
+		section.addPara(getString("helpPara2-2"), pad);
+		section.addPara(getString("helpPara2-3"), pad);
+		help2Text.addImageWithText(pad);
+		help2Holder.addUIElement(help2Text).inTL(0, 0);
+		TooltipMakerAPI help2Img = help2Holder.createUIElement(223, 123, false);
+		help2Img.addImage(Global.getSettings().getSpriteName("nex_groundbattle", "help_unitCard"), pad * 2);
+		help2Holder.addUIElement(help2Img).rightOfTop(help2Text, 8);
+		info.addCustom(help2Holder, opad);
+		
+		info.setParaInsigniaLarge();
+		info.addPara(getString("helpPara3Title"), opad);
+		info.setParaFontDefault();
+		
+		for (int i=1; i<=3; i++) {
+			ForceType type = ForceType.values()[i - 1];
+			info.setBulletedListMode(bullet);
+			section = info.beginImageWithText(Global.getSettings().getCommoditySpec(type.commodityId).getIconName(), 32);
+			String name = Misc.ucFirst(type.getName());
+			section.addPara(getString("helpPara3-" + i), pad, h, name);
+			info.addImageWithText(0);
+		}
+		unindent(info);
+		
+		info.setParaInsigniaLarge();
+		info.addPara(getString("helpPara4Title"), opad);
+		info.setParaFontDefault();
+		section = info.beginImageWithText("graphics/exerelin/icons/intel/swiss_flag.png", 32);
+		section.setBulletedListMode(bullet);
+		section.addPara(getString("helpPara4-1"), pad);
+		section.addPara(getString("helpPara4-2"), pad);
+		section.addPara(getString("helpPara4-3"), pad);
+		info.addImageWithText(pad);
+		unindent(info);
 	}
 	
 	public void addLogEvent(GroundBattleLog log) {
@@ -1320,7 +1522,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId == BUTTON_ANDRADA || buttonId == BUTTON_GOVERNORSHIP;
+		return buttonId == BUTTON_ANDRADA || buttonId == BUTTON_GOVERNORSHIP || buttonId instanceof Pair;
 	}
 	
 	@Override
@@ -1367,7 +1569,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 								str = Global.getSettings().getSpecialItemSpec(special.getId()).getName();
 								prompt.addPara(" - " + str, 0);
 							}
-								
 							break;
 					}
 				}
@@ -1379,6 +1580,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		
 		if (buttonId == BUTTON_RESOLVE) {
 			advanceTurn(true);
 			ui.updateUIForItem(this);
@@ -1413,6 +1615,19 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			ui.updateUIForItem(this);
 			return;
 		}
+		if (buttonId == BUTTON_DEBUG_AI) {
+			runAI(false, false);
+			return;
+		}
+		if (buttonId == BUTTON_AUTO_MOVE) {
+			runAI(playerIsAttacker, true);
+			ui.updateUIForItem(this);
+			return;
+		}
+		if (buttonId == BUTTON_AUTO_MOVE_TOGGLE) {
+			playerData.autoMoveAtEndTurn = !playerData.autoMoveAtEndTurn;
+			return;
+		}
 		
 		if (buttonId instanceof Pair) {
 			try {
@@ -1422,15 +1637,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					IndustryForBattle ifb = (IndustryForBattle)pair.two;
 					switch (action) {
 						case "loot":
-							String aiCore = ifb.getIndustry().getAICoreId();
-							SpecialItemData special = ifb.getIndustry().getSpecialItem();
-							// TODO: add stuff to cargo and play sound
-							
+							loot(ifb);
+							ui.updateUIForItem(this);
 							break;
 					}
 				}
 			} catch (Exception ex) {
-				// do nothing?
+				log.error("Button press failed", ex);
 			}
 		}
 	}
@@ -1457,11 +1670,19 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (viewMode == null) viewMode = ViewMode.OVERVIEW;
 		
 		generateIntro(panel, outer, width, opad);
-		generateUnitDisplay(outer, panel, width, opad);
+		
+		if (viewMode == ViewMode.HELP) {
+			generateHelpDisplay(outer, panel, width);
+			panel.addUIElement(outer).inTL(0, 0);
+			return;
+		}
+		
+		if (playerIsAttacker != null)
+			generateUnitDisplay(outer, panel, width, opad);
 		if (viewMode == ViewMode.OVERVIEW) {
 			generateModifiersDisplay(outer, panel, width - 6, opad);
 		} else if (viewMode == ViewMode.COMMAND) {
-			// abilities, when we get that
+			generateCommandDisplay(outer, panel, width, opad);
 		}
 		else if (viewMode == ViewMode.LOG) {
 			generateLogDisplay(outer, panel, width - 14);
@@ -1470,6 +1691,16 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		generateIndustryDisplay(outer, panel, width);
 		
 		panel.addUIElement(outer).inTL(0, 0);
+	}
+	
+	@Override
+	public FactionAPI getFactionForUIColors() {
+		if (true) return super.getFactionForUIColors();
+		
+		if (Boolean.FALSE.equals(playerIsAttacker)) {
+			return defender.getFaction();
+		}
+		return attacker.getFaction();
 	}
 	
 	@Override

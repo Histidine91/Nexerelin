@@ -16,6 +16,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
@@ -30,6 +31,7 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 
@@ -102,7 +104,16 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	public int getCurrentSupplies() {
 		return (int)Global.getSector().getPlayerFleet().getCargo().getSupplies();
 	}
-		
+	
+	public int getDisruptTime() {
+		float strRatio = unit.getAttackStrength()/GroundUnit.getBaseStrengthForAverageUnit(intel.getUnitSize(), ForceType.MARINE);
+		Industry ind = unit.getLocation().getIndustry();
+		float days = ind.getSpec().getDisruptDanger().disruptionDays * strRatio;
+		float already = ind.getDisruptedDays();
+		days *= days / (days + already); 
+		return Math.round(days);
+	}
+	
 	protected void addChoiceOptions() {
 		options.clearOptions();
 		
@@ -113,31 +124,41 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		if (deployed) {
 			options.addOption(getString("actionMove", true), OptionId.MOVE, null);
 			options.addOption(getString("actionWithdraw", true), OptionId.WITHDRAW, null);
-			// TODO
-			//options.addOption(getString("actionDisrupt", true), OptionId.DISRUPT, null);
+			
+			if (unit.getLocation().heldByAttacker == unit.isAttacker())
+				options.addOption(getString("actionDisrupt", true), OptionId.DISRUPT, null);
 			
 			if (unit.isReorganizing()) {
 				options.setEnabled(OptionId.MOVE, false);
+				options.setEnabled(OptionId.DISRUPT, false);
 				options.setTooltip(OptionId.MOVE, getString("actionMoveReorganizingTooltip"));
+			}
+			// out of movement points
+			else if (intel.getSide(unit.isAttacker()).getMovementPointsSpent().getModifiedValue() >
+					intel.getSide(unit.isAttacker()).getMovementPointsPerTurn().getModifiedValue()) 
+			{
+				options.setEnabled(OptionId.MOVE, false);
+				options.setTooltip(OptionId.MOVE, getString("actionMoveOutOfMovementPointsTooltip"));
 			}
 			
 			if (!intel.isPlayerInRange()) {
 				options.setEnabled(OptionId.WITHDRAW, false);
 				options.setTooltip(OptionId.WITHDRAW, String.format(getString("actionDeployOutOfRange"),
 						(int)GBConstants.MAX_SUPPORT_DIST));
-			}
+			}			
 			
 			options.addOptionConfirmation(OptionId.WITHDRAW, 
 					getString("actionWithdrawConfirm"), 
 					confirm, cancel);
+			int disruptTime = getDisruptTime();
 			options.addOptionConfirmation(OptionId.DISRUPT, 
-					"This will disrupt the %s for %s days, and takes effect immediately. The unit will reorganize for one turn.", 
+					String.format(getString("actionDisruptConfirm"), unit.getLocation().getName(), disruptTime), 
 					confirm, cancel);
 			
 			if (unit.getDestination() != null) {
 				options.addOption(getString("actionCancelMove", true), OptionId.CANCEL, null);
 			}
-			else if (GBConstants.ACTION_WITHDRAW.equals(unit.getCurrAction())) {
+			else if (unit.isWithdrawing()) {
 				options.addOption(getString("actionCancelWithdraw", true), OptionId.CANCEL, null);
 			}
 			
@@ -161,6 +182,12 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				options.setTooltip(OptionId.DEPLOY, String.format(getString("actionDeployNotEnoughTooltip"),
 						deployCost, currSupplies));
 				options.setTooltipHighlights(OptionId.DEPLOY, deployCost + "", currSupplies + "");
+			}
+			else if (intel.getSide(unit.isAttacker()).getMovementPointsSpent().getModifiedValue() >
+					intel.getSide(unit.isAttacker()).getMovementPointsPerTurn().getModifiedValue()) 
+			{
+				options.setEnabled(OptionId.DEPLOY, false);
+				options.setTooltip(OptionId.DEPLOY, getString("actionMoveOutOfMovementPointsTooltip"));
 			}
 			
 			//options.addOptionConfirmation(OptionId.DEPLOY, 
@@ -190,7 +217,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		
 		max = Math.min(max, curr + (int)cargo.getCommodityQuantity(type.commodityId));
 		if (unit.getType() == ForceType.HEAVY) {
-			max = Math.min(max, unit.getPersonnel() + cargo.getMarines());
+			max = Math.min(max, (unit.getPersonnel() + cargo.getMarines())/GroundUnit.CREW_PER_MECH);
 		}
 		
 		return max;
@@ -242,15 +269,14 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		unit.deploy(deployTarget, dialog);
 		float attrition = intel.getSide(unit.isAttacker()).getDropAttrition().getModifiedValue();
 		if (attrition > 0) {
-			// TODO: get a stereo sound for this
-			//Global.getSoundPlayer().playUISound("hellbore_fire", 1.2f, 1);
+			playSound("attrition");
 			showUnitPanel();
 			didAnything = true;
 			addLeaveOption(true);
 		} else {
+			playSound("deploy");
 			leave(true);
 		}
-	
 	}
 	
 	protected List<Industry> getIndustries() {
@@ -274,6 +300,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				}
 				else {
 					unit.setDestination(intel.getIndustryForBattleByIndustry(industry));
+					playSound("move");
 					leave(true);
 				}
 			}
@@ -282,6 +309,16 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				addChoiceOptions();
 			}
 		});
+	}
+	
+	protected void disrupt() {
+		float days = getDisruptTime();
+		days *= StarSystemGenerator.getNormalRandom(new Random(), 1f, 1.25f);
+		float already = unit.getLocation().getIndustry().getDisruptedDays();
+		unit.getLocation().getIndustry().setDisrupted(already + days);
+		unit.reorganize(1);
+		intel.reapply();
+		playSound("disrupt");
 	}
 	
 	public void showUnitPanel() {
@@ -313,10 +350,12 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			selectMoveOrDeployDestination(false);
 			break;
 		case DISRUPT:
-			// FIXME
+			disrupt();
+			leave(true);
 			break;
 		case WITHDRAW:
 			unit.orderWithdrawal();
+			playSound("withdraw");
 			leave(true);
 			break;
 		case DEPLOY:
@@ -337,6 +376,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			break;
 		case CANCEL:
 			unit.cancelMove();
+			playSound("cancelMove");
 			showUnitPanel();
 			addChoiceOptions();
 			didAnything = true;
@@ -350,6 +390,29 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	protected void leave(boolean didAnything) {
 		dialog.dismiss();
 		if (didAnything) ui.updateUIForItem(intel);	
+	}
+	
+	protected void playSound(String event) {
+		String id = getSound(event);
+		if (id != null)
+			Global.getSoundPlayer().playUISound(id, 1, 1);
+	}
+	
+	protected String getSound(String event) {
+		switch (event) {
+			case "attrition":
+				return "nex_ui_gb_attrition";
+			case "move":
+			case "withdraw":
+			case "cancelMove":
+				return "ui_intel_something_posted";
+			case "deploy":
+				return "ui_raid_prepared";
+			case "disrupt":
+				return "nex_sfx_deciv_bomb";
+			default:
+				return null;
+		}
 	}
 	
 	@Override

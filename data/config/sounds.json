@@ -12,6 +12,9 @@
 	"nex_sfx_combat":[
 		{"file":"sounds/nexerelin/sfx_interface/combat.wav","pitch":0.8,"volume":0.8},
 	],
+	"nex_ui_gb_attrition":[
+		{"file":"sounds/nexerelin/sfx_interface/groundbattle/groundfire.ogg","pitch":0.8,"volume":0.8},
+	],
 	
 	"nex_sfx_deciv_bomb":[
 		{"file":"sounds/nexerelin/sfx_interface/explosion_01.ogg","pitch":1,"volume":1.0},

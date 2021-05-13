@@ -141,6 +141,10 @@ public class GroundUnit {
 		return destination;
 	}
 	
+	public boolean isWithdrawing() {
+		return GBConstants.ACTION_WITHDRAW.equals(currAction);
+	}
+	
 	public String getCurrAction() {
 		return currAction;
 	}
@@ -195,12 +199,14 @@ public class GroundUnit {
 			return;
 		}
 		this.destination = destination;
+		intel.getSide(isAttacker).getMovementPointsSpent().modifyFlat(id + "_move", getDeployCost());
 		currAction = null;
 	}
 	
 	public void cancelMove() {
 		destination = null;
 		currAction = null;
+		intel.getSide(isAttacker).getMovementPointsSpent().unmodifyFlat(id + "_move");
 	}
 	
 	public void inflictAttrition(float amount, GroundBattleRoundResolve resolve, 
@@ -248,6 +254,7 @@ public class GroundUnit {
 			log.params.put("location", location);
 			intel.addLogEvent(log);
 		}
+		intel.getSide(isAttacker).getMovementPointsSpent().modifyFlat(id + "_deploy", cost);
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			plugin.reportUnitMoved(this, null);
 		}
@@ -255,12 +262,13 @@ public class GroundUnit {
 	
 	public void orderWithdrawal() {
 		currAction = GBConstants.ACTION_WITHDRAW;
+		intel.getSide(isAttacker).getMovementPointsSpent().modifyFlat(id + "_move", getDeployCost());
 		destination = null;
 	}
 	
 	public void executeMove() {
 		IndustryForBattle lastLoc = location;
-		if (GBConstants.ACTION_WITHDRAW.equals(currAction)) {
+		if (isWithdrawing()) {
 			if (intel.isPlayerInRange()) {
 				setLocation(null);
 				currAction = null;
@@ -301,6 +309,7 @@ public class GroundUnit {
 	}
 	
 	public void destroyUnit(float recoverProportion) {
+		cancelMove();
 		if (isPlayer && intel.isPlayerInRange()) {
 			getCargo().addMarines((int)(personnel * recoverProportion));
 			getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(heavyArms * recoverProportion));
@@ -343,16 +352,17 @@ public class GroundUnit {
 	public void addActionText(TooltipMakerAPI info) {
 		Color color = Misc.getTextColor();
 		String strId = "currAction";
-		if (isReorganizing() && isAttackPrevented()) {
+		
+		if (GBConstants.ACTION_WITHDRAW.equals(currAction)) {
+			strId += "Withdrawing";
+		}
+		else if (isReorganizing() && isAttackPrevented()) {
 			strId += "Shocked";
 			color = Misc.getNegativeHighlightColor();
 		}
 		else if (isReorganizing()) {
 			strId += "Reorganizing";
 			color = Misc.getNegativeHighlightColor();
-		}
-		else if (GBConstants.ACTION_WITHDRAW.equals(currAction)) {
-			strId += "Withdrawing";
 		}
 		else if (destination != null) {
 			strId += "Moving";
@@ -421,9 +431,16 @@ public class GroundUnit {
 		return getSize() * type.strength;
 	}
 	
+	public static float getBaseStrengthForAverageUnit(UnitSize size, ForceType type) 
+	{
+		return size.avgSize * type.strength;
+	}
+	
 	public int getDeployCost() {
-		return Math.round(getBaseStrength() * GBConstants.SUPPLIES_TO_DEPLOY_MULT 
-				* intel.getSide(isAttacker).dropCostMod.getMult());
+		float cost = getBaseStrength() * GBConstants.SUPPLIES_TO_DEPLOY_MULT;
+		cost *= type.dropCostMult;
+		cost = intel.getSide(isAttacker).dropCostMod.computeEffective(cost);
+		return Math.round(cost);
 	}
 	
 	protected void modifyAttackStatWithDesc(MutableStat stat, String id, float mult) 
@@ -459,7 +476,7 @@ public class GroundUnit {
 					stat.modifyMult("industry", industryMult, ifb.ind.getCurrentName());
 				}
 				*/
-			} else {	// heavy unit bonus on offensive
+			} else if (type == ForceType.HEAVY) {	// heavy unit bonus on offensive
 				modifyAttackStatWithDesc(stat, "heavy_offensive", GBConstants.HEAVY_OFFENSIVE_MULT);
 			}
 		}
@@ -469,6 +486,9 @@ public class GroundUnit {
 				modifyAttackStatWithDesc(stat, "heavy_cramped", GBConstants.HEAVY_STATION_MULT);
 			}
 		}
+		
+		if (type == ForceType.REBEL)
+			modifyAttackStatWithDesc(stat, "rebel", GBConstants.REBEL_DAMAGE_MULT);
 		
 		float moraleMult = NexUtilsMath.lerp(1 - GBConstants.MORALE_ATTACK_MOD, 
 				1 + GBConstants.MORALE_ATTACK_MOD, morale);
@@ -584,6 +604,9 @@ public class GroundUnit {
 	public float getAdjustedDamageTaken(float dmg) {
 		if (location != null && isAttacker == location.heldByAttacker)
 			dmg *= 1/location.getPlugin().getStrengthMult();
+		
+		if (type == ForceType.REBEL)
+			dmg *= GBConstants.REBEL_DAMAGE_MULT;
 				
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			dmg = plugin.modifyDamageReceived(this, dmg);
@@ -709,7 +732,7 @@ public class GroundUnit {
 		card.addUIElement(stats2).rightOfTop(stats, 0);
 		
 		// deploy cost
-		if (location == null) {
+		if (true || location == null) {
 			line = stats2.beginImageWithText(Global.getSettings().getCommoditySpec(
 					Commodities.SUPPLIES).getIconName(), 16 * sizeMult);
 			line.addPara(getDeployCost() + "", 0);
@@ -798,22 +821,25 @@ public class GroundUnit {
 	}
 	
 	public static enum ForceType {
-		MARINE(Commodities.MARINES, "troopNameMarine", 1, 1), 
-		HEAVY(Commodities.HAND_WEAPONS, "troopNameMech", 6, 1),
-		MILITIA(Commodities.CREW, "troopNameMilitia", 0.4f, 0.5f), 
-		REBEL(Commodities.CREW, "troopNameRebel", 0.4f, 0.7f);
+		MARINE(Commodities.MARINES, "troopNameMarine", 1, 1, 1), 
+		HEAVY(Commodities.HAND_WEAPONS, "troopNameMech", 6, 1, GBConstants.HEAVY_DROP_COST_MULT),
+		MILITIA(Commodities.CREW, "troopNameMilitia", 0.4f, 0.6f, 1), 
+		REBEL(Commodities.CREW, "troopNameRebel", 0.4f, 0.7f, 1);
 		
 		public final String commodityId;
 		public final String nameStringId;
 		public final float strength;
 		public final float moraleMult;
+		public final float dropCostMult;
 		
-		private ForceType(String commodityId, String nameStringId, float strength, float moraleMult) 
+		private ForceType(String commodityId, String nameStringId, float strength, 
+				float moraleMult, float dropCostMult) 
 		{
 			this.commodityId = commodityId;
 			this.nameStringId = nameStringId;
 			this.strength = strength;
 			this.moraleMult = moraleMult;
+			this.dropCostMult = dropCostMult;
 		}
 		
 		public String getName() {

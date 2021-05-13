@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class IndustryForBattle {
 	
-	public static final int HEIGHT = 100;
+	public static final int HEIGHT = 95;
 	public static final int COLUMN_WIDTH_INDUSTRY = 400;
 	//public static final int COLUMN_WIDTH_CONTROLLED_BY = 80;
 
@@ -61,6 +61,10 @@ public class IndustryForBattle {
 		return ind;
 	}
 	
+	public String getName() {
+		return ind.getCurrentName();
+	}
+	
 	public GroundBattleIntel getIntel() {
 		return intel;
 	}
@@ -71,6 +75,10 @@ public class IndustryForBattle {
 	
 	public GroundBattleSide getNonHoldingSide() {
 		return intel.getSide(!heldByAttacker);
+	}
+	
+	public List<GroundUnit> getUnits() {
+		return units;
 	}
 
 	public boolean containsEnemyOf(boolean attacker) {
@@ -89,6 +97,10 @@ public class IndustryForBattle {
 			else haveDefender = true;
 		}
 		return haveAttacker && haveDefender;
+	}
+	
+	public float getPriority() {
+		return GroundBattleSide.getDefendPriority(ind);
 	}
 	
 	/**
@@ -142,6 +154,15 @@ public class IndustryForBattle {
 	
 	public void removeUnit(GroundUnit unit) {
 		units.remove(unit);
+	}
+	
+	public float getStrength(boolean attacker) {
+		float strength = 0;
+		for (GroundUnit unit : units) {
+			if (unit.isAttacker != attacker) continue;
+			strength += unit.getAttackStrength();
+		}
+		return strength;
 	}
 	
 	public boolean isIndustryTrueDisrupted() {
@@ -219,11 +240,7 @@ public class IndustryForBattle {
 			}, TooltipLocation.BELOW);
 		
 		// strength
-		float strength = 0;
-		for (GroundUnit unit : units) {
-			if (unit.isAttacker != attacker) continue;
-			strength += unit.getAttackStrength();
-		}
+		float strength = getStrength(attacker);
 		String strengthNum = Math.round(strength) + "";
 		troops.addPara(GroundBattleIntel.getString("intelDesc_strength"), pad, hl, strengthNum);
 		
@@ -244,6 +261,16 @@ public class IndustryForBattle {
 					h, StringHelper.toPercent(avgMorale));
 			}
 		}
+		
+		
+		if (heldByAttacker && intel.playerIsAttacker) {
+			boolean haveLootables = ind.getAICoreId() != null || ind.getSpecialItem() != null;
+			if (haveLootables) {
+				troops.addButton(GroundBattleIntel.getString("btnLoot"), 
+						new Pair<String, IndustryForBattle> ("loot", this),
+						64, 16, pad);
+			}
+		}	
 		
 		panel.addUIElement(troops).rightOfTop(rightOf, 0);
 		return troops;
@@ -277,16 +304,7 @@ public class IndustryForBattle {
 		sub.addPara(str + ": " + owner, pad, heldByAttacker ? Misc.getPositiveHighlightColor() 
 				: Misc.getNegativeHighlightColor(), owner);
 		
-		if (heldByAttacker && intel.playerIsAttacker) {
-			boolean haveLootables = ind.getAICoreId() != null || ind.getSpecialItem() != null;
-			if (haveLootables) {
-				sub.addButton(GroundBattleIntel.getString("btnLoot"), 
-						new Pair<String, IndustryForBattle> ("loot", this),
-						64, 24, pad);
-			}
-		}
-		
-		ttIndustry.addImageWithText(0);
+		ttIndustry.addImageWithText(0);	
 
 		row.addUIElement(ttIndustry).inLMid(0);
 
@@ -294,7 +312,49 @@ public class IndustryForBattle {
 		TooltipMakerAPI atkPanel = renderForcePanel(row, COLUMN_WIDTH_TROOP_TOTAL, true, ttIndustry);
 		TooltipMakerAPI defPanel = renderForcePanel(row, COLUMN_WIDTH_TROOP_TOTAL, false, atkPanel);	
 
-		tooltip.addCustom(row, 10);
+		tooltip.addCustom(row, 0);
 	}
+	
+	/*
+	public static class TestPanelPlugin implements CustomUIPanelPlugin {
+		
+		protected IndustryForBattle industry;
+		protected PositionAPI pos;
+		public List<Pair<ButtonAPI, Boolean>> buttons = new ArrayList<>();
+		
+		public TestPanelPlugin(IndustryForBattle industry) {
+			this.industry = industry;
+		}
+		
+		public void addButton(ButtonAPI button) {
+			buttons.add(new Pair<>(button, false));
+		}
+		
+		@Override
+		public void positionChanged(PositionAPI pos) {
+			this.pos = pos;
+		}
+
+		@Override
+		public void renderBelow(float alphaMult) {}
+
+		@Override
+		public void render(float alphaMult) {}
+
+		@Override
+		public void advance(float amount) {
+			for (Pair<ButtonAPI, Boolean> buttonEntry : buttons) {
+				boolean prevState = buttonEntry.two;
+				if (prevState != buttonEntry.one.isChecked()) {
+					intel.loot(industry);
+				}
+			}
+		}
+
+		@Override
+		public void processInput(List<InputEventAPI> arg0) {
+		}
+	}
+	*/
 }
 	

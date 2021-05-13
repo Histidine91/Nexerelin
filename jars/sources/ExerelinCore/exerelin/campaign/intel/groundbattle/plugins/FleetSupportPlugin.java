@@ -36,6 +36,18 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		if (increment < 0) return 0;
 		return increment;
 	}
+	
+	@Override
+	public void init(GroundBattleIntel intel) {
+		super.init(intel);
+		if (intel.getTurnNum() == 1) {
+			String desc = GroundBattleIntel.getString("modifierMovementPointsFleetSupport");
+			List<CampaignFleetAPI> atkFleets = intel.getSupportingFleets(true);
+			float initDeployBonus = getBonusFromFleets(atkFleets);
+			intel.getSide(true).getMovementPointsPerTurn().modifyFlat("fleetSupport",
+				initDeployBonus, desc);
+		}
+	}
 		
 	@Override
 	public void advance(float days) {
@@ -87,10 +99,9 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 			bonus = defBonus * shareMult * 0.5f;
 		}
 		if (bonus != 0) {
-			
-			Global.getLogger(this.getClass()).info(String.format(
-					"    Unit %s receiving %s bonus damage from ground support (share %s)", 
-					unit.getName(), bonus, StringHelper.toPercent(shareMult)));
+			//Global.getLogger(this.getClass()).info(String.format(
+			//		"    Unit %s receiving %s bonus damage from ground support (share %s)", 
+			//		unit.getName(), bonus, StringHelper.toPercent(shareMult)));
 		}
 		return bonus;
 	}
@@ -125,6 +136,12 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 	
 	@Override
 	public void afterTurnResolve(int turn) {
+		String desc = GroundBattleIntel.getString("modifierMovementPointsFleetSupport");
+		intel.getSide(false).getMovementPointsPerTurn().modifyFlat("fleetSupport",
+				defBonus, desc);
+		intel.getSide(true).getMovementPointsPerTurn().modifyFlat("fleetSupport",
+				atkBonus, desc);
+		
 		atkBonus = 0;
 		defBonus = 0;
 		atkStrSum = 0;
@@ -186,5 +203,8 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		
 		str = GroundBattleIntel.getString("modifierGroundSupportDesc2");
 		tooltip.addPara(str, 3, h, String.format("%.0f", isAttacker ? atkBonus : defBonus));
+		
+		str = GroundBattleIntel.getString("modifierGroundSupportDesc3");
+		tooltip.addPara(str, 3);
 	}
 }

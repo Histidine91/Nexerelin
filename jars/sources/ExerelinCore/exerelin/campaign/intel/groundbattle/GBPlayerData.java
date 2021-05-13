@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAd
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelAtEntity;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +23,7 @@ public class GBPlayerData {
 	protected ReputationAdjustmentResult andradaRepChange;
 	protected Float andradaRepAfter;
 	protected Float governorshipPrice;
+	protected boolean autoMoveAtEndTurn;
 	
 	public GBPlayerData(GroundBattleIntel intel) {
 		this.intel = intel;
@@ -58,6 +58,14 @@ public class GBPlayerData {
 	
 	public void setLoot(CargoAPI loot) {
 		this.loot = loot;
+	}
+
+	public boolean isAutoMoveAtEndTurn() {
+		return autoMoveAtEndTurn;
+	}
+	
+	public void setAutoMoveAtEndTurn(boolean autoMoveAtEndTurn) {
+		this.autoMoveAtEndTurn = autoMoveAtEndTurn;
 	}
 	
 	public void updateXPTrackerNum() {

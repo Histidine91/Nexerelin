@@ -8,7 +8,8 @@ public class GBConstants {
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";
 	
-	public static int BASE_MOVES_PER_TURN = 3;
+	public static int BASE_MOVEMENT_POINTS_PER_TURN = 40;	// at size 3;
+	public static final float HEAVY_DROP_COST_MULT = 1.25f;
 	
 	public static float BASE_MORALE = 0.8f;
 	public static float BASE_DAMAGE_MULT = 0.1f;
@@ -19,10 +20,11 @@ public class GBConstants {
 	public static float REORGANIZE_AT_MORALE = 0.3f;
 	public static float BREAK_AT_MORALE = 0.01f;
 	public static float HEAVY_OFFENSIVE_MULT = 1.25f;
-	public static float HEAVY_STATION_MULT = 1.25f;
+	public static float HEAVY_STATION_MULT = 0.75f;
 	public static float XP_MORALE_BONUS = 0.2f;	// 20% more morale at 100% XP
 	public static float CAPTURE_MORALE = 0.1f;
 	public static float REORGANIZING_DMG_MULT = 0.7f;
+	public static float REBEL_DAMAGE_MULT = 0.5f;	// both dealt and received;
 	
 	public static int STABILITY_PENALTY_BASE = 2;
 	public static int STABILITY_PENALTY_OCCUPATION = 5;
@@ -33,9 +35,10 @@ public class GBConstants {
 	public static float MAX_SUPPORT_DIST = 300;
 	
 	public static float XP_MARKET_SIZE_MULT = 4f;
-	public static float XP_CASUALTY_MULT = 0.2f;
+	public static float XP_CASUALTY_MULT = 0.15f;
 	
 	public static float BASE_GARRISON_SIZE = 25;
 	public static float EXTERNAL_BOMBARDMENT_DAMAGE = 0.75f;
 	public static float INVASION_HEALTH_MONTHS_TO_RECOVER = 3;
+	public static float LIBERATION_REBEL_MULT = 0.25f;
 }

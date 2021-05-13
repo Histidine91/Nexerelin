@@ -166,6 +166,12 @@
 			"volta":"graphics/portraits/characters/volta.png",
 		},
 		
+		"nex_groundbattle":{
+			"icon_grounddefenses":"graphics/exerelin/icons/groundbattle/groundefenses.png",
+			"icon_heavybatteries":"graphics/exerelin/icons/groundbattle/heavybatteries.png",
+			"help_unitCard":"graphics/exerelin/help/gb_unitcard.png",
+		},
+		
 		"intel":{
 			"alliance":"graphics/icons/intel/star.png",
 			"allianceVote":"graphics/icons/intel/stars.png",

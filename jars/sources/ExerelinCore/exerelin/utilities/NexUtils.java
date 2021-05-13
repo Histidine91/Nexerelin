@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.plugins.LevelupPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
@@ -314,6 +315,25 @@ public class NexUtils
 		else if (val instanceof Boolean)
 			return (Boolean)val;
 		return false;
+	}
+	
+	public static TooltipCreator createSimpleTextTooltip(final String str, final float width) {
+		return new TooltipCreator() {
+			@Override
+			public boolean isTooltipExpandable(Object tooltipParam) {
+				return false;
+			}
+
+			@Override
+			public float getTooltipWidth(Object tooltipParam) {
+				return width;
+			}
+
+			@Override
+			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+				tooltip.addPara(str, 0);
+			}
+		};
 	}
 	
 	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(final boolean color, 

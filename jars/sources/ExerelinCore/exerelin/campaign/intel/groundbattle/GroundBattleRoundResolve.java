@@ -23,6 +23,7 @@ import org.lazywizard.lazylib.MathUtils;
 public class GroundBattleRoundResolve {
 	
 	public static Logger log = Global.getLogger(GroundBattleRoundResolve.class);
+	public static boolean PRINT_DEBUG = false;
 		
 	protected GroundBattleIntel intel;
 	protected Map<ForceType, Integer> atkLosses = new HashMap<>();
@@ -61,6 +62,9 @@ public class GroundBattleRoundResolve {
 			unit.executeMove();
 		}
 		
+		resetMovementPointsSpent(false);
+		resetMovementPointsSpent(true);
+		
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			plugin.beforeCombatResolve(intel.turnNum, 2);
 		}
@@ -77,6 +81,22 @@ public class GroundBattleRoundResolve {
 		
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			plugin.afterTurnResolve(intel.turnNum);
+		}
+	}
+	
+	/**
+	 * Clears the movement points spent table, then applies the overdraft modifier if needed.
+	 * @param isAttacker
+	 */
+	public void resetMovementPointsSpent(boolean isAttacker) {
+		GroundBattleSide side = intel.getSide(isAttacker);
+		int spentThisTurn = side.getMovementPointsSpent().getModifiedInt();
+		int pointsPerTurn = side.getMovementPointsPerTurn().getModifiedInt();
+		int overdraft = spentThisTurn - pointsPerTurn;
+		
+		side.getMovementPointsSpent().unmodify();
+		if (overdraft > 0) {
+			side.getMovementPointsSpent().modifyFlat("overdraft", overdraft);
 		}
 	}
 	
@@ -114,11 +134,11 @@ public class GroundBattleRoundResolve {
 			// was in combat, morale too low, not withdrawn
 			if (unit.lossesLastTurn > 0 && unit.morale < GBConstants.BREAK_AT_MORALE && unit.location != null) 
 			{
-				log.info(String.format("  Trying to rout %s due to low morale: %s", unit.name, unit.morale));
+				printDebug(String.format("  Trying to rout %s due to low morale: %s", unit.name, unit.morale));
 				tryRoutUnit(unit);
 			}
 			else if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
-				log.info(String.format("  Unit %s reorganizing due to low morale: %s", unit.name, unit.morale));
+				printDebug(String.format("  Unit %s reorganizing due to low morale: %s", unit.name, unit.morale));
 				unit.reorganize(1);
 			}
 		}
@@ -137,10 +157,11 @@ public class GroundBattleRoundResolve {
 		}
 		IndustryForBattle selected = picker.pick();
 		if (selected != null) {
-			log.info(String.format("  Unit %s retreating to %s", unit.name, selected.ind.getCurrentName()));
+			printDebug(String.format("  Unit %s retreating to %s", unit.name, selected.ind.getCurrentName()));
 			IndustryForBattle previous = unit.getLocation();
 			unit.inflictAttrition(0.5f, this, null);
 			unit.setLocation(selected);
+			unit.reorganize(1);
 			GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_ROUTED, intel.turnNum);
 			lg.params.put("unit", unit);
 			lg.params.put("location", selected);
@@ -162,16 +183,16 @@ public class GroundBattleRoundResolve {
 	
 	public void resolveCombatOnIndustry(IndustryForBattle ifb) {
 		if (!ifb.isContested()) return;
-		log.info("Resolving combat on " + ifb.ind.getCurrentName());
+		printDebug("Resolving combat on " + ifb.ind.getCurrentName());
 		
 		float atkStr = getAttackStrengthOnIndustry(ifb, true) * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
-		log.info(String.format("  Attacker strength: %.2f", atkStr));
+		printDebug(String.format("  Attacker strength: %.2f", atkStr));
 		float defStr = getAttackStrengthOnIndustry(ifb, false) * MathUtils.getRandomNumberInRange(0.8f, 1.2f);		
-		log.info(String.format("  Defender strength: %.2f", defStr));
+		printDebug(String.format("  Defender strength: %.2f", defStr));
 		
-		log.info(String.format("  Applying damage to defender"));
+		printDebug(String.format("  Applying damage to defender"));
 		distributeDamage(ifb, false, atkStr);
-		log.info(String.format("  Applying damage to attacker"));
+		printDebug(String.format("  Applying damage to attacker"));
 		distributeDamage(ifb, true, defStr);
 	}
 	
@@ -233,7 +254,7 @@ public class GroundBattleRoundResolve {
 		moraleDmg = unit.getAdjustedMoraleDamageTaken(moraleDmg);
 		float moraleDmgClamped = unit.modifyMorale(-moraleDmg);
 		
-		log.info(String.format("    Unit %s took %.2f morale damage, now has %.2f", 
+		printDebug(String.format("    Unit %s took %.2f morale damage, now has %.2f", 
 				unit.toString(), moraleDmg, unit.morale));
 		
 		return moraleDmgClamped;
@@ -264,7 +285,7 @@ public class GroundBattleRoundResolve {
 					GroundUnit.CREW_PER_MECH : kills, true);
 		}
 		
-		log.info(String.format("    Unit %s (%s) took %s losses", unit.name, unit.type.toString(), kills));
+		printDebug(String.format("    Unit %s (%s) took %s losses", unit.name, unit.type.toString(), kills));
 		
 		intel.getSide(unit.isAttacker).reportLosses(unit, kills);
 	}
@@ -277,7 +298,7 @@ public class GroundBattleRoundResolve {
 			float contrib = unit.getAttackStrength();
 			contrib *= GBConstants.BASE_DAMAGE_MULT;
 			contrib *= intel.unitSize.damMult;
-			log.info(String.format("    Unit %s (%s) contributing attack strength: %.2f", 
+			printDebug(String.format("    Unit %s (%s) contributing attack strength: %.2f", 
 					unit.name, unit.type.toString(), contrib));
 			str += contrib;
 		}
@@ -377,5 +398,10 @@ public class GroundBattleRoundResolve {
 
 		//NexUtilsMarket.reportInvadeLoot(dialog, market, tempInvasion, tempInvasion.invasionLoot);
 		return result;
+	}
+	
+	public static void printDebug(String text) {
+		if (!PRINT_DEBUG) return;
+		log.info(text);
 	}
 }

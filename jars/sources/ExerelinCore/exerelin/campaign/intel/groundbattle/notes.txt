@@ -35,32 +35,37 @@ Loot
 Smash
 - Disrupts an occupied industry. The selected unit is forced to reorganize for 1 turn.
 
+== Help page ==
+The basics
+	Marines and heavy armaments are assembled into units (platoons, companies, battalions or regiments, depending on the target colony size).
+	You can deploy units to the surface (cost supplies), and move them around when they get there. Opposing units on the same industry will shoot at each other.
+	
+Unit types
+Turn resolution
+Deployment and giving orders
+Morale
+
 == Todo ==
-- Limit moves per turn
-- Merge command
-- [test] Loot button
-- Smash command
-- [test] Log: report total losses at battle end
+- Merge/split command
 - [test] Orphans made
-- Attrition sound (meh, needs a set of stereo sounds)
-- Help view
-- AI
+
+- Special ability interface
+
+- exerelin_config option for legacy invasions
+
+- [playtest] AI
 
 - Generate buffs
 	- Faction buffs
 	- Commanders
 
-- Rebels
+- [test] Rebels
 
 - Condition to plugin map
 
 - [done] Military response script
 - Send reinforcement fleet
 - [test] Summon special forces
-
-
-- Special ability interface
-
 
 - Externalize strings: any?
 

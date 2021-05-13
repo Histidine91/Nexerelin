@@ -8,9 +8,12 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,7 +26,7 @@ import org.apache.log4j.Logger;
 
 public class GroundBattleSide {
 	
-	public static final Map<String, Integer> INDUSTRY_DEFEND_PRIORITY = new HashMap<>();
+	public static final Map<String, Float> INDUSTRY_DEFEND_PRIORITY = new HashMap<>();
 	
 	public static Logger log = Global.getLogger(GroundBattleSide.class);
 	
@@ -43,7 +46,7 @@ public class GroundBattleSide {
 	protected StatBonus bombardmentCostMod = new StatBonus();
 	protected MutableStat dropAttrition = new MutableStat(0);
 	protected MutableStat movementPointsPerTurn = new MutableStat(0);
-	protected int movementPointsUsedThisTurn = 0;
+	protected MutableStat movementPointsSpent = new MutableStat(0);
 	
 	public GroundBattleSide(GroundBattleIntel intel, boolean isAttacker) {
 		this.intel = intel;
@@ -82,8 +85,16 @@ public class GroundBattleSide {
 		return dropAttrition;
 	}
 	
+	public MutableStat getMovementPointsSpent() {
+		return movementPointsSpent;
+	}
+	
 	public MutableStat getMovementPointsPerTurn() {
 		return movementPointsPerTurn;
+	}
+	
+	public int getMovementPointsRemaining() {
+		return movementPointsPerTurn.getModifiedInt() - movementPointsSpent.getModifiedInt();
 	}
 	
 	public FactionAPI getFaction() {
@@ -122,12 +133,52 @@ public class GroundBattleSide {
 		}
 	}
 	
+	/**
+	 * Level of local defenders' (militia in particular) unwillingness to fight.<br/>
+	 * 0: Defending our home, normal strength.<br/>
+	 * 1: Defending on behalf of a conqueror, reduced strength.<br/>
+	 * 2: Our original faction or their ally comes to liberate us; heavily reduced 
+	 * strength and some militia become rebels.
+	 * @return
+	 */
+	protected int getResistanceTier() {
+		String origOwner = NexUtilsMarket.getOriginalOwner(intel.getMarket());
+		if (origOwner == null) {
+			return 0;
+		}
+		String currOwner = intel.getMarket().getFactionId();
+		String attacker = intel.getSide(true).getFaction().getId();
+		
+		if (AllianceManager.areFactionsAllied(attacker, origOwner)) {
+			return 2;
+		}
+		else if (!currOwner.equals(origOwner)) return 1;
+		else return 0;
+	}
+	
 	public void generateDefenders() {
 		float[] counts = GBUtils.estimateDefenderCounts(intel, true);
 		float militia = counts[0];
 		float marines = counts[1];
 		float heavies = counts[2];
 		
+		float rebels = 0;
+		int resistance = getResistanceTier();
+		if (resistance == 2) {
+			rebels += militia * GBConstants.LIBERATION_REBEL_MULT;
+			militia *= 1 - GBConstants.LIBERATION_REBEL_MULT;
+		}
+		
+		RebellionIntel rebellion = RebellionIntel.getOngoingEvent(intel.getMarket());
+		if (rebellion != null) {
+			float defStrength = GBUtils.estimateTotalDefenderStrength(intel, true);
+			float gs = Math.max(rebellion.getGovtStrength(), 1);
+			float mult = rebellion.getRebelStrength()/gs;
+			float rebsFromRebellion = defStrength * mult;
+			if (!rebellion.isStarted()) rebsFromRebellion *= 0.5f;
+			rebels += rebsFromRebellion;
+		}
+				
 		log.info(String.format("Available troops: %s militia, %s marines, %s heavy", militia, marines, heavies));
 		
 		// divide these peeps into units of the appropriate size
@@ -136,6 +187,11 @@ public class GroundBattleSide {
 		createDefenderUnits(ForceType.HEAVY, Math.round(heavies));
 		
 		allocateDefenders();
+		
+		if (rebels > 0) {
+			createAndAllocateRebels(Math.round(rebels),
+					Global.getSector().getFaction(NexUtilsMarket.getOriginalOwner(intel.getMarket())));
+		}
 		
 		currNormalBaseStrength = GBUtils.estimateTotalDefenderStrength(intel, false);
 	}
@@ -149,6 +205,16 @@ public class GroundBattleSide {
 	}
 	
 	public void createDefenderUnits(ForceType type, int numTroops) {
+		
+		float moraleMult = 1;
+		if (type == ForceType.MILITIA) {
+			int resistance = getResistanceTier();
+			if (resistance >= 2)
+				moraleMult = 0.6f;
+			else if (resistance == 1)
+				moraleMult = 0.8f;
+		}
+		
 		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
 		int numUnits = (int)((float)numTroops/sizePerUnit);
 		if (numUnits == 0 && numTroops > 1) {	//intel.unitSize.getAverageSizeForType(type)/2) {
@@ -158,6 +224,7 @@ public class GroundBattleSide {
 			int size = Math.round(numTroops/numUnits);
 			GroundUnit unit = new GroundUnit(intel, type, size, units.size());
 			unit.faction = intel.market.getFaction();
+			unit.morale *= moraleMult;
 			units.add(unit);
 		}
 	}
@@ -206,7 +273,43 @@ public class GroundBattleSide {
 		}
 	}
 	
-	public static int getDefendPriorityFromTags(Industry ind) {
+	public void createAndAllocateRebels(int numTroops, FactionAPI faction) {
+		log.info(String.format("Generating %s rebels", numTroops));
+		ForceType type = ForceType.REBEL;
+		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
+		int numUnits = (int)((float)numTroops/sizePerUnit);
+		if (numUnits == 0 && numTroops > 1) {
+			numUnits = 1;
+		}
+		List<GroundUnit> generatedRebels = new ArrayList<>();
+		for (int i=0; i<numUnits; i++) {
+			int size = Math.round(numTroops/numUnits);
+			GroundUnit unit = new GroundUnit(intel, type, size, generatedRebels.size());
+			unit.faction = faction;
+			unit.isAttacker = true;
+			intel.getSide(true).getUnits().add(unit);
+			generatedRebels.add(unit);
+		}
+		
+		List<IndustryForBattle> priority = new LinkedList<>(intel.industries);
+		Collections.sort(priority, PRIORITY_SORT);
+		Collections.reverse(priority);	// rebels appear on lower priority industries first, since that's where the military isn't
+		
+		List<IndustryForBattle> pickFrom = new LinkedList<>();
+		
+		Collections.shuffle(generatedRebels);
+		for (GroundUnit unit : generatedRebels) {
+			if (pickFrom.isEmpty()) {
+				pickFrom.addAll(priority);
+			}
+			IndustryForBattle loc = pickFrom.get(0);
+			unit.setLocation(loc);
+			log.info(String.format("Adding %s unit to %s", unit.type, loc.ind.getCurrentName()));
+			pickFrom.remove(0);
+		}
+	}
+	
+	public static float getDefendPriorityFromTags(Industry ind) {
 		Set<String> tags = ind.getSpec().getTags();
 		if (tags.contains(Industries.TAG_GROUNDDEFENSES) 
 				|| tags.contains(Industries.TAG_MILITARY)
@@ -214,18 +317,20 @@ public class GroundBattleSide {
 			return 4;
 		if (tags.contains(Industries.TAG_SPACEPORT))
 			return 3;
+		if (tags.contains(Industries.TAG_HEAVYINDUSTRY))
+			return 2.5f;
 		if (tags.contains(Industries.TAG_PATROL))
 			return 2;
 		
-		return 0;
+		return 0.5f;
 	}
 	
-	public static int getDefendPriority(Industry ind) {
+	public static float getDefendPriority(Industry ind) {
 		String id = ind.getId();
 		if (INDUSTRY_DEFEND_PRIORITY.containsKey(id))
 			return INDUSTRY_DEFEND_PRIORITY.get(id);
 		
-		int value = getDefendPriorityFromTags(ind);
+		float value = getDefendPriorityFromTags(ind);
 		INDUSTRY_DEFEND_PRIORITY.put(id, value);
 		return value;
 	}
@@ -233,8 +338,8 @@ public class GroundBattleSide {
 	public static final Comparator<IndustryForBattle> PRIORITY_SORT = new Comparator<IndustryForBattle>() {
 		@Override
 		public int compare(IndustryForBattle one, IndustryForBattle two) {
-			int prio1 = getDefendPriority(one.ind), prio2 = getDefendPriority(two.ind);
-			if (prio1 != prio2) return Integer.compare(prio2, prio1);
+			float prio1 = getDefendPriority(one.ind), prio2 = getDefendPriority(two.ind);
+			if (prio1 != prio2) return Float.compare(prio2, prio1);
 			
 			return Float.compare(two.ind.getBuildCost(), one.ind.getBuildCost());
 		}

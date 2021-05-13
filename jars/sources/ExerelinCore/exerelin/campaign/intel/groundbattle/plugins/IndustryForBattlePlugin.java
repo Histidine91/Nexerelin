@@ -83,22 +83,22 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 		
 		if (def.enemyDropCostMult != 1) {
 			otherSide.getDropCostMod().modifyMult(indForBattle.getIndustry().getId(), def.enemyDropCostMult, 
-					indForBattle.getIndustry().getCurrentName());
+					indForBattle.getName());
 		}
 		
 		if (def.enemyBombardmentCostMult != 1) {
 			otherSide.getBombardmentCostMod().modifyMult(defId, def.enemyBombardmentCostMult, 
-					indForBattle.getIndustry().getCurrentName());
+					indForBattle.getName());
 		}
 		
 		if (def.dropAttritionFactor != 0) {
 			otherSide.getDropAttrition().modifyFlat(defId, def.dropAttritionFactor, 
-					indForBattle.getIndustry().getCurrentName());
+					indForBattle.getName());
 		}
 		
 		if (def.dropAttritionMult != 1) {
 			otherSide.getDropAttrition().modifyMult(defId, def.dropAttritionMult, 
-					indForBattle.getIndustry().getCurrentName());
+					indForBattle.getName());
 		}
 		
 		if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
@@ -169,7 +169,7 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 		}
 
 		if (def.enemyBombardmentCostMult != 1) {
-			tooltip.addPara("- " + getString("modifierEnemyDropCost"), 0, h, String.format("%.1f", def.enemyBombardmentCostMult));
+			tooltip.addPara("- " + getString("modifierEnemyBombardmentCost"), 0, h, String.format("%.1f", def.enemyBombardmentCostMult));
 		}
 		
 		if (def.dropAttritionFactor != 0) {

@@ -20,7 +20,7 @@ public class SpaceportPlugin extends IndustryForBattlePlugin {
 		if (indForBattle.isIndustryTrueDisrupted()) return;
 		
 		GroundBattleSide ourSide = indForBattle.getHoldingSide();
-		String name = indForBattle.getIndustry().getCurrentName();
+		String name = indForBattle.getName();
 		ourSide.getDropCostMod().modifyMult(defId, getDropCostMult(), name);		
 	}
 	
