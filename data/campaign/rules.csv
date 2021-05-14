@@ -11,7 +11,6 @@ FireAll ExerelinNGCIntroPage",,,
 ExerelinNGCIntroPrevPage,NewGameOptionSelected,"$option==exerelinNGCIntroPrevPage","$introPage--
 FireAll ExerelinNGCIntroPage",,,
 ,,,,,,
-# introPage needs to be a float,,,,,,
 ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
 $isInIntro","SetShortcut exerelinNGCIntroNextPage RETURN
 SetShortcut exerelinNGCIntroEnd ESCAPE",">>> GREETINGS, STARFARER <<<
@@ -246,7 +245,6 @@ Nex_NGCCustomStart unset
 FireBest Nex_NGCCustomStartMenu",,,
 nex_NGCDoneOption,NewGameOptionSelected,"$option == nex_NGCDone","Nex_NGCFinalize
 NGCDone",,,
-"#END introPage needs to be a float",,,,,,
 "#END NGC options",,,,,,
 ,,,,,,
 # Market special options,,,,,,
@@ -2063,7 +2061,7 @@ nex_mercMeetBlurbSteiner,Nex_MercMeetBlurb,"$nex_mercCompanyId == steinerGuards"
 nex_mercMeetBlurbSteinerInsulted,Nex_MercMeetBlurb,"$nex_mercCompanyId == steinerGuards
 $nex_mercInsulted score:5","SetEnabled nex_mercHire false","The $nex_mercRank stares at you, $nex_mercHisOrHer eye twitching. A brief interval later, $nex_mercHisOrHer lip curls into a sneer.
 
-""Ah, the honorless dog returns. Have you come to grovel before House Steiner? Or do you wish to name your seconds?""",,
+""Ah, the honourless dog returns. Have you come to grovel before House Steiner? Or do you wish to name your seconds?""",,
 nex_mercHireBlurbSteiner,Nex_MercHireBlurb,"$nex_mercCompanyId == steinerGuards",,"""An excellent choice, captain. We can depart within the hour.""
 
 The Steiner unit joins your $shipOrFleet on schedule. It's definitely an impressive iron fist.",,
