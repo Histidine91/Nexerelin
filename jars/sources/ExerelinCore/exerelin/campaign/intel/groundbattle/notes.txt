@@ -46,18 +46,19 @@ Deployment and giving orders
 Morale
 
 == Todo ==
-- Merge/split command
-- [test] Orphans made
+- Block fleet actions while station present
 
 - Special ability interface
 
 - exerelin_config option for legacy invasions
 
 - [playtest] AI
+- Merge/split command
+- [test] Orphans made
 
 - Generate buffs
-	- Faction buffs
 	- Commanders
+	- Station
 
 - [test] Rebels
 

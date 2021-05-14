@@ -108,8 +108,8 @@ public class NexFactionConfig
     
     // invasions and stuff
     public boolean canInvade = true;
-    public float invasionStrengthBonusAttack = 0;	// marines
-    public float invasionStrengthBonusDefend = 0;
+    @Deprecated public float invasionStrengthBonusAttack = 0;    // marines
+    @Deprecated public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;	// ships
     @Deprecated public float responseFleetSizeMod = 0;
     public float invasionPointMult = 1;	// point accumulation for launching invasions
@@ -117,6 +117,7 @@ public class NexFactionConfig
     public float vengeanceFleetSizeMult = 1;
     public String factionIdForHqResponse = null;
     public boolean raidsFromBases = false;
+    public Map<String, Object> groundBattleSettings;
     
     // special forces
     public int specialForcesMaxFleets = 2;
@@ -219,7 +220,7 @@ public class NexFactionConfig
             marketSpawnWeight = (float)settings.optDouble("marketSpawnWeight", marketSpawnWeight);
             tariffMult = (float)settings.optDouble("tariffMult", tariffMult);
             
-			canInvade = settings.optBoolean("canInvade", canInvade);
+            canInvade = settings.optBoolean("canInvade", canInvade);
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
@@ -229,6 +230,12 @@ public class NexFactionConfig
             vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
             factionIdForHqResponse = settings.optString("factionIdForHqResponse", factionIdForHqResponse);
             raidsFromBases = settings.optBoolean("raidsFromBases", raidsFromBases);
+            
+            // ground battle
+            if (settings.has("groundBattleSettings")) {
+                JSONObject gbsJson = settings.getJSONObject("groundBattleSettings");
+                groundBattleSettings = NexUtils.jsonToMap(gbsJson);
+            }
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             noHomeworld = settings.optBoolean("noHomeworld", noHomeworld);

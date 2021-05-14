@@ -27,6 +27,10 @@
     "colonyExpeditionChance":0.75,	# not really their kind of thing...? I guess
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
+    "groundBattleSettings":{
+        "moraleDamageTakenMult":1.1,
+    },
+    
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.FactionListNamer",
         
     "startShipsSolo":[["wolf_Starting"]],

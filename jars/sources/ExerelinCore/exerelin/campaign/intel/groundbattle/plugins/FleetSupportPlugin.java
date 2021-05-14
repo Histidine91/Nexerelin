@@ -202,9 +202,9 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		tooltip.addPara(str, 0, h, (int)GBConstants.MAX_SUPPORT_DIST + "");
 		
 		str = GroundBattleIntel.getString("modifierGroundSupportDesc2");
-		tooltip.addPara(str, 3, h, String.format("%.0f", isAttacker ? atkBonus : defBonus));
+		tooltip.addPara(str, 10, h, String.format("%.0f", isAttacker ? atkBonus : defBonus));
 		
 		str = GroundBattleIntel.getString("modifierGroundSupportDesc3");
-		tooltip.addPara(str, 3);
+		tooltip.addPara(str, 10);
 	}
 }

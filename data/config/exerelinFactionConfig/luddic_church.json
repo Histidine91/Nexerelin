@@ -29,6 +29,10 @@
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
     "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
     
+    "groundBattleSettings":{
+        #"plugin":"",
+    },
+    
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.LuddicNamer",
     
     "startShipsSolo":[["vigilance_Standard"]],

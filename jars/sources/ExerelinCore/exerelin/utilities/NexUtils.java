@@ -225,6 +225,19 @@ public class NexUtils
 		catch(Exception e) { }
 		return new ArrayList<>();
 	}
+	
+	public static Object getJSONValueAsTrueType(String value) {
+		try {
+			return Float.parseFloat(value);
+		} catch (NumberFormatException ex) {}
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException ex) {}
+		
+		if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value))
+			return Boolean.parseBoolean(value);
+		return value;
+	}
 
 	public static Map<String, Object> jsonToMap(JSONObject object) throws JSONException {
 		Map<String, Object> map = new HashMap<>();
@@ -234,13 +247,17 @@ public class NexUtils
 			String key = keysItr.next();
 			Object value = object.get(key);
 
-			if(value instanceof JSONArray) {
+			if (value instanceof JSONArray) {
 				value = jsonToList((JSONArray) value);
 			}
 
-			else if(value instanceof JSONObject) {
+			else if (value instanceof JSONObject) {
 				value = jsonToMap((JSONObject) value);
 			}
+			else if (value instanceof String) {
+				value = getJSONValueAsTrueType((String)value);
+			}
+			
 			map.put(key, value);
 		}
 		return map;
@@ -297,13 +314,13 @@ public class NexUtils
 	public static StatBonus cloneStatBonus(StatBonus orig) {
 		StatBonus clone = new StatBonus();
 		for (StatMod stat : orig.getFlatBonuses().values()) {
-			orig.modifyFlat(stat.source, stat.value, stat.desc);
+			clone.modifyFlat(stat.source, stat.value, stat.desc);
 		}
 		for (StatMod stat : orig.getMultBonuses().values()) {
-			orig.modifyMult(stat.source, stat.value, stat.desc);
+			clone.modifyMult(stat.source, stat.value, stat.desc);
 		}
 		for (StatMod stat : orig.getPercentBonuses().values()) {
-			orig.modifyPercent(stat.source, stat.value, stat.desc);
+			clone.modifyPercent(stat.source, stat.value, stat.desc);
 		}
 		return clone;
 	}

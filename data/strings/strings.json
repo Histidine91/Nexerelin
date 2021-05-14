@@ -1238,8 +1238,8 @@
 		"unitPlatoonPlural":"platoons",
 		"unitCompany":"company",
 		"unitCompanyPlural":"companies",
-		"unitBatallion":"batallion",
-		"unitBatallionPlural":"batallions",
+		"unitBattalion":"battalion",
+		"unitBattalionPlural":"battalions",
 		"unitRegiment":"regiment",
 		"unitRegimentPlural":"regiments",
 		
@@ -1270,10 +1270,10 @@
 		"modifierHazardDescNeg":"Every turn, deployed units on an industry not controlled by their side lose %s morale, to a minimum of %s.",
 		
 		"modifierDropCost":"%s deployment costs",
-		"modifierEnemyDropCost":"Enemy deployment cost %s×",
-		"modifierEnemyBombardmentCost":"Enemy bombardment cost %s×",
+		"modifierEnemyDropCost":"Enemy deployment cost %s",
+		"modifierEnemyBombardmentCost":"Enemy bombardment cost %s",
 		"modifierDropAttrition":"Drop attrition: Enemies take %s damage on drop",
-		"modifierDropAttritionMult":"Drop attrition multiplier %s×",
+		"modifierDropAttritionMult":"Drop attrition multiplier %s",
 		"modifierPreventBombardment":"Prevents enemy bombardments",
 		"modifierMovementPointsBase":"Base movement points for market size %s",
 		"modifierMovementPointsFleetSupport":"Fleet support last turn",
@@ -1283,6 +1283,13 @@
 		"modifierGroundSupportDesc1":"Ground support is charged over time from nearby fleets each turn, and distributed proportionally to units that are engaged with the enemy. Fleets must be within %s units of the target to contribute.",
 		"modifierGroundSupportDesc2":"Current support charge: %s",
 		"modifierGroundSupportDesc3":"Ground support applied during a turn also increases movement points available the next turn.",
+		
+		"modifierFaction":"Faction Modifiers",
+		"modifierFactionDescPre":"Factions represented on this side",
+		"modifierFactionDescPost":"Each unit only benefits from the bonuses of its specific faction.",
+		"modifierFactionAttackMult":"%s damage dealt",
+		"modifierFactionDamageTakenMult":"%s damage received",
+		"modifierFactionMoraleDamageTakenMult":"%s morale damage received",
 		
 		"helpHeader":"Help",
 		

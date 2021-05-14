@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelData;
@@ -28,6 +29,7 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +59,7 @@ public class GroundUnit {
 	protected int heavyArms;
 	protected int lossesLastTurn;
 	protected float moraleDeltaLastTurn;
-	protected float morale = 0.8f;	
+	protected float morale = 0.8f;
 	
 	public Map<String, Object> data = new HashMap<>();
 	
@@ -115,17 +117,18 @@ public class GroundUnit {
 	
 	public String generateName() {
 		String name = Misc.ucFirst(intel.unitSize.getName());
+		int num = index + 1;
 		switch (intel.unitSize) {
 			case PLATOON:
 			case COMPANY:
 				int alphabetIndex = this.index % 26;
 				return GBDataManager.NATO_ALPHABET.get(alphabetIndex) + " " + name;
-			case BATALLION:
-				return index + PlanetNamer.getSuffix(index + 1) + " " + name;
+			case BATTALION:
+				return num + PlanetNamer.getSuffix(num) + " " + name;
 			case REGIMENT:
-				return Global.getSettings().getRoman(index + 1) + " " + name;
+				return Global.getSettings().getRoman(num) + " " + name;
 			default:
-				return name + " " + index;
+				return name + " " + num;
 		}
 	}
 	
@@ -168,6 +171,10 @@ public class GroundUnit {
 	
 	public float getMorale() {
 		return morale;
+	}
+	
+	public FactionAPI getFaction() {
+		return faction;
 	}
 	
 	/**
@@ -548,7 +555,22 @@ public class GroundUnit {
 			}
 		}
 		else {
-			return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+			StatBonus bonus = NexUtils.cloneStatBonus(intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD));
+			bonus.getFlatBonuses().clear();
+			for (StatMod mod : new ArrayList<>(bonus.getMultBonuses().values())) 
+			{
+				if (mod.getSource().startsWith("ind_")) {
+					bonus.unmodifyMult(mod.getSource());
+				}
+			}
+			for (StatMod mod : new ArrayList<>(bonus.getPercentBonuses().values())) 
+			{
+				if (mod.getSource().startsWith("ind_")) {
+					bonus.unmodifyPercent(mod.getSource());
+				}
+			}
+			return bonus;
+			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		}
 		return null;
 	}
@@ -786,7 +808,7 @@ public class GroundUnit {
 				tooltip.addPara(str, 0);
 				if (id.equals("morale")) {
 					Color hl = Misc.getHighlightColor();
-					//tooltip.setBulletedListMode("    - ");
+					//tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);
 					str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 2);
 					tooltip.addPara(str, 3, hl, 
 							StringHelper.toPercent(1 - GBConstants.MORALE_ATTACK_MOD),
@@ -817,7 +839,7 @@ public class GroundUnit {
 	
 	@Override
 	public String toString() {
-		return String.format("Unit %s (%s)", name, type.toString());
+		return String.format("%s (%s)", name, type.toString());
 	}
 	
 	public static enum ForceType {
@@ -854,7 +876,7 @@ public class GroundUnit {
 	public static enum UnitSize {
 		PLATOON(40, 60, 1f),
 		COMPANY(120, 200, 0.75f),
-		BATALLION(500, 800, 0.5f),
+		BATTALION(500, 800, 0.5f),
 		REGIMENT(2000, 3500, 0.25f);
 		
 		public int avgSize;

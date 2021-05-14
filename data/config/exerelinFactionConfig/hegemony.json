@@ -22,6 +22,10 @@
     "colonyExpeditionChance":1,	# baseline expansion behaviour
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
+    "groundBattleSettings":{
+        "moraleDamageTakenMult":0.9,
+    },
+    
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.PlanetNamer",
     #"specialForcesFlagshipVariants":{ "paragon_Elite":1, "astral_Strike":0.5 },
     

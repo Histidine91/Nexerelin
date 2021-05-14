@@ -18,7 +18,7 @@ public class GeneralPlugin extends BaseGroundBattlePlugin {
 		
 		if (intel.getTurnNum() == 1) {
 			intel.getSide(true).getMovementPointsPerTurn().modifyMult("turn1", 
-				1.5f, GroundBattleIntel.getString("modifierMovementPointsTurn1"));
+				GBConstants.TURN_1_MOVE_POINT_MULT, GroundBattleIntel.getString("modifierMovementPointsTurn1"));
 		}
 		else {
 			intel.getSide(true).getMovementPointsPerTurn().unmodify("turn1");

@@ -33,8 +33,15 @@
     },
     "diplomacyTraits":["paranoid", "stalwart", "irredentist", "law_and_order", "temperamental"],
     
-    "invasionStrengthBonusAttack":0.1,
+    # legacy invasion settings
     "invasionStrengthBonusDefend":0.2,
+    "invasionStrengthBonusDefend":0.2,
+    
+    "groundBattleSettings":{
+        "attackMult":1.25,
+        "defenseMult":1.25,
+        "moraleDamageTakenMult":0.8,
+    },
     #"invasionFleetSizeMod":-0.15,
     "invasionPointMult":0.7,
     

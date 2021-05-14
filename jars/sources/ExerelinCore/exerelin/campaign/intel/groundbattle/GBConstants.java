@@ -8,7 +8,8 @@ public class GBConstants {
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";
 	
-	public static int BASE_MOVEMENT_POINTS_PER_TURN = 40;	// at size 3;
+	public static int BASE_MOVEMENT_POINTS_PER_TURN = 20;	// at size 3;
+	public static float TURN_1_MOVE_POINT_MULT = 2;
 	public static final float HEAVY_DROP_COST_MULT = 1.25f;
 	
 	public static float BASE_MORALE = 0.8f;

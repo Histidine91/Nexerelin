@@ -53,6 +53,7 @@ import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
+import exerelin.campaign.intel.groundbattle.plugins.FactionBonusPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GeneralPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
@@ -140,7 +141,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		else if (size <= 5)
 			unitSize = UnitSize.COMPANY;
 		else if (size <= 7)
-			unitSize = UnitSize.BATALLION;
+			unitSize = UnitSize.BATTALION;
 		else
 			unitSize = UnitSize.REGIMENT;
 		
@@ -186,6 +187,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		GeneralPlugin general = new GeneralPlugin();
 		general.init(this);
 		otherPlugins.add(general);
+		
+		FactionBonusPlugin fb = new FactionBonusPlugin();
+		fb.init(this);
+		otherPlugins.add(fb);
 		
 		PlanetHazardPlugin hazard = new PlanetHazardPlugin();
 		hazard.init(this);
@@ -418,7 +423,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			index = playerData.getUnits().get(playerData.getUnits().size() - 1).index + 1;
 		}
 		GroundUnit unit = new GroundUnit(this, type, 0, index);
-		unit.faction = Global.getSector().getPlayerFaction();
+		unit.faction = PlayerFactionStore.getPlayerFaction();
 		unit.isPlayer = true;
 		unit.isAttacker = this.playerIsAttacker;
 		unit.fleet = Global.getSector().getPlayerFleet();
@@ -1172,12 +1177,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		// unit cards
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
-		
-		int numCards = 0;
-		for (GroundUnit unit : playerData.getUnits()) {
-			numCards++;
-		}
-		if (playerData.getUnits().size() < MAX_PLAYER_UNITS)
+		List<GroundUnit> listToRead = getAllUnits();	//playerData.getUnits();
+		int numCards = listToRead.size();
+		if (listToRead.size() < MAX_PLAYER_UNITS)
 			numCards++;	// for the "create unit" card
 		
 		int NUM_ROWS = (int)Math.ceil((float)numCards/CARDS_PER_ROW);
@@ -1191,9 +1193,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		//unitPanel.addUIElement(test).inTL(0, 0);
 		
 		List<TooltipMakerAPI> unitCards = new ArrayList<>();
-		
 		try {
-			for (GroundUnit unit : playerData.getUnits()) {
+			for (GroundUnit unit : listToRead) {
 				TooltipMakerAPI unitCard = unit.createUnitCard(unitPanel, false);
 				//log.info("Created card for " + unit.name);
 				
@@ -1201,7 +1202,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				placeCard(unitCard, numCards, numPrevious, unitPanel, unitCards, CARDS_PER_ROW);
 				unitCards.add(unitCard);
 			}
-			if (playerData.getUnits().size() < MAX_PLAYER_UNITS) {
+			if (listToRead.size() < MAX_PLAYER_UNITS) {
 				TooltipMakerAPI newCard = GroundUnit.createBlankCard(unitPanel, unitSize);
 				placeCard(newCard, unitCards.size(), unitCards.size(), unitPanel, unitCards, CARDS_PER_ROW);
 			}
