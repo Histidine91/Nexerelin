@@ -1,6 +1,8 @@
 package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.StringHelper;
@@ -8,6 +10,12 @@ import java.util.Map;
 
 public class RebellionCondition extends BaseMarketConditionPlugin {
 	protected RebellionIntel event = null;
+	
+	@Override
+	public void init(MarketAPI market, MarketConditionAPI condition) {
+		super.init(market, condition);
+		event = RebellionIntel.getOngoingEvent(market);
+	}
 	
 	// FIXME: diagnose the underlying issue!
 	protected boolean refetchEventIfNeeded()

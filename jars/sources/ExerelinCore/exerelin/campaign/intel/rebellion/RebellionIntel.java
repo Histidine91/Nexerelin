@@ -153,7 +153,6 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			ip.getData(rebelRep).getLocation().setMarket(market);
 			ip.checkOutPerson(rebelRep, "nex_rebel_representative");
 		}
-		conditionToken = market.addCondition("nex_rebellion_condition");
 		Global.getSector().getListenerManager().addListener(this);
 		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
@@ -192,6 +191,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
 						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
+		conditionToken = market.addCondition("nex_rebellion_condition");
 		Global.getSector().addScript(this);
 		if (!instant)
 			sendUpdate(UpdateParam.PREP);
