@@ -11,6 +11,8 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.econ.ReinforcedDefenses;
 import exerelin.campaign.econ.TributeCondition;
+import exerelin.campaign.entities.Nex_NavBuoyEntityPlugin;
+import exerelin.campaign.entities.Nex_SensorArrayEntityPlugin;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
@@ -29,6 +31,7 @@ import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.FactionBountyIntel;
 import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
+import exerelin.campaign.intel.InsuranceIntelV2;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.NexPirateActivity;
@@ -130,6 +133,8 @@ public class XStreamConfig {
 		x.alias("NexPirActv", NexPirateActivity.class);
 		x.alias("NexPlyrOtpst", PlayerOutpostIntel.class);
 		x.alias("NexRlfFlt", ReliefFleetIntelAlt.class);
+		x.alias("NexInsurPol", InsuranceIntelV2.InsurancePolicy.class);
+		x.alias("NexInsurClm", InsuranceIntelV2.InsuranceClaim.class);
 		
 		// raids and such
 		x.alias("NexRaidIntl", NexRaidIntel.class);
@@ -192,6 +197,8 @@ public class XStreamConfig {
 		x.alias("NexReinDefCond", ReinforcedDefenses.class);
 		x.alias("NexPrcrMssnIntl", Nex_ProcurementMissionIntel.class);
 		x.alias("NexBuyColIntl", BuyColonyIntel.class);
+		x.alias("NexNavBuoy", Nex_NavBuoyEntityPlugin.class);
+		x.alias("NexSensArr", Nex_SensorArrayEntityPlugin.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
