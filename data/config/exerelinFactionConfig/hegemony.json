@@ -7,6 +7,7 @@
     "marketSpawnWeight":2,
 
     "startRelationships":{ "tritachyon": -0.3, "persean":-0.6 },
+	"maxRelationships":{ "remnant":-0.51 },
     
     "alignments":{
         "technocratic":-0.5,

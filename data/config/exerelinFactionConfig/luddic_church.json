@@ -7,7 +7,7 @@
     "directoryUseShortName":true,
 
     "startRelationships":{ "tritachyon":-0.6 },
-    "maxRelationships":{ "tritachyon":-0.1 },
+    "maxRelationships":{ "tritachyon":-0.1, "remnant":-0.51},
     "diplomacyPositiveChance":{ "tritachyon":0.8 },
     "diplomacyNegativeChance":{ "tritachyon":1.2 },
     "morality":"good",
