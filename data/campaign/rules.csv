@@ -284,11 +284,9 @@ marketHostileBombardConfirmSel,DialogOptionSelected,"$option == mktBombardConfir
 marketHostileBombardNeverMindSel,DialogOptionSelected,"$option == mktBombardNeverMind","Nex_MarketCMD bombardNeverMind",,,
 marketHostileBombardResultSel,DialogOptionSelected,"$option == mktBombardResult","Nex_MarketCMD bombardResult",,,
 ,,,,,,
-nex_marketHostileInvadeSel,DialogOptionSelected,"$option == nex_mktInvade","Nex_MarketCMD invadeMenuV2",,,
+nex_marketHostileInvadeSel,DialogOptionSelected,"$option == nex_mktInvade","Nex_MarketCMD invadeMenu",,,
 nex_marketHostileInvadeGoBackSel,DialogOptionSelected,"$option == nex_mktInvadeGoBack","Nex_MarketCMD goBackToDefenses",,,
-nex_marketHostileInvadeConfirmSel,DialogOptionSelected,"$option == nex_mktInvadeConfirm","Nex_MarketCMD invadeConfirmV2
-ShowDefaultVisual
-FireAll PopulateOptions",,,
+nex_marketHostileInvadeConfirmSel,DialogOptionSelected,"$option == nex_mktInvadeConfirm","Nex_MarketCMD invadeConfirm",,,
 nex_marketHostileInvadeContinue,DISABLED_DialogOptionSelected,"$option == nex_mktInvadeContinue","ShowDefaultVisual
 FireBest PopulateOptions",,,
 nex_marketHostileInvadeAbortSel,DialogOptionSelected,"$option == nex_mktInvadeAbort","Nex_MarketCMD invadeAbort",,,

@@ -3,7 +3,6 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CoreUITabId;
@@ -130,16 +129,17 @@ public class Nex_MarketCMD extends MarketCMD {
 		initForInvasion(dialog.getInteractionTarget());
 		
 		if (command.equals("invadeMenu")) {
-			//invadeMenuV2();
-			invadeMenu();
-		} else if (command.equals("invadeMenuV2")) {
-			invadeMenuV2();
+			if (NexConfig.legacyInvasions)
+				invadeMenu();
+			else
+				invadeMenuV2();
 		} else if (command.equals("invadeConfirm")) {
-			invadeRunRound();
-		} else if (command.equals("invadeConfirmV2")) {
-			invadeInitV2();
+			if (NexConfig.legacyInvasions)
+				invadeRunRound();
+			else
+				invadeInitV2();
 		} else if (command.equals("openIntel")) {
-			openInvasionIntel();
+			openInvasionIntel(null);
 		} else if (command.equals("invadeAbort")) {
 			invadeFinish();
 		} else if (command.equals("invadeResult")) {
@@ -804,14 +804,21 @@ public class Nex_MarketCMD extends MarketCMD {
 		Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), "$nex_recentlyInvaded", 
 							   Factions.PLAYER, true, 60f);
 		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "NONE", 0);
+		
+		openInvasionIntel(intel);
 	}
 	
-	protected void openInvasionIntel() {
-		GroundBattleIntel intel = GroundBattleIntel.getOngoing(market);
+	protected void openInvasionIntel(GroundBattleIntel intel) {
+		if (intel == null) intel = GroundBattleIntel.getOngoing(market);
 		
+		final InteractionDialogAPI dialogF = dialog;
+		final Map<String, MemoryAPI> memMapF = memoryMap;
 		dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, new CoreInteractionListener(){
 			@Override
-			public void coreUIDismissed() {}
+			public void coreUIDismissed() {
+				new ShowDefaultVisual().execute(null, dialogF, new ArrayList<Token>(), memMapF);
+				FireAll.fire(null, dialogF, memMapF, "PopulateOptions");
+			}
 		});
 		Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
 	}

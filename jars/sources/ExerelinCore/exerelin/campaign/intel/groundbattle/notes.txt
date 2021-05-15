@@ -46,11 +46,7 @@ Deployment and giving orders
 Morale
 
 == Todo ==
-- Block fleet actions while station present
-
 - Special ability interface
-
-- exerelin_config option for legacy invasions
 
 - [playtest] AI
 - Merge/split command
@@ -64,12 +60,13 @@ Morale
 
 - Condition to plugin map
 
+- Invasion fleet -> ground forces conversion
+
 - [done] Military response script
 - Send reinforcement fleet
 - [test] Summon special forces
 
 - Externalize strings: any?
-
 
 - Supply mechanic (probably overcomplicating it)
 - At least change lift cap mult to drop cost mult?
@@ -86,4 +83,3 @@ Morale
 
 - Maybe AI just uses legacy invasion system?
 
-- Invasion fleet -> ground forces conversion
