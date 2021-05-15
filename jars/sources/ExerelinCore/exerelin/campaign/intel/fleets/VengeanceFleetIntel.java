@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -52,6 +53,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         Factions.SCAVENGERS, Factions.NEUTRAL, "nex_derelict",	//, Factions.LUDDIC_PATH
     }));
     public static final boolean ALWAYS_SPAWN_ONSITE = true;
+	public static final FleetAssignment TRAIL_ASSIGNMENT = FleetAssignment.DELIVER_CREW;
 
     public static Logger log = Global.getLogger(VengeanceFleetIntel.class);
     
@@ -72,6 +74,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
     protected final IntervalUtil interval2 = new IntervalUtil(1f, 2f);
     protected float timeSpentLooking = 0f;
     protected boolean trackingMode = false;
+	protected SectorEntityToken locationToken;
 	
 	public VengeanceFleetIntel(String factionId, MarketAPI market, int escalationLevel) {
 		this.factionId = factionId;
@@ -83,7 +86,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		daysToLaunch = 15 + (this.escalationLevel * 5);	// TODO: maybe something nicer
 		daysToLaunchFixed = daysToLaunch;
 	}
-    
+	
 	protected FactionAPI getFaction()
 	{
 		return Global.getSector().getFaction(factionId);
@@ -249,6 +252,22 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		str = StringHelper.substituteTokens(str, sub);
 		
 		info.addPara(str, opad, hl, highlights.toArray(new String[0]));
+		
+		if (fleet != null && Global.getSettings().isDevMode()) {
+			info.addPara("Debug information", opad);
+			bullet(info);
+			info.addPara(String.format("Current location: %s", fleet.getContainingLocation()), 0);
+			if (!fleet.getAssignmentsCopy().isEmpty()) {
+				FleetAssignmentDataAPI assign = fleet.getAssignmentsCopy().get(0);
+				info.addPara(String.format("Current assignment: %s, %s, target %s", assign.getAssignment(), 
+						assign.getActionText(), assign.getTarget()), 0);
+			}
+			if (locationToken != null) {
+				info.addPara(String.format("Location token is in: %s", locationToken.getContainingLocation()), 0);
+			}
+			info.addPara("Tracking mode: " + trackingMode, 0);
+			unindent(info);
+		}
 	}
 	
 	protected boolean isMarketKnown()
@@ -285,6 +304,104 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 	public SectorEntityToken getMapLocation(SectorMapAPI map) {
 		if (assembling && isMarketKnown()) return market.getPrimaryEntity();
 		return null;
+	}
+	
+	protected void handleFleetAssignment(CampaignFleetAPI playerFleet) {
+		updateLocationToken();
+
+		boolean playerVisible = false;
+		boolean fleetVisible = false;
+		if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
+			playerVisible = playerFleet.isVisibleToSensorsOf(fleet);
+			fleetVisible = fleet.isVisibleToSensorsOf(playerFleet);
+		}
+		if (playerVisible && fleetVisible) {
+			foundPlayerYet = true;
+		}
+				
+		// player and enemy fleet are close to each other, deactivate tracking mode
+		if (trackingMode && fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) 
+		{
+			if (Misc.getDistance(fleet.getLocation(), playerFleet.getLocation()) <= 1000f + 1.5f * Math.max(
+					fleet.getMaxSensorRangeToDetect(playerFleet),
+					playerFleet.getMaxSensorRangeToDetect(fleet))) {
+				trackingMode = false;
+			}
+		}
+		
+		String targetName = StringHelper.getString("yourFleet");
+		
+		// my understanding of tracking mode:
+		// it activates when player [has been encountered at least once or is currently visible], and [is no longer in same system]
+		// while tracking mode is active, fleet can travel to player without an actual sensor lock
+		// tracking mode is deactivated once the two fleets are in same location again and get sufficiently close
+		
+		EncounterOption option = fleet.getAI().pickEncounterOption(null, playerFleet);
+		if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD_VS_STRONGER) {
+			// can see player or has encountered player at least once			
+			if (playerVisible || foundPlayerYet) {
+				// in same system but not currently in tracking mode, look around the system?
+				// this means that if fleet has been shaken once,
+				// as long as player doesn't leave the system, player is safe
+				if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation()) && !trackingMode) {
+					if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.PATROL_SYSTEM) {
+						fleet.clearAssignments();
+						fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, locationToken, 1000,
+								StringHelper.getFleetAssignmentString("hunting", targetName));
+						fleet.getAbility(Abilities.EMERGENCY_BURN).activate();
+						((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
+																								  false);
+					}
+				// not in same system or not currently tracking, activate tracking mode
+				} else {
+					trackingMode = true;
+					if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
+						// tracking in same system, intercept
+						// 0.95: intercept only works if we can see player
+						// don't think it's possible to have sight on the player without tracking mode turning off
+						if (playerVisible) {
+							if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.INTERCEPT) {
+								fleet.clearAssignments();
+								fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 1000, 
+										StringHelper.getFleetAssignmentString("intercepting", targetName));
+							}
+						} else {
+							if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.ATTACK_LOCATION) {
+								fleet.clearAssignments();
+								fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, locationToken, 1000,
+										StringHelper.getFleetAssignmentString("hunting", targetName));
+								((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
+																										  false);
+							}
+						}
+						
+					} else {
+						// player not in same system, maphack our way to player
+						if (fleet.getAI().getCurrentAssignmentType() != TRAIL_ASSIGNMENT) {
+							fleet.clearAssignments();
+							fleet.addAssignment(TRAIL_ASSIGNMENT, locationToken, 1000,
+												StringHelper.getFleetAssignmentString("trailing", targetName));
+						}
+					}
+				}
+			} else {
+				// long-distance maphack
+				if (fleet.getAI().getCurrentAssignmentType() != TRAIL_ASSIGNMENT) {
+					fleet.clearAssignments();
+					fleet.addAssignment(TRAIL_ASSIGNMENT, locationToken, 1000, 
+							StringHelper.getFleetAssignmentString("trailing", targetName));
+				}
+			}
+		} else {
+			endEvent(EndReason.DEFEATED);
+			return;
+		}
+
+		if (!fleetVisible || !playerVisible) {
+			if (daysLeft <= 0f) {
+				endEvent(EndReason.EXPIRED);
+			}
+		}
 	}
 	
 	@Override
@@ -354,72 +471,8 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
         if (!interval.intervalElapsed()) {
             return;
         }
-
-        boolean playerVisible = false;
-        boolean fleetVisible = false;
-        if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
-            playerVisible = playerFleet.isVisibleToSensorsOf(fleet);
-            fleetVisible = fleet.isVisibleToSensorsOf(playerFleet);
-        }
-        if (playerVisible && fleetVisible) {
-            foundPlayerYet = true;
-        }
-
-        if (trackingMode && fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
-            if (Misc.getDistance(fleet.getLocation(), playerFleet.getLocation()) <= 1000f + 1.5f * Math.max(
-                    fleet.getMaxSensorRangeToDetect(playerFleet),
-                    playerFleet.getMaxSensorRangeToDetect(fleet))) {
-                trackingMode = false;
-            }
-        }
-        
-        String targetName = StringHelper.getString("yourFleet");
-
-        EncounterOption option = fleet.getAI().pickEncounterOption(null, playerFleet);
-        if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD_VS_STRONGER) {
-            if (playerVisible || foundPlayerYet) {
-                if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation()) && !trackingMode) {
-                    if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.PATROL_SYSTEM) {
-                        fleet.clearAssignments();
-                        fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, playerFleet, 1000,
-                                StringHelper.getFleetAssignmentString("hunting", targetName));
-                        fleet.getAbility(Abilities.EMERGENCY_BURN).activate();
-                        ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
-                                                                                                  false);
-                    }
-                } else {
-                    trackingMode = true;
-                    if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
-                        if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.INTERCEPT) {
-                            fleet.clearAssignments();
-                            fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 1000, 
-                                    StringHelper.getFleetAssignmentString("intercepting", targetName));
-                        }
-                    } else {
-                        if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
-                            fleet.clearAssignments();
-                            fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000,
-                                                StringHelper.getFleetAssignmentString("trailing", targetName));
-                        }
-                    }
-                }
-            } else {
-                if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
-                    fleet.clearAssignments();
-                    fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000, 
-                            StringHelper.getFleetAssignmentString("trailing", targetName));
-                }
-            }
-        } else {
-            endEvent(EndReason.DEFEATED);
-            return;
-        }
-
-        if (!fleetVisible || !playerVisible) {
-            if (daysLeft <= 0f) {
-                endEvent(EndReason.EXPIRED);
-            }
-        }
+		
+		handleFleetAssignment(playerFleet);
     }
 	
 	/*
@@ -451,6 +504,28 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
     }
 	*/
 	
+	/**
+	 * Updates the token used to track player fleet location when player is out of sight.
+	 * Normally (since 0.95) fleets don't know the player's containing location, unless 
+	 * player was seen jumping.
+	 */
+	public void updateLocationToken() {
+		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+		if (player == null || player.getContainingLocation() == null)
+			return;
+		
+		Vector2f loc = player.getLocation();
+		if (locationToken == null) {
+			locationToken = player.getContainingLocation().createToken(loc);
+		}
+		if (locationToken.getContainingLocation() != player.getContainingLocation()) {
+			// since we can't change its system, just rebuild it
+			locationToken = player.getContainingLocation().createToken(loc);
+			if (fleet != null) fleet.clearAssignments();
+		}
+		locationToken.setLocation(loc.x, loc.y);
+	}
+	
     public void startEvent() {
         
         if (!RevengeanceManager.isRevengeanceEnabled()) {
@@ -469,23 +544,29 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
             endEvent(EndReason.OTHER, 0);
             return;
         }
+		
+		updateLocationToken();
 
-        float distance = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
+		float distance = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
+		float distBonus = 30 + distance*1.5f;	// don't crank it up too much, I don't think this is the important component
+		
 		switch (escalationLevel) {
 			case 0:
 				duration = Math.max(60,
 						Math.min(120,
-								Math.round((20f + distance) * MathUtils.getRandomNumberInRange(0.75f, 1f))));
+								Math.round(distBonus * MathUtils.getRandomNumberInRange(0.75f, 1f))));
 				break;
 			case 1:
 				duration = Math.max(90, Math.min(150,
-						Math.round((20f + distance) * MathUtils.getRandomNumberInRange(1.25f, 1.75f))));
+						Math.round(distBonus * MathUtils.getRandomNumberInRange(1.25f, 1.75f))));
 				break;
 			default:
 				duration = Math.max(120, Math.min(180,
-						Math.round((20f + distance) * MathUtils.getRandomNumberInRange(2f, 2.5f))));
+						Math.round(distBonus * MathUtils.getRandomNumberInRange(2f, 2.5f))));
 				break;
 		}
+		duration += 15;
+		
 		if (Global.getSector().getMemoryWithoutUpdate().contains(VengeanceBuff.MEMORY_KEY)) {
 			duration *= VengeanceBuff.SEARCH_TIME_MULT;
 		}
@@ -660,7 +741,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_LOW_REP_IMPACT, true);
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
+		//fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
 		
 		return fleet;
