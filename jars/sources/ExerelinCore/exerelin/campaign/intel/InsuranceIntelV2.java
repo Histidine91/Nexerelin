@@ -624,7 +624,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		info.addPara(getString("helpPara1Title"), opad);
 		info.setParaFontDefault();
 		TooltipMakerAPI section = info.beginImageWithText("graphics/icons/intel/fleet_log3.png", 32);
-		section.setBulletedListMode("    - ");
+		section.setBulletedListMode(BaseIntelPlugin.BULLET);
 		section.addPara(getString("helpPara1-1"), pad, h, POLICY_TERM + "");
 		section.addPara(getString("helpPara1-2"), pad, h, NexConfig.playerInsuranceMult + "", 
 				StringHelper.toPercent(BASE_PREMIUM_RATIO));
@@ -635,7 +635,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		info.addPara(getString("helpPara2Title"), opad);
 		info.setParaFontDefault();
 		section = info.beginImageWithText("graphics/icons/intel/bounties2.png", 32);
-		section.setBulletedListMode("    - ");
+		section.setBulletedListMode(BaseIntelPlugin.BULLET);
 		section.addPara(getString("helpPara2-1"), pad);
 		section.addPara(getString("helpPara2-2"), pad, h, 
 				StringHelper.toPercent(COMPENSATION_PER_DMOD), 
@@ -648,7 +648,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		info.addPara(getString("helpPara3Title"), opad);
 		info.setParaFontDefault();
 		section = info.beginImageWithText("graphics/icons/intel/gain_credits.png", 32);
-		section.setBulletedListMode("    - ");
+		section.setBulletedListMode(BaseIntelPlugin.BULLET);
 		section.addPara(getString("helpPara3-1"), pad);
 		section.addPara(getString("helpPara3-2"), pad, h, MIN_PREMIUM_MULT + "", 
 				MAX_PREMIUM_MULT + "", PREMIUM_REDUCTION_INTERVAL + "");

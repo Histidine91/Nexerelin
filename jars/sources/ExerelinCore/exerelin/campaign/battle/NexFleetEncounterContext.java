@@ -3,23 +3,24 @@ package exerelin.campaign.battle;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DataForEncounterSide.OfficerEngagementData;
+import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
-import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import static com.fs.starfarer.api.impl.campaign.FleetEncounterContext.prepareShipForRecovery;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.VariantSource;
+import com.fs.starfarer.api.loading.WeaponSlotAPI;
+import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.SWPModPlugin;
 import data.scripts.util.SWP_Util;
 import exerelin.campaign.StatsTracker;
@@ -376,4 +377,117 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			od.addXP((long)(f * xp / num), textPanelForXPGain);
 		}
 	}
+	
+	//==========================================================================
+	// START AI CORE DROP DEBUG
+	
+	/*
+	protected void lootWeapons(FleetMemberAPI member, ShipVariantAPI variant, boolean own, float mult, boolean lootingModule) {
+		if (variant == null) return;
+		if (member.isFighterWing()) return;
+		
+//		if (own) {
+//			System.out.println("238034wefwef");
+//		}
+		//isUnremovable(
+		if (own && !lootingModule && member.getCaptain() != null &&
+				member.getCaptain().getMemoryWithoutUpdate().contains("$aiCoreIdForRecovery") &&
+				//member.getCaptain().isAICore() && 
+				!Misc.isUnremovable(member.getCaptain())) {
+			//loot.addItems(CargoItemType.RESOURCES, member.getCaptain().getAICoreId(), 1);
+			loot.addItems(CargoAPI.CargoItemType.RESOURCES,
+						  member.getCaptain().getMemoryWithoutUpdate().getString("$aiCoreIdForRecovery"), 1);
+		}
+		
+		Random random = Misc.random;
+		if (getSalvageRandom() != null) random = getSalvageRandom();
+		
+		if (!own && !lootingModule && 
+				member.getCaptain().isAICore() && !variant.hasTag(Tags.VARIANT_DO_NOT_DROP_AI_CORE_FROM_CAPTAIN)) {
+			String cid = member.getCaptain().getAICoreId();
+			if (cid != null) {
+				Global.getLogger(this.getClass()).info(String.format("Checking AI core drop %s from hull %s",
+						cid, member.getHullSpec().getHullName()));
+				CommoditySpecAPI spec = Global.getSettings().getCommoditySpec(cid);
+				if (!spec.hasTag(Tags.NO_DROP)) {
+					float prob = Global.getSettings().getFloat("drop_prob_officer_" + cid);
+					Global.getLogger(this.getClass()).info(String.format("  Base chance: %.2f", prob));
+					if (member.isStation()) {
+						prob *= Global.getSettings().getFloat("drop_prob_mult_ai_core_station");
+					} else if (member.isFrigate()) {
+						prob *= Global.getSettings().getFloat("drop_prob_mult_ai_core_frigate");
+					} else if (member.isDestroyer()) {
+						prob *= Global.getSettings().getFloat("drop_prob_mult_ai_core_destroyer");
+					} else if (member.isCruiser()) {
+						prob *= Global.getSettings().getFloat("drop_prob_mult_ai_core_cruiser");
+					} else if (member.isCapital()) {
+						prob *= Global.getSettings().getFloat("drop_prob_mult_ai_core_capital");
+					}
+					Global.getLogger(this.getClass()).info(String.format("  Chance after size multiplier: %.2f", prob));
+					float roll = random.nextFloat();
+					if (prob > 0 && roll < prob) {
+						Global.getLogger(this.getClass()).info(String.format(":D  Roll successful: %.2f < %.2f", roll, prob));
+						loot.addItems(CargoAPI.CargoItemType.RESOURCES, cid, 1);
+					}
+					else {
+						Global.getLogger(this.getClass()).info(String.format(":(  Roll failed: %.2f < %.2f", roll, prob));
+					}
+				}
+			}
+			
+		}
+		
+		float p = Global.getSettings().getFloat("salvageWeaponProb");
+		if (own) {
+			p = Global.getSettings().getFloat("salvageOwnWeaponProb");
+			p = Global.getSector().getPlayerFleet().getStats().getDynamic().getValue(Stats.OWN_WEAPON_RECOVERY_MOD, p);
+		} else {
+			p = Global.getSector().getPlayerFleet().getStats().getDynamic().getValue(Stats.ENEMY_WEAPON_RECOVERY_MOD, p);
+		}
+		boolean alreadyStripped = true;	//recoverableShips.contains(member);
+		
+
+		Set<String> remove = new HashSet<String>();
+		
+		if (variant.hasTag(Tags.VARIANT_CONSISTENT_WEAPON_DROPS)) {
+			for (String slotId : variant.getNonBuiltInWeaponSlots()) {
+				String weaponId = variant.getWeaponId(slotId);
+				if (weaponId == null) continue;
+				if (loot.getNumWeapons(weaponId) <= 0) {
+					WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(weaponId);
+					if (spec.hasTag(Tags.NO_DROP)) continue;
+					
+					loot.addWeapons(weaponId, 1);
+					remove.add(slotId);
+				}
+			}
+		}
+		
+		for (String slotId : variant.getNonBuiltInWeaponSlots()) {
+			if (remove.contains(slotId)) continue;
+			//if ((float) Math.random() * mult > 0.75f) {
+			if (!alreadyStripped) {
+				if (random.nextFloat() > mult) continue;
+				if (random.nextFloat() > p) continue;
+			}
+			
+			String weaponId = variant.getWeaponId(slotId);
+			WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(weaponId);
+			if (spec.hasTag(Tags.NO_DROP)) continue;
+			
+			loot.addItems(CargoAPI.CargoItemType.WEAPONS, weaponId, 1);
+			remove.add(slotId);
+		}
+		
+		
+		for (String slotId : variant.getModuleSlots()) {
+			WeaponSlotAPI slot = variant.getSlot(slotId);
+			if (slot.isStationModule()) {
+				ShipVariantAPI module = variant.getModuleVariant(slotId);
+				if (module == null) continue;
+				lootWeapons(member, module, own, mult, true);
+			}
+		}
+	}
+	*/
 }
