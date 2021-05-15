@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.IndustryPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -177,12 +178,12 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		switch (action.getDefId()) {
 			case CovertActionType.TRAVEL:
-				List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(thirdFaction.getId(), false);
-				
-				Collections.sort(markets, Nex_FleetRequest.marketComparatorName);
-				for (MarketAPI market : markets) {
-					if (market == agentMarket) continue;
+				Set<FactionAPI> validFactions = new HashSet<>(getFactions());
+				for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+				{
 					if (market.isHidden()) continue;
+					if (market == agent.getMarket()) continue;
+					if (!validFactions.contains(market.getFaction())) continue;
 					targets.add(market);
 				}
 				break;
@@ -235,8 +236,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		switch (action.getDefId()) {
 			case CovertActionType.TRAVEL:
-				if (travelDest == null || !targets.contains(travelDest))
-					setTravelDestination((MarketAPI)targets.get(0));
+				if (travelDest == null || !targets.contains(travelDest)) {
+					//setTravelDestination((MarketAPI)targets.get(0));
+				}
 				break;
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
 				if (commodityToDestroy == null || !targets.contains(commodityToDestroy))
@@ -677,29 +679,37 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	 */
 	protected void populateTargetOptions() {
 		optionsList.clear();
+		if (CovertActionType.TRAVEL.equals(action.getDefId())) {
+			List<SectorEntityToken> dests = new ArrayList<>();
+			for (Object marketRaw : targets) 
+			{
+				MarketAPI market = (MarketAPI)marketRaw;
+				dests.add(market.getPrimaryEntity());
+			}
+			NexUtilsMarket.pickEntityDestination(dialog, dests, 
+				StringHelper.getString("confirm", true), new NexUtilsMarket.CampaignEntityPickerWrapper(){
+					@Override
+					public void reportEntityPicked(SectorEntityToken token) {
+						optionSelected(null, token.getMarket());
+					}
+
+					@Override
+					public void reportEntityPickCancelled() {}
+
+					@Override
+					public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity) 
+					{
+						MarketAPI market = agent.getMarket();
+						Nex_FleetRequest.createInfoTextBasic(info, entity, market != null ? market.getPrimaryEntity() : null);
+					}
+				});
+			lastSelectedMenu = null;						
+			populateOptions();
+			return;
+		}
 		
 		switch (action.getDefId()) {
-			case CovertActionType.TRAVEL:
-				for (Object marketRaw : targets) 
-				{
-					MarketAPI market = (MarketAPI)marketRaw;
-					// don't overcomplicate it by displaying distance etc.
-					// we presume the player already knows where they want to send the agent
-					
-					// changed my mind, distance is pretty important in random sector
-					String name;
-					if (agent.market != null) {
-						float dist = Misc.getDistanceLY(agent.market.getLocationInHyperspace(), market.getLocationInHyperspace());
-						name = StringHelper.getString("exerelin_markets", "marketDirectoryEntryDistOnly");
-						name = StringHelper.substituteToken(name, "$market", market.getName());
-						name = StringHelper.substituteToken(name, "$distance", String.format("%.1f", dist));
-					}
-					else
-						name = market.getName();
-					
-					optionsList.add(new Pair<String, Object>(name, market));
-				}
-				break;
+			
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
 				for (Object commod : targets) {
 					String commodityId = (String)commod;
@@ -770,7 +780,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		// target faction and/or target object, if relevant
 		if (action != null) {
 			String id = action.getDefId();
-			if (id.equals(CovertActionType.TRAVEL) || id.equals(CovertActionType.RAISE_RELATIONS) 
+			if (id.equals(CovertActionType.RAISE_RELATIONS) 
 					|| id.equals(CovertActionType.LOWER_RELATIONS))
 			{
 				str = getString("dialogOption_faction");
@@ -808,11 +818,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				str = StringHelper.substituteToken(str, "$target", target);
 				options.addOption(str, Menu.TARGET);
 				// Disable target button if no targets available
-				if (id.equals(CovertActionType.TRAVEL) && thirdFaction == null) {
-					options.setEnabled(Menu.TARGET, false);
-				}
 				if (optionsList.isEmpty() && !id.equals(CovertActionType.SABOTAGE_INDUSTRY)
-						&& !id.equals(CovertActionType.PROCURE_SHIP)) {
+						&& !id.equals(CovertActionType.PROCURE_SHIP) 
+						&& !id.equals(CovertActionType.TRAVEL)) 
+				{
 					options.setEnabled(Menu.TARGET, false);
 				}
 			}
@@ -1014,7 +1023,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	
 	@Override
 	public void optionSelected(String optionText, Object optionData)
-	{
+	{		
 		if (optionText != null) {
 			text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
 		}

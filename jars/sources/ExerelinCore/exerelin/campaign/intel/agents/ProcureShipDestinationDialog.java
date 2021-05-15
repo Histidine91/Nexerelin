@@ -1,29 +1,28 @@
 package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
 import com.fs.starfarer.api.ui.IntelUIAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import static exerelin.campaign.intel.agents.AgentOrdersDialog.getString;
 import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
@@ -40,16 +39,13 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	protected TextPanelAPI text;
 	protected OptionPanelAPI options;
 	protected int currentPage = 1;
-	protected FactionAPI faction;
 	protected List<Pair<String, Object>> optionsList = new ArrayList<>();
-	protected List<FactionAPI> factions = new ArrayList<>();
 	protected List<MarketAPI> markets;
 	protected MarketAPI destination;
 	protected Menu currentMenu;
 	
 	protected enum Menu
 	{
-		FACTION,
 		DESTINATION,
 		NEXT_PAGE,
 		PREVIOUS_PAGE,
@@ -63,38 +59,16 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 			MarketAPI currDestination, IntelUIAPI ui) {
 		this.agent = agent;
 		destination = currDestination;
-		faction = destination.getFaction();
 		this.action = action;
 		this.ui = ui;
 	}
 	
-	protected void selectFaction(FactionAPI faction) {
-		this.faction = faction;
-		getMarkets();
-		
-		if (markets.isEmpty())
-			setDestination(null);
-		else
-			setDestination(markets.get(0));
-	}
-	
-	protected void loadFactions() {
-		Set<FactionAPI> factionsSet = new HashSet<>();
-		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (market.isHidden()) continue;
-			factionsSet.add(market.getFaction());
-		}		
-		
-		factions = new ArrayList<>(factionsSet);
-		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
-	}
-	
 	protected void getMarkets() {
 		markets = new ArrayList<>();
-		List<MarketAPI> factionMarkets = NexUtilsFaction.getFactionMarkets(faction.getId(), false);
-				
-		Collections.sort(factionMarkets, Nex_FleetRequest.marketComparatorName);
-		for (MarketAPI market : factionMarkets) {
+		List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
+		
+		//Collections.sort(markets, Nex_FleetRequest.marketComparatorName);
+		for (MarketAPI market : allMarkets) {
 			if (market.isHidden()) continue;
 			markets.add(market);
 		}
@@ -102,25 +76,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	
 	protected void populateOptions() {
 		options.clearOptions();
-		
-		if (currentMenu == Menu.FACTION) {
-			populateFactionOptions();
-		} 
-		else if (currentMenu == Menu.DESTINATION) {
-			populateTargetOptions();
-		}
-		else {
-			populateMainMenuOptions();
-		}
-	}
-	
-	protected void populateFactionOptions() {
-		optionsList.clear();
-		for (FactionAPI faction : factions) {
-			String name = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
-			optionsList.add(new Pair<String, Object>(name, faction));
-		}
-		showPaginatedMenu();
+		populateMainMenuOptions();
 	}
 	
 	protected void populateTargetOptions() {
@@ -140,17 +96,8 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	
 	protected void populateMainMenuOptions() {
 		String none = StringHelper.getString("none");
-				
-		// target faction
-		String str = getString("dialogOption_faction");
-		str = StringHelper.substituteToken(str, "$faction", faction != null ? 
-				faction.getDisplayName() : none);
-		options.addOption(str, Menu.FACTION);
-		if (factions.isEmpty()) {
-			options.setEnabled(Menu.FACTION, false);
-		}
 		
-		str = getString("dialogOption_target");
+		String str = getString("dialogOption_target");
 		String market = destination != null? destination.getName() : none;
 		str = StringHelper.substituteToken(str, "$target", market);
 		options.addOption(str, Menu.DESTINATION);
@@ -185,12 +132,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 		for (int x = offset, y = 1; x < max; x++, y++)
 		{
 			Pair<String, Object> entry = optionsList.get(x);
-			if (currentMenu == Menu.FACTION) {
-				options.addOption(entry.one, entry.two, ((FactionAPI)entry.two).getBaseUIColor(), null);
-			}
-			else
-				options.addOption(entry.one, entry.two);
-			
+			options.addOption(entry.one, entry.two);
 		}
 		
 		if (currentPage > 1)
@@ -217,6 +159,43 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 		options.setShortcut(Menu.BACK, Keyboard.KEY_ESCAPE,
 				false, false, false, true);
 	}
+	
+	protected void openDestinationPicker() {
+		List<SectorEntityToken> dests = new ArrayList<>();
+		for (MarketAPI market : markets) 
+		{
+			dests.add(market.getPrimaryEntity());
+		}
+		NexUtilsMarket.pickEntityDestination(dialog, dests, 
+				StringHelper.getString("confirm", true), new NexUtilsMarket.CampaignEntityPickerWrapper(){
+					@Override
+					public void reportEntityPicked(SectorEntityToken token) {
+						setDestination(token.getMarket());
+						populateOptions();
+					}
+
+					@Override
+					public void reportEntityPickCancelled() {}
+
+					@Override
+					public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity) 
+					{
+						String str = StringHelper.getString("exerelin_markets", "marketDirectoryEntryForPickerNoDist");
+						MarketAPI market = entity.getMarket();
+						String factionName = market.getFaction().getDisplayName();
+						String size = market.getSize() + "";
+						str = StringHelper.substituteToken(str, "$market", market.getName());
+						str = StringHelper.substituteToken(str, "$faction", factionName);
+						str = StringHelper.substituteToken(str, "$size", size);
+
+						Color hl = Misc.getHighlightColor();
+						LabelAPI text = info.addPara(str, 0);
+						text.setHighlight(factionName, size);
+						text.setHighlightColors(market.getFaction().getBaseUIColor(), hl);
+					}
+				});						
+		populateOptions();
+	}
 
 	@Override
 	public void init(InteractionDialogAPI dialog) {
@@ -228,7 +207,6 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 		
 		text.addParagraph(StringHelper.getString("nex_agentActions", "dialogProcureShipDestinationIntro"));
 		
-		loadFactions();
 		getMarkets();
 		
 		populateOptions();
@@ -251,26 +229,10 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 				showPaginatedMenu();
 				return;
 			}
-			
-			// faction selected
-			else if (optionData instanceof FactionAPI) {
-				selectFaction((FactionAPI)optionData);
-				currentMenu = null;
-				populateOptions();
-				return;
-			}
-			// travel destination 
-			else if (optionData instanceof MarketAPI) {
-				setDestination((MarketAPI)optionData);
-				currentMenu = null;
-				populateOptions();
-				return;
-			}
 
-			if (optionData == Menu.FACTION) {
-				currentMenu = Menu.FACTION;
-			} else if (optionData == Menu.DESTINATION) {
-				currentMenu = Menu.DESTINATION;
+			if (optionData == Menu.DESTINATION) {
+				openDestinationPicker();
+				return;				
 			} else if (optionData == Menu.BACK) {
 				// do nothing except populate options
 				currentMenu = null;

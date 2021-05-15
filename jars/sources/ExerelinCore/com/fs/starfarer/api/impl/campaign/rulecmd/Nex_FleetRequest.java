@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -18,19 +19,19 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
-import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.MutableValue;
 import data.scripts.campaign.bases.VayraRaiderBaseIntel;
-import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -43,18 +44,18 @@ import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.NexUtilsMarket.CampaignEntityPickerWrapper;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -67,9 +68,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	public static final String MEM_KEY_MARINES = "$nex_fleetRequest_marines";
 	public static final String MEM_KEY_SOURCES = "$nex_fleetRequest_sources";
 	public static final String MEM_KEY_SOURCE = "$nex_fleetRequest_source";
-	public static final String MEM_KEY_FACTIONS = "$nex_fleetRequest_factions";
-	public static final String MEM_KEY_FACTION = "$nex_fleetRequest_faction";
-	public static final String MEM_KEY_TARGETS = "$nex_fleetRequest_targets";
 	public static final String MEM_KEY_TARGET = "$nex_fleetRequest_target";
 	public static final String MEM_KEY_COST = "$nex_fleetRequest_cost";
 	public static final String MEM_KEY_BASE_STRIKE_TARGET = "$nex_canBaseStrike";
@@ -87,7 +85,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	protected MemoryAPI memory;
 	protected String option;
 	protected MarketAPI source;
-	protected FactionAPI faction;
 	protected MarketAPI target;
 	protected int fp;
 	protected int maxFP;
@@ -134,16 +131,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			case "setSource":
 				String sourceMarketId = option.substring(SOURCE_OPTION_PREFIX.length());
 				setSource(sourceMarketId);
-				printFleetInfo(false, true, false, false);
-				break;
-			case "factionMenu":
-				setupDelegateDialog(dialog);
-				listFactions();
-				break;
-			case "setFaction":
-				String factionId = option.substring(FACTION_OPTION_PREFIX.length());
-				setFaction(factionId);
-				printFleetInfo(false, true, false, true);
+				printFleetInfo(false, true, true, false);
 				break;
 			case "targetMenu":
 				setupDelegateDialog(dialog);
@@ -152,7 +140,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			case "setTarget":
 				String targetMarketId = option.substring(TARGET_OPTION_PREFIX.length());
 				setTarget(targetMarketId);
-				printFleetInfo(false, true, false, true);
+				printFleetInfo(false, true, true, true);
 				break;
 			case "proceed":
 				boolean success = launchFleet();
@@ -169,11 +157,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		option = memoryMap.get(MemKeys.LOCAL).getString("$option");
 		fleetType = getFleetType();
 		source = getSource();
-		faction = getFaction();
-		if (faction == null)
-			target = null;
-		else
-			target = getTarget();
+		target = getTarget();
 		fp = getFP();
 		marines = getMarines();
 		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
@@ -190,20 +174,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		setFP(400);
 		setMarines(200);
 		getSources();
-		getFactions();
-		getTargets();
-	}
-	
-	protected void resetTargets() {
-		memory.unset(MEM_KEY_TARGETS);
-		memory.unset(MEM_KEY_TARGET);
-		getTargets();
-	}
-	
-	protected void resetFactions() {
-		memory.unset(MEM_KEY_FACTIONS);
-		memory.unset(MEM_KEY_FACTION);
-		getFactions();
 	}
 	
 	/**
@@ -335,6 +305,18 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		return time;
 	}
 	
+	protected float getTimeToArrive() {
+		float launchTime = getTimeToLaunch();
+		
+		// estimate travel time
+		// assemble stage;
+		float travelTime = 3f + 3f * (float) Math.random();
+		// travel stage
+		travelTime += RouteLocationCalculator.getTravelDays(source.getPrimaryEntity(), target.getPrimaryEntity());
+		
+		return launchTime + travelTime;
+	}
+	
 	protected void printBudget() {
 		TextPanelAPI text = dialog.getTextPanel();
 		int capacity = InvasionFleetManager.getManager().getFleetRequestCapacity();
@@ -370,16 +352,22 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			text.addPara(str, hl, distStr);
 		}
 		if (showTime) {
-			String time = Misc.getAtLeastStringForDays((int)Math.ceil(getTimeToLaunch()));
-			text.addPara(getString("timeToLaunch", true) + ": " + time, hl, time);
+			if (source != null && target != null) {
+				String time = Misc.getAtLeastStringForDays((int)Math.ceil(getTimeToArrive()));
+				text.addPara(getString("timeToArrive", true) + ": " + time, hl, time);
+			}
+			else {
+				String time = Misc.getAtLeastStringForDays((int)Math.ceil(getTimeToLaunch()));
+				text.addPara(getString("timeToLaunch", true) + ": " + time, hl, time);
+			}
 		}
-		if (showStr && faction != null && target != null) {
+		if (showStr && target != null) {
 			boolean isInvasion = fleetType == FleetType.INVASION;
 			String key = isInvasion ? "infoTargetStrengthGround" : "infoTargetStrength";
 			Map<String, String> sub = new HashMap<>();
 			
 			String defStr = String.format("%.0f", InvasionFleetManager.estimatePatrolStrength(null, 
-					faction, target.getStarSystem(), 0) + InvasionFleetManager.estimateStationStrength(target));
+					target.getFaction(), target.getStarSystem(), 0) + InvasionFleetManager.estimateStationStrength(target));
 			String defStrGround =  String.format("%.0f", InvasionRound.getDefenderStrength(target, 1));
 			sub.put("$space", defStr);
 			if (isInvasion) sub.put("$ground", defStrGround);
@@ -451,89 +439,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		return markets;
 	}
 	
-	protected FactionAPI getFaction() {
-		if (!memory.contains(MEM_KEY_FACTION))
-			return null;
-		String factionId = memory.getString(MEM_KEY_FACTION);
-		if (factionId == null || factionId.isEmpty())
-			return null;
-		
-		FactionAPI faction = Global.getSector().getFaction(factionId);
-		return faction;
-	}
-	
-	protected void setFaction(String factionId) {
-		if (factionId == null) {
-			memory.unset(MEM_KEY_FACTION);
-			faction = null;
-			return;
-		}
-		memory.set(MEM_KEY_FACTION, factionId, 0);
-		faction = Global.getSector().getFaction(factionId);
-		//memory.set(MEM_KEY_FACTIONNAME, Nex_FactionDirectoryHelper.getFactionDisplayName(factionId), 0);
-		resetTargets();
-	}
-	
-	/**
-	 * Gets a list of possible target factions.
-	 * @return
-	 */
-	protected List<FactionAPI> getFactions() {
-		if (memory.contains(MEM_KEY_FACTIONS))
-			return (List<FactionAPI>)memory.get(MEM_KEY_FACTIONS);
-		
-		Set<FactionAPI> factionsSet = new HashSet<>();
-		if (fleetType == FleetType.BASESTRIKE) {
-			for (MarketAPI market : getHiddenBases(null)) {
-				factionsSet.add(market.getFaction());
-			}
-		}
-		else if (fleetType == FleetType.DEFENSE) {
-			factionsSet.add(Global.getSector().getPlayerFaction());
-			factionsSet.add(PlayerFactionStore.getPlayerFaction());
-			
-			String pfid = PlayerFactionStore.getPlayerFactionId();
-			for (FactionAPI faction : Global.getSector().getAllFactions())
-			{
-				if (AllianceManager.areFactionsAllied(faction.getId(), Factions.PLAYER)
-						|| AllianceManager.areFactionsAllied(faction.getId(), pfid))
-					factionsSet.add(faction);
-			}
-		}
-		else if (fleetType == FleetType.RELIEF) {
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-			{
-				FactionAPI faction = market.getFaction();
-				if (faction.isPlayerFaction()) continue;
-				if (faction.isHostileTo(Factions.PLAYER)) continue;
-				if (!Nex_StabilizePackage.isAllowed(market)) continue;
-				factionsSet.add(faction);
-			}
-		}
-		else {
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-				factionsSet.add(market.getFaction());
-			}
-		}
-		
-		if (fleetType.isAggressive()) {
-			factionsSet.remove(Global.getSector().getPlayerFaction());
-			factionsSet.remove(PlayerFactionStore.getPlayerFaction());
-		}
-		
-		List<FactionAPI> factions = new ArrayList<>(factionsSet);
-		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
-		
-		if (!factions.isEmpty())
-			setFaction(factions.get(0).getId());
-		else
-			setFaction(null);
-		
-		memory.set(MEM_KEY_FACTIONS, factions, 0);
-		
-		return factions;
-	}
-	
 	protected MarketAPI getTarget() {
 		if (!memory.contains(MEM_KEY_TARGET))
 			return null;
@@ -565,11 +470,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			if (source != null && target != null)
 				fp = new ReliefFleetIntelAlt(source, target).calcFP();
 			updateCost();
-			printFleetInfo(true, false, false, false);
+			printFleetInfo(true, false, true, false);
 		}
 	}
 	
-	public static List<MarketAPI> getHiddenBases(FactionAPI faction) {
+	public static List<MarketAPI> getHiddenBases() {
 		List<MarketAPI> markets = new ArrayList<>();
 		for (IntelInfoPlugin intelBase : Global.getSector().getIntelManager().getIntel()) {
 			BaseIntelPlugin intel = (BaseIntelPlugin)intelBase;
@@ -578,28 +483,20 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			
 			if (intel instanceof PirateBaseIntel) {
 				PirateBaseIntel base = (PirateBaseIntel)intel;
-				if (faction != null && base.getMarket().getFaction() != faction) 
-					continue;
 				markets.add(base.getMarket());
 			}
 			else if (intel instanceof LuddicPathBaseIntel) {
 				LuddicPathBaseIntel base = (LuddicPathBaseIntel)intel;
-				if (faction != null && base.getMarket().getFaction() != faction) 
-					continue;
 				markets.add(base.getMarket());
 			}
 			else if (intel instanceof RespawnBaseIntel) {
 				RespawnBaseIntel base = (RespawnBaseIntel)intel;
-				if (faction != null && base.getMarket().getFaction() != faction) 
-					continue;
 				markets.add(base.getMarket());
 			}
 			else {
 				if (Global.getSettings().getModManager().isModEnabled("vayrasector")) {
 					if (intel instanceof VayraRaiderBaseIntel) {
 						VayraRaiderBaseIntel base = (VayraRaiderBaseIntel)intel;
-						if (faction != null && base.getMarket().getFaction() != faction) 
-							continue;
 						markets.add(base.getMarket());
 					}
 				}
@@ -615,24 +512,23 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		return markets;
 	}
 	
-	protected List<MarketAPI> getTargets() {
-		if (faction == null) return null;
-		
-		if (memory.contains(MEM_KEY_TARGETS))
-			return (List<MarketAPI>)memory.get(MEM_KEY_TARGETS);
+	protected List<MarketAPI> getValidTargets() {
 		
 		List<MarketAPI> markets;
 		switch (fleetType) {
 			case INVASION:
-				markets = NexUtilsFaction.getFactionMarkets(faction.getId(), true);
+				markets = new ArrayList<>();
+				for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+					if (NexUtilsMarket.canBeInvaded(market, true))
+						markets.add(market);
+				}
 				break;
 			case BASESTRIKE:
-				markets = getHiddenBases(faction);
+				markets = getHiddenBases();
 				break;
 			case RELIEF:
-				List<MarketAPI> factionMarkets = NexUtilsFaction.getFactionMarkets(faction.getId(), false);
 				markets = new ArrayList<>();
-				for (MarketAPI market : factionMarkets) {
+				for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 					if (Nex_StabilizePackage.isAllowed(market))
 						markets.add(market);
 				}
@@ -640,7 +536,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			case DEFENSE:
 			case RAID:
 			default:
-				markets = NexUtilsFaction.getFactionMarkets(faction.getId(), false);
+				markets = Global.getSector().getEconomy().getMarketsCopy();
 				break;
 		}
 		List<MarketAPI> toRemove = new ArrayList<>();
@@ -653,15 +549,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			}
 		}
 		markets.removeAll(toRemove);
-		
-		Collections.sort(markets, marketComparatorName);
-		
-		if (!markets.isEmpty())
-			setTarget(markets.get(0).getId());
-		else
-			setTarget((String)null);
-		
-		memory.set(MEM_KEY_TARGETS, markets, 0);
 		
 		return markets;
 	}	
@@ -678,14 +565,14 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		fleetType = type;
 		//memory.set(MEM_KEY_TYPENAME, Misc.ucFirst(type.getName()), 0);
 		if (oldType != null && oldType != type) {
-			resetFactions();
 			updateCost();
+			setTarget((MarketAPI)null);
 			
 			if (fleetType == FleetType.RELIEF) {
 				
 			}
 			else {
-				printFleetInfo(true, false, false, true);
+				printFleetInfo(true, false, true, true);
 			}
 		}
 	}
@@ -737,13 +624,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
 				
 		// make hostile if needed
-		if (fleetType.isAggressive() && !faction.isHostileTo(Factions.PLAYER)) {
+		if (fleetType.isAggressive() && !target.getFaction().isHostileTo(Factions.PLAYER)) {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = 0;
 			impact.ensureAtBest = RepLevel.HOSTILE;
 			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.CUSTOM, 
 					impact, null, dialog.getTextPanel(), false);
-			Global.getSector().adjustPlayerReputation(envelope, faction.getId());
+			Global.getSector().adjustPlayerReputation(envelope, target.getFaction().getId());
 		}
 		
 		printBudget();
@@ -765,17 +652,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		String sourceName = source == null ? StringHelper.getString("none") : source.getName();
 		opts.addOption(getString("optionSource") + ": " + sourceName, "nex_fleetRequest_selectSource");
 		
-		String factionName = faction == null ? StringHelper.getString("none") 
-				: Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
-		opts.addOption(getString("optionFaction") + ": " + factionName, "nex_fleetRequest_selectFaction");
-		
 		String targetName = target == null ? StringHelper.getString("none") : target.getName();
 		if (target != null) {
 			targetName += ", " + target.getContainingLocation().getNameWithTypeIfNebula();
 		}
 		opts.addOption(getString("optionTarget") + ": " + targetName, "nex_fleetRequest_selectTarget");
-		if (faction == null)
-			opts.setEnabled("nex_fleetRequest_selectTarget", false);
 		
 		opts.addOption(StringHelper.getString("proceed", true), OPTION_PROCEED);
 		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
@@ -796,15 +677,15 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			opts.setTooltipHighlights(OPTION_PROCEED, costStr, creditsStr);
 			opts.setTooltipHighlightColors(OPTION_PROCEED, Misc.getHighlightColor(), Misc.getNegativeHighlightColor());
 		}
-		else if (source == null || faction == null || target == null) {
+		else if (source == null || target == null) {
 			opts.setEnabled(OPTION_PROCEED, false);
 		}
 		else {
 			String confirmMessage;
-			if (fleetType.isAggressive() && !faction.isHostileTo(Factions.PLAYER)) {
+			if (fleetType.isAggressive() && !target.getFaction().isHostileTo(Factions.PLAYER)) {
 				confirmMessage = getString("proceedConfirmNonHostile");
 				confirmMessage = StringHelper.substituteToken(confirmMessage, "$TheFaction", 
-						Misc.ucFirst(faction.getDisplayNameWithArticle()));
+						Misc.ucFirst(target.getFaction().getDisplayNameWithArticle()));
 			}
 			else {
 				confirmMessage = getString("proceedConfirm");
@@ -814,8 +695,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}
 		
 		Object exitOpt = "exerelinMarketSpecial";
-		if (memory.getBoolean("$nex_specialDialog"))
+		if (memory.getBoolean("$nex_specialDialog")) {
+			//dialog.getTextPanel().addPara("Trying special exit opt");
 			exitOpt = FieldOptionsScreenScript.FactionDirectoryDialog.Menu.INIT;
+		}
+			
 		opts.addOption(Misc.ucFirst(StringHelper.getString("cancel")), exitOpt);
 		opts.setShortcut(exitOpt, Keyboard.KEY_ESCAPE, false, false, false, false);
 		//ExerelinUtils.addDevModeDialogOptions(dialog, true);
@@ -828,25 +712,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		options.clear();
 		optionsAllPages.clear();
 		addOptionAllPages(StringHelper.getString("back", true), "nex_fleetRequest_main");
-	}
-	
-	/**
-	 * List target factions in option panel.
-	 */
-	protected void listFactions()
-	{
-		resetOpts();
-		List<FactionAPI> factions = getFactions();
-		
-		for (FactionAPI faction : factions)
-		{
-			String optId = FACTION_OPTION_PREFIX + faction.getId();
-			String text = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
-			addOption(text, optId);
-			addColor(optId, faction.getBaseUIColor());
-		}
-		
-		showOptions();
 	}
 	
 	protected String getMarketOptionString(MarketAPI market) {
@@ -866,75 +731,150 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	 */
 	protected void listSources()
 	{
-		resetOpts();
 		List<MarketAPI> sources = getSources();
-		
-		for (MarketAPI market : sources)
-		{
-			String optId = SOURCE_OPTION_PREFIX + market.getId();
-			String text = getMarketOptionString(market);
-
-			addOption(text, optId);
+		List<SectorEntityToken> sourceTokens = new ArrayList<>();
+		for (MarketAPI market : sources) {
+			sourceTokens.add(market.getPrimaryEntity());
 		}
 		
-		showOptions();
+		final InteractionDialogAPI dialogF = dialog;
+		NexUtilsMarket.pickEntityDestination(dialogF, sourceTokens, StringHelper.getString("confirm", true), 
+				new CampaignEntityPickerWrapper(){
+			@Override
+			public void reportEntityPicked(SectorEntityToken token) {
+				MarketAPI prevSource = source;
+				setSource(token.getMarket());
+				dialogF.getTextPanel().addPara(getString("optionSource") + ": %s", 
+						Misc.getHighlightColor(), source.getName());
+				boolean sameSource = prevSource == source;
+				if (!sameSource && source != null && target != null)
+				{
+					printFleetInfo(false, false, true, true);
+				}
+				// this works around not being able to exit the menu because our
+				// option selections are no longer reaching the FactionDirectoryDialog
+				// picking another rules dialog option fixes it for some reason
+				dialogF.getPlugin().optionSelected(null, "nex_fleetRequest_main");
+			}
+
+			@Override
+			public void reportEntityPickCancelled() {
+				dialogF.getPlugin().optionSelected(null, "nex_fleetRequest_main");
+			}
+
+			@Override
+			public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity) 
+			{
+				createInfoTextExt(info, entity, target != null ? target.getPrimaryEntity() : null, false);
+			}
+		});
 	}
 	
 	/**
-	 * List target markets in option panel.
+	 * Generate map for picking target.
 	 */
 	protected void listTargets()
 	{
-		resetOpts();
-		List<MarketAPI> targets = getTargets();
-		
-		Map<String, String> tooltips = new HashMap<>();
-		Map<String, Highlights> highlights = new HashMap<>();
-		
-		for (MarketAPI market : targets)
-		{
-			String optId = TARGET_OPTION_PREFIX + market.getId();
-			
-			// option text
-			String text = getMarketOptionString(market);
-			addOption(text, optId);
-			
-			// tooltip
-			String tooltip;
-			Highlights hl = new Highlights();
-			Color hlCol = Misc.getHighlightColor();
-			
-			String defStr = String.format("%.1f", InvasionFleetManager.estimatePatrolStrength(null, 
-					faction, market.getStarSystem(), 0) 
-					+ InvasionFleetManager.estimateStationStrength(target));
-			if (fleetType == FleetType.INVASION) {
-				tooltip = getString("targetEntryGroundTooltip");
-				tooltip = StringHelper.substituteToken(tooltip, "$space", defStr);
-				String groundDefStr = String.format("%.1f", InvasionRound.getDefenderStrength(market, 1));
-				tooltip = StringHelper.substituteToken(tooltip, "$ground", groundDefStr);
-				hl.setText(defStr, groundDefStr);
-				hl.setColors(hlCol, hlCol);
-			}
-			else {
-				tooltip = getString("targetEntryTooltip");
-				tooltip = StringHelper.substituteToken(tooltip, "$space", defStr);
-				hl.setText(defStr);
-				hl.setColors(hlCol);
-			}
-			tooltips.put(optId, tooltip);
-			highlights.put(optId, hl);
+		List<MarketAPI> targets = getValidTargets();
+		List<SectorEntityToken> targetTokens = new ArrayList<>();
+		for (MarketAPI market : targets) {
+			targetTokens.add(market.getPrimaryEntity());
 		}
 		
-		showOptions();
-		for (Map.Entry<String, String> tmp : tooltips.entrySet())
-		{
-			String optId = tmp.getKey();
-			String tooltip = tmp.getValue();
-			Highlights hl = highlights.get(optId);
-			dialog.getOptionPanel().setTooltip(optId, tooltip);
-			dialog.getOptionPanel().setTooltipHighlights(optId, hl.getText());
-			dialog.getOptionPanel().setTooltipHighlightColors(optId, hl.getColors());
+		final InteractionDialogAPI dialogF = dialog;
+		NexUtilsMarket.pickEntityDestination(dialogF, targetTokens, 
+				StringHelper.getString("confirm", true), new CampaignEntityPickerWrapper(){
+			@Override
+			public void reportEntityPicked(SectorEntityToken token) {
+				MarketAPI prevTarget = target;
+				setTarget(token.getMarket());
+				dialogF.getTextPanel().addPara(getString("optionTarget") + ": %s", 
+						Misc.getHighlightColor(), target.getName());
+				boolean sameTarget = prevTarget == target;
+				if (!sameTarget && source != null && target != null)
+				{
+					printFleetInfo(false, false, true, true);
+				}
+				// this works around not being able to exit the menu because our
+				// option selections are no longer reaching the FactionDirectoryDialog
+				// picking another rules dialog option fixes it for some reason
+				dialogF.getPlugin().optionSelected(null, "nex_fleetRequest_main");
+			}
+
+			@Override
+			public void reportEntityPickCancelled() {
+				dialogF.getPlugin().optionSelected(null, "nex_fleetRequest_main");
+			}
+
+			@Override
+			public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity) 
+			{
+				createInfoTextExt(info, entity, source != null ? source.getPrimaryEntity() : null, true);
+			}
+		});
+	}
+	
+	public void createInfoTextExt(TooltipMakerAPI info, SectorEntityToken entity, 
+			SectorEntityToken other, boolean isTarget) 
+	{
+		try {
+			createInfoTextBasic(info, entity, other);
+			MarketAPI market = entity.getMarket();
+
+			if (isTarget && fleetType != FleetType.RELIEF) {
+				String infoStr;
+				LabelAPI text;
+				float def = InvasionFleetManager.estimatePatrolStrength(null, 
+						entity.getFaction(), market.getStarSystem(), 0) 
+						+ InvasionFleetManager.estimateStationStrength(market);
+				def = NexUtils.getEstimateNum(def, 10);
+				String defStr = String.format("%.0f", def);
+				if (fleetType == FleetType.INVASION) {
+					infoStr = getString("targetEntryGroundTooltip");
+					infoStr = StringHelper.substituteToken(infoStr, "$space", defStr);
+					float groundDef = InvasionRound.getDefenderStrength(market, 1);
+					groundDef = NexUtils.getEstimateNum(groundDef, 10);
+					String groundDefStr = String.format("%.0f", groundDef);
+					infoStr = StringHelper.substituteToken(infoStr, "$ground", groundDefStr);
+
+					text = info.addPara(infoStr, 0);
+					text.setHighlight(defStr, groundDefStr);
+				}
+				else {
+					infoStr = getString("targetEntryTooltip");
+					infoStr = StringHelper.substituteToken(infoStr, "$space", defStr);
+					text = info.addPara(infoStr, 0);
+					text.setHighlight(defStr);
+				}
+			}
+		} catch (Exception ex) {
+			Global.getLogger(this.getClass()).error("Error printing target picked info", ex);
 		}
+	}
+	
+	public static void createInfoTextBasic(TooltipMakerAPI info, SectorEntityToken entity, 
+			SectorEntityToken other) {
+		String str = StringHelper.getString("exerelin_markets", "marketDirectoryEntryForPicker");
+		MarketAPI market = entity.getMarket();
+		String distStr;
+		if (other != null) {
+			float dist = Misc.getDistanceLY(other, entity);
+			distStr = Math.round(dist) + "";
+		}
+		else {
+			distStr = "?";
+		}
+		String factionName = market.getFaction().getDisplayName();
+		String size = market.getSize() + "";
+		str = StringHelper.substituteToken(str, "$market", market.getName());
+		str = StringHelper.substituteToken(str, "$faction", factionName);
+		str = StringHelper.substituteToken(str, "$size", size);
+		str = StringHelper.substituteToken(str, "$distance", distStr);
+
+		Color hl = Misc.getHighlightColor();
+		LabelAPI text = info.addPara(str, 0);
+		text.setHighlight(factionName, size, distStr);
+		text.setHighlightColors(market.getFaction().getBaseUIColor(), hl, hl);
 	}
 	
 	protected static String getString(String id) {
