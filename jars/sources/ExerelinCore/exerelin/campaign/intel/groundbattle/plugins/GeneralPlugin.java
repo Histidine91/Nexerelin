@@ -1,7 +1,12 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.utilities.NexUtilsGUI;
 
 public class GeneralPlugin extends BaseGroundBattlePlugin {
 	
@@ -33,5 +38,30 @@ public class GeneralPlugin extends BaseGroundBattlePlugin {
 	
 	public static int getBaseMovementPointsPerTurn(int marketSize) {
 		return (int)Math.round(GBConstants.BASE_MOVEMENT_POINTS_PER_TURN * Math.pow(2, marketSize - 2));
+	}
+	
+	// Graphical only: Station modifier
+	public void addModifierEntry(TooltipMakerAPI info, CustomPanelAPI outer, 
+			float width, float pad, Boolean isAttacker) {
+		
+		if (!Boolean.FALSE.equals(isAttacker)) return;
+		
+		if (!intel.hasStationFleet()) return;
+				
+		String icon = "graphics/icons/markets/orbital_station.png";
+		
+		NexUtilsGUI.CustomPanelGenResult gen = NexUtilsGUI.addPanelWithFixedWidthImage(outer, 
+				null, width, GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT, GroundBattleIntel.getString("modifierStation"), 
+				width - GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT - 8, 8, 
+				icon, GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT, 3, 
+				Misc.getPositiveHighlightColor(), true, getModifierTooltip());
+		
+		info.addCustom(gen.panel, pad);
+	}
+	
+	@Override
+	public void processTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+		tooltip.addPara(GroundBattleIntel.getString("modifierStationDesc"), 0,
+				Misc.getHighlightColor(), GroundBattleIntel.getString("modifierStationDescHighlight"));
 	}
 }

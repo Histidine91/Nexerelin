@@ -7,7 +7,6 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;

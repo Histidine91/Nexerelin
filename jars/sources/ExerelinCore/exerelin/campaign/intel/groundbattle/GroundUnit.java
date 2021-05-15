@@ -444,7 +444,8 @@ public class GroundUnit {
 	}
 	
 	public int getDeployCost() {
-		float cost = getBaseStrength() * GBConstants.SUPPLIES_TO_DEPLOY_MULT;
+		float cost = getSize() * GBConstants.SUPPLIES_TO_DEPLOY_MULT;
+		if (type == ForceType.HEAVY) cost *= HEAVY_COUNT_DIVISOR;
 		cost *= type.dropCostMult;
 		cost = intel.getSide(isAttacker).dropCostMod.computeEffective(cost);
 		return Math.round(cost);

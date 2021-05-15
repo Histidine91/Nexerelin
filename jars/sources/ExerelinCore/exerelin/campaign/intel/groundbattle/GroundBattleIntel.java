@@ -342,7 +342,16 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return results;
 	}
 	
-	protected boolean canSupport(FactionAPI faction, boolean isAttacker) {
+	public boolean hasStationFleet() {
+		CampaignFleetAPI station = Misc.getStationFleet(market);
+		if (station == null) return false;
+		
+		if (station.getFleetData().getMembersListCopy().isEmpty()) return false;
+		
+		return true;
+	}
+	
+	protected boolean canSupport(FactionAPI faction, boolean isAttacker) {		
 		FactionAPI supportee = getSide(isAttacker).faction;
 		if (faction.isPlayerFaction() && Misc.getCommissionFaction() == supportee)
 			return true;
@@ -354,6 +363,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public boolean fleetCanSupport(CampaignFleetAPI fleet, boolean isAttacker) 
 	{
+		if (isAttacker && hasStationFleet()) return false;
+		if (fleet.isStationMode()) return false;
 		if (fleet.isPlayerFleet()) {
 			return isAttacker == playerIsAttacker;
 		}
