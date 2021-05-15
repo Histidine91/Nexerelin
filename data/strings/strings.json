@@ -998,11 +998,12 @@
 		"marinesPerFleet":"marines per fleet",
 		"infoDistance":"Distance: $dist LY",
 		"timeToLaunch":"time to launch",
+		"timeToArrive":"time to arrive",
 		"infoTargetStrength":"Estimated strength: $space",
 		"infoTargetStrengthGround":"Estimated strength: $space space, $ground ground",
 		
 		"targetEntryTooltip":"Space defences: $space",
-		"targetEntryGroundTooltip":"Space defences: $space\nGround defences: $ground",
+		"targetEntryGroundTooltip":"Space defences: $space | Ground defences: $ground",
 		
 		"fleetSpawnMessage":"The task force is being prepared for launch.",
 		"tooltipInsufficientFunds":"Dispatching this task force requires $cost credits. You only have $credits credits.",
@@ -1327,6 +1328,8 @@
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
 		"marketDirectoryEntryDistOnly":"$market ($distance LY)",
+		"marketDirectoryEntryForPicker":"$market ($faction, size $size, $distance LY)",
+		"marketDirectoryEntryForPickerNoDist":"$market ($faction, size $size)",
 		"marketDirectoryHidden":"$num hidden markets",
 		"hasBaseTip":"has military base",
 		

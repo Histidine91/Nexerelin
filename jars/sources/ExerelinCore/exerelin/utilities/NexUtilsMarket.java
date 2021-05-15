@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignEntityPickerListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
@@ -23,6 +24,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
@@ -391,6 +393,40 @@ public class NexUtilsMarket {
 		}
 	}
 	
+	public static void pickEntityDestination(final InteractionDialogAPI dialog, 
+			final List<SectorEntityToken> destinations, String confirmText, 
+			final CampaignEntityPickerWrapper wrapper)
+	{
+		dialog.showCampaignEntityPicker("Select destination", "Destination:", confirmText, 
+				Global.getSector().getPlayerFaction(), destinations, 
+			new CampaignEntityPickerListener() {
+				public void pickedEntity(SectorEntityToken entity) {
+					wrapper.reportEntityPicked(entity);
+				}
+				public void cancelledEntityPicking() {
+					wrapper.reportEntityPickCancelled();
+				}
+				public String getMenuItemNameOverrideFor(SectorEntityToken entity) {
+					return null;
+				}
+				public String getSelectedTextOverrideFor(SectorEntityToken entity) {
+					return entity.getName() + " - " + entity.getContainingLocation().getNameWithTypeShort();
+				}
+				public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity) {
+					wrapper.createInfoText(info, entity);
+				}
+				public boolean canConfirmSelection(SectorEntityToken entity) {
+					return true;
+				}
+				public float getFuelColorAlphaMult() {
+					return 0.5f;
+				}
+				public float getFuelRangeMult() {
+					return 1;
+				}
+			});
+	}
+	
 	public static void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
 			TempDataInvasion actionData, CargoAPI cargo) 
 	{
@@ -455,5 +491,11 @@ public class NexUtilsMarket {
 		{
 			x.reportNPCSaturationBombardment(market, actionData);
 		}
+	}
+	
+	public static interface CampaignEntityPickerWrapper {
+		public void reportEntityPicked(SectorEntityToken entity);
+		public void reportEntityPickCancelled();
+		public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity);
 	}
 }

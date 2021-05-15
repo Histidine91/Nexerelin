@@ -77,6 +77,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -545,13 +546,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 	}
 	
-	protected int getEstimateNum(float num, int precision) {
-		int result = Math.round(num/precision);
-		result *= precision;
-		
-		return result;
-	}
-	
 	protected GroundBattleIntel prepIntel() {
 		GroundBattleIntel intel = new GroundBattleIntel(market, PlayerFactionStore.getPlayerFaction(), market.getFaction());
 		intel.setPlayerInitiated(true);
@@ -731,11 +725,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		info.addPara(String.format(GroundBattleIntel.getString("dialogGarrisonEstimate"), market.getName()), 10);
 		info.setParaFontDefault();
 		info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMilitia"), 3, 
-				h, getEstimateNum(strEst[0], precision) + "");
+				h, NexUtils.getEstimateNum(strEst[0], precision) + "");
 		info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMarine"), 3, 
-				h, getEstimateNum(strEst[1], precision) + "");
+				h, NexUtils.getEstimateNum(strEst[1], precision) + "");
 		info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateHeavy"), 3, 
-				h, getEstimateNum(strEst[2], precision) + "");
+				h, NexUtils.getEstimateNum(strEst[2], precision) + "");
 		
 		text.addTooltip();
 
@@ -752,9 +746,9 @@ public class Nex_MarketCMD extends MarketCMD {
 					market.getName()), 3);
 			info.setParaFontDefault();
 			info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMarine"), 3,
-					h, getEstimateNum(strEstPlayer[0], precision) + "");
+					h, NexUtils.getEstimateNum(strEstPlayer[0], precision) + "");
 			info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateHeavy"), 3,
-					h, getEstimateNum(strEstPlayer[1], precision) + "");
+					h, NexUtils.getEstimateNum(strEstPlayer[1], precision) + "");
 			text.addTooltip();
 		}
 		text.addPara(GroundBattleIntel.getString("dialogEstimateHelp"));

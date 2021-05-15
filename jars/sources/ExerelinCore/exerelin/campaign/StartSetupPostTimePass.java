@@ -106,10 +106,15 @@ public class StartSetupPostTimePass {
 		
 		if (spawnAsFactionId != null) {
 			factionId = spawnAsFactionId;
-			if (freeStart) {	// Blade Breaker start: use BB start relations
+			if (freeStart) {
+				// Blade Breaker start: use BB start relations
+				// Kassadar start: use ?? (should use Kassadar start relations?)
+				//Global.getLogger(StartSetupPostTimePass.class).info("Spawn as faction type 1");
 				NexUtilsReputation.syncFactionRelationshipsToPlayer();
 			}
-			else {	// Lion's Guard start: use Diktat start relations
+			else {	
+				// Lion's Guard start: use Diktat start relations
+				//Global.getLogger(StartSetupPostTimePass.class).info("Spawn as faction type 2");
 				NexUtilsReputation.syncPlayerRelationshipsToFaction(factionId);
 				factionIdForSpawnLoc = factionId;
 			}

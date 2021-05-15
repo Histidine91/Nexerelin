@@ -325,6 +325,13 @@ public class NexUtils
 		return clone;
 	}
 	
+	public static int getEstimateNum(float num, int precision) {
+		int result = Math.round(num/precision);
+		result *= precision;
+		
+		return result;
+	}
+	
 	public static boolean objectToBoolean(Object val) {
 		if (val == null) return false;
 		if (val instanceof String)

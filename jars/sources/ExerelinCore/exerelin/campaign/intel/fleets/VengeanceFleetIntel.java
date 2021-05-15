@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -46,15 +47,16 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class VengeanceFleetIntel extends BaseIntelPlugin {
-    
-    public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
-        Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
-        Factions.SCAVENGERS, Factions.NEUTRAL, "nex_derelict",	//, Factions.LUDDIC_PATH
-    }));
-    public static final boolean ALWAYS_SPAWN_ONSITE = true;
+	
+	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
+		Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
+		Factions.SCAVENGERS, Factions.NEUTRAL, "nex_derelict",	//, Factions.LUDDIC_PATH
+	}));
+	public static final boolean ALWAYS_SPAWN_ONSITE = true;
+	public static final FleetAssignment TRAIL_ASSIGNMENT = FleetAssignment.DELIVER_CREW;
 
-    public static Logger log = Global.getLogger(VengeanceFleetIntel.class);
-    
+	public static Logger log = Global.getLogger(VengeanceFleetIntel.class);
+	
 	protected VengeanceDef def;
 	protected String factionId;
 	protected MarketAPI market;
@@ -63,15 +65,16 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 	protected boolean over = false;
 	protected float daysToLaunch;
 	protected final float daysToLaunchFixed;
-    protected float daysLeft;
-    protected int duration;
-    protected int escalationLevel;
-    protected CampaignFleetAPI fleet;
-    protected boolean foundPlayerYet = false;
-    protected final IntervalUtil interval = new IntervalUtil(0.4f, 0.6f);
-    protected final IntervalUtil interval2 = new IntervalUtil(1f, 2f);
-    protected float timeSpentLooking = 0f;
-    protected boolean trackingMode = false;
+	protected float daysLeft;
+	protected int duration;
+	protected int escalationLevel;
+	protected CampaignFleetAPI fleet;
+	protected boolean foundPlayerYet = false;
+	protected final IntervalUtil interval = new IntervalUtil(0.4f, 0.6f);
+	protected final IntervalUtil interval2 = new IntervalUtil(1f, 2f);
+	protected float timeSpentLooking = 0f;
+	protected boolean trackingMode = false;
+	protected SectorEntityToken locationToken;
 	
 	public VengeanceFleetIntel(String factionId, MarketAPI market, int escalationLevel) {
 		this.factionId = factionId;
@@ -83,7 +86,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		daysToLaunch = 15 + (this.escalationLevel * 5);	// TODO: maybe something nicer
 		daysToLaunchFixed = daysToLaunch;
 	}
-    
+	
 	protected FactionAPI getFaction()
 	{
 		return Global.getSector().getFaction(factionId);
@@ -249,6 +252,22 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		str = StringHelper.substituteTokens(str, sub);
 		
 		info.addPara(str, opad, hl, highlights.toArray(new String[0]));
+		
+		if (fleet != null && Global.getSettings().isDevMode()) {
+			info.addPara("Debug information", opad);
+			bullet(info);
+			info.addPara(String.format("Current location: %s", fleet.getContainingLocation()), 0);
+			if (!fleet.getAssignmentsCopy().isEmpty()) {
+				FleetAssignmentDataAPI assign = fleet.getAssignmentsCopy().get(0);
+				info.addPara(String.format("Current assignment: %s, %s, target %s", assign.getAssignment(), 
+						assign.getActionText(), assign.getTarget()), 0);
+			}
+			if (locationToken != null) {
+				info.addPara(String.format("Location token is in: %s", locationToken.getContainingLocation()), 0);
+			}
+			info.addPara("Tracking mode: " + trackingMode, 0);
+			unindent(info);
+		}
 	}
 	
 	protected boolean isMarketKnown()
@@ -287,6 +306,104 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		return null;
 	}
 	
+	protected void handleFleetAssignment(CampaignFleetAPI playerFleet) {
+		updateLocationToken();
+
+		boolean playerVisible = false;
+		boolean fleetVisible = false;
+		if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
+			playerVisible = playerFleet.isVisibleToSensorsOf(fleet);
+			fleetVisible = fleet.isVisibleToSensorsOf(playerFleet);
+		}
+		if (playerVisible && fleetVisible) {
+			foundPlayerYet = true;
+		}
+				
+		// player and enemy fleet are close to each other, deactivate tracking mode
+		if (trackingMode && fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) 
+		{
+			if (Misc.getDistance(fleet.getLocation(), playerFleet.getLocation()) <= 1000f + 1.5f * Math.max(
+					fleet.getMaxSensorRangeToDetect(playerFleet),
+					playerFleet.getMaxSensorRangeToDetect(fleet))) {
+				trackingMode = false;
+			}
+		}
+		
+		String targetName = StringHelper.getString("yourFleet");
+		
+		// my understanding of tracking mode:
+		// it activates when player [has been encountered at least once or is currently visible], and [is no longer in same system]
+		// while tracking mode is active, fleet can travel to player without an actual sensor lock
+		// tracking mode is deactivated once the two fleets are in same location again and get sufficiently close
+		
+		EncounterOption option = fleet.getAI().pickEncounterOption(null, playerFleet);
+		if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD_VS_STRONGER) {
+			// can see player or has encountered player at least once			
+			if (playerVisible || foundPlayerYet) {
+				// in same system but not currently in tracking mode, look around the system?
+				// this means that if fleet has been shaken once,
+				// as long as player doesn't leave the system, player is safe
+				if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation()) && !trackingMode) {
+					if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.PATROL_SYSTEM) {
+						fleet.clearAssignments();
+						fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, locationToken, 1000,
+								StringHelper.getFleetAssignmentString("hunting", targetName));
+						fleet.getAbility(Abilities.EMERGENCY_BURN).activate();
+						((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
+																								  false);
+					}
+				// not in same system or not currently tracking, activate tracking mode
+				} else {
+					trackingMode = true;
+					if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
+						// tracking in same system, intercept
+						// 0.95: intercept only works if we can see player
+						// don't think it's possible to have sight on the player without tracking mode turning off
+						if (playerVisible) {
+							if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.INTERCEPT) {
+								fleet.clearAssignments();
+								fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 1000, 
+										StringHelper.getFleetAssignmentString("intercepting", targetName));
+							}
+						} else {
+							if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.ATTACK_LOCATION) {
+								fleet.clearAssignments();
+								fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, locationToken, 1000,
+										StringHelper.getFleetAssignmentString("hunting", targetName));
+								((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
+																										  false);
+							}
+						}
+						
+					} else {
+						// player not in same system, maphack our way to player
+						if (fleet.getAI().getCurrentAssignmentType() != TRAIL_ASSIGNMENT) {
+							fleet.clearAssignments();
+							fleet.addAssignment(TRAIL_ASSIGNMENT, locationToken, 1000,
+												StringHelper.getFleetAssignmentString("trailing", targetName));
+						}
+					}
+				}
+			} else {
+				// long-distance maphack
+				if (fleet.getAI().getCurrentAssignmentType() != TRAIL_ASSIGNMENT) {
+					fleet.clearAssignments();
+					fleet.addAssignment(TRAIL_ASSIGNMENT, locationToken, 1000, 
+							StringHelper.getFleetAssignmentString("trailing", targetName));
+				}
+			}
+		} else {
+			endEvent(EndReason.DEFEATED);
+			return;
+		}
+
+		if (!fleetVisible || !playerVisible) {
+			if (daysLeft <= 0f) {
+				endEvent(EndReason.EXPIRED);
+			}
+		}
+	}
+	
 	@Override
 	public void advanceImpl(float amount) {
 		if (over) {
@@ -313,189 +430,153 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 					endEvent(EndReason.FAILED_TO_SPAWN);
 			}
 			return;
-        }
+		}
 
-        CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-        if (playerFleet == null) {
-            return;
-        }
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		if (playerFleet == null) {
+			return;
+		}
 
-        if (!fleet.isAlive()) {
-            endEvent(EndReason.DEFEATED);
-            return;
-        }
-        
-        // fleet took too many losses, quit
-        if (fleet.getMemoryWithoutUpdate().contains("$startingFP") && fleet.getFleetPoints() < 0.4 * fleet.getMemoryWithoutUpdate().getFloat("$startingFP"))
-        {
-            endEvent(EndReason.DEFEATED);
-            return;
-        }
+		if (!fleet.isAlive()) {
+			endEvent(EndReason.DEFEATED);
+			return;
+		}
+		
+		// fleet took too many losses, quit
+		if (fleet.getMemoryWithoutUpdate().contains("$startingFP") && fleet.getFleetPoints() < 0.4 * fleet.getMemoryWithoutUpdate().getFloat("$startingFP"))
+		{
+			endEvent(EndReason.DEFEATED);
+			return;
+		}
 
-        /* Advance faster and faster if they lost you */
-        float days = Global.getSector().getClock().convertToDays(amount);
-        if (foundPlayerYet) {
-            timeSpentLooking += days;
-            daysLeft -= days * (2f + (escalationLevel * timeSpentLooking / duration));
-        } else {
-            daysLeft -= days;
-        }
-        interval.advance(days);
-        interval2.advance(days);
+		/* Advance faster and faster if they lost you */
+		float days = Global.getSector().getClock().convertToDays(amount);
+		if (foundPlayerYet) {
+			timeSpentLooking += days;
+			daysLeft -= days * (2f + (escalationLevel * timeSpentLooking / duration));
+		} else {
+			daysLeft -= days;
+		}
+		interval.advance(days);
+		interval2.advance(days);
 
-        if (interval2.intervalElapsed()) {
-            if (fleet.getAI().getCurrentAssignmentType() == FleetAssignment.PATROL_SYSTEM &&
-                    ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().getTarget() != playerFleet) {
-                ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000, false);
-                ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setTarget(playerFleet);
-            }
-        }
+		if (interval2.intervalElapsed()) {
+			if (fleet.getAI().getCurrentAssignmentType() == FleetAssignment.PATROL_SYSTEM &&
+					((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().getTarget() != playerFleet) {
+				((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000, false);
+				((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setTarget(playerFleet);
+			}
+		}
 
-        if (!interval.intervalElapsed()) {
-            return;
-        }
-
-        boolean playerVisible = false;
-        boolean fleetVisible = false;
-        if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
-            playerVisible = playerFleet.isVisibleToSensorsOf(fleet);
-            fleetVisible = fleet.isVisibleToSensorsOf(playerFleet);
-        }
-        if (playerVisible && fleetVisible) {
-            foundPlayerYet = true;
-        }
-
-        if (trackingMode && fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
-            if (Misc.getDistance(fleet.getLocation(), playerFleet.getLocation()) <= 1000f + 1.5f * Math.max(
-                    fleet.getMaxSensorRangeToDetect(playerFleet),
-                    playerFleet.getMaxSensorRangeToDetect(fleet))) {
-                trackingMode = false;
-            }
-        }
-        
-        String targetName = StringHelper.getString("yourFleet");
-
-        EncounterOption option = fleet.getAI().pickEncounterOption(null, playerFleet);
-        if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD_VS_STRONGER) {
-            if (playerVisible || foundPlayerYet) {
-                if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation()) && !trackingMode) {
-                    if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.PATROL_SYSTEM) {
-                        fleet.clearAssignments();
-                        fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, playerFleet, 1000,
-                                StringHelper.getFleetAssignmentString("hunting", targetName));
-                        fleet.getAbility(Abilities.EMERGENCY_BURN).activate();
-                        ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
-                                                                                                  false);
-                    }
-                } else {
-                    trackingMode = true;
-                    if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
-                        if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.INTERCEPT) {
-                            fleet.clearAssignments();
-                            fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 1000, 
-                                    StringHelper.getFleetAssignmentString("intercepting", targetName));
-                        }
-                    } else {
-                        if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
-                            fleet.clearAssignments();
-                            fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000,
-                                                StringHelper.getFleetAssignmentString("trailing", targetName));
-                        }
-                    }
-                }
-            } else {
-                if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
-                    fleet.clearAssignments();
-                    fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000, 
-                            StringHelper.getFleetAssignmentString("trailing", targetName));
-                }
-            }
-        } else {
-            endEvent(EndReason.DEFEATED);
-            return;
-        }
-
-        if (!fleetVisible || !playerVisible) {
-            if (daysLeft <= 0f) {
-                endEvent(EndReason.EXPIRED);
-            }
-        }
-    }
+		if (!interval.intervalElapsed()) {
+			return;
+		}
+		
+		handleFleetAssignment(playerFleet);
+	}
 	
 	/*
-    @Override
-    public void reportBattleOccurred(CampaignFleetAPI primaryWinner, BattleAPI battle) {
-        if (!isEventStarted()) {
-            return;
-        }
-        if (isDone()) {
-            return;
-        }
+	@Override
+	public void reportBattleOccurred(CampaignFleetAPI primaryWinner, BattleAPI battle) {
+		if (!isEventStarted()) {
+			return;
+		}
+		if (isDone()) {
+			return;
+		}
 
-        if (!battle.isPlayerInvolved() || !battle.isInvolved(fleet) || battle.onPlayerSide(fleet)) {
-            return;
-        }
+		if (!battle.isPlayerInvolved() || !battle.isInvolved(fleet) || battle.onPlayerSide(fleet)) {
+			return;
+		}
 
-        float before = 0f;
-        List<CampaignFleetAPI> side = battle.getSnapshotSideFor(fleet);
-        for (CampaignFleetAPI sideFleet : side) {
-            before += sideFleet.getFleetPoints();
-        }
-        before = Math.max(1f, before);
-        float after = 0f;
-        side = battle.getSideFor(fleet);
-        for (CampaignFleetAPI sideFleet : side) {
-            after += sideFleet.getFleetPoints();
-        }
-        float loss = Math.max(0f, 1f - (after / before));
-    }
+		float before = 0f;
+		List<CampaignFleetAPI> side = battle.getSnapshotSideFor(fleet);
+		for (CampaignFleetAPI sideFleet : side) {
+			before += sideFleet.getFleetPoints();
+		}
+		before = Math.max(1f, before);
+		float after = 0f;
+		side = battle.getSideFor(fleet);
+		for (CampaignFleetAPI sideFleet : side) {
+			after += sideFleet.getFleetPoints();
+		}
+		float loss = Math.max(0f, 1f - (after / before));
+	}
 	*/
 	
-    public void startEvent() {
-        
-        if (!RevengeanceManager.isRevengeanceEnabled()) {
-            endEvent(EndReason.OTHER, 0);
-            return;
-        }
+	/**
+	 * Updates the token used to track player fleet location when player is out of sight.
+	 * Normally (since 0.95) fleets don't know the player's containing location, unless 
+	 * player was seen jumping.
+	 */
+	public void updateLocationToken() {
+		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+		if (player == null || player.getContainingLocation() == null)
+			return;
+		
+		Vector2f loc = player.getLocation();
+		if (locationToken == null) {
+			locationToken = player.getContainingLocation().createToken(loc);
+		}
+		if (locationToken.getContainingLocation() != player.getContainingLocation()) {
+			// since we can't change its system, just rebuild it
+			locationToken = player.getContainingLocation().createToken(loc);
+			if (fleet != null) fleet.clearAssignments();
+		}
+		locationToken.setLocation(loc.x, loc.y);
+	}
+	
+	public void startEvent() {
+		
+		if (!RevengeanceManager.isRevengeanceEnabled()) {
+			endEvent(EndReason.OTHER, 0);
+			return;
+		}
 
-        def = VengeanceDef.getDef(factionId);
-        if (def == null) {
-            endEvent(EndReason.OTHER, 0);
-            return;
-        }
+		def = VengeanceDef.getDef(factionId);
+		if (def == null) {
+			endEvent(EndReason.OTHER, 0);
+			return;
+		}
 
-        CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-        if (playerFleet == null) {
-            endEvent(EndReason.OTHER, 0);
-            return;
-        }
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		if (playerFleet == null) {
+			endEvent(EndReason.OTHER, 0);
+			return;
+		}
+		
+		updateLocationToken();
 
-        float distance = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
+		float distance = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
+		float distBonus = 30 + distance*1.5f;	// don't crank it up too much, I don't think this is the important component
+		
 		switch (escalationLevel) {
 			case 0:
 				duration = Math.max(60,
 						Math.min(120,
-								Math.round((20f + distance) * MathUtils.getRandomNumberInRange(0.75f, 1f))));
+								Math.round(distBonus * MathUtils.getRandomNumberInRange(0.75f, 1f))));
 				break;
 			case 1:
 				duration = Math.max(90, Math.min(150,
-						Math.round((20f + distance) * MathUtils.getRandomNumberInRange(1.25f, 1.75f))));
+						Math.round(distBonus * MathUtils.getRandomNumberInRange(1.25f, 1.75f))));
 				break;
 			default:
 				duration = Math.max(120, Math.min(180,
-						Math.round((20f + distance) * MathUtils.getRandomNumberInRange(2f, 2.5f))));
+						Math.round(distBonus * MathUtils.getRandomNumberInRange(2f, 2.5f))));
 				break;
 		}
+		duration += 15;
+		
 		if (Global.getSector().getMemoryWithoutUpdate().contains(VengeanceBuff.MEMORY_KEY)) {
 			duration *= VengeanceBuff.SEARCH_TIME_MULT;
 		}
 		
-        daysLeft = duration;
+		daysLeft = duration;
 		
-        Global.getSector().getIntelManager().addIntel(this);
+		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
-        log.info("Started event of escalation level " + escalationLevel + " for " + getFaction().getDisplayName());
-    }
+		log.info("Started event of escalation level " + escalationLevel + " for " + getFaction().getDisplayName());
+	}
 	
 	protected CampaignFleetAPI spawnFleet()
 	{
@@ -506,10 +587,10 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		float player = NexUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;
-        int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
+		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
 		float sizeMult = InvasionFleetManager.getFactionDoctrineFleetSizeMult(market.getFaction());
-        int combat, freighter, tanker, utility;
-        float bonus;
+		int combat, freighter, tanker, utility;
+		float bonus;
 		
 		boolean buffRule = false;
 		if (Global.getSector().getMemoryWithoutUpdate().contains(VengeanceBuff.MEMORY_KEY)) {
@@ -519,87 +600,87 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			buffRule = true;
 		}
 		
-        switch (escalationLevel) {
-            default:
-            case 0:
-                combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f)));
-                combat = Math.min(120 + capBonus, combat);
-                combat *= sizeMult;
-                freighter = Math.round(combat / 20f);
-                tanker = Math.round(combat / 30f);
-                utility = Math.round(combat / 40f);
-                bonus = 0.1f;
-                break;
-            case 1:
-                if (player < 80f) {
-                    combat = Math.round(Math.max(45f, player * MathUtils.getRandomNumberInRange(0.75f, 1f)));
-                } else {
-                    combat = Math.round(70f + (player - 80f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f));
-                }
-                combat = (int)Math.min(210 + capBonus * 1.5f, combat);
-                combat *= sizeMult;
-                freighter = Math.round(combat / 20f);
-                tanker = Math.round(combat / 30f);
-                utility = Math.round(combat / 40f);
-                bonus = 0.3f;
-                break;
-            case 2:
-                if (player < 120f) {
-                    combat = Math.round(Math.max(60f, player * MathUtils.getRandomNumberInRange(1f, 1.25f)));
-                } else if (player < 240f) {
-                    combat = Math.round(135f + (player - 120f) * MathUtils.getRandomNumberInRange(0.75f, 1f));
-                } else {
-                    combat = Math.round(240f + (player - 240f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f));
-                }
-                combat = Math.min(300 + capBonus * 2, combat);
-                combat *= sizeMult;
-                freighter = Math.round(combat / 20f);
-                tanker = Math.round(combat / 30f);
-                utility = Math.round(combat / 40f);
-                bonus = 0.5f;
-                break;
-        }
-        
-        int total = combat + freighter + tanker + utility;
-        /*
-        if (total > 125 && total <= 250) {
-            bonus += 0.25f;
-        } else if (total > 250 && total <= 500) {
-            bonus += 0.5f;
-        } else if (total > 500) {
-            bonus += 0.75f;
-        }
+		switch (escalationLevel) {
+			default:
+			case 0:
+				combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f)));
+				combat = Math.min(120 + capBonus, combat);
+				combat *= sizeMult;
+				freighter = Math.round(combat / 20f);
+				tanker = Math.round(combat / 30f);
+				utility = Math.round(combat / 40f);
+				bonus = 0.1f;
+				break;
+			case 1:
+				if (player < 80f) {
+					combat = Math.round(Math.max(45f, player * MathUtils.getRandomNumberInRange(0.75f, 1f)));
+				} else {
+					combat = Math.round(70f + (player - 80f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f));
+				}
+				combat = (int)Math.min(210 + capBonus * 1.5f, combat);
+				combat *= sizeMult;
+				freighter = Math.round(combat / 20f);
+				tanker = Math.round(combat / 30f);
+				utility = Math.round(combat / 40f);
+				bonus = 0.3f;
+				break;
+			case 2:
+				if (player < 120f) {
+					combat = Math.round(Math.max(60f, player * MathUtils.getRandomNumberInRange(1f, 1.25f)));
+				} else if (player < 240f) {
+					combat = Math.round(135f + (player - 120f) * MathUtils.getRandomNumberInRange(0.75f, 1f));
+				} else {
+					combat = Math.round(240f + (player - 240f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f));
+				}
+				combat = Math.min(300 + capBonus * 2, combat);
+				combat *= sizeMult;
+				freighter = Math.round(combat / 20f);
+				tanker = Math.round(combat / 30f);
+				utility = Math.round(combat / 40f);
+				bonus = 0.5f;
+				break;
+		}
+		
+		int total = combat + freighter + tanker + utility;
+		/*
+		if (total > 125 && total <= 250) {
+			bonus += 0.25f;
+		} else if (total > 250 && total <= 500) {
+			bonus += 0.5f;
+		} else if (total > 500) {
+			bonus += 0.75f;
+		}
 		*/
-        
-        sizeMult = NexConfig.getFactionConfig(factionId).vengeanceFleetSizeMult;
+		
+		sizeMult = NexConfig.getFactionConfig(factionId).vengeanceFleetSizeMult;
 		sizeMult *= NexConfig.vengeanceFleetSizeMult;
-        combat *= sizeMult;
-        freighter *= sizeMult;
-        tanker *= sizeMult;
-        utility *= sizeMult;
-        
-        final float finalBonus = bonus;
+		combat *= sizeMult;
+		freighter *= sizeMult;
+		tanker *= sizeMult;
+		utility *= sizeMult;
+		
+		final float finalBonus = bonus;
 
-        final int finalCombat = combat;
-        final int finalFreighter = freighter;
-        final int finalTanker = tanker;
-        final int finalUtility = utility;
-        FleetParamsV3 params = new FleetParamsV3(market, // market
-                                                "vengeanceFleet",
-                                                finalCombat, // combatPts
-                                                finalFreighter, // freighterPts
-                                                finalTanker, // tankerPts
-                                                0f, // transportPts
-                                                0f, // linerPts
-                                                finalUtility, // utilityPts
-                                                finalBonus // qualityMod
-                                                );
-        params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
-        params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
-        fleet = NexUtilsFleet.customCreateFleet(getFaction(), params);
+		final int finalCombat = combat;
+		final int finalFreighter = freighter;
+		final int finalTanker = tanker;
+		final int finalUtility = utility;
+		FleetParamsV3 params = new FleetParamsV3(market, // market
+												"vengeanceFleet",
+												finalCombat, // combatPts
+												finalFreighter, // freighterPts
+												finalTanker, // tankerPts
+												0f, // transportPts
+												0f, // linerPts
+												finalUtility, // utilityPts
+												finalBonus // qualityMod
+												);
+		params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
+		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
+		fleet = NexUtilsFleet.customCreateFleet(getFaction(), params);
 
-        if (fleet == null)
-            return null;
+		if (fleet == null)
+			return null;
 		
 		PersonAPI commander = fleet.getCommander();
 		if (commander == null) {
@@ -611,57 +692,57 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			commander.getStats().setSkillLevel("sensors", 3);
 		}
 
-        //fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
-        fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
-        fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
+		//fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
+		fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
+		fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
 		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
-        fleet.setName(def.getFleetName(factionId, escalationLevel));
-        switch (escalationLevel) {
-            default:
-            case 0:
-                if (total > 500) {
-                    commander.setRankId(Ranks.SPACE_ADMIRAL);
-                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
-                } else if (total > 250) {
-                    commander.setRankId(Ranks.SPACE_CAPTAIN);
-                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
-                } else {
-                    commander.setRankId(Ranks.SPACE_COMMANDER);
-                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
-                }
-                break;
-            case 1:
-                if (total > 500) {
-                    commander.setRankId(Ranks.SPACE_ADMIRAL);
-                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
-                } else {
-                    commander.setRankId(Ranks.SPACE_CAPTAIN);
-                    commander.setPostId(Ranks.POST_FLEET_COMMANDER);
-                }
-                break;
-            case 2:
-                commander.setRankId(Ranks.SPACE_ADMIRAL);
-                commander.setPostId(Ranks.POST_FLEET_COMMANDER);
-                break;
-        }
-        if (ALWAYS_SPAWN_ONSITE || playerFleet.getContainingLocation() != market.getContainingLocation()) {
-            market.getPrimaryEntity().getContainingLocation().addEntity(fleet);
-            fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().y);
+		fleet.setName(def.getFleetName(factionId, escalationLevel));
+		switch (escalationLevel) {
+			default:
+			case 0:
+				if (total > 500) {
+					commander.setRankId(Ranks.SPACE_ADMIRAL);
+					commander.setPostId(Ranks.POST_FLEET_COMMANDER);
+				} else if (total > 250) {
+					commander.setRankId(Ranks.SPACE_CAPTAIN);
+					commander.setPostId(Ranks.POST_FLEET_COMMANDER);
+				} else {
+					commander.setRankId(Ranks.SPACE_COMMANDER);
+					commander.setPostId(Ranks.POST_FLEET_COMMANDER);
+				}
+				break;
+			case 1:
+				if (total > 500) {
+					commander.setRankId(Ranks.SPACE_ADMIRAL);
+					commander.setPostId(Ranks.POST_FLEET_COMMANDER);
+				} else {
+					commander.setRankId(Ranks.SPACE_CAPTAIN);
+					commander.setPostId(Ranks.POST_FLEET_COMMANDER);
+				}
+				break;
+			case 2:
+				commander.setRankId(Ranks.SPACE_ADMIRAL);
+				commander.setPostId(Ranks.POST_FLEET_COMMANDER);
+				break;
+		}
+		if (ALWAYS_SPAWN_ONSITE || playerFleet.getContainingLocation() != market.getContainingLocation()) {
+			market.getPrimaryEntity().getContainingLocation().addEntity(fleet);
+			fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().y);
 
-            fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
 					2f + escalationLevel + (float) Math.random() * 2f,
-                                StringHelper.getFleetAssignmentString("orbiting", market.getName()));
-        } else {
-            Vector2f loc = Misc.pickHyperLocationNotNearPlayer(market.getLocationInHyperspace(),
-                                                               Global.getSettings().getMaxSensorRange() + 500f);
-            Global.getSector().getHyperspace().addEntity(fleet);
-            fleet.setLocation(loc.x, loc.y);
-        }
+								StringHelper.getFleetAssignmentString("orbiting", market.getName()));
+		} else {
+			Vector2f loc = Misc.pickHyperLocationNotNearPlayer(market.getLocationInHyperspace(),
+															   Global.getSettings().getMaxSensorRange() + 500f);
+			Global.getSector().getHyperspace().addEntity(fleet);
+			fleet.setLocation(loc.x, loc.y);
+		}
 
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_LOW_REP_IMPACT, true);
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+		//fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
 		
 		return fleet;
 	}
@@ -670,211 +751,211 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		endEvent(reason, getBaseDaysAfterEnd());
 	}
 	
-    protected void endEvent(EndReason reason, float time) {
-        over = true;
+	protected void endEvent(EndReason reason, float time) {
+		over = true;
 		endReason = reason;
-        if (fleet != null && fleet.isAlive()) {
-            fleet.clearAssignments();
-            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, market.getPrimaryEntity(), 1000,
-                                StringHelper.getFleetAssignmentString("returningTo", market.getName()));
-            fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, false);
-            fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, false);
-            ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().forceTargetReEval();
-        }
+		if (fleet != null && fleet.isAlive()) {
+			fleet.clearAssignments();
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, market.getPrimaryEntity(), 1000,
+								StringHelper.getFleetAssignmentString("returningTo", market.getName()));
+			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, false);
+			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, false);
+			((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().forceTargetReEval();
+		}
 		
 		sendUpdateIfPlayerHasIntel(null, false);
 		
 		endAfterDelay(time);
-    }
+	}
 
-    public static enum VengeanceDef {
+	public static enum VengeanceDef {
 
-        GENERIC("", 1, 0.5f),
-        
-        HEGEMONY(Factions.HEGEMONY, 2, 0.75f),
-        TRITACHYON(Factions.TRITACHYON, 1, 0.5f),
-        DIKTAT(Factions.DIKTAT, 2, 1f),
-        PERSEAN(Factions.PERSEAN, 1, 0.5f),
-        LUDDIC_CHURCH(Factions.LUDDIC_CHURCH, 2, 0.5f),
-        LUDDIC_PATH(Factions.LUDDIC_PATH, 2, 1f),
-        PIRATES(Factions.PIRATES, 2, 0.33f),
-        CABAL("cabal", 1, 0.25f),
-        IMPERIUM("interstellarimperium", 2, 0.75f),
-        CITADEL("citadeldefenders", 0, 0.5f),
-        BLACKROCK("blackrock_driveyards", 2, 0.5f),
-        EXIGENCY("exigency", 2, 1f),
-        AHRIMAN("exipirated",2, 0.5f),
-        TEMPLARS("templars", 2, 0.5f),
-        SHADOWYARDS("shadow_industry", 1, 0.5f),
-        MAYORATE("mayorate", 2, 0.75f),
-        JUNK_PIRATES("junk_pirates", 1, 0.5f),
-        PACK("pack", 1, 0.5f),
-        ASP_SYNDICATE("syndicate_asp", 2, 0.75f),
-        DME("dassault_mikoyan", 2, 0.75f),
-        SCY("SCY", 0, 0.5f),
-        TIANDONG("tiandong", 1, 0.5f),
-        DIABLE("diableavionics", 1, 1f),
-        ORA("ORA", 0, 0.5f);
+		GENERIC("", 1, 0.5f),
+		
+		HEGEMONY(Factions.HEGEMONY, 2, 0.75f),
+		TRITACHYON(Factions.TRITACHYON, 1, 0.5f),
+		DIKTAT(Factions.DIKTAT, 2, 1f),
+		PERSEAN(Factions.PERSEAN, 1, 0.5f),
+		LUDDIC_CHURCH(Factions.LUDDIC_CHURCH, 2, 0.5f),
+		LUDDIC_PATH(Factions.LUDDIC_PATH, 2, 1f),
+		PIRATES(Factions.PIRATES, 2, 0.33f),
+		CABAL("cabal", 1, 0.25f),
+		IMPERIUM("interstellarimperium", 2, 0.75f),
+		CITADEL("citadeldefenders", 0, 0.5f),
+		BLACKROCK("blackrock_driveyards", 2, 0.5f),
+		EXIGENCY("exigency", 2, 1f),
+		AHRIMAN("exipirated",2, 0.5f),
+		TEMPLARS("templars", 2, 0.5f),
+		SHADOWYARDS("shadow_industry", 1, 0.5f),
+		MAYORATE("mayorate", 2, 0.75f),
+		JUNK_PIRATES("junk_pirates", 1, 0.5f),
+		PACK("pack", 1, 0.5f),
+		ASP_SYNDICATE("syndicate_asp", 2, 0.75f),
+		DME("dassault_mikoyan", 2, 0.75f),
+		SCY("SCY", 0, 0.5f),
+		TIANDONG("tiandong", 1, 0.5f),
+		DIABLE("diableavionics", 1, 1f),
+		ORA("ORA", 0, 0.5f);
 
-        public final String faction;
-        public final String madName;
-        public final String madFleet;
-        public final String madFleetSingle;
-        public final String ravingMadName;
-        public final String ravingMadFleet;
-        public final String ravingMadFleetSingle;
-        public final String starkRavingMadName;
-        public final String starkRavingMadFleet;
-        public final String starkRavingMadFleetSingle;
-        public final float vengefulness;
-        public final int maxLevel;
-        
-        // legacy constructor with non-external names
-        @Deprecated
-        private VengeanceDef(String faction, String madName, String madFleet, String madFleetSingle,
-                             String ravingMadName, String ravingMadFleet,
-                             String ravingMadFleetSingle, String starkRavingMadName, String starkRavingMadFleet,
-                             String starkRavingMadFleetSingle,
-                             float vengefulness) {
-            this.faction = faction;
-            this.madName = madName;
-            this.madFleet = madFleet;
-            this.madFleetSingle = madFleetSingle;
-            this.ravingMadName = ravingMadName;
-            this.ravingMadFleet = ravingMadFleet;
-            this.ravingMadFleetSingle = ravingMadFleetSingle;
-            this.starkRavingMadName = starkRavingMadName;
-            this.starkRavingMadFleet = starkRavingMadFleet;
-            this.starkRavingMadFleetSingle = starkRavingMadFleetSingle;
-            this.vengefulness = vengefulness;
-            
-            if (starkRavingMadName != null)
-                maxLevel = 2;
-            else if (ravingMadName != null)
-                maxLevel = 1;
-            else
-                maxLevel = 0;
-        }
-        
-        private VengeanceDef(String faction, int maxLevel, float vengefulness) {
-            this.faction = faction;
-            this.madName = "";
-            this.madFleet = "";
-            this.madFleetSingle = "";
-            if (maxLevel >= 1)
-            {
-                this.ravingMadName = "";
-                this.ravingMadFleet = "";
-                this.ravingMadFleetSingle = "";
-            }
-            else
-            {
-                this.ravingMadName = null;
-                this.ravingMadFleet = null;
-                this.ravingMadFleetSingle = null;
-            }
-            if (maxLevel >= 2)
-            {
-                this.starkRavingMadName = "";
-                this.starkRavingMadFleet = "";
-                this.starkRavingMadFleetSingle = "";
-            }
-            else
-            {
-                this.starkRavingMadName = null;
-                this.starkRavingMadFleet = null;
-                this.starkRavingMadFleetSingle = null;
-            }
-            this.vengefulness = vengefulness;
-            this.maxLevel = maxLevel;
-        }
+		public final String faction;
+		public final String madName;
+		public final String madFleet;
+		public final String madFleetSingle;
+		public final String ravingMadName;
+		public final String ravingMadFleet;
+		public final String ravingMadFleetSingle;
+		public final String starkRavingMadName;
+		public final String starkRavingMadFleet;
+		public final String starkRavingMadFleetSingle;
+		public final float vengefulness;
+		public final int maxLevel;
+		
+		// legacy constructor with non-external names
+		@Deprecated
+		private VengeanceDef(String faction, String madName, String madFleet, String madFleetSingle,
+							 String ravingMadName, String ravingMadFleet,
+							 String ravingMadFleetSingle, String starkRavingMadName, String starkRavingMadFleet,
+							 String starkRavingMadFleetSingle,
+							 float vengefulness) {
+			this.faction = faction;
+			this.madName = madName;
+			this.madFleet = madFleet;
+			this.madFleetSingle = madFleetSingle;
+			this.ravingMadName = ravingMadName;
+			this.ravingMadFleet = ravingMadFleet;
+			this.ravingMadFleetSingle = ravingMadFleetSingle;
+			this.starkRavingMadName = starkRavingMadName;
+			this.starkRavingMadFleet = starkRavingMadFleet;
+			this.starkRavingMadFleetSingle = starkRavingMadFleetSingle;
+			this.vengefulness = vengefulness;
+			
+			if (starkRavingMadName != null)
+				maxLevel = 2;
+			else if (ravingMadName != null)
+				maxLevel = 1;
+			else
+				maxLevel = 0;
+		}
+		
+		private VengeanceDef(String faction, int maxLevel, float vengefulness) {
+			this.faction = faction;
+			this.madName = "";
+			this.madFleet = "";
+			this.madFleetSingle = "";
+			if (maxLevel >= 1)
+			{
+				this.ravingMadName = "";
+				this.ravingMadFleet = "";
+				this.ravingMadFleetSingle = "";
+			}
+			else
+			{
+				this.ravingMadName = null;
+				this.ravingMadFleet = null;
+				this.ravingMadFleetSingle = null;
+			}
+			if (maxLevel >= 2)
+			{
+				this.starkRavingMadName = "";
+				this.starkRavingMadFleet = "";
+				this.starkRavingMadFleetSingle = "";
+			}
+			else
+			{
+				this.starkRavingMadName = null;
+				this.starkRavingMadFleet = null;
+				this.starkRavingMadFleetSingle = null;
+			}
+			this.vengefulness = vengefulness;
+			this.maxLevel = maxLevel;
+		}
 
-        public static VengeanceDef getDef(String faction) {
-            for (VengeanceDef def : VengeanceDef.values()) {
-                if (def.faction.contentEquals(faction)) {
-                    return def;
-                }
-            }
-            return VengeanceDef.GENERIC;
-        }
-        
-        boolean isValidString(String str)
-        {
-            return str != null && !str.isEmpty();
-        }
-        
-        String getName(String faction, int escalationLevel)
-        {
+		public static VengeanceDef getDef(String faction) {
+			for (VengeanceDef def : VengeanceDef.values()) {
+				if (def.faction.contentEquals(faction)) {
+					return def;
+				}
+			}
+			return VengeanceDef.GENERIC;
+		}
+		
+		boolean isValidString(String str)
+		{
+			return str != null && !str.isEmpty();
+		}
+		
+		String getName(String faction, int escalationLevel)
+		{
 			if (faction == null) faction = this.faction;
-            String name = "";
-            NexFactionConfig conf = NexConfig.getFactionConfig(faction);
-            if (conf.vengeanceLevelNames.size() > escalationLevel)
-            {
-                name = conf.vengeanceLevelNames.get(escalationLevel);
-                if (isValidString(name))
-                    return name;
-            }
-            switch (escalationLevel)
-            {
-                case 0:
-                    if (isValidString(madName)) return madName;
-                case 1:
-                    if (isValidString(ravingMadName)) return ravingMadName;
-                case 2:
-                    if (isValidString(starkRavingMadName)) return starkRavingMadName;
-            }
-            
-            return StringHelper.getString("nex_vengeance", "vengeanceLevel" + escalationLevel);
-        }
-        
-        String getFleetName(String faction, int escalationLevel)
-        {
+			String name = "";
+			NexFactionConfig conf = NexConfig.getFactionConfig(faction);
+			if (conf.vengeanceLevelNames.size() > escalationLevel)
+			{
+				name = conf.vengeanceLevelNames.get(escalationLevel);
+				if (isValidString(name))
+					return name;
+			}
+			switch (escalationLevel)
+			{
+				case 0:
+					if (isValidString(madName)) return madName;
+				case 1:
+					if (isValidString(ravingMadName)) return ravingMadName;
+				case 2:
+					if (isValidString(starkRavingMadName)) return starkRavingMadName;
+			}
+			
+			return StringHelper.getString("nex_vengeance", "vengeanceLevel" + escalationLevel);
+		}
+		
+		String getFleetName(String faction, int escalationLevel)
+		{
 			if (faction == null) faction = this.faction;
-            String name = "";
-            NexFactionConfig conf = NexConfig.getFactionConfig(faction);
-            if (conf.vengeanceFleetNames.size() > escalationLevel)
-            {
-                name = conf.vengeanceFleetNames.get(escalationLevel);
-                if (isValidString(name))
-                    return name;
-            }
-            switch (escalationLevel)
-            {
-                case 0:
-                    if (isValidString(madFleet)) return madFleet;
-                case 1:
-                    if (isValidString(ravingMadFleet)) return ravingMadFleet;
-                case 2:
-                    if (isValidString(starkRavingMadFleet)) return starkRavingMadFleet;
-            }
-            
-            return StringHelper.getString("nex_vengeance", "vengeanceFleet" + escalationLevel);
-        }
-        
-        String getFleetNameSingle(String faction, int escalationLevel)
-        {
+			String name = "";
+			NexFactionConfig conf = NexConfig.getFactionConfig(faction);
+			if (conf.vengeanceFleetNames.size() > escalationLevel)
+			{
+				name = conf.vengeanceFleetNames.get(escalationLevel);
+				if (isValidString(name))
+					return name;
+			}
+			switch (escalationLevel)
+			{
+				case 0:
+					if (isValidString(madFleet)) return madFleet;
+				case 1:
+					if (isValidString(ravingMadFleet)) return ravingMadFleet;
+				case 2:
+					if (isValidString(starkRavingMadFleet)) return starkRavingMadFleet;
+			}
+			
+			return StringHelper.getString("nex_vengeance", "vengeanceFleet" + escalationLevel);
+		}
+		
+		String getFleetNameSingle(String faction, int escalationLevel)
+		{
 			if (faction == null) faction = this.faction;
-            String name = "";
-            NexFactionConfig conf = NexConfig.getFactionConfig(faction);
-            if (conf.vengeanceFleetNamesSingle.size() > escalationLevel)
-            {
-                name = conf.vengeanceFleetNamesSingle.get(escalationLevel);
-                if (isValidString(name))
-                    return name;
-            }
-            switch (escalationLevel)
-            {
-                case 0:
-                    if (isValidString(madFleetSingle)) return madFleetSingle;
-                case 1:
-                    if (isValidString(ravingMadFleetSingle)) return ravingMadFleetSingle;
-                case 2:
-                    if (isValidString(starkRavingMadFleetSingle)) return starkRavingMadFleetSingle;
-            }
-            
-            return StringHelper.getString("nex_vengeance", "vengeanceFleet" + escalationLevel + "Single");
-        }
-    }
+			String name = "";
+			NexFactionConfig conf = NexConfig.getFactionConfig(faction);
+			if (conf.vengeanceFleetNamesSingle.size() > escalationLevel)
+			{
+				name = conf.vengeanceFleetNamesSingle.get(escalationLevel);
+				if (isValidString(name))
+					return name;
+			}
+			switch (escalationLevel)
+			{
+				case 0:
+					if (isValidString(madFleetSingle)) return madFleetSingle;
+				case 1:
+					if (isValidString(ravingMadFleetSingle)) return ravingMadFleetSingle;
+				case 2:
+					if (isValidString(starkRavingMadFleetSingle)) return starkRavingMadFleetSingle;
+			}
+			
+			return StringHelper.getString("nex_vengeance", "vengeanceFleet" + escalationLevel + "Single");
+		}
+	}
 	
 	public enum EndReason {
 		FAILED_TO_SPAWN, DEFEATED, EXPIRED, NO_LONGER_HOSTILE, OTHER

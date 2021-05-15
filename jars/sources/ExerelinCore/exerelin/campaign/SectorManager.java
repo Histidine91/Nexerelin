@@ -591,15 +591,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     @Override
     public void reportFleetSpawned(CampaignFleetAPI fleet) {
         if (fleet.getFaction().getId().equals("nex_derelict")) {
+            // TODO: comment this out after hotfix release? don't need encounter loot handler for AI core drops any more
             fleet.getMemoryWithoutUpdate().set(EncounterLootHandler.FLEET_MEMORY_KEY, "derelict");
-			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
+            fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
                    new RemnantRaidFleetInteractionConfigGen());
         }
     }
     
     // regularly refresh live factions
     // since we don't have listeners for decivilization etc.
-	// well now we do, but since markets might up and vanish in other ways, do it anyway
+    // well now we do, but since markets might up and vanish in other ways, do it anyway
     public void recheckLiveFactions()
     {
         Set<String> newLive = new HashSet<>();
