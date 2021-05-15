@@ -553,6 +553,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (type == EventType.INVASION && GroundBattleIntel.getOngoing(market) != null)
 				continue;
 			
+			boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId)
+					&& type == EventType.INVASION;
+			if (!revanchist && NexConfig.getFactionConfig(factionId).invasionOnlyRetake) 
+			{
+				continue;
+			}
+			
 			float weight = 1;
 			
 			weight *= getLowProfileMult(marketFactionId);
@@ -576,8 +583,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
 			
 			boolean haveHeavyIndustry = NexUtilsMarket.hasHeavyIndustry(market);
-			boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId)
-					&& type == EventType.INVASION;
 			
 			// revanchism, prioritise heavy industry
 			if (haveHeavyIndustry) {

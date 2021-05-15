@@ -108,6 +108,7 @@ public class NexFactionConfig
     
     // invasions and stuff
     public boolean canInvade = true;
+	public boolean invasionOnlyRetake = false;
     @Deprecated public float invasionStrengthBonusAttack = 0;    // marines
     @Deprecated public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;	// ships
@@ -221,6 +222,7 @@ public class NexFactionConfig
             tariffMult = (float)settings.optDouble("tariffMult", tariffMult);
             
             canInvade = settings.optBoolean("canInvade", canInvade);
+			invasionOnlyRetake = settings.optBoolean("invasionOnlyRetake", invasionOnlyRetake);
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
