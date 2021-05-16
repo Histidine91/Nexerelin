@@ -44,6 +44,7 @@ public class InvasionRound {
 	public static final float STR_DEF_MULT = 0;	// what proportion of one side's strength is used to negate other side's attack damage
 	public static final float INSTABILITY_PER_ROUND = 0.75f;
 	public static final int UNREST_DO_NOT_EXCEED = 10;
+	public static final int CONQUEST_UNREST_BONUS = 2;
 	public static final float HEAVY_WEAPONS_MULT = 2.5f;
 	public static final boolean DEBUG_MESSAGES = true;
 	
@@ -338,6 +339,9 @@ public class InvasionRound {
 		
 		// destabilize
 		int stabilityPenalty = getStabilityPenalty(market, numRounds, success);
+		String origOwner = NexUtilsMarket.getOriginalOwner(market);
+		if (success && origOwner != null && defenderFactionId.equals(origOwner))
+			stabilityPenalty += CONQUEST_UNREST_BONUS;
 		
 		if (stabilityPenalty > 0) {
 			String reason = Misc.ucFirst(getString("recentlyInvaded"));

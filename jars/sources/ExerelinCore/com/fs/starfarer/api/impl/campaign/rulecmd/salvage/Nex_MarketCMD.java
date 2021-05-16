@@ -954,6 +954,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	 * Finish the invasion, apply final effects
 	 */
 	protected void invadeFinish() {
+		String defenderId = market.getFactionId();
+		
 		Random random = getRandom();
 		InvasionRound.finishInvasion(playerFleet, null, market, tempInvasion.roundNum, tempInvasion.success);
 		
@@ -965,6 +967,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		// unrest
 		// note that this is for GUI only, actual impact is caused in InvasionRound
 		int stabilityPenalty = InvasionRound.getStabilityPenalty(market, tempInvasion.roundNum, tempInvasion.success);
+		String origOwner = NexUtilsMarket.getOriginalOwner(market);
+		if (tempInvasion.success && origOwner != null && defenderId.equals(origOwner))
+			stabilityPenalty += InvasionRound.CONQUEST_UNREST_BONUS;
 		
 		if (stabilityPenalty > 0) {
 			text.addPara(StringHelper.substituteToken(getString("stabilityReduced"), 

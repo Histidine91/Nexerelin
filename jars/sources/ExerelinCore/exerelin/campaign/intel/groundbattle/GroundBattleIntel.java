@@ -646,7 +646,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		market.getStability().removeTemporaryMod("invasion");
 		if (outcome == BattleOutcome.ATTACKER_VICTORY || outcome == BattleOutcome.DEFENDER_VICTORY
 				|| outcome == BattleOutcome.PEACE) {
+			
 			recentUnrest = 1 + (turnNum/market.getSize());
+			
+			String origOwner = NexUtilsMarket.getOriginalOwner(market);
+			if (outcome == BattleOutcome.ATTACKER_VICTORY && origOwner != null 
+					&& defender.getFaction().getId().equals(origOwner))
+				recentUnrest += 2;
+			
 			RecentUnrest.get(market, true).add(recentUnrest, String.format(getString("unrestReason"), 
 					attacker.getFaction().getDisplayName()));
 		}
