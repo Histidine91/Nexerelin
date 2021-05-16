@@ -30,7 +30,7 @@ public class MercFleetGenPlugin {
 	
 	public CampaignFleetAPI generateFleet(MarketAPI market) {
 		MercCompanyDef def = intel.getDef();
-		CampaignFleetAPI fleet = FleetFactoryV3.createEmptyFleet(def.factionId, FleetTypes.PATROL_MEDIUM, 
+		CampaignFleetAPI fleet = FleetFactoryV3.createEmptyFleet(def.factionIdForShipPick, FleetTypes.PATROL_MEDIUM, 
 				market);
 		
 		boolean haveFlagship = false;
@@ -49,7 +49,7 @@ public class MercFleetGenPlugin {
 					0, 0, 0, 0, 0, // freighter, tanker, transport, liner, utility
 					0	// qualityMod
 			);
-			params.factionId = def.factionId;
+			params.factionId = def.factionIdForShipPick;
 			params.mode = ShipPickMode.PRIORITY_THEN_ALL;
 			params.officerNumberMult = 0;
 			if (def.doctrineSizeOverride != null) {
@@ -90,6 +90,8 @@ public class MercFleetGenPlugin {
 			
 			fleet.inflateIfNeeded();
 		}
+		
+		fleet.setFaction(def.factionId, true);
 		
 		return fleet;
 	}

@@ -171,6 +171,7 @@ public class MercDataManager {
 				if (Global.getSector().getFaction(def.factionId) == null) {
 					throw new RuntimeException("  Invalid faction for merc company " + id);
 				}
+				def.factionIdForShipPick = entryJson.optString("factionForShipPick", def.factionId);
 				
 				if (entryJson.has("minRep"))
 					def.minRep = RepLevel.valueOf(entryJson.getString("minRep").toUpperCase());
@@ -229,6 +230,7 @@ public class MercDataManager {
 		public int feeUpfront;
 		public int feeMonthly;
 		public String factionId;
+		public String factionIdForShipPick;
 		public RepLevel minRep;
 		public int minLevel;
 		public List<List<String>> ships = new ArrayList<>();

@@ -22,6 +22,7 @@
 		#	"feeUpfront":50000,
 		#	"feeMonthly":2500,
 		#	"faction":"independent",	# used for default logo, min rep with player, min rep with hosting faction
+		#	"factionForShipPick":"mercenary",	# defaults to same as faction tag
 		#	"minRep":"SUSPICIOUS",
 		#	"minLevel":3,	# player level
 		#	"ships":[
@@ -106,7 +107,7 @@
 		
 		"westernesseKingsOwn":{
 			"name":"Westernesse King's Own",
-			"desc":"Foreign mercenaries retained — and hired out — by the King of Westernesse. The unit is defined as much by its foreign nature wherever it goes, and its loyalty to whoever its current official employer is, as by its fighting skill.",
+			"desc":"Foreign mercenaries retained — and hired out — by the King of Westernesse. The unit is defined as much by its status as foreigners wherever it goes, and its loyalty to whoever its current official employer is, as by its fighting skill.",
 			"feeUpfront":100000,
 			"feeMonthly":2500,
 			"faction":"persean",
@@ -192,7 +193,7 @@
 		
 		"dorasSurvey":{
 			"name":"Dora's Surveyor Corps",
-			"desc":"A spinoff of Ibrahim Interstellar Transport and Salvage, Dora's is where you turn to for one of those deep-space surveying expeditions.",
+			"desc":"A spinoff of Ibrahim Interstellar Transport and Salvage, Dora's is whom you turn to for one of those deep-space surveying expeditions.",
 			"feeUpfront":70000,
 			"feeMonthly":1750,
 			"faction":"independent",
@@ -221,6 +222,7 @@
 			"feeUpfront":90000,
 			"feeMonthly":2250,
 			"faction":"independent",
+			"factionForShipPick":"mercenary",
 			"minLevel":5,
 			"extraFP":30,
 			"doctrineSizeOverride":4,

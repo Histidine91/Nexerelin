@@ -124,7 +124,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		MonthlyReport report = SharedData.getData().getPreviousReport();
 		boolean debt = report.getDebt() > 0;
 		
-		boolean leaveDebug = true;
+		boolean leaveDebug = false;
 		if (debt || curr.getDaysRemaining() <= 0 || leaveDebug) {
 			dialog.getInteractionTarget().setActivePerson(curr.getFirstOfficer());
 			//dialog.getVisualPanel().showPersonInfo(getPerson(), true);

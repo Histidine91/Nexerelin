@@ -1945,11 +1945,20 @@ ShowPersonVisual
 FireAll PopulateOptions","""Welcome... oh, it's the debtor."" 
 
 $HeOrShe folds $hisOrHer arms. ""No service till you pay off your debt.""",,
-nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10",,,"nex_mercViewHires:View mercs for hire
+nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10
+$global.seenAIMIntro",,,"nex_mercViewHires:View mercs for hire
 nex_mercViewHelp:Inquire about AIM's terms and conditions",
+nex_mercRepOptionsFirstTime,PopulateOptions,"$nex_isAIMRep score:10
+!$global.seenAIMIntro",,,"nex_mercIntro1:""What do you do?""",
 nex_mercRepOptionsDebt,PopulateOptions,"$nex_isAIMRep score:10
 $player.nex_mercsUnpaid > 0","SetEnabled nex_mercViewHires false
 SetEnabled nex_mercViewHelp false",,,
+nex_mercIntro1,DialogOptionSelected,"$option == nex_mercIntro1","$global.seenAIMIntro = true","""Well, I handle all customer service inquiries. I put clients in touch with the mercs they need, and..."" $HeOrShe trails off. ""Oh, you meant our organization.""
+
+The $personPost straightens, as if actually eager to give the standard marketing pitch. ""The Association of Interstellar Mercenaries,"" $heOrShe intones, ""is the premier industry body and brokerage for the mercenary community in the Persean Sector. Here you can find some of the best in the business, at an affordable price. Our organization provides the assurance of clear, legally enforcable contracts and the convenience of matching clients with contractors in a way meeting both parties' needs.""","nex_mercIntro2:Continue",
+nex_mercIntro2,DialogOptionSelected,"$option == nex_mercIntro2","FireAll PopulateOptions","""Our list of available contractors, and our generous terms and conditions, are available for your perusal at any time.
+
+So, might we interest you in our excellent service providers today?""",,
 nex_mercViewHiresOptionSel,DialogOptionSelected,"$option == nex_mercViewHires","Nex_MercHire init
 FireBest Nex_MercViewHiresResult","""A moment, please."" The $manOrWoman makes a few quick presses on $hisOrHer TriPad.",,
 nex_mercViewHiresResult,Nex_MercViewHiresResult,"$nex_mercsForHire_count > 0","Nex_MercHire showOptions","""Right, we have some good people available. Take a look and see if they catch your fancy.""",,
@@ -1995,9 +2004,11 @@ You return to examining the list of available companies for hire.",,
 nex_mercViewHelp,DialogOptionSelected,"$option == nex_mercViewHelp","AddTextSmall "" - Hiring a mercenary company requires 1 story point. Only one company may be under contract at a time to a single employer.""
 SetTextHighlightColors story
 Highlight 1
-AddTextSmall "" - Contracts run for 365 days and are non-renewable. The player pays an upfront fee (50% of which is refunded on contract completion) and a monthly fee.""
+AddTextSmall "" - Contracts run for 365 days and are non-renewable. The employer pays an upfront fee (50% of which is refunded on contract completion) and a monthly fee.""
 Highlight 365 50%
-AddTextSmall "" - The employer is responsible for upkeep, maintenance and crewing of the provided ships. The minimal amount of crew needed to operate the provided ships will be supplied by AIM at the start of the contract, and removed when it ends.""
+AddTextSmall "" - The employer is responsible for upkeep, maintenance and crewing of the provided ships. The skeleton crew for the provided ships will be supplied via AIM at the start of the contract, and removed when it ends.""
+AddTextSmall "" - Acceptance of an employment offer is entirely at the discretion of the mercenary company. The company may define prerequisites for being shown to a prospective client, such as the employer's experience level and relationship with the relevant faction(s).""
+Highlight ""experience level"" ""relationship with the relevant faction(s)""
 AddTextSmall "" - Ships that come with an officer may not have their officer changed. The employer may place their own officers on other ships at their discretion.""
 AddTextSmall "" - When the company is returned to AIM, if the value of the remaining ships is less than their value at the time of contract signing (due to losses, battle damage, or any other cause), the employer will pay 80% of the difference.""
 Highlight 80%","""Sure thing. Let me send it over...""
