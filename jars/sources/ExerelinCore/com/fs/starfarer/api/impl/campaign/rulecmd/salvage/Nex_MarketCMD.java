@@ -956,6 +956,20 @@ public class Nex_MarketCMD extends MarketCMD {
 	protected void invadeFinish() {
 		String defenderId = market.getFactionId();
 		
+		// unrest
+		// note that this is for GUI only, actual impact is caused in InvasionRound
+		// do this before applying the actual unrest, so it displays the correct value
+		int stabilityPenalty = InvasionRound.getStabilityPenalty(market, tempInvasion.roundNum, tempInvasion.success);
+		String origOwner = NexUtilsMarket.getOriginalOwner(market);
+		if (tempInvasion.success && origOwner != null && defenderId.equals(origOwner)) {
+			stabilityPenalty += InvasionRound.CONQUEST_UNREST_BONUS;
+		}
+		
+		if (stabilityPenalty > 0) {
+			text.addPara(StringHelper.substituteToken(getString("stabilityReduced"), 
+					"$market", market.getName()), Misc.getHighlightColor(), "" + stabilityPenalty);
+		}
+		
 		Random random = getRandom();
 		InvasionRound.finishInvasion(playerFleet, null, market, tempInvasion.roundNum, tempInvasion.success);
 		
@@ -963,18 +977,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		// cooldown
 		setRaidCooldown(getRaidCooldownMax());
-		
-		// unrest
-		// note that this is for GUI only, actual impact is caused in InvasionRound
-		int stabilityPenalty = InvasionRound.getStabilityPenalty(market, tempInvasion.roundNum, tempInvasion.success);
-		String origOwner = NexUtilsMarket.getOriginalOwner(market);
-		if (tempInvasion.success && origOwner != null && defenderId.equals(origOwner))
-			stabilityPenalty += InvasionRound.CONQUEST_UNREST_BONUS;
-		
-		if (stabilityPenalty > 0) {
-			text.addPara(StringHelper.substituteToken(getString("stabilityReduced"), 
-					"$market", market.getName()), Misc.getHighlightColor(), "" + stabilityPenalty);
-		}
 		
 		// reputation impact
 		CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();

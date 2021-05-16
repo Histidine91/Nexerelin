@@ -401,8 +401,10 @@ public class InvasionRound {
 		if (!success) stabilityPenalty /= 2;
 		
 		int maxUnrest = Math.min(rounds * 2, UNREST_DO_NOT_EXCEED);
+		int threshold = maxUnrest - RecentUnrest.getPenalty(market);
+		if (threshold < 0) threshold = 0;
 		
-		stabilityPenalty = Math.min(stabilityPenalty, maxUnrest - RecentUnrest.getPenalty(market));
+		stabilityPenalty = Math.min(stabilityPenalty, threshold);
 		return Math.round(stabilityPenalty);
 	}
 	
