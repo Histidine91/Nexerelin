@@ -203,7 +203,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	
 	public static float getSizeMod(int size)
 	{
-		return (float)Math.pow(2, size - 2);
+		return (float)Math.pow(2, size - 1);
 	}
 	
 	/**
@@ -295,6 +295,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	{
 		float currIntensity = (govtStrength + rebelStrength) * 0.5f - (govtStrength - rebelStrength) * 0.5f;
 		currIntensity /= getSizeMod(market);
+		currIntensity *= 2;
 		
 		// counteracts intensity bleeding as belligerents' strength wears down
 		float age = (int)(this.elapsed/3);
