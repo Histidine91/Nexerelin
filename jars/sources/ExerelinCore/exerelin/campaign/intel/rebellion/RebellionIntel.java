@@ -63,14 +63,14 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		Submarkets.SUBMARKET_BLACK
 	}));
 	
-	public static final float MAX_DAYS = 180;
+	public static final float MAX_DAYS = 365*2;
 	public static final float VALUE_WEAPONS = 0.5f;
 	public static final float VALUE_SUPPLIES = 0.1f;
 	public static final float VALUE_MARINES = 0.25f;
 	//public static final float VALUE_PER_CREDIT = 0.01f * 0.01f;
 	public static final float REP_MULT = 0.1f;
 	public static final float MAX_REP = 0.2f;
-	public static final float STRENGTH_CHANGE_MULT = 0.15f;	// damage done per round
+	public static final float STRENGTH_CHANGE_MULT = 0.1f;	// damage done per round
 	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
 	public static final float REBEL_ORIGINAL_OWNER_STR_MULT = 1.25f;
 	public static final int MAX_STABILITY_PENALTY = 5;
@@ -485,16 +485,16 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		Industry ind = pickIndustryToDisrupt();
 		if (ind == null) return;
 		
-		float random = MathUtils.getRandomNumberInRange(0.25f, 1.75f);
+		float random = MathUtils.getRandomNumberInRange(0.5f, 1.75f);
 		float atkStr = rebelStrength * (0.25f + random);
-		random = MathUtils.getRandomNumberInRange(0.25f, 1.75f);
+		random = MathUtils.getRandomNumberInRange(0.25f, 1.5f);
 		float defStr = govtStrength * (0.25f + random);
 		
 		disruptionTimestamp = Global.getSector().getClock().getTimestamp();
 		lastIndustryDisrupted = ind;
 		
 		float disruptTime = 15 * (atkStr/defStr);
-		if (disruptTime > 90) disruptTime = 90;
+		if (disruptTime > 120) disruptTime = 120;
 		log.info("Rolled disruption time: " + disruptTime);
 		if (disruptTime < 30) {
 			this.disruptTime = 0;
@@ -896,6 +896,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 		else
 		{
+			points *= 0.5f;
 			govtStrength += points;
 			if (addTradePoints) govtTradePoints += points;
 			if (govtStrength < 0) govtStrength = 0;
