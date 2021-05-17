@@ -195,11 +195,7 @@ public class MercDataManager {
 				
 				if (entryJson.has("miscData")) {
 					JSONObject miscJson = entryJson.getJSONObject("miscData");
-					Iterator iterMisc = miscJson.keys();
-					while (iterMisc.hasNext()) {
-						String miscKey = (String)iterMisc.next();
-						def.miscData.put(miscKey, miscJson.get(miscKey));
-					}
+					def.miscData.putAll(NexUtils.jsonToMap(miscJson));
 				}
 				
 				companyDefs.put(id, def);

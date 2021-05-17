@@ -23,8 +23,11 @@ import exerelin.campaign.intel.merc.MercDataManager.OfficerDef;
 import exerelin.utilities.NexUtils;
 import java.util.List;
 import java.util.Random;
+import org.apache.log4j.Logger;
 
 public class MercFleetGenPlugin {
+	
+	public static Logger log = Global.getLogger(MercFleetGenPlugin.class);
 	
 	protected MercContractIntel intel;
 	
@@ -57,6 +60,11 @@ public class MercFleetGenPlugin {
 				copy.setShipSize(def.doctrineSizeOverride);
 				params.doctrineOverride = copy;
 			}
+			Integer maxSize = (Integer)def.miscData.get("maxAutogenFleetSize");
+			if (maxSize != null) {
+				log.info(String.format("Setting max autogen fleet size for %s to %s", def.id, maxSize));
+				params.maxNumShips = maxSize;
+			}
 			CampaignFleetAPI extra = FleetFactoryV3.createFleet(params);
 			extra.getFleetData().sort();
 			for (FleetMemberAPI member : extra.getFleetData().getMembersListCopy()) {
@@ -66,16 +74,22 @@ public class MercFleetGenPlugin {
 			}
 		}
 		List<FleetMemberAPI> ships = fleet.getFleetData().getMembersListCopy();
+		boolean first = true;
 		for (int i=0; i<def.officers.size(); i++) {
 			if (i >= ships.size()) break;
 			FleetMemberAPI member = ships.get(i);
 			PersonAPI officer = createOfficer(def.officers.get(i), member);
 			addOfficer(fleet, member, officer);
+			
+			if (first) {
+				fleet.setCommander(officer);
+			}
+			first = false;
 		}
 		
 		if (!def.noAutofit) {
 			DefaultFleetInflaterParams p = new DefaultFleetInflaterParams();
-			p.quality = 1.25f;
+			p.quality = 1.5f;
 			if (def.averageSMods != null) {
 				p.averageSMods = def.averageSMods;
 			}
@@ -120,7 +134,7 @@ public class MercFleetGenPlugin {
 					def.aiCoreId, intel.getDef().factionId, new Random());
 		} else {
 			person = OfficerManagerEvent.createOfficer(intel.getDef().getFaction(), 
-				def.level, pref, new Random());
+				def.level, pref, false, null, true, true, -1, new Random());
 		}		
 		
 		person.setPostId(Ranks.POST_MERCENARY);
@@ -160,10 +174,10 @@ public class MercFleetGenPlugin {
 	public boolean isAvailableAt(MarketAPI market) {
 		MercCompanyDef def = intel.getDef();
 		
-		Global.getLogger(this.getClass()).info("Trying availability for company " + def.id);
+		//log.info("Trying availability for company " + def.id);
 		boolean ignoreMarketRelationship = NexUtils.objectToBoolean(def.miscData.get("ignoreMarketRelationship"));
 		if (!ignoreMarketRelationship && market.getFaction().isHostileTo(def.factionId)) {
-			Global.getLogger(this.getClass()).info("  Hostile to market, unable to spawn");
+			log.info(def.id + " hostile to market, unable to spawn");
 			return false;
 		}
 		
@@ -198,7 +212,7 @@ public class MercFleetGenPlugin {
 			plugin = (MercFleetGenPlugin)clazz.newInstance();
 			plugin.intel = intel;
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(MercFleetGenPlugin.class).error("Failed to load merc fleet generator plugin" + className, ex);
+			log.error("Failed to load merc fleet generator plugin" + className, ex);
 		}
 		return plugin;
 	}

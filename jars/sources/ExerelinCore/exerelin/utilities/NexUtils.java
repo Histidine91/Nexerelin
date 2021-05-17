@@ -228,12 +228,11 @@ public class NexUtils
 	
 	public static Object getJSONValueAsTrueType(String value) {
 		try {
-			return Float.parseFloat(value);
-		} catch (NumberFormatException ex) {}
-		try {
 			return Integer.parseInt(value);
 		} catch (NumberFormatException ex) {}
-		
+		try {
+			return Float.parseFloat(value);
+		} catch (NumberFormatException ex) {}
 		if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value))
 			return Boolean.parseBoolean(value);
 		return value;

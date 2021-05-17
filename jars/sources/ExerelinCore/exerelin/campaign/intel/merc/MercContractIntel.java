@@ -13,9 +13,11 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -39,7 +41,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	public static final Object UPDATE_EXPIRE = new Object();
 	public static final Object BUTTON_DISMISS = new Object();
 	
-	protected boolean isDone;
+	protected boolean contractOver;
 	protected boolean annihilated;
 	protected String companyId;
 	
@@ -96,6 +98,10 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 				return officers.get(0);
 			}
 		}
+	}
+	
+	public boolean isContractOver() {
+		return contractOver;
 	}
 	
 	public long calcShipsValue() {
@@ -164,7 +170,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	public void endContractPeriod() {
 		// TODO: send expiry notification
 		sendUpdateIfPlayerHasIntel(listInfoParam, true);
-		isDone = true;
+		contractOver = true;
 	}
 	
 	/**
@@ -205,9 +211,11 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		Global.getSector().getPlayerFleet().getCargo().removeCrew(toRemove);
 		AddRemoveCommodity.addCommodityLossText(Commodities.CREW, toRemove, text);
 		
+		Set<FleetMemberAPI> currentMembers = new HashSet<>(Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy());
 		for (FleetMemberAPI member : ships) {
 			data.removeFleetMember(member);
-			AddRemoveCommodity.addFleetMemberLossText(member, text);
+			if (currentMembers.contains(member))
+				AddRemoveCommodity.addFleetMemberLossText(member, text);
 		}
 		//ships.clear();
 		
@@ -226,7 +234,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 
 	@Override
 	protected void advanceImpl(float amount) {
-		if (isDone) return;
+		if (contractOver) return;
 		
 		float days = Global.getSector().getClock().convertToDays(amount);
 		daysRemaining -= days;
@@ -249,9 +257,12 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		MonthlyReport.FDNode fleetNode = report.getNode(MonthlyReport.FLEET);
 		
 		MonthlyReport.FDNode mercNode = report.getNode(fleetNode, "nex_merc_" + def.id);
-		mercNode.upkeep = fee;
+		mercNode.upkeep += fee;
 		mercNode.name = String.format(getString("reportNode_name"), def.name);
 		mercNode.icon = def.getLogo();
+		
+		Global.getLogger(this.getClass()).info(String.format("Applying fee %s at iter %s, current total %s",
+				fee, iterIndex, mercNode.upkeep));
 	}
 
 	@Override
@@ -279,7 +290,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 								   Color tc, float initPad) {
-		if (!isDone)
+		if (!contractOver)
 			info.addPara(getString("intel_bullet_daysRemaining"), 3, Misc.getHighlightColor(), (int)daysRemaining + "");
 	}
 	
@@ -309,6 +320,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		}
 		
 		String str = getString("intel_desc_para1");
+		if (contractOver) str = getString("intel_desc_paraEnded");
 		str = StringHelper.substituteToken(str, "$playerName", Global.getSector().getPlayerPerson().getNameString());
 		info.addPara(str, opad, def.getFaction().getBaseUIColor(), def.name);
 		
@@ -317,10 +329,10 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		info.addPara(getString("intel_desc_feeUpfront") + ": " + fee1, opad, h, fee1);
 		info.addPara(getString("intel_desc_feeMonthly") + ": " + fee2, pad, h, fee2);
 		
-		if (!isDone)
+		if (!contractOver)
 			info.addPara(getString("intel_desc_daysRemaining"), pad, h, (int)daysRemaining + "");
 		else
-			info.addPara(getString("intel_desc_expired"), pad);
+			info.addPara(getString("intel_desc_daysExpired"), pad);
 		
 		FleetDataAPI data = Global.getSector().getPlayerFleet().getFleetData();
 		List<FleetMemberAPI> curr = new ArrayList<>();
@@ -354,7 +366,27 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 				? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor());
 		
 		// TODO: dismiss button
-		
+		if (!contractOver)
+			info.addButton(StringHelper.getString("dismiss", true), BUTTON_DISMISS, width, 24, opad);
+	}
+	
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		String str = getString("intel_desc_dismissPrompt");
+		prompt.addPara(str, 0);
+	}
+
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		return true;
+	}
+
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_DISMISS) {
+			contractOver = true;
+			ui.updateUIForItem(this);
+		}
 	}
 	
 	@Override
@@ -365,7 +397,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	@Override
 	protected String getName() {
 		String str = String.format(getString("intel_title"), getDef().name);
-		if (isDone || isEnding() || isEnded())
+		if (contractOver || isEnding() || isEnded())
 			str += " - " + StringHelper.getString("over", true);
 		return str;
 	}
@@ -373,7 +405,8 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(getString("intel_tag"));
+		//tags.add(getString("intel_tag"));
+		tags.add(Tags.INTEL_FLEET_LOG);
 		return tags;
 	}
 	

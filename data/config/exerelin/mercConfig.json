@@ -40,6 +40,7 @@
 		#			"gender":"f",
 		#			"level":4,
 		#			"portrait":"graphics/portraits/portrait_league08.png",
+		#			"aiCoreId":"gamma_core",
 		#			"rankId":"spaceCommander",
 		#			#"voice":"soldier",	# could be used for picking generic dialog texts, not sure if I want to bother writing those yet
 		#			#"skills":{},	# if specified, overrides whatever skills the officer was generated with based on level
@@ -57,14 +58,14 @@
 		"steinerGuards":{
 			"name":"Steiner Life Guards",
 			"desc":"A \"recon element\" from the personal guard of House Steiner of Eventide. The joke is funny to everyone, except their enemies.",
-			"feeUpfront":160000,
-			"feeMonthly":4000,
+			"feeUpfront":140000,
+			"feeMonthly":3500,
 			"faction":"hegemony",
 			"minRep":"NEUTRAL",
 			"minLevel":7,
 			"ships":[
-				["onslaught_Elite"],
-				["enforcer_Assault", "enforcer_Balanced", "enforcer_CS", "enforcer_Elite"],
+				["onslaught_Elite", "onslaught_Elite", "swp_liberator_fastr", "swp_liberator_eli"],
+				["enforcer_Assault", "enforcer_Balanced", "enforcer_CS", "enforcer_Elite", "swp_vanguard_cs", "swp_vanguard_sta"],
 			],
 			"officers":[
 				{
@@ -139,13 +140,14 @@
 		"menFromVolturn":{
 			"name":"Men from Volturn",
 			"desc":"Lumpenproles from the underbellies of Volturn's oceanic habitats. Such people find their way into a Diktat military as a means of escape, or simply for a larger supply of heads to break.",
-			"feeUpfront":60000,
-			"feeMonthly":1500,
+			"feeUpfront":70000,
+			"feeMonthly":1750,
 			"faction":"sindrian_diktat",
 			"minRep":"SUSPICIOUS",
 			"minLevel":3,
 			"ships":[
-				["hammerhead_Balanced", "hammerhead_support", "enforcer_Assault", "enforcer_Balanced", "enforcer_CS", "sunder_Assault", "sunder_CS"],
+				["hammerhead_Balanced", "hammerhead_support", "enforcer_Assault", "enforcer_Balanced", "enforcer_CS", 
+					"sunder_Assault", "sunder_CS", "swp_vanguard_ass", "swp_vanguard_ovd"],
 			],
 			"extraFP":20,
 			"officers":[
@@ -153,10 +155,10 @@
 					"firstName":"Nameless",	
 					"lastName":"Auroch",
 					"gender":"m",
-					"level":4,
+					"level":5,
 					"portrait":"graphics/portraits/characters/volta.png",
 					"rankId":"spaceCommander",
-					"persistentId":"nex_manFromVolturn",	# if set, officer will be reused on next hire instead of being recreated
+					"persistentId":"nex_manFromVolturn",
 				},
 				{
 					"level":3,
@@ -167,9 +169,12 @@
 			],
 			"miscData":{
 				"angeredByInsults":true,
+				"maxAutogenFleetSize":4,
 			},
+			"plugin":"exerelin.campaign.intel.merc.VolturnGenPlugin",	# adds two S-mods to flagship
 		},
 		
+		# this company is a bit boring, think of something cool for them
 		"pilgrimsGrace":{
 			"name":"Pilgrim's Grace",
 			"desc":"Part of a Luddic organization dedicated to charity and evangelism. Oriented for a support role rather than combat.",
@@ -239,16 +244,19 @@
 				},
 			],
 			"averageSMods":0,
+			"miscData":{
+				"maxAutogenFleetSize":6,
+			},
 		},
 		
 		"dickerson":{
-			"name":"Enfants de Dicker",
+			"name":"Les Enfants de Dicker",
 			"desc":"Scions of the notorious Dickerson pirate clan, eager to prove themselves through copious violence at a profit.",
-			"feeUpfront":70000,
-			"feeMonthly":1750,
+			"feeUpfront":80000,
+			"feeMonthly":2000,
 			"faction":"pirates",
 			"minLevel":3,
-			"extraFP":30,
+			"extraFP":25,
 			"doctrineSizeOverride":5,
 			"officers":[
 				{
@@ -272,30 +280,31 @@
 			"miscData":{
 				"angeredByInsults":true,
 				"ignoreMarketRelationship":true,
+				"maxAutogenFleetSize":5,
 			},
 		},
 		
-		# disabled, we don't want people stripping it for its weapons (also it kind of rekts the lore)
-		#"endbringer":{
-		#	"name":"The Bringer of End",
-		#	"desc":"This completely outworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",
-		#	"feeUpfront":120000,
-		#	"feeMonthly":12000,	# more since you're not paying officer salaries
-		#	"faction":"omega",
-		#	"minLevel":15,
-		#	"ships":[
-		#		["facet_Shieldbreaker", "facet_Attack", "facet_Attack2", "facet_Defense", "facet_Missile"],
-		#	],
-		#	"officers":[
-		#		{
-		#			"firstName":"Platinum",
-		#			"lastName":"Endbringer",
-		#			"level":9,
-		#			"rankId":"spaceCaptain",
-		#			"aiCoreId":"omega_core",
-		#		},
-		#	],
-		#	#"plugin":"",
-		#},
+		# disabled via min level, we don't want people stripping it for its weapons (also it kind of rekts the lore)
+		"endbringer":{
+			"name":"The Bringer of End",
+			"desc":"This completely outworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",
+			"feeUpfront":200000,
+			"feeMonthly":20000,	# more since you're not paying officer salaries
+			"faction":"omega",
+			"minLevel":99,	# not accessible
+			"ships":[
+				["facet_Shieldbreaker", "facet_Attack", "facet_Attack2", "facet_Defense", "facet_Missile"],
+			],
+			"officers":[
+				{
+					"firstName":"Platinum",
+					"lastName":"Endbringer",
+					"level":9,
+					"rankId":"spaceCaptain",
+					"aiCoreId":"omega_core",
+				},
+			],
+			#"plugin":"",
+		},
 	}
 }

@@ -6,10 +6,7 @@ At contract end, pay difference in base price of contracted ships between start 
 
 
 == Todo ==
-S-mod Auroch's ship?
-Dora blurbs?
-Contract termination button
-Test payment
+?
 
 == Intel values ==
 Company ID

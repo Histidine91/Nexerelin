@@ -20,10 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 public class MercSectorManager implements ColonyInteractionListener, EconomyTickListener {
 	
-	public static final boolean DEBUG_MODE = true;
+	public static Logger log = Global.getLogger(MercSectorManager.class);
+	
+	public static final boolean DEBUG_MODE = false;
 	public static final String DATA_KEY = "nex_mercSectorManager";
 	public static final int STAY_AT_MARKET_TIME = 10;	// in economyTicks
 	
@@ -62,6 +65,7 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 	
 	public void reportMercShown(String id, MarketAPI market) 
 	{
+		log.info(String.format("Showing merc %s at %s", id, market.getName()));
 		updateCurrentLocation(id, market, STAY_AT_MARKET_TIME);
 	}
 	
@@ -85,6 +89,7 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 			// check whether the merc company is somewhere else
 			if (!DEBUG_MODE && currentLocations.containsKey(id) && currentLocations.get(id).one != market) 
 			{
+				log.info(String.format("Merc %s was already shown elsewhere, skipping", id));
 				continue;
 			}
 			//Global.getLogger(this.getClass()).info("Testing merc company " + def.id);
@@ -95,7 +100,7 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 			picker.add(intel, def.pickChance);
 		}
 		
-		float max = DEBUG_MODE ? 6 : MercDataManager.companiesForHire;
+		float max = DEBUG_MODE ? 8 : MercDataManager.companiesForHire;
 		while (!picker.isEmpty()) {
 			MercContractIntel intel = picker.pickAndRemove();
 			results.add(intel);
@@ -157,6 +162,7 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 		
 		boolean enabled = MercDataManager.allowAtFaction(market.getFactionId())
 				&& (market.getSize() >= reqSize || Misc.isMilitary(market));
+		enabled = enabled && !market.isHidden();
 		
 		if (enabled) {
 			addRepresentativeToMarket(market);

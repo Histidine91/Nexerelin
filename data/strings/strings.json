@@ -1642,7 +1642,7 @@
 	},
 	
 	"nex_mercs":{
-		"intel_title":"Mercenary Company: %s",
+		"intel_title":"Merc Contract: %s",
 		"intel_tag":"Mercenaries",
 		"intel_bullet_daysRemaining":"%s day(s) remaining",
 		"intel_bullet_contractExpired":"Contract expired",
@@ -1655,7 +1655,8 @@
 		"intel_desc_shipsMissing":"Lost or missing ships",
 		
 		"intel_desc_para1":"The mercenary company %s is under contract to $playerName.",
-		"intel_desc_paraEnded":"Your contract with the mercenary company %s has ended, although fees will continue to be paid until the company leaves your fleet.",
+		"intel_desc_paraEnded":"Your contract with the mercenary company %s has ended.",
+		"intel_desc_dismissPrompt":"This will end your contract with the company, causing them to leave when docking at the next applicable market. Monthly fees will continue to be paid until they actually leave.",
 		
 		"dialog_officerLevels":"Officer levels: [%s]",
 		"dialog_lesserShips":"The company includes %s other ships of lesser significance.",
@@ -2053,7 +2054,7 @@
 		"dissonantAlias":"N",
 		
 		"m1_name":"Captive Cores",
-		"m1_stage1Desc":"Recover the Beta Cores stored on %s.",
+		"m1_stage1Desc":"Recover the Beta Cores stored on %s. You could hit the secure facility where they're stored, or talk to someone in authority who can help you.",
 		"m1_stage2Desc":"Return the Beta Cores you've recovered to %s at %s. Alternatively, you might choose to bring them to either the %s or the %s.",
 		"m1_stage1NextStep":"Recover the Beta Cores from %s",
 		"m1_stage2NextStep":"Return the Beta Cores to %s",

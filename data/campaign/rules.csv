@@ -20,7 +20,7 @@ Welcome to the Nexerelin mod for Starsector!
 Nexerelin is essentially a 4X extension to the game. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.
 
 Nexerelin is compatible with a large number of community-made faction mods, which you can add for a more varied gameplay experience.","exerelinNGCIntroNextPage:Next
-exerelinNGCIntroEnd:Skip",
+exerelinNGCIntroEnd:Skip","$introPage needs to be a float"
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
 $isInIntro","SetShortcut exerelinNGCIntroNextPage RETURN
 SetShortcut exerelinNGCIntroEnd ESCAPE","Your actions will gain or lose you influence with the factions in the Sector. The higher your influence with a faction, the greater access to their support and technology you will have.
@@ -1986,7 +1986,12 @@ nex_mercRepOptionsFirstTime,PopulateOptions,"$nex_isAIMRep score:10
 !$global.seenAIMIntro",,,"nex_mercIntro1:""What do you do?""",
 nex_mercRepOptionsDebt,PopulateOptions,"$nex_isAIMRep score:10
 $player.nex_mercsUnpaid > 0","SetEnabled nex_mercViewHires false
-SetEnabled nex_mercViewHelp false",,,
+SetEnabled nex_mercViewHelp false
+Nex_MercHire initDebt
+AddTextSmall ""You owe $nex_mercDebtStr credits. You have $player.creditsStr credits.""
+SetTextHighlightColors h $nex_mercDebtColor
+Highlight $nex_mercDebtStr $player.creditsStr
+Nex_AddOptionConfirmation nex_mercPayDebt ""Confirm payment?"" ""Yes"" ""No""",,"nex_mercPayDebt:Pay your debt",
 nex_mercIntro1,DialogOptionSelected,"$option == nex_mercIntro1","$global.seenAIMIntro = true","""Well, I handle all customer service inquiries. I put clients in touch with the mercs they need, and..."" $HeOrShe trails off. ""Oh, you meant our organization.""
 
 The $personPost straightens, as if actually eager to give the standard marketing pitch. ""The Association of Interstellar Mercenaries,"" $heOrShe intones, ""is the premier industry body and brokerage for the mercenary community in the Persean Sector. Here you can find some of the best in the business, at an affordable price. Our organization provides the assurance of clear, legally enforcable contracts and the convenience of matching clients with contractors in a way meeting both parties' needs.""","nex_mercIntro2:Continue",
@@ -2049,6 +2054,8 @@ Highlight 80%","""Sure thing. Let me send it over...""
 
 You examine the document on your screen. It's got a lot of legalese, but the key points are as follows:","nex_mercViewHires:View mercs for hire
 cutCommLink:Cut the comm link",
+nex_mercPayDebt,DialogOptionSelected,"$option == nex_mercPayDebt","Nex_MercHire payDebt
+FireAll PopulateOptions","""Thank you, that's much better. Please try to meet your contractual obligations next time.""",,
 nex_mercRepGoBack,DialogOptionSelected,"$option == nex_mercRepBack","Nex_VisualCustomPanel clear
 ShowPersonVisual
 FireAll PopulateOptions",,,
@@ -2124,6 +2131,21 @@ OR
 nex_mercHireBlurbLuddic,Nex_MercHireBlurb,"$nex_mercCompanyFactionId == luddic_church",,"""Blessings be with you.""
 
 The Luddic officer says a prayer before disconnecting. Their ships soon join yours, ready for their next pilgrimage.",,
+nex_mercMeetBlurbDora,Nex_MercMeetBlurb,"$nex_mercCompanyId == dorasSurvey",,"""Hello, captain $playerName. Shall we go exploring today?""
+OR
+""If it's a survey expedition you need, you've come to the right place.""",,
+nex_mercMeetBlurbEndbringer,Nex_MercMeetBlurb,"$nex_mercCompanyId == endbringer",,"""expression = friendly
+run greeting.sh
+query $player.name contract acceptable?""",,"Not actually used, but this was fun to write"
+nex_mercMeetBlurbEndbringerInsulted,Nex_MercMeetBlurb,"$nex_mercCompanyId == endbringer
+$nex_mercInsulted score:5","SetEnabled nex_mercHire false","""employer.recognized => true
+print( ""-___-"" );
+set contract.acceptable FALSE""",,
+nex_mercHireBlurbEndbringer,Nex_MercHireBlurb,"$nex_mercCompanyId == endbringer",,"""contract.accept();  // terms satisfactory
+print( ""^__^"" );
+init transfer""
+
+The strange... ship joins your $shipOrFleet. No-one among your officers or crew seems entirely comfortable with it, although everyone is much happier having it on their side than the reverse.",,
 ,,,,,,
 nex_mercLeaving_checkGeneric,Nex_MercsLeavingGreeting,,"ShowPersonVisual 
 FireBest Nex_MercLeavingOptions","""Hello, captain. Our term of service has concluded, hopefully to everyone's satisfaction. As per our contract, we will be taking our leave of you now.""",,
@@ -2137,14 +2159,14 @@ nex_mercLeaving_letGoBlurbRefusePayGeneric,Nex_MercLetGoBlurb,"$nex_mercLetGoTyp
 
 The comm link is cut before you can say anything more.",,
 nex_mercLeaving_checkVolturn,Nex_MercsLeavingGreeting,"$nex_mercCompanyId == menFromVolturn","ShowPersonVisual 
-FireBest Nex_MercLeavingOptions","""We men of Volturn, our job done. We leave now.""
+FireBest Nex_MercLeavingOptions","""We men of Volturn, our job done. We go now.""
 OR
 ""Contract completed. Auroch satisfied. Men of Volturn now leave.""",,
 nex_mercLeaving_checkVolturnDebt,Nex_MercsLeavingGreeting,"$player.inDebt score:5
 $nex_mercCompanyId == menFromVolturn","ShowPersonVisual 
 FireBest Nex_MercLeavingOptions","""Payment schedule not met. Auroch displeased. Men of Volturn depart, find better employer.""",,
 nex_mercLeaving_letGoBlurbJerkVolturn,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
-$nex_mercCompanyId == menFromVolturn","AdjustRepActivePerson INHOSPITABLE -5","The Man from Volturn listens to your tirade for all of six seconds. Then $heOrShe growls, and cuts the comm link.",,
+$nex_mercCompanyId == menFromVolturn","AdjustRepActivePerson INHOSPITABLE -5","The Man from Volturn listens to your tirade for all of six seconds. Then $heOrShe growls ferally, and cuts the comm link.",,
 nex_mercLeaving_letGoBlurbRefusePayVolturn,Nex_MercLetGoBlurb,"$nex_mercLetGoType == refusePay score:5
 $nex_mercCompanyId == menFromVolturn","AdjustRepActivePerson INHOSPITABLE -3","The Man from Volturn stares at you, rage building in $hisOrHer eyes.
 
@@ -2175,6 +2197,28 @@ nex_mercLeaving_letGoBlurbRefusePayLuddic,Nex_MercLetGoBlurb,"$nex_mercLetGoType
 $personFaction.id == luddic_church","AdjustRepActivePerson INHOSPITABLE -2","The $personRank listens to your 'explanation' with a frown. Then $heOrShe shakes $hisOrHer head, more in sorrow than anger.
 
 ""Your refusal to pay lawfully owed debts leads you to the sin of Mammon, friend $playerName,"" $heOrShe says. ""Repent, and find Ludd's forgiveness.""",,
+nex_mercLeaving_checkEndbringer,Nex_MercsLeavingGreeting,"$nex_mercCompanyId == endbringer","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""contract.expired => true
+sudo contract -end;
+query $playerName leave satisfactory review?""",,
+nex_mercLeaving_checkEndbringerDebt,Nex_MercsLeavingGreeting,"$nex_mercCompanyId == endbringer
+$player.inDebt score:5","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""paymentOverdue => true
+expression = disappoint
+contract.terminateEarly()  // no hard feelings?""",,
+nex_mercLeaving_letGoBlurbEndbringer,Nex_MercLetGoBlurb,"$nex_mercCompanyId == endbringer","AdjustRepActivePerson COOPERATIVE 3","""self.satisfaction++
+INIT offer() { next time self and $player.name meet, procure alcoholic beverage? }""",,
+nex_mercLeaving_letGoBlurbJerkEndbringer,Nex_MercLetGoBlurb,"$nex_mercCompanyId == endbringer
+$nex_mercLetGoType == jerk score:5","AdjustRepActivePerson INHOSPITABLE -5","""INTERRUPT
+assess $playerName ignorant of contract terms
+assess $playerName etiquette module failure, recommend reinstall
+badEmployers.add($playerName);
+
+connection.kill();""",,
+nex_mercLeaving_letGoBlurbRefusePayEndbringer,Nex_MercLetGoBlurb,"$nex_mercCompanyId == endbringer
+$nex_mercLetGoType == refusePay score:5","AdjustRepActivePerson INHOSPITABLE -3","""set property: $playerName -> DISHONEST true
+$playerName.debt += $nex_mercValueDiffVal
+while (debt > 0) emotionModule.guiltTrip( $playerName);""",,
 "#END blurbs",,,,,,
 "#END Merc hiring",,,,,,
 

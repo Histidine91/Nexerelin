@@ -85,6 +85,12 @@ public class Nex_MercHire extends BaseCommandPlugin {
 				long unpaid = params.get(1).getInt(memoryMap);
 				reportNonPayment(memoryMap, -unpaid);
 				break;
+			case "initDebt":
+				initDebt(dialog, memoryMap);
+				break;
+			case "payDebt":
+				payDebt(dialog, memoryMap);
+				break;	
 			case "checkLeave":
 				return checkLeave(dialog, market);
 		}
@@ -125,7 +131,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		boolean debt = report.getDebt() > 0;
 		
 		boolean leaveDebug = false;
-		if (debt || curr.getDaysRemaining() <= 0 || leaveDebug) {
+		if (debt || curr.isContractOver() || leaveDebug) {
 			dialog.getInteractionTarget().setActivePerson(curr.getFirstOfficer());
 			//dialog.getVisualPanel().showPersonInfo(getPerson(), true);
 			((RuleBasedInteractionDialogPluginImpl)dialog.getPlugin()).notifyActivePersonChanged();
@@ -146,8 +152,9 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			long net = refund - diff;	// paid to player
 			local.set("$nex_mercNetPaymentVal", net, 0);
 			local.set("$nex_mercNetPaymentStr", Misc.getDGSCredits(Math.abs(net)), 0);
+			return true;
 		}		
-		return true;
+		return false;
 	}
 	
 	public void processPayment(InteractionDialogAPI dialog, MemoryAPI local) {
@@ -193,6 +200,29 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		String companyId = memoryMap.get(MemKeys.LOCAL).getString("$nex_mercCompanyId");
 		String key = MEM_KEY_PREFIX_INSULT + companyId;
 		memoryMap.get(MemKeys.PLAYER).set(key, true, 500);
+	}
+	
+	public void initDebt(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		MemoryAPI player = memoryMap.get(MemKeys.PLAYER);
+		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
+		long unpaid = player.getLong(MEM_KEY_UNPAID);
+		String unpaidStr = Misc.getWithDGS(unpaid);
+		local.set("$nex_mercDebtStr", unpaidStr, 0);
+		
+		if (unpaid > Global.getSector().getPlayerFleet().getCargo().getCredits().get()) {
+			local.set("$nex_mercDebtColor", "bad", 0);
+			dialog.getOptionPanel().setEnabled("nex_mercPayDebt", false);
+		} else {
+			local.set("$nex_mercDebtColor", "h", 0);
+		}
+	}
+	
+	public void payDebt(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		MemoryAPI player = memoryMap.get(MemKeys.PLAYER);
+		long unpaid = player.getLong(MEM_KEY_UNPAID);
+		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(unpaid);
+		AddRemoveCommodity.addCreditsLossText((int)unpaid, dialog.getTextPanel());
+		player.unset(MEM_KEY_UNPAID);
 	}
 	
 	public void setMercOfficerMemoryKeys(PersonAPI officer, MemoryAPI local) {
