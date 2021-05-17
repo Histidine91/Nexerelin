@@ -1647,6 +1647,40 @@ Call $market.nex_remM1 updateStage
 AddRemoveCommodity beta_core 2","The marines carefully lower the crates with the AI cores onto the cargo bay floor, and step back, whether out of respect or superstitious fear.
 
 The diagnostic scan looks good. The cores are ready to be taken back to your strange friend $nex_remM1_personName… or, perhaps, the Hegemony or the Persean League would like to be informed that they have the winning bid. Even if they don't know it yet.",,
+nex_remM1_buyCoresOpt,PopulateOptions,"$market.nex_remM1_target score:1000
+Nex_IsBaseOfficial admin
+Call $market.nex_remM1_ref updateData
+$nex_remM1_stage == RETRIEVE_CORES score:1000",,,"nex_remM1_buyCores1:""I hear you're looking after a couple of AI cores.""",
+nex_remM1_buyCores1,DialogOptionSelected,"$option == nex_remM1_buyCores1",,"The $personRank's brow furrows in suspicion. ""Who's asking?""","nex_remM1_buyCores2:""A potential buyer.""",
+nex_remM1_buyCores2,DialogOptionSelected,"$option == nex_remM1_buyCores2",,"""Yeah, sure. Look, I don't know who told you this tale, but even supposing we had any cores around here, they wouldn't be for sale.""
+
+The $manOrWoman seems to shift uneasily. ""I'm sorry, but I can't help you.""","nex_remM1_buyCores3:""I have a large pile of credits that says otherwise"".",
+nex_remM1_buyCores3,DialogOptionSelected,"$option == nex_remM1_buyCores3
+$player.credits >= $nex_remM1_corePriceVal","Highlight $nex_remM1_corePriceStr $player.creditsStr","""I..."" $heOrShe sighs. ""You're not going to make this easy, are you?
+
+$nex_remM1_corePriceStr credits. That's how much it'll cost you to take the two beta cores. Most of this isn't even my kickback, you know; we'll need this to pay off the Hegs and the League when they find out what we've done.""
+
+You have $player.creditsStr credits.","nex_remM1_buyCores4:Agree
+cutCommLink:Decline and cut the comm link",
+nex_remM1_buyCores3NotEnoughCreds,DialogOptionSelected,"$option == nex_remM1_buyCores3","SetTextHighlightColors h bad
+Highlight $nex_remM1_corePriceStr $player.creditsStr","""I..."" $heOrShe sighs. ""You're not going to make this easy, are you?
+
+$nex_remM1_corePriceStr credits. That's how much it'll cost you to take the two beta cores. Most of this isn't even my kickback, you know; we'll need this to pay off the Hegs and the League when they find out what we've done.""
+
+You have $player.creditsStr credits.","nex_remM1_buyCores4NotEnoughCreds:""I don't have enough credits.""",
+nex_remM1_buyCores4,DialogOptionSelected,"$option == nex_remM1_buyCores4","Call $global.nex_remM1_ref boughtCores
+$market.nex_remM1_needToReturn = true
+Call $market.nex_remM1 updateStage
+AddCredits -$nex_remM1_corePriceVal
+AddRemoveCommodity beta_core 2","""You drive a hard bargain, captain. Fine, I'll have the cores ready for you to pick up within the hour.""
+
+The $personPost looks away from the screen for a few moments. ""Now, I have a few calls to make."" Turning back, meeting your gaze steadily: ""This conversation never happened, captain.""","cutCommLink:Thank $himOrHer and cut the comm link",
+nex_remM1_buyCores4NotEnoughCreds,DialogOptionSelected,"$option == nex_remM1_buyCores4NotEnoughCreds","ShowDefaultVisual
+EndConversation","The $personPost rolls $hisOrHer eyes. ""So much for that 'large pile of credits'.
+
+Good day, captain. We shan't speak of this again.""
+
+$HeOrShe terminates the connection.",,
 ,,,,,,
 nex_remM1_returnDissonant,PickGreeting,"$id == nex_dissonant
 Call $global.nex_remM1_ref updateData

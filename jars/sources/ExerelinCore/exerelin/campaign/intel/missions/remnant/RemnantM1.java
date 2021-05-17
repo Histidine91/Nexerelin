@@ -30,6 +30,8 @@ import org.apache.log4j.Logger;
 public class RemnantM1 extends HubMissionWithBarEvent {
 	
 	public static Logger log = Global.getLogger(RemnantM1.class);
+	
+	public static final float CORE_PRICE_MULT = 2.5f;
 
 	public static enum Stage {
 		RETRIEVE_CORES,
@@ -132,6 +134,11 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		return true;
 	}
 	
+	protected int getCorePrice() {
+		float base = Global.getSettings().getCommoditySpec(Commodities.BETA_CORE).getBasePrice();
+		return Math.round(base * 2 * CORE_PRICE_MULT);
+	}
+	
 	@Override
 	protected void updateInteractionDataImpl() {
 		set("$nex_remM1_personName", dissonant.getNameString());
@@ -143,7 +150,10 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		set("$nex_remM1_marketOnOrAt", market.getOnOrAt());
 		set("$nex_remM1_dist", getDistanceLY(market));
 		
+		int price = getCorePrice();
 		set("$nex_remM1_danger", danger);
+		set("$nex_remM1_corePriceVal", price);
+		set("$nex_remM1_corePriceStr", Misc.getWithDGS(price));
 		set("$nex_remM1_marines", Misc.getWithDGS(getMarinesRequiredForCustomObjective(market, danger)));
 		set("$nex_remM1_stage", getCurrentStage());
 	}
@@ -168,6 +178,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				abort();
 				return false;
 			case "raidComplete":
+			case "boughtCores":
 				dissonant.getMarket().getCommDirectory().addPerson(dissonant);
 				return true;
 			case "hasCores":
