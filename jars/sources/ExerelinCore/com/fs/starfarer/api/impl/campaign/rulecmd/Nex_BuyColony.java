@@ -192,7 +192,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 			//cargo.getCredits().add(value);
 			//AddRemoveCommodity.addCreditsGainText(value, text);
 		}
-		if (dialog != null) {
+		if (owned && dialog != null) {
 			TextPanelAPI text = dialog.getTextPanel();
 			AddRemoveCommodity.addCreditsLossText(value, text);
 			((RuleBasedDialog)dialog.getPlugin()).updateMemory();
