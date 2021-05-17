@@ -494,7 +494,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		disruptionTimestamp = Global.getSector().getClock().getTimestamp();
 		lastIndustryDisrupted = ind;
 		
-		float disruptTime = 15 * (atkStr/defStr);
+		float disruptTime = 30 * (atkStr/defStr);
 		if (disruptTime > 120) disruptTime = 120;
 		log.info("Rolled disruption time: " + disruptTime);
 		if (disruptTime < 30) {
