@@ -40,8 +40,10 @@ public class VengeanceBuff extends UNGP_BaseRuleEffect {
 			case 1:
 				return getPercentString((SEARCH_TIME_MULT - 1) * 100f);
 			case 2:
-				return Global.getSettings().getSkillSpec("sensors").getName();
+				return "+1";
 			case 3:
+				return Global.getSettings().getSkillSpec("sensors").getName();
+			case 4:
 				return Global.getSettings().getSkillSpec(Skills.NAVIGATION).getName();
 		}
 		return null;

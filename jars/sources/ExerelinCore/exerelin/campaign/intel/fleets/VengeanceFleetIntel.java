@@ -677,6 +677,9 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 												);
 		params.ignoreMarketFleetSizeMult = true;	// only use doctrine size, not source market size
 		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
+		params.averageSMods = escalationLevel;
+		if (buffRule) params.averageSMods += 1;
+		
 		fleet = NexUtilsFleet.customCreateFleet(getFaction(), params);
 
 		if (fleet == null)
