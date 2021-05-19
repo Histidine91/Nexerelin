@@ -47,39 +47,22 @@ Morale
 
 == Todo ==
 - Special ability interface
+- Generate buffs
+	- Commanders
+	- Luddic Church
+- Map view
+- Nex_MarketCMD: increase raid and bombard defense
 
 - [playtest] AI
 - Merge/split command
 - [test] Orphans made
 
-- Generate buffs
-	- Commanders
-	- Station
-
 - [test] Rebels
 
-- Condition to plugin map
-
 - Invasion fleet -> ground forces conversion
-
-- [done] Military response script
 - Send reinforcement fleet
-- [test] Summon special forces
 
 - Externalize strings: any?
-
-- Supply mechanic (probably overcomplicating it)
-- At least change lift cap mult to drop cost mult?
-	- This doesn't do anything against AI though
-	- Maybe instead units take damage when going through defenses?
-	- What does spaceport do, reduce losses?
-	
-	- Idea: Drop damage from defenses, in addition to defenses resulting in higher supply cost to drop
-		- Ground defenses: +0.1
-		- Heavy batteries: +0.2
-		- Planetary shield: x2
-		- EW applies 0.5x drop damage mult?
-		- Spaceport reduces drop costs
 
 - Maybe AI just uses legacy invasion system?
 

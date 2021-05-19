@@ -3,6 +3,7 @@ package exerelin.campaign.intel.groundbattle;
 import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,17 +19,26 @@ public class GBDataManager {
 	public static final String CONFIG_PATH = "data/config/exerelin/groundBattleDefs.json";
 	public static final List<String> NATO_ALPHABET = new ArrayList<>();
 	
-	protected static List<IndustryDef> defs = new ArrayList<>();
-	protected static Map<String, IndustryDef> defsById = new HashMap<>();
+	protected static List<IndustryDef> industryDefs = new ArrayList<>();
+	protected static Map<String, IndustryDef> industryDefsById = new HashMap<>();
+	
+	protected static List<ConditionDef> conditionDefs = new ArrayList<>();
+	protected static Map<String, ConditionDef> conditionDefsById = new HashMap<>();
 	
 	static {
 		loadDefs();
 	}
 	
-	protected static void loadDefs() {
+	// runcode exerelin.campaign.intel.groundbattle.GBDataManager.loadDefs();
+	public static void loadDefs() {
+		industryDefs.clear();
+		industryDefsById.clear();
+		conditionDefs.clear();
+		conditionDefsById.clear();
+		
 		IndustryDef defaultDef = new IndustryDef("default");
-		defs.add(defaultDef);
-		defsById.put("default", defaultDef);
+		industryDefs.add(defaultDef);
+		industryDefsById.put("default", defaultDef);
 		
 		try {
 			JSONObject json = Global.getSettings().getMergedJSONForMod(CONFIG_PATH, ExerelinConstants.MOD_ID);
@@ -58,8 +68,26 @@ public class GBDataManager {
 				def.icon = jsonIndEntry.optString("icon", null);
 				def.plugin = jsonIndEntry.optString("plugin", null);
 				
-				defs.add(def);
-				defsById.put(indId, def);
+				industryDefs.add(def);
+				industryDefsById.put(indId, def);
+			}
+			JSONObject jsonCond = json.getJSONObject("conditions");
+			iter = jsonCond.keys();
+			while (iter.hasNext()) {
+				String condId = (String)iter.next();
+				JSONObject jsonCondEntry = jsonCond.getJSONObject(condId);
+				
+				ConditionDef def = new ConditionDef(condId);
+				if (jsonCondEntry.has("tags")) {
+					def.tags.addAll(NexUtils.JSONArrayToArrayList(jsonCondEntry.getJSONArray("tags")));
+				}
+				def.plugin = jsonCondEntry.optString("plugin", null);
+				def.desc = jsonCondEntry.optString("desc", "");
+				if (jsonCondEntry.has("highlights"))
+					def.highlights = NexUtils.JSONArrayToArrayList(jsonCondEntry.getJSONArray("highlights"));
+				
+				conditionDefs.add(def);
+				conditionDefsById.put(condId, def);
 			}
 			
 			JSONArray jsonAlphabet = json.getJSONArray("natoAlphabet");
@@ -69,9 +97,13 @@ public class GBDataManager {
 		}
 	}
 	
-	public static IndustryDef getDef(String id) {
-		if (!defsById.containsKey(id)) return defsById.get("default");
-		return defsById.get(id);
+	public static IndustryDef getIndustryDef(String id) {
+		if (!industryDefsById.containsKey(id)) return industryDefsById.get("default");
+		return industryDefsById.get(id);
+	}
+	
+	public static ConditionDef getConditionDef(String id) {
+		return conditionDefsById.get(id);
 	}
 	
 	
@@ -90,6 +122,19 @@ public class GBDataManager {
 				
 		public IndustryDef(String industryId) {
 			this.industryId = industryId;
+		}
+	}
+	
+	public static class ConditionDef {
+		public final String conditionId;
+		public String plugin;
+		public Set<String> tags = new HashSet<>();
+		public String desc;
+		public List<String> highlights;
+		public List<Color> highlightColors;
+		
+		public ConditionDef(String conditionId) {
+			this.conditionId = conditionId;
 		}
 	}
 }

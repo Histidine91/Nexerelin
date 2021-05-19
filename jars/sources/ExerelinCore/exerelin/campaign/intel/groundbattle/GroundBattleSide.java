@@ -2,6 +2,7 @@ package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -169,7 +170,8 @@ public class GroundBattleSide {
 		}
 		
 		RebellionIntel rebellion = RebellionIntel.getOngoingEvent(intel.getMarket());
-		if (rebellion != null) {
+		if (rebellion != null && rebellion.getRebelFaction().isAtWorst(intel.getSide(true).getFaction(), RepLevel.NEUTRAL)) 
+		{
 			float defStrength = GBUtils.estimateTotalDefenderStrength(intel, true);
 			float gs = Math.max(rebellion.getGovtStrength(), 1);
 			float mult = rebellion.getRebelStrength()/gs;

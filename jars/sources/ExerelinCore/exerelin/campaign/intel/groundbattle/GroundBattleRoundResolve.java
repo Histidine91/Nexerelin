@@ -58,6 +58,9 @@ public class GroundBattleRoundResolve {
 			resolveCombatOnIndustry(ifb);
 		}
 		
+		processUnitsRoundIntermission();
+		updateIndustryOwners();
+		
 		for (GroundUnit unit : intel.getAllUnits()) {
 			unit.executeMove();
 		}
@@ -100,6 +103,19 @@ public class GroundBattleRoundResolve {
 		}
 	}
 	
+	public void processUnitsRoundIntermission() {
+		for (GroundUnit unit : intel.getAllUnits()) {
+			if (unit.getSize() <= 0) {	// ded
+				unit.destroyUnit(0);
+			}
+			// was in combat, morale too low, not withdrawn
+			else if (unit.lossesLastTurn > 0 && unit.morale < GBConstants.BREAK_AT_MORALE && !unit.isWithdrawing()) 
+			{
+				tryRoutUnit(unit);
+			}
+		}
+	}
+	
 	public void processUnitsAfterRound() {
 		for (GroundUnit unit : intel.getAllUnits()) {
 			unit.reorganize(-1);
@@ -134,7 +150,6 @@ public class GroundBattleRoundResolve {
 			// was in combat, morale too low, not withdrawn
 			if (unit.lossesLastTurn > 0 && unit.morale < GBConstants.BREAK_AT_MORALE && unit.location != null) 
 			{
-				printDebug(String.format("  Trying to rout %s due to low morale: %s", unit.name, unit.morale));
 				tryRoutUnit(unit);
 			}
 			else if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
@@ -145,8 +160,10 @@ public class GroundBattleRoundResolve {
 	}
 	
 	public IndustryForBattle tryRoutUnit(GroundUnit unit) {
+		printDebug(String.format("  Trying to rout %s due to low morale: %s", unit.name, unit.morale));
 		WeightedRandomPicker<IndustryForBattle> picker = new WeightedRandomPicker<>();
 		for (IndustryForBattle ifb : intel.getIndustries()) {
+			// can only rout to locations that are held by our side and not contested
 			if (ifb.heldByAttacker != unit.isAttacker) continue;
 			if (ifb.isContested()) continue;
 			if (ifb == unit.getLocation()) continue;

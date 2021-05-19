@@ -1106,7 +1106,7 @@
 		"intelTitle":"Surface Battle: $market",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
 		"intelDesc_round":"Turn %s",
-		"intelDesc_unitSize":"Unit size: %s (troop count: %s typical, %s max)",
+		"intelDesc_unitSize":"Unit size: %s (troop count: %s typical, %s max; damage mult %s)",
 		"intelDesc_headerAttackerMod":"Attacker modifiers",
 		"intelDesc_headerDefenderMod":"Defender modifiers",
 		"intelDesc_headerCommonMod":"Common modifiers",
@@ -1190,6 +1190,8 @@
 		"actionDisruptConfirm":"This will disrupt the %s for at least %s days, and takes effect immediately. The unit will reorganize for one turn.",
 		"actionWithdrawConfirm":"Confirm unit withdrawal? This will take effect during the move phase of the current turn.",
 		"actionDisbandConfirm":"Really disband this unit?",
+		
+		"currLocation":"Location: %s",
 		
 		"currActionReorganizing":"Reorganizing",
 		"currActionShocked":"Shocked",
@@ -1318,6 +1320,12 @@
 		"helpPara4-1":"Morale is a critical stat, a second healthbar and more.",
 		"helpPara4-2":"Morale is lost when a unit takes damage. If it drops too low, the unit will be unable to move, or may run away or be destroyed outright.",
 		"helpPara4-3":"A unit can recover morale when not in combat, depending on local conditions.",
+		
+		"ability_cooldown":"Cooldown: %s turns",
+		"ability_cooldownGlobal":"Global cooldown: %s turns",
+		
+		"responseStr":"responding to invasion",
+		"responseTravelStr":"moving in response to invasion",
 	},
 	
 	"exerelin_landmarks":{

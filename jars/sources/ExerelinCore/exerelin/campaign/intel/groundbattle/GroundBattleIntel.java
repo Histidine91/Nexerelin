@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -34,6 +35,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_BuyColony;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -50,6 +52,7 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.MarketTransferIntel;
+import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
@@ -57,6 +60,7 @@ import exerelin.campaign.intel.groundbattle.plugins.FactionBonusPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GeneralPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
+import exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.plugins.ExerelinModPlugin;
@@ -120,6 +124,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	//protected transient List<String> rawLog;
 	
 	protected List<IndustryForBattle> industries = new ArrayList<>();
+	protected List<GroundBattlePlugin> marketConditionPlugins = new LinkedList<>();
 	protected List<GroundBattlePlugin> otherPlugins = new LinkedList<>();
 	
 	protected Map<String, Object> data = new HashMap<>();
@@ -151,6 +156,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		this.defender.faction = defender;
 		
 		playerData = new GBPlayerData(this);
+	}
+	
+	protected Object readResolve() {
+		if (marketConditionPlugins == null)
+			marketConditionPlugins = new ArrayList<>();
+		return this;
 	}
 	
 	protected void generateDebugUnits() 
@@ -225,7 +236,25 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		defender.commander = market.getAdmin();
 		
+		if (market.getPlanetEntity() == null) {
+			data.put("cramped", true);
+		}
+		
 		initPlugins();
+		
+		for (MarketConditionAPI cond : market.getConditions()) {
+			String condId = cond.getId();
+			ConditionDef def = GBDataManager.getConditionDef(condId);
+			if (def != null) {
+				log.info("Processing condition " + condId);
+				if (def.tags.contains("cramped"))
+					data.put("cramped", true);
+				if (def.plugin != null) {
+					MarketConditionPlugin plugin = MarketConditionPlugin.loadPlugin(this, condId);
+					marketConditionPlugins.add(plugin);
+				}
+			}
+		}
 		
 		reapply();
 	}
@@ -264,9 +293,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return ifb;
 	}
 	
+	public List<GroundBattlePlugin> getMarketConditionPlugins() {
+		return marketConditionPlugins;
+	}
+	
 	public List<GroundBattlePlugin> getPlugins() {
 		List<GroundBattlePlugin> list = new ArrayList<>();
 		list.addAll(otherPlugins);
+		list.addAll(marketConditionPlugins);
 		for (IndustryForBattle ifb : industries) {
 			if (ifb.getPlugin() == null) {
 				log.warn("Null plugin for " + ifb.ind.getId());
@@ -304,6 +338,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		else return defender;
 	}
 	
+	public Map<String, Object> getCustomData() {
+		return data;
+	}
+	
 	public Boolean isPlayerAttacker() {
 		return playerIsAttacker;
 	}
@@ -323,6 +361,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public int getTurnNum() {
 		return turnNum;
+	}
+	
+	public boolean isCramped() {
+		Boolean cramped = (Boolean)data.get("cramped");
+		return Boolean.TRUE.equals(cramped);
 	}
 	
 	public void setInvasionIntel(InvasionIntel intel) {
@@ -450,7 +493,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	/**
-	 * Creates units for player based on available marines and heavy armaments.
+	 * Creates units for player based on available marines and heavy armaments.<br/>
 	 * Attempts to create the minimum number of units that will hold 100% of 
 	 * player forces of each type, then distributes marines and heavy arms equally
 	 * between each.
@@ -469,8 +512,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		int numPerUnit = 0;
 		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
 		
-		if (market.getPlanetEntity() == null) {
-			log.info("Non-planetary market, skipping generation of heavy units");
+		if (isCramped()) {
+			log.info("Cramped conditions, skipping generation of heavy units");
 			usableHeavyArms = 0;
 		} else {
 			log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, usableHeavyArms));
@@ -587,7 +630,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				Commodities.MARINES, market.getPrimaryEntity(), 
 				market.getSubmarket(Submarkets.SUBMARKET_STORAGE), true);
 			local.data.num = storage.getCargo().getMarines();
-			local.data.addXP(storageXP);
+			local.data.addXP(storageXP + playerData.xpTracker.data.xp);
 		}
 	}
 	
@@ -623,6 +666,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			else {
 				unit.removeUnit(true);
 			}
+		}
+		if (anyInStorage) {
+			StoragePlugin plugin = (StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+			if (plugin != null)
+				plugin.setPlayerPaidToUnlock(true);
 		}
 		addXPToDeployedUnits(storage);
 	}
@@ -827,6 +875,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					market.getPrimaryEntity(),
 					0.75f,
 					900);
+			params.actionText = getString("responseStr");
+			params.travelText = getString("responseTravelStr");
 			responseScript = new GBMilitaryResponseScript(params);
 			market.getContainingLocation().addScript(responseScript);
 		}
@@ -877,15 +927,21 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	// callins
 	
 	@Override
-	protected void advanceImpl(float amount) {
+	public void advance(float amount) {
+		super.advance(amount);
+		// needs to be in advance rather than advanceImpl so it runs after event ends
 		float days = Global.getSector().getClock().convertToDays(amount);
 		if (timerForDecision != null) {
+			//log.info(String.format("Timer for decision: curr %s, subtracting %s", timerForDecision, days));
 			timerForDecision -= days;
 			if (timerForDecision <= 0) {
 				timerForDecision = null;
 			}
 		}
-		
+	}
+	
+	@Override
+	protected void advanceImpl(float amount) {		
 		if (outcome != null) {
 			return;
 		}
@@ -899,6 +955,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			return;
 		}
 		
+		float days = Global.getSector().getClock().convertToDays(amount);
 		intervalShort.advance(days);
 		if (intervalShort.intervalElapsed()) {
 			doShortIntervalStuff(intervalShort.getElapsed());
@@ -1042,7 +1099,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				defender.faction.getBaseUIColor());
 		
 		str = getString("intelDesc_unitSize");
-		info.addPara(str, pad, Misc.getHighlightColor(), Misc.ucFirst(unitSize.getName()), unitSize.avgSize + "", unitSize.maxSize + "");
+		info.addPara(str, pad, Misc.getHighlightColor(), Misc.ucFirst(unitSize.getName()), 
+				unitSize.avgSize + "", unitSize.maxSize + "", String.format("%.2f", unitSize.damMult) + "×");
 		
 		str = getString("intelDesc_round");
 		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
@@ -1195,7 +1253,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		// unit cards
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
-		List<GroundUnit> listToRead = getAllUnits();	//playerData.getUnits();
+		List<GroundUnit> listToRead = playerData.getUnits();	// units whose cards should be shown
 		int numCards = listToRead.size();
 		if (listToRead.size() < MAX_PLAYER_UNITS)
 			numCards++;	// for the "create unit" card
@@ -1442,7 +1500,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				VIEW_BUTTON_HEIGHT, false);
 		str = StringHelper.substituteToken(getString("btnAndrada"), "$market", market.getName());
 		btnHolder1.addButton(str, BUTTON_ANDRADA, VIEW_BUTTON_WIDTH * 2, VIEW_BUTTON_HEIGHT, 0);
-		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
+		buttonRow.addUIElement(btnHolder1).inTL(0, 0);
 		
 		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH * 2, 
 				VIEW_BUTTON_HEIGHT, false);

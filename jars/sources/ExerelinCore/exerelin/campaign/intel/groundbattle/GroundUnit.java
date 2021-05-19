@@ -35,8 +35,12 @@ import java.util.Map;
 
 public class GroundUnit {
 	
-	public static final float PANEL_WIDTH = 220, PANEL_HEIGHT = 120;
-	public static final float TITLE_HEIGHT = 16, LOCATION_SECTION_HEIGHT = 32;
+	public static final boolean USE_LOCATION_IMAGE = true;
+	
+	public static final float PANEL_WIDTH = USE_LOCATION_IMAGE ? 220 : 200;
+	public static final float PANEL_HEIGHT = USE_LOCATION_IMAGE ? 120 : 110;
+	public static final float TITLE_HEIGHT = 16;
+	public static final float LOCATION_SECTION_HEIGHT = USE_LOCATION_IMAGE ? 32 : 24;
 	public static final float PADDING_X = 4;
 	public static final float BUTTON_SECTION_WIDTH = 64;
 	public static final Object BUTTON_NEW_MARINE = new Object();
@@ -391,7 +395,7 @@ public class GroundUnit {
 			str = String.format(str, location.ind.getCurrentName());
 		}
 		
-		info.addPara(str, color, 3);
+		info.addPara(str, color, 0);
 	}
 	
 	/**
@@ -489,7 +493,7 @@ public class GroundUnit {
 			}
 		}
 		
-		if (intel.market.getPlanetEntity() == null) {
+		if (intel.isCramped()) {
 			if (type == ForceType.HEAVY) {
 				modifyAttackStatWithDesc(stat, "heavy_cramped", GBConstants.HEAVY_STATION_MULT);
 			}
@@ -771,11 +775,22 @@ public class GroundUnit {
 		TooltipMakerAPI loc = card.createUIElement(PANEL_WIDTH * sizeMult, 
 				LOCATION_SECTION_HEIGHT * sizeMult, false);
 		
-		String img = location != null ? location.ind.getCurrentImage() : "graphics/illustrations/free_orbit.jpg";
-		line = loc.beginImageWithText(img, 32 * sizeMult);
-		addActionText(line);
-		loc.addImageWithText(pad);
+		// with image version
+		if (USE_LOCATION_IMAGE) {
+			String img = location != null ? location.ind.getCurrentImage() : "graphics/illustrations/free_orbit.jpg";
+			line = loc.beginImageWithText(img, 32 * sizeMult);
+			addActionText(line);
+			loc.addImageWithText(pad);
+			
+		} else {
+			if (location != null) {
+				String locStr = String.format(getString("currLocation"), location.getName());
+				loc.addPara(locStr, 0);
+			}
+			addActionText(loc);
+		}
 		card.addUIElement(loc).inBL(0, 2 * sizeMult);
+		
 		
 		// button holder
 		if (!forDialog) {
@@ -847,7 +862,7 @@ public class GroundUnit {
 		MARINE(Commodities.MARINES, "troopNameMarine", 1, 1, 1), 
 		HEAVY(Commodities.HAND_WEAPONS, "troopNameMech", 6, 1, GBConstants.HEAVY_DROP_COST_MULT),
 		MILITIA(Commodities.CREW, "troopNameMilitia", 0.4f, 0.6f, 1), 
-		REBEL(Commodities.CREW, "troopNameRebel", 0.4f, 0.7f, 1);
+		REBEL(Commodities.CREW, "troopNameRebel", 0.8f, 0.7f, 1);	// note that attack power is halved later
 		
 		public final String commodityId;
 		public final String nameStringId;
@@ -876,9 +891,9 @@ public class GroundUnit {
 	
 	public static enum UnitSize {
 		PLATOON(40, 60, 1f),
-		COMPANY(120, 200, 0.75f),
-		BATTALION(500, 800, 0.5f),
-		REGIMENT(2000, 3500, 0.25f);
+		COMPANY(120, 200, 0.5f),
+		BATTALION(500, 800, 0.25f),
+		REGIMENT(2000, 3500, 0.1f);
 		
 		public int avgSize;
 		public int maxSize;

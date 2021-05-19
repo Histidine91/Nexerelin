@@ -43,7 +43,7 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		if (intel.getTurnNum() == 1) {
 			String desc = GroundBattleIntel.getString("modifierMovementPointsFleetSupport");
 			List<CampaignFleetAPI> atkFleets = intel.getSupportingFleets(true);
-			float initDeployBonus = getBonusFromFleets(atkFleets);
+			float initDeployBonus = getBonusFromFleets(atkFleets) * GBConstants.FLEET_SUPPORT_MOVEMENT_MULT;
 			intel.getSide(true).getMovementPointsPerTurn().modifyFlat("fleetSupport",
 				initDeployBonus, desc);
 		}
@@ -138,9 +138,9 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 	public void afterTurnResolve(int turn) {
 		String desc = GroundBattleIntel.getString("modifierMovementPointsFleetSupport");
 		intel.getSide(false).getMovementPointsPerTurn().modifyFlat("fleetSupport",
-				defBonus, desc);
+				defBonus * GBConstants.FLEET_SUPPORT_MOVEMENT_MULT, desc);
 		intel.getSide(true).getMovementPointsPerTurn().modifyFlat("fleetSupport",
-				atkBonus, desc);
+				atkBonus * GBConstants.FLEET_SUPPORT_MOVEMENT_MULT, desc);
 		
 		atkBonus = 0;
 		defBonus = 0;

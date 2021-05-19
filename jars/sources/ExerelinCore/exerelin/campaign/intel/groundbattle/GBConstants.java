@@ -10,7 +10,8 @@ public class GBConstants {
 	
 	public static int BASE_MOVEMENT_POINTS_PER_TURN = 20;	// at size 3;
 	public static float TURN_1_MOVE_POINT_MULT = 2;
-	public static final float HEAVY_DROP_COST_MULT = 1.25f;
+	public static float HEAVY_DROP_COST_MULT = 1.25f;
+	public static float FLEET_SUPPORT_MOVEMENT_MULT = 0.5f;
 	
 	public static float BASE_MORALE = 0.8f;
 	public static float BASE_DAMAGE_MULT = 0.1f;
@@ -29,7 +30,7 @@ public class GBConstants {
 	
 	public static int STABILITY_PENALTY_BASE = 2;
 	public static int STABILITY_PENALTY_OCCUPATION = 5;
-	public static float DISRUPTED_TROOP_CONTRIB_MULT = 0.25f;
+	public static float DISRUPTED_TROOP_CONTRIB_MULT = 0.5f;
 	public static float DISRUPT_WHEN_CAPTURED_TIME = 0.25f;
 	
 	public static float SUPPLIES_TO_DEPLOY_MULT = 0.25f;

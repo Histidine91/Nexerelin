@@ -33,7 +33,7 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 	}
 	
 	protected IndustryDef getDef() {
-		return GBDataManager.getDef(defId);
+		return GBDataManager.getIndustryDef(defId);
 	}
 	
 	public Float getTroopContribution(String type) {
@@ -187,7 +187,7 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 	
 	public static IndustryForBattlePlugin loadPlugin(String defId, IndustryForBattle ind) 
 	{
-		String className = GBDataManager.getDef(defId).plugin;
+		String className = GBDataManager.getIndustryDef(defId).plugin;
 		if (className == null) className = "exerelin.campaign.intel.groundbattle.plugins.IndustryForBattlePlugin";
 		
 		IndustryForBattlePlugin plugin = null;

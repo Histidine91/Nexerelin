@@ -739,7 +739,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		} else {
 			precision /= 10;
 			if (precision < 1) precision = 1;
-			float[] strEstPlayer = GBUtils.estimatePlayerStrength();
+			float[] strEstPlayer = GBUtils.estimatePlayerStrength(intel);
 			info = text.beginTooltip();
 			info.setParaSmallInsignia();
 			info.addPara(String.format(GroundBattleIntel.getString("dialogPlayerEstimate"), 
@@ -747,8 +747,10 @@ public class Nex_MarketCMD extends MarketCMD {
 			info.setParaFontDefault();
 			info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMarine"), 3,
 					h, NexUtils.getEstimateNum(strEstPlayer[0], precision) + "");
-			info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateHeavy"), 3,
+			if (strEstPlayer.length > 1) {
+				info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateHeavy"), 3,
 					h, NexUtils.getEstimateNum(strEstPlayer[1], precision) + "");
+			}
 			text.addTooltip();
 		}
 		text.addPara(GroundBattleIntel.getString("dialogEstimateHelp"));

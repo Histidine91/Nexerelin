@@ -671,7 +671,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 			NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
 		
 		info.addPara(getString("intelBulletTarget"), afKnown ? pad : initPad, color, 
-				targetFaction.getBaseUIColor(), market.getName());
+				targetFaction.getBaseUIColor(), " " + market.getName());
 	}
 	
 	protected String getName() {
