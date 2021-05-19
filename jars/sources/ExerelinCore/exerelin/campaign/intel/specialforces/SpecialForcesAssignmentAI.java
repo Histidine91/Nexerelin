@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.specialforces;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -68,9 +69,23 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));
 				break;
-			case PATROL:
+				
 			case DEFEND_VS_PLAYER:
+				if (fleet.getContainingLocation() == Global.getSector().getPlayerFleet().getContainingLocation()) 
+				{
+					fleet.addAssignment(FleetAssignment.FOLLOW, Global.getSector().getPlayerFleet(),
+							current.daysMax - current.elapsed, getInSystemActionText(current),
+							goNextScript(current));
+					break;
+				}
+				// else fall through to next level
+			case PATROL:
 				fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, current.from,
+						current.daysMax - current.elapsed, getInSystemActionText(current),
+						goNextScript(current));
+				break;
+			case ASSIST_RAID:
+				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, current.from,
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));
 				break;
