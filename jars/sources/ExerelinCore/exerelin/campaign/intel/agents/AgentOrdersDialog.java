@@ -504,7 +504,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			case CovertActionType.TRAVEL:
 				action = new Travel(agent, null, agentFaction, mktFaction, true, null);
 				action.init();
-				getFactions();
+				getTargets();
+				optionSelected(null, Menu.TARGET);
 				break;
 			case CovertActionType.RAISE_RELATIONS:
 				action = new RaiseRelations(agent, market, agentFaction, mktFaction, agentFaction, true, null);
