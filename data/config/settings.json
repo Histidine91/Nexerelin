@@ -1,4 +1,6 @@
 {
+	#########################################################
+	# vanilla overrides
 	"colonyOverMaxPenalty":1,			# default 2
 	"industryRefundFraction":0.4,		# default 0.75
 	#"raidCooldownDays":3,				# default 1
@@ -9,7 +11,20 @@
 	"pirateBaseBounty4":140000,			# default 70000,
 	"pirateBaseBounty5":180000,			# default 80000,
 	
+	"bombardFuelFraction":1.5,
+	
+	"tier2StationOfficerLevel":2,
+	"tier3StationOfficerLevel":4,
+	
+	"adminHireTier2":20000,		#50000,
+	"adminSalaryTier2":10000,	#25000,
+	
+	"basePirateRaidTimeoutMonths":[3, 7],	#[6, 18],
+	
 	"economyExceptionOnMissingMarketEntity":false,
+	
+	#########################################################
+	# end vanilla overrides
 	
 	"nex_enableVersionChecker":true,
 	# if true, locations in Academy quest aren't marked as story-critical, so they can be decivilized and such
