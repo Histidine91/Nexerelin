@@ -447,11 +447,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	}
 	
 	public boolean rollInjury() {
-		if (result.isSuccessful() && !result.isDetected())
+		if (sp == StoryPointUse.NONE && result.isSuccessful() && !result.isDetected())
 			return false;
 		
 		float chance = CovertOpsManager.getBaseInjuryChance(result.isSuccessful());
-		chance *= getDef().detectionChance;
+		chance *= getDef().injuryChanceMult;
 		if (CovertOpsManager.getRandom(market).nextFloat() <= chance)
 		{
 			Injury injury = new Injury(agent, agentFaction, targetFaction, playerInvolved, params);
