@@ -12,3 +12,6 @@ nex_ddroRem,,,remnant,,,10,30,60,,,,,,,graphics/icons/missions/dead_drop.png,exe
 nex_sShipRem,,,remnant,,,10,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.RemnantSurplusShipHull
 nex_omegaWep,,,remnant,,,2,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.OmegaWeapons
 nex_sellAICore,,,remnant,,,8,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.SellAICore
+,,,,,,,,,,,,,,,,
+# vanilla overrides,,,,,,,,,,,,,,,,
+tabo,,,military,,,10,30,60,COOPERATIVE,,HIGH,,,,graphics/icons/missions/tactical_bombardment.png,exerelin.campaign.intel.missions.Nex_TacticallyBombardColony
