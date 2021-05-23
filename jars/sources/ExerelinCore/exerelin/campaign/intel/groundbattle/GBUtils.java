@@ -2,10 +2,13 @@ package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 public class GBUtils {
@@ -118,6 +121,14 @@ public class GBUtils {
 			market.getMemoryWithoutUpdate().set(GBConstants.MEMKEY_GARRISON_DAMAGE, damage);
 			log.info("Setting garrison damage for " + market.getName() + ": " + String.format("%.3f", damage));
 		}
-			
+	}
+	
+	
+	public static List<Industry> convertIFBListToIndustryList(List<IndustryForBattle> ifbs) {
+		List<Industry> industries = new ArrayList<>();
+		for (IndustryForBattle ifb : ifbs) {
+			industries.add(ifb.getIndustry());
+		}
+		return industries;
 	}
 }

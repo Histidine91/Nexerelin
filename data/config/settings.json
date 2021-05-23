@@ -147,7 +147,8 @@
 		"agentOrderSuccess":0.5,
 		"agentOrderDetection":0.75,
 		"agentOrderBoth":0,
-		"nex_hireMerc":0.25
+		"nex_hireMerc":0.25,
+		"nex_gb_inspire":0.25,
 	},
 	
 	"graphics":{
@@ -169,6 +170,8 @@
 		"nex_groundbattle":{
 			"icon_grounddefenses":"graphics/exerelin/icons/groundbattle/groundefenses.png",
 			"icon_heavybatteries":"graphics/exerelin/icons/groundbattle/heavybatteries.png",
+			"icon_inspire":"graphics/icons/skills/leadership.png",
+			
 			"help_unitCard":"graphics/exerelin/help/gb_unitcard.png",
 		},
 		
@@ -223,7 +226,6 @@
 			"nex_icon_omega":"graphics/exerelin/icons/logo_omega.png",
 			"nex_groundunit_attackpower":"graphics/exerelin/ui/red_diamond.png",
 			"command_experience":"graphics/icons/skills/command_experience.png",
-			
 		},
 		
 		"raidObjectives":{  # icons displayed at 26x26

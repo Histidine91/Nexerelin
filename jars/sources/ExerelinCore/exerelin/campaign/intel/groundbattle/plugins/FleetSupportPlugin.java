@@ -146,6 +146,8 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		defBonus = 0;
 		atkStrSum = 0;
 		defStrSum = 0;
+		
+		super.afterTurnResolve(turn);
 	}
 	
 	protected boolean hasTooltip(boolean isAttacker) {

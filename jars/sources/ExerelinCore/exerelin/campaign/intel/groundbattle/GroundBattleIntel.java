@@ -44,6 +44,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
+import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -55,7 +56,9 @@ import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
+import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
+import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.FactionBonusPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GeneralPlugin;
@@ -91,8 +94,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public static final float VIEW_BUTTON_WIDTH = 128;
 	public static final float VIEW_BUTTON_HEIGHT = 24;
+	public static final float MODIFIER_PANEL_HEIGHT = 160;
+	public static final float ABILITY_PANEL_HEIGHT = 160;
 	
 	public static final Object UPDATE_TURN = new Object();
+	public static final Object UPDATE_VICTORY = new Object();
 	public static final Object BUTTON_RESOLVE = new Object();
 	public static final Object BUTTON_AUTO_MOVE = new Object();
 	public static final Object BUTTON_AUTO_MOVE_TOGGLE = new Object();
@@ -212,6 +218,37 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		otherPlugins.add(fSupport);
 	}
 	
+	public List<GroundBattlePlugin> getOtherPlugins() {
+		return otherPlugins;
+	}
+	
+	public void addOtherPlugin(GroundBattlePlugin plugin) {
+		otherPlugins.add(plugin);
+	}
+	
+	public void removePlugin(GroundBattlePlugin plugin) {
+		if (marketConditionPlugins.contains(plugin))
+			marketConditionPlugins.remove(plugin);
+		if (otherPlugins.contains(plugin))
+			otherPlugins.remove(plugin);
+	}
+	
+	public void initMarketConditions() {
+		for (MarketConditionAPI cond : market.getConditions()) {
+			String condId = cond.getId();
+			ConditionDef def = GBDataManager.getConditionDef(condId);
+			if (def != null) {
+				log.info("Processing condition " + condId);
+				if (def.tags.contains("cramped"))
+					data.put("cramped", true);
+				if (def.plugin != null) {
+					MarketConditionPlugin plugin = MarketConditionPlugin.loadPlugin(this, condId);
+					marketConditionPlugins.add(plugin);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Should be called after relevant parameters are set.
 	 */
@@ -241,20 +278,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		initPlugins();
-		
-		for (MarketConditionAPI cond : market.getConditions()) {
-			String condId = cond.getId();
-			ConditionDef def = GBDataManager.getConditionDef(condId);
-			if (def != null) {
-				log.info("Processing condition " + condId);
-				if (def.tags.contains("cramped"))
-					data.put("cramped", true);
-				if (def.plugin != null) {
-					MarketConditionPlugin plugin = MarketConditionPlugin.loadPlugin(this, condId);
-					marketConditionPlugins.add(plugin);
-				}
-			}
-		}
+		initMarketConditions();		
 		
 		reapply();
 	}
@@ -442,7 +466,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return MathUtils.getDistance(fleet, 
 				market.getPrimaryEntity()) <= GBConstants.MAX_SUPPORT_DIST;
 	}
-	
+		
 	public static void applyTagWithReason(Map<String, Object> data, String tag, String reason) {
 		Object param = data.get(tag);
 		if (param != null && !(param instanceof Collection)) {
@@ -456,6 +480,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			reasons = new HashSet<>();
 		
 		reasons.add(reason);
+		data.put(tag, reasons);
 	}
 	
 	public static void unapplyTagWithReason(Map<String, Object> data, String tag, String reason) {
@@ -750,7 +775,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			addLogEvent(log);
 		}
 		
-		sendUpdateIfPlayerHasIntel(null, false);
+		sendUpdateIfPlayerHasIntel(UPDATE_VICTORY, false);
 
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
@@ -810,6 +835,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		interval.setElapsed(0);
 		turnNum++;
 		reapply();
+		attacker.reportTurn();
+		defender.reportTurn();
 	}
 	
 	/**
@@ -1125,27 +1152,33 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
 		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder1.addButton(getString("btnViewOverview"), ViewMode.OVERVIEW, base, bg, 
+		btnHolder1.addButton(getString("btnViewUnits"), ViewMode.UNITS, base, bg, 
 				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
 		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
 		
 		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder2.addButton(getString("btnViewCommand"), ViewMode.COMMAND, base, bg, 
+		btnHolder2.addButton(getString("btnViewAbilities"), ViewMode.ABILITIES, base, bg, 
 				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
 		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
 		
 		TooltipMakerAPI btnHolder3 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder3.addButton(getString("btnViewLog"), ViewMode.LOG, base, bg, 
+		btnHolder3.addButton(getString("btnViewInfo"), ViewMode.INFO, base, bg, 
 				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
 		buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
 		
 		TooltipMakerAPI btnHolder4 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder4.addButton(getString("btnViewHelp"), ViewMode.HELP, base, bg, 
+		btnHolder4.addButton(getString("btnViewLog"), ViewMode.LOG, base, bg, 
 				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
 		buttonRow.addUIElement(btnHolder4).rightOfTop(btnHolder3, 4);
+		
+		TooltipMakerAPI btnHolder5 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
+				VIEW_BUTTON_HEIGHT, false);
+		btnHolder5.addButton(getString("btnViewHelp"), ViewMode.HELP, base, bg, 
+				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
+		buttonRow.addUIElement(btnHolder5).rightOfTop(btnHolder4, 4);
 		
 		info.addCustom(buttonRow, 3);
 	}
@@ -1169,29 +1202,28 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return subpanel;
 	}
 	
-	public void placeCard(TooltipMakerAPI unitCard, int numCards, int numPrevious, 
-			CustomPanelAPI unitPanel, List<TooltipMakerAPI> unitCards,
-			int maxPerRow) {
+	public void placeElementInRows(CustomPanelAPI element, int numPrevious, 
+			CustomPanelAPI holder, List<CustomPanelAPI> elements,int maxPerRow) {
 		if (numPrevious == 0) {
 			// first card, place in TL
-			unitPanel.addUIElement(unitCard).inTL(0, 3);
+			holder.addComponent(element).inTL(0, 3);
 			//log.info("Placing card in TL");
 		}
 		else if (numPrevious % maxPerRow == 0) {
 			// row filled, place under first card of previous row
 			int rowNum = numPrevious/maxPerRow - 1;
-			TooltipMakerAPI firstOfPrevious = unitCards.get(maxPerRow * rowNum);
-			unitPanel.addUIElement(unitCard).belowLeft(firstOfPrevious, 3);
+			CustomPanelAPI firstOfPrevious = elements.get(maxPerRow * rowNum);
+			holder.addComponent(element).belowLeft(firstOfPrevious, 3);
 			//log.info("Placing card in new row");
 		}
 		else {
 			// right of last card
-			unitPanel.addUIElement(unitCard).rightOfTop(unitCards.get(numPrevious - 1), GroundUnit.PADDING_X);
+			holder.addComponent(element).rightOfTop(elements.get(numPrevious - 1), GroundUnit.PADDING_X);
 			//log.info("Placing card in current row");
 		}
 	}
 	
-	public void generateUnitDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float opad) 
+	public void generateUnitDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width, float opad) 
 	{
 		float pad = 3;
 		info.addSectionHeading(getString("unitPanel_header"), Alignment.MID, opad);
@@ -1236,7 +1268,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		info.addPara(getString("unitPanel_resources"), pad);
 		
-		CustomPanelAPI resourcePanel = panel.createCustomPanel(width, 32, null);
+		CustomPanelAPI resourcePanel = outer.createCustomPanel(width, 32, null);
 		
 		TooltipMakerAPI resourceSubPanel;
 		int subWidth = 96;
@@ -1251,94 +1283,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		info.addCustom(resourcePanel, pad);
 		
-		// unit cards
-		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
-		List<GroundUnit> listToRead = playerData.getUnits();	// units whose cards should be shown
-		int numCards = listToRead.size();
-		if (listToRead.size() < MAX_PLAYER_UNITS)
-			numCards++;	// for the "create unit" card
-		
-		int NUM_ROWS = (int)Math.ceil((float)numCards/CARDS_PER_ROW);
-		//log.info("Number of rows: " + NUM_ROWS);
-		//log.info("Cards per row: " + CARDS_PER_ROW);
-		
-		CustomPanelAPI unitPanel = panel.createCustomPanel(width, NUM_ROWS * (GroundUnit.PANEL_HEIGHT + pad), null);
-		
-		//TooltipMakerAPI test = unitPanel.createUIElement(64, 64, true);
-		//test.addPara("wololo", 0);
-		//unitPanel.addUIElement(test).inTL(0, 0);
-		
-		List<TooltipMakerAPI> unitCards = new ArrayList<>();
-		try {
-			for (GroundUnit unit : listToRead) {
-				TooltipMakerAPI unitCard = unit.createUnitCard(unitPanel, false);
-				//log.info("Created card for " + unit.name);
-				
-				int numPrevious = unitCards.size();
-				placeCard(unitCard, numCards, numPrevious, unitPanel, unitCards, CARDS_PER_ROW);
-				unitCards.add(unitCard);
-			}
-			if (listToRead.size() < MAX_PLAYER_UNITS) {
-				TooltipMakerAPI newCard = GroundUnit.createBlankCard(unitPanel, unitSize);
-				placeCard(newCard, unitCards.size(), unitCards.size(), unitPanel, unitCards, CARDS_PER_ROW);
-			}
-			
-		} catch (Exception ex) {
-			log.error("Failed to display cards", ex);
-		}
-				
-		info.addCustom(unitPanel, pad);
-	}
-	
-	public void populateModifiersDisplay(CustomPanelAPI outer, TooltipMakerAPI disp, 
-			float width, float pad, Boolean isAttacker) 
-	{
-		for (GroundBattlePlugin plugin : getPlugins()) {
-			plugin.addModifierEntry(disp, outer, width, pad, isAttacker);
-		}
-	}
-	
-	protected static float itemPanelHeight = 160;
-	public void generateModifiersDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
-	{		
-		// Holds the display for each faction, added to 'info'
-		CustomPanelAPI strPanel = panel.createCustomPanel(width, itemPanelHeight, null);
-		
-		float subWidth = width/3;
-		try {
-			TooltipMakerAPI dispAtk = strPanel.createUIElement(subWidth, itemPanelHeight, true);
-			strPanel.addUIElement(dispAtk).inTL(0, 0);
-			TooltipMakerAPI dispCom = strPanel.createUIElement(subWidth, itemPanelHeight, true);
-			strPanel.addUIElement(dispCom).inTMid(0);
-			TooltipMakerAPI dispDef = strPanel.createUIElement(subWidth, itemPanelHeight, true);
-			strPanel.addUIElement(dispDef).inTR(0, 0);
-
-			FactionAPI neutral = Global.getSector().getFaction(Factions.NEUTRAL);
-
-			dispAtk.addSectionHeading(getString("intelDesc_headerAttackerMod"), 
-					attacker.faction.getBaseUIColor(), attacker.faction.getDarkUIColor(), Alignment.MID, pad);
-			dispCom.addSectionHeading(getString("intelDesc_headerCommonMod"), 
-					neutral.getBaseUIColor(), neutral.getDarkUIColor(), Alignment.MID, pad);
-			dispDef.addSectionHeading(getString("intelDesc_headerDefenderMod"),
-					defender.faction.getBaseUIColor(), defender.faction.getDarkUIColor(), Alignment.MID, pad);
-			
-		
-			populateModifiersDisplay(strPanel, dispAtk, subWidth, 3, true);
-			populateModifiersDisplay(strPanel, dispCom, subWidth, 3, null);
-			populateModifiersDisplay(strPanel, dispDef, subWidth, 3, false);
-		} catch (Exception ex) {
-			log.error("Failed to display modifiers", ex);
-		}
-		
-		info.addCustom(strPanel, pad);
-	}
-	
-	public void generateCommandDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width, float pad) 
-	{
-		float opad = 10;
+		// player AI buttons
 		FactionAPI fc = getFactionForUIColors();
 		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
-		info.addSectionHeading(getString("commandPanel_header1"), base, bg,  Alignment.MID, opad);
 		
 		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
 		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(160, 
@@ -1361,6 +1308,121 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		info.addCustom(buttonRow, 0);
 		
+		// unit cards
+		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
+		List<GroundUnit> listToRead = playerData.getUnits();	// units whose cards should be shown
+		if (Global.getSettings().isDevMode()) {
+			listToRead = getAllUnits();
+		}
+		int numCards = listToRead.size();
+		if (listToRead.size() < MAX_PLAYER_UNITS)
+			numCards++;	// for the "create unit" card
+		
+		int NUM_ROWS = (int)Math.ceil((float)numCards/CARDS_PER_ROW);
+		//log.info("Number of rows: " + NUM_ROWS);
+		//log.info("Cards per row: " + CARDS_PER_ROW);
+		
+		CustomPanelAPI unitPanel = outer.createCustomPanel(width, NUM_ROWS * (GroundUnit.PANEL_HEIGHT + pad), null);
+		
+		//TooltipMakerAPI test = unitPanel.createUIElement(64, 64, true);
+		//test.addPara("wololo", 0);
+		//unitPanel.addUIElement(test).inTL(0, 0);
+		
+		List<CustomPanelAPI> unitCards = new ArrayList<>();
+		try {
+			for (GroundUnit unit : listToRead) {
+				CustomPanelAPI unitCard = unit.createUnitCard(unitPanel, false);
+				//log.info("Created card for " + unit.name);
+				
+				int numPrevious = unitCards.size();
+				placeElementInRows(unitCard, numPrevious, unitPanel, unitCards, CARDS_PER_ROW);
+				unitCards.add(unitCard);
+			}
+			if (listToRead.size() < MAX_PLAYER_UNITS) {
+				CustomPanelAPI newCard = GroundUnit.createBlankCard(unitPanel, unitSize);
+				placeElementInRows(newCard, unitCards.size(), unitPanel, unitCards, CARDS_PER_ROW);
+			}
+			
+		} catch (Exception ex) {
+			log.error("Failed to display unit cards", ex);
+		}
+				
+		info.addCustom(unitPanel, pad);
+	}
+	
+	public void populateModifiersDisplay(CustomPanelAPI outer, TooltipMakerAPI disp, 
+			float width, float pad, Boolean isAttacker) 
+	{
+		for (GroundBattlePlugin plugin : getPlugins()) {
+			plugin.addModifierEntry(disp, outer, width, pad, isAttacker);
+		}
+	}
+	
+	public void generateModifiersDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
+	{		
+		// Holds the display for each faction, added to 'info'
+		CustomPanelAPI strPanel = panel.createCustomPanel(width, MODIFIER_PANEL_HEIGHT, null);
+		
+		float subWidth = width/3;
+		try {
+			TooltipMakerAPI dispAtk = strPanel.createUIElement(subWidth, MODIFIER_PANEL_HEIGHT, true);
+			strPanel.addUIElement(dispAtk).inTL(0, 0);
+			TooltipMakerAPI dispCom = strPanel.createUIElement(subWidth, MODIFIER_PANEL_HEIGHT, true);
+			strPanel.addUIElement(dispCom).inTMid(0);
+			TooltipMakerAPI dispDef = strPanel.createUIElement(subWidth, MODIFIER_PANEL_HEIGHT, true);
+			strPanel.addUIElement(dispDef).inTR(0, 0);
+
+			FactionAPI neutral = Global.getSector().getFaction(Factions.NEUTRAL);
+
+			dispAtk.addSectionHeading(getString("intelDesc_headerAttackerMod"), 
+					attacker.faction.getBaseUIColor(), attacker.faction.getDarkUIColor(), Alignment.MID, pad);
+			dispCom.addSectionHeading(getString("intelDesc_headerCommonMod"), 
+					neutral.getBaseUIColor(), neutral.getDarkUIColor(), Alignment.MID, pad);
+			dispDef.addSectionHeading(getString("intelDesc_headerDefenderMod"),
+					defender.faction.getBaseUIColor(), defender.faction.getDarkUIColor(), Alignment.MID, pad);
+			
+		
+			populateModifiersDisplay(strPanel, dispAtk, subWidth, 3, true);
+			populateModifiersDisplay(strPanel, dispCom, subWidth, 3, null);
+			populateModifiersDisplay(strPanel, dispDef, subWidth, 3, false);
+		} catch (Exception ex) {
+			log.error("Failed to display modifiers", ex);
+		}
+		
+		info.addCustom(strPanel, pad);
+	}
+	
+	public void generateAbilityDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width, float pad) 
+	{
+		if (playerIsAttacker == null) return;
+		
+		float opad = 10;
+		FactionAPI fc = getFactionForUIColors();
+		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
+		info.addSectionHeading(getString("commandPanel_header1"), base, bg, Alignment.MID, opad);
+				
+		// abilities
+		int CARDS_PER_ROW = (int)(width/(AbilityPlugin.PANEL_WIDTH + GroundUnit.PADDING_X));
+		List<AbilityPlugin> abilities = getSide(playerIsAttacker).abilities;
+		int numCards = abilities.size();
+		
+		int NUM_ROWS = (int)Math.ceil((float)numCards/CARDS_PER_ROW);
+		CustomPanelAPI abilityPanel = outer.createCustomPanel(width, NUM_ROWS * AbilityPlugin.PANEL_HEIGHT, null);
+				
+		List<CustomPanelAPI> abilityCards = new ArrayList<>();
+		try {
+			for (AbilityPlugin plugin : abilities) {
+				CustomPanelAPI abilityCard = plugin.createAbilityCard(abilityPanel);
+				//log.info("Created card for " + unit.name);
+				
+				int numPrevious = abilityCards.size();
+				placeElementInRows(abilityCard, numPrevious, abilityPanel, abilityCards, CARDS_PER_ROW);
+				abilityCards.add(abilityCard);
+			}			
+		} catch (Exception ex) {
+			log.error("Failed to display ability cards", ex);
+		}
+		info.addCustom(abilityPanel, pad);
 	}
 	
 	public void generateIndustryDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width) 
@@ -1672,6 +1734,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			ui.showDialog(market.getPrimaryEntity(), new UnitOrderDialogPlugin(this, (GroundUnit)buttonId, ui));
 			return;
 		}
+		if (buttonId instanceof AbilityPlugin) {
+			ui.showDialog(market.getPrimaryEntity(), new AbilityDialogPlugin((AbilityPlugin)buttonId, ui));
+		}
 		if (buttonId == GroundUnit.BUTTON_NEW_HEAVY) {
 			createPlayerUnit(ForceType.HEAVY);
 			ui.updateUIForItem(this);
@@ -1744,7 +1809,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			return;
 		}
 		
-		if (viewMode == null) viewMode = ViewMode.OVERVIEW;
+		if (viewMode == null) viewMode = ViewMode.UNITS;
 		
 		generateIntro(panel, outer, width, opad);
 		
@@ -1754,12 +1819,15 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			return;
 		}
 		
-		if (playerIsAttacker != null)
-			generateUnitDisplay(outer, panel, width, opad);
-		if (viewMode == ViewMode.OVERVIEW) {
-			generateModifiersDisplay(outer, panel, width - 6, opad);
-		} else if (viewMode == ViewMode.COMMAND) {
-			generateCommandDisplay(outer, panel, width, opad);
+		if (viewMode == ViewMode.UNITS) {
+			if (playerIsAttacker != null)
+				generateUnitDisplay(outer, panel, width, opad);
+		} 
+		else if (viewMode == ViewMode.ABILITIES) {
+			generateAbilityDisplay(outer, panel, width, opad);
+		}
+		else if (viewMode == ViewMode.INFO) {
+			generateModifiersDisplay(outer, panel, width, opad);
 		}
 		else if (viewMode == ViewMode.LOG) {
 			generateLogDisplay(outer, panel, width - 14);
@@ -1796,6 +1864,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	@Override
+	public SectorEntityToken getMapLocation(SectorMapAPI map) {
+		return super.getMapLocation(map); //To change body of generated methods, choose Tools | Templates.
+	}
+	
+	@Override
 	public String getIcon() {
 		return "graphics/icons/markets/mercenaries.png";
 	}
@@ -1804,7 +1877,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public String getCommMessageSound() {
 		if (listInfoParam == UPDATE_TURN)
 			return "nex_sfx_combat";
-		return super.getCommMessageSound();
+		if (listInfoParam == UPDATE_VICTORY)
+			return "nex_sfx_combat";	// maybe different sound?
+		
+		return getSoundMajorPosting();
 	}
 	
 	@Override
@@ -1876,7 +1952,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public enum ViewMode {
-		OVERVIEW, COMMAND, LOG, HELP
+		UNITS, ABILITIES, INFO, LOG, HELP
 	}
 	
 	public enum BattleOutcome {

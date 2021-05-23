@@ -34,7 +34,12 @@ public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 	public void beforeCombatResolve(int turn, int numThisTurn) {}
 	
 	@Override
-	public void afterTurnResolve(int turn) {}
+	public void afterTurnResolve(int turn) {
+		if (isDone()) {
+			unapply();
+			intel.removePlugin(this);
+		}
+	}
 	
 	@Override
 	public void reportUnitMoved(GroundUnit unit, IndustryForBattle lastLoc) {}

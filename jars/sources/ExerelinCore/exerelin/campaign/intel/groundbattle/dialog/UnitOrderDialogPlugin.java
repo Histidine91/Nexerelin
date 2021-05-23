@@ -279,7 +279,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		}
 	}
 	
-	protected List<Industry> getIndustries() {
+	public List<Industry> getIndustries() {
 		List<Industry> industries = new ArrayList<>();
 		for (IndustryForBattle ifb : intel.getIndustries()) {
 			if (ifb == unit.getLocation()) continue;
@@ -323,7 +323,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	public void showUnitPanel() {
 		CustomPanelAPI panel = visual.showCustomPanel(GroundUnit.PANEL_WIDTH, GroundUnit.PANEL_HEIGHT, null);
-		panel.addUIElement(unit.createUnitCard(panel, true));
+		panel.addComponent(unit.createUnitCard(panel, true));
 	}
 	
 	public void printInit() {
@@ -401,7 +401,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	protected String getSound(String event) {
 		switch (event) {
 			case "attrition":
-				return "nex_ui_gb_attrition";
+				return "nex_sfx_gb_attrition";
 			case "move":
 			case "withdraw":
 			case "cancelMove":

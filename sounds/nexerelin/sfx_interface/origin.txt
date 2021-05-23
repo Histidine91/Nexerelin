@@ -8,3 +8,6 @@ groundbattle/groundfire.ogg is a mashup of Starsector's Mauler and Hephaesteus s
 
 alarm.wav - SoundBible (http://soundbible.com/2056-Missile-Alert.html), modified by Soren
 	CC-BY
+	
+groundbattle/static.ogg - by harveyjnz at Freesound https://freesound.org/people/harveyjnz/sounds/337700/
+	CC0

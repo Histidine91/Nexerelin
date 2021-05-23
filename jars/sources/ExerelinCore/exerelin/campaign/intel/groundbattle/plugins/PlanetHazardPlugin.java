@@ -24,6 +24,7 @@ public class PlanetHazardPlugin extends BaseGroundBattlePlugin {
 	@Override
 	public void afterTurnResolve(int turn) {
 		damageUnits(intel.getAllUnits());
+		super.afterTurnResolve(turn);
 	}
 	
 	public void damageUnits(List<GroundUnit> units) 

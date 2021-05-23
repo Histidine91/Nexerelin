@@ -19,6 +19,7 @@
 			"enemyDropCostMult":1.5,
 			"enemyBombardmentCostMult":2,
 			"dropAttritionFactor":10,
+			"tags":["noBombard"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.GroundDefensesPlugin",
 			"icon":"graphics/exerelin/icons/groundbattle/groundefenses.png",
 		},
@@ -31,12 +32,12 @@
 			},
 			"enemyDropCostMult":2,
 			"dropAttritionFactor":20,
-			"tags":["preventBombardment"],
+			"tags":["noBombard", "preventBombardment"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.GroundDefensesPlugin",
 			"icon":"graphics/exerelin/icons/groundbattle/heavybatteries.png",
 		},
 		"planetaryshield":{
-			"tags":["preventBombardment", "preventEW", "preventInspire", "preventCAS"],
+			"tags":["noBombard", "preventBombardment", "preventEW", "preventInspire", "preventCAS"],
 			"enemyDropCostMult":2,
 			"dropAttritionMult":2,
 		},
@@ -77,12 +78,13 @@
 			},	
 		},
 	},
-	# TODO
+	
 	"conditions":{
 		"water_surface":{
 			"desc":"The water surface does not permit normal combat. Most fighting will take place in the interior of sea habitats, where the usefulness of heavy armaments will be limited.",
 			"highlights":["heavy armaments"],
 			"tags":["cramped"],
+			"color":[32, 32, 255, 255],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin",	# unlike industries, this must be specified to do anything
 		},
 		
@@ -98,6 +100,38 @@
 			"highlights":["reorganize"],
 			"tags":["cramped", "preventEW", "preventInspire"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.MagneticCrustPlugin",
+		},
+	},
+	
+	"abilities":{
+		"fireSupport":{
+			"name":"Fire Support",
+			"icon":"graphics/icons/cargo/fuel.png",
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.FireSupportAbilityPlugin",
+			"sound":"nex_sfx_deciv_bomb",
+			"cooldown":2,
+			"cooldownGlobal":1,
+			"color":[255, 64, 64, 255],
+			"order":1,
+		},
+		"inspire":{
+			"name":"Inspire",
+			"icon":"graphics/icons/skills/leadership.png",
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.InspireAbilityPlugin",
+			"cooldownGlobal":2,
+			"color":[128, 192, 64, 255],
+			"order":2,
+			#"illustration":"",
+		},
+		"electronicwarfare":{
+			"name":"Electronic Warfare",
+			"icon":"graphics/icons/skills/EW.png",
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.EWAbilityPlugin",
+			"sound":"nex_sfx_ewar",
+			"cooldown":4,
+			"cooldownGlobal":2,
+			"color":[10, 140, 240, 255],
+			"order":3,
 		},
 	},
 	

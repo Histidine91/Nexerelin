@@ -10,7 +10,9 @@ import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.intel.groundbattle.GBDataManager.AbilityDef;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
@@ -36,6 +38,7 @@ public class GroundBattleSide {
 	protected List<GroundUnit> units = new LinkedList<>();
 	protected PersonAPI commander;
 	protected float currNormalBaseStrength;	// set for defender only
+	protected List<AbilityPlugin> abilities = new ArrayList<>();
 	protected Map<ForceType, Integer> losses = new HashMap<>();
 	protected Map<ForceType, Integer> lossesLastTurn = new HashMap<>();
 	protected Map<String, Object> data = new HashMap<>();
@@ -55,11 +58,24 @@ public class GroundBattleSide {
 		if (!isAttacker) {
 			commander = intel.getMarket().getAdmin();
 		}
+		
+		for (AbilityDef adef : GBDataManager.getAbilityDefs()) {
+			AbilityPlugin plugin = AbilityPlugin.loadPlugin(this, adef.id);
+			abilities.add(plugin);
+		}
+	}
+	
+	public GroundBattleIntel getIntel() {
+		return intel;
+	}
+	
+	public boolean isAttacker() {
+		return isAttacker;
 	}
 	
 	public Map<String, Object> getData() {
 		return data;
-	}	
+	}
 
 	public StatBonus getDamageDealtMod() {
 		return damageDealtMod;
@@ -113,6 +129,29 @@ public class GroundBattleSide {
 		return lossesLastTurn;
 	}
 	
+	public PersonAPI getCommander() {
+		return commander;
+	}
+	
+	public int getGlobalAbilityCooldown() {
+		String key = "abilityCooldown";
+		Integer cooldown = (Integer)data.get(key);
+		if (cooldown == null) return 0;
+		return cooldown;
+	}
+	
+	public void modifyGlobalAbilityCooldown(int cooldown) {
+		String key = "abilityCooldown";
+		Integer currCooldown = (Integer)data.get(key);
+		if (currCooldown != null) {
+			cooldown += currCooldown;
+		}
+		if (cooldown <= 0)
+			data.remove(key);
+		else
+			data.put(key, cooldown);
+	}
+	
 	public void reportLosses(GroundUnit unit, int num) {
 		ForceType type = unit.getType();
 		NexUtils.modifyMapEntry(losses, type, num);
@@ -131,6 +170,13 @@ public class GroundBattleSide {
 				StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(casualties, unit.faction.getId());
 			}
 		}
+	}
+	
+	public void reportTurn() {
+		for (AbilityPlugin ability : abilities) {
+			ability.reportTurn();
+		}
+		modifyGlobalAbilityCooldown(-1);
 	}
 	
 	/**

@@ -37,7 +37,9 @@ public class GeneralPlugin extends BaseGroundBattlePlugin {
 	}
 	
 	public static int getBaseMovementPointsPerTurn(int marketSize) {
-		return (int)Math.round(GBConstants.BASE_MOVEMENT_POINTS_PER_TURN * Math.pow(2, marketSize - 2));
+		int points = Math.round(GBConstants.BASE_MOVEMENT_POINTS_PER_TURN * (marketSize + 1)*(marketSize/2f));
+		if (points < 50) points = 50;
+		return points;
 	}
 	
 	// Graphical only: Station modifier

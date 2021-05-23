@@ -31,6 +31,7 @@ public class NexUtilsGUI {
 		if (largeFont)
 			textHolder.setParaSmallInsignia();
 		textHolder.addPara(text, textColor, pad);
+		textHolder.setParaFontDefault();
 		if (tooltip != null)
 			textHolder.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
 		panel.addUIElement(textHolder).rightOfTop(image, textPad);

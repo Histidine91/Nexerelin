@@ -37,10 +37,10 @@ public class GroundUnit {
 	
 	public static final boolean USE_LOCATION_IMAGE = true;
 	
-	public static final float PANEL_WIDTH = USE_LOCATION_IMAGE ? 220 : 200;
-	public static final float PANEL_HEIGHT = USE_LOCATION_IMAGE ? 120 : 110;
+	public static float PANEL_WIDTH = USE_LOCATION_IMAGE ? 220 : 200;
+	public static float PANEL_HEIGHT = USE_LOCATION_IMAGE ? 120 : 110;
 	public static final float TITLE_HEIGHT = 16;
-	public static final float LOCATION_SECTION_HEIGHT = USE_LOCATION_IMAGE ? 32 : 24;
+	public static float LOCATION_SECTION_HEIGHT = USE_LOCATION_IMAGE ? 32 : 24;
 	public static final float PADDING_X = 4;
 	public static final float BUTTON_SECTION_WIDTH = 64;
 	public static final Object BUTTON_NEW_MARINE = new Object();
@@ -662,12 +662,11 @@ public class GroundUnit {
 		return num/intel.unitSize.getAverageSizeForType(type);
 	}
 	
-	public static TooltipMakerAPI createBlankCard(CustomPanelAPI parent, UnitSize size) 
+	public static CustomPanelAPI createBlankCard(CustomPanelAPI parent, UnitSize size) 
 	{
 		FactionAPI faction = Global.getSector().getPlayerFaction();
 		CargoAPI cargo = getCargo();
 		
-		TooltipMakerAPI cardHolder = parent.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, 
 				new GroundUnitPanelPlugin(faction, null, faction.getCrest()));
 		
@@ -684,12 +683,11 @@ public class GroundUnit {
 			newHeavy.setEnabled(false);
 		
 		card.addUIElement(buttonHolder).inTL((PANEL_WIDTH-btnWidth)/2, PANEL_HEIGHT/2 - 24);
-		cardHolder.addCustom(card, 0);
 		
-		return cardHolder;
+		return card;
 	}
 	
-	public TooltipMakerAPI createUnitCard(CustomPanelAPI parent, boolean forDialog)
+	public CustomPanelAPI createUnitCard(CustomPanelAPI parent, boolean forDialog)
 	{
 		float sizeMult = 1, pad = 3;
 		if (forDialog) {
@@ -700,8 +698,6 @@ public class GroundUnit {
 		String commoditySprite = Global.getSettings().getCommoditySpec(type.commodityId).getIconName();
 		String crest = faction.getCrest();
 		
-		TooltipMakerAPI cardHolder = parent.createUIElement(PANEL_WIDTH * sizeMult, 
-				PANEL_HEIGHT * sizeMult, false);
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH * sizeMult, 
 				PANEL_HEIGHT * sizeMult, 
 				new GroundUnitPanelPlugin(faction, commoditySprite, crest));
@@ -801,8 +797,7 @@ public class GroundUnit {
 			card.addUIElement(buttonHolder).inTR(1 * sizeMult, 2 * sizeMult);
 		}
 		
-		cardHolder.addCustom(card, 0);
-		return cardHolder;
+		return card;
 	}
 	
 	public TooltipCreator createTooltip(final String id) {

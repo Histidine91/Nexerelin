@@ -1,10 +1,12 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.groundbattle.GBDataManager.AbilityDef;
 import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.StringHelper;
@@ -24,6 +26,7 @@ public class GroundBattleLog {
 	public static final String TYPE_UNIT_ROUTED = "unitRouted";
 	public static final String TYPE_UNIT_DESTROYED = "unitDestroyed";
 	public static final String TYPE_INDUSTRY_CAPTURED = "industryCaptured";
+	public static final String TYPE_ABILITY_USED = "abilityUsed";
 	public static final String TYPE_EXTERNAL_BOMBARDMENT = "externalBombardment";
 	public static final String TYPE_BATTLE_END = "victory";
 	public static final String TYPE_XP_GAINED = "gainXP";
@@ -127,6 +130,30 @@ public class GroundBattleLog {
 					label.setHighlightColors(h, pc, pc);
 				}
 				break;
+			
+			case TYPE_ABILITY_USED:
+				{
+					PersonAPI person = (PersonAPI)params.get("person");
+					AbilityDef ability = (AbilityDef)params.get("ability");
+					IndustryForBattle ind = (IndustryForBattle)params.get("industry");
+					String indName = ind != null ? ind.getName() : "";
+					str = getString("log_abilityUsed" + (ind != null ? "Industry" : ""));
+					String extraDesc = (String)params.get("extraDesc");
+					if (extraDesc == null) extraDesc = "";
+					
+					str = StringHelper.substituteToken(str, "$person", person.getNameString());
+					str = StringHelper.substituteToken(str, "$ability", ability.name);
+					if (ind != null)
+						str = StringHelper.substituteToken(str, "$industry", indName);
+					str = StringHelper.substituteToken(str, "$extraDesc", extraDesc);
+					
+					Color abilityColor = ability.color;
+					if (abilityColor == null) abilityColor = h;
+					
+					label = tooltip.addPara(str, LOG_PADDING, h, person.getNameString(), ability.name, indName);
+					label.setHighlightColors(person.getFaction().getBaseUIColor(), abilityColor, h);
+					break;
+				}
 			case TYPE_EXTERNAL_BOMBARDMENT:
 				{
 					boolean isSaturation = params.containsKey("isSaturation") && (boolean)params.get("isSaturation");
@@ -198,6 +225,11 @@ public class GroundBattleLog {
 				return Misc.getBallisticMountColor();
 			case TYPE_UNIT_DESTROYED:
 				return intel.getHighlightColorForSide(!unit.isAttacker);
+			case TYPE_ABILITY_USED:
+				{
+					boolean attacker = (boolean)params.get("isAttacker");
+					return intel.getHighlightColorForSide(attacker);
+				}
 			case TYPE_INDUSTRY_CAPTURED:
 				return intel.getHighlightColorForSide((boolean)params.get("heldByAttacker"));
 			case TYPE_BATTLE_END:

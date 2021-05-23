@@ -22,18 +22,13 @@ Inspire
 Electronic Warfare
 - Reduces enemy attack capability by 30%, and prevents giving orders. Lasts 1 turn.
 - Costs X supplies, where X is a number multiplied by (size ^ 2).
-- Requires EW skill.
+- Requires Y points in fleetwide ECM (based on market size).
 
 Close Air Support
-- Applies damage to target based on total OP of fighters in fleet.
+- Applies damage to target based on total OP of fighters in fleet. Bombers get a bonus.
 - Loses supplies and crew based on enemy ground defenses.
-- Requires Fighter Uplink skill.
+- Bonuses for having fighter-related skills?
 
-Loot
-- Grabs all special equipment and AI cores on the industry, sending it back to player cargo.
-
-Smash
-- Disrupts an occupied industry. The selected unit is forced to reorganize for 1 turn.
 
 == Help page ==
 The basics
@@ -46,7 +41,6 @@ Deployment and giving orders
 Morale
 
 == Todo ==
-- Special ability interface
 - Generate buffs
 	- Commanders
 	- Luddic Church

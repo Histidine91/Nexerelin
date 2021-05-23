@@ -103,6 +103,13 @@ public class GroundBattleRoundResolve {
 		}
 	}
 	
+	public void checkReorganize(GroundUnit unit) {
+		if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
+			printDebug(String.format("  Unit %s reorganizing due to low morale: %s", unit.name, unit.morale));
+			unit.reorganize(1);
+		}
+	}
+	
 	public void processUnitsRoundIntermission() {
 		for (GroundUnit unit : intel.getAllUnits()) {
 			if (unit.getSize() <= 0) {	// ded
@@ -152,9 +159,8 @@ public class GroundBattleRoundResolve {
 			{
 				tryRoutUnit(unit);
 			}
-			else if (unit.morale < GBConstants.REORGANIZE_AT_MORALE) {
-				printDebug(String.format("  Unit %s reorganizing due to low morale: %s", unit.name, unit.morale));
-				unit.reorganize(1);
+			else {
+				checkReorganize(unit);
 			}
 		}
 	}

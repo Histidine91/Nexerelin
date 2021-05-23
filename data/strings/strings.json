@@ -42,6 +42,7 @@
 		"status":"status",
 		"target":"target",
 		"unknown":"unknown",
+		"use":"use",
 		"vote":"vote",
 		"you":"you",
 		"yourFleet":"your fleet",
@@ -103,6 +104,8 @@
 		"expired":"expired",
 		"suspended":"suspended",
 		"neverMind":"never mind",
+		"activate":"activate",
+		"deactivate":"deactivate",
 		
 		"random":"random",
 		"randomize":"randomize",
@@ -1124,14 +1127,15 @@
 		
 		"bulletLossesLastTurn":"Losses last turn: %s",
 		
-		"btnViewOverview":"Overview",
-		"btnViewCommand":"Command",
+		"btnViewUnits":"Units",
+		"btnViewAbilities":"Abilities",
+		"btnViewInfo":"Info",
 		"btnViewLog":"Log",
 		"btnViewHelp":"Help",
 		"btnResolveRound":"Resolve round",
 		"btnAIDebug":"Debug defender AI",
 		"btnRunPlayerAI":"Auto-move units",
-		"btnRunPlayerAI_tooltip":"Let the AI move all deployed units as it sees fit. Will not move unis that already have a move or withdraw order. Will not deploy new units or use special abilities.",
+		"btnRunPlayerAI_tooltip":"Let the AI move all deployed units as it sees fit. Will not move units that already have a move or withdraw order. Will not deploy new units or use special abilities.",
 		"btnTogglePlayerAI":"Auto-move at turn end",
 		"btnNewUnitMarine":"New marine %s",
 		"btnNewUnitHeavy":"New heavy %s",
@@ -1147,7 +1151,7 @@
 		"unitPanel_movementPoints_tooltip1":"Spent when deploying or moving units. You can move units as long as you have a nonzero amount of points, but any overdraft has to be paid for the following turn.",
 		"unitPanel_movementPoints_tooltip2":"Current contributions to max points:",
 		
-		"commandPanel_header1":"Special functions",
+		"commandPanel_header1":"Special abilities",
 		
 		
 		"industryPanel_header_industry":"Industry",
@@ -1225,6 +1229,8 @@
 		"log_unitDeployed":"%s ($unitType) deployed to %s",
 		"log_unitWithdrawn":"%s ($unitType) withdrawn from %s to fleet",
 		"log_tacbomb":"%s! Severe damage to units at locations: $industries",
+		"log_abilityUsed":"$person used $ability! $extraDesc",
+		"log_abilityUsedIndustry":"$person used $ability on $industry! $extraDesc",
 		"log_satbomb":"%s!! Severe damage to units at all locations",
 		"log_victory":"%s %s wins the battle!",
 		"log_lossesFinal":"Final player losses: %s marines, %s heavy armaments",
@@ -1323,6 +1329,31 @@
 		
 		"ability_cooldown":"Cooldown: %s turns",
 		"ability_cooldownGlobal":"Global cooldown: %s turns",
+		"ability_outOfRange":"Out of range",
+		"ability_alreadyUsed":"Already used this battle",
+		
+		"ability_inspire_blurb":"An inspiring battle speech by the leader at the right time can turn the tide of battle.",
+		"ability_inspire_tooltip":"Raises morale of all units by %s, and removes one turn of the reorganizing state. Can be used once per battle.",
+		"ability_inspire_prereq":"Requires %s skill points in Leadership",
+		
+		"ability_ew_blurb":"Broad-spectrum EW attack on enemy C3, sensors and intelligence systems disrupts their ability to organize or fight.",
+		"ability_ew_tooltip1":"All enemy units reorganize for %s turn, and effects of enemy ground defenses is reduced to %s of normal.",
+		"ability_ew_tooltip2":"Requires nearby friendly fleets to have a total of %s ECM rating. Lasts an additional turn at %s ECM rating.",
+		"ability_ew_tooltip3":"Current ECM rating: %s (cached)",
+		"ability_ew_tooltipTimeRemaining":"Lasts for %s more turn(s).",
+		"ability_ew_insufficientECM":"Insufficient ECM rating",
+		"ability_ew_insufficientSupplies":"Insufficient supplies: %s",
+		
+		"ability_bombard_blurb":"Small-scale bombardment in direct support of ground forces.",
+		"ability_bombard_tooltip1":"Does %s damage (at current market size) distributed between all enemy units on the target industry. Damage increasd by %s if combat is ongoing on the target.",
+		"ability_bombard_tooltip2":"If target industry is held by enemy, disrupts the industry for its base raid time.",
+		"ability_bombard_tooltip3":"Ground defenses can protect themselves efficiently against fire support bombardments.",
+		"ability_bombard_tooltip4":"Costs %s fuel at current market size and conditions.",
+		"ability_bombard_result1":"Inflicted %s damage across %s units",
+		"ability_bombard_result2":"%s disrupted for %s days",
+		#"ability_bombard_confirm":"Will disrupt %s for %s days.",
+		"ability_bombard_prevented":"Fire support prevented",
+		"ability_bombard_insufficientFuel":"Insufficient fuel: %s",
 		
 		"responseStr":"responding to invasion",
 		"responseTravelStr":"moving in response to invasion",

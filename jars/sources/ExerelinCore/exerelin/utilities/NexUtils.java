@@ -194,22 +194,38 @@ public class NexUtils
 	}
 
 	public static String[] JSONArrayToStringArray(JSONArray jsonArray)
-    {
-        try
-        {
-            String[] ret = new String[jsonArray.length()];
-            for (int i=0; i<jsonArray.length(); i++)
-            {
-                ret[i] = jsonArray.getString(i);
-            }
-            return ret;
-        }
-        catch (Exception e)
-        {
-            Global.getLogger(NexFactionConfig.class).warn(e);
-            return new String[]{};
-        }
-    }
+	{
+		try
+		{
+			String[] ret = new String[jsonArray.length()];
+			for (int i=0; i<jsonArray.length(); i++)
+			{
+				ret[i] = jsonArray.getString(i);
+			}
+			return ret;
+		}
+		catch (Exception e)
+		{
+			Global.getLogger(NexUtils.class).error(e);
+			return new String[]{};
+		}
+	}
+	
+	public static Color JSONArrayToColor(JSONArray array)
+	{
+		try
+		{
+			float alpha = 255;
+			if (array.length() > 3) alpha = array.getInt(3)/255f;
+			Color color = new Color(array.getInt(0)/255f, array.getInt(1)/255f, array.getInt(2)/255f, alpha);
+			return color;
+		}
+		catch (Exception e)
+		{
+			Global.getLogger(NexUtils.class).error(e);
+			return Color.WHITE;
+		}
+	}
 
 	public static ArrayList<String> JSONArrayToArrayList(JSONArray jsonArray)
 	{
@@ -283,30 +299,30 @@ public class NexUtils
 	public static void removeScriptAndListener(SectorEntityToken entity, Class<?> oldClass, Class<?> newClass)
 	{
 		CampaignEventListener listener = null;
-        for (CampaignEventListener l : Global.getSector().getAllListeners()) {
-            if (oldClass.isInstance(l) && (newClass == null || !newClass.isInstance(l))) {
-                listener = l;
-                break;
-            }
-        }
-        if (listener != null) {
-            Global.getSector().removeListener(listener);
-        }
+		for (CampaignEventListener l : Global.getSector().getAllListeners()) {
+			if (oldClass.isInstance(l) && (newClass == null || !newClass.isInstance(l))) {
+				listener = l;
+				break;
+			}
+		}
+		if (listener != null) {
+			Global.getSector().removeListener(listener);
+		}
 		entity.removeScriptsOfClass(oldClass);
 	}
 	
 	public static void removeScriptAndListener(LocationAPI loc, Class<?> oldClass, Class<?> newClass)
 	{
 		CampaignEventListener listener = null;
-        for (CampaignEventListener l : Global.getSector().getAllListeners()) {
-            if (oldClass.isInstance(l) && (newClass == null || !newClass.isInstance(l))) {
-                listener = l;
-                break;
-            }
-        }
-        if (listener != null) {
-            Global.getSector().removeListener(listener);
-        }
+		for (CampaignEventListener l : Global.getSector().getAllListeners()) {
+			if (oldClass.isInstance(l) && (newClass == null || !newClass.isInstance(l))) {
+				listener = l;
+				break;
+			}
+		}
+		if (listener != null) {
+			Global.getSector().removeListener(listener);
+		}
 		loc.removeScriptsOfClass(oldClass);
 	}
 	
@@ -330,16 +346,7 @@ public class NexUtils
 		
 		return result;
 	}
-	
-	public static boolean objectToBoolean(Object val) {
-		if (val == null) return false;
-		if (val instanceof String)
-			return Boolean.parseBoolean((String)val);
-		else if (val instanceof Boolean)
-			return (Boolean)val;
-		return false;
-	}
-	
+		
 	public static TooltipCreator createSimpleTextTooltip(final String str, final float width) {
 		return new TooltipCreator() {
 			@Override
