@@ -17,12 +17,14 @@ public class Nex_StoragePlugin extends StoragePlugin {
 	public boolean isIllegalOnSubmarket(CargoStackAPI stack, TransferAction action) {
 		if (isFree()) return false;
 		if (action == action.PLAYER_BUY) return false;
+		if (market.getFaction().isPlayerFaction()) return false;
 		return super.isIllegalOnSubmarket(stack, action);
 	}
 
 	@Override
 	public boolean isIllegalOnSubmarket(String commodityId, TransferAction action) {
 		if (isFree()) return false;
+		if (market.getFaction().isPlayerFaction()) return false;
 		if (action == action.PLAYER_BUY) return false;
 		return super.isIllegalOnSubmarket(commodityId, action);
 	}
