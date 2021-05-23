@@ -54,7 +54,7 @@ public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 				null, width, GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT, cond.getName(), 
 				width - GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT - 8, 8, 
 				icon, GroundBattlePlugin.MODIFIER_ENTRY_HEIGHT, 3, 
-				null, true, tt);
+				getDef().color, true, tt);
 		
 		info.addCustom(gen.panel, pad);
 	}

@@ -640,6 +640,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (fleetXP > 0) {
 			log.info("Adding " + fleetXP + " XP for " + inFleet + " marines in fleet");
 			PlayerFleetPersonnelTracker.getInstance().getMarineData().addXP(fleetXP);
+			
+			GroundBattleLog xpLog = new GroundBattleLog(this, GroundBattleLog.TYPE_XP_GAINED);
+			xpLog.params.put("xp", fleetXP);
+			xpLog.params.put("marines", inFleet);
+			xpLog.params.put("isStorage", false);
+			addLogEvent(xpLog);
 		}
 		
 		float storageXP = (inStorage/total) * xp;
@@ -656,7 +662,15 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				market.getSubmarket(Submarkets.SUBMARKET_STORAGE), true);
 			local.data.num = storage.getCargo().getMarines();
 			local.data.addXP(storageXP + playerData.xpTracker.data.xp);
+			
+			GroundBattleLog xpLog = new GroundBattleLog(this, GroundBattleLog.TYPE_XP_GAINED);
+			xpLog.params.put("xp", storageXP);
+			xpLog.params.put("marines", inStorage);
+			xpLog.params.put("isStorage", true);
+			addLogEvent(xpLog);
 		}
+		
+		Global.getSector().getPlayerPerson().getStats().addXP(Math.round(xp * 1000));
 	}
 	
 	/**

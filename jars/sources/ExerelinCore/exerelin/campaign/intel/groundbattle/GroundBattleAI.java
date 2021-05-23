@@ -297,7 +297,7 @@ public class GroundBattleAI {
 			writeOffIndustries();
 		}
 		
-		boolean canContinue = movedAnything && availableStrength > 0;
+		boolean canContinue = movedAnything && availableStrength > 0 && intel.getSide(isAttacker).getMovementPointsRemaining() > 0;
 		return canContinue;
 	}
 			

@@ -84,7 +84,7 @@
 			"desc":"The water surface does not permit normal combat. Most fighting will take place in the interior of sea habitats, where the usefulness of heavy armaments will be limited.",
 			"highlights":["heavy armaments"],
 			"tags":["cramped"],
-			"color":[32, 32, 255, 255],
+			"color":[64, 96, 255, 255],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin",	# unlike industries, this must be specified to do anything
 		},
 		

@@ -37,6 +37,12 @@ public class GroundBattleLog {
 	public final String type;
 	public Map<String, Object> params = new HashMap<>();
 	
+	public GroundBattleLog(GroundBattleIntel intel, String type) {
+		this.intel = intel;
+		this.type = type;
+		turn = intel.getTurnNum();
+	}
+	
 	public GroundBattleLog(GroundBattleIntel intel, String type, int turn) {
 		this.intel = intel;
 		this.turn = turn;
@@ -196,6 +202,18 @@ public class GroundBattleLog {
 					tooltip.addPara(str, LOG_PADDING, h, marinesLost + "", heavyArmsLost + "");
 				}
 				break;
+				
+			case TYPE_XP_GAINED:
+				{
+					Integer marines = (Integer)params.get("marines");
+					if (marines == 0) marines = 0;
+					float xp = (float)params.get("xp");
+					Boolean storage = (Boolean)params.get("isStorage");
+					if (storage == null) storage = false;
+					
+					str = getString("log_xp_" + (storage ? "storage" : "fleet"));
+					tooltip.addPara(str, LOG_PADDING, h, marines + "", String.format("%.1f", xp));
+				}
 		}
 	}
 	

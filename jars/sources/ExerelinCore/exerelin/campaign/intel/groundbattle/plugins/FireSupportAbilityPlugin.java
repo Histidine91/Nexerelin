@@ -26,7 +26,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 	
 	public static float BASE_DAMAGE = 32;	// at size 3
 	public static float CLOSE_SUPPORT_DAMAGE_MULT = 1.25f;
-	public static float BASE_COST = 20;
+	public static float BASE_COST = 24;
 		
 	@Override
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
@@ -43,6 +43,10 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			}
 		}
 		
+		
+		boolean enemyHeld = target.heldByAttacker != side.isAttacker();
+		if (enemyHeld) damage /= target.getPlugin().getStrengthMult();
+		
 		logActivation(user);	// so it displays before the unit destruction messages, if any
 		
 		GroundBattleRoundResolve resolve = new GroundBattleRoundResolve(getIntel());
@@ -54,9 +58,8 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 				resolve.checkReorganize(unit);
 		}
 		
-		boolean disrupt = target.heldByAttacker != side.isAttacker();
 		float disruptTime = 0;
-		if (disrupt) {
+		if (enemyHeld) {
 			Industry ind = target.getIndustry();
 			disruptTime = getDisruptionTime(ind);
 			ind.setDisrupted(disruptTime + ind.getDisruptedDays(), true);
@@ -67,7 +70,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result1"), 
 				h, Math.round(damage) + "", numEnemies + "");
 		
-		if (disrupt) {
+		if (enemyHeld) {
 			dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result2"), 
 				h, target.getName(), (int)disruptTime + "");
 		}
@@ -124,7 +127,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			return new Pair<>(id, params);
 		}
 		// fuel check
-		{
+		if (user != null && user.getFleet() != null) {
 			int cost = getFuelCost();
 			float have = user.getFleet().getCargo().getMaxFuel();
 			if (user == Global.getSector().getPlayerPerson()) {

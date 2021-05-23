@@ -29,7 +29,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 	public static final String MEMORY_KEY_ECM_CACHE = "$nex_ecmRating_cache";
 	public static float BASE_ECM_REQ = 1.5f;	// at size 3
 	public static float GROUND_DEF_EFFECT_MULT = 0.75f;
-	public static int BASE_COST = 20;	// at size 3
+	public static int BASE_COST = 50;	// at size 3
 	
 	@Override
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
@@ -59,7 +59,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		}
 		
 		// supplies check
-		{
+		if (user != null && user.getFleet() != null) {
 			int cost = getSupplyCost();
 			float have = user.getFleet().getCargo().getMaxCapacity() * 0.5f;
 			if (user == Global.getSector().getPlayerPerson()) {

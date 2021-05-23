@@ -1345,7 +1345,7 @@
 		"ability_ew_insufficientSupplies":"Insufficient supplies: %s",
 		
 		"ability_bombard_blurb":"Small-scale bombardment in direct support of ground forces.",
-		"ability_bombard_tooltip1":"Does %s damage (at current market size) distributed between all enemy units on the target industry. Damage increasd by %s if combat is ongoing on the target.",
+		"ability_bombard_tooltip1":"Does %s damage (at current market size) distributed between all enemy units on the target industry. Damage increasd by %s if combat is ongoing on the target, and reduced by the industry's defense bonus (if any).",
 		"ability_bombard_tooltip2":"If target industry is held by enemy, disrupts the industry for its base raid time.",
 		"ability_bombard_tooltip3":"Ground defenses can protect themselves efficiently against fire support bombardments.",
 		"ability_bombard_tooltip4":"Costs %s fuel at current market size and conditions.",
