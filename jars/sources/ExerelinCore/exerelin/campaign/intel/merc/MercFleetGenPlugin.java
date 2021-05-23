@@ -175,8 +175,9 @@ public class MercFleetGenPlugin {
 		MercCompanyDef def = intel.getDef();
 		
 		//log.info("Trying availability for company " + def.id);
-		boolean ignoreMarketRelationship = NexUtils.objectToBoolean(def.miscData.get("ignoreMarketRelationship"));
-		if (!ignoreMarketRelationship && market.getFaction().isHostileTo(def.factionId)) {
+		Boolean ignoreMarketRelationship = (Boolean)def.miscData.get("ignoreMarketRelationship");
+		if (!Boolean.TRUE.equals(ignoreMarketRelationship) && market.getFaction().isHostileTo(def.factionId)) 
+		{
 			log.info(def.id + " hostile to market, unable to spawn");
 			return false;
 		}

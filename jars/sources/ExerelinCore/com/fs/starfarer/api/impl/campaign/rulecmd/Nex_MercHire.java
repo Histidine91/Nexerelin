@@ -249,9 +249,9 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		dialog.getVisualPanel().showSecondPerson(officer);
 		setMercOfficerMemoryKeys(officer, memoryMap.get(MemKeys.LOCAL));
 		
-		boolean checkInsult = NexUtils.objectToBoolean(intel.getDef().miscData.get("angeredByInsults"));
+		Boolean checkInsult = (Boolean)intel.getDef().miscData.get("angeredByInsults");
 		
-		if (checkInsult) 
+		if (Boolean.TRUE.equals(checkInsult))
 		{
 			String insultKey = MEM_KEY_PREFIX_INSULT + companyId;
 			boolean insulted = memoryMap.get(MemKeys.PLAYER).contains(insultKey);
