@@ -32,6 +32,7 @@ import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
+import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -220,6 +221,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		CampaignFleetAPI station = getStationFleet();
 		
 		boolean hasNonStation = false;
+		boolean hasOtherButInsignificant = true;
 		boolean hasStation = station != null;
 		boolean otherWantsToFight = false;
 		BattleAPI b = null;
@@ -302,10 +304,20 @@ public class Nex_MarketCMD extends MarketCMD {
 					for (CampaignFleetAPI fleet : b.getSideFor(station)) {
 						if (!fleet.isStationMode()) {
 							hasNonStation = true;
+							hasOtherButInsignificant &= Misc.isInsignificant(fleet);
 						}
 					}
 				} else {
-					hasNonStation = true;
+					if (b.getNonPlayerSide() != null) {
+						for (CampaignFleetAPI fleet : b.getNonPlayerSide()) {
+							if (!fleet.isStationMode()) {
+								hasNonStation = true;
+								hasOtherButInsignificant &= Misc.isInsignificant(fleet);
+							}
+						}
+					} else {
+						hasNonStation = true;
+					}
 				}
 				
 				for (CampaignFleetAPI fleet : b.getOtherSide(playerSide)) {
@@ -316,6 +328,8 @@ public class Nex_MarketCMD extends MarketCMD {
 					}
 				}
 			}
+			
+			if (!hasNonStation) hasOtherButInsignificant = false;
 			
 			//otherWantsToFight = hasStation || plugin.otherFleetWantsToFight(true);
 			
@@ -343,7 +357,11 @@ public class Nex_MarketCMD extends MarketCMD {
 						if (ongoingBattle) {
 							text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetOngoingBattle"));
 						} else {
-							text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetWithStation"));
+							if (hasOtherButInsignificant) {
+								text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetTooSmall"));
+							} else {
+								text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetWithStation"));
+							}
 						}
 					}
 				} else if (hasNonStation && otherWantsToFight) {
@@ -357,13 +375,15 @@ public class Nex_MarketCMD extends MarketCMD {
 				plugin.printOngoingBattleInfo();
 			}
 		}
-			
+
+		if (!hasNonStation) hasOtherButInsignificant = false;
+		
 		options.clearOptions();
 		
 		String engageText = StringHelper.getString("nex_militaryOptions", "optionEngage");
 		
 		if (playerCanNotJoin) {
-			engageText = "Engage the defenders";
+			engageText = StringHelper.getString("nex_militaryOptions", "optionEngage");
 		} else if (playerOnDefenderSide) {
 			if (hasStation && hasNonStation) {
 				engageText = StringHelper.getString("nex_militaryOptions", "optionAidStationAndDefenders");
@@ -391,8 +411,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.addOption(engageText, ENGAGE);
 		
 		
-		temp.canRaid = !hasNonStation || (hasNonStation && !otherWantsToFight);
-		temp.canBombard = (!hasNonStation || (hasNonStation && !otherWantsToFight)) && !hasStation;
+		temp.canRaid = ongoingBattle || hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation;
+		temp.canBombard = (hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation) && !hasStation;
 		//temp.canSurpriseRaid = Misc.getDaysSinceLastRaided(market) < SURPRISE_RAID_TIMEOUT;
 		
 		boolean couldRaidIfNotDebug = temp.canRaid;
@@ -436,6 +456,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			options.setEnabled(BOMBARD, false);
 			options.setTooltip(BOMBARD, StringHelper.getString("nex_militaryOptions", "cannotBombard"));
 		}
+		
 		
 		//DEBUG = false;
 		if (temp.canRaid && getRaidCooldown() > 0) {// && couldRaidIfNotDebug) {
@@ -1148,7 +1169,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			Loot more small and medium weapons
 		
 		Vanilla no longer has a raidSpecialItems method;
-		We're keeping this one around for now in case we want it for invasions
+		We're keeping this one around for legacy invasion loot
 	*/
 	@Deprecated
 	protected void raidSpecialItems(CargoAPI cargo, Random random, boolean isInvasion) 
@@ -1395,8 +1416,13 @@ public class Nex_MarketCMD extends MarketCMD {
 		});
 	}
 	
-	public TempData getTempData() {
-		return temp;
+	
+	// Differences from vanilla: Modified defender strength (TODO: decide whether it actually matters)
+	protected void bombardMenu() {
+		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+		
+		//defender.modifyMult("nex_bombardBonus", BASE_LOOT_SCORE);
+		super.bombardMenu();
 	}
 	
 	public static int getBombardDisruptDuration(BombardType type) {
