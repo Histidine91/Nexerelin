@@ -124,7 +124,7 @@
     "officerDeaths": false,	# officer permadeath (may be buggy)
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
     
-    "stabilizePackageEffect": 3,
+    "stabilizePackageEffect": 2,
     "rebellionMult": 1,	# higher mult means unrest will boil over into rebellion more quickly
     
     "maxNPCNewColonySize": 6,	# for new colonies created by colony expedition event
