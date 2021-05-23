@@ -137,7 +137,7 @@ public class FactionSetupHandler {
 			
 			FactionSetupItemDef def = new FactionSetupItemDef();
 			def.id = "blueprint_" + bp.one;
-			def.name = spec.getName();	// TODO
+			def.name = spec.getName();
 			def.className = "exerelin.world.factionsetup.BlueprintItem";
 			def.cost = cost;
 			def.params.put("id", bp.one);

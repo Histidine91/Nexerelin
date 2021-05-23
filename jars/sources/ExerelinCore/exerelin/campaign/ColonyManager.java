@@ -1109,7 +1109,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		MarketAPI gatheringPoint = prod.getGatheringPoint();
 		if (gatheringPoint == market && !market.isPlayerOwned()) {
-			// FIXME: pick new gathering point
 			prod.setGatheringPoint(pickNewGatheringPoint());
 		}
 	}

@@ -186,7 +186,6 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		if (type.equals(EVENT_TYPE_FOUNDCOLONY) && Misc.hasUnexploredRuins(dialog.getInteractionTarget().getMarket())) 
 		{
 			opts.setEnabled("nex_decivEvent_accept", false);
-			// FIXME localize
 			opts.setTooltip("nex_decivEvent_accept", StringHelper.getString("nex_decivEvent", "exploreRuins"));
 		}
 		else if (!enough) {

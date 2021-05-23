@@ -21,7 +21,6 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFleet;
 
 @SuppressWarnings("unchecked")
-// FIXME rename
 public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 
 	@Override

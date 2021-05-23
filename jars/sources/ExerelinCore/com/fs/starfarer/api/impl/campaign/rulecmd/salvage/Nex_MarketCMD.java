@@ -1159,9 +1159,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		boolean withBP = false;
 		boolean heavyIndustry = false;
 		
-		// TODO: use performRaid with GroundRaidObjectivePlugins instead of touching industries ourselves
-		// assuming we're even still using this invasion method
-		
 		for (Industry curr : market.getIndustries()) {
 			
 			if (!isInvasion) {
@@ -1401,13 +1398,6 @@ public class Nex_MarketCMD extends MarketCMD {
 	public TempData getTempData() {
 		return temp;
 	}
-	
-	// TODO see if the following changes from vanilla are still needed: Check blueprint cooldown; use externalised strings
-	@Override
-	protected void raidValuable() {
-		super.raidValuable();
-	}
-	
 	
 	public static int getBombardDisruptDuration(BombardType type) {
 		float dur = Global.getSettings().getFloat("bombardDisruptDuration");

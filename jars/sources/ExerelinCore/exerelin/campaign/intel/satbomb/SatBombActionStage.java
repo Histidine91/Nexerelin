@@ -24,7 +24,7 @@ public class SatBombActionStage extends InvActionStage {
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
 		if (offFltIntel.getOutcome() != null)
 			return;
-		// TODO
+		
 		boolean vicBioBomb = intel.getFaction().getId().equals("vic");
 		
 		float cost = Nex_MarketCMD.getBombardmentCost(market, fleet);

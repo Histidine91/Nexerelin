@@ -125,7 +125,6 @@ public class IndustryForBattle {
 		}
 		
 		if (heldByAttacker != nowHeldByAttacker) {
-			// TODO: post log message
 			plugin.unapply();
 			heldByAttacker = nowHeldByAttacker;
 			plugin.apply();
@@ -299,7 +298,6 @@ public class IndustryForBattle {
 		}
 		
 		String owner = StringHelper.getString(heldByAttacker ? "attacker" : "defender", true);
-		// TODO: color-code based on relationship of attacker to player
 		str = StringHelper.getString("nex_invasion2", "industryPanel_header_heldBy");
 		sub.addPara(str + ": " + owner, pad, heldByAttacker ? Misc.getPositiveHighlightColor() 
 				: Misc.getNegativeHighlightColor(), owner);

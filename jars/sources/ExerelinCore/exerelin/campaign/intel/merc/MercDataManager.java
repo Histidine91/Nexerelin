@@ -183,7 +183,6 @@ public class MercDataManager {
 				if (entryJson.has("doctrineSizeOverride"))
 					def.doctrineSizeOverride = entryJson.getInt("doctrineSizeOverride");
 				
-				// FIXME: load officers
 				def.officers.addAll(getOfficerList(entryJson));
 				
 				def.noAutofit = entryJson.optBoolean("noAutofit", false);

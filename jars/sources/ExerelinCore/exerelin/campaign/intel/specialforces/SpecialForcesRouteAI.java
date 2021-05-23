@@ -648,7 +648,7 @@ public class SpecialForcesRouteAI {
 		if (fleet == null) return true;
 		
 		SectorEntityToken target = currentTask.market.getPrimaryEntity();
-		return MathUtils.getDistance(fleet, target) < 250;	// FIXME
+		return MathUtils.getDistance(fleet, target) < 250;	// FIXME magic number
 	}
 	
 	public void notifyRouteFinished() {

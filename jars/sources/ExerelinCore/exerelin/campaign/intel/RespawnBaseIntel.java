@@ -305,7 +305,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		if (getPlayerVisibleTimestamp() == null) {
 			Global.getSector().getIntelManager().removeIntel(this);
 			Global.getSector().getIntelManager().addIntel(this, text == null, text);
-		} // TODO: Not sure if I should queue this or not
+		}
 	}
 	
 	@Override

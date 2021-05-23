@@ -930,7 +930,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public void loot(IndustryForBattle ifb) {
 		String aiCore = ifb.getIndustry().getAICoreId();
 		SpecialItemData special = ifb.getIndustry().getSpecialItem();
-		// TODO: add stuff to cargo and play sound
 		if (aiCore != null) {
 			Global.getSector().getPlayerFleet().getCargo().addCommodity(aiCore, 1);
 			ifb.getIndustry().setAICoreId(null);
@@ -1701,7 +1700,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 							prompt.addPara(str, 0);
 							String aiCore = ifb.getIndustry().getAICoreId();
 							SpecialItemData special = ifb.getIndustry().getSpecialItem();
-							// TODO: print item info
 							if (aiCore != null)
 								prompt.addPara(" - " + Global.getSettings().getCommoditySpec(aiCore).getName(), 0);
 							if (special != null) {

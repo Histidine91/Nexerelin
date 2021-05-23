@@ -168,7 +168,6 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	 * until returning to a suitable market.
 	 */
 	public void endContractPeriod() {
-		// TODO: send expiry notification
 		sendUpdateIfPlayerHasIntel(listInfoParam, true);
 		contractOver = true;
 	}
@@ -365,7 +364,6 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		label.setHighlightColors(h, h, currValue >= startingShipValue 
 				? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor());
 		
-		// TODO: dismiss button
 		if (!contractOver)
 			info.addButton(StringHelper.getString("dismiss", true), BUTTON_DISMISS, width, 24, opad);
 	}

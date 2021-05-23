@@ -1351,7 +1351,6 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		return str;
 	}
 	
-	// TODO
 	protected String getString(String id)
 	{
 		return StringHelper.getString("nex_rebellion", id);
