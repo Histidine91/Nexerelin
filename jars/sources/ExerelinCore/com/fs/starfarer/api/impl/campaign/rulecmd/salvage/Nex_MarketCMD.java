@@ -70,6 +70,7 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -267,7 +268,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			FleetInteractionDialogPluginImpl.FIDConfig params = new FleetInteractionDialogPluginImpl.FIDConfig();
 			params.justShowFleets = true;
 			params.showPullInText = withText;
-			plugin = new FleetInteractionDialogPluginImpl(params);
+			plugin = new NexFleetInteractionDialogPluginImpl(params);
 			//dialog.setInteractionTarget(primary);
 			dialog.setInteractionTarget(pluginFleet);
 			plugin.init(dialog);
