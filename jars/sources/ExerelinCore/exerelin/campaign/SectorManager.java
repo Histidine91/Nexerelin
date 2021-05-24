@@ -89,6 +89,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static final String MEMORY_KEY_RECENTLY_CAPTURED = "$nex_recentlyCapturedFrom";
     public static final String MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER = "$nex_recentlyCapturedByPlayer";
     public static final float MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE = 90;
+    public static final String MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT = "$nex_captureStabilizeTimeout";
     
     public static final float SIZE_FRACTION_FOR_VICTORY = 0.501f;
     public static final float HI_FRACTION_FOR_VICTORY = 0.67f;
@@ -1358,6 +1359,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (newOwner.isPlayerFaction() && isCapture) {
             market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED, 
                     oldOwnerId, MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE);
+        }
+        
+        // no stabilization time
+        if (isCapture) {
+            float timeout = (float)(7 * Math.pow(2, market.getSize() - 4));
+            market.getMemoryWithoutUpdate().set(MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT, 
+                    true, timeout);
         }
         
         if ((newOwner.isPlayerFaction() || newOwner == Misc.getCommissionFaction())

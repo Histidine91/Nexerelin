@@ -1421,6 +1421,8 @@
 		
 		"remoteCommDirectory":"Remote connection to comm directory",
 		"remoteSuspendAutonomy":"Take temporary control of autonomous colonies",
+		
+		"stabilizeInvasionTimeout":"Recently invaded, cannot stabilize for %s day(s)",
 
 		"prismNoSale":"No sales/returns",
 		"prismRelTooLow":"Requires: $faction - $minRelationship",

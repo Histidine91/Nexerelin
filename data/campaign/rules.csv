@@ -831,6 +831,12 @@ $market.nex_stabilizePackage_cooldown","SetTooltip nex_stabilizePackage_main ""$
 SetTooltipHighlightColors nex_stabilizePackage_main hColor
 SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textCooldown
 SetEnabled nex_stabilizePackage_main false",,,
+nex_stabilizePackageOptionCooldownInvasion,PopulateOptions,"$entity.hasMarket
+$faction.id != player
+$market.nex_captureStabilizeTimeout","SetTooltip nex_stabilizePackage_main ""$market was recently conquered, and the situation remains too chaotic for stabilization to be feasible. This will last for $nex_stabilizePackage_textInvadeCooldown.""
+SetTooltipHighlightColors nex_stabilizePackage_main hColor
+SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textInvadeCooldown
+SetEnabled nex_stabilizePackage_main false",,,
 nex_stabilizePackageSelRelief,DialogOptionSelected,"$option == nex_stabilizePackage_main
 $market.nex_stabilizePackage_type == ""relief""","Nex_StabilizePackage init
 SetShortcut nex_stabilizePackage_cancel ""ESCAPE""","""Truly? We would be most grateful for any assistance you can render. Supplies and food — and of course, credits — would help get the people of $market through their current difficulties.""

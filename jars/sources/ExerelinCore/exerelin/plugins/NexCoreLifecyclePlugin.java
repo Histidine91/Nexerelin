@@ -30,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.colony.NexStabilizeMarketPlugin;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
@@ -40,7 +41,7 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	
 	// don't add hostility event manager
 	// add own versions of punitive expedition manager and Hegemony inspection manager
-	// also own versions of base managers
+	// also own versions of base managers and stabilize market plugin
 	@Override
 	protected void addScriptsIfNeeded() {
 		ShipQuality.getInstance();
@@ -73,8 +74,8 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!plugins.hasPlugin(AbandonMarketPluginImpl.class)) {
 			plugins.addPlugin(new AbandonMarketPluginImpl(), true);
 		}
-		if (!plugins.hasPlugin(StabilizeMarketPluginImpl.class)) {
-			plugins.addPlugin(new StabilizeMarketPluginImpl(), true);
+		if (!plugins.hasPlugin(NexStabilizeMarketPlugin.class)) {
+			plugins.addPlugin(new NexStabilizeMarketPlugin(), true);
 		}
 		if (!plugins.hasPlugin(RemnantOfficerGeneratorPlugin.class)) {
 			plugins.addPlugin(new RemnantOfficerGeneratorPlugin(), true);

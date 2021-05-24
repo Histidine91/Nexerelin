@@ -18,6 +18,7 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig.Morality;
 import exerelin.utilities.NexUtilsReputation;
@@ -74,6 +75,10 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 			float timeRemaining = mem.getExpire(MEMORY_KEY_RECENT);
 			memoryMap.get(MemKeys.LOCAL).set("$nex_stabilizePackage_textCooldown", Misc.getAtLeastStringForDays((int)timeRemaining), 0);
 		}
+		if (mem.getBoolean(SectorManager.MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT)) {
+			float timeRemaining = mem.getExpire(SectorManager.MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT);
+			memoryMap.get(MemKeys.LOCAL).set("$nex_stabilizePackage_textInvadeCooldown", Misc.getAtLeastStringForDays((int)timeRemaining), 0);
+		}
 		mem.set("$nex_stabilizePackage_type", getStabilizeMethod(market), 0);
 	}
 	
@@ -100,6 +105,9 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	
 	protected static boolean isAllowed(MarketAPI market) {
 		if (market.isPlayerOwned()) return false;
+		if (market.getMemoryWithoutUpdate().getBoolean(SectorManager.MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT))
+			return false;
+		
 		int min = Math.min(NexConfig.stabilizePackageEffect, 3);
 		float recentUnrest = RecentUnrest.getPenalty(market);
 		return recentUnrest >= min || (recentUnrest >= 1 && market.getStabilityValue() == 0);
