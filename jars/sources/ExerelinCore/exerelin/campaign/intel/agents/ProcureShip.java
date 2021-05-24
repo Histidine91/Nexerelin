@@ -284,15 +284,15 @@ public class ProcureShip extends CovertActionIntel {
 	
 	// lower success rates for better ships
 	@Override
-	protected MutableStat getSuccessChance() {
+	protected MutableStat getSuccessChance(boolean checkSP) {
 		if (isLegal()) {
 			MutableStat stat = new MutableStat(0);
 			stat.modifyFlat("base", 100, getString("procureShipStatChanceLegal"));
 			return stat;
 		}
 		
-		MutableStat stat = super.getSuccessChance();
-		if (ship == null || sp.preventFailure()) return stat;
+		MutableStat stat = super.getSuccessChance(checkSP);
+		if (ship == null || (checkSP && sp.preventFailure())) return stat;
 		
 		float mult = 1;
 		switch (ship.getHullSpec().getHullSize()) {

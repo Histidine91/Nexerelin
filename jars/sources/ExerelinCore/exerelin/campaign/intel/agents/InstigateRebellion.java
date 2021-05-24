@@ -22,8 +22,12 @@ public class InstigateRebellion extends CovertActionIntel {
 	}
 	
 	@Override
-	protected MutableStat getSuccessChance() {
-		MutableStat stat = super.getSuccessChance();
+	protected MutableStat getSuccessChance(boolean checkSP) {
+		MutableStat stat = super.getSuccessChance(checkSP);
+		if (checkSP && sp.preventFailure()) {
+			return stat;
+		}
+		
 		float stabilityModifier = 1.2f - (market.getStabilityValue() - 2) * 0.1f;
 		
 		stat.modifyMult("stability", stabilityModifier, StringHelper.getString("stability", true));

@@ -253,10 +253,14 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	}
 	
 	protected MutableStat getSuccessChance() {
+		return getSuccessChance(true);
+	}
+	
+	protected MutableStat getSuccessChance(boolean checkSP) {
 
 		MutableStat stat = new MutableStat(0);
 
-		if (sp.preventFailure()) {
+		if (checkSP && sp.preventFailure()) {
 			stat.modifyFlat("baseChance", 999, getString("baseChance", true));
 			return stat;
 		}

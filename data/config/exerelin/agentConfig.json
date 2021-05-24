@@ -25,7 +25,7 @@
 		},
 		"injury":{
 			"name":"Injury Recovery",
-			"time":20,
+			"time":40,
 			"costScaling":false,
 			"useAlertLevel":false,
 			"listInIntel":false,

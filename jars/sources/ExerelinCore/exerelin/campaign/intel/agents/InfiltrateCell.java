@@ -57,12 +57,12 @@ public class InfiltrateCell extends CovertActionIntel {
 	}
 	
 	@Override
-	protected MutableStat getSuccessChance() {
+	protected MutableStat getSuccessChance(boolean checkSP) {
 		CovertOpsManager.CovertActionDef def = getDef();
 		int level = getLevel();
 		MutableStat stat = new MutableStat(0);
 		
-		if (sp.preventFailure()) {
+		if (checkSP && sp.preventFailure()) {
 			stat.modifyFlat("baseChance", 999, getString("baseChance", true));
 			return stat;
 		}
