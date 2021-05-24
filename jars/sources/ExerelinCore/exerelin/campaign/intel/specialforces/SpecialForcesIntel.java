@@ -171,16 +171,18 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				thisRoute.getQualityOverride(), // qualityOverride
 				FLEET_TYPE,
 				fp, // combatPts
-				fp * 0.25f, // freighterPts 
-				fp * 0.25f, // tankerPts
-				fp * 0.1f, // transportPts
+				fp * 0.15f, // freighterPts 
+				fp * 0.15f, // tankerPts
+				fp * 0.05f, // transportPts
 				0, // linerPts
-				fp * 0.1f, // utilityPts
+				fp * 0.07f, // utilityPts
 				0.25f
 		);
 		params.timestamp = thisRoute.getTimestamp();
 		params.officerLevelBonus = 1;
-		params.officerNumberMult = 1.25f;
+		params.officerNumberMult = 1.33f;
+		//int maxShips = Global.getSettings().getInt("maxShipsInAIFleet");
+		//params.maxNumShips = maxShips + Math.min(maxShips/6, 5);
 		params.random = new Random(seed);
 		params.ignoreMarketFleetSizeMult = true;
 		params.modeOverride = FactionAPI.ShipPickMode.PRIORITY_THEN_ALL;

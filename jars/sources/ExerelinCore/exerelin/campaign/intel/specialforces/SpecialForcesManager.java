@@ -34,6 +34,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	public static final float POINTS_TO_SPAWN = 250;
 	public static final float POINT_GENERATION_MULT = 0.002f;
 	public static final int RESPAWN_DELAY = 30;
+	public static final float SIZE_MULT = 0.65f;
 	public static final String MEM_KEY_RESPAWN_DELAY = "$nex_specialForcesRespawnDelay";
 	
 	protected Map<String, Float> factionPoints = new HashMap<>();
@@ -155,7 +156,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 			return null;
 		}
 		
-		float fp = POINTS_TO_SPAWN * MathUtils.getRandomNumberInRange(0.95f, 1.05f) * 0.6f;
+		float fp = POINTS_TO_SPAWN * MathUtils.getRandomNumberInRange(0.95f, 1.05f) * SIZE_MULT;
 		SpecialForcesIntel intel = new SpecialForcesIntel(origin, faction, fp);
 		intel.init(null);
 		return intel;
