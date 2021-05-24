@@ -2039,14 +2039,13 @@
 	},
 	
 	"exerelin_victoryScreen":{
-		#"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
-		"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the Sector!",
-		"victory_diplomatic":"Congratulations! $TheFaction and their allies control the Sector!",
+		"victory_conquest":"Congratulations! $TheFaction and allies have conquered their way to a dominant position in the Sector!",
+		"victory_diplomatic":"Congratulations! $TheFaction and their allies have established friendly relations with all powers in the sector!",
 		"victory_conquest_ally":"Congratulations! Your ally $theFaction have crushed all opposition and now reigns supreme over the Sector!",
 		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and their other allies in controlling the Sector!",
 
-		"defeat_conquest":"Alas, $theFaction have conquered the Sector. All your efforts have come to naught.",
-		"defeat_diplomatic":"$TheFaction and their allies now dominate the Sector. Unfortunately, you are not one of them...",
+		"defeat_conquest":"Alas, $theFaction and their allies have become the dominant power in the Sector. Others are slipping into irrelevance...",
+		"defeat_diplomatic":"$TheFaction and their allies have established themselves as the leader in the Sector. Unfortunately, you are not one of them...",
 
 		"retired":"You have chosen to retire prematurely. Yet the struggles of the Sector continue, on and on...",
 
@@ -2080,8 +2079,8 @@
 		"intelBulletFaction":"$faction",
 		"intelBulletFactionAndAllies":"$faction and allies",
 		
-		"intelDescConquest":"$TheFaction $hasOrHave crushed all possible competition. Their rule over the Sector is now undisputed.",
-		"intelDescDiplomatic":"$TheFaction and their allies are the only remaining powers in the Sector. Peace has come to this corner of the galaxy, at least for now.",
+		"intelDescConquest":"$TheFaction and their allies have become the dominant power in the Sector. None can stand before their might.",
+		"intelDescDiplomatic":"$TheFaction and their allies have developed positive relations with all other powers of the Sector. Peace has come to this corner of the galaxy, at least for now.",
 		"intelDescRetired":"You, $playerName, have chosen to retire from the game. The conflicts of the Sector will have to unfold without you.",
 		
 		"intelStringYouWon":"You have won the game!"

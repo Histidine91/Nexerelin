@@ -32,6 +32,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -42,6 +43,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.VayraModPlugin;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.RaidCondition;
@@ -67,6 +69,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsAstro;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,8 +87,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 
     protected static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
     public static final String MEMORY_KEY_RECENTLY_CAPTURED = "$nex_recentlyCapturedFrom";
-	public static final String MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER = "$nex_recentlyCapturedByPlayer";
+    public static final String MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER = "$nex_recentlyCapturedByPlayer";
     public static final float MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE = 90;
+    
+    public static final float SIZE_FRACTION_FOR_VICTORY = 0.501f;
+    public static final float HI_FRACTION_FOR_VICTORY = 0.67f;
+    
     public static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
         Ranks.POST_BASE_COMMANDER,
         Ranks.POST_OUTPOST_COMMANDER,
@@ -893,6 +900,94 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
+    public static int getAllianceTotalFromMap(Alliance alliance, Map<String, Integer> map) 
+    {
+        int result = 0;
+        for (String member : alliance.getMembersCopy()) {
+            Integer thisAmt = map.get(member);
+            if (thisAmt != null) result += thisAmt;
+        }
+        return result;
+    }
+    
+    public static String getAllianceMemberWithHighestValue(Alliance alliance, Map<String, Integer> map) 
+    {
+        int best = 0;
+        String bestId = null;
+        for (String member : alliance.getMembersCopy()) {
+            Integer thisAmt = map.get(member);
+            if (thisAmt == null) continue;
+            if (thisAmt > best) {
+                best = thisAmt;
+                bestId = member;
+            }
+        }
+        return bestId;
+    }
+    
+    public static String checkForConquestVictory(Collection<String> factionsToCheck) {
+        int totalSize = 0, totalHeavyIndustries = 0;
+        Map<String, Integer> factionSizes = new HashMap<>();
+        Map<String, Integer> heavyIndustries = new HashMap<>();
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
+        {
+            if (market.isHidden()) continue;
+            String factionId = market.getFactionId();
+            if (!factionsToCheck.contains(factionId)) continue;
+            
+            totalSize += market.getSize();
+            if (market.getFaction().isPlayerFaction()) {
+                factionId = PlayerFactionStore.getPlayerFactionId();
+            }
+            NexUtils.modifyMapEntry(factionSizes, factionId, market.getSize());
+            if (Nex_FactionDirectory.hasHeavyIndustry(market)) {
+                totalHeavyIndustries++;
+                NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
+            }
+        }
+                
+        for (Alliance alliance : AllianceManager.getAllianceList()) {
+            int size, numHI;
+            if (alliance != null) {
+                size = getAllianceTotalFromMap(alliance, factionSizes);
+                numHI = getAllianceTotalFromMap(alliance, heavyIndustries);
+                log.info(String.format("Alliance %s has %s/%s size, %s/%s HIs", alliance.getName(), 
+                        size, totalSize, numHI, totalHeavyIndustries));
+                
+                if (size/(float)totalSize >= SIZE_FRACTION_FOR_VICTORY) {
+                    return getAllianceMemberWithHighestValue(alliance, factionSizes); 
+                } else if (numHI/(float)totalHeavyIndustries >= HI_FRACTION_FOR_VICTORY)    {
+                    return getAllianceMemberWithHighestValue(alliance, heavyIndustries); 
+                }
+            }
+        }
+        
+        for (String factionId : getManager().liveFactionIds) {
+            // we already checked this faction as part of its alliance,
+            // if the whole alliance didn't have enough this faction sure doesn't
+            if (AllianceManager.getFactionAlliance(factionId) != null)
+                continue;
+            
+            Integer size = factionSizes.get(factionId);
+            Integer numHI = heavyIndustries.get(factionId);
+            if (size == null) continue;
+            
+            log.info(String.format("Faction %s has %s/%s size, %s/%s HIs", factionId, 
+                        size, totalSize, numHI, totalHeavyIndustries));
+            
+            if (size != null && size / (float)totalSize >= SIZE_FRACTION_FOR_VICTORY) {
+                return factionId;
+            }
+            
+            if (numHI != null && numHI / (float)totalHeavyIndustries >= HI_FRACTION_FOR_VICTORY) {
+                return factionId;
+            }
+        }
+        
+        return null;
+    }
+    
+    // runcode exerelin.campaign.SectorManager.checkForVictory()
     public static void checkForVictory()
     {
         SectorManager manager = getManager();
@@ -903,11 +998,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (sector.isInNewGameAdvance()) return;
         
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        FactionAPI playerAlignedFaction = Global.getSector().getFaction(playerAlignedFactionId);
         String victorFactionId = playerAlignedFactionId;
-        VictoryType victoryType = VictoryType.CONQUEST;
+        VictoryType victoryType;
         
-        List<String> liveFactions = getLiveFactionIdsCopy();
+        Set<String> liveFactions = new HashSet<>(getLiveFactionIdsCopy());
+        
         for (String factionId : getLiveFactionIdsCopy())
         {
             // don't count pirate factions unless config says so or we belong to it
@@ -917,18 +1012,24 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
         }
         
-        if (liveFactions.size() == 1)   // conquest victory
+        // conquest victory
+        String conqWin = checkForConquestVictory(liveFactions);
+        if (conqWin != null)
+        //if (liveFactions.size() == 1)   
         {
-            victorFactionId = liveFactions.get(0);
-            if (!victorFactionId.equals(playerAlignedFactionId))
+            victorFactionId = conqWin;
+            if (victorFactionId.equals(playerAlignedFactionId))
             {
-                if (NexConfig.allyVictories && sector.getFaction(Factions.PLAYER).isAtBest(victorFactionId, RepLevel.WELCOMING))
-                {
-                    victoryType = VictoryType.DEFEAT_CONQUEST;
-                }
-                else {
-                    victoryType = VictoryType.CONQUEST_ALLY;
-                }
+                victoryType = VictoryType.CONQUEST;
+            }
+            else if (NexConfig.allyVictories && AllianceManager.areFactionsAllied(victorFactionId, 
+                    playerAlignedFactionId))
+            {
+                victoryType = VictoryType.CONQUEST_ALLY;
+            }
+            else {
+
+                victoryType = VictoryType.DEFEAT_CONQUEST;
             }
             manager.victoryHasOccured = true;
         }
@@ -965,11 +1066,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     }
                 }
             }
-			
-            if (winner.equals(playerAlignedFactionId)) 
-				victoryType = VictoryType.DIPLOMATIC;
-            else if (NexConfig.allyVictories && playerAlignedFaction.isAtWorst(winner, RepLevel.FRIENDLY)) 
-				victoryType = VictoryType.DIPLOMATIC_ALLY;
+            
+            if (winner.equals(playerAlignedFactionId))
+                victoryType = VictoryType.DIPLOMATIC;
+            else if (NexConfig.allyVictories && AllianceManager.areFactionsAllied(victorFactionId, 
+                        playerAlignedFactionId)) 
+                victoryType = VictoryType.DIPLOMATIC_ALLY;
             else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
             
             victorFactionId = winner;
@@ -1282,6 +1384,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         NexUtilsMarket.reportMarketTransferred(market, newOwner, oldOwner, 
                 playerInvolved, isCapture, factionsToNotify, repChangeStrength);
+        
+        checkForVictory();
     }
     
     public static void addOrRemoveSubmarket(MarketAPI market, String submarketId, boolean shouldHave)
