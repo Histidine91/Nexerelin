@@ -250,20 +250,25 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 			//info.addPara("Over", initPad);
 		} else {
 			if (isUpdate && latestResult != null) {
-				info.addPara("%s received", initPad, tc, h, Misc.getDGSCredits(latestResult.payment));
+				info.addPara(getString("factionBountyIntel_bulletReceived"), 
+						initPad, tc, h, Misc.getDGSCredits(latestResult.payment));
 				if (Math.round(latestResult.fraction * 100f) < 100f) {
-					info.addPara("%s share based on damage dealt", 0f, tc, h, 
+					info.addPara(getString("factionBountyIntel_bulletShare"), 0f, tc, h, 
 							"" + (int) Math.round(latestResult.fraction * 100f) + "%");
 				}
 				CoreReputationPlugin.addAdjustmentMessage(latestResult.rep.delta, faction, null, 
 														  null, null, info, tc, isUpdate, 0f);
 			} else if (mode == ListInfoMode.IN_DESC) {
-				info.addPara("%s base reward per frigate", initPad, tc, h, Misc.getDGSCredits(baseBounty));
-				addDays(info, "remaining", duration - elapsedDays, tc);
+				info.addPara(getString("factionBountyIntel_bulletBaseReward"), 
+						initPad, tc, h, Misc.getDGSCredits(baseBounty));
+				addDays(info, getString("factionBountyIntel_bulletRemaining"), 
+						duration - elapsedDays, tc);
 			} else {
 				if (!isEnding()) {
-					info.addPara("%s base reward per frigate", initPad, tc, h, Misc.getDGSCredits(baseBounty));
-					addDays(info, "remaining", duration - elapsedDays, tc);
+					info.addPara(getString("factionBountyIntel_bulletBaseReward"), 
+							initPad, tc, h, Misc.getDGSCredits(baseBounty));
+					addDays(info, getString("factionBountyIntel_bulletRemaining"), 
+							duration - elapsedDays, tc);
 				}
 			}
 		}

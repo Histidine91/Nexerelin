@@ -496,7 +496,7 @@
 		"dialogSPOptionSuccessText":"Do what it takes to succeed",
 		"dialogSPOptionDetectionText":"Make sure we cover our tracks",
 		"dialogSPOptionsText":"A perfect job: no failure, no detection",
-		"dialogConfirmOptionSPTooltip":"If the mission is aborted, bonus XP will be granted such that the total bonus XP matches the story point cost.",
+		"dialogConfirmOptionSPTooltip":"Increases chance of agent injury. If the mission is aborted, bonus XP will be granted such that the total bonus XP matches the story point cost.",
 		"dialogConfirmText":"Initiate mission?",
 		"dialogFinalText":"Mission orders transmitted.",
 		
@@ -574,6 +574,10 @@
 		"factionBountyIntel_descResult2":"%s received",
 		"factionBountyIntel_descResult3":"%s share based on damage dealt",
 		"factionBountyIntel_descEnded":"This bounty is no longer on offer.",
+		"factionBountyIntel_bulletReceived":"%s received",
+		"factionBountyIntel_bulletShare":"%s share based on damage dealt",
+		"factionBountyIntel_bulletBaseReward":"%s base reward per frigate",
+		"factionBountyIntel_bulletRemaining":"remaining",
 	},
 	"nex_buyColony":{
 		"intelTitle":"Governorship: $market",
