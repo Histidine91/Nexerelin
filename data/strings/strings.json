@@ -1126,6 +1126,7 @@
 		"intelDesc_governorship":"You have purchased governorship of $market for %s.",
 		
 		"bulletLossesLastTurn":"Losses last turn: %s",
+		"bulletAbilityUsed":"%s used ability: %s",
 		
 		"btnViewUnits":"Units",
 		"btnViewAbilities":"Abilities",
@@ -1149,7 +1150,8 @@
 		"unitPanel_resources":"Resources on fleet",
 		"unitPanel_movementPoints":"Movement points",
 		"unitPanel_movementPoints_tooltip1":"Spent when deploying or moving units. You can move units as long as you have a nonzero amount of points, but any overdraft has to be paid for the following turn.",
-		"unitPanel_movementPoints_tooltip2":"Current contributions to max points:",
+		"unitPanel_movementPoints_tooltip2":"Deploying a unit also costs supplies, but moving it after it lands does not.",
+		"unitPanel_movementPoints_tooltip3":"Current contributions to max points:",
 		
 		"commandPanel_header1":"Special abilities",
 		
@@ -1323,9 +1325,13 @@
 		"helpPara3-3":"%s: Local defenders. Weak in combat and with a tendency to run away, their only saving grace is their numbers. Will not move off their current industry.",
 		
 		"helpPara4Title":"Morale",
-		"helpPara4-1":"Morale is a critical stat, a second healthbar and more.",
+		"helpPara4-1":"Morale is a critical stat, serving as a second healthbar and more.",
 		"helpPara4-2":"Morale is lost when a unit takes damage. If it drops too low, the unit will be unable to move, or may run away or be destroyed outright.",
 		"helpPara4-3":"A unit can recover morale when not in combat, depending on local conditions.",
+		
+		"helpPara5Title":"Abilities",
+		"helpPara5-1":"Several special abilities are available to turn the tide of battle in your favor. Enemies can also use them under certain circumstances.",
+		"helpPara5-2":"Each ability has certain requirements for use, an ability-specific cooldown, and a global cooldown that prevents use of all abilities for a number of turns.",
 		
 		"ability_cooldown":"Cooldown: %s turns",
 		"ability_cooldownGlobal":"Global cooldown: %s turns",
@@ -1345,10 +1351,10 @@
 		"ability_ew_insufficientSupplies":"Insufficient supplies: %s",
 		
 		"ability_bombard_blurb":"Small-scale bombardment in direct support of ground forces.",
-		"ability_bombard_tooltip1":"Does %s damage (at current market size) distributed between all enemy units on the target industry. Damage increasd by %s if combat is ongoing on the target, and reduced by the industry's defense bonus (if any).",
+		"ability_bombard_tooltip1":"Does %s damage (at current market size) distributed between all enemy units on the target industry. Damage increasd by %s if combat is ongoing on the target, and reduced by target units' defensive modifiers (if any).",
 		"ability_bombard_tooltip2":"If target industry is held by enemy, disrupts the industry for its base raid time.",
 		"ability_bombard_tooltip3":"Ground defenses can protect themselves efficiently against fire support bombardments.",
-		"ability_bombard_tooltip4":"Costs %s fuel at current market size and conditions.",
+		"ability_bombard_tooltip4":"Costs %s fuel at current market size, conditions and fleet composition.",
 		"ability_bombard_result1":"Inflicted %s damage across %s units",
 		"ability_bombard_result2":"%s disrupted for %s days",
 		#"ability_bombard_confirm":"Will disrupt %s for %s days.",

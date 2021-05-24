@@ -526,6 +526,16 @@ public class GroundUnit {
 	 */
 	public void substituteLocalXPBonus(StatBonus stats, boolean attackPower) {
 		PersonnelData data = intel.playerData.xpTracker.data;
+		injectXPBonus(stats, data, attackPower);
+	}
+	
+	/**
+	 * Applies the XP bonus from the provided {@code PersonnelData} to the provided stats.
+	 * @param stats
+	 * @param data
+	 * @param attackPower True to get modifier to attack power, false to get reduction to casualties.
+	 */
+	public void injectXPBonus(StatBonus stats, PersonnelData data, boolean attackPower) {
 		String id = "marineXP";
 		float effectBonus = PlayerFleetPersonnelTracker.getInstance().getMarineEffectBonus(data);
 		float casualtyReduction = PlayerFleetPersonnelTracker.getInstance().getMarineLossesReductionPercent(data);
@@ -574,6 +584,8 @@ public class GroundUnit {
 					bonus.unmodifyPercent(mod.getSource());
 				}
 			}
+			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
+			
 			return bonus;
 			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		}
@@ -606,6 +618,8 @@ public class GroundUnit {
 		dmg = intel.getSide(isAttacker).moraleDamTakenMod.computeEffective(dmg);
 		dmg *= mult;
 		
+		if (!isAttacker) dmg *= GBConstants.DEFENDER_MORALE_DMG_MULT;
+		
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			dmg = plugin.modifyMoraleDamageReceived(this, dmg);
 		}		
@@ -622,7 +636,9 @@ public class GroundUnit {
 			}
 		}
 		else {
-			return null;
+			StatBonus bonus = new StatBonus();
+			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
+			return bonus;
 			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		}
 		return null;

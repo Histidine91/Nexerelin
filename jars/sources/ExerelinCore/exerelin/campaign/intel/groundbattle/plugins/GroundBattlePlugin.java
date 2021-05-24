@@ -13,8 +13,14 @@ public interface GroundBattlePlugin {
 	
 	public void init(GroundBattleIntel intel);
 	
+	/**
+	 * Called at least once per turn.
+	 */
 	public void apply();
 	
+	/**
+	 * Called at least once per turn.
+	 */
 	public void unapply();
 	
 	public void advance(float days);
@@ -57,7 +63,7 @@ public interface GroundBattlePlugin {
 	public float modifyMoraleDamageReceived(GroundUnit unit, float dmg);
 	
 	/**
-	 * Generates an entry for the intel's modifier display.Should have an icon, name and tooltip.
+	 * Generates an entry for the intel's modifier display. Should have an icon, name and tooltip.
 	 * @param info The element to add the tooltip too.
 	 * @param outer
 	 * @param width

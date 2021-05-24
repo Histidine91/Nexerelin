@@ -14,13 +14,16 @@
 	],
 	
 	"nex_sfx_gb_attrition":[
-		{"file":"sounds/nexerelin/sfx_interface/groundbattle/groundfire.ogg","pitch":0.8,"volume":0.8},
+		{"file":"sounds/nexerelin/sfx_interface/groundbattle/groundfire.ogg","pitch":1,"volume":0.8},
 	],
 	"nex_sfx_deciv_bomb":[
 		{"file":"sounds/nexerelin/sfx_interface/explosion_01.ogg","pitch":1,"volume":1.0},
 	],
-	"nex_sfx_ewar":[
+	"nex_sfx_gb_ewar":[
 		{"file":"sounds/nexerelin/sfx_interface/groundbattle/static.ogg","pitch":1,"volume":1},
+	],
+	"nex_sfx_gb_inspire":[
+		{"file":"sounds/nexerelin/sfx_interface/groundbattle/cheer.ogg","pitch":1,"volume":0.5},
 	],
 	
 	

@@ -105,14 +105,14 @@ public class IndustryForBattle {
 	
 	/**
 	 * Check whether this industry should change hands.
+	 * @param hadCombatThisTurn
 	 * @return The new owner (may be same as previous owner).
 	 */
-	public boolean updateOwner() {
+	public boolean updateOwner(boolean hadCombatThisTurn) {
 		boolean nowHeldByAttacker = this.heldByAttacker;
 		
 		boolean haveAttacker = false;
 		boolean haveDefender = false;
-		boolean autocede = false;	// was this industry held by attackers who then moved on, witout being reoccupied by defenders?
 		for (GroundUnit unit : units) {
 			if (unit.isAttacker) haveAttacker = true;
 			else haveDefender = true;
@@ -121,7 +121,6 @@ public class IndustryForBattle {
 			nowHeldByAttacker = true;
 		} else if (!haveAttacker) {
 			nowHeldByAttacker = false;
-			if (!haveDefender) autocede = true;
 		}
 		
 		if (heldByAttacker != nowHeldByAttacker) {
@@ -129,7 +128,7 @@ public class IndustryForBattle {
 			heldByAttacker = nowHeldByAttacker;
 			plugin.apply();
 			
-			if (!autocede) {
+			if (hadCombatThisTurn) {
 				for (GroundUnit unit : intel.getSide(heldByAttacker).units) {
 					unit.modifyMorale(GBConstants.CAPTURE_MORALE);
 				}
@@ -140,7 +139,7 @@ public class IndustryForBattle {
 			GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_INDUSTRY_CAPTURED, intel.turnNum);
 			lg.params.put("industry", this);
 			lg.params.put("heldByAttacker", heldByAttacker);
-			if (!autocede)
+			if (hadCombatThisTurn)
 				lg.params.put("morale", GBConstants.CAPTURE_MORALE);
 			intel.addLogEvent(lg);		
 		}

@@ -1,7 +1,9 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.characters.PersonAPI;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,9 +19,10 @@ public class GroundBattleAI {
 	
 	public static Logger log = Global.getLogger(GroundBattleAI.class);
 	
-	public static boolean PRINT_DEBUG = true;
+	public static boolean PRINT_DEBUG = false;
 	public static float MIN_MORALE_TO_REDEPLOY = 0.35f;
 	public static float STRENGTH_RATIO_TO_WRITE_OFF = 0.75f;
+	public static float MIN_SCORE_FOR_ABILITY = 5;
 	
 	protected GroundBattleIntel intel;
 	protected boolean isAttacker;
@@ -46,6 +49,10 @@ public class GroundBattleAI {
 		this.intel = intel;
 		this.isAttacker = isAttacker;
 		this.isPlayer = isPlayer;
+	}
+	
+	public List<IFBStrengthRecord> getIndustriesWithEnemySorted() {
+		return industriesWithEnemySorted;
 	}
 	
 	protected Set<IndustryForBattle> getEnemyIndustries() {
@@ -165,16 +172,42 @@ public class GroundBattleAI {
 			while (proceed) {
 				count++;
 				printDebug("Decision loop iteration " + count);
-				proceed = decisionLoop();
+				proceed = decisionLoop(count);
 			}
 		} catch (Exception ex) {
 			log.error("AI orders failed", ex);
 		}
 	}
 	
+	public void checkAbilityUse() {
+		AbilityPlugin best = null;
+		float bestScore = 0;
+		GroundBattleSide side = intel.getSide(isAttacker);
+		PersonAPI user = side.getCommander();
+		
+		for (AbilityPlugin ability : side.getAbilities()) {
+			if (ability.getDisabledReason(user) != null) {
+				continue;
+			}
+			printDebug("  Checking ability for use: " + ability.getDef().name);
+			float score = ability.getAIUsePriority(this);
+			if (score > bestScore) {
+				bestScore = score;
+				best = ability;
+			}
+		}
+		if (bestScore < MIN_SCORE_FOR_ABILITY)
+			return;
+		
+		if (best != null) {
+			printDebug("AI trying ability: " + best.getDef().name);
+			boolean success = best.aiExecute(this, user);
+		}
+	}
+	
 	public void getInfo() {
 		printDebug("Preparing information for AI, is attacker: " + isAttacker);
-		
+				
 		List<GroundUnit> mobile = getMobileUnits();
 		
 		// ---------------------------------------------------------------------
@@ -205,6 +238,8 @@ public class GroundBattleAI {
 					record.getEffectiveStrengthRatio(false),
 					record.getPriorityForReinforcement(false)));
 		}
+		
+		checkAbilityUse();
 		
 		// ---------------------------------------------------------------------
 		// Get units we can redeploy to threatened areas
@@ -241,10 +276,11 @@ public class GroundBattleAI {
 	
 	/**
 	 * Move units to where they're needed, while we can.
+	 * @param iter The iteration number of the loop.
 	 * @return True if further action should be taken (i.e. this method should 
 	 * be called again), false otherwise.
 	 */
-	public boolean decisionLoop() {
+	public boolean decisionLoop(int iter) {		
 		boolean movedAnything = false;
 		for (IFBStrengthRecord toReinforce : industriesWithEnemySorted) {
 			printDebug("Considering plans for industry " + toReinforce.industry.getName());

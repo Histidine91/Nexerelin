@@ -8,8 +8,8 @@ import exerelin.campaign.intel.groundbattle.GroundBattleSide;
 
 public class SpaceportPlugin extends IndustryForBattlePlugin {
 	
-	public static float DROP_COST_MULT = 0.5f;
-	public static float DROP_COST_MULT_MEGAPORT = 0.25f;
+	public static float DROP_COST_MULT = 0.6f;
+	public static float DROP_COST_MULT_MEGAPORT = 0.4f;
 	//public static int MOVE_POINTS = 2;
 	//public static int MOVE_POINTS_MEGAPORT = 3;
 	

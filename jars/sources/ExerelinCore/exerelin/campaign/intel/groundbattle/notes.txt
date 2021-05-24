@@ -30,34 +30,16 @@ Close Air Support
 - Bonuses for having fighter-related skills?
 
 
-== Help page ==
-The basics
-	Marines and heavy armaments are assembled into units (platoons, companies, battalions or regiments, depending on the target colony size).
-	You can deploy units to the surface (cost supplies), and move them around when they get there. Opposing units on the same industry will shoot at each other.
-	
-Unit types
-Turn resolution
-Deployment and giving orders
-Morale
-
 == Todo ==
-- XP log event
 - Generate buffs
 	- Commanders
 	- Luddic Church
 - Map view
-- Nex_MarketCMD: increase raid and bombard defense
 
 - [playtest] AI
 - Merge/split command
 - [test] Orphans made
 
-- [test] Rebels
-
 - Invasion fleet -> ground forces conversion
 - Send reinforcement fleet
-
-- Externalize strings: any?
-
-- Maybe AI just uses legacy invasion system?
 

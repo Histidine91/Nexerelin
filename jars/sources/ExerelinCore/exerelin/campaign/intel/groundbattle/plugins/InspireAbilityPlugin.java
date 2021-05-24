@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.campaign.intel.groundbattle.GroundBattleAI;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
@@ -96,5 +97,21 @@ public class InspireAbilityPlugin extends AbilityPlugin {
 			level++;
 		}
 		return level;
+	}
+	
+	@Override
+	public float getAIUsePriority(GroundBattleAI ai) {
+		float score = 0, divisor = 0;
+		for (GroundUnit unit : side.getUnits()) {
+			divisor++;
+			if (unit.getMorale() < 0.2f)
+				score += 2;
+			else if (unit.getMorale() < 0.5f)
+				score += 1;
+			if (unit.isReorganizing())
+				score++;
+		}
+		if (divisor == 0) return 0;
+		return score/divisor * 6f;
 	}
 }

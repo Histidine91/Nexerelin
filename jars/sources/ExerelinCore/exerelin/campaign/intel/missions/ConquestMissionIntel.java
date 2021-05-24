@@ -26,6 +26,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
@@ -114,7 +115,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			missionCancelled();
 			endMissionWithUpdate(true);
 		}
-		else if (market.getFaction().isPlayerFaction()) {
+		else if (market.getFaction().isPlayerFaction() || market.getMemoryWithoutUpdate().getBoolean(GBConstants.MEMKEY_AWAIT_DECISION)) {
 			// do nothing, wait for player action
 		}
 		else if (market.getFaction() == faction) {

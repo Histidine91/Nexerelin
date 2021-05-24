@@ -1,14 +1,17 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GBConstants;
+import exerelin.campaign.intel.groundbattle.GroundBattleAI;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleRoundResolve;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
@@ -24,28 +27,30 @@ import java.util.Map;
 
 public class FireSupportAbilityPlugin extends AbilityPlugin {
 	
-	public static float BASE_DAMAGE = 32;	// at size 3
+	// TODO: use this to keep the same fleet from bombarding to infinity
+	// probably not needed now that base cost has been reduced?
+	public static final String MEMORY_KEY_FUEL_SPENT = "$nex_gbFireSupport_spend";
+	public static float BASE_DAMAGE = 48;	// at size 3
 	public static float CLOSE_SUPPORT_DAMAGE_MULT = 1.25f;
-	public static float BASE_COST = 24;
+	public static float BASE_COST = 32;
 		
 	@Override
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
 		super.activate(dialog, user);
+		
 		float damage = getDamage();
-		
-		
 		if (target.isContested()) damage *= CLOSE_SUPPORT_DAMAGE_MULT;
+		int cost = getFuelCost(user.getFleet());
 		
 		int numEnemies = 0;
 		for (GroundUnit unit : target.getUnits()) {
 			if (unit.isAttacker() != side.isAttacker()) {
 				numEnemies++;
 			}
-		}
-		
+		}		
 		
 		boolean enemyHeld = target.heldByAttacker != side.isAttacker();
-		if (enemyHeld) damage /= target.getPlugin().getStrengthMult();
+		//if (enemyHeld) damage /= target.getPlugin().getStrengthMult();	// applied in the actual damage check
 		
 		logActivation(user);	// so it displays before the unit destruction messages, if any
 		
@@ -75,6 +80,10 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 				h, target.getName(), (int)disruptTime + "");
 		}
 		
+		if (user.isPlayer()) {
+			Global.getSector().getPlayerFleet().getCargo().removeFuel(cost);
+		}
+		
 		getIntel().reapply();
 		
 		dialog.getTextPanel().setFontInsignia();
@@ -86,7 +95,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		TooltipMakerAPI tooltip = dialog.getTextPanel().beginTooltip();
 		generateTooltip(tooltip);
 		dialog.getTextPanel().addTooltip();
-		int cost = getFuelCost();
+		int cost = getFuelCost(Global.getSector().getPlayerFleet());
 		boolean canAfford = dialog.getTextPanel().addCostPanel(null,
 					Commodities.FUEL, cost, true);
 		
@@ -111,7 +120,8 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 				h, "" + dam, StringHelper.toPercent(CLOSE_SUPPORT_DAMAGE_MULT - 1));
 		tooltip.addPara(GroundBattleIntel.getString("ability_bombard_tooltip2"), opad);
 		tooltip.addPara(GroundBattleIntel.getString("ability_bombard_tooltip3"), opad);
-		float needed = getFuelCost(), curr = Global.getSector().getPlayerFleet().getCargo().getFuel();
+		float needed = getFuelCost(Global.getSector().getPlayerFleet());
+		float curr = Global.getSector().getPlayerFleet().getCargo().getFuel();
 		Color col = curr >= needed ? h : Misc.getNegativeHighlightColor();
 		tooltip.addPara(GroundBattleIntel.getString("ability_bombard_tooltip4"), opad, col, Math.round(needed) + "");
 	}
@@ -128,9 +138,9 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		}
 		// fuel check
 		if (user != null && user.getFleet() != null) {
-			int cost = getFuelCost();
+			int cost = getFuelCost(user.getFleet());
 			float have = user.getFleet().getCargo().getMaxFuel();
-			if (user == Global.getSector().getPlayerPerson()) {
+			if (user.isPlayer()) {
 				have = user.getFleet().getCargo().getFuel();
 			}
 			if (cost > have) {
@@ -147,18 +157,21 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		return reason;
 	}
 	
-	public int getFuelCost() {
+	public int getFuelCost(CampaignFleetAPI fleet) {
 		int marketSize = getIntel().getMarket().getSize();
-		float cost = BASE_COST * (float)Math.pow(2, marketSize - 3);
-		//Global.getLogger(this.getClass()).info("wololo " + cost);
+		float cost = BASE_COST * (marketSize - 3);
+		if (fleet != null) {
+			cost -= Misc.getFleetwideTotalMod(fleet, Stats.FLEET_BOMBARD_COST_REDUCTION, 0f)/2f;
+		}
+		
 		cost = side.getBombardmentCostMod().computeEffective(cost);
-		//Global.getLogger(this.getClass()).info("wololo " + cost);
+				
 		return Math.round(cost);
 	}
 	
 	public int getDamage() {
 		int marketSize = getIntel().getMarket().getSize();
-		return (int)Math.round(BASE_DAMAGE * Math.pow(2, marketSize - 3));
+		return (int)Math.round(BASE_DAMAGE * (marketSize - 3));
 	}
 	
 	@Override
@@ -192,5 +205,38 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			targets.add(ifb);
 		}
 		return targets;
+	}
+	
+	@Override
+	public float getAIUsePriority(GroundBattleAI ai) {
+		List<GroundBattleAI.IFBStrengthRecord> industries = ai.getIndustriesWithEnemySorted();
+		if (industries.isEmpty()) return 0;
+		return industries.get(0).reinforcePriorityCache * 5;
+	}
+	
+	@Override
+	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
+		// TODO: requires actual fleet
+		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
+		if (fleets.isEmpty()) return false;
+		
+		CampaignFleetAPI fleet = null;
+		
+		for (CampaignFleetAPI candidate : fleets) {
+			if (candidate.isPlayerFleet()) continue;
+			int cost = getFuelCost(fleet);
+			if (candidate.getCargo().getMaxFuel() >= cost) {
+				fleet = candidate;
+				break;
+			}
+		}
+		
+		if (fleet == null) return false;
+		
+		List<GroundBattleAI.IFBStrengthRecord> industries = ai.getIndustriesWithEnemySorted();
+		if (industries.isEmpty()) return false;
+		
+		target = industries.get(0).industry;
+		return super.aiExecute(ai, fleet.getCommander());
 	}
 }

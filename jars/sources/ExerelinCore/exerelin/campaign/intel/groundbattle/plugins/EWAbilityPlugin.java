@@ -14,6 +14,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GBDataManager;
 import exerelin.campaign.intel.groundbattle.GBDataManager.AbilityDef;
+import exerelin.campaign.intel.groundbattle.GroundBattleAI;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleSide;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
@@ -29,12 +30,19 @@ public class EWAbilityPlugin extends AbilityPlugin {
 	public static final String MEMORY_KEY_ECM_CACHE = "$nex_ecmRating_cache";
 	public static float BASE_ECM_REQ = 1.5f;	// at size 3
 	public static float GROUND_DEF_EFFECT_MULT = 0.75f;
-	public static int BASE_COST = 50;	// at size 3
+	public static int BASE_COST = 40;	// at size 3
 	
 	@Override
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
-		int powerLevel = getPowerLevel();
 		super.activate(dialog, user);
+		
+		int powerLevel = getPowerLevel();
+		int cost = getSupplyCost();
+		
+		if (user.isPlayer()) {
+			Global.getSector().getPlayerFleet().getCargo().removeSupplies(cost);
+		}
+		
 		for (GroundUnit unit : getIntel().getSide(!side.isAttacker()).getUnits()) {
 			unit.reorganize(powerLevel);
 		}
@@ -62,7 +70,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		if (user != null && user.getFleet() != null) {
 			int cost = getSupplyCost();
 			float have = user.getFleet().getCargo().getMaxCapacity() * 0.5f;
-			if (user == Global.getSector().getPlayerPerson()) {
+			if (user.isPlayer()) {
 				have = user.getFleet().getCargo().getSupplies();
 			}
 			
@@ -115,16 +123,6 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		}
 		tooltip.addPara(GroundBattleIntel.getString("ability_ew_tooltip3"), opad,
 				col, Math.round(curr) + "%");
-	}
-	
-	@Override
-	public float getAIUsePriority() {
-		GroundBattleIntel intel = getIntel();
-		if (intel.getTurnNum() <= 2) {
-			if (getDeployedProportion(intel.getSide(!this.side.isAttacker())) < 0.4f)
-				return 0;
-		}
-		return 10;
 	}
 	
 	/**
@@ -193,6 +191,16 @@ public class EWAbilityPlugin extends AbilityPlugin {
 			fleet.getMemoryWithoutUpdate().set(MEMORY_KEY_ECM_CACHE, fleetLevel, 0);
 		}
 		return level;
+	}
+	
+	@Override
+	public float getAIUsePriority(GroundBattleAI ai) {
+		GroundBattleIntel intel = getIntel();
+		if (intel.getTurnNum() <= 2) {
+			if (getDeployedProportion(intel.getSide(!this.side.isAttacker())) < 0.4f)
+				return 0;
+		}
+		return 10;
 	}
 	
 	public static class EWPersistentEffectPlugin extends BaseGroundBattlePlugin {

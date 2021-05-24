@@ -14,21 +14,24 @@ import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.utilities.NexUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 public class GroundBattleRoundResolve {
 	
 	public static Logger log = Global.getLogger(GroundBattleRoundResolve.class);
-	public static boolean PRINT_DEBUG = false;
+	public static final boolean PRINT_DEBUG = false;
 		
 	protected GroundBattleIntel intel;
 	protected Map<ForceType, Integer> atkLosses = new HashMap<>();
 	protected Map<ForceType, Integer> defLosses = new HashMap<>();
 	protected Map<ForceType, Integer> playerLosses = new HashMap<>();
+	protected Set<IndustryForBattle> hadCombat = new HashSet<>();
 	
 	public GroundBattleRoundResolve(GroundBattleIntel intel) {
 		this.intel = intel;
@@ -200,13 +203,14 @@ public class GroundBattleRoundResolve {
 	
 	public void updateIndustryOwners() {
 		for (IndustryForBattle ifb : intel.industries) {
-			ifb.updateOwner();
+			ifb.updateOwner(hadCombat.contains(ifb));
 		}
 	}
 	
 	public void resolveCombatOnIndustry(IndustryForBattle ifb) {
 		if (!ifb.isContested()) return;
 		printDebug("Resolving combat on " + ifb.ind.getCurrentName());
+		hadCombat.add(ifb);
 		
 		float atkStr = getAttackStrengthOnIndustry(ifb, true) * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		printDebug(String.format("  Attacker strength: %.2f", atkStr));

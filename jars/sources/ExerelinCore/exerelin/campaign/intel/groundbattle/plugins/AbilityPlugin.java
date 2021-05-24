@@ -11,6 +11,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GBDataManager;
 import exerelin.campaign.intel.groundbattle.GBDataManager.AbilityDef;
+import exerelin.campaign.intel.groundbattle.GroundBattleAI;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleLog;
 import exerelin.campaign.intel.groundbattle.GroundBattleSide;
@@ -56,6 +57,12 @@ public abstract class AbilityPlugin {
 		return GBDataManager.getAbilityDef(id);
 	}
 	
+	/**
+	 * Gets an ID and a user-facing string explaining why this ability can't be used right now, along with other data.<br/>
+	 * If ability can be used, returns null.
+	 * @param user
+	 * @return
+	 */
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
 		String id;
 		String desc;
@@ -79,7 +86,7 @@ public abstract class AbilityPlugin {
 			return new Pair<>(id, params);
 		}		
 		
-		if (user == Global.getSector().getPlayerPerson()) {
+		if (user.isPlayer()) {
 			GroundBattleIntel intel = getSide().getIntel();
 			if (!intel.isPlayerInRange()) {
 				id = "out_of_range";
@@ -117,6 +124,7 @@ public abstract class AbilityPlugin {
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
 		cooldown = getDef().cooldown;
 		side.modifyGlobalAbilityCooldown(getDef().cooldownGlobal);
+		getIntel().reportAbilityUsed(this, side, user);
 	}
 	
 	public GroundBattleLog logActivation(PersonAPI user) {
@@ -136,20 +144,40 @@ public abstract class AbilityPlugin {
 		}
 	}
 	
+	/**
+	 * If false, dialog sticks around after ability and requires an option click to close.
+	 * @return
+	 */
 	public boolean shouldCloseDialogOnActivate() {
 		return true;
 	}
 	
+	/**
+	 * Not supported yet, intended to get whether the ability should require a confirmation to activate.
+	 * @return
+	 */
 	public boolean hasActivateConfirmation() {
 		return false;
 	}
 	
+	/**
+	 * Generally used for text printed to ability use dialog when opened.
+	 * @param dialog
+	 */
 	public abstract void dialogAddIntro(InteractionDialogAPI dialog);
 	
+	/**
+	 * Do stuff when the dialog requests confirmation of ability use.
+	 * @param dialog
+	 */
 	public void dialogAddConfirmation(InteractionDialogAPI dialog) {
 		
 	}
 	
+	/**
+	 * Generally called after {@code dialogAddIntro}, prints ability cooldown information.
+	 * @param dialog
+	 */
 	public void addCooldownDialogText(InteractionDialogAPI dialog) {
 		TextPanelAPI text = dialog.getTextPanel();
 		Color h = Misc.getHighlightColor();
@@ -167,6 +195,10 @@ public abstract class AbilityPlugin {
 	
 	public abstract void generateTooltip(TooltipMakerAPI tooltip);
 	
+	/**
+	 * Called when the ability dialog is populating its options.
+	 * @param dialog
+	 */
 	public void addDialogOptions(InteractionDialogAPI dialog) {
 		dialog.getOptionPanel().addOption(StringHelper.getString("activate", true), AbilityDialogPlugin.OptionId.ACTIVATE);
 	}
@@ -185,6 +217,11 @@ public abstract class AbilityPlugin {
 		return true;
 	}
 	
+	/**
+	 * Creates a custom panel to show the ability in the intel screen.
+	 * @param parent
+	 * @return
+	 */
 	public CustomPanelAPI createAbilityCard(CustomPanelAPI parent) {
 		float pad = 3;
 		AbilityPlugin ability = this;
@@ -232,8 +269,26 @@ public abstract class AbilityPlugin {
 		};
 	}
 	
-	public float getAIUsePriority() {
+	/**
+	 * Score for which (if any) ability the AI should use this turn.<br/>
+	 * Return value must be 5 or higher to use this ability.
+	 * @param ai
+	 * @return
+	 */
+	public float getAIUsePriority(GroundBattleAI ai) {
 		return 0;
+	}
+	
+	/**
+	 * Called by AI to activate the ability. Does not check for usability.
+	 * @param ai
+	 * @param user
+	 * @return True if the ability was successfully used, false otherwise.
+	 */
+	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
+		activate(null, user);
+		playUISound();
+		return true;
 	}
 	
 	public static AbilityPlugin loadPlugin(GroundBattleSide side, String defId) 

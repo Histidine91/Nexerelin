@@ -133,6 +133,10 @@ public class GroundBattleSide {
 		return commander;
 	}
 	
+	public List<AbilityPlugin> getAbilities() {
+		return abilities;
+	}
+	
 	public int getGlobalAbilityCooldown() {
 		String key = "abilityCooldown";
 		Integer cooldown = (Integer)data.get(key);
@@ -374,6 +378,10 @@ public class GroundBattleSide {
 	
 	public static float getDefendPriority(Industry ind) {
 		String id = ind.getId();
+		if (ind.getDisruptedDays() > 20) {
+			return 0.5f;
+		}
+		
 		if (INDUSTRY_DEFEND_PRIORITY.containsKey(id))
 			return INDUSTRY_DEFEND_PRIORITY.get(id);
 		

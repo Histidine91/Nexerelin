@@ -18,7 +18,7 @@ import java.util.Map;
 public class GroundBattleLog {
 	
 	public static final float ROW_HEIGHT = 24;
-	public static final float TURN_NUM_WIDTH = 24;
+	public static final float TURN_NUM_WIDTH = 30;
 	public static final float LOG_PADDING = 2;
 	
 	public static final String TYPE_UNIT_LOSSES = "unitLosses";
@@ -223,7 +223,9 @@ public class GroundBattleLog {
 		
 		TooltipMakerAPI turnNumHolder = panel.createUIElement(TURN_NUM_WIDTH, ROW_HEIGHT, false);
 		turnNumHolder.setParaSmallInsignia();
-		turnNumHolder.addPara(turn + "", 0);
+		String turnStr = turn + "";
+		if (turn < 10) turnStr = " " + turnStr;
+		turnNumHolder.addPara(turnStr, 0);
 		panel.addUIElement(turnNumHolder).inTL(2, 2);
 		
 		TooltipMakerAPI text = panel.createUIElement(width - TURN_NUM_WIDTH - 6, ROW_HEIGHT, false);

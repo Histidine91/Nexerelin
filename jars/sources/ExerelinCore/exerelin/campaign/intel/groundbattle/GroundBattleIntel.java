@@ -19,6 +19,7 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelAtEntity;
@@ -89,7 +90,7 @@ import org.lazywizard.lazylib.MathUtils;
 public class GroundBattleIntel extends BaseIntelPlugin implements 
 		ColonyPlayerHostileActListener, ColonyNPCHostileActListener {
 	
-	public static int MAX_PLAYER_UNITS = 12;
+	public static int MAX_PLAYER_UNITS = 16;
 	public static final boolean ALWAYS_RETURN_TO_FLEET = false;
 	
 	public static final float VIEW_BUTTON_WIDTH = 128;
@@ -139,6 +140,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected IntervalUtil intervalShort = new IntervalUtil(0.2f, 0.2f);
 	protected MilitaryResponseScript responseScript;
 	
+	protected transient List<Pair<Boolean, AbilityPlugin>> abilitiesUsedLastTurn = new ArrayList<>();
+	
 	// =========================================================================
 	// setup, getters/setters and other logic
 	
@@ -167,6 +170,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected Object readResolve() {
 		if (marketConditionPlugins == null)
 			marketConditionPlugins = new ArrayList<>();
+		if (abilitiesUsedLastTurn == null)
+			abilitiesUsedLastTurn = new ArrayList<>();
+		
 		return this;
 	}
 	
@@ -536,6 +542,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
 		int numPerUnit = 0;
 		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
+		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
 		
 		if (isCramped()) {
 			log.info("Cramped conditions, skipping generation of heavy units");
@@ -545,7 +552,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			for (int i=0; i<numCreatable; i++) {
 				GroundUnit unit = createPlayerUnit(ForceType.HEAVY);
 				unit.setSize(numPerUnit, true);
-			}	
+			}
 		}
 		
 		// add marines
@@ -556,6 +563,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		numCreatable = Math.min(numCreatable, remainingSlots);
 		numPerUnit = 0;
 		if (numCreatable > 0) numPerUnit = marines/numCreatable;
+		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
 		
 		log.info(String.format("Can create %s marines, %s units each, have %s marines", numCreatable, numPerUnit, marines));
 		for (int i=0; i<numCreatable; i++) {
@@ -734,7 +742,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (outcome == BattleOutcome.ATTACKER_VICTORY || outcome == BattleOutcome.DEFENDER_VICTORY
 				|| outcome == BattleOutcome.PEACE) {
 			
-			recentUnrest = 1 + (turnNum/market.getSize());
+			recentUnrest = 1 + (turnNum/Math.max(market.getSize() - 1, 1));
 			
 			String origOwner = NexUtilsMarket.getOriginalOwner(market);
 			if (outcome == BattleOutcome.ATTACKER_VICTORY && origOwner != null 
@@ -752,6 +760,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (playerInitiated && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
 		{
 			timerForDecision = 7f;
+			market.getMemoryWithoutUpdate().set(GBConstants.MEMKEY_AWAIT_DECISION, true, timerForDecision);
 		}
 		
 		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
@@ -851,6 +860,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		reapply();
 		attacker.reportTurn();
 		defender.reportTurn();
+		abilitiesUsedLastTurn.clear();
 	}
 	
 	/**
@@ -954,6 +964,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}		
 		
 		Global.getSoundPlayer().playUISound("ui_cargo_special_military_drop", 1, 1);
+	}
+	
+	public void reportAbilityUsed(AbilityPlugin ability, GroundBattleSide side, PersonAPI person) 
+	{
+		if (person.isPlayer()) return;
+		Pair<Boolean, AbilityPlugin> entry = new Pair<>(side.isAttacker(), ability);
+		abilitiesUsedLastTurn.add(entry);
 	}
 	
 	public void doShortIntervalStuff(float days) {
@@ -1063,21 +1080,16 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	// =========================================================================
 	// GUI stuff 
-			
+	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-        String title = getSmallDescriptionTitle();
-
-        info.addPara(title, Misc.getBasePlayerColor(), 0f);
-		bullet(info);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+								   Color tc, float initPad) {
 		info.addPara(Misc.ucFirst(attacker.faction.getDisplayName()), attacker.faction.getBaseUIColor(), 3);
 		info.addPara(Misc.ucFirst(defender.faction.getDisplayName()), defender.faction.getBaseUIColor(), 0);
 		
 		if (listInfoParam == UPDATE_TURN) {
 			info.addPara(getString("intelDesc_round"), 0, Misc.getHighlightColor(), turnNum + "");
-			if (!playerData.getLossesLastTurn().isEmpty()) {
-				writeLossesLastTurnBullet(info);
-			}
+			writeTurnBullets(info);
 		}
 		
 		if (outcome != null) {
@@ -1104,9 +1116,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			}
 			info.addPara(getString(id), getBulletColorForMode(mode), 0);
 		}
-		
-		unindent(info);
-    }
+	}
 	
 	public Map<String, String> getFactionSubs() {
 		Map<String, String> sub = new HashMap<>();
@@ -1267,9 +1277,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 					String str = getString("unitPanel_movementPoints_tooltip1");
 					tooltip.addPara(str, 0);
-
+					
 					str = getString("unitPanel_movementPoints_tooltip2");
-					tooltip.addPara(str, 3);
+					tooltip.addPara(str, 10);
+					
+					str = getString("unitPanel_movementPoints_tooltip3");
+					tooltip.addPara(str, 10);
 
 					tooltip.addStatModGrid(360, 60, 10, 3, getSide(playerIsAttacker).getMovementPointsPerTurn(), 
 							true, NexUtils.getStatModValueGetter(true, 0));
@@ -1535,33 +1548,55 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		section.addPara(getString("helpPara4-3"), pad);
 		info.addImageWithText(pad);
 		unindent(info);
+		
+		info.setParaInsigniaLarge();
+		info.addPara(getString("helpPara5Title"), opad);
+		info.setParaFontDefault();
+		section = info.beginImageWithText("graphics/icons/skills/leadership.png", 32);
+		section.setBulletedListMode(bullet);
+		section.addPara(getString("helpPara5-1"), pad);
+		section.addPara(getString("helpPara5-2"), pad);
+		info.addImageWithText(pad);
+		unindent(info);
 	}
 	
 	public void addLogEvent(GroundBattleLog log) {
 		battleLog.add(log);
 	}
 	
-	public void writeLossesLastTurnBullet(TooltipMakerAPI info) {
+	public void writeTurnBullets(TooltipMakerAPI info) {
 		List<Pair<ForceType, Integer>> lossesSortable = new ArrayList<>();
 		
-		String str = getString("bulletLossesLastTurn");
-		for (ForceType type : playerData.getLossesLastTurn().keySet()) {
-			int thisLoss = playerData.getLossesLastTurn().get(type);
-			lossesSortable.add(new Pair<>(type, thisLoss));
-		}
-		Collections.sort(lossesSortable, new Comparator<Pair<ForceType, Integer>>() {
-			@Override
-			public int compare(Pair<ForceType, Integer> obj1, Pair<ForceType, Integer> obj2) {
-				return obj1.one.compareTo(obj2.one);
+		if (!playerData.getLossesLastTurn().isEmpty()) {
+			String str = getString("bulletLossesLastTurn");
+			for (ForceType type : playerData.getLossesLastTurn().keySet()) {
+				int thisLoss = playerData.getLossesLastTurn().get(type);
+				lossesSortable.add(new Pair<>(type, thisLoss));
 			}
-		});
-		
-		List<String> strings = new ArrayList<>();
-		for (Pair<ForceType, Integer> loss : lossesSortable) {
-			strings.add(loss.two + " " + loss.one.getCommodityName().toLowerCase());
+			Collections.sort(lossesSortable, new Comparator<Pair<ForceType, Integer>>() {
+				@Override
+				public int compare(Pair<ForceType, Integer> obj1, Pair<ForceType, Integer> obj2) {
+					return obj1.one.compareTo(obj2.one);
+				}
+			});
+
+			List<String> strings = new ArrayList<>();
+			for (Pair<ForceType, Integer> loss : lossesSortable) {
+				strings.add(loss.two + " " + loss.one.getCommodityName().toLowerCase());
+			}
+			str = String.format(str, StringHelper.writeStringCollection(strings, false, true));
+			info.addPara(str, 0);
 		}
-		str = String.format(str, StringHelper.writeStringCollection(strings, false, true));
-		info.addPara(str, 0);
+		if (!abilitiesUsedLastTurn.isEmpty()) {
+			for (Pair<Boolean, AbilityPlugin> entry : abilitiesUsedLastTurn) {
+				String str = getString("bulletAbilityUsed");
+				String user = StringHelper.getString(entry.one ? "attacker" : "defender", true);
+				String abilityName = entry.two.getDef().name;
+				
+				LabelAPI label = info.addPara(str, 0, Misc.getHighlightColor(), user, abilityName);
+				label.setHighlightColors(Misc.getHighlightColor(), entry.two.getDef().color);
+			}
+		}
 	}
 	
 	public void addPostVictoryButtons(CustomPanelAPI outer, TooltipMakerAPI info, float width) 
@@ -1861,6 +1896,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	@Override
+	protected String getName() {
+		return getSmallDescriptionTitle();
+	}
+	
+	@Override
 	public String getSmallDescriptionTitle() {
 		String str = getString("intelTitle");
 		str = StringHelper.substituteToken(str, "$market", market.getName());
@@ -1887,10 +1927,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	@Override
 	public String getCommMessageSound() {
-		if (listInfoParam == UPDATE_TURN)
+		if (listInfoParam == UPDATE_TURN && abilitiesUsedLastTurn.isEmpty())
 			return "nex_sfx_combat";
-		if (listInfoParam == UPDATE_VICTORY)
-			return "nex_sfx_combat";	// maybe different sound?
+		//if (listInfoParam == UPDATE_VICTORY)
+		//	return "nex_sfx_combat";	// maybe different sound?
 		
 		return getSoundMajorPosting();
 	}

@@ -75,8 +75,8 @@ public class AbilityDialogPlugin implements InteractionDialogPlugin {
 	}
 	
 	public void printInit() {
-		ability.dialogAddIntro(dialog);
 		populateOptions();
+		ability.dialogAddIntro(dialog);
 	}
 	
 	public void populateOptions() {
