@@ -719,7 +719,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			if (plugin != null)
 				plugin.setPlayerPaidToUnlock(true);
 		}
-		addXPToDeployedUnits(storage);
+		
+		if (outcome != outcome.CANCELLED) {
+			addXPToDeployedUnits(storage);
+		}
 	}
 	
 	public void handleTransfer() {

@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -90,10 +91,12 @@ public class InspireAbilityPlugin extends AbilityPlugin {
 	}
 	
 	public int getLeadershipSkill(PersonAPI person) {
+		if (person == null) return 0;
 		int level = 0;
 		for (SkillLevelAPI skill : person.getStats().getSkillsCopy()) {
 			if (!skill.getSkill().getGoverningAptitudeId().equals(Skills.APT_LEADERSHIP))
 				continue;
+			if (skill.getSkill().isAptitudeEffect()) continue;
 			level++;
 		}
 		return level;

@@ -38,7 +38,7 @@ public class GBConstants {
 	public static float DISRUPT_WHEN_CAPTURED_TIME = 0.25f;
 	
 	public static float SUPPLIES_TO_DEPLOY_MULT = 0.25f;
-	public static float MAX_SUPPORT_DIST = 300;
+	public static float MAX_SUPPORT_DIST = 250;
 	
 	public static float XP_MARKET_SIZE_MULT = 4f;
 	public static float XP_CASUALTY_MULT = 0.15f;
