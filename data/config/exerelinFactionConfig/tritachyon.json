@@ -27,6 +27,8 @@
     "colonyExpeditionChance":0.75,	# not really their kind of thing...? I guess
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
+    #"stabilizeCommodities":["lobster", "gamma_core"],	# luckily this was a test, if not, lol
+    
     "groundBattleSettings":{
         "moraleDamageTakenMult":1.1,
     },

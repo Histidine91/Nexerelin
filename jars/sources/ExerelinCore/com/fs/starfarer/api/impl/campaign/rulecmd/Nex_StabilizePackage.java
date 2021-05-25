@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.Morality;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -95,6 +96,10 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 	}
 	
 	public static List<String> getCommodityTypes(MarketAPI market) {
+		NexFactionConfig conf = NexConfig.getFactionConfig(market.getFactionId());
+		if (conf.stabilizeCommodities != null)
+			return conf.stabilizeCommodities;
+		
 		List<String> commodities = COMMODITIES_RELIEF;
 		String type = getStabilizeMethod(market);
 		if (type.equals("repression"))
@@ -127,6 +132,9 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 			case Commodities.SUPPLIES:
 				mult = 2f;
 				break;
+			default:
+				float price = Global.getSettings().getCommoditySpec(commodityId).getBasePrice();
+				mult = 100/price;
 		}
 		return (int)(getSizeMult(market) * mult);
 	}

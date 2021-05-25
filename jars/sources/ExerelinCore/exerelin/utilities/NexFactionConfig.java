@@ -133,6 +133,7 @@ public class NexFactionConfig
     public boolean noHomeworld = false;	// don't give this faction a HQ in procgen
     public boolean showIntelEvenIfDead = false;	// intel tab
 	public boolean noMissionTarget = false;
+	public List<String> stabilizeCommodities = null;
     
     public boolean allowAgentActions = true;
     public boolean allowPrisonerActions = true;
@@ -371,6 +372,10 @@ public class NexFactionConfig
 			
 			loadStartSpecialItems(settings);
             loadStartShips(settings);
+			
+			if (settings.has("stabilizeCommodities")) {
+				stabilizeCommodities = NexUtils.JSONArrayToArrayList(settings.getJSONArray("stabilizeCommodities"));
+			}
             
             // industry
             if (settings.has("industrySeeds"))

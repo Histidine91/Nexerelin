@@ -2,6 +2,7 @@ package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -9,7 +10,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.IconRenderMode;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -364,15 +367,34 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	}
 	
 	public void generateStabilizeCommodityPara(TooltipMakerAPI tooltip, Morality moral, float pad) {
-		CommoditySpecAPI commodity;
-		if (moral == Morality.GOOD || moral == Morality.NEUTRAL) {
-			commodity = Global.getSettings().getCommoditySpec(Commodities.FOOD);
-		} else {
-			commodity = Global.getSettings().getCommoditySpec(Commodities.HAND_WEAPONS);
+		List<String> commodities = new ArrayList<>();
+		NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
+		if (conf.stabilizeCommodities != null) {
+			commodities.addAll(conf.stabilizeCommodities);
 		}
-		TooltipMakerAPI tooltip2 = tooltip.beginImageWithText(commodity.getIconName(), 24);
-		tooltip2.addPara(getString("stabilizationCommodity"), 0, Misc.getHighlightColor(), commodity.getLowerCaseName());
-		tooltip.addImageWithText(pad);
+		else if (moral == Morality.GOOD || moral == Morality.NEUTRAL) {
+			commodities.addAll(Nex_StabilizePackage.COMMODITIES_RELIEF);
+		} else {
+			commodities.addAll(Nex_StabilizePackage.COMMODITIES_REPRESSION);
+		}
+		List<String> commoditiesStrings = new ArrayList<>();
+		for (String commodity : commodities) {
+			commoditiesStrings.add(Global.getSettings().getCommoditySpec(commodity).getLowerCaseName());
+		}
+		
+		String str = String.format(getString("stabilizationCommodity"), 
+				StringHelper.writeStringCollection(commoditiesStrings));
+		
+		tooltip.addPara(str, pad, Misc.getHighlightColor(), commoditiesStrings.toArray(new String[0]));
+		tooltip.beginIconGroup();
+		try {
+			MarketAPI temp = Global.getSector().getEconomy().getMarketsCopy().get(0);
+			for (String commodity : commodities) {
+				CommodityOnMarketAPI com = temp.getCommodityData(commodity);
+				tooltip.addIcons(com, 1, IconRenderMode.NORMAL);
+			}
+		} catch (Exception ex) {}
+		tooltip.addIconGroup(32, 0);
 	}
 
 	// adapted from Starship Legends' BattleReport
