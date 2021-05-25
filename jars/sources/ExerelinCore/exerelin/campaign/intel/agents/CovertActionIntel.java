@@ -456,9 +456,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		
 		float chance = CovertOpsManager.getBaseInjuryChance(result.isSuccessful());
 		chance *= getDef().injuryChanceMult;
-		if (CovertOpsManager.getRandom(market).nextFloat() <= chance)
+		if (sp.preventFailure()) {
+			chance *= 2 - getSuccessChance(false).getModifiedValue();
+		}
+		if (true || CovertOpsManager.getRandom(market).nextFloat() <= chance)
 		{
 			Injury injury = new Injury(agent, agentFaction, targetFaction, playerInvolved, params);
+			agent.setQueuedAction(agent.currentAction);
 			agent.setCurrentAction(injury);
 			injury.activate();
 			injuryTime = injury.days;
