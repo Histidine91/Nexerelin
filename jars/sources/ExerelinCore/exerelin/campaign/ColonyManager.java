@@ -28,6 +28,7 @@ import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.AdminData;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
@@ -1409,6 +1410,37 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	/**
+	 * NPC admins will vanish from the market and its comm board if replaced, so
+	 * call this when changing admins to put them back.
+	 * @param market
+	 * @param prevAdmin
+	 */
+	public static void replaceDisappearedAdmin(MarketAPI market, PersonAPI prevAdmin) 
+	{
+		if (prevAdmin == null) return;
+		if (prevAdmin.isPlayer()) return;
+		if (isPlayerHiredAdmin(prevAdmin)) return;
+		
+		market.addPerson(prevAdmin);
+		market.getCommDirectory().addPerson(prevAdmin);
+	}
+	
+	/**
+	 * Is the specified person a player-hired admin?
+	 * @param person
+	 * @return
+	 */
+	public static boolean isPlayerHiredAdmin(PersonAPI person) {
+		for (AdminData data : Global.getSector().getCharacterData().getAdmins())
+		{
+			if (data.getPerson() == person) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Sets a person on the market's comm board to be admin, if appropriate.
 	 * @param market
 	 * @param oldOwner
@@ -1422,9 +1454,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return;
 		}
 		
+		PersonAPI currAdmin = market.getAdmin();
+		
 		// if player has captured a market, assign player as admin
 		if (newOwner.isPlayerFaction() && market.isPlayerOwned()) {
 			market.setAdmin(Global.getSector().getPlayerPerson());
+			replaceDisappearedAdmin(market, currAdmin);
 			return;
 		}
 		
@@ -1437,6 +1472,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		PersonAPI admin = getBestAdmin(market);
 		market.setAdmin(admin);
+		replaceDisappearedAdmin(market, currAdmin);
 	}
 	
 	public static boolean hasFactionLeader(MarketAPI market) {
