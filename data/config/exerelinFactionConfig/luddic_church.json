@@ -30,7 +30,8 @@
     "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
     
     "groundBattleSettings":{
-        #"plugin":"",
+		"luddef_moraleDamageTakenMult":0.85f,
+        "plugin":"exerelin.campaign.intel.groundbattle.plugins.LuddicChurchBonusSubplugin",
     },
     
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.LuddicNamer",

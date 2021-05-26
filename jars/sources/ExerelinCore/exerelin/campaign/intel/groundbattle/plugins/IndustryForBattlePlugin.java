@@ -105,6 +105,16 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 			GroundBattleIntel.applyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_BOMBARDMENT, 
 					indForBattle.getIndustry().getId());
 		}
+		
+		if (def.tags.contains(GBConstants.TAG_PREVENT_EW)) {
+			GroundBattleIntel.applyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_EW, 
+					indForBattle.getIndustry().getId());
+		}
+		
+		if (def.tags.contains(GBConstants.TAG_PREVENT_INSPIRE)) {
+			GroundBattleIntel.applyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_INSPIRE, 
+					indForBattle.getIndustry().getId());
+		}
 		//Global.getLogger(this.getClass()).info(defId +" Drop attrition: " + otherSide.getDropAttrition().getModifiedValue());
 	}	
 

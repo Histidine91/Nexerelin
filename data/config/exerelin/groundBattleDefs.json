@@ -83,21 +83,23 @@
 		"water_surface":{
 			"desc":"The water surface does not permit normal combat. Most fighting will take place in the interior of sea habitats, where the usefulness of heavy armaments will be limited.",
 			"highlights":["heavy armaments"],
-			"tags":["cramped"],
 			"color":[64, 96, 255, 255],
+			"tags":["cramped"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin",	# unlike industries, this must be specified to do anything
 		},
 		
 		"US_tunnels":{
 			"desc":"The cramped spaces of underground fighting inhibits the usefulness of heavy armaments.",
 			"highlights":["heavy armaments"],
+			"color":[64, 180, 55, 255],
 			"tags":["cramped"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin",
 		},
 		
 		"US_magnetic":{
-			"desc":"Communications disrupted. All attacker units will reorganize for 1 turn after moving, and many special abilities are disabled.",
-			"highlights":["reorganize"],
+			"desc":"Communications disrupted. All attacker units will reorganize for 1 turn after moving, and attack power reduced by 15%. Many special abilities are disabled.",
+			"highlights":["1", "15%", "disabled"],
+			"color":[92, 110, 187, 255],
 			"tags":["cramped", "preventEW", "preventInspire"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.MagneticCrustPlugin",
 		},

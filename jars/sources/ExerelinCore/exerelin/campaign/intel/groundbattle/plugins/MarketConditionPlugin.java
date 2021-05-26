@@ -6,6 +6,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
+import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBDataManager;
 import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -33,6 +34,29 @@ public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 	public void apply() {
 		if (!isApplicable()) {
 			intel.getMarketConditionPlugins().remove(this);
+			return;
+		}
+		
+		ConditionDef def = getDef();
+		if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
+			GroundBattleIntel.applyTagWithReason(intel.getSide(true).getData(), GBConstants.TAG_PREVENT_BOMBARDMENT, 
+					conditionId);
+			GroundBattleIntel.applyTagWithReason(intel.getSide(false).getData(), GBConstants.TAG_PREVENT_BOMBARDMENT, 
+					conditionId);
+		}
+		
+		if (def.tags.contains(GBConstants.TAG_PREVENT_EW)) {
+			GroundBattleIntel.applyTagWithReason(intel.getSide(true).getData(), GBConstants.TAG_PREVENT_EW, 
+					conditionId);
+			GroundBattleIntel.applyTagWithReason(intel.getSide(false).getData(), GBConstants.TAG_PREVENT_EW, 
+					conditionId);
+		}
+		
+		if (def.tags.contains(GBConstants.TAG_PREVENT_INSPIRE)) {
+			GroundBattleIntel.applyTagWithReason(intel.getSide(true).getData(), GBConstants.TAG_PREVENT_INSPIRE, 
+					conditionId);
+			GroundBattleIntel.applyTagWithReason(intel.getSide(false).getData(), GBConstants.TAG_PREVENT_INSPIRE, 
+					conditionId);
 		}
 	}
 	

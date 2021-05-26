@@ -239,7 +239,8 @@ public class GroundBattleAI {
 					record.getPriorityForReinforcement(false)));
 		}
 		
-		checkAbilityUse();
+		if (!isPlayer)
+			checkAbilityUse();
 		
 		// ---------------------------------------------------------------------
 		// Get units we can redeploy to threatened areas

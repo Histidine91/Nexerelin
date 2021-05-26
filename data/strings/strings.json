@@ -1305,6 +1305,7 @@
 		"modifierFactionAttackMult":"%s damage dealt",
 		"modifierFactionDamageTakenMult":"%s damage received",
 		"modifierFactionMoraleDamageTakenMult":"%s morale damage received",
+		"modifierLuddicMoraleDamageTakenMult":"%s morale damage received on originally Luddic-held colonies (effect doubled for militia)",
 		
 		"modifierStation":"Orbital Station",
 		"modifierStationDesc":"An orbital station is active. Enemy fleets cannot support ground forces.",
@@ -1345,12 +1346,14 @@
 		"ability_inspire_blurb":"An inspiring battle speech by the leader at the right time can turn the tide of battle.",
 		"ability_inspire_tooltip":"Raises morale of all units by %s, and removes one turn of the reorganizing state. Can be used once per battle.",
 		"ability_inspire_prereq":"Requires %s skill points in Leadership",
+		"ability_inspire_prevented":"Inspire prevented",
 		
 		"ability_ew_blurb":"Broad-spectrum EW attack on enemy C3, sensors and intelligence systems disrupts their ability to organize or fight.",
 		"ability_ew_tooltip1":"All enemy units reorganize for %s turn, and effects of enemy ground defenses is reduced to %s of normal.",
-		"ability_ew_tooltip2":"Requires nearby friendly fleets to have a total of %s ECM rating. Lasts an additional turn at %s ECM rating.",
+		"ability_ew_tooltip2":"Requires nearby friendly fleets to have a total of %s ECM rating (at current market size). Lasts an additional turn at %s ECM rating.",
 		"ability_ew_tooltip3":"Current ECM rating: %s (cached)",
 		"ability_ew_tooltipTimeRemaining":"Lasts for %s more turn(s).",
+		"ability_ew_prevented":"Electronic warfare prevented",
 		"ability_ew_insufficientECM":"Insufficient ECM rating",
 		"ability_ew_insufficientSupplies":"Insufficient supplies: %s",
 		

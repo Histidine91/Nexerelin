@@ -12,6 +12,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBDataManager;
 import exerelin.campaign.intel.groundbattle.GBDataManager.AbilityDef;
 import exerelin.campaign.intel.groundbattle.GroundBattleAI;
@@ -56,6 +57,16 @@ public class EWAbilityPlugin extends AbilityPlugin {
 	
 	@Override
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
+		
+		if (side.getData().containsKey(GBConstants.TAG_PREVENT_EW)) {
+			Map<String, Object> params = new HashMap<>();
+			
+			String id = "ewPrevented";
+			String desc = GroundBattleIntel.getString("ability_ew_prevented");
+			params.put("desc", desc);
+			return new Pair<>(id, params);
+		}
+		
 		int powerLevel = getPowerLevel();
 		if (powerLevel <= 0) {
 			Map<String, Object> params = new HashMap<>();

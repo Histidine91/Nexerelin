@@ -1,12 +1,7 @@
 == Condition types ==
-Magnetic crust: attacker reorganizes after each move due to lack of communications, reduced damage
+Magnetic crust: attacker reorganizes after each move due to lack of communications
 Dust storm: reduced attack power for everyone?
-
-== Faction modifiers ==
-Hegemony: +15% morale
-Luddic Church: +10% marine morale, +20% militia morale (only on Luddic worlds)
-Tri-Tachyon: -10% morale
-Templars: +50% strength
+	It already buffs defender attack power, maybe that's enough
 
 == Abilities ==
 Bombardment
@@ -33,7 +28,6 @@ Close Air Support
 == Todo ==
 - Generate buffs
 	- Commanders
-	- Luddic Church
 - Map view
 
 - [playtest] AI
