@@ -5,23 +5,30 @@ import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin;
+import static com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.pickDerelictCondition;
+import static com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.pickVariant;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.StarSystemData;
+import static com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.addSalvageEntity;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsThemeGenerator;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import static exerelin.world.landmarks.BaseLandmarkDef.log;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class GraveyardWithMemorial extends BaseLandmarkDef {
 	
@@ -85,13 +92,79 @@ public class GraveyardWithMemorial extends BaseLandmarkDef {
 		return new String[] {faction1, faction2};
 	}
 	
+	public DerelictShipEntityPlugin.DerelictShipData createRandom(String factionId, Random random, float sModProb) {
+		if (random == null) random = new Random();
+		String variantId = pickVariantId(factionId);
+		
+		ShipRecoverySpecial.ShipCondition condition = pickDerelictCondition(random);
+		
+		ShipRecoverySpecial.PerShipData ship = new ShipRecoverySpecial.PerShipData(variantId, condition, sModProb);
+		
+		return new DerelictShipEntityPlugin.DerelictShipData(ship, true);
+	}
+	
+	protected String pickVariantId(String factionId) {
+		String variantId = pickVariant(factionId, random, 
+				ShipRoles.COMBAT_SMALL, 12f,
+				ShipRoles.COMBAT_FREIGHTER_SMALL, 3f,
+				ShipRoles.COMBAT_MEDIUM, 8f,
+				ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2f,
+				ShipRoles.COMBAT_LARGE, 5f,
+				ShipRoles.COMBAT_FREIGHTER_LARGE, 1f,
+				//ShipRoles.COMBAT_CAPITAL, 2f,
+				ShipRoles.CARRIER_SMALL,6f,
+				ShipRoles.CARRIER_MEDIUM, 4f,
+				ShipRoles.CARRIER_LARGE, 2f,
+				ShipRoles.PHASE_SMALL, 4f,
+				ShipRoles.PHASE_MEDIUM, 2f,
+				ShipRoles.PHASE_LARGE, 1f,
+				ShipRoles.PHASE_CAPITAL, .5f,
+				ShipRoles.TANKER_SMALL, 2f,
+				ShipRoles.TANKER_MEDIUM, 1f,
+				ShipRoles.TANKER_LARGE, .51f,
+				ShipRoles.FREIGHTER_SMALL, 2f,
+				ShipRoles.FREIGHTER_MEDIUM, 1f,
+				ShipRoles.FREIGHTER_LARGE, .5f,
+				ShipRoles.PERSONNEL_SMALL, 2f,
+				ShipRoles.PERSONNEL_MEDIUM, 1f,
+				ShipRoles.PERSONNEL_LARGE, .5f
+		);
+		return variantId;
+	}
+	
+	// copied from BaseThemeGenerator.addShipGraveyard
+	public void generateShipsForGraveyard(StarSystemData data, SectorEntityToken focus, WeightedRandomPicker<String> factions) {
+		int numShips = random.nextInt(5) + 3;
+		
+		WeightedRandomPicker<Float> bands = new WeightedRandomPicker<Float>(random);
+		for (int i = 0; i < numShips + 5; i++) {
+			bands.add(new Float(140 + i * 20), (i + 1) * (i + 1));
+		}
+		
+		for (int i = 0; i < numShips; i++) {
+			float radius = bands.pickAndRemove();
+			
+			DerelictShipEntityPlugin.DerelictShipData params = createRandom(factions.pick(), 
+					random, DerelictShipEntityPlugin.getDefaultSModProb());
+			if (params != null) {
+				CustomCampaignEntityAPI entity = (CustomCampaignEntityAPI) addSalvageEntity(random,
+									focus.getContainingLocation(),
+									Entities.WRECK, Factions.NEUTRAL, params);
+				entity.setDiscoverable(true);
+				float orbitDays = radius / (5f + random.nextFloat() * 10f);
+				entity.setCircularOrbit(focus, random.nextFloat() * 360f, radius, orbitDays);
+				BaseThemeGenerator.AddedEntity added = new BaseThemeGenerator.AddedEntity(entity, null, Entities.WRECK);
+				data.generated.add(added);
+			}
+		}
+	}
+	
 	/**
 	 * Creates a ship graveyard, debris field and beacon
 	 * @param system
 	 */
 	public void createGraveyard(StarSystemAPI system)
 	{
-		RuinsThemeGenerator generator = new RuinsThemeGenerator();
 		StarSystemData data = BaseThemeGenerator.computeSystemData(system);
 		
 		// find a location for the field (uses vanilla procgen code)
@@ -120,7 +193,7 @@ public class GraveyardWithMemorial extends BaseLandmarkDef {
 		factionPicker.add(factions[1]);
 		
 		// graveyard proper
-		generator.addShipGraveyard(data, token, factionPicker);
+		generateShipsForGraveyard(data, token, factionPicker);
 		
 		// debris field
 		// don't want, it gets in the way (blocks beacon tooltip)
