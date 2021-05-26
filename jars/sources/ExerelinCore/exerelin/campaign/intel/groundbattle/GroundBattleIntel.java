@@ -1132,11 +1132,30 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return sub;
 	}
 	
+	public TooltipMakerAPI generateViewModeButton(CustomPanelAPI buttonRow, String nameId, ViewMode mode,
+			Color base, Color bg, Color bright, TooltipMakerAPI rightOf) 
+	{
+		TooltipMakerAPI holder = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
+				VIEW_BUTTON_HEIGHT, false);
+		
+		ButtonAPI button = holder.addAreaCheckbox(getString(nameId), mode, base, bg, bright,
+				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
+		button.setChecked(mode == this.viewMode);
+		
+		if (rightOf != null) {
+			buttonRow.addUIElement(holder).rightOfTop(rightOf, 4);
+		} else {
+			buttonRow.addUIElement(holder).inTL(0, 3);
+		}
+		
+		return holder;
+	}
+	
 	public void generateIntro(CustomPanelAPI outer, TooltipMakerAPI info, float width, float pad) {
 		info.addImages(width, 128, pad, pad, attacker.faction.getLogo(), defender.faction.getLogo());
 				
 		FactionAPI fc = getFactionForUIColors();
-		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
+		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor(), bright = fc.getBrightUIColor();
 		
 		String str = getString("intelDesc_intro");
 		Map<String, String> sub = getFactionSubs();
@@ -1176,35 +1195,17 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		// view mode buttons
 		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
-		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
-				VIEW_BUTTON_HEIGHT, false);
-		btnHolder1.addButton(getString("btnViewUnits"), ViewMode.UNITS, base, bg, 
-				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
-		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
 		
-		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
-				VIEW_BUTTON_HEIGHT, false);
-		btnHolder2.addButton(getString("btnViewAbilities"), ViewMode.ABILITIES, base, bg, 
-				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
-		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
-		
-		TooltipMakerAPI btnHolder3 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
-				VIEW_BUTTON_HEIGHT, false);
-		btnHolder3.addButton(getString("btnViewInfo"), ViewMode.INFO, base, bg, 
-				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
-		buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
-		
-		TooltipMakerAPI btnHolder4 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
-				VIEW_BUTTON_HEIGHT, false);
-		btnHolder4.addButton(getString("btnViewLog"), ViewMode.LOG, base, bg, 
-				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
-		buttonRow.addUIElement(btnHolder4).rightOfTop(btnHolder3, 4);
-		
-		TooltipMakerAPI btnHolder5 = buttonRow.createUIElement(VIEW_BUTTON_WIDTH, 
-				VIEW_BUTTON_HEIGHT, false);
-		btnHolder5.addButton(getString("btnViewHelp"), ViewMode.HELP, base, bg, 
-				VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT, 0);
-		buttonRow.addUIElement(btnHolder5).rightOfTop(btnHolder4, 4);
+		TooltipMakerAPI btnHolder1 = generateViewModeButton(buttonRow, "btnViewUnits", 
+				ViewMode.UNITS, base, bg, bright, null);		
+		TooltipMakerAPI btnHolder2 = generateViewModeButton(buttonRow, "btnViewAbilities", 
+				ViewMode.ABILITIES, base, bg, bright, btnHolder1);		
+		TooltipMakerAPI btnHolder3 = generateViewModeButton(buttonRow, "btnViewInfo", 
+				ViewMode.INFO, base, bg, bright, btnHolder2);		
+		TooltipMakerAPI btnHolder4 = generateViewModeButton(buttonRow, "btnViewLog", 
+				ViewMode.LOG, base, bg, bright, btnHolder3);
+		TooltipMakerAPI btnHolder5 = generateViewModeButton(buttonRow, "btnViewHelp", 
+				ViewMode.HELP, base, bg, bright, btnHolder4);
 		
 		info.addCustom(buttonRow, 3);
 	}

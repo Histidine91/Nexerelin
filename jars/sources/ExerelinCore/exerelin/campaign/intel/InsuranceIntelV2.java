@@ -403,13 +403,8 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	}
 	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = Misc.getBasePlayerColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, Color tc, float initPad) {
 		float pad = 3f;
-		Color tc = getBulletColorForMode(mode);
 		Color h = Misc.getHighlightColor();
 		
 		// insurance payout notification
@@ -663,25 +658,38 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		info.addImageWithText(opad*2);
 	}
 	
+	public TooltipMakerAPI generateTabButton(CustomPanelAPI buttonRow, String nameId, Tab tab,
+			Color base, Color bg, Color bright, TooltipMakerAPI rightOf) 
+	{
+		TooltipMakerAPI holder = buttonRow.createUIElement(TAB_BUTTON_WIDTH, 
+				TAB_BUTTON_HEIGHT, false);
+		
+		ButtonAPI button = holder.addAreaCheckbox(getString(nameId), tab, base, bg, bright,
+				TAB_BUTTON_WIDTH, TAB_BUTTON_HEIGHT, 0);
+		button.setChecked(tab == this.currentTab);
+		
+		if (rightOf != null) {
+			buttonRow.addUIElement(holder).rightOfTop(rightOf, 4);
+		} else {
+			buttonRow.addUIElement(holder).inTL(0, 3);
+		}
+		
+		return holder;
+	}
+	
 	protected TooltipMakerAPI addTabButtons(TooltipMakerAPI tm, CustomPanelAPI panel, float width) {
 		
 		//CustomPanelAPI row = panel.createCustomPanel(width, TAB_BUTTON_HEIGHT, null);
 		//CustomPanelAPI spacer = panel.createCustomPanel(width, TAB_BUTTON_HEIGHT, null);
-		
-		TooltipMakerAPI btnHolder1 = panel.createUIElement(TAB_BUTTON_WIDTH, 
-				TAB_BUTTON_HEIGHT, false);
-		btnHolder1.addButton(getString("tabFleet"), BUTTON_FLEET, TAB_BUTTON_WIDTH, TAB_BUTTON_HEIGHT, 0);
-		panel.addUIElement(btnHolder1).inTL(0, 3);
-		
-		TooltipMakerAPI btnHolder2 = panel.createUIElement(TAB_BUTTON_WIDTH, 
-				TAB_BUTTON_HEIGHT, false);
-		btnHolder2.addButton(getString("tabClaims"), BUTTON_CLAIMS, TAB_BUTTON_WIDTH, TAB_BUTTON_HEIGHT, 0);
-		panel.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
-		
-		TooltipMakerAPI btnHolder3 = panel.createUIElement(TAB_BUTTON_WIDTH, 
-				TAB_BUTTON_HEIGHT, false);
-		btnHolder3.addButton(getString("tabHelp"), BUTTON_HELP, TAB_BUTTON_WIDTH, TAB_BUTTON_HEIGHT, 0);
-		panel.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
+		FactionAPI fc = getFactionForUIColors();
+		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor(), bright = fc.getBrightUIColor();
+				
+		TooltipMakerAPI btnHolder1 = generateTabButton(panel, "tabFleet", BUTTON_FLEET, 
+				base, bg, bright, null);		
+		TooltipMakerAPI btnHolder2 = generateTabButton(panel, "tabClaims", BUTTON_CLAIMS, 
+				base, bg, bright, btnHolder1);
+		TooltipMakerAPI btnHolder3 = generateTabButton(panel, "tabHelp", BUTTON_HELP, 
+				base, bg, bright, btnHolder2);
 		
 		//tm.addCustom(row, 0);
 		//tm.addCustom(spacer, 0);
