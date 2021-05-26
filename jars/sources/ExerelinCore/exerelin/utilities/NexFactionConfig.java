@@ -1038,20 +1038,19 @@ public class NexFactionConfig
     }
     
     /**
-     * Gets a list of ships to give to the player at start, based on the chosen starting fleet type.
-     * Can use the predefined ships in the faction config, or random ones based on ship roles.
+     * Gets a list of ships to give to the player at start, based on the chosen starting fleet type.Can use the predefined ships in the faction config, or random ones based on ship roles.
      * @param typeStr
      * @param allowFallback If true, return the specified solo start ship if the chosen type is not available,
      * or a Wolf if that isn't available either
+     * @param index
      * @return The currently selected fleet for that type, which is a list of variant IDs
      */
-    public List<String> getStartFleetForType(String typeStr, boolean allowFallback)
+    public List<String> getStartFleetForType(String typeStr, boolean allowFallback, int index)
     {
         StartFleetType type = StartFleetType.getType(typeStr);
+        boolean random = index < 0;
                 
-        if (ExerelinSetupData.getInstance().randomStartShips
-                && (type != StartFleetType.SUPER)
-                && (startShips.containsKey(type)))
+        if (random && (type != StartFleetType.SUPER) && (startShips.containsKey(type)))
         {
             int tries = 0;
             boolean valid = false;
@@ -1070,26 +1069,16 @@ public class NexFactionConfig
         }
         
         if (startShips.containsKey(type))
-            return startShips.get(type).getCurrentFleet();
+            return startShips.get(type).getFleet(index);
         
         if (!allowFallback) return null;
         
         if (startShips.containsKey(StartFleetType.SOLO))
-            return startShips.get(StartFleetType.SOLO).getCurrentFleet();
+            return startShips.get(StartFleetType.SOLO).getFleet(index);
         
         return Arrays.asList(new String[]{"wolf_Starting"});
     }
 	
-	/**
-	 * Cycles through the available fleets for all starting fleet types.
-	 */
-	public void cycleStartFleets()
-    {
-        for (Map.Entry<StartFleetType, StartFleetSet> tmp : startShips.entrySet())
-		{
-			tmp.getValue().incrementIndex();
-		}
-	}
 	
 	public int getNumStartFleetsForType(String typeStr)
 	{
@@ -1098,11 +1087,8 @@ public class NexFactionConfig
 		return startShips.get(type).getNumFleets();
 	}
 	
-	public int getStartFleetIndexForType(String typeStr)
-	{
-		StartFleetType type = StartFleetType.getType(typeStr);
-		if (!startShips.containsKey(type)) return -1;
-		return startShips.get(type).index;
+	public StartFleetSet getStartFleetSet(String type) {
+		return startShips.get(StartFleetType.getType(type));
 	}
 
 	/**
@@ -1111,22 +1097,15 @@ public class NexFactionConfig
 	public static class StartFleetSet {
 		public StartFleetType type;
 		public List<List<String>> fleets = new ArrayList<>();
-		public int index = 0;
 		
 		public StartFleetSet(StartFleetType type)
 		{
 			this.type = type;
 		}
 		
-		public void incrementIndex()
-		{
-			index++;
-			if (index >= fleets.size()) index = 0;
-		}
-		
-		public List<String> getCurrentFleet()
-		{
-			if (fleets.isEmpty()) return null;
+		public List<String> getFleet(int index) {
+			if (index < 0) index = 0;
+			if (index >= fleets.size()) index = fleets.size() - 1;
 			return fleets.get(index);
 		}
 		

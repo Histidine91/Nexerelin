@@ -150,7 +150,7 @@ FireAll ExerelinNGCStep3",,,
 nex_NGCCustomStart,NewGameOptionSelected,"$option == nex_NGCCustomStart","Nex_NGCCustomStart menu",,"1:nex_NGCDone:Done",
 nex_NGCCustomStartByTrigger,Nex_NGCCustomStartMenu,,"Nex_NGCCustomStart menu",,,
 ,,,,,,
-nex_NGCPickStartingShips,ExerelinNGCStep3,,"Nex_NGCStartFleetOptions","Your starting fleet?",,
+nex_NGCPickStartingShips,ExerelinNGCStep3,,"Nex_NGCStartFleetOptionsV2",,,
 nex_NGCStartShipsSolo,NewGameOptionSelected,"$option == nex_NGCFleetSolo","NGCAddStartingShipsByFleetType SOLO
 FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsCombatSmall,NewGameOptionSelected,"$option == nex_NGCFleetCombatSmall","NGCAddStartingShipsByFleetType COMBAT_SMALL
@@ -174,9 +174,11 @@ FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsGrandFleet,NewGameOptionSelected,"$option == nex_NGCFleetGrandFleet","NGCAddStartingShipsByFleetType GRAND_FLEET
 FireBest ExerelinNGCStep4",,,
 ,,,,,,
-nex_NGCStartShipsBack,NewGameOptionSelected,"$option == nex_NGCFleetBack","Nex_NGCListFactions listFactions $factionGroup",,,
+nex_NGCStartShipsBack,NewGameOptionSelected,"$option == nex_NGCFleetBack","Nex_VisualCustomPanel clear
+Nex_NGCListFactions listFactions $factionGroup",,,
 nex_NGCStartShipsBackToCustomStart,NewGameOptionSelected,"$option == nex_NGCFleetBack
-$nex_customStart != null","Nex_NGCCustomStart unset
+$nex_customStart != null","Nex_VisualCustomPanel clear
+Nex_NGCCustomStart unset
 Nex_NGCCustomStart menu",,,
 ,,,,,,
 nex_NGCCustomStartSelection,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomStart_""","Nex_NGCCustomStart select",,,

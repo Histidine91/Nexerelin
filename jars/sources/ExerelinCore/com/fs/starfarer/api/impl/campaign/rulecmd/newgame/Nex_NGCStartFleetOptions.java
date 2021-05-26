@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import org.lwjgl.input.Keyboard;
 
-
+@Deprecated
 public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 	
 	protected static final String[] FLEET_TYPES = {"SOLO", "COMBAT_SMALL", "COMBAT_LARGE", "TRADE_SMALL", 
@@ -86,7 +86,7 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 		{
 			NexFactionConfig factionConf = NexConfig.getFactionConfig(
 					PlayerFactionStore.getPlayerFactionIdNGC());
-			factionConf.cycleStartFleets();
+			//factionConf.cycleStartFleets();
 			populate(false);
 			return;
 		}
@@ -129,7 +129,7 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 		{
 			String fleetTypeStr = FLEET_TYPES[i];
 			String option = "nex_NGCFleet" + DIALOG_ENTRIES[i];
-			List<String> startingVariants = factionConf.getStartFleetForType(fleetTypeStr, false);
+			List<String> startingVariants = factionConf.getStartFleetForType(fleetTypeStr, false, 0);
 			if (startingVariants == null) {
 				//dialog.getOptionPanel().setEnabled(option, false);
 				continue;
@@ -141,7 +141,7 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 			if (!memoryMap.get(MemKeys.LOCAL).getBoolean("$randomStartShips"))
 			{
 				int numFleets = factionConf.getNumStartFleetsForType(fleetTypeStr);
-				int index = factionConf.getStartFleetIndexForType(fleetTypeStr) + 1;
+				int index = 0;
 				if (numFleets > 1) {
 					anyMultiple = true;
 					optionName += " (" + index + "/" + numFleets + ")";

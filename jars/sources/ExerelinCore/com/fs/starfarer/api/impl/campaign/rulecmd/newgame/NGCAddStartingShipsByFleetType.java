@@ -39,7 +39,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		NexFactionConfig factionConf = NexConfig.getFactionConfig(PlayerFactionStore.getPlayerFactionIdNGC());
 		List<String> startingVariants = (List<String>)memoryMap.get(MemKeys.LOCAL).get("$startShips_" + fleetTypeStr);
 		if (startingVariants == null || startingVariants.isEmpty())
-			startingVariants = factionConf.getStartFleetForType(fleetTypeStr, true);
+			startingVariants = factionConf.getStartFleetForType(fleetTypeStr, true, 0);
 		
 		generateFleetFromVariantIds(dialog, data, fleetTypeStr, startingVariants);
 		addStartingDModScript(memoryMap.get(MemKeys.LOCAL));

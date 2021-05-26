@@ -71,7 +71,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		opts.setSelectorValue("startOfficersSelector", data.numStartingOfficers);
 		
 		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
-		if (local.getBoolean("$randomStartShips") && local.contains("$nex_lastSelectedFleetType")) 
+		if (true && local.contains("$nex_lastSelectedFleetType")) 
 		{
 			StartFleetType type = StartFleetType.getType(local.getString("$nex_lastSelectedFleetType"));
 			if (type != StartFleetType.SUPER) {
@@ -115,7 +115,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		
 		NexFactionConfig factionConf = NexConfig.getFactionConfig(
 				PlayerFactionStore.getPlayerFactionIdNGC());
-		List<String> startingVariants = factionConf.getStartFleetForType(fleetTypeStr, false);
+		List<String> startingVariants = factionConf.getStartFleetForType(fleetTypeStr, false, -1);
 		memoryMap.get(MemKeys.LOCAL).set("$startShips_" + fleetTypeStr, startingVariants);
 	}
 }

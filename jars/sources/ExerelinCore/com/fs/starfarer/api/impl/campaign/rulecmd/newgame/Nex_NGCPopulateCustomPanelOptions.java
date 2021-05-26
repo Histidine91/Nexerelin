@@ -230,7 +230,8 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 						null, null)
 		);
 		
-		// random ships
+		// random ships; obsolete with new ship picking GUI
+		/*
 		addCheckboxOption(panel, info, getString("optionRandomStartShips"), "nex_randomStartShips", 
 				data.randomStartShips, "graphics/fx/question_mark.png", plugin, new ButtonEntry() {
 						@Override
@@ -243,6 +244,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				createTooltip(getString("tooltipRandomStartShips"), 
 						null, null)
 		);
+		*/
 		
 		// easy mode
 		//float offEasy = Global.getSettings().getFloat("easyOfficerLevelMult");

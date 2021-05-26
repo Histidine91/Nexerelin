@@ -44,14 +44,21 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 				createPanel(dialog, replace);
 				return true;
 			case "clear":
-				tooltip = null;
-				plugin = null;
-				CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
-				if (data != null) dialog.getVisualPanel().showPersonInfo(data.getPerson(), true);
+				clearPanel(dialog, memoryMap);
+				return true;
+			case "add":
+				addTooltipToPanel();
 				return true;
 		}
 				
 		return false;
+	}
+	
+	public static void clearPanel(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		tooltip = null;
+		plugin = null;
+		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
+		if (data != null) dialog.getVisualPanel().showPersonInfo(data.getPerson(), true);
 	}
 	
 	public static void createPanel(InteractionDialogAPI dialog, boolean replace) {
