@@ -781,9 +781,11 @@ public class ExerelinProcGen {
 			ProcGenEntity station = createEntityDataForStation(target);
 			stations.add(station);
 			marketsBySystem.get(loc).add(station);
+			count++;
 		}
 	}
 	
+	// ended up not using this for anything
 	protected boolean isInCorona(PlanetAPI planet)
 	{
 		StarSystemAPI system = planet.getStarSystem();
@@ -792,7 +794,7 @@ public class ExerelinProcGen {
 		for (PlanetAPI star : system.getPlanets())
 		{
 			if (!star.isStar()) return false;
-			
+			// TODO: actual corona detection
 		}
 		return false;
 	}
