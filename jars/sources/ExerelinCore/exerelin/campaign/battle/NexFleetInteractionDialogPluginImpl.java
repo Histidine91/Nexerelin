@@ -422,6 +422,25 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		return false;
 	}
 	
+	protected void printPullInText(CampaignFleetAPI fleet, BattleAPI b, BattleSide playerSide, boolean hostile) 
+	{
+		if (!config.straightToEngage && config.showPullInText) {
+			if (b.getSide(playerSide) == b.getSideFor(fleet)) {
+				textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
+						+ StringHelper.getString("exerelin_fleets", "supportingYourForces"));//, FRIEND_COLOR);
+			} else {
+				if (hostile) {
+					textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
+						+ StringHelper.getString("exerelin_fleets", "joiningTheEnemy"));//, ENEMY_COLOR);
+				} else {
+					textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
+						+ StringHelper.getString("exerelin_fleets", "supportingOpposingSide"));
+				}
+			}
+			textPanel.highlightFirstInLastPara(fleet.getNameWithFactionKeepCase() + ":", fleet.getFaction().getBaseUIColor());
+		}
+	}
+	
 	// vanilla with modified pulling in of nearby fleets
 	@Override
 	protected void pullInNearbyFleets() {
@@ -482,22 +501,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 					b.join(closest);
 					pulledIn.add(closest);
 					
-					if (!config.straightToEngage && config.showPullInText) {
-						if (b.getSide(playerSide) == b.getSideFor(closest)) {
-							textPanel.addParagraph(
-									Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": " 
-										+ StringHelper.getString("exerelin_fleets", "supportingYourForces"));//, FRIEND_COLOR);
-						} else {
-							if (hostile) {
-								textPanel.addParagraph(Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": " 
-										+ StringHelper.getString("exerelin_fleets", "joiningTheEnemy"));//, ENEMY_COLOR);
-							} else {
-								textPanel.addParagraph(Misc.ucFirst(closest.getNameWithFactionKeepCase()) + ": " 
-										+ StringHelper.getString("exerelin_fleets", "supportingOpposingSide"));
-							}
-						}
-						textPanel.highlightFirstInLastPara(closest.getNameWithFactionKeepCase() + ":", closest.getFaction().getBaseUIColor());
-					}
+					printPullInText(closest, b, playerSide, hostile);
 				}
 			}
 		}
@@ -512,21 +516,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				b.join(fleet);
 				pulledIn.add(fleet);
 				//if (b.isPlayerSide(b.getSideFor(fleet))) {
-				if (!config.straightToEngage && config.showPullInText) {
-					if (b.getSide(playerSide) == b.getSideFor(fleet)) {
-						textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
-								+ StringHelper.getString("exerelin_fleets", "supportingYourForces"));//, FRIEND_COLOR);
-					} else {
-						if (hostile) {
-							textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
-								+ StringHelper.getString("exerelin_fleets", "joiningTheEnemy"));//, ENEMY_COLOR);
-						} else {
-							textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": " 
-								+ StringHelper.getString("exerelin_fleets", "supportingOpposingSide"));
-						}
-					}
-					textPanel.highlightFirstInLastPara(fleet.getNameWithFactionKeepCase() + ":", fleet.getFaction().getBaseUIColor());
-				}
+				printPullInText(fleet, b, playerSide, hostile);
 //				someJoined = true;
 			}
 		}
@@ -548,6 +538,41 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				showFleetInfo();
 			}
 		}
+	}
+	
+	public void forcePullInFleets(CampaignFleetAPI... fleets) {
+		BattleAPI b = context.getBattle();
+		BattleSide playerSide = b.pickSide(Global.getSector().getPlayerFleet());
+		boolean hostile = otherFleet.getAI() != null && otherFleet.getAI().isHostileTo(playerFleet);
 		
+		List<CampaignFleetAPI> pulledInNow = new ArrayList<CampaignFleetAPI>();
+		
+		for (CampaignFleetAPI fleet : fleets) {
+			BattleSide joiningSide = b.pickSide(fleet, true);
+			if (!config.pullInAllies && joiningSide == playerSide) continue;
+			if (!config.pullInEnemies && joiningSide != playerSide) continue;
+
+			b.join(fleet);
+			pulledIn.add(fleet);
+			pulledInNow.add(fleet);
+			log.info(String.format("%s joining battle, can join %s, joiningSide %s, fleet battle %s", 
+					fleet.getName(), b.canJoin(fleet), joiningSide, fleet.getBattle()));
+			printPullInText(fleet, b, playerSide, hostile);
+		}
+		
+		for (CampaignFleetAPI curr : pulledInNow) {
+			curr.inflateIfNeeded();
+		}
+		
+		if (!ongoingBattle) {
+			log.info("wololo regen battle");
+			b.genCombined();
+			b.takeSnapshots();
+			playerFleet = b.getPlayerCombined();
+			otherFleet = b.getNonPlayerCombined();
+			//if (!config.straightToEngage) {
+				showFleetInfo();
+			//}
+		}
 	}
 }

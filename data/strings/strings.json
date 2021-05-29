@@ -1101,7 +1101,12 @@
 		"endMsgDefeat":"Your invasion has been defeated.",
 		
 		"storyCriticalWarning":"$market has an important role to play in the Sector to come. You have the feeling that if you were to proceed successfully with this invasion, the future could be distorted.",
-		"storyCriticalWarningHighlight":"the future could be distorted"
+		"storyCriticalWarningHighlight":"the future could be distorted",
+		
+		"dialogNoEngage":"You're unable to join this battle.",
+		"dialogNoEngage_def":"The attackers are in disarray and not currently attempting to engage the station.",
+		"dialogNoEngage_noEnemy":"There are no defenders to engage.",
+		"dialogNoEngage_avoid":"The defenders are refusing to give battle to defend the colony.",
 	},
 	"nex_industry":{
 		"effect_synchrotron":"Increases fuel production output by %s units.",

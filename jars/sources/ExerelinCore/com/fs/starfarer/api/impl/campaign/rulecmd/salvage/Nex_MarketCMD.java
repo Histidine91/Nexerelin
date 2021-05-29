@@ -2,12 +2,14 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -16,7 +18,9 @@ import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.BattleCreationContext;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
@@ -45,6 +49,7 @@ import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin.getEntityMemory;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
 import com.fs.starfarer.api.impl.campaign.rulecmd.VIC_MarketCMD;
@@ -70,6 +75,7 @@ import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
+import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -79,6 +85,7 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
+import exerelin.utilities.TemporaryFleetAdvanceScript;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,7 +153,9 @@ public class Nex_MarketCMD extends MarketCMD {
 			invadeResult(false);
 		} else if (command.equals("invadeResultAndrada")) {
 			invadeResult(true);
-		} else if (hasVIC() && command.equals(VIC_MarketCMD.VBombMenu))
+		} else if (command.equals("cleanupResponder")) {
+			cleanupResponder();
+		}else if (hasVIC() && command.equals(VIC_MarketCMD.VBombMenu))
 		{
 			new VIC_MarketCMD().execute(ruleId, dialog, params, memoryMap);
 		}
@@ -212,7 +221,26 @@ public class Nex_MarketCMD extends MarketCMD {
 		return false;
 	}
 	
-	// same as super method, but adds invade option
+	protected CampaignFleetAPI getOrGenerateResponseFleet() {
+		CampaignFleetAPI responder = null;
+		MemoryAPI memoryMarket = memoryMap.get(MemKeys.MARKET);
+		if (memoryMarket.contains(ResponseFleetManager.MEMORY_KEY_FLEET)) {
+			responder = memoryMarket.getFleet(ResponseFleetManager.MEMORY_KEY_FLEET);
+		} else {
+			responder = ResponseFleetManager.generateResponseFleet(market);
+			memoryMarket.set(ResponseFleetManager.MEMORY_KEY_FLEET, responder, ResponseFleetManager.RESPONSE_FLEET_TTL);
+		}
+		return responder;
+	}
+	
+	@Override
+	protected CampaignFleetAPI getInteractionTargetForFIDPI() {
+		CampaignFleetAPI fleet = super.getInteractionTargetForFIDPI();
+		if (fleet == null) fleet = getOrGenerateResponseFleet();
+		return fleet;
+	}
+	
+	// same as super method, but adds invade option and response fleets
 	@Override
 	protected void showDefenses(boolean withText) {
 		CampaignFleetAPI primary = getInteractionTargetForFIDPI();
@@ -224,7 +252,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		boolean otherWantsToFight = false;
 		BattleAPI b = null;
 		FleetEncounterContext context = null;
-		FleetInteractionDialogPluginImpl plugin = null;
+		NexFleetInteractionDialogPluginImpl plugin = null;
 		
 		boolean ongoingBattle = false;
 		
@@ -244,6 +272,24 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		if (market != null) {
 			Global.getSector().getEconomy().tripleStep();
+		}
+		
+		
+		ongoingBattle = primary != null && primary.getBattle() != null;
+		
+		boolean shouldSpawnResponder = !ongoingBattle;
+		if (primary != null && primary.getBattle() != null) {
+			BattleAPI.BattleSide playerSide = primary.getBattle().pickSide(playerFleet);
+			boolean playerWillOpposePrimary = playerSide != BattleAPI.BattleSide.NO_JOIN && playerSide != primary.getBattle().pickSide(primary);
+			shouldSpawnResponder = shouldSpawnResponder || playerWillOpposePrimary;
+		}
+		CampaignFleetAPI responder = shouldSpawnResponder ? getOrGenerateResponseFleet() : null;
+		if (responder != null) {
+			responder.setLocation(entity.getLocation().x, entity.getLocation().y);
+			//responder.setContainingLocation(entity.getContainingLocation());
+			//responder.setLocation(99999, 99999);
+			entity.getContainingLocation().addEntity(responder);
+			responder.setDoNotAdvanceAI(true);
 		}
 		
 		if (primary == null) {
@@ -300,6 +346,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				//for (CampaignFleetAPI fleet : b.getNonPlayerSide()) {
 				if (station != null) {
 					for (CampaignFleetAPI fleet : b.getSideFor(station)) {
+						if (fleet == responder) continue;
 						if (!fleet.isStationMode()) {
 							hasNonStation = true;
 							hasOtherButInsignificant &= Misc.isInsignificant(fleet);
@@ -308,6 +355,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				} else {
 					if (b.getNonPlayerSide() != null) {
 						for (CampaignFleetAPI fleet : b.getNonPlayerSide()) {
+							if (fleet == responder) continue;
 							if (!fleet.isStationMode()) {
 								hasNonStation = true;
 								hasOtherButInsignificant &= Misc.isInsignificant(fleet);
@@ -375,6 +423,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 
 		if (!hasNonStation) hasOtherButInsignificant = false;
+		
+		// TODO: proper text
+		if (responder != null) {
+			text.addPara("Response fleet present");
+		}
 		
 		options.clearOptions();
 		
@@ -498,14 +551,14 @@ public class Nex_MarketCMD extends MarketCMD {
 			options.setEnabled(ENGAGE, false);
 			if (!otherWantsToFight) {
 				if (ongoingBattle && playerOnDefenderSide && !otherWantsToFight) {
-					options.setTooltip(ENGAGE, "The attackers are in disarray and not currently attempting to engage the station.");
+					options.setTooltip(ENGAGE, getString("dialogNoEngage_def"));
 				} else {
 					if (playerCanNotJoin) {
-						options.setTooltip(ENGAGE, "You're unable to join this battle.");
+						options.setTooltip(ENGAGE, getString("dialogNoEngage"));
 					} else if (primary == null) {
-						options.setTooltip(ENGAGE, "There are no defenders to engage.");
+						options.setTooltip(ENGAGE, getString("dialogNoEngage_noEnemy"));
 					} else {
-						options.setTooltip(ENGAGE, "The defenders are refusing to give battle to defend the colony.");
+						options.setTooltip(ENGAGE, getString("dialogNoEngage_avoid"));
 					}
 				}
 			}
@@ -563,6 +616,156 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		if (plugin != null) {
 			plugin.cleanUpBattle();
+		}
+	}
+	
+	// Changes from vanilla: Add handling of response fleet
+	protected void engage() {
+		final SectorEntityToken entity = dialog.getInteractionTarget();
+		final MemoryAPI memory = getEntityMemory(memoryMap);
+		final MemoryAPI memoryMarket = memoryMap.get(MemKeys.MARKET);
+
+		final CampaignFleetAPI primary = getInteractionTargetForFIDPI();
+		
+		dialog.setInteractionTarget(primary);
+		
+		final FleetInteractionDialogPluginImpl.FIDConfig config = new FleetInteractionDialogPluginImpl.FIDConfig();
+		config.leaveAlwaysAvailable = true;
+		config.showCommLinkOption = false;
+		config.showEngageText = false;
+		config.showFleetAttitude = false;
+		config.showTransponderStatus = false;
+		config.alwaysAttackVsAttack = true;
+		config.impactsAllyReputation = true;
+		config.noSalvageLeaveOptionText = StringHelper.getString("continue", true);
+		
+		config.dismissOnLeave = false;
+		config.printXPToDialog = true;
+		
+		config.straightToEngage = true;
+		
+		CampaignFleetAPI station = getStationFleet();
+		config.playerAttackingStation = station != null;
+		
+		final NexFleetInteractionDialogPluginImpl plugin = new NexFleetInteractionDialogPluginImpl(config);
+		
+		final InteractionDialogPlugin originalPlugin = dialog.getPlugin();
+		config.delegate = new FleetInteractionDialogPluginImpl.BaseFIDDelegate() {
+			@Override
+			public void notifyLeave(InteractionDialogAPI dialog) {
+				if (primary.isStationMode()) {
+					primary.getMemoryWithoutUpdate().clear();
+					primary.clearAssignments();
+					//primary.deflate();
+				}
+				
+				dialog.setPlugin(originalPlugin);
+				dialog.setInteractionTarget(entity);
+				
+				boolean quickExit = entity.hasTag(Tags.NON_CLICKABLE);
+				
+				if (!Global.getSector().getPlayerFleet().isValidPlayerFleet() || quickExit) {
+					dialog.getOptionPanel().clearOptions();
+					dialog.getOptionPanel().addOption(StringHelper.getString("leave", true), "marketLeave");
+					dialog.getOptionPanel().setShortcut("marketLeave", Keyboard.KEY_ESCAPE, false, false, false, true);
+	
+					dialog.showTextPanel();
+					dialog.setPromptText("You decide to...");
+					dialog.getVisualPanel().finishFadeFast();
+					text.updateSize();
+					
+//					dialog.hideVisualPanel();
+//					dialog.getVisualPanel().finishFadeFast();
+//					dialog.hideTextPanel();
+//					dialog.dismiss();
+					return;
+				}
+				
+				if (plugin.getContext() instanceof FleetEncounterContext) {
+					FleetEncounterContext context = (FleetEncounterContext) plugin.getContext();
+					if (context.didPlayerWinMostRecentBattleOfEncounter()) {
+						// may need to do something here re: station being defeated & timed out
+						//FireBest.fire(null, dialog, memoryMap, "BeatDefendersContinue");
+					} else {
+						//dialog.dismiss();
+					}
+					
+					if (context.isEngagedInHostilities()) {
+						dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "NONE", 0);
+					}
+					
+					// MODIFIED: Response fleet handling
+					// Adapted from SalvageDefenderInteraction
+					CampaignFleetAPI responder = memoryMarket.getFleet(ResponseFleetManager.MEMORY_KEY_FLEET);
+					if (responder != null) {
+						// cleanup to reduce savefile size 
+						responder.getMemoryWithoutUpdate().clear();
+						responder.clearAssignments();
+						responder.deflate();
+					}
+					
+					if (context.didPlayerWinEncounterOutright()) {						
+						memoryMarket.set(ResponseFleetManager.MEMORY_KEY_FLEET, null, ResponseFleetManager.RESPONSE_FLEET_TTL);
+						if (responder != null) responder.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
+					} else if (responder != null) {
+						//log.info("Running responder cleanup check");
+						boolean persistResponders = false;
+						if (context.isEngagedInHostilities()) {
+							persistResponders |= !Misc.getSnapshotMembersLost(responder).isEmpty();
+							for (FleetMemberAPI member : responder.getFleetData().getMembersListCopy()) {
+								if (member.getStatus().needsRepairs()) {
+									persistResponders = true;
+									break;
+								}
+							}
+						}
+						// note to self: setting location or removing entity don't seem to do anything,
+						// presumably since responder gets readded when we show defenses again
+						if (persistResponders) {
+							//log.info("Persist");
+							responder.removeScriptsOfClass(TemporaryFleetAdvanceScript.class);
+							responder.addScript(new TemporaryFleetAdvanceScript(responder, ResponseFleetManager.RESPONSE_FLEET_TTL));
+							responder.setLocation(99999, 99999);
+						} else {
+							//log.info("No persist");
+							responder.getContainingLocation().removeEntity(responder);
+						}
+					}
+					
+					showDefenses(context.isEngagedInHostilities());
+				} else {
+					showDefenses(false);
+				}
+				dialog.getVisualPanel().finishFadeFast();
+				
+				//dialog.dismiss();
+			}
+			@Override
+			public void battleContextCreated(InteractionDialogAPI dialog, BattleCreationContext bcc) {
+				//bcc.aiRetreatAllowed = false;
+				bcc.objectivesAllowed = false;
+			}
+			@Override
+			public void postPlayerSalvageGeneration(InteractionDialogAPI dialog, FleetEncounterContext context, CargoAPI salvage) {
+			}
+			
+		};
+		
+		dialog.setPlugin(plugin);
+		plugin.init(dialog);
+	}
+	
+	public void cleanupResponder() {
+		CampaignFleetAPI responder = memoryMap.get(MemKeys.MARKET).getFleet(ResponseFleetManager.MEMORY_KEY_FLEET);
+		if (responder == null) return;
+		responder.getMemoryWithoutUpdate().clear(); 
+		responder.clearAssignments();
+		responder.deflate();
+		if (!responder.hasScriptOfClass(TemporaryFleetAdvanceScript.class)) 
+		{
+			responder.getContainingLocation().removeEntity(responder);
+		} else {
+			responder.setLocation(99999, 99999);
 		}
 	}
 	
