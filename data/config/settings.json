@@ -46,7 +46,7 @@
 	"nex_invade_and_raid_templars":true,
 	"nex_invasionStabilizeTimeoutMult":1,
 	
-	"nex_disruptMissionRewardMult":25000,
+	"nex_disruptMissionRewardMult":25000,	# no longer used
 	
 	"nex_transferMarket_valueDivisor":100000,
 	"nex_transferMarket_incomeDivisor":50000,

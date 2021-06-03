@@ -84,7 +84,6 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		this.target = target;
 		this.delegate = this;
 		this.from = from;
-		this.target = target;
 		this.fp = fp * FP_MULT;
 		baseFP = fp;
 		this.orgDur = orgDur;

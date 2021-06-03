@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
 
+@Deprecated
 public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlayerHostileActListener {
 	
 	public static final RepLevel MAX_REP_LEVEL = RepLevel.FAVORABLE;

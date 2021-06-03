@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+@Deprecated
 public class DisruptMissionManager extends BaseEventManager {
 
 	public static final String KEY = "nex_DisruptMissionManager";
