@@ -162,7 +162,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.successChance = (float)defJson.optDouble("successChance", 0);
 			def.detectionChance = (float)defJson.optDouble("detectionChance", 0);
 			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail", 0);
-			def.injuryChanceMult = (float)defJson.optDouble("detectionChanceFail", 1);
+			def.injuryChanceMult = (float)defJson.optDouble("injuryChanceMult", 1);
 			def.useAlertLevel = defJson.optBoolean("useAlertLevel", true);
 			def.useIndustrySecurity = defJson.optBoolean("useIndustrySecurity", true);
 			def.repLossOnDetect = new Pair<>((float)defJson.optDouble("repLossOnDetectionMin", 0), 
