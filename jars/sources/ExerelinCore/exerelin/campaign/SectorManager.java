@@ -1270,11 +1270,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (SubmarketAPI submarket : submarkets)
         {
             //if (submarket.getFaction() != oldOwner) continue;
+            //log.info(String.format("Submarket %s has spec faction %s", submarket.getNameOneLine(), submarket.getSpec().getFactionId()));
             String submarketId = submarket.getSpecId();
             if (!ALWAYS_CAPTURE_SUBMARKET.contains(submarketId))
             {
                 if (submarket.getPlugin().isFreeTransfer()) continue;
                 if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
+                
+                //if (submarket.getSpec().getFactionId() != null && !submarket.getSpec().getFactionId().isEmpty()) continue;
             }
             // this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
             //if (submarket.getPlugin().isBlackMarket()) continue;    
@@ -1329,6 +1332,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         marketsRemaining = NexUtilsFaction.getFactionMarkets(newOwnerId, true).size();
         if (marketsRemaining == 1)
         {
+			log.info("Respawning faction on market transfer: " + newOwner);
             factionRespawned(newOwner, market);
         }
         
