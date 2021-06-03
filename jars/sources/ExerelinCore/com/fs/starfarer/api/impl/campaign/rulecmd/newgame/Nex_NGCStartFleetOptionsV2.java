@@ -139,7 +139,9 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 			TooltipMakerAPI anchorForRandomButton;
 			
 			float counterWidth = 40;
-			if (maxIndex > 0) {
+			// have buttons even if there's only one option, so we can un-randomize?
+			// no, too ugly, add a proper non-random button
+			if (maxIndex > 0) {	
 				// previous button
 				TooltipMakerAPI leftButtonHolder = fleetPanel.createUIElement(
 						ARROW_BUTTON_WIDTH, BUTTON_HEIGHT, false);
@@ -161,10 +163,10 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 				
 				// number text
 				TooltipMakerAPI counter = fleetPanel.createUIElement(counterWidth, BUTTON_HEIGHT, false);
-				String indexStr = (index + 1) + "";
+				String indexStr = " " + (index + 1) + "";
 				if (index < 0) indexStr = " -";
 				LabelAPI label = counter.addPara(indexStr + " / " + (maxIndex + 1), 0);
-				label.getPosition().inTMid(0);
+				label.getPosition().inTMid(2);
 				fleetPanel.addUIElement(counter).rightOfTop(leftButtonHolder, 6);
 				
 				// next button
@@ -189,10 +191,31 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 				anchorForRandomButton = rightButtonHolder;
 			}
 			else {
-				TooltipMakerAPI spacer = fleetPanel.createUIElement(counterWidth 
+				// only one option selectable, just add a button that allows us to undo randomizing the fleet
+				if (StartFleetType.getType(fleetTypeStr) == StartFleetType.SUPER) {
+					TooltipMakerAPI spacer = fleetPanel.createUIElement(counterWidth 
 						+ ARROW_BUTTON_WIDTH * 2 + 6, BUTTON_HEIGHT, false);
-				fleetPanel.addUIElement(spacer).belowLeft(text, 3);
-				anchorForRandomButton = spacer;
+					fleetPanel.addUIElement(spacer).belowLeft(text, 3);
+					anchorForRandomButton = spacer;
+				}
+				else {
+					TooltipMakerAPI derandomButtonHolder = fleetPanel.createUIElement(
+						counterWidth + ARROW_BUTTON_WIDTH * 2 + 6, BUTTON_HEIGHT, false);
+					String buttonId = "button_prev_" + fleetTypeStr;
+					ButtonAPI button = derandomButtonHolder.addButton("<", buttonId, 
+							ARROW_BUTTON_WIDTH, BUTTON_HEIGHT, 0);
+					ButtonEntry entry = new ButtonEntry(button, buttonId) {
+						@Override
+						public void onToggle() {
+							setFleetIndex(fleetTypeStr, 0);
+							updateFleetType(fleetTypeStr, dialog, memoryMap);
+						}
+					};
+					Nex_VisualCustomPanel.getPlugin().addButton(entry);
+					fleetPanel.addUIElement(derandomButtonHolder).belowLeft(text, 3);
+
+					anchorForRandomButton = derandomButtonHolder;
+				}
 			}
 			
 			// random button
