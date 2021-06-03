@@ -43,6 +43,10 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 				boolean replace = params.get(1).getBoolean(memoryMap);
 				createPanel(dialog, replace);
 				return true;
+			case "readdTooltip":
+				if (tooltip == null) return false;
+				readdTooltip(dialog);
+				return true;
 			case "clear":
 				clearPanel(dialog, memoryMap);
 				return true;
@@ -73,6 +77,17 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 		//tooltip.setForceProcessInput(true);
 					
 		//panel.addUIElement(tooltip);	// do this later, so the tooltip correctly gets its scrollbar
+	}
+	
+	/**
+	 * Creates a new custom panel and readds the existing plugin and tooltip to it.<br/>
+	 * This resets the extent of the tooltip's scrollbar, for when new elements are added to the tooltip.
+	 * @param dialog
+	 */
+	public static void readdTooltip(InteractionDialogAPI dialog) {
+		VisualPanelAPI vp = dialog.getVisualPanel();
+		panel = vp.showCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, plugin);
+		addTooltipToPanel();
 	}
 	
 	/**

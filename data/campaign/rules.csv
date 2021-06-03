@@ -72,6 +72,7 @@ FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,"$option==exerelinNGCSectorOptions","FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,"$option==exerelinNGCFactionOptions","FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,"$option==exerelinNGCOtherOptions","FireAll ExerelinNGCOtherOptions",,,
+nex_NGCReaddTooltip,NexReaddVisualPanelTooltip,,"Nex_VisualCustomPanel readdTooltip",,,
 ,,,,,,
 nex_NGCCustomScenarioOption,ExerelinNGCOtherOptions,,"Nex_NGCCustomScenario menuOption
 Nex_DynamicPaginatedOptions addOption nex_NGCCustomScenarioMenu ""Custom scenario – $nex_customScenarioName""",,,
@@ -262,7 +263,8 @@ FireAll PopulateOptions",,,
 ,,,,,,
 # Military options override + additions,,,,,,
 marketHostileSel,DialogOptionSelected,"$option == marketConsiderHostile","Nex_MarketCMD showDefenses",,,
-marketHostileGoBackSel,DialogOptionSelected,"$option == mktGoBack","ShowDefaultVisual
+marketHostileGoBackSel,DialogOptionSelected,"$option == mktGoBack","Nex_MarketCMD cleanupResponder
+ShowDefaultVisual
 FireAll PopulateOptions",,,
 marketHostileEngageSel,DialogOptionSelected,"$option == mktEngage","Nex_MarketCMD engage",,,
 marketHostileRaidSel,DialogOptionSelected,"$option == mktRaid","Nex_MarketCMD raidMenu",,,
