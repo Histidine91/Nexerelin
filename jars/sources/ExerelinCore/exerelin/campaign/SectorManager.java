@@ -1368,8 +1368,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // no stabilization time
         if (isCapture) {
             float timeout = (float)(7 * Math.pow(2, market.getSize() - 4));
-            market.getMemoryWithoutUpdate().set(MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT, 
-                    true, timeout);
+            timeout *= Global.getSettings().getFloat("nex_invasionStabilizeTimeoutMult");
+            if (timeout > 0)
+                market.getMemoryWithoutUpdate().set(MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT, 
+                        true, timeout);
         }
         
         if ((newOwner.isPlayerFaction() || newOwner == Misc.getCommissionFaction())
