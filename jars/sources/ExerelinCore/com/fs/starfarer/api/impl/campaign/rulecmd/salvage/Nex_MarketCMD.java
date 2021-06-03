@@ -222,6 +222,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	protected CampaignFleetAPI getOrGenerateResponseFleet() {
+		if (true) return null;	// TODO
+		
 		CampaignFleetAPI responder = null;
 		MemoryAPI memoryMarket = memoryMap.get(MemKeys.MARKET);
 		if (memoryMarket.contains(ResponseFleetManager.MEMORY_KEY_FLEET)) {
@@ -424,9 +426,8 @@ public class Nex_MarketCMD extends MarketCMD {
 
 		if (!hasNonStation) hasOtherButInsignificant = false;
 		
-		// TODO: proper text
 		if (responder != null) {
-			text.addPara("Response fleet present");
+			//text.addPara("A response fleet is active $onOrAt $market and ");
 		}
 		
 		options.clearOptions();
