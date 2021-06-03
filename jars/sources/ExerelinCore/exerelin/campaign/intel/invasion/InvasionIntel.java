@@ -342,6 +342,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				0f // qualityMod, won't get used since routes mostly have quality override set
 				);
 		
+		params.maxNumShips = Math.round(Global.getSettings().getMaxShipsInFleet() * 1.2f);
+		
 		// we don't need the variability involved in this
 		if (!useMarketFleetSizeMult)
 			params.ignoreMarketFleetSizeMult = true;
