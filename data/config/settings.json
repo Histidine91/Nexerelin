@@ -11,7 +11,7 @@
 	"pirateBaseBounty4":140000,			# default 70000,
 	"pirateBaseBounty5":180000,			# default 80000,
 	
-	"bombardFuelFraction":1.5,
+	#"bombardFuelFraction":1.5,
 	
 	"tier2StationOfficerLevel":2,
 	"tier3StationOfficerLevel":4,
