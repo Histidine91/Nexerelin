@@ -474,7 +474,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		int tries = 0;
 		boolean lastTry = false;
 		reloadPickers();
-		while (true) {
+		while (!lastTry) {
 			tries++;
 			if (tries >= 10) lastTry = true;
 			
@@ -483,6 +483,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 			do {
 				if (takePicker.isEmpty()) reloadPickers();
 				commodityTake = takePicker.pickAndRemove();
+				if (lastTry) break;
 			} while (commodityTake == null || commodityTake.equals(commodityGive));
 
 			//log.info("Picked commodities: " + commodityGive + ", " + commodityTake);
@@ -548,7 +549,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	
 	protected void setMem(String key, Object value) {
 		if (DEBUG_MODE)
-			setMem(key, value, 0.5f);
+			setMem(key, value, 0.1f);
 		else	
 			setMem(key, value, EVENT_TIME);
 	}
