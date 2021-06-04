@@ -62,6 +62,7 @@ public class NexConfig
     public static float fleetRequestCapMult = 1;
     public static float fleetRequestIncrementMult = 1;
     public static float invasionFleetSizeMult = 1;
+    public static float responseFleetSizeMult = 1;
     public static float invasionGracePeriod = 90;
     public static float pointsRequiredForInvasionFleet = 27000f;
     public static float baseInvasionPointsPerFaction = 30f;
@@ -187,7 +188,7 @@ public class NexConfig
             useAgentSpecializations = settings.optBoolean("useAgentSpecializations", useAgentSpecializations);
             
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
-			legacyInvasions = settings.optBoolean("legacyInvasions", legacyInvasions);
+            legacyInvasions = settings.optBoolean("legacyInvasions", legacyInvasions);
             allowInvadeStoryCritical = settings.optBoolean("allowInvadeStoryCritical", allowInvadeStoryCritical);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
@@ -195,6 +196,7 @@ public class NexConfig
             fleetRequestCapMult = (float)settings.optDouble("fleetRequestCapMult", fleetRequestCapMult);
             fleetRequestIncrementMult = (float)settings.optDouble("fleetRequestIncrementMult", fleetRequestIncrementMult);
             invasionFleetSizeMult = (float)settings.optDouble("invasionFleetSizeMult", invasionFleetSizeMult);
+            responseFleetSizeMult = (float)settings.optDouble("responseFleetSizeMult", responseFleetSizeMult);
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
             baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);

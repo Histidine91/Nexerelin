@@ -108,11 +108,11 @@ public class NexFactionConfig
     
     // invasions and stuff
     public boolean canInvade = true;
-	public boolean invasionOnlyRetake = false;
+    public boolean invasionOnlyRetake = false;
     @Deprecated public float invasionStrengthBonusAttack = 0;    // marines
     @Deprecated public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;	// ships
-    @Deprecated public float responseFleetSizeMod = 0;
+    public float responseFleetSizeMod = 0;
     public float invasionPointMult = 1;	// point accumulation for launching invasions
     @Deprecated public float patrolSizeMult = 1;
     public float vengeanceFleetSizeMult = 1;

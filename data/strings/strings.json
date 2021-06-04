@@ -1745,6 +1745,8 @@
 		"hasFleet":"Defending ships are present in sufficient strength to prevent any hostile action until they are dealt with.",
 		"hasFleetOngoingBattle":"There are defending ships present, but they are currently involved in a battle, and you could take advantage of the distraction to launch a raid.",
 		"hasFleetTooSmall":"Defending ships are present, but not in sufficient strength to want to give battle or prevent any hostile action you might take.",
+		"hasResponder":"A response fleet is present $onOrAt $market and will prevent bombardments or invasions, although it will not deploy in response to raids.",
+		"hasResponderTooSmall":"A response fleet is present $onOrAt $market, but is too weak to interfere with any hostile action you might take.",
 		
 		"optionEngage":"Engage the defenders",
 		"optionAidStation":"Aid the $stationType",

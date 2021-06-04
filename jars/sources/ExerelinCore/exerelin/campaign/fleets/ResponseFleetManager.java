@@ -55,12 +55,10 @@ public class ResponseFleetManager
 			name = fleetFactionConfig.responseFleetName;
 		else
 			name = factionConfig.responseFleetName;
-		
-		int level = getResponseFleetType(market);
-		if (level <= 0) return null;
-		
-		int points = getPatrolCombatFP(level);
 				
+		int points = getPatrolCombatFP(market);
+		if (points <= 0) return null;
+		
 		FleetParamsV3 fleetParams = new FleetParamsV3(market, "exerelinResponseFleet", 
 				points, // combat
 				0,	//maxFP*0.1f, // freighters
@@ -87,7 +85,7 @@ public class ResponseFleetManager
 		return fleet;
 	}
 	
-	public static int getResponseFleetType(MarketAPI market) {
+	public static int getResponseFleetLevel(MarketAPI market) {
 		int level = 0;
 		for (Industry ind : market.getIndustries()) {
 			if (ind.isDisrupted()) continue;
@@ -105,8 +103,10 @@ public class ResponseFleetManager
 	}
 	
 	// Same values as vanilla Military Base, but the random value is replaced with 1 (i.e. maximum size patrol)
-	public static int getPatrolCombatFP(int level) {
+	public static int getPatrolCombatFP(MarketAPI market) {
 		float combat = 0;
+		int level = getResponseFleetLevel(market);
+		
 		switch (level) {
 		case 1:
 			combat = Math.round(3f + 1 * 2f) * 5f;
@@ -118,6 +118,9 @@ public class ResponseFleetManager
 			combat = Math.round(10f + 1 * 5f) * 5f;
 			break;
 		}
+		combat *= 1 + NexConfig.getFactionConfig(market.getFactionId()).responseFleetSizeMod;
+		combat *= NexConfig.responseFleetSizeMult;
+		
 		return (int) Math.round(combat);
 	}
 }

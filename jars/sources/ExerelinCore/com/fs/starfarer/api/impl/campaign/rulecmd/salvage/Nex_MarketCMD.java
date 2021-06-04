@@ -292,6 +292,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			responder.setDoNotAdvanceAI(true);
 		}
 		
+		boolean hasResponder = responder != null;
+		
 		if (primary == null) {
 			if (state == StationState.NONE) {
 				text.addPara(StringHelper.getString("nex_militaryOptions", "noStation"));
@@ -417,6 +419,12 @@ public class Nex_MarketCMD extends MarketCMD {
 					printStationState();
 					text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetTooSmall"));
 				}
+				if (!hasNonStation && hasResponder) {
+					String str = StringHelper.getString("nex_militaryOptions", otherWantsToFight ? "hasResponder" : "hasResponderTooSmall");
+					str = StringHelper.substituteToken(str, "$onOrAt", market.getOnOrAt());
+					str = StringHelper.substituteToken(str, "$market", market.getName());
+					text.addPara(str);
+				}
 				
 				plugin.printOngoingBattleInfo();
 			}
@@ -460,9 +468,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		options.addOption(engageText, ENGAGE);
 		
-		
+		boolean canOpposeBombardment = (hasNonStation || hasResponder) && otherWantsToFight;
 		temp.canRaid = ongoingBattle || hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation;
-		temp.canBombard = (hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation) && !hasStation;
+		temp.canBombard = (hasOtherButInsignificant || !canOpposeBombardment) && !hasStation;
 		//temp.canSurpriseRaid = Misc.getDaysSinceLastRaided(market) < SURPRISE_RAID_TIMEOUT;
 		
 		boolean couldRaidIfNotDebug = temp.canRaid;
