@@ -233,11 +233,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
     protected void addScriptsAndEventsIfNeeded() {
-        /*
         if (MercSectorManager.getInstance() == null) {
             new MercSectorManager().init();
         }
-        */
     }
     
     protected void alphaSiteWorkaround() {

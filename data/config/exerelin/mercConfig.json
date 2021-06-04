@@ -174,7 +174,7 @@
 			"plugin":"exerelin.campaign.intel.merc.VolturnGenPlugin",	# adds two S-mods to flagship
 		},
 		
-		# this company is a bit boring, think of something cool for them
+		# this company is boring, disabled until I think of something cool for them
 		"pilgrimsGrace":{
 			"name":"Pilgrim's Grace",
 			"desc":"Part of a Luddic organization dedicated to charity and evangelism. Oriented for a support role rather than combat.",
@@ -182,7 +182,7 @@
 			"feeMonthly":1500,
 			"faction":"luddic_church",
 			"minRep":"SUSPICIOUS",
-			"minLevel":3,
+			"minLevel":99,	# not accessible for now
 			"ships":[
 				["venture_Exploration"],
 				["wayfarer_Standard"],
@@ -233,7 +233,7 @@
 			"doctrineSizeOverride":4,
 			"officers":[
 				{
-					"level":4,
+					"level":5,
 					"rankId":"spaceCommander",
 				},
 				{
@@ -262,13 +262,13 @@
 				{
 					"lastName":"Dickerson",
 					"portrait":"graphics/uw/portraits/uw_dickerson_extended_family.png",
-					"level":4,
+					"level":5,
 					"rankId":"spaceCommander",
 				},
 				{
 					"lastName":"Dickerson",
 					"portrait":"graphics/uw/portraits/uw_dickerson_extended_family.png",
-					"level":3,
+					"level":4,
 				},
 				{
 					"lastName":"Dickerson",
@@ -276,6 +276,7 @@
 					"level":3,
 				},
 			],
+			"averageSMods":1,
 			"requiredMods":["underworld"],
 			"miscData":{
 				"angeredByInsults":true,
