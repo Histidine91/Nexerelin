@@ -960,8 +960,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					if (shouldRaid) lifetimeRaids++;
 					else lifetimeInvasions++;
 					spawnCounter.put(factionId, counter);
-					nextIsRaid.put(factionId, !shouldRaid);
 				}
+				nextIsRaid.put(factionId, !shouldRaid);
 			}
 		}
 	}
