@@ -222,8 +222,6 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	protected CampaignFleetAPI getOrGenerateResponseFleet() {
-		if (true) return null;	// TODO
-		
 		CampaignFleetAPI responder = null;
 		MemoryAPI memoryMarket = memoryMap.get(MemKeys.MARKET);
 		if (memoryMarket.contains(ResponseFleetManager.MEMORY_KEY_FLEET)) {
