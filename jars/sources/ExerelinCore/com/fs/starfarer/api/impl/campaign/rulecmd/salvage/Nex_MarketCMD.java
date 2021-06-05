@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -656,6 +657,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		final NexFleetInteractionDialogPluginImpl plugin = new NexFleetInteractionDialogPluginImpl(config);
 		
+		final TextPanelAPI text2 = text;	// needed to prevent an IllegalAccessError
+		
 		final InteractionDialogPlugin originalPlugin = dialog.getPlugin();
 		config.delegate = new FleetInteractionDialogPluginImpl.BaseFIDDelegate() {
 			@Override
@@ -679,7 +682,11 @@ public class Nex_MarketCMD extends MarketCMD {
 					dialog.showTextPanel();
 					dialog.setPromptText("You decide to...");
 					dialog.getVisualPanel().finishFadeFast();
-					text.updateSize();
+					try {
+						text2.updateSize();
+					} catch (Error ex) {
+						log.error("Text panel error", ex);
+					}
 					
 //					dialog.hideVisualPanel();
 //					dialog.getVisualPanel().finishFadeFast();
