@@ -34,7 +34,7 @@
     "diplomacyTraits":["paranoid", "stalwart", "irredentist", "law_and_order", "temperamental"],
     
     # legacy invasion settings
-    "invasionStrengthBonusDefend":0.2,
+    "invasionStrengthBonusAttack":0.2,
     "invasionStrengthBonusDefend":0.2,
     
     "groundBattleSettings":{
