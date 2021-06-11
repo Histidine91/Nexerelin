@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -15,6 +16,7 @@ import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -290,7 +292,6 @@ public class Nex_MarketCMD extends MarketCMD {
 			//responder.setContainingLocation(entity.getContainingLocation());
 			//responder.setLocation(99999, 99999);
 			entity.getContainingLocation().addEntity(responder);
-			responder.setDoNotAdvanceAI(true);
 		}
 		
 		boolean hasResponder = responder != null;
@@ -711,12 +712,6 @@ public class Nex_MarketCMD extends MarketCMD {
 					// MODIFIED: Response fleet handling
 					// Adapted from SalvageDefenderInteraction
 					CampaignFleetAPI responder = memoryMarket.getFleet(ResponseFleetManager.MEMORY_KEY_FLEET);
-					if (responder != null) {
-						// cleanup to reduce savefile size 
-						responder.getMemoryWithoutUpdate().clear();
-						responder.clearAssignments();
-						responder.deflate();
-					}
 					
 					if (context.didPlayerWinEncounterOutright()) {						
 						memoryMarket.set(ResponseFleetManager.MEMORY_KEY_FLEET, null, ResponseFleetManager.RESPONSE_FLEET_TTL);
@@ -733,16 +728,14 @@ public class Nex_MarketCMD extends MarketCMD {
 								}
 							}
 						}
-						// note to self: setting location or removing entity don't seem to do anything,
-						// presumably since responder gets readded when we show defenses again
 						if (persistResponders) {
-							//log.info("Persist");
-							responder.removeScriptsOfClass(TemporaryFleetAdvanceScript.class);
-							responder.addScript(new TemporaryFleetAdvanceScript(responder, ResponseFleetManager.RESPONSE_FLEET_TTL));
-							responder.setLocation(99999, 99999);
+							// push the fleet out into the real world, easier than trying to babysit it
+							responder.getMemoryWithoutUpdate().set("$nex_responder_no_cleanup", true);
+							responder.addAssignment(FleetAssignment.ORBIT_PASSIVE, entity, ResponseFleetManager.RESPONSE_FLEET_TTL);
+							responder.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, entity, 999);
+							memoryMarket.set(ResponseFleetManager.MEMORY_KEY_FLEET, null, ResponseFleetManager.RESPONSE_FLEET_TTL);
 						} else {
-							//log.info("No persist");
-							responder.getContainingLocation().removeEntity(responder);
+							cleanupResponder(responder);
 						}
 					}
 					
@@ -769,18 +762,21 @@ public class Nex_MarketCMD extends MarketCMD {
 		plugin.init(dialog);
 	}
 	
+	/**
+	 * Puts the responder fleet back in storage. Do _not_ use this for when the fleet needs to despawn.
+	 */
 	public void cleanupResponder() {
 		CampaignFleetAPI responder = memoryMap.get(MemKeys.MARKET).getFleet(ResponseFleetManager.MEMORY_KEY_FLEET);
+		cleanupResponder(responder);
+	}
+	
+	public void cleanupResponder(CampaignFleetAPI responder) {
 		if (responder == null) return;
+		if (responder.getMemoryWithoutUpdate().getBoolean("$nex_responder_no_cleanup")) return;
 		responder.getMemoryWithoutUpdate().clear(); 
 		responder.clearAssignments();
 		responder.deflate();
-		if (!responder.hasScriptOfClass(TemporaryFleetAdvanceScript.class)) 
-		{
-			responder.getContainingLocation().removeEntity(responder);
-		} else {
-			responder.setLocation(99999, 99999);
-		}
+		responder.getContainingLocation().removeEntity(responder);
 	}
 	
 	protected GroundBattleIntel prepIntel() {
@@ -1368,6 +1364,12 @@ public class Nex_MarketCMD extends MarketCMD {
 		targetValue *= tempInvasion.invasionMult;
 		targetValue *= tempInvasion.shortageMult;
 		return targetValue;
+	}
+	
+	@Override
+	protected void finishedRaidOrBombard() {
+		super.finishedRaidOrBombard();
+		cleanupResponder();
 	}
 	
 	// just to allow it to compile
