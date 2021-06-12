@@ -94,7 +94,7 @@ public class MercFleetGenPlugin {
 				p.averageSMods = def.averageSMods;
 			}
 			p.persistent = true;
-			p.seed = new Random().nextLong();
+			p.seed = intel.seed;
 			p.mode = ShipPickMode.PRIORITY_THEN_ALL;
 			p.timestamp = Global.getSector().getClock().getTimestamp();
 			p.allWeapons = true;
@@ -102,12 +102,16 @@ public class MercFleetGenPlugin {
 			FleetInflater inflater = Misc.getInflater(fleet, p);
 			fleet.setInflater(inflater);
 			
-			fleet.inflateIfNeeded();
+			inflateFleet(fleet);
 		}
 		
 		fleet.setFaction(def.factionId, true);
 		
 		return fleet;
+	}
+	
+	public void inflateFleet(CampaignFleetAPI fleet) {
+		fleet.inflateIfNeeded();
 	}
 	
 	public void addOfficer(CampaignFleetAPI fleet, FleetMemberAPI member, PersonAPI officer) 

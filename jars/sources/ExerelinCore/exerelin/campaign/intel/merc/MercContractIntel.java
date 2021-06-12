@@ -41,6 +41,8 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	public static final Object UPDATE_EXPIRE = new Object();
 	public static final Object BUTTON_DISMISS = new Object();
 	
+	protected Long seed;
+	
 	protected boolean contractOver;
 	protected boolean annihilated;
 	protected String companyId;
@@ -55,10 +57,18 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	
 	public MercContractIntel(String companyId) {
 		this.companyId = companyId;
+		this.seed = Misc.genRandomSeed();
 	}
 	
 	protected Object readResolve() {
 		fleetPlugin = MercFleetGenPlugin.createPlugin(this);
+		if (seed == null) {
+			seed = Misc.genRandomSeed();
+		}
+		// Trying a way to fix disappearing S-mods
+		if (offeredFleet != null && !getDef().noAutofit) {
+			fleetPlugin.inflateFleet(offeredFleet);
+		}
 		return this;
 	}
 	
@@ -70,6 +80,8 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	}
 	
 	public CampaignFleetAPI getOfferedFleet() {
+		if (offeredFleet != null && !offeredFleet.isInflated()) 
+			fleetPlugin.inflateFleet(offeredFleet);
 		return offeredFleet;
 	}
 	
