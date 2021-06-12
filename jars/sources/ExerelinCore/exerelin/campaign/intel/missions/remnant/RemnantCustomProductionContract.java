@@ -97,6 +97,10 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 			ShipHullSpecAPI spec = Global.getSettings().getHullSpec(id);
 			if (spec.hasTag(Tags.NO_SELL)) continue;
 			if (spec.getHints().contains(ShipTypeHints.STATION)) continue;
+			if (spec.getHints().contains(ShipTypeHints.UNBOARDABLE) && !spec.getTags().contains(Tags.AUTOMATED_RECOVERABLE)) 
+			{
+				continue;
+			}
 			ships.add(id);
 		}
 		for (String id : faction.getKnownWeapons()) {
