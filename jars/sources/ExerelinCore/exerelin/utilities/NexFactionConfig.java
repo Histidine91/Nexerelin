@@ -894,16 +894,21 @@ public class NexFactionConfig
         List<String> ships = new ArrayList<>();
         
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
+        int phaseDoctrine = Global.getSettings().createBaseFaction(factionId).getDoctrine().getPhaseShips();
+        float phaseMult = phaseDoctrine;
         
         switch (type) {
             case COMBAT_LARGE:
                 rolePicker.add(ShipRoles.COMBAT_LARGE, 1);
+                rolePicker.add(ShipRoles.PHASE_LARGE, 0.25f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+                rolePicker.add(ShipRoles.PHASE_MEDIUM, 0.4f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.25f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case TRADE_LARGE:
@@ -913,10 +918,12 @@ public class NexFactionConfig
                 rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
                 rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
+                rolePicker.add(ShipRoles.PHASE_MEDIUM, 0.4f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
                 rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.25f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case EXPLORER_LARGE:
@@ -924,9 +931,11 @@ public class NexFactionConfig
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_MEDIUM, 1);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+                rolePicker.add(ShipRoles.PHASE_MEDIUM, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case CARRIER_LARGE:
@@ -934,19 +943,24 @@ public class NexFactionConfig
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+                rolePicker.add(ShipRoles.PHASE_MEDIUM, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case COMBAT_SMALL:
                 rolePicker.add(ShipRoles.COMBAT_MEDIUM, 3);
+                rolePicker.add(ShipRoles.PHASE_MEDIUM, 0.4f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 7);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.6f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 6);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.6f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case TRADE_SMALL:
@@ -957,11 +971,13 @@ public class NexFactionConfig
                 rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
                 rolePicker.add(ShipRoles.FREIGHTER_SMALL, 2);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
                 rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
                 rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case EXPLORER_SMALL:
@@ -970,10 +986,12 @@ public class NexFactionConfig
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
                 rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 1);
                 rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 1);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case CARRIER_SMALL:
@@ -982,15 +1000,18 @@ public class NexFactionConfig
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
                 rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 4);
                 rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
                 rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.25f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case SOLO:
                 rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
                 rolePicker.add(ShipRoles.COMBAT_SMALL_FOR_SMALL_FLEET, 2);
+                rolePicker.add(ShipRoles.PHASE_SMALL, 0.2f * phaseMult);
                 pickShipsAndAddToList(rolePicker, ships, true);
                 break;
             case GRAND_FLEET:
