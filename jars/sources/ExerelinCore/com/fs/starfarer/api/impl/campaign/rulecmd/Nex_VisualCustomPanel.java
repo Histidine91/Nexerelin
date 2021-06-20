@@ -59,6 +59,7 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 	}
 	
 	public static void clearPanel(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		panel = null;
 		tooltip = null;
 		plugin = null;
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");

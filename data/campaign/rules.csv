@@ -184,7 +184,8 @@ Nex_NGCCustomStart menu",,,
 ,,,,,,
 nex_NGCCustomStartSelection,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCCustomStart_""","Nex_NGCCustomStart select",,,
 ,,,,,,
-nex_NGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and assets?""
+nex_NGCFinalize,ExerelinNGCStep4,,"Nex_VisualCustomPanel clear
+AddText ""Starting experience and assets?""
 Nex_NGCStartResources createOptions
 SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartEnsign:Ensign (20,000 credits, level 1)
 nex_NGCStartLieutenant:Lieutenant (75,000 credits, level 3, one officer)
