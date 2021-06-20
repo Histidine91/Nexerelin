@@ -12,6 +12,8 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.impl.campaign.tutorial.CampaignTutorialScript;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
@@ -62,7 +64,10 @@ public class Tutorial extends CustomStart {
 		data.setWithTimePass(false);
 		
 		dialog.getTextPanel().setFontSmallInsignia();
-		dialog.getTextPanel().addPara(StringHelper.getString("exerelin_misc", "tutorialStartWarning"));
+		LabelAPI label = dialog.getTextPanel().addPara(StringHelper.getString("exerelin_misc", "tutorialStartWarning"));
+		String hl = StringHelper.getString("exerelin_misc", "tutorialStartWarningHL");
+		label.setHighlight(hl.split(","));
+		label.setHighlightColor(Misc.getHighlightColor());
 		dialog.getTextPanel().setFontInsignia();
 		FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep3");
 	}

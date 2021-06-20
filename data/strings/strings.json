@@ -2193,6 +2193,7 @@
 		"systemCorvus":"Corvus",
 		"systemGalatia":"Galatia",
 		
-		"tutorialStartWarning":"Note: Starting above level 2 will cause your XP to be stolen after the first battle. Use the AddXP command in console to get it back."
+		"tutorialStartWarning":"Note: Starting at level 1 will cause your game to crash on start, but you will be able to reload and continue playing.\nStarting above level 2 will cause your XP to be stolen after the first battle. Use the AddXP command in console to get it back.",
+		"tutorialStartWarningHL":"level 1,crash,reload and continue playing,level 2,XP,stolen,AddXP"
 	},
 }
