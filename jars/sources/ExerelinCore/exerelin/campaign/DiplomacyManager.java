@@ -882,6 +882,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         for (String factionId : SectorManager.getLiveFactionIdsCopy())
         {
+            if (disallowedFactions.contains(factionId)) continue;
             getDiplomacyBrain(factionId).advance(days);
         }
         
