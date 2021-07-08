@@ -1048,13 +1048,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		final InteractionDialogAPI dialogF = dialog;
 		final Map<String, MemoryAPI> memMapF = memoryMap;
-		dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, new CoreInteractionListener(){
-			@Override
-			public void coreUIDismissed() {
-				new ShowDefaultVisual().execute(null, dialogF, new ArrayList<Token>(), memMapF);
-				FireAll.fire(null, dialogF, memMapF, "PopulateOptions");
-			}
-		});
 		Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
 	}
 	
