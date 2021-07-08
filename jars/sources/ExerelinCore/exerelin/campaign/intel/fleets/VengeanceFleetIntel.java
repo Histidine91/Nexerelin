@@ -83,7 +83,8 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		
 		if (escalationLevel < 0) escalationLevel = 0;
 		this.escalationLevel = Math.min(escalationLevel, def.maxLevel);
-		daysToLaunch = 15 + (this.escalationLevel * 5);	// TODO: maybe something nicer
+		daysToLaunch = 15 + (this.escalationLevel * 5);
+		daysToLaunch = Math.round(daysToLaunch * MathUtils.getRandomNumberInRange(0.9f, 1.1f));
 		daysToLaunchFixed = daysToLaunch;
 	}
 	
