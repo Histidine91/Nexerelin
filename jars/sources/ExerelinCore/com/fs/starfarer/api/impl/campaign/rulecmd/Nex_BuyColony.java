@@ -72,6 +72,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		int credits = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
 		MutableStat cost = getValue(market, false, true);
 		int required = cost.getModifiedInt();
+		if (required < 0) required = 0;
 		boolean enough = credits >= required;
 		String creditsStr = Misc.getWithDGS(credits);
 		String requiredStr = Misc.getWithDGS(required);
@@ -181,6 +182,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		int value = getValue(market, false, true).getModifiedInt();
+		if (value < 0) value = 0;
 		if (owned) {	// buying
 			cargo.getCredits().subtract(value);
 			// unlock storage
