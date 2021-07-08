@@ -312,6 +312,13 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			info.addPara(getString("dialog_lesserShips"), opad, h, "" + surplus);
 		}
 		text.addTooltip();
+		
+		text.setFontSmallInsignia();
+		int shipsAfter = members.size() + Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy().size();
+		int max = Global.getSettings().getMaxShipsInFleet();
+		Color color = shipsAfter > max ? Misc.getNegativeHighlightColor() : Misc.getHighlightColor();
+		text.addPara(getString("dialog_shipsAfterHiring"), color, "" + shipsAfter, "" + max);
+		text.setFontInsignia();
 	}
 	
 	/**
@@ -344,7 +351,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			String fee2 = Misc.getDGSCredits(def.feeMonthly);
 			text.addPara(fee1 + " + " + fee2 + "/mth", pad, enough ? Misc.getHighlightColor() 
 					: Misc.getNegativeHighlightColor(), fee1, fee2);
-			if (ExerelinModPlugin.isNexDev) {
+			if (true || ExerelinModPlugin.isNexDev) {
 				String fleetVal = Misc.getDGSCredits(intel.calcOfferedFleetValue());
 				text.addPara("Ship value: " + fleetVal, pad, Misc.getHighlightColor(), fleetVal);
 			}

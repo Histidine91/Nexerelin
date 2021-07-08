@@ -1719,6 +1719,7 @@
 		
 		"dialog_officerLevels":"Officer levels: [%s]",
 		"dialog_lesserShips":"The company includes %s other ships of lesser significance.",
+		"dialog_shipsAfterHiring":"Ships after hiring: %s/%s",
 		"dialog_debtIncurred":"Incurred %s debt",
 		
 		"reportNode_name":"Mercenary contract: %s",
