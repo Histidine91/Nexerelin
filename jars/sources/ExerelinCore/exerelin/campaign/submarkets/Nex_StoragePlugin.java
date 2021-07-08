@@ -1,6 +1,7 @@
 package exerelin.campaign.submarkets;
 
 import com.fs.starfarer.api.campaign.CargoStackAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -27,6 +28,14 @@ public class Nex_StoragePlugin extends StoragePlugin {
 		if (market.getFaction().isPlayerFaction()) return false;
 		if (action == action.PLAYER_BUY) return false;
 		return super.isIllegalOnSubmarket(commodityId, action);
+	}
+	
+	@Override
+	public boolean isIllegalOnSubmarket(FleetMemberAPI member, TransferAction action) {
+		if (isFree()) return false;
+		if (market.getFaction().isPlayerFaction()) return false;
+		if (action == action.PLAYER_BUY) return false;
+		return super.isIllegalOnSubmarket(member, action);
 	}
 	
 	@Override
