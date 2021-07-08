@@ -903,7 +903,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return;
 		
 		ReliefFleetIntelAlt.createEvent(source, target);
-		reliefFleetCooldown += target.getSize() * 2 * 10 * 1.5f;
+		reliefFleetCooldown += (target.getSize() + 1) * 15;
 	}
 	
 	/**
