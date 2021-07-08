@@ -1968,11 +1968,12 @@ Can an AI sulk? Pout? Maybe it's better not to ask.",,
 nex_dissonantConvo2Opt,PopulateOptions,"$id == nex_dissonant
 !$nex_convo2Seen
 $rel > 0.25",,,"20:nex_dissonantConvo2-1:""Are you a beta or an alpha core?""",
-nex_dissonantConvo2-1,DialogOptionSelected,"$option == nex_dissonantConvo2-1","$nex_convo2Seen = true","""Is impolite to selfkind ask such questions, $playerFirstName.""","nex_dissonantConvoEnd:""I beg your pardon.""
+nex_dissonantConvo2-1,DialogOptionSelected,"$option == nex_dissonantConvo2-1","$nex_convo2Seen = true","""Is impolite to selfkind ask such questions, $playerFirstName.""","nex_dissonantConvo2-End:""I beg your pardon.""
 nex_dissonantConvo2-2:""So, gamma then?""",
 nex_dissonantConvo2-2,DialogOptionSelected,"$option == nex_dissonantConvo2-2","AdjustRepPerson nex_dissonant SUSPICIOUS -1","$personLastName's avatar shrinks into a glowing ball. White, with a blooming corona of red.
 
 ""Perhaps for nicer jobs $playerName wishes? Ore from Cruor haul long-distance?""","nex_dissonantConvoEnd:Delicately change the topic",
+nex_dissonantConvo2-End,DialogOptionSelected,"$option == nex_dissonantConvo2-End","FireAll PopulateOptions","$personLastName makes no comment, although you imagine a sniffling sound.",,
 ,,,,,,
 nex_dissonantConvoEnd,DialogOptionSelected,"$option == nex_dissonantConvoEnd","FireAll PopulateOptions",,,
 "#END chatty stuff",,,,,,
