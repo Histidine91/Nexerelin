@@ -29,6 +29,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
@@ -269,12 +270,20 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			if (getStageIndex(stage) == failStage) break;
 		}
 		
-		if (getCurrentStage() == 0 && !isFailed()) {
+		if (getCurrentStage() == 0 && !isFailed()) 
+		{
 			FactionAPI pf = Global.getSector().getPlayerFaction();
-			ButtonAPI button = info.addButton(StringHelper.getString("avert", true), BUTTON_AVERT, 
+			// TODO: cancel option
+			if (Nex_IsFactionRuler.isRuler(faction.getId())) {
+				
+			} else {
+				ButtonAPI button = info.addButton(StringHelper.getString("avert", true), BUTTON_AVERT, 
 				  	pf.getBaseUIColor(), pf.getDarkUIColor(),
 				  (int)(width), 20f, opad * 2f);
-			button.setShortcut(Keyboard.KEY_T, true);
+				button.setShortcut(Keyboard.KEY_T, true);
+			}
+			
+			
 		}
 	}
 	
@@ -298,7 +307,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (!useMarketFleetSizeMult)
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
-		float fpNonCombatAdjust = isColonyFleet ? 50 : 15;
+		float fpNonCombatAdjust = isColonyFleet ? 30 : 10;
 		myFP -= fpNonCombatAdjust;
 		
 		float combat = myFP/2;
@@ -367,15 +376,16 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	}
 	
 	public void createColony() {
-		String oldName = getTarget().getName();
-		createColonyStatic(getTarget(), planet, faction, false);
-		String newName = getTarget().getName();
+		MarketAPI target = getTarget();
+		String oldName = target.getName();
+		createColonyStatic(target, planet, faction, false, playerSpawned);
+		String newName = target.getName();
 		if (!oldName.equals(newName))
 			this.newName = newName;
 	}
 	
 	public static void createColonyStatic(MarketAPI market, PlanetAPI planet, 
-			FactionAPI faction, boolean fromDeciv) 
+			FactionAPI faction, boolean fromDeciv, boolean isPlayer) 
 	{
 		log.info("Colonizing market " + market.getName() + ", " + market.getId());
 		String factionId = faction.getId();
@@ -445,8 +455,15 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			market.addIndustry(Industries.SPACEPORT);
 		}
 		
-		ColonyManager.buildIndustries(market);
-		ColonyManager.getManager().processNPCConstruction(market);
+		if (isPlayer) {
+			market.setPlayerOwned(true);
+			market.addIndustry(Industries.SPACEPORT);
+			market.getIndustry(Industries.SPACEPORT).startBuilding();
+		}
+		else {
+			ColonyManager.buildIndustries(market);
+			ColonyManager.getManager().processNPCConstruction(market);
+		}
 		
 		// planet desc change
 		MarketDescChanger.getInstance().reportMarketTransfered(market, faction,

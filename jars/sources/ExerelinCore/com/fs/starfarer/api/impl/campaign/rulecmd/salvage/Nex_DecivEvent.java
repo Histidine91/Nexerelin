@@ -239,7 +239,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		PlanetAPI planet = market.getPlanetEntity();
 		FactionAPI faction = Global.getSector().getFaction(Factions.INDEPENDENT);
 		
-		ColonyExpeditionIntel.createColonyStatic(market, planet, faction, true);
+		ColonyExpeditionIntel.createColonyStatic(market, planet, faction, true, false);
 		
 		PersonAPI person = getPerson(market);
 		

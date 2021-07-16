@@ -9,19 +9,24 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
@@ -38,6 +43,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
@@ -189,6 +195,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		init(dialog);
 	}
 	
+	protected float getColonyCost() {
+		float sup = 200 * Global.getSettings().getCommoditySpec(Commodities.SUPPLIES).getBasePrice();
+		float mach = 100 * Global.getSettings().getCommoditySpec(Commodities.HEAVY_MACHINERY).getBasePrice();
+		float crew = 1000 * Global.getSettings().getCommoditySpec(Commodities.CREW).getBasePrice();
+		return sup + mach + crew;
+	}
+	
 	protected float updateCost() {
 		if (fleetType == FleetType.RELIEF) {
 			if (target != null) cost = Nex_StabilizePackage.getNominalCost(target);
@@ -200,6 +213,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			if (fleetType == FleetType.INVASION) {
 				float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
 				cost *= mult;
+			}
+			else if (fleetType == FleetType.COLONY) {
+				cost *= 2;
+				cost += getColonyCost();
 			}
 		}
 		
@@ -298,6 +315,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		float time = InvasionFleetManager.getOrganizeTime(fp);
 		if (fleetType == FleetType.INVASION)
 			time *= 1.25f;
+		else if (fleetType == FleetType.COLONY)
+			time *= 2f;
 		time *= Global.getSettings().getFloat("nex_fleetRequestOrganizeTimeMult");
 		
 		if (time < 0.1f) time = 0.1f;
@@ -361,7 +380,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				text.addPara(getString("timeToLaunch", true) + ": " + time, hl, time);
 			}
 		}
-		if (showStr && target != null) {
+		if (showStr && target != null && fleetType != FleetType.COLONY) {
 			boolean isInvasion = fleetType == FleetType.INVASION;
 			String key = isInvasion ? "infoTargetStrengthGround" : "infoTargetStrength";
 			Map<String, String> sub = new HashMap<>();
@@ -443,14 +462,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (!memory.contains(MEM_KEY_TARGET))
 			return null;
 		
-		String marketId = memory.getString(MEM_KEY_TARGET);
-		if (marketId == null || marketId.isEmpty())
-			return null;
-		
-		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
+		MarketAPI market = (MarketAPI)memory.get(MEM_KEY_TARGET);
 		return market;
 	}
 	
+	@Deprecated
 	protected void setTarget(String marketId) {
 		if (marketId == null)
 			setTarget((MarketAPI)null);
@@ -464,7 +480,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			memory.unset(MEM_KEY_TARGET);
 			return;
 		}
-		memory.set(MEM_KEY_TARGET, market.getId(), 0);
+		memory.set(MEM_KEY_TARGET, market, 0);
 		target = market;
 		if (fleetType == FleetType.RELIEF) {
 			if (source != null && target != null)
@@ -533,6 +549,18 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 						markets.add(market);
 				}
 				break;
+			case COLONY:
+				markets = new ArrayList<>();
+				for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+					if (system.hasTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER)) continue;
+					for (PlanetAPI planet : system.getPlanets()) {
+						MarketAPI market = planet.getMarket();
+						if (market == null || !market.isPlanetConditionMarketOnly()) continue;
+						if (market.getSurveyLevel() != SurveyLevel.FULL) continue;
+						markets.add(market);
+					}
+				}
+				break;
 			case DEFENSE:
 			case RAID:
 			default:
@@ -564,6 +592,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		FleetType oldType = fleetType;
 		fleetType = type;
 		//memory.set(MEM_KEY_TYPENAME, Misc.ucFirst(type.getName()), 0);
+		if (fleetType == FleetType.COLONY) {
+			setFP(100);
+		}
 		if (oldType != null && oldType != type) {
 			updateCost();
 			setTarget((MarketAPI)null);
@@ -610,6 +641,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				case DEFENSE:
 					intel = new DefenseFleetIntel(attacker, source, target, fp, timeToLaunch);
 					break;
+				case COLONY:
+					intel = new ColonyExpeditionIntel(attacker, source, target, fp, timeToLaunch);
+					break;
 				default:
 					return false;
 			}
@@ -624,7 +658,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
 				
 		// make hostile if needed
-		if (fleetType.isAggressive() && !target.getFaction().isHostileTo(Factions.PLAYER)) {
+		if (fleetType.isAggressive && !target.getFaction().isHostileTo(Factions.PLAYER)) {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = 0;
 			impact.ensureAtBest = RepLevel.HOSTILE;
@@ -647,7 +681,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		String fpStr = fp + "";
 		opts.addOption(getString("optionStrength") + ": " + fpStr, "nex_fleetRequest_strengthMenu");
-		opts.setEnabled("nex_fleetRequest_strengthMenu", fleetType != FleetType.RELIEF);
+		opts.setEnabled("nex_fleetRequest_strengthMenu", fleetType != FleetType.RELIEF && fleetType != FleetType.COLONY);
 		
 		String sourceName = source == null ? StringHelper.getString("none") : source.getName();
 		opts.addOption(getString("optionSource") + ": " + sourceName, "nex_fleetRequest_selectSource");
@@ -682,7 +716,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}
 		else {
 			String confirmMessage;
-			if (fleetType.isAggressive() && !target.getFaction().isHostileTo(Factions.PLAYER)) {
+			if (fleetType.isAggressive && !target.getFaction().isHostileTo(Factions.PLAYER)) {
 				confirmMessage = getString("proceedConfirmNonHostile");
 				confirmMessage = StringHelper.substituteToken(confirmMessage, "$TheFaction", 
 						Misc.ucFirst(target.getFaction().getDisplayNameWithArticle()));
@@ -840,6 +874,14 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 					text = info.addPara(infoStr, 0);
 					text.setHighlight(defStr, groundDefStr);
 				}
+				else if (fleetType == FleetType.COLONY) {
+					infoStr = getString("targetEntryColonyTooltip");
+					String typeStr = Misc.ucFirst(market.getPlanetEntity().getTypeNameWithWorld());
+					infoStr = StringHelper.substituteToken(infoStr, "$type", typeStr);
+					text = info.addPara(infoStr, 0);
+					text.setHighlight(typeStr);
+					text.setHighlightColors(market.getPlanetEntity().getSpec().getIconColor());
+				}
 				else {
 					infoStr = getString("targetEntryTooltip");
 					infoStr = StringHelper.substituteToken(infoStr, "$space", defStr);
@@ -891,7 +933,18 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}};
 	
 	public enum FleetType {
-		INVASION, BASESTRIKE, RAID, DEFENSE, RELIEF;
+		INVASION(true), 
+		BASESTRIKE(true),
+		RAID(true), 
+		DEFENSE(false), 
+		COLONY(false), 
+		RELIEF(false);
+		
+		public final boolean isAggressive;
+		
+		private FleetType(boolean isAggressive) {
+			this.isAggressive = isAggressive;
+		}
 		
 		public static FleetType getTypeFromString(String str) {
 			return FleetType.valueOf(StringHelper.flattenToAscii(str.toUpperCase(Locale.ROOT)));
@@ -899,10 +952,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		public String getName() {
 			return getString("fleetType_" + StringHelper.flattenToAscii(toString().toLowerCase(Locale.ROOT)));
-		}
-		
-		public boolean isAggressive() {
-			return this != FleetType.DEFENSE && this != FleetType.RELIEF;
 		}
 	}
 }

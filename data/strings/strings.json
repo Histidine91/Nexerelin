@@ -995,6 +995,7 @@
 		"fleetType_basestrike":"base strike",
 		"fleetType_raid":"raid",
 		"fleetType_defense":"defense",
+		"fleetType_colony":"colony",
 		"fleetType_relief":"relief",
 		
 		"fleetCost":"fleet cost",
@@ -1011,6 +1012,7 @@
 		
 		"targetEntryTooltip":"Space defences: $space",
 		"targetEntryGroundTooltip":"Space defences: $space | Ground defences: $ground",
+		"targetEntryColonyTooltip":"$type",
 		
 		"fleetSpawnMessage":"The task force is being prepared for launch.",
 		"tooltipInsufficientFunds":"Dispatching this task force requires $cost credits. You only have $credits credits.",
