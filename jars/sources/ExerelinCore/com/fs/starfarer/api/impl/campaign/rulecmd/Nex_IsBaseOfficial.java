@@ -51,8 +51,14 @@ public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) 
-	{		
-		String post = memoryMap.get(MemKeys.LOCAL).getString("$postId");
+	{
+		String post;
+		try {	// stupid-ass workaround for unexplained NPE when interacting with Remnant stations while non-hostile
+			post = memoryMap.get(MemKeys.LOCAL).getString("$postId");
+		} catch (NullPointerException ex) {
+			return false;
+		}
+		
 		if (post == null) return false;
 		
 		String arg = params.get(0).getString(memoryMap);
