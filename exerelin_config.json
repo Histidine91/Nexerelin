@@ -100,6 +100,9 @@
     "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
     "leaveEliminatedFaction": true, # if our faction is wiped out, leave it
 	
+	"sizeFractionForVictory": 0.501,
+	"hiFractionForVictory": 0.67,
+	
 	"allowRandomDiplomacyTraits":true,	# randomize diplomacy traits when faction relations are randomized
     
     "enableRevengeFleets": 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)

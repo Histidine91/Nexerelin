@@ -154,6 +154,8 @@ public class NexConfig
     public static boolean autoResistAIInspections = true;
     public static boolean allyVictories = true;
     public static boolean updateMarketDescOnCapture = true;
+    public static float sizeFractionForVictory = 0.501f;
+    public static float hiFractionForVictory = 0.67f;
 
     public static void loadSettings()
     {
@@ -263,6 +265,8 @@ public class NexConfig
             autoResistAIInspections = settings.optBoolean("autoResistAIInspections", autoResistAIInspections);
             allyVictories = settings.optBoolean("allyVictories", allyVictories);
             updateMarketDescOnCapture = settings.optBoolean("updateMarketDescOnCapture", updateMarketDescOnCapture);
+            sizeFractionForVictory = (float)settings.optDouble("sizeFractionForVictory", sizeFractionForVictory);
+            hiFractionForVictory = (float)settings.optDouble("hiFractionForVictory", hiFractionForVictory);
             
             allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);

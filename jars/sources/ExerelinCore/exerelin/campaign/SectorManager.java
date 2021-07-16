@@ -91,8 +91,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static final float MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE = 90;
     public static final String MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT = "$nex_captureStabilizeTimeout";
     
-    public static final float SIZE_FRACTION_FOR_VICTORY = 0.501f;
-    public static final float HI_FRACTION_FOR_VICTORY = 0.67f;
+    public static final float SIZE_FRACTION_FOR_VICTORY = NexConfig.sizeFractionForVictory;
+    public static final float HI_FRACTION_FOR_VICTORY = NexConfig.hiFractionForVictory;
     
     public static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
         Ranks.POST_BASE_COMMANDER,
