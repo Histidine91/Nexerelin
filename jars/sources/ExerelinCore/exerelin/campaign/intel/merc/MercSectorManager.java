@@ -178,7 +178,7 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 	public void reportPlayerOpenedMarketAndCargoUpdated(MarketAPI market) {}
 
 	@Override
-	public void reportPlayerMarketTransaction(PlayerMarketTransaction arg0) {}
+	public void reportPlayerMarketTransaction(PlayerMarketTransaction transact) {}
 
 	@Override
 	public void reportEconomyTick(int numIter) {

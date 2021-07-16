@@ -4,10 +4,13 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
+import com.fs.starfarer.api.campaign.listeners.ColonyInteractionListener;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -31,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MercContractIntel extends BaseIntelPlugin implements EconomyTickListener
+public class MercContractIntel extends BaseIntelPlugin implements EconomyTickListener, ColonyInteractionListener
 {
 	//public static Logger log = Global.getLogger(MercContractIntel.class);
 	
@@ -277,8 +280,34 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	}
 
 	@Override
-	public void reportEconomyMonthEnd() {
-		
+	public void reportEconomyMonthEnd() {}
+	
+	@Override
+	public void reportPlayerClosedMarket(MarketAPI market) {}
+	
+	@Override
+	public void reportPlayerOpenedMarket(MarketAPI market) {}
+
+	@Override
+	public void reportPlayerOpenedMarketAndCargoUpdated(MarketAPI market) {}
+
+	@Override
+	public void reportPlayerMarketTransaction(PlayerMarketTransaction transact) 
+	{
+		for (ShipSaleInfo sale : transact.getShipsSold()) {
+			PersonAPI captain = sale.getMember().getCaptain();
+			if (!Misc.isUnremovable(captain)) continue;
+			if (officers.contains(captain)) {
+				Global.getSector().getPlayerFleet().getFleetData().removeOfficer(captain);
+			}
+		}
+		for (ShipSaleInfo buy : transact.getShipsBought()) {
+			PersonAPI captain = buy.getMember().getCaptain();
+			if (!Misc.isUnremovable(captain)) continue;
+			if (officers.contains(captain)) {
+				Global.getSector().getPlayerFleet().getFleetData().addOfficer(captain);
+			}
+		}
 	}
 	
 	@Override
