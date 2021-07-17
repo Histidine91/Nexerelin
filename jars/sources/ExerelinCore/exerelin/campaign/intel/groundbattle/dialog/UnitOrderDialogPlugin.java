@@ -67,6 +67,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	protected boolean didAnything;
 	
+	protected boolean quickMove;	// True when clicking on the "fast move button"
+	
 	public UnitOrderDialogPlugin(GroundBattleIntel intel, GroundUnit unit, IntelUIAPI ui) 
 	{
 		this.intel = intel;
@@ -88,7 +90,12 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		dialog.setOptionOnEscape(StringHelper.getString("cancel", true), OptionId.LEAVE);
 		
 		showUnitPanel();
-		optionSelected(null, OptionId.INIT);
+		if (quickMove) {
+			selectMoveOrDeployDestination(unit.getLocation() == null);
+		} else {
+			optionSelected(null, OptionId.INIT);
+		}
+		
 	}
 	
 	@Override
@@ -99,6 +106,10 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	@Override
 	public void backFromEngagement(EngagementResultAPI result) {
 		// no combat here, so this won't get called
+	}
+	
+	public void setQuickMove(boolean fastMove) {
+		this.quickMove = fastMove;
 	}
 	
 	public int getCurrentSupplies() {
@@ -262,7 +273,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		}
 		
 		options.addOption(StringHelper.getString("confirm", true), OptionId.DEPLOY_CONFIRM);
-		options.addOption(StringHelper.getString("back", true), OptionId.INIT, null);
+		options.addOption(StringHelper.getString("back", true), quickMove ? OptionId.LEAVE : OptionId.INIT, null);
 	}
 	
 	protected void confirmDeploy() {
@@ -306,7 +317,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			}
 			@Override
 			public void cancelledIndustryPicking() {
-				addChoiceOptions();
+				if (quickMove) leave(true);
+				else addChoiceOptions();
 			}
 		});
 	}

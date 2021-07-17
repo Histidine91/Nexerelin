@@ -807,8 +807,10 @@ public class GroundUnit {
 		// button holder
 		if (!forDialog) {
 			TooltipMakerAPI buttonHolder = card.createUIElement(BUTTON_SECTION_WIDTH * sizeMult, 
-				PANEL_HEIGHT * sizeMult, false);
+				PANEL_HEIGHT * sizeMult * 2, false);
 			buttonHolder.addButton(StringHelper.getString("action", true), this, 
+					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
+			buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this), 
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
 			card.addUIElement(buttonHolder).inTR(1 * sizeMult, 2 * sizeMult);
 		}
@@ -928,6 +930,14 @@ public class GroundUnit {
 		
 		public String getNamePlural() {
 			return getString("unit" + Misc.ucFirst(toString().toLowerCase()) + "Plural");
+		}
+	}
+	
+	public static class UnitQuickMoveHax {
+		public GroundUnit unit;
+		
+		public UnitQuickMoveHax(GroundUnit unit) {
+			this.unit = unit;
 		}
 	}
 }

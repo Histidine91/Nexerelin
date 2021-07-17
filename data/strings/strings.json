@@ -1151,6 +1151,7 @@
 		"btnTogglePlayerAI":"Auto-move at turn end",
 		"btnNewUnitMarine":"New marine %s",
 		"btnNewUnitHeavy":"New heavy %s",
+		"btnQuickMove":"Q. move",
 		"btnAndrada":"Take over $market",
 		"btnGovernorship":"Purchase governorship",
 		"btnGovernorshipConfirmPrompt":"You can purchase governorship of $market for %s. You have %s credits.",
