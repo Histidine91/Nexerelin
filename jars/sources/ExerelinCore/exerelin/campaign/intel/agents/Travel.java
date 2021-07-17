@@ -153,9 +153,10 @@ public class Travel extends CovertActionIntel {
 	@Override
 	public void abort() {
 		super.abort();
-		if (this == agent.currentAction && agent.nextAction != null) {
-			agent.nextAction.abort();
-			agent.nextAction = null;
+		CovertActionIntel next = agent.getNextAction();
+		if (this == agent.getCurrentAction() && next != null) {
+			next.abort();
+			agent.removeActionFromQueue(next);
 		}
 	}
 	

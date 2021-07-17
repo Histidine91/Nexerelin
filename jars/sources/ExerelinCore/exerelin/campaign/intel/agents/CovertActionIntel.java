@@ -371,10 +371,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 			handleStoryPointRefund();
 		}
 		if (agent != null){
-			if (agent.currentAction == this)
-				agent.pushActionQueue();
-			else if (agent.nextAction == this)
-				agent.nextAction = null;
+			agent.removeActionFromQueue(this);
 		}
 		endImmediately();
 	}
@@ -462,8 +459,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		if (true || CovertOpsManager.getRandom(market).nextFloat() <= chance)
 		{
 			Injury injury = new Injury(agent, agentFaction, targetFaction, playerInvolved, params);
-			agent.setQueuedAction(agent.currentAction);
-			agent.setCurrentAction(injury);
+			agent.addAction(injury, 0);
 			injury.activate();
 			injuryTime = injury.days;
 			return true;
@@ -884,8 +880,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		}
 		
 		if (injuryTime != null) {
-			CovertActionIntel injuryAction = agent.currentAction;
-			
 			str = StringHelper.getStringAndSubstituteToken("nex_agentActions", 
 					"intelDesc_injured", "$agentName", name);
 			info.addPara(str, pad, Misc.getNegativeHighlightColor(), Math.round(injuryTime) + "");

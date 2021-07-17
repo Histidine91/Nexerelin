@@ -33,6 +33,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -65,7 +66,9 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected MarketAPI market;
 	protected FactionAPI faction;
 	protected Set<Specialization> specializations = new HashSet<>();
-	protected CovertActionIntel currentAction, lastAction, nextAction;
+	protected List<CovertActionIntel> actionQueue = new LinkedList<>();
+	//@Deprecated protected CovertActionIntel currentAction, nextAction;
+	protected CovertActionIntel lastAction;
 	protected int level;
 	protected int xp;
 	protected long lastActionTimestamp;
@@ -162,10 +165,15 @@ public class AgentIntel extends BaseIntelPlugin {
 		this.market = market;
 	}
 	
-	public CovertActionIntel getCurrentAction() {
-		return currentAction;
+	public void addAction(CovertActionIntel action) {
+		actionQueue.add(action);
 	}
 	
+	public void addAction(CovertActionIntel action, int index) {
+		actionQueue.add(0, action);
+	}
+	
+	/*
 	public void setCurrentAction(CovertActionIntel currentAction) {
 		this.currentAction = currentAction;
 	}
@@ -175,6 +183,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			nextAction.abort();
 		nextAction = action;
 	}
+	*/
 	
 	public PersonAPI getAgent() {
 		return agent;
@@ -185,7 +194,18 @@ public class AgentIntel extends BaseIntelPlugin {
 		super.advanceImpl(amount);
 	}
 	
+	protected CovertActionIntel getCurrentAction() {
+		if (actionQueue.isEmpty()) return null;
+		return actionQueue.get(0);
+	}
+	
+	protected CovertActionIntel getNextAction() {
+		if (actionQueue.size() <= 1) return null;
+		return actionQueue.get(1);
+	}
+	
 	protected void pushActionQueue() {
+		/*
 		if (nextAction != null) {
 			currentAction = nextAction;
 			nextAction = null;
@@ -193,10 +213,21 @@ public class AgentIntel extends BaseIntelPlugin {
 		}
 		else
 			currentAction = null;
+		*/
+		if (actionQueue.isEmpty()) return;
+		actionQueue.remove(0);
+	}
+	
+	protected void removeActionFromQueue(CovertActionIntel action) {
+		if (action == getCurrentAction()) {
+			pushActionQueue();
+		} else {
+			actionQueue.remove(action);
+		}
 	}
 	
 	public void notifyActionCompleted() {
-		lastAction = currentAction;
+		lastAction = getCurrentAction();
 		lastActionTimestamp = Global.getSector().getClock().getTimestamp();
 		pushActionQueue();
 	}
@@ -237,6 +268,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			if (market != null)
 				info.addPara(market.getName(), 0, tc, market.getTextColorForFactionOrPlanet(), 
 						market.getName());
+			CovertActionIntel currentAction = getCurrentAction();
 			if (currentAction != null)
 				currentAction.addCurrentActionBullet(info, tc, 0);
 		}
@@ -324,6 +356,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			//info.addPara(getString("intelDescXPMax"), opad, h, level + "");
 		}
 		
+		CovertActionIntel currentAction = getCurrentAction();
 		if (currentAction != null) {
 			// current action progress
 			info.addSectionHeading(getString("intelDescCurrAction"), Alignment.MID, opad);
@@ -386,6 +419,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			}
 		}
 		
+		CovertActionIntel nextAction = getNextAction();
 		if (nextAction != null) {
 			info.addSectionHeading(getString("intelDescNextAction"), Alignment.MID, opad);
 			nextAction.addCurrentActionPara(info, opad);
@@ -481,6 +515,9 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		CovertActionIntel currentAction = getCurrentAction();
+		CovertActionIntel nextAction = getNextAction();
+		
 		if (buttonId == BUTTON_ORDERS) {
 			ui.showDialog(null, new AgentOrdersDialog(this, market, ui, false));
 		} else if (buttonId == BUTTON_QUEUE_ORDER) {
@@ -494,8 +531,9 @@ public class AgentIntel extends BaseIntelPlugin {
 			currentAction.abort();
 			//pushActionQueue();	// handled by action class
 		} else if (buttonId == BUTTON_CANCEL_QUEUE) {
+			if (nextAction == null) return;
 			nextAction.abort();
-			setQueuedAction(null);
+			actionQueue.remove(nextAction);
 		} else if (buttonId == BUTTON_REPEAT_ACTION) {
 			try {
 				CovertActionIntel repeat = (CovertActionIntel)lastAction.clone();
@@ -517,8 +555,6 @@ public class AgentIntel extends BaseIntelPlugin {
 		} else if (buttonId == BUTTON_DISMISS) {
 			if (currentAction != null)
 				currentAction.abort();
-			currentAction = null;
-			nextAction = null;
 			lastAction = null;
 			isDismissed = true;
 			//sendUpdateIfPlayerHasIntel(UPDATE_DISMISSED, false);
@@ -539,6 +575,9 @@ public class AgentIntel extends BaseIntelPlugin {
 	@Override
 	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
 		Color h = Misc.getHighlightColor();
+		CovertActionIntel currentAction = getCurrentAction();
+		CovertActionIntel nextAction = getNextAction();
+		
 		if (buttonId == BUTTON_ABORT) {
 			int credits = currentAction.getAbortRefund();
 			String creditsStr = Misc.getWithDGS(credits);
@@ -628,6 +667,8 @@ public class AgentIntel extends BaseIntelPlugin {
 	public SectorEntityToken getMapLocation(SectorMapAPI map) {
 		if (market != null)
 			return market.getPrimaryEntity();
+		
+		CovertActionIntel currentAction = getCurrentAction();
 		if (currentAction != null && currentAction.getDefId().equals(CovertActionType.TRAVEL))
 		{
 			Travel travel = (Travel)currentAction;
@@ -640,6 +681,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	@Override
 	public List<ArrowData> getArrowData(SectorMapAPI map) {
+		CovertActionIntel currentAction = getCurrentAction();
 		if (currentAction != null && currentAction.getDefId().equals(CovertActionType.TRAVEL))
 		{
 			Travel travel = (Travel)currentAction;

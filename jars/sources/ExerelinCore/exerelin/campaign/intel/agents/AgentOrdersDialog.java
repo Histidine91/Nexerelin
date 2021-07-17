@@ -984,11 +984,12 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			AddRemoveCommodity.addCreditsLossText(cost, text);
 		}
 		
+		agent.addAction(action);
 		if (isQueue) {
-			agent.setQueuedAction(action);
+			//agent.setQueuedAction(action);
 		}
 		else {
-			agent.setCurrentAction(action);
+			//agent.setCurrentAction(action);
 			action.activate();
 		}
 		
