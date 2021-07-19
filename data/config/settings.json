@@ -102,6 +102,8 @@
 	
 	"nex_milestones":true,	# enable milestones system?
 	
+	"nex_vicVirusBombChance":0.5,	# at 0.5, half of sat bomb expeditions by VIC will be converted to virus bomb expeditions
+	
 	"nex_sizeFractionForVictory":0.501,	# note: winner must also be twice as big as the next largest party
 	"nex_heavyIndustryFractionForVictory":0.667,
 	

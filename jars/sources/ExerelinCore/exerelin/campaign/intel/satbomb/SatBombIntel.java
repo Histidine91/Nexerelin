@@ -43,6 +43,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class SatBombIntel extends OffensiveFleetIntel {
 	
 	protected boolean isVengeance;
+	protected boolean isVirusBomb;
 		
 	public SatBombIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, 
 			float fp, float orgDur) {
@@ -52,6 +53,10 @@ public class SatBombIntel extends OffensiveFleetIntel {
 	@Override
 	public void init() {
 		log.info("Creating saturation bomb intel");
+		
+		if (faction.getId().equals("vic")) {
+			isVirusBomb = Math.random() < Global.getSettings().getFloat("nex_vicVirusBombChance");
+		}
 		
 		SectorEntityToken gather = from.getPrimaryEntity();
 		
@@ -115,7 +120,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 	}
 	
 	public boolean isVicVirusBomb() {
-		return faction.getId().equals("vic");
+		return isVirusBomb;
 	}
 	
 	@Override

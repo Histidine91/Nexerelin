@@ -226,6 +226,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					garDamage -= recoveryFactor;
 					GBUtils.setGarrisonDamageMemory(market, garDamage);
 				}
+				
+				checkVICEVC(market);
 			}
 			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
@@ -431,6 +433,72 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		else {
 			market.getIncomeMult().unmodify("nex_hardMode");
+		}
+	}
+	
+	/**
+	 * Builds the necessary structure(s) to manage viral contamination from VIC's viral bomb condition, if needed.
+	 * @param market
+	 */
+	public static void checkVICEVC(MarketAPI market)
+	{
+		if (!market.hasCondition("VIC_VBomb_scar")) {
+			return;
+		}
+		FactionAPI vic = Global.getSector().getFaction("vic");
+		if (vic == null) return;
+		
+		if (market.getFaction() == vic) {	// handled by VIC's own code?
+			//return;
+		}
+		
+		// what tier of antiviral structure are we allowed?
+		int wantedLevel = 1;
+		if (market.getFaction() == vic) wantedLevel = 3;
+		else {
+			if (market.getSize() >= 6 || Misc.isMilitary(market))
+				wantedLevel++;
+			if (AllianceManager.areFactionsAllied(market.getFactionId(), "vic"))
+				wantedLevel++;
+			if (vic.getRelationshipLevel(market.getFactionId()).isAtWorst(RepLevel.FRIENDLY))
+				wantedLevel++;
+		}
+		
+		if (wantedLevel > 3) wantedLevel = 3;
+		
+		// what tier of antiviral structure do we currently have?
+		int currLevel = 0;
+		Industry ind = null;
+		do {
+			ind = market.getIndustry("vic_antiEVCt3");
+			if (ind != null) {
+				currLevel = 3;
+				break;
+			}
+			ind = market.getIndustry("vic_antiEVCt2");
+			if (ind != null) {
+				currLevel = 2;
+				break;
+			}
+			ind = market.getIndustry("vic_antiEVCt1");
+			if (ind != null) {
+				currLevel = 1;
+				break;
+			}
+		} while (false);
+		
+		// don't do anything if structure is already building/upgrading
+		if (ind != null) {
+			if (ind.isBuilding() || ind.isUpgrading())
+				return;
+		}
+		
+		if (wantedLevel > currLevel) {
+			if (ind != null) ind.startUpgrading();
+			else {
+				market.addIndustry("vic_antiEVCt1");
+				market.getIndustry("vic_antiEVCt1").startBuilding();
+			}
 		}
 	}
 	
@@ -841,7 +909,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return false;
 		}
 		
-		ColonyExpeditionIntel.createColonyStatic(target.getMarket(), target, faction, false);
+		ColonyExpeditionIntel.createColonyStatic(target.getMarket(), target, faction, false, false);
 		return true;
 	}
 	
