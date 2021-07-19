@@ -30,9 +30,9 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 	// TODO: use this to keep the same fleet from bombarding to infinity
 	// probably not needed now that base cost has been reduced?
 	public static final String MEMORY_KEY_FUEL_SPENT = "$nex_gbFireSupport_spend";
-	public static float BASE_DAMAGE = 48;	// at size 3
+	public static float BASE_DAMAGE = 36;	// at size 3 and smaller
 	public static float CLOSE_SUPPORT_DAMAGE_MULT = 1.25f;
-	public static float BASE_COST = 32;
+	public static float BASE_COST = 25;
 		
 	@Override
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
@@ -159,7 +159,8 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 	
 	public int getFuelCost(CampaignFleetAPI fleet) {
 		int marketSize = getIntel().getMarket().getSize();
-		float cost = BASE_COST * (marketSize - 3);
+		if (marketSize < 3) marketSize = 3;
+		float cost = BASE_COST * (marketSize - 2);
 		if (fleet != null) {
 			cost -= Misc.getFleetwideTotalMod(fleet, Stats.FLEET_BOMBARD_COST_REDUCTION, 0f)/2f;
 		}
@@ -171,7 +172,8 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 	
 	public int getDamage() {
 		int marketSize = getIntel().getMarket().getSize();
-		return (int)Math.round(BASE_DAMAGE * (marketSize - 3));
+		if (marketSize < 3) marketSize = 3;
+		return (int)Math.round(BASE_DAMAGE * (marketSize - 2));
 	}
 	
 	@Override
