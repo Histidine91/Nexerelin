@@ -39,11 +39,11 @@
 	},
 	# ships the faction gets access to when importing S&W out-of-faction
 	"shipsWhenImporting":{
-		"tags":["derelict"],
+		"tags":["derelict", "archean_derelict"],
 		"hulls":[],
 	},
 	"knownShips":{
-		"tags":["derelict"],
+		"tags":["derelict", "archean_derelict"],
 		"hulls":[],
 	},
 	# listing ships here will make the faction mostly use them even if other hulls become available
@@ -52,7 +52,7 @@
 		"hulls":[],
 	},
 	"knownFighters":{
-		"tags":["derelict"],
+		"tags":["derelict", "archean_derelict"],
 		"fighters":[],
 	},
 	"priorityFighters":{
@@ -60,7 +60,7 @@
 		"fighters":[],
 	},
 	"knownWeapons":{
-		"tags":["derelict"],
+		"tags":["derelict", "archean_derelict"],
 		"weapons":[
 			"lightmg",
 			"lightdualmg",
@@ -124,7 +124,7 @@
 		"weapons":[],
 	},
 	"knownHullMods":{
-		"tags":["base_bp", "derelict"],
+		"tags":["base_bp", "derelict", "archean_derelict"],
 		"hullMods":[
 			"advancedshieldemitter", # accelerated
 			"advancedoptics",
