@@ -287,6 +287,7 @@ public class GroundUnit {
 		}
 		else {
 			if (destination == null) return;
+			intel.getMovedFromLastTurn().put(this, location);
 			setLocation(destination);
 			destination = null;
 		}
@@ -749,9 +750,7 @@ public class GroundUnit {
 		// morale
 		line = stats.beginImageWithText("graphics/icons/insignia/16x_star_circle.png", 
 				16 * sizeMult);
-		Color moraleColor = Misc.getHighlightColor();
-		if (morale > .6) moraleColor = Misc.getPositiveHighlightColor();
-		else if (morale < .3) moraleColor = Misc.getNegativeHighlightColor();
+		Color moraleColor = getMoraleColor(morale);
 		String moraleStr = Math.round(this.morale * 100) + "%";
 		line.addPara(moraleStr, moraleColor, 0);
 		stats.addImageWithText(pad);
@@ -818,6 +817,13 @@ public class GroundUnit {
 		return card;
 	}
 	
+	public static Color getMoraleColor(float morale) {
+		Color color = Misc.getHighlightColor();
+		if (morale > .6) color = Misc.getPositiveHighlightColor();
+		else if (morale < .3) color = Misc.getNegativeHighlightColor();
+		return color;
+	}
+	
 	public TooltipCreator createTooltip(final String id) {
 		final GroundUnit unit = this;
 		return new TooltipCreator() {
@@ -868,7 +874,7 @@ public class GroundUnit {
 	
 	@Override
 	public String toString() {
-		return String.format("%s (%s)", name, type.toString());
+		return String.format("%s (%s)", name, type.toString().toLowerCase());
 	}
 	
 	public static enum ForceType {

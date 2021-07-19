@@ -45,6 +45,8 @@
 	# if false, other factions will not attack Templars; recommend combining with "canInvade" tag in Templars' faction config to make them not invade others
 	"nex_invade_and_raid_templars":true,
 	"nex_invasionStabilizeTimeoutMult":1,
+	"nex_invasionBaseDefenseMult":1.4,	# legacy invasions only
+	"nex_useGroundBattleIndustryMap":true,	# new invasions only
 	
 	"nex_disruptMissionRewardMult":25000,	# no longer used
 	
@@ -89,8 +91,6 @@
 	
 	"nex_hardModeDispositionModifier":-15,
 	"nex_hardModeDominanceMult":1.5,	# when calculating disposition
-	
-	"nex_invasionBaseDefenseMult":1.4,
 		
 	"nex_aiCoreAndPrisonerCooldownAfterInvasion":61,	# cannot turn in prisoners or AI cores for this long after a successful invasion of that faction's markets
 	

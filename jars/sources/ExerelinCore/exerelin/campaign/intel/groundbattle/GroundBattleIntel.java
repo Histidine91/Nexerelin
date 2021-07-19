@@ -56,6 +56,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.campaign.intel.groundbattle.GroundUnit.UnitQuickMoveHax;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
@@ -65,6 +66,7 @@ import exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GeneralPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin;
+import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.plugins.ExerelinModPlugin;
@@ -129,6 +131,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	protected List<GroundBattleLog> battleLog = new LinkedList<>();
 	//protected transient List<String> rawLog;
+	protected Map<GroundUnit, IndustryForBattle> movedFromLastTurn = new HashMap<>();	// value is the industry the unit was on last turn
 	
 	protected List<IndustryForBattle> industries = new ArrayList<>();
 	protected List<GroundBattlePlugin> marketConditionPlugins = new LinkedList<>();
@@ -172,6 +175,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			marketConditionPlugins = new ArrayList<>();
 		if (abilitiesUsedLastTurn == null)
 			abilitiesUsedLastTurn = new ArrayList<>();
+		if (movedFromLastTurn == null)
+			movedFromLastTurn = new HashMap<>();
 		
 		return this;
 	}
@@ -368,12 +373,26 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		else return defender;
 	}
 	
+	public GBPlayerData getPlayerData() {
+		return playerData;
+	}
+	
+	public Map<GroundUnit, IndustryForBattle> getMovedFromLastTurn() {
+		return movedFromLastTurn;
+	}
+	
 	public Map<String, Object> getCustomData() {
 		return data;
 	}
 	
 	public Boolean isPlayerAttacker() {
 		return playerIsAttacker;
+	}
+	
+	public boolean isPlayerAttackerForGUI() {
+		Boolean isAttacker = this.isPlayerAttacker();
+		if (isAttacker != null) return isAttacker;
+		return true;
 	}
 	
 	public void setPlayerIsAttacker(Boolean bool) {
@@ -424,6 +443,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return true;
 	}
 	
+	/**
+	 * Can {@code faction} support the specified side in this ground battle? 
+	 * @param faction
+	 * @param isAttacker
+	 * @return
+	 */
 	protected boolean canSupport(FactionAPI faction, boolean isAttacker) {		
 		FactionAPI supportee = getSide(isAttacker).faction;
 		if (faction.isPlayerFaction() && Misc.getCommissionFaction() == supportee)
@@ -836,6 +861,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (force) {
 			doShortIntervalStuff(interval.getIntervalDuration() - interval.getElapsed());
 		}
+		movedFromLastTurn.clear();
 		
 		reapply();
 		checkAnyAttackers();
@@ -1422,6 +1448,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addCustom(strPanel, pad);
 	}
 	
+	/**
+	 * Draws the subpanel with the player abilities.
+	 * @param info
+	 * @param outer
+	 * @param width
+	 * @param pad
+	 */
 	public void generateAbilityDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width, float pad) 
 	{
 		if (playerIsAttacker == null) return;
@@ -1455,19 +1488,38 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addCustom(abilityPanel, pad);
 	}
 	
+	/**
+	 * Draws the subpanel with the list of industries and the forces on them.
+	 * @param info
+	 * @param panel
+	 * @param width
+	 */
 	public void generateIndustryDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width) 
 	{
-		info.beginTable(Global.getSector().getPlayerFaction(), 0,
-				getString("industryPanel_header_industry"), IndustryForBattle.COLUMN_WIDTH_INDUSTRY,
-				//getString("industryPanel_header_heldBy"), IndustryForBattle.COLUMN_WIDTH_CONTROLLED_BY,
-				getString("industryPanel_header_attacker"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL,
-				getString("industryPanel_header_defender"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL
-		);
-		info.addTable("", 0, 10);
-		info.addSpacer(4);
-		
-		for (IndustryForBattle ifb : industries) {
-			ifb.renderPanel(panel, info, width);
+		try {
+			if (Global.getSettings().getBoolean("nex_useGroundBattleIndustryMap")) {
+				// render map
+				MarketMapDrawer map = new MarketMapDrawer(this, panel, width - 12);
+				map.init();
+				CustomPanelAPI mapPanel = map.getPanel();
+				info.addCustom(mapPanel, 10);
+			}
+			else {
+				info.beginTable(Global.getSector().getPlayerFaction(), 0,
+						getString("industryPanel_header_industry"), IndustryForBattle.COLUMN_WIDTH_INDUSTRY,
+						//getString("industryPanel_header_heldBy"), IndustryForBattle.COLUMN_WIDTH_CONTROLLED_BY,
+						getString("industryPanel_header_attacker"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL,
+						getString("industryPanel_header_defender"), IndustryForBattle.COLUMN_WIDTH_TROOP_TOTAL
+				);
+				info.addTable("", 0, 10);
+				info.addSpacer(4);
+
+				for (IndustryForBattle ifb : industries) {
+					ifb.renderPanel(panel, info, width);
+				}
+			}
+		} catch (Exception ex) {
+			log.info("Failed to generate industry display", ex);
 		}
 	}
 	
@@ -1783,6 +1835,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		if (buttonId instanceof GroundUnit) {
 			ui.showDialog(market.getPrimaryEntity(), new UnitOrderDialogPlugin(this, (GroundUnit)buttonId, ui));
+			return;
+		}
+		if (buttonId instanceof UnitQuickMoveHax) {
+			UnitOrderDialogPlugin dialog = new UnitOrderDialogPlugin(this, ((UnitQuickMoveHax)buttonId).unit, ui);
+			dialog.setQuickMove(true);
+			ui.showDialog(market.getPrimaryEntity(), dialog);
 			return;
 		}
 		if (buttonId instanceof AbilityPlugin) {

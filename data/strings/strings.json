@@ -1165,14 +1165,16 @@
 		"unitPanel_movementPoints_tooltip2":"Deploying a unit also costs supplies, but moving it after it lands does not.",
 		"unitPanel_movementPoints_tooltip3":"Current contributions to max points:",
 		
-		"commandPanel_header1":"Special abilities",
-		
+		"commandPanel_header1":"Special abilities",		
 		
 		"industryPanel_header_industry":"Industry",
 		"industryPanel_header_heldBy":"Held by",
 		"industryPanel_header_defBonus":"Defense bonus",
 		"industryPanel_header_attacker":"Attacking forces",
 		"industryPanel_header_defender":"Defending forces",
+		"industryPanel_tooltipStrength":"Strength of the $side's forces on this industry.",
+		"industryPanel_tooltipMorale":"Weighted average morale of the $side's forces on this industry.",
+		"industryPanel_tooltipUnitInfo":"%s strength, %s morale",
 		
 		"unitCard_tooltip_marines":"Number of marines in this unit",
 		"unitCard_tooltip_heavyArms":"Number of heavy armaments in this unit",

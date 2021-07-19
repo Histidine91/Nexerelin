@@ -1,0 +1,3 @@
+by Hanns Holger Rutz ("Sciss")
+https://github.com/Sciss/Packing2D
+MIT license
