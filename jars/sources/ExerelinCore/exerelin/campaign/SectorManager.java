@@ -40,6 +40,7 @@ import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.VayraModPlugin;
 import exerelin.ExerelinConstants;
@@ -70,6 +71,7 @@ import exerelin.utilities.NexUtilsAstro;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -91,8 +93,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static final float MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE = 90;
     public static final String MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT = "$nex_captureStabilizeTimeout";
     
-    public static final float SIZE_FRACTION_FOR_VICTORY = 0.501f;
-    public static final float HI_FRACTION_FOR_VICTORY = 0.67f;
+    //public static final float SIZE_FRACTION_FOR_VICTORY = 0.501f;
+    //public static final float HI_FRACTION_FOR_VICTORY = 0.67f;
     
     public static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
         Ranks.POST_BASE_COMMANDER,
@@ -926,7 +928,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return bestId;
     }
     
-    public static String checkForConquestVictory(Collection<String> factionsToCheck) {
+    public static String checkForConquestVictory(Collection<String> factionsToCheck) 
+    {
+        float sizeForVictory = Global.getSettings().getFloat("nex_sizeFractionForVictory");
+        float hiForVictory = Global.getSettings().getFloat("nex_heavyIndustryFractionForVictory");
+        
         int totalSize = 0, totalHeavyIndustries = 0;
         Map<String, Integer> factionSizes = new HashMap<>();
         Map<String, Integer> heavyIndustries = new HashMap<>();
@@ -946,6 +952,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
             }
         }
+        
+        List<Pair<Object, Integer>> sizeRanked = new ArrayList<>();
+        //List<Pair<Object, Integer>> hiRanked = new ArrayList<>();
                 
         for (Alliance alliance : AllianceManager.getAllianceList()) {
             int size, numHI;
@@ -955,9 +964,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 log.info(String.format("Alliance %s has %s/%s size, %s/%s HIs", alliance.getName(), 
                         size, totalSize, numHI, totalHeavyIndustries));
                 
+                sizeRanked.add(new Pair<>((Object)alliance, size));
+                //hiRanked.add(new Pair<>((Object)alliance, numHI));
+                /*
                 if (size/(float)totalSize >= SIZE_FRACTION_FOR_VICTORY) {
                     return getAllianceMemberWithHighestValue(alliance, factionSizes); 
-                } else if (numHI/(float)totalHeavyIndustries >= HI_FRACTION_FOR_VICTORY)    {
+                } 
+                */
+                if (numHI/(float)totalHeavyIndustries >= hiForVictory)    {
                     return getAllianceMemberWithHighestValue(alliance, heavyIndustries); 
                 }
             }
@@ -976,16 +990,37 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             log.info(String.format("Faction %s has %s/%s size, %s/%s HIs", factionId, 
                         size, totalSize, numHI, totalHeavyIndustries));
             
-            if (size != null && size / (float)totalSize >= SIZE_FRACTION_FOR_VICTORY) {
+            sizeRanked.add(new Pair<>((Object)factionId, size));
+            //hiRanked.add(new Pair<>((Object)factionId, numHI));
+            /*
+            if (size / (float)totalSize >= SIZE_FRACTION_FOR_VICTORY) {
                 return factionId;
             }
+            */
             
-            if (numHI != null && numHI / (float)totalHeavyIndustries >= HI_FRACTION_FOR_VICTORY) {
+            if (numHI != null && numHI / (float)totalHeavyIndustries >= hiForVictory) {
                 return factionId;
             }
         }
         
-        return null;
+        // check for largest faction
+        // must have at least 51% of total market size, and be twice as big as runner-up
+        if (sizeRanked.isEmpty()) return null;
+        
+        sizeRanked.sort(victoryComparator);
+        Pair<Object, Integer> leader = sizeRanked.get(0);
+        int runnerup = 0;
+        if (sizeRanked.size() >= 2) runnerup = sizeRanked.get(1).two;
+        
+        if (leader.two /(float)totalSize < sizeForVictory)
+            return null;
+        if (leader.two < runnerup * 2) return null;
+        
+        if (leader.one instanceof Alliance) {
+            return getAllianceMemberWithHighestValue((Alliance)leader.one, factionSizes); 
+        } else {
+            return (String)leader.one;
+        }
     }
     
     // runcode exerelin.campaign.SectorManager.checkForVictory()
@@ -1605,4 +1640,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             return this == DEFEAT_CONQUEST || this == DEFEAT_DIPLOMATIC;
         }
     }
+    
+    public static Comparator<Pair<Object, Integer>> victoryComparator = new Comparator<Pair<Object, Integer>>() 
+    {
+        @Override
+        public int compare(Pair<Object, Integer> one, Pair<Object, Integer> two) {
+            return Integer.compare(two.two, one.two);
+        }
+    };
 }
