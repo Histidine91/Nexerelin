@@ -16,7 +16,6 @@ import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -88,7 +87,6 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import exerelin.utilities.TemporaryFleetAdvanceScript;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1048,7 +1046,21 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		final InteractionDialogAPI dialogF = dialog;
 		final Map<String, MemoryAPI> memMapF = memoryMap;
-		Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
+		//dialogF.getTextPanel().addPara("Opening invasion intel");
+		
+		// TODO: in future, use the showCore override that takes an object arg
+		//Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
+		//FireAll.fire(null, dialogF, memMapF, "PopulateOptions");
+		
+		if (true) {
+			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, new CoreInteractionListener(){
+				@Override
+				public void coreUIDismissed() {
+					new ShowDefaultVisual().execute(null, dialogF, new ArrayList<Token>(), memMapF);
+					FireAll.fire(null, dialogF, memMapF, "PopulateOptions");
+				}
+			});
+		}
 	}
 	
 	protected void invadeRunRound() 

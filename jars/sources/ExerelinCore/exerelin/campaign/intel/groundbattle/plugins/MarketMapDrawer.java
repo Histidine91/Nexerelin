@@ -131,6 +131,12 @@ public class MarketMapDrawer {
 		@Override
 		public void render(float alphaMult) {
 			super.render(alphaMult);
+			
+			if (debugRects != null) {
+				for (Rectangle r : debugRects) {
+					drawDebugRect(r);
+				}
+			}
 		}
 		
 		public void drawArrow(GroundUnit unit, IndustryForBattle from, IndustryForBattle to, boolean prevTurn) 
@@ -173,7 +179,7 @@ public class MarketMapDrawer {
 		public void renderBelow(float alphaMult) {
 			super.renderBelow(alphaMult);
 			
-			if (bg == null) return;
+			//if (bg == null) return;
 
 			float x = pos.getX();
 			float y = pos.getY();
@@ -187,8 +193,14 @@ public class MarketMapDrawer {
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			//GL11.glEnable(GL11.GL_LINE_STIPPLE);
 			
-			SpriteAPI bgSprite = Global.getSettings().getSprite(this.bg);
+			String spriteId = this.bg != null? this.bg : map.intel.getMarket().getContainingLocation().getBackgroundTextureFilename();
+			
+			SpriteAPI bgSprite = Global.getSettings().getSprite(spriteId);
 			bgSprite.setSize(w-4, h-4);
+			if (this.bg == null) {
+				//bgSprite.setTexWidth(w-4);
+				//bgSprite.setTexHeight(h-4);
+			}
 			bgSprite.renderAtCenter(x + w/2, y + h/2);
 						
 			for (GroundUnit unit : map.intel.getMovedFromLastTurn().keySet()) {
@@ -270,7 +282,8 @@ public class MarketMapDrawer {
 			float baseWidth = getIndustryPanelWidth();
 			float baseHeight = getIndustryPanelHeight();
 			
-			for (int i=0; i<industries.size() + 5; i++) {
+			int max = industries.size() + Math.max(0, 6 - industries.size()/2);
+			for (int i=0; i<max; i++) {
 				float width = baseWidth * MathUtils.getRandomNumberInRange(1.1f, 1.5f);
 				float height = baseHeight * MathUtils.getRandomNumberInRange(1.1f, 1.3f);
 				rects.add(new Rectangle(0, 0, (int)width, (int)height));
@@ -278,7 +291,8 @@ public class MarketMapDrawer {
 			
 			// add some extra unusable rectangles to mess up the tesselation
 			List<Rectangle> rectsForPack = new ArrayList<>(rects);
-			for (int i=0; i<7; i++) {
+			int maxExtra = Math.max(3, 14 - industries.size());
+			for (int i=0; i<maxExtra; i++) {
 				float width = baseWidth * MathUtils.getRandomNumberInRange(0.3f, 0.5f);
 				float height = baseHeight * MathUtils.getRandomNumberInRange(0.3f, 0.5f);
 				rectsForPack.add(new Rectangle(0, 0, (int)width, (int)height));

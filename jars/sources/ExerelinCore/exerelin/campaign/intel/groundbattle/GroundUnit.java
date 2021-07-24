@@ -809,8 +809,11 @@ public class GroundUnit {
 				PANEL_HEIGHT * sizeMult * 2, false);
 			buttonHolder.addButton(StringHelper.getString("action", true), this, 
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
-			buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this), 
+			ButtonAPI qm = buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this), 
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
+			if (isReorganizing()) {
+				qm.setEnabled(false);
+			}
 			card.addUIElement(buttonHolder).inTR(1 * sizeMult, 2 * sizeMult);
 		}
 		

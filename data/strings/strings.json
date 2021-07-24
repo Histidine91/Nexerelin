@@ -1228,7 +1228,7 @@
 		"dialogIndustryPickerHeader":"Select destination",
 		"dialogNoForces":"You have no forces with which to invade.",
 		"dialogOpenIntel":"Open invasion intel",
-		"dialogGarrisonEstimate":"%s's garrison strength is estimated at:",
+		"dialogGarrisonEstimate":"%s's garrison strength, taking into account local defenses and commodity availability, is estimated at:",
 		"dialogPlayerEstimate":"Your available invasion strength is estimated at:",
 		"dialogStrEstimateMilitia":"%s from militia",
 		"dialogStrEstimateMarine":"%s from marines",

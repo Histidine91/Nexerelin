@@ -567,7 +567,7 @@ public class IndustryForBattle {
 				return false;
 			}
 			public float getTooltipWidth(Object tooltipParam) {
-				return 320;	// FIXME magic number
+				return 360;	// FIXME magic number
 			}
 			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
 				tooltip.setBulletedListMode(" - ");
