@@ -188,9 +188,9 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		market.setPrimaryEntity(outpost);
 		market.addCondition(Conditions.ABANDONED_STATION);
 		market.addIndustry(Industries.POPULATION);
-		//market.addIndustry(Industries.SPACEPORT);
+		market.addIndustry(Industries.SPACEPORT);
 		market.addIndustry(Industries.WAYSTATION);
-		//market.getIndustry(Industries.SPACEPORT).startBuilding();
+		market.getIndustry(Industries.SPACEPORT).startBuilding();
 		market.getIndustry(Industries.WAYSTATION).startBuilding();
 		
 		market.setHidden(true);
