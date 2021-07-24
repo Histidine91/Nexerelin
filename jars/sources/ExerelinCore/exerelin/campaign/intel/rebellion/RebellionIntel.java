@@ -669,7 +669,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected SuppressionFleetData createSuppressionFleet(MarketAPI sourceMarket)
 	{
 		String factionId = sourceMarket.getFactionId();
-		float fp = (int)(getSizeMod(market) * 6f);
+		int sizeFactor = market.getSize() * 4;
+		if (sizeFactor < 1) sizeFactor = 1;
+		float fp = (int)(sizeFactor * 6f);
 		if (sourceMarket.hasIndustry(Industries.HIGHCOMMAND))
 			fp *= 1.25f;
 		if (sourceMarket.hasIndustry(Industries.MILITARYBASE))
