@@ -511,6 +511,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		if (isPlayerTargeted() && !isSendingUpdate()) {
 			return "nex_alarm";
 		}
+		else if (target.getFaction() == Misc.getCommissionFaction() && !isSendingUpdate()) {
+			return getSoundColonyThreat();
+		}
 		return super.getCommMessageSound();
 	}
 	
