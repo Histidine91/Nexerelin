@@ -46,7 +46,7 @@ public class GBConstants {
 	public static float XP_CASUALTY_MULT = 0.15f;
 	
 	public static float BASE_GARRISON_SIZE = 25;
-	public static float EXTERNAL_BOMBARDMENT_DAMAGE = 0.75f;
+	public static float EXTERNAL_BOMBARDMENT_DAMAGE = 0.6f;
 	public static float INVASION_HEALTH_MONTHS_TO_RECOVER = 3;
 	public static float LIBERATION_REBEL_MULT = 0.25f;
 	
