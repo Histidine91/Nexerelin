@@ -385,6 +385,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return data;
 	}
 	
+	public BattleOutcome getOutcome() {
+		return outcome;
+	}
+	
 	public Boolean isPlayerAttacker() {
 		return playerIsAttacker;
 	}
@@ -565,6 +569,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		float perUnitSize = (int)(unitSize.maxSize/GroundUnit.HEAVY_COUNT_DIVISOR);
 		int numCreatable = (int)Math.ceil(usableHeavyArms / perUnitSize);
 		numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
+		numCreatable = (int)Math.ceil(numCreatable * 0.75f);
 		int numPerUnit = 0;
 		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
 		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
@@ -2050,7 +2055,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GroundBattleIntel.class))
 		{
 			GroundBattleIntel gbi = (GroundBattleIntel)intel;
-			if (!gbi.isEnding() && !gbi.isEnded())
+			if (!gbi.isEnding() && !gbi.isEnded() && gbi.getOutcome() == null)
 				results.add(gbi);
 		}
 		return results;

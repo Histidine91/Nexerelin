@@ -442,9 +442,13 @@ public class SpecialForcesRouteAI {
 		// check for priority counter-ground-battle tasks
 		if (getCurrentTaskType() != TaskType.COUNTER_GROUND_BATTLE) {
 			for (GroundBattleIntel gbi : GroundBattleIntel.getOngoing()) {
+				
 				MarketAPI market = gbi.getMarket();
 				if (!AllianceManager.areFactionsAllied(market.getFaction().getId(), sf.getFaction().getId()))
 					continue;
+				if (!sf.getFaction().isHostileTo(gbi.getSide(true).getFaction()))
+					continue;
+				
 				float priority = this.getCounterGroundBattlePriority(market);
 				float toBeat = currentTask != null ? currentTask.priority : 0;
 				if (isBusy) toBeat *= 2;
