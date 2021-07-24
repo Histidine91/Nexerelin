@@ -61,11 +61,32 @@ public class GBUtils {
 			health = 1 - GBUtils.getGarrisonDamageMemory(intel.getMarket());
 		}
 		
+		marines *= 0.5f + 0.5f * getDeficitFactor(intel.market, Commodities.MARINES);
+		heavies *= 0.5f + 0.5f * getDeficitFactor(intel.market, Commodities.MARINES, Commodities.HAND_WEAPONS);
+		
+		float suppliesFactor = getDeficitFactor(intel.market, Commodities.SUPPLIES);
+		militia *= 1 + 0.25f * suppliesFactor;
+		marines *= 1 + 0.25f * suppliesFactor;
+		heavies *= 1 + 0.25f * suppliesFactor;
+		
 		militia = Math.round(militia * countForSize * 2.5f * health);
 		marines = Math.round(marines * countForSize * health);
 		heavies = Math.round(heavies * countForSize / GroundUnit.HEAVY_COUNT_DIVISOR * health);
 		
 		return new float[] {militia, marines, heavies};
+	}
+	
+	public static float getDeficitFactor(MarketAPI market, String... commodities) {
+		float lowest = 1;
+		for (String commodity : commodities) {
+			int avail = market.getCommodityData(commodity).getAvailable();
+			int demand = market.getCommodityData(commodity).getMaxDemand();
+			//log.info(String.format("Commodity %s has available %s, demand %s", commodity, avail, demand));
+			float ratio = demand == 0 ? 0 : avail/demand;
+			if (ratio < lowest)
+				lowest = ratio;
+		}
+		return lowest;
 	}
 	
 	public static float estimateTotalDefenderStrength(GroundBattleIntel intel, boolean useHealth) 
