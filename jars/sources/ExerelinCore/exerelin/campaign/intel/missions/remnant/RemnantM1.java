@@ -9,11 +9,13 @@ import java.awt.Color;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.MissionCompletionRep;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.missions.hub.BaseMissionHub;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
@@ -89,6 +91,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		requireMarketNotInHyperspace();
 		preferMarketSizeAtLeast(4);
 		preferMarketSizeAtMost(6);
+		search.marketPrefs.add(new MarketGroundDefReq(150, 600));
 		market = pickMarket();
 		danger = RaidDangerLevel.HIGH;
 		if (market == null) {
@@ -288,6 +291,22 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		return super.getPostfixForState();
 	}
 	
+	public static class MarketGroundDefReq implements MarketRequirement {
+		
+		Integer min = 0, max = Integer.MAX_VALUE;
+		
+		public MarketGroundDefReq(Integer min, Integer max) {
+			if (min != null) this.min = min;
+			if (max != null) this.max = max;
+		}
+		public boolean marketMatchesRequirement(MarketAPI market) {
+			StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+			int str = Math.round(defender.computeEffective(0));
+			//log.info("Market " + market.getName() + " has defences " + str);
+			
+			return str >= min && str <= max;
+		}
+	}
 }
 
 
