@@ -17,7 +17,11 @@ public class MagneticCrustPlugin extends MarketConditionPlugin {
 	
 	@Override
 	public void reportUnitMoved(GroundUnit unit, IndustryForBattle lastLoc) {
-		if (unit.isAttacker())
-			unit.reorganize(1);
+		if (unit.isAttacker()) {
+			if (lastLoc == null) // deployment
+				unit.reorganize(1);
+			else unit.reorganize(2);	// after movement; 2 turns since 1 turn of reorganization is removed at the end of this turn
+		}
+			
 	}
 }
