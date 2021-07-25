@@ -1539,8 +1539,15 @@ public class ExerelinProcGen {
 		Map<String, Set<LocationAPI>> populatedSystemsByFaction = new HashMap<>();
 		
 		for (String factionId : factions) {
-			factionPlanetCount.put(factionId, 0);
-			factionStationCount.put(factionId, 0);
+			// check for markets the faction already has
+			int planetCount = 0, stationCount = 0;
+			for (MarketAPI market : NexUtilsFaction.getFactionMarkets(factionId, true)) {
+				if (market.getPlanetEntity() == null) stationCount++;
+				else planetCount++;
+			}
+			
+			factionPlanetCount.put(factionId, planetCount);
+			factionStationCount.put(factionId, stationCount);
 			populatedSystemsByFaction.put(factionId, new HashSet<LocationAPI>());
 			
 			if (NexUtilsFaction.isPirateFaction(factionId))
@@ -1583,7 +1590,7 @@ public class ExerelinProcGen {
 
 				if (pirateFactions.contains(alignedFactionId))
 					systemsWithPirates.add(homeworld.starSystem);
-				factionPlanetCount.put(alignedFactionId, 1);
+				NexUtils.modifyMapEntry(factionPlanetCount, alignedFactionId, 1);
 
 				existingHQs.add(homeworld);
 				existingHQsByFaction.put(alignedFactionId, homeworld);
@@ -1598,7 +1605,7 @@ public class ExerelinProcGen {
 		if (antioch && factionIds.contains("templars"))
 		{
 			addAntiochPart2(sector);
-			factionPlanetCount.put(alignedFactionId, 1);
+			NexUtils.modifyMapEntry(factionPlanetCount,"templars", 1);
 		}
 		
 		Collections.sort(populatedPlanetsCopy, DESIRABILITY_COMPARATOR);
@@ -1618,6 +1625,7 @@ public class ExerelinProcGen {
 		for (String factionId : factions)
 		{
 			if (factionId.equals(alignedFactionId)) continue;
+			if (factionPlanetCount.get(factionId) > 0) continue;	// faction that spawns its own planets even in random sector
 			if (populatedPlanetsCopy.size() <= 0) {
 				log.info("No populated planets remaining, break");
 				break;
@@ -1636,7 +1644,7 @@ public class ExerelinProcGen {
 			
 			if (pirateFactions.contains(factionId))
 				systemsWithPirates.add(hq.starSystem);
-			factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
+			NexUtils.modifyMapEntry(factionPlanetCount, factionId, 1);
 			
 			unassignedEntities.remove(hq);
 			existingHQs.add(hq);
@@ -1674,13 +1682,13 @@ public class ExerelinProcGen {
 				{
 					marketSetup.initMarket(entity, factionId);
 					populatedPlanetsCopy.remove(entity);
-					factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
+					NexUtils.modifyMapEntry(factionPlanetCount, factionId, 1);
 				}
 				else
 				{
 					createStation(entity, factionId, true);
 					stationsCopy.remove(entity);
-					factionStationCount.put(factionId, factionStationCount.get(factionId) + 1);
+					NexUtils.modifyMapEntry(factionStationCount, factionId, 1);
 				}
 				toRemove.add(entity);
 				systemsWithPirates.add(entity.starSystem);
@@ -1689,7 +1697,7 @@ public class ExerelinProcGen {
 			unassignedEntities.removeAll(toRemove);
 		}
 		
-		// assign remaining planets
+		// assign remaining planets, with shares based on spawn weight
 		Map<String, Float> factionShare = new HashMap<>();
 		float totalShare = 0;
 		for (String factionId : factions) {
@@ -1709,7 +1717,7 @@ public class ExerelinProcGen {
 		int remainingPlanets = populatedPlanetsCopy.size();
 		for (String factionId : factions) {
 			int numPlanets = (int)(remainingPlanets * (factionShare.get(factionId)/totalShare) + 0.5);
-			for (int i=factionPlanetCount.get(factionId);i<numPlanets;i++)
+			for (int i=factionPlanetCount.get(factionId); i<numPlanets; i++)
 			{
 				if (populatedPlanetsCopy.isEmpty()) break;
 				
@@ -1718,14 +1726,16 @@ public class ExerelinProcGen {
 				populatedPlanetsCopy.remove(habitable);
 				unassignedEntities.remove(habitable);
 				marketSetup.initMarket(habitable, factionId);
-				factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
+				NexUtils.modifyMapEntry(factionPlanetCount, factionId, 1);
 				
 				populatedSystemsByFaction.get(factionId).add(habitable.starSystem);
 			}
-			if (populatedPlanetsCopy.isEmpty()) break;
+			if (populatedPlanetsCopy.isEmpty()) {
+				break;
+			}
 		}
 		
-		// dole out any unassigned planets
+		// dole out any unassigned planets at random, with Tetris rotation for factions
 		for (ProcGenEntity planet : populatedPlanetsCopy)
 		{
 			if (planet.market != null && !planet.market.isPlanetConditionMarketOnly())
@@ -1747,14 +1757,14 @@ public class ExerelinProcGen {
 		int remainingStations = stationsCopy.size();
 		for (String factionId : factions) {
 			int numStations = (int)(remainingStations * (factionShare.get(factionId)/totalShare) + 0.5);
-			for (int i=factionStationCount.get(factionId);i<numStations;i++)
+			for (int i=factionStationCount.get(factionId); i<numStations; i++)
 			{
 				ProcGenEntity station = pickMarketCloseToHQ(factionId, stationsCopy, 
 						existingHQsByFaction.get(factionId), populatedSystemsByFaction.get(factionId));
 				stationsCopy.remove(station);
 				unassignedEntities.remove(station);
 				createStation(station, factionId, true);
-				factionStationCount.put(factionId, factionStationCount.get(factionId) + 1);
+				NexUtils.modifyMapEntry(factionStationCount, factionId, 1);
 				populatedSystemsByFaction.get(factionId).add(station.starSystem);
 				
 				if (stationsCopy.isEmpty()) break;
