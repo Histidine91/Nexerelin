@@ -1056,6 +1056,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		// TODO: in future, use the showCore override that takes an object arg
 		//Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
 		//FireAll.fire(null, dialogF, memMapF, "PopulateOptions");
+		cleanupResponder();
 		
 		if (true) {
 			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, new CoreInteractionListener(){
