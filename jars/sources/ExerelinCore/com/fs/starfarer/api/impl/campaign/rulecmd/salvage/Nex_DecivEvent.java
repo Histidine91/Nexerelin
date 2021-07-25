@@ -105,6 +105,10 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		takePicker.add(Commodities.DOMESTIC_GOODS, 1.25f);
 	}
 	
+	static {
+		reloadPickers();
+	}
+	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
@@ -515,6 +519,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		String commodityTake = Commodities.FUEL;
 		String commodityGive = null;
 		do {
+			if (takePicker.isEmpty()) reloadPickers();
 			commodityGive = takePicker.pick();
 		} while (commodityGive == null || commodityGive.equals(commodityTake)
 				|| commodityGive.equals(Commodities.CREW));
