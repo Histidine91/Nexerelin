@@ -67,7 +67,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected FactionAPI faction;
 	protected Set<Specialization> specializations = new HashSet<>();
 	protected List<CovertActionIntel> actionQueue = new LinkedList<>();
-	//@Deprecated protected CovertActionIntel currentAction, nextAction;
+	@Deprecated protected CovertActionIntel currentAction, nextAction;
 	protected CovertActionIntel lastAction;
 	protected int level;
 	protected int xp;
@@ -92,6 +92,12 @@ public class AgentIntel extends BaseIntelPlugin {
 	
 	protected Object readResolve() {
 		if (specializations == null) specializations = new HashSet<>();
+		
+		if (actionQueue == null) {
+			actionQueue = new LinkedList<>();
+			if (currentAction != null) actionQueue.add(currentAction);
+			if (nextAction != null) actionQueue.add(nextAction);
+		}
 		return this;
 	}
 	
@@ -216,6 +222,8 @@ public class AgentIntel extends BaseIntelPlugin {
 		*/
 		if (actionQueue.isEmpty()) return;
 		actionQueue.remove(0);
+		if (actionQueue.isEmpty()) return;
+		actionQueue.get(0).activate();
 	}
 	
 	protected void removeActionFromQueue(CovertActionIntel action) {
