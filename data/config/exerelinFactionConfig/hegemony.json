@@ -8,6 +8,8 @@
 
     "startRelationships":{ "tritachyon": -0.3, "persean":-0.6 },
 	"maxRelationships":{ "remnant":-0.51 },
+	"diplomacyPositiveChance":{ "persean":0.8 },
+    "diplomacyNegativeChance":{ "persean":1.2 },
     
     "alignments":{
         "technocratic":-0.5,
