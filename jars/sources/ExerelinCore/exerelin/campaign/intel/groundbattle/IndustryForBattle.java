@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IconRenderMode;
@@ -23,6 +22,7 @@ import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,6 +56,7 @@ public class IndustryForBattle {
 		
 	protected Vector2f posOnMap;
 	protected transient Vector2f posOnMapGraphical;
+	protected transient Rectangle rectangle;
 
 	public IndustryForBattle(GroundBattleIntel intel, Industry ind) {
 		this.intel = intel;
@@ -128,8 +129,16 @@ public class IndustryForBattle {
 		return posOnMapGraphical;
 	}
 	
+	public Rectangle getRectangle() {
+		if (rectangle == null) 
+			rectangle = new Rectangle((int)posOnMap.x, (int)posOnMap.y, 
+					(int)MarketMapDrawer.getIndustryPanelWidth(), (int)MarketMapDrawer.getIndustryPanelHeight());
+		return rectangle;
+	}
+	
 	public void setPosOnMap(Vector2f pos) {
 		posOnMap = pos;
+		rectangle = null;
 		setPosOnMapGraphical();
 	}
 	
@@ -255,8 +264,7 @@ public class IndustryForBattle {
 		troops.addIconGroup(40, pad);
 		
 		boolean detailed = intel.playerIsAttacker != null && intel.playerIsAttacker == attacker;
-		troops.addTooltipToPrevious(detailed ? generateForceTooltipDetailed(attacker) 
-				: generateForceTooltip(strengths), TooltipLocation.BELOW);
+		troops.addTooltipToPrevious(generateForceTooltip(attacker, detailed ? 360 : 160), TooltipLocation.BELOW);
 		
 		// strength
 		float strength = getStrength(attacker);
@@ -451,8 +459,7 @@ public class IndustryForBattle {
 		iconGroupHolder.addIconGroup(height, 0);
 		
 		boolean detailed = intel.playerIsAttacker != null && intel.playerIsAttacker == attacker;
-		iconGroupHolder.addTooltipToPrevious(detailed ? generateForceTooltipDetailed(attacker) 
-				: generateForceTooltip(strengths), TooltipLocation.BELOW);
+		iconGroupHolder.addTooltipToPrevious(generateForceTooltip(attacker, detailed ? 360 : 160), TooltipLocation.BELOW);
 		troops.addUIElement(iconGroupHolder).rightOfTop(iconHolder, 4);
 						
 		return troops;
@@ -540,15 +547,38 @@ public class IndustryForBattle {
 		return box;
 	}
 	
-	public TooltipCreator generateForceTooltip(final Map<ForceType, Float> strengths) {
+	public TooltipCreator generateForceTooltip(final boolean isAttacker, final float width) {
 		return new TooltipCreator() {
 			public boolean isTooltipExpandable(Object tooltipParam) {
 				return false;
 			}
 			public float getTooltipWidth(Object tooltipParam) {
-				return 160;	// FIXME magic number
+				return width;
 			}
 			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+				
+				Map<ForceType, Float> strengths = new HashMap<>();
+				
+				// calc strengths of non-player units
+				for (GroundUnit unit : units) {
+					if (unit.isPlayer) continue;
+					if (unit.isAttacker != isAttacker) continue;
+					NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
+				}			
+				
+				// player units
+				for (GroundUnit unit : units) {
+					if (!unit.isPlayer) continue;
+					if (unit.isAttacker != isAttacker) continue;
+					String str = unit.toString() + ": " + GroundBattleIntel.getString("industryPanel_tooltipUnitInfo");
+					String atk = (int)unit.getAttackStrength() + "";
+					String mor = StringHelper.toPercent(unit.getMorale());
+					LabelAPI label = tooltip.addPara(str, 0, Color.white, atk, mor);
+					label.setHighlight(atk, mor);
+					label.setHighlightColors(Misc.getHighlightColor(), GroundUnit.getMoraleColor(unit.morale));
+				}
+				
+				// non-player units
 				List<ForceType> keys = new ArrayList<>(strengths.keySet());
 				Collections.sort(keys);
 				for (ForceType type : keys) {
@@ -557,30 +587,6 @@ public class IndustryForBattle {
 					String displayNum = String.format("%.1f", val);
 					tooltip.addPara(tooltipStr, 0f, Misc.getHighlightColor(), displayNum);
 				}
-			}
-		};
-	}
-	
-	public TooltipCreator generateForceTooltipDetailed(final boolean attacker) {
-		return new TooltipCreator() {
-			public boolean isTooltipExpandable(Object tooltipParam) {
-				return false;
-			}
-			public float getTooltipWidth(Object tooltipParam) {
-				return 360;	// FIXME magic number
-			}
-			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-				tooltip.setBulletedListMode(" - ");
-				for (GroundUnit unit : units) {
-					if (unit.isAttacker != attacker) continue;
-					String str = unit.toString() + ": " + GroundBattleIntel.getString("industryPanel_tooltipUnitInfo");
-					String atk = (int)unit.getAttackStrength() + "";
-					String mor = StringHelper.toPercent(unit.getMorale());
-					LabelAPI label = tooltip.addPara(str, 0, Color.white, atk, mor);
-					label.setHighlight(atk, mor);
-					label.setHighlightColors(Misc.getHighlightColor(), GroundUnit.getMoraleColor(unit.morale));
-				}
-				tooltip.setBulletedListMode(null);
 			}
 		};
 	}

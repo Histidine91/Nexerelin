@@ -1,14 +1,12 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.PositionAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
@@ -18,9 +16,12 @@ import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.rectanglepacker.Packer;
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
@@ -33,11 +34,14 @@ public class MarketMapDrawer {
 	/*
 	TODO:
 	draw arrows for last turn's enemy movements and this turn's player movements
-	Implement location distribution
 	*/
+	
+	public static final boolean DEBUG_MODE = false;
 	
 	public static final float INDUSTRY_PANEL_BASE_WIDTH = 340;
 	public static final float INDUSTRY_PANEL_BASE_HEIGHT = 190;
+	
+	public static Logger log = Global.getLogger(MarketMapDrawer.class);
 	
 	protected float width;
 	protected GroundBattleIntel intel;
@@ -87,7 +91,7 @@ public class MarketMapDrawer {
 		List<IndustryForBattle> industries = intel.getIndustries();
 		List<Rectangle> rects = new ArrayList<>();
 		for (IndustryForBattle ifb : industries) {
-			if (ifb.getPosOnMap() == null) {
+			if (DEBUG_MODE || ifb.getPosOnMap() == null) {
 				rects = new MapLocationGenV2().generateLocs(industries, width);
 				//panelPlugin.debugRects = rects;
 				//Global.getLogger(this.getClass()).info("lol " + rects.size());
@@ -141,28 +145,33 @@ public class MarketMapDrawer {
 		
 		public void drawArrow(GroundUnit unit, IndustryForBattle from, IndustryForBattle to, boolean prevTurn) 
 		{
-			if (true) return;
-			
 			float x = pos.getX();
 			float y = pos.getY();
 			Color color = unit.getFaction().getBaseUIColor();
+						
 			if (prevTurn) {
 				GL11.glColor4f(color.getRed()/255, color.getGreen()/255, color.getBlue()/255, 0.4f);
-				GL11.glLineWidth(2);
+				GL11.glLineWidth(1);
 			} else {
 				GL11.glColor4f(color.getRed()/255, color.getGreen()/255, color.getBlue()/255, 0.6f);
-				GL11.glLineWidth(3);
+				GL11.glLineWidth(1);
 			}
 			
 			Vector2f vFrom = from.getGraphicalPosOnMap();
 			Vector2f vTo = to.getGraphicalPosOnMap();
 			float height = map.width/2;
 			
+			Vector2f col1 = getCollisionPoint(vFrom, vTo, from.getRectangle());
+			Vector2f col2 = getCollisionPoint(vFrom, vTo, to.getRectangle());
+			
+			if (col1 == null || col2 == null)
+				return;
+			
 			// TODO: add the damn arrowhead
 			// also figure out a way to antialias this
 			GL11.glBegin(GL11.GL_LINES);
-			GL11.glVertex2f(vFrom.x + x, height-vFrom.y + y);
-			GL11.glVertex2f(vTo.x + x, height-vTo.y + y);
+			GL11.glVertex2f(col1.x + x, height-col1.y + y);
+			GL11.glVertex2f(col2.x + x, height-col2.y + y);
 			GL11.glEnd();
 			
 			GL11.glColor4f(1, 1, 1, 1);
@@ -195,14 +204,33 @@ public class MarketMapDrawer {
 			
 			String spriteId = this.bg != null? this.bg : map.intel.getMarket().getContainingLocation().getBackgroundTextureFilename();
 			
+			try {
+				Global.getSettings().loadTexture(spriteId);
+			} catch (IOException ex) {};
 			SpriteAPI bgSprite = Global.getSettings().getSprite(spriteId);
-			bgSprite.setSize(w-4, h-4);
-			if (this.bg == null) {
-				//bgSprite.setTexWidth(w-4);
-				//bgSprite.setTexHeight(h-4);
+			float drawW = w-4;
+			float drawH = h-2;
+			if (bg == null) {
+				// FIXME: this distorts the background
+				// but I have absolutely no idea how renderRegionAtCenter is supposed to work
+				bgSprite.setSize(drawW, drawH);
+				bgSprite.renderAtCenter(x + w/2, y + h/2);
+				
+				/*
+				bgSprite.renderRegionAtCenter(x + w/2, y + h/2,
+							(bgSprite.getTextureWidth()-drawW)/2,
+							(bgSprite.getTextureHeight()-drawH)/2,
+							drawW, drawH
+						);
+				*/
+				//bgSprite.renderRegion(x, y,0, 0, 512, 512);
 			}
-			bgSprite.renderAtCenter(x + w/2, y + h/2);
-						
+			else {
+				bgSprite.setSize(drawW, drawH);
+				bgSprite.renderAtCenter(x + w/2, y + h/2);
+			}
+			
+			
 			for (GroundUnit unit : map.intel.getMovedFromLastTurn().keySet()) {
 				IndustryForBattle prev = map.intel.getMovedFromLastTurn().get(unit);
 				IndustryForBattle curr = unit.getLocation();
@@ -488,4 +516,47 @@ public class MarketMapDrawer {
 			return new int[]{a, b};
 		}
 	}
+	
+	public static List<Pair<Vector2f, Vector2f>> getRectangleSides(Rectangle rect) {
+		Vector2f tl = new Vector2f(rect.x, rect.y);
+		Vector2f tr = new Vector2f(rect.x + rect.width, rect.y);
+		Vector2f bl = new Vector2f(rect.x, rect.y + rect.height);
+		Vector2f br = new Vector2f(rect.x + rect.width, rect.y + rect.height);
+		ArrayList<Pair<Vector2f, Vector2f>> result = new ArrayList<>();
+		result.add(new Pair<>(tl, tr));
+		result.add(new Pair<>(tr, br));
+		result.add(new Pair<>(br, bl));
+		result.add(new Pair<>(bl, tl));
+		
+		return result;
+	}
+	
+	public static Vector2f getCollisionPoint(Vector2f lineStart,
+                                             Vector2f lineEnd, Rectangle rect)
+    {
+        Vector2f closestIntersection = null;
+		List<Pair<Vector2f, Vector2f>> sides = getRectangleSides(rect);
+		
+        for (Pair<Vector2f, Vector2f> side : sides)
+        {
+            Vector2f intersection = CollisionUtils.getCollisionPoint(lineStart, lineEnd, side.one, side.two);
+            // Collision = true
+            if (intersection != null)
+            {
+                if (closestIntersection == null)
+                {
+                    closestIntersection = new Vector2f(intersection);
+                }
+                else if (MathUtils.getDistanceSquared(lineStart, intersection)
+                        < MathUtils.getDistanceSquared(lineStart, closestIntersection))
+                {
+                    closestIntersection.set(intersection);
+                }
+            }
+        }
+
+        // Null if no segment was hit
+        // FIXME: Lines completely within bounds return null (would affect custom fighter weapons)
+       return closestIntersection;
+    }
 }

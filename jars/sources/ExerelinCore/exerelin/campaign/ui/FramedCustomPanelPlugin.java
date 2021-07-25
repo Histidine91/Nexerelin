@@ -74,9 +74,9 @@ public class FramedCustomPanelPlugin implements CustomUIPanelPlugin {
 				GL11.glVertex2f(points[index+2] + x, points[index+3] + y);
 				GL11.glVertex2f(points[index+4] + x, points[index+5] + y);
 			}
+			GL11.glEnd();
 		}		
 		
-		GL11.glEnd();
 		GL11.glPopMatrix();
 	}
 
