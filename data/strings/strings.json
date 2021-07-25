@@ -1790,7 +1790,7 @@
 		
 		"intelTitle":"Outpost",
 		"intelTitleLost":"lost",
-		"intelDesc":"You have an outpost $name in the $location. It serves as a location for stockpiling of supplies and fuel, and a temporary storage location for salvage.",
+		"intelDesc":"You have an outpost $name in the $location. It serves as a location for stockpiling of supplies and fuel, and a temporary storage location for salvage.\n\nStorage is free, the listed figure is not actually charged.",
 		"intelDescLost":"The outpost is no longer operational.",
 		"intelButtonScuttle":"scuttle",
 		"intelPromptScuttle":"This will remotely shut down the station. All cargo will be lost.\n\nContinue?",
@@ -1830,7 +1830,13 @@
 		"spoilsItemBlueprints":"blueprints",
 		"spoilsItemAICores":"AI cores",
 
-		"dialogConfirmText":"Your forces are ready to go, awaiting your final confirmation."
+		"dialogConfirmText":"Your forces are ready to go, awaiting your final confirmation.",
+		
+		"casualties":"Your forces have suffered casualties during the raid.",
+		"noCasualties":"Your forces have not suffered any casualties.",
+		
+		"recentlyRaided":"recently raided",
+		"recentlyRaidedByFaction":"%s raid",
 	},
 	"nex_rebellion":{
 		"intelTitle":"Rebellion: $market",

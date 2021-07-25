@@ -38,6 +38,7 @@ import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
+import com.fs.starfarer.api.impl.campaign.graid.GroundRaidObjectivePlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -58,8 +59,12 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.VIC_MarketCMD;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BOMBARD;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.ENGAGE;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.GO_BACK;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.HOSTILE_ACTIONS_TIMEOUT_DAYS;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RAID;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RAID_CONFIRM_CONTINUE;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.addBombardVisual;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.applyDefenderIncreaseFromRaid;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.applyRaidStabiltyPenalty;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDestroyThreshold;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSaturationBombardmentStabilityPenalty;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;
@@ -1949,6 +1954,187 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardVisual(market.getPrimaryEntity());
 		
 		addBombardContinueOption();
+	}
+	
+	public int applyRaidStabiltyPenaltyNex(MarketAPI target, String desc) {
+		int penalty = 0, min = 1;
+		RaidDangerLevel highestDanger = RaidDangerLevel.NONE;
+		for (GroundRaidObjectivePlugin obj : temp.objectives) {
+			penalty += obj.getMarinesAssigned();
+			if (obj.getDangerLevel().compareTo(highestDanger) > 0)
+				highestDanger = obj.getDangerLevel();
+		}
+		penalty /= 3;
+		switch (highestDanger) {
+			case EXTREME:
+				min = 3;
+				break;
+			case HIGH:
+				min = 2;
+				break;
+			case MEDIUM:
+			case LOW:
+				min = 1;
+				break;
+		}
+		if (penalty < min) penalty = min;
+		
+		if (penalty > 0) {
+			RecentUnrest.get(target).add(penalty, desc);
+		}
+		return penalty;
+	}
+	
+	// Changes from vanilla: Stability loss not be based on raid effectiveness, rather on number of marine icons and danger level
+	protected void raidConfirm(boolean secret) {
+		if (temp.raidType == null) {
+			raidNeverMind();
+			return;
+		}
+				
+		Random random = getRandom();
+		
+		if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+			Misc.increaseMarketHostileTimeout(market, HOSTILE_ACTIONS_TIMEOUT_DAYS);
+		}
+		
+		addMilitaryResponse();		
+		
+		if (market != null) {
+			applyDefenderIncreaseFromRaid(market);
+		}
+		
+		setRaidCooldown(getRaidCooldownMax());
+		
+		int stabilityPenalty = 0;
+		if (!temp.nonMarket) {
+			String reason = StringHelper.getString("nex_raidDialog", "recentlyRaided");
+			if (Misc.isPlayerFactionSetUp()) {
+				reason = String.format(StringHelper.getString("nex_raidDialog", "recentlyRaided"), playerFaction.getDisplayName());
+			}
+			reason = Misc.ucFirst(reason);
+			// MODIFIED
+			stabilityPenalty = applyRaidStabiltyPenaltyNex(market, reason);
+			Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), MemFlags.RECENTLY_RAIDED, 
+								   Factions.PLAYER, true, 30f);
+			Misc.setRaidedTimestamp(market);
+		}
+		
+		int marines = playerFleet.getCargo().getMarines();
+		float probOfLosses = 1f;
+		
+		int losses = 0;
+		if (random.nextFloat() < probOfLosses) {
+			float averageLosses = getAverageMarineLosses(temp.objectives);
+			float variance = averageLosses / 4f;
+			
+			//float randomizedLosses = averageLosses - variance + variance * 2f * random.nextFloat();
+			float randomizedLosses = StarSystemGenerator.getNormalRandom(
+							random, averageLosses - variance, averageLosses + variance);
+			if (randomizedLosses < 1f) {
+				randomizedLosses = random.nextFloat() < randomizedLosses ? 1f : 0f;
+			}
+			randomizedLosses = Math.round(randomizedLosses);
+			losses = (int) randomizedLosses;
+			
+			if (losses < 0) losses = 0;
+			if (losses > marines) losses = marines;
+		}
+		
+		//losses = random.nextInt(marines / 2);
+		
+		if (losses <= 0) {
+			text.addPara(StringHelper.getString("nex_raidDialog", "noCasualties"));
+			temp.marinesLost = 0;
+		} else {
+			text.addPara(StringHelper.getString("nex_raidDialog", "casualties"));
+			playerFleet.getCargo().removeMarines(losses);
+			temp.marinesLost = losses;
+			AddRemoveCommodity.addCommodityLossText(Commodities.MARINES, losses, text);
+		}
+		
+		
+		if (!secret) {
+			boolean tOn = playerFleet.isTransponderOn();
+			boolean hostile = faction.isHostileTo(Factions.PLAYER);
+			CustomRepImpact impact = new CustomRepImpact();
+			if (market != null) {
+				impact.delta = market.getSize() * -0.01f * 1f;
+			} else {
+				impact.delta = -0.01f;
+			}
+			if (!hostile && tOn) {
+				impact.ensureAtBest = RepLevel.HOSTILE;
+			}
+			if (impact.delta != 0 && !faction.isNeutralFaction()) {
+				Global.getSector().adjustPlayerReputation(
+						new RepActionEnvelope(RepActions.CUSTOM, 
+							impact, null, text, true, true),
+							faction.getId());
+			}
+		}
+		
+		if (stabilityPenalty > 0) {
+			String str = StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+					"effectStability", "$market", market.getName());
+			text.addPara(str, Misc.getHighlightColor(), "" + stabilityPenalty);
+		}
+		
+//		if (!temp.nonMarket) {
+//			if (temp.raidType == RaidType.VALUABLE || true) {
+//				text.addPara("The raid was successful in achieving its objectives.");
+//			}
+//		}
+		
+		CargoAPI result = performRaid(random, temp.raidMult);
+		
+		if (market != null) market.reapplyIndustries();
+		
+		result.sort();
+		result.updateSpaceUsed();
+		
+		temp.raidLoot = result;
+		
+//		int raidCredits = (int)result.getCredits().get();
+//		if (raidCredits < 0) raidCredits = 0;
+//		
+//		//result.clear();
+//		if (raidCredits > 0) {
+//			AddRemoveCommodity.addCreditsGainText(raidCredits, text);
+//			playerFleet.getCargo().getCredits().add(raidCredits);
+//		}
+		
+		if (temp.xpGained > 0) {
+			Global.getSector().getPlayerStats().addXP(temp.xpGained, dialog.getTextPanel());
+		}
+		if (temp.raidType == RaidType.VALUABLE) {
+			if (result.getTotalCrew() + result.getSpaceUsed() + result.getFuel() < 10) {
+				dialog.getVisualPanel().showImagePortion("illustrations", "raid_covert_result", 640, 400, 0, 0, 480, 300);
+			} else {
+				dialog.getVisualPanel().showImagePortion("illustrations", "raid_valuables_result", 640, 400, 0, 0, 480, 300);
+			}
+		} else if (temp.raidType == RaidType.DISRUPT) {
+			dialog.getVisualPanel().showImagePortion("illustrations", "raid_disrupt_result", 640, 400, 0, 0, 480, 300);
+		}
+		
+		boolean withContinue = false;
+		
+		for (GroundRaidObjectivePlugin curr : temp.objectives) {
+			if (curr.withContinueBeforeResult()) {
+				withContinue = true;
+				break;
+			}
+		}
+		
+//		if (market.getMemoryWithoutUpdate().getBoolean("$raid_showContinueBeforeResult"))
+//		withContinue = true;
+		
+		if (withContinue) {
+			options.clearOptions();
+			options.addOption(StringHelper.getString("continue", true), RAID_CONFIRM_CONTINUE);
+		} else {
+			raidConfirmContinue();
+		}
 	}
 	
 	@Override
