@@ -168,6 +168,9 @@ public class ColonyTargetValuator {
 		if (system.getMemoryWithoutUpdate().getBoolean(MEM_KEY_NO_COLONIZE))
 			return false;
 		
+		if (system.hasTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER))
+			return false;
+		
 		if (system.hasPulsar()) return false;
 		//if (system.isNebula()) return false;
 		if (system.getPlanets().isEmpty()) return false;
@@ -213,6 +216,10 @@ public class ColonyTargetValuator {
 			return false;
 		}
 		if (market.getMemoryWithoutUpdate().getBoolean(MEM_KEY_NO_COLONIZE)) {
+			return false;
+		}
+		
+		if (market.getPrimaryEntity().hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) {
 			return false;
 		}
 		
