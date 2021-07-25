@@ -9,3 +9,4 @@ aiCore_station,AI Core (Orbital Station),exerelin.world.industry.bonus.AICoreSta
 aiCore_other,AI Core (Other),exerelin.world.industry.bonus.AICoreOther,
 aiCore_any,AI Core (Any),exerelin.world.industry.bonus.AICoreAny,
 population_upsize,Population Upsize,exerelin.world.industry.bonus.PopulationUpsize,
+vic_soil_nanites2,Transfiguration Solutions,exerelin.world.industry.vic.SoilNanites2,vic

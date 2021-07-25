@@ -21,3 +21,6 @@ IndEvo_dryDock,Restoration Docks,exerelin.world.industry.deconomics.RestorationD
 IndEvo_Academy,Academy,exerelin.world.industry.deconomics.Academy,,TRUE,IndEvo,
 IndEvo_senate,Senate,exerelin.world.industry.deconomics.Senate,,TRUE,IndEvo,
 IndEvo_ReqCenter,Requisitions Center,exerelin.world.industry.deconomics.RequisitionsCenter,,TRUE,IndEvo,
+victourism,Trade & Tourism,exerelin.world.industry.vic.Tourism,,TRUE,vic,
+vicbiolabs,Bio Research Complex,exerelin.world.industry.vic.BioLabs,,TRUE,vic,
+vic_revCenter,VIC Revitalization Center,exerelin.world.industry.vic.RevCenter,,TRUE,vic,
