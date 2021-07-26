@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import com.fs.starfarer.prototype.Utils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
@@ -23,6 +24,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -149,14 +151,6 @@ public class MarketMapDrawer {
 			float y = pos.getY();
 			Color color = unit.getFaction().getBaseUIColor();
 						
-			if (prevTurn) {
-				GL11.glColor4f(color.getRed()/255, color.getGreen()/255, color.getBlue()/255, 0.4f);
-				GL11.glLineWidth(1);
-			} else {
-				GL11.glColor4f(color.getRed()/255, color.getGreen()/255, color.getBlue()/255, 0.6f);
-				GL11.glLineWidth(1);
-			}
-			
 			Vector2f vFrom = from.getGraphicalPosOnMap();
 			Vector2f vTo = to.getGraphicalPosOnMap();
 			float height = map.width/2;
@@ -167,15 +161,13 @@ public class MarketMapDrawer {
 			if (col1 == null || col2 == null)
 				return;
 			
-			// TODO: add the damn arrowhead
-			// also figure out a way to antialias this
-			GL11.glBegin(GL11.GL_LINES);
-			GL11.glVertex2f(col1.x + x, height-col1.y + y);
-			GL11.glVertex2f(col2.x + x, height-col2.y + y);
-			GL11.glEnd();
-			
-			GL11.glColor4f(1, 1, 1, 1);
-			GL11.glLineWidth(1);
+			// panel coordinates to screen coordinates
+			col1.x += x; 
+			col1.y = height - col1.y + y;
+			col2.x += x; 
+			col2.y = height - col2.y + y;
+						
+			renderArrow(col1, col2, 10, color, 0.4f);
 		}
 		
 		public void drawDebugRect(Rectangle r) {
@@ -429,94 +421,7 @@ public class MarketMapDrawer {
 			return new Vector2f(x, y);
 		}
 	}
-	
-	/**
-	 * Generates a semi-random location on the map for each of the industries.
-	 * This is terrible, get a proper rectangle packing algorithm instead.
-	 */
-	@Deprecated
-	public static class MapLocationGen {
 		
-		public float rectWidth, rectHeight;
-		public float mapWidth, mapHeight;
-		public float cellWidth, cellHeight;
-		
-		public int numColumns, numRows;
-		//public int firstRowIndex, firstColIndex;
-		public int firstUsedRowIndex, lastUsedRowIndex, firstUsedColIndex, lastUsedColIndex;
-		
-		public MapLocationGen(float mapWidth, float mapHeight, float rectWidth, float rectHeight) {
-			this.mapWidth = mapWidth;
-			this.mapHeight = mapHeight;
-			this.rectWidth = rectWidth;
-			this.rectHeight = rectHeight;
-		}
-		
-		/**
-		 * Sets the map positions of each industry on the map.
-		 * @param industries
-		 */
-		public void assign(List<IndustryForBattle> industries) {
-			numColumns = Math.max(2, (int)(mapWidth/(rectWidth * 1.1f)));
-			numRows = (int)(mapHeight/(rectHeight * 1.5f));
-			
-			cellWidth = (float)Math.floor(mapWidth/numColumns);
-			cellHeight = (float)Math.floor(mapHeight/numRows);
-			
-			//firstRowIndex = -numRows/2;
-			//firstColIndex = -numColumns/2;
-			
-			int[] numUsedCells = getUsedCellCounts(industries.size());
-			
-			firstUsedRowIndex = -numUsedCells[1]/2;
-			lastUsedRowIndex = numUsedCells[1] + firstUsedRowIndex - 1;
-			firstUsedColIndex = -numUsedCells[0]/2;
-			lastUsedColIndex = numUsedCells[0] + firstUsedColIndex - 1;
-			
-			Global.getLogger(this.getClass()).info(String.format("First row: %s, last row: %s", firstUsedRowIndex, lastUsedRowIndex));
-			Global.getLogger(this.getClass()).info(String.format("First col: %s, last col: %s", firstUsedColIndex, lastUsedColIndex));
-			
-			WeightedRandomPicker<Integer[]> picker = new WeightedRandomPicker<>();
-			for (int i=firstUsedColIndex; i<=lastUsedColIndex; i++) {
-				for (int j=firstUsedRowIndex; j<=lastUsedRowIndex; j++) {
-					Global.getLogger(this.getClass()).info("Adding cell: " + i + ", " + j);
-					picker.add(new Integer[] {i, j});
-				}
-			}
-			for (IndustryForBattle ifb : industries) {
-				Integer[] pos = picker.pickAndRemove();
-				Global.getLogger(this.getClass()).info("Picked cell: " + pos[0] + ", " + pos[1]);
-				float x = pos[0] * cellWidth;
-				float y = pos[1] * cellHeight;
-				x += mapWidth/2;
-				y += mapHeight/2;
-				
-				float xVar = cellWidth - rectWidth;
-				float yVar = cellHeight - rectHeight;
-				x += Math.random() * xVar;
-				y += Math.random() * yVar;
-				
-				x = (int)x;
-				y = (int)y;
-				
-				Global.getLogger(this.getClass()).info(String.format("%s location on map: %s, %s", ifb.getName(), x, y));
-				ifb.setPosOnMap(new Vector2f(x, y));
-			}
-		}
-		
-		public int[] getUsedCellCounts(int numIndustries) {
-			int a = 1, b = 1;
-			boolean incrementRows = false;
-			while (a * b < numIndustries) {
-				if (incrementRows) a++;
-				else b++;
-				incrementRows = !incrementRows;
-			}
-			//Global.getLogger(this.getClass()).info(a + ", " + b);
-			return new int[]{a, b};
-		}
-	}
-	
 	public static List<Pair<Vector2f, Vector2f>> getRectangleSides(Rectangle rect) {
 		Vector2f tl = new Vector2f(rect.x, rect.y);
 		Vector2f tr = new Vector2f(rect.x + rect.width, rect.y);
@@ -531,6 +436,7 @@ public class MarketMapDrawer {
 		return result;
 	}
 	
+	// Adapted from LazyLib's CollisionUtils
 	public static Vector2f getCollisionPoint(Vector2f lineStart,
                                              Vector2f lineEnd, Rectangle rect)
     {
@@ -559,4 +465,93 @@ public class MarketMapDrawer {
         // FIXME: Lines completely within bounds return null (would affect custom fighter weapons)
        return closestIntersection;
     }
+	
+	// from base game code: https://fractalsoftworks.com/forum/index.php?topic=5061.msg336833#msg336833
+	protected static SpriteAPI texture = Global.getSettings().getSprite("graphics/hud/line32x32.png");
+	protected static void renderArrow(Vector2f from, Vector2f to, float startWidth, Color color, float maxAlpha) {
+		float dist = MathUtils.getDistance(from, to);
+		Vector2f dir = Vector2f.sub(from, to, new Vector2f());
+		if (dir.x != 0 || dir.y != 0) {
+			dir.normalise();
+		} else {
+			return;
+		}
+		float arrowHeadLength = Math.min(startWidth * 0.4f * 3f, dist * 0.5f);
+		dir.scale(arrowHeadLength);
+		Vector2f arrowEnd = Vector2f.add(to, dir, new Vector2f());
+		
+		// main body of the arrow
+		renderFan(from.x, from.y, arrowEnd.x, arrowEnd.y, startWidth, startWidth * 0.4f, color,
+				//0f, maxAlpha * 0.5f, maxAlpha);
+				maxAlpha * 0.2f, maxAlpha * 0.67f, maxAlpha);
+		// arrowhead, tapers to a width of 0
+		renderFan(arrowEnd.x, arrowEnd.y, to.x, to.y, startWidth * 0.4f * 3f, 0f, color,
+				maxAlpha, maxAlpha, maxAlpha);
+	}
+	
+	
+	protected static void renderFan(float x1, float y1, float x2, float y2, float startWidth, float endWidth, Color color, float edge1, float mid, float edge2) {
+		//HudRenderUtils.renderFan(texture, x1, y1, x2, y2, startWidth, endWidth, color, edge1, mid, edge2, false);
+		edge1 *= 0.4f;
+		edge2 *= 0.4f;
+		mid *= 0.4f;
+		boolean additive = true;
+		//additive = false;
+		renderFan(texture, x1, y1, x2, y2, startWidth, endWidth, color, edge1, mid, edge2, additive);
+		renderFan(texture, x1 + 0.5f, y1 + 0.5f, x2 + 0.5f, y2 + 0.5f, startWidth, endWidth, color, edge1, mid, edge2, additive);
+		renderFan(texture, x1 - 0.5f, y1 - 0.5f, x2 - 0.5f, y2 - 0.5f, startWidth, endWidth, color, edge1, mid, edge2, additive);
+	}
+	
+	public static void renderFan(SpriteAPI texture, float x1, float y1, float x2, float y2, 
+			float startWidth, float endWidth, Color color, 
+			float edge1, float mid, float edge2, boolean additive) {
+
+		GL11.glPushMatrix();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
+		texture.bindTexture();
+		
+		GL11.glEnable(GL11.GL_BLEND);
+		if (additive) {
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		} else {
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		}
+
+		Vector2f v1 = new Vector2f(x2 - x1, y2 - y1);
+		v1.normalise();
+		v1.set(v1.y, -v1.x);
+		Vector2f v2 = new Vector2f(v1);
+		v1.scale(startWidth * 0.5f);
+		v2.scale(endWidth * 0.5f);
+
+		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+		{
+			// center
+			GL11.glColor4ub((byte)color.getRed(), (byte)color.getGreen(), (byte)color.getBlue(), (byte)((float)color.getAlpha() * mid));
+			GL11.glTexCoord2f(0.5f, 0.5f);
+			GL11.glVertex2f((x2 + x1) * 0.5f, (y2 + y1) * 0.5f);
+			
+			// start
+			GL11.glColor4ub((byte)color.getRed(), (byte)color.getGreen(), (byte)color.getBlue(), (byte)((float)color.getAlpha() * edge1));
+			GL11.glTexCoord2f(0, 0);
+			GL11.glVertex2f(x1 - v1.x, y1 - v1.y);
+			GL11.glTexCoord2f(0, 1);
+			GL11.glVertex2f(x1 + v1.x, y1 + v1.y);
+			
+			// end
+			GL11.glColor4ub((byte)color.getRed(), (byte)color.getGreen(), (byte)color.getBlue(), (byte)((float)color.getAlpha() * edge2));
+			GL11.glTexCoord2f(1, 1);
+			GL11.glVertex2f(x2 + v2.x, y2 + v2.y);
+			GL11.glTexCoord2f(1, 0);
+			GL11.glVertex2f(x2 - v2.x, y2 - v2.y);
+			
+			// wrap back around to start
+			GL11.glColor4ub((byte)color.getRed(), (byte)color.getGreen(), (byte)color.getBlue(), (byte)((float)color.getAlpha() * edge1));
+			GL11.glTexCoord2f(0, 0);
+			GL11.glVertex2f(x1 - v1.x, y1 - v1.y);
+		}
+		GL11.glEnd();
+		GL11.glPopMatrix();
+	}
 }
