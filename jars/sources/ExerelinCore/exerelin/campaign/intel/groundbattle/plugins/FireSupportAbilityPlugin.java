@@ -70,14 +70,16 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			ind.setDisrupted(disruptTime + ind.getDisruptedDays(), true);
 		}
 		
-		Color h = Misc.getHighlightColor();
-		dialog.getTextPanel().setFontSmallInsignia();
-		dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result1"), 
-				h, Math.round(damage) + "", numEnemies + "");
-		
-		if (enemyHeld) {
-			dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result2"), 
-				h, target.getName(), (int)disruptTime + "");
+		if (dialog != null) {
+			Color h = Misc.getHighlightColor();
+			dialog.getTextPanel().setFontSmallInsignia();
+			dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result1"), 
+					h, Math.round(damage) + "", numEnemies + "");
+
+			if (enemyHeld) {
+				dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result2"), 
+					h, target.getName(), (int)disruptTime + "");
+			}
 		}
 		
 		if (user.isPlayer()) {
@@ -86,7 +88,8 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		
 		getIntel().reapply();
 		
-		dialog.getTextPanel().setFontInsignia();
+		if (dialog != null)
+			dialog.getTextPanel().setFontInsignia();
 	}
 
 	@Override
