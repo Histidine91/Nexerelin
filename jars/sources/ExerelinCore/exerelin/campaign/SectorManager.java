@@ -71,6 +71,7 @@ import exerelin.utilities.NexUtilsAstro;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -197,7 +198,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public void advance(float amount)
     {
         if (TutorialMissionIntel.isTutorialInProgress()) 
-			return;
+            return;
         
         if (respawnFactions){
             NexUtils.advanceIntervalDays(respawnIntervalUtil, amount);
@@ -225,7 +226,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             String str = String.format("Despawning fleet %s in %s: %s", fleet.getNameWithFactionKeepCase(), fleet.getContainingLocation().getNameWithLowercaseType(),
                     reason);
             
-            Global.getSector().getCampaignUI().addMessage(str);
+            //Global.getSector().getCampaignUI().addMessage(str);
         }
     }
     
@@ -1007,7 +1008,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // must have at least 51% of total market size, and be twice as big as runner-up
         if (sizeRanked.isEmpty()) return null;
         
-        sizeRanked.sort(victoryComparator);
+        Collections.sort(sizeRanked, victoryComparator);
         Pair<Object, Integer> leader = sizeRanked.get(0);
         int runnerup = 0;
         if (sizeRanked.size() >= 2) runnerup = sizeRanked.get(1).two;

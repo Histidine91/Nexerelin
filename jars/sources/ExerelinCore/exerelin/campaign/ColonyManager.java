@@ -494,6 +494,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		
 		if (wantedLevel > currLevel) {
+			log.info(String.format("Wanted VIC EVC level %s, current %s", wantedLevel, currLevel));
 			if (ind != null) ind.startUpgrading();
 			else {
 				market.addIndustry("vic_antiEVCt1");
