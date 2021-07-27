@@ -4,8 +4,14 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
+import com.fs.starfarer.api.util.Misc;
+import static exerelin.campaign.abilities.FollowMeAbility.BUSY_REASON;
+import static exerelin.campaign.abilities.FollowMeAbility.FOLLOW_DURATION_PASSIVE;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.utilities.StringHelper;
@@ -39,9 +45,45 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			return;
 		}
 		
+		checkPlayerInterrogate();
+		
 		if (fleet.getCurrentAssignment() == null) {
 			pickNext();
 		}
+	}
+	
+	/**
+	 * When having defend vs. player assignments, special task groups will try to interrogate player if seen with transponder off.
+	 * @return
+	 */
+	protected boolean checkPlayerInterrogate() {
+		MemoryAPI mem = fleet.getMemoryWithoutUpdate();
+		if (mem.contains(MemFlags.FLEET_BUSY)) return false;
+		if (mem.contains(MemFlags.MEMORY_KEY_PURSUE_PLAYER)) return false;
+		
+		SpecialForcesTask task = intel.routeAI.currentTask;
+		if (task == null) return false;
+		if (task.type != TaskType.DEFEND_VS_PLAYER) return false;
+		
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		if (playerFleet == null) return false;
+		
+		/*
+		FleetAssignmentDataAPI assign = fleet.getCurrentAssignment();
+		if (fleet.getCurrentAssignment() != null) {
+			if (assign.getAssignment() == FleetAssignment.INTERCEPT && assign.getTarget() == playerFleet)
+				return false;
+		}
+		*/
+		
+		if (fleet.getContainingLocation() != playerFleet.getContainingLocation()) return false;
+		if (!playerFleet.isVisibleToSensorsOf(fleet)) return false;
+		
+		Global.getLogger(this.getClass()).info(fleet.getName() + " moving to interrogate player");
+		
+		Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_sfInterrogatePlayer", true, 2);
+		Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_STICK_WITH_PLAYER_IF_ALREADY_TARGET, "nex_sfInterrogatePlayer", true, 2);
+		return true;
 	}
 	
 	@Override

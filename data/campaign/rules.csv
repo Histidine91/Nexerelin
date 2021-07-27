@@ -1497,6 +1497,43 @@ PrintDescription 3
 FireBest MarketPostOpen",Your $shipOrFleet approaches $entityName.,,
 ,,,,,,
 nex_continueCutCommDebug,DialogOptionSelected,$option == continueCutComm,DismissDialog,,,
+,,,,,,
+nex_specialForcesInterrogateInitial,BeginFleetEncounter,"!$entity.knowsWhoPlayerIs
+!$isHostile
+$pursuePlayer_nex_sfInterrogatePlayer score:50","MakeOtherFleetPreventDisengage nex_sfInterrogatePlayer true
+MakeOtherFleetAggressive nex_sfInterrogatePlayer true
+unset $ignorePlayerCommRequests
+$nex_sfInterrogatePlayerConv = true 0
+AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor
+OpenComms",,,
+nex_specialForcesInterrogateFirstComms,OpenCommLink,$entity.nex_sfInterrogatePlayerConv score:100,,"""Unknown party, this is $PersonRank $personName of $theFaction. Your presence in this location is deemed suspicious. You are ordered to turn on your transponder to verify your identity.""","0:nex_sfInterrogate_comply:Allow the scan
+2:nex_sfInterrogate_refuse:Refuse and cut the comm link",
+nex_specialForcesInterrogateStart,DialogOptionSelected,$option == nex_sfInterrogate_comply,"unset $entity.transponderOffConv
+unset $entity.sawPlayerTransponderOff
+ActivateAbility $player.fleetId transponder
+UpdateMemory
+FireBest Nex_SFInterrogatePlayerResult",You issue an order to activate the transponder.,,
+nex_specialForcesInterrogateHostile,Nex_SFInterrogatePlayerResult,$entity.isHostile,"AddText ""The special task group powers up combat systems.""","""$playerName, as we suspected. Prepare for death.""
+OR
+""$playerName, just as we thought. Your hiding games are over.""",cutCommLink:Cut the comm link,
+nex_specialForcesInterrogateHostileWeak,Nex_SFInterrogatePlayerResult,"$entity.isHostile
+$entity.relativeStrength < 0","$entity.ignorePlayerCommRequests = true 0
+MakeOtherFleetAggressive nex_sfInterrogatePlayer false
+MakeOtherFleetPreventDisengage nex_sfInterrogatePlayer false
+ShowDefaultVisual
+EndConversation","As expected, once they determine your identity, the $faction fleet shuts down comms and powers up combat systems.",,
+nex_specialForcesInterrogateNonHostile,Nex_SFInterrogatePlayerResult,!$entity.isHostile,"$entity.ignorePlayerCommRequests = true 0
+MakeOtherFleetAggressive nex_sfInterrogatePlayer false
+MakeOtherFleetPreventDisengage nex_sfInterrogatePlayer false","""$playerName, as we thought. You are not currently deemed a hostile party. I suggest you keep in that way."" 
+
+From the looks the $personRank is giving you, you suspect $heOrShe would enjoy having a pretext to open fire.",cutCommLink:Cut the comm link,
+nex_specialForcesInterrogateRefuse,DialogOptionSelected,$option == nex_sfInterrogate_refuse,"$entity.ignorePlayerCommRequests = true 0
+unset $entity.pursuePlayer_nex_sfInterrogatePlayer
+unset $nex_sfInterrogatePlayerConv
+ShowDefaultVisual
+EndConversation","""So be it.""
+
+The $faction fleet shuts down comms and powers up combat systems.",,
 #END bla,,,,,,
 ,,,,,,
 # Vanilla overrides,,,,,,
