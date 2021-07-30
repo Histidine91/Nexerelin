@@ -129,6 +129,22 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		tooltip.addPara(GroundBattleIntel.getString("ability_bombard_tooltip4"), opad, col, Math.round(needed) + "");
 	}
 	
+	protected float getNearbyFleetStrengths(boolean attacker) {
+		float str = 0;
+		for (CampaignFleetAPI fleet : getIntel().getSupportingFleets(attacker)) {
+			str += fleet.getEffectiveStrength();
+		}
+		return str;
+	}
+	
+	protected float[] getNearbyFleetStrengths() {
+		float ours = getNearbyFleetStrengths(side.isAttacker());
+		float theirs = getNearbyFleetStrengths(!side.isAttacker());
+		//Global.getLogger(this.getClass()).info("Our strength: " + ours);
+		//Global.getLogger(this.getClass()).info("Their strength: " + theirs);
+		return new float[] {ours, theirs};
+	}
+	
 	@Override
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
 		if (side.getData().containsKey(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
@@ -151,6 +167,22 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			
 				String id = "notEnoughFuel";
 				String desc = String.format(GroundBattleIntel.getString("ability_bombard_insufficientFuel"), cost);
+				params.put("desc", desc);
+				return new Pair<>(id, params);
+			}
+		}
+		float[] strengths = getNearbyFleetStrengths();
+		{
+			float ours = strengths[0];
+			float theirs = strengths[1];
+			if (ours < theirs * 2) {
+				Map<String, Object> params = new HashMap<>();
+			
+				String id = "enemyPresence";
+				String ourStr = String.format("%.0f", ours);
+				String theirStr = String.format("%.0f", theirs);
+				
+				String desc = String.format(GroundBattleIntel.getString("ability_bombard_enemyPresence"), ourStr, theirStr);
 				params.put("desc", desc);
 				return new Pair<>(id, params);
 			}
