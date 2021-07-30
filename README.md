@@ -11,9 +11,7 @@ If you want to build Nexerelin locally, follow the steps below.
 Intellij and Eclipse forks are currently the most popular Java IDE out there.
 The following contains instructions on how to set this project up on Intellij. (Eclipse should be similar but you will need to figure out where those dialogs and settings are on your own.)
 
-First of all, Nexerelin also requires several other external libs for compiling. Check out the forum post for the list:
-[http://fractalsoftworks.com/forum/index.php?topic=9175.1800](http://fractalsoftworks.com/forum/index.php?topic=9175.1800)
-Download and unzip them somewhere on your computer, you can download them to the starsector mod folder but you don't have to load them in the launcher.
+First of all, Nexerelin also requires several other external libs for compiling. The whole list can be found at the [end of this document](#required-libraries). Download and unzip them somewhere on your computer, you can download them to the starsector mod folder but you don't have to load them in the launcher.
 This is just so the jar files contained in those mods can be loaded by nexerelin java classes.
 
 You will also need to use jdk1.7 to compile the jar; starsector is currently using jdk1.7.0.79 but anything newer than that would work as well. i.e. 1.7.0.80 and not java 8, 9, etc.
@@ -81,6 +79,21 @@ You can use this similar setup for other starsector mods as well.
 Kazi also has a nice post on intellij setup as well [http://fractalsoftworks.com/forum/index.php?topic=10057.0](http://fractalsoftworks.com/forum/index.php?topic=10057.0)
 
 Have fun helping us debug the code :)
+
+### Required Libraries ###
+These are all the external libraries and referenced mods required to locally build Nexerelin:
+
+- [ApproLight](https://fractalsoftworks.com/forum/index.php?topic=9688.0)
+- [DynaSector](https://fractalsoftworks.com/forum/index.php?topic=11001.0)
+- [Lazylib](https://fractalsoftworks.com/forum/index.php?topic=5444.0)
+- [Console Commands](https://fractalsoftworks.com/forum/index.php?topic=4106.0)
+- [MagicLib](https://fractalsoftworks.com/forum/index.php?topic=13718.0)
+- [Ship/Weapon Pack](https://fractalsoftworks.com/forum/index.php?topic=11018.0)
+- [The Knights Templar](https://fractalsoftworks.com/forum/index.php?topic=8095.0)
+- [Underworld](https://fractalsoftworks.com/forum/index.php?topic=11002.0)
+- [Unofficial New Game Plus](https://fractalsoftworks.com/forum/index.php?topic=16680.0)
+- [Vayra's Sector](https://fractalsoftworks.com/forum/index.php?topic=16058.0)
+- [Volkov Industrial Conglomerate](https://fractalsoftworks.com/forum/index.php?topic=19603.0)
 
 ### License ###
 The Prism Freeport code and art assets are taken or adapted from the [Scy Nation mod](http://fractalsoftworks.com/forum/index.php?topic=8010.0) by Tartiflette and licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-nc-sa/4.0/).
