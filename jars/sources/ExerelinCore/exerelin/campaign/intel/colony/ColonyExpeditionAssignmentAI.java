@@ -1,9 +1,13 @@
 package exerelin.campaign.intel.colony;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetActionTextProvider;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -41,6 +45,44 @@ public class ColonyExpeditionAssignmentAI extends RouteFleetAssignmentAI impleme
 		if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RAIDER)) {
 			checkRaid(amount);
 		}
+	}
+	
+	// Try not to chase other stuff
+	@Override
+	protected void addLocalAssignment(RouteSegment current, boolean justSpawned) {
+		if (justSpawned) {
+			float progress = current.getProgress();
+			RouteLocationCalculator.setLocation(fleet, progress, 
+									current.from, current.getDestination());
+		}
+		if (current.from != null && current.to == null && !current.isFromSystemCenter()) {
+			// changed from vanilla: was ORBIT_AGGRESSIVE
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from, 
+					current.daysMax - current.elapsed, getInSystemActionText(current),
+					goNextScript(current));	
+			return;
+		}
+		
+		if (delegate instanceof ColonyActionStage) {
+			ColonyActionStage action = (ColonyActionStage)delegate;
+			if (fleet.getContainingLocation() == action.getTarget().getContainingLocation())
+			{
+				fleet.addAssignment(FleetAssignment.DELIVER_CREW, action.getTarget().getPrimaryEntity(), 
+								Math.max(current.daysMax - current.elapsed, 3), 
+								StringHelper.getFleetAssignmentString("travellingTo", action.getTarget().getName()));
+				return;
+			}
+		}
+		
+		SectorEntityToken target = null;
+		if (current.from.getContainingLocation() instanceof StarSystemAPI) {
+			target = ((StarSystemAPI)current.from.getContainingLocation()).getCenter();
+		} else {
+			target = Global.getSector().getHyperspace().createToken(current.from.getLocation().x, current.from.getLocation().y);
+		}
+		
+		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, target, 
+							current.daysMax - current.elapsed, getInSystemActionText(current));
 	}
 	
 	@Override
