@@ -38,6 +38,11 @@ public class NexUtils
 		return Long.parseLong(seedStr);
 	}
 	
+	/**
+	 * Converts the specified time to days and advances the provided interval.
+	 * @param interval
+	 * @param time
+	 */
 	public static void advanceIntervalDays (IntervalUtil interval, float time)
 	{
 		float days = Global.getSector().getClock().convertToDays(time);
