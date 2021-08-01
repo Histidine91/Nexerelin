@@ -1581,6 +1581,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		String postId = person.getPostId();
 		if (postId == null) return -1;
 		
+		if (person.getMemoryWithoutUpdate().getBoolean("nex_preferredAdmin")) {
+			String factionId = person.getMemoryWithoutUpdate().getString("nex_preferredAdmin_factionId");
+			if (factionId == null || factionId.equals(market.getFactionId()))
+				return 4;
+		}			
+		
 		if (postId.equals(Ranks.POST_FACTION_LEADER) && person.getFaction() == market.getFaction())
 			return 3;
 		else if (postId.equals(Ranks.POST_STATION_COMMANDER)) 
