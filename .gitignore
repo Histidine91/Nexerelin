@@ -3,6 +3,7 @@
 /jars/build.xml
 /jars/nbproject
 /nbproject
+/out
 .idea/
 *.aup
 *.au
