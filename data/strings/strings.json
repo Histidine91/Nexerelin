@@ -270,6 +270,8 @@
 		"intelButtonOrdersRepeat":"Repeat last mission",
 		"intelButtonUnlockMastery":"Unlock mastery",
 		"intelButtonUnlockMasteryWithLevel":"Unlock mastery (level %s)",
+		"intelButtonCellKill":"Internal security mode",
+		"intelButtonCellKillTooltip":"When agent is idle, will periodically travel to player or commissioning faction colonies with Pather cells, and destroy them. Will also find unlocated pirate bases if no relevant cells exist.",
 		"intelHeaderLocalReport":"Local report",
 		"intelDescLocalReport1":"%s is a size %s market, of stability %s.",
 		"intelDescLocalReport2":"Space patrol strength: %s, ground defence strength: %s",

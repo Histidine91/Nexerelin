@@ -4,10 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.BaseOptionStoryPointActionDelegate;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.StoryOptionParams;
@@ -17,6 +23,8 @@ import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.MutableValue;
 import exerelin.campaign.CovertOpsManager;
@@ -31,6 +39,7 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -59,6 +68,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final String BUTTON_CANCEL_QUEUE = "abortQueue";
 	protected static final String BUTTON_REPEAT_ACTION = "repeat";
 	protected static final String BUTTON_MASTERY = "mastery";
+	protected static final String BUTTON_CELL_KILL = "cellKill";
 	
 	protected static final String BUTTON_DISMISS = "dismiss";
 	
@@ -75,7 +85,9 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected boolean isDead = false;
 	protected boolean isDismissed = false;
 	protected boolean wantLevelUpNotification = false;
+	protected boolean cellKillMode = false;
 	
+	protected IntervalUtil cellKillInterval = new IntervalUtil(3, 3);
 	
 	public AgentIntel(PersonAPI agent, FactionAPI faction, int level) {
 		this.agent = agent;
@@ -97,6 +109,9 @@ public class AgentIntel extends BaseIntelPlugin {
 			actionQueue = new LinkedList<>();
 			if (currentAction != null) actionQueue.add(currentAction);
 			if (nextAction != null) actionQueue.add(nextAction);
+		}
+		if (cellKillInterval == null) {
+			cellKillInterval = new IntervalUtil(3, 3);
 		}
 		return this;
 	}
@@ -198,6 +213,15 @@ public class AgentIntel extends BaseIntelPlugin {
 	@Override
 	protected void advanceImpl(float amount) {
 		super.advanceImpl(amount);
+		
+		if (cellKillMode) {
+			NexUtils.advanceIntervalDays(cellKillInterval, amount);
+			if (cellKillInterval.intervalElapsed()) {
+				//Global.getLogger(this.getClass()).info("Cell kill interval for " + agent.getNameString());
+				checkCellKill();
+				checkBaseFind();
+			}
+		}
 	}
 	
 	protected CovertActionIntel getCurrentAction() {
@@ -238,6 +262,141 @@ public class AgentIntel extends BaseIntelPlugin {
 		lastAction = getCurrentAction();
 		lastActionTimestamp = Global.getSector().getClock().getTimestamp();
 		pushActionQueue();
+	}
+	
+	/**
+	 * Find a target (if any) for automatic Pather cell killing.
+	 */
+	public void checkCellKill() {
+		if (getCurrentAction() != null)
+			return;
+		
+		MarketAPI target;
+		
+		List<MarketAPI> playerMarkets = Misc.getFactionMarkets(Factions.PLAYER);
+		target = getClosestMarketForCellKill(playerMarkets);
+		
+		if (target == null && Misc.getCommissionFaction() != null) {
+			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
+			target = getClosestMarketForCellKill(commMarkets);
+		}
+		
+		if (target == null) return;
+		
+		issueCellKillOrder(target);
+	}
+	
+	public MarketAPI getClosestMarketForCellKill(Collection<MarketAPI> toCheck) {
+		
+		MarketAPI best = null;
+		float bestDist = 9999999;
+		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+		
+		for (MarketAPI market : toCheck) {
+			if (!market.hasCondition(Conditions.PATHER_CELLS)) continue;
+			MarketConditionAPI cond = market.getCondition(Conditions.PATHER_CELLS);
+			LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
+			LuddicPathCellsIntel cellIntel = cellCond.getIntel();
+			if (cellIntel.getSleeperTimeout() > 90)
+				continue;
+			
+			InfiltrateCell action = new InfiltrateCell(this, market, agent.getFaction(), market.getFaction(), true, null);
+			int cost = action.getCost();
+			if (cost > credits)
+				continue;
+			
+			// agent has no location, just pick the first market with cell we find
+			if (this.market == null)
+				return market;
+			
+			float dist = Misc.getDistanceLY(market.getLocationInHyperspace(), this.market.getLocationInHyperspace());
+			if (dist < bestDist) {
+				bestDist = dist;
+				best = market;
+			}
+		}
+		
+		return best;
+	}
+	
+	public void issueCellKillOrder(MarketAPI target) {
+		CovertActionIntel action;
+		if (target != this.market) {
+			action = new Travel(this, target, faction, target.getFaction(), true, null);
+			action.init();
+			addAction(action);
+			action.activate();
+		}
+		
+		
+		action = new InfiltrateCell(this, target, faction, target.getFaction(), true, null);
+		action.init();
+		addAction(action);
+		if (target == this.market) action.activate();
+	}
+	
+	/**
+	 * Find a target (if any) for automatic pirate base finding.
+	 */
+	public void checkBaseFind() {
+		if (getCurrentAction() != null)
+			return;
+		
+		MarketAPI target;
+		
+		List<MarketAPI> playerMarkets = Misc.getFactionMarkets(Factions.PLAYER);
+		target = getClosestMarketForBaseFind(playerMarkets);
+		
+		if (target == null && Misc.getCommissionFaction() != null) {
+			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
+			target = getClosestMarketForCellKill(commMarkets);
+		}
+		
+		if (target == null) return;
+		
+		issueBaseFindOrder(target);
+	}
+	
+	public MarketAPI getClosestMarketForBaseFind(Collection<MarketAPI> toCheck) {
+		
+		MarketAPI best = null;
+		float bestDist = 9999999;
+		
+		for (MarketAPI market : toCheck) {
+			if (!market.hasCondition(Conditions.PIRATE_ACTIVITY)) continue;
+			MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
+			PirateActivity activityCond = (PirateActivity)(cond.getPlugin());
+			PirateBaseIntel baseIntel = activityCond.getIntel();
+			if (baseIntel.isEnding() || baseIntel.isEnded() || baseIntel.isPlayerVisible())
+				continue;
+			
+			// agent has no location, just pick the first market with cell we find
+			if (this.market == null)
+				return market;
+			
+			float dist = Misc.getDistanceLY(market.getLocationInHyperspace(), this.market.getLocationInHyperspace());
+			if (dist < bestDist) {
+				bestDist = dist;
+				best = market;
+			}
+		}
+		
+		return best;
+	}
+	
+	public void issueBaseFindOrder(MarketAPI target) {
+		CovertActionIntel action;
+		if (target != this.market) {
+			action = new Travel(this, target, faction, target.getFaction(), true, null);
+			action.init();
+			addAction(action);
+			action.activate();
+		}
+				
+		action = new FindPirateBase(this, target, faction, true, null);
+		action.init();
+		addAction(action);
+		if (target == this.market) action.activate();
 	}
 	
 	@Override
@@ -459,6 +618,30 @@ public class AgentIntel extends BaseIntelPlugin {
 					(int)(width), 20f, opad);
 		}
 		
+		// cell kill option
+		/*
+		ButtonAPI button = info.addAreaCheckbox(getString("intelButtonCellKill"), BUTTON_CELL_KILL, 
+				pf.getBaseUIColor(), pf.getDarkUIColor(), pf.getBrightUIColor(),
+				(int)width, 20f, opad);		
+		button.setChecked(cellKillMode);
+		info.addTooltipToPrevious(new TooltipCreator(){
+				@Override
+				public boolean isTooltipExpandable(Object tooltipParam) {
+					return false;
+				}
+
+				@Override
+				public float getTooltipWidth(Object tooltipParam) {
+					return 360;
+				}
+
+				@Override
+				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+					tooltip.addPara(getString("intelButtonCellKillTooltip"), 0);
+				}
+		}, TooltipMakerAPI.TooltipLocation.BELOW);
+		*/
+		
 		// local report
 		if (market != null) {
 			info.addSectionHeading(getString("intelHeaderLocalReport"),	Alignment.MID, opad * 2);
@@ -516,7 +699,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		}
 		
 		// dismiss button
-		ButtonAPI button = info.addButton(StringHelper.getString("dismiss", true), 
+		info.addButton(StringHelper.getString("dismiss", true), 
 					BUTTON_DISMISS, pf.getBaseUIColor(), pf.getDarkUIColor(),
 					(int)(width), 20f, opad * 2f);
 	}
@@ -568,6 +751,8 @@ public class AgentIntel extends BaseIntelPlugin {
 			//sendUpdateIfPlayerHasIntel(UPDATE_DISMISSED, false);
 			endAfterDelay();
 			CovertOpsManager.getManager().removeAgent(this);
+		} else if (buttonId == BUTTON_CELL_KILL) {
+			cellKillMode = !cellKillMode;
 		}
 		super.buttonPressConfirmed(buttonId, ui);
 	}
