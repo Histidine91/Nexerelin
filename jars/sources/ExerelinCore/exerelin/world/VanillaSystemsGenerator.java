@@ -251,8 +251,9 @@ public class VanillaSystemsGenerator {
 		asher.removeIndustry(Industries.GROUNDDEFENSES, null, false);
 		asher.addIndustry(Industries.HEAVYBATTERIES);
 		
-		//MarketAPI chalcedon = getMarket("chalcedon");
+		MarketAPI chalcedon = getMarket("chalcedon");
 		//chalcedon.addIndustry(Industries.ORBITALSTATION);
+		chalcedon.addIndustry(Industries.WAYSTATION);
 		
 		MarketAPI culann = getMarket("culann");
 		culann.getIndustry(Industries.BATTLESTATION_HIGH).setAICoreId("alpha_core");
@@ -267,6 +268,9 @@ public class VanillaSystemsGenerator {
 		MarketAPI eldfell = getMarket("eldfell");
 		eldfell.addIndustry(Industries.GROUNDDEFENSES);
 		
+		MarketAPI epiphany = getMarket("epiphany");
+		epiphany.addIndustry(Industries.WAYSTATION);
+		
 		MarketAPI eochu_bres = getMarket("eochu_bres");
 		eochu_bres.getIndustry(Industries.STARFORTRESS_HIGH).setAICoreId("alpha_core");
 		
@@ -279,6 +283,9 @@ public class VanillaSystemsGenerator {
 		
 		MarketAPI mazalot = getMarket("mazalot");
 		//mazalot.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.LUDDIC_CHURCH);
+		
+		MarketAPI sindria = getMarket("sindria");
+		sindria.getIndustry(Industries.HIGHCOMMAND).setAICoreId("gamma_core");
 		
 		MarketAPI volturn = getMarket("volturn");
 		volturn.addIndustry(Industries.PATROLHQ);
