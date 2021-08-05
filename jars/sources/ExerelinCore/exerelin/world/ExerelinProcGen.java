@@ -288,6 +288,7 @@ public class ExerelinProcGen {
 	{
 		List<StarSystemAPI> list = new ArrayList<>();
 		PlanetAPI redPlanet = (PlanetAPI)Global.getSector().getMemoryWithoutUpdate().get(MiscellaneousThemeGenerator.PLANETARY_SHIELD_PLANET_KEY);
+		boolean corvus = ExerelinSetupData.getInstance().corvusMode;
 		
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
 		{
@@ -296,7 +297,7 @@ public class ExerelinProcGen {
 			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
 			if (system.hasPulsar()) continue;
 			if (system.getStar() != null && system.getStar().getSpec().isBlackHole()) continue;
-			if (hasForeignMarkets(system)) continue;
+			if (!corvus && hasForeignMarkets(system)) continue;
 			if (system.getBaseName().equals("Styx")) continue;
 			if (system.getBaseName().equals("Ascalon")) continue;
 			if (redPlanet != null && redPlanet.getStarSystem() == system)
@@ -436,11 +437,18 @@ public class ExerelinProcGen {
 	 */
 	protected void createEntityDataForSystem(StarSystemAPI system)
 	{
-		if (!system.isProcgen()) return;
+		//if (!system.isProcgen()) return;
 		
 		for (PlanetAPI planet : system.getPlanets())
 		{
 			if (planet.isStar()) continue;
+			if (planet.getMarket() == null || !planet.getMarket().isPlanetConditionMarketOnly()) {
+				//log.info(String.format("  Planet %s has no market or is already inhabited", planet.getName()));
+				continue;
+			}
+				
+			if (planet.getId().equals("ancyra")) continue;
+			
 			if (planet.isGasGiant()){
 				// gas giants are of interest even though we won't populate them directly
 				addDesirabilityForSystem(system, getDesirability(planet));
@@ -1041,19 +1049,31 @@ public class ExerelinProcGen {
 		factionIds = getStartingFactions();
 	}
 	
-	public void generate()
+	public void generate(boolean corvus)
 	{
 		log.info("Running procedural generation");
 		init();
 		
 		// process star systems
-		systems = getCoreSystems(CORE_WIDTH, CORE_HEIGHT, 1);
+		float mult = corvus ? 1.5f : 1;
+		systems = getCoreSystems(CORE_WIDTH * mult, CORE_HEIGHT * mult, 1);
 		for (StarSystemAPI system : systems)
 		{
 			positiveDesirabilityBySystem.put(system, 0f);
 			marketsBySystem.put(system, new ArrayList<ProcGenEntity>());
 			createEntityDataForSystem(system);
 		}
+						
+		if (corvus) {
+			// just create our homeworld
+			populatedPlanets.addAll(planets);
+			pickHomeworld();
+			homeworld.isHQ = true;
+			MarketAPI homeMarket = marketSetup.initMarket(homeworld, Factions.PLAYER);
+			homeMarket.setPlayerOwned(true);
+			return;
+		}
+		
 		Collections.sort(systems, new Comparator<StarSystemAPI>() {
 				public int compare(StarSystemAPI sys1, StarSystemAPI sys2) {
 					float desirability1 = positiveDesirabilityBySystem.get(sys1);
@@ -1095,7 +1115,7 @@ public class ExerelinProcGen {
 		
 		log.info("Preparing stations");
 		prepFreeStations();
-		
+				
 		log.info("Populating sector");
 		populateSector(Global.getSector());
 		

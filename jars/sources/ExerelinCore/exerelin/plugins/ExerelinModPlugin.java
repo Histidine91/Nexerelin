@@ -22,6 +22,7 @@ import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.CATAL
 import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.NO_ATMOSPHERE;
 import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.SYNCHROTRON_FUEL_BONUS;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -45,6 +46,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.MiningCooldownDrawer;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ui.ReinitScreenScript;
@@ -433,8 +435,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         alphaSiteWorkaround();
         
-        if (!SectorManager.getManager().isCorvusMode())
-            new ExerelinProcGen().generate();
+        if (!SectorManager.getManager().isCorvusMode()) {
+            new ExerelinProcGen().generate(false);
+        }
         
         ScenarioManager.afterProcGen(Global.getSector());
     }
@@ -445,6 +448,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (SectorManager.getManager().isCorvusMode()) {
             VanillaSystemsGenerator.enhanceVanillaMarkets();
+        }
+        
+        ExerelinSetupData setupData = ExerelinSetupData.getInstance();
+        if (SectorManager.getManager().isCorvusMode() 
+                && PlayerFactionStore.getPlayerFactionIdNGC().equals(Factions.PLAYER) 
+                && !setupData.freeStart) {
+            new ExerelinProcGen().generate(true);
         }
         
         expandSector();

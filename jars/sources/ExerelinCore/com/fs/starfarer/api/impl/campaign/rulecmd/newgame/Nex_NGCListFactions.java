@@ -123,8 +123,8 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		if (ExerelinSetupData.getInstance().corvusMode)
 		{
-			opts.setTooltip("nex_NGCJoinOwnFaction", StringHelper.getString("exerelin_ngc", "ownFactionDisabledTooltip"));
-			opts.setEnabled("nex_NGCJoinOwnFaction", false);
+			//opts.setTooltip("nex_NGCJoinOwnFaction", StringHelper.getString("exerelin_ngc", "ownFactionDisabledTooltip"));
+			//opts.setEnabled("nex_NGCJoinOwnFaction", false);
 		}
 		
 		List<FactionListGrouping> groups = Nex_FactionDirectoryHelper.getNGCFactionGroupings(true);

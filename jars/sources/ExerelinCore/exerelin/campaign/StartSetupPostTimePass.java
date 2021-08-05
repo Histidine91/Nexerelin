@@ -127,10 +127,6 @@ public class StartSetupPostTimePass {
 		if (!factionId.equals(Factions.PLAYER)) {
 			//ExerelinUtilsFaction.grantCommission(factionId);
 		}
-		// make own faction start's first market player-owned
-		else if (!corvusMode && !freeStart && entity != null) {
-			entity.getMarket().setPlayerOwned(true);
-		}
 		
 		// Galatian stipend
 		if (!TutorialMissionIntel.isTutorialInProgress() && !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()) 
