@@ -6,18 +6,15 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import data.scripts.campaign.DS_FleetFactory;
-import data.scripts.campaign.fleets.DS_FleetInjector;
-import static data.scripts.campaign.fleets.DS_FleetInjector.randomizeVariants;
-import data.scripts.util.DS_Defs;
-import data.scripts.util.DS_Util;
-import static data.scripts.util.DS_Util.getArchetypeWeights;
 import java.util.List;
 import java.util.Random;
 
+@Deprecated
 public class DSFleetUtilsProxy {
 	
+	@Deprecated
 	public static CampaignFleetAPI enhancedCreateFleet(FactionAPI faction, FleetParamsV3 params, int total) {
+		/*
 		final FleetParamsV3 params2 = params;
 		return DS_FleetFactory.enhancedCreateFleet(faction, total, new DS_FleetFactory.FleetFactoryDelegate() {
 			@Override
@@ -25,8 +22,12 @@ public class DSFleetUtilsProxy {
 				return FleetFactoryV3.createFleet(params2);
 			}
 		});
+		*/
+		return FleetFactoryV3.createFleet(params);
 	}
 	
+	/*
+	@Deprecated
 	public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {
 		String factionId = fleet.getFaction().getId();
 		MemoryAPI memory = fleet.getMemoryWithoutUpdate();
@@ -76,4 +77,5 @@ public class DSFleetUtilsProxy {
 		}
 		DS_FleetFactory.finishFleetNonIntrusive(fleet, factionId, false, r);
 	}
+	*/
 }

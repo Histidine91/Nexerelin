@@ -20,14 +20,12 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.util.DS_Defs;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.apache.log4j.Logger;
-import org.lazywizard.lazylib.MathUtils;
 
 
 public class NexUtilsFleet
@@ -46,8 +44,8 @@ public class NexUtilsFleet
      * @param type 
      */
     public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {      
-        if (ExerelinModPlugin.HAVE_DYNASECTOR)
-            DSFleetUtilsProxy.injectFleet(fleet, market, stability, qualityFactor, type);
+        //if (ExerelinModPlugin.HAVE_DYNASECTOR)
+        //    DSFleetUtilsProxy.injectFleet(fleet, market, stability, qualityFactor, type);
     }
     
     public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
