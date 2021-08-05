@@ -127,7 +127,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			if (getTarget().getFaction().isPlayerFaction()) {
 				NexUtilsReputation.adjustPlayerReputation(colonyFleetIntel.getFaction(), 
 						-ColonyExpeditionIntel.QUEUE_JUMP_REP_PENALTY);
-				if (colonyFleetIntel.getFaction().isAtBest(Factions.PLAYER, RepLevel.NEUTRAL))
+				if (colonyFleetIntel.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
 					colonyFleetIntel.hostileMode = true;
 			}
 			// if queue-jumped and not hostile, we failed

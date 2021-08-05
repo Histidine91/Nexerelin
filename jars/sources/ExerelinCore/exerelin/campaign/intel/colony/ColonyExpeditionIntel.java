@@ -66,7 +66,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	
 	public static final String MEMORY_KEY_COLONY = "$nex_npcColony";
 	public static final float INVADE_STRENGTH = 200;
-	public static final float QUEUE_JUMP_REP_PENALTY = 0.15f;
+	public static final float QUEUE_JUMP_REP_PENALTY = 0.1f;
 	public static final float QUEUE_JUMP_REP_PENALTY_EARLY = 0.05f;
 	public static final String BUTTON_AVERT = "BUTTON_CHANGE_ORDERS";
 	
