@@ -30,7 +30,7 @@ public class GBConstants {
 	public static float HEAVY_OFFENSIVE_MULT = 1.25f;
 	public static float HEAVY_STATION_MULT = 0.75f;
 	public static float XP_MORALE_BONUS = 0.2f;	// 20% more morale at 100% XP
-	public static float CAPTURE_MORALE = 0.08f;
+	public static float CAPTURE_MORALE = 0.03f;
 	public static float REORGANIZING_DMG_MULT = 0.7f;
 	public static float REBEL_DAMAGE_MULT = 0.5f;	// both dealt and received;
 	

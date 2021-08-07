@@ -175,11 +175,11 @@ public class IndustryForBattle {
 			plugin.apply();
 			
 			if (hadCombatThisTurn) {
-				for (GroundUnit unit : intel.getSide(heldByAttacker).units) {
-					unit.modifyMorale(GBConstants.CAPTURE_MORALE);
-				}
-				for (GroundUnit unit : intel.getSide(!heldByAttacker).units) {
-					unit.modifyMorale(-GBConstants.CAPTURE_MORALE);
+				for (GroundUnit unit : intel.getAllUnits()) {
+					float morale = GBConstants.CAPTURE_MORALE;
+					if (unit.isAttacker() != nowHeldByAttacker) morale *= -1;	// enemy lost this location
+					if (unit.getLocation() == this) morale *= 3f;
+					unit.modifyMorale(morale);
 				}
 			}
 			GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_INDUSTRY_CAPTURED, intel.turnNum);
