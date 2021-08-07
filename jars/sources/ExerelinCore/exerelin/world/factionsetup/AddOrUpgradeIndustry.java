@@ -22,14 +22,15 @@ public class AddOrUpgradeIndustry extends FactionSetupItem {
 		MarketAPI home = getPlayerHome();
 		if (home == null) return;
 		
-		String toAdd = (String)def.params.get("add");
-		if (home.hasIndustry(toAdd)) return;
-		
 		String upgrade = (String)def.params.get("upgrade");
 		if (home.hasIndustry(upgrade)) {
 			home.getIndustry(upgrade).startUpgrading();
 			home.getIndustry(upgrade).finishBuildingOrUpgrading();
+			return;
 		}
+		
+		String toAdd = (String)def.params.get("add");
+		if (home.hasIndustry(toAdd)) return;
 		home.addIndustry(toAdd);
 	}
 	
