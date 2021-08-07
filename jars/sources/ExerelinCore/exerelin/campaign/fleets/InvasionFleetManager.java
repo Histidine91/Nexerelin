@@ -570,7 +570,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (dist < 5000.0F) {
 					dist = 5000.0F;
 				}
-				weight = 20000.0F / dist;
+				// inverse square
+				float distMult = 20000.0F / dist;
+				distMult *= distMult;
+				
+				weight *= distMult;
 			}
 			
 			// modifier for defense strength (prefer weaker targets, proportional to size)
