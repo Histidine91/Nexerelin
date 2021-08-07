@@ -308,6 +308,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		{
 			x.reportBattleStarted(this);
 		}
+		reapply();
 	}
 	
 	public void initDebug() {
@@ -601,6 +602,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void updateStability() {
+		// not yet started
+		if (!Global.getSector().getIntelManager().hasIntel(this)) {
+			market.getStability().removeTemporaryMod("invasion");
+			return;
+		}
 		int total = 0, attacker = 0;
 		for (IndustryForBattle ifb : industries) {
 			total++;
