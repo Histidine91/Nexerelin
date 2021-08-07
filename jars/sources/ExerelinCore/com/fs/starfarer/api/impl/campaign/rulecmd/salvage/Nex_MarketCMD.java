@@ -435,7 +435,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		}
 
-		if (!hasNonStation) hasOtherButInsignificant = false;
+		// this is in the vanilla version, but causes response fleet to always fight
+		//if (!hasNonStation) hasOtherButInsignificant = false;
 		
 		if (responder != null) {
 			//text.addPara("A response fleet is active $onOrAt $market and ");
@@ -474,6 +475,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.addOption(engageText, ENGAGE);
 		
 		boolean canOpposeBombardment = (hasNonStation || hasResponder) && otherWantsToFight;
+		//log.info(String.format("Checking opposition: insignificant %s, wantsToFight %s", hasOtherButInsignificant, otherWantsToFight));
 		temp.canRaid = ongoingBattle || hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation;
 		temp.canBombard = (hasOtherButInsignificant || !canOpposeBombardment) && !hasStation;
 		//temp.canSurpriseRaid = Misc.getDaysSinceLastRaided(market) < SURPRISE_RAID_TIMEOUT;

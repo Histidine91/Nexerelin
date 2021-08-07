@@ -226,7 +226,7 @@ public class MarketMapDrawer {
 			
 			
 			for (GroundUnit unit : map.intel.getMovedFromLastTurn().keySet()) {
-				if (map.intel.getPlayerData().getUnits().contains(unit)) continue;
+				if (map.intel.getPlayerData().getUnits().contains(unit)) continue;	// fixme: should give units an isPlayer boolean maybe
 				IndustryForBattle prev = map.intel.getMovedFromLastTurn().get(unit);
 				IndustryForBattle curr = unit.getLocation();
 				if (curr == null || prev == null) continue;
