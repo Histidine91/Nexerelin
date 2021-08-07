@@ -60,6 +60,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final Object UPDATE_ARRIVED = new Object();
 	protected static final Object UPDATE_LEVEL_UP = new Object();
 	protected static final Object UPDATE_INJURY_RECOVERED = new Object();
+	protected static final Object UPDATE_CELL_KILL = new Object();
 	protected static final Object UPDATE_LOST = new Object();
 	protected static final Object UPDATE_ABORTED = new Object();
 	protected static final String BUTTON_ORDERS = "orders";
@@ -327,12 +328,12 @@ public class AgentIntel extends BaseIntelPlugin {
 			addAction(action);
 			action.activate();
 		}
-		
-		
+				
 		action = new InfiltrateCell(this, target, faction, target.getFaction(), true, null);
 		action.init();
 		addAction(action);
 		if (target == this.market) action.activate();
+		this.sendUpdateIfPlayerHasIntel(UPDATE_CELL_KILL, false);
 	}
 	
 	/**
@@ -424,6 +425,33 @@ public class AgentIntel extends BaseIntelPlugin {
 			info.addPara(getString("intelLevelUp"), pad, hl, level + "");
 		} else if (listInfoParam == UPDATE_INJURY_RECOVERED) {
 			info.addPara(getString("intelRecovered"), pad);
+		} else if (listInfoParam == UPDATE_CELL_KILL) {
+			MarketAPI destination = null;
+			float cost = 0;
+			CovertActionIntel act = getCurrentAction();
+			if (act instanceof Travel) {
+				destination = ((Travel)act).market;
+				act = getNextAction();
+				if (act instanceof InfiltrateCell) {
+					cost = act.getCost();
+				}
+			}
+			else if (act instanceof InfiltrateCell) {
+				destination = this.market;
+				cost = act.getCost();
+			}
+			if (destination != null) {
+				String mktName = destination.getName();
+				String costStr = Misc.getDGSCredits(cost);
+				String str = getString("intelCellKill");
+				str = StringHelper.substituteToken(str, "$market", mktName);
+				str = StringHelper.substituteToken(str, "$cost", costStr);
+				LabelAPI label = info.addPara(str, pad);
+				label.setHighlight(mktName, costStr);
+				label.setHighlightColors(destination.getTextColorForFactionOrPlanet(), hl);
+			}
+			
+			
 		} else if (listInfoParam == UPDATE_LOST) {
 			
 		} else {
@@ -619,7 +647,6 @@ public class AgentIntel extends BaseIntelPlugin {
 		}
 		
 		// cell kill option
-		/*
 		ButtonAPI button = info.addAreaCheckbox(getString("intelButtonCellKill"), BUTTON_CELL_KILL, 
 				pf.getBaseUIColor(), pf.getDarkUIColor(), pf.getBrightUIColor(),
 				(int)width, 20f, opad);		
@@ -640,7 +667,6 @@ public class AgentIntel extends BaseIntelPlugin {
 					tooltip.addPara(getString("intelButtonCellKillTooltip"), 0);
 				}
 		}, TooltipMakerAPI.TooltipLocation.BELOW);
-		*/
 		
 		// local report
 		if (market != null) {
