@@ -65,7 +65,7 @@ public class GroundBattleRoundResolve {
 		updateIndustryOwners();
 		
 		for (GroundUnit unit : intel.getAllUnits()) {
-			unit.executeMove();
+			unit.executeMove(false);
 		}
 		
 		resetMovementPointsSpent(false);
@@ -192,7 +192,8 @@ public class GroundBattleRoundResolve {
 			printDebug(String.format("  Unit %s retreating to %s", unit.name, selected.ind.getCurrentName()));
 			IndustryForBattle previous = unit.getLocation();
 			unit.inflictAttrition(0.5f, this, null);
-			unit.setLocation(selected);
+			unit.setDestination(selected);
+			unit.executeMove(true);
 			unit.reorganize(1);
 			GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_ROUTED, intel.turnNum);
 			lg.params.put("unit", unit);

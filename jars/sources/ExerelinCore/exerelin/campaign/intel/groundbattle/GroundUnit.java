@@ -277,7 +277,7 @@ public class GroundUnit {
 		destination = null;
 	}
 	
-	public void executeMove() {
+	public void executeMove(boolean silent) {
 		IndustryForBattle lastLoc = location;
 		if (isWithdrawing()) {
 			if (intel.isPlayerInRange()) {
@@ -291,7 +291,7 @@ public class GroundUnit {
 			setLocation(destination);
 			destination = null;
 		}
-		if (true || isPlayer) {
+		if (!silent) {
 			GroundBattleLog log = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_MOVED, intel.turnNum);
 			log.params.put("unit", this);
 			log.params.put("previous", lastLoc);
@@ -811,7 +811,7 @@ public class GroundUnit {
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
 			ButtonAPI qm = buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this), 
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
-			if (isReorganizing()) {
+			if (isReorganizing() || intel.getSide(isAttacker).getMovementPointsRemaining() <= 0) {
 				qm.setEnabled(false);
 			}
 			card.addUIElement(buttonHolder).inTR(1 * sizeMult, 2 * sizeMult);

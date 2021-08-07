@@ -147,27 +147,29 @@ public class MarketMapDrawer {
 		
 		public void drawArrow(GroundUnit unit, IndustryForBattle from, IndustryForBattle to, boolean prevTurn) 
 		{
-			float x = pos.getX();
-			float y = pos.getY();
-			Color color = unit.getFaction().getBaseUIColor();
-						
-			Vector2f vFrom = from.getGraphicalPosOnMap();
-			Vector2f vTo = to.getGraphicalPosOnMap();
-			float height = map.width/2;
-			
-			Vector2f col1 = getCollisionPoint(vFrom, vTo, from.getRectangle());
-			Vector2f col2 = getCollisionPoint(vFrom, vTo, to.getRectangle());
-			
-			if (col1 == null || col2 == null)
-				return;
-			
-			// panel coordinates to screen coordinates
-			col1.x += x; 
-			col1.y = height - col1.y + y;
-			col2.x += x; 
-			col2.y = height - col2.y + y;
-						
-			renderArrow(col1, col2, 10, color, 0.4f);
+			try {
+				float x = pos.getX();
+				float y = pos.getY();
+				Color color = unit.getFaction().getBaseUIColor();
+
+				Vector2f vFrom = from.getGraphicalPosOnMap();
+				Vector2f vTo = to.getGraphicalPosOnMap();
+				float height = map.width/2;
+
+				Vector2f col1 = getCollisionPoint(vFrom, vTo, from.getRectangle());
+				Vector2f col2 = getCollisionPoint(vFrom, vTo, to.getRectangle());
+
+				if (col1 == null || col2 == null)
+					return;
+
+				// panel coordinates to screen coordinates
+				col1.x += x; 
+				col1.y = height - col1.y + y;
+				col2.x += x; 
+				col2.y = height - col2.y + y;
+
+				renderArrow(col1, col2, 10, color, 0.4f);
+			} catch (Exception ex) {}
 		}
 		
 		public void drawDebugRect(Rectangle r) {
@@ -224,9 +226,10 @@ public class MarketMapDrawer {
 			
 			
 			for (GroundUnit unit : map.intel.getMovedFromLastTurn().keySet()) {
+				if (map.intel.getPlayerData().getUnits().contains(unit)) continue;
 				IndustryForBattle prev = map.intel.getMovedFromLastTurn().get(unit);
 				IndustryForBattle curr = unit.getLocation();
-				if (curr != null) continue;
+				if (curr == null || prev == null) continue;
 				drawArrow(unit, prev, curr, true);
 			}
 			for (GroundUnit unit : map.intel.getPlayerData().getUnits()) {
