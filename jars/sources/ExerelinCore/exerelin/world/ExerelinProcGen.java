@@ -1070,6 +1070,9 @@ public class ExerelinProcGen {
 			pickHomeworld();
 			homeworld.isHQ = true;
 			MarketAPI homeMarket = marketSetup.initMarket(homeworld, Factions.PLAYER);
+			marketSetup.addPrimaryIndustriesToMarkets();
+			marketSetup.addKeyIndustriesForFaction(Factions.PLAYER);
+			marketSetup.addFurtherIndustriesToMarkets();
 			homeMarket.setPlayerOwned(true);
 			return;
 		}
