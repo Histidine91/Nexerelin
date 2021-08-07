@@ -488,7 +488,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 			unrestReduction = before - ru.getPenalty();
 		}
 		
-		if (getFaction() != getTargetFaction()) {
+		if (getFaction() != getTargetFaction() && unrestReduction > 0) {
 			float rep = Nex_StabilizePackage.getReputation(target);
 			repResult = DiplomacyManager.adjustRelations(getFaction(), getTargetFaction(), rep, null, null, null);
 			relation = getFaction().getRelationship(target.getFactionId());
