@@ -2,6 +2,7 @@ package exerelin.utilities.rectanglepacker;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public abstract class Packer<T extends Rectangle>{
     public abstract List<T> pack();
 
     void sortByNonIncreasingHeight(List<T> rectangles){
-        rectangles.sort(new NonIncreasingHeightRectangleComparator());
+        Collections.sort(rectangles, new NonIncreasingHeightRectangleComparator());
     }
 
     private class NonIncreasingHeightRectangleComparator implements Comparator<Rectangle>{
