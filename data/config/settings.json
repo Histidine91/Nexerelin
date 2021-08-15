@@ -247,6 +247,8 @@
 			"nex_icon_omega":"graphics/exerelin/icons/logo_omega.png",
 			"nex_groundunit_attackpower":"graphics/exerelin/ui/red_diamond.png",
 			"command_experience":"graphics/icons/skills/command_experience.png",
+			
+			"nex_station_render":"graphics/exerelin/station_render_wireframe2.png",
 		},
 		
 		"raidObjectives":{  # icons displayed at 26x26

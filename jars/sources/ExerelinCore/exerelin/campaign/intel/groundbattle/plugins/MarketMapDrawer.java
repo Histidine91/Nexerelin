@@ -8,7 +8,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import com.fs.starfarer.prototype.Utils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
@@ -24,7 +23,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -32,11 +30,6 @@ import org.lwjgl.util.vector.Vector2f;
  * Draws the tacticool planet map.
  */
 public class MarketMapDrawer {
-	
-	/*
-	TODO:
-	draw arrows for last turn's enemy movements and this turn's player movements
-	*/
 	
 	public static final boolean DEBUG_MODE = false;
 	
@@ -94,7 +87,7 @@ public class MarketMapDrawer {
 		List<Rectangle> rects = new ArrayList<>();
 		for (IndustryForBattle ifb : industries) {
 			if (DEBUG_MODE || ifb.getPosOnMap() == null) {
-				rects = new MapLocationGenV2().generateLocs(industries, width);
+				rects = new MapLocationGenV2().generateLocs(industries, width, intel.getMarket().getPlanetEntity() == null);
 				//panelPlugin.debugRects = rects;
 				//Global.getLogger(this.getClass()).info("lol " + rects.size());
 				break;
@@ -205,21 +198,30 @@ public class MarketMapDrawer {
 			float drawW = w-4;
 			float drawH = h-2;
 			if (bg == null) {
-				// FIXME: this distorts the background
-				// but I have absolutely no idea how renderRegionAtCenter is supposed to work
-				bgSprite.setSize(drawW, drawH);
-				bgSprite.renderAtCenter(x + w/2, y + h/2);
+				// draw star system background
+				bgSprite.setSize(drawW, drawW);
 				
-				/*
-				bgSprite.renderRegionAtCenter(x + w/2, y + h/2,
-							(bgSprite.getTextureWidth()-drawW)/2,
-							(bgSprite.getTextureHeight()-drawH)/2,
-							drawW, drawH
+				// I have no idea why this combination of values works, but it does
+				// note that tx, ty, tw and th are expressed as fractions of the overall sprite size
+				bgSprite.renderRegion(x, y - h/2,
+							0f,
+							0.25f,
+							1, 1f * (drawH/drawW)
 						);
-				*/
+				
+				GL11.glTranslatef(x + w/2, y + h/2, 0);
 				//bgSprite.renderRegion(x, y,0, 0, 512, 512);
+				
+				//draw space station
+				SpriteAPI bgSprite2 = Global.getSettings().getSprite("misc", "nex_station_render");
+				float hMult = drawH * 0.9f / bgSprite2.getHeight();
+				bgSprite2.setSize(bgSprite2.getWidth() * hMult, bgSprite2.getHeight() * hMult);
+				GL11.glColor4f(1, 1, 1, 0.5f);
+				GL11.glRotatef(10, 0, 0, 1);
+				bgSprite2.renderAtCenter(0, 0);
 			}
 			else {
+				// draw planet texture
 				bgSprite.setSize(drawW, drawH);
 				bgSprite.renderAtCenter(x + w/2, y + h/2);
 			}
@@ -297,7 +299,7 @@ public class MarketMapDrawer {
 	public static class MapLocationGenV2 {
 		public List<Rectangle> rects = new ArrayList<>();
 		
-		public List<Rectangle> generateLocs(List<IndustryForBattle> industries, float mapWidth) 
+		public List<Rectangle> generateLocs(List<IndustryForBattle> industries, float mapWidth, boolean isStation) 
 		{
 			// work with a copy of the actual arg, since we'll be modifying it
 			industries = new LinkedList<>(industries);
@@ -336,7 +338,9 @@ public class MarketMapDrawer {
 						
 			List<Rectangle> toUse = new LinkedList<>();
 			for (int i=0; i<industries.size(); i++) {
-				toUse.add(picker.pickAndRemove());
+				// hypothetically puts stuff closer to the center but I can't prove it
+				if (isStation) toUse.add(picker.getItems().remove(0));
+				else toUse.add(picker.pickAndRemove());
 			}
 			
 			// Give the rectangle closest to the center to spaceport?
