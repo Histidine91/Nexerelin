@@ -592,7 +592,7 @@ public class NexFactionConfig
         // remove relationship bound clamp if both sides have random relations
         if (DiplomacyManager.haveRandomRelationships(factionId1, factionId2)) return true;
         
-        if (getMaxRelationship(factionId1, factionId2) < -0.5) return false;
+        if (getMaxRelationship(factionId1, factionId2) <= -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;
     }
