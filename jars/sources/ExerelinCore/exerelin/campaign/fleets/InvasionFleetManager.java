@@ -509,8 +509,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				continue;
 			// likely to crash in 0.9.1a
 			// well, now we're on 0.95 so maybe it works? let's give it a try
-			//if (market.getContainingLocation().isHyperspace())
-			//	continue;
+			// update: still crashes
+			if (market.getContainingLocation().isHyperspace())
+				continue;
 			
 			FactionAPI marketFaction = market.getFaction();
 			String marketFactionId = marketFaction.getId();
