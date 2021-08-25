@@ -28,12 +28,17 @@ Close Air Support
 == Todo ==
 - Generate buffs
 	- Commanders
-- Map view
+	- FPE condition: global buff to defense strength on all FPE industries?
+
+- Merge/split command
 
 - [playtest] AI
-- Merge/split command
+
 - [test] Orphans made
 
 - Invasion fleet -> ground forces conversion
+	- Invasion has X marines, each fleet gets a 1/N share of this
+	- When each fleet touches target, drop its marines off
+
 - Send reinforcement fleet
 

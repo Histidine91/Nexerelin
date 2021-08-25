@@ -22,6 +22,5 @@ public class MagneticCrustPlugin extends MarketConditionPlugin {
 				unit.reorganize(1);
 			else unit.reorganize(2);	// after movement; 2 turns since 1 turn of reorganization is removed at the end of this turn
 		}
-			
 	}
 }

@@ -186,7 +186,7 @@ public class ColonyTargetValuator {
 		// don't colonize systems with stations or large fleets (this is to avoid Remnant stations etc.)
 		if (!inhabited) {
 			for (CampaignFleetAPI fleet : system.getFleets()) {
-				//log.info(system.getName() + " has fleet " + fleet.getName());
+				//log.info(system.getName() + " has fleet " + fleet.getNameWithFaction() + ": " + fleet.isStationMode() + ", " + fleet.getFleetPoints());
 				if (fleet.isStationMode()) return false;
 				if (fleet.getFaction().isHostileTo(faction) && fleet.getFleetPoints() > 25)
 					return false;
