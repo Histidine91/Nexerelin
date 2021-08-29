@@ -1118,7 +1118,7 @@
 	"nex_industry":{
 		"effect_synchrotron":"Increases fuel production output by %s units.",
 		"effect_catalyticCore":"Increases refining production by %s units.",
-		"req_noAtmoOrIsStation":"No planet or no atmosphere",
+		"req_noAtmoOrIsStation":"Standalone station or no atmosphere",
 	},
 	
 	"nex_invasion2":{
