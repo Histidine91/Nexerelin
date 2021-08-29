@@ -181,6 +181,10 @@ public class GroundUnit {
 		return faction;
 	}
 	
+	public boolean isPlayer() {
+		return intel.playerData.getUnits().contains(this);
+	}
+	
 	/**
 	 * Adds the current personnel and heavy armaments in the unit back to player cargo.
 	 */
@@ -397,6 +401,10 @@ public class GroundUnit {
 		}
 		
 		info.addPara(str, color, 0);
+	}
+	
+	public void setMorale(float morale) {
+		this.morale = morale;
 	}
 	
 	/**
@@ -712,7 +720,7 @@ public class GroundUnit {
 			pad = 4.5f;
 		}
 		
-		String commoditySprite = Global.getSettings().getCommoditySpec(type.commodityId).getIconName();
+		String commoditySprite = type.getCommoditySprite();
 		String crest = faction.getCrest();
 		
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH * sizeMult, 
@@ -909,21 +917,27 @@ public class GroundUnit {
 		public String getCommodityName() {
 			return Global.getSettings().getCommoditySpec(commodityId).getName();
 		}
+		
+		public String getCommoditySprite() {
+			return Global.getSettings().getCommoditySpec(commodityId).getIconName();
+		}
 	}
 	
 	public static enum UnitSize {
-		PLATOON(40, 60, 1f),
+		PLATOON(40, 65, 1f),
 		COMPANY(120, 200, 0.5f),
 		BATTALION(500, 800, 0.25f),
 		REGIMENT(2000, 3500, 0.1f);
 		
-		public int avgSize;
-		public int maxSize;
-		public float damMult;
+		public final int avgSize;
+		public final int maxSize;
+		public final int minSize;
+		public final float damMult;
 		
 		private UnitSize(int avgSize, int maxSize, float damMult) {
 			this.avgSize = avgSize;
 			this.maxSize = maxSize;
+			minSize = (int)(avgSize * GBConstants.UNIT_MIN_SIZE_MULT);
 			this.damMult = damMult;
 		}
 		

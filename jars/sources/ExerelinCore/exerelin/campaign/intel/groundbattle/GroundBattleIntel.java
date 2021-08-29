@@ -70,6 +70,7 @@ import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ColonyNPCHostileActListener;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -1358,7 +1359,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		btnHolder1.addButton(getString("btnRunPlayerAI"), BUTTON_AUTO_MOVE,	base,
 				bg, 160, VIEW_BUTTON_HEIGHT, 0);
 		String tooltipStr = getString("btnRunPlayerAI_tooltip");
-		TooltipCreator tt = NexUtils.createSimpleTextTooltip(tooltipStr, 360);
+		TooltipCreator tt = NexUtilsGUI.createSimpleTextTooltip(tooltipStr, 360);
 		btnHolder1.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
 		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
 		
@@ -1596,7 +1597,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (int i=1; i<=3; i++) {
 			ForceType type = ForceType.values()[i - 1];
 			info.setBulletedListMode(bullet);
-			section = info.beginImageWithText(Global.getSettings().getCommoditySpec(type.commodityId).getIconName(), 32);
+			section = info.beginImageWithText(type.getCommoditySprite(), 32);
 			String name = Misc.ucFirst(type.getName());
 			section.addPara(getString("helpPara3-" + i), pad, h, name);
 			info.addImageWithText(0);

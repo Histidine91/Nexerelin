@@ -18,6 +18,8 @@ public class GBConstants {
 	public static float HEAVY_DROP_COST_MULT = 1.25f;
 	public static float FLEET_SUPPORT_MOVEMENT_MULT = 0.5f;
 	
+	public static float UNIT_MIN_SIZE_MULT = 0.25f;	// of base size
+	
 	public static float BASE_MORALE = 0.8f;
 	public static float BASE_DAMAGE_MULT = 0.1f;
 	public static float MORALE_ATTACK_MOD = 0.15f;

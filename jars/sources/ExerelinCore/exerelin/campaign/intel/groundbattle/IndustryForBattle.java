@@ -20,6 +20,7 @@ import exerelin.campaign.intel.groundbattle.plugins.IndustryForBattlePlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -386,7 +387,7 @@ public class IndustryForBattle {
 		strTT.addPara(Math.round(getStrength(attacker)) + "", textPad).setAlignment(Alignment.RMID);
 		String ttStr = StringHelper.substituteToken(GroundBattleIntel.getString(
 				"industryPanel_tooltipStrength"), "$side", side);
-		TooltipCreator tt = NexUtils.createSimpleTextTooltip(ttStr, 320);
+		TooltipCreator tt = NexUtilsGUI.createSimpleTextTooltip(ttStr, 320);
 		strTT.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
 		stats.addUIElement(strTT).inTL(2, 0);
 		
@@ -402,7 +403,7 @@ public class IndustryForBattle {
 			moraleTT.addPara(moraleStr + "%", textPad, h, moraleStr).setAlignment(Alignment.RMID);
 			ttStr = StringHelper.substituteToken(GroundBattleIntel.getString(
 				"industryPanel_tooltipMorale"), "$side", side);
-			tt = NexUtils.createSimpleTextTooltip(ttStr, 320);
+			tt = NexUtilsGUI.createSimpleTextTooltip(ttStr, 320);
 			moraleTT.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
 		}
 		else {

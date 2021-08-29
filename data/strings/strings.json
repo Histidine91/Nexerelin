@@ -1206,15 +1206,29 @@
 		"actionDisband":"disband",
 		"actionCancelMove":"cancel movement",
 		"actionCancelWithdraw":"cancel withdrawal",
+		"actionSplit":"split",
+		"actionMergeOrTransfer":"merge/transfer",
+		"actionMerge":"merge",
+		"actionTransfer":"transfer",
+		"actionTransferTooltip":"Move marines/heavy arms from one unit to another. The recipient unit's morale will shift proportionately towards that of the donor unit.",
+		"actionTransferSlider":"Size of our unit (%s)",
+		"actionTransferSliderTooltip":"Pools the strength from the two units, then gives the currently selected unit this many marines/heavy arms from the pool, with the remainder going to the other unit. Each unit cannot exceed the minimum or maximum unit size.",
+		
 		"actionMoveReorganizingTooltip":"Cannot move while reorganizing.",
 		"actionMoveOutOfMovementPointsTooltip":"Out of movement points.",
 		"actionDeployOutOfRange":"Fleet must be within %s units of the target.",
 		"actionDeployNotEnoughTooltip":"Deploying this unit would cost %s supplies. You only have %s supplies available.",
+		"actionSplitTooSmallTooltip":"Unit is too small to split.",
+		"actionSplitMaxUnitsTooltip":"Maximum number of player units reached.",
+		"actionMergeNoUnitsTooltip":"No other units of the same type in this location.",
+		"actionMergeTooLargeTooltip":"Resulting unit would exceed max size.",
+		
 		"actionDeployInfo":"Deployment will take effect immediately.",
 		"actionDeployInfoAttrition":"Enemy defenses will cause %s damage to this unit during the drop.",
 		"actionDisruptConfirm":"This will disrupt the %s for at least %s days, and takes effect immediately. The unit will reorganize for one turn.",
 		"actionWithdrawConfirm":"Confirm unit withdrawal? This will take effect during the move phase of the current turn.",
 		"actionDisbandConfirm":"Really disband this unit?",
+				
 		
 		"currLocation":"Location: %s",
 		

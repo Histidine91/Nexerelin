@@ -11,6 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NexUtilsGUI {
+		
+	public static TooltipCreator createSimpleTextTooltip(final String str, final float width) {
+		return new TooltipCreator() {
+			@Override
+			public boolean isTooltipExpandable(Object tooltipParam) {
+				return false;
+			}
+
+			@Override
+			public float getTooltipWidth(Object tooltipParam) {
+				return width;
+			}
+
+			@Override
+			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+				tooltip.addPara(str, 0);
+			}
+		};
+	}
 	
 	public static CustomPanelGenResult addPanelWithFixedWidthImage(CustomPanelAPI external,
 			CustomUIPanelPlugin plugin, float width, float height, 
@@ -28,12 +47,15 @@ public class NexUtilsGUI {
 		panel.addUIElement(image).inTL(0, 0);
 		
 		TooltipMakerAPI textHolder = panel.createUIElement(textWidth, height, false);
-		if (largeFont)
-			textHolder.setParaSmallInsignia();
-		textHolder.addPara(text, textColor, pad);
-		textHolder.setParaFontDefault();
-		if (tooltip != null)
-			textHolder.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
+		if (text != null) {
+			if (largeFont)
+				textHolder.setParaSmallInsignia();
+			textHolder.addPara(text, textColor, pad);
+			textHolder.setParaFontDefault();
+			if (tooltip != null)
+				textHolder.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
+		}
+		
 		panel.addUIElement(textHolder).rightOfTop(image, textPad);
 		
 		CustomPanelGenResult result = new CustomPanelGenResult(panel);

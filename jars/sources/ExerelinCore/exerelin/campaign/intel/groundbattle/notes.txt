@@ -30,8 +30,6 @@ Close Air Support
 	- Commanders
 	- FPE condition: global buff to defense strength on all FPE industries?
 
-- Merge/split command
-
 - [playtest] AI
 
 - [test] Orphans made

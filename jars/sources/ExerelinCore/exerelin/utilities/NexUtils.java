@@ -350,26 +350,7 @@ public class NexUtils
 		result *= precision;
 		
 		return result;
-	}
-		
-	public static TooltipCreator createSimpleTextTooltip(final String str, final float width) {
-		return new TooltipCreator() {
-			@Override
-			public boolean isTooltipExpandable(Object tooltipParam) {
-				return false;
-			}
-
-			@Override
-			public float getTooltipWidth(Object tooltipParam) {
-				return width;
-			}
-
-			@Override
-			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-				tooltip.addPara(str, 0);
-			}
-		};
-	}
+	}	
 	
 	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(final boolean color, 
 			final int numDigits) {
