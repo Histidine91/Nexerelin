@@ -229,11 +229,13 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		options.addOption(getString("actionMergeOrTransfer", true), OptionId.MERGE_DIALOG, null);
 		options.addOption(getString("actionSplit", true), OptionId.SPLIT, null);
 		
-		if (unit.getSize() < intel.getUnitSize().minSize*2) {
+		if (unit.getSize() < intel.getUnitSize().getMinSizeForType(unit.getType()) * 2) 
+		{
 			options.setEnabled(OptionId.SPLIT, false);
 			options.setTooltip(OptionId.SPLIT, getString("actionSplitTooSmallTooltip"));
 		}
-		else if (intel.getPlayerData().getUnits().size() >= GroundBattleIntel.MAX_PLAYER_UNITS) {
+		else if (intel.getPlayerData().getUnits().size() >= GroundBattleIntel.MAX_PLAYER_UNITS) 
+		{
 			options.setEnabled(OptionId.SPLIT, false);
 			options.setTooltip(OptionId.SPLIT, getString("actionSplitMaxUnitsTooltip"));
 		}
@@ -264,9 +266,6 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		int max = absoluteMax;
 		
-		if (unit.getType() == ForceType.HEAVY)
-			max /= GroundUnit.HEAVY_COUNT_DIVISOR;
-		
 		max = Math.min(max, curr + (int)cargo.getCommodityQuantity(type.commodityId));
 		if (unit.getType() == ForceType.HEAVY) {
 			max = Math.min(max, (unit.getPersonnel() + cargo.getMarines())/GroundUnit.CREW_PER_MECH);
@@ -277,12 +276,13 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	protected void showResizeScreen() {
 		options.clearOptions();
-		int min = 0;
+		int min = intel.getUnitSize().getMinSizeForType(unit.getType());
 		int curr = unit.getSize();
-		int max = getMaxCountForResize(unit, curr, intel.getUnitSize().maxSize);
+		int max = getMaxCountForResize(unit, curr, intel.getUnitSize().getMaxSizeForType(unit.getType()));
+		if (min > curr) min = curr;
 		
 		options.addSelector(getString("selectorUnitCount", true), "unitSizeSelector", Color.GREEN, 
-				256, 48, 0, max, ValueDisplayMode.VALUE, null);
+				256, 48, min, max, ValueDisplayMode.VALUE, null);
 		options.setSelectorValue("unitSizeSelector", curr);
 		
 		options.addOption(StringHelper.getString("confirm", true), OptionId.RESIZE_CONFIRM);
@@ -418,8 +418,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	}
 	
 	protected int[] getMinAndMaxForTransfer(GroundUnit other) {
-		int min = intel.getUnitSize().minSize;
-		int max = intel.getUnitSize().maxSize;
+		int min = intel.getUnitSize().getMinSizeForType(unit.getType());
+		int max = intel.getUnitSize().getMaxSizeForType(unit.getType());
 		
 		int sizeSum = unit.getSize() + other.getSize();
 		// cannot take so many troops that the other unit drops below min size
@@ -470,6 +470,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		float buttonWidth = 96;
 		boolean self = unit == other;
 		
+		int size = unit.getSize();
+		
 		TooltipMakerAPI panelTooltip = Nex_VisualCustomPanel.getTooltip();
 		
 		CustomPanelAPI panel = Nex_VisualCustomPanel.getPanel();
@@ -484,11 +486,15 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		//text.setParaSmallInsignia();
 		text.addPara(other.getName(), self ? Misc.getHighlightColor() : other.getFaction().getBaseUIColor(), pad);
 		int curr = other.getSize();
-		int max = intel.getUnitSize().maxSize;
-		text.addPara(String.format("%s/%s", curr, max), 0);
+		int max = intel.getUnitSize().getMaxSizeForType(unit.getType());
+		LabelAPI label = text.addPara(String.format("%s/%s", curr, max), 0);
+		if (curr < intel.getUnitSize().getMinSizeForType(unit.getType())) {
+			label.setHighlight(curr + "");
+			label.setHighlightColor(Misc.getNegativeHighlightColor());
+		}
 		String str = String.format("%.0f", other.getAttackStrength());
 		String morale = StringHelper.toPercent(other.getMorale());
-		LabelAPI label = text.addPara(String.format(getString("industryPanel_tooltipUnitInfo"), 
+		label = text.addPara(String.format(getString("industryPanel_tooltipUnitInfo"), 
 				str, morale), 0);
 		label.setHighlight(str, morale);
 		label.setHighlightColors(Misc.getHighlightColor(), GroundUnit.getMoraleColor(other.getMorale()));
@@ -498,6 +504,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			String buttonId = "transfer_" + other.id;
 			TooltipMakerAPI buttonTransferHolder = info.createUIElement(buttonWidth, 48, false);
 			ButtonAPI buttonTransfer = buttonTransferHolder.addButton(getString("actionTransfer", true), buttonId, buttonWidth, 40, 4);
+			boolean allowTransfer = size + other.getSize() > intel.getUnitSize().getMinSizeForType(unit.getType());
+			
 			InteractionDialogCustomPanelPlugin.ButtonEntry entry = new InteractionDialogCustomPanelPlugin.ButtonEntry(buttonTransfer, buttonId) 
 			{
 				@Override
@@ -505,12 +513,20 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 					showTransferDialog(other);
 				}
 			};
-			buttonTransferHolder.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(
+			if (!allowTransfer) {
+				buttonTransfer.setEnabled(false);
+				buttonTransferHolder.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(
+						getString("actionTransferTooSmallTooltip"), 240), TooltipMakerAPI.TooltipLocation.BELOW);
+			} else {
+				buttonTransferHolder.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(
 						getString("actionTransferTooltip"), 360), TooltipMakerAPI.TooltipLocation.BELOW);
+			}
+			
+			
 			Nex_VisualCustomPanel.getPlugin().addButton(entry);
 			info.addUIElement(buttonTransferHolder).rightOfTop(text, pad);
 
-			boolean allowMerge = unit.getSize() + other.getSize() <= intel.getUnitSize().maxSize;
+			boolean allowMerge = unit.getSize() + other.getSize() <= intel.getUnitSize().getMaxSizeForType(unit.getType());
 
 			buttonId = "merge_" + other.id;
 			TooltipMakerAPI buttonMergeHolder = info.createUIElement(buttonWidth, 48, false);

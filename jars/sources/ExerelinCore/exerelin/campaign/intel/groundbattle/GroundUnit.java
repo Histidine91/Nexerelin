@@ -697,14 +697,20 @@ public class GroundUnit {
 		
 		float btnWidth = 160;
 		
+		// add marine unit button
+		int minSize = size.getMinSizeForType(ForceType.MARINE);
+		
 		TooltipMakerAPI buttonHolder = card.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
 		ButtonAPI newMarine = buttonHolder.addButton(String.format(getString("btnNewUnitMarine")
 				, size.getName()), BUTTON_NEW_MARINE, btnWidth, 24, 0);
-		if (cargo.getMarines() <= 0) newMarine.setEnabled(false);
+		if (cargo.getMarines() < minSize) newMarine.setEnabled(false);
+		
+		// add heavy unit button
+		minSize = size.getMinSizeForType(ForceType.HEAVY);
 		
 		ButtonAPI newHeavy = buttonHolder.addButton(String.format(getString("btnNewUnitHeavy")
 				, size.getName()), BUTTON_NEW_HEAVY, btnWidth, 24, 0);
-		if (cargo.getMarines() < CREW_PER_MECH || cargo.getCommodityQuantity(Commodities.HAND_WEAPONS) <= 0) 
+		if (cargo.getMarines() < minSize * CREW_PER_MECH || cargo.getCommodityQuantity(Commodities.HAND_WEAPONS) < minSize) 
 			newHeavy.setEnabled(false);
 		
 		card.addUIElement(buttonHolder).inTL((PANEL_WIDTH-btnWidth)/2, PANEL_HEIGHT/2 - 24);
@@ -941,10 +947,21 @@ public class GroundUnit {
 			this.damMult = damMult;
 		}
 		
-		public int getAverageSizeForType(ForceType type) {
-			int count = avgSize;
+		public static int getSizeForType(int count, ForceType type) {
 			if (type == ForceType.HEAVY) count = Math.round(count/GroundUnit.HEAVY_COUNT_DIVISOR);
 			return count;
+		}
+		
+		public int getAverageSizeForType(ForceType type) {
+			return getSizeForType(avgSize, type);
+		}
+		
+		public int getMinSizeForType(ForceType type) {
+			return getSizeForType(minSize, type);
+		}
+		
+		public int getMaxSizeForType(ForceType type) {
+			return getSizeForType(maxSize, type);
 		}
 		
 		public String getName() {

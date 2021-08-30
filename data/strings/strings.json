@@ -1151,6 +1151,7 @@
 		"btnViewInfo":"Info",
 		"btnViewLog":"Log",
 		"btnViewHelp":"Help",
+		"btnCancelMoves":"Cancel all move orders",
 		"btnResolveRound":"Resolve round",
 		"btnAIDebug":"Debug defender AI",
 		"btnRunPlayerAI":"Auto-move units",
@@ -1222,6 +1223,7 @@
 		"actionDeployNotEnoughTooltip":"Deploying this unit would cost %s supplies. You only have %s supplies available.",
 		"actionSplitTooSmallTooltip":"Unit is too small to split.",
 		"actionSplitMaxUnitsTooltip":"Maximum number of player units reached.",
+		"actionTransferTooSmallTooltip":"Combined unit sizes are too small.",
 		"actionMergeNoUnitsTooltip":"No other units of the same type in this location.",
 		"actionMergeTooLargeTooltip":"Resulting unit would exceed max size.",
 		
@@ -1230,7 +1232,6 @@
 		"actionDisruptConfirm":"This will disrupt the %s for at least %s days, and takes effect immediately. The unit will reorganize for one turn.",
 		"actionWithdrawConfirm":"Confirm unit withdrawal? This will take effect during the move phase of the current turn.",
 		"actionDisbandConfirm":"Really disband this unit?",
-				
 		
 		"currLocation":"Location: %s",
 		
@@ -1358,7 +1359,7 @@
 		"helpPara3Title":"Unit types",
 		"helpPara3-1":"%s: General combat type.",
 		"helpPara3-2":"%s: Attack bonus when on enemy-held industries, but suffers an attack penalty on station-only markets. Increased deployment cost. Each vehicle requires two marines to crew.",
-		"helpPara3-3":"%s: Local defenders. Weak in combat and with a tendency to run away, their only saving grace is their numbers. Will not move off their current industry, except retreats.",
+		"helpPara3-3":"%s: Local defenders. Weak in combat and with a tendency to run away, their only saving grace is their numbers. Will not move off their current industry, except when fleeing.",
 		
 		"helpPara4Title":"Morale",
 		"helpPara4-1":"Morale is a critical stat, serving as a second healthbar and more.",

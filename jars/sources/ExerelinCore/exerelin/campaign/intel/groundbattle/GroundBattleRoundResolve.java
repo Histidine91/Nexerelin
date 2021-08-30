@@ -169,7 +169,7 @@ public class GroundBattleRoundResolve {
 	}
 	
 	public IndustryForBattle tryRoutUnit(GroundUnit unit) {
-		if (unit.getSize() < intel.getUnitSize().getAverageSizeForType(unit.getType()) * 0.05f) {
+		if (unit.getSize() < intel.getUnitSize().getMinSizeForType(unit.getType())) {
 			printDebug(String.format("  %s broken and too many losses, destroying", unit.name));
 			unit.destroyUnit(0.5f);
 			return null;

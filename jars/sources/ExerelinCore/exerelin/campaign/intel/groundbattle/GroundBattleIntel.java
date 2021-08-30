@@ -191,10 +191,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			unit.type = i >= 4 ? ForceType.HEAVY : ForceType.MARINE;
 			
 			if (unit.type == ForceType.HEAVY) {
-				unit.heavyArms = Math.round(this.unitSize.avgSize / GroundUnit.HEAVY_COUNT_DIVISOR * MathUtils.getRandomNumberInRange(1, 1.4f));
+				unit.heavyArms = Math.round(unitSize.getAverageSizeForType(ForceType.HEAVY) * MathUtils.getRandomNumberInRange(1, 1.4f));
 				unit.personnel = unit.heavyArms * 2;
 			} else {
-				unit.personnel = Math.round(this.unitSize.avgSize * MathUtils.getRandomNumberInRange(1, 1.4f));
+				unit.personnel = Math.round(unitSize.getAverageSizeForType(ForceType.MARINE) * MathUtils.getRandomNumberInRange(1, 1.4f));
 				//unit.heavyArms = MathUtils.getRandomNumberInRange(10, 15);
 			}
 			
@@ -543,7 +543,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		unit.isAttacker = this.playerIsAttacker;
 		unit.fleet = Global.getSector().getPlayerFleet();
 		
-		int size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.avgSize);
+		int size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.getAverageSizeForType(type));
 		unit.setSize(size, true);
 		
 		unit.setStartingMorale();
@@ -571,7 +571,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			usableHeavyArms /= 2;
 		}
 		
-		float perUnitSize = (int)(unitSize.maxSize/GroundUnit.HEAVY_COUNT_DIVISOR);
+		float perUnitSize = unitSize.getMaxSizeForType(ForceType.HEAVY);
 		int numCreatable = (int)Math.ceil(usableHeavyArms / perUnitSize);
 		numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
 		numCreatable = (int)Math.ceil(numCreatable * 0.75f);
@@ -588,7 +588,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		// add marines
 		marines -= usableHeavyArms * GroundUnit.CREW_PER_MECH;
 		int remainingSlots = MAX_PLAYER_UNITS - playerData.getUnits().size();
-		perUnitSize = unitSize.maxSize;
+		perUnitSize = unitSize.getMaxSizeForType(ForceType.MARINE);
 		numCreatable = (int)Math.ceil(marines / perUnitSize);
 		numCreatable = Math.min(numCreatable, remainingSlots);
 		numPerUnit = 0;
@@ -1208,7 +1208,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		str = getString("intelDesc_unitSize");
 		info.addPara(str, pad, Misc.getHighlightColor(), Misc.ucFirst(unitSize.getName()), 
-				unitSize.avgSize + "", unitSize.maxSize + "", String.format("%.2f", unitSize.damMult) + "×");
+				unitSize.minSize + "", unitSize.avgSize + "", unitSize.maxSize + "", 
+				String.format("%.2f", unitSize.damMult) + "×");
 		
 		str = getString("intelDesc_round");
 		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
