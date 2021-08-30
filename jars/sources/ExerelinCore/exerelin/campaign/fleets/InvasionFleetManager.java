@@ -853,6 +853,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		for (MarketAPI market : markets)
 		{
 			String factionId = market.getFactionId();
+			String origFactionId = NexUtilsMarket.getOriginalOwner(market);
+			if (factionId.equals("nex_derelict") && origFactionId != null)
+				factionId = origFactionId;
+			
 			if (EXCEPTION_LIST.contains(factionId)) continue;
 			
 			if (market.isHidden()) continue;
