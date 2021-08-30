@@ -96,7 +96,7 @@
 				["fury_attack", "fury_support", "harbinger_Strike", "hyperion_Attack", "hyperion_Strike",],
 				["shade_Assault", "omen_PD", "shrike_Attack", "shrike_Support"],
 			],
-			"extraFP":6,
+			"extraFP":9,
 			"officers":[	# added to ships in order
 				{
 					"level":4,
@@ -118,7 +118,7 @@
 				["heron_Attack", "heron_Strike"],
 				["drover_Strike"],
 			],
-			"extraFP":10,
+			"extraFP":15,
 			"officers":[	# added to ships in order
 				{
 					"level":5,
@@ -149,7 +149,7 @@
 				["hammerhead_Balanced", "hammerhead_support", "enforcer_Assault", "enforcer_Balanced", "enforcer_CS", 
 					"sunder_Assault", "sunder_CS", "swp_vanguard_ass", "swp_vanguard_ovd"],
 			],
-			"extraFP":20,
+			"extraFP":30,
 			"officers":[
 				{
 					"firstName":"Nameless",	
@@ -208,7 +208,7 @@
 				["apogee_Balanced"],
 				["shepherd_Frontier"],
 			],
-			"extraFP":5,
+			"extraFP":8,
 			"officers":[
 				{
 					"level":4,
@@ -229,7 +229,7 @@
 			"faction":"independent",
 			"factionForShipPick":"mercenary",
 			"minLevel":5,
-			"extraFP":30,
+			"extraFP":45,
 			"doctrineSizeOverride":4,
 			"officers":[
 				{
@@ -256,7 +256,7 @@
 			"feeMonthly":2000,
 			"faction":"pirates",
 			"minLevel":3,
-			"extraFP":25,
+			"extraFP":36,
 			"doctrineSizeOverride":5,
 			"officers":[
 				{
@@ -286,6 +286,7 @@
 		},
 		
 		# disabled via min level, we don't want people stripping it for its weapons (also it kind of rekts the lore)
+		# also note that battles won't end if this is deployed and on the field, use EndBattle console command
 		"endbringer":{
 			"name":"The Bringer of End",
 			"desc":"This completely outworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",

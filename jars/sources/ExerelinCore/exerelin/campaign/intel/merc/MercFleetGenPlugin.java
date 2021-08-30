@@ -60,6 +60,7 @@ public class MercFleetGenPlugin {
 				copy.setShipSize(def.doctrineSizeOverride);
 				params.doctrineOverride = copy;
 			}
+			params.ignoreMarketFleetSizeMult = true;
 			Integer maxSize = (Integer)def.miscData.get("maxAutogenFleetSize");
 			if (maxSize != null) {
 				log.info(String.format("Setting max autogen fleet size for %s to %s", def.id, maxSize));
