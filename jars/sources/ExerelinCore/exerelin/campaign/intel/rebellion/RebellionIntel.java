@@ -71,7 +71,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final float REP_MULT = 0.1f;
 	public static final float MAX_REP = 0.2f;
 	public static final float STRENGTH_CHANGE_MULT = 0.1f;	// damage done per round
-	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
+	public static final float SUPPRESSION_FLEET_INTERVAL = 120f;
 	public static final float REBEL_ORIGINAL_OWNER_STR_MULT = 1.25f;
 	public static final int MAX_STABILITY_PENALTY = 5;
 	public static final int MAX_FINAL_UNREST = 4;
