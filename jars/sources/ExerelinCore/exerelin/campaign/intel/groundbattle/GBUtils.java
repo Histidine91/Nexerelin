@@ -106,7 +106,7 @@ public class GBUtils {
 		
 		// if cramped, do marines only
 		// else, heavy arms then marines
-		if (intel.isCramped()) {
+		if (false && intel.isCramped()) {
 			return new float[] {marines * ForceType.MARINE.strength};
 		}
 		else {

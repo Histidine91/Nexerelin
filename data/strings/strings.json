@@ -1127,7 +1127,7 @@
 		"intelTitle":"Surface Battle: $market",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
 		"intelDesc_round":"Turn %s",
-		"intelDesc_unitSize":"Unit size: %s (troop count: %s typical, %s max; damage mult %s)",
+		"intelDesc_unitSize":"Unit size: %s (troop count: %s min, %s typical, %s max; damage mult %s)",
 		"intelDesc_headerAttackerMod":"Attacker modifiers",
 		"intelDesc_headerDefenderMod":"Defender modifiers",
 		"intelDesc_headerCommonMod":"Common modifiers",

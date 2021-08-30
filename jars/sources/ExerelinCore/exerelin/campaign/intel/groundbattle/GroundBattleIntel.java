@@ -102,6 +102,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public static final Object UPDATE_TURN = new Object();
 	public static final Object UPDATE_VICTORY = new Object();
 	public static final Object BUTTON_RESOLVE = new Object();
+	public static final Object BUTTON_CANCEL_MOVES = new Object();
 	public static final Object BUTTON_AUTO_MOVE = new Object();
 	public static final Object BUTTON_AUTO_MOVE_TOGGLE = new Object();
 	public static final Object BUTTON_DEBUG_AI = new Object();
@@ -565,6 +566,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		// add heavy units
 		int usableHeavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
+		if (isCramped()) {
+			log.info("Cramped conditions, halving heavy unit count");
+			usableHeavyArms /= 2;
+		}
 		
 		float perUnitSize = (int)(unitSize.maxSize/GroundUnit.HEAVY_COUNT_DIVISOR);
 		int numCreatable = (int)Math.ceil(usableHeavyArms / perUnitSize);
@@ -574,15 +579,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
 		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
 		
-		if (isCramped()) {
-			log.info("Cramped conditions, skipping generation of heavy units");
-			usableHeavyArms = 0;
-		} else {
-			log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, usableHeavyArms));
-			for (int i=0; i<numCreatable; i++) {
-				GroundUnit unit = createPlayerUnit(ForceType.HEAVY);
-				unit.setSize(numPerUnit, true);
-			}
+		log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, usableHeavyArms));
+		for (int i=0; i<numCreatable; i++) {
+			GroundUnit unit = createPlayerUnit(ForceType.HEAVY);
+			unit.setSize(numPerUnit, true);
 		}
 		
 		// add marines
@@ -755,7 +755,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				plugin.setPlayerPaidToUnlock(true);
 		}
 		
-		if (outcome != outcome.CANCELLED) {
+		if (outcome != BattleOutcome.CANCELLED) {
 			addXPToDeployedUnits(storage);
 		}
 	}
@@ -1354,23 +1354,32 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
 		
 		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
-		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(160, 
+		
+		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(180, 
 				VIEW_BUTTON_HEIGHT, false);
-		btnHolder1.addButton(getString("btnRunPlayerAI"), BUTTON_AUTO_MOVE,	base,
+		btnHolder1.addButton(getString("btnCancelMoves"), BUTTON_CANCEL_MOVES, base,
+				bg, 180, VIEW_BUTTON_HEIGHT, 0);
+		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
+		
+		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(160, 
+				VIEW_BUTTON_HEIGHT, false);
+		btnHolder2.addButton(getString("btnRunPlayerAI"), BUTTON_AUTO_MOVE,	base,
 				bg, 160, VIEW_BUTTON_HEIGHT, 0);
 		String tooltipStr = getString("btnRunPlayerAI_tooltip");
 		TooltipCreator tt = NexUtilsGUI.createSimpleTextTooltip(tooltipStr, 360);
-		btnHolder1.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
-		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
+		btnHolder2.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
+		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
 		
-		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(240, 
+		TooltipMakerAPI btnHolder3 = buttonRow.createUIElement(240, 
 				VIEW_BUTTON_HEIGHT, false);
-		ButtonAPI check = btnHolder2.addAreaCheckbox(getString("btnTogglePlayerAI"), BUTTON_AUTO_MOVE_TOGGLE, 
+		ButtonAPI check = btnHolder3.addAreaCheckbox(getString("btnTogglePlayerAI"), BUTTON_AUTO_MOVE_TOGGLE, 
 				base, bg, fc.getBrightUIColor(),
 				240, VIEW_BUTTON_HEIGHT, 0);
 		check.setChecked(playerData.autoMoveAtEndTurn);
-		btnHolder2.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
-		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);		
+		btnHolder3.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
+		buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);	
+		
+		
 		
 		info.addCustom(buttonRow, 0);
 		
@@ -1887,6 +1896,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		if (buttonId == BUTTON_AUTO_MOVE_TOGGLE) {
 			playerData.autoMoveAtEndTurn = !playerData.autoMoveAtEndTurn;
+			return;
+		}
+		if (buttonId == BUTTON_CANCEL_MOVES) {
+			for (GroundUnit unit : playerData.getUnits()) {
+				unit.cancelMove();
+			}
+			ui.updateUIForItem(this);
 			return;
 		}
 		
