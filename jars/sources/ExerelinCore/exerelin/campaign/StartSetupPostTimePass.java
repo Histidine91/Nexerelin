@@ -160,6 +160,9 @@ public class StartSetupPostTimePass {
 			MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
 			mem.set(GateEntityPlugin.CAN_SCAN_GATES, true);
 			mem.set(GateEntityPlugin.GATES_ACTIVE, true);
+			Global.getSector().getCharacterData().addAbility(Abilities.TRANSVERSE_JUMP);
+			Global.getSector().getCharacterData().addAbility(Abilities.GRAVITIC_SCAN);
+			
 			mem.set("$interactedWithGABarEvent", true);
 			
 			if (corvusMode) {
