@@ -255,7 +255,11 @@ ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut e
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,"$menuState = exerelinSpecial
 FireAll ExerelinMarketSpecialInitialize
 FireAll ExerelinMarketSpecial",,,
-ExerelinMarketSpecialBackOption,ExerelinMarketSpecial,,SetShortcut exerelinMarketSpecialBack ESCAPE,,25:exerelinMarketSpecialBack:Back,
+,,,,,,
+#nex_marketSpecialIntelOption,ExerelinMarketSpecial,!$hasMarket,MakeOptionOpenCore nex_openIntel INTEL OPEN,,24:nex_openIntel:Open intel screen,
+#nex_marketSpecialIntelOptionSel,DialogOptionSelected,$option == nex_openIntel,,,,
+ExerelinMarketSpecialBackOption,ExerelinMarketSpecial,$hasMarket,SetShortcut exerelinMarketSpecialBack ESCAPE,,25:exerelinMarketSpecialBack:Back,
+ExerelinMarketSpecialBackOptionNoMarket,ExerelinMarketSpecial,!$hasMarket,SetShortcut marketLeave ESCAPE,,25:marketLeave:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ExerelinShowDefaultVisual
 $menuState = main 0
 FireAll PopulateOptions",,,

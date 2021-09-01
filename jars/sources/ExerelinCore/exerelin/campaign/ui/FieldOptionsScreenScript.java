@@ -4,17 +4,20 @@ import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
@@ -56,10 +59,19 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 		
 		if (Keyboard.isKeyDown(NexConfig.directoryDialogKey))
 		{
-			Global.getSector().getCampaignUI().showInteractionDialog(new FactionDirectoryDialog(), Global.getSector().getPlayerFleet());
+			CampaignFleetAPI player =  Global.getSector().getPlayerFleet();
+			boolean success = Global.getSector().getCampaignUI().showInteractionDialog(
+					new RuleBasedInteractionDialogPluginImpl(), player);
+			if (success) {
+				InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+				RuleBasedDialog rbd = ((RuleBasedDialog) dialog.getPlugin());
+				dialog.getVisualPanel().showFleetInfo(null, player, null, null);
+				FireAll.fire(null, dialog, rbd.getMemoryMap(), "ExerelinMarketSpecial");
+			}
 		}
 	}
 
+	@Deprecated
 	public static class FactionDirectoryDialog implements InteractionDialogPlugin, CoreInteractionListener
 	{
 		private InteractionDialogAPI dialog;
