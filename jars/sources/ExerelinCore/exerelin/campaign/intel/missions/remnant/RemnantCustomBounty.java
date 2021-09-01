@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.missions.cb.CBPather;
 import com.fs.starfarer.api.impl.campaign.missions.cb.CBPatrol;
 import com.fs.starfarer.api.impl.campaign.missions.cb.CBTrader;
 import com.fs.starfarer.api.impl.campaign.missions.cb.CustomBountyCreator;
+import exerelin.campaign.intel.missions.Nex_CBHegInspector;
 
 public class RemnantCustomBounty extends BaseCustomBounty {
 
@@ -23,6 +24,7 @@ public class RemnantCustomBounty extends BaseCustomBounty {
 		CREATORS.add(new CBPather());
 		//CREATORS.add(new CBMilitaryRem());
 		CREATORS.add(new CBEnemyStation());
+		CREATORS.add(new Nex_CBHegInspector());
 	}
 	
 	@Override

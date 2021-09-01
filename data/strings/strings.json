@@ -581,6 +581,8 @@
 		"factionBountyIntel_bulletShare":"%s share based on damage dealt",
 		"factionBountyIntel_bulletBaseReward":"%s base reward per frigate",
 		"factionBountyIntel_bulletRemaining":"remaining",
+		
+		"bountyPostfix_hegInspector":"Hegemony Inspector",
 	},
 	"nex_buyColony":{
 		"intelTitle":"Governorship: $market",
