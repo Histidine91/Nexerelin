@@ -168,8 +168,7 @@ public class MercFleetGenPlugin {
 				person.getStats().setSkillLevel(skillId, level);
 			}
 		}
-		
-		
+				
 		Misc.setMercenary(person, true);
 		Misc.setUnremovable(person, true);
 		

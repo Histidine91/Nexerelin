@@ -339,8 +339,12 @@ public class MarketMapDrawer {
 			List<Rectangle> toUse = new LinkedList<>();
 			for (int i=0; i<industries.size(); i++) {
 				// hypothetically puts stuff closer to the center but I can't prove it
-				if (isStation) toUse.add(picker.getItems().remove(0));
-				else toUse.add(picker.pickAndRemove());
+				if (false && isStation) {
+					toUse.add(picker.getItems().remove(0));
+				}
+				else {
+					toUse.add(picker.pickAndRemove());
+				}
 			}
 			
 			// Give the rectangle closest to the center to spaceport?

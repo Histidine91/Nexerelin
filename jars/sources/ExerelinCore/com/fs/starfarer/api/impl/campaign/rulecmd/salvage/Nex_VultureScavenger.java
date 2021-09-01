@@ -101,6 +101,8 @@ public class Nex_VultureScavenger extends BaseCommandPlugin {
 		config.showFleetAttitude = false;
 		//config.alwaysAttackVsAttack = true;
 		config.pullInStations = false;
+		//config.pullInEnemies = false;
+		//config.pullInAllies = false;
 		config.noSalvageLeaveOptionText = Misc.ucFirst(StringHelper.getString("continue"));
 		
 		config.dismissOnLeave = false;

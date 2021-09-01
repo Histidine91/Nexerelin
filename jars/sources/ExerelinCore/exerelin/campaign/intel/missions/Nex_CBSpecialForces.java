@@ -177,6 +177,6 @@ public class Nex_CBSpecialForces extends BaseCustomBountyCreator {
 
 	@Override
 	public int getMinDifficulty() {
-		return 0;
+		return 7;
 	}
 }

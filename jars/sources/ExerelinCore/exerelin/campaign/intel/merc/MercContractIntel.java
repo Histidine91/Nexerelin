@@ -189,6 +189,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	
 	/**
 	 * Called when the mercs leave the party.
+	 * @param marketId The ID of the market where the mercs are departing.
 	 */
 	public void endEvent(String marketId) {
 		long currValue = calcShipsValue();

@@ -52,12 +52,21 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
-	protected int marinesPerFleet = 0;
+	protected int marinesPerFleet = 0;	// used for legacy invasions
+	protected int marinesTotal = -1;	// used for new invasions
 	protected DefenseFleetIntel brawlDefIntel;
 	protected WaitStage waitStage;
 		
 	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
+	}
+	
+	protected Object readResolve() {
+		if (marinesTotal == -1) {
+			marinesTotal = (int)Math.ceil(marinesPerFleet * 1.5f);
+		}
+		
+		return this;
 	}
 	
 	@Override
@@ -93,15 +102,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		//addStage(new NexReturnStage(this));	// sending fleets home is handled by wait stage
 		
-		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.55f);
-		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
-		if (marinesPerFleet < 100) {
-			marinesPerFleet = 100;
-		}
-		else if (marinesPerFleet > MAX_MARINES) {
-			log.info("Capping marines at " + MAX_MARINES + " (was " + marinesPerFleet + ")");
-			marinesPerFleet = MAX_MARINES;
-		}
+		setMarineCount();
 		
 		if (brawlMode) {
 			spawnBrawlDefenseFleet();
@@ -142,7 +143,19 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		}
 	}
 
-
+	public void setMarineCount() {
+		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.55f);
+		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
+		if (marinesPerFleet < 100) {
+			marinesPerFleet = 100;
+		}
+		else if (marinesPerFleet > MAX_MARINES) {
+			log.info("Capping marines at " + MAX_MARINES + " (was " + marinesPerFleet + ")");
+			marinesPerFleet = MAX_MARINES;
+		}
+		
+		marinesTotal = (int)Math.ceil(defenderStrength * 1.5);
+	}
 
 	/*
 	@Override
