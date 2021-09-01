@@ -201,6 +201,15 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		}
 		
 		FleetDataAPI data = Global.getSector().getPlayerFleet().getFleetData();
+		
+		// remove any officers that were assigned to player ships, from said ships
+		// otherwise they'll be stuck there forever
+		for (FleetMemberAPI member : data.getMembersListCopy()) {
+			if (member.getCaptain() != null && officers.contains(member.getCaptain())) {
+				member.setCaptain(null);
+			}
+		}
+		
 		for (PersonAPI officer : officers) {
 			data.removeOfficer(officer);
 		}
