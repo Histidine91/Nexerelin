@@ -77,7 +77,8 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 				
 				if ("super".equalsIgnoreCase(fleetTypeStr))
 				{
-					supplies += (int)temp.getCargoCapacity();
+					supplies += (int)temp.getCargoCapacity() * 3 / 4;
+					machinery += (int)temp.getCargoCapacity() / 4;
 				}
 				else
 				{
