@@ -175,12 +175,6 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 		}
 		return targets;
 	}
-	
-	@Override
-	public void giveReturnOrdersToStragglers(List<RouteManager.RouteData> stragglers) {
-		super.giveReturnOrdersToStragglers(stragglers);
-		RaidCondition.removeRaidFromConditions(system, intel);
-	}
 
 	@Override
 	public void notifyStarted() {

@@ -13,10 +13,12 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
@@ -103,6 +105,12 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
 						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
+	}
+	
+	@Override
+	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
+		super.notifyRaidEnded(raid, status);
+		RaidCondition.removeRaidFromConditions(system, this);
 	}
 	
 	// don't display faction
