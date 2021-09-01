@@ -37,6 +37,7 @@ public class ResponseFleetManager
 	{
 		//float qf = origin.getShipQualityFactor();
 		//qf = Math.max(qf, 0.7f);
+		if (market.isHidden()) return null;
 		
 		String factionId = market.getFactionId();
 		String fleetFactionId = factionId;
