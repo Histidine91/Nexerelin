@@ -572,9 +572,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		float perUnitSize = unitSize.getMaxSizeForType(ForceType.HEAVY);
-		int numCreatable = (int)Math.ceil(usableHeavyArms / perUnitSize);
-		numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
-		numCreatable = (int)Math.ceil(numCreatable * 0.75f);
+		int numCreatable = 0;
+		
+		if (usableHeavyArms >= unitSize.getMinSizeForType(ForceType.HEAVY)) {
+			numCreatable = (int)Math.ceil(usableHeavyArms / perUnitSize);
+			numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
+			numCreatable = (int)Math.ceil(numCreatable * 0.75f);
+		}		
+		
 		int numPerUnit = 0;
 		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
 		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
@@ -589,9 +594,15 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		marines -= usableHeavyArms * GroundUnit.CREW_PER_MECH;
 		int remainingSlots = MAX_PLAYER_UNITS - playerData.getUnits().size();
 		perUnitSize = unitSize.getMaxSizeForType(ForceType.MARINE);
-		numCreatable = (int)Math.ceil(marines / perUnitSize);
-		numCreatable = Math.min(numCreatable, remainingSlots);
-		numPerUnit = 0;
+		
+		if (marines >= unitSize.getMinSizeForType(ForceType.MARINE)) {
+			numCreatable = (int)Math.ceil(marines / perUnitSize);
+			numCreatable = Math.min(numCreatable, remainingSlots);
+			numPerUnit = 0;
+		} else {
+			numCreatable = 0;
+		}
+		
 		if (numCreatable > 0) numPerUnit = marines/numCreatable;
 		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
 		
