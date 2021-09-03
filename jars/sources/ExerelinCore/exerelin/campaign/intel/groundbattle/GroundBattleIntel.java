@@ -845,6 +845,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			log.params.put("marinesLost", countPersonnelFromMap(playerData.getLosses()));
 			log.params.put("heavyArmsLost", playerData.getLosses().get(ForceType.HEAVY));
 			addLogEvent(log);
+			
+			log = new GroundBattleLog(this, GroundBattleLog.TYPE_COMMODITIES_USED_REPORT, turnNum);
+			log.params.put("supplies", playerData.suppliesUsed);
+			log.params.put("fuel", playerData.fuelUsed);
+			addLogEvent(log);
 		}
 		
 		sendUpdateIfPlayerHasIntel(UPDATE_VICTORY, false);

@@ -84,6 +84,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		
 		if (user.isPlayer()) {
 			Global.getSector().getPlayerFleet().getCargo().removeFuel(cost);
+			getIntel().getPlayerData().fuelUsed += cost;
 		}
 		
 		getIntel().reapply();

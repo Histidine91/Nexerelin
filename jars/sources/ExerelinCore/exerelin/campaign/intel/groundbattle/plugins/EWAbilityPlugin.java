@@ -42,6 +42,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		
 		if (user.isPlayer()) {
 			Global.getSector().getPlayerFleet().getCargo().removeSupplies(cost);
+			getIntel().getPlayerData().suppliesUsed += cost;
 		}
 		
 		for (GroundUnit unit : getIntel().getSide(!side.isAttacker()).getUnits()) {

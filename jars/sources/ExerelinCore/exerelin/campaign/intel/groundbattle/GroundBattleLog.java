@@ -31,6 +31,7 @@ public class GroundBattleLog {
 	public static final String TYPE_BATTLE_END = "victory";
 	public static final String TYPE_XP_GAINED = "gainXP";
 	public static final String TYPE_LOSS_REPORT = "lossReport";
+	public static final String TYPE_COMMODITIES_USED_REPORT = "commoditiesUsedReport";
 	
 	public final GroundBattleIntel intel;
 	public final int turn;
@@ -206,7 +207,7 @@ public class GroundBattleLog {
 			case TYPE_XP_GAINED:
 				{
 					Integer marines = (Integer)params.get("marines");
-					if (marines == 0) marines = 0;
+					if (marines == null) marines = 0;
 					float xp = (float)params.get("xp");
 					Boolean storage = (Boolean)params.get("isStorage");
 					if (storage == null) storage = false;
@@ -214,6 +215,19 @@ public class GroundBattleLog {
 					str = getString("log_xp_" + (storage ? "storage" : "fleet"));
 					tooltip.addPara(str, LOG_PADDING, h, marines + "", String.format("%.1f", xp));
 				}
+				break;
+			
+			case TYPE_COMMODITIES_USED_REPORT:
+				{
+					Integer supplies = (Integer)params.get("supplies");
+					if (supplies == null) supplies = 0;
+					Integer fuel = (Integer)params.get("fuel");
+					if (fuel == null) fuel = 0;
+					str = getString("log_commoditiesUsed");
+					label = tooltip.addPara(str, LOG_PADDING, h, supplies + "", fuel + "");
+					label.setHighlightColors(Color.YELLOW, Color.PINK);
+				}
+				break;
 		}
 	}
 	

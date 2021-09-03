@@ -251,7 +251,10 @@ public class GroundUnit {
 	public void deploy(IndustryForBattle newLoc, InteractionDialogAPI dialog) {		
 		setLocation(newLoc);
 		int cost = getDeployCost();
-		if (isPlayer) getCargo().removeSupplies(cost);
+		if (isPlayer) {
+			getCargo().removeSupplies(cost);
+			intel.getPlayerData().suppliesUsed += cost;
+		}
 		if (dialog != null) {
 			AddRemoveCommodity.addCommodityLossText(Commodities.SUPPLIES, cost, dialog.getTextPanel());
 		}

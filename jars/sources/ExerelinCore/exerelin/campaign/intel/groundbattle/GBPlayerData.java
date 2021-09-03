@@ -17,6 +17,8 @@ public class GBPlayerData {
 	protected Map<GroundUnit.ForceType, Integer> lossesLastTurn = new HashMap<>();
 	protected Map<GroundUnit.ForceType, Integer> disbanded = new HashMap<>();
 	protected Map<String, Integer> sentToStorage = new HashMap<>();
+	public int suppliesUsed;
+	public int fuelUsed;
 	protected List<GroundUnit> units = new LinkedList<>();	
 	protected PersonnelAtEntity xpTracker;
 	protected CargoAPI loot;

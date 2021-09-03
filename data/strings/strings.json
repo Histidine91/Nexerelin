@@ -1275,6 +1275,7 @@
 		"log_ended":"Battle ended",
 		"log_xp_storage":"%s marines in storage earned %s XP",
 		"log_xp_fleet":"%s marines in fleet earned %s XP",
+		"log_commoditiesUsed":"Supplies used: %s | Fuel used: %s",
 		
 		"troopNameMarine":"marine",
 		"troopNameMech":"heavy",
