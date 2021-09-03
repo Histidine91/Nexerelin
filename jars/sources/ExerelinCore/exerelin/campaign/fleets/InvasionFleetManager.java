@@ -107,6 +107,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
+	public static final float PIRATE_RAGE_THRESHOLD = 125;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.1f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -1069,7 +1070,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					float newVal = NexUtils.modifyMapEntry(pirateRage, factionId, rage);
 					//log.info("Incrementing " + rage + " rage from market " + market.getName() + 
 					//		" of faction " + market.getFaction().getDisplayName() + ", now " + newVal);
-					if (newVal > 100) {
+					if (newVal > PIRATE_RAGE_THRESHOLD) {
 						spawnBaseStrikeFleet(market.getFaction(), plugin.getIntel().getMarket());
 					}
 				}
