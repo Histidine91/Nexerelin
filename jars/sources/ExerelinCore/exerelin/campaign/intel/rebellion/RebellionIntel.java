@@ -192,13 +192,20 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
 		conditionToken = market.addCondition("nex_rebellion_condition");
+		
+		if (instant) {
+			updateConflictIntensity();
+			updateStabilityPenalty();
+			updateCommodityDemand();
+		}
+		
 		Global.getSector().addScript(this);
 		if (!instant)
 			sendUpdate(UpdateParam.PREP);
 		else {
 			//sendUpdate(UpdateParam.START);	// leave it silent //TODO: niko-dear god how am i going to implement this
 		}
-			
+		
 	}
 	
 	public static float getSizeMod(int size)
