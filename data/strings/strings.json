@@ -1746,6 +1746,8 @@
 		"intel_desc_paraEnded":"Your contract with the mercenary company %s has ended.",
 		"intel_desc_dismissPrompt":"This will end your contract with the company, causing them to leave when docking at the next applicable market. Monthly fees will continue to be paid until they actually leave.",
 		
+		"panel_shipValue":"Ship value",
+		
 		"dialog_officerLevels":"Officer levels: [%s]",
 		"dialog_lesserShips":"The company includes %s other ships of lesser significance.",
 		"dialog_shipsAfterHiring":"Ships after hiring: %s/%s",

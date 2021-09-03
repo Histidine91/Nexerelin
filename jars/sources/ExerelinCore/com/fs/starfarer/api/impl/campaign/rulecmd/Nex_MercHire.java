@@ -24,6 +24,7 @@ import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -328,19 +329,25 @@ public class Nex_MercHire extends BaseCommandPlugin {
 	 */
 	public void showOptions(InteractionDialogAPI dialog) {
 		float pad = 3;
+		float opad = 10;
 		
 		Nex_VisualCustomPanel.createPanel(dialog, true);
 		dialog.getOptionPanel().clearOptions();
 		
-		TooltipMakerAPI panelTooltip = Nex_VisualCustomPanel.getTooltip();
+		CustomPanelAPI panel = Nex_VisualCustomPanel.panel;
+		TooltipMakerAPI tooltip = Nex_VisualCustomPanel.tooltip;
+		
 		List<MercContractIntel> hires = getAvailableHires(dialog.getInteractionTarget().getMarket());
 		int credits = (int)Global.getSector().getPlayerFleet().getCargo().getCredits().get();
 		for (MercContractIntel intel : hires) {
 			MercCompanyDef def = intel.getDef();
-			TooltipMakerAPI entryHolder = panelTooltip.beginImageWithText(def.getLogo(), 48);
 			
-			CustomPanelAPI info = Nex_VisualCustomPanel.getPanel().createCustomPanel(MERC_INFO_WIDTH, 48, null);
-			TooltipMakerAPI text = info.createUIElement(200, 0, false);
+			NexUtilsGUI.CustomPanelGenResult panelGen = NexUtilsGUI.addPanelWithFixedWidthImage(panel, 
+				null, panel.getPosition().getWidth(), 48, null, 200, 3 * 3, 
+				def.getLogo(), 48, pad, null, false, null);
+			
+			CustomPanelAPI info = panelGen.panel;
+			TooltipMakerAPI text = (TooltipMakerAPI)panelGen.elements.get(1);
 			
 			boolean enough = credits >= def.feeUpfront;
 			
@@ -353,9 +360,8 @@ public class Nex_MercHire extends BaseCommandPlugin {
 					: Misc.getNegativeHighlightColor(), fee1, fee2);
 			if (true || ExerelinModPlugin.isNexDev) {
 				String fleetVal = Misc.getDGSCredits(intel.calcOfferedFleetValue());
-				text.addPara("Ship value: " + fleetVal, pad, Misc.getHighlightColor(), fleetVal);
+				text.addPara(getString("panel_shipValue") + ": " + fleetVal, pad, Misc.getHighlightColor(), fleetVal);
 			}
-			info.addUIElement(text).inTL(0, 0);
 			
 			float shipAreaWidth = MERC_INFO_WIDTH - 200 - 8;
 			TooltipMakerAPI shipHolder = info.createUIElement(shipAreaWidth, 0, false);
@@ -368,9 +374,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			shipHolder.addShipList(max, 1, SHIP_ICON_WIDTH, Misc.getBasePlayerColor(), ships, pad);
 			info.addUIElement(shipHolder).rightOfTop(text, pad);
 			
-			entryHolder.addCustom(info, 0);
-			
-			panelTooltip.addImageWithText(pad);
+			tooltip.addCustom(info, opad);
 			
 			dialog.getOptionPanel().addOption(def.name, OPTION_PREFIX + def.id);
 			if (!enough) {
