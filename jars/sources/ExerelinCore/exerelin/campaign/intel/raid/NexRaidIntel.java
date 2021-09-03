@@ -144,7 +144,8 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		if (outcome != null) {
 			addOutcomeBullet(info, tc, initPad);
 		} else {
-			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
+			String name = system != null ? system.getNameWithLowercaseType() : target.getContainingLocation().getNameWithLowercaseType();
+			info.addPara(name, tc, initPad);
 		}
 		addETABullet(info, tc, h, 0);
 		
