@@ -87,7 +87,7 @@
 		"trigun":{
 			"name":"TriGun Services",
 			"desc":"Got a pirate problem? TriGun™ Services is here to help. Your enemies won't even see us coming. We can kill them in over seven hundred ways, and that's just with our lasers! TriGun™ is a wholly owned subsidiary of the Tri-Tachyon Corporation.",
-			"feeUpfront":90000,
+			"feeUpfront":85000,
 			"feeMonthly":2250,
 			"faction":"tritachyon",
 			"minRep":"INHOSPITABLE",
@@ -96,7 +96,7 @@
 				["fury_attack", "fury_support", "harbinger_Strike", "hyperion_Attack", "hyperion_Strike",],
 				["shade_Assault", "omen_PD", "shrike_Attack", "shrike_Support"],
 			],
-			"extraFP":9,
+			"extraFP":10,
 			"officers":[	# added to ships in order
 				{
 					"level":4,
@@ -301,11 +301,14 @@
 				{
 					"firstName":"Platinum",
 					"lastName":"Endbringer",
-					"level":9,
+					"level":10,
 					"rankId":"spaceCaptain",
 					"aiCoreId":"omega_core",
 				},
 			],
+			"miscData":{
+				"ignoreMarketRelationship":true,
+			},
 			#"plugin":"",
 		},
 	}
