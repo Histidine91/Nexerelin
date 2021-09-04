@@ -267,7 +267,7 @@ public class GroundBattleSide {
 		}
 		
 		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
-		int numUnits = (int)((float)numTroops/sizePerUnit);
+		int numUnits = (int)Math.ceil((float)numTroops/sizePerUnit - 0.25f);
 		if (numUnits == 0 && numTroops > 1) {	//intel.unitSize.getAverageSizeForType(type)/2) {
 			numUnits = 1;
 		}
