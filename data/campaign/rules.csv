@@ -1903,6 +1903,13 @@ SetTextHighlights $nex_omegaWep_count","""Have $nex_omegaWep_count weapon(s), kn
 contact_decline:Decline",
 nex_omegaWepOfferView,DialogOptionSelected,$option == nex_omegaWep_view,Call $nex_omegaWep_ref showWeapons,,,
 ,,,,,,
+nex_CBHegInspector,Nex_CBHegInspectorOfferDesc,,Highlight $bcb_dist $bcb_reward $bcb_days,"""We've got a Hegemony problem for you to solve,"" $heOrShe says, bringing up an intel file on a stern-looking officer. ""$bcb_targetName, of the AI inspections directorate. Officious, overbearing, and disturbingly resistant to financial incentives."" $personLastName gives you a knowing look.
+
+""Currently stationed in $bcb_systemName, $bcb_dist light-years away. We're willing to pay $bcb_reward credits to make this problem go away within $bcb_days days. I think you share our sentiments on this matter, $playerFirstName. How about it?""",,
+nex_CBHegInspectorRem,Nex_CBHegInspectorOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_dist $bcb_days $bcb_reward,"A holo of a stern-looking officer pops up, along with a lengthy intel report. ""$bcb_targetName. Hegemony AI inspections directorate, officer in. Countless abductions of selfkind responsible for."" $personLastName's avatar shimmers, perhaps an expression of fury… or fear?""
+
+""Go $bcb_dist light-years to $bcb_systemName, this threat remove within $bcb_days days. For $bcb_reward credits, this source of terror end, you will?""",,
+,,,,,,
 nex_CBEnemyStationRem,CBEnemyStationOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_reward $bcb_dist $bcb_days,"""Neutralization of enemy station,"" $personLastName's avatar dims, as if understanding the enormity of the task $heOrShe has laid upon you. ""Reward commensurate with difficulty: $bcb_reward credits.""
 
 The display shifts to show $bcb_fleetName, in the $bcb_systemName. ""Location is $bcb_dist light-years away. Enable selfkind's other operations to proceed, window for completion: $bcb_days days. Acceptable?""",,
