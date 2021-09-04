@@ -7,7 +7,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
@@ -18,8 +17,11 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
@@ -33,8 +35,22 @@ public class MarketMapDrawer {
 	
 	public static final boolean DEBUG_MODE = false;
 	
-	public static final float INDUSTRY_PANEL_BASE_WIDTH = 340;
-	public static final float INDUSTRY_PANEL_BASE_HEIGHT = 190;
+	public static final float INDUSTRY_PANEL_BASE_WIDTH = 330;
+	public static final float INDUSTRY_PANEL_BASE_HEIGHT = 171;
+	
+	public static final List<Color> DEBUG_COLORS = new ArrayList<>();
+	static {
+		for (int i=0; i<50; i++) {
+			DEBUG_COLORS.add(getRandomColor());
+		}
+	}
+	public static Color getRandomColor() {
+		return new Color(
+				MathUtils.getRandomNumberInRange(0, 255),
+				MathUtils.getRandomNumberInRange(0, 255),
+				MathUtils.getRandomNumberInRange(0, 255)
+		);
+	}
 	
 	public static Logger log = Global.getLogger(MarketMapDrawer.class);
 	
@@ -59,7 +75,7 @@ public class MarketMapDrawer {
 	}
 	
 	public static float getIndustryImageWidth() {
-		return 190 * getIndustryPanelSizeMult();
+		return 190 * 1f * getIndustryPanelSizeMult();	// TODO non-magic number mult?
 	}
 	
 	public static float getIndustryPanelHeight() {
@@ -88,8 +104,7 @@ public class MarketMapDrawer {
 		for (IndustryForBattle ifb : industries) {
 			if (DEBUG_MODE || ifb.getPosOnMap() == null) {
 				rects = new MapLocationGenV2().generateLocs(industries, width, intel.getMarket().getPlanetEntity() == null);
-				//panelPlugin.debugRects = rects;
-				//Global.getLogger(this.getClass()).info("lol " + rects.size());
+				panelPlugin.debugRects = rects;
 				break;
 			}
 		}
@@ -131,11 +146,24 @@ public class MarketMapDrawer {
 		public void render(float alphaMult) {
 			super.render(alphaMult);
 			
+			/*
 			if (debugRects != null) {
+				int num = 0;
 				for (Rectangle r : debugRects) {
-					drawDebugRect(r);
+					Color color = DEBUG_COLORS.get(num);
+					drawDebugRect(r, color);
+					num++;
 				}
 			}
+			
+			int num = 0;
+			for (IndustryForBattle ifb : map.intel.getIndustries()) {
+				num++;
+				IFBPanelPlugin plugin = new IFBPanelPlugin(ifb);
+				Color color = DEBUG_COLORS.get(num);
+				drawDebugSpot(ifb.getPosOnMap().x, ifb.getPosOnMap().y, color);
+			}
+			*/
 		}
 		
 		public void drawArrow(GroundUnit unit, IndustryForBattle from, IndustryForBattle to, boolean prevTurn) 
@@ -165,10 +193,18 @@ public class MarketMapDrawer {
 			} catch (Exception ex) {}
 		}
 		
-		public void drawDebugRect(Rectangle r) {
+		public void drawDebugRect(Rectangle r, Color color) {
 			float x = r.x + pos.getX();
 			float y = r.y + pos.getY();
+			GL11.glColor4f(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 0.5f);
 			GL11.glRectf(x, y, x + r.width, y + r.height);
+			GL11.glColor4f(1, 1, 1, 1);
+		}
+		
+		public void drawDebugSpot(float x, float y, Color color) {
+			GL11.glColor4f(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 0.5f);
+			GL11.glRectf(x - 4, y - 4, x + 4, y + 4);
+			GL11.glColor4f(1, 1, 1, 1);
 		}
 
 		@Override
@@ -304,48 +340,38 @@ public class MarketMapDrawer {
 			// work with a copy of the actual arg, since we'll be modifying it
 			industries = new LinkedList<>(industries);
 			
+			float mapHeight = mapWidth/2;
+			
 			float baseWidth = getIndustryPanelWidth();
 			float baseHeight = getIndustryPanelHeight();
 			
-			int max = industries.size() + Math.max(0, 6 - industries.size()/2);
-			for (int i=0; i<max; i++) {
-				float width = baseWidth * MathUtils.getRandomNumberInRange(1.1f, 1.5f);
-				float height = baseHeight * MathUtils.getRandomNumberInRange(1.1f, 1.3f);
-				rects.add(new Rectangle(0, 0, (int)width, (int)height));
+			boolean useNewAlgo = false;
+			
+			if (useNewAlgo) {
+				rects = generateRectangles((int)mapWidth, (int)mapHeight, 
+					Math.round(baseWidth * 1.2f), Math.round(baseHeight * 1.2f));
 			}
+			else {
+				Random random = new Random();
 			
-			// add some extra unusable rectangles to mess up the tesselation
-			List<Rectangle> rectsForPack = new ArrayList<>(rects);
-			int maxExtra = Math.max(3, 14 - industries.size());
-			for (int i=0; i<maxExtra; i++) {
-				float width = baseWidth * MathUtils.getRandomNumberInRange(0.3f, 0.5f);
-				float height = baseHeight * MathUtils.getRandomNumberInRange(0.3f, 0.5f);
-				rectsForPack.add(new Rectangle(0, 0, (int)width, (int)height));
+				int max = industries.size() + Math.max(0, 10 - industries.size()/2);
+				for (int i=0; i<max; i++) {
+					float width = baseWidth * MathUtils.getRandomNumberInRange(1.1f, 1.3f);
+					float height = baseHeight * MathUtils.getRandomNumberInRange(1.1f, 1.4f);
+					rects.add(new Rectangle(0, 0, (int)width, (int)height));
+				}
+
+				Packer.pack(rects, Packer.Algorithm.FIRST_FIT_DECREASING_HEIGHT, (int)mapWidth);
+
+				int offsetX = (int)(mapWidth - getRightmostPoint())/2;
+				int offsetY = (int)(mapWidth/2 - getLowestPoint())/2;
+				for (Rectangle r : rects) {
+					r.x += offsetX;
+					r.y += offsetY;
+				}
 			}
-			
-			Packer.pack(rectsForPack, Packer.Algorithm.BEST_FIT_DECREASING_HEIGHT, (int)mapWidth);
-			
-			int offsetX = (int)(mapWidth - getRightmostPoint())/2;
-			int offsetY = (int)(mapWidth/2 - getLowestPoint())/2;
-			for (Rectangle r : rects) {
-				r.x += offsetX;
-				r.y += offsetY;
-			}				
-			
-			// Pick random rectangles for our industries
-			WeightedRandomPicker<Rectangle> picker = new WeightedRandomPicker<>();
-			picker.addAll(rects);
 						
-			List<Rectangle> toUse = new LinkedList<>();
-			for (int i=0; i<industries.size(); i++) {
-				// hypothetically puts stuff closer to the center but I can't prove it
-				if (false && isStation) {
-					toUse.add(picker.getItems().remove(0));
-				}
-				else {
-					toUse.add(picker.pickAndRemove());
-				}
-			}
+			List<Pair<Rectangle, Float>> rectsSorted = getRectsSortedByDist(rects);
 			
 			// Give the rectangle closest to the center to spaceport?
 			// center being the average position of selected rects rather than the map center
@@ -355,33 +381,75 @@ public class MarketMapDrawer {
 					spaceport = ifb;
 					break;
 				}
-			}
+			}			
+			
+			List<Rectangle> picked = new ArrayList<>();
 			
 			if (spaceport != null) {
-				Rectangle best = getClosestToCenter(toUse);
-				toUse.remove(best);
-				assignPosFromRectangle(spaceport, best, baseWidth, baseHeight);
+				Rectangle best = rectsSorted.remove(0).one;
+				assignPosFromRectangle(spaceport, best, baseWidth, baseHeight, mapWidth);
+				picked.add(best);
 				industries.remove(spaceport);
 			}
 			
 			// assign the other industries
 			for (IndustryForBattle ifb : industries) {
-				Rectangle r = toUse.remove(0);
-				assignPosFromRectangle(ifb, r, baseWidth, baseHeight);
+				Rectangle r = pickFromListMaybeOffset(rectsSorted).one;
+				picked.add(r);
+				assignPosFromRectangle(ifb, r, baseWidth, baseHeight, mapWidth);
 			}
 			
 			return rects;
+			//return picked;
+		}
+		
+		public <T> T pickFromListMaybeOffset(List<T> list) {
+			int index = 0;
+			int maxOffset = list.size()/2 - 1;
+			if (maxOffset < 0) maxOffset = 0;
+			index += MathUtils.getRandomNumberInRange(0, maxOffset);
+			return list.remove(index);
+		}
+		
+		public List<Pair<Rectangle, Float>> getRectsSortedByDist(List<Rectangle> rects) {
+			Vector2f avg = getAveragePosition(rects);
+			List<Pair<Rectangle, Float>> results = new LinkedList<>();
+			
+			for (Rectangle r : rects) {
+				Vector2f center = new Vector2f((float)r.getCenterX(), (float)r.getCenterY());
+				float dist = MathUtils.getDistance(center, avg);
+				//dist += MathUtils.getRandomNumberInRange(-200, 200);
+				results.add(new Pair<>(r, dist));
+			}
+			
+			Collections.sort(results, new Comparator<Pair<Rectangle, Float>>() {
+				@Override
+				public int compare(Pair<Rectangle, Float> r1, Pair<Rectangle, Float> r2) {
+					return Float.compare(r1.two, r2.two);
+				}
+			
+			});
+			
+			return results;
 		}
 		
 		public void assignPosFromRectangle(IndustryForBattle ifb, Rectangle r,
-				float baseWidth, float baseHeight) 
+				float baseWidth, float baseHeight, float mapWidth) 
 		{
 			int x = r.x;
-			int y = r.y;
+			int y = Math.round(mapWidth/2 - r.y - baseHeight);
 			
 			// vary the actual position within the available rectangle
-			x += Math.random() * (r.width - baseWidth);
-			y += Math.random() * (r.height - baseHeight);
+			x += Math.random() * (r.width - baseWidth - 4) + 2;
+			y -= Math.random() * (r.height - baseHeight - 2) + 1;
+			
+			// clamp to edges
+			if (x < 0) x -= x;
+			if (y < 0) y -= y;
+			float overshoot = x + getIndustryPanelWidth() - mapWidth + 2;
+			if (overshoot > 0) x -= overshoot;
+			overshoot = y + getIndustryPanelHeight() - mapWidth/2 + 2;
+			if (overshoot > 0) y -= overshoot;
 
 			//Global.getLogger(this.getClass()).info(String.format("%s location on map: %s, %s", ifb.getName(), x, y));
 			ifb.setPosOnMap(new Vector2f(x, y));
@@ -405,22 +473,6 @@ public class MarketMapDrawer {
 			return best;
 		}
 		
-		public Rectangle getClosestToCenter(List<Rectangle> rects) {
-			Vector2f avg = getAveragePosition(rects);
-			
-			float bestDistSq = Float.MAX_VALUE;
-			Rectangle best = null;
-			for (Rectangle r : rects) {
-				Vector2f center = new Vector2f((float)r.getCenterX(), (float)r.getCenterY());
-				float distSq = MathUtils.getDistanceSquared(center, avg);
-				if (distSq < bestDistSq) {
-					bestDistSq = distSq;
-					best = r;
-				}
-			}
-			return best;
-		}
-		
 		public Vector2f getAveragePosition(List<Rectangle> rects) {
 			float x = 0, y = 0;
 			for (Rectangle r : rects) {
@@ -431,6 +483,148 @@ public class MarketMapDrawer {
 			y /= rects.size();
 			return new Vector2f(x, y);
 		}
+	}
+	
+	/**
+	 * Generate rectangles by repeated bisection.
+	 * @param outerWidth
+	 * @param outerHeight
+	 * @param minWidth
+	 * @param minHeight
+	 * @return
+	 * @deprecated
+	 */
+	@Deprecated
+	public static List<Rectangle> generateRectangles(int outerWidth, int outerHeight, int minWidth, int minHeight) 
+	{
+		// first place initial panel
+		int x = Math.round(minWidth * MathUtils.getRandomNumberInRange(1.1f, 1.15f));
+		int y = Math.round(minHeight * MathUtils.getRandomNumberInRange(1.1f, 1.15f));
+		
+		Random random = new Random();
+		if (random.nextBoolean()) x = outerWidth - x - minWidth;
+		if (random.nextBoolean()) y = outerHeight - y - minHeight;
+		
+		// generate initial 5 rectangles by extending central rectangle's bounds vertically
+		// actually, maybe try 9 rectangles
+		List<Rectangle> rects = new LinkedList<>();
+		
+		
+		rects.add(new Rectangle(x, y, minWidth, minHeight));									// center
+		rects.add(new Rectangle(0, 0, x, outerHeight));											// left
+		rects.add(new Rectangle(x + minWidth, 0, outerWidth - x - minWidth, outerHeight));	// right
+		rects.add(new Rectangle(x, 0, minWidth, y));											// bottom
+		rects.add(new Rectangle(x, y + minHeight, minWidth, outerHeight - y - minHeight));	// top
+		
+		// generate new rectangles by splitting existing ones
+		splitRectsLoop(rects, minWidth, minHeight);
+		return rects;
+	}
+	
+	@Deprecated
+	public static void splitRectsLoop(List<Rectangle> rects, int baseWidth, int baseHeight) 
+	{
+		boolean allow4Split = true;
+		int minWidth = (int)getIndustryPanelWidth();
+		int minHeight = (int)getIndustryPanelHeight();
+		
+		boolean didAnything = false;
+		int iter = 0;
+		do {
+			didAnything = false;
+			iter++;
+			List<Rectangle> rectsIter = new ArrayList<>(rects);
+			for (Rectangle rect : rectsIter) {
+				int w = rect.width;
+				int h = rect.height;
+				int x = rect.x;
+				int y = rect.y;
+								
+				// divide into four lengthwise
+				if (allow4Split && w > baseWidth * 4) {
+					Integer[] part = splitUnevenly(w, 4, minWidth).toArray(new Integer[]{});
+					rects.add(new Rectangle(x, y, part[0], h));
+					rects.add(new Rectangle(x + part[0], y, part[1], h));
+					rects.add(new Rectangle(x + part[0] + part[1], y, part[2], h));
+					rects.add(new Rectangle(x + part[0] + part[1] + part[2], y, part[3], h));
+					rects.remove(rect);
+					didAnything = true;
+				}
+				// divide into three lengthwise
+				else if (w > baseWidth * 3) {
+					Integer[] part = splitUnevenly(w, 3, minWidth).toArray(new Integer[]{});
+					rects.add(new Rectangle(x, y, part[0], h));
+					rects.add(new Rectangle(x + part[0], y, part[1], h));
+					rects.add(new Rectangle(x + part[0] + part[1], y, part[2], h));
+					rects.remove(rect);
+					didAnything = true;
+				}
+				// divide into two lengthwise
+				else if (w > baseWidth * 2) {
+					Integer[] part = splitUnevenly(w, 2, minWidth).toArray(new Integer[]{});
+					rects.add(new Rectangle(x, y, part[0], h));
+					rects.add(new Rectangle(x + part[0], y, part[1], h));
+					rects.remove(rect);
+					didAnything = true;
+				}
+				// divide into four heightwise
+				else if (allow4Split && h > baseHeight * 4) {
+					Integer[] part = splitUnevenly(h, 4, minHeight).toArray(new Integer[]{});
+					rects.add(new Rectangle(x, y, w, part[0]));
+					rects.add(new Rectangle(x, y + part[0], w, part[1]));
+					rects.add(new Rectangle(x, y + part[0] + part[1], w, part[2]));
+					rects.add(new Rectangle(x, y + part[0] + part[1] + part[2], w, part[3]));
+					rects.remove(rect);
+					didAnything = true;
+				}
+				// divide into three heightwise
+				else if (h > baseHeight * 3) {
+					Integer[] part = splitUnevenly(h, 3, minHeight).toArray(new Integer[]{});
+					rects.add(new Rectangle(x, y, w, part[0]));
+					rects.add(new Rectangle(x, y + part[0], w, part[1]));
+					rects.add(new Rectangle(x, y + part[0] + part[1], w, part[2]));
+					rects.remove(rect);
+					didAnything = true;
+				}
+				// divide into two heightwise
+				else if (h > baseHeight * 2) {
+					Integer[] part = splitUnevenly(h, 2, minHeight).toArray(new Integer[]{});
+					rects.add(new Rectangle(x, y, w, part[0]));
+					rects.add(new Rectangle(x, y + part[0], w, part[1]));
+					rects.remove(rect);
+					didAnything = true;
+				}
+			}
+		} while (didAnything && iter < 25);
+		//log.info("Splitter iterations: " + iter);
+	}
+	
+	/**
+	 * Splits {@code toDivide} into {@code divisor} parts of unequal size.
+	 * @param toDivide
+	 * @param divisor
+	 * @param min
+	 * @Deprecated
+	 * @return
+	 */
+	public static List<Integer> splitUnevenly(int toDivide, int divisor, int min) {
+		List<Integer> results = new ArrayList<>();
+		int remainder = toDivide;
+		for (int i=0; i<divisor; i++) {
+			int index = i + 1;
+			int numLeft = divisor - index;
+
+			if (index == divisor) {
+				results.add(remainder);
+				break;
+			}
+
+			int ourShare = MathUtils.getRandomNumberInRange(min, remainder - (min * numLeft));
+			results.add(ourShare);
+			remainder -= ourShare;
+		}
+		Collections.shuffle(results);
+		return results;
 	}
 		
 	public static List<Pair<Vector2f, Vector2f>> getRectangleSides(Rectangle rect) {

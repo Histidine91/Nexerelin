@@ -34,7 +34,6 @@ import org.lwjgl.util.vector.Vector2f;
 
 public class IndustryForBattle {
 	
-	public static final int HEIGHT = 95;
 	public static final int COLUMN_WIDTH_INDUSTRY = 400;
 	//public static final int COLUMN_WIDTH_CONTROLLED_BY = 80;
 
@@ -230,9 +229,9 @@ public class IndustryForBattle {
 	public TooltipMakerAPI renderForcePanel(CustomPanelAPI panel, float width, 
 			boolean attacker, UIComponentAPI rightOf) 
 	{
+		int height = Math.round(MarketMapDrawer.getIndustryImageWidth()/2);
 		float pad = 3;
-		TooltipMakerAPI troops = panel.createUIElement(width, HEIGHT, false);
-		MarketAPI market = ind.getMarket();
+		TooltipMakerAPI troops = panel.createUIElement(width, height, false);
 		final Color hl = Misc.getHighlightColor();
 		Color hp = Misc.getPositiveHighlightColor();
 		Color hn = Misc.getNegativeHighlightColor();
@@ -310,11 +309,12 @@ public class IndustryForBattle {
 	 * @param width
 	 */
 	public void renderPanel(CustomPanelAPI panel, TooltipMakerAPI tooltip, float width) {
-		CustomPanelAPI row = panel.createCustomPanel(width, HEIGHT, null);
+		int height = Math.round(MarketMapDrawer.getIndustryImageWidth()/2);
+		CustomPanelAPI row = panel.createCustomPanel(width, height, null);
 		float pad = 3;
 
 		// Industry image and text
-		TooltipMakerAPI ttIndustry = row.createUIElement(COLUMN_WIDTH_INDUSTRY, HEIGHT, false);
+		TooltipMakerAPI ttIndustry = row.createUIElement(COLUMN_WIDTH_INDUSTRY, height, false);
 		TooltipMakerAPI sub = ttIndustry.beginImageWithText(ind.getCurrentImage(), 95);
 		String str = ind.getCurrentName();
 		
@@ -381,9 +381,9 @@ public class IndustryForBattle {
 		String side = StringHelper.getString(attacker ? "attacker" : "defender");
 		
 		// strength
-		TooltipMakerAPI strTT = stats.createUIElement(width/2, height, false);
-		if (largeText) strTT.setParaInsigniaLarge();
-		else strTT.setParaSmallInsignia();
+		TooltipMakerAPI strTT = stats.createUIElement(width*0.55f, height, false);
+		if (largeText) strTT.setParaSmallInsignia();
+		//else strTT.setParaSmallInsignia();
 		strTT.addPara(Math.round(getStrength(attacker)) + "", textPad).setAlignment(Alignment.RMID);
 		String ttStr = StringHelper.substituteToken(GroundBattleIntel.getString(
 				"industryPanel_tooltipStrength"), "$side", side);
@@ -395,9 +395,9 @@ public class IndustryForBattle {
 		float avgMorale = totalMorale/totalUnits;
 		Color h = GroundUnit.getMoraleColor(avgMorale);
 
-		TooltipMakerAPI moraleTT = stats.createUIElement(width/2, height, false);
-		if (largeText) moraleTT.setParaInsigniaLarge();
-		else moraleTT.setParaSmallInsignia();
+		TooltipMakerAPI moraleTT = stats.createUIElement(width*0.45f, height, false);
+		if (largeText) strTT.setParaSmallInsignia();
+		//else moraleTT.setParaSmallInsignia();
 		if (isMoraleKnown(attacker)) {
 			String moraleStr = StringHelper.toPercent(avgMorale);
 			moraleTT.addPara(moraleStr + "%", textPad, h, moraleStr).setAlignment(Alignment.RMID);
