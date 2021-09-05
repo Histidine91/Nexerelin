@@ -75,7 +75,7 @@ public class MarketMapDrawer {
 	}
 	
 	public static float getIndustryImageWidth() {
-		return 190 * 1f * getIndustryPanelSizeMult();	// TODO non-magic number mult?
+		return 190 * 0.9f * getIndustryPanelSizeMult();	// TODO non-magic number mult?
 	}
 	
 	public static float getIndustryPanelHeight() {
