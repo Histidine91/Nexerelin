@@ -758,7 +758,7 @@ public class AgentIntel extends BaseIntelPlugin {
 				if (currCredits.get() < repeat.cost)
 					return;
 				addAction(repeat);
-				Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(currentAction.cost);
+				Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(repeat.cost);
 				repeat.activate();
 			} catch (CloneNotSupportedException ex) {
 				Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
