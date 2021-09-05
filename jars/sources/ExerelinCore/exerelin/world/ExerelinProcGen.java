@@ -1054,6 +1054,11 @@ public class ExerelinProcGen {
 		log.info("Running procedural generation");
 		init();
 		
+		// ensure consistent output of random when using own faction start in non-random sector
+		if (corvus) {
+			random = new Random(NexUtils.getStartingSeed());
+		}
+		
 		// process star systems
 		float mult = corvus ? 1.5f : 1;
 		systems = getCoreSystems(CORE_WIDTH * mult, CORE_HEIGHT * mult, 1);
@@ -1074,6 +1079,16 @@ public class ExerelinProcGen {
 			marketSetup.addKeyIndustriesForFaction(Factions.PLAYER);
 			marketSetup.addFurtherIndustriesToMarkets();
 			homeMarket.setPlayerOwned(true);
+			
+			StarSystemAPI system = homeworld.entity.getStarSystem();
+			system.setEnteredByPlayer(true);
+			Misc.setAllPlanetsSurveyed(system, true);
+			for (MarketAPI market : Global.getSector().getEconomy().getMarkets(system)) {
+				market.setSurveyLevel(MarketAPI.SurveyLevel.FULL); // could also be a station, not a planet
+			}
+			
+			cleanupDerelicts(Arrays.asList(new StarSystemAPI[] {system}));
+			
 			return;
 		}
 		
