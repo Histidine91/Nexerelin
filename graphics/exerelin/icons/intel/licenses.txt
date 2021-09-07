@@ -32,7 +32,11 @@ gunbarrel.png
 tuxedo.png
 	by Kenneth Von Alt, CC-BY
 	https://thenounproject.com/term/tuxedo/2104/
-	
+
+claw.png
+	from IconsPng.com, free to use without attribution
+	https://www.iconspng.com/image/127951/claws-grey-scratch
+
 ----------------------
 Made by Tartiflette:
 	peace.png

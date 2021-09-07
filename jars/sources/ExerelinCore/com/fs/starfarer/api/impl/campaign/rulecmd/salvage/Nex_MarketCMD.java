@@ -82,6 +82,8 @@ import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.groundbattle.GBUtils;
@@ -1755,7 +1757,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		else if (nonHostile.isEmpty()) {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
-		} 
+		}
+		else if (DiplomacyTraits.hasTrait(faction.getId(), TraitIds.MONSTROUS)) {
+			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+					"satBombWarningMonstrous", "$theFaction", faction.getDisplayNameWithArticle()));
+		}
 		else if (market.getSize() <= 3 || market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 		{
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
@@ -1857,6 +1863,9 @@ public class Nex_MarketCMD extends MarketCMD {
 				if (curr == faction) {
 					impact.ensureAtBest = RepLevel.VENGEFUL;
 					impact.delta *= 2;
+				}
+				else if (DiplomacyTraits.hasTrait(faction.getId(), TraitIds.MONSTROUS)) {
+					impact.ensureAtBest = null;
 				}
 				else if (size <= 3) {
 					impact.ensureAtBest = RepLevel.NEUTRAL;

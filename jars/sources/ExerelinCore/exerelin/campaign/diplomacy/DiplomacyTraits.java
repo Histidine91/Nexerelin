@@ -174,5 +174,6 @@ public class DiplomacyTraits {
 		public static final String ANARCHIST		= "anarchist";
 		public static final String LOWPROFILE		= "lowprofile";
 		public static final String DEVIOUS			= "devious";
+		public static final String MONSTROUS        = "monstrous";
 	}
 }

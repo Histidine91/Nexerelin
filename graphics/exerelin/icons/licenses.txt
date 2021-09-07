@@ -10,3 +10,7 @@ population.png
 	
 red_diamond.png
 	Modified from Starsector's danger3.png
+	
+[unnamed claw icon]
+	PNG Repo, CC-BY
+	https://www.pngrepo.com/svg/321121/midnight-claw

@@ -110,6 +110,7 @@ public class DiplomacyBrain {
 	public static final float ENEMY_OF_ALLY_PENALTY_MULT = 7.5f;
 	public static final float COMPETITION_PENALTY_MULT = 0.12f;
 	public static final float AI_PENALTY_MULT = 0.5f;
+	public static final float MONSTROUS_PENALTY = -10f;
 	//public static final float EVENT_AGENT_CHANCE = 0.35f;
 	
 	public static Logger log = Global.getLogger(DiplomacyBrain.class);
@@ -282,7 +283,7 @@ public class DiplomacyBrain {
 		disposition.modifyFlat("traits", currTraitScore + delta, "Traits");
 	}
 	
-	protected void updateDispositionFromTraits(MutableStat disposition, String factionId) 
+	protected void updateDispositionFromTraits(MutableStat disposition, String otherFactionId) 
 	{
 		Set<String> traits = new HashSet<>(DiplomacyTraits.getFactionTraits(this.factionId));
 		
@@ -309,7 +310,7 @@ public class DiplomacyBrain {
 			float aiScore = 0;
 			Map<MarketAPI, Float> aiHavers = EconomyInfoHelper.getInstance().getAICoreUsers();
 			for (MarketAPI market : aiHavers.keySet()) {
-				if (market.getFactionId().equals(factionId))
+				if (market.getFactionId().equals(otherFactionId))
 					aiScore += aiHavers.get(market);
 			}
 			aiScore *= AI_PENALTY_MULT;
@@ -337,7 +338,7 @@ public class DiplomacyBrain {
 		}
 		
 		if (traits.contains(TraitIds.MONOPOLIST)) {
-			float monopolyScore = EconomyInfoHelper.getInstance().getCompetitionFactor(this.factionId, factionId);
+			float monopolyScore = EconomyInfoHelper.getInstance().getCompetitionFactor(this.factionId, otherFactionId);
 			monopolyScore *= COMPETITION_PENALTY_MULT;
 			modifyDispositionFromTraits(disposition, -monopolyScore);
 		}
@@ -345,7 +346,7 @@ public class DiplomacyBrain {
 		if (traits.contains(TraitIds.HELPS_ALLIES)) 
 		{
 			float enemyScore = 0;
-			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, true, true, false);
+			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(otherFactionId, true, true, false);
 			for (String thirdFactionId : enemies) 
 			{
 				if (this.factionId.equals(thirdFactionId)) continue;
@@ -365,7 +366,7 @@ public class DiplomacyBrain {
 		
 		if (lawAndOrder || anarchist) {
 			float freeportScore = 0;
-			List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
+			List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(otherFactionId);
 			for (MarketAPI market : markets) {
 				if (market.isFreePort()) freeportScore += market.getSize();
 			}
@@ -381,16 +382,19 @@ public class DiplomacyBrain {
 			modifyDispositionFromTraits(disposition, freeportScore);
 		}
 		
+		if (DiplomacyTraits.hasTrait(otherFactionId, TraitIds.MONSTROUS)) {
+			modifyDispositionFromTraits(disposition, MONSTROUS_PENALTY);
+		}
 	}
 	
 	/**
 	 * Update our dispositions towards the specified faction.
-	 * @param factionId
+	 * @param otherFactionId
 	 * @param days Time since last update (for decaying event effects)
 	 */
-	public void updateDisposition(String factionId, float days)
+	public void updateDisposition(String otherFactionId, float days)
 	{
-		MutableStat disposition = getDisposition(factionId).disposition;
+		MutableStat disposition = getDisposition(otherFactionId).disposition;
 		
 		// clear disposition except for recent events
 		Float recent = disposition.getFlatMods().containsKey("events") ? 
@@ -399,35 +403,35 @@ public class DiplomacyBrain {
 		if (recent != null)
 			disposition.modifyFlat("events", recent);
 		
-		boolean isHardMode = isHardMode(factionId);
+		boolean isHardMode = isHardMode(otherFactionId);
 		
-		float dispBase = NexConfig.getFactionConfig(this.factionId).getDisposition(factionId);
-		if (!DiplomacyManager.haveRandomRelationships(this.factionId, factionId))
+		float dispBase = NexConfig.getFactionConfig(this.factionId).getDisposition(otherFactionId);
+		if (!DiplomacyManager.haveRandomRelationships(this.factionId, otherFactionId))
 			disposition.modifyFlat("base", dispBase, "Base disposition");
 		//else
 		//	disposition.unmodify("base");
 		
-		float dispFromRel = faction.getRelationship(factionId) * RELATIONS_MULT;
+		float dispFromRel = faction.getRelationship(otherFactionId) * RELATIONS_MULT;
 		disposition.modifyFlat("relationship", dispFromRel, "Relationship");
 		
-		float dispFromAlign = getDispositionFromAlignments(factionId);
+		float dispFromAlign = getDispositionFromAlignments(otherFactionId);
 		disposition.modifyFlat("alignments", dispFromAlign, "Alignments");
 		
 		//float dispFromMoral = getDispositionFromMorality(factionId);
 		//disposition.modifyFlat("morality", dispFromMoral, "Morality");
 		disposition.unmodify("morality");
 		
-		float dispFromEnemies = getDispositionFromEnemies(factionId);
+		float dispFromEnemies = getDispositionFromEnemies(otherFactionId);
 		disposition.modifyFlat("commonEnemies", dispFromEnemies, "Common enemies");
 		
-		updateDispositionFromEvents(disposition, factionId, days);	
+		updateDispositionFromEvents(disposition, otherFactionId, days);	
 		
 		float dispFromRevan = 0;
-		if (revanchismCache.containsKey(factionId))
-			dispFromRevan = -revanchismCache.get(factionId);
+		if (revanchismCache.containsKey(otherFactionId))
+			dispFromRevan = -revanchismCache.get(otherFactionId);
 		disposition.modifyFlat("revanchism", dispFromRevan, "Revanchism");
 		
-		float dispFromDominance = -DiplomacyManager.getDominanceFactor(factionId) * DOMINANCE_MULT;
+		float dispFromDominance = -DiplomacyManager.getDominanceFactor(otherFactionId) * DOMINANCE_MULT;
 		disposition.modifyFlat("dominance", dispFromDominance, "Dominance");
 		
 		if (isHardMode)
@@ -435,7 +439,7 @@ public class DiplomacyBrain {
 		//else
 		//	disposition.unmodify("hardmode");
 		
-		updateDispositionFromTraits(disposition, factionId);
+		updateDispositionFromTraits(disposition, otherFactionId);
 		
 		disposition.getModifiedValue();
 	}
