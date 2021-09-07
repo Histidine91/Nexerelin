@@ -65,6 +65,7 @@ public class GroundBattleRoundResolve {
 		updateIndustryOwners();
 		
 		for (GroundUnit unit : intel.getAllUnits()) {
+			if (unit.isReorganizing() && !unit.isWithdrawing()) continue;
 			unit.executeMove(false);
 		}
 		
