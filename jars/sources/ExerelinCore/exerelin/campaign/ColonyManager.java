@@ -218,6 +218,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				// prevent incentive credit debt accumulation on NPC markets
 				market.setIncentiveCredits(0);
 				
+				checkVICEVC(market);
+			}
+			
+			{
 				// garrison damage recovery
 				float garDamage = GBUtils.getGarrisonDamageMemory(market);
 				if (garDamage > 0) {
@@ -226,8 +230,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					garDamage -= recoveryFactor;
 					GBUtils.setGarrisonDamageMemory(market, garDamage);
 				}
-				
-				checkVICEVC(market);
 			}
 			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
