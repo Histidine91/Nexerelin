@@ -34,22 +34,34 @@ public class FactionBonusSubplugin {
 		return Global.getSector().getFaction(factionId);
 	}
 	
+	// fucking awful hax for a ClassCastException a couple of people are having
+	// how is this possible, the value is never stored as a double in the map!
+	public Float getSettingsFloat(String key) {
+		try {
+			return (Float)conf.groundBattleSettings.get(key);
+		} catch (ClassCastException ex) {
+			Double value = (Double)conf.groundBattleSettings.get(key);
+			if (value == null) return null;
+			return (float)(double)value;
+		}
+	}
+	
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
-		Float mult = (Float)conf.groundBattleSettings.get("attackMult");
+		Float mult = getSettingsFloat("attackMult");
 		if (mult != null)
 			dmg.modifyFlat("bonus_" + factionId, mult, getFaction().getDisplayName());
 		return dmg;
 	}
 	
 	public float modifyDamageReceived(GroundUnit unit, float dmg) {
-		Float mult = (Float)conf.groundBattleSettings.get("damageTakenMult");
+		Float mult = getSettingsFloat("damageTakenMult");
 		if (mult != null)
 			dmg *= mult;
 		return dmg;
 	}
 	
 	public float modifyMoraleDamageReceived(GroundUnit unit, float dmg) {
-		Float mult = (Float)conf.groundBattleSettings.get("moraleDamageTakenMult");
+		Float mult = getSettingsFloat("moraleDamageTakenMult");
 		if (mult != null)
 			dmg *= mult;
 		return dmg;
@@ -61,19 +73,19 @@ public class FactionBonusSubplugin {
 		tooltip.addPara(faction.getDisplayName(), faction.getBaseUIColor(), 3);
 		tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);
 		Color good = Misc.getPositiveHighlightColor(), bad = Misc.getNegativeHighlightColor();
-		Float atkMult = (Float)conf.groundBattleSettings.get("attackMult");
+		Float atkMult = getSettingsFloat("attackMult");
 		if (atkMult != null && atkMult != 1) {
 			Color col = atkMult >= 1 ? good : bad;
 			tooltip.addPara(GroundBattleIntel.getString("modifierFactionAttackMult"), 
 					0, col, String.format("%.1f×", atkMult));
 		}
-		Float defMult = (Float)conf.groundBattleSettings.get("damageTakenMult");
+		Float defMult = getSettingsFloat("damageTakenMult");
 		if (defMult != null && defMult != 1) {
 			Color col = defMult <= 1 ? good : bad;
 			tooltip.addPara(GroundBattleIntel.getString("modifierFactionDamageTakenMult"), 
 					0, col, String.format("%.1f×", defMult));
 		}
-		Float moraleMult = (Float)conf.groundBattleSettings.get("moraleDamageTakenMult");
+		Float moraleMult = getSettingsFloat("moraleDamageTakenMult");
 		if (moraleMult != null && moraleMult != 1) {
 			Color col = moraleMult <= 1 ? good : bad;
 			tooltip.addPara(GroundBattleIntel.getString("modifierFactionMoraleDamageTakenMult"), 
