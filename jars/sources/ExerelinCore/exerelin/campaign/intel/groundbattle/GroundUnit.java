@@ -899,7 +899,7 @@ public class GroundUnit {
 	
 	public static enum ForceType {
 		MARINE(Commodities.MARINES, "troopNameMarine", 1, 1, 1), 
-		HEAVY(Commodities.HAND_WEAPONS, "troopNameMech", 6, 1, GBConstants.HEAVY_DROP_COST_MULT),
+		HEAVY(Commodities.HAND_WEAPONS, "troopNameMech", 5.5f, 1, GBConstants.HEAVY_DROP_COST_MULT),
 		MILITIA(Commodities.CREW, "troopNameMilitia", 0.4f, 0.6f, 1), 
 		REBEL(Commodities.CREW, "troopNameRebel", 0.8f, 0.7f, 1);	// note that attack power is halved later
 		
