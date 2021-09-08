@@ -98,6 +98,7 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 			shareMult = unit.getBaseStrength()/defStrSum;
 			bonus = defBonus * shareMult * 0.5f;
 		}
+		bonus = Math.min(bonus, unit.getBaseStrength());
 		if (bonus != 0) {
 			//Global.getLogger(this.getClass()).info(String.format(
 			//		"    Unit %s receiving %s bonus damage from ground support (share %s)", 
