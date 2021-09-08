@@ -90,6 +90,7 @@ public class ResponseFleetManager
 		int level = 0;
 		for (Industry ind : market.getIndustries()) {
 			if (ind.isDisrupted()) continue;
+			if (ind.isBuilding()) continue;
 			
 			Set<String> tags = ind.getSpec().getTags();
 			if (tags.contains(Industries.TAG_COMMAND)) {

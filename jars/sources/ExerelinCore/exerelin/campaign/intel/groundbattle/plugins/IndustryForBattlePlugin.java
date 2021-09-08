@@ -38,6 +38,7 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 	
 	public Float getTroopContribution(String type) {
 		//if (indForBattle.getIndustry().isDisrupted()) return 0f;
+		if (indForBattle.getIndustry().isBuilding()) return 0f;
 		
 		Float num = getDef().troopCounts.get(type);
 		if (num == null) return 0f;
@@ -59,6 +60,9 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 	
 	public float getStrengthMult() {
 		if (indForBattle.isIndustryTrueDisrupted()) {
+			return 1f;
+		}
+		if (indForBattle.getIndustry().isBuilding()) {
 			return 1f;
 		}
 		float mult = getDef().strengthMult;
