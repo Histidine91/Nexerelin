@@ -2,8 +2,10 @@ package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
+import exerelin.plugins.ExerelinModPlugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -186,7 +188,9 @@ public class GroundBattleAI {
 		PersonAPI user = side.getCommander();
 		
 		for (AbilityPlugin ability : side.getAbilities()) {
-			if (ability.getDisabledReason(user) != null) {
+			Pair<String, Map<String, Object>> disableReason = ability.getDisabledReason(user);
+			if (disableReason != null) {
+				//printDebug("  Ability disabled: " + disableReason.two.get("desc"));
 				continue;
 			}
 			printDebug("  Checking ability for use: " + ability.getDef().name);
@@ -343,7 +347,7 @@ public class GroundBattleAI {
 	}
 	
 	public static void printDebug(String str) {
-		if (!PRINT_DEBUG) return;
+		if (!PRINT_DEBUG && !ExerelinModPlugin.isNexDev) return;
 		log.info(str);
 	}
 	

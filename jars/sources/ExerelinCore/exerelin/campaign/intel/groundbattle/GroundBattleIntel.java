@@ -87,7 +87,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
-// may not actually use this in the end and just go with the "disrupt everything" system
+/**
+ * Primary class for handling ground battles.
+ */
 public class GroundBattleIntel extends BaseIntelPlugin implements 
 		ColonyPlayerHostileActListener, ColonyNPCHostileActListener {
 	
@@ -294,6 +296,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		reapply();
 	}
 	
+	/**
+	 * Called when the player actually decides to proceed with the invasion.
+	 */
 	public void start() {
 		defender.generateDefenders();
 		if (playerInitiated) {
@@ -320,6 +325,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		generateDebugUnits();
 	}
 	
+	/**
+	 * Registers an industry on the market as an {@code IndustryForBattle} participating in the battle. 
+	 * @param industry The industry ID.
+	 * @return
+	 */
 	public IndustryForBattle addIndustry(String industry) 
 	{
 		Industry ind = market.getIndustry(industry);
@@ -973,6 +983,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 	}
 	
+	/**
+	 * Adds the response script that attracts patrols and such in the system to the scene of the battle.
+	 */
 	protected void addMilitaryResponse() {
 		if (!market.getFaction().getCustomBoolean(Factions.CUSTOM_NO_WAR_SIM)) {
 			MilitaryResponseScript.MilitaryResponseParams params = new MilitaryResponseScript.MilitaryResponseParams(CampaignFleetAIAPI.ActionType.HOSTILE, 
@@ -995,6 +1008,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 	}
 	
+	/**
+	 * Called when someone launches a tactical bombardment or saturation bombardment on the market.
+	 * @param ifb
+	 */
 	public void reportExternalBombardment(IndustryForBattle ifb) {
 		if (ifb == null) return;
 		InteractionDialogAPI dialog = null;	//Global.getSector().getCampaignUI().getCurrentInteractionDialog();
@@ -1006,6 +1023,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		reapply();
 	}
 	
+	/**
+	 * Loot action on a specific industry, sends its AI core and special item (if any) to player cargo.
+	 * @param ifb
+	 */
 	public void loot(IndustryForBattle ifb) {
 		String aiCore = ifb.getIndustry().getAICoreId();
 		SpecialItemData special = ifb.getIndustry().getSpecialItem();
@@ -1314,6 +1335,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 	}
 	
+	/**
+	 * Draws the subpanel listing player units.
+	 * @param info
+	 * @param outer
+	 * @param width
+	 * @param opad
+	 */
 	public void generateUnitDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width, float opad) 
 	{
 		float pad = 3;
@@ -1461,6 +1489,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 	}
 	
+	/**
+	 * Draws the subpanel listing modifier effects applying to the battle.
+	 * @param info
+	 * @param panel
+	 * @param width
+	 * @param pad
+	 */
 	public void generateModifiersDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width, float pad) 
 	{		
 		// Holds the display for each faction, added to 'info'
@@ -1590,6 +1625,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}		
 	}
 	
+	/**
+	 * Draws the help screen.
+	 * @param info
+	 * @param outer
+	 * @param width
+	 */
 	protected void generateHelpDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width)
 	{
 		float opad = 10;

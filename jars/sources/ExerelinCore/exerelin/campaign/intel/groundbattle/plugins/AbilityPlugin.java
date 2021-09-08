@@ -292,6 +292,10 @@ public abstract class AbilityPlugin {
 		return true;
 	}
 	
+	/**
+	 * Gets the total strength of attacker and defender fleets in support range of the market.
+	 * @return
+	 */
 	protected float[] getNearbyFleetStrengths() {
 		float ours = getNearbyFleetStrengths(side.isAttacker());
 		float theirs = getNearbyFleetStrengths(!side.isAttacker());
@@ -300,6 +304,11 @@ public abstract class AbilityPlugin {
 		return new float[] {ours, theirs};
 	}	
 	
+	/**
+	 * Gets the total strength of attacker or defender fleets in support range of the market.
+	 * @param attacker
+	 * @return
+	 */
 	protected float getNearbyFleetStrengths(boolean attacker) {
 		float str = 0;
 		for (CampaignFleetAPI fleet : getIntel().getSupportingFleets(attacker)) {

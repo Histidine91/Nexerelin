@@ -529,8 +529,6 @@ public class GroundUnit {
 		return stat;
 	}
 	
-	// 
-
 	/**
 	 * Hack to replace fleet marine XP bonus with the local XP bonus.
 	 * @param stats
@@ -690,6 +688,12 @@ public class GroundUnit {
 		return num/intel.unitSize.getAverageSizeForType(type);
 	}
 	
+	/**
+	 * Creates an empty card with the new marine/heavy unit buttons.
+	 * @param parent
+	 * @param size
+	 * @return
+	 */
 	public static CustomPanelAPI createBlankCard(CustomPanelAPI parent, UnitSize size) 
 	{
 		FactionAPI faction = Global.getSector().getPlayerFaction();
