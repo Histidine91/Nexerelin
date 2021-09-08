@@ -744,10 +744,17 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
 		boolean anyInStorage = false;
+		
+		boolean playerInRangeForReturn = false;	//MathUtils.getDistance(Global.getSector().getPlayerFleet(), market.getPlanetEntity()) > GBConstants.MAX_SUPPORT_DIST;
+		boolean returnToFleet = ALWAYS_RETURN_TO_FLEET || storage == null 
+				|| playerInRangeForReturn || outcome == BattleOutcome.PEACE;
+		
 		for (GroundUnit unit : new ArrayList<>(playerData.getUnits())) {
 			// if any player units are on market, send them to storage
+			// but only if player is out of range, else send them back to fleet?
+			// nah, too complicated
 			if (unit.getLocation() != null) {
-				if (storage != null && !ALWAYS_RETURN_TO_FLEET) {
+				if (!returnToFleet) {
 					storage.getCargo().addCommodity(Commodities.MARINES, unit.personnel);
 					storage.getCargo().addCommodity(Commodities.HAND_WEAPONS, unit.heavyArms);
 					if (playerData.getLoot() != null) {
@@ -838,6 +845,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		disbandPlayerUnits();
+		
+		if (outcome == BattleOutcome.PEACE || outcome == BattleOutcome.OTHER) {
+			
+		}
 		
 		handleTransfer();
 		

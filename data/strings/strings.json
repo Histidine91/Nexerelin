@@ -1135,7 +1135,7 @@
 		"intelDesc_strength":"Strength: %s",
 		"intelDesc_moraleAvg":"Average morale: %s",
 		"intelDesc_otherNotes":"Other notes",
-		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transfered to local storage.",
+		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transfered to local storage or returned to fleet.",
 		"intelDesc_lootAndSurvivorsDirect":"Surviving units and loot have been returned to fleet cargo.",
 		"intelDesc_localStorage":"Local storage",
 		"intelDesc_postVictoryOptions":"Having taken control of $market, you have a number of options.",
