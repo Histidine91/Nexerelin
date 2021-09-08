@@ -201,6 +201,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         List<GroundBattleIntel> toRemove = new ArrayList<>();
         for (GroundBattleIntel gb : Global.getSector().getListenerManager().getListeners(GroundBattleIntel.class)) {
+            if (!gb.isEnding() && !gb.isEnded()) continue;
             log.info("Removing leaked ground battle listener: " + gb.getSmallDescriptionTitle());
             toRemove.add(gb);
         }
