@@ -224,11 +224,9 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
-		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
-				+ myFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
-		if (tanker > myFP * 0.3f) tanker = myFP * 0.3f;
-		float transport = 0;
-		float freighter = myFP * (0.2f + random.nextFloat() * 0.1f);
+		float tanker = getWantedTankerFP(myFP, distance, random);
+		float transport = myFP * 0.1f;
+		float freighter = getWantedFreighterFP(myFP, random) * 0.75f;
 		
 		float totalFp = combat + tanker + transport + freighter;
 		
@@ -248,6 +246,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 				);
 		// we don't need the variability involved in this
 		// ...no, too much relies on fleet size mult (e.g. doctrine modifiers are piped through here)
+		// ... so apply the doctrine modifiers separately
 		if (!useMarketFleetSizeMult)
 			params.ignoreMarketFleetSizeMult = true;
 		

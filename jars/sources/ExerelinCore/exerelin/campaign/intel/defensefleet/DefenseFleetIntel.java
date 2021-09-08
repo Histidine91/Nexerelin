@@ -199,11 +199,10 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		float combat = myFP;
 		float tanker = 0;
 		if (market.getContainingLocation() != target.getContainingLocation()) {
-			tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
-				+ myFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
+			tanker = getWantedTankerFP(myFP, distance, random);
 		}
 		float transport = 0;
-		float freighter = myFP * (0.2f + random.nextFloat() * 0.1f);
+		float freighter = getWantedFreighterFP(myFP, random)/2;
 		
 		float totalFp = combat + tanker + transport + freighter;
 		

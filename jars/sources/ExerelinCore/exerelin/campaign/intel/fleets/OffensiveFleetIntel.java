@@ -24,6 +24,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.StringHelper;
@@ -440,6 +441,18 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		float raidFP = getRaidFP();
 		float raidStr = raidFP * InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		return raidStr;
+	}
+	
+	public float getWantedFreighterFP(float baseFP, Random random) {
+		return baseFP * (0.15f + random.nextFloat() * 0.05f);
+	}
+	
+	public float getWantedTankerFP(float baseFP, float distance, Random random) {
+		float tanker = baseFP * (0.1f + random.nextFloat() * 0.05f)
+				+ baseFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
+		if (tanker > baseFP * 0.2f) tanker = baseFP * 0.2f;
+		
+		return tanker;
 	}
 	
 	@Override

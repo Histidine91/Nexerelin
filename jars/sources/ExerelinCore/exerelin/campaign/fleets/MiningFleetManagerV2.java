@@ -191,7 +191,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		if (maxFP < 50) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixSmall") + " " + name;
 		else if (maxFP > 100) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixLarge") + " " + name;
 		
-		float freighterFP = maxFP*0.3f;
+		float freighterFP = maxFP*0.25f;
 		if (isGasMiningFleet) freighterFP *= 0.5f;	// to prevent fleets from having huge volatiles loads
 		
 		//log.info("Trying to create mining fleet of size " + maxFP + ", target " + target.getName());

@@ -330,11 +330,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
 		
 		float combat = myFP;
-		float tanker = myFP * (0.1f + random.nextFloat() * 0.05f)
-				+ myFP * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
-		if (tanker > myFP * 0.3f) tanker = myFP * 0.3f;
+		float tanker = getWantedTankerFP(myFP, distance, random);
+		if (tanker > myFP * 0.25f) tanker = myFP * 0.25f;
 		float transport = isInvasionFleet ? marinesPerFleet/100 : 0;
-		float freighter = myFP * (0.2f + random.nextFloat() * 0.1f);
+		float freighter = getWantedFreighterFP(myFP, random);
 		
 		if (isInvasionFleet) freighter *= 2;
 		
