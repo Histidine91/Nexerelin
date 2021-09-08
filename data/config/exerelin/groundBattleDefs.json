@@ -100,8 +100,16 @@
 			"desc":"Communications disrupted. All attacker units will reorganize for 1 turn after moving, and attack power reduced by 15%. Many special abilities are disabled.",
 			"highlights":["1", "15%", "disabled"],
 			"color":[92, 110, 187, 255],
-			"tags":["cramped", "preventEW", "preventInspire"],
+			"tags":["preventEW", "preventInspire"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.MagneticCrustPlugin",
+		},
+		
+		"FPE_defense":{
+			"desc":"Massively hardened ground defenses give the defender +25% attack strength and -25% damage received on industries they control.",
+			"highlights":["25%", "25%"],
+			"color":[190,63,0,255],
+			"tags":[],
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.FPEDefensePlugin",
 		},
 	},
 	
