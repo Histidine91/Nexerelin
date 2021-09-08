@@ -38,6 +38,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		super.activate(dialog, user);
 		
 		int powerLevel = getPowerLevel();
+		if (powerLevel <= 0) return;
 		int cost = getSupplyCost();
 		
 		if (user.isPlayer()) {
@@ -91,6 +92,23 @@ public class EWAbilityPlugin extends AbilityPlugin {
 			
 				String id = "notEnoughSupplies";
 				String desc = String.format(GroundBattleIntel.getString("ability_ew_insufficientSupplies"), cost);
+				params.put("desc", desc);
+				return new Pair<>(id, params);
+			}
+		}
+		
+		float[] strengths = getNearbyFleetStrengths();
+		{
+			float ours = strengths[0];
+			float theirs = strengths[1];
+			if (ours < theirs * 2) {
+				Map<String, Object> params = new HashMap<>();
+			
+				String id = "enemyPresence";
+				String ourStr = String.format("%.0f", ours);
+				String theirStr = String.format("%.0f", theirs);
+				
+				String desc = String.format(GroundBattleIntel.getString("ability_bombard_enemyPresence"), ourStr, theirStr);
 				params.put("desc", desc);
 				return new Pair<>(id, params);
 			}
@@ -177,8 +195,10 @@ public class EWAbilityPlugin extends AbilityPlugin {
 	}
 	
 	public float getECMLevel() {
-		if (!side.isAttacker()) {
-			PersonAPI leader = side.getCommander();
+		boolean attacker = side.isAttacker();
+		
+		if (!attacker) {
+			PersonAPI leader = side.getCommander();			
 			if (leader != null && leader.getStats().getSkillLevel(Skills.ELECTRONIC_WARFARE) > 1) {
 				return getNeededECMLevel() * 2f;
 			}
@@ -188,17 +208,20 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		int level = 0;
 		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
 		for (CampaignFleetAPI fleet : fleets) {
-			
+			//if (!attacker) Global.getLogger(this.getClass()).info("Getting ECM level for fleet " + fleet.getNameWithFaction());
 			// cache results
+			int fleetLevel = 0;
 			if (fleet.getMemoryWithoutUpdate().contains(MEMORY_KEY_ECM_CACHE)) {
-				level += fleet.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_ECM_CACHE);
+				fleetLevel = (int)fleet.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_ECM_CACHE);
+				//if (!attacker) Global.getLogger(this.getClass()).info("  ECM level (cached): " + fleetLevel);
+				level += fleetLevel;
 				continue;
 			}
 			
-			int fleetLevel = 0;
 			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 				fleetLevel += member.getStats().getDynamic().getValue(Stats.ELECTRONIC_WARFARE_FLAT, 0);
 			}
+			//if (!attacker) Global.getLogger(this.getClass()).info("  ECM level: " + fleetLevel);
 			level += fleetLevel;
 			fleet.getMemoryWithoutUpdate().set(MEMORY_KEY_ECM_CACHE, fleetLevel, 0);
 		}

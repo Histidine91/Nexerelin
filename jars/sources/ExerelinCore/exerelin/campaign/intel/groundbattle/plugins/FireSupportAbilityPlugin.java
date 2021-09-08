@@ -129,23 +129,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		Color col = curr >= needed ? h : Misc.getNegativeHighlightColor();
 		tooltip.addPara(GroundBattleIntel.getString("ability_bombard_tooltip4"), opad, col, Math.round(needed) + "");
 	}
-	
-	protected float getNearbyFleetStrengths(boolean attacker) {
-		float str = 0;
-		for (CampaignFleetAPI fleet : getIntel().getSupportingFleets(attacker)) {
-			str += fleet.getEffectiveStrength();
-		}
-		return str;
-	}
-	
-	protected float[] getNearbyFleetStrengths() {
-		float ours = getNearbyFleetStrengths(side.isAttacker());
-		float theirs = getNearbyFleetStrengths(!side.isAttacker());
-		//Global.getLogger(this.getClass()).info("Our strength: " + ours);
-		//Global.getLogger(this.getClass()).info("Their strength: " + theirs);
-		return new float[] {ours, theirs};
-	}
-	
+		
 	@Override
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
 		if (side.getData().containsKey(GBConstants.TAG_PREVENT_BOMBARDMENT)) {

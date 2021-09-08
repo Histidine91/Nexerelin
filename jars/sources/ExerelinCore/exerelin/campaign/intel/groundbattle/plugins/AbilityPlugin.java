@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -289,6 +290,22 @@ public abstract class AbilityPlugin {
 		activate(null, user);
 		playUISound();
 		return true;
+	}
+	
+	protected float[] getNearbyFleetStrengths() {
+		float ours = getNearbyFleetStrengths(side.isAttacker());
+		float theirs = getNearbyFleetStrengths(!side.isAttacker());
+		//Global.getLogger(this.getClass()).info("Our strength: " + ours);
+		//Global.getLogger(this.getClass()).info("Their strength: " + theirs);
+		return new float[] {ours, theirs};
+	}	
+	
+	protected float getNearbyFleetStrengths(boolean attacker) {
+		float str = 0;
+		for (CampaignFleetAPI fleet : getIntel().getSupportingFleets(attacker)) {
+			str += fleet.getEffectiveStrength();
+		}
+		return str;
 	}
 	
 	public static AbilityPlugin loadPlugin(GroundBattleSide side, String defId) 
