@@ -1078,6 +1078,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			advanceTurn(false);
 		}
 	}
+	
+	@Override
+	protected void notifyEnding() {
+		Global.getSector().getListenerManager().removeListener(this);
+	}
 
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, 
@@ -1090,6 +1095,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	@Override
 	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
 			MarketAPI market, MarketCMD.TempData actionData) {
+		
+		if (market != this.market) return;
+		
 		List<Industry> industries = actionData.bombardmentTargets;
 		List<String> indNames = new ArrayList<>();
 		for (Industry industry : industries) {
@@ -1106,6 +1114,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	@Override
 	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
 			MarketAPI market, MarketCMD.TempData actionData) {
+		
+		if (market != this.market) return;
+		
 		List<Industry> industries = actionData.bombardmentTargets;
 		for (Industry industry : industries) {
 			reportExternalBombardment(getIndustryForBattleByIndustry(industry));

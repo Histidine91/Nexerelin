@@ -16,10 +16,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.econ.impl.BoostIndustryInstallableItemEffect;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo;
 import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.CATALYTIC_CORE_BONUS;
-import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.NO_ATMOSPHERE;
 import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.SYNCHROTRON_FUEL_BONUS;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -68,6 +66,7 @@ import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
@@ -83,6 +82,8 @@ import exerelin.world.VanillaSystemsGenerator;
 import exerelin.world.scenarios.DerelictEmpireOfficerGeneratorPlugin;
 import exerelin.world.scenarios.ScenarioManager;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -198,6 +199,18 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
+        List<GroundBattleIntel> toRemove = new ArrayList<>();
+        for (GroundBattleIntel gb : Global.getSector().getListenerManager().getListeners(GroundBattleIntel.class)) {
+            log.info("Removing leaked ground battle listener: " + gb.getSmallDescriptionTitle());
+            toRemove.add(gb);
+        }
+        for (GroundBattleIntel gb : toRemove) {
+            Global.getSector().getListenerManager().removeListener(gb);
+        }
+    }
+    
+    // runcode exerelin.plugins.ExerelinModPlugin.debug();
+    public static void debug() {
         
     }
     
