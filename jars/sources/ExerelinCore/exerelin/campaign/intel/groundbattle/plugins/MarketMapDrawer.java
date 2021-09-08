@@ -245,6 +245,7 @@ public class MarketMapDrawer {
 							1, 1f * (drawH/drawW)
 						);
 				
+				GL11.glPushMatrix();
 				GL11.glTranslatef(x + w/2, y + h/2, 0);
 				//bgSprite.renderRegion(x, y,0, 0, 512, 512);
 				
@@ -255,6 +256,7 @@ public class MarketMapDrawer {
 				GL11.glColor4f(1, 1, 1, 0.5f);
 				GL11.glRotatef(10, 0, 0, 1);
 				bgSprite2.renderAtCenter(0, 0);
+				GL11.glPopMatrix();
 			}
 			else {
 				// draw planet texture
