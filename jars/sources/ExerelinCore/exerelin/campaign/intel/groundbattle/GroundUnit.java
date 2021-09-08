@@ -828,7 +828,9 @@ public class GroundUnit {
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
 			ButtonAPI qm = buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this), 
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
-			if (isReorganizing() || intel.getSide(isAttacker).getMovementPointsRemaining() <= 0) {
+			if (isReorganizing() || intel.getSide(isAttacker).getMovementPointsRemaining() <= 0
+					|| (location == null && getDeployCost() > Global.getSector().getPlayerFleet().getCargo().getSupplies())) 
+			{
 				qm.setEnabled(false);
 			}
 			card.addUIElement(buttonHolder).inTR(1 * sizeMult, 2 * sizeMult);
