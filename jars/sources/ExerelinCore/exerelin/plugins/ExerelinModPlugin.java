@@ -370,7 +370,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             sector.getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
         }
         
-        sector.addTransientScript(new PlayerInSystemTracker());
+        PlayerInSystemTracker.create();
         //sector.addTransientScript(new MiningCooldownDrawer());
         if (MiningCooldownDrawer.getEntity() == null) 
             MiningCooldownDrawer.create();

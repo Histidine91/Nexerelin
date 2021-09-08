@@ -3,19 +3,27 @@ package exerelin.campaign.fleets;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.TempData;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.groundbattle.GroundBattleCampaignListener;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * When player fleet is seen by a fleet in a location, record that fact to location's memory.
  */
-public class PlayerInSystemTracker implements EveryFrameScript {
+public class PlayerInSystemTracker implements EveryFrameScript, ColonyPlayerHostileActListener, GroundBattleCampaignListener {
 	
 	public static final float REMEMBER_PLAYER_TIME = 15;
 	public static final String MEMORY_KEY_PREFIX = "$nex_factionSeenPlayer_";
@@ -27,6 +35,13 @@ public class PlayerInSystemTracker implements EveryFrameScript {
 	public static boolean hasFactionSeenPlayer(LocationAPI loc, String factionId) {
 		String memKey = MEMORY_KEY_PREFIX + factionId;
 		return loc.getMemoryWithoutUpdate().getBoolean(memKey);
+	}
+	
+	public static PlayerInSystemTracker create() {
+		PlayerInSystemTracker tracker = new PlayerInSystemTracker();
+		Global.getSector().addTransientScript(tracker);
+		Global.getSector().getListenerManager().addListener(tracker, true);
+		return tracker;
 	}
 	
 	protected void updateLocationData() {
@@ -53,7 +68,7 @@ public class PlayerInSystemTracker implements EveryFrameScript {
 	
 	/**
 	 * Records the factions that know player is in this location, to that location's memory.
-	 * Player is known if another faction fleet spots it, and 
+	 * Player is known if another faction fleet spots it, or it commits a hostile action. 
 	 */
 	protected void updateSeenPlayerFactions() {
 		if (currLoc == null || currLoc.isHyperspace())
@@ -71,10 +86,21 @@ public class PlayerInSystemTracker implements EveryFrameScript {
 			
 			if (player.isVisibleToSensorsOf(fleet)) {
 				alreadySeenFactions.add(factionId);
-				String memKey = MEMORY_KEY_PREFIX + factionId;
-				currLoc.getMemoryWithoutUpdate().set(memKey, true, REMEMBER_PLAYER_TIME);
+				spotPlayer(factionId);
 			}
 		}
+	}
+	
+	public void spotPlayer(String factionId) {
+		spotPlayer(factionId, REMEMBER_PLAYER_TIME);
+	}
+	
+	public void spotPlayer(String factionId, float time) {
+		String memKey = MEMORY_KEY_PREFIX + factionId;
+		MemoryAPI mem = currLoc.getMemoryWithoutUpdate();
+		if (mem.contains(memKey) && mem.getExpire(memKey) > time) return;
+		
+		currLoc.getMemoryWithoutUpdate().set(memKey, true, time);
 	}
 	
 	@Override
@@ -95,4 +121,44 @@ public class PlayerInSystemTracker implements EveryFrameScript {
 	public boolean runWhilePaused() {
 		return false;
 	}
+
+	@Override
+	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, TempData actionData, CargoAPI cargo) 
+	{
+		spotPlayer(market.getFactionId());
+	}
+
+	@Override
+	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, TempData actionData, Industry industry)
+	{
+		spotPlayer(market.getFactionId());
+	}
+
+	@Override
+	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, TempData actionData) {
+		spotPlayer(market.getFactionId(), REMEMBER_PLAYER_TIME * 2);
+	}
+
+	@Override
+	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, TempData actionData) {
+		spotPlayer(market.getFactionId(), REMEMBER_PLAYER_TIME * 3);
+	}
+
+	@Override
+	public void reportBattleStarted(GroundBattleIntel battle) {
+		if (!battle.isPlayerAttacker()) return;
+		spotPlayer(battle.getMarket().getFactionId(), REMEMBER_PLAYER_TIME * 2);
+	}
+
+	@Override
+	public void reportBattleBeforeTurn(GroundBattleIntel battle, int turn) {}
+
+	@Override
+	public void reportBattleAfterTurn(GroundBattleIntel battle, int turn) {
+		if (!battle.isPlayerAttacker()) return;
+		spotPlayer(battle.getMarket().getFactionId(), REMEMBER_PLAYER_TIME * 2);
+	}
+
+	@Override
+	public void reportBattleEnded(GroundBattleIntel battle) {}
 }
