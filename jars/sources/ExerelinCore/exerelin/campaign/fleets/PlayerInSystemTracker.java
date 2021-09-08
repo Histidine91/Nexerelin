@@ -96,6 +96,8 @@ public class PlayerInSystemTracker implements EveryFrameScript, ColonyPlayerHost
 	}
 	
 	public void spotPlayer(String factionId, float time) {
+		if (currLoc == null) return;
+		
 		String memKey = MEMORY_KEY_PREFIX + factionId;
 		MemoryAPI mem = currLoc.getMemoryWithoutUpdate();
 		if (mem.contains(memKey) && mem.getExpire(memKey) > time) return;
