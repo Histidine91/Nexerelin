@@ -49,7 +49,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	// each entry in the array represents a fleet
 	// first number is vengeance points needed, second is escalation level (0-2)
 	public static final List<Integer[]> FLEET_STAGES = Arrays.asList(
-			new Integer[][] {{50, 0}, {100, 0}, {150, 0}, {200, 1}, {275, 1}, {350, 1}, {450, 2}}
+			new Integer[][] {{50, 0}, {100, 0}, {150, 1}, {200, 1}, {275, 2}, {350, 2}}
 	);
 	// after all stages are used up, spawn new vengeance fleets per this many points
 	public static final float ADDITIONAL_STAGE_INTERVAL = 75;
