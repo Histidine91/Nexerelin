@@ -10,7 +10,7 @@
 	"diplomacyPositiveChance":{ "hegemony":0.8 },
     "diplomacyNegativeChance":{ "hegemony":1.2 },
     
-    "morality":"good",	# Histidine's pro-League bias
+    "morality":"neutral",	# used to be good because of Histidine's pro-League bias
 
     "alignments":{
         "diplomatic":1,
