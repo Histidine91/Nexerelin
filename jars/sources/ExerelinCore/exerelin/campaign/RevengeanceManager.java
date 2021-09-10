@@ -440,15 +440,22 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		return (RevengeanceManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
 	}
 	
+	public void addVengeanceForMarketAttack(MarketAPI market, int size, float mult)
+	{
+		addVengeanceForMarketAttack(market, size, mult, true);
+	}
+	
 	/**
 	 * Increments vengeance points from raiding or bombarding a market.
 	 * @param market
 	 * @param size
 	 * @param mult Varies based on attack type
+	 * @param useSizeSquare If true, points are based on the square of market size; else based on just market size.
 	 */
-	public void addVengeanceForMarketAttack(MarketAPI market, int size, float mult)
+	public void addVengeanceForMarketAttack(MarketAPI market, int size, float mult, boolean useSizeSquare)
 	{
-		float addedPoints = size * size * mult;
+		float addedPoints = size * mult;
+		if (useSizeSquare) addedPoints *= size;
 		String factionId = market.getFactionId();
 		log.info("Adding vengeance points for market attack: " + market.getName() + ", " + addedPoints + " (mult " + mult + ")");
 		addPoints(addedPoints/2, factionId);
@@ -458,25 +465,26 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		// not really the right place for it, but saves us having to add its own listener
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, addedPoints * 5);
 	}
+	
 
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
-		addVengeanceForMarketAttack(market, market.getSize(), 0.75f);
+		addVengeanceForMarketAttack(market, market.getSize(), 0.75f, false);
 	}
 
 	@Override
 	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, Industry industry) {
-		addVengeanceForMarketAttack(market, market.getSize(), 0.75f);
+		addVengeanceForMarketAttack(market, market.getSize(), 0.75f, false);
 	}
 
 	@Override
 	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
-		addVengeanceForMarketAttack(market, market.getSize(), 1);
+		addVengeanceForMarketAttack(market, market.getSize(), 1, true);
 	}
 
 	@Override
 	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
-		addVengeanceForMarketAttack(market, market.getSize() + 1, 10);
+		addVengeanceForMarketAttack(market, market.getSize() + 1, 10, true);
 	}
 	
 }

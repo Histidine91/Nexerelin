@@ -605,7 +605,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			default:
 			case 0:
 				combat = Math.round(Math.max(30f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f)));
-				combat = Math.min(120 + capBonus, combat);
+				combat = Math.min(140 + capBonus, combat);
 				combat *= sizeMult;
 				freighter = Math.round(combat / 20f);
 				tanker = Math.round(combat / 30f);

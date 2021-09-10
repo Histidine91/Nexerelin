@@ -50,7 +50,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 			String type = NexUtilsFleet.getFleetType(fleet);
 			if (SpecialForcesIntel.FLEET_TYPE.equals(type))
 			{
-				memory.set("$useVengeanceGreeting", true, 0);
+				//memory.set("$useVengeanceGreeting", true, 0);
 				memory.set("$escalation", 
 						RevengeanceManager.getManager().getVengeanceEscalation(fleet.getFaction().getId()), 
 						0);
