@@ -238,6 +238,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		Set<FleetMemberAPI> currentMembers = new HashSet<>(Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy());
 		for (FleetMemberAPI member : ships) {
 			data.removeFleetMember(member);
+			member.setCaptain(null);	// remove from stored ships
 			if (currentMembers.contains(member))
 				AddRemoveCommodity.addFleetMemberLossText(member, text);
 		}
