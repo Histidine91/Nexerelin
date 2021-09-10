@@ -337,6 +337,15 @@ public class MarketMapDrawer {
 	public static class MapLocationGenV2 {
 		public List<Rectangle> rects = new ArrayList<>();
 		
+		public int getMaxRects(float mapWidth, float rectWidth, float rectHeight) {
+			float mapHeight = mapWidth/2;
+			
+			int columns = (int)(mapWidth/rectWidth + 0.25f);
+			int rows = (int)(mapHeight/rectHeight + 0.25f);
+			//log.info("Maximum rectangles for placement: " + rows * columns);
+			return rows * columns;
+		}
+		
 		public List<Rectangle> generateLocs(List<IndustryForBattle> industries, float mapWidth, boolean isStation) 
 		{
 			// work with a copy of the actual arg, since we'll be modifying it
@@ -356,7 +365,9 @@ public class MarketMapDrawer {
 			else {
 				Random random = new Random();
 			
-				int max = industries.size() + Math.max(0, 10 - industries.size()/2);
+				int max = 99;	//industries.size() + Math.max(0, 10 - industries.size()/2);
+				max = Math.min(max, getMaxRects(mapWidth, baseWidth * 1.2f, baseHeight * 1.25f));
+				
 				for (int i=0; i<max; i++) {
 					float width = baseWidth * MathUtils.getRandomNumberInRange(1.1f, 1.3f);
 					float height = baseHeight * MathUtils.getRandomNumberInRange(1.1f, 1.4f);
@@ -419,8 +430,13 @@ public class MarketMapDrawer {
 			
 			for (Rectangle r : rects) {
 				Vector2f center = new Vector2f((float)r.getCenterX(), (float)r.getCenterY());
-				float dist = MathUtils.getDistance(center, avg);
-				//dist += MathUtils.getRandomNumberInRange(-200, 200);
+				
+				// true distance
+				//float dist = MathUtils.getDistance(center, avg);
+				
+				// taxicab distance
+				float dist = Math.abs(center.x - avg.x) + Math.abs(center.y - avg.y);
+				
 				results.add(new Pair<>(r, dist));
 			}
 			
