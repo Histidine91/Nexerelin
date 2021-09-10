@@ -1257,6 +1257,8 @@
 		"dialogStrEstimateMarine":"%s from marines",
 		"dialogStrEstimateHeavy":"%s from heavy units",
 		"dialogEstimateHelp":"The actual outcome of the battle will also be heavily influenced by defense structures, local conditions and the commanders' tactics.",
+		"dialogGoToIntel":"After confirming the invasion, the intel screen will open. Go to the Military tab to find the invasion intel.",
+		"dialogGoToIntelHighlight":"Military tab",
 		
 		"logHeader":"Battle log",
 		"log_unitLosses":"%s ($unitType) on %s lost %s unit(s), %s morale",
@@ -1346,6 +1348,11 @@
 		"modifierStationDescHighlight":"Enemy fleets cannot support ground forces.",
 		
 		"helpHeader":"Help",
+		
+		"helpPara0Title":"Quickstart instructions",
+		"helpPara0-1":"Go to the Units tab and click on the Action button of a unit.",
+		"helpPara0-2":"Deploy the unit to an industry of your choice on the surface. Repeat for a few more units.",
+		"helpPara0-3":"After the industry has been taken, move the units to a new target.",
 		
 		"helpPara1Title":"The basics",
 		"helpPara1-1":"Marines and heavy armaments are assembled into units (platoons, companies, battalions or regiments, depending on the target colony size).",

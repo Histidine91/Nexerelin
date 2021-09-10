@@ -1003,14 +1003,18 @@ public class Nex_MarketCMD extends MarketCMD {
 			LabelAPI para = text.addPara(str);
 			para.setHighlight(market.getName(), getString("storyCriticalWarningHighlight"));
 			para.setHighlightColors(market.getFaction().getBaseUIColor(), Global.getSector().getPlayerFaction().getBaseUIColor());
-			text.setFontInsignia();
+			//text.setFontInsignia();
 		}
+		
+		text.setFontSmallInsignia();
+		LabelAPI label = text.addPara(GroundBattleIntel.getString("dialogGoToIntel"));
+		label.setHighlight(GroundBattleIntel.getString("dialogGoToIntelHighlight"));
+		text.setFontInsignia();
 		
 		options.clearOptions();
 		
 		options.addOption(getString("invasionProceed"), INVADE_CONFIRM);
 		
-		// FIXME: magic number
 		if (!hasForces) {
 			str = GroundBattleIntel.getString("dialogNoForces");
 			options.setTooltip(INVADE_CONFIRM, str);

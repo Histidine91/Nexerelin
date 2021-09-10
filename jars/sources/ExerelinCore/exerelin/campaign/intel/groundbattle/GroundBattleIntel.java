@@ -1652,9 +1652,19 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addSectionHeading(getString("helpHeader"), Alignment.MID, opad);
 		
 		info.setParaInsigniaLarge();
+		info.addPara(getString("helpPara0Title"), opad);
+		info.setParaFontDefault();
+		TooltipMakerAPI section = info.beginImageWithText("graphics/factions/crest_player_flag.png", 32);
+		section.setBulletedListMode(bullet);
+		section.addPara(getString("helpPara0-1"), pad);
+		section.addPara(getString("helpPara0-2"), pad);
+		section.addPara(getString("helpPara0-3"), pad);
+		info.addImageWithText(pad);
+		
+		info.setParaInsigniaLarge();
 		info.addPara(getString("helpPara1Title"), opad);
 		info.setParaFontDefault();
-		TooltipMakerAPI section = info.beginImageWithText("graphics/exerelin/icons/intel/invasion.png", 32);
+		section = info.beginImageWithText("graphics/exerelin/icons/intel/invasion.png", 32);
 		section.setBulletedListMode(bullet);
 		section.addPara(getString("helpPara1-1"), pad);
 		section.addPara(getString("helpPara1-2"), pad);
