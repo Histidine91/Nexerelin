@@ -16,6 +16,7 @@ import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -297,6 +298,12 @@ public class Nex_MarketCMD extends MarketCMD {
 			//responder.setContainingLocation(entity.getContainingLocation());
 			//responder.setLocation(99999, 99999);
 			entity.getContainingLocation().addEntity(responder);
+			// trying to force the responder to be afraid if appropriate, doesn't work
+			if (responder.getAI() instanceof ModularFleetAIAPI) {
+				ModularFleetAIAPI mAI = (ModularFleetAIAPI) responder.getAI();
+				mAI.getTacticalModule().forceTargetReEval();
+				mAI.getTacticalModule().forceTargetReEval();
+			}
 		}
 		
 		boolean hasResponder = responder != null;
@@ -479,6 +486,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		boolean canOpposeBombardment = (hasNonStation || hasResponder) && otherWantsToFight;
 		//log.info(String.format("Checking opposition: insignificant %s, wantsToFight %s", hasOtherButInsignificant, otherWantsToFight));
 		temp.canRaid = ongoingBattle || hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation;
+		//log.info(String.format("Checking opposition: canOpposeBombardment %s", canOpposeBombardment));
 		temp.canBombard = (hasOtherButInsignificant || !canOpposeBombardment) && !hasStation;
 		//temp.canSurpriseRaid = Misc.getDaysSinceLastRaided(market) < SURPRISE_RAID_TIMEOUT;
 		

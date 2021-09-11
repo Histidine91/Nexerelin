@@ -21,6 +21,7 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -238,7 +239,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 	
 	@Override
 	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
-		// TODO: requires actual fleet
+		// find a fleet to execute bombardment
 		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
 		if (fleets.isEmpty()) return false;
 		
@@ -259,10 +260,18 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		
 		if (fleet == null) return false;
 		
-		List<GroundBattleAI.IFBStrengthRecord> industries = ai.getIndustriesWithEnemySorted();
-		if (industries.isEmpty()) return false;
+		// pick a bombardment target: the highest priority industry that is a valid target
+		List<GroundBattleAI.IFBStrengthRecord> desiredTargets = ai.getIndustriesWithEnemySorted();
+		List<IndustryForBattle> validTargets = getTargetIndustries();
 		
-		target = industries.get(0).industry;
+		List<IndustryForBattle> targetsFiltered = new LinkedList<>();
+		for (GroundBattleAI.IFBStrengthRecord candidate : desiredTargets) {
+			IndustryForBattle ifb = candidate.industry;
+			targetsFiltered.add(ifb);
+		}
+		targetsFiltered.removeAll(validTargets);
+		if (targetsFiltered.isEmpty()) return false;
+		
 		return super.aiExecute(ai, fleet.getCommander());
 	}
 }
