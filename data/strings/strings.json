@@ -2146,7 +2146,10 @@
 		"intelDescDiplomatic":"$TheFaction and their allies have developed positive relations with all other powers of the Sector. Peace has come to this corner of the galaxy, at least for now.",
 		"intelDescRetired":"You, $playerName, have chosen to retire from the game. The conflicts of the Sector will have to unfold without you.",
 		
-		"intelStringYouWon":"You have won the game!"
+		"intelStringYouWon":"You have won the game!",
+		
+		"intelButtonCancel":"Cancel victory",
+		"intelButtonCancelPrompt":"This will remove the current victory state, allowing you to pursue a different victory condition. Note that the victory event may occur again almost immediately if the previous victory conditions are still met."
 	},
 	
 	"nex_world":{

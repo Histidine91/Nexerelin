@@ -13,7 +13,6 @@ RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,nexerelin",r
 StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,nexerelin",startvengeanceevent <faction> [level],Spawns a vengeance fleet for the specified faction.
 ReloadNexConfig,exerelin.console.commands.ReloadNexConfig,"campaign,nexerelin",reloadnexconfig,"Reloads the exerelin_settings.json file, and opens a dialog screen to change some Nexerelin sector settings (as if Nexerelin was added to an existing save)."
 AddAgent,exerelin.console.commands.AddAgent,"campaign,nexerelin",addagent <market> [level [specialization]],Adds an agent for the player.
-ResetVictory,exerelin.console.commands.ResetVictory,"campaign,nexerelin",resetvictory,Removes the existing victory/retirement intel (if one exists) and allows the player to win the game again. Note: This may happen quickly if victory conditions remain met.
 PrintDisposition,exerelin.console.commands.PrintDisposition,"campaign,nexerelin",printdisposition <faction1> <faction2>,Prints the 'disposition' (hidden diplomacy-related value) of faction 1 towards faction 2.
 #,,,,
 # Override default command,,,,

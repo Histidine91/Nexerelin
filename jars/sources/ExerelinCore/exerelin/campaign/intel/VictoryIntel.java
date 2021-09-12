@@ -3,10 +3,12 @@ package exerelin.campaign.intel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.SectorManager.VictoryType;
 import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.utilities.StringHelper;
@@ -16,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class VictoryIntel extends BaseIntelPlugin {
+	
+	public static Object BUTTON_CANCEL_VICTORY = new Object(); 
 	
 	protected String factionId;
 	protected VictoryType type;
@@ -65,7 +69,6 @@ public class VictoryIntel extends BaseIntelPlugin {
 			String str = StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", 
 					"intelDescRetired", "$playerName", Global.getSector().getPlayerPerson().getNameString());
 			info.addPara(str, opad);
-			return;
 		}
 		else if (customparams != null) {
 			info.addPara(customparams.intelText, opad, faction.getBaseUIColor(), 
@@ -73,27 +76,47 @@ public class VictoryIntel extends BaseIntelPlugin {
 			
 			if (playerWon)
 				info.addPara(StringHelper.getString("exerelin_victoryScreen", "intelStringYouWon"), opad);
-			
-			return;
 		}
-		
-		String strKey = "intelDescConquest";
-		if (type.isDiplomatic()) strKey = "intelDescDiplomatic";
-		
-		Map<String, String> replace = new HashMap<>();
-		replace.put("$theFaction", faction.getDisplayNameWithArticle());
-		replace.put("$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
-		replace.put("$hasOrHave", faction.getDisplayNameHasOrHave());
-		String str = StringHelper.getStringAndSubstituteTokens("exerelin_victoryScreen", 
-					strKey, replace);
-		
-		LabelAPI para = info.addPara(str, opad, faction.getBaseUIColor(), 
-				faction.getDisplayNameWithArticleWithoutArticle());
-		
-		if (playerWon)
-			info.addPara(StringHelper.getString("exerelin_victoryScreen", "intelStringYouWon"), opad);
-		
+		else {
+			String strKey = "intelDescConquest";
+			if (type.isDiplomatic()) strKey = "intelDescDiplomatic";
+
+			Map<String, String> replace = new HashMap<>();
+			replace.put("$theFaction", faction.getDisplayNameWithArticle());
+			replace.put("$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
+			replace.put("$hasOrHave", faction.getDisplayNameHasOrHave());
+			String str = StringHelper.getStringAndSubstituteTokens("exerelin_victoryScreen", 
+						strKey, replace);
+
+			LabelAPI para = info.addPara(str, opad, faction.getBaseUIColor(), 
+					faction.getDisplayNameWithArticleWithoutArticle());
+			
+			if (playerWon)
+				info.addPara(StringHelper.getString("exerelin_victoryScreen", "intelStringYouWon"), opad);
+		}
+				
 		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
+		
+		info.addButton(StringHelper.getString("exerelin_victoryScreen", "intelButtonCancel"), 
+				BUTTON_CANCEL_VICTORY, width, 20, opad);
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_CANCEL_VICTORY) {
+			SectorManager.getManager().clearVictory();
+			ui.updateIntelList();
+		}
+	}
+	
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		return true;
+	}
+	
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		prompt.addPara(StringHelper.getString("exerelin_victoryScreen", "intelButtonCancelPrompt"), 0);
 	}
 	
 	@Override
