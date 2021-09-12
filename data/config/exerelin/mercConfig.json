@@ -78,7 +78,7 @@
 					"voice":"soldier",
 				}
 			],
-			"averageSMods":1,
+			"averageSMods":2,
 			"miscData":{
 				"angeredByInsults":true,
 			},
@@ -103,7 +103,7 @@
 					"rankId":"spaceCommander",
 				},
 			],
-			"averageSMods":2,
+			"averageSMods":3,
 		},
 		
 		"westernesseKingsOwn":{
@@ -131,7 +131,7 @@
 					"level":4,
 				},
 			],
-			"averageSMods":1,
+			"averageSMods":2,
 			"miscData":{
 				"angeredByInsults":true,
 			},
@@ -167,6 +167,7 @@
 					"level":3,
 				},
 			],
+			"averageSMods":1,
 			"miscData":{
 				"angeredByInsults":true,
 				"maxAutogenFleetSize":4,
@@ -218,6 +219,7 @@
 					"level":3,
 				},
 			],
+			"averageSMods":1,
 		},
 		
 		"theJokers":{
@@ -243,7 +245,7 @@
 					"level":4,
 				},
 			],
-			"averageSMods":0,
+			"averageSMods":1,
 			"miscData":{
 				"maxAutogenFleetSize":6,
 			},
@@ -276,7 +278,7 @@
 					"level":3,
 				},
 			],
-			"averageSMods":1,
+			"averageSMods":2,
 			"requiredMods":["underworld"],
 			"miscData":{
 				"angeredByInsults":true,

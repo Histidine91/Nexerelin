@@ -18,11 +18,13 @@ public class VolturnGenPlugin extends MercFleetGenPlugin {
 		if (inf instanceof AutofitPluginDelegate) {
 			AutofitPluginDelegate del = (AutofitPluginDelegate)inf;
 			CoreAutofitPlugin auto = new CoreAutofitPlugin(fleet.getCommander());
-			log.info("bla " + intel + ", " + intel.seed);
+			int existingMods = flag.getVariant().getSMods().size();
+			if (existingMods >= 2) return;
+			
 			auto.setRandom(new Random(intel.seed));
 			auto.setChecked(CoreAutofitPlugin.UPGRADE, true);
 			// if you don't set a clone as the target, the ship doesn't get any weapons
-			auto.doFit(flag.getVariant(), flag.getVariant().clone(), 2, del);
+			auto.doFit(flag.getVariant(), flag.getVariant().clone(), 2 - existingMods, del);
 
 			fleet.getFleetData().setSyncNeeded();
 			fleet.getFleetData().syncIfNeeded();
