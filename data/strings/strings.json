@@ -565,6 +565,7 @@
 		"effectMarketDestroyed":"$market destroyed.",
 		"effectAllDisrupt":"All operations disrupted.",
 		"effectAllDisruptAndDownsize":"All operations disrupted. Colony size reduced to %s.",
+		"effectIndustryRemoved":"$market has exceeded its maximum industry count following the bombardment. Destroying industry: %s",
 	},
 	"nex_bounties":{
 		"factionBountyIntel_title":"Faction Bounty",

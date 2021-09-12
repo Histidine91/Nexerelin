@@ -25,6 +25,7 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -45,9 +46,11 @@ import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
+import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -64,6 +67,7 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBUtils;
+import exerelin.utilities.ColonyNPCHostileActListener;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
@@ -94,7 +98,8 @@ import org.lazywizard.lazylib.MathUtils;
  * admin bonuses from empire size, and relief fleets.
  */
 public class ColonyManager extends BaseCampaignEventListener implements EveryFrameScript,
-		EconomyTickListener, InvasionListener, PlayerColonizationListener, MarketImmigrationModifier
+		EconomyTickListener, InvasionListener, PlayerColonizationListener, MarketImmigrationModifier,
+		ColonyPlayerHostileActListener, ColonyNPCHostileActListener
 {
 	public static Logger log = Global.getLogger(ColonyManager.class);
 	
@@ -1282,6 +1287,41 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		return !DiplomacyTraits.hasTrait(faction.getId(), TraitIds.HATES_AI);
 	}
 	
+	public void checkIndustriesAfterSatBomb(MarketAPI market) {
+		int max = Misc.getMaxIndustries(market);
+		int curr = Misc.getNumIndustries(market);
+		
+		if (curr > max) {
+			float lowestCost = 999999999;
+			Industry cheapest = null;
+			
+			for (Industry ind : market.getIndustries()) {
+				IndustrySpecAPI spec = ind.getSpec();
+				if (!spec.hasTag(Industries.TAG_INDUSTRY)) continue;
+				if (ind.isHidden()) continue;
+				if (!ind.isAvailableToBuild()) continue;
+				if (!ind.canShutDown()) continue;
+				
+				float cost = ind.getBuildCost();
+				if (cost < lowestCost) {
+					lowestCost = cost;
+					cheapest = ind;
+				}
+			}
+			
+			if (cheapest != null) {
+				InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+				if (dialog != null) {
+					String str = StringHelper.getStringAndSubstituteToken("nex_bombardment", 
+							"effectIndustryRemoved", "$market", market.getName());
+					dialog.getTextPanel().addPara(str, Misc.getHighlightColor(), cheapest.getCurrentName());
+				}
+				
+				market.removeIndustry(cheapest.getId(), null, false);
+			}
+		}
+	}
+	
 	/**
 	 * Check if the AI cores on this market should be stashed following market capture.
 	 * TODO: Handle AI admin as well.
@@ -1606,6 +1646,39 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static ColonyManager getManager()
 	{
 		return (ColonyManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
+	}
+
+	@Override
+	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {}
+
+	@Override
+	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
+			MarketCMD.TempData actionData, Industry industry) {}
+
+	@Override
+	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {}
+
+	@Override
+	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {
+		checkIndustriesAfterSatBomb(market);
+	}
+	
+	@Override
+	public void reportNPCGenericRaid(MarketAPI market, MarketCMD.TempData actionData) {}
+
+	@Override
+	public void reportNPCIndustryRaid(MarketAPI market, MarketCMD.TempData actionData, Industry industry) {}
+
+	@Override
+	public void reportNPCTacticalBombardment(MarketAPI market, MarketCMD.TempData actionData) {}
+
+	@Override
+	public void reportNPCSaturationBombardment(MarketAPI market, MarketCMD.TempData actionData) 
+	{
+		checkIndustriesAfterSatBomb(market);
 	}
 	
 	public static class QueuedIndustry {
