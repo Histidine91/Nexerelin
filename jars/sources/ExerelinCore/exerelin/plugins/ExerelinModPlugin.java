@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.InstallableIndustryItemPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -26,6 +27,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.historian.HistorianData;
+import com.fs.starfarer.api.impl.campaign.intel.bar.events.historian.HistorianData.HistorianOfferCreator;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
@@ -45,6 +48,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.MiningCooldownDrawer;
+import exerelin.campaign.MiscEventsManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.StartSetupPostTimePass;
@@ -66,6 +70,7 @@ import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
+import exerelin.campaign.intel.bar.historian.ShuntLocationOfferCreator;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
@@ -208,6 +213,16 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (GroundBattleIntel gb : toRemove) {
             Global.getSector().getListenerManager().removeListener(gb);
         }
+        
+        boolean hasShuntOffer = false;
+        HistorianData hd = HistorianData.getInstance();
+        for (HistorianOfferCreator oc : hd.getCreators()) {
+            if (oc instanceof ShuntLocationOfferCreator) {
+                hasShuntOffer = true;
+                break;
+            }
+        }
+        if (!hasShuntOffer) hd.getCreators().add(new ShuntLocationOfferCreator());
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
@@ -372,6 +387,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         PlayerInSystemTracker.create();
+        MiscEventsManager.create();
         //sector.addTransientScript(new MiningCooldownDrawer());
         if (MiningCooldownDrawer.getEntity() == null) 
             MiningCooldownDrawer.create();

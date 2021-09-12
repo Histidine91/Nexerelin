@@ -20,6 +20,7 @@ import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.listeners.SurveyPlanetListener;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
+import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -335,7 +336,12 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 				awardMilestone("encounterRemnants");
 			}
 			if (won && otherFleet.getFaction().getId().equals(Factions.OMEGA)) {
-				awardMilestone("defeatOmega");
+				for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
+					if (loss.getHullSpec().getHullSize().compareTo(HullSize.CRUISER) >= 0) {
+						awardMilestone("defeatOmega");
+						break;
+					}
+				}
 			}
 			for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
 				if (loss.isStation()) {

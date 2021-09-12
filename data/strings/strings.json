@@ -1029,6 +1029,16 @@
 		"proceedConfirm":"Confirm launch?",
 		"proceedConfirmNonHostile":"$TheFaction is not currently hostile, but will be if you launch this task force. Are you sure you wish to do this?",
 	},
+	
+	"nex_historian":{
+		"promptEntityLoc":"... the possible location of a %s",
+		"spLogEntityLoc":"Learned location of %s",
+		"intelTitleEntityLoc":"%s Location",
+		"intelTitleEntityLocComplete":"%s - Discovered",
+		"intelParaEntityLoc1":"The historian, $historianName, has given you information about the location of $aOrAn $entity.",
+		"intelParaEntityLocCorona":"It should be found within the corona of %s.",
+	},
+	
 	"exerelin_invasion":{
 		"invadeOpt":"Invade $market",
 		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile. An invasion is a major enough hostile action that it can't be concealed, regardless of transponder status.",
