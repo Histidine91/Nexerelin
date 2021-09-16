@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.BaseOptionStoryPointActionDelegate;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.StoryOptionParams;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
@@ -34,6 +35,8 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.MilestoneTracker;
+import exerelin.campaign.intel.groundbattle.GBUtils;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
@@ -715,6 +718,22 @@ public class AgentIntel extends BaseIntelPlugin {
 						Misc.getNegativeHighlightColor()
 				);
 			}
+			
+			// garrison estimate
+			try
+			{
+				GroundBattleIntel intel = Nex_MarketCMD.prepIntel(market);
+				float[] strEst = GBUtils.estimateDefenderStrength(intel, true);
+				int precision = intel.getUnitSize().avgSize/5;
+				
+				info.addPara(GroundBattleIntel.getString("dialogGarrisonEstimateShort"), 10);
+				info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMilitia"), 3, 
+						h, NexUtils.getEstimateNum(strEst[0], precision) + "");
+				info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMarine"), 3, 
+						h, NexUtils.getEstimateNum(strEst[1], precision) + "");
+				info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateHeavy"), 3, 
+						h, NexUtils.getEstimateNum(strEst[2], precision) + "");	
+			} catch (Exception ex) {}
 		}
 		
 		if (lastAction != null) {

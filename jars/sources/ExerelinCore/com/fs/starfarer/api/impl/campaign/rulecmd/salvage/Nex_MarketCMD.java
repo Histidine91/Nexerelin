@@ -794,7 +794,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		responder.getContainingLocation().removeEntity(responder);
 	}
 	
-	protected GroundBattleIntel prepIntel() {
+	public static GroundBattleIntel prepIntel(MarketAPI market) {
 		GroundBattleIntel intel = new GroundBattleIntel(market, PlayerFactionStore.getPlayerFaction(), market.getFaction());
 		intel.setPlayerInitiated(true);
 		intel.setPlayerIsAttacker(true);
@@ -963,7 +963,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			text.addTooltip();
 		}
 		
-		GroundBattleIntel intel = prepIntel();
+		GroundBattleIntel intel = prepIntel(market);
 		
 		float[] strEst = GBUtils.estimateDefenderStrength(intel, true);
 		int precision = intel.getUnitSize().avgSize/5;
@@ -1046,7 +1046,7 @@ public class Nex_MarketCMD extends MarketCMD {
 					impact, null, text, true, true),
 					faction.getId());
 		
-		GroundBattleIntel intel = prepIntel();
+		GroundBattleIntel intel = prepIntel(market);
 		
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, text);
 		intel.start();
