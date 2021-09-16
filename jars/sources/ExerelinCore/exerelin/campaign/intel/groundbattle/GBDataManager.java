@@ -172,6 +172,10 @@ public class GBDataManager {
 		public IndustryDef(String industryId) {
 			this.industryId = industryId;
 		}
+	
+		public boolean hasTag(String tag) {
+			return tags.contains(tag);
+		}
 	}
 	
 	public static class ConditionDef {

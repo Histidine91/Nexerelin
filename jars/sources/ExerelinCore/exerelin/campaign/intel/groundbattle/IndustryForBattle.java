@@ -308,6 +308,7 @@ public class IndustryForBattle {
 	 * @param tooltip
 	 * @param width
 	 */
+	@Deprecated
 	public void renderPanel(CustomPanelAPI panel, TooltipMakerAPI tooltip, float width) {
 		int height = Math.round(MarketMapDrawer.getIndustryImageWidth()/2);
 		CustomPanelAPI row = panel.createCustomPanel(width, height, null);
@@ -348,13 +349,14 @@ public class IndustryForBattle {
 	}
 	
 	/**
-	 * Generates a panel with the strength and (if known) morale numbers.
+	 * Generates a panel with the strength and (if known) morale numbers, for the old tabular display.
 	 * @param indPanel The {@code IndustryForBattle} panel holding this one.
 	 * @param width
 	 * @param height
 	 * @param attacker
 	 * @return
 	 */
+	@Deprecated
 	public CustomPanelAPI renderStrPanel(CustomPanelAPI indPanel, float width, float height, 
 			boolean attacker) 
 	{
@@ -514,6 +516,15 @@ public class IndustryForBattle {
 					str = StringHelper.getString("nex_invasion2", "industryPanel_header_heldBy");
 					tt.addPara(str + ": " + owner, pad, heldByAttacker ? Misc.getPositiveHighlightColor() 
 							: Misc.getNegativeHighlightColor(), owner);
+					
+					if (getPlugin().getDef().hasTag("noBombard")) {
+						str = StringHelper.getString("nex_invasion2", "industryPanel_header_bombardmentImmune");
+						tt.addPara(str, pad);
+					}
+					else if (getPlugin().getDef().hasTag("resistBombard")) {
+						str = StringHelper.getString("nex_invasion2", "industryPanel_header_bombardmentResistant");
+						tt.addPara(str, pad);
+					}
 				}
 			}, TooltipLocation.BELOW);
 

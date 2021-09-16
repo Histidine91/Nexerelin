@@ -1190,6 +1190,8 @@
 		"industryPanel_header_industry":"Industry",
 		"industryPanel_header_heldBy":"Held by",
 		"industryPanel_header_defBonus":"Defense bonus",
+		"industryPanel_header_bombardmentImmune":"Bombardment immune",
+		"industryPanel_header_bombardmentResistant":"Not disrupted by bombardments",
 		"industryPanel_header_attacker":"Attacking forces",
 		"industryPanel_header_defender":"Defending forces",
 		"industryPanel_tooltipStrength":"Strength of the $side's forces on this industry.",
@@ -1411,7 +1413,7 @@
 		
 		"ability_bombard_blurb":"Small-scale bombardment in direct support of ground forces.",
 		"ability_bombard_tooltip1":"Does %s damage (at current market size) distributed between all enemy units on the target industry. Damage increasd by %s if combat is ongoing on the target, and reduced by target units' defensive modifiers (if any).",
-		"ability_bombard_tooltip2":"If target industry is held by enemy, disrupts the industry for its base raid time.",
+		"ability_bombard_tooltip2":"If target industry is held by enemy, disrupts the industry for its base raid time (except for hardened military structures).",
 		"ability_bombard_tooltip3":"Ground defenses can protect themselves efficiently against fire support bombardments. Bombardments also cannot take place if enemy fleets within support range have at least half the combined strength of our fleet(s).",
 		"ability_bombard_tooltip4":"Costs %s fuel at current market size, conditions and fleet composition.",
 		"ability_bombard_result1":"Inflicted %s damage across %s units",

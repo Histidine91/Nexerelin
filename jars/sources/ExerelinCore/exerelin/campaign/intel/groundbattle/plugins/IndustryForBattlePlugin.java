@@ -32,7 +32,7 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 		this.indForBattle = ind;
 	}
 	
-	protected IndustryDef getDef() {
+	public IndustryDef getDef() {
 		return GBDataManager.getIndustryDef(defId);
 	}
 	
@@ -105,17 +105,17 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 					indForBattle.getName());
 		}
 		
-		if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
+		if (def.hasTag(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
 			GroundBattleIntel.applyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_BOMBARDMENT, 
 					indForBattle.getIndustry().getId());
 		}
 		
-		if (def.tags.contains(GBConstants.TAG_PREVENT_EW)) {
+		if (def.hasTag(GBConstants.TAG_PREVENT_EW)) {
 			GroundBattleIntel.applyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_EW, 
 					indForBattle.getIndustry().getId());
 		}
 		
-		if (def.tags.contains(GBConstants.TAG_PREVENT_INSPIRE)) {
+		if (def.hasTag(GBConstants.TAG_PREVENT_INSPIRE)) {
 			GroundBattleIntel.applyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_INSPIRE, 
 					indForBattle.getIndustry().getId());
 		}
@@ -131,8 +131,18 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 		otherSide.getBombardmentCostMod().unmodify(defId);
 		otherSide.getDropAttrition().unmodify(defId);
 		
-		if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
+		if (def.hasTag(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
 			GroundBattleIntel.unapplyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_BOMBARDMENT, 
+					indForBattle.getIndustry().getId());
+		}
+		
+		if (def.hasTag(GBConstants.TAG_PREVENT_EW)) {
+			GroundBattleIntel.unapplyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_EW, 
+					indForBattle.getIndustry().getId());
+		}
+		
+		if (def.hasTag(GBConstants.TAG_PREVENT_INSPIRE)) {
+			GroundBattleIntel.unapplyTagWithReason(otherSide.getData(), GBConstants.TAG_PREVENT_INSPIRE, 
 					indForBattle.getIndustry().getId());
 		}
 	}
@@ -169,7 +179,7 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 		if (def.enemyDropCostMult == 1 && def.enemyBombardmentCostMult == 1
 				&& def.dropAttritionFactor == 0
 				&& def.dropAttritionMult == 1
-				&& !def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
+				&& !def.hasTag(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
 			return false;
 		}
 		return true;
@@ -194,7 +204,7 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 			tooltip.addPara("- " + getString("modifierDropAttritionMult"), 0, h, String.format("%.1f×", def.dropAttritionMult));
 		}
 
-		if (def.tags.contains(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
+		if (def.hasTag(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
 			tooltip.addPara("- " + getString("modifierPreventBombardment"), 0);
 		}
 	}

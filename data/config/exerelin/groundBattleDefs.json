@@ -42,12 +42,14 @@
 			"dropAttritionMult":2,
 		},
 		"patrolhq":{
+			"tags":["resistBombard"],
 			"strengthMult":1.2,
 			"troopCounts":{
 				"marine":0.1,
 			},
 		},
 		"militarybase":{
+			"tags":["resistBombard"],
 			"strengthMult":1.4,
 			"troopCounts":{
 				"militia":0.2,
@@ -56,6 +58,7 @@
 			},
 		},
 		"highcommand":{
+			"tags":["resistBombard"],
 			"strengthMult":1.5,
 			"troopCounts":{
 				"militia":0.3,
@@ -64,6 +67,7 @@
 			},
 		},
 		"lionsguard":{
+			"tags":["resistBombard"],
 			"strengthMult":1.5,
 			"troopCounts":{
 				"marine":0.25,
@@ -71,6 +75,7 @@
 			},
 		},
 		"6emebureau":{
+			"tags":["resistBombard"],
 			"strengthMult":1.25,
 			"troopCounts":{
 				"marine":0.2,

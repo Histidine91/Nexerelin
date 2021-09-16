@@ -65,7 +65,8 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		}
 		
 		float disruptTime = 0;
-		if (enemyHeld) {
+		if (enemyHeld && !target.getPlugin().getDef().hasTag("resistBombard")) 
+		{
 			Industry ind = target.getIndustry();
 			disruptTime = getDisruptionTime(ind);
 			ind.setDisrupted(disruptTime + ind.getDisruptedDays(), true);
@@ -77,7 +78,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result1"), 
 					h, Math.round(damage) + "", numEnemies + "");
 
-			if (enemyHeld) {
+			if (disruptTime > 0) {
 				dialog.getTextPanel().addPara(GroundBattleIntel.getString("ability_bombard_result2"), 
 					h, target.getName(), (int)disruptTime + "");
 			}
@@ -222,7 +223,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		List<IndustryForBattle> targets = new ArrayList<>();
 		for (IndustryForBattle ifb : getIntel().getIndustries()) {
 			if (ifb.heldByAttacker != getSide().isAttacker() && !ifb.isIndustryTrueDisrupted() 
-					&& ifb.getPlugin().getDef().tags.contains("noBombard"))
+					&& ifb.getPlugin().getDef().hasTag("noBombard"))
 				continue;
 			if (!ifb.containsEnemyOf(side.isAttacker())) continue;
 			targets.add(ifb);
