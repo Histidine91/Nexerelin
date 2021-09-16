@@ -239,9 +239,14 @@ public class GroundBattleSide {
 		
 		allocateDefenders();
 		
+		FactionAPI rebFac = Global.getSector().getFaction(NexUtilsMarket.getOriginalOwner(intel.getMarket()));
+		if (rebellion != null) {
+			rebFac = rebellion.getRebelFaction();
+		}
+		if (rebFac == null) rebFac = Global.getSector().getPlayerFaction();
+		
 		if (rebels > 0) {
-			createAndAllocateRebels(Math.round(rebels),
-					Global.getSector().getFaction(NexUtilsMarket.getOriginalOwner(intel.getMarket())));
+			createAndAllocateRebels(Math.round(rebels), rebFac);
 		}
 		
 		currNormalBaseStrength = GBUtils.estimateTotalDefenderStrength(intel, false);
