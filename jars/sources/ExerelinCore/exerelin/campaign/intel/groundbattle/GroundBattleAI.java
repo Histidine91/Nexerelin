@@ -343,7 +343,7 @@ public class GroundBattleAI {
 	}
 			
 	protected boolean canUnleashMilitia() {
-		return intel.turnNum > 15 + intel.getMarket().getSize() * 4;
+		return intel.turnNum >= intel.getMilitiaUnleashTurn();
 	}
 	
 	public static void printDebug(String str) {

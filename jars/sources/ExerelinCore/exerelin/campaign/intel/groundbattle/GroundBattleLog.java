@@ -32,6 +32,7 @@ public class GroundBattleLog {
 	public static final String TYPE_XP_GAINED = "gainXP";
 	public static final String TYPE_LOSS_REPORT = "lossReport";
 	public static final String TYPE_COMMODITIES_USED_REPORT = "commoditiesUsedReport";
+	public static final String TYPE_MILITIA_UNLEASHED = "militiaUnleashed";
 	
 	public final GroundBattleIntel intel;
 	public final int turn;
@@ -177,6 +178,10 @@ public class GroundBattleLog {
 				}
 				
 				break;
+			
+			case TYPE_MILITIA_UNLEASHED:
+				tooltip.addPara(getString("log_militiaUnleashed"), LOG_PADDING);
+				break;
 				
 			case TYPE_BATTLE_END:
 				Boolean isAttacker = (Boolean)params.get("attackerIsWinner");
@@ -269,6 +274,9 @@ public class GroundBattleLog {
 			case TYPE_BATTLE_END:
 				Boolean isAttacker = (Boolean)params.get("attackerIsWinner");
 				if (isAttacker != null) return intel.getHighlightColorForSide(isAttacker);
+				return Misc.getBasePlayerColor();
+			case TYPE_MILITIA_UNLEASHED:
+				if (intel.playerIsAttacker != null) return intel.getHighlightColorForSide(!intel.playerIsAttacker);
 				return Misc.getBasePlayerColor();
 			default:
 				return Misc.getBasePlayerColor();

@@ -121,7 +121,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected Float timerForDecision;
 	
 	protected MarketAPI market;
-	protected InvasionIntel intel;
+	protected InvasionIntel invasionIntel;
 	protected boolean playerInitiated;
 	protected Boolean playerIsAttacker;
 	
@@ -433,7 +433,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void setInvasionIntel(InvasionIntel intel) {
-		this.intel = intel;
+		this.invasionIntel = intel;
 	}
 	
 	public Color getHighlightColorForSide(boolean isAttacker) {
@@ -512,7 +512,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return MathUtils.getDistance(fleet, 
 				market.getPrimaryEntity()) <= GBConstants.MAX_SUPPORT_DIST;
 	}
-		
+	
+	public int getMilitiaUnleashTurn() {
+		return market.getSize() * 2;
+	}
+	
 	public static void applyTagWithReason(Map<String, Object> data, String tag, String reason) {
 		Object param = data.get(tag);
 		if (param != null && !(param instanceof Collection)) {
@@ -927,6 +931,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		if (outcome != null) {
 			return;
+		}
+		
+		if (turnNum == getMilitiaUnleashTurn() - 1) {
+			GroundBattleLog log = new GroundBattleLog(this, GroundBattleLog.TYPE_MILITIA_UNLEASHED, turnNum);
+			addLogEvent(log);
 		}
 		
 		if (playerIsAttacker != null)
@@ -1762,6 +1771,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				label.setHighlightColors(Misc.getHighlightColor(), entry.two.getDef().color);
 			}
 		}
+		
+		if (turnNum == getMilitiaUnleashTurn() - 1) {
+			String str = getString("bulletMilitiaUnleashed");
+			info.addPara(str, 0, Misc.getHighlightColor(), str);
+		}
 	}
 	
 	public void addPostVictoryButtons(CustomPanelAPI outer, TooltipMakerAPI info, float width) 
@@ -2105,7 +2119,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	@Override
 	public String getCommMessageSound() {
-		if (listInfoParam == UPDATE_TURN && abilitiesUsedLastTurn.isEmpty())
+		if (listInfoParam == UPDATE_TURN && abilitiesUsedLastTurn.isEmpty()
+				&& !attacker.getLossesLastTurn().isEmpty()
+				&& !defender.getLossesLastTurn().isEmpty())
 			return "nex_sfx_combat";
 		//if (listInfoParam == UPDATE_VICTORY)
 		//	return "nex_sfx_combat";	// maybe different sound?

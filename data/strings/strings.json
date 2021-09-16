@@ -1157,6 +1157,7 @@
 		
 		"bulletLossesLastTurn":"Losses last turn: %s",
 		"bulletAbilityUsed":"%s used ability: %s",
+		"bulletMilitiaUnleashed":"Militia unleashed!",
 		
 		"btnViewUnits":"Units",
 		"btnViewAbilities":"Abilities",
@@ -1286,6 +1287,7 @@
 		"log_abilityUsed":"$person used $ability! $extraDesc",
 		"log_abilityUsedIndustry":"$person used $ability on $industry! $extraDesc",
 		"log_satbomb":"%s!! Severe damage to units at all locations",
+		"log_militiaUnleashed":"Militia unleashed and can now move freely!",
 		"log_victory":"%s %s wins the battle!",
 		"log_lossesFinal":"Final player losses: %s marines, %s heavy armaments",
 		"log_ended":"Battle ended",
@@ -1381,7 +1383,7 @@
 		"helpPara3Title":"Unit types",
 		"helpPara3-1":"%s: General combat type.",
 		"helpPara3-2":"%s: Attack bonus when on enemy-held industries, but suffers an attack penalty on station-only markets. Increased deployment cost. Each vehicle requires two marines to crew.",
-		"helpPara3-3":"%s: Local defenders. Weak in combat and with a tendency to run away, their only saving grace is their numbers. Will not move off their current industry, except when fleeing.",
+		"helpPara3-3":"%s: Local defenders. Cowardly and weak in combat, their only saving grace is their numbers. Will (initially) not move off their current industry, except when fleeing.",
 		
 		"helpPara4Title":"Morale",
 		"helpPara4-1":"Morale is a critical stat, serving as a second healthbar and more.",
