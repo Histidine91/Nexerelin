@@ -1778,6 +1778,8 @@
 		"dialog_debtIncurred":"Incurred %s debt",
 		
 		"reportNode_name":"Mercenary contract: %s",
+		
+		"message_reverseSale":"Reversed sale or storage of %s",
 	},
 	
 	"nex_milestones":{
