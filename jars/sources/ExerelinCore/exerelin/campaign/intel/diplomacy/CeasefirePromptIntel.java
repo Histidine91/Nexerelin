@@ -39,6 +39,10 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	public static final Object EXPIRED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
 	public static final String BUTTON_REJECT = "Reject";
+	public static final Object DIALOG_OPT_ACCEPT = new Object();
+	public static final Object DIALOG_OPT_REJECT = new Object();
+	public static final Object DIALOG_OPT_OPEN = new Object();
+	public static final Object DIALOG_OPT_CLOSE = new Object();
 	
 	protected String factionId;
 	protected boolean isPeaceTreaty;
@@ -262,7 +266,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	
 	@Override
 	public String getSortString() {
-		return "Diplomacy";
+		return StringHelper.getString("diplomacy", true);
 	}
 	
 	@Override
@@ -272,9 +276,12 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 
 	@Override
 	public void populateOptions(OptionPanelAPI opts) {
-		opts.addOption(StringHelper.getString("exerelin_diplomacy", "dialogCeasefireOptionGotoIntel"), "goto");
-		opts.addOption(StringHelper.getString("close", true), "close");
-		opts.setShortcut("close", Keyboard.KEY_ESCAPE, false, false, false, false);
+		opts.addOption(StringHelper.getString("exerelin_diplomacy", "dialogCeasefireOptionGotoIntel"), DIALOG_OPT_OPEN);
+		opts.addOption(StringHelper.getString("accept", true), DIALOG_OPT_ACCEPT);
+		opts.addOption(StringHelper.getString("reject", true), DIALOG_OPT_REJECT);
+		opts.addOption(StringHelper.getString("close", true), DIALOG_OPT_CLOSE);
+		opts.setShortcut(DIALOG_OPT_OPEN, Keyboard.KEY_RETURN, false, false, false, false);
+		opts.setShortcut(DIALOG_OPT_CLOSE, Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 
 	@Override
@@ -314,15 +321,25 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 
 	@Override
 	public void optionSelected(InteractionDialogAPI dialog, Object optionData) {
-		String opt = (String)optionData;
-		if ("goto".equals(opt)) {
+		if (optionData == DIALOG_OPT_OPEN) {
 			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, null, this);
 			// jump to the correct intel item - doesn't work
-			//Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, this);
+			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, this);
+			return;
 		}
-		else if ("close".equals(opt)) {
+		else if (optionData == DIALOG_OPT_CLOSE) {
 			dialog.dismiss();
 		}
+		
+		else if (optionData == DIALOG_OPT_ACCEPT) {
+			this.accept();
+			endAfterDelay();
+		}
+		else if (optionData == DIALOG_OPT_REJECT) {
+			state = -1;
+			endAfterDelay();
+		}
+		dialog.dismiss();
 	}
 
 	@Override
@@ -330,5 +347,5 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		Global.getSector().getCampaignUI().getCurrentInteractionDialog().dismiss();
 	}
 	
-	// runcode new exerelin.campaign.intel.CeasefirePromptIntel("pirates", false).init()
+	// runcode new exerelin.campaign.intel.diplomacy.CeasefirePromptIntel("pirates", false).init()
 }
