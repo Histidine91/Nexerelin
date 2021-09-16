@@ -776,6 +776,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public void handleFactionRespawn()
     {
+        if (!NexConfig.enableInvasions) return;
+        
         if (factionRespawnCounts == null)
         {
             factionRespawnCounts = new HashMap<>();
