@@ -23,10 +23,10 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 	
 	protected float atkBonus = 0;
 	protected float defBonus = 0;
-	protected transient Set<GroundUnit> atkUnits;
-	protected transient Set<GroundUnit> defUnits;
-	protected transient float atkStrSum = 0;
-	protected transient float defStrSum = 0;
+	protected transient Set<GroundUnit> atkUnits;	// created and filled before round resolve
+	protected transient Set<GroundUnit> defUnits;	// created and filled before round resolve
+	protected transient float atkStrSum = 0;		// incremented prior to round resolve
+	protected transient float defStrSum = 0;		// incremented prior to round resolve
 	
 	protected float getBonusFromFleets(List<CampaignFleetAPI> fleets) {
 		float increment = 0;

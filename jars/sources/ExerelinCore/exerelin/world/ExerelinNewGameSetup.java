@@ -20,8 +20,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
-import com.fs.starfarer.api.impl.campaign.procgen.ConstellationGen;
-import static com.fs.starfarer.api.impl.campaign.procgen.ConstellationGen.createSpringSystem;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -360,7 +358,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		if (ExerelinModPlugin.HAVE_DYNASECTOR)
 		{
-			// FIXME
+			// TODO if DS ever comes back
 			/*
 			sector.addScript(new DS_MercFleetManager());
 			sector.addScript(new DS_LuddicPathFleetManager());

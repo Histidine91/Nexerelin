@@ -601,14 +601,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (isBuildingAnything(market))
 			return;
 		
-		log.info("Processing NPC construction queue for " + market.getName());
+		//log.info("Processing NPC construction queue for " + market.getName());
 		LinkedList<QueuedIndustry> queue = npcConstructionQueues.get(market);
 		if (queue == null || queue.isEmpty())
 			return;
 		
 		LinkedList<QueuedIndustry> queueCopy = new LinkedList<>(queue);
 		for (QueuedIndustry item : queueCopy) {
-			log.info("\tChecking industry queue: " + item.industry + ", " + item.type.toString());
+			//log.info("\tChecking industry queue: " + item.industry + ", " + item.type.toString());
 			
 			// Station double addition preventer
 			if (item.type == QueueType.NEW) {

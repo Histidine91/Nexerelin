@@ -138,6 +138,11 @@ public class NexUtilsFleet
     }
     
     // taken from SS+
+    /**
+     * Estimate of a fleet's strength based on fleet points and officer levels. Currently does not include D-mods or S-mods.
+     * @param fleet
+     * @return
+     */
     public static int calculatePowerLevel(CampaignFleetAPI fleet) {
         int power = fleet.getFleetPoints();
         for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {

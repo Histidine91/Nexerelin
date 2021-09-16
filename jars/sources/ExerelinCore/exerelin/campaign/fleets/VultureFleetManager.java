@@ -302,7 +302,7 @@ public class VultureFleetManager extends DisposableFleetManager
 	}
 	
 	/**
-	 * Gets the derelict ships present in the location.Will not grab ships with 
+	 * Gets the derelict ships present in the location. Will not grab ships with 
 	 * no expiry, or with nearby fleets that could threaten the vulture fleet.
 	 * @param loc
 	 * @param vulture

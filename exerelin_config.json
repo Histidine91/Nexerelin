@@ -18,7 +18,7 @@
     #"minimumStations": 3,
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market
     
-    "fleetBonusFpPerPlayerLevel": 1,	# not actually used, except for vengeance fleets
+    "fleetBonusFpPerPlayerLevel": 1,	# not actually used, except for vengeance and mining harassment fleets
     
     "prisonerRepatriateRepValue": 0.04,
     "prisonerBaseRansomValue": 5000,
