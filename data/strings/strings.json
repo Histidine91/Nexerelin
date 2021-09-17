@@ -1764,6 +1764,7 @@
 		"intel_desc_daysRemaining":"The contract will run for another %s day(s).",
 		"intel_desc_daysExpired":"The contract period has expired, and the company will leave upon return to a suitable location.",
 		"intel_desc_ships":"Current ships",
+		"intel_desc_shipsStored":"Stored ships",
 		"intel_desc_shipsMissing":"Lost or missing ships",
 		
 		"intel_desc_para1":"The mercenary company %s is under contract to $playerName.",
@@ -1776,6 +1777,7 @@
 		"dialog_lesserShips":"The company includes %s other ships of lesser significance.",
 		"dialog_shipsAfterHiring":"Ships after hiring: %s/%s",
 		"dialog_debtIncurred":"Incurred %s debt",
+		"dialog_removedFromStorage":"Lost %s from storage",
 		
 		"reportNode_name":"Mercenary contract: %s",
 		

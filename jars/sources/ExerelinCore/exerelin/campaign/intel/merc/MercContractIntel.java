@@ -2,6 +2,7 @@ package exerelin.campaign.intel.merc;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
@@ -29,14 +30,16 @@ import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 public class MercContractIntel extends BaseIntelPlugin implements EconomyTickListener, ColonyInteractionListener
 {
-	//public static Logger log = Global.getLogger(MercContractIntel.class);
+	public static Logger log = Global.getLogger(MercContractIntel.class);
 	
 	public static final float CONTRACT_PERIOD = 365;
 	public static final float MERC_AVAILABLE_TIME = 60;
@@ -54,6 +57,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	protected List<PersonAPI> officers = new ArrayList<>();
 	protected transient MercFleetGenPlugin fleetPlugin;
 	protected CampaignFleetAPI offeredFleet;
+	protected Map<FleetMemberAPI, CargoAPI> stored = new HashMap<>();
 	
 	protected long startingShipValue;
 	protected float daysRemaining;
@@ -64,6 +68,8 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	}
 	
 	protected Object readResolve() {
+		if (stored == null) stored = new HashMap<>();
+		
 		fleetPlugin = MercFleetGenPlugin.createPlugin(this);
 		if (seed == null) {
 			seed = Misc.genRandomSeed();
@@ -119,12 +125,40 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		return contractOver;
 	}
 	
+	/**
+	 * Check if the specified ship is still in the storage where we recorded it as being. 
+	 * If it isn't, remove it (note: can probably cause ConcurrentModificationException).
+	 * @param ship
+	 * @return True if ship was found in storage, false otherwise.
+	 */
+	public boolean validateStoredShip(FleetMemberAPI ship) {
+		if (!stored.containsKey(ship)) return false;
+		
+		CargoAPI cargo = stored.get(ship);
+		//log.info("Checking cargo " + cargo.toString());
+		if (!cargo.getMothballedShips().getMembersListCopy().contains(ship)) {
+			//log.info("Removing ship " + ship.getShipName());
+			try {
+				stored.remove(ship);
+			} catch (Exception ex) {
+				log.error("Failed to remove stored merc ship " + ship.getShipName(), ex);
+			}
+			
+			return false;
+		}
+		return true;
+	}
+	
 	public long calcShipsValue() {
 		float amt = 0;
 		Set<FleetMemberAPI> currentMembers = new HashSet<>(Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy());
 		for (FleetMemberAPI member : ships) {
 			if (currentMembers.contains(member))
 				amt += member.getBaseBuyValue();
+			else {
+				boolean have = validateStoredShip(member);
+				if (have) amt += member.getBaseBuyValue();
+			}
 		}
 		return Math.round(amt); 
 	}
@@ -215,6 +249,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		}
 		//officers.clear();
 		
+		// calculate crew removal
 		int currCrew = Global.getSector().getPlayerFleet().getCargo().getCrew();
 		int skeletonNonMerc = 0;
 		int skeletonMerc = 0;
@@ -235,13 +270,32 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		Global.getSector().getPlayerFleet().getCargo().removeCrew(toRemove);
 		AddRemoveCommodity.addCommodityLossText(Commodities.CREW, toRemove, text);
 		
+		// yeet the ships from player fleet
 		Set<FleetMemberAPI> currentMembers = new HashSet<>(Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy());
 		for (FleetMemberAPI member : ships) {
 			data.removeFleetMember(member);
-			member.setCaptain(null);	// remove from stored ships
+			// this removes the officer from stored ships, although it's not needed now that we're removing the ships themselves
+			member.setCaptain(null);
 			if (currentMembers.contains(member))
 				AddRemoveCommodity.addFleetMemberLossText(member, text);
-		}
+			
+			// yeet them from storage too!
+			else if (stored.containsKey(member)) {
+				boolean have = validateStoredShip(member);
+				if (!have) continue;
+				CargoAPI cargo = stored.get(member);
+				cargo.getMothballedShips().removeFleetMember(member);
+				// TODO: removal text
+				String name = member.getShipName() + ", " + member.getVariant().getHullSpec().getHullNameWithDashClass() 
+						+ " " + member.getVariant().getHullSpec().getDesignation();
+				if (text != null) {
+					text.setFontSmallInsignia();
+					text.addPara(getString("dialog_removedFromStorage"), Misc.getNegativeHighlightColor(),
+							Misc.getHighlightColor(), name);
+					text.setFontInsignia();
+				}
+			}
+		}		
 		//ships.clear();
 		
 		fleetPlugin.endEvent();
@@ -305,18 +359,56 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transact) 
 	{
-		for (ShipSaleInfo sale : transact.getShipsSold()) {
-			PersonAPI captain = sale.getMember().getCaptain();
-			if (!Misc.isUnremovable(captain)) continue;
-			if (officers.contains(captain)) {
-				Global.getSector().getPlayerFleet().getFleetData().removeOfficer(captain);
+		boolean storage = transact.getSubmarket().getPlugin().isFreeTransfer();
+		
+		if (storage) {
+			for (ShipSaleInfo sale : transact.getShipsSold()) {
+				FleetMemberAPI sold = sale.getMember();
+				PersonAPI captain = sold.getCaptain();
+				if (officers.contains(captain) && Misc.isUnremovable(captain)) {
+					Global.getSector().getPlayerFleet().getFleetData().removeOfficer(captain);
+				}
+				
+				if (ships.contains(sold)) {
+					//log.info("Storing ship " + sold.getShipName());
+					stored.put(sold, transact.getSubmarket().getCargo());
+				}
 			}
+			for (ShipSaleInfo buy : transact.getShipsBought()) {
+				FleetMemberAPI bought = buy.getMember();
+				PersonAPI captain = bought.getCaptain();
+				if (officers.contains(captain) && Misc.isUnremovable(captain)) {
+					Global.getSector().getPlayerFleet().getFleetData().addOfficer(captain);
+				}
+				
+				if (ships.contains(bought)) {
+					stored.remove(bought);
+				}
+			}
+			return;
 		}
-		for (ShipSaleInfo buy : transact.getShipsBought()) {
-			PersonAPI captain = buy.getMember().getCaptain();
-			if (!Misc.isUnremovable(captain)) continue;
-			if (officers.contains(captain)) {
-				Global.getSector().getPlayerFleet().getFleetData().addOfficer(captain);
+		
+		
+		for (ShipSaleInfo sale : transact.getShipsSold().toArray(new ShipSaleInfo[]{})) {
+			FleetMemberAPI sold = sale.getMember();
+			if (!storage && ships.contains(sold)) {
+				//Global.getLogger(this.getClass()).info("Sale value: " + sale.getPrice());
+				//Global.getLogger(this.getClass()).info("Sale value with tariff: " + sale.getPrice() * (1 + transact.getSubmarket().getTariff()));
+				//Global.getLogger(this.getClass()).info("Tariff: " + transact.getSubmarket().getTariff());
+				
+				transact.getSubmarket().getCargo().getMothballedShips().removeFleetMember(sold);
+				Global.getSector().getPlayerFleet().getFleetData().addFleetMember(sold);
+				sold.getRepairTracker().setMothballed(false);
+				float salePriceRecalc = sold.getBaseSellValue() * (1 - transact.getSubmarket().getTariff());
+				if (storage) salePriceRecalc = 0;
+				//Global.getLogger(this.getClass()).info("Estimated true sale price: " + salePriceRecalc);
+				Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(salePriceRecalc);
+				
+								
+				String str = String.format(getString("message_reverseSale"), sold.getShipName() + ", " + sold.getHullSpec().getHullNameWithDashClass());
+				Global.getSector().getCampaignUI().getMessageDisplay().addMessage(str);
+				// fail attempt to refresh GUI
+				//Global.getSector().getCampaignUI().showCoreUITab(Global.getSector().getCampaignUI().getCurrentCoreTab());
 			}
 		}
 	}
@@ -386,25 +478,34 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 			info.addPara(getString("intel_desc_daysExpired"), pad);
 		
 		FleetDataAPI data = Global.getSector().getPlayerFleet().getFleetData();
+		List<FleetMemberAPI> playerShips = data.getMembersListCopy();
 		List<FleetMemberAPI> curr = new ArrayList<>();
 		List<FleetMemberAPI> lost = new ArrayList<>();
+		List<FleetMemberAPI> stored = new ArrayList<>();
 		for (FleetMemberAPI ship : ships) {
-			if (ship.getFleetData() != null) {
+			if (playerShips.contains(ship)) {
 				curr.add(ship);
+			}
+			else if (validateStoredShip(ship)) {
+				stored.add(ship);
 			}
 			else {
 				lost.add(ship);
 			}
 		}
+		//log.info(String.format("Current ships %s, stored %s, lost %s", curr.size(), stored.size(), lost.size()));
 		if (!curr.isEmpty()) {
 			info.addPara(getString("intel_desc_ships") + ":", opad);
 			displayShips(info, width, curr, pad);
 		}
+		if (!stored.isEmpty()) {
+			info.addPara(getString("intel_desc_shipsStored") + ":", pad);
+			displayShips(info, width, stored, pad);
+		}
 		if (!lost.isEmpty()) {
 			info.addPara(getString("intel_desc_shipsMissing") + ":", pad);
 			displayShips(info, width, lost, pad);
-		}
-		
+		}		
 		
 		long currValue = calcShipsValue();
 		String v1 = Misc.getDGSCredits(startingShipValue);
