@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import com.fs.starfarer.api.campaign.econ.ImmigrationPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
@@ -30,6 +31,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
@@ -459,6 +461,10 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			market.setPlayerOwned(true);
 			market.addIndustry(Industries.SPACEPORT);
 			market.getIndustry(Industries.SPACEPORT).startBuilding();
+			SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+			if (storage != null) {
+				((StoragePlugin)storage.getPlugin()).setPlayerPaidToUnlock(true);
+			}
 		}
 		else {
 			ColonyManager.buildIndustries(market);
