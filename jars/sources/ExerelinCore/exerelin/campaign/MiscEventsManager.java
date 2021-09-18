@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;
-import com.fs.starfarer.api.campaign.listeners.FleetSpawnListener;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -138,15 +137,15 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			
 		}
 		
-		Global.getLogger(this.getClass()).info("Creating Omega complication");
+		//Global.getLogger(this.getClass()).info("Creating Omega complication");
 		//Global.getSector().getCampaignUI().addMessage("Creating Omega complication");
 	}
 
 	@Override
 	public void reportFleetSpawned(CampaignFleetAPI fleet) {
-		Global.getLogger(this.getClass()).info("Fleet spawned: " + fleet.getNameWithFactionKeepCase());
+		//Global.getLogger(this.getClass()).info("Fleet spawned: " + fleet.getNameWithFactionKeepCase());
 		if (fleet.getMemoryWithoutUpdate().contains("$nex_omega_hypershunt_complication")) {
-			Global.getSector().getCampaignUI().addMessage("Omega fleet spawned");
+			//Global.getSector().getCampaignUI().addMessage("Omega fleet spawned");
 			for (FleetMemberAPI member : fleet.getFleetData().getMembersListWithFightersCopy()) {
 				member.setVariant(member.getVariant().clone(), false, false);
 				member.getVariant().setSource(VariantSource.REFIT);
