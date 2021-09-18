@@ -1413,7 +1413,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		CustomPanelAPI resourcePanel = outer.createCustomPanel(width, 32, null);
 		
 		TooltipMakerAPI resourceSubPanel;
-		int subWidth = 96;
+		int subWidth = 108;
 		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, null, 
 				Commodities.MARINES, cargo.getMarines());
 		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
