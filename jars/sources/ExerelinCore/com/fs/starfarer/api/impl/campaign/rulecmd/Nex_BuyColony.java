@@ -196,7 +196,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		}
 		if (owned && dialog != null) {
 			TextPanelAPI text = dialog.getTextPanel();
-			AddRemoveCommodity.addCreditsLossText(value, text);
+			if (value != 0) AddRemoveCommodity.addCreditsLossText(value, text);
 			((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 		}
 		market.getMemoryWithoutUpdate().unset(ColonyManager.MEMORY_KEY_RULER_TEMP_OWNERSHIP);
