@@ -20,7 +20,7 @@ public class LuddicChurchBonusSubplugin extends FactionBonusSubplugin {
 			return super.modifyMoraleDamageReceived(unit, dmg);
 		
 		if (NexUtilsFaction.isLuddicFaction(origOwner)) {
-			Float mult = (Float)conf.groundBattleSettings.get("luddef_moraleDamageTakenMult");
+			Float mult = getSettingsFloat("luddef_moraleDamageTakenMult");
 			if (mult != null) {
 				dmg *= mult;
 				if (unit.getType() == ForceType.MILITIA)
