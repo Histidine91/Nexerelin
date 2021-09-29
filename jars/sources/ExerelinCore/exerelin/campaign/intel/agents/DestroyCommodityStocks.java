@@ -12,6 +12,7 @@ import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.lazywizard.lazylib.MathUtils;
 
 public class DestroyCommodityStocks extends CovertActionIntel {
@@ -52,7 +53,8 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 		// apply availability loss
 		CommodityOnMarketAPI commodity = market.getCommodityData(commodityId);
 		String desc = getString("commodityDestroyModDesc");
-		commodity.getAvailableStat().addTemporaryModFlat(duration, commodityId, desc, -effect);
+		String id = "agent_" + (agent == null ? UUID.randomUUID().toString() : agent.getAgent().getId());
+		commodity.getAvailableStat().addTemporaryModFlat(duration, id, desc, -effect);
 		market.reapplyConditions();
 		market.reapplyIndustries();
 		
