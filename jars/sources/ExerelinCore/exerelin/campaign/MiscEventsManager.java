@@ -79,6 +79,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			float fraction = Math.max(combat/maxPoints/0.75f, HubMissionWithTriggers.FleetSize.TINY.maxFPFraction);
 			e.triggerSetFleetSizeFraction(fraction);
 			e.triggerSetFleetMaxShipSize(2);
+			e.triggerSetFleetFaction(Factions.REMNANTS);
 			e.triggerSetStandardAggroInterceptFlags();
 			e.triggerMakeNoRepImpact();
 			e.triggerSetFleetGenericHailPermanent("Nex_HistorianOmegaHail");
