@@ -1390,8 +1390,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			// hax to handle "give small colony with HI away for raiding" exploit
 			// if the faction doesn't really need the industry and can't defend it, remove it
 			float def = InvasionRound.getDefenderStrength(market, 1);
-			if (!isCapture && oldOwner.isPlayerFaction() && EconomyInfoHelper.getInstance().hasHeavyIndustry(newOwner.getId())
-					&& def < 1000) 
+			EconomyInfoHelper help = EconomyInfoHelper.getInstance();
+			if (!isCapture && oldOwner.isPlayerFaction() && def < 1000 && help != null 
+					&& help.hasHeavyIndustry(newOwner.getId()))
 			{
 				log.info("Removing vulnerable heavy industry on " + market.getName());
 				List<String> toRemove = new ArrayList<>();

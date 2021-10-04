@@ -32,11 +32,6 @@ public class DerelictEmpire extends Scenario {
 				if (NexUtilsFaction.isPirateFaction(market.getFactionId())) continue;
 				if (market.getFactionId().equals(Factions.INDEPENDENT))
 					continue;
-				Global.getLogger(this.getClass()).info(String.format(
-						"my ID: %s; my spawn point: %s", 
-						market.getPrimaryEntity().getId(), 
-						ExerelinCorvusLocations.
-						getFactionSpawnPoint(market.getFactionId())));
 				if (corvus && corvusSpawnPoints.contains(market.getPrimaryEntity().getId()))
 					continue;
 				
