@@ -362,15 +362,14 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 		if (!wasMilestoneAwarded("eliteCrew")) {
 			List<OfficerDataAPI> officers = player.getFleetData().getOfficersCopy();
 			if (officers.size() >= 8) {
-				boolean success = true;
+				int have = 0;
 				for (OfficerDataAPI officer : officers) {
 					int level = officer.getPerson().getStats().getLevel();
-					if (level < 5) {
-						success = false;
-						break;
+					if (level >= 5) {
+						have++;
 					}
 				}
-				if (success) awardMilestone("eliteCrew");
+				if (have >= 8) awardMilestone("eliteCrew");
 			}
 		}
 	}
