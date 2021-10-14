@@ -86,7 +86,7 @@ public class ExerelinProcGen {
 	public static final String RANDOM_CORE_SYSTEM_TAG = "nex_random_core_system";
 	
 	public static final List<String> STATION_IMAGES = new ArrayList<>(Arrays.asList(new String[] {
-		"station_side00", "station_side02", "station_side04", "station_jangala_type"
+		"station_side00", "station_side02", "station_side04", "station_side06", "station_side07", "station_jangala_type"
 	}));
 	public static final Set<String> TAGS_TO_REMOVE = new HashSet<>(Arrays.asList(new String[] {
 		Tags.THEME_DERELICT, Tags.THEME_DERELICT_MOTHERSHIP, Tags.THEME_DERELICT_PROBES, Tags.THEME_DERELICT_SURVEY_SHIP,
