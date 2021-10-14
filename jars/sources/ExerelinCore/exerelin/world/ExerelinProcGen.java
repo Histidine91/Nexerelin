@@ -292,12 +292,17 @@ public class ExerelinProcGen {
 		
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
 		{
-			Vector2f loc = system.getLocation();
-			if (Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x) > width) continue;
-			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
+			// go ahead and spawn in Remnant systems, we'll clean them out later?
+			// actually no, I don't know what'll happen if we clear out the system with SEEKER's Nova
+			if (system.hasTag(Tags.THEME_REMNANT)) continue;
+			if (system.hasTag("theme_plaguebearers")) continue;
 			if (system.hasPulsar()) continue;
 			if (system.getStar() != null && system.getStar().getSpec().isBlackHole()) continue;
 			if (!corvus && hasForeignMarkets(system)) continue;
+			
+			Vector2f loc = system.getLocation();
+			if (Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x) > width) continue;
+			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
 			if (system.getBaseName().equals("Styx")) continue;
 			if (system.getBaseName().equals("Ascalon")) continue;
 			if (redPlanet != null && redPlanet.getStarSystem() == system)
