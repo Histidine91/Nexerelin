@@ -50,9 +50,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 public class AgentIntel extends BaseIntelPlugin {
+	
+	public static Logger log = Global.getLogger(AgentIntel.class);
 	
 	public static final int[] XP_LEVELS = new int[] {
 		0, 2000, 5000, 10000, 20000, 40000
@@ -306,8 +309,10 @@ public class AgentIntel extends BaseIntelPlugin {
 			
 			InfiltrateCell action = new InfiltrateCell(this, market, agent.getFaction(), market.getFaction(), true, null);
 			int cost = action.getCost();
-			if (cost > credits)
+			if (cost > credits) {
+				//log.info(String.format("Insufficient funds for cell kill on %s: %s/%s", market.getName(), cost, credits));
 				continue;
+			}
 			
 			// agent has no location, just pick the first market with cell we find
 			if (this.market == null)
@@ -336,6 +341,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		action.init();
 		addAction(action);
 		if (target == this.market) action.activate();
+		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(action.cost);
 		this.sendUpdateIfPlayerHasIntel(UPDATE_CELL_KILL, false);
 	}
 	
