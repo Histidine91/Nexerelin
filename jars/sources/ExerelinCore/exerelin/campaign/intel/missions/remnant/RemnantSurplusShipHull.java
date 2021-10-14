@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
@@ -51,6 +52,12 @@ public class RemnantSurplusShipHull extends SurplusShipHull {
 			variant = Global.getSettings().getVariant(variantId);
 			variant = Global.getSettings().getVariant(variant.getHullSpec().getHullId() + "_Hull").clone();
 			if (variant.getHullSpec().hasTag(Tags.NO_SELL)) {
+				variant = null;
+				continue;
+			}
+			ShipHullSpecAPI spec = variant.getHullSpec();
+			if (spec.getHints().contains(ShipHullSpecAPI.ShipTypeHints.UNBOARDABLE) && !spec.getTags().contains(Tags.AUTOMATED_RECOVERABLE)) 
+			{
 				variant = null;
 				continue;
 			}
