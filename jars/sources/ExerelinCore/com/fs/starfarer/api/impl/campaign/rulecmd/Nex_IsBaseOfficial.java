@@ -62,21 +62,24 @@ public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 		if (post == null) return false;
 		
 		String arg = params.get(0).getString(memoryMap);
-		switch (arg.toLowerCase(Locale.ROOT))
-		{
+		return isOfficial(post, arg.toLowerCase(Locale.ROOT));
+	}
+	
+	public static boolean isOfficial(String postId, String type) {
+		switch (type) {
 			case "command":
-				return COMMAND_POSTS.contains(post);
+				return COMMAND_POSTS.contains(postId);
 			case "military":
-				return MILITARY_POSTS.contains(post);
+				return MILITARY_POSTS.contains(postId);
 			case "admin":
-				return ADMIN_POSTS.contains(post);
+				return ADMIN_POSTS.contains(postId);
 			case "trade":
 			case "trader":
-				return TRADER_POSTS.contains(post);
+				return TRADER_POSTS.contains(postId);
 			case "any":
 			default:
-				return COMMAND_POSTS.contains(post) || MILITARY_POSTS.contains(post) 
-						|| TRADER_POSTS.contains(post) || ADMIN_POSTS.contains(post);
+				return COMMAND_POSTS.contains(postId) || MILITARY_POSTS.contains(postId) 
+						|| TRADER_POSTS.contains(postId) || ADMIN_POSTS.contains(postId);
 		}
 	}
 }

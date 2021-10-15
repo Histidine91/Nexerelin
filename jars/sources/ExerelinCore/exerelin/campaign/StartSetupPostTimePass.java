@@ -2,6 +2,7 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -20,7 +21,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsBaseOfficial;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
@@ -37,6 +40,8 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import exerelin.world.VanillaSystemsGenerator;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -289,7 +294,33 @@ public class StartSetupPostTimePass {
 				}
 				if (homeMarket.isPlayerOwned())
 					homeMarket.setAdmin(Global.getSector().getPlayerPerson());
+				generateContactAtStartingLocation(homeMarket);
 			}
+		}
+	}
+	
+	public static void generateContactAtStartingLocation(MarketAPI market) {				
+		if (market.getMemoryWithoutUpdate().getBoolean(ContactIntel.NO_CONTACTS_ON_MARKET)) return;
+		if (market.getFaction().getCustomBoolean(Factions.CUSTOM_NO_CONTACTS)) return;
+		if (market.getFaction().isPlayerFaction()) return;
+		
+		List<CommDirectoryEntryAPI> directory = market.getCommDirectory().getEntriesCopy();
+		Collections.shuffle(directory, StarSystemGenerator.random);
+		
+		for (CommDirectoryEntryAPI dir : directory)
+		{
+			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
+			PersonAPI contact = (PersonAPI)dir.getEntryData();
+			if (ContactIntel.playerHasContact(contact)) continue;
+			
+			String postId = contact.getPostId();
+			if (postId == null) continue;
+			if (!Nex_IsBaseOfficial.isOfficial(postId, "any")) continue;
+			
+			ContactIntel intel = new ContactIntel(contact, market);
+			Global.getSector().getIntelManager().addIntel(intel, false, null);
+			intel.develop(null);
+			break;
 		}
 	}
 }
