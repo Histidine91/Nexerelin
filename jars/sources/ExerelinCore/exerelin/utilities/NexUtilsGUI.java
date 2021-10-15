@@ -42,8 +42,12 @@ public class NexUtilsGUI {
 		CustomPanelAPI panel = external.createCustomPanel(width, height, plugin);
 		
 		TooltipMakerAPI image = panel.createUIElement(height, imageWidth, false);
-		if (imagePath != null) 
+		if (imagePath != null) {
 			image.addImage(imagePath, imageWidth, 0);
+			if (tooltip != null)
+				image.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
+		}
+		
 		panel.addUIElement(image).inTL(0, 0);
 		
 		TooltipMakerAPI textHolder = panel.createUIElement(textWidth, height, false);
