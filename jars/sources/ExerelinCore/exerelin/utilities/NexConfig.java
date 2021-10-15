@@ -76,7 +76,7 @@ public class NexConfig
     public static float allianceGracePeriod = 120;
     public static float allianceFormationInterval = 30f;
     public static boolean ignoreAlignmentForAlliances = false;
-    public static float predefinedAllianceNameChance = 0.5f;
+    public static float predefinedAllianceNameChance = 1;
     
     // Prism Freeport
     public static boolean prismInHyperspace = false;
@@ -209,7 +209,7 @@ public class NexConfig
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
-            predefinedAllianceNameChance = (float)settings.optDouble("usePredefinedAllianceNames", predefinedAllianceNameChance);
+            predefinedAllianceNameChance = (float)settings.optDouble("predefinedAllianceNameChance", predefinedAllianceNameChance);
             
             prismInHyperspace = settings.optBoolean("prismInHyperspace", prismInHyperspace);
             prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);
