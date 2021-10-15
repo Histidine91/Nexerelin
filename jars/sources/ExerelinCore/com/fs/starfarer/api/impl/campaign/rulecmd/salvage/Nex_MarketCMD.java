@@ -941,11 +941,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
 
 		float marines = playerFleet.getCargo().getMarines();
-		float mechs = fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS) * InvasionRound.HEAVY_WEAPONS_MULT;
 		
-		if (marines <= 0 && mechs <= 0) {
-			
-		}
 		String str;
 		TooltipMakerAPI info = text.beginTooltip();
 		// non-hostile faction warning

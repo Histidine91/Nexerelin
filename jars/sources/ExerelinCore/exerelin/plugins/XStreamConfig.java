@@ -56,7 +56,6 @@ import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.invasion.InvAssembleStage;
-import exerelin.campaign.intel.invasion.InvOrganizeStage;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.missions.Nex_ProcurementMissionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
@@ -150,7 +149,6 @@ public class XStreamConfig {
 		
 		// invasions
 		x.alias("NexInvIntl", InvasionIntel.class);
-		x.alias("NexInvOrgStg", InvOrganizeStage.class);
 		x.alias("NexInvAssmblStg", InvAssembleStage.class);
 		x.alias("NexInvActStg", InvActionStage.class);
 		x.alias("NexRspwnIntl", RespawnInvasionIntel.class);
