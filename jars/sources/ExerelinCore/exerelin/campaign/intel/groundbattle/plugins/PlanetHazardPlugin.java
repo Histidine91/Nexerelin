@@ -32,7 +32,7 @@ public class PlanetHazardPlugin extends BaseGroundBattlePlugin {
 		float moraleDelta = getMoraleImpact();
 		if (moraleDelta == 0) return;
 		for (GroundUnit unit : units) {
-			if (unit.getLocation() == null) return;
+			if (unit.getLocation() == null) continue;
 			
 			if (moraleDelta < 0 && unit.getLocation().heldByAttacker == unit.isAttacker())
 				continue;
