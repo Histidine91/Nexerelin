@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
@@ -25,6 +26,7 @@ import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelAtEntity;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -263,7 +265,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	/**
-	 * Should be called after relevant parameters are set.
+	 * Inits industries, plugins and such. Should be called after relevant parameters are set.<br/>
+	 * Does not actually commence the battle, so can be used for temporary instances (e.g. to determine garrison size).
 	 */
 	public void init() {
 		turnNum = 1;
@@ -459,6 +462,24 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	/**
+	 * Determine whether {@code faction} should assist the attacker or the defender.
+	 * @param faction
+	 * @return True if the faction should join the attacker, false to join the defender, null for neither.
+	 */
+	public Boolean getSideToSupport(FactionAPI faction) {		
+		// to help either side, we must be hostile to the other side, while being no worse than suspicious to our side		
+		boolean canHelpAttacker = faction.isAtWorst(attacker.getFaction(), RepLevel.SUSPICIOUS) && faction.isHostileTo(defender.getFaction());
+		boolean canHelpDefender = faction.isAtWorst(defender.getFaction(), RepLevel.SUSPICIOUS) && faction.isHostileTo(attacker.getFaction());
+		
+		// friendly to both, or hostile to both
+		if (canHelpAttacker && canHelpDefender) return null;
+		if (!canHelpAttacker && !canHelpDefender) return null;
+		
+		if (canHelpAttacker) return true;
+		else return false;
+	}
+	
+	/**
 	 * Can {@code faction} support the specified side in this ground battle? 
 	 * @param faction
 	 * @param isAttacker
@@ -468,10 +489,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		FactionAPI supportee = getSide(isAttacker).faction;
 		if (faction.isPlayerFaction() && Misc.getCommissionFaction() == supportee)
 			return true;
-		if (AllianceManager.areFactionsAllied(faction.getId(), supportee.getId()))
-			return true;
 		
-		return false;
+		Boolean sideToSupport = getSideToSupport(faction);
+		if (sideToSupport == null) return false;
+		return sideToSupport == isAttacker;
 	}
 	
 	public boolean fleetCanSupport(CampaignFleetAPI fleet, boolean isAttacker) 
@@ -479,7 +500,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (isAttacker && hasStationFleet()) return false;
 		if (fleet.isStationMode()) return false;
 		if (fleet.isPlayerFleet()) {
-			return isAttacker == playerIsAttacker;
+			return playerIsAttacker != null && isAttacker == playerIsAttacker;
 		}
 		MemoryAPI mem = fleet.getMemory();
 		if (mem.contains(MemFlags.MEMORY_KEY_TRADE_FLEET)) return false;
@@ -509,8 +530,23 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public boolean isFleetInRange(CampaignFleetAPI fleet) {
+		if (fleet == null) return true;
 		return MathUtils.getDistance(fleet, 
 				market.getPrimaryEntity()) <= GBConstants.MAX_SUPPORT_DIST;
+	}
+	
+	public boolean isRouteInRange(RouteData route) {
+		if (route == null) return true;
+		
+		try {
+			LocationAPI curr = route.getSegments().get(route.getCurrentSegmentId()).getCurrentContainingLocation();
+			if (curr != market.getContainingLocation()) return false; 
+
+			return MathUtils.getDistance(route.getInterpolatedHyperLocation(), 
+					market.getPrimaryEntity().getLocationInHyperspace()) 
+					<= GBConstants.MAX_SUPPORT_DIST / Misc.getUnitsPerLightYear();
+		} catch (Exception ex) {}
+		return true;
 	}
 	
 	public int getMilitiaUnleashTurn() {
@@ -567,6 +603,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return unit;
 	}
 	
+	// TODO: create non-player, non-garrison unit
+	
 	/**
 	 * Creates units for player based on available marines and heavy armaments.<br/>
 	 * Attempts to create the minimum number of units that will hold 100% of 
@@ -585,27 +623,44 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			usableHeavyArms /= 2;
 		}
 		
+		autoGenerateUnits(marines, usableHeavyArms, null, null, true);
+	}
+	
+	/**
+	 * Creates units for the specified side from a given number of marines and heavy armaments.<br/>
+	 * Attempts to create the minimum number of units that will hold 100% of 
+	 * the forces of each type, then distributes marines and heavy arms equally
+	 * between each.
+	 * @param marines
+	 * @param heavyArms
+	 * @param faction Does not need to be set if {@code player} is true.
+	 * @param isAttacker Does not need to be set if {@code player} is true.
+	 * @param player
+	 */
+	public void autoGenerateUnits(int marines, int heavyArms, FactionAPI faction, Boolean isAttacker, boolean player) {
 		float perUnitSize = unitSize.getMaxSizeForType(ForceType.HEAVY);
 		int numCreatable = 0;
 		
-		if (usableHeavyArms >= unitSize.getMinSizeForType(ForceType.HEAVY)) {
-			numCreatable = (int)Math.ceil(usableHeavyArms / perUnitSize);
+		if (heavyArms >= unitSize.getMinSizeForType(ForceType.HEAVY)) {
+			numCreatable = (int)Math.ceil(heavyArms / perUnitSize);
 			numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
 			numCreatable = (int)Math.ceil(numCreatable * 0.75f);
 		}		
 		
 		int numPerUnit = 0;
-		if (numCreatable > 0) numPerUnit = usableHeavyArms/numCreatable;
+		if (numCreatable > 0) numPerUnit = heavyArms/numCreatable;
 		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
 		
-		log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, usableHeavyArms));
+		log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, heavyArms));
 		for (int i=0; i<numCreatable; i++) {
-			GroundUnit unit = createPlayerUnit(ForceType.HEAVY);
+			GroundUnit unit;
+			if (player) unit = createPlayerUnit(ForceType.HEAVY);
+			else unit = getSide(isAttacker).createUnit(ForceType.HEAVY, faction, numPerUnit);
 			unit.setSize(numPerUnit, true);
 		}
 		
 		// add marines
-		marines -= usableHeavyArms * GroundUnit.CREW_PER_MECH;
+		marines -= heavyArms * GroundUnit.CREW_PER_MECH;
 		int remainingSlots = MAX_PLAYER_UNITS - playerData.getUnits().size();
 		perUnitSize = unitSize.getMaxSizeForType(ForceType.MARINE);
 		
@@ -622,7 +677,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		log.info(String.format("Can create %s marines, %s units each, have %s marines", numCreatable, numPerUnit, marines));
 		for (int i=0; i<numCreatable; i++) {
-			GroundUnit unit = createPlayerUnit(ForceType.MARINE);
+			GroundUnit unit;
+			if (player) unit = createPlayerUnit(ForceType.MARINE);
+			else unit = getSide(isAttacker).createUnit(ForceType.MARINE, faction, numPerUnit);
 			unit.setSize(numPerUnit, true);
 		}
 	}
@@ -1368,97 +1425,97 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addSectionHeading(getString("unitPanel_header"), Alignment.MID, opad);
 		
 		// movement points display
-		TooltipMakerAPI movementPoints = info.beginImageWithText(Global.getSettings().
-				getCommoditySpec(Commodities.SUPPLIES).getIconName(), 24);
-		int maxPoints = getSide(playerIsAttacker).getMovementPointsPerTurn().getModifiedInt();
-		int available = maxPoints - getSide(playerIsAttacker).getMovementPointsSpent().getModifiedInt();
-		Color h = Misc.getHighlightColor();
-		if (available <= 0) h = Misc.getNegativeHighlightColor();
-		else if (available >= maxPoints) h = Misc.getPositiveHighlightColor();
-		
-		String str = getString("unitPanel_movementPoints") + ": %s / %s";
-		movementPoints.addPara(str, pad, h, available + "", maxPoints + "");
-		
-		info.addImageWithText(pad);
-		info.addTooltipToPrevious(new TooltipCreator() {
-			@Override
-			public boolean isTooltipExpandable(Object tooltipParam) {
-					return false;
-				}
-				public float getTooltipWidth(Object tooltipParam) {
-					return 400;	// FIXME magic number
-				}
-				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-					Color h = Misc.getHighlightColor();
-		
-					String str = getString("unitPanel_movementPoints_tooltip1");
-					tooltip.addPara(str, 0);
-					
-					str = getString("unitPanel_movementPoints_tooltip2");
-					tooltip.addPara(str, 10);
-					
-					str = getString("unitPanel_movementPoints_tooltip3");
-					tooltip.addPara(str, 10);
+		if (playerIsAttacker != null) {
+			TooltipMakerAPI movementPoints = info.beginImageWithText(Global.getSettings().
+					getCommoditySpec(Commodities.SUPPLIES).getIconName(), 24);
+			int maxPoints = getSide(playerIsAttacker).getMovementPointsPerTurn().getModifiedInt();
+			int available = maxPoints - getSide(playerIsAttacker).getMovementPointsSpent().getModifiedInt();
+			Color h = Misc.getHighlightColor();
+			if (available <= 0) h = Misc.getNegativeHighlightColor();
+			else if (available >= maxPoints) h = Misc.getPositiveHighlightColor();
 
-					tooltip.addStatModGrid(360, 60, 10, 3, getSide(playerIsAttacker).getMovementPointsPerTurn(), 
-							true, NexUtils.getStatModValueGetter(true, 0));
-							
-				}			
-		}, TooltipMakerAPI.TooltipLocation.BELOW);
-		
-		// cargo display
-		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		info.addPara(getString("unitPanel_resources"), pad);
-		
-		CustomPanelAPI resourcePanel = outer.createCustomPanel(width, 32, null);
-		
-		TooltipMakerAPI resourceSubPanel;
-		int subWidth = 108;
-		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, null, 
-				Commodities.MARINES, cargo.getMarines());
-		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
-				Commodities.HAND_WEAPONS, (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS));
-		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
-				Commodities.SUPPLIES, (int)cargo.getSupplies());
-		resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
-				Commodities.FUEL, (int)cargo.getFuel());
-		
-		info.addCustom(resourcePanel, pad);
-		
-		// player AI buttons
-		FactionAPI fc = getFactionForUIColors();
-		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
-		
-		CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
-		
-		TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(180, 
-				VIEW_BUTTON_HEIGHT, false);
-		btnHolder1.addButton(getString("btnCancelMoves"), BUTTON_CANCEL_MOVES, base,
-				bg, 180, VIEW_BUTTON_HEIGHT, 0);
-		buttonRow.addUIElement(btnHolder1).inTL(0, 3);
-		
-		TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(160, 
-				VIEW_BUTTON_HEIGHT, false);
-		btnHolder2.addButton(getString("btnRunPlayerAI"), BUTTON_AUTO_MOVE,	base,
-				bg, 160, VIEW_BUTTON_HEIGHT, 0);
-		String tooltipStr = getString("btnRunPlayerAI_tooltip");
-		TooltipCreator tt = NexUtilsGUI.createSimpleTextTooltip(tooltipStr, 360);
-		btnHolder2.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
-		buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
-		
-		TooltipMakerAPI btnHolder3 = buttonRow.createUIElement(240, 
-				VIEW_BUTTON_HEIGHT, false);
-		ButtonAPI check = btnHolder3.addAreaCheckbox(getString("btnTogglePlayerAI"), BUTTON_AUTO_MOVE_TOGGLE, 
-				base, bg, fc.getBrightUIColor(),
-				240, VIEW_BUTTON_HEIGHT, 0);
-		check.setChecked(playerData.autoMoveAtEndTurn);
-		btnHolder3.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
-		buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);	
-		
-		
-		
-		info.addCustom(buttonRow, 0);
-		
+			String str = getString("unitPanel_movementPoints") + ": %s / %s";
+			movementPoints.addPara(str, pad, h, available + "", maxPoints + "");
+
+			info.addImageWithText(pad);
+			info.addTooltipToPrevious(new TooltipCreator() {
+				@Override
+				public boolean isTooltipExpandable(Object tooltipParam) {
+						return false;
+					}
+					public float getTooltipWidth(Object tooltipParam) {
+						return 400;	// FIXME magic number
+					}
+					public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+						Color h = Misc.getHighlightColor();
+
+						String str = getString("unitPanel_movementPoints_tooltip1");
+						tooltip.addPara(str, 0);
+
+						str = getString("unitPanel_movementPoints_tooltip2");
+						tooltip.addPara(str, 10);
+
+						str = getString("unitPanel_movementPoints_tooltip3");
+						tooltip.addPara(str, 10);
+
+						tooltip.addStatModGrid(360, 60, 10, 3, getSide(playerIsAttacker).getMovementPointsPerTurn(), 
+								true, NexUtils.getStatModValueGetter(true, 0));
+
+					}			
+			}, TooltipMakerAPI.TooltipLocation.BELOW);
+
+			// cargo display
+			CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+			info.addPara(getString("unitPanel_resources"), pad);
+
+			CustomPanelAPI resourcePanel = outer.createCustomPanel(width, 32, null);
+
+			TooltipMakerAPI resourceSubPanel;
+			int subWidth = 108;
+			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, null, 
+					Commodities.MARINES, cargo.getMarines());
+			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+					Commodities.HAND_WEAPONS, (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS));
+			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+					Commodities.SUPPLIES, (int)cargo.getSupplies());
+			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
+					Commodities.FUEL, (int)cargo.getFuel());
+
+			info.addCustom(resourcePanel, pad);
+
+			// player AI buttons
+			FactionAPI fc = getFactionForUIColors();
+			Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
+
+			CustomPanelAPI buttonRow = outer.createCustomPanel(width, 24, null);
+
+			TooltipMakerAPI btnHolder1 = buttonRow.createUIElement(180, 
+					VIEW_BUTTON_HEIGHT, false);
+			btnHolder1.addButton(getString("btnCancelMoves"), BUTTON_CANCEL_MOVES, base,
+					bg, 180, VIEW_BUTTON_HEIGHT, 0);
+			buttonRow.addUIElement(btnHolder1).inTL(0, 3);
+
+			TooltipMakerAPI btnHolder2 = buttonRow.createUIElement(160, 
+					VIEW_BUTTON_HEIGHT, false);
+			btnHolder2.addButton(getString("btnRunPlayerAI"), BUTTON_AUTO_MOVE,	base,
+					bg, 160, VIEW_BUTTON_HEIGHT, 0);
+			String tooltipStr = getString("btnRunPlayerAI_tooltip");
+			TooltipCreator tt = NexUtilsGUI.createSimpleTextTooltip(tooltipStr, 360);
+			btnHolder2.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
+			buttonRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
+
+			TooltipMakerAPI btnHolder3 = buttonRow.createUIElement(240, 
+					VIEW_BUTTON_HEIGHT, false);
+			ButtonAPI check = btnHolder3.addAreaCheckbox(getString("btnTogglePlayerAI"), BUTTON_AUTO_MOVE_TOGGLE, 
+					base, bg, fc.getBrightUIColor(),
+					240, VIEW_BUTTON_HEIGHT, 0);
+			check.setChecked(playerData.autoMoveAtEndTurn);
+			btnHolder3.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
+			buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);	
+
+			info.addCustom(buttonRow, 0);
+		}
+				
 		// unit cards
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
 		List<GroundUnit> listToRead = playerData.getUnits();	// units whose cards should be shown
@@ -2059,7 +2116,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		if (viewMode == ViewMode.UNITS) {
-			if (playerIsAttacker != null)
+			if (Global.getSettings().isDevMode() || playerIsAttacker != null)
 				generateUnitDisplay(outer, panel, width, opad);
 		} 
 		else if (viewMode == ViewMode.ABILITIES) {

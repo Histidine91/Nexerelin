@@ -18,21 +18,24 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetActionDelegate;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BombardType;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
 public class InvActionStage extends ActionStage implements FleetActionDelegate {
-	
-	public static final String MEM_KEY_INVASION_ATTEMPTED = "$nex_invasionAttempted";
 	
 	public static Logger log = Global.getLogger(InvActionStage.class);
 	
@@ -43,6 +46,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	protected float untilAutoresolve = 30f;
 	
 	protected OffensiveFleetIntel offFltIntel;
+	protected transient RouteData currRouteForAutoresolve;
 	
 	public InvActionStage(OffensiveFleetIntel invasion, MarketAPI target) {
 		super(invasion);
@@ -116,15 +120,21 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		boolean anyRaidersRemaining = false;
 		for (RouteData route : routes)
 		{
-			if (route.getActiveFleet() == null || !route.getActiveFleet().getMemoryWithoutUpdate()
-					.getBoolean(MEM_KEY_INVASION_ATTEMPTED))
+			if (!offFltIntel.isRouteActionDone(route))
 			{
 				anyRaidersRemaining = true;
 				break;
 			}
 		}
 		if (!anyRaidersRemaining) {
-			if (target.getFaction() != intel.getFaction()) {
+			if (offFltIntel instanceof InvasionIntel && ((InvasionIntel)offFltIntel).getGroundBattle() != null) 
+			{
+				// we've delivered our load, go ahead and proceed to next stage
+				offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
+				status = RaidStageStatus.SUCCESS;
+			}
+			else if (target.getFaction() != intel.getFaction()) {
+				// target not captured yet				
 				if (target.getFaction().isHostileTo(intel.getFaction())) {
 					offFltIntel.setOutcome(OffensiveOutcome.FAIL);
 					status = RaidStageStatus.FAILURE;
@@ -192,7 +202,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			return;
 		
 		// no double raiding
-		if (fleet != null && fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_INVASION_ATTEMPTED)) {
+		if (fleet != null && offFltIntel.isRouteActionDone(fleet)) {
 			log.warn(fleet.getName() + " is attempting invasion twice");
 			return;
 		}
@@ -201,14 +211,29 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		removeMilScripts();
 		
-		float atkStrength = (InvasionIntel.USE_REAL_MARINES && fleet != null) ? 
+		boolean needBomb = false;
+		float atkStrength = 0, defStrength = 0;	// only for legacy invasions
+		
+		if (NexConfig.legacyInvasions) {
+			atkStrength = (InvasionIntel.USE_REAL_MARINES && fleet != null) ? 
 				InvasionRound.getAttackerStrength(fleet) 
 				: InvasionRound.getAttackerStrength(offFltIntel.getFaction(), ((InvasionIntel)intel).getMarinesPerFleet());
-		float defStrength = InvasionRound.getDefenderStrength(market, 1);
+			defStrength = InvasionRound.getDefenderStrength(market, 1);
+
+			log.info("\tStrength ratio: " + atkStrength + " : " + defStrength);
+
+			needBomb = atkStrength < defStrength;
+		} else {
+			needBomb = true;
+		}
 		
-		log.info("\tStrength ratio: " + atkStrength + " : " + defStrength);
+		// don't cause an environmental disaster
+		if (target.hasCondition(Conditions.HABITABLE) && !target.hasCondition(Conditions.POLLUTION))
+			needBomb = false;
 		
-		boolean needBomb = atkStrength < defStrength;
+		// check whether there's actually anything to bomb
+		List<Industry> targets = Nex_MarketCMD.getTacticalBombardmentTargets(market);
+		if (targets.isEmpty()) needBomb = false;
 		
 		if (needBomb)
 		{
@@ -220,7 +245,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			}
 			Global.getLogger(this.getClass()).info("\tBombing target would cost " + bombCost + " of " + maxCost);
 			
-			/*
 			if (bombCost <= maxCost) {
 				Global.getLogger(this.getClass()).info("\tBombing target");
 				Nex_MarketCMD cmd = new Nex_MarketCMD(market.getPrimaryEntity());
@@ -231,16 +255,31 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				market.reapplyIndustries();
 				log.info("New strength is " + market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0));
 			}
-			*/
 		}
 		
 		Global.getLogger(this.getClass()).info("\tInvading target");
-		boolean success = InvasionRound.npcInvade(atkStrength, fleet, offFltIntel.getFaction(), market);
-		if (success)
-		{
-			offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
-			status = RaidStageStatus.SUCCESS;
-			//offFltIntel.endAfterDelay();	// can't end now, it breaks the subsequent wait stage
+		if (NexConfig.legacyInvasions) {
+			boolean success = InvasionRound.npcInvade(atkStrength, fleet, offFltIntel.getFaction(), market);
+			if (success)
+			{
+				offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
+				status = RaidStageStatus.SUCCESS;
+				//offFltIntel.endAfterDelay();	// can't end now, it breaks the subsequent wait stage
+			}
+		} else {
+			// create ground battle if doesn't exist
+			// add troops to it
+			InvasionIntel inv = (InvasionIntel)offFltIntel;
+			GroundBattleIntel gb = inv.getGroundBattle();
+			if (gb == null) {
+				gb = inv.initGroundBattle();
+			}
+			if (gb == null)	{ // failed to generate, possibly because there's an existing battle we couldn't join
+				offFltIntel.setRouteActionDone(fleet);
+				return;
+			}
+			if (fleet != null) inv.deployToGroundBattle(fleet);
+			else inv.deployToGroundBattle(currRouteForAutoresolve);
 		}
 		
 		// when FAILURE, gets sent by RaidIntel
@@ -253,8 +292,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			}
 		}
 		
-		if (fleet != null)
-			fleet.getMemoryWithoutUpdate().set(MEM_KEY_INVASION_ATTEMPTED, true);
+		offFltIntel.setRouteActionDone(fleet);
 	}
 	
 	protected void autoresolve() {
@@ -282,7 +320,16 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		List<RouteData> routes = getRoutes();
 		for (RouteData route : routes)
 		{
+			if (offFltIntel.isRouteActionDone(route))
+				continue;
+			// untested: keep brawl mode strike fleets from invading
+			// shouldn't be needed with the route check, but just in case
+			if ("exerelinInvasionSupportFleet".equals(route.getExtra().fleetType))
+				continue;
+			
+			currRouteForAutoresolve = route;
 			performRaid(route.getActiveFleet(), target);
+			offFltIntel.setRouteActionDone(route);
 			if (offFltIntel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
 		}
 		if (offFltIntel.getOutcome() != OffensiveOutcome.SUCCESS)
@@ -368,7 +415,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	@Override
 	public boolean canRaid(CampaignFleetAPI fleet, MarketAPI market) {
 		if (offFltIntel.getOutcome() != null) return false;
-		if (fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_INVASION_ATTEMPTED)) return false;
+		if (offFltIntel.isRouteActionDone(fleet)) return false;
 		
 		return market == target;
 	}

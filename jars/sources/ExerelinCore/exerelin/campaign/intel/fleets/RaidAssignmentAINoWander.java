@@ -15,14 +15,11 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.invasion.InvActionStage;
-import static exerelin.campaign.intel.invasion.InvActionStage.MEM_KEY_INVASION_ATTEMPTED;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 
 // vanilla, but replaces some assignment types and hacks addLocalAssignment to keep fleets from wandering off
@@ -112,7 +109,7 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 			}
 			
 			// force the fleet to go straight to target instead of pissing around system
-			if (current.custom instanceof MarketAPI && !fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_INVASION_ATTEMPTED))
+			if (current.custom instanceof MarketAPI && !fleet.getMemoryWithoutUpdate().getBoolean(OffensiveFleetIntel.MEM_KEY_ACTION_DONE))
 			{
 				final MarketAPI market = ((MarketAPI)current.custom);
 				target = market.getPrimaryEntity();

@@ -50,10 +50,7 @@ public class SatBombActionStage extends InvActionStage {
 			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
 			intel.sendOutcomeUpdate();
 		}
-		else {
-			if (fleet != null)
-				fleet.getMemoryWithoutUpdate().set(MEM_KEY_INVASION_ATTEMPTED, true);
-		}
+		offFltIntel.setRouteActionDone(fleet);
 	}
 	
 	@Override

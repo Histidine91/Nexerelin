@@ -108,7 +108,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		
 		showUnitPanel();
 		if (quickMove) {
-			selectMoveOrDeployDestination(unit.getLocation() == null);
+			selectMoveOrDeployDestination(!unit.isDeployed());
 		} else {
 			optionSelected(null, OptionId.INIT);
 		}

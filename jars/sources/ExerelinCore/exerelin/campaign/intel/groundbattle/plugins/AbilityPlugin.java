@@ -87,7 +87,7 @@ public abstract class AbilityPlugin {
 			return new Pair<>(id, params);
 		}		
 		
-		if (user.isPlayer()) {
+		if (user != null && user.isPlayer()) {
 			GroundBattleIntel intel = getSide().getIntel();
 			if (!intel.isPlayerInRange()) {
 				id = "out_of_range";

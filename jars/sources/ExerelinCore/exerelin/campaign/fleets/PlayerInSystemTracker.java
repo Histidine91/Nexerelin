@@ -148,7 +148,7 @@ public class PlayerInSystemTracker implements EveryFrameScript, ColonyPlayerHost
 
 	@Override
 	public void reportBattleStarted(GroundBattleIntel battle) {
-		if (!battle.isPlayerAttacker()) return;
+		if (!Boolean.TRUE.equals(battle.isPlayerAttacker())) return;
 		spotPlayer(battle.getMarket().getFactionId(), REMEMBER_PLAYER_TIME * 2);
 	}
 
@@ -157,7 +157,7 @@ public class PlayerInSystemTracker implements EveryFrameScript, ColonyPlayerHost
 
 	@Override
 	public void reportBattleAfterTurn(GroundBattleIntel battle, int turn) {
-		if (!battle.isPlayerAttacker()) return;
+		if (!Boolean.TRUE.equals(battle.isPlayerAttacker())) return;
 		spotPlayer(battle.getMarket().getFactionId(), REMEMBER_PLAYER_TIME * 2);
 	}
 

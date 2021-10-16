@@ -12,6 +12,7 @@ import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelData;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelRank;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
@@ -55,6 +56,7 @@ public class GroundUnit {
 	protected String name;
 	protected FactionAPI faction;
 	protected CampaignFleetAPI fleet;
+	protected RouteData route;
 	protected boolean isPlayer;
 	protected boolean isAttacker;
 	protected ForceType type;
@@ -148,6 +150,10 @@ public class GroundUnit {
 		return destination;
 	}
 	
+	public boolean isDeployed() {
+		return location != null;
+	}
+	
 	public boolean isWithdrawing() {
 		return GBConstants.ACTION_WITHDRAW.equals(currAction);
 	}
@@ -183,6 +189,16 @@ public class GroundUnit {
 	
 	public boolean isPlayer() {
 		return intel.playerData.getUnits().contains(this);
+	}
+	
+	public boolean isFleetInRange() {
+		if (fleet != null && fleet.isAlive()) {
+			return intel.isFleetInRange(fleet);
+		}
+		if (route != null) {
+			return intel.isRouteInRange(route);
+		}
+		return true;
 	}
 	
 	/**
@@ -570,18 +586,27 @@ public class GroundUnit {
 	}
 	
 	public StatBonus getAttackStatBonus() {
-		if (isAttacker) {
-			if (fleet != null && intel.isFleetInRange(fleet)) {
-				StatBonus bonus = NexUtils.cloneStatBonus(fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD));
-				if (isPlayer) {
-					substituteLocalXPBonus(bonus, true);
-				}
-				return bonus;
-			}
+		StatBonus bonus = new StatBonus();
+		
+		// unit from a fleet: apply fleet planetary operations bonuses, if fleet is in range
+		// note: a side effect of the in-range requirement is that the Ground Operations skill stops applying if player is out of range
+		if (fleet != null && isFleetInRange()) {
+			
+			bonus = NexUtils.cloneStatBonus(fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD));
 		}
+		// attacker unit not from a fleet (usually a rebel?)
+		// do nothing
+		else if (isAttacker) {
+			
+		}
+		// defender unit not from a fleet
 		else {
-			StatBonus bonus = NexUtils.cloneStatBonus(intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD));
+			// start by applying vanilla-type ground defense stat bonuses
+			bonus = NexUtils.cloneStatBonus(intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD));
+			
+			// purge all flat bonuses
 			bonus.getFlatBonuses().clear();
+			// purge all mult and percent bonuses that come from an industry
 			for (StatMod mod : new ArrayList<>(bonus.getMultBonuses().values())) 
 			{
 				if (mod.getSource().startsWith("ind_")) {
@@ -594,12 +619,24 @@ public class GroundUnit {
 					bonus.unmodifyPercent(mod.getSource());
 				}
 			}
-			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
-			
-			return bonus;
-			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		}
-		return null;
+		
+		// apply XP bonuses
+		if (isPlayer) {
+			substituteLocalXPBonus(bonus, true);
+		}
+		else if (isAttacker) {
+			// generic XP bonus for non-player attacker units (assumes 50% XP), but not for rebels
+			if (type != ForceType.REBEL) {
+				injectXPBonus(bonus, GBConstants.OFFENSE_STAT, true);
+			}
+		} 
+		else {
+			// generic XP bonus for defender units (assumes 25% XP)
+			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
+		}
+		
+		return bonus;
 	}
 	
 	public float getAttackStrength() {
@@ -832,8 +869,11 @@ public class GroundUnit {
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
 			ButtonAPI qm = buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this), 
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
+			boolean deployed = location != null;
+			boolean canDeploy = !deployed && getDeployCost() <= Global.getSector().getPlayerFleet().getCargo().getSupplies()
+					&& isFleetInRange();
 			if (isReorganizing() || intel.getSide(isAttacker).getMovementPointsRemaining() <= 0
-					|| (location == null && getDeployCost() > Global.getSector().getPlayerFleet().getCargo().getSupplies())) 
+					|| (!deployed && !canDeploy)) 
 			{
 				qm.setEnabled(false);
 			}

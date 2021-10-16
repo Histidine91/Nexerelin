@@ -35,7 +35,7 @@ public class GroundBattleAI {
 	protected transient Set<IndustryForBattle> industriesWithEnemy = new HashSet<>();
 	protected transient Set<IFBStrengthRecord> writeoffIndustries = new HashSet<>();
 	protected transient List<IFBStrengthRecord> industriesWithEnemySorted = new ArrayList<>();
-	protected transient List<GroundUnit> availableUnitsSorted = new LinkedList<>();
+	protected transient List<GroundUnit> availableUnitsSorted = new LinkedList<>();	// undeployed before deployed, then strongest to weakest
 	protected transient float availableStrength;
 	
 	/*
@@ -125,7 +125,7 @@ public class GroundBattleAI {
 		List<GroundUnit> results = new ArrayList<>();
 		boolean allowMilitia = canUnleashMilitia();
 		for (GroundUnit unit : intel.getSide(isAttacker).getUnits()) {
-			if (isPlayer && unit.getLocation() == null) continue;	// don't drop new units for player AI
+			if (isPlayer && !unit.isDeployed()) continue;	// don't drop new units for player AI
 			if (unit.getDestination() != null) continue;
 			if (unit.isWithdrawing()) continue;
 			if (unit.getMorale() < MIN_MORALE_TO_REDEPLOY) continue;
@@ -263,14 +263,19 @@ public class GroundBattleAI {
 			}
 			printDebug(String.format(" - Available unit: %s, at %s, strength %s", 
 					unit.toString(), 
-					unit.getLocation() == null ? "fleet" : unit.getLocation().getName(), 
+					!unit.isDeployed() ? "fleet" : unit.getLocation().getName(), 
 					unit.getAttackStrength()));
 			availableUnitsSorted.add(unit);
 		}
 		
 		Collections.sort(availableUnitsSorted, new Comparator<GroundUnit>() {
+			// undeployed units before deployed ones, then strong ones before weak ones
 			@Override
 			public int compare(GroundUnit one, GroundUnit two) {
+				if (!one.isDeployed() && two.isDeployed())
+					return -1;
+				if (one.isDeployed() && !two.isDeployed())
+					return 1;
 				return Float.compare(two.getBaseStrength(), one.getBaseStrength());
 			}
 		});

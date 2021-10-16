@@ -2,6 +2,7 @@ package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -97,6 +98,13 @@ public class GBUtils {
 			str += thisStr;
 		}
 		return str;
+	}
+	
+	public static float estimateTotalDefenderStrength(MarketAPI market, FactionAPI attacker, boolean useHealth) 
+	{
+		GroundBattleIntel temp = new GroundBattleIntel(market, attacker, market.getFaction());
+		temp.init();
+		return estimateTotalDefenderStrength(temp, useHealth);
 	}
 	
 	public static float[] estimatePlayerStrength(GroundBattleIntel intel) {

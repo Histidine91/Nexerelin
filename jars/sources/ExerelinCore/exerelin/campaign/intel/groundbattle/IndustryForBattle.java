@@ -223,7 +223,11 @@ public class IndustryForBattle {
 	}
 	
 	public boolean isMoraleKnown(boolean attacker) {
-		return Global.getSettings().isDevMode() || intel.playerIsAttacker == attacker;	// TODO: agent intel
+		if (Global.getSettings().isDevMode()) return true;
+		if (intel.playerIsAttacker != null && intel.playerIsAttacker == attacker) return true;
+		// TODO: agent intel
+		
+		return false;
 	}
 
 	public TooltipMakerAPI renderForcePanel(CustomPanelAPI panel, float width, 

@@ -16,7 +16,7 @@ Inspire
 
 Electronic Warfare
 - Reduces enemy attack capability by 30%, and prevents giving orders. Lasts 1 turn.
-- Costs X supplies, where X is a number multiplied by (size ^ 2).
+- Costs X supplies, where X is a number multiplied by (2 ^ size).
 - Requires Y points in fleetwide ECM (based on market size).
 
 Close Air Support
@@ -26,17 +26,51 @@ Close Air Support
 
 
 == Todo ==
+- NPC ground battle
+- Surprise attack bonus
+- Combined arms bonus?
+- Tutorial mission
+- Display estimated contribution of ground support in attack strength breakdown
+
 - Generate buffs
 	- Commanders
-	- FPE condition: global buff to defense strength on all FPE industries?
 
 - [playtest] AI
 
 - [test] Orphans made
 
 - Invasion fleet -> ground forces conversion
-	- Invasion has X marines, each fleet gets a 1/N share of this
-	- When each fleet touches target, drop its marines off
+	- Invasion has X marines, each fleet gets a share of this prorated by FP
+	- When each fleet touches target, drop its marines off, and start ground battle event if it isn't already running
+		- Units will start undeployed, teach AI how to deploy them
+		- Each unit has a fleet and a route, check if fleet is close enough before allowing deployment
+			- Check route if fleet is not alive
+	- When autoresolving, drop every route's marines off at once (if they penetrate space defences)
+		- Don't do this for routes that have dropped in non-autoresolve
 
-- Send reinforcement fleet
+	- Need a way to tag fleets/routes as already having unloaded their payload
+		- Maybe store the route in a set in the intel
+		- No, can't easily get route if performing raid from assignment AI
+		- Save the route to fleet memory when generating it
+
+	- Don't progress to patrol stage after raiding? Rather, wait until every route/fleet has raided
+		- Alternatively, go to patrol stage, but allow continued raiding (WaitStage is an ActionStage, so this works)
+			- What happens if a raid occurs, but then player leaves and fleets despawn before all of them have raided?
+				- This is fine if it remains in action stage (since it then autoresolves), but if it's now in the wait stage the remaining routes will do nothing)
+			- I think in the end, waiting for every route is best
+
+	- Progress so far:
+		+ Handle marines total
+		+ Update unit fleet/route check for deployment
+		+ Generate ground battle intel on first drop-off
+			+ If existing battle, pick a side to help (if neither valid, cancel invasion completely)
+		+ Add units to ground battle on each drop-off
+		+ Wait stage: return home if battle is over and we do not hold the market
+		+ Store already dropped routes
+		+ Action stage progresses when all routes are done
+		- Player join existing battle: choose a side
+
+- Send reinforcement fleet from neighboring markets
+	- Draw from response fleet?
+	- Or is this too obvious a way to bait them out?
 

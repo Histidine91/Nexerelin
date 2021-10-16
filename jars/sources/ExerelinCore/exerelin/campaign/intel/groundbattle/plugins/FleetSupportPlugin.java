@@ -67,7 +67,7 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 			Collection<IndustryForBattle> contestedLocations) 
 	{
 		for (GroundUnit unit : intel.getSide(attacker).getUnits()) {
-			if (unit.getLocation() == null) continue;
+			if (!unit.isDeployed()) continue;
 			if (unit.isAttackPrevented()) continue;
 			if (!contestedLocations.contains(unit.getLocation())) continue;
 			

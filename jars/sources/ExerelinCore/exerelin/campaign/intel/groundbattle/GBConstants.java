@@ -57,4 +57,10 @@ public class GBConstants {
 		DEFENSE_STAT.num = 100;
 		DEFENSE_STAT.xp = 25;
 	}
+	
+	public static PersonnelData OFFENSE_STAT = new PersonnelData("generic_attacker");
+	static {
+		OFFENSE_STAT.num = 100;
+		OFFENSE_STAT.xp = 50;
+	}
 }

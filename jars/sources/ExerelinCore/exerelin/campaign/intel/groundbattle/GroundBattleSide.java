@@ -278,11 +278,17 @@ public class GroundBattleSide {
 		}
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
-			GroundUnit unit = new GroundUnit(intel, type, size, units.size());
-			unit.faction = intel.market.getFaction();
+			GroundUnit unit = createUnit(type, faction, size);
 			unit.morale *= moraleMult;
-			units.add(unit);
 		}
+	}
+	
+	public GroundUnit createUnit(ForceType type, FactionAPI faction, int size) {
+		GroundUnit unit = new GroundUnit(intel, type, size, units.size());
+		unit.faction = faction;
+		unit.isAttacker = this.isAttacker;
+		units.add(unit);
+		return unit;
 	}
 	
 	public void allocateDefenders() {

@@ -2,6 +2,7 @@ package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -11,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -25,18 +27,20 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.campaign.intel.fleets.WaitStage;
+import exerelin.campaign.intel.groundbattle.GBUtils;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.Logger;
@@ -46,25 +50,32 @@ import org.lwjgl.util.vector.Vector2f;
 public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
 	public static final boolean NO_STRIKE_FLEETS = true;
-	public static final boolean USE_REAL_MARINES = false;
-	public static final int MAX_MARINES = 3000;
+	public static final boolean USE_REAL_MARINES = false;	// puts actual marines in cargo; undesirable because they appear in salvage
+	public static final int MAX_MARINES_PER_FLEET = 3000;
 	public static final int WAIT_AFTER_SUCCESS_DAYS = 90;
+	public static final int MAX_MARINES_TOTAL = 16000;
+	public static final float MARINE_GARRISION_MULT = 1;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
-	protected int marinesPerFleet = 0;	// used for legacy invasions
-	protected int marinesTotal = -1;	// used for new invasions
+	@Deprecated protected int marinesPerFleet = 0;	// used for legacy invasions? maybe we should just use total marines too
+	protected int marinesTotal = 0;	// used for new invasions
+	protected float fpNoBrawlMult;
 	protected DefenseFleetIntel brawlDefIntel;
+	protected GroundBattleIntel groundBattle;
 	protected WaitStage waitStage;
-		
+	
 	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
+		fpNoBrawlMult = fp;
 	}
 	
 	protected Object readResolve() {
 		if (marinesTotal == -1) {
 			marinesTotal = (int)Math.ceil(marinesPerFleet * 1.5f);
 		}
+		if (alreadyActionedRoutes == null)
+			alreadyActionedRoutes = new HashSet<>();
 		
 		return this;
 	}
@@ -144,17 +155,25 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	}
 
 	public void setMarineCount() {
+		// based on vanilla ground defense strength
 		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.55f);
 		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
 		if (marinesPerFleet < 100) {
 			marinesPerFleet = 100;
 		}
-		else if (marinesPerFleet > MAX_MARINES) {
-			log.info("Capping marines at " + MAX_MARINES + " (was " + marinesPerFleet + ")");
-			marinesPerFleet = MAX_MARINES;
+		else if (marinesPerFleet > MAX_MARINES_PER_FLEET) {
+			log.info("Capping marines per fleet (legacy) at " + MAX_MARINES_PER_FLEET + " (was " + marinesPerFleet + ")");
+			marinesPerFleet = MAX_MARINES_PER_FLEET;
 		}
 		
-		marinesTotal = (int)Math.ceil(defenderStrength * 1.5);
+		// base on Nex new invasion mechanic garrison
+		float garrison = GBUtils.estimateTotalDefenderStrength(target, faction, false);
+		marinesTotal = (int)Math.ceil(garrison * MARINE_GARRISION_MULT);
+		if (marinesTotal < 100) marinesTotal = 100;
+		else if (marinesTotal > MAX_MARINES_TOTAL) {
+			log.info("Capping total marines at " + MAX_MARINES_TOTAL + " (was " + marinesTotal + ")");
+			marinesTotal = MAX_MARINES_TOTAL;
+		}
 	}
 
 	/*
@@ -167,13 +186,99 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		endAfterDelay();	
 	}
 	*/
-		
+	
+	@Deprecated
 	public int getMarinesPerFleet() {
 		return marinesPerFleet;
 	}
 	
+	@Deprecated
 	public void setMarinesPerFleet(int marines) {
 		marinesPerFleet = marines;
+	}
+	
+	public void setMarinesTotal(int marines) {
+		marinesTotal = marines;
+	}
+	
+	public GroundBattleIntel getGroundBattle() {
+		return groundBattle;
+	}
+	
+	public GroundBattleIntel initGroundBattle() {
+		// if there's already a battle going on, use that if we can
+		groundBattle = GroundBattleIntel.getOngoing(target);
+		if (groundBattle != null && groundBattle.getOutcome() == null) {
+			//  terminate the entire invasion if we're not friendly to either side
+			Boolean joinAttacker = groundBattle.getSideToSupport(faction);
+			if (joinAttacker == null) {
+				groundBattle = null;
+				terminateEvent(OffensiveOutcome.OTHER);
+				return null;
+			}
+			
+			return groundBattle;
+		}
+		
+		GroundBattleIntel newBattle = new GroundBattleIntel(target, this.faction, target.getFaction());
+		newBattle.init();
+		newBattle.start();
+		groundBattle = newBattle;
+		return newBattle;
+	}
+	
+	public void deployToGroundBattle(CampaignFleetAPI fleet) {
+		deployToGroundBattle(getRouteFromFleet(fleet));
+	}
+	
+	public void deployToGroundBattle(RouteData route) {
+		if (route == null) return;
+		
+		if (groundBattle == null) {
+			// TODO print error message
+			return;
+		}
+		
+		Boolean side = groundBattle.getSideToSupport(faction);
+		if (side == null) {
+			// TODO print error message
+			return;
+		}
+				
+		float fpShare = route.getExtra().fp/fpNoBrawlMult;
+		int marines, heavyArms; 
+		
+		marines = (int)Math.ceil(marinesTotal * fpShare);
+		CampaignFleetAPI fleet = route.getActiveFleet();
+		if (fleet != null) {
+			CargoAPI cargo = route.getActiveFleet().getCargo();
+			if (USE_REAL_MARINES) {
+				marines = cargo.getMarines();
+			} else {
+				int capacity = (int)cargo.getMaxPersonnel();
+				int skeletonCrew = (int)fleet.getFleetData().getMinCrew();
+				log.info(String.format("Fleet has %s personnel capacity, minus %s skeleton crew, leaving %s space for marines", 
+						capacity, skeletonCrew, capacity - skeletonCrew));
+				marines = Math.min(marines, capacity - skeletonCrew);
+			}			
+			heavyArms = (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS);
+		}
+		else {
+			heavyArms = marines/5;
+			if (target.getPlanetEntity() == null) heavyArms /= 2;
+		}
+		
+		// first boots to hit the ground
+		boolean firstIn = groundBattle.getSide(side).getUnits().isEmpty();
+		
+		// create units
+		log.info(String.format("Deploying units: %s marines, %s heavy arms", marines, heavyArms));
+		groundBattle.autoGenerateUnits(marines, heavyArms, faction, side, false);
+		
+		// deploy the newly arrived units
+		if (true || !firstIn) {
+			groundBattle.runAI(side, false);
+		}
 	}
 	
 	public void initBrawlMode() {
@@ -326,13 +431,26 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		float myFP = extra.fp;
 		if (!isInvasionFleet) myFP *= 0.75f;
+		float fpBeforeDoctrineMult = myFP;
+		
 		if (!useMarketFleetSizeMult)
 			myFP *= InvasionFleetManager.getFactionDoctrineFleetSizeMult(faction);
+		
+		int marines = 0;
+		if (isInvasionFleet) {			
+			if (false && NexConfig.legacyInvasions) {
+				marines = marinesPerFleet;
+			}
+			else {
+				float fpShare = fpBeforeDoctrineMult/fpNoBrawlMult;
+				marines = (int)Math.ceil(marinesTotal * fpShare);
+			}
+		}
 		
 		float combat = myFP;
 		float tanker = getWantedTankerFP(myFP, distance, random);
 		if (tanker > myFP * 0.25f) tanker = myFP * 0.25f;
-		float transport = isInvasionFleet ? marinesPerFleet/100 : 0;
+		float transport = marines/100;
 		float freighter = getWantedFreighterFP(myFP, random);
 		
 		if (isInvasionFleet) freighter *= 2;
@@ -371,13 +489,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		if (fleet == null || fleet.isEmpty()) return null;
 		
 		fleet.setName(InvasionFleetManager.getFleetName(extra.fleetType, factionId, totalFp));
-		
-		if (USE_REAL_MARINES) {
-			fleet.getCargo().addMarines(marinesPerFleet);
-			log.info("Adding marines to cargo: " + marinesPerFleet);
-		}
-		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, marinesPerFleet/5);
-		
+				
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		// makes it not piss around the system instead of heading to objective, see http://fractalsoftworks.com/forum/index.php?topic=5061.msg263438#msg263438
 		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_NO_MILITARY_RESPONSE, true);
@@ -389,6 +501,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		}
 		
 		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
+		fleet.getMemoryWithoutUpdate().set("$nex_routeData", route);
 		
 		String postId = Ranks.POST_FLEET_COMMANDER;
 		String rankId = isInvasionFleet ? Ranks.SPACE_ADMIRAL : Ranks.SPACE_CAPTAIN;
@@ -396,7 +509,23 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		fleet.getCommander().setPostId(postId);
 		fleet.getCommander().setRankId(rankId);
 		
-		log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
+		if (marines > 0) {
+			if (USE_REAL_MARINES) {
+				fleet.getCargo().addMarines(marines);
+				log.info("Adding marines to cargo: " + marines);
+			}
+			int heavyArms = marines/5;
+			if (target.getPlanetEntity() == null) heavyArms /= 2;
+			fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, heavyArms);
+		}
+		
+		// this makes some stuff not think that strike fleets are available as raiders
+		if (!isInvasionFleet) {
+			setRouteActionDone(fleet);
+		}
+		
+		//log.info("Created fleet " + fleet.getName() + " of strength " + fleet.getFleetPoints() + "/" + totalFp);
+		log.info("Created fleet " + fleet.getName() + ", FP used: " + fpBeforeDoctrineMult + "/" + fp);
 		
 		return fleet;
 	}

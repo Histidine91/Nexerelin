@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
@@ -29,6 +30,7 @@ import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -36,6 +38,7 @@ import org.apache.log4j.Logger;
 
 public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate {
 	
+	public static final String MEM_KEY_ACTION_DONE = "$nex_raidActionDone";
 	public static final Object ENTERED_SYSTEM_UPDATE = new Object();
 	public static final Object OUTCOME_UPDATE = new Object();
 	public static final boolean INTEL_ALWAYS_VISIBLE = true;
@@ -61,6 +64,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	protected boolean brawlMode;
 	protected float brawlMult = -1;
+		
+	protected Set<RouteData> alreadyActionedRoutes = new HashSet<>();
 	
 	protected ActionStage action;
 	
@@ -116,6 +121,57 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	public boolean isRequiresSpaceportOrBase() {
 		return requiresSpaceportOrBase;
+	}
+	
+	public RouteData getRouteFromFleet(CampaignFleetAPI fleet) {
+		RouteData route = (RouteData)fleet.getMemoryWithoutUpdate().get("$nex_routeData");
+		return route;
+	}
+	
+	/**
+	 * Has this fleet already conducted its raid action?<br/>
+	 * Note: Only some raid actions bother setting this. Can be true from the start
+	 * for fleets that should not take action, such as the strike fleets in a brawl mode invasions.
+	 * @param route
+	 * @return
+	 */
+	public boolean isRouteActionDone(RouteData route) {
+		if (route == null) return false;
+		return alreadyActionedRoutes.contains(route);
+	}
+	
+	/**
+	 * Has this fleet already conducted its raid action?<br/>
+	 * Note: Only some raid actions bother setting this. Can be true from the start
+	 * for fleets that should not take action, such as the strike fleets in a brawl mode invasions.
+	 * @param fleet
+	 * @return
+	 */
+	public boolean isRouteActionDone(CampaignFleetAPI fleet) {
+		if (fleet.getMemoryWithoutUpdate().getBoolean(MEM_KEY_ACTION_DONE)) return true;
+		return isRouteActionDone(getRouteFromFleet(fleet));
+	}
+	
+	/**
+	 * Call this when a route conducts its raid action.<br/>
+	 * Autoresolve might call this twice per route; from when the route's active fleet 
+	 * (if it exists) performs the raid, and then for the route itself.
+	 * @param route
+	 */
+	public void setRouteActionDone(RouteData route) {
+		if (route == null) return;
+		alreadyActionedRoutes.add(route);
+		if (route.getActiveFleet() != null)
+			route.getActiveFleet().getMemoryWithoutUpdate().set(MEM_KEY_ACTION_DONE, true);
+	}
+	
+	/**
+	 * Call this when a fleet conducts its raid action.
+	 * @param fleet
+	 */
+	public void setRouteActionDone(CampaignFleetAPI fleet) {
+		RouteData route = getRouteFromFleet(fleet);
+		setRouteActionDone(route);
 	}
 	
 	public boolean shouldMakeImportantIfTargetingPlayer() {
@@ -501,6 +557,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		handleAllyFleetNaming(fleet, factionId, random);
 		
 		//fleet.addEventListener(this);
+		if (isRouteActionDone(route)) {
+			fleet.getMemoryWithoutUpdate().set(MEM_KEY_ACTION_DONE, true);
+		}
 		
 		market.getContainingLocation().addEntity(fleet);
 		fleet.setFacing((float) Math.random() * 360f);
@@ -535,10 +594,11 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public void printFleetCountDebug(TooltipMakerAPI info) {
 		if (ExerelinModPlugin.isNexDev) {
 			int predicted = (int)Math.round(getOrigNumFleets());
-			int actual = getRouteCount();
-			String str = String.format("DEBUG: Expected routes %s, actual %s", predicted, actual);
+			int active = getRouteCount();
+			int total = getRouteCountAll();
+			String str = String.format("DEBUG: Expected routes %s, active %s, total %s", predicted, active, total);
 			
-			info.addPara(str, 10, Misc.getHighlightColor(), predicted + "", actual + "");
+			info.addPara(str, 10, Misc.getHighlightColor(), predicted + "", active + "", total + "");
 		}
 	}
 	
@@ -547,5 +607,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		BaseRaidStage stage = (BaseRaidStage) stages.get(currStage);
 		
 		return stage.getRoutes().size();
+	}
+	
+	/**
+	 * Includes stragglers, unlike the regular route count.
+	 * @return
+	 */
+	protected int getRouteCountAll() {
+		List<RouteData> routes = RouteManager.getInstance().getRoutesForSource(this.getRouteSourceId());
+		return routes.size();
 	}
 }
