@@ -4,13 +4,13 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
-import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetActionDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.List;
@@ -82,10 +82,21 @@ public class WaitStage extends BaseRaidStage implements FleetActionDelegate {
 		int curr = intel.getCurrentStage();
 		int index = intel.getStageIndex(this);
 		float opad = 10f;
+		String strKey = "intelStageWait";
+		// special handling for ongoing ground battles
+		if (offFltIntel instanceof InvasionIntel && offFltIntel.getTarget().getFaction() != offFltIntel.getFaction()) 
+		{
+			InvasionIntel inv = (InvasionIntel)offFltIntel;
+			if (inv.getGroundBattle() != null && inv.getGroundBattle().getOutcome() == null) {
+				strKey = "intelStageWaitOngoing";
+			}
+		}
+		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
+					strKey, "$market", token.getName());
+		str = StringHelper.substituteToken(str, "$onOrAt", token.getMarket().getOnOrAt());
 		
 		if (curr == index) {
-			info.addPara(StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
-					"intelStageWait", "$market", token.getName()), opad);
+			info.addPara(str, opad);
 		}
 	}
 

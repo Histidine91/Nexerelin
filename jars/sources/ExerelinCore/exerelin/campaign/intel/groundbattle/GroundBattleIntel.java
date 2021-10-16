@@ -50,6 +50,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -69,11 +70,13 @@ import exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ColonyNPCHostileActListener;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -112,6 +115,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public static final Object BUTTON_DEBUG_AI = new Object();
 	public static final Object BUTTON_ANDRADA = new Object();
 	public static final Object BUTTON_GOVERNORSHIP = new Object();
+	public static final Object BUTTON_JOIN_ATTACKER = new Object();
+	public static final Object BUTTON_JOIN_DEFENDER = new Object();
 	
 	public static Logger log = Global.getLogger(GroundBattleIntel.class);
 	
@@ -416,6 +421,30 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public void setPlayerIsAttacker(Boolean bool) {
 		playerIsAttacker = bool;
 	}
+	
+	public void playerJoinBattle(boolean isAttacker) {
+		setPlayerIsAttacker(isAttacker);
+		
+		// lose rep with enemy now (gain rep with friend at end of battle)
+		FactionAPI enemy = getSide(!isAttacker).getFaction();
+		
+		float currFriendStr = getSide(isAttacker).getStrength();
+		float currEnemyStr = getSide(!isAttacker).getStrength();
+		float strFractionAtJoinTime = currFriendStr/(currFriendStr + currEnemyStr);
+		
+		playerData.strFractionAtJoinTime = strFractionAtJoinTime;
+		
+		CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+		impact.delta = market.getSize() * -0.02f;
+		// not now, we also need to look at requested fleets
+		//impact.ensureAtBest = tempInvasion.success ? RepLevel.VENGEFUL : RepLevel.HOSTILE;
+		impact.ensureAtBest = RepLevel.HOSTILE;
+		Global.getSector().adjustPlayerReputation(
+				new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, 
+					impact, null, null, true, true),
+					enemy.getId());
+	}
+	
 	
 	public void setPlayerInitiated(boolean playerInitiated) {
 		this.playerInitiated = playerInitiated;
@@ -727,8 +756,19 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void runAI() {
 		if (playerIsAttacker != null) {
+			// run player AI if automove is enabled
 			if (playerData.autoMoveAtEndTurn)
 				runAI(playerIsAttacker, true);
+			
+			// run friendly non-player AI if any such units exist
+			for (GroundUnit unit : getSide(playerIsAttacker).getUnits()) {
+				if (!unit.isPlayer) {
+					runAI(playerIsAttacker, false);
+					break;
+				}
+			}
+			
+			// run enemy AI
 			runAI(!playerIsAttacker, false);		
 		} else {
 			runAI(true, false);
@@ -879,10 +919,29 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			RecentUnrest.get(market, true).add(recentUnrest, String.format(getString("unrestReason"), 
 					attacker.getFaction().getDisplayName()));
 		}
-		
+					
 		if (Boolean.TRUE.equals(playerIsAttacker) && outcome == BattleOutcome.ATTACKER_VICTORY) 
 		{
-			playerData.setLoot(GroundBattleRoundResolve.lootMarket(market));
+			// loot multiplier based on our deployed attack strength as fraction of total attack strength
+			// this is relevant if we joined someone else's attack or vice-versa
+			float lootMult = 1;
+			{
+				float deployedPlayerStr = 0;
+				for (GroundUnit unit : playerData.getUnits()) {
+					if (unit.isDeployed()) deployedPlayerStr += unit.getAttackStrength();
+				}				
+				float deployedAttackerStr = 0;
+				for (GroundUnit unit : attacker.getUnits()) {
+					if (unit.isDeployed()) deployedAttackerStr += unit.getAttackStrength();
+				}
+				if (deployedAttackerStr < deployedPlayerStr) 
+					deployedAttackerStr = deployedPlayerStr;
+				
+				if (deployedAttackerStr <= 0) lootMult = 0;
+				else lootMult = deployedPlayerStr/deployedAttackerStr;
+			}
+			if (lootMult > 0)
+				playerData.setLoot(GroundBattleRoundResolve.lootMarket(market, lootMult));
 		}
 		if (playerInitiated && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
 		{
@@ -933,6 +992,18 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			log.params.put("fuel", playerData.fuelUsed);
 			addLogEvent(log);
 		}
+		
+		// reputation gain from helping
+		if (!playerInitiated && playerIsAttacker != null) {
+			float strFraction = playerData.strFractionAtJoinTime;
+			float contribMult = (1 - strFraction) * 0.8f + 0.2f;
+			
+			FactionAPI friend = getSide(playerIsAttacker).getFaction();
+			float rep = market.getSize() * 0.02f * contribMult;
+			if (rep >= 0.01f) {
+				NexUtilsReputation.adjustPlayerReputation(friend, rep);
+			}
+		}		
 		
 		sendUpdateIfPlayerHasIntel(UPDATE_VICTORY, false);
 
@@ -995,7 +1066,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			addLogEvent(log);
 		}
 		
-		if (playerIsAttacker != null)
+		if (playerIsAttacker != null || isImportant())
 			sendUpdateIfPlayerHasIntel(UPDATE_TURN, false);
 		interval.setElapsed(0);
 		turnNum++;
@@ -1313,6 +1384,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void generateIntro(CustomPanelAPI outer, TooltipMakerAPI info, float width, float pad) {
+		int buttonWidth = 160;
+		
 		info.addImages(width, 128, pad, pad, attacker.faction.getLogo(), defender.faction.getLogo());
 				
 		FactionAPI fc = getFactionForUIColors();
@@ -1339,17 +1412,53 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		str = getString("intelDesc_round");
 		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
 		
+		// join battle options
+		if (playerIsAttacker == null && isFleetInRange(Global.getSector().getPlayerFleet())) 
+		{
+			int height = 32;
+			
+			str = getString("btnJoinAttacker");
+			CustomPanelAPI joinAttackerPanel = outer.createCustomPanel(width, height, null);
+			TooltipMakerAPI image = joinAttackerPanel.createUIElement(height, height, false);
+			image.addImage(attacker.getFaction().getCrest(), height, 0);
+			joinAttackerPanel.addUIElement(image).inTL(0, 0);
+			TooltipMakerAPI buttonHolder = joinAttackerPanel.createUIElement(buttonWidth, height, false);
+			ButtonAPI button = buttonHolder.addButton(str, BUTTON_JOIN_ATTACKER, 
+					attacker.getFaction().getBaseUIColor(),
+					attacker.getFaction().getDarkUIColor(),
+					buttonWidth, height - 8 , 4);
+			if (attacker.getFaction().isHostileTo(Factions.PLAYER))
+				button.setEnabled(false);
+			joinAttackerPanel.addUIElement(buttonHolder).rightOfTop(image, 4);
+			info.addCustom(joinAttackerPanel, 10);
+			
+			str = getString("btnJoinDefender");
+			CustomPanelAPI joinDefenderPanel = outer.createCustomPanel(width, height, null);
+			image = joinDefenderPanel.createUIElement(height, height, false);
+			image.addImage(defender.getFaction().getCrest(), height, 0);
+			joinDefenderPanel.addUIElement(image).inTL(0, 0);
+			buttonHolder = joinDefenderPanel.createUIElement(buttonWidth, height, false);
+			button = buttonHolder.addButton(str, BUTTON_JOIN_DEFENDER, 
+					defender.getFaction().getBaseUIColor(),
+					defender.getFaction().getDarkUIColor(),
+					buttonWidth, height - 8 , 4);
+			if (defender.getFaction().isHostileTo(Factions.PLAYER))
+				button.setEnabled(false);
+			joinDefenderPanel.addUIElement(buttonHolder).rightOfTop(image, 4);
+			info.addCustom(joinDefenderPanel, 0);
+		}
+		
 		if (ExerelinModPlugin.isNexDev) {
 			CustomPanelAPI buttonDebugRow = outer.createCustomPanel(width, 24, null);
 			
-			TooltipMakerAPI btnHolder1 = buttonDebugRow.createUIElement(160, 
+			TooltipMakerAPI btnHolder1 = buttonDebugRow.createUIElement(buttonWidth, 
 				VIEW_BUTTON_HEIGHT, false);
-			btnHolder1.addButton(getString("btnResolveRound"), BUTTON_RESOLVE, base, bg, 160, 24, 0);
+			btnHolder1.addButton(getString("btnResolveRound"), BUTTON_RESOLVE, base, bg, buttonWidth, 24, 0);
 			buttonDebugRow.addUIElement(btnHolder1).inTL(0, 0);
 			
-			TooltipMakerAPI btnHolder2 = buttonDebugRow.createUIElement(160, 
+			TooltipMakerAPI btnHolder2 = buttonDebugRow.createUIElement(buttonWidth, 
 				VIEW_BUTTON_HEIGHT, false);
-			btnHolder2.addButton(getString("btnAIDebug"), BUTTON_DEBUG_AI, base, bg, 160, 24, 0);
+			btnHolder2.addButton(getString("btnAIDebug"), BUTTON_DEBUG_AI, base, bg, buttonWidth, 24, 0);
 			buttonDebugRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
 			
 			info.addCustom(buttonDebugRow, 3);
@@ -1945,7 +2054,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId == BUTTON_ANDRADA || buttonId == BUTTON_GOVERNORSHIP || buttonId instanceof Pair;
+		return buttonId == BUTTON_ANDRADA || buttonId == BUTTON_GOVERNORSHIP 
+				|| buttonId == BUTTON_JOIN_ATTACKER || buttonId == BUTTON_JOIN_DEFENDER
+				|| buttonId instanceof Pair;
 	}
 	
 	@Override
@@ -1971,6 +2082,27 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			prompt.addPara(str, 0, hl, Misc.getDGSCredits(cost.getModifiedValue()), Misc.getDGSCredits(curr));
 			prompt.addStatModGrid(480, 80, 100, 10, cost, true, NexUtils.getStatModValueGetter(true, 0));
 			return;
+		}
+		if (buttonId == BUTTON_JOIN_ATTACKER || buttonId == BUTTON_JOIN_DEFENDER) {
+			boolean isAttacker = buttonId == BUTTON_JOIN_ATTACKER;
+			
+			FactionAPI friend = getSide(isAttacker).getFaction();
+			FactionAPI enemy = getSide(!isAttacker).getFaction();
+			String friendName = friend.getDisplayNameWithArticleWithoutArticle();
+			String enemyName = enemy.getDisplayNameWithArticleWithoutArticle();
+			String theFriendName = friend.getDisplayNameWithArticle();
+			String theEnemyName = enemy.getDisplayNameWithArticle();
+			
+			// no stealth joining for now
+			boolean tOn = true;	//Global.getSector().getPlayerFleet().isTransponderOn();
+			
+			str = getString(tOn ? "btnJoinConfirmPrompt" : "btnJoinTOffConfirmPrompt");
+			str = StringHelper.substituteToken(str, "$theFriend", theFriendName);
+			str = StringHelper.substituteToken(str, "$theEnemy", theEnemyName);
+			
+			LabelAPI label = prompt.addPara(str, 0);
+			label.setHighlight(friendName, enemyName);
+			label.setHighlightColors(friend.getBaseUIColor(), enemy.getBaseUIColor());
 		}
 		
 		if (buttonId instanceof Pair) {
@@ -2063,6 +2195,16 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			for (GroundUnit unit : playerData.getUnits()) {
 				unit.cancelMove();
 			}
+			ui.updateUIForItem(this);
+			return;
+		}
+		if (buttonId == BUTTON_JOIN_ATTACKER) {
+			playerJoinBattle(true);
+			ui.updateUIForItem(this);
+			return;
+		}
+		if (buttonId == BUTTON_JOIN_DEFENDER) {
+			playerJoinBattle(false);
 			ui.updateUIForItem(this);
 			return;
 		}
@@ -2196,7 +2338,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(Tags.INTEL_MILITARY);
 		//tags.add(StringHelper.getString("exerelin_invasion", "invasions", true));
-		if (defender.faction.isPlayerFaction())
+		if (defender.faction.isPlayerFaction() || defender.faction == Misc.getCommissionFaction())
 			tags.add(Tags.INTEL_COLONIES);
 		tags.add(attacker.faction.getId());
 		tags.add(defender.faction.getId());

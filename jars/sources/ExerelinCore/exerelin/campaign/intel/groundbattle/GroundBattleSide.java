@@ -252,6 +252,14 @@ public class GroundBattleSide {
 		currNormalBaseStrength = GBUtils.estimateTotalDefenderStrength(intel, false);
 	}
 	
+	public float getStrength() {
+		float str = 0;
+		for (GroundUnit unit : units) {
+			str += unit.getAttackStrength();
+		}
+		return str;
+	}
+	
 	public float getBaseStrength() {
 		float str = 0;
 		for (GroundUnit unit : units) {

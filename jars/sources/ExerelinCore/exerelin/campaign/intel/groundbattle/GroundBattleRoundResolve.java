@@ -387,7 +387,7 @@ public class GroundBattleRoundResolve {
 		return targetValue;
 	}
 	
-	public static CargoAPI lootMarket(MarketAPI market) {
+	public static CargoAPI lootMarket(MarketAPI market, float mult) {
 		Map<CommodityOnMarketAPI, Float> valuables = computeInvasionValuables(market);
 		Random random = new Random();
 		WeightedRandomPicker<CommodityOnMarketAPI> picker = new WeightedRandomPicker<CommodityOnMarketAPI>(random);
@@ -397,6 +397,7 @@ public class GroundBattleRoundResolve {
 			picker.add(com, valuables.get(com));
 		}
 		float targetValue = getBaseInvasionValue(market, valuables);
+		targetValue *= mult;
 		
 		//float chunks = 10f;
 		float chunks = valuables.size();
@@ -421,7 +422,7 @@ public class GroundBattleRoundResolve {
 		result.sort();
 
 		float credits = (int)(targetValue * 0.1f * StarSystemGenerator.getNormalRandom(random, 0.5f, 1.5f));
-		if (credits < 0) credits = 2;
+		if (credits < 0) credits = 0;
 		result.getCredits().add(credits);
 
 		//result.clear();

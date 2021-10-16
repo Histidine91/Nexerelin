@@ -504,8 +504,10 @@ public class IndustryForBattle {
 					String str = ind.getCurrentName();
 					float pad = 3;
 					tt.addPara(str, 0, Misc.getHighlightColor(), ind.getCurrentName());
-		
-					if (isIndustryTrueDisrupted()) {
+					
+					boolean trueDisrupt = isIndustryTrueDisrupted();
+					
+					if (trueDisrupt) {
 						str = StringHelper.getString("disrupted", true);
 						tt.addPara(str, Misc.getHighlightColor(), pad);
 					}
@@ -521,14 +523,17 @@ public class IndustryForBattle {
 					tt.addPara(str + ": " + owner, pad, heldByAttacker ? Misc.getPositiveHighlightColor() 
 							: Misc.getNegativeHighlightColor(), owner);
 					
-					if (getPlugin().getDef().hasTag("noBombard")) {
-						str = StringHelper.getString("nex_invasion2", "industryPanel_header_bombardmentImmune");
-						tt.addPara(str, pad);
+					if (!trueDisrupt) {
+						if (getPlugin().getDef().hasTag("noBombard")) {
+							str = StringHelper.getString("nex_invasion2", "industryPanel_header_bombardmentImmune");
+							tt.addPara(str, pad);
+						}
+						else if (getPlugin().getDef().hasTag("resistBombard")) {
+							str = StringHelper.getString("nex_invasion2", "industryPanel_header_bombardmentResistant");
+							tt.addPara(str, pad);
+						}
 					}
-					else if (getPlugin().getDef().hasTag("resistBombard")) {
-						str = StringHelper.getString("nex_invasion2", "industryPanel_header_bombardmentResistant");
-						tt.addPara(str, pad);
-					}
+					
 				}
 			}, TooltipLocation.BELOW);
 

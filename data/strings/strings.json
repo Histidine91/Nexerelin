@@ -1009,9 +1009,10 @@
 		
 		"fleetCost":"fleet cost",
 		"fleetCostHelp":"The fleet(s) will cost $credits credits per FP.",
-		"fleetCostHelpMarines":"For invasion fleets, adding marines will multiply the cost, up to $marineMult times the base cost.",
+		"fleetCostHelpMarines":"Each marine costs $credits credits.",
 		"fleetBudget":"fleet request budget",
 		"fleetPoints":"fleet points",
+		"marines":"marines",
 		"marinesPerFleet":"marines per fleet",
 		"infoDistance":"Distance: $dist LY",
 		"timeToLaunch":"time to launch",
@@ -1068,7 +1069,9 @@
 		
 		"intelStageAction":"The invasion force is currently in-system.",
 		"intelStageWait":"The invasion force is defending $market after capturing it.",
+		"intelStageWaitOngoing":"The invasion force is supporting the surface battle $onOrAt $market.",
 		"intelStageActionSuccess":"The invasion force has conquered $market.",
+		"intelStageActionSuccessV2":"The invasion force has defeated the space defenses of $market and deployed their surface forces.",
 		"intelStageActionInsufficientReached":"The invasion forces have failed to reach $location in adequate strength. The invasion is aborted.",
 		"intelStageActionDefeatedGround":"The invasion forces have been repelled by the ground defenses of $market.",
 		"intelStageActionDefeatedSpace":"The invasion force has been defeated by the defenders of $market.",
@@ -1178,6 +1181,9 @@
 		"btnGovernorshipConfirmPrompt":"You can purchase governorship of $market for %s. You have %s credits.",
 		"btnLoot":"Loot",
 		"btnLootConfirmPrompt":"This will send the special items on this industry to your fleet. Proceed?",
+		"btnJoinAttacker":"Join attacker",
+		"btnJoinDefender":"Join defender",
+		"btnJoinConfirmPrompt":"Join the battle on the side of $theFriend? This will anger $theEnemy.",
 		
 		"unitPanel_header":"Available units",
 		"unitPanel_resources":"Resources on fleet",

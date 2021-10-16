@@ -30,12 +30,18 @@ public class GroundBattleAI {
 	protected boolean isAttacker;
 	protected boolean isPlayer;
 	
-	// generated for all industries, so ground units can look up the current strength where they are
+	/**
+	 * Generated for all industries, so ground units can look up the current strength where they are.
+	 */
 	protected transient Map<IndustryForBattle, IFBStrengthRecord> strengthRecords = new HashMap<>();
 	protected transient Set<IndustryForBattle> industriesWithEnemy = new HashSet<>();
 	protected transient Set<IFBStrengthRecord> writeoffIndustries = new HashSet<>();
 	protected transient List<IFBStrengthRecord> industriesWithEnemySorted = new ArrayList<>();
-	protected transient List<GroundUnit> availableUnitsSorted = new LinkedList<>();	// undeployed before deployed, then strongest to weakest
+
+	/**
+	 * 	Undeployed before deployed units, then strongest to weakest.
+	 */
+	protected transient List<GroundUnit> availableUnitsSorted = new LinkedList<>();
 	protected transient float availableStrength;
 	
 	/*
@@ -125,6 +131,7 @@ public class GroundBattleAI {
 		List<GroundUnit> results = new ArrayList<>();
 		boolean allowMilitia = canUnleashMilitia();
 		for (GroundUnit unit : intel.getSide(isAttacker).getUnits()) {
+			if (unit.isPlayer != this.isPlayer) continue;	// ally AI doesn't move player units (or vice-versa)
 			if (isPlayer && !unit.isDeployed()) continue;	// don't drop new units for player AI
 			if (unit.getDestination() != null) continue;
 			if (unit.isWithdrawing()) continue;

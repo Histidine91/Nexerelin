@@ -96,6 +96,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		targetFaction = target.getFaction();
 	}
 	
+	protected Object readResolve() {
+		if (alreadyActionedRoutes == null)
+			alreadyActionedRoutes = new HashSet<>();
+		
+		return this;
+	}
+	
 	public void init() {
 	}
 	
@@ -124,6 +131,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	}
 	
 	public RouteData getRouteFromFleet(CampaignFleetAPI fleet) {
+		if (fleet == null) return null;
 		RouteData route = (RouteData)fleet.getMemoryWithoutUpdate().get("$nex_routeData");
 		return route;
 	}

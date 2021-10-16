@@ -132,6 +132,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				// we've delivered our load, go ahead and proceed to next stage
 				offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
 				status = RaidStageStatus.SUCCESS;
+				offFltIntel.sendOutcomeUpdate();
 			}
 			else if (target.getFaction() != intel.getFaction()) {
 				// target not captured yet				
@@ -330,7 +331,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			currRouteForAutoresolve = route;
 			performRaid(route.getActiveFleet(), target);
 			offFltIntel.setRouteActionDone(route);
-			if (offFltIntel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
+			if (NexConfig.legacyInvasions && offFltIntel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
 		}
 		if (offFltIntel.getOutcome() != OffensiveOutcome.SUCCESS)
 		{
@@ -392,7 +393,10 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				key += "DefeatedGround";
 				break;
 			case SUCCESS:
-				key += "Success";
+				if (NexConfig.legacyInvasions)
+					key += "Success";
+				else
+					key += "SuccessV2";
 				break;
 			case TASK_FORCE_DEFEATED:
 				key += "DefeatedSpace";

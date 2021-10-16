@@ -34,6 +34,7 @@ import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.campaign.intel.fleets.WaitStage;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
@@ -74,8 +75,6 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		if (marinesTotal == -1) {
 			marinesTotal = (int)Math.ceil(marinesPerFleet * 1.5f);
 		}
-		if (alreadyActionedRoutes == null)
-			alreadyActionedRoutes = new HashSet<>();
 		
 		return this;
 	}
@@ -267,6 +266,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			heavyArms = marines/5;
 			if (target.getPlanetEntity() == null) heavyArms /= 2;
 		}
+		heavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
 		
 		// first boots to hit the ground
 		boolean firstIn = groundBattle.getSide(side).getUnits().isEmpty();
@@ -450,7 +450,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		float combat = myFP;
 		float tanker = getWantedTankerFP(myFP, distance, random);
 		if (tanker > myFP * 0.25f) tanker = myFP * 0.25f;
-		float transport = marines/100;
+		float transport = Math.max(marines/100, 8);	// a bit more than enough for a Valk
 		float freighter = getWantedFreighterFP(myFP, random);
 		
 		if (isInvasionFleet) freighter *= 2;

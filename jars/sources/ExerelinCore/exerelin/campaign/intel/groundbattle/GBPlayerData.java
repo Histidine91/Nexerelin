@@ -26,6 +26,12 @@ public class GBPlayerData {
 	protected Float andradaRepAfter;
 	protected Float governorshipPrice;
 	protected boolean autoMoveAtEndTurn;
+
+	/**
+	 * Ratio of friend strength to enemy strength at the time of joining an ongoing battle.
+	 * Used for calculating rep impact at end of battle.
+	 */
+	protected float strFractionAtJoinTime;	
 	
 	public GBPlayerData(GroundBattleIntel intel) {
 		this.intel = intel;

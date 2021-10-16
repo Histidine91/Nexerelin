@@ -68,7 +68,7 @@ Close Air Support
 		+ Wait stage: return home if battle is over and we do not hold the market
 		+ Store already dropped routes
 		+ Action stage progresses when all routes are done
-		- Player join existing battle: choose a side
+		+ Player join existing battle: choose a side
 
 - Send reinforcement fleet from neighboring markets
 	- Draw from response fleet?
