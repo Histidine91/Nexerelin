@@ -47,7 +47,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 	
 	public void spawnShuntFleet() {
 		FactionAPI faction = Global.getSector().getFaction(Factions.OMEGA);
-		float maxPoints = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL);
+		float maxPointsForFaction = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL);
 		
 		float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
 		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
@@ -76,7 +76,8 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 					FleetTypes.PATROL_SMALL, 
 					new Vector2f());
 			//e.triggerSetAdjustStrengthBasedOnQuality(false, 1);
-			float fraction = Math.max(combat/maxPoints/0.75f, HubMissionWithTriggers.FleetSize.TINY.maxFPFraction);
+			float fraction = Math.max(combat/maxPointsForFaction/0.75f, HubMissionWithTriggers.FleetSize.TINY.maxFPFraction);
+			fraction = Math.min(fraction, 1);
 			e.triggerSetFleetSizeFraction(fraction);
 			e.triggerSetFleetMaxShipSize(2);
 			e.triggerSetFleetFaction(Factions.REMNANTS);
