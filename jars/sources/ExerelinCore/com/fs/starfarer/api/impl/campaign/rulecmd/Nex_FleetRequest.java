@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -83,8 +82,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	public static final String SOURCE_OPTION_PREFIX = "nex_fleetRequest_setSource_";
 	public static final String TARGET_OPTION_PREFIX = "nex_fleetRequest_setTarget_";
 	public static final String FACTION_OPTION_PREFIX = "nex_fleetRequest_setFaction_";
-	public static final float BAR_WIDTH = 256;
-	public static final float MARINE_COST_MAX_MOD = 3;
+	public static final float BAR_WIDTH = 320;
+	public static final float MARINE_COST_MULT = 0.25f;	// each marine costs a quarter of its market value
 	public static final float RELIEF_COST_MULT = 2;
 	public static final float MIN_FP = 100;
 	
@@ -202,6 +201,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		return sup + mach + crew;
 	}
 	
+	protected float getCostPerMarine() {
+		return Global.getSettings().getCommoditySpec(Commodities.MARINES).getBasePrice() * MARINE_COST_MULT;
+	}
+	
 	protected float updateCost() {
 		if (fleetType == FleetType.RELIEF) {
 			if (target != null) cost = Nex_StabilizePackage.getNominalCost(target);
@@ -211,8 +214,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		else {
 			cost = fp * NexConfig.fleetRequestCostPerFP;
 			if (fleetType == FleetType.INVASION) {
-				float mult = 1 + MARINE_COST_MAX_MOD * (float)marines/InvasionIntel.MAX_MARINES;
-				cost *= mult;
+				cost += marines * getCostPerMarine();
 			}
 			else if (fleetType == FleetType.COLONY) {
 				cost *= 2;
@@ -259,13 +261,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	 */
 	protected void addCostHelpPara(TextPanelAPI text) {
 		text.setFontSmallInsignia();
-		String fpCost = Math.round(NexConfig.fleetRequestCostPerFP) + "";
-		String marineCost = (MARINE_COST_MAX_MOD + 1) + "";
+		String fpCost = (int)Math.round(NexConfig.fleetRequestCostPerFP) + "";
+		String marineCost = getCostPerMarine() + "";
 		String str = StringHelper.getStringAndSubstituteToken("nex_fleetRequest", 
 				"fleetCostHelp", "$credits", fpCost);
 		if (fleetType == FleetType.INVASION) {
 			str += " " + StringHelper.getStringAndSubstituteToken("nex_fleetRequest", 
-					"fleetCostHelpMarines", "$marineMult", marineCost);
+					"fleetCostHelpMarines", "$credits", marineCost);
 			text.addPara(str, Misc.getHighlightColor(), fpCost, marineCost);
 		}
 		else
@@ -289,8 +291,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		opts.setSelectorValue("fpSelector", fp);
 		
 		if (fleetType == FleetType.INVASION) {
-			opts.addSelector(getString("marinesPerFleet", true), "marineSelector", Color.orange, 
-					BAR_WIDTH, 48, 100, InvasionIntel.MAX_MARINES, ValueDisplayMode.VALUE, 
+			opts.addSelector(getString("marines", true), "marineSelector", Color.orange, 
+					BAR_WIDTH, 48, 100, InvasionIntel.MAX_MARINES_TOTAL, ValueDisplayMode.VALUE, 
 				null);
 			opts.setSelectorValue("marineSelector", marines);
 		}
@@ -616,7 +618,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		AddRemoveCommodity.addCreditsLossText((int)cost, dialog.getTextPanel());
 		credits.subtract(cost);
 		
-		FactionAPI attacker = source.getFaction();	//PlayerFactionStore.getPlayerFaction();
+		//FactionAPI attacker = source.getFaction();
+		FactionAPI attacker = Global.getSector().getPlayerFaction();
 		float timeToLaunch = getTimeToLaunch();
 		
 		if (fleetType == FleetType.RELIEF) {
@@ -630,7 +633,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			switch (fleetType) {
 				case INVASION:
 					intel = new InvasionIntel(attacker, source, target, fp, timeToLaunch);
-					((InvasionIntel)intel).setMarinesPerFleet((int)(marines));
+					((InvasionIntel)intel).setMarinesTotal((int)(marines));
 					break;
 				case RAID:
 					intel = new NexRaidIntel(attacker, source, target, fp, timeToLaunch);
