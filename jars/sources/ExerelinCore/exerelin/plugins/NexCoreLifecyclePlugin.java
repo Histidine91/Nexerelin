@@ -30,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.colony.NexAbandonMarketPlugin;
 import exerelin.campaign.colony.NexStabilizeMarketPlugin;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
@@ -71,8 +72,8 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!plugins.hasPlugin(CoreBuildObjectiveTypePicker.class)) {
 			plugins.addPlugin(new CoreBuildObjectiveTypePicker(), true);
 		}
-		if (!plugins.hasPlugin(AbandonMarketPluginImpl.class)) {
-			plugins.addPlugin(new AbandonMarketPluginImpl(), true);
+		if (!plugins.hasPlugin(NexAbandonMarketPlugin.class)) {
+			plugins.addPlugin(new NexAbandonMarketPlugin(), true);
 		}
 		if (!plugins.hasPlugin(NexStabilizeMarketPlugin.class)) {
 			plugins.addPlugin(new NexStabilizeMarketPlugin(), true);
