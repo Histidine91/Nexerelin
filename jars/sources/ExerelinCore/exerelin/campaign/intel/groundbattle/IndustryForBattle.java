@@ -15,6 +15,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.IndustryForBattlePlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
@@ -222,14 +224,29 @@ public class IndustryForBattle {
 		return str;
 	}
 	
-	public boolean isMoraleKnown(boolean attacker) {
-		if (Global.getSettings().isDevMode()) return true;
-		if (intel.playerIsAttacker != null && intel.playerIsAttacker == attacker) return true;
-		// TODO: agent intel
+	/**
+	 *
+	 * @param attacker
+	 * @return 0 = no info, 1 = color, 2 = number
+	 */
+	public int getMoraleDetailLevel(boolean attacker) {
+		if (Global.getSettings().isDevMode()) return 5;
+		if (intel.playerIsAttacker != null && intel.playerIsAttacker == attacker) return 5;
 		
-		return false;
+		// agent intel
+		int agentLevel = 0;
+		for (AgentIntel intel : CovertOpsManager.getManager().getAgents()) {
+			if (intel.getMarket() == intel.getMarket())
+				agentLevel += intel.getLevel();
+		}
+		if (agentLevel >= 5) return 2;
+		else if (agentLevel >= 3) return 1; 
+		
+		return 0;
 	}
-
+	
+	// old tabular display?
+	@Deprecated
 	public TooltipMakerAPI renderForcePanel(CustomPanelAPI panel, float width, 
 			boolean attacker, UIComponentAPI rightOf) 
 	{
@@ -267,7 +284,7 @@ public class IndustryForBattle {
 		}
 		troops.addIconGroup(40, pad);
 		
-		boolean detailed = intel.playerIsAttacker != null && intel.playerIsAttacker == attacker;
+		boolean detailed = Global.getSettings().isDevMode() || (intel.playerIsAttacker != null && intel.playerIsAttacker == attacker);
 		troops.addTooltipToPrevious(generateForceTooltip(attacker, detailed ? 360 : 160), TooltipLocation.BELOW);
 		
 		// strength
@@ -276,7 +293,8 @@ public class IndustryForBattle {
 		troops.addPara(GroundBattleIntel.getString("intelDesc_strength"), pad, hl, strengthNum);
 		
 		// morale
-		if (isMoraleKnown(attacker)) {
+		int moraleDetail = getMoraleDetailLevel(attacker);
+		if (moraleDetail > 0) {
 			float totalUnits = 0;	// denominator
 			float totalMorale = 0;	// numerator
 			for (GroundUnit unit : units) {
@@ -288,8 +306,11 @@ public class IndustryForBattle {
 			if (totalUnits > 0) {
 				float avgMorale = totalMorale/totalUnits;
 				Color h = GroundUnit.getMoraleColor(avgMorale);
+				String str = StringHelper.toPercent(avgMorale);
+				if (moraleDetail == 1)
+					str = "?";
 				troops.addPara(GroundBattleIntel.getString("intelDesc_moraleAvg"), pad, 
-					h, StringHelper.toPercent(avgMorale));
+					h, str);
 			}
 		}		
 		
@@ -353,14 +374,13 @@ public class IndustryForBattle {
 	}
 	
 	/**
-	 * Generates a panel with the strength and (if known) morale numbers, for the old tabular display.
+	 * Generates a panel with the strength and (if known) morale numbers.
 	 * @param indPanel The {@code IndustryForBattle} panel holding this one.
 	 * @param width
 	 * @param height
 	 * @param attacker
 	 * @return
 	 */
-	@Deprecated
 	public CustomPanelAPI renderStrPanel(CustomPanelAPI indPanel, float width, float height, 
 			boolean attacker) 
 	{
@@ -404,9 +424,16 @@ public class IndustryForBattle {
 		TooltipMakerAPI moraleTT = stats.createUIElement(width*0.45f, height, false);
 		if (largeText) strTT.setParaSmallInsignia();
 		//else moraleTT.setParaSmallInsignia();
-		if (isMoraleKnown(attacker)) {
+		int moraleDetail = getMoraleDetailLevel(attacker);
+		if (moraleDetail > 0) {
 			String moraleStr = StringHelper.toPercent(avgMorale);
-			moraleTT.addPara(moraleStr + "%", textPad, h, moraleStr).setAlignment(Alignment.RMID);
+			String append = "%";
+			if (moraleDetail == 1) {
+				moraleStr = " ? ";
+				append = "";
+			}
+			
+			moraleTT.addPara(moraleStr + append, textPad, h, moraleStr).setAlignment(Alignment.RMID);
 			ttStr = StringHelper.substituteToken(GroundBattleIntel.getString(
 				"industryPanel_tooltipMorale"), "$side", side);
 			tt = NexUtilsGUI.createSimpleTextTooltip(ttStr, 320);
@@ -465,7 +492,7 @@ public class IndustryForBattle {
 		}
 		iconGroupHolder.addIconGroup(height, 0);
 		
-		boolean detailed = intel.playerIsAttacker != null && intel.playerIsAttacker == attacker;
+		boolean detailed = Global.getSettings().isDevMode() || (intel.playerIsAttacker != null && intel.playerIsAttacker == attacker);
 		iconGroupHolder.addTooltipToPrevious(generateForceTooltip(attacker, detailed ? 360 : 160), TooltipLocation.BELOW);
 		troops.addUIElement(iconGroupHolder).rightOfTop(iconHolder, 4);
 						
@@ -580,16 +607,21 @@ public class IndustryForBattle {
 				
 				Map<ForceType, Float> strengths = new HashMap<>();
 				
+				boolean devmode = Global.getSettings().isDevMode();
+				
 				// calc strengths of non-player units
-				for (GroundUnit unit : units) {
-					if (unit.isPlayer) continue;
-					if (unit.isAttacker != isAttacker) continue;
-					NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
-				}			
+				if (!devmode) {
+					for (GroundUnit unit : units) {
+						if (unit.isPlayer) continue;
+						if (unit.isAttacker != isAttacker) continue;
+						NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
+					}	
+				}
+						
 				
 				// player units
 				for (GroundUnit unit : units) {
-					if (!unit.isPlayer) continue;
+					if (!devmode && !unit.isPlayer) continue;
 					if (unit.isAttacker != isAttacker) continue;
 					String str = unit.toString() + ": " + GroundBattleIntel.getString("industryPanel_tooltipUnitInfo");
 					String atk = (int)unit.getAttackStrength() + "";
@@ -600,13 +632,15 @@ public class IndustryForBattle {
 				}
 				
 				// non-player units
-				List<ForceType> keys = new ArrayList<>(strengths.keySet());
-				Collections.sort(keys);
-				for (ForceType type : keys) {
-					float val = strengths.get(type);
-					String tooltipStr = getIconTooltipPartial(type, val);
-					String displayNum = String.format("%.1f", val);
-					tooltip.addPara(tooltipStr, 0f, Misc.getHighlightColor(), displayNum);
+				if (!devmode) {
+					List<ForceType> keys = new ArrayList<>(strengths.keySet());
+					Collections.sort(keys);
+					for (ForceType type : keys) {
+						float val = strengths.get(type);
+						String tooltipStr = getIconTooltipPartial(type, val);
+						String displayNum = String.format("%.1f", val);
+						tooltip.addPara(tooltipStr, 0f, Misc.getHighlightColor(), displayNum);
+					}
 				}
 			}
 		};
