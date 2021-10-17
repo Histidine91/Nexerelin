@@ -24,6 +24,7 @@
 		"force":"force",
 		"theForce":"the force",
 		"freePort":"free port",
+		"fuelProduction":"fuel production",
 		"heavyIndustry":"heavy industry",
 		"hull":"hull",
 		"intelReport":"intel report",
@@ -833,10 +834,10 @@
 	},
 	"exerelin_factions":{
 		"factionDirectoryOption":"Faction directory",
-
+		
 		"joinedFaction":"Joined $theNewFaction",
 		"leftFaction":"Left $theOldFaction",
-		"numMarkets":"$TheFaction have $numMarkets market(s) (total size $size)",
+		"numMarkets":"$Faction   $numMarkets market(s), total size $size",
 		"switchedFactions":"Left $theOldFaction for $theNewFaction",
 
 		"relationshipLimit":"Relationship between $faction1 and $faction2 limited to $relationship",
@@ -1444,6 +1445,8 @@
 	},
 
 	"exerelin_markets":{
+		"marketDirectoryTooltip":"Has %s",
+		
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",

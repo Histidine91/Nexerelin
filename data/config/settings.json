@@ -242,6 +242,12 @@
 			"nex_spaceport":"graphics/icons/markets/spaceport.png",
 		},
 		
+		"marketConditions":{
+			"military_base":"graphics/icons/markets/military_base.png",
+			"fuel_production":"graphics/icons/markets/am_fuel_facility.png",
+			"heavy_industry":"graphics/icons/markets/autofactory.png",
+		},
+		
 		"misc":{
 			"nex_ironbank_logo":"graphics/exerelin/icons/ironbank.png",
 			"nex_icon_remnant":"graphics/exerelin/icons/logo_remnant.png",
