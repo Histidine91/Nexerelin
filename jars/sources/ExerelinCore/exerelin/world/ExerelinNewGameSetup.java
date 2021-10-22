@@ -162,6 +162,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		String name = StringHelper.getString("nex_world", "prismSystem_name");
 		StarSystemAPI system = Global.getSector().createStarSystem(name);
+		system.setBaseName(name);
 		system.setAge(StarAge.YOUNG);
 		system.getLocation().set(PRISM_LOC);
 		ProcgenUsedNames.notifyUsed(name);
