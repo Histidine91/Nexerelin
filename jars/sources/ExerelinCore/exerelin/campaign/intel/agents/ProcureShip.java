@@ -395,13 +395,14 @@ public class ProcureShip extends CovertActionIntel {
 	}
 	
 	@Override
-	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
-		super.addBulletPoints(info, color, initPad, pad);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad){
+		super.addBulletPoints(info, mode, isUpdate, tc, initPad);
 		if (result != null && result.isSuccessful()) {
 			String destName = destination.getName();
 			
 			if (delivered) {
-				info.addPara(getString("shipDeliveryInfoCompleteShort"), pad, color,
+				info.addPara(getString("shipDeliveryInfoCompleteShort"), 0, tc,
 						destination.getTextColorForFactionOrPlanet(), destName);
 				return;
 			}
@@ -411,7 +412,7 @@ public class ProcureShip extends CovertActionIntel {
 			str = StringHelper.substituteToken(str, "$market", destName);
 			str = StringHelper.substituteToken(str, "$time", days);
 			
-			LabelAPI label = info.addPara(str, pad, color);
+			LabelAPI label = info.addPara(str, 0, tc);
 			label.setHighlight(destName, days);
 			label.setHighlightColors(destination.getTextColorForFactionOrPlanet(), Misc.getHighlightColor());
 		}

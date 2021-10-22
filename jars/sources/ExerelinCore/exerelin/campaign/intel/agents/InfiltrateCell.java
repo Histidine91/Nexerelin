@@ -140,19 +140,20 @@ public class InfiltrateCell extends CovertActionIntel {
 	}
 	
 	@Override
-	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)
-			NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
+			NexUtilsFaction.addFactionNamePara(info, initPad, tc, agentFaction);
 		
-		info.addPara(getString("intelBulletTarget"), afKnown ? pad : initPad, color, 
+		info.addPara(getString("intelBulletTarget"), afKnown ? 0 : initPad, tc, 
 				market.getFaction().getBaseUIColor(), market.getName());
 	
 		if (result != null && result.isSuccessful() && base != null 
 				&& base.getEntity() != null)
 		{
 			LocationAPI loc = base.getEntity().getContainingLocation();
-			info.addPara(getString("intelBulletBaseLoc"), pad, color, 
+			info.addPara(getString("intelBulletBaseLoc"), 0, tc, 
 					Misc.getHighlightColor(), loc.getNameWithTypeIfNebula());
 		}
 	}

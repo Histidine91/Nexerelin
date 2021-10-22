@@ -35,9 +35,10 @@ public class FindPirateBase extends CovertActionIntel {
 	}
 	
 	@Override
-	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {		
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		info.addPara(getString("intelBulletTarget"), 
-				initPad, color, market.getTextColorForFactionOrPlanet(), market.getName());
+				initPad, tc, market.getTextColorForFactionOrPlanet(), market.getName());
 	}
 	
 	@Override

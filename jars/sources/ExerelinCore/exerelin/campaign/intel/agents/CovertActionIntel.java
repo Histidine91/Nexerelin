@@ -655,27 +655,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	}
 	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = Global.getSector().getPlayerFaction().getBaseUIColor();
-
-		info.addPara(getName(), c, 0);
-
-		Color tc = getBulletColorForMode(mode);
-		Color hl = Misc.getHighlightColor();
-		float initPad = 3;
-		float pad = 0;
-		
-		bullet(info);
-		
-		addBulletPoints(info, tc, initPad, pad);
-	}
-	
-	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)
-			NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
+			NexUtilsFaction.addFactionNamePara(info, initPad, tc, agentFaction);
 		
-		info.addPara(getString("intelBulletTarget"), afKnown ? pad : initPad, color, 
+		info.addPara(getString("intelBulletTarget"), afKnown ? 0 : initPad, tc, 
 				targetFaction.getBaseUIColor(), " " + market.getName());
 	}
 	

@@ -76,11 +76,12 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	}
 	
 	@Override
-	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
-		super.addBulletPoints(info, color, initPad, pad);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
+		super.addBulletPoints(info, mode, isUpdate, tc, initPad);
 		if (result != null && result.isSuccessful())
 		{
-			info.addPara(getString("commodityLossEffectShort"), pad, color, 
+			info.addPara(getString("commodityLossEffectShort"), 0, tc, 
 					Misc.getHighlightColor(), effect + "");
 		}
 			

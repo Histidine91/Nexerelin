@@ -244,20 +244,11 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		addBulletPoints(info, mode);
 	}
 	
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) 
+	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad)
 	{
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		float initPad = pad;
-		if (mode == ListInfoMode.IN_DESC) initPad = opad;
-		
-		Color tc = getBulletColorForMode(mode);
-		
-		bullet(info);
-		boolean isUpdate = getListInfoParam() != null;
 		
 		// not in the small description panel
 		if (mode != ListInfoMode.IN_DESC) {
@@ -310,8 +301,6 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 				addDays(info, getString("intelDescDuration_post_short"), duration - elapsedDays, tc, 0);
 			}
 		}
-		
-		unindent(info);
 	}
 	
 	@Override

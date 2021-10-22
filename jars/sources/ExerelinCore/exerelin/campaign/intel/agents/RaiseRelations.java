@@ -222,34 +222,34 @@ public class RaiseRelations extends CovertActionIntel {
 	}
 	
 	@Override
-	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
-		
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad){		
 		boolean first = true;
 		if (result != null)
 		{
 			if (result.isSuccessful()) {
-				NexUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
+				NexUtilsFaction.addFactionNamePara(info, initPad, tc, thirdFaction);
 				first = false;
 			}
 			else if (result.isDetected() || isAgentFactionKnown()) {
-				NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
+				NexUtilsFaction.addFactionNamePara(info, initPad, tc, agentFaction);
 				first = false;
 			}
 		}
 		else {
 			if (agentFaction != thirdFaction) {
-				NexUtilsFaction.addFactionNamePara(info, initPad, color, thirdFaction);
+				NexUtilsFaction.addFactionNamePara(info, initPad, tc, thirdFaction);
 				first = false;
 			}
 		}
-		NexUtilsFaction.addFactionNamePara(info, first ? initPad : pad, color, targetFaction);
+		NexUtilsFaction.addFactionNamePara(info, first ? initPad : 0, tc, targetFaction);
 		
 		if (repResult != null && repResult.delta != 0) {
 			String relString = NexUtilsReputation.getRelationStr(relation);
 			Color relColor = NexUtilsReputation.getRelColor(relation);
 			String str = StringHelper.getStringAndSubstituteToken("exerelin_diplomacy", "intelRepCurrentShort",
 					"$relationStr", relString);
-			info.addPara(str, pad, color, relColor, relString);
+			info.addPara(str, 0, tc, relColor, relString);
 		}
 	}
 

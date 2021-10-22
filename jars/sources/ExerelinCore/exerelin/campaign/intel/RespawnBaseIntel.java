@@ -393,62 +393,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 	public boolean runWhilePaused() {
 		return false;
 	}
-	
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
 		
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		float initPad = pad;
-		if (mode == ListInfoMode.IN_DESC) initPad = opad;
-		
-		Color tc = getBulletColorForMode(mode);
-		
-		bullet(info);
-		boolean isUpdate = getListInfoParam() != null;
-		
-		/*
-		if (bountyData != null && result == null) {
-			if (getListInfoParam() != BOUNTY_EXPIRED_PARAM) {
-				if (isUpdate || mode != ListInfoMode.IN_DESC) {
-					FactionAPI faction = bountyData.bountyFaction;
-					info.addPara("Bounty faction: " + faction.getDisplayName(), initPad, tc,
-							faction.getBaseUIColor(), faction.getDisplayName());
-					initPad = 0f;
-				}
-				info.addPara("%s reward", initPad, tc, h, Misc.getDGSCredits(bountyData.baseBounty));
-				addDays(info, "remaining", bountyData.bountyDuration - bountyData.bountyElapsedDays, tc);
-			}
-		}
-		
-		if (result != null && bountyData != null) {
-			switch (result.type) {
-			case END_PLAYER_BOUNTY:
-				info.addPara("%s received", initPad, tc, h, Misc.getDGSCredits(result.payment));
-				CoreReputationPlugin.addAdjustmentMessage(result.rep.delta, bountyData.bountyFaction, null, 
-						null, null, info, tc, isUpdate, 0f);
-				break;
-			case END_TIME:
-				break;
-			case END_OTHER:
-				break;
-			
-			}
-		}
-		*/
-
-		unindent(info);
-	}
-	
-	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		info.addPara(getName(), c, 0f);
-		addBulletPoints(info, mode);
-	}
-	
 	@Override
 	public String getSortString() {
 		String base = Misc.ucFirst(getFactionForUIColors().getPersonNamePrefix());

@@ -302,18 +302,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	// for intel popup in campaign screen's message area
 	@Override
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		float initPad = pad;
-		if (mode == ListInfoMode.IN_DESC) initPad = opad;
-		
-		Color tc = getBulletColorForMode(mode);
-		
-		bullet(info);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad){
 		
 		FactionAPI other = targetFaction;
 		if (target != null) other = target.getFaction();	// target is null for colony expeditions
@@ -341,10 +331,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		} else {
 			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
 			initPad = 0f;
-			addETABullet(info, tc, h, initPad);
+			addETABullet(info, tc, Misc.getHighlightColor(), initPad);
 		}
-		
-		unindent(info);
 	}
 	
 	protected void addArrivedBullet(TooltipMakerAPI info, Color color, float pad) 

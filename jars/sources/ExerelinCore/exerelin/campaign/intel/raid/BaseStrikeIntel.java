@@ -82,19 +82,9 @@ public class BaseStrikeIntel extends NexRaidIntel {
 	
 	// Same as OffensiveFleetIntel's one
 	@Override
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad){
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		float initPad = pad;
-		if (mode == ListInfoMode.IN_DESC) initPad = opad;
-		
-		Color tc = getBulletColorForMode(mode);
-		
-		bullet(info);
-		
 		FactionAPI other = targetFaction;
 		
 		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
@@ -121,8 +111,6 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		}
 		initPad = 0f;
 		addETABullet(info, tc, h, initPad);
-		
-		unindent(info);
 	}
 	
 	// intel long description in intel screen

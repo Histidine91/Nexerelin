@@ -231,21 +231,14 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 	public boolean runWhilePaused() {
 		return false;
 	}
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
-		
+	
+	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad){
+		super.addBulletPoints(info, mode);
 		Color h = Misc.getHighlightColor();
 		Color g = Misc.getGrayColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		float initPad = pad;
-		if (mode == ListInfoMode.IN_DESC) initPad = opad;
-		
-		Color tc = getBulletColorForMode(mode);
-		
-		bullet(info);
-		boolean isUpdate = getListInfoParam() != null;
-		
+				
 		if (isEnding() && isUpdate) {
 			//info.addPara("Over", initPad);
 		} else {
@@ -272,20 +265,6 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 				}
 			}
 		}
-		unindent(info);
-	}
-	
-	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color c = getTitleColor(mode);
-		float pad = 3f;
-		float opad = 10f;
-		
-		info.addPara(getName(), c, 0f);
-		
-		addBulletPoints(info, mode);
 	}
 	
 	@Override

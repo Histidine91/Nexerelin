@@ -245,12 +245,13 @@ public class LowerRelations extends CovertActionIntel {
 	}
 	
 	@Override
-	public void addBulletPoints(TooltipMakerAPI info, Color color, float initPad, float pad) {
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad){
 		boolean afKnown = isAgentFactionKnown();
 		if (afKnown)
-			NexUtilsFaction.addFactionNamePara(info, initPad, color, agentFaction);
-		NexUtilsFaction.addFactionNamePara(info, afKnown ? pad : initPad, color, targetFaction);
-		NexUtilsFaction.addFactionNamePara(info, pad, color, thirdFaction);
+			NexUtilsFaction.addFactionNamePara(info, initPad, tc, agentFaction);
+		NexUtilsFaction.addFactionNamePara(info, afKnown ? 0 : initPad, tc, targetFaction);
+		NexUtilsFaction.addFactionNamePara(info, 0, tc, thirdFaction);
 	}
 	
 	@Override

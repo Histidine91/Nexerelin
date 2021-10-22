@@ -115,18 +115,9 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 	
 	// don't display faction
 	@Override
-	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad){
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		float pad = 3f;
-		float opad = 10f;
-		
-		float initPad = pad;
-		if (mode == ListInfoMode.IN_DESC) initPad = opad;
-		
-		Color tc = getBulletColorForMode(mode);
-		
-		bullet(info);
 		
 		FactionAPI other = targetFaction;
 		
@@ -148,8 +139,6 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			info.addPara(name, tc, initPad);
 		}
 		addETABullet(info, tc, h, 0);
-		
-		unindent(info);
 	}
 	
 	protected void writeRaidTargetsBullet(TooltipMakerAPI info, Color tc, float pad) {
