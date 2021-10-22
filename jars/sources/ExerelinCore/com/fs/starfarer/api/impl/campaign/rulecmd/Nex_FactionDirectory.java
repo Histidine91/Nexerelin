@@ -174,7 +174,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		try {
 		float pad = 3, opad = 10;
 		float imgSize = 36;
-		float textWidth = 200;
+		float textWidth = 240;
 		
 		boolean isExiInCorvus = NexUtilsFaction.isExiInCorvus(factionId);
 		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
@@ -200,7 +200,8 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		str = StringHelper.substituteToken(str, "$numMarkets", numMarkets + "");
 		str = StringHelper.substituteToken(str, "$size", totalSize + "");
 		
-		Nex_VisualCustomPanel.createPanel(dialog, true);
+		float width = Nex_VisualCustomPanel.PANEL_WIDTH * 4/5;
+		Nex_VisualCustomPanel.createPanel(dialog, true, width, Nex_VisualCustomPanel.PANEL_HEIGHT);
 		
 		TooltipMakerAPI tt = Nex_VisualCustomPanel.getTooltip();
 		
@@ -243,19 +244,31 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			
 			String marketName = market.getName();
 			LocationAPI loc = market.getContainingLocation();
-			String locName = NexUtilsAstro.getLocationName(loc, true);
+			String locName = loc.getNameWithNoType();
 			int size = market.getSize();
-			Color sizeColor = getSizeColor(size);
-			Color locColor = Misc.getTextColor();
+			
+			Color marketColor = Misc.getTextColor();
+			Color locColor = marketColor;
+			Color ownerColor = marketColor;
+			
+			FactionAPI owner = NexUtilsFaction.getSystemOwner(loc);
+			String ownerName = "";
+			if (owner != null) {
+				ownerColor = owner.getBaseUIColor();
+				ownerName = owner.getDisplayName();
+			}
+			marketColor = ownerColor;
+			
 			if (loc instanceof StarSystemAPI) {
 				locColor = ((StarSystemAPI)loc).getStar().getSpec().getIconColor();
 			}
+			String locText = String.format("%s", locName, ownerName);
 			
 			String sizeImg = Global.getSettings().getMarketConditionSpec("population_" + size).getIcon();
 			
 			CustomPanelGenResult gen = NexUtilsGUI.addPanelWithFixedWidthImage(
 					Nex_VisualCustomPanel.getPanel(), 
-					null, Nex_VisualCustomPanel.PANEL_WIDTH, 40, 
+					null, width, 40, 
 					null, // add text ourselves later
 					textWidth, pad, 
 					sizeImg, imgSize, pad, null, false, null);
@@ -263,11 +276,13 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			
 			// market name and its location
 			TooltipMakerAPI text = (TooltipMakerAPI)gen.elements.get(1);
-			text.addPara(marketName, sizeColor, pad);
-			text.addPara(locName, locColor, pad);
+			text.addPara(marketName, marketColor, pad);
+			label = text.addPara(locText, pad);
+			label.setHighlight(locName, ownerName);
+			label.setHighlightColors(locColor, ownerColor);
 			
 			// icons showing stuff
-			float imagesWidth = Nex_VisualCustomPanel.PANEL_WIDTH - textWidth - imgSize - 4 - 4;
+			float imagesWidth = width - textWidth - imgSize - 4 - 4;
 			CustomPanelAPI featureImages = panel.createCustomPanel(imagesWidth, 40, null);
 			
 			List<String> images = new ArrayList<>();
@@ -332,6 +347,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			str = StringHelper.getStringAndSubstituteToken("exerelin_markets", "marketDirectoryHidden", "$num", hidden + "");
 			tt.addPara(str, pad, hl, hidden + "");
 		}
+		tt.addSpacer(pad);
 		
 		Nex_VisualCustomPanel.addTooltipToPanel();
 		

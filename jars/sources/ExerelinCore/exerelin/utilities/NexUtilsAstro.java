@@ -307,9 +307,9 @@ public class NexUtilsAstro {
 		if (loc instanceof StarSystemAPI)
 		{
 			if (includeTypeIfStar)
-				locName = ((StarSystemAPI)loc).getNameWithLowercaseType();
+				locName = ((StarSystemAPI)loc).getNameWithTypeShort();
 			else
-				locName = ((StarSystemAPI)loc).getBaseName();
+				locName = ((StarSystemAPI)loc).getNameWithTypeIfNebula();
 		}
 		return locName;
 	}

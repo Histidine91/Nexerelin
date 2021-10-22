@@ -67,13 +67,18 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 	}
 	
 	public static void createPanel(InteractionDialogAPI dialog, boolean replace) {
+		createPanel(dialog, replace, PANEL_WIDTH, PANEL_HEIGHT);
+	}
+	
+	public static void createPanel(InteractionDialogAPI dialog, boolean replace, float width, float height) 
+	{
 		if (!replace && tooltip != null)
 			return;
 		
 		VisualPanelAPI vp = dialog.getVisualPanel();
 		plugin = new InteractionDialogCustomPanelPlugin();
-		panel = vp.showCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, plugin);
-		tooltip = panel.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, true);
+		panel = vp.showCustomPanel(width, height, plugin);
+		tooltip = panel.createUIElement(width, height, true);
 		
 		//tooltip.setForceProcessInput(true);
 					
