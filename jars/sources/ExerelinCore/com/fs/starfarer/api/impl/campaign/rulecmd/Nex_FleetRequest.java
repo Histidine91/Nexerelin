@@ -618,8 +618,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		AddRemoveCommodity.addCreditsLossText((int)cost, dialog.getTextPanel());
 		credits.subtract(cost);
 		
-		//FactionAPI attacker = source.getFaction();
-		FactionAPI attacker = Global.getSector().getPlayerFaction();
+		FactionAPI attacker = source.getFaction();
+		if (fleetType == FleetType.COLONY)
+			attacker = Global.getSector().getPlayerFaction();
+		
 		float timeToLaunch = getTimeToLaunch();
 		
 		if (fleetType == FleetType.RELIEF) {
