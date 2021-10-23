@@ -228,6 +228,10 @@ public class VanillaSystemsGenerator {
 //		independent.setRelationship(pirates.getId(), 0);
 //		independent.setRelationship(independent.getId(), 0);
 //		independent.setRelationship(player.getId(), 0);
+		
+		// emulate starting hostilities
+		hegemony.setRelationship(Factions.PERSEAN, RepLevel.HOSTILE);
+		tritachyon.setRelationship(Factions.LUDDIC_CHURCH, RepLevel.HOSTILE);
 	}
 	
 	protected static MarketAPI getMarket(String marketId) {
