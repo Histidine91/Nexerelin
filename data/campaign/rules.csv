@@ -589,14 +589,11 @@ With their new supplies and equipment, the people of $market go to work with a f
 nex_decivEvent_acceptColonyPost,DialogOptionSelected,$option == nex_decivEvent_foundColonyEnd,FireBest MarketPostOpen,,,
 nex_decivEvent_declineColony,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.nex_decivEvent_type == ""foundColony""","Nex_DecivEvent decline
+Nex_DecivEvent addFoundColonyIntel
 ShowDefaultVisual
-FireAll PopulateOptions","""…I understand. We will have to make do, somehow.""
-
-You cut the comm link after some awkward, meaningless exchange of goodbyes.
+FireAll PopulateOptions","""…I understand. We will have to make do, somehow. But if you do come back in the future?""
 OR
-""Please, won't you reconsider?""
-
-It takes a while before $personName gives up $hisOrHer attempts to cajole you into changing your mind and you can cut the comm link.",,
+""Please, won't you reconsider? Perhaps, if you should ever return…""",,
 nex_decivEvent_declineColonyLater,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.hasRuins
 !$market.ruinsExplored

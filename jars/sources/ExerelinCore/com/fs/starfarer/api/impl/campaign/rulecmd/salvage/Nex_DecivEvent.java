@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -27,6 +28,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import exerelin.campaign.intel.colony.DecivRevivalIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsReputation;
@@ -58,6 +60,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	public static final boolean DEBUG_MODE = false;
 	public static final float EVENT_CHANCE = 0.35f;
 	public static final float EVENT_TIME = 60;
+	public static final float EVENT_TIME_LONG = 365;
 	public static final int SUPPLIES_TO_COLONIZE = 100;
 	public static final int MACHINERY_TO_COLONIZE = 50;
 	public static final float COLONY_REP_VALUE = 0.07f;
@@ -135,6 +138,10 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 			case "decline":
 				decline(dialog, memoryMap);
 				break;
+			case "addFoundColonyIntel":
+				addFoundColonyIntel(dialog, memoryMap);
+				break;
+				
 		}
 		return true;
 	}
@@ -259,6 +266,9 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		ip.getData(person).getLocation().setMarket(market);
 		ip.checkOutPerson(person, "permanent_staff");
 		market.setAdmin(person);
+		
+		DecivRevivalIntel intel = DecivRevivalIntel.getActiveIntel(planet);
+		if (intel != null) intel.endImmediately();
 		
 		dialog.getInteractionTarget().setActivePerson(null);
 		setMem(MEM_KEY_HAS_EVENT, false);
@@ -386,6 +396,19 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		return enough;
 	}
 	
+	protected DecivRevivalIntel addFoundColonyIntel(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
+	{
+		SectorEntityToken planet = dialog.getInteractionTarget().getMarket().getPrimaryEntity();
+		DecivRevivalIntel existing = DecivRevivalIntel.getActiveIntel(planet);
+		if (existing != null) return null;
+		
+		DecivRevivalIntel intel = new DecivRevivalIntel(planet);
+		Global.getSector().getIntelManager().addIntel(intel, false, dialog.getTextPanel());
+		// Global.getSector().getIntelManager().addIntel(intel, true);
+		// Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
+		return intel;
+	}
+	
 	protected CargoAPI getPlayerCargo() {
 		return Global.getSector().getPlayerFleet().getCargo();
 	}
@@ -398,6 +421,14 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	}
 	
 	protected void generateEvent(MarketAPI market) {
+		// existing deciv revival intel, set up found colony event		
+		if (DecivRevivalIntel.getActiveIntel(market.getPrimaryEntity()) != null) {
+			getPerson(market);
+			setMem(MEM_KEY_TYPE, EVENT_TYPE_FOUNDCOLONY);
+			setMem(MEM_KEY_HAS_EVENT, true);
+			return;
+		}		
+		
 		if (!DEBUG_MODE && Math.random() > EVENT_CHANCE) {
 			setMem(MEM_KEY_HAS_EVENT, false);
 			return;
@@ -424,9 +455,19 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 				setupColonyEvent();
 				break;
 		}
-		setMem(MEM_KEY_TYPE, type);
 		getPerson(market);	// generate and save the person
+		setMem(MEM_KEY_TYPE, type);
 		setMem(MEM_KEY_HAS_EVENT, true);
+		
+		// for found colony event, make all memory keys last for 365 days
+		// could be forever, but if the player never comes back, it'll be a waste of memory
+		// if player comes back after 365 days, just regenerate the data
+		if (type.equals(EVENT_TYPE_FOUNDCOLONY)) {
+			setMem(MEM_KEY_TYPE, type, EVENT_TIME_LONG);
+			setMem(MEM_KEY_HAS_EVENT, true, EVENT_TIME_LONG);
+			setMem(MEM_KEY_PERSON, getPerson(market), EVENT_TIME_LONG);
+		}
+		
 		memory.unset(MEM_KEY_EVENT_SEEN_BEFORE);
 	}
 	

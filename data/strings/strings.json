@@ -154,6 +154,8 @@
 		"saturationBombardment":"saturation bombardment",
 		
 		"none":"none",
+		
+		"ago":"ago",	# "10 days ago"
 	},
 
 	"exerelin_abilities":{
@@ -715,6 +717,9 @@
 		"freeSpaceFuel":"Your fleet's fuel tanks can hold an additional %s units of fuel.",
 		"freeSpaceCrew":"Your fleet's crew quarters can accommodate an additional %s personnel.",
 		"exploreRuins":"There are local ruins you should explore first.",
+		
+		"colonyIntelTitle":"Colony Revival",
+		"colonyIntelDesc":"The inhabitants of the decivilized planet %s in the %s seek to return to the stars. They would appreciate a gift of %s supplies and %s heavy machinery to complete repairs to their spaceport and other infrastructure.",
 	},
 	
 	"nex_defenseFleet":{
