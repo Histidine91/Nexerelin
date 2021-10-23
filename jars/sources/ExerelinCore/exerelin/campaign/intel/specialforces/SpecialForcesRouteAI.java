@@ -62,6 +62,8 @@ public class SpecialForcesRouteAI {
 	protected SpecialForcesIntel sf;
 	protected SpecialForcesTask currentTask;
 	
+	protected int idleCount = 0;
+	
 	protected IntervalUtil recheckTaskInterval = new IntervalUtil(7, 13);
 	
 	public SpecialForcesRouteAI(SpecialForcesIntel sf) {
@@ -326,7 +328,17 @@ public class SpecialForcesRouteAI {
 				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
 				travelSeg = new RouteManager.RouteSegment(task.time + travelTime, destination);
 				actionSeg = new RouteManager.RouteSegment(task.time, destination);
+				
+				idleCount++;
+				if (idleCount > 5) {
+					sf.goRogueOrExpire();
+				}
+				
 				break;
+		}
+		
+		if (task.type != TaskType.IDLE) {
+			idleCount = 0;
 		}
 		
 		// if joining a raid, try to make sure we arrive at the same time as them

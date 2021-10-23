@@ -22,6 +22,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.OptionalFleetData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteFleetSpawner;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.ButtonAPI;
@@ -32,6 +33,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.SectorManager;
 import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
@@ -40,6 +42,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -61,10 +64,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public static final Object NEW_ORDERS_UPDATE = new Object();
 	public static final float DAMAGE_TO_REBUILD = 0.4f;
 	public static final float DAMAGE_TO_TERMINATE = 0.9f;
+	public static final boolean ALLOW_GO_ROGUE = true;
 	
 	protected MarketAPI origin;
 	protected MarketAPI lastSpawnedFrom;	// updated when fleet rebuilds
 	protected FactionAPI faction;
+	protected FactionAPI factionForGear;
 	protected float startingFP;		// as stored in route extra data
 	protected float trueStartingFP;	// from actually generated fleet; reset on fleet rebuild
 	protected RouteData route;
@@ -91,8 +96,16 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	{
 		this.origin = origin;
 		this.faction = faction;
+		factionForGear = faction;
 		this.startingFP = startingFP;
 		lastSpawnedFrom = origin;
+	}
+	
+	protected Object readResolve() {
+		if (factionForGear == null)
+			factionForGear = faction;
+		
+		return this;
 	}
 	
 	public void init(PersonAPI commander) {
@@ -135,6 +148,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		if (fleet == null || fleet.isEmpty()) return null;
 		
+		fleet.setFaction(faction.getId());
+		
 		market.getContainingLocation().addEntity(fleet);
 		fleet.setFacing((float) Math.random() * 360f);
 		// this will get overridden by the assignment AI, depending on route-time elapsed etc
@@ -154,7 +169,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	 */
 	public CampaignFleetAPI createFleetFromParams(RouteData thisRoute, long seed) 
 	{
-		String factionId = faction.getId();
+		String factionId = factionForGear.getId();
 		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		if (conf.factionIdForHqResponse != null) 
 			factionId = conf.factionIdForHqResponse;
@@ -435,6 +450,41 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		return faction;
 	}
 	
+	public void setFaction(FactionAPI faction) {
+		this.faction = faction;
+		route.getExtra().factionId = faction.getId();
+		if (route.getActiveFleet() != null)
+			route.getActiveFleet().setFaction(faction.getId(), true);
+	}
+	
+	/**
+	 * Called when the task group is idle for too long (a sign that its faction has been eliminated); 
+	 * transfers it to pirates or Pathers, or just deletes it.
+	 */
+	public void goRogueOrExpire() {
+		
+		if (ALLOW_GO_ROGUE) {
+			FactionAPI toDefect = null;
+				
+			if (SectorManager.isFactionAlive(Factions.LUDDIC_PATH) && NexUtilsFaction.isLuddicFaction(faction.getId()))
+				toDefect = Global.getSector().getFaction(Factions.LUDDIC_PATH);
+			else if (SectorManager.isFactionAlive(Factions.PIRATES))
+				toDefect = Global.getSector().getFaction(Factions.PIRATES);
+
+			if (toDefect != null) {
+				log.info("Orphaned special task group " + getName() + " defecting to " + toDefect.getDisplayName());
+				setFaction(toDefect);
+				routeAI.pickTask(false);
+				return;
+			}
+		}		
+		
+		if (route.getActiveFleet() == null) {
+			log.info("Ending orphaned special task group " + getName());
+			endEvent();
+		}
+	}
+	
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad) {
@@ -445,7 +495,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	@Override
-	public String getSmallDescriptionTitle() {
+	public String getName() {
 		String str = getString("intelTitle");
 		
 		if (fleetName != null) {
