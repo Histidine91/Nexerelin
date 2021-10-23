@@ -69,15 +69,10 @@ public class TributeIntel extends BaseIntelPlugin {
 		Global.getSector().addScript(this);
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = !status.isOver() ? Misc.getBasePlayerColor() : Misc.getGrayColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-
-		float initPad = 3f, pad = 0;
-		Color tc = getBulletColorForMode(mode);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
+		float pad = 0;
 		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
 		info.addPara(market.getName(), tc, pad);
 	}

@@ -410,16 +410,11 @@ public class AgentIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-
-		info.addPara(getName(), c, 0);
-		
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		if (isDead || isDismissed) return;
-
-		Color tc = getBulletColorForMode(mode);
 		Color hl = Misc.getHighlightColor();
-		float pad = 3;
+		float pad = 0;
 		
 		bullet(info);
 		
@@ -476,6 +471,11 @@ public class AgentIntel extends BaseIntelPlugin {
 			if (currentAction != null)
 				currentAction.addCurrentActionBullet(info, tc, 0);
 		}
+	}
+	
+	@Override
+	public Color getTitleColor(ListInfoMode mode) {
+		return Misc.getBasePlayerColor();
 	}
 	
 	@Override

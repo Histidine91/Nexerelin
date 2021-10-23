@@ -34,17 +34,12 @@ public class VictoryIntel extends BaseIntelPlugin {
 		this.customparams = customparams;
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-		
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		if (type == VictoryType.RETIRED) return;
 		
-		float pad = 3f;
-		Color tc = getBulletColorForMode(mode);
+		float pad = 0f;
 		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		String name = Misc.ucFirst(faction.getDisplayName());

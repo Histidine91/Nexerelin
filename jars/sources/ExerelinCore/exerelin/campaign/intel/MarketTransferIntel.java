@@ -79,17 +79,10 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		return Global.getSector().getFaction(id);
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = Misc.getBasePlayerColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-
-		float initPad = 3f, pad = 0;
-		Color tc = getBulletColorForMode(mode);
-		Color h = Misc.getHighlightColor();
-		
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
+		float pad = 0;
 		addFactionBullet(info, "intelTransferBullet1", newFactionId, tc, initPad);
 		addFactionBullet(info, "intelTransferBullet2", oldFactionId, tc, pad);
 		if (creditsLost != null) {
@@ -98,6 +91,10 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		}
 	}
 	
+	@Override
+	public Color getTitleColor(ListInfoMode mode) {
+		return Misc.getBasePlayerColor();
+	}	
 	
 	protected void addFactionBullet(TooltipMakerAPI info, String stringId, String factionId, 
 			Color color, float pad)

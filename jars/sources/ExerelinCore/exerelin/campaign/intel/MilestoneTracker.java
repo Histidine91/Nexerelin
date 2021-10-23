@@ -164,14 +164,9 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 	}
 	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = Misc.getBasePlayerColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-
-		float pad = 3f;
-		Color tc = getBulletColorForMode(mode);
-		Color h = Misc.getHighlightColor();
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
+		float pad = 0f;
 		
 		if (listInfoParam instanceof String) {
 			MilestoneDef def = defsById.get((String)listInfoParam);

@@ -45,21 +45,11 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 		return Global.getSector().getFaction(id);
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		/*
-		Format:
-			Alliance Vote: <allianceName>
-			- <Peace/War> with <otherParty>: <passed/failed>
-		*/
-		
-		Color c = Misc.getBasePlayerColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 
-		float pad = 3f;
-		Color tc = getBulletColorForMode(mode);
+		float pad = 0f;
 		Color h = result.success ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor();
 		
 		// $warOrPeace with $otherParty: $passOrFail
@@ -85,6 +75,11 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 		LabelAPI para = info.addPara(str, tc, pad);
 		para.setHighlight(otherParty, passOrFail);
 		para.setHighlightColors(otherPartyCol, h);
+	}
+	
+	@Override
+	public Color getTitleColor(ListInfoMode mode) {
+		return Misc.getBasePlayerColor();
 	}
 	
 	@Override

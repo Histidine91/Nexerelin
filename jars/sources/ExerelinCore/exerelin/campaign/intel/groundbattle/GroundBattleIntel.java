@@ -943,7 +943,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			if (lootMult > 0)
 				playerData.setLoot(GroundBattleRoundResolve.lootMarket(market, lootMult));
 		}
-		if (playerInitiated && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
+		boolean startedByPlayer = playerInitiated || (invasionIntel != null && invasionIntel.isPlayerSpawned());
+		if (startedByPlayer && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
 		{
 			timerForDecision = 7f;
 			market.getMemoryWithoutUpdate().set(GBConstants.MEMKEY_AWAIT_DECISION, true, timerForDecision);
@@ -1318,7 +1319,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
-								   Color tc, float initPad) {
+									Color tc, float initPad){
 		info.addPara(Misc.ucFirst(attacker.faction.getDisplayName()), attacker.faction.getBaseUIColor(), 3);
 		info.addPara(Misc.ucFirst(defender.faction.getDisplayName()), defender.faction.getBaseUIColor(), 0);
 		

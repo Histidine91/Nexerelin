@@ -245,15 +245,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	}
 	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		
-		info.addPara(getName(), c, 0f);
-		
-		addBulletPoints(info, mode);
-	}
-	
-	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad){
 		Color h = Misc.getHighlightColor();

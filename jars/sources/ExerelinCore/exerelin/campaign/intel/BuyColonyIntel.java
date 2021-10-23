@@ -55,15 +55,9 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 		Global.getSector().addScript(this);
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-
-		float initPad = 3f, pad = 0;
-		Color tc = getBulletColorForMode(mode);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {	
 		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
 	}
 	

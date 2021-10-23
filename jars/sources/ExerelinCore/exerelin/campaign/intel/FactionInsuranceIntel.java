@@ -239,16 +239,16 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 	}
 
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = Misc.getBasePlayerColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-
-		float pad = 3f;
-		Color tc = getBulletColorForMode(mode);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		Color h = Misc.getHighlightColor();
 		if (paid)
-			info.addPara(getString("bulletPayment"), pad, tc, h, Misc.getDGSCredits(paidAmount));
+			info.addPara(getString("bulletPayment"), initPad, tc, h, Misc.getDGSCredits(paidAmount));
+	}
+	
+	@Override
+	public Color getTitleColor(ListInfoMode mode) {
+		return Misc.getBasePlayerColor();
 	}
 
 	@Override

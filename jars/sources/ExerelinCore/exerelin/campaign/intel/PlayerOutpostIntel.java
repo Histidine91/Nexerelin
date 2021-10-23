@@ -282,13 +282,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	}
 	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		info.addPara(getSmallDescriptionTitle(), c, 0f);
-	}
-	
-	@Override
-	public String getSmallDescriptionTitle() {
+	public String getName() {
 		String str = getString("intelTitle");
 		if (outpost != null) {
 			str = outpost.getName();

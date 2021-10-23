@@ -447,13 +447,6 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		panel.addUIElement(outer).inTL(0, 0);
 	}
 	
-	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-        String title = getSmallDescriptionTitle();
-
-        info.addPara(title, Misc.getBasePlayerColor(), 0f);
-    }
-	
 	public static String getString(String id) {
 		return getString(id, false);
 	}

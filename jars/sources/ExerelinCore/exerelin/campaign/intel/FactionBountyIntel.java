@@ -234,8 +234,7 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 	
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
-									Color tc, float initPad){
-		super.addBulletPoints(info, mode);
+									Color tc, float initPad) {
 		Color h = Misc.getHighlightColor();
 		Color g = Misc.getGrayColor();
 				

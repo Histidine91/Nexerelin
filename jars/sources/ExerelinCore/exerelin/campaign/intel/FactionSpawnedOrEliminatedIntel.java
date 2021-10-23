@@ -35,19 +35,17 @@ public class FactionSpawnedOrEliminatedIntel extends BaseIntelPlugin {
 		this.playerDefeat = playerDefeat;
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = Misc.getBasePlayerColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-				
-		float pad = 3f;
-		Color tc = getBulletColorForMode(mode);
-		
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		String name = Misc.ucFirst(faction.getDisplayName());
-		info.addPara(name, pad, tc, faction.getBaseUIColor(), name);
+		info.addPara(name, initPad, tc, faction.getBaseUIColor(), name);
+	}
+	
+	@Override
+	public Color getTitleColor(ListInfoMode mode) {
+		return Misc.getBasePlayerColor();
 	}
 	
 	@Override

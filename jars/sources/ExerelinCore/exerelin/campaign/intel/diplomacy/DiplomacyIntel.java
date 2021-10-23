@@ -116,15 +116,10 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		return DiplomacyManager.getEventByStage(eventId);
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = Misc.getBasePlayerColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-
-		float initPad = 3f, pad = 0;
-		Color tc = getBulletColorForMode(mode);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
+		float pad = 0;
 		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFaction(factionId1));
 		NexUtilsFaction.addFactionNamePara(info, pad, tc, getFaction(factionId2));
 		
@@ -133,6 +128,11 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_diplomacy", "intelRepCurrentShort",
 				"$relationStr", relation);
 		info.addPara(str, pad, tc, relColor, relation);
+	}
+	
+	@Override
+	public Color getTitleColor(ListInfoMode mode) {
+		return Misc.getBasePlayerColor();
 	}
 	
 	// text sidebar

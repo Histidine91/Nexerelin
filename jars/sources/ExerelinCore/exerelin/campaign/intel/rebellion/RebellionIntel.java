@@ -944,21 +944,16 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		modifyPoints(points, forRebels);
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		Color tc = getBulletColorForMode(mode);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		Color h = Misc.getHighlightColor();
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-		
-		float initPad = 3, pad = 0;
+		float pad = 0;
 		
 		int knownLevel = getDetailLevel();
-		NexUtilsFaction.addFactionNamePara(info, initPad, c, govtFaction);
+		NexUtilsFaction.addFactionNamePara(info, initPad, tc, govtFaction);
 		if (knownLevel >= DETAIL_LEVEL_TO_KNOW_FACTION) 
-			NexUtilsFaction.addFactionNamePara(info, pad, c, rebelFaction);
+			NexUtilsFaction.addFactionNamePara(info, pad, tc, rebelFaction);
 		
 		// If event is completed, print result
 		if (result != null) {

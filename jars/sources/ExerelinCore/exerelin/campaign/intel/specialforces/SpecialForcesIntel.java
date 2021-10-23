@@ -436,15 +436,11 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		Color tc = getBulletColorForMode(mode);
-		info.addPara(getSmallDescriptionTitle(), c, 0);
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		if (isEnding() || isEnded()) return;
 		if (routeAI.currentTask != null) {
-			bullet(info);
 			info.addPara(Misc.ucFirst(routeAI.currentTask.getText()), tc, 3);
-			unindent(info);
 		}
 	}
 	

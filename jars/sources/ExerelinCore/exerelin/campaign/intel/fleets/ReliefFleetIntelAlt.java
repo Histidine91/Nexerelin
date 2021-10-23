@@ -111,20 +111,18 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		return str;
 	}
 	
-	// bullet points
 	@Override
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-		Color c = getTitleColor(mode);
-		info.addPara(getName(), c, 0f);
-		bullet(info);
-		
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
+		FactionAPI faction = getFaction();
 		FactionAPI targetFaction = getTargetFaction();
 		boolean over = isEnding() || isEnded();
 		
-		float initPad = 3, pad = 0;
-		Color tc = getBulletColorForMode(mode);
-		String name = Misc.ucFirst(targetFaction.getDisplayName());
-		info.addPara(name, initPad, tc, targetFaction.getBaseUIColor(), name);
+		float pad = 0;
+		String name = Misc.ucFirst(faction.getDisplayName());
+		info.addPara(name, initPad, tc, faction.getBaseUIColor(), name);
+		name = Misc.ucFirst(targetFaction.getDisplayName());
+		info.addPara(name, pad, tc, targetFaction.getBaseUIColor(), name);
 				
 		String key = "intelBullet";
 		Map<String, String> sub = new HashMap<>();

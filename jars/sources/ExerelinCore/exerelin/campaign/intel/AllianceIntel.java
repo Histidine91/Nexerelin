@@ -65,8 +65,8 @@ public class AllianceIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
-	//This is the message info that shows on the left
-	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
+									Color tc, float initPad) {
 		UpdateType updateType = null;
 		if (listInfoParam != null)
 		{
@@ -81,15 +81,9 @@ public class AllianceIntel extends BaseIntelPlugin {
 				faction2 = Global.getSector().getFaction(factionId2);
 		}
 		
-		Color c = getTitleColor(mode);
 		float pad = 0f;
-		float initPad = 3;
-
-		info.addPara(getName(), c, pad);
-
-		Color tc = getBulletColorForMode(mode);
+		
 		Color hl = Misc.getHighlightColor();
-		bullet(info);
 		String str, sub1, sub2;
 		
 		if (updateType != null) {
