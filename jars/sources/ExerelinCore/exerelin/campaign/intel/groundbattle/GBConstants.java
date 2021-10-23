@@ -17,6 +17,7 @@ public class GBConstants {
 	public static float TURN_1_MOVE_POINT_MULT = 2;
 	public static float HEAVY_DROP_COST_MULT = 1.3f;
 	public static float FLEET_SUPPORT_MOVEMENT_MULT = 0.5f;
+	public static float SNEAK_ATTACK_MOVE_MULT = 1.25f;
 	
 	public static float UNIT_MIN_SIZE_MULT = 0.25f;	// of base size
 	

@@ -1132,6 +1132,7 @@
 		
 		"storyCriticalWarning":"$market has an important role to play in the Sector to come. You have the feeling that if you were to proceed successfully with this invasion, the future could be distorted.",
 		"storyCriticalWarningHighlight":"the future could be distorted",
+		"sneakAttackMsg":"Sneak attack bonus: %s× bonus movement points on turn 1, enemy units reorganize for %s turn",
 		
 		"dialogNoEngage":"You're unable to join this battle.",
 		"dialogNoEngage_def":"The attackers are in disarray and not currently attempting to engage the station.",
@@ -1357,6 +1358,7 @@
 		"modifierMovementPointsBase":"Base movement points for market size %s",
 		"modifierMovementPointsFleetSupport":"Fleet support last turn",
 		"modifierMovementPointsTurn1":"Turn 1 bonus",
+		"modifierMovementPointsSneakAttack":"Sneak attack (turn 1)",
 		
 		"modifierGroundSupport":"Ground Support",
 		"modifierGroundSupportDesc1":"Ground support is charged over time from nearby fleets each turn, and distributed proportionally to units that are engaged with the enemy. Fleets must be within %s units of the target to contribute.",

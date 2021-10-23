@@ -85,8 +85,10 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
+import exerelin.campaign.fleets.PlayerInSystemTracker;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
@@ -999,9 +1001,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		text.addPara(GroundBattleIntel.getString("dialogEstimateHelp"));
 		
+		text.setFontSmallInsignia();
 		
 		if (Misc.isStoryCritical(market)) {
-			text.setFontSmallInsignia();
 			str = getString("storyCriticalWarning");
 			str = StringHelper.substituteToken(str, "$market", market.getName());
 			LabelAPI para = text.addPara(str);
@@ -1010,7 +1012,12 @@ public class Nex_MarketCMD extends MarketCMD {
 			//text.setFontInsignia();
 		}
 		
-		text.setFontSmallInsignia();
+		if (!PlayerInSystemTracker.hasFactionSeenPlayer(market.getContainingLocation(), market.getFactionId()))
+		{
+			str = getString("sneakAttackMsg");
+			LabelAPI para = text.addPara(str, h, GBConstants.SNEAK_ATTACK_MOVE_MULT + "", 1 + "");
+		}		
+		
 		LabelAPI label = text.addPara(GroundBattleIntel.getString("dialogGoToIntel"));
 		label.setHighlight(GroundBattleIntel.getString("dialogGoToIntelHighlight"));
 		text.setFontInsignia();
@@ -1042,10 +1049,13 @@ public class Nex_MarketCMD extends MarketCMD {
 					impact, null, text, true, true),
 					faction.getId());
 		
+		boolean sneak = !PlayerInSystemTracker.hasFactionSeenPlayer(market.getContainingLocation(), market.getFactionId());
+		
 		GroundBattleIntel intel = prepIntel(market);
 		
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, text);
 		intel.start();
+		if (sneak) intel.applySneakAttack();
 		
 		if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
 			Misc.increaseMarketHostileTimeout(market, 60f);

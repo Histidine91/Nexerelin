@@ -1191,6 +1191,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		Global.getSoundPlayer().playUISound("ui_cargo_special_military_drop", 1, 1);
 	}
 	
+	public void applySneakAttack() {
+		for (GroundUnit unit : defender.getUnits()) {
+			unit.reorganize(1);
+		}
+		attacker.getMovementPointsPerTurn().modifyMult("sneakAttack", GBConstants.SNEAK_ATTACK_MOVE_MULT, 
+				getString("modifierMovementPointsSneakAttack"));
+	}
+	
 	public void reportAbilityUsed(AbilityPlugin ability, GroundBattleSide side, PersonAPI person) 
 	{
 		if (person.isPlayer()) return;
