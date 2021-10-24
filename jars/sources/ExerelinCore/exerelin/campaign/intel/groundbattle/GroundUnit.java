@@ -577,6 +577,7 @@ public class GroundUnit {
 			}
 		}
 		else {
+			//Global.getLogger(this.getClass()).info("Reducing casualties by " + casualtyReduction + " from " + data.xp);
 			if (casualtyReduction > 0) {
 				stats.modifyMult(id, 1f - casualtyReduction * 0.01f, rank.name + " " + StringHelper.getString("marines"));
 			} else {
@@ -694,17 +695,21 @@ public class GroundUnit {
 	
 	public StatBonus getDefenseStatBonus() {
 		StatBonus bonus = new StatBonus();
+		if (fleet != null && isFleetInRange()) {
+			bonus.applyMods(fleet.getStats().getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT));	
+		}
 		if (isAttacker) {
-			if (fleet != null) {
-				bonus.applyMods(fleet.getStats().getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT));
-				if (isPlayer) {
-					substituteLocalXPBonus(bonus, false);
-				}
+			if (!isPlayer) {
+				injectXPBonus(bonus, GBConstants.OFFENSE_STAT, false);
 			}
 		}
 		else {
 			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
 			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+		}
+		
+		if (isPlayer) {
+			substituteLocalXPBonus(bonus, false);
 		}
 		
 		return bonus;
