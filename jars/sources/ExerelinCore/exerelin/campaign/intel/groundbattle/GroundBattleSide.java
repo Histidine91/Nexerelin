@@ -233,9 +233,9 @@ public class GroundBattleSide {
 		log.info(String.format("Available troops: %s militia, %s marines, %s heavy", militia, marines, heavies));
 		
 		// divide these peeps into units of the appropriate size
-		createDefenderUnits(ForceType.MILITIA, Math.round(militia));
-		createDefenderUnits(ForceType.MARINE, Math.round(marines));
-		createDefenderUnits(ForceType.HEAVY, Math.round(heavies));
+		createUnits(ForceType.MILITIA, Math.round(militia));
+		createUnits(ForceType.MARINE, Math.round(marines));
+		createUnits(ForceType.HEAVY, Math.round(heavies));
 		
 		allocateDefenders();
 		
@@ -268,10 +268,10 @@ public class GroundBattleSide {
 		return str;
 	}
 	
-	public void createDefenderUnits(ForceType type, int numTroops) {
+	public void createUnits(ForceType type, int numTroops) {
 		
 		float moraleMult = 1;
-		if (type == ForceType.MILITIA) {
+		if (!isAttacker && type == ForceType.MILITIA) {
 			int resistance = getResistanceTier();
 			if (resistance >= 2)
 				moraleMult = 0.6f;
@@ -308,6 +308,7 @@ public class GroundBattleSide {
 		
 		// assign marine and heavy units to priority industries
 		for (GroundUnit unit : units) {
+			if (unit.isPlayer) continue;
 			if (unit.type == ForceType.MARINE || unit.type == ForceType.HEAVY) {
 				toAssign.add(unit);
 			}
@@ -328,6 +329,7 @@ public class GroundBattleSide {
 		
 		// assign militia to industries
 		for (GroundUnit unit : units) {
+			if (unit.isPlayer) continue;
 			if (unit.type == ForceType.MILITIA) {
 				toAssign.add(unit);
 			}
