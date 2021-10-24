@@ -153,7 +153,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected MilitaryResponseScript responseScript;
 	
 	/**
-	 * Set to true before the {@code reportBattleBeforeTurn} calls, and false after the {@code reportBattleAfterTurn} calls.
+	 * Set to true at the start of {@code advanceTurn()}, and false when it ends.
 	 */
 	protected transient boolean resolving;
 	
@@ -414,7 +414,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	/**
-	 * Returns true before the {@code reportBattleBeforeTurn} calls, and false after the {@code reportBattleAfterTurn} calls.
+	 * Set to true at the start of {@code advanceTurn()}, and false when it ends.
 	 * @return 
 	 */
 	public boolean isResolving() {
@@ -1051,6 +1051,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void advanceTurn(boolean force) {
+		resolving = true;
 		if (force) {
 			doShortIntervalStuff(interval.getIntervalDuration() - interval.getElapsed());
 		}
@@ -1059,7 +1060,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		reapply();
 		checkAnyAttackers();
 		runAI();
-		resolving = true;
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
 			x.reportBattleBeforeTurn(this, turnNum);
@@ -1069,7 +1069,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		{
 			x.reportBattleAfterTurn(this, turnNum);
 		}
-		resolving = false;
+		
 		checkForVictory();
 		playerData.updateXPTrackerNum();
 		
@@ -1090,6 +1090,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		attacker.reportTurn();
 		defender.reportTurn();
 		abilitiesUsedLastTurn.clear();
+		resolving = false;
 	}
 	
 	/**
@@ -2377,6 +2378,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
     @Override
     public boolean hasLargeDescription() { 
 		return true; 
+	}
+	
+	@Override
+	public void reportPlayerClickedOn() {
+		reapply();
 	}
 	
 	public static String getString(String id) {

@@ -47,6 +47,7 @@
 	"nex_invasionStabilizeTimeoutMult":1,
 	"nex_invasionBaseDefenseMult":1.4,	# legacy invasions only
 	"nex_useGroundBattleIndustryMap":true,	# new invasions only
+	"nex_gbUseFleetSupportEstimate":false,	# if true, will include estimated fleet support bonuses in units' displayed attack power
 	
 	"nex_disruptMissionRewardMult":25000,	# no longer used
 	
@@ -253,6 +254,7 @@
 			"nex_icon_remnant":"graphics/exerelin/icons/logo_remnant.png",
 			"nex_icon_omega":"graphics/exerelin/icons/logo_omega.png",
 			"nex_groundunit_attackpower":"graphics/exerelin/ui/red_diamond.png",
+			"nex_groundunit_defensepower":"graphics/exerelin/icons/groundbattle/shield.png",
 			"command_experience":"graphics/icons/skills/command_experience.png",
 			
 			"nex_station_render":"graphics/exerelin/station_render_wireframe2.png",

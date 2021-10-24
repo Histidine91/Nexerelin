@@ -28,6 +28,12 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 	protected transient float atkStrSum = 0;		// incremented prior to round resolve
 	protected transient float defStrSum = 0;		// incremented prior to round resolve
 	
+	// recomputed on unit move
+	protected transient Float atkStrSumEst;
+	protected transient Float defStrSumEst;
+	protected transient Float atkBonusEst;
+	protected transient Float defBonusEst;
+	
 	protected float getBonusFromFleets(List<CampaignFleetAPI> fleets) {
 		float increment = 0;
 		for (CampaignFleetAPI fleet : fleets) {
@@ -63,7 +69,7 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		Global.getSector().addPing(intel.getMarket().getPrimaryEntity(), "nex_invasion_support_range");
 	}
 	
-	protected void getEligibleUnits(Set<GroundUnit> collection, boolean attacker,
+	protected void loadEligibleUnits(Set<GroundUnit> collection, boolean attacker,
 			Collection<IndustryForBattle> contestedLocations) 
 	{
 		for (GroundUnit unit : intel.getSide(attacker).getUnits()) {
@@ -77,7 +83,36 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		}
 	}
 	
+	protected void recomputeEstimates()
+	{
+		atkStrSumEst = 0f;
+		defStrSumEst = 0f;
+		
+		if (atkBonusEst == null)
+			atkBonusEst = getBonusFromFleets(intel.getSupportingFleets(true));
+		if (defBonusEst == null)
+			defBonusEst = getBonusFromFleets(intel.getSupportingFleets(false));
+		
+		Set<IndustryForBattle> contestedLocations = new HashSet<>();
+		for (IndustryForBattle ifb : intel.getIndustries()) {
+			if (ifb.isContested()) contestedLocations.add(ifb);
+		}
+		
+		for (GroundUnit unit : intel.getAllUnits()) {
+			if (!unit.isDeployed()) continue;
+			if (unit.isAttackPrevented()) continue;
+			if (!contestedLocations.contains(unit.getLocation())) continue;
+			
+			if (unit.isAttacker()) atkStrSumEst += unit.getBaseStrength();
+			else defStrSumEst += unit.getBaseStrength();
+		}
+	}
+	
 	protected float getUnitAttackBonus(GroundUnit unit) {
+		if (!intel.isResolving() && Global.getSettings().getBoolean("nex_gbUseFleetSupportEstimate")) {
+			return getUnitAttackBonusEst(unit);
+		}
+		
 		if (atkUnits == null || defUnits == null) return 0;
 		
 		float bonus = 0;
@@ -100,11 +135,32 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		}
 		bonus = Math.min(bonus, unit.getBaseStrength());
 		if (bonus != 0) {
-			//Global.getLogger(this.getClass()).info(String.format(
-			//		"    Unit %s receiving %s bonus damage from ground support (share %s)", 
-			//		unit.getName(), bonus, StringHelper.toPercent(shareMult)));
+			Global.getLogger(this.getClass()).info(String.format(
+					"    Unit %s receiving %s bonus damage from ground support (share %s)", 
+					unit.getName(), bonus, StringHelper.toPercent(shareMult)));
 		}
 		return bonus;
+	}
+	
+	protected float getUnitAttackBonusEst(GroundUnit unit) {
+		if (atkBonusEst == null || defBonusEst == null) recomputeEstimates();
+		
+		if (!unit.isDeployed() || unit.isAttackPrevented() || !unit.getLocation().isContested()) {
+			return 0;
+		}
+		
+		boolean attacker = unit.isAttacker();
+		float divisor = attacker ? atkStrSumEst : defStrSumEst;
+		if (divisor == 0) return 0;
+		float shareMult = unit.getBaseStrength()/divisor;
+		
+		return shareMult * (attacker ? atkBonusEst : defBonusEst);
+	}
+	
+	@Override
+	public void reportUnitMoved(GroundUnit unit, IndustryForBattle lastLoc) {
+		if (!intel.isResolving())
+			recomputeEstimates();
 	}
 	
 	@Override
@@ -120,18 +176,21 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		defStrSum = 0;
 		
 		if (atkBonus > 0) {
-			getEligibleUnits(atkUnits, true, contestedLocations);
+			loadEligibleUnits(atkUnits, true, contestedLocations);
 		}
 		if (defBonus > 0) {
-			getEligibleUnits(defUnits, false, contestedLocations);
+			loadEligibleUnits(defUnits, false, contestedLocations);
 		}
 	}
 	
 	@Override
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
+		boolean estimate = !intel.isResolving();
 		float bonus = getUnitAttackBonus(unit);
+		String key = "modifierGroundSupport" + (estimate ? "Estimate" : "");
 		if (bonus != 0)
-			dmg.modifyFlat("groundSupport", bonus, StringHelper.getString("nex_invasion2", "modifierGroundSupport"));
+			dmg.modifyFlat("groundSupport", bonus, 
+					StringHelper.getString("nex_invasion2", key));
 		return dmg;
 	}
 	
@@ -147,6 +206,11 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		defBonus = 0;
 		atkStrSum = 0;
 		defStrSum = 0;
+		
+		atkStrSumEst = 0f;
+		defStrSumEst = 0f;
+		atkBonusEst = null;
+		defBonusEst = null;
 		
 		super.afterTurnResolve(turn);
 	}
