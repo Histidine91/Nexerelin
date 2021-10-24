@@ -286,6 +286,12 @@ public class GroundBattleAI {
 				return Float.compare(two.getBaseStrength(), one.getBaseStrength());
 			}
 		});
+		/*
+		log.info("Printing sorted units");
+		for (GroundUnit unit : availableUnitsSorted) {
+			log.info(unit + ": " + unit.getBaseStrength());
+		}
+		*/
 		
 		recomputeAvailableStrength();
 		writeOffIndustries();

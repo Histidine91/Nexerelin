@@ -1446,6 +1446,14 @@
 		"responseTravelStr":"moving in response to invasion",
 	},
 	
+	"nex_groundBattle_tutorial":{
+		"missionName":"Ground Pound",
+		
+		# reference to my fanfic
+		"contactName1":"Ross",
+		"contactName2":"Diamond",
+	},
+	
 	"exerelin_landmarks":{
 		"abandonedStation":"Abandoned Station",
 		"beholderStation":"Beholder Station",

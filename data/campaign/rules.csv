@@ -1652,7 +1652,163 @@ nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHai
 ...It appears this AI does not like cute cats. Absolutely unforgivable.  ",cutCommLink:Power up weapons and cut the comm link,
 #END historian find shunt,,,,,,
 ,,,,,,
+# ground battle tutorial,,,,,,
+nex_gbTut_barEventOption,AddBarEvents,"!$market.isHidden
+Nex_GBTutMission isAllowed
+$global.daysSinceStart > 365
+!$global.nex_interactedWithGBTutBarEvent
+RollProbability 0.6","AddBarEvent nex_gbTut_barEvent ""Speak with the person in the spacer's clothing"" ""A figure in spacer's garb is circulating around the bar, chatting up other similarly dressed persons. Might be soliciting some work."" highlight",,,
+nex_gbTut_barEventOptionDebug,AddBarEvents,"$global.isDevMode
+Nex_GBTutMission isAllowed
+!$global.nex_interactedWithGBTutBarEvent","AddBarEvent nex_gbTut_barEvent ""Speak with the person in the spacer's clothing"" ""A figure in spacer's garb is circulating around the bar, chatting up other similarly dressed persons. Might be soliciting some work."" highlight",,,
+nex_gbTut_barEvent,DialogOptionSelected,"$option == nex_gbTut_barEvent
+Nex_GBTutMission generateAgent",,"The agent meets your eyes and smiles. ""Hello, captain. You have the look of just the kind of person I'm looking for.""
+
+$HeOrShe beckons you join $himOrHer at a nearby table. ""I represent a certain party that has a certain problem, and requires someone with discretion to solve it. Interested?""",nex_gbTut_barEvent2:Hear $himOrHer out,
+nex_gbTut_barEvent2,DialogOptionSelected,$option == nex_gbTut_barEvent2,"Highlight Ilm Zagan
+Nex_AddOptionConfirmation nex_gbTut_barEventDecline ""Skip the ground battle tutorial?"" ""Yes"" ""No""","Leaning a little closer, the agent speaks in a low voice. ""If you're been paying close attention to the news, you might have heard of the recent political issues on Ilm, in the Zagan star system. Despite our best efforts, the situation has escalated to the point where armed force may be required.""
+
+You haven't, at least not to the point of having heard of this before, but nod for $himOrHer to continue.
+
+""We might have work on the planet for an entrepreneurial third party like yourself. If you're interested, simply head over there. I'll submit the relevant details to your TriPad.""","nex_gbTut_barEventAccept:Accept
+nex_gbTut_barEventDecline:Decline [skip tutorial]",
+nex_gbTut_barEventAccept,DialogOptionSelected,$option == nex_gbTut_barEventAccept,"Highlight ""some marines"" ""heavy armaments""
+$global.nex_interactedWithGBTutBarEvent = true
+BeginMission nex_gbTut","""Excellent! I knew you could be counted on.""
+
+You look over the details $heOrShe sends to your device. It includes the name and contact details of the ""interested party"", and a mention that bringing some marines along might be good. Possibly heavy armaments as well.",backToBar:Return to the bar,
+nex_gbTut_barEventDecline,DialogOptionSelected,$option == nex_gbTut_barEventDecline,$global.nex_interactedWithGBTutBarEvent = true,"The agent's face sinks. ""I understand,"" $heOrShe says in the most neutral tone $heOrShe can manage. ""Just remember: We always have room for brave and capable patriots in the fight for the Sector's freedom.""
+
+$HeOrShe salutes and stands up from the table.",backToBar:Return to the bar,
 ,,,,,,
+nex_gbTut_diamondConvo1a,PickGreeting,"$id == nex_rossDiamond score:1000
+Call $global.nex_gbTut_ref updateData
+$nex_gbTut_stage == START",ShowPersonVisual,"The comms display shows a static-distorted image of a blond officer, surprisingly boyish-looking for one with the insignia of a League Fleet captain.
+
+""Who gave you my comms ID... ah, I see. You're one of the people here to 'volunteer' your assistance with the crisis? Well, tough luck; unless your assistance consists of a war fleet or a battalion of marines, we don't need it. Our problems became a little too big just before you got here.""",nex_gbTut_diamondConvo2a:Explain that this is indeed the kind of assistance you can offer,
+nex_gbTut_diamondConvo1b,PickGreeting,"$id == nex_rossDiamond score:1000
+Call $global.nex_gbTut_ref updateData
+$nex_gbTut_stage == START
+!Nex_GBTutMission isEnemyFleetAlive","$enemyFleetKilled = true 0
+ShowPersonVisual","The comms display shows a static-distorted image of a blond officer, surprisingly boyish-looking for one with the insignia of a League Fleet captain.
+
+""You're the person who helped us repel that invasion fleet. Why?""","nex_gbTut_diamondConvo2b:""I was sent here.""",
+nex_gbTut_diamondConvo2a,DialogOptionSelected,$option == nex_gbTut_diamondConvo2a,,"""Ah... yes. You do have a combat-worthy fleet."" $personLastName seems to contemplate this for a few moments.
+
+""Well, beggars can't be choosers, I guess. I'll explain the situation and then you can help me with it.""",nex_gbTut_diamondConvo3:Continue,
+nex_gbTut_diamondConvo2b,DialogOptionSelected,$option == nex_gbTut_diamondConvo2b,,"""Ah, yes. That request by Fleet. I didn't understand what they hoped to get this way, but it seems to be working out... so far.
+
+""You've already helped us out. I'd appreciate it if you stuck with us a little longer.""",nex_gbTut_diamondConvo3:Continue,
+nex_gbTut_diamondConvo3,DialogOptionSelected,"$option == nex_gbTut_diamondConvo3
+Nex_GBTutMission isYesodAvailable score:5","Highlight ""unknown hostile party invading""","""The short version is: We've got an unknown hostile party invading the planet, and I don't have the resources to deal with it. All we've got standing in their way right now is the $market planetary militia.
+
+""Under the Zagan Accord of 154 – one of the products of that bloody business on Mazalot – the League is supposed to guarantee Ilm's safety. With the fleet base on Yesod, that's been no problem right up until now.  Only now someone has launched a direct assault on the planet, and I can't get through to the Fleet presence here – or outside the system, for that matter.""
+
+$HeOrShe seems to repress a snarl. ""What are those idiots doing!? Are they stonewalling me on purpose?""",nex_gbTut_diamondConvo4:Continue,
+nex_gbTut_diamondConvo3Alt,DialogOptionSelected,$option == nex_gbTut_diamondConvo3,"Highlight ""unknown hostile party invading""","""The short version is: We've got an unknown hostile party invading the planet, and I don't have the resources to deal with it. All we've got standing in their way right now is the $market planetary defense force.
+
+""Under the Zagan Accord of 154 – one of the products of that bloody business on Mazalot – the League is supposed to guarantee Ilm's safety. With the fleet base on Yesod, that's been no problem right up until now.  Only now we don't have a base on Yesod, do we? And I can't raise any friendlies outside the system, either.""",nex_gbTut_diamondConvo4:Continue,
+nex_gbTut_diamondConvo4,DialogOptionSelected,$option == nex_gbTut_diamondConvo4,"$option = nex_gbTut_diamondConvoMarineCheck 0
+FireBest DialogOptionSelected","""Anyway, it looks like you're the only person I can count on. All you need to do is help defeat the ground forces on the planet, and save $market. Easy enough, right?
+
+""...say, how many marines did you bring, anyway?""",,
+nex_gbTut_diamondConvo_marinesZero,DialogOptionSelected,"$option == nex_gbTut_diamondConvoMarineCheck
+$player.marines <= 0",,,"nex_gbTut_diamondConvo5:""...none.""",
+nex_gbTut_diamondConvo_marinesNonZero,DialogOptionSelected,"$option == nex_gbTut_diamondConvoMarineCheck
+$player.marines > 0",,,"nex_gbTut_diamondConvo5:""$player.marines.""",
+nex_gbTut_diamondConvo5Many,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5
+$player.marines > 300","$option = nex_gbTut_diamondConvo5Post
+FireBest DialogOptionSelected","$HisOrHer eyes seem to light up. ""That is a lot. With that firepower, we can turn this around pretty quickly.
+
+""Your fleet will also add a lot of punch. A little support in the right place can work wonders.""",,
+nex_gbTut_diamondConvo5Some,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5
+$player.marines <= 300
+$player.marines >= 100","$option = nex_gbTut_diamondConvo5Post
+FireBest DialogOptionSelected","""That'll have to do. Though it also depends a lot on the quality and equipment of the troops.
+
+""Your fleet will also add a lot of punch. A little support in the right place can work wonders.""",,
+nex_gbTut_diamondConvo5Few,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5
+$player.marines < 100","$option = nex_gbTut_diamondConvo5Post
+FireBest DialogOptionSelected","""That's... not a lot, captain. Couldn't you have brought a larger force?
+
+""Well, nothing to it. We'll just have to rely on your fleet to make up the difference. Deliver support to the troops we have and we might turn things around.""",,
+nex_gbTut_diamondConvo5TooFew,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5
+$player.marines < 25 score:3","AddCommodity marines 40
+$option = nex_gbTut_diamondConvo5Post
+FireBest DialogOptionSelected","$personLastName lets out an exasperated sigh.
+
+""I... look, tell you what. I just managed to hire a mercenary platoon; I'll transfer their contract to you.
+
+""Don't forget that your fleet can also contribute. Deliver some support in the right place to turn the tide.""",,
+nex_gbTut_diamondConvo5PostWithFleet,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5Post
+!$enemyFleetKilled",Call $global.nex_gbTut_ref startBattle,"""Alright, the battle's already ongoing, and I've got to liase with Colonel Shaddad on our defense strategy. I'll tie you in to our comm net, and let you deploy your own forces at your discretion.
+
+""I'd strongly suggest punching out their invasion fleet first; it'll cause us no end of grief if allowed to hang about. Good hunting, captain.""","cutCommLink:Cut the comm link
+nex_gbTut_diamondConvo6:""Can you explain how this works?""",
+nex_gbTut_diamondConvo5PostWithoutFleet,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5Post
+$enemyFleetKilled",Call $global.nex_gbTut_ref startBattle,"""Alright, the battle's already ongoing, and I've got to liase with Colonel Shaddad on our defense strategy. I'll tie you in to our comm net, and let you deploy your own forces at your discretion.
+
+""Taking out the enemy fleet has bought us some valuable breathing room, but the fight's far from over. Good hunting, captain.""","cutCommLink:Cut the comm link
+nex_gbTut_diamondConvo6:""Can you explain how this works?""",
+nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight marines ""heavy armaments"" ""Units tab"" deploy ","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
+
+""You'll start with your marines (and heavy armaments, if you ahve any) organized into units of a suitable size. From the Units tab in the intel screen, deploy them to the surface; this will cost supplies depending on the unit type and size.
+
+""Once they get there, they'll spend their time shooting up anyone occupying the same industry as them. You can also order them to move to another location, or withdraw to the fleet.
+
+""Extended combat drains your units' morale. Keep an eye on it; it's going to be unpleasant if your troops break.""",nex_gbTut_diamondConvo7:Continue,
+nex_gbTut_diamondConvo7,DialogOptionSelected,$option == nex_gbTut_diamondConvo7,"Highlight ""special abilities"" ""fire support"" ""electronic warfare"" ""inspirational speech"" ""Help tab""","""You can also support your units with one or more special abilities, found in their corresponding tab. These have different requirements and cooldowns; check the tooltips for more info. Fire support can inflict a good deal of damage on enemy forces at a location. If you can disrupt their operations with some electronic warfare, or give an inspirational speech to the troops, that's good too.
+
+""Beyond that, you should be able to work it out as you go. Consult the Help tab for more info if you need it.""",cutCommLink:Thank $himOrHer and cut the comm link,
+,,,,,,
+nex_gbTut_diamondConvoOngoing,PickGreeting,"$id == nex_rossDiamond score:1000
+Call $global.nex_gbTut_ref updateData
+$nex_gbTut_stage == BATTLE",ShowPersonVisual,"""We don't have time to waste chatting, captain. Defeat the invasion.""",cutCommLink:Cut the comm link,
+,,,,,,
+nex_gbTut_diamondPostConvo1,PickGreeting,"$id == nex_rossDiamond score:1000
+Call $global.nex_gbTut_ref updateData
+$nex_gbTut_stage == TALK_TO_CONTACT_AFTER",ShowPersonVisual,"""Excellent work, friend! The invasion has been thwarted and $market is safe.
+
+""We've picked up a bunch of prisoners, and Colonel Shaddad wants me to sit in on the interrogations. I imagine FleetSec would be very interested in just who sponsored an unflagged invasion of the planet.""","nex_gbTut_diamondPostConvo2:""Who do you think it was?""",
+nex_gbTut_diamondPostConvo2,DialogOptionSelected,$option == nex_gbTut_diamondPostConvo2,,"$personLastName rubs his chin. ""There are a few obvious suspects, aren't there? The Hegemony would just love to expand their influence in our backyard and embarass us at the same time. Then there's the Church; they've never really forgotten the Mazalot uprising.
+
+""But at the same time, this sort of skullduggery doesn't seem like their forte. And there are still a bunch of unanswered questions, like what the Fleet was doing all this time. I expect we'll be going over all the evidence with a fine comb.""
+
+$HeOrShe shakes $hisOrHer head, then looks straight at you. ""When I'm done with tonight's business, how about you come down dirtside with me for supper? You've certainly earned a couple of beers.""","nex_gbTut_diamondPostConvo3:Accept
+nex_gbTut_diamondPostConvoExit:Decline politely, saying you have other plans",
+nex_gbTut_diamondPostConvo3,DialogOptionSelected,$option == nex_gbTut_diamondPostConvo3,ShowDefaultVisual,"You cut the comm link after exchanging a few pleasantries.
+
+A few hours later, a message from the $personRank arrives in your inbox. It contains the name and address of a local middle-class establishment: clean, moderately fancy, with reasonable prices by the standards of its customers.
+
+Do you feel that $heOrShe could have been not so miserly, and treated the hero of $market to a suitably posh place? Or conversely, would you be more at home with the rowdiest watering hole the place has to offer?",nex_gbTut_diamondPostConvo4:Take a shuttle down to the restaurant,
+nex_gbTut_diamondPostConvo4,DialogOptionSelected,$option == nex_gbTut_diamondPostConvo4,ShowPersonVisual,"$personLastName meets you at a table outside the restaurant. 
+
+In contrast to his appearance on the comm not a day ago, the League $personRank before you now is a worn, hollowed-out imitation of a $manOrWoman. As if he was the one who'd been locked up with the interrogator.
+
+""Hello, $playerFirstName,"" he says, wearily. ""Please, order anything you like. It's my treat, after all.""","nex_gbTut_diamondPostConvo5:[reputation check] ""What did you find out?""",
+nex_gbTut_diamondPostConvo5Success,DialogOptionSelected,"$option == nex_gbTut_diamondPostConvo5
+Nex_GBTutMission repCheck",,"The $personRank looks at you for a long while. ""You didn't hear this from me, $playerFirstName,"" $heOrShe says at length. ""But let's just say it would explain why I'm the only Fleet asset who was around in Ilm's hour of need.""
+
+$HeOrShe throws back a glass of wine. ""We're all just pawns in the game, $playerFirstName. Pawns of a pack of jackals who would steal the stars from us, if they could. People's lives aren't real to them.
+
+""But there'll come a time when they answer for all they've trampled on,"" he goes on, more to himself than to you. ""And on that day...""",nex_gbTut_diamondPostConvoEnd:Continue,
+nex_gbTut_diamondPostConvo5Fail,DialogOptionSelected,"$option == nex_gbTut_diamondPostConvo5
+!Nex_GBTutMission repCheck",,"$HisOrHer smile doesn't reach his eyes. ""We don't know each other well enough for that, Hero of $market"".
+
+$HeOrShe gazes off into the distance. ""The captain was right,"" you catch a mutter. Somehow it doesn't seem like he's referring to you or himself.",nex_gbTut_diamondPostConvoEnd:Continue,
+nex_gbTut_diamondPostEnd,DialogOptionSelected,$option == nex_gbTut_diamondPostConvoEnd,"Call $global.nex_gbTut_ref endMission
+ShowDefaultVisual
+FireAll PopulateOptions","The rest of the dinner goes by, in the companionable silence of two acquaintances sharing a meal. The food is indeed good, and goes well with small talk.
+
+After the plates have been taken away, $personLastName nods to you. ""Bye for now, $playerFirstName. Maybe we'll see each other again someday; it's a small Sector, after all.""
+
+You take a shuttle back to your ship.",,
+nex_gbTut_diamondPostEndEarly,DialogOptionSelected,$option == nex_gbTut_diamondPostConvoExit,"Call $global.nex_gbTut_ref endMission
+ShowDefaultVisual
+FireAll PopulateOptions","""Oh. That's a shame, but I understand. Look me up if you change your mind, eh?""
+
+You cut the comm link after saying goodbye. Your work here is done; the rest of the Sector awaits.",,
+#END ground battle tutorial,,,,,,
 ,,,,,,
 # special forces bounty,,,,,,
 Nex_CBSpecialForces,Nex_CBSpecialForcesOfferDesc,,"SetTextHighlightColors $bcb_targetFactionColor h h
@@ -2290,6 +2446,6 @@ connection.kill();""",,
 nex_mercLeaving_letGoBlurbRefusePayEndbringer,Nex_MercLetGoBlurb,"$nex_mercCompanyId == endbringer
 $nex_mercLetGoType == refusePay score:5",AdjustRepActivePerson INHOSPITABLE -3,"""set property: $playerName -> DISHONEST true
 $playerName.debt += $nex_mercValueDiffVal
-while (debt > 0) emotionModule.guiltTrip( $playerName);""",,
+while (debt > 0) emotionModule.guiltTrip($playerName);""",,
 #END blurbs,,,,,,
 #END Merc hiring,,,,,,

@@ -152,6 +152,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected IntervalUtil intervalShort = new IntervalUtil(0.2f, 0.2f);
 	protected MilitaryResponseScript responseScript;
 	
+	protected boolean noTransfer = false;
+	
 	/**
 	 * Set to true at the start of {@code advanceTurn()}, and false when it ends.
 	 */
@@ -331,6 +333,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		reapply();
 	}
 	
+	
+	
 	public void initDebug() {
 		playerInitiated = true;
 		playerIsAttacker = true;
@@ -421,6 +425,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return resolving;
 	}
 	
+	public boolean isNoTransfer() {
+		return noTransfer;
+	}
+
+	public void setNoTransfer(boolean noTransfer) {
+		this.noTransfer = noTransfer;
+	}
+	
 	public Boolean isPlayerAttacker() {
 		return playerIsAttacker;
 	}
@@ -435,7 +447,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		playerIsAttacker = bool;
 	}
 	
-	public void playerJoinBattle(boolean isAttacker) {
+	public void playerJoinBattle(boolean isAttacker, boolean repChange) {
 		setPlayerIsAttacker(isAttacker);
 		
 		// lose rep with enemy now (gain rep with friend at end of battle)
@@ -447,15 +459,19 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		playerData.strFractionAtJoinTime = strFractionAtJoinTime;
 		
-		CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
-		impact.delta = market.getSize() * -0.02f;
-		// not now, we also need to look at requested fleets
-		//impact.ensureAtBest = tempInvasion.success ? RepLevel.VENGEFUL : RepLevel.HOSTILE;
-		impact.ensureAtBest = RepLevel.HOSTILE;
-		Global.getSector().adjustPlayerReputation(
-				new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, 
-					impact, null, null, true, true),
-					enemy.getId());
+		if (repChange) {
+			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+			impact.delta = market.getSize() * -0.02f;
+			// not now, we also need to look at requested fleets
+			//impact.ensureAtBest = tempInvasion.success ? RepLevel.VENGEFUL : RepLevel.HOSTILE;
+			impact.ensureAtBest = RepLevel.HOSTILE;
+			Global.getSector().adjustPlayerReputation(
+					new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, 
+						impact, null, null, true, true),
+						enemy.getId());
+		}
+		
+		autoGeneratePlayerUnits();
 	}
 	
 	
@@ -661,7 +677,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		// add heavy units
 		int usableHeavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
 		if (isCramped()) {
-			log.info("Cramped conditions, halving heavy unit count");
+			//log.info("Cramped conditions, halving heavy unit count");
 			usableHeavyArms /= 2;
 		}
 		
@@ -903,8 +919,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void handleTransfer() {
+		if (noTransfer) return;
+		
 		if (outcome == BattleOutcome.ATTACKER_VICTORY ) {
 			InvasionRound.conquerMarket(market, attacker.getFaction(), playerInitiated);
+			
 			market.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
 			market.getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
 			
@@ -1166,7 +1185,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		List<CampaignFleetAPI> fleets = market.getContainingLocation().getFleets();
 		for (CampaignFleetAPI other : fleets) {
-			if (other.getFaction() == market.getFaction()) {
+			if (other.getFaction() == market.getFaction() && Boolean.TRUE.equals(playerIsAttacker)) 
+			{
 				MemoryAPI mem = other.getMemoryWithoutUpdate();
 				Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, "raidAlarm", true, 1f);
 			}
@@ -2224,12 +2244,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			return;
 		}
 		if (buttonId == BUTTON_JOIN_ATTACKER) {
-			playerJoinBattle(true);
+			playerJoinBattle(true, true);
 			ui.updateUIForItem(this);
 			return;
 		}
 		if (buttonId == BUTTON_JOIN_DEFENDER) {
-			playerJoinBattle(false);
+			playerJoinBattle(false, true);
 			ui.updateUIForItem(this);
 			return;
 		}
