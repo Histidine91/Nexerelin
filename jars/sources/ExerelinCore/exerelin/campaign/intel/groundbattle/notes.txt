@@ -27,9 +27,18 @@ Close Air Support
 
 == Todo ==
 - NPC ground battle
-- Surprise attack bonus
 - Combined arms bonus?
+	- For max bonus, base strength of infantry units must equal that of heavy arms
+	- Bonus is proportional to the sine of their ratios
+	- Compute on each move/deploy, for units in previous location and current one
 - Tutorial mission
+	- Persean League crisis on [planet]: someone has sent a mercenary force to attack the place
+	- Fly to planet, beat up enemy fleet in orbit
+	- Talk to League contact (Ross Diamond?)
+	- Ground battle starts
+	- Win the ground battle to continue
+	- Talk to Diamond again
+	- Some fancy dialog, get paid
 - Display estimated contribution of ground support in attack strength breakdown
 
 - Generate buffs

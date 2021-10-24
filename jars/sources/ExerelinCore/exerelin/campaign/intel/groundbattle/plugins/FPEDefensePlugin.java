@@ -19,11 +19,12 @@ public class FPEDefensePlugin extends MarketConditionPlugin {
 	}
 	
 	@Override
-	public float modifyDamageReceived(GroundUnit unit, float dmg) {
+	public MutableStat modifyDamageReceived(GroundUnit unit, MutableStat dmg) {
 		if (unit.isAttacker()) return dmg;
 		if (unit.getLocation() == null || unit.getLocation().heldByAttacker == true)
 			return dmg;
 		
-		return dmg * DEF_MULT;
+		dmg.modifyMult(conditionId, DEF_MULT, intel.getMarket().getCondition(conditionId).getName());
+		return dmg;
 	}
 }

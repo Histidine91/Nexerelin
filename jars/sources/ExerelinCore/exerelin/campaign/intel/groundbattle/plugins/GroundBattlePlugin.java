@@ -52,7 +52,16 @@ public interface GroundBattlePlugin {
 	 * @param dmg The incoming damage value.
 	 * @return The new damage value.
 	 */
+	@Deprecated
 	public float modifyDamageReceived(GroundUnit unit, float dmg);
+	
+	/**
+	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.
+	 * @param unit
+	 * @param dmg The incoming damage value.
+	 * @return The new damage value.
+	 */
+	public MutableStat modifyDamageReceived(GroundUnit unit, MutableStat dmg);
 	
 	/**
 	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.

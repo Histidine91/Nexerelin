@@ -160,4 +160,23 @@ public class GBUtils {
 		}
 		return industries;
 	}
+	
+	public static float getCombinedArmsBonus() {
+		return 0;
+	}
+	
+	public static float getCombinedArmsRatio(List<GroundUnit> units) {
+		float inf = 0;
+		float mech = 0;
+		for (GroundUnit unit : units) {
+			if (unit.getType().isInfantry())
+				inf += unit.getBaseStrength();
+			else
+				mech = unit.getBaseStrength();
+		}
+		
+		if (inf == 0 || mech == 0) return 0;
+		if (inf < mech) return inf/mech;
+		else return mech/inf;
+	}
 }

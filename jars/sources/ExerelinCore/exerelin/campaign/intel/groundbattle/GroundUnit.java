@@ -673,38 +673,52 @@ public class GroundUnit {
 		return dmg;
 	}
 	
+	/**
+	 * Partial defense stat, before fleet/market bonuses are applied.
+	 * @return
+	 */
+	public MutableStat getDefenseStat() {
+		MutableStat stat = new MutableStat(0);
+		if (location != null && isAttacker == location.heldByAttacker)
+			stat.modifyMult(location.getIndustry().getId(), 1/location.getPlugin().getStrengthMult(),
+					location.getIndustry().getCurrentName());
+		
+		if (type == ForceType.REBEL)
+			stat.modifyMult("rebel", GBConstants.REBEL_DAMAGE_MULT, type.getName());
+				
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			stat = plugin.modifyDamageReceived(this, stat);
+		}
+		return stat;
+	} 
+	
 	public StatBonus getDefenseStatBonus() {
+		StatBonus bonus = new StatBonus();
 		if (isAttacker) {
 			if (fleet != null) {
-				StatBonus bonus = NexUtils.cloneStatBonus(fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT));
+				bonus.applyMods(fleet.getStats().getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT));
 				if (isPlayer) {
 					substituteLocalXPBonus(bonus, false);
 				}
 			}
 		}
 		else {
-			StatBonus bonus = new StatBonus();
 			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
-			return bonus;
 			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		}
-		return null;
+		
+		return bonus;
 	}
 	
 	public float getAdjustedDamageTaken(float dmg) {
-		if (location != null && isAttacker == location.heldByAttacker)
-			dmg *= 1/location.getPlugin().getStrengthMult();
+		MutableStat stat = getDefenseStat();
+		stat.setBaseValue(dmg);
 		
-		if (type == ForceType.REBEL)
-			dmg *= GBConstants.REBEL_DAMAGE_MULT;
-				
-		for (GroundBattlePlugin plugin : intel.getPlugins()) {
-			dmg = plugin.modifyDamageReceived(this, dmg);
-		}
+		dmg = stat.getModifiedValue();
 		
 		StatBonus bonus = getDefenseStatBonus();
 		if (bonus != null) {
-			dmg = bonus.computeEffective(dmg);
+			dmg = bonus.computeEffective(stat.getModifiedValue());
 		}
 		
 		dmg = intel.getSide(isAttacker).damageTakenMod.computeEffective(dmg);
@@ -819,12 +833,20 @@ public class GroundUnit {
 		TooltipMakerAPI stats2 = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult, 
 				(PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT) * sizeMult, false);
 		
-		// attack power;
+		// attack power
 		line = stats2.beginImageWithText(Global.getSettings().getSpriteName("misc", 
 				"nex_groundunit_attackpower"), 16 * sizeMult);
 		line.addPara(String.format("%.0f", getAttackStrength()), 0);
 		stats2.addImageWithText(pad);
 		stats2.addTooltipToPrevious(createTooltip("attackPower"), TooltipLocation.BELOW);
+		card.addUIElement(stats2).rightOfTop(stats, 0);
+		
+		// defence power
+		line = stats2.beginImageWithText(Global.getSettings().getSpriteName("misc", 
+				"nex_groundunit_defensepower"), 16 * sizeMult);
+		line.addPara(String.format("%.2f", getAdjustedDamageTaken(1)), 0);
+		stats2.addImageWithText(pad);
+		stats2.addTooltipToPrevious(createTooltip("defensePower"), TooltipLocation.BELOW);
 		card.addUIElement(stats2).rightOfTop(stats, 0);
 		
 		// deploy cost
@@ -907,32 +929,52 @@ public class GroundUnit {
 			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
 				String str = GroundBattleIntel.getString("unitCard_tooltip_" + id);
 				tooltip.addPara(str, 0);
-				if (id.equals("morale")) {
-					Color hl = Misc.getHighlightColor();
-					//tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);
-					str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 2);
-					tooltip.addPara(str, 3, hl, 
-							StringHelper.toPercent(1 - GBConstants.MORALE_ATTACK_MOD),
-							StringHelper.toPercent(1 + GBConstants.MORALE_ATTACK_MOD)
-					);
-					str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 3);
-					tooltip.addPara(str, 0, hl, StringHelper.toPercent(GBConstants.REORGANIZE_AT_MORALE));
-					str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 4);
-					tooltip.addPara(str, 0);
-				} else if (id.equals("attackPower")) {
-					str = getString("unitCard_tooltip_atkbreakdown_header");
-					tooltip.addPara(str, 3); 
-					tooltip.addStatModGrid(360, 60, 10, 3, getAttackStat(), true, NexUtils.getStatModValueGetter(true, 0));
-					
-					StatBonus bonus = unit.getAttackStatBonus();
-					if (bonus != null && !bonus.isUnmodified()) {
-						tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
-					}
-					
-					bonus = intel.getSide(isAttacker).getDamageDealtMod();
-					if (bonus != null && !bonus.isUnmodified()) {
-						tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
-					}
+				switch (id) {
+					case "morale":
+						Color hl = Misc.getHighlightColor();
+						//tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);
+						str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 2);
+						tooltip.addPara(str, 3, hl,
+								StringHelper.toPercent(1 - GBConstants.MORALE_ATTACK_MOD),
+								StringHelper.toPercent(1 + GBConstants.MORALE_ATTACK_MOD)
+						);	str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 3);
+						tooltip.addPara(str, 0, hl, StringHelper.toPercent(GBConstants.REORGANIZE_AT_MORALE));
+						str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 4);
+						tooltip.addPara(str, 0);
+						break;
+					case "attackPower":
+						{
+							str = getString("unitCard_tooltip_atkbreakdown_header");
+							tooltip.addPara(str, 3);
+							tooltip.addStatModGrid(360, 60, 10, 3, getAttackStat(), true, NexUtils.getStatModValueGetter(true, 0));
+							StatBonus bonus = unit.getAttackStatBonus();
+							if (bonus != null && !bonus.isUnmodified()) {
+								tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
+							}
+							bonus = intel.getSide(isAttacker).getDamageDealtMod();
+							if (bonus != null && !bonus.isUnmodified()) {
+								tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
+							}		break;
+						}
+					case "defensePower":
+						{
+							str = getString("unitCard_tooltip_atkbreakdown_header");
+							tooltip.addPara(str, 3);
+							MutableStat def = getDefenseStat();
+							if (def != null && !def.isUnmodified()) {
+								tooltip.addStatModGrid(360, 60, 10, 3, getDefenseStat(), true, NexUtils.getStatModValueGetter(true, 2, true));
+							}							
+							StatBonus bonus = unit.getDefenseStatBonus();
+							if (bonus != null && !bonus.isUnmodified()) {
+								tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 2, true));
+							}
+							bonus = intel.getSide(isAttacker).getDamageTakenMod();
+							if (bonus != null && !bonus.isUnmodified()) {
+								tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 2, true));
+							}		break;
+						}
+					default:
+						break;
 				}
 			}
 		};
@@ -975,6 +1017,10 @@ public class GroundUnit {
 		
 		public String getCommoditySprite() {
 			return Global.getSettings().getCommoditySpec(commodityId).getIconName();
+		}
+		
+		public boolean isInfantry() {
+			return this != ForceType.HEAVY;
 		}
 	}
 	

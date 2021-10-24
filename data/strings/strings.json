@@ -1220,6 +1220,7 @@
 		"unitCard_tooltip_morale4":"At zero morale, unit will be routed or destroyed if engaged",
 		"unitCard_tooltip_supplies":"Supplies required to deploy unit. This is also the unit's movement point cost.",
 		"unitCard_tooltip_attackPower":"Attack power under current conditions",
+		"unitCard_tooltip_defensePower":"Damage taken modifier (current)",
 		"unitCard_tooltip_atkbreakdown_header":"Partial breakdown:",
 		"unitCard_tooltip_atkbreakdown_base":"Base strength",
 		"unitCard_tooltip_atkbreakdown_heavy_offensive":"Mechanized assault",

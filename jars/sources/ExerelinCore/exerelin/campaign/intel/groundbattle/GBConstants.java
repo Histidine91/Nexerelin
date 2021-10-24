@@ -36,6 +36,7 @@ public class GBConstants {
 	public static float CAPTURE_MORALE = 0.03f;
 	public static float REORGANIZING_DMG_MULT = 0.7f;
 	public static float REBEL_DAMAGE_MULT = 0.5f;	// both dealt and received;
+	public static float COMBINED_ARMS_BONUS_MULT = 1.25f; 
 	
 	public static int STABILITY_PENALTY_BASE = 2;
 	public static int STABILITY_PENALTY_OCCUPATION = 5;

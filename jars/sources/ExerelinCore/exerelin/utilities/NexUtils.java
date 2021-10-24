@@ -333,15 +333,7 @@ public class NexUtils
 	
 	public static StatBonus cloneStatBonus(StatBonus orig) {
 		StatBonus clone = new StatBonus();
-		for (StatMod stat : orig.getFlatBonuses().values()) {
-			clone.modifyFlat(stat.source, stat.value, stat.desc);
-		}
-		for (StatMod stat : orig.getMultBonuses().values()) {
-			clone.modifyMult(stat.source, stat.value, stat.desc);
-		}
-		for (StatMod stat : orig.getPercentBonuses().values()) {
-			clone.modifyPercent(stat.source, stat.value, stat.desc);
-		}
+		clone.applyMods(orig);
 		return clone;
 	}
 	
@@ -352,26 +344,54 @@ public class NexUtils
 		return result;
 	}	
 	
-	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(final boolean color, 
+	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(boolean color, 
 			final int numDigits) {
-		return new TooltipMakerAPI.StatModValueGetter() {
-			public String getPercentValue(MutableStat.StatMod mod) {
-				String prefix = mod.getValue() > 0 ? "+" : "";
-				return prefix + (int)(mod.getValue()) + "%";
+		return getStatModValueGetter(color, numDigits, false);
+	}
+	
+	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(boolean color, 
+			int numDigits, boolean lowerIsBetter) {
+		
+		return new NexStatModValueGetter(color, numDigits, lowerIsBetter);	
+	}
+	
+	public static class NexStatModValueGetter implements TooltipMakerAPI.StatModValueGetter 
+	{		
+		protected Color high = Misc.getPositiveHighlightColor();
+		protected Color low = Misc.getNegativeHighlightColor();
+		
+		public boolean color;
+		public int numDigits;
+		public boolean lowerIsBetter;
+		
+		public NexStatModValueGetter(boolean color, int numDigits, boolean lowerIsBetter) {
+			this.color = color;
+			this.numDigits = numDigits;
+			this.lowerIsBetter = lowerIsBetter;
+			
+			if (lowerIsBetter) {
+				high = Misc.getNegativeHighlightColor();
+				low = Misc.getPositiveHighlightColor();
 			}
-			public String getMultValue(MutableStat.StatMod mod) {
-				return Strings.X + "" + Misc.getRoundedValue(mod.getValue());
-			}
-			public String getFlatValue(MutableStat.StatMod mod) {
-				String prefix = mod.getValue() > 0 ? "+" : "";
-				return prefix + String.format("%." + numDigits + "f", mod.getValue()) + "";
-			}
-			public Color getModColor(MutableStat.StatMod mod) {
-				if (!color) return null;
-				if (mod.getValue() < 1) return Misc.getNegativeHighlightColor();
-				if (mod.getValue() > 1) return Misc.getPositiveHighlightColor();
-				return null;
-			}
-		};
+		}			
+			
+		public String getPercentValue(MutableStat.StatMod mod) {
+			String prefix = mod.getValue() > 0 ? "+" : "";
+			return prefix + (int)(mod.getValue()) + "%";
+		}
+		public String getMultValue(MutableStat.StatMod mod) {
+			return Strings.X + "" + Misc.getRoundedValue(mod.getValue());
+		}
+		public String getFlatValue(MutableStat.StatMod mod) {
+			String prefix = mod.getValue() > 0 ? "+" : "";
+			return prefix + String.format("%." + numDigits + "f", mod.getValue()) + "";
+		}
+		public Color getModColor(MutableStat.StatMod mod) {
+			if (!color) return null;
+			
+			if (mod.getValue() < 1) return low;
+			if (mod.getValue() > 1) return high;
+			return null;
+		}
 	}
 }

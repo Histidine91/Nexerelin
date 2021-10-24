@@ -44,14 +44,23 @@ public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 	@Override
 	public void reportUnitMoved(GroundUnit unit, IndustryForBattle lastLoc) {}
 	
+	@Override
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
 		return dmg;
 	}
 	
+	@Override
+	@Deprecated
 	public float modifyDamageReceived(GroundUnit unit, float dmg) {
 		return dmg;
 	}
 	
+	@Override
+	public MutableStat modifyDamageReceived(GroundUnit unit, MutableStat dmg) {
+		return dmg;
+	}
+	
+	@Override
 	public float modifyMoraleDamageReceived(GroundUnit unit, float dmg) {
 		return dmg;
 	}

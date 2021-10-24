@@ -152,6 +152,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected IntervalUtil intervalShort = new IntervalUtil(0.2f, 0.2f);
 	protected MilitaryResponseScript responseScript;
 	
+	/**
+	 * Set to true before the {@code reportBattleBeforeTurn} calls, and false after the {@code reportBattleAfterTurn} calls.
+	 */
+	protected transient boolean resolving;
+	
 	protected transient List<Pair<Boolean, AbilityPlugin>> abilitiesUsedLastTurn = new ArrayList<>();
 	
 	// =========================================================================
@@ -406,6 +411,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public BattleOutcome getOutcome() {
 		return outcome;
+	}
+	
+	/**
+	 * Returns true before the {@code reportBattleBeforeTurn} calls, and false after the {@code reportBattleAfterTurn} calls.
+	 * @return 
+	 */
+	public boolean isResolving() {
+		return resolving;
 	}
 	
 	public Boolean isPlayerAttacker() {
@@ -1046,6 +1059,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		reapply();
 		checkAnyAttackers();
 		runAI();
+		resolving = true;
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
 			x.reportBattleBeforeTurn(this, turnNum);
@@ -1055,6 +1069,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		{
 			x.reportBattleAfterTurn(this, turnNum);
 		}
+		resolving = false;
 		checkForVictory();
 		playerData.updateXPTrackerNum();
 		
