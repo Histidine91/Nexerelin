@@ -245,6 +245,19 @@ public class IndustryForBattle {
 		return 0;
 	}
 	
+	protected boolean shouldShowDetailedDisplay(boolean attacker) {
+		if (Global.getSettings().isDevMode()) return true;
+		if (intel.playerIsAttacker == null || intel.playerIsAttacker != attacker)
+			return false;
+		
+		// check if any units are player units
+		for (GroundUnit unit : units) {
+			if (unit.isAttacker == attacker && unit.isPlayer)
+				return true;
+		}
+		return false;
+	}
+	
 	// old tabular display?
 	@Deprecated
 	public TooltipMakerAPI renderForcePanel(CustomPanelAPI panel, float width, 
@@ -284,7 +297,7 @@ public class IndustryForBattle {
 		}
 		troops.addIconGroup(40, pad);
 		
-		boolean detailed = Global.getSettings().isDevMode() || (intel.playerIsAttacker != null && intel.playerIsAttacker == attacker);
+		boolean detailed = shouldShowDetailedDisplay(attacker);
 		troops.addTooltipToPrevious(generateForceTooltip(attacker, detailed ? 360 : 160), TooltipLocation.BELOW);
 		
 		// strength
@@ -616,8 +629,7 @@ public class IndustryForBattle {
 						if (unit.isAttacker != isAttacker) continue;
 						NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
 					}	
-				}
-						
+				}						
 				
 				// player units
 				for (GroundUnit unit : units) {
