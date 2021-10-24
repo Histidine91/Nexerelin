@@ -228,7 +228,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		float stability = market.getStabilityValue();
 		float sizeMult = getSizeMod(market);
 		govtStrength = (6 + stability * 1.25f) * sizeMult;
-		rebelStrength = (3 + (10 - stability) * 1.25f) * sizeMult * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
+		rebelStrength = (3 + (10 - stability) * 1.25f) * 1.2f * sizeMult * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
 		if (rebelFaction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
 			rebelStrength *= REBEL_ORIGINAL_OWNER_STR_MULT;
 		
@@ -361,7 +361,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		mult += 0.25f;
 		
 		govtStrength += (2f + stability/10) * mult;
-		rebelStrength += (1 + (10 - stability)/10) * mult;
+		rebelStrength += (1 + (10 - stability)/10) * 1.2f * mult;
 		
 		debugMessage("  Updated force strengths: " + govtStrength + ", " + rebelStrength);
 	}
@@ -689,7 +689,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		String name = getFleetName("nex_suppressionFleet", factionId, fp);
 		
 		int str = (int)(rebelStrength * 2 - govtStrength);
-		int numMarines = (int)(str * 2 / VALUE_MARINES);
+		int maxStr = Math.round(12 * getSizeMod(market.getSize()));
+		str = Math.min(str, maxStr);
+		int numMarines = (int)(str / VALUE_MARINES);
 		
 		float distance = NexUtilsMarket.getHyperspaceDistance(sourceMarket, market);
 		int tankerFP = (int)(fp * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
@@ -709,7 +711,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(sourceMarket.getFaction(), fleetParams);
 		if (fleet == null) return null;
 		
-		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(numMarines/2.5f));
+		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(numMarines/4f));
 		fleet.getMemoryWithoutUpdate().set("$nex_rebellion_suppr_payload", str);
 		fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
 		fleet.setName(name);
