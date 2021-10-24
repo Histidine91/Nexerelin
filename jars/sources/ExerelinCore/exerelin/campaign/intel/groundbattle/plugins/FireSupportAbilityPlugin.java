@@ -65,7 +65,9 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		}
 		
 		float disruptTime = 0;
-		if (enemyHeld && !target.getPlugin().getDef().hasTag("resistBombard")) 
+		boolean canDisrupt = !target.getPlugin().getDef().hasTag("resistBombard") 
+				&& !target.getPlugin().getDef().hasTag("noBombard");
+		if (enemyHeld && canDisrupt) 
 		{
 			Industry ind = target.getIndustry();
 			disruptTime = getDisruptionTime(ind);
@@ -273,6 +275,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		targetsFiltered.removeAll(validTargets);
 		if (targetsFiltered.isEmpty()) return false;
 		
+		target = validTargets.get(0);
 		return super.aiExecute(ai, fleet.getCommander());
 	}
 }
