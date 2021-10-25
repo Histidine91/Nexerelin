@@ -155,6 +155,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 
 	public void setMarineCount() {
 		// based on vanilla ground defense strength
+		/*
 		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.55f);
 		marinesPerFleet = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
 		if (marinesPerFleet < 100) {
@@ -164,10 +165,18 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			log.info("Capping marines per fleet (legacy) at " + MAX_MARINES_PER_FLEET + " (was " + marinesPerFleet + ")");
 			marinesPerFleet = MAX_MARINES_PER_FLEET;
 		}
+		*/
 		
+		if (NexConfig.legacyInvasions) {
+			float defenderStrength = InvasionRound.getDefenderStrength(target, 0.75f);
+			marinesTotal = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
+		} 
 		// base on Nex new invasion mechanic garrison
-		float garrison = GBUtils.estimateTotalDefenderStrength(target, faction, false);
-		marinesTotal = (int)Math.ceil(garrison * MARINE_GARRISION_MULT);
+
+		else {
+			float garrison = GBUtils.estimateTotalDefenderStrength(target, faction, false);
+			marinesTotal = (int)Math.ceil(garrison * MARINE_GARRISION_MULT);
+		}
 		if (marinesTotal < 100) marinesTotal = 100;
 		else if (marinesTotal > MAX_MARINES_TOTAL) {
 			log.info("Capping total marines at " + MAX_MARINES_TOTAL + " (was " + marinesTotal + ")");
@@ -194,6 +203,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	@Deprecated
 	public void setMarinesPerFleet(int marines) {
 		marinesPerFleet = marines;
+	}
+	
+	public int getMarinesPerFleetV2(RouteData route) {
+		float fpShare = route.getExtra().fp/fpNoBrawlMult;
+		return (int)Math.ceil(marinesTotal * fpShare);
 	}
 	
 	public void setMarinesTotal(int marines) {
@@ -244,10 +258,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			return;
 		}
 				
-		float fpShare = route.getExtra().fp/fpNoBrawlMult;
-		int marines, heavyArms; 
+		int marines = getMarinesPerFleetV2(route);
+		int heavyArms = 0;
 		
-		marines = (int)Math.ceil(marinesTotal * fpShare);
 		CampaignFleetAPI fleet = route.getActiveFleet();
 		if (fleet != null) {
 			CargoAPI cargo = route.getActiveFleet().getCargo();
@@ -442,8 +455,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				marines = marinesPerFleet;
 			}
 			else {
-				float fpShare = fpBeforeDoctrineMult/fpNoBrawlMult;
-				marines = (int)Math.ceil(marinesTotal * fpShare);
+				marines = getMarinesPerFleetV2(route);
 			}
 		}
 		

@@ -83,7 +83,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
 	public static final float DEFENDER_STRENGTH_FP_MULT = 0.75f;
-	public static final float DEFENDER_STRENGTH_MARINE_MULT = 1;
+	public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.25f;
 	public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
 	// higher = factions (who aren't otherwise at war) invade pirates less often
 	public static final float ALL_AGAINST_ONE_INVASION_POINT_MOD = 0.27f;
