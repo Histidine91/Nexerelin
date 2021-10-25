@@ -36,7 +36,7 @@ public class GroundBattleAI {
 	protected transient Map<IndustryForBattle, IFBStrengthRecord> strengthRecords = new HashMap<>();
 	protected transient Set<IndustryForBattle> industriesWithEnemy = new HashSet<>();
 	protected transient Set<IFBStrengthRecord> writeoffIndustries = new HashSet<>();
-	protected transient List<IFBStrengthRecord> industriesWithEnemySorted = new ArrayList<>();
+	protected transient List<IFBStrengthRecord> industriesWithEnemySorted = new LinkedList<>();
 
 	/**
 	 * 	Undeployed before deployed units, then strongest to weakest.
@@ -87,6 +87,7 @@ public class GroundBattleAI {
 			remainingMovePoints -= unit.getDeployCost();
 			if (remainingMovePoints <= 0) break;
 		}
+		//printDebug("  Available strength is " + availableStrength);
 		return availableStrength;
 	}
 	
@@ -107,11 +108,15 @@ public class GroundBattleAI {
 				continue;
 			
 			float strRatio = record.getEffectiveStrengthRatio(false);
-			if (strRatio < STRENGTH_RATIO_TO_WRITE_OFF) 
+			float target = STRENGTH_RATIO_TO_WRITE_OFF;
+			if (isAttacker) target *= 1.25f;
+			if (strRatio == 0) target *= 1.5f;
+			
+			if (strRatio < target) 
 			{
 				float hypotheticalOurStr = record.ourStr + availableStrength;
 				float hypotheticalRatio = hypotheticalOurStr/record.theirStr;
-				if (hypotheticalRatio < STRENGTH_RATIO_TO_WRITE_OFF) 
+				if (hypotheticalRatio < target) 
 				{
 					printDebug(" - Writing off " + record.industry.getName());
 					printDebug(String.format("  - Current strength ratio %s, at most we could get it to %s", 
@@ -236,12 +241,22 @@ public class GroundBattleAI {
 			strengthRecords.put(ifb, record);
 		}
 		
-		Collections.sort(industriesWithEnemySorted, new Comparator<IFBStrengthRecord>() {
-			@Override
-			public int compare(IFBStrengthRecord one, IFBStrengthRecord two) {
-				return Float.compare(two.getPriorityForReinforcement(false), one.getPriorityForReinforcement(false));
+		Collections.sort(industriesWithEnemySorted, INDUSTRY_SORT_COMPARATOR);
+		
+		// concentration of force hax: for attacker, take only the top three industries that we do not already have a presence on
+		if (isAttacker) {
+			List<IFBStrengthRecord> toRemove = new ArrayList<>();
+			int extraCount = 0;
+			for (IFBStrengthRecord record : industriesWithEnemySorted) {
+				if (record.ourStr > 0) continue;
+				extraCount++;
+				if (extraCount > 3) {
+					toRemove.add(record);
+				}
 			}
-		});
+			industriesWithEnemySorted.removeAll(toRemove);
+		}
+				
 		printDebug("Listed industries with enemy presence");
 		for (IFBStrengthRecord record : industriesWithEnemySorted) {
 			printDebug(String.format(" - Industry %s has strength ratio %.2f, reinforcement priority %.2f", 
@@ -265,9 +280,10 @@ public class GroundBattleAI {
 				}
 				float remainingStr = strAtLoc.getEffectiveStrengthRatioAssumingUnitRemoved(unit);
 				//log.info("Remaining strRatio: " + remainingStr);
-				if (strAtLoc.hasEnemyPresence && remainingStr < 0.9f)
+				if (strAtLoc.hasEnemyPresence && remainingStr < 1.05f)
 					continue;
 			}
+			
 			printDebug(String.format(" - Available unit: %s, at %s, strength %s", 
 					unit.toString(), 
 					!unit.isDeployed() ? "fleet" : unit.getLocation().getName(), 
@@ -306,7 +322,8 @@ public class GroundBattleAI {
 	public boolean decisionLoop(int iter) {		
 		boolean movedAnything = false;
 		for (IFBStrengthRecord toReinforce : industriesWithEnemySorted) {
-			printDebug("Considering plans for industry " + toReinforce.industry.getName());
+			printDebug(String.format("Considering plans for industry %s (priority %s)", 
+					toReinforce.industry.getName(), toReinforce.getPriorityForReinforcement(false)));
 			if (writeoffIndustries.contains(toReinforce)) {
 				continue;
 			}
@@ -336,14 +353,17 @@ public class GroundBattleAI {
 				availableUnitsSorted.remove(unit);
 				
 				// recompute priority given the reinforcements we've just dispatched
-				toReinforce.ourStr += unit.getBaseStrength();
+				toReinforce.ourStr += unit.getAttackStrength();
 				toReinforce.getEffectiveStrengthRatio(true);
-				toReinforce.getPriorityForReinforcement(true);
+				float newDestPrio = toReinforce.getPriorityForReinforcement(true);
+				printDebug(String.format("  Destination %s now has priority %s", toReinforce.industry.getName(), newDestPrio));
 				if (origin != null) {
-					origin.ourStr -= unit.getBaseStrength();
+					origin.ourStr -= unit.getAttackStrength();
 					origin.getEffectiveStrengthRatio(true);
-					origin.getPriorityForReinforcement(true);
-				}			
+					// don't recompute origin's priority, to avoid circular unit movements because it fell in priority
+					//float newOriginPrio = origin.getPriorityForReinforcement(true);
+					//printDebug(String.format("  Origin %s now has priority %s", origin.industry.getName(), newOriginPrio));
+				}
 				
 				movedAnything = true;
 				break;
@@ -353,6 +373,8 @@ public class GroundBattleAI {
 		
 		if (movedAnything) {
 			recomputeAvailableStrength();
+			// resort industries that need deployment, since priority changed
+			Collections.sort(industriesWithEnemySorted, INDUSTRY_SORT_COMPARATOR);
 			writeOffIndustries();
 		}
 		
@@ -370,7 +392,7 @@ public class GroundBattleAI {
 	}
 	
 	public static class IFBStrengthRecord {
-		public boolean isAttacker;
+		public boolean isAttacker;	// is this the attacking side's copy of the record?
 		public IndustryForBattle industry;
 		public float ourStr;
 		public float theirStr;
@@ -388,6 +410,14 @@ public class GroundBattleAI {
 			hasEnemyPresence = theirStr > 0;
 		}
 		
+		/**
+		 * Get the ratio of our strength to enemy strength, on this industry.<br/>
+		 * "Effective" means apply the industry's strength mult (it's already been applied
+		 * in calculating the local strength, but do it again due to factors like square-cube law
+		 * and the modifier also offering a damage reduction).
+		 * @param recompute
+		 * @return
+		 */
 		public float getEffectiveStrengthRatio(boolean recompute) {
 			if (!recompute && strRatioCache != null)
 				return strRatioCache;
@@ -418,14 +448,27 @@ public class GroundBattleAI {
 				return reinforcePriorityCache;
 			}
 			
+			boolean weHoldThis = industry.heldByAttacker == isAttacker;
 			float strRatio = getEffectiveStrengthRatio(false);
+			if (isAttacker && !weHoldThis)
+				strRatio *= 0.5f;	// underestimate our strength on industries we do not hold, to favor concentration of force
+			
 			float prio = 1.25f - strRatio;
-			if (prio < 0) prio = 0;
-			else if (industry.heldByAttacker != isAttacker) prio /= 2;	// counterattacks have lower priority
-			prio += GroundBattleSide.getDefendPriority(industry.getIndustry()) * 0.1f;
+			if (prio < 0) 
+				prio = 0;
+			else if (!isAttacker && !weHoldThis) 
+				prio /= 2;	// counterattacks by defender have lower priority
+			prio += GroundBattleSide.getDefendPriority(industry.getIndustry()) * 0.125f;
 			
 			reinforcePriorityCache = prio;
 			return reinforcePriorityCache;
 		}
 	}
+	
+	public static final Comparator<IFBStrengthRecord> INDUSTRY_SORT_COMPARATOR = new Comparator<IFBStrengthRecord>() {
+		@Override
+		public int compare(IFBStrengthRecord one, IFBStrengthRecord two) {
+			return Float.compare(two.getPriorityForReinforcement(false), one.getPriorityForReinforcement(false));
+		}
+	};
 }

@@ -383,16 +383,16 @@ public class GroundBattleSide {
 	
 	public static float getDefendPriorityFromTags(Industry ind) {
 		Set<String> tags = ind.getSpec().getTags();
-		if (tags.contains(Industries.TAG_GROUNDDEFENSES) 
+		if (tags.contains(Industries.TAG_GROUNDDEFENSES))
+			return 4;
+		if (tags.contains(Industries.TAG_SPACEPORT) 
 				|| tags.contains(Industries.TAG_MILITARY)
 				|| tags.contains(Industries.TAG_COMMAND))
-			return 4;
-		if (tags.contains(Industries.TAG_SPACEPORT))
 			return 3;
 		if (tags.contains(Industries.TAG_HEAVYINDUSTRY))
 			return 2.5f;
 		if (tags.contains(Industries.TAG_PATROL))
-			return 2;
+			return 1.5f;
 		
 		return 0.5f;
 	}
