@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
+import com.fs.starfarer.api.impl.campaign.ids.People;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -175,8 +176,53 @@ public class StartSetupPostTimePass {
 				mem.set("$gaFC_missionCompleted", true);
 				mem.set("$gaKA_missionCompleted", true);
 				mem.set("$gaPZ_missionCompleted", true);
+				
+				addStoryContact(People.ARROYO);
+				//addStoryContact(People.HEGEMONY_GA_OFFICER);
+				addStoryContact(People.HORUS_YARIBAY);
+				addStoryContact(People.IBRAHIM);
+				handleAcademyVars();
 			}
 		}
+	}
+	
+	public static void handleAcademyVars() {
+		SectorEntityToken academy = Global.getSector().getEntityById("station_galatia_academy");
+		academy.getMemoryWithoutUpdate().set("$metProvost", true);
+		
+		MarketAPI market = academy.getMarket();
+		
+		PersonAPI seb = Global.getSector().getImportantPeople().getPerson(People.SEBESTYEN);
+		PersonAPI cour = Global.getSector().getImportantPeople().getPerson(People.COUREUSE);
+		PersonAPI baird = Global.getSector().getImportantPeople().getPerson(People.BAIRD);
+		PersonAPI garg = Global.getSector().getImportantPeople().getPerson(People.GARGOYLE);
+		
+		seb.getRelToPlayer().setLevel(RepLevel.COOPERATIVE);
+		seb.getMemoryWithoutUpdate().set("$gotGAATGpay", true);
+		seb.getMemoryWithoutUpdate().set("$askedProvostUpset", true);
+		seb.getMemoryWithoutUpdate().set("$metAlready", true);		
+		
+		market.getCommDirectory().getEntryForPerson(baird).setHidden(false);
+		market.getCommDirectory().getEntryForPerson(seb).setHidden(false);
+		
+		cour.getMarket().getCommDirectory().removePerson(cour);
+		cour.getMarket().removePerson(cour);
+		market.addPerson(cour);
+		market.getCommDirectory().addPerson(cour);
+		cour.getMemoryWithoutUpdate().set("$askedAboutBaird", true);
+		cour.getMemoryWithoutUpdate().set("$askedAboutGargoyle", true);
+		
+		garg.getMarket().getCommDirectory().removePerson(garg);
+		garg.getMarket().removePerson(garg);
+		market.addPerson(garg);
+		market.getCommDirectory().addPerson(garg);
+		garg.getMemoryWithoutUpdate().set("$askedProvostThrown", true);
+	}
+	
+	public static void addStoryContact(String id) {
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(id);
+		ContactIntel.addPotentialContact(1, person, person.getMarket(), null);
+		person.getMarket().getCommDirectory().getEntryForPerson(person).setHidden(false);
 	}
 	
 	public static SectorEntityToken pickRandomStartLocation(String factionId, boolean ownFactionOnly) {
