@@ -136,6 +136,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		GBUtils.setGarrisonDamageMemory(market, dam);
 		
 		battle = new GroundBattleIntel(planet.getMarket(), attacker, planet.getFaction());
+		battle.setEndIfPeace(false);
 		battle.init();
 		
 		float strength = GBUtils.estimateTotalDefenderStrength(battle, true);

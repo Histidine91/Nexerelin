@@ -153,6 +153,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected MilitaryResponseScript responseScript;
 	
 	protected boolean noTransfer = false;
+	protected boolean endIfPeace = true;
 	
 	/**
 	 * Set to true at the start of {@code advanceTurn()}, and false when it ends.
@@ -431,6 +432,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 
 	public void setNoTransfer(boolean noTransfer) {
 		this.noTransfer = noTransfer;
+	}
+	
+	public boolean isEndIfPeace() {
+		return endIfPeace;
+	}
+	
+	public void setEndIfPeace(boolean endIfPeace) {
+		this.endIfPeace = endIfPeace;
 	}
 	
 	public Boolean isPlayerAttacker() {
@@ -1276,7 +1285,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			endBattle(BattleOutcome.DESTROYED);
 			return;
 		}
-		if (!attacker.getFaction().isHostileTo(defender.getFaction())) {
+		if (endIfPeace && !attacker.getFaction().isHostileTo(defender.getFaction())) {
 			endBattle(BattleOutcome.PEACE);
 			return;
 		}
