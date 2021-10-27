@@ -31,6 +31,7 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
@@ -127,6 +128,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			}
 		}
 		if (!anyRaidersRemaining) {
+			log.info("No raiders remaining, running check");
 			if (offFltIntel instanceof InvasionIntel && ((InvasionIntel)offFltIntel).getGroundBattle() != null) 
 			{
 				// we've delivered our load, go ahead and proceed to next stage
@@ -244,7 +246,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		{
 			//float bombCost = Nex_MarketCMD.getBombardmentCost(market, fleet, BombardType.TACTICAL);
 			float bombCost = Nex_MarketCMD.getBombardmentCost(market, fleet);
-			float maxCost = offFltIntel.getRaidFP() / offFltIntel.getNumFleets() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
+			float maxCost = route.getExtra().fp * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
 			if (fleet != null) {
 				maxCost = fleet.getCargo().getMaxFuel() * 0.25f;
 			}
@@ -283,6 +285,9 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				offFltIntel.setRouteActionDone(fleet);
 				return;
 			}
+			
+			// honestly we could tag action as successful here, since the troops were dropped off
+			// ...no we can't, the other routes still need to make their attempt
 			if (fleet != null) inv.deployToGroundBattle(fleet);
 			else inv.deployToGroundBattle(currRouteForAutoresolve);
 		}
@@ -335,12 +340,24 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			currRouteForAutoresolve = route;
 			performRaid(route.getActiveFleet(), target);
 			offFltIntel.setRouteActionDone(route);
+			log.info("Autoresolving for route " + route.toString());
 			if (NexConfig.legacyInvasions && offFltIntel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
 		}
-		if (offFltIntel.getOutcome() != OffensiveOutcome.SUCCESS)
+		boolean fail;
+		boolean isNewInvade = offFltIntel instanceof InvasionIntel && !NexConfig.legacyInvasions;
+		if (isNewInvade) {
+			fail = ((InvasionIntel)offFltIntel).getGroundBattle() == null;
+		} else {
+			fail = offFltIntel.getOutcome() != OffensiveOutcome.SUCCESS;
+		}
+		if (fail)
 		{
 			status = RaidStageStatus.FAILURE;
 			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
+		}
+		else if (isNewInvade) {
+			status = RaidStageStatus.SUCCESS;
+			offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
 		}
 	}
 	
@@ -381,7 +398,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		if (status == RaidStageStatus.ONGOING && curr == index) {
 			info.addPara(StringHelper.getString("exerelin_invasion", "intelStageAction"), opad);
 			
-			if (Global.getSettings().isDevMode()) {
+			if (Global.getSettings().isDevMode() || ExerelinModPlugin.isNexDev) {
 				info.addPara("DEBUG: Autoresolving in %s days", opad, h, 
 						String.format("%.1f", untilAutoresolve));
 			}

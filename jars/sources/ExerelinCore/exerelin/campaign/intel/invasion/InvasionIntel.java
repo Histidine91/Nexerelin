@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
@@ -55,7 +56,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	public static final int MAX_MARINES_PER_FLEET = 3000;
 	public static final int WAIT_AFTER_SUCCESS_DAYS = 90;
 	public static final int MAX_MARINES_TOTAL = 16000;
-	public static final float MARINE_GARRISION_MULT = 1;
+	public static final float MARINE_GARRISION_MULT = 0.75f;
+	public static final float MARINE_NON_BOMBABLE_MULT = 1.3f;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
@@ -152,6 +154,17 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 					"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
 	}
+	
+	/**
+	 * Do we think we'll be allowed to tactically bombard the target when we get there?
+	 * @return
+	 */
+	protected boolean expectBombable() {
+		if (target.hasCondition(Conditions.HABITABLE) && !target.hasCondition(Conditions.POLLUTION))
+			return false;
+		float def = Nex_MarketCMD.getBombardmentCost(target, null);
+		return def < 3000;
+	}
 
 	public void setMarineCount() {
 		// based on vanilla ground defense strength
@@ -176,6 +189,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		else {
 			float garrison = GBUtils.estimateTotalDefenderStrength(target, faction, false);
 			marinesTotal = (int)Math.ceil(garrison * MARINE_GARRISION_MULT);
+			
+			if (!expectBombable()) {
+				marinesTotal *= MARINE_NON_BOMBABLE_MULT;
+			}
 		}
 		if (marinesTotal < 100) marinesTotal = 100;
 		else if (marinesTotal > MAX_MARINES_TOTAL) {
@@ -219,7 +236,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	}
 	
 	public GroundBattleIntel initGroundBattle() {
+		if (groundBattle != null) return groundBattle;
+		
 		// if there's already a battle going on, use that if we can
+		
 		groundBattle = GroundBattleIntel.getOngoing(target);
 		if (groundBattle != null && groundBattle.getOutcome() == null) {
 			//  terminate the entire invasion if we're not friendly to either side
@@ -247,6 +267,12 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	public void deployToGroundBattle(RouteData route) {
 		if (route == null) return;
 		
+		if (isRouteActionDone(route)) {
+			if (ExerelinModPlugin.isNexDev)
+				Global.getSector().getCampaignUI().addMessage("Route double deploying to battle: " + route.toString());
+			return;
+		}
+		
 		if (groundBattle == null) {
 			// TODO print error message
 			return;
@@ -271,8 +297,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 				int skeletonCrew = (int)fleet.getFleetData().getMinCrew();
 				log.info(String.format("Fleet has %s personnel capacity, minus %s skeleton crew, leaving %s space for marines", 
 						capacity, skeletonCrew, capacity - skeletonCrew));
+				// drop fewer marines if there's an active fleet, since we have fire support from fleet existing
+				marines = Math.round(marines * 0.75f);
 				marines = Math.min(marines, capacity - skeletonCrew);
-			}			
+			}
 			heavyArms = (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS);
 		}
 		else {
@@ -599,12 +627,6 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		float defenderStr = WarSimScript.getFactionStrength(targetFaction, system);
 		float defensiveStr = defenderStr + WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
 		
-		float invasionGroundStr = marinesPerFleet * (1 + NexConfig.getFactionConfig(faction.getId())
-				.invasionStrengthBonusAttack);
-		invasionGroundStr *= 1 + (getNumFleets() - 1)/2;
-		
-		float re = Nex_MarketCMD.getRaidEffectiveness(target, invasionGroundStr);
-		
 		String spaceStr = "";
 		String groundStr = "";
 		
@@ -621,6 +643,18 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			spaceWin = 1;
 		}
 		
+		float re;
+		if (NexConfig.legacyInvasions) {
+			float ourGroundStr = marinesTotal * (1 + NexConfig.getFactionConfig(faction.getId())
+				.invasionStrengthBonusAttack);
+			re = Nex_MarketCMD.getRaidEffectiveness(target, ourGroundStr);
+		}
+		else {
+			// FIXME: this is always "evenly matched", but of course it's not that simple
+			float enemyGroundStr = GBUtils.estimateTotalDefenderStrength(target, faction, true);
+			float ourGroundStrAdj = marinesTotal * 1.25f;
+			re = ourGroundStrAdj/(ourGroundStrAdj + enemyGroundStr);
+		}
 		if (re < 0.33f) {
 			groundStr = StringHelper.getString("outmatched");
 			groundWin = -1;
