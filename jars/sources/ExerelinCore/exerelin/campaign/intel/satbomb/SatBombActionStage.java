@@ -25,7 +25,7 @@ public class SatBombActionStage extends InvActionStage {
 		if (offFltIntel.getOutcome() != null)
 			return;
 		
-		boolean vicBioBomb = intel.getFaction().getId().equals("vic");
+		boolean vicBioBomb = ((SatBombIntel)offFltIntel).isVirusBomb;
 		
 		float cost = Nex_MarketCMD.getBombardmentCost(market, fleet);
 		//float maxCost = intel.getAssembleStage().getOrigSpawnFP() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
