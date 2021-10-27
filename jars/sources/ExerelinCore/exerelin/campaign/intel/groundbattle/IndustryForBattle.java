@@ -560,8 +560,7 @@ public class IndustryForBattle {
 
 					String owner = StringHelper.getString(heldByAttacker ? "attacker" : "defender", true);
 					str = StringHelper.getString("nex_invasion2", "industryPanel_header_heldBy");
-					tt.addPara(str + ": " + owner, pad, heldByAttacker ? Misc.getPositiveHighlightColor() 
-							: Misc.getNegativeHighlightColor(), owner);
+					tt.addPara(str + ": " + owner, pad, intel.getHighlightColorForSide(heldByAttacker), owner);
 					
 					if (!trueDisrupt) {
 						if (getPlugin().getDef().hasTag("noBombard")) {
@@ -594,7 +593,7 @@ public class IndustryForBattle {
 
 		panel.addComponent(box).inTL(x, y);
 		
-		if (heldByAttacker && intel.playerIsAttacker) {
+		if (heldByAttacker && Boolean.TRUE.equals(intel.playerIsAttacker)) {
 			boolean haveLootables = ind.getAICoreId() != null || ind.getSpecialItem() != null;
 			if (haveLootables) {
 				TooltipMakerAPI lootBtnHolder = box.createUIElement(GroundUnit.BUTTON_SECTION_WIDTH-6, 16, false);

@@ -113,6 +113,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public static final Object BUTTON_AUTO_MOVE = new Object();
 	public static final Object BUTTON_AUTO_MOVE_TOGGLE = new Object();
 	public static final Object BUTTON_DEBUG_AI = new Object();
+	public static final Object BUTTON_SHOW_ALL_UNITS = new Object();
 	public static final Object BUTTON_ANDRADA = new Object();
 	public static final Object BUTTON_GOVERNORSHIP = new Object();
 	public static final Object BUTTON_JOIN_ATTACKER = new Object();
@@ -137,6 +138,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected GBPlayerData playerData;
 		
 	protected transient ViewMode viewMode;
+	protected static transient boolean showAllUnits;	// debug only
 	
 	protected List<GroundBattleLog> battleLog = new LinkedList<>();
 	//protected transient List<String> rawLog;
@@ -1515,6 +1517,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			btnHolder2.addButton(getString("btnAIDebug"), BUTTON_DEBUG_AI, base, bg, buttonWidth, 24, 0);
 			buttonDebugRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
 			
+			TooltipMakerAPI btnHolder3 = buttonDebugRow.createUIElement(buttonWidth, 
+				VIEW_BUTTON_HEIGHT, false);
+			ButtonAPI check = btnHolder3.addAreaCheckbox(getString("btnShowAllUnits"), BUTTON_SHOW_ALL_UNITS, 
+					base, bg, fc.getBrightUIColor(), buttonWidth, VIEW_BUTTON_HEIGHT, 0);
+			check.setChecked(showAllUnits);
+			buttonDebugRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
+			
 			info.addCustom(buttonDebugRow, 3);
 		}
 		
@@ -1682,7 +1691,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		// unit cards
 		int CARDS_PER_ROW = (int)(width/(GroundUnit.PANEL_WIDTH + GroundUnit.PADDING_X));
 		List<GroundUnit> listToRead = playerData.getUnits();	// units whose cards should be shown
-		if (Global.getSettings().isDevMode()) {
+		if (showAllUnits) {
 			listToRead = getAllUnits();
 		}
 		int numCards = listToRead.size();
@@ -2236,6 +2245,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			runAI(false, false);
 			return;
 		}
+		if (buttonId == BUTTON_SHOW_ALL_UNITS) {
+			showAllUnits = !showAllUnits;
+			ui.updateUIForItem(this);
+			return;
+		}
 		if (buttonId == BUTTON_AUTO_MOVE) {
 			runAI(playerIsAttacker, true);
 			ui.updateUIForItem(this);
@@ -2297,6 +2311,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (outcome != null) {
 			generatePostBattleDisplay(panel, outer, width, height);
 			generateLogDisplay(outer, panel, width - 14);
+			generateIndustryDisplay(outer, panel, width);
+			
 			panel.addUIElement(outer).inTL(0, 0);
 			return;
 		}
@@ -2312,7 +2328,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		if (viewMode == ViewMode.UNITS) {
-			if (Global.getSettings().isDevMode() || playerIsAttacker != null)
+			if (Global.getSettings().isDevMode() || playerIsAttacker != null || showAllUnits)
 				generateUnitDisplay(outer, panel, width, opad);
 		} 
 		else if (viewMode == ViewMode.ABILITIES) {
