@@ -1769,9 +1769,9 @@ Call $global.nex_gbTut_ref updateData
 $nex_gbTut_stage == TALK_TO_CONTACT_AFTER",ShowPersonVisual,"""Excellent work, friend! The invasion has been thwarted and $market is safe.
 
 ""We've picked up a bunch of prisoners, and Colonel Shaddad wants me to sit in on the interrogations. I imagine FleetSec would be very interested in just who sponsored an unflagged invasion of the planet.""","nex_gbTut_diamondPostConvo2:""Who do you think it was?""",
-nex_gbTut_diamondPostConvo2,DialogOptionSelected,$option == nex_gbTut_diamondPostConvo2,,"$personLastName rubs his chin. ""There are a few obvious suspects, aren't there? The Hegemony would just love to expand their influence in our backyard and embarass us at the same time. Then there's the Church; they've never really forgotten the Mazalot uprising.
+nex_gbTut_diamondPostConvo2,DialogOptionSelected,$option == nex_gbTut_diamondPostConvo2,,"$personLastName rubs his chin. ""There are a few obvious suspects, aren't there? The Hegemony would just love to expand their influence in our backyard and embarrass us at the same time. Then there's the Church; they've never really forgotten the Mazalot uprising.
 
-""But at the same time, this sort of skullduggery doesn't seem like their forte. And there are still a bunch of unanswered questions, like what the Fleet was doing all this time. I expect we'll be going over all the evidence with a fine comb.""
+""On the other hand, this sort of skullduggery doesn't seem like their forte. And there are still a bunch of unanswered questions, like what the Fleet was doing all this time. I expect we'll be going over all the evidence with a fine comb.""
 
 $HeOrShe shakes $hisOrHer head, then looks straight at you. ""When I'm done with tonight's business, how about you come down dirtside with me for supper? You've certainly earned a couple of beers.""","nex_gbTut_diamondPostConvo3:Accept
 nex_gbTut_diamondPostConvoExit:Decline politely, saying you have other plans",
@@ -1797,14 +1797,14 @@ nex_gbTut_diamondPostConvo5Fail,DialogOptionSelected,"$option == nex_gbTut_diamo
 $HeOrShe gazes off into the distance. ""The captain was right,"" you catch a mutter. Somehow it doesn't seem like he's referring to you or himself.",nex_gbTut_diamondPostConvoEnd:Continue,
 nex_gbTut_diamondPostEnd,DialogOptionSelected,$option == nex_gbTut_diamondPostConvoEnd,"Call $global.nex_gbTut_ref endMission
 ShowDefaultVisual
-FireAll PopulateOptions","The rest of the dinner goes by, in the companionable silence of two acquaintances sharing a meal. The food is indeed good, and goes well with small talk.
+EndConversation","The rest of the dinner goes by, in the companionable silence of two acquaintances sharing a meal. The food is indeed good, and goes well with small talk.
 
 After the plates have been taken away, $personLastName nods to you. ""Bye for now, $playerFirstName. Maybe we'll see each other again someday; it's a small Sector, after all.""
 
 You take a shuttle back to your ship.",,
 nex_gbTut_diamondPostEndEarly,DialogOptionSelected,$option == nex_gbTut_diamondPostConvoExit,"Call $global.nex_gbTut_ref endMission
 ShowDefaultVisual
-FireAll PopulateOptions","""Oh. That's a shame, but I understand. Look me up if you change your mind, eh?""
+EndConversation","""Oh. That's a shame, but I understand. Look me up if you change your mind, eh?""
 
 You cut the comm link after saying goodbye. Your work here is done; the rest of the Sector awaits.",,
 #END ground battle tutorial,,,,,,

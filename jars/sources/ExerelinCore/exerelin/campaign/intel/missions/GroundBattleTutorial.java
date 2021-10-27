@@ -171,11 +171,11 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		// attempt at strength scaling
 		//triggerAutoAdjustFleetStrengthModerate();
 		float fraction = Math.max(combat/maxPointsForFaction/0.75f, HubMissionWithTriggers.FleetSize.SMALL.maxFPFraction);
-		fraction *= 0.4f;
+		fraction *= 0.55f;
 		fraction = Math.min(fraction, 1);
 		triggerSetFleetSizeFraction(fraction);
 		
-		getPreviousCreateFleetAction().transportMult = 0.25f;	// troop transport FP equal to 1/4 combat FP
+		getPreviousCreateFleetAction().transportMult = 0.2f;	// troop transport FP equal to 1/5 combat FP
 		
 		triggerMakeHostile();
 		triggerMakeNoRepImpact();
@@ -222,7 +222,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 			String text = getString("intelDesc2");
 			info.addPara(text, opad, planet.getMarket().getTextColorForFactionOrPlanet(), planet.getName());
 		} else if (currentStage == Stage.TALK_TO_CONTACT_AFTER) {
-			String text = getString("intelDesc1");
+			String text = getString("intelDesc3");
 			text = StringHelper.substituteToken(text, "$goToText", getGoToPlanetTextShort(planet));
 			text = StringHelper.substituteToken(text, "$rank", contact.getRank());
 			text = StringHelper.substituteToken(text, "$name", contact.getName().getLast());

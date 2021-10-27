@@ -1459,6 +1459,7 @@
 		"intelDesc3":"You've helped to repulse the invasion. $goToText and speak with $rank $name.",
 		
 		"intelBullet2":"Defeat the hostile forces invading %s",
+		"intelBullet3":"and speak with $name",
 	},
 	
 	"exerelin_landmarks":{
@@ -1654,7 +1655,7 @@
 		"tooltipStartingDMods":"May not apply to all custom starts.",
 		"optionRandomAntioch":"Antioch in random sector",
 		"optionSkipStory":"Skip story",
-		"tooltipSkipStory":"Mark the Academy missions as completed and grant gate travel capability at start",
+		"tooltipSkipStory":"Mark the Academy missions as completed, and grant gate travel, Transverse Jump and Neutrino Detector at start",
 		
 		"recommendedSizeMsg1":"Non-independent factions enabled: %s",
 		"recommendedSizeMsg2":"Auto-configuring sector size: %s systems, %s planets, %s stations",
