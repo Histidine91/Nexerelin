@@ -508,7 +508,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			this.disruptTime = 0;
 			
 			log.info("  Transmitting disruption failure");
-			sendUpdate(UpdateParam.INDUSTRY_DISRUPT_FAIL);
+			if (govtFaction.isPlayerFaction() || govtFaction == Misc.getCommissionFaction() || isImportant())
+				sendUpdate(UpdateParam.INDUSTRY_DISRUPT_FAIL);
 			return;
 		}
 		this.disruptTime = Math.round(disruptTime);
