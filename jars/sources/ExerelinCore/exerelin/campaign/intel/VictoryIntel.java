@@ -39,8 +39,6 @@ public class VictoryIntel extends BaseIntelPlugin {
 									Color tc, float initPad) {
 		if (type == VictoryType.RETIRED) return;
 		
-		float pad = 0f;
-		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		String name = Misc.ucFirst(faction.getDisplayName());
 		String strKey = "intelBulletFaction";
@@ -48,7 +46,7 @@ public class VictoryIntel extends BaseIntelPlugin {
 			strKey = "intelBulletFactionAndAllies";
 		
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", strKey, "$faction", name);
-		info.addPara(str, pad, tc, faction.getBaseUIColor(), name);
+		info.addPara(str, initPad, tc, faction.getBaseUIColor(), name);
 	}
 	
 	@Override

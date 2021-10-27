@@ -456,7 +456,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	}
 	
 	@Override
-	public String getSmallDescriptionTitle() {
+	public String getName() {
 		return Misc.ucFirst(faction.getDisplayName()) + " " + getString("title");
 	}
 	

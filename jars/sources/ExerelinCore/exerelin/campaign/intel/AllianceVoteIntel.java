@@ -48,8 +48,6 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad) {
-
-		float pad = 0f;
 		Color h = result.success ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor();
 		
 		// $warOrPeace with $otherParty: $passOrFail
@@ -72,7 +70,7 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 		sub.put("$passOrFail", passOrFail);
 				
 		String str = StringHelper.getStringAndSubstituteTokens("exerelin_alliances", "intelVoteBullet", sub);
-		LabelAPI para = info.addPara(str, tc, pad);
+		LabelAPI para = info.addPara(str, tc, initPad);
 		para.setHighlight(otherParty, passOrFail);
 		para.setHighlightColors(otherPartyCol, h);
 	}

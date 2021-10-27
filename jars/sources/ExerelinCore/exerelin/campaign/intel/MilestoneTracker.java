@@ -166,11 +166,9 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad) {
-		float pad = 0f;
-		
 		if (listInfoParam instanceof String) {
 			MilestoneDef def = defsById.get((String)listInfoParam);
-			info.addPara(def.name, pad);
+			info.addPara(def.name, initPad);
 		}
 	}
 	

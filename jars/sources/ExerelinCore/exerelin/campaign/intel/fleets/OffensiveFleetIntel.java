@@ -300,6 +300,24 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		super.sendUpdateIfPlayerHasIntel(listInfoParam, onlyIfImportant, sendIfHidden);
 	}
 	
+	// override RaidIntel's primitive form of addBulletPoints
+	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
+		float pad = 3f;
+		float opad = 10f;
+		
+		float initPad = pad;
+		if (mode == ListInfoMode.IN_DESC) initPad = opad;
+		
+		Color tc = getBulletColorForMode(mode);
+	
+		boolean isUpdate = getListInfoParam() != null;
+		
+		bullet(info);
+		addBulletPoints(info, mode, isUpdate, tc, initPad);
+		unindent(info);
+	}
+	
 	// for intel popup in campaign screen's message area
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 

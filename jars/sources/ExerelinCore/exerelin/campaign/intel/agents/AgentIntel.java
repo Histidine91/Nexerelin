@@ -414,7 +414,6 @@ public class AgentIntel extends BaseIntelPlugin {
 									Color tc, float initPad) {
 		if (isDead || isDismissed) return;
 		Color hl = Misc.getHighlightColor();
-		float pad = 0;
 		
 		bullet(info);
 		
@@ -422,13 +421,13 @@ public class AgentIntel extends BaseIntelPlugin {
 			
 		} else if (listInfoParam == UPDATE_ARRIVED) {
 			String marketName = market.getName();
-			info.addPara(marketName, pad, tc, market.getTextColorForFactionOrPlanet(), marketName);
+			info.addPara(marketName, initPad, tc, market.getTextColorForFactionOrPlanet(), marketName);
 		} else if (listInfoParam == UPDATE_ABORTED) {
-			info.addPara(getString("intelAborted"), pad);
+			info.addPara(getString("intelAborted"), initPad);
 		} else if (listInfoParam == UPDATE_LEVEL_UP) {
-			info.addPara(getString("intelLevelUp"), pad, hl, level + "");
+			info.addPara(getString("intelLevelUp"), initPad, hl, level + "");
 		} else if (listInfoParam == UPDATE_INJURY_RECOVERED) {
-			info.addPara(getString("intelRecovered"), pad);
+			info.addPara(getString("intelRecovered"), initPad);
 		} else if (listInfoParam == UPDATE_CELL_KILL) {
 			MarketAPI destination = null;
 			float cost = 0;
@@ -450,12 +449,10 @@ public class AgentIntel extends BaseIntelPlugin {
 				String str = getString("intelCellKill");
 				str = StringHelper.substituteToken(str, "$market", mktName);
 				str = StringHelper.substituteToken(str, "$cost", costStr);
-				LabelAPI label = info.addPara(str, pad);
+				LabelAPI label = info.addPara(str, initPad);
 				label.setHighlight(mktName, costStr);
 				label.setHighlightColors(destination.getTextColorForFactionOrPlanet(), hl);
-			}
-			
-			
+			}			
 		} else if (listInfoParam == UPDATE_LOST) {
 			
 		} else {
@@ -463,7 +460,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			if (!specializations.isEmpty()) {
 				str += " " + StringHelper.writeStringCollection(getSpecializationNames());
 			}
-			info.addPara(str, pad, tc, hl, level + "");
+			info.addPara(str, initPad, tc, hl, level + "");
 			if (market != null)
 				info.addPara(market.getName(), 0, tc, market.getTextColorForFactionOrPlanet(), 
 						market.getName());

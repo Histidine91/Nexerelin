@@ -121,8 +121,10 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		float pad = 0;
 		String name = Misc.ucFirst(faction.getDisplayName());
 		info.addPara(name, initPad, tc, faction.getBaseUIColor(), name);
-		name = Misc.ucFirst(targetFaction.getDisplayName());
-		info.addPara(name, pad, tc, targetFaction.getBaseUIColor(), name);
+		if (faction != targetFaction) {
+			name = Misc.ucFirst(targetFaction.getDisplayName());
+			info.addPara(name, pad, tc, targetFaction.getBaseUIColor(), name);
+		}
 				
 		String key = "intelBullet";
 		Map<String, String> sub = new HashMap<>();

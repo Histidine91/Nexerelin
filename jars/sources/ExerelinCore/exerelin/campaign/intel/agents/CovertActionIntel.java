@@ -665,6 +665,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 				targetFaction.getBaseUIColor(), " " + market.getName());
 	}
 	
+	@Override
+	public Color getTitleColor(ListInfoMode mode) {
+		return Misc.getBasePlayerColor();
+	}
+	
 	protected String getName() {
 		String str = getDef().name;
 		if (result != null) { 
