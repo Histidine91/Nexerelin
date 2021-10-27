@@ -214,17 +214,19 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		float opad = 10f;
 		Color h = Misc.getHighlightColor();
 		if (currentStage == Stage.START) {
-			info.addPara(getGoToPlanetTextPre(planet) +
-					", [temp] and contact one " + contact.getRank() 
-					+ " " + contact.getName().getFullName(), opad);
+			String text = getString("intelDesc1");
+			text = StringHelper.substituteToken(text, "$rank", contact.getRank());
+			text = StringHelper.substituteToken(text, "$name", contact.getNameString());
+			info.addPara(getGoToPlanetTextPre(planet) +	", " + text, opad);
 		} else if (currentStage == Stage.BATTLE) {
-			String text = "[temp] Defeat the hostile forces invading " + planet.getName();
-			info.addPara(text, opad);
+			String text = getString("intelDesc2");
+			info.addPara(text, opad, planet.getMarket().getTextColorForFactionOrPlanet(), planet.getName());
 		} else if (currentStage == Stage.TALK_TO_CONTACT_AFTER) {
-			String text = String.format("[temp] You've helped to repulse the invasion. " 
-					+ getGoToPlanetTextShort(planet) + " and speak with %s.", 
-					contact.getRank() + " " + contact.getName().getLast());
-			info.addPara(text, opad);
+			String text = getString("intelDesc1");
+			text = StringHelper.substituteToken(text, "$goToText", getGoToPlanetTextShort(planet));
+			text = StringHelper.substituteToken(text, "$rank", contact.getRank());
+			text = StringHelper.substituteToken(text, "$name", contact.getName().getLast());
+			info.addPara(text, opad, planet.getMarket().getTextColorForFactionOrPlanet(), planet.getName());
 		}
 	}
 
@@ -235,12 +237,13 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 			info.addPara(getGoToPlanetTextShort(planet), tc, pad);
 			return true;
 		} else if (currentStage == Stage.BATTLE) {
-			String text = "[temp] Defeat the hostile forces invading " + planet.getName();
-			info.addPara(text, tc, pad);
+			String text = getString("intelBullet2");
+			info.addPara(text, pad, tc, planet.getMarket().getTextColorForFactionOrPlanet(), planet.getName());
 			return true;
 		} else if (currentStage == Stage.TALK_TO_CONTACT_AFTER) {
-			String text = String.format(getGoToPlanetTextShort(planet) + " and speak with %s", 
-					contact.getName().getFullName());
+			String text = getString("intelBullet3");
+			text = StringHelper.substituteToken(text, "$name", contact.getNameString());
+			text = getGoToPlanetTextShort(planet) + " " + text;
 			info.addPara(text, tc, pad);
 			return true;
 		}

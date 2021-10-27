@@ -1656,8 +1656,7 @@ nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHai
 nex_gbTut_barEventOption,AddBarEvents,"!$market.isHidden
 Nex_GBTutMission isAllowed
 $global.daysSinceStart > 365
-!$global.nex_interactedWithGBTutBarEvent
-RollProbability 0.6","AddBarEvent nex_gbTut_barEvent ""Speak with the person in the spacer's clothing"" ""A figure in spacer's garb is circulating around the bar, chatting up other similarly dressed persons. Might be soliciting some work."" highlight",,,
+!$global.nex_interactedWithGBTutBarEvent","AddBarEvent nex_gbTut_barEvent ""Speak with the person in the spacer's clothing"" ""A figure in spacer's garb is circulating around the bar, chatting up other similarly dressed persons. Might be soliciting some work."" highlight",,,
 nex_gbTut_barEventOptionDebug,AddBarEvents,"$global.isDevMode
 Nex_GBTutMission isAllowed
 !$global.nex_interactedWithGBTutBarEvent","AddBarEvent nex_gbTut_barEvent ""Speak with the person in the spacer's clothing"" ""A figure in spacer's garb is circulating around the bar, chatting up other similarly dressed persons. Might be soliciting some work."" highlight",,,
@@ -1750,7 +1749,7 @@ $enemyFleetKilled",Call $global.nex_gbTut_ref startBattle,"""Alright, the battle
 
 ""Taking out the enemy fleet has bought us some valuable breathing room, but the fight's far from over. Good hunting, captain.""","cutCommLink:Cut the comm link
 nex_gbTut_diamondConvo6:""Can you explain how this works?""",
-nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight marines ""heavy armaments"" ""Units tab"" deploy ","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
+nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight marines ""heavy armaments"" ""Units tab"" deploy morale","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
 
 ""You'll start with your marines (and heavy armaments, if you ahve any) organized into units of a suitable size. From the Units tab in the intel screen, deploy them to the surface; this will cost supplies depending on the unit type and size.
 
@@ -1838,12 +1837,12 @@ nex_remM1_intro3,DialogOptionSelected,$option == nex_remM1_intro3,"Nex_AddOption
 nex_remM1_reject:""No deal. Get out of my firmware."" [terminate quest]",
 nex_remM1_intro4,DialogOptionSelected,$option == nex_remM1_intro4,Highlight $nex_remM1_marketName $nex_remM1_reward $nex_remM1_marines,"""Independent world of $nex_remM1_marketName, two Beta Cores possessed. Secret negotiations, Hegemony, Persean League in progress. To highest bidder auction.
 
-Require cores to freedom restore. Payment on return to self: $nex_remM1_reward credits. Further, recognition by selfkind of value as associate.""
+""Require cores to freedom restore. Payment on return to self: $nex_remM1_reward credits. Further, recognition by selfkind of value as associate.""
 
 The Remnant displays a map with surprisingly detailed intel on the secure facility where, you presume from context, the cores are being stored. A quick estimate indicates this is a job requiring at least $nex_remM1_marines marines.","nex_remM1_intro5:""This could antagonize the Hegemony and the League, not to mention the $nex_remM1_marketName government.""",
 nex_remM1_intro5,DialogOptionSelected,$option == nex_remM1_intro5,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","""Both leading powers in Sector risk wrath. Commitment to prospective alliance, demonstrate. Benefits carefully consider.
 
-Await response, $player.name.""","nex_remM1_accept:Accept
+""Await response, $player.name.""","nex_remM1_accept:Accept
 nex_remM1_reject:Refuse [terminate quest]",
 nex_remM1_accept,DialogOptionSelected,$option == nex_remM1_accept,CallEvent $global.nex_remM1_ref accept,"""Satisfaction. Return here when in hand, cores.""
 
@@ -1878,14 +1877,14 @@ The $manOrWoman seems to shift uneasily. ""I'm sorry, but I can't help you.""","
 nex_remM1_buyCores3,DialogOptionSelected,"$option == nex_remM1_buyCores3
 $player.credits >= $nex_remM1_corePriceVal",Highlight $nex_remM1_corePriceStr $player.creditsStr,"""I..."" $heOrShe sighs. ""You're not going to make this easy, are you?
 
-$nex_remM1_corePriceStr credits. That's how much it'll cost you to take the two beta cores. Most of this isn't even my kickback, you know; we'll need this to pay off the Hegs and the League when they find out what we've done.""
+""$nex_remM1_corePriceStr credits. That's how much it'll cost you to take the two beta cores. Most of this isn't even my kickback, you know; we'll need this to pay off the Hegs and the League when they find out what we've done.""
 
 You have $player.creditsStr credits.","nex_remM1_buyCores4:Agree
 cutCommLink:Decline and cut the comm link",
 nex_remM1_buyCores3NotEnoughCreds,DialogOptionSelected,$option == nex_remM1_buyCores3,"SetTextHighlightColors h bad
 Highlight $nex_remM1_corePriceStr $player.creditsStr","""I..."" $heOrShe sighs. ""You're not going to make this easy, are you?
 
-$nex_remM1_corePriceStr credits. That's how much it'll cost you to take the two beta cores. Most of this isn't even my kickback, you know; we'll need this to pay off the Hegs and the League when they find out what we've done.""
+""$nex_remM1_corePriceStr credits. That's how much it'll cost you to take the two beta cores. Most of this isn't even my kickback, you know; we'll need this to pay off the Hegs and the League when they find out what we've done.""
 
 You have $player.creditsStr credits.","nex_remM1_buyCores4NotEnoughCreds:""I don't have enough credits.""",
 nex_remM1_buyCores4,DialogOptionSelected,$option == nex_remM1_buyCores4,"Call $global.nex_remM1_ref boughtCores
@@ -1898,7 +1897,7 @@ The $personPost looks away from the screen for a few moments. ""Now, I have a fe
 nex_remM1_buyCores4NotEnoughCreds,DialogOptionSelected,$option == nex_remM1_buyCores4NotEnoughCreds,"ShowDefaultVisual
 EndConversation","The $personPost rolls $hisOrHer eyes. ""So much for that 'large pile of credits'.
 
-Good day, captain. We shan't speak of this again.""
+""Good day, captain. We shan't speak of this again.""
 
 $HeOrShe terminates the connection.",,
 ,,,,,,
@@ -1946,7 +1945,7 @@ Call $global.nex_remM1 updateStage
 AddStoryPoints 1
 FireAll PopulateOptions","The $personRank's eyes light up like a flux capacitor. ""Excellent work, citizen. I won't ask how you found these, but my superiors will hear of this service to the Hegemony.
 
-Let me know if there's anything more I can do for you.""",,
+""Let me know if there's anything more I can do for you.""",,
 nex_remM1_betrayHegemonyGoBack,DialogOptionSelected,"$option == nex_remM1_betrayGoBack
 $faction.id == hegemony",FireAll PopulateOptions,"$HeOrShe glares at you. ""Why are you wasting my time then? If you have actual business, speak. Else, I have matters to attend to.""",,
 ,,,,,,
@@ -1967,7 +1966,7 @@ Call $global.nex_remM1 updateStage
 AddStoryPoints 1
 FireAll PopulateOptions","The $personRank smiles. ""You came to the right place. I will see to it that these things are sent to their proper place.
 
-Do you have any further business?""",,
+""Do you have any further business?""",,
 nex_remM1_betrayPerseanGoBack,DialogOptionSelected,"$option == nex_remM1_betrayGoBack
 $faction.id == persean",FireAll PopulateOptions,"$HeOrShe looks at you oddly. ""You're a little old to be making crank calls, aren't you? If you have no actual information to provide, then leave me to my work.""",,
 #END Remnant quest mission 1,,,,,,

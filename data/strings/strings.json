@@ -1452,6 +1452,12 @@
 		# reference to my fanfic
 		"contactName1":"Ross",
 		"contactName2":"Diamond",
+		
+		"intelDesc1":" and contact one $rank $name.",
+		"intelDesc2":"Defeat the hostile forces invading %s.",
+		"intelDesc3":"You've helped to repulse the invasion. $goToText and speak with $rank $name.",
+		
+		"intelBullet2":"Defeat the hostile forces invading %s",
 	},
 	
 	"exerelin_landmarks":{

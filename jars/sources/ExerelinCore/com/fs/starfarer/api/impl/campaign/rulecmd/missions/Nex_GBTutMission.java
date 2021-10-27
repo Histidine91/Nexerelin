@@ -19,6 +19,7 @@ import exerelin.campaign.intel.missions.GroundBattleTutorial;
 import exerelin.utilities.NexConfig;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 
 public class Nex_GBTutMission extends BaseCommandPlugin {
@@ -46,22 +47,42 @@ public class Nex_GBTutMission extends BaseCommandPlugin {
 	
 	public static boolean isAllowed(MarketAPI market) {
 		if (NexConfig.legacyInvasions) return false;
+		Logger log = Global.getLogger(Nex_GBTutMission.class);
 		
 		FactionAPI persean = Global.getSector().getFaction(Factions.PERSEAN);
-		if (persean == null) return false;
+		if (persean == null) {
+			//log.info("No League faction");
+			return false;
+		}
 		
 		MarketAPI target = Global.getSector().getEconomy().getMarket(GroundBattleTutorial.PLANET_ID);
-		if (target == null) return false;
+		if (target == null) {
+			//log.info("Ilm not found");
+			return false;
+		}
 		
-		if (target.getFaction() != Global.getSector().getFaction(Factions.INDEPENDENT)) return false;
+		if (target == market) return false;
+		if (target.getContainingLocation() == market.getContainingLocation()) return false;
 		
-		if (!SectorManager.isFactionAlive(Factions.PERSEAN)) return false;
+		if (target.getFaction() != Global.getSector().getFaction(Factions.INDEPENDENT)) {
+			//log.info("Ilm not an independent planet");
+			return false;
+		}
+		
+		if (!SectorManager.isFactionAlive(Factions.PERSEAN)) {
+			//log.info("Persean League not alive");
+			return false;
+		}
 		
 		//if (persean.getRelToPlayer().isAtBest(RepLevel.INHOSPITABLE))
 		//	return false;
 		
-		if (market.getFaction().isHostileTo(persean)) return false;
+		if (market.getFaction().isHostileTo(persean)) {
+			//log.info("Current market hostile to League");
+			return false;
+		}
 		
+		//log.info("Can spawn tutorial here");
 		return true;
 	}
 	
