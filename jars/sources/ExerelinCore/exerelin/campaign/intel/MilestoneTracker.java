@@ -343,7 +343,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 						awardMilestone("defeatNexus");
 					}
 				}
-				else if (loss.isCapital()) {	// don't count station as a capital
+				else if (loss.isCapital() && !loss.isCivilian()) {	// don't count station as a capital
 					awardMilestone("firstCapital");
 				}
 				if (loss.getHullId().equals("ziggurat")) {
