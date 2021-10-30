@@ -27,6 +27,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
+import com.fs.starfarer.api.impl.campaign.population.PopulationComposition;
 import com.fs.starfarer.api.impl.campaign.procgen.NameGenData;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
@@ -416,14 +417,18 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		}
 		market.addIndustry(Industries.POPULATION);
 		
-		// set growth level to 0%
-		if (!faction.isPlayerFaction()) {
+		// set growth level to 0%; probably not needed any more?
+		/*
+		if (true || !faction.isPlayerFaction()) {
 			ImmigrationPlugin plugin = getImmigrationPlugin(market);
 			float min = plugin.getWeightForMarketSize(market.getSize());
 			market.getPopulation().setWeight(min);
 			market.getPopulation().normalize();
 			market.getMemoryWithoutUpdate().set("$nex_delay_growth", true, 10);
 		}
+		*/
+		// fixes insta colony upsize; see https://fractalsoftworks.com/forum/index.php?topic=5061.msg343893#msg343893
+		market.setIncoming(new PopulationComposition());
 		
 		NexFactionConfig config = NexConfig.getFactionConfig(factionId);
 		if (config.freeMarket)
@@ -451,7 +456,8 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (!fromDeciv) {
 			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
-			market.setImmigrationIncentivesOn(true);
+			if (!isPlayer)
+				market.setImmigrationIncentivesOn(true);
 		}
 		if (fromDeciv) {
 			market.addIndustry(Industries.SPACEPORT);
