@@ -3,6 +3,7 @@ package exerelin.campaign.battle;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.BattleAPI.BattleSide;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutcome;
@@ -10,12 +11,14 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
+import static com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.directToComms;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -331,6 +334,13 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		
 		super.init(dialog);
 	}
+	
+	// Hax: let Techpriest modify the dialog options again
+	@Override
+	protected void updateEngagementChoice(boolean withText) {
+		super.updateEngagementChoice(withText);
+		conversationDelegate.fireAll("UpdateEngagementChoice");
+	}	
 	
 	protected void addMemoryFlagIfNotSet(CampaignFleetAPI fleet, String memFlag)
 	{
