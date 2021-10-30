@@ -221,9 +221,14 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		if (route == null) route = currRouteForAutoresolve;
 		
 		if (NexConfig.legacyInvasions) {
+			int marines = ((InvasionIntel)intel).getMarinesPerFleetV2(route);
 			atkStrength = (InvasionIntel.USE_REAL_MARINES && fleet != null) ? 
 				InvasionRound.getAttackerStrength(fleet) 
-				: InvasionRound.getAttackerStrength(offFltIntel.getFaction(), ((InvasionIntel)intel).getMarinesPerFleetV2(route));
+				: InvasionRound.getAttackerStrength(offFltIntel.getFaction(), marines);
+			
+			log.info(String.format("Debug: Fleet has %s marines in total, under the old system it would have %s",
+						marines, ((InvasionIntel)intel).getMarinesPerFleet())
+					);
 			
 			defStrength = InvasionRound.getDefenderStrength(market, 1);
 

@@ -321,6 +321,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		defender.generateDefenders();
 		if (playerInitiated) {
 			autoGeneratePlayerUnits();
+		}
+		if (playerInitiated || defender.getFaction().isPlayerFaction() || defender.getFaction() == Misc.getCommissionFaction()) {
 			this.setImportant(true);
 		}
 		
@@ -470,7 +472,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		playerData.strFractionAtJoinTime = strFractionAtJoinTime;
 		
-		if (repChange) {
+		FactionAPI atkFac = attacker.getFaction();
+		boolean alreadyOurSide = atkFac.isPlayerFaction() || atkFac == Misc.getCommissionFaction()
+				|| AllianceManager.areFactionsAllied(atkFac.getId(), PlayerFactionStore.getPlayerFactionId());
+		if (repChange && !alreadyOurSide) {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = market.getSize() * -0.02f;
 			// not now, we also need to look at requested fleets
@@ -556,6 +561,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 */
 	protected boolean canSupport(FactionAPI faction, boolean isAttacker) {		
 		FactionAPI supportee = getSide(isAttacker).faction;
+		if (faction == supportee) return true;
 		if (faction.isPlayerFaction() && Misc.getCommissionFaction() == supportee)
 			return true;
 		
@@ -754,8 +760,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void updateStability() {
-		// not yet started
-		if (!Global.getSector().getIntelManager().hasIntel(this)) {
+		// not yet started, or already ended
+		if (!Global.getSector().getIntelManager().hasIntel(this) || isEnding() || isEnded()) 
+		{
 			market.getStability().removeTemporaryMod("invasion");
 			return;
 		}
@@ -1056,6 +1063,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			x.reportBattleEnded(this);
 		}
 		
+		updateStability();
 		endAfterDelay();
 	}
 	
@@ -1067,14 +1075,21 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return false;
 	}
 	
-	public void checkAnyAttackers() {
+	public boolean checkAnyAttackers(boolean checkUndeployed) {
 		// any units on ground?
-		if (hasAnyDeployedUnits(true)) return;
+		if (checkUndeployed) {
+			if (!attacker.getUnits().isEmpty()) return true;
+		}
+		else {
+			if (hasAnyDeployedUnits(true)) return true;
+		}
 		// guess not, end the battle
 		endBattle(turnNum <= 1 ? BattleOutcome.CANCELLED : BattleOutcome.DEFENDER_VICTORY);
+		return false;
 	}
 	
 	public void checkForVictory() {
+		if (outcome != null) return;
 		if (!hasAnyDeployedUnits(false)) {
 			endBattle(BattleOutcome.ATTACKER_VICTORY);
 		}
@@ -1088,8 +1103,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		movedFromLastTurn.clear();
 		
 		reapply();
-		checkAnyAttackers();
 		runAI();
+		boolean anyAttackers = checkAnyAttackers(false);
+		if (!anyAttackers) {
+			
+			resolving = false;
+			return;
+		}
+		
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
 			x.reportBattleBeforeTurn(this, turnNum);
@@ -1100,6 +1121,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			x.reportBattleAfterTurn(this, turnNum);
 		}
 		
+		anyAttackers = checkAnyAttackers(true);
 		checkForVictory();
 		playerData.updateXPTrackerNum();
 		
@@ -1828,7 +1850,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public void generateIndustryDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width) 
 	{
 		try {
-			if (Global.getSettings().getBoolean("nex_useGroundBattleIndustryMap")) {
+			if (Global.getSettings().getBoolean("nex_useGroundBattleIndustryMap") || industries.size() >= 16) {
 				// render map
 				MarketMapDrawer map = new MarketMapDrawer(this, panel, width - 12);
 				map.init();

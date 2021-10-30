@@ -161,8 +161,9 @@ public class GBUtils {
 		return industries;
 	}
 	
-	public static float getCombinedArmsBonus() {
-		return 0;
+	public static float getCombinedArmsBonus(float ratio) {
+		float level = (float)(Math.PI/2 * ratio);
+		return (float)Math.sin(level);
 	}
 	
 	public static float getCombinedArmsRatio(List<GroundUnit> units) {

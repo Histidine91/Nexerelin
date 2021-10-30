@@ -180,10 +180,16 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		}
 		*/
 		
+		// marinesPerFleet is no longer used except for debugging
+		{
+			float defenderStrength = InvasionRound.getDefenderStrength(target, 0.55f);
+			marinesPerFleet = (int)defenderStrength;
+		}
+		
 		if (NexConfig.legacyInvasions) {
 			float defenderStrength = InvasionRound.getDefenderStrength(target, 0.75f);
 			marinesTotal = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
-		} 
+		}
 		// base on Nex new invasion mechanic garrison
 
 		else {
