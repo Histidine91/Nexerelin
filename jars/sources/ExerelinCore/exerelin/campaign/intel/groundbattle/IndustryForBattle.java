@@ -235,9 +235,9 @@ public class IndustryForBattle {
 		
 		// agent intel
 		int agentLevel = 0;
-		for (AgentIntel intel : CovertOpsManager.getManager().getAgents()) {
-			if (intel.getMarket() == intel.getMarket())
-				agentLevel += intel.getLevel();
+		for (AgentIntel agent : CovertOpsManager.getManager().getAgents()) {
+			if (agent.getMarket() == intel.getMarket())
+				agentLevel += agent.getLevel();
 		}
 		if (agentLevel >= 5) return 2;
 		else if (agentLevel >= 3) return 1; 

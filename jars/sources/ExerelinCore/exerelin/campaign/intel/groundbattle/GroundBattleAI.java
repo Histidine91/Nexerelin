@@ -103,14 +103,16 @@ public class GroundBattleAI {
 				continue;
 			}
 			
+			float prio = record.industry.getPriority();
 			// too important to give up
-			if (record.industry.getPriority() >= 3)
+			if (!isAttacker && prio >= 3)
 				continue;
 			
 			float strRatio = record.getEffectiveStrengthRatio(false);
 			float target = STRENGTH_RATIO_TO_WRITE_OFF;
 			if (isAttacker) target *= 1.25f;
 			if (strRatio == 0) target *= 1.5f;
+			target -= prio * 0.15f;
 			
 			if (strRatio < target) 
 			{

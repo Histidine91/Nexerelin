@@ -1270,7 +1270,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void reportAbilityUsed(AbilityPlugin ability, GroundBattleSide side, PersonAPI person) 
 	{
-		if (person.isPlayer()) return;
+		if (person != null && person.isPlayer()) return;
 		Pair<Boolean, AbilityPlugin> entry = new Pair<>(side.isAttacker(), ability);
 		abilitiesUsedLastTurn.add(entry);
 	}
