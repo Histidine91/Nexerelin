@@ -21,6 +21,8 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
 import java.awt.Color;
 import java.io.IOException;
 import org.json.JSONObject;
@@ -182,9 +184,21 @@ public class NexFactionConfig
         this.factionId = factionId;
         this.loadFactionConfig();
     }
-
+    
+    public void clearLists() {
+        diplomacyTraits.clear();
+        vengeanceLevelNames.clear();
+        vengeanceFleetNames.clear();
+        vengeanceFleetNamesSingle.clear();
+        startSpecialItems.clear();
+        customStations.clear();
+        defenceStations.clear();
+        miningVariantsOrWings.clear();
+    }
     public void loadFactionConfig()
     {
+        clearLists();    // in case someone asks it to load config again, as Vayra's does
+        
         try
         {
             JSONObject settings = Global.getSettings().getMergedJSONForMod(
@@ -270,9 +284,11 @@ public class NexFactionConfig
                 }
             }
             
-            if (settings.has("miningVariantsOrWings"))
-                miningVariantsOrWings = Arrays.asList(NexUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
-            
+            if (settings.has("miningVariantsOrWings")) {
+				miningVariantsOrWings.addAll(Arrays.asList(NexUtils.JSONArrayToStringArray(
+						settings.getJSONArray("miningVariantsOrWings"))));
+			}
+			
             loadDefenceStations(settings);
             
             loadCustomStations(settings);
@@ -426,7 +442,7 @@ public class NexFactionConfig
         
         if (miningVariantsOrWings.isEmpty())
         {
-            miningVariantsOrWings = Arrays.asList(DEFAULT_MINERS);
+            miningVariantsOrWings.addAll(Arrays.asList(DEFAULT_MINERS));
         }
     }
     
@@ -1097,7 +1113,7 @@ public class NexFactionConfig
         if (startShips.containsKey(StartFleetType.SOLO))
             return startShips.get(StartFleetType.SOLO).getFleet(index);
         
-        return Arrays.asList(new String[]{"wolf_Starting"});
+        return new ArrayList<>(Arrays.asList(new String[]{"wolf_Starting"}));
     }
 	
 	
