@@ -32,6 +32,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
 import data.scripts.campaign.intel.SWP_IBBTracker;
 import data.scripts.campaign.intel.VayraUniqueBountyManager;
+import de.schafunschaf.bountiesexpanded.scripts.campaign.intel.bounties.highvaluebounty.HighValueBountyManager;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -396,20 +397,32 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return bossShips;
     }
     
+    /**
+     * Asks Vayra's Sector if a given HVB is completed.
+     * @param id
+     * @return
+     */
     public boolean isHVBCompleted(String id) {
         try {
             if (VayraUniqueBountyManager.getInstance().hasCurrentBounty(id))
                 return false;    // bounty is ongoing
-            
-            MemoryAPI memory = Global.getSector().getMemory();
-            List<String> spentBounties = (List<String>) memory.get("$vayra_uniqueBountiesSpent");
-            if (spentBounties == null) return false;
-            // bounty still available for spawning, i.e. not completed
-            if (!spentBounties.contains(id)) return false;
-            
-            return true;
+            return VayraUniqueBountyManager.getInstance().getSpentBountiesList().contains(id);
         } catch (Throwable t) {}
         return true;
+    }
+    
+    /**
+     * Asks Bounties Expanded if a given HVB is completed.
+     * @param bountyId
+     * @return
+     */
+    public boolean isBEHVBCompleted(String bountyId) {
+        try {
+            HighValueBountyManager bountyManager = HighValueBountyManager.getInstance();
+            return bountyManager != null && bountyManager.isBountyCompleted(bountyId);
+        } catch (Throwable t) {
+            return true;
+        }
     }
     
     /**
@@ -425,6 +438,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         int ibbProgress = 999;
         boolean checkBossCompletion = NexConfig.prismUseIBBProgressForBossShips;
         boolean haveVayra = Global.getSettings().getModManager().isModEnabled("vayrasector");
+        boolean haveBE = Global.getSettings().getModManager().isModEnabled("bountiesexpanded");
         int highestIBBNum = 0;
         
         try {
@@ -472,10 +486,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
                 
                 // Check if we've completed the HVB (if applicable)
-                if (checkBossCompletion && haveVayra && entry.hvbID != null && !entry.hvbID.isEmpty()) 
+                if (checkBossCompletion && entry.hvbID != null && !entry.hvbID.isEmpty()) 
                 {
                     try {
-                        if (!isHVBCompleted(entry.hvbID)) {
+                        if (haveBE && !isBEHVBCompleted(entry.hvbID)) {
+                            log.info("Bounties Expanded HVB not completed for " + entry.hvbID);
+                            proceed = false;
+                        }
+                        if (!haveBE && haveVayra && !isHVBCompleted(entry.hvbID)) {
                             log.info("HVB not completed for " + entry.hvbID);
                             proceed = false;
                         }
