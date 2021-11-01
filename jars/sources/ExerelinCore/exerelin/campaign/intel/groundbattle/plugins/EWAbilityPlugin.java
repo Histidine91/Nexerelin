@@ -41,7 +41,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		if (powerLevel <= 0) return;
 		int cost = getSupplyCost();
 		
-		if (user.isPlayer()) {
+		if (user != null && user.isPlayer()) {
 			Global.getSector().getPlayerFleet().getCargo().removeSupplies(cost);
 			getIntel().getPlayerData().suppliesUsed += cost;
 		}
@@ -194,6 +194,21 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		return 0;
 	}
 	
+	public float getECMLevel(CampaignFleetAPI fleet) {
+		int fleetLevel = 0;
+		if (fleet.getMemoryWithoutUpdate().contains(MEMORY_KEY_ECM_CACHE)) {
+			fleetLevel = (int)fleet.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_ECM_CACHE);
+			//if (!attacker) Global.getLogger(this.getClass()).info("  ECM level (cached): " + fleetLevel);
+			return fleetLevel;
+		}
+
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			fleetLevel += member.getStats().getDynamic().getValue(Stats.ELECTRONIC_WARFARE_FLAT, 0);
+		}
+		fleet.getMemoryWithoutUpdate().set(MEMORY_KEY_ECM_CACHE, fleetLevel, 0);
+		return fleetLevel;
+	}
+	
 	public float getECMLevel() {
 		boolean attacker = side.isAttacker();
 		
@@ -208,22 +223,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		int level = 0;
 		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
 		for (CampaignFleetAPI fleet : fleets) {
-			//if (!attacker) Global.getLogger(this.getClass()).info("Getting ECM level for fleet " + fleet.getNameWithFaction());
-			// cache results
-			int fleetLevel = 0;
-			if (fleet.getMemoryWithoutUpdate().contains(MEMORY_KEY_ECM_CACHE)) {
-				fleetLevel = (int)fleet.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_ECM_CACHE);
-				//if (!attacker) Global.getLogger(this.getClass()).info("  ECM level (cached): " + fleetLevel);
-				level += fleetLevel;
-				continue;
-			}
-			
-			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
-				fleetLevel += member.getStats().getDynamic().getValue(Stats.ELECTRONIC_WARFARE_FLAT, 0);
-			}
-			//if (!attacker) Global.getLogger(this.getClass()).info("  ECM level: " + fleetLevel);
-			level += fleetLevel;
-			fleet.getMemoryWithoutUpdate().set(MEMORY_KEY_ECM_CACHE, fleetLevel, 0);
+			level += getECMLevel(fleet);
 		}
 		return level;
 	}
@@ -236,6 +236,33 @@ public class EWAbilityPlugin extends AbilityPlugin {
 				return 0;
 		}
 		return 10;
+	}
+	
+	@Override
+	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
+		
+		if (user != null) {
+			return super.aiExecute(ai, user);
+		}
+		
+		// find a fleet to execute ECM
+		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
+		if (fleets.isEmpty()) return false;
+				
+		CampaignFleetAPI fleet = null;
+		float best = 0;
+		
+		for (CampaignFleetAPI candidate : fleets) {
+			if (candidate.isPlayerFleet()) continue;
+			float ecmLevel = getECMLevel(candidate);
+			if (ecmLevel > best) {
+				fleet = candidate;
+				best = ecmLevel;
+			}
+		}
+		
+		user = fleet.getCommander();
+		return super.aiExecute(ai, user);
 	}
 	
 	public static class EWPersistentEffectPlugin extends BaseGroundBattlePlugin {
