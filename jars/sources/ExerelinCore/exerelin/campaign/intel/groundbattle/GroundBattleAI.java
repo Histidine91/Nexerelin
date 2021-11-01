@@ -323,10 +323,14 @@ public class GroundBattleAI {
 	 */
 	public boolean decisionLoop(int iter) {		
 		boolean movedAnything = false;
+		// this prevents it from getting stuck if all the target industries are writeoffs
+		boolean ignoreWriteoff = writeoffIndustries.size() == industriesWithEnemySorted.size();
+		
 		for (IFBStrengthRecord toReinforce : industriesWithEnemySorted) {
 			printDebug(String.format("Considering plans for industry %s (priority %s)", 
 					toReinforce.industry.getName(), toReinforce.getPriorityForReinforcement(false)));
-			if (writeoffIndustries.contains(toReinforce)) {
+			if (writeoffIndustries.contains(toReinforce) && !ignoreWriteoff) 
+			{
 				continue;
 			}
 			for (GroundUnit unit : availableUnitsSorted) {
