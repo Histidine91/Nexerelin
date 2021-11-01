@@ -10,9 +10,11 @@ import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutco
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -224,7 +226,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
 				textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
 				
-				handleLifeInsurance(lostOfficers, recoverableOfficers);
+				handleLifeInsuranceAndSPRefund(lostOfficers, recoverableOfficers);
 			}
 		}
 
@@ -297,17 +299,34 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
 			}
 			
-			handleLifeInsurance(lostOfficers, null);
+			handleLifeInsuranceAndSPRefund(lostOfficers, null);
 		}
 
 		super.winningPath();
 	}
 
-	protected void handleLifeInsurance(List<OfficerDataAPI> deadOfficers, List<OfficerDataAPI> miaOfficers)
+	protected void handleLifeInsuranceAndSPRefund(List<OfficerDataAPI> deadOfficers, 
+			List<OfficerDataAPI> miaOfficers)
 	{
 		List<OfficerDataAPI> officers = new ArrayList<>(deadOfficers);
 		if (miaOfficers != null)
 			officers.addAll(miaOfficers);
+		
+		int points = 0;
+		for (OfficerDataAPI lost : officers) {
+			for (SkillLevelAPI skill : lost.getPerson().getStats().getSkillsCopy()) {
+				if (skill.getLevel() >= 2)
+					points++;
+			}
+			if (Misc.isMentored(lost.getPerson())) {
+				points++;
+			}
+		}
+		if (points > 0) {
+			String str = StringHelper.getString(STRING_HELPER_CAT, "msgStoryPointRefund");
+			dialog.getTextPanel().addPara(getString(str));
+			Global.getSector().getPlayerPerson().getStats().addStoryPoints(points, dialog.getTextPanel(), false);
+		}		
 		
 		SectorManager.getManager().addInsuredOfficers(officers);
 		

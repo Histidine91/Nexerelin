@@ -1721,6 +1721,8 @@
 		"miaPresumedDead":"MIA, presumed dead",
 		"killedInAction":"killed in action",
 		"rescued":"rescued",
+		
+		"msgStoryPointRefund":"The loss of your experienced officer(s) is a tragedy, but also a lesson. You will simply have to do better next time.",
 	},
 	
 	"nex_insurance":{
