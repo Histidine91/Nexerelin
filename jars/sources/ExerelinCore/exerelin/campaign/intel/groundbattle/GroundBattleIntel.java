@@ -939,7 +939,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public void handleTransfer() {
 		if (noTransfer) return;
 		
-		if (outcome == BattleOutcome.ATTACKER_VICTORY ) {
+		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
 			InvasionRound.conquerMarket(market, attacker.getFaction(), playerInitiated);
 			
 			market.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
@@ -2264,6 +2264,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			return;
 		}
 		if (buttonId == BUTTON_DEBUG_AI) {
+			runAI(true, false);
 			runAI(false, false);
 			return;
 		}
