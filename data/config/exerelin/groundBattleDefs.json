@@ -10,7 +10,7 @@
 		},
 		
 		"grounddefenses":{
-			"strengthMult":1.25,
+			"strengthMult":1.2,
 			"troopCounts":{
 				"militia":0.5,
 				"marine":0.5,
@@ -24,7 +24,7 @@
 			"icon":"graphics/exerelin/icons/groundbattle/groundefenses.png",
 		},
 		"heavybatteries":{
-			"strengthMult":1.5,
+			"strengthMult":1.4,
 			"troopCounts":{
 				"militia":1,
 				"marine":1,
@@ -50,7 +50,7 @@
 		},
 		"militarybase":{
 			"tags":["resistBombard"],
-			"strengthMult":1.4,
+			"strengthMult":1.3,
 			"troopCounts":{
 				"militia":0.2,
 				"marine":0.2,
@@ -59,7 +59,7 @@
 		},
 		"highcommand":{
 			"tags":["resistBombard"],
-			"strengthMult":1.5,
+			"strengthMult":1.4,
 			"troopCounts":{
 				"militia":0.3,
 				"marine":0.3,
@@ -68,7 +68,7 @@
 		},
 		"lionsguard":{
 			"tags":["resistBombard"],
-			"strengthMult":1.5,
+			"strengthMult":1.4,
 			"troopCounts":{
 				"marine":0.25,
 				"heavy":0.25,
@@ -76,12 +76,28 @@
 		},
 		"6emebureau":{
 			"tags":["resistBombard"],
-			"strengthMult":1.25,
+			"strengthMult":1.2,
 			"troopCounts":{
 				"marine":0.2,
 				"heavy":0.1,
 			},	
 		},
+		"ms_redwingsCommand":{
+			"tags":["resistBombard"],
+			"strengthMult":1.2,
+			"troopCounts":{
+				"marine":0.2,
+				"heavy":0.1,
+			},	
+		},
+		"brdy_defhq":{
+			"tags":["resistBombard"],
+			"strengthMult":1.2,
+			"troopCounts":{
+				"marine":0.2,
+				"heavy":0.1,
+			},	
+		},		
 	},
 	
 	"conditions":{
