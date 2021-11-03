@@ -932,19 +932,19 @@ public class GroundUnit {
 
 			@Override
 			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-				String str = GroundBattleIntel.getString("unitCard_tooltip_" + id);
+				String str = getString("unitCard_tooltip_" + id);
 				tooltip.addPara(str, 0);
 				switch (id) {
 					case "morale":
 						Color hl = Misc.getHighlightColor();
 						//tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);
-						str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 2);
+						str = " - " + getString("unitCard_tooltip_" + id + 2);
 						tooltip.addPara(str, 3, hl,
 								StringHelper.toPercent(1 - GBConstants.MORALE_ATTACK_MOD),
 								StringHelper.toPercent(1 + GBConstants.MORALE_ATTACK_MOD)
-						);	str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 3);
+						);	str = " - " + getString("unitCard_tooltip_" + id + 3);
 						tooltip.addPara(str, 0, hl, StringHelper.toPercent(GBConstants.REORGANIZE_AT_MORALE));
-						str = " - " + GroundBattleIntel.getString("unitCard_tooltip_" + id + 4);
+						str = " - " + getString("unitCard_tooltip_" + id + 4);
 						tooltip.addPara(str, 0);
 						break;
 					case "attackPower":

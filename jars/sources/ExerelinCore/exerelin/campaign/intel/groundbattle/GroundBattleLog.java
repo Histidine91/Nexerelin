@@ -256,7 +256,6 @@ public class GroundBattleLog {
 	
 	public Color getPanelColor() {
 		GroundUnit unit = (GroundUnit)params.get("unit");
-		IndustryForBattle ind = (IndustryForBattle)params.get("industry");
 		switch (type) {
 			case TYPE_UNIT_LOSSES:
 			case TYPE_UNIT_ROUTED:

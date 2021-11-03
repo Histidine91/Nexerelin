@@ -103,7 +103,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				opts.setShortcut("nex_factionDirectoryMain", Keyboard.KEY_ESCAPE, false, false, false, false);
 				
 				NexUtils.addDevModeDialogOptions(dialog);
-				
 				return true;
 				
 			case "print":
@@ -111,6 +110,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				//if (option == null) throw new IllegalStateException("No $option set");
 				String factionId = option.substring(PREFIX_LENGTH);
 				printFactionMarkets(dialog, factionId);
+				return true;
 		}
 		
 		return false;
@@ -214,8 +214,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		tt.addImageWithText(pad);
 		
 		//tt.addPara(StringHelper.HR, opad);
-
-		boolean anyBase = false;
 		
 		// Tasserus
 		/*
@@ -293,7 +291,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			{
 				images.add("graphics/icons/markets/military_base.png");
 				tooltipTexts.add(Global.getSettings().getIndustrySpec(Industries.MILITARYBASE).getName());
-				anyBase = true;
 			}
 			
 			// Has heavy industry
@@ -339,9 +336,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			panel.addComponent(featureImages).rightOfTop(text, pad);
 			
 			tt.addCustom(panel, pad);
-		}
-		if (anyBase) {
-			//text.addParagraph("*" + StringHelper.getString("exerelin_markets", "hasBaseTip"));
 		}
 		if (hidden > 0) {
 			str = StringHelper.getStringAndSubstituteToken("exerelin_markets", "marketDirectoryHidden", "$num", hidden + "");

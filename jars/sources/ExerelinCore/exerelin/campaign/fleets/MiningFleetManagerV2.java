@@ -123,7 +123,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		int marketSize = origin.getSize();
 		int maxFP = (int)(Math.pow(marketSize, 1.5f) * 5);
 		
-		float qf = origin.getShipQualityFactor();
+		//float qf = origin.getShipQualityFactor();
 		//qf = Math.max(qf, 0.7f);
 		
 		boolean isGasMiningFleet = false;

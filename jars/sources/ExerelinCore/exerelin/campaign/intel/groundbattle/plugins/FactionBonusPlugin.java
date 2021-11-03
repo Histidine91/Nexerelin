@@ -37,7 +37,7 @@ public class FactionBonusPlugin extends BaseGroundBattlePlugin {
 		String pluginClass = "exerelin.campaign.intel.groundbattle.plugins.FactionBonusSubplugin";
 		if (conf.groundBattleSettings.containsKey("plugin")) {
 			pluginClass = (String)conf.groundBattleSettings.get("plugin");
-		};
+		}
 		
 		FactionBonusSubplugin sub = FactionBonusSubplugin.loadPlugin(intel, factionId, pluginClass);
 		subplugins.put(factionId, sub);

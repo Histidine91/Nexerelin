@@ -21,10 +21,6 @@ public class FactionBountyManager extends BaseEventManager {
 	public static final String KEY = "$nex_factionBountyManager";
 	public static final float MAX_CONCURRENT_MULT = 0.2f;
 	
-	public FactionBountyManager() {
-		super();
-	}
-	
 	@Override
 	protected int getMinConcurrent() {
 		return 0;

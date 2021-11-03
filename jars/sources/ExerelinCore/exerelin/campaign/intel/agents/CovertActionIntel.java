@@ -228,7 +228,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		cost.modifyFlat("base", baseCost, getString("costBase", true));
 		
 		int level = getLevel();
-		float levelMult = 1 - 0.1f * (level - 1);
+		//float levelMult = 1 - 0.1f * (level - 1);
 		//cost.modifyMult("levelMult", baseCost, getString("costLevelMult", true));
 		
 		if (getDef().costScaling) {

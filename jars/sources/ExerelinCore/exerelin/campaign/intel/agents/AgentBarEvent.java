@@ -44,10 +44,6 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		picker.add(2, 4);
 		picker.add(3, 1);
 	}
-		
-	public AgentBarEvent() {
-		super();
-	}
 	
 	public static boolean isAtMaxAgents() {
 		return CovertOpsManager.getManager().getAgents().size() >= CovertOpsManager.getManager().getMaxAgents().getModifiedValue();

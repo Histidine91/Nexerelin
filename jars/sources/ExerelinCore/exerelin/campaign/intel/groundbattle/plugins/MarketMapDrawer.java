@@ -229,7 +229,7 @@ public class MarketMapDrawer {
 			
 			try {
 				Global.getSettings().loadTexture(spriteId);
-			} catch (IOException ex) {};
+			} catch (IOException ex) {}
 			SpriteAPI bgSprite = Global.getSettings().getSprite(spriteId);
 			float drawW = w-4;
 			float drawH = h-2;

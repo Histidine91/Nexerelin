@@ -100,8 +100,6 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			return tooltip.addPara(str, pad);
 		}
 		
-		Color h = Misc.getHighlightColor();
-		
 		Collections.sort(claimed, Nex_FactionDirectory.MARKET_COMPARATOR_SIZE);
 		
 		List<String> highlights = new ArrayList<>();
@@ -422,10 +420,10 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		// morality
 		Morality moral = NexConfig.getFactionConfig(faction.getId()).morality;
-		String moralId = moral.toString();
-		String moralStr = getString("morality_" + moralId.toLowerCase(), true);
 		
-		String str = getString("morality", true) + ": " + moralStr;
+		//String moralId = moral.toString();
+		//String moralStr = getString("morality_" + moralId.toLowerCase(), true);
+		//String str = getString("morality", true) + ": " + moralStr;
 		//flagAndBasicInfo.addPara(str, opad, moral.color, moralStr);
 		
 		generateClaimedMarketsPara(flagAndBasicInfo, opad);

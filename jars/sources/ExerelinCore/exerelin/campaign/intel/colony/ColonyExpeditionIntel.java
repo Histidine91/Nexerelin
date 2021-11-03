@@ -169,8 +169,6 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		FactionAPI attacker = getFaction();
 		FactionAPI defender = getTarget().getFaction();
 		if (lastOwner != null) defender = lastOwner;
-		String has = attacker.getDisplayNameHasOrHave();
-		String is = attacker.getDisplayNameIsOrAre();
 		String locationName = planet.getContainingLocation().getNameWithLowercaseType();
 		
 		String strDesc = getRaidStrDesc();

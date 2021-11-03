@@ -582,8 +582,6 @@ public class SpecialForcesRouteAI {
 		if (taskType == TaskType.REBUILD || taskType == TaskType.ASSEMBLE)
 			return false;
 		
-		boolean wantNewTask = false;
-		
 		if (taskType == TaskType.IDLE) {
 			return true;
 		}
@@ -669,7 +667,6 @@ public class SpecialForcesRouteAI {
 	
 	public void notifyRouteFinished() {
 		sf.debugMsg("Route finished, looking for new task", false);
-		Vector2f currLoc = sf.route.getInterpolatedHyperLocation();
 		
 		if (currentTask == null) {
 			pickTask(false);

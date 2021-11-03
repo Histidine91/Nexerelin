@@ -104,9 +104,6 @@ public class BaseStrikeActionStage extends InvActionStage {
 		int index = intel.getStageIndex(this);
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		if (curr < index) return;

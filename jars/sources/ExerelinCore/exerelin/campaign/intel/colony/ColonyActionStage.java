@@ -353,9 +353,6 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		int index = intel.getStageIndex(this);
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		if (curr < index) return;

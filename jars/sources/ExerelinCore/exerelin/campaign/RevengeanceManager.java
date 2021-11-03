@@ -210,9 +210,6 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}
 	
 	public void generateVengeanceIntel(String factionId) {
-		FactionAPI faction = Global.getSector().getFaction(factionId);
-		FactionAPI target = getTargetFactionForVengeance();
-		
 		MarketAPI source = pickMarketForFactionVengeance(factionId);
 		if (source != null)
 		{
@@ -326,10 +323,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		log.info("Trying to generate counter-invasion fleet");
 		
 		SectorAPI sector = Global.getSector();
-		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 		WeightedRandomPicker<String> attackerPicker = new WeightedRandomPicker();
-		WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
-		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
 		
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		

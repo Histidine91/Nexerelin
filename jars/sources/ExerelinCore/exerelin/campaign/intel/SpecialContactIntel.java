@@ -43,8 +43,6 @@ public class SpecialContactIntel extends ContactIntel {
 	
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		String pName = Misc.getPersonalityName(person);
-		
 		Color h = Misc.getHighlightColor();
 		Color g = Misc.getGrayColor();
 		Color tc = Misc.getTextColor();

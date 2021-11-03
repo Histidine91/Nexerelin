@@ -59,7 +59,6 @@ public class StartSetupPostTimePass {
 		if (corvusMode && !TutorialMissionIntel.isTutorialInProgress())
 			VanillaSystemsGenerator.exerelinEndGalatiaPortionOfMission();
 		
-		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		final String selectedFactionId = factionId;	// can't be changed by config
 		String factionIdForSpawnLoc = factionId;
@@ -127,12 +126,6 @@ public class StartSetupPostTimePass {
 		}
 		
 		handleStartLocation(sector, playerFleet, factionIdForSpawnLoc);
-		
-		// commission
-		// now handled in ExerelinNewGameSetup
-		if (!factionId.equals(Factions.PLAYER)) {
-			//ExerelinUtilsFaction.grantCommission(factionId);
-		}
 		
 		// Galatian stipend
 		if (!TutorialMissionIntel.isTutorialInProgress() && !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()) 

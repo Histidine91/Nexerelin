@@ -277,12 +277,6 @@ public class StringHelper {
 		return String.format("%.0f", num * 100) + "%";
 	}
 	
-	// old version, scheduled for removal
-	@Deprecated
-	public static void addFactionNameTokensCustom(Map<String, String> tokens, String str, FactionAPI faction) {
-		return;
-	}
-	
 	public static void addFactionNameTokensCustom(List<Pair<String, String>> tokens, String str, FactionAPI faction) {
 		if (faction != null) {
 			String factionName = faction.getDisplayName();

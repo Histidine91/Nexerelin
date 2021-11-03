@@ -114,16 +114,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	public static void deregisterOutpost(PlayerOutpostIntel outpost) {
 		getOutposts().remove(outpost);
 	}
-	
-	public PlayerOutpostIntel() {
 		
-	}
-	
-	// runcode exerelin.campaign.intel.PlayerOutpostIntel.reverseCompat()
-	public static void reverseCompat() 
-	{
-	}
-	
 	public MarketAPI getMarket() {
 		return market;
 	}

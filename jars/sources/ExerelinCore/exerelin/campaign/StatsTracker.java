@@ -276,10 +276,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     // all guesstimates until TempData becomes actually accessible
     public int addOrphansFromMilitaryAction(int power, float raidMult) {
         int orphans = (int)(MathUtils.getRandomNumberInRange(5, 20) * Math.pow(2, power));
-        if (raidMult < 0) {
-            
-        }
-        else {
+        if (raidMult > 0) {
             float contestedFactor = 0.5f - Math.abs(0.5f - raidMult);
             orphans = orphans * 2 * Math.round(contestedFactor);
         }

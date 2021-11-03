@@ -32,7 +32,6 @@ public abstract class AgentActionBase extends BaseCommandPlugin {
 	
 	protected boolean useSpecialPerson(String typeId, int count) {
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		List<CargoStackAPI> stacks = cargo.getStacksCopy();
 		if (cargo.getCommodityQuantity(typeId) < count) return false;
 		cargo.removeCommodity(typeId, count);
 		agentType = typeId;

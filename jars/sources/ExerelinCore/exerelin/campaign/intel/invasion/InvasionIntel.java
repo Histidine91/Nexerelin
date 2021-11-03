@@ -385,8 +385,6 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		FactionAPI attacker = getFaction();
 		FactionAPI defender = target.getFaction();
 		if (defender == attacker) defender = targetFaction;
-		String has = attacker.getDisplayNameHasOrHave();
-		String is = attacker.getDisplayNameIsOrAre();
 		String locationName = target.getContainingLocation().getNameWithLowercaseType();
 		
 		String strDesc = getRaidStrDesc();

@@ -426,8 +426,7 @@ public class InvasionRound {
 				if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
 				//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
 				if (seenFactions.contains(otherMarket.getFactionId())) continue;
-
-				RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
+				
 				seenFactions.add(otherMarket.getFactionId());
 				factionsToNotify.add(otherMarket.getFactionId());
 			}

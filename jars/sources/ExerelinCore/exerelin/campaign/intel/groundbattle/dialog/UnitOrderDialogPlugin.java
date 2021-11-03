@@ -302,7 +302,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		options.clearOptions();
 		String str = getString("actionDeployInfo");
 		int deployCost = unit.getDeployCost();
-		int currSupplies = getCurrentSupplies();
+		//int currSupplies = getCurrentSupplies();
 		dialog.getTextPanel().addPara(str);
 		boolean canAfford = dialog.getTextPanel().addCostPanel(null,
 					Commodities.SUPPLIES, deployCost, true);
@@ -390,7 +390,6 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		int ourSizeNew = (int)Math.round(sliderValue);
 		
 		int ourSize = unit.getSize(), theirSize = other.getSize();
-		int totalSize = ourSize + theirSize;
 		
 		int delta = ourSizeNew - ourSize;
 		
@@ -466,7 +465,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	 * @param other
 	 */
 	protected void showUnitForMerge(final GroundUnit other) {
-		float pad = 3, opad = 10;
+		float pad = 3;
 		float buttonWidth = 96;
 		boolean self = unit == other;
 		

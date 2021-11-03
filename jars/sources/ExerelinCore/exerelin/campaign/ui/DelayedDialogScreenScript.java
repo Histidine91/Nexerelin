@@ -12,11 +12,6 @@ public abstract class DelayedDialogScreenScript implements EveryFrameScript
 	protected boolean isDone = false;
 	protected float timer = 0;
 
-	public DelayedDialogScreenScript()
-	{
-
-	}
-
 	@Override
 	public boolean isDone()
 	{

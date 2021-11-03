@@ -26,14 +26,6 @@ import org.lwjgl.input.Keyboard;
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
 public class FieldOptionsScreenScript implements EveryFrameScript
 {
-	//private static int count = 0;
-	
-	public FieldOptionsScreenScript()
-	{
-		//count++;
-		//Global.getLogger(DirectoryScreenScript.class).info("Number of directory screen scripts running: " + count);
-	}
-
 	@Override
 	public boolean isDone()
 	{

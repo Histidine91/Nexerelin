@@ -128,8 +128,6 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		
 		FactionAPI attacker = getFaction();
 		FactionAPI defender = targetFaction;
-		String has = attacker.getDisplayNameHasOrHave();
-		String is = attacker.getDisplayNameIsOrAre();
 		String locationName = target.getContainingLocation().getNameWithLowercaseType();
 		boolean known = Global.getSettings().isDevMode() || target.getPrimaryEntity().isVisibleToPlayerFleet();
 		

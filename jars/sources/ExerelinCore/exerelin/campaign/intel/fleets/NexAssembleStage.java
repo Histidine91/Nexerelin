@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.fleets;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -21,8 +20,6 @@ import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.List;
 
 public abstract class NexAssembleStage extends AssembleStage {
 	
@@ -45,10 +42,6 @@ public abstract class NexAssembleStage extends AssembleStage {
 		int curr = intel.getCurrentStage();
 		int index = intel.getStageIndex(this);
 		
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		String key = "stageAssemble";
@@ -181,7 +174,7 @@ public abstract class NexAssembleStage extends AssembleStage {
 	// and get a different base size
 	@Override
 	protected float getLargeSize(boolean limitToSpawnFP) {
-		float mult = 1f;
+		float mult;
 		if (!getSources().isEmpty()) {
 			MarketAPI source = getSources().get(0);
 			FactionAPI.ShipPickMode mode = Misc.getShipPickMode(source);

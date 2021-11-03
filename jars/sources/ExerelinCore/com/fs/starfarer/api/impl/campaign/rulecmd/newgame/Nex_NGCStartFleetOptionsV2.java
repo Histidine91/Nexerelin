@@ -101,9 +101,6 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 				PlayerFactionStore.getPlayerFactionIdNGC());
 		TooltipMakerAPI panelTooltip = Nex_VisualCustomPanel.getTooltip();
 		
-		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
-		FactionAPI faction = Global.getSector().getFaction(factionId);
-		
 		for (int i=0; i<FLEET_TYPES.length; i++)
 		{
 			try {
@@ -186,7 +183,7 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 					}
 				};
 				Nex_VisualCustomPanel.getPlugin().addButton(entry);
-				PositionAPI pos = fleetPanel.addUIElement(rightButtonHolder).rightOfTop(counter, 0);
+				fleetPanel.addUIElement(rightButtonHolder).rightOfTop(counter, 0);
 				
 				anchorForRandomButton = rightButtonHolder;
 			}
@@ -224,7 +221,7 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 				String buttonId = "button_next_" + fleetTypeStr;
 				ButtonAPI randomButton = randomButtonHolder.addButton(StringHelper.getString("random", true), 
 						buttonId, 60, BUTTON_HEIGHT, 0);
-				ButtonEntry entry = entry = new ButtonEntry(randomButton, buttonId) {
+				ButtonEntry entry = new ButtonEntry(randomButton, buttonId) {
 					@Override
 					public void onToggle() {
 						setFleetIndex(fleetTypeStr, -1);

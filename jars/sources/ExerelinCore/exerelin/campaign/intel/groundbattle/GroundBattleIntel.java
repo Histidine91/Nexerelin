@@ -946,7 +946,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			market.getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
 			
 			InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
-			if (dialog == null && dialog instanceof RuleBasedDialog) {
+			if (dialog != null && dialog instanceof RuleBasedDialog) {
 				((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 				FireAll.fire(null, dialog, dialog.getPlugin().getMemoryMap(), "PopulateOptions");
 			}
@@ -2329,7 +2329,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		TooltipMakerAPI outer = panel.createUIElement(width, height, true);
 		
 		outer.addSectionHeading(getSmallDescriptionTitle(), faction.getBaseUIColor(), 
-				faction.getDarkUIColor(), com.fs.starfarer.api.ui.Alignment.MID, opad);
+				faction.getDarkUIColor(), Alignment.MID, opad);
 		
 		if (outcome != null) {
 			generatePostBattleDisplay(panel, outer, width, height);

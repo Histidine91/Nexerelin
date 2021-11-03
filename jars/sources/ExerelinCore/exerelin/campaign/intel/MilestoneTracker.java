@@ -228,7 +228,6 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 	public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
 		float opad = 10;
 		float pad = 3;
-		Color h = Misc.getHighlightColor();
 		TooltipMakerAPI info = panel.createUIElement(width, height, true);
 		
 		FactionAPI faction = PlayerFactionStore.getPlayerFaction();

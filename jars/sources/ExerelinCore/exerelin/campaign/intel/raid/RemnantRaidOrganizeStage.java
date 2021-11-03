@@ -22,9 +22,6 @@ public class RemnantRaidOrganizeStage extends NexOrganizeStage {
 		int index = intel.getStageIndex(this);
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		int days = Math.round(maxDays - elapsed);
@@ -42,7 +39,7 @@ public class RemnantRaidOrganizeStage extends NexOrganizeStage {
 		
 		String raid = offFltIntel.getActionNameWithArticle();
 		String cat = "nex_fleetIntel";
-		String key = "stageOrganize";
+		String key;
 		boolean haveTiming = true;
 		boolean printSource = false;
 		RemnantRaidIntel rri = (RemnantRaidIntel)intel;
