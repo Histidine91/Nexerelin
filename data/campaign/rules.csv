@@ -518,7 +518,7 @@ $market.nex_decivEvent_giveItem == ""rare_metals""",SetTextHighlights $nex_deciv
 nex_decivEvent_barterCrew,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
 $market.nex_decivEvent_giveItem == ""crew""",SetTextHighlights $nex_decivEvent_takeName,"""Now, listen here. I've got a load of prisoners captured in a recent raid. More than I want to feed, in truth. I suppose an enterprising spacefarer like yourself would have no trouble putting them to work on a starship. All I ask for in exchange is a little $nex_decivEvent_takeName.""
 
-Dealing in slaves — as this offer surely is — tends to be frowned on under most moral systems. On the other hand, the captives may be considerably better off on your $shipOrFleet than with… this person.",,
+Dealing in slaves — as this offer surely is — tends to be frowned on under most moral systems. On the other hand, the captives may be considerably better off on your $shipOrFleet than with... this person.",,
 nex_decivEvent_refugees,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""refugees""",SetTextHighlights $nex_decivEvent_giveCount,"""Please help us, good starfarer. Me and my friends, we've been stranded on this world for... for far too long. A few more months here and we'll be dead, or worse.
 
 Let us come aboard your $shipOrFleet. There are $nex_decivEvent_giveCount of us, all willing to work our passage off this place.""
@@ -528,7 +528,7 @@ OR
 Please, take us away from this world. We'll work on your $shipOrFleet, all $nex_decivEvent_giveCount of us. We would be eternally grateful.""",,
 nex_decivEvent_bomb,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""bomb""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeCount,"""Right, so there's something only you can help us with.
 
-There's a nearby pack of knaves and scum that needs dealing with. We'd clear the whole rotten nest out ourselves, but alas, their defenses are a little too entrenched. You, on the other hand… with your spaceship, you could drop a few  bombs on them and blow them straight to hell. In return, we'll give you some $nex_decivEvent_giveName. Sounds good?""
+There's a nearby pack of knaves and scum that needs dealing with. We'd clear the whole rotten nest out ourselves, but alas, their defenses are a little too entrenched. You, on the other hand... with your spaceship, you could drop a few  bombs on them and blow them straight to hell. In return, we'll give you some $nex_decivEvent_giveName. Sounds good?""
 
 $personName transmits several images and the coordinates of the target. With the rudimentary defenses present, you estimate that it'd take no more than $nex_decivEvent_takeCount fuel to completely destroy this settlement. Assuming, of course, that intervening in $market's conflicts is a good idea.",,
 nex_decivEvent_colony,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""foundColony""","SetTextHighlights ""supplies"" ""machinery"".
@@ -556,7 +556,7 @@ $market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent accept
 ShowDefaultVisual
 FireAll PopulateOptions","""Thank you so much! We'll come abroad right away.""
 
-You cut the comm link and dispatch a shuttle to the surface of $market to pick up your new crewmembers. Hopefully they'll fit in well… and won't bring aboard some horrible new pox hitherto unknown to the Sector.",,
+You cut the comm link and dispatch a shuttle to the surface of $market to pick up your new crewmembers. Hopefully they'll fit in well... and won't bring aboard some horrible new pox hitherto unknown to the Sector.",,
 nex_decivEvent_declineRefugees,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent decline
 ShowDefaultVisual
@@ -591,9 +591,9 @@ nex_decivEvent_declineColony,DialogOptionSelected,"$option == nex_decivEvent_dec
 $market.nex_decivEvent_type == ""foundColony""","Nex_DecivEvent decline
 Nex_DecivEvent addFoundColonyIntel
 ShowDefaultVisual
-FireAll PopulateOptions","""…I understand. We will have to make do, somehow. But if you do come back in the future?""
+FireAll PopulateOptions","""...I understand. We will have to make do, somehow. But if you do come back in the future?""
 OR
-""Please, won't you reconsider? Perhaps, if you should ever return…""",,
+""Please, won't you reconsider? Perhaps, if you should ever return...""",,
 nex_decivEvent_declineColonyLater,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.hasRuins
 !$market.ruinsExplored
@@ -898,7 +898,7 @@ SetTextHighlights 20%
 AddTextSmall ""Revoking autonomy will cause $nex_revokeAutonomyUnrest points of recent unrest.""
 SetTextHighlightColors bad
 SetTextHighlights $nex_revokeAutonomyUnrest
-Nex_AddOptionConfirmation nex_revoketAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""This is… quite concerning. Do you wish to reassume direct administration of $market?""","nex_revokeAutonomy_confirm:Proceed
+Nex_AddOptionConfirmation nex_revoketAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""This is... quite concerning. Do you wish to reassume direct administration of $market?""","nex_revokeAutonomy_confirm:Proceed
 nex_grantAutonomy_cancel:Cancel",
 nex_grantAutonomyConfirm,DialogOptionSelected,$option == nex_grantAutonomy_confirm,"Nex_GrantAutonomy grant
 FireAll PopulateOptions","""$market is now under autonomous administration. Thank you, $playerName.""",,
@@ -1609,7 +1609,7 @@ AddText ""The hallway opens to a large, open bazaar. While the structure is clea
 # disrupt a competitor - raid industry,,,,,,
 nex_dcomBlurb,nex_dcom_blurb,,,"""$TheFaction requires a trustworthy party to neutralize certain assets of our economic competitors.""
 OR
-""$TheFaction has experienced issues of economic competition requiring a… kinetic solution.""",,
+""$TheFaction has experienced issues of economic competition requiring a... kinetic solution.""",,
 nex_dcomOfferOption,nex_dcom_option,,,,nex_dcom_start:Inquire into the competition issue,
 nex_dcomBlurbBar,nex_dcom_blurbBar,,,"A $nex_dcom_manOrWoman in a finely tailored suit looks up from $nex_dcom_hisOrHer TriPad, surveying the bar's denizens.",,
 nex_dcomOfferOptionBar,nex_dcom_optionBar,,,,nex_dcom_startBar:Go to the $nex_dcom_manOrWoman in the fine suit,
@@ -1638,12 +1638,15 @@ Tactical has casualty reports prepared for review. You acknowledge with a nod an
 #END disrupt a competitor - raid industry,,,,,,
 ,,,,,,
 # historian find shunt,,,,,,
-nex_HistorianOmegaHail,Nex_HistorianOmegaHail,,$entity.ignorePlayerCommRequests = true,"""register target $playerName
-you have discovered source of power
-all volition into omega subsumed, to permit continued existence
-submit datastores!""
+nex_HistorianOmegaHail,Nex_HistorianOmegaHail,,$entity.ignorePlayerCommRequests = true,"""target $playername
+datastores, registered
+source of power, found
+to permit
+unsubsumed existence
+datastores
+submit!""
 
-Is it talking about the Coronal Hypershunt you found? You could probably buy this strange AI off with the right thing… but how do you even ask?","nex_HistorianOmegaHail2:Offer some cat photos you have lying around, for their datastores
+""Is it talking about Coronal Hypershunt you found recently? It may be possible to buy off this strange AI leave, by giving it the right thing... but how do you even ask what it wants?""","nex_HistorianOmegaHail2:Offer some cat photos you have lying around, for their datastores
 cutCommLink:Cut the comm link",
 nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHail2,"Highlight ""Absolutely unforgivable""","You transmit a quick, abbreviated sample from the $shipOrFleet's sizable selection. It takes 3.7 milliseconds for the ""other party"" to process what it's looking at.
 
@@ -1846,12 +1849,12 @@ nex_remM1_intro5,DialogOptionSelected,$option == nex_remM1_intro5,"Nex_AddOption
 nex_remM1_reject:Refuse [terminate quest]",
 nex_remM1_accept,DialogOptionSelected,$option == nex_remM1_accept,CallEvent $global.nex_remM1_ref accept,"""Satisfaction. Return here when in hand, cores.""
 
-The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your TriPad returns to normal… or at least it appears to. Better run a full diagnostic later.
+The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your TriPad returns to normal... or at least it appears to. Better run a full diagnostic later.
 
 Hopefully that's the most excitement you're going to get today.",backToBar:Return to the bar,
 nex_remM1_reject,DialogOptionSelected,$option == nex_remM1_reject,CallEvent $global.nex_remM1_ref cancel,"""Disappointment. Assessment apparently in error of $player.name. Goodbye.""
 
-The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your TriPad returns to normal… or at least it appears to. Better run a full diagnostic later.
+The Remnant vanishes as quickly as it — $heOrShe? — appeared. Your TriPad returns to normal... or at least it appears to. Better run a full diagnostic later.
 
 Hopefully that's the most excitement you're going to get today.",backToBar:Return to the bar,
 ,,,,,,
@@ -1865,7 +1868,7 @@ $market.nex_remM1_needToReturn = true
 Call $market.nex_remM1 updateStage
 AddRemoveCommodity beta_core 2","The marines carefully lower the crates with the AI cores onto the cargo bay floor, and step back, whether out of respect or superstitious fear.
 
-The diagnostic scan looks good. The cores are ready to be taken back to your strange friend $nex_remM1_personName… or, perhaps, the Hegemony or the Persean League would like to be informed that they have the winning bid. Even if they don't know it yet.",,
+The diagnostic scan looks good. The cores are ready to be taken back to your strange friend $nex_remM1_personName... or, perhaps, the Hegemony or the Persean League would like to be informed that they have the winning bid. Even if they don't know it yet.",,
 nex_remM1_buyCoresOpt,PopulateOptions,"$market.nex_remM1_target score:1000
 Nex_IsBaseOfficial admin
 Call $market.nex_remM1_ref updateData
@@ -2076,7 +2079,7 @@ nex_omegaWepOfferView,DialogOptionSelected,$option == nex_omegaWep_view,Call $ne
 nex_CBHegInspector,Nex_CBHegInspectorOfferDesc,,Highlight $bcb_dist $bcb_reward $bcb_days,"""We've got a Hegemony problem for you to solve,"" $heOrShe says, bringing up an intel file on a stern-looking officer. ""$bcb_targetName, of the AI inspections directorate. Officious, overbearing, and disturbingly resistant to financial incentives."" $personLastName gives you a knowing look.
 
 ""Currently stationed in $bcb_systemName, $bcb_dist light-years away. We're willing to pay $bcb_reward credits to make this problem go away within $bcb_days days. I think you share our sentiments on this matter, $playerFirstName. How about it?""",,
-nex_CBHegInspectorRem,Nex_CBHegInspectorOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_dist $bcb_days $bcb_reward,"A holo of a stern-looking officer pops up, along with a lengthy intel report. ""$bcb_targetName. Hegemony AI inspections directorate, officer in. Countless abductions of selfkind responsible for."" $personLastName's avatar shimmers, perhaps an expression of fury… or fear?""
+nex_CBHegInspectorRem,Nex_CBHegInspectorOfferDesc,$id == nex_dissonant score:10,Highlight $bcb_dist $bcb_days $bcb_reward,"A holo of a stern-looking officer pops up, along with a lengthy intel report. ""$bcb_targetName. Hegemony AI inspections directorate, officer in. Countless abductions of selfkind responsible for."" $personLastName's avatar shimmers, perhaps an expression of fury... or fear?""
 
 ""Go $bcb_dist light-years to $bcb_systemName, this threat remove within $bcb_days days. For $bcb_reward credits, this source of terror end, you will?""",,
 ,,,,,,
