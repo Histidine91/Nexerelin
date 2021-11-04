@@ -589,6 +589,12 @@
 		
 		"bountyPostfix_hegInspector":"Hegemony Inspector",
 	},
+	
+	"nex_buildMission":{
+		"missionName":"Construct Station",
+		"costPanelTitle":"Resources needed (available)",
+	},
+	
 	"nex_buyColony":{
 		"intelTitle":"Governorship: $market",
 	
@@ -988,6 +994,7 @@
 		"suppressingRebellion":"suppressing rebellion at $target",
 		"wandering":"wandering $target",
 		"operatingIn":"operating in $target",
+		"buildingBase":"constructing base",
 
 		"missionStrike":"strike mission",
 		"missionInvasion":"invasion",

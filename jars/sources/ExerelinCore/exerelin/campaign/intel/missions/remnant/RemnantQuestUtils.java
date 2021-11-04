@@ -8,10 +8,14 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Voices;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.SectorManager;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class RemnantQuestUtils {
 		
@@ -46,6 +50,22 @@ public class RemnantQuestUtils {
 		for (String id : TAG_AS_REMNANT_MISSION) {
 			Global.getSettings().getMissionSpec(id).getTagsAny().add("remnant");
 		}
+	}
+	
+	public static String getComplicationFaction(Random random, boolean allowIndependent) {
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+		//FactionAPI remnants = Global.getSector().getFaction(Factions.REMNANTS);
+		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			if (factionId.equals(Factions.PLAYER)) continue;
+			float weight = 0;
+			if (DiplomacyTraits.hasTrait(factionId, DiplomacyTraits.TraitIds.DISLIKES_AI)
+					|| DiplomacyTraits.hasTrait(factionId, DiplomacyTraits.TraitIds.HATES_AI))
+				weight += 2;
+			
+			if (weight > 0) picker.add(factionId);
+		}
+		picker.add(Factions.INDEPENDENT, 1);
+		return picker.pick();
 	}
 	
 	public static String getString(String id) {

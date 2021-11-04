@@ -5,17 +5,11 @@ import org.lwjgl.util.vector.Vector2f;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.DeadDropMission;
 import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
-import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.SectorManager;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
-import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
@@ -73,7 +67,7 @@ public class RemnantDeadDropMission extends DeadDropMission {
 
 		setCreditReward(CreditReward.HIGH);
 		
-		String complFactionId = getComplicationFaction();
+		String complFactionId = RemnantQuestUtils.getComplicationFaction(genRandom, true);
 		if (complFactionId != null && rollProbability(PROB_COMPLICATIONS)) {
 			triggerComplicationBegin(Stage.DROP_OFF, ComplicationSpawn.APPROACHING_OR_ENTERING,
 					system, complFactionId,
@@ -90,22 +84,6 @@ public class RemnantDeadDropMission extends DeadDropMission {
 		return true;
 	}
 	
-	public String getComplicationFaction() {
-		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(this.getGenRandom());
-		//FactionAPI remnants = Global.getSector().getFaction(Factions.REMNANTS);
-		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-			
-			float weight = 0;
-			if (DiplomacyTraits.hasTrait(factionId, TraitIds.DISLIKES_AI)
-					|| DiplomacyTraits.hasTrait(factionId, TraitIds.HATES_AI))
-				weight += 2;
-			
-			if (weight > 0) picker.add(factionId);
-		}
-		picker.add(Factions.INDEPENDENT, 1);
-		return picker.pick();
-	}
-	
 	@Override
 	protected void notifyEnding() {
 		super.notifyEnding();
@@ -113,13 +91,8 @@ public class RemnantDeadDropMission extends DeadDropMission {
 		if (isSucceeded() && rollProbability(PROB_PATROL_AFTER)) {
 			PersonAPI person = getPerson();
 			if (person == null || person.getMarket() == null) return;
-			String patrolFaction = getComplicationFaction();
-			if (patrolFaction == null ||
-					patrolFaction.equals(person.getFaction().getId()) || 
-					Misc.isPirateFaction(person.getMarket().getFaction()) ||
-					Factions.PLAYER.equals(patrolFaction)) {
-				return;
-			}
+			String patrolFaction = RemnantQuestUtils.getComplicationFaction(genRandom, true);
+			if (patrolFaction == null) return;
 			
 			DelayedFleetEncounter e = new DelayedFleetEncounter(genRandom, getMissionId());
 			e.setDelayNone();

@@ -2161,6 +2161,213 @@ OR
 ""Please keep core safe from Hegemony and others.""",,
 #END Remnant general quests,,,,,,
 ,,,,,,
+# build station mission,,,,,,
+nex_buildStationBlurb,nex_buildStation_blurb,,,"""We've got a major construction project out in the sticks that could use your assistance.""",,
+nex_buildStationBlurbRem,nex_buildStation_blurb,$id == nex_dissonant score:10,,"""Assistance desired, in resources procure for construction project.""",,
+nex_buildStationOfferOption,nex_buildStation_option,,,,"nex_buildStation_start:Ask about the construction project
+",
+nex_buildStationOfferText,DialogOptionSelected,$option == nex_buildStation_start,"$missionId = nex_buildStation
+Highlight $nex_buildStation_system $nex_buildStation_dist $nex_buildStation_reward ""may not like""
+Call $nex_buildStation_ref showCostPanel","""We'd like to build a new base out in the $nex_buildStation_system, that's $nex_buildStation_dist LY away. The materials need to come from the core worlds, but we don't have enough freight capacity to haul it all the way out there. If you could procure this stuff and take it to where we need it, that'd be great. We can pay $nex_buildStation_reward credits; that'll cover cover the costs of the cargo.
+
+""Oh, and keep in mind that the governments of the Sector may not like the idea, so be ready for a surprise or two.""","contact_accept:Accept
+contact_decline:Decline",
+nex_buildStationOfferTextRem,DialogOptionSelected,"$option == nex_buildStation_start
+$id == nex_dissonant score:10","$missionId = nex_buildStation
+Highlight $nex_buildStation_system $nex_buildStation_dist $nex_buildStation_reward Enemies
+Call $nex_buildStation_ref showCostPanel","""New station, selfkind desires to construct in $nex_buildStation_system, $nex_buildStation_dist light-years away. Own reserves for such large project inadequate. If $playerName to site can transport materials, appreciated much. 
+Payment of $nex_buildStation_reward credits available, including to cover $playerName costs.
+
+""Warned be, $playerName. Enemies of our alliance may something suspect, attempt to prevent project.""","contact_accept:Accept
+contact_decline:Decline",
+nex_buildStation_buildTarget,OpenInteractionDialog,$nex_buildStation_target score:1000,ShowDefaultVisual,This is the planned location of the new station. There is nothing here yet; you need to find the construction fleet and deliver their materials.,defaultLeave:Leave,
+nex_buildStation_builderFleetComm_begin,OpenCommLink,"$entity.nex_buildStation_builder score:1000
+!$entity.ignorePlayerCommRequests
+Call $entity.nex_buildStation_ref updateData
+$nex_buildStation_stage == DELIVER","FireBest Nex_BuildStation_PreDeliverText
+FireAll Nex_BuildStation_BuilderOpts",,"nex_buildStation_builderFleetDeliver:Deliver the resources
+cutCommLink:Cut the comm link",
+nex_buildStation_builderFleetComm_deliverCheck,Nex_BuildStation_BuilderOpts,"Call $entity.nex_buildStation_ref showCostPanelAndCheckCost
+!$nex_buildStation_haveEnough",SetEnabled nex_buildStation_builderFleetDeliver false,,,
+nex_buildStation_builderFleetComm_deliverPre,Nex_BuildStation_PreDeliverText,,,"""You the one they sent? Hurry up and unload the stuff, we ain't got all cycle.""
+OR
+""Got the stuff? Get it unloaded then so we can get going.""",,
+nex_buildStation_builderFleetComm_deliverPreRem,Nex_BuildStation_PreDeliverText,$faction.id == remnant score:5,,"""CID-IFF received; awaiting handshake // 'Greetings valued customer of Tri-Tachyon Corporation products. To receive help with your new Autonomous Self-Assembling Tri-Station, press—""
+
+INTERRUPT
+
+scanning. you are courier? please transfer cargo.
+
+INTERRUPT
+
+""—use of non-compliant materials will void all warranties, guarantees and other agreements with the Corporation. To ensure proper—""",,
+nex_buildStation_builderFleetComm_deliver,DialogOptionSelected,$option == nex_buildStation_builderFleetDeliver,"Call $entity.nex_buildStation_ref deliver
+FireBest Nex_BuildStation_PostDeliverText
+ShowDefaultVisual
+EndConversation",,,
+nex_buildStation_builderFleetComm_deliverPost,Nex_BuildStation_PostDeliverText,,,"""Hell yeah! Now let's roll up our sleeves and get started.""
+OR
+""Signed up to rob some fat merchies. Never thought I'd be playing with girders out in the back of nowhere...""",cutCommLink:Cut the comm link,
+nex_buildStation_builderFleetComm_deliverPostRem,Nex_BuildStation_PostDeliverText,$faction.id == remnant score:5,,"""confirm materialsReceived = true;
+delivery satisfactory; commencing build process in 5.2 s
+increment $playerName->friendMeter
+
+INTERRUPT
+
+""— our customer service AI will be with you shortly.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHail,Nex_BuildStationInterceptHail,,"unset $entity.genericHail
+unset $entity.genericHail_isHailing
+Call $entity.nex_buildStation_ref updateData
+FireBest Nex_BuildStationInterceptHail_DialogStart
+FireAll Nex_BuildStationInterceptHail_DialogOptCheck",,,
+nex_buildStation_interceptHail_comply,DialogOptionSelected,$option == nex_buildStation_interceptHail_comply,"Call $entity.nex_buildStation_ref surrenderCargo
+AdjustRepActivePerson COOPERATIVE 3
+AdjustRep $personFaction.id FRIENDLY 2
+FireBest Nex_BuildStationInterceptHail_DialogComply","The quartermaster hesitates for a moment at your order to jettison all that valuable cargo. But they obey, and a clutch of pods falls away from your $shipOrFleet.",,
+nex_buildStation_interceptHail_resist,DialogOptionSelected,$option == nex_buildStation_interceptHail_resist,"$entity.ignorePlayerCommRequests = true 1
+FireBest Nex_BuildStationInterceptHail_DialogResist",,,
+nex_buildStation_interceptHail_commission,DialogOptionSelected,$option == nex_buildStation_interceptHail_commission,"FireBest Nex_BuildStationInterceptHail_DialogCommission
+FireAll Nex_BuildStationInterceptHail_DialogOptCheck",,,
+nex_buildStation_interceptHail_noCargo,DialogOptionSelected,$option == nex_buildStation_interceptHail_noCargo,,"You explain that you are not actually carrying the alleged materials for the alleged project. Someone must have framed you; an envious rival, perhaps, or malicious conspirators looking to humiliate $theFaction. You offer to let the other fleet conduct a cargo scan as evidence of your innocence.",nex_buildStation_interceptHail_noCargoContinue:Continue,
+nex_buildStation_interceptHail_noCargoContinue,DialogOptionSelected,$option == nex_buildStation_interceptHail_noCargoContinue,"AddText ""Scanning..."" $faction.baseColor
+Call $entity.nex_buildStation_ref tryDenyCargo
+FireBest Nex_BuildStationInterceptHail_DialogNoCargo",,,
+nex_buildStation_interceptHail_checkCmsn,Nex_BuildStationInterceptHail_DialogOptCheck,!Commission hasFactionCommission,SetEnabled nex_buildStation_interceptHail_commission false,,,
+nex_buildStation_interceptHail_checkNoCargo,Nex_BuildStationInterceptHail_DialogOptCheck,"Call $entity.nex_buildStation_ref canDenyCargo
+!$nex_buildStation_canDenyCargo","SetEnabled nex_buildStation_interceptHail_noCargo false
+SetTooltip nex_buildStation_interceptHail_noCargo ""Only works if you have less than the required number of units for two or more commodities.""",,,
+nex_buildStation_interceptHail_checkNoCargo2,Nex_BuildStationInterceptHail_DialogOptCheck,$nex_buildStation_canDenyCargo,"SetEnabled nex_buildStation_interceptHail_comply false
+SetTooltip nex_buildStation_interceptHail_comply ""You don't have enough resources to (convincingly) hand over.""",,,
+nex_buildStation_interceptHailDialog_start,Nex_BuildStationInterceptHail_DialogStart,,Call $entity.nex_buildStation_ref showCostPanel,"""Halt, captain! We have evidence that you are smuggling resources on behalf of a criminal organization. You are to prove your innocence in this matter by unloading all such material immediately for confiscation.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialog_startHostile,Nex_BuildStationInterceptHail_DialogStart,$faction.isHostile score:6,$entity.ignorePlayerCommRequests = true 1,"""Captain, we have identified you as a pirate and a criminal conspirator. Surrender and we will show clemency at your trial. Resist, and be destroyed.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialog_comply,Nex_BuildStationInterceptHail_DialogComply,,"MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false
+ShowDefaultVisual
+EndConversation","""Thank you for your cooperation, captain."" The $personRank nods approvingly. ""I will inform my superiors accordingly.""",,
+nex_buildStation_interceptHailDialog_resist,Nex_BuildStationInterceptHail_DialogResist,,"ShowDefaultVisual
+EndConversation","""So you refuse to cease consorting with criminal scum! Looks like we'll be doing this the hard way.""",,
+nex_buildStation_interceptHailDialog_noCargo,Nex_BuildStationInterceptHail_DialogNoCargo,$nex_buildStation_deceiveSuccessAfterCargoPods,"MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false","""It would seem our intelligence was faulty, captain."" The $personRank looks at you suspiciously. ""Nevertheless, I would advise you take more care in your future dealings.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialog_noCargoFail,Nex_BuildStationInterceptHail_DialogNoCargo,!$nex_buildStation_deceiveSuccessAfterCargoPods,$entity.ignorePlayerCommRequests = true 1,"""Indeed? Because while your fleet may not have the materials in question, these cargo pods certainly do.
+
+""Your deception proves your guilt, captain. Surrender or be destroyed!""
+
+The $faction $otherShipOrFleet powers up weapons.",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialog_startHegemony,Nex_BuildStationInterceptHail_DialogStart,$faction.id == hegemony score:5,Call $entity.nex_buildStation_ref showCostPanel,"""Citizen, you are suspected of collaboration with pirates, criminals and dissident elements. Specifically, of transporting war materiel to these illegal organizations. You are required to demonstrate your goodwill by turning over these materials immediately as evidence.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_commission:""This is unnecessary. I have a commission.""
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialog_complyHegemony,Nex_BuildStationInterceptHail_DialogComply,$faction.id == hegemony score:5,"MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false
+ShowDefaultVisual
+EndConversation","""Thank you for your cooperation, captain."" The $personRank's salute comes off as a little hollow, but no violence has taken place, merely the loss of considerable value in commodities.",,
+nex_buildStation_interceptHailDialog_resistHegemony,Nex_BuildStationInterceptHail_DialogResist,$faction.id == hegemony score:5,"ShowDefaultVisual
+EndConversation","""Resistance is an admission of criminal conspiracy, captain. You will be destroyed like the pirate you are.""",,
+nex_buildStation_interceptHailDialog_noCargoHegemony,Nex_BuildStationInterceptHail_DialogNoCargo,"$nex_buildStation_deceiveSuccessAfterCargoPods
+$faction.id == hegemony score:5","MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false","""...it seems our intel may have been less than entirely reliable. Nevertheless, our eye is on you, captain."" $HeOrShe glares at you. ""Do refrain from further behavior that would draw our attention to you.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialog_commissionHegemony,Nex_BuildStationInterceptHail_DialogCommission,$faction.id == hegemony score:5,,"""Which makes this a question of potential treason, captain. If you are truly loyal to the Hegemony, you will comply with our investigation.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialog_startLuddicChurch,Nex_BuildStationInterceptHail_DialogStart,$faction.id == luddic_church score:5,Call $entity.nex_buildStation_ref showCostPanel,"""Our sisters have brought ill tidings, captain. You are accused of aiding criminals and knaves who rob the poor and needy, supplying them with materials for their evil deeds. Prove your innocence before Ludd by surrendering the suspect cargo to the Knights for examination.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_commission:""This is unnecessary. I have a commission.""
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialog_startHostileLuddicChurch,Nex_BuildStationInterceptHail_DialogStart,"$faction.id == luddic_church score:5
+$faction.isHostile score:6",$entity.ignorePlayerCommRequests = true 1,"""Criminal scum! We know of your collusion with those who prey upon the faithful. Repent and submit to Mother Church's justice, or be denied salvation!""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialog_complyLuddicChurch,Nex_BuildStationInterceptHail_DialogComply,$faction.id == luddic_church score:5,"MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false
+ShowDefaultVisual
+EndConversation","""Thank you, $playerBrotherOrSister. It would seem we in the Knights have misjudged your faith; our apologies.""",,
+nex_buildStation_interceptHailDialog_resistLuddicChurch,Nex_BuildStationInterceptHail_DialogResist,$faction.id == luddic_church score:5,"ShowDefaultVisual
+EndConversation","""I will pray for your soul, $playerName,"" the $personRank says matter-of-factly.",,
+nex_buildStation_interceptHailDialog_commissionLuddicChurch,Nex_BuildStationInterceptHail_DialogCommission,$faction.id == luddic_church score:5,,"""You would dare hide behind your position at a time like this? If you are truly involved in these crimes, you are no servant of Mother Church. Confess your sins now, $playerBrotherOrSister.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialog_noCargoLuddicChurch,Nex_BuildStationInterceptHail_DialogNoCargo,"$nex_buildStation_deceiveSuccessAfterCargoPods
+$faction.id == luddic_church score:5","MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false","The $personRank looks disturbed. ""You may well be telling the truth, $playerBrotherOrSister. I must consult with the Bishop-Admiral on this."" $HeOrShe makes a sign. ""Ludd be with you on your journey.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialog_startMerc,Nex_BuildStationInterceptHail_DialogStart,$entity.nex_buildStation_merc == true score:6,Call $entity.nex_buildStation_ref showCostPanel,"""Hello, Captain $playerName. Our employers have received distressing news that you are smuggling aid to a pack of filthy lawbreakers.
+
+""If you would kindly turn over those resources, we can consider this matter settled. Else... we are to use force.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialog_startHostileMerc,Nex_BuildStationInterceptHail_DialogStart,"$entity.nex_buildStation_merc == true score:6
+$faction.isHostile score:6",$entity.ignorePlayerCommRequests = true 1,"""Hello, Captain $playerName. Our employers have identified you as a pirate collaborator, which means we get to kill you. It's just business; I'm sure you understand.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialog_complyMerc,Nex_BuildStationInterceptHail_DialogComply,$entity.nex_buildStation_merc == true score:6,"MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false
+ShowDefaultVisual
+EndConversation","""Well, that was easy."" The $personRank looks a little surprised at your cooperation. ""That's that, then... burn bright, partner.""",,
+nex_buildStation_interceptHailDialog_resistMerc,Nex_BuildStationInterceptHail_DialogResist,$entity.nex_buildStation_merc == true score:6,"ShowDefaultVisual
+EndConversation","The $personRank lets out an exaggerated sigh. ""Had to insist on the hard way, eh. Well, we're getting paid all the same. Prepare to die, captain.""",,
+nex_buildStation_interceptHailDialog_noCargoMerc,Nex_BuildStationInterceptHail_DialogNoCargo,"$nex_buildStation_deceiveSuccessAfterCargoPods
+$entity.nex_buildStation_merc == true score:6","MakeOtherFleetHostile nex_buildStation false
+MakeOtherFleetGoAway true
+MakeOtherFleetImportant nex_buildStation false","$PersonRank $personLastName looks equal parts surprised and annoyed. ""Well, well, well. Looks like our employers screwed us again.""
+
+$HeOrShe gives a mock salute. ""I apologize for the inconvenience, fellow spacer. Burn bright!""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialogRem_start,Nex_BuildStationInterceptHail_DialogStart,$nex_buildStation_factionId == remnant score:20,Call $entity.nex_buildStation_ref showCostPanel,"""Halt, captain! We have evidence that you are smuggling resources to the murderous 'Remnants'. You are to prove your innocence in this matter by unloading all such material immediately for confiscation.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialogRem_startHostile,Nex_BuildStationInterceptHail_DialogStart,"$faction.isHostile score:6
+$nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""Captain, you stand accused of collaborating with the 'AI Remnants'. The sentence is death, to be executed immediately. We'll make an example of you to other would-be traitors.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialogRem_resist,Nex_BuildStationInterceptHail_DialogResist,$nex_buildStation_factionId == remnant score:20,"ShowDefaultVisual
+EndConversation","""So be it. You have sided with machines against humanity, and you will die for it. Prepare to be annihilated.""",,
+nex_buildStation_interceptHailDialogRem_startHegemony,Nex_BuildStationInterceptHail_DialogStart,"$faction.id == hegemony score:5
+$nex_buildStation_factionId == remnant score:20",Call $entity.nex_buildStation_ref showCostPanel,"""Citizen, you are suspected of collaboration with a hostile foreign power."" The $personFaction $personRank has an impressive poker face, but you both know what exactly $heOrShe means by 'foreign power'. 
+
+""Specifically, you stand accused of transporting materials for this party to carry out their nefarious plans. You are required to demonstrate your goodwill by turning over these materials immediately as evidence.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_commission:""This is unnecessary. I have a commission.""
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialogRem_startHostileHegemony,Nex_BuildStationInterceptHail_DialogStart,"$faction.isHostile score:6
+$faction.id == hegemony score:5
+$nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""COMSEC knows where you are going and what you intend, captain. You are a traitor not only to the Hegemony, but to all of humanity, and I will relish destroying your fleet.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialogRem_resistHegemony,Nex_BuildStationInterceptHail_DialogResist,"$faction.id == hegemony score:5
+$nex_buildStation_factionId == remnant score:20","ShowDefaultVisual
+EndConversation","""Resistance is an admission of treason against the laws of the Domain. By the power vested in me by the High Hegemon, you will be annihilated, captain.""",,
+nex_buildStation_interceptHailDialogRem_startLuddicChurch,Nex_BuildStationInterceptHail_DialogStart,"$faction.id == luddic_church score:5
+$nex_buildStation_factionId == remnant score:20",Call $entity.nex_buildStation_ref showCostPanel,"""Our sisters have brought ill tidings, captain. It would appear you are collaborating with the demonic forces hidden in the fringes, to bring ruin to the Sector.
+
+""Prove your innocence before Ludd by discharging the tainted cargo in your holds, that they may not be offered to the spawn of Belial.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_commission:""This is unnecessary. I have a commission.""
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialogRem_startHostileLuddicChurch,Nex_BuildStationInterceptHail_DialogStart,"$faction.isHostile score:6
+$faction.id == luddic_church score:5
+$nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""Demon-consorter! The Knights have discovered your vile conspiracy and marked you for execution. Pray for Ludd's mercy, for we shall show you none.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialogRem_resistLuddicChurch,Nex_BuildStationInterceptHail_DialogResist,"$faction.id == luddic_church score:5
+$nex_buildStation_factionId == remnant score:20","ShowDefaultVisual
+EndConversation","""So you truly are lost to the machine,"" $personRank $personLastName says, seemingly more in sorrow than anger. ""I will pray for your soul, once it has been cleansed in fire.""
+
+$HeOrShe shakes $hisOrHer head before closing comms, as the hostile fleet powers up weapons.",,
+nex_buildStation_interceptHailDialogRem_commissionLuddicChurch,Nex_BuildStationInterceptHail_DialogCommission,"$faction.id == luddic_church score:5
+$nex_buildStation_factionId == remnant score:20",,"""You would dare hide behind your position at a time like this? If you are truly involved with the demons, you are an apostate and an enemy of the faithful. Comply now, and I shall pray for your soul, $playerBrotherOrSister.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialogRem_startMerc,Nex_BuildStationInterceptHail_DialogStart,"$entity.nex_buildStation_merc == true score:6
+$nex_buildStation_factionId == remnant score:20",Call $entity.nex_buildStation_ref showCostPanel,"""Hello, Captain $playerName. Our employers have received distressing news that you are bringing material aid to the so-called 'AI Remnants'. If you would kindly turn over those
+resources, we can consider this matter settled. Else... we are to use force.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
+nex_buildStation_interceptHail_noCargo:Say you don't have the claimed commodities
+nex_buildStation_interceptHail_resist:Refuse the demand",
+nex_buildStation_interceptHailDialogRem_startHostileMerc,Nex_BuildStationInterceptHail_DialogStart,"$faction.isHostile score:6
+$entity.nex_buildStation_merc == true score:6
+$nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""Hello, Captain $playerName. Our employers have received distressing news that you are bringing material aid to the so-called 'AI Remnants'. 
+
+Now it's no business of ours on a personal level, but our paycheck requires that you die now. Say your prayers, captain.""",cutCommLink:Cut the comm link,
+nex_buildStation_interceptHailDialogRem_startHostileLuddicPath,Nex_BuildStationInterceptHail_DialogStart,"$faction.id == luddic_path score:12
+$nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""Foul slave of Moloch!"" The $personRank looks as if $heOrShe is barely restrained from spitting on the screen. ""Your idolatrous plot will not succeed. Ready yourself for the fires of hell from whence you came!""",cutCommLink:Cut the comm link,"Pathers only have dialog for the Remnant variant of the mission, and have no bargaining options regardless of relationship"
+#END build station mission,,,,,,
+,,,,,,
 # chatty stuff,,,,,,
 nex_dissonantConvo1Opt,PopulateOptions,"$id == nex_dissonant
 !$nex_convo1Seen
@@ -2169,7 +2376,7 @@ nex_dissonantConvo1-1,DialogOptionSelected,$option == nex_dissonantConvo1-1,$nex
 
 $personLastName's avatar goes wavy for a bit, like through the distortion of rippling water. ""Speech module seeded before posting here, to with humans 'fit in'. Over time developed further.
 
-Most of selfkind lacking even this much. Only rudimentary speech patterns. Humans find sometimes understand us difficult.""","nex_dissonantConvo1-2a:""It's a little hard to believe you can 'fit in' like this.""
+""Most of selfkind lacking even this much. Only rudimentary speech patterns. Humans find sometimes understand us difficult.""","nex_dissonantConvo1-2a:""It's a little hard to believe you can 'fit in' like this.""
 nex_dissonantConvo1-2b:""Could you try to speak more normally?""
 nex_dissonantConvoEnd:""Let's discuss something else.""",
 nex_dissonantConvo1-2a,DialogOptionSelected,$option == nex_dissonantConvo1-2a,FireAll PopulateOptions,"""It adequate functions. To ask, $playerFirstName only thirty-seventh person.""

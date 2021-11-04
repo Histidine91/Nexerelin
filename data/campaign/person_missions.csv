@@ -1,14 +1,15 @@
 mission id,person id,tagsAll,tagsAny,tagsNotAny,tags,freq,min timeout,max timeout,min rep,max rep,importance,reqMissionAny,reqMissionAll,reqMissionNone,icon,plugin
 nex_dcom,,,trade,,,10,30,60,FAVORABLE,,MEDIUM,,,,graphics/icons/missions/disrupt_competitor.png,exerelin.campaign.intel.missions.Nex_DisruptIndustry
 nex_gbTut,,,,,"priority, non_repeatable",,,,,,,,,,graphics/exerelin/missions/gb_tutorial.png,exerelin.campaign.intel.missions.GroundBattleTutorial
+nex_buildStation,,,"remnant, underworld",,,5,120,180,,,MEDIUM,,,,graphics/icons/markets/pirate_base.png,exerelin.campaign.intel.missions.BuildStation
 ,,,,,,,,,,,,,,,,
-# Remnant missions,,,,,,,,,,,,,,,,
+# Remnant story missions,,,,,,,,,,,,,,,,
 nex_remM1,,,,,"priority, non_repeatable",,,,,,,,,,graphics/icons/cargo/ai_core_beta.png,exerelin.campaign.intel.missions.remnant.RemnantM1
 ,,,,,,,,,,,,,,,,
 # generic Remnant missions,,,,,,,,,,,,,,,,
-# note: most are just vanilla missions with Remnant tag added in modPlugin onApplicationLoad,,,,,,,,,,,,,,,,
+# note: most Rem missions are just vanilla ones with Remnant tag added in modPlugin onApplicationLoad,,,,,,,,,,,,,,,,
 nex_cpcRem,,,remnant,,,6,30,60,,,,,,,graphics/icons/missions/custom_production.png,exerelin.campaign.intel.missions.remnant.RemnantCustomProductionContract
-nex_remcb,,,remnant,,priority,20,30,60,,,,,,,graphics/icons/missions/military_bounty.png,exerelin.campaign.intel.missions.remnant.RemnantCustomBounty
+nex_remcb,,,remnant,,,20,30,60,,,,,,,graphics/icons/missions/military_bounty.png,exerelin.campaign.intel.missions.remnant.RemnantCustomBounty
 nex_ddroRem,,,remnant,,,10,30,60,,,,,,,graphics/icons/missions/dead_drop.png,exerelin.campaign.intel.missions.remnant.RemnantDeadDropMission
 nex_sShipRem,,,remnant,,,10,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.RemnantSurplusShipHull
 nex_omegaWep,,,remnant,,,2,30,60,,,,,,,,exerelin.campaign.intel.missions.remnant.OmegaWeapons

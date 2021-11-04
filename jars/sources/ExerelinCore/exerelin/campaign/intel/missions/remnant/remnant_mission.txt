@@ -5,11 +5,15 @@ Mission 1
 - bring it back to Remnant contact for money and rep
 	- or defy Remnants and keep core
 
-code to add extraction mission:
-	AddRaidObjective genericIcon "Perform extraction operation"$extr_danger 5000 extrRaidFinished
-	$extr_addedRaidObjective = true 0
+Mission 2?
+- early warning of Hegemony operation against Remnant station in <system>; Midnight asks for assistance
+- get there, huge brawl between Heg+Luddic and Remnant fleets (with mercs fighting for Remnants too?)
+- objective is to ensure the station and neutralize all enemy fleets
+	- alternative route: join the attack instead? (will lead to losing Midnight as a contact, and put player on the anti-Remnant route long term)
+		- Allied forces are operating from a staging area with base, player is asked to scout the system
+		- Interact with marked point near station to summon the attack (makes all Remnants hostile)
 
-Mission 2
+Other missions
 - assassinate Knight of Ludd?
 
 Available free missions
@@ -21,7 +25,20 @@ Available free missions
 - (custom) Remnant production/Buy Omega weapons
 - Buy AI cores?
 
-TODO: need blurbs and options to display missions
+Station building mission
+- rare?
+- have cooldown
+- tell player to take 1k metals, 200 heavy machinery, 500 supplies and such to
+	- fleet will ambush player en route (Hegemony, Luddic Church, Luddic Path, any AI-hating faction, or merc)
+		- if non-hostile, will demand that player hand over the cargo they were going to use for the station (Pathers will just attack outright)
+- meet Remnant fleet orbiting location
+	- on delivery, Remnant fleet will assemble station after a delay
+- Complication fleet after completion?
 
+--------------------
+M2 dialog
+- "In naval matter assistance needed. Valuable strength $playerName can offer."
+- Offer your assistance in the "naval matter"
 
-Contact name: Midnight Dissonant
+- "Other agents to self send warning. Selfkind station in $system to enemies known. Cooperation between Hegemony and Luddic Church, unseen since after first war's end.
+"$system cannot be abandoned. 
