@@ -54,6 +54,7 @@ import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
+import exerelin.world.ExerelinNewGameSetup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1122,7 +1123,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 */
 	public static CampaignFleetAPI findBase(FactionAPI faction) {
 		WeightedRandomPicker<CampaignFleetAPI> basePicker = new WeightedRandomPicker();
-		Vector2f center = new Vector2f(0, 0);
+		Vector2f center = ExerelinNewGameSetup.SECTOR_CENTER;
 		for (StarSystemAPI system : Global.getSector().getStarSystems()) 
 		{
 			for (CampaignFleetAPI fleet : system.getFleets()) 
