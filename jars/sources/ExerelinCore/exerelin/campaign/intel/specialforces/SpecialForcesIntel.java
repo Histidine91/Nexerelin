@@ -842,7 +842,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	public void debugMsg(String msg, boolean small) {
-		log.info(msg);
+		//log.info(msg);
 		if (debugDialog != null) {// && dialog.getPlugin() instanceof SpecialForcesDebugDialog) {
 			TextPanelAPI text = debugDialog.getTextPanel();
 			if (small) text.setFontSmallInsignia();

@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
-import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Strategic level AI for special forces fleets. Handles perhaps everything to do with the managed route.
@@ -64,7 +63,7 @@ public class SpecialForcesRouteAI {
 	
 	protected int idleCount = 0;
 	
-	protected IntervalUtil recheckTaskInterval = new IntervalUtil(7, 13);
+	protected IntervalUtil recheckTaskInterval = new IntervalUtil(3, 5);
 	
 	public SpecialForcesRouteAI(SpecialForcesIntel sf) {
 		this.sf = sf;
@@ -702,7 +701,7 @@ public class SpecialForcesRouteAI {
 	
 	public void advance(float amount) {
 		float days = Global.getSector().getClock().convertToDays(amount);
-		recheckTaskInterval.advance(amount);
+		recheckTaskInterval.advance(days);
 		if (recheckTaskInterval.intervalElapsed()) {
 			updateTaskIfNeeded();
 		}
