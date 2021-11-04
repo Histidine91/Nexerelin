@@ -16,8 +16,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
 import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter.EncounterType;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
+import com.fs.starfarer.api.impl.campaign.missions.hub.MissionFleetAutoDespawn;
 import com.fs.starfarer.api.loading.VariantSource;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
@@ -42,10 +42,10 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 	@Override
 	public void reportEntityDiscovered(SectorEntityToken entity) {
 		if (entity.hasTag(Tags.CORONAL_TAP))
-			spawnShuntFleet();
+			spawnShuntFleet(entity);
 	}
 	
-	public void spawnShuntFleet() {
+	public void spawnShuntFleet(SectorEntityToken shunt) {
 		FactionAPI faction = Global.getSector().getFaction(Factions.OMEGA);
 		float maxPointsForFaction = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL);
 		
@@ -85,6 +85,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			e.triggerMakeNoRepImpact();
 			e.triggerSetFleetGenericHailPermanent("Nex_HistorianOmegaHail");
 			e.triggerSetFleetFlagPermanent("$nex_omega_hypershunt_complication");
+			e.triggerSetFleetMemoryValue("$nex_omega_hypershunt_complication_shunt", shunt);
 			//e.triggerSetFleetFaction(Factions.REMNANTS);
 			e.endCreate();
 		}
@@ -106,13 +107,15 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			params.ignoreMarketFleetSizeMult = true;
 			params.qualityOverride = 1.2f;
 			params.maxShipSize = 2;
-
+			
+			float delay = MathUtils.getRandomNumberInRange(0.75f, 3f);
+			//DelayedActionScript script;
 			CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(faction, params);
 
 			if (fleet == null)
 				return;
 
-			String targetName = StringHelper.getString("yourFleet");			
+			String targetName = StringHelper.getString("yourFleet");
 			
 			fleet.getMemoryWithoutUpdate().set("$genericHail", true);
 			fleet.getMemoryWithoutUpdate().set("$genericHail_openComms", "Nex_HistorianOmegaHail");
@@ -133,7 +136,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, playerFleet, 0.5f);	// make it get a little closer
 			fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 15,
 					StringHelper.getFleetAssignmentString("intercepting", targetName));
-			Misc.giveStandardReturnToSourceAssignments(fleet, false);
+			fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, shunt, 999999);
 			fleet.setLocation(pos.getX(), pos.getY());
 			playerFleet.getContainingLocation().addEntity(fleet);
 			
@@ -154,6 +157,11 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 				member.getVariant().addTag(Tags.SHIP_LIMITED_TOOLTIP);
 				member.getVariant().addTag(Tags.VARIANT_CONSISTENT_WEAPON_DROPS);
 			}
+			SectorEntityToken shunt = fleet.getMemoryWithoutUpdate().getEntity("$nex_omega_hypershunt_complication_shunt");
+			if (shunt != null) {
+				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, shunt, 999999);
+			}
+			fleet.removeScriptsOfClass(MissionFleetAutoDespawn.class);
 		}
 	}
 }
