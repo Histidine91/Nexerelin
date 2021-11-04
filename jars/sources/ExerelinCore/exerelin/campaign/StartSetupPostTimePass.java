@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.PersonImportance;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -21,7 +22,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.People;
+import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsBaseOfficial;
@@ -38,6 +41,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.SpecialItemSet;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import exerelin.world.VanillaSystemsGenerator;
@@ -356,10 +360,38 @@ public class StartSetupPostTimePass {
 			if (postId == null) continue;
 			if (!Nex_IsBaseOfficial.isOfficial(postId, "any")) continue;
 			
+			contact.setVoice(contact.getFaction().pickVoice(contact.getImportance(), StarSystemGenerator.random));
+			addTagsToStartingContact(contact, postId);
 			ContactIntel intel = new ContactIntel(contact, market);
 			Global.getSector().getIntelManager().addIntel(intel, false, null);
 			intel.develop(null);
 			break;
 		}
+	}
+	
+	public static void addTagsToStartingContact(PersonAPI contact, String postId) 
+	{
+		boolean pirate = Misc.isPirateFaction(contact.getFaction()) || NexUtilsFaction.isPirateFaction(contact.getFaction().getId());
+		
+		boolean mil = postId.equals(Ranks.POST_BASE_COMMANDER) || postId.equals(Ranks.POST_STATION_COMMANDER);
+		boolean trade = postId.equals(Ranks.POST_PORTMASTER) || postId.equals(Ranks.POST_SUPPLY_MANAGER) || postId.equals(Ranks.POST_SUPPLY_OFFICER);
+		
+		if (postId.equals(Ranks.POST_ADMINISTRATOR)) {
+			mil = true;
+			trade = true;
+		}
+		
+		if (!mil && !trade) {
+			if (Math.random() < 0.5f) mil = true;
+			else trade = true;
+		}
+		
+		if (mil) {
+			contact.addTag(pirate ? Tags.CONTACT_UNDERWORLD : Tags.CONTACT_MILITARY);
+		}
+		if (trade) {
+			contact.addTag(Tags.CONTACT_TRADE);
+		}
+		
 	}
 }
