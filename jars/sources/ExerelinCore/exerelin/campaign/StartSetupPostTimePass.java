@@ -342,10 +342,11 @@ public class StartSetupPostTimePass {
 		}
 	}
 	
-	public static void generateContactAtStartingLocation(MarketAPI market) {				
+	public static void generateContactAtStartingLocation(MarketAPI market) {
 		if (market.getMemoryWithoutUpdate().getBoolean(ContactIntel.NO_CONTACTS_ON_MARKET)) return;
 		if (market.getFaction().getCustomBoolean(Factions.CUSTOM_NO_CONTACTS)) return;
 		if (market.getFaction().isPlayerFaction()) return;
+		if (NexConfig.getFactionConfig(market.getFactionId()).noStartingContact) return;
 		
 		List<CommDirectoryEntryAPI> directory = market.getCommDirectory().getEntriesCopy();
 		Collections.shuffle(directory, StarSystemGenerator.random);

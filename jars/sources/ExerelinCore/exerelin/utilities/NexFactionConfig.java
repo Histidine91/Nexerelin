@@ -134,14 +134,16 @@ public class NexFactionConfig
     public boolean dropPrisoners = true;
     public boolean noHomeworld = false;	// don't give this faction a HQ in procgen
     public boolean showIntelEvenIfDead = false;	// intel tab
-	public boolean noMissionTarget = false;
-	public List<String> stabilizeCommodities = null;
+    public boolean noMissionTarget = false;
+    public List<String> stabilizeCommodities = null;
     
     public boolean allowAgentActions = true;
     public boolean allowPrisonerActions = true;
     
     public boolean directoryUseShortName = false;
     public String difficultyString = "";
+    
+    public boolean noStartingContact = false;
     
     // vengeance
     public List<String> vengeanceLevelNames = new ArrayList<>();
@@ -160,7 +162,7 @@ public class NexFactionConfig
     public List<String> miningVariantsOrWings = new ArrayList<>();
     
     public Map<StartFleetType, StartFleetSet> startShips = new HashMap<>();
-	public List<SpecialItemSet> startSpecialItems = new ArrayList<>();
+    public List<SpecialItemSet> startSpecialItems = new ArrayList<>();
     
     // set defaults
     static {
@@ -257,7 +259,8 @@ public class NexFactionConfig
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             noHomeworld = settings.optBoolean("noHomeworld", noHomeworld);
             showIntelEvenIfDead = settings.optBoolean("showIntelEvenIfDead", showIntelEvenIfDead);
-			noMissionTarget = settings.optBoolean("noMissionTarget", noMissionTarget);
+            noMissionTarget = settings.optBoolean("noMissionTarget", noMissionTarget);
+            noStartingContact = settings.optBoolean("noStartingContact", noStartingContact);
             
             allowAgentActions = settings.optBoolean("allowAgentActions", allowAgentActions);
             allowPrisonerActions = settings.optBoolean("allowPrisonerActions", allowPrisonerActions);
