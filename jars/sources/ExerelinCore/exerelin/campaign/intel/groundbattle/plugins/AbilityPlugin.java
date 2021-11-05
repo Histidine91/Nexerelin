@@ -288,7 +288,8 @@ public abstract class AbilityPlugin {
 	 */
 	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
 		activate(null, user);
-		playUISound();
+		if (side.getIntel().shouldNotify())
+			playUISound();
 		return true;
 	}
 	

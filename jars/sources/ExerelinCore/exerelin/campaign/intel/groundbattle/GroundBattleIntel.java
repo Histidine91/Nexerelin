@@ -1134,7 +1134,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			addLogEvent(log);
 		}
 		
-		if (playerIsAttacker != null || isImportant())
+		if (shouldNotify())
 			sendUpdateIfPlayerHasIntel(UPDATE_TURN, false);
 		interval.setElapsed(0);
 		turnNum++;
@@ -1143,6 +1143,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		defender.reportTurn();
 		abilitiesUsedLastTurn.clear();
 		resolving = false;
+	}
+	
+	public boolean shouldNotify() {
+		return playerIsAttacker != null || isImportant();
 	}
 	
 	/**
@@ -1176,6 +1180,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			playerData.andradaRepChange = result;
 			playerData.andradaRepAfter = Global.getSector().getPlayerFaction().getRelationship(PlayerFactionStore.getPlayerFactionId());
 		}
+		
+		timerForDecision = null;
 	}
 	
 	public void handleGovernorshipPurchase() {
@@ -1185,6 +1191,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			Nex_BuyColony.buy(market, null);
 			playerData.governorshipPrice = cost.getModifiedValue();
 		}
+		
+		timerForDecision = null;
 	}
 	
 	/**
