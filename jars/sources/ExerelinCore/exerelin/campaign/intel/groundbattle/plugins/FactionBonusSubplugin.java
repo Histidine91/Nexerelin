@@ -49,14 +49,14 @@ public class FactionBonusSubplugin {
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
 		Float mult = getSettingsFloat("attackMult");
 		if (mult != null)
-			dmg.modifyFlat("bonus_" + factionId, mult, getFaction().getDisplayName());
+			dmg.modifyMult("bonus_" + factionId, mult, getFaction().getDisplayName());
 		return dmg;
 	}
 	
 	public MutableStat modifyDamageReceived(GroundUnit unit, MutableStat dmg) {
 		Float mult = getSettingsFloat("damageTakenMult");
 		if (mult != null)
-			dmg.modifyFlat("bonus_" + factionId, mult, getFaction().getDisplayName());
+			dmg.modifyMult("bonus_" + factionId, mult, getFaction().getDisplayName());
 		return dmg;
 	}
 	
