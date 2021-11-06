@@ -234,7 +234,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 
 			log.info("\tStrength ratio: " + atkStrength + " : " + defStrength);
 
-			needBomb = atkStrength < defStrength;
+			//needBomb = atkStrength < defStrength;
 		} else {
 			needBomb = true;
 		}
