@@ -654,9 +654,17 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			re = Nex_MarketCMD.getRaidEffectiveness(target, ourGroundStr);
 		}
 		else {
-			// FIXME: this is always "evenly matched", but of course it's not that simple
-			float enemyGroundStr = GBUtils.estimateTotalDefenderStrength(target, faction, true);
+			GroundBattleIntel temp = new GroundBattleIntel(target, faction, target.getFaction());
+			temp.init();
+			float enemyGroundStr = GBUtils.estimateTotalDefenderStrength(temp, true);
 			float ourGroundStrAdj = marinesTotal * 1.25f;
+			
+			boolean canBomb = expectBombable();
+			if (!canBomb) {
+				float attrMult = 1 - temp.getSide(true).getDropAttrition().getModifiedValue()/100;
+				ourGroundStrAdj *= (attrMult * attrMult);	// square the effect due to morale effects
+			}
+			
 			re = ourGroundStrAdj/(ourGroundStrAdj + enemyGroundStr);
 		}
 		if (re < 0.33f) {
