@@ -262,7 +262,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	protected void addCostHelpPara(TextPanelAPI text) {
 		text.setFontSmallInsignia();
 		String fpCost = (int)Math.round(NexConfig.fleetRequestCostPerFP) + "";
-		String marineCost = getCostPerMarine() + "";
+		String marineCost = String.format("%.0f", getCostPerMarine());
 		String str = StringHelper.getStringAndSubstituteToken("nex_fleetRequest", 
 				"fleetCostHelp", "$credits", fpCost);
 		if (fleetType == FleetType.INVASION) {
@@ -382,7 +382,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				text.addPara(getString("timeToLaunch", true) + ": " + time, hl, time);
 			}
 		}
-		if (showStr && target != null && fleetType != FleetType.COLONY) {
+		if (showStr && target != null && fleetType.isCombat) {
 			boolean isInvasion = fleetType == FleetType.INVASION;
 			String key = isInvasion ? "infoTargetStrengthGround" : "infoTargetStrength";
 			Map<String, String> sub = new HashMap<>();
@@ -938,17 +938,19 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}};
 	
 	public enum FleetType {
-		INVASION(true), 
-		BASESTRIKE(true),
-		RAID(true), 
-		DEFENSE(false), 
-		COLONY(false), 
-		RELIEF(false);
+		INVASION(true, true), 
+		BASESTRIKE(true, true),
+		RAID(true, true), 
+		DEFENSE(false, true), 
+		COLONY(false, false), 
+		RELIEF(false, false);
 		
 		public final boolean isAggressive;
+		public final boolean isCombat;
 		
-		private FleetType(boolean isAggressive) {
+		private FleetType(boolean isAggressive, boolean isCombat) {
 			this.isAggressive = isAggressive;
+			this.isCombat = isCombat;
 		}
 		
 		public static FleetType getTypeFromString(String str) {
