@@ -7,6 +7,7 @@ import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -72,6 +73,15 @@ public class GroundBattleAI {
 		return results;
 	}
 	
+	protected int getHighestMoveCost(Collection<GroundUnit> units) {
+		int highest = 0;
+		for (GroundUnit unit : units) {
+			int cost = unit.getDeployCost();
+			if (highest < cost) highest = cost;
+		}
+		return highest;
+	}
+	
 	/**
 	 * Calculates the deployable strength of the units we can move, taking into 
 	 * account movement point costs.
@@ -81,11 +91,17 @@ public class GroundBattleAI {
 		int remainingMovePoints = intel.getSide(isAttacker).getMovementPointsPerTurn().getModifiedInt()
 				- intel.getSide(isAttacker).getMovementPointsSpent().getModifiedInt();
 		
+		// leave some move points for player to use
+		int threshold = 0;
+		if (!isPlayer && intel.playerIsAttacker != null && intel.playerIsAttacker == this.isAttacker) {
+			threshold = getHighestMoveCost(intel.getPlayerData().getUnits());
+		}
+		
 		availableStrength = 0;
 		for (GroundUnit unit : availableUnitsSorted) {
 			availableStrength += unit.getBaseStrength();
 			remainingMovePoints -= unit.getDeployCost();
-			if (remainingMovePoints <= 0) break;
+			if (remainingMovePoints <= threshold) break;
 		}
 		//printDebug("  Available strength is " + availableStrength);
 		return availableStrength;
