@@ -470,7 +470,9 @@ nex_fleetRequest_selectTargetMenu,DialogOptionSelected,$option == nex_fleetReque
 nex_fleetRequest_selectTarget,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setTarget_""","Nex_FleetRequest setTarget
 FireAll Nex_FleetRequest",,,
 ,,,,,,
-nex_fleetRequest_proceed,DialogOptionSelected,$option == nex_fleetRequest_proceed,Nex_FleetRequest proceed,,,
+nex_fleetRequest_proceed,DialogOptionSelected,$option == nex_fleetRequest_proceed,"Nex_FleetRequest proceed
+SetShortcut exerelinMarketSpecial ESCAPE",,"nex_fleetRequest_main:Continue
+exerelinMarketSpecial:Exit",
 #END Fleet requests,,,,,,
 ,,,,,,
 # Decivilized market events,,,,,,

@@ -673,7 +673,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		}
 		
 		printBudget();
-		generateMainMenu();
+		//generateMainMenu();
 		
 		return true;
 	}
