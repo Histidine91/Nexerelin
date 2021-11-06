@@ -324,7 +324,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		}
 		if (points > 0) {
 			String str = StringHelper.getString(STRING_HELPER_CAT, "msgStoryPointRefund");
-			dialog.getTextPanel().addPara(getString(str));
+			dialog.getTextPanel().addPara(str);
 			Global.getSector().getPlayerPerson().getStats().addStoryPoints(points, dialog.getTextPanel(), false);
 		}		
 		

@@ -2409,7 +2409,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	@Override
 	public SectorEntityToken getMapLocation(SectorMapAPI map) {
-		return super.getMapLocation(map); //To change body of generated methods, choose Tools | Templates.
+		return market.getPrimaryEntity();
 	}
 	
 	@Override

@@ -54,6 +54,7 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.invasion.InvAssembleStage;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
@@ -170,6 +171,9 @@ public class XStreamConfig {
 		// special forces
 		x.alias("NexSFIntl", SpecialForcesIntel.class);
 		x.alias("NexSFAssgnAI", SpecialForcesAssignmentAI.class);
+		
+		// ground battle
+		x.alias("GBtl", GroundBattleIntel.class);
 		
 		// agents
 		x.alias("NexAgntIntl", AgentIntel.class);
