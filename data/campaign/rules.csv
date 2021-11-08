@@ -318,8 +318,17 @@ nex_factionDirectoryList7,DialogOptionSelected,$option == nex_factionDirectoryLi
 nex_factionDirectoryList8,DialogOptionSelected,$option == nex_factionDirectoryList8,Nex_FactionDirectory listFactions 8,,,
 nex_factionDirectoryList9,DialogOptionSelected,$option == nex_factionDirectoryList9,Nex_FactionDirectory listFactions 9,,,
 nex_factionDirectoryList10,DialogOptionSelected,$option == nex_factionDirectoryList10,Nex_FactionDirectory listFactions 10,,,
+nex_factionDirectoryList_indSearch,DialogOptionSelected,$option == nex_factionDirectoryList_indSearch,"FireAll Nex_FactionDirectory_IndSearchOpts
+SetShortcut nex_factionDirectoryMain ESCAPE",,,
+nex_factionDirectoryList_indSearchDefault,Nex_FactionDirectory_IndSearchOpts,,,,"nex_printMarketsWithIndustries_heavyIndustry:Heavy industry
+nex_printMarketsWithIndustries_fuelprod:Fuel production
+nex_printMarketsWithIndustries_military:Military base
+99:nex_factionDirectoryMain:Go back",
+nex_factionDirectoryList_indSearchIndEvo,Nex_FactionDirectory_IndSearchOpts,Nex_IsModActive IndEvo,,,"nex_printMarketsWithIndustries_IndEvo_Academy:Academy
+nex_printMarketsWithIndustries_IndEvo_dryDock:Restoration Docks",
 ,,,,,,
 nex_factionDirectoryPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_printFactionMarkets_""",Nex_FactionDirectory print,,,
+nex_factionDirectoryPrintIndustry,DialogOptionSelected,"Nex_OptionStartsWith ""nex_printMarketsWithIndustries_""",Nex_FactionDirectory printIndustries,,,
 #END Market directory options,,,,,,
 ,,,,,,
 # Prisoner options,,,,,,

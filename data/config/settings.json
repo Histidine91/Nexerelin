@@ -247,6 +247,8 @@
 			"military_base":"graphics/icons/markets/military_base.png",
 			"fuel_production":"graphics/icons/markets/am_fuel_facility.png",
 			"heavy_industry":"graphics/icons/markets/autofactory.png",
+			"academy":"graphics/exerelin/icons/markets/indevo_academy.png",
+			"repairdocks":"graphics/exerelin/icons/markets/indevo_repairdocks.png",
 		},
 		
 		"misc":{

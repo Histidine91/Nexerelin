@@ -1480,9 +1480,7 @@
 		"museumShip":"Museum Ship ($name)",
 	},
 
-	"exerelin_markets":{
-		"marketDirectoryTooltip":"Has %s",
-		
+	"exerelin_markets":{		
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
@@ -1490,7 +1488,10 @@
 		"marketDirectoryEntryForPicker":"$market ($faction, size $size, $distance LY)",
 		"marketDirectoryEntryForPickerNoDist":"$market ($faction, size $size)",
 		"marketDirectoryHidden":"$num hidden markets",
-		"hasBaseTip":"has military base",
+				
+		"marketDirectoryOptionIndustrySearch":"Search for industry",
+		"marketDirectoryHeaderIndustrySearch":"search(%s)",
+		"marketDirectoryHeaderIndustrySearch2":"%s results(s) found",	
 		
 		"intelCaptureTitle":"Market Captured - $market",
 		"intelTransferTitle":"Market Transfered - $market",

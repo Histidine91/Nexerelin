@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -24,7 +23,6 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ui.FieldOptionsScreenScript.FactionDirectoryDialog;
 import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
@@ -32,6 +30,7 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,7 +43,10 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	public static final String FACTION_GROUPS_KEY = "$nex_factionDirectoryGroups";
 	public static final float GROUPS_CACHE_TIME = 0f;
 	public static final String PRINT_FACTION_OPTION_PREFIX = "nex_printFactionMarkets_";
-	static final int PREFIX_LENGTH = PRINT_FACTION_OPTION_PREFIX.length();
+	protected static final int PREFIX_LENGTH = PRINT_FACTION_OPTION_PREFIX.length();
+	public static final String PRINT_INDUSTRY_OPTION_PREFIX = "nex_printMarketsWithIndustries_";
+	protected static final int PREFIX_LENGTH_2 = PRINT_INDUSTRY_OPTION_PREFIX.length();
+	
 	public static final List<String> ARRAYLIST_PLAYERFACTION = Arrays.asList(new String[]{Factions.PLAYER});
 	
 	public static final HashMap<Integer, Color> colorByMarketSize = new HashMap<>();
@@ -106,11 +108,22 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				return true;
 				
 			case "print":
-				String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
-				//if (option == null) throw new IllegalStateException("No $option set");
-				String factionId = option.substring(PREFIX_LENGTH);
-				printFactionMarkets(dialog, factionId);
-				return true;
+				{
+					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
+					//if (option == null) throw new IllegalStateException("No $option set");
+					String factionId = option.substring(PREFIX_LENGTH);
+					printFactionMarkets(dialog, factionId);
+					return true;
+				}
+				
+			case "printIndustries":
+				{
+					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
+					//if (option == null) throw new IllegalStateException("No $option set");
+					String industryId = option.substring(PREFIX_LENGTH_2);
+					printMarketsWithIndustry(dialog, industryId);
+					return true;
+				}
 		}
 		
 		return false;
@@ -154,6 +167,9 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			opts.addOption(Misc.ucFirst(Global.getSector().getPlayerFaction().getDisplayName()), 
 					PRINT_FACTION_OPTION_PREFIX + Factions.PLAYER);
 		
+		opts.addOption(StringHelper.getString("exerelin_markets", "marketDirectoryOptionIndustrySearch"), 
+				"nex_factionDirectoryList_indSearch");
+		
 		Object exitOpt = "exerelinMarketSpecial";
 		if (special)
 			exitOpt = FactionDirectoryDialog.Menu.INIT;
@@ -163,18 +179,20 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		NexUtils.addDevModeDialogOptions(dialog);
 	}
 	
-	    
+	protected void addIconWithTooltip(List<String> images, List<String> tooltipTexts, String image, String tooltip) 
+	{
+		images.add(image);
+		tooltipTexts.add(tooltip);
+	}
+	
 	/**
-	 * Prints a formatted list of the specified faction's markets
+	 * Prints a formatted list of the specified faction's markets.
 	 * @param dialog
 	 * @param factionId
 	 */
 	public void printFactionMarkets(InteractionDialogAPI dialog, String factionId) 
-	{
-		try {
-		float pad = 3, opad = 10;
-		float imgSize = 36;
-		float textWidth = 240;
+	{		
+		float pad = 3;
 		
 		boolean isExiInCorvus = NexUtilsFaction.isExiInCorvus(factionId);
 		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
@@ -227,13 +245,84 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			tt.highlightInLastPara(hl, "??");
 		}
 		*/
+		printMarkets(dialog, markets, width, true);
+	}
+	
+	public boolean marketHasIndustry(MarketAPI market, String industryId) {
+		if ("heavyIndustry".equals(industryId))
+			return hasHeavyIndustry(market);
+		else if ("military".equals(industryId))
+			return Misc.isMilitary(market);
+		return market.hasIndustry(industryId);
+	}
+	
+	/**
+	 * Prints a formatted list of the specified faction's markets.
+	 * @param dialog
+	 * @param industryId
+	 */
+	public void printMarketsWithIndustry(InteractionDialogAPI dialog, String industryId) 
+	{		
+		float pad = 3;
+		
+		List<MarketAPI> markets = new ArrayList<>();
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (marketHasIndustry(market, industryId)) markets.add(market);
+		}
+		
+		Collections.sort(markets, MARKET_COMPARATOR);
+				
+		float width = Nex_VisualCustomPanel.PANEL_WIDTH * 4/5;
+		Nex_VisualCustomPanel.createPanel(dialog, true, width, Nex_VisualCustomPanel.PANEL_HEIGHT);
+		
+		TooltipMakerAPI tt = Nex_VisualCustomPanel.getTooltip();
+		
+		
+		// header, total number of markets
+		String str = StringHelper.getString("exerelin_markets", "marketDirectoryHeaderIndustrySearch");
+		tt.setParaFontVictor14();
+		tt.addPara(str, pad, Misc.getGrayColor(), Misc.getTextColor(), industryId);
+		
+		tt.setParaSmallInsignia();
+		str = StringHelper.getString("exerelin_markets", "marketDirectoryHeaderIndustrySearch2");
+		tt.addPara(str, pad, Misc.getHighlightColor(), markets.size() + "");
+		
+		tt.setParaFontDefault();
+		
+		printMarkets(dialog, markets, width, false);
+	}
+	
+	/**
+	 *Prints a formatted list of the provided markets.
+	 * @param dialog
+	 * @param markets
+	 * @param width
+	 * @param useSystemOwnerColor If true, market names use the system owner's 
+	 * faction color, else they use their own faction color.
+	 */
+	public void printMarkets(InteractionDialogAPI dialog, Collection<MarketAPI> markets, 
+			float width, boolean useSystemOwnerColor) 
+	{
+		try {
+		
+		float pad = 3;
+		float imgSize = 36;
+		float textWidth = 240;
+		
+		LabelAPI label;
+		String str;
+		Color hl = Misc.getHighlightColor();
+		TooltipMakerAPI tt = Nex_VisualCustomPanel.getTooltip();
 		
 		int hidden = 0;
 		for (MarketAPI market: markets)
 		{
 			if (market.isHidden() || market.getContainingLocation() == null) {
+				//dialog.getTextPanel().addPara("Found hidden market " + market.getId());
 				if (market.getFaction().isPlayerFaction() || market.getFaction() == Misc.getCommissionFaction()) {
-					
+					// do nothing
+				} else if (market.getId().equals("ga_market") || market.getId().equals("IndEvo_academyMarket")) {
+					// also do nothing
 				} else {
 					hidden++;
 					continue;
@@ -245,7 +334,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			String locName = loc.getNameWithNoType();
 			int size = market.getSize();
 			
-			Color marketColor = Misc.getTextColor();
+			Color marketColor = market.getFaction().getBaseUIColor();
 			Color locColor = marketColor;
 			Color ownerColor = marketColor;
 			
@@ -255,7 +344,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				ownerColor = owner.getBaseUIColor();
 				ownerName = owner.getDisplayName();
 			}
-			marketColor = ownerColor;
+			if (useSystemOwnerColor) marketColor = ownerColor;
 			
 			if (loc instanceof StarSystemAPI) {
 				locColor = ((StarSystemAPI)loc).getStar().getSpec().getIconColor();
@@ -287,26 +376,41 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			List<String> tooltipTexts = new ArrayList<>();
 			
 			// Has military base
-			if (market.hasSubmarket(Submarkets.GENERIC_MILITARY))
+			if (Misc.isMilitary(market))
 			{
-				images.add("graphics/icons/markets/military_base.png");
-				tooltipTexts.add(Global.getSettings().getIndustrySpec(Industries.MILITARYBASE).getName());
+				addIconWithTooltip(images, tooltipTexts, 
+						Global.getSettings().getSpriteName("marketConditions", "military_base"), 
+						Global.getSettings().getIndustrySpec(Industries.MILITARYBASE).getName());
 			}
 			
 			// Has heavy industry
 			if (hasHeavyIndustry(market)) {
-				images.add("graphics/icons/markets/autofactory.png");
-				tooltipTexts.add(StringHelper.getString("heavyIndustry"));
+				addIconWithTooltip(images, tooltipTexts, 
+						Global.getSettings().getSpriteName("marketConditions", "heavy_industry"), 
+						Global.getSettings().getIndustrySpec(Industries.HEAVYINDUSTRY).getName());
 			}
 			
 			if (market.hasIndustry(Industries.FUELPROD)) {
-				images.add("graphics/icons/markets/am_fuel_facility.png");
-				tooltipTexts.add(StringHelper.getString("fuelProduction"));
+				addIconWithTooltip(images, tooltipTexts, 
+						Global.getSettings().getSpriteName("marketConditions", "fuel_production"), 
+						Global.getSettings().getIndustrySpec(Industries.FUELPROD).getName());
+			}
+			
+			if (market.hasIndustry("IndEvo_dryDock")) {
+				addIconWithTooltip(images, tooltipTexts, 
+						Global.getSettings().getSpriteName("marketConditions", "repairdocks"), 
+						Global.getSettings().getIndustrySpec("IndEvo_dryDock").getName());
+			}
+			
+			if (market.hasIndustry("IndEvo_Academy")) {
+				addIconWithTooltip(images, tooltipTexts, 
+						Global.getSettings().getSpriteName("marketConditions", "academy"), 
+						Global.getSettings().getIndustrySpec("IndEvo_Academy").getName());
 			}
 			
 			if (market.isFreePort()) {
-				images.add("graphics/icons/markets/free_port.png");
-				tooltipTexts.add(StringHelper.getString("freePort"));
+				addIconWithTooltip(images, tooltipTexts, "graphics/icons/markets/free_port.png", 
+						StringHelper.getString("freePort"));
 			}
 			
 			// Cabal
