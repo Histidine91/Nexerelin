@@ -496,6 +496,8 @@
 		"dialogInfoEffect":"Effect: %s – %s",
 		"dialogInfoRebellionStability":"Current stability: %s (maximum allowed %s)",
 		"dialogInfoEffectRebellion":"Agent level mult for starting rebel strength: %s",
+		"dialogInfoRebellionLiberationBonusStrong":"Liberation bonus",
+		"dialogInfoRebellionLiberationBonus":"Foreign tyrant bonus",
 		"dialogInfoTimeNeeded":"Days to complete: %s",
 		"dialogInfoCost":"Cost: %s",
 		"dialogConfirmOptionSPText":"Execute mission with extraordinary investment",

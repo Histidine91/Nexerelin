@@ -382,6 +382,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				text.addPara(getString(header + "InstigateRebellion"), factionColor, mktName);
 				
 				int stability = (int)agentMarket.getStabilityValue(), required = InstigateRebellion.MAX_STABILITY;
+				
 				String stabilityStr = getString("dialogInfoRebellionStability");
 				LabelAPI label = text.addPara(stabilityStr, hl, stability + "", required + "");
 				label.setHighlight(stability + "", required + "");

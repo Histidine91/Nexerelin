@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.agents;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -8,6 +9,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Map;
@@ -15,6 +17,8 @@ import java.util.Map;
 public class InstigateRebellion extends CovertActionIntel {
 	
 	public static final int MAX_STABILITY = 6;
+	public static final float LIBERATION_MULT_STRONG = 1.4f;
+	public static final float LIBERATION_MULT = 1.2f;
 
 	public InstigateRebellion(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
@@ -32,8 +36,24 @@ public class InstigateRebellion extends CovertActionIntel {
 		
 		stat.modifyMult("stability", stabilityModifier, StringHelper.getString("stability", true));
 		
+		// liberation bonus
+		//float nonOwnerMult = 1;
+		
+		if (RebellionIntel.isNotUnderOriginalOwner(market)) 
+		{
+			String origOwnerId = NexUtilsMarket.getOriginalOwner(market);
+			FactionAPI origOwner = Global.getSector().getFaction(origOwnerId);
+			if (RebellionIntel.isRebelOriginalFaction(origOwner, agentFaction)) {
+				stat.modifyMult("liberation", LIBERATION_MULT_STRONG, getString("dialogInfoRebellionLiberationBonusStrong"));
+			}
+			else {
+				stat.modifyMult("liberation", LIBERATION_MULT, getString("dialogInfoRebellionLiberationBonus"));
+			}
+		}
+		
 		return stat;
 	}
+	
 	
 	@Override
 	public float getEffectMultForLevel() {
@@ -41,7 +61,7 @@ public class InstigateRebellion extends CovertActionIntel {
 		float mult = 0.7f + 0.15f * (level - 1);
 		return mult;
 	}
-
+	
 	@Override
 	public void onSuccess() {
 		RebellionIntel event = RebellionCreator.getInstance().createRebellion(market, agentFaction.getId(), true);
@@ -50,6 +70,7 @@ public class InstigateRebellion extends CovertActionIntel {
 			return;
 		}
 		
+		float mult = getEffectMultForLevel();
 		event.setRebelStrength(event.getRebelStrength() * getEffectMultForLevel());
 		
 		adjustRepIfDetected(RepLevel.HOSTILE, null);

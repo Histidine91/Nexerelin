@@ -72,7 +72,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final float MAX_REP = 0.2f;
 	public static final float STRENGTH_CHANGE_MULT = 0.1f;	// damage done per round
 	public static final float SUPPRESSION_FLEET_INTERVAL = 120f;
-	public static final float REBEL_ORIGINAL_OWNER_STR_MULT = 1.25f;
+	public static final float REBEL_LIBERATION_STRONG_STR_MULT = 1.3f;
+	public static final float REBEL_LIBERATION_STR_MULT = 1.15f;
 	public static final int MAX_STABILITY_PENALTY = 5;
 	public static final int MAX_FINAL_UNREST = 4;
 	
@@ -223,14 +224,38 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		return getSizeMod(market.getSize());
 	}
 	
+	public static boolean isRebelOriginalFaction(FactionAPI origOwner, FactionAPI rebelFaction) {
+		if (origOwner == null) return false;
+		
+		boolean isPlayer = rebelFaction.isPlayerFaction() || rebelFaction == Misc.getCommissionFaction();
+		
+		if (origOwner == rebelFaction) return true;
+		
+		if (isPlayer) {
+			return (origOwner.isPlayerFaction() || origOwner == Misc.getCommissionFaction());
+		}		
+		
+		return false;
+	}
+	
+	public static boolean isNotUnderOriginalOwner(MarketAPI market) {
+		String origOwnerId = NexUtilsMarket.getOriginalOwner(market);
+		return origOwnerId != null && !origOwnerId.equals(market.getFactionId());
+	}
+	
 	protected void setInitialStrengths(boolean instant)
 	{
 		float stability = market.getStabilityValue();
 		float sizeMult = getSizeMod(market);
 		govtStrength = (6 + stability * 1.25f) * sizeMult;
 		rebelStrength = (3 + (10 - stability) * 1.25f) * 1.2f * sizeMult * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
-		if (rebelFaction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
-			rebelStrength *= REBEL_ORIGINAL_OWNER_STR_MULT;
+		if (isNotUnderOriginalOwner(market)) {
+			FactionAPI origOwner = Global.getSector().getFaction(NexUtilsMarket.getOriginalOwner(market));
+			if (isRebelOriginalFaction(origOwner, rebelFaction))
+				rebelStrength *= REBEL_LIBERATION_STRONG_STR_MULT;
+			else
+				rebelStrength *= REBEL_LIBERATION_STR_MULT;
+		}			
 		
 		if (instant) {
 			govtStrength *= 1.5f;
