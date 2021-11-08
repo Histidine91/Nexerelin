@@ -685,7 +685,7 @@ public class GroundUnit {
 					location.getIndustry().getCurrentName());
 		
 		if (type == ForceType.REBEL)
-			stat.modifyMult("rebel", GBConstants.REBEL_DAMAGE_MULT, type.getName());
+			stat.modifyMult("rebel", GBConstants.REBEL_DAMAGE_MULT, Misc.ucFirst(type.getName()));
 				
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			stat = plugin.modifyDamageReceived(this, stat);

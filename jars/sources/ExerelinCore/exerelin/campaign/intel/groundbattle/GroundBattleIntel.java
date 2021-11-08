@@ -2274,6 +2274,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (buttonId == BUTTON_DEBUG_AI) {
 			runAI(true, false);
 			runAI(false, false);
+			ui.updateUIForItem(this);
 			return;
 		}
 		if (buttonId == BUTTON_SHOW_ALL_UNITS) {

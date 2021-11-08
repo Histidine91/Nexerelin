@@ -30,6 +30,7 @@ public class GroundBattleAI {
 	protected GroundBattleIntel intel;
 	protected boolean isAttacker;
 	protected boolean isPlayer;
+	protected int movePointThreshold;
 	
 	/**
 	 * Generated for all industries, so ground units can look up the current strength where they are.
@@ -90,18 +91,12 @@ public class GroundBattleAI {
 	protected float recomputeAvailableStrength() {
 		int remainingMovePoints = intel.getSide(isAttacker).getMovementPointsPerTurn().getModifiedInt()
 				- intel.getSide(isAttacker).getMovementPointsSpent().getModifiedInt();
-		
-		// leave some move points for player to use
-		int threshold = 0;
-		if (!isPlayer && intel.playerIsAttacker != null && intel.playerIsAttacker == this.isAttacker) {
-			threshold = getHighestMoveCost(intel.getPlayerData().getUnits());
-		}
-		
+			
 		availableStrength = 0;
 		for (GroundUnit unit : availableUnitsSorted) {
 			availableStrength += unit.getBaseStrength();
 			remainingMovePoints -= unit.getDeployCost();
-			if (remainingMovePoints <= threshold) break;
+			if (remainingMovePoints <= movePointThreshold) break;
 		}
 		//printDebug("  Available strength is " + availableStrength);
 		return availableStrength;
@@ -241,7 +236,14 @@ public class GroundBattleAI {
 	
 	public void getInfo() {
 		printDebug("Preparing information for AI, is attacker: " + isAttacker);
-				
+		
+		// leave some move points for player to use
+		movePointThreshold = 0;
+		if (intel.getTurnNum() > 1 && !isPlayer && intel.playerIsAttacker != null && intel.playerIsAttacker == this.isAttacker) {
+			movePointThreshold = getHighestMoveCost(intel.getPlayerData().getUnits());
+			printDebug("Reserving " + movePointThreshold + " move points for player");
+		}
+		
 		List<GroundUnit> mobile = getMobileUnits();
 		
 		// ---------------------------------------------------------------------
@@ -400,7 +402,7 @@ public class GroundBattleAI {
 			writeOffIndustries();
 		}
 		
-		boolean canContinue = movedAnything && availableStrength > 0 && intel.getSide(isAttacker).getMovementPointsRemaining() > 0;
+		boolean canContinue = movedAnything && availableStrength > 0 && intel.getSide(isAttacker).getMovementPointsRemaining() > movePointThreshold;
 		return canContinue;
 	}
 			
