@@ -4,7 +4,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.StatsTracker.DeadOfficerEntry;
 import exerelin.utilities.StringHelper;
-import java.util.Set;
+import java.util.List;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
@@ -18,7 +18,7 @@ public class PrintDeadOfficers implements BaseCommand {
             return CommandResult.WRONG_CONTEXT;
         }
 		
-		Set<DeadOfficerEntry> deadOfficers = StatsTracker.getStatsTracker().getDeadOfficers();
+		List<DeadOfficerEntry> deadOfficers = StatsTracker.getStatsTracker().getDeadOfficersSorted();
 		if (deadOfficers.isEmpty())
 		{
 			Console.showMessage(StringHelper.getString("exerelin_officers", "noOfficersDeadForNow"));

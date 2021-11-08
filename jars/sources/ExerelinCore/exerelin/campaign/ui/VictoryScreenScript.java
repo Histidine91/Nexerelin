@@ -1,11 +1,8 @@
 package exerelin.campaign.ui;
 
 import java.util.Map;
-import com.fs.starfarer.api.EveryFrameScript;
-import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.InteractionDialogImageVisual;
-import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
@@ -24,7 +21,7 @@ import exerelin.campaign.intel.VictoryIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.Set;
+import java.util.List;
 
 public class VictoryScreenScript extends DelayedDialogScreenScript
 {
@@ -177,7 +174,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 		
 		protected void printMemorial()
 		{
-			Set<DeadOfficerEntry> deadOfficers = StatsTracker.getStatsTracker().getDeadOfficers();
+			List<DeadOfficerEntry> deadOfficers = StatsTracker.getStatsTracker().getDeadOfficersSorted();
 			if (deadOfficers.isEmpty())
 			{
 				text.addParagraph(StringHelper.getString("exerelin_officers", "noOfficersDead"));

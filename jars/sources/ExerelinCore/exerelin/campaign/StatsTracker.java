@@ -22,7 +22,10 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +120,17 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     
     public Set<DeadOfficerEntry> getDeadOfficers() {
         return new HashSet<>(deadOfficers);
+    }
+    
+    public List<DeadOfficerEntry> getDeadOfficersSorted() {
+        List<DeadOfficerEntry> list = new ArrayList(deadOfficers);
+        Collections.sort(list, new Comparator<DeadOfficerEntry>(){
+            @Override
+            public int compare(DeadOfficerEntry off1, DeadOfficerEntry off2) {
+                return off1.getDeathDate().compareTo(off2.getDeathDate());
+            }
+        });
+        return list;
     }
     
     public int getNumOfficersLost() {
