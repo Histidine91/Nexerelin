@@ -595,6 +595,8 @@
 	"nex_buildMission":{
 		"missionName":"Construct Station",
 		"costPanelTitle":"Resources needed (available)",
+		"stageDesc":"Deliver the following resources to the fleet waiting at the specified location in the %s:",
+		"nextStepText":"Deliver resources to the %s",
 	},
 	
 	"nex_buyColony":{

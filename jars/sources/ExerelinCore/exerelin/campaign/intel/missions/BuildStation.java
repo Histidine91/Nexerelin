@@ -45,6 +45,8 @@ import static com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantThemeGene
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_PlayerOutpost.COST_HEIGHT;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -115,6 +117,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			
 		requireSystemTags(ReqMode.NOT_ANY, Tags.THEME_UNSAFE, Tags.THEME_CORE);
 		requireSystemHasNumPlanets(1);
+		requireSystemNotHasPulsar();
 		if (DEBUG_MODE) {
 			preferSystemWithinRangeOf(createdAt.getLocationInHyperspace(), 8);
 		} else {
@@ -122,6 +125,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		}		
 		if (factionId.equals(Factions.REMNANTS))
 			preferSystemTags(ReqMode.ANY, Tags.THEME_REMNANT_DESTROYED);
+		search.systemReqs.add(new SystemUninhabitedReq());
 		search.systemReqs.add(new CanBuildPirateBaseReq());
 		
 		system = pickSystem();
@@ -154,22 +158,27 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			}
 			
 			beginWithinHyperspaceRangeTrigger(system.getHyperspaceAnchor(), 7, true, Stage.DELIVER);
-			FleetQuality qual = FleetQuality.HIGHER;
-			FleetSize size = FleetSize.VERY_LARGE;
+			FleetQuality qual = FleetQuality.SMOD_1;
+			FleetSize size = FleetSize.LARGE;
 			String type = FleetTypes.TASK_FORCE;
-			if (!complFaction.equals(Factions.LUDDIC_PATH)) {
-				qual = FleetQuality.SMOD_1;
-				size = FleetSize.LARGE;
+			if (isMerc) {
+				type = FleetTypes.MERC_ARMADA;
+				size = FleetSize.MEDIUM;
+				qual = FleetQuality.SMOD_2;
+			}
+			else if (complFaction.equals(Factions.LUDDIC_PATH)) {
+				qual = FleetQuality.HIGHER;
+				size = FleetSize.VERY_LARGE;
 			}
 			
 			triggerCreateFleet(size, qual, isMerc ? Factions.MERCENARY : complFaction,
-					isMerc ? FleetTypes.MERC_ARMADA : type, 
-					system.getHyperspaceAnchor());
+					type, system.getHyperspaceAnchor());
 			triggerSetFleetOfficers(OfficerNum.MORE, OfficerQuality.HIGHER);
 			if (isMerc) {
-				//triggerSetFleetFaction(complFaction);
+				triggerSetFleetFaction(Factions.INDEPENDENT);
 				triggerSetFleetFlagPermanent("$nex_buildStation_merc");
-			}			
+				triggerMakeNoRepImpact();
+			}
 			triggerMakeHostileAndAggressive();
 			//triggerFleetMakeFaster(true, 2, true);
 			triggerSetFleetAlwaysPursue();
@@ -185,8 +194,6 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		}
 		
 		// spawn builder fleet on arrival
-		// TODO: make event fail if you attack the fleet
-		
 		{
 			beginWithinHyperspaceRangeTrigger(system.getHyperspaceAnchor(), 1f, false, Stage.DELIVER);
 			// don't do it using triggers, we need more control
@@ -249,9 +256,6 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		return getCommodityRequired(commodityId) * Global.getSettings().getCommoditySpec(commodityId).getBasePrice();
 	}
 	
-	// TODO
-	// callEvent method with build order
-
 	/**
 	 * Returns true if the cargo contains less than half the required amount of at least two commodities.
 	 * @param cargo
@@ -291,7 +295,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			if (!haveAtLeastHalfRequirement(commodityId, commodities.get(commodityId)))
 				numShortages++;
 		}
-		boolean successInitial = numShortages >= 2;
+		//boolean successInitial = numShortages >= 2;
 		
 		addCargoPodContentsToMap(commodities, fleet);
 		
@@ -578,6 +582,12 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		}
 	}
 	
+	public CargoAPI getCargoForDisplay() {
+		CargoAPI cargo = Global.getFactory().createCargo(true);
+		addCommodities(cargo);
+		return cargo;
+	}
+	
 	@Override
 	protected boolean callAction(String action, String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params,
 								Map<String, MemoryAPI> memoryMap) {
@@ -633,6 +643,28 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			setCurrentStage(Stage.FAILED, null, null);
 		}
 	}
+	
+	@Override
+	public void addDescriptionForNonEndStage(TooltipMakerAPI info, float width, float height) {
+		float opad = 10f;
+		
+		if (currentStage == Stage.DELIVER) {
+			String str = StringHelper.getString("nex_buildMission", "stageDesc");
+			info.addPara(str, opad, system.getStar().getSpec().getIconColor(), system.getNameWithLowercaseType());
+			info.showCargo(getCargoForDisplay(), 10, true, opad);
+		}
+	}
+
+	@Override
+	public boolean addNextStepText(TooltipMakerAPI info, Color tc, float pad) {
+		Color h = Misc.getHighlightColor();
+		if (currentStage == Stage.DELIVER) {
+			info.addPara(StringHelper.getString("nex_buildMission", "nextStepText"), pad,
+					system.getStar().getSpec().getIconColor(), system.getNameWithLowercaseTypeShort());
+			return true;
+		}
+		return false;
+	}
 		
 	@Override
 	protected void notifyEnding() {
@@ -682,10 +714,10 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			return !locs.isEmpty();
 		}
 	}
+	
+	public static class SystemUninhabitedReq implements StarSystemRequirement {
+		public boolean systemMatchesRequirement(StarSystemAPI system) {
+			return Misc.getMarketsInLocation(system).isEmpty();
+		}
+	}
 }
-
-
-
-
-
-
