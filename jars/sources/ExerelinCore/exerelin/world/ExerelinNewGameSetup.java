@@ -119,6 +119,10 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addIndustry(Industries.STARFORTRESS_HIGH);	// Arrays.asList(new String[]{Commodities.ALPHA_CORE}));
 		//market.addIndustry(Industries.CRYOSANCTUM);
 		
+		if (Global.getSettings().getModManager().isModEnabled("IndEvo")) {
+			market.addIndustry("IndEvo_PrivatePort");
+		}
+		
 		market.setFreePort(true);
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		//market.addSubmarket(Submarkets.GENERIC_MILITARY);
