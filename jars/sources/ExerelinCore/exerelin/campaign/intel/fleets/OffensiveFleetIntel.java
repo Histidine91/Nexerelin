@@ -97,8 +97,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	}
 	
 	protected Object readResolve() {
-		if (alreadyActionedRoutes == null)
+		if (alreadyActionedRoutes == null) {
 			alreadyActionedRoutes = new HashSet<>();
+		}
 		
 		return this;
 	}
@@ -145,6 +146,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	 */
 	public boolean isRouteActionDone(RouteData route) {
 		if (route == null) return false;
+		// reverse compat safety
+		if (alreadyActionedRoutes == null) {
+			alreadyActionedRoutes = new HashSet<>();
+		}
 		return alreadyActionedRoutes.contains(route);
 	}
 	
@@ -168,6 +173,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	 */
 	public void setRouteActionDone(RouteData route) {
 		if (route == null) return;
+		// reverse compat safety
+		if (alreadyActionedRoutes == null) {
+			alreadyActionedRoutes = new HashSet<>();
+		}
 		alreadyActionedRoutes.add(route);
 		if (route.getActiveFleet() != null)
 			route.getActiveFleet().getMemoryWithoutUpdate().set(MEM_KEY_ACTION_DONE, true);
