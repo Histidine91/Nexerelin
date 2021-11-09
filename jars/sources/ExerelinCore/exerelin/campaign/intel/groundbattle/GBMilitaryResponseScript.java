@@ -18,8 +18,12 @@ import exerelin.campaign.AllianceManager;
  */
 public class GBMilitaryResponseScript extends MilitaryResponseScript {
 	
-	public GBMilitaryResponseScript(MilitaryResponseParams params) {
+	protected GroundBattleIntel intel;
+	
+	public GBMilitaryResponseScript(MilitaryResponseParams params, GroundBattleIntel intel) 
+	{
 		super(params);
+		this.intel = intel;
 	}
 	
 	// Changes from vanilla: assignment is aggressive orbit instead of patrol, hostile-while-transponder-off memory key
@@ -46,8 +50,10 @@ public class GBMilitaryResponseScript extends MilitaryResponseScript {
 			}
 		}
 		
-		MemoryAPI mem = fleet.getMemoryWithoutUpdate();
-		Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, "invasionResponse", true, 4f);
+		if (intel != null && Boolean.TRUE.equals(intel.playerIsAttacker)) {
+			MemoryAPI mem = fleet.getMemoryWithoutUpdate();
+			Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, "invasionResponse", true, 4f);
+		}
 		Global.getLogger(this.getClass()).info(String.format("%s responding to invasion", fleet.getNameWithFaction()));
 	}
 	

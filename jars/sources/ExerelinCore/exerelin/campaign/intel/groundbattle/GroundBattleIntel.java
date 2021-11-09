@@ -1221,7 +1221,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					900);
 			params.actionText = getString("responseStr");
 			params.travelText = getString("responseTravelStr");
-			responseScript = new GBMilitaryResponseScript(params);
+			responseScript = new GBMilitaryResponseScript(params, this);
 			market.getContainingLocation().addScript(responseScript);
 		}
 		List<CampaignFleetAPI> fleets = market.getContainingLocation().getFleets();
