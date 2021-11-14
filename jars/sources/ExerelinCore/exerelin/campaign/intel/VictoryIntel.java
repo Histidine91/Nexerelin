@@ -2,6 +2,7 @@ package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -153,7 +154,8 @@ public class VictoryIntel extends BaseIntelPlugin {
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(StringHelper.getString("victory", true));
+		//tags.add(StringHelper.getString("victory", true));
+		tags.add(Tags.INTEL_STORY);
 		tags.add(factionId);
 		return tags;
 	}
