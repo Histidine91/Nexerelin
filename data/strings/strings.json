@@ -1681,7 +1681,7 @@
 		"factionToggleInfo":"Factions set to random will be enabled/disabled on leaving this screen",
 		"factionToggleBtnRandomize":"Randomize all",
 
-		"fleetSolo":"Solo frigate",
+		"fleetSolo":"Frigate (classic)",
 		"fleetCombatSmall":"Combat (small)",
 		"fleetTradeSmall":"Trade (small)",
 		"fleetExplorerSmall":"Explorer (small)",

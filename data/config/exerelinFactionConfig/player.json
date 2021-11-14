@@ -6,7 +6,12 @@
     
     "startShipsSolo":[
       ["swp_alastor_sta"],
-      ["centurion_Starting"]
+      ["centurion_Starting"],
+      # tutorial start
+      ["wolf_Starting", "kite_Starting"],
+      ["wolf_Starting", "shepherd_Starting"],
+      ["wayfarer_Starting", "kite_Starting"],
+      ["wayfarer_Starting", "shepherd_Starting"],
     ],
     "startShipsCombatSmall":[["hammerhead_Balanced", "vigilance_Starting", "kite_Standard"]],
     "startShipsTradeSmall":[["mule_Starting", "cerberus_Standard", "mercury_Standard"]],
