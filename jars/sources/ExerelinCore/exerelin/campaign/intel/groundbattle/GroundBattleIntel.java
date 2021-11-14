@@ -2398,12 +2398,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		String str = getString("intelTitle");
 		str = StringHelper.substituteToken(str, "$market", market.getName());
 		if (outcome != null) {
+			String suffix = StringHelper.getString("over", true);
 			if (outcome == BattleOutcome.ATTACKER_VICTORY)
-				str += " - " + StringHelper.getString("successful", true);
+				suffix = getString("intelTitleSuffixAttackerVictory");
 			else if (outcome == BattleOutcome.DEFENDER_VICTORY)
-				str += " - " + StringHelper.getString("failed", true);
-			else
-				str += " - " + StringHelper.getString("over", true);
+				suffix = getString("intelTitleSuffixDefenderVictory");
+			
+			str += " - " + suffix;
 		}
 		return str;
 	}

@@ -1158,6 +1158,8 @@
 	
 	"nex_invasion2":{
 		"intelTitle":"Surface Battle: $market",
+		"intelTitleSuffixAttackerVictory":"Attacker Victory",
+		"intelTitleSuffixDefenderVictory":"Defender Victory",
 		"intelDesc_intro":"Ground forces of $theAttacker are invading $market in the $location, held by $theDefender.",
 		"intelDesc_round":"Turn %s",
 		"intelDesc_unitSize":"Unit size: %s (troop count: %s min, %s typical, %s max; damage mult %s)",
