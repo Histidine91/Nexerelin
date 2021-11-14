@@ -47,12 +47,6 @@ public class CreateAlliance implements BaseCommand {
                 return CommandResult.BAD_SYNTAX;
             }
         }
-        if (faction1.equals(Factions.PLAYER) || faction2.equals(Factions.PLAYER))
-        {
-            Console.showMessage("Error: player faction not supported for alliances!");
-            Console.showMessage("(player_npc works as long as the faction is alive)");
-            return CommandResult.ERROR;
-        }
 
         FactionAPI fac1 = CommandUtils.findBestFactionMatch(faction1);
         FactionAPI fac2 = CommandUtils.findBestFactionMatch(faction2);
