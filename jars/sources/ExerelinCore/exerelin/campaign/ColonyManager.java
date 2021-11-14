@@ -606,6 +606,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (queue == null || queue.isEmpty())
 			return;
 		
+		if (market.isPlayerOwned()) {
+			// don't build stuff on player-owned market, clear queue
+			npcConstructionQueues.remove(market);
+			return;
+		}
+		
 		LinkedList<QueuedIndustry> queueCopy = new LinkedList<>(queue);
 		for (QueuedIndustry item : queueCopy) {
 			//log.info("\tChecking industry queue: " + item.industry + ", " + item.type.toString());
