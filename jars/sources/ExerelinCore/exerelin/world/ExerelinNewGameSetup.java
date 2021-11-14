@@ -62,6 +62,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	// runcode new exerelin.world.ExerelinNewGameSetup().addPrismMarket(Global.getSector(), false);
 	public SectorEntityToken addPrismMarket(SectorAPI sector, boolean newGame)
 	{
+		String name = StringHelper.getString("nex_world", "prismSystem_stationName");
 		SectorEntityToken prismEntity;
 		
 		if (ExerelinSetupData.getInstance().numSystems == 1)
@@ -78,7 +79,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 					orbitDistance = radius + 2000 + rand.nextFloat() * 500;
 				}
 			}
-			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
+			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", "independent");
 			prismEntity.setCircularOrbitPointingDown(toOrbit, NexUtilsAstro.getRandomAngle(rand), orbitDistance, NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else if (newGame && !NexConfig.prismInHyperspace)
@@ -104,7 +105,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		MarketAPI market = addMarketToEntity(prismEntity, data, "independent");
 		*/
 
-		MarketAPI market = Global.getFactory().createMarket("nex_prismFreeport" /*+ "_market"*/, "Prism Freeport", 5);
+		MarketAPI market = Global.getFactory().createMarket("nex_prismFreeport" /*+ "_market"*/, name, 5);
 		market.setFactionId(Factions.INDEPENDENT);
 		market.addCondition(Conditions.POPULATION_5);
 		market.addIndustry(Industries.POPULATION);
