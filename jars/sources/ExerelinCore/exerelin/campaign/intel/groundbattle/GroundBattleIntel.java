@@ -460,6 +460,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		playerIsAttacker = bool;
 	}
 	
+	public boolean isPlayerInitiated() {
+		return playerInitiated;
+	}
+	
 	public void playerJoinBattle(boolean isAttacker, boolean repChange) {
 		setPlayerIsAttacker(isAttacker);
 		
@@ -472,9 +476,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		playerData.strFractionAtJoinTime = strFractionAtJoinTime;
 		
-		FactionAPI atkFac = attacker.getFaction();
-		boolean alreadyOurSide = atkFac.isPlayerFaction() || atkFac == Misc.getCommissionFaction()
-				|| AllianceManager.areFactionsAllied(atkFac.getId(), PlayerFactionStore.getPlayerFactionId());
+		FactionAPI joinSide = getSide(playerIsAttacker).getFaction();
+		boolean alreadyOurSide = joinSide.isPlayerFaction() || joinSide == Misc.getCommissionFaction()
+				|| AllianceManager.areFactionsAllied(joinSide.getId(), PlayerFactionStore.getPlayerFactionId());
 		if (repChange && !alreadyOurSide) {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = market.getSize() * -0.02f;
@@ -540,10 +544,32 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * @param faction
 	 * @return True if the faction should join the attacker, false to join the defender, null for neither.
 	 */
-	public Boolean getSideToSupport(FactionAPI faction) {		
-		// to help either side, we must be hostile to the other side, while being no worse than suspicious to our side		
-		boolean canHelpAttacker = faction.isAtWorst(attacker.getFaction(), RepLevel.SUSPICIOUS) && faction.isHostileTo(defender.getFaction());
-		boolean canHelpDefender = faction.isAtWorst(defender.getFaction(), RepLevel.SUSPICIOUS) && faction.isHostileTo(attacker.getFaction());
+	public Boolean getSideToSupport(FactionAPI faction) {
+		return getSideToSupport(faction, true);
+	}
+	
+	/**
+	 * Determine whether {@code faction} should assist the attacker or the defender.
+	 * @param faction
+	 * @param fleetSupportOnly False when checking whether an invasion event should actually contribute ground troops.
+	 * @return True if the faction should join the attacker, false to join the defender, null for neither.
+	 */
+	public Boolean getSideToSupport(FactionAPI faction, boolean fleetSupportOnly) {
+		// to help either side, we must be hostile to the other side, while being no worse than suspicious to our side
+		// to actually join with ground troops, need allied state
+		boolean canHelpAttacker, canHelpDefender;
+		
+		if (fleetSupportOnly) {
+			canHelpAttacker = faction.isAtWorst(attacker.getFaction(), RepLevel.SUSPICIOUS) 
+					&& faction.isHostileTo(defender.getFaction());
+			canHelpDefender = faction.isAtWorst(defender.getFaction(), RepLevel.SUSPICIOUS) 
+					&& faction.isHostileTo(attacker.getFaction());
+		} else {
+			canHelpAttacker = AllianceManager.areFactionsAllied(faction.getId(), attacker.getFaction().getId()) 
+					&& faction.isHostileTo(defender.getFaction());
+			canHelpDefender = AllianceManager.areFactionsAllied(faction.getId(), defender.getFaction().getId()) 
+					&& faction.isHostileTo(attacker.getFaction());
+		}
 		
 		// friendly to both, or hostile to both
 		if (canHelpAttacker && canHelpDefender) return null;

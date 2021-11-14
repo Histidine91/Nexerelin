@@ -1084,6 +1084,9 @@
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
 		"intelBrawl":"$TheTargetFaction will likely deploy a large defense force to meet the invasion.",
 		
+		"intelStealPenalty":"The operation was pre-empted by player forces of $thePlayerFaction. $TheFaction has lodged an official protest over your meddling intervention.",
+		"intelStealBulletReason":"Target stolen",
+		
 		"intelStageAction":"The invasion force is currently in-system.",
 		"intelStageWait":"The invasion force is defending $market after capturing it.",
 		"intelStageWaitOngoing":"The invasion force is supporting the surface battle $onOrAt $market.",

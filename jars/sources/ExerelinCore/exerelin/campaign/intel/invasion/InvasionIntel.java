@@ -5,8 +5,11 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
+import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
@@ -25,15 +28,19 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
 import exerelin.campaign.intel.fleets.WaitStage;
 import exerelin.campaign.intel.groundbattle.GBUtils;
+import exerelin.campaign.intel.groundbattle.GroundBattleCampaignListener;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.plugins.ExerelinModPlugin;
@@ -42,14 +49,14 @@ import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
+public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate, 
+		GroundBattleCampaignListener {
 	
 	public static final boolean NO_STRIKE_FLEETS = true;
 	public static final boolean USE_REAL_MARINES = false;	// puts actual marines in cargo; undesirable because they appear in salvage
@@ -67,6 +74,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	protected DefenseFleetIntel brawlDefIntel;
 	protected GroundBattleIntel groundBattle;
 	protected WaitStage waitStage;
+	
+	protected boolean playerStoleOurTarget = false;
+	protected ReputationAdjustmentResult stealRepPenalty;
+	protected float stealRepAfter;
 	
 	public InvasionIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
@@ -121,8 +132,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		}
 
 		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("init called in InvasionIntel");
+			//Global.getSector().getCampaignUI().addMessage("init called in InvasionIntel");
 		}
+		
+		Global.getSector().getListenerManager().addListener(this);
 
 		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
@@ -241,6 +254,14 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		return groundBattle;
 	}
 	
+	public boolean hasOngoingNonJoinableBattle() {
+		GroundBattleIntel curr = GroundBattleIntel.getOngoing(target);
+		if (curr == null) return false;
+		
+		Boolean joinAttacker = curr.getSideToSupport(faction, false);
+		return joinAttacker == null;
+	}
+	
 	public GroundBattleIntel initGroundBattle() {
 		if (groundBattle != null) return groundBattle;
 		
@@ -248,11 +269,12 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		groundBattle = GroundBattleIntel.getOngoing(target);
 		if (groundBattle != null && groundBattle.getOutcome() == null) {
-			//  terminate the entire invasion if we're not friendly to either side
-			Boolean joinAttacker = groundBattle.getSideToSupport(faction);
+			// terminate the entire invasion if we're not friendly to either side
+			// no, just wait for it to end
+			Boolean joinAttacker = groundBattle.getSideToSupport(faction, false);
 			if (joinAttacker == null) {
 				groundBattle = null;
-				terminateEvent(OffensiveOutcome.OTHER);
+				//terminateEvent(OffensiveOutcome.OTHER);
 				return null;
 			}
 			
@@ -284,7 +306,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			return;
 		}
 		
-		Boolean side = groundBattle.getSideToSupport(faction);
+		Boolean side = groundBattle.getSideToSupport(faction, false);
 		if (side == null) {
 			// TODO print error message
 			return;
@@ -430,7 +452,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		}
 		
 		info.addSectionHeading(StringHelper.getString("status", true), 
-				   attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);
+				attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);
 		
 		// write our own status message for certain cancellation cases
 		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE)
@@ -442,6 +464,16 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			//string = StringHelper.substituteToken(string, "$otherFaction", factionName);
 			
 			info.addPara(string, opad);
+		
+			if (stealRepPenalty != null) {
+				string = StringHelper.getString("exerelin_invasion", "intelStealPenalty");
+				string = StringHelper.substituteTokens(string, sub);
+				string = StringHelper.substituteToken(string, "$thePlayerFaction", PlayerFactionStore.getPlayerFaction().getDisplayNameWithArticle());
+				info.addPara(string, opad);
+				DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), 
+						PlayerFactionStore.getPlayerFactionId(), stealRepAfter, stealRepPenalty, opad);
+			}
+			
 			return;
 		}
 		else if (outcome == OffensiveOutcome.MARKET_NO_LONGER_EXISTS)
@@ -460,6 +492,17 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 		
 		if (ExerelinModPlugin.isNexDev && (isEnding() || isEnded())) {
 			info.addPara("The event is now over.", opad);
+		}
+	}
+	
+	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, Color tc, float initPad) {
+		super.addBulletPoints(info, mode, isUpdate, tc, initPad);
+		if (isUpdate && stealRepPenalty != null) {
+			
+			String reason = StringHelper.getString("exerelin_invasion", "intelStealBulletReason");
+			CoreReputationPlugin.addAdjustmentMessage(stealRepPenalty.delta, faction, 
+					null, null, null, info, tc, true, 0, reason);
 		}
 	}
 	
@@ -726,7 +769,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	protected void notifyEnding() {
 		log.info("Invasion event ending");
 		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("notifyEnding() called in InvasionIntel " + getName() + ", " + (getPlayerVisibleTimestamp() == null));
+			//Global.getSector().getCampaignUI().addMessage("notifyEnding() called in InvasionIntel " + getName() + ", " + (getPlayerVisibleTimestamp() == null));
 		}
 		super.notifyEnding();
 		if (brawlDefIntel != null && brawlDefIntel.getOutcome() == null) {
@@ -743,4 +786,33 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate {
 			brawlDefIntel.giveReturnOrders();
 		}
 	}
+	
+	@Override
+	public void terminateEvent(OffensiveOutcome outcome) {
+		if (playerStoleOurTarget && outcome == OffensiveOutcome.NO_LONGER_HOSTILE) {
+			// rep loss
+			stealRepPenalty = DiplomacyManager.adjustRelations(this.faction, PlayerFactionStore.getPlayerFaction(), 
+					-target.getSize() * 0.02f, null, null, RepLevel.INHOSPITABLE);
+			stealRepAfter = faction.getRelToPlayer().getRel();
+		} 
+		super.terminateEvent(outcome);
+	}
+
+	@Override
+	public void reportBattleStarted(GroundBattleIntel battle) {
+		if (battle.getMarket() == target && battle.isPlayerInitiated()
+				&& getCurrentStage() == getStageIndex(action)
+				&& battle.getSideToSupport(faction, false) == null) {
+			playerStoleOurTarget = true;
+		}
+	}
+
+	@Override
+	public void reportBattleBeforeTurn(GroundBattleIntel battle, int turn) {}
+
+	@Override
+	public void reportBattleAfterTurn(GroundBattleIntel battle, int turn) {}
+
+	@Override
+	public void reportBattleEnded(GroundBattleIntel battle) {}
 }

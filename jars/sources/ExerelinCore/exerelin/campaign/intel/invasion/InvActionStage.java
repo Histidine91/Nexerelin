@@ -61,15 +61,30 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	public MarketAPI getTarget() {
 		return target;
 	}
+	
+	protected InvasionIntel getInvasionIntel() {
+		if (offFltIntel instanceof InvasionIntel) {
+			return (InvasionIntel)offFltIntel;
+		}
+		return null;
+	}
+	
+	protected boolean pauseDueToOngoingGroundBattle() {
+		InvasionIntel inv = getInvasionIntel();
+		if (inv != null && inv.hasOngoingNonJoinableBattle()) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void advance(float amount) {
 		super.advance(amount);
 		
 		float days = Misc.getDays(amount);
-		untilAutoresolve -= days;
-		if (DebugFlags.PUNITIVE_EXPEDITION_DEBUG) {
-			untilAutoresolve -= days * 100f;
+		
+		if (pauseDueToOngoingGroundBattle()) {
+			untilAutoresolve -= days;
 		}
 		
 		if (!gaveOrders) {
@@ -287,7 +302,8 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				gb = inv.initGroundBattle();
 			}
 			if (gb == null)	{ // failed to generate, possibly because there's an existing battle we couldn't join
-				offFltIntel.setRouteActionDone(fleet);
+				// don't abort our invasion, wait for the existing battle to finish
+				//offFltIntel.setRouteActionDone(fleet);
 				return;
 			}
 			
@@ -406,6 +422,10 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			if (Global.getSettings().isDevMode() || ExerelinModPlugin.isNexDev) {
 				info.addPara("DEBUG: Autoresolving in %s days", opad, h, 
 						String.format("%.1f", untilAutoresolve));
+				if (pauseDueToOngoingGroundBattle()) {
+					info.addPara("Autoresolve suspended, someone else's ground battle is ongoing", 0, h, 
+							String.format("%.1f", untilAutoresolve));
+				}
 			}
 			
 			return;
@@ -446,6 +466,10 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	public boolean canRaid(CampaignFleetAPI fleet, MarketAPI market) {
 		if (offFltIntel.getOutcome() != null) return false;
 		if (offFltIntel.isRouteActionDone(fleet)) return false;
+		InvasionIntel inv = getInvasionIntel();
+		if (inv != null && inv.hasOngoingNonJoinableBattle()) {
+			return false;
+		}
 		
 		return market == target;
 	}
