@@ -1765,7 +1765,7 @@ $enemyFleetKilled",Call $global.nex_gbTut_ref startBattle,"""Alright, the battle
 nex_gbTut_diamondConvo6:""Can you explain how this works?""",
 nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight marines ""heavy armaments"" ""Units tab"" deploy morale","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
 
-""You'll start with your marines (and heavy armaments, if you ahve any) organized into units of a suitable size. From the Units tab in the intel screen, deploy them to the surface; this will cost supplies depending on the unit type and size.
+""You'll start with your marines (and heavy armaments, if you have any) organized into units of a suitable size. From the Units tab in the intel screen, deploy them to the surface; this will cost supplies depending on the unit type and size.
 
 ""Once they get there, they'll spend their time shooting up anyone occupying the same industry as them. You can also order them to move to another location, or withdraw to the fleet.
 

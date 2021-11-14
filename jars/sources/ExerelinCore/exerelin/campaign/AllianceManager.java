@@ -785,7 +785,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     }
     
     /**
-     * Are these two factions allied?
+     * Are these two factions allied?<br/>
      * Note: A faction is considered allied to itself here, even if not a member of an alliance.
      * @param factionId1
      * @param factionId2

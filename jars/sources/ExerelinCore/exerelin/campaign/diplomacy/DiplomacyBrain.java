@@ -586,9 +586,11 @@ public class DiplomacyBrain {
 		});
 		
 		// list everyone we're currently trying to invade, don't bother making peace with them
+		// FIXME: don't ceasefire if someone is invading our ally too!
 		Set<String> factionsInvadingOrInvaded = new HashSet<>();
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
 			InvasionIntel inv = (InvasionIntel)intel;
+			if (inv.isEnding() || inv.isEnded()) continue;
 			if (inv.getFaction() == faction) {
 				//log.info(String.format("  %s don't ceasefire with %s, we're invading them", factionId, inv.getTarget().getFactionId()));
 				factionsInvadingOrInvaded.add(inv.getTarget().getFactionId());
