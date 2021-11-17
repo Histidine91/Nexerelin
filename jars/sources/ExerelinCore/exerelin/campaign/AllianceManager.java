@@ -767,6 +767,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
      */
     public static Alliance getFactionAlliance(String factionId)
     {
+        if (factionId == null) return null;
         return getManager().alliancesByFactionId.get(factionId);
     }
     

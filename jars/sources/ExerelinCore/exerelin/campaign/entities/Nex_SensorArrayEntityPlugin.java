@@ -41,7 +41,8 @@ public class Nex_SensorArrayEntityPlugin extends SensorArrayEntityPlugin {
 			return true;
 		if (fleet.getFaction().isPlayerFaction()) {
 			if (isHacked()) return true;
-			if (entity.getFaction() == Misc.getCommissionFaction()) return true;
+			if (AllianceManager.areFactionsAllied(entity.getFaction().getId(), Misc.getCommissionFactionId())) 
+				return true;
 		}
 		if (AllianceManager.areFactionsAllied(fleet.getFaction().getId(), entity.getFaction().getId()))
 			return true;
