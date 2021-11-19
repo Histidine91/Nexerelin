@@ -77,9 +77,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final int MAX_STABILITY_PENALTY = 5;
 	public static final int MAX_FINAL_UNREST = 4;
 	
-	public static final int DETAIL_LEVEL_TO_KNOW_FACTION = 2;
-	public static final int DETAIL_LEVEL_FOR_STRENGTH_COLORS = 3;
-	public static final int DETAIL_LEVEL_FOR_STRENGTH_VALUES = 5;
+	public static final int DETAIL_LEVEL_TO_KNOW_FACTION = 1;
+	public static final int DETAIL_LEVEL_FOR_STRENGTH_COLORS = 2;
+	public static final int DETAIL_LEVEL_FOR_STRENGTH_VALUES = 4;
 	
 	public static final boolean USE_REBEL_REP = false;
 	
