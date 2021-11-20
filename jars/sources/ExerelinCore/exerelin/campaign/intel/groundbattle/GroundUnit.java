@@ -245,15 +245,20 @@ public class GroundUnit {
 	{
 		if (resolve == null)
 			resolve = new GroundBattleRoundResolve(intel);
-		int losses = (int)(this.getSize() * amount);
+		int losses = (int)(getSize() * amount);
+		// wipeout
+		if (losses > getSize()) {
+			losses = getSize();
+			destroyUnit(0);
+		}
 		if (losses > 0) {
-			float morale = resolve.damageUnitMorale(this, losses);
+			float moraleDam = resolve.damageUnitMorale(this, losses);
 			resolve.inflictUnitLosses(this, losses);
 			
 			if (isPlayer && dialog != null) {
 				TextPanelAPI text = dialog.getTextPanel();
 				text.setFontSmallInsignia();
-				String moraleStr = StringHelper.toPercent(morale);
+				String moraleStr = StringHelper.toPercent(moraleDam);
 				String str = String.format(getString("deployAttrition"), losses, moraleStr);
 				Color neg = Misc.getNegativeHighlightColor();
 				LabelAPI para = text.addPara(str);
@@ -332,7 +337,7 @@ public class GroundUnit {
 			NexUtils.modifyMapEntry(intel.playerData.getDisbanded(), type, getSize());
 			Global.getLogger(this.getClass()).info("Disbanding " + name + ": " + getSize());
 			int inFleet = intel.countPersonnelFromMap(intel.playerData.getDisbanded());
-			Global.getLogger(this.getClass()).info("Disbanded personnel count: " + getSize());
+			Global.getLogger(this.getClass()).info("Disbanded personnel count: " + inFleet);
 			returnUnitsToCargo();
 		}
 		setLocation(null);

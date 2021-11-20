@@ -1193,6 +1193,8 @@
 		"btnCancelMoves":"Cancel all move orders",
 		"btnResolveRound":"Resolve round",
 		"btnAIDebug":"Debug AI",
+		"btnWipeAttackers":"Wipe attackers",
+		"btnWipeDefenders":"Wipe defenders",
 		"btnShowAllUnits":"Show all units",
 		"btnRunPlayerAI":"Auto-move units",
 		"btnRunPlayerAI_tooltip":"Let the AI move all deployed units as it sees fit. Will not move units that already have a move or withdraw order. Will not deploy new units or use special abilities.",

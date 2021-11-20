@@ -50,7 +50,6 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -70,7 +69,6 @@ import exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
-import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ColonyNPCHostileActListener;
 import exerelin.utilities.NexUtils;
@@ -108,12 +106,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public static final Object UPDATE_TURN = new Object();
 	public static final Object UPDATE_VICTORY = new Object();
-	public static final Object BUTTON_RESOLVE = new Object();
 	public static final Object BUTTON_CANCEL_MOVES = new Object();
 	public static final Object BUTTON_AUTO_MOVE = new Object();
 	public static final Object BUTTON_AUTO_MOVE_TOGGLE = new Object();
-	public static final Object BUTTON_DEBUG_AI = new Object();
-	public static final Object BUTTON_SHOW_ALL_UNITS = new Object();
 	public static final Object BUTTON_ANDRADA = new Object();
 	public static final Object BUTTON_GOVERNORSHIP = new Object();
 	public static final Object BUTTON_JOIN_ATTACKER = new Object();
@@ -988,6 +983,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			recentUnrest = 1 + (turnNum/Math.max(market.getSize() - 1, 1));
 			
 			String origOwner = NexUtilsMarket.getOriginalOwner(market);
+			// taking a market from its original owner adds extra unrest
 			if (outcome == BattleOutcome.ATTACKER_VICTORY && origOwner != null 
 					&& defender.getFaction().getId().equals(origOwner))
 				recentUnrest += 2;
@@ -1561,26 +1557,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		if (ExerelinModPlugin.isNexDev) {
-			CustomPanelAPI buttonDebugRow = outer.createCustomPanel(width, 24, null);
-			
-			TooltipMakerAPI btnHolder1 = buttonDebugRow.createUIElement(buttonWidth, 
-				VIEW_BUTTON_HEIGHT, false);
-			btnHolder1.addButton(getString("btnResolveRound"), BUTTON_RESOLVE, base, bg, buttonWidth, 24, 0);
-			buttonDebugRow.addUIElement(btnHolder1).inTL(0, 0);
-			
-			TooltipMakerAPI btnHolder2 = buttonDebugRow.createUIElement(buttonWidth, 
-				VIEW_BUTTON_HEIGHT, false);
-			btnHolder2.addButton(getString("btnAIDebug"), BUTTON_DEBUG_AI, base, bg, buttonWidth, 24, 0);
-			buttonDebugRow.addUIElement(btnHolder2).rightOfTop(btnHolder1, 4);
-			
-			TooltipMakerAPI btnHolder3 = buttonDebugRow.createUIElement(buttonWidth, 
-				VIEW_BUTTON_HEIGHT, false);
-			ButtonAPI check = btnHolder3.addAreaCheckbox(getString("btnShowAllUnits"), BUTTON_SHOW_ALL_UNITS, 
-					base, bg, fc.getBrightUIColor(), buttonWidth, VIEW_BUTTON_HEIGHT, 0);
-			check.setChecked(showAllUnits);
-			buttonDebugRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
-			
-			info.addCustom(buttonDebugRow, 3);
+			GBDebugCommands.addDebugButtons(this, outer, info, width, buttonWidth);
 		}
 		
 		// view mode buttons
@@ -2254,11 +2231,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		
-		if (buttonId == BUTTON_RESOLVE) {
-			advanceTurn(true);
-			ui.updateUIForItem(this);
+		if (GBDebugCommands.processDebugButtons(this, ui, buttonId)) {
 			return;
 		}
+		
 		if (buttonId instanceof ViewMode) {
 			viewMode = (ViewMode)buttonId;
 			ui.updateUIForItem(this);
@@ -2294,17 +2270,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		if (buttonId == BUTTON_GOVERNORSHIP) {
 			handleGovernorshipPurchase();
-			ui.updateUIForItem(this);
-			return;
-		}
-		if (buttonId == BUTTON_DEBUG_AI) {
-			runAI(true, false);
-			runAI(false, false);
-			ui.updateUIForItem(this);
-			return;
-		}
-		if (buttonId == BUTTON_SHOW_ALL_UNITS) {
-			showAllUnits = !showAllUnits;
 			ui.updateUIForItem(this);
 			return;
 		}
