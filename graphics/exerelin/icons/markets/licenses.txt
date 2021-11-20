@@ -1,0 +1,3 @@
+indevo_academy.png, indevo_repairdocks.png
+	From Industrial.Evolution mod, CC-BY-NC-ND, modified with permission
+	https://bitbucket.org/SirHartley/deconomics/
