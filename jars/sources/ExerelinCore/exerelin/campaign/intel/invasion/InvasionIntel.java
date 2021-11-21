@@ -88,6 +88,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		if (marinesTotal == -1) {
 			marinesTotal = (int)Math.ceil(marinesPerFleet * 1.5f);
 		}
+		if (fpNoBrawlMult == 0) {
+			log.info("Resetting invasion FP value (before brawl mult)");
+			fpNoBrawlMult = fp;
+		}
 		
 		return this;
 	}
