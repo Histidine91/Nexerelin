@@ -408,7 +408,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
      */
     public void tryMakeAlliance()
     {
-        log.info("Trying to Make Alliance");
+        log.info("Trying to make alliance");
         SectorAPI sector = Global.getSector();
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
         Collections.shuffle(liveFactionIds);
