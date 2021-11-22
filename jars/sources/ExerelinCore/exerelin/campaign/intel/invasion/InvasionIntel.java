@@ -792,6 +792,18 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	}
 	
 	@Override
+	public void checkForTermination() {
+		// ground battle ongoing and we've already taken the planet
+		if (groundBattle != null && !faction.isHostileTo(target.getFaction())) {
+			if (getCurrentStage() == getStageIndex(action) && action instanceof InvActionStage) {
+				((InvActionStage)action).succeed(true);
+				return;
+			}
+		}
+		super.checkForTermination();
+	}
+	
+	@Override
 	public void terminateEvent(OffensiveOutcome outcome) {
 		if (playerStoleOurTarget && outcome == OffensiveOutcome.NO_LONGER_HOSTILE) {
 			// rep loss

@@ -83,7 +83,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		float days = Misc.getDays(amount);
 		
-		if (pauseDueToOngoingGroundBattle()) {
+		if (!pauseDueToOngoingGroundBattle()) {
 			untilAutoresolve -= days;
 		}
 		
@@ -147,9 +147,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			if (offFltIntel instanceof InvasionIntel && ((InvasionIntel)offFltIntel).getGroundBattle() != null) 
 			{
 				// we've delivered our load, go ahead and proceed to next stage
-				offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
-				status = RaidStageStatus.SUCCESS;
-				offFltIntel.sendOutcomeUpdate();
+				succeed(true);
 			}
 			else if (target.getFaction() != intel.getFaction()) {
 				// target not captured yet				
@@ -164,6 +162,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				//offFltIntel.sendOutcomeUpdate();	// don't send for failure, advanceImpl() handles that
 			}
 		}
+	}
+	
+	public void succeed(boolean sendUpdate) {
+		offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
+		status = RaidStageStatus.SUCCESS;
+		if (sendUpdate) offFltIntel.sendOutcomeUpdate();
 	}
 	
 	@Override
@@ -377,8 +381,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
 		}
 		else if (isNewInvade) {
-			status = RaidStageStatus.SUCCESS;
-			offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
+			succeed(false);
 		}
 	}
 	
