@@ -1010,6 +1010,10 @@ public class MiningHelperLegacy {
 
 		combat = Math.round(player * MathUtils.getRandomNumberInRange(0.75f, 0.9f));
 		combat = Math.min(120 + capBonus, combat);
+		if (faction.getId().equals(Factions.REMNANTS)) {
+			combat *= 0.7f;
+		}
+		
 		freighter = Math.round(combat / 20f);
 		tanker = Math.round(combat / 30f);
 		utility = Math.round(combat / 40f);
