@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
@@ -193,6 +194,9 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 				offeredFleet.getFleetData().removeOfficer(officer);
 				officers.add(officer);
 				officer.setFaction(faction);
+			}
+			else if (officer != null) {
+				officer.setFaction(Factions.PLAYER);
 			}
 			player.getCargo().addCrew((int)member.getHullSpec().getMinCrew());
 						
