@@ -114,10 +114,12 @@ public class GroundUnit {
 			getCargo().removeCommodity(Commodities.HAND_WEAPONS, heavyArms);
 			
 			// move the XP from player cargo to battle player data
-			PlayerFleetPersonnelTracker.transferPersonnel(
-					PlayerFleetPersonnelTracker.getInstance().getMarineData(),
-					intel.playerData.xpTracker.data,
-					personnel, null);
+			if (isPlayer) {
+				PlayerFleetPersonnelTracker.transferPersonnel(
+						PlayerFleetPersonnelTracker.getInstance().getMarineData(),
+						intel.playerData.xpTracker.data,
+						personnel, null);
+			}
 		}
 	}
 	

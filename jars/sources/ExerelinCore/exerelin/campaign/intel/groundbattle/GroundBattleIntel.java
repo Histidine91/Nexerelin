@@ -856,7 +856,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		Integer inStorage = playerData.getSentToStorage().get(Commodities.MARINES);
 		if (inStorage == null) inStorage = 0;
 		float total = inFleet + inStorage;
-		if (total == 0) return;
+		if (total == 0) {
+			log.info(String.format("No XP action to take"));
+			return;
+		}
 		
 		// calc XP to apply
 		float sizeFactor = (float)Math.pow(2, market.getSize());
