@@ -608,7 +608,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		if (market.isPlayerOwned()) {
 			// don't build stuff on player-owned market, clear queue
-			npcConstructionQueues.remove(market);
+			//npcConstructionQueues.remove(market);	// causes concurrent modification exception if done during the loop
+			queue.clear();
 			return;
 		}
 		
