@@ -611,7 +611,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		}
 		
-		if (NexConfig.enableInvasions && InvasionRound.canInvade(entity))
+		if (InvasionRound.canInvade(entity))
 		{
 			options.addOption(StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
 					"invadeOpt", "$market", market.getName()), INVADE);
