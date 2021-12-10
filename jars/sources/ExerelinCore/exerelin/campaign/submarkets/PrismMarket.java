@@ -129,7 +129,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     @Override
     public void updateCargoPrePlayerInteraction() 
     {
-        log.info("Days since update: " + sinceLastCargoUpdate);
+        //log.info("Days since update: " + sinceLastCargoUpdate);
         if (sinceLastCargoUpdate < 30) return;
         sinceLastCargoUpdate = 0f;
         
