@@ -1657,7 +1657,7 @@ unsubsumed existence
 datastores
 submit!""
 
-""Is it talking about Coronal Hypershunt you found recently? It may be possible to buy off this strange AI leave, by giving it the right thing... but how do you even ask what it wants?""","nex_HistorianOmegaHail2:Offer some cat photos you have lying around, for their datastores
+Is it talking about Coronal Hypershunt you found recently? It may be possible to buy off this strange AI leave, by giving it the right thing... but how do you even ask what it wants?","nex_HistorianOmegaHail2:Offer some cat photos you have lying around, for their datastores
 cutCommLink:Cut the comm link",
 nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHail2,"Highlight ""Absolutely unforgivable""","You transmit a quick, abbreviated sample from the $shipOrFleet's sizable selection. It takes 3.7 milliseconds for the ""other party"" to process what it's looking at.
 
