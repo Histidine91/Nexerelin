@@ -42,6 +42,7 @@ import exerelin.campaign.intel.fleets.WaitStage;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleCampaignListener;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel.BattleOutcome;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -744,6 +745,21 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		info.addPara(compare + " " + outcomeDesc, opad, h, spaceStr, groundStr);
 		
 		printFleetCountDebug(info);
+	}
+	
+	@Override
+	public String getName() {
+		boolean useDeployedText = outcome == OffensiveOutcome.SUCCESS;
+		useDeployedText &= (groundBattle != null && groundBattle.getOutcome() != BattleOutcome.ATTACKER_VICTORY);
+		
+		if (useDeployedText) {
+			String base = StringHelper.getString("nex_fleetIntel", "title");
+			base = StringHelper.substituteToken(base, "$action", getActionName(), true);
+			base = StringHelper.substituteToken(base, "$market", getTarget().getName());
+
+			return base + " - " + StringHelper.getString("exerelin_invasion", "intelTitleSuffixDeployed", true);
+		}
+		return super.getName();
 	}
 		
 	@Override

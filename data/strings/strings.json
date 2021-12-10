@@ -1079,6 +1079,8 @@
 		
 		"invadeBlocked":"Any orbital station and interfering fleets must be removed before an invasion is possible.",
 		
+		"intelTitleSuffixDeployed":"deployed",
+		
 		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelDescRespawn":"Remnants of the $theFaction have gathered to invade $market in the $location, held by $theTargetFaction, in a bid to revive their power. The invasion forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
