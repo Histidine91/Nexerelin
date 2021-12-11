@@ -880,6 +880,9 @@
 		"pickerFancyText":"Loading database...",
 		"pickerCost":"Current cost: %s/%s",
 		"pickerTip":"There is no penalty to exceeding the point limit, other than having cheated not only the game but yourself.",
+		
+		"dialogOpenPicker":"Open picker",
+		"dialogViewPlanet":"View planet",
 	},
 	
 	"exerelin_fleets":{

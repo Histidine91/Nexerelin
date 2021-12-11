@@ -89,7 +89,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		else
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
-			prismEntity = hyperspace.addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
+			prismEntity = hyperspace.addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", "independent");
 			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(PRISM_LOC), NexUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
 			clearDeepHyper(prismEntity, 400);
 		}

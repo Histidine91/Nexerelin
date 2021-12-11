@@ -58,9 +58,9 @@ public class OwnFactionSetupScript extends DelayedDialogScreenScript
 		{
 			options.clearOptions();
 			
-			options.addOption("Open picker", Menu.OPTION_OPEN_PICKER);
+			options.addOption(getString("dialogOpenPicker"), Menu.OPTION_OPEN_PICKER);
 			//if (picked) options.setEnabled(Menu.OPTION_OPEN_PICKER, false);
-			options.addOption("View planet", Menu.OPTION_VIEW_PLANET);
+			options.addOption(getString("dialogViewPlanet"), Menu.OPTION_VIEW_PLANET);
 			//options.addOption("Open picker", Menu.DONE);
 		}
 		

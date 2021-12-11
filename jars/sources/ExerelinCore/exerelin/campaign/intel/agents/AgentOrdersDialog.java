@@ -483,7 +483,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	 */
 	protected void prepAction(CovertActionDef def) {
 		if (action != null && action.getDef() == def) {
-			text.addPara("Doing nothing");
+			//text.addPara("Doing nothing");
 			return;	// don't remake action unnecessarily
 		}
 		// Allow to printActionInfo for the desired action if the player want to select a new action_type
