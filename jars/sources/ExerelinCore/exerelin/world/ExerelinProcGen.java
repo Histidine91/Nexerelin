@@ -1177,6 +1177,12 @@ public class ExerelinProcGen {
 			switch (station.terrain.getType()) {
 				case Terrain.ASTEROID_BELT:
 					AsteroidBeltTerrainPlugin abt = (AsteroidBeltTerrainPlugin)station.terrain.getPlugin();
+					if (abt == null)
+						log.error(String.format("Warning: Asteroid belt %s in %s has no plugin", 
+								station.terrain.getName(), station.terrain.getContainingLocation()));
+					else
+						log.info(String.format("Creating station in asteroid belt %s in %s, has params: %s", 
+								station.terrain.getName(), station.terrain.getContainingLocation(), abt.params != null));
 					orbitRadius = (int)abt.params.middleRadius;
 					orbitDays = (abt.params.minOrbitDays + abt.params.maxOrbitDays)/2;
 					break;
