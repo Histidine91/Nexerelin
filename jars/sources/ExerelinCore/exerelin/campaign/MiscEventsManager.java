@@ -52,8 +52,11 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 		float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
 		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
 
-		int combat = Math.round(playerStr/5 * MathUtils.getRandomNumberInRange(0.6f, 0.7f) + capBonus);
+		int combat = Math.round((playerStr/5.5f + capBonus) * MathUtils.getRandomNumberInRange(0.6f, 0.7f));
 		combat *= 0.4f;
+		
+		if (combat < 12) return;	// don't spawn if player too weak
+		
 		//Global.getLogger(this.getClass()).info("Player strength: " + playerStr);
 		//Global.getLogger(this.getClass()).info("Omega estimated desired combat points: " + combat);
 		//Global.getLogger(this.getClass()).info("Omega max combat points: " + maxPoints);
