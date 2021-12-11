@@ -80,6 +80,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class InvasionFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_invasionFleetManager";
+	public static final String MEM_KEY_FACTION_TARGET_COOLDOWN = "$nex_recentlyTargetedMilitary";
 	
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
@@ -109,6 +110,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	public static final float PIRATE_RAGE_THRESHOLD = 125;
+	public static final int ATTACK_PLAYER_COOLDOWN = 60;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.08f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -524,6 +526,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			if (!marketFaction.isHostileTo(faction)) continue;
 			
+			if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction()
+					&& marketFaction.getMemoryWithoutUpdate().getBoolean(MEM_KEY_FACTION_TARGET_COOLDOWN)) {
+				continue;
+			}
+			
 			if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
 			
 			if (type == EventType.SAT_BOMB && faction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
@@ -701,6 +708,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		if (type != EventType.RAID)
 			organizeTime *= 1.25f;
+		
+		target.getFaction().getMemoryWithoutUpdate().set(MEM_KEY_FACTION_TARGET_COOLDOWN, true, ATTACK_PLAYER_COOLDOWN);
 		
 		// okay, assemble battlegroup
 		switch (type) {
