@@ -2078,6 +2078,15 @@
 		"intelStageActionDefeatedSpace":"The task force has been defeated by the defenders of $market.",
 		"intelStageActionAborted":"The bombardment has been aborted.",
 	},
+	
+	"nex_scoreboard":{
+		"title":"Scoreboard",
+		"headerPopulation":"Population",
+		"headerHeavyIndustry":"Heavy industry",
+		"headerDiplomacy":"Diplomacy",
+		"headerRequired":"Req."
+	},
+	
 	"nex_specialForces":{
 		"fleetNameGeneric":"%s task group",
 	

@@ -13,6 +13,8 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +78,22 @@ public class Alliance
 
 	public Set<String> getMembersCopy() {
 		return new HashSet<>(members);
+	}
+	
+	public List<String> getMembersSorted() {
+		List<String> members = new ArrayList<>(this.members);
+		final Map<String, Integer> memberSizes = new HashMap<>();
+		for (String member : members) {
+			memberSizes.put(member, NexUtilsFaction.getFactionMarketSizeSum(member, false));
+		}
+		Collections.sort(members, new Comparator<String>() {
+			@Override
+			public int compare(String f1, String f2) {
+				return Integer.compare(memberSizes.get(f2), memberSizes.get(f1));
+			}
+		});
+		
+		return members;
 	}
 	
 	public void addMember(String factionId) {
