@@ -1680,7 +1680,7 @@
 		"tooltipStartingDMods":"May not apply to all custom starts.",
 		"optionRandomAntioch":"Antioch in random sector",
 		"optionSkipStory":"Skip story",
-		"tooltipSkipStory":"Mark the Academy missions as completed, and grant gate travel, Transverse Jump and Neutrino Detector at start",
+		"tooltipSkipStory":"Marks the Academy missions as completed, and grant gate travel, Transverse Jump and Neutrino Detector at start.",
 		
 		"recommendedSizeMsg1":"Non-independent factions enabled: %s",
 		"recommendedSizeMsg2":"Auto-configuring sector size: %s systems, %s planets, %s stations",
@@ -2325,6 +2325,8 @@
 		"deadDropStr2":"the %s given to you by %s",
 		"deadDropCoordsStr1":"the dead drop coordinates",
 		"deadDropCoordsStr2":"the dead drop coordinates given to you by %s",
+		
+		"alphaSiteIntelDesc":"You have obtained navigation data leading to a mysterious location known as the %s.",
 		
 		"errorPrismLoad":"Failed to load Prism High-End Seller configuration defs!\nReport this issue with your modlist.",
 		

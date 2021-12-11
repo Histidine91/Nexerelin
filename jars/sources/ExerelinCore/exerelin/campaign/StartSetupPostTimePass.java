@@ -26,11 +26,14 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
+import com.fs.starfarer.api.impl.campaign.intel.misc.FleetLogIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsBaseOfficial;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
+import com.fs.starfarer.api.ui.SectorMapAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
@@ -180,6 +183,38 @@ public class StartSetupPostTimePass {
 				addStoryContact(People.IBRAHIM);
 				handleAcademyVars();
 			}
+			
+			// alpha site location intel?
+			FleetLogIntel intel = new FleetLogIntel() {
+								
+				@Override
+				public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+					info.addImage(getIcon(), 0);
+					info.addPara(StringHelper.getString("exerelin_misc", "alphaSiteIntelDesc"), 
+							3, Misc.getHighlightColor(), getSite().getName());
+					this.addDeleteButton(info, width);
+				}
+				
+				protected SectorEntityToken getSite() {
+					return Global.getSector().getEntityById("site_alpha");
+				}
+				
+				@Override
+				protected String getName() {
+					return getSite().getName();
+				}
+				
+				@Override
+				public String getIcon() {
+					return "graphics/icons/missions/project_ziggurat.png";
+				}
+				
+				@Override
+				public SectorEntityToken getMapLocation(SectorMapAPI map) {
+					return getSite();
+				}
+			};
+			Global.getSector().getIntelManager().addIntel(intel);
 		}
 	}
 	
