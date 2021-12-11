@@ -181,6 +181,8 @@ public class ColonyTargetValuator {
 				//log.info(system.getName() + " controlled by someone else");
 				return false;
 			}
+		} else if (system.hasTag(Tags.THEME_UNSAFE)) {
+			return false;
 		}
 		
 		// don't colonize systems with stations or large fleets (this is to avoid Remnant stations etc.)
