@@ -34,6 +34,7 @@
 		"options":"options",
 		"player":"player",
 		"relay":"relay",
+		"rename":"rename",
 		"salvage":"salvage",
 		"select":"select",
 		"size":"size",

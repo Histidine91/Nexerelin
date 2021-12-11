@@ -2,10 +2,16 @@ package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.CutStyle;
+import com.fs.starfarer.api.ui.Fonts;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
+import com.fs.starfarer.api.ui.TextFieldAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
@@ -15,8 +21,6 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import org.apache.log4j.Logger;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +30,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class AllianceIntel extends BaseIntelPlugin {
-	private static Logger log = Global.getLogger(AllianceIntel.class);
+	
+	public static final Object BUTTON_RENAME = new Object();
 	
 	// everything protected out of habit
 	protected FactionAPI faction1;
@@ -37,6 +44,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 	// more permanent store, since we may decide to no longer have alliance be accessible by ID once dissolved
 	protected String allianceName;	
 	protected boolean isDissolved = false;
+	protected transient TextFieldAPI nameField;
 
 	public AllianceIntel(FactionAPI faction1, FactionAPI faction2, String allianceId, String allianceName) {
 		log.info("Creating Alliance Intel");
@@ -129,11 +137,6 @@ public class AllianceIntel extends BaseIntelPlugin {
 	}
 
 	@Override
-	public String getSmallDescriptionTitle() {
-		return getName();
-	}
-
-	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
 
@@ -174,6 +177,16 @@ public class AllianceIntel extends BaseIntelPlugin {
 				+ alliance.getAlignment().toString().toLowerCase(Locale.ROOT), true);
 		str = getString("alignment", true) + ": " + alignmentName;
 		info.addPara(str, opad, alliance.getAlignment().color, alignmentName);
+		
+		// rename field		
+		if (Global.getSettings().isDevMode() || alliance.getMembersCopy().contains(Factions.PLAYER)) {
+			nameField = info.addTextField(width - 8, Fonts.DEFAULT_SMALL, opad);
+			nameField.setText(alliance.getName());
+			
+			ButtonAPI button = info.addButton(StringHelper.getString("rename", true), BUTTON_RENAME,
+					Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.RMID, CutStyle.BL_TR, 80, 20, 3);
+		}
+		
 		
 		str = getString("intelMembersHeader");
 		info.addSectionHeading(str, Alignment.MID, opad);
@@ -311,8 +324,9 @@ public class AllianceIntel extends BaseIntelPlugin {
 		para.setHighlight(name, num, sizeSum);
 		para.setHighlightColors(faction.getBaseUIColor(), hl, hl);
 	}
-
-	protected String getName() {
+	
+	@Override
+	public String getName() {
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelTitle", "$name", allianceName);
 		if (isDissolved)
 		{
@@ -334,6 +348,17 @@ public class AllianceIntel extends BaseIntelPlugin {
 		if ((UpdateType)params.get("type") == UpdateType.DISSOLVED)
 			isDissolved = true;
 		super.sendUpdateIfPlayerHasIntel(listInfoParam, onlyIfImportant, sendIfHidden);
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_RENAME) {
+			Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
+			allianceName = nameField.getText();
+			alliance.setName(allianceName);
+			ui.updateUIForItem(this);
+			return;
+		}
 	}
 
 	@Override
