@@ -2189,8 +2189,8 @@
 	"exerelin_victoryScreen":{
 		"victory_conquest":"Congratulations! $TheFaction and allies have conquered their way to a dominant position in the Sector!",
 		"victory_diplomatic":"Congratulations! $TheFaction and their allies have established friendly relations with all powers in the sector!",
-		"victory_conquest_ally":"Congratulations! Your ally $theFaction have crushed all opposition and now reigns supreme over the Sector!",
-		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and their other allies in controlling the Sector!",
+		"victory_conquest_ally":"Congratulations! Your ally $theFaction has achieved great conquests and now dominates the Sector!",
+		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and their other allies in building peace in the Sector!",
 
 		"defeat_conquest":"Alas, $theFaction and their allies have become the dominant power in the Sector. Others are slipping into irrelevance...",
 		"defeat_diplomatic":"$TheFaction and their allies have established themselves as the leader in the Sector. Unfortunately, you are not one of them...",
