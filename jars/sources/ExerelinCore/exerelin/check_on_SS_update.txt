@@ -4,23 +4,19 @@ Partial list.
 - NexCoreLifecyclePlugin
 - NexFleetInteractionDialogPluginImpl
 - NexFleetEncounterContext
-- [needs updating] Nex_MarketCMD
+- Nex_MarketCMD
 - Nex_SustainedBurnAbilityAI
 - [deprecated] SSP_BattleCreationPluginImpl
 - InvasionFleetManager.getPatrolCombatFP
 - Submarket plugins
 - Colony manager: getFreePortGrowthBonus()
 - Everything that uses Industries.TAG_UNRAIDABLE
+- Objective entity plugins
 
-	needs checking:
-	- [updated] Nex_PunitiveExpeditionManager
-	- [no change needed?] NexFleetInteractionDialogPluginImpl
-	- [no change needed?] NexFleetEncounterContext
-	- [no change] Nex_SustainedBurnAbilityAI
-	- [no change] InvasionFleetManager.getPatrolCombatFP
-	- [updated] Submarket plugins
-	- [no change] getFreePortGrowthBonus()
-	- [no change] Industries.TAG_UNRAIDABLE
+	needs checking (0.95.1a):
+	- [updated] NexCoreLifecyclePlugin
+	- [updated] NexFleetInteractionDialogPluginImpl
+	- [check later] Nex_MarketCMD
 
 last thing to look at is Nex_MarketCMD
 
@@ -28,9 +24,6 @@ last thing to look at is Nex_MarketCMD
 - SSP_BattleCreationPluginImpl looks RIP, it can't access needed variables from the data class
 
 Do on future SS release:
-- [done] ExerelinConfig/ExerelinFactionConfig: Shorten class/method names
-- [done] Remove agent/saboteur commodities
-- [done] Remove MutableStatNoFloor
 - Use "player colonized" and deciv listeners
 	- Deciv listener applications:
 		- Sector manager (faction elimination): useless, we don't know who the previous owner was
@@ -39,4 +32,3 @@ Do on future SS release:
 		- Faction setup nag script? mehhh
 
 - Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
-- [done] Move CeasefirePromptIntel to diplomacy package

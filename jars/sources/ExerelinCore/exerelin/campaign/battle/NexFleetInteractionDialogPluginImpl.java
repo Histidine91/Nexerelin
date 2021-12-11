@@ -337,23 +337,6 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		disabledOrDestroyedMembers.clear();
 	}
 	
-	@Override
-	public void init(InteractionDialogAPI dialog) {
-		if (this.config == null) {
-			MemoryAPI memory = dialog.getInteractionTarget().getMemoryWithoutUpdate();
-//			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE)) {
-//				this.config = (FIDConfig) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE);
-//			} else 
-			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)) {
-				this.config = ((FIDConfigGen) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)).createConfig();
-			} else {
-				this.config = new FIDConfig();
-			}
-		}
-		
-		super.init(dialog);
-	}
-	
 	// Hax: let Techpriest modify the dialog options again
 	@Override
 	protected void updateEngagementChoice(boolean withText) {
@@ -401,6 +384,10 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		if (dist >= joinRange) return false;
 		if (!(dist < baseSensorRange || (visible && level != VisibilityLevel.SENSOR_CONTACT))) 
 			return false;
+		
+		boolean ignore = fleet.getMemoryWithoutUpdate() != null && 
+						fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
+		if (ignore) return false;
 		
 		if (fleet.getAI() != null)
 		{
@@ -569,6 +556,10 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		}
 	}
 	
+	/**
+	 * Debugging command?
+	 * @param fleets
+	 */
 	public void forcePullInFleets(CampaignFleetAPI... fleets) {
 		BattleAPI b = context.getBattle();
 		BattleSide playerSide = b.pickSide(Global.getSector().getPlayerFleet());

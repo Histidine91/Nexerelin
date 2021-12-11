@@ -5,16 +5,20 @@ import com.fs.starfarer.api.campaign.GenericPluginManagerAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.listeners.CoreDiscoverEntityPlugin;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
+import com.fs.starfarer.api.characters.SkillsChangeOfficerEffect;
+import com.fs.starfarer.api.characters.SkillsChangeRemoveExcessOPEffect;
+import com.fs.starfarer.api.characters.SkillsChangeRemoveSmodsEffect;
+import com.fs.starfarer.api.characters.SkillsChangeRemoveVentsCapsEffect;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
-import com.fs.starfarer.api.impl.campaign.AbandonMarketPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreLifecyclePluginImpl;
 import com.fs.starfarer.api.impl.campaign.SmugglingScanScript;
-import com.fs.starfarer.api.impl.campaign.StabilizeMarketPluginImpl;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.Cryorevival;
 import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
+import com.fs.starfarer.api.impl.campaign.enc.EncounterManager;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
+import com.fs.starfarer.api.impl.campaign.ghosts.SensorGhostManager;
 import com.fs.starfarer.api.impl.campaign.graid.StandardGroundRaidObjectivesCreator;
 import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
@@ -27,6 +31,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.OmegaOfficerGeneratorPl
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantOfficerGeneratorPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
+import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamManager;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
@@ -90,7 +95,15 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		
 		PlayerFleetPersonnelTracker.getInstance();
 		
-		
+		if (!sector.hasScript(EncounterManager.class)) {
+			sector.addScript(new EncounterManager());
+		}
+		if (!sector.hasScript(SlipstreamManager.class)) {
+			sector.addScript(new SlipstreamManager());
+		}
+		if (!sector.hasScript(SensorGhostManager.class)) {
+			sector.addScript(new SensorGhostManager());
+		}
 		if (!sector.hasScript(OfficerManagerEvent.class)) {
 			sector.addScript(new OfficerManagerEvent());
 		}
@@ -123,6 +136,7 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!sector.hasScript(Nex_PunitiveExpeditionManager.class)) {
 			sector.addScript(new Nex_PunitiveExpeditionManager());
 		}
+		
 		if (!sector.hasScript(DecivTracker.class)) {
 			sector.addScript(new DecivTracker());
 		}
@@ -160,6 +174,11 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		}
 		
 		PlaythroughLog.getInstance();
+		
+		sector.getListenerManager().addListener(new SkillsChangeRemoveExcessOPEffect(), true);
+		sector.getListenerManager().addListener(new SkillsChangeRemoveVentsCapsEffect(), true);
+		sector.getListenerManager().addListener(new SkillsChangeRemoveSmodsEffect(), true);
+		sector.getListenerManager().addListener(new SkillsChangeOfficerEffect(), true);
 	}
 	
 	@Override

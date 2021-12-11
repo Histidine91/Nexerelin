@@ -65,7 +65,6 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RAID;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RAID_CONFIRM_CONTINUE;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.addBombardVisual;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.applyDefenderIncreaseFromRaid;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.applyRaidStabiltyPenalty;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDestroyThreshold;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSaturationBombardmentStabilityPenalty;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;

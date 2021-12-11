@@ -13,12 +13,19 @@ public class Nex_SensorArrayEntityPlugin extends SensorArrayEntityPlugin {
 	@Override
 	public void advance(float amount) {
 		if (entity.getContainingLocation() == null || entity.isInHyperspace()) return;
+		boolean reset = isReset();
 		
 		String id = getModId();
 		for (CampaignFleetAPI fleet : entity.getContainingLocation().getFleets()) {
 			if (fleet.isInHyperspaceTransition()) continue;
 			
 			if (canReceiveBonus(fleet)) {
+				
+				if (reset && !fleet.getFaction().isPlayerFaction()) {
+					respondToFalseSensorReadings(fleet);
+				} else if (reset && fleet.isPlayerFleet()) {
+					spawnPlayerSensorReading(fleet);
+				}
 				
 				String desc = Misc.ucFirst(entity.getCustomEntitySpec().getDefaultName().toLowerCase());
 				float bonus = SENSOR_BONUS;
