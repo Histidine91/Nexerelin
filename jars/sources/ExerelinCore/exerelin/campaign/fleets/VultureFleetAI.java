@@ -298,7 +298,7 @@ public class VultureFleetAI implements EveryFrameScript
 	
 	protected boolean shouldRecover(FleetMemberAPI member, SectorEntityToken entity) {
 		if (member.getHullSpec().getHints().contains(ShipTypeHints.UNBOARDABLE)) return false;
-		return Misc.isShipRecoverable(member, fleet, false, false, Misc.getSalvageSeed(entity), 1);
+		return Misc.isShipRecoverable(member, fleet, false, false, 1);
 	}
 	
 	public Script getScavengeScript(final SectorEntityToken target) {
