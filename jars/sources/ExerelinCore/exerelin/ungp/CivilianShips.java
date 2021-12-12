@@ -33,7 +33,7 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 	@Override
 	public void updateDifficultyCache(int difficulty) {
 		this.difficulty = difficulty;
-		Global.getLogger(this.getClass()).info(String.format("Updating cache"));
+		//Global.getLogger(this.getClass()).info(String.format("Updating cache"));
 		crPenalty = getValueByDifficulty(0, difficulty);
 		maintMult = getValueByDifficulty(1, difficulty);
 	}
