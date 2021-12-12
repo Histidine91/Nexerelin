@@ -32,7 +32,6 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -950,7 +949,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 factionId = PlayerFactionStore.getPlayerFactionId();
             }
             NexUtils.modifyMapEntry(factionSizes, factionId, market.getSize());
-            if (Nex_FactionDirectory.hasHeavyIndustry(market)) {
+            if (NexUtilsMarket.hasHeavyIndustry(market)) {
                 totalHeavyIndustries++;
                 NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
             }

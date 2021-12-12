@@ -1404,7 +1404,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				log.info("Removing vulnerable heavy industry on " + market.getName());
 				List<String> toRemove = new ArrayList<>();
 				for (Industry ind : market.getIndustries()) {
-					if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY)) {
+					if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY) && !ind.getSpec().getId().equals("IndEvo_ScrapYard")) 
+					{
 						toRemove.add(ind.getId());
 					}
 				}

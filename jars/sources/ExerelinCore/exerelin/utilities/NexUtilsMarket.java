@@ -240,6 +240,7 @@ public class NexUtilsMarket {
 		{
 			if (!ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY))
 				continue;
+			if (ind.getSpec().getId().equals("IndEvo_ScrapYard")) continue;
 			return true;
 		}
 		return false;

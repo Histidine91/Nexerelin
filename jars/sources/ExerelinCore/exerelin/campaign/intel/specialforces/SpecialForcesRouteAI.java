@@ -16,7 +16,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -34,6 +33,7 @@ import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsMarket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -794,7 +794,7 @@ public class SpecialForcesRouteAI {
 	 */
 	public float getRaidDefendPriority(MarketAPI market) {
 		float priority = market.getSize() * market.getSize();
-		if (Nex_FactionDirectory.hasHeavyIndustry(market))
+		if (NexUtilsMarket.hasHeavyIndustry(market))
 			priority *= 4;
 		
 		sf.debugMsg("  Defending market " + market.getName() + " has priority " + String.format("%.1f", priority), true);
@@ -808,7 +808,7 @@ public class SpecialForcesRouteAI {
 	 */
 	public float getRaidAttackPriority(MarketAPI market) {
 		float priority = market.getSize() * market.getSize();
-		if (Nex_FactionDirectory.hasHeavyIndustry(market))
+		if (NexUtilsMarket.hasHeavyIndustry(market))
 			priority *= 3;
 		
 		sf.debugMsg("  Attacking market " + market.getName() + " has priority " + String.format("%.1f", priority), true);
@@ -822,7 +822,7 @@ public class SpecialForcesRouteAI {
 	 */
 	public float getPatrolPriority(MarketAPI market) {
 		float priority = market.getSize() * market.getSize();
-		if (Nex_FactionDirectory.hasHeavyIndustry(market))
+		if (NexUtilsMarket.hasHeavyIndustry(market))
 			priority *= 4;
 		if (market.getFaction() != sf.faction)	// lower priority for allies' markets
 			priority *= 0.75f;

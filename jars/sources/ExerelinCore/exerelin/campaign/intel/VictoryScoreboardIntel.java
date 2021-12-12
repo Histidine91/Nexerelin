@@ -23,6 +23,7 @@ import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -264,7 +265,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
             
             totalSize += market.getSize();
             NexUtils.modifyMapEntry(factionSizes, factionId, market.getSize());
-            if (Nex_FactionDirectory.hasHeavyIndustry(market)) {
+            if (NexUtilsMarket.hasHeavyIndustry(market)) {
                 totalHeavyIndustries++;
                 NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
             }

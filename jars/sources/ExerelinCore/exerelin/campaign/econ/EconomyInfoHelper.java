@@ -154,6 +154,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				{
 					if (!ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY))
 						continue;
+					if (ind.getSpec().getId().equals("IndEvo_ScrapYard")) continue;
 					if (ind.getDisruptedDays() > 15) continue;
 					haveHeavyIndustry.add(market.getFactionId());
 					break;

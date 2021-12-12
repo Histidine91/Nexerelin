@@ -26,6 +26,7 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -68,14 +69,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		if (colorByMarketSize.containsKey(size))
 			color = colorByMarketSize.get(size);
 		return color;
-	}
-	
-	public static boolean hasHeavyIndustry(MarketAPI market) {
-		for (Industry ind : market.getIndustries()) {
-			if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY))
-				return true;
-		}
-		return false;
 	}
 	
 	@Override
@@ -250,7 +243,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	
 	public boolean marketHasIndustry(MarketAPI market, String industryId) {
 		if ("heavyIndustry".equals(industryId))
-			return hasHeavyIndustry(market);
+			return NexUtilsMarket.hasHeavyIndustry(market);
 		else if ("military".equals(industryId))
 			return Misc.isMilitary(market);
 		return market.hasIndustry(industryId);
@@ -384,7 +377,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			}
 			
 			// Has heavy industry
-			if (hasHeavyIndustry(market)) {
+			if (NexUtilsMarket.hasHeavyIndustry(market)) {
 				addIconWithTooltip(images, tooltipTexts, 
 						Global.getSettings().getSpriteName("marketConditions", "heavy_industry"), 
 						Global.getSettings().getIndustrySpec(Industries.HEAVYINDUSTRY).getName());
