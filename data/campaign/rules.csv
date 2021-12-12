@@ -2627,6 +2627,20 @@ $nex_mercCompanyId == steinerGuards",AdjustRepActivePerson INHOSPITABLE -8,"The 
 ""Were we still on Eventide, captain, I would demand satisfaction this very instant. But I see I can expect no better from an honourless dog like yourself. Farewell!""
 
 The comm link is cut before you can say anything further.",,
+nex_mercLeaving_letGoBlurbJerkSteinerEventide,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
+$nex_mercCompanyId == steinerGuards
+$market.id == eventide score:20",AdjustRepActivePerson INHOSPITABLE -5,"The $personRank turns puce less than six seconds into your rant. At twelve seconds, $heOrShe slams a fist on $hisOrHer console.
+
+""On Eventide, we noble houses of the Fourteenth know the way with those who insult us.""
+
+$HisOrHer eyes glow with malicious fury. ""Captain $playerName! My second will be in touch. I expect to see you on the field of honor in twelve hours!""","nex_merc_steinerDuel_accept:Accept the challenge
+nex_merc_steinerDuel_decline:Refuse",
+nex_mercLeaving_steinerDuel_accept,DialogOptionSelected,$option == nex_merc_steinerDuel_accept,,"The $personRank smirks coldly. ""So you do have a scrap of honour after all, captain. Very well, prepare yourself!""
+
+$HeOrShe cuts the comm link.",nex_merc_steinerDuel_prep:Continue,
+nex_mercLeaving_steinerDuel_decline,DialogOptionSelected,$option == nex_merc_steinerDuel_decline,AdjustRepActivePerson INHOSPITABLE -5,"The $personRank sneers in undisguised contempt. ""So you lack the spine to match your venom. I should have expected no better. Good day, 'captain'"".
+
+$HeOrShe snaps off the comm link.",nex_mercLeaving_continue:Continue,
 nex_mercLeaving_letGoBlurbRefusePaySteiner,Nex_MercLetGoBlurb,"$nex_mercLetGoType == refusePay score:5
 $nex_mercCompanyId == steinerGuards",AdjustRepActivePerson INHOSPITABLE -5,"The $personRank stares at you, incredulously at first, then with cold fury.
 
@@ -2669,3 +2683,76 @@ $playerName.debt += $nex_mercValueDiffVal
 while (debt > 0) emotionModule.guiltTrip($playerName);""",,
 #END blurbs,,,,,,
 #END Merc hiring,,,,,,
+,,,,,,
+#duel stuff,,,,,,
+#soeMeetCaspianStart0Alt,DialogOptionSelected,"!$global.didEventideRaoBall
+$faction.id == hegemony
+$option == marketVisitBar
+$player.metDaud
+$player.fcm_faction == hegemony","FireBest BarShuttleDownPrintDesc
+FireBest BarPrintDesc
+BarCMD playAmbience",,soe_meetCaspianStart:Continue,
+,,,,,,
+nex_duelPracticeOpt,ExerelinMarketSpecial,$global.isDevMode,,,7:nex_duelPractice:>> (dev) Practice fencing in the simulator,
+nex_duelPractice,DialogOptionSelected,$option == nex_duelPractice,,Select difficulty settings:,"nex_duelPractice_p0e0:Unskilled player, unskilled opponent
+nex_duelPractice_p1e0:Skilled player, unskilled opponent
+nex_duelPractice_p0e1:Unskilled player, skilled opponent
+nex_duelPractice_p1e1:Skilled player, skilled opponent
+nex_duelTutorial:Tutorial
+nex_duelTutorialSkilled:Tutorial (skilled)
+exerelinMarketSpecial:Go back",
+nex_duelPractice_p0e0,DialogOptionSelected,$option == nex_duelPractice_p0e0,Nex_FencingDuel start false false,,,
+nex_duelPractice_p1e0,DialogOptionSelected,$option == nex_duelPractice_p1e0,Nex_FencingDuel start true false,,,
+nex_duelPractice_p0e1,DialogOptionSelected,$option == nex_duelPractice_p0e1,Nex_FencingDuel start false true,,,
+nex_duelPractice_p1e1,DialogOptionSelected,$option == nex_duelPractice_p1e1,Nex_FencingDuel start true true,,,
+nex_duelPractice_tutorial,DialogOptionSelected,$option == nex_duelTutorial,Nex_FencingDuel tutorial false,,,
+nex_duelPractice_tutorialSkilled,DialogOptionSelected,$option == nex_duelTutorialSkilled,Nex_FencingDuel tutorial true,,,
+nex_duelPractice_tutorialCheckSkill,DialogOptionSelected,$option == nex_duelTutorialCheckSkill,Nex_FencingDuel tutorial $player.bladeSkill,,,
+,,,,,,
+nex_merc_steinerDuel_prep,DialogOptionSelected,$option == nex_merc_steinerDuel_prep,"ShowImageVisual eventide
+FireAll Nex_SteinerDuel_Pre","At the appointed time, you take a shuttle down to the local duelling grounds.
+
+A staffer presents the kit: smart material jumpsuit, hardened boots, gloves, and helmet. All the tools to ensure quick-tempered, murder-brained nobles (usually) survive their experience on the field more or less intact. On top of the pile lies a sheathed sword.
+
+As your XO stands unobtrusively behind you, you pick up the weapon. It feels…",,
+nex_merc_steinerDuel_prepNoCrew,DialogOptionSelected,"$option == nex_merc_steinerDuel_prep
+$player.crew <= 0","ShowImageVisual eventide
+FireAll Nex_SteinerDuel_Pre","At the appointed time, you take a shuttle down to the local duelling grounds.
+
+A staffer presents the kit: smart material jumpsuit, hardened boots, gloves, and helmet. All the tools to ensure quick-tempered, murder-brained nobles (usually) survive their experience on the field more or less intact. On top of the pile lies a sheathed sword.
+
+Standing alone, you pick up the weapon. It feels…",,
+nex_merc_steinerDuel_preOpt_unskilled,Nex_SteinerDuel_Pre,!$player.bladeSkill,,,"nex_steinerDuel_unskilled:...clumsy, dangerous; just when does a starship captain use such an archaic weapon, anyway?",
+nex_merc_steinerDuel_preOpt_skilled,Nex_SteinerDuel_Pre,$player.bladeSkill,,,"nex_steinerDuel_skilled:...like an old, trusted friend.",
+nex_merc_steinerDuel_preOpt_skilledSP,Nex_SteinerDuel_Pre,!$player.bladeSkill,"SetStoryOption nex_steinerDuel_skilled 1 soe_duelPrepStudied combat ""Called upon sword combat training while dueling on Eventide""",,"nex_steinerDuel_skilled:...like an old, trusted friend.",
+nex_merc_steinerDuel_ready,DialogOptionSelected,$option == nex_steinerDuel_readyShared,,,"nex_duelTutorialCheckSkill:Take a few practice swings (sword tutorial)
+nex_steinerDuel_begin:Go face your opponent",
+nex_merc_steinerDuel_readySkilled,DialogOptionSelected,$option == nex_steinerDuel_skilled,"AddTextSmall ""Revealed sword combat training"" highlight
+$player.bladeSkill = true
+$option = nex_steinerDuel_readyShared
+FireBest DialogOptionSelected",You heft the sword and slide it out of the scabbard smoothly. The patterned alloy gleams in the light.,,
+nex_merc_steinerDuel_readyUnskilled,DialogOptionSelected,$option == nex_steinerDuel_unskilled,"$option = nex_steinerDuel_readyShared
+FireBest DialogOptionSelected","You hold the sword uncertainly, like you're not quite sure which is the dangerous end. The attendant remains grave-faced.",,
+nex_merc_steinerDuel_begin,DialogOptionSelected,$option == nex_steinerDuel_begin,ShowPersonVisual true,"Dressed in dueling gear and sword in hand, you are led to one end of a columned loggia that seems to hang over the valley below. 
+
+$PersonRank $personName steps forward, and the crowds withdraw.
+
+""Are you ready to die for your words?"" $heOrShe pronounces.",nex_steinerDuel_fight:Fight!,
+nex_merc_steinerDuel_fight,DialogOptionSelected,$option == nex_steinerDuel_fight,"$nex_duelContext = steinerMercHonor 0
+Nex_FencingDuel start $player.bladeSkill true",,,
+nex_merc_steinerDuel_win,Nex_FencingDuelFinished,"$nex_duelContext == steinerMercHonor
+$nex_playerWonDuel","ShowImageVisual eventide
+unset $player.nex_mercsInsulted_steinerGuards
+unset $player.wasJerkToMerc","As your opponent falls over, the crowd goes wild.
+
+You turn away, sheathing your weapon. House Steiner may not take this humiliation well… but you've demonstrated some honor by the standards of Eventide, and that may count for something.",nex_steinerDuel_end:Return to your $shipOrFleet,
+nex_merc_steinerDuel_lose,Nex_FencingDuelFinished,"$nex_duelContext == steinerMercHonor
+$nex_playerLostDuel",AdjustRepActivePerson SUSPICIOUS -1,"The pain is too much and you collapse.
+
+A figure looms blurrily in your vision. ""So, dog, do you know the honour of our house now? Let this be a lesson to you, and do not let your tongue go where you sword arm cannot!""
+
+If this is going to happen again, it might be wise to take those words to heart.",nex_steinerDuel_end:Pick yourself up and return to your $shipOrFleet,
+nex_merc_steinerDuel_end,DialogOptionSelected,$option == nex_steinerDuel_end,"ShowDefaultVisual
+EndConversation DO_NOT_FIRE
+FireBest MarketPostDock",,,
+#END duel stuff,,,,,,
