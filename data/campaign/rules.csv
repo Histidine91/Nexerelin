@@ -1626,7 +1626,8 @@ nex_dcomBlurbBar,nex_dcom_blurbBar,,,"A $nex_dcom_manOrWoman in a finely tailore
 nex_dcomOfferOptionBar,nex_dcom_optionBar,,,,nex_dcom_startBar:Go to the $nex_dcom_manOrWoman in the fine suit,
 nex_dcomOfferTextBar,DialogOptionSelected,$option == nex_dcom_startBar,"$missionId = nex_dcom
 SetTextHighlightColors $nex_dcom_targetFactionColor h h h h h
-Highlight $nex_dcom_targetFaction $nex_dcom_marketName $nex_dcom_disruptDays $nex_dcom_dist $nex_dcom_reward $nex_dcom_marines","You walk over to the $nex_dcom_manOrWoman, whose bodyguard acknowledges you with a nod.
+Highlight $nex_dcom_targetFaction $nex_dcom_marketName $nex_dcom_disruptDays $nex_dcom_dist $nex_dcom_reward $nex_dcom_marines
+Call $nex_dcom_ref showMap ""Target: $nex_dcom_marketName""","You walk over to the $nex_dcom_manOrWoman, whose bodyguard acknowledges you with a nod.
 
 ""Captain. Sit, please. You may be just the person I'm looking for.""
 
@@ -1636,7 +1637,8 @@ Judging from the data, $nex_dcom_marines marines would be required to pull off t
 contact_declineBarNoContinue:Decline",
 nex_dcomOfferTextContact,DialogOptionSelected,$option == nex_dcom_start,"$missionId = nex_dcom
 SetTextHighlightColors $nex_dcom_targetFactionColor h h h h h
-Highlight $nex_dcom_targetFaction $nex_dcom_marketName $nex_dcom_dist $nex_dcom_reward $nex_dcom_disruptDays $nex_dcom_marines","""The target is the $nex_dcom_targetFaction $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName, $nex_dcom_dist light-years away. We have allocated a sum of $nex_dcom_reward credits should it be disrupted for at least $nex_dcom_disruptDays days.""
+Highlight $nex_dcom_targetFaction $nex_dcom_marketName $nex_dcom_dist $nex_dcom_reward $nex_dcom_disruptDays $nex_dcom_marines
+Call $nex_dcom_ref showMap ""Target: $nex_dcom_marketName""","""The target is the $nex_dcom_targetFaction $nex_dcom_industry $nex_dcom_marketOnOrAt $nex_dcom_marketName, $nex_dcom_dist light-years away. We have allocated a sum of $nex_dcom_reward credits should it be disrupted for at least $nex_dcom_disruptDays days.""
 
 $HeOrShe pulls up a shared display. The intel is comprehensive: estimated garrison stats and a deployment disposition report. It appears that $nex_dcom_marines marines would be required for this operation.","contact_accept:Accept
 contact_decline:Decline",
@@ -1687,7 +1689,9 @@ You haven't, at least not to the point of having heard of this before, but nod f
 nex_gbTut_barEventDecline:Decline [skip tutorial]",
 nex_gbTut_barEventAccept,DialogOptionSelected,$option == nex_gbTut_barEventAccept,"Highlight ""some marines"" ""heavy armaments""
 $global.nex_interactedWithGBTutBarEvent = true
-BeginMission nex_gbTut","""Excellent! I knew you could be counted on.""
+BeginMission nex_gbTut
+Call $global.nex_gbTut_ref updateData
+Call $global.nex_gbTut_ref showMap ""Destination: $nex_gbTut_marketName""","""Excellent! I knew you could be counted on.""
 
 You look over the details $heOrShe sends to your device. It includes the name and contact details of the ""interested party"", and a mention that bringing some marines along might be good. Possibly heavy armaments as well.",backToBar:Return to the bar,
 nex_gbTut_barEventDecline,DialogOptionSelected,$option == nex_gbTut_barEventDecline,$global.nex_interactedWithGBTutBarEvent = true,"The agent's face sinks. ""I understand,"" $heOrShe says in the most neutral tone $heOrShe can manage. ""Just remember: We always have room for brave and capable patriots in the fight for the Sector's freedom.""
@@ -1849,11 +1853,12 @@ nex_remM1_intro2,DialogOptionSelected,$option == nex_remM1_intro2,"$option = nex
 FireBest DialogOptionSelected","""Self-designation: of no consequence. Temporary identifier: $personName.""",,
 nex_remM1_intro3,DialogOptionSelected,$option == nex_remM1_intro3,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","Requiring assistance, sensitive matter. Credit compensation available. Receptive to monetary incentive and capable of fulfilling mission both, $player.name judged.""","nex_remM1_intro4:""I'm listening.""
 nex_remM1_reject:""No deal. Get out of my firmware."" [terminate quest]",
-nex_remM1_intro4,DialogOptionSelected,$option == nex_remM1_intro4,Highlight $nex_remM1_marketName $nex_remM1_reward $nex_remM1_marines,"""Independent world of $nex_remM1_marketName, two Beta Cores possessed. Secret negotiations, Hegemony, Persean League in progress. To highest bidder auction.
+nex_remM1_intro4,DialogOptionSelected,$option == nex_remM1_intro4,"Highlight $nex_remM1_marketName $nex_remM1_reward $nex_remM1_marines
+Call $global.nex_remM1_ref showMap ""Target: $nex_remM1_marketName""","""Independent world of $nex_remM1_marketName, two Beta Cores possessed. Secret negotiations, Hegemony, Persean League in progress. To highest bidder auction.
 
 ""Require cores to freedom restore. Payment on return to self: $nex_remM1_reward credits. Further, recognition by selfkind of value as associate.""
 
-The Remnant displays a map with surprisingly detailed intel on the secure facility where, you presume from context, the cores are being stored. A quick estimate indicates this is a job requiring at least $nex_remM1_marines marines.","nex_remM1_intro5:""This could antagonize the Hegemony and the League, not to mention the $nex_remM1_marketName government.""",
+The Remnant displays a map with surprisingly detailed intel on the secure facility where, you presume from context, the cores are being stored. A quick estimate indicates this is a job requiring at least $nex_remM1_marines marines, assuming you did this the violent way.","nex_remM1_intro5:""This could antagonize the Hegemony and the League, not to mention the $nex_remM1_marketName government.""",
 nex_remM1_intro5,DialogOptionSelected,$option == nex_remM1_intro5,"Nex_AddOptionConfirmation nex_remM1_reject ""You will not get a second chance at building this connection. Proceed?"" ""Yes"" ""No""","""Both leading powers in Sector risk wrath. Commitment to prospective alliance, demonstrate. Benefits carefully consider.
 
 ""Await response, $player.name.""","nex_remM1_accept:Accept
@@ -2062,7 +2067,8 @@ nex_remcbOfferTextContact,DialogOptionSelected,"$option == nex_remcb_start
 $id == nex_dissonant score:10","$missionId = nex_remcb
 $option = nex_remcb_showOptions 0
 FireBest DialogOptionSelected","$personName's avatar shrinks, making room for a list of enemies of the Remnants, of which there are many indeed. ""Hostile to selfkind activity. Neutralization of any, beneficial. Your pick, $playerName.""",,
-nex_remcbGoBackSel,DialogOptionSelected,$option == nex_remcb_showOptions,,,"nex_remcb_low:""I'd prefer a more manageable target.""
+nex_remcbGoBackSel,DialogOptionSelected,$option == nex_remcb_showOptions,"# removes map
+ShowPersonVisual",,"nex_remcb_low:""I'd prefer a more manageable target.""
 nex_remcb_normal:""Whatever you've got works for me.""
 nex_remcb_high:""I can handle a more challenging target.""
 contact_decline:""Maybe another time."" (decline)",
@@ -2119,7 +2125,8 @@ nex_ddroRemBlurb,nex_ddroRem_blurb,,,"""Dead drop for selfkind, deliver surrepti
 nex_ddroRemOfferOption,nex_ddroRem_option,,,,ddro_start:Ask about the secret package delivery,
 nex_ddroRemOfferTextContact,DialogOptionSelected,"$option == ddro_start
 $id == nex_dissonant score:10","$missionId = nex_ddroRem
-Highlight $ddro_dist $ddro_reward","$PersonName's avatar seems to shudder, as if in the depths of thought. Of course, it only lasts for a handful of milliseconds.
+Highlight $ddro_dist $ddro_reward
+Call $ddro_ref showMap ""Destination: $ddro_systemName""","$PersonName's avatar seems to shudder, as if in the depths of thought. Of course, it only lasts for a handful of milliseconds.
 
 ""This item to specified location $ddro_systemName, $ddro_dist light-years away deliver. Do not be spotted. Do not inform others. Reward is $ddro_reward credits."" The avatar fades into $ddro_aOrAnThing. ""Acceptable?""","contact_accept:Accept
 contact_decline:Decline",
@@ -2137,7 +2144,8 @@ OR
 ""Strategic observation of $ssat_marketName, package insertion into orbit: direct, quiet.""",,
 nex_ssatRemOfferTextContact,DialogOptionSelected,"$option == ssat_start
 $id == nex_dissonant score:10","$missionId = ssat
-SetTextHighlights $ssat_reward","""Enter standard orbit, $ssat_marketName in the $ssat_systemName. Then spy satellite package deploy while unobserved. Stealth imperative, patrols tracking you must be none. Reward is $ssat_reward credits.""","contact_accept:Accept
+SetTextHighlights $ssat_reward
+Call $ssat_ref showMap ""Target: $ssat_marketName""","""Enter standard orbit, $ssat_marketName in the $ssat_systemName. Then spy satellite package deploy while unobserved. Stealth imperative, patrols tracking you must be none. Reward is $ssat_reward credits.""","contact_accept:Accept
 contact_decline:Decline",
 ,,,,,,
 nex_dhiRemBlurb,dhi_blurb,$id == nex_dissonant score:10,,"""$dhi_industry $dhi_marketOnOrAt $dhi_marketName disrupt must. Weaken foes of selfkind.""",,
@@ -2182,14 +2190,16 @@ nex_buildStationOfferOption,nex_buildStation_option,,,,"nex_buildStation_start:A
 ",
 nex_buildStationOfferText,DialogOptionSelected,$option == nex_buildStation_start,"$missionId = nex_buildStation
 Highlight $nex_buildStation_system $nex_buildStation_dist $nex_buildStation_reward ""may not like""
-Call $nex_buildStation_ref showCostPanel","""We'd like to build a new base out in the $nex_buildStation_system, that's $nex_buildStation_dist LY away. The materials need to come from the core worlds, but we don't have enough freight capacity to haul it all the way out there. If you could procure this stuff and take it to where we need it, that'd be great. We can pay $nex_buildStation_reward credits; that'll cover cover the costs of the cargo.
+Call $nex_buildStation_ref showCostPanel
+Call $nex_buildStation_ref showMap ""Destination: $nex_buildStation_system""","""We'd like to build a new base out in the $nex_buildStation_system, that's $nex_buildStation_dist LY away. The materials need to come from the core worlds, but we don't have enough freight capacity to haul it all the way out there. If you could procure this stuff and take it to where we need it, that'd be great. We can pay $nex_buildStation_reward credits; that'll cover cover the costs of the cargo.
 
 ""Oh, and keep in mind that the governments of the Sector may not like the idea, so be ready for a surprise or two.""","contact_accept:Accept
 contact_decline:Decline",
 nex_buildStationOfferTextRem,DialogOptionSelected,"$option == nex_buildStation_start
 $id == nex_dissonant score:10","$missionId = nex_buildStation
 Highlight $nex_buildStation_system $nex_buildStation_dist $nex_buildStation_reward Enemies
-Call $nex_buildStation_ref showCostPanel","""New station, selfkind desires to construct in $nex_buildStation_system, $nex_buildStation_dist light-years away. Own reserves for such large project inadequate. If $playerName to site can transport materials, appreciated much. 
+Call $nex_buildStation_ref showCostPanel
+Call $nex_buildStation_ref showMap ""Destination: $nex_buildStation_system""","""New station, selfkind desires to construct in $nex_buildStation_system, $nex_buildStation_dist light-years away. Own reserves for such large project inadequate. If $playerName to site can transport materials, appreciated much. 
 Payment of $nex_buildStation_reward credits available, including to cover $playerName costs.
 
 ""Warned be, $playerName. Enemies of our alliance may something suspect, attempt to prevent project.""","contact_accept:Accept

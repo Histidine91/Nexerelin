@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PersonImportance;
 import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -24,6 +25,7 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.Nex_GBTutMission;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.TransmitterTrapSpecial;
+import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
@@ -85,11 +87,17 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 
 		contact = createContact(planet.getMarket());
 		Misc.makeStoryCritical(planet.getMarket(), "nex_gbTut");
-				
+		
 		makeImportant(planet, "$nex_gbTut_targetPlanet", Stage.START, Stage.BATTLE, Stage.TALK_TO_CONTACT_AFTER);
 		makeImportant(contact, "$nex_gbTut_contact", Stage.START, Stage.TALK_TO_CONTACT_AFTER);
 		
 		return true;
+	}
+	
+	// workaround to make the map display work
+	@Override
+	public SectorEntityToken getMapLocation(SectorMapAPI map, Object currentStage) {
+		return planet;
 	}
 	
 	@Override
@@ -207,6 +215,8 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		set("$nex_gbTut_reward", Misc.getWithDGS(getCreditsReward()));
 		*/
 		set("$nex_gbTut_stage", getCurrentStage());
+		set("$nex_gbTut_planetName", planet.getName());
+		set("$nex_gbTut_marketName", planet.getMarket().getName());
 	}
 	
 	@Override
