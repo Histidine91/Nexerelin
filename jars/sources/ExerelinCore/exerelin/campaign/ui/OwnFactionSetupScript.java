@@ -26,6 +26,7 @@ import exerelin.world.factionsetup.FactionSetupHandler;
 import exerelin.world.factionsetup.FactionSetupItemPlugin;
 import java.awt.Color;
 import java.util.List;
+import org.lwjgl.opengl.Display;
 
 /**
  * When picking the own faction start, present some options to customize player planet
@@ -81,12 +82,15 @@ public class OwnFactionSetupScript extends DelayedDialogScreenScript
 				copy.addSpecial(special, def.count);
 			}
 			copy.sort();
-
-			final float width = 210f;
+			
+			final float sideWidth = 210f;
+			final float screenWidth = Display.getWidth() * 3/4;
+			final float screenHeight = Display.getHeight() * 4/5;
 			dialog.showCargoPickerDialog(getString("pickerHeader"), 
 					Misc.ucFirst(StringHelper.getString("confirm")), 
 					Misc.ucFirst(StringHelper.getString("cancel")),
-							false, width, copy, new CargoPickerListener() {
+							false, sideWidth, screenWidth, screenHeight,  
+							copy, new CargoPickerListener() {
 				public void pickedCargo(CargoAPI cargo) {
 					FactionSetupHandler.clearSelectedItems();
 					cargo.sort();
