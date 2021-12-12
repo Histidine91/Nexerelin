@@ -635,7 +635,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			switch (fleetType) {
 				case INVASION:
 					intel = new InvasionIntel(attacker, source, target, fp, timeToLaunch);
-					((InvasionIntel)intel).setMarinesTotal((int)(marines));
+					//((InvasionIntel)intel).setMarinesTotal((int)(marines));	/ overriden by init
 					break;
 				case RAID:
 					intel = new NexRaidIntel(attacker, source, target, fp, timeToLaunch);
@@ -653,6 +653,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 					return false;
 			}
 			intel.init();
+			if (fleetType == FleetType.INVASION) {
+				((InvasionIntel)intel).setMarinesTotal((int)(marines));
+			}
 			intel.setPlayerSpawned(true);
 			setFP(fp);
 			dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
