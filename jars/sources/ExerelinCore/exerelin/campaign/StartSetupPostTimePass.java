@@ -172,6 +172,7 @@ public class StartSetupPostTimePass {
 			mem.set("$interactedWithGABarEvent", true);
 			
 			if (corvusMode) {
+				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$metDaud", true);
 				mem.set("$gaATG_missionCompleted", true);
 				mem.set("$gaFC_missionCompleted", true);
 				mem.set("$gaKA_missionCompleted", true);
