@@ -169,7 +169,7 @@
 		"agentOrderSuccess":0.5,
 		"agentOrderDetection":0.75,
 		"agentOrderBoth":0,
-		"nex_hireMerc":0.25,
+		"nex_hireMerc":0.75,
 		"nex_gb_inspire":0,
 	},
 	
