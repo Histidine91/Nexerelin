@@ -1,5 +1,6 @@
 package exerelin.utilities;
 
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -74,6 +75,13 @@ public class NexUtilsGUI {
 		
 		public CustomPanelGenResult(CustomPanelAPI panel) {
 			this.panel = panel;
+		}
+	}
+	
+	public static class NullCoreInteractionListener implements CoreInteractionListener {
+		@Override
+		public void coreUIDismissed() {
+
 		}
 	}
 }

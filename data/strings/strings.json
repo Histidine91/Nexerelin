@@ -1504,7 +1504,8 @@
 				
 		"marketDirectoryOptionIndustrySearch":"Search for industry",
 		"marketDirectoryHeaderIndustrySearch":"search(%s)",
-		"marketDirectoryHeaderIndustrySearch2":"%s results(s) found",	
+		"marketDirectoryHeaderIndustrySearch2":"%s results(s) found",
+		"marketDirectoryButtonShow":"show",
 		
 		"intelCaptureTitle":"Market Captured - $market",
 		"intelTransferTitle":"Market Transfered - $market",

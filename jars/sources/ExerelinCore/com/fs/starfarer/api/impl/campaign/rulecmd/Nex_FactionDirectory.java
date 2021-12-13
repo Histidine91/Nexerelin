@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
@@ -14,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.PositionAPI;
@@ -22,6 +24,8 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ui.FieldOptionsScreenScript.FactionDirectoryDialog;
+import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
+import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsGUI;
@@ -293,14 +297,16 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	 * @param useSystemOwnerColor If true, market names use the system owner's 
 	 * faction color, else they use their own faction color.
 	 */
-	public void printMarkets(InteractionDialogAPI dialog, Collection<MarketAPI> markets, 
+	public void printMarkets(final InteractionDialogAPI dialog, Collection<MarketAPI> markets, 
 			float width, boolean useSystemOwnerColor) 
 	{
 		try {
+		dialog.getVisualPanel().removeMapMarkerFromPersonInfo();
 		
 		float pad = 3;
 		float imgSize = 36;
-		float textWidth = 240;
+		float textWidth = 160;
+		float buttonWidth = 60;
 		
 		LabelAPI label;
 		String str;
@@ -308,7 +314,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		TooltipMakerAPI tt = Nex_VisualCustomPanel.getTooltip();
 		
 		int hidden = 0;
-		for (MarketAPI market: markets)
+		for (final MarketAPI market: markets)
 		{
 			if (market.isHidden() || market.getContainingLocation() == null) {
 				//dialog.getTextPanel().addPara("Found hidden market " + market.getId());
@@ -361,8 +367,26 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			label.setHighlight(locName, ownerName);
 			label.setHighlightColors(locColor, ownerColor);
 			
+			// show button			
+			TooltipMakerAPI buttonHolder = panel.createUIElement(buttonWidth, imgSize, false);
+			InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
+			ButtonAPI button = buttonHolder.addButton(StringHelper.getString("exerelin_markets", "marketDirectoryButtonShow", true), 
+					"nex_showMarket_" + market.getId(), buttonWidth, 24, 3);
+
+			plugin.addButton(new ButtonEntry(button, "nex_showMarket_" + market.getId()) {
+				@Override
+				public void onToggle() {
+					dialog.getVisualPanel().removeMapMarkerFromPersonInfo();
+					dialog.getVisualPanel().showMapMarker(market.getPrimaryEntity(), market.getName(), 
+							market.getTextColorForFactionOrPlanet(), false, null, null, null);
+					//dialog.getVisualPanel().showCore(CoreUITabId.MAP, market.getPrimaryEntity(), 
+					//		new NexUtilsGUI.NullCoreInteractionListener());
+				}
+			});
+			panel.addUIElement(buttonHolder).rightOfTop(text, pad);
+						
 			// icons showing stuff
-			float imagesWidth = width - textWidth - imgSize - 4 - 4;
+			float imagesWidth = width - textWidth - imgSize - buttonWidth - 4 - 4;
 			CustomPanelAPI featureImages = panel.createCustomPanel(imagesWidth, 40, null);
 			
 			List<String> images = new ArrayList<>();
@@ -430,7 +454,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				lastImageHolder = imageHolder;
 			}
 			
-			panel.addComponent(featureImages).rightOfTop(text, pad);
+			panel.addComponent(featureImages).rightOfTop(buttonHolder, pad);			
 			
 			tt.addCustom(panel, pad);
 		}

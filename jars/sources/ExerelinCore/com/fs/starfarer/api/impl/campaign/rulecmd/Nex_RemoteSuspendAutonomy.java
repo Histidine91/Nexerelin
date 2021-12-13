@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.intel.PlayerOutpostIntel;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsGUI.NullCoreInteractionListener;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
-public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus implements CoreInteractionListener {
+public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus {
 	
 	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
 	public static final String OPTION_PREFIX = "nex_suspendAutonomyRemote_";
@@ -45,7 +46,7 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus implements C
 				String marketId = memoryMap.get(MemKeys.LOCAL).getString("$option").substring(PREFIX_LENGTH);
 				MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
 				Nex_GrantAutonomy.suspendAutonomy(market);
-				dialog.getVisualPanel().showCore(CoreUITabId.OUTPOSTS, null, this);
+				dialog.getVisualPanel().showCore(CoreUITabId.OUTPOSTS, null, new NullCoreInteractionListener());
 				return true;
 		}
 		
@@ -104,10 +105,5 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus implements C
 			addOption(name, id);
 			if (colorize) addColor(id, market.getFaction().getBaseUIColor());
 		}
-	}
-
-	@Override
-	public void coreUIDismissed() {
-		
 	}
 }
