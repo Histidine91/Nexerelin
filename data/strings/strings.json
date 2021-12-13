@@ -1220,7 +1220,7 @@
 		"unitPanel_header":"Available units",
 		"unitPanel_resources":"Resources on fleet",
 		"unitPanel_movementPoints":"Movement points",
-		"unitPanel_movementPoints_tooltip1":"Spent when deploying or moving units. You can move units as long as you have a nonzero amount of points, but any overdraft has to be paid for the following turn.",
+		"unitPanel_movementPoints_tooltip1":"Spent when deploying or moving units. You can move units as long as you have a nonzero amount of points, but any overdraft has to be paid for the following turn. Fleet support is valuable to increase the supply of movement points.",
 		"unitPanel_movementPoints_tooltip2":"Deploying a unit also costs supplies, but moving it after it lands does not.",
 		"unitPanel_movementPoints_tooltip3":"Current contributions to max points:",
 		

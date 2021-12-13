@@ -1776,6 +1776,8 @@ nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,
 ""Extended combat drains your units' morale. Keep an eye on it; it's going to be unpleasant if your troops break.""",nex_gbTut_diamondConvo7:Continue,
 nex_gbTut_diamondConvo7,DialogOptionSelected,$option == nex_gbTut_diamondConvo7,"Highlight ""special abilities"" ""fire support"" ""electronic warfare"" ""inspirational speech"" ""Help tab""","""You can also support your units with one or more special abilities, found in their corresponding tab. These have different requirements and cooldowns; check the tooltips for more info. Fire support can inflict a good deal of damage on enemy forces at a location. If you can disrupt their operations with some electronic warfare, or give an inspirational speech to the troops, that's good too.
 
+""Of course, just sitting in orbit with specialized ground support ships helps as well. Makes the troops fight more effectively, and helps transport them to where they're needed.
+
 ""Beyond that, you should be able to work it out as you go. Consult the Help tab for more info if you need it.""",cutCommLink:Thank $himOrHer and cut the comm link,
 ,,,,,,
 nex_gbTut_diamondConvoOngoing,PickGreeting,"$id == nex_rossDiamond score:1000

@@ -156,6 +156,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		battle.playerJoinBattle(false, false);
 		battle.start();
 		battle.runAI(true, false);	// deploy starting attacker units
+		battle.setImportant(true);
 		
 		return battle;
 	}
