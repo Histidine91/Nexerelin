@@ -2145,7 +2145,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				String str = getString("intelDesc_governorship");
 				str = StringHelper.substituteToken(str, "$market", market.getName());
 				info.addPara(str, opad, Misc.getHighlightColor(), Misc.getDGSCredits(playerData.governorshipPrice));
-			} else if (timerForDecision != null) {
+			} 
+			// the extra conditions check if player already owns the market somehow, or purchased governorship through another channel
+			else if (timerForDecision != null && !market.getFaction().isPlayerFaction() && !market.isPlayerOwned()) 
+			{
 				addPostVictoryButtons(outer, info, width);
 			}
 		}
