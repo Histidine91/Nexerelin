@@ -29,6 +29,7 @@ public class MercDataManager {
 	public static Map<String, MercCompanyDef> companyDefs = new HashMap<>();
 	
 	public static int companiesForHire;
+	public static float companiesForHireMult;
 	public static float valueDifferencePaymentMult;
 	public static float feeUpfrontMult;
 	public static float feeMonthlyMult;
@@ -132,6 +133,7 @@ public class MercDataManager {
 			
 			// constant stuff
 			companiesForHire = jsonBase.optInt("companiesForHire", 3);
+			companiesForHireMult = (float)jsonBase.optDouble("companiesForHireMult", 0.2);
 			valueDifferencePaymentMult = (float)jsonBase.optDouble("valueDifferencePaymentMult", 0.8f);
 			feeUpfrontMult = (float)jsonBase.optDouble("feeUpfrontMult", 1);
 			feeMonthlyMult = (float)jsonBase.optDouble("feeMonthlyMult", 1);

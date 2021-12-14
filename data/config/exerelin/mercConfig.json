@@ -7,6 +7,7 @@
 	"disabledFactions":[],
 	
 	"companiesForHire":3,	# at a time
+	"companiesForHireMult":0.2,	# bonus for number of companies shown at a time, based on `companiesForHire` and number of valid companies for player to hire
 	"valueDifferencePaymentMult":0.8,	# pay this much for any base buy value the ships lose over the course of the contract
 	"feeUpfrontMult":1,
 	"feeMonthlyMult":2,
@@ -302,7 +303,7 @@
 			"officers":[
 				{
 					"firstName":"Platinum",
-					"lastName":"Endbringer",
+					"lastName":"Final",
 					"level":10,
 					"rankId":"spaceCaptain",
 					"aiCoreId":"omega_core",

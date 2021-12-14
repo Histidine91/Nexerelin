@@ -100,7 +100,12 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 			picker.add(intel, def.pickChance);
 		}
 		
-		float max = DEBUG_MODE ? 8 : MercDataManager.companiesForHire;
+		int max = MercDataManager.companiesForHire;
+		int bonusCount = picker.getItems().size() - MercDataManager.companiesForHire;
+		int bonus = (int)Math.floor(bonusCount * MercDataManager.companiesForHireMult);
+		if (bonus > 0) max += bonus;		
+		if (Global.getSettings().isDevMode() || DEBUG_MODE) max = Math.max(12, max);
+		
 		while (!picker.isEmpty()) {
 			MercContractIntel intel = picker.pickAndRemove();
 			results.add(intel);
