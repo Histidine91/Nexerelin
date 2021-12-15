@@ -124,12 +124,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     
     public List<DeadOfficerEntry> getDeadOfficersSorted() {
         List<DeadOfficerEntry> list = new ArrayList(deadOfficers);
-        Collections.sort(list, new Comparator<DeadOfficerEntry>(){
-            @Override
-            public int compare(DeadOfficerEntry off1, DeadOfficerEntry off2) {
-                return off1.getDeathDate().compareTo(off2.getDeathDate());
-            }
-        });
+        Collections.sort(list);
         return list;
     }
     
@@ -172,14 +167,14 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     
     public void addDeadOfficer(OfficerDataAPI officer, FleetMemberAPI member)
     {
-        if (deadOfficers == null) deadOfficers = new HashSet<>();	// reverse compat
+        if (deadOfficers == null) deadOfficers = new HashSet<>();    // reverse compat
         DeadOfficerEntry entry = new DeadOfficerEntry(officer, member);
         deadOfficers.add(entry);
     }
     
     public void removeDeadOfficer(OfficerDataAPI officer)
     {
-        if (deadOfficers == null) deadOfficers = new HashSet<>();	// reverse compat
+        if (deadOfficers == null) deadOfficers = new HashSet<>();    // reverse compat
         DeadOfficerEntry toRemove = null;
         for (DeadOfficerEntry dead : deadOfficers)
         {
@@ -352,10 +347,10 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         return !NO_ORPHANS_FACTIONS.contains(factionId);
     }
     
-    public static class DeadOfficerEntry
+    public static class DeadOfficerEntry implements Comparable<DeadOfficerEntry>
     {
-		public static final int NUM_CAUSES_OF_DEATH = 12;
-		
+        public static final int NUM_CAUSES_OF_DEATH = 12;
+        
         public OfficerDataAPI officer;
         public int deadCycle;
         public int deadMonth;
@@ -363,7 +358,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         public String shipName;
         public String shipClass;
         public String shipDesignation;
-		public String causeOfDeath;
+        public String causeOfDeath;
         
         public DeadOfficerEntry(OfficerDataAPI officer, FleetMemberAPI member)
         {
@@ -375,13 +370,23 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
             this.deadCycle = clock.getCycle();
             this.deadMonth = clock.getMonth();
             this.deadDay = clock.getDay();
-			this.causeOfDeath = StringHelper.getString("exerelin_officers", 
-					"causeOfDeath" + MathUtils.getRandomNumberInRange(1, NUM_CAUSES_OF_DEATH));
+            this.causeOfDeath = StringHelper.getString("exerelin_officers", 
+                    "causeOfDeath" + MathUtils.getRandomNumberInRange(1, NUM_CAUSES_OF_DEATH));
         }
         
         public String getDeathDate()
         {
             return deadCycle + "." + deadMonth + "." + deadDay;
+        }
+
+        @Override
+        public int compareTo(DeadOfficerEntry other) {
+            int result = Integer.compare(deadCycle, other.deadCycle);
+            if (result != 0) return result;
+            result = Integer.compare(deadMonth, other.deadMonth);
+            if (result != 0) return result;
+            result = Integer.compare(deadDay, other.deadDay);
+            return result;
         }
     }
 }
