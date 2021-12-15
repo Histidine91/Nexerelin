@@ -122,7 +122,7 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 		if (!market.getFaction().isHostileTo(intel.getFaction())) return;
 		
 		float raidStr = intel.getRaidFP() / intel.getNumFleets() * Misc.FP_TO_GROUND_RAID_STR_APPROX_MULT;
-		if (fleet != null) {
+		if (fleet != null && fleet.getCargo().getMaxPersonnel() > 0) {
 			raidStr = Nex_MarketCMD.getRaidStr(fleet);
 		}
 		
