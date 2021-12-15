@@ -321,9 +321,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	@Override
 	public void optionSelected(InteractionDialogAPI dialog, Object optionData) {
 		if (optionData == DIALOG_OPT_OPEN) {
-			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, null, this);
-			// jump to the correct intel item - doesn't work
-			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, this);
+			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, null, this, this);
 			return;
 		}
 		else if (optionData == DIALOG_OPT_CLOSE) {
