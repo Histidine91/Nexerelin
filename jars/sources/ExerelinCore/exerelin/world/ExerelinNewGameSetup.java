@@ -57,7 +57,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	public static final Vector2f PRISM_LOC = new Vector2f(-8005, -3785);
 	public static Logger log = Global.getLogger(ExerelinNewGameSetup.class);
 	
-	protected Random rand = StarSystemGenerator.random;
+	// don't use random, since seeds should generate the same result in Nex as in vanilla
+	// but it turns out this isn't enough
+	//protected Random rand = StarSystemGenerator.random;
 	
 	// runcode new exerelin.world.ExerelinNewGameSetup().addPrismMarket(Global.getSector(), false);
 	public SectorEntityToken addPrismMarket(SectorAPI sector, boolean newGame)
@@ -76,11 +78,12 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				PlanetAPI planet = (PlanetAPI)toOrbit;
 				if (planet.isStar()) 
 				{
-					orbitDistance = radius + 2000 + rand.nextFloat() * 500;
+					//orbitDistance = radius + 2000 + rand.nextFloat() * 500;
+					orbitDistance = radius + 2500;
 				}
 			}
 			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitPointingDown(toOrbit, NexUtilsAstro.getRandomAngle(rand), orbitDistance, NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
+			prismEntity.setCircularOrbitPointingDown(toOrbit, 343, orbitDistance, NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else if (newGame && !NexConfig.prismInHyperspace)
 		{
@@ -90,7 +93,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
 			prismEntity = hyperspace.addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(PRISM_LOC), NexUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(PRISM_LOC), 343, 150, 60, 30, 30);
 			clearDeepHyper(prismEntity, 400);
 		}
 		
