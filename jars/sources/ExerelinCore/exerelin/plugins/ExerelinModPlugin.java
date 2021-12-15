@@ -198,7 +198,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             NexUtilsMarket.setTariffs(market);
-            ColonyManager.getManager().setGrowthRate(market);
+            if (ColonyManager.getManager() != null)	// will be null if loading non-Nex save
+                ColonyManager.getManager().setGrowthRate(market);
         }
     }
     
