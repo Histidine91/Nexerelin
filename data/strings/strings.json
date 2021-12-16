@@ -1310,6 +1310,7 @@
 		"dialogStrEstimateMilitia":"%s from militia",
 		"dialogStrEstimateMarine":"%s from marines",
 		"dialogStrEstimateHeavy":"%s from heavy units",
+		"dialogStrEstimateDropCost":"Dropping a %s marine unit here would cost %s supplies.",
 		"dialogEstimateHelp":"The actual outcome of the battle will also be heavily influenced by defense structures, local conditions and the commanders' tactics.",
 		"dialogGoToIntel":"After confirming the invasion, the intel screen will open. Go to the Military tab to find the invasion intel.",
 		"dialogGoToIntelHighlight":"Military tab",

@@ -483,7 +483,12 @@ public class GroundUnit {
 	}
 	
 	public int getDeployCost() {
-		float cost = getSize() * GBConstants.SUPPLIES_TO_DEPLOY_MULT;
+		return getDeployCost(this.getSize(), type, isAttacker, intel);
+	}
+	
+	public static int getDeployCost(int size, ForceType type, boolean isAttacker, GroundBattleIntel intel) 
+	{
+		float cost = size * GBConstants.SUPPLIES_TO_DEPLOY_MULT;
 		if (type == ForceType.HEAVY) cost *= HEAVY_COUNT_DIVISOR;
 		cost *= type.dropCostMult;
 		cost = intel.getSide(isAttacker).dropCostMod.computeEffective(cost);
