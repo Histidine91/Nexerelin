@@ -260,6 +260,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 				best = ecmLevel;
 			}
 		}
+		if (fleet == null) return false;
 		
 		user = fleet.getCommander();
 		return super.aiExecute(ai, user);
