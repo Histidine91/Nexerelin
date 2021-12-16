@@ -65,8 +65,7 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 		if (ships.isEmpty() && weapons.isEmpty() && fighters.isEmpty()) return false;
 		
 		setStartingStage(Stage.WAITING);
-		setSuccessStage(Stage.COMPLETED);
-		//setSuccessStage(Stage.DELIVERED);	// doing it this way prevents double reporting, but loses the "delivered to" bullet point
+		setSuccessStage(Stage.DELIVERED);
 		setFailureStage(Stage.FAILED);
 		setNoAbandon();
 		
@@ -74,15 +73,6 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 		setStageOnMarketDecivilized(Stage.FAILED, market);
 		
 		return true;
-	}
-	
-	// see https://fractalsoftworks.com/forum/index.php?topic=21461.msg324415#msg324415
-	// note that it causes double notification on completion
-	public void setCurrentStage(Object next, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-		super.setCurrentStage(next, dialog, memoryMap);
-		if (currentStage == Stage.DELIVERED) {
-			endSuccess(dialog, memoryMap);
-		}
 	}
 	
 	@Override
