@@ -375,6 +375,7 @@ public class Nex_MarketCMD extends MarketCMD {
 							if (fleet == responder) continue;
 							if (!fleet.isStationMode()) {
 								hasNonStation = true;
+								//text.addPara(String.format("Fleet %s is insignificant: %s", fleet.getName(), Misc.isInsignificant(fleet)));
 								hasOtherButInsignificant &= Misc.isInsignificant(fleet);
 							}
 						}
@@ -399,6 +400,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			// inaccurate because it doesn't include the station in the "wants to fight" calculation, but, this is tricky
 			// and I don't want to break it right now
 			otherWantsToFight = otherHasStation || plugin.otherFleetWantsToFight(true);
+			
+			boolean canGiveBattleWithoutResponder = hasNonStation && !hasOtherButInsignificant; 
 			
 			if (withText) {
 				if (hasStation) {
@@ -427,14 +430,14 @@ public class Nex_MarketCMD extends MarketCMD {
 							}
 						}
 					}
-				} else if (hasNonStation && otherWantsToFight) {
+				} else if (hasNonStation && canGiveBattleWithoutResponder) {
 					printStationState();
 					text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleet"));
-				} else if (hasNonStation && !otherWantsToFight) {
+				} else if (hasNonStation && !canGiveBattleWithoutResponder) {
 					printStationState();
 					text.addPara(StringHelper.getString("nex_militaryOptions", "hasFleetTooSmall"));
 				}
-				if (!hasNonStation && hasResponder) {
+				if (!hasStation && hasResponder) {
 					String str = StringHelper.getString("nex_militaryOptions", otherWantsToFight ? "hasResponder" : "hasResponderTooSmall");
 					str = StringHelper.substituteToken(str, "$onOrAt", market.getOnOrAt());
 					str = StringHelper.substituteToken(str, "$market", market.getName());
@@ -485,10 +488,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.addOption(engageText, ENGAGE);
 		
 		boolean canOpposeBombardment = (hasNonStation || hasResponder) && otherWantsToFight;
-		//log.info(String.format("Checking opposition: insignificant %s, wantsToFight %s", hasOtherButInsignificant, otherWantsToFight));
+		//text.addPara(String.format("Checking opposition: insignificant %s, wantsToFight %s", hasOtherButInsignificant, otherWantsToFight));
 		temp.canRaid = ongoingBattle || hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation;
-		//log.info(String.format("Checking opposition: canOpposeBombardment %s", canOpposeBombardment));
-		temp.canBombard = (hasOtherButInsignificant || !canOpposeBombardment) && !hasStation;
+		//text.addPara(String.format("Checking opposition: canOpposeBombardment %s", canOpposeBombardment));
+		temp.canBombard = (!canOpposeBombardment) && !hasStation;
 		//temp.canSurpriseRaid = Misc.getDaysSinceLastRaided(market) < SURPRISE_RAID_TIMEOUT;
 		
 		boolean couldRaidIfNotDebug = temp.canRaid;
@@ -1080,7 +1083,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		cleanupResponder();
 		
 		if (true) {
-			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, new CoreInteractionListener(){
+			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, intel, new CoreInteractionListener(){
 				@Override
 				public void coreUIDismissed() {
 					new ShowDefaultVisual().execute(null, dialogF, new ArrayList<Token>(), memMapF);
