@@ -40,7 +40,6 @@
     # most of these are also used by raids
     
     # if false, replaces NPC invasions (including revenge counter-invasion mechanic) with raids
-    # for now, also prevents player invasions
     "enableInvasions": true,
     "legacyInvasions": false,	# old invasion system before v0.10.3 revamp (if I haven't released v0.10.3 yet, this is a beta feature)
     "allowInvadeStoryCritical":false,    # block NPC invasions from targeting story-critical markets
