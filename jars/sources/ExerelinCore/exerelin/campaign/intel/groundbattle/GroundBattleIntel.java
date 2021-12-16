@@ -317,7 +317,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (playerInitiated) {
 			autoGeneratePlayerUnits();
 		}
-		if (playerInitiated || defender.getFaction().isPlayerFaction() || defender.getFaction() == Misc.getCommissionFaction()) {
+		if (playerInitiated) { // || defender.getFaction().isPlayerFaction() || defender.getFaction() == Misc.getCommissionFaction()) {
 			this.setImportant(true);
 		}
 		
