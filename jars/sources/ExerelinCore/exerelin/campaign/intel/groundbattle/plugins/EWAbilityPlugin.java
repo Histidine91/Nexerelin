@@ -240,12 +240,15 @@ public class EWAbilityPlugin extends AbilityPlugin {
 	
 	@Override
 	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
-		
-		if (user != null) {
+		// usually this is because it was used by defender leader
+		// TODO: fix NPCs using ability and crediting it to player when player is attacker leader
+		// this not-player check should suffice I think?
+		if (user != null && !user.isPlayer()) {
 			return super.aiExecute(ai, user);
 		}
 		
-		// find a fleet to execute ECM
+		// find a fleet to execute EW
+		// NPCs can't use player fleet
 		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
 		if (fleets.isEmpty()) return false;
 				

@@ -212,6 +212,8 @@ public class GroundBattleAI {
 		GroundBattleSide side = intel.getSide(isAttacker);
 		PersonAPI user = side.getCommander();
 		
+		// TODO: let AI try all abilities, not just the best one?
+		// TODO: remove user from disabled check, let this happen in aiExecute
 		for (AbilityPlugin ability : side.getAbilities()) {
 			Pair<String, Map<String, Object>> disableReason = ability.getDisabledReason(user);
 			if (disableReason != null) {

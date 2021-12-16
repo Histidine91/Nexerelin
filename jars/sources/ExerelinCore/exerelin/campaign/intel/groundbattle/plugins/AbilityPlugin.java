@@ -283,10 +283,12 @@ public abstract class AbilityPlugin {
 	/**
 	 * Called by AI to activate the ability. Does not check for usability.
 	 * @param ai
-	 * @param user
+	 * @param user The ability's user. {@code GroundBattleAI} uses the fleet commander in its method call,<br/> 
+	 * but the value should be reset by the plugin implementation before calling the superclass method, will fail to execute if user is player.
 	 * @return True if the ability was successfully used, false otherwise.
 	 */
 	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
+		if (user.isPlayer()) return false;
 		activate(null, user);
 		if (side.getIntel().shouldNotify())
 			playUISound();

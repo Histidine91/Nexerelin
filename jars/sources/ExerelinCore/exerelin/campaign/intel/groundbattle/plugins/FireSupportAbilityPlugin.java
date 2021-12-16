@@ -243,6 +243,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 	@Override
 	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
 		// find a fleet to execute bombardment
+		// NPCs can't use player fleet
 		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
 		if (fleets.isEmpty()) return false;
 		
