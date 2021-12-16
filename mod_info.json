@@ -2,9 +2,9 @@
     "id":"nexerelin",
     "name":"Nexerelin",
     "author":"Histidine (original by Zaphide)",
-    "version":"0.10.3g",
+    "version":"0.10.3h",
     "description":"Join a faction and conquer the Sector!",
-    "gameVersion":"0.95a-RC15",
+    "gameVersion":"0.95.1a-RC5",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
     "dependencies": [
