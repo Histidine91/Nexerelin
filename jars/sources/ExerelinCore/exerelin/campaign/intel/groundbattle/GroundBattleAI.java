@@ -94,9 +94,9 @@ public class GroundBattleAI {
 			
 		availableStrength = 0;
 		for (GroundUnit unit : availableUnitsSorted) {
+			if (remainingMovePoints <= movePointThreshold) break;
 			availableStrength += unit.getBaseStrength();
 			remainingMovePoints -= unit.getDeployCost();
-			if (remainingMovePoints <= movePointThreshold) break;
 		}
 		//printDebug("  Available strength is " + availableStrength);
 		return availableStrength;
@@ -343,6 +343,8 @@ public class GroundBattleAI {
 		boolean movedAnything = false;
 		// this prevents it from getting stuck if all the target industries are writeoffs
 		boolean ignoreWriteoff = writeoffIndustries.size() == industriesWithEnemySorted.size();
+		boolean canAct = availableStrength > 0 && intel.getSide(isAttacker).getMovementPointsRemaining() > movePointThreshold;
+		if (!canAct) return false;
 		
 		for (IFBStrengthRecord toReinforce : industriesWithEnemySorted) {
 			printDebug(String.format("Considering plans for industry %s (priority %s)", 
