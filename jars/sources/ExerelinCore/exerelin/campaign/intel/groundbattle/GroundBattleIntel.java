@@ -593,6 +593,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public boolean fleetCanSupport(CampaignFleetAPI fleet, boolean isAttacker) 
 	{
+		if (fleet.getBattle() != null) return false;
 		if (isAttacker && hasStationFleet()) return false;
 		if (fleet.isStationMode()) return false;
 		if (fleet.isPlayerFleet()) {
