@@ -31,7 +31,7 @@ public class EWAbilityPlugin extends AbilityPlugin {
 	public static final String MEMORY_KEY_ECM_CACHE = "$nex_ecmRating_cache";
 	public static float BASE_ECM_REQ = 1.5f;	// at size 3
 	public static float GROUND_DEF_EFFECT_MULT = 0.7f;
-	public static int BASE_COST = 40;	// at size 3
+	public static int BASE_COST = 30;	// at size 3
 	
 	@Override
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
