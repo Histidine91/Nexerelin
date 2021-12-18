@@ -598,8 +598,8 @@ public class Nex_MarketCMD extends MarketCMD {
 							"optionBombardVirus", "$market", market.getName()), VIC_MarketCMD.VBombMenu);
 		}
 		if (canTB) {
-			options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
-							"optionBombardTitan", "$market", market.getName()), "iiTitanStrikeMenu");
+			//options.addOption(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
+			//				"optionBombardTitan", "$market", market.getName()), "iiTitanStrikeMenu");
 		}
 		
 		if (!temp.canBombard) {
