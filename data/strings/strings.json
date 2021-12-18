@@ -2132,6 +2132,20 @@
 		"bountyParaDestination":"The target is headed to %s in the %s.",
 	},
 	
+	"nex_skills":{
+		"tacticalDrillsEx":"Tactical Drills EX",
+		"tacticalDrillsExDesc1":"+%s effectiveness of ground defenses",
+		"tacticalDrillsExDesc2":"-%s morale damage taken during invasions",
+		
+		"auxiliarySupportEx":"Auxiliary Support EX",
+		"auxiliarySupportExDesc1":"+%s fleet size",
+		"auxiliarySupportExDesc2":"+%s accessibility",
+		"auxiliarySupportExDesc3":"+%s effectiveness of ground defenses",
+		
+		"bulkTransportEx":"Bulk Transport EX",
+		"bulkTransportExDesc1":"+%s accessibility",
+	},
+	
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
 		"stabilityText":"Planet buster",

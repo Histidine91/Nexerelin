@@ -147,6 +147,7 @@ public class NexConfig
     public static boolean useRelationshipBounds = true;
     public static boolean useEnhancedStartRelations = true;
     public static boolean useEnhancedCoreWorlds = true;
+    public static boolean useEnhancedAdmins = true;
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     public static float rebellionMult = 1;
@@ -268,6 +269,7 @@ public class NexConfig
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
             useEnhancedCoreWorlds = settings.optBoolean("useEnhancedCoreWorlds", useEnhancedCoreWorlds);
+            useEnhancedAdmins = settings.optBoolean("useEnhancedAdmins", useEnhancedAdmins);
             
             useCustomBattleCreationPlugin = settings.optBoolean("useCustomBattleCreationPlugin", useCustomBattleCreationPlugin);
             officerDeaths = settings.optBoolean("officerDeaths", officerDeaths);

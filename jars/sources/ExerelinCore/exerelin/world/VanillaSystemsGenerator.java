@@ -9,14 +9,18 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.People;
+import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import exerelin.campaign.skills.NexSkills;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -303,5 +307,20 @@ public class VanillaSystemsGenerator {
 		tigraCity.addCondition(Conditions.ORE_MODERATE);
 		tigraCity.getCondition(Conditions.ORE_MODERATE).setSurveyed(true);
 		tigraCity.addIndustry(Industries.MINING);
+	}
+	
+	public static void enhanceVanillaAdmins() {
+		if (!NexConfig.useEnhancedAdmins) return;
+		
+		addSkillToPerson(People.ANDRADA, NexSkills.TACTICAL_DRILLS_EX);
+		addSkillToPerson(People.SUN, NexSkills.BULK_TRANSPORT_EX);
+		addSkillToPerson(People.SUN, Skills.ELECTRONIC_WARFARE);
+		addSkillToPerson(People.DAUD, NexSkills.AUXILIARY_SUPPORT_EX);
+	}
+	
+	public static void addSkillToPerson(String personId, String skillId) {
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(personId);
+		if (person == null) return;
+		person.getStats().setSkillLevel(skillId, 1);
 	}
 }

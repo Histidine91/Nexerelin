@@ -481,6 +481,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (SectorManager.getManager().isCorvusMode()) {
             VanillaSystemsGenerator.enhanceVanillaMarkets();
+            VanillaSystemsGenerator.enhanceVanillaAdmins();
         }
         
         ExerelinSetupData setupData = ExerelinSetupData.getInstance();

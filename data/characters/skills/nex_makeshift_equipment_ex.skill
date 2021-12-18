@@ -1,0 +1,15 @@
+{
+	"id":"nex_makeshift_equipment_ex",
+	"governingAptitude":"industry",
+	"compressHullmods":false,
+	"scope":"GOVERNED_OUTPOST",
+	"effectGroups":[
+		{
+			"requiredSkillLevel":1,
+			"effectBasedOnLevel":false,
+			"effects":[
+				# not implemented
+			]
+		},
+	],
+}
