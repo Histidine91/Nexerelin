@@ -1026,16 +1026,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			market.getMemoryWithoutUpdate().set(GBConstants.MEMKEY_AWAIT_DECISION, true, timerForDecision);
 		}
 		
-		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
-			// reset to 25% health?
-			GBUtils.setGarrisonDamageMemory(market, 0.75f);
-		}
-		else if (outcome != BattleOutcome.DESTROYED) {
-			float currStrength = defender.getBaseStrength();
-			float strRatio = currStrength/defender.currNormalBaseStrength;
-			GBUtils.setGarrisonDamageMemory(market, 1 - strRatio);
-		}
-		
 		for (IndustryForBattle ifb : industries) {
 			if (!ifb.isIndustryTrueDisrupted())
 				ifb.ind.setDisrupted(0);
@@ -1045,6 +1035,19 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		if (outcome == BattleOutcome.PEACE || outcome == BattleOutcome.OTHER) {
 			
+		}
+		
+		if (outcome == BattleOutcome.ATTACKER_VICTORY && playerInitiated) {
+			// reset to 25% health for a player victory
+			GBUtils.setGarrisonDamageMemory(market, 0.75f);
+		}
+		else if (outcome != BattleOutcome.DESTROYED) {
+			// set health based on surviving units
+			// if attacker won, use half the surviving attackers, else use all surviving defenders
+			float currStrength = outcome == BattleOutcome.ATTACKER_VICTORY ? attacker.getBaseStrength() * 0.5f : defender.getBaseStrength();
+			float strRatio = currStrength/defender.currNormalBaseStrength;
+			if (strRatio > 1) strRatio = 1;
+			GBUtils.setGarrisonDamageMemory(market, 1 - strRatio);
 		}
 		
 		handleTransfer();
