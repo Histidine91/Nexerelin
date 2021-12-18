@@ -59,6 +59,11 @@ public class EWAbilityPlugin extends AbilityPlugin {
 	
 	@Override
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
+		CampaignFleetAPI fleet = null;
+		if (user != null) {
+			if (user.isPlayer()) fleet = Global.getSector().getPlayerFleet();
+			else fleet = user.getFleet();
+		}
 		
 		if (side.getData().containsKey(GBConstants.TAG_PREVENT_EW)) {
 			Map<String, Object> params = new HashMap<>();
@@ -80,11 +85,11 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		}
 		
 		// supplies check
-		if (user != null && user.getFleet() != null) {
+		if (fleet != null) {
 			int cost = getSupplyCost();
-			float have = user.getFleet().getCargo().getMaxCapacity() * 0.5f;
+			float have = fleet.getCargo().getMaxCapacity() * 0.5f;
 			if (user.isPlayer()) {
-				have = user.getFleet().getCargo().getSupplies();
+				have = fleet.getCargo().getSupplies();
 			}
 			
 			if (cost > have) {

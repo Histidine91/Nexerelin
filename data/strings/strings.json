@@ -1437,6 +1437,8 @@
 		"helpPara5-1":"Several special abilities are available to turn the tide of battle in your favor. Enemies can also use them under certain circumstances.",
 		"helpPara5-2":"Each ability has certain requirements for use, an ability-specific cooldown, and a global cooldown that prevents use of all abilities for a number of turns.",
 		
+		"ability_confirm":"Confirm?",
+		
 		"ability_cooldown":"Cooldown: %s turns",
 		"ability_cooldownGlobal":"Global cooldown: %s turns",
 		"ability_outOfRange":"Out of range",

@@ -29,7 +29,7 @@ import java.util.Map;
 
 public abstract class AbilityPlugin {
 	
-	public static float PANEL_HEIGHT = 40;
+	public static float PANEL_HEIGHT = 42;
 	public static float PANEL_WIDTH = 320;
 	
 	protected String id;
@@ -175,6 +175,10 @@ public abstract class AbilityPlugin {
 		
 	}
 	
+	public void dialogAddVisualPanel(InteractionDialogAPI dialog) {
+		
+	}
+	
 	/**
 	 * Generally called after {@code dialogAddIntro}, prints ability cooldown information.
 	 * @param dialog
@@ -202,6 +206,11 @@ public abstract class AbilityPlugin {
 	 */
 	public void addDialogOptions(InteractionDialogAPI dialog) {
 		dialog.getOptionPanel().addOption(StringHelper.getString("activate", true), AbilityDialogPlugin.OptionId.ACTIVATE);
+		if (hasActivateConfirmation()) {
+			dialog.getOptionPanel().addOptionConfirmation(AbilityDialogPlugin.OptionId.ACTIVATE, 
+					GroundBattleIntel.getString("ability_confirm"),
+					StringHelper.getString("yes", true), StringHelper.getString("no", true));
+		}
 	}
 	
 	/**
@@ -236,7 +245,7 @@ public abstract class AbilityPlugin {
 				new FramedCustomPanelPlugin(0.5f, Misc.getBasePlayerColor(), true), 
 				width, PANEL_HEIGHT, ability.getDef().name, 
 				width - PANEL_HEIGHT - 8, 6, 
-				icon, PANEL_HEIGHT, 0, 
+				icon, PANEL_HEIGHT-2, 0, 
 				color, true, getAbilityTooltip(ability));
 		
 		TooltipMakerAPI text = (TooltipMakerAPI)gen.elements.get(1);

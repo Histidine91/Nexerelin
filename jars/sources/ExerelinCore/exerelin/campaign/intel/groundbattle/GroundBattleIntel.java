@@ -1832,20 +1832,35 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		float opad = 10;
 		FactionAPI fc = getFactionForUIColors();
+		PersonAPI player = Global.getSector().getPlayerPerson();
+		
 		Color base = fc.getBaseUIColor(), bg = fc.getDarkUIColor();
 		info.addSectionHeading(getString("commandPanel_header1"), base, bg, Alignment.MID, opad);
 				
 		// abilities
 		int CARDS_PER_ROW = (int)(width/(AbilityPlugin.PANEL_WIDTH + GroundUnit.PADDING_X));
 		List<AbilityPlugin> abilities = getSide(playerIsAttacker).abilities;
-		int numCards = abilities.size();
+		List<AbilityPlugin> showableAbilities = new ArrayList<>();
+		
+		for (AbilityPlugin plugin : abilities) {
+			Pair<String, Map<String, Object>> disableReason = plugin.getDisabledReason(player);
+			if (disableReason != null && !plugin.showIfDisabled(disableReason))
+				continue;
+			showableAbilities.add(plugin);
+		}
+		
+		int numCards = showableAbilities.size();
 		
 		int NUM_ROWS = (int)Math.ceil((float)numCards/CARDS_PER_ROW);
 		CustomPanelAPI abilityPanel = outer.createCustomPanel(width, NUM_ROWS * AbilityPlugin.PANEL_HEIGHT, null);
 				
 		List<CustomPanelAPI> abilityCards = new ArrayList<>();
 		try {
-			for (AbilityPlugin plugin : abilities) {
+			for (AbilityPlugin plugin : showableAbilities) {
+				Pair<String, Map<String, Object>> disableReason = plugin.getDisabledReason(player);
+				if (disableReason != null && !plugin.showIfDisabled(disableReason))
+					continue;
+				
 				CustomPanelAPI abilityCard = plugin.createAbilityCard(abilityPanel);
 				//log.info("Created card for " + unit.name);
 				

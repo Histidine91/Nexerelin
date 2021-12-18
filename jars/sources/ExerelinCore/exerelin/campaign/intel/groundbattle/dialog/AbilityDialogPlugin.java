@@ -61,6 +61,7 @@ public class AbilityDialogPlugin implements InteractionDialogPlugin {
 		} else {
 			visual.showPlanetInfo(ability.getIntel().getMarket().getPrimaryEntity());
 		}
+		ability.dialogAddVisualPanel(dialog);
 		printInit();
 	}
 	

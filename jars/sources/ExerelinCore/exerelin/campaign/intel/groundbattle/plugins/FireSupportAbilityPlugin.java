@@ -113,11 +113,6 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		
 		addCooldownDialogText(dialog);
 	}
-	
-	@Override
-	public void dialogAddConfirmation(InteractionDialogAPI dialog) {
-		
-	}
 
 	@Override
 	public void generateTooltip(TooltipMakerAPI tooltip) {
@@ -136,6 +131,12 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		
 	@Override
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
+		CampaignFleetAPI fleet = null;
+		if (user != null) {
+			if (user.isPlayer()) fleet = Global.getSector().getPlayerFleet();
+			else fleet = user.getFleet();
+		}
+		
 		if (side.getData().containsKey(GBConstants.TAG_PREVENT_BOMBARDMENT)) {
 			Map<String, Object> params = new HashMap<>();
 			
@@ -145,11 +146,11 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			return new Pair<>(id, params);
 		}
 		// fuel check
-		if (user != null && user.getFleet() != null) {
-			int cost = getFuelCost(user.getFleet());
-			float have = user.getFleet().getCargo().getMaxFuel();
+		if (fleet != null) {
+			int cost = getFuelCost(fleet);
+			float have = fleet.getCargo().getMaxFuel();
 			if (user.isPlayer()) {
-				have = user.getFleet().getCargo().getFuel();
+				have = fleet.getCargo().getFuel();
 			}
 			if (cost > have) {
 				Map<String, Object> params = new HashMap<>();
@@ -190,6 +191,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		}
 		
 		cost = side.getBombardmentCostMod().computeEffective(cost);
+		if (cost < 0) cost = 0;
 				
 		return Math.round(cost);
 	}
