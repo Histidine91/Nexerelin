@@ -363,13 +363,13 @@ public class MiningHelperLegacy {
 	}
 	
 	/**
-	 * Fills a mining report with the resource output possible from mining this entity
-	 * Exhaustion is ignored (unless included in mult)
+	 * Fills a mining report with the resource output possible from mining this entity.
+	 * Exhaustion is ignored (unless included in mult).
 	 * @param entity The entity being mined
 	 * @param mult Resource output multiplier
 	 * @param report A mining report to fill out
 	 */
-	protected static void getResources(SectorEntityToken entity, float mult, MiningReport report)
+	public static void getResources(SectorEntityToken entity, float mult, MiningReport report)
 	{
 		if (entity == null) return;
 		boolean isGasGiant = (entity instanceof PlanetAPI && ((PlanetAPI)entity).isGasGiant());

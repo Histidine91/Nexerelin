@@ -105,6 +105,7 @@ public class MiningFleetAI implements EveryFrameScript
 		{
 			float fp = this.fleet.getFleetPoints();
 			if (fp < this.data.startingFleetPoints / 2.0F) {
+				MiningFleetManagerV2.getManager().reportFleetLost(data);
 				giveStandDownOrders();
 			}
 			CargoAPI cargo = fleet.getCargo();

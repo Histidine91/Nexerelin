@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.OrbitAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -28,6 +29,7 @@ import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -35,6 +37,8 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
 	public static final String MEMORY_KEY_NO_MINING_FLEETS = "$nex_noMiningFleets";
+	public static final int MINING_STRENGTH_FOR_COMMODITY_LOSS = 4;	// multiplied by FP
+	public static final int DAYS_RESOURCE_SHORTAGE = 30;
 	
 	protected static final float POINT_INCREMENT_PERIOD = 1;
 	protected static final float GAS_FLEET_CHANCE = 0.4f;
@@ -357,6 +361,21 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		CampaignFleetAPI fleet = spawnMiningFleet(market);
 		
 		return fleet;
+	}
+	
+	// Lower commodity availability on source market if mining fleets are lost
+	public void reportFleetLost(MiningFleetData data) {
+		MiningReport report = new MiningReport();
+		MiningHelperLegacy.getResources(data.target, MINING_STRENGTH_FOR_COMMODITY_LOSS * data.startingFleetPoints, report);
+		Set<String> commodities = report.totalOutput.keySet();
+		for (String commodityId : commodities) {
+			CommodityOnMarketAPI com = data.sourceMarket.getCommodityData(commodityId);
+			Float loss = report.totalOutput.get(commodityId);
+			if (loss == null) continue;
+			com.addTradeModMinus("minerLost_" + data.fleet.getId(), Math.round(loss), DAYS_RESOURCE_SHORTAGE);
+			log.info(String.format("Market %s losting %s trade mod of %s due to mining fleet loss", 
+					data.sourceMarket.getName(), Math.round(loss), commodityId));
+		}
 	}
 
 	@Override
