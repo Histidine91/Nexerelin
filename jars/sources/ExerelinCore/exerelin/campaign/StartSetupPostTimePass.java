@@ -395,7 +395,8 @@ public class StartSetupPostTimePass {
 			
 			String postId = contact.getPostId();
 			if (postId == null) continue;
-			if (!Nex_IsBaseOfficial.isOfficial(postId, "any")) continue;
+			// requested by ruddygreat; make contact always military
+			if (!Nex_IsBaseOfficial.isOfficial(postId, "military")) continue;
 			
 			contact.setVoice(contact.getFaction().pickVoice(contact.getImportance(), StarSystemGenerator.random));
 			addTagsToStartingContact(contact, postId);
