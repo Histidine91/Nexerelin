@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +134,9 @@ public class VanillaSystemsGenerator {
 		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_HEAVY_MOD).unmodifyMult("tut");
 		market.setEconGroup(null);
 		
+		// [MODIFIED] Nex: give Ancyra its base staff
+		NexUtilsMarket.addMarketPeople(market);
+		
 		market = derinkuyu.getMarket();
 		market.setEconGroup(null);
 		derinkuyu.setFaction(Factions.INDEPENDENT);
@@ -140,6 +144,7 @@ public class VanillaSystemsGenerator {
 			
 		FactionAPI ind = Global.getSector().getFaction(Factions.INDEPENDENT);
 		market.getSubmarket(Submarkets.SUBMARKET_OPEN).setFaction(ind);
+		
 	}
 	
 	public static void initFactionRelationships(SectorAPI sector) 
