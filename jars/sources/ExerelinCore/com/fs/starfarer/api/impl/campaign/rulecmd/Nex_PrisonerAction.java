@@ -6,6 +6,8 @@ import java.util.Map;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -83,10 +85,27 @@ public class Nex_PrisonerAction extends AgentActionBase {
 		FactionAPI faction = target.getFaction();
 		TextPanelAPI text = dialog.getTextPanel();
 		
+		//boolean wasInhosp = faction.getRelToPlayer().isAtBest(RepLevel.INHOSPITABLE);
+		
 		NexUtilsReputation.adjustPlayerReputation(faction, target.getActivePerson(), NexConfig.prisonerRepatriateRepValue,
 						NexConfig.prisonerRepatriateRepValue, null, text);
 		DiplomacyManager.getManager().getDiplomacyBrain(faction.getId()).reportDiplomacyEvent(PlayerFactionStore.getPlayerFactionId(), NexConfig.prisonerRepatriateRepValue);
 		StatsTracker.getStatsTracker().notifyPrisonersRepatriated(1);
+		
+		//boolean isInhosp = faction.getRelToPlayer().isAtBest(RepLevel.INHOSPITABLE);
+		
+		// Too much trouble right now, maybe next time
+		/* 
+		// refresh memory now that we have the rep level to dock
+		if (wasInhosp && isInhosp) {
+			// TODO: check if we're locked out due to recent commotion?
+			// or just let usgo in anyway
+			boolean transp = Global.getSector().getPlayerFleet().isTransponderOn();
+			
+			dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", transp ? "OPEN" : "SNEAK", 0);
+			((RuleBasedDialog)dialog.getPlugin()).updateMemory();
+		}
+		*/
 		
 		return true;
 	}

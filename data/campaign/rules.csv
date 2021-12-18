@@ -2761,7 +2761,7 @@ You turn away, sheathing your weapon. House Steiner may not take this humiliatio
 nex_merc_steinerDuel_lose,Nex_FencingDuelFinished,"$nex_duelContext == steinerMercHonor
 $nex_playerLostDuel",AdjustRepActivePerson SUSPICIOUS -1,"The pain is too much and you collapse.
 
-A figure looms blurrily in your vision. ""So, dog, do you know the honour of our house now? Let this be a lesson to you, and do not let your tongue go where you sword arm cannot!""
+A figure looms blurrily in your vision. ""So, dog, do you know the honour of House Steiner now? Let this be a lesson to you, and do not let your tongue go where you sword arm cannot!""
 
 If this is going to happen again, it might be wise to take those words to heart.",nex_steinerDuel_end:Pick yourself up and return to your $shipOrFleet,
 nex_merc_steinerDuel_end,DialogOptionSelected,$option == nex_steinerDuel_end,"ShowDefaultVisual

@@ -16,8 +16,9 @@
 	"tier2StationOfficerLevel":2,
 	"tier3StationOfficerLevel":4,
 	
-	"adminHireTier2":20000,		#50000,
-	"adminSalaryTier2":10000,	#25000,
+	# no longer used, vanilla settings keeps only for reverse compat
+	#"adminHireTier2":20000,		#50000,
+	#"adminSalaryTier2":10000,	#25000,
 	
 	"basePirateRaidTimeoutMonths":[3, 7],	#[6, 18],
 	
@@ -193,6 +194,7 @@
 			"icon_grounddefenses":"graphics/exerelin/icons/groundbattle/groundefenses.png",
 			"icon_heavybatteries":"graphics/exerelin/icons/groundbattle/heavybatteries.png",
 			"icon_inspire":"graphics/icons/skills/leadership.png",
+			"icon_ignisPluvia":"graphics/exerelin/icons/groundbattle/ignispluvia.png",
 			
 			"help_unitCard":"graphics/exerelin/help/gb_unitcard.png",
 		},
