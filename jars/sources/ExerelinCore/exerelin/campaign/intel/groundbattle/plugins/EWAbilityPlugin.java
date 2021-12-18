@@ -218,8 +218,11 @@ public class EWAbilityPlugin extends AbilityPlugin {
 		boolean attacker = side.isAttacker();
 		
 		if (!attacker) {
-			PersonAPI leader = side.getCommander();			
-			if (leader != null && leader.getStats().getSkillLevel(Skills.ELECTRONIC_WARFARE) > 1) {
+			PersonAPI leader = side.getCommander();
+			if (leader != null && 
+					(leader.getStats().getSkillLevel(Skills.ELECTRONIC_WARFARE) >= 1 
+					|| leader.getStats().getSkillLevel(Skills.HYPERCOGNITION) >= 1)) 
+			{
 				return getNeededECMLevel() * 2f;
 			}
 		}
