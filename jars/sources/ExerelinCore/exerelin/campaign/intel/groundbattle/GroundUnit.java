@@ -33,7 +33,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GroundUnit {
 	
 	public static final boolean USE_LOCATION_IMAGE = true;
@@ -285,7 +287,7 @@ public class GroundUnit {
 		destination = null;
 		float attrition = intel.getSide(isAttacker).dropAttrition.getModifiedValue()/100;
 		if (attrition > 0) {
-			Global.getLogger(this.getClass()).info(String.format(
+			log.info(String.format(
 					"%s receiving %s attrition during deployment", 
 					toString(), StringHelper.toPercent(attrition)));
 			inflictAttrition(attrition, null, dialog);
@@ -338,9 +340,9 @@ public class GroundUnit {
 	{
 		if (isPlayer && returnToCargo) {
 			NexUtils.modifyMapEntry(intel.playerData.getDisbanded(), type, getSize());
-			Global.getLogger(this.getClass()).info("Disbanding " + name + ": " + getSize());
+			log.info("Disbanding " + name + ": " + getSize());
 			int inFleet = intel.countPersonnelFromMap(intel.playerData.getDisbanded());
-			Global.getLogger(this.getClass()).info("Disbanded personnel count: " + inFleet);
+			log.info("Disbanded personnel count: " + inFleet);
 			returnUnitsToCargo();
 		}
 		setLocation(null);
@@ -348,7 +350,7 @@ public class GroundUnit {
 		if (isPlayer)
 			intel.playerData.getUnits().remove(this);
 		
-		Global.getLogger(this.getClass()).info(String.format("Removed unit %s (%s)", name, type));
+		log.info(String.format("Removed unit %s (%s)", name, type));
 	}
 	
 	public void destroyUnit(float recoverProportion) {
@@ -578,7 +580,7 @@ public class GroundUnit {
 		String id = "marineXP";
 		float effectBonus = PlayerFleetPersonnelTracker.getInstance().getMarineEffectBonus(data);
 		float casualtyReduction = PlayerFleetPersonnelTracker.getInstance().getMarineLossesReductionPercent(data);
-		//Global.getLogger(this.getClass()).info(String.format("XP %s translating to %s effect bonus, %s casualty red.", data.xp, effectBonus, casualtyReduction));
+		//log.info(String.format("XP %s translating to %s effect bonus, %s casualty red.", data.xp, effectBonus, casualtyReduction));
 		PersonnelRank rank = data.getRank();
 		if (attackPower) {
 			if (effectBonus > 0) {
@@ -590,7 +592,7 @@ public class GroundUnit {
 			}
 		}
 		else {
-			//Global.getLogger(this.getClass()).info("Reducing casualties by " + casualtyReduction + " from " + data.xp);
+			//log.info("Reducing casualties by " + casualtyReduction + " from " + data.xp);
 			if (casualtyReduction > 0) {
 				stats.modifyMult(id, 1f - casualtyReduction * 0.01f, rank.name + " " + StringHelper.getString("marines"));
 			} else {
@@ -677,6 +679,10 @@ public class GroundUnit {
 		if (isPlayer) {
 			//mult -= GBConstants.MORALE_DAM_XP_REDUCTION_MULT * PlayerFleetPersonnelTracker.getInstance().getMarineData().getXPLevel();
 		}
+		if (!isAttacker) {
+			dmg = intel.getMarket().getStats().getDynamic().getMod(GBConstants.STAT_MARKET_MORALE_DAMAGE).computeEffective(dmg);
+		}
+		
 		mult /= type.moraleMult;
 		dmg = intel.getSide(isAttacker).moraleDamTakenMod.computeEffective(dmg);
 		dmg *= mult;

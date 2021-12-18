@@ -10,6 +10,7 @@ public class GBConstants {
 	public static final String TAG_PREVENT_INSPIRE = "preventInspire";
 	public static final String MEMKEY_GARRISON_DAMAGE = "$nex_garrisonDamage";
 	public static final String MEMKEY_AWAIT_DECISION = "$nex_gbAwaitDecision";
+	public static final String STAT_MARKET_MORALE_DAMAGE = "nex_moraleDamageTaken";
 	
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";
