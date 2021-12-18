@@ -279,7 +279,7 @@ public class GroundBattleSide {
 				moraleMult = 0.8f;
 		}
 		
-		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
+		int sizePerUnit = Math.round(intel.unitSize.getAverageSizeForType(type) * GroundUnit.REBEL_COUNT_MULT);
 		int numUnits = (int)Math.ceil((float)numTroops/sizePerUnit - 0.25f);
 		if (numUnits == 0 && numTroops > 1) {	//intel.unitSize.getAverageSizeForType(type)/2) {
 			numUnits = 1;

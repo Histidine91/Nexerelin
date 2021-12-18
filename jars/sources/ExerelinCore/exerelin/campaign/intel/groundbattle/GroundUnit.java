@@ -48,6 +48,7 @@ public class GroundUnit {
 	public static final Object BUTTON_NEW_HEAVY = new Object();
 	
 	public static final float HEAVY_COUNT_DIVISOR = 6f;	// a marine platoon has 6x as many marines as a mech platoon has mechs
+	public static final float REBEL_COUNT_MULT = 0.6f;	// rebel units are 40% smaller
 	public static final int CREW_PER_MECH = 2;
 		
 	public final String id = Misc.genUID();
@@ -639,8 +640,10 @@ public class GroundUnit {
 			substituteLocalXPBonus(bonus, true);
 		}
 		else if (isAttacker) {
-			// generic XP bonus for non-player attacker units (assumes 50% XP), but not for rebels
-			if (type != ForceType.REBEL) {
+			// generic XP bonus for non-player attacker units (assumes 50% XP), except rebels which use the defender bonus
+			if (type == ForceType.REBEL) {
+				injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
+			} else {
 				injectXPBonus(bonus, GBConstants.OFFENSE_STAT, true);
 			}
 		} 
@@ -710,19 +713,20 @@ public class GroundUnit {
 		if (fleet != null && isFleetInRange()) {
 			bonus.applyMods(fleet.getStats().getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT));	
 		}
-		if (isAttacker) {
-			if (!isPlayer) {
+		if (isPlayer) {
+			substituteLocalXPBonus(bonus, false);
+		}
+		else if (isAttacker) {
+			if (type == ForceType.REBEL) {
+				injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
+			}
+			else if (!isPlayer) {
 				injectXPBonus(bonus, GBConstants.OFFENSE_STAT, false);
 			}
 		}
 		else {
 			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
-			//return intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
-		}
-		
-		if (isPlayer) {
-			substituteLocalXPBonus(bonus, false);
-		}
+		}		
 		
 		return bonus;
 	}
@@ -1061,6 +1065,8 @@ public class GroundUnit {
 		
 		public static int getSizeForType(int count, ForceType type) {
 			if (type == ForceType.HEAVY) count = Math.round(count/GroundUnit.HEAVY_COUNT_DIVISOR);
+			// don't do it here since it messes with the icon count in IndustryForBattle.renderTroopPanelNew
+			//if (type == ForceType.REBEL) count *= REBEL_COUNT_MULT;
 			return count;
 		}
 		
