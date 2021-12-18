@@ -37,7 +37,7 @@
 			"icon":"graphics/exerelin/icons/groundbattle/heavybatteries.png",
 		},
 		"planetaryshield":{
-			"tags":["noBombard", "preventBombardment", "preventEW", "preventInspire", "preventCAS"],
+			"tags":["noBombard", "preventBombardment", "preventBombardmentSuper", "preventEW", "preventInspire", "preventCAS"],
 			"enemyDropCostMult":2,
 			"dropAttritionMult":2,
 		},
@@ -164,6 +164,16 @@
 			"cooldownGlobal":2,
 			"color":[10, 140, 240, 255],
 			"order":3,
+		},
+		"ignisPluvia":{
+			"name":"Ignis Pluvia",
+			"icon":"graphics/exerelin/icons/groundbattle/ignispluvia.png",
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.IgnisPluviaAbilityPlugin",
+			"sound":"nex_sfx_deciv_bomb",
+			"cooldown":2,
+			"cooldownGlobal":1,
+			"color":[255, 128, 32, 255],
+			"order":4,
 		},
 	},
 	

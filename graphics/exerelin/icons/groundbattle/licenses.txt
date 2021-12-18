@@ -1,3 +1,7 @@
 shield.png
 	Public domain
 	https://iconarchive.com/show/blue-bits-icons-by-icojam/shield-icon.html
+
+ignispluvia.png
+	Modified from TITAN sprite, by Gwyvern for DR's Interstellar Imperium
+	Used with permission

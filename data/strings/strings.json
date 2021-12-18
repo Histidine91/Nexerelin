@@ -11,6 +11,7 @@
 		"colonies":"colonies",
 		"conquest":"conquest",
 		"continue":"continue",
+		"CR":"CR",
 		"credits":"credits",
 		"designType":"design type",
 		"diplomacy":"diplomacy",
@@ -1469,6 +1470,15 @@
 		"ability_bombard_prevented":"Fire support prevented",
 		"ability_bombard_insufficientFuel":"Insufficient fuel: %s",
 		"ability_bombard_enemyPresence":"Excessive enemy presence: %s vs. %s",
+		
+		"ability_ignisPluvia_invalidConfig":"Invalid configuration",
+		"ability_ignisPluvia_noMembers":"No Olympi available",
+		"ability_ignisPluvia_prevented":"Attack prevented",
+		"ability_ignisPluvia_resultDisrupt":"Disrupted industries: %s",
+		"ability_ignisPluvia_tooltip1":"Deploys an Olympus in MIRV configuration to unleash FIRE RAIN upon the target.",
+		"ability_ignisPluvia_tooltip2":"Distributes %s bombardments with %s damage each on all industries with an enemy presence. Damage is reduced by $market's drop attrition of %s, and increased by %s if combat is ongoing on the target industry.",
+		"ability_ignisPluvia_tooltip3":"The TITAN delivery system and the sheer volume of fire ensure that most ground defenses cannot prevent the attack, and cannot even defend their immediate area from more than one bombardment.",
+		"ability_ignisPluvia_tooltip4":"The selected Olympus will consume %s CR to conduct this attack.",
 		
 		"responseStr":"responding to invasion",
 		"responseTravelStr":"moving in response to invasion",
