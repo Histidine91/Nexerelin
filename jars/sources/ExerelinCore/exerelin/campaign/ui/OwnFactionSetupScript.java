@@ -84,8 +84,8 @@ public class OwnFactionSetupScript extends DelayedDialogScreenScript
 			copy.sort();
 			
 			final float sideWidth = 210f;
-			final float screenWidth = Display.getWidth() * 3/4;
-			final float screenHeight = Display.getHeight() * 4/5;
+			final float screenWidth = Global.getSettings().getScreenWidth() * 3/4;
+			final float screenHeight = Global.getSettings().getScreenHeight() * 4/5;
 			dialog.showCargoPickerDialog(getString("pickerHeader"), 
 					Misc.ucFirst(StringHelper.getString("confirm")), 
 					Misc.ucFirst(StringHelper.getString("cancel")),
