@@ -78,7 +78,7 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 		VisualPanelAPI vp = dialog.getVisualPanel();
 		plugin = new InteractionDialogCustomPanelPlugin();
 		panel = vp.showCustomPanel(width, height, plugin);
-		tooltip = panel.createUIElement(width, height, true);
+		tooltip = panel.createUIElement(width - 4, height, true);
 		
 		//tooltip.setForceProcessInput(true);
 					
@@ -100,6 +100,6 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 	 * Call this after all desired elements have been added to the tooltip; otherwise the scrollbar may not cover all elements.
 	 */
 	public static void addTooltipToPanel() {
-		panel.addUIElement(tooltip);
+		panel.addUIElement(tooltip).inTL(2, 0);
 	}
 }

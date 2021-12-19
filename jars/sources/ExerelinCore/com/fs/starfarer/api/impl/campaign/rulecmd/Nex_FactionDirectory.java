@@ -309,6 +309,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		String str;
 		Color hl = Misc.getHighlightColor();
 		TooltipMakerAPI tt = Nex_VisualCustomPanel.getTooltip();
+		InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
 		
 		int hidden = 0;
 		for (final MarketAPI market: markets)
@@ -366,7 +367,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			
 			// show button			
 			TooltipMakerAPI buttonHolder = panel.createUIElement(buttonWidth, imgSize, false);
-			InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
 			ButtonAPI button = buttonHolder.addButton(StringHelper.getString("exerelin_markets", "marketDirectoryButtonShow", true), 
 					"nex_showMarket_" + market.getId(), buttonWidth, 24, 3);
 
