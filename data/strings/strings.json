@@ -19,6 +19,7 @@
 		"disrupted":"disrupted",
 		"disruption":"disruption",
 		"done":"done",
+		"elite":"elite",
 		"expedition":"expedition",
 		"theExpedition":"the expedition",
 		"faction":"faction",
@@ -2130,6 +2131,16 @@
 		"bountyBulletUnknown":"Target location details are unknown (this should not happen, please report)",
 		"bountyParaLocation":"The target is located in the %s.",
 		"bountyParaDestination":"The target is headed to %s in the %s.",
+	},
+	
+	"nex_splitFleet":{
+		"dialog_headerMain":"Fleet configuration",
+		"dialog_headerShips":"Ships",
+		"dialog_headerOfficers":"Officers",
+		"dialog_headerShipPick":"Select ships",
+		"dialog_headerOfficerPick":"Select officers",
+		"dialog_commander":"commander",
+		"dialog_level":"level %s",
 	},
 	
 	"nex_skills":{

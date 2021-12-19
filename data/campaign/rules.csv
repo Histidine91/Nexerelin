@@ -259,7 +259,7 @@ FireAll ExerelinMarketSpecial",,,
 #nex_marketSpecialIntelOption,ExerelinMarketSpecial,!$hasMarket,MakeOptionOpenCore nex_openIntel INTEL OPEN,,24:nex_openIntel:Open intel screen,
 #nex_marketSpecialIntelOptionSel,DialogOptionSelected,$option == nex_openIntel,,,,
 ExerelinMarketSpecialBackOption,ExerelinMarketSpecial,$hasMarket,SetShortcut exerelinMarketSpecialBack ESCAPE,,25:exerelinMarketSpecialBack:Back,
-ExerelinMarketSpecialBackOptionNoMarket,ExerelinMarketSpecial,!$hasMarket,SetShortcut marketLeave ESCAPE,,25:marketLeave:Back,
+ExerelinMarketSpecialBackOptionNoMarket,ExerelinMarketSpecial,!$hasMarket,SetShortcut marketLeave ESCAPE,,999:marketLeave:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ExerelinShowDefaultVisual
 $menuState = main 0
 FireAll PopulateOptions",,,
@@ -2696,7 +2696,7 @@ while (debt > 0) emotionModule.guiltTrip($playerName);""",,
 #END blurbs,,,,,,
 #END Merc hiring,,,,,,
 ,,,,,,
-#duel stuff,,,,,,
+# duel stuff,,,,,,
 #soeMeetCaspianStart0Alt,DialogOptionSelected,"!$global.didEventideRaoBall
 $faction.id == hegemony
 $option == marketVisitBar
@@ -2705,7 +2705,7 @@ $player.fcm_faction == hegemony","FireBest BarShuttleDownPrintDesc
 FireBest BarPrintDesc
 BarCMD playAmbience",,soe_meetCaspianStart:Continue,
 ,,,,,,
-nex_duelPracticeOpt,ExerelinMarketSpecial,$global.isDevMode,,,7:nex_duelPractice:>> (dev) Practice fencing in the simulator,
+nex_duelPracticeOpt,ExerelinMarketSpecial,$global.isDevMode,,,30:nex_duelPractice:>> (dev) Practice fencing in the simulator,
 nex_duelPractice,DialogOptionSelected,$option == nex_duelPractice,,Select difficulty settings:,"nex_duelPractice_p0e0:Unskilled player, unskilled opponent
 nex_duelPractice_p1e0:Skilled player, unskilled opponent
 nex_duelPractice_p0e1:Unskilled player, skilled opponent
@@ -2768,3 +2768,45 @@ nex_merc_steinerDuel_end,DialogOptionSelected,$option == nex_steinerDuel_end,"Sh
 EndConversation DO_NOT_FIRE
 FireBest MarketPostDock",,,
 #END duel stuff,,,,,,
+,,,,,,
+# fleet splitter,,,,,,
+nex_splitFleet_opt,ExerelinMarketSpecial,!$hasMarket,,,10:nex_splitFleet_start:Split your fleet,
+nex_splitFleet_main,DialogOptionSelected,$option == nex_splitFleet_start,Nex_SplitFleet start,Preparing fleet split...,,
+nex_splitFleet_sf_opt,PopulateOptions,"Nex_IsBaseOfficial admin
+Nex_IsFactionRuler $faction.id",,,10:nex_splitFleet_sf_start:Create a special task group,
+nex_splitFleet_sf_optDisable,PopulateOptions,"Nex_IsBaseOfficial admin
+Nex_IsFactionRuler $faction.id
+!Nex_SplitFleet canCreate",SetEnabled nex_splitFleet_sf_start false,,,
+nex_splitFleet_sf_main,DialogOptionSelected,$option == nex_splitFleet_sf_start,"Nex_SplitFleet start
+Nex_SplitFleet setSFMode true
+$nex_splitFleet_mode = ""sf"" 0","""So, you wish to establish a special task group for $theFaction?""",,
+nex_splitFleet_mainOpts,Nex_SplitFleetOptions,,"Nex_AddOptionConfirmation nex_splitFleet_confirm ""Confirm split?"" ""Yes"" ""No""
+Nex_AddOptionConfirmation nex_splitFleet_cancel ""Exit menu?"" ""Yes"" ""No""",,"nex_splitFleet_pickShips:Pick ships
+nex_splitFleet_pickOfficers:Pick officers
+nex_splitFleet_confirm:Confirm
+nex_splitFleet_cancel:Cancel",
+nex_splitFleet_mainOptsNoConfirm,Nex_SplitFleetOptions,!Nex_SplitFleet canConfirm,SetEnabled nex_splitFleet_confirm false,,,
+nex_splitFleet_pickShips,DialogOptionSelected,$option == nex_splitFleet_pickShips,Nex_SplitFleet pickShips,,,
+nex_splitFleet_pickOfficers,DialogOptionSelected,$option == nex_splitFleet_pickOfficers,Nex_SplitFleet pickOfficers,,,
+nex_splitFleet_pickOfficersBack,DialogOptionSelected,$option == nex_splitFleet_pickOfficersBack,Nex_SplitFleet mainMenu,,,
+nex_splitFleet_confirm,DialogOptionSelected,$option == nex_splitFleet_confirm,"Nex_SplitFleet confirm
+ShowDefaultVisual
+FireAll ExerelinMarketSpecial",,,
+nex_splitFleet_sf_confirm,DialogOptionSelected,"$option == nex_splitFleet_confirm
+$nex_splitFleet_mode == ""sf""","Nex_SplitFleet confirm
+ShowPersonVisual
+FireBest PickGreeting",,,
+nex_splitFleet_cancel,DialogOptionSelected,$option == nex_SplitFleet_cancel,"Nex_SplitFleet cancel
+ShowDefaultVisual
+FireAll ExerelinMarketSpecial",,,
+nex_splitFleet_cancel_sf,DialogOptionSelected,"$option == nex_SplitFleet_cancel
+$nex_splitFleet_mode == ""sf""","Nex_SplitFleet cancel
+ShowPersonVisual
+FireBest PickGreeting",,,
+nex_splitFleet_greeting,OpenCommLink,$entity.nex_splitFleet score:100,,"""Hello, captain. Are we to rejoin your fleet now?""
+OR
+""It's pretty lonely out here, captain. Is it time to rejoin you?""","nex_splitFleet_merge:Merge fleets
+cutCommLink:Cut the comm link",
+nex_splitFleet_merge,DialogOptionSelected,$option == nex_splitFleet_merge,"Nex_SplitFleet merge
+DismissDialog",,,
+#END fleet splitter,,,,,,
