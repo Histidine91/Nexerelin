@@ -179,6 +179,10 @@ public abstract class AbilityPlugin {
 		
 	}
 	
+	public void dialogOnDismiss(InteractionDialogAPI dialog) {
+		
+	}
+	
 	/**
 	 * Generally called after {@code dialogAddIntro}, prints ability cooldown information.
 	 * @param dialog

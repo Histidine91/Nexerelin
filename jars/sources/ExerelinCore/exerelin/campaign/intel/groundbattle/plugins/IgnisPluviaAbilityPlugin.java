@@ -24,6 +24,7 @@ import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
 import static exerelin.campaign.intel.groundbattle.plugins.FireSupportAbilityPlugin.CLOSE_SUPPORT_DAMAGE_MULT;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
+import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 	
+	public static final boolean ALLOW_ANY_OLYMPUS = true;	// doesn't require Fundae or Apocalypse MIRV mode
 	public static final float ENTRY_HEIGHT = 48;
 	public static final float BUTTON_WIDTH = 80;
 	public static float BASE_DAMAGE = 32;	// for comparison, fire support on a size 6 does 72
@@ -189,6 +191,8 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
 		
 		List<FleetMemberAPI> olympi = getOlympi(Global.getSector().getPlayerFleet());
+		
+		List<RadioButtonEntry> allButtons = new ArrayList<>();
 				
 		for (final FleetMemberAPI member : olympi) 
 		{
@@ -214,21 +218,25 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 				ButtonAPI button = text.addAreaCheckbox(StringHelper.getString("select", true), 
 					member, base, dark, bright, BUTTON_WIDTH, 16, pad);
 				button.setChecked(olympus == member);
-
-				plugin.addButton(new InteractionDialogCustomPanelPlugin.ButtonEntry(button, "select_" + member.getId()) {
+				RadioButtonEntry rbe = new RadioButtonEntry(button, "select_" + member.getId()) {
 					@Override
-					public void onToggle() {
+					public void onToggleImpl() {
 						olympus = member;
-						dialogAddVisualPanel(dialog);
+						//dialogAddVisualPanel(dialog);
 						dialogSetEnabled(dialog);
 					}
-				});
+				};
+				plugin.addButton(rbe);
+				allButtons.add(rbe);
 			}
 			
 			itemPanel.addUIElement(text).rightOfTop(image, 3);
 			
 			info.addCustom(itemPanel, 3);
 			//dialog.getTextPanel().addPara("Adding Olympus " + member.getShipName());
+		}
+		for (RadioButtonEntry rbe : allButtons) {
+			rbe.buttons = allButtons;
 		}
 		Nex_VisualCustomPanel.addTooltipToPanel();
 	}
@@ -241,6 +249,11 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 	
 	protected void dialogSetEnabled(InteractionDialogAPI dialog) {
 		dialog.getOptionPanel().setEnabled(AbilityDialogPlugin.OptionId.ACTIVATE, olympus != null);
+	}
+	
+	@Override
+	public void dialogOnDismiss(InteractionDialogAPI dialog) {
+		olympus = null;
 	}
 
 	@Override
@@ -276,7 +289,7 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		}
 		if (fleet != null) {
 			List<FleetMemberAPI> olympi = getOlympi(fleet);
-			log.info("Number of Olympi: " + olympi.size());
+			//log.info("Number of Olympi: " + olympi.size());
 			if (olympi.isEmpty()) {
 				Map<String, Object> params = new HashMap<>();
 			
@@ -352,6 +365,8 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 	}
 	
 	public boolean isValidOlympusConfig(FleetMemberAPI member) {
+		if (ALLOW_ANY_OLYMPUS) return true;
+		
 		String hullId = member.getHullSpec().getBaseHullId();
 		if (hullId == null) hullId = member.getHullSpec().getHullId();
 		if (hullId.equals("ii_olympus"))

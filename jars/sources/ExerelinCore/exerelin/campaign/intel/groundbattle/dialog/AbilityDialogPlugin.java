@@ -157,6 +157,7 @@ public class AbilityDialogPlugin implements InteractionDialogPlugin {
 	}
 	
 	protected void leave(boolean didAnything) {
+		ability.dialogOnDismiss(dialog);
 		dialog.dismiss();
 		if (didAnything) ui.updateUIForItem(ability.getIntel());	
 	}
