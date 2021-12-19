@@ -13,7 +13,6 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.InstallableIndustryItemPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -205,15 +204,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        List<GroundBattleIntel> toRemove = new ArrayList<>();
-        for (GroundBattleIntel gb : Global.getSector().getListenerManager().getListeners(GroundBattleIntel.class)) {
-            if (!gb.isEnding() && !gb.isEnded()) continue;
-            log.info("Removing leaked ground battle listener: " + gb.getSmallDescriptionTitle());
-            toRemove.add(gb);
-        }
-        for (GroundBattleIntel gb : toRemove) {
-            Global.getSector().getListenerManager().removeListener(gb);
-        }
+        SectorManager.getManager().reverseCompatibility();
         
         boolean hasShuntOffer = false;
         HistorianData hd = HistorianData.getInstance();

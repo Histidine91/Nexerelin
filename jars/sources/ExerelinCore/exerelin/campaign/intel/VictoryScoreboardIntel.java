@@ -40,10 +40,14 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	
 	public static int getNeededSizeForVictory(int total, List<ScoreEntry> sizeRanked) {
 		
-		float neededPop = (float)(Math.sqrt(total) * 5);
-		// TODO		
-		
-		return (int)Math.ceil(neededPop);
+		float sizeFractionForVictory = Global.getSettings().getFloat("nex_sizeFractionForVictory");
+		int neededPop = (int)(total * sizeFractionForVictory);
+		int runnerUpScore = 0;
+		if (sizeRanked.size() >= 2)
+			runnerUpScore = sizeRanked.get(1).score;
+		neededPop = Math.max(neededPop, runnerUpScore * 2);
+				
+		return neededPop;
 	}
 	
 	/**
@@ -60,11 +64,10 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		List<String> factions = getWinnableFactions();
 		
 		int[] totals = generateRankings(factions, sizeRanked, hiRanked, friendsRanked);
-		float sizeFractionForVictory = Global.getSettings().getFloat("nex_sizeFractionForVictory");
         float hiFractionForVictory = Global.getSettings().getFloat("nex_heavyIndustryFractionForVictory");
 		
-		int neededPop = (int)Math.ceil(Math.min(Math.sqrt(totals[0]) * 5, totals[0] * sizeFractionForVictory));
-		int neededHI = (int)Math.ceil(Math.min(Math.sqrt(totals[1]) * 2, totals[1] * hiFractionForVictory));
+		int neededPop = getNeededSizeForVictory(totals[0], sizeRanked);
+		int neededHI = (int)(totals[1] * hiFractionForVictory);
 		int neededFriends = factions.size() - 1;
 		
 		float subWidth = width/3 - 8;
@@ -130,9 +133,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		label = hdrTitleHolder.addPara(headerText, 5);
 		label.setAlignment(Alignment.MID);
 		header.addUIElement(hdrTitleHolder).rightOfTop(hdrImgHolder, 16);
-		
-		
-		
+				
 		subScoreboard.addComponent(header).inTL(0, 3);
 		
 		TooltipMakerAPI tooltip = subScoreboard.createUIElement(width, height - headerHeight, true);
@@ -283,6 +284,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
         }
 		
 		for (String factionId : factionsToCheck) {
+			// check faction diplomacy
 			FactionAPI faction = Global.getSector().getFaction(factionId);
 			int friends = 0;
 			for (String otherFID : factionsToCheck) {
@@ -294,7 +296,8 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 				friendsRanked.add(new ScoreEntry(factionId, friends));
 			}
 			
-            // we already checked this faction as part of its alliance
+			// check faction pop/HI
+            // first see if we already checked this faction as part of its alliance
             if (AllianceManager.getFactionAlliance(factionId) != null)
                 continue;
             

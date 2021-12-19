@@ -60,6 +60,9 @@ import exerelin.campaign.intel.InsuranceIntelV2;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.VictoryIntel;
+import exerelin.campaign.intel.VictoryScoreboardIntel;
+import exerelin.campaign.intel.VictoryScoreboardIntel.ScoreEntry;
+import static exerelin.campaign.intel.VictoryScoreboardIntel.getNeededSizeForVictory;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
@@ -70,7 +73,6 @@ import exerelin.utilities.NexUtilsAstro;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -136,7 +138,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected transient List<OfficerDataAPI> insuranceLostOfficers = new ArrayList<>();
     protected InsuranceIntelV2 insurance = new InsuranceIntelV2();
     
+	protected VictoryScoreboardIntel scoreboard;
     protected boolean victoryHasOccured = false;
+	
     protected boolean respawnFactions = false;
     protected boolean onlyRespawnStartingFactions = false;
     protected SectorEntityToken homeworld;
@@ -188,10 +192,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         respawnInterval = NexConfig.factionRespawnInterval;
         respawnIntervalUtil = new IntervalUtil(respawnInterval * 0.75F, respawnInterval * 1.25F);
         
-        // Templars don't normally post bounties, but they do here
-        //if (Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions()).contains("templars"))
-        //    SharedData.getData().getPersonBountyEventData().addParticipatingFaction("templars");
+        scoreboard = new VictoryScoreboardIntel();
+		Global.getSector().getIntelManager().addIntel(scoreboard);
     }
+	
+	public void reverseCompatibility() {
+		if (scoreboard == null) {
+			scoreboard = new VictoryScoreboardIntel();
+			Global.getSector().getIntelManager().addIntel(scoreboard);
+		}
+	}
    
     @Override
     public void advance(float amount)
@@ -930,99 +940,36 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return bestId;
     }
     
-    public static String checkForConquestVictory(Collection<String> factionsToCheck) 
+	/**
+	 * @param factionsToCheck
+	 * @return Winning faction ID and victory type
+	 */
+	public static String[] checkForVictory(Collection<String> factionsToCheck) 
     {
-        float sizeForVictory = Global.getSettings().getFloat("nex_sizeFractionForVictory");
-        float hiForVictory = Global.getSettings().getFloat("nex_heavyIndustryFractionForVictory");
-        
-        int totalSize = 0, totalHeavyIndustries = 0;
-        Map<String, Integer> factionSizes = new HashMap<>();
-        Map<String, Integer> heavyIndustries = new HashMap<>();
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
-        {
-            if (market.isHidden()) continue;
-            String factionId = market.getFactionId();
-            if (!factionsToCheck.contains(factionId)) continue;
-            
-            totalSize += market.getSize();
-            if (market.getFaction().isPlayerFaction()) {
-                factionId = PlayerFactionStore.getPlayerFactionId();
-            }
-            NexUtils.modifyMapEntry(factionSizes, factionId, market.getSize());
-            if (NexUtilsMarket.hasHeavyIndustry(market)) {
-                totalHeavyIndustries++;
-                NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
-            }
-        }
-        
-        List<Pair<Object, Integer>> sizeRanked = new ArrayList<>();
-        //List<Pair<Object, Integer>> hiRanked = new ArrayList<>();
-                
-        for (Alliance alliance : AllianceManager.getAllianceList()) {
-            int size, numHI;
-            if (alliance != null) {
-                size = getAllianceTotalFromMap(alliance, factionSizes);
-                numHI = getAllianceTotalFromMap(alliance, heavyIndustries);
-                log.info(String.format("Alliance %s has %s/%s size, %s/%s HIs", alliance.getName(), 
-                        size, totalSize, numHI, totalHeavyIndustries));
-                
-                sizeRanked.add(new Pair<>((Object)alliance, size));
-                //hiRanked.add(new Pair<>((Object)alliance, numHI));
-                /*
-                if (size/(float)totalSize >= SIZE_FRACTION_FOR_VICTORY) {
-                    return getAllianceMemberWithHighestValue(alliance, factionSizes); 
-                } 
-                */
-                if (numHI/(float)totalHeavyIndustries >= hiForVictory)    {
-                    return getAllianceMemberWithHighestValue(alliance, heavyIndustries); 
-                }
-            }
-        }
-        
-        for (String factionId : getManager().liveFactionIds) {
-            // we already checked this faction as part of its alliance,
-            // if the whole alliance didn't have enough this faction sure doesn't
-            if (AllianceManager.getFactionAlliance(factionId) != null)
-                continue;
-            
-            Integer size = factionSizes.get(factionId);
-            Integer numHI = heavyIndustries.get(factionId);
-            if (size == null) continue;
-            
-            log.info(String.format("Faction %s has %s/%s size, %s/%s HIs", factionId, 
-                        size, totalSize, numHI, totalHeavyIndustries));
-            
-            sizeRanked.add(new Pair<>((Object)factionId, size));
-            //hiRanked.add(new Pair<>((Object)factionId, numHI));
-            /*
-            if (size / (float)totalSize >= SIZE_FRACTION_FOR_VICTORY) {
-                return factionId;
-            }
-            */
-            
-            if (numHI != null && numHI / (float)totalHeavyIndustries >= hiForVictory) {
-                return factionId;
-            }
-        }
-        
-        // check for largest faction
-        // must have at least 51% of total market size, and be twice as big as runner-up
-        if (sizeRanked.isEmpty()) return null;
-        
-        Collections.sort(sizeRanked, victoryComparator);
-        Pair<Object, Integer> leader = sizeRanked.get(0);
-        int runnerup = 0;
-        if (sizeRanked.size() >= 2) runnerup = sizeRanked.get(1).two;
-        
-        if (leader.two /(float)totalSize < sizeForVictory)
-            return null;
-        if (leader.two < runnerup * 2) return null;
-        
-        if (leader.one instanceof Alliance) {
-            return getAllianceMemberWithHighestValue((Alliance)leader.one, factionSizes); 
-        } else {
-            return (String)leader.one;
-        }
+        List<ScoreEntry> sizeRanked = new ArrayList<>();
+		List<ScoreEntry> hiRanked = new ArrayList<>();
+		List<ScoreEntry> friendsRanked = new ArrayList<>();
+		List<String> factions = VictoryScoreboardIntel.getWinnableFactions();
+		
+		float hiFractionForVictory = Global.getSettings().getFloat("nex_heavyIndustryFractionForVictory");
+		
+		int[] totals = VictoryScoreboardIntel.generateRankings(factions, sizeRanked, hiRanked, friendsRanked);
+		
+		int neededPop = getNeededSizeForVictory(totals[0], sizeRanked);
+		int neededHI = (int)(totals[1] * hiFractionForVictory);
+		int neededFriends = factions.size() - 1;
+		
+		if (!sizeRanked.isEmpty() && sizeRanked.get(0).score >= neededPop) {
+			return new String[] {sizeRanked.get(0).factionId, "conquest"};
+		}
+		if (!hiRanked.isEmpty() && hiRanked.get(0).score >= neededHI) {
+			return new String[] {hiRanked.get(0).factionId, "conquest"};
+		}
+		if (!friendsRanked.isEmpty() && friendsRanked.get(0).score >= neededFriends) {
+			return new String[] {friendsRanked.get(0).factionId, "diplomacy"};
+		}
+		
+		return null;
     }
     
     // runcode exerelin.campaign.SectorManager.checkForVictory()
@@ -1036,8 +983,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (sector.isInNewGameAdvance()) return;
         
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        String victorFactionId = playerAlignedFactionId;
-        VictoryType victoryType;
+        String victorFactionId = null;
+        VictoryType victoryType = null;
         
         Set<String> liveFactions = new HashSet<>(getLiveFactionIdsCopy());
         
@@ -1050,12 +997,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
         }
         
-        // conquest victory
-        String conqWin = checkForConquestVictory(liveFactions);
-        if (conqWin != null)
-        //if (liveFactions.size() == 1)   
-        {
-            victorFactionId = conqWin;
+        String[] winner = checkForVictory(liveFactions);
+		if (winner == null) {
+			return;
+		}
+		victorFactionId = winner[0];
+		String type = winner[1];
+		if (type.equals("conquest"))
+		{
             if (victorFactionId.equals(playerAlignedFactionId))
             {
                 victoryType = VictoryType.CONQUEST;
@@ -1069,57 +1018,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 
                 victoryType = VictoryType.DEFEAT_CONQUEST;
             }
-            manager.victoryHasOccured = true;
         }
-        else {
-            // diplomatic victory
-            List<String> eligibleWinners = new ArrayList<>();
-            for(String factionId : liveFactions)
-            {
-                boolean canWin = true;
-                FactionAPI faction = sector.getFaction(factionId);
-                if (faction.isNeutralFaction()) continue;
-                for (String otherFactionId: liveFactions)
-                {
-                    if (!faction.isAtWorst(otherFactionId, RepLevel.FRIENDLY))
-                    {
-                        canWin = false;
-                        break;
-                    }
-                }
-                if (canWin) eligibleWinners.add(factionId);
-            }
-            if (eligibleWinners.isEmpty()) return;
-            String winner = eligibleWinners.get(0);
-            int largestPopulation = 0;
-            if (eligibleWinners.size() > 1)
-            {
-                for (String factionId : eligibleWinners)
-                {
-                    int pop = NexUtilsFaction.getFactionMarketSizeSum(factionId);
-                    if (pop > largestPopulation)
-                    {
-                        winner = factionId;
-                        largestPopulation = pop;
-                    }
-                }
-            }
-            
+		else if (type.equals("diplomacy")) {
             if (winner.equals(playerAlignedFactionId))
                 victoryType = VictoryType.DIPLOMATIC;
             else if (NexConfig.allyVictories && AllianceManager.areFactionsAllied(victorFactionId, 
                         playerAlignedFactionId)) 
                 victoryType = VictoryType.DIPLOMATIC_ALLY;
             else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
-            
-            victorFactionId = winner;
-            manager.victoryHasOccured = true;
         }
         
-        if (manager.victoryHasOccured)
-        {
-            Global.getSector().addScript(new VictoryScreenScript(victorFactionId, victoryType));
-        }
+		manager.victoryHasOccured = true;
+        Global.getSector().addScript(new VictoryScreenScript(victorFactionId, victoryType));
     }
     
     public void customVictory(CustomVictoryParams params) {
