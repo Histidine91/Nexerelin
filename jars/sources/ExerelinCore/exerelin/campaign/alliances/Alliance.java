@@ -27,6 +27,7 @@ public class Alliance
 {
 	protected String name;
 	protected Set<String> members;
+	protected Set<String> permaMembers = new HashSet<>();
 	protected Alignment alignment;
 	private AllianceIntel intel;
 	public final String uuId;
@@ -40,6 +41,11 @@ public class Alliance
 		members.add(member2);
 		
 		uuId = UUID.randomUUID().toString();
+	}
+	
+	protected Object readResolve() {
+		if (permaMembers == null) permaMembers = new HashSet<>();
+		return this;
 	}
 	
 	public void createIntel(String member1, String member2) {
@@ -80,6 +86,10 @@ public class Alliance
 		return new HashSet<>(members);
 	}
 	
+	public Set<String> getPermaMembersCopy() {
+		return new HashSet<>(permaMembers);
+	}
+	
 	public List<String> getMembersSorted() {
 		List<String> members = new ArrayList<>(this.members);
 		final Map<String, Integer> memberSizes = new HashMap<>();
@@ -100,8 +110,33 @@ public class Alliance
 		members.add(factionId);
 	}
 	
+	/**
+	 * Will do nothing if the faction is contained in {@code permaMembers}.
+	 * @param factionId
+	 */
 	public void removeMember(String factionId) {
+		if (permaMembers.contains(factionId)) return;
 		members.remove(factionId);
+	}
+	
+	/**
+	 * Does not touch the regular members list, handle that separately.
+	 * @param factionId
+	 */
+	public void addPermaMember(String factionId) {
+		permaMembers.add(factionId);
+	}
+	
+	/**
+	 * Does not touch the regular members list, handle that separately.
+	 * @param factionId
+	 */
+	public void removePermaMember(String factionId) {
+		permaMembers.remove(factionId);
+	}
+	
+	public boolean isPermaMember(String factionId) {
+		return permaMembers.contains(factionId);
 	}
 	
 	public void clearMembers() {

@@ -200,7 +200,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return createAlliance(member1, member2, type, null);
     }
     
-    private static Alliance createAlliance(String member1, String member2, Alignment type, String name)
+    public static Alliance createAlliance(String member1, String member2, Alignment type, String name)
     {
         AllianceManager manager = getManager();
         
@@ -327,7 +327,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 		return  name;
 	}
 
-    private void joinAlliance(String factionId, Alliance alliance)
+    public void joinAlliance(String factionId, Alliance alliance)
     {
         // sync faction relationships
         SectorAPI sector = Global.getSector();
@@ -358,8 +358,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorManager.checkForVictory();
     }
        
-    private void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
+    public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
     {
+        if (alliance.isPermaMember(factionId)) return;
+        
         if (alliance.getMembersCopy().size() <= 2) 
         {
             dissolveAlliance(alliance);
@@ -373,7 +375,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorManager.checkForVictory();
     }
     
-    private void leaveAlliance(String factionId, Alliance alliance)
+    public void leaveAlliance(String factionId, Alliance alliance)
     {
         leaveAlliance(factionId, alliance, false);
     }
@@ -541,16 +543,21 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         Alliance alliance1 = manager.alliancesByFactionId.get(factionId);
         Alliance alliance2 = manager.alliancesByFactionId.get(otherFactionId);
         if (alliance1 == null || alliance2 == null || alliance1 != alliance2) return;
+        
+        boolean perma1 = alliance1.isPermaMember(factionId);
+        boolean perma2 = alliance1.isPermaMember(otherFactionId);
     
         FactionAPI faction = Global.getSector().getFaction(factionId);
         if (faction.isHostileTo(otherFactionId))
         {
             // no fighting here, both of you get out of our clubhouse!
-            if (alliance1.getMembersCopy().size() <= 3) manager.dissolveAlliance(alliance1);
+            if (!perma1 && !perma2 && alliance1.getMembersCopy().size() <= 3) {
+                manager.dissolveAlliance(alliance1);
+            }
             else
             {
-                manager.leaveAlliance(factionId, alliance1);
-                manager.leaveAlliance(otherFactionId, alliance1);
+                if (!perma1) manager.leaveAlliance(factionId, alliance1);
+                if (!perma2) manager.leaveAlliance(otherFactionId, alliance1);
             }
         }
         else
@@ -561,12 +568,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             float averageRel1 = alliance1.getAverageRelationshipWithFaction(factionId);
             float averageRel2 = alliance1.getAverageRelationshipWithFaction(otherFactionId);
             
-            if (averageRel1 < MIN_RELATIONSHIP_TO_STAY)
+            if (!perma1 && averageRel1 < MIN_RELATIONSHIP_TO_STAY)
             {
                 leave1 = true;
                 numLeavers++;
             }
-            if (averageRel2 < MIN_RELATIONSHIP_TO_STAY)
+            if (!perma2 && averageRel2 < MIN_RELATIONSHIP_TO_STAY)
             {
                 leave2 = true;
                 numLeavers++;
