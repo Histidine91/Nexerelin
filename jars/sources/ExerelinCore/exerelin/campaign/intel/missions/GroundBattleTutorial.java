@@ -7,6 +7,7 @@ import java.util.Map;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PersonImportance;
@@ -35,6 +36,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel.BattleOutcome;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -44,7 +46,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 	public static final String MEM_KEY_ENEMY_FLEET = "$nex_gbTut_enemyFleet";
 	public static final String PLANET_ID = "ilm";	// change if we want a different planet
 	public static final String ENEMY_FACTION = Factions.PIRATES;
-		
+	
 	public static enum Stage {
 		START,	// travel to planet and talk to Diamond
 		BATTLE,	// ground battle, and space battle if it hasn't happend already
@@ -121,6 +123,9 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 				checkStageChangesAndTriggers(dialog, memoryMap);
 				updateInteractionData(dialog, memoryMap);
 				
+				return true;
+			case "openIntel":
+				dialog.getVisualPanel().showCore(CoreUITabId.INTEL, planet, battle, new NexUtilsGUI.NullCoreInteractionListener());
 				return true;
 			case "updateData":
 				checkStageChangesAndTriggers(dialog, memoryMap);

@@ -1760,14 +1760,16 @@ FireBest DialogOptionSelected","$personLastName lets out an exasperated sigh.
 nex_gbTut_diamondConvo5PostWithFleet,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5Post
 !$enemyFleetKilled",Call $global.nex_gbTut_ref startBattle,"""Alright, the battle's already ongoing, and I've got to liase with Colonel Shaddad on our defense strategy. I'll tie you in to our comm net, and let you deploy your own forces at your discretion.
 
-""I'd strongly suggest punching out their invasion fleet first; it'll cause us no end of grief if allowed to hang about. Good hunting, captain.""","cutCommLink:Cut the comm link
+""I'd strongly suggest punching out their invasion fleet first; it'll cause us no end of grief if allowed to hang about. Good hunting, captain.""","nex_gbTut_diamondConvoGotoIntel:Cut the comm link
 nex_gbTut_diamondConvo6:""Can you explain how this works?""",
 nex_gbTut_diamondConvo5PostWithoutFleet,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5Post
 $enemyFleetKilled",Call $global.nex_gbTut_ref startBattle,"""Alright, the battle's already ongoing, and I've got to liase with Colonel Shaddad on our defense strategy. I'll tie you in to our comm net, and let you deploy your own forces at your discretion.
 
-""Taking out the enemy fleet has bought us some valuable breathing room, but the fight's far from over. Good hunting, captain.""","cutCommLink:Cut the comm link
+""Taking out the enemy fleet has bought us some valuable breathing room, but the fight's far from over. Good hunting, captain.""","nex_gbTut_diamondConvoGotoIntel:Cut the comm link
 nex_gbTut_diamondConvo6:""Can you explain how this works?""",
-nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight marines ""heavy armaments"" ""Units tab"" deploy morale","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
+nex_gbTut_diamondConvoGotoIntel,DialogOptionSelected,$option == nex_gbTut_diamondConvoGotoIntel,"Call $global.nex_gbTut_ref openIntel
+EndConversation",,,
+nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight marines ""heavy armaments"" ""Units tab"" ""intel screen"" deploy morale","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
 
 ""You'll start with your marines (and heavy armaments, if you have any) organized into units of a suitable size. From the Units tab in the intel screen, deploy them to the surface; this will cost supplies depending on the unit type and size.
 
@@ -1778,7 +1780,7 @@ nex_gbTut_diamondConvo7,DialogOptionSelected,$option == nex_gbTut_diamondConvo7,
 
 ""Of course, just sitting in orbit with specialized ground support ships helps as well. Makes the troops fight more effectively, and helps transport them to where they're needed.
 
-""Beyond that, you should be able to work it out as you go. Consult the Help tab for more info if you need it.""",cutCommLink:Thank $himOrHer and cut the comm link,
+""Beyond that, you should be able to work it out as you go. Consult the Help tab for more info if you need it.""",nex_gbTut_diamondConvoGotoIntel:Thank $himOrHer and cut the comm link,
 ,,,,,,
 nex_gbTut_diamondConvoOngoing,PickGreeting,"$id == nex_rossDiamond score:1000
 Call $global.nex_gbTut_ref updateData
@@ -2770,9 +2772,9 @@ FireBest MarketPostDock",,,
 #END duel stuff,,,,,,
 ,,,,,,
 # fleet splitter,,,,,,
-nex_splitFleet_opt,ExerelinMarketSpecial,!$hasMarket,,,10:nex_splitFleet_start:Split your fleet,
+#nex_splitFleet_opt,ExerelinMarketSpecial,!$hasMarket,,,10:nex_splitFleet_start:Split your fleet,Commented out because IndEvo has a leeter version
 nex_splitFleet_main,DialogOptionSelected,$option == nex_splitFleet_start,Nex_SplitFleet start,Preparing fleet split...,,
-nex_splitFleet_sf_opt,PopulateOptions,"Nex_IsBaseOfficial admin
+#nex_splitFleet_sf_opt,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_IsFactionRuler $faction.id",,,10:nex_splitFleet_sf_start:Create a special task group,
 nex_splitFleet_sf_optDisable,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_IsFactionRuler $faction.id
