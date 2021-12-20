@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.groundbattle.GBConstants;
+import exerelin.campaign.intel.groundbattle.GroundBattleAI;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleRoundResolve;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
@@ -333,6 +334,41 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 	@Override
 	public boolean shouldCloseDialogOnActivate() {
 		return false;
+	}
+	
+	@Override
+	public float getAIUsePriority(GroundBattleAI ai) {
+		return 30;
+	}
+	
+	@Override
+	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
+		// find a fleet to execute ability
+		// NPCs can't use player fleet
+		List<CampaignFleetAPI> fleets = getIntel().getSupportingFleets(side.isAttacker());
+		if (fleets.isEmpty()) return false;
+		
+		CampaignFleetAPI fleet = null;
+		olympus = null;
+		
+		for (CampaignFleetAPI candidate : fleets) {
+			if (candidate.isPlayerFleet()) continue;
+			if (candidate.getAI() != null) {
+				if (candidate.getAI().isFleeing() || candidate.getAI().isMaintainingContact())
+					continue;
+			}
+			for (FleetMemberAPI member : getOlympi(fleet)) {
+				if (haveEnoughCR(member)) {
+					olympus = member;
+					break;
+				}
+			}
+			if (olympus != null) break;
+		}
+		
+		if (olympus == null) return false;
+		user = fleet.getCommander();
+		return super.aiExecute(ai, user);
 	}
 	
 	public boolean hasAnyOlympi(CampaignFleetAPI fleet) {

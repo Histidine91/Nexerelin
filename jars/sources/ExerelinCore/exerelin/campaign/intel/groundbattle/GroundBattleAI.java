@@ -207,33 +207,37 @@ public class GroundBattleAI {
 	}
 	
 	public void checkAbilityUse() {
-		AbilityPlugin best = null;
-		float bestScore = 0;
+		
 		GroundBattleSide side = intel.getSide(isAttacker);
 		PersonAPI user = side.getCommander();
 		
-		// TODO: let AI try all abilities, not just the best one?
-		// TODO: remove user from disabled check, let this happen in aiExecute
+		List<Pair<AbilityPlugin, Float>> abilitiesSorted = new ArrayList<>();
+		
 		for (AbilityPlugin ability : side.getAbilities()) {
 			Pair<String, Map<String, Object>> disableReason = ability.getDisabledReason(user);
 			if (disableReason != null) {
 				//printDebug("  Ability disabled: " + disableReason.two.get("desc"));
 				continue;
 			}
-			printDebug("  Checking ability for use: " + ability.getDef().name);
+			
 			float score = ability.getAIUsePriority(this);
-			if (score > bestScore) {
-				bestScore = score;
-				best = ability;
-			}
+			if (score < MIN_SCORE_FOR_ABILITY) continue;
+			printDebug("  Checking ability for use: " + ability.getDef().name + ", " + score);
+			abilitiesSorted.add(new Pair<>(ability, score));
 		}
-		if (bestScore < MIN_SCORE_FOR_ABILITY)
-			return;
 		
-		if (best != null) {
-			printDebug("AI trying ability: " + best.getDef().name);
-			boolean success = best.aiExecute(this, user);
-		}
+		if (abilitiesSorted.isEmpty()) return;
+		
+		Collections.sort(abilitiesSorted, new Comparator<Pair<AbilityPlugin, Float>>() {
+			@Override
+			public int compare(Pair<AbilityPlugin, Float> a1, Pair<AbilityPlugin, Float> a2) {
+				return Float.compare(a1.two, a2.two);
+			}
+		});		
+		
+		AbilityPlugin best = abilitiesSorted.get(0).one;
+		printDebug("AI trying ability: " + best.getDef().name);
+		boolean success = best.aiExecute(this, user);
 	}
 	
 	public void getInfo() {
