@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.merc;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BuffManagerAPI.Buff;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
@@ -20,7 +21,6 @@ import com.fs.starfarer.api.plugins.OfficerLevelupPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercDataManager.OfficerDef;
-import exerelin.utilities.NexUtils;
 import java.util.List;
 import java.util.Random;
 import org.apache.log4j.Logger;
@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 public class MercFleetGenPlugin {
 	
 	public static Logger log = Global.getLogger(MercFleetGenPlugin.class);
+	public static final String MERC_BUFF_ID = "nex_mercBuff";
 	
 	protected MercContractIntel intel;
 	
@@ -104,6 +105,9 @@ public class MercFleetGenPlugin {
 			fleet.setInflater(inflater);
 			
 			inflateFleet(fleet);
+		}
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			member.getBuffManager().addBuffOnlyUpdateStat(new MercBuff());
 		}
 		
 		fleet.setFaction(def.factionId, true);
@@ -220,5 +224,27 @@ public class MercFleetGenPlugin {
 			log.error("Failed to load merc fleet generator plugin" + className, ex);
 		}
 		return plugin;
+	}
+	
+	/**
+	 * This does nothing except identify the ship as a merc ship.
+	 */
+	public static class MercBuff implements Buff {
+
+		@Override
+		public void apply(FleetMemberAPI member) {}
+
+		@Override
+		public String getId() {
+			return MERC_BUFF_ID;
+		}
+
+		@Override
+		public boolean isExpired() {
+			return false;
+		}
+
+		@Override
+		public void advance(float amount) {}
 	}
 }
