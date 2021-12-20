@@ -2103,7 +2103,11 @@
 		"headerPopulation":"Population",
 		"headerHeavyIndustry":"Heavy industry",
 		"headerDiplomacy":"Diplomacy",
-		"headerRequired":"Req."
+		"headerRequired":"Req.",
+		
+		"tooltipReqPop":"The winning faction or alliance must control at least %s of the Sector's total market size, and have %s the runner-up's total size.",
+		"tooltipReqHI":"The winning faction or alliance must control at least %s of the total heavy industries in the Sector.",
+		"tooltipReqFriend":"The winning faction must be friendly or better with every other competing faction in the Sector.",
 	},
 	
 	"nex_specialForces":{

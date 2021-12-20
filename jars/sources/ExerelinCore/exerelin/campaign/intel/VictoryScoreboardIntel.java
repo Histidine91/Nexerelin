@@ -7,12 +7,12 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -38,6 +38,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	
+	public static final float RUNNER_UP_SCORE_MULT = 1.5f;
+	
 	public static int getNeededSizeForVictory(int total, List<ScoreEntry> sizeRanked) {
 		
 		float sizeFractionForVictory = Global.getSettings().getFloat("nex_sizeFractionForVictory");
@@ -45,7 +47,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		int runnerUpScore = 0;
 		if (sizeRanked.size() >= 2)
 			runnerUpScore = sizeRanked.get(1).score;
-		neededPop = Math.max(neededPop, runnerUpScore * 2);
+		neededPop = (int)Math.max(neededPop, runnerUpScore * RUNNER_UP_SCORE_MULT);
 				
 		return neededPop;
 	}
@@ -64,23 +66,27 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		List<String> factions = getWinnableFactions();
 		
 		int[] totals = generateRankings(factions, sizeRanked, hiRanked, friendsRanked);
-        float hiFractionForVictory = Global.getSettings().getFloat("nex_heavyIndustryFractionForVictory");
+		float popFractionForVictory = Global.getSettings().getFloat("nex_sizeFractionForVictory");
+		float hiFractionForVictory = Global.getSettings().getFloat("nex_heavyIndustryFractionForVictory");
 		
 		int neededPop = getNeededSizeForVictory(totals[0], sizeRanked);
 		int neededHI = (int)(totals[1] * hiFractionForVictory);
 		int neededFriends = factions.size() - 1;
 		
 		float subWidth = width/3 - 8;
+		
 		CustomPanelAPI marketScoreboard = createSubScoreboard(outer, subWidth, height, getString("headerPopulation"), 
-				"graphics/icons/markets/urbanized_polity.png", neededPop, sizeRanked);
+				"graphics/icons/markets/urbanized_polity.png", neededPop, sizeRanked, 
+				createTooltip(getString("tooltipReqPop"), StringHelper.toPercent(popFractionForVictory), RUNNER_UP_SCORE_MULT + "×"));
 		outer.addComponent(marketScoreboard).inTL(4, 48);
 		
 		CustomPanelAPI hiScoreboard = createSubScoreboard(outer, subWidth, height, getString("headerHeavyIndustry"), 
-				Global.getSettings().getSpriteName("marketConditions", "heavy_industry"), neededHI, hiRanked);
+				Global.getSettings().getSpriteName("marketConditions", "heavy_industry"), neededHI, hiRanked,
+				createTooltip(getString("tooltipReqHI"), StringHelper.toPercent(hiFractionForVictory)));
 		outer.addComponent(hiScoreboard).rightOfTop(marketScoreboard, 3);
 		
 		CustomPanelAPI friendsScoreboard = createSubScoreboard(outer, subWidth, height, getString("headerDiplomacy"), 
-				"graphics/icons/intel/peace.png", neededFriends, friendsRanked);
+				"graphics/icons/intel/peace.png", neededFriends, friendsRanked, createTooltip(getString("tooltipReqFriend")));
 		outer.addComponent(friendsScoreboard).rightOfTop(hiScoreboard, 3);
 		} catch (Throwable t) {
 			log.error(t.getMessage(), t);
@@ -88,7 +94,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	}
 	
 	/**
-	 * Creates a sub-scoreboard (e.g. one for population, one for heavy industry, one for friends).
+	 * Creates a sub-scoreboard (e.g.one for population, one for heavy industry, one for friends).
 	 * @param outer
 	 * @param width
 	 * @param height
@@ -96,10 +102,11 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	 * @param headerImage
 	 * @param required Score required to win the game.
 	 * @param rankings Sorted list of factions/alliances and their scores.
+	 * @param tooltip
 	 * @return The sub-scoreboard custom panel.
 	 */
 	public CustomPanelAPI createSubScoreboard(CustomPanelAPI outer, float width, float height, 
-			String headerText, String headerImage, int required, List<ScoreEntry> rankings) 
+			String headerText, String headerImage, int required, List<ScoreEntry> rankings, TooltipCreator tooltip) 
 	{
 		CustomPanelAPI subScoreboard = outer.createCustomPanel(width, height, 
 				new FramedCustomPanelPlugin(0.25f, Misc.getBasePlayerColor(), true));
@@ -120,6 +127,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		hdrReqHolder.setParaOrbitronLarge();
 		label = hdrReqHolder.addPara(required + "", 6);
 		label.setAlignment(Alignment.RMID);
+		hdrReqHolder.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
 		header.addUIElement(hdrReqHolder).inTR(0, 0);
 		
 		TooltipMakerAPI hdrReqTxtHolder = header.createUIElement(reqWidth2, headerHeight, false);
@@ -136,7 +144,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 				
 		subScoreboard.addComponent(header).inTL(0, 3);
 		
-		TooltipMakerAPI tooltip = subScoreboard.createUIElement(width, height - headerHeight, true);
+		TooltipMakerAPI list = subScoreboard.createUIElement(width, height - headerHeight, true);
 		
 		// create each rank row
 		int lastScore = 0;
@@ -148,14 +156,14 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 				rank = lastRank;
 			
 			CustomPanelAPI row = createRankingRow(entry, rank, subScoreboard, width - 8, rowHeight);
-			tooltip.addCustom(row, 3);
+			list.addCustom(row, 3);
 			
 			lastScore = entry.score;
 			lastRank = rank;
 			//log.info("Added row for " + entry.getName());
 		}
 		
-		subScoreboard.addUIElement(tooltip).belowLeft(header, 3);
+		subScoreboard.addUIElement(list).belowLeft(header, 3);
 		
 		return subScoreboard;
 	}
@@ -348,8 +356,15 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		//tags.add(StringHelper.getString("victory", true));
+		tags.add(Tags.INTEL_FLEET_LOG);
 		tags.add(Tags.INTEL_STORY);
 		return tags;
+	}
+	
+
+	@Override
+	public IntelSortTier getSortTier() {
+		return IntelSortTier.TIER_1;
 	}
 	
 	@Override
@@ -359,7 +374,6 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	
 	@Override
 	public boolean isHidden() {
-		
 		//return SectorManager.getManager().hasVictoryOccured();
 		return false;
 	}
@@ -368,11 +382,25 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		return StringHelper.getString("nex_scoreboard", id);
 	}
 	
-	// runcode exerelin.campaign.intel.VictoryScoreboardIntel.debug()
-	public static void debug() {
-		Global.getSector().getIntelManager().addIntel(new VictoryScoreboardIntel());
+	public TooltipCreator createTooltip(final String str, final String... args) {
+		return new TooltipCreator() {
+			@Override
+			public boolean isTooltipExpandable(Object tooltipParam) {
+				return false;
+			}
+
+			@Override
+			public float getTooltipWidth(Object tooltipParam) {
+				return 360;
+			}
+
+			@Override
+			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+				tooltip.addPara(str, 0, Misc.getHighlightColor(), args);
+			}			
+		};
 	}
-	
+			
 	public static class ScoreEntry implements Comparable<ScoreEntry> {
 		public String factionId;
 		public List<String> allianceMembers;
