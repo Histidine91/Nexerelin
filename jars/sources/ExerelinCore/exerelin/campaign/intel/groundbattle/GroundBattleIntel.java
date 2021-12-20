@@ -783,7 +783,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void updateStability() {
 		// not yet started, or already ended
-		if (!Global.getSector().getIntelManager().hasIntel(this) || isEnding() || isEnded()) 
+		if (!Global.getSector().getIntelManager().hasIntel(this) || outcome != null) 
 		{
 			market.getStability().removeTemporaryMod("invasion");
 			return;
