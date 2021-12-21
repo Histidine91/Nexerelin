@@ -918,8 +918,23 @@ public class SpecialForcesRouteAI {
 	}
 	
 	public enum TaskType {
-		RAID, PATROL, ASSIST_RAID, DEFEND_RAID, REBUILD, DEFEND_VS_PLAYER,
-		HUNT_PLAYER, COUNTER_GROUND_BATTLE, ASSEMBLE, IDLE;
+		RAID(true), 
+		PATROL(false), 
+		ASSIST_RAID(true), 
+		DEFEND_RAID(true), 
+		REBUILD(false), 
+		DEFEND_VS_PLAYER(true),
+		HUNT_PLAYER(false), 
+		COUNTER_GROUND_BATTLE(true), 
+		ASSEMBLE(false), 
+		RESUPPLY(true), 
+		IDLE(false);
+		
+		public final boolean busyTask;
+		
+		private TaskType(boolean busyTask) {
+			this.busyTask = busyTask;
+		}
 		
 		/**
 		 * Returns true for tasks we don't like to "put down", 
@@ -927,8 +942,7 @@ public class SpecialForcesRouteAI {
 		 * @return
 		 */
 		public boolean isBusyTask() {
-			return this == RAID || this == ASSIST_RAID || this == DEFEND_RAID
-					|| this == DEFEND_VS_PLAYER || this == COUNTER_GROUND_BATTLE;
+			return busyTask;
 		}
 	}
 	
@@ -946,6 +960,7 @@ public class SpecialForcesRouteAI {
 			this.priority = priority;
 		}
 		
+		// TODO: need to externalize these now that player will have their own SF fleet with visible info
 		/**
 		 * Returns a string describing the task.
 		 * @return
@@ -968,6 +983,8 @@ public class SpecialForcesRouteAI {
 					return "reconstituting fleet at " + market.getName();
 				case ASSEMBLE:
 					return "assembling at " + market.getName();
+				case RESUPPLY:
+					return "resupplying at " + market.getName();
 				case IDLE:
 					return "idle";
 				default:

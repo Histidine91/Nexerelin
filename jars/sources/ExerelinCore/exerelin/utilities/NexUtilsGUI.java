@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -35,6 +36,25 @@ public class NexUtilsGUI {
 				tooltip.addPara(str, 0);
 			}
 		};
+	}
+	
+	public static TooltipMakerAPI createFleetMemberImageForPanel(CustomPanelAPI panel, 
+			FleetMemberAPI member, float width, float height) 
+	{
+		TooltipMakerAPI image = panel.createUIElement(width, height, false);
+		
+		List<FleetMemberAPI> ship = new ArrayList<>();
+		ship.add(member);
+		image.addShipList(1, 1, width, Color.WHITE, ship, 0);
+		return image;
+	}
+	
+	public static TooltipMakerAPI createPersonImageForPanel(CustomPanelAPI panel, 
+			PersonAPI person, float width, float height) 
+	{
+		TooltipMakerAPI image = panel.createUIElement(width, height, false);
+		image.addImage(person.getPortraitSprite(), height, 0);
+		return image;
 	}
 		
 	// yeeted from Stelnet (GPL v3)
@@ -75,7 +95,7 @@ public class NexUtilsGUI {
 		}
 
 		private void addSkill(TooltipMakerAPI tooltip, MutableCharacterStatsAPI.SkillLevelAPI skill) {
-			String elite = skill.getLevel() > 1 ? StringHelper.getString("elite") + " " : "";
+			String elite = skill.getLevel() > 1 ? StringHelper.getString("elite", true) + " " : "";
 			String skillString = String.format("%s%s", elite, skill.getSkill().getName());
 			TooltipMakerAPI inner = tooltip.beginImageWithText(skill.getSkill().getSpriteName(), 18);
 			inner.addPara(skillString, 0, Misc.getHighlightColor(), "Elite");

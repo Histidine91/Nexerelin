@@ -19,6 +19,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.MutableValue;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -481,16 +482,11 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	 */
 	protected TooltipMakerAPI generateImage(CustomPanelAPI panel, FleetMemberAPI member, OfficerDataAPI officer) 
 	{
-		TooltipMakerAPI image = panel.createUIElement(IMAGE_WIDTH, ENTRY_HEIGHT, false);
-		
 		if (member != null) {
-			List<FleetMemberAPI> ship = new ArrayList<>();
-			ship.add(member);
-			image.addShipList(1, 1, IMAGE_WIDTH, Color.WHITE, ship, 0);
+			return NexUtilsGUI.createFleetMemberImageForPanel(panel, member, IMAGE_WIDTH, ENTRY_HEIGHT);
 		} else {
-			image.addImage(officer.getPerson().getPortraitSprite(), IMAGE_WIDTH-8, 0);
+			return NexUtilsGUI.createPersonImageForPanel(panel, officer.getPerson(), IMAGE_WIDTH, ENTRY_HEIGHT);
 		}
-		return image;
 	}
 	
 	protected void createFleetView(CustomPanelAPI panel, TooltipMakerAPI info, float width) {

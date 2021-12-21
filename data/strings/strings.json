@@ -45,6 +45,7 @@
 		"stats":"stats",
 		"status":"status",
 		"target":"target",
+		"transfer":"transfer",
 		"unknown":"unknown",
 		"use":"use",
 		"vote":"vote",
@@ -2135,6 +2136,8 @@
 		"bountyBulletUnknown":"Target location details are unknown (this should not happen, please report)",
 		"bountyParaLocation":"The target is located in the %s.",
 		"bountyParaDestination":"The target is headed to %s in the %s.",
+		
+		"dialogButtonAssign":"Assign",
 	},
 	
 	"nex_splitFleet":{
@@ -2145,6 +2148,9 @@
 		"dialog_headerOfficerPick":"Select officers",
 		"dialog_commander":"commander",
 		"dialog_level":"level %s",
+		
+		"dialog_playerFleet":"player fleet",
+		"dialog_otherFleet":"other fleet",
 	},
 	
 	"nex_skills":{

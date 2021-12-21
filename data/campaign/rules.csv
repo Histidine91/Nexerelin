@@ -2771,44 +2771,55 @@ EndConversation DO_NOT_FIRE
 FireBest MarketPostDock",,,
 #END duel stuff,,,,,,
 ,,,,,,
-# fleet splitter,,,,,,
-#nex_splitFleet_opt,ExerelinMarketSpecial,!$hasMarket,,,10:nex_splitFleet_start:Split your fleet,Commented out because IndEvo has a leeter version
-nex_splitFleet_main,DialogOptionSelected,$option == nex_splitFleet_start,Nex_SplitFleet start,Preparing fleet split...,,
-#nex_splitFleet_sf_opt,PopulateOptions,"Nex_IsBaseOfficial admin
-Nex_IsFactionRuler $faction.id",,,10:nex_splitFleet_sf_start:Create a special task group,
-nex_splitFleet_sf_optDisable,PopulateOptions,"Nex_IsBaseOfficial admin
-Nex_IsFactionRuler $faction.id
-!Nex_SplitFleet canCreate",SetEnabled nex_splitFleet_sf_start false,,,
-nex_splitFleet_sf_main,DialogOptionSelected,$option == nex_splitFleet_sf_start,"Nex_SplitFleet start
-Nex_SplitFleet setSFMode true
-$nex_splitFleet_mode = ""sf"" 0","""So, you wish to establish a special task group for $theFaction?""",,
-nex_splitFleet_mainOpts,Nex_SplitFleetOptions,,"Nex_AddOptionConfirmation nex_splitFleet_confirm ""Confirm split?"" ""Yes"" ""No""
-Nex_AddOptionConfirmation nex_splitFleet_cancel ""Exit menu?"" ""Yes"" ""No""",,"nex_splitFleet_pickShips:Pick ships
-nex_splitFleet_pickOfficers:Pick officers
-nex_splitFleet_confirm:Confirm
-nex_splitFleet_cancel:Cancel",
-nex_splitFleet_mainOptsNoConfirm,Nex_SplitFleetOptions,!Nex_SplitFleet canConfirm,SetEnabled nex_splitFleet_confirm false,,,
-nex_splitFleet_pickShips,DialogOptionSelected,$option == nex_splitFleet_pickShips,Nex_SplitFleet pickShips,,,
-nex_splitFleet_pickOfficers,DialogOptionSelected,$option == nex_splitFleet_pickOfficers,Nex_SplitFleet pickOfficers,,,
-nex_splitFleet_pickOfficersBack,DialogOptionSelected,$option == nex_splitFleet_pickOfficersBack,Nex_SplitFleet mainMenu,,,
-nex_splitFleet_confirm,DialogOptionSelected,$option == nex_splitFleet_confirm,"Nex_SplitFleet confirm
-ShowDefaultVisual
-FireAll ExerelinMarketSpecial",,,
-nex_splitFleet_sf_confirm,DialogOptionSelected,"$option == nex_splitFleet_confirm
-$nex_splitFleet_mode == ""sf""","Nex_SplitFleet confirm
-ShowPersonVisual
-FireBest PickGreeting",,,
-nex_splitFleet_cancel,DialogOptionSelected,$option == nex_SplitFleet_cancel,"Nex_SplitFleet cancel
-ShowDefaultVisual
-FireAll ExerelinMarketSpecial",,,
-nex_splitFleet_cancel_sf,DialogOptionSelected,"$option == nex_SplitFleet_cancel
-$nex_splitFleet_mode == ""sf""","Nex_SplitFleet cancel
-ShowPersonVisual
-FireBest PickGreeting",,,
-nex_splitFleet_greeting,OpenCommLink,$entity.nex_splitFleet score:100,,"""Hello, captain. Are we to rejoin your fleet now?""
+# player special task group,,,,,,
+nex_configSF_createNewOpt,PopulateOptions,"Nex_IsBaseOfficial military
+Nex_IsFactionRuler $faction.id",,,10:nex_configSF_createNew:Create a special task group,
+nex_configSF_opt,OpenCommLink,"$faction.id == ""player""
+$entity.nex_sfIntel != null score:100
+!$printedFirstGreeting","ShowPersonVisual
+$printedFirstGreeting = true","""$PersonRank $personLastName, reporting. Awaiting orders, admiral.""
 OR
-""It's pretty lonely out here, captain. Is it time to rejoin you?""","nex_splitFleet_merge:Merge fleets
+""$PersonRank $personLastName, ready to receive your command.""","nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
-nex_splitFleet_merge,DialogOptionSelected,$option == nex_splitFleet_merge,"Nex_SplitFleet merge
+nex_configSF_optRepeat,OpenCommLink,"$faction.id == ""player""
+$entity.nex_sfIntel != null score:100
+$printedFirstGreeting",ShowPersonVisual,,"nex_configSF_start:Reconfigure task group
+cutCommLink:Cut the comm link",
+nex_configSF_createNew,DialogOptionSelected,$option == nex_configSF_createNew,Nex_SpecialForcesConfig beginCreate,Creating special task group...,,
+nex_configSF_main,DialogOptionSelected,$option == nex_configSF_start,Nex_SpecialForcesConfig mainMenu,Reconfiguring special task group...,,
+nex_configSF_mainOpts,Nex_ConfigSFOptions,!$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""",,"nex_configSF_giveShips:Give ships
+nex_configSF_takeShips:Take ships
+nex_configSF_showOfficers:Transfer officers
+nex_configSF_assignOfficers:Assign officers
+nex_configSF_disband:Absorb and disband task group
+nex_configSF_close:Done",
+nex_configSF_mainOptsCreate,Nex_ConfigSFOptions,$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_close ""Confirm task force creation?"" ""Yes"" ""No""
+Nex_AddOptionConfirmation nex_configSF_abortCreate ""Cancel task force creation?"" ""Yes"" ""No""",,"nex_configSF_giveShips:Give ships
+nex_configSF_takeShips:Take ships
+nex_configSF_showOfficers:Transfer officers
+nex_configSF_assignOfficers:Assign officers
+nex_configSF_createFinish:Create
+nex_configSF_abortCreate:Cancel",
+nex_configSF_mainOptsCreateNoShips,Nex_ConfigSFOptions,"$nex_psf_create
+$fleetPoints == 0","SetEnabled nex_configSF_takeShips false
+SetEnabled nex_configSF_createFinish false",,,
+nex_configSF_mainOptsNoShips,Nex_ConfigSFOptions,"!$nex_psf_create
+$entity.fleetPoints == 0","SetEnabled nex_configSF_takeShips false
+SetEnabled nex_configSF_close false
+SetTooltip nex_configSF_close ""Task force has no ships and will be disbanded. Use the disband option to confirm this course of action.""",,,
+nex_configSF_mainOptsNoCommander,Nex_ConfigSFOptions,!Nex_SpecialForcesConfig hasCommander,"SetEnabled nex_configSF_createFinish false
+SetTooltip nex_configSF_createFinish ""Fleet must have a commander.""",,,
+nex_configSF_giveShips,DialogOptionSelected,$option == nex_configSF_giveShips,Nex_SpecialForcesConfig giveShips,,,
+nex_configSF_takeShips,DialogOptionSelected,$option == nex_configSF_takeShips,Nex_SpecialForcesConfig takeShips,,,
+nex_configSF_transferOfficers,DialogOptionSelected,$option == nex_configSF_showOfficers,Nex_SpecialForcesConfig showOfficerTransfer,,"nex_configSF_officerConfirm:Confirm transfers
+nex_configSF_officerCancel:Cancel",
+nex_configSF_transferOfficersConfirm,DialogOptionSelected,$option == nex_configSF_officerConfirm,"Nex_SpecialForcesConfig transferOfficers
+Nex_SpecialForcesConfig mainMenu",,,
+nex_configSF_transferOfficersCancel,DialogOptionSelected,$option == nex_configSF_officerCancel,Nex_SpecialForcesConfig mainMenu,,,
+nex_configSF_assignOfficers,DialogOptionSelected,$option == nex_configSF_assignOfficers,Nex_SpecialForcesConfig showOfficerAssignment,,nex_configSF_officerCancel:Go back,
+nex_configSF_disband,DialogOptionSelected,$option == nex_configSF_disband,"Nex_SpecialForcesConfig disband
 DismissDialog",,,
-#END fleet splitter,,,,,,
+nex_configSF_close,DialogOptionSelected,$option == nex_configSF_close,FireBest OpenCommLink,,,
+nex_configSF_create,DialogOptionSelected,$option == nex_configSF_createFinish,Nex_SpecialForcesConfig done,"""As you command. The new task group is ready to go.""",,
+nex_configSF_abortCreate,DialogOptionSelected,$option == nex_configSF_abortCreate,Nex_SpecialForcesConfig cancel,,,
+#END player special task group,,,,,,

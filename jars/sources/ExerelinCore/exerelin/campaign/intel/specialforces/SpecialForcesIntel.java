@@ -49,6 +49,8 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -59,12 +61,15 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	public static final String SOURCE_ID = "nex_specialForces";
 	public static final String FLEET_TYPE = "nex_specialForces";
+	public static final String FLEET_MEM_KEY_INTEL = "$nex_sfIntel";
 	protected static final String BUTTON_DEBUG = "debug";
 	public static final Object ENDED_UPDATE = new Object();
 	public static final Object NEW_ORDERS_UPDATE = new Object();
 	public static final float DAMAGE_TO_REBUILD = 0.4f;
 	public static final float DAMAGE_TO_TERMINATE = 0.9f;
 	public static final boolean ALLOW_GO_ROGUE = true;
+	
+	protected boolean isPlayer;	// just checked for some stuff; most player-specific logic is handled in PlayerSpecialForcesIntel
 	
 	protected MarketAPI origin;
 	protected MarketAPI lastSpawnedFrom;	// updated when fleet rebuilds
@@ -79,7 +84,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	protected IntervalUtil interval = new IntervalUtil(0.2f, 0.3f);
 	
 	// These are preserved between fleet regenerations
-	protected PersonAPI commander;
+	@Getter @Setter protected PersonAPI commander;
 	protected FleetMemberAPI flagship;
 	
 	protected float rebuildCheckCooldown = 0;
@@ -117,7 +122,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		extra.fleetType = FLEET_TYPE;
 		extra.strength = getAdjustedStrength(startingFP, origin);
 		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
-		routeAI = new SpecialForcesRouteAI(this);
+		if (isPlayer) {
+			routeAI = new PlayerSpecialForcesRouteAI((PlayerSpecialForcesIntel)this);
+		} else {
+			routeAI = new SpecialForcesRouteAI(this);
+		}
+		
 		routeAI.addInitialTask();
 		generateFlagshipAndCommanderIfNeeded(route);
 
@@ -156,6 +166,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().y);
 		
 		fleet.addScript(createAssignmentAI(fleet, route));
+		
+		if (faction.isPlayerFaction()) {
+			fleet.setNoAutoDespawn(true);
+		}
 		
 		trueStartingFP = fleet.getFleetPoints();
 		return fleet;
@@ -235,6 +249,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		fleet.setNoFactionInName(true);
 		
 		fleet.addEventListener(new SFFleetEventListener(this));
+		fleet.getMemoryWithoutUpdate().set(FLEET_MEM_KEY_INTEL, this);
 		
 		return fleet;
 	}
@@ -518,8 +533,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		float opad = 10f;
 		
 		Color h = Misc.getHighlightColor();
-		Color c = getFactionForUIColors().getBaseUIColor();
-		Color d = getFactionForUIColors().getDarkUIColor();
 		
 		// Images
 		if (commander != null) {
@@ -538,13 +551,30 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			String fleetName = this.fleetName != null ? this.fleetName 
 					: "<" + StringHelper.getString("unknown") + ">";
 			str = StringHelper.substituteToken(str, "$fleetName", fleetName);
-
+			
 			info.addPara(str, opad);
 			return;
 		}
 		
+		printIntro(info, opad);
+		printCommanderInfo(info, opad);
+		printFleetStrengthInfo(info, opad);
+		printCurrentAction(info, opad);
+		
+		if (isDebugVisible()) {
+			str = getString("intelDescDebug");
+			info.addPara(str, Misc.getGrayColor(), opad);
+
+			ButtonAPI button = info.addButton(getString("intelButtonDebug"), 
+						BUTTON_DEBUG, faction.getBaseUIColor(), faction.getDarkUIColor(),
+						(int)(width), 20f, opad);
+			//button.setShortcut(Keyboard.KEY_D, true);
+		}
+	}
+	
+	protected void printIntro(TooltipMakerAPI info, float opad) {
 		// Intro paragraph
-		str = getString(fleetName != null? "intelDesc1" : "intelDesc1NoName");
+		String str = getString(fleetName != null? "intelDesc1" : "intelDesc1NoName");
 		str = StringHelper.substituteToken(str, "$faction", faction.getPersonNamePrefix());
 		if (fleetName != null) str = StringHelper.substituteToken(str, "$fleetName", fleetName);
 		
@@ -553,10 +583,14 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			label.setHighlight(fleetName);
 			label.setHighlightColor(faction.getBaseUIColor());
 		}
+	}
+	
+	protected void printCommanderInfo(TooltipMakerAPI info, float opad) {
+		Color h = Misc.getHighlightColor();
+		Color c = getFactionForUIColors().getBaseUIColor();
 		
-		// Commander info
 		if (commander != null) {
-			str = getString(flagship == null ? "intelDescCommanderNoFlagship" : "intelDescCommander");
+			String str = getString(flagship == null ? "intelDescCommanderNoFlagship" : "intelDescCommander");
 			str = StringHelper.substituteToken(str, "$rank", commander.getRank());
 			str = StringHelper.substituteToken(str, "$name", commander.getNameString());
 			
@@ -565,36 +599,41 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				String flagshipName = flagship.getShipName();
 				String flagshipType = flagship.getHullSpec().getNameWithDesignationWithDashClass();
 				str = StringHelper.substituteToken(str, "$flagship", flagshipType + " " + flagshipName);
-				label = info.addPara(str, opad);
+				LabelAPI label = info.addPara(str, opad);
 				label.setHighlight(commander.getNameString(), flagshipType, flagshipName);
 				label.setHighlightColors(h, h, c);
 			}
 			else {
 				info.addPara(str, opad, h, commander.getNameString());
 			}
-			
 		}
-		
-		// Fleet strength
-		str = getString("intelDescStr");
-		String fp = Math.round(route.getExtra().fp) + "";
-		if (route.getActiveFleet() != null)
-			fp = route.getActiveFleet().getFleetPoints() + "/" + fp;
-		int damage = 0;
-		if (route.getExtra().damage != null)
-			damage = (int)(route.getExtra().damage * 100);
-		
-		info.addPara(str, opad, h, fp, damage + "%");
-		
-		if (route.getActiveFleet() != null) {
-			str = getString("intelDescFleetStatus");
-			String loc = route.getActiveFleet().getContainingLocation() != null ?
-					route.getActiveFleet().getContainingLocation().getName() : " <null location>";
-			info.addPara(str, opad, h, loc);
+	}
+	
+	protected void printFleetStrengthInfo(TooltipMakerAPI info, float opad) {
+		Color h = Misc.getHighlightColor();
+		if (isDebugVisible()) {
+			String str = getString("intelDescStr");
+			String fp = Math.round(route.getExtra().fp) + "";
+			if (route.getActiveFleet() != null)
+				fp = route.getActiveFleet().getFleetPoints() + "/" + fp;
+			int damage = 0;
+			if (route.getExtra().damage != null)
+				damage = (int)(route.getExtra().damage * 100);
+
+			info.addPara(str, opad, h, fp, damage + "%");
+
+			if (route.getActiveFleet() != null) {
+				str = getString("intelDescFleetStatus");
+				String loc = route.getActiveFleet().getContainingLocation() != null ?
+						route.getActiveFleet().getContainingLocation().getName() : " <null location>";
+				info.addPara(str, opad, h, loc);
+			}
 		}
-		
-		// Current action
-		str = getString("intelDescAction");
+	}
+	
+	protected void printCurrentAction(TooltipMakerAPI info, float opad) {
+		Color h = Misc.getHighlightColor();		
+		String str = getString("intelDescAction");
 		String actionStr = "idling";
 		if (routeAI.currentTask != null)
 			actionStr = routeAI.currentTask.getText();
@@ -615,19 +654,31 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			
 			info.addPara(str, 3, h, from, to, elapsed, max);
 		}
+		// TODO: show ETA to current dest using 
+		
 		if (routeAI.currentTask != null) {
 			str = getString("intelDescActionPriority");
 			info.addPara(str, 3, h, String.format("%.1f", routeAI.currentTask.priority));
 		}
 		unindent(info);
+	}
+	
+	protected int getETA() {
+		CampaignFleetAPI fleet = route.getActiveFleet();
+		if (fleet == null) {
+			// TODO: try to calc something with RouteLocationCalculator?
+			return -1;
+		}
+		else {
+			float eta = 0;
+			SectorEntityToken target = fleet.getAI().getCurrentAssignment().getTarget();
+			if (target == null) return -1;
+			float distHyper = Misc.getDistanceLY(fleet.getLocationInHyperspace(), target.getLocationInHyperspace());
+			eta += distHyper/2;
+		}
 		
-		str = getString("intelDescDebug");
-		info.addPara(str, Misc.getGrayColor(), opad);
 		
-		ButtonAPI button = info.addButton(getString("intelButtonDebug"), 
-					BUTTON_DEBUG, faction.getBaseUIColor(), faction.getDarkUIColor(),
-					(int)(width), 20f, opad);
-		//button.setShortcut(Keyboard.KEY_D, true);
+		return Math.round(eta);
 	}
 	
 	@Override
@@ -733,6 +784,11 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	@Override
 	public boolean isHidden() {
+		if (faction.isPlayerFaction()) return false;
+		return !isDebugVisible();
+	}
+	
+	public boolean isDebugVisible() {
 		return !NexUtils.isNonPlaytestDevMode() && !ExerelinModPlugin.isNexDev;
 	}
 
@@ -839,6 +895,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public String getFleetName() {
 		if (fleetName != null) return fleetName;
 		return String.format(getString("fleetNameGeneric"), faction.getDisplayName());
+	}
+	
+	public static SpecialForcesIntel getIntelFromMemory(CampaignFleetAPI fleet) {
+		return (SpecialForcesIntel)fleet.getMemoryWithoutUpdate().get(FLEET_MEM_KEY_INTEL);
 	}
 	
 	public void debugMsg(String msg, boolean small) {

@@ -9,8 +9,6 @@ import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.characters.FullName;
-import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -18,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
@@ -41,11 +40,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.lazywizard.lazylib.CollectionUtils;
 
+// maybe try to create a blank SF event instead and do everything from there
 @Log4j
+@Deprecated
 public class Nex_SplitFleet extends BaseCommandPlugin {
 	
 	public static final String MEM_KEY_DATA = "$nex_splitFleet_data";
@@ -169,6 +168,8 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 				continue;
 			if (member.getBuffManager().getBuff(NO_SPLIT_FLEET_BUFF_ID) != null)
 				continue;
+			if (member.getVariant().hasTag(Tags.SHIP_CAN_NOT_SCUTTLE))
+				continue;
 			if (member == player.getFlagship())
 				continue;
 			ships.add(member);
@@ -232,8 +233,6 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 		tooltip.setParaFontDefault();
 		
 		// list officers
-		
-		// TODO add skill tooltip
 		for (final PersonAPI officer : officers) {
 			TooltipCreator offTT = new NexUtilsGUI.ShowPeopleOfficerTooltip(officer);
 			
@@ -307,11 +306,13 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 	{
 		SplitFleetCreationData data = getData(memoryMap);
 		if (data.isSF) {
+			/*
 			PlayerSpecialForcesIntel sf = new PlayerSpecialForcesIntel(
 					dialog.getInteractionTarget().getMarket(), Global.getSector().getPlayerFaction(), 
 					data.commander, data.ships, data.officers);
 			removeFromPlayerFleet(data);
 			sf.init();
+			*/
 		} else {
 			// kinda unsafe to remove before adding, but seems necessary to ensure correct data
 			removeFromPlayerFleet(data);
@@ -386,8 +387,6 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 			}
 			player.getFleetData().removeOfficer(officer);
  		}
-		player.getFleetData().setSyncNeeded();
-		player.getFleetData().syncIfNeeded();
 		player.forceSync();
 	}
 	
@@ -412,7 +411,7 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 		player.forceSync();
 	}
 	
-	protected FleetMemberAPI getShipCommandedBy(CampaignFleetAPI fleet, PersonAPI captain) {
+	protected static FleetMemberAPI getShipCommandedBy(CampaignFleetAPI fleet, PersonAPI captain) {
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			if (member.getCaptain() == captain) return member;
 		}
