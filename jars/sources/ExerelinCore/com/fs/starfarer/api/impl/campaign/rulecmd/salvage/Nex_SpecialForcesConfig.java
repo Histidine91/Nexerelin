@@ -494,8 +494,6 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		}
 		other.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
 		
-		player.getFleetData().setSyncNeeded();
-		player.getFleetData().syncIfNeeded();
 		player.forceSync();
 	}
 	

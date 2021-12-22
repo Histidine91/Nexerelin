@@ -331,8 +331,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	protected void syncFleet(CampaignFleetAPI fleet) {
 		fleet.getFleetData().sort();
-		fleet.getFleetData().setSyncNeeded();
-		fleet.getFleetData().syncIfNeeded();
 		fleet.forceSync();
 	}
 	

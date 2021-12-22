@@ -102,8 +102,6 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 				dialog.getTextPanel().addParagraph(rex.getMessage());
 			}	
 		}
-		tempFleet.getFleetData().setSyncNeeded();
-		tempFleet.getFleetData().syncIfNeeded();
 		tempFleet.forceSync();
 		
 		TextPanelAPI text = dialog.getTextPanel();

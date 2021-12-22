@@ -406,8 +406,6 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 		
 		other.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
 		
-		player.getFleetData().setSyncNeeded();
-		player.getFleetData().syncIfNeeded();
 		player.forceSync();
 	}
 	
