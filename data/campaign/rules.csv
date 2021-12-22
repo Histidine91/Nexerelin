@@ -1660,7 +1660,7 @@ datastores
 submit!""
 
 Is it talking about Coronal Hypershunt you found recently? It may be possible to buy off this strange AI leave, by giving it the right thing... but how do you even ask what it wants?","nex_HistorianOmegaHail2:Offer some cat photos you have lying around, for their datastores
-cutCommLink:Cut the comm link",
+cutCommLink:Cut the comm link",Text by Avanitia
 nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHail2,"Highlight ""Absolutely unforgivable""","You transmit a quick, abbreviated sample from the $shipOrFleet's sizable selection. It takes 3.7 milliseconds for the ""other party"" to process what it's looking at.
 
 ""companion animal, type furry, quadrupedal. use lacking, submission unworthy. will not subsume!""
@@ -2393,7 +2393,10 @@ $nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequest
 
 Now it's no business of ours on a personal level, but our paycheck requires that you die now. Say your prayers, captain.""",cutCommLink:Cut the comm link,
 nex_buildStation_interceptHailDialogRem_startHostileLuddicPath,Nex_BuildStationInterceptHail_DialogStart,"$faction.id == luddic_path score:12
-$nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""Foul slave of Moloch!"" The $personRank looks as if $heOrShe is barely restrained from spitting on the screen. ""Your idolatrous plot will not succeed. Ready yourself for the fires of hell from whence you came!""",cutCommLink:Cut the comm link,"Pathers only have dialog for the Remnant variant of the mission, and have no bargaining options regardless of relationship"
+$nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""Foul slave of Moloch!"" The $personRank looks as if $heOrShe is barely restraining $himOrHerself from spitting on the viewscreen. ""Your idolatrous plot will not succeed. Ready yourself for the fires of hell from whence you came!""
+OR
+""Foul servant of Moloch and its abominable soulless prophet!"" The $personRank looks as if $himOrHerself is barely keeping themselves from spitting on the comms console. ""Your plot to further stain the holy void will not succeed, for you will be purged by our sacred weaponry. Prepare yourself to be exorcised, demon.""",cutCommLink:Cut the comm link,"Pathers only have dialog for the Remnant variant of the mission, and have no bargaining options regardless of relationship
+Alt text by Avanitia"
 #END build station mission,,,,,,
 ,,,,,,
 # chatty stuff,,,,,,

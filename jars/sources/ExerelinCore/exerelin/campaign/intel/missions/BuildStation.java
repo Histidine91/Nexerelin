@@ -183,6 +183,9 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			//triggerFleetMakeFaster(true, 2, true);
 			triggerSetFleetAlwaysPursue();
 			triggerSetFleetMissionRef("$nex_buildStation_ref");
+			if (complFaction.equals(Factions.LUDDIC_PATH)) {
+				triggerFleetPatherNoDefaultTithe();
+			}			
 			triggerSetFleetGenericHailPermanent("Nex_BuildStationInterceptHail");
 			triggerFleetMakeImportant(null, Stage.DELIVER);
 			
@@ -503,6 +506,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 					// alpha for both types; damaged is already weaker
 					//coreId = Commodities.BETA_CORE;
 					fleet.getMemoryWithoutUpdate().set("$damagedStation", true);
+					fleet.setName(fleet.getName() + " (Damaged)");	// FIXME: externalize string
 				}
 					
 				AICoreOfficerPlugin plugin = Misc.getAICoreOfficerPlugin(coreId);
