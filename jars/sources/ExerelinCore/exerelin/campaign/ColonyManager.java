@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
@@ -25,6 +26,7 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketImmigrationModifier;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
@@ -1409,8 +1411,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						toRemove.add(ind.getId());
 					}
 				}
-				for (String indId : toRemove)
+				for (String indId : toRemove) {
+					moveSpecialsToBestSubmarket(market, market.getIndustry(indId));
 					market.removeIndustry(indId, null, false);
+				}
+					
 				
 				market.reapplyIndustries();
 			}
@@ -1447,6 +1452,35 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				}
 			}
 			
+		}
+	}
+	
+	/**
+	 * Move any special items from the specified industry to open market, black market, 
+	 * military submarket, or storage (in that order, picks the first one available).
+	 * @param market
+	 * @param ind
+	 */
+	public static void moveSpecialsToBestSubmarket(MarketAPI market, Industry ind) {
+		String aiCore = ind.getAICoreId();
+		SpecialItemData special = ind.getSpecialItem();
+		SubmarketAPI sub = market.getSubmarket(Submarkets.SUBMARKET_OPEN);
+		if (sub == null) {
+			market.getSubmarket(Submarkets.SUBMARKET_BLACK);
+		}
+		if (sub == null) {
+			market.getSubmarket(Submarkets.GENERIC_MILITARY);
+		}
+		if (sub == null) {
+			market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+		}
+		if (sub == null) return;
+		
+		if (aiCore != null) {
+			sub.getCargo().addCommodity(aiCore, 1);
+		}
+		if (special != null) {
+			sub.getCargo().addSpecial(special, 1);
 		}
 	}
 	
