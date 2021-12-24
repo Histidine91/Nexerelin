@@ -258,6 +258,10 @@ public class IndustryForBattle {
 		return false;
 	}
 	
+	protected boolean stillExistsOnMarket() {
+		return ind.getMarket() != null && ind.getMarket().hasIndustry(ind.getId());
+	}
+	
 	// old tabular display?
 	@Deprecated
 	public TooltipMakerAPI renderForcePanel(CustomPanelAPI panel, float width, 
@@ -329,7 +333,8 @@ public class IndustryForBattle {
 		
 		if (heldByAttacker && intel.playerIsAttacker) {
 			boolean haveLootables = ind.getAICoreId() != null || ind.getSpecialItem() != null;
-			if (haveLootables) {
+			if (haveLootables && this.stillExistsOnMarket() && intel.isFleetInRange(Global.getSector().getPlayerFleet())) 
+			{
 				troops.addButton(GroundBattleIntel.getString("btnLoot"), 
 						new Pair<String, IndustryForBattle> ("loot", this),
 						64, 16, pad);
