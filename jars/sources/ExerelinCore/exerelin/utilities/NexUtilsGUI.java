@@ -1,5 +1,6 @@
 package exerelin.utilities;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.characters.FullName;
@@ -12,6 +13,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
+import static exerelin.campaign.intel.merc.MercContractIntel.SHIP_ICON_WIDTH;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +45,7 @@ public class NexUtilsGUI {
 	{
 		TooltipMakerAPI image = panel.createUIElement(width, height, false);
 		
-		List<FleetMemberAPI> ship = new ArrayList<>();
-		ship.add(member);
-		image.addShipList(1, 1, width, Color.WHITE, ship, 0);
+		addSingleShipList(image, width, member, 0);
 		return image;
 	}
 	
@@ -138,6 +138,27 @@ public class NexUtilsGUI {
 		result.elements.add(image);
 		result.elements.add(textHolder);
 		return result;
+	}
+	
+	public static void addShipList(TooltipMakerAPI info, float width, List<FleetMemberAPI> ships, float iconWidth, float pad) 
+	{
+		int numColumns = (int)(width/iconWidth);
+		int numRows = (int)Math.ceil((float)ships.size()/numColumns);
+		info.addShipList(numColumns, numRows, iconWidth, Global.getSettings().getBasePlayerColor(), ships, pad);
+	}
+	
+	public static void addShipList(TooltipMakerAPI info, float width, int numColumns, List<FleetMemberAPI> ships, float pad) 
+	{
+		float iconWidth = width/numColumns;
+		int numRows = (int)Math.ceil((float)ships.size()/numColumns);
+		info.addShipList(numColumns, numRows, iconWidth, Global.getSettings().getBasePlayerColor(), ships, pad);
+	}
+	
+	public static void addSingleShipList(TooltipMakerAPI info, float width, FleetMemberAPI ship, float pad) 
+	{
+		List<FleetMemberAPI> temp = new ArrayList<>();
+		temp.add(ship);
+		info.addShipList(1, 1, width, Global.getSettings().getBasePlayerColor(), temp, pad);
 	}
 	
 	public static class CustomPanelGenResult {

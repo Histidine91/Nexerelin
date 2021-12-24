@@ -28,6 +28,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -441,12 +442,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 			info.addPara(getString("intel_bullet_daysRemaining"), 3, Misc.getHighlightColor(), (int)daysRemaining + "");
 	}
 	
-	public void displayShips(TooltipMakerAPI info, float width, List<FleetMemberAPI> ships, float pad) 
-	{
-		int numColumns = (int)(width/SHIP_ICON_WIDTH);
-		int numRows = (int)Math.ceil((float)ships.size()/numColumns);
-		info.addShipList(numColumns, numRows, 48, Global.getSettings().getBasePlayerColor(), ships, pad);
-	}
+	
 	
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
@@ -500,15 +496,15 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		//log.info(String.format("Current ships %s, stored %s, lost %s", curr.size(), stored.size(), lost.size()));
 		if (!curr.isEmpty()) {
 			info.addPara(getString("intel_desc_ships") + ":", opad);
-			displayShips(info, width, curr, pad);
+			NexUtilsGUI.addShipList(info, width, curr, SHIP_ICON_WIDTH, pad);
 		}
 		if (!stored.isEmpty()) {
 			info.addPara(getString("intel_desc_shipsStored") + ":", pad);
-			displayShips(info, width, stored, pad);
+			NexUtilsGUI.addShipList(info, width, stored, SHIP_ICON_WIDTH, pad);
 		}
 		if (!lost.isEmpty()) {
 			info.addPara(getString("intel_desc_shipsMissing") + ":", pad);
-			displayShips(info, width, lost, pad);
+			NexUtilsGUI.addShipList(info, width, lost, SHIP_ICON_WIDTH, pad);
 		}		
 		
 		long currValue = calcShipsValue();
@@ -542,6 +538,11 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 			contractOver = true;
 			ui.updateUIForItem(this);
 		}
+	}
+	
+	@Override
+	public IntelSortTier getSortTier() {
+		return IntelSortTier.TIER_2;
 	}
 	
 	@Override

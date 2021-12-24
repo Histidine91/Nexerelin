@@ -39,6 +39,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -444,9 +445,7 @@ public class ProcureShip extends CovertActionIntel {
 			}
 			
 			// show the ship
-			List<FleetMemberAPI> ships = new ArrayList<>();
-			ships.add(ship);
-			info.addShipList(1, 1, 128, Color.WHITE, ships, pad);
+			NexUtilsGUI.addSingleShipList(info, 128, ship, pad);
 		}
 		super.addResultPara(info, pad);
 	}

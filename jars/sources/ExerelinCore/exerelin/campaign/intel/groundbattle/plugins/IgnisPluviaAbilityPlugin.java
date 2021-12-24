@@ -26,6 +26,7 @@ import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
 import static exerelin.campaign.intel.groundbattle.plugins.FireSupportAbilityPlugin.CLOSE_SUPPORT_DAMAGE_MULT;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -166,15 +167,6 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		
 		addCooldownDialogText(dialog);
 	}
-	
-	protected TooltipMakerAPI generateImage(CustomPanelAPI panel, FleetMemberAPI member) 
-	{
-		TooltipMakerAPI image = panel.createUIElement(ENTRY_HEIGHT, ENTRY_HEIGHT, false);
-		List<FleetMemberAPI> ship = new ArrayList<>();
-		ship.add(member);
-		image.addShipList(1, 1, ENTRY_HEIGHT, Color.WHITE, ship, 0);
-		return image;
-	}
 
 	@Override
 	public void dialogAddVisualPanel(final InteractionDialogAPI dialog) {
@@ -198,7 +190,7 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		for (final FleetMemberAPI member : olympi) 
 		{
 			CustomPanelAPI itemPanel = panel.createCustomPanel(width, ENTRY_HEIGHT, null);
-			TooltipMakerAPI image = generateImage(itemPanel, member);
+			TooltipMakerAPI image = NexUtilsGUI.createFleetMemberImageForPanel(panel, member, ENTRY_HEIGHT, ENTRY_HEIGHT);
 			itemPanel.addUIElement(image).inTL(4, 0);
 			
 			TooltipMakerAPI text = itemPanel.createUIElement(width - PANEL_WIDTH - 4, ENTRY_HEIGHT, false);

@@ -19,6 +19,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -337,10 +338,8 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			
 			String name;
 			if (item.member != null) {
-				List<FleetMemberAPI> ship = new ArrayList<>();
-				ship.add(item.member);
 				name = item.member.getShipName();
-				image.addShipList(1, 1, IMAGE_WIDTH, Color.WHITE, ship, 0);
+				NexUtilsGUI.addSingleShipList(info, IMAGE_WIDTH, item.member, 0);
 			} else {
 				image.addImage(item.officer.getPerson().getPortraitSprite(), IMAGE_WIDTH-8, 0);
 				name = item.officer.getPerson().getNameString();
