@@ -2333,6 +2333,9 @@
 		"alreadyKnown":"known",
 
 		"deliverCommodities":"Deliver $num $commodity",
+		
+		"campaignEntityPicker_destination":"Destination: ",
+		"campaignEntityPicker_selectDestination":"Select destination",
 
 		"counterInsurgencyRep":"At your current relationship with $theFaction, payment for deliveries is $mult of current per-unit price.",
 		"counterInsurgencyRepFixed":"Payment for deliveries is $mult of current per-unit price.",

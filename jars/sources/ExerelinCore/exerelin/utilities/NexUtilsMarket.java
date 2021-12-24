@@ -398,7 +398,9 @@ public class NexUtilsMarket {
 			final List<SectorEntityToken> destinations, String confirmText, 
 			final CampaignEntityPickerWrapper wrapper)
 	{
-		dialog.showCampaignEntityPicker("Select destination", "Destination:", confirmText, 
+		dialog.showCampaignEntityPicker(StringHelper.getString("exerelin_misc", "campaignEntityPicker_selectDestination"),
+				StringHelper.getString("exerelin_misc", "campaignEntityPicker_destination"),
+				confirmText, 
 				Global.getSector().getPlayerFaction(), destinations, 
 			new CampaignEntityPickerListener() {
 				public void pickedEntity(SectorEntityToken entity) {
