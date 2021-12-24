@@ -1006,6 +1006,8 @@
 		"wandering":"wandering $target",
 		"operatingIn":"operating in $target",
 		"buildingBase":"constructing base",
+		"following":"following $target",
+		"holding":"holding",
 
 		"missionStrike":"strike mission",
 		"missionInvasion":"invasion",
@@ -2129,6 +2131,7 @@
 		"intelDescOver":"The $faction special task group $fleetName is no longer operational.",
 		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",
 		
+		"intelButtonCommand":"Give orders",
 		"intelButtonDebug":"Debug",
 		
 		"bountyBulletLocation":"Target is in the %s",
@@ -2138,6 +2141,8 @@
 		"bountyParaDestination":"The target is headed to %s in the %s.",
 		
 		"dialogButtonAssign":"Assign",
+		"dialogTooltipMaxPSF":"You can only have one special task group at a time.",
+		"dialogMsgTaskAssigned":"task assigned",
 	},
 	
 	"nex_splitFleet":{

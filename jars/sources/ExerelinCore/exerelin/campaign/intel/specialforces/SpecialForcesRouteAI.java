@@ -37,7 +37,10 @@ import exerelin.utilities.NexUtilsMarket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -275,8 +278,8 @@ public class SpecialForcesRouteAI {
 		currentTask = task;
 		sf.debugMsg("Assigning task of type " + task.type + "; priority " 
 				+ String.format("%.1f", task.priority), false);
-		if (task.market != null) 
-			sf.debugMsg("  Target: " + task.market.getName(), true);
+		if (task.getMarket() != null) 
+			sf.debugMsg("  Target: " + task.getMarket().getName(), true);
 		else if (task.system != null)
 			sf.debugMsg("  Target: " + task.system.getNameWithLowercaseType(), true);
 		
@@ -299,15 +302,24 @@ public class SpecialForcesRouteAI {
 			case PATROL:
 			case RAID:
 			case COUNTER_GROUND_BATTLE:
+			case WAIT_ORBIT:
 			case ASSEMBLE:
-				destination = task.market == null ? task.system.getCenter() : task.market.getPrimaryEntity();
+				destination = task.getMarket() == null ? task.system.getCenter() : task.getMarket().getPrimaryEntity();
+				if (task.getEntity() != null) destination = task.getEntity();
 				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
 				sf.debugMsg("Travel time: " + travelTime + "; from " + from.getLocation(), false);
 				travelSeg = new RouteManager.RouteSegment(travelTime, from, destination);
 				actionSeg = new RouteManager.RouteSegment(task.time, destination);
 				break;
 			case HUNT_PLAYER:
-				// TODO				
+				// TODO
+			case FOLLOW_PLAYER:
+				destination = task.getEntity();
+				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
+				sf.debugMsg("Travel time: " + travelTime + "; from " + from.getLocation(), false);
+				travelSeg = new RouteManager.RouteSegment(travelTime, from, destination);
+				actionSeg = new RouteManager.RouteSegment(task.time, destination);
+				break;
 			case IDLE:
 				// go to nearest star system and just bum around it for a bit
 				StarSystemAPI system;
@@ -380,7 +392,7 @@ public class SpecialForcesRouteAI {
 		task.raid = raid;
 		task.system = task.raid.getSystem();
 		if (task.raid instanceof OffensiveFleetIntel) {
-			task.market = ((OffensiveFleetIntel)task.raid).getTarget();
+			task.setMarket(((OffensiveFleetIntel)task.raid).getTarget());
 		}
 		task.time = 30 + raid.getETA();
 		return task;
@@ -391,7 +403,7 @@ public class SpecialForcesRouteAI {
 		task.raid = raid;
 		task.system = task.raid.getSystem();
 		if (task.raid instanceof OffensiveFleetIntel) {
-			task.market = ((OffensiveFleetIntel)task.raid).getTarget();
+			task.setMarket(((OffensiveFleetIntel)task.raid).getTarget());
 		}
 		task.time = 30;	// don't add ETA here, apply it as a delay instead
 		return task;
@@ -400,7 +412,7 @@ public class SpecialForcesRouteAI {
 	public SpecialForcesTask generatePatrolTask(MarketAPI market, float priority) {
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.PATROL, priority);
 		task.system = market.getStarSystem();
-		task.market = market;
+		task.setMarket(market);
 		return task;
 	}
 	
@@ -413,8 +425,8 @@ public class SpecialForcesRouteAI {
 	public SpecialForcesTask generateDefendVsPlayerTask(LocationAPI loc, float priority) {
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.DEFEND_VS_PLAYER, priority);
 		
-		task.market = getLargestMarketInSystem(loc, sf.faction);
-		task.system = task.market.getStarSystem();
+		task.setMarket(getLargestMarketInSystem(loc, sf.faction));
+		task.system = task.getMarket().getStarSystem();
 		
 		return task;
 	}
@@ -577,7 +589,7 @@ public class SpecialForcesRouteAI {
 	
 	protected boolean wantNewTask() {
 		TaskType taskType = currentTask == null ? TaskType.IDLE : currentTask.type;
-		
+				
 		if (taskType == TaskType.REBUILD || taskType == TaskType.ASSEMBLE)
 			return false;
 		
@@ -601,7 +613,7 @@ public class SpecialForcesRouteAI {
 			}
 		}
 		else if (taskType == TaskType.COUNTER_GROUND_BATTLE
-				&& GroundBattleIntel.getOngoing(currentTask.market) == null) 
+				&& GroundBattleIntel.getOngoing(currentTask.getMarket()) == null) 
 		{
 			return true;
 		}
@@ -629,6 +641,10 @@ public class SpecialForcesRouteAI {
 		// don't want a new task, but check if there's a defend task we should divert to
 		if (!wantNewTask)
 		{
+			// don't reassign from player-issued tasks
+			if (currentTask != null && currentTask.playerIssued)
+				return;
+			
 			TaskType taskType = currentTask == null ? null : currentTask.type;
 			
 			if (taskType == TaskType.RAID 
@@ -660,7 +676,7 @@ public class SpecialForcesRouteAI {
 		CampaignFleetAPI fleet = sf.route.getActiveFleet();
 		if (fleet == null) return true;
 		
-		SectorEntityToken target = currentTask.market.getPrimaryEntity();
+		SectorEntityToken target = currentTask.getMarket().getPrimaryEntity();
 		return MathUtils.getDistance(fleet, target) < 250;	// FIXME magic number
 	}
 	
@@ -681,15 +697,15 @@ public class SpecialForcesRouteAI {
 				sf.route.getSegments().clear();
 				sf.route.setCurrent(null);
 				sf.route.addSegment(new RouteManager.RouteSegment(currentTask.time * 0.5f, 
-						currentTask.market.getPrimaryEntity()));
-				addIdleSegment(sf.route, currentTask.market.getPrimaryEntity());
+						currentTask.getMarket().getPrimaryEntity()));
+				addIdleSegment(sf.route, currentTask.getMarket().getPrimaryEntity());
 				return;
 			}
 			
-			sf.executeRebuildOrder(currentTask.market);
+			sf.executeRebuildOrder(currentTask.getMarket());
 			// spend a few days orbiting the planet, to shake down the new members
 			SpecialForcesTask task = new SpecialForcesTask(TaskType.ASSEMBLE, 100);
-			task.market = currentTask.market;
+			task.setMarket(currentTask.getMarket());
 			task.time = 2;
 			assignTask(task);
 			return;
@@ -912,7 +928,7 @@ public class SpecialForcesRouteAI {
 		float orbitDays = 1 + sf.startingFP * 0.02f * (0.75f + (float) Math.random() * 0.5f);
 		
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.ASSEMBLE, 100);
-		task.market = sf.origin;
+		task.setMarket(sf.origin);
 		task.time = orbitDays;
 		assignTask(task);
 	}
@@ -927,7 +943,9 @@ public class SpecialForcesRouteAI {
 		HUNT_PLAYER(false), 
 		COUNTER_GROUND_BATTLE(true), 
 		ASSEMBLE(false), 
-		RESUPPLY(true), 
+		RESUPPLY(true),
+		FOLLOW_PLAYER(false),
+		WAIT_ORBIT(false),
 		IDLE(false);
 		
 		public final boolean busyTask;
@@ -951,13 +969,25 @@ public class SpecialForcesRouteAI {
 		public float priority;
 		public RaidIntel raid;
 		public float time = 45;	// controls how long the action segment lasts
-		public MarketAPI market;
+		@Getter private MarketAPI market;
+		@Getter @Setter private SectorEntityToken entity;
 		public StarSystemAPI system;
+		public boolean playerIssued;
 		public Map<String, Object> params = new HashMap<>();
 		
 		public SpecialForcesTask(TaskType type, float priority) {
 			this.type = type;
 			this.priority = priority;
+		}
+		
+		public SpecialForcesTask(String type, float priority) {
+			this.type = TaskType.valueOf(type.toUpperCase(Locale.ENGLISH));
+			this.priority = priority;
+		}
+		
+		public void setMarket(MarketAPI market) {
+			this.market = market;
+			this.entity = market.getPrimaryEntity();
 		}
 		
 		// TODO: need to externalize these now that player will have their own SF fleet with visible info
@@ -985,6 +1015,10 @@ public class SpecialForcesRouteAI {
 					return "assembling at " + market.getName();
 				case RESUPPLY:
 					return "resupplying at " + market.getName();
+				case WAIT_ORBIT:
+					return "orbiting " + entity.getName();
+				case FOLLOW_PLAYER:
+					return "following " + entity.getName();
 				case IDLE:
 					return "idle";
 				default:

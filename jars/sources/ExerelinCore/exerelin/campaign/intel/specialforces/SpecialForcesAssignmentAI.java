@@ -126,6 +126,17 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));
 				break;
+			case WAIT_ORBIT:
+				fleet.addAssignment(current.from.hasTag("nex_player_location_token") ? 
+						FleetAssignment.HOLD : FleetAssignment.ORBIT_PASSIVE, current.from,
+						current.daysMax - current.elapsed, getInSystemActionText(current),
+						goNextScript(current));
+				break;
+			case FOLLOW_PLAYER:
+				fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from,
+						current.daysMax - current.elapsed, getInSystemActionText(current),
+						goNextScript(current));
+				break;
 			case ASSIST_RAID:
 				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, current.from,
 						current.daysMax - current.elapsed, getInSystemActionText(current),
@@ -177,7 +188,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		switch (task.type) {
 			case ASSEMBLE:
 				return StringHelper.getFleetAssignmentString("orbiting", 
-						task.market.getName());
+						task.getMarket().getName());
 			case RAID:
 			case ASSIST_RAID:
 				return StringHelper.getFleetAssignmentString("attackingAroundStarSystem", 
@@ -189,7 +200,16 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						fleet.getContainingLocation().getNameWithLowercaseType());
 			case REBUILD:
 				return StringHelper.getFleetAssignmentString("reconstituting", 
-						task.market.getName());
+						task.getMarket().getName());
+			case WAIT_ORBIT:
+				if (task.getEntity().hasTag("nex_player_location_token")) {
+					return StringHelper.getFleetAssignmentString("holding", null);
+				}
+				return StringHelper.getFleetAssignmentString("orbiting", 
+						task.getEntity().getName());
+			case FOLLOW_PLAYER:
+				return StringHelper.getFleetAssignmentString("following", 
+						task.getEntity().getName());
 			default:
 				return super.getInSystemActionText(segment);
 		}

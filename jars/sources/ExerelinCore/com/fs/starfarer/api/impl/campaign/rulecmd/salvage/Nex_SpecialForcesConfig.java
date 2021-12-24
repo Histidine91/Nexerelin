@@ -55,6 +55,8 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		
 		String arg = params.get(0).getString(memoryMap);
 		switch (arg) {
+			case "canCreate":
+				return canCreate(memoryMap.get(MemKeys.LOCAL));
 			case "beginCreate":
 				beginCreate(dialog, memoryMap);
 				return true;
@@ -99,6 +101,14 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		}
 		
 		return false;
+	}
+	
+	protected boolean canCreate(MemoryAPI mem) {
+		if (PlayerSpecialForcesIntel.getActiveIntelCount() > 0) {
+			mem.set("$nex_psf_noCreateReason", SpecialForcesIntel.getString("dialogTooltipMaxPSF"), 0);
+			return false;
+		}
+		return true;
 	}
 	
 	protected void beginCreate(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {

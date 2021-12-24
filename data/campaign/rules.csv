@@ -2775,19 +2775,25 @@ FireBest MarketPostDock",,,
 #END duel stuff,,,,,,
 ,,,,,,
 # player special task group,,,,,,
-nex_configSF_createNewOpt,PopulateOptions,"Nex_IsBaseOfficial military
-Nex_IsFactionRuler $faction.id",,,10:nex_configSF_createNew:Create a special task group,
-nex_configSF_opt,OpenCommLink,"$faction.id == ""player""
+nex_sfCommLink,OpenCommLink,"$faction.id == ""player""
 $entity.nex_sfIntel != null score:100
 !$printedFirstGreeting","ShowPersonVisual
 $printedFirstGreeting = true","""$PersonRank $personLastName, reporting. Awaiting orders, admiral.""
 OR
-""$PersonRank $personLastName, ready to receive your command.""","nex_configSF_start:Reconfigure task group
+""$PersonRank $personLastName, ready to receive your command.""","nex_commandSF_main:Give orders
+nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
-nex_configSF_optRepeat,OpenCommLink,"$faction.id == ""player""
+nex_sfCommLink_repeat,OpenCommLink,"$faction.id == ""player""
 $entity.nex_sfIntel != null score:100
-$printedFirstGreeting",ShowPersonVisual,,"nex_configSF_start:Reconfigure task group
+$printedFirstGreeting",ShowPersonVisual,,"nex_commandSF_main:Give orders
+nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
+nex_configSF_createNewOpt,PopulateOptions,"Nex_IsBaseOfficial military
+Nex_IsFactionRuler $faction.id",,,10:nex_configSF_createNew:Create a special task group,
+nex_configSF_createNewOptDisabled,PopulateOptions,"Nex_IsBaseOfficial military
+Nex_IsFactionRuler $faction.id
+!Nex_SpecialForcesConfig canCreate","SetEnabled nex_configSF_createNew false
+SetTooltip nex_configSF_createNew $nex_psf_noCreateReason",,,
 nex_configSF_createNew,DialogOptionSelected,$option == nex_configSF_createNew,Nex_SpecialForcesConfig beginCreate,Creating special task group...,,
 nex_configSF_main,DialogOptionSelected,$option == nex_configSF_start,Nex_SpecialForcesConfig mainMenu,Reconfiguring special task group...,,
 nex_configSF_mainOpts,Nex_ConfigSFOptions,!$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""",,"nex_configSF_giveShips:Give ships
@@ -2825,4 +2831,20 @@ DismissDialog",,,
 nex_configSF_close,DialogOptionSelected,$option == nex_configSF_close,FireBest OpenCommLink,,,
 nex_configSF_create,DialogOptionSelected,$option == nex_configSF_createFinish,Nex_SpecialForcesConfig done,"""As you command. The new task group is ready to go.""",,
 nex_configSF_abortCreate,DialogOptionSelected,$option == nex_configSF_abortCreate,Nex_SpecialForcesConfig cancel,,,
+nex_commandSF_main,DialogOptionSelected,$option == nex_commandSF_main,Nex_SpecialForcesCommands main,Issuing commands to special task group...,,
+nex_commandSF_mainOpts,Nex_CommandSFOptions,,,,"nex_commandSF_patrol:Patrol system
+nex_commandSF_orbit:Orbit location
+nex_commandSF_follow:Follow player
+nex_commandSF_autoAssign:Auto-assign
+#nex_commandSF_participateRaid:Participate in raid
+nex_commandSF_leave:Leave",
+nex_commandSF_patrol,DialogOptionSelected,$option == nex_commandSF_patrol,Nex_SpecialForcesCommands patrol,,,
+nex_commandSF_orbit,DialogOptionSelected,$option == nex_commandSF_orbit,Nex_SpecialForcesCommands orbit,,,
+nex_commandSF_follow,DialogOptionSelected,$option == nex_commandSF_follow,Nex_SpecialForcesCommands follow,,,
+nex_commandSF_autoAssign,DialogOptionSelected,$option == nex_commandSF_autoAssign,"Nex_SpecialForcesCommands autoAssign
+#Nex_SpecialForcesCommands main",,,
+nex_commandSF_leave,DialogOptionSelected,$option == nex_commandSF_leave,"unset $nex_psf_task
+FireBest OpenCommLink",,,
+nex_commandSF_leaveRemote,DialogOptionSelected,"$option == nex_commandSF_leave
+$nex_remoteCommand score:10",DismissDialog,,,
 #END player special task group,,,,,,

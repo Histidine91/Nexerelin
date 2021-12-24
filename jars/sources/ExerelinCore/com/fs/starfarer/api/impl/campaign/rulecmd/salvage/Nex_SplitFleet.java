@@ -27,7 +27,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercFleetGenPlugin;
-import exerelin.campaign.intel.specialforces.PlayerSpecialForcesIntel;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
@@ -42,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.log4j.Log4j;
 
-// maybe try to create a blank SF event instead and do everything from there
+// no use this anymore, instead create a blank SF event instead and do everything from there
 @Log4j
 @Deprecated
 public class Nex_SplitFleet extends BaseCommandPlugin {
@@ -61,7 +60,7 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 			case "shouldShow":
 				return true;
 			case "canCreate":
-				return true;			
+				return true;
 			case "start":
 				start(dialog, memoryMap);
 				return true;

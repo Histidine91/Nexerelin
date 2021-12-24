@@ -12,9 +12,11 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
@@ -25,10 +27,15 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.CutStyle;
+import com.fs.starfarer.api.ui.Fonts;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
+import com.fs.starfarer.api.ui.TextFieldAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -63,6 +70,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public static final String FLEET_TYPE = "nex_specialForces";
 	public static final String FLEET_MEM_KEY_INTEL = "$nex_sfIntel";
 	protected static final String BUTTON_DEBUG = "debug";
+	protected static final Object BUTTON_RENAME = new Object();
+	protected static final Object BUTTON_COMMAND = new Object();
 	public static final Object ENDED_UPDATE = new Object();
 	public static final Object NEW_ORDERS_UPDATE = new Object();
 	public static final float DAMAGE_TO_REBUILD = 0.4f;
@@ -90,6 +99,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	protected float rebuildCheckCooldown = 0;
 	
 	protected transient InteractionDialogAPI debugDialog;
+	protected transient TextFieldAPI nameField;
 	
 	/*runcode 
 	MarketAPI market = Global.getSector().getEconomy().getMarket("culann");
@@ -390,7 +400,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		float time = 1 + fpWanted * 0.01f * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 		
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.REBUILD, 99999);
-		task.market = market;
+		task.setMarket(market);
 		task.time = time;
 		//task.params.put("fpToResupply", fpWanted);
 		task.system = market.getStarSystem();
@@ -528,9 +538,13 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		// do it this way to simplify PlayerSpecialForcesIntel's override
+		createSmallDescriptionPart1(info, width);
+		createSmallDescriptionPart2(info, width);
+	}
+	
+	protected void createSmallDescriptionPart1(TooltipMakerAPI info, float width) {
 		float opad = 10f;
-		
-		Color h = Misc.getHighlightColor();
 		
 		// Images
 		if (commander != null) {
@@ -556,6 +570,19 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		printIntro(info, opad);
 		printCommanderInfo(info, opad);
+		
+		if (Nex_IsFactionRuler.isRuler(faction.getId())) {
+			nameField = info.addTextField(width - 8, Fonts.DEFAULT_SMALL, opad);
+			if (fleetName != null) nameField.setText(fleetName);
+			ButtonAPI button = info.addButton(StringHelper.getString("rename", true), BUTTON_RENAME,
+					Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Alignment.RMID, CutStyle.BL_TR, 80, 20, 3);
+		}
+	}
+	
+	protected void createSmallDescriptionPart2(TooltipMakerAPI info, float width) {
+		float opad = 10;
+		String str;
+		
 		printFleetStrengthInfo(info, opad);
 		printCurrentAction(info, opad);
 		
@@ -629,7 +656,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		}
 	}
 	
-	protected void printCurrentAction(TooltipMakerAPI info, float opad) {
+	public void printCurrentAction(TooltipMakerAPI info, float opad) {
 		Color h = Misc.getHighlightColor();		
 		String str = getString("intelDescAction");
 		String actionStr = "idling";
@@ -652,7 +679,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			
 			info.addPara(str, 3, h, from, to, elapsed, max);
 		}
-		// TODO: show ETA to current dest using 
+		// TODO: show ETA to current dest
 		
 		if (routeAI.currentTask != null) {
 			str = getString("intelDescActionPriority");
@@ -673,15 +700,28 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			if (target == null) return -1;
 			float distHyper = Misc.getDistanceLY(fleet.getLocationInHyperspace(), target.getLocationInHyperspace());
 			eta += distHyper/2;
-		}
-		
-		
-		return Math.round(eta);
+			return Math.round(eta);
+		}		
 	}
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
-		ui.showDialog(null, new SpecialForcesDebugDialog(this, ui));
+		if (buttonId == BUTTON_DEBUG) {
+			ui.showDialog(null, new SpecialForcesDebugDialog(this, ui));
+		} else if (buttonId == BUTTON_RENAME) {
+			fleetName = nameField.getText();
+			if (route.getActiveFleet() != null) {
+				route.getActiveFleet().setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
+			}
+			ui.updateUIForItem(this);
+		} else if (buttonId == BUTTON_COMMAND) {
+			RuleBasedInteractionDialogPluginImpl plugin = new RuleBasedInteractionDialogPluginImpl();
+			ui.showDialog(route.getActiveFleet(), plugin);
+			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$nex_remoteCommand", true, 0);
+			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$option", "nex_commandSF_main", 0);			
+			plugin.fireBest("DialogOptionSelected");
+			ui.updateUIForItem(this);
+		}
 	}
 	
 	@Override
