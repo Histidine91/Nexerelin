@@ -3,6 +3,7 @@ battle.wav is a mashup of two sounds, both from projects licensed as (GPL v2 or 
 - Argh_heavy_machinegun.wav from xenoargh's Merc Squad
 
 explosion_01.ogg is just the file of the same name from Starsector, converted to stereo
+explision_chained is a similar conversion of explosion_01, explosion_02 and explosion_04
 
 groundbattle/groundfire.ogg is a mashup of Starsector's Mauler and Hephaesteus sounds
 

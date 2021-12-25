@@ -130,7 +130,7 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 				disruptedNames.add(ifb.getName());
 			}
 			String str = String.format(GroundBattleIntel.getString("ability_ignisPluvia_resultDisrupt"), 
-					StringHelper.writeStringCollection(disruptedNames, false, false));
+					StringHelper.writeStringCollection(disruptedNames));
 			dialog.getTextPanel().addPara(str, h, disruptedNames.toArray(new String[0]));
 		}
 		
@@ -186,11 +186,11 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		List<FleetMemberAPI> olympi = getOlympi(Global.getSector().getPlayerFleet());
 		
 		List<RadioButtonEntry> allButtons = new ArrayList<>();
-				
+		
 		for (final FleetMemberAPI member : olympi) 
 		{
 			CustomPanelAPI itemPanel = panel.createCustomPanel(width, ENTRY_HEIGHT, null);
-			TooltipMakerAPI image = NexUtilsGUI.createFleetMemberImageForPanel(panel, member, ENTRY_HEIGHT, ENTRY_HEIGHT);
+			TooltipMakerAPI image = NexUtilsGUI.createFleetMemberImageForPanel(itemPanel, member, ENTRY_HEIGHT, ENTRY_HEIGHT);
 			itemPanel.addUIElement(image).inTL(4, 0);
 			
 			TooltipMakerAPI text = itemPanel.createUIElement(width - PANEL_WIDTH - 4, ENTRY_HEIGHT, false);

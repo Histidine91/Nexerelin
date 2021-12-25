@@ -25,7 +25,9 @@
 	"nex_sfx_gb_inspire":[
 		{"file":"sounds/nexerelin/sfx_interface/groundbattle/cheer.ogg","pitch":1,"volume":0.5},
 	],
-	
+	"nex_sfx_gb_ignispluvia":[
+		{"file":"sounds/nexerelin/sfx_interface/explosion_chained.ogg","pitch":1.2,"volume":0.8},
+	],
 	
 	"nex_alarm":[
 		{"file":"sounds/nexerelin/sfx_interface/alarm.wav","pitch":1,"volume":1.0}

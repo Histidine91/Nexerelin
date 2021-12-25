@@ -169,7 +169,7 @@
 			"name":"Ignis Pluvia",
 			"icon":"graphics/exerelin/icons/groundbattle/ignispluvia.png",
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.IgnisPluviaAbilityPlugin",
-			"sound":"nex_sfx_deciv_bomb",
+			"sound":"nex_sfx_gb_ignispluvia",
 			"cooldown":2,
 			"cooldownGlobal":1,
 			"color":[255, 128, 32, 255],
