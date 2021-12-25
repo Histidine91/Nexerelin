@@ -2,36 +2,36 @@ package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
-import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CutStyle;
-import com.fs.starfarer.api.ui.Fonts;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.BUTTON_COMMAND;
-import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.BUTTON_DEBUG;
-import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.BUTTON_RENAME;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.getString;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.NexUtilsGUI;
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,8 +49,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	public static final float CREW_SALARY_MULT = 1.25f;
 	public static final float SUPPLY_COST_MULT = 1.25f;
+	public static final float REVIVE_COST_MULT = 0.7f;
+	
+	public static final Object DESTROYED_UPDATE = new Object();	
+	protected static final Object BUTTON_COMMAND = new Object();
+	protected static final Object BUTTON_RECREATE = new Object();
 	
 	@Setter protected CampaignFleetAPI tempFleet;
+	protected CampaignFleetAPI fleet;
 	@Getter protected Set<FleetMemberAPI> deadMembers = new LinkedHashSet<>();
 	
 	@Getter	protected boolean independentMode = true;
@@ -69,15 +75,15 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			
 	public void setFlagship(FleetMemberAPI member) {
 		flagship = member;
-		if (route != null && route.getActiveFleet() != null) {
-			route.getActiveFleet().getFleetData().setFlagship(flagship);
+		if (fleet != null) {
+			fleet.getFleetData().setFlagship(flagship);
 		}
 	}
 	
 	@Override
 	public void setCommander(PersonAPI commander) {
 		super.setCommander(commander);
-		commander.setRankId(Ranks.SPACE_CAPTAIN);
+		if (commander != null) commander.setRankId(Ranks.SPACE_CAPTAIN);
 	}
 		
 	public CampaignFleetAPI createTempFleet() {
@@ -132,13 +138,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		isAlive = true;
 		
+		this.fleet = fleet;
 		tempFleet = null;
 		
 		return fleet;
 	}
 	
 	public float getMonthsSuppliesRemaining() {
-		CampaignFleetAPI fleet = route.getActiveFleet();
 		if (fleet == null) return 0;
 		
 		int supplies = (int)fleet.getCargo().getSupplies();
@@ -149,7 +155,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	public float getFuelFractionRemaining() {
-		CampaignFleetAPI fleet = route.getActiveFleet();
 		if (fleet == null) return 0;
 		
 		int fuel = (int)fleet.getCargo().getFuel();
@@ -163,10 +168,20 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public void buyFuel(int wanted, MarketAPI market) {
 		
 	}
+	
+	public boolean reviveDeadMember(FleetMemberAPI member) {
+		boolean isDead = deadMembers.remove(member);
+		if (!isDead) return false;
+		fleet.getFleetData().addFleetMember(member);
+		member.getStatus().repairFully();
+		member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
 		
+		return true;
+	}
+	
 	@Override
 	protected void generateFlagshipAndCommanderIfNeeded(RouteData thisRoute) {
-		// do nothing		
+		// do nothing
 	}
 	
 	@Override
@@ -184,6 +199,30 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		// you die on my command, not before
 	}
 	
+	public void disband() {
+		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+		CampaignFleetAPI toDisband = this.fleet;
+		if (toDisband == null) toDisband = tempFleet;
+		
+		for (OfficerDataAPI officer : toDisband.getFleetData().getOfficersCopy()) {
+			if (officer.getPerson().isAICore()) continue;
+			player.getFleetData().addOfficer(officer);
+		}
+		for (FleetMemberAPI member : toDisband.getFleetData().getMembersListCopy()) {
+			player.getFleetData().addFleetMember(member);
+		}
+		for (FleetMemberAPI member : getDeadMembers()) {
+			player.getFleetData().addFleetMember(member);
+		}
+		
+		player.getCargo().addAll(toDisband.getCargo());
+				
+		player.forceSync();
+				
+		endAfterDelay();
+		toDisband.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
+	}
+	
 	@Override
 	protected void advanceImpl(float amount) {
 		super.advanceImpl(amount);
@@ -191,7 +230,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	protected void updateFuelUse() {
-		CampaignFleetAPI fleet = route.getActiveFleet();
 		if (fleet == null || fleet.isAlive()) return;
 		
 		if (!fleet.getContainingLocation().isHyperspace()) {
@@ -211,8 +249,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
 		float f = 1f / numIter;
 		
-		CampaignFleetAPI fleet = route.getActiveFleet();
-				
 		MonthlyReport report = SharedData.getData().getCurrentReport();
 		
 		FDNode fleetNode = report.getNode(MonthlyReport.FLEET);
@@ -225,6 +261,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 				"[temp] Commander's fee", commander.getPortraitSprite(), commanderFee * f, false);
 		
 		if (fleet == null) return;
+		
+		float officerSalary = 0;
+		for (OfficerDataAPI officer : fleet.getFleetData().getOfficersCopy()) {
+			officerSalary += Misc.getOfficerSalary(officer.getPerson());
+		}
+		FDNode officerNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_offSal", 
+				"[temp] Officer payroll", faction.getCrest(), officerSalary * f, false);
 		
 		float crew = fleet.getFleetData().getMinCrew();
 		float crewSalary = crew * Global.getSettings().getInt("crewSalary") * 1.25f;
@@ -260,12 +303,74 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	@Override
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, Color tc, float initPad) {
+		if (!isEnding() && !isEnded()) {
+			if (isUpdate && listInfoParam == DESTROYED_UPDATE || (mode == ListInfoMode.INTEL && !isAlive))
+			{
+				info.addPara(getString("intelBulletDestroyed"), tc, 3);
+				return;
+			}
+		}
+		
+		super.addBulletPoints(info, mode, isUpdate, tc, initPad);
+	}
+	
+	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		float pad = 3, opad = 10;
+		
 		createSmallDescriptionPart1(info, width);
 		
-		// TODO: list dead members
+		if (route == null || isEnding() || isEnded()) {
+			return;
+		}
+		
+		if (isAlive) {
+			info.addButton(getString("intelButtonCommand"), 
+					BUTTON_COMMAND, faction.getBaseUIColor(), faction.getDarkUIColor(),
+					(int)(width), 20f, opad);
+		} else {
+			ButtonAPI button = info.addButton(getString("intelButtonDisband"), 
+					BUTTON_RECREATE, faction.getBaseUIColor(), faction.getDarkUIColor(),
+					(int)(width), 20f, opad);
+			
+			InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+			boolean allow = dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null
+					&& dial.getInteractionTarget().getMarket().getFaction().isPlayerFaction();
+			if (!allow) {
+				button.setEnabled(false);
+				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip("[temp] Must be docked at a player market.", 360), 
+						TooltipMakerAPI.TooltipLocation.BELOW);
+			}
+		}
+
+		// list dead members
+		if (!deadMembers.isEmpty()) {
+			info.addPara(getString("intelDescLostShips"), opad);
+			NexUtilsGUI.addShipList(info, width, new ArrayList<>(deadMembers), 48, pad);
+		}		
 		
 		createSmallDescriptionPart2(info, width);
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_COMMAND) {
+			RuleBasedInteractionDialogPluginImpl plugin = new RuleBasedInteractionDialogPluginImpl();
+			ui.showDialog(route.getActiveFleet(), plugin);
+			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$nex_remoteCommand", true, 0);
+			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$option", "nex_commandSF_main", 0);			
+			plugin.fireBest("DialogOptionSelected");
+			ui.updateUIForItem(this);
+		}
+		else if (buttonId == BUTTON_RECREATE) {
+			disband();
+			ui.updateUIForItem(this);
+		}
+		else {
+			super.buttonPressConfirmed(buttonId, ui); //To change body of generated methods, choose Tools | Templates.
+		}
+		
 	}
 	
 	public static int getActiveIntelCount() {
@@ -284,14 +389,28 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		deadMembers.addAll(losses);
 	}
 	
+	@Override
+	public void reportFleetDespawned(CampaignEventListener.FleetDespawnReason reason, Object param) {
+		isAlive = false;
+		sendUpdateIfPlayerHasIntel(DESTROYED_UPDATE, false, false);
+	}
+	
 
 	@Override
 	public void reportEconomyTick(int iterIndex) {
-		
+		processCosts();
 	}
 
 	@Override
 	public void reportEconomyMonthEnd() {
 		
+	}
+	
+	public static int getReviveCost(List<FleetMemberAPI> members) {
+		float cost = 0;
+		for (FleetMemberAPI member : members) {
+			cost += member.getBaseValue();
+		}
+		return Math.round(cost * REVIVE_COST_MULT);
 	}
 }

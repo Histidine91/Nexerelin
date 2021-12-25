@@ -1,21 +1,21 @@
 package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.util.Misc;
-import static exerelin.campaign.abilities.FollowMeAbility.BUSY_REASON;
-import static exerelin.campaign.abilities.FollowMeAbility.FOLLOW_DURATION_PASSIVE;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.utilities.StringHelper;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 	
 	public static final Object CUSTOM_DELAY_BEFORE_RAID = new Object();
@@ -79,11 +79,48 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		if (fleet.getContainingLocation() != playerFleet.getContainingLocation()) return false;
 		if (!playerFleet.isVisibleToSensorsOf(fleet)) return false;
 		
-		Global.getLogger(this.getClass()).info(fleet.getName() + " moving to interrogate player");
+		log.info(fleet.getName() + " moving to interrogate player");
 		
 		Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_sfInterrogatePlayer", true, 2);
 		Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_STICK_WITH_PLAYER_IF_ALREADY_TARGET, "nex_sfInterrogatePlayer", true, 2);
 		return true;
+	}
+	
+	@Override
+	protected void pickNext(boolean justSpawned) {
+		RouteManager.RouteSegment current = route.getCurrent();
+		if (current == null) return;
+		
+		//log.info(fleet.getName() + " picking next assignment, current: " + fleet.getCurrentAssignment());
+		
+		// custom handling when pursuing a fleet		
+		if (SpecialForcesRouteAI.ROUTE_PURSUIT_SEGMENT.equals(current.custom)) {
+			SectorEntityToken target = current.to;
+			if (fleet.getContainingLocation() == target.getContainingLocation() && target.isVisibleToSensorsOf(fleet)) 
+			{
+				//log.info(fleet.getName() + " receiving local assignment");
+				addLocalAssignment(current, false);
+			} else {
+				//log.info(fleet.getName() + " receiving goto assignment");
+				addGoToFleetLocationAssignment(current);
+			}
+			return;
+		}
+		
+		super.pickNext(justSpawned);
+	}
+	
+	/**
+	 * Send the fleet to a token representing the latest position of the target fleet.
+	 * Needed since pursuing fleets doesn't work properly if the pursuee isn't in same system,
+	 * unless it was seen jumping. (see https://fractalsoftworks.com/forum/index.php?topic=5061.msg326888#msg326888)
+	 * @param current
+	 */
+	protected void addGoToFleetLocationAssignment(RouteManager.RouteSegment current) {
+		SectorEntityToken target = current.to;
+		SectorEntityToken locToken = target.getContainingLocation().createToken(target.getLocation());
+		fleet.addAssignment(FleetAssignment.DELIVER_CREW, locToken, 2, 
+				StringHelper.getFleetAssignmentString("trailing", target.getName().toLowerCase()));
 	}
 	
 	@Override
@@ -127,15 +164,22 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						goNextScript(current));
 				break;
 			case WAIT_ORBIT:
+				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, current.from, 999, new Script() {
+					@Override
+					public void run() {
+						intel.sendUpdateIfPlayerHasIntel(SpecialForcesIntel.ARRIVED_UPDATE, false, false);
+					}
+				});
 				fleet.addAssignment(current.from.hasTag("nex_player_location_token") ? 
 						FleetAssignment.HOLD : FleetAssignment.ORBIT_PASSIVE, current.from,
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));
 				break;
 			case FOLLOW_PLAYER:
+				// only one day, so it gets updated promptly if player changes location
+				// also don't go to next route segment
 				fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from,
-						current.daysMax - current.elapsed, getInSystemActionText(current),
-						goNextScript(current));
+						1, getInSystemActionText(current));
 				break;
 			case ASSIST_RAID:
 				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, current.from,

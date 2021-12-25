@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -71,9 +72,9 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public static final String FLEET_MEM_KEY_INTEL = "$nex_sfIntel";
 	protected static final String BUTTON_DEBUG = "debug";
 	protected static final Object BUTTON_RENAME = new Object();
-	protected static final Object BUTTON_COMMAND = new Object();
 	public static final Object ENDED_UPDATE = new Object();
 	public static final Object NEW_ORDERS_UPDATE = new Object();
+	public static final Object ARRIVED_UPDATE = new Object();
 	public static final float DAMAGE_TO_REBUILD = 0.4f;
 	public static final float DAMAGE_TO_TERMINATE = 0.9f;
 	public static final boolean ALLOW_GO_ROGUE = true;
@@ -512,6 +513,13 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad) {
 		if (isEnding() || isEnded()) return;
+		if (isUpdate && listInfoParam == ARRIVED_UPDATE && routeAI.currentTask.getEntity() != null) 
+		{
+			info.addPara(getString("intelBulletArrived"), 3, tc, 
+					routeAI.currentTask.getEntity().getFaction().getBaseUIColor(), 
+					routeAI.currentTask.getEntity().getName());
+			return;
+		}
 		if (routeAI.currentTask != null) {
 			info.addPara(Misc.ucFirst(routeAI.currentTask.getText()), tc, 3);
 		}
@@ -580,6 +588,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	protected void createSmallDescriptionPart2(TooltipMakerAPI info, float width) {
+		if (route == null || isEnding() || isEnded()) {
+			return;
+		}
+		
 		float opad = 10;
 		String str;
 		
@@ -652,6 +664,13 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				String loc = route.getActiveFleet().getContainingLocation() != null ?
 						route.getActiveFleet().getContainingLocation().getName() : " <null location>";
 				info.addPara(str, opad, h, loc);
+				
+				FleetAssignmentDataAPI assign = route.getActiveFleet().getCurrentAssignment();
+				str = String.format("Fleet current assignment: %s (time %s of %s)", 
+						assign.getActionText(),
+						assign.getElapsedDays(),
+						assign.getMaxDurationInDays());
+				//info.addPara(str, opad, h, loc);
 			}
 		}
 	}
@@ -676,12 +695,15 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			String elapsed = String.format("%.1f", segment.elapsed);
 			String max = String.format("%.1f", segment.daysMax);
 			
-			
 			info.addPara(str, 3, h, from, to, elapsed, max);
 		}
-		// TODO: show ETA to current dest
 		
 		if (routeAI.currentTask != null) {
+			int eta = getETA();
+			if (eta > -1) {
+				str = getString("intelDescETA");
+				info.addPara(str, 3, h, eta + "");
+			}
 			str = getString("intelDescActionPriority");
 			info.addPara(str, 3, h, String.format("%.1f", routeAI.currentTask.priority));
 		}
@@ -689,19 +711,25 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	protected int getETA() {
+		float eta = 0;
 		CampaignFleetAPI fleet = route.getActiveFleet();
-		if (fleet == null) {
-			// TODO: try to calc something with RouteLocationCalculator?
-			return -1;
-		}
-		else {
-			float eta = 0;
+		float distHyper;
+		if (fleet != null && fleet.isAlive() && fleet.getAI().getCurrentAssignment() != null) 
+		{
 			SectorEntityToken target = fleet.getAI().getCurrentAssignment().getTarget();
 			if (target == null) return -1;
-			float distHyper = Misc.getDistanceLY(fleet.getLocationInHyperspace(), target.getLocationInHyperspace());
-			eta += distHyper/2;
-			return Math.round(eta);
-		}		
+			if (target.getContainingLocation() == fleet.getContainingLocation())
+				return -1;
+			distHyper = Misc.getDistanceLY(fleet.getLocationInHyperspace(), target.getLocationInHyperspace());
+		}
+		else {
+			SectorEntityToken target = route.getCurrent().from;
+			if (target == null) target = route.getCurrent().to;
+			if (target == null) return -1;
+			distHyper = Misc.getDistanceLY(route.getInterpolatedHyperLocation(), target.getLocationInHyperspace());
+		}
+		eta += distHyper/2;
+		return Math.round(eta);
 	}
 	
 	@Override
@@ -714,13 +742,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				route.getActiveFleet().setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
 			}
 			ui.updateUIForItem(this);
-		} else if (buttonId == BUTTON_COMMAND) {
-			RuleBasedInteractionDialogPluginImpl plugin = new RuleBasedInteractionDialogPluginImpl();
-			ui.showDialog(route.getActiveFleet(), plugin);
-			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$nex_remoteCommand", true, 0);
-			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$option", "nex_commandSF_main", 0);			
-			plugin.fireBest("DialogOptionSelected");
-			ui.updateUIForItem(this);
 		}
 	}
 	
@@ -732,7 +753,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		if (route.getActiveFleet() != null && !route.getActiveFleet().isAlive()) 
 		{
-			log.info("Fleet is dead, ending event");
+			//log.info("Fleet is dead, ending event");
 			endEvent();
 			return;
 		}
@@ -827,7 +848,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	}
 	
 	public boolean isDebugVisible() {
-		return !NexUtils.isNonPlaytestDevMode() && !ExerelinModPlugin.isNexDev;
+		return NexUtils.isNonPlaytestDevMode() || ExerelinModPlugin.isNexDev;
 	}
 
 	@Override
@@ -896,6 +917,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		}
 	}
 	
+	public void reportFleetDespawned(FleetDespawnReason reason, Object param) {
+		
+	}
+	
 	public String pickFleetName(CampaignFleetAPI fleet, MarketAPI origin, PersonAPI commander)
 	{
 		String name = "error";
@@ -960,6 +985,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		@Override
 		public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) 
 		{
+			log.info("Despawning fleet " + fleet.getName());
+			sf.reportFleetDespawned(reason, param);
 			fleet.removeEventListener(this);
 		}
 

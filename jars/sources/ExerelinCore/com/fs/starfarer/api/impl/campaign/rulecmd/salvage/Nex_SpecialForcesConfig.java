@@ -8,14 +8,17 @@ import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
@@ -74,9 +77,17 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				return true;
 			case "takeShips":
 				transferShips(fleet, player, dialog, memoryMap);
-				return true;
+				return true;			
 			case "giveShips":
 				transferShips(player, fleet, dialog, memoryMap);
+				return true;
+			case "canRevive":
+				return canRevive(fleet, memoryMap.get(MemKeys.LOCAL));
+			case "reviveShips":
+				pickShipsForRevive(fleet, dialog, memoryMap);
+				return true;
+			case "reviveConfirm":
+				confirmShipRevive(fleet, dialog, memoryMap);
 				return true;
 			case "transferOfficers":
 				transferOfficers(dialog, memoryMap);
@@ -93,7 +104,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				done(dialog, memoryMap);
 				return true;
 			case "cancel":
-				cancel(dialog, memoryMap);
+				cancelCreation(dialog, memoryMap);
 				return true;
 			case "disband":
 				disband(dialog, memoryMap);
@@ -108,6 +119,30 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			mem.set("$nex_psf_noCreateReason", SpecialForcesIntel.getString("dialogTooltipMaxPSF"), 0);
 			return false;
 		}
+		return true;
+	}
+	
+	protected boolean canRevive(CampaignFleetAPI fleet, MemoryAPI mem) {
+		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(fleet);
+		if (intel.getDeadMembers().isEmpty()) {
+			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("dialogTooltipNoShipsToRevive"), 0);
+			return false;
+		}
+		boolean haveMarket = false;
+		for (MarketAPI market : Misc.getMarketsInLocation(fleet.getContainingLocation())) {
+			if (market.getFaction().isAtBest(fleet.getFaction(), RepLevel.INHOSPITABLE))
+				continue;
+			if (Misc.getDistance(market.getPrimaryEntity(), fleet) > 350)
+				continue;
+				
+			haveMarket = true;
+			break;
+		}
+		if (!haveMarket) {
+			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("dialogTooltipNoMarketForRevive"), 0);
+			return false;
+		}
+		
 		return true;
 	}
 	
@@ -135,7 +170,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	
 	protected void showOfficersForAssignment(final InteractionDialogAPI dialog) 
 	{
-		float pad = 3, opad = 10;
+		float pad = 3;
 		float height = PORTRAIT_SIZE_PICKER;
 				
 		Nex_VisualCustomPanel.createPanel(dialog, true);
@@ -170,11 +205,13 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			} else {
 				row.addUIElement(portraitHolder).inTL(height + 2, 0);
 			}
+			portraitHolder.addTooltipToPrevious(offTT, TooltipMakerAPI.TooltipLocation.BELOW);
 			
 			TooltipMakerAPI text = row.createUIElement(120, height, false);
 			
 			Color color = officer == fleet.getCommander() ? Misc.getHighlightColor() : Misc.getBasePlayerColor();
 			text.addPara(NexUtilsGUI.getAbbreviatedName(officer), color, 0);
+			text.addTooltipToPrevious(offTT, TooltipMakerAPI.TooltipLocation.BELOW);
 			text.addPara(getString("dialog_level", true), pad, Misc.getHighlightColor(), 
 					officer.getStats().getLevel() + "");
 			
@@ -250,9 +287,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	
 	protected void showOfficersForTransfer(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
-		CampaignFleetAPI other = getFleet(dialog);		
-		
-		FactionAPI pf = Global.getSector().getPlayerFaction();
+		CampaignFleetAPI other = getFleet(dialog);
 		
 		Nex_VisualCustomPanel.createPanel(dialog, true);
 		CustomPanelAPI panel = Nex_VisualCustomPanel.getPanel();
@@ -271,7 +306,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			float width, float height,
 			final InteractionDialogAPI dialog, final Map<String, MemoryAPI> memoryMap) 
 	{
-		float pad = 3, opad = 10;
+		float pad = 3;
 		
 		CustomPanelAPI sub = outer.createCustomPanel(width, height, null);
 		TooltipMakerAPI tooltip = sub.createUIElement(width - 4, height, true);
@@ -357,6 +392,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 						}
 						dialog.getVisualPanel().showFleetInfo(null, player, null, other);
 						other.getMemoryWithoutUpdate().set("$fleetPoints", other.getFleetPoints(), 0);
+						//((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 						populateMainOptions(dialog, memoryMap);
 					}
 					public void cancelledFleetMemberPicking() {
@@ -365,6 +401,90 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				});
 	}
 	
+	protected void showReviveConfirmScreen(final CampaignFleetAPI fleet, List<FleetMemberAPI> members,
+			final InteractionDialogAPI dialog, final Map<String, MemoryAPI> memoryMap)
+	{
+		TextPanelAPI text = dialog.getTextPanel();
+		
+		List<String> shipNames = new ArrayList<>();
+		for (FleetMemberAPI member : members) {
+			shipNames.add(member.getShipName());
+		}
+		String shipNamesStr = StringHelper.writeStringCollection(shipNames);
+		
+		text.setFontSmallInsignia();
+		text.addPara(SpecialForcesIntel.getString("dialogMsgRevivingShips", true) + ": " + shipNamesStr);
+		TooltipMakerAPI tooltip = dialog.getTextPanel().beginTooltip();
+		NexUtilsGUI.addShipList(tooltip, dialog.getTextWidth(), members, 48, 3);
+		text.addTooltip();
+		
+		// print cost and set to memory
+		int cost = PlayerSpecialForcesIntel.getReviveCost(members);
+		float have = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+		boolean enough = have >= cost;
+		String costStr = Misc.getDGSCredits(cost);
+		
+		text.addPara(StringHelper.getString("cost", true) + ": " + costStr, 
+				enough ? Misc.getHighlightColor() : Misc.getNegativeHighlightColor(), costStr);
+		text.addPara(StringHelper.getString("youHave", true), Misc.getHighlightColor(), Misc.getDGSCredits(have));
+		
+		memoryMap.get(MemKeys.LOCAL).set("$nex_sf_shipsToRevive", members, 0);
+		text.setFontInsignia();
+		FireAll.fire(null, dialog, memoryMap, "Nex_SFReviveShipsOpts");	
+		if (!enough)
+			dialog.getOptionPanel().setEnabled("nex_sf_reviveShipConfirm", false);
+	}
+		
+	protected void pickShipsForRevive(final CampaignFleetAPI fleet, 
+			final InteractionDialogAPI dialog, final Map<String, MemoryAPI> memoryMap) 
+	{
+		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(fleet);
+		List<FleetMemberAPI> ships = new ArrayList<>(intel.getDeadMembers());
+		final CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+				
+		dialog.showFleetMemberPickerDialog(getString("dialog_headerShipPick"), 
+				StringHelper.getString("confirm", true),
+				StringHelper.getString("cancel", true),
+				5, 9, 96, // 3, 7, 58 or so
+				true, true, ships, 
+				new FleetMemberPickerListener() {
+					public void pickedFleetMembers(List<FleetMemberAPI> members) {
+						showReviveConfirmScreen(fleet, members, dialog, memoryMap);
+					}
+					public void cancelledFleetMemberPicking() {
+						//showMain(dialog, memoryMap);
+					}
+				});
+	}
+	
+	protected void confirmShipRevive(final CampaignFleetAPI fleet, final InteractionDialogAPI dialog, final Map<String, MemoryAPI> memoryMap)
+	{
+		List<FleetMemberAPI> members = (List<FleetMemberAPI>)memoryMap.get(MemKeys.LOCAL).get("$nex_sf_shipsToRevive");
+		int cost = PlayerSpecialForcesIntel.getReviveCost(members);
+		
+		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(fleet);
+		for (FleetMemberAPI member : members) {
+			intel.reviveDeadMember(member);
+		}
+		
+		autopickCommanderIfNeeded(fleet);
+		fleet.getFleetData().sort();
+		fleet.forceSync();
+		
+		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(cost);
+		AddRemoveCommodity.addCreditsLossText(cost, dialog.getTextPanel());
+		
+		dialog.getVisualPanel().showFleetInfo(null, Global.getSector().getPlayerFleet(), null, fleet);
+		fleet.getMemoryWithoutUpdate().set("$fleetPoints", fleet.getFleetPoints(), 0);
+		//((RuleBasedDialog)dialog.getPlugin()).updateMemory();
+	}
+	
+	/**
+	 * Execute the transfer of ships between the player and SF fleet.
+	 * @param members
+	 * @param from
+	 * @param to
+	 */
 	protected void transferShips(List<FleetMemberAPI> members, CampaignFleetAPI from, CampaignFleetAPI to) 
 	{		
 		for (FleetMemberAPI member : members) {
@@ -390,6 +510,11 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		to.forceSync();
 	}
 	
+	/**
+	 * Execute the transfer of officers between the player and SF fleet.
+	 * @param dialog
+	 * @param memoryMap
+	 */
 	protected void transferOfficers(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
 	{
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
@@ -432,12 +557,20 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	}
 		
 	// TBD
+	@Deprecated
 	protected void transferCargo(final CampaignFleetAPI player, final CampaignFleetAPI other, 
 			final InteractionDialogAPI dialog, final Map<String, MemoryAPI> memoryMap) 
 	{
 		
 	}
-		
+	
+	/**
+	 * Switch the player fleet to the special task group, to refit its ships and assign its officers.
+	 * @param dialog
+	 * @param memoryMap
+	 * @deprecated
+	 */
+	@Deprecated
 	protected void assignAndRefit(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
 	{
 		final CampaignFleetAPI playerCurr = Global.getSector().getPlayerFleet();
@@ -452,6 +585,11 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		});
 	}
 	
+	/**
+	 * Create the special task group (if appropriate) and return to previous dialog.
+	 * @param dialog
+	 * @param memoryMap
+	 */
 	protected void done(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap)
 	{
 		if (memoryMap.get(MemKeys.LOCAL).getBoolean("$nex_psf_create")) {
@@ -469,7 +607,12 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		Nex_VisualCustomPanel.clearPanel(dialog, memoryMap);
 	}
 	
-	protected void cancel(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap)
+	/**
+	 * Cancels special task group creation.
+	 * @param dialog
+	 * @param memoryMap
+	 */
+	protected void cancelCreation(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap)
 	{
 		CampaignFleetAPI fleet = getFleet(dialog);
 		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
@@ -484,27 +627,17 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		FireBest.fire(null, dialog, memoryMap, "PickGreeting");
 	}
 	
+	/**
+	 * Disbands the special task group and adds its constituent units to the player fleet.
+	 * @param dialog
+	 * @param memoryMap
+	 */
 	protected void disband(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
-		CampaignFleetAPI other = (CampaignFleetAPI)dialog.getInteractionTarget();
+		CampaignFleetAPI other = (CampaignFleetAPI)dialog.getInteractionTarget();		
+		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(other);
 		
-		for (OfficerDataAPI officer : other.getFleetData().getOfficersCopy()) {
-			if (officer.getPerson().isAICore()) continue;
-			player.getFleetData().addOfficer(officer);
-		}
-		for (FleetMemberAPI member : other.getFleetData().getMembersListCopy()) {
-			player.getFleetData().addFleetMember(member);
-		}
-		
-		player.getCargo().addAll(other.getCargo());
-		
-		SpecialForcesIntel intel = SpecialForcesIntel.getIntelFromMemory(other);
-		if (intel != null) {
-			intel.endAfterDelay();
-		}
-		other.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
-		
-		player.forceSync();
+		intel.disband();
 	}
 	
 	/**

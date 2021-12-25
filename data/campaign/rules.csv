@@ -2794,10 +2794,15 @@ nex_configSF_createNewOptDisabled,PopulateOptions,"Nex_IsBaseOfficial military
 Nex_IsFactionRuler $faction.id
 !Nex_SpecialForcesConfig canCreate","SetEnabled nex_configSF_createNew false
 SetTooltip nex_configSF_createNew $nex_psf_noCreateReason",,,
-nex_configSF_createNew,DialogOptionSelected,$option == nex_configSF_createNew,Nex_SpecialForcesConfig beginCreate,Creating special task group...,,
-nex_configSF_main,DialogOptionSelected,$option == nex_configSF_start,Nex_SpecialForcesConfig mainMenu,Reconfiguring special task group...,,
-nex_configSF_mainOpts,Nex_ConfigSFOptions,!$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""",,"nex_configSF_giveShips:Give ships
+nex_configSF_createNew,DialogOptionSelected,$option == nex_configSF_createNew,"$nex_sf_menuType = ""config"" 0
+Nex_SpecialForcesConfig beginCreate",Creating special task group...,,
+nex_configSF_main,DialogOptionSelected,$option == nex_configSF_start,"$nex_sf_menuType = ""config"" 0
+Nex_SpecialForcesConfig mainMenu",Reconfiguring special task group...,,
+nex_configSF_mainOpts,Nex_ConfigSFOptions,"!$nex_psf_create
+!$nex_psf_recreate","Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""
+SetShortcut nex_configSF_close ESCAPE",,"nex_configSF_giveShips:Give ships
 nex_configSF_takeShips:Take ships
+nex_sf_reviveShipStart:Revive lost ships
 nex_configSF_showOfficers:Transfer officers
 nex_configSF_assignOfficers:Assign officers
 nex_configSF_disband:Absorb and disband task group
@@ -2809,15 +2814,18 @@ nex_configSF_showOfficers:Transfer officers
 nex_configSF_assignOfficers:Assign officers
 nex_configSF_createFinish:Create
 nex_configSF_abortCreate:Cancel",
-nex_configSF_mainOptsCreateNoShips,Nex_ConfigSFOptions,"$nex_psf_create
-$fleetPoints == 0","SetEnabled nex_configSF_takeShips false
-SetEnabled nex_configSF_createFinish false",,,
-nex_configSF_mainOptsNoShips,Nex_ConfigSFOptions,"!$nex_psf_create
-$entity.fleetPoints == 0","SetEnabled nex_configSF_takeShips false
+nex_configSF_mainOptsNoShips,Nex_ConfigSFOptions,$entity.fleetPoints == 0,"SetEnabled nex_configSF_takeShips false
 SetEnabled nex_configSF_close false
+SetEnabled nex_configSF_createFinish false
 SetTooltip nex_configSF_close ""Task force has no ships and will be disbanded. Use the disband option to confirm this course of action.""",,,
 nex_configSF_mainOptsNoCommander,Nex_ConfigSFOptions,!Nex_SpecialForcesConfig hasCommander,"SetEnabled nex_configSF_createFinish false
-SetTooltip nex_configSF_createFinish ""Fleet must have a commander.""",,,
+SetEnabled nex_configSF_close_false
+SetTooltip nex_configSF_createFinish ""Fleet must have a commander.""
+SetTooltip nex_configSF_recreate ""Fleet must have a commander.""
+SetTooltip nex_configSF_close ""Fleet must have a commander.""",,,
+nex_configSF_mainOptsNoRevive,Nex_ConfigSFOptions,"!$nex_psf_recreate
+!Nex_SpecialForcesConfig canRevive","SetEnabled nex_sf_reviveShipStart false
+SetTooltip nex_sf_reviveShipStart $nex_psf_noReviveReason",,,
 nex_configSF_giveShips,DialogOptionSelected,$option == nex_configSF_giveShips,Nex_SpecialForcesConfig giveShips,,,
 nex_configSF_takeShips,DialogOptionSelected,$option == nex_configSF_takeShips,Nex_SpecialForcesConfig takeShips,,,
 nex_configSF_transferOfficers,DialogOptionSelected,$option == nex_configSF_showOfficers,Nex_SpecialForcesConfig showOfficerTransfer,,"nex_configSF_officerConfirm:Confirm transfers
@@ -2831,13 +2839,17 @@ DismissDialog",,,
 nex_configSF_close,DialogOptionSelected,$option == nex_configSF_close,FireBest OpenCommLink,,,
 nex_configSF_create,DialogOptionSelected,$option == nex_configSF_createFinish,Nex_SpecialForcesConfig done,"""As you command. The new task group is ready to go.""",,
 nex_configSF_abortCreate,DialogOptionSelected,$option == nex_configSF_abortCreate,Nex_SpecialForcesConfig cancel,,,
-nex_commandSF_main,DialogOptionSelected,$option == nex_commandSF_main,Nex_SpecialForcesCommands main,Issuing commands to special task group...,,
-nex_commandSF_mainOpts,Nex_CommandSFOptions,,,,"nex_commandSF_patrol:Patrol system
+nex_commandSF_main,DialogOptionSelected,$option == nex_commandSF_main,"$nex_sf_menuType = ""command"" 0
+Nex_SpecialForcesCommands main",,,
+nex_commandSF_mainOpts,Nex_CommandSFOptions,,SetShortcut nex_commandSF_leave ESCAPE,,"nex_commandSF_patrol:Patrol system
 nex_commandSF_orbit:Orbit location
 nex_commandSF_follow:Follow player
 nex_commandSF_autoAssign:Auto-assign
+nex_sf_reviveShipStart:Revive dead ships
 #nex_commandSF_participateRaid:Participate in raid
 nex_commandSF_leave:Leave",
+nex_commandSF_mainOptsNoRevive,Nex_CommandSFOptions,!Nex_SpecialForcesConfig canRevive,"SetEnabled nex_sf_reviveShipStart false
+SetTooltip nex_sf_reviveShipStart $nex_psf_noReviveReason",,,
 nex_commandSF_patrol,DialogOptionSelected,$option == nex_commandSF_patrol,Nex_SpecialForcesCommands patrol,,,
 nex_commandSF_orbit,DialogOptionSelected,$option == nex_commandSF_orbit,Nex_SpecialForcesCommands orbit,,,
 nex_commandSF_follow,DialogOptionSelected,$option == nex_commandSF_follow,Nex_SpecialForcesCommands follow,,,
@@ -2847,4 +2859,18 @@ nex_commandSF_leave,DialogOptionSelected,$option == nex_commandSF_leave,"unset $
 FireBest OpenCommLink",,,
 nex_commandSF_leaveRemote,DialogOptionSelected,"$option == nex_commandSF_leave
 $nex_remoteCommand score:10",DismissDialog,,,
+nex_miscSF_reviveStart,DialogOptionSelected,$option == nex_sf_reviveShipStart,Nex_SpecialForcesConfig reviveShips,,,
+nex_miscSF_reviveOpts,Nex_SFReviveShipsOpts,,,,"nex_sf_reviveShipConfirm:Confirm
+nex_sf_reviveShipStart:Repick
+nex_sf_reviveShipCancel:Cancel",
+nex_miscSF_reviveConfirm_config,DialogOptionSelected,"$option == nex_sf_reviveShipConfirm
+$nex_sf_menuType == ""config"" score:10","Nex_SpecialForcesConfig reviveConfirm
+Nex_SpecialForcesConfig mainMenu",,,
+nex_miscSF_reviveConfirm_command,DialogOptionSelected,"$option == nex_sf_reviveShipConfirm
+$nex_sf_menuType == ""command"" score:10","Nex_SpecialForcesConfig reviveConfirm
+Nex_SpecialForcesCommands main",,,
+nex_miscSF_reviveBackToConfig,DialogOptionSelected,"$option == nex_sf_reviveShipCancel
+$nex_sf_menuType == ""config"" score:10",Nex_SpecialForcesConfig mainMenu,,,
+nex_miscSF_reviveBackToCommand,DialogOptionSelected,"$option == nex_sf_reviveShipCancel
+$nex_sf_menuType == ""command"" score:10",Nex_SpecialForcesCommands main,,,
 #END player special task group,,,,,,

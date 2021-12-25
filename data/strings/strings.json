@@ -11,6 +11,7 @@
 		"colonies":"colonies",
 		"conquest":"conquest",
 		"continue":"continue",
+		"cost":"cost",
 		"CR":"CR",
 		"credits":"credits",
 		"designType":"design type",
@@ -128,6 +129,7 @@
 		"are":"are",
 		"has":"has",
 		"have":"have",
+		"youHave":"you have %s",
 
 		"improvedBy":"improved by $amount",
 		"reducedBy":"reduced by $amount",
@@ -1510,12 +1512,13 @@
 		"museumShip":"Museum Ship ($name)",
 	},
 
-	"exerelin_markets":{		
+	"exerelin_markets":{
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
 		"marketDirectoryEntryDistOnly":"$market ($distance LY)",
 		"marketDirectoryEntryForPicker":"$market ($faction, size $size, $distance LY)",
+		"marketDirectoryEntryForPickerNoMarket":"$target ($distance LY)",
 		"marketDirectoryEntryForPickerNoDist":"$market ($faction, size $size)",
 		"marketDirectoryHidden":"$num hidden markets",
 				
@@ -2119,19 +2122,25 @@
 		"intelTitle":"Special Task Group",
 		"intelTag":"Special forces",
 		
+		"intelBulletArrived":"Arrived at %s",
+		"intelBulletDestroyed":"Fleet destroyed",
+		
 		"intelDesc1":"The $faction special task group $fleetName is present in the Sector.",
 		"intelDesc1NoName":"A $faction special task group is present in the Sector.",
 		"intelDescCommander":"The fleet is known to be commanded by $rank $name, in the $flagship.",
 		"intelDescCommanderNoFlagship":"The fleet is known to be commanded by $rank $name.",
 		"intelDescStr":"The fleet's estimated strength is %s fleet points (damage %s).",
 		"intelDescFleetStatus":"The fleet is physically alive and is currently in the %s.",
+		"intelDescLostShips":"Lost ships",
 		"intelDescAction":"Current action: $action",
 		"intelDescActionPriority":"Priority: %s",
 		"intelDescRouteSegmentInfo":"Route segment: from %s to %s (%s of %s days elapsed)",
+		"intelDescETA":"ETA to system: %s day(s)",
 		"intelDescOver":"The $faction special task group $fleetName is no longer operational.",
 		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",
 		
 		"intelButtonCommand":"Give orders",
+		"intelButtonDisband":"Disband",
 		"intelButtonDebug":"Debug",
 		
 		"bountyBulletLocation":"Target is in the %s",
@@ -2142,7 +2151,10 @@
 		
 		"dialogButtonAssign":"Assign",
 		"dialogTooltipMaxPSF":"You can only have one special task group at a time.",
+		"dialogTooltipNoShipsToRevive":"No ships to revive!",
+		"dialogTooltipNoMarketForRevive":"Fleet must be near a non-inhospitable market.",
 		"dialogMsgTaskAssigned":"task assigned",
+		"dialogMsgRevivingShips":"reviving ships",
 	},
 	
 	"nex_splitFleet":{

@@ -904,7 +904,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	
 	public static void createInfoTextBasic(TooltipMakerAPI info, SectorEntityToken entity, 
 			SectorEntityToken other) {
-		String str = StringHelper.getString("exerelin_markets", "marketDirectoryEntryForPicker");
 		MarketAPI market = entity.getMarket();
 		String distStr;
 		if (other != null) {
@@ -914,17 +913,29 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		else {
 			distStr = "?";
 		}
-		String factionName = market.getFaction().getDisplayName();
-		String size = market.getSize() + "";
-		str = StringHelper.substituteToken(str, "$market", market.getName());
-		str = StringHelper.substituteToken(str, "$faction", factionName);
-		str = StringHelper.substituteToken(str, "$size", size);
-		str = StringHelper.substituteToken(str, "$distance", distStr);
-
-		Color hl = Misc.getHighlightColor();
-		LabelAPI text = info.addPara(str, 0);
-		text.setHighlight(factionName, size, distStr);
-		text.setHighlightColors(market.getFaction().getBaseUIColor(), hl, hl);
+		String str;
+		if (market != null) {
+			str = StringHelper.getString("exerelin_markets", "marketDirectoryEntryForPicker");
+			String factionName = market.getFaction().getDisplayName();
+			String size = market.getSize() + "";
+			str = StringHelper.substituteToken(str, "$market", market.getName());
+			str = StringHelper.substituteToken(str, "$faction", factionName);
+			str = StringHelper.substituteToken(str, "$size", size);
+			str = StringHelper.substituteToken(str, "$distance", distStr);
+			
+			Color hl = Misc.getHighlightColor();
+			LabelAPI text = info.addPara(str, 0);
+			text.setHighlight(factionName, size, distStr);
+			text.setHighlightColors(market.getFaction().getBaseUIColor(), hl, hl);
+		}
+		else {
+			str = StringHelper.getString("exerelin_markets", "marketDirectoryEntryForPickerNoMarket");
+			str = StringHelper.substituteToken(str, "$target", entity.getName());
+			str = StringHelper.substituteToken(str, "$distance", distStr);
+			
+			Color hl = Misc.getHighlightColor();
+			info.addPara(str, 0, hl, distStr);
+		}	
 	}
 	
 	protected static String getString(String id) {

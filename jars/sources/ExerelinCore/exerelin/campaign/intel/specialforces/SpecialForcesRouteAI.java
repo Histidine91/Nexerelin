@@ -60,6 +60,7 @@ public class SpecialForcesRouteAI {
 	
 	// can't be a plain Object because when loaded the one in segment will no longer equal the static value
 	public static final String ROUTE_IDLE_SEGMENT = "SF_idleSeg";
+	public static final String ROUTE_PURSUIT_SEGMENT = "SF_pursueSeg";
 	
 	protected SpecialForcesIntel sf;
 	protected SpecialForcesTask currentTask;
@@ -315,10 +316,8 @@ public class SpecialForcesRouteAI {
 				// TODO
 			case FOLLOW_PLAYER:
 				destination = task.getEntity();
-				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
-				sf.debugMsg("Travel time: " + travelTime + "; from " + from.getLocation(), false);
-				travelSeg = new RouteManager.RouteSegment(travelTime, from, destination);
-				actionSeg = new RouteManager.RouteSegment(task.time, destination);
+				travelSeg = new RouteManager.RouteSegment(99999 + 1, from, destination);
+				travelSeg.custom = ROUTE_PURSUIT_SEGMENT;
 				break;
 			case IDLE:
 				// go to nearest star system and just bum around it for a bit
