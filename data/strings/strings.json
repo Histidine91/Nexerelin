@@ -1444,8 +1444,8 @@
 		
 		"ability_confirm":"Confirm?",
 		
-		"ability_cooldown":"Cooldown: %s turns",
-		"ability_cooldownGlobal":"Global cooldown: %s turns",
+		"ability_cooldown":"Cooldown: %s turn(s)",
+		"ability_cooldownGlobal":"Global cooldown: %s turn(s)",
 		"ability_outOfRange":"Out of range",
 		"ability_alreadyUsed":"Already used this battle",
 		
