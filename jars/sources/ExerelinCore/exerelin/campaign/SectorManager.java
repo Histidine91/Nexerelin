@@ -63,6 +63,7 @@ import exerelin.campaign.intel.VictoryIntel;
 import exerelin.campaign.intel.VictoryScoreboardIntel;
 import exerelin.campaign.intel.VictoryScoreboardIntel.ScoreEntry;
 import static exerelin.campaign.intel.VictoryScoreboardIntel.getNeededSizeForVictory;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
@@ -1208,8 +1209,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // no, this risks screwing market-specific tariffs
         //market.getTariff().modifyFlat("generator", Global.getSector().getFaction(newOwnerId).getTariffFraction());    
         
-        // (un)apply free port if needed
+        // (un)apply free port and hazard pay if needed
         ColonyManager.updateFreePortSetting(market);
+        boolean shouldKeepIncentives = market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY) 
+                || Factions.PLAYER.equals(NexUtilsMarket.getOriginalOwner(market));
+        if (!shouldKeepIncentives) 
+        {
+            market.setImmigrationIncentivesOn(null);
+        }
         ColonyManager.updateIncome(market);
         
         NexUtilsMarket.setTariffs(market);
