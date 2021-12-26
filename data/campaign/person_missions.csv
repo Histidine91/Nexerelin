@@ -1,10 +1,11 @@
 mission id,person id,tagsAll,tagsAny,tagsNotAny,tags,freq,min timeout,max timeout,min rep,max rep,importance,reqMissionAny,reqMissionAll,reqMissionNone,icon,plugin
 nex_dcom,,,trade,,,10,30,60,FAVORABLE,,MEDIUM,,,,graphics/icons/missions/disrupt_competitor.png,exerelin.campaign.intel.missions.Nex_DisruptIndustry
-nex_gbTut,,,,,"priority, non_repeatable",,,,,,,,,,graphics/exerelin/missions/gb_tutorial.png,exerelin.campaign.intel.missions.GroundBattleTutorial
+nex_gbTut,,,,,"priority, non_repeatable",,,,,,,,,,graphics/exerelin/icons/missions/gb_tutorial.png,exerelin.campaign.intel.missions.GroundBattleTutorial
 nex_buildStation,,,"remnant, underworld",,,5,120,180,,,MEDIUM,,,,graphics/icons/markets/pirate_base.png,exerelin.campaign.intel.missions.BuildStation
 ,,,,,,,,,,,,,,,,
 # Remnant story missions,,,,,,,,,,,,,,,,
 nex_remM1,,,,,"priority, non_repeatable",,,,,,,,,,graphics/icons/cargo/ai_core_beta.png,exerelin.campaign.intel.missions.remnant.RemnantM1
+nex_remBrawl,nex_dissonant,,,,"priority, non_repeatable",,,,FRIENDLY,,,,,,graphics/exerelin/icons/missions/rem_brawl.png,exerelin.campaign.intel.missions.remnant.RemnantBrawl
 ,,,,,,,,,,,,,,,,
 # generic Remnant missions,,,,,,,,,,,,,,,,
 # note: most Rem missions are just vanilla ones with Remnant tag added in modPlugin onApplicationLoad,,,,,,,,,,,,,,,,

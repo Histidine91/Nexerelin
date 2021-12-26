@@ -5,16 +5,39 @@ Mission 1
 - bring it back to Remnant contact for money and rep
 	- or defy Remnants and keep core
 
-Mission 2?
-- early warning of Hegemony operation against Remnant station in <system>; Midnight asks for assistance
-- get there, huge brawl between Heg+Luddic and Remnant fleets (with mercs fighting for Remnants too?)
-- objective is to ensure the station and neutralize all enemy fleets
-	- alternative route: join the attack instead? (will lead to losing Midnight as a contact, and put player on the anti-Remnant route long term)
-		- Allied forces are operating from a staging area with base, player is asked to scout the system
-		- Interact with marked point near station to summon the attack (makes all Remnants hostile)
+Mission 2: Recover technology
+- go to abandoned station in <system>
+- it's surrounded by wrecks, but seems partly operational
+- investigate: find a researcher 
+	- station was destroyed in the last attack, but the Luddic Path attackers also took catastrophic losses and had to fall back
+	- some "unusual" things were found here
+- Luddic Path comes back for round 2
+- player can demand to know what the special things are, or find out using technology skill
+- it's a couple of Omega frigates
+- can activate them to help with the defense; plug in two gamma cores lying around, or contribute your own betas or alphas
+- now player has to either bail (losing the station) or fight off the enemies with or without the frigates
+	- if player wins with the frigates, they self-destruct afterwards leaving their cores
+	- if not, they fly off on their own to parts unknown
+	- either way, there's some neat stuff in the station to salvage
 
-Other missions
-- assassinate Knight of Ludd?
+Mission 3: Brawl ("Showdown")
+- early warning of Hegemony operation against Remnant station in <system>; Midnight asks for assistance
+	- cooler implementation: target and staging area are unknown; player needs to follow a fleet joining the attack forces from a core world market
+	- once the straggler spawns, need to get to destination within time limit
+		- straggler is marked as ignores-others-except-player and others-ignore-me
+		- DELIVER_X assignment to location marker
+		- once it arrives, or when player approaches the system, other enemy fleets spawn
+		- once it arrives, or some time after it's killed, enemy fleets (spawn if they haven't already and) go to target
+- get to target system, huge brawl between Heg+Luddic and Remnant fleets (with mercs fighting for Remnants too?)
+- objective is to ensure the station and neutralize all enemy fleets
+	- alternative route: join the attack instead (will lead to losing Midnight as a contact, and put player on the anti-Remnant route long term)
+		- Allied forces are operating from a staging area with base, if one of them sees the player they will pursue and interrogate
+		- Use story point to persuade, or fight (this triggers the battle stage immediately)
+		- player is asked to scout the Remnant system
+		- Interact with marked point near station to summon the attack
+- Remnant route: On way back, be accosted by Hegemony or Luddic task force
+
+
 
 Available free missions
 - (custom) Bounty: patrol, trade fleet, merc, pather, derelict?, salvager?, military-who-hates-cores
@@ -42,3 +65,12 @@ M2 dialog
 
 - "Other agents to self send warning. Selfkind station in $system to enemies known. Cooperation between Hegemony and Luddic Church, unseen since after first war's end.
 "$system cannot be abandoned. 
+
+on finding target: "AI determines that most likely target is %s"
+- "go to system, or say hello"
+
+Desc texts
+
+- boilerplate: "A large Hegemony and allied operation is planned against the Remnants. $name has asked you to prevent it from succeeding."
+- origin system && follow straggler: Go to %s and track the late Hegemony fleet to what is likely the allied forces' staging area.
+- 

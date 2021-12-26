@@ -1994,6 +1994,28 @@ nex_remM1_betrayPerseanGoBack,DialogOptionSelected,"$option == nex_remM1_betrayG
 $faction.id == persean",FireAll PopulateOptions,"$HeOrShe looks at you oddly. ""You're a little old to be making crank calls, aren't you? If you have no actual information to provide, then leave me to my work.""",,
 #END Remnant quest mission 1,,,,,,
 ,,,,,,
+# Remnant brawl mission,,,,,,
+nex_remBrawl_blurb,nex_remBrawl_blurb,,"Highlight ""Special request""","""Special request that $playerName only can fulfill. Massive Hegemony operation against selfkind planned. In unravelling plot require assistance.""",,
+nex_remBrawl_offerOption,nex_remBrawl_option,,SetOptionColor nex_remBrawl_start highlight,,nex_remBrawl_start:Ask about the Hegemony operation,
+nex_remBrawl_missionText,DialogOptionSelected,$option == nex_remBrawl_start,$missionId = nex_remBrawl,"""Other agents to self send warning. Selfkind station to enemies known, but which one not certain. To destroy this key asset, cooperation between Hegemony and Luddic Church, unseen since after first war's end.
+
+""Selfkind defences reinforcing, all available assets, but without where hammer falls certainty, difficult will be. Even then, difficult will be. $playerName assistance required.""","nex_remBrawl_missionText2:""What do you need me to do?""",
+nex_remBrawl_missionText2,DialogOptionSelected,$option == nex_remBrawl_missionText2,"Call $global.nex_remBrawl_ref showMap ""Origin: $nex_remBrawl_stragglerOriginName""
+Highlight $nex_remBrawl_stragglerOriginName $nex_remBrawl_reward","""We know one Hegemony fleet in operation participating, delayed. Soon will depart $nex_remBrawl_stragglerOriginName to join operation. If $playerName follows, learn their staging area can, from there their goal deduce. Then location's defense join.
+
+""Not know how far away staging area. Lots of fuel bring.
+
+""For this, generous reward selfkind is prepared to offer. $nex_remBrawl_reward credits. But $personName knows, $playerName would do it out of friendship for self and selfkind.""","nex_remBrawl_accept:Accept
+nex_remBrawl_decline:Decline",
+nex_remBrawl_accept,DialogOptionSelected,$option == nex_remBrawl_accept,"Call $mHub accept $missionId
+Call $mHub returnToList","""Thank you, $playerFirstName. This deed self and selfkind will remember.""",,
+nex_remBrawl_decline,DialogOptionSelected,$option == nex_remBrawl_decline,Call $mHub doCleanup,"""…""
+
+You sense that $personFirstName is put out by this refusal. After a few breaths, $hisOrHer avatar vanishes from your display.",cutCommLink:Disconnect,
+,,,,,,
+,,,,,,
+#END Remnant brawl mission,,,,,,
+,,,,,,
 # Remnant general quests,,,,,,
 nex_rem_dissonantGeneralGreeting,PickGreeting,$id == nex_dissonant score:10,"ShowPersonVisual
 FireAll PopulateOptions","""$playerName, greetings. New collaborations, desired?""
