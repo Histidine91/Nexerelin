@@ -1116,6 +1116,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, 
             float repChangeStrength, boolean silent)
     {
+        if (factionsToNotify == null) factionsToNotify.equals(new ArrayList<>());
+        
         boolean wasPlayerOwned = market.isPlayerOwned();
         
         // transfer market and associated entities

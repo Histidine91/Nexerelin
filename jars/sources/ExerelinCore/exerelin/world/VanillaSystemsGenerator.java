@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.skills.NexSkills;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
@@ -143,11 +144,8 @@ public class VanillaSystemsGenerator {
 		
 		market = derinkuyu.getMarket();
 		market.setEconGroup(null);
-		derinkuyu.setFaction(Factions.INDEPENDENT);
-		market.setFactionId(Factions.INDEPENDENT);
-			
-		FactionAPI ind = Global.getSector().getFaction(Factions.INDEPENDENT);
-		market.getSubmarket(Submarkets.SUBMARKET_OPEN).setFaction(ind);
+		SectorManager.transferMarket(market, Global.getSector().getFaction(Factions.INDEPENDENT), market.getFaction(), 
+				false, true, null, 0, true);
 		
 	}
 	
