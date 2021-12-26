@@ -454,7 +454,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			addCommodities(builderFleet.getCargo());
 			orderBuild();
 		}	
-		setCurrentStage(Stage.COMPLETED, dialog, memoryMap);	
+		setCurrentStage(Stage.COMPLETED, dialog, memoryMap);
 	}
 	
 	public void build() {
@@ -721,7 +721,14 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 	
 	public static class SystemUninhabitedReq implements StarSystemRequirement {
 		public boolean systemMatchesRequirement(StarSystemAPI system) {
-			return Misc.getMarketsInLocation(system).isEmpty();
+			if (!Misc.getMarketsInLocation(system).isEmpty()) return false;
+			
+			List<CampaignFleetAPI> fleets = system.getFleets();
+			for (CampaignFleetAPI fleet : fleets) {
+				if (fleet.isStationMode()) return false;
+			}
+			
+			return true;
 		}
 	}
 }
