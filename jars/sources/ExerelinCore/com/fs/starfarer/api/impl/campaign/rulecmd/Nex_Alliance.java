@@ -16,7 +16,9 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class Nex_Alliance extends BaseCommandPlugin {
 
 	@Override
@@ -36,6 +38,9 @@ public class Nex_Alliance extends BaseCommandPlugin {
 			case "isAlignmentCompatible":
 				return isAlignmentCompatible(dialog.getInteractionTarget().getFaction().getId(), 
 						params.get(1).getString(memoryMap));
+			case "canMerge":
+				return canMerge(dialog.getInteractionTarget().getFaction().getId(), 
+						params.get(1).getBoolean(memoryMap));
 			case "invite":
 				invite(dialog, memoryMap);
 				return true;
@@ -44,6 +49,9 @@ public class Nex_Alliance extends BaseCommandPlugin {
 				return true;
 			case "join":
 				join(dialog, memoryMap);
+				return true;
+			case "merge":
+				merge(dialog, memoryMap, params.get(1).getBoolean(memoryMap));
 				return true;
 			case "leave":
 				leave(dialog, memoryMap);
@@ -71,11 +79,50 @@ public class Nex_Alliance extends BaseCommandPlugin {
 	}
 	
 	public boolean isAlignmentCompatible(String factionId, String allianceId) {
-		if (NexConfig.ignoreAlignmentForAlliances) return true;
-		
 		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
+		return isAlignmentCompatible(factionId, alliance);
+	}
+	
+	public boolean isAlignmentCompatible(String factionId, Alliance alliance) {
+		if (NexConfig.ignoreAlignmentForAlliances) return true;
 		float compat = AllianceManager.getAlignmentCompatibilityWithAlliance(factionId, alliance);
 		return compat >= AllianceManager.MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
+	}
+	
+	public boolean canMerge(String factionId, boolean reverse) {
+		Alliance first = AllianceManager.getPlayerAlliance(false);
+		Alliance second = AllianceManager.getFactionAlliance(factionId);
+		if (first == null || second == null) return false;
+		
+		if (reverse) {
+			Alliance temp = first;
+			first = second;
+			second = temp;
+		}
+		
+		for (String newMemberId : second.getMembersCopy()) {
+			if (!isAlignmentCompatible(newMemberId, first)) {
+				log.info(String.format("%s incompatible allignment with %s", newMemberId, first.getName()));
+				return false;
+			}
+			
+			FactionAPI newMember = Global.getSector().getFaction(newMemberId);
+			for (String existingMemberId : first.getMembersCopy()) {
+				if (newMember.isHostileTo(existingMemberId)) {
+					log.info(String.format("%s hostile to existing member %s", newMemberId, existingMemberId));
+					return false;
+				}
+			}
+			
+			boolean enoughAvgRep = first.getAverageRelationshipWithFaction(newMemberId) 
+					>= AllianceManager.MIN_RELATIONSHIP_TO_JOIN;
+			if (!enoughAvgRep) {
+				log.info(String.format("%s insufficient average reputation with %s", newMemberId, first.getName()));
+				return false;
+			}
+		}		
+		
+		return true;
 	}
 	
 	public void invite(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
@@ -151,6 +198,32 @@ public class Nex_Alliance extends BaseCommandPlugin {
 		if (oldAllianceDissolved) {
 			msg(text, "allianceDissolved", null, oldAllianceName, null);
 		}
+	}
+	
+	public void merge(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap, boolean reverse) 
+	{
+		String factionId = dialog.getInteractionTarget().getFaction().getId();
+		Alliance first = AllianceManager.getPlayerAlliance(false);
+		Alliance second = AllianceManager.getFactionAlliance(factionId);
+		
+		if (reverse) {
+			Alliance temp = first;
+			first = second;
+			second = temp;
+		}
+		
+		TextPanelAPI text = dialog.getTextPanel();
+		
+		AllianceManager.setPlayerInteractionTarget(dialog.getInteractionTarget());
+		AllianceManager.getManager().mergeAlliance(first, second);
+		AllianceManager.setPlayerInteractionTarget(null);
+		
+		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
+		AllianceManager.setMemoryKeys(memory, first);
+		memory = memoryMap.get(MemKeys.FACTION);
+		AllianceManager.setMemoryKeys(memory, first);
+		
+		msg(text, "mergedAlliance", factionId, first.getName(), second.getName(), Misc.getPositiveHighlightColor());
 	}
 	
 	public void leave(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {

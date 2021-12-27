@@ -121,6 +121,13 @@ public class AllianceIntel extends BaseIntelPlugin {
 					str = StringHelper.substituteToken(str, "$size", sub2);
 					info.addPara(str, pad, tc, hl, sub1, sub2);
 					break;
+				case MERGED:
+					Alliance other = (Alliance)((Map<String, Object>)listInfoParam).get("other");
+					sub1 = other.getName();
+					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", 
+							"intelMergedPoint", "$alliance", sub1);
+					info.addPara(str, initPad, tc, hl, sub1);
+					break;
 				case DISSOLVED:
 					//str = StringHelper.getString(Misc.ucFirst("dissolved"));
 					//info.addPara(str, pad);
@@ -360,6 +367,11 @@ public class AllianceIntel extends BaseIntelPlugin {
 			return;
 		}
 	}
+	
+	@Override
+	protected void notifyEnding() {
+		isDissolved = true;
+	}
 
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
@@ -398,6 +410,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		DISSOLVED,
 		FORMED,
 		JOINED,
-		LEFT
+		LEFT,
+		MERGED
 	}
 }

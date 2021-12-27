@@ -688,6 +688,26 @@ ExerelinInviteToAllianceOptionIncompatible,ExerelinMarketSpecial,"$showPlayerFac
 !$faction.isInAlliance
 !Nex_Alliance isAlignmentCompatible $faction.id $player.allianceId","SetTooltip exerelinInviteToAlliance ""$TheFaction cannot endorse the goals of the $_playerAllianceName.""
 SetEnabled exerelinInviteToAlliance false",,,
+ExerelinMergeAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$player.isInAlliance
+$faction.isInAlliance
+$faction.allianceId != $player.allianceId","Nex_AddOptionConfirmation exerelinMergeAlliance ""Are you sure you want to merge $_playerAllianceName with $_factionAllianceName?"" ""Yes"" ""No""",,exerelinMergeAlliance:Merge $_factionAllianceName into $_playerAllianceName,
+ExerelinMergeAllianceOptionIncompatible,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$player.isInAlliance
+$faction.isInAlliance
+$faction.allianceId != $player.allianceId
+!Nex_Alliance canMerge $faction.id false","SetTooltip exerelinMergeAlliance ""All members of their alliance must be able to join ours for a merger to take place.""
+SetEnabled exerelinMergeAlliance false",,,
+ExerelinMergeAllianceOptionReverse,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$player.isInAlliance
+$faction.isInAlliance
+$faction.allianceId != $player.allianceId","Nex_AddOptionConfirmation exerelinMergeAllianceReverse ""Are you sure you want to merge $_factionAllianceName with $_playerAllianceName?"" ""Yes"" ""No""",,exerelinMergeAllianceReverse:Merge $_playerAllianceName into $_factionAllianceName,
+ExerelinMergeAllianceOptionReverseIncompatible,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$player.isInAlliance
+$faction.isInAlliance
+$faction.allianceId != $player.allianceId
+!Nex_Alliance canMerge $faction.id true","SetTooltip exerelinMergeAllianceReverse ""All members of our alliance must be able to join theirs for a merger to take place.""
+SetEnabled exerelinMergeAllianceReverse false",,,
 ,,,,,,
 ExerelinFormAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !$player.isInAlliance
@@ -713,6 +733,10 @@ Nex_AddOptionConfirmation exerelinLeaveAlliance ""Are you sure you want your fac
 ExerelinJoinAlliance,DialogOptionSelected,$option == exerelinJoinAlliance,"Nex_Alliance join
 FireAll ExerelinMarketSpecialInitialize",,,
 ExerelinInviteToAlliance,DialogOptionSelected,$option == exerelinInviteToAlliance,"Nex_Alliance invite
+FireAll ExerelinMarketSpecialInitialize",,,
+ExerelinMergeAlliance,DialogOptionSelected,$option == exerelinMergeAlliance,"Nex_Alliance merge false
+FireAll ExerelinMarketSpecialInitialize",,,
+ExerelinMergeAllianceReverse,DialogOptionSelected,$option == exerelinMergeAllianceReverse,"Nex_Alliance merge true
 FireAll ExerelinMarketSpecialInitialize",,,
 ExerelinFormAlliance,DialogOptionSelected,$option == exerelinFormAlliance,"Nex_Alliance form
 FireAll ExerelinMarketSpecialInitialize",,,

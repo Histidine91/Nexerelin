@@ -192,6 +192,7 @@
 		"intelFormedPoint":"Founded by: $faction1, $faction2",	# not used
 		"intelJoinedPoint":"$Faction joined",
 		"intelLeftPoint":"$Faction left",
+		"intelMergedPoint":"Merged with $alliance",
 		"intelDissolvedPoint":"Dissolved",
 		
 		"intelStrengthPoint":"$num members; size $size",
@@ -229,6 +230,7 @@
 		"allianceDissolved":"Alliance $OldAlliance has been dissolved",
 		"invitedToAlliance":"$TheFaction has joined $NewAlliance",
 		"formedAlliance":"Formed $NewAlliance with $theFaction",
+		"mergedAlliance":"Merged $OldAlliance into $NewAlliance",
 		
 		"voteIntroLineWar":"Alliance vote: War between $Faction1 and $Faction2",
 		"voteIntroLinePeace":"Alliance vote: Peace between $Faction1 and $Faction2",
@@ -1484,7 +1486,7 @@
 		"ability_ignisPluvia_resultDisrupt":"Disrupted industries: %s",
 		"ability_ignisPluvia_tooltip1":"Deploys an Olympus in MIRV configuration to unleash FIRE RAIN upon the target.",
 		"ability_ignisPluvia_tooltip2":"Distributes %s bombardments with %s damage each on all industries with an enemy presence. Damage is reduced by $market's drop attrition of %s, and increased by %s if combat is ongoing on the target industry.",
-		"ability_ignisPluvia_tooltip3":"The TITAN delivery system and the sheer volume of fire ensure that most ground defenses cannot prevent the attack, and cannot even defend their immediate area from more than one bombardment.",
+		"ability_ignisPluvia_tooltip3":"The Titan delivery system and the sheer volume of fire ensure that most ground defenses cannot prevent the attack, and cannot even defend their immediate area from more than one bombardment.",
 		"ability_ignisPluvia_tooltip4":"The selected Olympus will consume %s CR to conduct this attack.",
 		
 		"responseStr":"responding to invasion",

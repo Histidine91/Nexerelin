@@ -357,6 +357,27 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         alliance.updateIntel(factionId, null, UpdateType.JOINED);
         SectorManager.checkForVictory();
     }
+    
+    /**
+     * Merges the two alliances by moving the members of {@code second} into {@code first}.
+     * @param first
+     * @param second
+     */
+    public void mergeAlliance(Alliance first, Alliance second) {
+        
+        List<String> toMove = new ArrayList<>(second.getMembersCopy());
+        dissolveAlliance(second, true);
+        for (String factionId : toMove) {
+            first.addMember(factionId);
+            alliancesByFactionId.put(factionId, first);
+        }
+        
+        Map<String, Object> infoParam = new HashMap<>(); 
+        infoParam.put("type", AllianceIntel.UpdateType.MERGED);
+        infoParam.put("other", second);
+        
+        first.getIntel().sendUpdateIfPlayerHasIntel(infoParam, false);
+    }
        
     public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
     {
@@ -380,7 +401,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         leaveAlliance(factionId, alliance, false);
     }
     
-    public void dissolveAlliance(Alliance alliance)
+    public void dissolveAlliance(Alliance alliance) {
+        dissolveAlliance(alliance, true);
+    }
+    
+    public void dissolveAlliance(Alliance alliance, boolean silent)
     {
         if (!alliances.contains(alliance)) return;
 		
@@ -396,17 +421,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         alliances.remove(alliance);
 		alliance.clearMembers();
 
-        alliance.updateIntel(memberPicker.pickAndRemove(), memberPicker.pickAndRemove(), UpdateType.DISSOLVED);
+        if (!silent)
+            alliance.updateIntel(memberPicker.pickAndRemove(), memberPicker.pickAndRemove(), UpdateType.DISSOLVED);
 		AllianceIntel intel = alliance.getIntel();
+        
 		Global.getSector().addScript(intel);	// so its advance() method can run and the intel can expire
 		intel.endAfterDelay();
 		
-//		alliance.getEvent().setDone(true);
         SectorManager.checkForVictory();
     }
-
+    
+    // TODO: maybe let alliances try to merge on their own too
     /**
-     * Check all factions for eligibility to join/form an alliance
+     * Check all factions for eligibility to join/form an alliance.
      */
     public void tryMakeAlliance()
     {
