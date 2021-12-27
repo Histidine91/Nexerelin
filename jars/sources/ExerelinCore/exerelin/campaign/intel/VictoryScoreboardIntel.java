@@ -43,7 +43,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	public static int getNeededSizeForVictory(int total, List<ScoreEntry> sizeRanked) {
 		
 		float sizeFractionForVictory = Global.getSettings().getFloat("nex_sizeFractionForVictory");
-		int neededPop = (int)(total * sizeFractionForVictory);
+		int neededPop = (int)Math.ceil(total * sizeFractionForVictory);
 		int runnerUpScore = 0;
 		if (sizeRanked.size() >= 2)
 			runnerUpScore = sizeRanked.get(1).score;
@@ -70,7 +70,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		float hiFractionForVictory = Global.getSettings().getFloat("nex_heavyIndustryFractionForVictory");
 		
 		int neededPop = getNeededSizeForVictory(totals[0], sizeRanked);
-		int neededHI = (int)(totals[1] * hiFractionForVictory);
+		int neededHI = (int)Math.ceil(totals[1] * hiFractionForVictory);
 		int neededFriends = factions.size() - 1;
 		
 		float subWidth = width/3 - 8;

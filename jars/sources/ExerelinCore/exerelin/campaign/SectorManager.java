@@ -957,7 +957,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 		int[] totals = VictoryScoreboardIntel.generateRankings(factions, sizeRanked, hiRanked, friendsRanked);
 		
 		int neededPop = getNeededSizeForVictory(totals[0], sizeRanked);
-		int neededHI = (int)(totals[1] * hiFractionForVictory);
+		int neededHI = (int)Math.ceil(totals[1] * hiFractionForVictory);
 		int neededFriends = factions.size() - 1;
 		
 		if (!sizeRanked.isEmpty() && sizeRanked.get(0).score >= neededPop) {
