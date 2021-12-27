@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -344,7 +345,8 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			if (useSystemOwnerColor) marketColor = ownerColor;
 			
 			if (loc instanceof StarSystemAPI) {
-				locColor = ((StarSystemAPI)loc).getStar().getSpec().getIconColor();
+				PlanetAPI star = ((StarSystemAPI)loc).getStar();
+				if (star != null) locColor = star.getSpec().getIconColor();
 			}
 			String locText = String.format("%s", locName, ownerName);
 			
