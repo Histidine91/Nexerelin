@@ -66,6 +66,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	public static final int MAX_MARINES_TOTAL = 16000;
 	public static final float MARINE_GARRISION_MULT = 0.75f;
 	public static final float MARINE_NON_BOMBABLE_MULT = 1.3f;
+	public static final float RESPAWN_MARINE_MULT = 1.4f;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
@@ -222,6 +223,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		else if (marinesTotal > MAX_MARINES_TOTAL) {
 			log.info("Capping total marines at " + MAX_MARINES_TOTAL + " (was " + marinesTotal + ")");
 			marinesTotal = MAX_MARINES_TOTAL;
+		}
+		
+		if (this instanceof RespawnInvasionIntel) {
+			marinesTotal *= RESPAWN_MARINE_MULT;
 		}
 	}
 
