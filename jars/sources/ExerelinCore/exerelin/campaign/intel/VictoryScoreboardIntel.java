@@ -364,7 +364,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 
 	@Override
 	public IntelSortTier getSortTier() {
-		return IntelSortTier.TIER_1;
+		return IntelSortTier.TIER_3;
 	}
 	
 	@Override

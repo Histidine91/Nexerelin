@@ -33,6 +33,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 	public static final Set<String> FOLLOW_VALID_FLEET_TYPES = new HashSet<>();
 	public static final String BUSY_REASON = "nex_followMe";
 	public static final List<String> ALLOWED_BUSY_REASONS = new ArrayList<>();
+	public static final FleetAssignment FLEET_ASSIGNMENT = FleetAssignment.ORBIT_PASSIVE;
 	
 	static {
 		FOLLOW_VALID_FLEET_TYPES.add(FleetTypes.PATROL_SMALL);
@@ -97,7 +98,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 					MemoryAPI mem = fleet.getMemoryWithoutUpdate();
 					String type = NexUtilsFleet.getFleetType(fleet);
 					if (!FOLLOW_VALID_FLEET_TYPES.contains(type)) continue;
-					if (mem.contains(MemFlags.FLEET_BUSY)) continue;
+					if (mem.contains(MemFlags.FLEET_BUSY)) continue;	// TODO: allow if this ability is the only reason for busy
 					if (fleet.getBattle() != null) continue;
 					if (fleet.isStationMode()) continue;
 					if (true)
@@ -116,13 +117,15 @@ public class FollowMeAbility extends BaseDurationAbility {
 						*/
 						if (currentAssignment != null && currentAssignment.getTarget() == entity)
 						{
-							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_PASSIVE);
+							ai.removeFirstAssignmentIfItIs(FLEET_ASSIGNMENT);
 						}
 						
 						//ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION - FOLLOW_DURATION_PASSIVE, null);
-						ai.addAssignmentAtStart(FleetAssignment.ORBIT_PASSIVE, entity, FOLLOW_DURATION_PASSIVE, null);
+						ai.addAssignmentAtStart(FLEET_ASSIGNMENT, entity, FOLLOW_DURATION_PASSIVE, null);
 						Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), 
 								MemFlags.FLEET_BUSY, BUSY_REASON, true, FOLLOW_DURATION_PASSIVE);
+						Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), 
+								MemFlags.FLEET_IGNORES_OTHER_FLEETS, BUSY_REASON, true, FOLLOW_DURATION_PASSIVE);
 						
 						//fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, FOLLOW_DURATION);
 						Global.getSector().addPing(fleet, "follow_me_receive");

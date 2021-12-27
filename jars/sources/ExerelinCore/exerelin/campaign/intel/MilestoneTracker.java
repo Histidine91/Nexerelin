@@ -300,6 +300,11 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 		return StringHelper.getString("nex_milestones", id);
 	}
 	
+	@Override
+	public IntelSortTier getSortTier() {
+		return IntelSortTier.TIER_3;
+	}
+	
 	// runcode exerelin.campaign.intel.MilestoneTracker.debug();
 	public static void debug() {
 		loadDefs();

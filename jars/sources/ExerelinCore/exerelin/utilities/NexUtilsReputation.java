@@ -75,7 +75,7 @@ public class NexUtilsReputation
 	}
 	
 	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,
-			PersonAPI person, float delta, float delta2, CommMessageAPI message, TextPanelAPI textPanel)
+			PersonAPI person, float delta, float deltaPerson, CommMessageAPI message, TextPanelAPI textPanel)
 	{
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
@@ -102,7 +102,7 @@ public class NexUtilsReputation
 		if (person != null) 
 		{
 			CustomRepImpact impact2 = new CustomRepImpact();
-			impact2.delta = delta2;
+			impact2.delta = deltaPerson;
 			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact2, message, textPanel, true), person);
 		}
 		
