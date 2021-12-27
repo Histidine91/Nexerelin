@@ -2065,6 +2065,46 @@ Hopefully the might of the Hegemony war machine will be enough to break through 
 nex_remBrawl_scoutSendFalse,DialogOptionSelected,$option == nex_remBrawl_scoutSendFalse,Call $nex_remBrawl_ref scoutFalse,"You spend some minutes with your officers and the bridge computers tweaking the data to result in a plausible, but wholly misleading, image of the battlespace the Hegemony will face.
 
 That ought to give them a real nasty surprise. Although with the strength you saw back in $nex_remBrawl_stagingAreaName, it may be a good idea not to get too complacent just yet.",defaultLeave:Leave,
+,,,,,,
+nex_remBrawl_barEvent,DialogOptionSelected,"$player.nex_remBrawl_barEvent score:1000
+#Nex_RuleHelper rollRemBrawlBarEvent
+$option == marketVisitBar","unset $player.nex_remBrawl_barEvent
+FireBest BarShuttleDownPrintDesc
+FireBest BarPrintDesc
+BarCMD playAmbience",,nex_remBrawl_barEvent2:Continue,Unused for now
+nex_remBrawl_barEvent2Skilled,DialogOptionSelected,"$option == nex_remBrawl_barEvent2
+$nex_skillCheck",,"As you start looking for a suitable seating arrangement, two hooded figures push roughly through the crowd. Two more, from a different direction.
+
+This is a liquor establishment, not the deck of a spacecraft, yet your instincts warn you all the same: danger.",nex_remBrawl_barEvent3:Continue,
+nex_remBrawl_barEvent2Unskilled,DialogOptionSelected,"$option == nex_remBrawl_barEvent2
+!$nex_skillCheck",,"As you start looking for a suitable seating arrangement, two hooded figures push roughly through the crowd. Two more, from a different direction.
+
+You've only started to react when one of your bodyguards shoves you towards a hard encounter with the floor.",nex_remBrawl_barEvent3:Continue,
+nex_remBrawl_barEvent3Skilled,DialogOptionSelected,"$option == nex_remBrawl_barEvent3
+$nex_skillCheck",,"Your laspistol is in your hand before you are conscious of the act. The older of the two approaching figures on your side snarls as he recognizes the inversion of predator and prey. 
+
+He goes for his gun. Big mistake; it confirms your suspicions. His forehead and more vanishes; the beam may not be visible but its effects certainly are.",nex_remBrawl_barEvent4:Continue,
+nex_remBrawl_barEvent3Unskilled,DialogOptionSelected,"$option == nex_remBrawl_barEvent3
+!$nex_skillCheck",,"The would-be assassins are fast. Just not fast enough. They both get their CP-subguns clear from under their cloaks before one of them goes down a flash of directed energy fire.
+
+The other triggers their weapon involuntarily as they go down, riddling the ceiling with holes. There's a lot of screaming elsewhere in the bar. You wish they'd stop.",nex_remBrawl_barEvent4:Continue,
+nex_remBrawl_barEvent4Skilled,DialogOptionSelected,"$option == nex_remBrawl_barEvent4
+$nex_skillCheck",,"Some brave bargoer leaps at the last would-be killer even as he levels his weapon, knocking him on the ground. Several others join her moments later, forming a pile an unaugmented human has no hope of escaping.",nex_remBrawl_barEvent5:Approach the assassin,
+nex_remBrawl_barEvent4Unskilled,DialogOptionSelected,"$option == nex_remBrawl_barEvent4
+!$nex_skillCheck",,"From your low position, you make out more gunfire, another body hitting the floor with a thud. Only then does the bodyguard take their foot off your back, allowing you to stand up.
+
+You now notice the fourth and last assassin. Several of the other patrons have tackled him to the floor and are now holding him down.",nex_remBrawl_barEvent5:Approach the assassin,
+nex_remBrawl_barEvent5,DialogOptionSelected,$option == nex_remBrawl_barEvent5,#Nex_RuleHelper showRandomPerson luddic_path,"The sole survivor of the attempt on your life snarls defiantly, $hisOrHer head sticking out from under the dogpile.
+
+""Mephistopheles may have saved his favorite pet today,"" he spits, ""but punishment will yet find you. The faithful are too numerous for you to kill us all. And when your masters' lies are torn away, when the people see you for the beast you truly are—""","nex_remBrawl_barEvent6:""Why did you try to kill me?""",
+nex_remBrawl_barEvent6,DialogOptionSelected,$option == nex_remBrawl_barEvent6,,"$HeOrShe sneers. ""You pretend not to know, demon-consorter? When you sided with the abomination against humanity and the faithful, with false gods against Ludd? How many did you slaughter that day, when they came to defeat a beast only to be put down by a traitor?""
+
+This... is this a reference to that Hegemony operation against the Remnant Nexus, which Midnight Dissonant asked you to stop? Somehow word has gotten around.
+
+""It is you who should explain,"" the Luddic assassin hisses. ""Tell them. Tell them why you have allied with demons.""","nex_remBrawl_barEventMoney:""The pay is good.""
+nex_remBrawl_barEventFight:""They fight my enemies.""
+nex_remBrawl_barEventDemon:""They are not the demons you claim.""
+nex_remBrawl_barEventNothing:Say nothing",
 #END Remnant brawl mission,,,,,,
 ,,,,,,
 # Remnant general quests,,,,,,
