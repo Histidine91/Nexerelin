@@ -38,39 +38,32 @@ Mission 3: Brawl ("Showdown")
 - Remnant route: On way back, be accosted by Hegemony or Luddic task force
 
 
-
-Available free missions
-- (custom) Bounty: patrol, trade fleet, merc, pather, derelict?, salvager?, military-who-hates-cores
-- (custom) System bounty
-	- If we're doing this, why not the disrupt missions?
-- Spysat
-- (custom) Dead drop
-- (custom) Remnant production/Buy Omega weapons
-- Buy AI cores?
-
-Station building mission
-- rare?
-- have cooldown
-- tell player to take 1k metals, 200 heavy machinery, 500 supplies and such to
-	- fleet will ambush player en route (Hegemony, Luddic Church, Luddic Path, any AI-hating faction, or merc)
-		- if non-hostile, will demand that player hand over the cargo they were going to use for the station (Pathers will just attack outright)
-- meet Remnant fleet orbiting location
-	- on delivery, Remnant fleet will assemble station after a delay
-- Complication fleet after completion?
-
 --------------------
-M2 dialog
-- "In naval matter assistance needed. Valuable strength $playerName can offer."
-- Offer your assistance in the "naval matter"
+Brawl dialog 
 
-- "Other agents to self send warning. Selfkind station in $system to enemies known. Cooperation between Hegemony and Luddic Church, unseen since after first war's end.
-"$system cannot be abandoned. 
+== Offer help ==
+"Are you serious?"
 
-on finding target: "AI determines that most likely target is %s"
-- "go to system, or say hello"
+You explain that you know of the Hegemony's plans for the Remnant station in $nex_remBrawl_targetSystemName, and how you can help. 
+The Remnants do not yet know you have turned against them; hence, you will be able to take them by surprise. 
+After all, it is nothing less than your duty as a citizen of the Domain and child of Mother Church to defeat the AI abomination wherever it arises.
 
-Desc texts
+The $personRank puts a hand on $hisOrHer forehead. "A moment, please. I... this is a matter for the admiral."
 
-- boilerplate: "A large Hegemony and allied operation is planned against the Remnants. $name has asked you to prevent it from succeeding."
-- origin system && follow straggler: Go to %s and track the late Hegemony fleet to what is likely the allied forces' staging area.
-- 
+
+The officer's image disappears from your screen, replaced by the $faction crest. A few minutes later, it reappears, along with the image of a figure in a Hegemony admiral's uniform.
+
+"So. I hear you have a proposition for me."
+
+
+After your explanation, the admiral nods slowly. "A curious plan indeed. Yet it might give us the edge we need against these machines."
+
+$nex_remBrawl_admiral_HeOrShe examines you like an unusual Domain artefact. "Here's what you can do for us. 
+Travel to the $nex_remBrawl_targetSystemName and reconnoiter their positions, in particular their station. Then, transmit the encoded data to us. 
+It'll be days old by the time we begin our assault, but that will still be valuable."
+
+The admiral looks at you, one eye larger than the other. "If, of course, you are truly on our side."
+> "You can count on me."
+> (Lie) "You can count on me."
+
+"Perfect. Now, be off with you. We'll be awaiting your signal."

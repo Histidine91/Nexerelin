@@ -38,7 +38,9 @@ public class SpecialContactIntel extends ContactIntel {
 	}
 	
 	public String getName() {
-		return StringHelper.getString("nex_contacts", "nameSpecialContact") + ": " + person.getNameString();
+		String name = StringHelper.getString("nex_contacts", "nameSpecialContact") + ": " + person.getNameString();
+		if (isEnding() || isEnded()) name += " - " + StringHelper.getString("lost", true);
+		return name;
 	}
 	
 	@Override
@@ -123,5 +125,10 @@ public class SpecialContactIntel extends ContactIntel {
 		}
 		
 		info.addPara(StringHelper.getString("nex_contacts", "intelDescSpecial"), opad);
+	}
+	
+	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode) {
+		if ((isEnding() || isEnded()) && state != ContactState.LOST_CONTACT_DECIV) return;
+		super.addBulletPoints(info, mode);
 	}
 }

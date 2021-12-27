@@ -170,8 +170,12 @@
 		"agentOrderSuccess":0.5,
 		"agentOrderDetection":0.75,
 		"agentOrderBoth":0,
+		
 		"nex_hireMerc":0.75,
 		"nex_gb_inspire":0,
+		
+		"nex_remBrawl_smoothtalk":0.75,
+		"nex_remBrawl_betray":0,	# since cost is zero SP
 	},
 	
 	"graphics":{

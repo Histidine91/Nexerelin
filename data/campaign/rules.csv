@@ -2003,7 +2003,7 @@ nex_remBrawl_missionText,DialogOptionSelected,$option == nex_remBrawl_start,$mis
 nex_remBrawl_missionText2,DialogOptionSelected,$option == nex_remBrawl_missionText2,"Call $global.nex_remBrawl_ref showMap ""Origin: $nex_remBrawl_stragglerOriginName""
 Highlight $nex_remBrawl_stragglerOriginName $nex_remBrawl_reward","""We know one Hegemony fleet in operation participating, delayed. Soon will depart $nex_remBrawl_stragglerOriginName to join operation. If $playerName follows, learn their staging area can, from there their goal deduce. Then location's defense join.
 
-""Not know how far away staging area. Lots of fuel bring.
+""Not know how far travel must. Lots of fuel bring.
 
 ""For this, generous reward selfkind is prepared to offer. $nex_remBrawl_reward credits. But $personName knows, $playerName would do it out of friendship for self and selfkind.""","nex_remBrawl_accept:Accept
 nex_remBrawl_decline:Decline",
@@ -2013,7 +2013,58 @@ nex_remBrawl_decline,DialogOptionSelected,$option == nex_remBrawl_decline,Call $
 
 You sense that $personFirstName is put out by this refusal. After a few breaths, $hisOrHer avatar vanishes from your display.",cutCommLink:Disconnect,
 ,,,,,,
+nex_remBrawl_attackerHail,Nex_RemBrawlSusHail,,"$entity.ignorePlayerCommRequests = true
+Call $entity.nex_remBrawl_ref updateData
+Highlight spy
+SetStoryOption nex_remBrawl_offerHelp1 1 nex_remBrawl_smoothtalk ui_char_spent_story_point ""Talked your way into a major Hegemony naval operation""","""Halt, captain! This system is a restricted area. What are you doing here?""
+
+The $personRank glares at you most suspiciously. ""Are you a spy?""","nex_remBrawl_offerHelp1:""I am here to assist in your operation.""
+nex_remBrawl_attackerConvo1:""Just passing through, $personRank.""",
+nex_remBrawl_attackerConvo1,DialogOptionSelected,$option == nex_remBrawl_attackerConvo1,"SetStoryOption nex_remBrawl_offerHelp1 1 nex_remBrawl_smoothtalk ui_char_spent_story_point ""Talked your way into a major Hegemony naval operation""","""A likely story! You come out here to the middle of nowhere, where we just happen to be conducting a top-secret operation—""
+
+$HeOrShe startles, then glares as if it's your fault. Which it technically is.
+
+""...as such, you will be required to stand your $shipOrFleet down and submit to detention for the duration. We will—"" $hisOrHer tone takes on a trace of apology ""— return your $shipOrFleet once this unpleasantness is over, and compensate you for the inconvenience.""","nex_remBrawl_offerHelp1:""Let me assist in your operation.""
+nex_remBrawl_attackerConvo2:""I'm afraid I cannot comply.""",
+nex_remBrawl_attackerConvo2,DialogOptionSelected,$option == nex_remBrawl_attackerConvo2,,"The $personRank's glare turns positively absolute-zero. ""That was not a request, captain,"" $heOrShe all but snarls. You will stand down at once, or be destroyed!""","nex_remBrawl_attackerConvoEnd:""Shields up!"" (end)",
+nex_remBrawl_attackerConvoEnd,DialogOptionSelected,$option == nex_remBrawl_attackerConvoEnd,Call $entity.nex_remBrawl_ref violentEncounter,"Your comms officer snaps the holofeed off, leaving a momentary ghostly afterimage of the $personRank's face floating in the air. Your $shipOrFleet is already going to combat stations.",cutCommLinkNoText:Continue,
+nex_remBrawl_attackerOfferHelp1,DialogOptionSelected,$option == nex_remBrawl_offerHelp1,,"""Are you serious?""
+
+You explain that you know of the Hegemony's plans for the Remnant station in $nex_remBrawl_targetSystemName, and how you can help. The Remnants do not yet know you have turned against them; hence, you will be able to take them by surprise. After all, it is nothing less than your duty as a citizen of the Domain and child of Mother Church to defeat the AI abomination wherever it arises.
+
+The $personRank puts a hand on $hisOrHer forehead. ""A moment, please. I... this is a matter for the admiral.""",nex_remBrawl_offerHelp2:Continue,
+nex_remBrawl_attackerOfferHelp2,DialogOptionSelected,$option == nex_remBrawl_offerHelp2,Call $entity.nex_remBrawl_ref showAdmiral,"The officer's image disappears from your screen, replaced by the $faction crest. A few minutes later, it reappears, along with the image of a figure in a Hegemony admiral's uniform.
+
+""So. I hear you have a proposition for me.""",nex_remBrawl_offerHelp3:Continue,
+nex_remBrawl_attackerOfferHelp3,DialogOptionSelected,$option == nex_remBrawl_offerHelp3,,"After your explanation, the admiral nods slowly. ""A curious plan indeed. Yet it might give us the edge we need against these machines.""
+
+$nex_remBrawl_admiral_HeOrShe examines you like an unusual Domain artefact. ""Here's what you can do for us. Travel to the $nex_remBrawl_targetSystemName and reconnoiter their positions, in particular their station. Then, transmit the encoded data to us. It'll be days old by the time we begin our assault, but that will still be valuable.""
+
+The admiral looks at you, one eye larger than the other. ""If, of course, you are truly on our side.""","nex_remBrawl_offerHelp4:""You can count on me.""
+nex_remBrawl_offerHelp4Alt:(lie) ""You can count on me.""",
+nex_remBrawl_attackerOfferHelp4,DialogOptionSelected,$option == nex_remBrawl_offerHelp4,"Call $entity.nex_remBrawl_ref agreeScout
+ShowDefaultVisual
+EndConversation","""Perfect. Now, be off with you. We'll be awaiting your signal.""
+
+The officers each give you a somewhat mocking salute, and cut the comm link almost simultaneously.",,
+nex_remBrawl_attackerOfferHelp4Alt,DialogOptionSelected,$option == nex_remBrawl_offerHelp4Alt,"$option = nex_remBrawl_offerHelp4 0
+FireBest DialogOptionSelected",,,
 ,,,,,,
+nex_remBrawl_scoutObjectInteraction,OpenInteractionDialog,"$nex_remBrawl_target score:1000 
+Call $nex_remBrawl_ref updateData
+","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting back in $nex_remBrawl_stagingAreaName. Your $shipOrFleet's sensors have been running continously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
+
+...or you could tamper with the readings, and leave them no better off, or worse, than if you'd never sent them anything.
+
+Your comms officer looks at you, ready to transmit the encoded hyperwave signal. With the encryption, the Remnants may have their suspicions, but they shouldn't know what you transmitted until it's far too late.","nex_remBrawl_scoutSendTrue:Send the true data
+nex_remBrawl_scoutSendFalse:Send the falsified data
+defaultLeave:Leave",
+nex_remBrawl_scoutSendTrue,DialogOptionSelected,$option == nex_remBrawl_scoutSendTrue,Call $nex_remBrawl_ref scoutTrue,"You transmit the accurate reconnaisance data.
+
+Hopefully the might of the Hegemony war machine will be enough to break through the Remnants' defenses and destroy the station, like back in the days after the First AI War. If not... you'll have to finish the job yourself. ",defaultLeave:Leave,
+nex_remBrawl_scoutSendFalse,DialogOptionSelected,$option == nex_remBrawl_scoutSendFalse,Call $nex_remBrawl_ref scoutFalse,"You spend some minutes with your officers and the bridge computers tweaking the data to result in a plausible, but wholly misleading, image of the battlespace the Hegemony will face.
+
+That ought to give them a real nasty surprise. Although with the strength you saw back in $nex_remBrawl_stagingAreaName, it may be a good idea not to get too complacent just yet.",defaultLeave:Leave,
 #END Remnant brawl mission,,,,,,
 ,,,,,,
 # Remnant general quests,,,,,,
