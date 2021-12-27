@@ -47,7 +47,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	protected String factionId;
 	protected boolean isPeaceTreaty;
 	protected int state = 0;	// 0 = pending, 1 = accepted, -1 = rejected
-	protected float daysRemaining = MathUtils.getRandomNumberInRange(14, 21);
+	protected float daysRemaining = MathUtils.getRandomNumberInRange(5, 7);
 	protected ExerelinReputationAdjustmentResult repResult;
 	protected float storedRelation;
 	
