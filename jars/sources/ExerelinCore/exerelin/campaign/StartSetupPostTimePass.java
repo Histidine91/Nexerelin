@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
@@ -22,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.People;
+import static com.fs.starfarer.api.impl.campaign.ids.People.SIYAVONG;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -216,6 +218,22 @@ public class StartSetupPostTimePass {
 				}
 			};
 			Global.getSector().getIntelManager().addIntel(intel);
+		}
+		
+		if (!corvusMode) {
+			// fix post-Ziggurat encounter crash
+			PersonAPI person = Global.getFactory().createPerson();
+			person.setId(SIYAVONG);
+			person.setFaction(Factions.PERSEAN);
+			person.setGender(FullName.Gender.MALE);
+			person.setRankId(Ranks.AGENT);
+			person.setPostId(Ranks.POST_SPECIAL_AGENT);
+			person.setImportance(PersonImportance.HIGH);
+			person.getName().setFirst("Finlay");	// FIXME: maybe should externalize the names, but meh
+			person.getName().setLast("Siyavong");
+			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
+			
+			Global.getSector().getImportantPeople().addPerson(person);
 		}
 	}
 	
