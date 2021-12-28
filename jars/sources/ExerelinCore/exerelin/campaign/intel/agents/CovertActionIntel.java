@@ -359,8 +359,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		}
 		float bonusXPFraction = 1 - Global.getSettings().getBonusXP(bonusXPId);
 		if (bonusXPFraction == 0) return;
-		long xpToGrant = Math.round(NexUtils.getBonusXPForSpendingStoryPointBeforeSpendingIt(Global.getSector().getPlayerStats())
-				* bonusXPFraction);
+		long xpToGrant = Math.round(Global.getSector().getPlayerStats().getBonusXPForSpendingStoryPointBeforeSpendingIt() * bonusXPFraction);
 		Global.getSector().getPlayerStats().addBonusXP(xpToGrant, true, null, true);
 	}
 	

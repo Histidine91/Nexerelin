@@ -143,49 +143,6 @@ public class NexUtils
 		return closestMarket;
 	}
 	
-	// see http://fractalsoftworks.com/forum/index.php?topic=5061.msg312513#msg312513
-	public static long getBonusXPForSpendingStoryPointBeforeSpendingIt(MutableCharacterStatsAPI stats) 
-	{
-		LevelupPlugin plugin = Global.getSettings().getLevelupPlugin();
-		int per = plugin.getStoryPointsPerLevel();
-		long xp = stats.getXP();
-		long bonusXp = stats.getBonusXp();
-		
-		// what we want to do is figure out exactly how much bonus XP is needed to gain 1 story point
-		// if the bonus XP crosses over to the next level - so part of the bonus XP is based on the XP
-		// for the current level, and part for the next.
-		int levelWithBonusXP = 1;
-		while (plugin.getXPForLevel(levelWithBonusXP + 1) <= xp + bonusXp * 2L) {
-			levelWithBonusXP++;
-			if (levelWithBonusXP >= plugin.getMaxLevel()) break;
-		}
-		
-		if (levelWithBonusXP < plugin.getMaxLevel() - 1) {
-			long currLevelStart = plugin.getXPForLevel(levelWithBonusXP);
-			long currLevelEnd = plugin.getXPForLevel(levelWithBonusXP + 1);
-			long nextLevelEnd = plugin.getXPForLevel(levelWithBonusXP + 2);
-			
-			currLevelEnd -= currLevelStart;
-			nextLevelEnd -= currLevelStart;
-			
-			float fraction = (float)(xp + bonusXp * 2L - currLevelStart) / (float) currLevelEnd;
-			float fractionPerPt = 1f / (float) per;
-			float fractionAfter = fraction + fractionPerPt * 2f; // * 2 because it'll be gained alongside real XP
-			
-			float xpForThisLevel = Math.max(0f, Math.min(1f, fractionAfter) - fraction) * currLevelEnd;
-			float xpForNextLevel = Math.max(0f, fractionAfter - 1f) * (nextLevelEnd - currLevelEnd);
-			
-			return (long)Math.round((xpForThisLevel + xpForNextLevel) * 0.5f); // * 0.5f to undo the earlier doubling
-		}
-		
-		int level = stats.getLevel() + 1;
-		level = Math.min(level, plugin.getMaxLevel() + 1);
-		long neededForPrevLevel = plugin.getXPForLevel(level - 1);
-		long neededForSPLevel = plugin.getXPForLevel(level);
-
-		return ((neededForSPLevel - neededForPrevLevel) / per);
-	}
-	
 	public static void addDevModeDialogOptions(InteractionDialogAPI dialog)
 	{
 		if (Global.getSettings().isDevMode())
