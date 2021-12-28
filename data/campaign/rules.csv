@@ -2582,10 +2582,10 @@ FireAll PopulateOptions","""Welcome... oh, it's the debtor.""
 
 $HeOrShe folds $hisOrHer arms. ""No service till you pay off your debt.""",,
 nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10
-$global.seenAIMIntro",,,"nex_mercViewHires:View mercs for hire
+$player.nex_seenAIMIntro",,,"nex_mercViewHires:View mercs for hire
 nex_mercViewHelp:Inquire about AIM's terms and conditions",
 nex_mercRepOptionsFirstTime,PopulateOptions,"$nex_isAIMRep score:10
-!$global.seenAIMIntro",,,"nex_mercIntro1:""What do you do?""",
+!$player.nex_seenAIMIntro",,,"nex_mercIntro1:""What do you do?""",
 nex_mercRepOptionsDebt,PopulateOptions,"$nex_isAIMRep score:10
 $player.nex_mercsUnpaid > 0","SetEnabled nex_mercViewHires false
 SetEnabled nex_mercViewHelp false
@@ -2594,7 +2594,7 @@ AddTextSmall ""You owe $nex_mercDebtStr credits. You have $player.creditsStr cre
 SetTextHighlightColors h $nex_mercDebtColor
 Highlight $nex_mercDebtStr $player.creditsStr
 Nex_AddOptionConfirmation nex_mercPayDebt ""Confirm payment?"" ""Yes"" ""No""",,nex_mercPayDebt:Pay your debt,
-nex_mercIntro1,DialogOptionSelected,$option == nex_mercIntro1,$global.seenAIMIntro = true,"""Well, I handle all customer service inquiries. I put clients in touch with the mercs they need, and..."" $HeOrShe trails off. ""Oh, you meant our organization.""
+nex_mercIntro1,DialogOptionSelected,$option == nex_mercIntro1,$player.nex_seenAIMIntro = true,"""Well, I handle all customer service inquiries. I put clients in touch with the mercs they need, and..."" $HeOrShe trails off. ""Oh, you meant our organization.""
 
 The $personPost straightens, as if actually eager to give the standard marketing pitch. ""The Association of Interstellar Mercenaries,"" $heOrShe intones, ""is the premier industry body and brokerage for the mercenary community in the Persean Sector. Here you can find some of the best in the business, at an affordable price. Our organization provides the assurance of clear, legally enforcable contracts and the convenience of matching clients with contractors in a way meeting both parties' needs.""",nex_mercIntro2:Continue,
 nex_mercIntro2,DialogOptionSelected,$option == nex_mercIntro2,FireAll PopulateOptions,"""Our list of available contractors, and our generous terms and conditions, are available for your perusal at any time.
