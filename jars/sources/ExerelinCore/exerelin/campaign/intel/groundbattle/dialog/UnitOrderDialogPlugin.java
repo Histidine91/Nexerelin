@@ -299,6 +299,12 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	protected void showDeploymentConfirmScreen(IndustryForBattle ifb) {
 		deployTarget = ifb;
+		
+		if (quickMove) {
+			dialog.getPlugin().optionSelected(null, OptionId.DEPLOY_CONFIRM);
+			return;
+		}
+		
 		options.clearOptions();
 		String str = getString("actionDeployInfo");
 		int deployCost = unit.getDeployCost();
