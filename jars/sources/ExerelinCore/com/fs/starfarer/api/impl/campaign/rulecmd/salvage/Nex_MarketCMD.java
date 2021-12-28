@@ -1988,6 +1988,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardContinueOption();
 	}
 	
+	@Deprecated
 	public int applyRaidStabiltyPenaltyNex(MarketAPI target, String desc) {
 		int penalty = 0, min = 1;
 		RaidDangerLevel highestDanger = RaidDangerLevel.NONE;
@@ -2044,11 +2045,18 @@ public class Nex_MarketCMD extends MarketCMD {
 			if (Misc.isPlayerFactionSetUp()) {
 				reason = String.format(StringHelper.getString("nex_raidDialog", "recentlyRaided"), playerFaction.getDisplayName());
 			}
-			reason = Misc.ucFirst(reason);
-			// MODIFIED
-			stabilityPenalty = applyRaidStabiltyPenaltyNex(market, reason);
+			float raidMultForStabilityPenalty = temp.raidMult;
+			if (temp.objectives != null) {
+				float assignedTokens = 0f;
+				for (GroundRaidObjectivePlugin curr : temp.objectives) {
+					assignedTokens += curr.getMarinesAssigned();
+				}
+				raidMultForStabilityPenalty = assignedTokens * 0.1f; 
+			}
+			
+			stabilityPenalty = applyRaidStabiltyPenalty(market, reason, raidMultForStabilityPenalty);
 			Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), MemFlags.RECENTLY_RAIDED, 
-								   Factions.PLAYER, true, 30f);
+									Factions.PLAYER, true, 30f);
 			Misc.setRaidedTimestamp(market);
 		}
 		
