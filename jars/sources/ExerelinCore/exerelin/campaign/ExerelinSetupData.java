@@ -34,8 +34,11 @@ public class ExerelinSetupData
 	public boolean corvusMode = true;
 	public boolean respawnFactions = false;
 	public boolean onlyRespawnStartingFactions = false;
-	public boolean randomStartRelationships = false;
-	public boolean randomStartRelationshipsPirate = false;
+	@Deprecated public boolean randomStartRelationships;	
+	@Deprecated public boolean randomStartRelationshipsPirate;
+	
+	public StartRelationsMode startRelationsMode = StartRelationsMode.DEFAULT;
+	public boolean applyStartRelationsModeToPirates = false;
 	public boolean easyMode = false;
 	public boolean hardMode = false;
 	public boolean prismMarketPresent = true;
@@ -74,5 +77,19 @@ public class ExerelinSetupData
 	
 	public static String getDModCountText(int level) {
 		return StringHelper.getString("exerelin_ngc", "dModLevel" + level);
+	}
+	
+	public static enum StartRelationsMode {
+		DEFAULT,
+		FLATTEN,
+		RANDOM;
+		
+		public boolean isRandom() {
+			return this == RANDOM;
+		}
+		
+		public boolean isDefault() {
+			return this == DEFAULT;
+		}
 	}
 }

@@ -15,6 +15,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.ExerelinSetupData.StartRelationsMode;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
@@ -80,34 +81,42 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 			InteractionDialogCustomPanelPlugin plugin) 
 	{
 		int NUM_OPTS = 3;
-		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionRandomRelations"),
+		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionStartingRelations"),
 				"graphics/icons/intel/peace.png", plugin, 
-				createTooltip(getString("tooltipRandomRelations"), null, null));
+				createTooltip(getString("tooltipStartingRelations"), null, null));
 		
 		final List<ButtonAPI> buttons = new ArrayList<>();
 		TooltipMakerAPI lastHolder = null;
 		final ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
 		// determine which button should be highlighted
-		int reqIndex = 0;
-		if (data.randomStartRelationships) {
-			reqIndex = !data.randomStartRelationshipsPirate ? 1 : 2;
-		}
+		int reqIndex = data.startRelationsMode.ordinal();
 		for (int i=0; i<NUM_OPTS; i++) {
-			String name = Misc.ucFirst(getString("btnRandomRelations" + i));
-			lastHolder = initRadioButton("nex_randomRelations_" + i, name, i == reqIndex, 
+			String name = Misc.ucFirst(getString("btnStartingRelations" + i));
+			lastHolder = initRadioButton("nex_startingRelations_" + i, name, i == reqIndex, 
 					buttonPanel, lastHolder, buttons);
 		}
+		TooltipMakerAPI checkPirateHolder = buttonPanel.createUIElement(48, ITEM_HEIGHT, false);
+		ButtonAPI checkPirate = checkPirateHolder.addCheckbox(48, ITEM_HEIGHT, getString("btnStartingRelationsPirate"), 
+				ButtonAPI.UICheckboxSize.TINY, 0);
+		checkPirate.setChecked(data.applyStartRelationsModeToPirates);
+		plugin.addButton(new ButtonEntry(checkPirate, "nex_startingRelationsPirate") {
+			@Override
+			public void onToggle() {
+				data.applyStartRelationsModeToPirates = button.isChecked();
+			}
+		});
+		buttonPanel.addUIElement(checkPirateHolder).rightOfTop(lastHolder, 3);
+		
 		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
 		
 		for (int i=0; i<NUM_OPTS; i++) {
 			final int index = i;
-			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_randomRelations_" + i) 
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_startingRelations_" + i) 
 			{
 				@Override
 				public void onToggleImpl() {
-					data.randomStartRelationships = index > 0;
-					data.randomStartRelationshipsPirate = index == 2;
+					data.startRelationsMode = StartRelationsMode.values()[index];
 				}
 			};
 			buttonEntries.add(radio);

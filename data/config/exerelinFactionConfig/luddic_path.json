@@ -1,7 +1,7 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-    "hostileToAll":2,
+    #"hostileToAll":2,	# no need, just use pirate logic? idk
     "pirateFaction":true,
     "showIntelEvenIfDead":true,
     

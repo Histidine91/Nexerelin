@@ -1671,9 +1671,10 @@
 		
 		"infoCustomPanel":"Mouse over option titles for more information",
 		
-		"btnRandomRelations0":"none",
-		"btnRandomRelations1":"non-pirate",
-		"btnRandomRelations2":"all",
+		"btnStartingRelations0":"default",
+		"btnStartingRelations1":"flatten",
+		"btnStartingRelations2":"random",
+		"btnStartingRelationsPirate":"Apply to\npirates",
 		
 		"btnFactionWeights0":"none",
 		"btnFactionWeights1":"default",
@@ -1684,8 +1685,8 @@
 		"btnFactionRespawn2":"all",
 		
 		# migrated from rules.csv
-		"optionRandomRelations":"Random starting faction relations",
-		"tooltipRandomRelations":"Will also disable faction relationship clamping, and randomize diplomacy traits",
+		"optionStartingRelations":"Starting faction relations",
+		"tooltipStartingRelations":"Non-default settings will also disable faction relationship clamping. If random, will randomize diplomacy traits.",
 		"optionFactionRespawn":"Faction respawn",
 		"tooltipFactionRespawn":"- %s: Do not use faction respawn mechanic.\n- %s: Factions present at the start of the game can respawn.\n- %s: Also allow entry of new factions not present at the start of the game.",
 		"optionFactionWeights":"Use faction weights",
@@ -2046,8 +2047,13 @@
 		"allowRespawn":"Allow faction respawn",
 		"allowRespawnNonOriginal":"Allow respawn for factions not currently present",
 		"hardMode":"Starfarer Mode",
-		"randomizeRelationships":"Randomize faction relationships",
-		"randomizeRelationshipsPirate":"Randomize relationships for pirate factions"
+		"startRelationsMode":"Reset relations",
+		"startRelationsMode_default":"no",
+		"startRelationsMode_random":"randomize",
+		"startRelationsMode_flatten":"flatten",
+		"startRelationsModePirate":"Apply relationship change to pirate factions",
+		
+		
 	},
 	"nex_reliefFleet":{		
 		"intelTitle":"Relief Fleet: $market",

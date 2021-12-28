@@ -46,13 +46,14 @@ public class DiplomacyTraits {
 			String name = entryJson.getString("name");
 			String desc = entryJson.getString("desc");
 			String icon = entryJson.optString("icon");
+			boolean noRandom = entryJson.optBoolean("noRandom", false);
 			JSONArray colorJson = entryJson.optJSONArray("color");
 			int[] color = null;
 			if (colorJson != null) {
 				color = new int[] {colorJson.getInt(0), colorJson.getInt(1), colorJson.getInt(2)};
 			}
 			
-			TraitDef trait = new TraitDef(id, name, desc, icon, color);
+			TraitDef trait = new TraitDef(id, name, desc, icon, color, noRandom);
 			
 			if (entryJson.has("incompatible")) {
 				JSONArray incompatJson = entryJson.getJSONArray("incompatible");
@@ -78,6 +79,7 @@ public class DiplomacyTraits {
 		
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 		for (TraitDef trait : TRAITS) {
+			if (trait.noRandom) continue;
 			picker.add(trait.id);
 		}
 		int count = 3 + NexUtilsMath.randomNextIntInclusive(random, 3);
@@ -140,9 +142,11 @@ public class DiplomacyTraits {
 		public final String desc;
 		public final String icon;
 		public final Color color;
+		public final boolean noRandom;
 		public final Set<String> incompatibilities = new HashSet<>();
 		
-		public TraitDef(String id, String name, String desc, String icon, int[] color) {
+		public TraitDef(String id, String name, String desc, String icon, int[] color, boolean noRandom) 
+		{
 			this.id = id;
 			this.name = name;
 			this.desc = desc;
@@ -151,6 +155,7 @@ public class DiplomacyTraits {
 				this.color = new Color(color[0], color[1], color[2]);
 			else
 				this.color = Color.WHITE;
+			this.noRandom = noRandom;
 		}
 	}
 	

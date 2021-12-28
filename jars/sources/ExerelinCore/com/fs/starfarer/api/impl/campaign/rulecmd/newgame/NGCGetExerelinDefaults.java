@@ -24,8 +24,8 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$numSystems", setupData.numSystems, 0);
 		map.set("$numPlanets", setupData.numPlanets, 0);
 		map.set("$numStations", setupData.numStations, 0);
-		map.set("$randomStartRelationships", setupData.randomStartRelationships, 0);
-		map.set("$randomStartRelationshipsPirate", setupData.randomStartRelationshipsPirate, 0);
+		map.set("$startRelationsMode", setupData.startRelationsMode, 0);
+		map.set("$startRelationsApplyToPirates", setupData.applyStartRelationsModeToPirates, 0);
 		map.set("$prismMarketPresent", setupData.prismMarketPresent, 0);
 		map.set("$respawnFactions", setupData.respawnFactions, 0);
 		map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
@@ -34,7 +34,6 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		
 		map.set("$corvusMode", setupData.corvusMode, 0);
 		map.set("$hardMode", setupData.hardMode, 0);
-		map.set("$randomStartShips", setupData.randomStartShips, 0);
 		map.set("$randomStartLocation", setupData.randomStartLocation, 0);
 		map.set("$nex_customScenarioName", StringHelper.getString("none"));
 		map.set("$nex_antiochInRandom", setupData.randomAntiochEnabled, 0);

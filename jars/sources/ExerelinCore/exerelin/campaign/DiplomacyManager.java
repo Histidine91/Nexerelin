@@ -19,6 +19,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.ExerelinSetupData.StartRelationsMode;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -41,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -81,7 +84,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         "sector", "domain", "everything"
     });
     
-    protected Map<String, Float> warWeariness;
+    protected Map<String, Float> warWeariness = new HashMap<>();
     protected static float warWearinessPerInterval = 50f;
     protected static DiplomacyEventDef peaceTreatyEvent;
     protected static DiplomacyEventDef ceasefireEvent;
@@ -91,8 +94,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected final IntervalUtil intervalUtil;
     
     protected float daysElapsed = 0;
-    protected boolean randomFactionRelationships = false;
-    protected boolean randomFactionRelationshipsPirate = false;
+    @Getter @Setter protected StartRelationsMode startRelationsMode = StartRelationsMode.DEFAULT;
+    @Getter @Setter protected boolean applyStartRelationsModeToPirates = false;
     protected long lastWarTimestamp = 0;
     
     protected Map<String, DiplomacyBrain> diplomacyBrains = new HashMap<>();
@@ -188,11 +191,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         interval = getDiplomacyInterval();
         this.intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
-              
-        if (warWeariness == null)
-        {
-            warWeariness = new HashMap<>();
-        }
+    }
+    
+    protected Object readResolve() {
+        if (startRelationsMode == null) startRelationsMode = StartRelationsMode.DEFAULT;
+        return this;
     }
     
     /**
@@ -306,7 +309,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      */
     public static boolean clampRelations(String faction1Id, String faction2Id, float delta)
     {
-        if (getManager().randomFactionRelationships)
+        if (getManager().startRelationsMode.isRandom())
             return false;
         
         FactionAPI faction1 = Global.getSector().getFaction(faction1Id);
@@ -328,7 +331,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static boolean isOutsideRepBounds(String faction1Id, String faction2Id, float delta) 
     {
-        if (getManager().randomFactionRelationships)
+        if (!getManager().startRelationsMode.isDefault())
             return false;
         
         FactionAPI faction1 = Global.getSector().getFaction(faction1Id);
@@ -555,7 +558,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             
             float chance = eventDef.chance;
             if (chance <= 0) continue;
-            if (!getManager().randomFactionRelationships) {
+            if (getManager().startRelationsMode.isDefault()) {
                 if (isNegative) {
                     float mult = NexFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
                     //if (mult != 1) log.info("Applying negative event mult: " + mult);
@@ -1139,7 +1142,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         alreadyRandomizedIds.addAll(DO_NOT_RANDOMIZE);
         
         // should we prevent randomization of pirate factions?
-        boolean pirateBlock = !manager.randomFactionRelationshipsPirate;
+        boolean blockPirates = !manager.applyStartRelationsModeToPirates;
         
         for (FactionAPI faction : sector.getAllFactions())
         {
@@ -1154,16 +1157,18 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 log.info("Faction " + factionId + " marked as non-randomizable");
                 alreadyRandomizedIds.add(factionId);
             }
-            else if (pirateBlock && NexConfig.getFactionConfig(factionId).pirateFaction)
+            else if (blockPirates && NexConfig.getFactionConfig(factionId).pirateFaction)
             {
                 log.info("Faction " + factionId + " is pirates, and pirate relations randomization is disabled");
                 alreadyRandomizedIds.add(factionId);
             }
         }
 
-        boolean randomize = manager.randomFactionRelationships;
+        StartRelationsMode mode = manager.startRelationsMode;
         
-        if (corvus && !randomize)
+        // apply relations even in flatten mode
+        // we'll do the flattening later
+        if (corvus && !mode.isRandom())
         {
             // load vanilla relationships
             VanillaSystemsGenerator.initFactionRelationships(sector);
@@ -1216,7 +1221,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 FactionAPI faction = sector.getFaction(factionId);
                 NexFactionConfig factionConfig = NexConfig.getFactionConfig(factionId);
                 
-                if (randomize && !alreadyRandomizedIds.contains(factionId))
+                if (mode.isRandom() && !alreadyRandomizedIds.contains(factionId))
                 {
                     if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
                     alreadyRandomizedIds.add(factionId);
@@ -1284,36 +1289,55 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);    // already done in syncPlayerRelationshipsToFaction
         }
-    }
-    
-    public static void resetFactionRelationships(String factionId)
-    {
-        if (!factionId.equals(PlayerFactionStore.getPlayerFactionId()) 
-                && !NexUtilsFaction.isFactionHostileToAll(factionId)
-                && !NexUtilsFaction.isExiInCorvus(factionId))
-        {
-            for (FactionAPI faction : Global.getSector().getAllFactions())
+        
+        if (mode == StartRelationsMode.FLATTEN) {
+            for (String factionId : factionIds) 
             {
-                String otherFactionId = faction.getId();
-                if (!NexUtilsFaction.isFactionHostileToAll(otherFactionId)
-                        && !NexUtilsFaction.isExiInCorvus(otherFactionId)
-                        && !otherFactionId.equals(factionId))
-                {
-                    faction.setRelationship(factionId, 0f);
-                }
+                resetFactionRelationships(factionId, blockPirates);
             }
         }
     }
     
+    public static void resetFactionRelationships(String factionId, boolean exemptPirates)
+    {
+        if (NexUtilsFaction.isPirateFaction(factionId)) {
+            if (exemptPirates) {
+                log.info("Not flattening relations for pirate faction: " + factionId);
+                return;
+            }
+        }
+        else if (NexUtilsFaction.isFactionHostileToAll(factionId)) 
+        {
+            return;
+        }
+        
+        log.info("Flattening relations for faction " + factionId);
+        
+        for (FactionAPI otherFaction : Global.getSector().getAllFactions())
+        {
+            String otherFactionId = otherFaction.getId();
+            if (otherFactionId.equals(factionId))
+                continue;
+            if (NexUtilsFaction.isPirateFaction(otherFactionId) && exemptPirates) {
+                log.info("Not flattening relations for other pirate faction: " + factionId);
+                continue;
+            }
+            
+            if (NexUtilsFaction.isFactionHostileToAll(otherFactionId)) continue;
+            //log.info("  Flattening relations for " + otherFactionId + " with factionId");
+            otherFaction.setRelationship(factionId, 0f);
+        }        
+    }
+    
     /**
-     * Do these two factions have randomized relationships with each other?
+     * Do these two factions have randomized (or flattened) relationships with each other?
      * @param factionId1
      * @param factionId2
      * @return False if random relations are disabled or either faction is set to non-randomized relations, true otherwise.
      */
     public static boolean haveRandomRelationships(String factionId1, String factionId2) 
     {
-        if (!DiplomacyManager.isRandomFactionRelationships()) return false;
+        if (!getManager().startRelationsMode.isDefault()) return false;
         if (NexConfig.getFactionConfig(factionId1).noRandomizeRelations) 
             return false;
         if (NexConfig.getFactionConfig(factionId2).noRandomizeRelations) 
@@ -1321,29 +1345,21 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return true;
     }
     
-    public static void setRandomFactionRelationships(boolean random, boolean pirate)
+    @Deprecated
+    public static void setRandomFactionRelationships(StartRelationsMode mode, boolean pirate)
     {
         DiplomacyManager manager = getManager();
-        manager.randomFactionRelationships = random;
-        manager.randomFactionRelationshipsPirate = pirate;
+        manager.applyStartRelationsModeToPirates = pirate;
     }
     
     public static boolean isRandomFactionRelationships()
     {
-        return getManager().randomFactionRelationships;
+        return getManager().startRelationsMode.isRandom();
     }
     
-     public boolean isRandomPirateFactionRelationships()
+    public boolean isRandomPirateFactionRelationships()
     {
-        return randomFactionRelationshipsPirate;
-    }
-    
-    protected Object readResolve()
-    {
-        if (diplomacyBrains == null)
-            diplomacyBrains = new HashMap<>();
-        
-        return this;
+        return applyStartRelationsModeToPirates;
     }
     
     public void reverseCompatibility() {

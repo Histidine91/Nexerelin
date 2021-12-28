@@ -11,8 +11,10 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.ExerelinSetupData.StartRelationsMode;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.StringHelper;
+import java.util.Locale;
 
 /**
  * When adding Nexerelin into an existing save, run this to reconfigure some options
@@ -31,16 +33,16 @@ public class ReinitScreenScript extends DelayedDialogScreenScript
 		protected OptionPanelAPI options;
 		protected boolean allowRespawn = SectorManager.getManager().isRespawnFactions();
 		protected boolean allowRespawnNonOriginal = !SectorManager.getManager().isOnlyRespawnStartingFactions();
-		protected boolean randomizeRelationships = DiplomacyManager.isRandomFactionRelationships();
-		protected boolean randomizeRelationshipsPirate = DiplomacyManager.getManager().isRandomPirateFactionRelationships();
+		protected StartRelationsMode relationsMode = StartRelationsMode.DEFAULT;
+		protected boolean relationsApplyPirate;
 		protected boolean hardMode = SectorManager.getManager().isHardMode();
 
 		protected enum Menu
 		{
 			OPTION_RESPAWN,
 			OPTION_RESPAWN_NON_ORIGINAL,
-			OPTION_RANDOM_RELATIONSHIPS,
-			OPTION_RANDOM_RELATIONSHIPS_PIRATE,
+			OPTION_RESET_RELATIONSHIPS,
+			OPTION_RESET_RELATIONSHIPS_PIRATE,
 			OPTION_HARD_MODE,
 			DONE
 		}
@@ -55,11 +57,11 @@ public class ReinitScreenScript extends DelayedDialogScreenScript
 				options.addOption(Misc.ucFirst(getString("allowRespawnNonOriginal")) + ": " 
 						+ StringHelper.getString(String.valueOf(allowRespawnNonOriginal)), Menu.OPTION_RESPAWN_NON_ORIGINAL);
 			
-			options.addOption(Misc.ucFirst(getString("randomizeRelationships")) + ": " 
-					+ StringHelper.getString(String.valueOf(randomizeRelationships)), Menu.OPTION_RANDOM_RELATIONSHIPS);
-			if (randomizeRelationships)
-				options.addOption(Misc.ucFirst(getString("randomizeRelationshipsPirate")) + ": " 
-					+ StringHelper.getString(String.valueOf(randomizeRelationshipsPirate)), Menu.OPTION_RANDOM_RELATIONSHIPS_PIRATE);
+			options.addOption(Misc.ucFirst(getString("startRelationsMode")) + ": " 
+					+ getRandomizeString(), Menu.OPTION_RESET_RELATIONSHIPS);
+			if (!relationsMode.isDefault())
+				options.addOption(Misc.ucFirst(getString("startRelationsModePirate")) + ": " 
+					+ StringHelper.getString(String.valueOf(relationsApplyPirate)), Menu.OPTION_RESET_RELATIONSHIPS_PIRATE);
 			options.addOption(Misc.ucFirst(getString("hardMode")) + ": " 
 					+ StringHelper.getString(String.valueOf(hardMode)), Menu.OPTION_HARD_MODE);
 			options.addOption(Misc.ucFirst(StringHelper.getString("done")), Menu.DONE);
@@ -68,6 +70,10 @@ public class ReinitScreenScript extends DelayedDialogScreenScript
 		protected String getString(String id)
 		{
 			return StringHelper.getString("exerelin_reinitScreen", id);
+		}
+		
+		protected String getRandomizeString() {
+			return getString("startRelationsMode_" + relationsMode.toString().toLowerCase(Locale.ENGLISH));
 		}
 		
 		@Override
@@ -101,13 +107,16 @@ public class ReinitScreenScript extends DelayedDialogScreenScript
 			{
 				allowRespawnNonOriginal = !allowRespawnNonOriginal;
 			}
-			else if (optionData == Menu.OPTION_RANDOM_RELATIONSHIPS)
+			else if (optionData == Menu.OPTION_RESET_RELATIONSHIPS)
 			{
-				randomizeRelationships = !randomizeRelationships;
+				int index = relationsMode.ordinal() + 1;
+				if (index >= StartRelationsMode.values().length)
+					index = 0;
+				relationsMode = StartRelationsMode.values()[index];
 			}
-			else if (optionData == Menu.OPTION_RANDOM_RELATIONSHIPS_PIRATE)
+			else if (optionData == Menu.OPTION_RESET_RELATIONSHIPS_PIRATE)
 			{
-				randomizeRelationshipsPirate = !randomizeRelationshipsPirate;
+				relationsApplyPirate = !relationsApplyPirate;
 			}
 			else if (optionData == Menu.OPTION_HARD_MODE)
 			{
@@ -117,9 +126,10 @@ public class ReinitScreenScript extends DelayedDialogScreenScript
 			{
 				SectorManager.setAllowRespawnFactions(allowRespawn, allowRespawnNonOriginal);
 				SectorManager.getManager().setHardMode(hardMode);
-				if (randomizeRelationships)
+				if (!relationsMode.isDefault())
 				{
-					DiplomacyManager.setRandomFactionRelationships(randomizeRelationships, randomizeRelationshipsPirate);
+					DiplomacyManager.getManager().setStartRelationsMode(relationsMode);
+					DiplomacyManager.getManager().setApplyStartRelationsModeToPirates(relationsApplyPirate);
 					DiplomacyManager.initFactionRelationships(true);
 				}
 				dialog.dismiss();

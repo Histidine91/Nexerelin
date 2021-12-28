@@ -164,7 +164,8 @@
 			"name":"Monstrous",
 			"desc":"This faction is seen as inhuman, and not in a cute way. Disposition penalties from everyone, and reduced rep penalty on the player for atrocities against this faction.",
 			"color":[224, 32, 48],
-			"icon":"graphics/exerelin/icons/intel/claw.png"
+			"icon":"graphics/exerelin/icons/intel/claw.png",
+			"noRandom":true,
 		}
 		# vindictive?
 	],
