@@ -32,6 +32,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
 import data.scripts.campaign.intel.SWP_IBBTracker;
 import data.scripts.campaign.intel.VayraUniqueBountyManager;
+import data.scripts.util.MagicSettings;
 import de.schafunschaf.bountiesexpanded.scripts.campaign.intel.bounties.highvaluebounty.HighValueBountyManager;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
@@ -412,17 +413,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }
     
     /**
-     * Asks Bounties Expanded if a given HVB is completed.
+     * Asks MagicBounties if a given HVB is completed.
      * @param bountyId
      * @return
      */
-    public boolean isBEHVBCompleted(String bountyId) {
-        try {
-            HighValueBountyManager bountyManager = HighValueBountyManager.getInstance();
-            return bountyManager != null && bountyManager.isBountyCompleted(bountyId);
-        } catch (Throwable t) {
-            return true;
-        }
+    public boolean isMBCompleted(String bountyId) {
+        return Global.getSector().getMemoryWithoutUpdate().getBoolean("$" + bountyId + "_succeeded");
     }
     
     /**
@@ -438,7 +434,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         int ibbProgress = 999;
         boolean checkBossCompletion = NexConfig.prismUseIBBProgressForBossShips;
         boolean haveVayra = Global.getSettings().getModManager().isModEnabled("vayrasector");
-        boolean haveBE = Global.getSettings().getModManager().isModEnabled("bountiesexpanded");
+        boolean haveMagicBounties = MagicSettings.getBoolean("MagicBounty", "bounty_board_enabled");
         int highestIBBNum = 0;
         
         try {
@@ -489,11 +485,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 if (checkBossCompletion && entry.hvbID != null && !entry.hvbID.isEmpty()) 
                 {
                     try {
-                        if (haveBE && !isBEHVBCompleted(entry.hvbID)) {
-                            log.info("Bounties Expanded HVB not completed for " + entry.hvbID);
+                        if (haveMagicBounties && !isMBCompleted(entry.hvbID)) {
+                            log.info("MagicBounty not completed for " + entry.hvbID);
                             proceed = false;
                         }
-                        if (!haveBE && haveVayra && !isHVBCompleted(entry.hvbID)) {
+                        
+                        if (!haveMagicBounties && haveVayra && !isHVBCompleted(entry.hvbID)) {
                             log.info("HVB not completed for " + entry.hvbID);
                             proceed = false;
                         }
