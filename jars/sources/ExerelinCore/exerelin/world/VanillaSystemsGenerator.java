@@ -145,7 +145,7 @@ public class VanillaSystemsGenerator {
 		market = derinkuyu.getMarket();
 		market.setEconGroup(null);
 		SectorManager.transferMarket(market, Global.getSector().getFaction(Factions.INDEPENDENT), market.getFaction(), 
-				false, true, null, 0, true);
+				false, false, null, 0, true);
 		
 	}
 	
