@@ -2090,6 +2090,18 @@ nex_remBrawl_scoutSendFalse,DialogOptionSelected,$option == nex_remBrawl_scoutSe
 
 That ought to give them a real nasty surprise. Although with the strength you saw back in $nex_remBrawl_stagingAreaName, it may be a good idea not to get too complacent just yet.",defaultLeave:Leave,
 ,,,,,,
+nex_greetingRemnantMerc,OpenCommLink,"$faction.id == remnant score:1000
+$nex_remBrawl_merc score:1000
+!$entity.isHostile","$menuState = fleetConvMain 0
+FireAll PopulateOptions","""It's good to see another human fleet out here. Out in this mess.""
+OR
+""The Hegemony won't like what we're doing, but a deal is a deal. Even with a toaster.""",,
+nex_greetingRemnantMercHostile,OpenCommLink,"$faction.id == remnant score:1000
+$nex_remBrawl_merc score:1000
+$entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""The Sector may judge us harshly for this deed, but on our honor as mercenaries, we will fight!""
+OR
+""We made a contract. We will honor it, no matter what comes our way!""",cutCommLink:Cut the comm link,
+,,,,,,
 nex_remBrawl_barEvent,DialogOptionSelected,"$player.nex_remBrawl_barEvent score:1000
 #Nex_RuleHelper rollRemBrawlBarEvent
 $option == marketVisitBar","unset $player.nex_remBrawl_barEvent

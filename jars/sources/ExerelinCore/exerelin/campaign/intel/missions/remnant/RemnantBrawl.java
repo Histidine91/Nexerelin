@@ -329,6 +329,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	protected void spawnAttackFleets() {
 		if (spawnedAttackFleets) return;
 		
+		FactionAPI remnant = Global.getSector().getFaction(Factions.REMNANTS);
+		
 		/*
 			Proposed composition:
 			3 big Heg fleets, maybe the latter two are slightly smaller
@@ -347,12 +349,16 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		factionPicker.add(Factions.LUDDIC_CHURCH, 2);
 		factionPicker.add(Factions.HEGEMONY);
 		if (AllianceManager.getFactionAlliance(Factions.HEGEMONY) != null) {
-			factionPicker.addAll(AllianceManager.getFactionAlliance(Factions.HEGEMONY).getMembersCopy());
+			for (String allyId : AllianceManager.getFactionAlliance(Factions.HEGEMONY).getMembersCopy()) 
+			{
+				if (!remnant.isHostileTo(allyId)) continue;
+				factionPicker.add(allyId);
+			}
 		}
 		for (int i=0; i<2; i++) {
 			spawnAttackFleet(factionPicker.pick(), fp);
 		}
-				
+		
 		spawnExtraDefenders();
 		
 		spawnedAttackFleets = true;
@@ -389,7 +395,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		makeImportant(fleet, "$nex_remBrawl_attackFleet", Stage.FOLLOW_STRAGGLER, Stage.GO_TO_TARGET_SYSTEM, Stage.BATTLE);
 		
 		// don't keep original faction if it risks them becoming hostile to Hegemony shortly
-		if (heg.isAtBest(factionId, RepLevel.FAVORABLE) || factionId.equals(Misc.getCommissionFactionId())) 
+		// or if they're not already hostile to Remnants
+		if (heg.isAtBest(factionId, RepLevel.FAVORABLE) 
+				|| factionId.equals(Misc.getCommissionFactionId())) 
 		{
 			fleet.setFaction(Factions.HEGEMONY, true);
 		}
@@ -410,7 +418,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		for (int i=0; i<=2; i++) {
 			FleetParamsV3 params = new FleetParamsV3(station.getLocationInHyperspace(),
 					Factions.MERCENARY,
-					1f,
+					1f,	// quality override
 					FleetTypes.MERC_ARMADA,
 					fp, // combat
 					fp * 0.1f,	// freighters
