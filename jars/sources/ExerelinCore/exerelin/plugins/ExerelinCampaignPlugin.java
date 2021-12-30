@@ -3,26 +3,30 @@ package exerelin.plugins;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.PluginPick;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.ai.AbilityAIPlugin;
+import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.AbilityPlugin;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.RevengeanceManager;
+import exerelin.campaign.abilities.ai.AlwaysOnTransponderAI;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
-import exerelin.combat.SSP_BattleCreationPluginImpl;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFleet;
 
 @SuppressWarnings("unchecked")
 public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
-
+	
+	public static final String MEM_KEY_BATTLE_PLUGIN = "$nex_battleCreationPlugin";
+	
 	@Override
 	public String getId()
 	{
@@ -115,9 +119,16 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	
 	@Override
 	public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(SectorEntityToken opponent) {
+		/*
 		if (opponent instanceof CampaignFleetAPI && NexConfig.useCustomBattleCreationPlugin) {
-			//return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
+			return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
 		}
+		*/
+		if (opponent.getMemoryWithoutUpdate().contains(MEM_KEY_BATTLE_PLUGIN)) {
+			BattleCreationPlugin bcp = (BattleCreationPlugin)opponent.getMemoryWithoutUpdate().get(MEM_KEY_BATTLE_PLUGIN);
+			return new PluginPick<>(bcp, PickPriority.MOD_GENERAL);
+		}
+		
 		return null;
 	}
 	
@@ -128,6 +139,23 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		}
 		if (interactionTarget instanceof AsteroidAPI) {
 			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
+		}
+		return null;
+	}
+	
+	@Override
+	public PluginPick<AbilityAIPlugin> pickAbilityAI(AbilityPlugin ability, ModularFleetAIAPI ai) {
+		if (ability == null) return null;
+		String id = ability.getId();
+		if (id == null) return null;
+		CampaignFleetAPI fleet = ai.getFleet();
+		if (fleet == null) return null;
+		
+		if (id.equals(Abilities.TRANSPONDER) && fleet.getMemoryWithoutUpdate().getBoolean(AlwaysOnTransponderAI.MEMORY_KEY_ALWAYS_ON)) {
+			Global.getLogger(this.getClass()).info("Adding custom transponder AI to fleet " + fleet.getName());
+			AlwaysOnTransponderAI aai = new AlwaysOnTransponderAI();
+			aai.init(ability);
+			return new PluginPick<AbilityAIPlugin>(aai, PickPriority.MOD_GENERAL);
 		}
 		return null;
 	}

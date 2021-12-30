@@ -552,7 +552,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			@Override
 			public void run() {
 				build();
-			}		
+			}
 		});
 	}
 	

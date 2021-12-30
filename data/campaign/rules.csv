@@ -1910,7 +1910,7 @@ FireBest OpenInteractionDialog",,,
 nex_remM1_raidFinished1,nex_remM1RaidFinished,Call $market.nex_remM1_ref updateData,"Call $global.nex_remM1_ref raidComplete
 $market.nex_remM1_needToReturn = true
 Call $market.nex_remM1 updateStage
-AddRemoveCommodity beta_core 2","The marines carefully lower the crates with the AI cores onto the cargo bay floor, and step back, whether out of respect or superstitious fear.
+AddRemoveCommodity beta_core 2","The marines carefully lower the crates with the AI cores onto the cargo bay deck, and step back, whether out of respect or superstitious fear.
 
 The diagnostic scan looks good. The cores are ready to be taken back to your strange friend $nex_remM1_personName... or, perhaps, the Hegemony or the Persean League would like to be informed that they have the winning bid. Even if they don't know it yet.",,
 nex_remM1_buyCoresOpt,PopulateOptions,"$market.nex_remM1_target score:1000
@@ -2018,6 +2018,378 @@ nex_remM1_betrayPerseanGoBack,DialogOptionSelected,"$option == nex_remM1_betrayG
 $faction.id == persean",FireAll PopulateOptions,"$HeOrShe looks at you oddly. ""You're a little old to be making crank calls, aren't you? If you have no actual information to provide, then leave me to my work.""",,
 #END Remnant quest mission 1,,,,,,
 ,,,,,,
+# Remnant fragments mission,,,,,,
+nex_remFragments_blurb,nex_remFragments_blurb,,,"""Affiliate of self gone missing has. Please investigate.""",,
+nex_remFragments_offerOption,nex_remFragments_option,,SetOptionColor nex_remFragments_start highlight,,"nex_remFragments_start:Inquire into the missing ""affiliate""",
+nex_remFragments_missionText,DialogOptionSelected,$option == nex_remFragments_start,"$missionId = nex_remFragments
+Highlight $nex_remFragments_targetSystem","""In self's role as agent, connections with various independent parties made. One is $nex_remFragments_engineer_name, engineer with a tech-mining team connected to selfkind's former masters.
+
+""Recently this person's employers, conducting survey operations in the $nex_remFragments_targetSystem. $nex_remFragments_engineer_HeOrShe in touch with self kept, on expedition status of.
+
+""Now they find a quote 'unusual' derelict ship, with 'anomalous ships and weapons', and other materials known to be valuable. Undesired implications of materials in human Sector circulating.""",nex_remFragments_missionText2:Continue,
+nex_remFragments_missionText2,DialogOptionSelected,$option == nex_remFragments_missionText2,"Call $global.nex_remFragments_ref showMap ""Location: $nex_remFragments_targetSystem""
+Highlight $nex_remFragments_reward","""We ask of $playerName, go to $nex_remFragments_targetSystem. Self's other agent there will guidance provide. Recover team and technology, return to self for reward of $nex_remFragments_reward credits.""
+
+This isn't much to go on.","nex_remFragments_accept:Accept
+contact_decline:Decline",
+nex_remFragments_accept,DialogOptionSelected,$option == nex_remFragments_accept,"Call $mHub accept $missionId
+Call $mHub returnToList","""Thank you, $playerName. Quickly go; the worst, self fears."" 
+
+$HeOrShe transmits some data on your mission, including a verbal challenge/password/countersign for the contact. How quaint, almost Luddic.",,
+,,,,,,
+nex_remFragments_lpWreckOpen,OpenInteractionDialog,"$customType == wreck
+$nex_remFragments_lpWreck score:1000
+!$player.nex_remFragments_foundLPSurvivor","$canNotSalvage = true 0
+ShowDefaultVisual
+SalvageGenFromSeed
+FireBest SalvageCheckHostile","Your $shipOrFleet approaches $aOrAn $nameInText.
+
+The ship is a wreck; that any power sources remain inside to be faintly detected is quite a feat in itself. Most of the hull has been gutted; by conventional kinetic, explosive and energy weapons, in the main... but there are parts of the ship that appear to have frozen over, and others where matter itself was scooped out in irregular spheroidical shapes.",,
+nex_remFragments_lpWreckOpen1,CheckSalvageSpecial,"$customType == wreck
+$nex_remFragments_lpWreck score:1000
+!$player.nex_remFragments_foundLPSurvivor",$player.nex_remFragments_foundLPSurvivor = true,"After a bit of haggling over hazard pay, a salvor crew sets out to explore the hulk. It's perfectly quiet for the most part, which is probably a good sign under the circumstances.
+
+Only one survivor is found: a near-gibbering figure crouching near one of the poorly maintained sensor arrays, her vacsuit – marked with insignia of the Luddic Path – dangerously close to critical failure. The helmet-cam view displays your crew trying their best to get some useful information out of her.
+
+""...a demon beyond all imagination,"" she chatters. ""Terrible beyond words! We struck at it over and over, and still its talons and hooves lashed out, defiling creation with each blast!""",nex_remFragments_lpWreck2:Continue,
+nex_remFragments_lpWreckOpen2,DialogOptionSelected,$option == nex_remFragments_lpWreck2,,"She points an accusing finger at one of the salvors. ""You! You brought this upon us! These creatures from beyond creation..."" She laughs and laughs and laughs.
+
+You shake your head mentally. If she's still alive when the salvage team finishes its work, and slightly more lucid by then, maybe you can drop her off somewhere back in the Core Worlds. Else... else is for later. ",nex_remFragments_lpWreck3:Continue,
+nex_remFragments_lpWreckOpen3,DialogOptionSelected,$option == nex_remFragments_lpWreck3,"unset $canNotSalvage
+SalvageSpecialInteraction",,,
+,,,,,,
+nex_remFragments_pointOpen,OpenInteractionDialog,$nex_remFragments_target score:1000,Call $global.nex_remFragments_ref pursue_mothership,"This is where the derelict ship was supposed to be. The point is surrounded by the hulks of ruined ships, both independent and Pather, as well as a drifting cloud of debris. But of anything interesting enough to fight over, there is no sign.
+
+""Captain..."" your sensor officer says after a moment. ""There's a particularly dense region of debris where our target might have been, but it's not evenly distributed. It's... shifted and displaced in a pattern consistent with the object moving away. If we head in,"" they mark a position on the system map, ""that direction, we might find it yet.""",,
+,,,,,,
+nex_remFragments_stationOpen,OpenInteractionDialog,"$nex_remFragments_mothership score:1000
+!$nex_remFragments_seenFirstDialog","$nex_remFragments_seenFirstDialog = true
+FireAll Nex_RemFragments_StationText1
+Call $global.nex_remFragments_ref updateData
+Call $global.nex_remFragments_ref prepEngineer
+ShowImageVisual space_wreckage","Your $shipOrFleet approaches the object.
+
+The structure was apparently once a Domain Explorarium mothership, but cut up and rearranged in rather dramatic fashion for purposes unknown.",nex_remFragments_engineerConvo1:Continue,
+nex_remFragments_stationReopen,OpenInteractionDialog,"$nex_remFragments_mothership score:1000
+$nex_remFragments_seenFirstDialog
+!$nex_remFragments_canSalvage",ShowImageVisual space_wreckage,"Your $shipOrFleet approaches the mothership.
+
+You don't have time to salvage it right now. Defeat the incoming fleet first.",defaultLeave:Leave,
+nex_remFragments_stationDescLP,Nex_RemFragments_StationText1,$player.nex_remFragments_foundLPSurvivor ,,"Your Pather informant seems to have exaggerated the resilience of the ""demon"" somewhat. The tattered hulk seems to have been thoroughly disarmed, its weapon mounts blown apart, half its comparments drained of air. The engines glow on thermals with residual heat.",,
+nex_remFragments_stationDescNoLP,Nex_RemFragments_StationText1,!$player.nex_remFragments_foundLPSurvivor ,,"The hulk is silent, weapon ports burned away, great rents torn in seemingly every exposed surface. It sits silent, utterly defenseless. The engines glow on thermals with residual heat.",,
+nex_remFragments_stationDescCommon,Nex_RemFragments_StationText1,,,"Nevertheless, your sensors still pick up a working fusion reactor at the ship's core, along with a faint looping radio transmission.",,
+nex_remFragments_engineerConvo1,DialogOptionSelected,$option == nex_remFragments_engineerConvo1,ShowPersonVisual true,"Your comms officer manages to open a link to whoever it is inside. A few moments later, a fuzzy image of a dishevelled, cringing figure fills the display volume.
+
+""Um... hello? This is $personName, with Dora's Surveyor Corps."" $HeOrShe stares at you for a moment, suddenly more wary than relieved. ""You the one the —"" $heOrShe catches $himOrHerself.
+
+""This glass is fragile.""","nex_remFragments_engineerConvo2:Give the password
+nex_remFragments_engineerConvo2Alt:Transmit the encrypted greeting like a normal person",
+nex_remFragments_engineerConvo2,DialogOptionSelected,$option == nex_remFragments_engineerConvo2,,"""Take care it does not fall,"" you recite.
+
+""Lest it break into shards."" The engineer visibly relaxes. You wonder what cryptic mumbo-jumbo $nex_remFragments_giverFirstName was trying to sneak into the conversation.",nex_remFragments_engineerConvo3:Continue,
+nex_remFragments_engineerConvo2Alt,DialogOptionSelected,$option == nex_remFragments_engineerConvo2Alt,,"The person on the other end raises both eyebrows at the sight on $hisOrHer screen, then relaxes. ""Okay. I was worried for a moment, but…""",nex_remFragments_engineerConvo3:Continue,
+nex_remFragments_engineerConvo3,DialogOptionSelected,$option == nex_remFragments_engineerConvo3,,"""We're rather fortunate you came, captain. I don't know how the blasted Pathers found out about us, but..."" $HeOrShe clutches $hisOrHer head. ""We turned all our guns against them, but they just kept coming and coming, and…
+
+""Anyway, it's just me and some of the techs now. Please, you've got to get us out of here! Before they come back.""","nex_remFragments_engineerConvo4:""What about the technology?""",
+nex_remFragments_engineerConvo4,DialogOptionSelected,$option == nex_remFragments_engineerConvo4,,"""If we leave now, we can count on the Pathers to blow it up when they return."" $HeOrShe pauses, considers this for a while. ""But they might not. In which case someone else could find the same thing we did.""
+
+The engineer lets out a long breath. ""I suppose you can pick up some of the tech we found. It's not much, but you may find it worth a few credits. You'll have to blow up anything we can't move promptly, however.""",nex_remFragments_engineerConvo5:Send in the recovery team,
+nex_remFragments_engineerConvo5,DialogOptionSelected,$option == nex_remFragments_engineerConvo5,ShowDefaultVisual,"It doesn't take long for the shuttles to dock with the bloated carcass before you, and for the salvors teams to fan out across the now-mostly-empty hulk. 
+
+One of the teams hooks up a transceiver to the first console they find, allowing you to access the ship's databanks from an isolated device. Another finds the survivors and starts shepherding them back to the fleet.
+
+You soon find that almost all of the previous (now deceased) salvage team's logs have been bulk-wiped. Understandable procedure following the attack, at least.
+
+The communications with the outside world have been purged, as well. No trace of any contact with $nex_remFragments_giverName, in particular. But a more interesting question comes up, and you order a search: was a distress signal sent out?","nex_remFragments_engineerConvoDistress:Yes
+nex_remFragments_engineerConvoNoDistress:No",
+nex_remFragments_engineerConvoDistress,DialogOptionSelected,$option == nex_remFragments_engineerConvoDistress,"Call $global.nex_remFragments_ref setDistress
+$option = nex_remFragments_engineerConvo6
+FireBest DialogOptionSelected",,,
+nex_remFragments_engineerConvoNoDistress,DialogOptionSelected,$option == nex_remFragments_engineerConvoNoDistress,"Call $global.nex_remFragments_ref setNoDistress
+$option = nex_remFragments_engineerConvo6
+FireBest DialogOptionSelected",,,
+nex_remFragments_engineerConvo6,DialogOptionSelected,$option == nex_remFragments_engineerConvo6,ShowPersonVisual true,"As you consider the matter, a warning alarm buzzes across the bridge. Your sensor officer looks up abruptly. ""Large fleet inbound, captain. They must have been sneaking up on us.""
+
+The Path, back for a rematch? Or a third-party interloper?
+
+The comm display lights up; it's your engineer friend, clutching a portable console, clearly panicking. ""Captain, you have got to get us out of here! Take what we can now, and destroy the ship!""
+
+Next to $himOrHer, another talking head appears: your operations chief. ""Captain, we've found something concerning. There's a drone bay here that doesn't appear on the schematics $personLastName gave us; we can't get through the doors, and none of our scanners can peer into it.""",nex_remFragments_engineerConvo7:Ask $personLastName about the bay,
+nex_remFragments_engineerConvo7,DialogOptionSelected,$option == nex_remFragments_engineerConvo7,"Call $global.nex_remFragments_ref setHackOptions
+SetStoryOption nex_remFragments_engineerConvoThreaten 1 nex_remFragments_threaten ui_char_spent_story_point_combat ""Violently persuaded an engineer""","""You're seriously worrying about that right now!?"" The engineer thumps a fist on a nearby bulkhead. ""Shouldn't we be getting out of here, before that fleet gets in here with us?""
+
+The crew of your $shipOrFleet accompanying $himOrHer turn to stare suspiciously.","nex_remFragments_engineerConvoHack:[Tech] Order a cyber breach into the ship's secure systems
+nex_remFragments_engineerConvoHackAI:Plug in a high-power AI core and set it loose on the network
+nex_remFragments_engineerConvoThreaten:Order your crew to use force
+nex_remFragments_engineerConvoEvacuate:Forget about it and evacuate",
+nex_remFragments_engineerConvoEvacuate,DialogOptionSelected,$option == nex_remFragments_engineerConvoEvacuate,Call $global.nex_remFragments_ref evacuate,"The engineer nods. ""I knew you'd see reason, captain.""
+
+The remaining salvage teams are hurriedly recalled. The shuttles can't make their way back to your $shipOrFleet fast enough. Whatever treasures may exist in the remains of the ship, you'll have to forget about them.
+
+Once everyone is back on board, you give the order, and your $shipOrFleet unleashes everything it has into what remains of the hulk. Already battered from its previous punishment, it is soon reduced to scrap and dust.",nex_remFragments_engineerConvoEnd:Leave,
+nex_remFragments_engineerConvoHackSuccess,DialogOptionSelected,"$option == nex_remFragments_engineerConvoHack
+$nex_remFragments_canHack",ShowDefaultVisual,"Your EW, comms and sensor officers put their heads together and try to penetrate the secure area of the ship's network. You disregard $personLastName's outraged sqawks.
+
+After about three minutes of this, someone shouts jubilantly on the bridge. ""We're in, captain!""",nex_remFragments_engineerConvoHack2:Continue,
+nex_remFragments_engineerConvoHackAI,DialogOptionSelected,$option == nex_remFragments_engineerConvoHackAI,ShowDefaultVisual,"You order an AI core uncased and connected to the derelict ship's network. Your comm officer eyes their console nervously, watching like a cat for any signs that the AI is trying to break out of the isolated comm channels you've provided for its work.
+
+Whatever the security system is, it hasn't been built to stand up to a beta or higher AI. Either that, or its own AI was damaged, destroyed or disconnected in the Pather attack. It folds in not half a minute.",nex_remFragments_engineerConvoHack2:Continue,
+nex_remFragments_engineerConvoHackSuccess2,DialogOptionSelected,$option == nex_remFragments_engineerConvoHack2,,"The diagrams on your screen are beyond humanity in more ways then one. A pair of ash-colored shapes, jagged yet oddly sleek. And the specifications! Half the Sector would kill for this capability, and the other half would kill to prevent it from ever seeing the light of day.
+
+You minimize the display and turn to look at a fuming $personLastName.",nex_remFragments_engineerConvoSecrets:Continue,
+nex_remFragments_engineerConvoHackFail,DialogOptionSelected,"$option == nex_remFragments_engineerConvoHack
+!$nex_remFragments_canHack","SetStoryOption nex_remFragments_engineerConvoThreaten 1 nex_remFragments_threaten ui_char_spent_story_point_combat ""Violently persuaded an engineer""","Your EW, comms and sensor officers put their heads together and try to penetrate the secure area of the ship's network. You disregard $personLastName's outraged sqawks.
+
+After about three minutes of this, you hear a moan and the sound of a bodily thump on a console. ""It's no use. We're locked out, captain.""
+
+""I told you!"" $personLastName barks, hopping up and down. ""Can we leave already?""","nex_remFragments_engineerConvoThreaten:Order your crew to use force
+nex_remFragments_engineerConvoEvacuate:Forget about it and evacuate",
+nex_remFragments_engineerConvoThreaten,DialogOptionSelected,$option == nex_remFragments_engineerConvoThreaten,,"You give the order, and the salvage team leader wheels around. A big CP-pistol slides out of his holster. The engineer squawks, almost tripping over $hisOrHer own feet as $heOrShe leaps away from the levelled gun.
+
+""You brute!"" $heOrShe protests. ""You pirate!""
+
+""Tell the cap'n what $playerHeOrShe wants to know,"" the salvor growls. ""Or we'll be taking back one less survivor.""",nex_remFragments_engineerConvoSecrets:Continue,
+nex_remFragments_engineerConvoSecrets,DialogOptionSelected,$option == nex_remFragments_engineerConvoSecrets,ShowPersonVisual,"The engineer seems to slump inwards. ""Oh, for the love of... Alright, fine, you win, you damned space-thug!""
+
+Ignoring the glares of your crew, $heOrShe gesticulates oddly. ""Listen. Those things in there, they're alien. Technology no human or AI has ever seen. Not even the Domain has such things. If they did, the Collapse could never have happened!""
+
+The logic is suspect, but it doesn't really matter right now.
+
+""They're ships of some kind. Connected to the mothership we're in right now. We found a control center in the ship, we think it controls the aliens. If we plugged in an AI core...""",nex_remFragments_engineerConvo8:Order the command center secured,
+nex_remFragments_engineerConvo8,DialogOptionSelected,$option == nex_remFragments_engineerConvo8,"Call $global.nex_remFragments_ref setAIOptions
+ShowDefaultVisual","Your salvors sweep into the control room. It's clear.
+
+The chamber is unlike a proper starship's bridge or CIC. There are barely any workstations for humans; most of the available space is taken up by densely packed computer racks. In the middle, on what looks disturbingly like an altar, there is indeed a port for an AI core.
+
+""If we activate the system, we can unleash a power they'll never expect,"" $personLastName breathes. ""But after that...""","nex_remFragments_engineerConvoAlpha:Send an Alpha Core from your $shipOrFleet
+nex_remFragments_engineerConvoBeta:Send a Beta Core from your $shipOrFleet
+nex_remFragments_engineerConvoGamma:Use a Gamma Core lying around in the chamber
+nex_remFragments_engineerConvoNoAI:You don't have time for this. You'll fight them yourself.
+nex_remFragments_engineerConvoEvacuateAlt:Forget it, just run while you can.",
+nex_remFragments_engineerConvoEvacuateAlt,DialogOptionSelected,$option == nex_remFragments_engineerConvoEvacuateAlt,Call $global.nex_remFragments_ref evacuate,"You look at the engineer, who shakes $hisOrHer head but says nothing.
+
+The remaining salvage teams are hurriedly recalled. The shuttles can't make their way back to your $shipOrFleet fast enough. Whatever treasures may exist in the remains of the ship, you'll have to forget about them.
+
+Once everyone is back on board, you give the order, and your $shipOrFleet unleashes everything it has into what remains of the hulk. Already battered from its previous punishment, it is soon reduced to scrap and dust.",nex_remFragments_engineerConvoEnd:Leave,
+nex_remFragments_engineerConvoNoAI,DialogOptionSelected,$option == nex_remFragments_engineerConvoNoAI,Call $global.nex_remFragments_ref battle,"You order the $shipOrFleet turned around and brought to battle stations.
+
+You don't need any technological handouts from an alien mind to win this one. Just the sheer guts that have carried you this far.",nex_remFragments_engineerConvoEnd:Leave,
+nex_remFragments_engineerConvoAIAlpha,DialogOptionSelected,$option == nex_remFragments_engineerConvoAlpha,Call $global.nex_remFragments_ref plugAlpha,"You have a shuttle dispatched post-haste with the cargo. The core slots neatly into the altar, and the diagram on your display lights up.
+
+""Energy signatures confirmed, captain.""",nex_remFragments_engineerConvo9:Continue,
+nex_remFragments_engineerConvoAIBeta,DialogOptionSelected,$option == nex_remFragments_engineerConvoBeta,Call $global.nex_remFragments_ref plugBeta,"You have a shuttle dispatched post-haste with the cargo. The core slots neatly into the altar, and the diagram on your display lights up.
+
+""Energy signatures confirmed, captain.""",nex_remFragments_engineerConvo9:Continue,
+nex_remFragments_engineerConvoAIGamma,DialogOptionSelected,$option == nex_remFragments_engineerConvoGamma,Call $global.nex_remFragments_ref plugGamma,"The salvors heave the core up from the deck and unceremoniously jam it into the port. The diagram on your display lights up.
+
+""Energy signatures confirmed, captain.""",nex_remFragments_engineerConvo9:Continue,
+nex_remFragments_engineerConvo9,DialogOptionSelected,$option == nex_remFragments_engineerConvo9,"Call $global.nex_remFragments_ref battle
+ShowPersonVisual true
+AddTextSmall ""Stay near the mothership to receive assistance"" highlight","You look at the engineer, who exhales slowly. ""The ships will be ready, captain. When the fleet reaches us, they... we'll give them a surprise."" 
+
+$HeOrShe smiles for the first time. It's not a pleasing expression.
+
+You cut the comm link. It's time for battle.",nex_remFragments_engineerConvoEnd:Leave,
+nex_remFragments_engineerConvoEnd,DialogOptionSelected,$option == nex_remFragments_engineerConvoEnd,"EndConversation
+DismissDialog",,,Not sure this is actually needed instead of closing directly
+,,,,,,
+nex_remFragments_attackerHailPatherFight,Nex_RemFragmentsHail,"$faction.id == luddic_path
+Call $global.nex_remFragments_ref updateData
+$nex_remFragments_stage == BATTLE","$entity.ignorePlayerCommRequests = true
+Call $global.nex_remFragments_ref setShardSpawnEnabled
+FireAll Nex_RemFragments_AttackerConvoOpts","""Defiler of holiness! Your sinful ways are at an end. We shall flatten this hive of demonic energies before your very eyes, and then you shall know the mercy of the void!""",,
+nex_remFragments_attackerHailPatherFlee,Nex_RemFragmentsHail,"$faction.id == luddic_path
+Call $global.nex_remFragments_ref updateData
+$nex_remFragments_stage == RETURN",$entity.ignorePlayerCommRequests = true,"""Defiler of holiness! Your sinful ways are at an end. There is no place in the Sector for you to hide, you who toy with the curses of demonkind!""",cutCommLink:Cut the comm link,
+nex_remFragments_attackerHailTTFight,Nex_RemFragmentsHail,"$faction.id == tritachyon
+Call $global.nex_remFragments_ref updateData
+$nex_remFragments_stage == BATTLE","$entity.ignorePlayerCommRequests = true
+Call $global.nex_remFragments_ref setShardSpawnEnabled
+FireAll Nex_RemFragments_AttackerConvoOptsTT","""Hello, captain."" The $personRank has the smile of a sales rep about to make a pitch.
+
+""The Tri-Tachyon Corporation thanks you for your recovery of company property. Now, if you would just kindly turn it over to our salvage teams, we can all go home without any... unpleasantness.""",,
+nex_remFragments_attackerHailTTFlee,Nex_RemFragmentsHail,"$faction.id == tritachyon
+Call $global.nex_remFragments_ref updateData
+$nex_remFragments_stage == RETURN",$entity.ignorePlayerCommRequests = true,"""Hello, captain."" The $personRank has the smile of a sales rep about to make a pitch.
+
+""You've caused us a considerable degree of trouble, with your destruction of Company property just now. But even if you hadn't, you're an uncomfortable witness to things shich should not have been seen. 
+
+""Accordingly, your termination is a regrettable necessity. The Tri-Tachyon Corporation wishes you a safe and pleasant death.""",cutCommLink:Cut the comm link,
+nex_remFragments_attackerConvoTT_rightsOpt,Nex_RemFragments_AttackerConvoOptsTT,"$faction.id == tritachyon
+!$nex_remFragments_rights",,,"nex_remFragments_attackerConvoTT_rights:""This ship is my right by salvage.""",
+nex_remFragments_attackerConvoTT_questionOpt,Nex_RemFragments_AttackerConvoOptsTT,"$faction.id == tritachyon
+!$nex_remFragments_questioned",,,"nex_remFragments_attackerConvoTT_question:""What's the ship to you?""",
+nex_remFragments_attackerConvoTT_paymentOpt,Nex_RemFragments_AttackerConvoOptsTT,"$faction.id == tritachyon
+!$nex_remFragments_payment",,,nex_remFragments_attackerConvoTT_payment:Negotiate a finder's fee,
+nex_remFragments_attackerConvoTT_paymentOpt2,Nex_RemFragments_AttackerConvoOptsTT,"$faction.id == tritachyon
+$nex_remFragments_payment","Nex_AddOptionConfirmation nex_remFragments_attackerConvoTT_paymentAccept ""Accepting the bribe will fail the mission."" ""Proceed"" ""Cancel""",,nex_remFragments_attackerConvoTT_paymentAccept:Accept the offer,
+nex_remFragments_attackerConvoTT_refuseOpt,Nex_RemFragments_AttackerConvoOptsTT,$nex_remFragments_canRefuse,,,nex_remFragments_attackerConvoTT_refuse:Refuse to turn it over,
+nex_remFragments_attackerConvoTT_rights,DialogOptionSelected,$option == nex_remFragments_attackerConvoTT_rights,"$nex_remFragments_rights = true 0
+$nex_remFragments_canRefuse = true 0
+FireAll Nex_RemFragments_AttackerConvoOptsTT","$HisOrHer smile no longer reaches $hisOrHer eyes. 
+
+""Your 'ship' represents a significant investment by the Corporation's external relations department, and contains technology derived from our intellectual property. Do not presume our rights are waived simply because you blundered into it first.
+
+""Now, will you turn it over, or do we have to get... uncivilized?""",,
+nex_remFragments_attackerConvoTT_question,DialogOptionSelected,$option == nex_remFragments_attackerConvoTT_question,"$nex_remFragments_questioned = true 0
+FireAll Nex_RemFragments_AttackerConvoOptsTT","""In truth, that is none of your business, $playerSirOrMadam. However, in the interests of diplomacy, we will tell you.""
+
+The $personRank spreads $hisOrHer arms magnificently. ""We already know what your ship possesses, of course. The work of an incomprehensible power, beyond anything the Domain has ever achieved. Mere hints of that power, of course, but pristine specimens nevertheless. In the right hands, with the Corporation's entire R&D apparatus devoted to unlocking its secrets...""
+
+$HeOrShe clenches a raised fist. ""We are on the cusp of a new era, $playerName! We shall throw off the shackles of the dead Domain, and forge a new galaxy in its place!""",,
+nex_remFragments_attackerConvoTT_paymentHigh,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_payment
+$entity.relativeStrength < 0","$nex_remFragments_rights = true 0
+$nex_remFragments_questioned = true 0
+$nex_remFragments_canRefuse = true 0
+$nex_remFragments_payment = true 0
+Highlight $nex_remFragments_bribeHighStr
+FireAll Nex_RemFragments_AttackerConvoOptsTT","""Ah, now we get to the bargaining."" The $personRank smiles thinly.
+
+""It would indeed be prudent to avoid any unnecessary damage to Company assets. Therefore, I am authorized to transfer a payment of $nex_remFragments_bribeHighStr credits to your account, upon agreement to transfer the ship and its contents to the Tri-Tachyon Corporation. I can have our legal AI put that down in writing for you, if you desire.""",,
+nex_remFragments_attackerConvoTT_paymentMedium,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_payment
+$entity.relativeStrength >= 0","$nex_remFragments_rights = true 0
+$nex_remFragments_questioned = true 0
+$nex_remFragments_canRefuse = true 0
+$nex_remFragments_payment = true 0
+Highlight $nex_remFragments_bribeMediumStr
+FireAll Nex_RemFragments_AttackerConvoOptsTT","""Ah, now we get to the bargaining."" The $personRank smiles thinly.
+
+""We can offer you a finder's fee of $nex_remFragments_bribeMediumStr credits to hand over the ship and its contents. Of course, the alternative is to remain in illegal possession of Tri-Tachyon property, in which case we shall have to take the appropriate measures.""
+
+You're guessing $heOrShe doesn't mean a lawsuit.",,
+#nex_remFragments_attackerConvoTT_paymentNone,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_payment
+$entity.relativeStrength > 0","$nex_remFragments_rights = true 0
+$nex_remFragments_questioned = true 0
+$nex_remFragments_canRefuse = true 0
+$nex_remFragments_payment = true 0
+FireAll Nex_RemFragments_AttackerConvoOptsTT","The $personRank laughs uproariously at your words. From the sounds heard over the link, the rest of $hisOrHer bridge is joining in as well.
+
+""Allow me to make a counteroffer,"" $heOrShe says after recovering. ""You can surrender the ship and its cargo, and walk away with your lives. Otherwise, we will simply annihilate your $shipOrFleet."" $HisOrHer head shakes sadly. ""A shame, indeed, how unsafe the space out here in the fringes is.""",,
+nex_remFragments_attackerConvoTT_paymentHighAccept,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_paymentAccept
+$entity.relativeStrength < 0","MakeOtherFleetHostile nex_remFragments false 0
+MakeOtherFleetNonHostile nex_remFragments true 99999
+Call $global.nex_remFragments_ref acceptedBribe
+AddCredits $nex_remFragments_bribeHighAmt
+AdjustRepActivePerson COOPERATIVE 5
+EndConversation
+ShowDefaultVisual","""Excellent. I knew you were a canny businessperson from your very look, captain.""
+
+$HeOrShe gives you an impressive bow before cutting the comm link.",,
+nex_remFragments_attackerConvoTT_paymentMediumAccept,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_paymentAccept
+$entity.relativeStrength == 0","MakeOtherFleetHostile nex_remFragments false 0
+MakeOtherFleetNonHostile nex_remFragments true 99999
+Call $global.nex_remFragments_ref acceptedBribe
+AddCredits $nex_remFragments_bribeMediumAmt
+AdjustRepActivePerson COOPERATIVE 2
+EndConversation
+ShowDefaultVisual","""Excellent. I knew you would understand the Company's generosity, captain.""
+
+$HeOrShe gives you an half-mocking bow before cutting the comm link.",,
+nex_remFragments_attackerConvoTT_paymentNoneAccept,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_paymentAccept
+$entity.relativeStrength > 0","MakeOtherFleetHostile nex_remFragments false 0
+MakeOtherFleetNonHostile nex_remFragments true 99999
+Call $global.nex_remFragments_ref acceptedBribe
+EndConversation
+ShowDefaultVisual","""A wise choice. Now run along, before someone gets hurt.""
+
+$HeOrShe smirks and cuts the comm link.",,
+nex_remFragments_attackerConvoTT_refuse,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_refuse
+$entity.relativeStrength >= 0","unset $nex_remFragments_delayShardOpt
+$nex_remFragments_rights = true 0
+$nex_remFragments_questioned = true 0
+FireAll Nex_RemFragments_AttackerConvoOpts","The $personRank shakes $hisOrHer head, more in sorrow than anger. ""I see you insist on being unreasonable. So be it, then.
+
+""Do try to put up more of a fight than those pitiful Pathers we found on the way here, at least. Swatting them aside barely broke up my boredom.""
+
+$HeOrShe reaches for the disconnect button.",,
+nex_remFragments_attackerConvoTT_refuseWeaker,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_refuse
+$entity.relativeStrength < 0","unset $nex_remFragments_delayShardOpt
+$nex_remFragments_rights = true 0
+$nex_remFragments_questioned = true 0
+FireAll Nex_RemFragments_AttackerConvoOpts","""I see.""
+
+$HeOrShe closes $hisOrHer eyes and takes a deep breath, as if steeling $hisOrHerself. ""You may be strong, captain. But today, you will learn that the Tri-Tachyon Corporation does not back down without a fight.""
+
+$HeOrShe reaches for the disconnect button.",,
+nex_remFragments_attackerConvo_spawnShardsOpt,Nex_RemFragments_AttackerConvoOpts,"$nex_remFragments_inSpawnRange
+!$nex_remFragments_delayShardOpt",,,nex_remFragments_spawnShards:Launch your allies,
+nex_remFragments_attackerConvo_cutCommLinkOpt,Nex_RemFragments_AttackerConvoOpts,"!$nex_remFragments_inSpawnRange
+!$nex_remFragments_delayShardOpt",,,cutCommLink:Cut the comm link,
+nex_remFragments_attackerConvo_spawnShardsLP,DialogOptionSelected,"$option == nex_remFragments_spawnShards
+$faction.id == luddic_path
+","Call $global.nex_remFragments_ref spawnAndJoinShards
+ShowDefaultVisual
+EndConversation","""Ludd's hells—""
+
+You call, and a fragment of a higher power answers. The mothership bay opens to space, and the silvery shapes zip out like the claws of an angel.
+
+They fan out into a ready formation just behind your fleet. The $personRank on the comms screen sweats under your gaze for a few heartbeats, before you reach out and tap the disconnect button.",,
+nex_remFragments_attackerConvo_spawnShardsTT,DialogOptionSelected,"$option == nex_remFragments_spawnShards
+$faction.id == tritachyon
+","Call $global.nex_remFragments_ref spawnAndJoinShards
+ShowDefaultVisual
+EndConversation","""By the credit—""
+
+You call, and a fragment of a higher power answers. The mothership bay opens to space, and the silvery shapes zip out like the claws of an angel.
+
+They fan out into a ready formation just behind your fleet. The $personRank on the comms screen is still staring at another display, trying to comprehend the power $heOrShe is witnessing, as you hit the disconnect button.",,
+nex_remFragments_defeatTrigger,Nex_RemFragments_AttackFleetDefeated,,Call $global.nex_remFragments_ref victory,"With the enemy fleet turned back, you can now go back and salvage the mothership.",,
+,,,,,,
+nex_remFragments_stationOpenSalvage,OpenInteractionDialog,"$nex_remFragments_mothership score:1000
+$nex_remFragments_seenFirstDialog
+$nex_remFragments_canSalvage
+!$nex_remFragments_seenPostBattleDialog","ShowDefaultVisual
+$entity.nex_remFragments_seenPostBattleDialog = true
+Call $global.nex_remFragments_ref prepEngineer
+Call $global.nex_remFragments_ref updateData","Now that the danger has passed, you can feast on the technological marvel before you at your leisure.
+
+The salvors have time to do their work properly now, and get to examining every nook and cranny of the ship again.
+
+Unfortunately, your delightful perusal of the loot estimates is interrupted by an urgent message on your command console.",nex_remFragments_salvage1:Continue,
+nex_remFragments_salvage1,DialogOptionSelected,"$option == nex_remFragments_salvage1
+$nex_remFragments_shardsDeployed",,"""The shards are flying away, Captain,"" your tactical officer reports. ""We've lost contact with them!""
+
+It takes only a moment for you to order a comm link opened with the AI core back in its control room. The thing was clearly already anticipating being blamed for this turn of events, because it immediately protests its innocence, explaining that its own control links were cut off and it was unable to regain control of the vessels, now happily speeding off to parts unknown.
+
+You consider this for a moment, and then order $personName sent to the bridge.",nex_remFragments_salvage2:Continue,
+nex_remFragments_salvage1NoShards,DialogOptionSelected,"$option == nex_remFragments_salvage1
+!$nex_remFragments_shardsDeployed",,"It's your ops chief. ""Boss, the alien ships in that bay? They just slagged themselves into so much scrap. Never seen nothing like it, man.""
+
+You immediately pull up a helmet-cam view. It... doesn't look good. The best you could do is sell them to an abstract art collector.
+
+It doesn't take you long at all to order $personName sent to the bridge.",nex_remFragments_salvage2:Continue,
+nex_remFragments_salvage2,DialogOptionSelected,$option == nex_remFragments_salvage2,"ShowPersonVisual true
+Call $global.nex_remFragments_ref despawnShards","The engineer's portable console is still under $hisOrHer arm as $heOrShe steps onto the bridge, flanked by a pair of guards. There is no sign of the twitchy, whining coward from earlier. $HisOrHer stare is straight, level, without meeting your eyes.
+
+When questioned: ""I only fulfilled the Lady's wishes."" After a while, $heOrShe adds, ""Talk to her and she may answer. I will say no more on this.""
+
+You repress a sigh as you order $himOrHer confined. At least the remaining loot is good...",nex_remFragments_salvage3:Continue,
+nex_remFragments_salvage3,DialogOptionSelected,$option == nex_remFragments_salvage3,"EndConversation
+ShowDefaultVisual
+$salvageLeaveText = Leave 0
+FireBest CheckSalvageSpecial",,,
+,,,,,,
+nex_remFragments_return_start,PickGreeting,$nex_remFragments_return score:1000,"ShowPersonVisual
+Call $global.nex_remFragments_ref updateData","""You return, $playerName,"" $personName greets you as you open the comm link.","nex_remFragments_return_transmit:Transmit your report
+nex_remFragments_return_explanation1:Demand an explanation",
+nex_remFragments_return_transmit,DialogOptionSelected,$option == nex_remFragments_return_transmit,,"$personFirstName spends 2.7 seconds analyzing your report. $HisOrHer avatar doesn't even flicker during the process.
+
+""Done well, friend $playerFirstName. Chosen well, self has in allying with you.""","nex_remFragments_return_explanation2:""I want an explanation."" ",
+nex_remFragments_return_explanation1,DialogOptionSelected,$option == nex_remFragments_return_explanation1,,"""What do you mean..."" $HisOrHer avatar shimmers briefly as you hit the transmit key. ""Oh.""
+
+$HeOrShe spends 2.7 seconds analyzing your report. The virtual face seems to nod almost imperceptibly, when she is done.
+
+""Done well you have, $playerName. But self fears, all the answers you seek self cannot give.""",nex_remFragments_return_explanation2:Continue,
+nex_remFragments_return_explanation2,DialogOptionSelected,$option == nex_remFragments_return_explanation2,,"For a brief moment, the avatar vanishes from your display.
+
+A low voice speaks: ""Other associate, employers had found some secrets of Omega. Not yet time for humans of Sector to blessings know. Must be protected from those who would misuse and dishonor blessings, and those who would in ingratitude destroy.
+
+""Self sent $playerFirstName to protect secrets. This $playerFirstName has done. $nex_remFragments_engineer_name too acted to Omega's secrets preserve.""","nex_remFragments_return_explanation3:""When will we be 'ready' for Omega?""",
+nex_remFragments_return_explanation3,DialogOptionSelected,$option == nex_remFragments_return_explanation3,Call $global.nex_remFragments_ref complete,"$personLastName's virtual visage dims slightly. ""Self cannot tell you, $playerName. Even self does not know. Even selfkind, Omega loyal servants of, not truly blessed yet.
+
+""In time, self and $playerFirstName's faith will rewarded be. For now, please this payment accept.""",contact_pickAnotherGreeting:Continue,
+#END Remnant fragments mission,,,,,,
+,,,,,,
 # Remnant brawl mission,,,,,,
 nex_remBrawl_blurb,nex_remBrawl_blurb,,"Highlight ""Special request""","""Special request that $playerName only can fulfill. Massive Hegemony operation against selfkind planned. In unravelling plot require assistance.""",,
 nex_remBrawl_offerOption,nex_remBrawl_option,,SetOptionColor nex_remBrawl_start highlight,,nex_remBrawl_start:Ask about the Hegemony operation,
@@ -2025,15 +2397,20 @@ nex_remBrawl_missionText,DialogOptionSelected,$option == nex_remBrawl_start,$mis
 
 ""Selfkind defences reinforcing, all available assets, but without where hammer falls certainty, difficult will be. Even then, difficult will be. $playerName assistance required.""","nex_remBrawl_missionText2:""What do you need me to do?""",
 nex_remBrawl_missionText2,DialogOptionSelected,$option == nex_remBrawl_missionText2,"Call $global.nex_remBrawl_ref showMap ""Origin: $nex_remBrawl_stragglerOriginName""
-Highlight $nex_remBrawl_stragglerOriginName $nex_remBrawl_reward","""We know one Hegemony fleet in operation participating, delayed. Soon will depart $nex_remBrawl_stragglerOriginName to join operation. If $playerName follows, learn their staging area can, from there their goal deduce. Then location's defense join.
+Highlight transponder ""follow from front""","""We know one Hegemony fleet in operation participating, delayed. Soon will depart $nex_remBrawl_stragglerOriginName to join operation. If $playerName follows, learn their staging area can, from there their goal deduce. Then location's defense join.
 
-""Not know how far travel must. Lots of fuel bring.
+""Other agents of self can give you this much. Hacked transponder on flagship; as long as $playerFirstName is close, location will for certain know.
 
-""For this, generous reward selfkind is prepared to offer. $nex_remBrawl_reward credits. But $personName knows, $playerName would do it out of friendship for self and selfkind.""","nex_remBrawl_accept:Accept
+""Not know how far travel must. Lots of fuel bring. And follow from front try to.""",nex_remBrawl_missionText3:Continue,
+nex_remBrawl_missionText3,DialogOptionSelected,$option == nex_remBrawl_missionText3,"Highlight $nex_remBrawl_stragglerOriginName $nex_remBrawl_reward
+AddTextSmall ""Once this mission is started, it can progress without player intervention. Be prepared to focus on it to the exclusion of other tasks, and consider leaving slow ships behind."" highlight","""For this, generous reward selfkind is prepared to offer. $nex_remBrawl_reward credits. But $personName knows, $playerName would do it out of friendship for self and selfkind.""","nex_remBrawl_accept:Accept
+nex_remBrawl_declineAlt:""Give me some time to prepare.""
 nex_remBrawl_decline:Decline",
 nex_remBrawl_accept,DialogOptionSelected,$option == nex_remBrawl_accept,"Call $mHub accept $missionId
 Call $mHub returnToList","""Thank you, $playerFirstName. This deed self and selfkind will remember.""",,
-nex_remBrawl_decline,DialogOptionSelected,$option == nex_remBrawl_decline,Call $mHub doCleanup,"""…""
+nex_remBrawl_declineAlt,DialogOptionSelected,$option == nex_remBrawl_declineAlt,"ShowPersonVisual
+Call $mHub returnToList","""Of course. But please hurry, $playerFirstName.""",,
+nex_remBrawl_decline,DialogOptionSelected,$option == nex_remBrawl_decline,Call $mHub doCleanup,"""...""
 
 You sense that $personFirstName is put out by this refusal. After a few breaths, $hisOrHer avatar vanishes from your display.",cutCommLink:Disconnect,
 ,,,,,,
@@ -2091,13 +2468,13 @@ nex_remBrawl_scoutSendFalse,DialogOptionSelected,$option == nex_remBrawl_scoutSe
 That ought to give them a real nasty surprise. Although with the strength you saw back in $nex_remBrawl_stagingAreaName, it may be a good idea not to get too complacent just yet.",defaultLeave:Leave,
 ,,,,,,
 nex_greetingRemnantMerc,OpenCommLink,"$faction.id == remnant score:1000
-$nex_remBrawl_merc score:1000
+$entity.nex_remBrawl_merc score:1000
 !$entity.isHostile","$menuState = fleetConvMain 0
 FireAll PopulateOptions","""It's good to see another human fleet out here. Out in this mess.""
 OR
 ""The Hegemony won't like what we're doing, but a deal is a deal. Even with a toaster.""",,
 nex_greetingRemnantMercHostile,OpenCommLink,"$faction.id == remnant score:1000
-$nex_remBrawl_merc score:1000
+$entity.nex_remBrawl_merc score:1000
 $entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""The Sector may judge us harshly for this deed, but on our honor as mercenaries, we will fight!""
 OR
 ""We made a contract. We will honor it, no matter what comes our way!""",cutCommLink:Cut the comm link,
@@ -2544,7 +2921,7 @@ Now it's no business of ours on a personal level, but our paycheck requires that
 nex_buildStation_interceptHailDialogRem_startHostileLuddicPath,Nex_BuildStationInterceptHail_DialogStart,"$faction.id == luddic_path score:12
 $nex_buildStation_factionId == remnant score:20",$entity.ignorePlayerCommRequests = true 1,"""Foul slave of Moloch!"" The $personRank looks as if $heOrShe is barely restraining $himOrHerself from spitting on the viewscreen. ""Your idolatrous plot will not succeed. Ready yourself for the fires of hell from whence you came!""
 OR
-""Foul servant of Moloch and its abominable soulless prophet!"" The $personRank looks as if $himOrHerself is barely keeping themselves from spitting on the comms console. ""Your plot to further stain the holy void will not succeed, for you will be purged by our sacred weaponry. Prepare yourself to be exorcised, demon.""",cutCommLink:Cut the comm link,"Pathers only have dialog for the Remnant variant of the mission, and have no bargaining options regardless of relationship
+""Foul servant of Moloch and its abominable soulless prophet!"" The $personRank looks as if $heOrShe is barely keeping $himOrHerself from spitting on the comms console. ""Your plot to further stain the holy void will not succeed, for you will be purged by our sacred weaponry. Prepare yourself to be exorcised, demon.""",cutCommLink:Cut the comm link,"Pathers only have dialog for the Remnant variant of the mission, and have no bargaining options regardless of relationship
 Alt text by Avanitia"
 #END build station mission,,,,,,
 ,,,,,,
@@ -3007,7 +3384,8 @@ nex_commandSF_autoAssign,DialogOptionSelected,$option == nex_commandSF_autoAssig
 nex_commandSF_leave,DialogOptionSelected,$option == nex_commandSF_leave,"unset $nex_psf_task
 FireBest OpenCommLink",,,
 nex_commandSF_leaveRemote,DialogOptionSelected,"$option == nex_commandSF_leave
-$nex_remoteCommand score:10",DismissDialog,,,
+$nex_remoteCommand score:10","Nex_SpecialForcesCommands refreshIntelUI
+DismissDialog",,,
 nex_miscSF_reviveStart,DialogOptionSelected,$option == nex_sf_reviveShipStart,Nex_SpecialForcesConfig reviveShips,,,
 nex_miscSF_reviveOpts,Nex_SFReviveShipsOpts,,,,"nex_sf_reviveShipConfirm:Confirm
 nex_sf_reviveShipStart:Repick

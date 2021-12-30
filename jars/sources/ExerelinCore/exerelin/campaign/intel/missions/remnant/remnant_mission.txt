@@ -5,19 +5,31 @@ Mission 1
 - bring it back to Remnant contact for money and rep
 	- or defy Remnants and keep core
 
-Mission 2: Recover technology
+Mission 2: Recover technology ("Fragments")
 - go to abandoned station in <system>
-- it's surrounded by wrecks, but seems partly operational
+- just outside the system is a wrecked Luddic Path capital
+	- a Pather survivor is on board, rants about the abomination "you" wreaked on us
+	- Deal with them appropriately, then salvage the wreck
+
+- since we're using a Domain mothership, maybe it moved away from its original point?
+
+- station is surrounded by wrecks, but seems partly operational
 - investigate: find a researcher 
 	- station was destroyed in the last attack, but the Luddic Path attackers also took catastrophic losses and had to fall back
 	- some "unusual" things were found here
-- Luddic Path comes back for round 2
+	- Was distress signal transmitted?
+- enemy fleet approaches
+	- If distress signal was not sent, it's a Luddic Path fleet back for round 2
+	- If it was sent, it's a Tri-Tachyon fleet here to take possession
 - player can demand to know what the special things are, or find out using technology skill
 - it's a couple of Omega frigates
-- can activate them to help with the defense; plug in two gamma cores lying around, or contribute your own betas or alphas
+- can activate them to help with the defense; plug in an AI core to control them remotely
 - now player has to either bail (losing the station) or fight off the enemies with or without the frigates
-	- if player wins with the frigates, they self-destruct afterwards leaving their cores
-	- if not, they fly off on their own to parts unknown
+	- If it's a TT fleet, can negotiate to sell the station's contents to the corp, price is based on relative strength
+	- after the battle, if the frigates were activated, they fly off to parts unknown
+	- else they self-destruct
+	- (it was the researcher who did it? depends on whether I want him to be a collaborator of Midnight or not)
+		- Has to be, since he wouldn't have asked Midnight to send the player (unless Midnight knew what was going on and he didn't)
 	- either way, there's some neat stuff in the station to salvage
 
 Mission 3: Brawl ("Showdown")
@@ -35,35 +47,4 @@ Mission 3: Brawl ("Showdown")
 		- Use story point to persuade, or fight (this triggers the battle stage immediately)
 		- player is asked to scout the Remnant system
 		- Interact with marked point near station to summon the attack
-- Remnant route: On way back, be accosted by Hegemony or Luddic task force
 
-
---------------------
-Brawl dialog 
-
-== Offer help ==
-"Are you serious?"
-
-You explain that you know of the Hegemony's plans for the Remnant station in $nex_remBrawl_targetSystemName, and how you can help. 
-The Remnants do not yet know you have turned against them; hence, you will be able to take them by surprise. 
-After all, it is nothing less than your duty as a citizen of the Domain and child of Mother Church to defeat the AI abomination wherever it arises.
-
-The $personRank puts a hand on $hisOrHer forehead. "A moment, please. I... this is a matter for the admiral."
-
-
-The officer's image disappears from your screen, replaced by the $faction crest. A few minutes later, it reappears, along with the image of a figure in a Hegemony admiral's uniform.
-
-"So. I hear you have a proposition for me."
-
-
-After your explanation, the admiral nods slowly. "A curious plan indeed. Yet it might give us the edge we need against these machines."
-
-$nex_remBrawl_admiral_HeOrShe examines you like an unusual Domain artefact. "Here's what you can do for us. 
-Travel to the $nex_remBrawl_targetSystemName and reconnoiter their positions, in particular their station. Then, transmit the encoded data to us. 
-It'll be days old by the time we begin our assault, but that will still be valuable."
-
-The admiral looks at you, one eye larger than the other. "If, of course, you are truly on our side."
-> "You can count on me."
-> (Lie) "You can count on me."
-
-"Perfect. Now, be off with you. We'll be awaiting your signal."

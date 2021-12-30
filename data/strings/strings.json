@@ -2333,6 +2333,21 @@
 		"m1_stage1NextStep":"Recover the Beta Cores from %s",
 		"m1_stage2NextStep":"Return the Beta Cores to %s",
 		
+		"fragments_name":"Fragments",
+		"fragments_boilerplateDesc":"An associate of $name has found some unusual things that require a deft resolution.",
+		"fragments_startDesc":"Go to the marked location in the %s.",
+		"fragments_pursueDesc":"Whatever the object in %s was, it seems to have moved away. Head towards the marked location and you should find it.",
+		"fragments_fightDesc":"Defeat the interloping fleet so you can salvage the mothership at your leisure.",
+		"fragments_salvageDesc":"With the enemy fleet defeated, return to the mothership to salvage it.",
+		"fragments_returnDesc":"Return to $name on %s to report the situation.",
+		
+		"fragments_startNextStep":"Go to marked location in %s",
+		"fragments_fightNextStep":"Defeat enemy fleet",
+		"fragments_salvageNextStep":"Salvage the mothership",
+		"fragments_returnNextStep":"Return to %s and talk to $name",
+		
+		"fragments_fleetName":"Mysterious Allies",
+		
 		"brawl_name":"Showdown",
 		"brawl_boilerplateDesc":"A large Hegemony and allied operation is planned against the Remnants. $name has asked you to prevent it from succeeding.",
 		"brawl_startDesc":"Go to %s and track the late Hegemony fleet to what is likely the allied forces' staging area.",

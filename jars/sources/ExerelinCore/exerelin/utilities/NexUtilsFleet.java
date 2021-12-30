@@ -149,14 +149,19 @@ public class NexUtilsFleet
 	public static int calculatePowerLevel(CampaignFleetAPI fleet) {
 		float power = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
-			power = calculatePowerLevel(member);
+			float thisPower = calculatePowerLevel(member);
+			power += thisPower;
 		}
 		
 		// count commander skills
 		int commanderSkills = 0;
 		if (fleet.getCommanderStats() != null) {
 			for (SkillLevelAPI level : fleet.getCommanderStats().getSkillsCopy()) {
-				if (level.getSkill().isAdmiralSkill()) commanderSkills++;
+				if (level.getLevel() <= 0) continue;
+				if (level.getSkill().isAdmiralSkill()) 
+				{
+					commanderSkills++;
+				}
 			}
 		}
 		
@@ -167,7 +172,7 @@ public class NexUtilsFleet
 			dpTotal += member.getBaseDeployCost();
 		}
 		if (dpTotal > 240) {
-			dpMult *= 240/dpTotal;
+			dpMult = 240f/dpTotal;
 		}
 		
 		float commanderMult = 1 + (commanderSkills * 0.1f * dpMult);
@@ -184,6 +189,7 @@ public class NexUtilsFleet
 		int numElite = 0;
 		if (member.getCaptain() != null) {
 			for (SkillLevelAPI skillLevel : member.getCaptain().getStats().getSkillsCopy()) {
+				if (skillLevel.getLevel() <= 0) continue;
 				numSkills++;
 				if (skillLevel.getLevel() >= 2) numElite++;
 			}

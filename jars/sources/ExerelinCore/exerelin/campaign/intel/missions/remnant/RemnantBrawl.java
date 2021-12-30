@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -39,6 +40,7 @@ import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.abilities.ai.AlwaysOnTransponderAI;
 import exerelin.campaign.intel.missions.BuildStation;
 import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 import exerelin.plugins.ExerelinModPlugin;
@@ -89,18 +91,14 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	protected boolean spawnedStraggler;
 	protected boolean spawnedAttackFleets;
 	protected boolean launchedAttack;
+	protected boolean orderedHangAboveSystem;
 	protected boolean knowStagingArea;
 	protected boolean battleInited;
 	@Deprecated protected boolean sentFalseInfo;	// not currently sued
 	
 	// runcode exerelin.campaign.intel.missions.remnant.RemnantBrawl.fixDebug()
 	public static void fixDebug() {
-		RemnantBrawl mission = (RemnantBrawl)Global.getSector().getMemoryWithoutUpdate().get("$nex_remBrawl_ref");
-		for (CampaignFleetAPI fleet : mission.attackFleets) {
-			if (fleet == mission.straggler) continue;
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), 
-					MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "$nex_remBrawl_sus", true, 99999);
-		}
+		
 	}
 	
 	@Override
@@ -289,6 +287,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		params.officerNumberMult = 1.2f;
 		params.averageSMods = 2;
 		params.random = this.genRandom;
+		params.maxShipSize = 3;	// more consistent top speed
 		
 		CampaignFleetAPI fleet = spawnFleet(params, stragglerOrigin.getPrimaryEntity());
 		attackFleets.add(fleet);
@@ -318,8 +317,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			}
 		});
 		
-		fleet.getCommanderStats().setSkillLevel(Skills.NAVIGATION, 1);
-		addTugsToFleet(fleet, 1, genRandom);
+		//fleet.getCommanderStats().setSkillLevel(Skills.NAVIGATION, 1);
+		addTugsToFleet(fleet, 2, genRandom);	// tugs instead of navigation to increase sensor profile
+		fleet.getMemoryWithoutUpdate().set(AlwaysOnTransponderAI.MEMORY_KEY_ALWAYS_ON, true);
 		
 		setCurrentStage(Stage.FOLLOW_STRAGGLER, null, null);
 		
@@ -404,9 +404,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		// fleets are sus and interrogate player
 		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), 
-				MemFlags.MEMORY_KEY_PURSUE_PLAYER, "$nex_remBrawl_sus", true, 99999);
+				MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_remBrawl_sus", true, 99999);
 		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), 
-					MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "$nex_remBrawl_sus", true, 99999);
+					MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "nex_remBrawl_sus", true, 99999);
 		fleet.getMemoryWithoutUpdate().set("$genericHail_openComms", "Nex_RemBrawlSusHail");
 		
 		return fleet;
@@ -415,7 +415,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	protected void spawnExtraDefenders() {
 		float fp = 45;
 		
-		for (int i=0; i<=2; i++) {
+		for (int i=0; i<2; i++) {
 			FleetParamsV3 params = new FleetParamsV3(station.getLocationInHyperspace(),
 					Factions.MERCENARY,
 					1f,	// quality override
@@ -471,12 +471,24 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 					targetToken, 60, StringHelper.getFleetAssignmentString("attacking", station.getName()));
 			fleet.addAssignment(FleetAssignment.INTERCEPT, station, 20);			
 		}
-		straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
-		straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS);
 		
-		unsetFleetSus();
+		unsetFleetSus();		
 		
 		launchedAttack = true;
+	}
+	
+	public void orderHangAboveSystem() {
+		if (orderedHangAboveSystem) return;
+		if (launchedAttack) return;
+		
+		for (CampaignFleetAPI fleet : attackFleets) {
+			fleet.clearAssignments();
+			SectorEntityToken dest = station.getStarSystem().getHyperspaceAnchor();
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, dest, 80);
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, dest, 99999);			
+		}
+		
+		orderedHangAboveSystem = true;
 	}
 	
 	/**
@@ -562,17 +574,17 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	public void makeAttackersHostile() {
 		for (CampaignFleetAPI fleet : attackFleets) {
-			Misc.makeLowRepImpact(fleet, "$nex_remBrawl");
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "$nex_remBrawl", true, 90);
+			Misc.makeLowRepImpact(fleet, "nex_remBrawl");
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remBrawl", true, 90);
 		}
 	}
 	
 	public void unsetFleetSus() {
 		for (CampaignFleetAPI fleet : attackFleets) {
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_PURSUE_PLAYER, "$nex_remBrawl_sus", false, 0);
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, "$pursue", false, 0);
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_remBrawl_sus", false, 0);
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, "pursue", false, 0);
 			//fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE);
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "$nex_remBrawl_sus", false, 0);
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "nex_remBrawl_sus", false, 0);
 			fleet.getMemoryWithoutUpdate().unset("$genericHail");
 			fleet.getMemoryWithoutUpdate().unset("$genericHail_openComms");
 		}
@@ -581,7 +593,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	public void setDefendersNonHostile() {
 		for (CampaignFleetAPI fleet : station.getContainingLocation().getFleets()) {
 			if (fleet.getFaction().getId().equals(Factions.REMNANTS)) {
-				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, "$nex_remBrawl_def", true, 90);
+				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, "nex_remBrawl_def", true, 90);
 			}
 		}
 	}
@@ -589,7 +601,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	public void unsetDefendersNonHostile() {
 		for (CampaignFleetAPI fleet : station.getContainingLocation().getFleets()) {
 			if (fleet.getFaction().getId().equals(Factions.REMNANTS)) {
-				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, "$nex_remBrawl_def", false, 0);
+				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, "nex_remBrawl_def", false, 0);
 			}
 		}
 	}
@@ -649,7 +661,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		for (CampaignFleetAPI fleet : createdFleets) {
 			if (!fleet.isAlive()) continue;
 			Misc.giveStandardReturnToSourceAssignments(fleet, true);
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "$nex_remBrawl", false, 9999);
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remBrawl", false, 9999);
 		}
 		stagingPoint.getContainingLocation().removeEntity(stagingPoint);
 	}
@@ -701,6 +713,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				return true;
 			case "agreeScout":
 				gotoScoutStage(dialog, memoryMap);
+				orderHangAboveSystem();
 				unsetFleetSus();
 				return true;
 			case "scoutTrue":
