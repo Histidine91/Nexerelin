@@ -643,7 +643,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						removeItemFromQueue(item, queue);
 						continue;
 					}
-					if (ind.canUpgrade()) {
+					if (ind.canUpgrade() && ind.getSpec().getUpgrade() != null) {
 						market.getIndustry(item.industry).startUpgrading();
 						removeItemFromQueue(item, queue);
 					}
