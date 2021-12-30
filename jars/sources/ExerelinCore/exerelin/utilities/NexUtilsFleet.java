@@ -8,9 +8,12 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
+import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.DModManager;
@@ -137,48 +140,71 @@ public class NexUtilsFleet
         }
     }
     
-    // taken from SS+
-    /**
-     * Estimate of a fleet's strength based on fleet points and officer levels. Currently does not include D-mods or S-mods.
-     * @param fleet
-     * @return
-     */
-    public static int calculatePowerLevel(CampaignFleetAPI fleet) {
-        int power = fleet.getFleetPoints();
-        for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
-            if (member.isCivilian()) {
-                power += member.getFleetPointCost() / 2;
-            } else {
-                power += member.getFleetPointCost();
-            }
-        }
-        int offLvl = 0;
-        int cdrLvl = 0;
-        boolean commander = false;
-        for (OfficerDataAPI officer : fleet.getFleetData().getOfficersCopy()) {
-            if (officer.getPerson() == fleet.getCommander()) {
-                commander = true;
-                cdrLvl = officer.getPerson().getStats().getLevel();
-            } else {
-                offLvl += officer.getPerson().getStats().getLevel();
-            }
-        }
-        if (!commander) {
-            cdrLvl = fleet.getCommanderStats().getLevel();
-        }
-        
-        // compensate for lower level numbers in Starsector 0.95a
-        cdrLvl *= 3;
-        offLvl *= 4;
-        
-        power *= Math.sqrt(cdrLvl / 100f + 1f);
-        int flatBonus = cdrLvl + offLvl + 10;
-        if (power < flatBonus * 2) {
-            flatBonus *= power / (float) (flatBonus * 2);
-        }
-        power += flatBonus;
-        return power;
-    }
+	// adapted from new Dark.Revenant algorithm, replacing older implementation from SS+
+	/**
+	 * Estimate of a fleet's strength based on fleet points, D/S-mods, officer levels and commander levels.
+	 * @param fleet
+	 * @return
+	 */
+	public static int calculatePowerLevel(CampaignFleetAPI fleet) {
+		float power = 0;
+		for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
+			power = calculatePowerLevel(member);
+		}
+		
+		// count commander skills
+		int commanderSkills = 0;
+		if (fleet.getCommanderStats() != null) {
+			for (SkillLevelAPI level : fleet.getCommanderStats().getSkillsCopy()) {
+				if (level.getSkill().isAdmiralSkill()) commanderSkills++;
+			}
+		}
+		
+		// account for DP dilution of commander skills
+		int dpTotal = 0;
+		float dpMult = 1;
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			dpTotal += member.getBaseDeployCost();
+		}
+		if (dpTotal > 240) {
+			dpMult *= 240/dpTotal;
+		}
+		
+		float commanderMult = 1 + (commanderSkills * 0.1f * dpMult);
+		
+		power *= commanderMult;
+		return Math.round(power);
+	}
+	
+	public static float calculatePowerLevel(FleetMemberAPI member) {
+		float myPower = member.getFleetPointCost();
+		if (member.isCivilian()) myPower /= 2;
+		
+		int numSkills = 0;
+		int numElite = 0;
+		if (member.getCaptain() != null) {
+			for (SkillLevelAPI skillLevel : member.getCaptain().getStats().getSkillsCopy()) {
+				numSkills++;
+				if (skillLevel.getLevel() >= 2) numElite++;
+			}
+			if (member.getCaptain().isPlayer()) {
+				numSkills *= 2;
+				numElite *= 2;
+			}
+		}
+		
+		float officerMult = 1 + numSkills * 0.15f + numElite * 0.05f;
+		
+		float dModEffect = 0.06f;
+		if (member.getHullSpec().getHints().contains(ShipTypeHints.CARRIER)) {
+			dModEffect = 0.04f;
+		}
+		float dModMult = 1 - DModManager.getNumDMods(member.getVariant()) * dModEffect;
+		
+		float sModMult = 1 + member.getVariant().getSMods().size() * 0.12f;
+		
+		return myPower * dModMult * officerMult * sModMult;
+	}
 	
 	public static float getFleetStrength(CampaignFleetAPI fleet, boolean withHull, boolean withQuality, boolean withCaptain) {
 		float str = 0;
