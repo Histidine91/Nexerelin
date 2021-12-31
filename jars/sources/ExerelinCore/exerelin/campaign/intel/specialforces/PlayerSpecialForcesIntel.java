@@ -54,6 +54,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
 	protected static final Object BUTTON_RECREATE = new Object();
+	protected static final Object BUTTON_INDEPENDENT_MODE = new Object();
 	
 	@Setter protected CampaignFleetAPI tempFleet;
 	protected CampaignFleetAPI fleet;
@@ -71,6 +72,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	public void init() {
 		super.init(commander);
+		Global.getSector().getListenerManager().addListener(this);
 	}
 			
 	public void setFlagship(FleetMemberAPI member) {
@@ -254,11 +256,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		FDNode fleetNode = report.getNode(MonthlyReport.FLEET);
 		
 		FDNode psfNode = processMonthlyReportNode(report, fleetNode, "nex_node_id_psf", 
-				getString("intelTitle"), faction.getCrest(), 0, false);
+				this.getName(), faction.getCrest(), 0, false);
 		
 		float commanderFee = Global.getSettings().getFloat("officerSalaryBase") * 5;
 		FDNode feeNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_commFee", 
-				"[temp] Commander's fee", commander.getPortraitSprite(), commanderFee * f, false);
+				getString("reportNode_commander"), commander.getPortraitSprite(), commanderFee * f, false);
 		
 		if (fleet == null) return;
 		
@@ -267,23 +269,23 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			officerSalary += Misc.getOfficerSalary(officer.getPerson());
 		}
 		FDNode officerNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_offSal", 
-				"[temp] Officer payroll", faction.getCrest(), officerSalary * f, false);
+				getString("reportNode_officer"), faction.getCrest(), officerSalary * f, false);
 		
 		float crew = fleet.getFleetData().getMinCrew();
 		float crewSalary = crew * Global.getSettings().getInt("crewSalary") * 1.25f;
 		FDNode crewNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_crewSal", 
-				"[temp] Crew payroll", commander.getPortraitSprite(), crewSalary * f, false);
+				getString("reportNode_crew"), commander.getPortraitSprite(), crewSalary * f, false);
 		
 		float suppMaint = fleet.getLogistics().getShipMaintenanceSupplyCost();
 		CommoditySpecAPI suppliesSpec = Global.getSettings().getCommoditySpec(Commodities.SUPPLIES);
 		float maintCost = suppMaint * suppliesSpec.getBasePrice() * 1.25f;
 		FDNode maintNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_suppliesCost", 
-				"[temp] Supply cost", suppliesSpec.getIconName(), maintCost * f, false);
+				getString("reportNode_supplies"), suppliesSpec.getIconName(), maintCost * f, false);
 		
 		CommoditySpecAPI fuelSpec = Global.getSettings().getCommoditySpec(Commodities.FUEL);
 		float fuelCost = this.fuelUsedLastInterval;
 		FDNode fuelNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_fuelCost", 
-				"[temp] Fuel cost", fuelSpec.getIconName(), fuelCost * f, false);
+				getString("reportNode_fuel"), fuelSpec.getIconName(), fuelCost * f, false);
 		fuelUsedLastInterval = 0;
 	}
 	
@@ -329,6 +331,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			info.addButton(getString("intelButtonCommand"), 
 					BUTTON_COMMAND, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
+			ButtonAPI check = info.addAreaCheckbox(getString("intelButtonCheckIndependent"), BUTTON_INDEPENDENT_MODE, 
+					faction.getBaseUIColor(), faction.getDarkUIColor(), faction.getBrightUIColor(),
+					(int)width, 20f, opad);
+			check.setChecked(independentMode);			
 		} else {
 			ButtonAPI button = info.addButton(getString("intelButtonDisband"), 
 					BUTTON_RECREATE, faction.getBaseUIColor(), faction.getDarkUIColor(),
@@ -367,6 +373,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			disband();
 			ui.updateUIForItem(this);
 		}
+		else if (buttonId == BUTTON_INDEPENDENT_MODE) {
+			independentMode = !independentMode;
+		}
 		else {
 			super.buttonPressConfirmed(buttonId, ui); //To change body of generated methods, choose Tools | Templates.
 		}
@@ -392,6 +401,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	public void reportFleetDespawned(CampaignEventListener.FleetDespawnReason reason, Object param) {
 		isAlive = false;
+		Global.getSector().getListenerManager().removeListener(this);
 		sendUpdateIfPlayerHasIntel(DESTROYED_UPDATE, false, false);
 	}
 	

@@ -15,15 +15,19 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.characters.SkillSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
+import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -38,8 +42,12 @@ import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -50,6 +58,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	public static final float PORTRAIT_SIZE_MAIN = 40;
 	public static final float PORTRAIT_SIZE_PICKER = 48;
 	public static final float BTN_HEIGHT = 16;
+	public static final int MAX_SKILLS = 2;
 	
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
 		SectorEntityToken token = dialog.getInteractionTarget();
@@ -94,6 +103,12 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				return true;
 			case "assignAndRefit":
 				assignAndRefit(dialog, memoryMap);
+				return true;
+			case "commanderSkillsView":
+				setCommanderSkills(dialog, memoryMap);
+				return true;
+			case "commanderSkillsConfirm":
+				applySkillChanges(dialog, memoryMap.get(MemKeys.LOCAL));
 				return true;
 			case "hasCommander":
 				return haveCommander(fleet);
@@ -183,7 +198,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		
 		
 		tooltip.setParaSmallOrbitron();
-		tooltip.addPara(getString("dialog_headerOfficerPick"), 0);
+		tooltip.addPara(getString("dialog_headerOfficerAssign"), 0).setAlignment(Alignment.MID);
 		tooltip.setParaFontDefault();
 		
 		// list officers
@@ -277,6 +292,12 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 							prevShip.setCaptain(prevCap);
 						}
 						newShip.setCaptain(officer);
+						
+						if (fleet.getCommander() == officer) {
+							SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
+							if (sf != null) sf.setFlagship(newShip);
+						}
+						
 						showOfficersForAssignment(dialog);
 					}
 					public void cancelledFleetMemberPicking() {
@@ -583,6 +604,191 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				other.forceSync();
 			}
 		});
+	}
+	
+	/**
+	 * Gets a sorted list of commander skills for picking from.
+	 * @return
+	 */
+	protected List<SkillSpecAPI> getSortedSkillList() {
+		List<SkillSpecAPI> results = new ArrayList<>();
+		
+		for (String skillId : Global.getSettings().getSkillIds()) {
+			SkillSpecAPI skill = Global.getSettings().getSkillSpec(skillId);
+			if (skill.hasTag(Skills.TAG_DEPRECATED)) continue;
+			if (skill.hasTag(Skills.TAG_PLAYER_ONLY)) continue;
+			if (!skill.isAdmiralSkill()) continue;
+			
+			results.add(skill);
+		}
+		
+		Collections.sort(results, new Comparator<SkillSpecAPI>(){
+			@Override
+			public int compare(SkillSpecAPI s1, SkillSpecAPI s2) {
+				int result = s1.getGoverningAptitudeId().compareTo(s2.getGoverningAptitudeId());
+				if (result != 0) return result;
+				
+				result = Integer.compare(s1.getTier(), s2.getTier());
+				return result;
+			}		
+		});
+		return results;
+	}
+	
+	/**
+	 * Opens the custom panel for picking the commander's skills.
+	 * @param dialog
+	 * @param memoryMap
+	 */
+	protected void setCommanderSkills(final InteractionDialogAPI dialog, final Map<String, MemoryAPI> memoryMap) 
+	{
+		float pad = 3, opad = 10;
+		float textWidth = 200;
+		float imageWidth = 40;
+		float skillPanelWidth = imageWidth + textWidth + 6;
+		
+		CampaignFleetAPI fleet = getFleet(dialog);
+		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
+		PersonAPI commander = sf.getCommander();
+		
+		Nex_VisualCustomPanel.createPanel(dialog, true);
+		CustomPanelAPI panel = Nex_VisualCustomPanel.getPanel();
+		TooltipMakerAPI tooltip = Nex_VisualCustomPanel.getTooltip();
+		InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
+				
+		tooltip.setParaSmallOrbitron();
+		tooltip.addPara(getString("dialog_headerTrainCommander"), 0).setAlignment(Alignment.MID);
+		tooltip.setParaFontDefault();
+		
+		TooltipMakerAPI img = tooltip.beginImageWithText(commander.getPortraitSprite(), 48);
+		img.setParaSmallInsignia();
+		img.addPara(commander.getNameString(), pad);
+		tooltip.addImageWithText(opad);
+		TooltipCreator offTT = new NexUtilsGUI.ShowPeopleOfficerTooltip(commander);
+		tooltip.addTooltipToPrevious(offTT, TooltipMakerAPI.TooltipLocation.BELOW);
+		
+		final Set<String> wantedSkills = new HashSet<>();
+		for (SkillLevelAPI skLevel : commander.getStats().getSkillsCopy()) {
+			SkillSpecAPI skill = skLevel.getSkill();
+			if (!skill.isAdmiralSkill()) continue;
+			if (skLevel.getLevel() <= 0) continue;
+			wantedSkills.add(skill.getId());
+		}
+		int numSelected = wantedSkills.size();
+		
+		memoryMap.get(MemKeys.LOCAL).set("$nex_psf_wantedSkills", wantedSkills, 0);
+		memoryMap.get(MemKeys.LOCAL).set("$nex_psf_originalSkills", new HashSet<>(wantedSkills), 0);
+		memoryMap.get(MemKeys.LOCAL).set("$nex_psf_skillsChangedAny", false, 0);
+		
+		List<SkillSpecAPI> skills = getSortedSkillList();
+		final List<ButtonAPI> checkboxes = new ArrayList<>();
+		int numPerRow = (int)Math.floor(Nex_VisualCustomPanel.PANEL_WIDTH/skillPanelWidth);
+		int numRows = skills.size()/numPerRow + 1;
+		//dialog.getTextPanel().addPara(String.format("%s per row, %s rows", numPerRow, numRows));
+		
+		CustomPanelAPI skillsHolder = panel.createCustomPanel(Nex_VisualCustomPanel.PANEL_WIDTH, numRows * (imageWidth + pad), null);
+		
+		int numThisRow = 0;
+		CustomPanelAPI lastPanel = null;
+		CustomPanelAPI firstOfLastRow = null;
+		for (final SkillSpecAPI skill : skills) {			
+			CustomPanelGenResult cpg = NexUtilsGUI.addPanelWithFixedWidthImage(panel, null, 
+					skillPanelWidth, 40, skill.getName(), textWidth, pad, 
+					skill.getSpriteName(), 40, 
+					pad, skill.getGoverningAptitudeColor(), false, null);
+			CustomPanelAPI skillPanel = cpg.panel;
+			TooltipMakerAPI text = (TooltipMakerAPI)cpg.elements.get(1);
+			
+			
+			ButtonAPI check = text.addCheckbox(textWidth, 14, StringHelper.getString("enable", true), 
+					ButtonAPI.UICheckboxSize.TINY, pad);
+			checkboxes.add(check);
+			check.setChecked(wantedSkills.contains(skill.getId()));
+			check.setEnabled(check.isChecked() || numSelected < MAX_SKILLS);
+			plugin.addButton(new InteractionDialogCustomPanelPlugin.ButtonEntry(
+					check, "nex_selectSkill_" + skill.getId()) 
+			{
+				@Override
+				public void onToggle() {
+					skillButtonPressed(button, skill.getId(), wantedSkills, checkboxes);
+					checkAnySkillChanges(wantedSkills, dialog, memoryMap.get(MemKeys.LOCAL));
+				}
+			});
+			
+			if (numThisRow >= numPerRow) {
+				// move to next row
+				skillsHolder.addComponent(skillPanel).belowLeft(firstOfLastRow, 3);
+				firstOfLastRow = skillPanel;
+				numThisRow = 0;
+			} else if (firstOfLastRow == null) {
+				// first in list
+				skillsHolder.addComponent(skillPanel).inTL(0, pad);
+				firstOfLastRow = skillPanel;
+			} else {
+				skillsHolder.addComponent(skillPanel).rightOfTop(lastPanel, 3);
+			}
+			lastPanel = skillPanel;			
+			numThisRow++;
+		}
+		tooltip.addCustom(skillsHolder, 3);
+		
+		Nex_VisualCustomPanel.addTooltipToPanel();
+		// we just opened the window, so no skills can be changed
+		dialog.getOptionPanel().setEnabled("nex_configSF_commanderSkillsConfirm", false);
+	}
+	
+	protected void skillButtonPressed(ButtonAPI button, String skillId, Set<String> wantedSkills, List<ButtonAPI> checkboxes) 
+	{
+		if (button.isChecked()) wantedSkills.add(skillId);
+		else wantedSkills.remove(skillId);
+		boolean allowMore = wantedSkills.size() < MAX_SKILLS;
+		for (ButtonAPI otherButton : checkboxes) {
+			if (button == otherButton) continue;
+			if (otherButton.isChecked()) continue;
+			otherButton.setEnabled(allowMore);
+		}
+	}
+	
+	/**
+	 * Check if the existing and wanted skill lists differ, set the confirm option enabled state accordingly.
+	 * @param wantedSkills
+	 * @param dialog
+	 * @param local
+	 */
+	protected void checkAnySkillChanges(Set<String> wantedSkills, InteractionDialogAPI dialog, MemoryAPI local) 
+	{	
+		Set<String> original = (Set<String>)local.get("$nex_psf_originalSkills");
+		boolean changed = !original.equals(wantedSkills);
+		
+		local.set("$nex_psf_skillsChangedAny", changed, 0);
+		dialog.getOptionPanel().setEnabled("nex_configSF_commanderSkillsConfirm", changed);
+	}
+	
+	/**
+	 * Remove existing skills, apply new ones.
+	 * @param dialog
+	 * @param local
+	 */
+	protected void applySkillChanges(InteractionDialogAPI dialog, MemoryAPI local) 
+	{		
+		CampaignFleetAPI fleet = getFleet(dialog);
+		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
+		PersonAPI commander = sf.getCommander();
+		
+		Set<String> original = (Set<String>)local.get("$nex_psf_originalSkills");
+		Set<String> updated = (Set<String>)local.get("$nex_psf_wantedSkills");
+		for (String toRemove : original) {
+			commander.getStats().setSkillLevel(toRemove, 0);
+			//dialog.getTextPanel().addPara("Removing skill " + toRemove);
+		}
+		for (String toAdd : updated) {
+			commander.getStats().setSkillLevel(toAdd, 1);
+			//dialog.getTextPanel().addPara("Adding skill " + toAdd);
+		}
+		
+		local.unset("$nex_psf_wantedSkills");
+		local.unset("$nex_psf_originalSkills");
+		local.unset("$nex_psf_skillsChangedAny");
 	}
 	
 	/**

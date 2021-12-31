@@ -95,7 +95,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	// These are preserved between fleet regenerations
 	@Getter @Setter protected PersonAPI commander;
-	protected FleetMemberAPI flagship;
+	@Getter @Setter protected FleetMemberAPI flagship;
 	
 	protected float rebuildCheckCooldown = 0;
 	
@@ -513,7 +513,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad) {
 		if (isEnding() || isEnded()) return;
-		if (isUpdate && listInfoParam == ARRIVED_UPDATE && routeAI.currentTask.getEntity() != null) 
+		if (isUpdate && listInfoParam == ARRIVED_UPDATE && routeAI.currentTask != null 
+				&& routeAI.currentTask.getEntity() != null) 
 		{
 			info.addPara(getString("intelBulletArrived"), 3, tc, 
 					routeAI.currentTask.getEntity().getFaction().getBaseUIColor(), 
@@ -666,11 +667,14 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				info.addPara(str, opad, h, loc);
 				
 				FleetAssignmentDataAPI assign = route.getActiveFleet().getCurrentAssignment();
-				str = String.format("Fleet current assignment: %s (time %s of %s)", 
-						assign.getActionText(),
-						assign.getElapsedDays(),
-						assign.getMaxDurationInDays());
-				//info.addPara(str, opad, h, loc);
+				if (assign != null) {
+					str = String.format("Fleet current assignment: %s (time %s of %s)", 
+							assign.getActionText(),
+							assign.getElapsedDays(),
+							assign.getMaxDurationInDays());
+					//info.addPara(str, opad, h, loc);
+				}
+				
 			}
 		}
 	}

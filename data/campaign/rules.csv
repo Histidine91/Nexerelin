@@ -3304,14 +3304,15 @@ FireBest MarketPostDock",,,
 nex_sfCommLink,OpenCommLink,"$faction.id == ""player""
 $entity.nex_sfIntel != null score:100
 !$printedFirstGreeting","ShowPersonVisual
-$printedFirstGreeting = true","""$PersonRank $personLastName, reporting. Awaiting orders, admiral.""
+$printedFirstGreeting = true 0","""$PersonRank $personLastName, reporting. Awaiting orders, admiral.""
 OR
 ""$PersonRank $personLastName, ready to receive your command.""","nex_commandSF_main:Give orders
 nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
 nex_sfCommLink_repeat,OpenCommLink,"$faction.id == ""player""
 $entity.nex_sfIntel != null score:100
-$printedFirstGreeting",ShowPersonVisual,,"nex_commandSF_main:Give orders
+$printedFirstGreeting","ShowPersonVisual
+$printedFirstGreeting = true 0",,"nex_commandSF_main:Give orders
 nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
 nex_configSF_createNewOpt,PopulateOptions,"Nex_IsBaseOfficial military
@@ -3324,30 +3325,34 @@ nex_configSF_createNew,DialogOptionSelected,$option == nex_configSF_createNew,"$
 Nex_SpecialForcesConfig beginCreate",Creating special task group...,,
 nex_configSF_main,DialogOptionSelected,$option == nex_configSF_start,"$nex_sf_menuType = ""config"" 0
 Nex_SpecialForcesConfig mainMenu",Reconfiguring special task group...,,
-nex_configSF_mainOpts,Nex_ConfigSFOptions,"!$nex_psf_create
-!$nex_psf_recreate","Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""
+nex_configSF_mainOpts,Nex_ConfigSFOptions,!$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""
 SetShortcut nex_configSF_close ESCAPE",,"nex_configSF_giveShips:Give ships
 nex_configSF_takeShips:Take ships
 nex_sf_reviveShipStart:Revive lost ships
 nex_configSF_showOfficers:Transfer officers
 nex_configSF_assignOfficers:Assign officers
+nex_configSF_commanderSkills:Train commander
 nex_configSF_disband:Absorb and disband task group
 nex_configSF_close:Done",
-nex_configSF_mainOptsCreate,Nex_ConfigSFOptions,$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_close ""Confirm task force creation?"" ""Yes"" ""No""
+nex_configSF_mainOptsCreate,Nex_ConfigSFOptions,$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_createFinish ""Confirm task force creation?"" ""Yes"" ""No""
 Nex_AddOptionConfirmation nex_configSF_abortCreate ""Cancel task force creation?"" ""Yes"" ""No""",,"nex_configSF_giveShips:Give ships
 nex_configSF_takeShips:Take ships
 nex_configSF_showOfficers:Transfer officers
 nex_configSF_assignOfficers:Assign officers
+nex_configSF_commanderSkills:Train commander
 nex_configSF_createFinish:Create
 nex_configSF_abortCreate:Cancel",
-nex_configSF_mainOptsNoShips,Nex_ConfigSFOptions,$entity.fleetPoints == 0,"SetEnabled nex_configSF_takeShips false
+nex_configSF_mainOptsNoShips,Nex_ConfigSFOptions,"!$nex_psf_create
+$entity.fleetPoints == 0","SetEnabled nex_configSF_takeShips false
 SetEnabled nex_configSF_close false
-SetEnabled nex_configSF_createFinish false
 SetTooltip nex_configSF_close ""Task force has no ships and will be disbanded. Use the disband option to confirm this course of action.""",,,
-nex_configSF_mainOptsNoCommander,Nex_ConfigSFOptions,!Nex_SpecialForcesConfig hasCommander,"SetEnabled nex_configSF_createFinish false
-SetEnabled nex_configSF_close_false
+nex_configSF_mainOptsNoShipsCreate,Nex_ConfigSFOptions,"$nex_psf_create
+$fleetPoints == 0","SetEnabled nex_configSF_takeShips false
+SetEnabled nex_configSF_createFinish false",,,
+nex_configSF_mainOptsNoCommander,Nex_ConfigSFOptions,!Nex_SpecialForcesConfig hasCommander,"SetEnabled nex_configSF_commanderSkills false
+SetEnabled nex_configSF_createFinish false
+SetEnabled nex_configSF_close false
 SetTooltip nex_configSF_createFinish ""Fleet must have a commander.""
-SetTooltip nex_configSF_recreate ""Fleet must have a commander.""
 SetTooltip nex_configSF_close ""Fleet must have a commander.""",,,
 nex_configSF_mainOptsNoRevive,Nex_ConfigSFOptions,"!$nex_psf_recreate
 !Nex_SpecialForcesConfig canRevive","SetEnabled nex_sf_reviveShipStart false
@@ -3360,6 +3365,12 @@ nex_configSF_transferOfficersConfirm,DialogOptionSelected,$option == nex_configS
 Nex_SpecialForcesConfig mainMenu",,,
 nex_configSF_transferOfficersCancel,DialogOptionSelected,$option == nex_configSF_officerCancel,Nex_SpecialForcesConfig mainMenu,,,
 nex_configSF_assignOfficers,DialogOptionSelected,$option == nex_configSF_assignOfficers,Nex_SpecialForcesConfig showOfficerAssignment,,nex_configSF_officerCancel:Go back,
+nex_configSF_commanderSkills,DialogOptionSelected,$option == nex_configSF_commanderSkills,"Nex_SpecialForcesConfig commanderSkillsView
+SetStoryOption nex_configSF_commanderSkillsConfirm general ""Trained $personName in fleet command skills""",,"nex_configSF_commanderSkillsConfirm:Confirm skill selection
+nex_configSF_commanderSkillsCancel:Go back",
+nex_configSF_commanderSkillsConfirm,DialogOptionSelected,$option == nex_configSF_commanderSkillsConfirm,"Nex_SpecialForcesConfig commanderSkillsConfirm
+Nex_SpecialForcesConfig mainMenu",,,
+nex_configSF_commanderSkillsCancel,DialogOptionSelected,$option == nex_configSF_commanderSkillsCancel,Nex_SpecialForcesConfig mainMenu,,,
 nex_configSF_disband,DialogOptionSelected,$option == nex_configSF_disband,"Nex_SpecialForcesConfig disband
 DismissDialog",,,
 nex_configSF_close,DialogOptionSelected,$option == nex_configSF_close,FireBest OpenCommLink,,,

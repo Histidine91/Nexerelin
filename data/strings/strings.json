@@ -2151,6 +2151,7 @@
 		"intelButtonCommand":"Give orders",
 		"intelButtonDisband":"Disband",
 		"intelButtonDebug":"Debug",
+		"intelButtonCheckIndependent":"Independent mode",
 		
 		"bountyBulletLocation":"Target is in the %s",
 		"bountyBulletDestination":"Target is headed to %s in the %s",
@@ -2164,6 +2165,12 @@
 		"dialogTooltipNoMarketForRevive":"Fleet must be near a non-inhospitable market.",
 		"dialogMsgTaskAssigned":"task assigned",
 		"dialogMsgRevivingShips":"reviving ships",
+		
+		"reportNode_commander":"Commander's fee",
+		"reportNode_officer":"Officer payroll",
+		"reportNode_crew":"Crew payroll",
+		"reportNode_supplies":"Supply cost".
+		"reportNode_fuel":"Fuel cost",
 	},
 	
 	"nex_splitFleet":{
@@ -2172,6 +2179,8 @@
 		"dialog_headerOfficers":"Officers",
 		"dialog_headerShipPick":"Select ships",
 		"dialog_headerOfficerPick":"Select officers",
+		"dialog_headerOfficerAssign":"Assign officers",
+		"dialog_headerTrainCommander":"Train commander skills",
 		"dialog_commander":"commander",
 		"dialog_level":"level %s",
 		

@@ -13,8 +13,16 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 	
 	@Override
 	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) {
+		SpecialForcesTask task;
 		if (!psf.isIndependentMode()) {
-			SpecialForcesTask task = new SpecialForcesTask(TaskType.IDLE, 0);
+			if (currentTask != null) {
+				try {
+					return (SpecialForcesTask)currentTask.clone();
+				} catch (CloneNotSupportedException c) {
+					log.error("Task cloning failed", c);
+				}
+			}
+			task = new SpecialForcesTask(TaskType.IDLE, 0);
 			task.time = 15;
 			return task;
 		}

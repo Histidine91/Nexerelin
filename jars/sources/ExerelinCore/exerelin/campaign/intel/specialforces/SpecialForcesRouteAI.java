@@ -963,7 +963,7 @@ public class SpecialForcesRouteAI {
 		}
 	}
 	
-	public static class SpecialForcesTask {
+	public static class SpecialForcesTask implements Cloneable {
 		public TaskType type;
 		public float priority;
 		public RaidIntel raid;
@@ -987,6 +987,10 @@ public class SpecialForcesRouteAI {
 		public void setMarket(MarketAPI market) {
 			this.market = market;
 			this.entity = market.getPrimaryEntity();
+		}
+		
+		public SpecialForcesTask clone() throws CloneNotSupportedException {
+			return (SpecialForcesTask)super.clone();
 		}
 		
 		// TODO: need to externalize these now that player will have their own SF fleet with visible info
