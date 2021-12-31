@@ -422,17 +422,16 @@ SetEnabled nex_miningPreview false",,,
 ,,,,,,
 nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"Nex_PrintMiningInfo planet
 FireAll nex_MiningOption",,,
-nex_miningMineOption,nex_MiningOption,$player.miningStrength > 0,"SetEnabled nex_miningStart true
+nex_miningMineOption,nex_MiningOption,,"SetEnabled nex_miningStart true
 SetShortcut nex_miningStart RETURN
 SetShortcut nex_miningBack ESCAPE",,"nex_miningStart:Start mining
 nex_miningFleetInfo:List mining ships
 nex_miningListTools:What ships and weapons can mine?
 nex_miningBack:Back",
 nex_miningMineOptionNoMiners,nex_MiningOption,$player.miningStrength <= 0,"SetTooltip nex_miningStart ""You have no ships capable of mining.""
-SetEnabled nex_miningStart false
-SetShortcut nex_miningBack ESCAPE",,"nex_miningStart:Start mining
-nex_miningListTools:What ships and weapons can mine?
-nex_miningBack:Back",
+SetEnabled nex_miningStart false",,,
+nex_miningMineOptionPursued,nex_MiningOption,HostileFleetNearbyAndAware,"SetTooltip nex_miningStart ""Cannot mine while a hostile fleet is tracking your movements.""
+SetEnabled nex_miningStart false",,,
 nex_miningFleetInfo,DialogOptionSelected,$option == nex_miningFleetInfo,"Nex_PrintMiningInfo fleet
 FireAll nex_miningOption",,,
 nex_miningListTools,DialogOptionSelected,$option == nex_miningListTools,"Nex_PrintMiningInfo tools
