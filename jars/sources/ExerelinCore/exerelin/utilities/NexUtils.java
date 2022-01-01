@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -310,6 +311,13 @@ public class NexUtils
 			int numDigits, boolean lowerIsBetter) {
 		
 		return new NexStatModValueGetter(color, numDigits, lowerIsBetter);	
+	}
+	
+	public static void printStackTrace(Logger log, int depth) {
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		for (int i=0; i<depth; i++) {
+			log.info(stack[i].toString());
+		}
 	}
 	
 	public static class NexStatModValueGetter implements TooltipMakerAPI.StatModValueGetter 

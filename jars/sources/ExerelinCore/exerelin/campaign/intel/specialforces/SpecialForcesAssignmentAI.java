@@ -12,6 +12,8 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 
@@ -92,6 +94,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		if (current == null) return;
 		
 		//log.info(fleet.getName() + " picking next assignment, current: " + fleet.getCurrentAssignment());
+		//NexUtils.printStackTrace(log, 10);
 		
 		// custom handling when pursuing a fleet		
 		if (SpecialForcesRouteAI.ROUTE_PURSUIT_SEGMENT.equals(current.custom)) {
@@ -178,7 +181,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			case FOLLOW_PLAYER:
 				// only one day, so it gets updated promptly if player changes location
 				// also don't go to next route segment
-				fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from,
+				fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.to,
 						1, getInSystemActionText(current));
 				break;
 			case ASSIST_RAID:

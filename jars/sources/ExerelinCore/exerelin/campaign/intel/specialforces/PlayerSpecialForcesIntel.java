@@ -47,9 +47,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	// can't be helped, it _is_ free if far-autoresolved
 	public static final boolean AI_MODE = true;
 	
-	public static final float CREW_SALARY_MULT = 1.25f;
-	public static final float SUPPLY_COST_MULT = 1.25f;
-	public static final float REVIVE_COST_MULT = 0.7f;
+	public static final float CREW_SALARY_MULT = 1f;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
+	public static final float SUPPLY_COST_MULT = 1f;	// ditto, even though we're getting free combat out of the deal
+	public static final float REVIVE_COST_MULT = 0.5f;
 	
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
@@ -136,7 +136,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		fleet.addEventListener(new SFFleetEventListener(this));
 		fleet.getMemoryWithoutUpdate().set("$nex_sfIntel", this);
 		
-		fleet.setAIMode(AI_MODE);		
+		fleet.setAIMode(AI_MODE);
+		fleet.setTransponderOn(false);
 		
 		isAlive = true;
 		
@@ -242,7 +243,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		if (lastPos != null) {
 			float distLY = Misc.getDistance(lastPos, fleet.getLocation());
 			float fuelPerLY = fleet.getLogistics().getFuelCostPerLightYear();
-			fuelUsedLastInterval += distLY * fuelPerLY;
+			float fuelUsed = distLY * fuelPerLY;
+			log.info(this.getName() + " registering fuel use: " + fuelUsed);
+			fuelUsedLastInterval += fuelUsed;
 		}
 		lastPos = new Vector2f(fleet.getLocation());
 	}
@@ -271,21 +274,23 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		FDNode officerNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_offSal", 
 				getString("reportNode_officer"), faction.getCrest(), officerSalary * f, false);
 		
+		CommoditySpecAPI crewSpec = Global.getSettings().getCommoditySpec(Commodities.CREW);
 		float crew = fleet.getFleetData().getMinCrew();
 		float crewSalary = crew * Global.getSettings().getInt("crewSalary") * 1.25f;
 		FDNode crewNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_crewSal", 
-				getString("reportNode_crew"), commander.getPortraitSprite(), crewSalary * f, false);
+				getString("reportNode_crew"), crewSpec.getIconName(), crewSalary * f, false);
 		
-		float suppMaint = fleet.getLogistics().getShipMaintenanceSupplyCost();
+		float suppMaint = fleet.getLogistics().getShipMaintenanceSupplyCost() * 30;
 		CommoditySpecAPI suppliesSpec = Global.getSettings().getCommoditySpec(Commodities.SUPPLIES);
+		log.info("Special task group uses " + suppMaint + " per month");
 		float maintCost = suppMaint * suppliesSpec.getBasePrice() * 1.25f;
 		FDNode maintNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_suppliesCost", 
 				getString("reportNode_supplies"), suppliesSpec.getIconName(), maintCost * f, false);
 		
 		CommoditySpecAPI fuelSpec = Global.getSettings().getCommoditySpec(Commodities.FUEL);
-		float fuelCost = this.fuelUsedLastInterval;
+		float fuelCost = this.fuelUsedLastInterval * fuelSpec.getBasePrice();
 		FDNode fuelNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_fuelCost", 
-				getString("reportNode_fuel"), fuelSpec.getIconName(), fuelCost * f, false);
+				getString("reportNode_fuel"), fuelSpec.getIconName(), fuelCost, false);
 		fuelUsedLastInterval = 0;
 	}
 	
@@ -295,7 +300,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		FDNode node = rpt.getNode(parent, id);
 		node.name = name;
 		node.custom = id;
-		node.icon = faction.getCrest();
+		node.icon = icon;
 		if (amount != 0) {
 			if (isIncome) node.income += amount;
 			else node.upkeep += amount;
@@ -365,9 +370,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			RuleBasedInteractionDialogPluginImpl plugin = new RuleBasedInteractionDialogPluginImpl();
 			ui.showDialog(route.getActiveFleet(), plugin);
 			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$nex_remoteCommand", true, 0);
-			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$option", "nex_commandSF_main", 0);			
-			plugin.fireBest("DialogOptionSelected");
-			ui.updateUIForItem(this);
+			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$nex_uiToRefresh", ui, 0);
+			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$option", "nex_commandSF_main", 0);
+			plugin.fireBest("DialogOptionSelected");			
 		}
 		else if (buttonId == BUTTON_RECREATE) {
 			disband();
@@ -379,7 +384,16 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		else {
 			super.buttonPressConfirmed(buttonId, ui); //To change body of generated methods, choose Tools | Templates.
 		}
-		
+	}
+	
+	@Override
+	public int getDamage() {
+		int liveFP = fleet.getFleetPoints();
+		int deadFP = 0;
+		for (FleetMemberAPI dead : deadMembers) {
+			deadFP += dead.getFleetPointCost();
+		}
+		return (int)(deadFP/(deadFP+liveFP) * 100);
 	}
 	
 	public static int getActiveIntelCount() {

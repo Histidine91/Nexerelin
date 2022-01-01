@@ -14,6 +14,7 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 	@Override
 	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) {
 		SpecialForcesTask task;
+		/*
 		if (!psf.isIndependentMode()) {
 			if (currentTask != null) {
 				try {
@@ -26,6 +27,7 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 			task.time = 15;
 			return task;
 		}
+		*/
 		if (!PlayerSpecialForcesIntel.AI_MODE) {
 			if (psf.getMonthsSuppliesRemaining() < 1 || psf.getFuelFractionRemaining() < 0.25f) {
 				return generateResupplyTask();

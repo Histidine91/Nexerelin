@@ -654,9 +654,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			String fp = Math.round(route.getExtra().fp) + "";
 			if (route.getActiveFleet() != null)
 				fp = route.getActiveFleet().getFleetPoints() + "/" + fp;
-			int damage = 0;
-			if (route.getExtra().damage != null)
-				damage = (int)(route.getExtra().damage * 100);
+			int damage = getDamage();
 
 			info.addPara(str, opad, h, fp, damage + "%");
 
@@ -682,7 +680,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public void printCurrentAction(TooltipMakerAPI info, float opad) {
 		Color h = Misc.getHighlightColor();		
 		String str = getString("intelDescAction");
-		String actionStr = "idling";
+		String actionStr = "[this should not appear]";
 		if (routeAI.currentTask != null)
 			actionStr = routeAI.currentTask.getText();
 		str = StringHelper.substituteToken(str, "$action", actionStr);
@@ -712,6 +710,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			info.addPara(str, 3, h, String.format("%.1f", routeAI.currentTask.priority));
 		}
 		unindent(info);
+	}
+	
+	protected int getDamage() {
+		if (route.getExtra().damage != null)
+			return (int)(route.getExtra().damage * 100);
+		return 0;
 	}
 	
 	protected int getETA() {

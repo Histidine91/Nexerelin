@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
 import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
@@ -55,6 +56,12 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 			case "autoAssign":
 				autoAssign(dialog, (CampaignFleetAPI)dialog.getInteractionTarget());
 				return true;
+			case "wait_player":
+				giveWaitOrder(dialog, memoryMap);
+				return true;
+			case "refreshIntelUI":
+				refreshIntelUI(fleet, memoryMap);
+				return true;
 		}
 		
 		return false;
@@ -77,6 +84,7 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 	public void giveOrderAtLocation(final InteractionDialogAPI dialog, final String orderType, final MemoryAPI local) 
 	{
 		List<SectorEntityToken> entities = getTargetsForOrder(orderType);
+		
 		NexUtilsMarket.pickEntityDestination(dialog, entities, 
 				StringHelper.getString("confirm", true), new NexUtilsMarket.CampaignEntityPickerWrapper(){
 			@Override
@@ -86,12 +94,12 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 				SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory((CampaignFleetAPI)dialog.getInteractionTarget());
 				sf.getRouteAI().assignTask(task);
 				printTaskInfo(dialog, sf, task);
-				dialog.getPlugin().optionSelected(null, "nex_commandSF_main");
+				//dialog.getPlugin().optionSelected(null, "nex_commandSF_main");
 			}
 
 			@Override
 			public void reportEntityPickCancelled() {
-				dialog.getPlugin().optionSelected(null, "nex_commandSF_main");
+				//dialog.getPlugin().optionSelected(null, "nex_commandSF_main");
 			}
 
 			@Override
@@ -102,6 +110,18 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 		});
 	}
 	
+	public void giveWaitOrder(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
+		SectorEntityToken token = fleet.getContainingLocation().createToken(fleet.getLocation());
+		token.addTag("nex_player_location_token");
+		SpecialForcesTask task = generateTask("wait_orbit", token);
+		task.time = 99999 + 1;
+		saveTaskToMemory(task, memoryMap.get(MemKeys.LOCAL));
+		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory((CampaignFleetAPI)dialog.getInteractionTarget());
+		sf.getRouteAI().assignTask(task);
+		printTaskInfo(dialog, sf, task);
+	}
+	
 	public void giveFollowOrder(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		// TODO: probably needs its own token
 		SpecialForcesTask task = generateTask("follow_player", Global.getSector().getPlayerFleet());
@@ -110,8 +130,6 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory((CampaignFleetAPI)dialog.getInteractionTarget());
 		sf.getRouteAI().assignTask(task);
 		printTaskInfo(dialog, sf, task);
-		
-		showMainMenu(dialog, memoryMap);
 	}
 	
 	public void printTaskInfo(InteractionDialogAPI dialog, SpecialForcesIntel sf, SpecialForcesTask task) {
@@ -155,18 +173,23 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 					results.add(market.getPrimaryEntity());
 				}
 				// "orbit player's current location"
-				// crashes normally, may have to add actually add token to location and clean it up when done
-				// nope even that doesn't work, RIP
-				// ...no that's not the cause
+				// yucky since setName doesn't work
+				/*
 				if (system == player.getContainingLocation()) {
 					final SectorEntityToken token = system.createToken(player.getLocation());
 					token.setName("[temp] Player location");	// does nothing!
 					token.addTag("nex_player_location_token");
 					results.add(token);
 				}
+				*/
 			}
 		}
-		
 		return new ArrayList<>(results);
+	}
+	
+	public void refreshIntelUI(CampaignFleetAPI fleet, Map<String, MemoryAPI> memoryMap) {
+		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
+		IntelUIAPI ui = (IntelUIAPI)memoryMap.get(MemKeys.LOCAL).get("$nex_uiToRefresh");
+		if (ui != null) ui.updateUIForItem(sf);
 	}
 }

@@ -34,6 +34,7 @@ import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -305,8 +306,9 @@ public class SpecialForcesRouteAI {
 			case COUNTER_GROUND_BATTLE:
 			case WAIT_ORBIT:
 			case ASSEMBLE:
-				destination = task.getMarket() == null ? task.system.getCenter() : task.getMarket().getPrimaryEntity();
 				if (task.getEntity() != null) destination = task.getEntity();
+				else
+					destination = task.getMarket() == null ? task.system.getCenter() : task.getMarket().getPrimaryEntity();
 				travelTime = RouteLocationCalculator.getTravelDays(from, destination);
 				sf.debugMsg("Travel time: " + travelTime + "; from " + from.getLocation(), false);
 				travelSeg = new RouteManager.RouteSegment(travelTime, from, destination);
@@ -1001,31 +1003,31 @@ public class SpecialForcesRouteAI {
 		public String getText() {
 			switch (type) {
 				case RAID:
-					return "raiding " + market.getName();
+					return StringHelper.getFleetAssignmentString("raiding", market.getName());
 				case ASSIST_RAID:
-					return "assisting " + raid.getName();
+					return StringHelper.getFleetAssignmentString("assisting", raid.getName());
 				case DEFEND_RAID:
-					return "defending vs. " + raid.getName();
+					return StringHelper.getFleetAssignmentString("defendingVs", raid.getName());
 				case COUNTER_GROUND_BATTLE:
-					return "countering ground battle at " + market.getName();
+					return StringHelper.getFleetAssignmentString("counteringGroundBattle", market.getName());
 				case PATROL:
-					return "patrolling " + (market != null? market.getName() : system.getNameWithLowercaseType());
+					return StringHelper.getFleetAssignmentString("patrolling", (market != null? market.getName() : system.getNameWithLowercaseType()));
 				case DEFEND_VS_PLAYER:
-					return "defending vs. player in " + Global.getSector().getPlayerFleet().getContainingLocation().getName();
+					return StringHelper.getFleetAssignmentString("defendingVsPlayer", Global.getSector().getPlayerFleet().getContainingLocation().getName());
 				case REBUILD:
-					return "reconstituting fleet at " + market.getName();
+					return StringHelper.getFleetAssignmentString("reconstituting", market.getName());
 				case ASSEMBLE:
-					return "assembling at " + market.getName();
+					return StringHelper.getFleetAssignmentString("assembling", market.getName());
 				case RESUPPLY:
-					return "resupplying at " + market.getName();
+					return StringHelper.getFleetAssignmentString("resupplying", market.getName());
 				case WAIT_ORBIT:
-					return "orbiting " + entity.getName();
+					return StringHelper.getFleetAssignmentString("orbiting", entity.getName());
 				case FOLLOW_PLAYER:
-					return "following " + entity.getName();
+					return StringHelper.getFleetAssignmentString("following", entity.getName());
 				case IDLE:
-					return "idle";
+					return StringHelper.getFleetAssignmentString("idle", null);
 				default:
-					return "unknown";
+					return StringHelper.getString("unknown");
 			}
 		}
 	}

@@ -966,6 +966,7 @@
 		"stageActionRetreated":"The defenses of the $location have caused $theForceType to retreat without a fight. $TheAction is now over.",
 	},
 	"exerelin_fleetAssignments":{
+		"assembling":"assembling at $target",
 		"preparingFor":"preparing for $missionType at $target",
 		"preparingForShort":"preparing for $missionType",
 		"returningTo":"returning to $target",
@@ -985,9 +986,12 @@
 		"bombarding":"bombarding $target",
 		"movingInToBombard":"moving in to bombard $target",
 		"colonizing":"colonizing $target",
+		"counteringGroundBattle":"countering ground battle at $target",
 		"movingInToColonize":"moving in to colonize $target",
 		"onColonyExpedition":"on colony expedition",
 		"defending":"defending $target",
+		"defendingVs":"defending vs. $target",
+		"defendingVsPlayer":"defending vs. player in $target",
 		"movingToDefend":"moving to defend $target",
 		"deliveringRelief":"delivering relief package to $target",
 		"unloadingRelief":"unloading relief package at $target",
@@ -1002,10 +1006,11 @@
 		"invading":"invading $target",
 		"movingInToInvade":"moving in to invade $target",
 		"movingToScavenge":"moving to scavenge $target",
+		"raiding":"raiding",
 		"mining":"mining $target",
 		"miningUnload":"unloading cargo and disbanding",
-		"resupplying":"resupplying at $target",
 		"reconstituting":"reconstituting fleet at $target",
+		"resupplying":"resupplying at $target",
 		"scavenging":"scavenging $target",
 		"suppressingRebellion":"suppressing rebellion at $target",
 		"wandering":"wandering $target",
@@ -1013,6 +1018,8 @@
 		"buildingBase":"constructing base",
 		"following":"following $target",
 		"holding":"holding",
+		
+		"idle":"idle",
 
 		"missionStrike":"strike mission",
 		"missionInvasion":"invasion",
@@ -2169,7 +2176,7 @@
 		"reportNode_commander":"Commander's fee",
 		"reportNode_officer":"Officer payroll",
 		"reportNode_crew":"Crew payroll",
-		"reportNode_supplies":"Supply cost".
+		"reportNode_supplies":"Supply cost",
 		"reportNode_fuel":"Fuel cost",
 	},
 	
@@ -2181,6 +2188,7 @@
 		"dialog_headerOfficerPick":"Select officers",
 		"dialog_headerOfficerAssign":"Assign officers",
 		"dialog_headerTrainCommander":"Train commander skills",
+		"dialog_maxSkillPoints":"Points spent: ",
 		"dialog_commander":"commander",
 		"dialog_level":"level %s",
 		
