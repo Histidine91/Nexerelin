@@ -60,6 +60,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float JOIN_CHANCE_MULT_PER_MEMBER = 0.8f;
     protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
+    protected static final float MERGE_CHANCE_MULT = 0.3f;
     protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"templars", Factions.INDEPENDENT});
     public static final float HOSTILE_THRESHOLD = -RepLevel.HOSTILE.getMin();
     
@@ -365,6 +366,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
      */
     public void mergeAlliance(Alliance first, Alliance second) {
         
+        for (String permaMember : second.getPermaMembersCopy()) {
+            first.addPermaMember(permaMember);
+        } 
         List<String> toMove = new ArrayList<>(second.getMembersCopy());
         dissolveAlliance(second, true);
         for (String factionId : toMove) {
@@ -431,7 +435,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorManager.checkForVictory();
     }
     
-    // TODO: maybe let alliances try to merge on their own too
     /**
      * Check all factions for eligibility to join/form an alliance.
      */
@@ -519,6 +522,55 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 return; // only one alliance at a time
             }
         }
+        
+        // no valid alliances to join, try to merge existing alliances
+        for (Alliance alliance : alliances) {
+            for (Alliance otherAlliance : alliances) {
+                if (alliance == otherAlliance) continue;
+                if (Math.random() > MERGE_CHANCE_MULT) continue;
+                
+                if (canMerge(alliance, otherAlliance)) {
+                    mergeAlliance(alliance, otherAlliance);
+                }
+            }
+        }
+    }
+    
+    public static boolean isAlignmentCompatible(String factionId, String allianceId) {
+        Alliance alliance = getAllianceByUUID(allianceId);
+        return isAlignmentCompatible(factionId, alliance);
+    }
+    
+    public static boolean isAlignmentCompatible(String factionId, Alliance alliance) {
+        if (NexConfig.ignoreAlignmentForAlliances) return true;
+        float compat = getAlignmentCompatibilityWithAlliance(factionId, alliance);
+        return compat >= MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
+    }
+    
+    public static boolean canMerge(Alliance first, Alliance second) {
+        for (String newMemberId : second.getMembersCopy()) {
+            if (!isAlignmentCompatible(newMemberId, first)) {
+                log.info(String.format("%s incompatible allignment with %s", newMemberId, first.getName()));
+                return false;
+            }
+            
+            FactionAPI newMember = Global.getSector().getFaction(newMemberId);
+            for (String existingMemberId : first.getMembersCopy()) {
+                if (newMember.isHostileTo(existingMemberId)) {
+                    log.info(String.format("%s hostile to existing member %s", newMemberId, existingMemberId));
+                    return false;
+                }
+            }
+            
+            boolean enoughAvgRep = first.getAverageRelationshipWithFaction(newMemberId) 
+                    >= AllianceManager.MIN_RELATIONSHIP_TO_JOIN;
+            if (!enoughAvgRep) {
+                log.info(String.format("%s insufficient average reputation with %s", newMemberId, first.getName()));
+                return false;
+            }
+        }    
+        
+        return true;
     }
     
     @Override

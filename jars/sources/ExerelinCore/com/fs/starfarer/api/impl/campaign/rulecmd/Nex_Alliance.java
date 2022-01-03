@@ -36,7 +36,7 @@ public class Nex_Alliance extends BaseCommandPlugin {
 				return enoughRepToJoin(params.get(1).getString(memoryMap), 
 						params.get(2).getString(memoryMap));
 			case "isAlignmentCompatible":
-				return isAlignmentCompatible(dialog.getInteractionTarget().getFaction().getId(), 
+				return AllianceManager.isAlignmentCompatible(dialog.getInteractionTarget().getFaction().getId(), 
 						params.get(1).getString(memoryMap));
 			case "canMerge":
 				return canMerge(dialog.getInteractionTarget().getFaction().getId(), 
@@ -77,18 +77,7 @@ public class Nex_Alliance extends BaseCommandPlugin {
 		
 		return true;
 	}
-	
-	public boolean isAlignmentCompatible(String factionId, String allianceId) {
-		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
-		return isAlignmentCompatible(factionId, alliance);
-	}
-	
-	public boolean isAlignmentCompatible(String factionId, Alliance alliance) {
-		if (NexConfig.ignoreAlignmentForAlliances) return true;
-		float compat = AllianceManager.getAlignmentCompatibilityWithAlliance(factionId, alliance);
-		return compat >= AllianceManager.MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
-	}
-	
+		
 	public boolean canMerge(String factionId, boolean reverse) {
 		Alliance first = AllianceManager.getPlayerAlliance(false);
 		Alliance second = AllianceManager.getFactionAlliance(factionId);
@@ -100,29 +89,7 @@ public class Nex_Alliance extends BaseCommandPlugin {
 			second = temp;
 		}
 		
-		for (String newMemberId : second.getMembersCopy()) {
-			if (!isAlignmentCompatible(newMemberId, first)) {
-				log.info(String.format("%s incompatible allignment with %s", newMemberId, first.getName()));
-				return false;
-			}
-			
-			FactionAPI newMember = Global.getSector().getFaction(newMemberId);
-			for (String existingMemberId : first.getMembersCopy()) {
-				if (newMember.isHostileTo(existingMemberId)) {
-					log.info(String.format("%s hostile to existing member %s", newMemberId, existingMemberId));
-					return false;
-				}
-			}
-			
-			boolean enoughAvgRep = first.getAverageRelationshipWithFaction(newMemberId) 
-					>= AllianceManager.MIN_RELATIONSHIP_TO_JOIN;
-			if (!enoughAvgRep) {
-				log.info(String.format("%s insufficient average reputation with %s", newMemberId, first.getName()));
-				return false;
-			}
-		}		
-		
-		return true;
+		return AllianceManager.canMerge(first, second);
 	}
 	
 	public void invite(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
