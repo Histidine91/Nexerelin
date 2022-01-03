@@ -2337,6 +2337,7 @@
 		"prismSystem_name":"Sitnalta",	# 'Atlantis backwards' because I have no imagination
 		"prismSystem_jumpName":"Twilight Gate",
 		"prismSystem_stationName":"Prism Freeport",
+		"prismSystem_gateName":"Lostgate",
 	},
 	
 	"nex_remnantQuest":{

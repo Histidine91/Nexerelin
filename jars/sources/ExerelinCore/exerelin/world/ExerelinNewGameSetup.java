@@ -206,13 +206,24 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		// comm relay
 		SectorEntityToken relay = system.addCustomEntity("nex_prism_relay", null, 
 				Entities.COMM_RELAY_MAKESHIFT, Factions.INDEPENDENT);
-		int period2 = (int)Math.round(Math.pow(2, 3/2) * orbitPeriod);
-		relay.setCircularOrbitPointingDown(star, 105, dist*2, period2);
+		int radiusRatio = 2;
+		int period2 = (int)Math.round(Math.sqrt(Math.pow(radiusRatio, 3)) * orbitPeriod);
+		relay.setCircularOrbitPointingDown(star, 105, dist*radiusRatio, period2);
 		
 		// station
 		name = StringHelper.getString("nex_world", "prismSystem_stationName");
 		SectorEntityToken prism = system.addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", Factions.INDEPENDENT);
 		prism.setCircularOrbitWithSpin(center, 240, dist, orbitPeriod, 30, 30);
+		
+		// gate (I give in)
+		name = StringHelper.getString("nex_world", "prismSystem_gateName");
+		SectorEntityToken gate = system.addCustomEntity("nex_prism_gate",
+						 name,
+						 "inactive_gate", // type of object, defined in custom_entities.json
+						 null); // faction
+		radiusRatio = 6;
+		int period3 = (int)Math.round(Math.sqrt(Math.pow(radiusRatio, 3)) * orbitPeriod);
+		gate.setCircularOrbitPointingDown(star, 225, dist*radiusRatio, period3);
 		
 		return prism;
 	}
