@@ -21,6 +21,7 @@ import exerelin.utilities.NexUtilsCargo;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -212,25 +213,32 @@ public class MiningFleetAI implements EveryFrameScript
 		}
 	}
 	
-	public static Script getUnloadScript(final CampaignFleetAPI fleet, final MarketAPI market, 
-			final boolean allowSupplies) 
+	public static Script getUnloadScript(CampaignFleetAPI fleet, MarketAPI market, boolean allowSupplies) 
 	{
-		return new Script() {
-			public void run() {
-				CargoAPI cargo = fleet.getCargo();
-				List<CargoStackAPI> cargoStacks = cargo.getStacksCopy();
-				for (CargoStackAPI stack : cargoStacks)
-				{
-					if (stack.isCommodityStack() && (allowSupplies || !stack.isSupplyStack()))
-					{
-						NexUtilsCargo.addCommodityStockpile(market, stack.getCommodityId(),
-								Math.round(stack.getSize()/2));
-						cargo.removeCommodity(stack.getCommodityId(), stack.getSize());
-					}
-				}
-				cargo.removeEmptyStacks();
-			}
-		};
+		return new UnloadScript(fleet, market, allowSupplies);
 	}
+	
+	@AllArgsConstructor
+	public static class UnloadScript implements Script {
+		
+		public CampaignFleetAPI fleet;
+		public MarketAPI market;
+		public boolean allowSupplies;
+		
+		public void run() {
+			CargoAPI cargo = fleet.getCargo();
+			List<CargoStackAPI> cargoStacks = cargo.getStacksCopy();
+			for (CargoStackAPI stack : cargoStacks)
+			{
+				if (stack.isCommodityStack() && (allowSupplies || !stack.isSupplyStack()))
+				{
+					NexUtilsCargo.addCommodityStockpile(market, stack.getCommodityId(),
+							Math.round(stack.getSize()/2));
+					cargo.removeCommodity(stack.getCommodityId(), stack.getSize());
+				}
+			}
+			cargo.removeEmptyStacks();
+		}
+	};
 }
 

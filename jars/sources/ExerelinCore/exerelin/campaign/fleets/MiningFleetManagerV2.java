@@ -2,6 +2,8 @@ package exerelin.campaign.fleets;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AsteroidAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
+import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.OrbitAPI;
@@ -282,6 +284,8 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 			}
 		}
 		
+		fleet.getMemoryWithoutUpdate().set("$nex_miningFleetData", data);
+		
 		MiningFleetAI ai = new MiningFleetAI(fleet, data);
 		fleet.addScript(ai);
 		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
@@ -364,7 +368,11 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 	}
 	
 	// Lower commodity availability on source market if mining fleets are lost
+	// Note: could be called twice for a fleet if it is routed and then destroyed;
+	// but should be fine since this just refreshes the trade mod, not inflates it
 	public void reportFleetLost(MiningFleetData data) {
+		if (data == null) return;
+		
 		MiningReport report = new MiningReport();
 		MiningHelperLegacy.getResources(data.target, MINING_STRENGTH_FOR_COMMODITY_LOSS * data.startingFleetPoints, report);
 		Set<String> commodities = report.totalOutput.keySet();
@@ -372,8 +380,9 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 			CommodityOnMarketAPI com = data.sourceMarket.getCommodityData(commodityId);
 			Float loss = report.totalOutput.get(commodityId);
 			if (loss == null) continue;
-			com.addTradeModMinus("minerLost_" + data.fleet.getId(), Math.round(loss), DAYS_RESOURCE_SHORTAGE);
-			log.info(String.format("Market %s losting %s trade mod of %s due to mining fleet loss", 
+			loss *= 10;
+			com.addTradeModMinus("minerLost_" + data.fleet.getId(), -Math.round(loss), DAYS_RESOURCE_SHORTAGE);
+			log.info(String.format("Market %s losing %s trade mod of %s due to mining fleet loss", 
 					data.sourceMarket.getName(), Math.round(loss), commodityId));
 		}
 	}
@@ -381,6 +390,12 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 	@Override
 	protected String getSpawnId() {
 		return "nex_miningFleet";
+	}
+	
+	@Override
+	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
+		if (reason == FleetDespawnReason.DESTROYED_BY_BATTLE || reason == FleetDespawnReason.NO_MEMBERS)
+			reportFleetLost((MiningFleetData)fleet.getMemoryWithoutUpdate().get("$nex_miningFleetData"));
 	}
 	
 	@Override
