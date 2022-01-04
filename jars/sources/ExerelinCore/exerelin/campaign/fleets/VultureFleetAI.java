@@ -10,6 +10,8 @@ import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
@@ -18,6 +20,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec.DropData;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageEntityGeneratorOld;
@@ -29,6 +32,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.campaign.econ.Submarket;
 import exerelin.campaign.fleets.VultureFleetManager.ShipRecoverySpecialNPC;
 import exerelin.campaign.fleets.VultureFleetManager.VultureFleetData;
 import exerelin.utilities.NexUtilsFleet;
@@ -36,6 +40,7 @@ import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import lombok.AllArgsConstructor;
 import org.apache.log4j.Logger;
 
 public class VultureFleetAI implements EveryFrameScript
@@ -357,8 +362,37 @@ public class VultureFleetAI implements EveryFrameScript
 			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
 			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, NexUtilsFleet.getDaysToOrbit(fleet), 
 					StringHelper.getFleetAssignmentString("miningUnload", null),
-					MiningFleetAI.getUnloadScript(fleet, data.source, true));
+					new VultureUnloadScript(fleet, data.source, true));
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
+		}
+	}
+	
+	
+	public static class VultureUnloadScript extends MiningFleetAI.UnloadScript {
+		
+		public VultureUnloadScript(CampaignFleetAPI fleet, MarketAPI market, boolean allowSupplies) {
+			super(fleet, market, allowSupplies);
+		}
+		
+		@Override
+		public void run() {
+			super.run();
+			
+			SubmarketAPI sub = market.getSubmarket(Submarkets.SUBMARKET_OPEN);
+			if (sub == null) sub = market.getSubmarket(Submarkets.SUBMARKET_BLACK);
+			if (sub == null) sub = market.getSubmarket(Submarkets.GENERIC_MILITARY);
+			if (sub == null) return;
+			
+			List<FleetMemberAPI> toRemove = new ArrayList<>();
+			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+				if (!member.isMothballed()) continue;
+				
+				toRemove.add(member);
+			}
+			for (FleetMemberAPI member : toRemove) {
+				fleet.getFleetData().removeFleetMember(member);
+				sub.getCargo().getMothballedShips().addFleetMember(member);
+			}
 		}
 	}
 }
