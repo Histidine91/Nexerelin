@@ -10,8 +10,8 @@ public class GBConstants {
 	public static final String TAG_PREVENT_INSPIRE = "preventInspire";
 	public static final String MEMKEY_GARRISON_DAMAGE = "$nex_garrisonDamage";
 	public static final String MEMKEY_AWAIT_DECISION = "$nex_gbAwaitDecision";
+	public static final String MEMKEY_INVASION_FAIL_STREAK = "$nex_invasionFailStreak";
 	public static final String STAT_MARKET_MORALE_DAMAGE = "nex_moraleDamageTaken";
-	
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";
 	
@@ -48,7 +48,7 @@ public class GBConstants {
 	public static float SUPPLIES_TO_DEPLOY_MULT = 0.25f;
 	public static float MAX_SUPPORT_DIST = 250;
 	
-	public static float XP_MARKET_SIZE_MULT = 4f;
+	public static float XP_MARKET_SIZE_MULT = 3f;
 	public static float XP_CASUALTY_MULT = 0.15f;
 	
 	public static float BASE_GARRISON_SIZE = 25;

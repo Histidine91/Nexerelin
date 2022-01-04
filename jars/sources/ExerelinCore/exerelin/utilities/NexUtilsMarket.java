@@ -27,8 +27,14 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempData
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.intel.groundbattle.GBConstants;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.missions.ConquestMissionIntel;
+import exerelin.campaign.intel.missions.ConquestMissionManager;
 import java.util.Arrays;
 import java.util.List;
 
@@ -391,6 +397,29 @@ public class NexUtilsMarket {
 
 		if (!addedPerson) {
 			addPerson(ip, market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
+		}
+	}
+	
+	public static void incrementInvasionFailStreak(MarketAPI market, FactionAPI attacker, boolean canSpawnConquestMission) 
+	{
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		int current = 0;
+		if (mem.contains(GBConstants.MEMKEY_INVASION_FAIL_STREAK)) {
+			current = mem.getInt(GBConstants.MEMKEY_INVASION_FAIL_STREAK);
+		}
+		current++;
+		mem.set(GBConstants.MEMKEY_INVASION_FAIL_STREAK, current);
+		
+		if (canSpawnConquestMission) {
+			float chance = current/(current + 5f);
+			if (chance > Math.random()) return;
+			
+			FactionAPI issuer = attacker;
+			Alliance alliance = AllianceManager.getFactionAlliance(attacker.getId());
+			if (alliance != null) issuer = Global.getSector().getFaction(alliance.getRandomMember());
+			
+			ConquestMissionIntel intel = new ConquestMissionIntel(market, issuer, ConquestMissionManager.getDuration(market));
+			intel.init();
 		}
 	}
 	

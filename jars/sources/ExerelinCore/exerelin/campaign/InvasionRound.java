@@ -18,6 +18,8 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.intel.groundbattle.GBConstants;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
@@ -386,6 +388,12 @@ public class InvasionRound {
 				float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
 				StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
 			}
+		}
+		
+		if (success) {
+			market.getMemoryWithoutUpdate().unset(GBConstants.MEMKEY_INVASION_FAIL_STREAK);
+		} else {
+			NexUtilsMarket.incrementInvasionFailStreak(market, attackerFaction, true);
 		}
 		
 		NexUtilsMarket.reportInvasionFinished(fleet, attackerFaction, market, numRounds, success);

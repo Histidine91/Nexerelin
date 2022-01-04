@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -104,6 +105,10 @@ public class Alliance
 		});
 		
 		return members;
+	}
+	
+	public String getRandomMember() {
+		return NexUtils.getRandomListElement(new ArrayList<>(members));
 	}
 	
 	public void addMember(String factionId) {

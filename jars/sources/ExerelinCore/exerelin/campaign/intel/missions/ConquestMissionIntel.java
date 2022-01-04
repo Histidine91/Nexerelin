@@ -70,8 +70,12 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	public void init() {
 		Global.getLogger(this.getClass()).info("Initiating conquest mission");
 		initRandomCancel();
+		
+		// considering only having conquest have a posting range, a lot more rare than disrupt missions
+		// actually I'm not sure if posting location is required at all, maybe for intel queueing?
 		setPostingLocation(market.getPrimaryEntity());
-		setPostingRangeLY(9999999999f); //considering only having conquest have a posting range, a lot more rare than disrupt missions
+		setPostingRangeLY(9999999999f);		
+		
 		boolean queuedNexMissions = NexConfig.queuedNexMissions;
 
 		if (queuedNexMissions) {

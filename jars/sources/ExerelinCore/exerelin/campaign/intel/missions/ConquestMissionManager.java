@@ -89,7 +89,7 @@ public class ConquestMissionManager extends BaseEventManager {
 			return null;
 		}
 		
-		float duration = 90 + target.getSize() * 20;
+		float duration = getDuration(target);
 		
 		ConquestMissionIntel intel = new ConquestMissionIntel(target, faction, duration);
 		intel.init();
@@ -97,6 +97,10 @@ public class ConquestMissionManager extends BaseEventManager {
 		
 		log.info("Intel successfully created");
 		return intel;
+	}
+	
+	public static float getDuration(MarketAPI target) {
+		return 90 + target.getSize() * 20;
 	}
 	
 	protected int getNumWars() {

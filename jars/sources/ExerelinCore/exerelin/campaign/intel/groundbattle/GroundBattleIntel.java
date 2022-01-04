@@ -981,6 +981,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public void endBattle(BattleOutcome outcome) {
 		this.outcome = outcome;
 		market.getStability().removeTemporaryMod("invasion");
+		
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		
 		if (outcome == BattleOutcome.ATTACKER_VICTORY || outcome == BattleOutcome.DEFENDER_VICTORY
 				|| outcome == BattleOutcome.PEACE) {
 			
@@ -1023,7 +1026,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (startedByPlayer && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
 		{
 			timerForDecision = 7f;
-			market.getMemoryWithoutUpdate().set(GBConstants.MEMKEY_AWAIT_DECISION, true, timerForDecision);
+			mem.set(GBConstants.MEMKEY_AWAIT_DECISION, true, timerForDecision);
 		}
 		
 		for (IndustryForBattle ifb : industries) {
@@ -1090,6 +1093,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
 			x.reportBattleEnded(this);
+		}
+		
+		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
+			mem.unset(GBConstants.MEMKEY_INVASION_FAIL_STREAK);
+		} else if (outcome == BattleOutcome.DEFENDER_VICTORY) {
+			NexUtilsMarket.incrementInvasionFailStreak(market, attacker.getFaction(), true);
 		}
 		
 		updateStability();
