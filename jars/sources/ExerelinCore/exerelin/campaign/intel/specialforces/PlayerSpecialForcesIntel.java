@@ -233,7 +233,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	protected void updateFuelUse() {
-		if (fleet == null || fleet.isAlive()) return;
+		if (fleet == null || !fleet.isAlive()) return;
 		
 		if (!fleet.getContainingLocation().isHyperspace()) {
 			lastPos = null;
@@ -241,11 +241,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		
 		if (lastPos != null) {
-			float distLY = Misc.getDistance(lastPos, fleet.getLocation());
+			float distLY = Misc.getDistanceLY(lastPos, fleet.getLocation());
 			float fuelPerLY = fleet.getLogistics().getFuelCostPerLightYear();
 			float fuelUsed = distLY * fuelPerLY;
-			log.info(this.getName() + " registering fuel use: " + fuelUsed);
-			fuelUsedLastInterval += fuelUsed;
+			if (fuelUsed > 0) {
+				log.info(this.getName() + " registering fuel use: " + fuelUsed);
+				fuelUsedLastInterval += fuelUsed;
+			}
+			
 		}
 		lastPos = new Vector2f(fleet.getLocation());
 	}
