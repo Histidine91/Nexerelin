@@ -441,6 +441,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		createdFleets.add(fleet);
 		fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
 		fleet.getMemoryWithoutUpdate().set("$nex_remBrawl_ref", this);
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
 		
 		loc.getContainingLocation().addEntity(fleet);
 		fleet.setLocation(loc.getLocation().x, loc.getLocation().y);

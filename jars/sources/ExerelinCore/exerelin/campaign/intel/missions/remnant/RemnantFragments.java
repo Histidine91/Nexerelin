@@ -245,6 +245,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		
 		fleet.getMemoryWithoutUpdate().set("$genericHail", true);
 		fleet.getMemoryWithoutUpdate().set("$genericHail_openComms", "Nex_RemFragmentsHail");
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
 		makeImportant(fleet, "$nex_remFragments_attacker", Stage.BATTLE);
 		Misc.addDefeatTrigger(fleet, "Nex_RemFragments_AttackFleetDefeated");
 		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remFragments", true, 999);
@@ -384,8 +385,9 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		if (shards < 2) shards = 2;
 		if (shards > MAX_SHARDS) shards = MAX_SHARDS;		
 		
-		for (int i=0; i< shards; i++) {
-			FleetMemberAPI member = fleet.getFleetData().addFleetMember(i%2 == 0 ? "shard_left_Attack": "shard_right_Attack");
+		for (int i=0; i < shards; i++) {
+			boolean left = i < shards/2;	// left shards will spawn on left side
+			FleetMemberAPI member = fleet.getFleetData().addFleetMember(left ? "shard_left_Attack": "shard_right_Attack");
 			if (aiCore != null) {
 				member.setCaptain(Misc.getAICoreOfficerPlugin(aiCore).createPerson(aiCore, Factions.OMEGA, genRandom));
 			}
