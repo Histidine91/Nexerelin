@@ -39,6 +39,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.EntityLocation;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial;
 import com.fs.starfarer.api.loading.VariantSource;
@@ -61,6 +63,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	
 	public static final int REQUIRED_HACK_SCORE = 5;
 	public static final int MAX_SHARDS = 6;
+	public static final float MOTHERSHIP_ORBIT_DIST = 12000;
 	
 	public static enum Stage {
 		GO_TO_SYSTEM,
@@ -93,14 +96,14 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	}
 	
 	public void fixDebug2() {
-		LocData loc = new LocData(EntityLocationType.HIDDEN_NOT_NEAR_STAR, null, Global.getSector().getCurrentLocation());
+		LocData loc = new LocData(null, null, Global.getSector().getCurrentLocation());
 		loc.loc = new BaseThemeGenerator.EntityLocation();
 		loc.loc.type = BaseThemeGenerator.LocationType.OUTER_SYSTEM;
-		loc.loc.location = MathUtils.getPointOnCircumference(system.getCenter().getLocation(), 
-				10000, genRandom.nextFloat() * 360f);
+		loc.loc.location = new Vector2f(10000, 10000);
 		loc.loc.orbit = null;
 		
-		spawnMissionNode(loc);
+		SectorEntityToken node = spawnMissionNode(loc);
+		makeImportant(node, "$nex_remFragments_target2");
 	}
 	
 	@Override
@@ -119,19 +122,29 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		system = pickSystem();
 		if (system == null) return false;
 		
+		// Mothership's original location, before it moved away. Has dead ships and debris.
 		LocData loc = new LocData(EntityLocationType.ORBITING_PLANET_OR_STAR, null, system);
 		point1 = spawnMissionNode(loc);
 		if (!setEntityMissionRef(point1, "$nex_remFragments_ref")) return false;
 		makeImportant(point1, "$nex_remFragments_target", Stage.GO_TO_SYSTEM);
 		
-		loc = new LocData(EntityLocationType.HIDDEN_NOT_NEAR_STAR, null, system);
-		loc.loc = new BaseThemeGenerator.EntityLocation();
-		loc.loc.type = BaseThemeGenerator.LocationType.OUTER_SYSTEM;
-		loc.loc.location = MathUtils.getPointOnCircumference(system.getCenter().getLocation(), 
-				10000, genRandom.nextFloat() * 360f);
+		// Mothership's new location.
+		// null EntityLocationType keeps LocData.updateLocIfNeeded from trying to regenerate the location
+		EntityLocation el = new EntityLocation();
+		el.type = LocationType.OUTER_SYSTEM;
+		int tries = 0;
+		do {
+			el.location = MathUtils.getPointOnCircumference(system.getCenter().getLocation(), 
+					MOTHERSHIP_ORBIT_DIST, genRandom.nextFloat() * 360f);
+			tries++;
+		} while (isNearCorona(system, el.location) && tries < 10);
+		loc = new LocData(el, system);
 		point2 = spawnMissionNode(loc);
 		if (!setEntityMissionRef(point2, "$nex_remFragments_ref")) return false;
 		makeImportant(point2, "$nex_remFragments_target2", Stage.FOLLOW_MOTHERSHIP);
+		point2.setCircularOrbit(system.getCenter(), Misc.getAngleInDegrees(el.location), 
+				MOTHERSHIP_ORBIT_DIST, MOTHERSHIP_ORBIT_DIST/24);
+		
 		//point2.addTag(Tags.NON_CLICKABLE);
 		// hide point2 till it's needed
 		point2.setDiscoverable(true);
@@ -203,6 +216,9 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		return true;
 	}
 	
+	/**
+	 * Spawns the Pather or TT fleet that attacks the player.
+	 */
 	public void spawnAttackFleet() {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		
@@ -320,6 +336,9 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		*/
 	}
 	
+	/**
+	 * Pather derelict in hyperspace above the system.
+	 */
 	protected void spawnPatherDerelict() {
 		List<ShipRolePick> picks = Global.getSector().getFaction(Factions.LUDDIC_PATH).pickShip(ShipRoles.COMBAT_CAPITAL, 
 				ShipPickParams.all(), null, genRandom);
@@ -412,6 +431,11 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		shardsDeployed = true;
 	}
 	
+	/**
+	 * Called when the attack fleet is defeated in combat, or despawned.
+	 * @param dialog
+	 * @param memoryMap
+	 */
 	public void reportFleetDefeated(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		if (wonBattle) return;
 		wonBattle = true;

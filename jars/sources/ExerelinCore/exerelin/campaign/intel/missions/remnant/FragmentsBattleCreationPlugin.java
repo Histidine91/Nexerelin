@@ -15,6 +15,9 @@ import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
+/**
+ * Custom plugin to add the force-deploy shards plugin to the Fragments combat encounter.
+ */
 public class FragmentsBattleCreationPlugin extends BattleCreationPluginImpl {
 	
 	@Override

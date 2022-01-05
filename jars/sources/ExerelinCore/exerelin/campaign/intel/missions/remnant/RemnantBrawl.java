@@ -12,7 +12,6 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -223,6 +222,10 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		return Global.getSector().getFaction(Factions.HEGEMONY);
 	}
 	
+	/**
+	 * Finds a suitable Remnant station to serve as the mission target.
+	 * @return
+	 */
 	public CampaignFleetAPI pickStation() {
 		WeightedRandomPicker<CampaignFleetAPI> picker = new WeightedRandomPicker();
 		WeightedRandomPicker<CampaignFleetAPI> pickerFallback = new WeightedRandomPicker();
@@ -272,6 +275,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		}
 	}
 	
+	/**
+	 * Spawns the fleet that player has to follow.
+	 */
 	protected void spawnStragglerFleet() {
 		if (straggler != null) return;
 		
@@ -326,6 +332,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		straggler = fleet;
 	}
 		
+	/**
+	 * Spawns the Hegemony and allied fleets that will attack the station.
+	 */
 	protected void spawnAttackFleets() {
 		if (spawnedAttackFleets) return;
 		
@@ -364,6 +373,12 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		spawnedAttackFleets = true;
 	}
 	
+	/**
+	 * Spawns one of the fleets that will attack the station.
+	 * @param factionId
+	 * @param fp
+	 * @return
+	 */
 	protected CampaignFleetAPI spawnAttackFleet(String factionId, int fp) {
 		FactionAPI heg = getHegemony();
 		
@@ -412,6 +427,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		return fleet;
 	}
 	
+	/**
+	 * Spawns some extra defenders (currently just two merc fleets) for the station.
+	 */
 	protected void spawnExtraDefenders() {
 		float fp = 45;
 		
@@ -580,6 +598,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		}
 	}
 	
+	/**
+	 * Make the attacker fleets no longer pursue the player for the scripted dialog.
+	 */
 	public void unsetFleetSus() {
 		for (CampaignFleetAPI fleet : attackFleets) {
 			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_remBrawl_sus", false, 0);
