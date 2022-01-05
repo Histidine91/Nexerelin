@@ -1474,28 +1474,20 @@ public class Nex_MarketCMD extends MarketCMD {
 		// blueprints
 		if (withBP) {
 			Set<String> droppedBefore = getEverRaidedBlueprints();
-			boolean allowRepeat = NexConfig.allowRepeatBlueprintsFromRaid;
-			boolean onlyUnlearned = Global.getSettings().getBoolean("nex_raidBPOnlyUnlearned");
 			FactionAPI player = Global.getSector().getPlayerFaction();
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
 			for (String id : market.getFaction().getKnownShips()) {
-				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
-				if (onlyUnlearned && player.knowsShip(id)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(ship + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownWeapons()) {
-				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getWeaponSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
-				if (onlyUnlearned && player.knowsWeapon(id)) continue;
 				if (Global.getSettings().getWeaponSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(weapon + id, 1f);
 			}
 			for (String id : market.getFaction().getKnownFighters()) {
-				if (!allowRepeat && droppedBefore.contains(id)) continue;
 				if (Global.getSettings().getFighterWingSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
-				if (onlyUnlearned && player.knowsFighter(id)) continue;
 				if (Global.getSettings().getFighterWingSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
 				picker.add(fighter + id, 1f);
 			}

@@ -70,7 +70,7 @@ public class NexConfig
     public static float invasionPointEconomyMult = 0.5f;
     public static float creditLossOnColonyLossMult = 0.5f;
     public static boolean allowNPCSatBomb = true;
-    public static boolean allowRepeatBlueprintsFromRaid = false;
+    public static float groundBattleDamageMult = 1;
     
     // Alliances
     public static float allianceGracePeriod = 120;
@@ -205,7 +205,7 @@ public class NexConfig
             invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
             creditLossOnColonyLossMult = (float)settings.optDouble("creditLossOnColonyLossMult", creditLossOnColonyLossMult);
             allowNPCSatBomb = settings.optBoolean("allowNPCSatBomb", allowNPCSatBomb);
-            allowRepeatBlueprintsFromRaid = settings.optBoolean("allowRepeatBlueprintsFromRaid", allowRepeatBlueprintsFromRaid);
+            groundBattleDamageMult = (float)settings.optDouble("groundBattleDamageMult", groundBattleDamageMult);
             
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);

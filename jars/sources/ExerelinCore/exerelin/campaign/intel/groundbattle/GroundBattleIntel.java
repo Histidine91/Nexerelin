@@ -182,6 +182,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		this.defender.faction = defender;
 		
 		playerData = new GBPlayerData(this);
+		
+		updateIntervals();
 	}
 	
 	protected Object readResolve() {
@@ -272,6 +274,15 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				}
 			}
 		}
+	}
+	
+	public void updateIntervals() {
+		float days = Global.getSettings().getFloat(isPlayerAttacker() != null ? "nex_gbTurnDaysPlayer" : "nex_gbTurnDaysNPC");
+		interval.setInterval(days, days);
+		days = days * 0.2f;
+		intervalShort.setInterval(days, days);		
+		
+		interval.setElapsed(0);
 	}
 	
 	/**
@@ -1174,7 +1185,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		if (shouldNotify())
 			sendUpdateIfPlayerHasIntel(UPDATE_TURN, false);
-		interval.setElapsed(0);
+		updateIntervals();
 		turnNum++;
 		reapply();
 		attacker.reportTurn();

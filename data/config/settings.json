@@ -49,6 +49,8 @@
 	"nex_invasionBaseDefenseMult":1.4,	# legacy invasions only
 	"nex_useGroundBattleIndustryMap":true,	# new invasions only
 	"nex_gbUseFleetSupportEstimate":false,	# if true, will include estimated fleet support bonuses in units' displayed attack power
+	"nex_gbTurnDaysPlayer":1,	# when player is participating
+	"nex_gbTurnDaysNPC":1,	# when player is not participating
 	
 	"nex_disruptMissionRewardMult":25000,	# no longer used
 	
@@ -64,7 +66,7 @@
 	
 	"nex_fleetRequestOrganizeTimeMult":0.75,	# default 0.75
 	
-	"nex_vultureSpawnRateMult":1,	# unsure what this actually does tbh
+	"nex_vultureSpawnRateMult":1,	# setting it to zero should prevent vultures from spawning, but I have not personally confirmed this
 	
 	"nex_spacerDebtMult":1,
 	

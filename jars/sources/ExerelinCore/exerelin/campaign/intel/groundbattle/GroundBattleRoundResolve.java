@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -333,6 +334,7 @@ public class GroundBattleRoundResolve {
 			float contrib = unit.getAttackStrength();
 			contrib *= GBConstants.BASE_DAMAGE_MULT;
 			contrib *= intel.unitSize.damMult;
+			contrib *= NexConfig.groundBattleDamageMult;
 			printDebug(String.format("    Unit %s (%s) contributing attack strength: %.2f", 
 					unit.name, unit.type.toString(), contrib));
 			str += contrib;
