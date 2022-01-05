@@ -299,6 +299,11 @@ public class AllianceVoter {
 		FactionAPI us = Global.getSector().getFaction(factionId);
 		NexFactionConfig usConf = NexConfig.getFactionConfig(factionId);
 		
+		// already at war
+		if (isWar && us.isHostileTo(otherFactionId)) {
+			return Vote.YES;
+		}
+		
 		// don't bother calculating vote if we like/hate them forever
 		if (!DiplomacyManager.haveRandomRelationships(factionId, otherFactionId))
 		{
