@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import com.fs.starfarer.api.campaign.econ.ImmigrationPlugin;
@@ -176,7 +177,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		String string = getDescString();
 		String attackerName = attacker.getDisplayNameWithArticle();
 		String defenderName = defender.getDisplayNameWithArticle();
-		String planetType = Misc.lcFirst(planet.getTypeNameWithLowerCaseWorld());
+		String planetType = planet.getTypeNameWithWorldLowerCase();
 		int numFleets = (int) getOrigNumFleets();
 				
 		Map<String, String> sub = new HashMap<>();
@@ -560,12 +561,15 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	}
 	
 	// don't terminate on target-not-in-economy, etc.
+	// also loosen rules on source market changing faction
 	@Override
 	public void checkForTermination() {
 		if (outcome != null) return;
 		
-		// source captured before launch
-		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
+		// source captured before launch, new owner is inhospitable to sender
+		// replaces basic faction equals check because that breaks for player sending colony expedition from commissioner's markets
+		if (getCurrentStage() <= 0 && from.getFaction().isAtBest(faction, RepLevel.INHOSPITABLE)) 
+		{
 			terminateEvent(OffensiveOutcome.FAIL);
 			return;
 		}
