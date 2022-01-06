@@ -165,7 +165,7 @@
 			"baseCost":2,					# used as multiplier for ship cost
 			"costScaling":false,
 			"injuryChanceMult":0,
-			"xp":500,	# multiplied in code
+			"xp":750,	# multiplied in code
 			#"specializations":[],	# handled in code
 		},
 		"findPirateBase":{
