@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -629,19 +630,21 @@ public class NexMarketBuilder
 		
 		if (data.isHQ)
 		{
+			int stationTier = 4;
 			if (factionId.equals(Factions.PLAYER)) {
 				market.addIndustry(Industries.PATROLHQ);
-				String stationId = NexConfig.getFactionConfig(factionId).getRandomDefenceStation(random, 1);
-				if (stationId != null)
-					market.addIndustry(stationId);
+				stationTier = 1;
+			}
+			else if (NexUtilsFaction.isPirateFaction(factionId)) {
+				market.addIndustry(Industries.MILITARYBASE);
+				stationTier = 2;
 			}
 			else {
 				market.addIndustry(Industries.HIGHCOMMAND);
-				// best station faction has, if it has a tier 4 station use that
-				String stationId = NexConfig.getFactionConfig(factionId).getRandomDefenceStation(random, 4);
-				if (stationId != null)
-					market.addIndustry(stationId);
 			}
+			String stationId = NexConfig.getFactionConfig(factionId).getRandomDefenceStation(random, stationTier);
+			if (stationId != null)
+				market.addIndustry(stationId);
 			
 			if (data == procGen.getHomeworld()) 
 			{
@@ -775,9 +778,6 @@ public class NexMarketBuilder
 		if (!marketsByFactionId.containsKey(factionId))
 			marketsByFactionId.put(factionId, new ArrayList<ProcGenEntity>());
 		marketsByFactionId.get(factionId).add(data);
-		
-		if (!data.starSystem.hasTag(ExerelinProcGen.RANDOM_CORE_SYSTEM_TAG))
-			data.starSystem.addTag(ExerelinProcGen.RANDOM_CORE_SYSTEM_TAG);
 		
 		return market;
 	}

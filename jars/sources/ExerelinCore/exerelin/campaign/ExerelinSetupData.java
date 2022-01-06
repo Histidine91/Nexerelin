@@ -29,6 +29,7 @@ public class ExerelinSetupData
 	public int maxMarketsPerSystem = 4;	// includes stations
 	public int randomColonies = 0;
 	public Map<String, Boolean> factions = new HashMap<>();
+	
 
 	// Game defaults
 	public boolean corvusMode = true;
@@ -39,6 +40,8 @@ public class ExerelinSetupData
 	
 	public StartRelationsMode startRelationsMode = StartRelationsMode.DEFAULT;
 	public boolean applyStartRelationsModeToPirates = false;
+	public HomeworldPickMode homeworldPickMode = HomeworldPickMode.ANY;
+	
 	public boolean easyMode = false;
 	public boolean hardMode = false;
 	public boolean prismMarketPresent = true;
@@ -90,6 +93,18 @@ public class ExerelinSetupData
 		
 		public boolean isDefault() {
 			return this == DEFAULT;
+		}
+	}
+	
+	public static enum HomeworldPickMode {
+		ANY, CORE, NON_CORE;
+		
+		public boolean canPickCore() {
+			return this != NON_CORE;
+		}
+		
+		public boolean canPickNonCore() {
+			return this != CORE;
 		}
 	}
 }

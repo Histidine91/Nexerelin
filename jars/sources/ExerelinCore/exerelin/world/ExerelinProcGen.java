@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -39,6 +40,7 @@ import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.NexConfig;
@@ -71,8 +73,10 @@ import org.lwjgl.util.vector.Vector2f;
 
 public class ExerelinProcGen {
 	
-	public static final float CORE_WIDTH = 15000;
-	public static final float CORE_HEIGHT = 12000;
+	public static final boolean DEBUG_MODE = false;
+	
+	public static final float CORE_WIDTH = 24000;	// for comparison vanilla sector is 30,100 across from Tyle to Naraka
+	public static final float CORE_HEIGHT = 12500;	// vanilla is 17,700 from Zagan to Penelope's Star
 	public static final int CORE_RECURSION_MAX_DEPTH = 6;
 	public static final float NEARBY_ENTITY_CHECK_DIST_SQ = 500 * 500;
 	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(
@@ -93,11 +97,12 @@ public class ExerelinProcGen {
 		Tags.THEME_REMNANT, Tags.THEME_REMNANT_DESTROYED, Tags.THEME_REMNANT_MAIN, Tags.THEME_REMNANT_RESURGENT, Tags.THEME_REMNANT_SECONDARY, Tags.THEME_REMNANT_SUPPRESSED,
 		"theme_breakers", "theme_breakers_main", "theme_breakers_secondary", "theme_breakers_destroyed", "theme_breakers_suppressed", "theme_breakers_resurgent"
 	}));
-	
+		
 	public static Logger log = Global.getLogger(ExerelinProcGen.class);
 	
 	protected Set<String> factionIds = new HashSet<>();
-	protected List<StarSystemAPI> systems = new ArrayList<>();
+	protected List<StarSystemAPI> systems = new ArrayList<>();	
+	protected Set<StarSystemAPI> systemsWithGates = new HashSet<>();
 	protected List<StarSystemAPI> maybePopulatedSystems = new ArrayList<>();
 	protected Set<StarSystemAPI> populatedSystems = new HashSet<>();
 	protected Map<StarSystemAPI, Float> positiveDesirabilityBySystem = new HashMap<>();
@@ -117,8 +122,10 @@ public class ExerelinProcGen {
 	
 	protected ExerelinSetupData setupData;
 	protected NexMarketBuilder marketSetup;
+	protected boolean homeworldOnlyMode;
 	
 	protected Random random;
+	
 	
 	
 	static {
@@ -256,24 +263,31 @@ public class ExerelinProcGen {
 	 */
 	protected boolean validateCoreSystems(List<StarSystemAPI> systems)
 	{
-		if (systems.size() < setupData.numSystems)
+		if (!homeworldOnlyMode && systems.size() < setupData.numSystems)
 			return false;
 		
 		int numDesirables = 0;
 		int numSystems = 0;
+		float req = homeworldOnlyMode ? 2 : 0.01f;
 		for (StarSystemAPI system : systems)
 		{
-			int count = 0;
+			int countThisSystem = 0;
 			for (PlanetAPI planet : system.getPlanets())
 			{
-				if (getDesirability(planet) <= 0) continue;
-				count++;
+				if (getDesirability(planet) < req) continue;
+				countThisSystem++;
 				numDesirables++;
-				if (count >= setupData.maxPlanetsPerSystem) break; 
+				if (!homeworldOnlyMode && countThisSystem >= setupData.maxPlanetsPerSystem) break; 
 			}
-			if (count > 0) numSystems++;
+			if (countThisSystem > 0) numSystems++;
 		}
-		return numDesirables >= setupData.numPlanets && numSystems > setupData.numSystems;
+				
+		boolean result;
+		if (homeworldOnlyMode) result = numDesirables >= 1;
+		else result = numDesirables >= setupData.numPlanets && numSystems > setupData.numSystems;
+		log.info(String.format("%s core system validation with %s usable planets in %s systems", 
+				(result ? "Passed" : "Failed"), numDesirables, numSystems));
+		return result;
 	}
 	
 	/**
@@ -286,29 +300,103 @@ public class ExerelinProcGen {
 	 */
 	protected List<StarSystemAPI> getCoreSystems(float width, float height, int recursionDepth)
 	{
+		log.info(String.format("Searching for core systems in %s width, %s height", width, height));
+		
 		List<StarSystemAPI> list = new ArrayList<>();
 		PlanetAPI redPlanet = (PlanetAPI)Global.getSector().getMemoryWithoutUpdate().get(MiscellaneousThemeGenerator.PLANETARY_SHIELD_PLANET_KEY);
-		boolean corvus = ExerelinSetupData.getInstance().corvusMode;
+		boolean canPickPopulatedSystems = homeworldOnlyMode;
 		
+		boolean canPickCore = setupData.homeworldPickMode.canPickCore();
+		boolean canPickNonCore = setupData.homeworldPickMode.canPickNonCore();
+				
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
-		{
+		{			
+			//log.info("Trying " + system.getBaseName());
+			
 			// go ahead and spawn in Remnant systems, we'll clean them out later?
 			// actually no, I don't know what'll happen if we clear out the system with SEEKER's Nova
-			if (system.hasTag(Tags.THEME_REMNANT)) continue;
-			if (system.hasTag("theme_plaguebearers")) continue;
-			if (system.hasPulsar()) continue;
-			if (system.getStar() != null && system.getStar().getSpec().isBlackHole()) continue;
-			if (!corvus && hasForeignMarkets(system)) continue;
+			// also in general people might wanna use the Remnant systems			
+			if (system.hasTag(Tags.THEME_REMNANT_MAIN)) {
+				//log.info("  Skipping Remnant system");
+				continue;
+			}
+			if (system.hasTag(Tags.THEME_DERELICT_SURVEY_SHIP) || 
+					system.hasTag(Tags.THEME_DERELICT_MOTHERSHIP) || 
+					system.hasTag(Tags.THEME_DERELICT_CRYOSLEEPER)) 
+			{
+				//log.info("  Skipping Derelict system");
+				continue;
+			}
+			if (system.hasTag(Tags.THEME_UNSAFE)) {
+				//log.info("  Skipping unsafe system");
+				continue;
+			}
+			if (system.hasTag("theme_plaguebearers")) {
+				//log.info("  Skipping plaguebearer system");
+				continue;
+			}
+			if (system.hasPulsar()) {
+				//log.info("  Skipping pulsar system");
+				continue;
+			}
+			if (system.getStar() != null && system.getStar().getSpec().isBlackHole()) {
+				//log.info("  Skipping black hole system");
+				continue;
+			}
+			
+			
+			boolean hasForeign = hasForeignMarkets(system);
+			// random sector: don't seed procgen markets in non-procgen systems
+			if (!canPickPopulatedSystems && hasForeign) {
+				//log.info("Skipping system " + system.getBaseName() + " due to existing population");
+				continue;
+			}
+			
+			/*
+				Note: tagging systems as core or non-core is done afterEconomyLoad,
+				while populating systems in random sector is done afterProcGen.
+				The significance of this is that any systems generated in random sector
+				but not populated will be considered non-core at this stage, but will be
+				considered a core system once the player is ingame (including for the debug intel).
+			*/			
+			boolean core = system.hasTag(Tags.THEME_CORE);
+			if (homeworldOnlyMode) {
+				if (!canPickCore && core) {
+					//log.info("Skipping system " + system.getBaseName() + " as core");
+					continue;
+				}
+				if (!canPickNonCore && !core) {
+					//log.info("Skipping system " + system.getBaseName() + " as non-core");
+					continue;
+				}	
+			}
+			
 			
 			Vector2f loc = system.getLocation();
-			if (Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x) > width) continue;
-			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
+			if (Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x) > width/2) {
+				//log.info("  System too far: " + Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x));				
+				continue;
+			}
+			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height/2) {
+				//log.info("  System too far: " + Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y));				
+				continue;
+			}					
+			
 			if (system.getBaseName().equals("Styx")) continue;
 			if (system.getBaseName().equals("Ascalon")) continue;
 			if (redPlanet != null && redPlanet.getStarSystem() == system)
 				continue;
 			
+			if (!core) {
+				log.info("Adding non-core system: " + system.getBaseName());
+			}
 			list.add(system);
+			
+			// while we're here, check if it has a gate
+			for (SectorEntityToken token : system.getEntitiesWithTag(Tags.GATE)) {
+				systemsWithGates.add(system);
+				break;
+			}
 		}
 		
 		// not enough systems/planets, expand our search
@@ -377,7 +465,7 @@ public class ExerelinProcGen {
 	}
 	
 	/**
-	 * Get how "desirable" the planet is based on its market conditions
+	 * Get how "desirable" the planet is based on its market conditions.
 	 * @param planet
 	 * @return
 	 */
@@ -394,6 +482,9 @@ public class ExerelinProcGen {
 		{
 			desirability += getDesirabilityForMarketCondition(cond);
 		}
+		
+		if (isInCorona(planet)) desirability -= 1;
+		if (systemsWithGates.contains(planet.getStarSystem())) desirability += 1;
 		
 		planetDesirabilityCache.put(planet, desirability);
 		
@@ -798,29 +889,33 @@ public class ExerelinProcGen {
 		}
 	}
 	
-	// ended up not using this for anything
 	protected boolean isInCorona(PlanetAPI planet)
 	{
 		StarSystemAPI system = planet.getStarSystem();
 		if (system == null) return false;
 		
-		for (PlanetAPI star : system.getPlanets())
-		{
-			if (!star.isStar()) return false;
-			// TODO: actual corona detection
-		}
-		return false;
+		return (HubMissionWithTriggers.isNearCorona(system, planet.getLocation()));
 	}
 	
 	/**
-	 * Picks the "homeworld" (player faction's HQ) from the most desirable planets
+	 * Picks the "homeworld" (player faction's HQ) from the most desirable planets.
 	 * @return
 	 */
 	protected ProcGenEntity pickHomeworld()
-	{
+	{		
 		List<ProcGenEntity> candidates = new ArrayList<>(populatedPlanets);
 		Collections.sort(candidates, DESIRABILITY_COMPARATOR);
 		
+		if (DEBUG_MODE) {
+			Global.getSector().getMemoryWithoutUpdate().set("$nex_randomSector_colonyCandidates", candidates);
+			Global.getSector().getIntelManager().addIntel(new HomeworldPickerDebugIntel());
+		}
+		
+		if (homeworldOnlyMode) {
+			homeworld = candidates.get(0);
+			return homeworld;
+		}
+				
 		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>(random);
 		for (int i=0; i<candidates.size(); i++)
 		{
@@ -978,6 +1073,7 @@ public class ExerelinProcGen {
 		}
 	}
 	
+	// TODO: this should not run ideally, pick systems that don't have derelicts in them
 	public static void cleanupDerelicts(Collection<StarSystemAPI> systems)
 	{
 		LocationAPI hyper = Global.getSector().getHyperspace();
@@ -1007,7 +1103,6 @@ public class ExerelinProcGen {
 			{
 				system.removeTag(tag);
 			}
-			system.addTag(Tags.THEME_CORE_POPULATED);
 			
 			hyperAnchors.add(system.getHyperspaceAnchor());
 		}
@@ -1054,18 +1149,30 @@ public class ExerelinProcGen {
 		factionIds = getStartingFactions();
 	}
 	
-	public void generate(boolean corvus)
+	// runcode exerelin.world.ExerelinProcGen.debug();
+	public static void debug() {
+		ExerelinProcGen procgen = new ExerelinProcGen();
+		procgen.generate(true, true);
+	}
+	
+	public void generate(boolean homeworldOnlyMode) {
+		generate(homeworldOnlyMode, false);
+	}
+	
+	public void generate(boolean homeworldOnlyMode, boolean testOnly)
 	{
-		log.info("Running procedural generation");
+		this.homeworldOnlyMode = homeworldOnlyMode;
+		
+		log.info("Running procedural generation, homeworld-only mode: " + homeworldOnlyMode);
 		init();
 		
 		// ensure consistent output of random when using own faction start in non-random sector
-		if (corvus) {
+		if (setupData.corvusMode) {
 			random = new Random(NexUtils.getStartingSeed());
 		}
 		
 		// process star systems
-		float mult = corvus ? 1.5f : 1;
+		float mult = homeworldOnlyMode ? 3 : 1;
 		systems = getCoreSystems(CORE_WIDTH * mult, CORE_HEIGHT * mult, 1);
 		for (StarSystemAPI system : systems)
 		{
@@ -1074,16 +1181,20 @@ public class ExerelinProcGen {
 			createEntityDataForSystem(system);
 		}
 						
-		if (corvus) {
+		if (homeworldOnlyMode) {
 			// just create our homeworld
 			populatedPlanets.addAll(planets);
 			pickHomeworld();
+			
+			if (testOnly) return;
+			
 			homeworld.isHQ = true;
 			MarketAPI homeMarket = marketSetup.initMarket(homeworld, Factions.PLAYER);
 			marketSetup.addPrimaryIndustriesToMarkets();
 			marketSetup.addKeyIndustriesForFaction(Factions.PLAYER);
 			marketSetup.addFurtherIndustriesToMarkets();
 			homeMarket.setPlayerOwned(true);
+			SectorManager.setHomeworld(homeworld.entity);
 			
 			StarSystemAPI system = homeworld.entity.getStarSystem();
 			system.setEnteredByPlayer(true);
@@ -1138,6 +1249,8 @@ public class ExerelinProcGen {
 		
 		log.info("Preparing stations");
 		prepFreeStations();
+		
+		if (testOnly) return;
 				
 		log.info("Populating sector");
 		populateSector(Global.getSector());
@@ -1620,14 +1733,17 @@ public class ExerelinProcGen {
 		if (spawnAsFactionId != null) alignedFactionId = spawnAsFactionId;
 		
 		// before we do anything else give the "homeworld" to our faction
-		pickHomeworld();
+		// don't pick homeworld now if we require player to start in a non-populated system
+		if (setupData.homeworldPickMode != HomeworldPickMode.NON_CORE) {
+			pickHomeworld();
+		}		
 		if (!ExerelinSetupData.getInstance().freeStart)	// (true)
 		{
 			if (alignedFactionId.equals("templars") && antioch)
 			{
 				// do nothing, Ascalon will be our only world
 			}
-			else
+			else if (homeworld != null)
 			{
 				homeworld.isHQ = true;
 				MarketAPI homeMarket = marketSetup.initMarket(homeworld, alignedFactionId);
@@ -1863,12 +1979,22 @@ public class ExerelinProcGen {
 			}
 		}
 		
+		// tags
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			StarSystemAPI sys = market.getStarSystem();
+			if (sys == null) continue;
+			sys.addTag(ExerelinProcGen.RANDOM_CORE_SYSTEM_TAG);
+			sys.addTag(Tags.THEME_CORE_POPULATED);
+			sys.removeTag(Tags.THEME_CORE_UNPOPULATED);
+			sys.addTag(Tags.THEME_CORE);
+		}
+		
 		// end distribution of markets and stations
 	}
 	
 	protected void finish()
 	{
-		SectorManager.setHomeworld(homeworld.entity);
+		if (homeworld != null) SectorManager.setHomeworld(homeworld.entity);
 		
 		SectorManager.reinitLiveFactions();
 		DiplomacyManager.initFactionRelationships(false);

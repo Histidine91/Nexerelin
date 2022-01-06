@@ -15,6 +15,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ExerelinSetupData.StartRelationsMode;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
@@ -239,22 +240,6 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 						null, null)
 		);
 		
-		// random ships; obsolete with new ship picking GUI
-		/*
-		addCheckboxOption(panel, info, getString("optionRandomStartShips"), "nex_randomStartShips", 
-				data.randomStartShips, "graphics/fx/question_mark.png", plugin, new ButtonEntry() {
-						@Override
-						public void onToggle() {
-							data.randomStartShips = button.isChecked();
-							MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-							memory.set("$randomStartShips", data.randomStartShips, 0);
-						}
-				}, 
-				createTooltip(getString("tooltipRandomStartShips"), 
-						null, null)
-		);
-		*/
-		
 		// easy mode
 		//float offEasy = Global.getSettings().getFloat("easyOfficerLevelMult");
 		float salEasy = Global.getSettings().getFloat("easySalvageMult");
@@ -317,6 +302,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 						null, null));
 		
 		addDModOptions(panel, info, plugin);
+		addHomeworldOptions(panel, info, plugin);
 		
 		// Antioch
 		if (!data.corvusMode && Global.getSector().getFaction("templars") != null) {
@@ -343,6 +329,8 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 					}, 
 					createTooltip(getString("tooltipSkipStory"), highlights, null));
 		}
+		
+		
 		
 		info.addPara(getString("infoCustomPanel"), 10);
 		
@@ -375,6 +363,46 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				public void onToggleImpl() {
 					data.dModLevel = index;
 					Global.getLogger(this.getClass()).info("D-mod level: " + data.dModLevel);
+				}
+			};
+			buttonEntries.add(radio);
+		}
+		for (RadioButtonEntry entry : buttonEntries) {
+			entry.buttons = buttonEntries;
+			plugin.addButton(entry);
+		}
+	}
+	
+	public void addHomeworldOptions(CustomPanelAPI panel, TooltipMakerAPI info,
+			InteractionDialogCustomPanelPlugin plugin) 
+	{
+		int NUM_OPTS = 3;
+		
+		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionHomeworldPick"),
+			"graphics/icons/intel/stars.png", plugin,
+			createTooltip(getString("tooltipHomeworldPick"), null, null));
+				
+		final List<ButtonAPI> buttons = new ArrayList<>();
+		TooltipMakerAPI lastHolder = null;
+		final ExerelinSetupData data = ExerelinSetupData.getInstance();
+		
+		// determine which button should be highlighted
+		int reqIndex = data.homeworldPickMode.ordinal();
+		for (int i=0; i<NUM_OPTS; i++) {
+			String name = Misc.ucFirst(getString("btnHomeworldPickMode" + i));
+			lastHolder = initRadioButton("nex_homeworldPickMode_" + i, name, i == reqIndex, 
+					buttonPanel, lastHolder, buttons);
+		}
+		
+		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
+		
+		for (int i=0; i<NUM_OPTS; i++) {
+			final int index = i;
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_homeworldPickMode_" + i) 
+			{
+				@Override
+				public void onToggleImpl() {
+					data.homeworldPickMode = HomeworldPickMode.values()[index];
 				}
 			};
 			buttonEntries.add(radio);

@@ -44,6 +44,7 @@ import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.MiningCooldownDrawer;
@@ -70,7 +71,6 @@ import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bar.historian.ShuntLocationOfferCreator;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
@@ -86,8 +86,6 @@ import exerelin.world.VanillaSystemsGenerator;
 import exerelin.world.scenarios.DerelictEmpireOfficerGeneratorPlugin;
 import exerelin.world.scenarios.ScenarioManager;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -459,8 +457,14 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         alphaSiteWorkaround();
         
+		// random sector: populate the sector
         if (!SectorManager.getManager().isCorvusMode()) {
             new ExerelinProcGen().generate(false);
+			// second pass: get player homeworld if we didn't pick it before (due to requiring a non-core world)
+			if (ExerelinSetupData.getInstance().homeworldPickMode == HomeworldPickMode.NON_CORE) 
+			{
+				new ExerelinProcGen().generate(true);
+			}
         }
         
         ScenarioManager.afterProcGen(Global.getSector());
@@ -475,6 +479,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             VanillaSystemsGenerator.enhanceVanillaAdmins();
         }
         
+		// non-random sector: pick player homeworld in own faction start
         ExerelinSetupData setupData = ExerelinSetupData.getInstance();
         if (SectorManager.getManager().isCorvusMode() 
                 && PlayerFactionStore.getPlayerFactionIdNGC().equals(Factions.PLAYER) 
