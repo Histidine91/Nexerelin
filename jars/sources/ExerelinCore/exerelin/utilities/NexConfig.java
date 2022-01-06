@@ -129,7 +129,7 @@ public class NexConfig
     public static float specialForcesSizeMult = 1;
     
     // Misc
-    public static int directoryDialogKey = 44;  // Z
+    public static int directoryDialogKey = 45;  // X
     public static boolean ceasefireNotificationPopup = true;
     public static int diplomacyEventFilterLevel = 0;
     public static int agentEventFilterLevel = 0;
