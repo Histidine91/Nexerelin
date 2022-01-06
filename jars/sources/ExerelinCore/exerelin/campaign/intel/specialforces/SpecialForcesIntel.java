@@ -487,9 +487,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	 */
 	public void goRogueOrExpire() {
 		
+		// I wanted to make it check alliance as well, but if the faction has been eliminated it's no longer in the alliance
 		if (ALLOW_GO_ROGUE) {
 			FactionAPI toDefect = null;
-				
+			
 			if (SectorManager.isFactionAlive(Factions.LUDDIC_PATH) && NexUtilsFaction.isLuddicFaction(faction.getId()))
 				toDefect = Global.getSector().getFaction(Factions.LUDDIC_PATH);
 			else if (SectorManager.isFactionAlive(Factions.PIRATES))

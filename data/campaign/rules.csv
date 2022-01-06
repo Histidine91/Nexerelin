@@ -3397,15 +3397,16 @@ nex_commandSF_mainOpts,Nex_CommandSFOptions,,SetShortcut nex_commandSF_leave ESC
 nex_commandSF_orbit:Orbit location
 nex_commandSF_follow:Follow player
 nex_commandSF_wait:Wait at player location
+nex_commandSF_joinRaid:Participate in raid
 nex_commandSF_autoAssign:Auto-assign
 nex_sf_reviveShipStart:Revive dead ships
-#nex_commandSF_participateRaid:Participate in raid
 nex_commandSF_leave:Leave",
 nex_commandSF_mainOptsNoRevive,Nex_CommandSFOptions,!Nex_SpecialForcesConfig canRevive,"SetEnabled nex_sf_reviveShipStart false
 SetTooltip nex_sf_reviveShipStart $nex_psf_noReviveReason",,,
 nex_commandSF_patrol,DialogOptionSelected,$option == nex_commandSF_patrol,Nex_SpecialForcesCommands patrol,,,
 nex_commandSF_orbit,DialogOptionSelected,$option == nex_commandSF_orbit,Nex_SpecialForcesCommands orbit,,,
 nex_commandSF_follow,DialogOptionSelected,$option == nex_commandSF_follow,Nex_SpecialForcesCommands follow,,,
+nex_commandSF_joinRaid,DialogOptionSelected,$option == nex_commandSF_joinRaid,Nex_SpecialForcesCommands joinRaid,,nex_commandSF_main:Go back,
 nex_commandSF_wait,DialogOptionSelected,$option == nex_commandSF_wait,Nex_SpecialForcesCommands wait_player,,,
 nex_commandSF_autoAssign,DialogOptionSelected,$option == nex_commandSF_autoAssign,"Nex_SpecialForcesCommands autoAssign
 #Nex_SpecialForcesCommands main",,,

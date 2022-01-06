@@ -2178,6 +2178,8 @@
 		"dialogTooltipNoMarketForRevive":"Fleet must be near a non-inhospitable market.",
 		"dialogMsgTaskAssigned":"task assigned",
 		"dialogMsgRevivingShips":"reviving ships",
+		"dialogButtonViewRaid":"View",
+		"dialogButtonJoinRaid":"Join",
 		
 		"reportNode_commander":"Commander's fee",
 		"reportNode_officer":"Officer payroll",

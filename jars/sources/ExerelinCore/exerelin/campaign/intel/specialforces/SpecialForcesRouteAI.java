@@ -161,7 +161,7 @@ public class SpecialForcesRouteAI {
 	 * Gets active raid-type events by us against hostile factions.
 	 * @return
 	 */
-	protected List<RaidIntel> getActiveRaidsFriendly() {
+	public List<RaidIntel> getActiveRaidsFriendly() {
 		List<RaidIntel> raids = getActiveRaids();
 		List<RaidIntel> raidsFiltered = new ArrayList<>();
 		for (RaidIntel raid : raids) {
@@ -225,7 +225,7 @@ public class SpecialForcesRouteAI {
 	 * Gets active raid-type events by hostile factions against us.
 	 * @return
 	 */
-	protected List<RaidIntel> getActiveRaidsHostile() {
+	public List<RaidIntel> getActiveRaidsHostile() {
 		List<RaidIntel> raids = getActiveRaids();
 		List<RaidIntel> raidsFiltered = new ArrayList<>();
 		for (RaidIntel raid : raids) {			
