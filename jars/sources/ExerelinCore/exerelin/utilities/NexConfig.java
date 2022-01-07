@@ -136,8 +136,9 @@ public class NexConfig
     public static int nexIntelQueued = 0;
     public static boolean queuedNexMissions = false;
     
-    public static float baseTariffMult = 1;
+    public static float baseTariffMult = 0.6f;
     public static float freeMarketTariffMult = 0.5f;
+    public static boolean doubleSubmarketWeapons = false;
     public static int warmongerPenalty = 0;
     public static float factionRespawnInterval = 120;
     public static int maxFactionRespawns = 3;
@@ -253,6 +254,7 @@ public class NexConfig
             
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
+            doubleSubmarketWeapons = settings.optBoolean("doubleSubmarketWeapons", doubleSubmarketWeapons);
             warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);

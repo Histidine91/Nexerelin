@@ -4,12 +4,13 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.submarkets.BlackMarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.NexConfig;
 
 public class Nex_BlackMarketPlugin extends BlackMarketPlugin {
 	
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		if (okToUpdateShipsAndWeapons()) {
+		if (NexConfig.doubleSubmarketWeapons && okToUpdateShipsAndWeapons()) {
 			super.updateCargoPrePlayerInteraction();
 			
 			// this was already done in super method, so what we're doing is doubling weapon/fighter counts

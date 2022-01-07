@@ -3,6 +3,7 @@ package exerelin.campaign.submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.MilitarySubmarketPlugin;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 
 // TODO: should also sell relevant package blueprints
@@ -10,7 +11,7 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		if (okToUpdateShipsAndWeapons()) {
+		if (NexConfig.doubleSubmarketWeapons && okToUpdateShipsAndWeapons()) {
 			super.updateCargoPrePlayerInteraction();
 			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
 			int weapons = 7 + Math.max(0, market.getSize() - 1) * 2;

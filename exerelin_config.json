@@ -67,6 +67,7 @@
     
     "baseTariffMult": 0.6,  # 1.0 = base tariff (usually 30%)
     "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
+	"doubleSubmarketWeapons": false,	# if true, double the amount of weapons generated on most submarkets (old behavior)
     
     "prismInHyperspace": false,	# if false, Prism will get its own star system (but not if added midgame)
     "prismMaxWeapons": 27,
