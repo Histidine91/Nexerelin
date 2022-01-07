@@ -88,7 +88,7 @@ public class VictoryIntel extends BaseIntelPlugin {
 			if (playerWon)
 				info.addPara(StringHelper.getString("exerelin_victoryScreen", "intelStringYouWon"), opad);
 		}
-				
+		
 		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 		
 		info.addButton(StringHelper.getString("exerelin_victoryScreen", "intelButtonCancel"), 
@@ -99,6 +99,7 @@ public class VictoryIntel extends BaseIntelPlugin {
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_CANCEL_VICTORY) {
 			SectorManager.getManager().clearVictory();
+			SectorManager.checkForVictory();
 			ui.updateIntelList();
 		}
 	}
