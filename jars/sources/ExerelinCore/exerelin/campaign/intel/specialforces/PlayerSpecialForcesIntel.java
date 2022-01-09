@@ -85,7 +85,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	public void setCommander(PersonAPI commander) {
 		super.setCommander(commander);
-		if (commander != null) commander.setRankId(Ranks.SPACE_CAPTAIN);
 	}
 		
 	public CampaignFleetAPI createTempFleet() {
@@ -102,6 +101,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		CampaignFleetAPI fleet = FleetFactoryV3.createEmptyFleet(faction.getId(), FLEET_TYPE, origin);
 		if (fleet == null) return null;
 		
+		// these values should already have been set during PSF creation
+		//commander = tempFleet.getCommander();
+		//flagship = tempFleet.getFlagship();
+		
+		fleet.setCommander(commander);
+		fleet.getFleetData().setFlagship(flagship);
+		
 		for (OfficerDataAPI od : tempFleet.getFleetData().getOfficersCopy()) {
 			//log.info("Adding officer " + officer.getNameString());
 			fleet.getFleetData().addOfficer(od);
@@ -109,12 +115,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		for (FleetMemberAPI live : tempFleet.getFleetData().getMembersListCopy()) {
 			fleet.getFleetData().addFleetMember(live);
 		}
-		commander = tempFleet.getCommander();
-		flagship = tempFleet.getFlagship();
-		fleet.setCommander(commander);
-		fleet.getFleetData().setFlagship(flagship);
 		fleet.setInflated(true);
 		fleet.setInflater(null);
+		
+		
+		commander.setRankId(Ranks.SPACE_CAPTAIN);
 		
 		fleet.setNoAutoDespawn(true);
 		
@@ -391,6 +396,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	@Override
 	public int getDamage() {
+		if (fleet == null) return 0;
 		int liveFP = fleet.getFleetPoints();
 		int deadFP = 0;
 		for (FleetMemberAPI dead : deadMembers) {

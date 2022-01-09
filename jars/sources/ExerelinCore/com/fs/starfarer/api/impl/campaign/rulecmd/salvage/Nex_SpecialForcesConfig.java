@@ -137,8 +137,10 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			case "commanderSkillsConfirm":
 				applySkillChanges(dialog, memoryMap.get(MemKeys.LOCAL));
 				return true;
-			case "hasCommander":
-				return fleet.getCommander() != null;
+			case "hasCommanderAndFlagship":
+				SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
+				dialog.getTextPanel().addPara("Flagship is " + sf.getFlagship());
+				return sf.getCommander() != null && sf.getFlagship() != null;
 			case "swapCargo":
 				transferCargo(player, fleet, dialog, memoryMap);
 				return true;
@@ -283,9 +285,9 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			{
 				@Override
 				public void onToggle() {
-					fleet.setCommander(officer);
-					SpecialForcesIntel.getIntelFromMemory(fleet).setCommander(officer);
-					if (member != null) fleet.getFleetData().setFlagship(member);
+					SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
+					setCommander(fleet, sf, officer);
+					setFlagship(fleet, sf, member);
 					showOfficersForAssignment(dialog);
 				}
 			});			
@@ -300,7 +302,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	protected void assignOfficerToShip(final InteractionDialogAPI dialog, final CampaignFleetAPI fleet, final PersonAPI officer) 
 	{
 		List<FleetMemberAPI> ships = new ArrayList<>();
-		for (FleetMemberAPI member : fleet.getMembersWithFightersCopy()) {
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			if (Misc.isUnremovable(member.getCaptain())) continue;
 			if (Misc.isAutomated(member)) continue;
 			ships.add(member);
@@ -317,12 +319,14 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 						FleetMemberAPI prevShip = getShipCommandedBy(fleet, officer);
 						if (prevCap != null && !prevCap.isDefault() && prevShip != null) {
 							prevShip.setCaptain(prevCap);
+						} else if (prevShip != null) {
+							prevShip.setCaptain(null);
 						}
 						newShip.setCaptain(officer);
 						
 						if (fleet.getCommander() == officer) {
 							SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
-							if (sf != null) sf.setFlagship(newShip);
+							setFlagship(fleet, sf, newShip);
 						}
 						
 						showOfficersForAssignment(dialog);
@@ -601,14 +605,30 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		}
 	}
 	
+	protected void setCommander(CampaignFleetAPI fleet, SpecialForcesIntel sf, PersonAPI commander) 
+	{
+		if (commander != null)
+			fleet.setCommander(commander);
+		sf.setCommander(commander);
+	}
+	
+	protected void setFlagship(CampaignFleetAPI fleet, SpecialForcesIntel sf, FleetMemberAPI member) {
+		if (member != null) {
+			fleet.getFleetData().setFlagship(member);
+			sf.setFlagship(member);
+		} else {
+			sf.setFlagship(null);
+		}
+	}
+	
 	protected void autopickCommanderIfNeeded(CampaignFleetAPI fleet) {
 		SpecialForcesIntel intel = SpecialForcesIntel.getIntelFromMemory(fleet);
 		if (intel.getCommander() != null) return;
 		if (fleet.getFleetData().getOfficersCopy().isEmpty()) return;
 		
 		PersonAPI com = fleet.getFleetData().getOfficersCopy().get(0).getPerson();
-		fleet.setCommander(com);
-		intel.setCommander(com);
+		setCommander(fleet, intel, com);
+		setFlagship(fleet, intel, getShipCommandedBy(fleet, com));
 	}
 		
 	// TBD
@@ -945,8 +965,14 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		//	fleet.setCommander(null);
 		SpecialForcesIntel intel = SpecialForcesIntel.getIntelFromMemory(fleet);
 		if (intel != null && intel.getCommander() == person) {
-			intel.setCommander(null);
+			setCommander(fleet, intel, null);
 			autopickCommanderIfNeeded(fleet);
+			
+			if (intel.getCommander() == null) {
+				setFlagship(fleet, intel, null);
+			} else {
+				setFlagship(fleet, intel, getShipCommandedBy(fleet, intel.getCommander()));
+			}
 		}
 	}
 	

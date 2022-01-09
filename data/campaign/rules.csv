@@ -3359,13 +3359,12 @@ SetTooltip nex_configSF_close ""Task force has no ships and will be disbanded. U
 nex_configSF_mainOptsNoShipsCreate,Nex_ConfigSFOptions,"$nex_psf_create
 $fleetPoints == 0","SetEnabled nex_configSF_takeShips false
 SetEnabled nex_configSF_createFinish false",,,
-nex_configSF_mainOptsNoCommander,Nex_ConfigSFOptions,!Nex_SpecialForcesConfig hasCommander,"SetEnabled nex_configSF_commanderSkills false
+nex_configSF_mainOptsNoCommander,Nex_ConfigSFOptions,!Nex_SpecialForcesConfig hasCommanderAndFlagship,"SetEnabled nex_configSF_commanderSkills false
 SetEnabled nex_configSF_createFinish false
 SetEnabled nex_configSF_close false
-SetTooltip nex_configSF_createFinish ""Fleet must have a commander.""
-SetTooltip nex_configSF_close ""Fleet must have a commander.""",,,
-nex_configSF_mainOptsTooManyOfficers,Nex_ConfigSFOptions,Nex_SpecialForcesConfig hasTooManyOfficers,"SetEnabled nex_configSF_commanderSkills false
-SetEnabled nex_configSF_createFinish false
+SetTooltip nex_configSF_createFinish ""Fleet must have a commander and flagship.""
+SetTooltip nex_configSF_close ""Fleet must have a commander and flagship.""",,,
+nex_configSF_mainOptsTooManyOfficers,Nex_ConfigSFOptions,Nex_SpecialForcesConfig hasTooManyOfficers,"SetEnabled nex_configSF_createFinish false
 SetEnabled nex_configSF_close false
 SetTooltip nex_configSF_createFinish ""Fleet has too many officers.""
 SetTooltip nex_configSF_close ""Fleet has too many officers.""",,,
