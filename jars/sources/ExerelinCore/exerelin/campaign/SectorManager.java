@@ -897,7 +897,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         NexUtils.addExpiringIntel(intel);
         
         SectorManager.addLiveFactionId(faction.getId());
-        if (manager != null && !existedBefore)
+        if (existedBefore)
         {
             manager.historicFactionIds.add(factionId);
         }
@@ -905,15 +905,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         setShowFactionInIntelTab(factionId, true);
         
         // increment "times respawned" count
-        if (manager != null)
-        {
-            int count = 0;
-            if (manager.factionRespawnCounts.containsKey(factionId))
-                count = manager.factionRespawnCounts.get(factionId) + 1;
-            else if (manager.factionIdsAtStart.contains(factionId))
-                count++;
-            manager.factionRespawnCounts.put(factionId, count);
-        }
+        // no, we already did that on launching the respawn event in the first place
+        manager.incrementNumRespawns(factionId);
     }
     
     public static int getAllianceTotalFromMap(Alliance alliance, Map<String, Integer> map) 
