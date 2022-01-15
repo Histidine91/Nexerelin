@@ -80,7 +80,7 @@ public class StartSetupPostTimePass {
 		for (int i=0; i<numOfficers; i++)
 		{
 			int level = numOfficers - i;
-			PersonAPI officer = OfficerManagerEvent.createOfficer(myFaction, level, true);
+			PersonAPI officer = OfficerManagerEvent.createOfficer(myFaction, level, false);
 			playerFleet.getFleetData().addOfficer(officer);
 			
 			// assign officers to ships
