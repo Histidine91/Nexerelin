@@ -30,6 +30,7 @@ import data.scripts.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
@@ -954,9 +955,12 @@ public class MiningHelperLegacy {
 			if (currAmount == null) currAmount = 0f;
 			float newVal = currAmount + valueForHarass;
 			
-			if (DEBUG_MODE || newVal + MathUtils.getRandomNumberInRange(-3, 3) >= miningHarassThreshold) {
+			LocationAPI loc = entity.getContainingLocation();
+			float needed = miningHarassThreshold + getMiningHarassThresholdModifier(loc);
+			
+			if (DEBUG_MODE || newVal + MathUtils.getRandomNumberInRange(-3, 3) >= needed) {
 				Global.getSector().getMemoryWithoutUpdate().set(MINING_HARASS_KEY, 0);
-				LocationAPI loc = entity.getContainingLocation();
+				
 				spawnHarassmentFleet(getHostileFaction(loc), loc);
 			} else {
 				//Global.getSector().getCampaignUI().addMessage("Mining harass value: " + newVal + "/" + miningHarassThreshold);
@@ -965,6 +969,26 @@ public class MiningHelperLegacy {
 		}
 
 		return result;
+	}
+	
+	public static float getMiningHarassThresholdModifier(LocationAPI location) {
+		float mod = 0;
+		for (MarketAPI market : Misc.getMarketsInLocation(location)) {
+			boolean pirate = NexUtilsFaction.isPirateFaction(market.getFactionId());
+			
+			// pirate markets make harassment more frequent
+			if (pirate) mod -=1;
+			else {
+				if (market.isHidden()) continue;
+				// main faction markets make harassment less frequent, unless they're hostile to us in which case they do the opposite
+				float thisMod = 1;
+				if (Misc.isMilitary(market)) thisMod = 2;
+				if (market.getFaction().isHostileTo(Factions.PLAYER)) thisMod *= -1;
+				mod += thisMod;
+			}
+		}
+		
+		return mod;
 	}
 
 	public static float computeMiningValue(MiningResult result){
