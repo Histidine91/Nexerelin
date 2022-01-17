@@ -185,6 +185,8 @@ public class StartSetupPostTimePass {
 				addStoryContact(People.HORUS_YARIBAY);
 				addStoryContact(People.IBRAHIM);
 				handleAcademyVars();
+			} else {
+				mem.set("$gaIntro2found", true);
 			}
 			
 			// alpha site location intel?
