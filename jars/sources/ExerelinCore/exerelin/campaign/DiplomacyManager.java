@@ -1279,6 +1279,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // if we leave our faction later, we'll be neutral to most but hostile to pirates and such
         PlayerFactionStore.saveIndependentPlayerRelations();
         
+        // run before setting player relations to chosen faction
+        if (mode == StartRelationsMode.FLATTEN) {
+            for (String factionId : factionIds) 
+            {
+                resetFactionRelationships(factionId, blockPirates);
+            }
+        }
+        
         // set player relations based on selected faction
         if (selectedFactionId.equals(Factions.PLAYER))
         {
@@ -1288,13 +1296,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             NexUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);    // already done in syncPlayerRelationshipsToFaction
-        }
-        
-        if (mode == StartRelationsMode.FLATTEN) {
-            for (String factionId : factionIds) 
-            {
-                resetFactionRelationships(factionId, blockPirates);
-            }
         }
     }
     
