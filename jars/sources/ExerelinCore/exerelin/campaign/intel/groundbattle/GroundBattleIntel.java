@@ -970,6 +970,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (outcome != BattleOutcome.CANCELLED) {
 			addXPToDeployedUnits(storage);
 		}
+		
+		PlayerFleetPersonnelTracker.getInstance().getDroppedOff().remove(playerData.xpTracker);
 	}
 	
 	public void handleTransfer() {
