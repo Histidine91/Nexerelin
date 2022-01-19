@@ -412,7 +412,7 @@ public class NexUtilsMarket {
 		
 		if (canSpawnConquestMission) {
 			float chance = current/(current + 5f);
-			if (chance > Math.random()) return;
+			if (chance < Math.random()) return;
 			
 			FactionAPI issuer = attacker;
 			Alliance alliance = AllianceManager.getFactionAlliance(attacker.getId());
@@ -420,6 +420,7 @@ public class NexUtilsMarket {
 			
 			ConquestMissionIntel intel = new ConquestMissionIntel(market, issuer, ConquestMissionManager.getDuration(market));
 			intel.init();
+			Global.getSector().addScript(intel);	// to allow it to expire
 		}
 	}
 	
