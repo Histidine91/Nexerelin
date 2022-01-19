@@ -166,6 +166,7 @@ public class DiplomacyTraits {
 		public static final String IRREDENTIST		= "irredentist";
 		public static final String STALWART			= "stalwart";
 		public static final String WEAK_WILLED		= "weak-willed";
+		public static final String FOREVERWAR		= "foreverwar";
 		public static final String SELFRIGHTEOUS	= "selfrighteous";
 		public static final String TEMPERAMENTAL	= "temperamental";
 		public static final String DISLIKES_AI		= "dislikes_ai";

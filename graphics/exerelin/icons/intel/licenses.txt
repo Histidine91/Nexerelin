@@ -37,6 +37,10 @@ claw.png
 	from IconsPng.com, free to use without attribution
 	https://www.iconspng.com/image/127951/claws-grey-scratch
 
+corinthian_helmet.png
+	by Viola, CC-BY-NC
+	https://pngset.com/download-free-png-crnhr
+
 ----------------------
 Made by Tartiflette:
 	peace.png

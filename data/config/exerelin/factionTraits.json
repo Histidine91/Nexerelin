@@ -50,7 +50,7 @@
 			"desc":"-33% war weariness gains.",
 			"icon":"graphics/icons/skills/leadership2.png",
 			"color":[173, 163, 156],
-			"incompatible":["weak-willed"]
+			"incompatible":["weak-willed", "foreverwar"]
 		},
 		{
 			"id":"weak-willed",
@@ -58,7 +58,15 @@
 			"desc":"+50% war weariness gains.",
 			"icon":"graphics/exerelin/icons/intel/white_flag.png",
 			"color":[255, 255, 153],
-			"incompatible":["stalwart"]
+			"incompatible":["stalwart", "foreverwar"]
+		},
+		{
+			"id":"foreverwar",
+			"name":"Forever War",
+			"desc":"Zero war weariness.",
+			"icon":"graphics/exerelin/icons/intel/corinthian_helmet.png",
+			"color":[168, 80, 96],
+			"incompatible":["weak-willed", "stalwart"]
 		},
 		{
 			"id":"selfrighteous",

@@ -704,10 +704,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public void modifyWarWeariness(String factionId, float amount)
     {
         List<String> traits = DiplomacyTraits.getFactionTraits(factionId);
-        if (traits.contains(TraitIds.STALWART))
-            amount *= 0.67;
-        else if (traits.contains(TraitIds.WEAK_WILLED))
-            amount *= 1.5f;
+        if (amount > 0) {
+            if (traits.contains(TraitIds.FOREVERWAR))
+                return;
+            else if (traits.contains(TraitIds.STALWART))
+                amount *= 0.67;
+            else if (traits.contains(TraitIds.WEAK_WILLED))
+                amount *= 1.5f;
+        }
+        
         
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
         if (alliance != null)
@@ -744,19 +749,18 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 if (!NexConfig.followersDiplomacy) continue;
                 if (!faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
             }
-
-            float weariness = getWarWeariness(factionId);
+			
+			float wearinessDelta = 0;
             List<String> enemies = getFactionsAtWarWithFaction(faction, false, false, true);
             int warCount = enemies.size();
             if (warCount > 0)
             {
                 //log.info("Incrementing war weariness for " + faction.getDisplayName());
-                weariness += enemies.size() * warWearinessPerInterval;
+                wearinessDelta += enemies.size() * warWearinessPerInterval;
             }
-            else weariness -= warWearinessPerInterval;
-            if (weariness < 0) weariness = 0f;
+            else wearinessDelta -= warWearinessPerInterval;
             
-            warWeariness.put(factionId, weariness);
+			modifyWarWeariness(factionId, wearinessDelta);
         }
     }
     
