@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter.Encount
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.missions.hub.MissionFleetAutoDespawn;
 import com.fs.starfarer.api.loading.VariantSource;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
@@ -41,7 +42,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 
 	@Override
 	public void reportEntityDiscovered(SectorEntityToken entity) {
-		if (entity.hasTag(Tags.CORONAL_TAP))
+		if (entity.hasTag(Tags.CORONAL_TAP)  && Global.getSettings().getBoolean("nex_spawnHypershuntComplication"))
 			spawnShuntFleet(entity);
 	}
 	
@@ -55,7 +56,12 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 		int combat = Math.round((playerStr/5.5f + capBonus) * MathUtils.getRandomNumberInRange(0.6f, 0.7f));
 		combat *= 0.4f;
 		
-		if (combat < 12) return;	// don't spawn if player too weak
+		// don't spawn if player too weak
+		if (combat < 12) {
+			if (ExerelinModPlugin.isNexDev)
+				Global.getSector().getCampaignUI().addMessage("Player too weak for shunt complication");
+			return;
+		}	
 		
 		//Global.getLogger(this.getClass()).info("Player strength: " + playerStr);
 		//Global.getLogger(this.getClass()).info("Omega estimated desired combat points: " + combat);
@@ -65,7 +71,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 		
 		// preferred in most ways since it automates various behaviors
 		// but has problems in that no way to set variant tags, needs to outsource to a listener
-		if (USE_OMEGA_DFE) {			
+		if (USE_OMEGA_DFE) {
 			DelayedFleetEncounter e = new DelayedFleetEncounter(null, "hist");
 			e.setTypes(EncounterType.OUTSIDE_SYSTEM, EncounterType.JUMP_IN_NEAR_PLAYER, 
 					EncounterType.IN_HYPER_EN_ROUTE, EncounterType.FROM_SOMEWHERE_IN_SYSTEM);
@@ -84,12 +90,19 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			e.triggerSetFleetSizeFraction(fraction);
 			e.triggerSetFleetMaxShipSize(2);
 			e.triggerSetFleetFaction(Factions.REMNANTS);
-			e.triggerSetStandardAggroInterceptFlags();
+			
+			// behavior
+			//e.triggerSetStandardAggroInterceptFlags();
+			e.triggerMakeHostileAndAggressive();
+			//e.triggerFleetAllowLongPursuit();
+			//e.triggerSetFleetAlwaysPursue();
+			e.triggerOrderFleetInterceptPlayer();
+			e.triggerOrderFleetMaybeEBurn();
+			
 			e.triggerMakeNoRepImpact();
 			e.triggerSetFleetGenericHailPermanent("Nex_HistorianOmegaHail");
 			e.triggerSetFleetFlagPermanent("$nex_omega_hypershunt_complication");
 			e.triggerSetFleetMemoryValue("$nex_omega_hypershunt_complication_shunt", shunt);
-			//e.triggerSetFleetFaction(Factions.REMNANTS);
 			e.endCreate();
 		}
 		else {
@@ -122,7 +135,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			
 			fleet.getMemoryWithoutUpdate().set("$genericHail", true);
 			fleet.getMemoryWithoutUpdate().set("$genericHail_openComms", "Nex_HistorianOmegaHail");
-			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_ALLOW_LONG_PURSUIT, true);
+			//fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_ALLOW_LONG_PURSUIT, true);
 			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE, true);
 			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PURSUE_PLAYER, true);
 			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
@@ -153,7 +166,9 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 	public void reportFleetSpawned(CampaignFleetAPI fleet) {
 		//Global.getLogger(this.getClass()).info("Fleet spawned: " + fleet.getNameWithFactionKeepCase());
 		if (fleet.getMemoryWithoutUpdate().contains("$nex_omega_hypershunt_complication")) {
-			//Global.getSector().getCampaignUI().addMessage("Omega fleet spawned");
+			if (ExerelinModPlugin.isNexDev)
+				Global.getSector().getCampaignUI().addMessage("Omega fleet spawned");
+			
 			for (FleetMemberAPI member : fleet.getFleetData().getMembersListWithFightersCopy()) {
 				member.setVariant(member.getVariant().clone(), false, false);
 				member.getVariant().setSource(VariantSource.REFIT);
