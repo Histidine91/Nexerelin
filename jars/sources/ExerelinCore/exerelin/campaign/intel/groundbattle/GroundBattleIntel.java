@@ -497,6 +497,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 						enemy.getId());
 		}
 		
+		if (playerIsAttacker) {
+			Misc.increaseMarketHostileTimeout(market, 60f);
+		}
+		
 		autoGeneratePlayerUnits();
 	}
 	
@@ -1184,6 +1188,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			GroundBattleLog log = new GroundBattleLog(this, GroundBattleLog.TYPE_MILITIA_UNLEASHED, turnNum);
 			addLogEvent(log);
 		}
+		
+		attacker.getMovementPointsPerTurn().unmodify("sneakAttack");
 		
 		if (shouldNotify())
 			sendUpdateIfPlayerHasIntel(UPDATE_TURN, false);
