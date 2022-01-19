@@ -17,6 +17,7 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 	protected float crPenalty;
 	protected float maintMult;
 	protected float milDP, civDP;
+	protected boolean needReapply = false;
 	
 	/**
 	 * The degree to which military ships out-DP civilian ones. Returns 0 when
@@ -34,8 +35,7 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 	public void updateDifficultyCache(int difficulty) {
 		this.difficulty = difficulty;
 		//Global.getLogger(this.getClass()).info(String.format("Updating cache"));
-		crPenalty = getValueByDifficulty(0, difficulty);
-		maintMult = getValueByDifficulty(1, difficulty);
+		getValueByDifficulty(-1, difficulty);
 	}
 	
 	@Override
@@ -55,29 +55,40 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 
         @Override
         public void apply(FleetMemberAPI member) {
-            decreaseMaxCR(member.getStats(), id, crPenalty, rule.getName());
+			//Global.getLogger(this.getClass()).info(String.format("Applying debuff for %s: %s CR penalty, %s maint mult", 
+			//		member.getShipName(), crPenalty, maintMult));
+			decreaseMaxCR(member.getStats(), id, crPenalty, rule.getName());
 			member.getStats().getSuppliesPerMonth().modifyMult(id, maintMult, rule.getName());
-        }
-    }
+		}
+	}
 	
 	
-    @Override
-    public void applyPlayerFleetStats(CampaignFleetAPI fleet) {
+	@Override
+	public void applyPlayerFleetStats(CampaignFleetAPI fleet) {
+		float oldCivDP = civDP;
+		float oldMilDP = milDP;
+		
 		civDP = 0;
 		milDP = 0;
 		
-        final List<FleetMemberAPI> members = fleet.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : members) {
+		final List<FleetMemberAPI> members = fleet.getFleetData().getMembersListCopy();
+		for (FleetMemberAPI member : members) {
 			if (member.isMothballed()) continue;
-            if (member.getVariant().hasHullMod(HullMods.CIVGRADE) || member.getVariant().hasHullMod(HullMods.MILITARIZED_SUBSYSTEMS)) {
+			if (member.getVariant().hasHullMod(HullMods.CIVGRADE) || member.getVariant().hasHullMod(HullMods.MILITARIZED_SUBSYSTEMS)) {
 				civDP += member.getDeploymentPointsCost();
 			}
 			else milDP += member.getDeploymentPointsCost();
-        }
+		}
+		if (oldCivDP != civDP || oldMilDP != milDP) {
+			needReapply = true;
+			Global.getLogger(this.getClass()).info("Reapplying buff");
+		}
+		
 		updateDifficultyCache(difficulty);
 		
 		//Global.getLogger(this.getClass()).info(String.format("Applying stats: %s civ, %s mil", civDP, milDP));
-        
+		//Global.getLogger(this.getClass()).info(String.format("Applying stats: %s crPenalty, %s maintMult", crPenalty, maintMult));
+		
 		boolean needsSync = false;
 		for (FleetMemberAPI member : members) {
 			String buffId = rule.getBuffID();
@@ -87,16 +98,24 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 				continue;
 			}
 			
-            float buffDur = 0.1f;
+			if (needReapply) {
+				member.getBuffManager().removeBuff(buffId);
+			}
+			
+			//Global.getLogger(this.getClass()).info("Checking fleet member for buff: " + member.getShipName());
+			float buffDur = 0.1f;
 			BuffManagerAPI.Buff test = member.getBuffManager().getBuff(buffId);
 			if (test instanceof MilitaryDebuff) {
 				MilitaryDebuff buff = (MilitaryDebuff) test;
 				buff.setDur(buffDur);
+				buff.apply(member);
+				//Global.getLogger(this.getClass()).info("Updating buff duration for " + member.getShipName());
 			} else {
 				member.getBuffManager().addBuff(new MilitaryDebuff(buffId, buffDur));
 				needsSync = true;
 			}
 		}
+		needReapply = false;
 		if (needsSync) {
 			fleet.forceSync();
 		}
