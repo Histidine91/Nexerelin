@@ -906,7 +906,7 @@ public class ExerelinProcGen {
 		List<ProcGenEntity> candidates = new ArrayList<>(populatedPlanets);
 		Collections.sort(candidates, DESIRABILITY_COMPARATOR);
 		
-		if (DEBUG_MODE) {
+		if (DEBUG_MODE || Global.getSettings().isDevMode()) {
 			Global.getSector().getMemoryWithoutUpdate().set("$nex_randomSector_colonyCandidates", candidates);
 			Global.getSector().getIntelManager().addIntel(new HomeworldPickerDebugIntel());
 		}
@@ -1653,11 +1653,15 @@ public class ExerelinProcGen {
 			
 			if (alreadyPresent.contains(candidate.starSystem))
 			{
+				// code to stop trying to fill a system with a faction's markets if we already have a lot of those
+				// don't do it, go ahead and pool, most vanilla systems are like this
+				/*
 				float existingCount = countMarketsInSystemForFaction(candidate.starSystem, factionId);
 				//log.info("System " + candidate.starSystem.getBaseName() + " already has " + existingCount + " markets for " + factionId);
 				float existingMult = 4 - existingCount;
 				if (existingMult < 0.5) existingMult = 0.5f;
 				score *= existingMult;
+				*/
 			}
 			
 			if (score > bestScore) {
