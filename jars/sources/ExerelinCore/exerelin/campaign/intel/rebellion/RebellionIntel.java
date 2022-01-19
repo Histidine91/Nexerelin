@@ -779,6 +779,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			
 			if (!maybeSource.hasSpaceport()) continue;
 			
+			if (RebellionIntel.isOngoing(maybeSource)) continue;
+			
 			float dist = Misc.getDistance(maybeSource.getLocationInHyperspace(), targetLoc);
 			if (dist < 5000.0f) {
 				dist = 5000.0f;
