@@ -1997,6 +1997,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		section.addPara(getString("helpPara2-1"), pad);
 		section.addPara(getString("helpPara2-2"), pad);
 		section.addPara(getString("helpPara2-3"), pad);
+		section.addPara(getString("helpPara2-4"), pad);
 		help2Text.addImageWithText(pad);
 		help2Holder.addUIElement(help2Text).inTL(0, 0);
 		TooltipMakerAPI help2Img = help2Holder.createUIElement(223, 123, false);

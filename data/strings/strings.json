@@ -1439,6 +1439,7 @@
 		"helpPara2-1":"The unit card displays each unit's stats and its current location.",
 		"helpPara2-2":"Click on the Action button on the unit card to give it an order.",
 		"helpPara2-3":"The enemy commander will also move their units around in response to your attack. You can check their troop movements in the log.",
+		"helpPara2-4":"Each side has limited movement points per turn (increases with market size and ground support hullmods).",
 		
 		"helpPara3Title":"Unit types",
 		"helpPara3-1":"%s: General combat type.",
