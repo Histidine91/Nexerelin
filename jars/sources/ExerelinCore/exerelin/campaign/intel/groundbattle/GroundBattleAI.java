@@ -207,7 +207,8 @@ public class GroundBattleAI {
 	}
 	
 	public void checkAbilityUse() {
-		
+		// try-catch here as well so an exception in ability use doesn't block normal movement
+		try {
 		GroundBattleSide side = intel.getSide(isAttacker);
 		PersonAPI user = side.getCommander();
 		
@@ -238,6 +239,10 @@ public class GroundBattleAI {
 		AbilityPlugin best = abilitiesSorted.get(0).one;
 		printDebug("AI trying ability: " + best.getDef().name);
 		boolean success = best.aiExecute(this, user);
+		
+		} catch (Exception ex) {
+			log.error("Ability use check failed", ex);
+		}
 	}
 	
 	public void getInfo() {

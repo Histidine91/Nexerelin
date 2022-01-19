@@ -349,9 +349,10 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 				if (candidate.getAI().isFleeing() || candidate.getAI().isMaintainingContact())
 					continue;
 			}
-			for (FleetMemberAPI member : getOlympi(fleet)) {
+			for (FleetMemberAPI member : getOlympi(candidate)) {
 				if (haveEnoughCR(member)) {
 					olympus = member;
+					fleet = candidate;
 					break;
 				}
 			}
@@ -374,6 +375,7 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 	public List<FleetMemberAPI> getOlympi(CampaignFleetAPI fleet) 
 	{
 		List<FleetMemberAPI> members = new ArrayList<>();
+		if (fleet == null) return members;
 		for (FleetMemberAPI candidate : fleet.getFleetData().getCombatReadyMembersListCopy())
 		{
 			if (isOlympus(candidate)) {
