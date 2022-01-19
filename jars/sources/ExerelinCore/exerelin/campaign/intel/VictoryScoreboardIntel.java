@@ -144,7 +144,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 				
 		subScoreboard.addComponent(header).inTL(0, 3);
 		
-		TooltipMakerAPI list = subScoreboard.createUIElement(width, height - headerHeight, true);
+		TooltipMakerAPI list = subScoreboard.createUIElement(width, height - headerHeight - 8, true);
 		
 		// create each rank row
 		int lastScore = 0;
@@ -155,7 +155,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 			if (entry.score == lastScore)
 				rank = lastRank;
 			
-			CustomPanelAPI row = createRankingRow(entry, rank, subScoreboard, width - 8, rowHeight);
+			CustomPanelAPI row = createRankingRow(entry, rank, subScoreboard, width - 12, rowHeight);
 			list.addCustom(row, 3);
 			
 			lastScore = entry.score;
