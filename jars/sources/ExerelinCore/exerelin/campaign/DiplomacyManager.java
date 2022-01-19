@@ -1342,7 +1342,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      */
     public static boolean haveRandomRelationships(String factionId1, String factionId2) 
     {
-        if (!getManager().startRelationsMode.isDefault()) return false;
+        if (getManager().startRelationsMode.isDefault()) return false;
         if (NexConfig.getFactionConfig(factionId1).noRandomizeRelations) 
             return false;
         if (NexConfig.getFactionConfig(factionId2).noRandomizeRelations) 
