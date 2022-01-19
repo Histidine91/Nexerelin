@@ -91,7 +91,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		requireMarketNotInHyperspace();
 		preferMarketSizeAtLeast(4);
 		preferMarketSizeAtMost(6);
-		search.marketPrefs.add(new MarketGroundDefReq(150, 600));
+		search.marketPrefs.add(new MarketGroundDefReq(150, 350));
 		market = pickMarket();
 		danger = RaidDangerLevel.HIGH;
 		if (market == null) {
