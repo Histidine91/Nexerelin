@@ -181,6 +181,9 @@ public class NexUtilsMarket {
 		if (!NexConfig.allowInvadeStoryCritical && Misc.isStoryCritical(market))
 			return false;
 		
+		if (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_NPC_NO_INVADE))
+			return false;
+		
 		boolean allowPirates = NexConfig.allowPirateInvasions;
 		boolean isPirate = NexUtilsFaction.isPirateFaction(factionId);
 		// player markets count as pirate if player has a commission with a pirate faction
