@@ -175,6 +175,7 @@ public class StartSetupPostTimePass {
 			
 			if (corvusMode) {
 				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$metDaud", true);
+				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$gaveDaudYaribayContact", true);
 				mem.set("$gaATG_missionCompleted", true);
 				mem.set("$gaFC_missionCompleted", true);
 				mem.set("$gaKA_missionCompleted", true);
