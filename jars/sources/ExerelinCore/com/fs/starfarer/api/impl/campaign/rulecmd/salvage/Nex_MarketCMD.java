@@ -243,6 +243,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		return responder;
 	}
 	
+	public static void unsetResponseFleet(MarketAPI market) {
+		market.getMemoryWithoutUpdate().unset(ResponseFleetManager.MEMORY_KEY_FLEET);
+	}
+	
 	@Override
 	protected CampaignFleetAPI getInteractionTargetForFIDPI() {
 		CampaignFleetAPI fleet = super.getInteractionTargetForFIDPI();
