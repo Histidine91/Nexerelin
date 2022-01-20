@@ -1873,7 +1873,7 @@ public class ExerelinProcGen {
 			float share = 1;
 			if (setupData.useFactionWeights) {
 				if (setupData.randomFactionWeights) {
-					share = (float)(1 + 0.5f * random.nextGaussian());
+					share = (float)(0.5f + 0.5f * random.nextFloat() + 0.5f * random.nextFloat());
 				} else {
 					share = NexConfig.getFactionConfig(factionId).marketSpawnWeight;
 				}
