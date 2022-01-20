@@ -656,7 +656,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		// cell kill option
 		ButtonAPI button = info.addAreaCheckbox(getString("intelButtonCellKill"), BUTTON_CELL_KILL, 
 				pf.getBaseUIColor(), pf.getDarkUIColor(), pf.getBrightUIColor(),
-				(int)width, 20f, opad);		
+				(int)width, 20f, opad);
 		button.setChecked(cellKillMode);
 		info.addTooltipToPrevious(new TooltipCreator(){
 				@Override

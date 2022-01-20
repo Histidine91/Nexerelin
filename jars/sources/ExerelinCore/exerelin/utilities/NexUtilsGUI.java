@@ -13,7 +13,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
-import static exerelin.campaign.intel.merc.MercContractIntel.SHIP_ICON_WIDTH;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;

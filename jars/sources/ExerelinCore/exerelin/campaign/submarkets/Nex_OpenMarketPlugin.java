@@ -8,7 +8,9 @@ public class Nex_OpenMarketPlugin extends OpenMarketPlugin {
 	
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		if (NexConfig.doubleSubmarketWeapons && okToUpdateShipsAndWeapons()) {
+		boolean okToUpdate = okToUpdateShipsAndWeapons();
+		super.updateCargoPrePlayerInteraction();
+		if (NexConfig.doubleSubmarketWeapons && okToUpdate) {
 			super.updateCargoPrePlayerInteraction();
 			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
 			int weapons = 5 + Math.max(0, market.getSize() - 1) + (Misc.isMilitary(market) ? 5 : 0);
@@ -18,9 +20,6 @@ public class Nex_OpenMarketPlugin extends OpenMarketPlugin {
 			addFighters(fighters, fighters + 2, 0, market.getFactionId());
 			
 			getCargo().sort();
-		}
-		else {
-			super.updateCargoPrePlayerInteraction();
 		}
 	}
 }

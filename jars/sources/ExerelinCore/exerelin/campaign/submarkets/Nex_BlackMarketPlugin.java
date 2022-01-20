@@ -10,8 +10,9 @@ public class Nex_BlackMarketPlugin extends BlackMarketPlugin {
 	
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		if (NexConfig.doubleSubmarketWeapons && okToUpdateShipsAndWeapons()) {
-			super.updateCargoPrePlayerInteraction();
+		boolean okToUpdate = okToUpdateShipsAndWeapons();
+		super.updateCargoPrePlayerInteraction();
+		if (NexConfig.doubleSubmarketWeapons && okToUpdate) {
 			
 			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
 			WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<String>();
@@ -26,9 +27,6 @@ public class Nex_BlackMarketPlugin extends BlackMarketPlugin {
 			addFighters(fighters, fighters + 2, 3, factionPicker);
 			
 			getCargo().sort();
-		}
-		else {
-			super.updateCargoPrePlayerInteraction();
 		}
 	}
 }

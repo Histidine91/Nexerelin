@@ -140,7 +140,12 @@ public class DiplomacyBrain {
 	
 	//==========================================================================
 	//==========================================================================
-		
+
+	/**
+	 * Gets the brain faction's disposition towards the specified faction.
+	 * @param factionId
+	 * @return
+	 */	
 	public DispositionEntry getDisposition(String factionId)
 	{
 		if (!dispositions.containsKey(factionId))

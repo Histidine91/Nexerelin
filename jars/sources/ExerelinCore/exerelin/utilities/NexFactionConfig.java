@@ -19,15 +19,11 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
-import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
 import java.awt.Color;
 import java.io.IOException;
 import org.json.JSONObject;
 import java.util.*;
-import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -534,6 +530,7 @@ public class NexFactionConfig
         return minRelationships.get(factionId);
     }
     
+    //runcode exerelin.utilities.NexFactionConfig.getMaxRelationship("hegemony", "al_ars")
     public static float getMaxRelationship(String factionId1, String factionId2)
     {
         if (!NexConfig.useRelationshipBounds) return 1;
@@ -606,6 +603,7 @@ public class NexFactionConfig
         return 0;
     }
     
+    // runcode $print(exerelin.utilities.NexFactionConfig.canCeasefire("hegemony", "al_ars"))
     public static boolean canCeasefire(String factionId1, String factionId2)
     {
         // remove relationship bound clamp if both sides have random relations

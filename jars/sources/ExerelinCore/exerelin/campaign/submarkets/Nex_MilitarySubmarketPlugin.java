@@ -11,7 +11,9 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	
 	@Override
 	public void updateCargoPrePlayerInteraction() {
-		if (NexConfig.doubleSubmarketWeapons && okToUpdateShipsAndWeapons()) {
+		boolean okToUpdate = okToUpdateShipsAndWeapons();
+		super.updateCargoPrePlayerInteraction();
+		if (NexConfig.doubleSubmarketWeapons && okToUpdate) {
 			super.updateCargoPrePlayerInteraction();
 			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
 			int weapons = 7 + Math.max(0, market.getSize() - 1) * 2;
@@ -21,9 +23,6 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 			addFighters(fighters, fighters + 2, 3, market.getFactionId());
 			
 			getCargo().sort();
-		}
-		else {
-			super.updateCargoPrePlayerInteraction();
 		}
 	}
 	
