@@ -1065,6 +1065,10 @@ public class NexMarketBuilder
 				continue;
 			
 			BonusGen bonus = bonusesById.get(bonusEntry.id);
+			if (bonus == null) {
+				log.error(String.format("Bonus %s for faction %s does not exist", bonusEntry.id, factionId));
+				continue;
+			}
 			
 			// order industries by reverse priority, highest priority markets get the bonuses
 			List<Pair<Industry, Float>> ordered = new ArrayList<>();	// float is priority value
