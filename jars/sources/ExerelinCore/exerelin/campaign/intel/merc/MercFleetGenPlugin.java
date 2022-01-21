@@ -3,6 +3,7 @@ package exerelin.campaign.intel.merc;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BuffManagerAPI.Buff;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FleetInflater;
@@ -108,6 +109,20 @@ public class MercFleetGenPlugin {
 		}
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			member.getBuffManager().addBuffOnlyUpdateStat(new MercBuff());
+		}
+		
+		// custom name if present
+		if (def.shipNamePrefix != null) {
+			FactionAPI faction = Global.getSector().getFaction(def.factionId);
+			String factionPrefix = faction.getShipNamePrefix();
+			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+				String name = member.getShipName();
+				if (factionPrefix == null || factionPrefix.isEmpty()) {
+					member.setShipName(def.shipNamePrefix + " " + name);
+				} else {
+					member.setShipName(name.replaceFirst(faction.getShipNamePrefix(), def.shipNamePrefix));
+				}				
+			}
 		}
 		
 		fleet.setFaction(def.factionId, true);

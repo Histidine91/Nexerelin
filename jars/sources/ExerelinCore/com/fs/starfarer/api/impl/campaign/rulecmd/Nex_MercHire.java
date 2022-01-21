@@ -111,7 +111,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 	public void hire(InteractionDialogAPI dialog, MarketAPI market, String companyId) {
 		MercContractIntel intel = getSelectedCompany(market, companyId);
 		intel.accept(market, dialog.getTextPanel());
-		int price = intel.getDef().feeUpfront;
+		int price = intel.getModifiedFeeUpfront();
 		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(price);
 		AddRemoveCommodity.addCreditsLossText(price, dialog.getTextPanel());
 		getAvailableHires(market).remove(intel);
@@ -147,7 +147,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			if (diff < 0) diff = 0;
 			local.set("$nex_mercValueDiffVal", diff, 0);
 			local.set("$nex_mercValueDiffStr", Misc.getDGSCredits(diff), 0);
-			int refund = Math.round(curr.getDef().feeUpfront * MercDataManager.feeUpfrontRefundMult);
+			int refund = Math.round(curr.getModifiedFeeUpfront() * MercDataManager.feeUpfrontRefundMult);
 			local.set("$nex_mercRetainerRefundVal", refund, 0);
 			local.set("$nex_mercRetainerRefundStr", Misc.getDGSCredits(refund), 0);
 			long net = refund - diff;	// paid to player
@@ -278,8 +278,8 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		Color h = Misc.getHighlightColor();
 
 		info.addPara(def.desc, pad);
-
-		String fee1 = Misc.getDGSCredits(def.feeUpfront);
+		
+		String fee1 = Misc.getDGSCredits(intel.getModifiedFeeUpfront());
 		String fee2 = Misc.getDGSCredits(def.feeMonthly);
 		info.addPara(getString("intel_desc_feeUpfront") + ": " + fee1, opad, h, fee1);
 		info.addPara(getString("intel_desc_feeMonthly") + ": " + fee2, pad, h, fee2);
@@ -349,12 +349,13 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			CustomPanelAPI info = panelGen.panel;
 			TooltipMakerAPI text = (TooltipMakerAPI)panelGen.elements.get(1);
 			
-			boolean enough = credits >= def.feeUpfront;
+			int feeCalc = intel.getModifiedFeeUpfront();
+			boolean enough = credits >= feeCalc;
 			
 			//text.setParaSmallInsignia();
 			text.addPara(def.name, def.getFaction().getBaseUIColor(), 0);
 			//text.setParaFontDefault();
-			String fee1 = Misc.getDGSCredits(def.feeUpfront);
+			String fee1 = Misc.getDGSCredits(feeCalc);
 			String fee2 = Misc.getDGSCredits(def.feeMonthly);
 			text.addPara(fee1 + " + " + fee2 + "/mth", pad, enough ? Misc.getHighlightColor() 
 					: Misc.getNegativeHighlightColor(), fee1, fee2);

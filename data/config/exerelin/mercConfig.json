@@ -20,8 +20,10 @@
 		#	"name":"The Swordmasters",
 		#	"desc":"A generic company of guns for hire.",
 		#	"logo":"graphics/icons/missions/military_bounty.png",
+		#	"shipNamePrefix":"SMS",
 		#	"feeUpfront":50000,
 		#	"feeMonthly":2500,
+		#	"fleetFeeMult":0.2,		# fraction of fleet cost that is added to upfront fee	
 		#	"faction":"independent",	# used for default logo, min rep with player, min rep with hosting faction
 		#	"factionForShipPick":"mercenary",	# defaults to same as faction tag
 		#	"minRep":"SUSPICIOUS",
@@ -289,7 +291,6 @@
 		},
 		
 		# disabled via min level, we don't want people stripping it for its weapons (also it kind of rekts the lore)
-		# also note that battles won't end if this is deployed and on the field, use EndBattle console command
 		"endbringer":{
 			"name":"The Bringer of End",
 			"desc":"This completely outworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",

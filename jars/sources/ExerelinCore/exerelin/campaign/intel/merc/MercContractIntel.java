@@ -87,6 +87,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		fleetPlugin = MercFleetGenPlugin.createPlugin(this);
 		if (fleetPlugin.isAvailableAt(market)) {
 			offeredFleet = fleetPlugin.generateFleet(market);
+			startingShipValue = calcOfferedFleetValue();
 		}
 	}
 	
@@ -177,6 +178,15 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	
 	public long getShipValueDiff() {
 		return startingShipValue - calcShipsValue();
+	}
+	
+	/**
+	 * Includes the fleet cost multiplied by the fleet fee mult, if any.
+	 * @return
+	 */
+	public int getModifiedFeeUpfront() {
+		MercCompanyDef def = this.getDef();
+		return def.feeUpfront + Math.round(startingShipValue * def.fleetFeeMult);
 	}
 	
 	public void accept(MarketAPI market, TextPanelAPI text) {
@@ -467,7 +477,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		str = StringHelper.substituteToken(str, "$playerName", Global.getSector().getPlayerPerson().getNameString());
 		info.addPara(str, opad, def.getFaction().getBaseUIColor(), def.name);
 		
-		String fee1 = Misc.getDGSCredits(def.feeUpfront);
+		String fee1 = Misc.getDGSCredits(getModifiedFeeUpfront());
 		String fee2 = Misc.getDGSCredits(def.feeMonthly);
 		info.addPara(getString("intel_desc_feeUpfront") + ": " + fee1, opad, h, fee1);
 		info.addPara(getString("intel_desc_feeMonthly") + ": " + fee2, pad, h, fee2);
@@ -505,7 +515,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		if (!lost.isEmpty()) {
 			info.addPara(getString("intel_desc_shipsMissing") + ":", pad);
 			NexUtilsGUI.addShipList(info, width, lost, SHIP_ICON_WIDTH, pad);
-		}		
+		}
 		
 		long currValue = calcShipsValue();
 		String v1 = Misc.getDGSCredits(startingShipValue);

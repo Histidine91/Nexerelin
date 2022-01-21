@@ -167,8 +167,10 @@ public class MercDataManager {
 				def.name = entryJson.getString("name");
 				def.desc = entryJson.getString("desc");
 				def.logo = entryJson.optString("logo", null);
+				def.shipNamePrefix = entryJson.optString("shipNamePrefix", null);
 				def.feeUpfront = Math.round(entryJson.optInt("feeUpfront") * feeUpfrontMult);
 				def.feeMonthly = Math.round(entryJson.optInt("feeMonthly") * feeMonthlyMult);
+				def.fleetFeeMult = Math.round(entryJson.optDouble("fleetFeeMult"));
 				def.factionId = entryJson.optString("faction", Factions.INDEPENDENT);
 				if (Global.getSector().getFaction(def.factionId) == null) {
 					throw new RuntimeException("  Invalid faction for merc company " + id);
@@ -178,6 +180,7 @@ public class MercDataManager {
 				if (entryJson.has("minRep"))
 					def.minRep = RepLevel.valueOf(entryJson.getString("minRep").toUpperCase());
 				def.minLevel = entryJson.optInt("minLevel");
+				def.minLevel *= Global.getSettings().getInt("playerMaxLevel")/15;
 				
 				// load ships
 				def.ships.addAll(getShipList(entryJson));
@@ -224,8 +227,10 @@ public class MercDataManager {
 		public String name;
 		public String desc;
 		public String logo;
+		public String shipNamePrefix;
 		public int feeUpfront;
 		public int feeMonthly;
+		public float fleetFeeMult;
 		public String factionId;
 		public String factionIdForShipPick;
 		public RepLevel minRep;
