@@ -15,9 +15,9 @@ public class AbandonedStation extends BaseLandmarkDef {
 	
 	@Override
 	public int getCount() {
-		if (Global.getSector().getEconomy().getMarketsCopy().size() > 75)
-			return 2;
-		return 1;
+		if (Global.getSector().getEconomy().getMarketsCopy().size() > 50)
+			return 3;
+		return 2;
 	}
 	
 	@Override
