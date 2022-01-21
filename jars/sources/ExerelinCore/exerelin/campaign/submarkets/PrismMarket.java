@@ -432,7 +432,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         int ibbProgress = 999;
         boolean checkBossCompletion = NexConfig.prismUseIBBProgressForBossShips;
         boolean haveVayra = Global.getSettings().getModManager().isModEnabled("vayrasector");
-        boolean haveMagicBounties = MagicSettings.getBoolean("MagicBounty", "bounty_board_enabled");
+        boolean haveMagicBounties = MagicSettings.getBoolean("MagicLib", "bounty_board_enabled");
         int highestIBBNum = 0;
         
         try {

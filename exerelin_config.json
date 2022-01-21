@@ -75,7 +75,7 @@
     "prismNumWings": 6,
     "prismNumBossShips": 3,    # int; boss ships being the IBB super ships seen in Ship/Weapon Pack
     "prismRenewBossShips": false,   # if false, once a boss ship is bought or captured it won't appear in the market again
-    "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SWP to unlock new boss ships for sale
+    "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SWP to unlock new boss ships for sale; also applies to HVBs
     "prismTariff": 2.0,  # float, 1.0 = 100% tariff; modified by relationship with independents
     "prismBlueprintPriceMult":1.5,
     
