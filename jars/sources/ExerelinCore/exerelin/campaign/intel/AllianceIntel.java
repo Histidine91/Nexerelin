@@ -321,7 +321,8 @@ public class AllianceIntel extends BaseIntelPlugin {
 		String num = NexUtilsFaction.getFactionMarkets(factionId).size() + "";
 		String sizeSum = NexUtilsFaction.getFactionMarketSizeSum(factionId) + "";
 		Map<String, String> sub = new HashMap<>();
-		sub.put("$faction", name);
+		boolean permanent = AllianceManager.getAllianceByUUID(allianceId).isPermaMember(factionId);
+		sub.put("$faction", name + (permanent ? " " + getString("memberPermanentSuffix") : ""));
 		sub.put("$num", num);
 		sub.put("$size", sizeSum);
 		

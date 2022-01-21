@@ -238,7 +238,9 @@
 		"voteNoAllysLine2":"Size rating: $factionSize",
 		"voteAllianceHeader":"Alliance $allianceName: size rating $allianceSize",
 		"voteQuestionLine":"How does $myFaction vote?",
-		"voteConfirm":"Confirm vote?"
+		"voteConfirm":"Confirm vote?",
+		
+		"memberPermanentSuffix":"(permanent)"
 	},
 	"nex_agents":{
 		"agentLevel":"operative level",
