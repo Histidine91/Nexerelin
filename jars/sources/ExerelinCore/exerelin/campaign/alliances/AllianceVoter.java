@@ -112,13 +112,13 @@ public class AllianceVoter {
 		if (vote1 != null && vote1.success)
 		{
 			if (vote2 != null && vote2.success)
-				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, ally2, isWar, defyingFactions);
+				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, ally2, vote1, vote2, isWar, defyingFactions);
 			else
-				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, null, isWar, defyingFactions);
+				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, null, vote1, null, isWar, defyingFactions);
 		}
 		else if (vote2 != null && vote2.success)
 		{
-			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, isWar, defyingFactions);
+			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, null, vote2, isWar, defyingFactions);
 		}
 		
 		// report intel

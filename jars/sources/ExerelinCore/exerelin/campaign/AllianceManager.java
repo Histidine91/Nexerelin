@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.alliances.AllianceVoter.VoteResult;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.NexConfig;
@@ -676,9 +677,16 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         doAlliancePeaceStateChange(faction1Id, faction2Id, getFactionAlliance(faction1Id), getFactionAlliance(faction2Id), isWar, new HashSet<String>());
     }
-
+    
     public static void doAlliancePeaceStateChange(String faction1Id, String faction2Id, 
             Alliance alliance1, Alliance alliance2, boolean isWar, Set<String> defyingFactions)
+    {
+         doAlliancePeaceStateChange(faction1Id, faction2Id, alliance1, alliance2, null, null, isWar, new HashSet<String>());
+    }
+    
+    public static void doAlliancePeaceStateChange(String faction1Id, String faction2Id, 
+            Alliance alliance1, Alliance alliance2, VoteResult vote1, VoteResult vote2,
+            boolean isWar, Set<String> defyingFactions)
     {
         if (alliance1 == null && alliance2 == null)
             return;
@@ -686,6 +694,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorAPI sector = Global.getSector();
         FactionAPI faction1 = sector.getFaction(faction1Id);
         FactionAPI faction2 = sector.getFaction(faction2Id);
+        DiplomacyManager manager = DiplomacyManager.getManager();
         
         // declare war on/make peace with the other faction/alliance
         float delta = isWar ? -0.1f : 0.3f;
@@ -696,57 +705,78 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         if (alliance1 != null)
         {
-            for (String memberId : alliance1.getMembersCopy())
+            for (String a1MemberId : alliance1.getMembersCopy())
             {
-                if (defyingFactions.contains(memberId)) continue;
+                if (defyingFactions.contains(a1MemberId)) continue;
                 
-                FactionAPI member = sector.getFaction(memberId);
+                FactionAPI a1Member = sector.getFaction(a1MemberId);
+                boolean m1VotedYes = vote1.yesVotes.contains(a1MemberId);
+                
+                // other party is in an alliance, iterate over their members and update accordingly
                 if (alliance2 != null)
                 {
-                    for (String otherMemberId : alliance2.getMembersCopy())
+                    for (String a2MemberId : alliance2.getMembersCopy())
                     {
-                        if (defyingFactions.contains(otherMemberId)) continue;
+                        if (defyingFactions.contains(a2MemberId)) continue;
                         
-                        FactionAPI otherMember = sector.getFaction(otherMemberId);
+                        FactionAPI otherMember = sector.getFaction(a2MemberId);
                         // already in correct state, do nothing
-                        if (isWar && member.isHostileTo(otherMemberId) || !isWar && !member.isHostileTo(otherMemberId))
+                        if (isWar && a1Member.isHostileTo(a2MemberId) || !isWar && !a1Member.isHostileTo(a2MemberId))
                         {
                             continue;
                         }
                 
-                        DiplomacyManager.adjustRelations(member, otherMember, delta, 
+                        DiplomacyManager.adjustRelations(a1Member, otherMember, delta, 
                                 ensureAtBest, ensureAtWorst, limit, true);
+                        
+                        boolean m2VotedYes = vote2.yesVotes.contains(a2MemberId);
+                        
+                        // handle disposition changes
+                        // if we voted for the alliance action, modify our disposition towards the other guys accordingly
+                        if (m1VotedYes)
+                            manager.getDiplomacyBrain(a1MemberId).reportDiplomacyEvent(a2MemberId, delta);
+                        if (m2VotedYes)
+                            manager.getDiplomacyBrain(a2MemberId).reportDiplomacyEvent(a1MemberId, delta);
+                        
                         anyChanges = true;
                     }
                 }
+                // other party is not in an alliance, just work with the one faction
                 else
                 {
                     // already in correct state, do nothing
-                    if (isWar && member.isHostileTo(faction2Id) || !isWar && !member.isHostileTo(faction2Id))
+                    if (isWar && a1Member.isHostileTo(faction2Id) || !isWar && !a1Member.isHostileTo(faction2Id))
                     {
                         continue;
                     }
-                    DiplomacyManager.adjustRelations(member, faction2, delta, 
+                    DiplomacyManager.adjustRelations(a1Member, faction2, delta, 
                             ensureAtBest, ensureAtWorst, limit, true);
+                    if (m1VotedYes)
+                            manager.getDiplomacyBrain(a1MemberId).reportDiplomacyEvent(faction2Id, delta);
+                    
                     anyChanges = true;
                 }
             }
         }
         else if (alliance2 != null)
         {
-            for (String memberId : alliance2.getMembersCopy())
+            for (String a2MemberId : alliance2.getMembersCopy())
             {
-                if (defyingFactions.contains(memberId)) continue;
+                if (defyingFactions.contains(a2MemberId)) continue;
+                boolean m2VotedYes = vote2.yesVotes.contains(a2MemberId);
                 
-                FactionAPI member = sector.getFaction(memberId);
+                FactionAPI a2Member = sector.getFaction(a2MemberId);
                 // already in correct state, do nothing
-                if (isWar && member.isHostileTo(faction1Id) || !isWar && !member.isHostileTo(faction1Id))
+                if (isWar && a2Member.isHostileTo(faction1Id) || !isWar && !a2Member.isHostileTo(faction1Id))
                 {
                     continue;
                 }
                 
-                DiplomacyManager.adjustRelations(member, faction1, delta, 
+                DiplomacyManager.adjustRelations(a2Member, faction1, delta, 
                             ensureAtBest, ensureAtWorst, limit, true);
+                if (m2VotedYes)
+                    manager.getDiplomacyBrain(a2MemberId).reportDiplomacyEvent(faction1Id, delta);
+                
                 anyChanges = true;
             }
         }
