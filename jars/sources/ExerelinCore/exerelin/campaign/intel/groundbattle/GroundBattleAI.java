@@ -350,7 +350,13 @@ public class GroundBattleAI {
 	 * @return True if further action should be taken (i.e. this method should 
 	 * be called again), false otherwise.
 	 */
-	public boolean decisionLoop(int iter) {		
+	public boolean decisionLoop(int iter) {
+		// stalemated for too many turns, withdraw attacker
+		if (isAttacker && !isPlayer && intel.getTurnsSinceLastAction() >= GBConstants.WITHDRAW_AFTER_NO_COMBAT_TURNS) {
+			orderWithdrawal();
+			return false;
+		}
+		
 		boolean movedAnything = false;
 		// this prevents it from getting stuck if all the target industries are writeoffs
 		boolean ignoreWriteoff = writeoffIndustries.size() == industriesWithEnemySorted.size();
@@ -417,6 +423,16 @@ public class GroundBattleAI {
 		
 		boolean canContinue = movedAnything && availableStrength > 0 && intel.getSide(isAttacker).getMovementPointsRemaining() > movePointThreshold;
 		return canContinue;
+	}
+	
+	public void orderWithdrawal() {
+		int remainingMovePoints = intel.getSide(isAttacker).getMovementPointsPerTurn().getModifiedInt()
+				- intel.getSide(isAttacker).getMovementPointsSpent().getModifiedInt();
+		
+		for (GroundUnit unit : availableUnitsSorted) {
+			if (remainingMovePoints <= movePointThreshold) break;
+			unit.orderWithdrawal();
+		}
 	}
 			
 	protected boolean canUnleashMilitia() {

@@ -87,6 +87,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -148,6 +149,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected IntervalUtil interval = new IntervalUtil(1, 1);
 	protected IntervalUtil intervalShort = new IntervalUtil(0.2f, 0.2f);
 	protected MilitaryResponseScript responseScript;
+	@Getter protected int turnsSinceLastAction = 0;
 	
 	protected boolean noTransfer = false;
 	protected boolean endIfPeace = true;
@@ -1335,6 +1337,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void reportAbilityUsed(AbilityPlugin ability, GroundBattleSide side, PersonAPI person) 
 	{
+		resetTurnsSinceLastAction();
+		
 		if (person != null && person.isPlayer()) return;
 		Pair<Boolean, AbilityPlugin> entry = new Pair<>(side.isAttacker(), ability);
 		abilitiesUsedLastTurn.add(entry);
@@ -1345,6 +1349,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (GroundBattlePlugin plugin : getPlugins()) {
 			plugin.advance(days);
 		}
+	}
+	
+	public void incrementTurnsSinceLastAction() {
+		turnsSinceLastAction++;
+	}
+	
+	public void resetTurnsSinceLastAction() {
+		turnsSinceLastAction = 0;
 	}
 	
 	// =========================================================================

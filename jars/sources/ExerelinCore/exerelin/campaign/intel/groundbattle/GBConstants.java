@@ -56,6 +56,8 @@ public class GBConstants {
 	public static float INVASION_HEALTH_MONTHS_TO_RECOVER = 3;
 	public static float LIBERATION_REBEL_MULT = 0.25f;
 	
+	public static int WITHDRAW_AFTER_NO_COMBAT_TURNS = 6;
+	
 	public static PersonnelData DEFENSE_STAT = new PersonnelData("generic_defender");
 	static {
 		DEFENSE_STAT.num = 100;

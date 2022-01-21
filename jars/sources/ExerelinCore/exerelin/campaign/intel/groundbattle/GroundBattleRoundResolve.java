@@ -50,6 +50,8 @@ public class GroundBattleRoundResolve {
 		intel.getSide(false).getLossesLastTurn().clear();
 		intel.playerData.getLossesLastTurn().clear();
 		
+		boolean anyAction = false;
+		
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			plugin.beforeTurnResolve(intel.turnNum);
 		}
@@ -59,15 +61,19 @@ public class GroundBattleRoundResolve {
 		}
 		
 		for (IndustryForBattle ifb : intel.industries) {
-			resolveCombatOnIndustry(ifb);
+			anyAction |= resolveCombatOnIndustry(ifb);
 		}
 		
 		processUnitsRoundIntermission();
 		updateIndustryOwners();
 		
+		// move units to their destinations
 		for (GroundUnit unit : intel.getAllUnits()) {
 			if (unit.isReorganizing() && !unit.isWithdrawing()) continue;
+			boolean isWithdrawal = unit.isWithdrawing();
 			unit.executeMove(false);
+			
+			if (!isWithdrawal) anyAction = true;
 		}
 		
 		resetMovementPointsSpent(false);
@@ -78,7 +84,7 @@ public class GroundBattleRoundResolve {
 		}
 		
 		for (IndustryForBattle ifb : intel.industries) {
-			resolveCombatOnIndustry(ifb);
+			anyAction |= resolveCombatOnIndustry(ifb);
 		}
 		
 		processUnitsAfterRound();
@@ -90,6 +96,11 @@ public class GroundBattleRoundResolve {
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			plugin.afterTurnResolve(intel.turnNum);
 		}
+		
+		if (anyAction)
+			intel.resetTurnsSinceLastAction();
+		else
+			intel.incrementTurnsSinceLastAction();
 	}
 	
 	/**
@@ -216,8 +227,8 @@ public class GroundBattleRoundResolve {
 		}
 	}
 	
-	public void resolveCombatOnIndustry(IndustryForBattle ifb) {
-		if (!ifb.isContested()) return;
+	public boolean resolveCombatOnIndustry(IndustryForBattle ifb) {
+		if (!ifb.isContested()) return false;
 		printDebug("Resolving combat on " + ifb.ind.getCurrentName());
 		hadCombat.add(ifb);
 		
@@ -230,6 +241,8 @@ public class GroundBattleRoundResolve {
 		distributeDamage(ifb, false, atkStr);
 		printDebug(String.format("  Applying damage to attacker"));
 		distributeDamage(ifb, true, defStr);
+		
+		return true;
 	}
 	
 	/**
