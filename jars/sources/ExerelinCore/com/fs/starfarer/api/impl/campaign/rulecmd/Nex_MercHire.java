@@ -143,7 +143,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			local.set("$nex_mercCompanyName", curr.getDef().name, 0);
 			
 			// money stuff
-			long diff = curr.getShipValueDiff();
+			long diff = Math.round(curr.getShipValueDiff() * MercDataManager.valueDifferencePaymentMult);
 			if (diff < 0) diff = 0;
 			local.set("$nex_mercValueDiffVal", diff, 0);
 			local.set("$nex_mercValueDiffStr", Misc.getDGSCredits(diff), 0);
@@ -152,6 +152,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			local.set("$nex_mercRetainerRefundStr", Misc.getDGSCredits(refund), 0);
 			long net = refund - diff;	// paid to player
 			local.set("$nex_mercNetPaymentVal", net, 0);
+			local.set("$nex_mercNetPaymentAbsVal", Math.abs(net), 0);
 			local.set("$nex_mercNetPaymentStr", Misc.getDGSCredits(Math.abs(net)), 0);
 			return true;
 		}		

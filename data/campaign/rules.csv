@@ -1553,7 +1553,7 @@ $nex_sfInterrogatePlayerConv = true 0
 AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor
 OpenComms",,,
 nex_specialForcesInterrogateFirstComms,OpenCommLink,$entity.nex_sfInterrogatePlayerConv score:100,unset $nex_sfInterrogatePlayerConv,"""Unknown party, this is $PersonRank $personName of $theFactionLong. Your presence in this location is deemed suspicious. You are ordered to turn on your transponder to verify your identity.""","0:nex_sfInterrogate_comply:Activate transponder
-2:nex_sfInterrogate_refuse:Refuse and cut the comm link",
+1:nex_sfInterrogate_refuse:Refuse and cut the comm link",
 nex_specialForcesInterrogateStart,DialogOptionSelected,$option == nex_sfInterrogate_comply,"unset $entity.transponderOffConv
 unset $entity.sawPlayerTransponderOff
 MakeOtherFleetAggressive nex_sfInterrogatePlayer false
@@ -2097,8 +2097,8 @@ nex_remFragments_engineerConvo2Alt:Transmit the encrypted greeting like a normal
 nex_remFragments_engineerConvo2,DialogOptionSelected,$option == nex_remFragments_engineerConvo2,,"""Take care it does not fall,"" you recite.
 
 ""Lest it break into shards."" The engineer visibly relaxes. You wonder what cryptic mumbo-jumbo $nex_remFragments_giverFirstName was trying to sneak into the conversation.",nex_remFragments_engineerConvo3:Continue,
-nex_remFragments_engineerConvo2Alt,DialogOptionSelected,$option == nex_remFragments_engineerConvo2Alt,,"The person on the other end raises both eyebrows at the sight on $hisOrHer screen, then relaxes. ""Okay. I was worried for a moment, but…""",nex_remFragments_engineerConvo3:Continue,
-nex_remFragments_engineerConvo3,DialogOptionSelected,$option == nex_remFragments_engineerConvo3,,"""We're rather fortunate you came, captain. I don't know how the blasted Pathers found out about us, but..."" $HeOrShe clutches $hisOrHer head. ""We turned all our guns against them, but they just kept coming and coming, and…
+nex_remFragments_engineerConvo2Alt,DialogOptionSelected,$option == nex_remFragments_engineerConvo2Alt,,"The person on the other end raises both eyebrows at the sight on $hisOrHer screen, then relaxes. ""Okay. I was worried for a moment, but...""",nex_remFragments_engineerConvo3:Continue,
+nex_remFragments_engineerConvo3,DialogOptionSelected,$option == nex_remFragments_engineerConvo3,,"""We're rather fortunate you came, captain. I don't know how the blasted Pathers found out about us, but..."" $HeOrShe clutches $hisOrHer head. ""We turned all our guns against them, but they just kept coming and coming, and...
 
 ""Anyway, it's just me and some of the techs now. Please, you've got to get us out of here! Before they come back.""","nex_remFragments_engineerConvo4:""What about the technology?""",
 nex_remFragments_engineerConvo4,DialogOptionSelected,$option == nex_remFragments_engineerConvo4,,"""If we leave now, we can count on the Pathers to blow it up when they return."" $HeOrShe pauses, considers this for a while. ""But they might not. In which case someone else could find the same thing we did.""
@@ -3232,7 +3232,7 @@ badEmployers.add($playerName);
 connection.kill();""",,
 nex_mercLeaving_letGoBlurbRefusePayEndbringer,Nex_MercLetGoBlurb,"$nex_mercCompanyId == endbringer
 $nex_mercLetGoType == refusePay score:5",AdjustRepActivePerson INHOSPITABLE -3,"""set property: $playerName -> DISHONEST true
-$playerName.debt += $nex_mercValueDiffVal
+$playerName.debt += $nex_mercNetPaymentAbsVal
 while (debt > 0) emotionModule.guiltTrip($playerName);""",,
 #END blurbs,,,,,,
 #END Merc hiring,,,,,,
@@ -3267,14 +3267,14 @@ FireAll Nex_SteinerDuel_Pre","At the appointed time, you take a shuttle down to 
 
 A staffer presents the kit: smart material jumpsuit, hardened boots, gloves, and helmet. All the tools to ensure quick-tempered, murder-brained nobles (usually) survive their experience on the field more or less intact. On top of the pile lies a sheathed sword.
 
-As your XO stands unobtrusively behind you, you pick up the weapon. It feels…",,
+As your XO stands unobtrusively behind you, you pick up the weapon. It feels...",,
 nex_merc_steinerDuel_prepNoCrew,DialogOptionSelected,"$option == nex_merc_steinerDuel_prep
 $player.crew <= 0","ShowImageVisual eventide
 FireAll Nex_SteinerDuel_Pre","At the appointed time, you take a shuttle down to the local duelling grounds.
 
 A staffer presents the kit: smart material jumpsuit, hardened boots, gloves, and helmet. All the tools to ensure quick-tempered, murder-brained nobles (usually) survive their experience on the field more or less intact. On top of the pile lies a sheathed sword.
 
-Standing alone, you pick up the weapon. It feels…",,
+Standing alone, you pick up the weapon. It feels...",,
 nex_merc_steinerDuel_preOpt_unskilled,Nex_SteinerDuel_Pre,!$player.bladeSkill,,,"nex_steinerDuel_unskilled:...clumsy, dangerous; just when does a starship captain use such an archaic weapon, anyway?",
 nex_merc_steinerDuel_preOpt_skilled,Nex_SteinerDuel_Pre,$player.bladeSkill,,,"nex_steinerDuel_skilled:...like an old, trusted friend.",
 nex_merc_steinerDuel_preOpt_skilledSP,Nex_SteinerDuel_Pre,!$player.bladeSkill,"SetStoryOption nex_steinerDuel_skilled 1 soe_duelPrepStudied combat ""Called upon sword combat training while dueling on Eventide""",,"nex_steinerDuel_skilled:...like an old, trusted friend.",
@@ -3298,7 +3298,7 @@ $nex_playerWonDuel","ShowImageVisual eventide
 unset $player.nex_mercsInsulted_steinerGuards
 unset $player.wasJerkToMerc","As your opponent falls over, the crowd goes wild.
 
-You turn away, sheathing your weapon. House Steiner may not take this humiliation well… but you've demonstrated some honor by the standards of Eventide, and that may count for something.",nex_steinerDuel_end:Return to your $shipOrFleet,
+You turn away, sheathing your weapon. House Steiner may not take this humiliation well... but you've demonstrated some honor by the standards of Eventide, and that may count for something.",nex_steinerDuel_end:Return to your $shipOrFleet,
 nex_merc_steinerDuel_lose,Nex_FencingDuelFinished,"$nex_duelContext == steinerMercHonor
 $nex_playerLostDuel",AdjustRepActivePerson SUSPICIOUS -1,"The pain is too much and you collapse.
 
