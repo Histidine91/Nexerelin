@@ -25,6 +25,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 
@@ -46,6 +47,8 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		
 		generateFleetFromVariantIds(dialog, data, fleetTypeStr, startingVariants);
 		addStartingDModScript(memoryMap.get(MemKeys.LOCAL));
+		
+		ExerelinSetupData.getInstance().startFleetType = StartFleetType.getType(fleetTypeStr);
 		
 		memoryMap.get(MemKeys.LOCAL).set("$nex_lastSelectedFleetType", fleetTypeStr);
 		

@@ -1245,6 +1245,10 @@ public class NexFactionConfig
 		{
 			return StartFleetType.valueOf(str.toUpperCase());
 		}
+		
+		public boolean isTrade() {
+			return this == TRADE_SMALL || this == TRADE_LARGE;
+		}
 	}
 	
 	public static enum Morality {

@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.customstart.CustomStartDefs;
 import exerelin.campaign.customstart.CustomStartDefs.CustomStartDef;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 	public static void selectCustomStart(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap, String startId) {
 		dialog.getOptionPanel().clearOptions();
 		memoryMap.get(MemKeys.LOCAL).set("$nex_customStart", startId);
+		ExerelinSetupData.getInstance().startFleetType = null;
 		CustomStartDefs.loadCustomStart(startId, dialog, memoryMap);
 		// no need to decide whether to go to starting level/resources dialog or straight to completion; let the custom start code handle it
 	}

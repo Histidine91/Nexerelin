@@ -3,6 +3,7 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.utilities.StringHelper;
 
 import java.util.HashMap;
@@ -30,7 +31,6 @@ public class ExerelinSetupData
 	public int randomColonies = 0;
 	public Map<String, Boolean> factions = new HashMap<>();
 	
-
 	// Game defaults
 	public boolean corvusMode = true;
 	public boolean respawnFactions = false;
@@ -54,6 +54,11 @@ public class ExerelinSetupData
 	@Deprecated public boolean randomStartShips = false;
 	public int dModLevel = 0;
 	public boolean skipStory = false;
+	
+	/**
+	 * Can be null with special starts.
+	 */
+	public StartFleetType startFleetType = null;
 	
 	public String startScenario = null;
 

@@ -45,6 +45,7 @@ import exerelin.world.ExerelinCorvusLocations;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.SpecialItemSet;
+import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
@@ -399,6 +400,7 @@ public class StartSetupPostTimePass {
 		}
 	}
 	
+	// runcode exerelin.campaign.StartSetupPostTimePass.generateContactAtStartingLocation(Global.getSector().getEconomy().getMarket("jangala"))
 	public static void generateContactAtStartingLocation(MarketAPI market) {
 		if (market.getMemoryWithoutUpdate().getBoolean(ContactIntel.NO_CONTACTS_ON_MARKET)) return;
 		if (market.getFaction().getCustomBoolean(Factions.CUSTOM_NO_CONTACTS)) return;
@@ -416,8 +418,13 @@ public class StartSetupPostTimePass {
 			
 			String postId = contact.getPostId();
 			if (postId == null) continue;
-			// requested by ruddygreat; make contact always military
-			if (!Nex_IsBaseOfficial.isOfficial(postId, "military")) continue;
+			
+			// make contact always military except for trade starts
+			boolean military = Nex_IsBaseOfficial.isOfficial(postId, "military");
+			StartFleetType type = ExerelinSetupData.getInstance().startFleetType;
+			boolean tradeStart = type != null && type.isTrade();
+			//Global.getLogger(StartSetupPostTimePass.class).info(String.format("Testing contact of post %s: %s, %s", postId, military, tradeStart));
+			if (military == tradeStart) continue;
 			
 			contact.setVoice(contact.getFaction().pickVoice(contact.getImportance(), StarSystemGenerator.random));
 			addTagsToStartingContact(contact, postId);
