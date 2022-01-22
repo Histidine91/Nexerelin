@@ -65,7 +65,7 @@ public class GBDebugCommands {
 		TooltipMakerAPI btnHolder3 = buttonDebugRow.createUIElement(buttonWidth, 
 			VIEW_BUTTON_HEIGHT, false);
 		ButtonAPI check = btnHolder3.addAreaCheckbox(getString("btnShowAllUnits"), GBDebugCommands.BUTTON_SHOW_ALL_UNITS, 
-				base, bg, fc.getBrightUIColor(), buttonWidth, VIEW_BUTTON_HEIGHT, 0);
+				base, bg, bright, buttonWidth, VIEW_BUTTON_HEIGHT, 0);
 		check.setChecked(GroundBattleIntel.showAllUnits);
 		buttonDebugRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
 

@@ -1,8 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignUIAPI.CoreUITradeMode;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -15,7 +13,6 @@ import exerelin.campaign.intel.PlayerOutpostIntel;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsGUI.NullCoreInteractionListener;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

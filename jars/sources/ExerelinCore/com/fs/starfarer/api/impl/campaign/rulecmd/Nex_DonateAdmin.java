@@ -9,7 +9,6 @@ import com.fs.starfarer.api.characters.AdminData;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.utilities.StringHelper;

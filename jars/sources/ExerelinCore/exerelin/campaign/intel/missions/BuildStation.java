@@ -45,7 +45,6 @@ import static com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantThemeGene
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_PlayerOutpost.COST_HEIGHT;
 import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Misc;
@@ -661,7 +660,6 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 
 	@Override
 	public boolean addNextStepText(TooltipMakerAPI info, Color tc, float pad) {
-		Color h = Misc.getHighlightColor();
 		if (currentStage == Stage.DELIVER) {
 			info.addPara(StringHelper.getString("nex_buildMission", "nextStepText"), pad,
 					system.getStar().getSpec().getIconColor(), system.getNameWithLowercaseTypeShort());

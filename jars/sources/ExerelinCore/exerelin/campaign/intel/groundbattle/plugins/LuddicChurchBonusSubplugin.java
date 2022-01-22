@@ -34,7 +34,6 @@ public class LuddicChurchBonusSubplugin extends FactionBonusSubplugin {
 	public void processTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) 
 	{
 		super.processTooltip(tooltip, expanded, tooltipParam);
-		FactionAPI faction = getFaction();
 		Color good = Misc.getPositiveHighlightColor(), bad = Misc.getNegativeHighlightColor();
 		Float moraleMult = (Float)conf.groundBattleSettings.get("luddef_moraleDamageTakenMult");
 		tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);

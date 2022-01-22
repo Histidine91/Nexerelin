@@ -9,7 +9,6 @@ import com.fs.starfarer.api.campaign.SpecialItemPlugin.SpecialItemRendererAPI;
 import com.fs.starfarer.api.campaign.SpecialItemSpecAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
 import java.util.Map;
 
 public class BlueprintItem extends FactionSetupItem {

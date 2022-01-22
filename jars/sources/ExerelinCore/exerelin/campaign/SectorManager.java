@@ -584,7 +584,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         float sumRepDelta = 0;
 
         for (final MarketAPI market : markets) {
-            FactionAPI faction = market.getFaction();
             String factionId = market.getFactionId();
             if (seenFactions.contains(factionId)) continue;
             

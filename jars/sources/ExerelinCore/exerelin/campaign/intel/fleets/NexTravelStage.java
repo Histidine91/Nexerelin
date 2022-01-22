@@ -1,14 +1,12 @@
 package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.TravelStage;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.List;
 
 public class NexTravelStage extends TravelStage {
 	
@@ -31,10 +29,6 @@ public class NexTravelStage extends TravelStage {
 		int curr = intel.getCurrentStage();
 		int index = intel.getStageIndex(this);
 		
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		String key = "stageTravel";

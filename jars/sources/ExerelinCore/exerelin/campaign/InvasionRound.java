@@ -11,7 +11,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -19,7 +18,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
@@ -118,7 +116,7 @@ public class InvasionRound {
 				float currDisruption = curr.getDisruptedDays();
 				//industryPicker.add(curr, curr.getBuildCost());
 				float maxDisruption = Math.min(curr.getBuildTime() * 4, bombardDisruptDur);
-				if (currDisruption > curr.getBuildTime() * 4)
+				if (currDisruption > maxDisruption)
 					continue;
 				float weight = Math.max(100 - currDisruption, 20);
 				if (currDisruption > 0) weight *= 0.5f;

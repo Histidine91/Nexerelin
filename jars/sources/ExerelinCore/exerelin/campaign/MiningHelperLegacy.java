@@ -885,7 +885,6 @@ public class MiningHelperLegacy {
 	public static float applyResourceExhaustion(SectorEntityToken entity, float miningStrength)
 	{
 		Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
-		String type = "default";
 		float currExhaustion = 0;
 		if (exhaustionMap.containsKey(entity))
 			currExhaustion = exhaustionMap.get(entity);
@@ -895,7 +894,6 @@ public class MiningHelperLegacy {
 		if (entity instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)entity;
-			type = planet.getTypeId();
 			if (!planet.isMoon())
 				delta *= planetExhaustionMult;
 		}
@@ -1026,7 +1024,6 @@ public class MiningHelperLegacy {
 		if (faction == null) return null;
 		
 		int combat, freighter, tanker, utility;
-		float bonus;
 
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		float player = NexUtilsFleet.calculatePowerLevel(playerFleet) * 0.4f;

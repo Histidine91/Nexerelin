@@ -41,7 +41,6 @@ import exerelin.campaign.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.intel.agents.AgentIntel;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 
 import java.awt.Color;

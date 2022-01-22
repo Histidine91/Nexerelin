@@ -8,7 +8,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.industry.*;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
-import exerelin.world.NexMarketBuilder;
 
 public class SalvageYards extends IndustryClassGen {
 

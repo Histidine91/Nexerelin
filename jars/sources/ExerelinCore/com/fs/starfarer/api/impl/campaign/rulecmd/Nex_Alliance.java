@@ -11,7 +11,6 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;

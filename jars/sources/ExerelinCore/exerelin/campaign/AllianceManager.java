@@ -346,12 +346,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return;
         }
         
-        boolean playerIsHostile = faction.isHostileTo(Factions.PLAYER);
-        
         alliance.addMember(factionId);
         alliancesByFactionId.put(factionId, alliance);
         
         // don't do this anymore, since relationship doesn't change on joining alliance
+		//boolean playerIsHostile = faction.isHostileTo(Factions.PLAYER);
         //boolean playerWasHostile = faction.isHostileTo(Factions.PLAYER);
         //if (playerIsHostile != playerWasHostile)
         //    DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile, false);

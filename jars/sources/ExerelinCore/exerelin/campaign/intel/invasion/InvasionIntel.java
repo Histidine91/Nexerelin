@@ -407,9 +407,6 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		//super.createSmallDescription(info, width, height);
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);

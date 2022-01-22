@@ -388,7 +388,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}
 	
 	/**
-	 * Select a source market for faction vengeance fleets
+	 * Select a source market for faction vengeance fleets.
 	 * @param factionId
 	 * @return
 	 */
@@ -396,7 +396,6 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
-		float total = 0f;
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (faction.getId().contentEquals("cabal")) {
 				if (market.getFaction() != faction && !market.hasCondition("cabal_influence")) {

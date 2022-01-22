@@ -4,8 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -13,8 +11,6 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.StringHelper;
-import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
 

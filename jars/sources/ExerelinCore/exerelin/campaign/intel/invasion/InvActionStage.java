@@ -10,7 +10,6 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.ActionType;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript.MilitaryResponseParams;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
@@ -412,9 +411,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		int index = intel.getStageIndex(this);
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		if (curr < index) return;

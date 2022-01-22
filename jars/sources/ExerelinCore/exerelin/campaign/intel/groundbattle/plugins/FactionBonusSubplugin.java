@@ -10,7 +10,6 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
 /**

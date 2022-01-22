@@ -298,8 +298,6 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		Color h = Misc.getHighlightColor();
 		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		//info.addImage(commodity.getCommodity().getIconName(), width, 80, opad);
@@ -309,8 +307,7 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		info.addImages(width, 96, opad, opad * 2f,
 					faction.getCrest(),
 					industry.getCurrentImage());
-		
-		String prefix = faction.getPersonNamePrefix();		
+			
 		
 		String str = getString("intelDesc1");
 		String marketName = market.getName();

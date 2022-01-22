@@ -21,7 +21,6 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import static exerelin.campaign.intel.fleets.OffensiveFleetIntel.ENTERED_SYSTEM_UPDATE;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
@@ -118,8 +117,6 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad){
 		Color h = Misc.getHighlightColor();
-		
-		FactionAPI other = targetFaction;
 		
 		if (outcome == null)
 		{

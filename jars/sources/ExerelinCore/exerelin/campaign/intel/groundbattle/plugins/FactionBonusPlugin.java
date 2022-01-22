@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.utilities.NexConfig;
@@ -109,7 +108,7 @@ public class FactionBonusPlugin extends BaseGroundBattlePlugin {
 	}
 	
 	public void processTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam, boolean isAttacker) {
-		float pad = 3, opad = 10;
+		float opad = 10;
 		tooltip.addPara(GroundBattleIntel.getString("modifierFactionDescPre"), 0);
 		
 		List<FactionBonusSubplugin> subs = new ArrayList<>();

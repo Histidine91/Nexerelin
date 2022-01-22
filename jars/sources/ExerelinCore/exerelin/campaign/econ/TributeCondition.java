@@ -60,10 +60,6 @@ public class TributeCondition extends BaseMarketConditionPlugin implements Marke
 	@Override
 	public void createTooltipAfterDescription(TooltipMakerAPI tooltip, boolean expanded) {
 		Color h = Misc.getHighlightColor();
-		Color n = Misc.getNegativeHighlightColor();
-		
-		float pad = 3f;
-		float small = 5f;
 		float opad = 10f;
 		
 		tooltip.addPara(getString("cond_tooltip1"), opad, h, getIncomePenalty() + "x");

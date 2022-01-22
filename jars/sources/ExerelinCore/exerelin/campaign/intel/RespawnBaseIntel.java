@@ -449,11 +449,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 	
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		
-		Color h = Misc.getHighlightColor();
 		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 
 		//info.addPara(getName(), c, 0f);

@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.missions;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;

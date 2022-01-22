@@ -24,7 +24,6 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.world.SSP_AsteroidTracker;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;

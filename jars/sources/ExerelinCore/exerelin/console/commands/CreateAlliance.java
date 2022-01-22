@@ -1,7 +1,6 @@
 package exerelin.console.commands;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.utilities.NexUtils;

@@ -50,9 +50,7 @@ public class DecivRevivalIntel extends FleetLogIntel {
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
 		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		String text = String.format(StringHelper.getString("nex_decivEvent", "colonyIntelDesc"),

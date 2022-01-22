@@ -808,34 +808,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		public final String starkRavingMadFleetSingle;
 		public final float vengefulness;
 		public final int maxLevel;
-		
-		// legacy constructor with non-external names
-		@Deprecated
-		private VengeanceDef(String faction, String madName, String madFleet, String madFleetSingle,
-							 String ravingMadName, String ravingMadFleet,
-							 String ravingMadFleetSingle, String starkRavingMadName, String starkRavingMadFleet,
-							 String starkRavingMadFleetSingle,
-							 float vengefulness) {
-			this.faction = faction;
-			this.madName = madName;
-			this.madFleet = madFleet;
-			this.madFleetSingle = madFleetSingle;
-			this.ravingMadName = ravingMadName;
-			this.ravingMadFleet = ravingMadFleet;
-			this.ravingMadFleetSingle = ravingMadFleetSingle;
-			this.starkRavingMadName = starkRavingMadName;
-			this.starkRavingMadFleet = starkRavingMadFleet;
-			this.starkRavingMadFleetSingle = starkRavingMadFleetSingle;
-			this.vengefulness = vengefulness;
-			
-			if (starkRavingMadName != null)
-				maxLevel = 2;
-			else if (ravingMadName != null)
-				maxLevel = 1;
-			else
-				maxLevel = 0;
-		}
-		
+				
 		private VengeanceDef(String faction, int maxLevel, float vengefulness) {
 			this.faction = faction;
 			this.madName = "";

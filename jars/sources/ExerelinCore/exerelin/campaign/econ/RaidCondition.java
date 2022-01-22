@@ -86,10 +86,8 @@ public class RaidCondition extends BaseMarketConditionPlugin {
 	@Override
 	public void createTooltipAfterDescription(TooltipMakerAPI tooltip, boolean expanded) {
 		Color h = Misc.getHighlightColor();
-		Color n = Misc.getNegativeHighlightColor();
 		
 		float pad = 3f;
-		float small = 5f;
 		float opad = 10f;
 		
 		if (stabPenalty != 0 || accessPenalty != 0) {

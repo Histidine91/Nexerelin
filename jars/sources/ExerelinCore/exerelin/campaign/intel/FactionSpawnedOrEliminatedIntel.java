@@ -81,8 +81,7 @@ public class FactionSpawnedOrEliminatedIntel extends BaseIntelPlugin {
 		String str = StringHelper.getStringAndSubstituteTokens("exerelin_factions", 
 					strKey, replace);
 		
-		LabelAPI para = info.addPara(str, opad, faction.getBaseUIColor(), 
-				faction.getDisplayNameWithArticleWithoutArticle());
+		info.addPara(str, opad, faction.getBaseUIColor(), faction.getDisplayNameWithArticleWithoutArticle());
 		
 		if (playerVictory)
 		{
@@ -93,7 +92,7 @@ public class FactionSpawnedOrEliminatedIntel extends BaseIntelPlugin {
 			replace.put("$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
 			replace.put("$playerFaction", playerFaction.getDisplayName());
 			replace.put("$PlayerFaction", Misc.ucFirst(playerFaction.getDisplayName()));
-			para = info.addPara(str, opad, playerFaction.getBaseUIColor(),
+			info.addPara(str, opad, playerFaction.getBaseUIColor(),
 					playerFaction.getDisplayNameWithArticleWithoutArticle());
 		}
 		else if (playerDefeat)

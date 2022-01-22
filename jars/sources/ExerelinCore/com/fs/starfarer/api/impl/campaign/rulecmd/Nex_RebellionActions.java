@@ -25,7 +25,6 @@ import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 
@@ -176,7 +175,6 @@ public class Nex_RebellionActions extends PaginatedOptions {
 	public void addDeliverOption(InteractionDialogAPI dialog, String commodity, int amount, 
 			String idSuffix) {
 		MarketAPI market = dialog.getInteractionTarget().getMarket();
-		OptionPanelAPI opts = dialog.getOptionPanel();
 		
 		String optId = OPT_PREFIX + commodity + idSuffix;
 		addOption(getDeliverString(commodity, amount), optId);

@@ -311,7 +311,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		Color h = Misc.getHighlightColor();
 		Color g = Misc.getGrayColor();
 		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		//info.addImage(commodity.getCommodity().getIconName(), width, 80, opad);
@@ -325,9 +324,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			info.addImages(width, 128, opad, opad * 2f,
 					   faction.getCrest(),
 					   targetFaction.getCrest());
-		}
-		
-		String prefix = faction.getPersonNamePrefix();		
+		}	
 		
 		String str = taken ? getString("intelDesc1Alt") : getString("intelDesc1");
 		String marketName = market.getName();

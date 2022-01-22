@@ -245,7 +245,6 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 	}
 	
 	public List<SectorEntityToken> getTargetsForOrder(String type) {
-		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		Set<SectorEntityToken> results = new HashSet<>();
 		List<StarSystemAPI> systems = Global.getSector().getStarSystems();
 		for (StarSystemAPI system : systems) {

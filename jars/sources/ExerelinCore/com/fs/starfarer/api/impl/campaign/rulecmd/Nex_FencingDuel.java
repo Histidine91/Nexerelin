@@ -2,7 +2,6 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.eventide.DuelDialogDelegate;
 import com.fs.starfarer.api.impl.campaign.eventide.DuelPanel;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.duel.Nex_DuelDialogDelegate;

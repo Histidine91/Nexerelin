@@ -1,19 +1,14 @@
 package exerelin.campaign.intel.agents;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.missions.BaseDisruptIndustry;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.Pair;
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;

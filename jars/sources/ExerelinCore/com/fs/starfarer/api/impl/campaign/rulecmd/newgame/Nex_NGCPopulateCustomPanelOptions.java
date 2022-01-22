@@ -446,7 +446,6 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 			String buttonId, boolean initSetting, String imagePath, 
 			InteractionDialogCustomPanelPlugin plugin, ButtonEntry be, TooltipCreator tooltip) 
 	{
-		float pad = 3;
 		FactionAPI faction = Global.getSector().getPlayerFaction();
 		
 		CustomPanelAPI buttonHolder = prepOption(panel, info, name, imagePath, plugin, tooltip);

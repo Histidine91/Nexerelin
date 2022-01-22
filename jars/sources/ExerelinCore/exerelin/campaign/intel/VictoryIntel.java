@@ -82,8 +82,7 @@ public class VictoryIntel extends BaseIntelPlugin {
 			String str = StringHelper.getStringAndSubstituteTokens("exerelin_victoryScreen", 
 						strKey, replace);
 
-			LabelAPI para = info.addPara(str, opad, faction.getBaseUIColor(), 
-					faction.getDisplayNameWithArticleWithoutArticle());
+			info.addPara(str, opad, faction.getBaseUIColor(), faction.getDisplayNameWithArticleWithoutArticle());
 			
 			if (playerWon)
 				info.addPara(StringHelper.getString("exerelin_victoryScreen", "intelStringYouWon"), opad);

@@ -23,7 +23,6 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
@@ -109,9 +108,6 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		//super.createSmallDescription(info, width, height);
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);

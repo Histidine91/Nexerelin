@@ -13,7 +13,7 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 	
 	@Override
 	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) {
-		SpecialForcesTask task;
+		//SpecialForcesTask task;
 		/*
 		if (!psf.isIndependentMode()) {
 			if (currentTask != null) {

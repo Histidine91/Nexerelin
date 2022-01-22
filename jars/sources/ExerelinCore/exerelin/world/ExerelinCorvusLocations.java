@@ -1,7 +1,6 @@
 package exerelin.world;
 
 import com.fs.starfarer.api.Global;
-import data.scripts.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import java.io.IOException;
 import java.util.HashMap;

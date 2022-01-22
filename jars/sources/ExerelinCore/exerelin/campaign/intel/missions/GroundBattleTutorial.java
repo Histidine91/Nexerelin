@@ -228,7 +228,6 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 	@Override
 	public void addDescriptionForNonEndStage(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
-		Color h = Misc.getHighlightColor();
 		if (currentStage == Stage.START) {
 			String text = getString("intelDesc1");
 			text = StringHelper.substituteToken(text, "$rank", contact.getRank());
@@ -248,7 +247,6 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 
 	@Override
 	public boolean addNextStepText(TooltipMakerAPI info, Color tc, float pad) {
-		Color h = Misc.getHighlightColor();
 		if (currentStage == Stage.START) {
 			info.addPara(getGoToPlanetTextShort(planet), tc, pad);
 			return true;

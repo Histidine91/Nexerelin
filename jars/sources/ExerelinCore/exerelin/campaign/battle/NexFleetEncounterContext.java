@@ -223,8 +223,6 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			return;
 		}
 
-		DataForEncounterSide data = getDataFor(result.getFleet());
-
 		List<FleetMemberAPI> all = new ArrayList<>(result.getDisabled().size() + result.getDestroyed().size());
 		all.addAll(result.getDisabled());
 		all.addAll(result.getDestroyed());

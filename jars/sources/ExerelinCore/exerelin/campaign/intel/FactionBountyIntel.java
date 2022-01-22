@@ -236,7 +236,6 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad) {
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
 				
 		if (isEnding() && isUpdate) {
 			//info.addPara("Over", initPad);
@@ -294,7 +293,6 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
 		Color tc = Misc.getTextColor();
 		float pad = 3f;
 		float opad = 10f;
@@ -334,12 +332,12 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 		if (hostile.isEmpty()) {
 			str = getString("factionBountyIntel_desc4NoHostile");
 			str = StringHelper.substituteFactionTokens(str, faction);
-			str = StringHelper.substituteToken(str, "$isOrAre", faction.getDisplayNameIsOrAre());
+			str = StringHelper.substituteToken(str, "$isOrAre", isOrAre);
 			info.addPara(str, 0f);
 		} else {
 			str = getString("factionBountyIntel_desc4");
 			str = StringHelper.substituteFactionTokens(str, faction);
-			str = StringHelper.substituteToken(str, "$isOrAre", faction.getDisplayNameIsOrAre());
+			str = StringHelper.substituteToken(str, "$isOrAre", isOrAre);
 			info.addPara(str, opad);
 			
 			info.setParaFontDefault();

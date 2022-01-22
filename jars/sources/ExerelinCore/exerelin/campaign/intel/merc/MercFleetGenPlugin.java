@@ -173,7 +173,7 @@ public class MercFleetGenPlugin {
 			Global.getSector().getImportantPeople().addPerson(person);
 		}
 		
-		OfficerLevelupPlugin plugin = (OfficerLevelupPlugin) Global.getSettings().getPlugin("officerLevelUp");
+		//OfficerLevelupPlugin plugin = (OfficerLevelupPlugin) Global.getSettings().getPlugin("officerLevelUp");
 		person.getStats().setLevel(def.level);
 		
 		if (def.skills != null) {

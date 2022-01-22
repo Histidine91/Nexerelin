@@ -80,7 +80,7 @@ public class TributeIntel extends BaseIntelPlugin {
 	// text sidebar
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		float opad = 10f, pad = 3f;
+		float opad = 10f;
 		
 		Color h = Misc.getHighlightColor();
 		Color base = getFactionForUIColors().getBaseUIColor();

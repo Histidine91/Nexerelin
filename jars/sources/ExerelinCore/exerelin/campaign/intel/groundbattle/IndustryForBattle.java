@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IconRenderMode;
@@ -271,8 +270,6 @@ public class IndustryForBattle {
 		float pad = 3;
 		TooltipMakerAPI troops = panel.createUIElement(width, height, false);
 		final Color hl = Misc.getHighlightColor();
-		Color hp = Misc.getPositiveHighlightColor();
-		Color hn = Misc.getNegativeHighlightColor();
 		
 		final Map<ForceType, Float> strengths = new HashMap<>();
 		
@@ -407,9 +404,6 @@ public class IndustryForBattle {
 		
 		CustomUIPanelPlugin panelPlugin = new FramedCustomPanelPlugin(0.5f, intel.getSide(attacker).getFaction().getBaseUIColor(), true);
 		CustomPanelAPI stats = indPanel.createCustomPanel(width, height, panelPlugin);
-		final Color hl = Misc.getHighlightColor();
-		Color hp = Misc.getPositiveHighlightColor();
-		Color hn = Misc.getNegativeHighlightColor();
 		
 		float totalUnits = 0;	// denominator
 		float totalMorale = 0;	// numerator

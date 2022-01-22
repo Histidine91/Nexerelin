@@ -3,7 +3,6 @@ package exerelin.campaign.ui;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.ButtonAPI;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

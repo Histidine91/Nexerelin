@@ -629,9 +629,9 @@ public class DiplomacyBrain {
 	}
 	
 	public RepLevel getMaxRepForOpportunisticWar() {
-		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		
 		/*
+		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		float niceness = conf.alignments.get(Alignment.DIPLOMATIC) - conf.alignments.get(Alignment.MILITARIST);
 		if (niceness >= 1f)
 			return RepLevel.HOSTILE;	//effectively disabled (we'd already be at war)

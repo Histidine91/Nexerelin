@@ -1,21 +1,6 @@
 package exerelin.campaign.intel.bases;
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.DebugFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PlayerRelatedPirateBaseManager;
-import static com.fs.starfarer.api.impl.campaign.intel.bases.PlayerRelatedPirateBaseManager.MAX_TIMEOUT;
-import static com.fs.starfarer.api.impl.campaign.intel.bases.PlayerRelatedPirateBaseManager.MIN_MONTHS_BEFORE_RAID;
-import static com.fs.starfarer.api.impl.campaign.intel.bases.PlayerRelatedPirateBaseManager.MIN_TIMEOUT;
-import com.fs.starfarer.api.util.Misc;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 public class Nex_PlayerRelatedPirateBaseManager extends PlayerRelatedPirateBaseManager {
 	// nothing here yet, this is just in case I want to override stuff later

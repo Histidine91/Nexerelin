@@ -1,10 +1,8 @@
 package exerelin.campaign.intel.missions.remnant;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PersonImportance;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
@@ -18,7 +16,6 @@ import static com.fs.starfarer.api.impl.campaign.missions.hub.BaseHubMission.get
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
-import java.util.Map;
 
 public class RemnantCustomProductionContract extends CustomProductionContract {
 	

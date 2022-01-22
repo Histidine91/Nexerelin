@@ -967,8 +967,6 @@ public class ExerelinProcGen {
 					"comm_relay", // type of object, defined in custom_entities.json
 					capital.entity.getFaction().getId()); // faction
 				
-				List<SectorEntityToken> jumpPoints = system.getJumpPoints();
-
 				int lp = 4;
 				if (random.nextBoolean()) lp = 5;
 				

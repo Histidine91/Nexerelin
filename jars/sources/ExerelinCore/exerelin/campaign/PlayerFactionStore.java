@@ -97,7 +97,6 @@ public class PlayerFactionStore {
         Map<String, Float> storedRelations = (Map<String, Float>)data.get(PLAYER_RELATIONS_KEY);
         if (storedRelations == null) return;
         
-        FactionAPI playerFaction = sector.getFaction(Factions.PLAYER);
         for (FactionAPI faction : sector.getAllFactions())
         {
             Float relation = storedRelations.get(faction.getId());

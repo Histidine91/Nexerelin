@@ -362,9 +362,7 @@ public class MarketMapDrawer {
 				rects = generateRectangles((int)mapWidth, (int)mapHeight, 
 					Math.round(baseWidth * 1.2f), Math.round(baseHeight * 1.2f));
 			}
-			else {
-				Random random = new Random();
-			
+			else {			
 				int max = 99;	//industries.size() + Math.max(0, 10 - industries.size()/2);
 				max = Math.min(max, getMaxRects(mapWidth, baseWidth * 1.2f, baseHeight * 1.25f));
 				

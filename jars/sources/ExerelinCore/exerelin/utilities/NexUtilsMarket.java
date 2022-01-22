@@ -32,7 +32,6 @@ import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import java.util.Arrays;
@@ -370,7 +369,6 @@ public class NexUtilsMarket {
 			}
 		}
 		if (hasStation) {
-			PersonAPI person = market.getFaction().createRandomPerson();
 			String rankId = Ranks.SPACE_COMMANDER;
 			if (market.getSize() >= 6) {
 				rankId = Ranks.SPACE_ADMIRAL;

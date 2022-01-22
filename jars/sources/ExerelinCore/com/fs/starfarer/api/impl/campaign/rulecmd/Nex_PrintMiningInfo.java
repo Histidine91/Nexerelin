@@ -13,7 +13,6 @@ import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
@@ -156,9 +155,9 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		{
 			float strength = MiningHelperLegacy.getShipMiningStrength(member, true);
 			if (strength == 0) continue;
-			float strengthRaw = MiningHelperLegacy.getShipMiningStrength(member, false);
+			//float strengthRaw = MiningHelperLegacy.getShipMiningStrength(member, false);
 			String strengthStr = String.format("%.2f", strength);
-			String strengthModStr = String.format("%.2f", strength - strengthRaw);
+			//String strengthModStr = String.format("%.2f", strength - strengthRaw);
 			String shipName = "";
 			if (member.isFighterWing()) shipName = member.getVariant().getFullDesignationWithHullName();
 			else shipName = member.getShipName() + " (" + member.getHullSpec().getHullNameWithDashClass() + ")";

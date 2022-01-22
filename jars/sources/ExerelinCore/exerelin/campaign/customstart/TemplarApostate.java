@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.NexUtilsReputation;
 import java.util.Map;
 
 public class TemplarApostate extends CustomStart {

@@ -17,7 +17,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.MutableValue;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
@@ -558,7 +557,6 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	}
 	
 	protected void createClaimsView(CustomPanelAPI panel, TooltipMakerAPI info, float width) {
-		float pad = 3;
 		float opad = 10;
 		Color h = Misc.getHighlightColor();
 		

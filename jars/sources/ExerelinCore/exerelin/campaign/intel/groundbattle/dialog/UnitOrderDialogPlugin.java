@@ -321,6 +321,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		
 		options.addOption(StringHelper.getString("confirm", true), OptionId.DEPLOY_CONFIRM);
 		options.addOption(StringHelper.getString("back", true), quickMove ? OptionId.LEAVE : OptionId.INIT, null);
+		if (!canAfford) options.setEnabled(OptionId.DEPLOY_CONFIRM, false);
 	}
 	
 	protected void confirmDeploy() {

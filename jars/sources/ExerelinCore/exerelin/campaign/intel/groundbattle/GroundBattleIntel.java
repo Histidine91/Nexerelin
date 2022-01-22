@@ -1698,9 +1698,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					public float getTooltipWidth(Object tooltipParam) {
 						return 400;	// FIXME magic number
 					}
-					public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-						Color h = Misc.getHighlightColor();
-
+					public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) 
+					{
 						String str = getString("unitPanel_movementPoints_tooltip1");
 						tooltip.addPara(str, 0);
 
@@ -2105,7 +2104,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void addPostVictoryButtons(CustomPanelAPI outer, TooltipMakerAPI info, float width) 
 	{
-		float pad = 3, opad = 10;
+		float opad = 10;
 		String str = StringHelper.substituteToken(getString("intelDesc_postVictoryOptions"), "$market", market.getName());
 		info.addPara(str, opad);
 		
@@ -2388,7 +2387,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	// adapted from Starship Legends' BattleReport
     @Override
     public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
-		float pad = 3;
 		float opad = 10;
 		FactionAPI faction = market.getFaction();
 		

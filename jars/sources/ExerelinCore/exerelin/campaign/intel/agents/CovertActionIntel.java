@@ -385,8 +385,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	 */
 	protected CovertActionResult covertActionRoll()
 	{
-		CovertOpsManager.CovertActionDef def = getDef();
-		CovertActionResult rollResult = null;
+		CovertActionResult rollResult;
 		
 		Random random = CovertOpsManager.getRandom(market);
 		

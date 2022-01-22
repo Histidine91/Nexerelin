@@ -2,12 +2,8 @@ package exerelin.campaign.fleets.utils;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import java.util.List;
-import java.util.Random;
 
 @Deprecated
 public class DSFleetUtilsProxy {

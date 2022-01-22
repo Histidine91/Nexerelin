@@ -499,7 +499,6 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	{
 		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(fleet);
 		List<FleetMemberAPI> ships = new ArrayList<>(intel.getDeadMembers());
-		final CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 				
 		dialog.showFleetMemberPickerDialog(getString("dialog_headerShipPick"), 
 				StringHelper.getString("confirm", true),
@@ -947,7 +946,6 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	 * @param memoryMap
 	 */
 	protected void disband(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		CampaignFleetAPI other = (CampaignFleetAPI)dialog.getInteractionTarget();		
 		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(other);
 		

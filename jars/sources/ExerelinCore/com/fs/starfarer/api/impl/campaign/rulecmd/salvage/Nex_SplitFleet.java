@@ -117,7 +117,6 @@ public class Nex_SplitFleet extends BaseCommandPlugin {
 		SplitFleetCreationData data = getData(memoryMap);
 		
 		Nex_VisualCustomPanel.createPanel(dialog, true);
-		CustomPanelAPI panel = Nex_VisualCustomPanel.getPanel();
 		TooltipMakerAPI tooltip = Nex_VisualCustomPanel.getTooltip();
 		
 		List<FleetMemberAPI> ships = new ArrayList<>(data.ships);

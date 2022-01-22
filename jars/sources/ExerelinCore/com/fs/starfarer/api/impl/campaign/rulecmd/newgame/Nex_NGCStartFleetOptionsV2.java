@@ -1,7 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.PositionAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;

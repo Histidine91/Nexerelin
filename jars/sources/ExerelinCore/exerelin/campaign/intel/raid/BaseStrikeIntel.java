@@ -15,7 +15,6 @@ import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -119,9 +118,6 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		//super.createSmallDescription(info, width, height);
 		
 		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);

@@ -2,7 +2,6 @@ package exerelin.campaign.fleets;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AsteroidAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;

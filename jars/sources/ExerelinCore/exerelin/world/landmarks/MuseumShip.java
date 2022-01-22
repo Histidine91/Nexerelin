@@ -17,7 +17,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 

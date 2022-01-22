@@ -65,11 +65,7 @@ public class EntityLocationOffer extends BaseHistorianOfferWithLocation implemen
 	
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		Color h = Misc.getHighlightColor();
 		Color g = Misc.getGrayColor();
-		//Color c = getTitleColor(mode);
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		HistorianData hd = HistorianData.getInstance();

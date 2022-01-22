@@ -224,9 +224,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 			//dialog.setTextWidth(Display.getWidth() * .9f);
 			
 			FactionAPI faction = Global.getSector().getFaction(factionId);
-			String factionName = faction.getDisplayName();
-			String theFactionName = faction.getDisplayNameWithArticle();
-			String TheFactionName =  Misc.ucFirst(theFactionName);
+			String factionName = faction.getDisplayNameWithArticleWithoutArticle();
 			//String firstStar = SectorManager.getFirstStarName();
 			String message = "";
 			String victoryTypeStr = victoryType.toString().toLowerCase();

@@ -25,7 +25,7 @@ public class ShuntLocationOfferCreator extends BaseHistorianOfferCreator {
 	
 	@Override
 	public HistorianOffer createOffer(Random random, List<HistorianOffer> soFar) {
-		HistorianData hd = HistorianData.getInstance();
+		//HistorianData hd = HistorianData.getInstance();
 		
 		SectorEntityToken entity = pickEntity(random, false);
 		if (entity == null) return null;

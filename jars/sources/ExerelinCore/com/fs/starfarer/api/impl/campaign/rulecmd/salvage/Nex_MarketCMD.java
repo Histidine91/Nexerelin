@@ -831,7 +831,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (mechs > marines) mechs = marines;
 		
 		StatBonus attackerBase = new StatBonus(); 
-		StatBonus defenderBase = new StatBonus(); 
 		
 		//defenderBase.modifyFlatAlways("base", baseDef, "Base value for a size " + market.getSize() + " colony");
 		
@@ -938,11 +937,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	protected void invadeMenuV2() {
-		CampaignFleetAPI fleet = playerFleet;
-		
-		float width = 350;
 		float opad = 10f;
-		float small = 5f;
 		
 		Color h = Misc.getHighlightColor();
 		
@@ -951,7 +946,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		float marines = playerFleet.getCargo().getMarines();
 		
 		String str;
-		TooltipMakerAPI info = text.beginTooltip();
+		TooltipMakerAPI info;
 		// non-hostile faction warning
 		String is = faction.getDisplayNameIsOrAre();
 		boolean hostile = faction.isHostileTo(Factions.PLAYER);
@@ -1021,7 +1016,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (!PlayerInSystemTracker.hasFactionSeenPlayer(market.getContainingLocation(), market.getFactionId()))
 		{
 			str = getString("sneakAttackMsg");
-			LabelAPI para = text.addPara(str, h, GBConstants.SNEAK_ATTACK_MOVE_MULT + "", 1 + "");
+			text.addPara(str, h, GBConstants.SNEAK_ATTACK_MOVE_MULT + "", 1 + "");
 		}		
 		
 		LabelAPI label = text.addPara(GroundBattleIntel.getString("dialogGoToIntel"));
@@ -1477,9 +1472,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		// blueprints
 		if (withBP) {
-			Set<String> droppedBefore = getEverRaidedBlueprints();
-			FactionAPI player = Global.getSector().getPlayerFaction();
-			WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>(random);
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 			for (String id : market.getFaction().getKnownShips()) {
 				if (Global.getSettings().getHullSpec(id).hasTag(Tags.NO_BP_DROP)) continue;
 				if (Global.getSettings().getHullSpec(id).hasTag(Items.TAG_BASE_BP)) continue;
@@ -1667,8 +1660,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	// Differences from vanilla: Modified defender strength (TODO: decide whether it actually matters)
 	protected void bombardMenu() {
-		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
-		
+		//StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		//defender.modifyMult("nex_bombardBonus", BASE_LOOT_SCORE);
 		super.bombardMenu();
 	}

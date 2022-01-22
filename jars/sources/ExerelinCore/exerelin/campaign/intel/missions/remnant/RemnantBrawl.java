@@ -768,7 +768,6 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	@Override
 	public void addDescriptionForNonEndStage(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
-		Color h = Misc.getHighlightColor();
 		
 		String str = getString("brawl_boilerplateDesc");
 		str = StringHelper.substituteToken(str, "$name", getPerson().getName().getFullName());

@@ -15,7 +15,6 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.customstart.CustomStartDefs;
 import exerelin.campaign.customstart.CustomStartDefs.CustomStartDef;
-import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;

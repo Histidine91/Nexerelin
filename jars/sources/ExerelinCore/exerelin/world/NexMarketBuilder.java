@@ -16,7 +16,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -925,10 +924,7 @@ public class NexMarketBuilder
 		int max = getMaxProductiveIndustries(entity);
 		if (entity.numProductiveIndustries >= max)
 			return;
-		
-		String factionId = entity.market.getFactionId();
-		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
-		
+				
 		List<IndustryClassGen> availableIndustries = new ArrayList<>();
 		for (IndustryClassGen gen : industryClassesOrdered)
 		{

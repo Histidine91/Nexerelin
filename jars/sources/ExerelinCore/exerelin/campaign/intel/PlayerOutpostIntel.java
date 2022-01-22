@@ -289,7 +289,6 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
 		
-		Color h = Misc.getHighlightColor();
 		Color c = getFactionForUIColors().getBaseUIColor();
 		Color d = getFactionForUIColors().getDarkUIColor();
 		

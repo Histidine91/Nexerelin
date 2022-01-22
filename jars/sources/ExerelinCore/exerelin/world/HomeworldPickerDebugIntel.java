@@ -80,7 +80,6 @@ public class HomeworldPickerDebugIntel extends BaseIntelPlugin {
 		float opad = 10;
 		//float elWidth = width - 4;
 		float textWidth = 240;
-		Color h = Misc.getHighlightColor();
 		
 		TooltipMakerAPI buttonHolder = addTabButtons(panel, width);
 		
@@ -152,7 +151,7 @@ public class HomeworldPickerDebugIntel extends BaseIntelPlugin {
 			return;
 		}
 		
-		PlanetAPI planet = (PlanetAPI)buttonId;
+		//PlanetAPI planet = (PlanetAPI)buttonId;
 		//RuleBasedInteractionDialogPluginImpl plugin = new RuleBasedInteractionDialogPluginImpl();
 		//ui.showDialog(planet, plugin);
 		//Global.getSector().getCampaignUI().showInteractionDialog(planet);

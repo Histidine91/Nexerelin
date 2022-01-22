@@ -140,8 +140,6 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
 		
-		Color h = Misc.getHighlightColor();
-		
 		FactionAPI faction1 = getFaction(factionId1);
 		FactionAPI faction2 = getFaction(factionId2);
 		

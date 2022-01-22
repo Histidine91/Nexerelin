@@ -241,7 +241,6 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	 * @param marketId The ID of the market where the mercs are departing.
 	 */
 	public void endEvent(String marketId) {
-		long currValue = calcShipsValue();
 		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
 		
 		TextPanelAPI text = null;

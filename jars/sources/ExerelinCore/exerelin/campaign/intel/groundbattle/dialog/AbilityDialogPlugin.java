@@ -19,7 +19,6 @@ import static exerelin.campaign.intel.agents.AgentOrdersDialog.getString;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import exerelin.utilities.StringHelper;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AbilityDialogPlugin implements InteractionDialogPlugin {

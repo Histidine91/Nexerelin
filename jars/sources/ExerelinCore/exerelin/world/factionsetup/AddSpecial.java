@@ -38,9 +38,8 @@ public class AddSpecial extends FactionSetupItem {
 		String desc = def.desc;
 		List<String> sub = new ArrayList<>();
 		List entries = (List)def.params.get("items");
-		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		for (int i=0; i<entries.size(); i++) {
-			List item = (List)entries.get(0);
+		for (Object entry : entries) {
+			List item = (List)entry;
 			String id = (String)item.get(0);
 			String name = Global.getSettings().getSpecialItemSpec(id).getName();
 			sub.add(name + "");

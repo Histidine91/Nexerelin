@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
-import com.fs.starfarer.api.campaign.econ.ImmigrationPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
@@ -41,7 +40,6 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import static com.fs.starfarer.api.util.Misc.getImmigrationPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.MarketDescChanger;
@@ -216,10 +214,6 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		//super.createSmallDescription(info, width, height);
 		
-		Color h = Misc.getHighlightColor();
-		Color g = Misc.getGrayColor();
-		Color tc = Misc.getTextColor();
-		float pad = 3f;
 		float opad = 10f;
 		
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);

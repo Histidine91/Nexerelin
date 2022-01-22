@@ -21,7 +21,6 @@ import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.intel.raid.NexRaidIntel.log;
 
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import java.util.List;

@@ -26,7 +26,6 @@ import exerelin.world.factionsetup.FactionSetupHandler;
 import exerelin.world.factionsetup.FactionSetupItemPlugin;
 import java.awt.Color;
 import java.util.List;
-import org.lwjgl.opengl.Display;
 
 /**
  * When picking the own faction start, present some options to customize player planet

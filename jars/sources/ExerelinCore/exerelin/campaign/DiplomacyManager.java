@@ -458,9 +458,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     
     public ExerelinReputationAdjustmentResult doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
-    {
-        SectorAPI sector = Global.getSector();
-        
+    {        
         float delta = MathUtils.getRandomNumberInRange(event.minRepChange, event.maxRepChange);
             
         if (delta < 0 && delta > -0.01f) delta = -0.01f;

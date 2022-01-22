@@ -60,7 +60,6 @@ public class Nex_CBSpecialForces extends BaseCustomBountyCreator {
 	@Override
 	public void addTargetLocationAndDescription(TooltipMakerAPI info, float width, 
 			float height, HubMissionWithBarEvent mission, CustomBountyData data) {
-		float opad = 10f;
 		float pad = 3f;
 		Color h = Misc.getHighlightColor();
 		SpecialForcesIntel intel = getSFIntel(data);

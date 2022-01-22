@@ -31,7 +31,6 @@ public class SetMarketOwner implements BaseCommand {
             return CommandResult.BAD_SYNTAX;
         }
         
-        SectorAPI sector = Global.getSector();
         String[] tmp = args.split(" ");
         
         String targetName = tmp[0];

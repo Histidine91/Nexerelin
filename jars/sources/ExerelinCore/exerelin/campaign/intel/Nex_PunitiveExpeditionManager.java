@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.COMPETITION_PRODUCTION_MULT;
 import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.FACTION_MUST_BE_IN_TOP_X_PRODUCERS;

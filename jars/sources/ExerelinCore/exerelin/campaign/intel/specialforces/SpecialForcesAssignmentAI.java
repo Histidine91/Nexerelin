@@ -12,8 +12,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
-import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 

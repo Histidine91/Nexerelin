@@ -47,7 +47,6 @@ public class Nex_GBTutMission extends BaseCommandPlugin {
 	
 	public static boolean isAllowed(MarketAPI market) {
 		if (NexConfig.legacyInvasions) return false;
-		Logger log = Global.getLogger(Nex_GBTutMission.class);
 		
 		FactionAPI persean = Global.getSector().getFaction(Factions.PERSEAN);
 		if (persean == null) {

@@ -68,7 +68,6 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 		
 		Color h = Misc.getHighlightColor();
 		Color base = getFactionForUIColors().getBaseUIColor();
-		Color dark = getFactionForUIColors().getDarkUIColor();
 		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
@@ -93,13 +92,13 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 				str = StringHelper.getStringAndSubstituteTokens(cat, "intelDesc", replace);
 				label = info.addPara(str, opad);
 				label.setHighlight(market.getName(), factionName);
-				label.setHighlightColors(h, faction.getBaseUIColor());
+				label.setHighlightColors(h, base);
 				break;
 			case QUIT:
 				str = StringHelper.getStringAndSubstituteTokens(cat, "intelDescQuit", replace);
 				label = info.addPara(str, opad);
 				label.setHighlight(market.getName(), factionName);
-				label.setHighlightColors(h, faction.getBaseUIColor());
+				label.setHighlightColors(h, base);
 				break;
 			case LOST:
 				FactionAPI otherFaction = market.getFaction();
@@ -115,7 +114,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 				str = StringHelper.getStringAndSubstituteTokens(cat, "intelDescResignedCommission", replace);
 				label = info.addPara(str, opad);
 				label.setHighlight(factionName, market.getName());
-				label.setHighlightColors(faction.getBaseUIColor(), h);
+				label.setHighlightColors(base, h);
 				break;
 		}
 		

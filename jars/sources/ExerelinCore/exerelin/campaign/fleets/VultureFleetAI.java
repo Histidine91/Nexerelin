@@ -32,7 +32,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData;
 import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.campaign.econ.Submarket;
 import exerelin.campaign.fleets.VultureFleetManager.ShipRecoverySpecialNPC;
 import exerelin.campaign.fleets.VultureFleetManager.VultureFleetData;
 import exerelin.utilities.NexUtilsFleet;
@@ -40,7 +39,6 @@ import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import lombok.AllArgsConstructor;
 import org.apache.log4j.Logger;
 
 public class VultureFleetAI implements EveryFrameScript

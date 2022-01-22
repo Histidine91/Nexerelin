@@ -71,7 +71,7 @@ public class InstigateRebellion extends CovertActionIntel {
 		}
 		
 		float mult = getEffectMultForLevel();
-		event.setRebelStrength(event.getRebelStrength() * getEffectMultForLevel());
+		event.setRebelStrength(event.getRebelStrength() * mult);
 		
 		adjustRepIfDetected(RepLevel.HOSTILE, null);
 		reportEvent();

@@ -107,8 +107,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		LabelAPI label = info.addPara(str, opad);
 		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), 
 				cfOrPt, days);
-		label.setHighlightColors(faction.getBaseUIColor(), Misc.getHighlightColor(), 
-				Misc.getHighlightColor());
+		label.setHighlightColors(faction.getBaseUIColor(), h, h);
 		
 		if (state == 0) {
 			replace.clear();
