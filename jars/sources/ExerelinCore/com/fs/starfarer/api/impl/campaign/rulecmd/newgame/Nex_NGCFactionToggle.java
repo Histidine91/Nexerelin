@@ -73,7 +73,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptionsPlus {
 		float expectedStations = 0;
 		float expectedPlanets = 0;
 		for (Map.Entry<String, Boolean> tmp : data.factions.entrySet()) {
-			if (tmp.getValue() == false) continue;
+			if (!tmp.getValue()) continue;
 			String factionId = tmp.getKey();
 			if (factionId.equals(Factions.INDEPENDENT)) continue;
 			

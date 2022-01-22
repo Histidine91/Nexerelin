@@ -28,7 +28,7 @@ public class NGCSetCorvusMode extends BaseCommandPlugin {
 		// disable custom scenario if appropriate
 		if (data.startScenario != null) {
 			StartScenarioDef def = ScenarioManager.getScenarioDef(data.startScenario);
-			if (setting == true && def.randomSectorOnly) {
+			if (setting && def.randomSectorOnly) {
 				Nex_NGCCustomScenario.selectScenario(memory, null);
 				String msg = StringHelper.getStringAndSubstituteToken(
 						"exerelin_ngc", "customScenarioRemoved", "$name", def.name);

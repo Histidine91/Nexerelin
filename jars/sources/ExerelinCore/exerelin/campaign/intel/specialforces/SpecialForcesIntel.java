@@ -943,7 +943,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			
 			boolean allow = false;
 			int tries = 0;
-			while (allow == false && tries < 25) {
+			while (!allow && tries < 25) {
 				name = namer.getFleetName(fleet, origin, commander);
 				allow = name != null && !hasDuplicateName(name);
 				tries++;

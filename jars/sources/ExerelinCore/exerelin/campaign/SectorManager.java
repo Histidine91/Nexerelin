@@ -248,7 +248,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (loser == null) return;
         String loserFactionId = loser.getFaction().getId();
         NexFactionConfig loserConfig = NexConfig.getFactionConfig(loserFactionId);
-        if (loserConfig != null && loserConfig.dropPrisoners == false)
+        if (!loserConfig.dropPrisoners)
             return;
         
         int numSurvivors = 0;

@@ -12,7 +12,7 @@ public class Nex_TacticallyBombardColony extends TacticallyBombardColony {
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
 		boolean created = super.create(createdAt, barEvent);
-		if (created == false) return created;
+		if (!created) return false;
 		
 		int bombCost = MarketCMD.getBombardmentCost(market, null);
 		int bonus = bombCost * EXTRA_REWARD_PER_FUEL;

@@ -11,7 +11,7 @@ public class FPEDefensePlugin extends MarketConditionPlugin {
 	@Override
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
 		if (unit.isAttacker()) return dmg;
-		if (unit.getLocation() == null || unit.getLocation().heldByAttacker == true)
+		if (unit.getLocation() == null || unit.getLocation().heldByAttacker)
 			return dmg;
 		
 		dmg.modifyMult(conditionId, ATK_MULT, intel.getMarket().getCondition(conditionId).getName());
@@ -21,7 +21,7 @@ public class FPEDefensePlugin extends MarketConditionPlugin {
 	@Override
 	public MutableStat modifyDamageReceived(GroundUnit unit, MutableStat dmg) {
 		if (unit.isAttacker()) return dmg;
-		if (unit.getLocation() == null || unit.getLocation().heldByAttacker == true)
+		if (unit.getLocation() == null || unit.getLocation().heldByAttacker)
 			return dmg;
 		
 		dmg.modifyMult(conditionId, DEF_MULT, intel.getMarket().getCondition(conditionId).getName());

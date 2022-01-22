@@ -42,7 +42,8 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 				Map<String, Boolean> enabledFactions = ExerelinSetupData.getInstance().factions;
 				for (String pickable : NexConfig.getFactions(false, true))
 				{
-					if (!enabledFactions.containsKey(pickable) || enabledFactions.get(pickable) == true)
+					// assume faction is enabled if the map doesn't contain it
+					if (!enabledFactions.containsKey(pickable) || enabledFactions.get(pickable))
 						picker.add(pickable);
 				}
 				// followers can be picked too
