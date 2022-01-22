@@ -265,6 +265,8 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		makeImportant(fleet, "$nex_remFragments_attacker", Stage.BATTLE);
 		Misc.addDefeatTrigger(fleet, "Nex_RemFragments_AttackFleetDefeated");
 		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remFragments", true, 999);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+		
 		if (distressSent) {
 			Misc.makeLowRepImpact(fleet, "nex_remFragments");
 		} else {
@@ -287,8 +289,9 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				
 		// fleet assignments
 		String targetName = StringHelper.getString("yourFleet");
-		fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, mothership, 1);
-		fleet.addAssignment(FleetAssignment.INTERCEPT, player, 3,
+		String actionStr = StringHelper.getFleetAssignmentString("travellingTo", mothership.getName());
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, mothership, 0.5f, actionStr);
+		fleet.addAssignment(FleetAssignment.INTERCEPT, player, 2,
 				StringHelper.getFleetAssignmentString("intercepting", targetName));
 		
 		if (currentStage == Stage.RETURN) {
@@ -296,9 +299,8 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		}
 		else if (currentStage == Stage.BATTLE)
 		{
-			// if we win, loot or destroy the mothership
-			String actionStr = StringHelper.getFleetAssignmentString(distressSent ? "scavenging" : "attacking", mothership.getName());
-			
+			// if the attack fleet wins, loot or destroy the mothership
+			actionStr = StringHelper.getFleetAssignmentString(distressSent ? "scavenging" : "attacking", mothership.getName());
 			fleet.addAssignment(FleetAssignment.DELIVER_CREW, mothership, 100, actionStr);
 			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, mothership, 0.5f, actionStr, new Script() {
 				@Override
@@ -573,6 +575,10 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				return true;
 			case "acceptedBribe":
 				setCurrentStage(Stage.FAILED, dialog, memoryMap);
+				if (attacker != null) {
+					attacker.removeFirstAssignmentIfItIs(FleetAssignment.GO_TO_LOCATION);
+					attacker.removeFirstAssignmentIfItIs(FleetAssignment.INTERCEPT);
+				}
 				return true;
 			case "enableSalvage":
 				reportFleetDefeated(dialog, memoryMap);

@@ -2178,7 +2178,7 @@ nex_remFragments_engineerConvoThreaten,DialogOptionSelected,$option == nex_remFr
 ""You brute!"" $heOrShe protests. ""You pirate!""
 
 ""Tell the cap'n what $playerHeOrShe wants to know,"" the salvor growls. ""Or we'll be taking back one less survivor.""",nex_remFragments_engineerConvoSecrets:Continue,
-nex_remFragments_engineerConvoSecrets,DialogOptionSelected,$option == nex_remFragments_engineerConvoSecrets,ShowPersonVisual,"The engineer seems to slump inwards. ""Oh, for the love of... Alright, fine, you win, you damned space-thug!""
+nex_remFragments_engineerConvoSecrets,DialogOptionSelected,$option == nex_remFragments_engineerConvoSecrets,ShowPersonVisual true,"The engineer seems to slump inwards. ""Oh, for the love of... Alright, fine, you win, you damned space-thug!""
 
 Ignoring the glares of your crew, $heOrShe gesticulates oddly. ""Listen. Those things in there, they're alien. Technology no human or AI has ever seen. Not even the Domain has such things. If they did, the Collapse could never have happened!""
 

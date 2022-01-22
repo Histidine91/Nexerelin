@@ -126,7 +126,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		*/
 		if (opponent.getMemoryWithoutUpdate().contains(MEM_KEY_BATTLE_PLUGIN)) {
 			BattleCreationPlugin bcp = (BattleCreationPlugin)opponent.getMemoryWithoutUpdate().get(MEM_KEY_BATTLE_PLUGIN);
-			return new PluginPick<>(bcp, PickPriority.MOD_GENERAL);
+			return new PluginPick<>(bcp, PickPriority.MOD_SPECIFIC);
 		}
 		
 		return null;
