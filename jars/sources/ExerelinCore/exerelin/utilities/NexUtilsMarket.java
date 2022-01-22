@@ -36,7 +36,9 @@ import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import java.util.Arrays;
 import java.util.List;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class NexUtilsMarket {
 	
 	// use the memory key instead of this wherever possible
@@ -412,8 +414,12 @@ public class NexUtilsMarket {
 		mem.set(GBConstants.MEMKEY_INVASION_FAIL_STREAK, current);
 		
 		if (canSpawnConquestMission) {
-			float chance = current/(current + 5f);
-			if (chance < Math.random()) return;
+			if (current <= 1) return;
+			float chance = current/(current + 3f);
+			double roll = Math.random();
+			log.info(String.format("Trying fail streak conquest mission: streak %s, chance %.2f, roll %.2f", current, chance, roll));
+			
+			if (chance < roll) return;
 			
 			FactionAPI issuer = attacker;
 			Alliance alliance = AllianceManager.getFactionAlliance(attacker.getId());
