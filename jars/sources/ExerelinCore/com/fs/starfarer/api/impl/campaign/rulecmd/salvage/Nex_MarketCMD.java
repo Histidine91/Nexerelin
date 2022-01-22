@@ -405,7 +405,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			// and I don't want to break it right now
 			otherWantsToFight = otherHasStation || plugin.otherFleetWantsToFight(true);
 			
-			boolean canGiveBattleWithoutResponder = hasNonStation && !hasOtherButInsignificant; 
+			boolean canGiveBattleWithoutResponder = hasNonStation && otherWantsToFight && !hasOtherButInsignificant; 
 			
 			if (withText) {
 				if (hasStation) {
