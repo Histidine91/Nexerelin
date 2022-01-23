@@ -274,7 +274,10 @@ public class ExerelinProcGen {
 			int countThisSystem = 0;
 			for (PlanetAPI planet : system.getPlanets())
 			{
+				if (planet.getMarket() == null) continue;
 				if (getDesirability(planet) < req) continue;
+				if (homeworldOnlyMode && planet.getMarket().getHazardValue() > 1.75f)
+					continue;
 				countThisSystem++;
 				numDesirables++;
 				if (!homeworldOnlyMode && countThisSystem >= setupData.maxPlanetsPerSystem) break; 
@@ -485,6 +488,10 @@ public class ExerelinProcGen {
 		
 		if (isInCorona(planet)) desirability -= 1;
 		if (systemsWithGates.contains(planet.getStarSystem())) desirability += 1;
+		
+		// cap desirability based on hazard
+		//float hazard = market.getHazardValue();
+		//desirability = Math.min(desirability, (3.25f - hazard) * 2);
 		
 		planetDesirabilityCache.put(planet, desirability);
 		
@@ -912,7 +919,14 @@ public class ExerelinProcGen {
 		}
 		
 		if (homeworldOnlyMode) {
-			homeworld = candidates.get(0);
+			for (ProcGenEntity candidate : candidates) {
+				if (candidate.market.getHazardValue() > 1.75f) continue;
+				homeworld = candidate;
+				break;
+			}
+			if (homeworld == null) {
+				homeworld = candidates.get(0);
+			}
 			return homeworld;
 		}
 				
@@ -931,13 +945,14 @@ public class ExerelinProcGen {
 	/**
 	 * Spawns comm relays in each star system, or converts existing ones made by procgen
 	 */
-	protected void spawnCommRelays()
+	protected void spawnCommRelays(Collection<StarSystemAPI> systems)
 	{
-		for (StarSystemAPI system : populatedSystems)
+		for (StarSystemAPI system : systems)
 		{
 			SectorEntityToken relay = null;
+			String factionId = null;
 			ProcGenEntity capital = capitalsBySystem.get(system);
-			if (capital == null) continue;
+			if (capital != null) factionId = capital.market.getFactionId();
 			
 			// see if there are existing relays or other objectives we can co-opt
 			for (SectorEntityToken objective : system.getEntitiesWithTag(Tags.OBJECTIVE))
@@ -945,10 +960,11 @@ public class ExerelinProcGen {
 				if (objective.hasTag(Tags.COMM_RELAY))
 				{
 					relay = objective;
-					relay.setFaction(capital.market.getFactionId());
+					relay.setFaction(factionId);
 				}
 				
 				objective.getMemoryWithoutUpdate().unset(MemFlags.OBJECTIVE_NON_FUNCTIONAL);
+				continue;
 			}
 			
 			// see if system has any stable locations that could be left for a relay
@@ -963,9 +979,9 @@ public class ExerelinProcGen {
 				log.info("Creating comm relay for system " + system.getName());
 				
 				relay = system.addCustomEntity(system.getId() + "_relay", // unique id
-					system.getBaseName() + " " + StringHelper.getString("relay", true), // name - if null, defaultName from custom_entities.json will be used
-					"comm_relay", // type of object, defined in custom_entities.json
-					capital.entity.getFaction().getId()); // faction
+						system.getBaseName() + " " + StringHelper.getString("relay", true), // name - if null, defaultName from custom_entities.json will be used
+						"comm_relay", // type of object, defined in custom_entities.json
+						factionId); // faction
 				
 				int lp = 4;
 				if (random.nextBoolean()) lp = 5;
@@ -1193,15 +1209,19 @@ public class ExerelinProcGen {
 			marketSetup.addFurtherIndustriesToMarkets();
 			homeMarket.setPlayerOwned(true);
 			SectorManager.setHomeworld(homeworld.entity);
-			
+						
 			StarSystemAPI system = homeworld.entity.getStarSystem();
 			system.setEnteredByPlayer(true);
 			Misc.setAllPlanetsSurveyed(system, true);
 			for (MarketAPI market : Global.getSector().getEconomy().getMarkets(system)) {
 				market.setSurveyLevel(MarketAPI.SurveyLevel.FULL); // could also be a station, not a planet
 			}
+			if (!capitalsBySystem.containsKey(system))
+				capitalsBySystem.put(system, homeworld);
 			
-			cleanupDerelicts(Arrays.asList(new StarSystemAPI[] {system}));
+			List<StarSystemAPI> sysList = Arrays.asList(new StarSystemAPI[] {system});
+			spawnCommRelays(sysList);
+			cleanupDerelicts(sysList);
 			
 			return;
 		}
@@ -1254,7 +1274,7 @@ public class ExerelinProcGen {
 		populateSector(Global.getSector());
 		
 		setCapitals();
-		spawnCommRelays();
+		spawnCommRelays(populatedSystems);
 		surveyPlanets();
 		marketSetup.addCabalSubmarkets();
 		marketSetup.ensureHasSynchrotron();

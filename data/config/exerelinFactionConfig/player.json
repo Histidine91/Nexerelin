@@ -27,5 +27,7 @@
     
     "startSpecialItems":[
         [["low_tech_package", ""], ["midline_package", ""], ["high_tech_package", ""], ["XIV_package", ""], ["missile_package", ""]],
-    ]
+    ],
+    
+    "industrySeeds":[],	# don't seed stuff
 }

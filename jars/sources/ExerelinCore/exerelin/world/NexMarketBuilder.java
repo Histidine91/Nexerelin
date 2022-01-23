@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -24,7 +25,9 @@ import data.scripts.UnderworldModPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -640,6 +643,11 @@ public class NexMarketBuilder
 			}
 			else {
 				market.addIndustry(Industries.HIGHCOMMAND);
+				List<String> traits = DiplomacyTraits.getFactionTraits(factionId);
+				if (!traits.contains(DiplomacyTraits.TraitIds.DISLIKES_AI) && !traits.contains(DiplomacyTraits.TraitIds.HATES_AI))
+				{
+					market.getIndustry(Industries.HIGHCOMMAND).setAICoreId(Commodities.GAMMA_CORE);
+				}
 			}
 			String stationId = NexConfig.getFactionConfig(factionId).getRandomDefenceStation(random, stationTier);
 			if (stationId != null)
