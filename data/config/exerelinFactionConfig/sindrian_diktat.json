@@ -18,8 +18,11 @@
     "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
 
     "factionIdForHqResponse":"lions_guard",
-    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.DiktatNamer",   
+    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.DiktatNamer",
     "specialForcesMaxFleets":1,
+    
+    # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
+    "colonyExpeditionChance":0.75,	# not really their kind of thing...? I guess
     
     "startShipsSolo":[
       ["swp_brawler_lions_guard_eli"],
