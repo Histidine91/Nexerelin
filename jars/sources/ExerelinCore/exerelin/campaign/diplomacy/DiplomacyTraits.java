@@ -109,7 +109,7 @@ public class DiplomacyTraits {
 	}
 	
 	public static List<String> getFactionTraits(String factionId) {
-		if (NexConfig.allowRandomDiplomacyTraits && DiplomacyManager.isRandomFactionRelationships()
+		if (NexConfig.allowRandomDiplomacyTraits && DiplomacyManager.getManager().getStartRelationsMode().isRandom()
 				&& NexConfig.getFactionConfig(factionId).allowRandomDiplomacyTraits) 
 		{
 			MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();

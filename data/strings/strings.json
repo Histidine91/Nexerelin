@@ -1700,7 +1700,7 @@
 		
 		# migrated from rules.csv
 		"optionStartingRelations":"Starting faction relations",
-		"tooltipStartingRelations":"Non-default settings will also disable faction relationship clamping. If random, will randomize diplomacy traits.",
+		"tooltipStartingRelations":"Non-default settings will also disable faction relationship clamping. If random, will randomize diplomacy traits. 'Flatten' sets all relations to zero.",
 		"optionFactionRespawn":"Faction respawn",
 		"tooltipFactionRespawn":"- %s: Do not use faction respawn mechanic.\n- %s: Factions present at the start of the game can respawn.\n- %s: Also allow entry of new factions not present at the start of the game.",
 		"optionFactionWeights":"Use faction weights",
