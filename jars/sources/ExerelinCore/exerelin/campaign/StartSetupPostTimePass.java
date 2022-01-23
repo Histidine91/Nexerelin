@@ -80,8 +80,9 @@ public class StartSetupPostTimePass {
 		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;
 		for (int i=0; i<numOfficers; i++)
 		{
-			int level = numOfficers - i;
+			int level = 1;	//numOfficers - i;
 			PersonAPI officer = OfficerManagerEvent.createOfficer(myFaction, level, false);
+			Misc.setMentored(officer, true);
 			playerFleet.getFleetData().addOfficer(officer);
 			
 			// assign officers to ships
