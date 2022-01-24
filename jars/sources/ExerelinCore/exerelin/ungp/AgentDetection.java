@@ -1,6 +1,7 @@
 package exerelin.ungp;
 
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
+import data.scripts.campaign.specialist.UNGP_SpecialistSettings;
 import data.scripts.ungprules.impl.UNGP_BaseRuleEffect;
 import data.scripts.ungprules.tags.UNGP_CharacterTag;
 import exerelin.utilities.NexUtilsMath;
@@ -16,7 +17,8 @@ public class AgentDetection extends UNGP_BaseRuleEffect implements UNGP_Characte
     // 10-50%
     @Override
     public float getValueByDifficulty(int index, int difficulty) {
-		bonus = 0.1f + NexUtilsMath.lerp(0, 0.4f, (difficulty-1)/19f);
+		float denominator = UNGP_SpecialistSettings.MAX_DIFFICULTY - 1;
+		bonus = 0.1f + NexUtilsMath.lerp(0, 0.4f, (difficulty-1)/denominator);
         if (index == 0) return bonus;
 		if (index == 1) return bonus * 2;
         return 0;

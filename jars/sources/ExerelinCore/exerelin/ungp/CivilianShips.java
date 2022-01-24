@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.BuffManagerAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
+import data.scripts.campaign.specialist.UNGP_SpecialistSettings;
 import data.scripts.ungprules.impl.UNGP_BaseRuleEffect;
 import data.scripts.ungprules.tags.UNGP_PlayerFleetTag;
 import data.scripts.utils.UNGP_BaseBuff;
@@ -40,9 +41,10 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 	
 	@Override
 	public float getValueByDifficulty(int index, int difficulty) {
+		float denominator = UNGP_SpecialistSettings.MAX_DIFFICULTY/2;
 		float excess = getMilExcess();
-		crPenalty = BASE_CR_REDUCTION * (difficulty/10) * excess;
-		maintMult = 1 + excess * (difficulty/10);
+		crPenalty = BASE_CR_REDUCTION * (difficulty/denominator) * excess;
+		maintMult = 1 + excess * (difficulty/denominator);
 		if (index == 0) return crPenalty;
 		else if (index == 1) return maintMult;
 		return 0;
