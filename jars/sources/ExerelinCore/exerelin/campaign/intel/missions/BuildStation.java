@@ -547,7 +547,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		String actText = StringHelper.getString("exerelin_fleetAssignments", "buildingBase");
 		builderFleet.clearAssignments();
 		float time = DEBUG_MODE ? 0.1f : 3;
-		builderFleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, time, actText, new Script() {
+		builderFleet.addAssignment(FleetAssignment.HOLD, target, time, actText, new Script() {
 			@Override
 			public void run() {
 				build();
