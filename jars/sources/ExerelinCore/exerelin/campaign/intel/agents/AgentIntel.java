@@ -586,19 +586,21 @@ public class AgentIntel extends BaseIntelPlugin {
 			str = StringHelper.substituteToken(str, "$daysStr", daysStr);
 			info.addPara(str, opad, h, daysNum);
 			
+			float nextPad = opad;
 			if (currentAction.getDefId().equals(CovertActionType.PROCURE_SHIP))
 			{
 				info.addButton(StringHelper.getString("nex_agentActions", 
 						"intelButton_procureShipSetDestination", true), 
-					ProcureShip.BUTTON_CHANGE_DESTINATION, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					currentAction, pf.getBaseUIColor(), pf.getDarkUIColor(),
 					(int)(width), 20f, opad * 2f);
+				nextPad = pad;
 			}
 			
 			// abort button
 			if (currentAction.canAbort()) {
 				ButtonAPI button = info.addButton(StringHelper.getString("abort", true), 
 					BUTTON_ABORT, pf.getBaseUIColor(), pf.getDarkUIColor(),
-					(int)(width), 20f, opad * 2f);
+					(int)(width), 20f, nextPad * 2f);
 				//button.setShortcut(Keyboard.KEY_T, true);
 			}
 		} else {
@@ -641,11 +643,21 @@ public class AgentIntel extends BaseIntelPlugin {
 						opad, chanceCol, successStr);
 			}
 			
+			float nextPad = opad;
+			if (nextAction.getDefId().equals(CovertActionType.PROCURE_SHIP))
+			{
+				info.addButton(StringHelper.getString("nex_agentActions", 
+						"intelButton_procureShipSetDestination", true), 
+					nextAction, pf.getBaseUIColor(), pf.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
+				nextPad = pad;
+			}
+			
 			// abort button
 			if (nextAction.canAbort()) {
 				ButtonAPI button = info.addButton(StringHelper.getString("abort", true), 
 					BUTTON_CANCEL_QUEUE, pf.getBaseUIColor(), pf.getDarkUIColor(),
-					(int)(width), 20f, opad * 2f);
+					(int)(width), 20f, nextPad * 2f);
 			}
 		} else if (currentAction != null) {
 			ButtonAPI button = info.addButton(getString("intelButtonOrdersQueue"), 
@@ -791,8 +803,8 @@ public class AgentIntel extends BaseIntelPlugin {
 			} catch (CloneNotSupportedException ex) {
 				Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
 			}
-		} else if (buttonId == ProcureShip.BUTTON_CHANGE_DESTINATION) {
-			ProcureShip procure = (ProcureShip)currentAction;
+		} else if (buttonId instanceof ProcureShip) {
+			ProcureShip procure = (ProcureShip)buttonId;
 			ui.showDialog(null, new ProcureShipDestinationDialog(this, procure, procure.destination, ui));
 		} else if (buttonId == BUTTON_MASTERY) {
 			this.specializations.clear();

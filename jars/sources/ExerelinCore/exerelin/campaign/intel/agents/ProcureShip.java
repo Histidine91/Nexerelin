@@ -56,7 +56,7 @@ import org.lazywizard.lazylib.MathUtils;
 public class ProcureShip extends CovertActionIntel {
 	
 	public static final float FAILURE_REFUND_MULT = 0.75f;
-	public static final String BUTTON_CHANGE_DESTINATION = "changeDestination";
+	@Deprecated public static final String BUTTON_CHANGE_DESTINATION = "changeDestination";
 	public static final List<String> ALLOWED_SUBMARKETS = new ArrayList<>(Arrays.asList(new String[] {
 		Submarkets.SUBMARKET_OPEN, Submarkets.SUBMARKET_BLACK, 
 		Submarkets.GENERIC_MILITARY, "AL_militaryMarket"
