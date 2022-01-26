@@ -97,8 +97,6 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			clearDeepHyper(prismEntity, 400);
 		}
 		
-		prismEntity.addTag(ExerelinConstants.TAG_UNINVADABLE);
-		
 		/*
 		EntityData data = new EntityData(null);
 		data.name = "Prism Freeport";
@@ -133,7 +131,8 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
-		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
+		if (!market.getContainingLocation().isHyperspace()) 
+			market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
 		NexUtilsMarket.setTariffs(market);
