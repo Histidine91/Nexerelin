@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -19,6 +20,7 @@ import com.fs.starfarer.api.campaign.listeners.BaseFleetEventListener;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
@@ -80,7 +82,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	protected SectorEntityToken scoutPoint;
 	protected CampaignFleetAPI station;
 	protected CampaignFleetAPI straggler;
-	protected boolean betrayed;
+	protected boolean stationIsStrong = false;
 	
 	protected PersonAPI admiral;
 	
@@ -93,6 +95,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	protected boolean orderedHangAboveSystem;
 	protected boolean knowStagingArea;
 	protected boolean battleInited;
+	protected boolean betrayed;
 	@Deprecated protected boolean sentFalseInfo;	// not currently sued
 	
 	// runcode exerelin.campaign.intel.missions.remnant.RemnantBrawl.fixDebug()
@@ -119,6 +122,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		station = pickStation();
 		if (station == null) return false;
+		stationIsStrong = !station.getMemoryWithoutUpdate().getBoolean("$damagedStation");
+		
+		//log.info(String.format("Picked nexus in %s", station.getContainingLocation().getNameWithLowercaseTypeShort()));
 		
 		// pick straggler origin
 		requireMarketFaction(Factions.HEGEMONY);
@@ -234,7 +240,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		for (StarSystemAPI system : Global.getSector().getStarSystems()) 
 		{
 			if (!system.hasTag(Tags.THEME_REMNANT)) continue;
-			boolean highPower = system.hasTag(Tags.THEME_REMNANT_RESURGENT);
+			boolean highPower = false;
 			
 			for (CampaignFleetAPI fleet : system.getFleets()) 
 			{
@@ -243,8 +249,11 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				
 				if (fleet.isStationMode()) 
 				{
+					//log.info(String.format("Checking nexus in %s, highPower %s", system.getNameWithLowercaseTypeShort(), highPower));
 					float dist = MathUtils.getDistance(fleet.getLocation(), center);
 					float weight = 50000/dist;
+					highPower = fleet.getMemoryWithoutUpdate().getBoolean("$damagedStation");
+					
 					if (weight > 20) weight = 20;
 					if (weight < 0.1f) weight = 0.1f;
 					if (highPower && dist <= 20000) picker.add(fleet, weight);
@@ -347,13 +356,22 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			2 semi-big fleets, chance of being LC or Hegemony allies
 			switch fleet to Hegemony if the faction isn't allied
 		*/
-		int fp = 150;
-		for (int i=0; i<3; i++) {
+		int fp = 120;
+		int hegCount = 2;
+		int allyCount = 1;
+		if (stationIsStrong) {
+			hegCount = 3;
+			allyCount = 2;
+			fp = 150;
+		}
+			
+		
+		for (int i=0; i<hegCount; i++) {
 			spawnAttackFleet(Factions.HEGEMONY, fp);
 		}
 		spawnAttackFleet(Factions.LUDDIC_CHURCH, fp);
 		
-		fp = 120;
+		fp = stationIsStrong ? 120 : 90;
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(this.genRandom);
 		factionPicker.add(Factions.LUDDIC_CHURCH, 2);
 		factionPicker.add(Factions.HEGEMONY);
@@ -364,7 +382,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				factionPicker.add(allyId);
 			}
 		}
-		for (int i=0; i<2; i++) {
+		for (int i=0; i<allyCount; i++) {
 			spawnAttackFleet(factionPicker.pick(), fp);
 		}
 		
@@ -574,6 +592,17 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		}
 		setCurrentStage(betrayed ? Stage.BATTLE_DEFECTED : Stage.BATTLE, dialog, memoryMap);
 		
+		if (!betrayed && knowStagingArea) {
+			MilitaryResponseScript.MilitaryResponseParams params = new MilitaryResponseScript.MilitaryResponseParams(CampaignFleetAIAPI.ActionType.HOSTILE, 
+					"nex_remBrawl_" + Misc.genUID() + station.getId(), 
+					station.getFaction(),
+					station,
+					1f,
+					15f);
+			MilitaryResponseScript script = new MilitaryResponseScript(params);
+			station.getContainingLocation().addScript(script);
+		}
+		
 		battleInited = true;
 	}
 	
@@ -778,6 +807,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			//info.addPara("[debug] Staging area found: " + knowStagingArea, opad);
 			info.addPara("[debug] Station is in: " + station.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
 			info.addPara("[debug] Staging area: " + stagingArea.getNameWithLowercaseTypeShort(), 0);
+			if (straggler != null && straggler.isAlive()) {
+				info.addPara("[debug] Straggler currently in " + straggler.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
+			}
 		}
 		Color col = station.getStarSystem().getStar().getSpec().getIconColor();
 		String sysName = station.getContainingLocation().getNameWithLowercaseTypeShort();
