@@ -142,6 +142,7 @@ public class ConquestMissionManager extends BaseEventManager {
 		for (String factionId : liveFactions)
 		{
 			if (factionId.equals(Factions.PLAYER)) continue;
+			if (!NexConfig.getFactionConfig(factionId).canInvade) continue;
 			if (!NexConfig.allowPirateInvasions && NexUtilsFaction.isPirateFaction(factionId))
 				continue;
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, NexConfig.allowPirateInvasions, true, false);
