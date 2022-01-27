@@ -1463,6 +1463,7 @@
 		"ability_cooldownGlobal":"Global cooldown: %s turn(s)",
 		"ability_outOfRange":"Out of range",
 		"ability_alreadyUsed":"Already used this battle",
+		"ability_cannotSupport":"Fleet support blocked",
 		
 		"ability_inspire_blurb":"An inspiring battle speech by the leader at the right time can turn the tide of battle.",
 		"ability_inspire_tooltip":"Raises morale of all units by %s, and removes one turn of the reorganizing state. Can be used once per battle.",

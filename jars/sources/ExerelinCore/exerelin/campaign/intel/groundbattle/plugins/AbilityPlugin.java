@@ -98,6 +98,20 @@ public abstract class AbilityPlugin {
 			}
 		}
 		
+		// fleet cannot support	
+		CampaignFleetAPI fleet = null;
+		if (user != null) {
+			if (user.isPlayer()) fleet = Global.getSector().getPlayerFleet();
+			else fleet = user.getFleet();
+		}
+		if (fleet != null && !side.getIntel().fleetCanSupport(fleet, side.isAttacker())) 
+		{
+			id = "supportBlocked";
+			desc = String.format(GroundBattleIntel.getString("ability_cannotSupport"));
+			params.put("desc", desc);
+			return new Pair<>(id, params);
+		}
+		
 		return null;
 	}
 	
