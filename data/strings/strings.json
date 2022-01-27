@@ -1231,6 +1231,7 @@
 		"btnGovernorship":"Purchase governorship",
 		"btnGovernorshipConfirmPrompt":"You can purchase governorship of $market for %s. You have %s credits.",
 		"btnLoot":"Loot",
+		"btnLootTooltip":"Sends special items on this industry to your fleet.",
 		"btnLootConfirmPrompt":"This will send the special items on this industry to your fleet. Proceed?",
 		"btnJoinAttacker":"Join attacker",
 		"btnJoinDefender":"Join defender",
@@ -1243,7 +1244,7 @@
 		"unitPanel_movementPoints_tooltip2":"Deploying a unit also costs supplies, but moving it after it lands does not.",
 		"unitPanel_movementPoints_tooltip3":"Current contributions to max points:",
 		
-		"commandPanel_header1":"Special abilities",		
+		"commandPanel_header1":"Special abilities",
 		
 		"industryPanel_header_industry":"Industry",
 		"industryPanel_header_heldBy":"Held by",
@@ -1499,6 +1500,10 @@
 		"ability_ignisPluvia_tooltip2":"Distributes %s bombardments with %s damage each on all industries with an enemy presence. Damage is reduced by $market's drop attrition of %s, and increased by %s if combat is ongoing on the target industry.",
 		"ability_ignisPluvia_tooltip3":"The Titan delivery system and the sheer volume of fire ensure that most ground defenses cannot prevent the attack, and cannot even defend their immediate area from more than one bombardment.",
 		"ability_ignisPluvia_tooltip4":"The selected Olympus will consume %s CR to conduct this attack.",
+		
+		"noLootReasonNotHeld":"Industry not held",
+		"noLootReasonOwnMarket":"Can't loot from own market",
+		"noLootReasonStrength":"Player strength must be half of total strength or more (when invasion is not player-initiated)",
 		
 		"responseStr":"responding to invasion",
 		"responseTravelStr":"moving in response to invasion",

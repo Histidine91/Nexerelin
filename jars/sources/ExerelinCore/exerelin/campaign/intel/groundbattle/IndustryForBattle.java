@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IconRenderMode;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -214,6 +215,44 @@ public class IndustryForBattle {
 		return ind.getDisruptedDays() > GBConstants.DISRUPT_WHEN_CAPTURED_TIME;
 	}
 	
+	public boolean hasLootables() {
+		return ind.getAICoreId() != null || ind.getSpecialItem() != null;
+	}
+	
+	public String getNoLootReason() {
+		// check already done before showing the button
+		//if (intel.playerIsAttacker == null) return "[temp] Not in battle";
+		
+		if (heldByAttacker != intel.playerIsAttacker) return GroundBattleIntel.getString("noLootReasonNotHeld");
+		
+		// player is helping defender: can only loot if this is not our planet
+		boolean playerOwned = intel.market.isPlayerOwned();
+		if (!intel.playerIsAttacker && playerOwned) {
+			return GroundBattleIntel.getString("noLootReasonOwnMarket");
+		}
+		
+		if (!intel.isFleetInRange(Global.getSector().getPlayerFleet()))
+			return GroundBattleIntel.getString("ability_outOfRange");
+		
+		// can loot if we started this battle
+		if (intel.playerInitiated) return null;
+		
+		// else, our units must account for at least half of total strength on this industry
+		float ourStr = 0, totalStr = 0;
+		for (GroundUnit unit : units) {
+			float str = unit.getAttackStrength();
+			if (unit.isPlayer || unit.getFaction().isPlayerFaction())
+				ourStr += str;
+			
+			totalStr += str;
+		}
+		if (ourStr < totalStr * 0.5f)
+			return GroundBattleIntel.getString("noLootReasonStrength");
+		
+		
+		return null;
+	}
+	
 	public String getIconTooltipPartial(ForceType type, float value) {
 		String displayNum = String.format("%.1f", value);
 		String str = GroundBattleIntel.getString("unitEquivalent");
@@ -328,15 +367,17 @@ public class IndustryForBattle {
 			}
 		}		
 		
-		if (heldByAttacker && intel.playerIsAttacker) {
-			boolean haveLootables = ind.getAICoreId() != null || ind.getSpecialItem() != null;
-			if (haveLootables && this.stillExistsOnMarket() && intel.isFleetInRange(Global.getSector().getPlayerFleet())) 
-			{
-				troops.addButton(GroundBattleIntel.getString("btnLoot"), 
-						new Pair<String, IndustryForBattle> ("loot", this),
-						64, 16, pad);
+		if (intel.playerIsAttacker != null && hasLootables() && stillExistsOnMarket()) {
+			ButtonAPI button = troops.addButton(GroundBattleIntel.getString("btnLoot"), 
+					new Pair<String, IndustryForBattle> ("loot", this),
+					64, 16, pad);
+			String noLootReason = getNoLootReason();
+			if (noLootReason != null) {
+				button.setEnabled(false);
 			}
-		}	
+			// tooltip
+			troops.addTooltipToPrevious(generateLootTooltip(noLootReason), TooltipLocation.LEFT);
+		}
 		
 		panel.addUIElement(troops).rightOfTop(rightOf, 0);
 		return troops;
@@ -592,16 +633,21 @@ public class IndustryForBattle {
 
 		panel.addComponent(box).inTL(x, y);
 		
-		if (heldByAttacker && Boolean.TRUE.equals(intel.playerIsAttacker)) {
-			boolean haveLootables = ind.getAICoreId() != null || ind.getSpecialItem() != null;
-			if (haveLootables) {
-				TooltipMakerAPI lootBtnHolder = box.createUIElement(GroundUnit.BUTTON_SECTION_WIDTH-6, 16, false);
-				lootBtnHolder.addButton(GroundBattleIntel.getString("btnLoot"), 
-						new Pair<String, IndustryForBattle> ("loot", this),
-						GroundUnit.BUTTON_SECTION_WIDTH-6, 16, 0);
-				box.addUIElement(lootBtnHolder).inBR(5, 2);
+		if (intel.playerIsAttacker != null && hasLootables() && stillExistsOnMarket()) 
+		{
+			TooltipMakerAPI lootBtnHolder = box.createUIElement(GroundUnit.BUTTON_SECTION_WIDTH-6, 16, false);
+			ButtonAPI button = lootBtnHolder.addButton(GroundBattleIntel.getString("btnLoot"), 
+					new Pair<String, IndustryForBattle> ("loot", this),
+					GroundUnit.BUTTON_SECTION_WIDTH-6, 16, 0);
+			box.addUIElement(lootBtnHolder).inBR(5, 2);
+			
+			String noLootReason = getNoLootReason();
+			if (noLootReason != null) {
+				button.setEnabled(false);
 			}
-		}	
+			// tooltip
+			lootBtnHolder.addTooltipToPrevious(generateLootTooltip(noLootReason), TooltipLocation.LEFT);
+		}
 		
 		return box;
 	}
@@ -651,6 +697,31 @@ public class IndustryForBattle {
 						String displayNum = String.format("%.1f", val);
 						tooltip.addPara(tooltipStr, 0f, Misc.getHighlightColor(), displayNum);
 					}
+				}
+			}
+		};
+	}
+	
+	public static TooltipCreator generateLootTooltip(final String noLootReason) {
+		final float width = 320;
+		
+		return new TooltipCreator() {
+			@Override
+			public boolean isTooltipExpandable(Object tooltipParam) {
+				return false;
+			}
+
+			@Override
+			public float getTooltipWidth(Object tooltipParam) {
+				return width;
+			}
+
+			@Override
+			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+				tooltip.addPara(GroundBattleIntel.getString("btnLootTooltip"), 0);
+				
+				if (noLootReason != null) {
+					tooltip.addPara(noLootReason, Misc.getNegativeHighlightColor(), 10);
 				}
 			}
 		};
