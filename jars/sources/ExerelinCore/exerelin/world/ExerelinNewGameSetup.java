@@ -131,9 +131,6 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
-		if (!market.getContainingLocation().isHyperspace()) 
-			market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
-		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
 		NexUtilsMarket.setTariffs(market);
 		market.addSubmarket("exerelin_prismMarket");
@@ -142,6 +139,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		prismEntity.setFaction(Factions.INDEPENDENT);
 		market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);	// not doing this makes market condition tooltips fail to appear
 		sector.getEconomy().addMarket(market, true);
+		
+		if (market.getContainingLocation().isHyperspace()) 
+			market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
 		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
 		//prismEntity.setInteractionImage("illustrations", "space_bar");
