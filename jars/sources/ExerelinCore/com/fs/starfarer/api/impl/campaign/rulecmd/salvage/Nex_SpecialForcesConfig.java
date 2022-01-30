@@ -139,7 +139,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				return true;
 			case "hasCommanderAndFlagship":
 				SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
-				dialog.getTextPanel().addPara("Flagship is " + sf.getFlagship());
+				//dialog.getTextPanel().addPara("Flagship is " + sf.getFlagship());
 				return sf.getCommander() != null && sf.getFlagship() != null;
 			case "swapCargo":
 				transferCargo(player, fleet, dialog, memoryMap);
@@ -886,11 +886,11 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		Set<String> updated = (Set<String>)local.get("$nex_psf_wantedSkills");
 		for (String toRemove : original) {
 			commander.getStats().setSkillLevel(toRemove, 0);
-			dialog.getTextPanel().addPara("Removing skill " + toRemove);
+			//dialog.getTextPanel().addPara("Removing skill " + toRemove);
 		}
 		for (String toAdd : updated) {
 			commander.getStats().setSkillLevel(toAdd, 1);
-			dialog.getTextPanel().addPara("Adding skill " + toAdd);
+			//dialog.getTextPanel().addPara("Adding skill " + toAdd);
 		}
 		
 		local.unset("$nex_psf_wantedSkills");
