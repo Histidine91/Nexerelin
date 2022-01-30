@@ -1922,7 +1922,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public void generateIndustryDisplay(TooltipMakerAPI info, CustomPanelAPI panel, float width) 
 	{
 		try {
-			if (Global.getSettings().getBoolean("nex_useGroundBattleIndustryMap") || industries.size() >= 16) {
+			if (Global.getSettings().getBoolean("nex_useGroundBattleIndustryMap")) { // && industries.size() <= 16) {
 				// render map
 				MarketMapDrawer map = new MarketMapDrawer(this, panel, width - 12);
 				map.init();
