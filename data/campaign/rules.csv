@@ -2345,8 +2345,7 @@ nex_remFragments_attackerConvo_spawnShardsOpt,Nex_RemFragments_AttackerConvoOpts
 nex_remFragments_attackerConvo_cutCommLinkOpt,Nex_RemFragments_AttackerConvoOpts,"!$nex_remFragments_inSpawnRange
 !$nex_remFragments_delayShardOpt",,,cutCommLink:Cut the comm link,
 nex_remFragments_attackerConvo_spawnShardsLP,DialogOptionSelected,"$option == nex_remFragments_spawnShards
-$faction.id == luddic_path
-","Call $global.nex_remFragments_ref spawnAndJoinShards
+$faction.id == luddic_path","Call $global.nex_remFragments_ref spawnAndJoinShards
 ShowDefaultVisual
 EndConversation","""Ludd's hells—""
 
@@ -2354,8 +2353,7 @@ You call, and a fragment of a higher power answers. The mothership bay opens to 
 
 They fan out into a ready formation just behind your fleet. The $personRank on the comms screen sweats under your gaze for a few heartbeats, before you reach out and tap the disconnect button.",,
 nex_remFragments_attackerConvo_spawnShardsTT,DialogOptionSelected,"$option == nex_remFragments_spawnShards
-$faction.id == tritachyon
-","Call $global.nex_remFragments_ref spawnAndJoinShards
+$faction.id == tritachyon","Call $global.nex_remFragments_ref spawnAndJoinShards
 ShowDefaultVisual
 EndConversation","""By the credit—""
 

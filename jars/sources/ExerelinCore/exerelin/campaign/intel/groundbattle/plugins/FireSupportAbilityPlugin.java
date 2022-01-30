@@ -177,7 +177,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 				return new Pair<>(id, params);
 			}
 		}
-				
+		
 		Pair<String, Map<String, Object>> reason = super.getDisabledReason(user);
 		return reason;
 	}
