@@ -29,9 +29,7 @@ public class FragmentsBattleCreationPlugin extends BattleCreationPluginImpl {
 		if (playerGoal == FleetGoal.ESCAPE || enemyGoal == FleetGoal.ESCAPE) return;
 		
 		engine.addPlugin(new ForceDeployRemnantShards());
-	}
-	
-	
+	}	
 	
 	public static class ForceDeployRemnantShards extends BaseEveryFrameCombatPlugin {
 		boolean ran = false;

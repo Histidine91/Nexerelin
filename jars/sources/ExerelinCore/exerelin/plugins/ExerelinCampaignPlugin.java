@@ -21,8 +21,10 @@ import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.utilities.NexUtilsFleet;
+import lombok.extern.log4j.Log4j;
 
 @SuppressWarnings("unchecked")
+@Log4j
 public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	
 	public static final String MEM_KEY_BATTLE_PLUGIN = "$nex_battleCreationPlugin";
@@ -125,8 +127,22 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 		}
 		*/
 		if (opponent.getMemoryWithoutUpdate().contains(MEM_KEY_BATTLE_PLUGIN)) {
-			BattleCreationPlugin bcp = (BattleCreationPlugin)opponent.getMemoryWithoutUpdate().get(MEM_KEY_BATTLE_PLUGIN);
-			return new PluginPick<>(bcp, PickPriority.MOD_SPECIFIC);
+			// safety in case the memory has the old way with the whole plugin saved to memory
+			Object curr = opponent.getMemoryWithoutUpdate().get(MEM_KEY_BATTLE_PLUGIN);
+			if (curr instanceof BattleCreationPlugin) {
+				curr = curr.getClass().getName();
+				opponent.getMemoryWithoutUpdate().set(MEM_KEY_BATTLE_PLUGIN, curr);
+			}
+			
+			String className = (String)curr;
+			try {
+				ClassLoader loader = Global.getSettings().getScriptClassLoader();
+				Class<?> clazz = loader.loadClass(className);
+				BattleCreationPlugin bcp = (BattleCreationPlugin)clazz.newInstance();
+				return new PluginPick<>(bcp, PickPriority.MOD_SPECIFIC);
+			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+				throw new RuntimeException("Failed to load battle plugin for fleet " + opponent.getFullName(), ex);
+			}
 		}
 		
 		return null;
@@ -155,7 +171,7 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 			Global.getLogger(this.getClass()).info("Adding custom transponder AI to fleet " + fleet.getName());
 			AlwaysOnTransponderAI aai = new AlwaysOnTransponderAI();
 			aai.init(ability);
-			return new PluginPick<AbilityAIPlugin>(aai, PickPriority.MOD_GENERAL);
+			return new PluginPick<AbilityAIPlugin>(aai, PickPriority.MOD_SET);
 		}
 		return null;
 	}

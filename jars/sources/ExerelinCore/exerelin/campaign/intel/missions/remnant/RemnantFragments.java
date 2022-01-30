@@ -96,14 +96,9 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	}
 	
 	public void fixDebug2() {
-		LocData loc = new LocData(null, null, Global.getSector().getCurrentLocation());
-		loc.loc = new BaseThemeGenerator.EntityLocation();
-		loc.loc.type = BaseThemeGenerator.LocationType.OUTER_SYSTEM;
-		loc.loc.location = new Vector2f(10000, 10000);
-		loc.loc.orbit = null;
-		
-		SectorEntityToken node = spawnMissionNode(loc);
-		makeImportant(node, "$nex_remFragments_target2");
+		if (attacker != null) {
+			attacker.getMemoryWithoutUpdate().set(ExerelinCampaignPlugin.MEM_KEY_BATTLE_PLUGIN, FragmentsBattleCreationPlugin.class.getName());
+		}
 	}
 	
 	@Override
@@ -285,7 +280,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		
 		fleet.setLocation(pos.x, pos.y);
 		
-		fleet.getMemoryWithoutUpdate().set(ExerelinCampaignPlugin.MEM_KEY_BATTLE_PLUGIN, new FragmentsBattleCreationPlugin());
+		fleet.getMemoryWithoutUpdate().set(ExerelinCampaignPlugin.MEM_KEY_BATTLE_PLUGIN, FragmentsBattleCreationPlugin.class.getName());
 				
 		// fleet assignments
 		String targetName = StringHelper.getString("yourFleet");
@@ -404,7 +399,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		
 		int shards = (int)(attackerBaseFP/45);
 		if (shards < 2) shards = 2;
-		if (shards > MAX_SHARDS) shards = MAX_SHARDS;		
+		if (shards > MAX_SHARDS) shards = MAX_SHARDS;
 		
 		for (int i=0; i < shards; i++) {
 			boolean left = i < shards/2;	// left shards will spawn on left side
@@ -445,8 +440,9 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		mothership.getMemoryWithoutUpdate().set("$nex_remFragments_canSalvage", true);
 		
 		Misc.giveStandardReturnToSourceAssignments(attacker, true);
-		if (ally != null)
+		if (ally != null) {
 			ally.addAssignment(FleetAssignment.ORBIT_PASSIVE, mothership, 999999);
+		}
 	}
 	
 	public int getSkillValueForHack(SkillLevelAPI skill) {
