@@ -252,7 +252,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 					//log.info(String.format("Checking nexus in %s, highPower %s", system.getNameWithLowercaseTypeShort(), highPower));
 					float dist = MathUtils.getDistance(fleet.getLocation(), center);
 					float weight = 50000/dist;
-					highPower = fleet.getMemoryWithoutUpdate().getBoolean("$damagedStation");
+					highPower = !fleet.getMemoryWithoutUpdate().getBoolean("$damagedStation");
 					
 					if (weight > 20) weight = 20;
 					if (weight < 0.1f) weight = 0.1f;
@@ -449,7 +449,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	 * Spawns some extra defenders (currently just two merc fleets) for the station.
 	 */
 	protected void spawnExtraDefenders() {
-		float fp = 45;
+		float fp = 60;
 		
 		for (int i=0; i<2; i++) {
 			FleetParamsV3 params = new FleetParamsV3(station.getLocationInHyperspace(),
