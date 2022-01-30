@@ -525,14 +525,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         // no valid alliances to join, try to merge existing alliances
         for (Alliance alliance : alliances) {
+			boolean didAnything = false;
+			
             for (Alliance otherAlliance : alliances) {
                 if (alliance == otherAlliance) continue;
                 if (Math.random() > MERGE_CHANCE_MULT) continue;
                 
                 if (canMerge(alliance, otherAlliance)) {
                     mergeAlliance(alliance, otherAlliance);
+					didAnything = true;
+					break;
                 }
             }
+			if (didAnything) break;
         }
     }
     
