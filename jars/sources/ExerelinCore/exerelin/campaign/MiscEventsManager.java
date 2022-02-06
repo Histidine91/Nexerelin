@@ -53,8 +53,8 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 		float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
 		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
 
-		int combat = Math.round((playerStr/5.5f + capBonus) * MathUtils.getRandomNumberInRange(0.6f, 0.7f));
-		combat *= 0.4f;
+		int combat = Math.round((playerStr/4f + capBonus) * MathUtils.getRandomNumberInRange(0.6f, 0.7f));
+		combat *= 0.5f;
 		
 		// don't spawn if player too weak
 		if (combat < 12) {
@@ -63,9 +63,9 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 			return;
 		}	
 		
-		//Global.getLogger(this.getClass()).info("Player strength: " + playerStr);
-		//Global.getLogger(this.getClass()).info("Omega estimated desired combat points: " + combat);
-		//Global.getLogger(this.getClass()).info("Omega max combat points: " + maxPoints);
+		Global.getLogger(this.getClass()).info("Player strength: " + playerStr);
+		Global.getLogger(this.getClass()).info("Omega estimated desired combat points: " + combat);
+		Global.getLogger(this.getClass()).info("Omega max combat points: " + maxPointsForFaction);
 		combat = Math.min(70, combat);
 		combat = Math.max(12, combat);	// at least a shard
 		

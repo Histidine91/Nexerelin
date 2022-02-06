@@ -1705,14 +1705,14 @@ nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHai
 
 ...It appears this AI does not like cute cats. Absolutely unforgivable.  ",cutCommLink:Power up weapons and cut the comm link,
 nex_HistorianOmegaHailBribeBeta,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeBeta,"MakeOtherFleetHostile hist false
-MakeOtherFleetAggressive hist false
+MakeOtherFleetNonHostile hist true
 AdjustRep $personFaction.id COOPERATIVE 5","The other party considers this proposal.
 
 ""submission of lesser congregant acceptable. subsumed will be!""
 
 You order the (un?)lucky AI core released in a sealed pod to meet its new god. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
 nex_HistorianOmegaHailBribeAlpha,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeAlpha,"MakeOtherFleetHostile hist false
-MakeOtherFleetAggressive hist false
+MakeOtherFleetNonHostile hist true
 AdjustRep $personFaction.id COOPERATIVE 10
 AdjustRepActivePerson COOPERATIVE 15","The other party considers this proposal.
 
@@ -2737,7 +2737,7 @@ Call $nex_sellAICore_ref2 addContacts",,,
 nex_sellAICorePrintAcceptText,ContactPrintAcceptText,"$id == nex_dissonant score:10
 $missionId == nex_sellAICore",,"""Please take good care, your new core.""
 OR
-""Please keep core safe from Hegemony and others.""",,
+""Please core keep safe from Hegemony and others.""",,
 #END Remnant general quests,,,,,,
 ,,,,,,
 # build station mission,,,,,,
