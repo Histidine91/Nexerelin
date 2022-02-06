@@ -87,6 +87,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	protected boolean distressSent;
 	protected float attackerBaseFP;
 	protected boolean shardsDeployed;
+	protected boolean decidedToFlee;
 	protected boolean wonBattle;
 	
 	// runcode exerelin.campaign.intel.missions.remnant.RemnantFragments.fixDebug()
@@ -223,6 +224,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		log.info("Player strength: " + playerStr);
 		int fp = Math.round(playerStr + capBonus)/4;
 		if (fp < 60) fp = 60;
+		if (fp > 300) fp = 300;
 		
 		attackerBaseFP = fp;
 		
@@ -258,7 +260,8 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		fleet.getMemoryWithoutUpdate().set("$genericHail_openComms", "Nex_RemFragmentsHail");
 		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
 		makeImportant(fleet, "$nex_remFragments_attacker", Stage.BATTLE);
-		Misc.addDefeatTrigger(fleet, "Nex_RemFragments_AttackFleetDefeated");
+		if (!decidedToFlee)
+			Misc.addDefeatTrigger(fleet, "Nex_RemFragments_AttackFleetDefeated");
 		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remFragments", true, 999);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
 		
@@ -434,7 +437,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	 * @param memoryMap
 	 */
 	public void reportFleetDefeated(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-		if (wonBattle) return;
+		if (wonBattle || decidedToFlee) return;
 		wonBattle = true;
 		setCurrentStage(Stage.SALVAGE_MOTHERSHIP, dialog, memoryMap);
 		mothership.getMemoryWithoutUpdate().set("$nex_remFragments_canSalvage", true);
@@ -561,6 +564,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				setCurrentStage(Stage.BATTLE, dialog, memoryMap);
 				return true;
 			case "evacuate":
+				decidedToFlee = true;
 				setCurrentStage(Stage.RETURN, dialog, memoryMap);
 				destroyMothership();
 				return true;
