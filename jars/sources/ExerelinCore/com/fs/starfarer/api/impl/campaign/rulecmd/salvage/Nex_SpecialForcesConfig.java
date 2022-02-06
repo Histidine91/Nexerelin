@@ -166,6 +166,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		return true;
 	}
 	
+	// TODO: check if fleet is in battle as well?
 	protected boolean canRevive(CampaignFleetAPI fleet, MemoryAPI mem) {
 		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(fleet);
 		if (intel.getDeadMembers().isEmpty()) {
@@ -176,7 +177,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		for (MarketAPI market : Misc.getMarketsInLocation(fleet.getContainingLocation())) {
 			if (market.getFaction().isAtBest(fleet.getFaction(), RepLevel.INHOSPITABLE))
 				continue;
-			if (MathUtils.getDistance(market.getPrimaryEntity(), fleet) > 200)
+			if (MathUtils.getDistance(market.getPrimaryEntity(), fleet) > 300)
 				continue;
 				
 			haveMarket = true;
