@@ -170,7 +170,7 @@ public class MercDataManager {
 				def.shipNamePrefix = entryJson.optString("shipNamePrefix", null);
 				def.feeUpfront = Math.round(entryJson.optInt("feeUpfront") * feeUpfrontMult);
 				def.feeMonthly = Math.round(entryJson.optInt("feeMonthly") * feeMonthlyMult);
-				def.fleetFeeMult = Math.round(entryJson.optDouble("fleetFeeMult"));
+				def.fleetFeeMult = (float)entryJson.optDouble("fleetFeeMult");
 				def.factionId = entryJson.optString("faction", Factions.INDEPENDENT);
 				if (Global.getSector().getFaction(def.factionId) == null) {
 					throw new RuntimeException("  Invalid faction for merc company " + id);
