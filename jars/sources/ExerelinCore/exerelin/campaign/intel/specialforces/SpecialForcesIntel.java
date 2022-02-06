@@ -565,7 +565,11 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		String str;
 		
 		// Event over?
-		if (route == null || isEnding() || isEnded()) {
+		boolean over = route == null || isEnding() || isEnded();
+		if (this instanceof PlayerSpecialForcesIntel) {
+			over |= !((PlayerSpecialForcesIntel)this).isAlive;
+		}
+		if (over) {
 			str = getString("intelDescOver");
 			str = StringHelper.substituteToken(str, "$faction", faction.getPersonNamePrefix());
 			String fleetName = this.fleetName != null ? this.fleetName 

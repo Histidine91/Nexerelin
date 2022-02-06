@@ -358,7 +358,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 					&& dial.getInteractionTarget().getMarket().getFaction().isPlayerFaction();
 			if (!allow) {
 				button.setEnabled(false);
-				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip("[temp] Must be docked at a player market.", 360), 
+				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip("intelTooltipDisbandNotDocked", 360), 
 						TooltipMakerAPI.TooltipLocation.BELOW);
 			}
 		}
@@ -367,9 +367,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		if (!deadMembers.isEmpty()) {
 			info.addPara(getString("intelDescLostShips"), opad);
 			NexUtilsGUI.addShipList(info, width, new ArrayList<>(deadMembers), 48, pad);
-		}		
+		}
 		
-		createSmallDescriptionPart2(info, width);
+		if (isAlive)
+			createSmallDescriptionPart2(info, width);
 	}
 	
 	@Override
