@@ -362,9 +362,10 @@ public class MarketMapDrawer {
 				rects = generateRectangles((int)mapWidth, (int)mapHeight, 
 					Math.round(baseWidth * 1.2f), Math.round(baseHeight * 1.2f));
 			}
-			else {			
+			else {
 				int max = 99;	//industries.size() + Math.max(0, 10 - industries.size()/2);
 				max = Math.min(max, getMaxRects(mapWidth, baseWidth * 1.2f, baseHeight * 1.25f));
+				if (max < industries.size()) max = industries.size();
 				
 				for (int i=0; i<max; i++) {
 					float width = baseWidth * MathUtils.getRandomNumberInRange(1.1f, 1.3f);
@@ -381,7 +382,7 @@ public class MarketMapDrawer {
 					r.y += offsetY;
 				}
 			}
-						
+			
 			List<Pair<Rectangle, Float>> rectsSorted = getRectsSortedByDist(rects);
 			
 			// Give the rectangle closest to the center to spaceport?
@@ -406,8 +407,10 @@ public class MarketMapDrawer {
 			// assign the other industries
 			for (IndustryForBattle ifb : industries) {
 				Rectangle r = pickFromListMaybeOffset(rectsSorted).one;
-				picked.add(r);
-				assignPosFromRectangle(ifb, r, baseWidth, baseHeight, mapWidth);
+				if (r != null) {
+					picked.add(r);
+					assignPosFromRectangle(ifb, r, baseWidth, baseHeight, mapWidth);
+				}
 			}
 			
 			return rects;
@@ -415,6 +418,8 @@ public class MarketMapDrawer {
 		}
 		
 		public <T> T pickFromListMaybeOffset(List<T> list) {
+			if (list.isEmpty()) return null;
+			
 			int index = 0;
 			int maxOffset = list.size()/2 - 1;
 			if (maxOffset < 0) maxOffset = 0;
