@@ -36,6 +36,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TextFieldAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -905,8 +906,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle)
 	{
-		log.info("Fleet " + fleet.getName() + " in battle");
-		
 		/*
 			NOTE: this causes calculation errors if a fleet is damage, despawned, then respawned
 			e.g. if it loses half its FP, despawns, then respawns, trueStartingFP will now be half its original value
@@ -998,7 +997,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		{
 			log.info("Despawning fleet " + fleet.getName());
 			sf.reportFleetDespawned(reason, param);
-			fleet.removeEventListener(this);
+			Global.getSector().addScript(new RemoveListenerScript(fleet, this));
 		}
 
 		@Override
@@ -1006,6 +1005,24 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		{
 			sf.reportBattleOccurred(fleet, primaryWinner, battle);
 		}
-		
+	}
+	
+	// make it a non-anonymous class to avoid an extremely minor chance of unintentional save breakage
+	public static class RemoveListenerScript extends DelayedActionScript {
+
+		protected CampaignFleetAPI fleet;
+		protected FleetEventListener listener;
+
+		public RemoveListenerScript(CampaignFleetAPI fleet, FleetEventListener listener) 
+		{
+			super(1);
+			this.fleet = fleet;
+			this.listener = listener;
+		}
+
+		@Override
+		public void doAction() {
+			fleet.removeEventListener(listener);
+		}
 	}
 }

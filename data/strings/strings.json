@@ -2172,7 +2172,7 @@
 		
 		"intelButtonCommand":"Give orders",
 		"intelButtonDisband":"Disband",
-		"intelTooltipDisbandNotDocked":"Must be docked at a player market.",
+		"intelTooltipDisbandNotDocked":"Must be docked at a market.",
 		"intelButtonDebug":"Debug",
 		"intelButtonCheckIndependent":"Independent mode",
 		

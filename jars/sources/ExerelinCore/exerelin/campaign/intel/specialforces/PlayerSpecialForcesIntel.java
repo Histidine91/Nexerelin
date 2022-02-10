@@ -32,6 +32,7 @@ import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.getString
 import exerelin.utilities.NexUtilsGUI;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +50,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	public static final float CREW_SALARY_MULT = 1f;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
 	public static final float SUPPLY_COST_MULT = 1f;	// ditto, even though we're getting free combat out of the deal
-	public static final float REVIVE_COST_MULT = 0.5f;
+	public static final float REVIVE_COST_MULT = 0.25f;
 	
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
@@ -212,6 +213,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		CampaignFleetAPI toDisband = this.fleet;
 		if (toDisband == null) toDisband = tempFleet;
 		
+		//float reviveCostDebug = getReviveCost(deadMembers);
+		//log.info("Reviving dead ships would cost " + reviveCostDebug + " credits");
+		
 		for (OfficerDataAPI officer : toDisband.getFleetData().getOfficersCopy()) {
 			if (officer.getPerson().isAICore()) continue;
 			player.getFleetData().addOfficer(officer);
@@ -221,6 +225,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		for (FleetMemberAPI member : getDeadMembers()) {
 			player.getFleetData().addFleetMember(member);
+			// so they don't vanish if not repaired immediately
+			member.getRepairTracker().performRepairsFraction(0.001f);
 		}
 		
 		player.getCargo().addAll(toDisband.getCargo());
@@ -354,11 +360,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 					(int)(width), 20f, opad);
 			
 			InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
-			boolean allow = dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null
-					&& dial.getInteractionTarget().getMarket().getFaction().isPlayerFaction();
+			boolean allow = dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null;
 			if (!allow) {
 				button.setEnabled(false);
-				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip("intelTooltipDisbandNotDocked", 360), 
+				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(getString("intelTooltipDisbandNotDocked"), 360), 
 						TooltipMakerAPI.TooltipLocation.BELOW);
 			}
 		}
@@ -406,6 +411,12 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		return (int)(deadFP/(deadFP+liveFP) * 100);
 	}
 	
+	@Override
+	protected void notifyEnding() {
+		super.notifyEnding();
+		Global.getSector().getListenerManager().removeListener(this);
+	}
+	
 	public static int getActiveIntelCount() {
 		int num = 0;
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(PlayerSpecialForcesIntel.class)) {
@@ -425,7 +436,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	public void reportFleetDespawned(CampaignEventListener.FleetDespawnReason reason, Object param) {
 		isAlive = false;
+		
+		// remove economy tick listener, no longer needed
 		Global.getSector().getListenerManager().removeListener(this);
+		
 		sendUpdateIfPlayerHasIntel(DESTROYED_UPDATE, false, false);
 	}
 	
@@ -440,7 +454,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 	}
 	
-	public static int getReviveCost(List<FleetMemberAPI> members) {
+	public static int getReviveCost(Collection<FleetMemberAPI> members) {
 		float cost = 0;
 		for (FleetMemberAPI member : members) {
 			cost += member.getBaseValue();
