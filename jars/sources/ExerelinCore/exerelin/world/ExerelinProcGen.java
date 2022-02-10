@@ -391,7 +391,7 @@ public class ExerelinProcGen {
 				continue;
 			
 			if (!core) {
-				log.info("Adding non-core system: " + system.getBaseName());
+				//log.info("Adding non-core system: " + system.getBaseName());
 			}
 			list.add(system);
 			

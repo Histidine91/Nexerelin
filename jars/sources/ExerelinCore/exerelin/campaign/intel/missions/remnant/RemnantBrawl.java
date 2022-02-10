@@ -562,7 +562,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 					checkAttack();
 				}
 			});
-			Global.getSector().getCampaignUI().addMessage("Found staging area");
+			//Global.getSector().getCampaignUI().addMessage("Found staging area");
 		}
 	}
 	
@@ -661,7 +661,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		if (!attackFleets.contains(fleet)) return;
 		
 		int fp = fleet.getFleetPoints();
-		if (fp < fleet.getMemoryWithoutUpdate().getFloat("$startingFP")) {
+		if (fp < fleet.getMemoryWithoutUpdate().getFloat("$startingFP") * 0.4f) {
 			log.info("Removing attacker fleet " + fleet.getFullName() + " due to excessive damage");
 			attackFleets.remove(fleet);
 			checkRemnantVictory();
