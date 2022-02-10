@@ -1859,7 +1859,7 @@ nex_gbTut_diamondPostConvo4,DialogOptionSelected,$option == nex_gbTut_diamondPos
 
 In contrast to his appearance on the comm not a day ago, the League $personRank before you now is a worn, hollowed-out imitation of a $manOrWoman. As if he was the one who'd been locked up with the interrogator.
 
-""Hello, $playerFirstName,"" he says, wearily. ""Please, order anything you like. It's my treat, after all.""","nex_gbTut_diamondPostConvo5:[reputation check] ""What did you find out?""",
+""Hello, $playerFirstName,"" he says, wearily. ""Please, order anything you like. It's my treat, after all.""","nex_gbTut_diamondPostConvo5:""What did you find out?""",
 nex_gbTut_diamondPostConvo5Success,DialogOptionSelected,"$option == nex_gbTut_diamondPostConvo5
 Nex_GBTutMission repCheck",,"The $personRank looks at you for a long while. ""You didn't hear this from me, $playerFirstName,"" $heOrShe says at length. ""But let's just say it would explain why I'm the only Fleet asset who was around in Ilm's hour of need.""
 
