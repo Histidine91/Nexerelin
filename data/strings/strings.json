@@ -623,8 +623,8 @@
 		"intelDescNoRefund":"Due to your poor relationship with $theFaction, no refund has been issued.",
 		
 		"dialogCost":"Requires %s credits. You have %s credits.",
-		"costFactorIndustry":"industry value",
-		"costFactorIncome":"income",
+		"costFactorIndustry":"industry value (%s price modifier)",
+		"costFactorIncome":"income (6 months)",
 		"costFactorSizeAndStability":"market size and stability",
 		"costFactorPlayerFounded":"player-founded colony",
 		"costFactorRecentlyCapturedByPlayer":"recently captured by player",

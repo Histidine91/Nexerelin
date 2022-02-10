@@ -138,10 +138,16 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		}
 		
 		float value = NexUtilsMarket.getMarketIndustryValue(market);
+		float valueMult = Global.getSettings().getFloat("nex_governorship_industryValueMult");
+		value *= valueMult;
+		
 		if (isRefund)
 			value *= Global.getSettings().getFloat("industryRefundFraction");
-		stat.modifyFlat("industry", value, StringHelper.getString("nex_buyColony", 
-				"costFactorIndustry", true));
+		
+		String desc = StringHelper.getString("nex_buyColony", "costFactorIndustry", true);
+		float modifier = valueMult - 1; 
+		desc = String.format(desc, StringHelper.toPercent(modifier));
+		stat.modifyFlat("industry", value, desc);
 		
 		float income = NexUtilsMarket.getIncomeNetPresentValue(market, 6, isRefund ? 0.1f : 0);
 		stat.modifyFlat("income", income, StringHelper.getString("nex_buyColony", 
@@ -169,7 +175,8 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		intel.init();
 		if (dialog != null)
 			Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
-	}	
+	}
+	
 	public static void setColonyPlayerOwned(MarketAPI market, boolean owned, InteractionDialogAPI dialog) 
 	{
 		market.setPlayerOwned(owned);
