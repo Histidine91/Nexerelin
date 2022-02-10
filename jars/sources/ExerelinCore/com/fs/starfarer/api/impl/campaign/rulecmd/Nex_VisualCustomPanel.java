@@ -13,6 +13,11 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 
+/**
+ * Used to create a CustomPanelAPI in an InteractionDialogAPI.
+ * Make sure to call {@code clearPanel} when no longer needed, to avoid memory leaks.
+ * @author Histidine
+ */
 public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 	
 	public static final float PANEL_WIDTH = 600;
@@ -58,6 +63,12 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 		return false;
 	}
 	
+	/**
+	 * Clears the static references to the custom panel and its tooltip and plugin.<br/>
+	 * If not done after use, the contents of the panel can cause a memory leak.
+	 * @param dialog
+	 * @param memoryMap
+	 */
 	public static void clearPanel(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		panel = null;
 		tooltip = null;
