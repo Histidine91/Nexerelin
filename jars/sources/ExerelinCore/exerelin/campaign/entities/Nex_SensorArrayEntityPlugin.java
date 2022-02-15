@@ -46,7 +46,7 @@ public class Nex_SensorArrayEntityPlugin extends SensorArrayEntityPlugin {
 	public boolean canReceiveBonus(CampaignFleetAPI fleet) {
 		if (fleet.getFaction() == entity.getFaction())
 			return true;
-		if (fleet.getFaction().isPlayerFaction()) {
+		if (fleet.getFaction().isPlayerFaction() || entity.getFaction().isPlayerFaction()) {
 			if (isHacked()) return true;
 			if (AllianceManager.areFactionsAllied(entity.getFaction().getId(), Misc.getCommissionFactionId())) 
 				return true;
