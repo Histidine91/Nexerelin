@@ -51,9 +51,16 @@ public class VengeanceBuff extends UNGP_BaseRuleEffect {
 		return null;
 	}
 
-	@Override
+	@Deprecated @Override
 	public String getDescriptionParams(int index, int difficulty) {
 		if (index == 0) return getPercentString(getValueByDifficulty(index, difficulty) * 100f);
 		return getDescriptionParams(index);
 	}
+	
+	@Override
+	public String getDescriptionParams(int index, UNGP_SpecialistSettings.Difficulty difficulty) {
+		if (index == 0) return getPercentString(getValueByDifficulty(index, difficulty) * 100f);
+		return getDescriptionParams(index);
+	}
+
 }

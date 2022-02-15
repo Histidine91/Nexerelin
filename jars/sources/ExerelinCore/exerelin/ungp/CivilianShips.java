@@ -1,8 +1,8 @@
 package exerelin.ungp;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BuffManagerAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import data.scripts.campaign.specialist.UNGP_SpecialistSettings;
@@ -12,9 +12,10 @@ import data.scripts.utils.UNGP_BaseBuff;
 import java.util.List;
 
 public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFleetTag {
-    public static final float BASE_CR_REDUCTION = 0.2f;
+	public static final float BASE_CR_REDUCTION = 0.2f;
 	
-	protected int difficulty;
+	@Deprecated protected int difficulty;
+	protected UNGP_SpecialistSettings.Difficulty difficultyEnum;
 	protected float crPenalty;
 	protected float maintMult;
 	protected float milDP, civDP;
@@ -33,13 +34,30 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 	}
 	
 	@Override
+	public void updateDifficultyCache(UNGP_SpecialistSettings.Difficulty difficulty) {
+		difficultyEnum = difficulty;
+		//Global.getLogger(this.getClass()).info(String.format("Updating cache"));
+		getValueByDifficulty(-1, difficulty);
+	}
+	
+	@Override
+	public float getValueByDifficulty(int index, UNGP_SpecialistSettings.Difficulty difficulty) {
+		float excess = getMilExcess();
+		crPenalty = BASE_CR_REDUCTION * difficulty.getLinearValue(0.1f, 0.1f);
+		maintMult = 1 + (float)difficulty.getLinearValue(0.25f, 0.75f);
+		if (index == 0) return crPenalty;
+		else if (index == 1) return maintMult;
+		return 0;
+	}
+
+	@Deprecated @Override
 	public void updateDifficultyCache(int difficulty) {
 		this.difficulty = difficulty;
 		//Global.getLogger(this.getClass()).info(String.format("Updating cache"));
 		getValueByDifficulty(-1, difficulty);
 	}
 	
-	@Override
+	@Deprecated	@Override
 	public float getValueByDifficulty(int index, int difficulty) {
 		float denominator = UNGP_SpecialistSettings.MAX_DIFFICULTY/2;
 		float excess = getMilExcess();
@@ -50,13 +68,13 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 		return 0;
 	}
 
-    protected class MilitaryDebuff extends UNGP_BaseBuff {
-        public MilitaryDebuff(String id, float dur) {
-            super(id, dur);
-        }
+	protected class MilitaryDebuff extends UNGP_BaseBuff {
+		public MilitaryDebuff(String id, float dur) {
+			super(id, dur);
+		}
 
-        @Override
-        public void apply(FleetMemberAPI member) {
+		@Override
+		public void apply(FleetMemberAPI member) {
 			//Global.getLogger(this.getClass()).info(String.format("Applying debuff for %s: %s CR penalty, %s maint mult", 
 			//		member.getShipName(), crPenalty, maintMult));
 			decreaseMaxCR(member.getStats(), id, crPenalty, rule.getName());
@@ -83,10 +101,10 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 		}
 		if (oldCivDP != civDP || oldMilDP != milDP) {
 			needReapply = true;
-			Global.getLogger(this.getClass()).info("Reapplying buff");
+			//Global.getLogger(this.getClass()).info("Reapplying buff");
 		}
 		
-		updateDifficultyCache(difficulty);
+		updateDifficultyCache(difficultyEnum);
 		
 		//Global.getLogger(this.getClass()).info(String.format("Applying stats: %s civ, %s mil", civDP, milDP));
 		//Global.getLogger(this.getClass()).info(String.format("Applying stats: %s crPenalty, %s maintMult", crPenalty, maintMult));
@@ -94,7 +112,8 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 		boolean needsSync = false;
 		for (FleetMemberAPI member : members) {
 			String buffId = rule.getBuffID();
-			boolean civ = member.getVariant().hasHullMod(HullMods.CIVGRADE) || member.getVariant().hasHullMod(HullMods.MILITARIZED_SUBSYSTEMS);
+			boolean civ = member.getVariant().hasHullMod(HullMods.CIVGRADE) || member.getVariant().hasHullMod(HullMods.MILITARIZED_SUBSYSTEMS)
+					|| member.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN);
 			if (civ) {
 				member.getBuffManager().removeBuff(buffId);
 				continue;
@@ -121,21 +140,27 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 		if (needsSync) {
 			fleet.forceSync();
 		}
-    }
+	}
 
-    @Override
-    public void unapplyPlayerFleetStats(CampaignFleetAPI fleet) {
-    }
+	@Override
+	public void unapplyPlayerFleetStats(CampaignFleetAPI fleet) {
+	}
 	
 	@Override
-    public String getDescriptionParams(int index) {
-        if (index == 1) return getPercentString(BASE_CR_REDUCTION * 100);
+	public String getDescriptionParams(int index) {
+		if (index == 1) return getPercentString(BASE_CR_REDUCTION * 100);
 		if (index == 0) return 2 + "×";
-        return null;
-    }
+		return null;
+	}
 
-    @Override
-    public String getDescriptionParams(int index, int difficulty) {
-        return getDescriptionParams(index);
-    }
+	@Deprecated @Override
+	public String getDescriptionParams(int index, int difficulty) {
+		return getDescriptionParams(index);
+	}
+	
+	@Override
+	public String getDescriptionParams(int index, UNGP_SpecialistSettings.Difficulty difficulty) 
+	{
+		return getDescriptionParams(index);
+	}
 }
