@@ -78,7 +78,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			
 	public void setFlagship(FleetMemberAPI member) {
 		flagship = member;
-		if (fleet != null) {
+		if (fleet != null && member != null) {
 			fleet.getFleetData().setFlagship(flagship);
 		}
 	}
