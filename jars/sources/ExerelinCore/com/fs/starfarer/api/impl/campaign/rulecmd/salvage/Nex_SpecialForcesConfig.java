@@ -435,6 +435,10 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				continue;
 			if (member == player.getFlagship())
 				continue;
+			if (member.getCaptain() != null && !member.getCaptain().isDefault()) {
+				if (Misc.isMercenary(member.getCaptain()))
+					continue;
+			}
 			ships.add(member);
 		}
 		
