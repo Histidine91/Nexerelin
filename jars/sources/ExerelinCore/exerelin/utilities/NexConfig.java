@@ -113,6 +113,7 @@ public class NexConfig
     public static float revengePointsPerEnemyFP = 0.05f;
     public static float revengePointsForMarketCaptureMult = 2f;
     public static float vengeanceFleetSizeMult = 0.8f;
+    public static boolean useNewVengeanceEncounters = true;
     
     // Combat
     @Deprecated public static boolean useCustomBattleCreationPlugin = false;
@@ -243,6 +244,7 @@ public class NexConfig
             revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);
             revengePointsForMarketCaptureMult = (float)settings.optDouble("revengeFleetPointsForMarketCaptureMult", revengePointsForMarketCaptureMult);
             vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
+			useNewVengeanceEncounters = settings.optBoolean("useNewVengeanceEncounters", useNewVengeanceEncounters);
             
             maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
             hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);

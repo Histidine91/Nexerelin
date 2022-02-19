@@ -16,11 +16,14 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -546,6 +549,12 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		float distance = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
 		float distBonus = 30 + distance*1.5f;	// don't crank it up too much, I don't think this is the important component
 		
+		if (NexConfig.useNewVengeanceEncounters) {
+			spawnFleet();
+			endEvent(EndReason.OTHER);
+			return;
+		}
+		
 		switch (escalationLevel) {
 			case 0:
 				duration = Math.max(60,
@@ -654,6 +663,40 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		freighter *= sizeMult;
 		tanker *= sizeMult;
 		utility *= sizeMult;
+		
+		if (NexConfig.useNewVengeanceEncounters) {
+			log.info("Creating vengeance DelayedFleetEncounter");
+			DelayedFleetEncounter e = new DelayedFleetEncounter(null, "nex_vengeance");
+			e.setTypes(DelayedFleetEncounter.EncounterType.OUTSIDE_SYSTEM, 
+					DelayedFleetEncounter.EncounterType.IN_HYPER_EN_ROUTE);
+			e.setDelayNone();
+			e.setLocationInnerSector(true, factionId);
+			e.setDoNotAbortWhenPlayerFleetTooStrong();
+			e.beginCreate();
+			e.triggerCreateFleet(HubMissionWithTriggers.FleetSize.SMALL, 
+					HubMissionWithTriggers.FleetQuality.VERY_HIGH, 
+					factionId, 
+					"vengeanceFleet", 
+					market.getLocationInHyperspace());
+			//e.triggerSetAdjustStrengthBasedOnQuality(false, 1);
+			
+			NexUtilsFleet.setTriggerFleetFP(Global.getSector().getFaction(factionId), combat, e);
+			
+			// behavior
+			e.triggerSetStandardAggroInterceptFlags();
+			
+			e.triggerMakeLowRepImpact();
+			e.triggerSetFleetMemoryValue("$clearCommands_no_remove", true);
+			e.triggerSetFleetMemoryValue("$escalation", (float)escalationLevel);
+			e.triggerSetFleetMemoryValue(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true);
+			
+			e.triggerFleetSetName(def.getFleetName(factionId, escalationLevel));
+			
+			e.endCreate();			
+			
+			return null;
+			
+		}
 		
 		final float finalBonus = bonus;
 

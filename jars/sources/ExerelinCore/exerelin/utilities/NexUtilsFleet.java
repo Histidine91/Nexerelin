@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
@@ -222,6 +223,14 @@ public class NexUtilsFleet
     {
         return Global.getSector().getPlayerPerson().getStats().getLevel() * NexConfig.fleetBonusFpPerPlayerLevel;
     }
+	
+	public static void setTriggerFleetFP(FactionAPI faction, float fp, HubMissionWithTriggers mission) 
+	{
+		float maxPointsForFaction = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL);
+		float fraction = Math.max(fp/maxPointsForFaction/0.75f, HubMissionWithTriggers.FleetSize.TINY.maxFPFraction);
+		fraction = Math.min(fraction, 1);
+		mission.triggerSetFleetSizeFraction(fraction);
+	}
     
     public static List<CampaignFleetAPI> getAllFleetsInSector()
     {

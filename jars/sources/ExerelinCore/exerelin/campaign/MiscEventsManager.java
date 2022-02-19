@@ -85,9 +85,9 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 					FleetTypes.PATROL_SMALL, 
 					new Vector2f());
 			//e.triggerSetAdjustStrengthBasedOnQuality(false, 1);
-			float fraction = Math.max(combat/maxPointsForFaction/0.75f, HubMissionWithTriggers.FleetSize.TINY.maxFPFraction);
-			fraction = Math.min(fraction, 1);
-			e.triggerSetFleetSizeFraction(fraction);
+			
+			NexUtilsFleet.setTriggerFleetFP(faction, combat, e);
+			
 			e.triggerSetFleetMaxShipSize(2);
 			e.triggerSetFleetFaction(Factions.REMNANTS);
 			
