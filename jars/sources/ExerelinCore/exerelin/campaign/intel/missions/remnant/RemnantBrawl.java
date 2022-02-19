@@ -320,6 +320,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		makeImportant(fleet, "$nex_remBrawl_attackFleet", Stage.FOLLOW_STRAGGLER, Stage.GO_TO_TARGET_SYSTEM, Stage.BATTLE);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
+		fleet.removeAbility("sun_hd_hyperdrive");
 		
 		fleet.addEventListener(new BaseFleetEventListener() {
 			public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, CampaignEventListener.FleetDespawnReason reason, Object param) {
