@@ -45,6 +45,7 @@ import exerelin.campaign.abilities.ai.AlwaysOnTransponderAI;
 import exerelin.campaign.intel.missions.BuildStation;
 import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinNewGameSetup;
@@ -449,7 +450,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	 * Spawns some extra defenders (currently just two merc fleets) for the station.
 	 */
 	protected void spawnExtraDefenders() {
-		float fp = 60;
+		float fp = 50;
 		
 		for (int i=0; i<2; i++) {
 			FleetParamsV3 params = new FleetParamsV3(station.getLocationInHyperspace(),
@@ -709,10 +710,19 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	protected void cleanup() {
 		Global.getSector().getListenerManager().removeListener(this);
-		for (CampaignFleetAPI fleet : createdFleets) {
+		for (final CampaignFleetAPI fleet : createdFleets) {
 			if (!fleet.isAlive()) continue;
 			Misc.giveStandardReturnToSourceAssignments(fleet, true);
 			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remBrawl", false, 9999);
+			if (FleetTypes.MERC_ARMADA.equals(NexUtilsFleet.getFleetType(fleet))) {
+				fleet.addScript(new DelayedActionScript(9) {
+					@Override
+					public void doAction() {
+						if (!fleet.isAlive()) return;
+						fleet.setFaction(Factions.INDEPENDENT, true);
+					}
+				});
+			}
 		}
 		stagingPoint.getContainingLocation().removeEntity(stagingPoint);
 	}
