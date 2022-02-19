@@ -264,6 +264,8 @@ NGCDone",,,
 # Market special options,,,,,,
 ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,21:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,"$menuState = exerelinSpecial
+unset $nex_fleetRequest_initComplete
+ShowDefaultVisual
 FireAll ExerelinMarketSpecialInitialize
 FireAll ExerelinMarketSpecial",,,
 ,,,,,,

@@ -75,6 +75,10 @@ public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 		plugin = null;
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
 		if (data != null) dialog.getVisualPanel().showPersonInfo(data.getPerson(), true);
+		else {
+			// no, make the stuff do it themselves
+			//new ShowDefaultVisual().execute(null, dialog, new ArrayList<Token>(), memoryMap);
+		}
 	}
 	
 	public static void createPanel(InteractionDialogAPI dialog, boolean replace) {
