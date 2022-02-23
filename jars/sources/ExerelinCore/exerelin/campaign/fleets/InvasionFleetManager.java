@@ -794,7 +794,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return total;
 	}
 	
-	protected static float getPointsPerMarketPerTick(MarketAPI market)
+	public static float getPointsPerMarketPerTick(MarketAPI market)
 	{
 		return getMarketInvasionCommodityValue(market) * NexConfig.invasionPointEconomyMult;
 	}
