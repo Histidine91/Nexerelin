@@ -980,7 +980,7 @@ FireAll PopulateOptions",$PersonRank $personLastName confirms the deployment of 
 ,,,,,,
 # Donate admin,,,,,,
 nex_donateAdminOption,PopulateOptions,"$entity.hasMarket
-Nex_IsBaseOfficial military
+Nex_IsBaseOfficial admin
 Nex_DonateAdmin isEnabled",,,13:nex_donateAdmin:Donate admin,
 nex_donateAdmin,DialogOptionSelected,$option == nex_donateAdmin,"Nex_DonateAdmin list
 AddTextSmall ""This will install the selected admin at this autonomous colony. The admin will be permanently removed from your party.""
