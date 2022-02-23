@@ -347,9 +347,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		
 		if (isAlive) {
-			info.addButton(getString("intelButtonCommand"), 
+			ButtonAPI command = info.addButton(getString("intelButtonCommand"), 
 					BUTTON_COMMAND, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
+			if (fleet != null && fleet.getBattle() != null) {
+				command.setEnabled(false);
+				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(getString("intelTooltipCommandInBattle"), 360), 
+						TooltipMakerAPI.TooltipLocation.BELOW);
+			}
 			ButtonAPI check = info.addAreaCheckbox(getString("intelButtonCheckIndependent"), BUTTON_INDEPENDENT_MODE, 
 					faction.getBaseUIColor(), faction.getDarkUIColor(), faction.getBrightUIColor(),
 					(int)width, 20f, opad);

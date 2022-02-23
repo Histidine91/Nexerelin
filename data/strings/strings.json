@@ -2171,6 +2171,7 @@
 		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",
 		
 		"intelButtonCommand":"Give orders",
+		"intelTooltipCommandInBattle":"Fleet is currently in battle and cannot receive orders.",
 		"intelButtonDisband":"Disband",
 		"intelTooltipDisbandNotDocked":"Must be docked at a market.",
 		"intelButtonDebug":"Debug",
