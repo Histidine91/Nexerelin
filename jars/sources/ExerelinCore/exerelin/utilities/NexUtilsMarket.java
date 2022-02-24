@@ -413,7 +413,7 @@ public class NexUtilsMarket {
 		current++;
 		mem.set(GBConstants.MEMKEY_INVASION_FAIL_STREAK, current);
 		
-		if (canSpawnConquestMission) {
+		if (canSpawnConquestMission && !attacker.isPlayerFaction()) {
 			if (current <= 1) return;
 			float chance = current/(current + 3f);
 			double roll = Math.random();
