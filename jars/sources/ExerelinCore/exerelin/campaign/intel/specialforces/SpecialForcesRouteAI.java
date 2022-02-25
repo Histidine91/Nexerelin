@@ -838,6 +838,8 @@ public class SpecialForcesRouteAI {
 	 * @return
 	 */
 	public float getPatrolPriority(MarketAPI market) {
+		if (market.isHidden()) return -1;
+		
 		float priority = market.getSize() * market.getSize();
 		if (NexUtilsMarket.hasHeavyIndustry(market))
 			priority *= 4;
