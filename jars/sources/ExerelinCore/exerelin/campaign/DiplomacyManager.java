@@ -595,6 +595,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             boolean isNegative = (event.maxRepChange + event.minRepChange)/2 < 0;
             if (isNegative) chance /= sumChancesNegative;
             else chance /= sumChancesPositive;
+            //log.info("Adding event " + event.name + " with chance " + chance + " to picker");
             
             eventPicker.add(event, chance);
         }
@@ -624,8 +625,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
         List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId1);
+        String type = "either";
+        if (params != null) {
+            if (params.onlyPositive) type = "positive";
+            if (params.onlyNegative) type = "negative";
+        }        
         
-        log.info("Factions are: " + faction1.getDisplayName() + ", " + faction2.getDisplayName());
+        log.info(String.format("Creating %s diplomacy event for factions %s, %s", type, faction1.getDisplayName(), faction2.getDisplayName()));
         
         DiplomacyEventDef event;
         if (eventId != null) event = eventDefsById.get(eventId);
@@ -696,6 +702,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             faction2 = factionPicker.pickAndRemove();
         
         if (faction2 == null) return;
+        
         createDiplomacyEvent(faction1, faction2);
     }
     

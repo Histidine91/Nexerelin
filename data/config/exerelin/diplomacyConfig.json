@@ -3,11 +3,17 @@
 	
 	"warWearinessPerInterval":20,	# default 20
 	"eventFrequency":20,	# approximate interval in days between events and between diplomacy AI operations, default 20
+	
+	# List of events
+	
+	# note that chance of positive event is normalized between all positive events involved
+	# likewise for negative event
+	# so negative events will still happen even if positive events have huge chance values
 	"events":[
 		{
 			"name":"Official Aid",
 			"stage":"official_aid",
-			"random":false,
+			"random":false,	# if true (default), event will be triggered by the faction's diplomacy AI, which is _somewhat_ less random
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
