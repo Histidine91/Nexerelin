@@ -97,8 +97,8 @@ public class NexSkills {
 		}
 		
 		public String getEffectDescription(float level) {
-			//String str1 = String.format(getString("auxiliarySupportExDesc1"), StringHelper.toPercent(ACCESS));
-			String str1 = String.format(getString("auxiliarySupportExDesc2"), (int)Math.round(FLEET_SIZE) + "%");
+			//String str1 = String.format(getString("auxiliarySupportExDesc2"), StringHelper.toPercent(ACCESS));
+			String str1 = String.format(getString("auxiliarySupportExDesc1"), (int)Math.round(FLEET_SIZE) + "%");
 			String str2 = String.format(getString("auxiliarySupportExDesc3"), (int)Math.round(DEFEND_BONUS) + "%");
 			return str1 + "\n" + str2;
 		}
