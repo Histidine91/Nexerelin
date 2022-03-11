@@ -422,8 +422,10 @@ public class NexUtilsMarket {
 			if (chance < roll) return;
 			
 			FactionAPI issuer = attacker;
-			Alliance alliance = AllianceManager.getFactionAlliance(attacker.getId());
-			if (alliance != null) issuer = Global.getSector().getFaction(alliance.getRandomMember());
+			
+			// too much trouble to check whether the ally is non-player, hostile to target, etc.
+			//Alliance alliance = AllianceManager.getFactionAlliance(attacker.getId());
+			//if (alliance != null) issuer = Global.getSector().getFaction(alliance.getRandomMember());
 			
 			ConquestMissionIntel intel = new ConquestMissionIntel(market, issuer, ConquestMissionManager.getDuration(market));
 			intel.init();
