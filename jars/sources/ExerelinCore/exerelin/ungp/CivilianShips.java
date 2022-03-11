@@ -1,5 +1,6 @@
 package exerelin.ungp;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BuffManagerAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
@@ -43,8 +44,9 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 	@Override
 	public float getValueByDifficulty(int index, UNGP_SpecialistSettings.Difficulty difficulty) {
 		float excess = getMilExcess();
-		crPenalty = BASE_CR_REDUCTION * difficulty.getLinearValue(0.1f, 0.1f);
-		maintMult = 1 + (float)difficulty.getLinearValue(0.25f, 0.75f);
+		if (excess > 1) excess = 1;
+		crPenalty = BASE_CR_REDUCTION * excess;
+		maintMult = 1 + excess;
 		if (index == 0) return crPenalty;
 		else if (index == 1) return maintMult;
 		return 0;
@@ -94,7 +96,9 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 		final List<FleetMemberAPI> members = fleet.getFleetData().getMembersListCopy();
 		for (FleetMemberAPI member : members) {
 			if (member.isMothballed()) continue;
-			if (member.getVariant().hasHullMod(HullMods.CIVGRADE) || member.getVariant().hasHullMod(HullMods.MILITARIZED_SUBSYSTEMS)) {
+			if (member.getVariant().hasHullMod(HullMods.CIVGRADE) 
+					|| member.getVariant().hasHullMod(HullMods.MILITARIZED_SUBSYSTEMS) 
+					|| member.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN)) {
 				civDP += member.getDeploymentPointsCost();
 			}
 			else milDP += member.getDeploymentPointsCost();
