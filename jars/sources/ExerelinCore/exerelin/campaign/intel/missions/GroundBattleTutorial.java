@@ -153,8 +153,8 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		battle.init();
 		
 		float strength = GBUtils.estimateTotalDefenderStrength(battle, true);
-		int marines = Math.round(strength * 0.5f);
-		int heavies = Math.round(strength * 0.35f / GroundUnit.HEAVY_COUNT_DIVISOR);
+		int marines = Math.round(strength * 0.65f);
+		int heavies = Math.round(strength * 0.4f / GroundUnit.HEAVY_COUNT_DIVISOR);
 		marines += heavies * GroundUnit.CREW_PER_MECH;
 		battle.autoGenerateUnits(marines, heavies, attacker, true, false);
 		
