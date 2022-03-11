@@ -900,7 +900,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(StringHelper.getString("nex_agents", "agents", true));
-		tags.add(agentFaction.getId());
+		if (isAgentFactionKnown())
+			tags.add(agentFaction.getId());
 		tags.add(targetFaction.getId());
 		return tags;
 	}
