@@ -53,8 +53,8 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 		float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
 		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
 
-		int combat = Math.round((playerStr/4f + capBonus) * MathUtils.getRandomNumberInRange(0.6f, 0.7f));
-		combat *= 0.5f;
+		int combat = Math.round((playerStr/5f + capBonus) * MathUtils.getRandomNumberInRange(0.6f, 0.7f));
+		combat *= 0.45f;
 		
 		// don't spawn if player too weak
 		if (combat < 12) {
