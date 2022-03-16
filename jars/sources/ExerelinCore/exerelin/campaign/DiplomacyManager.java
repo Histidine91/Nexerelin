@@ -10,6 +10,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
@@ -42,8 +44,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -54,12 +58,13 @@ import org.lazywizard.lazylib.MathUtils;
 /**
  * Creates diplomacy events at regular intervals; handles war weariness
  */
+@Log4j
 public class DiplomacyManager extends BaseCampaignEventListener implements EveryFrameScript
 {
-    public static Logger log = Global.getLogger(DiplomacyManager.class);
     
     protected static final String CONFIG_FILE = "data/config/exerelin/diplomacyConfig.json";
     protected static final String MANAGER_MAP_KEY = "exerelin_diplomacyManager";
+	public static final String MEM_KEY_MAX_RELATIONS = "$nex_max_relations";
     
     public static final List<String> disallowedFactions;
         
@@ -314,7 +319,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         FactionAPI faction1 = Global.getSector().getFaction(faction1Id);
         float curr = faction1.getRelationship(faction2Id);
-        float max = NexFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+        float max = DiplomacyManager.getManager().getMaxRelationship(faction1Id, faction2Id);
         float min = NexFactionConfig.getMinRelationship(faction1Id, faction2Id);
         if (delta >= 0 && max < curr)
         {
@@ -336,7 +341,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         FactionAPI faction1 = Global.getSector().getFaction(faction1Id);
         float curr = faction1.getRelationship(faction2Id);
-        float max = NexFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+        float max = DiplomacyManager.getManager().getMaxRelationship(faction1Id, faction2Id);
         float min = NexFactionConfig.getMinRelationship(faction1Id, faction2Id);
         if (delta >= 0 && curr > max)
         {
@@ -782,6 +787,78 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             tmp.getValue().cacheRevanchism();
         }
     }
+	
+	public Map<String, MutableStat> getMaxRelationshipModMap(String factionId) {
+		return getMaxRelationshipModMap(Global.getSector().getFaction(factionId));
+	}
+	
+	public Map<String, MutableStat> getMaxRelationshipModMap(FactionAPI faction) {
+		Map<String, MutableStat> maxTable = (Map<String, MutableStat>)faction.getMemoryWithoutUpdate().get(MEM_KEY_MAX_RELATIONS);
+		if (maxTable == null) {
+			maxTable = new HashMap<>();
+			faction.getMemoryWithoutUpdate().set(MEM_KEY_MAX_RELATIONS, maxTable);
+		}
+		return maxTable;
+	}
+	
+	/**
+	 * Gets the modifier stat to maximum relationship with the other faction (may be null).
+	 * @param factionId
+	 * @param otherFactionId
+	 * @return
+	 */
+	public MutableStat getMaxRelationshipMod(String factionId, String otherFactionId) {
+		return getMaxRelationshipMod(Global.getSector().getFaction(factionId), otherFactionId);
+	}
+	
+	/**
+	 * Gets the modifier value to maximum relationship with the other faction, if any.
+	 * @param faction
+	 * @param otherFactionId
+	 * @return
+	 */
+	public MutableStat getMaxRelationshipMod(FactionAPI faction, String otherFactionId) {
+		Map<String, MutableStat> maxTable = this.getMaxRelationshipModMap(faction);		
+		return maxTable.get(otherFactionId);
+	}
+	
+	/**
+	 * Gets the modifier to maximum relationship with the other faction .
+	 * @param factionId
+	 * @param otherFactionId
+	 * @return
+	 */
+	public float getMaxRelationshipModValue(String factionId, String otherFactionId) {
+		MutableStat stat = getMaxRelationshipMod(factionId, otherFactionId);
+		if (stat == null) return 0;
+		return stat.getModifiedValue();
+	}
+	
+	public float getMaxRelationship(String factionId, String otherFactionId) {
+		if (factionId.equals(otherFactionId)) return 1;
+		float mod1 = getMaxRelationshipModValue(factionId, otherFactionId);
+		float mod2 = getMaxRelationshipModValue(otherFactionId, factionId);
+		
+		float mod = Math.min(mod1, mod2);
+		
+		return mod + NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
+	}
+	
+	public void modifyMaxRelationshipMod(String modifierId, float mod, String factionId, String otherFactionId, String desc) 
+	{
+		MutableStat stat = getMaxRelationshipMod(factionId, otherFactionId);
+		if (stat == null) {
+			
+			stat = new MutableStat(0);
+		}
+		Map<String, StatMod> currentMods = stat.getFlatMods();
+		float currentValue = 0;
+		if (currentMods.containsKey(modifierId)) currentValue = currentMods.get(modifierId).getValue();
+		stat.modifyFlat(modifierId, mod + currentValue, desc);
+		
+		Map<String, MutableStat> modMap = getMaxRelationshipModMap(factionId);
+		modMap.put(otherFactionId, stat);
+	}
     
     public DiplomacyBrain getDiplomacyBrain(String factionId)
     {

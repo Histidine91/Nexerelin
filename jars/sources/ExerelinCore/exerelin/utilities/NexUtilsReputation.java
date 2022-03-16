@@ -28,7 +28,7 @@ public class NexUtilsReputation
 	{
 		if (faction1Id.equals(faction2Id))
 			return delta;
-		float max = NexFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+		float max = DiplomacyManager.getManager().getMaxRelationship(faction1Id, faction2Id);
 		float min = NexFactionConfig.getMinRelationship(faction1Id, faction2Id);
 		float curr = Global.getSector().getFaction(faction1Id).getRelationship(faction2Id);
 		if (delta > 0 && curr + delta > max)

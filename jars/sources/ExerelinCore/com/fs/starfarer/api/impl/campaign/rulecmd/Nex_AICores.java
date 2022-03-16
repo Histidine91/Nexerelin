@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.AICores;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
@@ -119,18 +120,20 @@ public class Nex_AICores extends AICores {
 						Misc.getWithDGS(bounty) + Strings.C, "" + (int) repChange);
 				
 				FactionAPI myFaction = PlayerFactionStore.getPlayerFaction();
-				if (!DiplomacyManager.haveRandomRelationships(faction.getId(), myFaction.getId()))
+				//if (!DiplomacyManager.haveRandomRelationships(faction.getId(), myFaction.getId()))
 				{
 					String shortName = NexUtilsFaction.getFactionShortName(faction);
-					float maxRep = NexFactionConfig.getMaxRelationship(faction.getId(), myFaction.getId());
+					float maxRep = DiplomacyManager.getManager().getMaxRelationship(faction.getId(), myFaction.getId());
 					if (maxRep < 1)
 					{
 						int maxRepInt = (int)(maxRep * 100f);
 						str = StringHelper.getStringAndSubstituteToken("exerelin_factions", 
 								"repLimit", "$faction", shortName);
 						panel.setParaFontColor(Misc.getGrayColor());
-						panel.addPara(str, opad * 1f, NexUtilsReputation.getRelColor(maxRep), 
+						LabelAPI label = panel.addPara(str, opad * 1f, NexUtilsReputation.getRelColor(maxRep), 
 								maxRepInt + "/100", NexUtilsReputation.getRelationStr(myFaction, faction));
+						label.setHighlightColors(NexUtilsReputation.getRelColor(maxRep), faction.getRelColor(myFaction.getId()));
+						
 						panel.setParaFontColor(Misc.getTextColor());
 					}
 				}

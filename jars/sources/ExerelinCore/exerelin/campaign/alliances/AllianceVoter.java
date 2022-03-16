@@ -314,7 +314,7 @@ public class AllianceVoter {
 			}
 			else
 			{
-				if (NexFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
+				if (DiplomacyManager.getManager().getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
 					return Vote.NO;
 			}
 		}
@@ -423,7 +423,7 @@ public class AllianceVoter {
 			}
 			else
 			{
-				if (NexFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
+				if (DiplomacyManager.getManager().getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
 					return true;
 			}
 		}

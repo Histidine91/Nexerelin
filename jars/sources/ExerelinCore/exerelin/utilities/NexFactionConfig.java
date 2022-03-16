@@ -533,6 +533,9 @@ public class NexFactionConfig
     //runcode exerelin.utilities.NexFactionConfig.getMaxRelationship("hegemony", "al_ars")
     public static float getMaxRelationship(String factionId1, String factionId2)
     {
+        if (!DiplomacyManager.getManager().getStartRelationsMode().isDefault())
+            return 1;
+        
         if (!NexConfig.useRelationshipBounds) return 1;
         if (factionId1 == null || factionId2 == null) return 1;
         
@@ -609,7 +612,7 @@ public class NexFactionConfig
         // remove relationship bound clamp if both sides have random relations
         if (DiplomacyManager.haveRandomRelationships(factionId1, factionId2)) return true;
         
-        if (getMaxRelationship(factionId1, factionId2) <= -0.5) return false;
+        if (DiplomacyManager.getManager().getMaxRelationship(factionId1, factionId2) <= -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;
     }

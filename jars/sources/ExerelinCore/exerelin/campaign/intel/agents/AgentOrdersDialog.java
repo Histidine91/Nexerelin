@@ -310,7 +310,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					other = PlayerFactionStore.getPlayerFactionId();
 				if (!DiplomacyManager.haveRandomRelationships(action.getTargetFaction().getId(), other)) 
 				{
-					float max = NexFactionConfig.getMaxRelationship(action.getTargetFaction().getId(),	other);
+					float max = DiplomacyManager.getManager().getMaxRelationship(action.getTargetFaction().getId(),	other);
 					if (max < 1) {
 						String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 						str = StringHelper.substituteToken(str, "$faction1", 
