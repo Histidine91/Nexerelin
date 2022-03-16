@@ -122,6 +122,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static final Set<String> NO_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
         "uw_arigato"
     }));
+    public static final Set<String> NEVER_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
+        "roider_unionMarket"
+    }));
     public static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
         "tiandong_retrofit", "ii_ebay"
     }));
@@ -1221,6 +1224,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             //if (submarket.getFaction() != oldOwner) continue;
             //log.info(String.format("Submarket %s has spec faction %s", submarket.getNameOneLine(), submarket.getSpec().getFactionId()));
             String submarketId = submarket.getSpecId();
+            if (NEVER_CAPTURE_SUBMARKET.contains(submarketId)) continue;
+            
             if (!ALWAYS_CAPTURE_SUBMARKET.contains(submarketId))
             {
                 if (submarket.getPlugin().isFreeTransfer()) continue;
