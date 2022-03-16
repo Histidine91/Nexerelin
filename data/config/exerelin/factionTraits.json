@@ -8,13 +8,13 @@
 			"color":[144, 16, 144],
 			"incompatible":["pacifist"]	# used when generating randomized diplomacy traits
 		},
-		#{
-		#	"id":"predatory",
-		#	"name":"Predatory",
-		#	"desc":"Can opportunistically declare war regardless of disposition.",
-		#	"icon":"graphics/icons/markets/pirate_moot.png",
-		#	"color":[255, 32, 32]
-		#},
+		{
+			"id":"predatory",
+			"name":"Predatory",
+			"desc":"Can opportunistically declare war regardless of disposition.",
+			"icon":"graphics/icons/markets/pirate_moot.png",
+			"color":[255, 32, 32]
+		},
 		{
 			"id":"pacifist",
 			"name":"Pacifist",
