@@ -3,11 +3,19 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.econ.Industry;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;
+import com.fs.starfarer.api.combat.BattleCreationContext;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.BaseFIDDelegate;
+import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.FIDConfig;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
@@ -17,15 +25,25 @@ import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
 import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter.EncounterType;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.missions.hub.MissionFleetAutoDespawn;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.NexTempData;
 import com.fs.starfarer.api.loading.VariantSource;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
+import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class MiscEventsManager extends BaseCampaignEventListener implements DiscoverEntityListener {
+@Log4j
+public class MiscEventsManager extends BaseCampaignEventListener implements 
+		DiscoverEntityListener, ColonyPlayerHostileActListener {
 	
 	public static final boolean USE_OMEGA_DFE = true;
 	
@@ -180,6 +198,63 @@ public class MiscEventsManager extends BaseCampaignEventListener implements Disc
 				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, shunt, 999999);
 			}
 			fleet.removeScriptsOfClass(MissionFleetAutoDespawn.class);
+			
+			FIDConfig conf = new FIDConfig();
+			conf.delegate = new ShuntEncounterFIDDelegate();
+			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, conf);
+		}
+	}
+
+	@Override
+	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {}
+
+	@Override
+	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
+			MarketCMD.TempData actionData, Industry industry) {}
+
+	@Override
+	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {}
+	
+	// Permanent rep penalty for sat bomb
+	@Override
+	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
+			MarketAPI market, MarketCMD.TempData actionData) {
+		
+		if (actionData == null || actionData.willBecomeHostile == null) return;
+		
+		log.info("Sat bomb reported");
+		
+		if (market.isHidden()) return;
+		if (NexConfig.permaHateFromPlayerSatBomb <= 0) return;
+		FactionAPI target = market.getFaction();
+		
+		if (actionData instanceof NexTempData) {
+			NexTempData nd = (Nex_MarketCMD.NexTempData)actionData;
+			boolean suppress = nd.satBombLimitedHatred;
+			if (suppress) {
+				log.info("do not rage");
+				return;
+			}
+			if (target.isNeutralFaction()) target = nd.targetFaction;
+		}
+		
+		log.info("Inflicting relationship cap from sat bomb");
+		for (FactionAPI faction: actionData.willBecomeHostile) {
+			if (faction.isNeutralFaction()) continue;
+			float change = -NexConfig.permaHateFromPlayerSatBomb;
+			if (faction == target) change *= 2;
+			DiplomacyManager.getManager().modifyMaxRelationshipMod("satbomb", change, 
+					faction.getId(), Factions.PLAYER, StringHelper.getString("saturationBombardment"));
+		}
+	}
+	
+	public static class ShuntEncounterFIDDelegate extends BaseFIDDelegate {		
+		@Override
+		public void battleContextCreated(InteractionDialogAPI dialog, BattleCreationContext bcc) {
+			bcc.aiRetreatAllowed = false;
+			bcc.fightToTheLast = true;
 		}
 	}
 }

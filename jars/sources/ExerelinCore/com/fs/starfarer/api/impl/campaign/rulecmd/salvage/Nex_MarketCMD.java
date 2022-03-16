@@ -128,16 +128,18 @@ public class Nex_MarketCMD extends MarketCMD {
 	protected TempDataInvasion tempInvasion = new TempDataInvasion();
 	
 	public Nex_MarketCMD() {
-		
+		temp = new NexTempData(null);
 	}
 	
 	public Nex_MarketCMD(SectorEntityToken entity) {
 		super(entity);
+		temp = new NexTempData(entity.getFaction());
 		initForInvasion(entity);
 	}
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+		temp = new NexTempData(entity.getFaction());
 		super.execute(ruleId, dialog, params, memoryMap);
 		
 		String command = params.get(0).getString(memoryMap);
@@ -1758,10 +1760,11 @@ public class Nex_MarketCMD extends MarketCMD {
 //		
 //		text.addTooltip();
 		
-
+		setSatBombLimitedHatred(false);
 		if (hidden) {
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningHidden", "$market", market.getName()));
+			setSatBombLimitedHatred(true);
 		}
 		else if (nonHostile.isEmpty()) {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
@@ -1769,11 +1772,13 @@ public class Nex_MarketCMD extends MarketCMD {
 		else if (DiplomacyTraits.hasTrait(faction.getId(), TraitIds.MONSTROUS)) {
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningMonstrous", "$theFaction", faction.getDisplayNameWithArticle()));
+			setSatBombLimitedHatred(true);
 		}
 		else if (market.getSize() <= 3 || market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 		{
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningSmall", "$market", market.getName()));
+			setSatBombLimitedHatred(true);
 		} else {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarning"));
 		}
@@ -1815,6 +1820,11 @@ public class Nex_MarketCMD extends MarketCMD {
 					 h, "" + temp.bombardCost, "" + fuel);
 		
 		addBombardConfirmOptions();
+	}
+	
+	protected void setSatBombLimitedHatred(boolean val) {
+		if (!(temp instanceof NexTempData)) return;
+		((NexTempData)temp).satBombLimitedHatred = val;
 	}
 	
 	// Changes from vanilla: Custom rep handling for sat bomb;
@@ -2263,5 +2273,18 @@ public class Nex_MarketCMD extends MarketCMD {
 		public Map<CommodityOnMarketAPI, Float> invasionValuables;
 		public CargoAPI invasionLoot;
 		public int invasionCredits;
+	}
+	
+	public static class NexTempData extends TempData {
+		
+		public NexTempData(FactionAPI faction) {
+			this.targetFaction = faction;
+		}
+		
+		/**
+		 * Set to true if there are any factors that led the sat bombardment to not inflict the full rep penalties, such as size.
+		 */
+		public boolean satBombLimitedHatred;
+		public FactionAPI targetFaction;
 	}
 }

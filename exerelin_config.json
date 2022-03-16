@@ -58,6 +58,7 @@
     "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
     "creditLossOnColonyLossMult": 0.4,
     "allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
+    "permaHateFromPlayerSatBomb": 0.24f,	# sat bombing permanently lowers max relationship with relevant factions by this much (doubled for actual victim)
     "groundBattleDamageMult":1,	# modifier to damage dealt during ground battle resolution; lower this to make battles last longer
     
     "allianceGracePeriod": 120,  # no alliances can form for this long at start
