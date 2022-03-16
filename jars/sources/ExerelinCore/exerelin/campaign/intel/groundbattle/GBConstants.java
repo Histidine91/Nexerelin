@@ -38,7 +38,7 @@ public class GBConstants {
 	public static float CAPTURE_MORALE = 0.03f;
 	public static float REORGANIZING_DMG_MULT = 0.7f;
 	public static float REBEL_DAMAGE_MULT = 0.5f;	// both dealt and received;
-	public static float COMBINED_ARMS_BONUS_MULT = 1.25f; 
+	public static float COMBINED_ARMS_BONUS_MULT = 1.25f;
 	
 	public static int STABILITY_PENALTY_BASE = 2;
 	public static int STABILITY_PENALTY_OCCUPATION = 5;
@@ -55,6 +55,7 @@ public class GBConstants {
 	public static float EXTERNAL_BOMBARDMENT_DAMAGE = 0.6f;
 	public static float INVASION_HEALTH_MONTHS_TO_RECOVER = 3;
 	public static float LIBERATION_REBEL_MULT = 0.25f;
+	public static float ATTRITION_MULT_PER_DEFICIT_UNIT = 0.25f;
 	
 	public static int WITHDRAW_AFTER_NO_COMBAT_TURNS = 6;
 	

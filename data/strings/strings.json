@@ -1406,6 +1406,7 @@
 		"modifierMovementPointsFleetSupport":"Fleet support last turn",
 		"modifierMovementPointsTurn1":"Turn 1 bonus",
 		"modifierMovementPointsSneakAttack":"Sneak attack (turn 1)",
+		"modifierGroundDefShortageMult":"Effects reduced by commodity shortage: %s",
 		
 		"modifierGroundSupport":"Ground Support",
 		"modifierGroundSupportEstimate":"Ground Support (estimated)",
