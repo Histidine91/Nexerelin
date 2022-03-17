@@ -34,6 +34,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
 
 public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate {
@@ -61,6 +63,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected float orgDur;
 	protected boolean useMarketFleetSizeMult = InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT;
 	protected boolean requiresSpaceportOrBase = true;
+	@Getter @Setter protected Float qualityOverride = null;
 	
 	protected boolean brawlMode;
 	protected float brawlMult = -1;

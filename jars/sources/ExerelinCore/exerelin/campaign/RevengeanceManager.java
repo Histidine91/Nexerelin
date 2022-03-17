@@ -16,12 +16,16 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.VengeanceFleetIntel.VengeanceDef;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
@@ -35,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Handles SS+ vengeance fleets and Nexerelin counter-invasion fleets
@@ -44,7 +49,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	public static final boolean DEBUG_MODE = false;
 	public static final String PERSISTENT_KEY = "nex_revengeanceManager";
 	
-	public static final float HARD_MODE_MULT = 2;
+	public static final float HARD_MODE_MULT = 2;	
 	
 	// each entry in the array represents a fleet
 	// first number is vengeance points needed, second is escalation level (0-2)
@@ -66,11 +71,15 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	
 	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;
 	public static final float INVASION_POINT_COST_MULTIPLIER = 0.5f;
-	public static final float SAT_BOMB_CHANCE = 0.4f;
+	public static final float SAT_BOMB_CHANCE = 0.4f;	
+	public static final int SAT_BOMB_DEATHS_FOR_REVENGE = 50000;
 	
 	public static Logger log = Global.getLogger(RevengeanceManager.class);
 	
-	float points = 0;
+	protected float points = 0;
+	protected int satBombDeathToll = 0;
+	protected int deathTollSinceLastVengeance = 0;
+	
 	Map<String, Float> factionPoints = new HashMap<>();
 	Map<String, Integer> factionVengeanceStage = new HashMap<>();
 	
@@ -387,6 +396,68 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		return true;
 	}
 	
+	public boolean generateRetaliationForSatBomb(String factionId) {
+		log.info("Processing revenge for sat bomb");
+		
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		FactionAPI target = Global.getSector().getPlayerFaction();
+		OffensiveFleetIntel intel = null;
+				
+		if (InvasionFleetManager.canSatBomb(faction, target, true)) {		
+			InvasionFleetManager.EventType type = InvasionFleetManager.EventType.SAT_BOMB;
+
+			intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(
+					faction, getTargetFactionForVengeance(), type, 1.6f);
+			if (intel != null) {
+				((SatBombIntel)intel).setVengeance(true);
+				intel.setQualityOverride(1.25f);
+				// counter-invasions draw on the same points needed for invasions, but at half the normal rate
+				float cost = InvasionFleetManager.getManager().
+						getInvasionPointReduction(NexConfig.pointsRequiredForInvasionFleet, intel);
+				cost *= INVASION_POINT_COST_MULTIPLIER;
+				InvasionFleetManager.getManager().modifySpawnCounter(factionId, -cost);
+				log.info("Dispatching retaliatiory sat bomb fleet");
+			}
+		}
+		
+		// no intel? spawn kill fleet instead
+		if (intel == null) {
+			log.info("Dispatching sat bombing hunter fleet");
+			float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
+			int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
+			VengeanceDef def = VengeanceDef.getDef(factionId);
+			int escalationLevel = def.maxLevel;
+
+			int combat = Math.round(playerStr + capBonus);
+			
+			DelayedFleetEncounter e = new DelayedFleetEncounter(null, "nex_vengeance_satbomb");
+			e.setTypes(DelayedFleetEncounter.EncounterType.OUTSIDE_SYSTEM, 
+					DelayedFleetEncounter.EncounterType.IN_HYPER_EN_ROUTE);
+			e.setDelay(30, 40);
+			e.setLocationAnywhere(true, factionId);
+			e.setDoNotAbortWhenPlayerFleetTooStrong();
+			e.beginCreate();
+			e.triggerCreateFleet(HubMissionWithTriggers.FleetSize.LARGE, 
+					HubMissionWithTriggers.FleetQuality.SMOD_2, 
+					factionId, 
+					"vengeanceFleet",
+					new Vector2f());						
+			NexUtilsFleet.setTriggerFleetFP(faction, combat, e);
+			
+			e.triggerFleetMakeFaster(true, 2, true);
+			e.triggerSetStandardAggroInterceptFlags();
+			e.triggerOrderFleetMaybeEBurn();
+			e.triggerSetFleetMemoryValue("$clearCommands_no_remove", true);
+			e.triggerSetFleetMemoryValue("$escalation", (float)escalationLevel);
+			e.triggerSetFleetMemoryValue(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true);			
+			e.triggerFleetSetName(def.getFleetName(factionId, escalationLevel));
+			e.endCreate();
+		}
+		
+		return true;
+	}
+	
+	
 	/**
 	 * Select a source market for faction vengeance fleets.
 	 * @param factionId
@@ -458,7 +529,21 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		// not really the right place for it, but saves us having to add its own listener
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, addedPoints * 5);
 	}
-	
+		
+	public void updateSatBombDeathToll(String factionId, int size) {
+		double before = Math.pow(10, size);
+		//double after = Math.pow(10, size - 1);
+		//int deaths = (int)Math.round(before - after);
+		int deaths = (int)Math.round(before);
+		
+		deathTollSinceLastVengeance += deaths;
+		if (deathTollSinceLastVengeance >= SAT_BOMB_DEATHS_FOR_REVENGE) {
+			log.info("Death toll reached " + Misc.getWithDGS(deathTollSinceLastVengeance) + ", triggering revengeance");
+			RevengeanceManager.getManager().generateRetaliationForSatBomb(factionId);
+			deathTollSinceLastVengeance = 0;
+		}
+		satBombDeathToll += deaths;
+	}
 
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {

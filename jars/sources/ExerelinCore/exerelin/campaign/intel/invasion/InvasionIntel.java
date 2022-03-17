@@ -573,6 +573,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 			params.ignoreMarketFleetSizeMult = true;
 		
 		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
+		params.qualityOverride = this.qualityOverride;
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();

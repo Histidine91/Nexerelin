@@ -178,6 +178,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 			params.ignoreMarketFleetSizeMult = true;
 		
 		params.modeOverride = FactionAPI.ShipPickMode.PRIORITY_THEN_ALL;
+		params.qualityOverride = this.qualityOverride;
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();

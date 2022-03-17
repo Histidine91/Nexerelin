@@ -133,13 +133,13 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	public Nex_MarketCMD(SectorEntityToken entity) {
 		super(entity);
-		temp = new NexTempData(entity.getFaction());
+		temp = new NexTempData(entity);
 		initForInvasion(entity);
 	}
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		temp = new NexTempData(entity.getFaction());
+		temp = new NexTempData(entity);
 		super.execute(ruleId, dialog, params, memoryMap);
 		
 		String command = params.get(0).getString(memoryMap);
@@ -1827,7 +1827,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		((NexTempData)temp).satBombLimitedHatred = val;
 	}
 	
-	// Changes from vanilla: Custom rep handling for sat bomb;
+	// Changes from vanilla: Custom rep and data handling for sat bomb;
 	// saturation bombardment affects disposition
 	@Override
 	protected void bombardConfirm() {
@@ -1955,7 +1955,9 @@ public class Nex_MarketCMD extends MarketCMD {
 							Misc.getHighlightColor()
 							, "" + market.getSize());
 				}
-				
+				if (temp instanceof NexTempData) {
+					((NexTempData)temp).sizeBeforeBombardment = market.getSize();
+				}
 			}
 			ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
 		}
@@ -2277,8 +2279,12 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	public static class NexTempData extends TempData {
 		
-		public NexTempData(FactionAPI faction) {
-			this.targetFaction = faction;
+		public NexTempData(SectorEntityToken entity) {
+			if (entity == null) return;
+			
+			this.targetFaction = entity.getFaction();
+			if (entity.getMarket() != null)
+				this.sizeBeforeBombardment = entity.getMarket().getSize();
 		}
 		
 		/**
@@ -2286,5 +2292,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		 */
 		public boolean satBombLimitedHatred;
 		public FactionAPI targetFaction;
+		public int sizeBeforeBombardment;
 	}
 }

@@ -425,7 +425,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public static boolean canSatBomb(FactionAPI attacker, FactionAPI defender) {
-		if (attacker.getRelationshipLevel(defender) != RepLevel.VENGEFUL)
+		return canSatBomb(attacker, defender, false);
+	}
+	
+	public static boolean canSatBomb(FactionAPI attacker, FactionAPI defender, boolean retaliatory) {
+		if (!retaliatory && attacker.getRelationshipLevel(defender) != RepLevel.VENGEFUL)
 			return false;
 		
 		if (attacker.getCustom() == null || !attacker.getCustom().has(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA))

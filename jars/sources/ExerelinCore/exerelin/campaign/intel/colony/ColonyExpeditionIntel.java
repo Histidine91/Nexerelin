@@ -334,6 +334,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			params.ignoreMarketFleetSizeMult = true;
 		
 		//params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
+		params.qualityOverride = this.qualityOverride;
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();

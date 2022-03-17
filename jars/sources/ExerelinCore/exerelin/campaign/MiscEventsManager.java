@@ -29,9 +29,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.NexTempData;
 import com.fs.starfarer.api.loading.VariantSource;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
-import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
-import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsAstro;
@@ -179,7 +177,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		//Global.getLogger(this.getClass()).info("Creating Omega complication");
 		//Global.getSector().getCampaignUI().addMessage("Creating Omega complication");
 	}
-
+	
 	@Override
 	public void reportFleetSpawned(CampaignFleetAPI fleet) {
 		//Global.getLogger(this.getClass()).info("Fleet spawned: " + fleet.getNameWithFactionKeepCase());
@@ -223,24 +221,25 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 			MarketAPI market, MarketCMD.TempData actionData) {
 		
 		if (actionData == null || actionData.willBecomeHostile == null) return;
-		
-		log.info("Sat bomb reported");
-		
+				
 		if (market.isHidden()) return;
 		if (NexConfig.permaHateFromPlayerSatBomb <= 0) return;
 		FactionAPI target = market.getFaction();
+		int size = market.getSize();
 		
+		// try to use values stored in NexTempData, since the ones we can get from 
+		// the market directly may be inaccurate due to decivilization
 		if (actionData instanceof NexTempData) {
 			NexTempData nd = (Nex_MarketCMD.NexTempData)actionData;
 			boolean suppress = nd.satBombLimitedHatred;
 			if (suppress) {
-				log.info("do not rage");
 				return;
 			}
+			size = nd.sizeBeforeBombardment;
 			if (target.isNeutralFaction()) target = nd.targetFaction;
 		}
 		
-		log.info("Inflicting relationship cap from sat bomb");
+		log.info("Sat bomb detected, inflicting penalties");
 		for (FactionAPI faction: actionData.willBecomeHostile) {
 			if (faction.isNeutralFaction()) continue;
 			float change = -NexConfig.permaHateFromPlayerSatBomb;
@@ -248,6 +247,8 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 			DiplomacyManager.getManager().modifyMaxRelationshipMod("satbomb", change, 
 					faction.getId(), Factions.PLAYER, StringHelper.getString("saturationBombardment"));
 		}
+		
+		RevengeanceManager.getManager().updateSatBombDeathToll(target.getId(), size);
 	}
 	
 	public static class ShuntEncounterFIDDelegate extends BaseFIDDelegate {		

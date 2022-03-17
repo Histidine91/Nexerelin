@@ -220,6 +220,7 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 			params.ignoreMarketFleetSizeMult = true;
 		
 		params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
+		params.qualityOverride = this.qualityOverride;
 		
 		if (route != null) {
 			params.timestamp = route.getTimestamp();
