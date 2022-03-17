@@ -24,6 +24,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers.FleetQuality;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -669,12 +670,33 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			DelayedFleetEncounter e = new DelayedFleetEncounter(null, "nex_vengeance");
 			e.setTypes(DelayedFleetEncounter.EncounterType.OUTSIDE_SYSTEM, 
 					DelayedFleetEncounter.EncounterType.IN_HYPER_EN_ROUTE);
-			e.setDelayNone();
+			e.setDelay(30, 40);
 			e.setLocationInnerSector(true, factionId);
 			e.setDoNotAbortWhenPlayerFleetTooStrong();
 			e.beginCreate();
+			
+			int smods = escalationLevel;
+			if (buffRule) smods += 1;
+			
+			FleetQuality qual;
+			switch (smods) {
+				case 0:
+				default:
+					qual = FleetQuality.HIGHER;
+					break;
+				case 1:
+					qual = FleetQuality.SMOD_1;
+					break;
+				case 2:
+					qual = FleetQuality.SMOD_2;
+					break;
+				case 3:
+					qual = FleetQuality.SMOD_3;
+					break;
+			}
+			
 			e.triggerCreateFleet(HubMissionWithTriggers.FleetSize.SMALL, 
-					HubMissionWithTriggers.FleetQuality.VERY_HIGH, 
+					qual, 
 					factionId, 
 					"vengeanceFleet", 
 					market.getLocationInHyperspace());
@@ -684,6 +706,9 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			
 			// behavior
 			e.triggerSetStandardAggroInterceptFlags();
+			e.triggerOrderFleetMaybeEBurn();
+			if (buffRule)
+				e.triggerFleetMakeFaster(true, 0, true);
 			
 			e.triggerMakeLowRepImpact();
 			e.triggerSetFleetMemoryValue("$clearCommands_no_remove", true);
@@ -923,7 +948,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			return StringHelper.getString("nex_vengeance", "vengeanceLevel" + escalationLevel);
 		}
 		
-		String getFleetName(String faction, int escalationLevel)
+		public String getFleetName(String faction, int escalationLevel)
 		{
 			if (faction == null) faction = this.faction;
 			String name = "";
