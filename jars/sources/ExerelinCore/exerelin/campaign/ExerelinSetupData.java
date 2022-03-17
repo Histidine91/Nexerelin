@@ -53,7 +53,7 @@ public class ExerelinSetupData
 	public int numStartingOfficers = 0;
 	@Deprecated public boolean randomStartShips = false;
 	public int dModLevel = 0;
-	public boolean skipStory = false;
+	public boolean skipStory = Global.getSettings().getBoolean("nex_skipStoryDefault");
 	
 	/**
 	 * Can be null with special starts.
