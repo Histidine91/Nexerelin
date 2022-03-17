@@ -58,12 +58,14 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
+// aka "Showdown"
 public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventListener {
 	
 	public static Logger log = Global.getLogger(RemnantBrawl.class);
 	
 	public static final float STRAGGLER_LOST_ATTACK_DELAY = 15;
 	public static final float STAGING_AREA_FOUND_ATTACK_DELAY = 2.5f;
+	public static final int BATTLE_MAX_DAYS = 60;
 
 	public static enum Stage {
 		GO_TO_ORIGIN_SYSTEM,
@@ -97,7 +99,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	protected boolean knowStagingArea;
 	protected boolean battleInited;
 	protected boolean betrayed;
-	@Deprecated protected boolean sentFalseInfo;	// not currently sued
+	@Deprecated protected boolean sentFalseInfo;	// not currently used
+	
+	protected float battleTimer = 0;
 	
 	// runcode exerelin.campaign.intel.missions.remnant.RemnantBrawl.fixDebug()
 	public static void fixDebug() {
@@ -678,11 +682,15 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		if (betrayed) {
 			// do nothing, let player finish the job themselves
 		} else {
-			setCurrentStage(Stage.COMPLETED, null, null);
-			getPerson().setImportance(getPerson().getImportance().next());
-			ContactIntel ci = ContactIntel.getContactIntel(getPerson());
-			if (ci != null) ci.sendUpdateIfPlayerHasIntel(null, false, false);
+			remnantVictory();
 		}
+	}
+	
+	public void remnantVictory() {
+		setCurrentStage(Stage.COMPLETED, null, null);
+		getPerson().setImportance(getPerson().getImportance().next());
+		ContactIntel ci = ContactIntel.getContactIntel(getPerson());
+		if (ci != null) ci.sendUpdateIfPlayerHasIntel(null, false, false);
 	}
 	
 	public void hegemonyVictory() {
@@ -739,6 +747,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		super.advanceImpl(amount);
 		checkStagingAreaFound();
 		checkAdvanceToBattleStage();
+		
+		if (currentStage == Stage.BATTLE) {
+			battleTimer += Misc.getDays(amount);
+			if (battleTimer >= BATTLE_MAX_DAYS) {
+				remnantVictory();
+			}
+		}
 	}
 	
 	@Override
@@ -757,7 +772,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		set("$nex_remBrawl_admiral_HisOrHer", Misc.ucFirst(admiral.getHisOrHer()));
 		set("$nex_remBrawl_admiral", admiral);
 		
-		set("$nex_remBrawl_stage", getCurrentStage());
+		set("$nex_remBrawl_stage", getCurrentStage());	// not needed, already set by BaseHubMission?
 	}
 	
 	@Override
