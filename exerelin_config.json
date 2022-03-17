@@ -14,6 +14,9 @@
     #if false, missions are added directly. if true, missions are delivered when in relay range.
     "queuedNexMissions":false,
     
+    "enableVictory":true,	# set to false to disable victory conditions (does not affect 'story-based' victories by any mod)
+    
+    # Random sector settings
     "minimumPlanets": 3,
     #"minimumStations": 3,
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market

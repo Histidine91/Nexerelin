@@ -137,6 +137,7 @@ public class NexConfig
     public static int agentEventFilterLevel = 0;
     public static int nexIntelQueued = 0;
     public static boolean queuedNexMissions = false;
+	public static boolean enableVictory = true;
     
     public static float baseTariffMult = 0.6f;
     public static float freeMarketTariffMult = 0.5f;
@@ -288,6 +289,7 @@ public class NexConfig
             agentEventFilterLevel = settings.optInt("agentEventFilterLevel", agentEventFilterLevel);
             nexIntelQueued = settings.optInt("nexIntelQueued", nexIntelQueued);
             queuedNexMissions = settings.optBoolean("queuedNexMissions", queuedNexMissions);
+            enableVictory = settings.optBoolean("enableVictory", enableVictory);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

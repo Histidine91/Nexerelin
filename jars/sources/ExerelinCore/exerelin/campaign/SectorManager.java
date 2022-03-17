@@ -972,6 +972,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     // runcode exerelin.campaign.SectorManager.checkForVictory()
     public static void checkForVictory()
     {
+        if (!NexConfig.enableVictory) return;
+        
         SectorManager manager = getManager();
         if (manager.victoryHasOccured) return;
         //FactionAPI faction = Global.getSector().getFaction(factionId);
