@@ -60,14 +60,14 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		}
 		
 		// if Prism Freeport exists, the mission must be created there
-		if (!createdAt.getId().equals("nex_prismFreeport") 
-				&& Global.getSector().getEconomy().getMarket("nex_prismFreeport") != null)
+		// else, must be an indie market
+		boolean atPrism = createdAt.getId().equals("nex_prismFreeport");
+		if (!atPrism && Global.getSector().getEconomy().getMarket("nex_prismFreeport") != null)
 		{
 			return false;
 		}
-		
 		String mktFactionId = createdAt.getFactionId();
-		if (!Factions.INDEPENDENT.equals(mktFactionId)) {
+		if (!atPrism && !Factions.INDEPENDENT.equals(mktFactionId)) {
 			return false;
 		}
 		
