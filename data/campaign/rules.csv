@@ -509,21 +509,21 @@ nex_decivEvent_init,DialogOptionSelected,$option == nex_decivEvent_interact,Nex_
 nex_decivEvent_greetingFirstTime,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
 !Nex_DecivEvent wasCivilized",,"""Hello? Is this thing on?
 
-Oh, hello, stranger! It's been a long time since anyone swung by. Is the Sector still alive? Where'd you get that ship? Did Half-Life 3 finally come out?""
+""Oh, hello, stranger! It's been a long time since anyone swung by. Is the Sector still alive? Where'd you get that ship? Did Half-Life 3 finally come out?""
 
 Maybe dropping off a datacube for $himOrHer to read at $hisOrHer own leisure would get $himOrHer to stop asking questions.
 OR
 ""A ship! A ship, a ship, a ship!!
 
-Gods, are we glad to see you! For the longest time we were wondering if there was even anyone else alive out there. My name is $personName, and I can't wait to shake your hand!""",nex_decivEvent_greetingContinue:Continue,
+""Gods, are we glad to see you! For the longest time we were wondering if there was even anyone else alive out there. My name is $personName, and I can't wait to shake your hand!""",nex_decivEvent_greetingContinue:Continue,
 nex_decivEvent_greetingFirstTimeWasCivilized,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
 Nex_DecivEvent wasCivilized",,"""Praise the gods! I was starting to fear we'd never see a ship in the sky again.
 
-As you can guess, we've had no contact with the rest of the Sector since... since the previous government fell and everything went to hell here.""
+""As you can guess, we've had no contact with the rest of the Sector since... since the previous government fell and everything went to hell here.""
 OR
 ""A $shipOrFleet! I guess the Sector hasn't forgotten $market after all.
 
-Most of us are stuck here on $market, living day to day. It's a wonder most of us are even alive, honestly.""",nex_decivEvent_greetingContinue:Continue,
+""Most of us are stuck here on $market, living day to day. It's a wonder most of us are even alive, honestly.""",nex_decivEvent_greetingContinue:Continue,
 nex_decivEvent_greeting,Nex_DecivEvent_Greeting,$market.nex_decivEvent_visitedBefore,Nex_DecivEvent trade,"""Hello, space traveler! I see you decided to stop by again.""
 OR
 ""Oh, it's $playerName.""",,
@@ -1822,9 +1822,12 @@ $enemyFleetKilled",Call $global.nex_gbTut_ref startBattle,"""Alright, the battle
 
 ""Taking out the enemy fleet has bought us some valuable breathing room, but the fight's far from over. Good hunting, captain.""","nex_gbTut_diamondConvoGotoIntel:Cut the comm link
 nex_gbTut_diamondConvo6:""Can you explain how this works?""",
-nex_gbTut_diamondConvoGotoIntel,DialogOptionSelected,$option == nex_gbTut_diamondConvoGotoIntel,"Call $global.nex_gbTut_ref openIntel
-EndConversation",,,
-nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight marines ""heavy armaments"" ""Units tab"" ""intel screen"" deploy morale","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
+nex_gbTut_diamondConvoGotoIntel,DialogOptionSelected,$option == nex_gbTut_diamondConvoGotoIntel,"EndConversation
+ShowDefaultVisual
+Call $global.nex_gbTut_ref openIntel",,,
+nex_gbTut_diamondConvo6,DialogOptionSelected,$option == nex_gbTut_diamondConvo6,"Highlight turns ""a day"" marines ""heavy armaments"" ""Units tab"" ""intel screen"" deploy morale","""I... alright, fine, let's make this quick."" $HeOrShe grumbles, tapping a series of keys, and an informational display appears on your screen.
+
+""Combat resolves in turns, each taking a day.
 
 ""You'll start with your marines (and heavy armaments, if you have any) organized into units of a suitable size. From the Units tab in the intel screen, deploy them to the surface; this will cost supplies depending on the unit type and size.
 
@@ -2075,14 +2078,14 @@ ShowDefaultVisual
 SalvageGenFromSeed
 FireBest SalvageCheckHostile","Your $shipOrFleet approaches $aOrAn $nameInText.
 
-The ship is a wreck; that any power sources remain inside to be faintly detected is quite a feat in itself. Most of the hull has been gutted; by conventional kinetic, explosive and energy weapons, in the main... but there are parts of the ship that appear to have frozen over, and others where matter itself was scooped out in irregular spheroidical shapes.",,
+The ship is a wreck; that any power sources remain inside to be faintly detected is quite a feat in itself. Most of the hull has been gutted; by conventional kinetic, explosive and energy weapons, in the main... but there are parts of the ship that appear to have frozen over, and others where spheroidical bites were taken out of the hull.",,
 nex_remFragments_lpWreckOpen1,CheckSalvageSpecial,"$customType == wreck
 $nex_remFragments_lpWreck score:1000
 !$player.nex_remFragments_foundLPSurvivor",$player.nex_remFragments_foundLPSurvivor = true,"After a bit of haggling over hazard pay, a salvor crew sets out to explore the hulk. It's perfectly quiet for the most part, which is probably a good sign under the circumstances.
 
-Only one survivor is found: a near-gibbering figure crouching near one of the poorly maintained sensor arrays, her vacsuit – marked with insignia of the Luddic Path – dangerously close to critical failure. The helmet-cam view displays your crew trying their best to get some useful information out of her.
+Only one survivor is found: a near-gibbering figure crouching near one of the poorly maintained sensor arrays, her vacsuit – marked with insignia of the Luddic Path – dangerously close to critical failure. On the helmet-cam view, you watch your crew trying their best to get some useful information out of her.
 
-""...a demon beyond all imagination,"" she chatters. ""Terrible beyond words! We struck at it over and over, and still its talons and hooves lashed out, defiling creation with each blast!""",nex_remFragments_lpWreck2:Continue,
+""...a demon beyond all imagination,"" she chatters. ""Terrible beyond words! We struck at it over and over, and still it taunted us, lashing out with its infernal appendages, defiling creation with each blast!""",nex_remFragments_lpWreck2:Continue,
 nex_remFragments_lpWreckOpen2,DialogOptionSelected,$option == nex_remFragments_lpWreck2,,"She points an accusing finger at one of the salvors. ""You! You brought this upon us! These creatures from beyond creation..."" She laughs and laughs and laughs.
 
 You shake your head mentally. If she's still alive when the salvage team finishes its work, and slightly more lucid by then, maybe you can drop her off somewhere back in the Core Worlds. Else... else is for later. ",nex_remFragments_lpWreck3:Continue,
@@ -2091,7 +2094,7 @@ SalvageSpecialInteraction",,,
 ,,,,,,
 nex_remFragments_pointOpen,OpenInteractionDialog,$nex_remFragments_target score:1000,Call $global.nex_remFragments_ref pursue_mothership,"This is where the derelict ship was supposed to be. The point is surrounded by the hulks of ruined ships, both independent and Pather, as well as a drifting cloud of debris. But of anything interesting enough to fight over, there is no sign.
 
-""Captain..."" your sensor officer says after a moment. ""There's a particularly dense region of debris where our target might have been, but it's not evenly distributed. It's... shifted and displaced in a pattern consistent with the object moving away. If we head in,"" they mark a position on the system map, ""that direction, we might find it yet.""",,
+""Captain..."" your sensor officer says after a moment. ""There's a particularly dense region of debris where our target might have been, but it's not evenly distributed. It's... shifted and displaced in a pattern consistent with the object moving away. If we head in that direction,"" they mark a position on the system map, ""we might find it yet.""",,
 ,,,,,,
 nex_remFragments_stationOpen,OpenInteractionDialog,"$nex_remFragments_mothership score:1000
 !$nex_remFragments_seenFirstDialog","$nex_remFragments_seenFirstDialog = true
@@ -2100,13 +2103,13 @@ Call $global.nex_remFragments_ref updateData
 Call $global.nex_remFragments_ref prepEngineer
 ShowImageVisual space_wreckage","Your $shipOrFleet approaches the object.
 
-The structure was apparently once a Domain Explorarium mothership, but cut up and rearranged in rather dramatic fashion for purposes unknown.",nex_remFragments_engineerConvo1:Continue,
+The structure bears a resemblance to a Domain Explorarium mothership, but seemingly cut up and rearranged in rather dramatic fashion for purposes unknown.",nex_remFragments_engineerConvo1:Continue,
 nex_remFragments_stationReopen,OpenInteractionDialog,"$nex_remFragments_mothership score:1000
 $nex_remFragments_seenFirstDialog
 !$nex_remFragments_canSalvage",ShowImageVisual space_wreckage,"Your $shipOrFleet approaches the mothership.
 
 You don't have time to salvage it right now. Defeat the incoming fleet first.",defaultLeave:Leave,
-nex_remFragments_stationDescLP,Nex_RemFragments_StationText1,$player.nex_remFragments_foundLPSurvivor ,,"Your Pather informant seems to have exaggerated the resilience of the ""demon"" somewhat. The tattered hulk seems to have been thoroughly disarmed, its weapon mounts blown apart, half its comparments drained of air. The engines glow on thermals with residual heat.",,
+nex_remFragments_stationDescLP,Nex_RemFragments_StationText1,$player.nex_remFragments_foundLPSurvivor ,,"Your Pather informant seems to have exaggerated the resilience of the ""demon"" somewhat. The tattered hulk seems to have been thoroughly disarmed, its weapon mounts blown apart, half its compartments open to space. The engines glow on thermals with residual heat.",,
 nex_remFragments_stationDescNoLP,Nex_RemFragments_StationText1,!$player.nex_remFragments_foundLPSurvivor ,,"The hulk is silent, weapon ports burned away, great rents torn in seemingly every exposed surface. It sits silent, utterly defenseless. The engines glow on thermals with residual heat.",,
 nex_remFragments_stationDescCommon,Nex_RemFragments_StationText1,,,"Nevertheless, your sensors still pick up a working fusion reactor at the ship's core, along with a faint looping radio transmission.",,
 nex_remFragments_engineerConvo1,DialogOptionSelected,$option == nex_remFragments_engineerConvo1,ShowPersonVisual true,"Your comms officer manages to open a link to whoever it is inside. A few moments later, a fuzzy image of a dishevelled, cringing figure fills the display volume.
@@ -2117,7 +2120,7 @@ nex_remFragments_engineerConvo1,DialogOptionSelected,$option == nex_remFragments
 nex_remFragments_engineerConvo2Alt:Transmit the encrypted greeting like a normal person",
 nex_remFragments_engineerConvo2,DialogOptionSelected,$option == nex_remFragments_engineerConvo2,,"""Take care it does not fall,"" you recite.
 
-""Lest it break into shards."" The engineer visibly relaxes. You wonder what cryptic mumbo-jumbo $nex_remFragments_giverFirstName was trying to sneak into the conversation.",nex_remFragments_engineerConvo3:Continue,
+""Lest it break into shards."" The engineer visibly relaxes. You wonder what cryptic mumbo-jumbo $nex_remFragments_giverFirstName was trying to sneak into the conversation. Maybe some poetry she once read.",nex_remFragments_engineerConvo3:Continue,
 nex_remFragments_engineerConvo2Alt,DialogOptionSelected,$option == nex_remFragments_engineerConvo2Alt,,"The person on the other end raises both eyebrows at the sight on $hisOrHer screen, then relaxes. ""Okay. I was worried for a moment, but...""",nex_remFragments_engineerConvo3:Continue,
 nex_remFragments_engineerConvo3,DialogOptionSelected,$option == nex_remFragments_engineerConvo3,,"""We're rather fortunate you came, captain. I don't know how the blasted Pathers found out about us, but..."" $HeOrShe clutches $hisOrHer head. ""We turned all our guns against them, but they just kept coming and coming, and...
 
@@ -2378,7 +2381,7 @@ Unfortunately, your delightful perusal of the loot estimates is interrupted by a
 nex_remFragments_salvage1,DialogOptionSelected,"$option == nex_remFragments_salvage1
 $nex_remFragments_shardsDeployed",,"""The shards are flying away, Captain,"" your tactical officer reports. ""We've lost contact with them!""
 
-It takes only a moment for you to order a comm link opened with the AI core back in its control room. The thing was clearly already anticipating being blamed for this turn of events, because it immediately protests its innocence, explaining that its own control links were cut off and it was unable to regain control of the vessels, now happily speeding off to parts unknown.
+It takes only a moment for you to order a comm link opened with the AI core back in its control room. The thing was clearly anticipating being blamed for this turn of events, because it immediately protests its innocence, explaining that its own control links were cut off and it was unable to regain control of the vessels, now happily speeding off to parts unknown.
 
 You consider this for a moment, and then order $personName sent to the bridge.",nex_remFragments_salvage2:Continue,
 nex_remFragments_salvage1NoShards,DialogOptionSelected,"$option == nex_remFragments_salvage1

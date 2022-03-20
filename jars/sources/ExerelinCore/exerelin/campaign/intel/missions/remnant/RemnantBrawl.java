@@ -876,7 +876,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			info.addPara(getString("brawl_foundStagingAreaNextStep2"), tc, 0);
 		} 
 		else if (currentStage == Stage.SCOUT) {
-			info.addPara(getString("brawl_scoutNextStep" + (knowStagingArea ? "" : "Unknown")), 0, col, sysName);
+			info.addPara(getString("brawl_scoutNextStep"), 0, col, sysName);
 		}
 		else if (currentStage == Stage.BATTLE) {
 			info.addPara(getString("brawl_battleNextStep" + (knowStagingArea ? "" : "Unknown")), 0, col, sysName);
