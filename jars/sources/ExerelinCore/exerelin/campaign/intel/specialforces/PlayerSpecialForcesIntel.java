@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.lazywizard.console.Console;
 import org.lwjgl.util.vector.Vector2f;
 
 public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements EconomyTickListener {
@@ -50,7 +51,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	public static final float CREW_SALARY_MULT = 1f;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
 	public static final float SUPPLY_COST_MULT = 1f;	// ditto, even though we're getting free combat out of the deal
-	public static final float REVIVE_COST_MULT = 0.25f;
 	
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
@@ -391,7 +391,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$nex_remoteCommand", true, 0);
 			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$nex_uiToRefresh", ui, 0);
 			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$option", "nex_commandSF_main", 0);
-			plugin.fireBest("DialogOptionSelected");			
+			plugin.fireBest("DialogOptionSelected");
 		}
 		else if (buttonId == BUTTON_RECREATE) {
 			disband();
@@ -460,10 +460,20 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	public static int getReviveCost(Collection<FleetMemberAPI> members) {
-		float cost = 0;
+		float supplies = 0;
 		for (FleetMemberAPI member : members) {
-			cost += member.getBaseValue();
+			//log.info("Checking revive for member " + member.getShipName());
+			float suppliesPerCRPoint = member.getDeploymentCostSupplies()/member.getDeployCost();
+			float suppliesPerDay = suppliesPerCRPoint * member.getRepairTracker().getRecoveryRate();
+			float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
+			
+			float suppliesNeeded = daysToRepair * suppliesPerDay;
+			//log.info(String.format("Current CR: %.2f, revive cost %.0f", member.getRepairTracker().getCR(), suppliesNeeded));
+			supplies += suppliesNeeded;
 		}
-		return Math.round(cost * REVIVE_COST_MULT);
+		//log.info("Total supplies: " + supplies);
+		float supplyCost = Global.getSettings().getCommoditySpec(Commodities.SUPPLIES).getBasePrice();
+		
+		return Math.round(supplies * supplyCost);
 	}
 }
