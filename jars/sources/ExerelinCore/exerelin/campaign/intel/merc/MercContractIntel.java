@@ -43,7 +43,6 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 {
 	public static Logger log = Global.getLogger(MercContractIntel.class);
 	
-	public static final float CONTRACT_PERIOD = 365;
 	public static final float MERC_AVAILABLE_TIME = 60;
 	public static final float SHIP_ICON_WIDTH = 48;
 	public static final Object UPDATE_EXPIRE = new Object();
@@ -216,7 +215,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		
 		fleetPlugin.accept();
 		
-		daysRemaining = CONTRACT_PERIOD;
+		daysRemaining = Global.getSettings().getFloat("nex_merc_company_contract_period");
 		startingShipValue = calcShipsValue();
 		
 		offeredFleet = null;
@@ -328,6 +327,13 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	@Override
 	protected void advanceImpl(float amount) {
 		if (contractOver) return;
+		
+		boolean reset = daysRemaining > Global.getSettings().getFloat("officerMercContractDur");
+		if (reset) {
+			for (PersonAPI officer : officers) {
+				Misc.setMercHiredNow(officer);
+			}
+		}
 		
 		float days = Global.getSector().getClock().convertToDays(amount);
 		daysRemaining -= days;
@@ -572,6 +578,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		Set<String> tags = super.getIntelTags(map);
 		//tags.add(getString("intel_tag"));
 		tags.add(Tags.INTEL_FLEET_LOG);
+		tags.add(Tags.INTEL_ACCEPTED);
 		return tags;
 	}
 	
