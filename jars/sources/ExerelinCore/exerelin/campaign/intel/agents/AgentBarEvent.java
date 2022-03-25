@@ -223,7 +223,6 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 	}
 
 	protected void addIntel(AgentIntel.Specialization spec) {
-		TextPanelAPI text = dialog.getTextPanel();
 		AgentIntel intel = new AgentIntel(person, Global.getSector().getPlayerFaction(), level);
 		if (spec != null) intel.addSpecialization(spec);
 		intel.init();
@@ -255,5 +254,10 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 	@Override
 	protected Gender getPersonGender() {
 		return Gender.ANY;
+	}
+	
+	@Override
+	public boolean isAlwaysShow() {
+		return false;
 	}
 }

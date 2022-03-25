@@ -9,4 +9,8 @@ public class AgentBarEventCreator extends BaseBarEventCreator
 	public PortsideBarEvent createBarEvent() {
 		return new AgentBarEvent();
 	}
+	
+	public float getBarEventFrequencyWeight() {
+		return 20f;
+	}
 }
