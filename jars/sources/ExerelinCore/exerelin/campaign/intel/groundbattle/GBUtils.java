@@ -83,7 +83,7 @@ public class GBUtils {
 			int avail = market.getCommodityData(commodity).getAvailable();
 			int demand = market.getCommodityData(commodity).getMaxDemand();
 			//log.info(String.format("Commodity %s has available %s, demand %s", commodity, avail, demand));
-			float ratio = demand == 0 ? 0 : avail/demand;
+			float ratio = demand == 0 ? 1 : avail/demand;
 			if (ratio < lowest)
 				lowest = ratio;
 		}
