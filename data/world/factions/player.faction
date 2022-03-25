@@ -15,53 +15,5 @@
 			"logo":"graphics/exerelin/factions/persean_league_old_flag.png",
 			"crest":"graphics/exerelin/factions/persean_league_old_crest.png"
 		},
-		{
-			"logo":"graphics/exerelin/factions/Arm_Flag.png",
-			"crest":"graphics/exerelin/factions/Arm_Crest.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Arm_Flag_Blue.png",
-			"crest":"graphics/exerelin/factions/Arm_Crest_Blue.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Crystal_Flag.png",
-			"crest":"graphics/exerelin/factions/Crystal_Crest.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Crystal_Flag_Blue.png",
-			"crest":"graphics/exerelin/factions/Crystal_Crest_Blue.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Disc_Flag.png",
-			"crest":"graphics/exerelin/factions/Disc_Crest.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Imperial_Flag.png",
-			"crest":"graphics/exerelin/factions/Imperial_Crest.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Sails_Flag.png",
-			"crest":"graphics/exerelin/factions/Sails_Crest.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Sails_Flag_Blue.png",
-			"crest":"graphics/exerelin/factions/Sails_Crest_Blue.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Sprout_Flag.png",
-			"crest":"graphics/exerelin/factions/Sprout_Crest.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Star_Flag.png",
-			"crest":"graphics/exerelin/factions/Star_Crest.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Star_Flag_Blue.png",
-			"crest":"graphics/exerelin/factions/Star_Crest_Blue.png"
-		},
-		{
-			"logo":"graphics/exerelin/factions/Wings_Flag.png",
-			"crest":"graphics/exerelin/factions/Wings_Crest.png"
-		}
 	],
 }
