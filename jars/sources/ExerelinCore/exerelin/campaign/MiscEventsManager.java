@@ -30,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.NexTempData;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsAstro;
@@ -197,9 +198,8 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 			}
 			fleet.removeScriptsOfClass(MissionFleetAutoDespawn.class);
 			
-			FIDConfig conf = new FIDConfig();
-			conf.delegate = new ShuntEncounterFIDDelegate();
-			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, conf);
+			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
+					new RemnantRaidFleetInteractionConfigGen());
 		}
 	}
 
@@ -249,13 +249,5 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		}
 		
 		RevengeanceManager.getManager().updateSatBombDeathToll(target.getId(), size);
-	}
-	
-	public static class ShuntEncounterFIDDelegate extends BaseFIDDelegate {		
-		@Override
-		public void battleContextCreated(InteractionDialogAPI dialog, BattleCreationContext bcc) {
-			bcc.aiRetreatAllowed = false;
-			bcc.fightToTheLast = true;
-		}
 	}
 }
