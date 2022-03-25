@@ -695,6 +695,8 @@ public class DiplomacyBrain {
 			}
 		});
 		
+		boolean predatory = DiplomacyTraits.hasTrait(factionId, TraitIds.PREDATORY);
+		
 		RepLevel maxRep = getMaxRepForOpportunisticWar();
 		log.info("Relationship required for war: " + maxRep);
 		if (maxRep.isAtBest(RepLevel.HOSTILE))
@@ -704,9 +706,14 @@ public class DiplomacyBrain {
 		for (DispositionEntry disposition : dispositionsList)
 		{
 			String otherFactionId = disposition.factionId;
+			RepLevel thisMaxRep = maxRep;
+			
+			if (predatory && otherFactionId.equals(Factions.PLAYER)) {
+				thisMaxRep = RepLevel.SUSPICIOUS;
+			}			
 			if (otherFactionId.equals(this.factionId)) continue;
 			log.info("Checking vs. " + otherFactionId + ": " + disposition.disposition.getModifiedValue()
-					+ ", " + faction.isAtBest(otherFactionId, maxRep));
+					+ ", " + faction.isAtBest(otherFactionId, thisMaxRep));
 			
 			// don't diplo with player if they're commissioned with someone else
 			if (otherFactionId.equals(Factions.PLAYER) && !otherFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
@@ -716,9 +723,9 @@ public class DiplomacyBrain {
 			if (NexUtilsFaction.isPirateFaction(otherFactionId) && !NexConfig.allowPirateInvasions)
 				continue;
 			if (ceasefires.containsKey(otherFactionId)) continue;
-			if (!faction.isAtBest(otherFactionId, maxRep)) continue;	// relations aren't bad enough yet
+			if (!faction.isAtBest(otherFactionId, thisMaxRep)) continue;	// relations aren't bad enough yet
 			if (faction.isHostileTo(otherFactionId)) continue;	// already at war
-			if (disposition.disposition.getModifiedValue() > MAX_DISPOSITION_FOR_WAR) continue;
+			if (!predatory && disposition.disposition.getModifiedValue() > MAX_DISPOSITION_FOR_WAR) continue;
 			
 			float decisionRating = getWarDecisionRating(otherFactionId);
 			if (decisionRating > 40 + MathUtils.getRandomNumberInRange(-5, 5))

@@ -11,7 +11,7 @@
 		{
 			"id":"predatory",
 			"name":"Predatory",
-			"desc":"Can opportunistically declare war regardless of disposition.",
+			"desc":"Can opportunistically declare war regardless of disposition score, at Favorable (Suspicious if Player) reputation level or lower",
 			"icon":"graphics/icons/markets/pirate_moot.png",
 			"color":[255, 32, 32]
 		},
