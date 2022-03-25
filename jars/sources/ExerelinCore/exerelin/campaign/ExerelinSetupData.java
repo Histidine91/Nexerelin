@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 public class ExerelinSetupData
 {
 	public static final int NUM_DMOD_LEVELS = 4;
+	public static final String MEM_KEY_START_FLEET_TYPE = "$nex_startFleetType";
 	
 	public static Logger log = Global.getLogger(ExerelinSetupData.class);
 	protected static ExerelinSetupData instance = null;

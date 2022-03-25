@@ -76,6 +76,9 @@ public class StartSetupPostTimePass {
 		FactionAPI myFaction = sector.getFaction(factionId);
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
 		
+		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(
+				ExerelinSetupData.MEM_KEY_START_FLEET_TYPE, ExerelinSetupData.getInstance().startFleetType);
+		
 		// assign officers
 		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;
 		int maxLevel = Global.getSettings().getLevelupPlugin().getMaxLevel();
