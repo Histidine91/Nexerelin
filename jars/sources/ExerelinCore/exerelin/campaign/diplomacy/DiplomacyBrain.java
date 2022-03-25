@@ -662,7 +662,7 @@ public class DiplomacyBrain {
 		RepLevel required = RepLevel.INHOSPITABLE;
 		List<String> traits = DiplomacyTraits.getFactionTraits(factionId);
 		if (traits.contains(TraitIds.PREDATORY))
-			required = RepLevel.COOPERATIVE;
+			required = RepLevel.WELCOMING;
 		else if (traits.contains(TraitIds.PARANOID))
 			required = RepLevel.SUSPICIOUS;
 		else if (traits.contains(TraitIds.PACIFIST))
