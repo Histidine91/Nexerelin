@@ -59,7 +59,7 @@ public class NexSkills {
 		}
 
 		public void unapply(MarketAPI market, String id) {
-			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).unmodify();
+			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).unmodify(id);
 			market.getStats().getDynamic().getMod(GBConstants.STAT_MARKET_MORALE_DAMAGE).unmodify();
 		}
 		
@@ -92,7 +92,7 @@ public class NexSkills {
 
 		public void unapply(MarketAPI market, String id) {
 			//market.getAccessibilityMod().unmodifyFlat(id);
-			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).unmodify();
+			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).unmodify(id);
 			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).unmodifyFlat(id);
 		}
 		
