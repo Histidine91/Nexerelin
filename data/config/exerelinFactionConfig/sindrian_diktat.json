@@ -13,7 +13,7 @@
     "alignments":{
         "militarist":1,
         "diplomatic":-1,
-        "hierarchial":1,
+        "hierarchical":1,
     },
     "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
 

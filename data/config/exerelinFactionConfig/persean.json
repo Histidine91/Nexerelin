@@ -15,7 +15,7 @@
     "alignments":{
         "diplomatic":1,
         "ideological":0.5,
-        "hierarchial":-0.5,
+        "hierarchical":-0.5,
     },
     "diplomacyTraits":["helps_allies", "irredentist", "envious"],
     

@@ -26,7 +26,7 @@
     "allowPrisonerActions":false,
     
     "alignments":{
-        "hierarchial":1,
+        "hierarchical":1,
         "militarist":1,
         "diplomatic":-1,
         "ideological":1,

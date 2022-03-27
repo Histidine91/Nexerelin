@@ -5,7 +5,7 @@
     "logisticsFleetName":"Supply Convoy",
     
     "alignments":{
-        "hierarchial":-1,
+        "hierarchical":-1,
         "militarist":-0.5,
         "diplomatic":0.5,
         "ideological":0.5,

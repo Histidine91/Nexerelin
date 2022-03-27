@@ -18,7 +18,7 @@
     "alignments":{
         "corporate":0.5,
         "technocratic":0.5,
-        "hierarchial":-1,
+        "hierarchical":-1,
         "ideological":0.5,
         "diplomatic":-1,
     },

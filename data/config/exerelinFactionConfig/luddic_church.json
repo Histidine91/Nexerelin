@@ -16,7 +16,7 @@
         "corporate":-0.5,
         "technocratic":-1,
         #"militarist":0.5,
-        "hierarchial":0.5,
+        "hierarchical":0.5,
         "ideological":1,
     },
     "diplomacyTraits":["selfrighteous", "hates_ai", "law_and_order", "submissive"],

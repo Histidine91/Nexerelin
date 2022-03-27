@@ -375,6 +375,7 @@ public class NexFactionConfig
                     float value = (float)alignmentsJson.optDouble(key, 0);
                     String alignmentName = StringHelper.flattenToAscii(key.toUpperCase());
                     try {
+                        if (alignmentName.equals("HIERARCHIAL")) alignmentName = Alignment.HIERARCHICAL.toString();    // spelling fix
                         Alignment alignment = Alignment.valueOf(alignmentName);
                         alignments.put(alignment, value);
                     } catch (IllegalArgumentException ex) {
