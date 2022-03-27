@@ -125,7 +125,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	public static Logger log = Global.getLogger(Nex_MarketCMD.class);
 	
-	protected TempDataInvasion tempInvasion = new TempDataInvasion();
+	// don't assign it here, since we need it before the constructor finishes running
+	protected TempDataInvasion tempInvasion;
 	
 	public Nex_MarketCMD() {
 		temp = new NexTempData(null);
@@ -133,19 +134,37 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	public Nex_MarketCMD(SectorEntityToken entity) {
 		super(entity);
+	}
+	
+	@Override
+	protected void init(SectorEntityToken entity) {
 		temp = new NexTempData(entity);
+		super.init(entity);
+		
+		// MarketCMD is instantiated and inited as soon as player docks, without going through us
+		// so when it does get to us, it just loads the non-Nex temp data that was saved to memory
+		// if we see that happening, recreate the temp data
+		if (!(temp instanceof NexTempData)) {
+			temp = new NexTempData(entity);
+			String key = "$MarketCMD_temp";
+			MemoryAPI mem = null;
+			if (market != null) {
+				mem = market.getMemoryWithoutUpdate();
+			} else {
+				mem = entity.getMemoryWithoutUpdate();
+			}
+			mem.set(key, temp, 0f);
+		}
+		
 		initForInvasion(entity);
 	}
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		temp = new NexTempData(entity);
 		super.execute(ruleId, dialog, params, memoryMap);
 		
 		String command = params.get(0).getString(memoryMap);
 		if (command == null) return false;
-		
-		initForInvasion(dialog.getInteractionTarget());
 		
 		if (command.equals("invadeMenu")) {
 			if (NexConfig.legacyInvasions)
@@ -181,6 +200,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (mem.contains(key)) {
 			tempInvasion = (TempDataInvasion) mem.get(key);
 		} else {
+			tempInvasion = new TempDataInvasion();
 			mem.set(key, tempInvasion, 0f);
 		}
 	}
@@ -422,8 +442,7 @@ public class Nex_MarketCMD extends MarketCMD {
 						}
 					}
 					text.addPara(StringHelper.getStringAndSubstituteToken("nex_militaryOptions", 
-							"hasStation", "$stationName", name));
-					
+							"hasStation", "$stationName", name));					
 					
 					if (hasNonStation) {
 						if (ongoingBattle) {
@@ -1824,6 +1843,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	protected void setSatBombLimitedHatred(boolean val) {
 		if (!(temp instanceof NexTempData)) return;
+		//log.info("Trying sat bomb limited hatred: " + val);
 		((NexTempData)temp).satBombLimitedHatred = val;
 	}
 	
@@ -2280,6 +2300,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static class NexTempData extends TempData {
 		
 		public NexTempData(SectorEntityToken entity) {
+			super();
 			if (entity == null) return;
 			
 			this.targetFaction = entity.getFaction();
