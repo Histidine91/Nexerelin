@@ -592,6 +592,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 			case "despawnShards":
 				if (ally != null) {
 					Misc.giveStandardReturnToSourceAssignments(ally, true);
+					ally.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
 				}
 				setCurrentStage(Stage.RETURN, dialog, memoryMap);
 				return true;
