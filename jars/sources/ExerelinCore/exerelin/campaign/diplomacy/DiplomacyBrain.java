@@ -22,6 +22,7 @@ import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.diplomacy.CeasefirePromptIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.Morality;
@@ -472,40 +473,40 @@ public class DiplomacyBrain {
 	
 	public float getWarDecisionRating(String enemyId)
 	{
-		log.info("Considering war declaration by " + this.factionId + " against " + enemyId);
+		logDebug("Considering war declaration by " + this.factionId + " against " + enemyId);
 		NexFactionConfig ourConf = NexConfig.getFactionConfig(this.factionId);
 		
 		float disposition = getDisposition(enemyId).disposition.getModifiedValue();
-		log.info("\tDisposition: " + disposition);
+		logDebug("\tDisposition: " + disposition);
 		
 		float targetStrength = getFactionStrength(enemyId);
 		float targetEnemyStrength = getFactionEnemyStrength(enemyId);
-		log.info("\tOur strength: " + ourStrength);
-		log.info("\tTheir strength: " + targetStrength);
-		log.info("\tTheir enemies' strength: " + targetEnemyStrength);
-		log.info("\tExisting enemies' strength: " + enemyStrength);
+		logDebug("\tOur strength: " + ourStrength);
+		logDebug("\tTheir strength: " + targetStrength);
+		logDebug("\tTheir enemies' strength: " + targetEnemyStrength);
+		logDebug("\tExisting enemies' strength: " + enemyStrength);
 		//float netStrength = ourStrength - enemyStrength - (targetStrength - targetEnemyStrength);
 		//if (netStrength < 0) netStrength *= 0.5f;	// make small fry a bit more reckless
 		
 		// existing enemy strength is weighted less, to discourage dogpiles
 		float strRatio = (ourStrength + targetEnemyStrength * 0.5f) / (targetStrength + enemyStrength);
-		log.info("\tStrength ratio: " + strRatio);
+		logDebug("\tStrength ratio: " + strRatio);
 		
 		float militarismMult = ourConf.alignments.get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
-		log.info("\tMilitarism mult: " + militarismMult);
+		logDebug("\tMilitarism mult: " + militarismMult);
 		
 		float dominance = DiplomacyManager.getDominanceFactor(enemyId) * 40;
-		log.info("\tTarget dominance: " + dominance);
+		logDebug("\tTarget dominance: " + dominance);
 		
 		float score = (-disposition + dominance);
-		log.info("\tDisposition + dominance score: " + score);
+		logDebug("\tDisposition + dominance score: " + score);
 		if (score > 0) 
 		{
 			float mult = militarismMult * strRatio;
-			log.info("\t\tMilitarism/strength multiplier: " + mult);
+			logDebug("\t\tMilitarism/strength multiplier: " + mult);
 			score *= mult;
 		}
-		log.info("\tTotal score: " + score);
+		logDebug("\tTotal score: " + score);
 		return score;
 	}
 	
@@ -711,7 +712,8 @@ public class DiplomacyBrain {
 			if (predatory && otherFactionId.equals(Factions.PLAYER)) {
 				thisMaxRep = RepLevel.SUSPICIOUS;
 			}			
-			if (otherFactionId.equals(this.factionId)) continue;
+			if (AllianceManager.areFactionsAllied(factionId, otherFactionId)) continue;			
+			
 			log.info("Checking vs. " + otherFactionId + ": " + disposition.disposition.getModifiedValue()
 					+ ", " + faction.isAtBest(otherFactionId, thisMaxRep));
 			
@@ -980,7 +982,12 @@ public class DiplomacyBrain {
 	
 	//==========================================================================
 	//==========================================================================
-
+	
+	protected static void logDebug(String str) {
+		if (!ExerelinModPlugin.isNexDev) return;
+		log.info(str);
+	}
+	
 	/**
 	 * Gets the sum of the faction's market sizes, plus half that sum for the faction's allies.
 	 * @param factionId
