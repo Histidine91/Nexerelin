@@ -81,9 +81,10 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		
 		addInvasionFleet();
 		//setStoryMission();
-				
-		//connectWithGlobalFlag(Stage.START, Stage.BATTLE, "$nex_gbTut_talkedToContact");
-		setStageOnGlobalFlag(Stage.COMPLETED, "$nex_gbTut_completed");
+		
+		beginStageTrigger(Stage.COMPLETED);
+		triggerSetGlobalMemoryValue("$nex_gbTut_missionCompleted", true);
+		endTrigger();
 		
 		setCreditReward(CreditReward.HIGH);
 
