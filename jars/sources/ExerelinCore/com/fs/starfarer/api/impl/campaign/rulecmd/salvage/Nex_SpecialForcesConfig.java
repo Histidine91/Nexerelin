@@ -315,6 +315,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				true, false, ships, 
 				new FleetMemberPickerListener() {
 					public void pickedFleetMembers(List<FleetMemberAPI> members) {
+						if (members.isEmpty()) return;
 						FleetMemberAPI newShip = members.get(0);
 						PersonAPI prevCap = newShip.getCaptain();
 						FleetMemberAPI prevShip = getShipCommandedBy(fleet, officer);
