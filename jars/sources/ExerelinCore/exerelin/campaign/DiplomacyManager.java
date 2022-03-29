@@ -990,7 +990,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     @Override
     public void reportPlayerReputationChange(String factionId, float delta) {
-        FactionAPI player = Global.getSector().getFaction("player");
+        FactionAPI player = Global.getSector().getPlayerFaction();
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         
         // clamp
@@ -1003,9 +1003,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         boolean isHostile = player.isHostileTo(factionId);
         
         // if we changed peace/war state, decide if alliances should get involved
-        if (isHostile && currentRel - delta > AllianceManager.HOSTILE_THRESHOLD 
+        // but only if our relationship should be synced
+        if (!NexConfig.getFactionConfig(factionId).noSyncRelations) {
+            if (isHostile && currentRel - delta > AllianceManager.HOSTILE_THRESHOLD 
                 || !isHostile && currentRel - delta < AllianceManager.HOSTILE_THRESHOLD)
-            AllianceVoter.allianceVote(playerAlignedFactionId, factionId, isHostile);
+                AllianceVoter.allianceVote(playerAlignedFactionId, factionId, isHostile);
+        }
         
         // handled by commission intel
         /*
