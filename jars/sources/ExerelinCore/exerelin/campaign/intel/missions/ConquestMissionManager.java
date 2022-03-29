@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
-@Deprecated
 public class ConquestMissionManager extends BaseEventManager {
 
 	public static final String KEY = "nex_ConquestMissionManager";

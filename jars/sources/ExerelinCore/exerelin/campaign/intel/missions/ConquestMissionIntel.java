@@ -90,6 +90,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	@Override
 	public void endMission() {
 		Global.getSector().getListenerManager().removeListener(this);
+		Misc.makeUnimportant(market.getPrimaryEntity(), "nex_conquest");
 		endAfterDelay();
 	}
 	
@@ -191,7 +192,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 
 	@Override
 	public void missionAccepted() {
-		// nothing needed
+		Misc.makeImportant(market.getPrimaryEntity(), "nex_conquest");
 	}
 
 	@Override
