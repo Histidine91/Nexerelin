@@ -46,6 +46,7 @@ public class CreateAlliance implements BaseCommand {
                 return CommandResult.BAD_SYNTAX;
             }
         }
+        if (alignment.redirect != null) alignment = alignment.redirect;
 
         FactionAPI fac1 = CommandUtils.findBestFactionMatch(faction1);
         FactionAPI fac2 = CommandUtils.findBestFactionMatch(faction2);

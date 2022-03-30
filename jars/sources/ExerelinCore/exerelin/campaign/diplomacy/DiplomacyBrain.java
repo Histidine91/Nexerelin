@@ -166,6 +166,8 @@ public class DiplomacyBrain {
 		//log.info("Checking alignments for factions: " + factionId + ", " + this.factionId);
 		for (Alignment align : Alliance.Alignment.values())
 		{
+			if (align.redirect != null) continue;
+			
 			float ours = ourConf.alignments.get(align);
 			float theirs = conf.alignments.get(align);
 			float thisDisp = 0;

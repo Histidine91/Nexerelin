@@ -46,6 +46,7 @@ public class Alliance
 	
 	protected Object readResolve() {
 		if (permaMembers == null) permaMembers = new HashSet<>();
+		if (alignment.redirect != null) alignment = alignment.redirect;
 		return this;
 	}
 	
@@ -246,13 +247,21 @@ public class Alliance
 		TECHNOCRATIC(Color.CYAN),
 		MILITARIST(Color.RED),
 		HIERARCHICAL(Color.MAGENTA),
+		@Deprecated HIERARCHIAL(Color.MAGENTA, HIERARCHICAL),	// reverse compatibility hax
 		DIPLOMATIC(Color.YELLOW),
 		IDEOLOGICAL(Color.GREEN);
 		
 		public final Color color;
+		public final Alignment redirect;
 		
 		private Alignment(Color color) {
 			this.color = color;
+			redirect = null;
+		}
+		
+		private Alignment(Color color, Alignment redirect) {
+			this.color = color;
+			this.redirect = redirect;
 		}
 	}
 }
