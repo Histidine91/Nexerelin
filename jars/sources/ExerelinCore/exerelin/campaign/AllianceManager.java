@@ -104,8 +104,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             JSONObject namePrefixes = nameConfig.getJSONObject("prefixes");
             JSONArray namePrefixesCommon = namePrefixes.getJSONArray("common");
             
-			allianceNameCommonPrefixes = NexUtils.JSONArrayToArrayList(namePrefixesCommon);
-            for (Alignment alignment : Alignment.values())
+            allianceNameCommonPrefixes = NexUtils.JSONArrayToArrayList(namePrefixesCommon);
+            for (Alignment alignment : Alignment.getAlignments())
             {
                 List<String> names =  NexUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
                 allianceNamesByAlignment.put(alignment, names);
@@ -133,7 +133,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 			}
 			
         } catch (JSONException | IOException ex) {
-            Global.getLogger(AllianceManager.class).log(Level.ERROR, ex);
+            throw new RuntimeException("Failed to load alliance names", ex);
         }
     }
     
@@ -149,7 +149,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         List<Alignment> bestAlignments = new ArrayList<>();
         NexFactionConfig config1 = NexConfig.getFactionConfig(factionId);
         NexFactionConfig config2 = NexConfig.getFactionConfig(otherFactionId);   
-        for (Alignment alignment : Alignment.values())
+        for (Alignment alignment : Alignment.getAlignments())
         {
             float alignment1 = 0;
             float alignment2 = 0;
@@ -226,7 +226,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return alliance2;
         }
         
-        if (type == null) type = (Alignment) NexUtils.getRandomArrayElement(Alignment.values());
+        if (type == null) type = (Alignment) NexUtils.getRandomListElement(Alignment.getAlignments());
         
         List<String> namePrefixes = generateNamePrefixes(member1, member2, type);
         
@@ -540,6 +540,27 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 			if (didAnything) break;
         }
     }
+	
+	// runcode exerelin.campaign.AllianceManager.testAllianceCreation();
+	public static void testAllianceCreation() {
+		List<String> alliances = SectorManager.getLiveFactionIdsCopy();
+		int failures = 0;
+		for (int i=0; i<100; i++) {
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+			picker.addAll(alliances);
+			
+			String factionId1 = picker.pickAndRemove();
+			String factionId2 = picker.pickAndRemove();
+			Alliance alliance = AllianceManager.createAlliance(factionId1, factionId2, NexUtils.getRandomListElement(Alignment.getAlignments()));
+			if (alliance != null) {
+				AllianceManager.getManager().dissolveAlliance(alliance, true);
+			}
+			else {
+				failures++;
+			}
+		}
+		log.info("Failed to create " + failures + " alliances");
+	}
     
     public static boolean isAlignmentCompatible(String factionId, String allianceId) {
         Alliance alliance = getAllianceByUUID(allianceId);

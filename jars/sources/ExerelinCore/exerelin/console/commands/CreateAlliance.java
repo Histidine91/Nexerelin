@@ -33,7 +33,7 @@ public class CreateAlliance implements BaseCommand {
         String faction1 = tmp[0];
         String faction2 = tmp[1];
 
-        Alignment alignment = (Alignment) NexUtils.getRandomArrayElement(Alignment.values());
+        Alignment alignment = (Alignment) NexUtils.getRandomListElement(Alignment.getAlignments());
         if (tmp.length == 3)
         {
             try
@@ -46,7 +46,6 @@ public class CreateAlliance implements BaseCommand {
                 return CommandResult.BAD_SYNTAX;
             }
         }
-        if (alignment.redirect != null) alignment = alignment.redirect;
 
         FactionAPI fac1 = CommandUtils.findBestFactionMatch(faction1);
         FactionAPI fac2 = CommandUtils.findBestFactionMatch(faction2);

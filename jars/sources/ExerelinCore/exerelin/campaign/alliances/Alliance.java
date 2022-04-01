@@ -263,5 +263,18 @@ public class Alliance
 			this.color = color;
 			this.redirect = redirect;
 		}
+		
+		/**
+		 * Returns only non-deprecated alignments.
+		 * @return
+		 */
+		public static List<Alignment> getAlignments() {
+			List<Alignment> alignments = new ArrayList<>();
+			for (Alignment candidate : Alignment.values()) {
+				if (candidate.redirect != null) continue;
+				alignments.add(candidate);
+			}
+			return alignments;
+		}
 	}
 }

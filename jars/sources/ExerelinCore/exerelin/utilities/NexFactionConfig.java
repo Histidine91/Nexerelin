@@ -164,7 +164,7 @@ public class NexFactionConfig
     static {
         for (Alignment alignment : Alignment.values())
         {
-            if (alignment.redirect != null) continue;
+            //if (alignment.redirect != null) continue;
             DEFAULT_ALIGNMENTS.put(alignment, 0f);
         }
         
