@@ -12,10 +12,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;
-import com.fs.starfarer.api.combat.BattleCreationContext;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.BaseFIDDelegate;
-import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.FIDConfig;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
@@ -29,7 +26,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.NexTempData;
 import com.fs.starfarer.api.loading.VariantSource;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -229,17 +225,19 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		
 		// try to use values stored in NexTempData, since the ones we can get from 
 		// the market directly may be inaccurate due to decivilization
+		
 		if (actionData instanceof NexTempData) {
 			NexTempData nd = (Nex_MarketCMD.NexTempData)actionData;
 			boolean suppress = nd.satBombLimitedHatred;
 			if (suppress) {
+				log.info("Limited hatred");
 				return;
 			}
 			size = nd.sizeBeforeBombardment;
 			if (target.isNeutralFaction()) target = nd.targetFaction;
 		}
 		
-		log.info("Sat bomb detected, inflicting penalties");
+		//log.info("Sat bomb detected, inflicting penalties");
 		for (FactionAPI faction: actionData.willBecomeHostile) {
 			if (faction.isNeutralFaction()) continue;
 			float change = -NexConfig.permaHateFromPlayerSatBomb;

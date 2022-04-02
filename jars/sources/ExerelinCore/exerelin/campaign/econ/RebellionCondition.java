@@ -4,8 +4,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.Map;
 
 public class RebellionCondition extends BaseMarketConditionPlugin {
@@ -34,8 +37,15 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 			market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
 					StringHelper.getString("exerelin_marketConditions", "rebellion"));
 		
+		// can cause concurrent modification exception if left alone
+		// just leave the condition for now?
 		if (event == null)	// refetch failed
 			market.removeSpecificCondition(this.getModId());
+		
+		if (event == null && ExerelinModPlugin.isNexDev) {
+			Global.getSector().getCampaignUI().addMessage(String.format(
+					"Warning: Rebellion condition on %s has no rebellion", market.getName()), Misc.getHighlightColor());
+		}
 	}
 		
 	@Override
@@ -67,6 +77,7 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 	
 	@Override
 	public String[] getHighlights() {
+		if (event == null) return new String[0];
 		return new String[] {
 			//Global.getSector().getFaction(event.getRebelFactionId()).getDisplayNameWithArticle(),
 			"" + event.getStabilityPenalty()
