@@ -25,7 +25,9 @@ public class GalatiaAcademy extends BaseLandmarkDef {
 		Set<StarSystemAPI> populatedSystems = new HashSet<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
-			populatedSystems.add(market.getStarSystem());
+			StarSystemAPI sys = market.getStarSystem();
+			if (sys == null) continue;
+			populatedSystems.add(sys);
 		}
 		
 		for (StarSystemAPI system : populatedSystems)
