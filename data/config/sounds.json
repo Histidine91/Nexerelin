@@ -31,5 +31,12 @@
 	
 	"nex_alarm":[
 		{"file":"sounds/nexerelin/sfx_interface/alarm.wav","pitch":1,"volume":1.0}
-	]
+	],
+	
+	"nex_ui_cargo_prisoner":{"sounds":[
+		{"file":"sounds/nexerelin/sfx_cargo/steel_cage_open.ogg","pitch":1,"volume":0.6},
+	],},
+	"nex_ui_cargo_prisoner_drop":{"sounds":[
+		{"file":"sounds/nexerelin/sfx_cargo/steel_cage_close.ogg","pitch":1,"volume":0.6},
+	],}
 }
