@@ -69,6 +69,7 @@ import exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.campaign.ui.ProgressBar;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ColonyNPCHostileActListener;
 import exerelin.utilities.NexUtils;
@@ -282,7 +283,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		float days = Global.getSettings().getFloat(isPlayerAttacker() != null ? "nex_gbTurnDaysPlayer" : "nex_gbTurnDaysNPC");
 		interval.setInterval(days, days);
 		days = days * 0.2f;
-		intervalShort.setInterval(days, days);		
+		intervalShort.setInterval(days, days);
 		
 		interval.setElapsed(0);
 	}
@@ -1564,8 +1565,32 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				unitSize.minSize + "", unitSize.avgSize + "", unitSize.maxSize + "", 
 				String.format("%.2f", unitSize.damMult) + "×");
 		
-		str = getString("intelDesc_round");
-		info.addPara(str, pad, Misc.getHighlightColor(), turnNum + "");
+		// turn num and progress row
+		{
+			float barHeight = 18;
+			float barWidth = 240;
+			str = getString("intelDesc_round");
+			CustomPanelAPI turnRow = outer.createCustomPanel(width, barHeight, null);
+			TooltipMakerAPI turnText = turnRow.createUIElement(100, barHeight, false);
+						
+			turnText.addPara(str, 0, Misc.getHighlightColor(), turnNum + "");
+			turnRow.addUIElement(turnText).inTL(0, 0);
+			
+			float timePassed = interval.getElapsed();
+			float timeNeeded = interval.getIntervalDuration();
+			
+			float progress = (timePassed/timeNeeded) * 100;
+			float remainingHours = (timeNeeded - timePassed)*24;
+			str = String.format(getString("intelDesc_roundDaysRemaining"), remainingHours);
+			
+			TooltipMakerAPI turnBarHolder = turnRow.createUIElement(barWidth, barHeight, false);		
+			ProgressBar.addBarLTR(turnBarHolder, str, Alignment.MID, null, barWidth, barHeight, 1, 1, progress, 0, null, 
+					Misc.getGrayColor(), Color.black, Misc.getDarkPlayerColor());
+			turnRow.addUIElement(turnBarHolder).rightOfTop(turnText, 0);
+			
+			info.addCustom(turnRow, pad);
+		}
+		
 		
 		// join battle options
 		if (playerIsAttacker == null && isFleetInRange(Global.getSector().getPlayerFleet())) 
