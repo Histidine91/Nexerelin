@@ -65,7 +65,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	public static final float STRAGGLER_LOST_ATTACK_DELAY = 15;
 	public static final float STAGING_AREA_FOUND_ATTACK_DELAY = 2.5f;
-	public static final int BATTLE_MAX_DAYS = 60;
+	public static final int BATTLE_MAX_DAYS = 45;
 
 	public static enum Stage {
 		GO_TO_ORIGIN_SYSTEM,
