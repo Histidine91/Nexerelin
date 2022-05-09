@@ -379,7 +379,9 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		
 		boolean ignore = fleet.getMemoryWithoutUpdate() != null && 
 						fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
-		if (ignore) return false;
+		//if (ignore) return false; // we'll take care of this in a bit, need to check some other stuff first
+		
+		boolean escorting = false;
 		
 		if (fleet.getAI() != null)
 		{
@@ -419,11 +421,13 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_LOW_REP_IMPACT);
 							}
 						}
-						
+						escorting = true;
 						return true;
 					}
 				}
 			}
+			if (ignore) return false;
+			
 			if (fleet.getAI().wantsToJoin(battle, true)) 
 				return true;
 		}
