@@ -118,6 +118,9 @@ public class ColonyTargetValuator {
 	}
 	
 	public float evaluatePlanet(MarketAPI market, float distanceLY, FactionAPI faction) {
+		
+		if (market.hasCondition("VIC_VBomb_scar")) return -1000;
+		
 		List<String> conds = new ArrayList<>();
 		if (faction.getId().equals(NexUtilsMarket.getOriginalOwner(market))
 				&& NexUtilsAstro.isCoreSystem(market.getStarSystem()))
