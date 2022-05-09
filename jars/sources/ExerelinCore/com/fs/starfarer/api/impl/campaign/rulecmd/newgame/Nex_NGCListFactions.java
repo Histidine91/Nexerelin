@@ -24,6 +24,7 @@ import org.lwjgl.input.Keyboard;
 public class Nex_NGCListFactions extends PaginatedOptions {
 	
 	public static final String JOIN_FACTION_OPTION_PREFIX = "nex_NGCJoinFaction_";
+	public static final String LIST_FACTIONS_IN_GROUP_OPTION_PREFIX = "nex_NGCListFactionsGroup_";
 	protected static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
 	
 	@Override
@@ -41,7 +42,15 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 			case "listFactions":
 				OptionPanelAPI opts = dialog.getOptionPanel();
 				opts.clearOptions();
-				int num = (int)params.get(1).getFloat(memoryMap);
+				int num = 0;
+				if (params.size() > 1) {
+					num = (int)params.get(1).getFloat(memoryMap);
+				}
+				else {
+					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
+					num = Integer.parseInt(option.substring(LIST_FACTIONS_IN_GROUP_OPTION_PREFIX.length()));
+				}
+				
 				if (num == 0)
 				{
 					super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
@@ -94,13 +103,12 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 		for (FactionListGrouping group : groups)
 		{
 			groupNum++;
-			String optionId = "nex_NGCListFactions" + groupNum;
+			String optionId = LIST_FACTIONS_IN_GROUP_OPTION_PREFIX + groupNum;
 			addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "factions")) + ": " + group.getGroupingRangeString(),
 					optionId);
 		}
 		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "ownFaction")), "nex_NGCJoinOwnFaction");
 		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "freeStartHard")), "nex_NGCFreeStart");
-		opts.setTooltip("nex_NGCFreeStart", StringHelper.getString("exerelin_ngc", "freeStartTooltip"));
 		
 		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "randomFaction")), "nex_NGCJoinRandomFaction");
 		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "customStart")), "nex_NGCCustomStart");
@@ -132,12 +140,13 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 		for (FactionListGrouping group : groups)
 		{
 			groupNum++;
-			String optionId = "nex_NGCListFactions" + groupNum;
+			String optionId = LIST_FACTIONS_IN_GROUP_OPTION_PREFIX + groupNum;
 			opts.setTooltip(optionId, group.tooltip);
 			opts.setTooltipHighlights(optionId, group.getFactionNames().toArray(new String[0]));
 			opts.setTooltipHighlightColors(optionId, group.getTooltipColors().toArray(new Color[0]));
 		}
 		
+		opts.setTooltip("nex_NGCFreeStart", StringHelper.getString("exerelin_ngc", "freeStartTooltip"));
 		opts.setShortcut("exerelinNGCOptionsBack", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 }

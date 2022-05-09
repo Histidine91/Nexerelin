@@ -108,17 +108,7 @@ FireAll ExerelinNGCOtherOptions",,,
 ,,,,,,
 nex_NGCFactionSelection,ExerelinNGCStep2,,Nex_NGCListFactions listGroups,Which faction would you like to join?,,
 nex_NGCFactionsBackToGroups,NewGameOptionSelected,$option==nex_NGCFactionsBack,Nex_NGCListFactions listGroups,,,
-,,,,,,
-nex_NGCListFactions1,NewGameOptionSelected,$option==nex_NGCListFactions1,Nex_NGCListFactions listFactions 1,,,
-nex_NGCListFactions2,NewGameOptionSelected,$option==nex_NGCListFactions2,Nex_NGCListFactions listFactions 2,,,
-nex_NGCListFactions3,NewGameOptionSelected,$option==nex_NGCListFactions3,Nex_NGCListFactions listFactions 3,,,
-nex_NGCListFactions4,NewGameOptionSelected,$option==nex_NGCListFactions4,Nex_NGCListFactions listFactions 4,,,
-nex_NGCListFactions5,NewGameOptionSelected,$option==nex_NGCListFactions5,Nex_NGCListFactions listFactions 5,,,
-nex_NGCListFactions6,NewGameOptionSelected,$option==nex_NGCListFactions6,Nex_NGCListFactions listFactions 6,,,
-nex_NGCListFactions7,NewGameOptionSelected,$option==nex_NGCListFactions7,Nex_NGCListFactions listFactions 7,,,
-nex_NGCListFactions8,NewGameOptionSelected,$option==nex_NGCListFactions8,Nex_NGCListFactions listFactions 8,,,
-nex_NGCListFactions9,NewGameOptionSelected,$option==nex_NGCListFactions9,Nex_NGCListFactions listFactions 9,,,
-nex_NGCListFactions10,NewGameOptionSelected,$option==nex_NGCListFactions10,Nex_NGCListFactions listFactions 10,,,
+nex_NGCListFactionsByGroup,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCListFactionsGroup_""",Nex_NGCListFactions listFactions,,,
 ,,,,,,
 nex_NGCJoinFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCJoinFaction_""","Nex_NGCSetFactionFromJoinOption
 FireAll ExerelinNGCStep3",,,
@@ -1494,7 +1484,7 @@ $faction.id == nex_derelict score:1000",SetEnabled marketCommDir false,,,
 nex_relLevelDerelict,RelationshipLevelDesc,$faction.id == nex_derelict score:5,,...,,
 ,,,,,,
 ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET
-$market.id == nex_prismFreeport","AddText ""Bright, slick, overusing chrome and opal ornaments, the concourse is quite the unusual sight for a station lost in hyperspace. Wherever the eye looks, every detail spells luxury. On the sides, behind extravagant transparent promenades, the source of all this wealth is offered to the observation of all potential buyers: the menacing and yet reassuring silhouettes of ships from all origins, all pristine looking and advantageously lit. A bit further it's the weapons that are exposed in the same fashion. Holo displays and simulators are available everywhere to help clients to find the perfect tool to fit their needs."" marketFlavorTextColor",,,
+$market.id == nex_prismFreeport","AddText ""Bright, slick, overusing chrome and opal ornaments, the concourse is quite the unusual sight for a station out here by its lonesome. Wherever the eye looks, every detail spells luxury. On the sides, behind extravagant transparent promenades, the source of all this wealth is offered to the observation of all potential buyers: the menacing and yet reassuring silhouettes of ships from all origins, all pristine looking and advantageously lit. A bit further it's the weapons that are exposed in the same fashion. Holo displays and simulators are available everywhere to help clients to find the perfect tool to fit their needs."" marketFlavorTextColor",,,
 ExerelinFlavorTextMarketFollowers,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $faction.id == ""player""","AddText ""The port concourse is filled with trader starcraft of every size. Speculators crowd offloading ship captains with deals and peddlers call out to crew, holding wares and projecting personal ad-holos. Guards salute you in recognition as you pass by them."" marketFlavorTextColor",,,
 ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
@@ -3349,7 +3339,7 @@ nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
 nex_configSF_createNewOpt,PopulateOptions,"Nex_IsBaseOfficial military
 Nex_IsFactionRuler $faction.id",,,10:nex_configSF_createNew:Create a special task group,
-nex_configSF_createNewOptDisabled,PopulateOptions,"Nex_IsBaseOfficial military
+#nex_configSF_createNewOptDisabled,PopulateOptions,"Nex_IsBaseOfficial military
 Nex_IsFactionRuler $faction.id
 !Nex_SpecialForcesConfig canCreate","SetEnabled nex_configSF_createNew false
 SetTooltip nex_configSF_createNew $nex_psf_noCreateReason",,,
