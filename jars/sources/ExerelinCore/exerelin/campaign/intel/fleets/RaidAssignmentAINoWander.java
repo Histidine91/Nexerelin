@@ -79,7 +79,7 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 		}
 		
 		// used for invasion fleets hanging around market after capturing it
-		if (current.custom.equals(WaitStage.ROUTE_CUSTOM_NO_WANDER)) {
+		if (current.custom != null && current.custom.equals(WaitStage.ROUTE_CUSTOM_NO_WANDER)) {
 			
 			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from, 
 					current.daysMax - current.elapsed, getInSystemActionText(current),
