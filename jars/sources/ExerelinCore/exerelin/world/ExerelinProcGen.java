@@ -2,6 +2,7 @@ package exerelin.world;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
+import com.fs.starfarer.api.campaign.CampaignTerrainPlugin;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -29,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.AL_ChaosCrackFleetManager;
+import data.scripts.terrain.MagicAsteroidBeltTerrainPlugin;
 /*
 import data.scripts.campaign.ExigencyCommRelayAdder;
 import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
@@ -1307,15 +1309,28 @@ public class ExerelinProcGen {
 		if (station.terrain != null) {
 			switch (station.terrain.getType()) {
 				case Terrain.ASTEROID_BELT:
-					AsteroidBeltTerrainPlugin abt = (AsteroidBeltTerrainPlugin)station.terrain.getPlugin();
-					if (abt == null)
+					CampaignTerrainPlugin plugin = station.terrain.getPlugin();
+
+					if (plugin == null) {
 						log.error(String.format("Warning: Asteroid belt %s in %s has no plugin", 
 								station.terrain.getName(), station.terrain.getContainingLocation()));
-					else
+						break;
+					}
+
+					if (plugin instanceof AsteroidBeltTerrainPlugin) {
+						AsteroidBeltTerrainPlugin abt = (AsteroidBeltTerrainPlugin)plugin;
 						log.info(String.format("Creating station in asteroid belt %s in %s, has params: %s", 
 								station.terrain.getName(), station.terrain.getContainingLocation(), abt.params != null));
-					orbitRadius = (int)abt.params.middleRadius;
-					orbitDays = (abt.params.minOrbitDays + abt.params.maxOrbitDays)/2;
+						orbitRadius = (int)abt.params.middleRadius;
+						orbitDays = (abt.params.minOrbitDays + abt.params.maxOrbitDays)/2;
+					}
+					if (plugin instanceof MagicAsteroidBeltTerrainPlugin) {
+						MagicAsteroidBeltTerrainPlugin abt = (MagicAsteroidBeltTerrainPlugin)plugin;
+						log.info(String.format("Creating station in asteroid belt %s in %s, has params: %s", 
+								station.terrain.getName(), station.terrain.getContainingLocation(), abt.params != null));
+						orbitRadius = (int)abt.params.middleRadius;
+						orbitDays = (abt.params.minOrbitDays + abt.params.maxOrbitDays)/2;
+					}
 					break;
 				case Terrain.RING:
 					BaseRingTerrain brt = (BaseRingTerrain)station.terrain.getPlugin();
