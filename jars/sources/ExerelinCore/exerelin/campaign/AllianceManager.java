@@ -382,17 +382,17 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         first.getIntel().sendUpdateIfPlayerHasIntel(infoParam, false);
     }
-       
-    public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
+    
+    public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent, boolean force)
     {
-        if (alliance.isPermaMember(factionId)) return;
+        if (!force && alliance.isPermaMember(factionId)) return;
         
         if (alliance.getMembersCopy().size() <= 2) 
         {
             dissolveAlliance(alliance);
             return;
         }
-		
+        
         alliance.removeMember(factionId);
         alliancesByFactionId.remove(factionId);
         
@@ -402,7 +402,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     public void leaveAlliance(String factionId, Alliance alliance)
     {
-        leaveAlliance(factionId, alliance, false);
+        leaveAlliance(factionId, alliance, false, false);
+    }
+    
+    public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent) {
+        leaveAlliance(factionId, alliance, noEvent, false);
     }
     
     public void dissolveAlliance(Alliance alliance) {

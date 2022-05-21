@@ -2,6 +2,7 @@ package exerelin.console.commands;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.alliances.Alliance;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
@@ -38,8 +39,14 @@ public class LeaveAlliance implements BaseCommand {
             return CommandResult.ERROR;
         }
 
-        AllianceManager.leaveAlliance(faction, false);
-        Console.showMessage(CommandUtils.getFactionName(fac) + " has left their alliance (if any).");
+        Alliance alliance = AllianceManager.getFactionAlliance(faction);
+		if (alliance == null) {
+			Console.showMessage(CommandUtils.getFactionName(fac) + " is not in an alliance");
+            return CommandResult.ERROR;
+		}
+		AllianceManager.getManager().leaveAlliance(faction, alliance, false, true);
+		
+        Console.showMessage(CommandUtils.getFactionName(fac) + " has left their alliance.");
         return CommandResult.SUCCESS;
     }
 }
