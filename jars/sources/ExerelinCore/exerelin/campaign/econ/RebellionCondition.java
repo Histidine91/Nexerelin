@@ -25,7 +25,7 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 	{
 		if (event == null)	// try regetting
 		{
-			Global.getLogger(this.getClass()).warn("Event is null, re-fetching");
+			Global.getLogger(this.getClass()).warn(String.format("Event on %s is null, re-fetching", market.getName()));
 			event = RebellionIntel.getOngoingEvent(market);
 		}
 		return event != null;
@@ -39,8 +39,10 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 		
 		// can cause concurrent modification exception if left alone
 		// just leave the condition for now?
-		if (event == null)	// refetch failed
-			market.removeSpecificCondition(this.getModId());
+		if (event == null) {	// refetch failed
+			Global.getLogger(this.getClass()).warn("Event refetch failed");
+			// market.removeSpecificCondition(this.getModId());
+		}
 		
 		if (event == null && ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage(String.format(
