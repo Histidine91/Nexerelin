@@ -1210,6 +1210,7 @@
 		"bulletLossesLastTurn":"Losses last turn: %s",
 		"bulletAbilityUsed":"%s used ability: %s",
 		"bulletMilitiaUnleashed":"Militia unleashed!",
+		"bulletDaysToTakeControl":"%s day(s) to take personal control",
 		
 		"btnViewUnits":"Units",
 		"btnViewAbilities":"Abilities",

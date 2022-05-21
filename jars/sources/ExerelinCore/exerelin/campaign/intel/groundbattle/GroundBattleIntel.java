@@ -53,6 +53,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
@@ -2124,6 +2125,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (turnNum == getMilitiaUnleashTurn() - 1) {
 			String str = getString("bulletMilitiaUnleashed");
 			info.addPara(str, 0, Misc.getHighlightColor(), str);
+		}
+		
+		if (timerForDecision != null) {
+			String str = getString("bulletDaysToTakeControl");
+			info.addPara(str, 0, Misc.getHighlightColor(), String.format("%.0f", timerForDecision));;
 		}
 	}
 	
