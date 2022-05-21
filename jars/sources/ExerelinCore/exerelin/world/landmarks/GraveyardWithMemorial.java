@@ -142,18 +142,23 @@ public class GraveyardWithMemorial extends BaseLandmarkDef {
 		
 		for (int i = 0; i < numShips; i++) {
 			float radius = bands.pickAndRemove();
-			
-			DerelictShipEntityPlugin.DerelictShipData params = createRandom(factions.pick(), 
+			String factionId = factions.pick();
+			DerelictShipEntityPlugin.DerelictShipData params = createRandom(factionId, 
 					random, DerelictShipEntityPlugin.getDefaultSModProb());
 			if (params != null) {
-				CustomCampaignEntityAPI entity = (CustomCampaignEntityAPI) addSalvageEntity(random,
-									focus.getContainingLocation(),
-									Entities.WRECK, Factions.NEUTRAL, params);
-				entity.setDiscoverable(true);
-				float orbitDays = radius / (5f + random.nextFloat() * 10f);
-				entity.setCircularOrbit(focus, random.nextFloat() * 360f, radius, orbitDays);
-				BaseThemeGenerator.AddedEntity added = new BaseThemeGenerator.AddedEntity(entity, null, Entities.WRECK);
-				data.generated.add(added);
+				try {
+					CustomCampaignEntityAPI entity = (CustomCampaignEntityAPI) addSalvageEntity(random,
+										focus.getContainingLocation(),
+										Entities.WRECK, Factions.NEUTRAL, params);
+					entity.setDiscoverable(true);
+					float orbitDays = radius / (5f + random.nextFloat() * 10f);
+					entity.setCircularOrbit(focus, random.nextFloat() * 360f, radius, orbitDays);
+					BaseThemeGenerator.AddedEntity added = new BaseThemeGenerator.AddedEntity(entity, null, Entities.WRECK);
+					data.generated.add(added);
+				} catch (Exception ex) {
+					log.error("Failed to spawn graveyard derelict for faction " + factionId);
+					log.error("  Ship variant:" + params.ship.variantId);
+				}
 			}
 		}
 	}
