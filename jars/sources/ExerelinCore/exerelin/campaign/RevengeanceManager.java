@@ -139,6 +139,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	{
 		if (!isRevengeanceEnabled()) return;
 		if (VengeanceFleetIntel.EXCEPTION_LIST.contains(factionId)) return;
+		if (!SectorManager.isFactionAlive(factionId)) return;
+		
 		if (factionPoints == null)
 			factionPoints = new HashMap<>();
 		if (!factionPoints.containsKey(factionId))
