@@ -445,6 +445,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		// remove economy tick listener, no longer needed
 		Global.getSector().getListenerManager().removeListener(this);
 		
+		if (reason != CampaignEventListener.FleetDespawnReason.DESTROYED_BY_BATTLE) {
+			Global.getSector().getCampaignUI().showConfirmDialog(getString("warnMsg"), 
+					getString("warnMsgButton1"), getString("warnMsgButton2"), 640, 320, null, null);
+		}
+		
 		sendUpdateIfPlayerHasIntel(DESTROYED_UPDATE, false, false);
 	}
 	

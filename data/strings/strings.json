@@ -2200,6 +2200,10 @@
 		"reportNode_crew":"Crew payroll",
 		"reportNode_supplies":"Supply cost",
 		"reportNode_fuel":"Fuel cost",
+		
+		"warnMsg":"Player special task group has despawned without being killed in battle!\n\nIf this was expected (e.g. fleet was killed with console), everything is fine and you can ignore this message.\n\nOtherwise, please report to Histidine with a description of what the task group is currently doing and where it is (also consider making a save copy in case it's needed for debugging).",
+		"warnMsgButton1":"I understand",
+		"warnMsgButton2":"Remain ignorant",
 	},
 	
 	"nex_splitFleet":{
