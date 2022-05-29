@@ -106,6 +106,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public static final float VIEW_BUTTON_HEIGHT = 24;
 	public static final float MODIFIER_PANEL_HEIGHT = 160;
 	public static final float ABILITY_PANEL_HEIGHT = 160;
+	public static final int LOG_MAX_TURNS_AGO = 50;
 	
 	public static final Object UPDATE_TURN = new Object();
 	public static final Object UPDATE_VICTORY = new Object();
@@ -152,6 +153,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected IntervalUtil intervalShort = new IntervalUtil(0.2f, 0.2f);
 	protected MilitaryResponseScript responseScript;
 	@Getter protected int turnsSinceLastAction = 0;
+	
+	protected InvasionIntel responseIntel;
 	
 	protected boolean noTransfer = false;
 	protected boolean endIfPeace = true;
@@ -1984,7 +1987,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			CustomPanelAPI logPanel = outer.createCustomPanel(width, logPanelHeight, null);
 			TooltipMakerAPI scroll = logPanel.createUIElement(width, logPanelHeight, true);
 			for (int i=battleLog.size() - 1; i>=0; i--) {
+				int logTurn = battleLog.get(i).turn;
 				battleLog.get(i).writeLog(logPanel, scroll, width - 4);
+				if (turnNum - logTurn > LOG_MAX_TURNS_AGO) break;
 			}
 
 			logPanel.addUIElement(scroll);
