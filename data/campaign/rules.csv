@@ -2811,7 +2811,7 @@ FireBest Nex_BuildStationInterceptHail_DialogNoCargo",,,
 nex_buildStation_interceptHail_checkCmsn,Nex_BuildStationInterceptHail_DialogOptCheck,!Commission hasFactionCommission,SetEnabled nex_buildStation_interceptHail_commission false,,,
 nex_buildStation_interceptHail_checkNoCargo,Nex_BuildStationInterceptHail_DialogOptCheck,"Call $entity.nex_buildStation_ref canDenyCargo
 !$nex_buildStation_canDenyCargo","SetEnabled nex_buildStation_interceptHail_noCargo false
-SetTooltip nex_buildStation_interceptHail_noCargo ""Only works if you have less than the required number of units for two or more commodities.""",,,
+SetTooltip nex_buildStation_interceptHail_noCargo ""Only works if you have less than half the required number of units for two or more commodities.""",,,
 nex_buildStation_interceptHail_checkNoCargo2,Nex_BuildStationInterceptHail_DialogOptCheck,$nex_buildStation_canDenyCargo,"SetEnabled nex_buildStation_interceptHail_comply false
 SetTooltip nex_buildStation_interceptHail_comply ""You don't have enough resources to (convincingly) hand over.""",,,
 nex_buildStation_interceptHailDialog_start,Nex_BuildStationInterceptHail_DialogStart,,Call $entity.nex_buildStation_ref showCostPanel,"""Halt, captain! We have evidence that you are smuggling resources on behalf of a criminal organization. You are to prove your innocence in this matter by unloading all such material immediately for confiscation.""","nex_buildStation_interceptHail_comply:Hand over the listed commodities
