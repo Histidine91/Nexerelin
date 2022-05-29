@@ -1324,7 +1324,7 @@ public class ExerelinProcGen {
 						orbitRadius = (int)abt.params.middleRadius;
 						orbitDays = (abt.params.minOrbitDays + abt.params.maxOrbitDays)/2;
 					}
-					if (plugin instanceof MagicAsteroidBeltTerrainPlugin) {
+					else if (plugin instanceof MagicAsteroidBeltTerrainPlugin) {
 						MagicAsteroidBeltTerrainPlugin abt = (MagicAsteroidBeltTerrainPlugin)plugin;
 						log.info(String.format("Creating station in asteroid belt %s in %s, has params: %s", 
 								station.terrain.getName(), station.terrain.getContainingLocation(), abt.params != null));
