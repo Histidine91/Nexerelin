@@ -38,6 +38,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.*;
+import static exerelin.campaign.SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.intel.agents.AgentIntel;
@@ -49,6 +50,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -91,6 +94,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected float elapsed = 0;
 	protected float suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
 	protected IntervalUtil disruptInterval = new IntervalUtil(30, 42);
+	@Getter @Setter protected boolean playerInitiated;
 	
 	protected FactionAPI govtFaction;
 	protected FactionAPI rebelFaction;
@@ -639,9 +643,15 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		applyReputationChange();
 		
 		// transfer market depending on rebellion outcome
-		if (result == RebellionResult.REBEL_VICTORY)
+		if (result == RebellionResult.REBEL_VICTORY) {
 			SectorManager.transferMarket(market, rebelFaction, market.getFaction(), 
 					false, true, null, 0);
+			
+			if (playerInitiated) {
+				market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER, true, 60);
+			}
+		}
+		
 		else if (result == RebellionResult.MUTUAL_ANNIHILATION)
 			SectorManager.transferMarket(market, Global.getSector().getFaction(Factions.PIRATES), market.getFaction(), 
 					false, true, null, 0);

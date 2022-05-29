@@ -69,6 +69,9 @@ public class InstigateRebellion extends CovertActionIntel {
 			endAfterDelay();
 			return;
 		}
+		if (playerInvolved) {
+			event.setPlayerInitiated(true);
+		}
 		
 		float mult = getEffectMultForLevel();
 		event.setRebelStrength(event.getRebelStrength() * mult);
