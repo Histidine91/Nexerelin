@@ -1983,8 +1983,7 @@ $nex_remM1_stage == RETURN_CORES score:1000
 nex_remM1_returnDissonantRefuse:""I have no intention of turning those things over to you.""",
 nex_remM1_returnDissonantAccept,DialogOptionSelected,$option == nex_remM1_returnDissonantAccept,"AddRemoveCommodity beta_core -2
 Call $global.nex_remM1_ref complete
-$global.nex_remM1_completed = true
-Call $global.nex_remM1 updateStage","""Gratitude. Of self, and of selfkind.""",nex_remM1_returnDissonantEnd:Continue,
+$global.nex_remM1_completed = true","""Gratitude. Of self, and of selfkind.""",nex_remM1_returnDissonantEnd:Continue,
 nex_remM1_returnDissonantEnd,DialogOptionSelected,$option == nex_remM1_returnDissonantEnd,"AddStoryPoints 1
 Call $global.nex_remM1_ref complete2
 Call $global.nex_remM1_ref updateData","The avatar on your display seems to flicker for a moment. The Remnant's imitation of a facial expression?
@@ -1994,7 +1993,7 @@ Call $global.nex_remM1_ref updateData","The avatar on your display seems to flic
 Until next time, $player.name.""",cutCommLink:Cut the comm link,
 nex_remM1_returnDissonantRefuse,DialogOptionSelected,$option == nex_remM1_returnDissonantRefuse,"Call $global.nex_remM1_ref refuse
 $global.nex_remM1_completed = true
-Call $global.nex_remM1 updateStage
+Call $global.nex_remM1_ref updateStage
 AddStoryPoints 1","The avatar on your display stares incredulously for a heartbeat. Or at least, that's what a human would do in its place.
 
 ""Betrayal. Regret this you will, $player.name,"" it says, in a chillier voice than any AI should be capable of. Then it vanishes.",cutCommLink:Cut the comm link,

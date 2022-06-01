@@ -45,7 +45,16 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 	
 	protected PersonAPI dissonant;
 	protected MarketAPI market;
+	protected MarketAPI sourceMarket;
 	protected RaidDangerLevel danger;
+	
+	protected Object readResolve() {
+		log.info("Readresolve for Remnant M1");
+		if (sourceMarket == null && dissonant != null) {
+			sourceMarket = dissonant.getMarket();
+		}
+		return this;
+	}
 	
 	@Override
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
@@ -82,6 +91,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 			return false;
 		}
 		personOverride = dissonant;
+		sourceMarket = createdAt;
 		
 		setStoryMission();
 		
@@ -182,7 +192,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				return false;
 			case "raidComplete":
 			case "boughtCores":
-				dissonant.getMarket().getCommDirectory().addPerson(dissonant);
+				sourceMarket.getCommDirectory().addPerson(dissonant);
 				return true;
 			case "hasCores":
 				return Global.getSector().getPlayerFleet().getCargo().getCommodityQuantity(Commodities.BETA_CORE) >= 2;
@@ -198,7 +208,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 			case "complete2":
 				dissonant.getName().setFirst(getString("dissonantName1"));
 				dissonant.getName().setLast(getString("dissonantName2"));
-				SpecialContactIntel intel = new SpecialContactIntel(dissonant, dissonant.getMarket());
+				SpecialContactIntel intel = new SpecialContactIntel(dissonant, sourceMarket);
 				Global.getSector().getIntelManager().addIntel(intel, false, dialog.getTextPanel());
 				return true;
 			case "betray":
@@ -229,8 +239,9 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				
 				// fall through to next level
 			case "refuse":
-				dissonant.getMarket().getCommDirectory().removePerson(dissonant);
-				dissonant.getMarket().removePerson(dissonant);
+				// handle this stuff on mission failure?
+				sourceMarket.getCommDirectory().removePerson(dissonant);
+				sourceMarket.removePerson(dissonant);
 				dissonant.getMemoryWithoutUpdate().set("$nex_remM1_failed", true);
 				return false;				
 			default:
@@ -253,12 +264,12 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		}
 		else if (currentStage == Stage.RETURN_CORES) {
 			LabelAPI label = info.addPara(getString("m1_stage2Desc"), opad, h, pName, 
-					dissonant.getMarket().getName(), heg.getDisplayNameWithArticle(),
+					sourceMarket.getName(), heg.getDisplayNameWithArticle(),
 					pl.getDisplayNameLongWithArticle());
-			label.setHighlight(pName, dissonant.getMarket().getName(), 
+			label.setHighlight(pName, sourceMarket.getName(), 
 					heg.getDisplayNameWithArticleWithoutArticle(),
 					pl.getDisplayNameWithArticleWithoutArticle());
-			label.setHighlightColors(h, dissonant.getMarket().getFaction().getBaseUIColor(), 
+			label.setHighlightColors(h, sourceMarket.getFaction().getBaseUIColor(), 
 					heg.getBaseUIColor(), pl.getBaseUIColor());
 		}
 	}
@@ -272,8 +283,8 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		}
 		else if (currentStage == Stage.RETURN_CORES) {
 			info.addPara(getString("m1_stage2NextStep"), pad, tc,
-					dissonant.getMarket().getTextColorForFactionOrPlanet(), 
-					dissonant.getMarket().getName());
+					sourceMarket.getTextColorForFactionOrPlanet(), 
+					sourceMarket.getName());
 		}
 		return false;
 	}
