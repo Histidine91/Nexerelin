@@ -68,7 +68,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	public static final List<SkillSpecAPI> SORTED_SKILLS;
 	
 	static {
-		SKILL_AVAILABLE_OVERRIDES.put(Skills.AUTOMATED_SHIPS, true);
+		//SKILL_AVAILABLE_OVERRIDES.put(Skills.AUTOMATED_SHIPS, true);
 		SKILL_AVAILABLE_OVERRIDES.put(Skills.DERELICT_CONTINGENT, true);
 		SKILL_AVAILABLE_OVERRIDES.put(Skills.OFFICER_TRAINING, false);
 		SKILL_AVAILABLE_OVERRIDES.put(Skills.BEST_OF_THE_BEST, false);
