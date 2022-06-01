@@ -70,6 +70,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	}));
 	
 	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;
+	public static final float NEW_STYLE_VENGEANCE_POINT_MULT = 0.5f;
 	public static final float INVASION_POINT_COST_MULTIPLIER = 0.5f;
 	public static final float SAT_BOMB_CHANCE = 0.4f;	
 	public static final int SAT_BOMB_DEATHS_FOR_REVENGE = 50000;
@@ -156,6 +157,9 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		
 		points *= VengeanceFleetIntel.VengeanceDef.getDef(factionId).vengefulness * 2;
 		points *= VENGEANCE_FLEET_POINT_MULT;
+		
+		// new style vengeance fleets are a lot likelier to actually catch player, so make them less frequent
+		if (NexConfig.useNewVengeanceEncounters) points *= NEW_STYLE_VENGEANCE_POINT_MULT;
 		
 		String debugStr = "Adding faction revengeance points for " + factionId + ": " + points;
 		log.info(debugStr);
