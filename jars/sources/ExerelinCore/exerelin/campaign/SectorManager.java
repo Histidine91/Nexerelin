@@ -263,13 +263,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (FleetMemberData member : casualties) {
             Status status = member.getStatus();
             if (status == Status.DESTROYED || status == Status.NORMAL) continue;
+            float thisCrew = member.getMember().getMinCrew();
+            if (thisCrew <= 0) continue;
+            
             fp += member.getMember().getFleetPointCost();
-            crewRaw += member.getMember().getMinCrew();
+            crewRaw += thisCrew;
             //log.info("Enemy lost: " + member.getMember().getVariant().getFullDesignationWithHullName());
             
             // officers as prisoners
             PersonAPI captain = member.getMember().getCaptain();
-            if (captain != null && !captain.isDefault())
+            if (captain != null && !captain.isDefault() && !captain.isAICore())
             {
                 float survivalChance = 1f - (0.5f * member.getMember().getStats().getCrewLossMult().modified);
                 float captureChance = 0.15f + (0.1f * captain.getStats().getLevel() / Global.getSettings().getLevelupPlugin().getMaxLevel());
@@ -277,6 +280,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     prisoners++;
             }
         }
+        
+        // none of the ships had crew, may as well quit here
+        if (crewRaw <= 0) return;
         
         // old random prisoner drops
         for (int i=0; i<fp; i += 10)
