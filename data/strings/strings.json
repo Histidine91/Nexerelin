@@ -1623,6 +1623,7 @@
 
 		"miningToolsListHeader":"The following mining ships and weapons exist in the Sector:",
 		"miningToolsListAddendum":"Fighter wings and modules with the appropriate weapons count towards their parent ship's mining strength. Built-in weapons are also counted.",
+		"miningToolsError":"Invalid mining entry: %s",
 		"insufficientMachineryWarning":"Your $shipOrFleet does not have enough heavy machinery to work at full capacity.",
 
 		"cacheFound":"Hidden cache found!",

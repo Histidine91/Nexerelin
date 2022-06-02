@@ -198,10 +198,16 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			if (MiningHelperLegacy.isHidden(variant.getHullSpec().getHullId()) || MiningHelperLegacy.isHidden(variant.getHullSpec().getBaseHullId()))
 				continue;
 			
-			FleetMemberAPI temp = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant);
-			float strength = MiningHelperLegacy.getShipMiningStrength(temp, false);
-			if (strength == 0) continue;
-			miningHulls.add(new Pair<>(temp.getHullSpec(), strength));
+			try {
+				FleetMemberAPI temp = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant);
+				float strength = MiningHelperLegacy.getShipMiningStrength(temp, false);
+				if (strength == 0) continue;
+				miningHulls.add(new Pair<>(temp.getHullSpec(), strength));
+			} catch (Exception ex) {
+				text.addPara(StringHelper.getString(STRING_CATEGORY, "miningToolsError"), Misc.getNegativeHighlightColor(), Misc.getHighlightColor(), variantId);
+				Global.getLogger(this.getClass()).error(ex);
+			}
+			
 		}
 		
 		Collections.sort(miningHulls, MINING_TOOL_COMPARATOR);
