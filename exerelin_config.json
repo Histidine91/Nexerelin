@@ -102,6 +102,7 @@
     "allyVictories":true,	# player gets victory screen if they are Friendly or Cooperative with actual winner
     "countPiratesForVictory": false,
     "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
+    "useConfigRelationshipsInNonRandomSector": false,	# use relations defined in the faction config. Specific factions can set this to true for themselves as well
     "leaveEliminatedFaction": true, # if our faction is wiped out, leave it
     
     "allowRandomDiplomacyTraits":true,	# randomize diplomacy traits when faction relations are randomized

@@ -94,6 +94,7 @@ public class NexFactionConfig
     public boolean allowRandomDiplomacyTraits = true;
     public boolean noSyncRelations = false;
     public boolean noRandomizeRelations = false;
+    public boolean useConfigRelationshipsInNonRandomSector = false;
     
     // economy and such
     public float marketSpawnWeight = 1;	// what proportion of procgen markets this faction gets
@@ -346,6 +347,7 @@ public class NexFactionConfig
             allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
             noRandomizeRelations = settings.optBoolean("noRandomizeRelations", noRandomizeRelations);
             noSyncRelations = settings.optBoolean("noSyncRelations", noSyncRelations);
+            useConfigRelationshipsInNonRandomSector = settings.optBoolean("useConfigRelationshipsInNonRandomSector", useConfigRelationshipsInNonRandomSector);
             
             // morality
             if (settings.has("morality"))
@@ -480,8 +482,8 @@ public class NexFactionConfig
     
     float guessDispositionTowardsFaction(String factionId)
     {
-        float posChance = getDiplomacyPositiveChance(factionId);
-        float negChance = getDiplomacyNegativeChance(factionId);
+        float posChance = getDiplomacyPositiveChance(factionId, true);
+        float negChance = getDiplomacyNegativeChance(factionId, true);
         
         return (posChance - negChance) * 25;
     }
@@ -563,8 +565,22 @@ public class NexFactionConfig
         return Math.max(min1, min2);
     }
     
-    float getDiplomacyPositiveChance(String factionId)
+    public float getDiplomacyPositiveChance(String factionId)
     {
+        return getDiplomacyPositiveChance(factionId, false);
+    }
+    
+    /**
+     * Chance mult for positive diplomacy events towards the other faction.
+     * @param factionId
+     * @param raw If false, check if start relations mode is "random" or "flatten" (chance will be 1 in that case).
+     * @return
+     */
+    public float getDiplomacyPositiveChance(String factionId, boolean raw)
+    {
+        if (!raw && !DiplomacyManager.getManager().getStartRelationsMode().isDefault())
+            return 1;
+        
         if (diplomacyPositiveChance.containsKey(factionId))
             return diplomacyPositiveChance.get(factionId);
         if (diplomacyPositiveChance.containsKey("default"))
@@ -572,8 +588,22 @@ public class NexFactionConfig
         return 1;
     }
     
-    float getDiplomacyNegativeChance(String factionId)
+    public float getDiplomacyNegativeChance(String factionId) 
     {
+        return getDiplomacyNegativeChance(factionId, false);
+    }
+    
+    /**
+     * Chance mult for negative diplomacy events towards the other faction.
+     * @param factionId
+     * @param raw If false, check if start relations mode is "random" or "flatten" (chance will be 1 in that case).
+     * @return
+     */
+    public float getDiplomacyNegativeChance(String factionId, boolean raw)
+    {
+        if (!raw && !DiplomacyManager.getManager().getStartRelationsMode().isDefault())
+            return 1;
+        
         if (diplomacyNegativeChance.containsKey(factionId))
             return diplomacyNegativeChance.get(factionId);
         if (diplomacyNegativeChance.containsKey("default"))
@@ -603,6 +633,9 @@ public class NexFactionConfig
     
     public float getDisposition(String factionId)
     {
+        if (!DiplomacyManager.getManager().getStartRelationsMode().isDefault())
+            return 0;
+        
         if (dispositions.containsKey(factionId))
             return dispositions.get(factionId);
         return 0;

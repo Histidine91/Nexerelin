@@ -1257,10 +1257,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         // apply relations even in flatten mode
         // we'll do the flattening later
-        if (corvus && !mode.isRandom())
+        boolean useScriptRelations = corvus && !mode.isRandom() && !NexConfig.useConfigRelationshipsInNonRandomSector;
+        if (useScriptRelations)
         {
             // load vanilla relationships
             VanillaSystemsGenerator.initFactionRelationships(sector);
+            for (String factionId : factionIds) {
+                NexFactionConfig factionConfig = NexConfig.getFactionConfig(factionId);
+                if (factionConfig.useConfigRelationshipsInNonRandomSector) {
+                    applyFactionRelationshipsFromConfig(factionId, factionIds, factionConfig);
+                }
+            }
         }
         else
         {
@@ -1354,13 +1361,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
                 else    // start hostile with hated factions, friendly with liked ones (from config)
                 {
-                    handleHostileToAllFaction(factionId, factionIds);
-                    
-                    for (Map.Entry<String, Float> entry : factionConfig.startRelationships.entrySet())
-                    {
-                        if (factionId.equals(entry.getKey())) continue;
-                        faction.setRelationship(entry.getKey(), entry.getValue());
-                    }
+                    applyFactionRelationshipsFromConfig(factionId, factionIds, factionConfig);
                 }
             }
         }
@@ -1385,6 +1386,18 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             NexUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);    // already done in syncPlayerRelationshipsToFaction
+        }
+    }
+    
+    public static void applyFactionRelationshipsFromConfig(String factionId, List<String> otherFactionIds, 
+            NexFactionConfig conf) 
+    {
+        FactionAPI faction = Global.getSector().getFaction(factionId);
+        handleHostileToAllFaction(factionId, otherFactionIds);
+        for (Map.Entry<String, Float> entry : conf.startRelationships.entrySet())
+        {
+            if (factionId.equals(entry.getKey())) continue;
+            faction.setRelationship(entry.getKey(), entry.getValue());
         }
     }
     

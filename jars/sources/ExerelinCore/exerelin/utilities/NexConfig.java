@@ -54,7 +54,7 @@ public class NexConfig
     
     // Invasion stuff
     public static boolean enableInvasions = true;
-	public static boolean legacyInvasions = false;
+    public static boolean legacyInvasions = false;
     public static boolean allowInvadeStoryCritical = false;
     public static boolean allowPirateInvasions = false;
     public static boolean retakePirateMarkets = true;
@@ -149,6 +149,7 @@ public class NexConfig
     public static boolean leaveEliminatedFaction = true;
     public static boolean allowRandomDiplomacyTraits = true;
     public static boolean useRelationshipBounds = true;
+    public static boolean useConfigRelationshipsInNonRandomSector = false;
     public static boolean useEnhancedStartRelations = true;
     public static boolean useEnhancedCoreWorlds = true;
     public static boolean useEnhancedAdmins = true;
@@ -247,7 +248,7 @@ public class NexConfig
             revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);
             revengePointsForMarketCaptureMult = (float)settings.optDouble("revengeFleetPointsForMarketCaptureMult", revengePointsForMarketCaptureMult);
             vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
-			useNewVengeanceEncounters = settings.optBoolean("useNewVengeanceEncounters", useNewVengeanceEncounters);
+            useNewVengeanceEncounters = settings.optBoolean("useNewVengeanceEncounters", useNewVengeanceEncounters);
             
             maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
             hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
@@ -275,6 +276,7 @@ public class NexConfig
             allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
+            useConfigRelationshipsInNonRandomSector = settings.optBoolean("useConfigRelationshipsInNonRandomSector", useConfigRelationshipsInNonRandomSector);
             useEnhancedCoreWorlds = settings.optBoolean("useEnhancedCoreWorlds", useEnhancedCoreWorlds);
             useEnhancedAdmins = settings.optBoolean("useEnhancedAdmins", useEnhancedAdmins);
             
