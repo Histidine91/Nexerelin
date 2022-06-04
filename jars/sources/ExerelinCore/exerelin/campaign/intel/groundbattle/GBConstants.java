@@ -59,6 +59,8 @@ public class GBConstants {
 	
 	public static int WITHDRAW_AFTER_NO_COMBAT_TURNS = 6;
 	
+	public static float MAX_DIST_FOR_COUNTER_INVASION = 15;
+	
 	public static PersonnelData DEFENSE_STAT = new PersonnelData("generic_defender");
 	static {
 		DEFENSE_STAT.num = 100;

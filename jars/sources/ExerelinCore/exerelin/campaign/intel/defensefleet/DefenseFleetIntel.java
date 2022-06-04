@@ -42,6 +42,7 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		
 	public DefenseFleetIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
+		abortIfNonHostile = false;
 	}
 	
 	@Override
@@ -76,21 +77,6 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		else {
 			Global.getSector().getIntelManager().queueIntel(this);
 			intelQueuedOrAdded = true;
-		}
-	}
-	
-	@Override
-	public void checkForTermination() {
-		if (outcome != null) return;
-		
-		// source captured before launch
-		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
-			terminateEvent(OffensiveOutcome.FAIL);
-		}
-		
-		// TODO: maybe retarget instead
-		else if (!target.isInEconomy()) {
-			terminateEvent(OffensiveOutcome.MARKET_NO_LONGER_EXISTS);
 		}
 	}
 	

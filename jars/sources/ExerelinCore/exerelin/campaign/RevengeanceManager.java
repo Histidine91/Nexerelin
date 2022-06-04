@@ -123,10 +123,10 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		{
 			Global.getSector().getCampaignUI().addMessage(debugStr);
 		}
-		float pointsToSpawn = Global.getSettings().getFloat("nex_counterInvasionPointsToSpawn");
+		float pointsToSpawn = Global.getSettings().getFloat("nex_revengeInvasionPointsToSpawn");
 		if (points >= pointsToSpawn)
 		{
-			boolean success = generateCounterInvasionFleet(fromFactionId);
+			boolean success = generateRevengeInvasionFleet(fromFactionId);
 			if (success) points -= pointsToSpawn;
 		}
 	}
@@ -333,9 +333,9 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	 * @param triggeringFactionId The ID of the faction the player most recently committed a hostile act against.
 	 * @return True if fleet was successfully created, false otherwise
 	 */
-	protected boolean generateCounterInvasionFleet(String triggeringFactionId)
+	protected boolean generateRevengeInvasionFleet(String triggeringFactionId)
 	{
-		log.info("Trying to generate counter-invasion fleet");
+		log.info("Trying to generate revenge invasion fleet");
 		
 		SectorAPI sector = Global.getSector();
 		WeightedRandomPicker<String> attackerPicker = new WeightedRandomPicker();

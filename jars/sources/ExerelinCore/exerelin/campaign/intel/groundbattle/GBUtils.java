@@ -7,8 +7,17 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
+import exerelin.campaign.intel.invasion.CounterInvasionIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -179,5 +188,82 @@ public class GBUtils {
 		if (inf == 0 || mech == 0) return 0;
 		if (inf < mech) return inf/mech;
 		else return mech/inf;
+	}
+	
+	public static CounterInvasionIntel prepCounterInvasion(MarketAPI origin, MarketAPI target) {
+		float fp = InvasionFleetManager.estimatePatrolStrength(target, 0.1f);
+		fp *= InvasionFleetManager.getInvasionSizeMult(origin.getFactionId());
+		
+		// smaller than a normal invasion
+		float sizeMult = 0.5f;
+		sizeMult *= Math.min(1, origin.getSize()/(float)target.getSize());
+		if (!Misc.isMilitary(origin)) sizeMult *= 0.7f;
+		fp *= sizeMult;
+		
+		float organizeTime = InvasionFleetManager.getOrganizeTime(fp) * 0.5f;
+		
+		CounterInvasionIntel intel = new CounterInvasionIntel(origin.getFaction(), origin, target, fp, organizeTime);
+		return intel;
+	}
+	
+	public static MarketAPI getMarketForCounterInvasion(MarketAPI target) {
+		List<MarketAPI> available = AllianceManager.getAllianceMarkets(target.getFactionId());
+		List<CounterInvasionOriginPick> sorted = new ArrayList<>();
+		
+		for (MarketAPI market : available) {
+			boolean sameSystem = market.getContainingLocation() == target.getContainingLocation();
+			boolean military = Misc.isMilitary(market);
+			float priority;
+			if (sameSystem) priority = military ? 1 : 2;
+			else priority = 3;
+			
+			CounterInvasionOriginPick pick = new CounterInvasionOriginPick();
+			pick.market = market;
+			pick.priority = priority;
+			
+			float score = market.getSize() * 10;
+			if (military) score *= 3;
+			if (!sameSystem) {
+				float dist = Misc.getDistanceLY(market.getPlanetEntity(), target.getPrimaryEntity());
+				if (dist > GBConstants.MAX_DIST_FOR_COUNTER_INVASION) continue;
+				if (dist < 1) dist = 1;
+				score /= dist;
+			}
+			// prefer to use own faction instead of allied
+			if (market.getFaction() != target.getFaction()) score /= 2;
+			
+			pick.score = score;
+			
+			sorted.add(pick);
+		}		
+		if (sorted.isEmpty()) return null;
+		
+		Collections.sort(sorted);
+		float bestPrio = sorted.get(0).priority;
+		
+		WeightedRandomPicker<CounterInvasionOriginPick> picker = new WeightedRandomPicker<>();
+		for (CounterInvasionOriginPick pick : sorted) {
+			if (pick.priority < bestPrio) break;
+			picker.add(pick, pick.score);
+		}
+		if (picker.isEmpty()) return null;
+		return picker.pick().market;
+	}
+	
+	
+	// priority 1: same system, military
+	// priority 2: same system, non-military
+	// priority 3: other system, military or non-military
+	public static class CounterInvasionOriginPick implements Comparable<CounterInvasionOriginPick> {
+		public MarketAPI market;
+		public float priority;
+		public float score;
+
+		@Override
+		public int compareTo(CounterInvasionOriginPick other) {
+			if (priority != other.priority)
+				return Float.compare(priority, other.priority);
+			return Float.compare(other.score, score);
+		}	
 	}
 }

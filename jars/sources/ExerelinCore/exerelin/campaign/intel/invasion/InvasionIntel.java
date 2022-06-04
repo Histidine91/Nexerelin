@@ -813,12 +813,24 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	@Override
 	public void checkForTermination() {
 		// ground battle ongoing and we've already taken the planet
-		if (groundBattle != null && !faction.isHostileTo(target.getFaction())) {
+		// ...no reason to abort now, if we hold the planet, and someone else is attacking, 
+		// and we already came all this way with these marines, go ahead and use them!
+		/*
+		if (groundBattle != null && !dropEvenIfPlanetNonHostile && !faction.isHostileTo(target.getFaction())) 
+		{
 			if (getCurrentStage() == getStageIndex(action) && action instanceof InvActionStage) {
 				((InvActionStage)action).succeed(true);
 				return;
 			}
 		}
+		*/
+		
+		// to proceed, planet must either have an ongoing ground battle or be hostile
+		if (!faction.isHostileTo(target.getFaction()) && GroundBattleIntel.getOngoing(target) == null) {
+			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
+			return;
+		}
+		
 		super.checkForTermination();
 	}
 	

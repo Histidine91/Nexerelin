@@ -65,6 +65,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean requiresSpaceportOrBase = true;
 	@Getter @Setter protected Float qualityOverride = null;
 	
+	@Getter @Setter protected boolean abortIfNonHostile = true;
+	
 	protected boolean brawlMode;
 	protected float brawlMult = -1;
 		
@@ -495,7 +497,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		else if (!target.isInEconomy()) {
 			terminateEvent(OffensiveOutcome.MARKET_NO_LONGER_EXISTS);
 		}
-		else if (!faction.isHostileTo(target.getFaction())) {
+		else if (abortIfNonHostile && !faction.isHostileTo(target.getFaction())) {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
 	}

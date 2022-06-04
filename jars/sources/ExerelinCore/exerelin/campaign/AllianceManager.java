@@ -603,6 +603,18 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return true;
     }
     
+    /**
+     * Gets all markets belonging to the faction's alliance (if no alliance, just get the faction's own markets).
+     * @param factionId
+     * @return
+     */
+    public static List<MarketAPI> getAllianceMarkets(String factionId)
+    {
+        Alliance alliance = AllianceManager.getFactionAlliance(factionId);
+        if (alliance == null) return Misc.getFactionMarkets(factionId);
+        return alliance.getAllianceMarkets();
+    }
+    
     @Override
     public void advance(float amount)
     {

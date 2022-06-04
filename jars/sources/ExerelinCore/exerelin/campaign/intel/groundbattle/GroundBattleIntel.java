@@ -1207,10 +1207,35 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		defender.reportTurn();
 		abilitiesUsedLastTurn.clear();
 		resolving = false;
+		
+		checkForResponse();
 	}
 	
 	public boolean shouldNotify() {
 		return playerIsAttacker != null || isImportant();
+	}
+	
+	public void checkForResponse() {
+		if (outcome != null) return;
+		boolean startedByPlayer = playerInitiated || (invasionIntel != null && invasionIntel.isPlayerSpawned());
+		if (!startedByPlayer) return;
+		
+		if (turnNum < 3) return;
+		if (responseIntel != null) return;	// already spawned
+		
+		// requires non-negative invasion point charge to spawn
+		float points = InvasionFleetManager.getManager().getSpawnCounter(market.getFactionId());
+		if (points < 0) return;
+		
+		// TODO: find origin market
+		MarketAPI origin = GBUtils.getMarketForCounterInvasion(market);
+		if (origin == null) return;
+		
+		responseIntel = GBUtils.prepCounterInvasion(origin, market);
+		if (responseIntel == null) return;
+		responseIntel.init();
+		float cost = responseIntel.getBaseFP();
+		InvasionFleetManager.getManager().modifySpawnCounter(market.getFactionId(), -cost);
 	}
 	
 	/**

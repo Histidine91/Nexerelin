@@ -261,6 +261,11 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		if (target.hasCondition(Conditions.HABITABLE) && !target.hasCondition(Conditions.POLLUTION))
 			needBomb = false;
 		
+		// don't bomb if we're raiding own planet for whatever reason
+		if (!target.getFaction().isHostileTo(intel.getFaction())) {
+			needBomb = false;
+		}
+		
 		// check whether there's actually anything to bomb
 		List<Industry> targets = Nex_MarketCMD.getTacticalBombardmentTargets(market);
 		if (targets.isEmpty()) needBomb = false;
