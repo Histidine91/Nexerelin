@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.specialforces;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 
 public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
@@ -13,6 +14,12 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 	
 	@Override
 	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) {
+		if (!psf.independentMode) {
+			Global.getSector().getCampaignUI().addMessage("Warning, attempting to assign task to special task group while not in independent mode");
+			Global.getSector().getCampaignUI().addMessage("See starsector.log for more info");
+			log.warn("Attempting to assign task to special task group while not in independent mode", new Throwable());
+		}
+		
 		//SpecialForcesTask task;
 		/*
 		if (!psf.isIndependentMode()) {
