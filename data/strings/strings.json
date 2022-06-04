@@ -1183,6 +1183,8 @@
 		"dialogNoEngage_def":"The attackers are in disarray and not currently attempting to engage the station.",
 		"dialogNoEngage_noEnemy":"There are no defenders to engage.",
 		"dialogNoEngage_avoid":"The defenders are refusing to give battle to defend the colony.",
+		
+		"captureAntiExploitMsg":"Due to %s being captured again by player in a short span of time, industry construction/upgrades have been cancelled",
 	},
 	"nex_industry":{
 		"effect_synchrotron":"Increases fuel production output by %s units.",

@@ -19,7 +19,9 @@ import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
@@ -72,6 +74,7 @@ import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsAstro;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1207,6 +1210,39 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             //if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
         }
+        
+        // cancel industries under construction or upgrading?
+        // only as exploit prevention
+        if (isCapture && market.isPlayerOwned() && market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER)) 
+        {
+            for (Industry ind : new ArrayList<>(market.getIndustries())) {
+                // TODO: maybe this should have a notification message
+                if (ind.isUpgrading()) ind.cancelUpgrade();
+                else if (ind.isBuilding()) {
+                    // first move any special items on the industry to storage
+                    String aiCore = ind.getAICoreId();
+                    SpecialItemData special = ind.getSpecialItem();
+                    CargoAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo();
+                    if (aiCore != null) {
+                        storage.addCommodity(aiCore, 1);
+                    }
+                    if (special != null) {
+                        storage.addSpecial(special, 1);
+                    }
+
+                    market.removeIndustry(ind.getId(), null, false);
+                }
+            }
+            String str = StringHelper.getString("exerelin_invasion", "captureAntiExploitMsg");
+			str = String.format(str, market.getName());
+			if (Global.getSector().getCampaignUI().getCurrentInteractionDialog() != null) {
+				Global.getSector().getCampaignUI().getCurrentInteractionDialog().getTextPanel().addPara(str, Misc.getHighlightColor());
+			} else {
+				Global.getSector().getCampaignUI().addMessage(str);
+			}
+            
+        }
+        
         
         // tariffs
         
