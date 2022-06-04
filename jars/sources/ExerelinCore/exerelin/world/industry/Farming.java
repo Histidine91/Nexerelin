@@ -21,14 +21,18 @@ public class Farming extends IndustryClassGen {
 	public Farming() {
 		super(Industries.FARMING, Industries.AQUACULTURE);
 	}
+	
+	public boolean isWater(ProcGenEntity entity) {
+		return com.fs.starfarer.api.impl.campaign.econ.impl.Farming.AQUA_PLANETS.contains(entity.planetType) || 
+				entity.market.hasCondition(Conditions.WATER_SURFACE);
+	}
 
 	@Override
 	public float getWeight(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		
 		// aquaculture
-		if (entity.type != EntityType.STATION 
-				&& com.fs.starfarer.api.impl.campaign.econ.impl.Farming.AQUA_PLANETS.contains(entity.planetType)) 
+		if (entity.type != EntityType.STATION && isWater(entity)) 
 			return 90000 * getFactionMult(entity);
 		
 		for (MarketConditionAPI cond : market.getConditions())
@@ -79,7 +83,7 @@ public class Farming extends IndustryClassGen {
 		}
 		
 		String id = Industries.FARMING;
-		if (com.fs.starfarer.api.impl.campaign.econ.impl.Farming.AQUA_PLANETS.contains(entity.planetType))
+		if (isWater(entity))
 			id = Industries.AQUACULTURE;
 		
 		NexMarketBuilder.addIndustry(market, id, this.id, instant);
