@@ -17,7 +17,6 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import static exerelin.campaign.SectorManager.getAllianceTotalFromMap;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexConfig;
@@ -39,6 +38,7 @@ import lombok.extern.log4j.Log4j;
 public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	
 	public static final float RUNNER_UP_SCORE_MULT = 1.5f;
+	public static final float ALLIANCE_CONTRIB_MULT = 0.5f;
 	
 	public static int getNeededSizeForVictory(int total, List<ScoreEntry> sizeRanked) {
 		
@@ -214,14 +214,23 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		imageHolder.addImage(image, height-4, 2);
 		row.addUIElement(imageHolder).rightOfTop(rankHolder, pad);
 		
-		TooltipMakerAPI nameHolder = row.createUIElement(width - height * 1.5f - pad * 4 - 2, height, false);
+		float nameWidth = width - height * 1.5f - pad * 4 - 2;
+		TooltipMakerAPI nameHolder = row.createUIElement(nameWidth, height*0.45f, false);
 		//nameHolder.setParaSmallInsignia();
-		nameHolder.addPara(entry.getName(), color, namePad);
-		if (entry.alliance != null) {
-			String[] crests = entry.getAllianceMemberCrests();
-			nameHolder.addImages(20 * crests.length, 20, 1, 3, crests);
-		}
+		nameHolder.addPara(entry.getName(), color, namePad);		
 		row.addUIElement(nameHolder).rightOfTop(imageHolder, pad * 2);
+		
+		if (entry.alliance != null) {
+			TooltipMakerAPI allyContribHolder = row.createUIElement(100, height/2, false);
+			Color hl = entry.allianceContrib > 0 ? Misc.getPositiveHighlightColor() : Misc.getTextColor();
+			allyContribHolder.addPara(getString("textAllyContrib"), 0, hl, entry.allianceContrib + "");
+			row.addUIElement(allyContribHolder).belowLeft(nameHolder, 0);
+			
+			TooltipMakerAPI crestHolder = row.createUIElement(nameWidth - 120 - 4, height/2, false);
+			String[] crests = entry.getAllianceMemberCrests();
+			crestHolder.addImages(20 * crests.length, 20, 0, 3, crests);
+			row.addUIElement(crestHolder).rightOfTop(allyContribHolder, 0);
+		}
 		
 		TooltipMakerAPI scoreHolder = row.createUIElement(height*1.5f, height, false);
 		scoreHolder.setParaSmallInsignia();
@@ -279,7 +288,9 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
                 NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
             }
         }
-                
+        
+		// alliances are no longer directly checked
+		/*
         for (Alliance alliance : AllianceManager.getAllianceList()) {
             int size, numHI;
             if (alliance != null) {
@@ -290,6 +301,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
                 hiRanked.add(new ScoreEntry(alliance, numHI));
             }
         }
+		*/
 		
 		for (String factionId : factionsToCheck) {
 			// check faction diplomacy
@@ -306,15 +318,44 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 			
 			// check faction pop/HI
             // first see if we already checked this faction as part of its alliance
+			/*
             if (AllianceManager.getFactionAlliance(factionId) != null)
                 continue;
-            
+            */
+			
             Integer size = factionSizes.get(factionId);
             Integer numHI = heavyIndustries.get(factionId);
             if (size == null) continue;
-            
-            sizeRanked.add(new ScoreEntry(factionId, size));
-            if (numHI != null) hiRanked.add(new ScoreEntry(factionId, numHI));
+			
+			
+            ScoreEntry entry = new ScoreEntry(factionId, size);
+			
+			// alliance contribution
+			int allySize = 0;
+			int allyIndustries = 0;
+			Alliance alliance = AllianceManager.getFactionAlliance(factionId);
+			if (alliance != null) {
+				for (String allyId : alliance.getMembersCopy()) {
+					if (allyId.equals(factionId)) continue;
+					allySize += factionSizes.get(allyId);
+					allyIndustries += heavyIndustries.get(allyId);
+				}
+				allySize *= ALLIANCE_CONTRIB_MULT;
+				allyIndustries *= ALLIANCE_CONTRIB_MULT;
+				
+				entry.score += allySize;
+				
+				entry.setAlliance(alliance);
+				entry.allianceContrib = allySize;
+			}
+            sizeRanked.add(entry);
+			
+            if (numHI != null) {
+				entry = new ScoreEntry(factionId, numHI + allyIndustries);
+				entry.setAlliance(alliance);
+				entry.allianceContrib = allyIndustries;
+				hiRanked.add(entry);
+			}
         }
 		
 		Collections.sort(sizeRanked);
@@ -406,6 +447,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		public List<String> allianceMembers;
 		public Alliance alliance;
 		public int score;
+		public int allianceContrib;
 		
 		public ScoreEntry(String factionId, int score) {
 			this.factionId = factionId;
@@ -419,6 +461,11 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 			factionId = allianceMembers.get(0);			
 		}
 		
+		public void setAlliance(Alliance alliance) {
+			this.alliance = alliance;
+			if (alliance != null) allianceMembers = alliance.getMembersSorted();
+		}
+		
 		public String getIcon() {
 			return Global.getSector().getFaction(factionId).getCrest();
 		}
@@ -428,23 +475,22 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		}
 		
 		public String getName() {
-			if (alliance != null) return alliance.getName();
+			//if (alliance != null) return alliance.getName();
 			return Global.getSector().getFaction(factionId).getDisplayName();
 		}
 		
 		/**
-		 * Excludes the largest member (since their crest will be used as the main icon).
+		 * Excludes the entry's own faction ID (since their crest will be used as the main icon).
 		 * @return
 		 */
 		public String[] getAllianceMemberCrests() {
 			if (allianceMembers == null) return null;
-			String[] crests = new String[allianceMembers.size() - 1];
-			if (crests.length <= 0) return crests;
-			for (int i=0; i<crests.length; i++) {
-				crests[i] = Global.getSector().getFaction(allianceMembers.get(i+1)).getCrest();
-				//log.info("Adding crest " + crests[i]);
-			}			
-			return crests;
+			List<String> crests = new ArrayList<>();
+			for (String member : allianceMembers) {
+				if (member.equals(this.factionId)) continue;
+				crests.add(Global.getSector().getFaction(member).getCrest());
+			}	
+			return crests.toArray(new String[0]);
 		}
 
 		@Override
