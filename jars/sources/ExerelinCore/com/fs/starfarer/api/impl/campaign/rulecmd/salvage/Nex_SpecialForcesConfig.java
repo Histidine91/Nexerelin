@@ -553,7 +553,8 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	{		
 		for (FleetMemberAPI member : members) {
 			PersonAPI cap = member.getCaptain();
-			if (cap != null && !cap.isDefault() && !cap.isAICore()) {
+			boolean storedInFleetData = cap != null && from.getFleetData().getOfficerData(cap) != null;
+			if (storedInFleetData && !cap.isDefault() && !cap.isAICore()) {
 				from.getFleetData().removeOfficer(cap);
 				to.getFleetData().addOfficer(cap);
 				if (cap == from.getCommander()) {

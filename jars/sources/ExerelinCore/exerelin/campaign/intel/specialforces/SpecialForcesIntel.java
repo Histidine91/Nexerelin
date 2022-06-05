@@ -203,6 +203,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		float fp = thisRoute.getExtra().fp * (1 - damage) * conf.specialForcesSizeMult
 				* NexConfig.specialForcesSizeMult;
 		
+		log.info(String.format("Preparing fleet params for special task group of faction %s, origin %s, thisRoute %s", 
+				this.faction.getId(), origin.getId(), thisRoute));
 		FleetParamsV3 params = new FleetParamsV3(
 				lastSpawnedFrom,
 				null, // locInHyper

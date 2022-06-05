@@ -63,6 +63,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	@Getter	protected boolean independentMode = true;
 	protected boolean isAlive;
+	protected boolean waitingForSpawn;
 	protected float fuelUsedLastInterval;
 	protected transient Vector2f lastPos;
 	
@@ -71,8 +72,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		isPlayer = true;
 	}
 	
-	public void init() {
+	@Override
+	public void init(PersonAPI commander) {
 		super.init(commander);
+		waitingForSpawn = true;
 		Global.getSector().getListenerManager().addListener(this);
 	}
 			
@@ -110,7 +113,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		fleet.getFleetData().setFlagship(flagship);
 		
 		for (OfficerDataAPI od : tempFleet.getFleetData().getOfficersCopy()) {
-			//log.info("Adding officer " + officer.getNameString());
 			fleet.getFleetData().addOfficer(od);
 		}
 		for (FleetMemberAPI live : tempFleet.getFleetData().getMembersListCopy()) {
@@ -124,7 +126,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		fleet.setNoAutoDespawn(true);
 		
-		fleet.setFaction(faction.getId(), true);
+		fleet.setFaction(faction.getId(), false);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
@@ -146,6 +148,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		fleet.setTransponderOn(false);
 		
 		isAlive = true;
+		waitingForSpawn = false;
 		
 		this.fleet = fleet;
 		tempFleet = null;
@@ -326,7 +329,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, Color tc, float initPad) {
 		if (!isEnding() && !isEnded()) {
-			if (isUpdate && listInfoParam == DESTROYED_UPDATE || (mode == ListInfoMode.INTEL && !isAlive))
+			if (isUpdate && listInfoParam == DESTROYED_UPDATE || (mode == ListInfoMode.INTEL && !isAlive && !waitingForSpawn))
 			{
 				info.addPara(getString("intelBulletDestroyed"), tc, 3);
 				return;
