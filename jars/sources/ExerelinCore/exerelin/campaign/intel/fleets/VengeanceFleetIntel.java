@@ -31,6 +31,8 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.econ.FleetPoolManager.RequisitionParams;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.ungp.VengeanceBuff;
 import exerelin.utilities.NexConfig;
@@ -647,7 +649,9 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 				break;
 		}
 		
-		int total = combat + freighter + tanker + utility;
+		int total = combat + freighter + tanker + utility;		
+		float availableFromPool = FleetPoolManager.getManager().drawFromPool(factionId, new RequisitionParams(total));
+		
 		/*
 		if (total > 125 && total <= 250) {
 			bonus += 0.25f;
@@ -660,6 +664,8 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		
 		sizeMult = NexConfig.getFactionConfig(factionId).vengeanceFleetSizeMult;
 		sizeMult *= NexConfig.vengeanceFleetSizeMult;
+		sizeMult *= (availableFromPool/total);
+		
 		combat *= sizeMult;
 		freighter *= sizeMult;
 		tanker *= sizeMult;
@@ -667,6 +673,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		
 		if (NexConfig.useNewVengeanceEncounters) {
 			log.info("Creating vengeance DelayedFleetEncounter");
+			
 			DelayedFleetEncounter e = new DelayedFleetEncounter(null, "nex_vengeance");
 			e.setTypes(DelayedFleetEncounter.EncounterType.OUTSIDE_SYSTEM, 
 					DelayedFleetEncounter.EncounterType.IN_HYPER_EN_ROUTE);
@@ -717,7 +724,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 			
 			e.triggerFleetSetName(def.getFleetName(factionId, escalationLevel));
 			
-			e.endCreate();			
+			e.endCreate();
 			
 			return null;
 			
@@ -746,8 +753,11 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		
 		fleet = NexUtilsFleet.customCreateFleet(getFaction(), params);
 
-		if (fleet == null)
+		if (fleet == null) {
+			FleetPoolManager.getManager().modifyPool(factionId, availableFromPool);
 			return null;
+		}
+			
 		
 		PersonAPI commander = fleet.getCommander();
 		if (commander == null) {

@@ -58,6 +58,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -195,7 +196,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             NexUtilsMarket.setTariffs(market);
-            if (ColonyManager.getManager() != null)	// will be null if loading non-Nex save
+            if (ColonyManager.getManager() != null)    // will be null if loading non-Nex save
                 ColonyManager.getManager().setGrowthRate(market);
         }
     }
@@ -229,6 +230,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     public static void addScripts() {
         SectorAPI sector = Global.getSector();
+        new FleetPoolManager().init();
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
         sector.addScript(InvasionFleetManager.create());
@@ -258,6 +260,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     protected void addScriptsAndEventsIfNeeded() {
         if (MercSectorManager.getInstance() == null) {
             new MercSectorManager().init();
+        }
+        if (FleetPoolManager.getManager() == null) {
+            new FleetPoolManager().init().initPointsFromIFM();
         }
     }
     
@@ -404,7 +409,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onApplicationLoad() throws Exception
     {
-        boolean bla = NexConfig.countPiratesForVictory;	// just loading config class, not doing anything with it
+        boolean bla = NexConfig.countPiratesForVictory;    // just loading config class, not doing anything with it
         if (!HAVE_VERSION_CHECKER && Global.getSettings().getBoolean("nex_enableVersionChecker"))
             VCModPluginCustom.onApplicationLoad();
         
@@ -428,7 +433,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         RemnantQuestUtils.setupRemnantContactMissions();
         modifySynchrotronAndCatCore();
         
-        //MilitaryCustomBounty.CREATORS.clear();	// for debugging
+        //MilitaryCustomBounty.CREATORS.clear();    // for debugging
         MilitaryCustomBounty.CREATORS.add(new Nex_CBHegInspector());
     }
     
@@ -457,14 +462,14 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         alphaSiteWorkaround();
         
-		// random sector: populate the sector
+        // random sector: populate the sector
         if (!SectorManager.getManager().isCorvusMode()) {
             new ExerelinProcGen().generate(false);
-			// second pass: get player homeworld if we didn't pick it before (due to requiring a non-core world)
-			if (ExerelinSetupData.getInstance().homeworldPickMode == HomeworldPickMode.NON_CORE) 
-			{
-				new ExerelinProcGen().generate(true);
-			}
+            // second pass: get player homeworld if we didn't pick it before (due to requiring a non-core world)
+            if (ExerelinSetupData.getInstance().homeworldPickMode == HomeworldPickMode.NON_CORE) 
+            {
+                new ExerelinProcGen().generate(true);
+            }
         }
         
         ScenarioManager.afterProcGen(Global.getSector());
@@ -479,7 +484,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             VanillaSystemsGenerator.enhanceVanillaAdmins();
         }
         
-		// non-random sector: pick player homeworld in own faction start
+        // non-random sector: pick player homeworld in own faction start
         ExerelinSetupData setupData = ExerelinSetupData.getInstance();
         if (SectorManager.getManager().isCorvusMode() 
                 && PlayerFactionStore.getPlayerFactionIdNGC().equals(Factions.PLAYER) 

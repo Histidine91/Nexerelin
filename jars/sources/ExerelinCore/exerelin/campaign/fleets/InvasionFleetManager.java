@@ -10,7 +10,6 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
@@ -37,6 +36,8 @@ import exerelin.campaign.StatsTracker;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.econ.FleetPoolManager.RequisitionParams;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -64,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -81,6 +83,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_invasionFleetManager";
 	public static final String MEM_KEY_FACTION_TARGET_COOLDOWN = "$nex_recentlyTargetedMilitary";
+	public static final String MEMORY_KEY_POINTS_LAST_TICK = "$nex_invasionPointsLastTick";
 	
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
@@ -97,7 +100,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final int MAX_SIMULTANEOUS_EVENTS_PER_SYSTEM = 3;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
-	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
 	public static final float PATROL_ESTIMATION_MULT = 0.7f;
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
 	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
@@ -120,7 +122,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static Logger log = Global.getLogger(InvasionFleetManager.class);
 	
 	protected final List<OffensiveFleetIntel> activeIntel = new LinkedList();
-	protected HashMap<String, Float> spawnCounter = new HashMap<>();
+	@Getter protected HashMap<String, Float> spawnCounter = new HashMap<>();
 	protected HashMap<String, Boolean> nextIsRaid = new HashMap<>();
 	protected HashMap<String, Float> pirateRage = new HashMap<>();
 	
@@ -458,14 +460,58 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		return canSatBomb(attacker, target.getFaction());
 	}
+		
+	/**
+	 * Gets the contribution of the specified market to invasion points, based on its commodity availability.
+	 * @param market
+	 * @return
+	 */
+	public static float getMarketInvasionCommodityValue(MarketAPI market) {
+		float ships = FleetPoolManager.getCommodityPoints(market, Commodities.SHIPS);
+		float supplies = FleetPoolManager.getCommodityPoints(market, Commodities.SUPPLIES);
+		float marines = FleetPoolManager.getCommodityPoints(market, Commodities.MARINES);
+		float mechs = FleetPoolManager.getCommodityPoints(market, Commodities.HAND_WEAPONS);
+		float fuel = FleetPoolManager.getCommodityPoints(market, Commodities.FUEL);
+		
+		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
+		
+		float total = (ships*2 + supplies + marines + mechs + fuel) * stabilityMult;
+		
+		return total;
+	}
 	
+	public static float getPointsPerMarketPerTick(MarketAPI market)
+	{
+		return getMarketInvasionCommodityValue(market) * NexConfig.invasionPointEconomyMult;
+	}
+	
+	/**
+	 * Modifies the invasion spawn counter AND the shared fleet pool.<br/>
+	 * Deprecated, should modify each separately (using {@code modifySpawnCounterV2} and
+	 * {@code FleetPoolManager.getManager().modifyPool}.
+	 * @param factionId
+	 * @param amount
+	 * @deprecated
+	 */
+	@Deprecated
 	public void modifySpawnCounter(String factionId, float amount) {
+		NexUtils.modifyMapEntry(spawnCounter, factionId, amount);
+		FleetPoolManager.getManager().modifyPool(factionId, amount);
+	}
+	
+	/**
+	 * Modifies the invasion spawn counter.
+	 * @param factionId
+	 * @param amount
+	 */
+	public void modifySpawnCounterV2(String factionId, float amount) {
 		NexUtils.modifyMapEntry(spawnCounter, factionId, amount);
 	}
 	
-	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, EventType type)
+	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, 
+			FactionAPI targetFaction, EventType type, RequisitionParams rp)
 	{
-		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1);
+		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1, rp);
 	}
 	
 	public MarketAPI getSourceMarketForFleet(FactionAPI faction, List<MarketAPI> markets) {
@@ -656,10 +702,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 * @param targetFaction
 	 * @param type
 	 * @param sizeMult
+	 * @param rp Parameters for drawing from fleet pool (set to null if pool should not be touched).
 	 * @return The invasion fleet intel, if one was created
 	 */
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
-			EventType type, float sizeMult)
+			EventType type, float sizeMult, RequisitionParams rp)
 	{
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -692,11 +739,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				&& (type == EventType.RAID || type == EventType.SAT_BOMB))
 			type = EventType.INVASION;
 		
-		return generateInvasionOrRaidFleet(originMarket, targetMarket, type, sizeMult);
+		return generateInvasionOrRaidFleet(originMarket, targetMarket, type, sizeMult, rp);
 	}
 	
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(MarketAPI origin, MarketAPI target, 
-			EventType type, float sizeMult) {
+			EventType type, float sizeMult, RequisitionParams rp) {
 		FactionAPI faction = origin.getFaction();
 		String factionId = faction.getId();
 		float maxMult = type == EventType.RESPAWN ? 5 : 1;
@@ -709,6 +756,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			fp *= RAID_SIZE_MULT;
 		else if (type == EventType.RESPAWN)
 			fp *= RESPAWN_SIZE_MULT;
+		
+		if (rp != null) {
+			rp.amount = fp;
+			fp = FleetPoolManager.getManager().drawFromPool(factionId, rp);
+			if (fp < 10) return null;
+		}		
 		
 		if (type != EventType.RAID)
 			organizeTime *= 1.25f;
@@ -760,48 +813,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return null;
 	}
 	
-	/**
-	 * Gets the value of the specified commodity availability on the specified 
-	 * market in contributing to invasion points. Imported commodities are worth less,
-	 * locally manufactured commodities worth more.
-	 * @param market
-	 * @param commodity
-	 * @return
-	 */
-	protected static float getCommodityPoints(MarketAPI market, String commodity) {
-		float pts = market.getCommodityData(commodity).getAvailable();
-		CommoditySourceType source = market.getCommodityData(commodity).getCommodityMarketData().getMarketShareData(market).getSource();
-		if (source == CommoditySourceType.GLOBAL)
-			pts *= 0.75f;
-		else if (source == CommoditySourceType.LOCAL)
-			pts *= 5;
-		
-		return pts;
-	}
-	
-	/**
-	 * Gets the contribution of the specified market to invasion points, based on its commodity availability.
-	 * @param market
-	 * @return
-	 */
-	public static float getMarketInvasionCommodityValue(MarketAPI market) {
-		float ships = getCommodityPoints(market, Commodities.SHIPS);
-		float supplies = getCommodityPoints(market, Commodities.SUPPLIES);
-		float marines = getCommodityPoints(market, Commodities.MARINES);
-		float mechs = getCommodityPoints(market, Commodities.HAND_WEAPONS);
-		float fuel = getCommodityPoints(market, Commodities.FUEL);
-		
-		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
-		
-		float total = (ships*2 + supplies + marines + mechs + fuel) * stabilityMult;
-		
-		return total;
-	}
-	
-	public static float getPointsPerMarketPerTick(MarketAPI market)
-	{
-		return getMarketInvasionCommodityValue(market) * NexConfig.invasionPointEconomyMult;
-	}
 	
 	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getMaxInvasionSize("hegemony"), 1);
 	/**
@@ -846,6 +857,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 * Generates invasion points for all applicable markets and factions,
 	 * and attempts to generate invasion/raid fleets if the required number
 	 * of points is reached.
+	 * <br/><br/>
+	 * This largely duplicates the shared fleet pool, but since we want factions 
+	 * to sometimes not invade as frequently as they technically have the resources for,
+	 * it became necessary to keep this separate.
 	 */
 	protected void processInvasionPoints()
 	{
@@ -882,7 +897,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (market.isPlayerOwned()) {
 					continue;
 				}
-				else mult *= PLAYER_AUTONOMOUS_POINT_MULT;
+				else mult *= FleetPoolManager.PLAYER_AUTONOMOUS_POINT_MULT;
 			}
 			
 			if (!pointsPerFaction.containsKey(factionId))
@@ -892,6 +907,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			float addedPoints = getPointsPerMarketPerTick(market) * mult;
 			
 			currPoints += addedPoints;
+			market.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK, addedPoints, 3);
 			pointsPerFaction.put(factionId, currPoints);
 		}
 		
@@ -958,14 +974,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel;
 			}
 			
-			increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+			increment *= mult;
 			increment *= config.invasionPointMult;
 			increment *= ongoingMod;
 			
 			counter += increment;
+			log.info(String.format("Adding %s invasion points for %s", increment, factionId));
+			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK, increment, 3);
 			
 			float pointsRequired = NexConfig.pointsRequiredForInvasionFleet;
-			if (counter < pointsRequired)
+			float fleetPool = FleetPoolManager.getManager().getCurrentPool(factionId);
+			if (counter < pointsRequired || fleetPool < pointsRequired)
 			{
 				spawnCounter.put(factionId, counter);
 				//if (counter > pointsRequired/2 && oldCounter < pointsRequired/2)
@@ -977,7 +996,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				// invasions and raids alternate
 				boolean shouldRaid = shouldRaid(factionId);
 				OffensiveFleetIntel intel = generateInvasionOrRaidFleet(faction, null, 
-						shouldRaid ? EventType.RAID : EventType.INVASION);
+						shouldRaid ? EventType.RAID : EventType.INVASION, new RequisitionParams());
 				if (intel != null)
 				{
 					counter -= getInvasionPointReduction(pointsRequired, intel);
@@ -1005,13 +1024,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		templarInvasionPoints += (100 + perLevelPoints) 
 			* NexConfig.getFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
 		
-		float req = NexConfig.pointsRequiredForInvasionFleet;
+		float req = NexConfig.pointsRequiredForInvasionFleet;	
 		boolean shouldRaid = shouldRaid("templars");
 		EventType type = shouldRaid ? EventType.RAID : EventType.INVASION;
-		if (templarInvasionPoints >= req)
+		
+		// multiplier is so we don't completely drain the pool when we launch an invasion
+		if (templarInvasionPoints >= req * 2f)
 		{
 			OffensiveFleetIntel intel = generateInvasionOrRaidFleet(Global.getSector().getFaction("templars"), null, 
-					type);
+					type, new RequisitionParams(req));
 			if (intel != null) {
 				templarInvasionPoints -= getInvasionPointReduction(req, intel);
 				nextIsRaid.put("templars", !shouldRaid);
@@ -1022,7 +1043,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		// Others invading and raiding Templars
 		if (!Global.getSettings().getBoolean("nex_invade_and_raid_templars")) return;
 		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
-		if (templarCounterInvasionPoints >= req)
+		if (templarCounterInvasionPoints >= req * 2f)
 		{
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker();
 			for (String factionId : enemies)
@@ -1037,7 +1058,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			type = shouldRaid ? EventType.RAID : EventType.INVASION;
 			
 			OffensiveFleetIntel intel = generateInvasionOrRaidFleet(faction, Global.getSector().getFaction("templars"), 
-					type, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
+					type, TEMPLAR_COUNTER_INVASION_FLEET_MULT, new RequisitionParams(req));
 			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
 			if (intel != null) {
 				templarCounterInvasionPoints -= getInvasionPointReduction(req, intel);
@@ -1051,7 +1072,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (source == null)
 			return;
 		
-		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1);
+		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1, new RequisitionParams());
 		
 		NexUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
 	}
@@ -1109,6 +1130,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 	}
 	
+	// I forget why this exists instead of deducting the FP cost directly
+	// is it for Templar invasions which use a different point system?
 	/**
 	 * Gets the number of invasion points that should be deducted as a result of launching an invasion or raid.
 	 * @param base
@@ -1123,10 +1146,23 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getManager().getSpawnCounter("player"));
+	/**
+	 * Gets the accumulated invasion points for the specific faction.
+	 * @param factionId
+	 * @return
+	 */
 	public float getSpawnCounter(String factionId) {
 		if (!spawnCounter.containsKey(factionId))
 			spawnCounter.put(factionId, 0f);
 		return spawnCounter.get(factionId);
+	}
+	
+	public static float getPointsLastTick(MarketAPI market) {
+		return market.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_POINTS_LAST_TICK);
+	}
+	
+	public static float getPointsLastTick(FactionAPI faction) {
+		return faction.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_POINTS_LAST_TICK);
 	}
 	
 	/**

@@ -708,7 +708,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }
     
     /**
-     * Creates a respawn fleet intel item.If no market is available to spawn from, it generates a hidden base.
+     * Creates a respawn fleet intel item. If no market is available to spawn from, it generates a hidden base.
      * Will not create the respawn intel in this case, unless {@code proceedAfterSpawningBase} is true.
      * @param respawnFaction
      * @param sourceMarket
@@ -773,7 +773,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());
         RespawnInvasionIntel intel = (RespawnInvasionIntel)InvasionFleetManager.getManager().generateInvasionOrRaidFleet(sourceMarket, targetMarket, 
-                InvasionFleetManager.EventType.RESPAWN, 1);
+                InvasionFleetManager.EventType.RESPAWN, 1, null);
         if (intel != null) {
             respawnFaction.getMemoryWithoutUpdate().set("$nex_respawn_cooldown", true, 
                     Global.getSettings().getFloat("nex_faction_respawn_cooldown"));

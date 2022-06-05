@@ -249,6 +249,15 @@ public class StringHelper {
 		return result;
 	}
 	
+	public static List<String> commodityIdListToCommodityNameList(List<String> commodityIds)
+	{
+		List<String> result = new ArrayList<>();
+		for (String commodity : commodityIds) {
+			result.add(Global.getSettings().getCommoditySpec(commodity).getLowerCaseName());
+		}
+		return result;
+	}
+	
 	public static String writeStringCollection(Collection<String> strings)
 	{
 		return writeStringCollection(strings, false, false);
@@ -266,7 +275,7 @@ public class StringHelper {
 			{
 				if (oxfordComma || !includeAnd || num <= strings.size() - 1)
 					str += ", ";
-				if (includeAnd)
+				if (includeAnd && num == strings.size() - 1)
 					str += StringHelper.getString("and") + " ";
 			}
 		}

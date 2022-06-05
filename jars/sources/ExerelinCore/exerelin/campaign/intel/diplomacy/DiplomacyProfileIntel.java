@@ -373,10 +373,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		} else {
 			commodities.addAll(Nex_StabilizePackage.COMMODITIES_REPRESSION);
 		}
-		List<String> commoditiesStrings = new ArrayList<>();
-		for (String commodity : commodities) {
-			commoditiesStrings.add(Global.getSettings().getCommoditySpec(commodity).getLowerCaseName());
-		}
+		List<String> commoditiesStrings = StringHelper.commodityIdListToCommodityNameList(commodities);
 		
 		String str = String.format(getString("stabilizationCommodity"), 
 				StringHelper.writeStringCollection(commoditiesStrings));

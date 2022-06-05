@@ -11,7 +11,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
@@ -72,7 +72,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 		float totalPoints = 0;
 		for (MarketAPI market : markets)
 		{
-			float points = InvasionFleetManager.getMarketInvasionCommodityValue(market);
+			float points = FleetPoolManager.getMarketFleetPoolCommodityValue(market);
 			points *= POINT_GENERATION_MULT;
 			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			points *= conf.specialForcesPointMult;
@@ -98,7 +98,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 			String factionId = market.getFactionId();
 			if (!liveFactions.contains(factionId)) continue;
 			
-			float points = InvasionFleetManager.getMarketInvasionCommodityValue(market);
+			float points = FleetPoolManager.getMarketFleetPoolCommodityValue(market);
 			points *= days * POINT_GENERATION_MULT * NexConfig.specialForcesPointMult;
 			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			points *= conf.specialForcesPointMult;

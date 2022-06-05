@@ -39,6 +39,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.*;
 import static exerelin.campaign.SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER;
+import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.intel.agents.AgentIntel;
@@ -721,6 +722,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (sourceMarket.hasIndustry(Industries.MEGAPORT))
 			fp *= 1.1f;
 		
+		fp = FleetPoolManager.getManager().drawFromPool(factionId, new FleetPoolManager.RequisitionParams(fp, 0, -5000f, 0.5f));
+		if (fp <= 0) return null;
+		
 		String name = getFleetName("nex_suppressionFleet", factionId, fp);
 		
 		int str = (int)(rebelStrength * 2 - govtStrength);
@@ -743,8 +747,12 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				fp*0.05f,	// utility
 				0);	// quality mod
 		
+		
 		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(sourceMarket.getFaction(), fleetParams);
-		if (fleet == null) return null;
+		if (fleet == null) {
+			FleetPoolManager.getManager().modifyPool(factionId, fp);
+			return null;
+		}
 		
 		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(numMarines/4f));
 		fleet.getMemoryWithoutUpdate().set("$nex_rebellion_suppr_payload", str);

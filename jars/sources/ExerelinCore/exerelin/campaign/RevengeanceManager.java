@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.econ.FleetPoolManager.RequisitionParams;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -366,7 +367,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		log.info("Picked enemy: " + revengeFaction.getDisplayName());
 		
 		// spawn our revengeance fleet
-		String debugStr = "Spawning counter-invasion fleet for " + revengeFactionId;
+		String debugStr = "Preparing to spawn counter-invasion fleet for " + revengeFactionId;
 		log.info(debugStr);
 		if (Global.getSettings().isDevMode())
 		{
@@ -385,9 +386,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		{
 			type = InvasionFleetManager.EventType.RAID;
 		}
-			
+		
+		RequisitionParams params = new RequisitionParams();
+		params.thresholdBeforeAbort = -NexConfig.pointsRequiredForInvasionFleet;
+		params.amountMult = 0.75f;
+		
 		OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(
-				revengeFaction, getTargetFactionForVengeance(), type, 1.25f);
+				revengeFaction, getTargetFactionForVengeance(), type, 1.25f, params);
 		if (intel != null && satBomb) {
 			((SatBombIntel)intel).setVengeance(true);
 		}
@@ -411,9 +416,13 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 				
 		if (InvasionFleetManager.canSatBomb(faction, target, true)) {		
 			InvasionFleetManager.EventType type = InvasionFleetManager.EventType.SAT_BOMB;
+			
+			RequisitionParams params = new RequisitionParams();
+			//params.thresholdBeforeAbort = -NexConfig.pointsRequiredForInvasionFleet;
+			params.amountMult = 0.5f;
 
 			intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(
-					faction, getTargetFactionForVengeance(), type, 1.6f);
+					faction, getTargetFactionForVengeance(), type, 1.6f, params);
 			if (intel != null) {
 				((SatBombIntel)intel).setVengeance(true);
 				intel.setQualityOverride(1.25f);
