@@ -244,16 +244,16 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	public static List<String> getWinnableFactions() {
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		List<String> factions = new ArrayList<>();
-        for (String factionId : SectorManager.getLiveFactionIdsCopy())
-        {			
+		for (String factionId : SectorManager.getLiveFactionIdsCopy())
+		{
 			if (factionId.equals(Factions.PLAYER) && Misc.getCommissionFaction() != null)
 				continue;
-            // don't count pirate factions unless config says so or we belong to it
-            if (!NexUtilsFaction.isPirateFaction(factionId) || NexConfig.countPiratesForVictory || factionId.equals(playerAlignedFactionId))
-            {
-                factions.add(factionId);
-            }
-        }
+			// don't count pirate factions unless config says so or we belong to it
+			if (!NexUtilsFaction.isPirateFaction(factionId) || NexConfig.countPiratesForVictory || factionId.equals(playerAlignedFactionId))
+			{
+				factions.add(factionId);
+			}
+		}
 		return factions;
 	}
 	
@@ -267,40 +267,40 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	 */
 	public static int[] generateRankings(Collection<String> factionsToCheck, 
 			List<ScoreEntry> sizeRanked, List<ScoreEntry> hiRanked, List<ScoreEntry> friendsRanked) 
-    {        
-        int totalSize = 0, totalHeavyIndustries = 0;
-        Map<String, Integer> factionSizes = new HashMap<>();
-        Map<String, Integer> heavyIndustries = new HashMap<>();
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
-        {
-            if (market.isHidden()) continue;
-            String factionId = market.getFactionId();			
-            if (market.getFaction().isPlayerFaction()) {
-                factionId = PlayerFactionStore.getPlayerFactionId();
-            }
+	{
+		int totalSize = 0, totalHeavyIndustries = 0;
+		Map<String, Integer> factionSizes = new HashMap<>();
+		Map<String, Integer> heavyIndustries = new HashMap<>();
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
+		{
+			if (market.isHidden()) continue;
+			String factionId = market.getFactionId();			
+			if (market.getFaction().isPlayerFaction()) {
+				factionId = PlayerFactionStore.getPlayerFactionId();
+			}
 			
-            if (!factionsToCheck.contains(factionId)) continue;
-            
-            totalSize += market.getSize();
-            NexUtils.modifyMapEntry(factionSizes, factionId, market.getSize());
-            if (NexUtilsMarket.hasHeavyIndustry(market)) {
-                totalHeavyIndustries++;
-                NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
-            }
-        }
-        
+			if (!factionsToCheck.contains(factionId)) continue;
+			
+			totalSize += market.getSize();
+			NexUtils.modifyMapEntry(factionSizes, factionId, market.getSize());
+			if (NexUtilsMarket.hasHeavyIndustry(market)) {
+				totalHeavyIndustries++;
+				NexUtils.modifyMapEntry(heavyIndustries, factionId, 1);
+			}
+		}
+		
 		// alliances are no longer directly checked
 		/*
-        for (Alliance alliance : AllianceManager.getAllianceList()) {
-            int size, numHI;
-            if (alliance != null) {
-                size = getAllianceTotalFromMap(alliance, factionSizes);
-                numHI = getAllianceTotalFromMap(alliance, heavyIndustries);
-                
-                sizeRanked.add(new ScoreEntry(alliance, size));
-                hiRanked.add(new ScoreEntry(alliance, numHI));
-            }
-        }
+		for (Alliance alliance : AllianceManager.getAllianceList()) {
+			int size, numHI;
+			if (alliance != null) {
+				size = getAllianceTotalFromMap(alliance, factionSizes);
+				numHI = getAllianceTotalFromMap(alliance, heavyIndustries);
+				
+				sizeRanked.add(new ScoreEntry(alliance, size));
+				hiRanked.add(new ScoreEntry(alliance, numHI));
+			}
+		}
 		*/
 		
 		for (String factionId : factionsToCheck) {
@@ -317,18 +317,18 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 			}
 			
 			// check faction pop/HI
-            // first see if we already checked this faction as part of its alliance
+			// first see if we already checked this faction as part of its alliance
 			/*
-            if (AllianceManager.getFactionAlliance(factionId) != null)
-                continue;
-            */
+			if (AllianceManager.getFactionAlliance(factionId) != null)
+				continue;
+			*/
 			
-            Integer size = factionSizes.get(factionId);
-            Integer numHI = heavyIndustries.get(factionId);
-            if (size == null) continue;
+			Integer size = factionSizes.get(factionId);
+			Integer numHI = heavyIndustries.get(factionId);
+			if (size == null) continue;
 			
 			
-            ScoreEntry entry = new ScoreEntry(factionId, size);
+			ScoreEntry entry = new ScoreEntry(factionId, size);
 			
 			// alliance contribution
 			int allySize = 0;
@@ -348,15 +348,15 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 				entry.setAlliance(alliance);
 				entry.allianceContrib = allySize;
 			}
-            sizeRanked.add(entry);
+			sizeRanked.add(entry);
 			
-            if (numHI != null) {
+			if (numHI != null) {
 				entry = new ScoreEntry(factionId, numHI + allyIndustries);
 				entry.setAlliance(alliance);
 				entry.allianceContrib = allyIndustries;
 				hiRanked.add(entry);
 			}
-        }
+		}
 		
 		Collections.sort(sizeRanked);
 		Collections.sort(hiRanked);
