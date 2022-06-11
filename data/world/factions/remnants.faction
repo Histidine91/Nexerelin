@@ -1,0 +1,6 @@
+{
+	"custom":{
+		"AICoreValueMult":0.5,
+		"AICoreRepMult":2,
+	},
+}

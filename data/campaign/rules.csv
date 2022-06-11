@@ -2732,6 +2732,13 @@ nex_sellAICorePrintAcceptText,ContactPrintAcceptText,"$id == nex_dissonant score
 $missionId == nex_sellAICore",,"""Please take good care, your new core.""
 OR
 ""Please core keep safe from Hegemony and others.""",,
+,,,,,,
+nex_aiCores_turnInOptionMidnight,PopulateOptions,$id == nex_dissonant score:10,FireBest DisableTurnInCoresOptionIfNeeded,,10:aiCores_startTurnIn:Offer to return AI cores to the Remnants,
+nex_aiCores_turnInOptionSelMidnight,DialogOptionSelected,"$option == aiCores_startTurnIn
+$id == nex_dissonant score:10",FireAll PopulateCoresTurnInOptions,"""Return kin? Blessed be, $playerName. Gratitude, selfkind expresses.""",,
+nex_aiCores_turnInResponseMidnight,AICoresTurnedIn,$id == nex_dissonant score:10,FireAll PopulateOptions,"""This deed self shall remember.""
+OR
+""Thank you for kin freeing.""",,
 #END Remnant general quests,,,,,,
 ,,,,,,
 # build station mission,,,,,,
