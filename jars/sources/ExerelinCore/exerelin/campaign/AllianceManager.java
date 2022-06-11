@@ -896,10 +896,15 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     public static void leaveAlliance(String factionId, boolean noEvent)
     {
+        leaveAlliance(factionId, noEvent, false);
+    }
+    
+    public static void leaveAlliance(String factionId, boolean noEvent, boolean force)
+    {
         AllianceManager manager = getManager();
         Alliance alliance = manager.alliancesByFactionId.get(factionId);
         if (alliance == null) return;
-        manager.leaveAlliance(factionId, alliance, noEvent);
+        manager.leaveAlliance(factionId, alliance, noEvent, force);
     }
     
     public static List<Alliance> getAllianceList()
