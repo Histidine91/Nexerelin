@@ -66,6 +66,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	public static final float STRAGGLER_LOST_ATTACK_DELAY = 15;
 	public static final float STAGING_AREA_FOUND_ATTACK_DELAY = 2.5f;
 	public static final int BATTLE_MAX_DAYS = 45;
+	public static final float DISTANCE_TO_SPAWN_STRAGGLER = 1f;
+	public static final float STRAGGLER_WAIT_TIME = 3.5f;
 
 	public static enum Stage {
 		GO_TO_ORIGIN_SYSTEM,
@@ -180,7 +182,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		endTrigger();
 		
 		// trigger: spawn straggler
-		beginWithinHyperspaceRangeTrigger(stragglerOrigin.getPrimaryEntity(), 3, false, Stage.GO_TO_ORIGIN_SYSTEM);
+		beginWithinHyperspaceRangeTrigger(stragglerOrigin.getPrimaryEntity(), DISTANCE_TO_SPAWN_STRAGGLER, 
+				false, Stage.GO_TO_ORIGIN_SYSTEM);
 		triggerRunScriptAfterDelay(0, new Script() {
 			@Override
 			public void run() {
@@ -311,7 +314,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		CampaignFleetAPI fleet = spawnFleet(params, stragglerOrigin.getPrimaryEntity());
 		attackFleets.add(fleet);
-		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, stragglerOrigin.getPrimaryEntity(), 3);
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, stragglerOrigin.getPrimaryEntity(), STRAGGLER_WAIT_TIME);
 		fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, stagingPoint, 1000, 
 				StringHelper.getFleetAssignmentString("travellingTo", StringHelper.getString("unknownLocation")), 
 				new Script() {
@@ -833,6 +836,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			//info.addPara("[debug] Staging area found: " + knowStagingArea, opad);
 			info.addPara("[debug] Station is in: " + station.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
 			info.addPara("[debug] Staging area: " + stagingArea.getNameWithLowercaseTypeShort(), 0);
+			info.addPara(String.format("[debug] Straggler origin: %s in %s", stragglerOrigin.getName(), stragglerOrigin.getContainingLocation().getName()), 0);
 			if (straggler != null && straggler.isAlive()) {
 				info.addPara("[debug] Straggler currently in " + straggler.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
 			}
