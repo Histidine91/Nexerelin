@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.AllianceIntel;
@@ -16,16 +17,19 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-
 public class Alliance 
 {
+	public static final String MEMORY_KEY_ALIGNMENTS = "$nex_alignments";
+	
 	protected String name;
 	protected Set<String> members;
 	protected Set<String> permaMembers = new HashSet<>();
@@ -275,6 +279,21 @@ public class Alliance
 				alignments.add(candidate);
 			}
 			return alignments;
+		}
+		
+		public String getName() {
+			return StringHelper.getString("exerelin_alliances", "alignment_" 
+				+ this.toString().toLowerCase(Locale.ROOT), true);
+		}
+		
+		public static void setFactionAlignment(String factionId, Alignment align, float value) {
+			MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+			if (!mem.contains(MEMORY_KEY_ALIGNMENTS)) {
+				mem.set(MEMORY_KEY_ALIGNMENTS, new EnumMap<Alignment, Float>(Alignment.class));
+			}
+			
+			Map<Alignment, Float> alignments = (Map<Alignment, Float>)mem.get(MEMORY_KEY_ALIGNMENTS);
+			alignments.put(align, value);
 		}
 	}
 }

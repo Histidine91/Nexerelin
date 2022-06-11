@@ -157,18 +157,25 @@ public class DiplomacyBrain {
 		return dispositions.get(factionId);
 	}
 	
-	public float getDispositionFromAlignments(String factionId)
-	{
+	public float getDispositionFromAlignments(String factionId) {
 		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		NexFactionConfig ourConf = NexConfig.getFactionConfig(this.factionId);
+		Map<Alignment, Float> alignments = conf.getAlignmentsCopy(false);
+		Map<Alignment, Float> ourAlignments = ourConf.getAlignmentsCopy(false);
+		
+		return getDispositionFromAlignments(alignments, ourAlignments);
+	}
+	
+	public float getDispositionFromAlignments(Map<Alignment, Float> alignments, Map<Alignment, Float> ourAlignments)
+	{		
 		float disposition = 0;
 		
 		//log.info("Checking alignments for factions: " + factionId + ", " + this.factionId);
 		for (Alignment align : Alliance.Alignment.getAlignments())
 		{
 			
-			float ours = ourConf.alignments.get(align);
-			float theirs = conf.alignments.get(align);
+			float ours = ourAlignments.get(align);
+			float theirs = alignments.get(align);
 			float thisDisp = 0;
 			
 			if (ours == 0 || theirs == 0)
@@ -192,13 +199,13 @@ public class DiplomacyBrain {
 		}
 		
 		// diplomatic factions tend to have high dispositions in general
-		float ourDiplo = ourConf.alignments.get(Alignment.DIPLOMATIC);
-		float theirDiplo = conf.alignments.get(Alignment.DIPLOMATIC);
+		float ourDiplo = ourAlignments.get(Alignment.DIPLOMATIC);
+		float theirDiplo = alignments.get(Alignment.DIPLOMATIC);
 		
 		disposition += (ourDiplo + theirDiplo) * ALIGNMENT_DIPLOMATIC_MULT;
 		
 		return disposition * ALIGNMENT_MULT;
-	}	
+	}
 	
 	public float getDispositionFromMorality(String factionId)
 	{
@@ -394,14 +401,21 @@ public class DiplomacyBrain {
 		}
 	}
 	
+	public void updateDisposition(String otherFactionId, float days) {
+		updateDisposition(otherFactionId, null, days);
+	}
+	
 	/**
 	 * Update our dispositions towards the specified faction.
 	 * @param otherFactionId
+	 * @param disposition Specify a {@code MutableStat} here to update those stats instead of the one the brain actually uses (use to preview disposition changes).
 	 * @param days Time since last update (for decaying event effects)
 	 */
-	public void updateDisposition(String otherFactionId, float days)
+	public void updateDisposition(String otherFactionId, MutableStat disposition, float days)
 	{
-		MutableStat disposition = getDisposition(otherFactionId).disposition;
+		if (disposition == null) {
+			disposition = getDisposition(otherFactionId).disposition;
+		}
 		
 		// clear disposition except for recent events
 		Float recent = disposition.getFlatMods().containsKey("events") ? 
@@ -493,7 +507,7 @@ public class DiplomacyBrain {
 		float strRatio = (ourStrength + targetEnemyStrength * 0.5f) / (targetStrength + enemyStrength);
 		logDebug("\tStrength ratio: " + strRatio);
 		
-		float militarismMult = ourConf.alignments.get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
+		float militarismMult = ourConf.getAlignmentsCopy(false).get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
 		logDebug("\tMilitarism mult: " + militarismMult);
 		
 		float dominance = DiplomacyManager.getDominanceFactor(enemyId) * 40;

@@ -4,7 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
+import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
@@ -19,6 +21,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import java.awt.Color;
 import java.io.IOException;
@@ -88,7 +91,7 @@ public class NexFactionConfig
     public Map<String, Float> diplomacyPositiveChance = new HashMap<>();
     public Map<String, Float> diplomacyNegativeChance = new HashMap<>();
     public Map<String, Float> dispositions = new HashMap<>();
-    public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
+    protected Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
     public List<String> diplomacyTraits = new ArrayList<>();
     public boolean allowRandomDiplomacyTraits = true;
@@ -756,6 +759,26 @@ public class NexFactionConfig
         if (!industrySpawnMults.containsKey(defId))
             return 1;
         return (float)industrySpawnMults.get(defId);
+    }
+    
+    /**
+     * Gets this faction's alignments.
+     * @param configOnly If false, load alignments from faction memory instead of config file where available.
+     * @return
+     */
+    public Map<Alignment, Float> getAlignmentsCopy(boolean configOnly) {
+        Map<Alignment, Float> align = new HashMap<>(alignments);
+        
+        if (configOnly) return align;
+        
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return align;
+        MemoryAPI mem = sector.getFaction(factionId).getMemoryWithoutUpdate();
+        if (mem.contains(Alliance.MEMORY_KEY_ALIGNMENTS)) {
+            Map<Alignment, Float> align2 = (Map<Alignment, Float>)mem.get(Alliance.MEMORY_KEY_ALIGNMENTS);
+            align.putAll(align2);
+        }
+        return align;
     }
     
     public List<String> getStartShipList(JSONArray array) throws JSONException

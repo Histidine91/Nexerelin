@@ -20,6 +20,7 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
@@ -330,8 +331,9 @@ public class AllianceVoter {
 		int factionCount = 0;
 		float otherAllianceDispositionSum = 0;
 		
-		float hawkishness = usConf.alignments.get(Alignment.MILITARIST);
-		float diplomaticness = usConf.alignments.get(Alignment.DIPLOMATIC);
+		Map<Alignment, Float> alignments = usConf.getAlignmentsCopy(false);
+		float hawkishness = alignments.get(Alignment.MILITARIST);
+		float diplomaticness = alignments.get(Alignment.DIPLOMATIC);
 		
 		for (String otherMember: otherAllianceMembers)
 		{
@@ -430,8 +432,9 @@ public class AllianceVoter {
 		if (factionId.equals(Factions.PLAYER))
 			return false;
 		
-		float hawkishness = usConf.alignments.get(Alignment.MILITARIST);
-		float diplomaticness = usConf.alignments.get(Alignment.DIPLOMATIC);
+		Map<Alignment, Float> alignments = usConf.getAlignmentsCopy(false);
+		float hawkishness = alignments.get(Alignment.MILITARIST);
+		float diplomaticness = alignments.get(Alignment.DIPLOMATIC);
 		float friendRelationship = us.getRelationship(friendId);
 		
 		// if war vote, and we're friendly to target and like the target more than the triggering friend, defy

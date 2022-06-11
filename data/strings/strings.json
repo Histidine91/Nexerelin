@@ -831,7 +831,11 @@
 		
 		"stabilizationCommodity":"Stabilization commodities: %s",
 		
+		"alignmentConfigHeader":"Modify faction alignments",
+		"alignmentConfigWarning":"Changing alignments after the first time will cost %s story point(s).",
+		
 		"dispTableHeader":"Dispositions towards other factions",
+		"dispTableHeaderInwards":"Dispositions of other factions towards us",
 		"dispTableOverall":"Overall",
 		"dispTableBase":"Base",
 		"dispTableRelationship":"Relation",

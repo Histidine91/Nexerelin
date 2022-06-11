@@ -148,18 +148,20 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         float bestAlignmentValue = 0;
         List<Alignment> bestAlignments = new ArrayList<>();
         NexFactionConfig config1 = NexConfig.getFactionConfig(factionId);
-        NexFactionConfig config2 = NexConfig.getFactionConfig(otherFactionId);   
+        NexFactionConfig config2 = NexConfig.getFactionConfig(otherFactionId);
+        Map<Alignment, Float> alignments1 = config1.getAlignmentsCopy(false);
+        Map<Alignment, Float> alignments2 = config2.getAlignmentsCopy(false);
         for (Alignment alignment : Alignment.getAlignments())
         {
             float alignment1 = 0;
             float alignment2 = 0;
             if (config1 != null)
             {
-                alignment1 = config1.alignments.get(alignment);
+                alignment1 = alignments1.get(alignment);
             }
             if (config2 != null)
             {
-                alignment2 = config2.alignments.get(alignment);
+                alignment2 = alignments2.get(alignment);
             }
             float sum = alignment1 + alignment2;
             if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !NexConfig.ignoreAlignmentForAlliances) continue;
@@ -186,13 +188,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance == null) return 0;
         float value = 0;
         NexFactionConfig config = NexConfig.getFactionConfig(factionId);
-        if (config.alignments != null)
+		Map<Alignment, Float> alignments = config.getAlignmentsCopy(false);
         {
             //log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.getName());
             //log.info("Alliance alignment: " + alliance.alignment.toString());
             Alignment align = alliance.getAlignment();
-            if (config.alignments.containsKey(align))
-                value = config.alignments.get(align);
+            if (alignments.containsKey(align))
+                value = alignments.get(align);
         }
         return value;
     }

@@ -4,13 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IconRenderMode;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -19,6 +22,7 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -36,22 +40,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	
 	public static final float WEARINESS_MAX_FOR_COLOR = 10000;
 	public static final float MARGIN = 40;
 	public static final Set<String> NO_PROFILE_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
-		Factions.PLAYER, Factions.DERELICT, "nex_derelict"
+		Factions.DERELICT, "nex_derelict"
 	}));
 	public static final List<String> DISPOSITION_SOURCE_KEYS = new ArrayList<>(Arrays.asList(new String[] {
 		"overall", "base", "relationship", "alignments", /*"morality",*/ "events", "commonEnemies", "dominance", "revanchism", "traits"
 	}));
 	
 	protected FactionAPI faction;
+	protected transient Map<Alignment, Float> alignmentTemp;
 	
 	public static final Comparator<Pair<Alignment, Float>> ALIGNMENT_COMPARATOR = new Comparator<Pair<Alignment, Float>>()
 	{
@@ -132,7 +138,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		List<Pair<Alignment, Float>> alignments = new ArrayList<>();
 		NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
 		
-		for (Map.Entry<Alignment, Float> tmp : conf.alignments.entrySet())
+		for (Map.Entry<Alignment, Float> tmp : conf.getAlignmentsCopy(false).entrySet())
 		{
 			if (tmp.getValue() == 0) continue;
 			alignments.add(new Pair<>(tmp.getKey(), tmp.getValue()));			
@@ -148,8 +154,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			float strength = alignEntry.two;
 			String strengthStr = (strength > 0? "+": "") + strength;
 			
-			String alignmentName = StringHelper.getString("exerelin_alliances", "alignment_" 
-				+ align.toString().toLowerCase(Locale.ROOT), true);
+			String alignmentName = align.getName();
 			alignmentStrings.add(alignmentName + " " + strengthStr);
 			highlights.add(alignmentName);
 			highlights.add(strengthStr);
@@ -244,10 +249,43 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		unindent(tooltip);
 	}
 	
-	public void createDispositionTable(TooltipMakerAPI tooltip, float width, float pad) 
+	public void addAlignmentButtons(CustomPanelAPI outer, TooltipMakerAPI tooltip, float width, float pad) {
+		boolean alreadySetAlignments = Global.getSector().getFaction(faction.getId()).getMemoryWithoutUpdate().contains(Alliance.MEMORY_KEY_ALIGNMENTS);
+		
+		try {
+			tooltip.addSectionHeading(getString("alignmentConfigHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
+			float[] values = new float[] {-1f, -0.5f, 0f, 0.5f, 1f};
+			
+			Color base = faction.getBaseUIColor(), bright = faction.getBrightUIColor(), dark = faction.getDarkUIColor();
+			Map<Alignment, Float> currAlign = NexConfig.getFactionConfig(faction.getId()).getAlignmentsCopy(false);
+
+			for (Alignment align : Alignment.getAlignments()) {
+				tooltip.addPara(Misc.ucFirst(align.getName()), align.color, pad);
+				CustomPanelAPI buttonRow = outer.createCustomPanel(width, 32, null);
+				TooltipMakerAPI last = null;
+				for (float fv : values) {
+					TooltipMakerAPI holder = buttonRow.createUIElement(40, 24, false);
+					ButtonAPI button = holder.addAreaCheckbox(fv + "", new Pair<Alignment, Float>(align, fv), 
+							base, dark, bright, 40, 24, 0);
+					button.setChecked(fv == currAlign.get(align));
+					if (last == null)
+						buttonRow.addUIElement(holder).inTL(0, 0);
+					else
+						buttonRow.addUIElement(holder).rightOfTop(last, 3);
+					last = holder;
+					//log.info(String.format("Added button %s %s", align.toString(), fv));
+				}
+				tooltip.addCustom(buttonRow, 3);
+			}
+		} catch (Exception ex) {
+			log.error(ex);
+		}
+	}
+	
+	public void createDispositionTable(boolean inwards, TooltipMakerAPI tooltip, float width, float pad) 
 	{
 		width -= MARGIN;
-		tooltip.addSectionHeading(getString("dispTableHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
+		tooltip.addSectionHeading(getString("dispTableHeader" + (inwards ? "Inwards" : "")), com.fs.starfarer.api.ui.Alignment.MID, pad);
 		
 		float cellWidth = 0.09f * width;
 		tooltip.beginTable(faction, 20, StringHelper.getString("faction", true), 0.19f * width,
@@ -267,7 +305,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		boolean pirate = NexConfig.getFactionConfig(faction.getId()).pirateFaction;
 		List<FactionAPI> factions = NexUtilsFaction.factionIdsToFactions(SectorManager.getLiveFactionIdsCopy());
 		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
-		
+				
 		for (FactionAPI otherFaction : factions) {
 			if (otherFaction == faction) continue;
 			NexFactionConfig conf = NexConfig.getFactionConfig(otherFaction.getId());
@@ -281,12 +319,28 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			}
 			
 			List<Object> rowContents = new ArrayList<>();
-			DiplomacyBrain.DispositionEntry entry = brain.getDisposition(otherFaction.getId());
+			if (inwards) {
+				brain = DiplomacyManager.getManager().getDiplomacyBrain(otherFaction.getId());
+				//brain.updateAllDispositions(0);
+			}
+			DiplomacyBrain.DispositionEntry entry = brain.getDisposition(inwards ? faction.getId() : otherFaction.getId());
+			
+			MutableStat dispositionCopy = new MutableStat(0);
+			dispositionCopy.applyMods(entry.disposition);
+			
+			// handling for preview of alignment changes
+			boolean preview = alignmentTemp != null;
+			// TODO: update alignment disposition using preview table when in preview mode
+			if (preview) {
+				float dfa = brain.getDispositionFromAlignments(alignmentTemp, conf.getAlignmentsCopy(false));
+				dispositionCopy.modifyFlat("alignments", dfa, "Alignments");
+			}
 			
 			// add faction
 			//rowContents.add(com.fs.starfarer.api.ui.Alignment.MID);
 			rowContents.add(otherFaction.getBaseUIColor());
 			rowContents.add(Misc.ucFirst(otherFaction.getDisplayName()));
+			
 			
 			// add values
 			for (String source : DISPOSITION_SOURCE_KEYS) {
@@ -294,26 +348,37 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 				boolean overall = source.equals("overall");
 				
 				float subval = 0;
+				float subvalOriginal = 0;	// used only in preview mode
 				if (overall) {
-					subval = entry.disposition.getModifiedValue();
+					subval = dispositionCopy.getModifiedValue();
+					subvalOriginal = entry.disposition.getModifiedValue();
 				}
-				else if (entry.disposition.getFlatMods().containsKey(source)) {
-					subval = entry.disposition.getFlatStatMod(source).getValue();
+				else if (dispositionCopy.getFlatMods().containsKey(source)) {
+					subval = dispositionCopy.getFlatStatMod(source).getValue();
+					subvalOriginal = dispositionCopy.getFlatStatMod(source).getValue();
 				}
 				
 				Color color = Misc.getTextColor();
-				if (overall) {
-					if (subval > DiplomacyBrain.LIKE_THRESHOLD)
-						color = Misc.getPositiveHighlightColor();
-					else if (subval < DiplomacyBrain.DISLIKE_THRESHOLD)
-						color = Misc.getNegativeHighlightColor();
+				float compareValueHigh = 0;
+				float compareValueLow = 0;
+				
+				if (preview && source.equals("alignments")) {
+					compareValueHigh = subvalOriginal;
+					compareValueLow = subvalOriginal;
 				} else {
-					if (subval > 1.5f)
-						color = Misc.getPositiveHighlightColor();
-					else if (subval < -1.5f)
-						color = Misc.getNegativeHighlightColor();
+					if (overall) {
+						compareValueHigh = DiplomacyBrain.LIKE_THRESHOLD;
+						compareValueLow =  DiplomacyBrain.DISLIKE_THRESHOLD;
+					} else {
+						compareValueHigh = 1.5f;
+						compareValueLow = -1.5f;
+					}
 				}
 				
+				if (preview && !source.equals("alignments")) {}		// do nothing
+				else if (subval > compareValueHigh) color = Misc.getPositiveHighlightColor();
+				else if (subval < compareValueLow) color = Misc.getNegativeHighlightColor();
+								
 				rowContents.add(color);
 				
 				if (subval != 0)
@@ -432,12 +497,30 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		addWarWearinessInfo(outer, opad);
 		
 		// disposition table
-		createDispositionTable(outer, width, opad);
+		// player: add alignment buttons
+		if (faction.isPlayerFaction()) {
+			addAlignmentButtons(panel, outer, width, pad);
+			createDispositionTable(true, outer, width, opad);
+		}
+		else {
+			createDispositionTable(false, outer, width, opad);
+			createDispositionTable(true, outer, width, opad);
+		}		
 		
 		// list traits
 		listTraits(outer, opad);
 		
 		panel.addUIElement(outer).inTL(0, 0);
+	}
+	
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId instanceof Pair) {
+			Pair<Alignment, Float> pair = (Pair<Alignment, Float>)buttonId;
+			Alignment.setFactionAlignment(faction.getId(), pair.one, pair.two);
+			ui.updateUIForItem(this);
+			return;
+		}
 	}
 	
 	public static String getString(String id) {
