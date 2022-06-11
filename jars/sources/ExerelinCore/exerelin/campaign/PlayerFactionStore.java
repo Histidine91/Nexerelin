@@ -18,8 +18,8 @@ import org.apache.log4j.Logger;
  * but that behavior is no longer applied.
  */
 public class PlayerFactionStore {
-    private static final String PLAYER_FACTION_ID_KEY = "exerelin_playerFactionId";
-    private static final String PLAYER_RELATIONS_KEY = "exerelin_independentPlayerRelations";
+    public static final String PLAYER_FACTION_ID_KEY = "exerelin_playerFactionId";
+    public static final String PLAYER_RELATIONS_KEY = "exerelin_independentPlayerRelations";
     
     private static String factionId = Factions.PLAYER;
     

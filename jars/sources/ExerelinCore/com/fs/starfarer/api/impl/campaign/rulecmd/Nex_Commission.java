@@ -54,7 +54,7 @@ public class Nex_Commission extends Commission {
 	protected boolean playerMeetsCriteria() {
 		NexFactionConfig conf = NexConfig.getFactionConfig(person.getFaction().getId());
 		if (conf.pirateFaction)
-			return faction.getRelToPlayer().isAtWorst(RepLevel.SUSPICIOUS);
+			return faction.getRelToPlayer().isAtWorst(Nex_FactionCommissionIntel.PIRATE_JOIN_REQUIRED_REP);
 		
 		return super.playerMeetsCriteria();
 	}
@@ -64,7 +64,7 @@ public class Nex_Commission extends Commission {
 		RepLevel required = COMMISSION_REQ;
 		NexFactionConfig conf = NexConfig.getFactionConfig(person.getFaction().getId());
 		if (conf.pirateFaction)
-			required = RepLevel.SUSPICIOUS;
+			required = Nex_FactionCommissionIntel.PIRATE_JOIN_REQUIRED_REP;
 		
 		CoreReputationPlugin.addRequiredStanding(entityFaction, required, null, dialog.getTextPanel(), null, null, 0f, true);
 		CoreReputationPlugin.addCurrentStanding(entityFaction, null, dialog.getTextPanel(), null, null, 0f);
