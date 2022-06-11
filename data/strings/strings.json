@@ -2216,6 +2216,8 @@
 		"dialogButtonAssign":"Assign",
 		"dialogTooltipMaxPSF":"You can only have one special task group at a time.",
 		"dialogTooltipNoShipsToRevive":"No ships to revive!",
+		"dialogTooltipFleetNull":"Fleet does not exist (this should not happen, please report)",
+		"dialogTooltipFleetInBattle":"Fleet is in battle",
 		"dialogTooltipNoMarketForRevive":"Fleet must be near a non-inhospitable market.",
 		"dialogMsgTaskAssigned":"task assigned",
 		"dialogMsgRevivingShips":"reviving ships",

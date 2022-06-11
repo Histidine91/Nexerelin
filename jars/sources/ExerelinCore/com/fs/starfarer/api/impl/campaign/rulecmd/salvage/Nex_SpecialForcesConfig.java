@@ -166,11 +166,18 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		return true;
 	}
 	
-	// TODO: check if fleet is in battle as well?
 	protected boolean canRevive(CampaignFleetAPI fleet, MemoryAPI mem) {
 		PlayerSpecialForcesIntel intel = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(fleet);
 		if (intel.getDeadMembers().isEmpty()) {
 			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("dialogTooltipNoShipsToRevive"), 0);
+			return false;
+		}
+		if (intel.getRoute().getActiveFleet() == null) {
+			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("dialogTooltipFleetNull"), 0);
+			return false;
+		}
+		if (intel.getRoute().getActiveFleet().getBattle() != null) {
+			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("dialogTooltipInBattle"), 0);
 			return false;
 		}
 		boolean haveMarket = false;
