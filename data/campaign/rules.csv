@@ -3345,6 +3345,9 @@ nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
 nex_configSF_createNewOpt,PopulateOptions,"Nex_IsBaseOfficial military
 Nex_IsFactionRuler $faction.id",,,10:nex_configSF_createNew:Create a special task group,
+nex_configSF_createNewOptAlt,PopulateOptions,"Nex_IsBaseOfficial military
+!Nex_IsFactionRuler $faction.id
+$faction.id == $player.factionId",,,10:nex_configSF_createNew:Create a special task group,
 #nex_configSF_createNewOptDisabled,PopulateOptions,"Nex_IsBaseOfficial military
 Nex_IsFactionRuler $faction.id
 !Nex_SpecialForcesConfig canCreate","SetEnabled nex_configSF_createNew false
