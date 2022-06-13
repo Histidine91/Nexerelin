@@ -114,6 +114,8 @@ public class FleetPoolManager extends BaseIntelPlugin {
 		float totalToDraw = overdraft + nonOverdraft;
 		
 		float returnAmount = params.amount * (totalToDraw/wantedBase);
+		if (params.abortIfNotAtLeast > returnAmount) return 0;
+		
 		modifyPool(factionId, -totalToDraw);
 		return returnAmount;
 	}
@@ -444,6 +446,8 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	
 	public static class RequisitionParams {
 		
+		public static final float DEFAULT_ABORT_RATIO = 0.75f;
+		
 		/**
 		 * How many points we want to take.
 		 */
@@ -469,10 +473,16 @@ public class FleetPoolManager extends BaseIntelPlugin {
 		 */
 		public float overdraftMult = 1;
 		
+		/**
+		 * If the pool won't give us at least this many points, cancel the requisition. Defaults to {@code DEFAULT_ABORT_RATIO} times amount.
+		 */
+		public float abortIfNotAtLeast;
+		
 		public RequisitionParams() {}
 		
 		public RequisitionParams(float amount) {
 			this.amount = amount;
+			this.abortIfNotAtLeast = amount * DEFAULT_ABORT_RATIO;
 		}
 		
 		public RequisitionParams(float amount, float thresholdBeforeOverdraft, Float thresholdBeforeAbort, float overdraftMult) 
@@ -481,6 +491,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 			this.thresholdBeforeOverdraft = thresholdBeforeOverdraft;
 			this.thresholdBeforeAbort = thresholdBeforeAbort;
 			this.overdraftMult = overdraftMult;
+			this.abortIfNotAtLeast = amount * DEFAULT_ABORT_RATIO;
 		}
 	}
 }
