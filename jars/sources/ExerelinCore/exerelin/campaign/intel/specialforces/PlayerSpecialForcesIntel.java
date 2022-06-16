@@ -259,7 +259,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			float fuelPerLY = fleet.getLogistics().getFuelCostPerLightYear();
 			float fuelUsed = distLY * fuelPerLY;
 			if (fuelUsed > 0) {
-				log.info(this.getName() + " registering fuel use: " + fuelUsed);
+				//log.info(this.getName() + " registering fuel use: " + fuelUsed);
 				fuelUsedLastInterval += fuelUsed;
 			}
 			
