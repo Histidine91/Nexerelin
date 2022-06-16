@@ -496,7 +496,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	@Deprecated
 	public void modifySpawnCounter(String factionId, float amount) {
 		NexUtils.modifyMapEntry(spawnCounter, factionId, amount);
-		FleetPoolManager.getManager().modifyPool(factionId, amount);
+		FleetPoolManager.getManager().modifyPool(factionId, amount * FleetPoolManager.FLEET_POOL_MULT);
 	}
 	
 	/**
@@ -979,7 +979,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			increment *= ongoingMod;
 			
 			counter += increment;
-			log.info(String.format("Adding %s invasion points for %s", increment, factionId));
+			//log.info(String.format("Adding %s invasion points for %s", increment, factionId));
 			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK, increment, 3);
 			
 			float pointsRequired = NexConfig.pointsRequiredForInvasionFleet;
@@ -1314,12 +1314,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		for (Industry ind : market.getIndustries()) {
 			if (ind.isDisrupted()) continue;
 			
-			if (ind.getSpec().hasTag(Industries.TAG_PATROL))
-				amount += 1;
+			if (ind.getSpec().hasTag(Industries.TAG_COMMAND))
+				amount += 3 * size;
 			else if (ind.getSpec().hasTag(Industries.TAG_MILITARY))
 				amount += 2 * size;
-			else if (ind.getSpec().hasTag(Industries.TAG_COMMAND))
-				amount += 3 * size;
+			else if (ind.getSpec().hasTag(Industries.TAG_PATROL))
+				amount += 1;
 		}
 		amount *= 100;
 		
@@ -1363,7 +1363,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		
 		// if still in invasion grace period, do nothing further
-		if (daysElapsed < NexConfig.invasionGracePeriod)
+		if (false && daysElapsed < NexConfig.invasionGracePeriod)
 		{
 			daysElapsed += days;
 			return;

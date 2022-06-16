@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.extern.log4j.Log4j;
@@ -38,13 +39,15 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class FleetPoolManager extends BaseIntelPlugin {
 	
-	public static final boolean USE_POOL = true;
+	public static final boolean USE_POOL = false;
 	
 	public static final String DATA_KEY = "nex_fleetPoolManager";
 	public static final String MEMORY_KEY_POINTS_LAST_TICK = "$nex_fleetPoolPointsLastTick";
-	public static final Set<String> EXCEPTION_LIST = InvasionFleetManager.EXCEPTION_LIST;
+	public static final Set<String> EXCEPTION_LIST = new HashSet<>();
+	// approximate conversion ratio of invasion points to fleet points, plus a bit of margin since this is used for more than invasions
+	public static final float FLEET_POOL_MULT = 0.02f;
 	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
-	public static final float FLEET_POOL_MAX = 5000000;	// 5 million?
+	public static final float FLEET_POOL_MAX = 50000;	// 50k
 	public static final List<String> COMMODITIES = Arrays.asList(new String[] {
 		Commodities.SHIPS, Commodities.SUPPLIES, Commodities.FUEL
 	});
@@ -70,6 +73,15 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	
 	public float getCurrentPool(String factionId) {
 		if (!USE_POOL) return 1000000;
+		return getCurrentPoolInternal(factionId);
+	}
+	
+	/**
+	 * {@code getCurrentPool} without the "return 1M if pool disabled" hax.
+	 * @param factionId
+	 * @return
+	 */
+	protected float getCurrentPoolInternal(String factionId) {
 		if (!factionPools.containsKey(factionId)) {
 			factionPools.put(factionId, 0f);
 		}
@@ -77,7 +89,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	}
 	
 	public float modifyPool(String factionId, float amount) {
-		float pool = getCurrentPool(factionId);
+		float pool = getCurrentPoolInternal(factionId);
 		pool += amount;
 		if (pool > FLEET_POOL_MAX) pool = FLEET_POOL_MAX;
 		factionPools.put(factionId, pool);
@@ -91,9 +103,12 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	 * @return The points granted for use from the pool (may be zero).
 	 */
 	public float drawFromPool(String factionId, RequisitionParams params) {
-		if (!USE_POOL) return params.amount;
+		if (!USE_POOL) {
+			modifyPool(factionId, params.amount);	// we don't care about the pool, but modify it anyway for debugging
+			return params.amount;
+		}
 		
-		float pool = getCurrentPool(factionId);
+		float pool = getCurrentPoolInternal(factionId);
 		float wantedBase = params.amount * params.amountMult;
 		
 		// requisition would take us below abort threshold
@@ -128,10 +143,10 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	public void initPointsFromIFM() {
 		HashMap<String, Float> invPoints = InvasionFleetManager.getManager().getSpawnCounter();
 		for (String factionId : invPoints.keySet()) {
-			log.info(String.format("Faction %s has %.0f points", factionId, invPoints.get(factionId)));
+			float poolPoints = invPoints.get(factionId) * FLEET_POOL_MULT;
+			log.info(String.format("Initializing faction %s fleet pool with %.0f points", factionId, poolPoints));
+			factionPools.put(factionId, poolPoints);
 		}
-		
-		factionPools.putAll(invPoints);
 	}
 	
 	/**
@@ -208,11 +223,11 @@ public class FleetPoolManager extends BaseIntelPlugin {
 			if (!pointsPerFaction.containsKey(factionId))
 				pointsPerFaction.put(factionId, 0f);
 			
-			float pool = getCurrentPool(factionId);
+			float pool = getCurrentPoolInternal(factionId);
 			float increment = pointsPerFaction.get(factionId);
 			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
-				increment += NexConfig.baseInvasionPointsPerFaction;
-				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel;
+				increment += NexConfig.baseInvasionPointsPerFaction * FLEET_POOL_MULT;
+				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel * FLEET_POOL_MULT;
 			}
 			
 			increment *= config.invasionPointMult;
@@ -236,6 +251,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
 		
 		float total = (ships*3 + supplies*2 + fuel*2) * stabilityMult;
+		total *= FLEET_POOL_MULT;
 		
 		return total;
 	}
@@ -289,11 +305,11 @@ public class FleetPoolManager extends BaseIntelPlugin {
 			rowContents.add(Misc.ucFirst(faction.getDisplayName()));
 			
 			// current pool
-			float pool = getCurrentPool(factionId);
+			float pool = getCurrentPoolInternal(factionId);
 			rowContents.add(Misc.getWithDGS(pool));
 			// last increment
 			float increment = getPointsLastTick(faction);
-			rowContents.add(Misc.getWithDGS(increment));
+			rowContents.add(String.format("%.1f", increment));
 			
 			// invasion points
 			float invPoints = InvasionFleetManager.getManager().getSpawnCounter(factionId);
