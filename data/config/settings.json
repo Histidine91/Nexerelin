@@ -288,6 +288,9 @@
 			"nex_plant":"graphics/exerelin/icons/plant.png",
 			"nex_population_upsize":"graphics/exerelin/icons/population.png",
 			"nex_factionsetup_industry_frame":"graphics/exerelin/ui/factionsetup_industry_frame.png",
+			
+			"nex_arrow_right":"graphics/exerelin/ui/arrow_right.png",
+			"nex_arrow_left":"graphics/exerelin/ui/arrow_left.png",
 		},
 	}
 }

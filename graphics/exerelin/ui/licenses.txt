@@ -1,0 +1,7 @@
+arrow_left.png
+arrow_right.png
+	by Riley Huntley, CC-BY-SA 3.0
+	https://commons.wikimedia.org/wiki/File:Sideways_Arrow_Icon.svg
+	
+red_diamond.png
+	Modified from Starsector's danger3.png

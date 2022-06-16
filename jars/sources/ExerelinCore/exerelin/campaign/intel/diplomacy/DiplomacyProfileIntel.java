@@ -49,12 +49,16 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	
 	public static final float WEARINESS_MAX_FOR_COLOR = 10000;
 	public static final float MARGIN = 40;
+	public static final Object BUTTON_DISPOSITION_DIR = new Object();
+	
 	public static final Set<String> NO_PROFILE_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
 		Factions.DERELICT, "nex_derelict"
 	}));
 	public static final List<String> DISPOSITION_SOURCE_KEYS = new ArrayList<>(Arrays.asList(new String[] {
 		"overall", "base", "relationship", "alignments", /*"morality",*/ "events", "commonEnemies", "dominance", "revanchism", "traits"
 	}));
+	
+	public static boolean showInwardDisposition = false;
 	
 	protected FactionAPI faction;
 	protected transient Map<Alignment, Float> alignmentTemp;
@@ -223,7 +227,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		}
 	}
 	
-	public void addWarWearinessInfo(TooltipMakerAPI tooltip, float pad) {
+	protected void addWarWearinessInfo(TooltipMakerAPI tooltip, float pad) {
 		float weariness = DiplomacyManager.getWarWeariness(faction.getId(), true);
 		String wearinessStr = String.format("%.0f", weariness);
 		
@@ -249,7 +253,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		unindent(tooltip);
 	}
 	
-	public void addAlignmentButtons(CustomPanelAPI outer, TooltipMakerAPI tooltip, float width, float pad) {
+	protected void addAlignmentButtons(CustomPanelAPI outer, TooltipMakerAPI tooltip, float width, float pad) {
 		boolean alreadySetAlignments = Global.getSector().getFaction(faction.getId()).getMemoryWithoutUpdate().contains(Alliance.MEMORY_KEY_ALIGNMENTS);
 		
 		try {
@@ -282,10 +286,35 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		}
 	}
 	
-	public void createDispositionTable(boolean inwards, TooltipMakerAPI tooltip, float width, float pad) 
+	/**
+	 * Creates the button for toggling whether to show inwards disposition direction.
+	 * @param mainPanel
+	 * @param tooltip
+	 * @param width
+	 * @param pad
+	 */
+	protected void createDispositionDirButton(CustomPanelAPI mainPanel, TooltipMakerAPI tooltip, float width, float pad) {
+		CustomPanelAPI row = mainPanel.createCustomPanel(width, 32, null);
+		
+		TooltipMakerAPI btnHolder = row.createUIElement(width, 24, false);
+		Color base = faction.getBaseUIColor(), bright = faction.getBrightUIColor(), dark = faction.getDarkUIColor();
+		ButtonAPI button = btnHolder.addAreaCheckbox(getString("dispButtonDir"), BUTTON_DISPOSITION_DIR, 
+							base, dark, bright, 240, 24, 0);
+		button.setChecked(showInwardDisposition);
+		row.addUIElement(btnHolder).inTL(0, 0);
+		
+		TooltipMakerAPI iconHolder = row.createUIElement(32, 24, false);
+		iconHolder.addImage(Global.getSettings().getSpriteName("ui", "nex_arrow_" + (showInwardDisposition ? "left" : "right")), 32, 0);
+		row.addUIElement(iconHolder).inTL(240 + 3, 0);
+		
+		tooltip.addCustom(row, pad);
+	}
+	
+	protected void createDispositionTable(boolean inwards, CustomPanelAPI mainPanel, TooltipMakerAPI tooltip, float width, float pad)
 	{
 		width -= MARGIN;
 		tooltip.addSectionHeading(getString("dispTableHeader" + (inwards ? "Inwards" : "")), com.fs.starfarer.api.ui.Alignment.MID, pad);
+		this.createDispositionDirButton(mainPanel, tooltip, width, 3);
 		
 		float cellWidth = 0.09f * width;
 		tooltip.beginTable(faction, 20, StringHelper.getString("faction", true), 0.19f * width,
@@ -500,11 +529,10 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		// player: add alignment buttons
 		if (faction.isPlayerFaction()) {
 			addAlignmentButtons(panel, outer, width, pad);
-			createDispositionTable(true, outer, width, opad);
+			createDispositionTable(true, panel, outer, width, opad);
 		}
 		else {
-			createDispositionTable(false, outer, width, opad);
-			createDispositionTable(true, outer, width, opad);
+			createDispositionTable(showInwardDisposition, panel, outer, width, opad);
 		}		
 		
 		// list traits
@@ -515,6 +543,12 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_DISPOSITION_DIR) {
+			showInwardDisposition = !showInwardDisposition;
+			ui.updateUIForItem(this);
+			return;
+		}
+		
 		if (buttonId instanceof Pair) {
 			Pair<Alignment, Float> pair = (Pair<Alignment, Float>)buttonId;
 			Alignment.setFactionAlignment(faction.getId(), pair.one, pair.two);

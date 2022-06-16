@@ -848,6 +848,7 @@
 		"dispTableHardMode":"Difficulty",
 		"dispTableTraits":"Traits",
 		
+		"dispButtonDir":"Show others' disposition to us",
 		"dispFootnoteHardMode":"Starfarer mode: $penalty disposition towards $faction",
 		
 		"traitsHeader":"Traits",

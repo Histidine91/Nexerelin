@@ -205,15 +205,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         SectorManager.getManager().reverseCompatibility();
         
-        boolean hasShuntOffer = false;
-        HistorianData hd = HistorianData.getInstance();
-        for (HistorianOfferCreator oc : hd.getCreators()) {
-            if (oc instanceof ShuntLocationOfferCreator) {
-                hasShuntOffer = true;
-                break;
-            }
+        if (SectorManager.isFactionAlive(Factions.PLAYER) && DiplomacyManager.getManager().getDiplomacyProfile(Factions.PLAYER) == null) 
+        {
+            DiplomacyManager.getManager().createDiplomacyProfile(Factions.PLAYER);
         }
-        if (!hasShuntOffer) hd.getCreators().add(new ShuntLocationOfferCreator());
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
