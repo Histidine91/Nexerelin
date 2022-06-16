@@ -103,7 +103,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float PATROL_ESTIMATION_MULT = 0.7f;
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
 	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
-	public static final float BASE_INVASION_COST = 500f;	// for reference, Jangala at start of game is around 500
+	public static final float BASE_INVASION_SIZE = 500f;	// for reference, Jangala at start of game is around 500
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 6f;
 	public static final float SAT_BOMB_CHANCE = 0.4f;
@@ -983,8 +983,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK, increment, 3);
 			
 			float pointsRequired = NexConfig.pointsRequiredForInvasionFleet;
-			float fleetPool = FleetPoolManager.getManager().getCurrentPool(factionId);
-			if (counter < pointsRequired || fleetPool < pointsRequired)
+			boolean canSpawn = counter > pointsRequired;
+			if (FleetPoolManager.USE_POOL) {
+				canSpawn = counter > pointsRequired * 2f;	// so it doesn't drain the pool completely following an invasion
+				float fleetPool = FleetPoolManager.getManager().getCurrentPool(factionId);
+				canSpawn = canSpawn && fleetPool > BASE_INVASION_SIZE;
+			}
+			
+			if (!canSpawn)
 			{
 				spawnCounter.put(factionId, counter);
 				//if (counter > pointsRequired/2 && oldCounter < pointsRequired/2)
@@ -999,7 +1005,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 						shouldRaid ? EventType.RAID : EventType.INVASION, new RequisitionParams());
 				if (intel != null)
 				{
-					counter -= getInvasionPointReduction(pointsRequired, intel);
+					counter -= getInvasionPointCost(pointsRequired, intel);
 					if (shouldRaid) lifetimeRaids++;
 					else lifetimeInvasions++;
 					spawnCounter.put(factionId, counter);
@@ -1024,17 +1030,19 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		templarInvasionPoints += (100 + perLevelPoints) 
 			* NexConfig.getFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
 		
-		float req = NexConfig.pointsRequiredForInvasionFleet;	
+		float req = NexConfig.pointsRequiredForInvasionFleet;
+		float threshold = req;
+		// multiplier is so we don't completely drain the pool when we launch an invasion
+		if (FleetPoolManager.USE_POOL) threshold *= 2;
 		boolean shouldRaid = shouldRaid("templars");
 		EventType type = shouldRaid ? EventType.RAID : EventType.INVASION;
 		
-		// multiplier is so we don't completely drain the pool when we launch an invasion
-		if (templarInvasionPoints >= req * 2f)
+		if (templarInvasionPoints >= threshold)
 		{
 			OffensiveFleetIntel intel = generateInvasionOrRaidFleet(Global.getSector().getFaction("templars"), null, 
 					type, new RequisitionParams(req));
 			if (intel != null) {
-				templarInvasionPoints -= getInvasionPointReduction(req, intel);
+				templarInvasionPoints -= getInvasionPointCost(req, intel);
 				nextIsRaid.put("templars", !shouldRaid);
 			}
 			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
@@ -1043,7 +1051,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		// Others invading and raiding Templars
 		if (!Global.getSettings().getBoolean("nex_invade_and_raid_templars")) return;
 		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
-		if (templarCounterInvasionPoints >= req * 2f)
+		if (templarCounterInvasionPoints >= threshold)
 		{
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker();
 			for (String factionId : enemies)
@@ -1061,7 +1069,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					type, TEMPLAR_COUNTER_INVASION_FLEET_MULT, new RequisitionParams(req));
 			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
 			if (intel != null) {
-				templarCounterInvasionPoints -= getInvasionPointReduction(req, intel);
+				templarCounterInvasionPoints -= getInvasionPointCost(req, intel);
 				nextIsRaid.put(factionId, !shouldRaid);
 			}
 		}
@@ -1130,17 +1138,22 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 	}
 	
+	@Deprecated
+	public static float getInvasionPointReduction(float basePointCost, OffensiveFleetIntel intel) {
+		return getInvasionPointCost(basePointCost, intel);
+	}
+	
 	// I forget why this exists instead of deducting the FP cost directly
 	// is it for Templar invasions which use a different point system?
 	/**
 	 * Gets the number of invasion points that should be deducted as a result of launching an invasion or raid.
-	 * @param base
+	 * @param basePointCost
 	 * @param intel
 	 * @return
 	 */
-	public float getInvasionPointReduction(float base, OffensiveFleetIntel intel)
+	public static float getInvasionPointCost(float basePointCost, OffensiveFleetIntel intel)
 	{
-		float amount = base * Math.max(intel.getBaseFP()/BASE_INVASION_COST, 0.8f);
+		float amount = basePointCost * Math.max(intel.getBaseFP()/BASE_INVASION_SIZE, 0.8f);
 		log.info("Deducting " + amount + " invasion points for " + intel.getName());
 		return amount;
 	}
