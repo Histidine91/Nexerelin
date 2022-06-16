@@ -44,6 +44,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	public static final String MEMORY_KEY_POINTS_LAST_TICK = "$nex_fleetPoolPointsLastTick";
 	public static final Set<String> EXCEPTION_LIST = InvasionFleetManager.EXCEPTION_LIST;
 	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
+	public static final float FLEET_POOL_MAX = 5000000;	// 5 million?
 	public static final List<String> COMMODITIES = Arrays.asList(new String[] {
 		Commodities.SHIPS, Commodities.SUPPLIES, Commodities.FUEL
 	});
@@ -78,6 +79,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	public float modifyPool(String factionId, float amount) {
 		float pool = getCurrentPool(factionId);
 		pool += amount;
+		if (pool > FLEET_POOL_MAX) pool = FLEET_POOL_MAX;
 		factionPools.put(factionId, pool);
 		return pool;
 	}
@@ -288,17 +290,17 @@ public class FleetPoolManager extends BaseIntelPlugin {
 			
 			// current pool
 			float pool = getCurrentPool(factionId);
-			rowContents.add(String.format("%.0f", pool));
+			rowContents.add(Misc.getWithDGS(pool));
 			// last increment
 			float increment = getPointsLastTick(faction);
-			rowContents.add(String.format("%.0f", increment));
+			rowContents.add(Misc.getWithDGS(increment));
 			
 			// invasion points
 			float invPoints = InvasionFleetManager.getManager().getSpawnCounter(factionId);
-			rowContents.add(String.format("%.0f", invPoints));
+			rowContents.add(Misc.getWithDGS(invPoints));
 			// last increment
 			float increment2 = InvasionFleetManager.getPointsLastTick(faction);
-			rowContents.add(String.format("%.0f", increment2));
+			rowContents.add(Misc.getWithDGS(increment2));
 			
 			tooltip.addRow(rowContents.toArray());
 		}
@@ -343,7 +345,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	
 	@Override
 	public String getIcon() {
-		return Global.getSettings().getHullSpec("hammerhead").getSpriteName();
+		return "graphics/icons/cargo/starship_weapons.png";
 	}
 	
 	@Override
