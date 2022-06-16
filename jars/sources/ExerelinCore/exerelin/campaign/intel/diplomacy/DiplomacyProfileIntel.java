@@ -31,6 +31,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.Morality;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -49,6 +50,8 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	
 	public static final float WEARINESS_MAX_FOR_COLOR = 10000;
 	public static final float MARGIN = 40;
+	public static final float ALIGNMENT_BUTTON_WIDTH = 40;
+	public static final float ALIGNMENT_BUTTON_HEIGHT = 20;
 	public static final Object BUTTON_DISPOSITION_DIR = new Object();
 	
 	public static final Set<String> NO_PROFILE_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
@@ -253,34 +256,62 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		unindent(tooltip);
 	}
 	
-	protected void addAlignmentButtons(CustomPanelAPI outer, TooltipMakerAPI tooltip, float width, float pad) {
+	/**
+	 * Sets up the buttons for player to set their faction's alignments.
+	 * @param outer
+	 * @param tooltip
+	 * @param width
+	 * @param pad
+	 */
+	protected void createAlignmentButtons(CustomPanelAPI outer, TooltipMakerAPI tooltip, float width, float pad) {
 		boolean alreadySetAlignments = Global.getSector().getFaction(faction.getId()).getMemoryWithoutUpdate().contains(Alliance.MEMORY_KEY_ALIGNMENTS);
+		float[] values = new float[] {-1f, -0.5f, 0f, 0.5f, 1f};
+		int numAlignments = Alignment.getAlignments().size();
+		
+		float buttonPad = 3;
+		float alignmentPanelWidth = (ALIGNMENT_BUTTON_WIDTH + buttonPad) * values.length;
+		int panelsPerRow = (int)(width/alignmentPanelWidth);
+		// avoid 5-1 rows
+		if (panelsPerRow > 3 && numAlignments % panelsPerRow == 1)
+			panelsPerRow--;
+		
+		int numRows = (int)Math.ceil(numAlignments/(float)panelsPerRow);
+		float alignmentPanelHeight = (20 + ALIGNMENT_BUTTON_HEIGHT + 2);
+		float height = (alignmentPanelHeight + buttonPad) * numRows;
+		
+		Color base = faction.getBaseUIColor(), bright = faction.getBrightUIColor(), dark = faction.getDarkUIColor();
+		
+		tooltip.addSectionHeading(getString("alignmentConfigHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
 		
 		try {
-			tooltip.addSectionHeading(getString("alignmentConfigHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
-			float[] values = new float[] {-1f, -0.5f, 0f, 0.5f, 1f};
+			CustomPanelAPI panelAllAlignments = outer.createCustomPanel(width, height, null);
+			List<CustomPanelAPI> panels = new ArrayList<>();
 			
-			Color base = faction.getBaseUIColor(), bright = faction.getBrightUIColor(), dark = faction.getDarkUIColor();
 			Map<Alignment, Float> currAlign = NexConfig.getFactionConfig(faction.getId()).getAlignmentsCopy(false);
 
 			for (Alignment align : Alignment.getAlignments()) {
-				tooltip.addPara(Misc.ucFirst(align.getName()), align.color, pad);
-				CustomPanelAPI buttonRow = outer.createCustomPanel(width, 32, null);
+				CustomPanelAPI panelAlignment = panelAllAlignments.createCustomPanel(alignmentPanelWidth, alignmentPanelHeight, null);
+				TooltipMakerAPI alignmentNameHolder = panelAlignment.createUIElement(alignmentPanelWidth, 10, false);
+				alignmentNameHolder.addPara(Misc.ucFirst(align.getName()), align.color, pad);
+				panelAlignment.addUIElement(alignmentNameHolder).inTL(0, 0);
+				
 				TooltipMakerAPI last = null;
 				for (float fv : values) {
-					TooltipMakerAPI holder = buttonRow.createUIElement(40, 24, false);
-					ButtonAPI button = holder.addAreaCheckbox(fv + "", new Pair<Alignment, Float>(align, fv), 
-							base, dark, bright, 40, 24, 0);
+					TooltipMakerAPI holder = panelAlignment.createUIElement(ALIGNMENT_BUTTON_WIDTH, ALIGNMENT_BUTTON_HEIGHT, false);
+					ButtonAPI button = holder.addAreaCheckbox(fv + "", new Pair<>(align, fv), 
+							base, dark, bright, ALIGNMENT_BUTTON_WIDTH, ALIGNMENT_BUTTON_HEIGHT, 0);
 					button.setChecked(fv == currAlign.get(align));
 					if (last == null)
-						buttonRow.addUIElement(holder).inTL(0, 0);
+						panelAlignment.addUIElement(holder).inBL(0, 0);
 					else
-						buttonRow.addUIElement(holder).rightOfTop(last, 3);
+						panelAlignment.addUIElement(holder).rightOfTop(last, buttonPad);
 					last = holder;
-					//log.info(String.format("Added button %s %s", align.toString(), fv));
 				}
-				tooltip.addCustom(buttonRow, 3);
+				NexUtilsGUI.placeElementInRows(panelAllAlignments, panelAlignment, panels, panels.size(), panelsPerRow, buttonPad);
+				panels.add(panelAlignment);
 			}
+			tooltip.addCustom(panelAllAlignments, 3);
+			
 		} catch (Exception ex) {
 			log.error(ex);
 		}
@@ -314,7 +345,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	{
 		width -= MARGIN;
 		tooltip.addSectionHeading(getString("dispTableHeader" + (inwards ? "Inwards" : "")), com.fs.starfarer.api.ui.Alignment.MID, pad);
-		this.createDispositionDirButton(mainPanel, tooltip, width, 3);
+		if (true || !faction.isPlayerFaction()) createDispositionDirButton(mainPanel, tooltip, width, 3);
 		
 		float cellWidth = 0.09f * width;
 		tooltip.beginTable(faction, 20, StringHelper.getString("faction", true), 0.19f * width,
@@ -528,8 +559,8 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		// disposition table
 		// player: add alignment buttons
 		if (faction.isPlayerFaction()) {
-			addAlignmentButtons(panel, outer, width, pad);
-			createDispositionTable(true, panel, outer, width, opad);
+			createAlignmentButtons(panel, outer, width, pad);
+			createDispositionTable(showInwardDisposition, panel, outer, width, opad);
 		}
 		else {
 			createDispositionTable(showInwardDisposition, panel, outer, width, opad);
@@ -552,6 +583,15 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		if (buttonId instanceof Pair) {
 			Pair<Alignment, Float> pair = (Pair<Alignment, Float>)buttonId;
 			Alignment.setFactionAlignment(faction.getId(), pair.one, pair.two);
+			
+			// update alignments of other factions so they're reflected in the intel display
+			List<String> factions = SectorManager.getLiveFactionIdsCopy();
+			for (DiplomacyBrain brain : DiplomacyManager.getManager().getDiplomacyBrains().values()) {
+				for (String factionId : factions) {
+					brain.updateDispositionFromAlignment(brain.getDisposition(factionId).disposition, factionId);
+				}				
+			}
+			
 			ui.updateUIForItem(this);
 			return;
 		}
@@ -602,6 +642,12 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(getString("intelTag"));
 		return tags;
+	}
+	
+	@Override
+	public IntelSortTier getSortTier() {
+		if (faction.isPlayerFaction()) return IntelSortTier.TIER_2;
+		return super.getSortTier();
 	}
 	
 	public static DiplomacyProfileIntel createEvent(String factionId) {

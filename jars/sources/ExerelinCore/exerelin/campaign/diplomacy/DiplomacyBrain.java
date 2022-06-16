@@ -400,6 +400,12 @@ public class DiplomacyBrain {
 			modifyDispositionFromTraits(disposition, MONSTROUS_PENALTY);
 		}
 	}
+		
+	public void updateDispositionFromAlignment(MutableStat disposition, String otherFactionId) 
+	{
+		float dispFromAlign = getDispositionFromAlignments(otherFactionId);
+		disposition.modifyFlat("alignments", dispFromAlign, "Alignments");
+	}
 	
 	public void updateDisposition(String otherFactionId, float days) {
 		updateDisposition(otherFactionId, null, days);
@@ -435,8 +441,7 @@ public class DiplomacyBrain {
 		float dispFromRel = faction.getRelationship(otherFactionId) * RELATIONS_MULT;
 		disposition.modifyFlat("relationship", dispFromRel, "Relationship");
 		
-		float dispFromAlign = getDispositionFromAlignments(otherFactionId);
-		disposition.modifyFlat("alignments", dispFromAlign, "Alignments");
+		updateDispositionFromAlignment(disposition, otherFactionId);
 		
 		//float dispFromMoral = getDispositionFromMorality(factionId);
 		//disposition.modifyFlat("morality", dispFromMoral, "Morality");

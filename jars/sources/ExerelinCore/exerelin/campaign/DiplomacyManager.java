@@ -44,12 +44,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,7 +101,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     @Getter @Setter protected boolean applyStartRelationsModeToPirates = false;
     protected long lastWarTimestamp = 0;
     
-    protected Map<String, DiplomacyBrain> diplomacyBrains = new HashMap<>();
+    @Getter protected Map<String, DiplomacyBrain> diplomacyBrains = new HashMap<>();
     protected Map<String, DiplomacyProfileIntel> profiles = new HashMap<>();
     
     static {
@@ -1472,8 +1470,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 createDiplomacyProfile(factionId);
             }
         }
-    }
-    
+    }    
     
     public static class DiplomacyEventDef {
         public String name;

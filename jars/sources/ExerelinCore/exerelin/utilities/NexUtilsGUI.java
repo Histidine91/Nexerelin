@@ -138,6 +138,27 @@ public class NexUtilsGUI {
 		result.elements.add(textHolder);
 		return result;
 	}
+		
+	public static void placeElementInRows(CustomPanelAPI holder, CustomPanelAPI element, List<CustomPanelAPI> prevElements, 
+			int numPrevious, int maxPerRow, float xpad) {
+		if (numPrevious == 0) {
+			// first card, place in TL
+			holder.addComponent(element).inTL(0, 3);
+			//log.info("Placing card in TL");
+		}
+		else if (numPrevious % maxPerRow == 0) {
+			// row filled, place under first card of previous row
+			int rowNum = numPrevious/maxPerRow - 1;
+			CustomPanelAPI firstOfPrevious = prevElements.get(maxPerRow * rowNum);
+			holder.addComponent(element).belowLeft(firstOfPrevious, 3);
+			//log.info("Placing card in new row");
+		}
+		else {
+			// right of last card
+			holder.addComponent(element).rightOfTop(prevElements.get(numPrevious - 1), xpad);
+			//log.info("Placing card in current row");
+		}
+	}
 	
 	public static void addShipList(TooltipMakerAPI info, float width, List<FleetMemberAPI> ships, float iconWidth, float pad) 
 	{
