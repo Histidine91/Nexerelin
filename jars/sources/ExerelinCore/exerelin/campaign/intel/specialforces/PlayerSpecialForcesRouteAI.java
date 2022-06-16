@@ -13,6 +13,18 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 	}
 	
 	@Override
+	public void notifyRouteFinished() {
+		if (!psf.independentMode && currentTask != null && currentTask.type != TaskType.REBUILD && currentTask.raid == null) 
+		{
+			//Global.getSector().getCampaignUI().addMessage("Repeating current task");
+			//log.info("Repeating current task");
+			assignTask(currentTask, true);
+			return;
+		}
+		super.notifyRouteFinished();
+	}
+	
+	@Override
 	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) {
 		if (!psf.independentMode) {
 			Global.getSector().getCampaignUI().addMessage("Warning, attempting to assign task to special task group while not in independent mode");

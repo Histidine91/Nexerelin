@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-import org.lazywizard.console.Console;
 import org.lwjgl.util.vector.Vector2f;
 
 public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements EconomyTickListener {
@@ -66,6 +65,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected boolean waitingForSpawn;
 	protected float fuelUsedLastInterval;
 	protected transient Vector2f lastPos;
+	
+	protected Object readResolve() {
+		if (!Global.getSector().getListenerManager().hasListener(this)) {
+			Global.getSector().getListenerManager().addListener(this);
+		}
+		return this;
+	}
 	
 	public PlayerSpecialForcesIntel(MarketAPI origin, FactionAPI faction) {
 		super(origin, faction, 0);

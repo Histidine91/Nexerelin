@@ -14,6 +14,7 @@ import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesT
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
+import org.lazywizard.lazylib.MathUtils;
 
 @Log4j
 public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
@@ -165,12 +166,14 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						goNextScript(current));
 				break;
 			case WAIT_ORBIT:
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, current.from, 999, new Script() {
-					@Override
-					public void run() {
-						intel.sendUpdateIfPlayerHasIntel(SpecialForcesIntel.ARRIVED_UPDATE, false, false);
-					}
-				});
+				if (MathUtils.getDistance(fleet, current.from) > 300) {
+					fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, current.from, 999, new Script() {
+						@Override
+						public void run() {
+							intel.sendUpdateIfPlayerHasIntel(SpecialForcesIntel.ARRIVED_UPDATE, false, false);
+						}
+					});
+				}
 				fleet.addAssignment(current.from.hasTag("nex_player_location_token") ? 
 						FleetAssignment.HOLD : FleetAssignment.ORBIT_PASSIVE, current.from,
 						current.daysMax - current.elapsed, getInSystemActionText(current),

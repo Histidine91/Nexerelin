@@ -267,11 +267,15 @@ public class SpecialForcesRouteAI {
 		return from;
 	}
 	
+	public void assignTask(SpecialForcesTask task) {
+		assignTask(task, false);
+	}
+	
 	/**
 	 * Set task as current, updating routes and the like.
 	 * @param task
 	 */
-	public void assignTask(SpecialForcesTask task) 
+	public void assignTask(SpecialForcesTask task, boolean silent) 
 	{
 		if (task.type == TaskType.IDLE && currentTask != null && currentTask.type == TaskType.IDLE)
 			return;
@@ -385,7 +389,7 @@ public class SpecialForcesRouteAI {
 			fleet.clearAssignments();
 		}
 		
-		sf.sendUpdateIfPlayerHasIntel(SpecialForcesIntel.NEW_ORDERS_UPDATE, false, false);
+		if (!silent) sf.sendUpdateIfPlayerHasIntel(SpecialForcesIntel.NEW_ORDERS_UPDATE, false, false);
 	}
 	
 	public SpecialForcesTask generateRaidDefenseTask(RaidIntel raid, float priority) {
