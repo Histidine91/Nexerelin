@@ -28,8 +28,6 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
 public class LowerRelations extends CovertActionIntel {
 	
@@ -40,7 +38,6 @@ public class LowerRelations extends CovertActionIntel {
 		repResult2 is change between self and third faction
 	*/
 	
-	@Getter @Setter protected FactionAPI thirdFaction;
 	protected ExerelinReputationAdjustmentResult repResult2;
 	protected float relation2;
 

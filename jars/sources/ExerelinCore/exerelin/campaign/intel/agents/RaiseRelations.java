@@ -24,16 +24,12 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
 public class RaiseRelations extends CovertActionIntel {
 	
 	public static final String MEM_KEY_COOLDOWN = "$nex_agentModifyRelationsCooldown";
 	public static final float MODIFY_RELATIONS_COOLDOWN = 30;	// days
 	
-	@Getter @Setter protected FactionAPI thirdFaction;
-
 	public RaiseRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);

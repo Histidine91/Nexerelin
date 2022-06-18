@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.lazywizard.lazylib.MathUtils;
 
 public abstract class CovertActionIntel extends BaseIntelPlugin implements Cloneable {
@@ -58,12 +60,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	public static final float AI_ADMIN_SUCCESS_MULT = 0.75f;
 	
 	protected Map<String, Object> params;
-	protected MarketAPI market;
-	protected AgentIntel agent;
-	protected FactionAPI agentFaction;
-	protected FactionAPI targetFaction;
-	protected boolean playerInvolved = false;
-	protected CovertActionResult result;
+	@Getter @Setter protected MarketAPI market;
+	@Getter protected AgentIntel agent;
+	@Getter @Setter  protected FactionAPI agentFaction;
+	@Getter @Setter  protected FactionAPI targetFaction;
+	@Getter @Setter protected FactionAPI thirdFaction;
+	@Getter @Setter protected boolean playerInvolved = false;
+	@Getter @Setter protected CovertActionResult result;
 	protected ExerelinReputationAdjustmentResult repResult;
 	protected float relation;
 	protected int xpGain = -1;
@@ -128,14 +131,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		return repResult;
 	}
 	
-	public void setMarket(MarketAPI market) {
-		this.market = market;
-	}
-	
-	public void setResult(CovertActionResult result) {
-		this.result = result;
-	}
-	
 	public abstract String getDefId();
 	
 	public CovertOpsManager.CovertActionDef getDef() {
@@ -148,22 +143,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 			name = Misc.ucFirst(name.toLowerCase());
 		}
 		return name;
-	}
-	
-	public AgentIntel getAgent() {
-		return agent;
-	}
-	
-	public FactionAPI getAgentFaction() {
-		return agentFaction;
-	}
-	
-	public FactionAPI getTargetFaction() {
-		return targetFaction;
-	}
-	
-	public boolean isPlayerInvolved() {
-		return playerInvolved;
 	}
 
 	private boolean seenByPlayer = false;
@@ -464,10 +443,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 			return true;
 		}
 		return false;
-	}
-	
-	public CovertActionResult getResult()	{
-		return result;
 	}
 	
 	/**
