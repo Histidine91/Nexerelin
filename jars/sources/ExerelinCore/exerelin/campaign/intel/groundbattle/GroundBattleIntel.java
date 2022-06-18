@@ -53,6 +53,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
@@ -940,14 +941,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		boolean anyInStorage = false;
 		
-		boolean playerInRangeForReturn = false;	//MathUtils.getDistance(Global.getSector().getPlayerFleet(), market.getPlanetEntity()) > GBConstants.MAX_SUPPORT_DIST;
+		boolean playerInRangeForReturn = MathUtils.getDistance(Global.getSector().getPlayerFleet(), market.getPrimaryEntity()) < GBConstants.MAX_SUPPORT_DIST;
 		boolean returnToFleet = ALWAYS_RETURN_TO_FLEET || storage == null 
 				|| playerInRangeForReturn || outcome == BattleOutcome.PEACE;
 		
 		for (GroundUnit unit : new ArrayList<>(playerData.getUnits())) {
 			// if any player units are on market, send them to storage
 			// but only if player is out of range, else send them back to fleet?
-			// nah, too complicated
 			if (unit.getLocation() != null) {
 				if (!returnToFleet) {
 					storage.getCargo().addCommodity(Commodities.MARINES, unit.personnel);
@@ -1231,11 +1231,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		MarketAPI origin = GBUtils.getMarketForCounterInvasion(market);
 		if (origin == null) return;
 		
-		responseIntel = GBUtils.prepCounterInvasion(origin, market);
-		if (responseIntel == null) return;
-		responseIntel.init();
-		float cost = responseIntel.getBaseFP();
-		InvasionFleetManager.getManager().modifySpawnCounter(market.getFactionId(), -cost);
+		responseIntel = GBUtils.generateCounterInvasion(this, origin, market);
 	}
 	
 	/**
@@ -1352,7 +1348,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (special != null) {
 			Global.getSector().getPlayerFleet().getCargo().addSpecial(special, 1);
 			ifb.getIndustry().setSpecialItem(null);
-		}		
+		}
 		
 		Global.getSoundPlayer().playUISound("ui_cargo_special_military_drop", 1, 1);
 	}
@@ -1697,27 +1693,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return subpanel;
 	}
 	
-	public void placeElementInRows(CustomPanelAPI element, int numPrevious, 
-			CustomPanelAPI holder, List<CustomPanelAPI> elements,int maxPerRow) {
-		if (numPrevious == 0) {
-			// first card, place in TL
-			holder.addComponent(element).inTL(0, 3);
-			//log.info("Placing card in TL");
-		}
-		else if (numPrevious % maxPerRow == 0) {
-			// row filled, place under first card of previous row
-			int rowNum = numPrevious/maxPerRow - 1;
-			CustomPanelAPI firstOfPrevious = elements.get(maxPerRow * rowNum);
-			holder.addComponent(element).belowLeft(firstOfPrevious, 3);
-			//log.info("Placing card in new row");
-		}
-		else {
-			// right of last card
-			holder.addComponent(element).rightOfTop(elements.get(numPrevious - 1), GroundUnit.PADDING_X);
-			//log.info("Placing card in current row");
-		}
-	}
-	
 	/**
 	 * Draws the subpanel listing player units.
 	 * @param info
@@ -1848,12 +1823,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				//log.info("Created card for " + unit.name);
 				
 				int numPrevious = unitCards.size();
-				placeElementInRows(unitCard, numPrevious, unitPanel, unitCards, CARDS_PER_ROW);
+				NexUtilsGUI.placeElementInRows(unitPanel, unitCard, unitCards, numPrevious, CARDS_PER_ROW, GroundUnit.PADDING_X);
 				unitCards.add(unitCard);
 			}
-			if (listToRead.size() < MAX_PLAYER_UNITS) {
+			if (playerIsAttacker != null && listToRead.size() < MAX_PLAYER_UNITS) {
 				CustomPanelAPI newCard = GroundUnit.createBlankCard(unitPanel, unitSize);
-				placeElementInRows(newCard, unitCards.size(), unitPanel, unitCards, CARDS_PER_ROW);
+				NexUtilsGUI.placeElementInRows(unitPanel, newCard, unitCards, unitCards.size(), CARDS_PER_ROW, GroundUnit.PADDING_X);
 			}
 			
 		} catch (Exception ex) {
@@ -1958,7 +1933,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				//log.info("Created card for " + unit.name);
 				
 				int numPrevious = abilityCards.size();
-				placeElementInRows(abilityCard, numPrevious, abilityPanel, abilityCards, CARDS_PER_ROW);
+				NexUtilsGUI.placeElementInRows(abilityPanel, abilityCard, abilityCards, numPrevious, CARDS_PER_ROW, 3);
 				abilityCards.add(abilityCard);
 			}			
 		} catch (Exception ex) {

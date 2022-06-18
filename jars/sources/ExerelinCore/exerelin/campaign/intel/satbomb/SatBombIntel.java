@@ -223,7 +223,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 	
 	@Override
 	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
-		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(fleet, route, (InvActionStage)action);
+		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(this, fleet, route, (InvActionStage)action);
 		return raidAI;
 	}
 	

@@ -6,16 +6,16 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.invasion.CounterInvasionIntel;
-import exerelin.campaign.intel.invasion.InvasionIntel;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.NexConfig;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -190,20 +190,46 @@ public class GBUtils {
 		else return mech/inf;
 	}
 	
-	public static CounterInvasionIntel prepCounterInvasion(MarketAPI origin, MarketAPI target) {
-		float fp = InvasionFleetManager.estimatePatrolStrength(target, 0.1f);
+	public static CounterInvasionIntel generateCounterInvasion(GroundBattleIntel gb, MarketAPI origin, MarketAPI target) {
+		String factionId = origin.getFactionId();
+		float fp = 0;	//InvasionFleetManager.estimatePatrolStrength(target, 0.1f);
+		fp += target.getSize() * target.getSize() * 3 * 1.25f;
 		fp *= InvasionFleetManager.getInvasionSizeMult(origin.getFactionId());
 		
 		// smaller than a normal invasion
-		float sizeMult = 0.5f;
+		float sizeMult = 1;	//0.5f;
 		sizeMult *= Math.min(1, origin.getSize()/(float)target.getSize());
 		if (!Misc.isMilitary(origin)) sizeMult *= 0.7f;
 		fp *= sizeMult;
 		
-		float organizeTime = InvasionFleetManager.getOrganizeTime(fp) * 0.5f;
+		if (FleetPoolManager.USE_POOL) {
+			fp = FleetPoolManager.getManager().drawFromPool(factionId, new FleetPoolManager.RequisitionParams(fp, 0, 0f, 1));
+			if (fp < 30) return null;
+		}
+		else if (InvasionFleetManager.getManager().getSpawnCounter(factionId) < NexConfig.pointsRequiredForInvasionFleet/5) 
+		{
+			return null;
+		}
 		
-		CounterInvasionIntel intel = new CounterInvasionIntel(origin.getFaction(), origin, target, fp, organizeTime);
-		return intel;
+		float organizeTime = 0;	//InvasionFleetManager.getOrganizeTime(fp) * 0.2f;
+		
+		CounterInvasionIntel counter = new CounterInvasionIntel(gb, origin.getFaction(), origin, target, fp, organizeTime);
+		counter.init();
+		InvasionFleetManager.getManager().modifySpawnCounterV2(factionId, InvasionFleetManager.getInvasionPointCost(fp, counter));
+		return counter;
+	}
+	
+	public static float getCounterInvasionDistMult(MarketAPI market) {
+		float mult = 1;
+		for (Industry ind : market.getIndustries()) {
+			if (ind.isDisrupted()) continue;
+			
+			if (ind.getSpec().hasTag(Industries.TAG_COMMAND))
+				mult = 4;
+			else if (ind.getSpec().hasTag(Industries.TAG_MILITARY))
+				mult = 2;
+		}
+		return mult;
 	}
 	
 	public static MarketAPI getMarketForCounterInvasion(MarketAPI target) {
@@ -211,6 +237,9 @@ public class GBUtils {
 		List<CounterInvasionOriginPick> sorted = new ArrayList<>();
 		
 		for (MarketAPI market : available) {
+			if (market == target) continue;
+			if (market.isHidden()) continue;
+			
 			boolean sameSystem = market.getContainingLocation() == target.getContainingLocation();
 			boolean military = Misc.isMilitary(market);
 			float priority;
@@ -224,8 +253,11 @@ public class GBUtils {
 			float score = market.getSize() * 10;
 			if (military) score *= 3;
 			if (!sameSystem) {
-				float dist = Misc.getDistanceLY(market.getPlanetEntity(), target.getPrimaryEntity());
-				if (dist > GBConstants.MAX_DIST_FOR_COUNTER_INVASION) continue;
+				float dist = Misc.getDistanceLY(market.getPrimaryEntity(), target.getPrimaryEntity());
+				float distMult = getCounterInvasionDistMult(market);
+				float maxDist = GBConstants.MAX_DIST_FOR_COUNTER_INVASION * distMult;
+				
+				if (dist > maxDist) continue;
 				if (dist < 1) dist = 1;
 				score /= dist;
 			}

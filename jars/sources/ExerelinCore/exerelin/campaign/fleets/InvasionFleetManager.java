@@ -698,12 +698,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	/**
 	 * Try to create an invasion fleet or raid fleet.
-	 * @param faction The faction launching an invasion
-	 * @param targetFaction
+	 * @param faction The faction launching an invasion/raid
+	 * @param targetFaction Faction to target (null to automatically pick a random faction)
 	 * @param type
 	 * @param sizeMult
 	 * @param rp Parameters for drawing from fleet pool (set to null if pool should not be touched).
-	 * @return The invasion fleet intel, if one was created
+	 * @return The invasion/raid fleet intel, if one was created
 	 */
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
 			EventType type, float sizeMult, RequisitionParams rp)

@@ -627,7 +627,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	
 	@Override
 	public RouteFleetAssignmentAI createAssignmentAI(CampaignFleetAPI fleet, RouteManager.RouteData route) {
-		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(fleet, route, 
+		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(this, fleet, route, 
 				outcome == null ? (InvActionStage)action : waitStage);
 		return raidAI;
 	}

@@ -28,9 +28,11 @@ import org.lazywizard.lazylib.MathUtils;
 public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	
 	protected transient IntervalUtil assistCheckInterval = new IntervalUtil(0.15f, 0.15f);
+	protected OffensiveFleetIntel ofi;
 	
-	public RaidAssignmentAINoWander(CampaignFleetAPI fleet, RouteData route, FleetActionDelegate delegate) {
+	public RaidAssignmentAINoWander(OffensiveFleetIntel ofi, CampaignFleetAPI fleet, RouteData route, FleetActionDelegate delegate) {
 		super(fleet, route, delegate);
+		this.ofi = ofi;
 	}
 	
 	protected Object readResolve() {
@@ -321,7 +323,7 @@ public class RaidAssignmentAINoWander extends RaidAssignmentAI {
 	
 	@Override
 	protected void giveRaidOrder(MarketAPI target) {
-		if (target.getFaction() == fleet.getFaction())
+		if (target.getFaction() == fleet.getFaction() && (ofi == null || ofi.abortIfNonHostile))
 			return;
 		super.giveRaidOrder(target);
 	}
