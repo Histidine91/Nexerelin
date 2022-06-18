@@ -441,6 +441,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		fleet.getMemoryWithoutUpdate().set("$nex_buildStation_builder", true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 99999);
 		
 		Global.getSector().getListenerManager().addListener(this);
