@@ -212,7 +212,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 			time *= 1 + 0.25f * (market.getSize() - 3);
 		}
 		if (CovertOpsManager.isDebugMode() || NexUtils.isNonPlaytestDevMode())
-			time *= 0.1f;
+			time *= 0.05f;
 		
 		return time;
 	}

@@ -16,6 +16,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -23,13 +24,15 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 public class RaiseRelations extends CovertActionIntel {
 	
 	public static final String MEM_KEY_COOLDOWN = "$nex_agentModifyRelationsCooldown";
 	public static final float MODIFY_RELATIONS_COOLDOWN = 30;	// days
 	
-	protected FactionAPI thirdFaction;
+	@Getter @Setter protected FactionAPI thirdFaction;
 
 	public RaiseRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved, Map<String, Object> params) {
@@ -37,13 +40,12 @@ public class RaiseRelations extends CovertActionIntel {
 		this.thirdFaction = thirdFaction;
 	}
 	
-	public void setThirdFaction(FactionAPI thirdFaction) {
-		this.thirdFaction = thirdFaction;
-	}
-	
 	@Override
 	public float getTimeNeeded() {
-		return super.getTimeNeeded() + getModifyRelationsCooldown(targetFaction);
+		float cooldown = getModifyRelationsCooldown(targetFaction);
+		if (CovertOpsManager.isDebugMode() || NexUtils.isNonPlaytestDevMode())
+			cooldown *= 0.05f;
+		return super.getTimeNeeded() + cooldown;
 	}
 	
 	@Override

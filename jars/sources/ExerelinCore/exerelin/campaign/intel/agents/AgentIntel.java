@@ -31,6 +31,7 @@ import com.fs.starfarer.api.util.MutableValue;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -77,6 +78,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final String BUTTON_REPEAT_ACTION = "repeat";
 	protected static final String BUTTON_MASTERY = "mastery";
 	protected static final String BUTTON_CELL_KILL = "cellKill";
+	protected static final String BUTTON_REPEAT_RELATIONS = "repeatRelations";
 	
 	protected static final String BUTTON_DISMISS = "dismiss";
 	
@@ -94,6 +96,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected boolean isDismissed = false;
 	protected boolean wantLevelUpNotification = false;
 	protected boolean cellKillMode = false;
+	protected boolean repeatRelationsMode = false;
 	
 	protected IntervalUtil cellKillInterval = new IntervalUtil(3, 3);
 	
@@ -269,7 +272,49 @@ public class AgentIntel extends BaseIntelPlugin {
 	public void notifyActionCompleted() {
 		lastAction = getCurrentAction();
 		lastActionTimestamp = Global.getSector().getClock().getTimestamp();
+		
+		// repeat relationship action if appropriate
+		if (repeatRelationsMode && (lastAction instanceof RaiseRelations || lastAction instanceof LowerRelations)) 
+		{
+			boolean doneAllWeCan = false;
+			if (lastAction instanceof RaiseRelations) {
+				RaiseRelations act = (RaiseRelations)lastAction;
+				float rel = act.getTargetFaction().getRelationship(act.getThirdFaction().getId());
+				float max = DiplomacyManager.getManager().getMaxRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
+				//log.info(String.format("Relationship at %s, max %s, is max: %s", rel, max, rel >= max));
+				doneAllWeCan = rel + 0.005f >= max;
+			} else if (lastAction instanceof LowerRelations) {
+				LowerRelations act = (LowerRelations)lastAction;
+				float rel = act.getTargetFaction().getRelationship(act.getThirdFaction().getId());
+				float min = DiplomacyManager.getManager().getMaxRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
+				doneAllWeCan = rel - 0.005f <= min;
+			}
+			
+			if (!doneAllWeCan) {
+				repeatLastAction(true);
+				// TODO: event notification
+				return;
+			}			
+		}
+		
 		pushActionQueue();
+	}
+	
+	public void repeatLastAction(boolean toFront) {
+		try {
+			CovertActionIntel repeat = (CovertActionIntel)lastAction.clone();
+			MutableValue currCredits = Global.getSector().getPlayerFleet().getCargo().getCredits();
+			if (currCredits.get() < repeat.cost)
+				return;
+			
+			if (toFront) addAction(repeat, 0);
+			else addAction(repeat);
+			
+			Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(repeat.cost);
+			repeat.activate();
+		} catch (CloneNotSupportedException ex) {
+			Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
+		}
 	}
 	
 	/**
@@ -686,6 +731,28 @@ public class AgentIntel extends BaseIntelPlugin {
 					tooltip.addPara(getString("intelButtonCellKillTooltip"), 0);
 				}
 		}, TooltipMakerAPI.TooltipLocation.BELOW);
+			
+		// repeat relations option
+		button = info.addAreaCheckbox(getString("intelButtonRepeatRelations"), BUTTON_REPEAT_RELATIONS, 
+				pf.getBaseUIColor(), pf.getDarkUIColor(), pf.getBrightUIColor(),
+				(int)width, 20f, opad);
+		button.setChecked(repeatRelationsMode);
+		info.addTooltipToPrevious(new TooltipCreator(){
+				@Override
+				public boolean isTooltipExpandable(Object tooltipParam) {
+					return false;
+				}
+
+				@Override
+				public float getTooltipWidth(Object tooltipParam) {
+					return 360;
+				}
+
+				@Override
+				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+					tooltip.addPara(getString("intelButtonRepeatRelationsTooltip"), 0);
+				}
+		}, TooltipMakerAPI.TooltipLocation.BELOW);
 		
 		// local report
 		if (market != null) {
@@ -792,17 +859,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			nextAction.abort();
 			actionQueue.remove(nextAction);
 		} else if (buttonId == BUTTON_REPEAT_ACTION) {
-			try {
-				CovertActionIntel repeat = (CovertActionIntel)lastAction.clone();
-				MutableValue currCredits = Global.getSector().getPlayerFleet().getCargo().getCredits();
-				if (currCredits.get() < repeat.cost)
-					return;
-				addAction(repeat);
-				Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(repeat.cost);
-				repeat.activate();
-			} catch (CloneNotSupportedException ex) {
-				Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
-			}
+			repeatLastAction(false);
 		} else if (buttonId instanceof ProcureShip) {
 			ProcureShip procure = (ProcureShip)buttonId;
 			ui.showDialog(null, new ProcureShipDestinationDialog(this, procure, procure.destination, ui));
@@ -819,6 +876,8 @@ public class AgentIntel extends BaseIntelPlugin {
 			CovertOpsManager.getManager().removeAgent(this);
 		} else if (buttonId == BUTTON_CELL_KILL) {
 			cellKillMode = !cellKillMode;
+		} else if (buttonId == BUTTON_REPEAT_RELATIONS) {
+			repeatRelationsMode = !repeatRelationsMode;
 		}
 		super.buttonPressConfirmed(buttonId, ui);
 	}

@@ -21,12 +21,15 @@ import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
 
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 public class LowerRelations extends CovertActionIntel {
 	
@@ -37,17 +40,13 @@ public class LowerRelations extends CovertActionIntel {
 		repResult2 is change between self and third faction
 	*/
 	
-	protected FactionAPI thirdFaction;
+	@Getter @Setter protected FactionAPI thirdFaction;
 	protected ExerelinReputationAdjustmentResult repResult2;
 	protected float relation2;
 
 	public LowerRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, 
 			FactionAPI thirdFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
-		this.thirdFaction = thirdFaction;
-	}
-	
-	public void setThirdFaction(FactionAPI thirdFaction) {
 		this.thirdFaction = thirdFaction;
 	}
 	
@@ -60,7 +59,10 @@ public class LowerRelations extends CovertActionIntel {
 	
 	@Override
 	public float getTimeNeeded() {
-		return super.getTimeNeeded() + RaiseRelations.getModifyRelationsCooldown(targetFaction);
+		float cooldown = RaiseRelations.getModifyRelationsCooldown(targetFaction);
+		if (CovertOpsManager.isDebugMode() || NexUtils.isNonPlaytestDevMode())
+			cooldown *= 0.05f;
+		return super.getTimeNeeded() + cooldown;
 	}
 	
 	@Override
