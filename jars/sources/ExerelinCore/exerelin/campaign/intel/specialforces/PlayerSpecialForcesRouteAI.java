@@ -56,6 +56,12 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 		return super.pickTask(priorityDefenseOnly);
 	}
 	
+	@Override
+	public void updateTaskIfNeeded() {
+		if (!psf.independentMode) return;
+		super.updateTaskIfNeeded();
+	}
+	
 	public SpecialForcesTask generateResupplyTask() {
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.RESUPPLY, 9999f);
 		// TODO: find location
