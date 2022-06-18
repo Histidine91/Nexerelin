@@ -69,6 +69,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final Object UPDATE_LEVEL_UP = new Object();
 	protected static final Object UPDATE_INJURY_RECOVERED = new Object();
 	protected static final Object UPDATE_CELL_KILL = new Object();
+	protected static final Object UPDATE_REPEAT_RELATIONS = new Object();
 	protected static final Object UPDATE_LOST = new Object();
 	protected static final Object UPDATE_ABORTED = new Object();
 	protected static final String BUTTON_ORDERS = "orders";
@@ -276,25 +277,8 @@ public class AgentIntel extends BaseIntelPlugin {
 		// repeat relationship action if appropriate
 		if (repeatRelationsMode && (lastAction instanceof RaiseRelations || lastAction instanceof LowerRelations)) 
 		{
-			boolean doneAllWeCan = false;
-			if (lastAction instanceof RaiseRelations) {
-				RaiseRelations act = (RaiseRelations)lastAction;
-				float rel = act.getTargetFaction().getRelationship(act.getThirdFaction().getId());
-				float max = DiplomacyManager.getManager().getMaxRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
-				//log.info(String.format("Relationship at %s, max %s, is max: %s", rel, max, rel >= max));
-				doneAllWeCan = rel + 0.005f >= max;
-			} else if (lastAction instanceof LowerRelations) {
-				LowerRelations act = (LowerRelations)lastAction;
-				float rel = act.getTargetFaction().getRelationship(act.getThirdFaction().getId());
-				float min = DiplomacyManager.getManager().getMaxRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
-				doneAllWeCan = rel - 0.005f <= min;
-			}
-			
-			if (!doneAllWeCan) {
-				repeatLastAction(true);
-				// TODO: event notification
-				return;
-			}			
+			boolean repeated = tryRepeatRelations();
+			if (repeated) return;
 		}
 		
 		pushActionQueue();
@@ -315,6 +299,31 @@ public class AgentIntel extends BaseIntelPlugin {
 		} catch (CloneNotSupportedException ex) {
 			Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
 		}
+	}
+	
+	public boolean tryRepeatRelations() {
+		boolean doneAllWeCan = false;
+		CovertActionIntel act = lastAction;
+		int cost = act.getCost();
+		if (cost > Global.getSector().getPlayerFleet().getCargo().getCredits().get()) return false;
+		
+		if (lastAction instanceof RaiseRelations) {
+			float rel = act.getTargetFaction().getRelationship(act.getThirdFaction().getId());
+			float max = DiplomacyManager.getManager().getMaxRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
+			//log.info(String.format("Relationship at %s, max %s, is max: %s", rel, max, rel >= max));
+			doneAllWeCan = rel + 0.005f >= max;
+		} else if (lastAction instanceof LowerRelations) {
+			float rel = act.getTargetFaction().getRelationship(act.getThirdFaction().getId());
+			float min = DiplomacyManager.getManager().getMaxRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
+			doneAllWeCan = rel - 0.005f <= min;
+		}
+
+		if (!doneAllWeCan) {
+			repeatLastAction(true);
+			sendUpdateIfPlayerHasIntel(UPDATE_REPEAT_RELATIONS, false);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -388,7 +397,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		addAction(action);
 		if (target == this.market) action.activate();
 		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(action.cost);
-		this.sendUpdateIfPlayerHasIntel(UPDATE_CELL_KILL, false);
+		sendUpdateIfPlayerHasIntel(UPDATE_CELL_KILL, false);
 	}
 	
 	/**
@@ -498,7 +507,23 @@ public class AgentIntel extends BaseIntelPlugin {
 				LabelAPI label = info.addPara(str, initPad);
 				label.setHighlight(mktName, costStr);
 				label.setHighlightColors(destination.getTextColorForFactionOrPlanet(), hl);
-			}			
+			}
+		} else if (listInfoParam == UPDATE_REPEAT_RELATIONS) {
+			CovertActionIntel act = getCurrentAction();
+			FactionAPI faction1 = act.getTargetFaction();
+			FactionAPI faction2 = act.getThirdFaction();
+			String actionName = act.getName();
+			
+			String str = getString("intelRepeatRelations");
+			String costStr = Misc.getDGSCredits(act.getCost());
+			str = StringHelper.substituteToken(str, "$action", act.getName());
+			str = StringHelper.substituteToken(str, "$faction1", faction1.getDisplayName());
+			str = StringHelper.substituteToken(str, "$faction2", faction2.getDisplayName());
+			str = StringHelper.substituteToken(str, "$cost", costStr);
+			
+			LabelAPI label = info.addPara(str, initPad);
+			label.setHighlight(act.getName(), faction1.getDisplayName(), faction2.getDisplayName(), costStr);
+			label.setHighlightColors(hl, faction1.getBaseUIColor(), faction2.getBaseUIColor(), hl);
 		} else if (listInfoParam == UPDATE_LOST) {
 			
 		} else {
