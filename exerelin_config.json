@@ -44,7 +44,7 @@
     
     # if false, replaces NPC invasions (including revenge counter-invasion mechanic) with raids
     "enableInvasions": true,
-    "legacyInvasions": false,	# old invasion system before v0.10.3 revamp (if I haven't released v0.10.3 yet, this is a beta feature)
+    "legacyInvasions": false,	# old invasion system before v0.10.3 revamp
     "allowInvadeStoryCritical":false,    # block NPC invasions from targeting story-critical markets
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
@@ -54,7 +54,7 @@
     "invasionFleetSizeMult": 1,
     "responseFleetSizeMult": 1,
     "invasionGracePeriod": 90,  # factions won't accumulate invasion points for this many days at start
-    "pointsRequiredForInvasionFleet": 27000,    # bigger = longer delay between invasion fleets
+    "pointsRequiredForInvasionFleet": 27000,    # name is a bit misleading, but anyway bigger number = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
     "invasionPointsPerPlayerLevel": 1.5,
@@ -73,7 +73,7 @@
     "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
     "doubleSubmarketWeapons": false,	# if true, double the amount of weapons generated on most submarkets (old behavior)
     
-    "prismInHyperspace": false,	# if false, Prism will get its own star system (but not if added midgame)
+    #"prismInHyperspace": false,	# if false, Prism will get its own star system (but not if added midgame). Likely to crash, not recommended
     "prismMaxWeapons": 27,
     "prismNumShips": 14,
     "prismNumWings": 6,
