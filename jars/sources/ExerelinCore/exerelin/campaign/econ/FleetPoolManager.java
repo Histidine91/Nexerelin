@@ -47,7 +47,9 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	// approximate conversion ratio of invasion points to fleet points, plus a bit of margin since this is used for more than invasions
 	public static final float FLEET_POOL_MULT = 0.02f;
 	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
-	public static final float FLEET_POOL_MAX = 50000;	// 50k
+	@Deprecated public static final float FLEET_POOL_MAX = 50000;	// 50k
+	public static final float FLEET_POOL_MAX_MULT = 365;	// 1 year of storage
+	
 	public static final List<String> COMMODITIES = Arrays.asList(new String[] {
 		Commodities.SHIPS, Commodities.SUPPLIES, Commodities.FUEL
 	});
@@ -90,10 +92,17 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	
 	public float modifyPool(String factionId, float amount) {
 		float pool = getCurrentPoolInternal(factionId);
+		float max = Math.max(pool, getMaxPool(factionId));
 		pool += amount;
-		if (pool > FLEET_POOL_MAX) pool = FLEET_POOL_MAX;
+		if (pool > max) pool = max;
+		
+		
 		factionPools.put(factionId, pool);
 		return pool;
+	}
+	
+	public float getMaxPool(String factionId) {
+		return Math.max(100, getPointsLastTick(Global.getSector().getFaction(factionId)) * FLEET_POOL_MULT);
 	}
 	
 	/**
