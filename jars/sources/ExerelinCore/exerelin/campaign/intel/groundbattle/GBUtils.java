@@ -193,7 +193,7 @@ public class GBUtils {
 	public static CounterInvasionIntel generateCounterInvasion(GroundBattleIntel gb, MarketAPI origin, MarketAPI target) {
 		String factionId = origin.getFactionId();
 		float fp = 0;	//InvasionFleetManager.estimatePatrolStrength(target, 0.1f);
-		fp += target.getSize() * target.getSize() * 3 * 1.25f;
+		fp += target.getSize() * target.getSize() * 3 * 5f;
 		fp *= InvasionFleetManager.getInvasionSizeMult(origin.getFactionId());
 		
 		// smaller than a normal invasion
