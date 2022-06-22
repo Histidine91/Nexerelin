@@ -132,6 +132,12 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		}
 	}
 	
+	public float getFactionPoints(String factionId) {
+		if (factionPoints.containsKey(factionId))
+			return factionPoints.get(factionId);
+		return 0;
+	}
+	
 	/**
 	 * Add vengeance points for a specific faction (for sat bomb and hunter-killer fleets)
 	 * @param factionId
