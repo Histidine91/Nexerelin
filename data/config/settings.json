@@ -90,6 +90,8 @@
 	
 	"nex_merc_company_contract_period":365,
 	
+	"nex_killCellsForCommissioner":false,
+	
 	"nex_playerOutpost_metals":400,
 	"nex_playerOutpost_supplies":75,
 	"nex_playerOutpost_machinery":50,

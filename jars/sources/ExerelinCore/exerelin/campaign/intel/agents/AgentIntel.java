@@ -338,7 +338,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		List<MarketAPI> playerMarkets = Misc.getFactionMarkets(Factions.PLAYER);
 		target = getClosestMarketForCellKill(playerMarkets);
 		
-		if (target == null && Misc.getCommissionFaction() != null) {
+		if (target == null && Misc.getCommissionFaction() != null && Global.getSettings().getBoolean("nex_killCellsForCommissioner")) {
 			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
 			target = getClosestMarketForCellKill(commMarkets);
 		}
