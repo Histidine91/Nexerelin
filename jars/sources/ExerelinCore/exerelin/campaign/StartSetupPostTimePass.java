@@ -184,6 +184,7 @@ public class StartSetupPostTimePass {
 				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$metDaud", true);
 				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$gaveDaudYaribayContact", true);
 				mem.set("$gaATG_missionCompleted", true);
+				mem.set("$gaATG_missionGiven", true);
 				mem.set("$gaFC_missionCompleted", true);
 				mem.set("$gaKA_missionCompleted", true);
 				mem.set("$gaPZ_missionCompleted", true);
