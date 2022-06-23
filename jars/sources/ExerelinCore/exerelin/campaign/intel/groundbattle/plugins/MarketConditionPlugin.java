@@ -16,6 +16,7 @@ import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 	
 	protected String conditionId;
+	protected Boolean isAttacker;
 		
 	public void init(GroundBattleIntel intel, String conditionId) {
 		init(intel);
@@ -64,7 +65,7 @@ public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 	public void addModifierEntry(TooltipMakerAPI info, CustomPanelAPI outer, 
 			float width, float pad, Boolean isAttacker) {		
 				
-		if (isAttacker != null) {
+		if (isAttacker != this.isAttacker) {
 			return;
 		}
 		MarketConditionAPI cond = intel.getMarket().getCondition(conditionId);
