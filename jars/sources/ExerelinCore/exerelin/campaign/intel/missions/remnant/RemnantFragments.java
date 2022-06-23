@@ -428,6 +428,8 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		fleet.getBattle().uncombine();
 		fleet.getBattle().genCombined();
 		
+		Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1.1f, 1.5f);
+		
 		shardsDeployed = true;
 	}
 	
@@ -450,6 +452,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	
 	public int getSkillValueForHack(SkillLevelAPI skill) {
 		if (!skill.getSkill().getGoverningAptitudeId().equals(Skills.APT_TECHNOLOGY)) return 0;
+		if (skill.getLevel() <= 0) return 0;
 		switch (skill.getSkill().getId()) {
 			case Skills.ELECTRONIC_WARFARE:
 			case Skills.AUTOMATED_SHIPS:
