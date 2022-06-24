@@ -256,10 +256,22 @@ public class AgentIntel extends BaseIntelPlugin {
 		else
 			currentAction = null;
 		*/
-		if (actionQueue.isEmpty()) return;
-		actionQueue.remove(0);
-		if (actionQueue.isEmpty()) return;
-		actionQueue.get(0).activate();
+		
+		// don't loop it, the abort() call will take care of pushing the queue again
+		//while (!actionQueue.isEmpty()) 
+		{
+			boolean abortedIsTravel = actionQueue.get(0) instanceof Travel;
+			actionQueue.remove(0);
+			if (actionQueue.isEmpty()) return;
+			CovertActionIntel currAction = actionQueue.get(0);
+			// probably don't need both checks but meh
+			if (!abortedIsTravel || currAction.market == this.market) {
+				currAction.activate();
+				return;
+			} else {
+				currAction.abort();
+			}
+		}
 	}
 	
 	protected void removeActionFromQueue(CovertActionIntel action) {
