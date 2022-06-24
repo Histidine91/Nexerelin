@@ -262,13 +262,18 @@ public class AgentIntel extends BaseIntelPlugin {
 		{
 			boolean abortedIsTravel = actionQueue.get(0) instanceof Travel;
 			actionQueue.remove(0);
-			if (actionQueue.isEmpty()) return;
+			if (actionQueue.isEmpty()) {
+				//log.info("Action queue is empty, exiting");
+				return;
+			}
 			CovertActionIntel currAction = actionQueue.get(0);
 			// probably don't need both checks but meh
 			if (!abortedIsTravel || currAction.market == this.market) {
+				//log.info("Activating next action");
 				currAction.activate();
 				return;
 			} else {
+				//log.info("Previous action required travel, aborting queued action");
 				currAction.abort();
 			}
 		}
@@ -331,6 +336,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		}
 
 		if (!doneAllWeCan) {
+			actionQueue.remove(0);
 			repeatLastAction(true);
 			sendUpdateIfPlayerHasIntel(UPDATE_REPEAT_RELATIONS, false);
 			return true;
@@ -904,6 +910,8 @@ public class AgentIntel extends BaseIntelPlugin {
 			this.specializations.clear();
 			Global.getSector().getPlayerStats().spendStoryPoints(1, true, null, true, 0, getMasteryLogString());
 		} else if (buttonId == BUTTON_DISMISS) {
+			if (nextAction != null)
+				nextAction.abort();
 			if (currentAction != null)
 				currentAction.abort();
 			lastAction = null;
