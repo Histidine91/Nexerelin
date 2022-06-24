@@ -94,15 +94,16 @@ public class FleetPoolManager extends BaseIntelPlugin {
 		float pool = getCurrentPoolInternal(factionId);
 		float max = Math.max(pool, getMaxPool(factionId));
 		pool += amount;
-		if (pool > max) pool = max;
-		
+		if (pool > max) pool = max;		
 		
 		factionPools.put(factionId, pool);
 		return pool;
 	}
 	
 	public float getMaxPool(String factionId) {
-		return Math.max(100, getPointsLastTick(Global.getSector().getFaction(factionId)) * FLEET_POOL_MULT);
+		float lastTick = getPointsLastTick(Global.getSector().getFaction(factionId));
+		//log.info(String.format("Max pool for %s is %s times %s == %s", factionId, lastTick, FLEET_POOL_MAX_MULT, lastTick * FLEET_POOL_MAX_MULT));
+		return Math.max(100, lastTick * FLEET_POOL_MAX_MULT);
 	}
 	
 	/**

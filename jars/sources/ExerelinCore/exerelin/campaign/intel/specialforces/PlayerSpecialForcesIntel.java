@@ -295,7 +295,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			officerSalary += Misc.getOfficerSalary(officer.getPerson());
 		}
 		FDNode officerNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_offSal", 
-				getString("reportNode_officer"), faction.getCrest(), officerSalary * f, false);
+				getString("reportNode_officer"), Global.getSettings().getSpriteName("income_report", "officers"), 
+				officerSalary * f, false);
 		
 		CommoditySpecAPI crewSpec = Global.getSettings().getCommoditySpec(Commodities.CREW);
 		float crew = fleet.getFleetData().getMinCrew();

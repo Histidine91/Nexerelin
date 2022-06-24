@@ -41,6 +41,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.econ.FleetPoolManager;
 import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
@@ -421,6 +422,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			rebuildFleet();
 		}
 		SpecialForcesManager.getManager().incrementPoints(faction.getId(), -fp);
+		FleetPoolManager.getManager().modifyPool(faction.getId(), -fp);
 	}
 	
 	/**
@@ -570,7 +572,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		// Event over?
 		boolean over = route == null || isEnding() || isEnded();
 		if (this instanceof PlayerSpecialForcesIntel) {
-			over |= !((PlayerSpecialForcesIntel)this).isAlive;
+			boolean live = ((PlayerSpecialForcesIntel)this).isAlive || ((PlayerSpecialForcesIntel)this).waitingForSpawn;
+			over |= !live;
 		}
 		if (over) {
 			str = getString("intelDescOver");

@@ -760,7 +760,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (rp != null) {
 			rp.amount = fp;
 			fp = FleetPoolManager.getManager().drawFromPool(factionId, rp);
-			if (fp < 10) return null;
+			if (fp < 10) {
+				FleetPoolManager.getManager().modifyPool(factionId, fp);
+				return null;
+			}
 		}		
 		
 		if (type != EventType.RAID)
