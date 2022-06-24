@@ -64,7 +64,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	public static Logger log = Global.getLogger(RemnantBrawl.class);
 	
 	public static final float STRAGGLER_LOST_ATTACK_DELAY = 15;
-	public static final float STAGING_AREA_FOUND_ATTACK_DELAY = 2.5f;
+	public static final float STAGING_AREA_FOUND_ATTACK_DELAY = 3.5f;
 	public static final int BATTLE_MAX_DAYS = 45;
 	public static final float DISTANCE_TO_SPAWN_STRAGGLER = 1f;
 	public static final float STRAGGLER_WAIT_TIME = 3.5f;
@@ -314,7 +314,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		CampaignFleetAPI fleet = spawnFleet(params, stragglerOrigin.getPrimaryEntity());
 		attackFleets.add(fleet);
-		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, stragglerOrigin.getPrimaryEntity(), STRAGGLER_WAIT_TIME);
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, stragglerOrigin.getPrimaryEntity(), 
+				STRAGGLER_WAIT_TIME, new SetStageScript(this, Stage.FOLLOW_STRAGGLER));
 		fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, stagingPoint, 1000, 
 				StringHelper.getFleetAssignmentString("travellingTo", StringHelper.getString("unknownLocation")), 
 				new Script() {
@@ -324,7 +325,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 					}
 				});
 		fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
-		makeImportant(fleet, "$nex_remBrawl_attackFleet", Stage.FOLLOW_STRAGGLER, Stage.GO_TO_TARGET_SYSTEM, Stage.BATTLE);
+		makeImportant(fleet, "$nex_remBrawl_attackFleet", Stage.GO_TO_ORIGIN_SYSTEM, Stage.FOLLOW_STRAGGLER, Stage.GO_TO_TARGET_SYSTEM, Stage.BATTLE);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
 		fleet.removeAbility("sun_hd_hyperdrive");
@@ -344,8 +345,6 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		//fleet.getCommanderStats().setSkillLevel(Skills.NAVIGATION, 1);
 		addTugsToFleet(fleet, 2, genRandom);	// tugs instead of navigation to increase sensor profile
 		fleet.getMemoryWithoutUpdate().set(AlwaysOnTransponderAI.MEMORY_KEY_ALWAYS_ON, true);
-		
-		setCurrentStage(Stage.FOLLOW_STRAGGLER, null, null);
 		
 		straggler = fleet;
 	}
@@ -441,7 +440,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		if (heg.isAtBest(factionId, RepLevel.FAVORABLE) 
 				|| factionId.equals(Misc.getCommissionFactionId())) 
 		{
-			fleet.setFaction(Factions.HEGEMONY, true);
+			fleet.setFaction(Factions.HEGEMONY, false);
 		}
 		
 		// fleets are sus and interrogate player
@@ -475,6 +474,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			params.averageSMods = 4;
 			params.random = this.genRandom;
 			CampaignFleetAPI fleet = spawnFleet(params, station);
+			fleet.setFaction(Factions.INDEPENDENT, true);	// to set captain factions
 			fleet.setFaction(Factions.REMNANTS, false);
 			fleet.addAssignment(FleetAssignment.ORBIT_AGGRESSIVE, station, 3000);
 			fleet.getMemoryWithoutUpdate().set("$nex_remBrawl_merc", true);
@@ -513,9 +513,11 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		for (CampaignFleetAPI fleet : attackFleets) {
 			fleet.clearAssignments();
+			boolean sittingOnSystem = currentStage == Stage.SCOUT;
+			int time = sittingOnSystem ? 15 : 45; 
 			fleet.addAssignment(betrayed ? FleetAssignment.DELIVER_MARINES : FleetAssignment.ATTACK_LOCATION, 
-					targetToken, 60, StringHelper.getFleetAssignmentString("attacking", station.getName()));
-			fleet.addAssignment(FleetAssignment.INTERCEPT, station, 20);			
+					targetToken, time, StringHelper.getFleetAssignmentString("attacking", station.getName()));
+			fleet.addAssignment(FleetAssignment.INTERCEPT, station, 20);
 		}
 		
 		unsetFleetSus();		
@@ -731,7 +733,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 					@Override
 					public void doAction() {
 						if (!fleet.isAlive()) return;
-						fleet.setFaction(Factions.INDEPENDENT, true);
+						fleet.setFaction(Factions.INDEPENDENT, false);
 					}
 				});
 			}
@@ -844,9 +846,14 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		Color col = station.getStarSystem().getStar().getSpec().getIconColor();
 		String sysName = station.getContainingLocation().getNameWithLowercaseTypeShort();
 		
-		if (currentStage == Stage.GO_TO_ORIGIN_SYSTEM || currentStage == Stage.FOLLOW_STRAGGLER) 
+		if (currentStage == Stage.GO_TO_ORIGIN_SYSTEM ) 
 		{
 			info.addPara(getString("brawl_startDesc"), opad, 
+					stragglerOrigin.getFaction().getBaseUIColor(), stragglerOrigin.getName());
+		}
+		else if (currentStage == Stage.FOLLOW_STRAGGLER) 
+		{
+			info.addPara(getString("brawl_followStragglerDesc"), opad, 
 					stragglerOrigin.getFaction().getBaseUIColor(), stragglerOrigin.getName());
 		}
 		else if (currentStage == Stage.GO_TO_TARGET_SYSTEM) {
@@ -871,9 +878,12 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		//info.addPara("[debug] Current stage: " + currentStage, tc, pad);
 		
-		if (currentStage == Stage.GO_TO_ORIGIN_SYSTEM || currentStage == Stage.FOLLOW_STRAGGLER) {
+		if (currentStage == Stage.GO_TO_ORIGIN_SYSTEM) {
 			info.addPara(getString("brawl_startNextStep"), 0, tc, 
 					stragglerOrigin.getFaction().getBaseUIColor(), stragglerOrigin.getName());
+		}
+		else if (currentStage == Stage.FOLLOW_STRAGGLER) {
+			info.addPara(getString("brawl_followStragglerNextStep"), tc, 0);
 		} 
 		else if (currentStage == Stage.GO_TO_TARGET_SYSTEM) {
 			info.addPara(getString("brawl_foundStagingAreaNextStep"), 0, tc, col, sysName);
@@ -893,7 +903,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	@Override
 	protected boolean shouldSendUpdateForStage(Object id) {
-		return id != Stage.FOLLOW_STRAGGLER;
+		return true;	//id != Stage.FOLLOW_STRAGGLER;
 	}
 
 	@Override
@@ -956,9 +966,21 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			checkAttackFleetDefeated(participant);
 		}
 	}
+	
+	protected static class SetStageScript implements Script {
+		
+		public Stage stage;
+		public RemnantBrawl mission;
+		
+		public SetStageScript(RemnantBrawl mission, Stage stage) {
+			this.mission = mission;
+			this.stage = stage;
+		}
+		
+		@Override
+		public void run() {
+			log.info("Wololo running set stage script");
+			mission.setCurrentStage(stage, null, null);
+		}
+	}
 }
-
-
-
-
-

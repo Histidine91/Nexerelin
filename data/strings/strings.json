@@ -2426,14 +2426,16 @@
 		
 		"brawl_name":"Showdown",
 		"brawl_boilerplateDesc":"A large Hegemony and allied operation is planned against the Remnants. $name has asked you to prevent it from succeeding.",
-		"brawl_startDesc":"Go to %s and track the late Hegemony fleet to what is likely the allied forces' staging area.",
+		"brawl_startDesc":"Go to %s and wait for the delayed Hegemony fleet, which will lead you to to what is likely the allied forces' staging area.",
+		"brawl_followStragglerDesc":"The Hegemony fleet has departed %s, follow it to the expected staging area of the allied forces.",
 		"brawl_foundStagingAreaDesc":"You've found the staging area for the Hegemony forces. Its location suggests that their target is in the %s; you should proceed there quickly.\n\nOr if you're so inclined, you could speak with the one of the fleet commanders before they move out...",
 		"brawl_scoutDesc":"Reconnoiter the %s system for the Hegemony; travel to the marked location on the map to transmit the data.",
 		"brawl_battleDesc":"The Hegemony forces will try to destroy the Remnant station in the %s. Protect it at all costs.",
 		"brawl_battleDescUnknown":"The Hegemony forces will try to destroy a nearby Remnant station, but you do not know which one. Protect it as best as you can.",
 		"brawl_battleBetrayDesc":"You have betrayed the Remnants and transmitted reconnaissance data to the Hegemony. Their fleets will now attempt to destroy the Remnant station in the %s. Hopefully they'll get the job done; if not, finish it yourself.",
 		
-		"brawl_startNextStep":"Go to %s and follow Hegemony fleet",
+		"brawl_startNextStep":"Go to %s and wait for Hegemony fleet to depart",
+		"brawl_followStragglerNextStep":"Follow Hegemony fleet to staging area",
 		"brawl_foundStagingAreaUpdate":"AI analysis indicates most probable target is %s",
 		"brawl_foundStagingAreaNextStep":"Prepare to defend %s",
 		"brawl_foundStagingAreaNextStep2":"Or negotiate with Hegemony commander before attack commences",

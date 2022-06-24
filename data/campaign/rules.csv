@@ -2474,14 +2474,14 @@ FireBest DialogOptionSelected",,,
 ,,,,,,
 nex_remBrawl_scoutObjectInteraction,OpenInteractionDialog,"$nex_remBrawl_target score:1000 
 Call $nex_remBrawl_ref updateData
-","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting back in $nex_remBrawl_stagingAreaName. Your $shipOrFleet's sensors have been running continously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
+","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting to strike at the Remnants. Your $shipOrFleet's sensors have been running continously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
 
 ...or you could tamper with the readings, and leave them no better off, or worse, than if you'd never sent them anything.
 
 Your comms officer looks at you, ready to transmit the encoded hyperwave signal. With the encryption, the Remnants may have their suspicions, but they shouldn't know what you transmitted until it's far too late.","nex_remBrawl_scoutSendTrue:Send the true data
 nex_remBrawl_scoutSendFalse:Send the falsified data
 defaultLeave:Leave",
-nex_remBrawl_scoutSendTrue,DialogOptionSelected,$option == nex_remBrawl_scoutSendTrue,Call $nex_remBrawl_ref scoutTrue,"You transmit the accurate reconnaisance data.
+nex_remBrawl_scoutSendTrue,DialogOptionSelected,$option == nex_remBrawl_scoutSendTrue,Call $nex_remBrawl_ref scoutTrue,"You transmit the accurate reconnaissance data.
 
 Hopefully the might of the Hegemony war machine will be enough to break through the Remnants' defenses and destroy the station, like back in the days after the First AI War. If not... you'll have to finish the job yourself. ",defaultLeave:Leave,
 nex_remBrawl_scoutSendFalse,DialogOptionSelected,$option == nex_remBrawl_scoutSendFalse,Call $nex_remBrawl_ref scoutFalse,"You spend some minutes with your officers and the bridge computers tweaking the data to result in a plausible, but wholly misleading, image of the battlespace the Hegemony will face.
