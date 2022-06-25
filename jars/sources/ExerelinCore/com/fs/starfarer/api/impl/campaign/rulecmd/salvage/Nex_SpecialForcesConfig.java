@@ -112,7 +112,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				return true;
 			case "takeShips":
 				transferShips(fleet, player, dialog, memoryMap);
-				return true;			
+				return true;
 			case "giveShips":
 				transferShips(player, fleet, dialog, memoryMap);
 				return true;
@@ -576,9 +576,13 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		if (from.isPlayerFleet()) {
 			autopickCommanderIfNeeded(to);
 			to.getFleetData().sort();
+			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(to)).getMembersBackup().addAll(members);
 		}			
-		else
+		else {
 			autopickCommanderIfNeeded(from);
+			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(from)).getMembersBackup().removeAll(members);
+		}
+			
 		
 		from.forceSync();
 		to.forceSync();

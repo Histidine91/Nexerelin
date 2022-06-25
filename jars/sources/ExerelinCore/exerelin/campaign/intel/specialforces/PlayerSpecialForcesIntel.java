@@ -33,10 +33,12 @@ import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrengt
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.SOURCE_ID;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.getString;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsGUI;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +65,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	@Setter protected CampaignFleetAPI tempFleet;
 	protected CampaignFleetAPI fleet;
+	
+	/**
+	 * Stores all members added to the fleet (and not subsequently removed), dead or alive. For safety/debugging purposes.
+	 */
+	@Getter protected Set<FleetMemberAPI> membersBackup = new LinkedHashSet<>();
 	@Getter protected Set<FleetMemberAPI> deadMembers = new LinkedHashSet<>();
 	
 	@Getter	protected boolean independentMode = true;
@@ -280,6 +287,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 		updateFuelUse();
+		
+		if (membersBackup == null) {
+			membersBackup = new LinkedHashSet<>();
+			CampaignFleetAPI fleet = this.fleet;
+			if (fleet == null) fleet = this.tempFleet;
+			if (fleet != null) membersBackup.addAll(fleet.getFleetData().getMembersListCopy());
+			membersBackup.addAll(deadMembers);
+		}
 	}
 	
 	protected void updateFuelUse() {
@@ -428,6 +443,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			info.addPara(getString("intelDescLostShips"), opad);
 			NexUtilsGUI.addShipList(info, width, new ArrayList<>(deadMembers), 48, pad);
 		}
+		if (Global.getSettings().isDevMode() || ExerelinModPlugin.isNexDev) {
+			info.addPara("All members", opad);
+			NexUtilsGUI.addShipList(info, width, new ArrayList<>(membersBackup), 48, pad);
+		}
 		
 		if (isAlive)
 			createSmallDescriptionPart2(info, width);
@@ -525,6 +544,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			Global.getSector().getCampaignUI().showConfirmDialog(getString("warnMsg"), 
 					getString("warnMsgButton1"), getString("warnMsgButton2"), 640, 320, null, null);
 		}
+		deadMembers.addAll(membersBackup);
 		
 		sendUpdateIfPlayerHasIntel(DESTROYED_UPDATE, false, false);
 	}
