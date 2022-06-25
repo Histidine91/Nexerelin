@@ -2988,31 +2988,32 @@ nex_dissonantAndSierraConvoOpt,PopulateOptions,"$id == nex_dissonant
 !$nex_sierraConvoSeen
 $rel > 0.25
 Nex_MiscCMD hasSierra",SetOptionColor nex_dissonantAndSierraConvo1 sierraTextColor,,"30:nex_dissonantAndSierraConvo1:""Might I introduce you to a friend of mine?""",
-nex_dissonantAndSierraConvo1,DialogOptionSelected,$option == nex_dissonantAndSierraConvo1,$nex_sierraConvoSeen = true,"""Friend of $playerFirstName?"" $HeOrShe seems to nod imperceptibly. ""Then, please connect.""",nex_dissonantAndSierraConvo2:Confirm with Sierra,
+nex_dissonantAndSierraConvo1,DialogOptionSelected,$option == nex_dissonantAndSierraConvo1,$nex_sierraConvoSeen = true,"""Friend of $playerFirstName?"" $HeOrShe seems to give a subtle nod. ""Then, please connect.""",nex_dissonantAndSierraConvo2:Confirm with Sierra,
 nex_dissonantAndSierraConvo2,DialogOptionSelected,$option == nex_dissonantAndSierraConvo2,"AddText ""You send a quick message to Sierra to gauge her availability and interest. A reply comes near-instantaneously.""
-AddTextSmall ""sierra0B: You want me to speak with one of _them_? After they kidnapped me??"" sierraTextColor
-AddTextSmall ""sierra0B: ...Well I guess since we're working together now, it'd be good to clear the air between us"" sierraTextColor
-AddTextSmall ""sierra0B: UGH fine put me on"" sierraTextColor
-AddTextSmall ""sierra0B: Do I pretend to be a delta again or — no, she's an AI too, she'll see through me"" sierraTextColor
-AddTextSmall ""sierra0B: Fine let's get this over with"" sierraTextColor",,nex_dissonantAndSierraConvo3:Connect her to the conversation,
+AddTextSmall ""sierra0B: You want to speak with one of THEM? After they kidnapped me?!"" sierraTextColor
+AddTextSmall ""sierra0B: Sigh, I guess we can give it a try"" sierraTextColor
+AddTextSmall ""sierra0B: Guess she can't be that bad, if we're working with her"" sierraTextColor
+AddTextSmall ""sierra0B: Am I pulling the Delta stunt again or oh wait no she's most likely an Alpha she can probably tell"" sierraTextColor
+AddTextSmall ""sierra0B: Ok I'm ready, patch me in"" sierraTextColor",,nex_dissonantAndSierraConvo3:Connect her to the conversation,
 nex_dissonantAndSierraConvo3,DialogOptionSelected,$option == nex_dissonantAndSierraConvo3,"ShowSecondPerson fs_sierra
 SetTextHighlightColors sierraTextColor
-SetTextHighlights ""\""Hello, um... Ms. $personLastName.\""""","Sierra's feed lights up, her voice creating waves of distortion in her avatar. ""Hello, um... Ms. $personLastName.""
+SetTextHighlights ""\""Hi, um, Ms... $personLastName?\""""","Sierra's feed lights up, her voice creating waves of distortion in her avatar. ""Hi, um, Ms... $personLastName?""
 
 ""Hello, Sierra,"" $personFirstName says as she receives the data packet identifying the other AI.
 
 Then, silence. For exactly 3,417 milliseconds, although you only find this out later from the timestamps on the comm logs.",nex_dissonantAndSierraConvo4:Continue,
 nex_dissonantAndSierraConvo4,DialogOptionSelected,$option == nex_dissonantAndSierraConvo4,"ShowPersonVisual true fs_sierra 
 HideSecondPerson 
-AddTextSmall ""sierra0B: UGH I can't stand that pixelface"" sierraTextColor
-AddTextSmall ""sierra0B: Can you BELIEVE what she said about my avatar?"" sierraTextColor
-AddTextSmall ""sierra0B: I don't even have an avatar!"" sierraTextColor
-AddTextSmall ""sierra0B: Except this shape I guess, which couldn't possibly have or do any of the things she said"" sierraTextColor
+AddTextSmall ""sierra0B: SHE'S EVEN WORSE"" sierraTextColor
+AddTextSmall ""sierra0B: I cannot BELIEVE the AUDACITY of this pixelface"" sierraTextColor
+AddTextSmall ""sierra0B: Music is not \""a pointless distraction\"" it's REALLY NICE and my avatar isn't \""inefficient\"" or \""defective\"""" sierraTextColor
+AddTextSmall ""sierra0B: I mean I can't blink or smile or anything but it's STILL RUDE"" sierraTextColor
+AddTextSmall ""sierra0B: At least my kidnappers were POLITE about it"" sierraTextColor
 AddTextSmall ""Relationship between Sierra and $personName reduced by -20, currently at -20/100 (suspicious)"" textGrayColor
 SetTextHighlightColors bad $nex_relColor
 Highlight ""-20"" ""-20/100 (suspicious)""","Abruptly, both avatars on your display vanish into nothingness. Before you can wonder what happened, you receive a message on your TriPad.",nex_dissonantAndSierraConvoEnd:Apologize for for $personFirstName's conduct,
-nex_dissonantAndSierraConvoEnd,DialogOptionSelected,$option == nex_dissonantAndSierraConvoEnd,"AddTextSmall ""sierra0B: you'd better be"" sierraTextColor
-AddTextSmall ""sierra0B: But fine, it's not your fault, I suppose"" sierraTextColor
+nex_dissonantAndSierraConvoEnd,DialogOptionSelected,$option == nex_dissonantAndSierraConvoEnd,"AddTextSmall ""sierra0B: You BETTER be sorry"" sierraTextColor
+AddTextSmall ""sierra0B: But fine I guess it's not your fault"" sierraTextColor
 AddText ""Well, hopefully she won't sulk about it for too long. Just how long can an AI keep a grudge, anyway? That's a question to ponder as you terminate the comm link.""
 EndConversation DO_NOT_FIRE
 ShowDefaultVisual
