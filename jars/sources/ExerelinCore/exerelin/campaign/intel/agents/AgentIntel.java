@@ -1133,5 +1133,18 @@ public class AgentIntel extends BaseIntelPlugin {
 			}
 			return names;
 		}
+		
+		/**
+		 * Returns 1 for saboteur–negotiator, 0 if same specialization, 0.5 if either is a hybrid. Returns 0 if {@code other} is null.
+		 * @param other
+		 * @return
+		 */
+		public float getSpecializationDistance(Specialization other) {
+			if (!NexConfig.useAgentSpecializations) return 0;
+			if (other == null) return 0;
+			if (this == other) return 0;
+			if (this == Specialization.HYBRID || other == Specialization.HYBRID) return 0.5f;
+			return 1;
+		}
 	}
 }

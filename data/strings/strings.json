@@ -253,6 +253,8 @@
 		"verbSuccess":"success",
 		"verbFailed":"failed",
 		
+		"specialization":"specialization",
+		
 		"recruited":"recruited",
 		"arrived":"arrived",
 		"lost":"lost",
@@ -365,6 +367,7 @@
 		"intelStatus_procureShip":"Procuring $ship, delivering to $market",
 		"intelStatus_findPirateBase":"Finding pirate base",
 		"intelStatus_instigateRebellion":"Instigating rebellion",
+		"intelStatus_recruitAgent":"Recruiting %s agent",
 		
 		"intelDesc_raiseRelations_success":"An operative from $theAgentFaction has subverted the $faction political process to improve relations with their own faction.",
 		"intelDesc_raiseRelations_successPlayer":"Your operative $agentName has successfully subverted the $faction political process to improve relations with $theThirdFaction.",
@@ -430,6 +433,8 @@
 		"intelDesc_instigateRebellion_failureDetected":"$TheAgentFaction was thwarted in their attempt to instigate a rebellion $onOrAt $market. $TheFaction is certainly planning reprisals.",
 		"intelDesc_instigateRebellion_failureDetectedPlayer":"$Faction authorities have broken up $agentName's attempted rebellion $onOrAt $market. They will not overlook $theAgentFaction's crime.",
 		
+		"intelDesc_recruitAgent_successPlayer":"Your operative $agentName has recruited a new colleague $onOrAt $market.",
+		
 		"intel_lastMessage_travel_success":"\"Arrived at $market. Awaiting further directions.\"",
 		"intel_lastMessage_raiseRelations_success":"\"$TheFaction likes us rather more now.\"",
 		"intel_lastMessage_raiseRelations_failure":"\"Political interference with $theFaction was unsuccessful.\"",
@@ -449,6 +454,7 @@
 		"intel_lastMessage_instigateRebellion_failure":"\"Our efforts to start a rebellion on $market have been suppressed.\"",
 		"intel_lastMessage_injury_success":"\"Recovered from injuries. Ready for duty once more.\"",
 		"intel_lastMessage_findPirateBase_success":"\"Found the base supporting the pirate activity on $market.\"",
+		"intel_lastMessage_recruitAgent_success":"\"Recruited a new operative from $market.\"",
 		
 		"destabilizeText1":"poisoned the water supply",
 		"destabilizeText2":"fired into a crowd at a public venue",
@@ -488,9 +494,12 @@
 		"dialogShipPickerHeader":"Ship to procure",
 		
 		"dialogTooltipAlreadyModifyingRelations":"Another operative is currently already manipulating this faction.",
+		"dialogTooltipRecruitTooLowLevel":"Requires operative level %s or higher.",
+		"dialogTooltipRecruitMaxAgents":"Already at maximum number of agents.",
 		#"dialogTooltipModifyingRelationsCooldown":"This faction has already been recently manipulated. It will take $cooldown before further such actions can be executed.",
 		"dialogInfoModifyingRelationsCooldown":"This faction has already been manipulated in the recent past. Further such actions will take longer.",
 		"dialogInfoSabotageIndustryMission":"Warning: operative sabotage may not be considered a legitimate manner of completing industry disruption missions.",
+		"dialogInfoRecruitAgentSpecialization":"Cross-specialization recruitment will cost more and take longer.",
 		
 		"dialogProcureShipIntro":"A single ship can be procured from a faction, but persuading officials to \"lose\" a military-grade warship through a judicious combination of bribes, blackmail and forgery requires an expense considerably in excess of the market price. It should only be used for hulls which have proven difficult to obtain through other channels.",
 		"dialogProcureShipIntro2":"Ship will have a random variant and be subject to D-mods. Not all ships known to the faction may be available.",
@@ -506,6 +515,7 @@
 		"dialogInfoHeaderSabotageIndustry":"Sabotage %s on %s",
 		"dialogInfoHeaderProcureShip":"Procure %s",
 		"dialogInfoHeaderInstigateRebellion":"Instigate rebellion on %s",
+		"dialogInfoHeaderRecruitAgent":"Recruit %s operative",
 		"dialogInfoSuccessChance":"Success chance: %s",
 		"dialogInfoEffect":"Effect: %s – %s",
 		"dialogInfoRebellionStability":"Current stability: %s (maximum allowed %s)",
@@ -2175,8 +2185,8 @@
 		
 		"textAllyContrib":"+%s from allies",
 		
-		"tooltipReqPop":"The winning faction or alliance must control at least %s of the Sector's total market size, and have %s the runner-up's total size.",
-		"tooltipReqHI":"The winning faction or alliance must control at least %s of the total heavy industries in the Sector.",
+		"tooltipReqPop":"The winning faction must control at least %s of the Sector's total market size, and have %s the runner-up's total size.",
+		"tooltipReqHI":"The winning faction must control at least %s of the total heavy industries in the Sector.",
 		"tooltipReqFriend":"The winning faction must be friendly or better with every other competing faction in the Sector.",
 	},
 	

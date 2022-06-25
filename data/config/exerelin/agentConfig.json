@@ -174,5 +174,16 @@
 			"costScaling":false,
 			"useAlertLevel":false,
 		},
+		"recruitAgent":{
+			"time":120,
+			"name":"Recruit Operative",
+			"successChance":1,
+			"useAlertLevel":false,
+			"alertLevelIncrease":0,
+			"costScaling":false,
+			#"baseCost":20000,	# handled in code
+			"injuryChanceMult":0,
+			"xp":1000,
+		},
 	},
 }

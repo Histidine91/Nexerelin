@@ -90,6 +90,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         public static final String INFILTRATE_CELL = "infiltrateCell";
         public static final String PROCURE_SHIP = "procureShip";
         public static final String FIND_PIRATE_BASE = "findPirateBase";
+		public static final String RECRUIT_AGENT = "recruitAgent";
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);

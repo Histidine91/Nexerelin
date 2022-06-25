@@ -40,6 +40,7 @@ import exerelin.campaign.CovertOpsManager.CovertActionType;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.intel.agents.AgentIntel.Specialization;
 import exerelin.campaign.intel.agents.CovertActionIntel.StoryPointUse;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.utilities.NexConfig;
@@ -51,6 +52,7 @@ import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -80,6 +82,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected List<FactionAPI> factions = new ArrayList<>();
 	protected List<Object> targets = new ArrayList<>();
 	protected FactionAPI thirdFaction;	// for travel and lower relations
+	
+	// these should just be grabbed from the action itself?
 	protected MarketAPI travelDest;
 	protected String commodityToDestroy;
 	protected Industry industryToSabotage;
@@ -209,6 +213,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				targets.addAll(ProcureShip.getEligibleTargets(agentMarket, (ProcureShip)action));
 				Collections.sort(targets, PROCURE_SHIP_COMPARATOR);
 				break;
+			case CovertActionType.RECRUIT_AGENT:
+				targets.addAll(Arrays.asList(AgentIntel.Specialization.values()));
+				break;
 		}
 		
 		this.targets = targets;
@@ -272,6 +279,11 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected void setShipToProcure(FleetMemberAPI ship) {
 		shipToProcure = ship;
 		((ProcureShip)action).setShip(ship);
+		printActionInfo();
+	}
+	
+	protected void setSpecialization(Specialization spec) {
+		((RecruitAgent)action).setSpecialization(spec);
 		printActionInfo();
 	}
 	
@@ -391,6 +403,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				String effectStr = getString("dialogInfoEffectRebellion");
 				float strMult = action.getEffectMultForLevel();
 				text.addPara(effectStr, strMult < 1 ? neg : hl, String.format("%.2f", strMult));
+				break;
+			case CovertActionType.RECRUIT_AGENT:
+				String specialization = ((RecruitAgent)action).getSpecialization().getName();
+				text.addPara(getString(header + "RecruitAgent"), hl, specialization);
 				break;
 		}
 		
@@ -574,6 +590,15 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				action.init();
 				printActionInfo();
 				break;
+			case CovertActionType.RECRUIT_AGENT:				
+				action = new RecruitAgent(agent, market, agentFaction, mktFaction, true, null);
+				action.init();
+				text.setFontSmallInsignia();
+				text.addPara(getString("dialogInfoRecruitAgentSpecialization"));
+				text.setFontInsignia();
+				getTargets();
+				printActionInfo();	// since this action's getTargets() call doesn't lead to it
+				break;
 		}
 	}
 	
@@ -593,20 +618,25 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected void populateOptions() {
 		options.clearOptions();
 		
-		if (lastSelectedMenu == Menu.ACTION_TYPE) {			
-			populateActionOptions();
-		}
-		else if (lastSelectedMenu == Menu.FACTION) {
-			populateFactionOptions();
-		} 
-		else if (lastSelectedMenu == Menu.TARGET) {
-			populateTargetOptions();
-		}
-		else if (lastSelectedMenu == Menu.CONFIRM_SP){
-			populateSPOptions();
-		}
-		else {
+		if (null == lastSelectedMenu) {
 			populateMainMenuOptions();
+		}
+		else switch (lastSelectedMenu) {
+			case ACTION_TYPE:
+				populateActionOptions();
+				break;
+			case FACTION:
+				populateFactionOptions();
+				break;
+			case TARGET:
+				populateTargetOptions();
+				break;
+			case CONFIRM_SP:
+				populateSPOptions();
+				break;
+			default:
+				populateMainMenuOptions();
+				break;
 		}
 	}
 	
@@ -659,6 +689,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			PirateBaseIntel baseIntel = activityCond.getIntel();
 			if (!baseIntel.isEnding() && !baseIntel.isEnded() && !baseIntel.isPlayerVisible())
 				addActionOption(CovertActionType.FIND_PIRATE_BASE);
+		}
+		if (agentMarket != null) {
+			addActionOption(CovertActionType.RECRUIT_AGENT);
 		}
 		
 		showPaginatedMenu();
@@ -764,7 +797,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 								populateOptions();
 							}
 						});
-				return;
+				return;			
+			case CovertActionType.RECRUIT_AGENT:
+				for (Object spec : targets) {
+					Specialization spec2 = (Specialization)spec;
+					String name = spec2.getName();
+					optionsList.add(new Pair<String, Object>(name, spec2));
+				}				
+				break;
 		}
 		
 		showPaginatedMenu();
@@ -795,7 +835,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			}
 				
 			if (id.equals(CovertActionType.TRAVEL) || id.equals(CovertActionType.DESTROY_COMMODITY_STOCKS)
-					|| id.equals(CovertActionType.SABOTAGE_INDUSTRY) || id.equals(CovertActionType.PROCURE_SHIP)) 
+					|| id.equals(CovertActionType.SABOTAGE_INDUSTRY) || id.equals(CovertActionType.PROCURE_SHIP)
+					|| id.equals(CovertActionType.RECRUIT_AGENT)) 
 			{
 				str = getString("dialogOption_target");
 				String target = null;
@@ -815,6 +856,15 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					case CovertActionType.PROCURE_SHIP:
 						target = shipToProcure != null?
 								shipToProcure.getHullSpec().getNameWithDesignationWithDashClass() : none;
+						break;
+					case CovertActionType.RECRUIT_AGENT:
+						{
+							Specialization spec = ((RecruitAgent)action).getSpecialization();
+							target = spec != null ?	spec.getName() : none;
+						}
+						break;
+					default:
+						break;
 				}
 				
 				str = StringHelper.substituteToken(str, "$target", target);
@@ -922,6 +972,22 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			String tooltip = getString("dialogTooltipAlreadyModifyingRelations");
 			options.setTooltip(raise, tooltip);
 			options.setTooltip(lower, tooltip);
+		}
+		
+		int minRecruitLevel = RecruitAgent.MIN_LEVEL;
+		if (agent.level < minRecruitLevel) {
+			CovertActionDef recruit = CovertOpsManager.getDef(CovertActionType.RECRUIT_AGENT);
+			options.setEnabled(recruit, false);
+			String tooltip = String.format(getString("dialogTooltipRecruitTooLowLevel"), minRecruitLevel);
+			options.setTooltip(recruit, tooltip);
+			options.setTooltipHighlights(recruit, minRecruitLevel + "");
+		}
+		int maxAgents = CovertOpsManager.getManager().getMaxAgents().getModifiedInt();
+		if (maxAgents <= CovertOpsManager.getAgentsStatic().size()) {
+			CovertActionDef recruit = CovertOpsManager.getDef(CovertActionType.RECRUIT_AGENT);
+			options.setEnabled(recruit, false);
+			String tooltip = getString("dialogTooltipRecruitMaxAgents");
+			options.setTooltip(recruit, tooltip);
 		}
 	}
 	
@@ -1070,7 +1136,13 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				populateOptions();
 				return;
 			}
-
+			// agent specialization
+			else if (optionData instanceof Specialization) {
+				setSpecialization((Specialization)optionData);
+				populateOptions();
+				return;
+			}
+			
 			if (optionData == Menu.ACTION_TYPE)	{
 				lastSelectedMenu = Menu.ACTION_TYPE;
 			} else if (optionData == Menu.FACTION) {
