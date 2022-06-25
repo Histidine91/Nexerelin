@@ -2216,6 +2216,8 @@
 		"intelButtonCommand":"Give orders",
 		"intelTooltipCommandInBattle":"Fleet is currently in battle and cannot receive orders.",
 		"intelButtonDisband":"Disband",
+		"intelButtonRecreate":"Recreate (experimental)",
+		"intelConfirmPromptRecreate":"Reviving the flagship will cost %s. You have %s.",
 		"intelTooltipDisbandNotDocked":"Must be docked at a market.",
 		"intelButtonDebug":"Debug",
 		"intelButtonCheckIndependent":"Independent mode",

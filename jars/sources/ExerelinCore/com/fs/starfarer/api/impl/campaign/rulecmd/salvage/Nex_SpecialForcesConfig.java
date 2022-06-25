@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CoreUITabId;
@@ -176,8 +177,9 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("dialogTooltipFleetNull"), 0);
 			return false;
 		}
-		if (intel.getRoute().getActiveFleet().getBattle() != null) {
-			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("dialogTooltipInBattle"), 0);
+		BattleAPI bat = intel.getRoute().getActiveFleet().getBattle();
+		if (bat != null && !bat.isPlayerInvolved()) {
+			mem.set("$nex_psf_noReviveReason", SpecialForcesIntel.getString("intelTooltipCommandInBattle"), 0);
 			return false;
 		}
 		boolean haveMarket = false;

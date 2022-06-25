@@ -18,6 +18,7 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -25,9 +26,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
+import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.SOURCE_ID;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.getString;
 import exerelin.utilities.NexUtilsGUI;
 import java.awt.Color;
@@ -53,6 +57,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
+	protected static final Object BUTTON_DISBAND = new Object();
 	protected static final Object BUTTON_RECREATE = new Object();
 	protected static final Object BUTTON_INDEPENDENT_MODE = new Object();
 	
@@ -246,6 +251,31 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		toDisband.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
 	}
 	
+	protected void recreate() {
+		// only revive flagship
+		/*
+		for (FleetMemberAPI dead : new ArrayList<>(deadMembers)) {
+			reviveDeadMember(dead);
+		}
+		*/
+		reviveDeadMember(flagship);
+		
+		tempFleet = fleet;
+		// create new route
+		InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+		if (dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null) {
+			origin = dial.getInteractionTarget().getMarket();
+		}
+		RouteManager.OptionalFleetData extra = new RouteManager.OptionalFleetData(origin);
+		extra.factionId = faction.getId();
+		extra.fp = startingFP;
+		extra.fleetType = FLEET_TYPE;
+		extra.strength = getAdjustedStrength(startingFP, origin);
+		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
+		routeAI.addInitialTask();
+		waitingForSpawn = true;
+	}
+	
 	@Override
 	protected void advanceImpl(float amount) {
 		super.advanceImpl(amount);
@@ -369,13 +399,23 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 					faction.getBaseUIColor(), faction.getDarkUIColor(), faction.getBrightUIColor(),
 					(int)width, 20f, opad);
 			check.setChecked(independentMode);			
-		} else {
+		} else if (!waitingForSpawn) {
 			ButtonAPI button = info.addButton(getString("intelButtonDisband"), 
-					BUTTON_RECREATE, faction.getBaseUIColor(), faction.getDarkUIColor(),
+					BUTTON_DISBAND, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
+			
 			
 			InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
 			boolean allow = dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null;
+			if (!allow) {
+				button.setEnabled(false);
+				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(getString("intelTooltipDisbandNotDocked"), 360), 
+						TooltipMakerAPI.TooltipLocation.BELOW);
+			}
+			
+			button = info.addButton(getString("intelButtonRecreate"), 
+					BUTTON_RECREATE, faction.getBaseUIColor(), faction.getDarkUIColor(),
+					(int)(width), 20f, opad);
 			if (!allow) {
 				button.setEnabled(false);
 				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(getString("intelTooltipDisbandNotDocked"), 360), 
@@ -394,6 +434,24 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		if (buttonId == BUTTON_RECREATE) {
+			float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+			float cost = getReviveCost(deadMembers);
+			
+			LabelAPI txt = prompt.addPara(getString("intelConfirmPromptRecreate"), 0, Misc.getHighlightColor(),
+					Misc.getDGSCredits(cost), 
+					Misc.getDGSCredits(credits));
+			txt.setHighlightColors(Misc.getHighlightColor(), credits >= cost ? Misc.getHighlightColor() : Misc.getNegativeHighlightColor());
+		}
+	}
+	
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		return buttonId == BUTTON_RECREATE;
+	}
+	
+	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_COMMAND) {
 			RuleBasedInteractionDialogPluginImpl plugin = new RuleBasedInteractionDialogPluginImpl();
@@ -403,8 +461,12 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			plugin.getMemoryMap().get(MemKeys.LOCAL).set("$option", "nex_commandSF_main", 0);
 			plugin.fireBest("DialogOptionSelected");
 		}
-		else if (buttonId == BUTTON_RECREATE) {
+		else if (buttonId == BUTTON_DISBAND) {
 			disband();
+			ui.updateUIForItem(this);
+		}
+		else if (buttonId == BUTTON_RECREATE) {
+			recreate();
 			ui.updateUIForItem(this);
 		}
 		else if (buttonId == BUTTON_INDEPENDENT_MODE) {
@@ -439,6 +501,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			num++;
 		}
 		return num;
+	}
+	
+	public void reportShipDeath(FleetMemberAPI member) {
+		deadMembers.add(member);
 	}
 	
 	@Override

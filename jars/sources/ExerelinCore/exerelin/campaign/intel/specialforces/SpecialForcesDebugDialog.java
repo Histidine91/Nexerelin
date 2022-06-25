@@ -51,6 +51,7 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 		options.addOption("Reconstitute fleet", Options.REBUILD);
 		//options.addOption("Validate route segment", Options.VALIDATE_ROUTE);
 		options.addOption("Generate new name", Options.GENERATE_NAME);
+		options.addOption("Kill random ship", Options.KILL_SHIP);
 		options.addOption("Delete fleet and refund points", Options.DELETE);
 		options.addOption("Exit", Options.EXIT);
 		options.setShortcut(Options.EXIT, Keyboard.KEY_ESCAPE, false, false, false, false);
@@ -121,7 +122,7 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 				}
 				break;
 			case GENERATE_NAME:
-				if (intel.route.getActiveFleet() != null) {
+				if (fleet != null) {
 					intel.fleetName = intel.pickFleetName(fleet, intel.route.getMarket(), intel.commander);
 					fleet.setName(intel.faction.getFleetTypeName(FLEET_TYPE) + " – " + intel.fleetName);
 					text.addPara("New fleet name: " + intel.fleetName);
@@ -129,6 +130,24 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 				else {
 					text.addPara("Fleet not currently available for naming");
 				}
+				break;
+			case KILL_SHIP:
+				if (fleet == null) {
+					text.addPara("Fleet not alive");
+					break;
+				}
+				WeightedRandomPicker<FleetMemberAPI> picker = new WeightedRandomPicker<>();
+				picker.addAll(fleet.getFleetData().getMembersInPriorityOrder());
+				FleetMemberAPI kill = picker.pick();
+				if (kill == null) {
+					text.addPara("No ships remaining");
+					break;
+				}
+				fleet.removeFleetMemberWithDestructionFlash(kill);
+				if (intel instanceof PlayerSpecialForcesIntel) {
+					((PlayerSpecialForcesIntel)intel).reportShipDeath(kill);
+				}
+				text.addPara("Killed member " + kill.getShipName() + ", " + kill.getHullSpec().getHullNameWithDashClass());
 				break;
 			case DELETE:
 				intel.endEvent();
@@ -189,6 +208,6 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 	
 	protected enum Options {
 		CHECK_TASKS, PICK_NEW_TASK, PATROL_RANDOM, RESET_ROUTE_LOCATION, REBUILD, 
-		GENERATE_NAME, VALIDATE_ROUTE, CHECK_FLEET_STATUS, DELETE, EXIT
+		GENERATE_NAME, VALIDATE_ROUTE, CHECK_FLEET_STATUS, KILL_SHIP, DELETE, EXIT
 	}
 }
