@@ -160,10 +160,12 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	}
 	
 	protected boolean canCreate(MemoryAPI mem) {
+		/*
 		if (PlayerSpecialForcesIntel.getActiveIntelCount() > 0) {
 			mem.set("$nex_psf_noCreateReason", SpecialForcesIntel.getString("dialogTooltipMaxPSF"), 0);
 			return false;
 		}
+		*/
 		return true;
 	}
 	
