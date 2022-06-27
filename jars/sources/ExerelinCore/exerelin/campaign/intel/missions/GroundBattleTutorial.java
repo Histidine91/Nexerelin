@@ -171,7 +171,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		FactionAPI faction = Global.getSector().getFaction(Factions.MERCENARY);
 		float maxPointsForFaction = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL);
 		
-		float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
+		float playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet()) * 0.7f;
 		int capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus());
 
 		int combat = Math.round(playerStr/5 * MathUtils.getRandomNumberInRange(0.6f, 0.7f) + capBonus);
