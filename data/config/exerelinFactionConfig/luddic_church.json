@@ -27,7 +27,7 @@
         
     "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
-    "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
+    "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade"],
     
     "groundBattleSettings":{
 		"luddef_moraleDamageTakenMult":0.85f,

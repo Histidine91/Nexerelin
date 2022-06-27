@@ -224,7 +224,7 @@ public class VultureFleetManager extends DisposableFleetManager
 			
 			fleets.add(fleet);
 		}
-		log.info("Dangerous fleet count: " + fleets.size());
+		//log.info("Dangerous fleet count: " + fleets.size());
 		
 		return fleets;
 	}

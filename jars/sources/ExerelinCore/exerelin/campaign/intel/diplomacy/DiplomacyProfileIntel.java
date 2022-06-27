@@ -183,7 +183,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	
 	protected void addDispositionInfo(TooltipMakerAPI tooltip, float pad) {
 		FactionAPI playerFaction = PlayerFactionStore.getPlayerFaction();
-		if (playerFaction == faction) return;
+		if (playerFaction == faction || faction.isPlayerFaction()) return;
 		
 		String playerFactionId = playerFaction.getId();
 		
