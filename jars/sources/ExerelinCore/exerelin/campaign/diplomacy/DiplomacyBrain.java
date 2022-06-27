@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
+import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel.AntiInspectionOrders;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -640,18 +642,30 @@ public class DiplomacyBrain {
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
 			InvasionIntel inv = (InvasionIntel)intel;
 			if (inv.isEnding() || inv.isEnded()) continue;
-			// invasion by us or an ally, mark the target
+			// we or an ally are invading someone, mark the target
 			if (AllianceManager.areFactionsAllied(inv.getFaction().getId(), factionId))
 			{
 				//log.info(String.format("  %s don't ceasefire with %s, we're invading them", factionId, inv.getTarget().getFactionId()));
 				factionsInvadingOrInvaded.add(inv.getTarget().getFactionId());
 			}
 			
-			// someone else invading us (who isn't player), mark the invader
-			if (!inv.getFaction().isPlayerFaction() && AllianceManager.areFactionsAllied(inv.getTarget().getFaction().getId(), factionId)) {
+			// someone else invading us (and that someone isn't player), mark the invader
+			if (!inv.getFaction().isPlayerFaction() && AllianceManager.areFactionsAllied(inv.getTarget().getFaction().getId(), factionId)) 
+			{
 				//log.info(String.format("  %s don't ceasefire with %s, they're invading us", factionId, inv.getFaction().getId()));
 				factionsInvadingOrInvaded.add(inv.getFaction().getId());
 			}
+		}
+		
+		// same deal for Hegemony inspections
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(HegemonyInspectionIntel.class)) {
+			HegemonyInspectionIntel hii = (HegemonyInspectionIntel)intel;
+			if (hii.isEnding() || hii.isEnded()) continue;
+			if (hii.getOrders() != AntiInspectionOrders.RESIST) continue;
+			if (AllianceManager.areFactionsAllied(factionId, Factions.HEGEMONY))
+				factionsInvadingOrInvaded.add(Factions.PLAYER);
+			if (AllianceManager.areFactionsAllied(factionId, PlayerFactionStore.getPlayerFactionId()))
+				factionsInvadingOrInvaded.add(Factions.HEGEMONY);
 		}
 		
 		// also don't ceasefire with any of the involved faction's allies	
