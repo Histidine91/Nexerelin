@@ -355,7 +355,13 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		MarketAPI target;
 		
-		List<MarketAPI> playerMarkets = Misc.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> playerMarkets = new ArrayList<>();
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
+				playerMarkets.add(market);
+			}
+		}
+		
 		target = getClosestMarketForCellKill(playerMarkets);
 		
 		if (target == null && Misc.getCommissionFaction() != null && Global.getSettings().getBoolean("nex_killCellsForCommissioner")) {
@@ -434,7 +440,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		if (target == null && Misc.getCommissionFaction() != null) {
 			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
-			target = getClosestMarketForCellKill(commMarkets);
+			target = getClosestMarketForBaseFind(commMarkets);
 		}
 		
 		if (target == null) return;
