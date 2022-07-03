@@ -923,7 +923,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		route.getExtra().damage = damage;
 		
 		List<FleetMemberAPI> losses = Misc.getSnapshotMembersLost(fleet);
-		if (losses.contains(flagship)) {
+		if (losses.contains(flagship) && !isPlayer) {
 			flagship = null;
 			// TODO: maybe chance of commander being killed?
 		}

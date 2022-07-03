@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
@@ -128,6 +129,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		fleet.setCommander(commander);
 		fleet.getFleetData().setFlagship(flagship);
+		//flagship.setCaptain(commander);	// safety in case it's lost?
 		
 		for (OfficerDataAPI od : tempFleet.getFleetData().getOfficersCopy()) {
 			fleet.getFleetData().addOfficer(od);
@@ -264,14 +266,32 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			reviveDeadMember(dead);
 		}
 		*/
+		
+		InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+		if (flagship == null) {
+			for (FleetMemberAPI member : deadMembers) {
+				if (member.isFlagship()) {
+					flagship = member;
+					break;
+				}
+			}
+		}
+		if (flagship == null) {
+			Global.getSector().getCampaignUI().getMessageDisplay().addMessage("Error: Flagship not found, cannot revive");
+			return;
+		}
+		int cost = getReviveCost(flagship);
 		reviveDeadMember(flagship);
+		if (dial != null) AddRemoveCommodity.addCreditsLossText(cost, dial.getTextPanel());
+		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(cost);
 		
 		tempFleet = fleet;
+		
 		// create new route
-		InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
 		if (dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null) {
 			origin = dial.getInteractionTarget().getMarket();
 		}
+		
 		RouteManager.OptionalFleetData extra = new RouteManager.OptionalFleetData(origin);
 		extra.factionId = faction.getId();
 		extra.fp = startingFP;
@@ -380,7 +400,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, Color tc, float initPad) {
 		if (!isEnding() && !isEnded()) {
-			if (isUpdate && listInfoParam == DESTROYED_UPDATE || (mode == ListInfoMode.INTEL && !isAlive && !waitingForSpawn))
+			boolean modeOK = mode == ListInfoMode.INTEL || mode == ListInfoMode.MAP_TOOLTIP;
+			if (isUpdate && listInfoParam == DESTROYED_UPDATE || (modeOK && !isAlive && !waitingForSpawn))
 			{
 				info.addPara(getString("intelBulletDestroyed"), tc, 3);
 				return;
@@ -455,7 +476,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
 		if (buttonId == BUTTON_RECREATE) {
 			float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-			float cost = getReviveCost(deadMembers);
+			float cost = getReviveCost(flagship);
 			
 			LabelAPI txt = prompt.addPara(getString("intelConfirmPromptRecreate"), 0, Misc.getHighlightColor(),
 					Misc.getDGSCredits(cost), 
@@ -504,6 +525,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			deadFP += dead.getFleetPointCost();
 		}
 		return (int)(deadFP/(deadFP+liveFP) * 100);
+	}
+	
+	@Override
+	public IntelSortTier getSortTier() {
+		return IntelSortTier.TIER_2;
 	}
 	
 	@Override
@@ -559,16 +585,25 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 	}
 	
+	public static float getReviveSupplyCost(FleetMemberAPI member) {
+		float suppliesPerCRPoint = member.getDeploymentCostSupplies()/member.getDeployCost();
+		float suppliesPerDay = suppliesPerCRPoint * member.getRepairTracker().getRecoveryRate();
+		float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
+
+		float suppliesNeeded = daysToRepair * suppliesPerDay;
+			
+		return suppliesNeeded;
+	}
+	
+	public static int getReviveCost(FleetMemberAPI member) {
+		float cost = getReviveSupplyCost(member) * Global.getSettings().getCommoditySpec(Commodities.SUPPLIES).getBasePrice();
+		return Math.round(cost);
+	}
+	
 	public static int getReviveCost(Collection<FleetMemberAPI> members) {
 		float supplies = 0;
 		for (FleetMemberAPI member : members) {
-			//log.info("Checking revive for member " + member.getShipName());
-			float suppliesPerCRPoint = member.getDeploymentCostSupplies()/member.getDeployCost();
-			float suppliesPerDay = suppliesPerCRPoint * member.getRepairTracker().getRecoveryRate();
-			float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
-			
-			float suppliesNeeded = daysToRepair * suppliesPerDay;
-			//log.info(String.format("Current CR: %.2f, revive cost %.0f", member.getRepairTracker().getCR(), suppliesNeeded));
+			float suppliesNeeded = getReviveSupplyCost(member);
 			supplies += suppliesNeeded;
 		}
 		//log.info("Total supplies: " + supplies);
