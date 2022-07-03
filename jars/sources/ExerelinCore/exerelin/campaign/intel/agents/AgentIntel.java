@@ -28,6 +28,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.MutableValue;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionDef;
 import exerelin.campaign.CovertOpsManager.CovertActionType;
@@ -44,6 +45,7 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1110,7 +1112,11 @@ public class AgentIntel extends BaseIntelPlugin {
 		NEGOTIATOR, SABOTEUR, HYBRID;
 		
 		public static Specialization pickRandomSpecialization() {
-			return (Specialization)NexUtils.getRandomArrayElement(Specialization.values());
+			WeightedRandomPicker<Specialization> picker = new WeightedRandomPicker<>();
+			picker.addAll(Arrays.asList(Specialization.values()));
+			Specialization spec = picker.pick();
+			//log.info("Picked random specialization: " + spec);
+			return spec;
 		}
 		
 		public String getName() {
