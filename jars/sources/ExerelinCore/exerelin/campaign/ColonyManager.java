@@ -194,7 +194,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			// handle market growth
 			if (!market.isPlayerOwned())
 			{
-				if (allowGrowth && !market.isHidden() && Misc.getMarketSizeProgress(market) >= 1) 
+				float growthRate = market.getIncoming().getWeightValue();
+				if (allowGrowth && !market.isHidden() && growthRate > 0 && Misc.getMarketSizeProgress(market) >= 1) 
 				{
 					// workaround for colony near-instant growth in later cycles
 					// if we're still in the grace period, we know it shouldn't have grown, so reset it
