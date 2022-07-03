@@ -464,13 +464,13 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		return !NexConfig.legacyInsurance;
 	}
 	
-	public static int TAB_BUTTON_HEIGHT = 20;
-	public static int TAB_BUTTON_WIDTH = 180;
-	public static int ENTRY_HEIGHT = 80;
-	public static int ENTRY_WIDTH = 300;
-	public static int IMAGE_WIDTH = 80;
-	public static int INSURE_BUTTON_WIDTH = 120;
-	public static int IMAGE_DESC_GAP = 12;
+	public static final int TAB_BUTTON_HEIGHT = 20;
+	public static final int TAB_BUTTON_WIDTH = 180;
+	public static final int ENTRY_HEIGHT = 80;
+	public static final int ENTRY_WIDTH = 420;
+	public static final int IMAGE_WIDTH = 80;
+	public static final int INSURE_BUTTON_WIDTH = 120;
+	public static final int IMAGE_DESC_GAP = 12;
 	
 	/**
 	 * Generates an image of a ship or officer on the left-hand side of the screen. 
@@ -488,31 +488,40 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		}
 	}
 	
-	protected void createFleetView(CustomPanelAPI panel, TooltipMakerAPI info, float width) {
-		float pad = 3;
-		float opad = 10;
-		Color h = Misc.getHighlightColor();
+	protected void createFleetView(CustomPanelAPI outer, TooltipMakerAPI info, float width) {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		if (player == null) return;
 		
+		float pad = 3;
+		float opad = 10;
+		Color h = Misc.getHighlightColor();
+		float availableWidth = width - opad;
+		
 		float heightPerItem = ENTRY_HEIGHT + opad;
+		float widthPerItem = ENTRY_WIDTH + opad * 2;
 		int numItems = player.getFleetData().getMembersListCopy().size();
-		float itemPanelHeight = heightPerItem * numItems;
-		CustomPanelAPI itemPanel = panel.createCustomPanel(ENTRY_WIDTH, itemPanelHeight, null);
-		float yPos = opad;
+		int numPerRow = (int)(availableWidth/widthPerItem);
+		if (numPerRow < 1) numPerRow = 1;
+		int rows = (int)Math.ceil(numItems/(float)numPerRow);
+		
+		float allItemsPanelHeight = (heightPerItem + pad) * rows;
+		CustomPanelAPI allItemsPanel = outer.createCustomPanel(width, allItemsPanelHeight, null);
 		
 		float premiumMult = calcPremiumMult();
 		float currCredits = getCredits();
 		
 		info.addButton(getString("buttonInsureAll"), BUTTON_INSURE_ALL, 120, 16, opad);
 		
+		List<CustomPanelAPI> memberPanels = new ArrayList<>();
+		
 		for (FleetMemberAPI member : player.getFleetData().getMembersListCopy()) 
 		{
-			TooltipMakerAPI image = generateImage(itemPanel, member, null);
-			itemPanel.addUIElement(image).inTL(4, yPos);
+			CustomPanelAPI memberPanel = allItemsPanel.createCustomPanel(widthPerItem, heightPerItem, null);
+			TooltipMakerAPI image = generateImage(memberPanel, member, null);
+			memberPanel.addUIElement(image).inTL(4, opad);
 			
-			TooltipMakerAPI entry = itemPanel.createUIElement(width - IMAGE_WIDTH - IMAGE_DESC_GAP,
-					ENTRY_HEIGHT, true);
+			TooltipMakerAPI entry = memberPanel.createUIElement(widthPerItem - IMAGE_WIDTH - IMAGE_DESC_GAP - INSURE_BUTTON_WIDTH,
+					ENTRY_HEIGHT, false);
 			entry.addPara(member.getShipName(), h, 0);
 			
 			InsurancePolicy policy = policies.get(member.getId());
@@ -537,23 +546,29 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 				
 				RepairTrackerAPI repair = member.getRepairTracker();
 				if (repair.getBaseCR() < repair.getMaxCR() || repair.getRemainingRepairTime() > 0)
-					entry.addPara("Must be fully repaired to insure", 0);
+					entry.addPara(getString("entryDescRequireRepairs"), 0);
 				
 			}
 			//itemPanel.addUIElement(entry).inTL(4 + IMAGE_WIDTH + IMAGE_DESC_GAP, yPos);
-			itemPanel.addUIElement(entry).rightOfTop(image, IMAGE_DESC_GAP);
+			memberPanel.addUIElement(entry).rightOfTop(image, IMAGE_DESC_GAP);
 			
-			TooltipMakerAPI buttonHolder = itemPanel.createUIElement(INSURE_BUTTON_WIDTH, 16, false);
+			TooltipMakerAPI buttonHolder = memberPanel.createUIElement(INSURE_BUTTON_WIDTH, 16, false);
 			String name = getString(policy == null ? "buttonInsure" : "buttonRenew");
 			ButtonAPI insure = buttonHolder.addButton(name, member, 120, 16, 0);
 			if (canInsure(member, premiumMult, true) == -1) {
 				insure.setEnabled(false);
 			}
-			itemPanel.addUIElement(buttonHolder).inTL(4 + IMAGE_WIDTH + IMAGE_DESC_GAP + ENTRY_WIDTH, yPos);
+			memberPanel.addUIElement(buttonHolder).rightOfTop(entry, pad);
 			
-			yPos += ENTRY_HEIGHT + opad;
+			try {
+				NexUtilsGUI.placeElementInRows(allItemsPanel, memberPanel, memberPanels, memberPanels.size(), numPerRow, opad * 2);
+			} catch (Exception ex) {
+				log.error("Failed to add insurable panel", ex);
+			}
+			
+			memberPanels.add(memberPanel);
 		}
-		info.addCustom(itemPanel, 0);
+		info.addCustom(allItemsPanel, 0);
 	}
 	
 	protected void createClaimsView(CustomPanelAPI panel, TooltipMakerAPI info, float width) {

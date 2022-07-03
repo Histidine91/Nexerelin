@@ -1883,6 +1883,7 @@
 		"entryDescPotentialAmount":"Can insure for %s",
 		"entryDescAmountPaid":"Paid out %s on $day-$month-$year",
 		"entryDescPremium":"Premium: %s",
+		"entryDescRequireRepairs":"Must be fully repaired to insure",
 		"entryDescDaysRemaining":"%s day(s) remaining",
 		"entryDescLost":"Ship lost; paying for base value",
 		"entryDescRecovered":"Ship recovered: had %s D-mods, now has %s",
