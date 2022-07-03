@@ -19,3 +19,4 @@ nex_sellAICore,,,remnant,,,8,30,60,,,,,,,,exerelin.campaign.intel.missions.remna
 ,,,,,,,,,,,,,,,,
 # vanilla overrides,,,,,,,,,,,,,,,,
 tabo,,,military,,,10,30,60,COOPERATIVE,,HIGH,,,,graphics/icons/missions/tactical_bombardment.png,exerelin.campaign.intel.missions.Nex_TacticallyBombardColony
+cheapCom,,,"trade, underworld",,,10,30,60,INHOSPITABLE,,,,,,graphics/icons/missions/cheap_commodity.png,exerelin.campaign.intel.missions.Nex_CheapCommodityMission
