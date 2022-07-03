@@ -111,7 +111,7 @@
     "revengePointsPerEnemyFP": 0.05,
     "revengePointsForMarketCaptureMult": 2,
     "vengeanceFleetSizeMult": 0.8,
-    "useNewVengeanceEncounters": true,
+    "useNewVengeanceEncounters": false,
     
     "specialForcesPointMult": 1,	# rate at which factions spawn special task groups
     "specialForcesSizeMult": 1,
