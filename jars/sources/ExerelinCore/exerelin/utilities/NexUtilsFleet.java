@@ -224,12 +224,27 @@ public class NexUtilsFleet
         return Global.getSector().getPlayerPerson().getStats().getLevel() * NexConfig.fleetBonusFpPerPlayerLevel;
     }
 	
-	public static void setTriggerFleetFP(FactionAPI faction, float fp, HubMissionWithTriggers mission) 
+	public static void setTriggerFleetFP(FactionAPI faction, float fp, HubMissionWithTriggers mission) {
+		setTriggerFleetFP(faction, fp, null, mission);
+	}
+	
+	/**
+	 * Sets the fleet size fraction for a hub mission trigger fleet by converting from the specified FP value.<br/>
+	 * i.e. converts FP to a fraction of the faction's "max fleet size", which the game calculates 
+	 * for each faction and which is normally used for controlling fleet sizes in hub missions.
+	 * @param faction
+	 * @param fp
+	 * @param floor Minimum fraction, default is {@code HubMissionWithTriggers.FleetSize.TINY.maxFPFraction}.
+	 * @param mission
+	 */
+	public static void setTriggerFleetFP(FactionAPI faction, float fp, Float floor, HubMissionWithTriggers mission)
 	{
+		if (floor == null) floor = HubMissionWithTriggers.FleetSize.TINY.maxFPFraction;
 		float maxPointsForFaction = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL);
-		float fraction = Math.max(fp/maxPointsForFaction/0.75f, HubMissionWithTriggers.FleetSize.TINY.maxFPFraction);
+		float fraction = Math.max(fp/maxPointsForFaction/0.75f, floor);
 		fraction = Math.min(fraction, 1);
 		mission.triggerSetFleetSizeFraction(fraction);
+		log.info(String.format("Setting trigger fleet FP: %s/%s/0.75 == %s", fp, maxPointsForFaction, fraction));
 	}
     
     public static List<CampaignFleetAPI> getAllFleetsInSector()

@@ -59,7 +59,56 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 			spawnShuntFleet(entity);
 	}
 	
-	public void spawnShuntFleet(SectorEntityToken shunt) {
+	/*
+		runcode SectorEntityToken entity = Global.getSector().getEconomy().getMarket("jangala").getPrimaryEntity();
+		exerelin.campaign.MiscEventsManager.spawnFleetDFE(entity, Global.getSector().getFaction(Factions.OMEGA), 30);
+	*/
+	public static void spawnFleetDFE(SectorEntityToken shunt, FactionAPI faction, float fp) {
+		DelayedFleetEncounter e = new DelayedFleetEncounter(null, "hist");
+		e.setTypes(EncounterType.OUTSIDE_SYSTEM, EncounterType.JUMP_IN_NEAR_PLAYER, 
+				EncounterType.IN_HYPER_EN_ROUTE, EncounterType.FROM_SOMEWHERE_IN_SYSTEM);
+		e.setDelayNone();
+		e.setLocationAnywhere(false, Factions.REMNANTS);
+		e.setDoNotAbortWhenPlayerFleetTooStrong();
+		e.beginCreate();
+		e.triggerCreateFleet(HubMissionWithTriggers.FleetSize.SMALL, 
+				HubMissionWithTriggers.FleetQuality.VERY_HIGH, 
+				Factions.OMEGA, 
+				FleetTypes.PATROL_SMALL, 
+				new Vector2f());
+		//e.triggerSetAdjustStrengthBasedOnQuality(false, 1);
+
+		NexUtilsFleet.setTriggerFleetFP(faction, fp, 0f, e);
+
+		e.triggerSetFleetMaxShipSize(2);
+		e.triggerSetFleetFaction(Factions.REMNANTS);
+				
+		boolean debug = true;
+		if (debug) {
+			e.triggerMakeFleetIgnoredByOtherFleets();
+			e.triggerMakeFleetIgnoreOtherFleets();
+			e.triggerSetFleetFlagPermanent("$nex_omega_hypershunt_complication_debug");
+		}
+		// behavior
+		if (!debug) {
+			//e.triggerSetStandardAggroInterceptFlags();
+			e.triggerMakeHostileAndAggressive();
+			//e.triggerFleetAllowLongPursuit();
+			//e.triggerSetFleetAlwaysPursue();
+			e.triggerOrderFleetInterceptPlayer();
+			e.triggerOrderFleetMaybeEBurn();
+		}		
+
+		e.triggerMakeNoRepImpact();
+		e.triggerSetFleetGenericHailPermanent("Nex_HistorianOmegaHail");
+		e.triggerSetFleetFlagPermanent("$nex_omega_hypershunt_complication");
+		e.triggerSetFleetMemoryValue("$nex_omega_hypershunt_complication_shunt", shunt);
+		
+		
+		e.endCreate();
+	}
+	
+	public void spawnShuntFleet(SectorEntityToken entity) {
 		FactionAPI faction = Global.getSector().getFaction(Factions.OMEGA);
 		float maxPointsForFaction = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL);
 		
@@ -78,6 +127,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		
 		Global.getLogger(this.getClass()).info("Player strength: " + playerStr);
 		Global.getLogger(this.getClass()).info("Omega estimated desired combat points: " + combat);
+		// Omega max is around 3k?
 		Global.getLogger(this.getClass()).info("Omega max combat points: " + maxPointsForFaction);
 		combat = Math.min(70, combat);
 		combat = Math.max(12, combat);	// at least a shard
@@ -85,38 +135,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		// preferred in most ways since it automates various behaviors
 		// but has problems in that no way to set variant tags, needs to outsource to a listener
 		if (USE_OMEGA_DFE) {
-			DelayedFleetEncounter e = new DelayedFleetEncounter(null, "hist");
-			e.setTypes(EncounterType.OUTSIDE_SYSTEM, EncounterType.JUMP_IN_NEAR_PLAYER, 
-					EncounterType.IN_HYPER_EN_ROUTE, EncounterType.FROM_SOMEWHERE_IN_SYSTEM);
-			e.setDelayNone();
-			e.setLocationAnywhere(false, Factions.REMNANTS);
-			e.setDoNotAbortWhenPlayerFleetTooStrong();
-			e.beginCreate();
-			e.triggerCreateFleet(HubMissionWithTriggers.FleetSize.SMALL, 
-					HubMissionWithTriggers.FleetQuality.VERY_HIGH, 
-					Factions.OMEGA, 
-					FleetTypes.PATROL_SMALL, 
-					new Vector2f());
-			//e.triggerSetAdjustStrengthBasedOnQuality(false, 1);
-			
-			NexUtilsFleet.setTriggerFleetFP(faction, combat, e);
-			
-			e.triggerSetFleetMaxShipSize(2);
-			e.triggerSetFleetFaction(Factions.REMNANTS);
-			
-			// behavior
-			//e.triggerSetStandardAggroInterceptFlags();
-			e.triggerMakeHostileAndAggressive();
-			//e.triggerFleetAllowLongPursuit();
-			//e.triggerSetFleetAlwaysPursue();
-			e.triggerOrderFleetInterceptPlayer();
-			e.triggerOrderFleetMaybeEBurn();
-			
-			e.triggerMakeNoRepImpact();
-			e.triggerSetFleetGenericHailPermanent("Nex_HistorianOmegaHail");
-			e.triggerSetFleetFlagPermanent("$nex_omega_hypershunt_complication");
-			e.triggerSetFleetMemoryValue("$nex_omega_hypershunt_complication_shunt", shunt);
-			e.endCreate();
+			spawnFleetDFE(entity, faction, combat);
 		}
 		else {
 			CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
@@ -165,7 +184,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, playerFleet, 0.5f);	// make it get a little closer
 			fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 15,
 					StringHelper.getFleetAssignmentString("intercepting", targetName));
-			fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, shunt, 999999);
+			fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, entity, 999999);
 			fleet.setLocation(pos.getX(), pos.getY());
 			playerFleet.getContainingLocation().addEntity(fleet);
 			
