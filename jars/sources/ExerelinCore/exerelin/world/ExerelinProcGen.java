@@ -1326,6 +1326,11 @@ public class ExerelinProcGen {
 					}
 					else if (plugin instanceof MagicAsteroidBeltTerrainPlugin) {
 						MagicAsteroidBeltTerrainPlugin abt = (MagicAsteroidBeltTerrainPlugin)plugin;
+						if (abt.params == null) {
+							log.error(String.format("Warning: Asteroid belt %s in %s has no params, this is caused by non-fixed versions of MagicLib", 
+								station.terrain.getName(), station.terrain.getContainingLocation()));
+							break;
+						}
 						log.info(String.format("Creating station in Magic asteroid belt %s in %s, has params: %s", 
 								station.terrain.getName(), station.terrain.getContainingLocation(), abt.params != null));
 						orbitRadius = (int)abt.params.middleRadius;
