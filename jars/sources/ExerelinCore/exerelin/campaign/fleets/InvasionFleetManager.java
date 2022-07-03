@@ -1245,7 +1245,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//log.info("\tTarget: " + targetMarket.getName());
 		
 		float fp = 500;	//getWantedFleetSize(faction, targetMarket, 0.2f, true) * 2.5f;
-		float mult = Math.min(1 + (numRemnantRaids * 0.25f), 3f);
+		float mult = sizeMult * Math.min(1 + (numRemnantRaids * 0.25f), 3f);
 		fp *= mult;
 		float organizeTime = getOrganizeTime(fp);
 		fp *= 1 + NexConfig.getFactionConfig(factionId).invasionFleetSizeMod;
@@ -1395,6 +1395,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		processPirateRage();
 	}
 	
+	// runcode exerelin.campaign.fleets.InvasionFleetManager.debugRemnantRaidFleet();
 	public static void debugRemnantRaidFleet() {
 		getManager().generateRemnantRaidFleet(null,	null, 1);
 	}
