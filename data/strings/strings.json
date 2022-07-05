@@ -2217,9 +2217,12 @@
 		"intelButtonCommand":"Give orders",
 		"intelTooltipCommandInBattle":"Fleet is currently in battle and cannot receive orders.",
 		"intelButtonDisband":"Disband",
-		"intelButtonRecreate":"Recreate (experimental)",
+		"intelButtonRecreate":"Revive flagship (experimental)",
+		"intelButtonRecreateAll":"Revive all (experimental)",
 		"intelConfirmPromptRecreate":"Reviving the flagship will cost %s. You have %s.",
+		"intelConfirmPromptRecreateAll":"Reviving all ships will cost %s. You have %s.",
 		"intelTooltipDisbandNotDocked":"Must be docked at a market.",
+		"intelTooltipRecreateNotEnoughCredits":"Requires %s credits.",
 		"intelButtonDebug":"Debug",
 		"intelButtonCheckIndependent":"Independent mode",
 		

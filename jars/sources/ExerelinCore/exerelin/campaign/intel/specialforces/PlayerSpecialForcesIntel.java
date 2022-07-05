@@ -61,6 +61,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected static final Object BUTTON_COMMAND = new Object();
 	protected static final Object BUTTON_DISBAND = new Object();
 	protected static final Object BUTTON_RECREATE = new Object();
+	protected static final Object BUTTON_RECREATE_ALL = new Object();
 	protected static final Object BUTTON_INDEPENDENT_MODE = new Object();
 	
 	@Setter protected CampaignFleetAPI tempFleet;
@@ -259,15 +260,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		toDisband.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
 	}
 	
-	protected void recreate() {
-		// only revive flagship
-		/*
-		for (FleetMemberAPI dead : new ArrayList<>(deadMembers)) {
-			reviveDeadMember(dead);
-		}
-		*/
-		
+	protected void recreate(boolean all) {
 		InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+		
+		// safety
 		if (flagship == null) {
 			for (FleetMemberAPI member : deadMembers) {
 				if (member.isFlagship()) {
@@ -280,8 +276,18 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			Global.getSector().getCampaignUI().getMessageDisplay().addMessage("Error: Flagship not found, cannot revive");
 			return;
 		}
-		int cost = getReviveCost(flagship);
-		reviveDeadMember(flagship);
+		
+		int cost = all ? getReviveCost(deadMembers) : getReviveCost(flagship);
+		
+		if (all) {
+			for (FleetMemberAPI dead : new ArrayList<>(deadMembers)) {
+				reviveDeadMember(dead);
+			}
+		}
+		else {
+			reviveDeadMember(flagship);
+		}
+		
 		if (dial != null) AddRemoveCommodity.addCreditsLossText(cost, dial.getTextPanel());
 		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(cost);
 		
@@ -435,26 +441,44 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 					(int)width, 20f, opad);
 			check.setChecked(independentMode);			
 		} else if (!waitingForSpawn) {
+			// dead mode
+			
 			ButtonAPI button = info.addButton(getString("intelButtonDisband"), 
 					BUTTON_DISBAND, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
-			
-			
+						
 			InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
 			boolean allow = dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null;
 			if (!allow) {
-				button.setEnabled(false);
-				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(getString("intelTooltipDisbandNotDocked"), 360), 
-						TooltipMakerAPI.TooltipLocation.BELOW);
+				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
 			}
 			
+			float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+			
+			// revive flagship
 			button = info.addButton(getString("intelButtonRecreate"), 
 					BUTTON_RECREATE, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
+			float cost = getReviveCost(flagship);
 			if (!allow) {
-				button.setEnabled(false);
-				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(getString("intelTooltipDisbandNotDocked"), 360), 
-						TooltipMakerAPI.TooltipLocation.BELOW);
+				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
+			}
+			else if (cost > credits) {
+				String reason = String.format(getString("intelTooltipRecreateNotEnoughCredits"), Misc.getWithDGS(cost));
+				disableReviveButton(button, info, reason);
+			}
+			
+			// revive all
+			button = info.addButton(getString("intelButtonRecreateAll"), 
+					BUTTON_RECREATE_ALL, faction.getBaseUIColor(), faction.getDarkUIColor(),
+					(int)(width), 20f, pad);
+			cost = getReviveCost(deadMembers);
+			if (!allow) {
+				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
+			}
+			else if (cost > credits) {
+				String reason = String.format(getString("intelTooltipRecreateNotEnoughCredits"), Misc.getWithDGS(cost));
+				disableReviveButton(button, info, reason);
 			}
 		}
 
@@ -472,13 +496,23 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			createSmallDescriptionPart2(info, width);
 	}
 	
+	public void disableReviveButton(ButtonAPI button, TooltipMakerAPI info, String reason) {
+		button.setEnabled(false);
+		info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(reason, 360), 
+				TooltipMakerAPI.TooltipLocation.BELOW);
+	}
+	
 	@Override
 	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
-		if (buttonId == BUTTON_RECREATE) {
+		if (buttonId == BUTTON_RECREATE || buttonId == BUTTON_RECREATE_ALL) {
+			boolean all = buttonId == BUTTON_RECREATE_ALL;
 			float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-			float cost = getReviveCost(flagship);
+			float cost;
+			if (all) cost = getReviveCost(deadMembers);
+			else cost = getReviveCost(flagship);
 			
-			LabelAPI txt = prompt.addPara(getString("intelConfirmPromptRecreate"), 0, Misc.getHighlightColor(),
+			LabelAPI txt = prompt.addPara(getString("intelConfirmPromptRecreate" + (all ? "All" : "")), 
+					0, Misc.getHighlightColor(),
 					Misc.getDGSCredits(cost), 
 					Misc.getDGSCredits(credits));
 			txt.setHighlightColors(Misc.getHighlightColor(), credits >= cost ? Misc.getHighlightColor() : Misc.getNegativeHighlightColor());
@@ -487,7 +521,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId == BUTTON_RECREATE;
+		return buttonId == BUTTON_RECREATE || buttonId == BUTTON_RECREATE_ALL;
 	}
 	
 	@Override
@@ -505,7 +539,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			ui.updateUIForItem(this);
 		}
 		else if (buttonId == BUTTON_RECREATE) {
-			recreate();
+			recreate(false);
+			ui.updateUIForItem(this);
+		}
+		else if (buttonId == BUTTON_RECREATE_ALL) {
+			recreate(true);
 			ui.updateUIForItem(this);
 		}
 		else if (buttonId == BUTTON_INDEPENDENT_MODE) {
