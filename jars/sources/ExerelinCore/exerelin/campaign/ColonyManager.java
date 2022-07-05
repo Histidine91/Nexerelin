@@ -1621,7 +1621,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		// if market was player-controlled or administered by a faction leader, pick a new admin from comm board
 		boolean reassign = oldOwner.isPlayerFaction() || market.isPlayerOwned() 
 				|| Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())
-				|| hasFactionLeader(market);
+				|| hasFactionLeaderOrPreferredAdmin(market);
 		if (!reassign)
 			return;
 		
@@ -1636,6 +1636,19 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
 			PersonAPI person = (PersonAPI)dir.getEntryData();
 			if (Ranks.POST_FACTION_LEADER.equals(person.getPostId()))
+				return true;
+		}
+		return false;
+	}
+	
+	public static boolean hasFactionLeaderOrPreferredAdmin(MarketAPI market) {
+		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
+		{
+			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
+			PersonAPI person = (PersonAPI)dir.getEntryData();
+			if (Ranks.POST_FACTION_LEADER.equals(person.getPostId()))
+				return true;
+			if (person.getMemoryWithoutUpdate().getString("$nex_preferredAdmin_factionId") != null)
 				return true;
 		}
 		return false;
@@ -1669,9 +1682,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		if (person.getMemoryWithoutUpdate().getBoolean("$nex_preferredAdmin")) {
 			String factionId = person.getMemoryWithoutUpdate().getString("$nex_preferredAdmin_factionId");
+			//log.info(String.format("Preferred admin %s has faction ID %s, market faction is %s", person.getNameString(), factionId, market.getFactionId()));
 			if (factionId == null || factionId.equals(market.getFactionId()))
 				return 4;
-		}			
+		}
 		
 		if (postId.equals(Ranks.POST_FACTION_LEADER) && person.getFaction() == market.getFaction())
 			return 3;
