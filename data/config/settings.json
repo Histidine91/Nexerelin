@@ -174,6 +174,8 @@
 		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",
 		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
 		#"newGameSectorProcGen":"exerelin.world.ExerelinSectorProcGen",
+		
+		"nex_restoreCommanderPlugin":"exerelin.combat.RestoreCommanderPlugin",
 	},
 	
 	# Bonus XP values for most story-point-using actions

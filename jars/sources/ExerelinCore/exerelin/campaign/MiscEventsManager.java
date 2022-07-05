@@ -2,17 +2,21 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
@@ -26,20 +30,28 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.NexTempData;
 import com.fs.starfarer.api.loading.VariantSource;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
+import java.util.List;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
+/**
+ * Handles Omega encounter on finding a coronal hypershunt; perma-hate from sat bombing; other stuff?
+ */
 @Log4j
 public class MiscEventsManager extends BaseCampaignEventListener implements 
 		DiscoverEntityListener, ColonyPlayerHostileActListener {
 	
+	public static final String MEMORY_KEY_FLAGSHIP_WORKAROUND = "$nex_flagship_workaround";	
 	public static final boolean USE_OMEGA_DFE = true;
 	
 	public MiscEventsManager() {
@@ -215,6 +227,47 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 			
 			fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
 					new RemnantRaidFleetInteractionConfigGen());
+		}
+	}
+	
+	@Override
+	public void reportShownInteractionDialog(InteractionDialogAPI dialog) {
+		try {
+			
+		InteractionDialogPlugin plugin = dialog.getPlugin();
+		//log.info("Interaction dialog plugin class: " + plugin.getClass().getName());
+		if (plugin instanceof FleetInteractionDialogPluginImpl) {
+			SectorEntityToken target = dialog.getInteractionTarget();
+			if (target == null || !(target instanceof CampaignFleetAPI))
+				return;
+			
+			CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+			CampaignFleetAPI targetFleet = (CampaignFleetAPI)target;
+			BattleAPI battle = targetFleet.getBattle();
+			//log.info("Fleet in battle: " + battle);
+			if (battle != null) {
+				List<CampaignFleetAPI> fleets = battle.getBothSides();
+				for (CampaignFleetAPI fleet : fleets) {
+					if (fleet == player) continue;
+					if (fleet.isHostileTo(player)) continue;
+					
+					FleetMemberAPI flag = fleet.getFlagship();
+					PersonAPI commander = fleet.getCommander();
+					if (flag == null || commander == null || flag.getCaptain() != commander) {
+						continue;
+					}
+					
+					//log.info(String.format("Saving commander %s, flagship %s for fleet %s", commander.getNameString(), flag.getShipName(), fleet.getName()));
+					fleet.getMemoryWithoutUpdate().set(MEMORY_KEY_FLAGSHIP_WORKAROUND, 
+							new Object[]{flag, commander}, 0);
+				}
+			}
+		}
+		
+		} catch (Exception ex) {
+			String warn = "[Nex] Error saving fleet flagships/commanders";
+			dialog.getTextPanel().addPara(warn, Misc.getNegativeHighlightColor());
+			log.error(warn, ex);
 		}
 	}
 
