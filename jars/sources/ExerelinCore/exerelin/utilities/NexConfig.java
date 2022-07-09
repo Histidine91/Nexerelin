@@ -366,6 +366,10 @@ public class NexConfig
 			return null;
 		}
     }
+	
+	public static List<NexFactionConfig> getAllFactionConfigsCopy() {
+		return new ArrayList<>(exerelinFactionConfigs);
+	}
 
     @Deprecated
     public static List<String> getAllCustomFactionRebels()

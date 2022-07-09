@@ -331,7 +331,7 @@ public class AllianceVoter {
 		int factionCount = 0;
 		float otherAllianceDispositionSum = 0;
 		
-		Map<Alignment, Float> alignments = usConf.getAlignmentsCopy(false);
+		Map<Alignment, Float> alignments = usConf.getAlignmentValues();
 		float hawkishness = alignments.get(Alignment.MILITARIST);
 		float diplomaticness = alignments.get(Alignment.DIPLOMATIC);
 		
@@ -432,7 +432,7 @@ public class AllianceVoter {
 		if (factionId.equals(Factions.PLAYER))
 			return false;
 		
-		Map<Alignment, Float> alignments = usConf.getAlignmentsCopy(false);
+		Map<Alignment, Float> alignments = usConf.getAlignmentValues();
 		float hawkishness = alignments.get(Alignment.MILITARIST);
 		float diplomaticness = alignments.get(Alignment.DIPLOMATIC);
 		float friendRelationship = us.getRelationship(friendId);

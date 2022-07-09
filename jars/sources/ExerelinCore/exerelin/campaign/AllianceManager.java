@@ -149,20 +149,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         List<Alignment> bestAlignments = new ArrayList<>();
         NexFactionConfig config1 = NexConfig.getFactionConfig(factionId);
         NexFactionConfig config2 = NexConfig.getFactionConfig(otherFactionId);
-        Map<Alignment, Float> alignments1 = config1.getAlignmentsCopy(false);
-        Map<Alignment, Float> alignments2 = config2.getAlignmentsCopy(false);
+        Map<Alignment, Float> alignments1 = config1.getAlignmentValues();
+        Map<Alignment, Float> alignments2 = config2.getAlignmentValues();
         for (Alignment alignment : Alignment.getAlignments())
         {
-            float alignment1 = 0;
-            float alignment2 = 0;
-            if (config1 != null)
-            {
-                alignment1 = alignments1.get(alignment);
-            }
-            if (config2 != null)
-            {
-                alignment2 = alignments2.get(alignment);
-            }
+            float alignment1 = alignments1.get(alignment);
+            float alignment2 = alignments2.get(alignment);
             float sum = alignment1 + alignment2;
             if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !NexConfig.ignoreAlignmentForAlliances) continue;
             if (sum > bestAlignmentValue)
@@ -188,7 +180,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance == null) return 0;
         float value = 0;
         NexFactionConfig config = NexConfig.getFactionConfig(factionId);
-		Map<Alignment, Float> alignments = config.getAlignmentsCopy(false);
+		Map<Alignment, Float> alignments = config.getAlignmentValues();
         {
             //log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.getName());
             //log.info("Alliance alignment: " + alliance.alignment.toString());

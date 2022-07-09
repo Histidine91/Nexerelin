@@ -4,7 +4,7 @@
 		"alliance":"alliance",
 		"alliances":"alliances",
 		"alliance(s)":"alliance(s)",
-		"base":"base",
+		"base":"base",	# as in "base value",
 		"cabal":"Cabal",
 		"close":"close",
 		"colony":"colony",
@@ -183,6 +183,7 @@
 		"alignment_militarist":"militarist",
 		"alignment_diplomatic":"diplomatic",
 		"alignment_ideological":"ideological",
+		"alignmentModifierPlayerSet":"Set by player",
 		
 		"intelDesc":"The $alliance alliance is present in the Sector. It has $numMembers members, with $numMarkets markets of total size $marketSizeSum.",
 		"intelMemberEntry":"$faction: $num markets (total size $size)",

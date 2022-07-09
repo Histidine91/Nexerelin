@@ -9,6 +9,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -284,16 +286,6 @@ public class Alliance
 		public String getName() {
 			return StringHelper.getString("exerelin_alliances", "alignment_" 
 				+ this.toString().toLowerCase(Locale.ROOT), true);
-		}
-		
-		public static void setFactionAlignment(String factionId, Alignment align, float value) {
-			MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
-			if (!mem.contains(MEMORY_KEY_ALIGNMENTS)) {
-				mem.set(MEMORY_KEY_ALIGNMENTS, new EnumMap<Alignment, Float>(Alignment.class));
-			}
-			
-			Map<Alignment, Float> alignments = (Map<Alignment, Float>)mem.get(MEMORY_KEY_ALIGNMENTS);
-			alignments.put(align, value);
 		}
 	}
 }

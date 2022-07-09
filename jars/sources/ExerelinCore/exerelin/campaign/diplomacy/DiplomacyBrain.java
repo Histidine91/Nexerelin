@@ -162,8 +162,8 @@ public class DiplomacyBrain {
 	public float getDispositionFromAlignments(String factionId) {
 		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		NexFactionConfig ourConf = NexConfig.getFactionConfig(this.factionId);
-		Map<Alignment, Float> alignments = conf.getAlignmentsCopy(false);
-		Map<Alignment, Float> ourAlignments = ourConf.getAlignmentsCopy(false);
+		Map<Alignment, Float> alignments = conf.getAlignmentValues();
+		Map<Alignment, Float> ourAlignments = ourConf.getAlignmentValues();
 		
 		return getDispositionFromAlignments(alignments, ourAlignments);
 	}
@@ -514,7 +514,7 @@ public class DiplomacyBrain {
 		float strRatio = (ourStrength + targetEnemyStrength * 0.5f) / (targetStrength + enemyStrength);
 		logDebug("\tStrength ratio: " + strRatio);
 		
-		float militarismMult = ourConf.getAlignmentsCopy(false).get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
+		float militarismMult = ourConf.getAlignmentValues().get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
 		logDebug("\tMilitarism mult: " + militarismMult);
 		
 		float dominance = DiplomacyManager.getDominanceFactor(enemyId) * 40;

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
@@ -20,6 +21,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
@@ -129,6 +131,7 @@ public class NexFactionConfig
     public float specialForcesSizeMult = 1;
     public String specialForcesNamerClass = "exerelin.campaign.intel.specialforces.namer.CommanderNamer";
     public Map<String, Float> specialForcesFlagshipVariants = new HashMap<>();
+	public String specialForcesNamePrefix = null;
     
     // misc
     public boolean dropPrisoners = true;
@@ -762,24 +765,66 @@ public class NexFactionConfig
     }
     
     /**
-     * Gets this faction's alignments.
-     * @param configOnly If false, load alignments from faction memory instead of config file where available.
+	 * Gets this faction's alignments specified in config, without any ingame modifiers.
      * @return
      */
-    public Map<Alignment, Float> getAlignmentsCopy(boolean configOnly) {
+	public Map<Alignment, Float> getBaseAlignments() {
         Map<Alignment, Float> align = new HashMap<>(alignments);
         
-        if (configOnly) return align;
-        
-        SectorAPI sector = Global.getSector();
-        if (sector == null) return align;
-        MemoryAPI mem = sector.getFaction(factionId).getMemoryWithoutUpdate();
-        if (mem.contains(Alliance.MEMORY_KEY_ALIGNMENTS)) {
-            Map<Alignment, Float> align2 = (Map<Alignment, Float>)mem.get(Alliance.MEMORY_KEY_ALIGNMENTS);
-            align.putAll(align2);
-        }
         return align;
     }
+	
+	public Map<Alignment, MutableStat> createInitialAlignmentsMap() {
+		Map<Alignment, MutableStat> alignMap = new HashMap<>();
+		for (Alignment align : Alignment.getAlignments()) {
+			MutableStat stat = new MutableStat(0);
+			float base = alignments.get(align);
+			stat.modifyFlat("base", base, StringHelper.getString("base"));
+			
+			alignMap.put(align, stat);
+		}
+		return alignMap;
+	}
+	
+	public Map<Alignment, MutableStat> storeInitialAlignmentsInMemory() {
+		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+		Map<Alignment, MutableStat> alignMap = createInitialAlignmentsMap();
+		mem.set(Alliance.MEMORY_KEY_ALIGNMENTS, alignMap);
+		return alignMap;
+	}
+	
+	public void updateBaseAlignmentsInMemory() {
+		Map<Alignment, MutableStat> alignMap = getAlignments();
+		for (Alignment align : alignMap.keySet()) {
+			MutableStat stat = alignMap.get(align);
+			float base = alignments.get(align);
+			stat.modifyFlat("base", base, StringHelper.getString("base"));
+		}
+	}
+	
+	public Map<Alignment, MutableStat> getAlignments() {
+		FactionAPI faction;
+		if (Global.getSector() == null || Global.getSector().getFaction(factionId) == null) {
+			faction = Global.getSettings().createBaseFaction(factionId);
+		} else {
+			faction = Global.getSector().getFaction(factionId);
+		}
+		MemoryAPI mem = faction.getMemoryWithoutUpdate();
+		
+		if (!mem.contains(Alliance.MEMORY_KEY_ALIGNMENTS)) {
+			storeInitialAlignmentsInMemory();
+		}
+		return (Map<Alignment, MutableStat>)mem.get(Alliance.MEMORY_KEY_ALIGNMENTS);
+	}
+	
+	public Map<Alignment, Float> getAlignmentValues() {
+		Map<Alignment, MutableStat> alignMap = getAlignments();
+		Map<Alignment, Float> alignMapConverted = new HashMap<>();
+		for (Alignment align : alignMap.keySet()) {
+			alignMapConverted.put(align, alignMap.get(align).getModifiedValue());
+		}
+		return alignMapConverted;
+	}
     
     public List<String> getStartShipList(JSONArray array) throws JSONException
     {

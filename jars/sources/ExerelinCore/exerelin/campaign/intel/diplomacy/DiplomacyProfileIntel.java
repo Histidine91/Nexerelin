@@ -145,7 +145,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		List<Pair<Alignment, Float>> alignments = new ArrayList<>();
 		NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
 		
-		for (Map.Entry<Alignment, Float> tmp : conf.getAlignmentsCopy(false).entrySet())
+		for (Map.Entry<Alignment, Float> tmp : conf.getAlignmentValues().entrySet())
 		{
 			if (tmp.getValue() == 0) continue;
 			alignments.add(new Pair<>(tmp.getKey(), tmp.getValue()));			
@@ -287,7 +287,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			CustomPanelAPI panelAllAlignments = outer.createCustomPanel(width, height, null);
 			List<CustomPanelAPI> panels = new ArrayList<>();
 			
-			Map<Alignment, Float> currAlign = NexConfig.getFactionConfig(faction.getId()).getAlignmentsCopy(false);
+			Map<Alignment, Float> currAlign = NexConfig.getFactionConfig(faction.getId()).getAlignmentValues();
 
 			for (Alignment align : Alignment.getAlignments()) {
 				CustomPanelAPI panelAlignment = panelAllAlignments.createCustomPanel(alignmentPanelWidth, alignmentPanelHeight, null);
@@ -392,7 +392,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			boolean preview = alignmentTemp != null;
 			// TODO: update alignment disposition using preview table when in preview mode
 			if (preview) {
-				float dfa = brain.getDispositionFromAlignments(alignmentTemp, conf.getAlignmentsCopy(false));
+				float dfa = brain.getDispositionFromAlignments(alignmentTemp, conf.getAlignmentValues());
 				dispositionCopy.modifyFlat("alignments", dfa, "Alignments");
 			}
 			
@@ -582,7 +582,8 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		if (buttonId instanceof Pair) {
 			Pair<Alignment, Float> pair = (Pair<Alignment, Float>)buttonId;
-			Alignment.setFactionAlignment(faction.getId(), pair.one, pair.two);
+			MutableStat align = NexConfig.getFactionConfig(faction.getId()).getAlignments().get(pair.one);
+			align.modifyFlat("playerSet", pair.two, StringHelper.getString("exerelin_alliances", "alignmentModifierPlayerSet"));
 			
 			// update alignments of other factions so they're reflected in the intel display
 			List<String> factions = SectorManager.getLiveFactionIdsCopy();

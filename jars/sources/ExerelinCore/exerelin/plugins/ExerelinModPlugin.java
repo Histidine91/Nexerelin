@@ -191,13 +191,19 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addTransientScript(new ReinitScreenScript());
     }
     
-    protected void refreshTariffsAndGrowthRate()
+    protected void refreshMarketSettings()
     {
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             NexUtilsMarket.setTariffs(market);
             if (ColonyManager.getManager() != null)    // will be null if loading non-Nex save
                 ColonyManager.getManager().setGrowthRate(market);
+        }
+    }
+    
+    protected void refreshFactionSettings() {
+        for (NexFactionConfig conf : NexConfig.getAllFactionConfigsCopy()) {
+            conf.updateBaseAlignmentsInMemory();
         }
     }
     
@@ -349,7 +355,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         addScriptsAndEventsIfNeeded();
         
         reverseCompatibility();
-        refreshTariffsAndGrowthRate();
+        refreshMarketSettings();
+        refreshFactionSettings();
         
         SectorAPI sector = Global.getSector();
         sector.registerPlugin(new ExerelinCampaignPlugin());
