@@ -3368,6 +3368,7 @@ FireBest MarketPostDock",,,
 # player special task group,,,,,,
 nex_sfCommLink,OpenCommLink,"$faction.id == ""player""
 $entity.nex_sfIntel != null score:100
+!$entity.nex_specialforces_npc
 !$printedFirstGreeting","ShowPersonVisual
 $printedFirstGreeting = true 0","""$PersonRank $personLastName, reporting. Awaiting orders, admiral.""
 OR
@@ -3376,6 +3377,7 @@ nex_configSF_start:Reconfigure task group
 cutCommLink:Cut the comm link",
 nex_sfCommLink_repeat,OpenCommLink,"$faction.id == ""player""
 $entity.nex_sfIntel != null score:100
+!$entity.nex_specialforces_npc
 $printedFirstGreeting","ShowPersonVisual
 $printedFirstGreeting = true 0",,"nex_commandSF_main:Give orders
 nex_configSF_start:Reconfigure task group

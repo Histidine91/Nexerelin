@@ -139,17 +139,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			fleet.getFleetData().addFleetMember(live);
 		}
 		fleet.setInflated(true);
-		fleet.setInflater(null);
-		
+		fleet.setInflater(null);		
 		
 		commander.setRankId(Ranks.SPACE_CAPTAIN);
 		
 		fleet.setNoAutoDespawn(true);
 		
 		fleet.setFaction(faction.getId(), false);
-		
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
-		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
 				
 		syncFleet(fleet);
 		this.startingFP = fleet.getFleetPoints();
@@ -160,9 +156,12 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
 		fleet.setNoFactionInName(true);
+				
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);		
+		fleet.getMemoryWithoutUpdate().set(FLEET_MEM_KEY_INTEL, this);
 		
 		fleet.addEventListener(new SFFleetEventListener(this));
-		fleet.getMemoryWithoutUpdate().set("$nex_sfIntel", this);
 		
 		fleet.setAIMode(AI_MODE);
 		fleet.setTransponderOn(false);

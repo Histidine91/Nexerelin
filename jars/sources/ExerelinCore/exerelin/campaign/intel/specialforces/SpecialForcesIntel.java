@@ -246,9 +246,6 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		fleet.setFaction(faction.getId(), true);
 		
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
-		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
-		
 		replaceCommander(fleet, false);
 		injectFlagship(fleet);
 		
@@ -261,8 +258,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
 		fleet.setNoFactionInName(true);
 		
-		fleet.addEventListener(new SFFleetEventListener(this));
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
+		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);
+		fleet.getMemoryWithoutUpdate().set("$nex_specialforces_npc", true);
 		fleet.getMemoryWithoutUpdate().set(FLEET_MEM_KEY_INTEL, this);
+		
+		fleet.addEventListener(new SFFleetEventListener(this));		
 		
 		return fleet;
 	}
