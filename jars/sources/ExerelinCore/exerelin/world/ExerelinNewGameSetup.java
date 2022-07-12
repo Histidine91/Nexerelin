@@ -85,7 +85,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", "independent");
 			prismEntity.setCircularOrbitPointingDown(toOrbit, 343, orbitDistance, NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
-		else if (newGame && !NexConfig.prismInHyperspace)
+		else if (!NexConfig.prismInHyperspace)
 		{
 			prismEntity = generatePrismInOwnSystem();
 		}
