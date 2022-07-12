@@ -45,6 +45,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
@@ -549,6 +550,11 @@ public class ExerelinProcGen {
 			if (planet.isStar()) continue;
 			if (planet.getMarket() == null || !planet.getMarket().isPlanetConditionMarketOnly()) {
 				//log.info(String.format("  Planet %s has no market or is already inhabited", planet.getName()));
+				continue;
+			}
+			
+			if (planet.getMarket().getMemoryWithoutUpdate().getBoolean(ColonyTargetValuator.MEM_KEY_NO_COLONIZE)) 
+			{
 				continue;
 			}
 				
