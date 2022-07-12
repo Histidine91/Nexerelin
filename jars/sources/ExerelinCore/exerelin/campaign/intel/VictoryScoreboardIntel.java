@@ -337,7 +337,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 			if (alliance != null) {
 				for (String allyId : alliance.getMembersCopy()) {
 					if (allyId.equals(factionId)) continue;
-					allySize += factionSizes.get(allyId);
+					if (factionSizes.containsKey(allyId)) allySize += factionSizes.get(allyId);
 					if (heavyIndustries.containsKey(allyId)) allyIndustries += heavyIndustries.get(allyId);
 				}
 				allySize *= ALLIANCE_CONTRIB_MULT;
