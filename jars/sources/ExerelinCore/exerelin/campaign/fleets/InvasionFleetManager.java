@@ -1366,7 +1366,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 		
 		// if still in invasion grace period, do nothing further
-		if (false && daysElapsed < NexConfig.invasionGracePeriod)
+		if (daysElapsed < NexConfig.invasionGracePeriod)
 		{
 			daysElapsed += days;
 			return;
