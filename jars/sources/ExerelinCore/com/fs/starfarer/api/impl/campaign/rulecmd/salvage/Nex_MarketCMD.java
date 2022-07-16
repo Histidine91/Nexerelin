@@ -1678,12 +1678,18 @@ public class Nex_MarketCMD extends MarketCMD {
 		});
 	}
 	
-	
-	// Differences from vanilla: Modified defender strength (TODO: decide whether it actually matters)
-	protected void bombardMenu() {
-		//StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
-		//defender.modifyMult("nex_bombardBonus", BASE_LOOT_SCORE);
-		super.bombardMenu();
+	@Override
+	protected void raidMenu() {
+		super.raidMenu();
+		// TODO: minimum raid strength for stability impacts
+		if (true) return;
+		
+		float minForStab = getMinRaidStrengthForUnrest();
+		String mfs_str = Math.round(minForStab) + "";
+		LabelAPI lbl = text.addPara(String.format("[temp] Min raid strength to cause unrest at market size %s: %s", 
+				market.getSize(), mfs_str));
+		lbl.setHighlight(market.getSize() + "", mfs_str);
+		lbl.setHighlightColors(Misc.getHighlightColor(), temp.attackerStr >= minForStab ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor());
 	}
 	
 	public static int getBombardDisruptDuration(BombardType type) {
@@ -2006,6 +2012,16 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardVisual(market.getPrimaryEntity());
 		
 		addBombardContinueOption();
+	}
+	
+	protected float getMinRaidStrengthForUnrest() {
+		if (market == null) return 0;
+		float estimatedPopForSize = (float)Math.pow(10, market.getSize());
+		
+		float reqStr = 10 * (float)Math.pow(2, market.getSize());
+		reqStr = Math.min(reqStr, estimatedPopForSize * 0.1f);
+		
+		return reqStr;
 	}
 	
 	@Deprecated

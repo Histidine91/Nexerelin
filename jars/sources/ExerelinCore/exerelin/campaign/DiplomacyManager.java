@@ -846,7 +846,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 	{
 		MutableStat stat = getMaxRelationshipMod(factionId, otherFactionId);
 		if (stat == null) {
-			
 			stat = new MutableStat(0);
 		}
 		Map<String, StatMod> currentMods = stat.getFlatMods();

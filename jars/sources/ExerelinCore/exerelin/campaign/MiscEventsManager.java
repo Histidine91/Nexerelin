@@ -139,7 +139,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		
 		Global.getLogger(this.getClass()).info("Player strength: " + playerStr);
 		Global.getLogger(this.getClass()).info("Omega estimated desired combat points: " + combat);
-		// Omega max is around 3k?
+		// Omega max is around 3k with Star Federation, with vanilla it's >500
 		Global.getLogger(this.getClass()).info("Omega max combat points: " + maxPointsForFaction);
 		combat = Math.min(70, combat);
 		combat = Math.max(12, combat);	// at least a shard
