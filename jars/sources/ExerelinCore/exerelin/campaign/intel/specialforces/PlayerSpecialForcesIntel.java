@@ -623,6 +623,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	public static float getReviveSupplyCost(FleetMemberAPI member) {
+		if (member == null) return 0;
 		float suppliesPerCRPoint = member.getDeploymentCostSupplies()/member.getDeployCost();
 		float suppliesPerDay = suppliesPerCRPoint * member.getRepairTracker().getRecoveryRate();
 		float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
@@ -633,6 +634,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 	
 	public static int getReviveCost(FleetMemberAPI member) {
+		if (member == null) return 0;
 		float cost = getReviveSupplyCost(member) * Global.getSettings().getCommoditySpec(Commodities.SUPPLIES).getBasePrice();
 		return Math.round(cost);
 	}
