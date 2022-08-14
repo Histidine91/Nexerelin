@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -69,6 +70,7 @@ import org.lazywizard.lazylib.MathUtils;
 public class BuildStation extends HubMissionWithBarEvent implements FleetEventListener {
 	
 	public static final boolean DEBUG_MODE = false;
+	public static final float FLEET_CHANCE = 0.9f;
 	
 	public static final Map<String, Integer> COMMODITIES_REQUIRED = new HashMap<>();
 	static {
@@ -146,7 +148,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		setTimeLimit(Stage.FAILED, MISSION_DAYS, null);
 		
 		// fleet intercepts player en route to meeting point
-		//if (false)
+		if (new Random().nextFloat() < FLEET_CHANCE)
 		{
 			String complFaction = getComplicationFaction();
 			boolean isMerc = genRandom.nextFloat() < 0.35f;
