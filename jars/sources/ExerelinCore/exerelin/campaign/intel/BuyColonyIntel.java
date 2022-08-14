@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Handles the event for player governorship of a market.
+ */
 public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener {
 	
 	public static final Object EXPIRED_UPDATE = new Object();
@@ -139,6 +142,7 @@ public class BuyColonyIntel extends BaseIntelPlugin implements InvasionListener 
 	
 	public void cancel(Status newStatus) {
 		market.setPlayerOwned(false);
+		SectorManager.updateSubmarkets(market, market.getFactionId(), market.getFactionId());
 		reassignAdmin();
 		ColonyManager.getManager().checkGatheringPoint(market);
 		status = newStatus;
