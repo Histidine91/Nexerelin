@@ -255,7 +255,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			fleetName = pickFleetName(fleet, origin, commander);
 		}
 		
-		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
+		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " - " + fleetName);
 		fleet.setNoFactionInName(true);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
@@ -757,7 +757,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		} else if (buttonId == BUTTON_RENAME) {
 			fleetName = nameField.getText();
 			if (route.getActiveFleet() != null) {
-				route.getActiveFleet().setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
+				route.getActiveFleet().setName(faction.getFleetTypeName(FLEET_TYPE) + " - " + fleetName);
 			}
 			ui.updateUIForItem(this);
 		}

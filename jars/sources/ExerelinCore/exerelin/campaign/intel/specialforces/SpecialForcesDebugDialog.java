@@ -124,7 +124,7 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 			case GENERATE_NAME:
 				if (fleet != null) {
 					intel.fleetName = intel.pickFleetName(fleet, intel.route.getMarket(), intel.commander);
-					fleet.setName(intel.faction.getFleetTypeName(FLEET_TYPE) + " – " + intel.fleetName);
+					fleet.setName(intel.faction.getFleetTypeName(FLEET_TYPE) + " - " + intel.fleetName);
 					text.addPara("New fleet name: " + intel.fleetName);
 				}
 				else {

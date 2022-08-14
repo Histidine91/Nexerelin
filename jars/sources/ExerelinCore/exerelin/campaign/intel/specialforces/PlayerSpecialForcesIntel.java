@@ -154,7 +154,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			fleetName = pickFleetName(fleet, origin, commander);
 		}
 		
-		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " – " + fleetName);
+		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " - " + fleetName);
 		fleet.setNoFactionInName(true);
 				
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);

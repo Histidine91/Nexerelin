@@ -228,7 +228,7 @@ public class Nex_FactionDirectoryHelper {
 			String tooltip = "";
 			for (int i = 0; i< factions.size(); i++)
 			{
-				tooltip = tooltip + "– " + getFactionDisplayName(factions.get(i));
+				tooltip = tooltip + "- " + getFactionDisplayName(factions.get(i));
 				if (i < factions.size() - 1)
 					tooltip += "\n";
 			}
@@ -238,7 +238,7 @@ public class Nex_FactionDirectoryHelper {
 		public String getGroupingRangeString()
 		{
 			if (last.isEmpty()) return first;
-			return first + " – " + last;
+			return first + " - " + last;
 		}
 		
 		public List<Color> getTooltipColors()
