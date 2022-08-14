@@ -2,6 +2,7 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -9,6 +10,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexUtilsReputation;
 import java.util.List;
 import java.util.Map;
+import org.lazywizard.lazylib.MathUtils;
 
 public class Nex_MiscCMD extends BaseCommandPlugin {
 	
@@ -21,6 +23,8 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 		{
 			case "hasSierra":
 				return hasSierra(memoryMap.get(MemKeys.LOCAL));
+			case "isRemoteConnection":
+				return isRemote(dialog.getInteractionTarget());
 			default:
 				return false;
 		}
@@ -37,5 +41,11 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isRemote(SectorEntityToken target) {
+		if (target.getContainingLocation() != Global.getSector().getCurrentLocation()) return true;
+		float dist = MathUtils.getDistance(target, Global.getSector().getPlayerFleet());
+		return dist > 10;
 	}
 }

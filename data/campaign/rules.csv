@@ -2638,6 +2638,9 @@ nex_remcb_showOptions:Ask about one of the other targets",
 nex_omegaWepBlurb,nex_omegaWep_blurb,$id == nex_dissonant score:10,,"""Blessings of omega. Available, quantity limited.""",,
 nex_omegaWepOfferOption,nex_omegaWep_option,,,,"nex_omegaWep_start:Inquire about the ""blessings of omega""
 ",
+nex_omegaWepOfferOptionSNBlock,nex_omegaWep_option,Nex_MiscCMD isRemoteConnection,"SetEnabled nex_omegaWep_start false
+SetTooltip nex_omegaWep_start ""Cannot be done during a remote call for safety reasons.""",,"nex_omegaWep_start:Inquire about the ""blessings of omega""
+",
 nex_omegaWepOfferText,DialogOptionSelected,"$id == nex_dissonant score:10
 $option == nex_omegaWep_start","$missionId = nex_omegaWep
 SetTextHighlights $nex_omegaWep_count","""Have $nex_omegaWep_count weapon(s), known to humans not. Now belong to $playerName, if credits have.""","nex_omegaWep_view:See what $personName and Omega have to offer
