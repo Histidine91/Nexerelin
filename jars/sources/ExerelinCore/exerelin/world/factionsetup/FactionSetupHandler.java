@@ -95,6 +95,10 @@ public class FactionSetupHandler {
 				for (Pair<String, String> item : itemSet.items) {
 					String id = item.one;
 					SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(id);
+					if (spec == null) {
+						Global.getLogger(FactionSetupHandler.class).error(String.format("Invalid special item %s for faction %s", id, factionId));
+						continue;
+					}
 					if (spec.hasTag("package_bp")) 
 					{
 						if (alreadyAddedBPs.contains(spec.getId())) continue;
