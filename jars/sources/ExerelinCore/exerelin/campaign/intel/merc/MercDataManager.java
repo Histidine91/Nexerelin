@@ -180,7 +180,7 @@ public class MercDataManager {
 				if (entryJson.has("minRep"))
 					def.minRep = RepLevel.valueOf(entryJson.getString("minRep").toUpperCase());
 				def.minLevel = entryJson.optInt("minLevel");
-				def.minLevel *= Global.getSettings().getInt("playerMaxLevel")/15;
+				def.minLevel *= Global.getSettings().getInt("playerMaxLevel")/15f;
 				
 				// load ships
 				def.ships.addAll(getShipList(entryJson));
