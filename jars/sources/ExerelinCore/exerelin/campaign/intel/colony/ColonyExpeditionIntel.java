@@ -472,8 +472,10 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		}
 		
 		// planet desc change
-		MarketDescChanger.getInstance().reportMarketTransfered(market, faction,
+		if (MarketDescChanger.getInstance() != null) {
+			MarketDescChanger.getInstance().reportMarketTransfered(market, faction,
 				Global.getSector().getFaction(Factions.NEUTRAL), false, false, null, 0);
+		}
 	}
 	
 	public void notifyQueueJumpedEarly() {
