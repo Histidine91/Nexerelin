@@ -218,7 +218,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				fp * 0.05f, // transportPts
 				0, // linerPts
 				fp * 0.07f, // utilityPts
-				0.25f
+				0.25f	// qualityMod
 		);
 		params.timestamp = thisRoute.getTimestamp();
 		params.officerLevelBonus = 1;
@@ -255,7 +255,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			fleetName = pickFleetName(fleet, origin, commander);
 		}
 		
-		fleet.setName(faction.getFleetTypeName(FLEET_TYPE) + " - " + fleetName);
+		updateFleetName(fleet);
 		fleet.setNoFactionInName(true);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
@@ -266,6 +266,14 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		fleet.addEventListener(new SFFleetEventListener(this));		
 		
 		return fleet;
+	}
+	
+	public void updateFleetName(CampaignFleetAPI fleet) {
+		if (fleet == null) return;
+		String name = faction.getFleetTypeName(FLEET_TYPE);
+		if (!name.isEmpty()) name += " - ";
+		name += fleetName;
+		fleet.setName(name);
 	}
 	
 	/**
@@ -756,9 +764,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			ui.showDialog(null, new SpecialForcesDebugDialog(this, ui));
 		} else if (buttonId == BUTTON_RENAME) {
 			fleetName = nameField.getText();
-			if (route.getActiveFleet() != null) {
-				route.getActiveFleet().setName(faction.getFleetTypeName(FLEET_TYPE) + " - " + fleetName);
-			}
+			updateFleetName(route.getActiveFleet());
 			ui.updateUIForItem(this);
 		}
 	}

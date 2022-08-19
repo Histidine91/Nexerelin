@@ -4,4 +4,7 @@
 			"territorial":false,
 		},
 	},
+	"fleetTypeNames":{
+		"nex_specialForces":"",
+	},
 },

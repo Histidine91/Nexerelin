@@ -39,6 +39,10 @@
 		"Wisdom",
 	],
 	
+	"factionNames_independent":[
+		"Independent State Allied Forces",
+	],
+	
 	"factionNames_tritachyon":[
 		"Archimedes",
 		"Averroes",

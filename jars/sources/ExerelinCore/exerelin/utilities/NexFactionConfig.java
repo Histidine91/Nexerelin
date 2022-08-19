@@ -131,7 +131,6 @@ public class NexFactionConfig
     public float specialForcesSizeMult = 1;
     public String specialForcesNamerClass = "exerelin.campaign.intel.specialforces.namer.CommanderNamer";
     public Map<String, Float> specialForcesFlagshipVariants = new HashMap<>();
-	public String specialForcesNamePrefix = null;
     
     // misc
     public boolean dropPrisoners = true;
@@ -276,7 +275,7 @@ public class NexFactionConfig
             colonyTargetValuator = settings.optString("colonyTargetValuator", colonyTargetValuator);
             maxColonyDistance = (float)settings.optDouble("maxColonyDistance", maxColonyDistance);
             
-            specialForcesMaxFleets = settings.optInt("specialForcesMaxFleets", specialForcesMaxFleets);
+            specialForcesMaxFleets = playableFaction ? settings.optInt("specialForcesMaxFleets", specialForcesMaxFleets) : 0;
             specialForcesCountMult = (float)settings.optDouble("specialForcesCountMult", specialForcesCountMult);
             specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
             specialForcesSizeMult = (float)settings.optDouble("specialForcesSizeMult", specialForcesSizeMult);

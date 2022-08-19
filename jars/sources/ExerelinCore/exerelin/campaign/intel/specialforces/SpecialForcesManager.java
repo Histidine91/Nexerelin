@@ -90,13 +90,13 @@ public class SpecialForcesManager implements EveryFrameScript {
 	{
 		if (Global.getSector().isInNewGameAdvance()) return;
 		
-		Set<String> liveFactions = new HashSet<>(SectorManager.getLiveFactionIdsCopy());
+		Set<String> factions = SectorManager.getManager().getPresentFactionIdsCopy();
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
 		
 		for (MarketAPI market : markets)
 		{
 			String factionId = market.getFactionId();
-			if (!liveFactions.contains(factionId)) continue;
+			if (!factions.contains(factionId)) continue;
 			
 			float points = FleetPoolManager.getMarketFleetPoolCommodityValue(market);
 			points *= days * POINT_GENERATION_MULT * NexConfig.specialForcesPointMult;
@@ -107,7 +107,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 		}
 		
 		// spawn fleets if needed
-		for (String factionId : liveFactions) {
+		for (String factionId : factions) {
 			float points = getPoints(factionId);
 			if (points >= POINTS_TO_SPAWN && countActiveFleetsForFaction(factionId) < getMaxFleets(factionId)) 
 			{
