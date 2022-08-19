@@ -1606,6 +1606,8 @@
 		"transferMarketRep":"Transferring $market will earn $repChange reputation with the recipient faction.",
 		"transferMarketOriginalOwner":"$market was originally held by $theFaction, and will give $bonus the reputation if returned to them.",
 		"transferMarketRecentlyCaptured":"$market was recently taken from $theFaction, and will only give $mult the reputation if returned now.",
+		"transferMarketAndGovern":"Govern in the name of $theFaction",
+		"transferMarketAndGovernInfo":"This will transfer $market to $theFaction and appoint you as governor. You will collect its revenue and pay its costs, and can build industries and structures on it. Storage is free. Your personal ship construction will benefit from $faction industry.\n\nYou can resign your governorship at any time; it will also be revoked if you lose your commission.",
 		"transferMarketFactorIndustry":"industry value",
 		"transferMarketFactorIncome":"income",
 		"transferMarketFactorStability":"stability",

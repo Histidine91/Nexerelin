@@ -88,6 +88,11 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				String factionId = option.substring(PREFIX_LENGTH);
 				transferMarket(dialog, market, factionId);
 				return true;
+				
+			case "transferAndGovern":
+				transferMarket(dialog, market, Misc.getCommissionFactionId());
+				Nex_BuyColony.buy(market, 0, dialog);
+				return true;
 			
 			// prints a string listing the reputation change from performing the transfer
 			case "printRepChange":
@@ -240,6 +245,26 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 					optionId, group.tooltip);
 			opts.setTooltipHighlights(optionId, group.getFactionNames().toArray(new String[0]));
 			opts.setTooltipHighlightColors(optionId, group.getTooltipColors().toArray(new Color[0]));
+		}
+		
+		FactionAPI comm = Misc.getCommissionFaction();
+		if (comm != null && Factions.PLAYER.equals(NexUtilsMarket.getOriginalOwner(dialog.getInteractionTarget().getMarket())))
+		{
+			String str = StringHelper.getString("exerelin_markets", "transferMarketAndGovern");
+			str = StringHelper.substituteFactionTokens(str, comm);
+			
+			String tooltip = StringHelper.getStringAndSubstituteToken("exerelin_markets", "transferMarketAndGovernInfo", 
+							"$market", dialog.getInteractionTarget().getMarket().getName());
+			tooltip = StringHelper.substituteFactionTokens(tooltip, comm);
+			
+			opts.addOption(Misc.ucFirst(str), "nex_transferMarketAndGovern", comm.getBaseUIColor(), tooltip);
+			
+			String warningString = StringHelper.getStringAndSubstituteToken("exerelin_markets", "transferMarketWarning", 
+							"$market", dialog.getInteractionTarget().getMarket().getName());
+					warningString = StringHelper.substituteFactionTokens(warningString, comm);
+			
+			opts.addOptionConfirmation("nex_transferMarketAndGovern", warningString, 
+					Misc.ucFirst(StringHelper.getString("yes")), Misc.ucFirst(StringHelper.getString("no")));
 		}
 		
 		String exitOpt = "exerelinBaseCommanderMenuRepeat";

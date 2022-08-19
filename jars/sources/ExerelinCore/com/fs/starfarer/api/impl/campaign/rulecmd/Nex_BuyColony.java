@@ -130,7 +130,8 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		MutableStat stat = new MutableStat(0);
 		
 		// (practically) free for size 3 player-founded colonies
-		if (NexUtilsMarket.getOriginalOwner(market) == null && market.getSize() <= 3) 
+		String origOwner = NexUtilsMarket.getOriginalOwner(market);
+		if ((origOwner == null || Factions.PLAYER.equals(origOwner)) && market.getSize() <= 3) 
 		{
 			stat.modifyFlat("playerFounded", 1, StringHelper.getString("nex_buyColony", 
 				"costFactorPlayerFounded", true));
@@ -170,14 +171,26 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	}
 	
 	public static void buy(MarketAPI market, InteractionDialogAPI dialog) {
-		setColonyPlayerOwned(market, true, dialog);
+		int value = getValue(market, false, true).getModifiedInt();
+		if (value < 0) value = 0;
+		buy(market, value, dialog);
+	}
+	
+	public static void buy(MarketAPI market, int value, InteractionDialogAPI dialog) {
+		setColonyPlayerOwned(market, true, value, dialog);
 		BuyColonyIntel intel = new BuyColonyIntel(market.getFactionId(), market);
 		intel.init();
 		if (dialog != null)
 			Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
 	}
 	
-	public static void setColonyPlayerOwned(MarketAPI market, boolean owned, InteractionDialogAPI dialog) 
+	public static void setColonyPlayerOwned(MarketAPI market, boolean owned, InteractionDialogAPI dialog) {
+		int value = getValue(market, false, true).getModifiedInt();
+		if (value < 0) value = 0;
+		setColonyPlayerOwned(market, owned, value, dialog);
+	}
+	
+	public static void setColonyPlayerOwned(MarketAPI market, boolean owned, int value, InteractionDialogAPI dialog) 
 	{
 		market.setPlayerOwned(owned);
 		if (owned)
@@ -187,9 +200,8 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		FactionAPI player = Global.getSector().getPlayerFaction();
 		ColonyManager.reassignAdminIfNeeded(market, player, player);
 		
-		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		int value = getValue(market, false, true).getModifiedInt();
-		if (value < 0) value = 0;
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();		
+		
 		if (owned) {	// buying
 			cargo.getCredits().subtract(value);
 			// unlock storage

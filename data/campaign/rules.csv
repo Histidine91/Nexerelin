@@ -774,13 +774,23 @@ nex_marketTransferList5,DialogOptionSelected,$option == nex_transferMarketList5,
 nex_marketTransferList6,DialogOptionSelected,$option == nex_transferMarketList6,Nex_TransferMarket listFactions 6,,,
 nex_marketTransferList7,DialogOptionSelected,$option == nex_transferMarketList7,Nex_TransferMarket listFactions 7,,,
 nex_marketTransferList8,DialogOptionSelected,$option == nex_transferMarketList8,Nex_TransferMarket listFactions 8,,,
+nex_marketTransferList9,DialogOptionSelected,$option == nex_transferMarketList9,Nex_TransferMarket listFactions 9,,,
+nex_marketTransferList10,DialogOptionSelected,$option == nex_transferMarketList9,Nex_TransferMarket listFactions 10,,,
+,,,,,,
+nex_marketTransferAndGovern,DialogOptionSelected,$option == nex_transferMarketAndGovern,"Nex_TransferMarket transferAndGovern
+FireAll Nex_MarketPostTransfer",,,
 ,,,,,,
 nex_marketTransferExecute,DialogOptionSelected,"Nex_OptionStartsWith ""nex_transferMarket_""","Nex_TransferMarket transfer
 FireAll Nex_MarketPostTransfer",,,
 ,,,,,,
-nex_marketTransferPostDialog,Nex_MarketPostTransfer,,"AddText ""\""As you command. $market is now in possession of $entity._newFaction.""
-AddText ""\""Goodbye, chief.\""""",,nex_transferMarketEnd:Cut the comm link,
-nex_marketTransferPostDialogLeave,DialogOptionSelected,$option == nex_transferMarketEnd,"UpdateMemory
+nex_marketTransferPostDialog,Nex_MarketPostTransfer,$option != nex_transferMarketAndGovern,,"""As you command. $market is now in possession of $entity._newFaction.""
+
+""Goodbye, chief.""",nex_transferMarketEnd:Cut the comm link,
+nex_marketTransferPostDialogGovernor,Nex_MarketPostTransfer,$option == nex_transferMarketAndGovern,,"""As you command. You now hold $market in the name of $entity._newFaction. We will make the necessary arrangements at once.
+
+""When you return, all will be in place.""",nex_transferMarketEnd:Thank $himOrHer and cut the comm link,
+,,,,,,
+nex_marketTransferPostDialogDone,DialogOptionSelected,$option == nex_transferMarketEnd,"UpdateMemory
 ShowDefaultVisual
 EndConversation",,,
 #END Market transfer options,,,,,,
