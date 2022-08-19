@@ -140,6 +140,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
     protected Set<String> liveFactionIds = new HashSet<>();
+    protected Set<String> presentFactionIds = new HashSet<>();    // like live factions but includes non-playable factions
     protected Set<String> historicFactionIds = new HashSet<>();    // factions that have ever been present in the Sector
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
     protected transient Map<FleetMemberAPI, Integer[]> insuranceLostMembers = new HashMap<>();    // array contains base value, number of D-mods, and CR
@@ -183,6 +184,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected Object readResolve() {
         insuranceLostMembers = new HashMap<>();
         insuranceLostOfficers = new ArrayList<>();
+        
+        if (presentFactionIds == null) {
+            presentFactionIds = new HashSet<>(liveFactionIds);
+        }
         
         return this;
     }
@@ -647,6 +652,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (!NexUtilsMarket.canBeInvaded(market, false))
                 continue;
             newLive.add(factionId);
+            presentFactionIds.add(factionId);
             factionMarkets.put(factionId, market);
         }
         for (String factionId : oldLive)
@@ -909,10 +915,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         NexUtils.addExpiringIntel(intel);
         
         SectorManager.addLiveFactionId(faction.getId());
-        if (existedBefore)
-        {
-            manager.historicFactionIds.add(factionId);
-        }
+        manager.historicFactionIds.add(factionId);
         
         setShowFactionInIntelTab(factionId, true);
         
@@ -1507,6 +1510,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public List<String> getStartingFactionIdsCopy() {
         return new ArrayList<>(factionIdsAtStart);
+    }
+    
+    /**
+     * Similar to live faction IDs, but includes non-playable factions.
+     * @return
+     */
+    public HashSet<String> getPresentFactionIdsCopy() {
+        return new HashSet<>(presentFactionIds);
     }
     
     public static void removeLiveFactionId(String factionId)
