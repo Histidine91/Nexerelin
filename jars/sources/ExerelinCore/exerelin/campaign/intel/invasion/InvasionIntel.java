@@ -364,6 +364,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		if (!Global.getSettings().getBoolean("nex_brawlMode"))
 			return;
 		
+		if (this instanceof CounterInvasionIntel)
+			return;
+		
 		brawlMode = true;
 		float min = Global.getSettings().getFloat("nex_brawlMode_minMult");
 		float max = Global.getSettings().getFloat("nex_brawlMode_maxMult");

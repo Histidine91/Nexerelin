@@ -202,20 +202,22 @@ public class GBUtils {
 		if (!Misc.isMilitary(origin)) sizeMult *= 0.7f;
 		fp *= sizeMult;
 		
+		log.info("Counter-invasion size before pool: " + fp);
+		fp = FleetPoolManager.getManager().drawFromPool(factionId, new FleetPoolManager.RequisitionParams(fp, 0, 0f, 1));
 		if (FleetPoolManager.USE_POOL) {
-			fp = FleetPoolManager.getManager().drawFromPool(factionId, new FleetPoolManager.RequisitionParams(fp, 0, 0f, 1));
 			if (fp < 30) return null;
 		}
 		else if (InvasionFleetManager.getManager().getSpawnCounter(factionId) < NexConfig.pointsRequiredForInvasionFleet/5) 
 		{
 			return null;
 		}
+		log.info("Counter-invasion size after pool: " + fp);
 		
 		float organizeTime = 0;	//InvasionFleetManager.getOrganizeTime(fp) * 0.2f;
 		
 		CounterInvasionIntel counter = new CounterInvasionIntel(gb, origin.getFaction(), origin, target, fp, organizeTime);
 		counter.init();
-		InvasionFleetManager.getManager().modifySpawnCounterV2(factionId, InvasionFleetManager.getInvasionPointCost(fp, counter));
+		InvasionFleetManager.getManager().modifySpawnCounterV2(factionId, -InvasionFleetManager.getInvasionPointCost(counter));
 		return counter;
 	}
 	

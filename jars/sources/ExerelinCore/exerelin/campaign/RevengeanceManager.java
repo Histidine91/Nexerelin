@@ -404,7 +404,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		}
 		if (intel != null) {
 			// counter-invasions draw on the same points needed for invasions, but at half the normal rate
-			float cost = InvasionFleetManager.getInvasionPointCost(NexConfig.pointsRequiredForInvasionFleet, intel);
+			float cost = InvasionFleetManager.getInvasionPointCost(intel);
 			cost *= INVASION_POINT_COST_MULTIPLIER;
 			InvasionFleetManager.getManager().modifySpawnCounter(revengeFactionId, -cost);
 		}
@@ -432,7 +432,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 				((SatBombIntel)intel).setVengeance(true);
 				intel.setQualityOverride(1.25f);
 				// counter-invasions draw on the same points needed for invasions, but at half the normal rate
-				float cost = InvasionFleetManager.getInvasionPointCost(NexConfig.pointsRequiredForInvasionFleet, intel);
+				float cost = InvasionFleetManager.getInvasionPointCost(intel);
 				cost *= INVASION_POINT_COST_MULTIPLIER;
 				InvasionFleetManager.getManager().modifySpawnCounter(factionId, -cost);
 				log.info("Dispatching retaliatiory sat bomb fleet");

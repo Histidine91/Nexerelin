@@ -1008,7 +1008,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 						shouldRaid ? EventType.RAID : EventType.INVASION, new RequisitionParams());
 				if (intel != null)
 				{
-					counter -= getInvasionPointCost(pointsRequired, intel);
+					counter -= getInvasionPointCost(intel);
 					if (shouldRaid) lifetimeRaids++;
 					else lifetimeInvasions++;
 					spawnCounter.put(factionId, counter);
@@ -1045,7 +1045,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			OffensiveFleetIntel intel = generateInvasionOrRaidFleet(Global.getSector().getFaction("templars"), null, 
 					type, new RequisitionParams(req));
 			if (intel != null) {
-				templarInvasionPoints -= getInvasionPointCost(req, intel);
+				templarInvasionPoints -= getInvasionPointCost(intel);
 				nextIsRaid.put("templars", !shouldRaid);
 			}
 			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
@@ -1072,7 +1072,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					type, TEMPLAR_COUNTER_INVASION_FLEET_MULT, new RequisitionParams(req));
 			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
 			if (intel != null) {
-				templarCounterInvasionPoints -= getInvasionPointCost(req, intel);
+				templarCounterInvasionPoints -= getInvasionPointCost(intel);
 				nextIsRaid.put(factionId, !shouldRaid);
 			}
 		}
@@ -1159,6 +1159,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float amount = basePointCost * Math.max(intel.getBaseFP()/BASE_INVASION_SIZE, 0.8f);
 		log.info("Deducting " + amount + " invasion points for " + intel.getName());
 		return amount;
+	}
+	
+	public static float getInvasionPointCost(OffensiveFleetIntel intel)
+	{
+		return getInvasionPointCost(NexConfig.pointsRequiredForInvasionFleet, intel);
 	}
 	
 	// runcode Console.showMessage("" + exerelin.campaign.fleets.InvasionFleetManager.getManager().getSpawnCounter("player"));
