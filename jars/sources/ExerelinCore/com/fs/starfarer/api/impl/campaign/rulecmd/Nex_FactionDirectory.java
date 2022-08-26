@@ -252,7 +252,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	}
 	
 	/**
-	 * Prints a formatted list of the specified faction's markets.
+	 * Prints a formatted list of the markets with the specified industry ID.
 	 * @param dialog
 	 * @param industryId
 	 */

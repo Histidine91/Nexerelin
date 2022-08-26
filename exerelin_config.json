@@ -73,7 +73,7 @@
     "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
     "doubleSubmarketWeapons": false,	# if true, double the amount of weapons generated on most submarkets (old behavior)
     
-    #"prismInHyperspace": false,	# if false, Prism will get its own star system (but not if added midgame). Likely to crash, not recommended
+    #"prismInHyperspace": false,	# if false, Prism will get its own star system. Setting to true is likely to crash, not recommended
     "prismMaxWeapons": 27,
     "prismNumShips": 14,
     "prismNumWings": 6,
@@ -111,6 +111,8 @@
     "revengePointsPerEnemyFP": 0.05,
     "revengePointsForMarketCaptureMult": 2,
     "vengeanceFleetSizeMult": 0.8,
+    # old vengeance fleets have the intel item, spawn at a location, then chase you around the map
+    # new vengeance fleets just appear outside a system and try to catch you, like some vanilla encounters
     "useNewVengeanceEncounters": false,
     
     "specialForcesPointMult": 1,	# rate at which factions spawn special task groups
