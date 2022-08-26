@@ -299,9 +299,11 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			boolean generateHS = Global.getSettings().getBoolean("AdjustedSectorHS");
 			if (generateHS)
 				hyperMap = "data/campaign/terrain/hyperspace_new.png";
-			else
-				hyperMap = "data/campaign/terrain/no_storms.png";
-		}		
+			else {
+				// AS no longer has a no-storms mode
+				//hyperMap = "data/campaign/terrain/no_storms.png";
+			}
+		}
 		
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
@@ -341,8 +343,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			int num = ExerelinSetupData.getInstance().numSystems;
 			int min = num + 1;
 			int max = (int)Math.max(num * 1.2f, num + 3);
-			if (min < 14) min = 14;
+			if (min < 12) min = 12;
 			if (max < 18) max = 18;
+			if (max > 24) max = 24;
 			
 			params.minStars = min;
 			params.maxStars = max;
