@@ -166,6 +166,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		fp = getFP();
 		marines = getMarines();
 		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
+		if (Global.getSettings().isDevMode()) maxFP = 5000;
 		
 		updateCost();
 	}
@@ -322,6 +323,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		time *= Global.getSettings().getFloat("nex_fleetRequestOrganizeTimeMult");
 		
 		if (time < 0.1f) time = 0.1f;
+		
+		if (Global.getSettings().isDevMode()) {
+			time = 0.5f;
+		}
 		
 		return time;
 	}
@@ -577,6 +582,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			else if (market.getContainingLocation().isHyperspace()) {
 				toRemove.add(market);
 			}
+			// maybe it should also cover the other non-base-strike missions, but leave it in for now?
+			else if (market.isHidden() && !fleetType.allowTargetHidden()) 
+			{
+				toRemove.add(market);
+			}
 		}
 		markets.removeAll(toRemove);
 		
@@ -664,6 +674,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		InvasionFleetManager.getManager().modifyFleetRequestStock(-fp);
 		maxFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
+		if (Global.getSettings().isDevMode()) maxFP = 5000;
 				
 		// make hostile if needed
 		if (fleetType.isAggressive && !target.getFaction().isHostileTo(Factions.PLAYER)) {
@@ -702,13 +713,14 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		opts.addOption(StringHelper.getString("proceed", true), OPTION_PROCEED);
 		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-		if (maxFP < MIN_FP) {
+		boolean devmode = Global.getSettings().isDevMode();
+		if (maxFP < MIN_FP && !devmode) {
 			opts.setEnabled("nex_fleetRequest_strengthMenu", false);
 			opts.setEnabled(OPTION_PROCEED, false);
 			String tooltip = getString("tooltipInsufficientFP");
 			opts.setTooltip(OPTION_PROCEED, tooltip);
 		}		
-		else if (cost > credits) {
+		else if (cost > credits && !devmode) {
 			opts.setEnabled(OPTION_PROCEED, false);
 			String tooltip = getString("tooltipInsufficientFunds");
 			String costStr = Misc.getWithDGS(cost);
@@ -965,6 +977,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		private FleetType(boolean isAggressive, boolean isCombat) {
 			this.isAggressive = isAggressive;
 			this.isCombat = isCombat;
+		}
+		
+		public boolean allowTargetHidden() {
+			return this == BASESTRIKE;
 		}
 		
 		public static FleetType getTypeFromString(String str) {
