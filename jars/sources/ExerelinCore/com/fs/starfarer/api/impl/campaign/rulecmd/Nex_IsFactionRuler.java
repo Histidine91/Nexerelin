@@ -29,7 +29,7 @@ public class Nex_IsFactionRuler extends BaseCommandPlugin {
 			return true;
 		
 		if (factionId.equals(PlayerFactionStore.getPlayerFactionId()))		
-			return NexConfig.factionRuler;
+			return NexConfig.factionRuler || NexConfig.getFactionConfig(factionId).isPlayerRuled;
 		
 		return false;
 	}
