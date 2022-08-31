@@ -6,6 +6,8 @@ import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -63,6 +65,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected static final Object BUTTON_RECREATE = new Object();
 	protected static final Object BUTTON_RECREATE_ALL = new Object();
 	protected static final Object BUTTON_INDEPENDENT_MODE = new Object();
+	protected static final Object BUTTON_UNSTICK = new Object();
 	
 	@Setter protected CampaignFleetAPI tempFleet;
 	protected CampaignFleetAPI fleet;
@@ -259,6 +262,31 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		toDisband.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
 	}
 	
+	public void unstickFleet() {
+		log.info("Beginning fleet unstick");
+		CampaignFleetAPI fleet = route.getActiveFleet();
+		if (fleet == null) {
+			log.warn("Attempted to unstick nonexistent fleet");
+			return;
+		}
+		if (routeAI.currentTask == null) {
+			log.warn("No current task, cannot unstick");
+			return;
+		}
+		SectorEntityToken dest = routeAI.currentTask.getEntity();
+		if (dest == null) {
+			log.info("Task has no destination, translocating fleet to player instead");
+			dest = Global.getSector().getPlayerFleet();
+		}
+		
+		LocationAPI from = fleet.getContainingLocation();
+		if (from != null) from.removeEntity(fleet);
+		LocationAPI to = dest.getContainingLocation();
+		to.addEntity(fleet);
+		fleet.setLocation(dest.getLocation().x, dest.getLocation().y);
+		log.info("Fleet teleported to " + to.getName());
+	}
+	
 	protected void recreate(boolean all) {
 		InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
 		
@@ -438,7 +466,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			ButtonAPI check = info.addAreaCheckbox(getString("intelButtonCheckIndependent"), BUTTON_INDEPENDENT_MODE, 
 					faction.getBaseUIColor(), faction.getDarkUIColor(), faction.getBrightUIColor(),
 					(int)width, 20f, opad);
-			check.setChecked(independentMode);			
+			check.setChecked(independentMode);
+						
+			// unstick
+			info.addButton(getString("intelButtonUnstick"), 
+					BUTTON_UNSTICK, faction.getBaseUIColor(), faction.getDarkUIColor(),
+					(int)(width), 20f, opad);
+			
 		} else if (!waitingForSpawn) {
 			// dead mode
 			
@@ -516,11 +550,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 					Misc.getDGSCredits(credits));
 			txt.setHighlightColors(Misc.getHighlightColor(), credits >= cost ? Misc.getHighlightColor() : Misc.getNegativeHighlightColor());
 		}
+		else if (buttonId == BUTTON_UNSTICK) {
+			prompt.addPara(getString("intelConfirmPromptUnstick"), 0);
+		}
 	}
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId == BUTTON_RECREATE || buttonId == BUTTON_RECREATE_ALL;
+		return buttonId == BUTTON_RECREATE || buttonId == BUTTON_RECREATE_ALL || buttonId == BUTTON_UNSTICK;
 	}
 	
 	@Override
@@ -547,6 +584,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		else if (buttonId == BUTTON_INDEPENDENT_MODE) {
 			independentMode = !independentMode;
+		}
+		else if (buttonId == BUTTON_UNSTICK) {
+			unstickFleet();
+			ui.updateUIForItem(this);
 		}
 		else {
 			super.buttonPressConfirmed(buttonId, ui); //To change body of generated methods, choose Tools | Templates.
