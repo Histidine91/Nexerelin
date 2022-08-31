@@ -2529,6 +2529,12 @@
 		"pirateActivityPenaltyNone":"No perceptible impact on operations as of yet.",
 		"pirateActivityPenaltyModified":"Impacts reduced due to reputation with pirates (%s).",
 		
+		"cargoScanContrabandFound":"Contraband found!",
+		"cargoScanSuspiciousCargo":"Suspicious cargo found!",
+		"cargoScanSuspicionLevel":"Vessels flagged for inspection due to overall suspicion level!",
+		"cargoScanNoFind":"No contraband or suspicious cargo found.",
+		
+		
 		"galatiaStipend":"Stipend from Galatia Academy",
 		
 		"deadDropStr1":"the %s",
