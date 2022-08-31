@@ -91,6 +91,7 @@ import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
+import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
@@ -115,6 +116,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE_RESULT = "nex_mktInvadeResult";
 	public static final String INVADE_RESULT_ANDRADA = "nex_mktInvadeResultAndrada";
 	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
+	public static final String CREWREPLACER_JOB = "raiding_marines";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
 	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
@@ -845,7 +847,7 @@ public class Nex_MarketCMD extends MarketCMD {
 //		dialog.getVisualPanel().finishFadeFast();
 		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
 
-		float marines = playerFleet.getCargo().getMarines();
+		float marines = CrewReplacerUtils.getMarines(fleet, CREWREPLACER_JOB);
 		float support = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_GROUND_SUPPORT, 0f);
 		if (support > marines) support = marines;
 		float mechs = fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS) * InvasionRound.HEAVY_WEAPONS_MULT;
@@ -964,7 +966,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
 
-		float marines = playerFleet.getCargo().getMarines();
+		float marines = CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB);
 		
 		String str;
 		TooltipMakerAPI info;
@@ -1171,9 +1173,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			text.addPara(getString("noLosses"));
 		}
 		if (result.losses > 0) {
-			playerFleet.getCargo().removeMarines(result.losses);
+			CrewReplacerUtils.removeMarines(playerFleet, CREWREPLACER_JOB, result.losses, text);
 			tempInvasion.marinesLost = result.losses;
-			AddRemoveCommodity.addCommodityLossText(Commodities.MARINES, result.losses, text);
 		}
 		if (result.lossesMech > 0) {
 			playerFleet.getCargo().removeCommodity(Commodities.HAND_WEAPONS, result.lossesMech);
@@ -1214,7 +1215,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		str = StringHelper.substituteToken(str, "$delta", ad);
 		text.addPara(str, hl2, ds, ad);
 		
-		String marinesRemaining = playerFleet.getCargo().getMarines() + "";
+		String marinesRemaining = CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB) + "";
 		str = Misc.ucFirst(getString("marinesRemaining")) + ": " + marinesRemaining;
 		text.addPara(str, hl2, marinesRemaining);
 		int mechs = (int)playerFleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS);
@@ -1338,7 +1339,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			contText = StringHelper.substituteToken(getString("invasionFail"), "$market", market.getName());
 		}
 		
-		int marines = Global.getSector().getPlayerFleet().getCargo().getMarines();
+		int marines = (int)(CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB));
 		float total = marines + tempInvasion.marinesLost;
 		float xpGain = 1f - tempInvasion.invasionMult;
 		xpGain *= total;
@@ -2096,7 +2097,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			Misc.setRaidedTimestamp(market);
 		}
 		
-		int marines = playerFleet.getCargo().getMarines();
+		int marines = (int)CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB);
 		float probOfLosses = 1f;
 		
 		int losses = 0;
@@ -2124,9 +2125,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			temp.marinesLost = 0;
 		} else {
 			text.addPara(StringHelper.getString("nex_raidDialog", "casualties"));
-			playerFleet.getCargo().removeMarines(losses);
 			temp.marinesLost = losses;
-			AddRemoveCommodity.addCommodityLossText(Commodities.MARINES, losses, text);
+			CrewReplacerUtils.removeMarines(playerFleet, CREWREPLACER_JOB, losses, text);
 		}
 		
 		
