@@ -143,6 +143,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 		protected void printCredits()
 		{
 			for (int i=1; i<=10; i++) {
+				if (i==5) continue;
 				printCreditLine(getCreditsString("name" + i), getCreditsString("contrib" + i));
 			}
 		}

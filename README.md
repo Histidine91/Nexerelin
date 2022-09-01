@@ -93,7 +93,7 @@ These are all the external libraries and referenced mods required to locally bui
 - [Unofficial New Game Plus](https://fractalsoftworks.com/forum/index.php?topic=16680.0)
 - [Vayra's Sector](https://fractalsoftworks.com/forum/index.php?topic=16058.0)
 - [Volkov Industrial Conglomerate](https://fractalsoftworks.com/forum/index.php?topic=19603.0)
-- [Bounties Expanded](https://github.com/Schaf-Unschaf/BountiesExpanded/releases)
+- [Crew Replacer](https://fractalsoftworks.com/forum/index.php?topic=24249.0)
 - [Project Lombok](https://projectlombok.org/)
 
 ## License ##
