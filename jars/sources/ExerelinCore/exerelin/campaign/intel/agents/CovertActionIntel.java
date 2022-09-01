@@ -33,6 +33,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -421,6 +422,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 				MilestoneTracker.getIntel().awardMilestone("agentAction15");
 		}		
 		
+		CovertOpsManager.reportAgentAction(this);
 		return result;
 	}
 	

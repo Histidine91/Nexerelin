@@ -51,6 +51,7 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
+import exerelin.utilities.AgentActionListener;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
@@ -963,6 +964,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	
 	public void removeAgent(AgentIntel intel) {
 		agents.remove(intel);
+	}	
+	
+	public static void reportAgentAction(CovertActionIntel intel)
+	{
+		for (AgentActionListener x : Global.getSector().getListenerManager().getListeners(AgentActionListener.class)) {
+			x.reportAgentAction(intel);
+		}
 	}
 	
 	public static final TooltipCreator AGENT_NODE_TOOLTIP = new TooltipCreator() {

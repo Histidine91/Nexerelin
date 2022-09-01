@@ -10,6 +10,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Map;
@@ -206,6 +207,7 @@ public class Travel extends CovertActionIntel {
 	public CovertOpsManager.CovertActionResult execute() {
 		result = CovertActionResult.SUCCESS;
 		onSuccess();
+		CovertOpsManager.reportAgentAction(this);
 		return result;
 	}
 	
