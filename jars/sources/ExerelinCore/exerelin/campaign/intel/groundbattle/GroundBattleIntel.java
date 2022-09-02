@@ -1531,6 +1531,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					break;
 			}
 			info.addPara(getString(id), getBulletColorForMode(mode), 0);
+			
+			if (timerForDecision != null) {
+				String str = getString("bulletDaysToTakeControl");
+				info.addPara(str, 0, getBulletColorForMode(mode), Misc.getHighlightColor(), String.format("%.0f", timerForDecision));;
+			}
 		}
 	}
 	
@@ -2130,11 +2135,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (turnNum == getMilitiaUnleashTurn() - 1) {
 			String str = getString("bulletMilitiaUnleashed");
 			info.addPara(str, 0, Misc.getHighlightColor(), str);
-		}
-		
-		if (timerForDecision != null) {
-			String str = getString("bulletDaysToTakeControl");
-			info.addPara(str, 0, Misc.getHighlightColor(), String.format("%.0f", timerForDecision));;
 		}
 	}
 	
