@@ -972,7 +972,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				unit.removeUnit(true);
 			}
 		}
-		if (anyInStorage) {
+		if (Boolean.TRUE.equals(playerIsAttacker) || anyInStorage) {
 			StoragePlugin plugin = (StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
 			if (plugin != null)
 				plugin.setPlayerPaidToUnlock(true);
