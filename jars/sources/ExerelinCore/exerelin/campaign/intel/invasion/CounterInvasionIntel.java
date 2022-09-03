@@ -9,6 +9,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,13 +63,20 @@ public class CounterInvasionIntel extends InvasionIntel {
 		return StringHelper.getString("exerelin_invasion", "intelDescCounterInvasion");
 	}
 	
-	public static List<RespawnInvasionIntel> getOngoing() {
-		List<RespawnInvasionIntel> ongoing = new ArrayList<>();
-		List<IntelInfoPlugin> ongoingRaw = Global.getSector().getIntelManager().getIntel(RespawnInvasionIntel.class);
-		for (IntelInfoPlugin intel : ongoingRaw) {
-			ongoing.add((RespawnInvasionIntel)intel);
+	protected void addOutcomeBullet(TooltipMakerAPI info, Color color, float pad) 
+	{
+		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE) {
+			//String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
+			//		key, "$target", target.getName());
+			//info.addPara(str, initPad, tc, other.getBaseUIColor(), target.getName());
+			String str = StringHelper.getString("nex_fleetIntel", "intelBulletWonGroundBattle");
+			str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
+			str = StringHelper.substituteToken(str, "$action", getActionName(), true);
+			info.addPara(str, color, pad);
 		}
-		return ongoing;
+		else {
+			super.addOutcomeBullet(info, color, pad);
+		}
 	}
 	
 	@Override

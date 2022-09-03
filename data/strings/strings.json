@@ -2346,7 +2346,7 @@
 		"intelBulletDefeated":"Fleet defeated",
 		"intelBulletExpired":"Mission over",
 		"intelBulletNoLongerHostile":"Cancelled: No longer hostile",
-		
+		"intelBulletWonGroundBattle":"Enemy ground forces defeated",
 		
 		"intelStatusAssembling":"The fleet will launch from $market in $days.",
 		"intelStatusActive":"The fleet is currently active and will pursue you for $duration.",
