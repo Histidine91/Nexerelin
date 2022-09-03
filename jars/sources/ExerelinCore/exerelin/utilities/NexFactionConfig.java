@@ -157,7 +157,8 @@ public class NexFactionConfig
     public float colonyExpeditionChance = 0;
     public String colonyTargetValuator = "exerelin.campaign.colony.ColonyTargetValuator";
     public float maxColonyDistance = 18;
-    
+	public String factionConditionSubplugin = null;
+			
     // misc. part 2
     public List<CustomStation> customStations = new ArrayList<>();
     public List<DefenceStationSet> defenceStations = new ArrayList<>();
@@ -276,6 +277,7 @@ public class NexFactionConfig
             colonyExpeditionChance = (float)settings.optDouble("colonyExpeditionChance", colonyExpeditionChance);
             colonyTargetValuator = settings.optString("colonyTargetValuator", colonyTargetValuator);
             maxColonyDistance = (float)settings.optDouble("maxColonyDistance", maxColonyDistance);
+			factionConditionSubplugin = settings.optString("factionConditionSubplugin", factionConditionSubplugin);
             
             specialForcesMaxFleets = playableFaction ? settings.optInt("specialForcesMaxFleets", specialForcesMaxFleets) : 0;
             specialForcesCountMult = (float)settings.optDouble("specialForcesCountMult", specialForcesCountMult);

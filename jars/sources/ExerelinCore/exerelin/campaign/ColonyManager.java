@@ -64,6 +64,7 @@ import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
@@ -1368,12 +1369,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public void reportEconomyMonthEnd() {}
 	
 	@Override
-	public void reportPlayerColonizedPlanet(PlanetAPI market) {
+	public void reportPlayerColonizedPlanet(PlanetAPI planet) {
+		MarketAPI market = planet.getMarket();
+		market.addCondition(FactionConditionPlugin.CONDITION_ID);
 		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.PLAYER);
 	}
 	
 	@Override
-	public void reportPlayerAbandonedColony(MarketAPI arg0) {}
+	public void reportPlayerAbandonedColony(MarketAPI market) {}
 
 	@Override
 	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
@@ -1435,6 +1438,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		coreStashCheck(market, oldOwner, newOwner);
 		
+		MarketConditionAPI cond = market.getCondition(FactionConditionPlugin.CONDITION_ID);
+		if (cond != null) {
+			((FactionConditionPlugin)cond.getPlugin()).checkForRegen();
+		}
+		
 		// Turn "derelict officers" into normal ones
 		if (oldOwner.getId().equals("nex_derelict")) 
 		{
@@ -1451,8 +1459,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					person.setName(temp.getName());
 					person.getMemoryWithoutUpdate().set("$nex_derelict_officer_removed", true);
 				}
-			}
-			
+			}			
 		}
 	}
 	

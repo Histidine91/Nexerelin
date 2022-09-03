@@ -11,6 +11,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -152,21 +153,22 @@ public class StringHelper {
 	}
 	
 	/**
-	 * Replaces {@code $faction} and {@code $theFaction} substrings 
-	 * (and the uppercase versions thereof) in {@code str}. 
+	 * Replaces {@code $factionIsOrAre},  {@code $faction} and {@code $theFaction} 
+	 * substrings (and the uppercase versions thereof) in {@code str}. 
 	 * @param str
 	 * @param faction
 	 * @return
 	 */
 	public static String substituteFactionTokens(String str, FactionAPI faction)
 	{
-		Map<String, String> replacements = new HashMap<>();
+		Map<String, String> replacements = new LinkedHashMap<>();
 		String name = NexUtilsFaction.getFactionShortName(faction);
 		String theName = faction.getDisplayNameWithArticle();
-		replacements.put("$faction", name);
-		replacements.put("$Faction", Misc.ucFirst(name));
+		replacements.put("$factionIsOrAre", faction.getDisplayNameIsOrAre());
 		replacements.put("$theFaction", theName);
 		replacements.put("$TheFaction", Misc.ucFirst(theName));
+		replacements.put("$faction", name);
+		replacements.put("$Faction", Misc.ucFirst(name));
 		
 		return substituteTokens(str, replacements);
 	}

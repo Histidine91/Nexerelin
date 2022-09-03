@@ -4,6 +4,8 @@
     "corvusCompatible":true,
     "noHomeworld":true,
     "showIntelEvenIfDead":true,
+	
+	"factionConditionSubplugin":"exerelin.campaign.econ.faction.OutlawFCSubplugin",
         
     "rebelFleetSuffix":"Rivals",
     

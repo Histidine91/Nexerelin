@@ -58,6 +58,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
 import exerelin.utilities.*;
@@ -214,6 +215,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (SectorManager.isFactionAlive(Factions.PLAYER) && DiplomacyManager.getManager().getDiplomacyProfile(Factions.PLAYER) == null) 
         {
             DiplomacyManager.getManager().createDiplomacyProfile(Factions.PLAYER);
+        }
+        
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (!market.hasCondition(FactionConditionPlugin.CONDITION_ID)) {
+                market.addCondition(FactionConditionPlugin.CONDITION_ID);
+            }
         }
     }
     

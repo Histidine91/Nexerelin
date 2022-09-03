@@ -901,6 +901,11 @@
 		"intel_descLost":"With your faction beaten and scattered, you are on your own with whatever allies you still have or can cobble up. It may be time to find greener pastures elsewhere.",
 	},
 	
+	"nex_factionConditions":{
+		"condName_outlaw":"%s: Underground Connections",
+		"condDesc_outlaw":"$TheFaction $factionIsOrAre tied in strongly to the Sector's grey and underworld economy, mitigating attempts by larger powers to constrain trade and commerce. Accessibility increased by $accessibility%%.",
+	},
+	
 	"nex_factionSetup":{
 		"dialogIntro1":"Welcome, Leader %s of %s",
 		"dialogIntro2":"Your faction dwells on the world of %s. You may enhance its starting resources in this menu. This decision is permanent once confirmed, so choose wisely.",

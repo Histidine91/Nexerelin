@@ -44,6 +44,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -470,6 +471,8 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			ColonyManager.buildIndustries(market);
 			ColonyManager.getManager().processNPCConstruction(market);
 		}
+		
+		market.addCondition(FactionConditionPlugin.CONDITION_ID);
 		
 		// planet desc change
 		if (MarketDescChanger.getInstance() != null) {
