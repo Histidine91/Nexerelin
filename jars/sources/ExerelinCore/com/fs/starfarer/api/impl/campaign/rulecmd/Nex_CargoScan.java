@@ -34,11 +34,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.log4j.Log4j;
 
-
+@Log4j
 public class Nex_CargoScan extends CargoScan {
 	
-	public static final boolean ENABLED = false;
+	public static final boolean ENABLED = true;
 	
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (!ENABLED) return super.execute(ruleId, dialog, params, memoryMap);
@@ -288,6 +289,7 @@ public class Nex_CargoScan extends CargoScan {
 		if (Commodities.HAND_WEAPONS.equals(stack.getCommodityId())) {
 			FactionAPI player = PlayerFactionStore.getPlayerFaction();
 			if (AllianceManager.areFactionsAllied(faction.getId(), player.getId())) {
+				//log.info("Skipping stack of " + (int)stack.getSize() + " " + stack.getDisplayName());
 				return false;
 			}
 		}
