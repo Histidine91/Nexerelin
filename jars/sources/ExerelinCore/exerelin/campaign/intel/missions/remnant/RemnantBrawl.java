@@ -63,7 +63,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	public static Logger log = Global.getLogger(RemnantBrawl.class);
 	
-	public static final float STRAGGLER_LOST_ATTACK_DELAY = 15;
+	public static final float STRAGGLER_LOST_ATTACK_DELAY = 10;
 	public static final float STAGING_AREA_FOUND_ATTACK_DELAY = 3.5f;
 	public static final int BATTLE_MAX_DAYS = 45;
 	public static final float DISTANCE_TO_SPAWN_STRAGGLER = 1f;
@@ -332,10 +332,12 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		fleet.addEventListener(new BaseFleetEventListener() {
 			public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, CampaignEventListener.FleetDespawnReason reason, Object param) {
+				log.info("Straggler fleet despawned");
 				spawnAttackFleets();
 				Global.getSector().addScript(new DelayedActionScript(STRAGGLER_LOST_ATTACK_DELAY) {
 					@Override
 					public void doAction() {
+						log.info("Checking attack after straggler lost delay");
 						checkAttack();
 					}
 				});
@@ -562,6 +564,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			}
 		}
 		if (found) {
+			spawnAttackFleets();
 			knowStagingArea = true;
 			stagingPoint.setDiscoverable(false);
 			if (currentStage == Stage.FOLLOW_STRAGGLER) {
@@ -613,6 +616,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			MilitaryResponseScript script = new MilitaryResponseScript(params);
 			station.getContainingLocation().addScript(script);
 		}
+		unsetFleetComms();
 		
 		battleInited = true;
 	}
@@ -647,6 +651,11 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, "pursue", false, 0);
 			//fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE);
 			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "nex_remBrawl_sus", false, 0);
+		}
+	}
+	
+	public void unsetFleetComms() {
+		for (CampaignFleetAPI fleet : attackFleets) {
 			fleet.getMemoryWithoutUpdate().unset("$genericHail");
 			fleet.getMemoryWithoutUpdate().unset("$genericHail_openComms");
 		}
@@ -792,11 +801,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				orderAttack();
 				makeAttackersHostile();
 				unsetFleetSus();
+				unsetFleetComms();
 				return true;
 			case "agreeScout":
 				gotoScoutStage(dialog, memoryMap);
 				orderHangAboveSystem();
 				unsetFleetSus();
+				unsetFleetComms();
 				return true;
 			case "scoutTrue":
 				betrayed = true;
@@ -890,13 +901,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			info.addPara(getString("brawl_foundStagingAreaNextStep2"), tc, 0);
 		} 
 		else if (currentStage == Stage.SCOUT) {
-			info.addPara(getString("brawl_scoutNextStep"), 0, col, sysName);
+			info.addPara(getString("brawl_scoutNextStep"), 0, tc, col, sysName);
 		}
 		else if (currentStage == Stage.BATTLE) {
-			info.addPara(getString("brawl_battleNextStep" + (knowStagingArea ? "" : "Unknown")), 0, col, sysName);
+			info.addPara(getString("brawl_battleNextStep" + (knowStagingArea ? "" : "Unknown")), 0, tc, col, sysName);
 		}
 		else if (currentStage == Stage.BATTLE_DEFECTED) {
-			info.addPara(getString("brawl_battleBetrayNextStep"), 0, col, sysName);
+			info.addPara(getString("brawl_battleBetrayNextStep"), 0, tc, col, sysName);
 		}
 		return false;
 	}

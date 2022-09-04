@@ -2451,7 +2451,14 @@ You sense that $personFirstName is put out by this refusal. After a few breaths,
 nex_remBrawl_attackerHail,Nex_RemBrawlSusHail,,"$entity.ignorePlayerCommRequests = true
 Call $entity.nex_remBrawl_ref updateData
 Highlight spy
-SetStoryOption nex_remBrawl_offerHelp1 1 nex_remBrawl_smoothtalk ui_char_spent_story_point ""Talked your way into a major Hegemony naval operation""","""Halt, captain! This system is a restricted area. What are you doing here?""
+SetStoryOption nex_remBrawl_offerHelp1 1 nex_remBrawl_smoothtalk ui_char_spent_story_point ""Talked your way into a major Hegemony naval operation""","""Halt, captain! This system is a restricted military area. What are you doing here?""
+
+The $personRank glares at you most suspiciously. ""Are you a spy?""","nex_remBrawl_offerHelp1:""I am here to assist in your operation.""
+nex_remBrawl_attackerConvo1:""Just passing through, $personRank.""",
+nex_remBrawl_attackerHailHyperspace,Nex_RemBrawlSusHail,$entity.inHyperspace score:5,"$entity.ignorePlayerCommRequests = true
+Call $entity.nex_remBrawl_ref updateData
+Highlight spy
+SetStoryOption nex_remBrawl_offerHelp1 1 nex_remBrawl_smoothtalk ui_char_spent_story_point ""Talked your way into a major Hegemony naval operation""","""Halt, captain! You are interfering with a military exercise. What are you doing here?""
 
 The $personRank glares at you most suspiciously. ""Are you a spy?""","nex_remBrawl_offerHelp1:""I am here to assist in your operation.""
 nex_remBrawl_attackerConvo1:""Just passing through, $personRank.""",
@@ -2461,7 +2468,7 @@ $HeOrShe startles, then glares as if it's your fault. Which it technically is.
 
 ""...as such, you will be required to stand your $shipOrFleet down and submit to detention for the duration. We will—"" $hisOrHer tone takes on a trace of apology ""— return your $shipOrFleet once this unpleasantness is over, and compensate you for the inconvenience.""","nex_remBrawl_offerHelp1:""Let me assist in your operation.""
 nex_remBrawl_attackerConvo2:""I'm afraid I cannot comply.""",
-nex_remBrawl_attackerConvo2,DialogOptionSelected,$option == nex_remBrawl_attackerConvo2,,"The $personRank's glare turns positively absolute-zero. ""That was not a request, captain,"" $heOrShe all but snarls. You will stand down at once, or be destroyed!""","nex_remBrawl_attackerConvoEnd:""Shields up!"" (end)",
+nex_remBrawl_attackerConvo2,DialogOptionSelected,$option == nex_remBrawl_attackerConvo2,,"The $personRank's glare turns positively absolute-zero. ""That was not a request, captain,"" $heOrShe all but snarls. You will stand down at once, or be destroyed!""","nex_remBrawl_attackerConvoEnd:""Shields up!""",
 nex_remBrawl_attackerConvoEnd,DialogOptionSelected,$option == nex_remBrawl_attackerConvoEnd,Call $entity.nex_remBrawl_ref violentEncounter,"Your comms officer snaps the holofeed off, leaving a momentary ghostly afterimage of the $personRank's face floating in the air. Your $shipOrFleet is already going to combat stations.",cutCommLinkNoText:Continue,
 nex_remBrawl_attackerOfferHelp1,DialogOptionSelected,$option == nex_remBrawl_offerHelp1,,"""Are you serious?""
 
