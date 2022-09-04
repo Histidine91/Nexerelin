@@ -2059,7 +2059,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addCustom(help2Holder, opad);
 		
 		info.setParaInsigniaLarge();
-		info.addPara(getString("helpPara3Title"), opad);
+		info.addPara(getString("helpPara3Title"), opad * 3);
 		info.setParaFontDefault();
 		
 		for (int i=1; i<=3; i++) {
