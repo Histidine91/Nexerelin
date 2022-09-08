@@ -2480,7 +2480,7 @@ nex_remBrawl_attackerOfferHelp2,DialogOptionSelected,$option == nex_remBrawl_off
 ""So. I hear you have a proposition for me.""",nex_remBrawl_offerHelp3:Continue,
 nex_remBrawl_attackerOfferHelp3,DialogOptionSelected,$option == nex_remBrawl_offerHelp3,,"After your explanation, the admiral nods slowly. ""A curious plan indeed. Yet it might give us the edge we need against these machines.""
 
-$nex_remBrawl_admiral_HeOrShe examines you like an unusual Domain artefact. ""Here's what you can do for us. Travel to the $nex_remBrawl_targetSystemName and reconnoiter their positions, in particular their station. Then, transmit the encoded data to us. It'll be days old by the time we begin our assault, but that will still be valuable.""
+$nex_remBrawl_admiral_HeOrShe examines you like an unusual Domain artefact. ""Here's what you can do for us. Travel to the $nex_remBrawl_targetSystemName system and reconnoiter their positions, in particular their station. Then, transmit the encoded data to us. It'll be days old by the time we begin our assault, but that will still be valuable.""
 
 The admiral looks at you, one eye larger than the other. ""If, of course, you are truly on our side.""","nex_remBrawl_offerHelp4:""You can count on me.""
 nex_remBrawl_offerHelp4Alt:(lie) ""You can count on me.""",
@@ -2494,7 +2494,7 @@ FireBest DialogOptionSelected",,,
 ,,,,,,
 nex_remBrawl_scoutObjectInteraction,OpenInteractionDialog,"$nex_remBrawl_target score:1000 
 Call $nex_remBrawl_ref updateData
-","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting to strike at the Remnants. Your $shipOrFleet's sensors have been running continously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
+","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting to enter the system and slay the dragon. Your $shipOrFleet's sensors have been running continously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
 
 ...or you could tamper with the readings, and leave them no better off, or worse, than if you'd never sent them anything.
 

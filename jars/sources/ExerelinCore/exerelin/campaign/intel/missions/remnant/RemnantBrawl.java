@@ -68,6 +68,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	public static final int BATTLE_MAX_DAYS = 45;
 	public static final float DISTANCE_TO_SPAWN_STRAGGLER = 1f;
 	public static final float STRAGGLER_WAIT_TIME = 3.5f;
+	public static final float SUS_EXPIRE = 6;
 
 	public static enum Stage {
 		GO_TO_ORIGIN_SYSTEM,
@@ -222,7 +223,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		setRepPersonChangesVeryHigh();
 		setRepFactionChangesHigh();
 		setCreditReward(CreditReward.VERY_HIGH);
-		setCreditReward(this.creditReward * 3);		
+		setCreditReward(this.creditReward * 4);		
 		
 		return true;
 	}
@@ -522,14 +523,16 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			fleet.addAssignment(FleetAssignment.INTERCEPT, station, 20);
 		}
 		
-		unsetFleetSus();		
+		//unsetFleetSus();
+		setFleetSusExpire();
 		
 		launchedAttack = true;
 	}
 	
 	public void orderHangAboveSystem() {
 		if (orderedHangAboveSystem) return;
-		if (launchedAttack) return;
+		//if (launchedAttack) return;
+		if (currentStage == Stage.BATTLE) return;
 		
 		for (CampaignFleetAPI fleet : attackFleets) {
 			fleet.clearAssignments();
@@ -539,6 +542,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		}
 		
 		orderedHangAboveSystem = true;
+		launchedAttack = false;
 	}
 	
 	/**
@@ -591,6 +595,11 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				initBattleStage(null, null);
 				break;
 			}
+			/*
+			else if (fleet.getContainingLocation().isHyperspace()) {
+				unsetFleetSus(fleet);
+			}
+			*/
 		}
 	}
 	
@@ -647,11 +656,26 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	 */
 	public void unsetFleetSus() {
 		for (CampaignFleetAPI fleet : attackFleets) {
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_remBrawl_sus", false, 0);
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, "pursue", false, 0);
-			//fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE);
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "nex_remBrawl_sus", false, 0);
+			unsetFleetSus(fleet);
 		}
+	}
+	
+	public void unsetFleetSus(CampaignFleetAPI fleet) {
+		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_remBrawl_sus", false, 0);
+		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, "pursue", false, 0);
+		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "nex_remBrawl_sus", false, 0);
+	}
+	
+	public void setFleetSusExpire() {
+		for (CampaignFleetAPI fleet : attackFleets) {
+			setFleetSusExpire(fleet);
+		}
+	}
+	
+	public void setFleetSusExpire(CampaignFleetAPI fleet) {
+		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_PURSUE_PLAYER, "nex_remBrawl_sus", true, SUS_EXPIRE);
+		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, "pursue", true, SUS_EXPIRE);
+		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_PREVENT_DISENGAGE, "nex_remBrawl_sus", true, SUS_EXPIRE);
 	}
 	
 	public void unsetFleetComms() {
