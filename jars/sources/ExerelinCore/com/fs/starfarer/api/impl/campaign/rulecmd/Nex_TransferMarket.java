@@ -56,29 +56,8 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				
 			// list factions within a faction grouping
 			case "listFactions":
-				OptionPanelAPI opts = dialog.getOptionPanel();
-				opts.clearOptions();
 				int num = (int)params.get(1).getFloat(memoryMap);
-				//memoryMap.get(MemKeys.LOCAL).set("$nex_dirFactionGroup", num);
-				List<FactionListGrouping> groups = (List<FactionListGrouping>)(memoryMap.get(MemKeys.LOCAL).get(FACTION_GROUPS_KEY));
-				FactionListGrouping group = groups.get(num - 1);
-				for (FactionAPI faction : group.factions)
-				{
-					String optKey = SELECT_FACTION_PREFIX + faction.getId();
-					opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), optKey, faction.getColor(), null);
-					String warningString = StringHelper.getStringAndSubstituteToken("exerelin_markets", "transferMarketWarning", 
-							"$market", dialog.getInteractionTarget().getMarket().getName());
-					warningString = StringHelper.substituteFactionTokens(warningString, faction);
-					
-					opts.addOptionConfirmation(optKey, warningString, 
-							Misc.ucFirst(StringHelper.getString("yes")), Misc.ucFirst(StringHelper.getString("no")));
-				}
-				
-				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_transferMarketMain");
-				opts.setShortcut("nex_transferMarketMain", Keyboard.KEY_ESCAPE, false, false, false, false);
-				
-				NexUtils.addDevModeDialogOptions(dialog);
-				
+				listFactions(dialog, memoryMap.get(MemKeys.LOCAL), num);
 				return true;
 			
 			// actually transfer the market to the specified faction
@@ -112,6 +91,8 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 				text.addTooltip();
 				
 				String recentOwnerId = getRecentlyCapturedFromId(market);
+				
+				/*
 				if (recentOwnerId != null && !recentOwnerId.equals(Factions.PLAYER)) {
 					FactionAPI recentOwner = Global.getSector().getFaction(recentOwnerId);
 					str = StringHelper.getString("exerelin_markets", "transferMarketRecentlyCaptured");
@@ -123,6 +104,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 					para.setHighlight(recentOwner.getDisplayNameWithArticleWithoutArticle(), mult);
 					para.setHighlightColors(recentOwner.getBaseUIColor(), Misc.getNegativeHighlightColor());
 				}
+				*/
 				
 				String origOwnerId = NexUtilsMarket.getOriginalOwner(market);
 				if (origOwnerId != null && !origOwnerId.equals(recentOwnerId) && !origOwnerId.equals(Factions.PLAYER)) {
@@ -210,8 +192,43 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		return market.getMemoryWithoutUpdate().getString(SectorManager.MEMORY_KEY_RECENTLY_CAPTURED);
 	}
 	
+	public static void listFactions(InteractionDialogAPI dialog, MemoryAPI memory, int num) 
+	{
+		OptionPanelAPI opts = dialog.getOptionPanel();
+		opts.clearOptions();	
+		//memoryMap.get(MemKeys.LOCAL).set("$nex_dirFactionGroup", num);
+		List<FactionListGrouping> groups = (List<FactionListGrouping>)(memory.get(FACTION_GROUPS_KEY));
+		FactionListGrouping group = groups.get(num - 1);
+		
+		MarketAPI market = dialog.getInteractionTarget().getMarket();
+		boolean recentlyCaptured = getRecentlyCapturedFromId(market) != null;
+		
+		for (FactionAPI faction : group.factions)
+		{
+			String optKey = SELECT_FACTION_PREFIX + faction.getId();
+			opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), optKey, faction.getColor(), null);
+			String warningString = StringHelper.getStringAndSubstituteToken("exerelin_markets", "transferMarketWarning", 
+					"$market", dialog.getInteractionTarget().getMarket().getName());
+			warningString = StringHelper.substituteFactionTokens(warningString, faction);
+			
+			if (recentlyCaptured && faction.isHostileTo(Factions.PLAYER)) {
+				opts.setEnabled(optKey, false);
+				opts.setTooltip(optKey, StringHelper.getString("exerelin_markets", "transferMarketRecentlyCapturedDisabled"));
+				continue;
+			}
+			
+			opts.addOptionConfirmation(optKey, warningString, 
+					Misc.ucFirst(StringHelper.getString("yes")), Misc.ucFirst(StringHelper.getString("no")));
+		}
+
+		opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_transferMarketMain");
+		opts.setShortcut("nex_transferMarketMain", Keyboard.KEY_ESCAPE, false, false, false, false);
+
+		NexUtils.addDevModeDialogOptions(dialog);
+	}
+	
 	/**
-	 * Creates dialog options for the faction list subgroups
+	 * Creates dialog options for the faction list subgroups.
 	 * @param dialog
 	 * @param memory
 	 */
