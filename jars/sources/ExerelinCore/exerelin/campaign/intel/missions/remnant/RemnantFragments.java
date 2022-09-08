@@ -38,6 +38,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
+import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec;
+import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec.DropData;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.EntityLocation;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType;
@@ -384,6 +386,32 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				Stage.BATTLE, Stage.SALVAGE_MOTHERSHIP);
 		mothership.setInteractionImage("illustrations", "abandoned_station");
 		mothership.getMemoryWithoutUpdate().set("$defenderFleetDefeated", true);
+		
+		addMothershipDrops();
+	}
+	
+	
+	protected void addMothershipDrops() {
+		DropData d = new SalvageEntityGenDataSpec.DropData();
+		d.chances = 1;
+		d.group = "rare_tech";
+		mothership.addDropRandom(d);
+		
+		d = new SalvageEntityGenDataSpec.DropData();
+		d.chances = 3;
+		d.group = "omega_weapons_small";
+		mothership.addDropRandom(d);
+		
+		d = new SalvageEntityGenDataSpec.DropData();
+		d.chances = 1;
+		d.group = "omega_weapons_medium";
+		mothership.addDropRandom(d);
+		
+		d = new SalvageEntityGenDataSpec.DropData();
+		d.chances = 8;
+		d.group = "rem_weapons2";
+		mothership.addDropRandom(d);
+		
 		CargoAPI temp = Global.getFactory().createCargo(true);
 		temp.addCommodity(Commodities.GAMMA_CORE, 1);
 		BaseSalvageSpecial.addExtraSalvage(temp, mothership.getMemoryWithoutUpdate(), -1);
