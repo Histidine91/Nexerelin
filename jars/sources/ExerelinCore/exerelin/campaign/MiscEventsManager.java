@@ -95,7 +95,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		e.triggerSetFleetMaxShipSize(2);
 		e.triggerSetFleetFaction(Factions.REMNANTS);
 				
-		boolean debug = true;
+		boolean debug = false;
 		if (debug) {
 			e.triggerMakeFleetIgnoredByOtherFleets();
 			e.triggerMakeFleetIgnoreOtherFleets();
@@ -109,7 +109,9 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 			//e.triggerSetFleetAlwaysPursue();
 			e.triggerOrderFleetInterceptPlayer();
 			e.triggerOrderFleetMaybeEBurn();
-		}		
+			//e.triggerMakeFleetIgnoredByOtherFleets();
+			e.triggerMakeFleetIgnoreOtherFleetsExceptPlayer();
+		}
 
 		e.triggerMakeNoRepImpact();
 		e.triggerSetFleetGenericHailPermanent("Nex_HistorianOmegaHail");

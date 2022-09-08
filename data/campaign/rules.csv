@@ -1710,8 +1710,7 @@ nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHai
 
 ...It appears this AI does not like cute cats. Absolutely unforgivable.  ",cutCommLink:Power up weapons and cut the comm link,
 nex_HistorianOmegaHailBribeBeta,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeBeta,"MakeOtherFleetHostile hist false
-MakeOtherFleetNonHostile hist true
-AdjustRep $personFaction.id COOPERATIVE 5","The other party considers this proposal.
+MakeOtherFleetNonHostile hist true","The other party considers this proposal.
 
 ""submission of lesser congregant acceptable. subsumed will be!""
 
