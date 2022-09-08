@@ -1682,12 +1682,10 @@ public class Nex_MarketCMD extends MarketCMD {
 	@Override
 	protected void raidMenu() {
 		super.raidMenu();
-		// TODO: minimum raid strength for stability impacts
-		if (true) return;
 		
 		float minForStab = getMinRaidStrengthForUnrest();
 		String mfs_str = Math.round(minForStab) + "";
-		LabelAPI lbl = text.addPara(String.format("[temp] Min raid strength to cause unrest at market size %s: %s", 
+		LabelAPI lbl = text.addPara(String.format(StringHelper.getString("nex_raidDialog", "minStrengthForUnrest"), 
 				market.getSize(), mfs_str));
 		lbl.setHighlight(market.getSize() + "", mfs_str);
 		lbl.setHighlightColors(Misc.getHighlightColor(), temp.attackerStr >= minForStab ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor());
@@ -2089,6 +2087,10 @@ public class Nex_MarketCMD extends MarketCMD {
 					assignedTokens += curr.getMarinesAssigned();
 				}
 				raidMultForStabilityPenalty = assignedTokens * 0.1f; 
+			}
+			float minForUnrest = getMinRaidStrengthForUnrest();
+			if (temp.attackerStr < minForUnrest) {
+				raidMultForStabilityPenalty = 0;
 			}
 			
 			stabilityPenalty = applyRaidStabiltyPenalty(market, reason, raidMultForStabilityPenalty);
