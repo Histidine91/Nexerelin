@@ -33,7 +33,7 @@ public class BlueprintItem extends FactionSetupItem {
 		tempForRender.createTooltip(tooltip, useGray, transferHandler, stackSource);
 		//tooltip.addPara("", 10);
 		
-		super.createTooltip(tooltip, expanded, transferHandler, stackSource, useGray);
+		//super.createTooltip(tooltip, expanded, transferHandler, stackSource, useGray);
 		SpecialItemData special = getSpecialItemData();
 		SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(special.getId());
 		
