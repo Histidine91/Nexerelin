@@ -277,9 +277,9 @@ public class NexFactionConfig
             colonyExpeditionChance = (float)settings.optDouble("colonyExpeditionChance", colonyExpeditionChance);
             colonyTargetValuator = settings.optString("colonyTargetValuator", colonyTargetValuator);
             maxColonyDistance = (float)settings.optDouble("maxColonyDistance", maxColonyDistance);
-			factionConditionSubplugin = settings.optString("factionConditionSubplugin", factionConditionSubplugin);
+            factionConditionSubplugin = settings.optString("factionConditionSubplugin", factionConditionSubplugin);
             
-            specialForcesMaxFleets = playableFaction ? settings.optInt("specialForcesMaxFleets", specialForcesMaxFleets) : 0;
+            specialForcesMaxFleets = settings.optInt("specialForcesMaxFleets", playableFaction ? specialForcesMaxFleets : 0);
             specialForcesCountMult = (float)settings.optDouble("specialForcesCountMult", specialForcesCountMult);
             specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
             specialForcesSizeMult = (float)settings.optDouble("specialForcesSizeMult", specialForcesSizeMult);

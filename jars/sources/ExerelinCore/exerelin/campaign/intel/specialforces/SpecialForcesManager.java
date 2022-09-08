@@ -17,16 +17,18 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
  * Generates special forces fleets for factions.
  */
+@Log4j
 public class SpecialForcesManager implements EveryFrameScript {
 	
 	public static final String PERSISTENT_KEY = "nex_specialForcesManager";
@@ -37,7 +39,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	public static final float SIZE_MULT = 0.65f;
 	public static final String MEM_KEY_RESPAWN_DELAY = "$nex_specialForcesRespawnDelay";
 	
-	protected Map<String, Float> factionPoints = new HashMap<>();
+	@Getter protected Map<String, Float> factionPoints = new HashMap<>();
 	protected final List<SpecialForcesIntel> activeIntel = new LinkedList();
 	protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
@@ -66,7 +68,8 @@ public class SpecialForcesManager implements EveryFrameScript {
 		this.activeIntel.removeAll(remove);
 	}
 	
-	// runcode Console.showMessage(exerelin.campaign.intel.specialforces.SpecialForcesManager.getPointsPerDay("persean") + "");
+	// runcode Console.showMessage(exerelin.campaign.intel.specialforces.SpecialForcesManager.getManager().getFactionPoints().get("independent") + "");
+	// runcode Console.showMessage(exerelin.campaign.intel.specialforces.SpecialForcesManager.getPointsPerDay("independent") + "");
 	public static float getPointsPerDay(String factionId) {
 		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
 		float totalPoints = 0;
@@ -152,7 +155,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 		
 		MarketAPI origin = picker.pick();
 		if (origin == null) {
-			Global.getLogger(this.getClass()).info("No market found to spawn special task force for " + factionId);
+			//log.info("No market found to spawn special task force for " + factionId);
 			return null;
 		}
 		
