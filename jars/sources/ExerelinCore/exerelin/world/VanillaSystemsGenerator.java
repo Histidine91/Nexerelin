@@ -19,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.ids.People;
 import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.skills.NexSkills;
 import exerelin.utilities.NexConfig;
@@ -245,6 +246,10 @@ public class VanillaSystemsGenerator {
 	}
 		
 	public static void enhanceVanillaMarkets() {
+		// this part always runs regardless of setting
+		MarketAPI derinkuyu = getMarket("derinkuyu_market");
+		derinkuyu.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.INDEPENDENT);
+		
 		if (!NexConfig.useEnhancedCoreWorlds || Global.getSettings().getModManager().isModEnabled("archeus"))
 			return;
 		
@@ -269,7 +274,7 @@ public class VanillaSystemsGenerator {
 		culann.getIndustry(Industries.BATTLESTATION_HIGH).setAICoreId("alpha_core");
 		culann.getIndustry(Industries.MILITARYBASE).setAICoreId("alpha_core");
 		
-		MarketAPI derinkuyu = getMarket("derinkuyu_market");
+		//MarketAPI derinkuyu = getMarket("derinkuyu_market");
 		derinkuyu.addCondition(Conditions.ORE_SPARSE);
 		derinkuyu.getCondition(Conditions.ORE_SPARSE).setSurveyed(true);
 		derinkuyu.addCondition(Conditions.RARE_ORE_SPARSE);
