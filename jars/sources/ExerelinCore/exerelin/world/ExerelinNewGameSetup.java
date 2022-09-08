@@ -343,9 +343,12 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			int num = ExerelinSetupData.getInstance().numSystems;
 			int min = num + 1;
 			int max = (int)Math.max(num * 1.2f, num + 3);
-			if (min < 12) min = 12;
-			if (max < 18) max = 18;
+			if (max < 16) max = 16;
 			if (max > 24) max = 24;
+			if (min > max - 3) min = max - 3;
+			if (min < 12) min = 12;
+			
+			log.info(String.format("Generating system with %s min, %s max stars", min, max));
 			
 			params.minStars = min;
 			params.maxStars = max;
