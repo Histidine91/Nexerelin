@@ -25,10 +25,11 @@ public class Nex_IsFactionRuler extends BaseCommandPlugin {
 	
 	public static boolean isRuler(String factionId)
 	{
+		if (factionId == null) return false;
 		if (factionId.equals(Factions.PLAYER))
 			return true;
 		
-		if (factionId.equals(PlayerFactionStore.getPlayerFactionId()))		
+		if (factionId.equals(PlayerFactionStore.getPlayerFactionId()))
 			return NexConfig.factionRuler || NexConfig.getFactionConfig(factionId).isPlayerRuled;
 		
 		return false;

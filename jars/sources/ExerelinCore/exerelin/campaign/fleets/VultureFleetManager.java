@@ -153,7 +153,7 @@ public class VultureFleetManager extends DisposableFleetManager
 		VultureFleetAI ai = new VultureFleetAI(fleet, data);
 		fleet.addScript(ai);
 		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + total);
-		if (ExerelinModPlugin.isNexDev) {
+		if (false && ExerelinModPlugin.isNexDev) {
 			Global.getSector().getCampaignUI().addMessage("Spawned vulture fleet in " 
 					+ origin.getContainingLocation() + " from " + origin.getName() 
 					+ ", translocation: " + !onTheSpot);
