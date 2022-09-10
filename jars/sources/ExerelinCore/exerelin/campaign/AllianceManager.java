@@ -486,10 +486,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             
             for (Alliance alliance : alliances)
             {
-                float value = getAlignmentCompatibilityWithAlliance(factionId, alliance);
-                if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !NexConfig.ignoreAlignmentForAlliances) continue;
+                float value = NexConfig.ignoreAlignmentForAlliances ? 1 : getAlignmentCompatibilityWithAlliance(factionId, alliance);
+                if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE) continue;
                 
-				if (Math.random() > Math.pow(JOIN_CHANCE_MULT_PER_MEMBER, alliance.getMembersCopy().size() ))
+				if (Math.random() > Math.pow(JOIN_CHANCE_MULT_PER_MEMBER, alliance.getMembersCopy().size()))
 				{
 					continue;
 				}
