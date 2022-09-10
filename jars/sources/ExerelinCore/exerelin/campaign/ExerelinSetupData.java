@@ -65,7 +65,7 @@ public class ExerelinSetupData
 
 	public ExerelinSetupData()
 	{
-		List<String> factionIds = NexConfig.getFactions(true, false);
+		List<String> factionIds = NexConfig.getFactions(true, false, true);
 		factionIds.add(Factions.INDEPENDENT);
 		factionIds.remove(Factions.PLAYER);
 		for (String factionId : factionIds) {

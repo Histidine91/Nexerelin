@@ -111,9 +111,10 @@ public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 		InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
 		final ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
-		List<String> spawnableFactionIds = NexConfig.getFactions(true, false);
+		List<String> spawnableFactionIds = NexConfig.getFactions(true, false, true);
 		spawnableFactionIds.add(Factions.INDEPENDENT);
 		spawnableFactionIds.remove(Factions.PLAYER);
+		
 		Collections.sort(spawnableFactionIds, new Comparator<String>()
 		{
 			@Override

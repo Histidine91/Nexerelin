@@ -387,7 +387,8 @@ public class StartSetupPostTimePass {
 		Vector2f loc = entity.getLocation();
 		playerFleet.setLocation(loc.x, loc.y);
 		
-		if (!SectorManager.getManager().isFreeStart())
+		FactionAPI ef = entity.getFaction();
+		if (ef != null && ef.getId().equals(PlayerFactionStore.getPlayerFactionIdNGC()))
 		{
 			// unlock storage
 			MarketAPI homeMarket = entity.getMarket();

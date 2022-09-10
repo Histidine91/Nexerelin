@@ -385,7 +385,11 @@ public class NexConfig
         return customRebels;
     }
     
-    public static List<String> getFactions(boolean onlyPlayable, boolean onlyStartable)
+    public static List<String> getFactions(boolean onlyPlayable, boolean onlyStartable) {
+        return getFactions(onlyPlayable, onlyStartable, false);
+    }
+    
+    public static List<String> getFactions(boolean onlyPlayable, boolean onlyStartable, boolean excludeFreeStart)
     {
         List<String> factions = new ArrayList<>();
 
@@ -394,6 +398,10 @@ public class NexConfig
                 continue;
             if (onlyStartable && !config.startingFaction)
                 continue;
+            if (excludeFreeStart && config.freeStart) {
+                continue;
+            }
+            
             if (NexUtilsFaction.doesFactionExist(config.factionId))
             {
                 factions.add(config.factionId);
