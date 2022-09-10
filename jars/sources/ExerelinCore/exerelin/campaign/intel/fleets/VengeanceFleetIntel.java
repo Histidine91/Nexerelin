@@ -39,6 +39,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -420,6 +421,10 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		 if (assembling) {
 			if (!market.getFactionId().equals(factionId))
 				endEvent(EndReason.FAILED_TO_SPAWN);
+			
+			if (!NexUtilsMarket.hasWorkingSpaceport(market)) {
+				endEvent(EndReason.FAILED_TO_SPAWN);
+			}
 			
 			daysToLaunch -= Global.getSector().getClock().convertToDays(amount);
 			if (daysToLaunch < 0)
