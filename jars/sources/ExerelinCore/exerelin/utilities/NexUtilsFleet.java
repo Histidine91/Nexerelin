@@ -106,6 +106,19 @@ public class NexUtilsFleet
     }
     
     /**
+     * Since {@code FleetLogisticsAPI.getShipMaintenanceSupplyCost()} also includes repair and CR recovery costs.
+     * @param fleet
+     * @return
+     */
+    public static float getTrueMonthlyMaintenanceCost(CampaignFleetAPI fleet) {
+        float cost = 0;
+        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+            cost += member.getStats().getSuppliesPerMonth().getModifiedValue();
+        }
+        return cost;
+    }
+    
+    /**
      * Gets the number of fleet generation points represented by the specified fleet, as used in FleetFactoryV2.
      * Frigates = 1 point each, destroyers = 2, cruisers = 4, capitals = 8
      * @param fleet

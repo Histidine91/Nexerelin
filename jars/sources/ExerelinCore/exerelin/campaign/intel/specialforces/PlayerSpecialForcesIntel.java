@@ -37,6 +37,7 @@ import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYP
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.SOURCE_ID;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.getString;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -372,7 +373,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	protected void processCosts() {
 		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
-		float f = 1f / numIter;
+		float timeMult = 1f / numIter;
 		
 		MonthlyReport report = SharedData.getData().getCurrentReport();
 		
@@ -383,7 +384,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		float commanderFee = Global.getSettings().getFloat("officerSalaryBase") * 5;
 		FDNode feeNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_commFee", 
-				getString("reportNode_commander"), commander.getPortraitSprite(), commanderFee * f, false);
+				getString("reportNode_commander"), commander.getPortraitSprite(), commanderFee * timeMult, false);
 		
 		if (fleet == null) return;
 		
@@ -393,20 +394,20 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		FDNode officerNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_offSal", 
 				getString("reportNode_officer"), Global.getSettings().getSpriteName("income_report", "officers"), 
-				officerSalary * f, false);
+				officerSalary * timeMult, false);
 		
 		CommoditySpecAPI crewSpec = Global.getSettings().getCommoditySpec(Commodities.CREW);
 		float crew = fleet.getFleetData().getMinCrew();
-		float crewSalary = crew * Global.getSettings().getInt("crewSalary") * 1.25f;
+		float crewSalary = crew * Global.getSettings().getInt("crewSalary") * CREW_SALARY_MULT;
 		FDNode crewNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_crewSal", 
-				getString("reportNode_crew"), crewSpec.getIconName(), crewSalary * f, false);
+				getString("reportNode_crew"), crewSpec.getIconName(), crewSalary * timeMult, false);
 		
-		float suppMaint = fleet.getLogistics().getShipMaintenanceSupplyCost() * 30;
+		float suppMaint = NexUtilsFleet.getTrueMonthlyMaintenanceCost(fleet);
 		CommoditySpecAPI suppliesSpec = Global.getSettings().getCommoditySpec(Commodities.SUPPLIES);
 		log.info("Special task group uses " + suppMaint + " per month");
-		float maintCost = suppMaint * suppliesSpec.getBasePrice() * 1.25f;
+		float maintCost = suppMaint * suppliesSpec.getBasePrice() * SUPPLY_COST_MULT;
 		FDNode maintNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_suppliesCost", 
-				getString("reportNode_supplies"), suppliesSpec.getIconName(), maintCost * f, false);
+				getString("reportNode_supplies"), suppliesSpec.getIconName(), maintCost * timeMult, false);
 		
 		CommoditySpecAPI fuelSpec = Global.getSettings().getCommoditySpec(Commodities.FUEL);
 		float fuelCost = this.fuelUsedLastInterval * fuelSpec.getBasePrice();
