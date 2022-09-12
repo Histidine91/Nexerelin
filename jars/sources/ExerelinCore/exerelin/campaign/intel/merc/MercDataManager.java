@@ -103,6 +103,7 @@ public class MercDataManager {
 			def.level = thisJson.optInt("level", 1);
 			def.portrait = thisJson.optString("portrait", null);
 			def.rankId = thisJson.optString("rankId", null);
+			def.skillsReplace = thisJson.optBoolean("skillsReplace", true);
 			def.voice = thisJson.optString("voice", null);
 			def.persistentId = thisJson.optString("persistentId", null);
 			def.aiCoreId = thisJson.optString("aiCoreId", null);
@@ -269,6 +270,7 @@ public class MercDataManager {
 		public String rankId;
 		public String voice;
 		public Map<String, Integer> skills;	// null if not set
+		public boolean skillsReplace;
 		public String aiCoreId;
 		public String persistentId;
 	}

@@ -148,9 +148,9 @@ public class MercFleetGenPlugin {
 			if (important != null) return important;
 		}
 		
-		SkillPickPreference pref = SkillPickPreference.GENERIC;
-		if (member.isCarrier()) pref = SkillPickPreference.CARRIER;
-		else if (member.isPhaseShip()) pref = SkillPickPreference.PHASE;
+		SkillPickPreference pref = SkillPickPreference.ANY;
+		//if (member.isCarrier()) pref = SkillPickPreference.CARRIER;
+		//else if (member.isPhaseShip()) pref = SkillPickPreference.PHASE;
 		PersonAPI person; 
 		
 		if (def.aiCoreId != null) {
@@ -178,9 +178,11 @@ public class MercFleetGenPlugin {
 		
 		if (def.skills != null) {
 			// purge existing skills if needed
-			List<SkillLevelAPI> existing = person.getStats().getSkillsCopy();
-			for (SkillLevelAPI level : existing) {
-				person.getStats().setSkillLevel(level.getSkill().getId(), 0);
+			if (def.skillsReplace) {
+				List<SkillLevelAPI> existing = person.getStats().getSkillsCopy();
+				for (SkillLevelAPI level : existing) {
+					person.getStats().setSkillLevel(level.getSkill().getId(), 0);
+				}
 			}
 			for (String skillId : def.skills.keySet()) {
 				int level = def.skills.get(skillId);
@@ -211,7 +213,7 @@ public class MercFleetGenPlugin {
 				return false;
 			}
 		}
-		if (Global.getSector().getPlayerPerson().getStats().getLevel() < def.minLevel)
+		if (!MercSectorManager.DEBUG_MODE && Global.getSector().getPlayerPerson().getStats().getLevel() < def.minLevel)
 			return false;
 		
 		return true;
