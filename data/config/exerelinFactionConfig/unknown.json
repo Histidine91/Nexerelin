@@ -1,0 +1,8 @@
+{
+    # enemy faction in Exiled Space
+    "playableFaction":false,
+    "corvusCompatible":true,
+    "startRelationships":{ "default": -1 },
+    "noRandomizeRelations":true,
+    "noSyncRelations":true,
+}
