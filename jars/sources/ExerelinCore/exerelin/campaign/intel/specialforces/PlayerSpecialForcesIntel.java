@@ -379,7 +379,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		FDNode fleetNode = report.getNode(MonthlyReport.FLEET);
 		
-		FDNode psfNode = processMonthlyReportNode(report, fleetNode, "nex_node_id_psf", 
+		String nodeId = "nex_node_id_psf_" + this.toString();
+		FDNode psfNode = processMonthlyReportNode(report, fleetNode, nodeId, 
 				this.getName(), faction.getCrest(), 0, false);
 		
 		float commanderFee = Global.getSettings().getFloat("officerSalaryBase") * 5;
