@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -29,6 +31,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.MiningHelperLegacy.MiningReport;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -43,7 +46,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 	public static float COST_HEIGHT = 67;
 	
 	@Override
-	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+	public boolean execute(String ruleId, final InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
 		SectorEntityToken target = dialog.getInteractionTarget();
 
@@ -60,6 +63,16 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 				break;
 			case "planet":
 				printPlanetInfo(dialog.getInteractionTarget(), dialog.getTextPanel(), memoryMap);
+				break;
+			
+			// doesn't really have anything to do with mining info, but this was the easiest place to put it
+			case "cargo":
+				dialog.getVisualPanel().showCore(CoreUITabId.CARGO, null, new CoreInteractionListener() {
+					@Override
+					public void coreUIDismissed() {
+						dialog.dismiss();
+					}
+				});
 				break;
 			default:
 				printPlanetInfo(dialog.getInteractionTarget(), dialog.getTextPanel(), memoryMap);

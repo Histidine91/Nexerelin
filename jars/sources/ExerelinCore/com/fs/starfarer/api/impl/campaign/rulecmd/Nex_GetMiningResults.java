@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
@@ -137,10 +138,21 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 				text.addParagraph("  " + displayStr + ": " + machineryLost);
 				text.highlightInLastPara(red, machineryLost+"");
 			}
-		}
- 
+		}		
+		
 		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
+		
+		dialog.getOptionPanel().clearOptions();
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		if (cargo.getSpaceUsed() > cargo.getMaxCapacity()) {
+			text.addPara(StringHelper.getString(STRING_CATEGORY, "cargoFull"), Misc.getNegativeHighlightColor());
+			dialog.getOptionPanel().addOption(StringHelper.getString(STRING_CATEGORY, "optionOpenCargo"), "nex_miningOpenCargo");
+			
+		} else {
+			dialog.getOptionPanel().addOption(StringHelper.getString("leave", true), "nex_miningLeave");
+			dialog.getOptionPanel().addOption(StringHelper.getString(STRING_CATEGORY, "optionOpenCargo"), "nex_miningOpenCargo");
+		}
 
 		return true;
 	}

@@ -1678,7 +1678,10 @@
 		"shipDestroyed":"$ship destroyed",
 		"shipLostCR":"$ship lost $crLost CR",
 		"crewLost":"crew lost",
-		"machineryLost":"heavy machinery lost"
+		"machineryLost":"heavy machinery lost",
+		"cargoFull":"Cargo overloaded",
+		
+		"optionOpenCargo":"Open cargo screen",
 	},
 	
 	"exerelin_ngc":{

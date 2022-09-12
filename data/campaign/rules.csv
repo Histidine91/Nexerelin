@@ -442,10 +442,12 @@ FireAll nex_miningOption",,,
 nex_miningStart,DialogOptionSelected,"$nex_canMine
 $option == nex_miningStart","$player.nex_miningCooldown = true 1
 Nex_GetMiningResults 1
-ShowDefaultVisual",,nex_miningLeave:Leave,
+ShowDefaultVisual",,"# handled in code
+#nex_miningLeave:Leave",
 ,,,,,,
 nex_miningBack,DialogOptionSelected,$option == nex_miningBack,FireAll PopulateOptions,,,
 nex_miningLeave,DialogOptionSelected,$option == nex_miningLeave,DismissDialog,,,
+nex_miningOpenCargo,DialogOptionSelected,$option == nex_miningOpenCargo,Nex_PrintMiningInfo cargo,,,
 #END Mining options,,,,,,
 ,,,,,,
 # Fleet requests,,,,,,
