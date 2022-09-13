@@ -8,7 +8,8 @@
 			"requiredSkillLevel":1,
 			"effectBasedOnLevel":false,
 			"effects":[
-				# not implemented
+				{"type":"CHARACTER_STATS", "script":"exerelin.campaign.skills.NexSkills$MakeshipEquipmentEx1"},
+				{"type":"GOVERNED_OUTPOST", "script":"exerelin.campaign.skills.NexSkills$MakeshipEquipmentEx2"},
 			]
 		},
 	],

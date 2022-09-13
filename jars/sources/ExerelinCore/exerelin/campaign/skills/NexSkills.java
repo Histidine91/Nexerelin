@@ -1,5 +1,6 @@
 package exerelin.campaign.skills;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.CharacterStatsSkillEffect;
 import com.fs.starfarer.api.characters.LevelBasedEffect;
@@ -14,6 +15,7 @@ public class NexSkills {
 	public static final String TACTICAL_DRILLS_EX = "nex_tactical_drills_ex";
 	public static final String AUXILIARY_SUPPORT_EX = "nex_auxiliary_support_ex";
 	public static final String BULK_TRANSPORT_EX = "nex_bulk_transport_ex";
+	public static final String MAKESHIFT_EQUIPMENT_EX = "nex_makeshift_equipment_ex";
 	
 	public static String getString(String id) {
 		return StringHelper.getString("nex_skills", id);
@@ -126,6 +128,57 @@ public class NexSkills {
 		
 		public String getEffectDescription(float level) {
 			return String.format(getString("bulkTransportExDesc1"), StringHelper.toPercent(ACCESS));
+		}
+		
+		public String getEffectPerLevelDescription() {
+			return null;
+		}
+
+		public LevelBasedEffect.ScopeDescription getScopeDescription() {
+			return LevelBasedEffect.ScopeDescription.GOVERNED_OUTPOST;
+		}
+	}
+	
+	public static class MakeshipEquipmentEx1 implements CharacterStatsSkillEffect {
+		public static final int DEMAND_REDUCTION = 1;
+		
+		public void apply(MutableCharacterStatsAPI stats, String id, float level) {
+			String desc = getString("makeshipEquipmentEx");
+			stats.getDynamic().getMod(Stats.DEMAND_REDUCTION_MOD).modifyFlat(id, DEMAND_REDUCTION, desc);
+		}
+
+		public void unapply(MutableCharacterStatsAPI stats, String id) {
+			stats.getDynamic().getMod(Stats.DEMAND_REDUCTION_MOD).unmodifyFlat(id);
+		}
+		
+		public String getEffectDescription(float level) {
+			return String.format(getString("makeshipEquipmentExDesc1"), DEMAND_REDUCTION);
+		}
+		
+		public String getEffectPerLevelDescription() {
+			return null;
+		}
+
+		public LevelBasedEffect.ScopeDescription getScopeDescription() {
+			return LevelBasedEffect.ScopeDescription.GOVERNED_OUTPOST;
+		}
+	}
+	
+	public static class MakeshipEquipmentEx2 implements MarketSkillEffect {
+		public static final float UPKEEP_MULT = 0.9f;
+		
+		public void apply(MarketAPI market, String id, float level) {
+			String desc = getString("makeshipEquipmentEx");
+			market.getUpkeepMult().modifyMult(id, UPKEEP_MULT, desc);
+		}
+
+		public void unapply(MarketAPI market, String id) {
+			market.getUpkeepMult().unmodifyPercent(id);
+		}
+		
+		public String getEffectDescription(float level) {
+			float percent = Math.round((1 - UPKEEP_MULT) * 100f);
+			return String.format(getString("makeshipEquipmentExDesc2"), Math.round(percent));
 		}
 		
 		public String getEffectPerLevelDescription() {

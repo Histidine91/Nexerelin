@@ -2298,6 +2298,10 @@
 		
 		"bulkTransportEx":"Bulk Transport EX",
 		"bulkTransportExDesc1":"+%s accessibility",
+		
+		"makeshipEquipmentEx":"Makeship Equipment EX",
+		"makeshipEquipmentExDesc1":"All industries demand %s less unit of all the commodities they consume",
+		"makeshipEquipmentExDesc2":"-%s%% upkeep cost",
 	},
 	
 	"exerelin_superweapon":{
