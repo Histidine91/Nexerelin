@@ -52,7 +52,7 @@ public class Nex_CargoScan extends CargoScan {
 		
 		FactionAPI faction = other.getFaction();
 		
-		CargoScanResult result = new CargoScanResult();
+		Nex_CargoScanResult result = new Nex_CargoScanResult();
 		
 		float totalLegal = 0;
 		float totalLegalCargo = 0;
@@ -165,12 +165,14 @@ public class Nex_CargoScan extends CargoScan {
 		//illegalFound.clear();
 		
 		//boolean boarding = !suspicious && level >= 0.5f && illegalFound.isEmpty();
+		//log.info(String.format("Suspicious: %s, suspicious due to level: %s", suspicious, suspiciousDueToLevel));
 		if (suspicious && illegalFound.isEmpty()) {
 			WeightedRandomPicker<FleetMemberAPI> picker = new WeightedRandomPicker<FleetMemberAPI>();
 			for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
 				if (member.isMothballed() && member.getRepairTracker().getBaseCR() < 0.2f) continue;
 				picker.add(member, member.getFleetPointCost());
 			}
+			//log.info(String.format("Picker size: %s", picker.getItems().size()));
 			if (picker.isEmpty()) {
 				suspicious = false;
 			} else {
@@ -178,7 +180,7 @@ public class Nex_CargoScan extends CargoScan {
 				float picked = 0f;
 				while (picked < totalDamage && !picker.isEmpty()) {
 					FleetMemberAPI pick = picker.pickAndRemove();
-					result.shipsToDamage.add(pick);
+					result.getShipsToDamage().add(pick);
 					picked += pick.getFleetPointCost();
 				}
 			}
@@ -295,5 +297,15 @@ public class Nex_CargoScan extends CargoScan {
 		}
 		
 		return faction.isIllegal(stack);
+	}
+	
+	/**
+	 * Attempt to workaround not being able to access {@code shipsToDamage}.
+	 */
+	public static class Nex_CargoScanResult extends CargoScanResult {
+		
+		public List<FleetMemberAPI> getShipsToDamage() {
+			return shipsToDamage;
+		}
 	}
 }
