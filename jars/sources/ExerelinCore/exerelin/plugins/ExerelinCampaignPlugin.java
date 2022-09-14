@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.AbilityPlugin;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -19,6 +20,7 @@ import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.abilities.ai.AlwaysOnTransponderAI;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.colony.AICoreAdminPluginOmega;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.utilities.NexUtilsFleet;
 import lombok.extern.log4j.Log4j;
@@ -172,6 +174,13 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 			AlwaysOnTransponderAI aai = new AlwaysOnTransponderAI();
 			aai.init(ability);
 			return new PluginPick<AbilityAIPlugin>(aai, PickPriority.MOD_SET);
+		}
+		return null;
+	}
+	
+	public PluginPick<AICoreAdminPlugin> pickAICoreAdminPlugin(String commodityId) {
+		if (Commodities.OMEGA_CORE.equals(commodityId)) {
+			return new PluginPick<AICoreAdminPlugin>(new AICoreAdminPluginOmega(), PickPriority.MOD_GENERAL);
 		}
 		return null;
 	}
