@@ -52,23 +52,43 @@ public class NexSkills {
 	
 	public static class TacticalDrillsEx1 implements MarketSkillEffect {
 		public static final float DEFEND_BONUS = 50;
-		public static final float MORALE_DMG_MULT = 0.9f;
 		
 		public void apply(MarketAPI market, String id, float level) {
 			String desc = getString("tacticalDrillsEx");
 			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).modifyMult(id, 1f + DEFEND_BONUS * 0.01f, desc);
-			market.getStats().getDynamic().getMod(GBConstants.STAT_MARKET_MORALE_DAMAGE).modifyMult(id, MORALE_DMG_MULT, desc);
 		}
 
 		public void unapply(MarketAPI market, String id) {
 			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).unmodify(id);
+		}
+		
+		public String getEffectDescription(float level) {
+			return String.format(getString("tacticalDrillsExDesc1"), (int)Math.round(DEFEND_BONUS) + "%");
+		}
+		
+		public String getEffectPerLevelDescription() {
+			return null;
+		}
+
+		public ScopeDescription getScopeDescription() {
+			return ScopeDescription.GOVERNED_OUTPOST;
+		}
+	}
+	
+	public static class TacticalDrillsEx2 implements MarketSkillEffect {
+		public static final float MORALE_DMG_MULT = 0.9f;
+		
+		public void apply(MarketAPI market, String id, float level) {
+			String desc = getString("tacticalDrillsEx");
+			market.getStats().getDynamic().getMod(GBConstants.STAT_MARKET_MORALE_DAMAGE).modifyMult(id, MORALE_DMG_MULT, desc);
+		}
+
+		public void unapply(MarketAPI market, String id) {
 			market.getStats().getDynamic().getMod(GBConstants.STAT_MARKET_MORALE_DAMAGE).unmodify();
 		}
 		
 		public String getEffectDescription(float level) {
-			String str1 = String.format(getString("tacticalDrillsExDesc1"), (int)Math.round(DEFEND_BONUS) + "%");
-			String str2 = String.format(getString("tacticalDrillsExDesc2"), StringHelper.toPercent(1 - MORALE_DMG_MULT));
-			return str1 + "\n" + str2;
+			return String.format(getString("tacticalDrillsExDesc2"), StringHelper.toPercent(1 - MORALE_DMG_MULT));
 		}
 		
 		public String getEffectPerLevelDescription() {
@@ -81,28 +101,19 @@ public class NexSkills {
 	}
 	
 	public static class AuxiliarySupportEx1 implements MarketSkillEffect {
-		//public static final float ACCESS = 0.1f;
 		public static final float FLEET_SIZE = 20f;
-		public static final float DEFEND_BONUS = 25f;
 		
 		public void apply(MarketAPI market, String id, float level) {
 			String desc = getString("auxiliarySupportEx");
-			//market.getAccessibilityMod().modifyFlat(id, ACCESS, desc);
-			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).modifyMult(id, 1f + DEFEND_BONUS * 0.01f, desc);
 			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyFlat(id, FLEET_SIZE / 100f, desc);
 		}
 
 		public void unapply(MarketAPI market, String id) {
-			//market.getAccessibilityMod().unmodifyFlat(id);
-			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).unmodify(id);
 			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).unmodifyFlat(id);
 		}
 		
 		public String getEffectDescription(float level) {
-			//String str1 = String.format(getString("auxiliarySupportExDesc2"), StringHelper.toPercent(ACCESS));
-			String str1 = String.format(getString("auxiliarySupportExDesc1"), (int)Math.round(FLEET_SIZE) + "%");
-			String str2 = String.format(getString("auxiliarySupportExDesc3"), (int)Math.round(DEFEND_BONUS) + "%");
-			return str1 + "\n" + str2;
+			return String.format(getString("auxiliarySupportExDesc1"), (int)Math.round(FLEET_SIZE) + "%");
 		}
 		
 		public String getEffectPerLevelDescription() {
@@ -111,6 +122,31 @@ public class NexSkills {
 
 		public ScopeDescription getScopeDescription() {
 			return ScopeDescription.GOVERNED_OUTPOST;
+		}
+	}
+	
+	public static class AuxiliarySupportEx2 implements MarketSkillEffect {
+		public static final float DEFEND_BONUS = 25f;
+		
+		public void apply(MarketAPI market, String id, float level) {
+			String desc = getString("auxiliarySupportEx");
+			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).modifyMult(id, 1f + DEFEND_BONUS * 0.01f, desc);
+		}
+
+		public void unapply(MarketAPI market, String id) {
+			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).unmodify(id);
+		}
+		
+		public String getEffectDescription(float level) {
+			return String.format(getString("auxiliarySupportExDesc3"), (int)Math.round(DEFEND_BONUS) + "%");
+		}
+		
+		public String getEffectPerLevelDescription() {
+			return null;
+		}
+
+		public LevelBasedEffect.ScopeDescription getScopeDescription() {
+			return LevelBasedEffect.ScopeDescription.GOVERNED_OUTPOST;
 		}
 	}
 	
@@ -134,8 +170,8 @@ public class NexSkills {
 			return null;
 		}
 
-		public LevelBasedEffect.ScopeDescription getScopeDescription() {
-			return LevelBasedEffect.ScopeDescription.GOVERNED_OUTPOST;
+		public ScopeDescription getScopeDescription() {
+			return ScopeDescription.GOVERNED_OUTPOST;
 		}
 	}
 	

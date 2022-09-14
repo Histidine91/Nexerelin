@@ -9,6 +9,7 @@
 			"effectBasedOnLevel":false,
 			"effects":[
 				{"type":"GOVERNED_OUTPOST", "script":"exerelin.campaign.skills.NexSkills$TacticalDrillsEx1"},
+				{"type":"GOVERNED_OUTPOST", "script":"exerelin.campaign.skills.NexSkills$TacticalDrillsEx2"},
 			]
 		},
 	],
