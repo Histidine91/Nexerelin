@@ -329,12 +329,14 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 		boolean won = battle.getSideFor(primaryWinner).contains(player);
 		for (CampaignFleetAPI otherFleet : battle.getNonPlayerSideSnapshot()) {
 			boolean remnant = otherFleet.getFaction().getId().equals(Factions.REMNANTS);
+			boolean omega = otherFleet.getFaction().getId().equals(Factions.OMEGA);
 			if (remnant) {
 				awardMilestone("encounterRemnants");
 			}
-			if (won && otherFleet.getFaction().getId().equals(Factions.OMEGA)) {
+			if (won && (remnant || omega)) {
 				for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
-					if (loss.getHullSpec().getHullSize().compareTo(HullSize.CRUISER) >= 0) {
+					if (loss.getHullSpec().hasTag(Tags.OMEGA) && loss.getHullSpec().getHullSize().compareTo(HullSize.CRUISER) >= 0) 
+					{
 						awardMilestone("defeatOmega");
 						break;
 					}
