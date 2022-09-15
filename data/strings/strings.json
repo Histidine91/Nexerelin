@@ -964,6 +964,7 @@
 		"bulletNoLongerExists":"$Action aborted: target destroyed",
 		"bulletNoLongerHostile":"$Action aborted: no longer hostile",
 		"bulletCancelled":"$Action cancelled",
+		"bulletWonGroundBattle":"Enemy ground forces defeated",
 		"bulletETA":"Estimated %s $days until arrival",
 		"strCompare":"Compared to the defenses, $theAction's space forces are %s and its ground forces are %s.",
 		"predictionDefeatInOrbit":"$TheAction is likely to be defeated in orbit.",
@@ -973,6 +974,7 @@
 		"predictionBombard":"$theForceType is likely to resort to tactical bombardment.",
 		"outcomeNoLongerHostile":"As $target's current faction is not currently hostile, $theAction has been cancelled.",
 		"outcomeNoLongerExists":"$target has been destroyed by another hostile party.",
+		"outcomeWonGroundBattle":"Enemy forces invading $target have been driven off.",
 		
 		"stageOrganize":"$TheAction is currently being planned $onOrAt $market.",
 		"stageOrganizeUnknown":"$TheAction is currently in the planning stages.",
@@ -2356,7 +2358,6 @@
 		"intelBulletDefeated":"Fleet defeated",
 		"intelBulletExpired":"Mission over",
 		"intelBulletNoLongerHostile":"Cancelled: No longer hostile",
-		"intelBulletWonGroundBattle":"Enemy ground forces defeated",
 		
 		"intelStatusAssembling":"The fleet will launch from $market in $days.",
 		"intelStatusActive":"The fleet is currently active and will pursue you for $duration.",

@@ -465,6 +465,29 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 				attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);
 		
 		// write our own status message for certain cancellation cases
+		boolean endDesc = addCustomOutcomeDesc(info, sub);
+		if (endDesc) return;
+		
+		for (RaidStage stage : stages) {
+			stage.showStageInfo(info);
+			if (getStageIndex(stage) == failStage) break;
+		}
+		
+		if (ExerelinModPlugin.isNexDev && (isEnding() || isEnded())) {
+			info.addPara("The event is now over.", opad);
+		}
+	}
+	
+	/**
+	 * Writes custom outcome text to the small description.
+	 * @param info
+	 * @param sub
+	 * @return True if {@code createSmallDescription} should exit, false otherwise.
+	 */
+	protected boolean addCustomOutcomeDesc(TooltipMakerAPI info, Map<String, String> sub) {
+		String string;
+		float opad = 10;
+		
 		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE)
 		{
 			string = StringHelper.getString("nex_fleetIntel", "outcomeNoLongerHostile");
@@ -484,7 +507,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 						PlayerFactionStore.getPlayerFactionId(), stealRepAfter, stealRepPenalty, opad);
 			}
 			
-			return;
+			return true;
 		}
 		else if (outcome == OffensiveOutcome.MARKET_NO_LONGER_EXISTS)
 		{
@@ -492,17 +515,9 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 			string = StringHelper.substituteToken(string, "$target", target.getName());
 			//string = StringHelper.substituteToken(string, "$theAction", getActionNameWithArticle());
 			info.addPara(string, opad);
-			return;
+			return true;
 		}
-		
-		for (RaidStage stage : stages) {
-			stage.showStageInfo(info);
-			if (getStageIndex(stage) == failStage) break;
-		}
-		
-		if (ExerelinModPlugin.isNexDev && (isEnding() || isEnded())) {
-			info.addPara("The event is now over.", opad);
-		}
+		return false;
 	}
 	
 	@Override

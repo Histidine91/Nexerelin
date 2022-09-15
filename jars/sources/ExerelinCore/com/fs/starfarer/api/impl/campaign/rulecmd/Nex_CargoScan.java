@@ -245,8 +245,7 @@ public class Nex_CargoScan extends CargoScan {
 		
 		return true;
 	}
-		
-	// TODO: externalize strings
+	
 	public void printResults(TextPanelAPI text, CargoAPI illegalFound, boolean suspicious, boolean suspiciousDueToLevel) {		
 		//text.setFontVictor();
 		text.setFontSmallInsignia();
@@ -273,7 +272,7 @@ public class Nex_CargoScan extends CargoScan {
 				text.addParagraph(getString("SuspiciousCargo"), hl);
 			}
 		} else {
-			text.addParagraph(getString("SuspicionLevel"));
+			text.addParagraph(getString("NoFind"));
 		}
 		
 		text.addParagraph("-----------------------------------------------------------------------------");

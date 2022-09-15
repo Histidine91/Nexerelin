@@ -1,8 +1,6 @@
 package exerelin.campaign.intel.invasion;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -10,8 +8,7 @@ import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Used for 'counter-invasions' in response to a player invasion of the faction's market.
@@ -65,11 +62,13 @@ public class CounterInvasionIntel extends InvasionIntel {
 	
 	protected void addOutcomeBullet(TooltipMakerAPI info, Color color, float pad) 
 	{
-		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE) {
+		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE && triggerBattle != null 
+				&& triggerBattle.getOutcome() == GroundBattleIntel.BattleOutcome.DEFENDER_VICTORY)
+		{
 			//String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
 			//		key, "$target", target.getName());
 			//info.addPara(str, initPad, tc, other.getBaseUIColor(), target.getName());
-			String str = StringHelper.getString("nex_fleetIntel", "intelBulletWonGroundBattle");
+			String str = StringHelper.getString("nex_fleetIntel", "bulletWonGroundBattle");
 			str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
 			str = StringHelper.substituteToken(str, "$action", getActionName(), true);
 			info.addPara(str, color, pad);
@@ -77,6 +76,23 @@ public class CounterInvasionIntel extends InvasionIntel {
 		else {
 			super.addOutcomeBullet(info, color, pad);
 		}
+	}
+	
+	@Override
+	protected boolean addCustomOutcomeDesc(TooltipMakerAPI info, Map<String, String> sub) {
+		float opad = 10;
+		
+		if (outcome == OffensiveOutcome.NO_LONGER_HOSTILE && triggerBattle != null 
+				&& triggerBattle.getOutcome() == GroundBattleIntel.BattleOutcome.DEFENDER_VICTORY)
+		{
+			String string = StringHelper.getString("nex_fleetIntel", "outcomeWonGroundBattle");
+			string = StringHelper.substituteToken(string, "$target", target.getName());
+			
+			info.addPara(string, opad);
+			return true;
+		}
+		
+		return super.addCustomOutcomeDesc(info, sub);
 	}
 	
 	@Override
