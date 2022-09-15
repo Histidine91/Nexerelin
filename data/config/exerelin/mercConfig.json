@@ -305,10 +305,15 @@
 			"officers":[
 				{
 					"firstName":"Platinum",
-					"lastName":"Final",
+					"lastName":"Terminal",
 					"level":10,
 					"rankId":"spaceCaptain",
 					"aiCoreId":"omega_core",
+					"persistentId":"nex_endbringer",
+					"skills":{
+						"missile_specialization":2,
+					},
+					"skillsReplace":false,
 				},
 			],
 			"miscData":{
