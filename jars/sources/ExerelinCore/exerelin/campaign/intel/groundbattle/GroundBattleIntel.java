@@ -2523,6 +2523,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	@Override
+	public IntelSortTier getSortTier() {
+		if (isEnding()) {
+			return IntelSortTier.TIER_COMPLETED;
+		}
+		return IntelSortTier.TIER_2;
+	}
+	
+	@Override
 	protected float getBaseDaysAfterEnd() {
 		return 30;
 	}
