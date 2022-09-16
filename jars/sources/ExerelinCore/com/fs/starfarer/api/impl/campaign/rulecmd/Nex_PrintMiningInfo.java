@@ -26,6 +26,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.Pair;
@@ -37,6 +38,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 
 
 public class Nex_PrintMiningInfo extends BaseCommandPlugin {
@@ -229,10 +231,14 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			ShipHullSpecAPI hull = entry.one;
 			float strength = entry.two;
 			String name = hull.getHullName();
-			
+			String origin = hull.getManufacturer();
+			String size = hull.getHullSize().toString().toLowerCase();
 			String strengthStr = getFormattedStrengthString(strength);
-			text.addParagraph(name + ": " + strengthStr);
-			text.highlightInLastPara(hl, name);
+			
+			String formatted = String.format("%s (%s %s): %s", name, origin, size, strengthStr);
+			LabelAPI label = text.addParagraph(formatted);
+			label.setHighlight(name, strengthStr);
+			label.setHighlightColors(Global.getSettings().getDesignTypeColor(origin), hl);
 		}
 		
 		text.addParagraph("");
@@ -264,14 +270,18 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			name += " " + WING;
 			
 			String strengthStr = getFormattedStrengthString(strength);
-			text.addParagraph(name + ": " + strengthStr);
-			text.highlightInLastPara(hl, name);
+			String origin = wingSpec.getVariant().getHullSpec().getManufacturer();
+			
+			String formatted = String.format("%s (%s): %s", name, origin, strengthStr);
+			LabelAPI label = text.addParagraph(formatted);
+			label.setHighlight(origin, strengthStr);
+			label.setHighlightColors(Global.getSettings().getDesignTypeColor(origin), hl);
 		}
 		
 		text.addParagraph("");
 		
 		// now weapons
-		List<Pair<String, Float>> miningWeapons = new ArrayList<>();
+		List<Pair<WeaponSpecAPI, Float>> miningWeapons = new ArrayList<>();
 		
 		for (Map.Entry<String, Float> tmp : MiningHelperLegacy.getMiningWeaponsCopy().entrySet())
 		{
@@ -284,19 +294,23 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			} catch (RuntimeException rex) {
 				continue;	// doesn't exist, skip
 			}
-			String name = weapon.getWeaponName();
-			miningWeapons.add(new Pair<>(name, strength));
+			miningWeapons.add(new Pair<>(weapon, strength));
 		}
 		
 		Collections.sort(miningWeapons, MINING_TOOL_COMPARATOR);
 		
-		for (Pair<String, Float> entry : miningWeapons) {
-			String name = entry.one;
+		for (Pair<WeaponSpecAPI, Float> entry : miningWeapons) {
+			WeaponSpecAPI weapon = entry.one;
+			String name = weapon.getWeaponName();
 			float strength = entry.two;
 			
 			String strengthStr = getFormattedStrengthString(strength);
-			text.addParagraph(name + ": " + strengthStr);
-			text.highlightInLastPara(hl, name);
+			String origin = weapon.getManufacturer();
+			
+			String formatted = String.format("%s (%s): %s", name, origin, strengthStr);
+			LabelAPI label = text.addParagraph(formatted);
+			label.setHighlight(origin, strengthStr);
+			label.setHighlightColors(Global.getSettings().getDesignTypeColor(origin), hl);
 		}
 		
 		text.addParagraph("");
@@ -319,6 +333,11 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			else if (p1.one instanceof FighterWingSpecAPI) {
 				String n1 = ((FighterWingSpecAPI)p1.one).getWingName();
 				String n2 = ((FighterWingSpecAPI)p2.one).getWingName();
+				return n1.compareTo(n2);
+			}
+			else if (p1.one instanceof WeaponSpecAPI) {
+				String n1 = ((WeaponSpecAPI)p1.one).getWeaponName();
+				String n2 = ((WeaponSpecAPI)p2.one).getWeaponName();
 				return n1.compareTo(n2);
 			}
 			else if (p1.one instanceof String) {
