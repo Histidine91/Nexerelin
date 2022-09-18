@@ -68,8 +68,8 @@ public class GroundUnit {
 	
 	//protected int personnel;
 	//protected int heavyArms;
-	@Getter	protected Map<String, Integer> personnelMap;
-	@Getter protected Map<String, Integer> equipmentMap;
+	@Getter	protected Map<String, Integer> personnelMap = new HashMap<>();
+	@Getter protected Map<String, Integer> equipmentMap = new HashMap<>();
 
 	protected int lossesLastTurn;
 	protected float moraleDeltaLastTurn;
@@ -85,8 +85,8 @@ public class GroundUnit {
 		this.intel = intel;
 		this.type = type;
 		this.index = index;
-		setSize(num, false);
 		name = generateName();
+		if (num > 0) setSize(num, false);
 	}
 	
 	protected static CargoAPI getCargo() {
@@ -138,6 +138,7 @@ public class GroundUnit {
 
 		int wantedHeavyArms = 0;
 		int wantedPersonnel= 0;
+		//log.info(String.format("Setting size %s for unit %s", num, name));
 
 		if (type == ForceType.HEAVY) {
 			wantedHeavyArms = num;
@@ -148,7 +149,9 @@ public class GroundUnit {
 		}
 		// now take the new ones from cargo
 		if (takeFromCargo) {
+			//log.info(String.format("Want %s marine equivalents for unit %s", wantedPersonnel, name));
 			addPersonnelOrEquipmentFromCargo(wantedPersonnel, true);
+			//log.info(String.format("Want %s heavy arms equivalents for unit %s", wantedHeavyArms, name));
 			addPersonnelOrEquipmentFromCargo(wantedHeavyArms, false);
 			
 			// move the XP from player cargo to battle player data
@@ -179,6 +182,7 @@ public class GroundUnit {
 			for (int index = 0; index < taken.size(); index++) {
 				int count = taken.get(0);
 				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB, index, Commodities.MARINES);
+				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
 			}
 		} else {
@@ -186,6 +190,7 @@ public class GroundUnit {
 			for (int index = 0; index < taken.size(); index++) {
 				int count = taken.get(0);
 				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS, index, Commodities.HAND_WEAPONS);
+				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
 			}
 		}

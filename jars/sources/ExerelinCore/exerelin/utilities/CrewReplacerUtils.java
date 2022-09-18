@@ -88,6 +88,7 @@ public class CrewReplacerUtils {
 			list.add(count);
 			String commodityId = job.Crews.get(index).name;
 			fleet.getCargo().removeCommodity(commodityId, thisCount);
+			//Global.getLogger(CrewReplacerUtils.class).info(String.format("  Removing %s of commodity %s for job %s", count, commodityId, jobId));
 		}
 		return list;
 	}

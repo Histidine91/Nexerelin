@@ -701,8 +701,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		reasons.remove(reason);
 		if (reasons.isEmpty()) data.remove(tag);
 	}
-	
+
 	public GroundUnit createPlayerUnit(ForceType type) {
+		return createPlayerUnit(type, null);
+	}
+	
+	public GroundUnit createPlayerUnit(ForceType type, Integer size) {
 		int index = 0;
 		if (!playerData.getUnits().isEmpty()) {
 			index = playerData.getUnits().get(playerData.getUnits().size() - 1).index + 1;
@@ -712,8 +716,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		unit.isPlayer = true;
 		unit.isAttacker = this.playerIsAttacker;
 		unit.fleet = Global.getSector().getPlayerFleet();
-		
-		int size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.getAverageSizeForType(type));
+
+		if (size == null) {
+			size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.getAverageSizeForType(type));
+		}
 		unit.setSize(size, true);
 		
 		unit.setStartingMorale();
@@ -774,9 +780,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, heavyArms));
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
-			if (player) unit = createPlayerUnit(ForceType.HEAVY);
+			if (player) unit = createPlayerUnit(ForceType.HEAVY, numPerUnit);
 			else unit = getSide(isAttacker).createUnit(ForceType.HEAVY, faction, numPerUnit);
-			unit.setSize(numPerUnit, true);
 		}
 		
 		// add marines
@@ -798,9 +803,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		log.info(String.format("Can create %s marines, %s units each, have %s marines", numCreatable, numPerUnit, marines));
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
-			if (player) unit = createPlayerUnit(ForceType.MARINE);
+			if (player) unit = createPlayerUnit(ForceType.MARINE, numPerUnit);
 			else unit = getSide(isAttacker).createUnit(ForceType.MARINE, faction, numPerUnit);
-			unit.setSize(numPerUnit, true);
 		}
 	}
 	
