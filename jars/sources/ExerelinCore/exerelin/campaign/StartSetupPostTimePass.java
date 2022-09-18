@@ -54,8 +54,10 @@ import exerelin.world.VanillaSystemsGenerator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import lombok.extern.log4j.Log4j;
 import org.lwjgl.util.vector.Vector2f;
 
+@Log4j
 public class StartSetupPostTimePass {
 	
 	public static void execute()
@@ -427,6 +429,7 @@ public class StartSetupPostTimePass {
 			
 			String postId = contact.getPostId();
 			if (postId == null) continue;
+			if (!Nex_IsBaseOfficial.isOfficial(postId, "any")) continue;
 			
 			// make contact always military except for trade starts
 			boolean military = Nex_IsBaseOfficial.isOfficial(postId, "military");
