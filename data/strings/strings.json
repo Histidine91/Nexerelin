@@ -2037,27 +2037,6 @@
 		"conditionListHeader":"The following hostile factions have active raids in the system:",
 	},
 	"nex_raidDialog":{
-		# TODO: check if any of these are still used
-		"expectedSpoilsHeader":"expected spoils",
-		"expectedSpoilsNone":"After careful consideration, there do not appear to be any targets likely to yield much of value.",
-		"expectedSpoils":"The commander of your ground forces designates several warehouses and other locations most likely to yield valuable items.",
-		"expectedSpoilsValue":"The estimated value of the common commodities obtained is projected to be around ",
-		"expectedSpoilsValueReduced":"The value is lower than it otherwise might be due to the colony suffering from various shortages.",
-
-		"spoilsHIandBP":"In addition, the colony has well-developed heavy industry, increasing the possibility of obtaining some ship weapons and modspecs, as well as blueprints.",
-		"spoilsBP":"In addition, the colony has facilities that make use of blueprints, increasing the possibility of some being obtained.",
-		"spoilsHI":"In addition, the colony has well-developed heavy industry, increasing the possibility of obtaining some ship weapons and modspecs.",
-		"spoilsMilitary":"In addition, the colony has a military presence, increasing the possibility of obtaining some ship weapons and modspecs.",
-		"spoilsAICores":"There are also trace indications of AI cores being used, which might be obtained as well.",
-
-		"spoilsNoBlueprints":"However, the local blueprint facilities have been locked down due to recent raids.",
-		"spoilsNoBlueprints2":"Blueprints cannot be acquired from this raid.",
-
-		"spoilsItemWeapons":"ship weapons",
-		"spoilsItemModspecs":"modspecs",
-		"spoilsItemBlueprints":"blueprints",
-		"spoilsItemAICores":"AI cores",
-		
 		"nonHostile":"$TheFaction $isOrAre not currently hostile. Your fleet's transponder is on, and carrying out a raid will result in open hostilities.",
 		"nonHostileTOff":"$TheFaction $isOrAre not currently hostile. Your fleet's transponder is off, and carrying out a raid will only result in a minor penalty to your standing.",
 		"raidStrength":"raid strength",
