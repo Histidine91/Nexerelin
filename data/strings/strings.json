@@ -1213,6 +1213,7 @@
 		"roundResult_lose":"The defenders counterattack and eliminate your ground forces.",
 		
 		"noLosses":"Your forces have not suffered any losses.",
+		"losses":"Losses this round:",
 		"stabilityReduced":"Stability of $market reduced by %s.",
 		"rebellion":"Ongoing guerilla activity against your occupation remains and will have to be subdued.",
 		
@@ -1997,7 +1998,7 @@
 		"cannotBombard":"All defenses must be defeated to make a bombardment possible.",
 		"raidCooldown":"Your forces will be able to organize another raid within $cooldown.",
 		
-		"nonHostileWarning":"The $faction $isOrAre not currently hostile, and you have been positively identified. Are you sure you want to engage in open hostilities?",
+		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile, and you have been positively identified. Are you sure you want to engage in open hostilities?",
 	},
 	
 	"nex_playerOutpost":{
@@ -2036,6 +2037,7 @@
 		"conditionListHeader":"The following hostile factions have active raids in the system:",
 	},
 	"nex_raidDialog":{
+		# TODO: check if any of these are still used
 		"expectedSpoilsHeader":"expected spoils",
 		"expectedSpoilsNone":"After careful consideration, there do not appear to be any targets likely to yield much of value.",
 		"expectedSpoils":"The commander of your ground forces designates several warehouses and other locations most likely to yield valuable items.",
@@ -2055,6 +2057,17 @@
 		"spoilsItemModspecs":"modspecs",
 		"spoilsItemBlueprints":"blueprints",
 		"spoilsItemAICores":"AI cores",
+		
+		"nonHostile":"$TheFaction $isOrAre not currently hostile. Your fleet's transponder is on, and carrying out a raid will result in open hostilities.",
+		"nonHostileTOff":"$TheFaction $isOrAre not currently hostile. Your fleet's transponder is off, and carrying out a raid will only result in a minor penalty to your standing.",
+		"raidStrength":"raid strength",
+		"groundDefStrength":"ground defense strength",
+		"projectedEffectiveness":"projected raid effectiveness",
+		"optRaidValuable":"Try to acquire valuables, such as commodities or blueprints, or achieve other objectives",
+		"optRaidDisrupt":"Disrupt the operations of a specific industry or facility",
+		"cannotDisrupt":"The ground defenses are too strong for your forces to be able to cause long-term disruption.",
+		"cannotRaidValuables":"You do not have the forces to carry out an effective raid to acquire valuables or achieve other objectives.",
+		"tooltipDisruptMinEffectiveness":"Requires at least %s raid effectiveness.",
 
 		"dialogConfirmText":"Your forces are ready to go, awaiting your final confirmation.",
 		

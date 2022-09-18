@@ -117,6 +117,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE_RESULT_ANDRADA = "nex_mktInvadeResultAndrada";
 	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
 	public static final String CREWREPLACER_JOB = "raiding_marines";
+	public static final String CREWREPLACER_JOB_HEAVYARMS = "nex_invasion_heavyarms";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
 	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
@@ -594,7 +595,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			//if (!playerFleet.getFaction().isHostileTo(otherFleet.getFaction()) && knows && !context.isEngagedInHostilities()) {
 			if (nonHostile != null && knows && !lowImpact && !context.isEngagedInHostilities()) {
 				String text = StringHelper.getString("nex_militaryOptions", "nonHostileWarning");
-				text = StringHelper.substituteToken(text, "$faction", nonHostile.getDisplayNameLong());
+				text = StringHelper.substituteToken(text, "$faction", nonHostile.getDisplayNameLong(), true);
+				text = StringHelper.substituteToken(text, "$theFaction", nonHostile.getDisplayNameLongWithArticle(), true);
 				text = StringHelper.substituteToken(text, "$isOrAre", nonHostile.getDisplayNameIsOrAre());
 				
 				options.addOptionConfirmation(ENGAGE,
@@ -850,7 +852,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		float marines = CrewReplacerUtils.getMarines(fleet, CREWREPLACER_JOB);
 		float support = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_GROUND_SUPPORT, 0f);
 		if (support > marines) support = marines;
-		float mechs = fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS) * InvasionRound.HEAVY_WEAPONS_MULT;
+		float mechs = CrewReplacerUtils.getHeavyArms(fleet, CREWREPLACER_JOB_HEAVYARMS) * InvasionRound.HEAVY_WEAPONS_MULT;
 		if (mechs > marines) mechs = marines;
 		
 		StatBonus attackerBase = new StatBonus(); 
@@ -1171,15 +1173,16 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		if (result.losses <= 0 && result.lossesMech <= 0) {
 			text.addPara(getString("noLosses"));
+		} else if (CrewReplacerUtils.enabled) {
+			text.addPara(getString("losses"));
 		}
 		if (result.losses > 0) {
 			CrewReplacerUtils.removeMarines(playerFleet, CREWREPLACER_JOB, result.losses, text);
 			tempInvasion.marinesLost = result.losses;
 		}
 		if (result.lossesMech > 0) {
-			playerFleet.getCargo().removeCommodity(Commodities.HAND_WEAPONS, result.lossesMech);
+			CrewReplacerUtils.removeHeavyArms(playerFleet, CREWREPLACER_JOB_HEAVYARMS, result.losses, text);
 			tempInvasion.mechsLost = result.lossesMech;
-			AddRemoveCommodity.addCommodityLossText(Commodities.HAND_WEAPONS, result.lossesMech, text);
 		}
 		
 		text.setFontSmallInsignia();
@@ -1218,7 +1221,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		String marinesRemaining = CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB) + "";
 		str = Misc.ucFirst(getString("marinesRemaining")) + ": " + marinesRemaining;
 		text.addPara(str, hl2, marinesRemaining);
-		int mechs = (int)playerFleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS);
+		int mechs = (int)CrewReplacerUtils.getHeavyArms(playerFleet, CREWREPLACER_JOB_HEAVYARMS);
 		if (mechs > 0) {
 			str = Misc.ucFirst(getString("mechsRemaining")) + ": " + mechs;
 			text.addPara(str, hl2, mechs + "");
@@ -1678,10 +1681,161 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		});
 	}
-	
+
+	// changes from vanilla: Crew replacer compat
+	protected void raidMenuSuper() {
+		float width = 350;
+		float opad = 10f;
+		float small = 5f;
+
+		Color h = Misc.getHighlightColor();
+
+		temp.nonMarket = false;
+
+		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
+
+		// MODIFIED
+		float marines = CrewReplacerUtils.getMarines(this.playerFleet, CREWREPLACER_JOB);
+		float support = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_GROUND_SUPPORT, 0f);
+		if (support > marines) support = marines;
+
+		StatBonus attackerBase = new StatBonus();
+		StatBonus defenderBase = new StatBonus();
+
+		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
+		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
+
+		StatBonus attacker = playerFleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
+		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+
+		String surpriseKey = "core_surprise";
+//		if (temp.isSurpriseRaid) {
+//			//defender.modifyMult(surpriseKey, 0.1f, "Surprise raid");
+//			attacker.modifyMult(surpriseKey, SURPRISE_RAID_STRENGTH_MULT, "Surprise raid");
+//		}
+
+		String increasedDefensesKey = "core_addedDefStr";
+		float added = getDefenderIncreaseValue(market);
+		if (added > 0) {
+			defender.modifyFlat(increasedDefensesKey, added,  getString("defenderPreparedness", true));
+		}
+
+		float attackerStr = (int) Math.round(attacker.computeEffective(attackerBase.computeEffective(0f)));
+		float defenderStr = (int) Math.round(defender.computeEffective(defenderBase.computeEffective(0f)));
+
+		temp.attackerStr = attackerStr;
+		temp.defenderStr = defenderStr;
+
+		TooltipMakerAPI info = text.beginTooltip();
+
+		info.setParaSmallInsignia();
+
+		String has = faction.getDisplayNameHasOrHave();
+		String is = faction.getDisplayNameIsOrAre();
+		boolean hostile = faction.isHostileTo(Factions.PLAYER);
+		boolean tOn = playerFleet.isTransponderOn();
+		float initPad = 0f;
+		if (!hostile) {
+			String str = StringHelper.getString("nex_raidDialog", tOn ? "nonHostile" : "nonHostileTOff");
+
+			str = StringHelper.substituteToken(str, "$faction", faction.getDisplayNameLong(), true);
+			str = StringHelper.substituteToken(str, "$theFaction", faction.getDisplayNameLongWithArticle(), true);
+			str = StringHelper.substituteToken(str, "$isOrAre", faction.getDisplayNameIsOrAre());
+			info.addPara(str,
+					initPad, faction.getBaseUIColor(), faction.getDisplayNameWithArticleWithoutArticle());
+		}
+		initPad = opad;
+
+		float sep = small;
+		sep = 3f;
+		info.addPara(StringHelper.getString("nex_raidDialog", "raidStrength", true) + ": %s", initPad,
+				h, "" + (int)attackerStr);
+		info.addStatModGrid(width, 50, opad, small, attackerBase, true, statPrinter(false));
+		if (!attacker.isUnmodified()) {
+			info.addStatModGrid(width, 50, opad, sep, attacker, true, statPrinter(true));
+		}
+
+		info.addPara(StringHelper.getString("nex_raidDialog", "groundDefStrength", true) + ": %s",
+				opad, h, "" + (int)defenderStr);
+		//info.addStatModGrid(width, 50, opad, small, defenderBase, true, statPrinter());
+		//if (!defender.isUnmodified()) {
+		info.addStatModGrid(width, 50, opad, small, defender, true, statPrinter(true));
+		//}
+
+		defender.unmodifyFlat(increasedDefensesKey);
+		defender.unmodifyMult(surpriseKey);
+		attacker.unmodifyMult(surpriseKey);
+
+		text.addTooltip();
+
+		boolean hasForces = true;
+		boolean canDisrupt = true;
+		temp.raidMult = attackerStr / Math.max(1f, (attackerStr + defenderStr));
+		temp.raidMult = Math.round(temp.raidMult * 100f) / 100f;
+		//temp.raidMult = 1f;
+
+		{
+			//temp.failProb = 0f;
+			Color eColor = h;
+			if (temp.raidMult < DISRUPTION_THRESHOLD && temp.raidMult < VALUABLES_THRESHOLD) {
+				eColor = Misc.getNegativeHighlightColor();
+			}
+			if (temp.raidMult < DISRUPTION_THRESHOLD) {
+				//eColor = Misc.getNegativeHighlightColor();
+				canDisrupt = false;
+				//temp.canFail = true;
+			} else if (temp.raidMult >= 0.7f) {
+				//eColor = Misc.getPositiveHighlightColor();
+			}
+//			text.addPara("Projected raid effectiveness: %s. " +
+//					"This will determine the outcome of the raid, " +
+//					"as well as the casualties suffered by your forces, if any.",
+//					eColor,
+//					"" + (int)Math.round(temp.raidMult * 100f) + "%");
+			text.addPara("Projected raid effectiveness: %s",
+					eColor,
+					"" + (int)(temp.raidMult * 100f) + "%");
+			//"" + (int)Math.round(temp.raidMult * 100f) + "%");
+			if (!canDisrupt) {
+				text.addPara(StringHelper.getString("nex_raidDialog", "cannotDisrupt"));
+			}
+			if (temp.raidMult < VALUABLES_THRESHOLD) {
+				text.addPara(StringHelper.getString("nex_raidDialog", "cannotRaidValuables"));
+				hasForces = false;
+			}
+		}
+
+		if (DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+			canDisrupt = true;
+		}
+
+		options.clearOptions();
+
+		options.addOption(StringHelper.getString("nex_raidDialog", "optRaidValuable"), RAID_VALUABLE);
+		options.addOption(StringHelper.getString("nex_raidDialog", "optRaidDisrupt"), RAID_DISRUPT);
+
+		if (!hasForces) {
+			options.setEnabled(RAID_VALUABLE, false);
+		}
+
+		if (!hasForces || !canDisrupt) {
+			options.setEnabled(RAID_DISRUPT, false);
+			if (!canDisrupt) {
+				String pct = "" + (int)Math.round(DISRUPTION_THRESHOLD * 100f) + "%";
+				String tt = String.format(pct, StringHelper.getString("nex_raidDialog", "tooltipDisruptMinEffectiveness"));
+				options.setTooltip(RAID_DISRUPT, tt);
+				options.setTooltipHighlights(RAID_DISRUPT, pct);
+				options.setTooltipHighlightColors(RAID_DISRUPT, h);
+			}
+		}
+
+		options.addOption(StringHelper.getString("goBack", true), RAID_GO_BACK);
+		options.setShortcut(RAID_GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
+	}
+
 	@Override
 	protected void raidMenu() {
-		super.raidMenu();
+		raidMenuSuper();
 		
 		float minForStab = getMinRaidStrengthForUnrest();
 		String mfs_str = Math.round(minForStab) + "";

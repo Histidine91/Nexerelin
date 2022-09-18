@@ -441,6 +441,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         loadRaidBPBlocker();
         RemnantQuestUtils.setupRemnantContactMissions();
         modifySynchrotronAndCatCore();
+
+        // load crew replacer utils if needed
+        boolean foo = CrewReplacerUtils.enabled;
         
         //MilitaryCustomBounty.CREATORS.clear();    // for debugging
         MilitaryCustomBounty.CREATORS.add(new Nex_CBHegInspector());
