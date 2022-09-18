@@ -118,7 +118,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 207;
 	public static final int MIN_CYCLE_FOR_EXPEDITIONS = 207;
 	public static final float MAX_EXPEDITION_FP = 600;
-	public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
+	//public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
 	public static final float NPC_FREE_PORT_GROWTH_REDUCTION_MULT = 0.5f;
 	
 	public static final int[] BONUS_ADMIN_LEVELS;
@@ -220,8 +220,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					}
 				}
 				
-				if (market.getFaction().isPlayerFaction() && !market.isHidden()) {
-					processAutonomousColonyIncome(market);
+				if (market.getFaction().isPlayerFaction() && !market.isHidden()) 
+				{
+					processAutonomousColonyIncome(market, false);
+				}
+				else if (Nex_IsFactionRuler.isRuler(market.getFactionId()) && !market.isHidden()) 
+				{
+					processAutonomousColonyIncome(market, true);
 				}
 				
 				// prevent incentive credit debt accumulation on NPC markets
@@ -551,8 +556,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	/**
 	 * Registers income from an autonomous colony in the monthly report.
 	 * @param market
+	 * @param byRuler True if we're calling this method due to being faction ruler, false for normal autonomous colonies of {@code player} faction.
 	 */
-	protected void processAutonomousColonyIncome(MarketAPI market) {
+	protected void processAutonomousColonyIncome(MarketAPI market, boolean byRuler) {
 		float numIter = Global.getSettings().getFloat("economyIterPerMonth");
 		float f = 1f / numIter;
 		
@@ -574,8 +580,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			subNode.name = getString("reportAutonomousTax");
 			subNode.tooltipCreator = AUTONOMOUS_INCOME_NODE_TOOLTIP;
 			
-			subNode.income += income * AUTONOMOUS_INCOME_MULT * f;
-			subNode.upkeep += upkeep * AUTONOMOUS_INCOME_MULT * f;
+			float mult = Global.getSettings().getFloat(byRuler ? "nex_rulerIncomeMult" : "nex_autonomousIncomeMult");
+			
+			subNode.income += income * mult * f;
+			subNode.upkeep += upkeep * mult * f;
 			subNode.icon = subNode.income >= subNode.upkeep ? "graphics/icons/reports/generic_income.png"
 					: "graphics/icons/reports/generic_expense.png";
 		}
@@ -1768,7 +1776,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
 			tooltip.addPara(getString("reportAutonomousTaxTooltip"), 0, Misc.getHighlightColor(), 
-					String.format("%.0f", AUTONOMOUS_INCOME_MULT * 100) + "%");
+					String.format("%.0f", Global.getSettings().getFloat("nex_autonomousIncomeMult") * 100) + "%");
 		}
 	};
 }
