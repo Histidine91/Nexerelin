@@ -1691,6 +1691,53 @@ Call $market.nex_dcom_ref updateStage","You feel the almost imperceptible vibrat
 Tactical has casualty reports prepared for review. You acknowledge with a nod and shut off the comms.",mktRaidResult:Continue,
 #END disrupt a competitor - raid industry,,,,,,
 ,,,,,,
+# buy ship mission,,,,,,
+nex_bShipBlurb_generic,nex_bShip_blurb,,,"""I noticed you have some nice ships in that fleet of yours. I might be interested in buying one.""",,
+nex_bShipOfferOption_generic,nex_bShip_option,,,,nex_bShip_start:Discuss the potential ship sale,
+nex_bShipBlurbBar_generic,nex_bShip_blurbBar,,,"A gaudily-dressed person approaches you, inquiring if you're the owner of ""the fleet that docked earlier"".",,
+nex_bShipOfferOptionBar_generic,nex_bShip_optionBar,,,,nex_bShip_start:Give in and entertain the gaudy person,
+nex_bShipOfferInit,DialogOptionSelected,$option == nex_bShip_start,"$missionId = nex_bShip
+FireAll Nex_BShip_PreShipPick",,,
+nex_bShipOfferTextBar,Nex_BShip_PreShipPick,,FireBest Nex_BShip_PreShipPickText,,,
+nex_bShipOfferTextBar_generic,Nex_BShip_PreShipPickText,$nex_bShip_barEvent,,"When you confirm that you indeed possess the fleet in question, the $nex_bShip_manOrWoman's face lights up. ""Wonderful! You see, I'm a ship collector. The more unusual, the better. No worries if it's got a few battle scars. All part of the charm, you see.
+
+""As it happens, right now I'm looking to expand my little collection.""",,
+nex_bShipOfferTextContact_generic,Nex_BShip_PreShipPickText,!$nex_bShip_barEvent,,"""Excellent. I have room in my collection for a ship meeting certain requirements.""",,
+nex_bShipOfferTextBar_military,Nex_BShip_PreShipPickText,"$nex_bShip_barEvent
+$nex_bShip_variation == MILITARY score:5",,"When you confirm that you indeed possess the fleet in question, the $nex_bShip_manOrWoman's face lights up. ""Wonderful! You see, I'm making purchases on behalf of $theFaction. They're looking for some good ships not normally accessible to them, and you seem like you fit the bill. Slightly banged up is fine, too; they can fix that on their own!""",,
+nex_bShipOfferTextContact_military,Nex_BShip_PreShipPickText,"!$nex_bShip_barEvent
+$nex_bShip_variation == MILITARY score:5",,"""Excellent. Our fleets are in need of some new vessels, and you surely have a few good such specimens. Including ones not normally available to $theFaction.""",,
+nex_bShipOfferShowRules,Nex_BShip_PreShipPick,,Call $nex_bShip_ref showRules,,,
+nex_bShipOfferOptionsNonBar,Nex_BShip_PreShipPick,!$nex_bShip_barEvent,,,"nex_bShip_pickShip:Offer a ship meeting these requirements
+contact_decline:Decline",
+nex_bShipOfferOptionsBar,Nex_BShip_PreShipPick,$nex_bShip_barEvent,,,"nex_bShip_pickShip:Offer a ship meeting these requirements
+contact_declineBarNoContinue:Decline",
+nex_bShipSelected,DialogOptionSelected,"$option == nex_bShip_pickShip
+!$nex_bShip_barEvent",Call $nex_bShip_ref showPicker,,,
+nex_bShipSelectedBar,DialogOptionSelected,"$option == nex_bShip_pickShip
+$nex_bShip_barEvent",Call $nex_bShip_ref showPicker,,,
+nex_bShipSelectedInit,Nex_BShip_ShipPicked,,"Call $nex_bShip_ref updateData
+Call $nex_bShip_ref showShip
+FireBest Nex_BShip_ShipPickedText",,,
+nex_bShipSelectedOptions,Nex_BShip_ShipPicked,!$nex_bShip_barEvent,"SetShortcut contact_decline ""ESCAPE""",,"nex_bShip_pickShip:Offer another ship
+contact_accept:Confirm sale
+contact_decline:Decline",
+nex_bShipSelectedOptionsBar,Nex_BShip_ShipPicked,$nex_bShip_barEvent,"SetShortcut contact_declineBarNoContinue ""ESCAPE""",,"nex_bShip_pickShip:Offer another ship
+contact_acceptBar:Confirm sale
+contact_declineBarNoContinue:Decline",
+nex_bShipSelectedText_generic,Nex_BShip_ShipPickedText,,Highlight $nex_bShip_price,"""Ah, a fine specimen indeed."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""I can offer $nex_bShip_price credits for this.""",,
+nex_bShipSelectedText_military,Nex_BShip_ShipPickedText,$nex_bShip_variation == MILITARY score:5,Highlight $nex_bShip_price,"""Looks worthy."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""$TheFaction will authorize a payment of $nex_bShip_price credits for this vessel.""",,
+nex_bShipSelectedExtraInfo,Nex_BShip_ShipPicked,,"AddTextSmall ""Weapons and LPCs will be included in the sale. Story points will be refunded for any S-mods on the ship.""
+SetTextHighlightColors story
+Highlight ""Story points""",,,
+nex_bShipPostAccept,ContactPostAccept,$missionId == nex_bShip,"ShowPersonVisual
+AddCommodity credits $nex_bShip_price
+RemoveShip $nex_bShip_member
+Call $nex_bShip_ref2 confirm
+Call $nex_bShip_ref2 repSuccess
+Call $nex_bShip_ref2 addContacts",,,
+#END buy ship mission,,,,,,
+,,,,,,
 # historian find shunt,,,,,,
 nex_HistorianOmegaHail,Nex_HistorianOmegaHail,,"$entity.ignorePlayerCommRequests = true
 FireAll Nex_HistorianOmegaHailOpts","""target $playername

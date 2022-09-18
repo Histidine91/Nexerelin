@@ -18,9 +18,12 @@ import org.lwjgl.util.vector.Vector2f;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -251,6 +254,14 @@ public class NexUtils
 			list.add(value);
 		}
 		return list;
+	}
+	
+	public static <T> List<T> getCollectionIntersection(Collection<T> first, Collection<T> second) {
+		List<T> result = new ArrayList<>();
+		for (T foo : first) {
+			if (second.contains(foo)) result.add(foo);
+		}
+		return result;
 	}
 	
 	// invented by DarkRevenant

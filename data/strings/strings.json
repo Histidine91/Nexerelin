@@ -624,6 +624,14 @@
 		"nextStepText":"Deliver resources to the %s",
 	},
 	
+	"nex_buyShipMission":{
+		"ruleHeader":"Requirements",
+		"ruleDesignType":"Design type: %s",
+		"ruleHullSize":"Size: %s",
+		"ruleDP":"DP at least %s/%s/%s/%s",
+		"ruleDMods":"Maximum D-mods: %s",
+	},
+	
 	"nex_buyColony":{
 		"intelTitle":"Governorship: $market",
 	
@@ -2559,6 +2567,8 @@
 		"deadDropCoordsStr2":"the dead drop coordinates given to you by %s",
 		
 		"alphaSiteIntelDesc":"You have obtained navigation data leading to a mysterious location known as the %s.",
+		
+		"selectShipGeneric":"Select ship",
 		
 		"errorPrismLoad":"Failed to load Prism High-End Seller configuration defs!\nReport this issue with your modlist.",
 		
