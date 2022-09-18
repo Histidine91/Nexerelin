@@ -28,7 +28,9 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsGUI;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -191,8 +193,9 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	public void accept(MarketAPI market, TextPanelAPI text) {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		String faction = getDef().factionId;
-		for (FleetMemberAPI member : offeredFleet.getFleetData().getMembersListCopy()) {
-			
+		
+		for (FleetMemberAPI member : offeredFleet.getFleetData().getMembersListCopy()) 
+		{
 			offeredFleet.getFleetData().removeFleetMember(member);
 			player.getFleetData().addFleetMember(member);
 			ships.add(member);
@@ -219,6 +222,11 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		startingShipValue = calcShipsValue();
 		
 		offeredFleet = null;
+		
+		int rep = getDef().feeUpfront/20000;
+		
+		NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(faction), null, rep * 0.01f,
+						0, null, text);
 		
 		Global.getSector().getIntelManager().addIntel(this, false, text);
 		Global.getSector().addScript(this);
