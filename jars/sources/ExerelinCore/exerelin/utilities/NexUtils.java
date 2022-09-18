@@ -106,6 +106,24 @@ public class NexUtils
 		map.put(key, curr + amount);
 		return curr + amount;
 	}
+
+	public static <T> int getMapSumInteger(Map<T, Integer> map) {
+		int i = 0;
+		for (Integer value : map.values()) {
+			if (value == null) continue;
+			i += value;
+		}
+		return i;
+	}
+
+	public static <T> float getMapSumFloat(Map<T, Float> map) {
+		float f = 0;
+		for (Float value : map.values()) {
+			if (value == null) continue;
+			f += value;
+		}
+		return f;
+	}
 	
 	/**
 	 * Generates a gaussian value using the provided {@code Random} (equivalent to

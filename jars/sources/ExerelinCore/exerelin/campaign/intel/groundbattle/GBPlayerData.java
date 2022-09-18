@@ -68,6 +68,10 @@ public class GBPlayerData {
 		this.loot = loot;
 	}
 
+	public void addToLoot(String commodityId, int amount) {
+		loot.addCommodity(commodityId, amount);
+	}
+
 	public boolean isAutoMoveAtEndTurn() {
 		return autoMoveAtEndTurn;
 	}
@@ -79,7 +83,7 @@ public class GBPlayerData {
 	public void updateXPTrackerNum() {
 		int num = 0;
 		for (GroundUnit unit : units) {
-			num += unit.personnel;
+			num += unit.getMarines();
 		}
 		xpTracker.data.numMayHaveChanged(num, false);
 	}

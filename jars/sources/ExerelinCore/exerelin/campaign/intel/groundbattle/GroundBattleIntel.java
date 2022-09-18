@@ -215,11 +215,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			unit.type = i >= 4 ? ForceType.HEAVY : ForceType.MARINE;
 			
 			if (unit.type == ForceType.HEAVY) {
-				unit.heavyArms = Math.round(unitSize.getAverageSizeForType(ForceType.HEAVY) * MathUtils.getRandomNumberInRange(1, 1.4f));
-				unit.personnel = unit.heavyArms * 2;
+				int numHeavies = Math.round(unitSize.getAverageSizeForType(ForceType.HEAVY) * MathUtils.getRandomNumberInRange(1, 1.4f));
+				unit.setSize(numHeavies, false);
 			} else {
-				unit.personnel = Math.round(unitSize.getAverageSizeForType(ForceType.MARINE) * MathUtils.getRandomNumberInRange(1, 1.4f));
-				//unit.heavyArms = MathUtils.getRandomNumberInRange(10, 15);
+				int numMarines = Math.round(unitSize.getAverageSizeForType(ForceType.MARINE) * MathUtils.getRandomNumberInRange(1, 1.4f));
+				unit.setSize(numMarines, false);
 			}
 			
 			IndustryForBattle loc = industries.get(MathUtils.getRandomNumberInRange(0, industries.size() - 1));
@@ -950,15 +950,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			// but only if player is out of range, else send them back to fleet?
 			if (unit.getLocation() != null) {
 				if (!returnToFleet) {
-					storage.getCargo().addCommodity(Commodities.MARINES, unit.personnel);
-					storage.getCargo().addCommodity(Commodities.HAND_WEAPONS, unit.heavyArms);
-					if (playerData.getLoot() != null) {
-						playerData.getLoot().addCommodity(Commodities.MARINES, unit.personnel);
-						playerData.getLoot().addCommodity(Commodities.HAND_WEAPONS, unit.heavyArms);
-					}
-					NexUtils.modifyMapEntry(playerData.getSentToStorage(), Commodities.MARINES, unit.personnel);
-					NexUtils.modifyMapEntry(playerData.getSentToStorage(), Commodities.HAND_WEAPONS, unit.heavyArms);
-					unit.removeUnit(false);
+					unit.sendUnitToStorage(storage);
 					anyInStorage = true;
 				}
 				else {

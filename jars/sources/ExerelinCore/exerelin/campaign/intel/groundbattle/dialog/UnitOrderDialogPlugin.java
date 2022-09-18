@@ -1,17 +1,14 @@
 package exerelin.campaign.intel.groundbattle.dialog;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.IndustryPickerListener;
+import com.fs.starfarer.api.campaign.*;
+
 import java.util.Map;
 
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import exerelin.utilities.CrewReplacerUtils;
 import org.lwjgl.input.Keyboard;
 
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.VisualPanelAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -263,12 +260,21 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	public static int getMaxCountForResize(GroundUnit unit, int curr, int absoluteMax) {
 		ForceType type = unit.getType();
-		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
 		int max = absoluteMax;
-		
-		max = Math.min(max, curr + (int)cargo.getCommodityQuantity(type.commodityId));
-		if (unit.getType() == ForceType.HEAVY) {
-			max = Math.min(max, (unit.getPersonnel() + cargo.getMarines())/GroundUnit.CREW_PER_MECH);
+
+		// marine: cap by number of available marine equivalents remaining
+		if (unit.getType() == ForceType.MARINE) {
+			max = Math.min(max, curr + (int)CrewReplacerUtils.getMarines(fleet, Nex_MarketCMD.CREWREPLACER_JOB));
+		}
+		// heavy: cap by number of available heavy arms equivalents remaining, and also marine equivalents to crew them
+		else if (unit.getType() == ForceType.HEAVY) {
+			max = Math.min(max, curr + (int)CrewReplacerUtils.getHeavyArms(fleet, Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS));
+			max = Math.min(max, (unit.getPersonnelCount() + (int)CrewReplacerUtils.getMarines(fleet, Nex_MarketCMD.CREWREPLACER_JOB))/GroundUnit.CREW_PER_MECH);
+		}
+		// other types: just check cargo for the available commodity ID
+		else {
+			max = Math.min(max, curr + (int)fleet.getCargo().getCommodityQuantity(type.commodityId));
 		}
 		
 		return max;

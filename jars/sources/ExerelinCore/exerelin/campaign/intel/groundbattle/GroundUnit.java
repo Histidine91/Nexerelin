@@ -1,11 +1,8 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.combat.StatBonus;
@@ -16,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -26,13 +24,17 @@ import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.campaign.intel.specialforces.namer.PlanetNamer;
+import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -52,7 +54,7 @@ public class GroundUnit {
 	public static final float HEAVY_COUNT_DIVISOR = 6f;	// a marine platoon has 6x as many marines as a mech platoon has mechs
 	public static final float REBEL_COUNT_MULT = 0.6f;	// rebel units are 40% smaller
 	public static final int CREW_PER_MECH = 2;
-		
+
 	public final String id = Misc.genUID();
 	protected int index;
 	protected GroundBattleIntel intel;
@@ -64,8 +66,11 @@ public class GroundUnit {
 	protected boolean isAttacker;
 	protected ForceType type;
 	
-	protected int personnel;
-	protected int heavyArms;
+	//protected int personnel;
+	//protected int heavyArms;
+	@Getter	protected Map<String, Integer> personnelMap;
+	@Getter protected Map<String, Integer> equipmentMap;
+
 	protected int lossesLastTurn;
 	protected float moraleDeltaLastTurn;
 	protected float morale = 0.8f;
@@ -97,32 +102,96 @@ public class GroundUnit {
 		
 		return morale;
 	}
-	
+
+	/**
+	 * Returns the total number of personnel (all types) in this unit.
+	 * @return
+	 */
+	public int getPersonnelCount() {
+		return NexUtils.getMapSumInteger(personnelMap);
+	}
+
+	/**
+	 * Returns the number of marines in this unit (and not any other personnel type).
+	 * @return
+	 */
+	public int getMarines() {
+		Integer count = personnelMap.get(Commodities.MARINES);
+		if (count == null) return 0;
+		return count;
+	}
+
+	public int getEquipmentCount() {
+		return NexUtils.getMapSumInteger(equipmentMap);
+	}
+
+	/**
+	 * Changes the unit size.
+	 * @param num Number of marine equivalents for a marine unit, heavy arms equivalents for a heavy unit, etc.
+	 * @param takeFromCargo If true, takes the needed commodities from the fleet's cargo.
+	 */
 	public void setSize(int num, boolean takeFromCargo) {
 		// first return the existing units to cargo
 		if (takeFromCargo) {
-			returnUnitsToCargo();
+			returnCommoditiesToCargo();
 		}
-		
+
+		int wantedHeavyArms = 0;
+		int wantedPersonnel= 0;
+
 		if (type == ForceType.HEAVY) {
-			heavyArms = num;
-			personnel = num * CREW_PER_MECH;
+			wantedHeavyArms = num;
+			wantedPersonnel = num * CREW_PER_MECH;
 		}
 		else {
-			personnel = num;
+			wantedPersonnel = num;
 		}
 		// now take the new ones from cargo
 		if (takeFromCargo) {
-			getCargo().removeMarines(personnel);
-			getCargo().removeCommodity(Commodities.HAND_WEAPONS, heavyArms);
+			addPersonnelOrEquipmentFromCargo(wantedPersonnel, true);
+			addPersonnelOrEquipmentFromCargo(wantedHeavyArms, false);
 			
 			// move the XP from player cargo to battle player data
 			if (isPlayer) {
 				PlayerFleetPersonnelTracker.transferPersonnel(
 						PlayerFleetPersonnelTracker.getInstance().getMarineData(),
 						intel.playerData.xpTracker.data,
-						personnel, null);
+						this.getMarines(), null);
 			}
+		}
+		else {
+			personnelMap.put(Commodities.MARINES, wantedPersonnel);
+			if (wantedHeavyArms > 0) personnelMap.put(Commodities.HAND_WEAPONS, wantedPersonnel);
+		}
+	}
+
+	/**
+	 * Grabs marine equivalents or heavy arms equivalents from cargo using Crew Replacer.
+	 * @param wanted
+	 * @param isPersonnel
+	 */
+	public void addPersonnelOrEquipmentFromCargo(int wanted, boolean isPersonnel) {
+		List<Integer> taken = null;
+
+		Map<String, Integer> commodities = isPersonnel ? this.getPersonnelMap() : this.getEquipmentMap();
+		if (isPersonnel) {
+			taken = CrewReplacerUtils.takeMarinesFromCargo(fleet, Nex_MarketCMD.CREWREPLACER_JOB, wanted);
+			for (int index = 0; index < taken.size(); index++) {
+				int count = taken.get(0);
+				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB, index, Commodities.MARINES);
+				NexUtils.modifyMapEntry(commodities, commodityId, count);
+			}
+		} else {
+			taken = CrewReplacerUtils.takeHeavyArmsFromCargo(fleet, Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS, wanted);
+			for (int index = 0; index < taken.size(); index++) {
+				int count = taken.get(0);
+				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS, index, Commodities.HAND_WEAPONS);
+				NexUtils.modifyMapEntry(commodities, commodityId, count);
+			}
+		}
+
+		if (taken == null) {
+			log.error(String.format("Failed to obtain %s commodities from cargo (is personnel: %s", wanted, isPersonnel));
 		}
 	}
 	
@@ -174,16 +243,18 @@ public class GroundUnit {
 	public boolean isAttacker() {
 		return isAttacker;
 	}
-	
+
 	/**
 	 * Result is identical to {@code getSize()} for normal units,
 	 * or {@code CREW_PER_MECH} times larger for heavy units.
+	 * Identical to {@code getPersonnelCount(), use that instead.}
 	 * @return
 	 */
+	@Deprecated
 	public int getPersonnel() {
-		return personnel;
+		return getPersonnelCount();
 	}
-	
+
 	public float getMorale() {
 		return morale;
 	}
@@ -205,21 +276,71 @@ public class GroundUnit {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Adds the current personnel and heavy armaments in the unit back to player cargo.
+	 * Now named @{code returnCommoditiesToCargo}.
 	 */
+	@Deprecated
 	public void returnUnitsToCargo() {
-		getCargo().addMarines(personnel);
-		getCargo().addCommodity(Commodities.HAND_WEAPONS, heavyArms);
-		
+		returnCommoditiesToCargo(getCargo(), 1);
+	}
+
+	public void returnCommoditiesToCargo() {
+		returnCommoditiesToCargo(getCargo(), 1);
+	}
+
+	/**
+	 * Adds the current personnel and equipment in the unit back to player cargo.
+	 */
+	public void returnCommoditiesToCargo(CargoAPI cargo, float mult) {
+		int numMarines = this.getMarines();
+
+		returnCommodityMapToCargo(personnelMap, cargo, mult);
+		returnCommodityMapToCargo(equipmentMap, cargo, mult);
+
 		// move the XP from battle player data to player cargo
 		PlayerFleetPersonnelTracker.transferPersonnel(
 				intel.playerData.xpTracker.data,
-				PlayerFleetPersonnelTracker.getInstance().getMarineData(), 
-				personnel, null);
-		personnel = 0;
-		heavyArms = 0;
+				PlayerFleetPersonnelTracker.getInstance().getMarineData(),
+				numMarines, null);
+	}
+
+	/**
+	 * Adds the items in the map (each multiplied by {@code mult} to the specified cargo and CLEARS the map.
+	 * @param commodities
+	 * @param cargo
+	 */
+	public static void returnCommodityMapToCargo(Map<String, Integer> commodities, CargoAPI cargo, float mult) {
+		for (String commodityId : commodities.keySet()) {
+			int count = commodities.get(commodityId);
+			cargo.addCommodity(commodityId, Math.round(count * mult));
+		}
+		commodities.clear();
+	}
+
+	public void sendUnitToStorage(SubmarketAPI storage) {
+		sendCommodityMapToStorage(personnelMap, storage);
+		sendCommodityMapToStorage(equipmentMap, storage);
+		removeUnit(false);
+	}
+
+	/**
+	 * Used to send the contents of a unit to the local storage post-battle. Will clear the unit's personnel and equipment maps.
+	 * @param commodities
+	 * @param storage
+	 */
+	public void sendCommodityMapToStorage(Map<String, Integer> commodities, SubmarketAPI storage) {
+		CargoAPI cargoLoot = intel.playerData.getLoot();
+		CargoAPI cargoStorage = storage.getCargo();
+		for (String commodityId : commodities.keySet()) {
+			int count = commodities.get(commodityId);
+			cargoStorage.addCommodity(commodityId, count);
+			if (cargoLoot != null) {
+				cargoLoot.addCommodity(commodityId, count);
+			}
+			NexUtils.modifyMapEntry(intel.playerData.getSentToStorage(), commodityId, count);
+		}
+		commodities.clear();
 	}
 	
 	public void setLocation(IndustryForBattle newLoc) {
@@ -356,8 +477,7 @@ public class GroundUnit {
 	public void destroyUnit(float recoverProportion) {
 		cancelMove();
 		if (isPlayer && intel.isPlayerInRange()) {
-			getCargo().addMarines((int)(personnel * recoverProportion));
-			getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(heavyArms * recoverProportion));
+			this.returnCommoditiesToCargo(getCargo(), recoverProportion);
 		}
 		GroundBattleLog lg = new GroundBattleLog(intel, GroundBattleLog.TYPE_UNIT_DESTROYED, intel.turnNum);
 		lg.params.put("unit", this);
@@ -753,7 +873,7 @@ public class GroundUnit {
 	}
 	
 	public int getSize() {
-		int num = type == ForceType.HEAVY ? heavyArms : personnel;
+		int num = type == ForceType.HEAVY ? getEquipmentCount() : getPersonnelCount();
 		return num;
 	}
 	
@@ -762,7 +882,7 @@ public class GroundUnit {
 	 * @return
 	 */
 	public float getNumUnitEquivalents() {
-		float num = type == ForceType.HEAVY ? heavyArms : personnel;
+		float num = getSize();
 		return num/intel.unitSize.getAverageSizeForType(type);
 	}
 	
@@ -828,17 +948,20 @@ public class GroundUnit {
 				(PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT) * sizeMult, false);
 		
 		// number of marines
+		String commodityId = personnelMap.keySet().iterator().next();
 		TooltipMakerAPI line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(
-				Commodities.MARINES).getIconName(), 16 * sizeMult);
-		line.addPara(personnel + "", 0);
+				commodityId).getIconName(), 16 * sizeMult);
+		line.addPara(getPersonnelCount() + "", 0);
 		stats.addImageWithText(pad);
 		stats.addTooltipToPrevious(createTooltip("marines"), TooltipLocation.BELOW);
 		
 		// number of heavy arms
-		if (heavyArms > 0) {
+		int equipment = getEquipmentCount();
+		if (equipment > 0) {
+			commodityId = equipmentMap.keySet().iterator().next();
 			line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(
-					Commodities.HAND_WEAPONS).getIconName(), 16 * sizeMult);
-			line.addPara(heavyArms + "", 0);
+					commodityId).getIconName(), 16 * sizeMult);
+			line.addPara(equipment + "", 0);
 			stats.addImageWithText(pad);
 			stats.addTooltipToPrevious(createTooltip("heavyArms"), TooltipLocation.BELOW);
 		}

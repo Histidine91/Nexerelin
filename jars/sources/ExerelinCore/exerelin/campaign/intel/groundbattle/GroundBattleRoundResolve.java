@@ -8,9 +8,11 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
+import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import java.util.ArrayList;
@@ -313,30 +315,69 @@ public class GroundBattleRoundResolve {
 		if (kills == 0) return;
 		
 		Map<ForceType, Integer> toModify = unit.isAttacker ? atkLosses : defLosses;
-		
+
+		int prevMarines = unit.getMarines();
+
 		boolean heavy = unit.type == ForceType.HEAVY;
-		if (heavy) {
-			unit.heavyArms -= kills;
-			unit.personnel -= kills * GroundUnit.CREW_PER_MECH;
-			if (unit.heavyArms < 0) unit.heavyArms = 0;
-			if (unit.personnel < 0) unit.personnel = 0;
-		}
-		else {
-			unit.personnel -= kills;
-			if (unit.personnel < 0) unit.personnel = 0;
-		}
+		int personnelKills = heavy ? kills * GroundUnit.CREW_PER_MECH : kills;
+		int equipmentKills = heavy ? kills : 0;
+		int equipmentKillsTrue = inflictUnitCommodityLosses(unit, equipmentKills, true);
+		int personnelKillsTrue = inflictUnitCommodityLosses(unit, personnelKills, false);
+		int killsTrue = heavy ? equipmentKillsTrue : personnelKillsTrue;
+
 		unit.lossesLastTurn += kills;
 		
 		NexUtils.modifyMapEntry(toModify, unit.type, kills);
+
+		int currMarines = unit.getMarines();
 		if (unit.isPlayer) {
 			NexUtils.modifyMapEntry(playerLosses, unit.type, kills);
-			intel.playerData.xpTracker.data.remove(heavy ? kills * 
-					GroundUnit.CREW_PER_MECH : kills, true);
+			intel.playerData.xpTracker.data.remove(prevMarines - currMarines, true);
 		}
 		
-		printDebug(String.format("    Unit %s (%s) took %s losses", unit.name, unit.type.toString(), kills));
+		printDebug(String.format("    Unit %s (%s) took %s losses (%s true losses)", unit.name, unit.type.toString(), kills, killsTrue));
 		
 		intel.getSide(unit.isAttacker).reportLosses(unit, kills);
+	}
+
+	/**
+	 * Reduce the unit's commodity counts due to taking losses.
+	 * @param unit
+	 * @param kills Kills to inflict on the unit.
+	 * @param isEquipment
+	 * @return Computed kill count (may differ from {@code kills} due to some commodity types having a non-standard damage resistance.)
+	 */
+	public int inflictUnitCommodityLosses(GroundUnit unit, int kills, boolean isEquipment)
+	{
+		if (kills <= 0) return 0;
+
+		int totalInUnit = isEquipment ? unit.getEquipmentCount() : unit.getPersonnelCount();
+		Map<String, Integer> commodities = isEquipment ? unit.getEquipmentMap() : unit.getPersonnelMap();
+
+		int computedKills = 0;
+		for (String commodityId : commodities.keySet()) {
+			int myCount = commodities.get(commodityId);
+			float myDeathShare = (float)myCount/totalInUnit;
+			float myDeathsRaw = kills * myDeathShare;
+
+			// damage resistance based on the personnel type's utility
+			String jobId = isEquipment ? Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS : Nex_MarketCMD.CREWREPLACER_JOB;
+			float damResist = CrewReplacerUtils.getCommodityPower(jobId, commodityId);
+			if (damResist <= 0) damResist = 1;	// safety
+
+			myDeathsRaw /= damResist;
+
+			float remainder = myDeathsRaw % 1;
+
+			int myDeaths = (int)myDeathsRaw;
+			if (Math.random() < remainder) myDeathsRaw += 1;
+
+			NexUtils.modifyMapEntry(commodities, commodityId, myDeaths);
+			printDebug(String.format("      Killing %s of commodity type %s for unit %s", myDeaths, commodityId, unit.getName()));
+			computedKills += myDeaths;
+		}
+
+		return computedKills;
 	}
 	
 	public float getAttackStrengthOnIndustry(IndustryForBattle ifb, boolean attacker) 
@@ -401,7 +442,13 @@ public class GroundBattleRoundResolve {
 		targetValue *= computeShortageMult(market);
 		return targetValue;
 	}
-	
+
+	/**
+	 * Used to get player loot after winning the ground battle.
+	 * @param market
+	 * @param mult
+	 * @return A {@code CargoAPI} containing the loot obtained.
+	 */
 	public static CargoAPI lootMarket(MarketAPI market, float mult) {
 		Map<CommodityOnMarketAPI, Float> valuables = computeInvasionValuables(market);
 		Random random = new Random();
