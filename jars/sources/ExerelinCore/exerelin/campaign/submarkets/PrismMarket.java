@@ -14,7 +14,9 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -150,15 +152,20 @@ public class PrismMarket extends BaseSubmarketPlugin {
         cargo.sort();
     }
     
-    public boolean isShipAllowed(FleetMemberAPI member, float requiredFP)
+    public boolean isShipAllowed(ShipHullSpecAPI spec, float requiredFP)
     {
-        if (member.getHullSpec().isDHull()) return false;
-        if (member.getHullSpec().hasTag(Tags.RESTRICTED)) return false;
-        if (member.getFleetPointCost() < requiredFP) return false; //quality check
-        if (restrictedShips.contains(member.getHullSpec().getBaseHullId())) return false;
-        if (member.getHullSpec().getHints().contains(ShipTypeHints.STATION)) return false;
+        if (spec.isDHull()) return false;
+        if (spec.hasTag(Tags.RESTRICTED)) return false;
+        if (spec.getFleetPoints() < requiredFP) return false; //quality check
+        if (restrictedShips.contains(spec.getBaseHullId())) return false;
+        if (spec.getHints().contains(ShipTypeHints.STATION)) return false;
         
         return true;
+    }
+    
+    public boolean isShipAllowed(FleetMemberAPI member, float requiredFP)
+    {
+        return isShipAllowed(member.getHullSpec(), requiredFP);
     }
     
     public boolean isWingAllowed(FighterWingSpecAPI spec)
@@ -261,9 +268,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
         //remove half the stock (and all boss ships)
         for (FleetMemberAPI member : data.getMembersListCopy()) {
             if (allBossShips.contains(member.getHullId())) 
-				data.removeFleetMember(member);
+                data.removeFleetMember(member);
             else if (itemGenRandom.nextFloat() > 0.5f) 
-				data.removeFleetMember(member);                
+                data.removeFleetMember(member);
         }
 
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>(itemGenRandom);
@@ -314,30 +321,36 @@ public class PrismMarket extends BaseSubmarketPlugin {
             
             for (ShipRolePick pick : picks) {
                 FleetMemberType type = FleetMemberType.SHIP;
-                String variantId = pick.variantId; 
-                                
-                //set the ID
-                FleetMemberAPI member = Global.getFactory().createFleetMember(type, variantId);
-                variantId = member.getHullId() + "_Hull";
-                member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+                String variantId = pick.variantId;
+                // get hull variant ID
+                ShipVariantAPI variant = Global.getSettings().getVariant(variantId);
+                ShipHullSpecAPI spec = variant.getHullSpec();
+                String hullId = variant.getHullSpec().getHullId();
+                variantId = hullId + "_Hull";
                
                 // Fleet point cost threshold
                 int FP;
-                if (member.isCapital()){
-                    FP = 20;
-                } else if (member.isCruiser()){
-                    FP = 14;
-                } else if (member.isDestroyer()){
-                    FP = 10;
-                } else if (member.isFrigate()){
-                    FP = 5;
-                } else {
-                    FP = 6;
+                switch (spec.getHullSize()) {
+                    case CAPITAL_SHIP:
+                        FP = 20;
+                        break;
+                    case CRUISER:
+                        FP = 14;
+                        break;
+                    case DESTROYER:
+                        FP = 10;
+                        break;
+                    case FRIGATE:
+                        FP = 5;
+                        break;
+                    default:
+                        FP = 6;
                 }
                 
                 //if the variant is not degraded and high end, add it. Else start over
-                if (isShipAllowed(member, FP))
+                if (isShipAllowed(spec, FP))
                 {
+                    FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
                     member.getRepairTracker().setMothballed(true);
                     member.getRepairTracker().setCR(0.5f);
                     getCargo().getMothballedShips().addFleetMember(member);
