@@ -76,6 +76,7 @@ public class CrewReplacerUtils {
 	 * @param count
 	 * @return A list of integers representing the counts of each taken crew type (empty if Crew Replacer is unavailable).
 	 */
+	// runcode exerelin.utilities.CrewReplacerUtils.takeCommodityFromCargo(Global.getSector().getPlayerFleet(), "raiding_marines", 10);
 	public static List<Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
 		List<Integer> list = new ArrayList<>();
 		if (!enabled) return list;
@@ -85,10 +86,11 @@ public class CrewReplacerUtils {
 		for (int index = 0; index < crews.size(); index++) {
 			Float value = crews.get(index);
 			int thisCount = (int)(float)value;
-			list.add(count);
+			if (thisCount <= 0) continue;
+			list.add(thisCount);
 			String commodityId = job.Crews.get(index).name;
 			fleet.getCargo().removeCommodity(commodityId, thisCount);
-			//Global.getLogger(CrewReplacerUtils.class).info(String.format("  Removing %s of commodity %s for job %s", count, commodityId, jobId));
+			//Global.getLogger(CrewReplacerUtils.class).info(String.format("  Removing %s of commodity %s for job %s", thisCount, commodityId, jobId));
 		}
 		return list;
 	}

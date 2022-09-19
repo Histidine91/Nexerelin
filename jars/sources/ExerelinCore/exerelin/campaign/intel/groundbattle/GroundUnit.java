@@ -180,7 +180,7 @@ public class GroundUnit {
 		if (isPersonnel) {
 			taken = CrewReplacerUtils.takeMarinesFromCargo(fleet, Nex_MarketCMD.CREWREPLACER_JOB, wanted);
 			for (int index = 0; index < taken.size(); index++) {
-				int count = taken.get(0);
+				int count = taken.get(index);
 				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB, index, Commodities.MARINES);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
@@ -188,7 +188,7 @@ public class GroundUnit {
 		} else {
 			taken = CrewReplacerUtils.takeHeavyArmsFromCargo(fleet, Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS, wanted);
 			for (int index = 0; index < taken.size(); index++) {
-				int count = taken.get(0);
+				int count = taken.get(index);
 				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS, index, Commodities.HAND_WEAPONS);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
