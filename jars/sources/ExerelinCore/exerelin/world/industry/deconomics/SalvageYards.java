@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.industry.*;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 
@@ -19,12 +20,8 @@ public class SalvageYards extends IndustryClassGen {
 	public boolean canApply(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		if (market.getSize() < 4) return false;
-		
-		// no scrapyards on heavy industry worlds
-		for (Industry ind : market.getIndustries()) {
-			if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY))
-				return false;
-		}
+		// must have heavy industry first
+		if (!NexUtilsMarket.hasHeavyIndustry(market)) return false;
 		
 		return super.canApply(entity);
 	}
