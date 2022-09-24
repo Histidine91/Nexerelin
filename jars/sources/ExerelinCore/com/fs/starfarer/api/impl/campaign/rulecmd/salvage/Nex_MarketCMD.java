@@ -116,8 +116,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE_RESULT = "nex_mktInvadeResult";
 	public static final String INVADE_RESULT_ANDRADA = "nex_mktInvadeResultAndrada";
 	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
-	public static final String CREWREPLACER_JOB = "raiding_marines";
-	public static final String CREWREPLACER_JOB_HEAVYARMS = "nex_invasion_heavyarms";
+	public static final String CREWREPLACER_JOB_RAID = "raiding_marines";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
 	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
@@ -849,10 +848,10 @@ public class Nex_MarketCMD extends MarketCMD {
 //		dialog.getVisualPanel().finishFadeFast();
 		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
 
-		float marines = CrewReplacerUtils.getMarines(fleet, CREWREPLACER_JOB);
+		float marines = CrewReplacerUtils.getMarines(fleet, GBConstants.CREW_REPLACER_JOB_MARINES);
 		float support = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_GROUND_SUPPORT, 0f);
 		if (support > marines) support = marines;
-		float mechs = CrewReplacerUtils.getHeavyArms(fleet, CREWREPLACER_JOB_HEAVYARMS) * InvasionRound.HEAVY_WEAPONS_MULT;
+		float mechs = CrewReplacerUtils.getHeavyArms(fleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS) * InvasionRound.HEAVY_WEAPONS_MULT;
 		if (mechs > marines) mechs = marines;
 		
 		StatBonus attackerBase = new StatBonus(); 
@@ -968,7 +967,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
 
-		float marines = CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB);
+		float marines = CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB_RAID);
 		
 		String str;
 		TooltipMakerAPI info;
@@ -1177,11 +1176,11 @@ public class Nex_MarketCMD extends MarketCMD {
 			text.addPara(getString("losses"));
 		}
 		if (result.losses > 0) {
-			CrewReplacerUtils.removeMarines(playerFleet, CREWREPLACER_JOB, result.losses, text);
+			CrewReplacerUtils.removeMarines(playerFleet, GBConstants.CREW_REPLACER_JOB_MARINES, result.losses, text);
 			tempInvasion.marinesLost = result.losses;
 		}
 		if (result.lossesMech > 0) {
-			CrewReplacerUtils.removeHeavyArms(playerFleet, CREWREPLACER_JOB_HEAVYARMS, result.losses, text);
+			CrewReplacerUtils.removeHeavyArms(playerFleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS, result.losses, text);
 			tempInvasion.mechsLost = result.lossesMech;
 		}
 		
@@ -1218,10 +1217,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		str = StringHelper.substituteToken(str, "$delta", ad);
 		text.addPara(str, hl2, ds, ad);
 		
-		String marinesRemaining = CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB) + "";
+		String marinesRemaining = CrewReplacerUtils.getMarines(playerFleet, GBConstants.CREW_REPLACER_JOB_MARINES) + "";
 		str = Misc.ucFirst(getString("marinesRemaining")) + ": " + marinesRemaining;
 		text.addPara(str, hl2, marinesRemaining);
-		int mechs = (int)CrewReplacerUtils.getHeavyArms(playerFleet, CREWREPLACER_JOB_HEAVYARMS);
+		int mechs = (int)CrewReplacerUtils.getHeavyArms(playerFleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
 		if (mechs > 0) {
 			str = Misc.ucFirst(getString("mechsRemaining")) + ": " + mechs;
 			text.addPara(str, hl2, mechs + "");
@@ -1342,7 +1341,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			contText = StringHelper.substituteToken(getString("invasionFail"), "$market", market.getName());
 		}
 		
-		int marines = (int)(CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB));
+		int marines = (int)(CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB_RAID));
 		float total = marines + tempInvasion.marinesLost;
 		float xpGain = 1f - tempInvasion.invasionMult;
 		xpGain *= total;
@@ -1695,7 +1694,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
 
 		// MODIFIED
-		float marines = CrewReplacerUtils.getMarines(this.playerFleet, CREWREPLACER_JOB);
+		float marines = CrewReplacerUtils.getMarines(this.playerFleet, CREWREPLACER_JOB_RAID);
 		float support = Misc.getFleetwideTotalMod(playerFleet, Stats.FLEET_GROUND_SUPPORT, 0f);
 		if (support > marines) support = marines;
 
@@ -2253,7 +2252,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			Misc.setRaidedTimestamp(market);
 		}
 		
-		int marines = (int)CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB);
+		int marines = (int)CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB_RAID);
 		float probOfLosses = 1f;
 		
 		int losses = 0;
@@ -2282,7 +2281,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		} else {
 			text.addPara(StringHelper.getString("nex_raidDialog", "casualties"));
 			temp.marinesLost = losses;
-			CrewReplacerUtils.removeMarines(playerFleet, CREWREPLACER_JOB, losses, text);
+			CrewReplacerUtils.removeMarines(playerFleet, CREWREPLACER_JOB_RAID, losses, text);
 		}
 		
 		

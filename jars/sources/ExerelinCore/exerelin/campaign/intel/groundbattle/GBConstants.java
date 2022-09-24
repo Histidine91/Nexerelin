@@ -14,6 +14,9 @@ public class GBConstants {
 	public static final String STAT_MARKET_MORALE_DAMAGE = "nex_moraleDamageTaken";
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";
+	public static final String CREW_REPLACER_JOB_MARINES = "nex_groundBattle_marines";
+	public static final String CREW_REPLACER_JOB_HEAVYARMS = "nex_groundBattle_heavyarms";
+	public static final String CREW_REPLACER_JOB_TANKCREW = "nex_groundBattle_tankCrew";
 	
 	public static int BASE_MOVEMENT_POINTS_PER_TURN = 10;
 	public static float TURN_1_MOVE_POINT_MULT = 2;

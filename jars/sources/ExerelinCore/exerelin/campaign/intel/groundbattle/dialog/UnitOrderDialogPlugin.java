@@ -265,12 +265,12 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 
 		// marine: cap by number of available marine equivalents remaining
 		if (unit.getType() == ForceType.MARINE) {
-			max = Math.min(max, curr + (int)CrewReplacerUtils.getMarines(fleet, Nex_MarketCMD.CREWREPLACER_JOB));
+			max = Math.min(max, curr + (int)CrewReplacerUtils.getMarines(fleet, GBConstants.CREW_REPLACER_JOB_MARINES));
 		}
 		// heavy: cap by number of available heavy arms equivalents remaining, and also marine equivalents to crew them
 		else if (unit.getType() == ForceType.HEAVY) {
-			max = Math.min(max, curr + (int)CrewReplacerUtils.getHeavyArms(fleet, Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS));
-			max = Math.min(max, (unit.getPersonnelCount() + (int)CrewReplacerUtils.getMarines(fleet, Nex_MarketCMD.CREWREPLACER_JOB))/GroundUnit.CREW_PER_MECH);
+			max = Math.min(max, curr + (int)CrewReplacerUtils.getHeavyArms(fleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS));
+			max = Math.min(max, (unit.getPersonnelCount() + (int)CrewReplacerUtils.getMarines(fleet, GBConstants.CREW_REPLACER_JOB_TANKCREW))/GroundUnit.CREW_PER_MECH);
 		}
 		// other types: just check cargo for the available commodity ID
 		else {

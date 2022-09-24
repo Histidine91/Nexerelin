@@ -361,7 +361,7 @@ public class GroundBattleRoundResolve {
 			float myDeathsRaw = kills * myDeathShare;
 
 			// damage resistance based on the personnel type's utility
-			String jobId = isEquipment ? Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS : Nex_MarketCMD.CREWREPLACER_JOB;
+			String jobId = isEquipment ? GBConstants.CREW_REPLACER_JOB_HEAVYARMS : GBConstants.CREW_REPLACER_JOB_MARINES;
 			float damResist = CrewReplacerUtils.getCommodityPower(jobId, commodityId);
 			if (damResist <= 0) damResist = 1;	// safety
 

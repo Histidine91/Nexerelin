@@ -178,18 +178,19 @@ public class GroundUnit {
 
 		Map<String, Integer> commodities = isPersonnel ? this.getPersonnelMap() : this.getEquipmentMap();
 		if (isPersonnel) {
-			taken = CrewReplacerUtils.takeMarinesFromCargo(fleet, Nex_MarketCMD.CREWREPLACER_JOB, wanted);
+			String jobId = type == ForceType.HEAVY ? GBConstants.CREW_REPLACER_JOB_TANKCREW : GBConstants.CREW_REPLACER_JOB_MARINES;
+			taken = CrewReplacerUtils.takeMarinesFromCargo(fleet, jobId, wanted);
 			for (int index = 0; index < taken.size(); index++) {
 				int count = taken.get(index);
-				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB, index, Commodities.MARINES);
+				String commodityId = CrewReplacerUtils.getCommodityIdForJob(jobId, index, Commodities.MARINES);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
 			}
 		} else {
-			taken = CrewReplacerUtils.takeHeavyArmsFromCargo(fleet, Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS, wanted);
+			taken = CrewReplacerUtils.takeHeavyArmsFromCargo(fleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS, wanted);
 			for (int index = 0; index < taken.size(); index++) {
 				int count = taken.get(index);
-				String commodityId = CrewReplacerUtils.getCommodityIdForJob(Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS, index, Commodities.HAND_WEAPONS);
+				String commodityId = CrewReplacerUtils.getCommodityIdForJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS, index, Commodities.HAND_WEAPONS);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
 			}
