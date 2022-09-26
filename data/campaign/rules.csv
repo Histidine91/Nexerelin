@@ -1705,6 +1705,9 @@ nex_bShipOfferTextBar_generic,Nex_BShip_PreShipPickText,$nex_bShip_barEvent,,"Wh
 nex_bShipOfferTextContact_generic,Nex_BShip_PreShipPickText,!$nex_bShip_barEvent,,"""Excellent. I have room in my collection for a ship meeting certain requirements.""",,
 nex_bShipOfferTextBar_military,Nex_BShip_PreShipPickText,"$nex_bShip_barEvent
 $nex_bShip_variation == MILITARY score:5",,"When you confirm that you indeed possess the fleet in question, the $nex_bShip_manOrWoman's face lights up. ""Wonderful! You see, I'm making purchases on behalf of $theFaction. They're looking for some good ships not normally accessible to them, and you seem like you fit the bill. Slightly banged up is fine, too; they can fix that on their own!""",,
+nex_bShipOfferTextBar_militaryOfficial,Nex_BShip_PreShipPickText,"$nex_bShip_barEvent
+$nex_bShip_variation == MILITARY score:5
+$nex_bShip_isBaseOfficial score:5",,"When you confirm that you indeed possess the fleet in question, the $nex_bShip_manOrWoman offers a handshake. ""Well met, captain. I represent $theFaction authorities here on $market. We are in need of fine ships like those in your fleet, and we're willing to compensate you accordingly.""",,
 nex_bShipOfferTextContact_military,Nex_BShip_PreShipPickText,"!$nex_bShip_barEvent
 $nex_bShip_variation == MILITARY score:5",,"""Excellent. Our fleets are in need of some new vessels, and you surely have a few good such specimens. Including ones not normally available to $theFaction.""",,
 nex_bShipOfferShowRules,Nex_BShip_PreShipPick,,Call $nex_bShip_ref showRules,,,
@@ -1726,6 +1729,7 @@ nex_bShipSelectedOptionsBar,Nex_BShip_ShipPicked,$nex_bShip_barEvent,"SetShortcu
 contact_acceptBar:Confirm sale
 contact_declineBarNoContinue:Decline",
 nex_bShipSelectedText_generic,Nex_BShip_ShipPickedText,,Highlight $nex_bShip_price,"""Ah, a fine specimen indeed."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""I can offer $nex_bShip_price credits for this.""",,
+nex_bShipSelectedText_aristo,Nex_BShip_ShipPickedText,$voice == aristo,Highlight $nex_bShip_price,"""Ah, a fine specimen indeed."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""I can offer $nex_bShip_price credits for this.""",,
 nex_bShipSelectedText_military,Nex_BShip_ShipPickedText,$nex_bShip_variation == MILITARY score:5,Highlight $nex_bShip_price,"""Looks worthy."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""$TheFaction will authorize a payment of $nex_bShip_price credits for this vessel.""",,
 nex_bShipSelectedExtraInfo,Nex_BShip_ShipPicked,,"AddTextSmall ""Weapons and LPCs will be included in the sale. Story points will be refunded for any S-mods on the ship.""
 SetTextHighlightColors story

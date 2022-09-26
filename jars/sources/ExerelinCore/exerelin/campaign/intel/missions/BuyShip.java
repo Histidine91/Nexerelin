@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsBaseOfficial;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
@@ -30,7 +31,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 	public static final List<Class> AVAILABLE_RULES = new ArrayList<>();
 	public static final float PRICE_IMPORTANCE_LOW = 50000;
 	public static final float PRICE_IMPORTANCE_HIGH = 150000;
-	public static final int SET_MIN_SIZE = 3;
+	public static final int SET_MIN_SIZE = 2;
 	
 	static {
 		AVAILABLE_RULES.add(DesignTypeRule.class);
@@ -306,6 +307,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 		//set("$nex_bShip_isMilitary", getPerson().hasTag(Tags.CONTACT_MILITARY));
 		//set("$nex_bShip_isTrade", getPerson().hasTag(Tags.CONTACT_TRADE));
 		//set("$nex_bShip_isUnderworld", getPerson().hasTag(Tags.CONTACT_UNDERWORLD));
+		set("$nex_bShip_isBaseOfficial", Nex_IsBaseOfficial.isOfficial(getPerson().getPostId(), "any"));
 		set("$nex_bShip_variation", variation);
 
 		if (member != null) {
