@@ -34,7 +34,7 @@ public class RestoreCommanderPlugin extends BaseEveryFrameCombatPlugin {
 
 			for (FleetMemberAPI member : members) {
 				if (member.getFleetData() == null) {
-					log.info("Fleet data is null, skipping");
+					//log.info("Fleet data is null, skipping");
 					continue;
 				}
 				CampaignFleetAPI fleet = member.getFleetData().getFleet();
