@@ -69,9 +69,8 @@ public class SellAICore extends HubMissionWithBarEvent {
 	
 	protected Variation pickVariation() {
 		RepLevel rep = getPerson().getRelToPlayer().getLevel();
-		
-		
-		WeightedRandomPicker<Variation> picker = new WeightedRandomPicker<>();
+
+		WeightedRandomPicker<Variation> picker = new WeightedRandomPicker<>(genRandom);
 		switch (rep) {
 			case COOPERATIVE:
 				picker.add(Variation.ALPHA, 1);
