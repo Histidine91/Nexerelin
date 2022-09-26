@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import data.scripts.crewReplacer_Job;
 import data.scripts.crewReplacer_Main;
+import exerelin.campaign.intel.groundbattle.GBConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,18 @@ public class CrewReplacerUtils {
 	static {
 		if (enabled) {
 			// register heavy arms "job"
-			crewReplacer_Job jobHA = crewReplacer_Main.getJob(Nex_MarketCMD.CREWREPLACER_JOB_HEAVYARMS);
+			crewReplacer_Job jobHA = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
 			jobHA.addNewCrew(Commodities.HAND_WEAPONS, 1, 1);
+			
+			crewReplacer_Job jobGBM = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_MARINES);
+			jobHA.addNewCrew(Commodities.MARINES, 1, 1);
+			
+			crewReplacer_Job jobTC = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_TANKCREW);
+			jobHA.addNewCrew(Commodities.MARINES, 1, 1);
 
 			if (debugMode) {
 				jobHA.addNewCrew(Commodities.RARE_ORE, 1, 1);
-				crewReplacer_Job jobMarines = crewReplacer_Main.getJob(Nex_MarketCMD.CREWREPLACER_JOB);
+				crewReplacer_Job jobMarines = crewReplacer_Main.getJob(Nex_MarketCMD.CREWREPLACER_JOB_RAID);
 				jobMarines.addNewCrew(Commodities.ORE, 1, 1);
 				//jobMarines.organizePriority();
 			}
