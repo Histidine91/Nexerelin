@@ -12,6 +12,7 @@
     
     "alignments":{
         "militarist":1,
+		"technocratic":0.5,
         "diplomatic":-1,
         "hierarchical":1,
     },

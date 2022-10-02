@@ -13,6 +13,7 @@
     "morality":"neutral",	# used to be good because of Histidine's pro-League bias
 
     "alignments":{
+        "corporate":0.5,
         "diplomatic":1,
         "ideological":0.5,
         "hierarchical":-0.5,
