@@ -9,9 +9,11 @@ import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
+import com.fs.starfarer.api.impl.campaign.econ.ResourceDepositsCondition;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
+import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import data.scripts.util.MagicSettings;
+import exerelin.ExerelinConstants;
+import exerelin.utilities.NexUtils;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.console.Console;
 
@@ -26,6 +33,15 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	
 	public static Logger log = Global.getLogger(EconomyInfoHelper.class);
 	public static boolean loggingMode = false;
+
+	public static final Map<String, Integer> COMMODITY_OUTPUT_MODIFIERS = new HashMap<>();
+
+	static {
+		Map<String, Float> modifiers = MagicSettings.getFloatMap(ExerelinConstants.MOD_ID, "commodity_output_modifiers");
+		for (String commodityId : modifiers.keySet()) {
+			COMMODITY_OUTPUT_MODIFIERS.put(commodityId, Math.round(modifiers.get(commodityId)));
+		}
+	}
 	
 	protected static EconomyInfoHelper currInstance;
 	
@@ -33,12 +49,17 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	
 	// for each faction, store map of commodity ID and its best output
 	protected Map<String, Map<String, Integer>> factionProductionByFaction = new HashMap<>();
+	protected Map<String, Map<String, Integer>> factionImportsByFaction = new HashMap<>();
 	
 	protected Map<String, List<ProducerEntry>> producersByFaction = new HashMap<>();
 	protected Map<String, List<ProducerEntry>> producersByCommodity = new HashMap<>();
 	protected Map<String, Map<FactionAPI, Integer>> marketSharesByCommodity = new HashMap<>();
+	protected Map<String, Integer> totalDemandByCommodity = new HashMap<>();
+	protected Map<String, Integer> totalSupplyByCommodity = new HashMap<>();
+
 	protected Map<MarketAPI, Float> aiCoreUsers = new HashMap<>();
 	protected Map<String, Integer> empireSizeCache = new HashMap<>();
+	protected Map<String, Float> netIncomeByFaction = new HashMap<>();
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
@@ -53,9 +74,19 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		Global.getSector().getListenerManager().addListener(currInstance, true);
 		
 		currInstance.collectEconomicData(true);
+		
+		// run again because some data seems to be wrong the first time?
+		Global.getSector().addScript(new DelayedActionScript(0.01f) {
+			@Override
+			public void doAction() {
+				currInstance.collectEconomicData(false);
+			}
+		});		
 		return currInstance;
 	}
 	
+	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance();
+	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().collectEconomicData(false);
 	public static EconomyInfoHelper getInstance() {
 		return currInstance;
 	}
@@ -69,17 +100,38 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	public static void setLoggingMode(boolean mode) {
 		loggingMode = mode;
 	}
+
+	/**
+	 * Returns modifier to commodity outputs from the market's size.
+	 * e.g. ore has a modifier of zero because a size 3 colony produces 3 ore, rare ore modifier is -2
+	 * because the same colony makes 1 rare ore (with baseline market conditions)
+	 * @param commodityId
+	 * @return
+	 */
+	public static int getCommodityOutputModifier(String commodityId) {
+		Integer mod = ResourceDepositsCondition.BASE_MODIFIER.get(commodityId);
+		if (mod != null) return mod;
+
+		mod = COMMODITY_OUTPUT_MODIFIERS.get(commodityId);
+		if (mod != null) return mod;
+
+		return 0;
+	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().collectEconomicData()
 	public void collectEconomicData(boolean firstRun) 
 	{
 		haveHeavyIndustry.clear();
 		factionProductionByFaction.clear();
+		factionImportsByFaction.clear();
 		producersByFaction.clear();
 		producersByCommodity.clear();
 		marketSharesByCommodity.clear();
+		totalDemandByCommodity.clear();
+		totalSupplyByCommodity.clear();
 		aiCoreUsers.clear();
 		empireSizeCache.clear();
+		netIncomeByFaction.clear();
 		
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsInGroup(null);
 		if (markets.isEmpty())
@@ -94,10 +146,12 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			
 			String commodityId = com.getId();
 			producersByCommodity.put(commodityId, new ArrayList<ProducerEntry>());
+
 			
 			CommodityMarketDataAPI data = com.getCommodityMarketData();
 			marketSharesByCommodity.put(commodityId, data.getMarketSharePercentPerFaction());
-			
+
+			// iterate over all producers
 			for (MarketAPI producer : data.getMarkets()) 
 			{
 				if (producer.isHidden()) continue;
@@ -110,6 +164,10 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				CommoditySourceType source = data.getMarketShareData(producer).getSource();
 				if (source != CommoditySourceType.LOCAL)
 					continue;
+								
+				if (commodityId.equals(Commodities.SUPPLIES)) {
+					log.info("Found supplies producer: " + producer.getName());
+				}
 				
 				String factionId = producer.getFactionId();
 				
@@ -137,6 +195,53 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				if (output > factionsBest) {
 					factionProductionByFaction.get(factionId).put(commodityId, output);
 				}
+
+				NexUtils.modifyMapEntry(totalSupplyByCommodity, commodityId, output);
+			}
+
+			// iterate over all importers
+			for (MarketAPI importer : data.getMarkets())
+			{
+				if (importer.isHidden()) continue;
+				
+				// don't count illegal goods
+				if (importer.getCommodityData(commodityId).isIllegal())
+					continue;
+
+				// make sure supply is imported
+				CommoditySourceType source = data.getMarketShareData(importer).getSource();
+				if (source != CommoditySourceType.GLOBAL)
+					continue;
+
+				String factionId = importer.getFactionId();
+
+				// instantiate faction-keyed maps
+				if (!factionImportsByFaction.containsKey(factionId))
+				{
+					factionImportsByFaction.put(factionId, new HashMap<String, Integer>());
+				}
+
+				int demand = importer.getCommodityData(commodityId).getMaxDemand();
+				
+				if (commodityId.equals(Commodities.METALS) && importer.getId().equals("kazeron")) {
+					log.info(String.format("Kazeron has %s metal demand, source %s", demand, source));
+				}
+				if (commodityId.equals(Commodities.SUPPLIES) && importer.getId().equals("kazeron")) {
+					//log.info(String.format("Kazeron has %s supplies demand, source %s", demand, source));
+				}
+
+				int factionsHighest = 0;
+				if (factionImportsByFaction.get(factionId).containsKey(commodityId)) {
+					factionsHighest = factionImportsByFaction.get(factionId).get(commodityId);
+				}
+				if (demand > factionsHighest) {
+					factionImportsByFaction.get(factionId).put(commodityId, demand);
+				}
+			}
+
+			for (MarketAPI marketParticipant : data.getMarkets()) {
+				int demand = marketParticipant.getCommodityData(commodityId).getMaxDemand();
+				NexUtils.modifyMapEntry(totalDemandByCommodity, commodityId, demand);
 			}
 		}
 		
@@ -182,6 +287,12 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			if (aiScore > 0) {
 				aiCoreUsers.put(market, aiScore);
 			}
+			float income = market.getNetIncome();
+			if (market.getFactionId().equals("tritachyon")) {
+				log.info(String.format("Market %s has net income %s", market.getName(), income));
+			}
+
+			NexUtils.modifyMapEntry(netIncomeByFaction, market.getFactionId(), income);
 		}
 	}
 	
@@ -233,6 +344,46 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			return 0;
 		return ourProduction.get(commodityId);
 	}
+
+	/**
+	 * Gets a map of all commodities the specified faction imports
+	 * and their highest demand in that faction. Warning: imports may be temporary, 
+	 * resulting from a disruption in local suppliers.
+	 * @param factionId
+	 * @return
+	 */
+	public Map<String, Integer> getCommoditiesImportedByFaction(String factionId) {
+		if (!factionImportsByFaction.containsKey(factionId))
+			return new HashMap<>();
+
+		Map<String, Integer> result = factionImportsByFaction.get(factionId);
+
+		if (loggingMode) {
+			logInfo("Faction " + factionId + " imports the following commodities:");
+			for (Map.Entry<String, Integer> tmp : result.entrySet()) {
+				String comId = tmp.getKey();
+				int amount = tmp.getValue();
+				logInfo("  " + amount + " " + comId);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Gets the faction's imports of the specified commodity, in econ units. Warning: 
+	 * imports may be temporary, resulting from a disruption in local suppliers.
+	 * @param factionId
+	 * @param commodityId
+	 * @return
+	 */
+	public int getFactionCommodityImports(String factionId, String commodityId) {
+		Map<String, Integer> ourImports = getCommoditiesImportedByFaction(factionId);
+		if (ourImports == null) return 0;
+		if (!ourImports.containsKey(commodityId))
+			return 0;
+		return ourImports.get(commodityId);
+	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getProducers("hegemony", "metals", 0);
 	/**
@@ -278,7 +429,11 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		
 		return results;
 	}
-	
+
+	public List<ProducerEntry> getCompetingProducers(String factionId, int min) {
+		return getCompetingProducers(factionId, min, true);
+	}
+
 	/**
 	 * Gets a list of all producers which compete with the specified faction 
 	 * in any commodity the faction supplies.
@@ -286,20 +441,36 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	 * @param min Minimum amount of production to be considered. 
 	 * Applies both to the list of commodities to be checked, 
 	 * and the producers to be returned.
+	 * @param useModifiers If true, apply commodity modifier outputs (e.g. -2 for rare metals) to reflect higher/lower base production.
 	 * @return
 	 */
-	public List<ProducerEntry> getCompetingProducers(String factionId, int min) {
+	public List<ProducerEntry> getCompetingProducers(String factionId, int min, boolean useModifiers) {
 		List<ProducerEntry> results = new ArrayList<>();
 		Map<String, Integer> ourProduction = factionProductionByFaction.get(factionId);
 		if (ourProduction == null) return results;
 		Set<String> commodities = ourProduction.keySet();
 		for (String commodityId : commodities) {
-			if (ourProduction.get(commodityId) < min)
+			int thisMin = min;
+			if (useModifiers) thisMin += getCommodityOutputModifier(commodityId);
+
+			if (ourProduction.get(commodityId) < thisMin)
 				continue;
-			results.addAll(getCompetingProducers(factionId, commodityId, min));
+			results.addAll(getCompetingProducers(factionId, commodityId, thisMin));
 		}
 		
 		return results;
+	}
+
+	public int getMarketShare(String factionId, String commodityId) {
+		return getMarketShare(Global.getSector().getFaction(factionId), commodityId);
+	}
+
+	public int getMarketShare(FactionAPI faction, String commodityId) {
+		Map<FactionAPI, Integer> shares = marketSharesByCommodity.get(commodityId);
+		if (shares == null) return 0;
+		Integer share = shares.get(faction);
+		if (share == null) return 0;
+		return share;
 	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getCompetingProducerFactions("hegemony", "metals");
@@ -368,6 +539,13 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	public boolean hasHeavyIndustry(String factionId) {
 		return haveHeavyIndustry.contains(factionId);
 	}
+
+	public float getFactionNetIncome(String factionId) {
+		Float result = netIncomeByFaction.get(factionId);
+		if (result == null) return 0;
+		return result;
+	}
+
 	
 	public Map<MarketAPI, Float> getAICoreUsers() {
 		return aiCoreUsers;

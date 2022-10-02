@@ -35,6 +35,7 @@ import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import lombok.extern.log4j.Log4j;
 
@@ -43,6 +44,12 @@ public class NexUtilsMarket {
 	
 	// use the memory key instead of this wherever possible
 	public static final List<String> NO_INVADE_MARKETS = Arrays.asList(new String[]{"SCY_prismFreeport", "prismFreeport", "prismFreeport_market"});
+
+	public static final Comparator<MarketAPI> marketSizeComparator = new Comparator<MarketAPI>() {
+
+		public int compare(MarketAPI m1, MarketAPI m2) {
+			return Integer.compare(m2.getSize(), m1.getSize());
+		}};
 	
 	public static float getPopulation(MarketAPI market)
 	{

@@ -232,18 +232,7 @@ public class NexMarketBuilder
 			if (cabalCandidates.isEmpty())
 				cabalCandidates = cabalCandidatesBackup;
 			
-			Comparator<MarketAPI> marketSizeComparator = new Comparator<MarketAPI>() {
-
-				public int compare(MarketAPI m1, MarketAPI m2) {
-				   int size1 = m1.getSize();
-					int size2 = m2.getSize();
-
-					if (size1 > size2) return -1;
-					else if (size2 > size1) return 1;
-					else return 0;
-				}};
-			
-			Collections.sort(cabalCandidates, marketSizeComparator);
+			Collections.sort(cabalCandidates, NexUtilsMarket.marketSizeComparator);
 			
 			try {
 				for (int i=0; i<cabalCandidates.size()*CABAL_MARKET_MULT; i++)

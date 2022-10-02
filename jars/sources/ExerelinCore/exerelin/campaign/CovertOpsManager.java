@@ -636,7 +636,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				.getCommoditiesProducedByFaction(agentFaction.getId());
 		
 		boolean monopolist = DiplomacyTraits.hasTrait(agentFaction.getId(), TraitIds.MONOPOLIST);
-		for (ProducerEntry prod : EconomyInfoHelper.getInstance().getCompetingProducers(agentFaction.getId(), 2)) 
+		for (ProducerEntry prod : EconomyInfoHelper.getInstance().getCompetingProducers(agentFaction.getId(), 4, true))
 		{
 			if (DISALLOWED_FACTIONS.contains(prod.factionId)) continue;
 			

@@ -24,6 +24,19 @@
 		},
 		"mining_hidden_ships_and_weapons":["drone_borer"],
 		
+		# difference between the colony size and how much of that good it would produce normally
+		# mining/farming outputs are grabbed from ResourceDepositsCondition.BASE_MODIFIER instead
+		"commodity_output_modifiers":{
+			"rare_metals":-2,
+			"heavy_machinery":-2,
+			"supplies":-2,
+			"hand_weapons":-2,
+			"ships":-2,
+			"fuel":-2,
+			"luxury_goods":-2,
+			"drugs":-2
+		}
+		
 		# currently unused
 		#"faction_spawn_points":{
 		#	# faction: [system name, entity ID]

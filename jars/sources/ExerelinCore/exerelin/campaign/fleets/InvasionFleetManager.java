@@ -543,6 +543,59 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected boolean areTooManyOngoing(MarketAPI market) {
 		return false;
 	}
+
+	public boolean isValidInvasionOrRaidTarget(FactionAPI faction, FactionAPI targetFaction, MarketAPI market, EventType type, boolean isRemnantRaid)
+	{
+		String factionId = faction.getId();
+		FactionAPI marketFaction = market.getFaction();
+		String marketFactionId = marketFaction.getId();
+
+		if (EXCEPTION_LIST.contains(marketFactionId) && targetFaction != marketFaction) return false;
+		if (targetFaction != null && targetFaction != marketFaction)
+			return false;
+
+		if (!marketFaction.isHostileTo(faction)) return false;
+
+		if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction()
+				&& marketFaction.getMemoryWithoutUpdate().getBoolean(MEM_KEY_FACTION_TARGET_COOLDOWN)) {
+			return false;
+		}
+
+		if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0)) return false;
+
+		if (type == EventType.SAT_BOMB && faction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
+			return false;
+
+		if (isRemnantRaid) {
+			// non-hard mode mercy for new player colonies
+			// TODO: replace with an expiring memory key when we get colonization listener
+			if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction() && market.getSize() < 4)
+				return false;
+		}
+
+		/*
+		float defenderStrength = InvasionRound.GetDefenderStrength(market);
+		float estimateMarinesRequired = defenderStrength * 1.2f;
+		if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
+			continue;	 // too strong for us
+		*/
+
+		// Tiandong can't invade Point Mogui
+		if (factionId.equals("tiandong") && market.getId().equals("tiandong_mogui_market"))
+			return false;
+
+		if (type == EventType.INVASION && GroundBattleIntel.getOngoing(market) != null)
+			return false;
+
+		boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId)
+				&& type == EventType.INVASION;
+		if (!revanchist && NexConfig.getFactionConfig(factionId).invasionOnlyRetake)
+		{
+			return false;
+		}
+
+		return true;
+	}
 	
 	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
 			Vector2f originLoc, List<MarketAPI> markets, EventType type) {
@@ -556,6 +609,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		String factionId = faction.getId();
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
 		Set<LocationAPI> systemsWeHavePresenceIn = NexUtilsFaction.getLocationsWithFactionPresence(factionId);
+
+		boolean isPirateFaction = NexUtilsFaction.isPirateFaction(factionId);
+		if (factionId.equals(Factions.PLAYER))
+			isPirateFaction = isPirateFaction || NexUtilsFaction.isPirateFaction(
+					PlayerFactionStore.getPlayerFactionId());
 		
 		for (MarketAPI market : markets) 
 		{
@@ -567,58 +625,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (market.getContainingLocation().isHyperspace())
 				continue;
 			
+			if (!isValidInvasionOrRaidTarget(faction, targetFaction, market, type, isRemnantRaid)) {
+				continue;
+			}
+
 			FactionAPI marketFaction = market.getFaction();
 			String marketFactionId = marketFaction.getId();
-			
-			if (EXCEPTION_LIST.contains(marketFactionId) && targetFaction != marketFaction) continue;
-			if (targetFaction != null && targetFaction != marketFaction)
-				continue;
-			
-			if (!marketFaction.isHostileTo(faction)) continue;
-			
-			if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction()
-					&& marketFaction.getMemoryWithoutUpdate().getBoolean(MEM_KEY_FACTION_TARGET_COOLDOWN)) {
-				continue;
-			}
-			
-			if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
-			
-			if (type == EventType.SAT_BOMB && faction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
-				continue;
-			
-			if (isRemnantRaid) {
-				// non-hard mode mercy for new player colonies
-				// TODO: replace with an expiring memory key when we get colonization listener
-				if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction() && market.getSize() < 4)
-					continue;
-			}
-			
-			
-			/*
-			float defenderStrength = InvasionRound.GetDefenderStrength(market);
-			float estimateMarinesRequired = defenderStrength * 1.2f;
-			if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
-				continue;	 // too strong for us
-			*/
-			
-			// Tiandong can't invade Point Mogui
-			if (factionId.equals("tiandong") && market.getId().equals("tiandong_mogui_market"))
-				continue;
-			
-			boolean isPirateFaction = NexUtilsFaction.isPirateFaction(factionId);
-			if (factionId.equals(Factions.PLAYER))
-				isPirateFaction = isPirateFaction || NexUtilsFaction.isPirateFaction(
-						PlayerFactionStore.getPlayerFactionId());
-			
-			if (type == EventType.INVASION && GroundBattleIntel.getOngoing(market) != null)
-				continue;
-			
-			boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId)
-					&& type == EventType.INVASION;
-			if (!revanchist && NexConfig.getFactionConfig(factionId).invasionOnlyRetake) 
-			{
-				continue;
-			}
 			
 			float weight = 1;
 			
@@ -647,6 +659,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
 			
 			boolean haveHeavyIndustry = NexUtilsMarket.hasHeavyIndustry(market);
+
+			boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId)
+					&& type == EventType.INVASION;
 			
 			// revanchism, prioritise heavy industry
 			if (haveHeavyIndustry) {

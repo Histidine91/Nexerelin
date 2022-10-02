@@ -89,7 +89,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		return true; 
 	}
 	
-	protected List<MarketAPI> getClaimedMarkets() {
+	public static List<MarketAPI> getClaimedMarkets(FactionAPI faction) {
 		List<MarketAPI> claimed = new ArrayList<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (market.getFaction() != faction 
@@ -102,7 +102,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	}
 	
 	protected LabelAPI generateClaimedMarketsPara(TooltipMakerAPI tooltip, float pad) {
-		List<MarketAPI> claimed = getClaimedMarkets();
+		List<MarketAPI> claimed = getClaimedMarkets(faction);
 		String str = null;
 		if (claimed.isEmpty()) {
 			str = getString("claimedMarketsNone");
