@@ -2306,6 +2306,15 @@
 		"makeshipEquipmentExDesc2":"-%s%% upkeep cost",
 	},
 	
+	"nex_strategicAI":{
+		"statImportVolume":"import volume",
+		"statValue":"value",
+		"statDefenseAdjustedValue":"value/defense",
+		"statFactionPower":"faction power",
+		"statCompetingShare":"competitor's market share",
+		"statRage":"current pirate rage"
+	},
+	
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
 		"stabilityText":"Planet buster",
@@ -2561,6 +2570,8 @@
 		"alphaSiteIntelDesc":"You have obtained navigation data leading to a mysterious location known as the %s.",
 		
 		"selectShipGeneric":"Select ship",
+		
+		"intelTagDebug":"Debug",
 		
 		"errorPrismLoad":"Failed to load Prism High-End Seller configuration defs!\nReport this issue with your modlist.",
 		
