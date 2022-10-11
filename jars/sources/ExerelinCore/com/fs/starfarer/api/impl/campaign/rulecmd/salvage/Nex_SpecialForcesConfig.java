@@ -696,6 +696,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			} else {
 				if (skill.hasTag(Skills.TAG_DEPRECATED)) continue;
 				if (skill.hasTag(Skills.TAG_PLAYER_ONLY)) continue;
+				if (skill.hasTag(Skills.TAG_NPC_ONLY)) continue;
 				if (!skill.isAdmiralSkill()) continue;
 			}
 			results.add(skill);

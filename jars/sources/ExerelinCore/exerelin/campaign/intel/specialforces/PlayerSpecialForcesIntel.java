@@ -23,10 +23,13 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -141,9 +144,15 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		for (FleetMemberAPI live : tempFleet.getFleetData().getMembersListCopy()) {
 			fleet.getFleetData().addFleetMember(live);
+			if (live.getVariant().getSource() != VariantSource.REFIT) {
+				live.setVariant(live.getVariant().clone(), false, false);
+				live.getVariant().setSource(VariantSource.REFIT);
+				live.getVariant().addTag(Items.TAG_NO_AUTOFIT);
+			}
 		}
+		
 		fleet.setInflated(true);
-		fleet.setInflater(null);		
+		fleet.setInflater(null);
 		
 		commander.setRankId(Ranks.SPACE_CAPTAIN);
 		
@@ -667,7 +676,12 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	public static float getReviveSupplyCost(FleetMemberAPI member) {
 		if (member == null) return 0;
-		float suppliesPerCRPoint = member.getDeploymentCostSupplies()/member.getDeployCost();
+		float deployCost = member.getDeployCost();
+		if (deployCost <= 0) {
+			log.error(String.format("Ship %s has zero or negative deployment cost, applying safety", member.getShipName()));
+			deployCost = 0.1f;
+		}
+		float suppliesPerCRPoint = member.getDeploymentCostSupplies()/deployCost;
 		float suppliesPerDay = suppliesPerCRPoint * member.getRepairTracker().getRecoveryRate();
 		float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
 
