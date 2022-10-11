@@ -971,7 +971,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	@Override
 	public List<ArrowData> getArrowData(SectorMapAPI map) {
-		if (currentStage == Stage.GO_TO_TARGET_SYSTEM && knowStagingArea) {
+		if ((currentStage == Stage.GO_TO_TARGET_SYSTEM || currentStage == Stage.SCOUT) && knowStagingArea) {
 			List<ArrowData> result = new ArrayList<>();
 			ArrowData arrow = new ArrowData(stagingArea.getHyperspaceAnchor(), station);
 			arrow.color = getHegemony().getBaseUIColor();
