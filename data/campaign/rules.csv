@@ -298,6 +298,7 @@ marketHostileBombardResultSel,DialogOptionSelected,$option == mktBombardResult,N
 nex_marketHostileInvadeSel,DialogOptionSelected,$option == nex_mktInvade,Nex_MarketCMD invadeMenu,,,
 nex_marketHostileInvadeGoBackSel,DialogOptionSelected,$option == nex_mktInvadeGoBack,Nex_MarketCMD goBackToDefenses,,,
 nex_marketHostileInvadeConfirmSel,DialogOptionSelected,$option == nex_mktInvadeConfirm,Nex_MarketCMD invadeConfirm,,,
+nex_marketHostileInvadeOpenIntelSel,DialogOptionSelected,$option == nex_mktInvadeOpenIntel,Nex_MarketCMD openIntel,,,
 nex_marketHostileInvadeContinue,DISABLED_DialogOptionSelected,$option == nex_mktInvadeContinue,"ShowDefaultVisual
 FireBest PopulateOptions",,,
 nex_marketHostileInvadeAbortSel,DialogOptionSelected,$option == nex_mktInvadeAbort,Nex_MarketCMD invadeAbort,,,
