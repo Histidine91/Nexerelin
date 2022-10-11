@@ -233,7 +233,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		if (distressSent) {
 			factionId = Factions.TRITACHYON;
 		} else {
-			fp *= 1.5f;
+			fp *= 1.25f;
 		}
 		
 		FleetParamsV3 params = new FleetParamsV3(system.getLocation(),
@@ -246,10 +246,15 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				0,		// personnel transports
 				0,		// liners
 				0,	// utility
-				0.3f);	// quality mod
+				0);	// quality mod
 		params.random = this.genRandom;
 		if (distressSent) {
 			params.averageSMods = 2;
+			params.qualityMod = 0.3f;
+		}
+		else {
+			params.averageSMods = 0;	// sometimes have one S-mod
+			params.qualityMod = 0.7f;
 		}
 				
 		CampaignFleetAPI fleet = FleetFactoryV3.createFleet(params);
