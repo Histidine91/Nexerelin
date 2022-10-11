@@ -157,17 +157,12 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				if (producer.isHidden()) continue;
 				
 				// don't count illegal production
-				if (producer.getCommodityData(commodityId).isIllegal())
+				if (!producer.getCommodityData(commodityId).isSupplyLegal())
 					continue;
-				
-				// make sure supply is local
-				CommoditySourceType source = data.getMarketShareData(producer).getSource();
-				if (source != CommoditySourceType.LOCAL)
-					continue;
-								
-				if (commodityId.equals(Commodities.SUPPLIES)) {
-					log.info("Found supplies producer: " + producer.getName());
-				}
+
+				// get local supply
+				int supply = producer.getCommodityData(commodityId).getMaxSupply();
+				if (supply <= 0) continue;
 				
 				String factionId = producer.getFactionId();
 				
@@ -222,13 +217,6 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				}
 
 				int demand = importer.getCommodityData(commodityId).getMaxDemand();
-				
-				if (commodityId.equals(Commodities.METALS) && importer.getId().equals("kazeron")) {
-					log.info(String.format("Kazeron has %s metal demand, source %s", demand, source));
-				}
-				if (commodityId.equals(Commodities.SUPPLIES) && importer.getId().equals("kazeron")) {
-					//log.info(String.format("Kazeron has %s supplies demand, source %s", demand, source));
-				}
 
 				int factionsHighest = 0;
 				if (factionImportsByFaction.get(factionId).containsKey(commodityId)) {
@@ -288,9 +276,6 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				aiCoreUsers.put(market, aiScore);
 			}
 			float income = market.getNetIncome();
-			if (market.getFactionId().equals("tritachyon")) {
-				log.info(String.format("Market %s has net income %s", market.getName(), income));
-			}
 
 			NexUtils.modifyMapEntry(netIncomeByFaction, market.getFactionId(), income);
 		}
