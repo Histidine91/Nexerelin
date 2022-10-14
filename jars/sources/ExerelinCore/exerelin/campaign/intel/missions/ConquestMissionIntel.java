@@ -41,7 +41,7 @@ import org.lwjgl.input.Keyboard;
 
 public class ConquestMissionIntel extends BaseMissionIntel implements InvasionListener {
 	
-	public static final float SIZE_REWARD_MULT = 5000;
+	public static final float SIZE_REWARD_MULT = 6000;
 	public static final String BUTTON_TRANSFER = "BUTTON_TRANSFER";
 	
 	protected MarketAPI market;
@@ -162,7 +162,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	protected int calculateReward(boolean includeBonus) {
 		float value = NexUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
 		
-		value += NexUtilsMarket.getIncomeNetPresentValue(market, 3, 0);
+		value += NexUtilsMarket.getIncomeNetPresentValue(market, 6, 0);
 		
 		if (includeBonus) {
 			float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_REWARD_MULT);
@@ -438,7 +438,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		return market.getPrimaryEntity();
 	}
 	
-	protected String getString(String id) {
+	public static String getString(String id) {
 		return StringHelper.getString("nex_conquestMission", id);
 	}
 	

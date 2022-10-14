@@ -3,6 +3,7 @@ nex_dcom,,,trade,,,10,30,60,FAVORABLE,,MEDIUM,,,,graphics/icons/missions/disrupt
 nex_gbTut,,,,,"priority, non_repeatable",,,,,,,,,,graphics/exerelin/icons/missions/gb_tutorial.png,exerelin.campaign.intel.missions.GroundBattleTutorial
 nex_buildStation,,,"remnant, underworld",,,5,120,180,,,MEDIUM,,,,graphics/icons/markets/pirate_base.png,exerelin.campaign.intel.missions.BuildStation
 nex_bShip,,,"military, trade, underworld",,,,,,,,,,,,,exerelin.campaign.intel.missions.BuyShip
+nex_conq,,,military,,,5,45,90,WELCOMING,,HIGH,,,,graphics/exerelin/icons/intel/invasion.png,exerelin.campaign.intel.missions.ConquestMissionContact
 ,,,,,,,,,,,,,,,,
 # Remnant story missions,,,,,,,,,,,,,,,,
 nex_remM1,,,,,"priority, non_repeatable",,,,,,,,,,graphics/icons/cargo/ai_core_beta.png,exerelin.campaign.intel.missions.remnant.RemnantM1

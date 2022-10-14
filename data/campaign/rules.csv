@@ -1692,6 +1692,21 @@ Call $market.nex_dcom_ref updateStage","You feel the almost imperceptible vibrat
 Tactical has casualty reports prepared for review. You acknowledge with a nod and shut off the comms.",mktRaidResult:Continue,
 #END disrupt a competitor - raid industry,,,,,,
 ,,,,,,
+# conquest mission,,,,,,
+nex_conquestBlurb,nex_conquest_blurb,,,"""$TheFaction requires a capable land/space force to seize one of our enemies' holdings.""",,
+nex_conquestOfferOption,nex_conquest_option,,,,nex_conquest_start:Consider the invasion operation,
+nex_conquestOfferTextContact,DialogOptionSelected,$option == nex_conquest_start,"$missionId = nex_conquest
+SetTextHighlightColors h h $nex_conquest_marketFactionColor h h
+Highlight $nex_conquest_marketName $nex_conquest_marketLocation $nex_conquest_theMarketFaction $nex_conquest_days $nex_conquest_reward
+Call $nex_conquest_ref showMap ""Target: $nex_conquest_marketName""
+Call $nex_conquest_ref printDefenses","""$nex_conquest_marketName, in the $nex_conquest_marketLocation system."" $lastName brings up a display on your screen. ""A possession of $nex_conquest_theMarketFaction, and a strategic goal for $theFaction. We want you to seize this $nex_conquest_marketPlanetOrStation for us, within $nex_conquest_days.
+
+""Upon transfer of $nex_conquest_marketName, you will receive a credit reward equal to the shutdown value of the structures and industries $onOrAt $market, plus its six-month income, plus a bonus based on its size and stability. We currently estimate this to be $nex_conquest_reward credits.""
+
+You examine the intelligence report transmitted by $lastName. The surface defenders of $nex_conquest_marketName are estimated at:","contact_accept:Accept
+contact_decline:Decline",
+#END conquest mission,,,,,,
+,,,,,,
 # buy ship mission,,,,,,
 nex_bShipBlurb_generic,nex_bShip_blurb,,,"""I noticed you have some nice ships in that fleet of yours. I might be interested in buying one.""",,
 nex_bShipOfferOption_generic,nex_bShip_option,,,,nex_bShip_start:Discuss the potential ship sale,
