@@ -74,7 +74,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		if (true && local.contains("$nex_lastSelectedFleetType")) 
 		{
 			StartFleetType type = StartFleetType.getType(local.getString("$nex_lastSelectedFleetType"));
-			if (type != StartFleetType.SUPER) {
+			if (type != StartFleetType.CUSTOM && type != StartFleetType.SUPER) {
 				opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
 						"fleetRandomReroll")), "nex_NGCStep4FleetReroll");
 			}

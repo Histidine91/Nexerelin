@@ -1348,7 +1348,7 @@ public class NexFactionConfig
 	public static enum StartFleetType {
 		SOLO, COMBAT_SMALL, COMBAT_LARGE, TRADE_SMALL, TRADE_LARGE,
 		EXPLORER_SMALL, EXPLORER_LARGE, CARRIER_SMALL, CARRIER_LARGE, 
-		SUPER, GRAND_FLEET;
+		SUPER, GRAND_FLEET, CUSTOM;
 		
 		public static StartFleetType getType(String str)
 		{

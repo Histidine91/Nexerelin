@@ -134,8 +134,6 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 			TooltipMakerAPI anchorForRandomButton;
 			
 			float counterWidth = 40;
-			// have buttons even if there's only one option, so we can un-randomize?
-			// no, too ugly, add a proper non-random button
 			if (maxIndex > 0) {	
 				// previous button
 				TooltipMakerAPI leftButtonHolder = fleetPanel.createUIElement(
@@ -266,6 +264,15 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 				Global.getLogger(this.getClass()).error("Failed to add start ship option", ex);
 			}
 		}
+
+		ButtonAPI custom = panelTooltip.addButton(Nex_NGCCustomStartFleet.getString("customFleetButton"), "custom", 96, 24, 3);
+		ButtonEntry entry = new ButtonEntry(custom, "custom") {
+			@Override
+			public void onToggle() {
+				Nex_NGCCustomStartFleet.createDialog(dialog, memoryMap, PlayerFactionStore.getPlayerFactionIdNGC());
+			}
+		};
+		Nex_VisualCustomPanel.getPlugin().addButton(entry);
 		
 		Nex_VisualCustomPanel.addTooltipToPanel();
 		

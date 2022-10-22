@@ -170,6 +170,8 @@
 	"nex_expandCoreLength":0,
 	"nex_expandCoreMult":1,
 	
+	"nex_customStartFleetThresholds":[0, 80000, 160000, 240000, 500000, 1000000],
+	
 	"nex_factionSetupNumFont":"graphics/fonts/insignia21LTaa.fnt",
 	
 	"plugins":{

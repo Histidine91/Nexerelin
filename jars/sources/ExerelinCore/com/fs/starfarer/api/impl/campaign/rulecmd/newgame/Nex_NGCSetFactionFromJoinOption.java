@@ -26,6 +26,7 @@ public class Nex_NGCSetFactionFromJoinOption extends BaseCommandPlugin {
 		//dialog.getTextPanel().addParagraph(factionId);
 		
 		memoryMap.get(MemKeys.LOCAL).set("$playerFaction", factionId, 0);
+		memoryMap.get(MemKeys.LOCAL).unset(Nex_NGCCustomStartFleet.MEMORY_KEY_SHIP_MAP);
 		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
 		if (!factionId.equals(Factions.PLAYER))
 		{
