@@ -1189,9 +1189,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // handle local resources stockpiles taken
         if (market.hasSubmarket(Submarkets.LOCAL_RESOURCES)) {
-            Nex_LocalResourcesSubmarketPlugin plugin = (Nex_LocalResourcesSubmarketPlugin)
-                    market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin();
-            plugin.billCargo();
+            boolean canCast = market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin() instanceof Nex_LocalResourcesSubmarketPlugin;
+
+            if (canCast) {
+                Nex_LocalResourcesSubmarketPlugin plugin = (Nex_LocalResourcesSubmarketPlugin)
+                        market.getSubmarket(Submarkets.LOCAL_RESOURCES).getPlugin();
+                plugin.billCargo();
+            }
         }
         
         updateSubmarkets(market, oldOwnerId, newOwnerId);
