@@ -838,6 +838,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 		float mod2 = getMaxRelationshipModValue(otherFactionId, factionId);
 		
 		float mod = Math.min(mod1, mod2);
+		float result = mod + NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
+		if (result < -1) result = -1;
 		
 		return mod + NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
 	}
