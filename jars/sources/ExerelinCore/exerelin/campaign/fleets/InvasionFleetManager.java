@@ -865,6 +865,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 */
 	public boolean shouldRaid(String factionId) {
 		if (!NexConfig.enableInvasions) return true;
+		if (NexConfig.invasionsOnlyAfterPlayerColony && !Misc.isPlayerFactionSetUp()) return false;
 		if (!NexConfig.getFactionConfig(factionId).canInvade) return true;
 		if (!nextIsRaid.containsKey(factionId))
 			nextIsRaid.put(factionId, Math.random() > 0.5f);

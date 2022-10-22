@@ -55,6 +55,7 @@ public class NexConfig
     // Invasion stuff
     public static boolean enableInvasions = true;
     public static boolean legacyInvasions = false;
+	public static boolean invasionsOnlyAfterPlayerColony = false;
     public static boolean allowInvadeStoryCritical = false;
     public static boolean allowPirateInvasions = false;
     public static boolean retakePirateMarkets = true;
@@ -195,6 +196,7 @@ public class NexConfig
             
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
             legacyInvasions = settings.optBoolean("legacyInvasions", legacyInvasions);
+			invasionsOnlyAfterPlayerColony = settings.optBoolean("invasionsOnlyAfterPlayerColony", invasionsOnlyAfterPlayerColony);
             allowInvadeStoryCritical = settings.optBoolean("allowInvadeStoryCritical", allowInvadeStoryCritical);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);

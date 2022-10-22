@@ -45,6 +45,7 @@
     # if false, replaces NPC invasions (including revenge counter-invasion mechanic) with raids
     "enableInvasions": true,
     "legacyInvasions": false,	# old invasion system before v0.10.3 revamp
+    "invasionsOnlyAfterPlayerColony": false,	# if true, factions will only invade after player faction is configured (as happens upon first having a colony)
     "allowInvadeStoryCritical":false,    # block NPC invasions from targeting story-critical markets
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
