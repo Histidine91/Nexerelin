@@ -251,7 +251,7 @@ public class StringHelper {
 		return result;
 	}
 	
-	public static List<String> commodityIdListToCommodityNameList(List<String> commodityIds)
+	public static List<String> commodityIdListToCommodityNameList(Collection<String> commodityIds)
 	{
 		List<String> result = new ArrayList<>();
 		for (String commodity : commodityIds) {
