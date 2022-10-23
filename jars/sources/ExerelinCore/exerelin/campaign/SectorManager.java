@@ -50,6 +50,7 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.RaidCondition;
+import exerelin.campaign.events.NexRepTrackerEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexConfig;
@@ -1130,6 +1131,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (factionsToNotify == null) factionsToNotify = (new ArrayList<>());
         
         boolean wasPlayerOwned = market.isPlayerOwned();
+        
+        // first forcibly update trade data (so it doesn't get attributed to new faction)
+        if (NexRepTrackerEvent.getTracker() != null) {
+            NexRepTrackerEvent.getTracker().checkForTradeReputationChanges(oldOwner, true);
+        }
         
         // transfer market and associated entities
         String newOwnerId = newOwner.getId();

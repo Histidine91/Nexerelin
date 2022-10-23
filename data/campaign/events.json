@@ -2,4 +2,7 @@
 	"nex_security_alert":{
 		"script":"exerelin.campaign.events.covertops.SecurityAlertEvent"
 	},
+	"rep_tracker":{
+		"script":"exerelin.campaign.events.NexRepTrackerEvent",
+	}
 }
