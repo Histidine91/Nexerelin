@@ -502,7 +502,7 @@ nex_decivEvent_init,DialogOptionSelected,$option == nex_decivEvent_interact,Nex_
 nex_decivEvent_greetingFirstTime,Nex_DecivEvent_Greeting,"!$market.nex_decivEvent_visitedBefore
 !Nex_DecivEvent wasCivilized",,"""Hello? Is this thing on?
 
-""Oh, hello, stranger! It's been a long time since anyone swung by. Is the Sector still alive? Where'd you get that ship? Did Half-Life 3 finally come out?""
+""Oh, hello, stranger! It's been a long time since anyone swung by. Is the Sector still alive? Where'd you get that ship? Have they finally found where Ludd went?""
 
 Maybe dropping off a datacube for $himOrHer to read at $hisOrHer own leisure would get $himOrHer to stop asking questions.
 OR
@@ -1769,7 +1769,7 @@ datastores
 submit!""
 
 Is it talking about Coronal Hypershunt you found recently? It may be possible to buy off this strange AI, by giving it the right thing... but how do you even ask what it wants?",,Text and idea for bribe options by Avanitia
-nex_HistorianOmegaHail_optsCommon,Nex_HistorianOmegaHailOpts,,,,"1:nex_HistorianOmegaHail2:Offer some cat photos you have lying around, for their datastores
+nex_HistorianOmegaHail_optsCommon,Nex_HistorianOmegaHailOpts,,,,"#1:nex_HistorianOmegaHail2:Offer some cat photos you have lying around, for their datastores
 10:cutCommLink:Cut the comm link",Text by Avanitia
 nex_HistorianOmegaHail_optsBeta,Nex_HistorianOmegaHailOpts,HasItem beta_core,,,2:nex_HistorianOmegaHail_bribeBeta:Offer a Beta Core,Text by Avanitia
 nex_HistorianOmegaHail_optsAlpha,Nex_HistorianOmegaHailOpts,HasItem alpha_core,,,3:nex_HistorianOmegaHail_bribeAlpha:Offer an Alpha Core,Text by Avanitia
@@ -3109,8 +3109,6 @@ AddText ""Well, hopefully she won't sulk about it for too long. Just how long ca
 EndConversation DO_NOT_FIRE
 ShowDefaultVisual
 FireAll PopulateOptions",,,
-,,,,,,
-,,,,,,
 #END chatty stuff,,,,,,
 #END missions,,,,,,
 ,,,,,,
