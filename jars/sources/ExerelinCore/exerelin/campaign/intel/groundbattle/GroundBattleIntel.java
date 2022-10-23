@@ -777,7 +777,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (numCreatable > 0) numPerUnit = heavyArms/numCreatable;
 		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
 		
-		log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, heavyArms));
+		//log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, heavyArms));
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
 			if (player) unit = createPlayerUnit(ForceType.HEAVY, numPerUnit);
@@ -800,7 +800,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (numCreatable > 0) numPerUnit = marines/numCreatable;
 		numPerUnit = (int)Math.min(numPerUnit, perUnitSize);
 		
-		log.info(String.format("Can create %s marines, %s units each, have %s marines", numCreatable, numPerUnit, marines));
+		//log.info(String.format("Can create %s marines, %s units each, have %s marines", numCreatable, numPerUnit, marines));
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
 			if (player) unit = createPlayerUnit(ForceType.MARINE, numPerUnit);

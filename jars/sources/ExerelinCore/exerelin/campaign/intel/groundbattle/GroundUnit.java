@@ -164,7 +164,7 @@ public class GroundUnit {
 		}
 		else {
 			personnelMap.put(Commodities.MARINES, wantedPersonnel);
-			if (wantedHeavyArms > 0) personnelMap.put(Commodities.HAND_WEAPONS, wantedPersonnel);
+			if (wantedHeavyArms > 0) equipmentMap.put(Commodities.HAND_WEAPONS, wantedHeavyArms);
 		}
 	}
 
@@ -603,7 +603,7 @@ public class GroundUnit {
 	 * @return
 	 */
 	public float getBaseStrength() {
-		return getSize() * type.strength;
+		return getSizeForStrength() * type.strength;
 	}
 	
 	public static float getBaseStrengthForAverageUnit(UnitSize size, ForceType type) 
@@ -884,11 +884,29 @@ public class GroundUnit {
 	}
 	
 	/**
+	 * Adjusted for the strength of each commodity type used in this unit.
+	 * @return
+	 */
+	public float getSizeForStrength() {
+		float str = 0;
+		Map<String, Integer> map = type == ForceType.HEAVY ? this.equipmentMap : this.personnelMap;
+		String jobId = type == ForceType.HEAVY ? GBConstants.CREW_REPLACER_JOB_HEAVYARMS : GBConstants.CREW_REPLACER_JOB_MARINES;
+		for (String commodity : map.keySet()) {
+			int count = map.get(commodity);
+			float power = CrewReplacerUtils.getCommodityPower(jobId, commodity);
+			//log.info(String.format("Commodity %s has power %.1f", commodity, power));
+			float thisStr = power * count;
+			str += thisStr;
+		}
+		return str;
+	}
+	
+	/**
 	 * e.g. two half-companies and one full company will return about the same value.
 	 * @return
 	 */
 	public float getNumUnitEquivalents() {
-		float num = getSize();
+		float num = getSizeForStrength();
 		return num/intel.unitSize.getAverageSizeForType(type);
 	}
 	

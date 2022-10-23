@@ -372,7 +372,7 @@ public class GroundBattleRoundResolve {
 			int myDeaths = (int)myDeathsRaw;
 			if (Math.random() < remainder) myDeathsRaw += 1;
 
-			NexUtils.modifyMapEntry(commodities, commodityId, myDeaths);
+			NexUtils.modifyMapEntry(commodities, commodityId, -myDeaths);
 			printDebug(String.format("      Killing %s of commodity type %s for unit %s", myDeaths, commodityId, unit.getName()));
 			computedKills += myDeaths;
 		}

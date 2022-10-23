@@ -279,11 +279,15 @@ public class GroundBattleSide {
 				moraleMult = 0.8f;
 		}
 		
-		int sizePerUnit = Math.round(intel.unitSize.getAverageSizeForType(type) * GroundUnit.REBEL_COUNT_MULT);
+		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
+		if (type == ForceType.REBEL) {
+			sizePerUnit = Math.round(sizePerUnit * GroundUnit.REBEL_COUNT_MULT);
+		}
 		int numUnits = (int)Math.ceil((float)numTroops/sizePerUnit - 0.25f);
 		if (numUnits == 0 && numTroops > 1) {	//intel.unitSize.getAverageSizeForType(type)/2) {
 			numUnits = 1;
 		}
+		//log.info(String.format("Can create %s units of %s", numUnits, type));
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
 			GroundUnit unit = createUnit(type, faction, size);
