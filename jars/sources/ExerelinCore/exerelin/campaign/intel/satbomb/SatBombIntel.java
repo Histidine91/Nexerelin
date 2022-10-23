@@ -120,6 +120,11 @@ public class SatBombIntel extends OffensiveFleetIntel {
 	public boolean isVicVirusBomb() {
 		return isVirusBomb;
 	}
+
+	@Override
+	public String getType() {
+		return "satbomb";
+	}
 	
 	@Override
 	public CampaignFleetAPI createFleet(String factionId, RouteManager.RouteData route, MarketAPI market, Vector2f locInHyper, Random random) {

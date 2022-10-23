@@ -35,6 +35,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
             targetsSorted.add(new Pair<>(market, valueMod));
         }
 
+        Collections.sort(targetsSorted, VALUE_COMPARATOR);
         int max = Math.min(targetsSorted.size(), MAX_MARKETS_FOR_PICKER);
 
         WeightedRandomPicker<Pair<MarketAPI, Float>> picker = new WeightedRandomPicker<>();

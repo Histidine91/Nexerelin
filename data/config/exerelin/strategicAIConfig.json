@@ -30,6 +30,20 @@
 			"tags":["military"],
 			"module":MILITARY
 		},
+		"retaliation":{
+			"name":"Retaliation",
+			"desc":"We were recently attacked by the dastardly $faction, during the event $event.",
+			"classPath":"exerelin.campaign.ai.concern.RetaliationConcern",
+			"tags":["military"],
+			"module":MILITARY
+		},
+		"developRelations":{
+			"name":"Develop Relations",
+			"desc":"We should further build our promising relations with $theFaction.",
+			"classPath":"exerelin.campaign.ai.concern.DevelopRelationsConcern",
+			"tags":["diplomacy"],
+			"module":DIPLOMATIC
+		},
 		"powerfulUnfriendly":{
 			"name":"Powerful Unfriendly",
 			"desc":"$TheFaction is strong, and our relations with them are not always friendly. We should either appease them or take other precautions.",
@@ -41,6 +55,7 @@
 			"name":"War Weariness",
 			"desc":"Our people tire of the constant fighting. We should seek to make peace with one or more of our enemies.",
 			"classPath":"exerelin.campaign.ai.concern.WarWearinessConcern",
+			"icon":"graphics/exerelin/icons/intel/peace.png",
 			"tags":["diplomacy"],
 			"module":DIPLOMATIC
 		},
@@ -53,7 +68,7 @@
 		},
 		"commodityCompetition":{
 			"name":"Competition",
-			"desc":"$TheFaction competes with us in the production of $commodity (market share $theirShare). We should secure our commercial interests.",
+			"desc":"$TheFaction competes with us in the production of $commodity (market share $theirShare%%). We should secure our commercial interests.",
 			"classPath":"exerelin.campaign.ai.concern.CommodityCompetitionConcern",
 			"tags":["economy"],
 			"module":ECONOMIC
@@ -62,6 +77,13 @@
 			"name":"Import Dependency",
 			"desc":"We rely upon foreign suppliers of $commodity ($amount units). We should seek to establish domestic production.",
 			"classPath":"exerelin.campaign.ai.concern.ImportDependencyConcern",
+			"tags":["economy"],
+			"module":ECONOMIC
+		},
+		"undersuppliedMarket":{
+			"name":"Undersupplied Market",
+			"desc":"The market for a number of related commodities currently offers a high revenue per producer: $commodities",
+			"classPath":"exerelin.campaign.ai.concern.UndersuppliedMarketConcern",
 			"tags":["economy"],
 			"module":ECONOMIC
 		},

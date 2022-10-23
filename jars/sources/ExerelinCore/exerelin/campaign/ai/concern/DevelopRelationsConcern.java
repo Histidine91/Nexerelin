@@ -28,6 +28,7 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
             if (!wantToBefriend(faction)) continue;
 
             float weight = theirStrength;
+            weight *= 10;
             if (weight <= 0) continue;
 
             picker.add(faction, weight);

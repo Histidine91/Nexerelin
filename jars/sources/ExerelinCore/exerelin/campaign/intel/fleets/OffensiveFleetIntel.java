@@ -10,7 +10,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import static com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin.getDaysString;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -257,6 +256,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public MarketAPI getTarget() {
 		return target;
 	}
+
+	public abstract String getType();
 	
 	@Override
 	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
@@ -417,9 +418,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public String getName() {
-		String base = StringHelper.getString("nex_fleetIntel", "title");
-		base = StringHelper.substituteToken(base, "$action", getActionName(), true);
-		base = StringHelper.substituteToken(base, "$market", getTarget().getName());
+		String base = getBaseName();
 		
 		if (isEnding() || outcome != null) {
 			if (outcome == OffensiveOutcome.SUCCESS) {
@@ -430,6 +429,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			}
 			return base + " - " + StringHelper.getString("over", true);
 		}
+		return base;
+	}
+
+	public String getBaseName() {
+		String base = StringHelper.getString("nex_fleetIntel", "title");
+		base = StringHelper.substituteToken(base, "$action", getActionName(), true);
+		base = StringHelper.substituteToken(base, "$market", getTarget().getName());
 		return base;
 	}
 	
@@ -653,5 +659,12 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			if (route.getActiveFleet() != null) return true;
 		}
 		return false;
+	}
+
+	public static void reportRaid(OffensiveFleetIntel intel)
+	{
+		for (RaidListener x : Global.getSector().getListenerManager().getListeners(RaidListener.class)) {
+			x.reportRaidEnded(intel, intel.faction, intel.targetFaction, intel.target, intel.outcome == OffensiveOutcome.SUCCESS);
+		}
 	}
 }

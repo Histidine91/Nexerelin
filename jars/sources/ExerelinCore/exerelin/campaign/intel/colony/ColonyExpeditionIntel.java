@@ -611,6 +611,11 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	public String getForceTypeIsOrAre() {
 		return getString("forceIsOrAre");
 	}
+
+	@Override
+	public String getType() {
+		return "colony";
+	}
 	
 	protected String getString(String id) {
 		return StringHelper.getString("nex_colonyFleet", id);

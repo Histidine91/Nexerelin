@@ -684,7 +684,12 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	public String getForceTypeIsOrAre() {
 		return StringHelper.getString("exerelin_invasion", "forceIsOrAre");
 	}
-	
+
+	@Override
+	public String getType() {
+		return "invasion";
+	}
+
 	@Override
 	public void addStandardStrengthComparisons(TooltipMakerAPI info, 
 									MarketAPI target, FactionAPI targetFaction, 

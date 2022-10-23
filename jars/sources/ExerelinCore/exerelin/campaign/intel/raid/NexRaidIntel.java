@@ -196,6 +196,11 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 	protected float getDistanceToTarget(MarketAPI market) {
 		return NexUtilsMarket.getHyperspaceDistance(market, target);
 	}
+
+	@Override
+	public String getType() {
+		return "raid";
+	}
 	
 	@Override
 	public CampaignFleetAPI createFleet(String factionId, RouteManager.RouteData route, MarketAPI market, Vector2f locInHyper, Random random) {

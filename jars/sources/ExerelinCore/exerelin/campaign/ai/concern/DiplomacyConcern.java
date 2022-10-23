@@ -18,8 +18,6 @@ import java.util.Set;
 @Log4j
 public abstract class DiplomacyConcern extends BaseStrategicConcern {
 
-    @Getter protected FactionAPI faction;
-
     @Override
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         if (faction == null) return null;

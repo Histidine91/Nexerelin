@@ -2,6 +2,7 @@ package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -30,7 +31,16 @@ public abstract class StrategicAIModule {
         return list;
     }
 
-    public void findConcerns() {
+    public void init() {}
+
+    public void advance(float days) {};
+
+    /**
+     * @return List of new concerns found.
+     */
+    public List<StrategicConcern> findConcerns() {
+        List<StrategicConcern> newConcerns = new ArrayList<>();
+
         for (StrategicDefManager.StrategicConcernDef def : getRelevantConcernDefs()) {
             StrategicConcern concern = StrategicDefManager.instantiateConcern(def);
             if (concern == null) continue;
@@ -38,10 +48,12 @@ public abstract class StrategicAIModule {
             concern.setAI(this.ai, this);
             boolean have = concern.generate();
             if (have) {
-                log.info("Found concern " + concern.getName());
+                //log.info("Found concern " + concern.getName());
                 currentConcerns.add(concern);
+                newConcerns.add(concern);
             }
         }
+        return newConcerns;
     }
 
     abstract void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder);

@@ -2330,7 +2330,10 @@
 		"statDefenseAdjustedValue":"value/defense",
 		"statFactionPower":"faction power",
 		"statCompetingShare":"competitor's market share",
-		"statRage":"current pirate rage"
+		"statRage":"current pirate rage",
+		
+		"concernDesc_retaliation_success":"We must respond in kind at once, to show $theFaction that we are not defenseless.",
+		"concernDesc_retaliation_fail":"Although their attempt failed, we must swiftly punish them for their insolence.",
 	},
 	
 	"exerelin_superweapon":{

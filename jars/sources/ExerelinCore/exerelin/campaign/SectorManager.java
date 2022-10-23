@@ -1,5 +1,6 @@
 package exerelin.campaign;
 
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.ui.VictoryScreenScript;
 import com.fs.starfarer.api.EveryFrameScript;
@@ -898,7 +899,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             expelPlayerFromFaction(true);
         }
-        
+
+        StrategicAI.removeAI(defeatedId);
+
         checkForVictory();
     }
     
@@ -923,6 +926,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // increment "times respawned" count
         // no, we already did that on launching the respawn event in the first place
         manager.incrementNumRespawns(factionId);
+
+        StrategicAI.addAIIfNeeded(factionId);
     }
     
     public static int getAllianceTotalFromMap(Alliance alliance, Map<String, Integer> map) 

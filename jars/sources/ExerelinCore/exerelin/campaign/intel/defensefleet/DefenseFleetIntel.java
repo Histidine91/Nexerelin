@@ -273,7 +273,12 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 	public String getForceTypeIsOrAre() {
 		return StringHelper.getString("nex_defenseFleet", "forceIsOrAre");
 	}
-	
+
+	@Override
+	public String getType() {
+		return "defense";
+	}
+
 	public static void createDebugEvent(MarketAPI source, MarketAPI dest, float fp, float orgDur){
 		DefenseFleetIntel intel = new DefenseFleetIntel(source.getFaction(), source, dest, fp, orgDur);
 		intel.init();

@@ -82,17 +82,21 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     }
 
     protected void updatePriority() {
-        priority.modifyFlat("competingShare", competitorShare * 10, StrategicAI.getString("statCompetingShare", true));
+        priority.modifyFlat("competingShare", competitorShare * 5, StrategicAI.getString("statCompetingShare", true));
     }
 
     @Override
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         if (commodityId == null) return null;
         String str = getDef().desc;
+        FactionAPI competitor = Global.getSector().getFaction(competitorId);
         str = StringHelper.substituteToken(str, "$commodity", Global.getSettings().getCommoditySpec(commodityId).getName());
         str = StringHelper.substituteToken(str, "$theirShare", competitorShare + "");
+        str = StringHelper.substituteFactionTokens(str, competitor);
         Color hl = Misc.getHighlightColor();
-        return tooltip.addPara(str, pad, hl, competitorShare + "");
+        LabelAPI label = tooltip.addPara(str, pad, hl, competitor.getDisplayName(), competitorShare + "");
+        label.setHighlightColors(competitor.getBaseUIColor(), hl);
+        return label;
     }
 
     @Override

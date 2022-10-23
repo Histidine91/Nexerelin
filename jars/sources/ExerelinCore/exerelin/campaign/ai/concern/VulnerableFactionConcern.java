@@ -31,6 +31,7 @@ public class VulnerableFactionConcern extends DiplomacyConcern {
             float weight = ourStrength/2 - theirStrength;
             if (weight <= 0) continue;
             weight *= getPriorityMult(us.getRelationshipLevel(faction));
+            weight *= 10;
 
             picker.add(faction, weight);
         }

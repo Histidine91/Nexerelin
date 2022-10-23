@@ -46,6 +46,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ai.MilitaryInfoHelper;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.MiningCooldownDrawer;
@@ -389,7 +390,6 @@ public class ExerelinModPlugin extends BaseModPlugin
             EconomyInfoHelper.createInstance();
             MilitaryInfoHelper.createInstance();
         }
-
         
         if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
             sector.getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
@@ -405,6 +405,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!plugins.hasPlugin(DerelictEmpireOfficerGeneratorPlugin.class)) {
             plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
         }
+
+        StrategicAI.addAIsIfNeeded();
         
         alphaSiteWorkaround();
     }
