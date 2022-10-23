@@ -177,6 +177,10 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		beginStageTrigger(Stage.COMPLETED);
 		triggerSetGlobalMemoryValue("$nex_remBrawl_missionCompleted", true);
 		endTrigger();
+
+		beginStageTrigger(Stage.BATTLE_DEFECTED);
+		triggerSetGlobalMemoryValue("$nex_remBrawl_betrayedMidnight", true);
+		endTrigger();
 		
 		beginStageTrigger(Stage.FAILED);
 		triggerSetGlobalMemoryValue("$nex_remBrawl_missionFailed", true);

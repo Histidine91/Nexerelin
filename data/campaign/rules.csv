@@ -3578,3 +3578,20 @@ $nex_sf_menuType == ""config"" score:10",Nex_SpecialForcesConfig mainMenu,,,
 nex_miscSF_reviveBackToCommand,DialogOptionSelected,"$option == nex_sf_reviveShipCancel
 $nex_sf_menuType == ""command"" score:10",Nex_SpecialForcesCommands main,,,
 #END player special task group,,,,,,
+,,,,,,
+# Misc. dialog,,,,,,
+Nex_SierraThoughtsRemnantBrawl,SierrasThoughts,"$global.nex_remBrawl_missionCompleted score:5
+!$global.nex_sierraMentionedRemBrawl
+!$global.nex_remBrawl_betrayedMidnight","$nex_sierraMentionedRemBrawl = true
+SetTextHighlightColors sierraTextColor sierraTextColor
+SetTextHighlights ""\""We sure killed a lot of Hegemony and other sailors back there. All for the Remnants... my kidnappers. I know, it was a war between the two factions, and we fought for the side that paid us.\"""" ""\""I just hope we're doing the right thing. Who knows what Midnight and the others are really planning?\""""","Sierra lets out a soft sigh. ""We sure killed a lot of Hegemony and other sailors back there. All for the Remnants... my kidnappers. I know, it was a war between the two factions, and we fought for the side that paid us.""
+
+Her avatar seems to shudder momentarily. ""I just hope we're doing the right thing. Who knows what Midnight and the others are really planning?""",,
+Nex_SierraThoughtsRemnantBrawlBetrayed,SierrasThoughts,"$global.nex_remBrawl_missionCompleted score:5
+!$global.nex_sierraMentionedRemBrawl
+$global.nex_remBrawl_betrayedMidnight","$nex_sierraMentionedRemBrawl = true
+SetTextHighlightColors sierraTextColor sierraTextColor sierraTextColor sierraTextColor
+SetTextHighlights ""\""So, we turned on the Remnants and betrayed them to the Hegemony.\""""  ""\""Part of me is happy, all right. I don't like them, I don't trust them.\"""" ""\""Who knows what evil plots they're brewing for the Sector?"" ""\""At the same time, I kind of feel uncomfortable, betraying our client like that. Let's just hope we don't have to associate with anyone like that again.\""""","""So, we turned on the Remnants and betrayed them to the Hegemony."" Sierra's avatar rotates slowly. ""Part of me is happy, all right. I don't like them, I don't trust them."" A little shudder. ""Who knows what evil plots they're brewing for the Sector?
+
+""At the same time, I kind of feel uncomfortable, betraying our client like that. Let's just hope we don't have to associate with anyone like that again.""",,
+#END Misc. dialog,,,,,,
