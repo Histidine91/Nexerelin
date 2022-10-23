@@ -192,6 +192,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		if (status != RaidStageStatus.ONGOING) return;
 		
 		boolean inSpawnRange = RouteManager.isPlayerInSpawnRange(getTarget().getPrimaryEntity());
+		if (!inSpawnRange) inSpawnRange |= colonyFleetIntel.anyActionRoutesHaveLiveFleets();
 		if (!inSpawnRange && untilAutoresolve <= 0){
 			autoresolve();
 			return;

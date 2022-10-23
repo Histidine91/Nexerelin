@@ -645,4 +645,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		List<RouteData> routes = RouteManager.getInstance().getRoutesForSource(this.getRouteSourceId());
 		return routes.size();
 	}
+	
+	public boolean anyActionRoutesHaveLiveFleets() {
+		if (action == null || action.getRoutes() == null) return false;
+		
+		for (RouteData route : action.getRoutes()) {
+			if (route.getActiveFleet() != null) return true;
+		}
+		return false;
+	}
 }

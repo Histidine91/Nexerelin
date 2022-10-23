@@ -175,6 +175,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		if (status != RaidStageStatus.ONGOING) return;
 		
 		boolean inSpawnRange = RouteManager.isPlayerInSpawnRange(target.getPrimaryEntity());
+		if (!inSpawnRange) inSpawnRange |= offFltIntel.anyActionRoutesHaveLiveFleets();
 		if (!inSpawnRange && untilAutoresolve <= 0){
 			autoresolve();
 			return;
