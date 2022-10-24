@@ -63,6 +63,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	public static final float PORTRAIT_SIZE_PICKER = 48;
 	public static final float BTN_HEIGHT = 16;
 	public static final int MAX_SKILL_LEVEL = 3;
+	public static final float MAX_REVIVE_DISTANCE = 500;
 	
 	public static final Map<String, Boolean> SKILL_AVAILABLE_OVERRIDES = new HashMap<>();
 	public static final Map<String, Integer> SKILL_VALUES = new HashMap<>();
@@ -188,7 +189,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		for (MarketAPI market : Misc.getMarketsInLocation(fleet.getContainingLocation())) {
 			if (market.getFaction().isAtBest(fleet.getFaction(), RepLevel.INHOSPITABLE))
 				continue;
-			if (MathUtils.getDistance(market.getPrimaryEntity(), fleet) > 300)
+			if (MathUtils.getDistance(market.getPrimaryEntity(), fleet) > MAX_REVIVE_DISTANCE)
 				continue;
 				
 			haveMarket = true;
