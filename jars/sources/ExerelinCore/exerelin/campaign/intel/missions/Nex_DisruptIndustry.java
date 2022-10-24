@@ -8,13 +8,18 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.BaseDisruptIndustry;
+import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.intel.agents.CovertActionIntel;
+import exerelin.campaign.intel.agents.SabotageIndustry;
 import exerelin.campaign.intel.missions.DisruptMissionManager.TargetEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import exerelin.utilities.AgentActionListener;
 import org.apache.log4j.Logger;
 
-public class Nex_DisruptIndustry extends BaseDisruptIndustry {
+public class Nex_DisruptIndustry extends BaseDisruptIndustry implements AgentActionListener {
 	
 	public static Logger log = Global.getLogger(Nex_DisruptIndustry.class);
 	@Deprecated public static final float BASE_MARINES_REQUIRED = 120;
@@ -133,6 +138,27 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry {
 		} else {
 			triggerCreateMediumPatrolAroundMarket(market, Stage.DISRUPT, 0f);
 			triggerCreateLargePatrolAroundMarket(market, Stage.DISRUPT, 0f);
+		}
+	}
+
+	@Override
+	public void acceptImpl(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		Global.getSector().getListenerManager().addListener(this);
+	}
+
+	@Override
+	protected void notifyEnding() {
+		Global.getSector().getListenerManager().removeListener(this);
+	}
+
+	@Override
+	public void reportAgentAction(CovertActionIntel action) {
+		if (action.isPlayerInvolved() && action.getDefId().equals(CovertOpsManager.CovertActionType.SABOTAGE_INDUSTRY)
+				&& action.getResult() != null && action.getResult().isSuccessful()) {
+			SabotageIndustry sab = (SabotageIndustry)action;
+			if (sab.getIndustry() == this.industry) {
+				setCurrentStage(Stage.COMPLETED, null, null);
+			}
 		}
 	}
 }
