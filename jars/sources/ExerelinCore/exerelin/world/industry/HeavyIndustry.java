@@ -80,8 +80,7 @@ public class HeavyIndustry extends IndustryClassGen {
 		if (market.hasIndustry(Industries.ORBITALWORKS) 
 				|| market.hasIndustry("ms_massIndustry")
 				|| market.hasIndustry("ms_militaryProduction")
-				|| market.hasIndustry("ms_orbitalShipyard")
-				|| market.hasIndustry("IndEvo_ScrapYard"))
+				|| market.hasIndustry("ms_orbitalShipyard"))
 			return false;
 		
 		// don't build heavy industry on new small colonies, they're raid bait
