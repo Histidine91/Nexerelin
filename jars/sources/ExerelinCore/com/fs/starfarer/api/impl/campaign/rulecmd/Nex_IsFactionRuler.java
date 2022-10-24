@@ -1,5 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
+import com.fs.starfarer.api.campaign.FactionAPI;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,10 @@ public class Nex_IsFactionRuler extends BaseCommandPlugin {
 		//FactionAPI faction = Global.getSector().getFaction(factionId);
 		
 		return isRuler(factionId);
+	}
+	
+	public static boolean isRuler(FactionAPI faction) {
+		return isRuler(faction.getId());
 	}
 	
 	public static boolean isRuler(String factionId)

@@ -26,6 +26,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
@@ -580,17 +581,42 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
 			boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
 	{
+		// Liberation checks go here
 		if (this.market != market) return;
 		if (result != null) return;
-		if (newOwner.isAtWorst(rebelFaction, RepLevel.SUSPICIOUS))
-		{
-			if (started) {
-				liberatorFaction = newOwner;
-				endEvent(RebellionResult.LIBERATED);
+		
+		boolean selfLiberate = newOwner == rebelFaction;
+		if (isCapture) {
+			// new owner welcoming or better to rebels, count as liberation and (if new owner is not player or ruled faction) give rebels the planet
+			if (newOwner.isAtWorst(rebelFaction, RepLevel.WELCOMING))
+			{
+				if (started) {
+					liberatorFaction = newOwner;
+					endEvent(RebellionResult.LIBERATED);
+					
+					if (!selfLiberate && !Nex_IsFactionRuler.isRuler(newOwner)) {
+						SectorManager.transferMarket(market, rebelFaction, market.getFaction(), 
+								false, false, null, 0);
+						DiplomacyManager.adjustRelations(newOwner, rebelFaction, market.getSize() * 2, null, null, null);
+					}
+				}
+				else endEvent(RebellionResult.OTHER);
 			}
-			else endEvent(RebellionResult.OTHER);
 		}
-		else
+		else {
+			// faction hands over planet to rebels, this is also a liberation
+			if (newOwner == rebelFaction)
+			{
+				if (started) {
+					liberatorFaction = oldOwner;
+					endEvent(RebellionResult.LIBERATED);
+					DiplomacyManager.adjustRelations(oldOwner, rebelFaction, market.getSize() * 2, null, null, null);
+				}
+				else endEvent(RebellionResult.OTHER);
+			}
+		}
+		
+		if (result != null)
 		{
 			govtFaction = newOwner;
 		}
@@ -946,6 +972,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		
 		if (rebels)
 		{
+			points *= 2f;
 			rebelStrength += points;
 			if (addTradePoints) rebelTradePoints += points;
 			if (rebelStrength < 0) rebelStrength = 0;
@@ -981,13 +1008,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		debugMessage("  Weapon points: " + weaponPoints);
 		debugMessage("  Supply points: " + supplyPoints);
 		
-		points += marinePoints;
-		points += getNetCommoditySold(transaction, Commodities.HAND_WEAPONS) * VALUE_WEAPONS;
-		points += getNetCommoditySold(transaction, Commodities.SUPPLIES) * VALUE_SUPPLIES;
+		points = marinePoints + weaponPoints + supplyPoints;
 		
 		boolean forRebels = transaction.getSubmarket().getPlugin().isBlackMarket();
-		if (forRebels) points *= 2f;
-		
 		modifyPoints(points, forRebels);
 	}
 	
@@ -1402,7 +1425,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		return str;
 	}
 	
-	protected String getString(String id)
+	public static String getString(String id)
 	{
 		return StringHelper.getString("nex_rebellion", id);
 	}
