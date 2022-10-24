@@ -760,27 +760,31 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		{
 			FactionAPI targetFaction = null, thirdFaction = null;
 			int factionCount = 0;
-			WeightedRandomPicker<FactionAPI> targetFactionPicker = generateTargetFactionPicker(actionType, agentFaction, factions);
-			factionCount = targetFactionPicker.getItems().size();
-			if (factionCount < 1 || (actionType.equals(CovertActionType.LOWER_RELATIONS) && factionCount < 2))
-			{
-				log.info("\tFailed to find target faction(s)");
-				return null;
-			}
-			
-			targetFaction = targetFactionPicker.pickAndRemove();
-			result.put("targetFaction", targetFaction);
-			if (factionCount >= 2) {
-				thirdFaction = targetFactionPicker.pickAndRemove();
-				result.put("thirdFaction", thirdFaction);
-			}
 
-			log.info("\tTarget faction: " + targetFaction.getDisplayName());
+			// don't pick a target faction for Instigate Rebellion, just iterate over all valid targets
+			if (!actionType.equals(CovertActionType.INSTIGATE_REBELLION)) {
+				WeightedRandomPicker<FactionAPI> targetFactionPicker = generateTargetFactionPicker(actionType, agentFaction, factions);
+				factionCount = targetFactionPicker.getItems().size();
+				if (factionCount < 1 || (actionType.equals(CovertActionType.LOWER_RELATIONS) && factionCount < 2))
+				{
+					log.info("\tFailed to find target faction(s)");
+					return null;
+				}
+
+				targetFaction = targetFactionPicker.pickAndRemove();
+				result.put("targetFaction", targetFaction);
+				if (factionCount >= 2) {
+					thirdFaction = targetFactionPicker.pickAndRemove();
+					result.put("thirdFaction", thirdFaction);
+				}
+
+				log.info("\tTarget faction: " + targetFaction.getDisplayName());
+			}
 			
 			WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker(random);
 			for (MarketAPI market: markets)
 			{
-				if (market.getFaction() != targetFaction)
+				if (targetFaction != null && market.getFaction() != targetFaction)
 					continue;
 				if (market.isHidden()) continue;
 
@@ -807,6 +811,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				log.warn("\tFailed to find target market");
 			}
 			result.put("market", market);
+			if (targetFaction == null) {
+				result.put("targetFaction", market.getFaction());
+			}
 		}
 		
 		return result;
