@@ -55,6 +55,7 @@ import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Misc;
 import static com.fs.starfarer.api.util.Misc.getImmigrationPlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -1402,7 +1403,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 
 	@Override
-	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, 
+	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved,
 			boolean isCapture, List<String> factionsToNotify, float repChangeStrength) 
 	{
 		LinkedList<QueuedIndustry> existing = npcConstructionQueues.remove(market);
@@ -1416,18 +1417,25 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					&& help.hasHeavyIndustry(newOwner.getId()))
 			{
 				log.info("Removing vulnerable heavy industry on " + market.getName());
-				List<String> toRemove = new ArrayList<>();
+				final List<String> toRemove = new ArrayList<>();
 				for (Industry ind : market.getIndustries()) {
 					if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY) && !ind.getSpec().getId().equals("IndEvo_ScrapYard")) 
 					{
 						toRemove.add(ind.getId());
 					}
 				}
-				for (String indId : toRemove) {
-					moveSpecialsToBestSubmarket(market, market.getIndustry(indId));
-					market.removeIndustry(indId, null, false);
-				}
-					
+				final MarketAPI marketF = market;
+				// delay the actual removal to avoid screwing with payout on conquest missions
+				Global.getSector().addScript(new DelayedActionScript(0) {
+					@Override
+					public void doAction() {
+						for (String indId : toRemove) {
+							moveSpecialsToBestSubmarket(marketF, marketF.getIndustry(indId));
+							marketF.removeIndustry(indId, null, false);
+						}
+					}
+				});
+
 				
 				market.reapplyIndustries();
 			}
