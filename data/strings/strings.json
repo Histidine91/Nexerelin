@@ -599,6 +599,7 @@
 		"effectAllDisruptAndDownsize":"All operations disrupted. Colony size reduced to %s.",
 		"effectIndustryRemoved":"$market has exceeded its maximum industry count following the bombardment. Destroying industry: %s",
 	},
+	
 	"nex_bounties":{
 		"factionBountyIntel_title":"Faction Bounty",
 		"factionBountyIntel_titleEnded":"Bounty Ended",
@@ -615,6 +616,10 @@
 		"factionBountyIntel_bulletShare":"%s share based on damage dealt",
 		"factionBountyIntel_bulletBaseReward":"%s base reward per frigate",
 		"factionBountyIntel_bulletRemaining":"remaining",
+				
+		"systemBountyIntel_title":"System War Bounty",
+		"systemBountyIntel_desc":"Applies to all %s fleets in or near the $location, which is home to a military base $onOrAt $market.",
+		"systemBountyIntel_desc2":"Payment depends on the number and size of ships destroyed. Standing with $theFaction, as well as with $person, will improve.",
 		
 		"bountyPostfix_hegInspector":"Hegemony Inspector",
 	},
@@ -2017,6 +2022,12 @@
 		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile, and you have been positively identified. Are you sure you want to engage in open hostilities?",
 	},
 	
+	"nex_missions":{
+		"cancelReason_alreadyCaptured":"$TheFaction has already captured $market.",
+		"cancelReason_noLongerHostile":"$TheFaction is no longer hostile to the target faction.",
+		"cancelReason_noLongerInterested":"$TheFaction is no longer interested in carrying out the mission.",
+	},
+	
 	"nex_playerOutpost":{
 		"outposts":"outposts",
 		"outpostProperName":"Outpost",
@@ -2136,6 +2147,11 @@
 		
 		"commodityPriceDesc":"Rebellion",
 		"unrestDesc":"Recent rebellion",
+		
+		"missionName":"Supply Rebellion",
+		"costPanelTitle":"Resources needed (available)",
+		"stageDesc":"Deliver the following resources to the rebel representative $onOrAt %s:",
+		"nextStepText":"Deliver resources to %s",
 	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",

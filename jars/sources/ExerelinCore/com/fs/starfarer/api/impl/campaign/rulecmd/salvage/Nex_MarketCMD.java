@@ -964,6 +964,28 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.addOption(Misc.ucFirst(StringHelper.getString("goBack")), INVADE_GO_BACK);
 		options.setShortcut(INVADE_GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
 	}
+
+	public static void printDefenderInvasionStrength(TooltipMakerAPI tooltip,  MarketAPI market) {
+		GroundBattleIntel intel = prepIntel(market);
+		printDefenderInvasionStrength(tooltip, intel);
+	}
+
+	public static void printDefenderInvasionStrength(TooltipMakerAPI tooltip, GroundBattleIntel intel) {
+		Color h = Misc.getHighlightColor();
+
+		float[] strEst = GBUtils.estimateDefenderStrength(intel, true);
+		int precision = intel.getUnitSize().avgSize/5;
+
+		tooltip.setParaSmallInsignia();
+		tooltip.addPara(String.format(GroundBattleIntel.getString("dialogGarrisonEstimate"), intel.getMarket().getName()), 10);
+		tooltip.setParaFontDefault();
+		tooltip.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMilitia"), 3,
+				h, NexUtils.getEstimateNum(strEst[0], precision) + "");
+		tooltip.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMarine"), 3,
+				h, NexUtils.getEstimateNum(strEst[1], precision) + "");
+		tooltip.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateHeavy"), 3,
+				h, NexUtils.getEstimateNum(strEst[2], precision) + "");
+	}
 	
 	protected void invadeMenuV2() {
 		float opad = 10f;
@@ -990,25 +1012,13 @@ public class Nex_MarketCMD extends MarketCMD {
 			initPad = opad;
 			text.addTooltip();
 		}
-		
-		GroundBattleIntel intel = prepIntel(market);
-		
-		float[] strEst = GBUtils.estimateDefenderStrength(intel, true);
-		int precision = intel.getUnitSize().avgSize/5;
-		
+
 		info = text.beginTooltip();
-		info.setParaSmallInsignia();
-		info.addPara(String.format(GroundBattleIntel.getString("dialogGarrisonEstimate"), market.getName()), 10);
-		info.setParaFontDefault();
-		info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMilitia"), 3, 
-				h, NexUtils.getEstimateNum(strEst[0], precision) + "");
-		info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMarine"), 3, 
-				h, NexUtils.getEstimateNum(strEst[1], precision) + "");
-		info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateHeavy"), 3, 
-				h, NexUtils.getEstimateNum(strEst[2], precision) + "");
-		
+		printDefenderInvasionStrength(info, market);
 		text.addTooltip();
 
+		GroundBattleIntel intel = prepIntel(market);
+		int precision = intel.getUnitSize().avgSize/5;
 		boolean hasForces = marines > 0;
 		if (!hasForces) {
 			text.addPara(GroundBattleIntel.getString("dialogNoForces"));
@@ -1018,7 +1028,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			float[] strEstPlayer = GBUtils.estimatePlayerStrength(intel);
 			info = text.beginTooltip();
 			info.setParaSmallInsignia();
-			info.addPara(String.format(GroundBattleIntel.getString("dialogPlayerEstimate"), 
+			info.addPara(String.format(GroundBattleIntel.getString("dialogPlayerEstimate"),
 					market.getName()), 3);
 			info.setParaFontDefault();
 			info.addPara("  - " + GroundBattleIntel.getString("dialogStrEstimateMarine"), 3,
@@ -2182,32 +2192,21 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	@Deprecated
-	public int applyRaidStabiltyPenaltyNex(MarketAPI target, String desc) {
-		int penalty = 0, min = 1;
-		RaidDangerLevel highestDanger = RaidDangerLevel.NONE;
-		for (GroundRaidObjectivePlugin obj : temp.objectives) {
-			penalty += obj.getMarinesAssigned();
-			if (obj.getDangerLevel().compareTo(highestDanger) > 0)
-				highestDanger = obj.getDangerLevel();
-		}
-		penalty /= 3;
-		switch (highestDanger) {
-			case EXTREME:
-				min = 3;
-				break;
-			case HIGH:
-				min = 2;
-				break;
-			case MEDIUM:
-			case LOW:
-				min = 1;
-				break;
-		}
-		if (penalty < min) penalty = min;
-		
+	public int applyRaidStabiltyPenaltyNex(MarketAPI target, String desc, float re) {
+
+		int penalty = 0;
+		if (re >= 0.79f) penalty = 3;
+		else if (re >= 0.59f) penalty = 2;
+		else if (re >= 0.29f) penalty = 1;
+
+		int currUnrest = RecentUnrest.get(market).getPenalty();
+		int reduction = currUnrest/4;
+		penalty -= currUnrest;
+
 		if (penalty > 0) {
 			RecentUnrest.get(target).add(penalty, desc);
 		}
+
 		return penalty;
 	}
 	
@@ -2251,7 +2250,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				raidMultForStabilityPenalty = 0;
 			}
 			
-			stabilityPenalty = applyRaidStabiltyPenalty(market, reason, raidMultForStabilityPenalty);
+			stabilityPenalty = applyRaidStabiltyPenaltyNex(market, reason, raidMultForStabilityPenalty);
 			Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), MemFlags.RECENTLY_RAIDED, 
 									Factions.PLAYER, true, 30f);
 			Misc.setRaidedTimestamp(market);

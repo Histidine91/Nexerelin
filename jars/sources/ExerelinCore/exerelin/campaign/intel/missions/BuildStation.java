@@ -71,6 +71,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 	
 	public static final boolean DEBUG_MODE = false;
 	public static final float FLEET_CHANCE = 0.9f;
+	public static final float COMMODITY_PRICE_MULT = 1.1f;
 	
 	public static final Map<String, Integer> COMMODITIES_REQUIRED = new HashMap<>();
 	static {
@@ -221,7 +222,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 		
 		
 		setCreditReward(CreditReward.VERY_HIGH);
-		setCreditReward(creditReward + getTotalCost());
+		setCreditReward(creditReward + Math.round(getTotalCost() * COMMODITY_PRICE_MULT));
 		setRepFactionChangesHigh();
 		setRepPersonChangesVeryHigh();
 		
@@ -616,10 +617,6 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 				return true;
 			case "tryDenyCargo":
 				tryDenyCargo(dialog, memoryMap);
-				return true;
-			case "updateData":
-				checkStageChangesAndTriggers(dialog, memoryMap);
-				updateInteractionData(dialog, memoryMap);
 				return true;
 		}
 		return false;

@@ -794,7 +794,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				{
 					if (!NexUtilsMarket.canBeInvaded(market, false))
 						continue;
-					if (RebellionCreator.getInstance().getRebellionPoints(market) < 50)
+					if (!Global.getSettings().isDevMode() && RebellionCreator.getInstance().getRebellionPoints(market) < 50)
 						continue;
 					if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
 						continue;
@@ -811,7 +811,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				log.warn("\tFailed to find target market");
 			}
 			result.put("market", market);
-			if (targetFaction == null) {
+			if (targetFaction == null && market != null) {
 				result.put("targetFaction", market.getFaction());
 			}
 		}

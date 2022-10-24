@@ -213,7 +213,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 
 			List<FleetMemberAPI> intersect = NexUtils.getCollectionIntersection(bestList, fromThisRule);
 
-			// if have an intersection, use that
+			// if have a (sufficiently large) intersection, use that
 			if (!intersect.isEmpty() && intersect.size() >= SET_MIN_SIZE) {
 				bestList = intersect;
 			}
@@ -273,7 +273,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 		List<FleetMemberAPI> members = getEligibleShips(false);
 		int cols = Math.min(members.size(), 7);
 		if (cols < 4) cols = 4;
-		int rows = (members.size()/cols);
+		int rows = (int)Math.ceil(members.size()/(float)cols);
 		if (rows == 0) rows = 1;
 
 		dialog.showFleetMemberPickerDialog(StringHelper.getString("exerelin_misc", "selectShipGeneric"),

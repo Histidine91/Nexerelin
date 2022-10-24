@@ -1699,11 +1699,11 @@ nex_conquestOfferTextContact,DialogOptionSelected,$option == nex_conquest_start,
 SetTextHighlightColors h h $nex_conquest_marketFactionColor h h
 Highlight $nex_conquest_marketName $nex_conquest_marketLocation $nex_conquest_theMarketFaction $nex_conquest_days $nex_conquest_reward
 Call $nex_conquest_ref showMap ""Target: $nex_conquest_marketName""
-Call $nex_conquest_ref printDefenses","""$nex_conquest_marketName, in the $nex_conquest_marketLocation system."" $lastName brings up a display on your screen. ""A possession of $nex_conquest_theMarketFaction, and a strategic goal for $theFaction. We want you to seize this $nex_conquest_marketPlanetOrStation for us, within $nex_conquest_days.
+Call $nex_conquest_ref printDefenses","""$nex_conquest_marketName, in the $nex_conquest_marketLocation system."" $lastName brings up a display on your screen. ""A possession of $nex_conquest_marketFaction, and a strategic goal for $theFaction. We want you to seize this $nex_conquest_marketPlanetOrStation for us, within $nex_conquest_days days.
 
 ""Upon transfer of $nex_conquest_marketName, you will receive a credit reward equal to the shutdown value of the structures and industries $onOrAt $market, plus its six-month income, plus a bonus based on its size and stability. We currently estimate this to be $nex_conquest_reward credits.""
 
-You examine the intelligence report transmitted by $lastName. The surface defenders of $nex_conquest_marketName are estimated at:","contact_accept:Accept
+You examine the intelligence report transmitted by $personLastName.","contact_accept:Accept
 contact_decline:Decline",
 #END conquest mission,,,,,,
 ,,,,,,
@@ -3043,6 +3043,97 @@ OR
 ""Foul servant of Moloch and its abominable soulless prophet!"" The $personRank looks as if $heOrShe is barely keeping $himOrHerself from spitting on the comms console. ""Your plot to further stain the holy void will not succeed, for you will be purged by our sacred weaponry. Prepare yourself to be exorcised, demon.""",cutCommLink:Cut the comm link,"Pathers only have dialog for the Remnant variant of the mission, and have no bargaining options regardless of relationship
 Alt text by Avanitia"
 #END build station mission,,,,,,
+,,,,,,
+# military system bounty,,,,,,
+nex_msbBlurb,nex_msb_blurb,,,"""We wish to inflict harm on an enemy's naval forces. You will be paid a sizable sum for vessels sunk in the target system.""
+OR
+""We need a spoiling attack conducted on enemy forces in a system, with payment for each ship sunk.""
+OR
+""We're looking to issue a bounty on an enemy's forces in a system.""",,
+nex_msbBlurbRem,nex_msb_blurb,$id == nex_dissonant score:10,,"""Selfkind desires military force to enemy naval forces in target system engage and destroy.""
+OR
+""To neutralize forces in enemy system, bounty available.""",,
+nex_msbOfferOption,nex_msb_option,,,,nex_msb_start:Ask about the military system bounty,
+nex_msbBlurbBar,nex_msb_blurbBar,,,A $nex_msb_manOrWoman in a naval uniform appears to be interviewing prospective privateers.,,
+nex_msbOfferOptionBar,nex_msb_optionBar,,,,nex_msb_startBar:Look into the privateering arrangement,
+nex_msbOfferTextContact,DialogOptionSelected,$option == nex_msb_start,"$missionId = nex_msb
+SetTextHighlightColors $nex_msb_factionColor h h h
+SetTextHighlights $nex_msb_faction $nex_msb_dist  $nex_msb_baseBounty $nex_msb_days
+Call $nex_msb_ref showMap ""Target: $nex_msb_systemNameShort""","""The terms are this,"" $heOrShe says. ""The target is the $nex_msb_faction naval forces stationed at $nex_msb_baseName in $nex_msb_systemName, $nex_msb_dist light-years away. The base rate is $nex_msb_baseBounty credits per frigate destroyed or disabled in or near the system, on an increasing scale for larger hulls, as specified in addendum A of the terms I've forwarded. The bounty will be in effect for $nex_msb_days days.
+
+""$TheFaction's naval forces will be most grateful for your assistance in this matter, captain.""","contact_accept:Accept
+contact_decline:Decline",
+nex_msbOfferTextContactRem,DialogOptionSelected,"$option == nex_msb_start
+$id == nex_dissonant score:10","$missionId = nex_msb
+SetTextHighlightColors $nex_msb_factionColor h h h
+SetTextHighlights $nex_msb_faction $nex_msb_dist  $nex_msb_baseBounty $nex_msb_days
+Call $nex_msb_ref showMap ""Target: $nex_msb_systemNameShort""","""Target $nex_msb_faction forces from $nex_msb_baseName in $nex_msb_systemName, $nex_msb_dist light-years away,"" $personLastName enunciates. ""Base rate set at $nex_msb_baseBounty credits each frigate in or near system destroyed or disabled, with larger ships fee greater. Arrangement for $nex_msb_days days in effect.
+
+""Selfkind own forces cannot yet directly in core worlds intervene. Act through trusted agents like $playerName be.""","contact_accept:Accept
+contact_decline:Decline",
+nex_msbOfferTextBar,DialogOptionSelected,$option == nex_msb_startBar,"$missionId = nex_msb
+SetTextHighlightColors $nex_msb_factionColor hl hl hl
+SetTextHighlights $nex_msb_faction $nex_msb_dist  $nex_msb_baseBounty $nex_msb_days
+Call $nex_msb_ref showMap ""Target: $nex_msb_systemNameShort""","You reach the end of the brief queue and take the seat offered by the naval officer.
+
+""The $faction navy seeks capable private military contractors for an operation against the $nex_msb_faction,"" $heOrShe explains. ""The target location is $nex_msb_baseName in $nex_msb_systemName, $nex_msb_dist light-years away. Payment is also applicable for any targets of opportunity encountered that are hostile to $theFaction. 
+
+""The base rate is $nex_msb_baseBounty credits per frigate destroyed or disabled, on an increasing scale for larger hulls,"" the officer transmits a document to your TriPad, ""as specified in addendum A of the provided terms. The duration of the bounty is $nex_msb_days days.""","contact_acceptBar:Accept
+contact_declineBarNoContinue:Decline",
+#END military system bounty,,,,,,
+,,,,,,
+# supply rebellion,,,,,,
+nex_supRebBlurb,nex_supReb_blurb,,,"""I need a large quantity of materiel supplied to a liberation movement.""
+OR
+""There is a group of... freedom fighters we'd like you to supply.""",,
+nex_supRebOfferOption,nex_supReb_option,,,,"nex_supReb_start:""You mean rebels.""",
+nex_supRebOfferBegin,DialogOptionSelected,$option == nex_supReb_start,"$missionId = nex_supReb
+FireBest nex_supRebOfferText",,"contact_accept:Accept
+contact_decline:Decline",
+nex_supRebText,nex_supRebOfferText,,"SetTextHighlightColors $nex_supReb_marketColor h h h
+SetTextHighlights $nex_supReb_marketName $nex_supReb_dist $nex_supReb_payment undetected
+Call $nex_supReb_ref showMap ""Destination: $nex_supReb_marketName""
+Call $nex_supReb_ref showCostPanel","""Well... yes. We need a certain amount of supplies and heavy arms,"" $personLastName transmits a manifest to your display, ""along with a few good marines for cadre. Bring them to $nex_supReb_marketName - that's $nex_supReb_dist light-years away. You'll have to acquire the goods yourself, but the payment of $nex_supReb_payment credits should more than cover your costs.
+
+""When you get there, $nex_supReb_PersonPost $nex_supReb_personName will receive the shipment from you and deliver payment.
+
+""Also, I don't need to tell you this, but the delivery must be undetected. We can't have $nex_supReb_marketName security seizing the materiel, or worse, blowing our cover.""",,
+nex_supRebTextUnderworld,nex_supRebOfferText,$nex_supReb_underworld,"SetTextHighlightColors $nex_supReb_marketColor h h h
+SetTextHighlights $nex_supReb_marketName $nex_supReb_dist $nex_supReb_payment undetected
+Call $nex_supReb_ref showMap ""Destination: $nex_supReb_marketName""
+Call $nex_supReb_ref showCostPanel","""One man's terrorist..."" $heOrShe smiles, then continues. 
+
+""We're gonna need some supplies and heavy arms,"" $personLastName transmits a manifest to your display, ""and some experienced troops as trainers. Bring them to $nex_supReb_marketName - that's $nex_supReb_dist light-years away. We're paying $nex_supReb_payment credits; enough for you to buy all the stuff you need.
+
+""When you get there, $nex_supReb_PersonPost $nex_supReb_personName will receive the shipment from you and deliver payment – but only if you got in undetected. Otherwise, the authorities will intercept the shipment and it'll all be wasted. Got that?""",,
+nex_supRebDeliverGreeting,PickGreeting,"$nex_supReb_needsCommodity score:1000
+Call $nex_supReb_ref updateData","ShowPersonVisual
+Call $nex_supReb_ref showCostPanelAndCheckCost
+FireAll nex_supReb_CommodityCheck","$personName looks you over nervously. ""You the one they sent? Got the goods, ready for dropoff?""
+OR
+$personName eyes you suspiciously, ""You're $playerName? I thought you'd look different. Well, if you're here with the goods, I'll provide a drop-off point.""","nex_supReb_deliver:Deliver the goods
+cutCommLink:Cut the comm link",
+nex_supRebDeliverGreetingTransponderOn,PickGreeting,"$nex_supReb_needsCommodity score:1000
+$player.transponderOn score:5","ShowPersonVisual
+SetShortcut cutCommLink ""ESCAPE""","After a short wait, your connection request is accepted. The $manOrWoman starts to speak, then glances off-screen and closes the connection, leaving you looking at static.
+
+You realize that you'll need to come back with your transponder turned off before you're able to do business with this person.",0:cutCommLink:Cut the comm link,
+nex_supRebDeliverGreetingDetected,PickGreeting,"$nex_supReb_needsCommodity score:1000
+HasAttentionOfAuthorities score:5","ShowPersonVisual
+SetShortcut cutCommLink ""ESCAPE""","After a short wait, your connection request is accepted. The $manOrWoman starts to speak, then glances off-screen and closes the connection, leaving you looking at static.
+
+You consider that perhaps coming back with your transponder off and without attracting any undue attention might be a better approach.",0:cutCommLink:Cut the comm link,
+nex_supRebDeliverNotEnough,nex_supReb_CommodityCheck,!$nex_supReb_haveEnough,SetEnabled nex_supReb_deliver false,,,
+nex_supRebDeliverOptionSel,DialogOptionSelected,$option == nex_supReb_deliver,"AddCommodity credits $nex_supReb_credits
+Call $nex_supReb_ref deliver
+$nex_supReb_completed = true
+Call $nex_supReb_ref updateStage
+FireAll PopulateOptions","$HeOrShe nods, ""The boss will be pleased.""
+OR
+""Thank you, $playerFirstName,"" $heOrShe says. ""You have done the cause of freedom a good deed today.""
+OR
+""Okay, it's done."" $HeOrShe seems to key in some kind of confirmation on an off-brand datapad, then looks back up at you. ""This never happened.""",,
+#END supply rebellion,,,,,,
 ,,,,,,
 # chatty stuff,,,,,,
 nex_dissonantConvo1Opt,PopulateOptions,"$id == nex_dissonant

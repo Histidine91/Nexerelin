@@ -5,29 +5,26 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_TransferMarket;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.EventCancelReason;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static exerelin.campaign.intel.missions.ConquestMissionManager.MIN_PLAYER_LEVEL;
 
@@ -40,15 +37,13 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	protected FactionAPI faction;
 	protected FactionAPI lastTargetFaction;
 	//protected float reward;
-	protected boolean betrayed;
-	protected CancelReason cancelReason = null;
 	//protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
 	public static enum Stage {
 		CAPTURE,
 		COMPLETED,
 		FAILED,
-		FAILED_NO_PENALTY,
+		//FAILED_NO_PENALTY,	// use an EventCancelReason instead
 	}
 	
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
@@ -83,8 +78,15 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		 */
 
 		faction = getPerson().getFaction();
-		market = pickMarket();
+		market = InvasionFleetManager.getManager().getTargetMarketForFleet(
+				faction, null, null, Global.getSector().getEconomy().getMarketsCopy(),
+				InvasionFleetManager.EventType.INVASION);
 		if (market == null) return false;
+		else if (market.getFaction().isPlayerFaction() || market.getFaction() == Misc.getCommissionFaction())
+		{
+			//log.info("Target market belongs to player, retry later");
+			return false;
+		}
 		
 		if (!setMarketMissionRef(market, "$nex_conquest_ref")) {
 			return false;
@@ -99,11 +101,8 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		setStageOnMemoryFlag(Stage.COMPLETED, market, "$nex_conquest_completed");
 		setTimeLimit(Stage.FAILED, duration, market.getStarSystem());
 		
-		addNoPenaltyFailureStages(Stage.FAILED_NO_PENALTY);
-		connectWithMarketDecivilized(Stage.CAPTURE, Stage.FAILED_NO_PENALTY, market);
-		setStageOnMarketDecivilized(Stage.FAILED_NO_PENALTY, createdAt);
-		connectWithHostilitiesEnded(Stage.CAPTURE, Stage.FAILED_NO_PENALTY, person, market);
-		setStageOnHostilitiesEnded(Stage.FAILED_NO_PENALTY, person, market);
+		addNoPenaltyFailureStages(EventCancelReason.NOT_IN_ECONOMY, EventCancelReason.ALREADY_CAPTURED, EventCancelReason.RELATIONS_TOO_HIGH);
+		connectWithMarketDecivilized(Stage.CAPTURE, EventCancelReason.NOT_IN_ECONOMY, market);
 		
 		//setCreditReward(80000, 100000);
 		setCreditReward(calculateReward(true));
@@ -135,54 +134,30 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	}
 
 	@Override
-	protected void endSuccessImpl(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-		cleanup();
-	}
-
-	@Override
-	protected void endFailureImpl(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-		cleanup();
-	}
-
-	@Override
-	protected void endAbandonImpl() {
-		cleanup();
+	protected void notifyEnding() {
+		Global.getSector().getListenerManager().removeListener(this);
 	}
 
 	public void checkMarketState() {
 		if (currentStage != Stage.CAPTURE) return;
 		
-		if (!market.isInEconomy()) {
-			cancelReason = CancelReason.NOT_IN_ECONOMY;
-			missionCancelled();
-		}
-		else if (market.getFaction().isPlayerFaction() || market.getMemoryWithoutUpdate().getBoolean(GBConstants.MEMKEY_AWAIT_DECISION)) {
+		if (market.getFaction().isPlayerFaction() || market.getMemoryWithoutUpdate().getBoolean(GBConstants.MEMKEY_AWAIT_DECISION)) {
 			// do nothing, wait for player action
 		}
 		else if (market.getFaction() == faction) {
-			cancelReason = CancelReason.ALREADY_CAPTURED;
-			missionCancelled();
+			missionCancelled(EventCancelReason.ALREADY_CAPTURED);
 		}
 		else if (market.getFaction().isAtWorst(faction, RepLevel.SUSPICIOUS)) {
-			cancelReason = CancelReason.NO_LONGER_HOSTILE;
-			missionCancelled();
+			missionCancelled(EventCancelReason.RELATIONS_TOO_HIGH);
 		}
 	}
-
-	protected void cleanup() {
-		Global.getSector().getListenerManager().removeListener(this);
-	}
 	
-	protected void missionCancelled() {
-		result = new HubMissionResult();
-		result.success = false;
-		endAbandonImpl();
-		endAfterDelay();
-		abort();
+	protected void missionCancelled(EventCancelReason reason) {
+		this.addNoPenaltyFailureStages(reason);
+		this.setCurrentStage(reason, null, null);
 	}
 	
 	protected void missionComplete() {
-		setCreditReward(calculateReward(true));
 		setCurrentStage(Stage.COMPLETED, null, null);
 	}
 	
@@ -220,10 +195,11 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	@Override
 	protected void updateInteractionDataImpl() {
 		set("$nex_conquest_days", Misc.getWithDGS(timeLimit.days));
-		set("$nex_conquest_time", Misc.getWithDGS(getCreditsReward()));
+		set("$nex_conquest_reward", Misc.getWithDGS(getCreditsReward()));
 		set("$nex_conquest_marketName", market.getName());
 		set("$nex_conquest_marketFactionColor", market.getFaction().getBaseUIColor());
 		set("$nex_conquest_marketFaction", market.getFaction().getDisplayName());
+		set("$nex_conquest_marketLocation", market.getContainingLocation().getNameWithLowercaseType());
 		set("$nex_conquest_theMarketFaction", market.getFaction().getDisplayNameWithArticle());
 		set("$nex_conquest_onOrAt", market.getOnOrAt());
 		set("$nex_conquest_marketPlanetOrStation", StringHelper.getString(market.getPlanetEntity() == null ? "station" : "planet"));
@@ -236,7 +212,7 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		switch (action) {
 			case "printDefenses":
 				TooltipMakerAPI tooltip = dialog.getTextPanel().beginTooltip();
-				//Nex_MarketCMD.printDefenderInvasionStrength(tooltip, market);
+				Nex_MarketCMD.printDefenderInvasionStrength(tooltip, market);
 				dialog.getTextPanel().addTooltip();
 				return true;
 			default:
@@ -244,6 +220,25 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		}
 
 		return super.callEvent(ruleId, dialog, params, memoryMap);
+	}
+
+	@Override
+	public String getBaseName() {
+		return ConquestMissionIntel.getString("intelTitle") + ": " + market.getName();
+	}
+
+	@Override
+	public void addDescriptionForCurrentStage(TooltipMakerAPI info, float width, float height) {
+		super.addDescriptionForCurrentStage(info, width, height);
+		float opad = 10f;
+
+		if (currentStage instanceof EventCancelReason) {
+			String str = ((EventCancelReason)currentStage).getReason();
+			if (str == null) return;
+			str = StringHelper.substituteToken(str, "$market", market.getName());
+			str = StringHelper.substituteFactionTokens(str, faction);
+			info.addPara(str, opad);
+		}
 	}
 
 	@Override
@@ -257,14 +252,6 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 
 		boolean taken = market.getFaction() == faction;
 		FactionAPI targetFaction = taken ? lastTargetFaction : market.getFaction();
-
-		if (!market.isInEconomy()) {
-			info.addImage(faction.getLogo(), width, 128, opad);
-		} else {
-			info.addImages(width, 128, opad, opad * 2f,
-					faction.getCrest(),
-					targetFaction.getCrest());
-		}
 
 		String str = taken ? ConquestMissionIntel.getString("intelDesc1Alt") : ConquestMissionIntel.getString("intelDesc1");
 		String marketName = market.getName();
@@ -282,6 +269,13 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		str = StringHelper.substituteToken(str, "$market", marketName);
 		str = StringHelper.substituteToken(str, "$onOrAt", market.getOnOrAt());
 		info.addPara(str, opad, tc);
+
+		if (currentStage == Stage.CAPTURE && market.getFaction().isPlayerFaction()) {
+			ButtonAPI button = info.addButton(ConquestMissionIntel.getString("intelButtonTransfer"), BUTTON_TRANSFER,
+					faction.getBaseUIColor(), faction.getDarkUIColor(),
+					(int)(width), 20f, opad * 2f);
+			button.setShortcut(Keyboard.KEY_T, true);
+		}
 	}
 
 	@Override
@@ -302,6 +296,13 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 			return;
 		}
 		super.buttonPressConfirmed(buttonId, ui);
+	}
+
+	@Override
+	public Set<String> getIntelTags(SectorMapAPI map) {
+		Set<String> tags = super.getIntelTags(map);
+		tags.add(market.getFactionId());
+		return tags;
 	}
 
 	@Override
@@ -326,11 +327,9 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		
 		if (newOwner == faction) {
 			if (playerInvolved || oldOwner.isPlayerFaction()) missionComplete();
-			else missionCancelled();
+			else missionCancelled(EventCancelReason.ALREADY_CAPTURED);
 		} else if (!newOwner.isPlayerFaction()) {
 			lastTargetFaction = newOwner;
 		}
 	}
-		
-	public static enum CancelReason { ALREADY_CAPTURED, NOT_IN_ECONOMY, NO_LONGER_HOSTILE, OTHER }
 }

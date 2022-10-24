@@ -22,6 +22,7 @@ public class StringHelper {
 	
 	public static String getString(String category, String id, boolean ucFirst) {
 		String str = "";
+		if (id == null) return str;
 		try {
 			str = Global.getSettings().getString(category, id);
 		}
