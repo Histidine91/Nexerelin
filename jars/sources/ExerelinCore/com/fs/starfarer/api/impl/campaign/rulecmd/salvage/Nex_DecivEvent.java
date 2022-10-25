@@ -58,7 +58,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	*/
 	
 	public static final boolean DEBUG_MODE = false;
-	public static final float EVENT_CHANCE = 0.35f;
+	public static final float EVENT_CHANCE = 0.4f;
 	public static final float EVENT_TIME = 60;
 	public static final float EVENT_TIME_LONG = 365;
 	public static final int SUPPLIES_TO_COLONIZE = 100;
@@ -68,6 +68,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	public static final String EVENT_TYPE_REFUGEES = "refugees";
 	public static final String EVENT_TYPE_BOMB = "bomb";
 	public static final String EVENT_TYPE_FOUNDCOLONY = "foundColony";
+	public static final String EVENT_TYPE_RAID = "raid";
 	public static final String MEM_KEY_PREFIX = "$nex_decivEvent_";
 	public static final String MEM_KEY_HAS_EVENT = MEM_KEY_PREFIX + "hasEvent";
 	public static final String MEM_KEY_TYPE = MEM_KEY_PREFIX + "type";
@@ -77,17 +78,29 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	public static final String MEM_KEY_GIVE_ID = MEM_KEY_PREFIX + "giveItem";
 	public static final String MEM_KEY_GIVE_COUNT = MEM_KEY_PREFIX + "giveCount";
 	public static final String MEM_KEY_GIVE_NAME = MEM_KEY_PREFIX + "giveName";
+	public static final String MEM_KEY_RAID_ITEM = MEM_KEY_PREFIX + "raidItem";
 	public static final String MEM_KEY_FREE_SPACE = MEM_KEY_PREFIX + "freeSpace";
 	public static final String MEM_KEY_AMOUNT_HAVE = MEM_KEY_PREFIX + "amountHave";
 	public static final String MEM_KEY_VISITED_BEFORE = MEM_KEY_PREFIX + "visitedBefore";
 	public static final String MEM_KEY_PERSON = MEM_KEY_PREFIX + "person";
 	public static final String MEM_KEY_EVENT_SEEN_BEFORE = MEM_KEY_PREFIX + "seenBefore";
+
+	public static final List<String> RAID_ITEMS = new ArrayList<>();
+	public static final int RAID_ITEM_COUNT = 8;
+
+	static {
+		for (int i=0; i<RAID_ITEM_COUNT; i++) {
+			RAID_ITEMS.add(StringHelper.getString("nex_decivEvent", "raidItem" + (i + 1)));
+		}
+	}
 	
 	public static final WeightedRandomPicker<String> givePicker = new WeightedRandomPicker<>();
 	public static final WeightedRandomPicker<String> takePicker = new WeightedRandomPicker<>();
+	public static final WeightedRandomPicker<String> givePickerHigh = new WeightedRandomPicker<>();
 	
 	public static Logger log = Global.getLogger(Nex_DecivEvent.class);
-	
+
+	protected SectorEntityToken entity;
 	protected MemoryAPI memory;
 	
 	public static void reloadPickers() {
@@ -106,6 +119,15 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		takePicker.add(Commodities.HEAVY_MACHINERY, 1.5f);
 		takePicker.add(Commodities.FOOD, 1.25f);
 		takePicker.add(Commodities.DOMESTIC_GOODS, 1.25f);
+
+		givePickerHigh.clear();
+		givePickerHigh.add(Commodities.SUPPLIES, 1f);
+		givePickerHigh.add(Commodities.FUEL, 1f);
+		givePickerHigh.add(Commodities.RARE_ORE, 0.5f);
+		givePickerHigh.add(Commodities.RARE_METALS, 0.3f);
+		givePickerHigh.add(Commodities.HAND_WEAPONS, 0.15f);
+		givePickerHigh.add(Commodities.HEAVY_MACHINERY, 0.5f);
+		givePickerHigh.add(Commodities.LUXURY_GOODS, 0.4f);
 	}
 	
 	static {
@@ -117,7 +139,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		if (dialog == null) return false;
 		
 		String arg = params.get(0).getString(memoryMap);
-		MarketAPI market = dialog.getInteractionTarget().getMarket();
+		entity = dialog.getInteractionTarget();
+		MarketAPI market = entity.getMarket();
 		memory = market.getMemory();
 		
 		switch(arg)
@@ -137,6 +160,9 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 				break;
 			case "decline":
 				decline(dialog, memoryMap);
+				break;
+			case "end":
+				end(dialog);
 				break;
 			case "addFoundColonyIntel":
 				addFoundColonyIntel(dialog, memoryMap);
@@ -186,12 +212,15 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		FireBest.fire(null, dialog, memoryMap, "Nex_DecivEvent_OfferText");
 		
 		String type = memory.getString(MEM_KEY_TYPE);
-		boolean enough = makeCostPanel(dialog.getTextPanel());		
 		
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		opts.clearOptions();
 		opts.addOption(StringHelper.getString("accept", true), "nex_decivEvent_accept");
 		opts.addOption(StringHelper.getString("decline", true), "nex_decivEvent_decline");
+		NexUtils.addDevModeDialogOptions(dialog);
+		if (type.equals(EVENT_TYPE_RAID)) return;	// don't display extra info
+
+		boolean enough = makeCostPanel(dialog.getTextPanel());
 		
 		// require player to survey planet and explore any ruins first?
 		if (type.equals(EVENT_TYPE_FOUNDCOLONY) && Misc.hasUnexploredRuins(dialog.getInteractionTarget().getMarket())) 
@@ -202,8 +231,6 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		else if (!enough) {
 			opts.setEnabled("nex_decivEvent_accept", false);
 		}
-		
-		NexUtils.addDevModeDialogOptions(dialog);
 	}
 	
 	protected void accept(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
@@ -217,7 +244,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		if (type.equals(EVENT_TYPE_FOUNDCOLONY)) {
 			foundColony(dialog);
 			return;
-		}		
+		}
+
 		else if (type.equals(EVENT_TYPE_BOMB)) {
 			Global.getSoundPlayer().playUISound("nex_sfx_deciv_bomb", 1, 1);
 		}
@@ -237,6 +265,11 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	protected void decline(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
 	{
 		dialog.getInteractionTarget().setActivePerson(null);
+	}
+
+	protected void end(InteractionDialogAPI dialog) {
+		dialog.getInteractionTarget().setActivePerson(null);
+		setMem(MEM_KEY_HAS_EVENT, false);
 	}
 	
 	protected void foundColony(InteractionDialogAPI dialog) {
@@ -437,6 +470,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		eventTypePicker.add(EVENT_TYPE_BARTER, 10);
 		eventTypePicker.add(EVENT_TYPE_REFUGEES, 2.5f * market.getHazardValue());
 		eventTypePicker.add(EVENT_TYPE_BOMB, 3f);
+		eventTypePicker.add(EVENT_TYPE_RAID, 4f);
 		if (market.getPlanetEntity() != null)
 			eventTypePicker.add(EVENT_TYPE_FOUNDCOLONY, 1.25f/market.getHazardValue());
 		
@@ -450,6 +484,9 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 				break;
 			case EVENT_TYPE_BOMB:
 				setupBombEvent();
+				break;
+			case EVENT_TYPE_RAID:
+				setupRaidEvent();
 				break;
 			case EVENT_TYPE_FOUNDCOLONY:
 				setupColonyEvent();
@@ -560,8 +597,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		String commodityTake = Commodities.FUEL;
 		String commodityGive = null;
 		do {
-			if (takePicker.isEmpty()) reloadPickers();
-			commodityGive = takePicker.pick();
+			if (givePickerHigh.isEmpty()) reloadPickers();
+			commodityGive = givePickerHigh.pick();
 		} while (commodityGive == null || commodityGive.equals(commodityTake)
 				|| commodityGive.equals(Commodities.CREW));
 		
@@ -570,6 +607,27 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		baseAmount /= 4;
 		
 		setupCommodities(commodityGive, commodityTake, baseAmount, 4f, 1);
+	}
+
+	protected void setupRaidEvent() {
+		String commodityTake = Commodities.MARINES;
+		String commodityGive = null;
+		do {
+			if (givePickerHigh.isEmpty()) reloadPickers();
+			commodityGive = givePickerHigh.pick();
+		} while (commodityGive == null || commodityGive.equals(Commodities.CREW));
+
+		// 15-25 marines, more or less
+		float baseAmount = 10 + MathUtils.getRandomNumberInRange(1, 3) * 5;
+
+		MemoryAPI em = entity.getMemoryWithoutUpdate();
+		em.set("$raidDifficulty", baseAmount * 2, EVENT_TIME);
+		em.set("$raidGoBackTrigger", "Nex_DecivEvent_RaidCancelled", EVENT_TIME);
+		em.set("$raidContinueTrigger", "Nex_DecivEvent_RaidFinishedB", EVENT_TIME);
+
+		setupCommodities(commodityGive, commodityTake, baseAmount, 2f, 1);
+
+		setMem(MEM_KEY_RAID_ITEM, NexUtils.getRandomListElement(RAID_ITEMS));
 	}
 	
 	protected void setupRefugeeEvent() {

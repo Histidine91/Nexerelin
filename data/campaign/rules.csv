@@ -547,6 +547,11 @@ nex_decivEvent_bomb,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""b
 There's a nearby pack of knaves and scum that needs dealing with. We'd clear the whole rotten nest out ourselves, but alas, their defenses are a little too entrenched. You, on the other hand... with your spaceship, you could drop a few  bombs on them and blow them straight to hell. In return, we'll give you some $nex_decivEvent_giveName. Sounds good?""
 
 $personName transmits several images and the coordinates of the target. With the rudimentary defenses present, you estimate that it'd take no more than $nex_decivEvent_takeCount fuel to completely destroy this settlement. Assuming, of course, that intervening in $market's conflicts is a good idea.",,
+nex_decivEvent_raid,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""raid""",SetTextHighlights boys with fancy guns,"""Got any boys with fancy guns up there? If so, we have a little favor to ask.
+
+""Recently, a rival camp stole something of great value to us,  $nex_decivEvent_raidItem. We'd go and get it back, but they're dug in too deep for us to handle. But if you were to come in with your fancy shuttles and power armor, they'd crumple like cellulose paper. In return, you can keep whatever other valuables you find in their miserable den. Interested?""
+
+Do you risk your marines' lives, even against such meager opposition, for uncertain loot?",,
 nex_decivEvent_colony,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""foundColony""","SetTextHighlights ""supplies"" ""machinery"".
 AddTextSmall ""Will create a new independent colony $onOrAt $market.""
 SetTextHighlights independent","""We have a great favor to ask of you, friend $playerName.
@@ -593,6 +598,29 @@ $personName is most pleased. ""Excellent!"" $heOrShe crows. ""Take your reward, 
 A while later, your shuttle returns to your $shipOrFleet with the promised goods. That's one problem taken care of, at least.",,
 nex_decivEvent_declineBomb,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.nex_decivEvent_type == ""bomb""","Nex_DecivEvent decline
+ShowDefaultVisual
+FireAll PopulateOptions","""Bah, fine. Have it your way, Captain High-and-Mighty.""
+
+You cut the comm link. The outcome of whatever feud $personName and $hisOrHer neighbors have down there is none of your concern.",,
+nex_decivEvent_acceptRaid,DialogOptionSelected,"$option == nex_decivEvent_accept
+$market.nex_decivEvent_type == ""raid""","AddRaidObjective genericIcon ""Recover item"" MINIMAL $entity.raidDifficulty Nex_DecivEvent_RaidFinishedA
+$option = mktRaidNonMarket
+FireBest DialogOptionSelected",,,
+nex_decivEvent_acceptRaid2,Nex_DecivEvent_RaidFinishedA,,AddCommodity $market.nex_decivEvent_giveItem $market.nex_decivEvent_giveCount,"After a brief reconnaisance overflight with aerospace assets, your marines storm the target location. The crude defenses of a minor settlement on a decivilized world are no match for an organized marine element with air and orbital support, and resistance rapidly disintegrates.
+
+A quick search turns up $nex_decivEvent_raidItem in the leader's personal chambers. Your squads also find a pile of loot, which they load on a shuttle.",,
+nex_decivEvent_acceptRaid3,Nex_DecivEvent_RaidFinishedB,,"Nex_DecivEvent end
+ShowDefaultVisual
+FireAll PopulateOptions","""Thank you so much, starfarer!"" $personName enthuses, after you return $hisOrHer trinket. Well, it's probably more valuable out here $onOrAt $market than back in civilized space. ""If you ever stop by again, don't be a stranger, alright?""
+
+Your marines return to the $shipOrFleet without fuss. Maybe there'll be another little adventure like this on the next planet.",,
+nex_decivEvent_declineRaid,DialogOptionSelected,"$option == nex_decivEvent_decline
+$market.nex_decivEvent_type == ""raid""","Nex_DecivEvent decline
+ShowDefaultVisual
+FireAll PopulateOptions","""Bah, fine. Have it your way, Captain High-and-Mighty.""
+
+You cut the comm link. The outcome of whatever feud $personName and $hisOrHer neighbors have down there is none of your concern.",,
+nex_decivEvent_declineRaidTrigger,Nex_DecivEvent_RaidCancelled,,"Nex_DecivEvent decline
 ShowDefaultVisual
 FireAll PopulateOptions","""Bah, fine. Have it your way, Captain High-and-Mighty.""
 

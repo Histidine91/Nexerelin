@@ -770,6 +770,15 @@
 		
 		"colonyIntelTitle":"Colony Revival",
 		"colonyIntelDesc":"The inhabitants of the decivilized planet %s in the %s seek to return to the stars. They would appreciate a gift of %s supplies and %s heavy machinery to complete repairs to their spaceport and other infrastructure.",
+		
+		"raidItem1":"a finely carved wood statue",
+		"raidItem2":"an atmospheric water condenser",
+		"raidItem3":"a wedding ring with large ruby",
+		"raidItem4":"an encyclopedia datachip",
+		"raidItem5":"a human-sized Volturnian lobster plush",
+		"raidItem6":"a Domain military medal",
+		"raidItem7":"a traditionally made katana",
+		"raidItem8":"a scavenged starship computer",
 	},
 	
 	"nex_defenseFleet":{
@@ -2025,6 +2034,7 @@
 	"nex_missions":{
 		"cancelReason_alreadyCaptured":"$TheFaction has already captured $market.",
 		"cancelReason_noLongerHostile":"$TheFaction is no longer hostile to the target faction.",
+		"cancelReason_relationsTooHigh":"$TheFaction's relations with the target faction are now too high.",
 		"cancelReason_noLongerInterested":"$TheFaction is no longer interested in carrying out the mission.",
 	},
 	
