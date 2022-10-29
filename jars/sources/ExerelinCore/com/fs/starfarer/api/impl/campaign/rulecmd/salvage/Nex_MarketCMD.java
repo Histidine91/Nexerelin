@@ -2201,7 +2201,7 @@ public class Nex_MarketCMD extends MarketCMD {
 
 		int currUnrest = RecentUnrest.get(market).getPenalty();
 		int reduction = currUnrest/4;
-		penalty -= currUnrest;
+		penalty -= reduction;
 
 		if (penalty > 0) {
 			RecentUnrest.get(target).add(penalty, desc);
