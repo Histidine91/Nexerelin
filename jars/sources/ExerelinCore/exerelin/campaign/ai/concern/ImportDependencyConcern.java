@@ -2,6 +2,7 @@ package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -11,19 +12,36 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+@Log4j
 public class ImportDependencyConcern extends BaseStrategicConcern {
 
     @Getter protected String commodityId;
     @Getter protected int required;
 
+    public static final Map<String, Float> MULTIPLIERS = new HashMap<>();
+    static {
+        MULTIPLIERS.put(Commodities.FOOD, 2f);
+        MULTIPLIERS.put(Commodities.SUPPLIES, 2f);
+        MULTIPLIERS.put(Commodities.HAND_WEAPONS, 2f);
+        MULTIPLIERS.put(Commodities.SHIP_WEAPONS, 2f);
+        MULTIPLIERS.put(Commodities.HEAVY_MACHINERY, 2f);
+        MULTIPLIERS.put(Commodities.METALS, 1.5f);
+        MULTIPLIERS.put(Commodities.RARE_METALS, 1.5f);
+        MULTIPLIERS.put(Commodities.FUEL, 1.5f);
+    }
+
     @Override
     public boolean generate() {
         Set alreadyConcerned = getExistingConcernItems();
+
+        log.info("Generating import dependency concern for " + ai.getFaction().getDisplayName());
+        log.info("Import dependency existing concerns: " + alreadyConcerned + ", size " + alreadyConcerned.size());
 
         Map<String, Integer> imports = EconomyInfoHelper.getInstance().getCommoditiesImportedByFaction(ai.getFaction().getId());
         Map<String, Integer> trueImports = new HashMap<>();
@@ -49,7 +67,9 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
         commodityId = picker.pick();
         if (commodityId != null) {
             required = Math.round(picker.getWeight(commodityId));
-            priority.modifyFlat("importVolume", required * 10, StrategicAI.getString("statImportVolume", true));
+            float prio = required * 10;
+            if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
+            priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
             return true;
         }
 
@@ -81,7 +101,11 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
             end();
             return;
         }
+
         required = imports;
+        float prio = required * 10;
+        if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
+        priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
     }
 
     @Override

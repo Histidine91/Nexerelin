@@ -8,10 +8,13 @@ public class WarWearinessConcern extends DiplomacyConcern {
 
     @Override
     public boolean generate() {
+        if (!getExistingConcernsOfSameType().isEmpty()) return false;
+
         float weariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
         if (weariness < DiplomacyBrain.MAX_WEARINESS_FOR_WAR * 0.75f) return false;
 
         updatePriority(weariness);
+        faction = ai.getFaction();
         return true;
     }
 

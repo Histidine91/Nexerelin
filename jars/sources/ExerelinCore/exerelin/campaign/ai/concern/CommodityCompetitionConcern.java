@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.StringHelper;
@@ -22,6 +23,8 @@ import java.util.Set;
 
 public class CommodityCompetitionConcern extends BaseStrategicConcern {
 
+    public static final int MAX_SIMULTANEOUS_CONCERNS = 4;
+
     @Getter protected String commodityId;
     @Getter protected String competitorId;
     @Getter protected int competitorShare;
@@ -29,6 +32,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     @Override
     public boolean generate() {
         Set alreadyConcerned = getExistingConcernItems();
+        if (alreadyConcerned.size() >= MAX_SIMULTANEOUS_CONCERNS) return false;
         String factionId = ai.getFactionId();
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
 
@@ -57,6 +61,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
         for (Pair<FactionAPI, Integer> competitorEntry : competitors2) {
             int share = competitorEntry.two;
             if (share < ourShare/2) continue;
+            if (share < SAIConstants.MIN_COMPETITOR_SHARE) continue;
             picker2.add(competitorEntry, share);
         }
 
@@ -82,7 +87,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     }
 
     protected void updatePriority() {
-        priority.modifyFlat("competingShare", competitorShare * 5, StrategicAI.getString("statCompetingShare", true));
+        priority.modifyFlat("competingShare", competitorShare * 8, StrategicAI.getString("statCompetingShare", true));
     }
 
     @Override

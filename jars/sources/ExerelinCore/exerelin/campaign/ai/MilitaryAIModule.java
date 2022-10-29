@@ -10,12 +10,14 @@ import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.RaidListener;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+@Log4j
 public class MilitaryAIModule extends StrategicAIModule implements RaidListener {
 
     @Getter public List<RaidRecord> recentRaids = new LinkedList<>();
@@ -56,6 +58,7 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
 
     @Override
     public void reportRaidEnded(RaidIntel intel, FactionAPI attacker, FactionAPI defender, MarketAPI target, boolean success) {
+        log.info("Raid ended: " + intel.getName());
         if (attacker != ai.faction || defender != ai.faction) return;
 
         String name = intel.getName();

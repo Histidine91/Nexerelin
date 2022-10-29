@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import lombok.extern.log4j.Log4j;
 
@@ -16,6 +17,8 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
     public boolean generate() {
         FactionAPI us = ai.getFaction();
         Set alreadyConcerned = getExistingConcernItems();
+        //log.info("Generating develop relations concern for " + us.getDisplayName());
+        //log.info("Develop relations existing concerns: " + alreadyConcerned + ", size " + alreadyConcerned.size());
 
         WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>();
 
@@ -23,13 +26,14 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
 
         for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
             FactionAPI faction = Global.getSector().getFaction(factionId);
+            if (faction == us) continue;
             if (alreadyConcerned.contains(faction)) continue;
             float theirStrength = getFactionStrength(faction);
             if (!wantToBefriend(faction)) continue;
 
             float weight = theirStrength;
-            weight *= 10;
-            if (weight <= 0) continue;
+            weight *= 20;
+            if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) continue;
 
             picker.add(faction, weight);
         }
@@ -48,8 +52,8 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
             return;
         }
 
-        float weight = theirStrength;
-        if (weight <= 0) {
+        float weight = theirStrength *= 20;
+        if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) {
             end();
             return;
         }

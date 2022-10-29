@@ -28,8 +28,8 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
             float theirStrength = getFactionStrength(faction);
             if (!shouldBeConcernedAbout(faction, ourStrength, theirStrength)) continue;
 
-            float weight = theirStrength - ourStrength/2;
-            if (weight <= 0) continue;
+            float weight = theirStrength * 2 - ourStrength;
+            if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) continue;
             weight *= getPriorityMult(us.getRelationshipLevel(faction));
 
             picker.add(faction, weight);
@@ -49,8 +49,8 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
             return;
         }
 
-        float weight = theirStrength - ourStrength/2;
-        if (weight <= 0) {
+        float weight = theirStrength * 2 - ourStrength;
+        if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) {
             end();
             return;
         }

@@ -2,7 +2,7 @@
 	"concerns":{
 		"revanchism":{
 			"name":"Revanchism",
-			"desc":"We must take back our rightful territory of $market from the vile $faction!",
+			"desc":"We must take back our rightful territory of $market (size $size) from the vile $faction!",
 			#"icon":"",	# if blank or unspecified, will default to faction icon (more generally, it uses whatever icon the code says to use)
 			"classPath":"exerelin.campaign.ai.concern.RevanchismConcern",
 			"tags":["military", "diplomacy"],
@@ -10,14 +10,21 @@
 		},
 		"vulnerableEnemyTarget":{
 			"name":"Vulnerable Enemy Target",
-			"desc":"$market is a highly valuable target, yet poorly defended for its value. It would do well under our management.",
+			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. It would do well under our management.",
 			"classPath":"exerelin.campaign.ai.concern.VulnerableEnemyTargetConcern",
 			"tags":["military", "economy"],
 			"module":MILITARY
 		},
+		"enemyInSharedSystem":{
+			"name":"Enemy in Shared System",
+			"desc":"$market (size $size) is an enemy colony in a system we also have a presence. We ought to neutralize this threat.",
+			"classPath":"exerelin.campaign.ai.concern.HostileInSharedSystemConcern",
+			"tags":["military"],
+			"module":MILITARY
+		},
 		"inadequateDefense":{
 			"name":"Inadequate Defenses",
-			"desc":"$market is a highly valuable target, yet poorly defended for its value. We should strengthen its defenses.",
+			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. We should strengthen its defenses.",
 			"classPath":"exerelin.campaign.ai.concern.InadequateDefenseConcern",
 			"tags":["military", "economy"],
 			"module":MILITARY
@@ -46,7 +53,7 @@
 		},
 		"powerfulUnfriendly":{
 			"name":"Powerful Unfriendly",
-			"desc":"$TheFaction is strong, and our relations with them are not always friendly. We should either appease them or take other precautions.",
+			"desc":"$TheFaction $factionIsOrAre strong, and our relations with them are not always friendly. We should either appease them or take other precautions.",
 			"classPath":"exerelin.campaign.ai.concern.PowerfulUnfriendlyConcern",
 			"tags":["diplomacy"],
 			"module":DIPLOMATIC

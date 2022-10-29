@@ -48,6 +48,7 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern {
             CommodityMarketDataAPI data = testMarket.getCommodityData(commodityId).getCommodityMarketData();
 
             float size = data.getMarketValue();
+            if (size <= 0) continue;
             List<EconomyInfoHelper.ProducerEntry> producers = EconomyInfoHelper.getInstance().getProducersByCommodity(commodityId);
             int numProducers = producers.size();
             // output units

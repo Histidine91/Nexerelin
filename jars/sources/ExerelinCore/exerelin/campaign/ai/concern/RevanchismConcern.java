@@ -1,10 +1,15 @@
 package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.StringHelper;
 
 import java.util.*;
 
@@ -38,14 +43,19 @@ public class RevanchismConcern extends MarketRelatedConcern {
         }
         market = picker.pick();
 
+        update();
+
+        return market != null;
+    }
+
+    @Override
+    public void update() {
         if (market != null) {
-            float value = this.getMarketValue(market)/1000f * market.getSize();
-            value /= 10;
+            float value = getMarketValue(market)/1000f * market.getSize();
+            value /= SAIConstants.MARKET_VALUE_DIVISOR;
 
             priority.modifyFlat("value", value, StrategicAI.getString("statValue", true));
         }
-
-        return market != null;
     }
 
     @Override
@@ -54,6 +64,13 @@ public class RevanchismConcern extends MarketRelatedConcern {
             return otherConcern.getMarket() == this.market;
         }
         return false;
+    }
+
+    @Override
+    public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
+        LabelAPI label = super.createTooltipDesc(tooltip, holder, pad);
+        label.setText(StringHelper.substituteFactionTokens(label.getText(), market.getFaction()));
+        return label;
     }
 
     @Override

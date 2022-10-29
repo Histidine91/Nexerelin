@@ -36,6 +36,7 @@ public class RetaliationConcern extends BaseStrategicConcern {
         Map<String, Integer> numRaidsByFaction = new HashMap<>();
 
         for (RaidRecord raid : ((MilitaryAIModule)module).getRecentRaids()) {
+            log.info("Checking raid " + raid.name);
             if (alreadyConcernRaids.contains(raid)) continue;
             if (raid.defender != ai.getFaction()) continue;
             if (!raid.attacker.isHostileTo(ai.getFaction())) continue;

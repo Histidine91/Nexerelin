@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
@@ -37,8 +38,9 @@ public class StrategicAI extends BaseIntelPlugin {
 	@Getter protected DiplomaticAIModule diploModule;
 	@Getter protected MilitaryAIModule milModule;
 
-	@Getter protected List<StrategicConcern> existingConcerns = new ArrayList<>();
+	@Deprecated @Getter protected List<StrategicConcern> existingConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastAddedConcerns = new ArrayList<>();
+	protected transient List<StrategicConcern> lastRemovedConcerns = new ArrayList<>();
 	protected IntervalUtil interval = new IntervalUtil(29, 31);
 
 
@@ -48,6 +50,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	
 	public StrategicAI init() {
 		Global.getSector().getIntelManager().addIntel(this, true);
+		Global.getSector().addScript(this);
 		faction.getMemoryWithoutUpdate().set(MEMORY_KEY, this);
 
 		econModule = new EconomicAIModule(this, StrategicDefManager.ModuleType.ECONOMIC);
@@ -66,6 +69,7 @@ public class StrategicAI extends BaseIntelPlugin {
 
 	protected Object readResolve() {
 		lastAddedConcerns = new ArrayList<>();
+		lastRemovedConcerns = new ArrayList<>();
 		return this;
 	}
 	
@@ -78,7 +82,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	}
 
 	public void addConcerns(Collection<StrategicConcern> concerns) {
-		existingConcerns.addAll(concerns);
+		//existingConcerns.addAll(concerns);
 		lastAddedConcerns.addAll(concerns);
 	}
 
@@ -94,12 +98,9 @@ public class StrategicAI extends BaseIntelPlugin {
 		if (!interval.intervalElapsed()) return;
 
 		// update existing concerns, remove any if needed
-		Iterator concernIter = existingConcerns.listIterator();
-		while (concernIter.hasNext()) {
-			StrategicConcern concern = (StrategicConcern)concernIter.next();
-			concern.update();
-			if (!concern.isValid()) concernIter.remove();
-		}
+		updateConcerns(econModule);
+		updateConcerns(milModule);
+		updateConcerns(diploModule);
 
 		// find new concerns
 		findConcerns(econModule);
@@ -108,9 +109,10 @@ public class StrategicAI extends BaseIntelPlugin {
 
 		// TODO: tell executive module to take action
 
-		if (!lastAddedConcerns.isEmpty()) {
+		if (!lastAddedConcerns.isEmpty() || !lastRemovedConcerns.isEmpty()) {
 			sendUpdateIfPlayerHasIntel(UPDATE_NEW_CONCERNS, true, false);
 			lastAddedConcerns.clear();
+			lastRemovedConcerns.clear();
 		}
 	}
 
@@ -119,6 +121,21 @@ public class StrategicAI extends BaseIntelPlugin {
 		if (!newConcerns.isEmpty()) {
 			addConcerns(newConcerns);
 		}
+	}
+
+	protected void updateConcerns(StrategicAIModule module) {
+		List<StrategicConcern> removedConcerns = module.updateConcerns();
+		if (!removedConcerns.isEmpty()) {
+			lastRemovedConcerns.addAll(removedConcerns);
+		}
+	}
+
+	public List<StrategicConcern> getExistingConcerns() {
+		List<StrategicConcern> concerns = new ArrayList<>();
+		concerns.addAll(econModule.getCurrentConcerns());
+		concerns.addAll(milModule.getCurrentConcerns());
+		concerns.addAll(diploModule.getCurrentConcerns());
+		return concerns;
 	}
 
 	@Override
@@ -150,6 +167,9 @@ public class StrategicAI extends BaseIntelPlugin {
 		float opad = 10;
 		float sectionPad = 32;
 
+		String str = "%s days to next strategy meeting";
+		tooltip.addPara(str, opad, Misc.getHighlightColor(), String.format("%.1f", interval.getIntervalDuration() - interval.getElapsed()));
+
 		tooltip.setParaInsigniaLarge();
 		tooltip.addPara("[temp] Economic report", sectionPad);
 		tooltip.setParaFontDefault();
@@ -174,13 +194,13 @@ public class StrategicAI extends BaseIntelPlugin {
 	
 	@Override
 	public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
-		TooltipMakerAPI superheaderHolder = panel.createUIElement(width/3, 40, false);
+		TooltipMakerAPI superheaderHolder = panel.createUIElement(width/2, 40, false);
 		TooltipMakerAPI superheader = superheaderHolder.beginImageWithText(getIcon(), 40);
 		superheader.setParaOrbitronVeryLarge();
 		superheader.addPara(getName(), 3);
 		superheaderHolder.addImageWithText(3);
 		
-		panel.addUIElement(superheaderHolder).inTL(width*0.35f, 0);
+		panel.addUIElement(superheaderHolder).inTL(width*0.3f, 0);
 		
 		TooltipMakerAPI tableHolder = panel.createUIElement(width, 600, true);
 		
@@ -192,8 +212,13 @@ public class StrategicAI extends BaseIntelPlugin {
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, Color tc, float initPad) {
 		Object param = getListInfoParam();
 		if (param == UPDATE_NEW_CONCERNS) {
+			info.addPara(getString("intelBulletUpdate"), initPad);
 			int numNewConcerns = lastAddedConcerns.size();
-			info.addPara(getString("intelBulletUpdate"), initPad, tc, numNewConcerns + "");
+			if (numNewConcerns > 0) info.addPara(getString("intelBulletUpdateAdd"), 0, tc,
+					numNewConcerns + "", lastAddedConcerns.toString());
+			int numRemovedConcerns = lastRemovedConcerns.size();
+			if (numRemovedConcerns > 0) info.addPara(getString("intelBulletUpdateRemove"), 0, tc,
+					numRemovedConcerns + "", lastRemovedConcerns.toString());
 		}
 	}
 
@@ -216,7 +241,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(StringHelper.getString("exerelin_misc", "intelTagDebug"));
-		tags.add(DiplomacyProfileIntel.getString("intelTag"));
+		//tags.add(DiplomacyProfileIntel.getString("intelTag"));
 		return tags;
 	}	
 
@@ -273,6 +298,22 @@ public class StrategicAI extends BaseIntelPlugin {
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(Factions.PLAYER)) continue;
 			addAIIfNeeded(factionId);
+		}
+	}
+	
+	// runcode exerelin.campaign.ai.StrategicAI.purgeConcerns();
+	public static void purgeConcerns() {
+		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			StrategicAI ai = getAI(factionId);
+			if (ai != null) {
+				for (StrategicConcern concern : ai.getExistingConcerns()) {
+					concern.end();
+				}
+				ai.econModule.currentConcerns.clear();
+				ai.milModule.currentConcerns.clear();
+				ai.diploModule.currentConcerns.clear();
+				ai.existingConcerns.clear();
+			}
 		}
 	}
 }

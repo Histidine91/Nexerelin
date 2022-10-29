@@ -33,7 +33,8 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
                 if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD) continue;
                 if (gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) continue;
 
-                float valueMod = value/(sd*2 + gd);
+                float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR;
+                if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) continue;
 
                 targetsSorted.add(new Pair<>(market, valueMod));
             }
@@ -49,7 +50,7 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
         Pair<MarketAPI, Float> goal = picker.pick();
         if (goal != null) {
             market = goal.one;
-            priority.modifyFlat("defenseAdjustedValue", goal.two/10, StrategicAI.getString("statDefenseAdjustedValue", true));
+            priority.modifyFlat("defenseAdjustedValue", goal.two, StrategicAI.getString("statDefenseAdjustedValue", true));
         }
 
         return market != null;
@@ -63,7 +64,15 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
         float gd = getGroundDefenseValue(market);
         if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD && gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) {
             end();
+            return;
         }
+        float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR;
+        if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) {
+            end();
+            return;
+        }
+        priority.modifyFlat("defenseAdjustedValue", value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR,
+                StrategicAI.getString("statDefenseAdjustedValue", true));
     }
 
     @Override
@@ -78,11 +87,4 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
         }
         return false;
     }
-
-    public static final Comparator<Pair<MarketAPI, Float>> VALUE_COMPARATOR = new Comparator<Pair<MarketAPI, Float>>() {
-        @Override
-        public int compare(Pair<MarketAPI, Float> o1, Pair<MarketAPI, Float> o2) {
-            return Float.compare(o2.two, o1.two);
-        }
-    };
 }

@@ -4,10 +4,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
-import exerelin.utilities.NexUtilsMarket;
 
 import java.util.*;
 
@@ -17,40 +17,44 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
 
     @Override
     public boolean generate() {
-        List<MarketAPI> hostiles = new ArrayList<>();
+        List<Pair<MarketAPI, Float>> hostiles = new ArrayList<>();
         Set alreadyConcernMarkets = getExistingConcernItems();
 
         Set<LocationAPI> toCheck = new HashSet<>();
         for (MarketAPI market : Misc.getFactionMarkets(ai.getFaction())) {
-            if (alreadyConcernMarkets.contains(market)) continue;
             toCheck.add(market.getContainingLocation());
         }
 
         for (LocationAPI loc : toCheck) {
             for (MarketAPI market : Global.getSector().getEconomy().getMarkets(loc)) {
                 if (market.isHidden()) continue;
+                if (alreadyConcernMarkets.contains(market)) continue;
                 if (!market.getFaction().isHostileTo(ai.getFaction())) continue;
-                hostiles.add(market);
+
+                float value = getMarketValue(market)/1000f + market.getSize() * 100;
+                value /= SAIConstants.MARKET_VALUE_DIVISOR;
+                value *= 2;
+                if (value < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) continue;
+
+                hostiles.add(new Pair<>(market, value));
             }
         }
 
         if (hostiles.isEmpty()) return false;
 
-        Collections.sort(hostiles, NexUtilsMarket.marketSizeComparator);
+        Collections.sort(hostiles, MARKET_PAIR_COMPARATOR);
 
-        WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+        WeightedRandomPicker<Pair<MarketAPI, Float>> picker = new WeightedRandomPicker<>();
         int max = Math.min(hostiles.size(), MAX_MARKETS_FOR_PICKER);
         for (int i=0; i<max; i++) {
-            MarketAPI toPick = hostiles.get(i);
-            picker.add(toPick, toPick.getSize());
+            Pair<MarketAPI, Float> entry = hostiles.get(i);
+            picker.add(entry, entry.two);
         }
-        market = picker.pick();
+        Pair<MarketAPI, Float> chosen = picker.pick();
 
-        if (market != null) {
-            float value = this.getMarketValue(market)/1000f * market.getSize();
-            value /= 10;
-
-            priority.modifyFlat("value", value, StrategicAI.getString("statValue", true));
+        if (chosen != null) {
+            market = chosen.one;
+            priority.modifyFlat("value", chosen.two, StrategicAI.getString("statValue", true));
         }
 
         return market != null;

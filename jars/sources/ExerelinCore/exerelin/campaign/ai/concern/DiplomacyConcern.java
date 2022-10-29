@@ -24,13 +24,18 @@ public abstract class DiplomacyConcern extends BaseStrategicConcern {
         String str = getDef().desc;
         str = StringHelper.substituteFactionTokens(str, faction);
         Color hl = faction.getBaseUIColor();
-        return tooltip.addPara(str, pad, hl);
+        return tooltip.addPara(str, pad, hl, faction.getDisplayNameWithArticleWithoutArticle());
     }
 
     @Override
     public String getIcon() {
-        if (faction != null) return faction.getCrest();
+        //if (faction != null) return faction.getCrest();
         return super.getIcon();
+    }
+
+    @Override
+    public String getName() {
+        return super.getName() + " - " + (faction != null ? faction.getDisplayName() : "<error>");
     }
 
     @Override

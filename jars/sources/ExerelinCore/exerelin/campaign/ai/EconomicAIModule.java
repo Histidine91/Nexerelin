@@ -37,12 +37,12 @@ public class EconomicAIModule extends StrategicAIModule {
 		for (String otherFactionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(otherFactionId)) continue;
 			int compFactor = helper.getCompetitionFactor(factionId, otherFactionId);
-			if (compFactor < 50) continue;
+			if (compFactor < 20) continue;
 			
 			FactionAPI otherFaction = Global.getSector().getFaction(otherFactionId);
 			String sprite = otherFaction.getCrest();
             TooltipMakerAPI iwt = tooltip.beginImageWithText(sprite, 24);
-            LabelAPI label = iwt.addPara("%s: %s", 0, hl, otherFaction.getDisplayName(), compFactor + "");
+            LabelAPI label = iwt.addPara("%s: %s", 0, hl, Misc.ucFirst(otherFaction.getDisplayName()), compFactor + "");
             label.setHighlightColors(hl, otherFaction.getBaseUIColor());
             tooltip.addImageWithText(pad);
 		}

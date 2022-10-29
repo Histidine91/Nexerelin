@@ -277,6 +277,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			if (this.getCurrentStage() >= 2) impact *= 2;
 			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
 		}
+
+		reportRaid(this);
 	}
 	
 	@Override

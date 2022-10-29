@@ -118,6 +118,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         String icon = getDef().icon;
         if (icon == null || icon.isEmpty()) {
             if (market != null) icon = market.getFaction().getCrest();
+            else if (faction != null) icon = faction.getCrest();
             else icon = ai.getFaction().getCrest();
         }
 
@@ -126,6 +127,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     @Override
     public FactionAPI getFaction() {
+        if (faction != null) return faction;
         if (market != null) return market.getFaction();
         return ai.getFaction();
     }
@@ -147,7 +149,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     public List<StrategicConcern> getExistingConcernsOfSameType() {
         List<StrategicConcern> results = new ArrayList<>();
-        for (StrategicConcern concern : ai.getExistingConcerns()) {
+        for (StrategicConcern concern : module.getCurrentConcerns()) {
             if (concern.isEnded()) continue;
             if (concern.getClass() == this.getClass()) {
                 results.add(concern);
@@ -166,6 +168,11 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         value += NexUtilsMarket.getIncomeNetPresentValue(market, 6, 0.02f);
 
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
     public static float getSpaceDefenseValue(MarketAPI market) {

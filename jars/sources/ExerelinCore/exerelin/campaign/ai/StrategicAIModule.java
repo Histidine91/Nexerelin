@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Log4j
@@ -54,6 +55,17 @@ public abstract class StrategicAIModule {
             }
         }
         return newConcerns;
+    }
+
+    public List<StrategicConcern> updateConcerns() {
+        List<StrategicConcern> toRemove = new ArrayList<>();
+        for (StrategicConcern concern : currentConcerns) {
+            concern.update();
+            if (!concern.isValid() || concern.isEnded())
+                toRemove.add(concern);
+        }
+        currentConcerns.removeAll(toRemove);
+        return toRemove;
     }
 
     abstract void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder);
