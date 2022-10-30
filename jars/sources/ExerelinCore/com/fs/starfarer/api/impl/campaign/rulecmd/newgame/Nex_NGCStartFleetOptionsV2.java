@@ -93,7 +93,8 @@ public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {
 	{
 		dialog.getOptionPanel().clearOptions();
 		Nex_VisualCustomPanel.clearPanel(dialog, memoryMap);
-		Nex_VisualCustomPanel.createPanel(dialog, true);
+		Nex_VisualCustomPanel.createPanel(dialog, true, Nex_VisualCustomPanel.PANEL_WIDTH,
+				Nex_VisualCustomPanel.PANEL_HEIGHT + 60);
 		
 		NexFactionConfig factionConf = NexConfig.getFactionConfig(
 				PlayerFactionStore.getPlayerFactionIdNGC());
