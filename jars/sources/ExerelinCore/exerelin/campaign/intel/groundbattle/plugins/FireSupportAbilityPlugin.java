@@ -17,6 +17,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleRoundResolve;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		if (enemyHeld && canDisrupt) 
 		{
 			Industry ind = target.getIndustry();
-			disruptTime = getDisruptionTime(ind);
+			disruptTime = NexUtilsMarket.getIndustryDisruptTime(ind);
 			ind.setDisrupted(disruptTime + ind.getDisruptedDays(), true);
 		}
 		
@@ -216,10 +217,6 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 	public boolean hasActivateConfirmation() {
 		//return (target != null && getIntel().getIndustryForBattleByIndustry(target).heldByAttacker != side.isAttacker());
 		return false;
-	}
-	
-	public float getDisruptionTime(Industry ind) {
-		return ind.getSpec().getDisruptDanger().disruptionDays;
 	}
 	
 	@Override

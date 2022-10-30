@@ -439,6 +439,10 @@ public class NexUtilsMarket {
 			Global.getSector().addScript(intel);	// to allow it to expire
 		}
 	}
+
+	public static float getIndustryDisruptTime(Industry ind) {
+		return ind.getSpec().getDisruptDanger().disruptionDays;
+	}
 	
 	public static void pickEntityDestination(final InteractionDialogAPI dialog, 
 			final List<SectorEntityToken> destinations, String confirmText, 

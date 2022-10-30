@@ -3,12 +3,13 @@ package exerelin.campaign.intel.groundbattle;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import exerelin.utilities.NexUtilsMarket;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -35,6 +38,12 @@ public class GroundBattleRoundResolve {
 	protected Map<ForceType, Integer> defLosses = new HashMap<>();
 	protected Map<ForceType, Integer> playerLosses = new HashMap<>();
 	protected Set<IndustryForBattle> hadCombat = new HashSet<>();
+
+	/**
+	 * First float in pair is by local attacker, second is by local defender.
+	 * These may not be the same as the planetary attacker/defender, although they should remain within a turn.
+	 */
+	protected Map<IndustryForBattle, Pair<Float, Float>> localDamageDealt = new HashMap<>();
 	
 	public GroundBattleRoundResolve(GroundBattleIntel intel) {
 		this.intel = intel;
@@ -93,6 +102,7 @@ public class GroundBattleRoundResolve {
 		updateIndustryOwners();
 		processUnitsAfterRound2();
 		updateIndustryOwners();
+		disruptIndustriesFromCombat();
 		intel.disruptIndustries();
 		
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
@@ -228,6 +238,13 @@ public class GroundBattleRoundResolve {
 			ifb.updateOwner(hadCombat.contains(ifb));
 		}
 	}
+
+	protected Pair<Float, Float> getOrGenerateDamageDealtEntry(IndustryForBattle ifb) {
+		if (!localDamageDealt.containsKey(ifb)) {
+			localDamageDealt.put(ifb, new Pair<Float, Float>(0f, 0f));
+		}
+		return localDamageDealt.get(ifb);
+	}
 	
 	public boolean resolveCombatOnIndustry(IndustryForBattle ifb) {
 		if (!ifb.isContested()) return false;
@@ -238,6 +255,13 @@ public class GroundBattleRoundResolve {
 		printDebug(String.format("  Attacker strength: %.2f", atkStr));
 		float defStr = getAttackStrengthOnIndustry(ifb, false) * MathUtils.getRandomNumberInRange(0.8f, 1.2f);		
 		printDebug(String.format("  Defender strength: %.2f", defStr));
+
+		float localAtkStr = ifb.heldByAttacker ? defStr : atkStr;
+		float localDefStr = ifb.heldByAttacker ? atkStr : defStr;
+
+		Pair<Float, Float> ddEntry = getOrGenerateDamageDealtEntry(ifb);
+		ddEntry.one += localAtkStr;
+		ddEntry.two += localDefStr;
 		
 		printDebug(String.format("  Applying damage to defender"));
 		distributeDamage(ifb, false, atkStr);
@@ -378,6 +402,28 @@ public class GroundBattleRoundResolve {
 		}
 
 		return computedKills;
+	}
+
+	public void disruptIndustriesFromCombat() {
+		for (IndustryForBattle ifb : localDamageDealt.keySet()) {
+			disruptIndustryFromCombat(ifb);
+		}
+	}
+
+	public void disruptIndustryFromCombat(IndustryForBattle ifb) {
+		if (ifb.getPlugin().getDef().hasTag("nobombard") || ifb.getPlugin().getDef().hasTag("resistBombard"))
+			return;
+
+		Pair<Float, Float> entry = localDamageDealt.get(ifb);
+		float localAtkDmg = entry.one;
+		float localDefDmg = entry.two;
+		float surplus = (localAtkDmg - localDefDmg)/localDefDmg;
+		if (surplus < GBConstants.DISRUPT_DAMAGE_MIN_FACTOR) return;
+		if (surplus > 1) surplus = 1;
+
+		Industry ind = ifb.getIndustry();
+		float disruptTime = NexUtilsMarket.getIndustryDisruptTime(ind) * GBConstants.DISRUPT_DAMAGE_TIME_MULT * surplus;
+		ind.setDisrupted(ind.getDisruptedDays() + disruptTime, true);
 	}
 	
 	public float getAttackStrengthOnIndustry(IndustryForBattle ifb, boolean attacker) 
