@@ -20,7 +20,7 @@ public class RemnantDeadDropMission extends DeadDropMission {
 	public static float PROB_COMPLICATIONS = 0.75f;
 	public static int ITEM_COUNT = 10;
 	
-	public static List<String> ITEMS = new ArrayList<>();
+	public static final List<String> ITEMS = new ArrayList<>();
 	
 	static {
 		for (int i=0; i<ITEM_COUNT; i++) {

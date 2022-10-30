@@ -1,13 +1,8 @@
 package exerelin.campaign.intel.missions;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.MissionCompletionRep;
@@ -17,27 +12,24 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_TransferMarket;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.InvasionListener;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import org.lwjgl.input.Keyboard;
 
 public class ConquestMissionIntel extends BaseMissionIntel implements InvasionListener {
 	

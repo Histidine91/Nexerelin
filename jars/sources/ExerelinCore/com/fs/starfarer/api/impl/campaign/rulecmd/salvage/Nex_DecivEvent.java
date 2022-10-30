@@ -86,7 +86,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	public static final String MEM_KEY_EVENT_SEEN_BEFORE = MEM_KEY_PREFIX + "seenBefore";
 
 	public static final List<String> RAID_ITEMS = new ArrayList<>();
-	public static final int RAID_ITEM_COUNT = 8;
+	public static final int RAID_ITEM_COUNT = 9;
 
 	static {
 		for (int i=0; i<RAID_ITEM_COUNT; i++) {
