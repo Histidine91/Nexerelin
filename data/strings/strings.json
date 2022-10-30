@@ -2349,7 +2349,9 @@
 	},
 	
 	"nex_strategicAI":{
-		"intelBulletUpdate":"Strategy meeting: %s new concern(s)",
+		"intelBulletUpdate":"Strategy meeting",
+		"intelBulletUpdateAdd":"%s new concern(s): %s",
+		"intelBulletUpdateRemove":"%s concern(s) removed: %s",
 		
 		"statImportVolume":"import volume",
 		"statValue":"value",

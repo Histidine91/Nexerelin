@@ -616,7 +616,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			}
 		}
 		
-		if (result != null)
+		if (result == null)
 		{
 			govtFaction = newOwner;
 		}
