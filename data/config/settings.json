@@ -189,7 +189,7 @@
 		"agentOrderBoth":0,
 		
 		"nex_hireMerc":0.75,
-		"nex_gb_inspire":0,
+		"nex_gb_inspire":0.25,
 		
 		"nex_remFragments_threaten":1,
 		"nex_remBrawl_smoothtalk":0.75,
