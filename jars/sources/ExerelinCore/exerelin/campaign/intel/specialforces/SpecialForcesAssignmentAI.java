@@ -79,6 +79,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		
 		if (fleet.getContainingLocation() != playerFleet.getContainingLocation()) return false;
 		if (!playerFleet.isVisibleToSensorsOf(fleet)) return false;
+		if (playerFleet.isTransponderOn()) return false;
 		
 		log.info(fleet.getName() + " moving to interrogate player");
 		

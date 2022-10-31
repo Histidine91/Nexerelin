@@ -1577,7 +1577,7 @@ FireBest MarketPostOpen",Your $shipOrFleet approaches $entityName.,,
 ,,,,,,
 nex_continueCutCommDebug,DialogOptionSelected,$option == continueCutComm,DismissDialog,,,
 ,,,,,,
-nex_specialForcesInterrogateInitial,BeginFleetEncounter,"!$entity.knowsWhoPlayerIs
+nex_specialForcesInterrogateInitial,BeginFleetEncounter,"!$knowsWhoPlayerIs
 !$isHostile
 $pursuePlayer_nex_sfInterrogatePlayer score:50","MakeOtherFleetPreventDisengage nex_sfInterrogatePlayer true
 MakeOtherFleetAggressive nex_sfInterrogatePlayer true
