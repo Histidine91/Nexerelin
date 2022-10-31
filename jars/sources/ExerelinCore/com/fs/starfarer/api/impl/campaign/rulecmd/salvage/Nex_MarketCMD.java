@@ -2200,7 +2200,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		else if (re >= 0.29f) penalty = 1;
 
 		int currUnrest = RecentUnrest.get(market).getPenalty();
-		int reduction = currUnrest/4;
+		int reduction = currUnrest/5;
 		penalty -= reduction;
 
 		if (penalty > 0) {
