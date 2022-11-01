@@ -20,6 +20,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -47,7 +48,8 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		switch (arg)
 		{
 			case "hasSpaceport":
-				return NexUtilsMarket.hasWorkingSpaceport(market);
+				//return NexUtilsMarket.hasWorkingSpaceport(market);
+				return market.hasSpaceport();
 			
 			// list faction groupings
 			case "listGroups":

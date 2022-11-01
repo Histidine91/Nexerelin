@@ -789,7 +789,7 @@ nex_marketTransferInit,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_IsFactionRuler $faction.id",,,nex_transferMarketMainWithDialog:Transfer this market to another faction,
 nex_marketTransferInitNoSpaceport,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_IsFactionRuler $faction.id
-!Nex_TransferMarket hasSpaceport","SetTooltip nex_transferMarketMainWithDialog ""Requires a functional spaceport for any potential recipient to consider accepting.""
+!Nex_TransferMarket hasSpaceport","SetTooltip nex_transferMarketMainWithDialog ""Requires a spaceport for any potential recipient to consider accepting.""
 SetEnabled nex_transferMarketMainWithDialog false",,,
 ,,,,,,
 nex_marketTransfer,DialogOptionSelected,$option == nex_transferMarketMain,FireAll Nex_MarketTransferMain,,,
