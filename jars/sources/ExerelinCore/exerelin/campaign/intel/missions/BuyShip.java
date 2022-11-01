@@ -89,8 +89,17 @@ public class BuyShip extends HubMissionWithBarEvent {
 			}
 			 */
 			setGiverImportance(pickImportance());
-
 			findOrCreateGiver(createdAt, false, false);
+			PersonAPI barPerson = getPerson();
+			if (barPerson != null)
+			{
+				if (Nex_IsBaseOfficial.isOfficial(barPerson.getPostId(), "military")) {
+					barPerson.addTag(Tags.CONTACT_MILITARY);
+				}
+				else {
+					barPerson.addTag(Tags.CONTACT_TRADE);
+				}
+			}
 		}
 
 		PersonAPI person = getPerson();
