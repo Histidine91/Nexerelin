@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.FullName;
+import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
@@ -23,7 +24,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.People;
-import static com.fs.starfarer.api.impl.campaign.ids.People.SIYAVONG;
+
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -56,6 +57,8 @@ import java.util.List;
 import java.util.Random;
 import lombok.extern.log4j.Log4j;
 import org.lwjgl.util.vector.Vector2f;
+
+import static com.fs.starfarer.api.impl.campaign.ids.People.*;
 
 @Log4j
 public class StartSetupPostTimePass {
@@ -232,9 +235,18 @@ public class StartSetupPostTimePass {
 			};
 			Global.getSector().getIntelManager().addIntel(intel);
 		}
-		
+
+		// fix post-Ziggurat encounter crash and some other issues
 		if (!corvusMode) {
-			// fix post-Ziggurat encounter crash
+			createImportantPeopleInRandomSector();
+		}
+	}
+
+	// runcode exerelin.campaign.StartSetupPostTimePass.createImportantPeopleInRandomSector()
+	public static void createImportantPeopleInRandomSector() {
+		ImportantPeopleAPI ip = Global.getSector().getImportantPeople();
+
+		if (ip.getPerson(SIYAVONG) == null) {
 			PersonAPI person = Global.getFactory().createPerson();
 			person.setId(SIYAVONG);
 			person.setFaction(Factions.PERSEAN);
@@ -242,11 +254,24 @@ public class StartSetupPostTimePass {
 			person.setRankId(Ranks.AGENT);
 			person.setPostId(Ranks.POST_SPECIAL_AGENT);
 			person.setImportance(PersonImportance.HIGH);
-			person.getName().setFirst("Finlay");	// FIXME: maybe should externalize the names, but meh
-			person.getName().setLast("Siyavong");
+			person.getName().setFirst(StringHelper.getString("exerelin_misc", "siyavongName1"));
+			person.getName().setLast(StringHelper.getString("exerelin_misc", "siyavongName2"));
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
-			
-			Global.getSector().getImportantPeople().addPerson(person);
+			ip.addPerson(person);
+		}
+
+		if (ip.getPerson(COTTON) == null) {
+			PersonAPI person = Global.getFactory().createPerson();
+			person.setId(COTTON);
+			person.setFaction(Factions.LUDDIC_PATH);
+			person.setGender(FullName.Gender.MALE);
+			person.setRankId(Ranks.BROTHER);
+			person.setPostId(Ranks.POST_TERRORIST);
+			person.setImportance(PersonImportance.HIGH);
+			person.getName().setFirst(StringHelper.getString("exerelin_misc", "cottonName1"));
+			person.getName().setLast(StringHelper.getString("exerelin_misc", "cottonName2"));
+			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
+			ip.addPerson(person);
 		}
 	}
 	

@@ -2609,7 +2609,6 @@
 		"cargoScanSuspicionLevel":"Vessels flagged for inspection due to overall suspicion level!",
 		"cargoScanNoFind":"No contraband or suspicious cargo found.",
 		
-		
 		"galatiaStipend":"Stipend from Galatia Academy",
 		
 		"deadDropStr1":"the %s",
@@ -2628,6 +2627,12 @@
 		# used in new game sector generation, tutorial start
 		"systemCorvus":"Corvus",
 		"systemGalatia":"Galatia",
+		
+		# named characters from vanilla, created manually in random sector
+		"siyavongName1":"Finlay",
+		"siyavongName2":"Siyavong",
+		"cottonName1":"Livewell",
+		"cottonName2":"Cotton",
 		
 		"abandonColonyStoryCriticalTooltip":"This colony will have a key role in the Sector's history and cannot be abandoned.",
 	},
