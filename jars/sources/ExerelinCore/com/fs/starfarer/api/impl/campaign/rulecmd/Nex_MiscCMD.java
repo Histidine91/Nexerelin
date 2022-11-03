@@ -3,9 +3,13 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
+import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel.AntiInspectionOrders;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexUtilsReputation;
 import java.util.List;
@@ -25,12 +29,14 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 				return hasSierra(memoryMap.get(MemKeys.LOCAL));
 			case "isRemoteConnection":
 				return isRemote(dialog.getInteractionTarget());
+			case "hasOngoingInspection":
+				return hasOngoingInspection(dialog.getInteractionTarget().getMarket());
 			default:
 				return false;
 		}
 	}
 	
-	public boolean hasSierra(MemoryAPI mem) {
+	public static boolean hasSierra(MemoryAPI mem) {
 		if (Global.getSector().getPlayerFleet() != null) {
 			for (FleetMemberAPI member : Global.getSector().getPlayerFleet().getMembersWithFightersCopy()) {
 				if (member.getVariant().hasHullMod("fronsec_sierrasconcord")) {
@@ -43,9 +49,20 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 		return false;
 	}
 	
-	public boolean isRemote(SectorEntityToken target) {
+	public static boolean isRemote(SectorEntityToken target) {
 		if (target.getContainingLocation() != Global.getSector().getCurrentLocation()) return true;
 		float dist = MathUtils.getDistance(target, Global.getSector().getPlayerFleet());
 		return dist > 10;
+	}
+	
+	public static boolean hasOngoingInspection(MarketAPI market) {
+		for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(HegemonyInspectionIntel.class)) {
+			if (iip.isEnding() || iip.isEnded()) continue;
+			HegemonyInspectionIntel inspect = (HegemonyInspectionIntel)iip;
+			if (inspect.getTarget() != market) continue;
+			if (inspect.getOrders() == AntiInspectionOrders.BRIBE) continue;
+			return true;
+		}
+		return false;
 	}
 }

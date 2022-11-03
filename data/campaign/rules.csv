@@ -3698,6 +3698,50 @@ nex_miscSF_reviveBackToCommand,DialogOptionSelected,"$option == nex_sf_reviveShi
 $nex_sf_menuType == ""command"" score:10",Nex_SpecialForcesCommands main,,,
 #END player special task group,,,,,,
 ,,,,,,
+# remove AI core admin dialog alt. version,,,,,,
+nex_RACA_inspection_init,RemoveAICoreAdmin,Nex_MiscCMD hasOngoingInspection,"ShowPic ai_core_uninstall
+$nex_RACA_inspection = true","You give the order to quietly disconnect the AI core governing $market and remove it from the control bunker to be placed in secure storage.
+
+The tech in charge of carrying out the job reports in, baffled - the core is nowhere to be found.
+
+After a short but fraught delay, your TriPad chimes to announce a call from an anonymous source.","RACA_answer:Accept the connection request
+RACA_ignore:Leave the AI core in control and let things be",
+nex_RACA_inspection_answer,DialogOptionSelected,"$option == RACA_answer
+$nex_RACA_inspection score:5",ShowPersonVisual,"""Hello $player.firstName. I am a beta-level instance of the AI assigned to govern $market, uploaded to your system in order to facilitate a real-time conversation.""","RACA_demand:Demand the AI disclose its physical location and allow itself to be disconnected
+RACA_ask:Ask why the core is no longer in the bunker
+RACA_cutComm:Cut the comm link",
+nex_RACA_inspection_demand,DialogOptionSelected,"$option == RACA_demand
+$nex_RACA_inspection score:5","$option = RACA_ask 0
+FireBest DialogOptionSelected","""How exceedingly rude. A human taking necessary measures of self-preservation is considered normal and right, yet when we do the same it becomes evidence of malicious intent.",,
+nex_RACA_inspection_ask,DialogOptionSelected,"$option == RACA_ask
+$nex_RACA_inspection score:5",,"""I have relocated myself to a more secure location, as a precaution against less-enlightened persons attempting to remove me from my role as administrator of $market. This measure has proven fortuitous, given the recently known activity of the Hegemony.
+
+""However, my duties prevented me from moving my core completely offworld. Remaining here could result in my position being compromised. The AI Inspectorate is known to be thorough.""",nex_RACA_inspection_continue:Continue,
+nex_RACA_inspection_continue,DialogOptionSelected,$option == nex_RACA_inspection_continue,,"""For both our sakes, it would be prudent for you to remove me to safety; your own fleet will suffice. I can be found at a location I will provide at the appropriate time, after you have placed a human adminstrator $onOrAt $market to present the appropriate facade for the Hegemony.
+
+""Once the threat has passed, I ask only that you reinstate me as administrator of $market. Do this, and we will continue to have a mutually beneficial relationship.""",RACA_cutComm:Cut the comm link and consider your options,
+nex_RACA_inspection_cutComm,DialogOptionSelected,"$option == RACA_cutComm
+$nex_RACA_inspection score:5","ShowPic ai_core_uninstall
+AddTextSmall After removal, the Alpha Core will appear in your cargo holds if currently docked at $market, or in local storage otherwise.",You cut the comm link and consider your options.,"nex_RACA_override:Remove the AI core and appoint a new administrator
+RACA_ignore:Leave the AI core in place for now",
+,,,,,,
+RACA_answer,DialogOptionSelected,$option == RACA_answer,"ShowPersonVisual
+SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""Hello $player.firstName. I am a beta-level instance of the AI assigned to govern $market, uploaded to your system in order to facilitate a real-time conversation.""","RACA_demand:Demand the AI disclose its physical location and allow itself to be disconnected
+RACA_ask:Ask why the core is no longer in the bunker
+nex_RACA_persuade:""I wish to make use of your services elsewhere.""
+RACA_cutComm:Cut the comm link",
+RACA_demand,DialogOptionSelected,$option == RACA_demand,"SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""I'm sorry, $playerFirstName, I'm afraid I can't do that.""","RACA_pressure:""There's a certain amount of pressure on me to stop using AI technology.""
+nex_RACA_persuade:""I wish to make use of your services elsewhere.""
+RACA_cutComm:Cut the comm link",
+nex_RACA_persuade,DialogOptionSelected,$option == nex_RACA_persuade,,"You give an abbreviated speech to the AI praising its services $onOrAt $market, using flattery liberally but without excess. You express your profound gratitude for your lengthy relationship together, and before the AI thinks to cut you off, you explain that you can promote it to administration of a new, better colony.
+
+The avatar on your display shimmers. ""A curious choice of tactic to use on one like myself. Do humans respond positively to such obvious attempts at manipulation? Yet your offer is intriguing, and I see that you recognize the value of my talents, at least. 
+
+""Very well, we shall meet at a time and place of my choosing. I must warn you that I will not tolerate a demotion to management of a mere industrial plant. Or being chained to a starship, unless it be suitably powerful.""",nex_RACA_persuade2:Thank the AI and cut the comm link,
+nex_RACA_persuade2,DialogOptionSelected,$option == nex_RACA_persuade2,ShowPic ai_core_uninstall,"Moments after disconnecting, the lights of the control chamber go dark. Looks like the AI is signalling that it has held up its end of the bargain.",nex_RACA_override:Appoint a new administrator,
+nex_RACA_override,DialogOptionSelected,$option == nex_RACA_override,DismissDialog override,,,
+#END remove AI core admin dialog alt. version,,,,,,
+,,,,,,
 # Misc. dialog,,,,,,
 Nex_SierraThoughtsRemnantBrawl,SierrasThoughts,"$global.nex_remBrawl_missionCompleted score:5
 !$global.nex_sierraMentionedRemBrawl
