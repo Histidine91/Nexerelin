@@ -3743,6 +3743,12 @@ nex_RACA_override,DialogOptionSelected,$option == nex_RACA_override,DismissDialo
 #END remove AI core admin dialog alt. version,,,,,,
 ,,,,,,
 # Misc. dialog,,,,,,
+Nex_SierraThoughtsRemnantFragments,SierrasThoughts,"$global.nex_remFragments_deployedShards score:5
+!$global.nex_sierraMentionedRemFragmentShards","SetTextHighlightColors sierraTextColor sierraTextColor sierraTextColor sierraTextColor 
+SetTextHighlights ""\""So. That was Omega, right? Those things that helped us.\"""" ""\""I never thought I'd get to see one of these up close, and on our side.\"""" ""\""That kind of power is... dangerous. But so tempting! If I had my ship decked full with that kind of technology, I'd...\"""" ""\""Sorry, captain. Got carried away there.\""""
+$global.nex_sierraMentionedRemFragmentShards = true","Sierra's avatar flickers for a second, as if gathering her thoughts. ""So. That was Omega, right? Those things that helped us."" A moment of silence. ""I never thought I'd get to see one of these up close, and on our side.""
+
+The avatar buzzes visually. ""That kind of power is... dangerous. But so tempting! If I had my ship decked full with that kind of technology, I'd..."" Sierra seems to catch herself. ""Sorry, captain. Got carried away there.""",,
 Nex_SierraThoughtsRemnantBrawl,SierrasThoughts,"$global.nex_remBrawl_missionCompleted score:5
 !$global.nex_sierraMentionedRemBrawl
 !$global.nex_remBrawl_betrayedMidnight","$nex_sierraMentionedRemBrawl = true

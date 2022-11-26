@@ -233,7 +233,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		if (distressSent) {
 			factionId = Factions.TRITACHYON;
 		} else {
-			fp *= 1.25f;
+			fp *= 1.3f;
 		}
 		
 		FleetParamsV3 params = new FleetParamsV3(system.getLocation(),
@@ -254,7 +254,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		}
 		else {
 			params.averageSMods = 0;	// sometimes have one S-mod
-			params.qualityMod = 0.7f;
+			params.qualityMod = 0.45f;
 		}
 				
 		CampaignFleetAPI fleet = FleetFactoryV3.createFleet(params);
@@ -296,7 +296,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		String targetName = StringHelper.getString("yourFleet");
 		String actionStr = StringHelper.getFleetAssignmentString("travellingTo", mothership.getName());
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, mothership, 0.5f, actionStr);
-		fleet.addAssignment(FleetAssignment.INTERCEPT, player, 2,
+		fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, player, 2,
 				StringHelper.getFleetAssignmentString("intercepting", targetName));
 		
 		if (currentStage == Stage.RETURN) {
@@ -464,6 +464,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		Global.getSoundPlayer().playUISound("ui_char_spent_story_point_technology", 1.1f, 1.5f);
 		
 		shardsDeployed = true;
+		Global.getSector().getMemoryWithoutUpdate().set("$nex_remFragments_deployedShards", true);
 	}
 	
 	/**
