@@ -677,6 +677,8 @@
 		"hardModeIncomeMultDesc":"Starfarer mode",
 		"reportAutonomousTax":"Autonomous colony tax",
 		"reportAutonomousTaxTooltip":"Autonomous colonies transfer %s of their profit or loss to your faction.",
+		
+		"profitXPMessage":"Adding XP from profitability of personally governed colonies",
 	},
 	
 	"nex_colonyFleet":{

@@ -136,6 +136,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected int numColonies;
 	protected int currIter;
 	protected float reliefFleetCooldown;
+	protected float profitMarginForXP = 0;
 	
 	static {
 		SURVEY_DATA_VALUES.put(Commodities.SURVEY_DATA_1, 1f);
@@ -258,6 +259,16 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				{
 					needRelief.add(market);
 				}
+			}
+
+			if (market.getAdmin() != null && market.getAdmin().isPlayer()) {
+				float profit = market.getNetIncome();
+				float cost = market.getIndustryUpkeep();
+				float margin = profit/cost;
+				log.info(String.format("Market %s adding %.2f profit margin (%.0f profit, %.0f cost)", market.getName(), margin, profit, cost));
+				if (margin <= 0) continue;
+				float numTicksPerMonth = Global.getSettings().getFloat("economyIterPerMonth");
+				profitMarginForXP += margin * market.getSize() / numTicksPerMonth;
 			}
 		}
 		updatePlayerBonusAdmins(playerFactionSize);
@@ -1001,6 +1012,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		ReliefFleetIntelAlt.createEvent(source, target);
 		reliefFleetCooldown += (target.getSize() + 1) * 15;
 	}
+
+	public void addXPFromProfit() {
+		long xp = Math.round(profitMarginForXP * Global.getSettings().getFloat("nex_xpPerProfitMargin"));
+		if (xp > 0) {
+			Global.getSector().getCampaignUI().addMessage(getString("profitXPMessage"), Misc.getPositiveHighlightColor());
+			Global.getSector().getPlayerPerson().getStats().addXP(xp);
+		}
+		profitMarginForXP = 0;
+	}
 	
 	/**
 	 * Generates an official in the specified post for the specified market, if needed. 
@@ -1375,7 +1395,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 
 	@Override
-	public void reportEconomyMonthEnd() {}
+	public void reportEconomyMonthEnd() {
+		addXPFromProfit();
+	}
 	
 	@Override
 	public void reportPlayerColonizedPlanet(PlanetAPI planet) {
