@@ -142,6 +142,7 @@ public class Nex_FactionCommissionIntel extends FactionCommissionIntel implement
 
 	@Override
 	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
+		if (actionData == null) return;
 		List<FactionAPI> hostile = actionData.willBecomeHostile;
 		Map<String, Integer> atrocities = getAtrocitiesByFaction();
 		for (FactionAPI rage : hostile) {
