@@ -717,8 +717,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	}
 	
 	public void checkRemnantVictory() {
-		boolean won = (currentStage == Stage.BATTLE || currentStage == Stage.GO_TO_TARGET_SYSTEM) 
-				&& attackFleets.isEmpty();
+		boolean won = spawnedAttackFleets && attackFleets.isEmpty();
 		
 		if (!won) return;
 		if (betrayed) {
