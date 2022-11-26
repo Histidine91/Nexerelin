@@ -294,7 +294,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		lastActionTimestamp = Global.getSector().getClock().getTimestamp();
 		
 		// repeat relationship action if appropriate
-		if (repeatRelationsMode && (lastAction instanceof RaiseRelations || lastAction instanceof LowerRelations)) 
+		if (repeatRelationsMode && getNextAction() == null && (lastAction instanceof RaiseRelations || lastAction instanceof LowerRelations))
 		{
 			boolean repeated = tryRepeatRelations();
 			if (repeated) return;
