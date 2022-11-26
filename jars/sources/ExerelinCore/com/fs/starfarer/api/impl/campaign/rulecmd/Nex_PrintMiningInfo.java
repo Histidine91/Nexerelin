@@ -232,7 +232,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			float strength = entry.two;
 			String name = hull.getHullName();
 			String origin = hull.getManufacturer();
-			String size = hull.getHullSize().toString().toLowerCase();
+			String size = StringHelper.getString(hull.getHullSize().toString().toLowerCase());
 			String strengthStr = getFormattedStrengthString(strength);
 			
 			String formatted = String.format("%s (%s %s): %s", name, origin, size, strengthStr);
@@ -274,7 +274,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			
 			String formatted = String.format("%s (%s): %s", name, origin, strengthStr);
 			LabelAPI label = text.addParagraph(formatted);
-			label.setHighlight(origin, strengthStr);
+			label.setHighlight(name, strengthStr);
 			label.setHighlightColors(Global.getSettings().getDesignTypeColor(origin), hl);
 		}
 		
@@ -307,9 +307,9 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			String strengthStr = getFormattedStrengthString(strength);
 			String origin = weapon.getManufacturer();
 			
-			String formatted = String.format("%s (%s): %s", name, origin, strengthStr);
+			String formatted = String.format("%s (%s, %s %s): %s", name, origin, weapon.getSize().getDisplayName(), weapon.getType().getDisplayName(), strengthStr);
 			LabelAPI label = text.addParagraph(formatted);
-			label.setHighlight(origin, strengthStr);
+			label.setHighlight(name, strengthStr);
 			label.setHighlightColors(Global.getSettings().getDesignTypeColor(origin), hl);
 		}
 		

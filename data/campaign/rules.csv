@@ -429,8 +429,8 @@ FireAll nex_MiningOption",,,
 nex_miningMineOption,nex_MiningOption,,"SetEnabled nex_miningStart true
 SetShortcut nex_miningStart RETURN
 SetShortcut nex_miningBack ESCAPE",,"nex_miningStart:Start mining
-nex_miningFleetInfo:List mining ships
-nex_miningListTools:What ships and weapons can mine?
+nex_miningFleetInfo:List mining ships in fleet
+nex_miningListTools:Database of mining ships, wings and weapons
 nex_miningBack:Back",
 nex_miningMineOptionNoMiners,nex_MiningOption,$player.miningStrength <= 0,"SetTooltip nex_miningStart ""You have no ships capable of mining.""
 SetEnabled nex_miningStart false",,,
