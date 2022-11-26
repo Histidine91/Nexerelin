@@ -89,8 +89,8 @@ public class RebellionCreator implements EveryFrameScript {
 		}
 		
 		String originalOwner = NexUtilsMarket.getOriginalOwner(market);
-		if (SectorManager.getManager().isRespawnFactions() && !SectorManager.isFactionAlive(originalOwner) &&
-				SectorManager.getManager().getNumRespawns(originalOwner) < NexConfig.maxFactionRespawns) 
+		boolean enoughRespawns = NexConfig.maxFactionRespawns < 0 || SectorManager.getManager().getNumRespawns(originalOwner) < NexConfig.maxFactionRespawns;
+		if (SectorManager.getManager().isRespawnFactions() && !SectorManager.isFactionAlive(originalOwner) && enoughRespawns) 
 		{
 			addToListIfNotPresent(enemies, originalOwner);
 		}
