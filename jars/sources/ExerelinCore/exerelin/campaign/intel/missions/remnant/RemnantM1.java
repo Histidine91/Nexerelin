@@ -201,6 +201,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				return true;
 			case "complete":
 				BaseMissionHub.set(dissonant, new BaseMissionHub(dissonant));
+				sourceMarket.addPerson(dissonant);	// in case we refused the mission before then re-enabled it with console, reset Midnight's market
 				dissonant.getMemoryWithoutUpdate().set(BaseMissionHub.NUM_BONUS_MISSIONS, 1);
 				dissonant.getMemoryWithoutUpdate().set("$nex_remM1_completed", true);
 				((RuleBasedDialog)dialog.getPlugin()).updateMemory();
