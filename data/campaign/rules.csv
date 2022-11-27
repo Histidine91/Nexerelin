@@ -212,6 +212,8 @@ Nex_NGCStartResources createOptions
 SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartAgent:Agent (20,000 credits, level 1)
 nex_NGCStartSpecialAgent:Special Agent (75,000 credits, level 3)
 nex_NGCCustomResourcesStart:Custom...",
+nex_NGCStep4RepickCustom,NewGameOptionSelected,"$option == nex_NGCStep4FleetReroll
+$nex_lastSelectedFleetType == CUSTOM",Nex_NGCCustomStartFleet,,,
 ,,,,,,
 nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCStartEnsign,"NGCAddCredits 20000
 NGCAddCharacterPoints 1

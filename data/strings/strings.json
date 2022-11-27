@@ -1834,6 +1834,7 @@
 		"fleetSuper":"Super ship",
 		"fleetGrandFleet":"Grand fleet",
 		"fleetRandomReroll":"[Reroll random ships]",
+		"fleetCustomRepick":"[Repick custom ships]",
 		"fleetCycle":"[Cycle fleets]",
 		
 		"startingLevelTitle":"Starting level",

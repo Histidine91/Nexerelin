@@ -10,10 +10,13 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.campaign.ui.ProgressBar;
 import exerelin.utilities.NexFactionConfig;
@@ -29,7 +32,7 @@ import java.util.*;
 import java.util.List;
 
 @Log4j
-public class Nex_NGCCustomStartFleet  {
+public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
 
     public static final float PANEL_WIDTH = 1024;
     public static final float PANEL_HEIGHT = 720;
@@ -54,6 +57,12 @@ public class Nex_NGCCustomStartFleet  {
             throw new RuntimeException("Failed to load cost thresholds", jex);
         }
     }
+	
+	@Override
+	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
+		createDialog(dialog, memoryMap, PlayerFactionStore.getPlayerFactionIdNGC());
+		return true;
+	}
 
     public static void createDialog(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap, String factionId) {
         dialog.showCustomDialog(PANEL_WIDTH, PANEL_HEIGHT, new CustomStartFleetDelegate(dialog, factionId, memoryMap));
@@ -211,7 +220,6 @@ public class Nex_NGCCustomStartFleet  {
         }
 
         public void addStartingShips() {
-            // TODO: add ships
             CharacterCreationData data = (CharacterCreationData)mem.get("$characterData");
             List<String> variantIds = new ArrayList<>();
             for (String ship : ships.keySet()) {
@@ -227,6 +235,7 @@ public class Nex_NGCCustomStartFleet  {
 
         @Override
         public void customDialogConfirm() {
+			new NGCClearStartingGear().execute(null, dialog, new ArrayList<Token>(), memoryMap);
             addStartingShips();
             mem.set("$nex_lastSelectedFleetType", "CUSTOM");
             NGCAddStartingShipsByFleetType.addStartingDModScript(mem);

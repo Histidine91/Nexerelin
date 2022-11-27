@@ -78,6 +78,10 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 				opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
 						"fleetRandomReroll")), "nex_NGCStep4FleetReroll");
 			}
+			else if (type == StartFleetType.CUSTOM) {
+				opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
+						"fleetCustomRepick")), "nex_NGCStep4FleetReroll");
+			}
 		}
 		
 		opts.addOption(StringHelper.getString("back", true), "nex_NGCStartBack");
