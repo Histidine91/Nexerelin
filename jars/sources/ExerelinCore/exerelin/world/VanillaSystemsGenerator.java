@@ -1,24 +1,12 @@
 package exerelin.world;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.People;
-import com.fs.starfarer.api.impl.campaign.ids.Skills;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.skills.NexSkills;
@@ -300,10 +288,14 @@ public class VanillaSystemsGenerator {
 		//mazalot.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.LUDDIC_CHURCH);
 		
 		MarketAPI sindria = getMarket("sindria");
-		sindria.getIndustry(Industries.HIGHCOMMAND).setAICoreId("gamma_core");
+		sindria.getIndustry(Industries.HIGHCOMMAND).setAICoreId(Commodities.ALPHA_CORE);
 		
 		MarketAPI volturn = getMarket("volturn");
 		volturn.addIndustry(Industries.PATROLHQ);
+		Industry gd = volturn.getIndustry(Industries.GROUNDDEFENSES);
+		if (gd != null) {
+			gd.setSpecialItem(new SpecialItemData(Items.DRONE_REPLICATOR, null));
+		}
 		
 		MarketAPI tigraCity = getMarket("tigra_city");
 		tigraCity.addCondition(Conditions.ORE_MODERATE);
