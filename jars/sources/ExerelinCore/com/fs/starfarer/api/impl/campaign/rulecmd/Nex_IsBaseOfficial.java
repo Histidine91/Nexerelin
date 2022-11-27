@@ -34,6 +34,7 @@ public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 		ADMIN_POSTS.add(Ranks.POST_OUTPOST_COMMANDER);
 		ADMIN_POSTS.add(Ranks.POST_PORTMASTER);
 		ADMIN_POSTS.add(Ranks.POST_ADMINISTRATOR);
+		ADMIN_POSTS.add("evaOfficial");	// used by some UAF admins
 		
 		TRADER_POSTS.add(Ranks.POST_STATION_COMMANDER);
 		TRADER_POSTS.add(Ranks.POST_OUTPOST_COMMANDER);
