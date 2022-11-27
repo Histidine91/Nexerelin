@@ -6,8 +6,12 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
+import exerelin.campaign.ColonyManager;
 import exerelin.world.ExerelinProcGen;
+import exerelin.world.NexMarketBuilder;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class Synchrotron extends BonusGen {
 	
 	public Synchrotron() {
@@ -33,5 +37,9 @@ public class Synchrotron extends BonusGen {
 		String type = Items.SYNCHROTRON;
 		ind.setSpecialItem(new SpecialItemData(type, null));
 		super.apply(ind, entity);
+
+		log.info(String.format("Upgrading defenses on %s after adding %s", entity.market.getName(), name));
+		NexMarketBuilder.addOrQueueHeavyBatteries(entity.market, ColonyManager.getManager(), true);
+		NexMarketBuilder.addOrUpgradeStation(entity.market, -1, true, ColonyManager.getManager(), marketBuilder.getRandom());
 	}
 }

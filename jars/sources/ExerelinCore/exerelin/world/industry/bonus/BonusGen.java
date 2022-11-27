@@ -3,6 +3,9 @@ package exerelin.world.industry.bonus;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.NexMarketBuilder;
+import lombok.Setter;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,6 +18,7 @@ public abstract class BonusGen {
 	protected final Set<String> industryIds;
 	protected String id;
 	protected String name;
+	@Setter protected transient NexMarketBuilder marketBuilder;
 		
 	public BonusGen(Collection<String> industryIds)
 	{

@@ -2,6 +2,8 @@ package exerelin.world;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import lombok.Getter;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
@@ -49,6 +51,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,7 +116,7 @@ public class NexMarketBuilder
 	protected Map<String, Integer> currIndustryCounts = new HashMap<>();
 	
 	protected final ExerelinProcGen procGen;
-	protected final Random random;
+	@Getter	protected final Random random;
 	
 	static {
 		loadIndustries();
@@ -399,6 +403,76 @@ public class NexMarketBuilder
 		if (best == null) return null;
 		return new Pair<>(best, bestLevel);
 	}
+
+	public static void addOrQueueHeavyBatteries(MarketAPI market, ColonyManager colMan, boolean instant) {
+		if (instant) {
+			Industry groundDef = market.getIndustry(Industries.GROUNDDEFENSES);
+			if (groundDef != null) {
+				groundDef.startUpgrading();
+				groundDef.finishBuildingOrUpgrading();
+				return;
+			}
+			addIndustry(market, Industries.HEAVYBATTERIES, instant);
+		}
+		else {
+			colMan.queueIndustry(market, Industries.GROUNDDEFENSES, QueueType.NEW);
+			colMan.queueIndustry(market, Industries.GROUNDDEFENSES, QueueType.UPGRADE);
+		}
+	}
+
+	/**
+	 * Adds a station of the specified size to market.
+	 * @param market
+	 * @param wantedSizeIndex Must not be outside the station sizes actually defined for the faction.
+	 *                         Exception: negative number means add 1 to current station level (if possible), or add a level 1 station if none exists.
+	 * @param instant
+	 * @param colMan
+	 * @param random
+	 */
+	public static void addOrUpgradeStation(MarketAPI market, int wantedSizeIndex, boolean instant, ColonyManager colMan, @Nullable Random random)
+	{
+		if (random == null) random = new Random();
+
+		// look for an existing station and see if we should upgrade it
+		Pair<Industry, Integer> currStation = getCurrentStationAndTier(market);
+		if (wantedSizeIndex < 0) {
+			if (currStation != null) wantedSizeIndex = currStation.two;
+			else wantedSizeIndex = 0;
+		}
+
+		if (currStation != null) {
+			//log.info("Size index " + sizeIndex + ", curent size " + currStation.two);
+			boolean wantUpgrade = wantedSizeIndex + 1 > currStation.two;
+			if (wantUpgrade)
+			{
+				Industry station = currStation.one;
+				if (station.getSpec().getUpgrade() != null) {
+					station.startUpgrading();
+					if (instant) station.finishBuildingOrUpgrading();
+				}
+			}
+		}
+		// no station, add one
+		else {
+			NexFactionConfig conf = NexConfig.getFactionConfig(market.getFactionId());
+			if (instant) {
+				String station = conf.getRandomDefenceStation(random, wantedSizeIndex);
+				if (station != null) {
+					//log.info("Adding station: " + station);
+					addIndustry(market, station, instant);
+				}
+			}
+			else {
+				DefenceStationSet set = conf.getRandomDefenceStationSet(random);
+				if (set != null) {
+					colMan.queueIndustry(market, set.industryIds.get(0), QueueType.NEW);
+					for (int i=0; i<wantedSizeIndex;i++) {
+						colMan.queueIndustry(market, set.industryIds.get(i), QueueType.UPGRADE);
+					}
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Adds patrol/military bases, ground defenses and defense stations as appropriate to the market.
@@ -489,11 +563,7 @@ public class NexMarketBuilder
 				sizeForGun -=1;
 			}
 			if (marketSize > sizeForHeavyGun) {
-				if (instant) addIndustry(market, Industries.HEAVYBATTERIES, instant);
-				else {
-					colMan.queueIndustry(market, Industries.GROUNDDEFENSES, QueueType.NEW);
-					colMan.queueIndustry(market, Industries.GROUNDDEFENSES, QueueType.UPGRADE);
-				}
+				addOrQueueHeavyBatteries(market, colMan, instant);
 			}
 			else if (marketSize > sizeForGun)
 				addIndustry(market, Industries.GROUNDDEFENSES, instant);
@@ -533,39 +603,7 @@ public class NexMarketBuilder
 			
 			if (sizeIndex >= 0)
 			{
-				// look for an existing station and see if we should upgrade it
-				Pair<Industry, Integer> currStation = getCurrentStationAndTier(market);
-				if (currStation != null) {
-					//log.info("Size index " + sizeIndex + ", curent size " + currStation.two);
-					if (sizeIndex + 1 > currStation.two)
-					{
-						Industry station = currStation.one;
-						if (station.getSpec().getUpgrade() != null) {
-							station.startUpgrading();
-							if (instant) station.finishBuildingOrUpgrading();
-						}
-					}
-				}
-				// no station, add one
-				else {
-					NexFactionConfig conf = NexConfig.getFactionConfig(market.getFactionId());
-					if (instant) {
-						String station = conf.getRandomDefenceStation(random, sizeIndex);
-						if (station != null) {
-							//log.info("Adding station: " + station);
-							addIndustry(market, station, instant);
-						}
-					}
-					else {
-						DefenceStationSet set = conf.getRandomDefenceStationSet(random);
-						if (set != null) {
-							colMan.queueIndustry(market, set.industryIds.get(0), QueueType.NEW);
-							for (int i=0; i<sizeIndex;i++) {
-								colMan.queueIndustry(market, set.industryIds.get(i), QueueType.UPGRADE);
-							}
-						}
-					}
-				}
+				addOrUpgradeStation(market, sizeIndex, instant, colMan, random);
 			}
 		}
 		
@@ -1062,6 +1100,7 @@ public class NexMarketBuilder
 				log.error(String.format("Bonus %s for faction %s does not exist", bonusEntry.id, factionId));
 				continue;
 			}
+			bonus.setMarketBuilder(this);
 			
 			// order industries by reverse priority, highest priority markets get the bonuses
 			List<Pair<Industry, Float>> ordered = new ArrayList<>();	// float is priority value
