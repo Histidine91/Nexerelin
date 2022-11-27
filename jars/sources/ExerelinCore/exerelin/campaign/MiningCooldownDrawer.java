@@ -87,17 +87,23 @@ public class MiningCooldownDrawer extends BaseCustomEntityPlugin {
 		Vector2f loc = fleet.getLocation();	
 		float x = view.convertWorldXtoScreenX(loc.x);
 		float y = view.convertWorldYtoScreenY(loc.y + fleet.getRadius() + 20) + 8;
+		float screenScale = Global.getSettings().getScreenScaleMult();
+		
+		x *= screenScale;
+		y *= screenScale;
 		
 		int halfW = BAR_WIDTH/2, halfH = BAR_HEIGHT/2;
+		int sw = (int)Global.getSettings().getScreenWidth();
+		int sh = (int)Global.getSettings().getScreenHeight();
 		
-		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-		GL11.glOrtho(0.0, Display.getWidth(), 0.0, Display.getHeight(), -1.0, 1.0);
+		GL11.glViewport(0, 0, sw, sh);
+		GL11.glOrtho(0.0, sw, 0.0, sh, -1.0, 1.0);
 		GL11.glLineWidth(2);
 		GL11.glTranslatef(x, y, 0);
 		
 		float screenMult = 1/view.getViewMult();
 		GL11.glScalef(screenMult, screenMult, 1);
-		GL11.glTranslatef(-halfW + ICON_WIDTH/2, 0, 0);
+		GL11.glTranslatef((-halfW + ICON_WIDTH/2) * screenScale, 0, 0);
 		
 		// bar fill
 		int length = (int)(BAR_WIDTH * amount);
