@@ -142,9 +142,11 @@
 		"fleets":"fleets",
 		"fighterWing":"fighter wing",
 		"fighterWingShort":"wing",
+		"fighter":"fighter",
+		"frigate":"frigate",
 		"destroyer":"destroyer",
 		"cruiser":"cruiser",
-		"capitalShip":"capital ship",
+		"capital_ship":"capital ship",
 		
 		"unknownLocation":"unknown location",
 		"anUnknownLocation":"an unknown location",
