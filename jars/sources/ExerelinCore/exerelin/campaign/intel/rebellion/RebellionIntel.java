@@ -986,6 +986,25 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			if (govtStrength < 0) govtStrength = 0;
 			if (govtTradePoints < 0) govtTradePoints = 0;
 		}
+
+		printTransactionPoints(points, rebels);
+	}
+
+	public void printTransactionPoints(float points, boolean rebels) {
+		InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+		if (dialog != null) {
+			dialog.getTextPanel().setFontSmallInsignia();
+			String side = getString(rebels ? "rebel" : "government");
+			String pointsStr = String.format("%.1f", points);
+			LabelAPI label = dialog.getTextPanel().addPara(String.format(getString("dialogStrChange"), side, pointsStr));
+			label.setHighlight(side, pointsStr);
+			Color sideColor = govtFaction.getColor();
+			if (rebels) {
+				sideColor = getDetailLevel() >= DETAIL_LEVEL_TO_KNOW_FACTION ? rebelFaction.getColor() : Misc.getHighlightColor();
+			}
+			label.setHighlightColors(sideColor, Misc.getHighlightColor());
+			dialog.getTextPanel().setFontInsignia();
+		}
 	}
 	
 	// Called from SectorManager

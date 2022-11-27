@@ -20,7 +20,7 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 		event = RebellionIntel.getOngoingEvent(market);
 	}
 	
-	// FIXME: diagnose the underlying issue!
+	// should probably just make the condition non-transient but this works
 	protected boolean refetchEventIfNeeded()
 	{
 		if (event == null)	// try regetting
