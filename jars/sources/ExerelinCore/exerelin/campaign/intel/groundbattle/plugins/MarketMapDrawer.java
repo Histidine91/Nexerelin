@@ -226,10 +226,12 @@ public class MarketMapDrawer {
 			//GL11.glEnable(GL11.GL_LINE_STIPPLE);
 			
 			String spriteId = this.bg != null? this.bg : map.intel.getMarket().getContainingLocation().getBackgroundTextureFilename();
-			
+
+			/*
 			try {
 				Global.getSettings().loadTexture(spriteId);
 			} catch (IOException ex) {}
+			 */
 			SpriteAPI bgSprite = Global.getSettings().getSprite(spriteId);
 			float drawW = w-4;
 			float drawH = h-2;
