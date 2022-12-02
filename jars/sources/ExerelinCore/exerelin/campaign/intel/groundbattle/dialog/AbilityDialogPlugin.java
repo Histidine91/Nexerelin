@@ -4,6 +4,8 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.IndustryPickerListener;
 import java.util.Map;
 
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import org.lwjgl.input.Keyboard;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -109,6 +111,7 @@ public class AbilityDialogPlugin implements InteractionDialogPlugin {
 	
 	public void activateOptionPicked() {
 		if (ability.targetsIndustry()) {
+			/*
 			List<Industry> targets = GBUtils.convertIFBListToIndustryList(ability.getTargetIndustries());
 			dialog.showIndustryPicker(getString("dialogIndustryPickerHeader"), 
 						StringHelper.getString("select", true), ability.getIntel().getMarket(), 
@@ -123,6 +126,34 @@ public class AbilityDialogPlugin implements InteractionDialogPlugin {
 						populateOptions();
 					}
 				});
+
+			 */
+			List<IndustryForBattle> targets = ability.getTargetIndustries();
+			GBIndustryPickerDialogDelegate delegate = new GBIndustryPickerDialogDelegate(ability.getIntel(), targets ) {
+				@Override
+				protected String getHeaderString() {
+					return GroundBattleIntel.getString("actionSelectTargetHeader");
+				}
+
+				@Override
+				public void customDialogConfirm() {
+					if (selectedIndustry == null) {
+						customDialogCancel();
+						return;
+					}
+					target = selectedIndustry.getIndustry();
+					ability.setTarget(selectedIndustry);
+					activate();
+				}
+
+				@Override
+				public void customDialogCancel() {
+					options.clearOptions();
+					populateOptions();
+				}
+			};
+			int[] dimensions = delegate.getWantedDimensions();
+			dialog.showCustomDialog(dimensions[0] + 16, dimensions[1] + dimensions[4], delegate);
 		} else {
 			activate();
 		}

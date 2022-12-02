@@ -7,9 +7,8 @@ import java.awt.Color;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 
-public class FramedCustomPanelPlugin implements CustomUIPanelPlugin {
-	
-	protected PositionAPI pos;
+public class FramedCustomPanelPlugin extends CustomPanelPluginWithInput {
+
 	public float sideRatio = 0.5f;
 	public Color color;
 	public boolean square = false;
@@ -19,11 +18,6 @@ public class FramedCustomPanelPlugin implements CustomUIPanelPlugin {
 		this.sideRatio = sideRatio;
 		this.color = color;
 		this.square = square;
-	}	
-
-	@Override
-	public void positionChanged(PositionAPI pos) {
-		this.pos = pos;
 	}
 	
 	public void renderBox(float x, float y, float w, float h, float alphaMult) {
@@ -92,13 +86,5 @@ public class FramedCustomPanelPlugin implements CustomUIPanelPlugin {
 		float h = pos.getHeight();
 		
 		renderBox(x, y, w, h, alphaMult);
-	}
-
-	@Override
-	public void advance(float amount) {
-	}
-
-	@Override
-	public void processInput(List<InputEventAPI> arg0) {
 	}
 }

@@ -1353,6 +1353,9 @@
 		"unitCard_tooltip_atkbreakdown_disabled":"Attack disabled",
 		"unitCard_tooltip_atkbreakdown_rebel":"Rebel",
 		
+		"actionSelectTargetHeader":"Select target",
+		"actionSelectDestinationHeader":"Select destination",
+		"actionSelectIndustryFooter":"Click on an industry panel (but not the troop icons) to select it",
 		"actionMove":"move",
 		"actionDeploy":"deploy",
 		"actionDisrupt":"disrupt",

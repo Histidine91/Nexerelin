@@ -1,28 +1,22 @@
 package exerelin.campaign.ui;
 
-import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
-import com.fs.starfarer.api.input.InputEventAPI;
-import com.fs.starfarer.api.ui.PositionAPI;
-import java.awt.Color;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 /**
  * Panel with solid border. Also accepts a background color.
  */
-public class CustomPanelPluginWithBorder implements CustomUIPanelPlugin {
-	protected PositionAPI pos;
-	protected Color color;
-	protected Color bgColor;
+public class CustomPanelPluginWithBorder extends CustomPanelPluginWithInput {
+	@Getter	@Setter	protected Color color;
+	@Getter	@Setter	protected Color bgColor;
+	@Getter @Setter protected boolean highlight;
 
 	public CustomPanelPluginWithBorder(Color color, Color bgColor) {
 		this.color = color;
 		this.bgColor = bgColor;
-	}
-
-	@Override
-	public void positionChanged(PositionAPI pos) {
-		this.pos = pos;
 	}
 
 	@Override
@@ -39,12 +33,24 @@ public class CustomPanelPluginWithBorder implements CustomUIPanelPlugin {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GL11.glColor4f(bgColor.getRed()/255f, bgColor.getGreen()/255f, bgColor.getBlue()/255f, 
-				bgColor.getAlpha()/255f * alphaMult);
+		glColorWithMult(bgColor, highlight ? 1.5f : 1, alphaMult);
 		GL11.glRectf(x, y, x + w, y + h);
 		GL11.glColor4f(1, 1, 1, 1);
 
 		GL11.glPopMatrix();
+	}
+
+	protected float multiplyColor(float base, float mult) {
+		return Math.min(base * mult, 255);
+	}
+
+	protected void glColorWithMult(Color color, float mult, float alphaMult) {
+		float red = multiplyColor(color.getRed(), mult)/255f;
+		float green = multiplyColor(color.getGreen(), mult)/255f;
+		float blue = multiplyColor(color.getBlue(), mult)/255f;
+		float alpha = multiplyColor(color.getAlpha(), alphaMult)/255f;
+
+		GL11.glColor4f(red, green, blue, alpha);
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class CustomPanelPluginWithBorder implements CustomUIPanelPlugin {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GL11.glColor4f(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 0.3f * alphaMult);
+		glColorWithMult(color, highlight ? 1.5f : 1, 0.3f * alphaMult);
 
 		for (int i=0; i<4; i++) {
 			GL11.glBegin(GL11.GL_LINE_LOOP);
@@ -78,10 +84,4 @@ public class CustomPanelPluginWithBorder implements CustomUIPanelPlugin {
 		GL11.glEnd();
 		GL11.glPopMatrix();
 	}
-
-	@Override
-	public void processInput(List<InputEventAPI> events) {}
-
-	@Override
-	public void advance(float amount) {}
 }

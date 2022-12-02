@@ -551,19 +551,21 @@ public class IndustryForBattle {
 						
 		return troops;
 	}
-	
+
+	public CustomPanelAPI renderPanelNew(CustomPanelAPI panel, float width, float height, CustomUIPanelPlugin pp) {
+		return renderPanelNew(panel, "map", width, height, pp);
+	}
+
 	/**
 	 * Creates a panel for the industry on the ground battle map.
 	 * @param panel The external panel holding this one.
 	 * @param width
 	 * @param height
-	 * @param x
-	 * @param y
 	 * @param pp
 	 * @return
 	 */
-	public CustomPanelAPI renderPanelNew(CustomPanelAPI panel, float width, float height, float x, float y, 
-			CustomUIPanelPlugin pp) 
+	public CustomPanelAPI renderPanelNew(CustomPanelAPI panel, String mode, float width, float height,
+			CustomUIPanelPlugin pp)
 	{		
 		float imageWidth = MarketMapDrawer.getIndustryImageWidth();
 		float subHeight = (int)(height / 4 - 2);
@@ -630,10 +632,8 @@ public class IndustryForBattle {
 		box.addComponent(atkPanel).belowLeft(ttImage, 0);
 		CustomPanelAPI defPanel = renderTroopPanelNew(box, width, subHeight, false);
 		box.addComponent(defPanel).belowLeft(atkPanel, 1);
-
-		panel.addComponent(box).inTL(x, y);
 		
-		if (intel.playerIsAttacker != null && hasLootables() && stillExistsOnMarket()) 
+		if ("map".equals(mode) && intel.playerIsAttacker != null && hasLootables() && stillExistsOnMarket())
 		{
 			TooltipMakerAPI lootBtnHolder = box.createUIElement(GroundUnit.BUTTON_SECTION_WIDTH-6, 16, false);
 			ButtonAPI button = lootBtnHolder.addButton(GroundBattleIntel.getString("btnLoot"), 

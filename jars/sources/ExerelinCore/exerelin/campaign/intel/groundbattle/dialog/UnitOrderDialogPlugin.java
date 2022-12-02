@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.*;
 
 import java.util.Map;
 
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import exerelin.utilities.CrewReplacerUtils;
 import org.lwjgl.input.Keyboard;
 
@@ -352,9 +351,20 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		}
 		return industries;
 	}
+
+	public List<IndustryForBattle> getIFBs() {
+		List<IndustryForBattle> industries = new ArrayList<>();
+		for (IndustryForBattle ifb : intel.getIndustries()) {
+			if (ifb == unit.getLocation()) continue;
+			industries.add(ifb);
+		}
+		return industries;
+	}
 	
 	protected void selectMoveOrDeployDestination(final boolean deploy) {
+		/*
 		List<Industry> industries = getIndustries();
+
 		dialog.showIndustryPicker(getString("dialogIndustryPickerHeader"), 
 				StringHelper.getString("select", true), intel.getMarket(),
 				industries, new IndustryPickerListener() {
@@ -375,6 +385,39 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				else addChoiceOptions();
 			}
 		});
+		*/
+		List<IndustryForBattle> industries = getIFBs();
+		GBIndustryPickerDialogDelegate delegate = new GBIndustryPickerDialogDelegate(intel, industries) {
+			@Override
+			protected String getHeaderString() {
+				return getString("actionSelectDestinationHeader");
+			}
+
+			@Override
+			public void customDialogConfirm() {
+				if (selectedIndustry == null) {
+					customDialogCancel();
+					return;
+				}
+
+				if (deploy) {
+					showDeploymentConfirmScreen(selectedIndustry);
+				}
+				else {
+					unit.setDestination(selectedIndustry);
+					playSound("move");
+					leave(true);
+				}
+			}
+
+			@Override
+			public void customDialogCancel() {
+				if (quickMove) leave(true);
+				else addChoiceOptions();
+			}
+		};
+		int[] dimensions = delegate.getWantedDimensions();
+		dialog.showCustomDialog(dimensions[0] + 16, dimensions[1] + dimensions[4], delegate);
 	}
 	
 	protected void disrupt() {

@@ -138,7 +138,12 @@ public class NexUtilsGUI {
 		result.elements.add(textHolder);
 		return result;
 	}
-		
+
+	public static void placeElementInRows(CustomPanelAPI holder, CustomPanelAPI element, List<CustomPanelAPI> prevElements,
+										  int maxPerRow, float xpad) {
+		placeElementInRows(holder, element, prevElements, prevElements.size(), maxPerRow, xpad);
+	}
+
 	public static void placeElementInRows(CustomPanelAPI holder, CustomPanelAPI element, List<CustomPanelAPI> prevElements, 
 			int numPrevious, int maxPerRow, float xpad) {
 		if (numPrevious == 0) {

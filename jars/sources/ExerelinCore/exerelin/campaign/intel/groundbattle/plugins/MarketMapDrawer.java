@@ -4,7 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.PositionAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -22,6 +24,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
@@ -113,7 +117,8 @@ public class MarketMapDrawer {
 			IFBPanelPlugin plugin = new IFBPanelPlugin(ifb);
 			float x = ifb.getPosOnMap().x;
 			float y = ifb.getPosOnMap().y;
-			CustomPanelAPI indPanel = ifb.renderPanelNew(panel, panelWidth, panelHeight, x, y, plugin);
+			CustomPanelAPI indPanel = ifb.renderPanelNew(panel, panelWidth, panelHeight, plugin);
+			panel.addComponent(indPanel).inTL(x, y);
 			
 			index++;
 		}
@@ -286,7 +291,8 @@ public class MarketMapDrawer {
 	}
 	
 	public static class IFBPanelPlugin extends CustomPanelPluginWithBorder {
-		protected static final Color BG_COLOR = new Color(0f, 0f, 0f, 0.5f);
+		public static final Color BG_COLOR = new Color(0f, 0f, 0f, 0.5f);
+		public static final Color BG_COLOR_HIGHLIGHT = new Color(0.2f, 0.25f, 0.3f, 0.5f);
 		
 		//protected GroundBattleIntel intel;
 		protected IndustryForBattle ifb;
@@ -298,6 +304,10 @@ public class MarketMapDrawer {
 			super(getColor(ifb), BG_COLOR);
 			this.ifb = ifb;
 			isContested = ifb.isContested();
+		}
+
+		public IndustryForBattle getIFB() {
+			return ifb;
 		}
 		
 		protected static Color getColor(IndustryForBattle ifb) {
@@ -331,6 +341,8 @@ public class MarketMapDrawer {
 				//stippleIndex++;
 			}			
 		}
+
+
 	}
 	
 	/**
