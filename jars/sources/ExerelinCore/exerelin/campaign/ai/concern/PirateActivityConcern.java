@@ -28,7 +28,7 @@ public class PirateActivityConcern extends BaseStrategicConcern {
     @Override
     public boolean generate() {
         if (!getExistingConcernsOfSameType().isEmpty()) return false;
-
+        rage = ai.getFaction().getMemoryWithoutUpdate().getFloat("$nex_pirateRage");
         update();
 
         return !affectedMarkets.isEmpty();
@@ -85,8 +85,11 @@ public class PirateActivityConcern extends BaseStrategicConcern {
                 affectedMarkets.add(new RageEntry(market, cond.getIdForPluginModifications(), thisRage));
             }
         }
+        if (affectedMarkets.isEmpty()) return;
+        
         Global.getLogger(this.getClass()).info("Rage this update: " + rageThisUpdate);
         rage += rageThisUpdate;
+        ai.getFaction().getMemoryWithoutUpdate().set("$nex_pirateRage", rage);
         priority.modifyFlat("rage", rage, StrategicAI.getString("statRage", true));
     }
 

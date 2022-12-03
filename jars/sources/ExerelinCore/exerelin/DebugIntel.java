@@ -2,6 +2,10 @@ package exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
+import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketShareDataAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
@@ -11,12 +15,15 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,12 +61,71 @@ public class DebugIntel extends BaseIntelPlugin {
 	============================================================================
 	*/
 	
-	public void createVengeanceTable(TooltipMakerAPI tooltip, float width, float pad) 
+	public void createCommodityProfitTable(TooltipMakerAPI tooltip, float width, float pad)
 	{
 		width -= MARGIN;
+		Color hl = Misc.getHighlightColor();
 		
+		tooltip.addSectionHeading("Carnegie Market Info", com.fs.starfarer.api.ui.Alignment.MID, pad);
+		
+		float cellWidth = 0.16f * width;
+		tooltip.beginTable(getFactionForUIColors(), 20, "Commodity", 0.2f * width,
+				"Market size", cellWidth,
+				"Producers", cellWidth,
+				"Output units", cellWidth,
+				"Market per producer", cellWidth,
+				"Market per unit", cellWidth
+		);
+		
+		List<CommoditySpecAPI> commoditySpecs = Global.getSettings().getAllCommoditySpecs();
+		MarketAPI testMarket = Global.getSector().getEconomy().getMarketsCopy().get(0);
+		
+		for (CommoditySpecAPI spec : commoditySpecs) {
+			if (spec.isNonEcon() || spec.isMeta() || spec.isPersonnel()) continue;
+
+			String commodityId = spec.getId();
+			
+			List<Object> rowContents = new ArrayList<>();
+			
+			// commodity name
+			//rowContents.add(com.fs.starfarer.api.ui.Alignment.MID);
+			rowContents.add(hl);
+			rowContents.add(spec.getName());
+			
+			// market size
+			CommodityMarketDataAPI data = testMarket.getCommodityData(commodityId).getCommodityMarketData();
+
+			float size = data.getMarketValue();
+			rowContents.add(Misc.getWithDGS(size));
+			// number of producers
+			List<EconomyInfoHelper.ProducerEntry> producers = EconomyInfoHelper.getInstance().getProducersByCommodity(commodityId);
+			int numProducers = producers.size();
+			rowContents.add(numProducers + "");
+			// output units
+			int totalOutput = 0;
+			for (EconomyInfoHelper.ProducerEntry producer : producers) {
+				totalOutput += producer.output;
+			}
+			rowContents.add(totalOutput + "");
+
+			// market per producer
+			float marketPerProducer = size/numProducers;
+			rowContents.add(Misc.getWithDGS(marketPerProducer));
+			// market per unit
+			float marketPerUnit = size/totalOutput;
+			rowContents.add(Misc.getWithDGS(marketPerUnit));
+			
+			tooltip.addRow(rowContents.toArray());
+		}
+		
+		tooltip.addTable("", 0, pad);
+	}
+
+	public void createVengeanceTable(TooltipMakerAPI tooltip, float width, float pad) {
+		width -= MARGIN;
+
 		tooltip.addSectionHeading("Vengeance debug", com.fs.starfarer.api.ui.Alignment.MID, pad);
-		
+
 		float cellWidth = 0.2f * width;
 		tooltip.beginTable(getFactionForUIColors(), 20, StringHelper.getString("faction", true), 0.2f * width,
 				"Vengeance points", cellWidth,
@@ -67,43 +133,43 @@ public class DebugIntel extends BaseIntelPlugin {
 				"Escalation level", cellWidth,
 				"Max escalation level", cellWidth
 		);
-		
+
 		List<FactionAPI> factions = NexUtilsFaction.factionIdsToFactions(SectorManager.getLiveFactionIdsCopy());
 		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
 		RevengeanceManager man = RevengeanceManager.getManager();
-		
+
 		for (FactionAPI faction : factions) {
 			String factionId = faction.getId();
 			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			if (!conf.playableFaction || conf.disableDiplomacy) continue;
-			
+
 			List<Object> rowContents = new ArrayList<>();
-			
+
 			// add faction
 			//rowContents.add(com.fs.starfarer.api.ui.Alignment.MID);
 			rowContents.add(faction.getBaseUIColor());
 			rowContents.add(Misc.ucFirst(faction.getDisplayName()));
-			
+
 			// current points
 			float points = man.getFactionPoints(factionId);
 			rowContents.add(Misc.getWithDGS(points));
 			// current stage
 			int stage = man.getCurrentVengeanceStage(factionId);
 			rowContents.add(stage + "");
-			
+
 			// escalation level
 			int escalation = man.getVengeanceEscalation(factionId);
 			rowContents.add(escalation + "");
 			// max escalation level
 			int maxEscalation = VengeanceFleetIntel.VengeanceDef.getDef(factionId).maxLevel;
 			rowContents.add(maxEscalation + "");
-			
+
 			tooltip.addRow(rowContents.toArray());
 		}
-		
+
 		tooltip.addTable("", 0, pad);
 	}
-	
+
 	@Override
 	public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
 		TooltipMakerAPI superheaderHolder = panel.createUIElement(width/3, 40, false);
@@ -116,7 +182,7 @@ public class DebugIntel extends BaseIntelPlugin {
 		
 		TooltipMakerAPI tableHolder = panel.createUIElement(width, 600, true);
 		
-		createVengeanceTable(tableHolder, width, 10);
+		createCommodityProfitTable(tableHolder, width, 10);
 		panel.addUIElement(tableHolder).inTL(3, 48);
 	}
 
@@ -138,7 +204,7 @@ public class DebugIntel extends BaseIntelPlugin {
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(Tags.INTEL_FLEET_LOG);
+		tags.add(StringHelper.getString("exerelin_misc", "intelTagDebug"));
 		return tags;
 	}	
 

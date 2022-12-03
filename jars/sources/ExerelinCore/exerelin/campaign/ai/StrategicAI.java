@@ -38,7 +38,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	@Getter protected DiplomaticAIModule diploModule;
 	@Getter protected MilitaryAIModule milModule;
 
-	@Deprecated @Getter protected List<StrategicConcern> existingConcerns = new ArrayList<>();
+	@Deprecated protected List<StrategicConcern> existingConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastAddedConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastRemovedConcerns = new ArrayList<>();
 	protected IntervalUtil interval = new IntervalUtil(29, 31);
