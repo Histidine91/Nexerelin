@@ -1,0 +1,30 @@
+{
+	"baseHullId":"facet",
+	"skinHullId":"facet_endbringer",
+	"hullName":"Facet (END)",
+	"descriptionPrefix":"[file not found]\n// Please do not touch ^_^",
+	"removeBuiltInMods":["automated"],
+	"ordnancePoints":50,
+	"weaponSlotChanges":{
+		"WS 000":{"type":BUILT_IN},
+		"WS 001":{"type":BUILT_IN},
+		"WS 002":{"type":BUILT_IN},
+		"WS 003":{"type":BUILT_IN},
+		"WS 004":{"type":BUILT_IN},
+		"WS 005":{"type":BUILT_IN},
+		"WS 006":{"type":BUILT_IN},
+		"WS 007":{"type":BUILT_IN},
+		"WS 008":{"type":BUILT_IN},
+	 },
+	"builtInWeapons":{
+		"WS 000": "cryoblaster",
+		"WS 001": "amsrm",
+		"WS 002": "amsrm",
+		"WS 003": "resonatormrm",
+		"WS 004": "disintegrator",
+		"WS 005": "minipulser",
+		"WS 006": "shockrepeater",
+		"WS 007": "shockrepeater",
+		"WS 008": "riftlance"
+	}
+}

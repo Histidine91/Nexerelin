@@ -291,7 +291,7 @@
 			},
 		},
 		
-		# disabled via min level, we don't want people stripping it for its weapons (also it kind of rekts the lore)
+		# disabled via min level, it kind of rekts the lore
 		"endbringer":{
 			"name":"The Bringer of End",
 			"desc":"This completely outworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",
@@ -300,7 +300,7 @@
 			"faction":"omega",
 			"minLevel":99,	# not accessible
 			"ships":[
-				["facet_Shieldbreaker", "facet_Attack", "facet_Attack2", "facet_Defense", "facet_Missile"],
+				["facet_endbringer_Prime"],
 			],
 			"officers":[
 				{
