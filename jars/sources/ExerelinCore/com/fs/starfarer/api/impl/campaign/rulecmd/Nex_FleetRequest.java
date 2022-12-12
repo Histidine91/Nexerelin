@@ -36,8 +36,10 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.MutableValue;
 import data.scripts.campaign.bases.VayraRaiderBaseIntel;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -441,10 +443,17 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (memory.contains(MEM_KEY_SOURCES))
 			return (List<MarketAPI>)memory.get(MEM_KEY_SOURCES);
 		
-		List<MarketAPI> marketsTemp = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
-		String commissioner = PlayerFactionStore.getPlayerFactionId();
-		if (!commissioner.equals(Factions.PLAYER))
-			marketsTemp.addAll(NexUtilsFaction.getFactionMarkets(commissioner));
+		List<MarketAPI> marketsTemp;
+		Alliance alliance = AllianceManager.getPlayerAlliance(true);
+		if (alliance != null) {
+			marketsTemp = alliance.getAllianceMarkets();
+		}
+		else {
+			marketsTemp = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
+			String commissioner = PlayerFactionStore.getPlayerFactionId();
+			if (!commissioner.equals(Factions.PLAYER))
+				marketsTemp.addAll(NexUtilsFaction.getFactionMarkets(commissioner));
+		}
 		
 		List<MarketAPI> markets = new ArrayList<>();
 		for (MarketAPI market : marketsTemp) {
