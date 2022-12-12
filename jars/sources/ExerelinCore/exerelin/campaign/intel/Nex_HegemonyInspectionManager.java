@@ -24,7 +24,7 @@ public class Nex_HegemonyInspectionManager extends HegemonyInspectionManager {
 			return;
 		
 		String playerFactionId = PlayerFactionStore.getPlayerFactionId();
-		if (AllianceManager.areFactionsAllied(playerFactionId, Factions.HEGEMONY))
+		if (!playerFactionId.equals(Factions.HEGEMONY) && AllianceManager.areFactionsAllied(playerFactionId, Factions.HEGEMONY))
 			return;
 		
 		super.checkInspection();
