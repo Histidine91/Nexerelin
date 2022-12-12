@@ -1836,7 +1836,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			options.setEnabled(RAID_DISRUPT, false);
 			if (!canDisrupt) {
 				String pct = "" + (int)Math.round(DISRUPTION_THRESHOLD * 100f) + "%";
-				String tt = String.format(pct, StringHelper.getString("nex_raidDialog", "tooltipDisruptMinEffectiveness"));
+				String tt = String.format(StringHelper.getString("nex_raidDialog", "tooltipDisruptMinEffectiveness"), pct);
 				options.setTooltip(RAID_DISRUPT, tt);
 				options.setTooltipHighlights(RAID_DISRUPT, pct);
 				options.setTooltipHighlightColors(RAID_DISRUPT, h);
