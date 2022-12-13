@@ -176,6 +176,11 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
                 for (String ship : knownShips) {
                     ShipHullSpecAPI spec = Global.getSettings().getHullSpec(ship);
                     if (spec.hasTag(Tags.RESTRICTED)) continue;
+
+                    // check that this ship has valid variants
+                    // or we could just add the Hull variant in that case?
+                    if (Global.getSettings().getHullIdToVariantListMap().get(ship).isEmpty()) continue;
+
                     ships.put(ship, 0);
                 }
             }
@@ -227,16 +232,27 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
                 for (int i=0; i<count; i++) {
                     List<String> variants = Global.getSettings().getHullIdToVariantListMap().get(ship);
                     String variantId = NexUtils.getRandomListElement(variants);
+                    if (variantId == null) variantId = ship + "_Hull";
                     variantIds.add(variantId);
                 }
             }
             NGCAddStartingShipsByFleetType.generateFleetFromVariantIds(dialog, data, "CUSTOM", variantIds);
         }
 
+        public boolean haveAnyShips() {
+            for (String ship : ships.keySet()) {
+                if (ships.get(ship) > 0) return true;
+            }
+            return false;
+        }
+
         @Override
         public void customDialogConfirm() {
-			new NGCClearStartingGear().execute(null, dialog, new ArrayList<Token>(), memoryMap);
+            if (!haveAnyShips()) return;
+
+            new NGCClearStartingGear().execute(null, dialog, new ArrayList<Token>(), memoryMap);
             addStartingShips();
+
             mem.set("$nex_lastSelectedFleetType", "CUSTOM");
             NGCAddStartingShipsByFleetType.addStartingDModScript(mem);
             ExerelinSetupData.getInstance().startFleetType = NexFactionConfig.StartFleetType.CUSTOM;
