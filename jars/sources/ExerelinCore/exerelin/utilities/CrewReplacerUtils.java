@@ -131,11 +131,6 @@ public class CrewReplacerUtils {
 
 	public static float getCommodityPower(String jobId, String commodityId) {
 		if (!enabled) return 1;
-		
-		crewReplacer_Job jobTemp = crewReplacer_Main.getJob("raiding_marines");
-		float power = jobTemp.getCrew("fake_commodity_id").crewPower;
-		
-		
 		crewReplacer_Job job = crewReplacer_Main.getJob(jobId);
 		//log.info(String.format("Getting commodity %s power for job %s: %s", commodityId, jobId, job.getCrew(commodityId).crewPower));
 		return job.getCrew(commodityId).crewPower;
