@@ -32,6 +32,7 @@ import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.AdminData;
+import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
@@ -110,6 +111,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final String PERSISTENT_KEY = "nex_colonyManager";
 	public static final String MEMORY_KEY_GROWTH_LIMIT = "$nex_colony_growth_limit";
 	public static final String MEMORY_KEY_STASHED_CORES = "$nex_stashed_ai_cores";
+	public static final String MEMORY_KEY_STASHED_CORE_ADMIN = "$nex_stashed_ai_core_admin";
 	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP = "$nex_ruler_temp_owner";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
@@ -1266,7 +1268,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * Uninstall AI cores from industries and store them in memory.
 	 * @param market
 	 */
-	public void stashCores(MarketAPI market) {
+	public void stashCores(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner) {
 		Map<String, String> industriesToCores;
 		if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORES))
 			industriesToCores = (Map<String, String>)(market.getMemoryWithoutUpdate()
@@ -1286,9 +1288,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				numStashed++;
 			}
 		}
+
+		PersonAPI admin = market.getAdmin();
+		if (admin != null && admin.isAICore() && !Global.getSector().getImportantPeople().containsPerson(admin)) {
+			market.getMemoryWithoutUpdate().set(MEMORY_KEY_STASHED_CORE_ADMIN, admin);
+			market.setAdmin(null);
+			reassignAdminIfNeeded(market, oldOwner, newOwner);
+			numStashed++;
+		}
+
 		market.getMemoryWithoutUpdate().set(MEMORY_KEY_STASHED_CORES, industriesToCores);
 		printCoreStashMessage(StringHelper.getString("exerelin_misc", "aiCoreStashMsg"), 
-				numStashed, market);		
+				numStashed, market);
 	}
 	
 	/**
@@ -1296,6 +1307,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * @param market
 	 */
 	public void restoreCores(MarketAPI market) {
+		if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORE_ADMIN)) {
+			PersonAPI aiAdmin = (PersonAPI)market.getMemoryWithoutUpdate().get(MEMORY_KEY_STASHED_CORE_ADMIN);
+			PersonAPI currAdmin = market.getAdmin();
+			market.setAdmin(aiAdmin);
+			replaceDisappearedAdmin(market, currAdmin);
+		}
+
 		if (!market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORES))
 			return;
 		
@@ -1364,7 +1382,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	/**
 	 * Check if the AI cores on this market should be stashed following market capture.
-	 * TODO: Handle AI admin as well.
 	 * @param market
 	 * @param oldOwner
 	 * @param newOwner
@@ -1373,7 +1390,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	{
 		//boolean oldAllowsAI = doesFactionAllowAI(oldOwner);
 		boolean newAllowsAI = doesFactionAllowAI(newOwner);
-		if (!newAllowsAI) stashCores(market);
+		if (!newAllowsAI) stashCores(market, oldOwner, newOwner);
 		else restoreCores(market);
 	}
 
