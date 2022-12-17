@@ -76,6 +76,13 @@ public class LowerRelations extends CovertActionIntel {
 	}
 
 	@Override
+	protected boolean becameHostile() {
+		if (repResult2 != null && repResult2.isHostile && !repResult2.wasHostile)
+			return true;
+		return super.becameHostile();
+	}
+
+	@Override
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
 		if (ExerelinModPlugin.isNexDev) {

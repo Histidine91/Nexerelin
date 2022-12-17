@@ -1684,6 +1684,8 @@
 		"templarControl":"Templar control",
 		
 		"originalOwner":"Originally held by %s",
+		
+		"cancelWorkMsg":"Cancelling work on %s on %s"
 	},
 	"exerelin_marketConditions":{
 		"marketAttacked":"Market attacked",
@@ -2637,6 +2639,8 @@
 		"selectShipGeneric":"Select ship",
 		
 		"intelTagDebug":"Debug",
+		
+		"xpProfitableTradeMsg":"Gained experience from profitable trades",
 		
 		"errorPrismLoad":"Failed to load Prism High-End Seller configuration defs!\nReport this issue with your modlist.",
 		

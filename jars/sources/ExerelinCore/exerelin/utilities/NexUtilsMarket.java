@@ -512,8 +512,7 @@ public class NexUtilsMarket {
 					isCapture, factionsToNotify, repChangeStrength);
 		}
 	}
-	
-	// TODO
+
 	public static void reportNPCGenericRaid(MarketAPI market, MarketCMD.TempData actionData) 
 	{
 		for (ColonyNPCHostileActListener x : Global.getSector().getListenerManager().getListeners(ColonyNPCHostileActListener.class)) 

@@ -25,6 +25,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
 /**
@@ -100,8 +102,7 @@ public class NexRepTrackerEvent extends BaseEventPlugin {
 		//final long gain = 1000;
 		if (gain > 0) {
 			data.setAccruedXP(0);
-			// TODO externalize
-			Global.getSector().getCampaignUI().addMessage("Gained experience from profitable trades", Misc.getBasePlayerColor());
+			Global.getSector().getCampaignUI().addMessage(StringHelper.getString("exerelin_misc", "xpProfitableTradeMsg"), Misc.getBasePlayerColor());
 			Global.getSector().getCharacterData().getPerson().getStats().addXP(gain);
 		}
 	}

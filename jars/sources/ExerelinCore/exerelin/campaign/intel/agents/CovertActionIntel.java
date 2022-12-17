@@ -556,7 +556,14 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 				//|| result != null && result.isDetected()
 				|| (result != null && result.isSuccessful())
 				|| (repResult != null && repResult != NO_EFFECT)
+				|| becameHostile()
 				|| Global.getSettings().isDevMode();
+	}
+
+	protected boolean becameHostile() {
+		if (repResult != null && repResult.isHostile && !repResult.wasHostile)
+			return true;
+		return false;
 	}
 	
 	protected boolean affectsPlayerRep() {
@@ -600,7 +607,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 				Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() TRUE;if intel doesn't display, something bad happened.");
 			}
 		}
-		if (shouldReportEvent()) { //TODO: make it so if an agent action makes 2 factions hostile, add it
+		if (shouldReportEvent()) {
 			boolean notify = shouldNotify();
 			if (NexConfig.nexIntelQueued <= 1) {
 				if (NexConfig.nexIntelQueued <= 0

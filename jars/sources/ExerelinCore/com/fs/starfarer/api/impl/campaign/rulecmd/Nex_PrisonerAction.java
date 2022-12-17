@@ -97,7 +97,7 @@ public class Nex_PrisonerAction extends AgentActionBase {
 		// refresh memory now that we have the rep level to dock
 		if (wasInhosp && isInhosp) {
 			// TODO: check if we're locked out due to recent commotion?
-			// or just let usgo in anyway
+			// or just let us go in anyway
 			boolean transp = Global.getSector().getPlayerFleet().isTransponderOn();
 			
 			dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", transp ? "OPEN" : "SNEAK", 0);

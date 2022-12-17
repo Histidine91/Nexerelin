@@ -1001,8 +1001,7 @@ public class SpecialForcesRouteAI {
 		public SpecialForcesTask clone() throws CloneNotSupportedException {
 			return (SpecialForcesTask)super.clone();
 		}
-		
-		// TODO: need to externalize these now that player will have their own SF fleet with visible info
+
 		/**
 		 * Returns a string describing the task.
 		 * @return

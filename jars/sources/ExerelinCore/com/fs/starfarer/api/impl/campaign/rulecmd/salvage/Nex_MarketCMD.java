@@ -1451,13 +1451,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		return 1;
 	}
 	
-	/* 
-		TODO: Compare with superclass's output from raids and see if the following are still required:
-			Drop blueprints known to player
-			Only drop each blueprint once
-			Filter out NO_BP_DROP blueprints _before_ adding them to picker
-			Loot more small and medium weapons
-		
+	/*
 		Vanilla no longer has a raidSpecialItems method;
 		We're keeping this one around for legacy invasion loot
 	*/

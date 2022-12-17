@@ -220,7 +220,6 @@ public abstract class BuyShipRule {
 		@Override
 		public void printRule(TooltipMakerAPI tooltip, float pad) {
 			//tooltip.addPara("[temp] DP at least: " + dp, pad, Misc.getHighlightColor(), dp + "");
-			// TODO
 			tooltip.addPara(getString("ruleDP"), pad, Misc.getHighlightColor(), 
 					MIN_DP[2] + "", MIN_DP[3] + "", MIN_DP[4] + "", MIN_DP[5] + "");
 		}
