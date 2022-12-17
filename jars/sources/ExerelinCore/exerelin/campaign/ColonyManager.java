@@ -176,6 +176,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		int playerFactionSize = 0;
 		boolean allowGrowth = Global.getSector().getClock().getCycle() >= MIN_CYCLE_FOR_NPC_GROWTH;
+		float numTicksPerMonth = Global.getSettings().getFloat("economyIterPerMonth");
 		for (MarketAPI market : markets) 
 		{
 			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned())
@@ -241,7 +242,6 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				// garrison damage recovery
 				float garDamage = GBUtils.getGarrisonDamageMemory(market);
 				if (garDamage > 0) {
-					float numTicksPerMonth = Global.getSettings().getFloat("economyIterPerMonth");
 					float recoveryFactor = 1/(numTicksPerMonth*GBConstants.INVASION_HEALTH_MONTHS_TO_RECOVER);
 					garDamage -= recoveryFactor;
 					GBUtils.setGarrisonDamageMemory(market, garDamage);
@@ -266,9 +266,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				float cost = market.getIndustryUpkeep();
 				float margin = profit/cost;
 				log.info(String.format("Market %s adding %.2f profit margin (%.0f profit, %.0f cost)", market.getName(), margin, profit, cost));
+				float size = market.getSize() - 2;
+				if (size < 0.5f) size = 0.5f;
+				float marginForXP = margin * size / numTicksPerMonth;
+				float xpEquivalent = marginForXP * Global.getSettings().getFloat("nex_xpPerProfitMargin");
+				log.info(String.format("This will be worth %.0f XP at month end (about %.0f/month)", xpEquivalent, xpEquivalent * numTicksPerMonth));
 				if (margin <= 0) continue;
-				float numTicksPerMonth = Global.getSettings().getFloat("economyIterPerMonth");
-				profitMarginForXP += margin * market.getSize() / numTicksPerMonth;
+				profitMarginForXP += marginForXP;
 			}
 		}
 		updatePlayerBonusAdmins(playerFactionSize);
