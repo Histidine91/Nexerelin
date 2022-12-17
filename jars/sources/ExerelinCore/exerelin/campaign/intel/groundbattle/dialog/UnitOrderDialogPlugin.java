@@ -225,7 +225,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		options.addOption(getString("actionMergeOrTransfer", true), OptionId.MERGE_DIALOG, null);
 		options.addOption(getString("actionSplit", true), OptionId.SPLIT, null);
 		
-		if (unit.getSize() < intel.getUnitSize().getMinSizeForType(unit.getType()) * 2) 
+		if (unit.getSize() < intel.getUnitSize().getMinSizeForType(unit.getUnitDefId()) * 2)
 		{
 			options.setEnabled(OptionId.SPLIT, false);
 			options.setTooltip(OptionId.SPLIT, getString("actionSplitTooSmallTooltip"));
@@ -281,9 +281,9 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	protected void showResizeScreen() {
 		options.clearOptions();
-		int min = intel.getUnitSize().getMinSizeForType(unit.getType());
+		int min = intel.getUnitSize().getMinSizeForType(unit.getUnitDefId());
 		int curr = unit.getSize();
-		int max = getMaxCountForResize(unit, curr, intel.getUnitSize().getMaxSizeForType(unit.getType()));
+		int max = getMaxCountForResize(unit, curr, intel.getUnitSize().getMaxSizeForType(unit.getUnitDefId()));
 		if (min > curr) min = curr;
 		
 		options.addSelector(getString("selectorUnitCount", true), "unitSizeSelector", Color.GREEN, 
@@ -473,8 +473,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	}
 	
 	protected int[] getMinAndMaxForTransfer(GroundUnit other) {
-		int min = intel.getUnitSize().getMinSizeForType(unit.getType());
-		int max = intel.getUnitSize().getMaxSizeForType(unit.getType());
+		int min = intel.getUnitSize().getMinSizeForType(unit.getUnitDefId());
+		int max = intel.getUnitSize().getMaxSizeForType(unit.getUnitDefId());
 		
 		int sizeSum = unit.getSize() + other.getSize();
 		// cannot take so many troops that the other unit drops below min size
@@ -541,9 +541,9 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		//text.setParaSmallInsignia();
 		text.addPara(other.getName(), self ? Misc.getHighlightColor() : other.getFaction().getBaseUIColor(), pad);
 		int curr = other.getSize();
-		int max = intel.getUnitSize().getMaxSizeForType(unit.getType());
+		int max = intel.getUnitSize().getMaxSizeForType(unit.getUnitDefId());
 		LabelAPI label = text.addPara(String.format("%s/%s", curr, max), 0);
-		if (curr < intel.getUnitSize().getMinSizeForType(unit.getType())) {
+		if (curr < intel.getUnitSize().getMinSizeForType(unit.getUnitDefId())) {
 			label.setHighlight(curr + "");
 			label.setHighlightColor(Misc.getNegativeHighlightColor());
 		}
@@ -559,7 +559,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			String buttonId = "transfer_" + other.id;
 			TooltipMakerAPI buttonTransferHolder = info.createUIElement(buttonWidth, 48, false);
 			ButtonAPI buttonTransfer = buttonTransferHolder.addButton(getString("actionTransfer", true), buttonId, buttonWidth, 40, 4);
-			boolean allowTransfer = size + other.getSize() > intel.getUnitSize().getMinSizeForType(unit.getType());
+			boolean allowTransfer = size + other.getSize() > intel.getUnitSize().getMinSizeForType(unit.getUnitDefId());
 			
 			InteractionDialogCustomPanelPlugin.ButtonEntry entry = new InteractionDialogCustomPanelPlugin.ButtonEntry(buttonTransfer, buttonId) 
 			{
@@ -581,7 +581,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			Nex_VisualCustomPanel.getPlugin().addButton(entry);
 			info.addUIElement(buttonTransferHolder).rightOfTop(text, pad);
 
-			boolean allowMerge = unit.getSize() + other.getSize() <= intel.getUnitSize().getMaxSizeForType(unit.getType());
+			boolean allowMerge = unit.getSize() + other.getSize() <= intel.getUnitSize().getMaxSizeForType(unit.getUnitDefId());
 
 			buttonId = "merge_" + other.id;
 			TooltipMakerAPI buttonMergeHolder = info.createUIElement(buttonWidth, 48, false);
@@ -627,7 +627,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		
 		unit.setSize(half, false);
 		
-		GroundUnit otherUnit = intel.createPlayerUnit(unit.getType());
+		GroundUnit otherUnit = intel.createPlayerUnit(unit.getUnitDefId());
 		otherUnit.setSize(otherHalf, false);
 		otherUnit.setMorale(unit.getMorale());
 		otherUnit.setLocation(unit.getLocation());

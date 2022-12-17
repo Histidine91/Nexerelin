@@ -49,13 +49,15 @@ public class CrewReplacerUtils {
 	}
 	
 	public static float getMarines(CampaignFleetAPI fleet, String jobId) {
-		if (!enabled) return fleet.getCargo().getMarines();
-		
-		return crewReplacer_Main.getJob(jobId).getAvailableCrewPower(fleet);
+		return getAvailableCommodity(fleet, Commodities.MARINES, jobId);
 	}
 
 	public static float getHeavyArms(CampaignFleetAPI fleet, String jobId) {
-		if (!enabled) return fleet.getCargo().getCommodityQuantity(Commodities.HAND_WEAPONS);
+		return getAvailableCommodity(fleet, Commodities.HAND_WEAPONS, jobId);
+	}
+
+	public static float getAvailableCommodity(CampaignFleetAPI fleet, String commodity, String jobId) {
+		if (!enabled) return fleet.getCargo().getCommodityQuantity(commodity);
 
 		return crewReplacer_Main.getJob(jobId).getAvailableCrewPower(fleet);
 	}
@@ -71,9 +73,13 @@ public class CrewReplacerUtils {
 	}
 
 	public static List<Integer> takeHeavyArmsFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
+		return takeCommodityFromCargo(fleet, Commodities.HAND_WEAPONS, jobId, count);
+	}
+
+	public static List<Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String commodity, String jobId, int count) {
 		if (!enabled) {
 			List<Integer> list = new ArrayList<>();
-			fleet.getCargo().removeCommodity(Commodities.HAND_WEAPONS, count);
+			fleet.getCargo().removeCommodity(commodity, count);
 			list.add(count);
 			return list;
 		}
@@ -119,9 +125,13 @@ public class CrewReplacerUtils {
 	}
 
 	public static void removeHeavyArms(CampaignFleetAPI fleet, String jobId, int count, TextPanelAPI text) {
+		removeCommodity(fleet, Commodities.HAND_WEAPONS, jobId, count, text);
+	}
+
+	public static void removeCommodity(CampaignFleetAPI fleet, String commodityId, String jobId, int count, TextPanelAPI text) {
 		if (!enabled) {
-			fleet.getCargo().removeCommodity(Commodities.HAND_WEAPONS, count);
-			if (text != null) AddRemoveCommodity.addCommodityLossText(Commodities.HAND_WEAPONS, count, text);
+			fleet.getCargo().removeCommodity(commodityId, count);
+			if (text != null) AddRemoveCommodity.addCommodityLossText(commodityId, count, text);
 			return;
 		}
 		crewReplacer_Job job = crewReplacer_Main.getJob(jobId);

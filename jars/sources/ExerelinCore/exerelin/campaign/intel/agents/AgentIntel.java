@@ -40,6 +40,7 @@ import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
+import exerelin.campaign.intel.groundbattle.GroundUnitDef;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
@@ -869,7 +870,7 @@ public class AgentIntel extends BaseIntelPlugin {
 						h, NexUtils.getEstimateNum(strEst[2], precision) + "");	
 				
 				int numMarines = 200;
-				int dropCost = GroundUnit.getDeployCost(numMarines, GroundUnit.ForceType.MARINE, true, intel);
+				int dropCost = GroundUnit.getDeployCost(numMarines, GroundUnitDef.MARINE, true, intel);
 				info.addPara(GroundBattleIntel.getString("dialogStrEstimateDropCost"), 3, 
 						h, numMarines + "", dropCost + "");	
 			} catch (Exception ex) {}

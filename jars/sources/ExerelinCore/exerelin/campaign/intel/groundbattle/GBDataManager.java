@@ -41,6 +41,8 @@ public class GBDataManager {
 		conditionDefsById.clear();
 		abilityDefs.clear();
 		abilityDefsById.clear();
+		GroundUnitDef.UNIT_DEFS.clear();
+		GroundUnitDef.UNIT_DEFS_BY_ID.clear();
 		
 		IndustryDef defaultDef = new IndustryDef("default");
 		industryDefs.add(defaultDef);
@@ -123,9 +125,40 @@ public class GBDataManager {
 				abilityDefsById.put(id, def);
 			}
 			Collections.sort(abilityDefs);
+
+			JSONObject jsonUnit = json.getJSONObject("unitTypes");
+			iter = jsonUnit.keys();
+			while (iter.hasNext()) {
+				String id = (String) iter.next();
+				JSONObject jsonUnitEntry = jsonUnit.getJSONObject(id);
+				String name = jsonUnitEntry.getString("name");
+				GroundUnit.ForceType type = GroundUnit.ForceType.valueOf(jsonUnitEntry.getString("type"));
+				GroundUnitDef def = new GroundUnitDef(id, name, type);
+				def.playerCanCreate = jsonUnitEntry.optBoolean("playerCanCreate", false);
+				def.strength = (float)jsonUnitEntry.optDouble("strength", 1);
+				def.unitSizeMult = (float)jsonUnitEntry.optDouble("unitSizeMult", 1);
+				def.dropCostMult = (float)jsonUnitEntry.optDouble("dropCostMult", 1);
+				def.offensiveStrMult = (float)jsonUnitEntry.optDouble("offensiveStrMult", 1);
+				def.crampedStrMult = (float)jsonUnitEntry.optDouble("crampedStrMult", 1);
+				if (jsonUnitEntry.has("personnel")) {
+					JSONObject jper = jsonUnitEntry.getJSONObject("personnel");
+					def.personnel = new GroundUnitDef.GroundUnitCommodity(jper.getString("commodityId"),
+							jper.getString("crewReplacerJobId"), jper.optInt("mult", 1));
+				}
+				if (jsonUnitEntry.has("equipment")) {
+					JSONObject jeqp = jsonUnitEntry.getJSONObject("equipment");
+					def.equipment = new GroundUnitDef.GroundUnitCommodity(jeqp.getString("commodityId"),
+							jeqp.getString("crewReplacerJobId"), jeqp.optInt("mult", 1));
+				}
+				if (jsonUnitEntry.has("tags")) {
+					def.tags.addAll(NexUtils.JSONArrayToArrayList(jsonUnitEntry.getJSONArray("tags")));
+				}
+
+				GroundUnitDef.addUnitDef(def);
+			}
 			
 			JSONArray jsonAlphabet = json.getJSONArray("natoAlphabet");
-			NATO_ALPHABET.addAll(NexUtils.JSONArrayToArrayList(jsonAlphabet));			
+			NATO_ALPHABET.addAll(NexUtils.JSONArrayToArrayList(jsonAlphabet));
 		} catch (Exception ex) {
 			Global.getLogger(GBDataManager.class).error(ex);
 		}

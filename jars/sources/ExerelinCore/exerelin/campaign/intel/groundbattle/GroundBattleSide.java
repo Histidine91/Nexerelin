@@ -233,9 +233,9 @@ public class GroundBattleSide {
 		log.info(String.format("Available troops: %s militia, %s marines, %s heavy", militia, marines, heavies));
 		
 		// divide these peeps into units of the appropriate size
-		createUnits(ForceType.MILITIA, Math.round(militia));
-		createUnits(ForceType.MARINE, Math.round(marines));
-		createUnits(ForceType.HEAVY, Math.round(heavies));
+		createUnits(GroundUnitDef.MILITIA, Math.round(militia));
+		createUnits(GroundUnitDef.MARINE, Math.round(marines));
+		createUnits(GroundUnitDef.HEAVY, Math.round(heavies));
 		
 		allocateDefenders();
 		
@@ -268,10 +268,10 @@ public class GroundBattleSide {
 		return str;
 	}
 	
-	public void createUnits(ForceType type, int numTroops) {
-		
+	public void createUnits(String unitDefId, int numTroops) {
 		float moraleMult = 1;
-		if (!isAttacker && type == ForceType.MILITIA) {
+		boolean rebel = GroundUnitDef.REBEL.equals(unitDefId);
+		if (!isAttacker && !rebel) {
 			int resistance = getResistanceTier();
 			if (resistance >= 2)
 				moraleMult = 0.6f;
@@ -279,8 +279,8 @@ public class GroundBattleSide {
 				moraleMult = 0.8f;
 		}
 		
-		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
-		if (type == ForceType.REBEL) {
+		int sizePerUnit = intel.unitSize.getAverageSizeForType(unitDefId);
+		if (rebel) {
 			sizePerUnit = Math.round(sizePerUnit * GroundUnit.REBEL_COUNT_MULT);
 		}
 		int numUnits = (int)Math.ceil((float)numTroops/sizePerUnit - 0.25f);
@@ -290,13 +290,13 @@ public class GroundBattleSide {
 		//log.info(String.format("Can create %s units of %s", numUnits, type));
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
-			GroundUnit unit = createUnit(type, faction, size);
+			GroundUnit unit = createUnit(unitDefId, faction, size);
 			unit.morale *= moraleMult;
 		}
 	}
 	
-	public GroundUnit createUnit(ForceType type, FactionAPI faction, int size) {
-		GroundUnit unit = new GroundUnit(intel, type, size, units.size());
+	public GroundUnit createUnit(String unitDefId, FactionAPI faction, int size) {
+		GroundUnit unit = new GroundUnit(intel, unitDefId, size, units.size());
 		unit.faction = faction;
 		unit.isAttacker = this.isAttacker;
 		units.add(unit);
@@ -351,8 +351,7 @@ public class GroundBattleSide {
 	
 	public void createAndAllocateRebels(int numTroops, FactionAPI faction) {
 		log.info(String.format("Generating %s rebels", numTroops));
-		ForceType type = ForceType.REBEL;
-		int sizePerUnit = intel.unitSize.getAverageSizeForType(type);
+		int sizePerUnit = intel.unitSize.getAverageSizeForType(GroundUnitDef.REBEL);
 		int numUnits = (int)((float)numTroops/sizePerUnit);
 		if (numUnits == 0 && numTroops > 1) {
 			numUnits = 1;
@@ -360,7 +359,7 @@ public class GroundBattleSide {
 		List<GroundUnit> generatedRebels = new ArrayList<>();
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
-			GroundUnit unit = new GroundUnit(intel, type, size, generatedRebels.size());
+			GroundUnit unit = new GroundUnit(intel, GroundUnitDef.REBEL, size, generatedRebels.size());
 			unit.faction = faction;
 			unit.isAttacker = true;
 			intel.getSide(true).getUnits().add(unit);

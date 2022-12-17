@@ -155,7 +155,7 @@ public class GroundBattleAI {
 			if (unit.isWithdrawing()) continue;
 			if (unit.getMorale() < MIN_MORALE_TO_REDEPLOY) continue;
 			if (unit.isReorganizing() || unit.isAttackPrevented()) continue;
-			if (!allowMilitia && unit.getType() == ForceType.MILITIA) continue;
+			if (!allowMilitia && unit.getUnitDef().hasTag(GroundUnitDef.TAG_MILITIA)) continue;
 			results.add(unit);
 		}
 		return results;
@@ -183,7 +183,7 @@ public class GroundBattleAI {
 				continue;
 			
 			float thisStr = unit.getAttackStrength();
-			if (unit.getType() == ForceType.MILITIA)
+			if (unit.getUnitDef().hasTag(GroundUnitDef.TAG_MILITIA))
 				thisStr *= 0.5f;
 			strength += thisStr;
 		}

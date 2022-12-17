@@ -34,9 +34,9 @@ public class GBUtils {
 	public static float[] estimateDefenderStrength(GroundBattleIntel intel, boolean useHealth) {
 		float[] counts = estimateDefenderCounts(intel, useHealth);
 		return new float[] {
-			counts[0] * ForceType.MILITIA.strength,
-			counts[1] * ForceType.MARINE.strength, 
-			counts[2] * ForceType.HEAVY.strength,
+			counts[0] * GroundUnitDef.getUnitDef(GroundUnitDef.MILITIA).strength,
+			counts[1] * GroundUnitDef.getUnitDef(GroundUnitDef.MARINE).strength,
+			counts[2] * GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).strength,
 		};
 	}
 	

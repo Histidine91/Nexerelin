@@ -48,22 +48,25 @@ public class GroundUnit {
 	public static float LOCATION_SECTION_HEIGHT = USE_LOCATION_IMAGE ? 32 : 24;
 	public static final float PADDING_X = 4;
 	public static final float BUTTON_SECTION_WIDTH = 64;
-	public static final Object BUTTON_NEW_MARINE = new Object();
-	public static final Object BUTTON_NEW_HEAVY = new Object();
+	//public static final Object BUTTON_NEW_MARINE = new Object();
+	//public static final Object BUTTON_NEW_HEAVY = new Object();
 	
 	public static final float HEAVY_COUNT_DIVISOR = 6f;	// a marine platoon has 6x as many marines as a mech platoon has mechs
 	public static final float REBEL_COUNT_MULT = 0.6f;	// rebel units are 40% smaller
 	public static final int CREW_PER_MECH = 2;
 
 	public final String id = Misc.genUID();
+	@Getter protected String unitDefId;
+	protected transient GroundUnitDef unitDef;
 	protected int index;
 	protected GroundBattleIntel intel;
-	protected String name;
-	protected FactionAPI faction;
-	protected CampaignFleetAPI fleet;
+	@Getter protected String name;
+	@Getter protected FactionAPI faction;
+	@Getter protected CampaignFleetAPI fleet;
 	protected RouteData route;
-	protected boolean isPlayer;
-	protected boolean isAttacker;
+	@Getter protected boolean isPlayer;
+	@Getter protected boolean isAttacker;
+	@Deprecated
 	protected ForceType type;
 	
 	//protected int personnel;
@@ -76,17 +79,56 @@ public class GroundUnit {
 	protected float morale = 0.8f;
 	
 	public Map<String, Object> data = new HashMap<>();
-	
-	protected String currAction;
-	protected IndustryForBattle location;
-	protected IndustryForBattle destination;
-	
+
+	@Getter protected String currAction;
+	@Getter protected IndustryForBattle location;
+	@Getter protected IndustryForBattle destination;
+
+	@Deprecated
 	public GroundUnit(GroundBattleIntel intel, ForceType type, int num, int index) {
 		this.intel = intel;
 		this.type = type;
 		this.index = index;
 		name = generateName();
 		if (num > 0) setSize(num, false);
+	}
+
+	public GroundUnit(GroundBattleIntel intel, String unitDefId, int num, int index) {
+		this.intel = intel;
+		this.unitDefId = unitDefId;
+		this.unitDef = getUnitDef();
+		this.type = unitDef.type;
+		this.index = index;
+		name = generateName();
+		if (num > 0) setSize(num, false);
+	}
+
+	protected Object readResolve() {
+		if (unitDefId == null) {
+			switch (type) {
+				case MARINE:
+					unitDefId = "marine";
+					break;
+				case HEAVY:
+					unitDefId = "heavy";
+					break;
+				case MILITIA:
+					unitDefId = "militia";
+					break;
+				case REBEL:
+					unitDefId = "rebel";
+					break;
+			}
+		}
+		unitDef = getUnitDef();
+		if (unitDef == null) {
+			log.info("Failed to get unitdef for unit " + name + ", has def ID " + unitDefId);
+		}
+		return this;
+	}
+
+	public GroundUnitDef getUnitDef() {
+		return GroundUnitDef.getUnitDef(unitDefId);
 	}
 	
 	protected static CargoAPI getCargo() {
@@ -140,13 +182,13 @@ public class GroundUnit {
 		int wantedPersonnel= 0;
 		//log.info(String.format("Setting size %s for unit %s", num, name));
 
-		if (type == ForceType.HEAVY) {
-			wantedHeavyArms = num;
-			wantedPersonnel = num * CREW_PER_MECH;
+		if (unitDef.equipment != null) {
+			wantedHeavyArms = num * unitDef.equipment.mult;
 		}
-		else {
-			wantedPersonnel = num;
+		if (unitDef.personnel != null) {
+			wantedPersonnel = num * unitDef.personnel.mult;
 		}
+
 		// now take the new ones from cargo
 		if (takeFromCargo) {
 			//log.info(String.format("Want %s marine equivalents for unit %s", wantedPersonnel, name));
@@ -163,8 +205,8 @@ public class GroundUnit {
 			}
 		}
 		else {
-			personnelMap.put(Commodities.MARINES, wantedPersonnel);
-			if (wantedHeavyArms > 0) equipmentMap.put(Commodities.HAND_WEAPONS, wantedHeavyArms);
+			if (wantedPersonnel > 0) personnelMap.put(unitDef.personnel.commodityId, wantedPersonnel);
+			if (wantedHeavyArms > 0) equipmentMap.put(unitDef.equipment.commodityId, wantedHeavyArms);
 		}
 	}
 
@@ -178,21 +220,24 @@ public class GroundUnit {
 
 		Map<String, Integer> commodities = isPersonnel ? this.getPersonnelMap() : this.getEquipmentMap();
 		if (isPersonnel) {
-			String jobId = type == ForceType.HEAVY ? GBConstants.CREW_REPLACER_JOB_TANKCREW : GBConstants.CREW_REPLACER_JOB_MARINES;
-			taken = CrewReplacerUtils.takeMarinesFromCargo(fleet, jobId, wanted);
+			String jobId = unitDef.personnel.crewReplacerJobId;
+			String commodityId = unitDef.personnel.commodityId;
+			taken = CrewReplacerUtils.takeCommodityFromCargo(fleet, commodityId, jobId, wanted);
 			for (int index = 0; index < taken.size(); index++) {
 				int count = taken.get(index);
-				String commodityId = CrewReplacerUtils.getCommodityIdForJob(jobId, index, Commodities.MARINES);
+				String thisCommodityId = CrewReplacerUtils.getCommodityIdForJob(jobId, index, commodityId);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
-				NexUtils.modifyMapEntry(commodities, commodityId, count);
+				NexUtils.modifyMapEntry(commodities, thisCommodityId, count);
 			}
 		} else {
-			taken = CrewReplacerUtils.takeHeavyArmsFromCargo(fleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS, wanted);
+			String jobId = unitDef.equipment.crewReplacerJobId;
+			String commodityId = unitDef.equipment.commodityId;
+			taken = CrewReplacerUtils.takeCommodityFromCargo(fleet, commodityId, jobId, wanted);
 			for (int index = 0; index < taken.size(); index++) {
 				int count = taken.get(index);
-				String commodityId = CrewReplacerUtils.getCommodityIdForJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS, index, Commodities.HAND_WEAPONS);
+				String thisCommodityId = CrewReplacerUtils.getCommodityIdForJob(jobId, index, commodityId);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
-				NexUtils.modifyMapEntry(commodities, commodityId, count);
+				NexUtils.modifyMapEntry(commodities, thisCommodityId, count);
 			}
 		}
 
@@ -217,19 +262,7 @@ public class GroundUnit {
 				return name + " " + num;
 		}
 	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public IndustryForBattle getLocation() {
-		return location;
-	}
-	
-	public IndustryForBattle getDestination() {
-		return destination;
-	}
-	
+
 	public boolean isDeployed() {
 		return location != null;
 	}
@@ -237,17 +270,10 @@ public class GroundUnit {
 	public boolean isWithdrawing() {
 		return GBConstants.ACTION_WITHDRAW.equals(currAction);
 	}
-	
-	public String getCurrAction() {
-		return currAction;
-	}
-	
+
+	@Deprecated
 	public ForceType getType() {
 		return type;
-	}
-	
-	public boolean isAttacker() {
-		return isAttacker;
 	}
 
 	/**
@@ -612,14 +638,13 @@ public class GroundUnit {
 	}
 	
 	public int getDeployCost() {
-		return getDeployCost(this.getSize(), type, isAttacker, intel);
+		return getDeployCost(this.getSize(), unitDefId, isAttacker, intel);
 	}
 	
-	public static int getDeployCost(int size, ForceType type, boolean isAttacker, GroundBattleIntel intel) 
+	public static int getDeployCost(int size, String unitDefId, boolean isAttacker, GroundBattleIntel intel)
 	{
 		float cost = size * GBConstants.SUPPLIES_TO_DEPLOY_MULT;
-		if (type == ForceType.HEAVY) cost *= HEAVY_COUNT_DIVISOR;
-		cost *= type.dropCostMult;
+		cost *= GroundUnitDef.getUnitDef(unitDefId).dropCostMult;
 		cost = intel.getSide(isAttacker).dropCostMod.computeEffective(cost);
 		return Math.round(cost);
 	}
@@ -907,7 +932,7 @@ public class GroundUnit {
 	 */
 	public float getNumUnitEquivalents() {
 		float num = getSizeForStrength();
-		return num/intel.unitSize.getAverageSizeForType(type);
+		return num/intel.unitSize.getAverageSizeForType(unitDef);
 	}
 	
 	/**
@@ -918,31 +943,36 @@ public class GroundUnit {
 	 */
 	public static CustomPanelAPI createBlankCard(CustomPanelAPI parent, UnitSize size) 
 	{
+		float pad = 3;
 		FactionAPI faction = Global.getSector().getPlayerFaction();
-		CargoAPI cargo = getCargo();
+		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, 
 				new GroundUnitPanelPlugin(faction, null, faction.getCrest()));
 		
 		float btnWidth = 160;
 		
-		// add marine unit button
-		int minSize = size.getMinSizeForType(ForceType.MARINE);
-		
+		// add create unit buttons
 		TooltipMakerAPI buttonHolder = card.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
-		ButtonAPI newMarine = buttonHolder.addButton(String.format(getString("btnNewUnitMarine")
-				, size.getName()), BUTTON_NEW_MARINE, btnWidth, 24, 0);
-		if (cargo.getMarines() < minSize) newMarine.setEnabled(false);
+		int numButtons = 0;
+		for (GroundUnitDef def : GroundUnitDef.UNIT_DEFS) {
+			if (!def.playerCanCreate) continue;
+			ButtonAPI newUnit = buttonHolder.addButton(String.format(getString("btnNewUnit"), def.name, size.getName()),
+					def, btnWidth, 24, numButtons > 0 ? pad : 0);
+			int minSize = size.getMinSizeForType(def);
+			int reqPers = def.personnel != null ? minSize * def.personnel.mult : 0;
+			int reqEquip = def.equipment != null ? minSize * def.equipment.mult : 0;
+			boolean enough = reqPers <= 0 || CrewReplacerUtils.getAvailableCommodity(player,
+					def.personnel.commodityId, def.personnel.crewReplacerJobId) >= reqPers;
+			enough &= reqEquip <= 0 || CrewReplacerUtils.getAvailableCommodity(player,
+					def.equipment.commodityId, def.equipment.crewReplacerJobId) >= reqEquip;
+
+			if (!enough) newUnit.setEnabled(false);
+
+			numButtons++;
+		}
 		
-		// add heavy unit button
-		minSize = size.getMinSizeForType(ForceType.HEAVY);
-		
-		ButtonAPI newHeavy = buttonHolder.addButton(String.format(getString("btnNewUnitHeavy")
-				, size.getName()), BUTTON_NEW_HEAVY, btnWidth, 24, 0);
-		if (cargo.getMarines() < minSize * CREW_PER_MECH || cargo.getCommodityQuantity(Commodities.HAND_WEAPONS) < minSize) 
-			newHeavy.setEnabled(false);
-		
-		card.addUIElement(buttonHolder).inTL((PANEL_WIDTH-btnWidth)/2, PANEL_HEIGHT/2 - 24);
+		card.addUIElement(buttonHolder).inTL((PANEL_WIDTH-btnWidth)/2, PANEL_HEIGHT/2 - 24 * numButtons/2);
 		
 		return card;
 	}
@@ -1158,7 +1188,8 @@ public class GroundUnit {
 	public String toString() {
 		return String.format("%s (%s)", name, type.toString().toLowerCase());
 	}
-	
+
+	@Deprecated
 	public static enum ForceType {
 		MARINE(Commodities.MARINES, "troopNameMarine", 1, 1, 1), 
 		HEAVY(Commodities.HAND_WEAPONS, "troopNameMech", 5.5f, 1, GBConstants.HEAVY_DROP_COST_MULT),
@@ -1222,17 +1253,37 @@ public class GroundUnit {
 			//if (type == ForceType.REBEL) count *= REBEL_COUNT_MULT;
 			return count;
 		}
-		
-		public int getAverageSizeForType(ForceType type) {
-			return getSizeForType(avgSize, type);
+
+		public static int getSizeForType(int count, String unitDefId) {
+			return getSizeForType(count, GroundUnitDef.getUnitDef(unitDefId));
+		}
+
+		public static int getSizeForType(int count, GroundUnitDef def) {
+			return Math.round(count * def.unitSizeMult);
+		}
+
+		public int getAverageSizeForType(String unitDefId) {
+			return getSizeForType(avgSize, unitDefId);
+		}
+
+		public int getAverageSizeForType(GroundUnitDef def) {
+			return getSizeForType(avgSize, def);
 		}
 		
-		public int getMinSizeForType(ForceType type) {
-			return getSizeForType(minSize, type);
+		public int getMinSizeForType(String unitDefId) {
+			return getSizeForType(minSize, unitDefId);
+		}
+
+		public int getMinSizeForType(GroundUnitDef def) {
+			return getSizeForType(minSize, def);
 		}
 		
-		public int getMaxSizeForType(ForceType type) {
-			return getSizeForType(maxSize, type);
+		public int getMaxSizeForType(String unitDefId) {
+			return getSizeForType(maxSize, unitDefId);
+		}
+
+		public int getMaxSizeForType(GroundUnitDef def) {
+			return getSizeForType(maxSize, def);
 		}
 		
 		public String getName() {

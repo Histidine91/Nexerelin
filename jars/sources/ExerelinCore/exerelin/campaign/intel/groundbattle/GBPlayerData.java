@@ -13,6 +13,7 @@ import java.util.Map;
 public class GBPlayerData {
 	
 	protected GroundBattleIntel intel;
+	// FIXME: ForceType is deprecated
 	protected Map<GroundUnit.ForceType, Integer> losses = new HashMap<>();
 	protected Map<GroundUnit.ForceType, Integer> lossesLastTurn = new HashMap<>();
 	protected Map<GroundUnit.ForceType, Integer> disbanded = new HashMap<>();

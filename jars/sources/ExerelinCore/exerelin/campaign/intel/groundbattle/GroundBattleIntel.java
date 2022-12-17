@@ -208,17 +208,17 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected void generateDebugUnits() 
 	{
 		for (int i=0; i<6; i++) {
-			GroundUnit unit = new GroundUnit(this, ForceType.MARINE, 0, i);
+			String type = i >= 4 ? GroundUnitDef.HEAVY : GroundUnitDef.MARINE;
+			GroundUnit unit = new GroundUnit(this, type, 0, i);
 			unit.faction = Global.getSector().getPlayerFaction();
 			unit.isPlayer = true;
 			unit.isAttacker = this.playerIsAttacker;
-			unit.type = i >= 4 ? ForceType.HEAVY : ForceType.MARINE;
 			
-			if (unit.type == ForceType.HEAVY) {
-				int numHeavies = Math.round(unitSize.getAverageSizeForType(ForceType.HEAVY) * MathUtils.getRandomNumberInRange(1, 1.4f));
+			if (GroundUnitDef.HEAVY.equals(type)) {
+				int numHeavies = Math.round(unitSize.getAverageSizeForType(GroundUnitDef.HEAVY) * MathUtils.getRandomNumberInRange(1, 1.4f));
 				unit.setSize(numHeavies, false);
 			} else {
-				int numMarines = Math.round(unitSize.getAverageSizeForType(ForceType.MARINE) * MathUtils.getRandomNumberInRange(1, 1.4f));
+				int numMarines = Math.round(unitSize.getAverageSizeForType(GroundUnitDef.MARINE) * MathUtils.getRandomNumberInRange(1, 1.4f));
 				unit.setSize(numMarines, false);
 			}
 			
@@ -702,23 +702,23 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (reasons.isEmpty()) data.remove(tag);
 	}
 
-	public GroundUnit createPlayerUnit(ForceType type) {
-		return createPlayerUnit(type, null);
+	public GroundUnit createPlayerUnit(String unitDefId) {
+		return createPlayerUnit(unitDefId, null);
 	}
 	
-	public GroundUnit createPlayerUnit(ForceType type, Integer size) {
+	public GroundUnit createPlayerUnit(String unitDefId, Integer size) {
 		int index = 0;
 		if (!playerData.getUnits().isEmpty()) {
 			index = playerData.getUnits().get(playerData.getUnits().size() - 1).index + 1;
 		}
-		GroundUnit unit = new GroundUnit(this, type, 0, index);
+		GroundUnit unit = new GroundUnit(this, unitDefId, 0, index);
 		unit.faction = PlayerFactionStore.getPlayerFaction();
 		unit.isPlayer = true;
 		unit.isAttacker = this.playerIsAttacker;
 		unit.fleet = Global.getSector().getPlayerFleet();
 
 		if (size == null) {
-			size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.getAverageSizeForType(type));
+			size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.getAverageSizeForType(unitDefId));
 		}
 		unit.setSize(size, true);
 		
@@ -764,10 +764,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * @param player
 	 */
 	public void autoGenerateUnits(int marines, int heavyArms, FactionAPI faction, Boolean isAttacker, boolean player) {
-		float perUnitSize = unitSize.getMaxSizeForType(ForceType.HEAVY);
+		float perUnitSize = unitSize.getMaxSizeForType(GroundUnitDef.HEAVY);
 		int numCreatable = 0;
 		
-		if (heavyArms >= unitSize.getMinSizeForType(ForceType.HEAVY)) {
+		if (heavyArms >= unitSize.getMinSizeForType(GroundUnitDef.HEAVY)) {
 			numCreatable = (int)Math.ceil(heavyArms / perUnitSize);
 			numCreatable = Math.min(numCreatable, MAX_PLAYER_UNITS);
 			numCreatable = (int)Math.ceil(numCreatable * 0.75f);
@@ -780,16 +780,16 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		//log.info(String.format("Can create %s heavies, %s units each, have %s heavies", numCreatable, numPerUnit, heavyArms));
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
-			if (player) unit = createPlayerUnit(ForceType.HEAVY, numPerUnit);
-			else unit = getSide(isAttacker).createUnit(ForceType.HEAVY, faction, numPerUnit);
+			if (player) unit = createPlayerUnit(GroundUnitDef.HEAVY, numPerUnit);
+			else unit = getSide(isAttacker).createUnit(GroundUnitDef.HEAVY, faction, numPerUnit);
 		}
 		
 		// add marines
 		marines -= heavyArms * GroundUnit.CREW_PER_MECH;
 		int remainingSlots = MAX_PLAYER_UNITS - playerData.getUnits().size();
-		perUnitSize = unitSize.getMaxSizeForType(ForceType.MARINE);
+		perUnitSize = unitSize.getMaxSizeForType(GroundUnitDef.MARINE);
 		
-		if (marines >= unitSize.getMinSizeForType(ForceType.MARINE)) {
+		if (marines >= unitSize.getMinSizeForType(GroundUnitDef.MARINE)) {
 			numCreatable = (int)Math.ceil(marines / perUnitSize);
 			numCreatable = Math.min(numCreatable, remainingSlots);
 			numPerUnit = 0;
@@ -803,8 +803,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		//log.info(String.format("Can create %s marines, %s units each, have %s marines", numCreatable, numPerUnit, marines));
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
-			if (player) unit = createPlayerUnit(ForceType.MARINE, numPerUnit);
-			else unit = getSide(isAttacker).createUnit(ForceType.MARINE, faction, numPerUnit);
+			if (player) unit = createPlayerUnit(GroundUnitDef.MARINE, numPerUnit);
+			else unit = getSide(isAttacker).createUnit(GroundUnitDef.MARINE, faction, numPerUnit);
 		}
 	}
 	
@@ -832,7 +832,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		updateStability();
 	}
-	
+
+	// FIXME: ForceType is deprecated
 	protected int countPersonnelFromMap(Map<ForceType, Integer> map) {
 		int num = 0;
 		for (ForceType type : map.keySet()) {
@@ -2349,13 +2350,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (buttonId instanceof AbilityPlugin) {
 			ui.showDialog(market.getPrimaryEntity(), new AbilityDialogPlugin((AbilityPlugin)buttonId, ui));
 		}
-		if (buttonId == GroundUnit.BUTTON_NEW_HEAVY) {
-			createPlayerUnit(ForceType.HEAVY);
-			ui.updateUIForItem(this);
-			return;
-		}
-		if (buttonId == GroundUnit.BUTTON_NEW_MARINE) {
-			createPlayerUnit(ForceType.MARINE);
+		if (buttonId instanceof GroundUnitDef) {
+			createPlayerUnit(((GroundUnitDef)buttonId).id);
 			ui.updateUIForItem(this);
 			return;
 		}
