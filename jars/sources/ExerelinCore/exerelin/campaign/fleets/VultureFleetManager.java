@@ -82,7 +82,7 @@ public class VultureFleetManager extends DisposableFleetManager
 		Random random = new Random();
 		
 		// Medium scavenger fleet, plus more combat ships and minus some unnecessary stuff
-		// FIXME: make it not so random?
+		// make it not so random? ... nah it's fine
 		int combat = 4 + random.nextInt(5);
 		int freighter = 4 + random.nextInt(5);
 		int utility = 2 + random.nextInt(3);

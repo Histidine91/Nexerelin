@@ -46,6 +46,7 @@ public class IndustryForBattle {
 	public static final int COLUMN_WIDTH_TROOP_BUTTON = 24;
 	public static final int COLUMN_WIDTH_TROOP_TOTAL = COLUMN_WIDTH_TROOP_ICON + COLUMN_WIDTH_TROOP_NAME
 			+ COLUMN_WIDTH_TROOP_COUNT + COLUMN_WIDTH_TROOP_STR + 2 * COLUMN_WIDTH_TROOP_BUTTON + 16;
+	public static final int DEFAULT_TOOLTIP_WIDTH = 240;
 	public static final int NUM_ICONS_PER_UNIT = 3;	// 3 icons == 1 platoon/company/etc.
 
 	public static final Map<GroundUnit.ForceType, Integer[]> ICON_COUNTS = new HashMap<>();
@@ -579,7 +580,7 @@ public class IndustryForBattle {
 					return false;
 				}
 				public float getTooltipWidth(Object tooltipParam) {
-					return 240;	// FIXME magic number
+					return DEFAULT_TOOLTIP_WIDTH;
 				}
 				public void createTooltip(TooltipMakerAPI tt, boolean expanded, Object tooltipParam) 
 				{

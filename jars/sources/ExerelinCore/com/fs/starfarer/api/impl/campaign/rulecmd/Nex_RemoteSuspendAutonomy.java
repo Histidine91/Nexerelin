@@ -90,7 +90,7 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus {
 		
 		for (MarketAPI market : markets) {
 			if (market.isPlayerOwned()) continue;
-			if (market.getContainingLocation() == null) continue;	// FIXME
+			if (market.getContainingLocation() == null) continue;	// FIXME why is this fixme here? I don't remember
 			if (market.getMemoryWithoutUpdate().contains(PlayerOutpostIntel.MARKET_MEMORY_FLAG))
 				continue;
 			

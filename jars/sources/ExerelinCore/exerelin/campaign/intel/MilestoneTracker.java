@@ -408,7 +408,8 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
-		// FIXME: I don't have access to credit total, only the net
+		// was gonna put a milestone here
+		// but I don't have access to credit total, only the net
 	}
 
 	@Override

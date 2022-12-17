@@ -58,6 +58,7 @@ public class SpecialForcesRouteAI {
 	public static final float PLAYER_STR_DIVISOR = 400;
 	// don't defend against player attacking a location more than this many light-years away
 	public static final float MAX_PLAYER_DISTANCE_TO_DEFEND = 10;
+	public static final float MAX_DISTANCE_FOR_TASK = 250;	// in-system distance to target entity
 	
 	// can't be a plain Object because when loaded the one in segment will no longer equal the static value
 	public static final String ROUTE_IDLE_SEGMENT = "SF_idleSeg";
@@ -682,7 +683,7 @@ public class SpecialForcesRouteAI {
 		if (fleet == null) return true;
 		
 		SectorEntityToken target = currentTask.getMarket().getPrimaryEntity();
-		return MathUtils.getDistance(fleet, target) < 250;	// FIXME magic number
+		return MathUtils.getDistance(fleet, target) < MAX_DISTANCE_FOR_TASK;
 	}
 	
 	public void notifyRouteFinished() {

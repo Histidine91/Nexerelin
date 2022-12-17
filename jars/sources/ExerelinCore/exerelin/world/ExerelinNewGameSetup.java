@@ -69,7 +69,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		if (ExerelinSetupData.getInstance().numSystems == 1)
 		{
-			// FIXME 
+			// FIXME one-system case not implemented
 			SectorEntityToken toOrbit = Global.getSector().getEntityById("jangala");	//null;
 			float radius = toOrbit.getRadius();
 			float orbitDistance = radius + 150;

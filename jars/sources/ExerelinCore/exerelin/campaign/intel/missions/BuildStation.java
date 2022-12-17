@@ -509,7 +509,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 					// alpha for both types; damaged is already weaker
 					//coreId = Commodities.BETA_CORE;
 					fleet.getMemoryWithoutUpdate().set("$damagedStation", true);
-					fleet.setName(fleet.getName() + " (Damaged)");	// FIXME: externalize string
+					fleet.setName(fleet.getName() + " " + StringHelper.getString("exerelin_misc", "damagedStationSuffix"));
 				}
 					
 				AICoreOfficerPlugin plugin = Misc.getAICoreOfficerPlugin(coreId);
@@ -638,7 +638,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle) 
 	{		
 		// if that was the builder fleet, and we attacked it, fail
-		// FIXME: fleet seems to always be null?
+		// fleet seems to always be null? I think it's because listener isn't attached to the builder fleet
 		if (!battle.getBothSides().contains(builderFleet)) return;
 		if (!battle.isPlayerInvolved()) return;
 		if (getCurrentStage() != Stage.DELIVER) return;

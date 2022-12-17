@@ -110,7 +110,6 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
         return super.getIcon();
     }
 
-    // FIXME
     @Override
     public boolean isSameAs(StrategicConcern otherConcern, Object param) {
         String commodityId = this.commodityId;

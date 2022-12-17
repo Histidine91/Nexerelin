@@ -121,6 +121,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final float TACTICAL_BOMBARD_FUEL_MULT = 1;	// 0.5f;
 	public static final float TACTICAL_BOMBARD_DISRUPT_MULT = 1f;	// 1/3f;
 	public static final float INVASION_XP_MULT = 3;
+	public static final float MIN_INVASION_MULT = 0.25f;
 	public static final String MEMORY_KEY_BP_COOLDOWN = "$nex_raid_blueprints_cooldown";
 	public static final String DATA_KEY_BPS_ALREADY_RAIDED = "nex_already_raided_blueprints";
 	public static final float BASE_LOOT_SCORE = 3;
@@ -920,7 +921,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		boolean hasForces = true;
 		tempInvasion.invasionMult = attackerStr / Math.max(1f, (attackerStr + defenderStr));
 		
-		if (tempInvasion.invasionMult < 0.25f) {
+		if (tempInvasion.invasionMult < MIN_INVASION_MULT) {
 			text.addPara(getString("insufficientForces"));
 			hasForces = false;
 		} else {
@@ -951,10 +952,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.clearOptions();
 		
 		options.addOption(getString("invasionProceed"), INVADE_CONFIRM);
-		
-		// FIXME: magic number
+
 		if (!hasForces) {
-			String pct = 25 + "%";
+			String pct = (int)(MIN_INVASION_MULT * 100) + "%";
 			str = StringHelper.substituteToken(getString("insufficientForcesTooltip"), "$percent", pct);
 			options.setTooltip(INVADE_CONFIRM, str);
 			options.setEnabled(INVADE_CONFIRM, false);

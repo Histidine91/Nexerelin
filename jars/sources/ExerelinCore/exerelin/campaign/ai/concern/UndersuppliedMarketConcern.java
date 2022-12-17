@@ -136,7 +136,6 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern {
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         if (commodityBundle == null || commodityBundle.commodities.isEmpty()) return null;
 
-        // FIXME
         String str = getDef().desc;
         List<String> commodityNames = StringHelper.commodityIdListToCommodityNameList(commodityBundle.commodities);
         String commodityNames2 = StringHelper.writeStringCollection(commodityNames);

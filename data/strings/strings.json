@@ -2632,6 +2632,8 @@
 		
 		"alphaSiteIntelDesc":"You have obtained navigation data leading to a mysterious location known as the %s.",
 		
+		"damagedStationSuffix":"(Damaged)",
+		
 		"selectShipGeneric":"Select ship",
 		
 		"intelTagDebug":"Debug",
