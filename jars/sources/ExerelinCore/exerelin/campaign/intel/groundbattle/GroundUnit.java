@@ -66,8 +66,8 @@ public class GroundUnit {
 	protected boolean isAttacker;
 	protected ForceType type;
 	
-	//protected int personnel;
-	//protected int heavyArms;
+	@Deprecated protected int personnel;
+	@Deprecated protected int heavyArms;
 	@Getter	protected Map<String, Integer> personnelMap = new HashMap<>();
 	@Getter protected Map<String, Integer> equipmentMap = new HashMap<>();
 
@@ -87,6 +87,18 @@ public class GroundUnit {
 		this.index = index;
 		name = generateName();
 		if (num > 0) setSize(num, false);
+	}
+
+	protected Object readResolve() {
+		if (personnelMap == null) {
+			personnelMap = new HashMap<>();
+			personnelMap.put(Commodities.MARINES, personnel);
+		}
+		if (equipmentMap == null) {
+			equipmentMap = new HashMap<>();
+			equipmentMap.put(Commodities.HAND_WEAPONS, heavyArms);
+		}
+		return this;
 	}
 	
 	protected static CargoAPI getCargo() {
