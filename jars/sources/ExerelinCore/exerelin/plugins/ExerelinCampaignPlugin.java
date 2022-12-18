@@ -8,6 +8,9 @@ import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.AbilityPlugin;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -174,6 +177,17 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 			AlwaysOnTransponderAI aai = new AlwaysOnTransponderAI();
 			aai.init(ability);
 			return new PluginPick<AbilityAIPlugin>(aai, PickPriority.MOD_SET);
+		}
+		return null;
+	}
+
+	@Override
+	public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
+		if (action instanceof RepActions || action instanceof RepActionEnvelope) {
+			return new PluginPick<ReputationActionResponsePlugin>(
+					new NexReputationPlugin(),
+					PickPriority.MOD_SET
+			);
 		}
 		return null;
 	}
