@@ -579,11 +579,11 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		if (from.isPlayerFleet()) {
 			autopickCommanderIfNeeded(to);
 			to.getFleetData().sort();
-			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(to)).getMembersBackup().addAll(members);
+			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(to)).notifyShipsAdded(members);
 		}			
 		else {
 			autopickCommanderIfNeeded(from);
-			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(from)).getMembersBackup().removeAll(members);
+			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(from)).notifyShipsRemoved(members);
 		}
 			
 		

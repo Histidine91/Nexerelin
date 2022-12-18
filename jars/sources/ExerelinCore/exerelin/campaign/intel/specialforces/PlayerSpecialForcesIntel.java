@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
@@ -34,6 +35,7 @@ import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
@@ -43,11 +45,8 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.util.vector.Vector2f;
@@ -73,11 +72,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	@Setter protected CampaignFleetAPI tempFleet;
 	protected CampaignFleetAPI fleet;
+
+	protected transient IntervalUtil variantCheckInterval = new IntervalUtil(1, 1);
 	
 	/**
 	 * Stores all members added to the fleet (and not subsequently removed), dead or alive. For safety/debugging purposes.
 	 */
 	@Getter protected Set<FleetMemberAPI> membersBackup = new LinkedHashSet<>();
+	@Getter protected Map<FleetMemberAPI, ShipVariantAPI> storedVariants = new LinkedHashMap<>();
 	@Getter protected Set<FleetMemberAPI> deadMembers = new LinkedHashSet<>();
 	
 	@Getter	protected boolean independentMode = true;
@@ -90,6 +92,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		if (!Global.getSector().getListenerManager().hasListener(this)) {
 			Global.getSector().getListenerManager().addListener(this);
 		}
+		variantCheckInterval = new IntervalUtil(1, 1);
 		return this;
 	}
 	
@@ -122,6 +125,28 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		tempFleet.getMemoryWithoutUpdate().set("$nex_psf_isTempFleet", true);
 		tempFleet.getMemoryWithoutUpdate().set("$nex_sfIntel", this);
 		return tempFleet;
+	}
+
+	public void notifyShipsAdded(Collection<FleetMemberAPI> members) {
+		for (FleetMemberAPI member : members) {
+			notifyShipAdded(member);
+		}
+	}
+
+	public void notifyShipAdded(FleetMemberAPI member) {
+		membersBackup.add(member);
+		storedVariants.put(member, member.getVariant());
+	}
+
+	public void notifyShipsRemoved(Collection<FleetMemberAPI> members) {
+		for (FleetMemberAPI member : members) {
+			notifyShipRemoved(member);
+		}
+	}
+
+	public void notifyShipRemoved(FleetMemberAPI member) {
+		membersBackup.remove(member);
+		storedVariants.remove(member);
 	}
 	
 	public CampaignFleetAPI createFleet(RouteData thisRoute) 
@@ -296,6 +321,26 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		fleet.setLocation(dest.getLocation().x, dest.getLocation().y);
 		log.info("Fleet teleported to " + to.getName());
 	}
+
+	public void checkVariants() {
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			ShipVariantAPI variant = member.getVariant();
+			ShipVariantAPI saved = storedVariants.get(member);
+			if (saved == null) {
+				log.warn("Missing stored variant for fleet member " + member.getShipName() + ", "
+						+ member.getHullSpec().getNameWithDesignationWithDashClass());
+				continue;
+			}
+			if (variant != saved) {
+				String warn = "Warning: Variant for " + member.getShipName() + ", " + member.getHullSpec().getNameWithDesignationWithDashClass()
+						+ " does not match saved variant, restoring";
+				Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(), member.getShipName(),
+						"", Misc.getHighlightColor(), Color.WHITE);
+				log.warn(warn);
+				member.setVariant(saved, false, true);
+			}
+		}
+	}
 	
 	protected void recreate(boolean all) {
 		InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
@@ -344,18 +389,38 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		routeAI.addInitialTask();
 		waitingForSpawn = true;
 	}
-	
-	@Override
-	protected void advanceImpl(float amount) {
-		super.advanceImpl(amount);
-		updateFuelUse();
-		
+
+	protected void reverseCompatibility() {
 		if (membersBackup == null) {
 			membersBackup = new LinkedHashSet<>();
 			CampaignFleetAPI fleet = this.fleet;
 			if (fleet == null) fleet = this.tempFleet;
 			if (fleet != null) membersBackup.addAll(fleet.getFleetData().getMembersListCopy());
 			membersBackup.addAll(deadMembers);
+		}
+		if (storedVariants == null) {
+			storedVariants = new LinkedHashMap<>();
+			CampaignFleetAPI fleet = this.fleet;
+			if (fleet == null) fleet = this.tempFleet;
+			if (fleet != null) {
+				for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+					storedVariants.put(member, member.getVariant());
+				}
+			}
+		}
+	}
+	
+	@Override
+	protected void advanceImpl(float amount) {
+		super.advanceImpl(amount);
+		updateFuelUse();
+		
+		reverseCompatibility();
+
+		float days = Misc.getDays(amount);
+		variantCheckInterval.advance(days);
+		if (variantCheckInterval.intervalElapsed()) {
+			checkVariants();
 		}
 	}
 	
