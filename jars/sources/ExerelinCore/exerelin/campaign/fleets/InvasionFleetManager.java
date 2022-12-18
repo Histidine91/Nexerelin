@@ -568,7 +568,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 
 		if (isRemnantRaid) {
 			// non-hard mode mercy for new player colonies
-			// TODO: replace with an expiring memory key when we get colonization listener
+			// TODO: replace with an expiring memory key when we get colonization listener?
 			if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction() && market.getSize() < 4)
 				return false;
 		}

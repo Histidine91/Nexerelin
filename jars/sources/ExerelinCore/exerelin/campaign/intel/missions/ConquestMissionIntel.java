@@ -43,10 +43,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	protected boolean betrayed;
 	protected CancelReason cancelReason = null;
 	//protected IntervalUtil interval = new IntervalUtil(1, 1);
-
-	public void locationOfConquestMarket() {
-		Global.getSector().getCampaignUI().addMessage("Location of conquest mission is " + market.getContainingLocation().getNameWithLowercaseType());
-	}
 	
 	public ConquestMissionIntel(MarketAPI market, FactionAPI faction, float duration) {
 		Global.getLogger(this.getClass()).info("Instantiating conquest mission");
@@ -54,9 +50,6 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		this.faction = faction;
 		this.duration = duration;
 		lastTargetFaction = market.getFaction();
-		if (ExerelinModPlugin.isNexDev){
-			locationOfConquestMarket();
-		}
 	}
 	
 	public void init() {

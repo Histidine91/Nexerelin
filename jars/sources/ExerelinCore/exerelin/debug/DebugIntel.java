@@ -1,4 +1,4 @@
-package exerelin;
+package exerelin.debug;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;

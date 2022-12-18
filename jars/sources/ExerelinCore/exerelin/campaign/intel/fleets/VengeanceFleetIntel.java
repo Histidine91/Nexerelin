@@ -341,7 +341,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		
 		EncounterOption option = fleet.getAI().pickEncounterOption(null, playerFleet);
 		if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD_VS_STRONGER) {
-			// can see player or has encountered player at least once			
+			// can see player or has encountered player at least once
 			if (playerVisible || foundPlayerYet) {
 				// in same system but not currently in tracking mode, look around the system?
 				// this means that if fleet has been shaken once,
@@ -355,7 +355,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 						((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
 																								  false);
 					}
-				// not in same system or not currently tracking, activate tracking mode
+				// not in same system, or currently tracking; activate tracking mode
 				} else {
 					trackingMode = true;
 					if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation())) {
@@ -387,8 +387,9 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 						}
 					}
 				}
-			} else {
-				// long-distance maphack
+			}
+			// can't see player now and haven't seen player at least once; long-distance maphack
+			else {
 				if (fleet.getAI().getCurrentAssignmentType() != TRAIL_ASSIGNMENT) {
 					fleet.clearAssignments();
 					fleet.addAssignment(TRAIL_ASSIGNMENT, locationToken, 1000, 
