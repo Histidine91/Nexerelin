@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -14,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -23,7 +25,10 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.fleets.InvasionFleetManager;
+
+import static exerelin.campaign.battle.NexWarSimScript.*;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
@@ -622,9 +627,104 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	}
 	
 	@Override
-	public void addStandardStrengthComparisons(TooltipMakerAPI info, MarketAPI target, FactionAPI targetFaction, boolean withGround, boolean withBombard, String raid, String raids) {
-		super.addStandardStrengthComparisons(info, target, targetFaction, withGround, withBombard, raid, raids);
+	public void addStandardStrengthComparisons(TooltipMakerAPI info, MarketAPI target, FactionAPI targetFaction, boolean withGround,
+											   boolean withBombard, String raid, String raids) {
+		float pad = 3, opad = 10;
+		Color hl = Misc.getHighlightColor();
+		//super.addStandardStrengthComparisons(info, target, targetFaction, withGround, withBombard, raid, raids);
+		info.addPara(StringHelper.getString("nex_fleetIntel", "strCompareV2Header"), opad);
+
+		bullet(info);
+
+		FactionStrengthReport attackerRpt = NexWarSimScript.getFactionStrengthReport(faction, target.getStarSystem());
+		FactionStrengthReport defenderRpt = NexWarSimScript.getFactionStrengthReport(targetFaction, target.getStarSystem());
+		float raidStr = getRaidStr();
+		float attackerStr = attackerRpt.totalStrength + raidStr;
+		float stationStr = WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
+		float defenderStr = WarSimScript.getFactionStrength(targetFaction, system);
+		float defenderStr2 = defenderRpt.totalStrength + stationStr;
+
+		String spaceStr = "";
+		String spaceStr2 = "";
+		String groundStr = "";
+
+		int spaceWin = 0;
+		int spaceWin2 = 0;
+		int groundWin = 0;
+
+		// our raid strength vs. immediate defenders
+		if (raidStr < defenderStr * 0.75f) {
+			spaceStr = StringHelper.getString("outmatched");
+			spaceWin = -1;
+		} else if (raidStr < defenderStr * 1.25f) {
+			spaceStr = StringHelper.getString("evenlyMatched");
+		} else {
+			spaceStr = StringHelper.getString("superior");
+			spaceWin = 1;
+		}
+		{
+			String bullet = StringHelper.getStringAndSubstituteToken("nex_fleetIntel", "strCompareSpace",
+					"$Action", Misc.ucFirst(getActionName()));
+			bullet += ": " + spaceStr;
+			info.addPara(bullet, 0, hl, spaceStr);
+		}
+
+		if (attackerStr < defenderStr2 * 0.75f) {
+			spaceStr2 = StringHelper.getString("outmatched");
+			spaceWin2 = -1;
+		} else if (attackerStr < defenderStr2 * 1.25f) {
+			spaceStr2 = StringHelper.getString("evenlyMatched");
+		} else {
+			spaceStr2 = StringHelper.getString("superior");
+			spaceWin2 = 1;
+		}
+		{
+			String bullet = StringHelper.getStringAndSubstituteToken("nex_fleetIntel", "strCompareSpace2",
+					"$Action", Misc.ucFirst(getActionName()));
+			bullet += ": " + spaceStr2;
+			info.addPara(bullet, 0, hl, spaceStr2);
+		}
+
+		float re = getEstimatedRaidEffectiveness(target);
+		if (re < 0.33f) {
+			groundStr = StringHelper.getString("outmatched");
+			groundWin = -1;
+		} else if (re < 0.66f) {
+			groundStr = StringHelper.getString("evenlyMatched");
+		} else {
+			groundStr = StringHelper.getString("superior");
+			groundWin = 1;
+		}
+		{
+			String bullet = StringHelper.getStringAndSubstituteToken("nex_fleetIntel", "strCompareGround",
+					"$Action", Misc.ucFirst(getActionName()));
+			bullet += ": " + groundStr;
+			info.addPara(bullet, 0, hl, groundStr);
+		}
+
+		unindent(info);
+
+		String key = "Successful";
+		if (spaceWin == -1)
+			key = "DefeatInOrbit";
+		else if (groundWin == -1)
+			key = "DefeatOnGround";
+		else if (spaceWin < 1 || groundWin < 1)
+			key = "Uncertain";
+		String outcomeDesc = StringHelper.getString("nex_fleetIntel", "prediction" + key);
+		outcomeDesc = StringHelper.substituteToken(outcomeDesc, "$theAction", getActionNameWithArticle(), true);
+		info.addPara(outcomeDesc, pad);
+
+		addDebugStrengthBreakdown(info, target, targetFaction);
 		printFleetCountDebug(info);
+	}
+
+	public float getEstimatedRaidEffectiveness(MarketAPI target) {
+		float raidFP = getRaidFPAdjusted() / getNumFleets();
+		float assumedRaidGroundStr = raidFP * Misc.FP_TO_GROUND_RAID_STR_APPROX_MULT;
+		float re = MarketCMD.getRaidEffectiveness(target, assumedRaidGroundStr);
+
+		return re;
 	}
 	
 	public void printFleetCountDebug(TooltipMakerAPI info) {
@@ -637,12 +737,67 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			info.addPara(str, 10, Misc.getHighlightColor(), predicted + "", active + "", total + "");
 		}
 	}
+
+	public void addDebugStrengthBreakdown(TooltipMakerAPI info, MarketAPI target, FactionAPI targetFaction) {
+		if (!ExerelinModPlugin.isNexDev) return;
+		float pad = 3, opad = 10;
+
+		FactionStrengthReport attacker = getFactionStrengthReport(faction, target.getStarSystem());
+		FactionStrengthReport defender = getFactionStrengthReport(targetFaction, target.getStarSystem());
+
+		info.addPara("Attacker breakdown", faction.getBaseUIColor(), opad);
+		bullet(info);
+		Set<Object> seenRoutesOrFleets = new HashSet<>();
+		for (FactionStrengthReportEntry entry : attacker.entries) {
+			printDebugStrengthRow(info, entry.name, entry.strength);
+			if (entry.fleet != null) seenRoutesOrFleets.add(entry.fleet);
+			else seenRoutesOrFleets.add(entry.route);
+		}
+		// add the routes from this intel, if they're not already in-system
+		for (RouteData route : getRoutes()) {
+			if (seenRoutesOrFleets.contains(route)) continue;
+			CampaignFleetAPI fleet = route.getActiveFleet();
+			if (fleet != null && seenRoutesOrFleets.contains(fleet)) continue;
+
+			if (fleet != null) {
+				printDebugStrengthRow(info, fleet.getFullName(), fleet.getEffectiveStrength());
+			} else {
+				RouteManager.OptionalFleetData data = route.getExtra();
+				if (data == null) continue;
+				if (data.strength != null) {
+					float mult = 1f;
+					if (data.damage != null) mult *= (1f - data.damage);
+					printDebugStrengthRow(info, "Route " + route.toString(), (float)Math.round(data.strength * mult));
+				}
+			}
+		}
+		unindent(info);
+
+		info.addPara("Defender breakdown", targetFaction.getBaseUIColor(),  opad);
+		bullet(info);
+		for (FactionStrengthReportEntry entry : defender.entries) {
+			printDebugStrengthRow(info, entry.name, entry.strength);
+		}
+		unindent(info);
+	}
+
+	protected void printDebugStrengthRow(TooltipMakerAPI info, String name, float strength) {
+		String strengthStr = String.format("%.1f", strength);
+		info.addPara(String.format("%s: %s", name, strengthStr), 0, Misc.getHighlightColor(), strengthStr);
+	}
 	
 	protected int getRouteCount() {
 		int currStage = getCurrentStage();
 		BaseRaidStage stage = (BaseRaidStage) stages.get(currStage);
 		
 		return stage.getRoutes().size();
+	}
+
+	protected List<RouteData> getRoutes() {
+		int currStage = getCurrentStage();
+		BaseRaidStage stage = (BaseRaidStage) stages.get(currStage);
+
+		return stage.getRoutes();
 	}
 	
 	/**

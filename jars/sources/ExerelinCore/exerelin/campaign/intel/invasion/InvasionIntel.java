@@ -691,40 +691,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	}
 
 	@Override
-	public void addStandardStrengthComparisons(TooltipMakerAPI info, 
-									MarketAPI target, FactionAPI targetFaction, 
-									boolean withGround, boolean withBombard,
-									String raid, String raids) {
-		Color h = Misc.getHighlightColor();
-		float opad = 10f;
-		
-		float raidFP = getRaidFPAdjusted() / getNumFleets();
-		float raidStr = getRaidStr();
-		
-		//float defenderStr = WarSimScript.getEnemyStrength(getFaction(), system);
-		float defenderStr = WarSimScript.getFactionStrength(targetFaction, system);
-		float defensiveStr = defenderStr + WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
-		
-		String spaceStr = "";
-		String groundStr = "";
-		
-		int spaceWin = 0;
-		int groundWin = 0;
-		
-		if (raidStr < defensiveStr * 0.75f) {
-			spaceStr = StringHelper.getString("outmatched");
-			spaceWin = -1;
-		} else if (raidStr < defensiveStr * 1.25f) {
-			spaceStr = StringHelper.getString("evenlyMatched");
-		} else {
-			spaceStr = StringHelper.getString("superior");
-			spaceWin = 1;
-		}
-		
+	public float getEstimatedRaidEffectiveness(MarketAPI target) {
 		float re;
 		if (NexConfig.legacyInvasions) {
 			float ourGroundStr = marinesTotal * (1 + NexConfig.getFactionConfig(faction.getId())
-				.invasionStrengthBonusAttack);
+					.invasionStrengthBonusAttack);
 			re = Nex_MarketCMD.getRaidEffectiveness(target, ourGroundStr);
 		}
 		else {
@@ -732,45 +703,16 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 			temp.init();
 			float enemyGroundStr = GBUtils.estimateTotalDefenderStrength(temp, true);
 			float ourGroundStrAdj = marinesTotal * 1.25f;
-			
+
 			boolean canBomb = expectBombable();
 			if (!canBomb) {
 				float attrMult = 1 - temp.getSide(true).getDropAttrition().getModifiedValue()/100;
 				ourGroundStrAdj *= (attrMult * attrMult);	// square the effect due to morale effects
 			}
-			
+
 			re = ourGroundStrAdj/(ourGroundStrAdj + enemyGroundStr);
 		}
-		if (re < 0.33f) {
-			groundStr = StringHelper.getString("outmatched");
-			groundWin = -1;
-		} else if (re < 0.66f) {
-			groundStr = StringHelper.getString("evenlyMatched");
-		} else {
-			groundStr = StringHelper.getString("superior");
-			groundWin = 1;
-		}
-		
-		String key = "Successful";
-		if (spaceWin == -1)
-			key = "DefeatInOrbit";
-		else if (groundWin == -1)
-			key = "DefeatOnGround";
-		else if (spaceWin < 1 || groundWin < 1)
-			key = "Uncertain";
-		String outcomeDesc = StringHelper.getString("nex_fleetIntel", "prediction" + key);
-		outcomeDesc = StringHelper.substituteToken(outcomeDesc, "$theAction", getActionNameWithArticle(), true);
-		/*
-		if (groundWin == -1)
-			outcomeDesc = StringHelper.getString("exerelin_invasion", "intelPredictionBombard") 
-					+ " " + outcomeDesc;
-		*/
-		
-		String compare = StringHelper.getString("nex_fleetIntel", "strCompare");
-		compare = StringHelper.substituteToken(compare, "$theAction", getActionNameWithArticle(), true);
-		info.addPara(compare + " " + outcomeDesc, opad, h, spaceStr, groundStr);
-		
-		printFleetCountDebug(info);
+		return re;
 	}
 	
 	@Override

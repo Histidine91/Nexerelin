@@ -995,12 +995,19 @@
 		"bulletCancelled":"$Action cancelled",
 		"bulletWonGroundBattle":"Enemy ground forces defeated",
 		"bulletETA":"Estimated %s $days until arrival",
+		
 		"strCompare":"Compared to the defenses, $theAction's space forces are %s and its ground forces are %s.",
+		"strCompareV2Header":"Strength comparison",
+		"strCompareSpace":"$Action vs. local defenses",
+		"strCompareSpace2":"...including other expected participants",
+		"strCompareGround":"Ground forces",
+		
 		"predictionDefeatInOrbit":"$TheAction is likely to be defeated in orbit.",
 		"predictionDefeatOnGround":"$TheAction is likely to be largely repelled by the ground defences.",
 		"predictionUncertain":"$TheAction's outcome is uncertain.",
 		"predictionSuccessful":"$TheAction is likely to be successful.",
 		"predictionBombard":"$theForceType is likely to resort to tactical bombardment.",
+		
 		"outcomeNoLongerHostile":"As $target's current faction is not currently hostile, $theAction has been cancelled.",
 		"outcomeNoLongerExists":"$target has been destroyed by another hostile party.",
 		"outcomeWonGroundBattle":"Enemy forces invading $target have been driven off.",
