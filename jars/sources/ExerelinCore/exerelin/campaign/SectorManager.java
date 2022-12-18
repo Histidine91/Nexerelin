@@ -333,8 +333,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         insuranceLostMembers.clear();
         insuranceLostOfficers.clear();
-        
-        handleCommissionPay(battle);
     }
     
     @Override
@@ -559,38 +557,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //WarmongerEvent event = WarmongerEvent.getOngoingEvent();
         //if (event != null) event.reportEvent(location, params);
     }
-    
-    // Commission bounties aren't actually payed in Starsector 0.9.1-RC10 in spite of the notification. This fixes that.
-    // TODO - Remove this once the bug is fixed
-    public void handleCommissionPay(BattleAPI battle) 
-    {
-        if (!battle.isPlayerInvolved()) return;
-        // Ruth has her own copy of the bugfix
-        if (Global.getSettings().getModManager().isModEnabled("sun_ruthless_sector"))
-            return;
-        
-        FactionCommissionIntel intel = Misc.getCommissionIntel();
-        if (intel == null || intel.isEnded() || intel.isEnding()) return;
 
-        int payment = 0;
-        for (CampaignFleetAPI otherFleet : battle.getNonPlayerSideSnapshot()) {
-            if (!intel.getFactionForUIColors().isHostileTo(otherFleet.getFaction())) continue;
-
-            float bounty = 0;
-            for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
-                float mult = Misc.getSizeNum(loss.getHullSpec().getHullSize());
-                bounty += mult * Global.getSettings().getFloat("factionCommissionBounty");
-            }
-
-            payment += (int) (bounty * battle.getPlayerInvolvementFraction());
-        }
-
-        if (payment > 0) {
-            log.info("Commission bounty: paying " + payment + " credits");
-            Global.getSector().getPlayerFleet().getCargo().getCredits().add(payment);
-        }
-    }
-    
     public void handleSlaveTradeRep()
     {
         if (NexConfig.prisonerSlaveRepValue > 0) return;
@@ -1234,7 +1201,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (isCapture && market.isPlayerOwned() && market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER)) 
         {
             for (Industry ind : new ArrayList<>(market.getIndustries())) {
-                // TODO: maybe this should have a notification message
                 if (ind.isUpgrading()) ind.cancelUpgrade();
                 else if (ind.isBuilding()) {
                     // first move any special items on the industry to storage
@@ -1250,6 +1216,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 
                     market.removeIndustry(ind.getId(), null, false);
                 }
+                String str = String.format(StringHelper.getString("exerelin_markets", "cancelWorkMsg"),
+                        ind.getCurrentName(), market.getName());
+                Global.getSector().getCampaignUI().addMessage(str, Misc.getTextColor(), ind.getCurrentName(), market.getName(),
+                        Misc.getHighlightColor(), oldOwner.getBaseUIColor());
             }
             String str = StringHelper.getString("exerelin_invasion", "captureAntiExploitMsg");
 			str = String.format(str, market.getName());
