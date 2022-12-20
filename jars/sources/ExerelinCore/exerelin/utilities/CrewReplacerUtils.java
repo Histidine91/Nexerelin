@@ -80,7 +80,7 @@ public class CrewReplacerUtils {
 		return takeCommodityFromCargo(fleet, Commodities.HAND_WEAPONS, jobId, count);
 	}
 
-	public static List<Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String commodity, String jobId, int count) {
+	public static Map<String, Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String commodity, String jobId, int count) {
 		if (!enabled) {
 			Map<String, Integer> map = new LinkedHashMap<>();
 			fleet.getCargo().removeCommodity(commodity, count);

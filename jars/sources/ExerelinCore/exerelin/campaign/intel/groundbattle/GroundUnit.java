@@ -231,8 +231,8 @@ public class GroundUnit {
 			String jobId = unitDef.personnel.crewReplacerJobId;
 			String commodityId = unitDef.personnel.commodityId;
 			taken = CrewReplacerUtils.takeCommodityFromCargo(fleet, commodityId, jobId, wanted);
-			for (String commodityId : taken.keySet()) {
-				int count = taken.get(commodityId);
+			for (String thisCommodityId : taken.keySet()) {
+				int count = taken.get(thisCommodityId);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, thisCommodityId, count);
 			}
@@ -240,8 +240,8 @@ public class GroundUnit {
 			String jobId = unitDef.equipment.crewReplacerJobId;
 			String commodityId = unitDef.equipment.commodityId;
 			taken = CrewReplacerUtils.takeCommodityFromCargo(fleet, commodityId, jobId, wanted);
-			for (String commodityId : taken.keySet()) {
-				int count = taken.get(commodityId);
+			for (String thisCommodityId : taken.keySet()) {
+				int count = taken.get(thisCommodityId);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s, index %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, thisCommodityId, count);
 			}
