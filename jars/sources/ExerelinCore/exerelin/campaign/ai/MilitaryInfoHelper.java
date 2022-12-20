@@ -44,6 +44,7 @@ public class MilitaryInfoHelper {
 	}
 	
 	public static MilitaryInfoHelper getInstance() {
+		if (currInstance == null) return new MilitaryInfoHelper();
 		return currInstance;
 	}
 	

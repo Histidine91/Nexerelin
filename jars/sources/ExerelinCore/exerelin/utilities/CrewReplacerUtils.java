@@ -6,12 +6,16 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
+import data.scripts.crewReplacer_Crew;
 import data.scripts.crewReplacer_Job;
 import data.scripts.crewReplacer_Main;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -62,26 +66,26 @@ public class CrewReplacerUtils {
 		return crewReplacer_Main.getJob(jobId).getAvailableCrewPower(fleet);
 	}
 
-	public static List<Integer> takeMarinesFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
+	public static Map<String, Integer> takeMarinesFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
 		if (!enabled) {
-			List<Integer> list = new ArrayList<>();
+			Map<String, Integer> map = new LinkedHashMap<>();
 			fleet.getCargo().removeMarines(count);
-			list.add(count);
-			return list;
+			map.put(Commodities.MARINES, count);
+			return map;
 		}
 		return takeCommodityFromCargo(fleet, jobId, count);
 	}
 
-	public static List<Integer> takeHeavyArmsFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
+	public static Map<String, Integer> takeHeavyArmsFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
 		return takeCommodityFromCargo(fleet, Commodities.HAND_WEAPONS, jobId, count);
 	}
 
 	public static List<Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String commodity, String jobId, int count) {
 		if (!enabled) {
-			List<Integer> list = new ArrayList<>();
+			Map<String, Integer> map = new LinkedHashMap<>();
 			fleet.getCargo().removeCommodity(commodity, count);
-			list.add(count);
-			return list;
+			map.put(commodity, count);
+			return map;
 		}
 		return takeCommodityFromCargo(fleet, jobId, count);
 	}
@@ -91,12 +95,12 @@ public class CrewReplacerUtils {
 	 * @param fleet
 	 * @param jobId
 	 * @param count
-	 * @return A list of integers representing the counts of each taken crew type (empty if Crew Replacer is unavailable).
+	 * @return A map of strings and integers representing the counts of each taken crew type (empty if Crew Replacer is unavailable).
 	 */
 	// runcode exerelin.utilities.CrewReplacerUtils.takeCommodityFromCargo(Global.getSector().getPlayerFleet(), "raiding_marines", 10);
-	public static List<Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
-		List<Integer> list = new ArrayList<>();
-		if (!enabled) return list;
+	public static Map<String, Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String jobId, int count) {
+		Map<String, Integer> map = new LinkedHashMap<>();
+		if (!enabled) return map;
 		
 		crewReplacer_Job job = crewReplacer_Main.getJob(jobId);
 		List<Float> crews = job.getCrewForJob(fleet, count); // crewPowerRequired is the amount of crew power you want crew replacer to get from an fleet.
@@ -104,13 +108,13 @@ public class CrewReplacerUtils {
 			Float value = crews.get(index);
 			int thisCount = (int)(float)value;
 			if (thisCount <= 0) continue;
-			list.add(thisCount);
 			String commodityId = job.Crews.get(index).name;
+			map.put(commodityId, thisCount);
 			float power = job.Crews.get(index).crewPower;
 			fleet.getCargo().removeCommodity(commodityId, thisCount);
 			Global.getLogger(CrewReplacerUtils.class).info(String.format("  Removing %s of commodity %s for job %s, power %s", thisCount, commodityId, jobId, power));
 		}
-		return list;
+		return map;
 	}
 	
 	public static void removeMarines(CampaignFleetAPI fleet, String jobId, int count, TextPanelAPI text) {
@@ -151,5 +155,19 @@ public class CrewReplacerUtils {
 
 		crewReplacer_Job job = crewReplacer_Main.getJob(jobId);
 		return job.Crews.get(index).name;
+	}
+
+	public static List<String> getAllCommodityIdsForJob(String jobId, String defaultId) {
+		List<String> results = new ArrayList<>();
+		if (!enabled) {
+			results.add(defaultId);
+			return results;
+		}
+
+		crewReplacer_Job job = crewReplacer_Main.getJob(jobId);
+		for (crewReplacer_Crew crew : job.Crews) {
+			results.add(crew.name);
+		}
+		return results;
 	}
 }

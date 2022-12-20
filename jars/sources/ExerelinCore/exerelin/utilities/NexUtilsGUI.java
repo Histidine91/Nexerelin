@@ -7,11 +7,8 @@ import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
-import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -139,28 +136,34 @@ public class NexUtilsGUI {
 		return result;
 	}
 
-	public static void placeElementInRows(CustomPanelAPI holder, CustomPanelAPI element, List<CustomPanelAPI> prevElements,
+	public static PositionAPI addToCustomPanel(CustomPanelAPI holder, UIPanelAPI element) {
+		if (element instanceof TooltipMakerAPI)
+			return holder.addUIElement((TooltipMakerAPI) element);
+		else return holder.addComponent(element);
+	}
+
+	public static void placeElementInRows(CustomPanelAPI holder, UIPanelAPI element, List<? extends UIPanelAPI> prevElements,
 										  int maxPerRow, float xpad) {
 		placeElementInRows(holder, element, prevElements, prevElements.size(), maxPerRow, xpad);
 	}
 
-	public static void placeElementInRows(CustomPanelAPI holder, CustomPanelAPI element, List<CustomPanelAPI> prevElements, 
+	public static void placeElementInRows(CustomPanelAPI holder, UIPanelAPI element, List<? extends UIPanelAPI> prevElements,
 			int numPrevious, int maxPerRow, float xpad) {
 		if (numPrevious == 0) {
 			// first card, place in TL
-			holder.addComponent(element).inTL(0, 3);
+			addToCustomPanel(holder, element).inTL(0, 3);
 			//log.info("Placing card in TL");
 		}
 		else if (numPrevious % maxPerRow == 0) {
 			// row filled, place under first card of previous row
 			int rowNum = numPrevious/maxPerRow - 1;
-			CustomPanelAPI firstOfPrevious = prevElements.get(maxPerRow * rowNum);
-			holder.addComponent(element).belowLeft(firstOfPrevious, 3);
+			UIPanelAPI firstOfPrevious = prevElements.get(maxPerRow * rowNum);
+			addToCustomPanel(holder, element).belowLeft(firstOfPrevious, 3);
 			//log.info("Placing card in new row");
 		}
 		else {
 			// right of last card
-			holder.addComponent(element).rightOfTop(prevElements.get(numPrevious - 1), xpad);
+			addToCustomPanel(holder, element).rightOfTop(prevElements.get(numPrevious - 1), xpad);
 			//log.info("Placing card in current row");
 		}
 	}

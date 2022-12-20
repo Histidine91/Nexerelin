@@ -69,8 +69,8 @@ public class GroundUnit {
 	@Deprecated
 	protected ForceType type;
 	
-	//protected int personnel;
-	//protected int heavyArms;
+	@Deprecated protected int personnel;
+	@Deprecated protected int heavyArms;
 	@Getter	protected Map<String, Integer> personnelMap = new HashMap<>();
 	@Getter protected Map<String, Integer> equipmentMap = new HashMap<>();
 
@@ -123,6 +123,14 @@ public class GroundUnit {
 		unitDef = getUnitDef();
 		if (unitDef == null) {
 			log.info("Failed to get unitdef for unit " + name + ", has def ID " + unitDefId);
+		}
+		if (personnelMap == null) {
+			personnelMap = new HashMap<>();
+			personnelMap.put(Commodities.MARINES, personnel);
+		}
+		if (equipmentMap == null) {
+			equipmentMap = new HashMap<>();
+			equipmentMap.put(Commodities.HAND_WEAPONS, heavyArms);
 		}
 		return this;
 	}
@@ -216,16 +224,15 @@ public class GroundUnit {
 	 * @param isPersonnel
 	 */
 	public void addPersonnelOrEquipmentFromCargo(int wanted, boolean isPersonnel) {
-		List<Integer> taken = null;
+		Map<String, Integer> taken = null;
 
 		Map<String, Integer> commodities = isPersonnel ? this.getPersonnelMap() : this.getEquipmentMap();
 		if (isPersonnel) {
 			String jobId = unitDef.personnel.crewReplacerJobId;
 			String commodityId = unitDef.personnel.commodityId;
 			taken = CrewReplacerUtils.takeCommodityFromCargo(fleet, commodityId, jobId, wanted);
-			for (int index = 0; index < taken.size(); index++) {
-				int count = taken.get(index);
-				String thisCommodityId = CrewReplacerUtils.getCommodityIdForJob(jobId, index, commodityId);
+			for (String commodityId : taken.keySet()) {
+				int count = taken.get(commodityId);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, thisCommodityId, count);
 			}
@@ -233,10 +240,9 @@ public class GroundUnit {
 			String jobId = unitDef.equipment.crewReplacerJobId;
 			String commodityId = unitDef.equipment.commodityId;
 			taken = CrewReplacerUtils.takeCommodityFromCargo(fleet, commodityId, jobId, wanted);
-			for (int index = 0; index < taken.size(); index++) {
-				int count = taken.get(index);
-				String thisCommodityId = CrewReplacerUtils.getCommodityIdForJob(jobId, index, commodityId);
-				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
+			for (String commodityId : taken.keySet()) {
+				int count = taken.get(commodityId);
+				//log.info(String.format("  Adding %s of commodity %s for unit %s, index %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, thisCommodityId, count);
 			}
 		}
@@ -1115,6 +1121,17 @@ public class GroundUnit {
 		else if (morale < .3) color = Misc.getNegativeHighlightColor();
 		return color;
 	}
+
+	public void addCommodityBreakdown(TooltipMakerAPI tooltip, boolean isEquipment) {
+		Color hl = Misc.getHighlightColor();
+		Map<String, Integer> commodities = isEquipment ? this.getEquipmentMap() : this.getPersonnelMap();
+		for (String commodityId : commodities.keySet()) {
+			int count = commodities.get(commodityId);
+			TooltipMakerAPI imgWithText = tooltip.beginImageWithText(GroundBattleIntel.getCommoditySprite(commodityId), 24);
+			imgWithText.addPara("%s " + GroundBattleIntel.getCommodityName(commodityId), 0, hl, count + "");
+			tooltip.addImageWithText(0);
+		}
+	}
 	
 	public TooltipCreator createTooltip(final String id) {
 		final GroundUnit unit = this;
@@ -1134,6 +1151,12 @@ public class GroundUnit {
 				String str = getString("unitCard_tooltip_" + id);
 				tooltip.addPara(str, 0);
 				switch (id) {
+					case "marines":
+						addCommodityBreakdown(tooltip, false);
+						break;
+					case "heavyArms":
+						addCommodityBreakdown(tooltip, true);
+						break;
 					case "morale":
 						Color hl = Misc.getHighlightColor();
 						//tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);

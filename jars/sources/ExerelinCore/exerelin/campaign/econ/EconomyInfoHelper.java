@@ -88,6 +88,8 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance();
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().collectEconomicData(false);
 	public static EconomyInfoHelper getInstance() {
+		// FIXME: cheap workaround for any NPE that might result from calling EconomyInfoHelper before it's initialized
+		if (currInstance == null) return new EconomyInfoHelper();
 		return currInstance;
 	}
 	
