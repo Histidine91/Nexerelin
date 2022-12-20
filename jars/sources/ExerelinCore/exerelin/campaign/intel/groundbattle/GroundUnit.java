@@ -186,24 +186,22 @@ public class GroundUnit {
 	 * @param isPersonnel
 	 */
 	public void addPersonnelOrEquipmentFromCargo(int wanted, boolean isPersonnel) {
-		List<Integer> taken = null;
+		Map<String, Integer> taken = null;
 
 		Map<String, Integer> commodities = isPersonnel ? this.getPersonnelMap() : this.getEquipmentMap();
 		if (isPersonnel) {
 			String jobId = type == ForceType.HEAVY ? GBConstants.CREW_REPLACER_JOB_TANKCREW : GBConstants.CREW_REPLACER_JOB_MARINES;
 			taken = CrewReplacerUtils.takeMarinesFromCargo(fleet, jobId, wanted);
-			for (int index = 0; index < taken.size(); index++) {
-				int count = taken.get(index);
-				String commodityId = CrewReplacerUtils.getCommodityIdForJob(jobId, index, Commodities.MARINES);
+			for (String commodityId : taken.keySet()) {
+				int count = taken.get(commodityId);
 				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
 			}
 		} else {
 			taken = CrewReplacerUtils.takeHeavyArmsFromCargo(fleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS, wanted);
-			for (int index = 0; index < taken.size(); index++) {
-				int count = taken.get(index);
-				String commodityId = CrewReplacerUtils.getCommodityIdForJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS, index, Commodities.HAND_WEAPONS);
-				//log.info(String.format("  Adding %s of commodity %s for unit %s", count, commodityId, this.getName()));
+			for (String commodityId : taken.keySet()) {
+				int count = taken.get(commodityId);
+				//log.info(String.format("  Adding %s of commodity %s for unit %s, index %s", count, commodityId, this.getName()));
 				NexUtils.modifyMapEntry(commodities, commodityId, count);
 			}
 		}
@@ -931,7 +929,7 @@ public class GroundUnit {
 	public static CustomPanelAPI createBlankCard(CustomPanelAPI parent, UnitSize size) 
 	{
 		FactionAPI faction = Global.getSector().getPlayerFaction();
-		CargoAPI cargo = getCargo();
+		CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
 		
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH, PANEL_HEIGHT, 
 				new GroundUnitPanelPlugin(faction, null, faction.getCrest()));
@@ -944,16 +942,19 @@ public class GroundUnit {
 		TooltipMakerAPI buttonHolder = card.createUIElement(PANEL_WIDTH, PANEL_HEIGHT, false);
 		ButtonAPI newMarine = buttonHolder.addButton(String.format(getString("btnNewUnitMarine")
 				, size.getName()), BUTTON_NEW_MARINE, btnWidth, 24, 0);
-		if (cargo.getMarines() < minSize) newMarine.setEnabled(false);
+		if (CrewReplacerUtils.getMarines(fleet, GBConstants.CREW_REPLACER_JOB_MARINES) < minSize) {
+			newMarine.setEnabled(false);
+		}
 		
 		// add heavy unit button
 		minSize = size.getMinSizeForType(ForceType.HEAVY);
 		
 		ButtonAPI newHeavy = buttonHolder.addButton(String.format(getString("btnNewUnitHeavy")
 				, size.getName()), BUTTON_NEW_HEAVY, btnWidth, 24, 0);
-		if (cargo.getMarines() < minSize * CREW_PER_MECH || cargo.getCommodityQuantity(Commodities.HAND_WEAPONS) < minSize) 
+		if (CrewReplacerUtils.getMarines(fleet, GBConstants.CREW_REPLACER_JOB_TANKCREW) < minSize * CREW_PER_MECH
+				|| CrewReplacerUtils.getHeavyArms(fleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS) < minSize) {
 			newHeavy.setEnabled(false);
-		
+		}
 		card.addUIElement(buttonHolder).inTL((PANEL_WIDTH-btnWidth)/2, PANEL_HEIGHT/2 - 24);
 		
 		return card;
@@ -1097,6 +1098,17 @@ public class GroundUnit {
 		else if (morale < .3) color = Misc.getNegativeHighlightColor();
 		return color;
 	}
+
+	public void addCommodityBreakdown(TooltipMakerAPI tooltip, boolean isEquipment) {
+		Color hl = Misc.getHighlightColor();
+		Map<String, Integer> commodities = isEquipment ? this.getEquipmentMap() : this.getPersonnelMap();
+		for (String commodityId : commodities.keySet()) {
+			int count = commodities.get(commodityId);
+			TooltipMakerAPI imgWithText = tooltip.beginImageWithText(GroundBattleIntel.getCommoditySprite(commodityId), 24);
+			imgWithText.addPara("%s " + GroundBattleIntel.getCommodityName(commodityId), 0, hl, count + "");
+			tooltip.addImageWithText(0);
+		}
+	}
 	
 	public TooltipCreator createTooltip(final String id) {
 		final GroundUnit unit = this;
@@ -1116,6 +1128,12 @@ public class GroundUnit {
 				String str = getString("unitCard_tooltip_" + id);
 				tooltip.addPara(str, 0);
 				switch (id) {
+					case "marines":
+						addCommodityBreakdown(tooltip, false);
+						break;
+					case "heavyArms":
+						addCommodityBreakdown(tooltip, true);
+						break;
 					case "morale":
 						Color hl = Misc.getHighlightColor();
 						//tooltip.setBulletedListMode(BaseIntelPlugin.BULLET);

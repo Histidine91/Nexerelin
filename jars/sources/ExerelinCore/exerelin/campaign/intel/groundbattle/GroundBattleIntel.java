@@ -73,23 +73,11 @@ import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.ui.ProgressBar;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ColonyNPCHostileActListener;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsGUI;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
+
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
@@ -738,9 +726,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * between each.
 	 */
 	public void autoGeneratePlayerUnits() {
-		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		int marines = cargo.getMarines();
-		int heavyArms = (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS);
+		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+		// we could try getting crew replacements for marines as well, but kinda jank since marines and tank crew may not have fully overlapping commodities
+		int marines = player.getCargo().getMarines();
+		int heavyArms = (int)CrewReplacerUtils.getHeavyArms(player, GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
 		
 		// add heavy units
 		int usableHeavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
@@ -1674,23 +1663,50 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		info.addCustom(buttonRow, 3);
 	}
 	
-	protected String getCommoditySprite(String commodityId) {
+	protected static String getCommoditySprite(String commodityId) {
 		return Global.getSettings().getCommoditySpec(commodityId).getIconName();
 	}
+
+	protected static String getCommodityName(String commodityId) {
+		return Global.getSettings().getCommoditySpec(commodityId).getLowerCaseName();
+	}
 	
-	public TooltipMakerAPI addResourceSubpanel(CustomPanelAPI resourcePanel, float width, 
-			TooltipMakerAPI rightOf, String commodity, int amount) 
+	public TooltipMakerAPI addResourceSubpanel(String commodityId, CustomPanelAPI resourcePanel,
+			List<TooltipMakerAPI> elements, float width, int maxPerRow)
 	{
 		TooltipMakerAPI subpanel = resourcePanel.createUIElement(width, 32, false);
-		TooltipMakerAPI image = subpanel.beginImageWithText(getCommoditySprite(commodity), 32);
-		image.addPara(amount + "", 0);
+		TooltipMakerAPI image = subpanel.beginImageWithText(getCommoditySprite(commodityId), 32);
+		float amount = Global.getSector().getPlayerFleet().getCargo().getCommodityQuantity(commodityId);
+		image.addPara((int)(amount) + "", 0);
 		subpanel.addImageWithText(0);
-		if (rightOf == null)
-			resourcePanel.addUIElement(subpanel).inTL(0, 0);
-		else
-			resourcePanel.addUIElement(subpanel).rightOfTop(rightOf, 0);
+		NexUtilsGUI.placeElementInRows(resourcePanel, subpanel, elements, maxPerRow, 0);
+		elements.add(subpanel);
 		
 		return subpanel;
+	}
+
+	public CustomPanelAPI generateResourcePanel(CustomPanelAPI outer, float width) {
+		int subWidth = 108;
+		int numPerRow = (int)(width/subWidth);
+
+		Set<String> commodities = new LinkedHashSet<>();
+		commodities.add(Commodities.SUPPLIES);
+		commodities.add(Commodities.FUEL);
+		commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(GBConstants.CREW_REPLACER_JOB_MARINES, Commodities.MARINES));
+		commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS, Commodities.HAND_WEAPONS));
+		commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(GBConstants.CREW_REPLACER_JOB_TANKCREW, Commodities.MARINES));
+
+		int numRows = (int)Math.ceil(commodities.size()/(float)numPerRow);
+
+		CustomPanelAPI resourcePanel = outer.createCustomPanel(width, 32 * numRows, null);
+
+		List<TooltipMakerAPI> elements = new ArrayList<>();
+
+		for (String commodity : commodities) {
+			addResourceSubpanel(commodity, resourcePanel, elements, subWidth, numPerRow);
+		}
+
+		return resourcePanel;
 	}
 	
 	/**
@@ -1745,22 +1761,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			}, TooltipMakerAPI.TooltipLocation.BELOW);
 
 			// cargo display
-			CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 			info.addPara(getString("unitPanel_resources"), pad);
 
-			CustomPanelAPI resourcePanel = outer.createCustomPanel(width, 32, null);
-
-			TooltipMakerAPI resourceSubPanel;
-			int subWidth = 108;
-			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, null, 
-					Commodities.MARINES, cargo.getMarines());
-			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
-					Commodities.HAND_WEAPONS, (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS));
-			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
-					Commodities.SUPPLIES, (int)cargo.getSupplies());
-			resourceSubPanel = addResourceSubpanel(resourcePanel, subWidth, resourceSubPanel, 
-					Commodities.FUEL, (int)cargo.getFuel());
-
+			CustomPanelAPI resourcePanel = generateResourcePanel(outer, width);
 			info.addCustom(resourcePanel, pad);
 
 			// player AI buttons
