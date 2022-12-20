@@ -14,6 +14,7 @@ import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.campaign.ui.CustomPanelPluginWithBorder;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.rectanglepacker.Packer;
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -457,13 +458,7 @@ public class MarketMapDrawer {
 				results.add(new Pair<>(r, dist));
 			}
 			
-			Collections.sort(results, new Comparator<Pair<Rectangle, Float>>() {
-				@Override
-				public int compare(Pair<Rectangle, Float> r1, Pair<Rectangle, Float> r2) {
-					return Float.compare(r1.two, r2.two);
-				}
-			
-			});
+			Collections.sort(results, new NexUtils.PairWithFloatComparator(false));
 			
 			return results;
 		}

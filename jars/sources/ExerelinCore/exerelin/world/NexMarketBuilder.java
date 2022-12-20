@@ -3,6 +3,7 @@ package exerelin.world;
 import java.util.List;
 import java.util.ArrayList;
 
+import exerelin.utilities.*;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -32,14 +33,9 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.BonusSeed;
 import exerelin.utilities.NexFactionConfig.DefenceStationSet;
 import exerelin.utilities.NexFactionConfig.IndustrySeed;
-import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.industry.IndustryClassGen;
@@ -1178,12 +1174,5 @@ public class NexMarketBuilder
 				
 	}
 	
-	public static final Comparator<Pair<Industry, Float>> BONUS_COMPARATOR 
-			= new Comparator<Pair<Industry, Float>>() 
-	{
-		@Override
-		public int compare(Pair<Industry, Float> p1, Pair<Industry, Float> p2) {
-			return p1.two.compareTo(p2.two);
-		}
-	};
+	public static final Comparator BONUS_COMPARATOR = new NexUtils.PairWithFloatComparator(false);
 }

@@ -27,13 +27,9 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.Morality;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsGUI;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,14 +62,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	protected FactionAPI faction;
 	protected transient Map<Alignment, Float> alignmentTemp;
 	
-	public static final Comparator<Pair<Alignment, Float>> ALIGNMENT_COMPARATOR = new Comparator<Pair<Alignment, Float>>()
-	{
-		@Override
-		public int compare(Pair<Alignment, Float> align1, Pair<Alignment, Float> align2)
-		{
-			return align2.two.compareTo(align1.two);
-		}
-	};
+	public static final Comparator ALIGNMENT_COMPARATOR = new NexUtils.PairWithFloatComparator(true);
 	
 	public DiplomacyProfileIntel(String factionId) {
 		this.faction = Global.getSector().getFaction(factionId);

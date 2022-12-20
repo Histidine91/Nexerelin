@@ -16,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import exerelin.utilities.NexUtils;
 import org.apache.log4j.Logger;
 
 public class GroundBattleAI {
@@ -229,12 +231,7 @@ public class GroundBattleAI {
 		
 		if (abilitiesSorted.isEmpty()) return;
 		
-		Collections.sort(abilitiesSorted, new Comparator<Pair<AbilityPlugin, Float>>() {
-			@Override
-			public int compare(Pair<AbilityPlugin, Float> a1, Pair<AbilityPlugin, Float> a2) {
-				return Float.compare(a1.two, a2.two);
-			}
-		});		
+		Collections.sort(abilitiesSorted, new NexUtils.PairWithFloatComparator(true));
 		
 		AbilityPlugin best = abilitiesSorted.get(0).one;
 		printDebug("AI trying ability: " + best.getDef().name);

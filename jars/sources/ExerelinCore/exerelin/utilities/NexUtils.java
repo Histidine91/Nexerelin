@@ -12,18 +12,13 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
+
+import com.fs.starfarer.api.util.Pair;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-import java.util.Random;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -342,6 +337,29 @@ public class NexUtils
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		for (int i=0; i<depth; i++) {
 			log.info(stack[i].toString());
+		}
+	}
+
+	public static class PairWithFloatComparator implements Comparator<Pair<?, Float>> {
+
+		public boolean descending;
+
+		public PairWithFloatComparator(boolean descending) {
+			this.descending = descending;
+		}
+
+		@Override
+		public int compare(Pair<?, Float> o1, Pair<?, Float> o2) {
+			if (descending) return Float.compare(o2.two, o1.two);
+			return Float.compare(o1.two, o2.two);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof PairWithFloatComparator) {
+				return ((PairWithFloatComparator)obj).descending = this.descending;
+			}
+			return false;
 		}
 	}
 	

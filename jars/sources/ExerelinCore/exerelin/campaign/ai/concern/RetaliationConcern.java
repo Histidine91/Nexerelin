@@ -111,10 +111,5 @@ public class RetaliationConcern extends BaseStrategicConcern {
         return raids;
     }
 
-    public static final Comparator<Pair<RaidRecord, Float>> VALUE_COMPARATOR = new Comparator<Pair<RaidRecord, Float>>() {
-        @Override
-        public int compare(Pair<RaidRecord, Float> o1, Pair<RaidRecord, Float> o2) {
-            return Float.compare(o2.two, o1.two);
-        }
-    };
+    public static final Comparator VALUE_COMPARATOR = new NexUtils.PairWithFloatComparator(true);
 }

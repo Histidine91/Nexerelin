@@ -5,6 +5,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 
 import java.util.Comparator;
@@ -33,10 +34,5 @@ public abstract class MarketRelatedConcern extends BaseStrategicConcern {
         return label;
     }
 
-    public static final Comparator<Pair<MarketAPI, Float>> MARKET_PAIR_COMPARATOR = new Comparator<Pair<MarketAPI, Float>>() {
-        @Override
-        public int compare(Pair<MarketAPI, Float> o1, Pair<MarketAPI, Float> o2) {
-            return Float.compare(o2.two, o1.two);
-        }
-    };
+    public static final Comparator MARKET_PAIR_COMPARATOR = new NexUtils.PairWithFloatComparator(true);
 }
