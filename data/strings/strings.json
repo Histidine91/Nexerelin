@@ -2563,6 +2563,8 @@
 		"brawl_battleNextStepUnknown":"Defend Remnant station in unknown location",
 		"brawl_battleBetrayNextStep":"Destroy Remnant station in %s",
 		
+		"brawl_msg_disableWatchtowers":"Artillery network in %s disabled!",
+		
 		"deadDropItem1":"a crate of exotic optronic components",
 		"deadDropItem2":"a data chip containing Hegemony deployment schedules",
 		"deadDropItem3":"a data chip with Knights of Ludd meeting logs",

@@ -2,16 +2,8 @@ package exerelin.campaign.intel.missions.remnant;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.FleetAssignment;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import java.awt.Color;
 
@@ -632,6 +624,15 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		unsetFleetComms();
 		
 		battleInited = true;
+
+		LocationAPI loc = station.getContainingLocation();
+		if (loc.hasTag("IndEvo_SystemHasArtillery")) {
+			Misc.setFlagWithReason(loc.getMemoryWithoutUpdate(), "$IndEvo_SystemDisableWatchtowers", "nex_remnantBrawl", true, BATTLE_MAX_DAYS);
+			String msg = String.format(getString("brawl_msg_disableWatchtowers"), loc.getNameWithLowercaseType());
+			Global.getSector().getCampaignUI().addMessage(msg, Misc.getHighlightColor(), loc.getNameWithLowercaseType(),
+					"", station.getFaction().getBaseUIColor(), Color.WHITE);
+
+		}
 	}
 	
 	/**
