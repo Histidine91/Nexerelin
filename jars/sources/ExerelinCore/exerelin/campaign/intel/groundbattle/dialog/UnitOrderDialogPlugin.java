@@ -622,13 +622,21 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	}
 	
 	protected void split() {
-		int half = unit.getSize()/2;
-		int otherHalf = unit.getSize() - half;
-		
-		unit.setSize(half, false);
-		
 		GroundUnit otherUnit = intel.createPlayerUnit(unit.getType());
-		otherUnit.setSize(otherHalf, false);
+
+		for (String commodityId : unit.getPersonnelMap().keySet()) {
+			int count = unit.getPersonnelMap().get(commodityId);
+			int halfCount = count/2;
+			unit.getPersonnelMap().put(commodityId, halfCount);
+			otherUnit.getPersonnelMap().put(commodityId, count - halfCount);
+		}
+		for (String commodityId : unit.getEquipmentMap().keySet()) {
+			int count = unit.getEquipmentMap().get(commodityId);
+			int halfCount = count/2;
+			unit.getEquipmentMap().put(commodityId, halfCount);
+			otherUnit.getEquipmentMap().put(commodityId, count - halfCount);
+		}
+
 		otherUnit.setMorale(unit.getMorale());
 		otherUnit.setLocation(unit.getLocation());
 		
