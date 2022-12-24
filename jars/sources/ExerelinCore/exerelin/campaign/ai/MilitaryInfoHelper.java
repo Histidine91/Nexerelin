@@ -26,15 +26,20 @@ public class MilitaryInfoHelper {
 	protected Set<String> haveHeavyIndustry = new HashSet<>();
 
 	protected Map<LocationAPI, PatrolStrengthEntry> patrolStrength = new HashMap<>();
+
+	public static MilitaryInfoHelper createInstance() {
+		return createInstance(false);
+	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
 	 * Creates and stores an instance of the military info helper. Should be called on every game load.
 	 * @return 
 	 */
-	public static MilitaryInfoHelper createInstance() {
+	public static MilitaryInfoHelper createInstance(boolean replace) {
 		if (currInstance != null) {
-			Global.getSector().getListenerManager().removeListener(currInstance);
+			if (replace) Global.getSector().getListenerManager().removeListener(currInstance);
+			else return currInstance;
 		}
 		currInstance = new MilitaryInfoHelper();
 		Global.getSector().getListenerManager().addListener(currInstance, true);
@@ -42,9 +47,13 @@ public class MilitaryInfoHelper {
 		currInstance.collectMilitaryData(true);
 		return currInstance;
 	}
-	
+
 	public static MilitaryInfoHelper getInstance() {
-		if (currInstance == null) return new MilitaryInfoHelper();
+		return getInstance(true);
+	}
+	
+	public static MilitaryInfoHelper getInstance(boolean createIfNeeded) {
+		if (currInstance == null && createIfNeeded) return createInstance(false);
 		return currInstance;
 	}
 	

@@ -60,15 +60,20 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	protected Map<MarketAPI, Float> aiCoreUsers = new HashMap<>();
 	protected Map<String, Integer> empireSizeCache = new HashMap<>();
 	protected Map<String, Float> netIncomeByFaction = new HashMap<>();
+
+	public static EconomyInfoHelper createInstance() {
+		return createInstance(false);
+	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
 	 * Creates and stores an instance of the economy info helper. Should be called on every game load.
 	 * @return 
 	 */
-	public static EconomyInfoHelper createInstance() {
+	public static EconomyInfoHelper createInstance(boolean replace) {
 		if (currInstance != null) {
-			Global.getSector().getListenerManager().removeListener(currInstance);
+			if (replace) Global.getSector().getListenerManager().removeListener(currInstance);
+			else return currInstance;
 		}
 		currInstance = new EconomyInfoHelper();
 		Global.getSector().getListenerManager().addListener(currInstance, true);
@@ -88,8 +93,11 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance();
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().collectEconomicData(false);
 	public static EconomyInfoHelper getInstance() {
-		// FIXME: cheap workaround for any NPE that might result from calling EconomyInfoHelper before it's initialized
-		if (currInstance == null) return new EconomyInfoHelper();
+		return getInstance(true);
+	}
+
+	public static EconomyInfoHelper getInstance(boolean createIfNeeded) {
+		if (currInstance == null && createIfNeeded) return createInstance(false);
 		return currInstance;
 	}
 	
