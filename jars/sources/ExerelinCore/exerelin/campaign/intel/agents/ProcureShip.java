@@ -25,6 +25,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData;
+import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -149,7 +150,7 @@ public class ProcureShip extends CovertActionIntel {
 		String cfId = NexUtilsFaction.getCommissionFactionId();
 		String afId = agentFaction.getId();
 		String tgtId = targetFaction.getId();
-		Global.getLogger(this.getClass()).info(cfId + ", " + afId + ", " + tgtId);
+		//Global.getLogger(this.getClass()).info(cfId + ", " + afId + ", " + tgtId);
 		
 		if (AllianceManager.areFactionsAllied(afId, tgtId)) return true;
 		if (cfId != null) {
@@ -243,6 +244,9 @@ public class ProcureShip extends CovertActionIntel {
 				destination.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addFighters(ship.getHullId(), 1);
 			else
 				destination.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().getMothballedShips().addFleetMember(ship);
+
+			StoragePlugin plugin = (StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+			plugin.setPlayerPaidToUnlock(true);
 		} 
 		// if no storage, add as derelict around market
 		else if (destination.getPrimaryEntity() != null) 
