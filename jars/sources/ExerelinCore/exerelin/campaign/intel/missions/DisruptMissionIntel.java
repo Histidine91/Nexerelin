@@ -338,7 +338,7 @@ public class DisruptMissionIntel extends BaseMissionIntel implements ColonyPlaye
 		switch (reason) {
 			case ECONOMIC_COMPETITION:
 				reasonKey += "Economic";
-				sub.put("$commodity", Global.getSettings().getCommoditySpec(commodityId).getName().toLowerCase());
+				sub.put("$commodity", StringHelper.getCommodityName(commodityId).toLowerCase());
 				break;
 			case MILITARY:
 				reasonKey += "Military";

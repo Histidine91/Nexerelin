@@ -95,7 +95,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
         if (commodityId == null) return null;
         String str = getDef().desc;
         FactionAPI competitor = Global.getSector().getFaction(competitorId);
-        str = StringHelper.substituteToken(str, "$commodity", Global.getSettings().getCommoditySpec(commodityId).getName());
+        str = StringHelper.substituteToken(str, "$commodity", StringHelper.getCommodityName(commodityId));
         str = StringHelper.substituteToken(str, "$theirShare", competitorShare + "");
         str = StringHelper.substituteFactionTokens(str, competitor);
         Color hl = Misc.getHighlightColor();

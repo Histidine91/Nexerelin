@@ -1241,7 +1241,7 @@ public class GroundUnit {
 		}
 		
 		public String getCommodityName() {
-			return Global.getSettings().getCommoditySpec(commodityId).getName();
+			return StringHelper.getCommodityName(commodityId);
 		}
 		
 		public String getCommoditySprite() {

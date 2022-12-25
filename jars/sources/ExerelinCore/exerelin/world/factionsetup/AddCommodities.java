@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.SpecialItemPlugin.SpecialItemRendererAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.StringHelper;
 import exerelin.world.factionsetup.FactionSetupHandler.FactionSetupItemDef;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class AddCommodities extends FactionSetupItem {
 		for (int i=0; i<commodities.size(); i++) {
 			String commodityId = (String)commodities.get(i);
 			int count = (int)counts.get(i);
-			String name = Global.getSettings().getCommoditySpec(commodityId).getName();
+			String name = StringHelper.getCommodityName(commodityId);
 			sub.add(count + "");
 			sub.add(name + "");
 		}

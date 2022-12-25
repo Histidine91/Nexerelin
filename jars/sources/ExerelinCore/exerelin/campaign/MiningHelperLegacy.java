@@ -875,7 +875,7 @@ public class MiningHelperLegacy {
 				if (def.mult == 0)
 					num = 1;
 				fleet.getCargo().addCommodity(def.commodityId, num);
-				name = Global.getSector().getEconomy().getCommoditySpec(def.commodityId).getName();
+				name = StringHelper.getCommodityName(def.commodityId);
 			}
 			caches.add(new CacheResult(def, name, num));
 		}

@@ -329,4 +329,8 @@ public class StringHelper {
 			tokens.add(new Pair<>("$The" + strUc, Misc.ucFirst(faction.getDisplayNameWithArticle())));
 		}
 	}
+
+	public static String getCommodityName(String commodityId) {
+		return Global.getSettings().getCommoditySpec(commodityId).getName();
+	}
 }

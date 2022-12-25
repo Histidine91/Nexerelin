@@ -112,7 +112,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         if (commodityId == null) return null;
         String str = getDef().desc;
-        str = StringHelper.substituteToken(str, "$commodity", Global.getSettings().getCommoditySpec(commodityId).getName());
+        str = StringHelper.substituteToken(str, "$commodity", StringHelper.getCommodityName(commodityId));
         str = StringHelper.substituteToken(str, "$amount", required + "");
         Color hl = Misc.getHighlightColor();
         return tooltip.addPara(str, pad, hl, required + "");

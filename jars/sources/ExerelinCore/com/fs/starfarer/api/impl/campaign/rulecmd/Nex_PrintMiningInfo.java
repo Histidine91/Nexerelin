@@ -95,8 +95,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		String dangerStr = MessageFormat.format("{0,number,#%}", danger);
 		float exhaustion = report.exhaustion;
 		String exhaustionStr = String.format("%.1f", exhaustion * 100) + "%";
-		
-		EconomyAPI economy = Global.getSector().getEconomy();
+
 		String planetType = target.getName();
 		if (target instanceof PlanetAPI)
 		{
@@ -122,7 +121,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			String res = tmp.getKey();
 			float amount = tmp.getValue();
 			String amountStr = String.format("%.2f", amount);
-			String resName = economy.getCommoditySpec(res).getName();
+			String resName = StringHelper.getCommodityName(res);
 			text.addParagraph(resName + ": " + amountStr);
 			text.highlightInLastPara(hl, resName);
 		}

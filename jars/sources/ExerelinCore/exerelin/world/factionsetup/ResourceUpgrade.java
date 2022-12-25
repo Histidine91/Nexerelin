@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.StringHelper;
 import exerelin.world.factionsetup.FactionSetupHandler.FactionSetupItemDef;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -151,7 +152,7 @@ public class ResourceUpgrade extends FactionSetupItem {
 		String commodity = type;
 		if (commodity.equals("farming")) commodity = "food";
 		
-		String resName = Global.getSettings().getCommoditySpec(commodity).getName();
+		String resName = StringHelper.getCommodityName(commodity);
 		if (def.params.containsKey("resourceName"))
 			resName = (String)def.params.get("resourceName");
 		

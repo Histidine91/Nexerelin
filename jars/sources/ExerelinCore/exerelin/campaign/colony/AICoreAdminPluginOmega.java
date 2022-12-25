@@ -7,6 +7,7 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import exerelin.campaign.skills.NexSkills;
+import exerelin.utilities.StringHelper;
 
 public class AICoreAdminPluginOmega implements AICoreAdminPlugin {
 	
@@ -14,7 +15,7 @@ public class AICoreAdminPluginOmega implements AICoreAdminPlugin {
 		PersonAPI person = Global.getFactory().createPerson();
 		person.setFaction(factionId);
 		person.setAICoreId(aiCoreId);
-		String commodityName = Global.getSettings().getCommoditySpec(aiCoreId).getName();
+		String commodityName = StringHelper.getCommodityName(aiCoreId);
 		person.setName(new FullName(commodityName, "", FullName.Gender.ANY));
 		person.setPortraitSprite("graphics/portraits/characters/omega.png");
 		

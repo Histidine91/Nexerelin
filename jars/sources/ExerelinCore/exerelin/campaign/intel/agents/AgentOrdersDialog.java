@@ -752,7 +752,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			case CovertActionType.DESTROY_COMMODITY_STOCKS:
 				for (Object commod : targets) {
 					String commodityId = (String)commod;
-					String name = Global.getSettings().getCommoditySpec(commodityId).getName();
+					String name = StringHelper.getCommodityName(commodityId);
 					optionsList.add(new Pair<String, Object>(name, commodityId));
 				}
 				break;
@@ -849,9 +849,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 						target = travelDest != null? travelDest.getName() : none;
 						break;
 					case CovertActionType.DESTROY_COMMODITY_STOCKS:
-						target = commodityToDestroy != null? 
-								Global.getSettings().getCommoditySpec(commodityToDestroy).getName()
-								: none;
+						target = commodityToDestroy != null? StringHelper.getCommodityName(commodityToDestroy) : none;
 						break;
 					case CovertActionType.SABOTAGE_INDUSTRY:
 						target = industryToSabotage != null? 

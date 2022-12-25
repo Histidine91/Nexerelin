@@ -2322,7 +2322,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 							String aiCore = ifb.getIndustry().getAICoreId();
 							SpecialItemData special = ifb.getIndustry().getSpecialItem();
 							if (aiCore != null)
-								prompt.addPara(" - " + Global.getSettings().getCommoditySpec(aiCore).getName(), 0);
+								prompt.addPara(" - " + StringHelper.getCommodityName(aiCore), 0);
 							if (special != null) {
 								str = Global.getSettings().getSpecialItemSpec(special.getId()).getName();
 								prompt.addPara(" - " + str, 0);

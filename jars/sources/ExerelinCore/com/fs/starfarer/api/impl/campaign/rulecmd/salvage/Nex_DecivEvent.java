@@ -192,14 +192,14 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		if (memory.contains(MEM_KEY_GIVE_ID)) {
 			String giveId = memory.getString(MEM_KEY_GIVE_ID);
 			int giveNum = (int)memory.getLong(MEM_KEY_GIVE_COUNT);
-			local.set(MEM_KEY_GIVE_NAME, getCommodityName(giveId), 0);
+			local.set(MEM_KEY_GIVE_NAME, StringHelper.getCommodityName(giveId), 0);
 			local.set(MEM_KEY_GIVE_COUNT, giveNum, 0);
 		}
 		
 		if (memory.contains(MEM_KEY_TAKE_ID)) {
 			String takeId = memory.getString(MEM_KEY_TAKE_ID);
 			int takeNum = (int)memory.getLong(MEM_KEY_TAKE_COUNT);
-			local.set(MEM_KEY_TAKE_NAME, getCommodityName(takeId), 0);
+			local.set(MEM_KEY_TAKE_NAME, StringHelper.getCommodityName(takeId), 0);
 			local.set(MEM_KEY_TAKE_COUNT, takeNum, 0);
 		}
 		
@@ -344,7 +344,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		switch (type) {
 			case EVENT_TYPE_BOMB:
 				header = StringHelper.getString("nex_decivEvent", "costPanelHeaderBomb");
-				header = StringHelper.substituteToken(header, "$commodity", getCommodityName(giveId));
+				header = StringHelper.substituteToken(header, "$commodity", StringHelper.getCommodityName(giveId));
 				break;
 			case EVENT_TYPE_FOUNDCOLONY:
 				header = StringHelper.getString("nex_decivEvent", "costPanelHeaderColony");
@@ -352,8 +352,8 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 			case EVENT_TYPE_BARTER:
 			default:
 				header = StringHelper.getString("nex_decivEvent", "costPanelHeader");
-				header = StringHelper.substituteToken(header, "$commodity1", getCommodityName(giveId));
-				header = StringHelper.substituteToken(header, "$commodity2", getCommodityName(takeId));
+				header = StringHelper.substituteToken(header, "$commodity1", StringHelper.getCommodityName(giveId));
+				header = StringHelper.substituteToken(header, "$commodity2", StringHelper.getCommodityName(takeId));
 				break;
 		}
 		
@@ -645,10 +645,6 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 	
 	protected void setupColonyEvent() {
 		// no action needed?
-	}
-	
-	protected String getCommodityName(String commodityId) {
-		return Global.getSettings().getCommoditySpec(commodityId).getName().toLowerCase(Locale.ROOT);
 	}
 	
 	protected void setMem(String key, Object value) {

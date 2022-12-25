@@ -243,7 +243,7 @@ public class Nex_RebellionActions extends PaginatedOptions {
 	public String getDeliverString(String commodityId, int num)
 	{
 		String base = StringHelper.getString("exerelin_misc", "deliverCommodities");
-		String commodityName = Global.getSector().getEconomy().getCommoditySpec(commodityId).getName().toLowerCase();
+		String commodityName = StringHelper.getCommodityName(commodityId).toLowerCase();
 		
 		String result = StringHelper.substituteToken(base, "$num", num + "");
 		result = StringHelper.substituteToken(result, "$commodity", commodityName);
