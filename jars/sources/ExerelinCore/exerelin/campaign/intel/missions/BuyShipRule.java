@@ -2,6 +2,7 @@ package exerelin.campaign.intel.missions;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
@@ -259,6 +260,53 @@ public abstract class BuyShipRule {
 
 		@Override
 		public boolean wantToUseRule(CampaignFleetAPI fleet) {
+			Random random = mission.getGenRandom();
+			if (random == null) random = new Random();
+			return random.nextFloat() < CHANCE_TO_USE_RULE;
+		}
+	}
+
+	public static class ShipTypeRule extends BuyShipRule {
+
+		public static final float CHANCE_TO_USE_RULE = 0.7f;
+		public static final String WARSHIP = "warship";
+		public static final String CARRIER = "carrier";
+		public static final String PHASE = "phase";
+		public String type = WARSHIP;
+
+		@Override
+		void init(CampaignFleetAPI fleet) {
+			MarketAPI market = mission.getPostingLocation().getMarket();
+			if (market == null) return;
+			FactionAPI faction = market.getFaction();
+
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+			picker.add(WARSHIP, 6 - faction.getDoctrine().getWarships());
+			picker.add(CARRIER, 6 - faction.getDoctrine().getCarriers());
+			picker.add(PHASE, 6 - faction.getDoctrine().getPhaseShips());
+
+			type = picker.pick();
+		}
+
+		@Override
+		boolean isShipAllowed(FleetMemberAPI member) {
+			boolean carrier = member.isCarrier();
+			boolean phase = member.isPhaseShip();
+			boolean warship = !carrier && !phase;
+
+			if (CARRIER.equals(type)) return carrier;
+			else if (PHASE.equals(type)) return phase;
+			else return warship;
+		}
+
+		@Override
+		void printRule(TooltipMakerAPI tooltip, float pad) {
+			tooltip.addPara(getString("ruleShipType"), pad, Misc.getHighlightColor(), getString("ruleShipType_"+type));
+		}
+
+		@Override
+		public boolean wantToUseRule(CampaignFleetAPI fleet) {
+			if (true) return true;
 			Random random = mission.getGenRandom();
 			if (random == null) random = new Random();
 			return random.nextFloat() < CHANCE_TO_USE_RULE;

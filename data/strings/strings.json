@@ -639,6 +639,10 @@
 		"ruleHullSize":"Size: %s",
 		"ruleDP":"DP at least %s/%s/%s/%s",
 		"ruleDMods":"Maximum D-mods: %s",
+		"ruleShipType":"Type: %s",
+		"ruleShipType_warship":"warship",
+		"ruleShipType_carrier":"carrier",
+		"ruleShipType_phase":"phase",
 	},
 	
 	"nex_buyColony":{

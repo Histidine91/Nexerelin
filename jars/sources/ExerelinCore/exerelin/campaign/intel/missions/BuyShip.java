@@ -32,12 +32,14 @@ public class BuyShip extends HubMissionWithBarEvent {
 	public static final float PRICE_IMPORTANCE_LOW = 50000;
 	public static final float PRICE_IMPORTANCE_HIGH = 150000;
 	public static final int SET_MIN_SIZE = 2;
+	public static final int MIN_RULES = 2;
 	
 	static {
 		AVAILABLE_RULES.add(DesignTypeRule.class);
 		AVAILABLE_RULES.add(HullSizeRule.class);
 		AVAILABLE_RULES.add(DPRule.class);
 		AVAILABLE_RULES.add(DModRule.class);
+		AVAILABLE_RULES.add(ShipTypeRule.class);
 	}
 
 	public static float BASE_PRICE_MULT = 1.6f;
@@ -145,6 +147,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 	}
 
 	protected void loadRules() {
+		rules.clear();
 		CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
 		for (Class ruleClass : AVAILABLE_RULES) {
 			BuyShipRule rule = BuyShipRule.instantiate(ruleClass, this);
@@ -216,32 +219,37 @@ public class BuyShip extends HubMissionWithBarEvent {
 			}
 		}
 
-		for (BuyShipRule currRule : new ArrayList<>(rules)) {
-			List<FleetMemberAPI> fromThisRule = currRule.getShipsMeetingRule(player);
-			if (fromThisRule.isEmpty()) continue;
+		int tries = 0;
+		do {
+			if (tries > 0) loadRules();
+			for (BuyShipRule currRule : new ArrayList<>(rules)) {
+				List<FleetMemberAPI> fromThisRule = currRule.getShipsMeetingRule(player);
+				if (fromThisRule.isEmpty()) continue;
 
-			List<FleetMemberAPI> intersect = NexUtils.getCollectionIntersection(bestList, fromThisRule);
+				List<FleetMemberAPI> intersect = NexUtils.getCollectionIntersection(bestList, fromThisRule);
 
-			// if have a (sufficiently large) intersection, use that
-			if (!intersect.isEmpty() && intersect.size() >= SET_MIN_SIZE) {
-				bestList = intersect;
-			}
-			// else use the new list if it's smaller
-			else if (isSmallerButNotTooSmall(fromThisRule, bestList)) {
-				bestList = fromThisRule;
-				// previous rules have failed, remove them
-				if (pruneRules && rules.contains(currRule)) {
-					rules = rules.subList(rules.indexOf(currRule), rules.size() - 1);
+				// if have a (sufficiently large) intersection, use that
+				if (!intersect.isEmpty() && intersect.size() >= SET_MIN_SIZE) {
+					bestList = intersect;
+				}
+				// else use the new list if it's smaller
+				else if (isSmallerButNotTooSmall(fromThisRule, bestList)) {
+					bestList = fromThisRule;
+					// previous rules have failed, remove them
+					if (pruneRules && rules.contains(currRule)) {
+						rules = rules.subList(rules.indexOf(currRule), rules.size());
+					}
+				}
+				// old list is bigger, use that
+				else {
+					// new rule has failed, remove it
+					if (pruneRules) {
+						rules.remove(currRule);
+					}
 				}
 			}
-			// old list is bigger, use that
-			else {
-				// new rule has failed, remove it
-				if (pruneRules) {
-					rules.remove(currRule);
-				}
-			}
-		}
+			tries++;
+		} while (rules.size() < MIN_RULES && tries < 15);
 
 		return bestList;
 	}
