@@ -1430,7 +1430,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public void reportPlayerColonizedPlanet(PlanetAPI planet) {
 		MarketAPI market = planet.getMarket();
 		market.addCondition(FactionConditionPlugin.CONDITION_ID);
-		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.PLAYER);
+		if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
+			market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.PLAYER);
 	}
 	
 	@Override
