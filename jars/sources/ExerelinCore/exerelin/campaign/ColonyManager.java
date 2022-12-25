@@ -267,13 +267,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				float profit = market.getNetIncome();
 				float cost = market.getIndustryUpkeep();
 				float margin = profit/cost;
+				if (margin <= 0) continue;
 				log.info(String.format("Market %s adding %.2f profit margin (%.0f profit, %.0f cost)", market.getName(), margin, profit, cost));
 				float size = market.getSize() - 2;
 				if (size < 0.5f) size = 0.5f;
 				float marginForXP = margin * size / numTicksPerMonth;
 				float xpEquivalent = marginForXP * Global.getSettings().getFloat("nex_xpPerProfitMargin");
 				log.info(String.format("This will be worth %.0f XP at month end (about %.0f/month)", xpEquivalent, xpEquivalent * numTicksPerMonth));
-				if (margin <= 0) continue;
 				profitMarginForXP += marginForXP;
 			}
 		}
@@ -1307,42 +1307,48 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	/**
-	 * Restore AI cores from memory and reassign them to industries.
+	 * Restore AI cores from memory and reassign them to industries, or as admin.
 	 * @param market
 	 */
 	public void restoreCores(MarketAPI market) {
+		int numRestored = 0;
+
 		if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORE_ADMIN)) {
 			PersonAPI aiAdmin = (PersonAPI)market.getMemoryWithoutUpdate().get(MEMORY_KEY_STASHED_CORE_ADMIN);
 			PersonAPI currAdmin = market.getAdmin();
 			market.setAdmin(aiAdmin);
 			replaceDisappearedAdmin(market, currAdmin);
-		}
-
-		if (!market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORES))
-			return;
-		
-		Map<String, String> industriesToCores = (Map<String, String>)(market
-				.getMemoryWithoutUpdate().get(MEMORY_KEY_STASHED_CORES));
-		
-		int numRestored = 0;
-		for (Industry ind : market.getIndustries()) {
-			String indId = ind.getId();
-			if (!industriesToCores.containsKey(indId)) continue;
-			
-			String currAI = ind.getAICoreId();
-			String wantedAI = industriesToCores.get(indId);
-			
-			// If industry already has an AI core installed, put the stashed one in storage
-			// else, assign it to the industry
-			if (currAI == null)
-				ind.setAICoreId(wantedAI);
-			else
-				market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addCommodity(wantedAI, 1);
+			market.getMemoryWithoutUpdate().unset(MEMORY_KEY_STASHED_CORE_ADMIN);
 			numRestored++;
 		}
-		market.getMemoryWithoutUpdate().unset(MEMORY_KEY_STASHED_CORES);
-		printCoreStashMessage(StringHelper.getString("exerelin_misc", "aiCoreRestoreMsg"),  
-				numRestored, market);
+
+		if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_STASHED_CORES))
+		{
+			Map<String, String> industriesToCores = (Map<String, String>) (market
+					.getMemoryWithoutUpdate().get(MEMORY_KEY_STASHED_CORES));
+
+			for (Industry ind : market.getIndustries()) {
+				String indId = ind.getId();
+				if (!industriesToCores.containsKey(indId)) continue;
+
+				String currAI = ind.getAICoreId();
+				String wantedAI = industriesToCores.get(indId);
+
+				// If industry already has an AI core installed, put the stashed one in storage
+				// else, assign it to the industry
+				if (currAI == null)
+					ind.setAICoreId(wantedAI);
+				else
+					market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addCommodity(wantedAI, 1);
+				numRestored++;
+			}
+			market.getMemoryWithoutUpdate().unset(MEMORY_KEY_STASHED_CORES);
+		}
+
+		if (numRestored > 0) {
+			printCoreStashMessage(StringHelper.getString("exerelin_misc", "aiCoreRestoreMsg"),
+					numRestored, market);
+		}
 	}
 	
 	public boolean doesFactionAllowAI(FactionAPI faction) {
