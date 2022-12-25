@@ -54,6 +54,7 @@ import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -667,7 +668,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	protected void printFleetStrengthInfo(TooltipMakerAPI info, float opad) {
 		Color h = Misc.getHighlightColor();
-		if (isDebugVisible()) {
+		if (true || isDebugVisible()) {
 			String str = getString("intelDescStr");
 			String fp = Math.round(route.getExtra().fp) + "";
 			if (route.getActiveFleet() != null)
@@ -853,10 +854,29 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		if (route.getActiveFleet() != null) {
 			StarSystemAPI sys = route.getActiveFleet().getStarSystem();
 			if (sys != null) return sys.getCenter();
+			else return route.getActiveFleet();
 		}
 		return null;
 	}
-	
+
+	@Override
+	public List<ArrowData> getArrowData(SectorMapAPI map) {
+		SectorEntityToken origin = getMapLocation(map);
+		if (origin == null) return null;
+		SectorEntityToken dest = null;
+		RouteSegment segment = route.getCurrent();
+		if (segment != null) dest = segment.getDestination();
+		if (dest == null) return null;
+
+		List<ArrowData> result = new ArrayList<ArrowData>();
+		ArrowData arrow = new ArrowData(origin, dest);
+		arrow.color = Global.getSector().getPlayerFaction().getColor();
+		arrow.width = 10f;
+		result.add(arrow);
+
+		return result;
+	}
+
 	public static String getString(String id) {
 		return getString(id, false);
 	}
