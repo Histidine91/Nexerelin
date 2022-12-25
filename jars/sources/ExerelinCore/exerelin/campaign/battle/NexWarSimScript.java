@@ -1,9 +1,12 @@
 package exerelin.campaign.battle;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,7 +20,8 @@ public class NexWarSimScript {
     public static FactionStrengthReport getFactionStrengthReport(FactionAPI faction, LocationAPI loc) {
         FactionStrengthReport report = new FactionStrengthReport(faction.getId());
 
-        Set<CampaignFleetAPI> seenFleets = new HashSet<CampaignFleetAPI>();
+        Set<CampaignFleetAPI> seenFleets = new HashSet<>();
+        Set<RouteData> seenRoutes = new HashSet<>();
         for (CampaignFleetAPI fleet : loc.getFleets()) {
             if (fleet.getFaction() != faction) continue;
             if (fleet.isStationMode()) continue;
@@ -43,6 +47,30 @@ public class NexWarSimScript {
                 float mult = 1f;
                 if (data.damage != null) mult *= (1f - data.damage);
                 report.addEntry(new FactionStrengthReportEntry("Route " + route.toString(), route, (float)Math.round(data.strength * mult)));
+                seenRoutes.add(route);
+            }
+        }
+
+        for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(SpecialForcesIntel.class)) {
+            SpecialForcesIntel sf = (SpecialForcesIntel)iip;
+            RouteData route = sf.getRoute();
+            CampaignFleetAPI fleet = route.getActiveFleet();
+            if (seenFleets.contains(fleet) || seenRoutes.contains(route)) {
+                continue;
+            }
+            if (sf.getFaction() != faction) continue;
+
+            if (sf.getRouteAI().getCurrentTask() == null) continue;
+            if (sf.getRouteAI().getCurrentTask().system != loc) continue;
+
+            if (fleet != null) {
+                report.addEntry(new FactionStrengthReportEntry(fleet));
+                seenFleets.add(fleet);
+            } else {
+                float mult = 1f;
+                if (route.getExtra().damage != null) mult *= (1f - route.getExtra().damage);
+                report.addEntry(new FactionStrengthReportEntry(sf.getName(), route, (float)Math.round(route.getExtra().strength * mult)));
+                seenRoutes.add(route);
             }
         }
 

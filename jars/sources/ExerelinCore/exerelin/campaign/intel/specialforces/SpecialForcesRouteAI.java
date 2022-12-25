@@ -65,7 +65,7 @@ public class SpecialForcesRouteAI {
 	public static final String ROUTE_PURSUIT_SEGMENT = "SF_pursueSeg";
 	
 	protected SpecialForcesIntel sf;
-	protected SpecialForcesTask currentTask;
+	@Getter protected SpecialForcesTask currentTask;
 	
 	protected int idleCount = 0;
 	
