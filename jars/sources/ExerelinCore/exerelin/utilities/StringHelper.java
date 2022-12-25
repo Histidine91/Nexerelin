@@ -173,6 +173,28 @@ public class StringHelper {
 		
 		return substituteTokens(str, replacements);
 	}
+
+	/**
+	 * Replaces {@code $factionIsOrAre},  {@code $faction} and {@code $theFaction}
+	 * substrings (and the uppercase versions thereof) in {@code str}.
+	 * @param str
+	 * @param faction
+	 * @return
+	 */
+	public static String substituteFactionTokens(String str, String prefix, FactionAPI faction)
+	{
+		Map<String, String> replacements = new LinkedHashMap<>();
+		String name = NexUtilsFaction.getFactionShortName(faction);
+		String theName = faction.getDisplayNameWithArticle();
+		String ucPrefix = Misc.ucFirst(prefix);
+		replacements.put("$" + prefix + "FactionIsOrAre", faction.getDisplayNameIsOrAre());
+		replacements.put("$the" + ucPrefix + "Faction", theName);
+		replacements.put("$The" + ucPrefix + "Faction", Misc.ucFirst(theName));
+		replacements.put("$" + prefix + "Faction", name);
+		replacements.put("$" + ucPrefix + "Faction", Misc.ucFirst(name));
+
+		return substituteTokens(str, replacements);
+	}
 	
 	public static Highlights getFactionHighlights(String factionId) {
 		return getFactionHighlights(Global.getSector().getFaction(factionId));
