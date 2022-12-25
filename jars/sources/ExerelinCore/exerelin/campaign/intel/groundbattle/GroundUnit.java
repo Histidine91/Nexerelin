@@ -178,7 +178,8 @@ public class GroundUnit {
 	/**
 	 * Changes the unit size.
 	 * @param num Number of marine equivalents for a marine unit, heavy arms equivalents for a heavy unit, etc.
-	 * @param takeFromCargo If true, takes the needed commodities from the fleet's cargo.
+	 * @param takeFromCargo If true, takes the needed commodities from the fleet's cargo. For compatibility with Crew Replacer,
+	 *                      should always be true when resizing a player unit, or else do your own implementation (e.g. current unit split implementation).
 	 */
 	public void setSize(int num, boolean takeFromCargo) {
 		// first return the existing units to cargo

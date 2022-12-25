@@ -101,6 +101,11 @@ public class RecruitAgent extends CovertActionIntel {
 	}
 
 	@Override
+	public boolean shouldAbortIfOwnMarket() {
+		return false;
+	}
+
+	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getString("intelStatus_recruitAgent");
 		info.addPara(action, pad, Misc.getHighlightColor(), specialization.getName());

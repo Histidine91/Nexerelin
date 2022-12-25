@@ -30,25 +30,30 @@ public class CrewReplacerUtils {
 
 	static {
 		if (enabled) {
-			// register heavy arms "job"
-			crewReplacer_Job jobHA = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
-			jobHA.addNewCrew(Commodities.HAND_WEAPONS, 1, 1);
-			
-			crewReplacer_Job jobGBM = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_MARINES);
-			jobGBM.addNewCrew(Commodities.MARINES, 1, 1);
-			
-			crewReplacer_Job jobTC = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_TANKCREW);
-			jobTC.addNewCrew(Commodities.MARINES, 1, 1);
+			loadCrew();
+		}
+	}
 
-			if (debugMode) {
-				jobHA.addNewCrew(Commodities.RARE_ORE, 0.2f, 1);
-				//log.info(String.format("Commodity %s has power %s for job %s", Commodities.RARE_ORE, jobHA.getCrew(Commodities.RARE_ORE).crewPower, jobHA.name));
-				jobGBM.addNewCrew(Commodities.ORE, 0.2f, 1);
-				jobTC.addNewCrew(Commodities.ORE, 0.2f, 1);
-				crewReplacer_Job jobMarines = crewReplacer_Main.getJob(Nex_MarketCMD.CREWREPLACER_JOB_RAID);
-				jobMarines.addNewCrew(Commodities.ORE, 0.2f, 1);
-				//jobMarines.organizePriority();
-			}
+	// runcode exerelin.utilities.CrewReplacerUtils.loadCrew();
+	public static void loadCrew() {
+		// register heavy arms "job"
+		crewReplacer_Job jobHA = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
+		jobHA.addNewCrew(Commodities.HAND_WEAPONS, 1, 1);
+
+		crewReplacer_Job jobGBM = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_MARINES);
+		jobGBM.addNewCrew(Commodities.MARINES, 1, 1);
+
+		crewReplacer_Job jobTC = crewReplacer_Main.getJob(GBConstants.CREW_REPLACER_JOB_TANKCREW);
+		jobTC.addNewCrew(Commodities.MARINES, 1, 1);
+
+		if (debugMode) {
+			jobHA.addNewCrew(Commodities.RARE_ORE, 0.2f, 1);
+			//log.info(String.format("Commodity %s has power %s for job %s", Commodities.RARE_ORE, jobHA.getCrew(Commodities.RARE_ORE).crewPower, jobHA.name));
+			jobGBM.addNewCrew(Commodities.ORE, 0.2f, 1);
+			jobTC.addNewCrew(Commodities.ORE, 0.2f, 1);
+			crewReplacer_Job jobMarines = crewReplacer_Main.getJob(Nex_MarketCMD.CREWREPLACER_JOB_RAID);
+			jobMarines.addNewCrew(Commodities.ORE, 0.2f, 1);
+			//jobMarines.organizePriority();
 		}
 	}
 	

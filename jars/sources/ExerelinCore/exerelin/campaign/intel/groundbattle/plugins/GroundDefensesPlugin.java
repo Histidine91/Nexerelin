@@ -27,7 +27,7 @@ public class GroundDefensesPlugin extends IndustryForBattlePlugin {
 		for (SpecialItemData item : specialItems) {
 			if (item.getId().equals(Items.DRONE_REPLICATOR)) {
 				contrib *= ItemEffectsRepo.DRONE_REPLICATOR_BONUS_MULT;
-				Global.getLogger(this.getClass()).info("  Applying drone replicator bonus");
+				//Global.getLogger(this.getClass()).info("  Applying drone replicator bonus");
 			}
 		}
 		
