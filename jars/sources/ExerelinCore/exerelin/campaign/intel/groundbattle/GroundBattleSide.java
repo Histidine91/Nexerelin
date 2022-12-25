@@ -247,6 +247,7 @@ public class GroundBattleSide {
 		
 		if (rebels > 0) {
 			createAndAllocateRebels(Math.round(rebels), rebFac);
+			intel.rebelsArose = true;
 		}
 		
 		currNormalBaseStrength = GBUtils.estimateTotalDefenderStrength(intel, false);

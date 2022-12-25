@@ -71,6 +71,7 @@ import exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
 import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
 import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.ui.ProgressBar;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
@@ -144,7 +145,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	@Getter protected int turnsSinceLastAction = 0;
 	
 	protected InvasionIntel responseIntel;
-	
+
+	protected boolean rebelsArose = false;
 	protected boolean noTransfer = false;
 	protected boolean endIfPeace = true;
 	
@@ -1048,7 +1050,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (outcome == BattleOutcome.PEACE || outcome == BattleOutcome.OTHER) {
 			
 		}
-		
+
+		if (outcome == BattleOutcome.DEFENDER_VICTORY && rebelsArose) {
+			RebellionIntel reb = RebellionIntel.getOngoingEvent(market);
+			if (reb != null) reb.endEvent(RebellionIntel.RebellionResult.GOVERNMENT_VICTORY);
+		}
+
+		// reset garrison strength
 		if (outcome == BattleOutcome.ATTACKER_VICTORY && playerInitiated) {
 			// reset to 25% health for a player victory
 			GBUtils.setGarrisonDamageMemory(market, 0.75f);
@@ -1207,12 +1215,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		if (turnNum < 3) return;
 		if (responseIntel != null) return;	// already spawned
+
+		// don't allow counter-invasion if this market was recently taken
+		if (market.getMemoryWithoutUpdate().contains(SectorManager.MEMORY_KEY_RECENTLY_CAPTURED)) return;
 		
 		// requires non-negative invasion point charge to spawn
 		float points = InvasionFleetManager.getManager().getSpawnCounter(market.getFactionId());
 		if (points < 0) return;
-		
-		// TODO: find origin market
+
 		MarketAPI origin = GBUtils.getMarketForCounterInvasion(market);
 		if (origin == null) return;
 		

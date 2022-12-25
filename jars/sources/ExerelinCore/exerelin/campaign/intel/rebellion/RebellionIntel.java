@@ -1503,7 +1503,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		INDUSTRY_DISRUPTED, INDUSTRY_DISRUPT_FAIL, END
 	}
 	
-	protected enum RebellionResult {
+	public enum RebellionResult {
 		GOVERNMENT_VICTORY, REBEL_VICTORY, MUTUAL_ANNIHILATION, TIME_EXPIRED, LIBERATED, DECIVILIZED, OTHER
 	}
 }

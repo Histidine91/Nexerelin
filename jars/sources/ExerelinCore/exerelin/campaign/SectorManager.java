@@ -1346,8 +1346,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (rebel != null) rebel.setInitialStrengthsAfterInvasion(playerInvolved);
         }
         
-        boolean playerTaken = newOwner.isPlayerFaction() || newOwner == Misc.getCommissionFaction();
-        if (playerTaken && isCapture) {
+        //boolean playerTaken = newOwner.isPlayerFaction() || newOwner == Misc.getCommissionFaction();
+        if (isCapture) {
             market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED, 
                     oldOwnerId, MEMORY_KEY_RECENTLY_CAPTURED_EXPIRE);
         }
