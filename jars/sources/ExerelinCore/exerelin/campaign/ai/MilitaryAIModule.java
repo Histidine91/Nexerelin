@@ -27,13 +27,8 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
     }
 
     @Override
-    public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder) {
-        float pad = 3;
-        float opad = 10;
-        //tooltip.addPara("TBD", opad);
-        for (StrategicConcern concern : currentConcerns) {
-            concern.createTooltip(tooltip, holder, pad);
-        }
+    public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
+        super.generateReport(tooltip, holder, width);
     }
 
     @Override

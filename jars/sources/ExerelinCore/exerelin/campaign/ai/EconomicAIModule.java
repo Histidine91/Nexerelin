@@ -9,8 +9,11 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.utilities.NexUtilsGUI;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EconomicAIModule extends StrategicAIModule {
     public EconomicAIModule(StrategicAI ai, StrategicDefManager.ModuleType module) {
@@ -24,7 +27,7 @@ public class EconomicAIModule extends StrategicAIModule {
      */
 
     @Override
-    public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder) {
+    public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
         float pad = 3;
         float opad = 10;
         Color hl = Misc.getHighlightColor();
@@ -32,6 +35,7 @@ public class EconomicAIModule extends StrategicAIModule {
 
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
 
+        // TODO externalize
         tooltip.addPara("Our factionwide monthly income from markets is %s", opad, hl, Misc.getDGSCredits(helper.getFactionNetIncome(ai.getFaction().getId())));
 		tooltip.addPara("Other factions with significant commodity competition: ", opad);
 		for (String otherFactionId : SectorManager.getLiveFactionIdsCopy()) {
@@ -43,7 +47,7 @@ public class EconomicAIModule extends StrategicAIModule {
 			String sprite = otherFaction.getCrest();
             TooltipMakerAPI iwt = tooltip.beginImageWithText(sprite, 24);
             LabelAPI label = iwt.addPara("%s: %s", 0, hl, Misc.ucFirst(otherFaction.getDisplayName()), compFactor + "");
-            label.setHighlightColors(hl, otherFaction.getBaseUIColor());
+            label.setHighlightColors(otherFaction.getBaseUIColor(), hl);
             tooltip.addImageWithText(pad);
 		}
 
@@ -65,8 +69,6 @@ public class EconomicAIModule extends StrategicAIModule {
 
         tooltip.addSpacer(opad);
 
-        for (StrategicConcern concern : currentConcerns) {
-            concern.createTooltip(tooltip, holder, pad);
-        }
+        super.generateReport(tooltip, holder, width);
     }
 }

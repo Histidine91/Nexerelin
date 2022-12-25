@@ -4,6 +4,8 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.campaign.ai.concern.StrategicConcern;
+import exerelin.campaign.ui.FramedCustomPanelPlugin;
+import exerelin.utilities.NexUtilsGUI;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
@@ -68,5 +70,19 @@ public abstract class StrategicAIModule {
         return toRemove;
     }
 
-    abstract void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder);
+    public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
+        float pad = 3, opad = 10;
+        int concernCount = currentConcerns.size();
+        NexUtilsGUI.RowSortCalc dimensions = new NexUtilsGUI.RowSortCalc(concernCount, width, SAIConstants.CONCERN_ITEM_WIDTH + 3, SAIConstants.CONCERN_ITEM_HEIGHT + 3);
+        
+        CustomPanelAPI outer = holder.createCustomPanel(width, dimensions.height, null);
+
+        List<CustomPanelAPI> existingPanels = new ArrayList<>();
+        for (StrategicConcern concern : currentConcerns) {
+            CustomPanelAPI ct = concern.createPanel(outer);
+            NexUtilsGUI.placeElementInRows(outer, ct, existingPanels, dimensions.numPerRow, 3);
+            existingPanels.add(ct);
+        }
+        tooltip.addCustom(outer, opad);
+    }
 }

@@ -111,6 +111,11 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     }
 
     @Override
+    public String getName() {
+        return String.format("%s: %s %s", super.getName(), faction.getDisplayName(), StringHelper.getCommodityName(competitorId));
+    }
+
+    @Override
     public boolean isSameAs(StrategicConcern otherConcern, Object param) {
         String commodityId = this.commodityId;
         if (commodityId == null && param instanceof String)

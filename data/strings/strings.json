@@ -36,7 +36,8 @@
 		"marines":"marines",
 		"options":"options",
 		"player":"player",
-		"planet":"planet",
+		"planet":"planet",		
+		"priority":"priority",
 		"relay":"relay",
 		"rename":"rename",
 		"salvage":"salvage",
@@ -2381,6 +2382,11 @@
 		"intelBulletUpdate":"Strategy meeting",
 		"intelBulletUpdateAdd":"%s new concern(s): %s",
 		"intelBulletUpdateRemove":"%s concern(s) removed: %s",
+		
+		"intelPara_daysToNextMeeting":"%s days to next strategy meeting",
+		"intelHeader_economy":"Economic report",
+		"intelHeader_military":"Military report",
+		"intelHeader_diplomacy":"Diplomacy report",
 		
 		"statImportVolume":"import volume",
 		"statValue":"value",

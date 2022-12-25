@@ -11,11 +11,10 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.ai.MilitaryInfoHelper;
-import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.ai.StrategicAIModule;
-import exerelin.campaign.ai.StrategicDefManager;
+import exerelin.campaign.ai.*;
 import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ui.FramedCustomPanelPlugin;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -68,15 +67,46 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     public void update() {}
 
     @Override
-    public void createTooltip(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
-        TooltipMakerAPI iwt = tooltip.beginImageWithText(this.getIcon(), 48);
+    public CustomPanelAPI createPanel(final CustomPanelAPI holder) {
+        final float pad = 3;
+        final float opad = 10;
+
+        CustomPanelAPI myPanel = holder.createCustomPanel(SAIConstants.CONCERN_ITEM_WIDTH, SAIConstants.CONCERN_ITEM_HEIGHT,
+                new FramedCustomPanelPlugin(0.25f, ai.getFaction().getBaseUIColor(), true));
+
+        TooltipMakerAPI tooltip = myPanel.createUIElement(SAIConstants.CONCERN_ITEM_WIDTH, SAIConstants.CONCERN_ITEM_HEIGHT, true);
+        TooltipMakerAPI iwt = tooltip.beginImageWithText(this.getIcon(), 32);
+
         iwt.addPara(getName(), Misc.getHighlightColor(), 0);
-        createTooltipDesc(iwt, holder, 3);
+
+        //createTooltipDesc(iwt, holder, 3);
+
         int prioVal = (int)getPriorityFloat();
-        String prio = String.format("Priority: %s", prioVal);
-        iwt.addPara(prio, pad, Misc.getHighlightColor(), prioVal + "");
-        //iwt.addTooltipToPrevious();   // TODO
+        String prio = String.format(StringHelper.getString("priority", true) + ": %s", prioVal);
+        iwt.addPara(prio, 0, Misc.getHighlightColor(), prioVal + "");
         tooltip.addImageWithText(pad);
+        tooltip.addTooltipToPrevious(new TooltipMakerAPI.TooltipCreator() {
+            @Override
+            public boolean isTooltipExpandable(Object tooltipParam) {
+                return false;
+            }
+
+            @Override
+            public float getTooltipWidth(Object tooltipParam) {
+                return 360;
+            }
+
+            @Override
+            public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+                createTooltipDesc(tooltip, holder, pad);
+                tooltip.addPara(StringHelper.getString("priority", true), opad);
+                tooltip.addStatModGrid(360, 60, 10, 0, priority,
+                        true, NexUtils.getStatModValueGetter(true, 0));
+            }
+        }, TooltipMakerAPI.TooltipLocation.BELOW);
+
+        myPanel.addUIElement(tooltip).inTL(0, 0);
+        return myPanel;
     }
 
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {

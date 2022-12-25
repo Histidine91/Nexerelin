@@ -65,7 +65,7 @@ public interface StrategicConcern {
     MarketAPI getMarket();
     FactionAPI getFaction();
 
-    void createTooltip(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad);
+    CustomPanelAPI createPanel(CustomPanelAPI holder);
 
     /**
      * Creates a list of actions we can take in response to this concern.

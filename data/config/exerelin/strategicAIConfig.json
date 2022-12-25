@@ -58,6 +58,13 @@
 			"tags":["diplomacy"],
 			"module":DIPLOMATIC
 		},
+		"closeAdversaries":{
+			"name":"Close Adversaries",
+			"desc":"Two factions unfriendly to us, $theFaction and $theOtherFaction, are getting closer than we would like.",
+			"classPath":"exerelin.campaign.ai.concern.CloseAdversariesConcern",
+			"tags":["diplomacy"],
+			"module":DIPLOMATIC
+		},
 		"warWeariness":{
 			"name":"War Weariness",
 			"desc":"Our people tire of the constant fighting. We should seek to make peace with one or more of our enemies.",

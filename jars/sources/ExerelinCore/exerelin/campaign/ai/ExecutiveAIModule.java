@@ -14,6 +14,6 @@ public class ExecutiveAIModule extends StrategicAIModule {
      */
 
     @Override
-    public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder) {
+    public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
     }
 }

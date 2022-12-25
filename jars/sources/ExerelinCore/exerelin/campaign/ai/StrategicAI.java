@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -162,34 +163,43 @@ public class StrategicAI extends BaseIntelPlugin {
 	============================================================================
 	*/
 
-	public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI panel) {
+	public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI panel, float width) {
 		float pad = 3;
 		float opad = 10;
-		float sectionPad = 32;
+		float sectionPad = 16;
 
-		String str = "%s days to next strategy meeting";
+		String str = getString("intelPara_daysToNextMeeting");
 		tooltip.addPara(str, opad, Misc.getHighlightColor(), String.format("%.1f", interval.getIntervalDuration() - interval.getElapsed()));
 
-		tooltip.setParaInsigniaLarge();
-		tooltip.addPara("[temp] Economic report", sectionPad);
-		tooltip.setParaFontDefault();
-		econModule.generateReport(tooltip, panel);
+		tooltip.addSectionHeading(getString("intelHeader_economy"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
+		try {
+			econModule.generateReport(tooltip, panel, width);
+		} catch (Exception ex) {
+			log.error("Failed to generate economy report", ex);
+		}
 
 		tooltip.setParaInsigniaLarge();
-		tooltip.addPara("[temp] Military report", sectionPad);
+		tooltip.addSectionHeading(getString("intelHeader_military"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
 		tooltip.setParaFontDefault();
-		milModule.generateReport(tooltip, panel);
+		try {
+			milModule.generateReport(tooltip, panel, width);
+		} catch (Exception ex) {
+			log.error("Failed to generate military report", ex);
+		}
 
-		tooltip.setParaInsigniaLarge();
-		tooltip.addPara("[temp] Diplomacy report", sectionPad);
-		tooltip.setParaFontDefault();
-		diploModule.generateReport(tooltip, panel);
+		tooltip.addSectionHeading(getString("intelHeader_diplomacy"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
+		try {
+			diploModule.generateReport(tooltip, panel, width);
+		} catch (Exception ex) {
+			log.error("Failed to generate diplomacy report", ex);
+		}
+
 	}
 	
 	public void displayReport(TooltipMakerAPI tooltip, CustomPanelAPI panel, float width, float pad)
 	{
 		width -= MARGIN;
-		generateReport(tooltip, panel);
+		generateReport(tooltip, panel, width);
 	}
 	
 	@Override
