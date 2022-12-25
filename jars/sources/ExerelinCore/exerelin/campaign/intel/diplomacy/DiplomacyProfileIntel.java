@@ -296,7 +296,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 						panelAlignment.addUIElement(holder).rightOfTop(last, buttonPad);
 					last = holder;
 				}
-				NexUtilsGUI.placeElementInRows(panelAllAlignments, panelAlignment, panels, panels.size(), panelsPerRow, buttonPad);
+				NexUtilsGUI.placeElementInRows(panelAllAlignments, panelAlignment, panels, panelsPerRow, buttonPad);
 				panels.add(panelAlignment);
 			}
 			tooltip.addCustom(panelAllAlignments, 3);

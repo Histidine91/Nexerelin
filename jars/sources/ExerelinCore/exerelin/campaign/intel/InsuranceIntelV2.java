@@ -561,7 +561,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 			memberPanel.addUIElement(buttonHolder).rightOfTop(entry, pad);
 			
 			try {
-				NexUtilsGUI.placeElementInRows(allItemsPanel, memberPanel, memberPanels, memberPanels.size(), numPerRow, opad * 2);
+				NexUtilsGUI.placeElementInRows(allItemsPanel, memberPanel, memberPanels, numPerRow, opad * 2);
 			} catch (Exception ex) {
 				log.error("Failed to add insurable panel", ex);
 			}

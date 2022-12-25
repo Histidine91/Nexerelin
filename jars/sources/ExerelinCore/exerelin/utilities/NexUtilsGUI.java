@@ -144,11 +144,8 @@ public class NexUtilsGUI {
 
 	public static void placeElementInRows(CustomPanelAPI holder, UIPanelAPI element, List<? extends UIPanelAPI> prevElements,
 										  int maxPerRow, float xpad) {
-		placeElementInRows(holder, element, prevElements, prevElements.size(), maxPerRow, xpad);
-	}
 
-	public static void placeElementInRows(CustomPanelAPI holder, UIPanelAPI element, List<? extends UIPanelAPI> prevElements,
-			int numPrevious, int maxPerRow, float xpad) {
+		int numPrevious = prevElements.size();
 		if (numPrevious == 0) {
 			// first card, place in TL
 			addToCustomPanel(holder, element).inTL(0, 3);
@@ -202,6 +199,36 @@ public class NexUtilsGUI {
 		@Override
 		public void coreUIDismissed() {
 
+		}
+	}
+
+	public static class RowSortCalc {
+		// provided
+		public int numElements;
+		public float width;
+		/**
+		 * Include any padding.
+		 */
+		public float elementWidth;
+		/**
+		 * Include any padding.
+		 */
+		public float elementHeight;
+
+		// computed
+		public int numRows;
+		public int numPerRow;
+		public float height;
+
+		public RowSortCalc(int numElements, float width, float elementWidth, float elementHeight) {
+			this.numElements = numElements;
+			this.width = width;
+			this.elementWidth = elementWidth;
+			this.elementHeight = elementHeight;
+
+			numPerRow = (int)(width/elementWidth);
+			numRows = (int)Math.ceil((float)numElements/numPerRow);
+			height = numRows * elementHeight;
 		}
 	}
 }

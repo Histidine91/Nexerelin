@@ -198,7 +198,7 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
             for (String ship : ships.keySet()) {
                 int currCount = ships.get(ship);
                 CustomPanelAPI shipPanel = createShipPanel(mid, ship, currCount);
-                NexUtilsGUI.placeElementInRows(mid, shipPanel, shipPanels, shipPanels.size(), maxPerRow, pad);
+                NexUtilsGUI.placeElementInRows(mid, shipPanel, shipPanels, maxPerRow, pad);
                 shipPanels.add(shipPanel);
             }
             tooltip.addCustom(mid, pad);

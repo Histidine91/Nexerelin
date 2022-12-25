@@ -1835,14 +1835,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			for (GroundUnit unit : listToRead) {
 				CustomPanelAPI unitCard = unit.createUnitCard(unitPanel, false);
 				//log.info("Created card for " + unit.name);
-				
-				int numPrevious = unitCards.size();
-				NexUtilsGUI.placeElementInRows(unitPanel, unitCard, unitCards, numPrevious, CARDS_PER_ROW, GroundUnit.PADDING_X);
+
+				NexUtilsGUI.placeElementInRows(unitPanel, unitCard, unitCards, CARDS_PER_ROW, GroundUnit.PADDING_X);
 				unitCards.add(unitCard);
 			}
 			if (playerIsAttacker != null && listToRead.size() < MAX_PLAYER_UNITS) {
 				CustomPanelAPI newCard = GroundUnit.createBlankCard(unitPanel, unitSize);
-				NexUtilsGUI.placeElementInRows(unitPanel, newCard, unitCards, unitCards.size(), CARDS_PER_ROW, GroundUnit.PADDING_X);
+				NexUtilsGUI.placeElementInRows(unitPanel, newCard, unitCards, CARDS_PER_ROW, GroundUnit.PADDING_X);
 			}
 			
 		} catch (Exception ex) {
@@ -1945,9 +1944,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				
 				CustomPanelAPI abilityCard = plugin.createAbilityCard(abilityPanel);
 				//log.info("Created card for " + unit.name);
-				
-				int numPrevious = abilityCards.size();
-				NexUtilsGUI.placeElementInRows(abilityPanel, abilityCard, abilityCards, numPrevious, CARDS_PER_ROW, 3);
+
+				NexUtilsGUI.placeElementInRows(abilityPanel, abilityCard, abilityCards, CARDS_PER_ROW, 3);
 				abilityCards.add(abilityCard);
 			}			
 		} catch (Exception ex) {
