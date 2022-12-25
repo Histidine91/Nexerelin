@@ -528,6 +528,7 @@
 		"dialogInfoRebellionLiberationBonusStrong":"Liberation bonus",
 		"dialogInfoRebellionLiberationBonus":"Foreign tyrant bonus",
 		"dialogInfoTimeNeeded":"Days to complete: %s",
+		"dialogInfoTimeNeededOverAgents":"  Action time increased due to being over agent limit (%s/%s)",
 		"dialogInfoCost":"Cost: %s",
 		"dialogConfirmOptionSPText":"Execute mission with extraordinary investment",
 		"dialogSPOptionSuccessText":"Do what it takes to succeed",

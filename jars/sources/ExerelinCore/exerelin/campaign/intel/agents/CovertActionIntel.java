@@ -191,10 +191,20 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		if (getDef().costScaling) {
 			time *= 1 + 0.25f * (market.getSize() - 3);
 		}
+
+		time *= getTimeMultForOverMaxAgents();
+
 		if (CovertOpsManager.isDebugMode() || NexUtils.isNonPlaytestDevMode())
 			time *= 0.05f;
 		
 		return time;
+	}
+
+	public float getTimeMultForOverMaxAgents() {
+		int curr = CovertOpsManager.getManager().getAgents().size();
+		int max = CovertOpsManager.getManager().getMaxAgents().getModifiedInt();
+		if (curr <= max) return 1;
+		return curr/(float)max;
 	}
 	
 	public int getCost() {

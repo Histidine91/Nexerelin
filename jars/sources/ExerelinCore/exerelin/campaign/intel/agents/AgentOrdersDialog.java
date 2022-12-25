@@ -434,6 +434,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			printStat(travel.getTravelTime(), false);
 			printStat(travel.getArriveTime(), false);
 		}
+		if (action.getTimeMultForOverMaxAgents() > 1) {
+			text.addPara(getString("dialogInfoTimeNeededOverAgents"), neg, hl, CovertOpsManager.getManager().getAgents().size() + "",
+					CovertOpsManager.getManager().getMaxAgents().getModifiedInt() + "");
+		}
 		
 		MutableStat cost = action.getCostStat();
 		int costInt = cost.getModifiedInt();
