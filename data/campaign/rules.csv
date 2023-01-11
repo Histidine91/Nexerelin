@@ -3136,19 +3136,19 @@ Call $nex_supReb_ref showCostPanel","""One man's terrorist..."" $heOrShe smiles,
 ""We're gonna need some supplies and heavy arms,"" $personLastName transmits a manifest to your display, ""and some experienced troops as trainers. Bring them to $nex_supReb_marketName - that's $nex_supReb_dist light-years away. We're paying $nex_supReb_payment credits; enough for you to buy all the stuff you need.
 
 ""When you get there, $nex_supReb_PersonPost $nex_supReb_personName will receive the shipment from you and deliver payment – but only if you got in undetected. Otherwise, the authorities will intercept the shipment and it'll all be wasted. Got that?""",,
-nex_supRebDeliverGreeting,PickGreeting,"$nex_supReb_needsCommodity score:1000
+nex_supRebDeliverGreeting,PickGreeting,"$nex_supReb_needsCommodity score:11000
 Call $nex_supReb_ref updateData","ShowPersonVisual
 Call $nex_supReb_ref showCostPanelAndCheckCost
 FireAll nex_supReb_CommodityCheck","$personName looks you over nervously. ""You the one they sent? Got the goods, ready for dropoff?""
 OR
 $personName eyes you suspiciously, ""You're $playerName? I thought you'd look different. Well, if you're here with the goods, I'll provide a drop-off point.""","nex_supReb_deliver:Deliver the goods
 cutCommLink:Cut the comm link",
-nex_supRebDeliverGreetingTransponderOn,PickGreeting,"$nex_supReb_needsCommodity score:1000
+nex_supRebDeliverGreetingTransponderOn,PickGreeting,"$nex_supReb_needsCommodity score:11000
 $player.transponderOn score:5","ShowPersonVisual
 SetShortcut cutCommLink ""ESCAPE""","After a short wait, your connection request is accepted. The $manOrWoman starts to speak, then glances off-screen and closes the connection, leaving you looking at static.
 
 You realize that you'll need to come back with your transponder turned off before you're able to do business with this person.",0:cutCommLink:Cut the comm link,
-nex_supRebDeliverGreetingDetected,PickGreeting,"$nex_supReb_needsCommodity score:1000
+nex_supRebDeliverGreetingDetected,PickGreeting,"$nex_supReb_needsCommodity score:11000
 HasAttentionOfAuthorities score:5","ShowPersonVisual
 SetShortcut cutCommLink ""ESCAPE""","After a short wait, your connection request is accepted. The $manOrWoman starts to speak, then glances off-screen and closes the connection, leaving you looking at static.
 
