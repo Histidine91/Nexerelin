@@ -7,6 +7,7 @@ import java.util.Map;
 
 import exerelin.campaign.PlayerFactionStore;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
@@ -20,7 +21,6 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.util.Random;
 
-
 public class NGCSetPlayerFaction extends BaseCommandPlugin {
 	
 	protected static Random random = new Random();
@@ -28,6 +28,10 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
+		return true;
+	}
+	
+	public void setFaction(String factionId, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		if ("random".equals(factionId))
 		{
 			
@@ -68,12 +72,13 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 			dialog.getTextPanel().highlightFirstInLastPara(name, faction.getBaseUIColor());
 		}
 		
+		memoryMap.get(MemKeys.LOCAL).set("$playerFaction", factionId, 0);
+		memoryMap.get(MemKeys.LOCAL).unset(Nex_NGCCustomStartFleet.MEMORY_KEY_SHIP_MAP);
 		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
 		if (!factionId.equals(Factions.PLAYER))
 		{
 			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			ExerelinSetupData.getInstance().freeStart = conf.freeStart;
 		}
-		return true;
 	}
 }
