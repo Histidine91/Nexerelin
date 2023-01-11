@@ -24,6 +24,8 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public abstract class BuyShipRule {
+	
+	public static final String TAG_NO_BUY = "nex_buy_ship_mission_exclude";
 
 	@Getter	@Setter	protected BuyShip mission;
 
@@ -64,8 +66,11 @@ public abstract class BuyShipRule {
 	
 	public static boolean isShipAllowedStatic(FleetMemberAPI member, BuyShip mission) {
 		if (member.getVariant().hasTag(Tags.SHIP_CAN_NOT_SCUTTLE)) {
-            return false;
-        }
+			return false;
+		}
+		if (member.getVariant().hasTag(TAG_NO_BUY)) {
+			return false;
+		}
 		// todo: maybe Cabal should allow even automated ships?
 		MarketAPI market = mission.getPostingLocation().getMarket();
 		if (Misc.isAutomated(member) && market != null && market.getFaction().getIllegalCommodities().contains(Commodities.AI_CORES)) {
@@ -214,7 +219,7 @@ public abstract class BuyShipRule {
 		public boolean isShipAllowed(FleetMemberAPI member) {
 			//return member.getBaseDeploymentCostSupplies() >= dp;
 			int sizeIndex = member.getHullSpec().getHullSize().ordinal();
-			return member.getBaseDeploymentCostSupplies() > MIN_DP[sizeIndex];
+			return member.getBaseDeploymentCostSupplies() >= MIN_DP[sizeIndex];
 		}
 
 		@Override
