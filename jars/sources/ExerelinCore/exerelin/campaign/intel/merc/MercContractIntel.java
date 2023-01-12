@@ -1,13 +1,8 @@
 package exerelin.campaign.intel.merc;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FleetDataAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
@@ -27,6 +22,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.campaign.Faction;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsGUI;
@@ -79,7 +75,17 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		}
 		// Trying a way to fix disappearing S-mods
 		if (offeredFleet != null && !getDef().noAutofit) {
-			fleetPlugin.inflateFleet(offeredFleet);
+			FactionAPI faction = offeredFleet.getFaction();
+			Faction trueFaction = (Faction)faction;
+
+			/* Uncomment this line to reload trueFaction's spec and thus prevent the exception that breaks loading the game sometimes */
+			trueFaction.getSpec();
+			
+			try {
+				fleetPlugin.inflateFleet(offeredFleet);
+			} catch (Exception ex) {
+				log.warn("Failed to inflate fleet", ex);
+			}
 		}
 		return this;
 	}
