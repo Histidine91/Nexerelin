@@ -264,6 +264,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (market.getAdmin() != null && market.getAdmin().isPlayer()) {
 				float profit = market.getNetIncome();
 				float cost = market.getIndustryUpkeep();
+				if (profit <= 0 || cost <= 0) continue;
 				float margin = profit/cost;
 				log.info(String.format("Market %s adding %.2f profit margin (%.0f profit, %.0f cost)", market.getName(), margin, profit, cost));
 				float size = market.getSize() - 2;
