@@ -1729,9 +1729,9 @@ nex_conquestOfferTextContact,DialogOptionSelected,$option == nex_conquest_start,
 SetTextHighlightColors h h $nex_conquest_marketFactionColor h h
 Highlight $nex_conquest_marketName $nex_conquest_marketLocation $nex_conquest_theMarketFaction $nex_conquest_days $nex_conquest_reward
 Call $nex_conquest_ref showMap ""Target: $nex_conquest_marketName""
-Call $nex_conquest_ref printDefenses","""$nex_conquest_marketName, in the $nex_conquest_marketLocation system."" $lastName brings up a display on your screen. ""A possession of $nex_conquest_marketFaction, and a strategic goal for $theFaction. We want you to seize this $nex_conquest_marketPlanetOrStation for us, within $nex_conquest_days days.
+Call $nex_conquest_ref printDefenses","""$nex_conquest_marketName, in the $nex_conquest_marketLocation system."" $lastName brings up a display on your screen. ""A possession of $nex_conquest_theMarketFaction, and a strategic goal for $theFaction. We want you to seize this $nex_conquest_marketPlanetOrStation for us, within $nex_conquest_days days.
 
-""Upon transfer of $nex_conquest_marketName, you will receive a credit reward equal to the shutdown value of the structures and industries $onOrAt $market, plus its six-month income, plus a bonus based on its size and stability. We currently estimate this to be $nex_conquest_reward credits.""
+""Upon transfer of $nex_conquest_marketName, you will receive a credit reward equal to the shutdown value of its structures and industries, plus its six-month income, plus a bonus based on its size and stability. We currently estimate this to be $nex_conquest_reward credits.""
 
 You examine the intelligence report transmitted by $personLastName.","contact_accept:Accept
 contact_decline:Decline",
