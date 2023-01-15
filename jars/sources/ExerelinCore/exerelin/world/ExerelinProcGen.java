@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.impl.MusicPlayerPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -1530,14 +1531,15 @@ public class ExerelinProcGen {
                 4, 4, "AL_primenebula", StarAge.ANY);
         primeNebula.addTag("radar_nebula");
 	}
-	
+
+	// if this doesn't compile, try getting ApproLight 1.10 or later
 	protected void addUnos(MarketAPI market)
 	{
 		SectorEntityToken toOrbit = market.getPrimaryEntity();
-		SectorEntityToken hegemonyforALStation = toOrbit.getContainingLocation().addCustomEntity("unosStation",
-			"Unos Station", "station_unos_type", "approlight");
-		  hegemonyforALStation.setCircularOrbitPointingDown(toOrbit, 45 + 180, 400, 50);  
-		  hegemonyforALStation.setCustomDescriptionId("station_approlight01");
+		SectorEntityToken unosStation = toOrbit.getContainingLocation().addCustomEntity("AL_unosStation", null, "station_unos_type", "approlight");
+		unosStation.setCircularOrbitPointingDown(toOrbit, 225.0F, 500.0F, 60.0F);
+		unosStation.setCustomDescriptionId("AL_unosStation");
+		unosStation.getMemoryWithoutUpdate().set(MusicPlayerPluginImpl.MUSIC_SET_MEM_KEY, "ApproLight_unos_music");
 	}
 	
 	protected void addAntiochPart2(SectorAPI sector)
