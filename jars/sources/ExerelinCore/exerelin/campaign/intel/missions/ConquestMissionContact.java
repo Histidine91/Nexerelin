@@ -49,9 +49,6 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	}
 	
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
-		//genRandom = Misc.random;
-		//if (!Misc.isMilitary(createdAt)) return false;
-		
 		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
 			return false;
 		
@@ -118,10 +115,9 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	
 	@Override
 	public MarketAPI pickMarket(boolean resetSearch) {
-		log.info("Picking market for contact conquest mission");
 		return InvasionFleetManager.getManager().getTargetMarketForFleet(
 				faction, null, null, Global.getSector().getEconomy().getMarketsCopy(),
-				InvasionFleetManager.EventType.INVASION);
+				InvasionFleetManager.EventType.INVASION, false, genRandom);
 	}
 
 	@Override
