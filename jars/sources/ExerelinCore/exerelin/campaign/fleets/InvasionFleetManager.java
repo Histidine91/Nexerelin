@@ -600,14 +600,23 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
 			Vector2f originLoc, List<MarketAPI> markets, EventType type) {
 		return getTargetMarketForFleet(faction, targetFaction, originLoc,
-				markets, type, false);
+				markets, type, false, null);
+	}
+
+	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction,
+			Vector2f originLoc, List<MarketAPI> markets, EventType type, boolean isRemnantRaid)
+	{
+		return getTargetMarketForFleet(faction, targetFaction, originLoc,
+				markets, type, isRemnantRaid, null);
 	}
 	
 	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 
-			Vector2f originLoc, List<MarketAPI> markets, EventType type, boolean isRemnantRaid) 
+			Vector2f originLoc, List<MarketAPI> markets, EventType type, boolean isRemnantRaid, Random random)
 	{
+		if (random == null) random = new Random();
+
 		String factionId = faction.getId();
-		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker(random);
 		Set<LocationAPI> systemsWeHavePresenceIn = NexUtilsFaction.getLocationsWithFactionPresence(factionId);
 
 		boolean isPirateFaction = NexUtilsFaction.isPirateFaction(factionId);

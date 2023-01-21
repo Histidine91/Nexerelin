@@ -6,13 +6,8 @@ import java.util.Map;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.ExerelinSetupData;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
 
 
 public class Nex_NGCSetFactionFromJoinOption extends BaseCommandPlugin {
@@ -25,14 +20,7 @@ public class Nex_NGCSetFactionFromJoinOption extends BaseCommandPlugin {
 		String factionId = option.substring(length);
 		//dialog.getTextPanel().addParagraph(factionId);
 		
-		memoryMap.get(MemKeys.LOCAL).set("$playerFaction", factionId, 0);
-		memoryMap.get(MemKeys.LOCAL).unset(Nex_NGCCustomStartFleet.MEMORY_KEY_SHIP_MAP);
-		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
-		if (!factionId.equals(Factions.PLAYER))
-		{
-			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
-			ExerelinSetupData.getInstance().freeStart = conf.freeStart;
-		}
+		new NGCSetPlayerFaction().setFaction(factionId, dialog, memoryMap);
 			
 		return true;
 	}

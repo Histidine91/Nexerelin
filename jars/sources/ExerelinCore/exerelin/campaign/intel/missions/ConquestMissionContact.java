@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.*;
 
 import static exerelin.campaign.intel.missions.ConquestMissionManager.MIN_PLAYER_LEVEL;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class ConquestMissionContact extends HubMissionWithSearch implements InvasionListener {
 
 	public static final float SIZE_REWARD_MULT = 8000;
@@ -47,9 +49,6 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	}
 	
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
-		//genRandom = Misc.random;
-		//if (!Misc.isMilitary(createdAt)) return false;
-		
 		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
 			return false;
 		
@@ -78,9 +77,7 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		 */
 
 		faction = getPerson().getFaction();
-		market = InvasionFleetManager.getManager().getTargetMarketForFleet(
-				faction, null, null, Global.getSector().getEconomy().getMarketsCopy(),
-				InvasionFleetManager.EventType.INVASION);
+		market = pickMarket();
 		if (market == null) return false;
 		else if (market.getFaction().isPlayerFaction() || market.getFaction() == Misc.getCommissionFaction())
 		{
@@ -120,7 +117,7 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	public MarketAPI pickMarket(boolean resetSearch) {
 		return InvasionFleetManager.getManager().getTargetMarketForFleet(
 				faction, null, null, Global.getSector().getEconomy().getMarketsCopy(),
-				InvasionFleetManager.EventType.INVASION);
+				InvasionFleetManager.EventType.INVASION, false, genRandom);
 	}
 
 	@Override

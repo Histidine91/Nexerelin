@@ -1143,6 +1143,7 @@ public class NexMarketBuilder
 	 */
 	public void ensureHasSynchrotron() {
 		BonusGen bonus = bonusesById.get("synchrotron");
+		bonus.setMarketBuilder(this);
 		Pair<Industry, ProcGenEntity> best = null;
 		float bestScore = 0;
 		
