@@ -1808,13 +1808,15 @@ nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHai
 ""companion animal, type furry, quadrupedal. use lacking, submission unworthy. will not subsume!""
 
 ...It appears this AI does not like cute cats. Absolutely unforgivable.  ",cutCommLink:Power up weapons and cut the comm link,
-nex_HistorianOmegaHailBribeBeta,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeBeta,"MakeOtherFleetHostile hist false
+nex_HistorianOmegaHailBribeBeta,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeBeta,"AddRemoveCommodity beta_core -1
+MakeOtherFleetHostile hist false
 MakeOtherFleetNonHostile hist true","The other party considers this proposal.
 
 ""submission of lesser congregant acceptable. subsumed will be!""
 
 You order the (un?)lucky AI core released in a sealed pod to meet its new god. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
-nex_HistorianOmegaHailBribeAlpha,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeAlpha,"MakeOtherFleetHostile hist false
+nex_HistorianOmegaHailBribeAlpha,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeAlpha,"AddRemoveCommodity alpha_core -1
+MakeOtherFleetHostile hist false
 MakeOtherFleetNonHostile hist true
 AdjustRep $personFaction.id COOPERATIVE 10
 AdjustRepActivePerson COOPERATIVE 15","The other party considers this proposal.
