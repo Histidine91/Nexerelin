@@ -300,6 +300,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 				true, false, members,
 				new FleetMemberPickerListener() {
 					public void pickedFleetMembers(List<FleetMemberAPI> members) {
+						if (members.isEmpty()) return;
 						pickShip(members.get(0));
 						FireAll.fire(null, dialog, memoryMap, "Nex_BShip_ShipPicked");
 					}
