@@ -2,7 +2,11 @@
     "id":"nexerelin",
     "name":"Nexerelin",
     "author":"Histidine (original by Zaphide)",
-    "version":"0.10.6b",
+    "version":{
+        "major":0, 
+        "minor":10, 
+        "patch":6c
+    },
     "description":"Join a faction and conquer the Sector!",
     "gameVersion":"0.95.1a-RC6",
     "totalConversion":false,
