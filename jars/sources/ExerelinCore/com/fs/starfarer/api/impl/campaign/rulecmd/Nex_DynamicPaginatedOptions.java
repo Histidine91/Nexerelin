@@ -28,13 +28,13 @@ public class Nex_DynamicPaginatedOptions extends PaginatedOptionsPlus {
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		Global.getLogger(this.getClass()).info("Processing rule " + ruleId);
+		//Global.getLogger(this.getClass()).info("Processing rule " + ruleId);
 		this.dialog = dialog;
 		String arg = params.get(0).getString(memoryMap);
 		switch (arg)
 		{
 			case "show":
-				Global.getLogger(this.getClass()).info("Showing options");
+				//Global.getLogger(this.getClass()).info("Showing options");
 				optionsPerPage = 5;
 				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 				showOptions();

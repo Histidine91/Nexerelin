@@ -58,7 +58,7 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
 
     @Override
     public void reportRaidEnded(RaidIntel intel, FactionAPI attacker, FactionAPI defender, MarketAPI target, boolean success) {
-        log.info("Raid ended: " + intel.getName());
+        //log.info("Raid ended: " + intel.getName());
         if (attacker != ai.faction || defender != ai.faction) return;
 
         String name = intel.getName();
