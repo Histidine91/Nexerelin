@@ -62,7 +62,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -443,13 +445,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (memory.contains(MEM_KEY_SOURCES))
 			return (List<MarketAPI>)memory.get(MEM_KEY_SOURCES);
 		
-		List<MarketAPI> marketsTemp;
+		Set<MarketAPI> marketsTemp = new HashSet<>();
+		marketsTemp.addAll(NexUtilsFaction.getFactionMarkets(Factions.PLAYER));
 		Alliance alliance = AllianceManager.getPlayerAlliance(true);
 		if (alliance != null) {
-			marketsTemp = alliance.getAllianceMarkets();
+			marketsTemp.addAll(alliance.getAllianceMarkets());
 		}
 		else {
-			marketsTemp = NexUtilsFaction.getFactionMarkets(Factions.PLAYER);
 			String commissioner = PlayerFactionStore.getPlayerFactionId();
 			if (!commissioner.equals(Factions.PLAYER))
 				marketsTemp.addAll(NexUtilsFaction.getFactionMarkets(commissioner));
