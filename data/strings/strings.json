@@ -2676,4 +2676,63 @@
 		
 		"abandonColonyStoryCriticalTooltip":"This colony will have a key role in the Sector's history and cannot be abandoned.",
 	},
+	
+	"nex_lunaSettings":{
+		"header_invasions":"Invasions",
+		"header_insurance":"Insurance",
+		"header_agents":"Operatives",
+		"header_prisoners":"Prisoners",
+		"header_satbomb":"Saturation bombardments",
+		
+		"name_ceasefireNotificationPopup":"Ceasefire notification popup",
+		"name_crewLootMult":"Crew loot mult",
+		"tooltip_crewLootMult":"Modifies the amount of crew captured from enemy fleets post-battle.",
+		
+		"name_enableInvasions":"Enable invasions",
+		"name_legacyInvasions":"Use legacy invasion system",
+		"tooltip_legacyInvasions":"Disables the ground battle minigame and reverts to the old system of single-day invasion resolution. Will not affect ground battles already in progress.",
+		"name_invasionsOnlyAfterPlayerColony":"Prevent invasions until first player colony",
+		"name_allowInvadeStoryCritical":"Allow invasion of story-critical markets",
+		"tooltip_allowInvadeStoryCritical":"Allows NPC factions to invade markets marked as story-critical by the game. This can result in nonsensical (but potentially amusing) situations with story missions.",
+		"name_followersInvasions":"Player faction launches invasions",
+		"tooltip_followersInvasions":"If true, player invasion will launch invasion events of its own. (Autonomous colonies can do this regardless of this setting, but very infrequently.)",
+		"name_allowPirateInvasions":"Allow pirate invasions",
+		"tooltip_allowPirateInvasions":"Allow pirate-type factions to invade and be invaded. This also applies to player colonies with a pirate commission.",
+		"name_retakePirateMarkets":"Retake pirate conquests",
+		"tooltip_retakePirateMarkets":"Allows other factions to invade pirate-held markets that did not originally belong to pirates, even if pirate invasions are disabled.",
+		"name_invasionGracePeriod":"Invasion grace period",
+		"tooltip_invasionGracePeriod":"Days from game start before NPC factions can start preparing to invade others.",
+		"name_pointsRequiredForInvasionFleet":"Invasion points required for invasion event",
+		"tooltip_pointsRequiredForInvasionFleet":"Increase to make invasions less frequent or decrease to make them more frequent. Points are generated based on the faction's military-related economic capacity. Actual point consumption varies with the amount of forces committed.",
+		"name_invasionFleetSizeMult":"Invasion size mult",
+		"tooltip_invasionFleetSizeMult":"Modifies the size of the space forces during invasion events. Changing this value may significantly alter the likelihood of an invasion succeeding.",
+		"name_fleetRequestCostPerFP":"Fleet request cost per FP",
+		"tooltip_fleetRequestCostPerFP":"Credit cost of requested fleets per fleet point (hidden value) of the generated fleet(s).",
+		"name_creditLossOnColonyLossMult":"Credit loss mult on market loss",
+		"tooltip_creditLossOnColonyLossMult":"Multiplier of the player's stored credits lost when a market is captured by another faction. The proportion of total credits lost is equal to the market size divided by the total size of all markets in the faction, multiplied by this number. It is doubled on Starfarer mode, and cannot exceed 75%%.",
+		
+		"name_legacyInsurance":"Legacy insurance",
+		"tooltip_legacyInsurance":"Old insurance system with automatic free insurance from your commissioning faction (but not from player faction).",
+		"name_playerInsuranceMult":"Player insurance mult",
+		"tooltip_playerInsuranceMult":"Multiplier of ship value for the potential insurance payout.",
+		
+		"name_prisonerRepatriateRepValue":"Prisoner repatriation reputation",
+		"tooltip_prisonerRepatriateRepValue":"Multiplied by 100, e.g. 0.1 = 10 reputation.",
+		"name_prisonerBaseRansomValue":"Base prisoner ransom value",
+		"name_prisonerRansomValueIncrementPerLevel":"Prisoner ransom value per level",
+		
+		"name_agentBaseSalary":"Operative base salary",
+		"name_agentSalaryPerLevel":"Operative salary per level",
+		"name_maxAgents":"Max operatives (base)",
+		"name_agentStealMarketShipsOnly":"Market-restricted ship procurement",
+		"tooltip_agentStealMarketShipsOnly":"Operatives can only procure ships that are on sale on the local market at the time.",
+		"name_useAgentSpecializations":"Use operative specializations",
+		"name_followersAgents":"Player faction conducts operative actions",
+		"tooltip_followersAgents":"If enabled, player faction will independently conduct covert operations like NPC factions do, independent of your actions.",
+		
+		"name_allowNPCSatBomb":"Allow NPC saturation bombardments",
+		"tooltip_allowNPCSatBomb":"Does not affect territorial bombardments of player colonies in claimed systems.",
+		"name_permaHateFromPlayerSatBomb":"Permanent hatred from saturation bombardment",
+		"tooltip_permaHateFromPlayerSatBomb":"If a saturation bombardment makes a faction immediately hostile to player, the player's maximum reputation with this faction will also be permanently reduced by this amount (multiplied by 100). Amount is doubled for the faction targeted by the bombardment.",
+	}
 }

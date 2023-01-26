@@ -26,8 +26,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.historian.HistorianData;
-import com.fs.starfarer.api.impl.campaign.intel.bar.events.historian.HistorianData.HistorianOfferCreator;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
@@ -74,7 +72,6 @@ import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
-import exerelin.campaign.intel.bar.historian.ShuntLocationOfferCreator;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
@@ -104,6 +101,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static final boolean HAVE_SWP = Global.getSettings().getModManager().isModEnabled("swp");
     public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
     public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
+    public static final boolean HAVE_LUNALIB = Global.getSettings().getModManager().isModEnabled("lunalib");
     //public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
     public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
     public static boolean isNexDev = false;
@@ -409,6 +407,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         StrategicAI.addAIsIfNeeded();
         
         alphaSiteWorkaround();
+
+        if (HAVE_LUNALIB) LunaConfigHelper.createListener();
     }
     
     @Override
@@ -454,6 +454,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         //MilitaryCustomBounty.CREATORS.clear();    // for debugging
         MilitaryCustomBounty.CREATORS.add(new Nex_CBHegInspector());
+
+        if (HAVE_LUNALIB) LunaConfigHelper.initLunaConfig();
     }
     
     @Override
