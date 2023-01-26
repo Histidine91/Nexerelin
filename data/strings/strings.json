@@ -1576,6 +1576,7 @@
 		
 		"ability_ignisPluvia_invalidConfig":"Invalid configuration",
 		"ability_ignisPluvia_noMembers":"No Olympi available",
+		"ability_ignisPluvia_noTargets":"No targets found",
 		"ability_ignisPluvia_prevented":"Attack prevented",
 		"ability_ignisPluvia_resultDisrupt":"Disrupted industries: %s",
 		"ability_ignisPluvia_tooltip1":"Deploys an Olympus in MIRV configuration to unleash FIRE RAIN upon the target.",
