@@ -266,6 +266,7 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		
 	@Override
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
+		Map<String, Object> params = new HashMap<>();
 		CampaignFleetAPI fleet = null;
 		if (user != null) {
 			if (user.isPlayer()) fleet = Global.getSector().getPlayerFleet();
@@ -273,7 +274,6 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		}
 		
 		if (side.getData().containsKey(GBConstants.TAG_PREVENT_BOMBARDMENT_SUPER)) {
-			Map<String, Object> params = new HashMap<>();
 			
 			String id = "bombardmentPrevented";
 			String desc = GroundBattleIntel.getString("ability_ignisPluvia_prevented");
@@ -284,7 +284,6 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 			List<FleetMemberAPI> olympi = getOlympi(fleet);
 			//log.info("Number of Olympi: " + olympi.size());
 			if (olympi.isEmpty()) {
-				Map<String, Object> params = new HashMap<>();
 			
 				String id = "noMembers";
 				String desc = GroundBattleIntel.getString("ability_ignisPluvia_noMembers");
@@ -296,9 +295,7 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 		{
 			float ours = strengths[0];
 			float theirs = strengths[1];
-			if (ours < theirs * 2) {
-				Map<String, Object> params = new HashMap<>();
-			
+			if (ours < theirs * 2) {			
 				String id = "enemyPresence";
 				String ourStr = String.format("%.0f", ours);
 				String theirStr = String.format("%.0f", theirs);
@@ -307,6 +304,12 @@ public class IgnisPluviaAbilityPlugin extends AbilityPlugin {
 				params.put("desc", desc);
 				return new Pair<>(id, params);
 			}
+		}
+		if (getTargetIndustries().isEmpty()) {
+			String id = "noTargets";
+			String desc = GroundBattleIntel.getString("ability_ignisPluvia_noTargets");
+			params.put("desc", desc);
+			return new Pair<>(id, params);
 		}
 				
 		Pair<String, Map<String, Object>> reason = super.getDisabledReason(user);
