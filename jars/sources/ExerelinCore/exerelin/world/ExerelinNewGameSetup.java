@@ -168,12 +168,12 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		int orbitPeriod = 361;
 		
 		String name = StringHelper.getString("nex_world", "prismSystem_name");
+		String systemName = name;	// will be used later
 		StarSystemAPI system = Global.getSector().createStarSystem(name);
-		system.setBaseName(name);
+		system.setType(StarSystemGenerator.StarSystemType.NEBULA);
 		system.setAge(StarAge.YOUNG);
 		system.getLocation().set(PRISM_LOC);
 		ProcgenUsedNames.notifyUsed(name);
-		system.setType(StarSystemGenerator.StarSystemType.NEBULA);
 		
 		// temporarily create a "star"
 		PlanetAPI star = system.initStar("nex_prism_center", "nebula_center_young", 0, 0);
@@ -223,6 +223,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		radiusRatio = 6;
 		int period3 = (int)Math.round(Math.sqrt(Math.pow(radiusRatio, 3)) * orbitPeriod);
 		gate.setCircularOrbitPointingDown(star, 225, dist*radiusRatio, period3);
+		
+		// do it last to ensure correct naming of the system
+		system.setBaseName(systemName);
 		
 		return prism;
 	}
