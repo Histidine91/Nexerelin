@@ -89,9 +89,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected transient Vector2f lastPos;
 	
 	protected Object readResolve() {
-		if (!Global.getSector().getListenerManager().hasListener(this)) {
-			Global.getSector().getListenerManager().addListener(this);
-		}
+		addListenerIfNeeded();
 		variantCheckInterval = new IntervalUtil(1, 1);
 		return this;
 	}
@@ -105,7 +103,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public void init(PersonAPI commander) {
 		super.init(commander);
 		waitingForSpawn = true;
-		Global.getSector().getListenerManager().addListener(this);
+		addListenerIfNeeded();
+	}
+
+	public void addListenerIfNeeded() {
+		if (isEnding() || isEnded()) return;
+		if (!Global.getSector().getListenerManager().hasListener(this)) {
+			Global.getSector().getListenerManager().addListener(this);
+		}
 	}
 			
 	public void setFlagship(FleetMemberAPI member) {
@@ -388,6 +393,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
 		routeAI.addInitialTask();
 		waitingForSpawn = true;
+
+		addListenerIfNeeded();
 	}
 
 	protected void reverseCompatibility() {
