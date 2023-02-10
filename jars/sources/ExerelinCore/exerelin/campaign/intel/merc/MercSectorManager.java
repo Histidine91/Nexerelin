@@ -28,6 +28,7 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 	
 	public static final boolean DEBUG_MODE = false;
 	public static final String DATA_KEY = "nex_mercSectorManager";
+	public static final String MEMORY_KEY_NO_REP = "$nex_no_AIM_representative";
 	public static final int STAY_AT_MARKET_TIME = 10;	// in economyTicks
 	
 	protected Map<MarketAPI, PersonAPI> aimReps = new HashMap<>();
@@ -168,6 +169,7 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 		boolean enabled = MercDataManager.allowAtFaction(market.getFactionId())
 				&& (market.getSize() >= reqSize || Misc.isMilitary(market));
 		enabled = enabled && !market.isHidden();
+		enabled = enabled && !market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_NO_REP);
 		
 		if (enabled) {
 			addRepresentativeToMarket(market);
