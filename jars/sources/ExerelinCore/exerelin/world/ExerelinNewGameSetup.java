@@ -412,6 +412,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		SectorManager.getManager().setFreeStart(setupData.freeStart);
 		
 		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
+		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(PlayerFactionStore.STARTING_FACTION_ID_MEMKEY, factionId);
 		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
 		{
