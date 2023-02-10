@@ -3685,6 +3685,7 @@ nex_commandSF_leave,DialogOptionSelected,$option == nex_commandSF_leave,"unset $
 FireBest OpenCommLink",,,
 nex_commandSF_leaveRemote,DialogOptionSelected,"$option == nex_commandSF_leave
 $nex_remoteCommand score:10","Nex_SpecialForcesCommands refreshIntelUI
+unset $nex_uiToRefresh
 DismissDialog",,,
 nex_miscSF_reviveStart,DialogOptionSelected,$option == nex_sf_reviveShipStart,Nex_SpecialForcesConfig reviveShips,,,
 nex_miscSF_reviveOpts,Nex_SFReviveShipsOpts,,,,"nex_sf_reviveShipConfirm:Confirm
