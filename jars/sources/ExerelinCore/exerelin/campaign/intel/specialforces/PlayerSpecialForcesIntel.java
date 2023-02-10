@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
@@ -34,6 +35,7 @@ import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
@@ -43,11 +45,8 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.util.vector.Vector2f;
@@ -87,9 +86,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected transient Vector2f lastPos;
 	
 	protected Object readResolve() {
-		if (!Global.getSector().getListenerManager().hasListener(this)) {
-			Global.getSector().getListenerManager().addListener(this);
-		}
+		addListenerIfNeeded();
 		return this;
 	}
 	
@@ -102,7 +99,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public void init(PersonAPI commander) {
 		super.init(commander);
 		waitingForSpawn = true;
-		Global.getSector().getListenerManager().addListener(this);
+		addListenerIfNeeded();
+	}
+
+	public void addListenerIfNeeded() {
+		if (isEnding() || isEnded()) return;
+		if (!Global.getSector().getListenerManager().hasListener(this)) {
+			Global.getSector().getListenerManager().addListener(this);
+		}
 	}
 			
 	public void setFlagship(FleetMemberAPI member) {
@@ -343,13 +347,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
 		routeAI.addInitialTask();
 		waitingForSpawn = true;
+
+		addListenerIfNeeded();
 	}
-	
-	@Override
-	protected void advanceImpl(float amount) {
-		super.advanceImpl(amount);
-		updateFuelUse();
-		
+
+	protected void reverseCompatibility() {
 		if (membersBackup == null) {
 			membersBackup = new LinkedHashSet<>();
 			CampaignFleetAPI fleet = this.fleet;
@@ -357,6 +359,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			if (fleet != null) membersBackup.addAll(fleet.getFleetData().getMembersListCopy());
 			membersBackup.addAll(deadMembers);
 		}
+	}
+	
+	@Override
+	protected void advanceImpl(float amount) {
+		super.advanceImpl(amount);
+		updateFuelUse();
+		
+		reverseCompatibility();
 	}
 	
 	protected void updateFuelUse() {
