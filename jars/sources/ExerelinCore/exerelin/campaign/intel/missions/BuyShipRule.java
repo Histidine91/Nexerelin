@@ -13,6 +13,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import static exerelin.campaign.intel.missions.BuyShip.getString;
+import exerelin.utilities.StringHelper;
 
 import java.awt.*;
 import java.util.*;
@@ -169,7 +170,7 @@ public abstract class BuyShipRule {
 
 		@Override
 		public void printRule(TooltipMakerAPI tooltip, float pad) {
-			String sizeStr = size.toString().toLowerCase();
+			String sizeStr = StringHelper.getString(size.toString().toLowerCase());
 			tooltip.addPara(getString("ruleHullSize"), pad, Misc.getHighlightColor(), sizeStr);
 		}
 	}
