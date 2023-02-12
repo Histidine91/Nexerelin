@@ -18,6 +18,11 @@ public class PopupDialogScript extends DelayedDialogScreenScript
 	public PopupDialogScript(PopupDialog popup) {
 		this.popup = popup;
 	}
+
+	@Override
+	public boolean shouldCancel() {
+		return popup.shouldCancel();
+	}
 	
 	@Override
 	protected void showDialog() {
@@ -28,6 +33,7 @@ public class PopupDialogScript extends DelayedDialogScreenScript
 		public void init(InteractionDialogAPI dialog);
 		public void populateOptions(OptionPanelAPI options);
 		public void optionSelected(InteractionDialogAPI dialog, Object optionData);
+		public boolean shouldCancel();
 	}
 
 	public static class PopupDialogPlugin implements InteractionDialogPlugin
