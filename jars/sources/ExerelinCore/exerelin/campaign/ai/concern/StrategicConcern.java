@@ -74,6 +74,7 @@ public interface StrategicConcern {
     List<StrategicAction> generateActions();
 
     StrategicAction pickAction();
+    void notifyActionUpdate();
 
     boolean isEnded();
     void end();

@@ -71,6 +71,7 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
         }
 
         Pair<FactionAPI, FactionAPI> factions = picker.pick();
+        if (factions == null) return false;
         float weight = picker.getWeight(factions);
         faction = factions.one;
         faction2 = factions.two;

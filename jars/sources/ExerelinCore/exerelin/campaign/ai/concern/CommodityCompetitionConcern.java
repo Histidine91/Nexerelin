@@ -26,7 +26,6 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     public static final int MAX_SIMULTANEOUS_CONCERNS = 4;
 
     @Getter protected String commodityId;
-    @Getter protected String competitorId;
     @Getter protected int competitorShare;
 
     @Override
@@ -69,7 +68,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
         if (result == null) return false;
 
         this.competitorShare = result.two;
-        this.competitorId = result.one.getId();
+        faction = result.one;
         updatePriority();
         return true;
     }
@@ -78,7 +77,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     public void update() {
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
         int ourShare = helper.getMarketShare(ai.getFaction(), commodityId);
-        int theirShare = helper.getMarketShare(competitorId, getCommodityId());
+        int theirShare = helper.getMarketShare(faction.getId(), getCommodityId());
         if (theirShare < ourShare/2) {
             end();
             return;
@@ -94,13 +93,12 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         if (commodityId == null) return null;
         String str = getDef().desc;
-        FactionAPI competitor = Global.getSector().getFaction(competitorId);
         str = StringHelper.substituteToken(str, "$commodity", StringHelper.getCommodityName(commodityId));
         str = StringHelper.substituteToken(str, "$theirShare", competitorShare + "");
-        str = StringHelper.substituteFactionTokens(str, competitor);
+        str = StringHelper.substituteFactionTokens(str, faction);
         Color hl = Misc.getHighlightColor();
-        LabelAPI label = tooltip.addPara(str, pad, hl, competitor.getDisplayName(), competitorShare + "");
-        label.setHighlightColors(competitor.getBaseUIColor(), hl);
+        LabelAPI label = tooltip.addPara(str, pad, hl, faction.getDisplayName(), competitorShare + "");
+        label.setHighlightColors(faction.getBaseUIColor(), hl);
         return label;
     }
 
@@ -112,7 +110,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
 
     @Override
     public String getName() {
-        return String.format("%s: %s %s", super.getName(), faction.getDisplayName(), StringHelper.getCommodityName(competitorId));
+        return String.format("%s: %s %s", super.getName(), faction.getDisplayName(), StringHelper.getCommodityName(commodityId));
     }
 
     @Override
@@ -123,24 +121,24 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
 
         if (otherConcern instanceof CommodityCompetitionConcern) {
             CommodityCompetitionConcern idc = (CommodityCompetitionConcern)otherConcern;
-            return idc.commodityId == commodityId && idc.commodityId == competitorId;
+            return idc.commodityId == commodityId && idc.faction == faction;
         }
         return false;
     }
 
     @Override
     public Set getExistingConcernItems() {
-        Set<String> commodities = new HashSet<>();
+        Set<String> commoditiesAndFactions = new HashSet<>();
         for (StrategicConcern concern : getExistingConcernsOfSameType()) {
             CommodityCompetitionConcern ccc = (CommodityCompetitionConcern)concern;
-            commodities.add(ccc.commodityId);
-            commodities.add(ccc.competitorId);
+            commoditiesAndFactions.add(ccc.commodityId);
+            commoditiesAndFactions.add(ccc.faction.getId());
         }
-        return commodities;
+        return commoditiesAndFactions;
     }
 
     @Override
     public boolean isValid() {
-        return commodityId != null && competitorId != null && competitorShare > 0;
+        return commodityId != null && faction != null && competitorShare > 0;
     }
 }

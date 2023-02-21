@@ -133,6 +133,9 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     }
 
     @Override
+    public void notifyActionUpdate() {};
+
+    @Override
     public void end() {
         ended = true;
         // Notify module? or maybe just let it remove on its own in advance();
