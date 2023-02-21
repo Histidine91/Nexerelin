@@ -313,17 +313,7 @@ nex_factionDirectoryOption,ExerelinMarketSpecial,,SetShortcut nex_factionDirecto
 nex_factionDirectory,DialogOptionSelected,$option == nex_factionDirectoryMain,FireAll ExerelinFactionDirectory,,,
 nex_factionDirectoryByTrigger,ExerelinFactionDirectory,,"Nex_VisualCustomPanel clear
 Nex_FactionDirectory listGroups",Which faction do you want to look up?,,
-,,,,,,
-nex_factionDirectoryList1,DialogOptionSelected,$option == nex_factionDirectoryList1,Nex_FactionDirectory listFactions 1,,,
-nex_factionDirectoryList2,DialogOptionSelected,$option == nex_factionDirectoryList2,Nex_FactionDirectory listFactions 2,,,
-nex_factionDirectoryList3,DialogOptionSelected,$option == nex_factionDirectoryList3,Nex_FactionDirectory listFactions 3,,,
-nex_factionDirectoryList4,DialogOptionSelected,$option == nex_factionDirectoryList4,Nex_FactionDirectory listFactions 4,,,
-nex_factionDirectoryList5,DialogOptionSelected,$option == nex_factionDirectoryList5,Nex_FactionDirectory listFactions 5,,,
-nex_factionDirectoryList6,DialogOptionSelected,$option == nex_factionDirectoryList6,Nex_FactionDirectory listFactions 6,,,
-nex_factionDirectoryList7,DialogOptionSelected,$option == nex_factionDirectoryList7,Nex_FactionDirectory listFactions 7,,,
-nex_factionDirectoryList8,DialogOptionSelected,$option == nex_factionDirectoryList8,Nex_FactionDirectory listFactions 8,,,
-nex_factionDirectoryList9,DialogOptionSelected,$option == nex_factionDirectoryList9,Nex_FactionDirectory listFactions 9,,,
-nex_factionDirectoryList10,DialogOptionSelected,$option == nex_factionDirectoryList10,Nex_FactionDirectory listFactions 10,,,
+nex_factionDirectoryList,DialogOptionSelected,"Nex_OptionStartsWith ""nex_factionDirectoryList_""",Nex_FactionDirectory listFactions,,,
 nex_factionDirectoryList_indSearch,DialogOptionSelected,$option == nex_factionDirectoryList_indSearch,"FireAll Nex_FactionDirectory_IndSearchOpts
 SetShortcut nex_factionDirectoryMain ESCAPE",,,
 nex_factionDirectoryList_indSearchDefault,Nex_FactionDirectory_IndSearchOpts,,,,"nex_printMarketsWithIndustries_heavyIndustry:Heavy industry

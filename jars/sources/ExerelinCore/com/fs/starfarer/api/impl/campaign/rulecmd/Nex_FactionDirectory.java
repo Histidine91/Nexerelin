@@ -45,10 +45,12 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	
 	public static final String FACTION_GROUPS_KEY = "$nex_factionDirectoryGroups";
 	public static final float GROUPS_CACHE_TIME = 0f;
+	public static final String LIST_FACTIONS_OPTION_PREFIX = "nex_factionDirectoryList_";
+	protected static final int FACTIONS_PREFIX_LENGTH = LIST_FACTIONS_OPTION_PREFIX.length();
 	public static final String PRINT_FACTION_OPTION_PREFIX = "nex_printFactionMarkets_";
-	protected static final int PREFIX_LENGTH = PRINT_FACTION_OPTION_PREFIX.length();
+	protected static final int FACTION_PREFIX_LENGTH = PRINT_FACTION_OPTION_PREFIX.length();
 	public static final String PRINT_INDUSTRY_OPTION_PREFIX = "nex_printMarketsWithIndustries_";
-	protected static final int PREFIX_LENGTH_2 = PRINT_INDUSTRY_OPTION_PREFIX.length();
+	protected static final int INDUSTRY_PREFIX_LENGTH = PRINT_INDUSTRY_OPTION_PREFIX.length();
 	
 	public static final List<String> ARRAYLIST_PLAYERFACTION = Arrays.asList(new String[]{Factions.PLAYER});
 	
@@ -86,7 +88,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			case "listFactions":
 				OptionPanelAPI opts = dialog.getOptionPanel();
 				opts.clearOptions();
-				int num = (int)params.get(1).getFloat(memoryMap);
+				int num = Integer.parseInt(memoryMap.get(MemKeys.LOCAL).getString("$option").substring(FACTIONS_PREFIX_LENGTH));
 				//memoryMap.get(MemKeys.LOCAL).set("$nex_dirFactionGroup", num);
 				List<FactionListGrouping> groups = (List<FactionListGrouping>)(memoryMap.get(MemKeys.LOCAL).get(FACTION_GROUPS_KEY));
 				FactionListGrouping group = groups.get(num - 1);
@@ -106,7 +108,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				{
 					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
 					//if (option == null) throw new IllegalStateException("No $option set");
-					String factionId = option.substring(PREFIX_LENGTH);
+					String factionId = option.substring(FACTION_PREFIX_LENGTH);
 					printFactionMarkets(dialog, factionId);
 					return true;
 				}
@@ -115,7 +117,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				{
 					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
 					//if (option == null) throw new IllegalStateException("No $option set");
-					String industryId = option.substring(PREFIX_LENGTH_2);
+					String industryId = option.substring(INDUSTRY_PREFIX_LENGTH);
 					printMarketsWithIndustry(dialog, industryId);
 					return true;
 				}
@@ -152,7 +154,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		for (FactionListGrouping group : groups)
 		{
 			groupNum++;
-			String optionId = "nex_factionDirectoryList" + groupNum;
+			String optionId = "nex_factionDirectoryList_" + groupNum;
 			opts.addOption(group.getGroupingRangeString(),
 					optionId, group.tooltip);
 			opts.setTooltipHighlights(optionId, group.getFactionNames().toArray(new String[0]));
