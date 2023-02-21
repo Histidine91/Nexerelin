@@ -689,7 +689,12 @@ public class GroundUnit {
 					stat.modifyMult("industry", industryMult, ifb.ind.getCurrentName());
 				}
 				*/
-			} else if (type == ForceType.HEAVY) {	// heavy unit bonus on offensive
+			}
+		}
+		if (type == ForceType.HEAVY) {	// heavy unit bonus on offensive
+			boolean offensiveBonus = ifb == null && this.isAttacker;
+			offensiveBonus |= ifb != null && ifb.heldByAttacker != isAttacker;
+			if (offensiveBonus) {
 				modifyAttackStatWithDesc(stat, "heavy_offensive", GBConstants.HEAVY_OFFENSIVE_MULT);
 			}
 		}

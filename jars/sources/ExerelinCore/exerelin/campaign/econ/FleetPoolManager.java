@@ -394,7 +394,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	
 	@Override
 	public boolean isHidden() {
-		return !USE_POOL && !ExerelinModPlugin.isNexDev;
+		return !USE_POOL;// && !ExerelinModPlugin.isNexDev;
 	}
 	
 	protected String getString(String id) {

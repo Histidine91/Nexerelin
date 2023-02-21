@@ -138,7 +138,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		// pick staging area
 		//requireSystemHasNumPlanets(1);
 		requireSystemNotHasPulsar();
-		requireSystemTags(ReqMode.NOT_ANY, Tags.THEME_UNSAFE, Tags.THEME_CORE, Tags.THEME_REMNANT);
+		requireSystemTags(ReqMode.NOT_ANY, Tags.THEME_UNSAFE, Tags.THEME_CORE, Tags.THEME_REMNANT, 
+				Tags.TRANSIENT, Tags.SYSTEM_CUT_OFF_FROM_HYPER, Tags.THEME_HIDDEN);
 		requireSystemWithinRangeOf(station.getContainingLocation().getLocation(), 12);
 		search.systemReqs.add(new BuildStation.SystemUninhabitedReq());
 		preferSystemOutsideRangeOf(station.getContainingLocation().getLocation(), 7);

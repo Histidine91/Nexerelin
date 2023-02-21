@@ -157,6 +157,8 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	}
 	
 	public void accept() {
+		if (state == 1) return;
+		
 		String eventId = isPeaceTreaty ? "peace_treaty" : "ceasefire";
 		float reduction = isPeaceTreaty ? NexConfig.warWearinessPeaceTreatyReduction : NexConfig.warWearinessCeasefireReduction;
 
@@ -344,4 +346,9 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	}
 	
 	// runcode new exerelin.campaign.intel.diplomacy.CeasefirePromptIntel("pirates", false).init()
+
+	@Override
+	public boolean shouldCancel() {
+		return state != 0;
+	}
 }

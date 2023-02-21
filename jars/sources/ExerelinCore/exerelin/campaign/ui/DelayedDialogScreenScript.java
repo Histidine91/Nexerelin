@@ -24,6 +24,10 @@ public abstract class DelayedDialogScreenScript implements EveryFrameScript
 		return true;
 	}
 	
+	public boolean shouldCancel() {
+		return false;
+	}
+	
 	@Override
 	public void advance(float amount)
 	{
@@ -36,6 +40,11 @@ public abstract class DelayedDialogScreenScript implements EveryFrameScript
 		
 		timer += Global.getSector().getClock().convertToDays(amount);
 		if (timer < DAYS_TO_WAIT) return;
+		
+		if (shouldCancel()) {
+			isDone = true;
+			return;
+		}
 		
 		if (!isDone)
 		{

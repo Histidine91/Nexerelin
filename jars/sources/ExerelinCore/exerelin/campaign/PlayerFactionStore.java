@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 public class PlayerFactionStore {
     public static final String PLAYER_FACTION_ID_KEY = "exerelin_playerFactionId";
     public static final String PLAYER_RELATIONS_KEY = "exerelin_independentPlayerRelations";
+    public static final String STARTING_FACTION_ID_MEMKEY = "$nex_startingFactionId";
     
     private static String factionId = Factions.PLAYER;
     

@@ -117,7 +117,8 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 			return false;
 		}
 			
-		requireSystemTags(ReqMode.NOT_ANY, Tags.THEME_UNSAFE, Tags.THEME_CORE);
+		requireSystemTags(ReqMode.NOT_ANY, Tags.THEME_UNSAFE, Tags.THEME_CORE, Tags.TRANSIENT, 
+				Tags.SYSTEM_CUT_OFF_FROM_HYPER, Tags.THEME_HIDDEN);
 		requireSystemHasNumPlanets(1);
 		requireSystemNotHasPulsar();
 		if (DEBUG_MODE) {
