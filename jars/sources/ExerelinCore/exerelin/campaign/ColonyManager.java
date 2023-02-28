@@ -257,7 +257,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 					&& !NexUtilsFaction.isPirateOrTemplarFaction(market.getFactionId())) 
 			{
 				int unrest = RecentUnrest.getPenalty(market);
-				if (unrest >= NexConfig.stabilizePackageEffect + 1 || market.getStabilityValue() <= 1) 
+				boolean wantStabilize = unrest >= NexConfig.stabilizePackageEffect + 1|| (market.getStabilityValue() <= 1 && unrest > 0);
+				if (wantStabilize) 
 				{
 					needRelief.add(market);
 				}
