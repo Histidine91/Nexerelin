@@ -976,7 +976,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (noTransfer) return;
 		
 		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
-			InvasionRound.conquerMarket(market, attacker.getFaction(), playerInitiated);
+			FactionAPI newOwner = attacker.getFaction();
+			if (this.playerInitiated && wasPlayerMarket()) {
+				newOwner = Global.getSector().getPlayerFaction();
+			}
+
+			InvasionRound.conquerMarket(market, newOwner, playerInitiated);
 			
 			market.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
 			market.getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
@@ -1235,7 +1240,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 */
 	protected boolean wasPlayerMarket() {
 		String origOwner = NexUtilsMarket.getOriginalOwner(market);
-		boolean originallyPlayer = origOwner == null || origOwner.equals(Factions.PLAYER);
+		boolean originallyPlayer = /* origOwner == null ||*/ origOwner.equals(Factions.PLAYER);
 		return originallyPlayer;
 	}
 	

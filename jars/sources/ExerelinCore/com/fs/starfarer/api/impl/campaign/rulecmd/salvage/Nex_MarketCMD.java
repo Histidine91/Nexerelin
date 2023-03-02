@@ -2418,7 +2418,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	 */
 	protected boolean wasPlayerMarket() {
 		String origOwner = NexUtilsMarket.getOriginalOwner(market);
-		boolean originallyPlayer = origOwner == null || origOwner.equals(Factions.PLAYER);
+		boolean originallyPlayer = origOwner.equals(Factions.PLAYER);
 		return originallyPlayer;
 	}
 	
