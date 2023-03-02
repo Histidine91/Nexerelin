@@ -48,6 +48,7 @@ public class ExerelinSetupData
 	public boolean prismMarketPresent = true;
 	public boolean randomAntiochEnabled = true;
 	public boolean freeStart = false;
+	public boolean spacerObligation = false;
 	public boolean useFactionWeights = true;
 	public boolean randomFactionWeights = false;
 	public boolean randomStartLocation = false;

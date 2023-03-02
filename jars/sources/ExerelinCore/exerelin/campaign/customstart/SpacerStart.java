@@ -83,7 +83,11 @@ public class SpacerStart extends CustomStart {
 				}
 				fleet.getFleetData().setSyncNeeded();
 				
-				new Nex_SpacerObligation();
+				// add spacer obligation if not already set in 
+				if (!ExerelinSetupData.getInstance().spacerObligation) {
+					new Nex_SpacerObligation();
+				}
+					
 			}
 		});
 		

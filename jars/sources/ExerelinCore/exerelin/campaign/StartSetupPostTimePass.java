@@ -59,6 +59,7 @@ import lombok.extern.log4j.Log4j;
 import org.lwjgl.util.vector.Vector2f;
 
 import static com.fs.starfarer.api.impl.campaign.ids.People.*;
+import exerelin.campaign.customstart.Nex_SpacerObligation;
 
 @Log4j
 public class StartSetupPostTimePass {
@@ -239,6 +240,11 @@ public class StartSetupPostTimePass {
 		// fix post-Ziggurat encounter crash and some other issues
 		if (!corvusMode) {
 			createImportantPeopleInRandomSector();
+		}
+		
+		// Spacer obligation
+		if (ExerelinSetupData.getInstance().spacerObligation) {
+			new Nex_SpacerObligation();
 		}
 	}
 

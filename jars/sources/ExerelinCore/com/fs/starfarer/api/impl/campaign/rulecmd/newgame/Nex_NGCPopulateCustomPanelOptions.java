@@ -290,6 +290,19 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				createTooltip(tooltipStr, highlights, null)
 		);
 		
+		// spacer obligation
+		
+		tooltipStr = String.format(getString("tooltipSpacerObligation"), highlights.toArray());
+		addCheckboxOption(panel, info, getString("optionSpacerObligation"), "nex_spacerObligation", 
+				data.spacerObligation, Global.getSettings().getSpriteName("income_report", "generic_expense"), plugin, new ButtonEntry() {
+						@Override
+						public void onToggle() {
+							data.spacerObligation = button.isChecked();
+						}
+				}, 
+				createTooltip(tooltipStr, highlights, null)
+		);
+		
 		// random start location
 		addCheckboxOption(panel, info, getString("optionRandomStartLocation"), "nex_randomStartLocation", 
 				data.randomStartLocation, "graphics/icons/intel/new_planet_info.png", plugin, new ButtonEntry() {
