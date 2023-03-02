@@ -135,7 +135,24 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				setCommanderSkills(dialog, memoryMap);
 				return true;
 			case "hasTooManyOfficers":
-				return fleet != null && getMaxOfficers(fleet) < fleet.getFleetData().getOfficersCopy().size();
+			{
+				if (fleet == null) return false;
+				int num = fleet.getFleetData().getOfficersCopy().size();
+				int max = getMaxOfficers(fleet);
+				memoryMap.get(MemKeys.LOCAL).set("$nex_numOfficers", num, 0);
+				memoryMap.get(MemKeys.LOCAL).set("$nex_maxOfficers", max, 0);
+				return num > max;
+			}
+			case "hasTooManyShips":
+			{
+				if (fleet == null) return false;
+				int num = fleet.getFleetData().getNumMembers();
+				int max = Global.getSettings().getMaxShipsInFleet();
+				memoryMap.get(MemKeys.LOCAL).set("$nex_numShips", num, 0);
+				memoryMap.get(MemKeys.LOCAL).set("$nex_maxShips", max, 0);
+				return num > max;
+			}
+
 			case "commanderSkillsConfirm":
 				applySkillChanges(dialog, memoryMap.get(MemKeys.LOCAL));
 				return true;

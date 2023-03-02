@@ -3628,8 +3628,20 @@ SetTooltip nex_configSF_createFinish ""Fleet must have a commander and flagship.
 SetTooltip nex_configSF_close ""Fleet must have a commander and flagship.""",,,
 nex_configSF_mainOptsTooManyOfficers,Nex_ConfigSFOptions,Nex_SpecialForcesConfig hasTooManyOfficers,"SetEnabled nex_configSF_createFinish false
 SetEnabled nex_configSF_close false
-SetTooltip nex_configSF_createFinish ""Fleet has too many officers.""
-SetTooltip nex_configSF_close ""Fleet has too many officers.""",,,
+SetTooltip nex_configSF_createFinish ""Fleet has too many officers ($nex_numOfficers/$nex_maxOfficers).""
+SetTooltip nex_configSF_close ""Fleet has too many officers ($nex_numOfficers/$nex_maxOfficers).""
+SetTooltipHighlightColors nex_configSF_createFinish bad h
+SetTooltipHighlights nex_configSF_createFinish $nex_numOfficers $nex_maxOfficers
+SetTooltipHighlightColors nex_configSF_close bad h
+SetTooltipHighlights nex_configSF_close $nex_numOfficers $nex_maxOfficers",,,
+nex_configSF_mainOptsTooManyShips,Nex_ConfigSFOptions,Nex_SpecialForcesConfig hasTooManyShips,"SetEnabled nex_configSF_createFinish false
+SetEnabled nex_configSF_close false
+SetTooltip nex_configSF_createFinish ""Fleet has too many ships ($nex_numShips/$nex_maxShips).""
+SetTooltip nex_configSF_close ""Fleet has too many ships ($nex_numShips/$nex_maxShips).""
+SetTooltipHighlightColors nex_configSF_createFinish bad h
+SetTooltipHighlights nex_configSF_createFinish $nex_numShips $nex_maxShips
+SetTooltipHighlightColors nex_configSF_close bad h
+SetTooltipHighlights nex_configSF_close $nex_numShips $nex_maxShips",,,
 nex_configSF_mainOptsNoRevive,Nex_ConfigSFOptions,"!$nex_psf_recreate
 !Nex_SpecialForcesConfig canRevive","SetEnabled nex_sf_reviveShipStart false
 SetTooltip nex_sf_reviveShipStart $nex_psf_noReviveReason",,,
