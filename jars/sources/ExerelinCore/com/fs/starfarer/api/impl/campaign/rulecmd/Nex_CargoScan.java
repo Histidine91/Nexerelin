@@ -85,12 +85,14 @@ public class Nex_CargoScan extends CargoScan {
 		float shieldedMult = (0.25f + 0.75f * unshieldedFraction);
 		
 		MarketAPI market = Misc.getSourceMarket(other);
-		float level = market.getMemory().getFloat(MemFlags.MEMORY_MARKET_SMUGGLING_SUSPICION_LEVEL);
+		Float level = 0f;
 		float suspicionMult = 0f;
 		if (market != null) {
-			if (level >= 0.05f) {
+			level = market.getMemory().getFloat(MemFlags.MEMORY_MARKET_SMUGGLING_SUSPICION_LEVEL);
+			if (level != null && level >= 0.05f) {
 				suspicionMult = 0.5f + 0.5f * level;
 			}
+			if (level == null) level = 0f;
 		}
 		
 		totalLegalCargo *= shieldedMult;
