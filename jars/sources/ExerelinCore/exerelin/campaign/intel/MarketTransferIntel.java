@@ -56,7 +56,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 			if (!isCapture || !cooldown) {
 				for (String factionId : factionsToNotify) {
 					float thisRep = repChange;
-					if (NexUtilsFaction.isPirateOrTemplarFaction(factionId))
+					if (isCapture && NexUtilsFaction.isPirateOrTemplarFaction(factionId))
 						thisRep *= 0.5f;
 
 					FactionAPI faction = Global.getSector().getFaction(factionId);
