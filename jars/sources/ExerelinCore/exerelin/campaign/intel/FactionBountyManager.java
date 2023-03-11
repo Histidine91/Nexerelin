@@ -9,6 +9,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseEventManager;
+import com.fs.starfarer.api.impl.campaign.shared.PersonBountyEventData;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
@@ -80,10 +82,13 @@ public class FactionBountyManager extends BaseEventManager {
 		List<String> liveFactions = SectorManager.getLiveFactionIdsCopy();
 		WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>();
 		boolean allowEnemies = Global.getSettings().getBoolean("nex_factionBounty_issuedByEnemies");
+		PersonBountyEventData data = SharedData.getData().getPersonBountyEventData();
 		
 		for (String factionId : liveFactions) {
 			if (factionId.equals(Factions.PLAYER))
 				continue;
+			
+			//if (!data.isParticipating(factionId)) continue;
 			
 			// pirates don't issue bounties
 			if (NexConfig.getFactionConfig(factionId).pirateFaction)
@@ -91,6 +96,7 @@ public class FactionBountyManager extends BaseEventManager {
 			
 			FactionAPI faction = Global.getSector().getFaction(factionId);
 			if (already.contains(faction)) continue;
+			if (faction.getCustomBoolean(Factions.CUSTOM_POSTS_NO_BOUNTIES)) continue;
 			if (!allowEnemies && faction.isHostileTo(Factions.PLAYER)) continue;
 			
 			// weight based on number of enemies this faction has
