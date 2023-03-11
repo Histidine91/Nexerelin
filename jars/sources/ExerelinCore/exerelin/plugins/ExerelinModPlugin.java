@@ -409,19 +409,40 @@ public class ExerelinModPlugin extends BaseModPlugin
         alphaSiteWorkaround();
 
         if (HAVE_LUNALIB) LunaConfigHelper.createListener();
+
+        for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
+        {
+            x.onGameLoad(newGame);
+        }
     }
     
     @Override
     public void beforeGameSave()
     {
         log.info("Before game save");
+        for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
+        {
+            x.beforeGameSave();
+        }
     }
     
     @Override
     public void afterGameSave() {
         log.info("After game save");
+        for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
+        {
+            x.afterGameSave();
+        }
     }
-    
+
+    @Override
+    public void onGameSaveFailed() {
+        for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
+        {
+            x.onGameSaveFailed();
+        }
+    }
+
     @Override
     public void onApplicationLoad() throws Exception
     {
@@ -494,6 +515,11 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         ScenarioManager.afterProcGen(Global.getSector());
+
+        for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
+        {
+            x.onNewGameAfterProcGen();
+        }
     }
     
     @Override
@@ -529,6 +555,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
                 market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, market.getFactionId());
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
+			
+			if (NexConfig.getFactionConfig(market.getFactionId()).noMissionTarget) {
+				market.setInvalidMissionTarget(true);
+			}
         }
         
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getManager().isCorvusMode());
@@ -536,6 +566,11 @@ public class ExerelinModPlugin extends BaseModPlugin
         addBarEvents();
         EconomyInfoHelper.createInstance();
         MilitaryInfoHelper.createInstance();
+
+        for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
+        {
+            x.onNewGameAfterEconomyLoad();
+        }
     }
     
     @Override
@@ -562,6 +597,11 @@ public class ExerelinModPlugin extends BaseModPlugin
                 if (tries >= 1000)
                     break;
             }
+        }
+
+        for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
+        {
+            x.onNewGameAfterTimePass();
         }
     }
     

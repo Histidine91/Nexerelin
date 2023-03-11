@@ -42,6 +42,7 @@ import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYP
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.SOURCE_ID;
 import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.getString;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.ModPluginEventListener;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import java.awt.Color;
@@ -51,7 +52,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.util.vector.Vector2f;
 
-public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements EconomyTickListener {
+public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements EconomyTickListener, ModPluginEventListener {
 	
 	// for now
 	// actually never turn this on? when we invoke combat costs this becomes a mess overall
@@ -89,7 +90,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected transient Vector2f lastPos;
 	
 	protected Object readResolve() {
-		addListenerIfNeeded();
+		// no, bad, don't do anything in readResolve that involves anything else
+		//addListenerIfNeeded();
 		variantCheckInterval = new IntervalUtil(1, 1);
 		return this;
 	}
@@ -779,4 +781,27 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		return Math.round(supplies * supplyCost);
 	}
+
+	@Override
+	public void onGameLoad(boolean newGame) {
+		addListenerIfNeeded();
+	}
+
+	@Override
+	public void beforeGameSave() {}
+
+	@Override
+	public void afterGameSave() {}
+
+	@Override
+	public void onGameSaveFailed() {}
+
+	@Override
+	public void onNewGameAfterProcGen() {}
+
+	@Override
+	public void onNewGameAfterEconomyLoad() {}
+
+	@Override
+	public void onNewGameAfterTimePass() {}
 }

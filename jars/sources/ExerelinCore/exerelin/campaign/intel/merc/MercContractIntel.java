@@ -24,10 +24,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.campaign.Faction;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsGUI;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 
-public class MercContractIntel extends BaseIntelPlugin implements EconomyTickListener, ColonyInteractionListener
+public class MercContractIntel extends BaseIntelPlugin implements EconomyTickListener, ColonyInteractionListener, ModPluginEventListener
 {
 	public static Logger log = Global.getLogger(MercContractIntel.class);
 	
@@ -68,25 +66,6 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	
 	protected Object readResolve() {
 		if (stored == null) stored = new HashMap<>();
-		
-		fleetPlugin = MercFleetGenPlugin.createPlugin(this);
-		if (seed == null) {
-			seed = Misc.genRandomSeed();
-		}
-		// Trying a way to fix disappearing S-mods
-		if (offeredFleet != null && !getDef().noAutofit) {
-			FactionAPI faction = offeredFleet.getFaction();
-			Faction trueFaction = (Faction)faction;
-
-			/* Uncomment this line to reload trueFaction's spec and thus prevent the exception that breaks loading the game sometimes */
-			trueFaction.getSpec();
-			
-			try {
-				fleetPlugin.inflateFleet(offeredFleet);
-			} catch (Exception ex) {
-				log.warn("Failed to inflate fleet", ex);
-			}
-		}
 		return this;
 	}
 	
@@ -613,4 +592,39 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		}
 		return null;
 	}
+
+	@Override
+	public void onGameLoad(boolean newGame) {
+		// Trying a way to fix disappearing S-mods
+		fleetPlugin = MercFleetGenPlugin.createPlugin(this);
+		if (seed == null) {
+			seed = Misc.genRandomSeed();
+		}
+		try {
+			if (offeredFleet != null && !getDef().noAutofit) {
+				FactionAPI faction = offeredFleet.getFaction();
+				fleetPlugin.inflateFleet(offeredFleet);
+			}
+		} catch (Throwable t) {
+			log.warn("Failed to inflate fleet", t);
+		}
+	}
+
+	@Override
+	public void beforeGameSave() {}
+
+	@Override
+	public void afterGameSave() {}
+
+	@Override
+	public void onGameSaveFailed() {}
+
+	@Override
+	public void onNewGameAfterProcGen() {}
+
+	@Override
+	public void onNewGameAfterEconomyLoad() {}
+
+	@Override
+	public void onNewGameAfterTimePass() {}
 }
