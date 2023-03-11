@@ -952,6 +952,19 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.clearOptions();
 		
 		options.addOption(getString("invasionProceed"), INVADE_CONFIRM);
+		{
+			String confirmMessage;
+			if (!hostile) {
+				confirmMessage = getString("invadeOptConfirmNonHostile");
+				confirmMessage = StringHelper.substituteToken(confirmMessage, "$theFaction",
+						faction.getDisplayNameWithArticle());
+			}
+			else {
+				confirmMessage = getString("invadeOptConfirm");
+			}
+			options.addOptionConfirmation(INVADE_CONFIRM, confirmMessage,
+					StringHelper.getString("yes", true), StringHelper.getString("no", true));
+		}
 
 		if (!hasForces) {
 			String pct = (int)(MIN_INVASION_MULT * 100) + "%";
@@ -1065,6 +1078,19 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.clearOptions();
 		
 		options.addOption(getString("invasionProceed"), INVADE_CONFIRM);
+		{
+			String confirmMessage;
+			if (!hostile) {
+				confirmMessage = getString("invadeOptConfirmNonHostile");
+				confirmMessage = StringHelper.substituteToken(confirmMessage, "$theFaction",
+						faction.getDisplayNameWithArticle());
+			}
+			else {
+				confirmMessage = getString("invadeOptConfirm");
+			}
+			options.addOptionConfirmation(INVADE_CONFIRM, confirmMessage,
+					StringHelper.getString("yes", true), StringHelper.getString("no", true));
+		}
 		
 		if (!hasForces) {
 			str = GroundBattleIntel.getString("dialogNoForces");

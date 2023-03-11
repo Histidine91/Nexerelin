@@ -1165,6 +1165,8 @@
 		"takeForSelfWarning":"You can take $market as a personal holding, but this will not please your current faction.\n\nProceed?",
 		"takeForSelfNoWarning":"As $market originally belonged to you (or is otherwise unclaimed), you may take it for yourself without penalty.",
 		"repChangeCooldownMsg":"No reputation gain as this market has already been captured recently",
+		"invadeOptConfirm":"Proceed with invasion?",
+		"invadeOptConfirmNonHostile":"Proceed with invasion? This will initiate hostilities with $theFaction!",
 		
 		"invasion":"invasion",
 		"invasions":"invasions",
