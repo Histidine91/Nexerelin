@@ -270,6 +270,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				if (profit <= 0 || cost <= 0) continue;
 				float margin = profit/cost;
 				if (margin <= 0) continue;
+				if (margin > 2) margin = 2;
 				log.info(String.format("Market %s adding %.2f profit margin (%.0f profit, %.0f cost)", market.getName(), margin, profit, cost));
 				float size = market.getSize() - 2;
 				if (size < 0.5f) size = 0.5f;
