@@ -671,8 +671,11 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		if (true || isDebugVisible()) {
 			String str = getString("intelDescStr");
 			String fp = Math.round(route.getExtra().fp) + "";
-			if (route.getActiveFleet() != null)
-				fp = route.getActiveFleet().getFleetPoints() + "/" + fp;
+			if (route.getActiveFleet() != null) {
+				String routeFP = fp;
+				fp = route.getActiveFleet().getFleetPoints() + "";
+				if (!this.isPlayer || ExerelinModPlugin.isNexDev) fp += "/" + routeFP;
+			}
 			int damage = getDamage();
 
 			info.addPara(str, opad, h, fp, damage + "%");

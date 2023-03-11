@@ -138,6 +138,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		for (FleetMemberAPI member : members) {
 			notifyShipAdded(member);
 		}
+		if (route != null && fleet != null) route.getExtra().fp = (float)fleet.getFleetPoints();
 	}
 
 	public void notifyShipAdded(FleetMemberAPI member) {
@@ -149,6 +150,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		for (FleetMemberAPI member : members) {
 			notifyShipRemoved(member);
 		}
+		if (route != null && fleet != null) route.getExtra().fp = (float)fleet.getFleetPoints();
 	}
 
 	public void notifyShipRemoved(FleetMemberAPI member) {
@@ -194,6 +196,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 				
 		syncFleet(fleet);
 		this.startingFP = fleet.getFleetPoints();
+		route.getExtra().fp = this.startingFP;
 		
 		if (fleetName == null) {
 			fleetName = pickFleetName(fleet, origin, commander);
@@ -251,6 +254,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		fleet.getFleetData().addFleetMember(member);
 		member.getStatus().repairFully();
 		member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
+		
+		route.getExtra().fp = (float)fleet.getFleetPoints();
 		
 		return true;
 	}
