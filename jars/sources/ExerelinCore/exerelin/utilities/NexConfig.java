@@ -115,7 +115,7 @@ public class NexConfig
     public static float revengePointsPerEnemyFP = 0.05f;
     public static float revengePointsForMarketCaptureMult = 2f;
     public static float vengeanceFleetSizeMult = 0.8f;
-    public static boolean useNewVengeanceEncounters = true;
+    public static boolean useNewVengeanceEncounters = false;
     
     // Combat
     @Deprecated public static boolean useCustomBattleCreationPlugin = false;
