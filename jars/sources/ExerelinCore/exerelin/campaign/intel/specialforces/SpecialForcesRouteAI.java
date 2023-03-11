@@ -455,14 +455,19 @@ public class SpecialForcesRouteAI {
 		}
 		return largest;
 	}
-	
+
+	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) {
+		return pickTask(priorityDefenseOnly, false);
+	}
+
 	/**
 	 * Picks a task for the task force to do.
 	 * @param priorityDefenseOnly Only check for any urgent defense tasks that 
 	 * should take priority over what we're currently doing.
+	 * @param isManualOrder Was 'pick task' instruction manually given by player? Only relevant for player task groups.
 	 * @return 
 	 */
-	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) 
+	public SpecialForcesTask pickTask(boolean priorityDefenseOnly, boolean isManualOrder)
 	{
 		sf.debugMsg("Picking task for " + sf.getFleetName(), false);
 		

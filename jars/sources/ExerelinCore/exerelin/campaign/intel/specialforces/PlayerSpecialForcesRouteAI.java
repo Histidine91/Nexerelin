@@ -23,10 +23,10 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 		}
 		super.notifyRouteFinished();
 	}
-	
+
 	@Override
-	public SpecialForcesTask pickTask(boolean priorityDefenseOnly) {
-		if (!psf.independentMode) {
+	public SpecialForcesTask pickTask(boolean priorityDefenseOnly, boolean isManualOrder) {
+		if (!psf.independentMode && !isManualOrder) {
 			Global.getSector().getCampaignUI().addMessage("Warning, attempting to assign task to special task group while not in independent mode");
 			Global.getSector().getCampaignUI().addMessage("See starsector.log for more info");
 			log.warn("Attempting to assign task to special task group while not in independent mode", new Throwable());
@@ -53,7 +53,7 @@ public class PlayerSpecialForcesRouteAI extends SpecialForcesRouteAI {
 			}
 		}
 		
-		return super.pickTask(priorityDefenseOnly);
+		return super.pickTask(priorityDefenseOnly, isManualOrder);
 	}
 	
 	@Override
