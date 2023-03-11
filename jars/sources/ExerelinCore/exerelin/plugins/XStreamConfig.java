@@ -15,7 +15,6 @@ import exerelin.campaign.entities.Nex_NavBuoyEntityPlugin;
 import exerelin.campaign.entities.Nex_SensorArrayEntityPlugin;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
-import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.events.WarmongerEvent;
 import exerelin.campaign.fleets.MiningFleetAI;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
@@ -119,7 +118,6 @@ public class XStreamConfig {
 		x.alias("InstgtRbl", InstigateRebellion.class);
 		x.alias("RebelEvntCreator", RebellionCreator.class);
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
-		x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);
 		x.alias("WarmongerEvnt", WarmongerEvent.class);
 		
 		// intel

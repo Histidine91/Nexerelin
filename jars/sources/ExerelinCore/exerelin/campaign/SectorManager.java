@@ -52,7 +52,6 @@ import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.events.NexRepTrackerEvent;
-import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
@@ -556,43 +555,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // TODO
         //WarmongerEvent event = WarmongerEvent.getOngoingEvent();
         //if (event != null) event.reportEvent(location, params);
-    }
-
-    public void handleSlaveTradeRep()
-    {
-        if (NexConfig.prisonerSlaveRepValue > 0) return;
-        
-        LocationAPI loc = marketLastSoldSlaves.getPrimaryEntity().getContainingLocation();
-        List<MarketAPI> markets = Misc.getMarketsInLocation(loc);
-        List<String> factionsToNotify = new ArrayList<>();  
-        Set<String> seenFactions = new HashSet<>();
-        Map<String, Float> repPenalties = new HashMap<>();
-        float sumRepDelta = 0;
-
-        for (final MarketAPI market : markets) {
-            String factionId = market.getFactionId();
-            if (seenFactions.contains(factionId)) continue;
-            
-            seenFactions.add(factionId);
-            
-            float delta = SlavesSoldEvent.getSlaveRepPenalty(factionId, numSlavesRecentlySold);
-            if (delta >= 0) continue;
-            
-            factionsToNotify.add(factionId);
-            repPenalties.put(factionId, delta);
-            sumRepDelta += delta;
-        }
-        if (factionsToNotify.isEmpty()) return;
-        //log.info("Selling " + numSlavesRecentlySold + " slaves; rep penalty for each is " + ExerelinConfig.prisonerSlaveRepValue);
-        
-        Map<String, Object> params = new HashMap<>();
-
-        params.put("factionsToNotify", factionsToNotify);
-        params.put("numSlaves", numSlavesRecentlySold);
-        params.put("repPenalties", repPenalties);
-        params.put("avgRepChange", sumRepDelta/factionsToNotify.size());
-        SlavesSoldEvent event = (SlavesSoldEvent)Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_slaves_sold");
-        event.reportSlaveTrade(marketLastSoldSlaves, params);
     }
     
     @Override

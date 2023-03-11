@@ -1,4 +1,6 @@
 {
+	# Note: With LunaLib, most of these settings can be modified and saved ingame, in which case this file only serves to provide the default values
+	
     "directoryDialogKey": 45,   # integer, default 45 (X)
     
     "ceasefireNotificationPopup": true,
@@ -24,8 +26,8 @@
     "fleetBonusFpPerPlayerLevel": 1,	# not actually used, except for vengeance and mining harassment fleets
     
     "prisonerRepatriateRepValue": 0.04,
-    "prisonerBaseRansomValue": 5000,
-    "prisonerRansomValueIncrementPerLevel": 500,
+    "prisonerBaseRansomValue": 10000,
+    "prisonerRansomValueIncrementPerLevel": 2000,
     "prisonerLootChancePer10Fp": 0.025,
     
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships

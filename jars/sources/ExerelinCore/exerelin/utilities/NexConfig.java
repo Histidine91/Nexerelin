@@ -34,11 +34,8 @@ public class NexConfig
     
     // Prisoners
     public static float prisonerRepatriateRepValue = 0.04f;
-    public static float prisonerBaseRansomValue = 5000f;
-    public static float prisonerRansomValueIncrementPerLevel = 500f;
-    public static float prisonerBaseSlaveValue = 10000f;
-    public static float prisonerSlaveValueIncrementPerLevel = 1000f;
-    public static float prisonerSlaveRepValue = -0.02f;
+    public static float prisonerBaseRansomValue = 10000f;
+    public static float prisonerRansomValueIncrementPerLevel = 2000f;
     public static float prisonerLootChancePer10Fp = 0.025f;
     public static float crewLootMult = 0.02f;
     
@@ -182,10 +179,7 @@ public class NexConfig
             prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue", prisonerRepatriateRepValue);
             prisonerBaseRansomValue = (float)settings.optDouble("prisonerBaseRansomValue", prisonerBaseRansomValue);
             prisonerRansomValueIncrementPerLevel = (float)settings.optDouble("prisonerRansomValueIncrementPerLevel", prisonerRansomValueIncrementPerLevel);
-            prisonerBaseSlaveValue = (float)settings.optDouble("prisonerBaseSlaveValue", prisonerBaseSlaveValue);
-            prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel", prisonerSlaveValueIncrementPerLevel);
             prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp", prisonerLootChancePer10Fp);
-            prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue", prisonerSlaveRepValue);
             crewLootMult = (float)settings.optDouble("crewLootMult", crewLootMult);
             
             agentBaseSalary = settings.optInt("agentBaseSalary", agentBaseSalary);

@@ -43,10 +43,8 @@ public class Nex_PrisonerAction extends AgentActionBase {
 			case "getValue":
 				int level = Global.getSector().getPlayerPerson().getStats().getLevel();
 				int ransomValue = (int)(NexConfig.prisonerBaseRansomValue + NexConfig.prisonerRansomValueIncrementPerLevel * (level - 1));
-				int slaveValue = (int)(NexConfig.prisonerBaseSlaveValue + NexConfig.prisonerSlaveValueIncrementPerLevel * (level - 1));
 				
 				local.set("$ransomValue", Misc.getWithDGS(ransomValue), 0);
-				local.set("$slaveValue", Misc.getWithDGS(slaveValue), 0);
 				break;
 			case "isAtMaxRep":
 				return isAtMaxRep(dialog.getInteractionTarget());
@@ -57,10 +55,8 @@ public class Nex_PrisonerAction extends AgentActionBase {
 	public boolean ransom(MemoryAPI mem, SectorEntityToken target, boolean isSlave) {
 		if (!usePrisoner()) return false;
 		
-		float baseValue = isSlave? NexConfig.prisonerBaseSlaveValue 
-				: NexConfig.prisonerBaseRansomValue;
-		float increment = isSlave? NexConfig.prisonerSlaveValueIncrementPerLevel 
-				: NexConfig.prisonerRansomValueIncrementPerLevel;
+		float baseValue = NexConfig.prisonerBaseRansomValue;
+		float increment = NexConfig.prisonerRansomValueIncrementPerLevel;
 		String key = isSlave ? "$slaveValue" : "$ransomValue";
 		
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
