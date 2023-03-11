@@ -28,6 +28,7 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
+		setFaction(factionId, dialog, memoryMap);
 		return true;
 	}
 	
