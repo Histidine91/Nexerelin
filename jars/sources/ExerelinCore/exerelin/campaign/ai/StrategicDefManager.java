@@ -75,6 +75,10 @@ public class StrategicDefManager {
         public StrategicConcernDef(String id) {
             this.id = id;
         }
+
+        public boolean hasTag(String tag) {
+            return tags.contains(tag);
+        }
     }
 
     public enum ModuleType {

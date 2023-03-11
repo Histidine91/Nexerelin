@@ -31,5 +31,6 @@ public class WarWearinessConcern extends DiplomacyConcern {
 
     protected void updatePriority(float weariness) {
         priority.modifyFlat("value", weariness/100f, StrategicAI.getString("statValue", true));
+        reapplyPriorityModifiers();
     }
 }

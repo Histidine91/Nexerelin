@@ -7,6 +7,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -55,7 +56,14 @@ public class RevanchismConcern extends MarketRelatedConcern {
             value /= SAIConstants.MARKET_VALUE_DIVISOR;
 
             priority.modifyFlat("value", value, StrategicAI.getString("statValue", true));
+            reapplyPriorityModifiers();
         }
+    }
+
+    @Override
+    public void reapplyPriorityModifiers() {
+        super.reapplyPriorityModifiers();
+        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.IRREDENTIST, 1.5f, false);
     }
 
     @Override

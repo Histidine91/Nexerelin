@@ -87,6 +87,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
 
     protected void updatePriority() {
         priority.modifyFlat("competingShare", competitorShare * 8, StrategicAI.getString("statCompetingShare", true));
+        reapplyPriorityModifiers();
     }
 
     @Override

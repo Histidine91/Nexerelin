@@ -62,6 +62,12 @@ public interface StrategicConcern {
      */
     void update();
 
+
+    /**
+     * Should be called when the concern is generated and each time it is updated.
+     */
+    void reapplyPriorityModifiers();
+
     MarketAPI getMarket();
     FactionAPI getFaction();
 
@@ -75,6 +81,7 @@ public interface StrategicConcern {
 
     StrategicAction pickAction();
     void notifyActionUpdate();
+	float getActionCooldown();
 
     boolean isEnded();
     void end();

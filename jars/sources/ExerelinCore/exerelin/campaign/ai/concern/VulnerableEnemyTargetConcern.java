@@ -51,6 +51,7 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
         if (goal != null) {
             market = goal.one;
             priority.modifyFlat("defenseAdjustedValue", goal.two, StrategicAI.getString("statDefenseAdjustedValue", true));
+            reapplyPriorityModifiers();
         }
 
         return market != null;
@@ -73,6 +74,7 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
         }
         priority.modifyFlat("defenseAdjustedValue", value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR,
                 StrategicAI.getString("statDefenseAdjustedValue", true));
+        reapplyPriorityModifiers();
     }
 
     @Override

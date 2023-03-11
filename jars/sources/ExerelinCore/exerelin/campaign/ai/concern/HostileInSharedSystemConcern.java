@@ -8,6 +8,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 
 import java.util.*;
 
@@ -55,9 +56,16 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
         if (chosen != null) {
             market = chosen.one;
             priority.modifyFlat("value", chosen.two, StrategicAI.getString("statValue", true));
+            reapplyPriorityModifiers();
         }
 
         return market != null;
+    }
+
+    @Override
+    public void reapplyPriorityModifiers() {
+        super.reapplyPriorityModifiers();
+        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
     }
 
     @Override

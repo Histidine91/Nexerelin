@@ -8,16 +8,13 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import com.fs.starfarer.campaign.Faction;
-import com.fs.starfarer.ui.P;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -77,6 +74,7 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
         faction2 = factions.two;
 
         priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
+        reapplyPriorityModifiers();
 
         return faction != null;
     }
@@ -112,6 +110,13 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
             return;
         }
         priority.modifyFlat("power", theirStrength + theirStrength2, StrategicAI.getString("statFactionPower", true));
+        reapplyPriorityModifiers();
+    }
+
+    @Override
+    public void reapplyPriorityModifiers() {
+        super.reapplyPriorityModifiers();
+        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
     }
 
     @Override

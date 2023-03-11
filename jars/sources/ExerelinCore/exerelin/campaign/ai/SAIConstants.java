@@ -22,6 +22,10 @@ public class SAIConstants {
      */
     public static float MIN_MARKET_VALUE_PRIORITY_TO_CARE = 40;
 
+    public static float MAX_ALIGNMENT_MODIFIER_FOR_PRIORITY = 0.25f;
+
+    // UI stuff
+
     public static final float CONCERN_ITEM_WIDTH = 320;
     public static final float CONCERN_ITEM_HEIGHT = 72;
 }

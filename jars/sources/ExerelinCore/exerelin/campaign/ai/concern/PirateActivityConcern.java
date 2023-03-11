@@ -91,6 +91,7 @@ public class PirateActivityConcern extends BaseStrategicConcern {
         rage += rageThisUpdate;
         ai.getFaction().getMemoryWithoutUpdate().set("$nex_pirateRage", rage);
         priority.modifyFlat("rage", rage, StrategicAI.getString("statRage", true));
+        reapplyPriorityModifiers();
     }
 
     @Override

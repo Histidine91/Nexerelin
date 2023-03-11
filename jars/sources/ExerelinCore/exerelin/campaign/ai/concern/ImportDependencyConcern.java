@@ -70,6 +70,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
             float prio = required * 10;
             if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
             priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
+            reapplyPriorityModifiers();
             return true;
         }
 
@@ -106,6 +107,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
         float prio = required * 10;
         if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
         priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
+        reapplyPriorityModifiers();
     }
 
     @Override

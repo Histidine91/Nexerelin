@@ -11,13 +11,14 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.*;
 import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -39,6 +40,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     protected FactionAPI faction;
     @Getter protected StrategicAction currentAction;
     @Getter protected boolean ended;
+    @Getter protected float actionCooldown;
 
     @Override
     public void setAI (StrategicAI ai, StrategicAIModule module) {
@@ -65,6 +67,40 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     @Override
     public void update() {}
+
+    @Override
+    public void reapplyPriorityModifiers() {
+        StrategicDefManager.StrategicConcernDef def = getDef();
+        MutableStat stat = getPriority();
+        if (def.hasTag(TAG_MILITARY)) {
+            applyPriorityModifierForAlignment(Alignment.MILITARIST);
+        }
+        if (def.hasTag(TAG_DIPLOMACY)) {
+            applyPriorityModifierForAlignment(Alignment.DIPLOMATIC);
+        }
+        if (def.hasTag(TAG_ECONOMY)) {
+            applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.MONOPOLIST, 1.4f, false);
+        }
+        if (def.hasTag(TAG_COVERT)) {
+            applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.DEVIOUS, 1.4f, false);
+        }
+    }
+
+    public void applyPriorityModifierForAlignment(Alignment alignment) {
+        MutableStat stat = getPriority();
+        float alignValue = NexConfig.getFactionConfig(ai.getFactionId()).getAlignments().get(Alignment.DIPLOMATIC).modified;
+        stat.modifyMult("alignment_" + alignment.getName(), 1 + SAIConstants.MAX_ALIGNMENT_MODIFIER_FOR_PRIORITY * alignValue,
+                "[temp] Alignment: " + Misc.ucFirst(alignment.getName()));
+    }
+
+    public void applyPriorityModifierForTrait(String trait, float mult, boolean force) {
+        if (!DiplomacyTraits.hasTrait(ai.getFactionId(), trait) && !force)
+            return;
+
+        DiplomacyTraits.TraitDef traitDef = DiplomacyTraits.getTrait(trait);
+        MutableStat stat = getPriority();
+        stat.modifyMult("trait_" + trait, mult, "[temp] Trait: " + traitDef.name);
+    }
 
     @Override
     public CustomPanelAPI createPanel(final CustomPanelAPI holder) {
@@ -104,6 +140,12 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
                         true, NexUtils.getStatModValueGetter(true, 0));
             }
         }, TooltipMakerAPI.TooltipLocation.BELOW);
+
+        if (this.getCurrentAction() != null) {
+
+        } else {
+
+        }
 
         myPanel.addUIElement(tooltip).inTL(0, 0);
         return myPanel;

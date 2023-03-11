@@ -69,6 +69,7 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern {
         if (commodityBundle != null) {
             float valuePerProducer = commodityBundle.totalPerProducerValue;
             priority.modifyFlat("value", valuePerProducer/500, StrategicAI.getString("statValue", true));
+            reapplyPriorityModifiers();
             return true;
         }
 
@@ -130,6 +131,7 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern {
 
         float valuePerProducer = commodityBundle.totalPerProducerValue;
         priority.modifyFlat("value", valuePerProducer/500, StrategicAI.getString("statValue", true));
+        reapplyPriorityModifiers();
     }
 
     @Override
