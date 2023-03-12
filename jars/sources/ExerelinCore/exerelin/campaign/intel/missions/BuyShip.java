@@ -14,6 +14,8 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
+import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
+import com.fs.starfarer.api.impl.campaign.plog.SModRecord;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsBaseOfficial;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -168,10 +170,24 @@ public class BuyShip extends HubMissionWithBarEvent {
 	}
 
 	protected void afterSale(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
-		int sMods = member.getVariant().getSMods().size();
+		int sMods = this.getSModsInstalledByPlayer(member);
 		if (sMods > 0) {
 			Global.getSector().getPlayerStats().addStoryPoints(sMods, dialog.getTextPanel(), false);
 		}
+	}
+	
+	protected int getSModsInstalledByPlayer(FleetMemberAPI member) {
+		int count = 0;
+		for (SModRecord record : PlaythroughLog.getInstance().getSModsInstalled()) {
+			FleetMemberAPI thisMember = record.getMember();
+			if (member != thisMember) continue;
+			if (record.getSMods().isEmpty()) continue;
+			String modId = record.getSMods().get(0);
+			if (!member.getVariant().getSMods().contains(modId)) continue;
+			if (!member.getVariant().getHullMods().contains(modId)) continue;
+			count++;
+		}
+		return count;
 	}
 
 	protected Variation pickVariation() {

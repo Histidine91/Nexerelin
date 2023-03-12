@@ -1767,9 +1767,9 @@ contact_declineBarNoContinue:Decline",
 nex_bShipSelectedText_generic,Nex_BShip_ShipPickedText,,Highlight $nex_bShip_price,"""Ah, a fine specimen indeed."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""I can offer $nex_bShip_price credits for this.""",,
 nex_bShipSelectedText_aristo,Nex_BShip_ShipPickedText,$voice == aristo,Highlight $nex_bShip_price,"""Ah, a fine specimen indeed."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""I can offer $nex_bShip_price credits for this.""",,
 nex_bShipSelectedText_military,Nex_BShip_ShipPickedText,$nex_bShip_variation == MILITARY score:5,Highlight $nex_bShip_price,"""Looks worthy."" $HeOrShe considers the specifications you transmit to $hisOrHer TriPad. ""$TheFaction will authorize a payment of $nex_bShip_price credits for this vessel.""",,
-nex_bShipSelectedExtraInfo,Nex_BShip_ShipPicked,,"AddTextSmall ""Weapons and LPCs will be included in the sale. Story points will be refunded for any S-mods on the ship.""
-SetTextHighlightColors story
-Highlight ""Story points""",,,
+nex_bShipSelectedExtraInfo,Nex_BShip_ShipPicked,,"AddTextSmall ""Weapons and LPCs will be included in the sale. Story points will be refunded for any S-mods on the ship, if they were installed by the player.""
+SetTextHighlightColors story h
+Highlight ""Story points"" ""if""",,,
 nex_bShipPostAccept,ContactPostAccept,$missionId == nex_bShip,"ShowPersonVisual
 AddCommodity credits $nex_bShip_price
 RemoveShip $nex_bShip_member
