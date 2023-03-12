@@ -26,6 +26,8 @@ import org.lwjgl.input.Keyboard;
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
 public class FieldOptionsScreenScript implements EveryFrameScript
 {
+	protected transient boolean keyDown = false;
+
 	@Override
 	public boolean isDone()
 	{
@@ -51,14 +53,20 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 		
 		if (Keyboard.isKeyDown(NexConfig.directoryDialogKey))
 		{
-			CampaignFleetAPI player =  Global.getSector().getPlayerFleet();
-			boolean success = Global.getSector().getCampaignUI().showInteractionDialog(
-					new RuleBasedInteractionDialogPluginImpl(), player);
-			if (success) {
-				InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
-				RuleBasedDialog rbd = ((RuleBasedDialog) dialog.getPlugin());
-				dialog.getVisualPanel().showFleetInfo(null, player, null, null);
-				FireAll.fire(null, dialog, rbd.getMemoryMap(), "ExerelinMarketSpecial");
+			keyDown = true;
+		}
+		else {
+			if (keyDown) {
+				CampaignFleetAPI player =  Global.getSector().getPlayerFleet();
+				boolean success = Global.getSector().getCampaignUI().showInteractionDialog(
+						new RuleBasedInteractionDialogPluginImpl(), player);
+				if (success) {
+					InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+					RuleBasedDialog rbd = ((RuleBasedDialog) dialog.getPlugin());
+					dialog.getVisualPanel().showFleetInfo(null, player, null, null);
+					FireAll.fire(null, dialog, rbd.getMemoryMap(), "ExerelinMarketSpecial");
+				}
+				keyDown = false;
 			}
 		}
 	}
