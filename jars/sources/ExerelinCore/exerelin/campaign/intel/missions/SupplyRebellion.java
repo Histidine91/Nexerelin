@@ -102,14 +102,19 @@ public class SupplyRebellion extends HubMissionWithBarEvent {
         List<FactionAPI> otherFactions = new ArrayList<>();
         for (String ofid : SectorManager.getLiveFactionIdsCopy()) {
             FactionAPI otherFaction = Global.getSector().getFaction(ofid);
+            if (otherFaction.isPlayerFaction()) continue;
             if (otherFaction.isAtWorst(factionId, RepLevel.SUSPICIOUS)) continue;
             otherFactions.add(otherFaction);
         }
+        
+        Random random = genRandom;
+        if (random == null) random = new Random();
         Map<String, Object> targetData = CovertOpsManager.getManager().pickTarget(person.getFaction(), otherFactions,
-                CovertOpsManager.CovertActionType.INSTIGATE_REBELLION);
+                CovertOpsManager.CovertActionType.INSTIGATE_REBELLION, random);
         deliveryMarket = (MarketAPI)targetData.get("market");
 
         if (deliveryMarket == null) return false;
+        if (deliveryMarket.isInvalidMissionTarget()) return false;
 
         if (true || NexUtilsFaction.isPirateFaction(factionId)) {
             deliveryContact = findOrCreateCriminal(deliveryMarket, true);

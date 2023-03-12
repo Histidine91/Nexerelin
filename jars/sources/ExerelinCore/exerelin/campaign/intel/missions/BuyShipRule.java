@@ -233,9 +233,7 @@ public abstract class BuyShipRule {
 		
 		@Override
 		public boolean wantToUseRule(CampaignFleetAPI fleet) {
-			Random random = mission.getGenRandom();
-			if (random == null) random = new Random();
-			return random.nextFloat() < CHANCE_TO_USE_RULE;
+			return mission.getGenRandom().nextFloat() < CHANCE_TO_USE_RULE;
 		}
 	}
 
@@ -266,9 +264,7 @@ public abstract class BuyShipRule {
 
 		@Override
 		public boolean wantToUseRule(CampaignFleetAPI fleet) {
-			Random random = mission.getGenRandom();
-			if (random == null) random = new Random();
-			return random.nextFloat() < CHANCE_TO_USE_RULE;
+			return mission.getGenRandom().nextFloat() < CHANCE_TO_USE_RULE;
 		}
 	}
 
@@ -286,7 +282,7 @@ public abstract class BuyShipRule {
 			if (market == null) return;
 			FactionAPI faction = market.getFaction();
 
-			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(mission.getGenRandom());
 			picker.add(WARSHIP, 6 - faction.getDoctrine().getWarships());
 			picker.add(CARRIER, 6 - faction.getDoctrine().getCarriers());
 			picker.add(PHASE, 6 - faction.getDoctrine().getPhaseShips());
@@ -312,10 +308,7 @@ public abstract class BuyShipRule {
 
 		@Override
 		public boolean wantToUseRule(CampaignFleetAPI fleet) {
-			if (true) return true;
-			Random random = mission.getGenRandom();
-			if (random == null) random = new Random();
-			return random.nextFloat() < CHANCE_TO_USE_RULE;
+			return mission.getGenRandom().nextFloat() < CHANCE_TO_USE_RULE;
 		}
 	}
 }

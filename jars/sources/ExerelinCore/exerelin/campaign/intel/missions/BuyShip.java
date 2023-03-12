@@ -191,7 +191,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 	}
 
 	protected Variation pickVariation() {
-		WeightedRandomPicker<Variation> picker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<Variation> picker = new WeightedRandomPicker<>(genRandom);
 		PersonAPI person = getPerson();
 		if (person.hasTag(Tags.CONTACT_TRADE)) {
 			picker.add(Variation.COLLECTOR, 1);

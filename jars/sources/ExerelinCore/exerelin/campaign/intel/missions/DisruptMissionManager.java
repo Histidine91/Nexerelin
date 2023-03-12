@@ -22,6 +22,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -129,10 +130,14 @@ public class DisruptMissionManager extends BaseEventManager {
 		return faction.getRelationshipLevel(target).isAtBest(required);
 	}
 	
-	public static TargetEntry getTarget(FactionAPI faction, int minAmount, int maxAmount) 
+	public static TargetEntry getTarget(FactionAPI faction, int minAmount, int maxAmount) {
+		return getTarget(faction, minAmount, maxAmount, new Random());
+	}
+	
+	public static TargetEntry getTarget(FactionAPI faction, int minAmount, int maxAmount, Random random) 
 	{
 		String factionId = faction.getId();
-		WeightedRandomPicker<TargetEntry> picker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<TargetEntry> picker = new WeightedRandomPicker<>(random);
 		Map<String, Integer> commodities = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(factionId);
 		Map<String, Integer> importantCommodities = new HashMap<>();
 		//List<ProducerEntry> competitors = EconomyInfoHelper.getInstance().getCompetingProducers(faction.getId(), 3);

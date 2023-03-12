@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import exerelin.utilities.AgentActionListener;
+import java.util.Random;
 import org.apache.log4j.Logger;
 
 public class Nex_DisruptIndustry extends BaseDisruptIndustry implements AgentActionListener {
@@ -72,7 +73,10 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry implements AgentAct
 				break;
 		}
 		
-		TargetEntry target = DisruptMissionManager.getTarget(faction, min, max);
+		Random random = genRandom;
+		if (random == null) random = new Random();
+		
+		TargetEntry target = DisruptMissionManager.getTarget(faction, min, max, random);
 		if (target != null) {
 			this.target = target;
 			industry = target.industry;

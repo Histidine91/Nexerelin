@@ -679,15 +679,21 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		return picker.pick();
 	}
 	
+	public Map<String, Object> pickTarget(FactionAPI agentFaction, List<FactionAPI> factions, 
+			String actionType) {
+		return pickTarget(agentFaction, factions, actionType, this.random);
+	}
+	
 	/**
 	 * Picks an appropriate target for our agent action.
 	 * @param agentFaction
 	 * @param factions
 	 * @param actionType
+	 * @param random
 	 * @return A {@code HashMap} containing targeting details (faction, market, industry, etc.) as appropriate
 	 */
 	public Map<String, Object> pickTarget(FactionAPI agentFaction, List<FactionAPI> factions, 
-			String actionType) 
+			String actionType, Random random) 
 	{
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
 		Map<String, Object> result = new HashMap<>();

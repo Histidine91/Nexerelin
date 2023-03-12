@@ -84,6 +84,7 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 			//log.info("Target market belongs to player, retry later");
 			return false;
 		}
+		if (market.isInvalidMissionTarget()) return false;
 		
 		if (!setMarketMissionRef(market, "$nex_conquest_ref")) {
 			return false;
