@@ -2683,6 +2683,8 @@
 	},
 	
 	"nex_lunaSettings":{
+		"header_ui":"User interface",
+		"header_debug":"Debug",
 		"header_invasions":"Invasions",
 		"header_insurance":"Insurance",
 		"header_agents":"Operatives",
@@ -2695,6 +2697,12 @@
 		"name_ceasefireNotificationPopup":"Ceasefire notification popup",
 		"name_nexDevMode":"Nexerelin dev mode",
 		"tooltip_nexDevMode":"Enables some mod-related testing functions and information.",
+		"name_directoryDialogKey":"Field options menu",
+		"tooltip_directoryDialogKey":"On the overworld screen, brings up a dialog with the faction directory and other useful functions.",
+		"name_diplomacyEventFilterLevel":"Diplomacy event filter level",
+		"tooltip_diplomacyEventFilterLevel":"0 = no filter, 1 = popup only events affecting player/commissioner faction, 2 = filter out all events. War/peace events are always shown.",
+		"name_agentEventFilterLevel":"Operative event filter level",
+		"tooltip_agentEventFilterLevel":"Works more or less the same way as the diplomacy filter.",
 		
 		"name_enableInvasions":"Enable invasions",
 		"name_legacyInvasions":"Use legacy invasion system",

@@ -24,8 +24,11 @@ public class LunaConfigHelper implements LunaSettingsListener {
         String mid = ExerelinConstants.MOD_ID;
         //List<String> tags = DEFAULT_TAGS;
 
-        addSetting("nexDevMode", "boolean", ExerelinModPlugin.isNexDev);
+        addHeader("ui");
+        addSetting("directoryDialogKey", "key", NexConfig.directoryDialogKey);
         addSetting("ceasefireNotificationPopup", "boolean", NexConfig.ceasefireNotificationPopup);
+        addSetting("diplomacyEventFilterLevel", "int", NexConfig.diplomacyEventFilterLevel, 0, 2);
+        addSetting("agentEventFilterLevel", "int", NexConfig.agentEventFilterLevel, 0, 2);
 
         addHeader("invasions");
         addSetting("enableInvasions", "boolean", NexConfig.enableInvasions);
@@ -60,9 +63,9 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
         addHeader("prisoners");
         addSetting("prisonerRepatriateRepValue", "float", NexConfig.prisonerRepatriateRepValue, 0, 1);
-        addSetting("prisonerBaseRansomValue", "int", (int)NexConfig.prisonerBaseRansomValue, 0, 1000000);
-        addSetting("prisonerRansomValueIncrementPerLevel", "int", (int)NexConfig.prisonerRansomValueIncrementPerLevel, 0, 1000000);
-        addSetting("crewLootMult", "float", NexConfig.crewLootMult, 0, 100);
+        addSetting("prisonerBaseRansomValue", "int", (int)NexConfig.prisonerBaseRansomValue, 0, 200000);
+        addSetting("prisonerRansomValueIncrementPerLevel", "int", (int)NexConfig.prisonerRansomValueIncrementPerLevel, 0, 100000);
+        addSetting("crewLootMult", "float", NexConfig.crewLootMult, 0, 10);
 
         addHeader("satbomb");
         addSetting("allowNPCSatBomb", "boolean", NexConfig.allowNPCSatBomb);
@@ -88,6 +91,9 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("officerDeaths", "boolean", NexConfig.officerDeaths);
         addSetting("rebellionMult", "float", NexConfig.rebellionMult, 0f, 10f);
 
+        addHeader("debug");
+        addSetting("nexDevMode", "boolean", ExerelinModPlugin.isNexDev);
+
         LunaSettings.SettingsCreator.refresh(mid);
 
         try {
@@ -98,8 +104,10 @@ public class LunaConfigHelper implements LunaSettingsListener {
     }
 
     public static void loadConfigFromLuna() {
-        ExerelinModPlugin.isNexDev = (boolean)loadSetting("nexDevMode", "boolean");
         NexConfig.ceasefireNotificationPopup = (boolean)loadSetting("ceasefireNotificationPopup", "boolean");
+        NexConfig.directoryDialogKey = (int)loadSetting("directoryDialogKey", "key");
+        NexConfig.diplomacyEventFilterLevel = (int)loadSetting("diplomacyEventFilterLevel", "int");
+        NexConfig.agentEventFilterLevel = (int)loadSetting("agentEventFilterLevel", "int");
 
         NexConfig.crewLootMult = (float)loadSetting("crewLootMult", "float");
 
@@ -152,6 +160,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.officerDeaths = (boolean)loadSetting("officerDeaths", "boolean");
         NexConfig.rebellionMult = (float)loadSetting("rebellionMult", "float");
         //NexConfig.prismNumBossShips = (int)loadSetting("prismNumBossShips", "int");
+
+        ExerelinModPlugin.isNexDev = (boolean)loadSetting("nexDevMode", "boolean");
     }
 
     public static Object loadSetting(String var, String type) {
@@ -162,6 +172,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
                 return LunaSettings.getBoolean(mid, var);
             case "int":
             case "integer":
+            case "key":
                 return LunaSettings.getInt(mid, var);
             case "float":
                 return (float)(double)LunaSettings.getDouble(mid, var);
@@ -183,29 +194,32 @@ public class LunaConfigHelper implements LunaSettingsListener {
             tooltip = "";
         }
         String mid = ExerelinConstants.MOD_ID;
+        String name = getString("name_" + var);
 
         switch (type) {
             case "boolean":
-                LunaSettings.SettingsCreator.addBoolean(mid, var, getString("name_" + var), tooltip, (boolean)defaultVal);
+                LunaSettings.SettingsCreator.addBoolean(mid, var, name, tooltip, (boolean)defaultVal);
                 break;
             case "int":
             case "integer":
                 if (defaultVal instanceof Float) {
                     defaultVal = Math.round((float)defaultVal);
                 }
-                LunaSettings.SettingsCreator.addInt(mid, var, getString("name_" + var), tooltip,
+                LunaSettings.SettingsCreator.addInt(mid, var, name, tooltip,
                         (int)defaultVal, (int)Math.round(min), (int)Math.round(max));
                 break;
             case "float":
                 // fix float -> double conversion causing an unround number
                 String floatStr = ((Float)defaultVal).toString();
-                LunaSettings.SettingsCreator.addDouble(mid, var, getString("name_" + var), tooltip,
+                LunaSettings.SettingsCreator.addDouble(mid, var, name, tooltip,
                         Double.parseDouble(floatStr), min, max);
                 break;
             case "double":
-                LunaSettings.SettingsCreator.addDouble(mid, var, getString("name_" + var), tooltip,
+                LunaSettings.SettingsCreator.addDouble(mid, var, name, tooltip,
                         (double)defaultVal, min, max);
                 break;
+            case "key":
+                LunaSettings.SettingsCreator.addKeybind(mid, var, name, tooltip, (int)defaultVal);
             default:
                 log.error(String.format("Setting %s has invalid type %s", var, type));
         }
