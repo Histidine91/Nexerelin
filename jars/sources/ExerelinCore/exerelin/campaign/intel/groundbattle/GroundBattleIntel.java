@@ -100,6 +100,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public static final Object UPDATE_TURN = new Object();
 	public static final Object UPDATE_VICTORY = new Object();
+	public static final Object UPDATE_NON_VICTORY_END = new Object();
 	public static final Object BUTTON_CANCEL_MOVES = new Object();
 	public static final Object BUTTON_AUTO_MOVE = new Object();
 	public static final Object BUTTON_AUTO_MOVE_TOGGLE = new Object();
@@ -1110,7 +1111,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			}
 		}		
 		
-		sendUpdateIfPlayerHasIntel(UPDATE_VICTORY, false);
+		if (outcome == BattleOutcome.ATTACKER_VICTORY || outcome == BattleOutcome.DEFENDER_VICTORY)
+			sendUpdateIfPlayerHasIntel(UPDATE_VICTORY, false);
+		else
+			sendUpdateIfPlayerHasIntel(UPDATE_NON_VICTORY_END, false);
 
 		for (GroundBattleCampaignListener x : Global.getSector().getListenerManager().getListeners(GroundBattleCampaignListener.class)) 
 		{
@@ -2521,8 +2525,15 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				&& !attacker.getLossesLastTurn().isEmpty()
 				&& !defender.getLossesLastTurn().isEmpty())
 			return "nex_sfx_combat";
-		//if (listInfoParam == UPDATE_VICTORY)
-		//	return "nex_sfx_combat";	// maybe different sound?
+		if (listInfoParam == UPDATE_NON_VICTORY_END && outcome != BattleOutcome.CANCELLED) {
+			return "nex_sfx_gb_draw";
+		}
+		if (listInfoParam == UPDATE_VICTORY) {
+			boolean attackerVictory = (outcome == BattleOutcome.ATTACKER_VICTORY);
+			boolean playerVictory = attackerVictory == (playerIsAttacker == null || playerIsAttacker.booleanValue());
+			if (playerVictory) return "nex_sfx_gb_victory";
+			else return "nex_sfx_gb_defeat";
+		}
 		
 		return getSoundMajorPosting();
 	}

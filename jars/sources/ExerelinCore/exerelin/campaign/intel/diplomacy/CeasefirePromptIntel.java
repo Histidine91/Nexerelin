@@ -256,7 +256,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	
 	@Override
 	public String getCommMessageSound() {
-		return getSoundColonyThreat();
+		return "nex_ui_ceasefire_prompt";
 	}
 		
 	@Override
