@@ -314,7 +314,7 @@ nex_factionDirectory,DialogOptionSelected,$option == nex_factionDirectoryMain,Fi
 nex_factionDirectoryByTrigger,ExerelinFactionDirectory,,"Nex_VisualCustomPanel clear
 Nex_FactionDirectory listGroups",Which faction do you want to look up?,,
 nex_factionDirectoryList,DialogOptionSelected,"Nex_OptionStartsWith ""nex_factionDirectoryList_""",Nex_FactionDirectory listFactions,,,
-nex_factionDirectoryList_indSearch,DialogOptionSelected,$option == nex_factionDirectoryList_indSearch,"FireAll Nex_FactionDirectory_IndSearchOpts
+nex_factionDirectoryList_indSearch,DialogOptionSelected,$option == nex_factionDirectoryList_indSearch score:2,"FireAll Nex_FactionDirectory_IndSearchOpts
 SetShortcut nex_factionDirectoryMain ESCAPE",,,
 nex_factionDirectoryList_indSearchDefault,Nex_FactionDirectory_IndSearchOpts,,,,"nex_printMarketsWithIndustries_heavyIndustry:Heavy industry
 nex_printMarketsWithIndustries_fuelprod:Fuel production

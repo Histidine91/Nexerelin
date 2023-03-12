@@ -1,12 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -19,6 +14,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.PositionAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ui.FieldOptionsScreenScript.FactionDirectoryDialog;
@@ -40,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector2f;
 
 public class Nex_FactionDirectory extends BaseCommandPlugin {
 	
@@ -261,19 +258,29 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	public void printMarketsWithIndustry(InteractionDialogAPI dialog, String industryId) 
 	{		
 		float pad = 3;
-		
-		List<MarketAPI> markets = new ArrayList<>();
+
+		// get markets and sort them by distance from player
+		List<Pair<MarketAPI, Float>> entries = new ArrayList<>();
+
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (marketHasIndustry(market, industryId)) markets.add(market);
+			if (marketHasIndustry(market, industryId)) {
+				float dist = Misc.getDistanceToPlayerLY(market.getContainingLocation().getLocation());
+				Pair<MarketAPI, Float> entry = new Pair<>(market, dist);
+				entries.add(entry);
+			}
 		}
-		
-		Collections.sort(markets, MARKET_COMPARATOR);
+		Collections.sort(entries, MARKET_COMPARATOR_DISTANCE);
+
+		// convert to arraylist of markets
+		List<MarketAPI> markets = new ArrayList<>();
+		for (Pair<MarketAPI, Float> entry : entries) {
+			markets.add(entry.one);
+		}
 				
 		float width = Nex_VisualCustomPanel.PANEL_WIDTH * 4/5;
 		Nex_VisualCustomPanel.createPanel(dialog, true, width, Nex_VisualCustomPanel.PANEL_HEIGHT);
 		
 		TooltipMakerAPI tt = Nex_VisualCustomPanel.getTooltip();
-		
 		
 		// header, total number of markets
 		String str = StringHelper.getString("exerelin_markets", "marketDirectoryHeaderIndustrySearch");
@@ -350,7 +357,10 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				PlanetAPI star = ((StarSystemAPI)loc).getStar();
 				if (star != null) locColor = star.getSpec().getIconColor();
 			}
-			String locText = String.format("%s", locName, ownerName);
+			float dist = Misc.getDistanceToPlayerLY(loc.getLocation());
+			String distStr = String.format("%.1f", dist);
+			String locText = StringHelper.getStringAndSubstituteToken("exerelin_markets", "marketDirectoryEntryForPickerNoMarket", "$target", loc.getNameWithNoType());
+			locText = StringHelper.substituteToken(locText, "$distance", distStr);
 			
 			String sizeImg = Global.getSettings().getMarketConditionSpec("population_" + size).getIcon();
 			
@@ -366,8 +376,8 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			TooltipMakerAPI text = (TooltipMakerAPI)gen.elements.get(1);
 			text.addPara(marketName, marketColor, pad);
 			label = text.addPara(locText, pad);
-			label.setHighlight(locName, ownerName);
-			label.setHighlightColors(locColor, ownerColor);
+			label.setHighlight(locName, distStr);
+			label.setHighlightColors(locColor, hl);
 			
 			// show button			
 			TooltipMakerAPI buttonHolder = panel.createUIElement(buttonWidth, imgSize, false);
@@ -475,7 +485,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	}
 		
 	/**
-	 * Sorts markets by name of their star system, then by size
+	 * Sorts markets by name of their star system, then by size.
 	 */
 	public static final Comparator<MarketAPI> MARKET_COMPARATOR = new Comparator<MarketAPI>() {
 		@Override
@@ -499,6 +509,22 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	public static final Comparator<MarketAPI> MARKET_COMPARATOR_SIZE = new Comparator<MarketAPI>() {
 		@Override
 		public int compare(MarketAPI m1, MarketAPI m2) {
+			if (m1.getSize() != m2.getSize())
+				return Integer.compare(m2.getSize(), m1.getSize());
+			return m1.getName().compareTo(m2.getName());
+		}};
+
+	public static final Comparator<Pair<MarketAPI, Float>> MARKET_COMPARATOR_DISTANCE = new Comparator<Pair<MarketAPI, Float>>() {
+		@Override
+		public int compare(Pair<MarketAPI, Float> e1, Pair<MarketAPI, Float> e2) {
+			MarketAPI m1 = e1.one;
+			MarketAPI m2 = e2.one;
+			float d1 = e1.two;
+			float d2 = e2.two;
+
+			if (d1 != d2) {
+				return Float.compare(d1, d2);
+			}
 			if (m1.getSize() != m2.getSize())
 				return Integer.compare(m2.getSize(), m1.getSize());
 			return m1.getName().compareTo(m2.getName());
