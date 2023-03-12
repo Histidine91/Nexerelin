@@ -151,8 +151,6 @@ public class NexUtilsMarket {
 	{
 		String origOwner = getOriginalOwner(market);
 		if (factionId == null) return origOwner == null;
-		if (factionId.equals(Factions.PLAYER))
-			return origOwner == null || origOwner.equals(Factions.PLAYER);
 		return factionId.equals(origOwner);
 	}
 	
