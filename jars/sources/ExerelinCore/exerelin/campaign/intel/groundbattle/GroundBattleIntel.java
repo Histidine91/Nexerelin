@@ -1039,7 +1039,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				playerData.setLoot(GroundBattleRoundResolve.lootMarket(market, lootMult));
 		}
 		boolean startedByPlayer = playerInitiated || (invasionIntel != null && invasionIntel.isPlayerSpawned());
-		if (startedByPlayer && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null) 
+		if (startedByPlayer && outcome == BattleOutcome.ATTACKER_VICTORY && Misc.getCommissionFaction() != null && !wasPlayerMarket())
 		{
 			timerForDecision = 7f;
 			mem.set(GBConstants.MEMKEY_AWAIT_DECISION, true, timerForDecision);
@@ -1238,10 +1238,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * Was this market originally owned by the player?
 	 * @return
 	 */
-	protected boolean wasPlayerMarket() {
-		String origOwner = NexUtilsMarket.getOriginalOwner(market);
-		boolean originallyPlayer = /* origOwner == null ||*/ origOwner.equals(Factions.PLAYER);
-		return originallyPlayer;
+	public boolean wasPlayerMarket() {
+		return NexUtilsMarket.wasOriginalOwner(market, Factions.PLAYER);
 	}
 	
 	/**
