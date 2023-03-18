@@ -1488,9 +1488,10 @@ UpdateMemory
 $tradeMode = OPEN 0
 ShowDefaultVisual",Outpost constructed.,exerelinMarketSpecialBack:Back,
 ,,,,,,
-nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,13:nex_outpostDismantle:Dismantle outpost,
+nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,25:nex_outpostDismantle:Dismantle outpost,
 nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"Nex_PlayerOutpost dismantleInfo
-Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $market?"" ""Yes"" ""No""","You can dismantle this outpost, recovering the AI core(s) and half the resources used in its creation.
+Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $market?"" ""Yes"" ""No""
+SetShortcut nex_outpostBack ESCAPE","You can dismantle this outpost, recovering the AI core(s) and half the resources used in its creation.
 
 All cargo in Storage will also be recovered. All cargo in Local Resources will be lost.","nex_outpostDismantleConfirm:Proceed
 nex_outpostBack:Go back",
