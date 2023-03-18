@@ -597,7 +597,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 					if (!selfLiberate && !Nex_IsFactionRuler.isRuler(newOwner)) {
 						SectorManager.transferMarket(market, rebelFaction, market.getFaction(), 
 								false, false, null, 0);
-						DiplomacyManager.adjustRelations(newOwner, rebelFaction, market.getSize() * 2, null, null, null);
+						DiplomacyManager.adjustRelations(newOwner, rebelFaction, market.getSize() * 0.02f, null, null, null);
 					}
 				}
 				else endEvent(RebellionResult.OTHER);
