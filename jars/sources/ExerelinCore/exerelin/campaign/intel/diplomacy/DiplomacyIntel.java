@@ -15,17 +15,22 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class DiplomacyIntel extends BaseIntelPlugin {
+public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDelegate {
 	
 	protected String eventId;
 	protected String factionId1;
@@ -37,6 +42,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	protected boolean isPeace;
 	private boolean seenByPlayer = false;
 	private boolean shouldEndWhenSeen = false;
+
+	@Getter	@Setter	protected StrategicAction strategicAction;
 	protected Long timestampActual = Global.getSector().getClock().getTimestamp();
 
 	public DiplomacyIntel(String eventId, String factionId1, String factionId2, MarketAPI market, ExerelinReputationAdjustmentResult reputation)
@@ -282,7 +289,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		return getName();
 	}
 	
-	protected String getName() {
+	public String getName() {
 		String str = StringHelper.getString("exerelin_diplomacy", "intelTitle");
 		DiplomacyEventDef def = getEventDef();
 		if (def != null)
@@ -321,5 +328,10 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	@Override
 	public String getSortString() {
 		return "Diplomacy";
+	}
+
+	@Override
+	public ActionStatus getStrategicActionStatus() {
+		return ActionStatus.SUCCESS;
 	}
 }

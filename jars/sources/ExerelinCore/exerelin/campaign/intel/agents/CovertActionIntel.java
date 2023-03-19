@@ -26,6 +26,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
@@ -45,7 +47,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lazywizard.lazylib.MathUtils;
 
-public abstract class CovertActionIntel extends BaseIntelPlugin implements Cloneable {
+public abstract class CovertActionIntel extends BaseIntelPlugin implements StrategicActionDelegate, Cloneable {
 	
 	public static final String[] EVENT_ICONS = new String[]{
 		"graphics/exerelin/icons/intel/spy4.png",
@@ -69,6 +71,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	@Getter @Setter protected boolean playerInvolved = false;
 	@Getter @Setter protected CovertActionResult result;
 	protected ExerelinReputationAdjustmentResult repResult;
+	@Getter @Setter protected StrategicAction strategicAction;
 	protected float relation;
 	protected int xpGain = -1;
 	protected int newLevel = -1;
@@ -281,6 +284,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 		// alert level
 		if (def.useAlertLevel) {
 			float mult = 1 - CovertOpsManager.getAlertLevel(market);
+			if (mult < 0) mult = 0;
 			stat.modifyMult("alertLevel", mult, StringHelper.getString("nex_agents", "alertLevel", true));
 		}
 		
@@ -661,8 +665,21 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Clone
 	public Color getTitleColor(ListInfoMode mode) {
 		return Misc.getBasePlayerColor();
 	}
-	
-	protected String getName() {
+
+	@Override
+	public ActionStatus getStrategicActionStatus() {
+		if (getResult() != null) {
+			return getResult().isSuccessful() ? ActionStatus.SUCCESS : ActionStatus.FAILURE;
+		}
+		else if (isEnded() || isEnding()) {
+			return ActionStatus.CANCELLED;
+		}
+		if (!started) return ActionStatus.STARTING;
+
+		return ActionStatus.IN_PROGRESS;
+	}
+
+	public String getName() {
 		String str = getDef().name;
 		if (result != null) { 
 			if (result.isSuccessful())

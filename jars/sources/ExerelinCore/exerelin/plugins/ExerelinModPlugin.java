@@ -44,6 +44,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ai.MilitaryInfoHelper;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.MarketDescChanger;
@@ -385,8 +386,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addTransientListener(new EncounterLootHandler());
 
         if (!newGame) {
-            EconomyInfoHelper.createInstance();
-            MilitaryInfoHelper.createInstance();
+            EconomyInfoHelper.createInstance(true);
+            MilitaryInfoHelper.createInstance(true);
         }
         
         if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
@@ -404,7 +405,11 @@ public class ExerelinModPlugin extends BaseModPlugin
             plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
         }
 
-        StrategicAI.addAIsIfNeeded();
+        if (SAIConstants.AI_ENABLED){
+            StrategicAI.addAIsIfNeeded();
+        } else {
+            StrategicAI.removeAIs();
+        }
         
         alphaSiteWorkaround();
 

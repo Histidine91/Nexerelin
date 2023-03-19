@@ -24,6 +24,8 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -42,7 +44,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 
-public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate {
+public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate, StrategicActionDelegate {
 	
 	public static final String MEM_KEY_ACTION_DONE = "$nex_raidActionDone";
 	public static final Object ENTERED_SYSTEM_UPDATE = new Object();
@@ -68,6 +70,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean useMarketFleetSizeMult = InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT;
 	protected boolean requiresSpaceportOrBase = true;
 	@Getter @Setter protected Float qualityOverride = null;
+	@Getter @Setter protected StrategicAction strategicAction;
 	
 	@Getter @Setter protected boolean abortIfNonHostile = true;
 	
@@ -422,7 +425,18 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			info.addPara(str, pad, color, hl, "" + (int)Math.round(eta));
 		}
 	}
-	
+
+	@Override
+	public ActionStatus getStrategicActionStatus() {
+		if (getCurrentStage() == 0) return ActionStatus.STARTING;
+		if (outcome != null) {
+			if (outcome == OffensiveOutcome.SUCCESS) return ActionStatus.SUCCESS;
+			else if (outcome == OffensiveOutcome.FAIL) return ActionStatus.FAILURE;
+			else return ActionStatus.CANCELLED;
+		}
+		return ActionStatus.IN_PROGRESS;
+	}
+
 	@Override
 	public String getName() {
 		String base = getBaseName();

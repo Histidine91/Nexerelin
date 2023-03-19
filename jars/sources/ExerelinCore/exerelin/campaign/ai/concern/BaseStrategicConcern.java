@@ -11,10 +11,9 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.*;
 import exerelin.campaign.ai.action.StrategicAction;
-import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
@@ -24,10 +23,8 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 @Log4j
 public abstract class BaseStrategicConcern implements StrategicConcern {
@@ -35,12 +32,12 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     @Getter @Setter protected String id;
     protected StrategicAI ai;
     protected StrategicAIModule module;
-    @Getter @Setter protected MutableStat priority = new MutableStat(0);
+    @Getter protected MutableStat priority = new MutableStat(0);
     @Getter protected MarketAPI market;
     protected FactionAPI faction;
     @Getter protected StrategicAction currentAction;
     @Getter protected boolean ended;
-    @Getter protected float actionCooldown;
+    @Getter @Setter protected float actionCooldown;
 
     @Override
     public void setAI (StrategicAI ai, StrategicAIModule module) {
@@ -71,35 +68,27 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     @Override
     public void reapplyPriorityModifiers() {
         StrategicDefManager.StrategicConcernDef def = getDef();
-        MutableStat stat = getPriority();
-        if (def.hasTag(TAG_MILITARY)) {
-            applyPriorityModifierForAlignment(Alignment.MILITARIST);
+        if (def.hasTag(SAIConstants.TAG_MILITARY)) {
+            SAIUtils.applyPriorityModifierForAlignment(ai.getFactionId(), priority, Alignment.MILITARIST);
         }
-        if (def.hasTag(TAG_DIPLOMACY)) {
-            applyPriorityModifierForAlignment(Alignment.DIPLOMATIC);
-        }
-        if (def.hasTag(TAG_ECONOMY)) {
-            applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.MONOPOLIST, 1.4f, false);
-        }
-        if (def.hasTag(TAG_COVERT)) {
-            applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.DEVIOUS, 1.4f, false);
-        }
-    }
+        if (def.hasTag(SAIConstants.TAG_DIPLOMACY)) {
+            //log.info("Applying diplomacy modifier for concern " + this.getName());
+            SAIUtils.applyPriorityModifierForAlignment(ai.getFactionId(), priority, Alignment.DIPLOMATIC);
 
-    public void applyPriorityModifierForAlignment(Alignment alignment) {
-        MutableStat stat = getPriority();
-        float alignValue = NexConfig.getFactionConfig(ai.getFactionId()).getAlignments().get(Alignment.DIPLOMATIC).modified;
-        stat.modifyMult("alignment_" + alignment.getName(), 1 + SAIConstants.MAX_ALIGNMENT_MODIFIER_FOR_PRIORITY * alignValue,
-                "[temp] Alignment: " + Misc.ucFirst(alignment.getName()));
-    }
+            if (faction != null) {
+                Boolean wantPositive = null;
+                if (def.hasTag("diplomacy_positive")) wantPositive = true;
+                else if (def.hasTag("diplomacy_negative")) wantPositive = false;
 
-    public void applyPriorityModifierForTrait(String trait, float mult, boolean force) {
-        if (!DiplomacyTraits.hasTrait(ai.getFactionId(), trait) && !force)
-            return;
-
-        DiplomacyTraits.TraitDef traitDef = DiplomacyTraits.getTrait(trait);
-        MutableStat stat = getPriority();
-        stat.modifyMult("trait_" + trait, mult, "[temp] Trait: " + traitDef.name);
+                if (wantPositive != null) SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), wantPositive, priority);
+            }
+        }
+        if (def.hasTag(SAIConstants.TAG_ECONOMY)) {
+            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.MONOPOLIST, 1.4f, false);
+        }
+        if (def.hasTag(SAIConstants.TAG_COVERT)) {
+            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.DEVIOUS, 1.4f, false);
+        }
     }
 
     @Override
@@ -171,11 +160,61 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     @Override
     public StrategicAction pickAction() {
-        return null;
+        StrategicAction bestAction = null;
+        float bestPrio = 0;
+
+        for (StrategicDefManager.StrategicActionDef possibleActionDef : module.getRelevantActionDefs(this)) {
+            StrategicAction action = StrategicDefManager.instantiateAction(possibleActionDef);
+            if (faction != null && !faction.isHostileTo(ai.getFaction()) && action.getDef().hasTag("wartime")) {
+                continue;
+            }
+            if (!action.canUseForConcern(this)) continue;
+            if (!action.isValid()) continue;
+            action.updatePriority();
+            float priority = action.getPriorityFloat();
+            if (priority < SAIConstants.MIN_ACTION_PRIORITY_TO_USE) continue;
+
+            if (priority > bestPrio) {
+                bestAction = action;
+                bestPrio = priority;
+            } else continue;
+        }
+
+        return bestAction;
     }
 
     @Override
-    public void notifyActionUpdate() {};
+    public boolean initAction(StrategicAction action) {
+        boolean success = action.generate();
+        if (!success) return false;
+        this.currentAction = action;
+        action.init();
+        notifyActionUpdate(action, StrategicActionDelegate.ActionStatus.STARTING);
+        return true;
+    }
+
+    @Override
+    public void notifyActionUpdate(StrategicAction action, StrategicActionDelegate.ActionStatus newStatus) {
+        if (newStatus == StrategicActionDelegate.ActionStatus.SUCCESS || newStatus == StrategicActionDelegate.ActionStatus.FAILURE) {
+            actionCooldown += action.getDef().cooldown;
+        }
+        else if (newStatus == StrategicActionDelegate.ActionStatus.STARTING) {
+            ai.getExecModule().reportRecentAction(action);
+        }
+    };
+
+    @Override
+    public boolean canTakeAction(StrategicAction action) {
+        return true;    // usually handled by the action's code
+    }
+
+    @Override
+    public void advance(float days) {
+        if (ended) return;
+        if (currentAction != null) currentAction.advance(days);
+        actionCooldown -= days;
+        if (actionCooldown < 0) actionCooldown = 0;
+    }
 
     @Override
     public void end() {
@@ -208,8 +247,15 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     }
 
     @Override
+    public List<FactionAPI> getFactions() {
+        return new ArrayList<>(Arrays.asList(new FactionAPI[] {getFaction()}));
+    }
+
+    @Override
     public String getName() {
-        return getDef().name;
+        String name = getDef().name;
+        if (ended) name = "[FIXME ended] " + name;
+        return name;
     }
 
     @Override
@@ -243,6 +289,11 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         value += NexUtilsMarket.getIncomeNetPresentValue(market, 6, 0.02f);
 
         return value;
+    }
+
+    public boolean isAwaitingAction() {
+        if (actionCooldown > 0) return false;
+        return currentAction == null || currentAction.isEnded();
     }
 
     @Override

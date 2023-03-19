@@ -20,7 +20,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class UndersuppliedMarketConcern extends BaseStrategicConcern {
+public class UndersuppliedMarketConcern extends BaseStrategicConcern implements HasCommodityTarget {
 
     public static float MARKET_PER_PRODUCER_THRESHOLD = 10000;
 
@@ -132,6 +132,11 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern {
         float valuePerProducer = commodityBundle.totalPerProducerValue;
         priority.modifyFlat("value", valuePerProducer/500, StrategicAI.getString("statValue", true));
         reapplyPriorityModifiers();
+    }
+
+    @Override
+    public List<String> getCommodityIds() {
+        return new ArrayList<>(commodityBundle.commodities);
     }
 
     @Override

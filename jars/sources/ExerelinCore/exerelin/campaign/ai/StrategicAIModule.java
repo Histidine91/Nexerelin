@@ -34,9 +34,24 @@ public abstract class StrategicAIModule {
         return list;
     }
 
+    public List<StrategicDefManager.StrategicActionDef> getRelevantActionDefs(StrategicConcern concern) {
+        List<StrategicDefManager.StrategicActionDef> list = new ArrayList<>();
+        for (StrategicDefManager.StrategicActionDef def : StrategicDefManager.ACTION_DEFS_BY_ID.values()) {
+            List<String> tagsCopy = new ArrayList<>(def.tags);
+            tagsCopy.retainAll(concern.getDef().tags);
+            if (tagsCopy.isEmpty()) continue;
+            list.add(def);
+        }
+        return list;
+    }
+
     public void init() {}
 
-    public void advance(float days) {};
+    public void advance(float days) {
+        for (StrategicConcern concern : currentConcerns) {
+            concern.advance(days);
+        }
+    };
 
     /**
      * @return List of new concerns found.

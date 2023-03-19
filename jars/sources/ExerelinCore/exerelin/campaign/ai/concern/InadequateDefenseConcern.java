@@ -4,6 +4,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexUtilsFaction;
@@ -22,7 +23,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
 
         Set<Object> alreadyConcernMarkets = getExistingConcernItems();
 
-        for (MarketAPI market : NexUtilsFaction.getFactionMarkets(ai.getFaction().getId(), true)) {
+        for (MarketAPI market : NexUtilsFaction.getFactionMarkets(ai.getFactionId(), true)) {
             if (alreadyConcernMarkets.contains(market)) continue;
             int size = market.getSize();
             float value = getMarketValue(market);
@@ -79,7 +80,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
     @Override
     public void reapplyPriorityModifiers() {
         super.reapplyPriorityModifiers();
-        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
+        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
     }
 
     @Override

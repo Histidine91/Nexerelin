@@ -43,9 +43,9 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
         log.info("Generating import dependency concern for " + ai.getFaction().getDisplayName());
         log.info("Import dependency existing concerns: " + alreadyConcerned + ", size " + alreadyConcerned.size());
 
-        Map<String, Integer> imports = EconomyInfoHelper.getInstance().getCommoditiesImportedByFaction(ai.getFaction().getId());
+        Map<String, Integer> imports = EconomyInfoHelper.getInstance().getCommoditiesImportedByFaction(ai.getFactionId());
         Map<String, Integer> trueImports = new HashMap<>();
-        Map<String, Integer> production = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(ai.getFaction().getId());
+        Map<String, Integer> production = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(ai.getFactionId());
 
         for (String commodityId : imports.keySet()) {
             if (alreadyConcerned.contains(commodityId)) continue;
@@ -79,11 +79,11 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
 
     protected boolean isRelyOnImports(String commodityId) {
         int threshold = 4 + EconomyInfoHelper.getCommodityOutputModifier(commodityId);
-        int imports = EconomyInfoHelper.getInstance().getFactionCommodityImports(ai.getFaction().getId(), commodityId);
+        int imports = EconomyInfoHelper.getInstance().getFactionCommodityImports(ai.getFactionId(), commodityId);
         if (imports < threshold) {
             return false;
         }
-        int production = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFaction().getId(), commodityId);
+        int production = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
         if (production > imports) return false;
 
         return true;
@@ -92,12 +92,12 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
     @Override
     public void update() {
         int threshold = 4 + EconomyInfoHelper.getCommodityOutputModifier(commodityId);
-        int imports = EconomyInfoHelper.getInstance().getFactionCommodityImports(ai.getFaction().getId(), commodityId);
+        int imports = EconomyInfoHelper.getInstance().getFactionCommodityImports(ai.getFactionId(), commodityId);
         if (imports < threshold) {
             end();
             return;
         }
-        int production = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFaction().getId(), commodityId);
+        int production = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
         if (production > imports) {
             end();
             return;

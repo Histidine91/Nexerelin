@@ -9,10 +9,13 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.util.*;
@@ -23,10 +26,12 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
 
     public static final int MAX_ADVERSARIES_TO_CHECK = 4;
 
-    protected FactionAPI faction2;
+    @Getter protected FactionAPI faction2;
 
     @Override
     public boolean generate() {
+        if (NexUtilsFaction.isPirateFaction(ai.getFactionId())) return false;
+
         FactionAPI us = ai.getFaction();
         Set alreadyConcerned = getExistingConcernItems();
 
@@ -116,7 +121,12 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
     @Override
     public void reapplyPriorityModifiers() {
         super.reapplyPriorityModifiers();
-        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
+        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
+    }
+
+    @Override
+    public List<FactionAPI> getFactions() {
+        return new ArrayList<>(Arrays.asList(new FactionAPI[] {getFaction(), faction2}));
     }
 
     @Override

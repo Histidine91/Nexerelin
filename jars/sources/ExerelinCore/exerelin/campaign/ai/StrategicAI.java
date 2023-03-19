@@ -5,10 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
@@ -29,7 +26,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	public static final String MEMORY_KEY = "$nex_strategicAI";
 	public static final String UPDATE_NEW_CONCERNS = "new_concerns";
 	public static final float MARGIN = 40;
-	//public static final Object BUTTON_GENERATE_REPORT = new Object();
+	public static final Object BUTTON_MEETING = new Object();
 	//public static final Long lastReportTimestamp;
 
 	@Getter	protected final FactionAPI faction;
@@ -38,11 +35,13 @@ public class StrategicAI extends BaseIntelPlugin {
 	@Getter protected EconomicAIModule econModule;
 	@Getter protected DiplomaticAIModule diploModule;
 	@Getter protected MilitaryAIModule milModule;
+	@Getter protected ExecutiveAIModule execModule;
 
 	@Deprecated protected List<StrategicConcern> existingConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastAddedConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastRemovedConcerns = new ArrayList<>();
 	protected IntervalUtil interval = new IntervalUtil(29, 31);
+	@Getter protected float daysSinceLastUpdate;
 
 
 	public StrategicAI(FactionAPI faction) {
@@ -57,6 +56,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		econModule = new EconomicAIModule(this, StrategicDefManager.ModuleType.ECONOMIC);
 		diploModule = new DiplomaticAIModule(this, StrategicDefManager.ModuleType.DIPLOMATIC);
 		milModule = new MilitaryAIModule(this, StrategicDefManager.ModuleType.MILITARY);
+		execModule = new ExecutiveAIModule(this);
 		econModule.init();
 		diploModule.init();
 		milModule.init();
@@ -71,6 +71,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	protected Object readResolve() {
 		lastAddedConcerns = new ArrayList<>();
 		lastRemovedConcerns = new ArrayList<>();
+		if (execModule == null) execModule = new ExecutiveAIModule(this);
 		return this;
 	}
 	
@@ -94,10 +95,16 @@ public class StrategicAI extends BaseIntelPlugin {
 		econModule.advance(days);
 		milModule.advance(days);
 		diploModule.advance(days);
+		execModule.advance(days);
 
 		interval.advance(days);
 		if (!interval.intervalElapsed()) return;
+		daysSinceLastUpdate = interval.getIntervalDuration();
 
+		update();
+	}
+
+	protected void update() {
 		// update existing concerns, remove any if needed
 		updateConcerns(econModule);
 		updateConcerns(milModule);
@@ -109,6 +116,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		findConcerns(diploModule);
 
 		// TODO: tell executive module to take action
+		execModule.actOnConcerns();
 
 		if (!lastAddedConcerns.isEmpty() || !lastRemovedConcerns.isEmpty()) {
 			sendUpdateIfPlayerHasIntel(UPDATE_NEW_CONCERNS, true, false);
@@ -170,6 +178,9 @@ public class StrategicAI extends BaseIntelPlugin {
 
 		String str = getString("intelPara_daysToNextMeeting");
 		tooltip.addPara(str, opad, Misc.getHighlightColor(), String.format("%.1f", interval.getIntervalDuration() - interval.getElapsed()));
+		if (ExerelinModPlugin.isNexDev) {
+			tooltip.addButton("Force meeting", BUTTON_MEETING, 128, 24, pad);
+		}
 
 		tooltip.addSectionHeading(getString("intelHeader_economy"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
 		try {
@@ -194,6 +205,12 @@ public class StrategicAI extends BaseIntelPlugin {
 			log.error("Failed to generate diplomacy report", ex);
 		}
 
+		tooltip.addSectionHeading(getString("intelHeader_executive"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
+		try {
+			execModule.generateReport(tooltip, panel, width);
+		} catch (Exception ex) {
+			log.error("Failed to generate executive report", ex);
+		}
 	}
 	
 	public void displayReport(TooltipMakerAPI tooltip, CustomPanelAPI panel, float width, float pad)
@@ -229,6 +246,14 @@ public class StrategicAI extends BaseIntelPlugin {
 			int numRemovedConcerns = lastRemovedConcerns.size();
 			if (numRemovedConcerns > 0) info.addPara(getString("intelBulletUpdateRemove"), 0, tc,
 					numRemovedConcerns + "", lastRemovedConcerns.toString());
+		}
+	}
+
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == BUTTON_MEETING) {
+			update();
+			ui.updateUIForItem(this);
 		}
 	}
 
@@ -307,7 +332,15 @@ public class StrategicAI extends BaseIntelPlugin {
 	public static void addAIsIfNeeded() {
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(Factions.PLAYER)) continue;
+			if (NexConfig.getFactionConfig(factionId).pirateFaction) continue;
 			addAIIfNeeded(factionId);
+		}
+	}
+
+	public static void removeAIs() {
+		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			if (factionId.equals(Factions.PLAYER)) continue;
+			removeAI(factionId);
 		}
 	}
 	

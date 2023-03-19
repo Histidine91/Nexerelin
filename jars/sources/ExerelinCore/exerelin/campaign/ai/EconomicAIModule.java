@@ -31,7 +31,7 @@ public class EconomicAIModule extends StrategicAIModule {
         float pad = 3;
         float opad = 10;
         Color hl = Misc.getHighlightColor();
-        String factionId = ai.getFaction().getId();
+        String factionId = ai.getFactionId();
 
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
 

@@ -44,6 +44,7 @@ public class LowerRelations extends CovertActionIntel {
 	public LowerRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, 
 			FactionAPI thirdFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
+		if (thirdFaction != null) thirdFaction = agentFaction;
 		this.thirdFaction = thirdFaction;
 	}
 	

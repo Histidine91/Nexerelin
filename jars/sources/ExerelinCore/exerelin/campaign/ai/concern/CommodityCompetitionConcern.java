@@ -15,13 +15,10 @@ import exerelin.utilities.StringHelper;
 import lombok.Getter;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-public class CommodityCompetitionConcern extends BaseStrategicConcern {
+public class CommodityCompetitionConcern extends BaseStrategicConcern implements HasCommodityTarget {
 
     public static final int MAX_SIMULTANEOUS_CONCERNS = 4;
 
@@ -88,6 +85,11 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern {
     protected void updatePriority() {
         priority.modifyFlat("competingShare", competitorShare * 8, StrategicAI.getString("statCompetingShare", true));
         reapplyPriorityModifiers();
+    }
+
+    @Override
+    public List<String> getCommodityIds() {
+        return new ArrayList<>(Arrays.asList(new String[] {commodityId}));
     }
 
     @Override

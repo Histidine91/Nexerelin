@@ -3,9 +3,13 @@ package exerelin.campaign.ai.concern;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import lombok.extern.log4j.Log4j;
@@ -64,8 +68,8 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
     @Override
     public void reapplyPriorityModifiers() {
         super.reapplyPriorityModifiers();
-        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
-        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.SUBMISSIVE, 1.4f, false);
+        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
+        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.SUBMISSIVE, 1.4f, false);
     }
 
     protected float getPriorityMult(RepLevel level) {
@@ -84,9 +88,25 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
     protected boolean shouldBeConcernedAbout(FactionAPI faction, float ourStrength, float theirStrength) {
         FactionAPI us = ai.getFaction();
         if (faction.isHostileTo(us)) return false;  // already at war anyway
-        if (faction.isAtWorst(us, RepLevel.WELCOMING)) return false;    // safe for now
+
+        RepLevel disregardAtRep = RepLevel.FAVORABLE;
+        if (DiplomacyTraits.hasTrait(us.getId(), DiplomacyTraits.TraitIds.PARANOID)) {
+            disregardAtRep = disregardAtRep.getOneBetter();
+        }
+        if (faction.isAtWorst(us, disregardAtRep)) return false;    // safe for now
+
         if (theirStrength * SAIConstants.STRENGTH_MULT_FOR_CONCERN < ourStrength) return false;   // we're bigger than them
 
         return true;
+    }
+
+    @Override
+    public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
+        LabelAPI label = super.createTooltipDesc(tooltip, holder, pad);
+        if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PARANOID)) {
+            label.setText(label.getText() + "\n\n" + StrategicAI.getString("concernDesc_paranoidHigherRepLevel"));
+        }
+
+        return label;
     }
 }

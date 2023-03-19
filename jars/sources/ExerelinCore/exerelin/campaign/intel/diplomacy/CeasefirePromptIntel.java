@@ -19,6 +19,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.ui.PopupDialogScript;
 import exerelin.campaign.ui.PopupDialogScript.PopupDialog;
@@ -30,11 +32,14 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.input.Keyboard;
 
 public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog,
-		CoreInteractionListener {
+		CoreInteractionListener, StrategicActionDelegate {
 	
 	public static final Object EXPIRED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
@@ -50,6 +55,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	protected float daysRemaining = MathUtils.getRandomNumberInRange(5, 7);
 	protected ExerelinReputationAdjustmentResult repResult;
 	protected float storedRelation;
+	@Getter	@Setter	protected StrategicAction strategicAction;
 	
 	//runcode new exerelin.campaign.intel.CeasefirePromptIntel("luddic_church", false).init();
 	
@@ -165,7 +171,8 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		FactionAPI faction = getFactionForUIColors();
 		FactionAPI player = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 
-		repResult = DiplomacyManager.createDiplomacyEvent(faction, player, eventId, null);
+		DiplomacyIntel intel = DiplomacyManager.createDiplomacyEvent(faction, player, eventId, null);
+		repResult = intel.reputation;
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
 		DiplomacyManager.getManager().modifyWarWeariness(PlayerFactionStore.getPlayerFactionId(), -reduction);
 		storedRelation = faction.getRelationship(PlayerFactionStore.getPlayerFactionId());
@@ -232,7 +239,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		return getName();
 	}
 	
-	protected String getName() {
+	public String getName() {
 		String str = StringHelper.getString("exerelin_diplomacy", isPeaceTreaty ? 
 				"intelPeaceTreatyTitle" : "intelCeasefireTitle");
 		if (listInfoParam == EXPIRED_UPDATE)
@@ -350,5 +357,19 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	@Override
 	public boolean shouldCancel() {
 		return state != 0;
+	}
+
+	@Override
+	public ActionStatus getStrategicActionStatus() {
+		switch (state) {
+			case 0:
+				return ActionStatus.IN_PROGRESS;
+			case 1:
+				return ActionStatus.SUCCESS;
+			case -1:
+				return ActionStatus.FAILURE;
+			default:
+				return ActionStatus.CANCELLED;
+		}
 	}
 }

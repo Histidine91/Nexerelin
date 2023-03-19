@@ -2,13 +2,20 @@ package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFaction;
 
 import java.util.*;
 
@@ -26,11 +33,14 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
             toCheck.add(market.getContainingLocation());
         }
 
+        boolean weArePirate = NexUtilsFaction.isPirateFaction(ai.getFactionId());
         for (LocationAPI loc : toCheck) {
             for (MarketAPI market : Global.getSector().getEconomy().getMarkets(loc)) {
                 if (market.isHidden()) continue;
                 if (alreadyConcernMarkets.contains(market)) continue;
-                if (!market.getFaction().isHostileTo(ai.getFaction())) continue;
+                if (!repCheck(market)) continue;
+                boolean theyArePirate = NexUtilsFaction.isPirateFaction(market.getFactionId());
+                if (weArePirate != theyArePirate) continue;
 
                 float value = getMarketValue(market)/1000f + market.getSize() * 100;
                 value /= SAIConstants.MARKET_VALUE_DIVISOR;
@@ -65,7 +75,7 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
     @Override
     public void reapplyPriorityModifiers() {
         super.reapplyPriorityModifiers();
-        applyPriorityModifierForTrait(DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
+        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
     }
 
     @Override
@@ -76,10 +86,27 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
         return false;
     }
 
-    @Override
-    public boolean isValid() {
-        return market != null && market.getFaction().isHostileTo(ai.getFaction());
+    public boolean repCheck(MarketAPI market) {
+        RepLevel atBest = RepLevel.HOSTILE;
+        if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PARANOID)) {
+            atBest = RepLevel.INHOSPITABLE;
+        }
+        return market.getFaction().isAtBest(ai.getFactionId(), atBest);
     }
 
+    @Override
+    public boolean isValid() {
+        if (market == null) return false;
+        return repCheck(market);
+    }
 
+    @Override
+    public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
+        LabelAPI label = super.createTooltipDesc(tooltip, holder, pad);
+        if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PARANOID)) {
+            label.setText(label.getText() + "\n\n" + StrategicAI.getString("concernDesc_paranoidHigherRepLevel"));
+        }
+
+        return label;
+    }
 }

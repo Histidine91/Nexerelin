@@ -2,6 +2,7 @@ package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.utilities.NexUtils;
 import lombok.extern.log4j.Log4j;
@@ -16,6 +17,7 @@ public class StrategicDefManager {
     public static final String DEF_FILE_PATH = "data/config/exerelin/strategicAIConfig.json";
 
     public static final Map<String, StrategicConcernDef> CONCERN_DEFS_BY_ID = new HashMap<>();
+    public static final Map<String, StrategicActionDef> ACTION_DEFS_BY_ID = new HashMap<>();
 
     static {
         loadConfig();
@@ -41,6 +43,22 @@ public class StrategicDefManager {
 
                 CONCERN_DEFS_BY_ID.put(id, def);
             }
+
+            JSONObject actionsJSON = config.getJSONObject("concerns");
+            keys = actionsJSON.sortedKeys();
+            while (keys.hasNext()) {
+                id = keys.next();
+                JSONObject defJSON = actionsJSON.getJSONObject(id);
+                StrategicActionDef def = new StrategicActionDef(id);
+                def.name = defJSON.getString("name");
+                def.classPath = defJSON.getString("classPath");
+                def.cooldown = (float)defJSON.optDouble("cooldown", 0);
+                def.antiRepetition = (float)defJSON.optDouble("antiRepetition", SAIConstants.DEFAULT_ANTI_REPETITION_VALUE);
+                List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
+                def.tags.addAll(tags);
+
+                ACTION_DEFS_BY_ID.put(id, def);
+            }
         } catch (IOException | JSONException ex) {
             throw new RuntimeException("Failed to load strategic AI config, id " + id, ex);
         }
@@ -48,6 +66,9 @@ public class StrategicDefManager {
 
     public static StrategicConcernDef getConcernDef(String id) {
         return CONCERN_DEFS_BY_ID.get(id);
+    }
+    public static StrategicActionDef getActionDef(String id) {
+        return ACTION_DEFS_BY_ID.get(id);
     }
 
     public static StrategicConcern instantiateConcern(StrategicConcernDef def) {
@@ -63,6 +84,19 @@ public class StrategicDefManager {
         return concern;
     }
 
+    public static StrategicAction instantiateAction(StrategicActionDef def) {
+        StrategicAction action = null;
+        try {
+            ClassLoader loader = Global.getSettings().getScriptClassLoader();
+            Class<?> clazz = loader.loadClass(def.classPath);
+            action = (StrategicAction)clazz.newInstance();
+            action.setId(def.id);
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+            log.error("Failed to load action " + def.id, ex);
+        }
+        return action;
+    }
+
     public static class StrategicConcernDef {
         public final String id;
         public String name;
@@ -73,6 +107,23 @@ public class StrategicDefManager {
         public Set<String> tags = new HashSet<>();
 
         public StrategicConcernDef(String id) {
+            this.id = id;
+        }
+
+        public boolean hasTag(String tag) {
+            return tags.contains(tag);
+        }
+    }
+
+    public static class StrategicActionDef {
+        public final String id;
+        public String name;
+        public String classPath;
+        public float cooldown;
+        public float antiRepetition;
+        public Set<String> tags = new HashSet<>();
+
+        public StrategicActionDef(String id) {
             this.id = id;
         }
 

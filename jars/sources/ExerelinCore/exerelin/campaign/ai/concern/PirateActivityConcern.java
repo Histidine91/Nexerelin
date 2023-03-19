@@ -86,8 +86,9 @@ public class PirateActivityConcern extends BaseStrategicConcern {
             }
         }
         if (affectedMarkets.isEmpty()) return;
-        
-        Global.getLogger(this.getClass()).info("Rage this update: " + rageThisUpdate);
+
+        rageThisUpdate *= ai.getDaysSinceLastUpdate();
+        Global.getLogger(this.getClass()).info(String.format("Rage this update: %.1f", rageThisUpdate));
         rage += rageThisUpdate;
         ai.getFaction().getMemoryWithoutUpdate().set("$nex_pirateRage", rage);
         priority.modifyFlat("rage", rage, StrategicAI.getString("statRage", true));

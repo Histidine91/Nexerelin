@@ -9,18 +9,13 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicAIModule;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
 public interface StrategicConcern {
-
-    public static final String TAG_MILITARY = "military";
-    public static final String TAG_ECONOMY = "economy";
-    public static final String TAG_DIPLOMACY = "diplomacy";
-    public static final String TAG_FRIENDLY = "friendly";
-    public static final String TAG_UNFRIENDLY = "unfriendly";
-    public static final String TAG_COVERT = "covert";
 
     StrategicAI getAI();
     void setAI(StrategicAI ai, StrategicAIModule module);
@@ -62,6 +57,7 @@ public interface StrategicConcern {
      */
     void update();
 
+    void advance(float days);
 
     /**
      * Should be called when the concern is generated and each time it is updated.
@@ -70,6 +66,7 @@ public interface StrategicConcern {
 
     MarketAPI getMarket();
     FactionAPI getFaction();
+    List<FactionAPI> getFactions();
 
     CustomPanelAPI createPanel(CustomPanelAPI holder);
 
@@ -80,8 +77,17 @@ public interface StrategicConcern {
     List<StrategicAction> generateActions();
 
     StrategicAction pickAction();
-    void notifyActionUpdate();
+    boolean initAction(StrategicAction action);
+    //void setCurrentAction(StrategicAction action);
+    StrategicAction getCurrentAction();
+    /**
+     * To be called when an action has any news to report. Note: The completion status update may be called before the starting status update.
+     * @param action
+     * @param newStatus
+     */
+    void notifyActionUpdate(StrategicAction action, @Nullable StrategicActionDelegate.ActionStatus newStatus);
 	float getActionCooldown();
+	boolean canTakeAction(StrategicAction action);
 
     boolean isEnded();
     void end();
