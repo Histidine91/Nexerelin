@@ -778,7 +778,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (!warWeariness.containsKey(loseFactionId)) return;
         float value = (market.getSize()^3) * 5;
         
-        warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + value);
+        modifyWarWeariness(loseFactionId, value);
         
         // update revanchism caches
         for (Map.Entry<String, DiplomacyBrain> tmp : diplomacyBrains.entrySet()) {
@@ -951,8 +951,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         //log.info(winFaction.getDisplayName() + " war weariness from battle: " + winnerLosses);
         //log.info(loseFaction.getDisplayName() + " war weariness from battle: " + loserLosses);
         
-        warWeariness.put(winFactionId, getWarWeariness(winFactionId) + winnerLosses);
-        warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + loserLosses);
+        modifyWarWeariness(winFactionId, winnerLosses);
+        modifyWarWeariness(loseFactionId, loserLosses);
     }
             
     @Override
