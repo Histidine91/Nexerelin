@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import exerelin.utilities.versionchecker.UpdateInfo.ModInfo;
 import exerelin.utilities.versionchecker.UpdateInfo.VersionFile;
+import lombok.Getter;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.Color;
@@ -23,13 +24,13 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-final class UpdateNotificationScript implements EveryFrameScript
+public final class UpdateNotificationScript implements EveryFrameScript
 {
     private float timeUntilWarn = .75f; // Ensures text appears
     private boolean isUpdateCheckDone = false, hasWarned = false, isDone = false;
     private transient Future<UpdateInfo> futureUpdateInfo;
-    private transient UpdateInfo updateInfo;
-    private transient List<ModSpecAPI> unsupportedMods;
+    @Getter private transient UpdateInfo updateInfo;
+    @Getter private transient List<ModSpecAPI> unsupportedMods;
 
     UpdateNotificationScript(final List<ModSpecAPI> unsupportedMods,
                              final Future<UpdateInfo> updateInfo)

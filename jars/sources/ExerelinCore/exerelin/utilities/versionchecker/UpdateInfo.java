@@ -1,16 +1,17 @@
 package exerelin.utilities.versionchecker;
 
+import lombok.Getter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-final class UpdateInfo
+public final class UpdateInfo
 {
-    private final List<ModInfo> hasUpdate = new ArrayList<>();
-    private final List<ModInfo> hasNoUpdate = new ArrayList<>();
-    private final List<ModInfo> failedCheck = new ArrayList<>();
+    @Getter private final List<ModInfo> hasUpdate = new ArrayList<>();
+    @Getter private final List<ModInfo> hasNoUpdate = new ArrayList<>();
+    @Getter private final List<ModInfo> failedCheck = new ArrayList<>();
     private int numModsChecked = 0;
     private String ssUpdate = null, ssUpdateError = null;
 
