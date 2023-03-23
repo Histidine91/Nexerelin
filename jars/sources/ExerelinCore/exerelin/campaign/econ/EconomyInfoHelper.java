@@ -27,6 +27,7 @@ import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
 import lombok.Getter;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.lazywizard.console.Console;
 
 public class EconomyInfoHelper implements EconomyTickListener {
@@ -379,6 +380,10 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			return 0;
 		return ourImports.get(commodityId);
 	}
+
+	public List<ProducerEntry> getProducers(String factionId, String commodityId, int min) {
+		return getProducers(factionId, commodityId, min, false);
+	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.getInstance().getProducers("hegemony", "metals", 0);
 	/**
@@ -386,15 +391,19 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	 * @param factionId
 	 * @param commodityId
 	 * @param min Minimum amount of production to be considered.
+	 * @param useModifiers If true, apply commodity modifier outputs (e.g. -2 for rare metals) to reflect higher/lower base production.
 	 * @return
 	 */
-	public List<ProducerEntry> getProducers(String factionId, String commodityId, int min) {
+	public List<ProducerEntry> getProducers(String factionId, String commodityId, int min, boolean useModifiers) {
 		List<ProducerEntry> results = new ArrayList<>();
 		logInfo(factionId + " producers of " + commodityId + ":");
 		if (!producersByCommodity.containsKey(commodityId)) return results;
 		for (ProducerEntry entry : producersByCommodity.get(commodityId)) {
+			int thisMin = min;
+			if (useModifiers) thisMin += getCommodityOutputModifier(commodityId);
+
 			if (!entry.factionId.equals(factionId)) continue;
-			if (entry.output < min) continue;
+			if (entry.output < thisMin) continue;
 			results.add(entry);
 			logInfo(String.format("  %s (%s): %d", entry.market.getName(), entry.factionId, entry.output));
 		}
@@ -556,7 +565,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		
 	}
 	
-	public static class ProducerEntry {
+	public static class ProducerEntry implements Comparable<ProducerEntry> {
 		public String commodityId;
 		public String factionId;
 		public MarketAPI market;
@@ -570,6 +579,11 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			this.output = output;
 			
 			logInfo(String.format("%s of %s produces %d of %s", market.getName(), factionId, output, commodityId));
+		}
+
+		@Override
+		public int compareTo(@NotNull EconomyInfoHelper.ProducerEntry o) {
+			return Integer.compare(o.output, this.output);
 		}
 	}
 }

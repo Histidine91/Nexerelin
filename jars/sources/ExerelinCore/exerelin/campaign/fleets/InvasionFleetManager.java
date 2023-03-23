@@ -33,6 +33,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
@@ -113,6 +114,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	public static final float PIRATE_RAGE_THRESHOLD = 125;
 	public static final int ATTACK_PLAYER_COOLDOWN = 60;
+	public static final boolean PREFER_MILITARY_FOR_ORIGIN = false;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.08f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -389,13 +391,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		mult *= NexConfig.invasionFleetSizeMult;
 		return mult;
 	}
-	
+
+	public static float getMarketWeightForInvasionSource(MarketAPI market) {
+		return getMarketWeightForInvasionSource(market, null);
+	}
+
 	/**
 	 * Gets the weighting of the specified market in picking where to launch an invasion or raid from.
 	 * @param market
+	 * @param target The hyperspace location of the target, if known.
 	 * @return
 	 */
-	public static float getMarketWeightForInvasionSource(MarketAPI market) {
+	public static float getMarketWeightForInvasionSource(MarketAPI market, Vector2f target) {
 		//marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
 		//if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
 		//		continue;
@@ -422,6 +429,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			weight *= 1.2f;
 		}
 		weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
+
+		if (target != null) {
+			float dist = Misc.getDistance(market.getLocationInHyperspace(), target);
+			if (dist < 5000.0F) {
+				dist = 5000.0F;
+			}
+			// inverse square
+			float distMult = 20000.0F / dist;
+			distMult *= distMult;
+
+			weight *= distMult;
+		}
 		
 		return weight;
 	}
@@ -431,8 +450,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	public static boolean canSatBomb(FactionAPI attacker, FactionAPI defender, boolean retaliatory) {
-		if (!retaliatory && attacker.getRelationshipLevel(defender) != RepLevel.VENGEFUL)
-			return false;
+		if (defender != null) {
+			if (!retaliatory && attacker.getRelationshipLevel(defender) != RepLevel.VENGEFUL)
+				return false;
+		}
 		
 		if (attacker.getCustom() == null || !attacker.getCustom().has(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA))
 			return false;
@@ -444,7 +465,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				.optBoolean("canBombard", false);
 		}
 		
-		if (defender.isPlayerFaction() || PlayerFactionStore.getPlayerFaction() == defender) 
+		if (defender != null && (defender.isPlayerFaction() || PlayerFactionStore.getPlayerFaction() == defender))
 		{
 			canBombard = canBombard || StatsTracker.getStatsTracker().getMarketsSatBombarded() > 0;
 		}
@@ -513,9 +534,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	{
 		return generateInvasionOrRaidFleet(faction, targetFaction, type, 1, rp);
 	}
-	
+
 	public MarketAPI getSourceMarketForFleet(FactionAPI faction, List<MarketAPI> markets) {
+		return getSourceMarketForFleet(faction, null, markets);
+	}
+
+	public MarketAPI getSourceMarketForFleet(FactionAPI faction, Vector2f target, List<MarketAPI> markets) {
 		WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
+		WeightedRandomPicker<MarketAPI> sourcePickerBackup = new WeightedRandomPicker();
 		for (MarketAPI market : markets) {
 			if (market.getFaction() != faction) continue;
 			if (market.isHidden()) continue;
@@ -532,10 +558,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			{
 				continue;
 			}
-			
-			sourcePicker.add(market, getMarketWeightForInvasionSource(market));
+
+			float weight = getMarketWeightForInvasionSource(market, target);
+			if (PREFER_MILITARY_FOR_ORIGIN && Misc.isMilitary(market)) {
+				sourcePicker.add(market, weight);
+			}
+			else {
+				sourcePickerBackup.add(market, weight);
+			}
 		}
 		MarketAPI originMarket = sourcePicker.pick();
+		if (originMarket == null) originMarket = sourcePickerBackup.pick();
 		return originMarket;
 	}
 	
@@ -945,6 +978,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
 		for (String factionId: liveFactionIds)
 		{
+			if (StrategicAI.getAI(factionId) != null) return;
+
 			if (EXCEPTION_LIST.contains(factionId)) continue;
 			FactionAPI faction = sector.getFaction(factionId);
 			if (faction.isNeutralFaction()) continue;
@@ -1103,14 +1138,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		}
 	}
 	
-	protected void spawnBaseStrikeFleet(FactionAPI faction, MarketAPI target) {
+	public OffensiveFleetIntel spawnBaseStrikeFleet(FactionAPI faction, MarketAPI target) {
 		MarketAPI source = getSourceMarketForFleet(faction, Global.getSector().getEconomy().getMarketsCopy());
 		if (source == null)
-			return;
+			return null;
 		
 		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1, new RequisitionParams());
 		
 		NexUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
+		return intel;
 	}
 	
 	/**

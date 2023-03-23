@@ -1,5 +1,6 @@
 package exerelin.campaign;
 
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.intel.agents.LowerRelations;
 import exerelin.campaign.intel.agents.InstigateRebellion;
 import exerelin.campaign.intel.agents.SabotageIndustry;
@@ -358,9 +359,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			switch (actionType) {
 				case CovertActionType.RAISE_RELATIONS:
 					// Use if we want to get closer to this faction
-					if (disposition < DiplomacyBrain.DISLIKE_THRESHOLD)
+					if (disposition <= DiplomacyBrain.DISLIKE_THRESHOLD)
 						continue;
-					else if (disposition > DiplomacyBrain.LIKE_THRESHOLD)
+					else if (disposition >= DiplomacyBrain.LIKE_THRESHOLD)
 						weight *= 2;
 					
 					switch (repLevel) {
@@ -512,6 +513,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         for (FactionAPI faction: factions)
         {
             String factionId = faction.getId();
+            if (StrategicAI.getAI(factionId) != null) continue;	// handled there
+
             if (DISALLOWED_FACTIONS.contains(factionId)) continue;
             if (NexUtilsFaction.isPirateFaction(factionId)) continue;  // pirates don't do covert warfare
             if (!NexConfig.followersAgents && Nex_IsFactionRuler.isRuler(faction.getId()) ) continue;
@@ -695,7 +698,6 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	public Map<String, Object> pickTarget(FactionAPI agentFaction, List<FactionAPI> factions, 
 			String actionType, Random random) 
 	{
-		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
 		Map<String, Object> result = new HashMap<>();
 		boolean isDestroyStocks = actionType.equals(CovertActionType.DESTROY_COMMODITY_STOCKS);
 		boolean isSabotage = actionType.equals(CovertActionType.SABOTAGE_INDUSTRY);
@@ -786,33 +788,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 
 				log.info("\tTarget faction: " + targetFaction.getDisplayName());
 			}
-			
-			WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker(random);
-			for (MarketAPI market: markets)
-			{
-				if (targetFaction != null && market.getFaction() != targetFaction)
-					continue;
-				if (market.isHidden()) continue;
 
-				float weight = 1;
-				// rebellion special handling
-				if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
-				{
-					if (!NexUtilsMarket.canBeInvaded(market, false))
-						continue;
-					if (!Global.getSettings().isDevMode() && RebellionCreator.getInstance().getRebellionPoints(market) < 50)
-						continue;
-					if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
-						continue;
-					if (RebellionIntel.isOngoing(market))
-						continue;
-
-					if (NexUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
-						weight *= 4;
-				}
-				marketPicker.add(market, weight);
-			}
-			MarketAPI market = marketPicker.pick();
+			MarketAPI market = pickTargetMarket(agentFaction, targetFaction, actionType, random);
 			if (market == null) {
 				log.warn("\tFailed to find target market");
 			}
@@ -823,6 +800,37 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		}
 		
 		return result;
+	}
+
+	public MarketAPI pickTargetMarket(FactionAPI agentFaction, FactionAPI targetFaction, String actionType, Random random) {
+		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+		WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker(random);
+		for (MarketAPI market: markets)
+		{
+			if (targetFaction != null && market.getFaction() != targetFaction)
+				continue;
+			if (market.isHidden()) continue;
+
+			float weight = 1;
+
+			// rebellion special handling
+			if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
+			{
+				if (!NexUtilsMarket.canBeInvaded(market, false))
+					continue;
+				if (!Global.getSettings().isDevMode() && RebellionCreator.getInstance().getRebellionPoints(market) < 50)
+					continue;
+				if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
+					continue;
+				if (RebellionIntel.isOngoing(market))
+					continue;
+
+				if (NexUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
+					weight *= 4;
+			}
+			marketPicker.add(market, weight);
+		}
+		return marketPicker.pick();
 	}
 	
 	public static Random getRandom(MarketAPI market) {

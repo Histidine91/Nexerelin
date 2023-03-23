@@ -18,11 +18,14 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventParams;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.diplomacy.CeasefirePromptIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -41,7 +44,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import lombok.Getter;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.lazywizard.lazylib.MathUtils;
 
 /*
@@ -121,12 +127,12 @@ public class DiplomacyBrain {
 	protected String factionId;
 	protected transient FactionAPI faction;
 	protected Map<String, DispositionEntry> dispositions = new HashMap<>();
-	protected Map<String, Float> ceasefires = new HashMap<>();
+	@Getter protected Map<String, Float> ceasefires = new HashMap<>();
 	protected List<String> enemies = new ArrayList<>();
 	protected IntervalUtil intervalShort = new IntervalUtil(0.45f, 0.55f);
 	protected IntervalUtil interval;
-	protected float ourStrength = 0;
-	protected float enemyStrength = 0;
+	@Getter	protected float ourStrength = 0;
+	@Getter protected float enemyStrength = 0;
 	protected float playerCeasefireOfferCooldown = 0;
 	protected Map<String, Float> revanchismCache = new HashMap<>();
 	
@@ -532,7 +538,7 @@ public class DiplomacyBrain {
 		return score;
 	}
 	
-	protected boolean tryMakePeace(String enemyId, float ourWeariness)
+	protected IntelInfoPlugin tryMakePeace(String enemyId, float ourWeariness)
 	{
 		FactionAPI enemy = Global.getSector().getFaction(enemyId);
 		// don't diplo with player if they're commissioned with someone else
@@ -542,10 +548,10 @@ public class DiplomacyBrain {
 		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + NexConfig.minWarWearinessForPeace);
 		if (!enemyIsPlayer) {
 			if (enemyWeariness < NexConfig.minWarWearinessForPeace)
-				return false;
+				return null;
 		} else {
 			if (playerCeasefireOfferCooldown > 0)
-				return false;
+				return null;
 		}
 		
 		// add war weariness of both factions, plus effects from recent events
@@ -563,7 +569,7 @@ public class DiplomacyBrain {
 		float divisor = NexConfig.warWearinessDivisor + NexConfig.warWearinessDivisorModPerLevel 
 				* Global.getSector().getPlayerPerson().getStats().getLevel();
 		if (Math.random() > sumWeariness / divisor)
-			return false;
+			return null;
 		
 		log.info("\tNegotiating treaty");
 		boolean peaceTreaty = false;    // if false, only ceasefire
@@ -573,33 +579,34 @@ public class DiplomacyBrain {
 			peaceTreaty = Math.random() < DiplomacyManager.PEACE_TREATY_CHANCE;
 		}
 		if (enemyIsPlayer) {
-			new CeasefirePromptIntel(factionId, peaceTreaty).init();
+			CeasefirePromptIntel intel = new CeasefirePromptIntel(factionId, peaceTreaty);
+			intel.init();
 			playerCeasefireOfferCooldown = 60;
-			return true;
+			return intel;
 		}
 		String eventId = peaceTreaty ? "peace_treaty" : "ceasefire";
 		float reduction = peaceTreaty ? NexConfig.warWearinessPeaceTreatyReduction : NexConfig.warWearinessCeasefireReduction;
 		
-		DiplomacyManager.createDiplomacyEvent(faction, enemy, eventId, null);
+		DiplomacyIntel intel = DiplomacyManager.createDiplomacyEvent(faction, enemy, eventId, null);
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
 		DiplomacyManager.getManager().modifyWarWeariness(enemyId, -reduction);
-		return true;
+		return intel;
 	}
 	
-	public boolean checkPeace()
+	public IntelInfoPlugin checkPeace(@Nullable String targetFactionId)
 	{
-		if (enemies.isEmpty()) return false;
+		if (enemies.isEmpty()) return null;
 		if (NexUtilsFaction.isPirateFaction(factionId) && !NexConfig.allowPirateInvasions)
-			return false;
+			return null;
 		
 		long lastWar = DiplomacyManager.getManager().getLastWarTimestamp();
 		if (Global.getSector().getClock().getElapsedDaysSince(lastWar) < DiplomacyManager.MIN_INTERVAL_BETWEEN_WARS)
-			return false;
+			return null;
 		
 		float ourWeariness = DiplomacyManager.getWarWeariness(factionId, true);
 		log.info("Checking peace for faction " + faction.getDisplayName() + ": weariness " + ourWeariness);
 		if (ourWeariness < NexConfig.minWarWearinessForPeace)
-			return false;
+			return null;
 		
 		List<String> enemiesLocal = new ArrayList<>(this.enemies);		
 		Collections.sort(enemiesLocal, new Comparator<String>() {
@@ -619,6 +626,8 @@ public class DiplomacyBrain {
 		int tries = 3;
 		for (String enemyId : enemiesLocal)
 		{
+			if (targetFactionId != null && !targetFactionId.equals(enemyId)) continue;
+
 			if (factionsInvadingOrInvaded.contains(enemyId))
 				continue;
 			if (!NexFactionConfig.canCeasefire(factionId, enemyId))
@@ -626,14 +635,14 @@ public class DiplomacyBrain {
 			// don't diplomacy with a commissioned player
 			if (enemyId.equals(Factions.PLAYER) && Misc.getCommissionFaction() != null)
 				continue;
-			
-			boolean success = tryMakePeace(enemyId, ourWeariness);
-			if (success) return true;
+
+			IntelInfoPlugin intel = tryMakePeace(enemyId, ourWeariness);
+			if (intel != null) return intel;
 			tries--;
 			if (tries <= 0) break;
 		}
 		
-		return false;
+		return null;
 	}
 	
 	public Set<String> getOngoingInvasionFactions() {
@@ -706,19 +715,19 @@ public class DiplomacyBrain {
 		return required;
 	}
 	
-	public boolean checkWar()
+	public DiplomacyIntel checkWar(@Nullable String targetFactionId)
 	{
 		long lastWar = DiplomacyManager.getManager().getLastWarTimestamp();
 		if (Global.getSector().getClock().getElapsedDaysSince(lastWar) < DiplomacyManager.MIN_INTERVAL_BETWEEN_WARS)
-			return false;
+			return null;
 		
 		log.info("Checking war for faction " + faction.getDisplayName());
 		if (NexUtilsFaction.isPirateOrTemplarFaction(factionId) && !NexConfig.allowPirateInvasions)
-			return false;
+			return null;
 		
 		float ourWeariness = DiplomacyManager.getWarWeariness(factionId, true);
 		if (ourWeariness > MAX_WEARINESS_FOR_WAR)
-			return false;
+			return null;
 		
 		// check factions in order of how much we hate them
 		List<DispositionEntry> dispositionsList = getDispositionsList();
@@ -735,14 +744,15 @@ public class DiplomacyBrain {
 		RepLevel maxRep = getMaxRepForOpportunisticWar();
 		log.info("Relationship required for war: " + maxRep);
 		if (maxRep.isAtBest(RepLevel.HOSTILE))
-			return false;
+			return null;
 		
 		WeightedRandomPicker<String> warPicker = new WeightedRandomPicker<>();
 		for (DispositionEntry disposition : dispositionsList)
 		{
 			String otherFactionId = disposition.factionId;
+			if (targetFactionId != null && !targetFactionId.equals(otherFactionId)) continue;
+
 			RepLevel thisMaxRep = maxRep;
-			
 			if (predatory && otherFactionId.equals(Factions.PLAYER)) {
 				thisMaxRep = RepLevel.SUSPICIOUS;
 			}			
@@ -769,11 +779,10 @@ public class DiplomacyBrain {
 				warPicker.add(otherFactionId, decisionRating);
 			}
 		}
-		if (warPicker.isEmpty()) return false;
+		if (warPicker.isEmpty()) return null;
 		
-		DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(warPicker.pick()),
+		return DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(warPicker.pick()),
 				"declare_war", null);
-		return true;
 	}
 	
 	public void doRandomEvent()
@@ -810,11 +819,11 @@ public class DiplomacyBrain {
 			{
 				params.onlyPositive = true;
 			}
-			else if (disp < DISLIKE_THRESHOLD)
+			else if (disp <= DISLIKE_THRESHOLD)
 			{
 				params.onlyNegative = true;
 			}
-			else if (disp > LIKE_THRESHOLD)
+			else if (disp >= LIKE_THRESHOLD)
 			{
 				params.onlyPositive = true;
 			}
@@ -827,6 +836,8 @@ public class DiplomacyBrain {
 	
 	public void considerOptions()
 	{
+		if (StrategicAI.getAI(factionId) != null) return;
+
 		if (DiplomacyManager.disallowedFactions.contains(factionId)) return;
 		if (Nex_IsFactionRuler.isRuler(factionId))
 			return;
@@ -836,11 +847,11 @@ public class DiplomacyBrain {
 		boolean didSomething = false;
 		
 		// first see if we should make peace
-		didSomething = checkPeace();
+		didSomething = checkPeace(null) != null;
 		if (didSomething) return;
 		
 		// let's see if we should declare war on anyone
-		didSomething = checkWar();
+		didSomething = checkWar(null) != null;
 		if (didSomething) return;
 		
 		// do a random event

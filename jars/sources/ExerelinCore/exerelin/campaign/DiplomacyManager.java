@@ -460,7 +460,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.repLimit);
     }
     
-    public ExerelinReputationAdjustmentResult doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
+    public DiplomacyIntel doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
     {        
         float delta = MathUtils.getRandomNumberInRange(event.minRepChange, event.maxRepChange);
             
@@ -483,9 +483,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
             if (diplomacyBrains.containsKey(faction2.getId()))
                 diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);
+
+            return intel;
         }
         
-        return result;
+        return null;
     }
     
     /**
@@ -620,7 +622,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      * @param params
      * @return
      */
-    public static ExerelinReputationAdjustmentResult createDiplomacyEvent(
+    public static DiplomacyIntel createDiplomacyEvent(
             FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params)
     {        
         String factionId1 = faction1.getId();
