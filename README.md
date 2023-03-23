@@ -94,6 +94,7 @@ These are all the external libraries and referenced mods required to locally bui
 - [Vayra's Sector](https://fractalsoftworks.com/forum/index.php?topic=16058.0)
 - [Volkov Industrial Conglomerate](https://fractalsoftworks.com/forum/index.php?topic=19603.0)
 - [Crew Replacer](https://fractalsoftworks.com/forum/index.php?topic=24249.0)
+- [LunaLib](https://github.com/Lukas22041/LunaLib/)
 - [Project Lombok](https://projectlombok.org/)
 
 ## License ##

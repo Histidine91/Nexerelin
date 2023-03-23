@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j;
 import lunalib.lunaSettings.LunaSettings;
 import lunalib.lunaSettings.LunaSettingsListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,36 +25,38 @@ public class LunaConfigHelper implements LunaSettingsListener {
         String mid = ExerelinConstants.MOD_ID;
         //List<String> tags = DEFAULT_TAGS;
 
-        addHeader("ui");
+        String tabFleets = getString("tabFleets");
+
+        addHeader("ui", null);
         addSetting("directoryDialogKey", "key", NexConfig.directoryDialogKey);
         addSetting("ceasefireNotificationPopup", "boolean", NexConfig.ceasefireNotificationPopup);
         addSetting("diplomacyEventFilterLevel", "int", NexConfig.diplomacyEventFilterLevel, 0, 2);
         addSetting("agentEventFilterLevel", "int", NexConfig.agentEventFilterLevel, 0, 2);
 
-        addHeader("invasions");
-        addSetting("enableInvasions", "boolean", NexConfig.enableInvasions);
-        addSetting("legacyInvasions", "boolean", NexConfig.legacyInvasions);
-        addSetting("invasionsOnlyAfterPlayerColony", "boolean", NexConfig.invasionsOnlyAfterPlayerColony);
-        addSetting("allowInvadeStoryCritical", "boolean", NexConfig.allowInvadeStoryCritical);
-        addSetting("followersInvasions", "boolean", NexConfig.followersInvasions);
-        addSetting("allowPirateInvasions", "boolean", NexConfig.allowPirateInvasions);
-        addSetting("retakePirateMarkets", "boolean", NexConfig.retakePirateMarkets);
+        addHeader("invasions", tabFleets);
+        addSetting("enableInvasions", "boolean", tabFleets, NexConfig.enableInvasions);
+        addSetting("legacyInvasions", "boolean", tabFleets, NexConfig.legacyInvasions);
+        addSetting("invasionsOnlyAfterPlayerColony", "boolean", tabFleets, NexConfig.invasionsOnlyAfterPlayerColony);
+        addSetting("allowInvadeStoryCritical", "boolean", tabFleets, NexConfig.allowInvadeStoryCritical);
+        addSetting("followersInvasions", "boolean", tabFleets, NexConfig.followersInvasions);
+        addSetting("allowPirateInvasions", "boolean", tabFleets, NexConfig.allowPirateInvasions);
+        addSetting("retakePirateMarkets", "boolean", tabFleets, NexConfig.retakePirateMarkets);
 
-        addSetting("invasionGracePeriod", "int", Math.round(NexConfig.invasionGracePeriod), 0, 365*5);
-        addSetting("pointsRequiredForInvasionFleet", "int", Math.round(NexConfig.pointsRequiredForInvasionFleet), 2000, 100000);
-        addSetting("baseInvasionPointsPerFaction", "int", Math.round(NexConfig.baseInvasionPointsPerFaction), 0, 1000);
-        addSetting("invasionPointsPerPlayerLevel", "int", Math.round(NexConfig.invasionPointsPerPlayerLevel), 0, 100);
-        addSetting("invasionPointEconomyMult", "float", NexConfig.invasionPointEconomyMult, 0, 10);
-        addSetting("invasionFleetSizeMult", "float", NexConfig.invasionFleetSizeMult, 0.1, 10);
-        addSetting("fleetRequestCostPerFP", "int", Math.round(NexConfig.fleetRequestCostPerFP), 1, 10000);
-        addSetting("creditLossOnColonyLossMult", "float", NexConfig.creditLossOnColonyLossMult, 0, 1);
-        addSetting("groundBattleDamageMult", "float", NexConfig.groundBattleDamageMult, 0, 5);
+        addSetting("invasionGracePeriod", "int", tabFleets, Math.round(NexConfig.invasionGracePeriod), 0, 365*5);
+        addSetting("pointsRequiredForInvasionFleet", "int", tabFleets, Math.round(NexConfig.pointsRequiredForInvasionFleet), 2000, 100000);
+        addSetting("baseInvasionPointsPerFaction", "int", tabFleets, Math.round(NexConfig.baseInvasionPointsPerFaction), 0, 1000);
+        addSetting("invasionPointsPerPlayerLevel", "int", tabFleets, Math.round(NexConfig.invasionPointsPerPlayerLevel), 0, 100);
+        addSetting("invasionPointEconomyMult", "float", tabFleets, NexConfig.invasionPointEconomyMult, 0, 10);
+        addSetting("invasionFleetSizeMult", "float", tabFleets, NexConfig.invasionFleetSizeMult, 0.1, 10);
+        addSetting("fleetRequestCostPerFP", "int", tabFleets, Math.round(NexConfig.fleetRequestCostPerFP), 1, 10000);
+        addSetting("creditLossOnColonyLossMult", "float", tabFleets, NexConfig.creditLossOnColonyLossMult, 0, 1);
+        addSetting("groundBattleDamageMult", "float", tabFleets, NexConfig.groundBattleDamageMult, 0, 5);
 
-        addHeader("insurance");
+        addHeader("insurance", null);
         addSetting("legacyInsurance", "boolean", NexConfig.legacyInsurance);
         addSetting("playerInsuranceMult", "float", NexConfig.playerInsuranceMult, 0, 10);
 
-        addHeader("agents");
+        addHeader("agents", null);
         addSetting("agentBaseSalary", "int", NexConfig.agentBaseSalary, 0, 100000);
         addSetting("agentSalaryPerLevel", "int", NexConfig.agentSalaryPerLevel, 0, 100000);
         addSetting("maxAgents", "int", NexConfig.maxAgents, 0, 100);
@@ -61,27 +64,27 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("useAgentSpecializations", "boolean", NexConfig.useAgentSpecializations);
         addSetting("followersAgents", "boolean", NexConfig.followersAgents);
 
-        addHeader("prisoners");
+        addHeader("prisoners", null);
         addSetting("prisonerRepatriateRepValue", "float", NexConfig.prisonerRepatriateRepValue, 0, 1);
         addSetting("prisonerBaseRansomValue", "int", (int)NexConfig.prisonerBaseRansomValue, 0, 200000);
         addSetting("prisonerRansomValueIncrementPerLevel", "int", (int)NexConfig.prisonerRansomValueIncrementPerLevel, 0, 100000);
         addSetting("crewLootMult", "float", NexConfig.crewLootMult, 0, 10);
 
-        addHeader("satbomb");
-        addSetting("allowNPCSatBomb", "boolean", NexConfig.allowNPCSatBomb);
-        addSetting("permaHateFromPlayerSatBomb", "float", NexConfig.permaHateFromPlayerSatBomb, 0, 1);
+        addHeader("satbomb", tabFleets);
+        addSetting("allowNPCSatBomb", "boolean", tabFleets, NexConfig.allowNPCSatBomb);
+        addSetting("permaHateFromPlayerSatBomb", "float", tabFleets, NexConfig.permaHateFromPlayerSatBomb, 0, 1);
 
-        addHeader("vengeance");
-        addSetting("enableRevengeFleets", "int", NexConfig.enableRevengeFleets, 0, 2);
-        addSetting("useNewVengeanceEncounters", "boolean", NexConfig.useNewVengeanceEncounters);
-        addSetting("vengeanceFleetSizeMult", "float", NexConfig.vengeanceFleetSizeMult, 0.2, 5);
+        addHeader("vengeance", tabFleets);
+        addSetting("enableRevengeFleets", "int", tabFleets, NexConfig.enableRevengeFleets, 0, 2);
+        addSetting("useNewVengeanceEncounters", "boolean", tabFleets, NexConfig.useNewVengeanceEncounters);
+        addSetting("vengeanceFleetSizeMult", "float", tabFleets, NexConfig.vengeanceFleetSizeMult, 0.2, 5);
 
-        addHeader("otherFleets");
-        addSetting("colonyExpeditionInterval", "int", NexConfig.colonyExpeditionInterval, 15, 10000);
-        addSetting("specialForcesPointMult", "float", NexConfig.specialForcesPointMult, 0, 10);
-        addSetting("specialForcesSizeMult", "float", NexConfig.specialForcesSizeMult, 0.2, 5);
+        addHeader("otherFleets", tabFleets);
+        addSetting("colonyExpeditionInterval", "int", tabFleets, NexConfig.colonyExpeditionInterval, 15, 10000);
+        addSetting("specialForcesPointMult", "float", tabFleets, NexConfig.specialForcesPointMult, 0, 10);
+        addSetting("specialForcesSizeMult", "float", tabFleets, NexConfig.specialForcesSizeMult, 0.2, 5);
 
-        addHeader("misc");
+        addHeader("misc", null);
         addSetting("enableVictory", "boolean", NexConfig.enableVictory);
 
         addSetting("hardModeColonyGrowthMult", "float", NexConfig.hardModeColonyGrowthMult, 0.5f, 1f);
@@ -91,7 +94,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("officerDeaths", "boolean", NexConfig.officerDeaths);
         addSetting("rebellionMult", "float", NexConfig.rebellionMult, 0f, 10f);
 
-        addHeader("debug");
+        addHeader("debug", null);
         addSetting("nexDevMode", "boolean", ExerelinModPlugin.isNexDev);
 
         LunaSettings.SettingsCreator.refresh(mid);
@@ -185,20 +188,30 @@ public class LunaConfigHelper implements LunaSettingsListener {
     }
 
     public static void addSetting(String var, String type, Object defaultVal) {
-        addSetting(var, type, defaultVal, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        addSetting(var, type, null, defaultVal, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    public static void addSetting(String var, String type, @Nullable String tab, Object defaultVal) {
+        addSetting(var, type, tab, defaultVal, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public static void addSetting(String var, String type, Object defaultVal, double min, double max) {
-        String tooltip = Global.getSettings().getString("nex_lunaSettings", "tooltip_" + var);
+        addSetting(var, type, null, defaultVal, min, max);
+    }
+
+    public static void addSetting(String var, String type, @Nullable String tab, Object defaultVal, double min, double max) {
+        String tooltip = getString("tooltip_" + var);
         if (tooltip.startsWith("Missing string:")) {
             tooltip = "";
         }
         String mid = ExerelinConstants.MOD_ID;
         String name = getString("name_" + var);
 
+        if (tab == null) tab = "";
+
         switch (type) {
             case "boolean":
-                LunaSettings.SettingsCreator.addBoolean(mid, var, name, tooltip, (boolean)defaultVal);
+                LunaSettings.SettingsCreator.addBoolean(mid, var, name, tooltip, (boolean)defaultVal, tab);
                 break;
             case "int":
             case "integer":
@@ -206,31 +219,32 @@ public class LunaConfigHelper implements LunaSettingsListener {
                     defaultVal = Math.round((float)defaultVal);
                 }
                 LunaSettings.SettingsCreator.addInt(mid, var, name, tooltip,
-                        (int)defaultVal, (int)Math.round(min), (int)Math.round(max));
+                        (int)defaultVal, (int)Math.round(min), (int)Math.round(max), tab);
                 break;
             case "float":
                 // fix float -> double conversion causing an unround number
                 String floatStr = ((Float)defaultVal).toString();
                 LunaSettings.SettingsCreator.addDouble(mid, var, name, tooltip,
-                        Double.parseDouble(floatStr), min, max);
+                        Double.parseDouble(floatStr), min, max, tab);
                 break;
             case "double":
                 LunaSettings.SettingsCreator.addDouble(mid, var, name, tooltip,
-                        (double)defaultVal, min, max);
+                        (double)defaultVal, min, max, tab);
                 break;
             case "key":
-                LunaSettings.SettingsCreator.addKeybind(mid, var, name, tooltip, (int)defaultVal);
+                LunaSettings.SettingsCreator.addKeybind(mid, var, name, tooltip, (int)defaultVal, tab);
             default:
                 log.error(String.format("Setting %s has invalid type %s", var, type));
         }
     }
 
-    public static void addHeader(String id) {
-        LunaSettings.SettingsCreator.addHeader(ExerelinConstants.MOD_ID, id, getString("header_" + id));
+    public static void addHeader(String id, String tab) {
+        addHeader(id, getString("header_" + id), tab);
     }
 
-    public static void addHeader(String id, String title) {
-        LunaSettings.SettingsCreator.addHeader(ExerelinConstants.MOD_ID, id, title);
+    public static void addHeader(String id, String title, String tab) {
+        if (tab == null) tab = "";
+        LunaSettings.SettingsCreator.addHeader(ExerelinConstants.MOD_ID, id, title, tab);
     }
 
     public static LunaConfigHelper createListener() {

@@ -289,6 +289,8 @@
 			"command_experience":"graphics/icons/skills/command_experience.png",
 			
 			"nex_station_render":"graphics/exerelin/station_render_wireframe2.png",
+			
+			"nex_luna_icon":"graphics/exerelin/icons/nex_icon_nobg.png",
 		},
 		
 		"raidObjectives":{  # icons displayed at 26x26

@@ -2705,6 +2705,8 @@
 		"header_otherFleets":"Other fleets",
 		"header_misc":"Miscellaneous",
 		
+		"tabFleets":"Fleets and battles",
+		
 		"name_ceasefireNotificationPopup":"Ceasefire notification popup",
 		"name_nexDevMode":"Nexerelin dev mode",
 		"tooltip_nexDevMode":"Enables some mod-related testing functions and information.",
