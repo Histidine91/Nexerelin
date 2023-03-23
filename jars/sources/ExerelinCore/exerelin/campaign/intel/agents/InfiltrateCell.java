@@ -40,7 +40,14 @@ public class InfiltrateCell extends CovertActionIntel {
 	public void init() {
 		super.init();
 	}
-	
+
+	@Override
+	public void advanceImpl(float amount) {
+		super.advanceImpl(amount);
+
+		checkCellDissolved();
+	}
+
 	@Override
 	public void onSuccess() {
 		targetFaction = Global.getSector().getFaction(Factions.LUDDIC_PATH);
@@ -131,6 +138,21 @@ public class InfiltrateCell extends CovertActionIntel {
 		// locate base
 		if (base != null && base.isHidden())
 			base.makeKnown();
+	}
+
+	protected void checkCellDissolved() {
+		MarketConditionAPI cond = market.getCondition(Conditions.PATHER_CELLS);
+		if (cond == null) {
+			abort();
+			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
+			return;
+		}
+		LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
+		LuddicPathCellsIntel cellIntel = cellCond.getIntel();
+		if (cellIntel.isEnding() || cellIntel.isEnded()) {
+			abort();
+			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
+		}
 	}
 	
 	@Override
