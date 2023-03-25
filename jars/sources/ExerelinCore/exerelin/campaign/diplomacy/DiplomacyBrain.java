@@ -286,7 +286,7 @@ public class DiplomacyBrain {
 		return 0;
 	}
 	
-	protected void modifyDispositionFromTraits(MutableStat disposition, float delta) {
+	public void modifyDispositionFromTraits(MutableStat disposition, float delta) {
 		float currTraitScore = 0;
 		if (disposition.getFlatMods().containsKey("traits"))
 			currTraitScore = disposition.getFlatStatMod("traits").getValue();
@@ -486,6 +486,7 @@ public class DiplomacyBrain {
 		{
 			updateDisposition(factionId, days);
 		}
+		reportDispositionsUpdated(factionId, this);
 	}
 	
 	public float getWarDecisionRating(String enemyId)
@@ -1062,6 +1063,13 @@ public class DiplomacyBrain {
 				str += market.getSize();
 		}
 		return str;
+	}
+
+	public static void reportDispositionsUpdated(String factionId, DiplomacyBrain brain) {
+		for (DiplomacyBrainListener x : Global.getSector().getListenerManager().getListeners(DiplomacyBrainListener.class))
+		{
+			x.reportDispositionsUpdated(factionId, brain);
+		}
 	}
 	
 	public static class DispositionEntry
