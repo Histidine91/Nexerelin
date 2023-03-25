@@ -1,6 +1,5 @@
 package exerelin.campaign.ai.action;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -94,6 +93,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
     public void updatePriority() {
         priority.modifyFlat("base", 100, StrategicAI.getString("statBase", true));
         applyPriorityModifiers();
+        SAIUtils.reportActionPriorityUpdated(ai, this);
     }
 
     @Override
@@ -120,11 +120,11 @@ public abstract class BaseStrategicAction implements StrategicAction {
         if (isEnded) return;
         if (delegate != null) delegate.abortStrategicAction();
         end(StrategicActionDelegate.ActionStatus.CANCELLED);
+        SAIUtils.reportActionCancelled(ai, this);
     }
 
     @Override
     public void end(StrategicActionDelegate.ActionStatus status) {
-        Global.getLogger(this.getClass()).info("wololo ending " + getName());
         isEnded = true;
         this.status = status;
         concern.notifyActionUpdate(this, status);

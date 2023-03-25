@@ -1,8 +1,12 @@
 package exerelin.campaign.ai;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
+import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -53,4 +57,60 @@ public class SAIUtils {
         stat.modifyMult("trait_" + trait, mult, StrategicAI.getString("statTrait", true) + ": " + traitDef.name);
     }
 
+
+    public static void reportStrategyMeetingHeld(StrategicAI ai)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportStrategyMeetingHeld(ai);
+        }
+    }
+
+    public static void reportConcernAdded(StrategicAI ai, StrategicConcern concern)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportConcernAdded(ai, concern);
+        }
+    }
+
+    public static void reportConcernUpdated(StrategicAI ai, StrategicConcern concern)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportConcernUpdated(ai, concern);
+        }
+    }
+
+    public static void reportConcernRemoved(StrategicAI ai, StrategicConcern concern)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportConcernRemoved(ai, concern);
+        }
+    }
+
+    public static void reportActionAdded(StrategicAI ai, StrategicAction action)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportActionAdded(ai, action);
+        }
+    }
+
+    public static void reportActionPriorityUpdated(StrategicAI ai, StrategicAction action)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportActionPriorityUpdated(ai, action);
+        }
+    }
+
+    public static void reportActionUpdated(StrategicAI ai, StrategicAction action, StrategicActionDelegate.ActionStatus status)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportActionUpdated(ai, action, status);
+        }
+    }
+
+    public static void reportActionCancelled(StrategicAI ai, StrategicAction action)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportActionCancelled(ai, action);
+        }
+    }
 }

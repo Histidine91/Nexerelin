@@ -55,8 +55,8 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     }
 
     @Override
-    public void updatePriority() {
-        super.updatePriority();
+    public void applyPriorityModifiers() {
+        super.applyPriorityModifiers();
         if (FleetPoolManager.USE_POOL) {
             float curPool = FleetPoolManager.getManager().getCurrentPool(ai.getFactionId());
             float max = FleetPoolManager.getManager().getMaxPool(ai.getFactionId());

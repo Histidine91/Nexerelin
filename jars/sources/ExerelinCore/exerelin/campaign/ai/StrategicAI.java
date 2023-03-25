@@ -146,6 +146,8 @@ public class StrategicAI extends BaseIntelPlugin {
 			lastAddedConcerns.clear();
 			lastRemovedConcerns.clear();
 		}
+
+		SAIUtils.reportStrategyMeetingHeld(this);
 	}
 
 	protected void findConcerns(StrategicAIModule module) {

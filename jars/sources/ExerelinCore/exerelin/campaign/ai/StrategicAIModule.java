@@ -49,7 +49,7 @@ public abstract class StrategicAIModule {
             if (concern.isEnded()) continue;
             concern.advance(days);
         }
-    };
+    }
 
     /**
      * @return List of new concerns found.
@@ -67,6 +67,7 @@ public abstract class StrategicAIModule {
                 //log.info("Found concern " + concern.getName());
                 currentConcerns.add(concern);
                 newConcerns.add(concern);
+                SAIUtils.reportConcernAdded(ai, concern);
             }
         }
         return newConcerns;
@@ -76,10 +77,15 @@ public abstract class StrategicAIModule {
         List<StrategicConcern> toRemove = new ArrayList<>();
         for (StrategicConcern concern : currentConcerns) {
             concern.update();
-            if (!concern.isValid() || concern.isEnded())
+            if (!concern.isValid() || concern.isEnded()) {
                 toRemove.add(concern);
+            }
         }
-        currentConcerns.removeAll(toRemove);
+        for (StrategicConcern concern : toRemove) {
+            if (!concern.isEnded()) concern.end();
+            currentConcerns.remove(concern);
+            SAIUtils.reportConcernRemoved(ai, concern);
+        }
         return toRemove;
     }
 

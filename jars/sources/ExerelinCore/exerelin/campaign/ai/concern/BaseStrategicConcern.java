@@ -67,7 +67,9 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     }
 
     @Override
-    public void update() {}
+    public void update() {
+        SAIUtils.reportConcernUpdated(ai, this);
+    }
 
     @Override
     public void reapplyPriorityModifiers() {
@@ -155,7 +157,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         String marketName = "";
         Color hl = Misc.getHighlightColor();
         if (market != null) {
-            marketName = getMarket().getName();
+            marketName = market.getName();
             str = StringHelper.substituteToken(str, "$market", marketName);
             hl = market.getFaction().getBaseUIColor();
         }
@@ -192,7 +194,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             if (priority > bestPrio) {
                 bestAction = action;
                 bestPrio = priority;
-            } else continue;
+            }
         }
 
         return bestAction;
@@ -205,11 +207,16 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         this.currentAction = action;
         action.init();
         notifyActionUpdate(action, StrategicActionDelegate.ActionStatus.STARTING);
+        SAIUtils.reportActionAdded(ai, action);
         return true;
     }
 
     @Override
     public void notifyActionUpdate(StrategicAction action, StrategicActionDelegate.ActionStatus newStatus) {
+        if (action != currentAction) {
+            log.error("Received update from a strategic action other than our current action", new Throwable());
+        }
+
         if (newStatus == StrategicActionDelegate.ActionStatus.SUCCESS || newStatus == StrategicActionDelegate.ActionStatus.FAILURE) {
             actionCooldown += action.getDef().cooldown;
             update();
@@ -220,7 +227,9 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         else if (newStatus == StrategicActionDelegate.ActionStatus.STARTING) {
             ai.getExecModule().reportRecentAction(action);
         }
-    };
+
+        SAIUtils.reportActionUpdated(ai, action, newStatus);
+    }
 
     @Override
     public boolean canTakeAction(StrategicAction action) {
@@ -270,13 +279,13 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     @Override
     public List<FactionAPI> getFactions() {
         if (faction == null) return null;
-        return new ArrayList<>(Arrays.asList(new FactionAPI[] {getFaction()}));
+        return new ArrayList<>(Arrays.asList(getFaction()));
     }
 
     @Override
     public List<MarketAPI> getMarkets() {
         if (market == null) return null;
-        return new ArrayList<>(Arrays.asList(new MarketAPI[] {market}));
+        return new ArrayList<>(Arrays.asList(market));
     }
 
     @Override
