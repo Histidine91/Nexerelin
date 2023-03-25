@@ -68,6 +68,7 @@
 		},
 		"destabilizeMarket":{
 			"name":"Destabilize Market",
+			"nameForSub":"Destabilize %s",
 			"time":20,
 			"successChance":0.65,
 			"detectionChance":0.3,
@@ -83,6 +84,7 @@
 		},
 		"sabotageIndustry":{
 			"name":"Sabotage Industry",
+			"nameForSub":"Sabotage %s",
 			"time":45,
 			"successChance":0.5,
 			"detectionChance":0.5,
@@ -99,6 +101,7 @@
 		},
 		"destroyCommodities":{
 			"name":"Destroy Commodity Stocks",
+			"nameForSub":"Destroy %s Stocks",
 			"time":25,
 			"successChance":0.65,
 			"detectionChance":0.25,
@@ -169,7 +172,7 @@
 			#"specializations":[],	# handled in code
 		},
 		"findPirateBase":{
-			"name":"Find pirate base",
+			"name":"Find Pirate Base",
 			"time":2,
 			"costScaling":false,
 			"useAlertLevel":false,

@@ -670,7 +670,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	}
 
 	public String getName() {
-		String str = getDef().name;
+		String str = getSubbedName();
 		if (result != null) { 
 			if (result.isSuccessful())
 				str += " - " + StringHelper.getString("nex_agents", "verbSuccess", true);
@@ -679,6 +679,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		}
 		
 		return str;
+	}
+
+	protected String getSubbedName() {
+		return getDef().nameForSub;
 	}
 	
 	@Override

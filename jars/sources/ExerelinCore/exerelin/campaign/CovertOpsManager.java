@@ -136,6 +136,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			CovertActionDef def = new CovertActionDef();
 			def.id = id;
 			def.name = defJson.getString("name");
+			def.nameForSub = defJson.optString("nameForSub", def.name);
 			def.successChance = (float)defJson.optDouble("successChance", 0);
 			def.detectionChance = (float)defJson.optDouble("detectionChance", 0);
 			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail", 0);
@@ -1019,6 +1020,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	public static class CovertActionDef {
 		public String id;
 		public String name;
+		public String nameForSub;
 		public float successChance;
 		public float detectionChance;
 		public float detectionChanceFail;
