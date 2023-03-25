@@ -12,7 +12,7 @@
 			"name":"Vulnerable Enemy Target",
 			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. This presents us with an opportunity.",
 			"classPath":"exerelin.campaign.ai.concern.VulnerableEnemyTargetConcern",
-			"tags":["military", "economy", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize"],
+			"tags":["military", "economy", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize", "canRebel"],
 			"module":MILITARY
 		},
 		"enemyInSharedSystem":{
@@ -70,7 +70,7 @@
 			"name":"Close Adversaries",
 			"desc":"Two factions unfriendly to us, $theFaction and $theOtherFaction, are getting closer than we would like.",
 			"classPath":"exerelin.campaign.ai.concern.CloseAdversariesConcern",
-			"tags":["diplomacy", "diplomacy_negative", "canDeclareWar", "canMakePeace"],
+			"tags":["diplomacy", "canLowerRelations", "diplomacy_negative", "canDeclareWar", "canMakePeace"],
 			"module":DIPLOMATIC
 		},
 		"warWeariness":{
@@ -117,33 +117,29 @@
 		"invasion":{
 			"name":"Invasion",
 			"classPath":"exerelin.campaign.ai.action.fleet.InvasionAction",
-			"cooldown":60,			# how long after action completion before a new action can be taken for the concern
-			"antiRepetition":35,	# reduction in action priority if recently used elsewhere, decays over time
+			"cooldown":60,			# how long after action completion before a new action can be taken for the concern; default 30
+			"antiRepetition":35,	# reduction in action priority if recently used elsewhere, decays over time; default 25
 			# wartime actions can only be used when at war
 			"tags":["military", "market", "canInvade", "unfriendly", "aggressive", "wartime"],
 		},
 		"raid":{
 			"name":"Raid",
 			"classPath":"exerelin.campaign.ai.action.fleet.RaidAction",
-			"cooldown":30,
 			"tags":["military", "market", "canRaid", "unfriendly", "aggressive", "wartime"],
 		},
 		"baseStrike":{
 			"name":"Base Strike",
 			"classPath":"exerelin.campaign.ai.action.fleet.BaseStrikeAction",
-			"cooldown":30,
 			"tags":["military", "market", "canBaseStrike", "unfriendly", "aggressive", "wartime"],
 		},
 		"diplomacyPositive":{
 			"name":"Diplomatic Action (Positive)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
-			"cooldown":30,
 			"tags":["diplomacy", "canDiplomacy", "friendly"],
 		},
 		"diplomacyNegative":{
 			"name":"Diplomatic Action (Negative)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
-			"cooldown":30,
 			"tags":["diplomacy", "canDiplomacy", "unfriendly"],
 		},
 		"declareWar":{
@@ -155,26 +151,34 @@
 		"makePeace":{
 			"name":"Make Peace",
 			"classPath":"exerelin.campaign.ai.action.MakePeaceAction",
-			"cooldown":30,
 			"tags":["diplomacy", "canDiplomacy", "friendly"],
 		},
 		"agentRaiseRelations":{
 			"name":"Raise Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.RaiseRelationsAction",
-			"cooldown":30,
 			"tags":["diplomacy", "covert", "canDiplomacy", "diplomacy_positive", "friendly"],
 		},
 		"agentLowerRelations":{
 			"name":"Lower Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.LowerRelationsAction",
-			"cooldown":30,
-			"tags":["diplomacy", "covert", "canDiplomacy", "diplomacy_negative", "unfriendly"],
+			"tags":["diplomacy", "covert", "canLowerRelations", "diplomacy_negative", "unfriendly"],
 		},
 		"agentDestroyCommodityStocks":{
 			"name":"Destroy Commodity Stocks",
 			"classPath":"exerelin.campaign.ai.action.covert.DestroyCommodityStocksAction",
-			"cooldown":30,
-			"tags":["economy", "covert", "canDestroyCommodity", "aggressive", "unfriendly"],
+			"tags":["covert", "canDestroyCommodity", "aggressive", "unfriendly"],
+		},
+		"agentSabotageIndustry":{
+			"name":"Sabotage Industry",
+			"classPath":"exerelin.campaign.ai.action.covert.SabotageIndustryAction",
+			"antiRepetition":30,
+			"tags":["covert", "canSabotageIndustry", "aggressive", "unfriendly"],
+		},
+		"agentInstigateRebellion":{
+			"name":"Instigate Rebellion",
+			"classPath":"exerelin.campaign.ai.action.covert.InstigateRebellionAction",
+			"antiRepetition":30,
+			"tags":["military", "covert", "canInvade", "aggressive", "unfriendly"],
 		},
 	}	
 }

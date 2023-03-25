@@ -5,7 +5,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.utilities.NexConfig;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -40,10 +40,14 @@ public class MakePeaceAction extends DiplomacyAction {
     @Override
     public boolean canUseForConcern(StrategicConcern concern) {
         if (!concern.getDef().hasTag("canDeclareWar")) return false;
-        if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST)) return false;
         if (concern.getFaction() != null && concern.getFaction().isHostileTo(ai.getFaction())) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;
     }
 }

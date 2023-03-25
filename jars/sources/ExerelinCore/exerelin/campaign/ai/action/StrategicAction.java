@@ -29,6 +29,7 @@ public interface StrategicAction {
     void updatePriority();
 
     void advance(float days);
+    void abort();
     void end(StrategicActionDelegate.ActionStatus newStatus);
     boolean isEnded();
 

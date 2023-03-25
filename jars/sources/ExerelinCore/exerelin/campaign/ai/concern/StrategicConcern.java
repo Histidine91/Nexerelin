@@ -4,7 +4,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicAIModule;
 import exerelin.campaign.ai.StrategicDefManager;
@@ -77,9 +76,25 @@ public interface StrategicConcern {
      */
     @Nullable List<FactionAPI> getFactions();
 
+    /**
+     * Creates a GUI panel for display in the AI'ss intel screen item.
+     * @param holder
+     * @return
+     */
     CustomPanelAPI createPanel(CustomPanelAPI holder);
 
-    StrategicAction pickAction();
+    /**
+     * Asks the concern to select a strategic action it considers the most suitable (has highest priority score).
+     * Does not actually generate or activate the proposed action.
+     * @return
+     */
+    @Nullable StrategicAction pickAction();
+
+    /**
+     * Generates and initiates the specified strategic action.
+     * @param action
+     * @return True if the action was successfully initiated, false otherwise.
+     */
     boolean initAction(StrategicAction action);
     //void setCurrentAction(StrategicAction action);
     StrategicAction getCurrentAction();
@@ -96,6 +111,11 @@ public interface StrategicConcern {
     void end();
 
     String getName();
+    /**
+     * Shown in the concern's GUI panel. Exists because it may need to be shorter than {@code getName()} which is used in logging and elsewhere.
+     * @return
+     */
+    String getDisplayName();
     String getDesc();
     String getId();
     String getIcon();

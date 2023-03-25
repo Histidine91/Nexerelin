@@ -39,16 +39,17 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class FleetPoolManager extends BaseIntelPlugin {
 	
-	public static final boolean USE_POOL = false;
+	public static final boolean USE_POOL = true;
 	
 	public static final String DATA_KEY = "nex_fleetPoolManager";
 	public static final String MEMORY_KEY_POINTS_LAST_TICK = "$nex_fleetPoolPointsLastTick";
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>();
 	// approximate conversion ratio of invasion points to fleet points, plus a bit of margin since this is used for more than invasions
-	public static final float FLEET_POOL_MULT = 0.02f;
+	// or maybe it could be a bit lower, since it never seems to actually get exhausted
+	public static final float FLEET_POOL_MULT = 0.012f;
 	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
 	@Deprecated public static final float FLEET_POOL_MAX = 50000;	// 50k
-	public static final float FLEET_POOL_MAX_MULT = 365;	// 1 year of storage
+	public static final float FLEET_POOL_MAX_MULT = 180;	// < 0.5 year of storage
 	
 	public static final List<String> COMMODITIES = Arrays.asList(new String[] {
 		Commodities.SHIPS, Commodities.SUPPLIES, Commodities.FUEL
@@ -114,7 +115,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	 */
 	public float drawFromPool(String factionId, RequisitionParams params) {
 		if (!USE_POOL) {
-			modifyPool(factionId, params.amount);	// we don't care about the pool, but modify it anyway for debugging
+			modifyPool(factionId, -params.amount);	// we don't care about the pool, but modify it anyway for debugging
 			return params.amount;
 		}
 		
@@ -394,7 +395,7 @@ public class FleetPoolManager extends BaseIntelPlugin {
 	
 	@Override
 	public boolean isHidden() {
-		return !USE_POOL;// && !ExerelinModPlugin.isNexDev;
+		return !USE_POOL && !ExerelinModPlugin.isNexDev;
 	}
 	
 	protected String getString(String id) {

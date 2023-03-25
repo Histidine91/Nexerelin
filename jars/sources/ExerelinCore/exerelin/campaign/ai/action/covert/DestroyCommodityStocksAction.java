@@ -30,6 +30,7 @@ public class DestroyCommodityStocksAction extends CovertAction {
         DEFAULT_COMMODITY_TARGETS.add(Commodities.FOOD);
         DEFAULT_COMMODITY_TARGETS.add(Commodities.FUEL);
         DEFAULT_COMMODITY_TARGETS.add(Commodities.HAND_WEAPONS);
+        DEFAULT_COMMODITY_TARGETS.add(Commodities.HEAVY_MACHINERY);
     }
 
     protected String commodityId;

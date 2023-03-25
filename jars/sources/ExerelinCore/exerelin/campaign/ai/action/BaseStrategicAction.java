@@ -44,7 +44,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
     }
 
     /**
-     * FIXME: Either use this for something or remove it.
+     * Called before action generation and every half-day or so.
      * @return
      */
     @Override
@@ -113,6 +113,13 @@ public abstract class BaseStrategicAction implements StrategicAction {
             status = currStatus;
             concern.notifyActionUpdate(this, status);
         }
+    }
+
+    @Override
+    public void abort() {
+        if (isEnded) return;
+        if (delegate != null) delegate.abortStrategicAction();
+        end(StrategicActionDelegate.ActionStatus.CANCELLED);
     }
 
     @Override

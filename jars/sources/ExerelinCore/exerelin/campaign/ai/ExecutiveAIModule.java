@@ -2,9 +2,7 @@ package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ai.action.StrategicAction;
-import exerelin.campaign.ai.concern.BaseStrategicConcern;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.utilities.NexUtils;
 import lombok.extern.log4j.Log4j;
@@ -44,6 +42,18 @@ public class ExecutiveAIModule extends StrategicAIModule {
             if (val < 0) recentActionsForAntiRepetition.remove(actionDefId);
             else recentActionsForAntiRepetition.put(actionDefId, val);
         }
+
+        List<StrategicConcern> concerns = new ArrayList<>(ai.getExistingConcerns());
+        int numOngoingActions = 0;
+        for (StrategicConcern concern : concerns) {
+            if (concern.isEnded()) continue;
+            StrategicAction act = concern.getCurrentAction();
+            if (act != null && !act.isEnded()) {
+                if (!act.isValid()) {
+                    act.abort();
+                }
+            }
+        }
     }
 
     public void actOnConcerns() {
@@ -58,11 +68,14 @@ public class ExecutiveAIModule extends StrategicAIModule {
             }
         });
 
+        // count ongoing actions
         int numOngoingActions = 0;
         for (StrategicConcern concern : concerns) {
             if (concern.isEnded()) continue;
-            if (concern.getCurrentAction() != null && !concern.getCurrentAction().isEnded())
+            StrategicAction act = concern.getCurrentAction();
+            if (act != null && !act.isEnded()) {
                 numOngoingActions++;
+            }
         }
 
         for (StrategicConcern concern : concerns) {

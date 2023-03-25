@@ -46,4 +46,9 @@ public class LowerRelationsAction extends CovertAction {
     public boolean canUseForConcern(StrategicConcern concern) {
         return concern.getDef().hasTag("diplomacy_negative");
     }
+
+    @Override
+    public boolean isValid() {
+        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;
+    }
 }

@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -58,6 +59,14 @@ public class AllianceVoter {
 	 */
 	public static void allianceVote(String faction1Id, String faction2Id, boolean isWar)
 	{
+		String commId = Misc.getCommissionFactionId();
+		if (faction1Id.equals(Factions.PLAYER) && commId != null) {
+			faction1Id = commId;
+		}
+		if (faction2Id.equals(Factions.PLAYER) && commId != null) {
+			faction2Id = commId;
+		}
+
 		Alliance ally1 = AllianceManager.getFactionAlliance(faction1Id);
 		Alliance ally2 = AllianceManager.getFactionAlliance(faction2Id);
 		if (ally1 == null && ally2 == null) return;

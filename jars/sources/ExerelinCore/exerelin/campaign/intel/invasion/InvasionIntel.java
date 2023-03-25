@@ -1,26 +1,17 @@
 package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
-import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
@@ -32,13 +23,9 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
-import exerelin.campaign.intel.fleets.NexOrganizeStage;
-import exerelin.campaign.intel.fleets.NexTravelStage;
-import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
-import exerelin.campaign.intel.fleets.WaitStage;
+import exerelin.campaign.intel.fleets.*;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleCampaignListener;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -48,13 +35,14 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate, 
 		GroundBattleCampaignListener {
@@ -460,6 +448,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 				info.addPara(string, opad);
 			}
 		}
+
+		addStrategicActionInfo(info, width);
 		
 		info.addSectionHeading(StringHelper.getString("status", true), 
 				attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);

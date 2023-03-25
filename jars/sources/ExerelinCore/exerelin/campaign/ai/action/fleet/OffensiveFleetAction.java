@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.BaseStrategicAction;
-import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -63,7 +62,8 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
             float max = FleetPoolManager.getManager().getMaxPool(ai.getFactionId());
             float proportion = curPool/max;
             if (max <= 0) proportion = 0;
-            priority.modifyFlat("fleetPool", proportion, StrategicAI.getString("statFleetPool", true));
+            if (proportion > 0.75f) proportion = 1;
+            priority.modifyMult("fleetPool", proportion, StrategicAI.getString("statFleetPool", true));
         }
     }
 

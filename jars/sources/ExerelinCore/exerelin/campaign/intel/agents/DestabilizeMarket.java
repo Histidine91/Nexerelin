@@ -8,10 +8,11 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
-import org.lazywizard.lazylib.MathUtils;
 
 public class DestabilizeMarket extends CovertActionIntel {
 	
@@ -83,6 +84,10 @@ public class DestabilizeMarket extends CovertActionIntel {
 	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
 		String action = getActionString("intelStatus_destabilizeMarket", true);
 		info.addPara(action, pad, color, Misc.getHighlightColor(), Math.round(daysRemaining) + "");
+	}
+
+	protected String getSubbedName() {
+		return String.format(getDef().nameForSub, market.getName());
 	}
 	
 	@Override

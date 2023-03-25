@@ -1,12 +1,5 @@
 package exerelin.campaign;
 
-import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.intel.agents.LowerRelations;
-import exerelin.campaign.intel.agents.InstigateRebellion;
-import exerelin.campaign.intel.agents.SabotageIndustry;
-import exerelin.campaign.intel.agents.DestabilizeMarket;
-import exerelin.campaign.intel.agents.RaiseRelations;
-import exerelin.campaign.intel.agents.DestroyCommodityStocks;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
@@ -14,12 +7,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
-import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
-import com.fs.starfarer.api.campaign.econ.Industry;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MonthlyReport;
+import com.fs.starfarer.api.campaign.econ.*;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
-import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -37,44 +26,29 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.util.MagicSettings;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.EconomyInfoHelper.ProducerEntry;
-import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.agents.AgentIntel;
+import exerelin.campaign.intel.agents.*;
 import exerelin.campaign.intel.agents.AgentIntel.Specialization;
-import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
-import exerelin.utilities.AgentActionListener;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Handles some agent-related stuff
@@ -731,34 +705,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				}
 				else if (isSabotage) 
 				{
-					// kill the spaceport?
-					if (NexUtilsMarket.hasWorkingSpaceport(target.market) && random.nextFloat() < 0.35f) 
-					{
-						Industry ind = target.market.getIndustry(Industries.MEGAPORT);
-						if (ind == null) ind = target.market.getIndustry(Industries.SPACEPORT);
-						if (ind != null) {
-							log.info("\tSabotaging spaceport on " + target.market.getName());
-							result.put("industry", ind);
-						}
-					}
-					// or find the industry producing this stuff
-					else for (Industry ind : target.market.getIndustries()) 
-					{
-						if (ind.getId().equals(Industries.POPULATION))
-							continue;
-						
-						MutableCommodityQuantity supply = ind.getSupply(target.commodityId);
-						if (supply != null && supply.getQuantity().getModifiedInt() >= target.output)
-						{
-							log.info("\tFound economic target: " + ind.getCurrentName() 
-									+ " on " + ind.getMarket().getName());
-							result.put("industry", ind);
-							break;
-						}
-					}
-					result.put("market", target.market);
-					result.put("targetFaction", target.market.getFaction());
-					return result;
+					return this.pickSabotageIndustryTargetFromProducerEntry(target);
 				}
 			}
 		}
@@ -802,6 +749,45 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		return result;
 	}
 
+	/**
+	 * Picks an industry on the market specified by the {@code ProducerEntry} that we should sabotage.
+	 * @param target
+	 * @return
+	 */
+	public Map<String, Object> pickSabotageIndustryTargetFromProducerEntry(ProducerEntry target)
+	{
+		Map<String, Object> result = new HashMap<>();
+
+		// kill the spaceport?
+		if (NexUtilsMarket.hasWorkingSpaceport(target.market) && random.nextFloat() < 0.35f)
+		{
+			Industry ind = target.market.getIndustry(Industries.MEGAPORT);
+			if (ind == null) ind = target.market.getIndustry(Industries.SPACEPORT);
+			if (ind != null) {
+				log.info("\tSabotaging spaceport on " + target.market.getName());
+				result.put("industry", ind);
+			}
+		}
+		// or find the industry producing this stuff
+		else for (Industry ind : target.market.getIndustries())
+		{
+			if (ind.getId().equals(Industries.POPULATION))
+				continue;
+
+			MutableCommodityQuantity supply = ind.getSupply(target.commodityId);
+			if (supply != null && supply.getQuantity().getModifiedInt() >= target.output)
+			{
+				log.info("\tFound economic target: " + ind.getCurrentName()
+						+ " on " + ind.getMarket().getName());
+				result.put("industry", ind);
+				break;
+			}
+		}
+		result.put("market", target.market);
+		result.put("targetFaction", target.market.getFaction());
+		return result;
+	}
+
 	public MarketAPI pickTargetMarket(FactionAPI agentFaction, FactionAPI targetFaction, String actionType, Random random) {
 		return pickTargetMarket(agentFaction, targetFaction, actionType, null, random);
 	}
@@ -820,14 +806,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			// rebellion special handling
 			if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
 			{
-				if (!NexUtilsMarket.canBeInvaded(market, false))
-					continue;
-				if (!Global.getSettings().isDevMode() && RebellionCreator.getInstance().getRebellionPoints(market) < 50)
-					continue;
-				if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
-					continue;
-				if (RebellionIntel.isOngoing(market))
-					continue;
+				if (!canInstigateRebellion(market)) continue;
 
 				if (NexUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
 					weight *= 4;
@@ -923,6 +902,18 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         if (numFactions < 0) numFactions = 0;
         return baseInterval * (float)Math.pow(0.95, numFactions);
     }
+
+    public static boolean canInstigateRebellion(MarketAPI market) {
+		if (!NexUtilsMarket.canBeInvaded(market, false))
+			return false;
+		if (RebellionCreator.getInstance().getRebellionPoints(market) < 50)
+			return false;
+		if (market.getStabilityValue() > InstigateRebellion.MAX_STABILITY)
+			return false;
+		if (RebellionIntel.isOngoing(market))
+			return false;
+		return true;
+	}
     
     public static void modifyAlertLevel(MarketAPI market, float amount)
     {

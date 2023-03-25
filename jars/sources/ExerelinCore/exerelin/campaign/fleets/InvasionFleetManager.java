@@ -2,23 +2,12 @@ package exerelin.campaign.fleets;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
@@ -39,37 +28,23 @@ import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.FleetPoolManager.RequisitionParams;
-import exerelin.campaign.intel.invasion.InvasionIntel;
-import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
+import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.NexUtilsMath;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import exerelin.world.ExerelinNewGameSetup;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.util.*;
 
 /**
  * Handles invasion, raid and base strike fleets generation.
@@ -1428,7 +1403,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		boolean elapsed = this.tracker.intervalElapsed();
 		
 		if (elapsed) {
-			updateFleetRequestStock(tracker.getIntervalDuration());
+			updateFleetRequestStock(tracker.getElapsed());
 		}
 		
 		// if still in invasion grace period, do nothing further

@@ -7,13 +7,9 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.EconomyInfoHelper;
-import exerelin.utilities.NexUtilsGUI;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EconomicAIModule extends StrategicAIModule {
     public EconomicAIModule(StrategicAI ai, StrategicDefManager.ModuleType module) {
@@ -36,7 +32,7 @@ public class EconomicAIModule extends StrategicAIModule {
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
 
         tooltip.addPara(StrategicAI.getString("intelPara_income"), opad, hl, Misc.getDGSCredits(helper.getFactionNetIncome(factionId)));
-		tooltip.addPara("intelPara_competitors", opad);
+		tooltip.addPara(StrategicAI.getString("intelPara_competitors"), opad);
 		for (String otherFactionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(otherFactionId)) continue;
 			int compFactor = helper.getCompetitionFactor(factionId, otherFactionId);

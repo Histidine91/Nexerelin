@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -440,6 +441,12 @@ public class NexUtilsMarket {
 
 	public static float getIndustryDisruptTime(Industry ind) {
 		return ind.getSpec().getDisruptDanger().disruptionDays;
+	}
+
+	public static int getIndustrySupply(Industry ind, String commodityId) {
+		MutableCommodityQuantity quant = ind.getSupply(commodityId);
+		if (quant == null) return 0;
+		return quant.getQuantity().getModifiedInt();
 	}
 	
 	public static void pickEntityDestination(final InteractionDialogAPI dialog, 

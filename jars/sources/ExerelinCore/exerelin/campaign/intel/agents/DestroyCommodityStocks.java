@@ -8,17 +8,19 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
-import java.awt.Color;
+import exerelin.utilities.StringHelper;
+import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.lazywizard.lazylib.MathUtils;
+
+import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 
 public class DestroyCommodityStocks extends CovertActionIntel {
 	
 	protected String commodityId;
-	protected String commodityName;
 	protected float duration;
 	protected int effect;
 
@@ -26,17 +28,15 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
 		this.commodityId = commodityId;
-		commodityName = getCommodityName();
 	}
 	
 	public void setCommodity(String commodityId) {
 		this.commodityId = commodityId;
-		commodityName = getCommodityName();
 	}
 	
 	public String getCommodityName() {
 		if (commodityId == null) return null;
-		return market.getCommodityData(commodityId).getCommodity().getName().toLowerCase();
+		return StringHelper.getCommodityName(commodityId);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 		{
 			TooltipMakerAPI item = info.beginImageWithText(getIcon(), 40);
 			item.addPara(getString("commodityLossEffect"), 0, Misc.getHighlightColor(), 
-					commodityName, effect + "");
+					getCommodityName(), effect + "");
 			info.addImageWithText(pad);
 			
 		}
@@ -103,23 +103,28 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getActionString("intelStatus_destroyCommodities", false);
-		info.addPara(action, pad, Misc.getHighlightColor(), commodityName);
+		info.addPara(action, pad, Misc.getHighlightColor(), getCommodityName());
 	}
 	
 	@Override
 	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
 		String action = getActionString("intelStatus_destroyCommodities", true);
-		info.addPara(action, pad, color, Misc.getHighlightColor(), 
-				commodityName, Math.round(daysRemaining) + "");
+		info.addPara(action, pad, color, Misc.getHighlightColor(),
+				getCommodityName(), Math.round(daysRemaining) + "");
 	}
 	
 	
 	@Override
 	protected List<Pair<String, String>> getStandardReplacements() {
 		List<Pair<String, String>> sub = super.getStandardReplacements();
-		sub.add(new Pair<>("$commodity", commodityName));
+		sub.add(new Pair<>("$commodity", getCommodityName()));
 		
 		return sub;
+	}
+
+	@Override
+	protected String getSubbedName() {
+		return String.format(getDef().nameForSub, getCommodityName());
 	}
 
 	@Override

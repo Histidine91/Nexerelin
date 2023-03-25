@@ -11,21 +11,12 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.*;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
-import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.StatsTracker;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -35,17 +26,16 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 
 public abstract class CovertActionIntel extends BaseIntelPlugin implements StrategicActionDelegate, Cloneable {
 	
@@ -703,6 +693,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		info.addSectionHeading(getString("intelResultHeader"), Alignment.MID, opad);
 		addResultPara(info, opad);
 		addAgentOutcomePara(info, opad);
+		addStrategicActionPara(info, width, opad);
 		
 		// goto agent button
 		if (agent != null) {
@@ -716,6 +707,9 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_GOTOAGENT && agent != null) {
 			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, agent);
+		}
+		if (buttonId == StrategicActionDelegate.BUTTON_GO_INTEL && strategicAction != null) {
+			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
 		}
 	}
 	
@@ -892,6 +886,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 			info.addPara(str, pad, market.getFaction().getBaseUIColor(), agentEscapeDest.getName());
 		}
 	}
+
+	public void addStrategicActionPara(TooltipMakerAPI info, float width, float pad) {
+		if (strategicAction == null) return;
+		info.addPara(StrategicAI.getString("intelPara_actionDelegateDesc"), pad, Misc.getHighlightColor(), strategicAction.getConcern().getName());
+		info.addButton(StrategicAI.getString("btnGoIntel"), StrategicActionDelegate.BUTTON_GO_INTEL, width, 24, 3);
+	}
 	
 	@Override
 	protected float getBaseDaysAfterEnd() {
@@ -940,6 +940,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	@Override
 	public float getStrategicActionDaysRemaining() {
 		return daysRemaining;
+	}
+
+	@Override
+	public void abortStrategicAction() {
+		abort();
 	}
 
 	public static String getString(String id) {

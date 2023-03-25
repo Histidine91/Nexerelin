@@ -1,18 +1,10 @@
 package exerelin.campaign.ai.action.covert;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.rulecmd.AgentActionBase;
 import exerelin.campaign.CovertOpsManager;
-import exerelin.campaign.ai.SAIUtils;
-import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.BaseStrategicAction;
-import exerelin.campaign.econ.FleetPoolManager;
-import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.agents.CovertActionIntel;
-import exerelin.campaign.intel.agents.RaiseRelations;
-import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 
 import java.util.List;
 
@@ -25,18 +17,6 @@ public abstract class CovertAction extends BaseStrategicAction {
 
     public CovertActionIntel getIntel() {
         return (CovertActionIntel)delegate;
-    }
-
-    @Override
-    public String getName() {
-        if (getIntel() != null) return getIntel().getActionName(true);
-        return getDef().id;
-    }
-
-    @Override
-    public String getIcon() {
-        if (getIntel() != null)  return getIntel().getIcon();
-        return null;
     }
 
     public FactionAPI getAgentFaction() {

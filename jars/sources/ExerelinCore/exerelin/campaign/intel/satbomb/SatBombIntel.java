@@ -20,23 +20,18 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.fleets.NexOrganizeStage;
-import exerelin.campaign.intel.fleets.NexReturnStage;
-import exerelin.campaign.intel.fleets.NexTravelStage;
-import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-import exerelin.campaign.intel.fleets.RaidAssignmentAINoWander;
+import exerelin.campaign.intel.fleets.*;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
-import static exerelin.campaign.intel.raid.NexRaidIntel.log;
-
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import org.lwjgl.util.vector.Vector2f;
 
 public class SatBombIntel extends OffensiveFleetIntel {
 	
@@ -284,6 +279,8 @@ public class SatBombIntel extends OffensiveFleetIntel {
 			addStandardStrengthComparisons(info, target, targetFaction, false, true, 
 					getForceType(), StringHelper.getString("nex_satbomb", "expeditionForcePossessive"));
 		}
+
+		addStrategicActionInfo(info, width);
 		
 		info.addSectionHeading(StringHelper.getString("status", true),
 				   attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);

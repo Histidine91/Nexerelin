@@ -1,10 +1,10 @@
 package exerelin.campaign.ai.action;
 
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
+import exerelin.utilities.NexConfig;
 
 public class DiplomacyAction extends BaseStrategicAction {
 
@@ -47,7 +47,7 @@ public class DiplomacyAction extends BaseStrategicAction {
         params.onlyPositive = !canNegative;
         params.onlyNegative = !canPositive;
 
-        delegate = DiplomacyManager.createDiplomacyEvent(ai.getFaction(), concern.getFaction(), null, params);
+        delegate = DiplomacyManager.createDiplomacyEvent(concern.getFaction(), ai.getFaction(), null, params);
         if (delegate == null) return false;
         end(StrategicActionDelegate.ActionStatus.SUCCESS);
         return true;
@@ -79,5 +79,10 @@ public class DiplomacyAction extends BaseStrategicAction {
             return false;
 
         return concern.getDef().hasTag("canDiplomacy");
+    }
+
+    @Override
+    public boolean isValid() {
+        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;
     }
 }

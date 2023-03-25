@@ -10,12 +10,15 @@ import java.awt.*;
  */
 public interface StrategicActionDelegate {
 
+    public static final Object BUTTON_GO_INTEL = new Object();
+
     ActionStatus getStrategicActionStatus();
     float getStrategicActionDaysRemaining();
     String getName();
     String getIcon();
     StrategicAction getStrategicAction();
     void setStrategicAction(StrategicAction action);
+    void abortStrategicAction();
 
     // states: preparing, in progress, done?
     public enum ActionStatus {

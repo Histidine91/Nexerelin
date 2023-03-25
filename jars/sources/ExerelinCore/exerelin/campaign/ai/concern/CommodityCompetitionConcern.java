@@ -2,7 +2,9 @@ package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -12,6 +14,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 
@@ -19,7 +22,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class CommodityCompetitionConcern extends BaseStrategicConcern implements HasCommodityTarget {
+public class CommodityCompetitionConcern extends BaseStrategicConcern implements HasCommodityTarget, HasIndustryTarget {
 
     public static final int MAX_SIMULTANEOUS_CONCERNS = 4;
 
@@ -88,14 +91,58 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
         reapplyPriorityModifiers();
     }
 
+    /**
+     * Gets a list of the target faction's markets producing the commodity.
+     * @return
+     */
     @Override
     public List<MarketAPI> getMarkets() {
-        return super.getMarkets();
+        List<MarketAPI> markets = new ArrayList<>();
+        List<EconomyInfoHelper.ProducerEntry> competitors = EconomyInfoHelper.getInstance().getProducers(
+                faction.getId(), commodityId, 3, true);
+        for (EconomyInfoHelper.ProducerEntry entry : competitors) {
+            markets.add(entry.market);
+        }
+        return markets;
     }
 
     @Override
     public List<String> getCommodityIds() {
         return new ArrayList<>(Arrays.asList(new String[] {commodityId}));
+    }
+
+    /**
+     * Picks a random competing industry that produces the commodity, for actions that require such.
+     * @return
+     */
+    @Override
+    public Industry getTargetIndustry() {
+        // First find a market that produces the thing
+        MarketAPI tm = null;
+        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker<>();
+        List<EconomyInfoHelper.ProducerEntry> competitors = EconomyInfoHelper.getInstance().getProducers(
+                faction.getId(), commodityId, 3, true);
+        for (EconomyInfoHelper.ProducerEntry entry : competitors) {
+            marketPicker.add(entry.market, entry.output);
+        }
+        tm = marketPicker.pick();
+        if (tm == null) return null;
+
+        // now look for an industry on that market that produces the thing (or the spaceport)
+        WeightedRandomPicker<Industry> industryPicker = new WeightedRandomPicker<>();
+        for (Industry ind : tm.getIndustries()) {
+            if (ind.getSpec().hasTag(Industries.TAG_SPACEPORT)) {
+                industryPicker.add(ind, 6);
+                continue;
+            }
+
+            int supply = NexUtilsMarket.getIndustrySupply(ind, commodityId);
+            int supplyAdjusted = supply - EconomyInfoHelper.getCommodityOutputModifier(commodityId);
+            if (supplyAdjusted > 4) {
+                industryPicker.add(ind, supplyAdjusted);
+            }
+        }
+        return industryPicker.pick();
     }
 
     @Override
@@ -119,7 +166,12 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
     @Override
     public String getName() {
-        return String.format("%s: %s", super.getName(), faction.getDisplayName());  //, StringHelper.getCommodityName(commodityId));
+        return String.format("%s - %s %s", super.getName(), faction.getDisplayName(), StringHelper.getCommodityName(commodityId));
+    }
+
+    @Override
+    public String getDisplayName() {
+        return String.format("%s - %s", super.getName(), faction.getDisplayName());  //, StringHelper.getCommodityName(commodityId));
     }
 
     @Override

@@ -1,20 +1,19 @@
 package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.plugins.ExerelinModPlugin;
@@ -179,6 +178,11 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 			para.setHighlightColors(getFactionHighlightColors(faction1, faction2));
 			*/
 		}
+
+		if (strategicAction != null) {
+			info.addPara(StrategicAI.getString("intelPara_actionDelegateDesc"), opad, Misc.getHighlightColor(), strategicAction.getConcern().getName());
+			info.addButton(StrategicAI.getString("btnGoIntel"), StrategicActionDelegate.BUTTON_GO_INTEL, width, 24, 3);
+		}
 		
 		info.addSectionHeading(StringHelper.getString("exerelin_diplomacy", "intelHeader2"),
 				Alignment.MID, opad);
@@ -285,6 +289,13 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 	*/
 
 	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == StrategicActionDelegate.BUTTON_GO_INTEL && strategicAction != null) {
+			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
+		}
+	}
+
+	@Override
 	public String getSmallDescriptionTitle() {
 		return getName();
 	}
@@ -338,5 +349,10 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 	@Override
 	public float getStrategicActionDaysRemaining() {
 		return -1;
+	}
+
+	@Override
+	public void abortStrategicAction() {
+		// too late lol, do nothing
 	}
 }

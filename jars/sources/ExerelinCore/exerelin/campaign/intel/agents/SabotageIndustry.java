@@ -7,11 +7,13 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
-import java.awt.Color;
+import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
-import org.lazywizard.lazylib.MathUtils;
+
+import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 
 public class SabotageIndustry extends CovertActionIntel {
 	
@@ -104,6 +106,11 @@ public class SabotageIndustry extends CovertActionIntel {
 		sub.add(new Pair<>("$industry", industry.getCurrentName()));
 		
 		return sub;
+	}
+
+	@Override
+	protected String getSubbedName() {
+		return String.format(getDef().nameForSub, industry.getCurrentName());
 	}
 
 	@Override

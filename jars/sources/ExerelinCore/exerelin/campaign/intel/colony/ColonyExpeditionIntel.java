@@ -1,11 +1,7 @@
 package exerelin.campaign.intel.colony;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
@@ -16,14 +12,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
@@ -33,12 +22,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
@@ -46,24 +30,17 @@ import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
-import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.NexTravelStage;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.*;
+
+import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 
 public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
@@ -220,6 +197,8 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);
 		
 		addInitialDescSection(info, opad);
+
+		addStrategicActionInfo(info, width);
 		
 		FactionAPI attacker = getFaction();
 		FactionAPI defender = getTarget().getFaction();
@@ -289,6 +268,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (buttonId == BUTTON_AVERT) {
 			ui.showDialog(null, new ColonyAvertInteractionDialogPlugin(this, ui));
 		}
+		super.buttonPressConfirmed(buttonId, ui);
 	}
 	
 	@Override

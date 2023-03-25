@@ -1,10 +1,7 @@
 package exerelin.campaign.intel.fleets;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
@@ -16,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -24,25 +22,27 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.fleets.InvasionFleetManager;
-
-import static exerelin.campaign.battle.NexWarSimScript.*;
-import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.log4j.Logger;
+
+import java.awt.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.log4j.Logger;
+
+import static exerelin.campaign.battle.NexWarSimScript.*;
+import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 
 public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate, StrategicActionDelegate {
 	
@@ -639,7 +639,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			member.setShipName(curr.pickRandomShipName(rand));
 		}
 	}
-	
+
+	@Override
+	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		super.createSmallDescription(info, width, height);
+		addStrategicActionInfo(info, width);
+	}
+
 	@Override
 	public void addStandardStrengthComparisons(TooltipMakerAPI info, MarketAPI target, FactionAPI targetFaction, boolean withGround,
 											   boolean withBombard, String raid, String raids) {
@@ -799,6 +805,12 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		String strengthStr = String.format("%.1f", strength);
 		info.addPara(String.format("%s: %s", name, strengthStr), 0, Misc.getHighlightColor(), strengthStr);
 	}
+
+	protected void addStrategicActionInfo(TooltipMakerAPI info, float width) {
+		if (strategicAction == null) return;
+		info.addPara(StrategicAI.getString("intelPara_actionDelegateDesc"), 10, Misc.getHighlightColor(), strategicAction.getConcern().getName());
+		info.addButton(StrategicAI.getString("btnGoIntel"), StrategicActionDelegate.BUTTON_GO_INTEL, width, 24, 3);
+	}
 	
 	protected int getRouteCount() {
 		int currStage = getCurrentStage();
@@ -813,7 +825,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 		return stage.getRoutes();
 	}
-	
+
+	@Override
+	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == StrategicActionDelegate.BUTTON_GO_INTEL && strategicAction != null) {
+			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
+		}
+	}
+
 	/**
 	 * Includes stragglers, unlike the regular route count.
 	 * @return
@@ -835,6 +854,11 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	@Override
 	public float getStrategicActionDaysRemaining() {
 		return getETA();
+	}
+
+	@Override
+	public void abortStrategicAction() {
+		terminateEvent(OffensiveOutcome.OTHER);
 	}
 
 	public static void reportRaid(OffensiveFleetIntel intel)

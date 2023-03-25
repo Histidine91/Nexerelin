@@ -10,18 +10,35 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
-import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.*;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+/**
+ * High-level strategy AI for factions.
+ */
 @Log4j
 public class StrategicAI extends BaseIntelPlugin {
+
+	/*
+		How the AI works:
+			Each strategy AI has an economic module, military module, diplomacy module, and executive module.
+			Update interval is a month long.
+			Every update ("strategy meeting"), the econ, mil and diplo modules search for "concerns" (issues of note facing the faction),
+			and check if previously generated concerns are still relevant.
+			The executive module then picks two of the most important concerns and attempts to generates an "action" for each.
+
+		Examples of concerns: revanchist claim on a planet, commodity competition from another faction, desire to butter up another faction, etc.
+		Examples of actions: diplomatic actions, invasions, raids, agent sabotage
+	 */
 
 	public static final String MEMORY_KEY = "$nex_strategicAI";
 	public static final String UPDATE_NEW_CONCERNS = "new_concerns";
@@ -41,6 +58,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	protected transient List<StrategicConcern> lastAddedConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastRemovedConcerns = new ArrayList<>();
 	protected IntervalUtil interval = new IntervalUtil(29, 31);
+	protected IntervalUtil intervalShort = new IntervalUtil(0.48f, 0.52f);
 	@Getter protected float daysSinceLastUpdate;
 
 
@@ -72,6 +90,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		lastAddedConcerns = new ArrayList<>();
 		lastRemovedConcerns = new ArrayList<>();
 		if (execModule == null) execModule = new ExecutiveAIModule(this);
+		if (intervalShort == null) intervalShort = new IntervalUtil(0.48f, 0.52f);
 		return this;
 	}
 	
@@ -92,14 +111,18 @@ public class StrategicAI extends BaseIntelPlugin {
 	protected void advanceImpl(float amount) {
 		float days = Global.getSector().getClock().convertToDays(amount);
 
-		econModule.advance(days);
-		milModule.advance(days);
-		diploModule.advance(days);
-		execModule.advance(days);
+		intervalShort.advance(days);
+		if (intervalShort.intervalElapsed()) {
+			float days2 = intervalShort.getElapsed();
+			econModule.advance(days2);
+			milModule.advance(days2);
+			diploModule.advance(days2);
+			execModule.advance(days2);
+		}
 
 		interval.advance(days);
 		if (!interval.intervalElapsed()) return;
-		daysSinceLastUpdate = interval.getIntervalDuration();
+		daysSinceLastUpdate = interval.getElapsed();
 
 		update();
 	}

@@ -1,6 +1,5 @@
 package exerelin.campaign.ai.concern;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -19,14 +18,17 @@ import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
-import exerelin.utilities.*;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFleet;
+import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @Log4j
 public abstract class BaseStrategicConcern implements StrategicConcern {
@@ -105,7 +107,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         TooltipMakerAPI tooltip = myPanel.createUIElement(SAIConstants.CONCERN_ITEM_WIDTH, SAIConstants.CONCERN_ITEM_HEIGHT, true);
         TooltipMakerAPI iwt = tooltip.beginImageWithText(this.getIcon(), 32);
 
-        iwt.addPara(getName(), Misc.getHighlightColor(), 0);
+        iwt.addPara(getDisplayName(), Misc.getHighlightColor(), 0);
 
         //createTooltipDesc(iwt, holder, 3);
 
@@ -231,6 +233,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     @Override
     public void end() {
         ended = true;
+        if (currentAction != null) currentAction.abort();
         // Notify module? or maybe just let it remove on its own in advance();
     }
 
@@ -275,6 +278,11 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         String name = getDef().name;
         if (ended) name = "[FIXME ended] " + name;
         return name;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return getName();
     }
 
     @Override

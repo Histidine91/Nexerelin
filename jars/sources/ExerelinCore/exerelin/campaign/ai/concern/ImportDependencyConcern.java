@@ -1,7 +1,6 @@
 package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -15,8 +14,8 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @Log4j
 public class ImportDependencyConcern extends BaseStrategicConcern implements HasCommodityTarget {
@@ -123,6 +122,16 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
         str = StringHelper.substituteToken(str, "$amount", required + "");
         Color hl = Misc.getHighlightColor();
         return tooltip.addPara(str, pad, hl, required + "");
+    }
+
+    @Override
+    public String getName() {
+        return String.format("%s - %s", super.getName(), StringHelper.getCommodityName(commodityId));
+    }
+
+    @Override
+    public String getDisplayName() {
+        return super.getName();
     }
 
     @Override

@@ -1,19 +1,9 @@
 package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
@@ -28,15 +18,15 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog,
 		CoreInteractionListener, StrategicActionDelegate {
@@ -376,5 +366,12 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	@Override
 	public float getStrategicActionDaysRemaining() {
 		return daysRemaining;
+	}
+
+	@Override
+	public void abortStrategicAction() {
+		state =-1;
+		sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
+		endAfterDelay();
 	}
 }
