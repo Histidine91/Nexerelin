@@ -17,7 +17,10 @@ public class DiplomacyAction extends BaseStrategicAction {
         boolean canPositive = concern.getDef().hasTag("diplomacy_positive");
         boolean canNegative = concern.getDef().hasTag("diplomacy_negative");
 
-        if (!canNegative && !canPositive) return false;
+        if (!canNegative && !canPositive) {
+            canPositive = true;
+            canNegative = true;
+        }
 
         DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
         float disp = brain.getDisposition(concern.getFaction().getId()).disposition.getModifiedValue();
@@ -42,12 +45,17 @@ public class DiplomacyAction extends BaseStrategicAction {
         DiplomacyManager.DiplomacyEventParams params = new DiplomacyManager.DiplomacyEventParams();
         params.random = false;
         params.onlyPositive = !canNegative;
-        params.onlyNegative = canPositive;
+        params.onlyNegative = !canPositive;
 
         delegate = DiplomacyManager.createDiplomacyEvent(ai.getFaction(), concern.getFaction(), null, params);
         if (delegate == null) return false;
         end(StrategicActionDelegate.ActionStatus.SUCCESS);
         return true;
+    }
+
+    @Override
+    public void init() {
+        super.init();
     }
 
     @Override
@@ -64,6 +72,12 @@ public class DiplomacyAction extends BaseStrategicAction {
 
     @Override
     public boolean canUseForConcern(StrategicConcern concern) {
-        return concern.getDef().hasTag("diplomacy_positive") || concern.getDef().hasTag("diplomacy_negative");
+        if (concern.getDef().hasTag("diplomacy_positive") && !this.getDef().hasTag("friendly"))
+            return false;
+
+        if (concern.getDef().hasTag("diplomacy_negative") && !this.getDef().hasTag("unfriendly"))
+            return false;
+
+        return concern.getDef().hasTag("canDiplomacy");
     }
 }

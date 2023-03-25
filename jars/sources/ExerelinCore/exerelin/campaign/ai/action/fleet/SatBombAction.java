@@ -2,6 +2,7 @@ package exerelin.campaign.ai.action.fleet;
 
 import com.fs.starfarer.api.impl.campaign.Tuning;
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexConfig;
@@ -16,7 +17,15 @@ public class SatBombAction extends OffensiveFleetAction {
     public boolean canUseForConcern(StrategicConcern concern) {
         if (Tuning.getDaysSinceStart() < NexConfig.invasionGracePeriod) return false;
         if (!InvasionFleetManager.canSatBomb(ai.getFaction(), concern.getFaction())) return false;
+        if (InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
+            return false;
 
         return concern.getDef().hasTag("canSatBomb");
+    }
+
+    @Override
+    public void applyPriorityModifiers() {
+        super.applyPriorityModifiers();
+        priority.modifyFlat("base", 75, StrategicAI.getString("statBase", true));
     }
 }

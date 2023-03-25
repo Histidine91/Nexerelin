@@ -1,20 +1,26 @@
 package exerelin.campaign.ai.action.covert;
 
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.concern.CommodityCompetitionConcern;
 import exerelin.campaign.ai.concern.HasCommodityTarget;
 import exerelin.campaign.ai.concern.StrategicConcern;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.agents.DestroyCommodityStocks;
+import lombok.extern.log4j.Log4j;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+@Log4j
 public class DestroyCommodityStocksAction extends CovertAction {
 
     public static final Set<String> DEFAULT_COMMODITY_TARGETS = new LinkedHashSet<>();
@@ -38,6 +44,7 @@ public class DestroyCommodityStocksAction extends CovertAction {
         }
 
         if (market == null) market = pickTargetMarket();
+        if (market == null) return false;
         if (commodityId == null) commodityId = pickTargetCommodityFallback(market);
 
         CovertActionIntel intel = new DestroyCommodityStocks(null, market, commodityId, getAgentFaction(), getTargetFaction(),
@@ -46,14 +53,12 @@ public class DestroyCommodityStocksAction extends CovertAction {
     }
 
     public MarketAPI pickTargetMarket() {
-        if (concern.getMarket() != null)
-            return concern.getMarket();
-
         if (commodityId != null) {
             WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
             List<EconomyInfoHelper.ProducerEntry> competitors = EconomyInfoHelper.getInstance().getProducers(
-                    concern.getFaction().getId(), commodityId, 6, true);
+                    concern.getFaction().getId(), commodityId, 3, true);
             for (EconomyInfoHelper.ProducerEntry entry : competitors) {
+                //log.info(String.format("  Adding competing producer as agent target: %s, output %s", entry.market.getName(), entry.output));
                 picker.add(entry.market, entry.output);
             }
             return picker.pick();
@@ -80,5 +85,13 @@ public class DestroyCommodityStocksAction extends CovertAction {
     @Override
     public boolean canUseForConcern(StrategicConcern concern) {
         return concern.getDef().hasTag("canDestroyCommodity") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
+    }
+
+    @Override
+    public RepLevel getMaxRelToTarget(FactionAPI target) {
+        if (concern instanceof CommodityCompetitionConcern && !DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.MONOPOLIST)) {
+            return RepLevel.SUSPICIOUS;
+        }
+        return super.getMaxRelToTarget(target);
     }
 }

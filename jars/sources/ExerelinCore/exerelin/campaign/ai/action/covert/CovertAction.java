@@ -49,22 +49,23 @@ public abstract class CovertAction extends BaseStrategicAction {
 
     public FactionAPI getThirdFaction() {
         List<FactionAPI> factions = concern.getFactions();
-        if (factions.size() <= 1) return null;
+        if (factions != null && factions.size() <= 1) return null;
         return factions.get(1);
     }
 
     public MarketAPI pickTargetMarket() {
         if (concern.getMarket() != null) return concern.getMarket();
 
-        return CovertOpsManager.getManager().pickTargetMarket(getAgentFaction(), getTargetFaction(), getActionType(), null);
+        return CovertOpsManager.getManager().pickTargetMarket(getAgentFaction(), getTargetFaction(), getActionType(), concern.getMarkets(), null);
     }
 
     public abstract String getActionType();
 
     protected boolean beginAction(CovertActionIntel intel) {
         if (intel == null) return false;
+        delegate = intel;
         intel.activate();
-        intel.execute();
+        //intel.execute();
         return true;
     }
 }

@@ -38,7 +38,7 @@ public class SabotageIndustryAction extends CovertAction {
         if (commodityId != null) {
             WeightedRandomPicker<com.fs.starfarer.api.campaign.econ.MarketAPI> picker = new WeightedRandomPicker<>();
             List<EconomyInfoHelper.ProducerEntry> competitors = EconomyInfoHelper.getInstance().getProducers(
-                    concern.getFaction().getId(), commodityId, 6, true);
+                    concern.getFaction().getId(), commodityId, 3, true);
             for (EconomyInfoHelper.ProducerEntry entry : competitors) {
                 picker.add(entry.market, entry.output);
             }
@@ -59,6 +59,7 @@ public class SabotageIndustryAction extends CovertAction {
 
     @Override
     public boolean canUseForConcern(StrategicConcern concern) {
+        if (!(concern instanceof HasIndustryTarget)) return false;
         return concern.getDef().hasTag("canSabotageIndustry") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
     }
 }

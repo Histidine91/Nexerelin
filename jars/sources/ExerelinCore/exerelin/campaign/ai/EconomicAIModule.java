@@ -35,9 +35,8 @@ public class EconomicAIModule extends StrategicAIModule {
 
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
 
-        // TODO externalize
-        tooltip.addPara("Our factionwide monthly income from markets is %s", opad, hl, Misc.getDGSCredits(helper.getFactionNetIncome(ai.getFaction().getId())));
-		tooltip.addPara("Other factions with significant commodity competition: ", opad);
+        tooltip.addPara(StrategicAI.getString("intelPara_income"), opad, hl, Misc.getDGSCredits(helper.getFactionNetIncome(factionId)));
+		tooltip.addPara("intelPara_competitors", opad);
 		for (String otherFactionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(otherFactionId)) continue;
 			int compFactor = helper.getCompetitionFactor(factionId, otherFactionId);

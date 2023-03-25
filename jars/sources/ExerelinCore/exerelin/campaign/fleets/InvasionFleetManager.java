@@ -560,7 +560,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 
 			float weight = getMarketWeightForInvasionSource(market, target);
-			if (PREFER_MILITARY_FOR_ORIGIN && Misc.isMilitary(market)) {
+			if (!PREFER_MILITARY_FOR_ORIGIN || Misc.isMilitary(market)) {
 				sourcePicker.add(market, weight);
 			}
 			else {

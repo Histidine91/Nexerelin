@@ -14,6 +14,7 @@ import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
 
 import com.fs.starfarer.api.util.Pair;
+import com.fs.starfarer.ui.P;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -338,6 +339,28 @@ public class NexUtils
 		for (int i=0; i<depth; i++) {
 			log.info(stack[i].toString());
 		}
+	}
+
+	public static String mutableStatToString(MutableStat stat) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Value: " + stat.getModifiedValue());
+		for (String flatModId : stat.getFlatMods().keySet()) {
+			MutableStat.StatMod mod = stat.getFlatMods().get(flatModId);
+			float val = mod.value;
+			sb.append(String.format("\n  %s: %s%.1f", mod.desc, val > 0 ? "+" : "", val));
+		}
+		for (String percentModId : stat.getPercentMods().keySet()) {
+			MutableStat.StatMod mod = stat.getPercentMods().get(percentModId);
+			float val = mod.value;
+			sb.append(String.format("\n  %s: %s%.1f%%", mod.desc, val > 0 ? "+" : "", val));
+		}
+		for (String multModId : stat.getMultMods().keySet()) {
+			MutableStat.StatMod mod = stat.getMultMods().get(multModId);
+			float val = mod.value;
+			sb.append(String.format("\n  %s: %.2f×", mod.desc, val));
+		}
+
+		return sb.toString();
 	}
 
 	public static class PairWithFloatComparator implements Comparator<Pair<?, Float>> {

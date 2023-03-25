@@ -936,7 +936,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		}
 		return EVENT_ICONS[significance];
 	}
-	
+
+	@Override
+	public float getStrategicActionDaysRemaining() {
+		return daysRemaining;
+	}
+
 	public static String getString(String id) {
 		return getString(id, false);
 	}

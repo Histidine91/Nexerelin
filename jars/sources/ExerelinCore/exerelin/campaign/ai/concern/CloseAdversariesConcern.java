@@ -12,6 +12,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -39,8 +40,11 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
 
         float ourStrength = getFactionStrength(us);
 
+        boolean canPirate = false;  // NexConfig.allowPirateInvasions;
+
         List<Pair<FactionAPI, Float>> adversaries = new ArrayList<>();
         for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+            if (canPirate && NexUtilsFaction.isPirateFaction(factionId)) continue;
             if (us.isAtWorst(factionId, RepLevel.NEUTRAL)) continue;
             FactionAPI faction = Global.getSector().getFaction(factionId);
             float theirStrength = getFactionStrength(faction);

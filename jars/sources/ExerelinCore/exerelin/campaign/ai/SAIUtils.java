@@ -7,7 +7,9 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexConfig;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class SAIUtils {
 
     /**
@@ -16,23 +18,23 @@ public class SAIUtils {
      * @param wantPositive
      * @param stat
      */
-    public static void applyPriorityModifierForDisposition(String aiFactionId, boolean wantPositive, MutableStat stat) {
+    public static void applyPriorityModifierForDisposition(String aiFactionId, String otherFactionId, boolean wantPositive, MutableStat stat) {
 
         DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(aiFactionId);
         if (brain.getDisposition(aiFactionId) != null) {
-            float disposition = brain.getDisposition(aiFactionId).disposition.getModifiedValue();
+            float disposition = brain.getDisposition(otherFactionId).disposition.getModifiedValue();
             boolean isPositive;
             if (disposition <= DiplomacyBrain.DISLIKE_THRESHOLD) isPositive = false;
             else if (disposition >= DiplomacyBrain.LIKE_THRESHOLD) isPositive = true;
             else return;
 
-            if (isPositive == wantPositive) {
-                String desc = StrategicAI.getString(isPositive ? "statDispositionPositive" : "statDispositionNegative", true);
-                float mult = isPositive ? SAIConstants.POSITIVE_DISPOSITION_MULT : SAIConstants.NEGATIVE_DISPOSITION_MULT;
-                String source = isPositive ? "disposition_positive" : "disposition_negative";
+            //log.info(String.format("Is positive: %s, want positive: %s", isPositive, wantPositive));
 
-                stat.modifyMult(source, mult, desc);
-            }
+            String desc = StrategicAI.getString(isPositive ? "statDispositionPositive" : "statDispositionNegative", true);
+            float mult = isPositive == wantPositive ? SAIConstants.POSITIVE_DISPOSITION_MULT : SAIConstants.NEGATIVE_DISPOSITION_MULT;
+            String source = isPositive ? "disposition_positive" : "disposition_negative";
+
+            stat.modifyMult(source, mult, desc);
         }
     }
 

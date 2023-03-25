@@ -31,6 +31,7 @@ public abstract class MarketRelatedConcern extends BaseStrategicConcern {
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         LabelAPI label = super.createTooltipDesc(tooltip, holder, pad);
         label.setText(StringHelper.substituteToken(label.getText(), "$size", market.getSize() + ""));
+
         return label;
     }
 

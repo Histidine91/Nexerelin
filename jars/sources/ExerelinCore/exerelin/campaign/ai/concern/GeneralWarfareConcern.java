@@ -1,6 +1,7 @@
 package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -23,7 +24,9 @@ import exerelin.utilities.NexConfig;
 import lombok.Getter;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class GeneralWarfareConcern extends BaseStrategicConcern {
@@ -44,7 +47,6 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
 
     @Override
     public void update() {
-
         hostileFactions.clear();
         hostileFactions.addAll(DiplomacyManager.getFactionsAtWarWithFaction(ai.getFactionId(), NexConfig.allowPirateInvasions, true, false));
         if (hostileFactions.isEmpty()) return;
@@ -70,6 +72,16 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
         }
 
         reapplyPriorityModifiers();
+    }
+
+    @Override
+    public List<FactionAPI> getFactions() {
+        List<FactionAPI> factions = new ArrayList<>();
+        for (String factionId : hostileFactions) {
+            factions.add(Global.getSector().getFaction(factionId));
+        }
+
+        return factions;
     }
 
     @Override

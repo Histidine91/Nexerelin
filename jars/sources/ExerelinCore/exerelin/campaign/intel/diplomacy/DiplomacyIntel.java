@@ -334,4 +334,9 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 	public ActionStatus getStrategicActionStatus() {
 		return ActionStatus.SUCCESS;
 	}
+
+	@Override
+	public float getStrategicActionDaysRemaining() {
+		return -1;
+	}
 }

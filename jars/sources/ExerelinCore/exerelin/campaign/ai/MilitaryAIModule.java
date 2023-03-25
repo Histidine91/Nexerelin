@@ -6,13 +6,17 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ai.concern.StrategicConcern;
+import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.RaidListener;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +32,18 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
 
     @Override
     public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
+        float pad = 3, opad = 10;
+        Color hl = Misc.getHighlightColor();
+        String factionId = ai.getFactionId();
+
+        float nextPad = opad;
+        if (FleetPoolManager.USE_POOL) {
+            float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
+            float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
+            tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "");
+            nextPad = pad;
+        }
+        tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, (int) InvasionFleetManager.getManager().getSpawnCounter(factionId) + "");
         super.generateReport(tooltip, holder, width);
     }
 
@@ -53,7 +69,10 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
 
     @Override
     public void reportRaidEnded(RaidIntel intel, FactionAPI attacker, FactionAPI defender, MarketAPI target, boolean success) {
-        //log.info("Raid ended: " + intel.getName());
+        if (defender == ai.getFaction()) {
+            log.info(String.format("Raid against %s ended: %s", defender.getDisplayName(), intel.getName()));
+        }
+
         if (attacker != ai.faction || defender != ai.faction) return;
 
         String name = intel.getName();

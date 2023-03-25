@@ -1,6 +1,10 @@
 package exerelin.campaign.ai.action;
 
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
@@ -34,6 +38,10 @@ public interface StrategicAction {
     void setId(String id);
 
     boolean canUseForConcern(StrategicConcern concern);
+    RepLevel getMinRelToTarget(FactionAPI target);
+    RepLevel getMaxRelToTarget(FactionAPI target);
 
     StrategicDefManager.StrategicActionDef getDef();
+
+    void createPanel(CustomPanelAPI outer, TooltipMakerAPI tooltip);
 }

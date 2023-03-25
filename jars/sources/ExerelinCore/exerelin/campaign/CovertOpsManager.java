@@ -803,7 +803,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	}
 
 	public MarketAPI pickTargetMarket(FactionAPI agentFaction, FactionAPI targetFaction, String actionType, Random random) {
-		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+		return pickTargetMarket(agentFaction, targetFaction, actionType, null, random);
+	}
+
+	public MarketAPI pickTargetMarket(FactionAPI agentFaction, FactionAPI targetFaction, String actionType, List<MarketAPI> markets, Random random) {
+		if (markets == null) markets = Global.getSector().getEconomy().getMarketsCopy();
 		WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker(random);
 		for (MarketAPI market: markets)
 		{

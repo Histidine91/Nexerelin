@@ -372,4 +372,9 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 				return ActionStatus.CANCELLED;
 		}
 	}
+
+	@Override
+	public float getStrategicActionDaysRemaining() {
+		return daysRemaining;
+	}
 }

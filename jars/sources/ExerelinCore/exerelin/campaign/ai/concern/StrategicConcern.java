@@ -64,17 +64,20 @@ public interface StrategicConcern {
      */
     void reapplyPriorityModifiers();
 
-    MarketAPI getMarket();
-    FactionAPI getFaction();
-    List<FactionAPI> getFactions();
-
-    CustomPanelAPI createPanel(CustomPanelAPI holder);
-
+    @Nullable MarketAPI getMarket();
     /**
-     * Creates a list of actions we can take in response to this concern.
+     * Should be overriden for concerns that have a list of multiple markets involved. Return null if empty.
      * @return
      */
-    List<StrategicAction> generateActions();
+    @Nullable List<MarketAPI> getMarkets();
+    @Nullable FactionAPI getFaction();
+    /**
+     * Should be overriden for concerns that have a list of multiple factions involved. Return null if empty.
+     * @return
+     */
+    @Nullable List<FactionAPI> getFactions();
+
+    CustomPanelAPI createPanel(CustomPanelAPI holder);
 
     StrategicAction pickAction();
     boolean initAction(StrategicAction action);

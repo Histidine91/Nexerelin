@@ -1,6 +1,11 @@
 package exerelin.campaign.ai.action;
 
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
@@ -8,6 +13,8 @@ import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.utilities.NexUtils;
+import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +43,10 @@ public abstract class BaseStrategicAction implements StrategicAction {
         return false;
     }
 
+    /**
+     * FIXME: Either use this for something or remove it.
+     * @return
+     */
     @Override
     public boolean isValid() {
         return true;
@@ -59,13 +70,12 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
         if (concern.getFaction() != null) {
             if (def.hasTag(SAIConstants.TAG_FRIENDLY)) {
-                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), true, priority);
+                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), concern.getFaction().getId(), true, priority);
             }
             if (def.hasTag(SAIConstants.TAG_UNFRIENDLY)) {
-                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), false, priority);
+                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), concern.getFaction().getId(), false, priority);
             }
         }
-
 
         priority.modifyFlat("antiRepetition", -ai.getExecModule().getAntiRepetitionValue(id), StrategicAI.getString("statAntiRepetition", true));
     }
@@ -96,7 +106,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
         if (isEnded) return;
         StrategicActionDelegate.ActionStatus currStatus = delegate.getStrategicActionStatus();
         if (status != currStatus) {
-            if (currStatus.isEnded()) {
+            if (currStatus.ended) {
                 end(currStatus);
                 return;
             }
@@ -127,6 +137,58 @@ public abstract class BaseStrategicAction implements StrategicAction {
     @Override
     public boolean canUseForConcern(StrategicConcern concern) {
         return false;
+    }
+
+    @Override
+    public RepLevel getMinRelToTarget(FactionAPI target) {
+        return RepLevel.VENGEFUL;
+    }
+
+    @Override
+    public RepLevel getMaxRelToTarget(FactionAPI target) {
+        if (getDef().hasTag("wartime")) return RepLevel.HOSTILE;
+        if (getDef().hasTag("aggressive")) return RepLevel.NEUTRAL;
+        return RepLevel.COOPERATIVE;
+    }
+
+    @Override
+    public void createPanel(CustomPanelAPI outer, TooltipMakerAPI tooltip) {
+        final float pad = 3, opad = 10;
+        final StrategicAction action = this;
+
+        TooltipMakerAPI iwt = tooltip.beginImageWithText(this.getIcon(), 32);
+
+        iwt.addPara(getName(), status.color, 0);
+
+        //createTooltipDesc(iwt, holder, 3);
+
+        int prioVal = (int)getPriorityFloat();
+        String prio = String.format(StringHelper.getString("priority", true) + ": %s", prioVal);
+        iwt.addPara(prio, 0, Misc.getHighlightColor(), prioVal + "");
+        tooltip.addImageWithText(pad);
+        tooltip.addTooltipToPrevious(new TooltipMakerAPI.TooltipCreator() {
+            @Override
+            public boolean isTooltipExpandable(Object tooltipParam) {
+                return false;
+            }
+
+            @Override
+            public float getTooltipWidth(Object tooltipParam) {
+                return 360;
+            }
+
+            @Override
+            public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+                tooltip.addPara(action.getStatus().getStatusString(), 0, action.getStatus().color, action.getStatus().getStatusName(true));
+                if (!action.getStatus().ended) {
+                    tooltip.addPara(StrategicAI.getString("actionStatusETA"), pad, Misc.getHighlightColor(),
+                            (int)action.getDelegate().getStrategicActionDaysRemaining() + "");
+                }
+                tooltip.addPara(StringHelper.getString("priority", true), opad);
+                tooltip.addStatModGrid(360, 60, 10, 0, priority,
+                        true, NexUtils.getStatModValueGetter(true, 0));
+            }
+        }, TooltipMakerAPI.TooltipLocation.BELOW);
     }
 
     @Override

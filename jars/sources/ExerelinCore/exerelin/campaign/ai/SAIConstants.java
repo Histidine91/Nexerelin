@@ -25,14 +25,15 @@ public class SAIConstants {
     public static float MIN_MARKET_VALUE_PRIORITY_TO_CARE = 40;
 
     public static float MAX_ALIGNMENT_MODIFIER_FOR_PRIORITY = 0.25f;
-    public static float NEGATIVE_DISPOSITION_MULT = 0.75f;
+    public static float NEGATIVE_DISPOSITION_MULT = 0.6f;
     public static float POSITIVE_DISPOSITION_MULT = 1.25f;
 
     public static int ACTIONS_PER_MEETING = 2;
     public static int MAX_SIMULTANEOUS_ACTIONS = 10;    // todo?
     public static float MIN_ACTION_PRIORITY_TO_USE = 30;
+    public static float DEFAULT_ACTION_COOLDOWN = 30;
     public static float DEFAULT_ANTI_REPETITION_VALUE = 25;
-    public static float ANTI_REPETITION_DECAY_PER_DAY = 1;
+    public static float ANTI_REPETITION_DECAY_PER_DAY = 0.1f;
 
     // UI stuff
     public static final float CONCERN_ITEM_WIDTH = 320;

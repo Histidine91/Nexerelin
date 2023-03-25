@@ -44,7 +44,7 @@ public class StrategicDefManager {
                 CONCERN_DEFS_BY_ID.put(id, def);
             }
 
-            JSONObject actionsJSON = config.getJSONObject("concerns");
+            JSONObject actionsJSON = config.getJSONObject("actions");
             keys = actionsJSON.sortedKeys();
             while (keys.hasNext()) {
                 id = keys.next();
@@ -52,7 +52,7 @@ public class StrategicDefManager {
                 StrategicActionDef def = new StrategicActionDef(id);
                 def.name = defJSON.getString("name");
                 def.classPath = defJSON.getString("classPath");
-                def.cooldown = (float)defJSON.optDouble("cooldown", 0);
+                def.cooldown = (float)defJSON.optDouble("cooldown", SAIConstants.DEFAULT_ACTION_COOLDOWN);
                 def.antiRepetition = (float)defJSON.optDouble("antiRepetition", SAIConstants.DEFAULT_ANTI_REPETITION_VALUE);
                 List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
                 def.tags.addAll(tags);
@@ -71,6 +71,11 @@ public class StrategicDefManager {
         return ACTION_DEFS_BY_ID.get(id);
     }
 
+    /**
+     * Creates an instance of the strategic concern with the specified def. Make sure to call its {@code setAI} method before using.
+     * @param def
+     * @return
+     */
     public static StrategicConcern instantiateConcern(StrategicConcernDef def) {
         StrategicConcern concern = null;
         try {
@@ -84,6 +89,11 @@ public class StrategicDefManager {
         return concern;
     }
 
+    /**
+     * Creates an instance of the strategic action with the specified def. Make sure to call its {@code setAI} and {@code setConcern} methods before using.
+     * @param def
+     * @return
+     */
     public static StrategicAction instantiateAction(StrategicActionDef def) {
         StrategicAction action = null;
         try {

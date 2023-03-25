@@ -1,7 +1,9 @@
 package exerelin.campaign.ai.concern;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -80,7 +82,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
                 if (def.hasTag("diplomacy_positive")) wantPositive = true;
                 else if (def.hasTag("diplomacy_negative")) wantPositive = false;
 
-                if (wantPositive != null) SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), wantPositive, priority);
+                if (wantPositive != null) SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), faction.getId(), wantPositive, priority);
             }
         }
         if (def.hasTag(SAIConstants.TAG_ECONOMY)) {
@@ -95,6 +97,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     public CustomPanelAPI createPanel(final CustomPanelAPI holder) {
         final float pad = 3;
         final float opad = 10;
+        final StrategicConcern concern = this;
 
         CustomPanelAPI myPanel = holder.createCustomPanel(SAIConstants.CONCERN_ITEM_WIDTH, SAIConstants.CONCERN_ITEM_HEIGHT,
                 new FramedCustomPanelPlugin(0.25f, ai.getFaction().getBaseUIColor(), true));
@@ -123,17 +126,21 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
             @Override
             public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-                createTooltipDesc(tooltip, holder, pad);
+                createTooltipDesc(tooltip, holder, 0);
+                if (concern.getActionCooldown() > 0) {
+                    tooltip.addPara(StringHelper.getString("priority", true), opad);
+                }
+
                 tooltip.addPara(StringHelper.getString("priority", true), opad);
                 tooltip.addStatModGrid(360, 60, 10, 0, priority,
                         true, NexUtils.getStatModValueGetter(true, 0));
             }
         }, TooltipMakerAPI.TooltipLocation.BELOW);
 
-        if (this.getCurrentAction() != null) {
-
+        if (currentAction != null) {
+            currentAction.createPanel(holder, tooltip);
         } else {
-
+            tooltip.addPara(StrategicAI.getString("descNoAction", false), Misc.getGrayColor(), 0);
         }
 
         myPanel.addUIElement(tooltip).inTL(0, 0);
@@ -154,24 +161,29 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     }
 
     @Override
-    public List<StrategicAction> generateActions() {
-        return null;
-    }
-
-    @Override
     public StrategicAction pickAction() {
+        log.info(String.format("Picking action for concern %s", getName()));
         StrategicAction bestAction = null;
         float bestPrio = 0;
 
         for (StrategicDefManager.StrategicActionDef possibleActionDef : module.getRelevantActionDefs(this)) {
             StrategicAction action = StrategicDefManager.instantiateAction(possibleActionDef);
-            if (faction != null && !faction.isHostileTo(ai.getFaction()) && action.getDef().hasTag("wartime")) {
-                continue;
+            action.setAI(this.ai);
+            action.setConcern(this);
+
+            // check if action is usable
+            if (!action.isValid()) continue;
+            if (!this.canTakeAction(action)) continue;
+            if (faction != null) {
+                RepLevel rep = faction.getRelationshipLevel(ai.getFactionId());
+                if (!rep.isAtBest(action.getMaxRelToTarget(faction))) continue;
+                if (!rep.isAtWorst(action.getMinRelToTarget(faction))) continue;
             }
             if (!action.canUseForConcern(this)) continue;
-            if (!action.isValid()) continue;
+
             action.updatePriority();
             float priority = action.getPriorityFloat();
+            log.info(String.format("  Action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));
             if (priority < SAIConstants.MIN_ACTION_PRIORITY_TO_USE) continue;
 
             if (priority > bestPrio) {
@@ -243,12 +255,19 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     public FactionAPI getFaction() {
         if (faction != null) return faction;
         if (market != null) return market.getFaction();
-        return ai.getFaction();
+        return null;    //ai.getFaction();
     }
 
     @Override
     public List<FactionAPI> getFactions() {
+        if (faction == null) return null;
         return new ArrayList<>(Arrays.asList(new FactionAPI[] {getFaction()}));
+    }
+
+    @Override
+    public List<MarketAPI> getMarkets() {
+        if (market == null) return null;
+        return new ArrayList<>(Arrays.asList(new MarketAPI[] {market}));
     }
 
     @Override

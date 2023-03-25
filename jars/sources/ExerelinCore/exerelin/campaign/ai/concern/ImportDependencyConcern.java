@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.List;
 
 @Log4j
-public class ImportDependencyConcern extends BaseStrategicConcern {
+public class ImportDependencyConcern extends BaseStrategicConcern implements HasCommodityTarget {
 
     @Getter protected String commodityId;
     @Getter protected int required;
@@ -40,8 +40,8 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
     public boolean generate() {
         Set alreadyConcerned = getExistingConcernItems();
 
-        log.info("Generating import dependency concern for " + ai.getFaction().getDisplayName());
-        log.info("Import dependency existing concerns: " + alreadyConcerned + ", size " + alreadyConcerned.size());
+        //log.info("Generating import dependency concern for " + ai.getFaction().getDisplayName());
+        //log.info("Import dependency existing concerns: " + alreadyConcerned + ", size " + alreadyConcerned.size());
 
         Map<String, Integer> imports = EconomyInfoHelper.getInstance().getCommoditiesImportedByFaction(ai.getFactionId());
         Map<String, Integer> trueImports = new HashMap<>();
@@ -108,6 +108,11 @@ public class ImportDependencyConcern extends BaseStrategicConcern {
         if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
         priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
         reapplyPriorityModifiers();
+    }
+
+    @Override
+    public List<String> getCommodityIds() {
+        return new ArrayList<>(Arrays.asList(new String[] {commodityId}));
     }
 
     @Override

@@ -46,7 +46,7 @@
 		},
 		"generalWarfare":{
 			"name":"General Warfare",
-			"desc":"We are at war with %s factions and should take action against our enemies.",
+			"desc":"We are at war with %s faction(s) and should take action against our enemies.",
 			"classPath":"exerelin.campaign.ai.concern.GeneralWarfareConcern",
 			"tags":["military", "wantCauseHarm", "canSatBomb"],
 			"module":MILITARY
@@ -63,7 +63,7 @@
 			"name":"Powerful Unfriendly",
 			"desc":"$TheFaction $factionIsOrAre strong, and our relations with them are not always friendly. We should either appease them or take other precautions.",
 			"classPath":"exerelin.campaign.ai.concern.PowerfulUnfriendlyConcern",
-			"tags":["diplomacy", "canDiplomacy", "diplomacy_positive"],
+			"tags":["diplomacy", "canDiplomacy"],
 			"module":DIPLOMATIC
 		},
 		"closeAdversaries":{
@@ -92,14 +92,14 @@
 			"name":"Competition",
 			"desc":"$TheFaction competes with us in the production of $commodity (market share $theirShare%%). We should secure our commercial interests.",
 			"classPath":"exerelin.campaign.ai.concern.CommodityCompetitionConcern",
-			"tags":["economy", "commodity", "canDestroyCommodity"],
+			"tags":["economy", "commodity", "canDestroyCommodity", "canSabotageIndustry", "canInvade", "canRaid"],
 			"module":ECONOMIC
 		},
 		"importDependency":{
 			"name":"Import Dependency",
 			"desc":"We rely upon foreign suppliers of $commodity ($amount units). We should seek to establish domestic production.",
 			"classPath":"exerelin.campaign.ai.concern.ImportDependencyConcern",
-			"tags":["economy", "commodity"],
+			"tags":["economy", "commodity", "canInvade"],
 			"module":ECONOMIC
 		},
 		"undersuppliedMarket":{
@@ -110,63 +110,71 @@
 			"module":ECONOMIC
 		},
 	},
+	
+	# for an action to be usable for a concern, they need to have at least one matching tag
+	# the economy/military/diplomacy tags are also used for prioritization of concerns and actions based on the faction's alignment
 	"actions":{
 		"invasion":{
 			"name":"Invasion",
 			"classPath":"exerelin.campaign.ai.action.fleet.InvasionAction",
 			"cooldown":60,			# how long after action completion before a new action can be taken for the concern
-			"antiRepetition":30,	# reduction in action priority if recently used elsewhere, decays over time
+			"antiRepetition":35,	# reduction in action priority if recently used elsewhere, decays over time
 			# wartime actions can only be used when at war
-			"tags":["military", "market", "invasion", "unfriendly", "wartime"],
+			"tags":["military", "market", "canInvade", "unfriendly", "aggressive", "wartime"],
 		},
 		"raid":{
 			"name":"Raid",
 			"classPath":"exerelin.campaign.ai.action.fleet.RaidAction",
 			"cooldown":30,
-			"tags":["military", "market", "raid", "unfriendly", "wartime"],
+			"tags":["military", "market", "canRaid", "unfriendly", "aggressive", "wartime"],
 		},
 		"baseStrike":{
 			"name":"Base Strike",
 			"classPath":"exerelin.campaign.ai.action.fleet.BaseStrikeAction",
 			"cooldown":30,
-			"tags":["military", "market", "baseStrike", "unfriendly", "wartime"],
+			"tags":["military", "market", "canBaseStrike", "unfriendly", "aggressive", "wartime"],
 		},
-		# TODO maybe separate into positive/negative
-		"diplomacy":{
-			"name":"Diplomatic Action",
+		"diplomacyPositive":{
+			"name":"Diplomatic Action (Positive)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
 			"cooldown":30,
-			"tags":["diplomacy"],
+			"tags":["diplomacy", "canDiplomacy", "friendly"],
+		},
+		"diplomacyNegative":{
+			"name":"Diplomatic Action (Negative)",
+			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
+			"cooldown":30,
+			"tags":["diplomacy", "canDiplomacy", "unfriendly"],
 		},
 		"declareWar":{
 			"name":"Declare War",
 			"classPath":"exerelin.campaign.ai.action.DeclareWarAction",
 			"cooldown":0,
-			"tags":["military", "diplomacy", "unfriendly"],
+			"tags":["military", "diplomacy", "canDiplomacy", "aggressive", "unfriendly"],
 		},
 		"makePeace":{
 			"name":"Make Peace",
 			"classPath":"exerelin.campaign.ai.action.MakePeaceAction",
 			"cooldown":30,
-			"tags":["diplomacy", "unfriendly"],
+			"tags":["diplomacy", "canDiplomacy", "friendly"],
 		},
 		"agentRaiseRelations":{
 			"name":"Raise Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.RaiseRelationsAction",
 			"cooldown":30,
-			"tags":["diplomacy", "covert", "diplomacy_positive", "friendly"],
+			"tags":["diplomacy", "covert", "canDiplomacy", "diplomacy_positive", "friendly"],
 		},
 		"agentLowerRelations":{
 			"name":"Lower Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.LowerRelationsAction",
 			"cooldown":30,
-			"tags":["diplomacy", "covert", "diplomacy_negative", "unfriendly"],
+			"tags":["diplomacy", "covert", "canDiplomacy", "diplomacy_negative", "unfriendly"],
 		},
 		"agentDestroyCommodityStocks":{
 			"name":"Destroy Commodity Stocks",
 			"classPath":"exerelin.campaign.ai.action.covert.DestroyCommodityStocksAction",
 			"cooldown":30,
-			"tags":["economy", "covert", "unfriendly"],
+			"tags":["economy", "covert", "canDestroyCommodity", "aggressive", "unfriendly"],
 		},
 	}	
 }

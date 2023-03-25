@@ -2,6 +2,7 @@ package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -83,8 +84,13 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
     }
 
     protected void updatePriority() {
-        priority.modifyFlat("competingShare", competitorShare * 8, StrategicAI.getString("statCompetingShare", true));
+        priority.modifyFlat("competingShare", competitorShare * 6, StrategicAI.getString("statCompetingShare", true));
         reapplyPriorityModifiers();
+    }
+
+    @Override
+    public List<MarketAPI> getMarkets() {
+        return super.getMarkets();
     }
 
     @Override
@@ -113,7 +119,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
     @Override
     public String getName() {
-        return String.format("%s: %s %s", super.getName(), faction.getDisplayName(), StringHelper.getCommodityName(commodityId));
+        return String.format("%s: %s", super.getName(), faction.getDisplayName());  //, StringHelper.getCommodityName(commodityId));
     }
 
     @Override

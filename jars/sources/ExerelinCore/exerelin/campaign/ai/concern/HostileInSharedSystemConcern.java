@@ -104,7 +104,8 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         LabelAPI label = super.createTooltipDesc(tooltip, holder, pad);
         if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PARANOID)) {
-            label.setText(label.getText() + "\n\n" + StrategicAI.getString("concernDesc_paranoidHigherRepLevel"));
+            DiplomacyTraits.TraitDef def = DiplomacyTraits.getTrait(DiplomacyTraits.TraitIds.PARANOID);
+            tooltip.addPara(StrategicAI.getString("concernDesc_paranoidHigherRepLevel"), pad, def.color, def.name);
         }
 
         return label;

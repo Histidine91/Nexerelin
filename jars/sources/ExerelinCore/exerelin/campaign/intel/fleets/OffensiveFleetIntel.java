@@ -832,6 +832,11 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return false;
 	}
 
+	@Override
+	public float getStrategicActionDaysRemaining() {
+		return getETA();
+	}
+
 	public static void reportRaid(OffensiveFleetIntel intel)
 	{
 		for (RaidListener x : Global.getSector().getListenerManager().getListeners(RaidListener.class)) {

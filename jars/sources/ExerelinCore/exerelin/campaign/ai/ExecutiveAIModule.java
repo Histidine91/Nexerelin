@@ -2,6 +2,7 @@ package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.BaseStrategicConcern;
 import exerelin.campaign.ai.concern.StrategicConcern;
@@ -17,7 +18,7 @@ public class ExecutiveAIModule extends StrategicAIModule {
         This should make the actual decisions
      */
 
-    public static Map<String, Float> recentActionsForAntiRepetition = new HashMap<>();
+    public Map<String, Float> recentActionsForAntiRepetition = new HashMap<>();
 
     public ExecutiveAIModule(StrategicAI ai) {
         super(ai, null);
@@ -87,6 +88,8 @@ public class ExecutiveAIModule extends StrategicAIModule {
 
     @Override
     public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
+        String str = StrategicAI.getString("intelPara_recentActions");
+        tooltip.addPara(str, 10);
         super.generateReport(tooltip, holder, width);
     }
 }
