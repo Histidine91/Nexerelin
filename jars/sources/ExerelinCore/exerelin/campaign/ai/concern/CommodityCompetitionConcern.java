@@ -145,6 +145,15 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
         return industryPicker.pick();
     }
 
+    /**
+     * Do not use, call {@code getTargetIndustry()} and use that instead.
+     * @return null
+     */
+    @Override
+    public String getTargetIndustryId() {
+        return null;
+    }
+
     @Override
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         if (commodityId == null) return null;

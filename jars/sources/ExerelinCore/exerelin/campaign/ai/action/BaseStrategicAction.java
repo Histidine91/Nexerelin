@@ -1,5 +1,6 @@
 package exerelin.campaign.ai.action;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -103,7 +104,6 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
     @Override
     public void advance(float days) {
-        if (isEnded) return;
         StrategicActionDelegate.ActionStatus currStatus = delegate.getStrategicActionStatus();
         if (status != currStatus) {
             if (currStatus.ended) {
@@ -124,6 +124,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
     @Override
     public void end(StrategicActionDelegate.ActionStatus status) {
+        Global.getLogger(this.getClass()).info("wololo ending " + getName());
         isEnded = true;
         this.status = status;
         concern.notifyActionUpdate(this, status);
@@ -131,14 +132,14 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
     @Override
     public String getName() {
-        if (delegate != null) return delegate.getName();
+        if (delegate != null && delegate != this) return delegate.getName();
         return getDef().name;
     }
 
     @Override
     public String getIcon() {
-        if (delegate != null) return delegate.getIcon();
-        return null;
+        if (delegate != null&& delegate != this) return delegate.getIcon();
+        return "graphics/icons/intel/reputation.png";
     }
 
     @Override

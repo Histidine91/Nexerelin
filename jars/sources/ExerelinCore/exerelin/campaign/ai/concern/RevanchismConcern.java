@@ -52,6 +52,8 @@ public class RevanchismConcern extends MarketRelatedConcern {
 
     @Override
     public void update() {
+        super.update();
+
         if (market != null) {
             float value = getMarketValue(market)/1000f * market.getSize();
             value /= SAIConstants.MARKET_VALUE_DIVISOR;

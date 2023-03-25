@@ -64,6 +64,9 @@ public class LightIndustry extends IndustryClassGen {
 					market.getFactionId(), Commodities.DOMESTIC_GOODS) <= 0)
 				weight *= 2f;
 		}
+
+		// drug lab dosh :^)
+		if (market.isFreePort()) weight *= 2.5f;
 		
 		weight *= getFactionMult(entity);
 		

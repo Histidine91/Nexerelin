@@ -3,6 +3,7 @@ package exerelin.campaign.ai.action;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -36,15 +37,16 @@ public class DeclareWarAction extends DiplomacyAction {
 
     @Override
     public boolean canUseForConcern(StrategicConcern concern) {
-        if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST)) return false;
+        // we have the military tag for alignment purposes, but don't use this action for actual military actions
+        if (concern.getDef().module == StrategicDefManager.ModuleType.MILITARY) return false;
         if (concern.getFaction() != null && concern.getFaction().isHostileTo(ai.getFaction())) {
             return false;
         }
         return true;
     }
-    
+
     @Override
     public boolean isValid() {
-        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;
+        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy && !DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST);
     }
 }

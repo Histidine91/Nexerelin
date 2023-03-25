@@ -87,9 +87,11 @@ public class ProductionMap {
 
     public static void addExtraction(String industry, String commodity, String condition) {
         getOrCreateIndustry(industry).outputs.add(commodity);
+        getOrCreateIndustry(industry).conditionsToOutputs.put(condition, commodity);
         getOrCreateIndustry(industry).isExtractive = true;
         getOrCreateCommodity(commodity).isExtracted = true;
         getOrCreateCommodity(commodity).producers.add(industry);
+        getOrCreateCommodity(commodity).conditions.add(condition);
         getOrCreateCondition(condition).addIndustryOutput(industry, commodity);
     }
 
@@ -151,10 +153,27 @@ public class ProductionMap {
         public String id;
         public Set<String> inputs = new LinkedHashSet<>();
         public Set<String> outputs = new LinkedHashSet<>();
+        public Map<String, String> conditionsToOutputs = new HashMap<>();
         public boolean isExtractive;
 
         public IndustryEntry(String id) {
             this.id = id;
+        }
+
+        /**
+         * Gets the conditions which this industry extracts to turn into {@code outputCommodity}.
+         * @param outputCommodity
+         * @return
+         */
+        public List<String> getConditionsForOutput(String outputCommodity) {
+            List<String> list = new ArrayList<>();
+            for (String condition : conditionsToOutputs.keySet()) {
+                String thisCommodity = conditionsToOutputs.get(condition);
+                if (thisCommodity.equals(outputCommodity)) {
+                    list.add(condition);
+                }
+            }
+            return list;
         }
     }
 
@@ -162,6 +181,7 @@ public class ProductionMap {
         public String id;
         public Set<String> consumers = new LinkedHashSet<>();
         public Set<String> producers = new LinkedHashSet<>();
+        public Set<String> conditions = new LinkedHashSet<>();
         public boolean isExtracted;
 
         public CommodityEntry(String id) {

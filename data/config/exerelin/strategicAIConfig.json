@@ -92,21 +92,21 @@
 			"name":"Competition",
 			"desc":"$TheFaction competes with us in the production of $commodity (market share $theirShare%%). We should secure our commercial interests.",
 			"classPath":"exerelin.campaign.ai.concern.CommodityCompetitionConcern",
-			"tags":["economy", "commodity", "canDestroyCommodity", "canSabotageIndustry", "canInvade", "canRaid"],
+			"tags":["economy", "commodity", "canDestroyCommodity", "canSabotageIndustry", "canInvade", "canRaid", "canBuildEcon"],
 			"module":ECONOMIC
 		},
 		"importDependency":{
 			"name":"Import Dependency",
 			"desc":"We rely upon foreign suppliers of $commodity ($amount units). We should seek to establish domestic production.",
 			"classPath":"exerelin.campaign.ai.concern.ImportDependencyConcern",
-			"tags":["economy", "commodity", "canInvade"],
+			"tags":["economy", "commodity", "canInvade", "canBuildEcon"],
 			"module":ECONOMIC
 		},
 		"undersuppliedMarket":{
 			"name":"Undersupplied Market",
 			"desc":"The market for a number of related commodities currently offers a high revenue per producer: $commodities",
 			"classPath":"exerelin.campaign.ai.concern.UndersuppliedMarketConcern",
-			"tags":["economy", "commodity"],
+			"tags":["economy", "commodity", "canBuildEcon"],
 			"module":ECONOMIC
 		},
 	},
@@ -132,6 +132,7 @@
 			"classPath":"exerelin.campaign.ai.action.fleet.BaseStrikeAction",
 			"tags":["military", "market", "canBaseStrike", "unfriendly", "aggressive", "wartime"],
 		},
+		
 		"diplomacyPositive":{
 			"name":"Diplomatic Action (Positive)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
@@ -153,6 +154,7 @@
 			"classPath":"exerelin.campaign.ai.action.MakePeaceAction",
 			"tags":["diplomacy", "canDiplomacy", "friendly"],
 		},
+		
 		"agentRaiseRelations":{
 			"name":"Raise Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.RaiseRelationsAction",
@@ -179,6 +181,14 @@
 			"classPath":"exerelin.campaign.ai.action.covert.InstigateRebellionAction",
 			"antiRepetition":30,
 			"tags":["military", "covert", "canInvade", "aggressive", "unfriendly"],
+		},
+		
+		"buildEcon":{
+			"name":"Build (Economy)",
+			"classPath":"exerelin.campaign.ai.action.industry.BuildEconAction",
+			"cooldown":60,
+			"antiRepetition":50,
+			"tags":["economy", "canBuildEcon"],
 		},
 	}	
 }

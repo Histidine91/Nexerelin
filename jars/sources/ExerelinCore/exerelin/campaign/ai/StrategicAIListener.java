@@ -5,11 +5,12 @@ import exerelin.campaign.ai.concern.StrategicConcern;
 
 public interface StrategicAIListener  {
 
-    void reportStrategyMeetingHeld();
-    void reportConcernAdded(StrategicConcern concern);
-    void reportConcernUpdated(StrategicConcern concern);
-    void reportConcernRemoved(StrategicConcern concern);
-    void reportActionAdded(StrategicAction action);
-    void reportActionCompleted(StrategicAction action);
-    void reportActionRemoved(StrategicAction action);
+    void reportStrategyMeetingHeld(StrategicAI ai);
+    void reportConcernAdded(StrategicAI ai, StrategicConcern concern);
+    void reportConcernUpdated(StrategicAI ai, StrategicConcern concern);
+    void reportConcernRemoved(StrategicAI ai, StrategicConcern concern);
+    void reportActionAdded(StrategicAI ai, StrategicAction action);
+    void reportActionUpdated(StrategicAI ai, StrategicAction action);
+    void reportActionCompleted(StrategicAI ai, StrategicAction action);
+    void reportActionRemoved(StrategicAI ai, StrategicAction action);
 }

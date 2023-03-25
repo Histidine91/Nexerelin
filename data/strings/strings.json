@@ -2416,9 +2416,13 @@
 		"statDispositionNegative":"low disposition",
 		"statWarDecisionRating":"war decision rating vs. target",
 		"statAntiRepetition":"recently used this action",
+		"statCannotBeSolved":"concern cannot be solved with this action",
+		"statExistingMarketShare":"existing market share",
 		
 		"descCooldown":"Action cooldown: %s day(s)",
 		"descNoAction":"no action",
+		
+		"actionName_build":"build %s",
 		
 		"actionStatus":"Status: %s",
 		"actionStatus_starting":"starting",

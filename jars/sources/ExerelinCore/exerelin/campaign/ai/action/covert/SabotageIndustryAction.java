@@ -23,9 +23,14 @@ public class SabotageIndustryAction extends CovertAction {
     @Override
     public boolean generate() {
         industry = null;
-        if (concern instanceof HasIndustryTarget)
-            ((HasIndustryTarget)concern).getTargetIndustry();
         market = concern.getMarket();
+
+        // get the target industry from concern if it has one
+        if (concern instanceof HasIndustryTarget) {
+            industry = ((HasIndustryTarget)concern).getTargetIndustry();
+            if (industry == null && market != null)
+                industry = market.getIndustry(((HasIndustryTarget)concern).getTargetIndustryId());
+        }
 
         if (industry == null) industry = pickTargetIndustryFallback(market);
         if (industry == null) return false;

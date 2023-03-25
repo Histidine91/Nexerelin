@@ -111,7 +111,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
         //createTooltipDesc(iwt, holder, 3);
 
-        int prioVal = (int)getPriorityFloat();
+        int prioVal = Math.round(getPriorityFloat());
         String prio = String.format(StringHelper.getString("priority", true) + ": %s", prioVal);
         iwt.addPara(prio, 0, Misc.getHighlightColor(), prioVal + "");
         tooltip.addImageWithText(pad);
@@ -130,7 +130,8 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
                 createTooltipDesc(tooltip, holder, 0);
                 if (concern.getActionCooldown() > 0) {
-                    tooltip.addPara(StringHelper.getString("priority", true), opad);
+                    tooltip.addPara(StrategicAI.getString("descCooldown", true), opad, Misc.getHighlightColor(),
+                            Math.round(concern.getActionCooldown()) + "");
                 }
 
                 tooltip.addPara(StringHelper.getString("priority", true), opad);
@@ -211,6 +212,10 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     public void notifyActionUpdate(StrategicAction action, StrategicActionDelegate.ActionStatus newStatus) {
         if (newStatus == StrategicActionDelegate.ActionStatus.SUCCESS || newStatus == StrategicActionDelegate.ActionStatus.FAILURE) {
             actionCooldown += action.getDef().cooldown;
+            update();
+        }
+        else if (newStatus == StrategicActionDelegate.ActionStatus.CANCELLED) {
+            update();
         }
         else if (newStatus == StrategicActionDelegate.ActionStatus.STARTING) {
             ai.getExecModule().reportRecentAction(action);
@@ -224,8 +229,9 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     @Override
     public void advance(float days) {
-        if (ended) return;
-        if (currentAction != null) currentAction.advance(days);
+        if (currentAction != null && !currentAction.isEnded()) {
+            currentAction.advance(days);
+        }
         actionCooldown -= days;
         if (actionCooldown < 0) actionCooldown = 0;
     }

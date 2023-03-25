@@ -2,19 +2,10 @@ package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
-import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
-import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.campaign.bases.VayraRaiderActivityCondition;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
@@ -47,6 +38,8 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
 
     @Override
     public void update() {
+        super.update();
+
         hostileFactions.clear();
         hostileFactions.addAll(DiplomacyManager.getFactionsAtWarWithFaction(ai.getFactionId(), NexConfig.allowPirateInvasions, true, false));
         if (hostileFactions.isEmpty()) return;

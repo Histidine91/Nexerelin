@@ -36,6 +36,8 @@ public class PirateActivityConcern extends BaseStrategicConcern {
 
     @Override
     public void update() {
+        super.update();
+
         float rageIncrement = Global.getSettings().getFloat("nex_pirateRageIncrement");
         float rageThisUpdate = 0;
         affectedMarkets.clear();

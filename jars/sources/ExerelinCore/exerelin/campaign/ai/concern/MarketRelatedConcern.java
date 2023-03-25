@@ -4,7 +4,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Pair;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 
@@ -33,6 +32,15 @@ public abstract class MarketRelatedConcern extends BaseStrategicConcern {
         label.setText(StringHelper.substituteToken(label.getText(), "$size", market.getSize() + ""));
 
         return label;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+
+        if (market != null && !market.isInEconomy()) {
+            end();
+        }
     }
 
     public static final Comparator MARKET_PAIR_COMPARATOR = new NexUtils.PairWithFloatComparator(true);

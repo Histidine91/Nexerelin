@@ -2,15 +2,12 @@ package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.campaign.ai.concern.StrategicConcern;
-import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtilsGUI;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Log4j
@@ -49,6 +46,7 @@ public abstract class StrategicAIModule {
 
     public void advance(float days) {
         for (StrategicConcern concern : currentConcerns) {
+            if (concern.isEnded()) continue;
             concern.advance(days);
         }
     };
