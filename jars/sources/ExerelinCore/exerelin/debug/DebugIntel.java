@@ -5,8 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketShareDataAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -22,13 +20,13 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
+import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class DebugIntel extends BaseIntelPlugin {
@@ -47,7 +45,7 @@ public class DebugIntel extends BaseIntelPlugin {
 		return (DebugIntel)Global.getSector().getPersistentData().get(DATA_KEY);
 	}
 	
-	// runcode exerelin.DebugIntel.createIntel();
+	// runcode exerelin.debug.DebugIntel.createIntel();
 	public static DebugIntel createIntel() {
 		DebugIntel intel = new DebugIntel();
 		intel.init();

@@ -50,7 +50,7 @@ public class Nex_DisruptIndustry extends BaseDisruptIndustry implements AgentAct
 	}
 	
 	@Override
-	public MarketAPI pickMarket() {
+	public MarketAPI pickMarket(boolean resetSearch) {
 		FactionAPI faction = getPerson().getFaction();
 		int min = 0, max = 999;
 		switch (getPerson().getImportance()) {

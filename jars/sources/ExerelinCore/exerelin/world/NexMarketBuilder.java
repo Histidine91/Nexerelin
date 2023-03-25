@@ -1,12 +1,5 @@
 package exerelin.world;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import exerelin.utilities.*;
-import lombok.Getter;
-import org.apache.log4j.Logger;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -14,13 +7,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.Items;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -28,30 +15,27 @@ import data.scripts.UnderworldModPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
-import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.BonusSeed;
 import exerelin.utilities.NexFactionConfig.DefenceStationSet;
 import exerelin.utilities.NexFactionConfig.IndustrySeed;
-import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.ExerelinProcGen.EntityType;
+import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.industry.IndustryClassGen;
 import exerelin.world.industry.bonus.BonusGen;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
+import lombok.Getter;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * How it works.
@@ -95,7 +79,7 @@ public class NexMarketBuilder
 	protected static final List<IndustryClassGen> industryClasses = new ArrayList<>();
 	protected static final List<IndustryClassGen> industryClassesOrdered = new ArrayList<>();	// sorted by priority
 	protected static final Map<String, IndustryClassGen> industryClassesById = new HashMap<>();
-	protected static final Map<String, IndustryClassGen> industryClassesByIndustryId = new HashMap<>();
+	@Getter protected static final Map<String, IndustryClassGen> industryClassesByIndustryId = new HashMap<>();
 	protected static final List<IndustryClassGen> specialIndustryClasses = new ArrayList<>();
 	protected static final List<BonusGen> bonuses = new ArrayList<>();
 	protected static final Map<String, BonusGen> bonusesById = new HashMap<>();
@@ -184,10 +168,6 @@ public class NexMarketBuilder
 			log.error(ex);
 			throw new IllegalStateException("Error loading bonus items for procgen: " + ex);
 		}	
-	}
-	
-	public static Map<String, IndustryClassGen> getIndustryClassesByIndustryId() {
-		return industryClassesByIndustryId;
 	}
 	
 	public NexMarketBuilder(ExerelinProcGen procGen)

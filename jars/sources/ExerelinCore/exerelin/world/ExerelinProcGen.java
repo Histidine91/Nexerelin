@@ -1,23 +1,11 @@
 package exerelin.world;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
-import com.fs.starfarer.api.campaign.CampaignTerrainPlugin;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.MusicPlayerPluginImpl;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -32,13 +20,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.AL_ChaosCrackFleetManager;
 import data.scripts.terrain.MagicAsteroidBeltTerrainPlugin;
-/*
-import data.scripts.campaign.ExigencyCommRelayAdder;
-import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
-import data.scripts.world.exipirated.ExipiratedAvestaMovement;
-import data.scripts.world.exipirated.ExipiratedCollectorFleetManager;
-import data.scripts.world.exipirated.ExipiratedPatrolFleetManager;
-*/
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
@@ -47,32 +28,26 @@ import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.ColonyTargetValuator;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
+
+/*
+import data.scripts.campaign.ExigencyCommRelayAdder;
+import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
+import data.scripts.world.exipirated.ExipiratedAvestaMovement;
+import data.scripts.world.exipirated.ExipiratedCollectorFleetManager;
+import data.scripts.world.exipirated.ExipiratedPatrolFleetManager;
+*/
 
 
 public class ExerelinProcGen {
@@ -502,25 +477,6 @@ public class ExerelinProcGen {
 		return desirability;
 	}
 	
-	/**
-	 * Creates a ProcGenEntity for the specified planet
-	 * @param planet
-	 * @return
-	 */
-	protected ProcGenEntity createEntityDataForPlanet(PlanetAPI planet)
-	{
-		ProcGenEntity data = new ProcGenEntity(planet);
-		data.name = planet.getName();
-		data.type = planet.isMoon() ? EntityType.MOON : EntityType.PLANET;
-		data.market = planet.getMarket();
-		data.desirability = getDesirability(planet);
-		data.planetType = planet.getTypeId();
-		data.primary = planet.getOrbitFocus();
-		data.starSystem = (StarSystemAPI)planet.getContainingLocation();
-		
-		return data;
-	}
-	
 	public static ProcGenEntity createEntityData(SectorEntityToken token)
 	{
 		ProcGenEntity data = new ProcGenEntity(token);
@@ -568,7 +524,7 @@ public class ExerelinProcGen {
 			}
 			
 			//log.info("Creating entity data for planet " + planet.getName());
-			ProcGenEntity planetData = createEntityDataForPlanet(planet);
+			ProcGenEntity planetData = createEntityData(planet);
 			procGenEntitiesByToken.put(planet, planetData);
 			planets.add(planetData);
 			//log.info("\tPlanet desirability: " + planetData.desirability);

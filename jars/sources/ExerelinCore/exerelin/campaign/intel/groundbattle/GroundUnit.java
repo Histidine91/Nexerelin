@@ -64,7 +64,7 @@ public class GroundUnit {
 	@Getter protected FactionAPI faction;
 	@Getter protected CampaignFleetAPI fleet;
 	protected RouteData route;
-	@Getter protected boolean isPlayer;
+	protected boolean isPlayer;
 	@Getter protected boolean isAttacker;
 	@Deprecated
 	protected ForceType type;
@@ -225,6 +225,8 @@ public class GroundUnit {
 	 * @param isPersonnel
 	 */
 	public void addPersonnelOrEquipmentFromCargo(int wanted, boolean isPersonnel) {
+		if (wanted == 0) return;
+
 		Map<String, Integer> taken = null;
 
 		Map<String, Integer> commodities = isPersonnel ? this.getPersonnelMap() : this.getEquipmentMap();
@@ -296,10 +298,6 @@ public class GroundUnit {
 
 	public float getMorale() {
 		return morale;
-	}
-	
-	public FactionAPI getFaction() {
-		return faction;
 	}
 	
 	public boolean isPlayer() {
@@ -1187,7 +1185,8 @@ public class GroundUnit {
 							bonus = intel.getSide(isAttacker).getDamageDealtMod();
 							if (bonus != null && !bonus.isUnmodified()) {
 								tooltip.addStatModGrid(360, 60, 10, 3, bonus, true, NexUtils.getStatModValueGetter(true, 0));
-							}		break;
+							}
+							break;
 						}
 					case "defensePower":
 						{

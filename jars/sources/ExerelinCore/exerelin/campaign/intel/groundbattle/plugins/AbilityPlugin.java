@@ -120,7 +120,7 @@ public abstract class AbilityPlugin {
 	}
 	
 	public List<IndustryForBattle> getTargetIndustries() {
-		return new ArrayList<>();
+		return new ArrayList<>(getIntel().getIndustries());
 	}
 	
 	public void setTarget(Industry target) {

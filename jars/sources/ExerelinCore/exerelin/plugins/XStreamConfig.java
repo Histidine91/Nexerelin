@@ -188,6 +188,7 @@ public class XStreamConfig {
 		x.alias("NexAllyIntl", AllianceIntel.class);
 		x.alias("NexAllyVoteIntl", AllianceVoteIntel.class);
 		x.alias("AllyVoteRslt", AllianceVoter.VoteResult.class);
+		x.alias("NexAlign", Alliance.Alignment.class);
 		
 		// misc
 		x.alias("NexRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);

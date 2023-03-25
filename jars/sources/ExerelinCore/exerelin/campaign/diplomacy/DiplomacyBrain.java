@@ -18,7 +18,6 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventParams;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
@@ -33,22 +32,12 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.Morality;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
 import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
 
 /*
 Which category a faction falls in is based on their disposition towards us. Disposition is based on:
