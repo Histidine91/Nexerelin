@@ -45,6 +45,7 @@ public class GBConstants {
 	
 	public static int STABILITY_PENALTY_BASE = 2;
 	public static int STABILITY_PENALTY_OCCUPATION = 5;
+	public static int EXISTING_UNREST_DIVISOR = 4;
 	public static float DISRUPTED_TROOP_CONTRIB_MULT = 0.5f;
 	public static float DISRUPT_WHEN_CAPTURED_TIME = 0.25f;
 	public static float DISRUPT_DAMAGE_MIN_FACTOR = 0.15f;	// local attacker must have at least this much more damage than local defender to disrupt

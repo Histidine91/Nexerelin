@@ -1,14 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import java.util.List;
-import java.util.Map;
-
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -24,16 +17,17 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.Morality;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 
 public class Nex_StabilizePackage extends BaseCommandPlugin {
 	
 	public static final String MEMORY_KEY_RECENT = "$nex_stabilizePackage_cooldown";
 	public static final int STABILIZE_INTERVAL = 60;
+	public static final int RECENT_UNREST_DIVISOR_FOR_BONUS = 4;
 	
 	public static final List<String> COMMODITIES_RELIEF = new ArrayList<>(Arrays.asList(
 			Commodities.SUPPLIES, Commodities.FOOD	//, Commodities.DOMESTIC_GOODS
@@ -113,7 +107,7 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		if (market.getMemoryWithoutUpdate().getBoolean(SectorManager.MEMORY_KEY_CAPTURE_STABILIZE_TIMEOUT))
 			return false;
 		
-		int min = Math.min(NexConfig.stabilizePackageEffect, 3);
+		int min = Math.min(NexConfig.stabilizePackageEffect, 2);
 		float recentUnrest = RecentUnrest.getPenalty(market);
 		return recentUnrest >= min || (recentUnrest >= 1 && market.getStabilityValue() == 0);
 	}
@@ -234,12 +228,23 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		if (ru != null) {
 			text.setFontSmallInsignia();
 			int before = ru.getPenalty();
-			ru.add(-NexConfig.stabilizePackageEffect, 
+			int baseEffect = NexConfig.stabilizePackageEffect;
+			int fullEffect = getStabilizePackageEffect(market);
+			ru.add(-fullEffect, 
 					StringHelper.getString("exerelin_markets", "stabilizeRecentUnrestEntry"));
 			int diff = before - ru.getPenalty();
-			text.addPara(StringHelper.getStringAndSubstituteToken("exerelin_markets",
-					"stabilizeEffect", "$market", market.getName()), 
-					Misc.getPositiveHighlightColor(), "" + diff);
+			
+			int bonus = diff - baseEffect;
+			if (bonus > 0) {
+				text.addPara(StringHelper.getStringAndSubstituteToken("exerelin_markets",
+						"stabilizeEffectBonus", "$market", market.getName()),
+						Misc.getPositiveHighlightColor(), "" + diff, "" + bonus);
+			} else {
+				text.addPara(StringHelper.getStringAndSubstituteToken("exerelin_markets",
+						"stabilizeEffect", "$market", market.getName()), 
+						Misc.getPositiveHighlightColor(), "" + diff);
+			}
+			
 			text.setFontInsignia();
 		}
 		
@@ -268,5 +273,12 @@ public class Nex_StabilizePackage extends BaseCommandPlugin {
 		}
 		
 		market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENT, true, STABILIZE_INTERVAL);
+	}
+	
+	public static int getStabilizePackageEffect(MarketAPI market) {
+		int num = NexConfig.stabilizePackageEffect;
+		num += RecentUnrest.getPenalty(market)/RECENT_UNREST_DIVISOR_FOR_BONUS;
+		
+		return num;
 	}
 }

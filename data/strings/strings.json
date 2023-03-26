@@ -1676,6 +1676,7 @@
 		"stabilizeTooltipDisabled":"Insufficient resources.",
 		"stabilizeRecentUnrestEntry":"Stabilization package",
 		"stabilizeEffect":"Stability of $market increased by %s.",
+		"stabilizeEffectBonus":"Stability of $market increased by %s (including %s bonus effect from high unrest).",
 		
 		"reinforcedDefensesHeader":"You can reinforce the ground defenses of $market for $time days at a cost of $credits and the following commodities:",
 		"reinforcedDefensesTooltipDisabled":"Insufficient resources.",

@@ -483,7 +483,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		RecentUnrest ru = RecentUnrest.get(target);
 		if (ru != null) {
 			int before = ru.getPenalty();
-			ru.add(-Math.min(before, NexConfig.stabilizePackageEffect), 
+			ru.add(-Math.min(before, Nex_StabilizePackage.getStabilizePackageEffect(target)), 
 					StringHelper.getString("exerelin_markets", "stabilizeRecentUnrestEntry"));
 			unrestReduction = before - ru.getPenalty();
 		}

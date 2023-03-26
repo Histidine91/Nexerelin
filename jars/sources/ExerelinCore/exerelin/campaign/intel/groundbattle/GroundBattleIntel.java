@@ -1012,6 +1012,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					&& defender.getFaction().getId().equals(origOwner))
 				recentUnrest += 2;
 			
+			int existingUnrest = RecentUnrest.getPenalty(market);
+			recentUnrest -= existingUnrest/GBConstants.EXISTING_UNREST_DIVISOR;
+			if (recentUnrest < 0) recentUnrest = 0;
+			
 			RecentUnrest.get(market, true).add(recentUnrest, String.format(getString("unrestReason"), 
 					attacker.getFaction().getDisplayName()));
 		}
