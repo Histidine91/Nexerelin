@@ -1,8 +1,8 @@
 {
 	# note: pirates will never have a diplomacy event with non-pirates unless pirate invasions are enabled in main config
 	
-	"warWearinessPerInterval":20,	# default 20
-	"eventFrequency":20,	# approximate interval in days between events and between diplomacy AI operations, default 20
+	"warWearinessPerInterval":30,	# default should be same as eventFrequency?
+	"eventFrequency":30,	# approximate interval in days between events and between diplomacy AI operations, default 30
 	
 	# List of events
 	
