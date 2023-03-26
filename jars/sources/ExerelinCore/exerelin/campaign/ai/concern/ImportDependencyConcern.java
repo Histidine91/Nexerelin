@@ -106,7 +106,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
         float prio = required * 10;
         if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
         priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
-        reapplyPriorityModifiers();
+        super.update();
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
-import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import lombok.extern.log4j.Log4j;
@@ -62,14 +61,7 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
         }
         weight *= getPriorityMult(ai.getFaction().getRelationshipLevel(faction));
         priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
-        reapplyPriorityModifiers();
-    }
-
-    @Override
-    public void reapplyPriorityModifiers() {
-        super.reapplyPriorityModifiers();
-        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
-        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.SUBMISSIVE, 1.4f, false);
+        super.update();
     }
 
     protected float getPriorityMult(RepLevel level) {

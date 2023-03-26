@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.action.industry.BuildIndustryAction;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -117,6 +118,10 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
      */
     @Override
     public Industry getTargetIndustry() {
+        // this return value is only for stuff to raid/sabotage/whatever, for building stuff we have no input to provide
+        if (currentAction instanceof BuildIndustryAction)
+            return null;
+
         // First find a market that produces the thing
         MarketAPI tm = null;
         WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker<>();

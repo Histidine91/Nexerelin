@@ -11,19 +11,17 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
-import java.awt.Color;
-
 import com.fs.starfarer.api.util.Pair;
-import com.fs.starfarer.ui.P;
-import org.lazywizard.lazylib.MathUtils;
-import org.lwjgl.util.vector.Vector2f;
-
-import java.util.*;
-
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class NexUtils
@@ -357,7 +355,7 @@ public class NexUtils
 		for (String multModId : stat.getMultMods().keySet()) {
 			MutableStat.StatMod mod = stat.getMultMods().get(multModId);
 			float val = mod.value;
-			sb.append(String.format("\n  %s: %.2f×", mod.desc, val));
+			sb.append(String.format("\n  %s: %.2fx", mod.desc, val));
 		}
 
 		return sb.toString();

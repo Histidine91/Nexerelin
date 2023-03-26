@@ -20,26 +20,29 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-import static exerelin.campaign.intel.fleets.OffensiveFleetIntel.ENTERED_SYSTEM_UPDATE;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
-import exerelin.plugins.ExerelinModPlugin;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.log4j.Logger;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import org.apache.log4j.Logger;
-import org.lwjgl.util.vector.Vector2f;
 
 public class NexRaidIntel extends OffensiveFleetIntel {
 	
 	public static Logger log = Global.getLogger(NexRaidIntel.class);
+
+	@Getter	@Setter	protected String preferredIndustryTarget;
 		
 	public NexRaidIntel(FactionAPI attacker, MarketAPI from, MarketAPI target, float fp, float orgDur) {
 		super(attacker, from, target, fp, orgDur);
@@ -71,9 +74,6 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		addStage(action);
 		
 		addStage(new NexReturnStage(this));
-
-		if (ExerelinModPlugin.isNexDev)
-			Global.getSector().getCampaignUI().addMessage("init() called in NexRaidIntel");
 
 		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {

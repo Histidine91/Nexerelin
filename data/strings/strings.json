@@ -2389,6 +2389,7 @@
 		"intelBulletUpdate":"Strategy meeting",
 		"intelBulletUpdateAdd":"%s new concern(s): %s",
 		"intelBulletUpdateRemove":"%s concern(s) removed: %s",
+		"intelBulletUpdateAddAct":"%s action(s) taken: %s",
 		
 		"intelPara_daysToNextMeeting":"%s days to next strategy meeting",
 		"intelPara_income":"Our factionwide monthly income from markets is %s",

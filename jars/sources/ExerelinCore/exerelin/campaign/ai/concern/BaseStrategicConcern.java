@@ -16,7 +16,6 @@ import exerelin.campaign.ai.*;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFleet;
@@ -68,6 +67,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     @Override
     public void update() {
+        reapplyPriorityModifiers();
         SAIUtils.reportConcernUpdated(ai, this);
     }
 
@@ -89,11 +89,10 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
                 if (wantPositive != null) SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), faction.getId(), wantPositive, priority);
             }
         }
-        if (def.hasTag(SAIConstants.TAG_ECONOMY)) {
-            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.MONOPOLIST, 1.4f, false);
-        }
-        if (def.hasTag(SAIConstants.TAG_COVERT)) {
-            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.DEVIOUS, 1.4f, false);
+
+        SAIUtils.applyPriorityModifierForTraits(def.tags, ai.getFactionId(), priority);
+        if (this instanceof HostileInSharedSystemConcern) {
+            log.info("Has trait " + def.hasTag("trait_paranoid"));
         }
     }
 
@@ -109,7 +108,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         TooltipMakerAPI tooltip = myPanel.createUIElement(SAIConstants.CONCERN_ITEM_WIDTH, SAIConstants.CONCERN_ITEM_HEIGHT, true);
         TooltipMakerAPI iwt = tooltip.beginImageWithText(this.getIcon(), 32);
 
-        iwt.addPara(getDisplayName(), Misc.getHighlightColor(), 0);
+        iwt.addPara(getDisplayName(), ended ? Misc.getGrayColor() : Misc.getHighlightColor(), 0);
 
         //createTooltipDesc(iwt, holder, 3);
 
@@ -291,7 +290,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     @Override
     public String getName() {
         String name = getDef().name;
-        if (ended) name = "[FIXME ended] " + name;
+        //if (ended) name = "[FIXME ended] " + name;
         return name;
     }
 

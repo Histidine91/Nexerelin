@@ -5,28 +5,28 @@
 			"desc":"We must take back our rightful territory of $market (size $size) from the vile $faction!",
 			#"icon":"",	# if blank or unspecified, will default to faction icon (more generally, it uses whatever icon the code says to use)
 			"classPath":"exerelin.campaign.ai.concern.RevanchismConcern",
-			"tags":["military", "diplomacy", "market", "canInvade", "canDeclareWar"],
+			"tags":["military", "diplomacy", "market", "canInvade", "canDeclareWar", "trait_irredentist"],
 			"module":MILITARY	# which AI module handles this concern, mostly for organizational purposes
 		},
 		"vulnerableEnemyTarget":{
 			"name":"Vulnerable Enemy Target",
 			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. This presents us with an opportunity.",
 			"classPath":"exerelin.campaign.ai.concern.VulnerableEnemyTargetConcern",
-			"tags":["military", "economy", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize", "canRebel"],
+			"tags":["military", "economy", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize", "canRebel", "trait_predatory"],
 			"module":MILITARY
 		},
 		"enemyInSharedSystem":{
 			"name":"Enemy in Shared System",
 			"desc":"$market (size $size) is an enemy colony in a system we also have a presence. We ought to neutralize this threat.",
 			"classPath":"exerelin.campaign.ai.concern.HostileInSharedSystemConcern",
-			"tags":["military", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize", "canRebel", "canDeclareWar"],
+			"tags":["military", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize", "canRebel", "canDeclareWar", "trait_paranoid"],
 			"module":MILITARY
 		},
 		"inadequateDefense":{
 			"name":"Inadequate Defenses",
 			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. We should strengthen its defenses.",
 			"classPath":"exerelin.campaign.ai.concern.InadequateDefenseConcern",
-			"tags":["military", "economy", "market"],
+			"tags":["military", "economy", "market", "trait_paranoid"],
 			"module":MILITARY
 		},
 		"pirateActivity":{
@@ -34,7 +34,7 @@
 			"desc":"We have %s case(s) of pirate, Pather or other malicious activity on our markets. Soon we will need to destroy the nest from which these rats originate.",
 			"classPath":"exerelin.campaign.ai.concern.PirateActivityConcern",
 			"icon":"graphics/icons/markets/pirate_activity.png",
-			"tags":["military", "canBaseStrike"],
+			"tags":["military", "canBaseStrike", "trait_law_and_order"],
 			"module":MILITARY
 		},
 		"retaliation":{
@@ -63,14 +63,14 @@
 			"name":"Powerful Unfriendly",
 			"desc":"$TheFaction $factionIsOrAre strong, and our relations with them are not always friendly. We should either appease them or take other precautions.",
 			"classPath":"exerelin.campaign.ai.concern.PowerfulUnfriendlyConcern",
-			"tags":["diplomacy", "canDiplomacy"],
+			"tags":["diplomacy", "canDiplomacy", "trait_paranoid", "trait_submissive"],
 			"module":DIPLOMATIC
 		},
 		"closeAdversaries":{
 			"name":"Close Adversaries",
 			"desc":"Two factions unfriendly to us, $theFaction and $theOtherFaction, are getting closer than we would like.",
 			"classPath":"exerelin.campaign.ai.concern.CloseAdversariesConcern",
-			"tags":["diplomacy", "canLowerRelations", "diplomacy_negative", "canDeclareWar", "canMakePeace"],
+			"tags":["diplomacy", "canLowerRelations", "diplomacy_negative", "canDeclareWar", "canMakePeace", "trait_paranoid"],
 			"module":DIPLOMATIC
 		},
 		"warWeariness":{
@@ -78,35 +78,35 @@
 			"desc":"Our people tire of the constant fighting. We should seek to make peace with one or more of our enemies.",
 			"classPath":"exerelin.campaign.ai.concern.WarWearinessConcern",
 			"icon":"graphics/exerelin/icons/intel/peace.png",
-			"tags":["diplomacy", "canMakePeace"],
+			"tags":["diplomacy", "canMakePeace", "trait_pacifist", "trait_weak-willed"],
 			"module":DIPLOMATIC
 		},
 		"vulnerableFaction":{
 			"name":"Vulnerable Faction",
 			"desc":"$TheFaction is weak and vulnerable. It would be a shame if something were to happen to them.",
 			"classPath":"exerelin.campaign.ai.concern.VulnerableFactionConcern",
-			"tags":["diplomacy", "military", "canDiplomacy", "diplomacy_positive", "diplomacy_negative", "canDeclareWar"],
+			"tags":["diplomacy", "military", "canDiplomacy", "diplomacy_positive", "diplomacy_negative", "canDeclareWar", "trait_predatory"],
 			"module":DIPLOMATIC
 		},
 		"commodityCompetition":{
 			"name":"Competition",
 			"desc":"$TheFaction competes with us in the production of $commodity (market share $theirShare%%). We should secure our commercial interests.",
 			"classPath":"exerelin.campaign.ai.concern.CommodityCompetitionConcern",
-			"tags":["economy", "commodity", "canDestroyCommodity", "canSabotageIndustry", "canInvade", "canRaid", "canBuildEcon"],
+			"tags":["economy", "commodity", "canDestroyCommodity", "canSabotageIndustry", "canInvade", "canRaid", "canBuildEcon", "trait_monopolist"],
 			"module":ECONOMIC
 		},
 		"importDependency":{
 			"name":"Import Dependency",
 			"desc":"We rely upon foreign suppliers of $commodity ($amount units). We should seek to establish domestic production.",
 			"classPath":"exerelin.campaign.ai.concern.ImportDependencyConcern",
-			"tags":["economy", "commodity", "canInvade", "canBuildEcon"],
+			"tags":["economy", "commodity", "canInvade", "canBuildEcon", "trait_monopolist", "trait_paranoid"],
 			"module":ECONOMIC
 		},
 		"undersuppliedMarket":{
 			"name":"Undersupplied Market",
 			"desc":"The market for a number of related commodities currently offers a high revenue per producer: $commodities",
 			"classPath":"exerelin.campaign.ai.concern.UndersuppliedMarketConcern",
-			"tags":["economy", "commodity", "canBuildEcon"],
+			"tags":["economy", "commodity", "canBuildEcon", "trait_monopolist"],
 			"module":ECONOMIC
 		},
 	},

@@ -47,9 +47,12 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 			or just clarify the intel message to explain what it's doing
 	*/
 	
-	
 	public NexRaidActionStage(RaidIntel raid, StarSystemAPI system) {
 		super(raid, system);
+	}
+
+	protected NexRaidIntel getNexRaidIntel() {
+		return (NexRaidIntel)intel;
 	}
 	
 	// Simplified version of PirateRaidActionStage.updateRoutes()
@@ -136,6 +139,12 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	}
 	
 	protected Industry pickIndustryToDisrupt(MarketAPI market) {
+		String preferred = getNexRaidIntel().getPreferredIndustryTarget();
+		if (preferred != null) {
+			Industry ind = market.getIndustry(preferred);
+			if (ind != null) return ind;
+		}
+
 		WeightedRandomPicker<Industry> picker = new WeightedRandomPicker<>();
 		for (Industry industry : market.getIndustries()) {
 			if (!industry.canBeDisrupted()) continue;

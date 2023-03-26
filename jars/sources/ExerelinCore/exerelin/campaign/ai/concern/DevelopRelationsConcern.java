@@ -59,7 +59,7 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
             return;
         }
         priority.modifyFlat("power", theirStrength/3, StrategicAI.getString("statFactionPower", true));
-        reapplyPriorityModifiers();
+        super.update();
     }
 
     protected boolean wantToBefriend(FactionAPI faction) {

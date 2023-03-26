@@ -12,7 +12,6 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -58,14 +57,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
             SAIUtils.applyPriorityModifierForAlignment(ai.getFactionId(), priority, Alignment.MILITARIST);
         }
         if (def.hasTag(SAIConstants.TAG_DIPLOMACY)) {
-            //log.info("Applying diplomacy modifier for concern " + this.getName());
             SAIUtils.applyPriorityModifierForAlignment(ai.getFactionId(), priority, Alignment.DIPLOMATIC);
-        }
-        if (def.hasTag(SAIConstants.TAG_ECONOMY)) {
-            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.MONOPOLIST, 1.4f, false);
-        }
-        if (def.hasTag(SAIConstants.TAG_COVERT)) {
-            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.DEVIOUS, 1.4f, false);
         }
 
         if (concern.getFaction() != null) {
@@ -76,6 +68,8 @@ public abstract class BaseStrategicAction implements StrategicAction {
                 SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), concern.getFaction().getId(), false, priority);
             }
         }
+
+        SAIUtils.applyPriorityModifierForTraits(def.tags, ai.getFactionId(), priority);
 
         priority.modifyFlat("antiRepetition", -ai.getExecModule().getAntiRepetitionValue(id), StrategicAI.getString("statAntiRepetition", true));
     }

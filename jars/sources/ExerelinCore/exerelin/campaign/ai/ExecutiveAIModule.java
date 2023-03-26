@@ -33,6 +33,14 @@ public class ExecutiveAIModule extends StrategicAIModule {
         return val;
     }
 
+    public List<StrategicAction> getRecentActions() {
+        List<StrategicAction> list = new ArrayList<>();
+        for (StrategicConcern concern : currentConcerns) {
+            list.add(concern.getCurrentAction());
+        }
+        return list;
+    }
+
     @Override
     public void advance(float days) {
         super.advance(days);

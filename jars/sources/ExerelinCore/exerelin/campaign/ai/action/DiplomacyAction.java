@@ -48,14 +48,14 @@ public class DiplomacyAction extends BaseStrategicAction {
         params.onlyNegative = !canPositive;
 
         delegate = DiplomacyManager.createDiplomacyEvent(concern.getFaction(), ai.getFaction(), null, params);
-        if (delegate == null) return false;
-        end(StrategicActionDelegate.ActionStatus.SUCCESS);
-        return true;
+        return delegate != null;
     }
 
     @Override
     public void init() {
         super.init();
+        // used to be in generate() directly but putting it here makes some stuff technically cleaner
+        end(StrategicActionDelegate.ActionStatus.SUCCESS);
     }
 
     @Override

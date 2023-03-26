@@ -13,6 +13,8 @@ import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexConfig;
 import lombok.extern.log4j.Log4j;
 
+import java.util.Collection;
+
 @Log4j
 public class SAIUtils {
 
@@ -56,6 +58,20 @@ public class SAIUtils {
         DiplomacyTraits.TraitDef traitDef = DiplomacyTraits.getTrait(trait);
         stat.modifyMult("trait_" + trait, mult, StrategicAI.getString("statTrait", true) + ": " + traitDef.name);
     }
+
+    public static void applyPriorityModifierForTraits(Collection<String> tags, String aiFActionId, MutableStat stat) {
+        for (String tag : tags) {
+            if (tag.startsWith("trait_")) {
+                String traitId = tag.substring("trait_".length());
+                applyPriorityModifierForTrait(aiFActionId, stat, traitId, SAIConstants.TRAIT_POSITIVE_MULT, false);
+            }
+            else if (tag.startsWith("!trait_")) {
+                String traitId = tag.substring("!trait_".length());
+                applyPriorityModifierForTrait(aiFActionId, stat, traitId, SAIConstants.TRAIT_NEGATIVE_MULT, false);
+            }
+        }
+    }
+
 
 
     public static void reportStrategyMeetingHeld(StrategicAI ai)

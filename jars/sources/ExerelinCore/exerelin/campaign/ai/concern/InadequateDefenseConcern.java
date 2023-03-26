@@ -4,13 +4,14 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
-import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexUtilsFaction;
 import lombok.extern.log4j.Log4j;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @Log4j
 public class InadequateDefenseConcern extends MarketRelatedConcern {
@@ -74,13 +75,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
         }
         priority.modifyFlat("defenseAdjustedValue", valueMod,
                 StrategicAI.getString("statDefenseAdjustedValue", true));
-        reapplyPriorityModifiers();
-    }
-
-    @Override
-    public void reapplyPriorityModifiers() {
-        super.reapplyPriorityModifiers();
-        SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PARANOID, 1.4f, false);
+        super.update();
     }
 
     @Override

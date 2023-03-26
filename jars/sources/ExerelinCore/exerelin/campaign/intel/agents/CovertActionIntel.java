@@ -691,13 +691,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		
 		addImages(info, width, opad);
 		addMainDescPara(info, opad);
+		addStrategicActionPara(info, width, opad);
 		if (timestampActual != null) 
 			info.addPara(Misc.getAgoStringForTimestamp(timestampActual) + ".", opad);
 		
 		info.addSectionHeading(getString("intelResultHeader"), Alignment.MID, opad);
 		addResultPara(info, opad);
 		addAgentOutcomePara(info, opad);
-		addStrategicActionPara(info, width, opad);
 		
 		// goto agent button
 		if (agent != null) {

@@ -38,8 +38,6 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
 
     @Override
     public void update() {
-        super.update();
-
         hostileFactions.clear();
         hostileFactions.addAll(DiplomacyManager.getFactionsAtWarWithFaction(ai.getFactionId(), NexConfig.allowPirateInvasions, true, false));
         if (hostileFactions.isEmpty()) return;
@@ -64,7 +62,7 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
             }
         }
 
-        reapplyPriorityModifiers();
+        super.update();
     }
 
     @Override

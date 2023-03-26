@@ -191,7 +191,11 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
     @Override
     public String getName() {
-        String name = String.format(StrategicAI.getString("actionName_build"), getIndustryName());
+        String indName = getIndustryName();
+        String name;
+        if (indName != null) name = String.format(StrategicAI.getString("actionName_build", true), indName);
+        else name = getDef().name;
+
         if (market != null) name += ": " + market.getName();
         return name;
     }
@@ -199,7 +203,7 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
     public String getIndustryName() {
         if (industryUnderConstruction != null) return industryUnderConstruction.getCurrentName();
         if (industryId != null) return Global.getSettings().getIndustrySpec(industryId).getName();
-        return "error";
+        return null;
     }
 
     @Override

@@ -11,6 +11,7 @@ import exerelin.campaign.econ.ProductionMap;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
+import lombok.extern.log4j.Log4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Set;
 /**
  * Build an economy industry. Concerns that want to use this action must implement at least one of {@code HasIndustryTarget} or {@code HasCommodityTarget}.
  */
+@Log4j
 public class BuildEconAction extends BuildIndustryAction {
 
     @Override

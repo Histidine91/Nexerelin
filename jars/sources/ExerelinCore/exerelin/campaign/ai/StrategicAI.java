@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -57,6 +58,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	@Deprecated protected List<StrategicConcern> existingConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastAddedConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastRemovedConcerns = new ArrayList<>();
+	protected transient List<StrategicAction> lastAddedActions = new ArrayList<>();
 	protected IntervalUtil interval = new IntervalUtil(29, 31);
 	protected IntervalUtil intervalShort = new IntervalUtil(0.48f, 0.52f);
 	@Getter protected float daysSinceLastUpdate;
@@ -89,6 +91,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	protected Object readResolve() {
 		lastAddedConcerns = new ArrayList<>();
 		lastRemovedConcerns = new ArrayList<>();
+		lastAddedActions = new ArrayList<>();
 		if (execModule == null) execModule = new ExecutiveAIModule(this);
 		if (intervalShort == null) intervalShort = new IntervalUtil(0.48f, 0.52f);
 		return this;
@@ -138,13 +141,15 @@ public class StrategicAI extends BaseIntelPlugin {
 		findConcerns(milModule);
 		findConcerns(diploModule);
 
-		// TODO: tell executive module to take action
+		// tell executive module to take action
 		execModule.actOnConcerns();
+		lastAddedActions.addAll(execModule.getRecentActions());
 
-		if (!lastAddedConcerns.isEmpty() || !lastRemovedConcerns.isEmpty()) {
+		if (!lastAddedConcerns.isEmpty() || !lastRemovedConcerns.isEmpty() || !lastAddedActions.isEmpty()) {
 			sendUpdateIfPlayerHasIntel(UPDATE_NEW_CONCERNS, true, false);
 			lastAddedConcerns.clear();
 			lastRemovedConcerns.clear();
+			lastAddedActions.clear();
 		}
 
 		SAIUtils.reportStrategyMeetingHeld(this);
@@ -271,6 +276,9 @@ public class StrategicAI extends BaseIntelPlugin {
 			int numRemovedConcerns = lastRemovedConcerns.size();
 			if (numRemovedConcerns > 0) info.addPara(getString("intelBulletUpdateRemove"), 0, tc,
 					numRemovedConcerns + "", lastRemovedConcerns.toString());
+			int numAddedActions = lastAddedActions.size();
+			if (numAddedActions > 0) info.addPara(getString("intelBulletUpdateAddAct"), 0, tc,
+					numAddedActions + "", lastAddedActions.toString());
 		}
 	}
 

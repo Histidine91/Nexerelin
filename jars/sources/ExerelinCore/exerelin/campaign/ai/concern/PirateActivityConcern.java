@@ -36,8 +36,6 @@ public class PirateActivityConcern extends BaseStrategicConcern {
 
     @Override
     public void update() {
-        super.update();
-
         float rageIncrement = Global.getSettings().getFloat("nex_pirateRageIncrement");
         float rageThisUpdate = 0;
         affectedMarkets.clear();
@@ -94,7 +92,7 @@ public class PirateActivityConcern extends BaseStrategicConcern {
         rage += rageThisUpdate;
         ai.getFaction().getMemoryWithoutUpdate().set("$nex_pirateRage", rage);
         priority.modifyFlat("rage", rage, StrategicAI.getString("statRage", true));
-        reapplyPriorityModifiers();
+        super.update();
     }
 
     @Override
