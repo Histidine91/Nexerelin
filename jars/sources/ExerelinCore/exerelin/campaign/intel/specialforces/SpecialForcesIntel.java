@@ -2,14 +2,8 @@ package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
@@ -27,42 +21,31 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CutStyle;
-import com.fs.starfarer.api.ui.Fonts;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TextFieldAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.econ.FleetPoolManager;
-import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.campaign.intel.specialforces.namer.SpecialForcesNamer;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
+import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 
 public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpawner 
 {
@@ -702,7 +685,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public void printCurrentAction(TooltipMakerAPI info, float opad) {
 		Color h = Misc.getHighlightColor();		
 		String str = getString("intelDescAction");
-		String actionStr = "[this should not appear]";
+		String actionStr = StringHelper.getString("exerelin_fleetAssignments", "idle");
 		if (routeAI.currentTask != null)
 			actionStr = routeAI.currentTask.getText();
 		str = StringHelper.substituteToken(str, "$action", actionStr);
