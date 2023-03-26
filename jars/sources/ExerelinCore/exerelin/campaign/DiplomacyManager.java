@@ -1,14 +1,8 @@
 package exerelin.campaign;
 
-import exerelin.campaign.alliances.AllianceVoter;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.MutableStat.StatMod;
@@ -23,27 +17,15 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ExerelinSetupData.StartRelationsMode;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import exerelin.world.VanillaSystemsGenerator;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -52,6 +34,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
 
 /**
  * Creates diplomacy events at regular intervals; handles war weariness
@@ -140,6 +127,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             eventDef.id = eventDefJson.getString("stage");
             eventDef.desc = eventDefJson.getString("desc");
             eventDef.random = eventDefJson.optBoolean("random", true);
+            eventDef.invert = eventDefJson.optBoolean("invert", false);
             
             eventDef.minRepChange = (float)eventDefJson.getDouble("minRepChange");
             eventDef.maxRepChange = (float)eventDefJson.getDouble("maxRepChange");
@@ -575,15 +563,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     chance *= mult;
                     chance *= params.positiveChanceMult;
                 }
-
-                if (dominance > DOMINANCE_MIN)
-                {
-                    float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
-                    if (isNegative) chance += (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
-                    else chance += (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
-                }
-                if (chance <= 0) continue;
             }
+            if (dominance > DOMINANCE_MIN)
+            {
+                float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
+                if (isNegative) chance += (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
+                else chance += (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
+            }
+            if (chance <= 0) continue;
             
             validEvents.add(new Pair<>(eventDef, chance));
             if (isNegative) sumChancesNegative += chance;
@@ -624,30 +611,36 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      */
     public static DiplomacyIntel createDiplomacyEvent(
             FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params)
-    {        
-        String factionId1 = faction1.getId();
-        String factionId2 = faction2.getId();
-        
-        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
-        List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId1);
+    {
+        DiplomacyEventDef event;
+        if (eventId != null) event = eventDefsById.get(eventId);
+        else event = getManager().pickDiplomacyEvent(faction1, faction2, params);
+
         String type = "either";
         if (params != null) {
             if (params.onlyPositive) type = "positive";
             if (params.onlyNegative) type = "negative";
-        }        
-        
+        }
+
         log.info(String.format("Creating %s diplomacy event for factions %s, %s", type, faction1.getDisplayName(), faction2.getDisplayName()));
-        
-        DiplomacyEventDef event;
-        if (eventId != null) event = eventDefsById.get(eventId);
-        else event = getManager().pickDiplomacyEvent(faction1, faction2, params);
-        
         if (event == null)
         {
             log.info("No event available");
             return null;
         }
         log.info("Trying event: " + event.name);
+
+        if (event.invert) {
+            FactionAPI temp = faction1;
+            faction1 = faction2;
+            faction2 = temp;
+        }
+
+        String factionId1 = faction1.getId();
+        String factionId2 = faction2.getId();
+        
+        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
+        List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId1);
         for (MarketAPI market:markets)
         {
             marketPicker.add(market);
@@ -1480,6 +1473,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         public String id;
         public String desc;
         public boolean random = true;
+        public boolean invert;
         public RepLevel minRepLevelToOccur;
         public RepLevel maxRepLevelToOccur;
         public RepLevel repEnsureAtWorst;

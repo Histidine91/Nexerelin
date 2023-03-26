@@ -18,6 +18,7 @@
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
 			"allowNonPiratesToPirates":true,
+			"invert":false,	# if true, swaps faction 1 and 2 internally (mostly for ensuring a "do-er" that makes sense with strategic AI)
 			"desc":"$OtherFaction authorities have sent a charitable aid package to $faction citizens $onOrAt $market. Local officials have expressed their gratitude."
 		},
 		{
@@ -90,6 +91,7 @@
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
 			"allowPiratesToPirates":true,
+			"invert":true,
 			"desc":"Police $onOrAt $market have extradited a wanted $otherFaction criminal. Law enforcement officials have praised the cooperation of $faction authorities."
 		},
 		{
@@ -104,6 +106,7 @@
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true,
+			"invert":true,
 			"desc":"$TheFaction and $theOtherFaction have held a prisoner exchange $onOrAt $market. The honorable conduct of the two combatants has raised the prospect of peace talks in the future."
 		},
 		{
@@ -166,6 +169,7 @@
 			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
 			"allowPiratesToPirates":true,
+			"invert":true,
 			"desc":"$Faction officials have accused $theOtherFaction of funding opposition groups $onOrAt $market. The resulting dispute has soured relations between the two factions."
 		},
 		{
@@ -188,6 +192,7 @@
 			"repLimit":"inhospitable",
 			"allowPiratesToPirates":true,
 			"chance":1.2,
+			"invert":true,
 			"desc":"$Faction authorities are refusing to turn over an escaped $otherFaction criminal $onOrAt $market, despite official protests through diplomatic channels."
 		},
 		{
@@ -203,6 +208,7 @@
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true,
 			"chance":1.2,
+			"invert":true,
 			"desc":"Rumors have surfaced that $faction counter-intelligence has broken up a spy ring operated by $theOtherFaction. Although official figures remain silent on the matter, it's clear that diplomatic relations are suffering."
 		},
 		{
@@ -216,6 +222,7 @@
 			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
 			"chance":1,
+			"invert":true,
 			"desc":"$Faction officials announce discovering evidence of an $otherFaction-backed terrorist plot $onOrAt $market. The $otherFaction leadership denies any involvement."
 		},
 		{
@@ -240,6 +247,7 @@
 			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
 			"chance":1,
+			"invert":true,
 			"desc":"$TheFaction has accused $theOtherFaction of sponsoring privateers to attack its shipping. A formal military response has been considered."
 		},
 		{
@@ -277,6 +285,7 @@
 			"repEnsureAtBest":"hostile",
 			"minRepChange":-0.4,
 			"maxRepChange":-0.3,
+			"invert":true,
 			"chance":0,	# only occurs when DiplomacyManager calls it directly
 			"desc":"$TheFaction announces initiation of hostilities against $theOtherFaction!"
 		},
@@ -289,6 +298,7 @@
 			"minRepChange":0.3,
 			"maxRepChange":0.45,
 			"repLimit":"neutral",
+			"invert":true,
 			"chance":0,	# only occurs when DiplomacyManager calls it directly
 			"desc":"Weary of the fighting, $theFaction and $theOtherFaction have agreed to a cessation of hostilities. Nevertheless, relations remain tense."
 		},
@@ -301,6 +311,7 @@
 			"minRepChange":0.5,
 			"maxRepChange":0.65,
 			"repLimit":"favorable",
+			"invert":true,
 			"chance":0,	# only occurs when DiplomacyManager calls it directly
 			"desc":"$TheFaction and $theOtherFaction have set aside their differences and signed a lasting peace treaty."
 		},
@@ -327,6 +338,7 @@
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
 			"allowPiratesToNonPirates":true,
 			"chance":1.5,
+			"invert":true,
 			"desc":"$OtherFaction adherents $onOrAt $market are facing social and state penalties for their faith, ranging from ostracism to beatings and confiscation of property. The $otherFaction believers have made their anger at $theFaction known."
 		},
 		{
@@ -396,10 +408,11 @@
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable",
 			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan",
-				"ori","rori","tiandong","ptech","tiandong"],
+				"ori","rori","tiandong","ptech","scalartech"],
 			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan",
-				"ori","rori","tiandong","ptech","tiandong"],
+				"ori","rori","tiandong","ptech","scalartech"],
 			"chance":1.2,
+			"invert":true,
 			"desc":"After $theOtherFaction won a major defense contract, competitor $Faction issued a press release alleging the use of bribery and kickbacks. $OtherFaction and client officials claim the process was entirely above board."
 		},
 	]
