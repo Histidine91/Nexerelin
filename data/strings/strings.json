@@ -2168,7 +2168,8 @@
 		
 		"intelHeaderTrade":"Trade impacts",
 		"intelDescTradeGovt":"You supplied fresh troops and/or materiel to government forces $onOrAt $market during the rebellion. This has earned you a positive reputation with $theGovtFaction, less so with the $rebelFaction rebels.",
-		"intelDescTradeRebels":"You supplied fresh troops and/or materiel to the $rebelFaction rebels $onOrAt $market during the rebellion. This interference has not gone unnoticed by $govtFaction authorities.",
+		"intelDescTradeGovtPrev":"You supplied fresh troops and/or materiel to government forces $onOrAt $market during the rebellion. Unfortunately the government faction in question is no longer in power to appreciate your assistance, while the $rebelFaction rebels see and remember.",
+		"intelDescTradeRebels":"You supplied fresh troops and/or materiel to the $rebelFaction rebels $onOrAt $market during the rebellion. This interference has not gone unnoticed by $govtFaction authorities, if they were in power at the time of the trade.",
 		
 		"intelBulletPrep":"In preparation",
 		"intelBulletStart":"Rebellion launched",

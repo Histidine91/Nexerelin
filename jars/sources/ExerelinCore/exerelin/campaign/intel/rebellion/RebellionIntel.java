@@ -1,15 +1,8 @@
 package exerelin.campaign.intel.rebellion;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -19,44 +12,32 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.*;
-import static exerelin.campaign.SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.utilities.*;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static exerelin.campaign.SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER;
+import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 
 public class RebellionIntel extends BaseIntelPlugin implements InvasionListener, 
 		FleetEventListener {
@@ -105,6 +86,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected float rebelStrength = 1;
 	protected float govtTradePoints = 0;
 	protected float rebelTradePoints = 0;
+	protected float govtTradePointsWithCurrentGovt = 0;	// reset if government changes
+	protected float rebelTradePointsWithCurrentGovt = 0;	// reset if government changes
 	
 	protected SuppressionFleetData suppressionFleet = null;
 	protected MarketAPI suppressionFleetSource = null;
@@ -557,24 +540,30 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (result == RebellionResult.OTHER) return;
 		
 		float rebelTradePointsFloored = Math.max(rebelTradePoints, 0);
+		float rebelTradePointsCurrGovtFloored = Math.max(rebelTradePointsWithCurrentGovt, 0);
 		float govtTradePointsFloored = Math.max(govtTradePoints, 0);
+		float govtTradePointsCurrGovtFloored = Math.max(govtTradePointsWithCurrentGovt, 0);
 		
 		float netRebelTradePoints = rebelTradePointsFloored - govtTradePointsFloored;
-		float rep = (float)Math.sqrt(netRebelTradePoints) * market.getSize() * 0.01f * REP_MULT;
-		if (rep > MAX_REP) rep = MAX_REP;
-		
-		if (netRebelTradePoints > 0)
-		{
-			debugMessage("  Rebel trade rep: " + rep);
-			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebelFaction, rep, null, null);
-			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govtFaction, -rep*1.5f, null, null);
-		}
-		else if (netRebelTradePoints < 0)
-		{
-			debugMessage("  Government trade rep: " + rep);
-			repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebelFaction, -rep*1.5f, null, null);
-			repResultGovt = NexUtilsReputation.adjustPlayerReputation(govtFaction, rep, null, null);
-		}
+		float netRebelTradePointsCurrGovt = rebelTradePointsCurrGovtFloored - govtTradePointsCurrGovtFloored;
+
+		// rebels know about all trade, govt only knows the trade since they took power
+
+		float rebelRep = (float)Math.sqrt(Math.abs(netRebelTradePoints)) * market.getSize() * 0.01f * REP_MULT;
+		if (rebelRep > MAX_REP) rebelRep = MAX_REP;
+		if (netRebelTradePoints < 0) rebelRep = -rebelRep;
+		if (rebelRep < 0) rebelRep *= 1.5f;
+
+		float govtRep = (float)Math.sqrt(Math.abs(netRebelTradePointsCurrGovt)) * market.getSize() * 0.01f * REP_MULT;
+		if (govtRep > MAX_REP) govtRep = MAX_REP;
+		if (netRebelTradePointsCurrGovt > 0) govtRep = -govtRep;	// note the inequality runs in the opposite direction here
+		if (govtRep < 0) govtRep *= 1.5f;
+
+		debugMessage("  Rebel trade rep: " + rebelRep);
+		repResultRebel = NexUtilsReputation.adjustPlayerReputation(rebelFaction, rebelRep, null, null);
+
+		debugMessage("  Government trade rep: " + govtRep);
+		repResultGovt = NexUtilsReputation.adjustPlayerReputation(govtFaction, govtRep, null, null);
 	}
 	
 	@Override
@@ -619,6 +608,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (result == null)
 		{
 			govtFaction = newOwner;
+		}
+
+		if (newOwner != oldOwner) {
+			govtTradePointsWithCurrentGovt = 0;
+			rebelTradePointsWithCurrentGovt = 0;
 		}
 	}
 	
@@ -974,17 +968,25 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		{
 			points *= 2f;
 			rebelStrength += points;
-			if (addTradePoints) rebelTradePoints += points;
+			if (addTradePoints) {
+				rebelTradePoints += points;
+				rebelTradePointsWithCurrentGovt += points;
+			}
 			if (rebelStrength < 0) rebelStrength = 0;
 			if (rebelTradePoints < 0) rebelTradePoints = 0;
+			if (rebelTradePointsWithCurrentGovt < 0) rebelTradePointsWithCurrentGovt = 0;
 		}
 		else
 		{
 			points *= 0.5f;
 			govtStrength += points;
-			if (addTradePoints) govtTradePoints += points;
+			if (addTradePoints) {
+				govtTradePoints += points;
+				govtTradePointsWithCurrentGovt += points;
+			}
 			if (govtStrength < 0) govtStrength = 0;
 			if (govtTradePoints < 0) govtTradePoints = 0;
+			if (govtTradePointsWithCurrentGovt < 0) govtTradePointsWithCurrentGovt = 0;
 		}
 
 		printTransactionPoints(points, rebels);
@@ -1213,25 +1215,27 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			// reputation from trade
 			if (repResultGovt != null && repResultRebel != null) {
 				info.addSectionHeading(getString("intelHeaderTrade"), Alignment.MID, opad);
-				
-				float netForGov = repResultGovt.delta - repResultRebel.delta;
-				id = netForGov >= 0 ? "intelDescTradeGovt" : "intelDescTradeRebels";
-				str = getString(id);
-				str = StringHelper.substituteTokens(str, sub, true);
-				label = info.addPara(str, opad);
-				if (netForGov >= 0) {
+
+				if (govtTradePoints > 0) {
+					str = getString(govtTradePointsWithCurrentGovt > 0 ? "intelDescTradeGovt" : "intelDescTradeGovtPrev");
+					str = StringHelper.substituteTokens(str, sub, true);
+					label = info.addPara(str, opad);
 					label.setHighlight(govtName, rebName);
 					label.setHighlightColors(govtColor, rebColor);
-				} else {
+				}
+				if (rebelTradePoints > 0) {
+					str = getString("intelDescTradeRebels");
+					str = StringHelper.substituteTokens(str, sub, true);
+					label = info.addPara(str, opad);
 					label.setHighlight(rebName, govtName);
 					label.setHighlightColors(rebColor, govtColor);
 				}
 				
 				bullet(info);
 				CoreReputationPlugin.addAdjustmentMessage(repResultGovt.delta, govtFaction, null, 
-						null, null, info, Misc.getTextColor(), false, 3);
+						null, null, info, Misc.getTextColor(), false, opad);
 				CoreReputationPlugin.addAdjustmentMessage(repResultRebel.delta, rebelFaction, null, 
-						null, null, info, Misc.getTextColor(), false, 3);
+						null, null, info, Misc.getTextColor(), false, pad);
 				unindent(info);
 			}
 			return;
