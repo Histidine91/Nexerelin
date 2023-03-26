@@ -16,14 +16,14 @@ import exerelin.utilities.NexUtilsReputation;
 
 public class Nex_Commission extends Commission {
 	
-	// replace the "faction issues commissions" check with "playable faction" check
+	// adds "playable faction" check to the "faction issues commissions" check
 	@Override
 	protected boolean personCanGiveCommission() {
 		if (person == null) return false;
 		if (person.getFaction().isPlayerFaction()) return false;
 		
 		NexFactionConfig conf = NexConfig.getFactionConfig(person.getFaction().getId());
-		if (!conf.playableFaction) return false;
+		if (!conf.playableFaction && !offersCommissions) return false;
 		
 		Alliance ally = AllianceManager.getPlayerAlliance(false);
 		if (ally != null) return false;
