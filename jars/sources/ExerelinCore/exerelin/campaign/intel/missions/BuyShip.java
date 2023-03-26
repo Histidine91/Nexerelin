@@ -2,9 +2,6 @@ package exerelin.campaign.intel.missions;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-
-import java.util.*;
-
 import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -26,6 +23,8 @@ import exerelin.campaign.intel.missions.BuyShipRule.*;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
+
+import java.util.*;
 
 @Log4j
 public class BuyShip extends HubMissionWithBarEvent {
@@ -240,7 +239,14 @@ public class BuyShip extends HubMissionWithBarEvent {
 			if (tries > 0) loadRules();
 			for (BuyShipRule currRule : new ArrayList<>(rules)) {
 				List<FleetMemberAPI> fromThisRule = currRule.getShipsMeetingRule(player);
-				if (fromThisRule.isEmpty()) continue;
+
+				// nothing eligible from this rule, it has failed
+				if (fromThisRule.isEmpty()) {
+					if (pruneRules) {
+						rules.remove(currRule);
+					}
+					continue;
+				}
 
 				List<FleetMemberAPI> intersect = NexUtils.getCollectionIntersection(bestList, fromThisRule);
 

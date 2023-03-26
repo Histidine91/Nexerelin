@@ -13,16 +13,18 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import static exerelin.campaign.intel.missions.BuyShip.getString;
 import exerelin.utilities.StringHelper;
-
-import java.awt.*;
-import java.util.*;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static exerelin.campaign.intel.missions.BuyShip.getString;
 
 @Log4j
 public abstract class BuyShipRule {
