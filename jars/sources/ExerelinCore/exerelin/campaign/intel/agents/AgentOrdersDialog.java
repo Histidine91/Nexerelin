@@ -1,14 +1,7 @@
 package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
-import com.fs.starfarer.api.campaign.IndustryPickerListener;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -43,24 +36,13 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.agents.AgentIntel.Specialization;
 import exerelin.campaign.intel.agents.CovertActionIntel.StoryPointUse;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 public class AgentOrdersDialog implements InteractionDialogPlugin
 {
@@ -197,7 +179,6 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 					if (commodity.isPersonnel()) continue;
 					if (commodity.getAvailable() < 2) continue;
 					targets.add(commodity.getId());
-					//log.info("Adding commodity target: " + commodity.getId());
 				}
 				break;
 			case CovertActionType.SABOTAGE_INDUSTRY:
@@ -653,7 +634,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	}
 
 	protected void populateSPOptions() {
-		optionsList.clear();
+		//optionsList.clear();	// not sure why this is here, shouldn't be needed
 
 		options.addOption(getString("dialogSPOptionSuccessText"), Menu.CONFIRM_SP_SUCCESS);
 		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_SUCCESS, "agentOrderSuccess", "ui_char_spent_story_point_combat", null);
@@ -661,8 +642,10 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		options.addOption(getString("dialogSPOptionDetectionText"), Menu.CONFIRM_SP_DETECTION);
 		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_DETECTION, "agentOrderDetection", "ui_char_spent_story_point_combat", null);
 
-		options.addOption(getString("dialogSPOptionsText"), Menu.CONFIRM_SP_BOTH);
-		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", null);
+		if (action.getDef().detectionChance > 0) {
+			options.addOption(getString("dialogSPOptionsText"), Menu.CONFIRM_SP_BOTH);
+			SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", null);
+		}
 
 		addBackOption();
 	}
