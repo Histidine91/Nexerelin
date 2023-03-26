@@ -1,8 +1,6 @@
 package exerelin.campaign.ai.action;
 
-import com.fs.starfarer.api.campaign.FactionAPI;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.utilities.NexConfig;
@@ -29,17 +27,11 @@ public class MakePeaceAction extends DiplomacyAction {
     @Override
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
-        FactionAPI faction = concern.getFaction();
-        if (faction != null) {
-            DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
-            float decisionRating = brain.getWarDecisionRating(faction.getId());
-            priority.modifyFlat("targetWarDecisionRating", decisionRating, StrategicAI.getString("statWarDecisionRating", true));
-        }
     }
 
     @Override
     public boolean canUseForConcern(StrategicConcern concern) {
-        if (!concern.getDef().hasTag("canDeclareWar")) return false;
+        if (!concern.getDef().hasTag("canMakePeace")) return false;
         if (concern.getFaction() != null && concern.getFaction().isHostileTo(ai.getFaction())) {
             return false;
         }

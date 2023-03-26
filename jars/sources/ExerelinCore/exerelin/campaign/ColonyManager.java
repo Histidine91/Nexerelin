@@ -678,6 +678,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	protected void removeItemFromQueue(QueuedIndustry toRemove, LinkedList<QueuedIndustry> queue) {
 		queue.remove(toRemove);
 	}
+
+	public boolean removeQueuedIndustry(String industryId, MarketAPI market) {
+		LinkedList<QueuedIndustry> queue = getConstructionQueue(market);
+		if (queue == null) return false;
+		for (QueuedIndustry qi : queue) {
+			if (qi.industry.equals(industryId)) {
+				removeItemFromQueue(qi, queue);
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public void queueIndustry(MarketAPI market, String industry, QueueType type) {
 		if (!npcConstructionQueues.containsKey(market))

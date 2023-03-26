@@ -314,7 +314,7 @@ public class StrategicAI extends BaseIntelPlugin {
 
 	@Override
 	public IntelSortTier getSortTier() {
-		return IntelSortTier.TIER_1;
+		return IntelSortTier.TIER_5;
 	}
 	
 	@Override

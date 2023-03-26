@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+import exerelin.campaign.ColonyManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.BaseStrategicAction;
 import exerelin.campaign.ai.action.StrategicAction;
@@ -226,5 +227,11 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
     public void setStrategicAction(StrategicAction action) { }
 
     @Override
-    public void abortStrategicAction() {}
+    public void abortStrategicAction() {
+        if (industryUnderConstruction != null) {
+            industryUnderConstruction.getMarket().removeIndustry(industryUnderConstruction.getId(), null, false);
+        } else {
+            ColonyManager.getManager().removeQueuedIndustry(industryId, market);
+        }
+    }
 }

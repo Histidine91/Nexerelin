@@ -78,7 +78,7 @@
 			"desc":"Our people tire of the constant fighting. We should seek to make peace with one or more of our enemies.",
 			"classPath":"exerelin.campaign.ai.concern.WarWearinessConcern",
 			"icon":"graphics/exerelin/icons/intel/peace.png",
-			"tags":["diplomacy", "canMakePeace", "trait_pacifist", "trait_weak-willed"],
+			"tags":["diplomacy", "canMakePeace", "trait_pacifist", "trait_weak-willed", "!trait_stalwart"],
 			"module":DIPLOMATIC
 		},
 		"vulnerableFaction":{

@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -31,6 +32,10 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
     @Override
     public boolean generate() {
+        // monopolist only
+        if (!DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.MONOPOLIST))
+            return false;
+
         Set alreadyConcerned = getExistingConcernItems();
         if (alreadyConcerned.size() >= MAX_SIMULTANEOUS_CONCERNS) return false;
         String factionId = ai.getFactionId();

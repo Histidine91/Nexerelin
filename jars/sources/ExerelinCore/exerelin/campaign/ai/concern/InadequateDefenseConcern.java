@@ -73,7 +73,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
             end();
             return;
         }
-        priority.modifyFlat("defenseAdjustedValue", valueMod,
+        priority.modifyFlat("defenseAdjustedValue", valueMod * 2,
                 StrategicAI.getString("statDefenseAdjustedValue", true));
         super.update();
     }

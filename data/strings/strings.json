@@ -2413,6 +2413,8 @@
 		"statRage":"current pirate rage",
 		"statAlignment":"alignment",
 		"statTrait":"trait",
+		"statDiplomacyChancePositive":"positive diplomacy chance",
+		"statDiplomacyChanceNegative":"negative diplomacy chance",
 		"statFleetPool":"fleet pool proportion",
 		"statPriorityOverTime":"priority over time",
 		"statDispositionPositive":"high disposition",
@@ -2800,7 +2802,7 @@
 		"name_allowNPCSatBomb":"Allow NPC saturation bombardments",
 		"tooltip_allowNPCSatBomb":"Does not affect territorial bombardments of player colonies in claimed systems.",
 		"name_permaHateFromPlayerSatBomb":"Permanent hatred from saturation bombardment",
-		"tooltip_permaHateFromPlayerSatBomb":"If a saturation bombardment makes a faction immediately hostile to player, the player's maximum reputation with this faction will also be permanently reduced by this amount (multiplied by 100). Amount is doubled for the faction targeted by the bombardment.",
+		"tooltip_permaHateFromPlayerSatBomb":"If a saturation bombardment makes a faction immediately hostile to player, the player's maximum reputation with this faction will also be [permanently] reduced by this amount (multiplied by 100). Amount is doubled for the faction targeted by the bombardment.",
 		
 		"name_enableRevengeFleets":"Enable vengeance fleets",
 		"tooltip_enableRevengeFleets":"0 = off. 1 = Starfarer mode only. 2 = always (point generation halved on non-Starfarer).",
