@@ -5,7 +5,7 @@
 			"desc":"We must take back our rightful territory of $market (size $size) from the vile $faction!",
 			#"icon":"",	# if blank or unspecified, will default to faction icon (more generally, it uses whatever icon the code says to use)
 			"classPath":"exerelin.campaign.ai.concern.RevanchismConcern",
-			"tags":["military", "diplomacy", "market", "canInvade", "canDeclareWar", "trait_irredentist"],
+			"tags":["military", "market", "canInvade", "canDeclareWar", "trait_irredentist"],
 			"module":MILITARY	# which AI module handles this concern, mostly for organizational purposes
 		},
 		"vulnerableEnemyTarget":{
@@ -136,23 +136,25 @@
 		"diplomacyPositive":{
 			"name":"Diplomatic Action (Positive)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
+			"cooldown":60,	# longer since it's instant action
 			"tags":["diplomacy", "canDiplomacy", "friendly"],
 		},
 		"diplomacyNegative":{
 			"name":"Diplomatic Action (Negative)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
+			"cooldown":60,	# longer since it's instant action
 			"tags":["diplomacy", "canDiplomacy", "unfriendly"],
 		},
 		"declareWar":{
 			"name":"Declare War",
 			"classPath":"exerelin.campaign.ai.action.DeclareWarAction",
 			"cooldown":0,
-			"tags":["military", "diplomacy", "canDiplomacy", "aggressive", "unfriendly"],
+			"tags":["military", "diplomacy", "canDeclareWar", "aggressive", "unfriendly"],
 		},
 		"makePeace":{
 			"name":"Make Peace",
 			"classPath":"exerelin.campaign.ai.action.MakePeaceAction",
-			"tags":["diplomacy", "canDiplomacy", "friendly"],
+			"tags":["diplomacy", "canMakePeace", "friendly"],
 		},
 		
 		"agentRaiseRelations":{

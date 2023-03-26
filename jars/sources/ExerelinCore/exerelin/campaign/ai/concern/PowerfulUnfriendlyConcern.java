@@ -11,6 +11,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.utilities.NexUtilsFaction;
 import lombok.extern.log4j.Log4j;
 
 import java.util.Set;
@@ -80,8 +81,9 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
     protected boolean shouldBeConcernedAbout(FactionAPI faction, float ourStrength, float theirStrength) {
         FactionAPI us = ai.getFaction();
         if (faction.isHostileTo(us)) return false;  // already at war anyway
+        if (NexUtilsFaction.isPirateFaction(faction.getId())) return false; // no need to befriend pirates
 
-        RepLevel disregardAtRep = RepLevel.FAVORABLE;
+        RepLevel disregardAtRep = RepLevel.NEUTRAL;
         if (DiplomacyTraits.hasTrait(us.getId(), DiplomacyTraits.TraitIds.PARANOID)) {
             disregardAtRep = disregardAtRep.getOneBetter();
         }

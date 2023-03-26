@@ -36,10 +36,8 @@ public class BuildEconAction extends BuildIndustryAction {
     protected String pickIndustry(MarketAPI market) {
         {
             String fromConcern = null;
-            if (concern instanceof HasIndustryTarget) {
-                fromConcern = ((HasIndustryTarget)concern).getTargetIndustryId();
-                if (fromConcern == null)
-                    fromConcern = ((HasIndustryTarget)concern).getTargetIndustry().getId();
+            if (concern instanceof HasIndustryToBuild) {
+                fromConcern = ((HasIndustryToBuild)concern).getIndustryIdToBuild();
             }
             if (fromConcern != null) return fromConcern;
         }
@@ -107,6 +105,6 @@ public class BuildEconAction extends BuildIndustryAction {
     public boolean canUseForConcern(StrategicConcern concern) {
         if (!concern.getDef().hasTag("canBuildEcon")) return false;
 
-        return concern instanceof HasCommodityTarget || concern instanceof HasIndustryTarget;
+        return concern instanceof HasCommodityTarget || concern instanceof HasIndustryToBuild;
     }
 }

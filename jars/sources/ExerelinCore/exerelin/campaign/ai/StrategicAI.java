@@ -13,15 +13,14 @@ import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * High-level strategy AI for factions.
@@ -348,10 +347,11 @@ public class StrategicAI extends BaseIntelPlugin {
 		return ai;
 	}
 
-	public static void addAIIfNeeded(String factionId) {
+	public static StrategicAI addAIIfNeeded(String factionId) {
 		if (getAI(factionId) == null) {
-			addIntel(factionId);
+			return addIntel(factionId);
 		}
+		return null;
 	}
 
 	public static void removeAI(String factionId) {
@@ -363,10 +363,17 @@ public class StrategicAI extends BaseIntelPlugin {
 	}
 
 	public static void addAIsIfNeeded() {
+		Random random = new Random(NexUtils.getStartingSeed());
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(Factions.PLAYER)) continue;
 			if (NexConfig.getFactionConfig(factionId).pirateFaction) continue;
-			addAIIfNeeded(factionId);
+			StrategicAI ai = addAIIfNeeded(factionId);
+
+			// stagger the intervals so the strategy meetings aren't all taking place at the same time
+			if (ai != null) {
+				float increment = random.nextFloat() * 0.5f;
+				ai.interval.advance(ai.interval.getIntervalDuration() * increment);
+			}
 		}
 	}
 

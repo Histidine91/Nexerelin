@@ -40,7 +40,7 @@ public class BaseStrikeAction extends OffensiveFleetAction {
                 base = LuddicPathCellsIntel.getClosestBase(market);
                 if (base == null) continue;
 
-                targetPicker.add(market);
+                targetPicker.add(base.getMarket());
             }
         }
 

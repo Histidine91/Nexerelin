@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.utilities.NexUtils;
@@ -57,6 +58,10 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
             for (int index2 = index1 + 1; index2 < adversaries.size(); index2++) {
                 FactionAPI faction2 = adversaries.get(index2).one;
                 float str2 = adversaries.get(index2).two;
+
+                // perma-allied, why bother
+                if (AllianceManager.areFactionsPermaAllied(faction1.getId(), faction2.getId()))
+                    continue;
 
                 Set<FactionAPI> set = new HashSet<>();
                 set.add(faction1);

@@ -32,7 +32,8 @@ public class SAIConstants {
 
     public static int ACTIONS_PER_MEETING = 2;
     public static int MAX_SIMULTANEOUS_ACTIONS = 10;    // todo?
-    public static float MIN_ACTION_PRIORITY_TO_USE = 30;
+    public static float MIN_CONCERN_PRIORITY_TO_ACT = 75;
+    public static float MIN_ACTION_PRIORITY_TO_USE = 75;
     public static float DEFAULT_ACTION_COOLDOWN = 30;
     public static float DEFAULT_ANTI_REPETITION_VALUE = 25;
     public static float ANTI_REPETITION_DECAY_PER_DAY = 0.1f;

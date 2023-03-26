@@ -2,13 +2,7 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignUIAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -23,12 +17,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.StringHelper;
-import org.apache.log4j.Level;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,17 +25,8 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AllianceManager  extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(AllianceManager.class);
@@ -957,6 +937,14 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance2 == null) return false;
         
         return alliance1 == alliance2;
+    }
+
+    public static boolean areFactionsPermaAllied(String factionId1, String factionId2)
+    {
+        if (factionId1.equals(factionId2)) return true;
+        if (!areFactionsAllied(factionId1, factionId2)) return false;
+        Alliance all = getFactionAlliance(factionId1);
+        return all.isPermaMember(factionId1) && all.isPermaMember(factionId2);
     }
     
     public static void renameAlliance(Alliance alliance, String newName)

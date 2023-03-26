@@ -92,6 +92,7 @@ public class ExecutiveAIModule extends StrategicAIModule {
             if (concern.isEnded()) continue;
             if (concern.getCurrentAction() != null && !concern.getCurrentAction().isEnded()) continue;
             if (concern.getActionCooldown() > 0) continue;
+            if (concern.getPriorityFloat() < SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT) continue;
 
             StrategicAction bestAction = concern.pickAction();
             if (bestAction == null) continue;

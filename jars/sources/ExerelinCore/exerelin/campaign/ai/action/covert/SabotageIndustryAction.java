@@ -36,6 +36,7 @@ public class SabotageIndustryAction extends CovertAction {
         if (industry == null) return false;
 
         if (market == null) market = industry.getMarket();
+        if (market == null) return false;
 
         CovertActionIntel intel = new SabotageIndustry(null, market, industry, getAgentFaction(), getTargetFaction(),
                 false, null);

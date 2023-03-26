@@ -32,13 +32,12 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
             if (!wantToBefriend(faction)) continue;
 
             float weight = theirStrength;
-            weight *= 20;
             if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) continue;
 
             picker.add(faction, weight);
         }
         faction = picker.pick();
-        priority.modifyFlat("power", picker.getWeight(faction)/3, StrategicAI.getString("statFactionPower", true));
+        priority.modifyFlat("power", picker.getWeight(faction), StrategicAI.getString("statFactionPower", true));
         reapplyPriorityModifiers();
 
         return faction != null;
@@ -53,12 +52,12 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
             return;
         }
 
-        float weight = theirStrength *= 20;
+        float weight = theirStrength;
         if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) {
             end();
             return;
         }
-        priority.modifyFlat("power", theirStrength/3, StrategicAI.getString("statFactionPower", true));
+        priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
         super.update();
     }
 

@@ -194,7 +194,13 @@ public abstract class BaseStrategicAction implements StrategicAction {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public StrategicDefManager.StrategicActionDef getDef() {
         return StrategicDefManager.getActionDef(id);
     }
+
 }
