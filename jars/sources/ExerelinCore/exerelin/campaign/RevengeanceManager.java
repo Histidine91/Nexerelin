@@ -1,14 +1,7 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
@@ -22,25 +15,16 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.econ.FleetPoolManager.RequisitionParams;
-import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
-import exerelin.utilities.NexConfig;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel.VengeanceDef;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.NexUtilsMath;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.util.*;
 
 /**
  * Handles SS+ vengeance fleets and Nexerelin counter-invasion fleets
@@ -406,7 +390,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			// counter-invasions draw on the same points needed for invasions, but at half the normal rate
 			float cost = InvasionFleetManager.getInvasionPointCost(intel);
 			cost *= INVASION_POINT_COST_MULTIPLIER;
-			InvasionFleetManager.getManager().modifySpawnCounter(revengeFactionId, -cost);
+			InvasionFleetManager.getManager().modifySpawnCounterV2(revengeFactionId, -cost);
 		}
 		
 		return true;
@@ -434,7 +418,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 				// counter-invasions draw on the same points needed for invasions, but at half the normal rate
 				float cost = InvasionFleetManager.getInvasionPointCost(intel);
 				cost *= INVASION_POINT_COST_MULTIPLIER;
-				InvasionFleetManager.getManager().modifySpawnCounter(factionId, -cost);
+				InvasionFleetManager.getManager().modifySpawnCounterV2(factionId, -cost);
 				log.info("Dispatching retaliatiory sat bomb fleet");
 			}
 		}

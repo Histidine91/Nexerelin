@@ -67,13 +67,21 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
         if (commodityId != null) {
             required = Math.round(picker.getWeight(commodityId));
             float prio = required * 10;
-            if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
             priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
             reapplyPriorityModifiers();
             return true;
         }
 
         return false;
+    }
+
+    @Override
+    public void reapplyPriorityModifiers() {
+        super.reapplyPriorityModifiers();
+
+        if (MULTIPLIERS.containsKey(commodityId)) {
+            priority.modifyMult("commodityType", MULTIPLIERS.get(commodityId), StrategicAI.getString("statCommodityType", true));
+        }
     }
 
     protected boolean isRelyOnImports(String commodityId) {
@@ -83,7 +91,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
             return false;
         }
         int production = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
-        if (production > imports) return false;
+        if (production >= imports) return false;
 
         return true;
     }
@@ -97,7 +105,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
             return;
         }
         int production = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
-        if (production > imports) {
+        if (production >= imports) {
             end();
             return;
         }

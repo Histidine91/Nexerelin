@@ -17,6 +17,7 @@ import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsMarket;
@@ -91,9 +92,6 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         }
 
         SAIUtils.applyPriorityModifierForTraits(def.tags, ai.getFactionId(), priority);
-        if (this instanceof HostileInSharedSystemConcern) {
-            log.info("Has trait " + def.hasTag("trait_paranoid"));
-        }
     }
 
     @Override
@@ -176,6 +174,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             action.setConcern(this);
 
             // check if action is usable
+            if (Math.random() < action.getDef().chance) continue;
             if (!action.isValid()) continue;
             if (!this.canTakeAction(action)) continue;
             if (faction != null) {
@@ -187,7 +186,9 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
             action.updatePriority();
             float priority = action.getPriorityFloat();
-            log.info(String.format("  Action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));
+            if (ExerelinModPlugin.isNexDev) {
+                log.info(String.format("  Action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));
+            }
             if (priority < SAIConstants.MIN_ACTION_PRIORITY_TO_USE) continue;
 
             if (priority > bestPrio) {

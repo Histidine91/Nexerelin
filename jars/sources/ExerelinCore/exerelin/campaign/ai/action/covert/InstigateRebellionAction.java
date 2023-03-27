@@ -11,11 +11,26 @@ public class InstigateRebellionAction extends CovertAction {
 
     @Override
     public boolean generate() {
+        if (concern.getMarket() != null && !CovertOpsManager.canInstigateRebellion(concern.getMarket())) {
+            return false;
+        }
+
         MarketAPI target = pickTargetMarket();
         if (target == null) return false;
+
+        if (isInstigateActionOngoing(target)) return false;
+
         CovertActionIntel intel = new InstigateRebellion(null, target, getAgentFaction(), getTargetFaction(),
                 false, null);
         return beginAction(intel);
+    }
+
+    protected boolean isInstigateActionOngoing(MarketAPI market) {
+        for (CovertActionIntel intel : CovertOpsManager.getManager().getOngoingCovertActionsOfType(InstigateRebellion.class)) {
+            InstigateRebellion ir = (InstigateRebellion)intel;
+            if (ir.getMarket() == market) return true;
+        }
+        return false;
     }
 
     @Override

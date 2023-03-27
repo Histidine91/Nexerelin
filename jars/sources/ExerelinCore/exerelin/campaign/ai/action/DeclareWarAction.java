@@ -47,6 +47,8 @@ public class DeclareWarAction extends DiplomacyAction {
 
     @Override
     public boolean isValid() {
-        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy && !DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST);
+        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy
+                && !DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST)
+                && DiplomacyManager.getWarWeariness(ai.getFactionId(), true) <= DiplomacyBrain.MAX_WEARINESS_FOR_WAR;
     }
 }

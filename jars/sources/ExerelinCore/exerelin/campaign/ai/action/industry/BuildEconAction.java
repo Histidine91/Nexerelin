@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Build an economy industry. Concerns that want to use this action must implement at least one of {@code HasIndustryTarget} or {@code HasCommodityTarget}.
+ * Build an economy industry. Concerns that want to use this action must implement at least one of {@code HasIndustryToBuild} or {@code HasCommodityTarget}.
  */
 @Log4j
 public class BuildEconAction extends BuildIndustryAction {

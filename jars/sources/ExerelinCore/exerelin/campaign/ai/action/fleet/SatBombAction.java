@@ -28,7 +28,7 @@ public class SatBombAction extends OffensiveFleetAction {
         if (!NexConfig.allowNPCSatBomb) return false;
         if (Tuning.getDaysSinceStart() < NexConfig.invasionGracePeriod) return false;
         if (!InvasionFleetManager.canSatBomb(ai.getFaction(), concern.getFaction())) return false;
-        if (InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
+        if (status == null && InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
             return false;
 
         return true;

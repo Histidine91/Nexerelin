@@ -2405,11 +2405,13 @@
 		"intelHeader_executive":"Executive status",
 		
 		"statBase":"base value",
-		"statImportVolume":"import volume",
 		"statValue":"value",
 		"statDefenseAdjustedValue":"value/defense",
+		"statImportVolume":"import volume",
+		"statCommodityType":"commodity type",
 		"statFactionPower":"faction power",
 		"statCompetingShare":"competitor's market share",
+		"statExistingMarketShare":"existing market share",
 		"statRage":"current pirate rage",
 		"statAlignment":"alignment",
 		"statTrait":"trait",
@@ -2422,7 +2424,6 @@
 		"statWarDecisionRating":"war decision rating vs. target",
 		"statAntiRepetition":"recently used this action",
 		"statCannotBeSolved":"concern cannot be solved with this action",
-		"statExistingMarketShare":"existing market share",
 		
 		"descCooldown":"Action cooldown: %s day(s)",
 		"descNoAction":"no action",

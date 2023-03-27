@@ -52,6 +52,7 @@ public class StrategicDefManager {
                 StrategicActionDef def = new StrategicActionDef(id);
                 def.name = defJSON.getString("name");
                 def.classPath = defJSON.getString("classPath");
+                def.chance = (float)defJSON.optDouble("chance", 1);
                 def.cooldown = (float)defJSON.optDouble("cooldown", SAIConstants.DEFAULT_ACTION_COOLDOWN);
                 def.antiRepetition = (float)defJSON.optDouble("antiRepetition", SAIConstants.DEFAULT_ANTI_REPETITION_VALUE);
                 List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
@@ -129,6 +130,7 @@ public class StrategicDefManager {
         public final String id;
         public String name;
         public String classPath;
+        public float chance;
         public float cooldown;
         public float antiRepetition;
         public Set<String> tags = new HashSet<>();

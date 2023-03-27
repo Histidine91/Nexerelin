@@ -96,6 +96,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     protected Map<MarketAPI, MutableStat> marketSuccessMods = new HashMap<>();
     protected Map<MarketAPI, MutableStat> marketDetectionMods = new HashMap<>();
+    protected Set<CovertActionIntel> ongoingActions = new LinkedHashSet<>();
     
     static {
         String[] factions = {Factions.NEUTRAL, Factions.PLAYER, Factions.INDEPENDENT};    //{"templars", "independent"};
@@ -281,6 +282,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				addAgent(agent);
 			}
 		}
+		if (this.ongoingActions == null) {
+			ongoingActions = new LinkedHashSet<>();
+		}
+
 		updateBaseMaxAgents();
 		return this;
 	}
@@ -816,6 +821,20 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		}
 		return marketPicker.pick();
 	}
+
+	public void addOngoingCovertAction(CovertActionIntel intel) {
+		ongoingActions.add(intel);
+	}
+
+	public List<CovertActionIntel> getOngoingCovertActionsOfType(Class toSearch) {
+		List<CovertActionIntel> results = new ArrayList<>();
+		for (CovertActionIntel intel : ongoingActions) {
+			if (toSearch.isInstance(intel)) {
+				results.add(intel);
+			}
+		}
+		return results;
+	}
 	
 	public static Random getRandom(MarketAPI market) {
 		if (true) return new Random();
@@ -985,6 +1004,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	
 	public static void reportAgentAction(CovertActionIntel intel)
 	{
+		getManager().ongoingActions.remove(intel);
 		for (AgentActionListener x : Global.getSector().getListenerManager().getListeners(AgentActionListener.class)) {
 			x.reportAgentAction(intel);
 		}

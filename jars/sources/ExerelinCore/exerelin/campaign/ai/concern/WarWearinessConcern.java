@@ -6,20 +6,11 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 
 public class WarWearinessConcern extends DiplomacyConcern {
 
-    protected Object readResolve() {
-        faction = null;
-        return this;
-    }
-
     @Override
     public boolean generate() {
         if (!getExistingConcernsOfSameType().isEmpty()) return false;
-
-        float weariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
-        if (weariness < DiplomacyBrain.MAX_WEARINESS_FOR_WAR * 0.75f) return false;
-
-        updatePriority(weariness);
-        return true;
+        update();
+        return !ended;
     }
 
     @Override
@@ -29,8 +20,13 @@ public class WarWearinessConcern extends DiplomacyConcern {
             end();
             return;
         }
-
         updatePriority(weariness);
+    }
+
+    @Override
+    public boolean isValid() {
+        float weariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
+        return weariness >= DiplomacyBrain.MAX_WEARINESS_FOR_WAR * 0.75f;
     }
 
     @Override

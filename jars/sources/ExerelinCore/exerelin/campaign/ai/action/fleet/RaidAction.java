@@ -30,9 +30,14 @@ public class RaidAction extends OffensiveFleetAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
-        if (InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet * 0.75f)
+    public boolean isValid() {
+        if (status == null && InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet * 0.75f)
             return false;
+        return super.isValid();
+    }
+
+    @Override
+    public boolean canUseForConcern(StrategicConcern concern) {
         return concern.getDef().hasTag("canRaid") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
     }
 }

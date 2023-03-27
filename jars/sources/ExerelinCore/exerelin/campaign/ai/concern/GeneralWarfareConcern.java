@@ -23,7 +23,7 @@ import java.util.Set;
 public class GeneralWarfareConcern extends BaseStrategicConcern {
 
     public static final float BASE_PRIORITY = 50;
-    public static final float PRIORITY_PER_DAY = 0.5f;
+    public static final float PRIORITY_PER_DAY = 0.2f;
 
     @Getter protected Set<String> hostileFactions = new HashSet<>();
     @Getter protected float priorityFromTime = 0;

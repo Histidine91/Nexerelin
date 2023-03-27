@@ -17,8 +17,10 @@ public class LowerRelationsAction extends CovertAction {
     @Override
     public boolean generate() {
         FactionAPI thirdFaction = getThirdFaction();
+        Global.getLogger(this.getClass()).info("Third faction is " + thirdFaction);
         if (thirdFaction == null) {
             thirdFaction = pickThirdFactionFallback();
+            Global.getLogger(this.getClass()).info("Third faction (fallback) is " + thirdFaction);
         }
         if (thirdFaction == null) return false;
 

@@ -13,11 +13,10 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
-import static exerelin.campaign.intel.raid.NexRaidIntel.log;
-
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -164,6 +163,8 @@ public class BaseStrikeIntel extends NexRaidIntel {
 			addStandardStrengthComparisons(info, target, targetFaction, false, false, 
 					getForceType(), getActionName());
 		}
+
+		addStrategicActionInfo(info, width);
 		
 		info.addSectionHeading(StringHelper.getString("status", true), 
 				   attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);

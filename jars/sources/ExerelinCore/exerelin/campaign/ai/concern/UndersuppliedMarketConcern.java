@@ -22,6 +22,8 @@ import java.util.List;
 
 public class UndersuppliedMarketConcern extends BaseStrategicConcern implements HasCommodityTarget {
 
+    public static final int MAX_SIMULTANEOUS_CONCERNS = 3;
+
     public static float MARKET_PER_PRODUCER_THRESHOLD = 10000;
 
     @Getter protected CommodityBundle commodityBundle;
@@ -33,6 +35,7 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern implements 
             return false;
 
         Set alreadyConcerned = getExistingConcernItems();
+        if (alreadyConcerned.size() >= MAX_SIMULTANEOUS_CONCERNS) return false;
 
         java.util.List<CommoditySpecAPI> commoditySpecs = Global.getSettings().getAllCommoditySpecs();
         MarketAPI testMarket = Global.getSector().getEconomy().getMarketsCopy().get(0);

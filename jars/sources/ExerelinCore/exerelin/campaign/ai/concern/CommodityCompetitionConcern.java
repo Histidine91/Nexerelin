@@ -25,7 +25,8 @@ import java.util.*;
 
 public class CommodityCompetitionConcern extends BaseStrategicConcern implements HasCommodityTarget, HasIndustryTarget {
 
-    public static final int MAX_SIMULTANEOUS_CONCERNS = 4;
+    public static final int MAX_SIMULTANEOUS_CONCERNS = 1;
+    public static final int MAX_SIMULTANEOUS_CONCERNS_MONOPOLIST = 3;
 
     @Getter protected String commodityId;
     @Getter protected int competitorShare;
@@ -33,11 +34,13 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
     @Override
     public boolean generate() {
         // monopolist only
-        if (!DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.MONOPOLIST))
-            return false;
+        int max = MAX_SIMULTANEOUS_CONCERNS;
+        if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.MONOPOLIST))
+            max = MAX_SIMULTANEOUS_CONCERNS_MONOPOLIST;
 
         Set alreadyConcerned = getExistingConcernItems();
-        if (alreadyConcerned.size() >= MAX_SIMULTANEOUS_CONCERNS) return false;
+        // note: the alreadyConcerned set contains both commodity and faction IDs, so it's actually twice the length of the actual item count
+        if (alreadyConcerned.size() >= max * 2) return false;
         String factionId = ai.getFactionId();
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
 
@@ -118,6 +121,8 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
     /**
      * Picks a random competing industry that produces the commodity, for actions that require such.
+     * Note to self: This caused me so much trouble when it was passing a sabotage target to {@code BuildIndustryAction}
+     * for construction, be careful to not let such things happen again.
      * @return
      */
     @Override

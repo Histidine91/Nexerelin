@@ -34,7 +34,7 @@ public class InvasionAction extends OffensiveFleetAction {
             //log.info("Too early: " + Tuning.getDaysSinceStart());
             return false;
         }
-        if (InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
+        if (status == null && InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
             return false;
 
         return true;

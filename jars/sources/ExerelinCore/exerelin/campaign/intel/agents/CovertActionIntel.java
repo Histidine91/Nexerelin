@@ -106,6 +106,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		init();
 		started = true;
 		Global.getSector().addScript(this);
+		CovertOpsManager.getManager().addOngoingCovertAction(this);
 	}
 	
 	public void reset() {

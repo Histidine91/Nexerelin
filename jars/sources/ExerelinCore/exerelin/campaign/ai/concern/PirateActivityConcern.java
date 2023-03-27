@@ -15,12 +15,16 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.campaign.bases.VayraRaiderActivityCondition;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import lombok.Getter;
 
 import java.awt.*;
 import java.util.*;
 
 public class PirateActivityConcern extends BaseStrategicConcern {
+
+    public static final float RAGE_REDUCTION_ON_SUCCESS = 35;
 
     @Getter protected float rage = 0;
     Set<RageEntry> affectedMarkets = new HashSet<>();
@@ -89,10 +93,22 @@ public class PirateActivityConcern extends BaseStrategicConcern {
 
         rageThisUpdate *= ai.getDaysSinceLastUpdate();
         Global.getLogger(this.getClass()).info(String.format("Rage this update: %.1f", rageThisUpdate));
-        rage += rageThisUpdate;
+        modifyRage(rageThisUpdate);
+        super.update();
+    }
+
+    protected void modifyRage(float amount) {
+        rage += amount;
         ai.getFaction().getMemoryWithoutUpdate().set("$nex_pirateRage", rage);
         priority.modifyFlat("rage", rage, StrategicAI.getString("statRage", true));
-        super.update();
+    }
+
+    @Override
+    public void notifyActionUpdate(StrategicAction action, StrategicActionDelegate.ActionStatus newStatus) {
+        super.notifyActionUpdate(action, newStatus);
+        if (newStatus == StrategicActionDelegate.ActionStatus.SUCCESS) {
+            modifyRage(-RAGE_REDUCTION_ON_SUCCESS);
+        }
     }
 
     @Override
