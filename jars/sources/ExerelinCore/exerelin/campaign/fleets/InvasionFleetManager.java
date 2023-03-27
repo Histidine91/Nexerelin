@@ -949,12 +949,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		int playerLevel = Global.getSector().getPlayerPerson().getStats().getLevel();
 		
-		// pick a faction to invade someone
+		// actually add points for the factions, and see if they have enough to invade
 		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
 		for (String factionId: liveFactionIds)
 		{
-			if (StrategicAI.getAI(factionId) != null) return;
-
 			if (EXCEPTION_LIST.contains(factionId)) continue;
 			FactionAPI faction = sector.getFaction(factionId);
 			if (faction.isNeutralFaction()) continue;
@@ -1027,6 +1025,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				float fleetPool = FleetPoolManager.getManager().getCurrentPool(factionId);
 				canSpawn = canSpawn && fleetPool > BASE_INVASION_SIZE;
 			}
+			if (StrategicAI.getAI(factionId) != null) canSpawn = false;
+
 			
 			if (!canSpawn)
 			{
