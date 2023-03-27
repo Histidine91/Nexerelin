@@ -44,6 +44,10 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
+/**
+ * Interaction dialog for giving agent orders.
+ * Really needs to be modularized someday, like ground battle abilities.
+ */
 public class AgentOrdersDialog implements InteractionDialogPlugin
 {
 	public static final int ENTRIES_PER_PAGE = 6;

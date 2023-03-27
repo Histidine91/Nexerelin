@@ -16,18 +16,18 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
-import static exerelin.campaign.intel.agents.CovertActionIntel.NO_EFFECT;
-import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
-
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
 
 public class LowerRelations extends CovertActionIntel {
 	
@@ -44,7 +44,7 @@ public class LowerRelations extends CovertActionIntel {
 	public LowerRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, 
 			FactionAPI thirdFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
-		if (thirdFaction != null) thirdFaction = agentFaction;
+		if (thirdFaction == null) thirdFaction = agentFaction;
 		this.thirdFaction = thirdFaction;
 	}
 	
@@ -87,10 +87,10 @@ public class LowerRelations extends CovertActionIntel {
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
 		if (ExerelinModPlugin.isNexDev) {
-		Global.getSector().getCampaignUI().addMessage("reportEvent() called in LowerRelations");
-		if (shouldReportEvent()){
-			Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ LowerRelations TRUE;if intel doesn't display, something bad happened.");
-		}
+			//Global.getSector().getCampaignUI().addMessage("reportEvent() called in LowerRelations");
+			if (shouldReportEvent()){
+				//Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ LowerRelations TRUE;if intel doesn't display, something bad happened.");
+			}
 		}
 		if (shouldReportEvent()) {
 			boolean notify = shouldNotify();

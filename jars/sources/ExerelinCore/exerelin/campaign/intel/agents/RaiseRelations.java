@@ -33,8 +33,13 @@ public class RaiseRelations extends CovertActionIntel {
 	public RaiseRelations(AgentIntel agentIntel, MarketAPI market, FactionAPI agentFaction, 
 			FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
-		if (thirdFaction != null) thirdFaction = agentFaction;
+		if (thirdFaction == null) thirdFaction = agentFaction;
 		this.thirdFaction = thirdFaction;
+	}
+
+	protected Object readResolve() {
+		if (thirdFaction == null) thirdFaction = agentFaction;
+		return this;
 	}
 	
 	@Override
@@ -121,9 +126,9 @@ public class RaiseRelations extends CovertActionIntel {
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
 		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("reportEvent() called in RaiseRelations");
+			//Global.getSector().getCampaignUI().addMessage("reportEvent() called in RaiseRelations");
 			if (shouldReportEvent()){
-				Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ RaiseRelations TRUE;if intel doesn't display, something bad happened.");
+				//Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ RaiseRelations TRUE;if intel doesn't display, something bad happened.");
 			}
 		}
 		if (shouldReportEvent()) {

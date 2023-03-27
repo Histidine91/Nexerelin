@@ -606,9 +606,9 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	protected void reportEvent() {
 		timestamp = Global.getSector().getClock().getTimestamp();
 		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("reportEvent() called in CovertActionIntel");
+			//Global.getSector().getCampaignUI().addMessage("reportEvent() called in CovertActionIntel");
 			if (shouldReportEvent()){
-				Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() TRUE;if intel doesn't display, something bad happened.");
+				//Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() TRUE;if intel doesn't display, something bad happened.");
 			}
 		}
 		if (shouldReportEvent()) {
