@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -21,17 +20,18 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import java.awt.Color;
-import java.io.IOException;
-import org.json.JSONObject;
-import java.util.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
 
 public class NexFactionConfig
 {
@@ -521,7 +521,7 @@ public class NexFactionConfig
             for (String factionId : factions)
             {
                 float disp = guessDispositionTowardsFaction(factionId);
-                log.info("Disposition of " + this.factionId + " towards " + factionId + " is " + disp);
+                //log.info("Disposition of " + this.factionId + " towards " + factionId + " is " + disp);
                 dispositions.put(factionId, disp);
             }
             dispositions.remove("default");

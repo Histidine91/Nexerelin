@@ -13,28 +13,16 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import exerelin.utilities.*;
 import lombok.extern.log4j.Log4j;
+
+import java.util.*;
 
 @Log4j
 public class FleetPoolManager extends BaseIntelPlugin {
@@ -143,6 +131,8 @@ public class FleetPoolManager extends BaseIntelPlugin {
 		
 		float returnAmount = params.amount * (totalToDraw/wantedBase);
 		if (params.abortIfNotAtLeast > returnAmount) return 0;
+
+		log.info(String.format("Faction %s supplying %.1f points, deducting %.1f points", factionId, returnAmount, totalToDraw));
 		
 		modifyPool(factionId, -totalToDraw);
 		return returnAmount;

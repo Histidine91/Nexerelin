@@ -62,12 +62,9 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 
 	@Override
 	public void endAfterDelay() {
-		if (ExerelinModPlugin.isNexDev){
-			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in DiplomacyIntel called: " + this.getName());
-		}
 		if (!seenByPlayer) {
 			shouldEndWhenSeen = true;
-			return; //
+			return; // don't do anything if not seen by player
 		}
 		super.endAfterDelay();
 	}

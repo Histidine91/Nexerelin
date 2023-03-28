@@ -145,9 +145,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 
 	@Override
 	public void endAfterDelay() {
-		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("endAfterDelay() in CovertActionIntel called");
-		}
 		if (!seenByPlayer) {
 			shouldEndWhenSeen = true;
 			return; // don't do anything if not seen by player

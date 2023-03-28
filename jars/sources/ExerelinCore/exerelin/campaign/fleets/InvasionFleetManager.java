@@ -1193,7 +1193,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static float getInvasionPointCost(float basePointCost, OffensiveFleetIntel intel)
 	{
 		float amount = basePointCost * Math.max(intel.getBaseFP()/BASE_INVASION_SIZE, 0.8f);
-		log.info("Deducting " + amount + " invasion points for " + intel.getName());
+		log.info("Preparing to deduct " + amount + " invasion points for " + intel.getName());
 		return amount;
 	}
 	
@@ -1472,7 +1472,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return false;
 	}
 	
-	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB };
+	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB, DEFENSE, OTHER };
 	
 	// No longer used
 	// only kept around because some classes I'm keeping for reference still reference it
