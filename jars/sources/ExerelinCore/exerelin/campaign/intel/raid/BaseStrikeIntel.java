@@ -270,4 +270,9 @@ public class BaseStrikeIntel extends NexRaidIntel {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
 	}
+
+	@Override
+	public InvasionFleetManager.EventType getEventType() {
+		return InvasionFleetManager.EventType.BASE_STRIKE;
+	}
 }

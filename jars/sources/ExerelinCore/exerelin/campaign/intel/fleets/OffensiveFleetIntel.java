@@ -851,6 +851,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return false;
 	}
 
+	public InvasionFleetManager.EventType getEventType() {
+		return InvasionFleetManager.EventType.RAID;
+	}
+
 	@Override
 	public float getStrategicActionDaysRemaining() {
 		return getETA();

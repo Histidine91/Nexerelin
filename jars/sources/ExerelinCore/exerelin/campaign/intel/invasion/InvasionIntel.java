@@ -801,6 +801,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	}
 
 	@Override
+	public InvasionFleetManager.EventType getEventType() {
+		return InvasionFleetManager.EventType.INVASION;
+	}
+
+	@Override
 	public void reportBattleStarted(GroundBattleIntel battle) {
 		if (battle.getMarket() == target && battle.isPlayerInitiated()
 				&& getCurrentStage() == getStageIndex(action)

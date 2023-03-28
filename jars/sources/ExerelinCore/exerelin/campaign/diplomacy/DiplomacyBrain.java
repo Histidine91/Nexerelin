@@ -25,7 +25,7 @@ import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.diplomacy.CeasefirePromptIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
-import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
@@ -610,15 +610,15 @@ public class DiplomacyBrain {
 			}
 		});
 		
-		// list everyone we're currently trying to invade, don't bother making peace with them
-		Set<String> factionsInvadingOrInvaded = getOngoingInvasionFactions();		
+		// list everyone we're currently trying to invade/raid/etc., don't bother making peace with them
+		Set<String> factionsAttackingOrAttacked = getOngoingOffensiveFactions();
 		
 		int tries = 3;
 		for (String enemyId : enemiesLocal)
 		{
 			if (targetFactionId != null && !targetFactionId.equals(enemyId)) continue;
 
-			if (factionsInvadingOrInvaded.contains(enemyId))
+			if (factionsAttackingOrAttacked.contains(enemyId))
 				continue;
 			if (!NexFactionConfig.canCeasefire(factionId, enemyId))
 				continue;
@@ -635,24 +635,25 @@ public class DiplomacyBrain {
 		return null;
 	}
 	
-	public Set<String> getOngoingInvasionFactions() {
+	public Set<String> getOngoingOffensiveFactions() {
 		Set<String> factionsInvadingOrInvaded = new HashSet<>();
 				
-		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(InvasionIntel.class)) {
-			InvasionIntel inv = (InvasionIntel)intel;
-			if (inv.isEnding() || inv.isEnded()) continue;
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(OffensiveFleetIntel.class)) {
+			OffensiveFleetIntel ofi = (OffensiveFleetIntel)intel;
+			if (ofi.isEnding() || ofi.isEnded()) continue;
+			if (!ofi.isAbortIfNonHostile()) continue;
 			// we or an ally are invading someone, mark the target
-			if (AllianceManager.areFactionsAllied(inv.getFaction().getId(), factionId))
+			if (AllianceManager.areFactionsAllied(ofi.getFaction().getId(), factionId))
 			{
 				//log.info(String.format("  %s don't ceasefire with %s, we're invading them", factionId, inv.getTarget().getFactionId()));
-				factionsInvadingOrInvaded.add(inv.getTarget().getFactionId());
+				factionsInvadingOrInvaded.add(ofi.getTarget().getFactionId());
 			}
 			
 			// someone else invading us (and that someone isn't player), mark the invader
-			if (!inv.getFaction().isPlayerFaction() && AllianceManager.areFactionsAllied(inv.getTarget().getFaction().getId(), factionId)) 
+			if (!ofi.getFaction().isPlayerFaction() && AllianceManager.areFactionsAllied(ofi.getTarget().getFaction().getId(), factionId))
 			{
 				//log.info(String.format("  %s don't ceasefire with %s, they're invading us", factionId, inv.getFaction().getId()));
-				factionsInvadingOrInvaded.add(inv.getFaction().getId());
+				factionsInvadingOrInvaded.add(ofi.getFaction().getId());
 			}
 		}
 		

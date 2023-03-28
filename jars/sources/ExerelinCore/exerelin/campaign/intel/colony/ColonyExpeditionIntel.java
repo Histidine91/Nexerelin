@@ -611,6 +611,11 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (colonyOutcome == ColonyOutcome.SUCCESS) return 15;
 		return 7;
 	}
+
+	@Override
+	public InvasionFleetManager.EventType getEventType() {
+		return InvasionFleetManager.EventType.OTHER;
+	}
 	
 	// runcode exerelin.campaign.intel.colony.ColonyExpeditionIntel.debug("jangala")
 	public static void debug(String marketId) {

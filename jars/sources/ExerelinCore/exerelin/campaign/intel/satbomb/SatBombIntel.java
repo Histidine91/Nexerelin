@@ -359,6 +359,11 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		}
 		return super.getCommMessageSound();
 	}
+
+	@Override
+	public InvasionFleetManager.EventType getEventType() {
+		return InvasionFleetManager.EventType.SAT_BOMB;
+	}
 	
 	public static void createDebugEvent(MarketAPI source, MarketAPI dest, float fp, float orgDur){
 		SatBombIntel intel = new SatBombIntel(source.getFaction(), source, dest, fp, orgDur);

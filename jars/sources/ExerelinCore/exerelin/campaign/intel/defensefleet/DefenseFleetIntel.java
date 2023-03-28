@@ -23,16 +23,16 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.apache.log4j.Logger;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import org.apache.log4j.Logger;
-import org.lwjgl.util.vector.Vector2f;
 
 public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelegate {
 	
@@ -277,6 +277,11 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 	@Override
 	public String getType() {
 		return "defense";
+	}
+
+	@Override
+	public InvasionFleetManager.EventType getEventType() {
+		return InvasionFleetManager.EventType.DEFENSE;
 	}
 
 	public static void createDebugEvent(MarketAPI source, MarketAPI dest, float fp, float orgDur){
