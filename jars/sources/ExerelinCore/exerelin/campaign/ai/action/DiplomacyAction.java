@@ -115,7 +115,9 @@ public class DiplomacyAction extends BaseStrategicAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
+        if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
+
         if (concern.getDef().hasTag("diplomacy_positive") && !this.getDef().hasTag("friendly"))
             return false;
 
@@ -123,10 +125,5 @@ public class DiplomacyAction extends BaseStrategicAction {
             return false;
 
         return concern.getDef().hasTag("canDiplomacy");
-    }
-
-    @Override
-    public boolean isValid() {
-        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;
     }
 }

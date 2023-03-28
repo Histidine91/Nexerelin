@@ -15,19 +15,7 @@ public class InvasionAction extends OffensiveFleetAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
-        return concern.getDef().hasTag("canInvade") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
-    }
-
-    @Override
-    public void applyPriorityModifiers() {
-        super.applyPriorityModifiers();
-        // doesn't need the priority penalty relative to raids
-        //priority.modifyFlat("base", 75, StrategicAI.getString("statBase", true));
-    }
-
-    @Override
-    public boolean isValid() {
+    public boolean canUse(StrategicConcern concern) {
         if (!NexConfig.enableInvasions) return false;
 
         if (Tuning.getDaysSinceStart() < NexConfig.invasionGracePeriod) {
@@ -37,6 +25,13 @@ public class InvasionAction extends OffensiveFleetAction {
         if (status == null && InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
             return false;
 
-        return true;
+        return concern.getDef().hasTag("canInvade") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
+    }
+
+    @Override
+    public void applyPriorityModifiers() {
+        super.applyPriorityModifiers();
+        // doesn't need the priority penalty relative to raids
+        //priority.modifyFlat("base", 75, StrategicAI.getString("statBase", true));
     }
 }

@@ -53,7 +53,7 @@ public class BaseStrikeAction extends OffensiveFleetAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
         return concern.getDef().hasTag("canBaseStrike");
     }
 }

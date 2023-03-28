@@ -20,7 +20,7 @@ public class RaiseRelationsAction extends CovertAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
         return concern.getDef().hasTag("canDiplomacy") && concern.getDef().hasTag("diplomacy_positive");
     }
 }

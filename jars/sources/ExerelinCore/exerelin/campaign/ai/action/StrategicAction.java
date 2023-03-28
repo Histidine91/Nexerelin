@@ -23,6 +23,10 @@ public interface StrategicAction {
 
     boolean generate();
     void init();
+    /**
+     * Called every half-day or so to ensure the action should still continue.
+     * @return
+     */
     boolean isValid();
     MutableStat getPriority();
     float getPriorityFloat();
@@ -38,7 +42,7 @@ public interface StrategicAction {
     String getId();
     void setId(String id);
 
-    boolean canUseForConcern(StrategicConcern concern);
+    boolean canUse(StrategicConcern concern);
     RepLevel getMinRelToTarget(FactionAPI target);
     RepLevel getMaxRelToTarget(FactionAPI target);
 

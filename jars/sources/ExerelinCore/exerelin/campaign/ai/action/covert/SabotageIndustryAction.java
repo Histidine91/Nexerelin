@@ -94,7 +94,7 @@ public class SabotageIndustryAction extends CovertAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
         //if (!(concern instanceof HasIndustryTarget)) return false;
         return concern.getDef().hasTag("canSabotageIndustry") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
     }

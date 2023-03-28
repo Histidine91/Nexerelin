@@ -17,7 +17,6 @@ public class InstigateRebellionAction extends CovertAction {
 
         MarketAPI target = pickTargetMarket();
         if (target == null) return false;
-
         if (isInstigateActionOngoing(target)) return false;
 
         CovertActionIntel intel = new InstigateRebellion(null, target, getAgentFaction(), getTargetFaction(),
@@ -39,19 +38,15 @@ public class InstigateRebellionAction extends CovertAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
+        if (!NexConfig.enableInvasions) return false;
         if (!concern.getDef().hasTag("canInvade") && !concern.getDef().hasTag("canInstigateRebellion"))
             return false;
-
-        if (concern.getMarket() != null) {
-            return CovertOpsManager.canInstigateRebellion(concern.getMarket());
+        MarketAPI concernTarget = concern.getMarket();
+        if (concernTarget != null) {
+            return CovertOpsManager.canInstigateRebellion(concernTarget) && !isInstigateActionOngoing(concernTarget);
         }
 
         return true;
-    }
-
-    @Override
-    public boolean isValid() {
-        return NexConfig.enableInvasions;
     }
 }

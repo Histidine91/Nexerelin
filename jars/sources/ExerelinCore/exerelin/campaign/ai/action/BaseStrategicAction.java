@@ -42,10 +42,6 @@ public abstract class BaseStrategicAction implements StrategicAction {
         return false;
     }
 
-    /**
-     * Called before action generation and every half-day or so.
-     * @return
-     */
     @Override
     public boolean isValid() {
         return true;
@@ -137,7 +133,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
         return false;
     }
 

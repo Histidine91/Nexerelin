@@ -32,7 +32,7 @@ public class DestabilizeMarketAction extends CovertAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
         return concern.getDef().hasTag("canDestabilize") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
     }
 }

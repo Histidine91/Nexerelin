@@ -36,17 +36,12 @@ public class DeclareWarAction extends DiplomacyAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
         // we have the military tag for alignment purposes, but don't use this action for actual military actions
         if (concern.getDef().module == StrategicDefManager.ModuleType.MILITARY) return false;
         if (concern.getFaction() != null && concern.getFaction().isHostileTo(ai.getFaction())) {
             return false;
         }
-        return true;
-    }
-
-    @Override
-    public boolean isValid() {
         return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy
                 && !DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST)
                 && DiplomacyManager.getWarWeariness(ai.getFactionId(), true) <= DiplomacyBrain.MAX_WEARINESS_FOR_WAR;

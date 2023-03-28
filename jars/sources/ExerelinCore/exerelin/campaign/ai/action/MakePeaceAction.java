@@ -30,16 +30,11 @@ public class MakePeaceAction extends DiplomacyAction {
     }
 
     @Override
-    public boolean canUseForConcern(StrategicConcern concern) {
+    public boolean canUse(StrategicConcern concern) {
         if (!concern.getDef().hasTag("canMakePeace")) return false;
-        if (concern.getFaction() != null && concern.getFaction().isHostileTo(ai.getFaction())) {
+        if (concern.getFaction() != null && !concern.getFaction().isHostileTo(ai.getFaction())) {
             return false;
         }
-        return true;
-    }
-
-    @Override
-    public boolean isValid() {
         return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;
     }
 }

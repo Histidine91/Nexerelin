@@ -175,14 +175,13 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
             // check if action is usable
             if (Math.random() < action.getDef().chance) continue;
-            if (!action.isValid()) continue;
             if (!this.canTakeAction(action)) continue;
             if (faction != null) {
                 RepLevel rep = faction.getRelationshipLevel(ai.getFactionId());
                 if (!rep.isAtBest(action.getMaxRelToTarget(faction))) continue;
                 if (!rep.isAtWorst(action.getMinRelToTarget(faction))) continue;
             }
-            if (!action.canUseForConcern(this)) continue;
+            if (!action.canUse(this)) continue;
 
             action.updatePriority();
             float priority = action.getPriorityFloat();
