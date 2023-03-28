@@ -83,6 +83,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 6f;
 	public static final float SAT_BOMB_CHANCE = 0.4f;
+	public static final float RAID_COST_MULT = 0.65f;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
 	public static final float RAID_SIZE_MULT = 0.85f;
@@ -1193,6 +1194,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static float getInvasionPointCost(float basePointCost, OffensiveFleetIntel intel)
 	{
 		float amount = basePointCost * Math.max(intel.getBaseFP()/BASE_INVASION_SIZE, 0.8f);
+		if (intel.getEventType() == EventType.RAID || intel.getEventType() == EventType.DEFENSE)
+			amount *= RAID_COST_MULT;
 		log.info("Preparing to deduct " + amount + " invasion points for " + intel.getName());
 		return amount;
 	}
