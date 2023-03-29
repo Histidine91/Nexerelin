@@ -1,5 +1,6 @@
 package exerelin.campaign.ai.action;
 
+import com.fs.starfarer.api.Global;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
@@ -9,6 +10,9 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 
 public class DiplomacyAction extends BaseStrategicAction {
+
+    public static final float DIPLOMACY_GLOBAL_COOLDOWN = 3;
+    public static final String MEM_KEY_GLOBAL_COOLDOWN = "$nex_diplomacy_cooldown";
 
     public DiplomacyIntel getIntel() {
         return (DiplomacyIntel)delegate;
@@ -49,7 +53,7 @@ public class DiplomacyAction extends BaseStrategicAction {
         params.onlyPositive = !canNegative;
         params.onlyNegative = !canPositive;
 
-        delegate = DiplomacyManager.createDiplomacyEvent(concern.getFaction(), ai.getFaction(), null, params);
+        delegate = DiplomacyManager.createDiplomacyEventV2(concern.getFaction(), ai.getFaction(), null, params);
         return delegate != null;
     }
 
@@ -100,6 +104,7 @@ public class DiplomacyAction extends BaseStrategicAction {
         super.init();
         // used to be in generate() directly but putting it here makes some stuff technically cleaner
         end(StrategicActionDelegate.ActionStatus.SUCCESS);
+        Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY_GLOBAL_COOLDOWN, true, DIPLOMACY_GLOBAL_COOLDOWN);
     }
 
     @Override
@@ -117,6 +122,9 @@ public class DiplomacyAction extends BaseStrategicAction {
     @Override
     public boolean canUse(StrategicConcern concern) {
         if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
+
+        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
+            return false;
 
         if (concern.getDef().hasTag("diplomacy_positive") && !this.getDef().hasTag("friendly"))
             return false;

@@ -10,6 +10,9 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.covert.LowerRelationsAction;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import lombok.extern.log4j.Log4j;
 
@@ -32,7 +35,7 @@ public class VulnerableFactionConcern extends DiplomacyConcern {
             float theirStrength = getFactionStrength(faction);
             if (!shouldBeConcernedAbout(faction, ourStrength, theirStrength)) continue;
 
-            float weight = ourStrength/2 - theirStrength;
+            float weight = (ourStrength/2 - theirStrength) * 2;
             if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) continue;
             weight *= getPriorityMult(us.getRelationshipLevel(faction));
             weight *= 10;
@@ -55,7 +58,7 @@ public class VulnerableFactionConcern extends DiplomacyConcern {
             return;
         }
 
-        float weight = ourStrength/2 - theirStrength;
+        float weight = (ourStrength/2 - theirStrength) * 2;
         if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) {
             end();
             return;
@@ -64,6 +67,19 @@ public class VulnerableFactionConcern extends DiplomacyConcern {
         priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
 
         super.update();
+    }
+
+    @Override
+    public void reapplyPriorityModifiers() {
+        super.reapplyPriorityModifiers();
+        // no diplomacy alignment mod
+        priority.unmodify("alignment_" + Alliance.Alignment.DIPLOMATIC);
+    }
+
+    @Override
+    public boolean canTakeAction(StrategicAction action) {
+        if (action instanceof LowerRelationsAction) return false;
+        return super.canTakeAction(action);
     }
 
     protected float getPriorityMult(RepLevel level) {

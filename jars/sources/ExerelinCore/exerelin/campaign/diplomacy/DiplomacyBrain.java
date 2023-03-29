@@ -730,8 +730,6 @@ public class DiplomacyBrain {
 			}
 		});
 		
-		boolean predatory = DiplomacyTraits.hasTrait(factionId, TraitIds.PREDATORY);
-		
 		RepLevel maxRep = getMaxRepForOpportunisticWar();
 		log.info("Relationship required for war: " + maxRep);
 		if (maxRep.isAtBest(RepLevel.HOSTILE))
@@ -742,27 +740,9 @@ public class DiplomacyBrain {
 		{
 			String otherFactionId = disposition.factionId;
 			if (targetFactionId != null && !targetFactionId.equals(otherFactionId)) continue;
-
-			RepLevel thisMaxRep = maxRep;
-			if (predatory && otherFactionId.equals(Factions.PLAYER)) {
-				thisMaxRep = RepLevel.SUSPICIOUS;
-			}			
-			if (AllianceManager.areFactionsAllied(factionId, otherFactionId)) continue;			
-			
-			log.info("Checking vs. " + otherFactionId + ": " + disposition.disposition.getModifiedValue()
-					+ ", " + faction.isAtBest(otherFactionId, thisMaxRep));
 			
 			// don't diplo with player if they're commissioned with someone else
-			if (otherFactionId.equals(Factions.PLAYER) && !otherFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
-				continue;
-			if (!SectorManager.isFactionAlive(otherFactionId)) continue;
-			if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) continue;
-			if (NexUtilsFaction.isPirateFaction(otherFactionId) && !NexConfig.allowPirateInvasions)
-				continue;
-			if (ceasefires.containsKey(otherFactionId)) continue;
-			if (!faction.isAtBest(otherFactionId, thisMaxRep)) continue;	// relations aren't bad enough yet
-			if (faction.isHostileTo(otherFactionId)) continue;	// already at war
-			if (!predatory && disposition.disposition.getModifiedValue() > MAX_DISPOSITION_FOR_WAR) continue;
+			if (!canWarWithFaction(otherFactionId, disposition)) continue;
 			
 			float decisionRating = getWarDecisionRating(otherFactionId);
 			if (decisionRating > 40 + MathUtils.getRandomNumberInRange(-5, 5))
@@ -774,6 +754,36 @@ public class DiplomacyBrain {
 		
 		return DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(warPicker.pick()),
 				"declare_war", null);
+	}
+
+	public boolean canWarWithFaction(String otherFactionId) {
+		return canWarWithFaction(otherFactionId, this.getDisposition(otherFactionId));
+	}
+
+	public boolean canWarWithFaction(String otherFactionId, DispositionEntry disposition) {
+		boolean predatory = DiplomacyTraits.hasTrait(factionId, TraitIds.PREDATORY);
+		RepLevel maxRep = getMaxRepForOpportunisticWar();
+		if (predatory && otherFactionId.equals(Factions.PLAYER)) {
+			maxRep = RepLevel.SUSPICIOUS;
+		}
+
+		if (AllianceManager.areFactionsAllied(factionId, otherFactionId)) return false;
+
+		log.info("Checking vs. " + otherFactionId + ": " + disposition.disposition.getModifiedValue()
+				+ ", " + faction.isAtBest(otherFactionId, maxRep));
+
+		// don't diplo with player if they're commissioned with someone else
+		if (otherFactionId.equals(Factions.PLAYER) && !otherFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
+			return false;
+		if (!SectorManager.isFactionAlive(otherFactionId)) return false;
+		if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) return false;
+		if (NexUtilsFaction.isPirateFaction(otherFactionId) && !NexConfig.allowPirateInvasions)
+			return false;
+		if (ceasefires.containsKey(otherFactionId)) return false;
+		if (!faction.isAtBest(otherFactionId, maxRep)) return false;	// relations aren't bad enough yet
+		if (faction.isHostileTo(otherFactionId)) return false;	// already at war
+		if (!predatory && disposition.disposition.getModifiedValue() > MAX_DISPOSITION_FOR_WAR) return false;
+		return true;
 	}
 	
 	public void doRandomEvent()

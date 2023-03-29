@@ -34,8 +34,16 @@ public class RaidAction extends OffensiveFleetAction {
         if (!concern.getDef().hasTag("canRaid") && !concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM))
             return false;
 
-        if (InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet * 0.75f)
+        float pointReq = NexConfig.pointsRequiredForInvasionFleet;
+        float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());
+
+        if (pointHave < pointReq * 0.75f)
             return false;
+
+        float pointCostEst = InvasionFleetManager.getInvasionPointCost(pointReq, getWantedFleetSizeForConcern(true), getEventType());
+        if ((pointCostEst > pointReq * 2) && (pointCostEst > pointHave + pointReq)) {
+            return false;
+        }
 
         return true;
     }

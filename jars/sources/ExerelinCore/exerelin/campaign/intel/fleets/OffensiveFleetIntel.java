@@ -428,12 +428,12 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	@Override
 	public ActionStatus getStrategicActionStatus() {
-		if (getCurrentStage() == 0) return ActionStatus.STARTING;
 		if (outcome != null) {
 			if (outcome == OffensiveOutcome.SUCCESS) return ActionStatus.SUCCESS;
 			else if (outcome == OffensiveOutcome.FAIL) return ActionStatus.FAILURE;
 			else return ActionStatus.CANCELLED;
 		}
+		if (getCurrentStage() == 0) return ActionStatus.STARTING;
 		return ActionStatus.IN_PROGRESS;
 	}
 

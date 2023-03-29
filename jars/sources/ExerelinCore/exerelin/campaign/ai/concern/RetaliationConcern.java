@@ -9,6 +9,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.MilitaryAIModule;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -20,6 +21,7 @@ import java.util.*;
 import static exerelin.campaign.ai.MilitaryAIModule.RaidRecord;
 
 @Log4j
+@Deprecated
 public class RetaliationConcern extends BaseStrategicConcern {
 
     public static final int MAX_RAIDS_FOR_PICKER = 3;
@@ -27,6 +29,7 @@ public class RetaliationConcern extends BaseStrategicConcern {
 
     @Override
     public boolean generate() {
+        log.info("Trying to generate retaliation concern");
         List<Pair<RaidRecord, Float>> raidsSorted = new ArrayList<>();
         if (!(module instanceof MilitaryAIModule)) return false;
 
@@ -57,6 +60,7 @@ public class RetaliationConcern extends BaseStrategicConcern {
         WeightedRandomPicker<Pair<RaidRecord, Float>> picker = new WeightedRandomPicker<>();
         for (int i=0; i<max; i++) {
             Pair<RaidRecord, Float> pair = raidsSorted.get(i);
+            log.info("Adding raid record to picker: " + pair.one.name);
             picker.add(pair, pair.two);
         }
         Pair<RaidRecord, Float> toRespond = picker.pick();
@@ -64,7 +68,8 @@ public class RetaliationConcern extends BaseStrategicConcern {
             raid = toRespond.one;
             market = raid.target;
             faction = raid.attacker;
-            priority.modifyFlat("defenseAdjustedValue", toRespond.two*5, StrategicAI.getString("statValue", true));
+            log.info("Selected raid record: " + toRespond.one.name);
+            priority.modifyFlat("rageValue", toRespond.two*5, StrategicAI.getString("statRaidAnger", true));
         }
 
         return raid != null;
@@ -77,7 +82,8 @@ public class RetaliationConcern extends BaseStrategicConcern {
 
     @Override
     public boolean isValid() {
-        return raid != null && ai.getFaction().isHostileTo(faction);
+        return false;
+        //return raid != null && ai.getFaction().isHostileTo(faction);
     }
 
     @Override
@@ -85,10 +91,11 @@ public class RetaliationConcern extends BaseStrategicConcern {
         // "We were recently attacked by the dastardly $faction, during the event $event."
         String str = getDef().desc;
         str += " " + StringHelper.getString("nex_strategicAI", "concernDesc_retaliation_" + (raid.success ? "success" : "fail"));
-        StringHelper.substituteFactionTokens(str, faction);
+        str = StringHelper.substituteFactionTokens(str, faction);
+        str = StringHelper.substituteToken(str, "$event", raid.name);
         Color hl = raid.attacker.getBaseUIColor();
 
-        LabelAPI label = tooltip.addPara(str, pad, hl, raid.attacker.getDisplayName(), raid.name);
+        LabelAPI label = tooltip.addPara(str, pad, hl, NexUtilsFaction.getFactionShortName(raid.attacker), raid.name);
         label.setHighlightColors(hl, Misc.getHighlightColor());
         return label;
     }

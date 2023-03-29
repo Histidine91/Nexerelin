@@ -22,10 +22,23 @@ public class InvasionAction extends OffensiveFleetAction {
             //log.info("Too early: " + Tuning.getDaysSinceStart());
             return false;
         }
-        if (status == null && InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
+
+        if (!concern.getDef().hasTag("canInvade") && !concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM)) {
+            return false;
+        }
+
+        float pointReq = NexConfig.pointsRequiredForInvasionFleet;
+        float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());
+
+        if (pointHave < pointReq)
             return false;
 
-        return concern.getDef().hasTag("canInvade") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
+        float pointCostEst = InvasionFleetManager.getInvasionPointCost(pointReq, getWantedFleetSizeForConcern(false), getEventType());
+        if ((pointCostEst > pointReq * 2) && (pointCostEst > pointHave + pointReq)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

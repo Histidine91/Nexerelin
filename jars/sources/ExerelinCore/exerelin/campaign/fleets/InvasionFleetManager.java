@@ -1188,16 +1188,23 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	/**
 	 * Gets the number of invasion points that should be deducted as a result of launching an invasion or raid.
 	 * @param basePointCost
-	 * @param intel
+	 * @param fp
+	 * @param type
 	 * @return
 	 */
+	public static float getInvasionPointCost(float basePointCost, float fp, EventType type)
+	{
+		float amount = basePointCost * Math.max(fp/BASE_INVASION_SIZE, 0.8f);
+		if (type == EventType.RAID || type == EventType.DEFENSE)
+			amount *= RAID_COST_MULT;
+
+		log.info("Preparing to deduct " + amount + " invasion points for event " + type);
+		return amount;
+	}
+
 	public static float getInvasionPointCost(float basePointCost, OffensiveFleetIntel intel)
 	{
-		float amount = basePointCost * Math.max(intel.getBaseFP()/BASE_INVASION_SIZE, 0.8f);
-		if (intel.getEventType() == EventType.RAID || intel.getEventType() == EventType.DEFENSE)
-			amount *= RAID_COST_MULT;
-		log.info("Preparing to deduct " + amount + " invasion points for " + intel.getName());
-		return amount;
+		return getInvasionPointCost(basePointCost, intel.getBaseFP(), intel.getEventType());
 	}
 	
 	public static float getInvasionPointCost(OffensiveFleetIntel intel)

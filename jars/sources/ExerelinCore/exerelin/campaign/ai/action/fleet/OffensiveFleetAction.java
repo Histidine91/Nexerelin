@@ -88,4 +88,9 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
         if (getIntel() != null)  return getIntel().getIcon();
         return null;
     }
+
+    protected float getWantedFleetSizeForConcern(boolean countAllHostile) {
+        if (concern.getMarket() == null) return 0;
+        return InvasionFleetManager.getWantedFleetSize(ai.getFaction(), concern.getMarket(), 0, countAllHostile);
+    }
 }

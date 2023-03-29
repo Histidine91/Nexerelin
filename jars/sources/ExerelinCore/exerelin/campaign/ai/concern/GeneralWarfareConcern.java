@@ -99,7 +99,8 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
     public void notifyActionUpdate(StrategicAction action, StrategicActionDelegate.ActionStatus newStatus) {
         super.notifyActionUpdate(action, newStatus);
         if (newStatus == StrategicActionDelegate.ActionStatus.STARTING) {
-            priorityFromTime -= action.getDef().cooldown;
+            Global.getLogger(this.getClass()).info("Lowering priority by " + action.getDef().cooldown + " based on action cooldown");
+            priorityFromTime -= action.getDef().cooldown * 2;
             priority.modifyFlat("priorityFromTime", priorityFromTime, StrategicAI.getString("statPriorityOverTime", true));
         }
     }

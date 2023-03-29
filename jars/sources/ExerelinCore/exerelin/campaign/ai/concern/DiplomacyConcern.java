@@ -1,14 +1,12 @@
 package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
@@ -20,7 +18,8 @@ public abstract class DiplomacyConcern extends BaseStrategicConcern {
 
     @Override
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
-        if (faction == null) return null;
+        FactionAPI faction = this.faction;
+        if (faction == null) faction = ai.getFaction();
         String str = getDef().desc;
         str = StringHelper.substituteFactionTokens(str, faction);
         Color hl = faction.getBaseUIColor();

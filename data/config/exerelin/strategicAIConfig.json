@@ -39,8 +39,8 @@
 		},
 		"retaliation":{
 			"name":"Retaliation",
-			"desc":"We were recently attacked by the dastardly $faction, during the event $event.",
-			"classPath":"exerelin.campaign.ai.concern.RetaliationConcern",
+			"desc":"We were recently attacked by our enemies, the most notable of which was the $event by the dastardly $faction.",
+			"classPath":"exerelin.campaign.ai.concern.RetaliationConcernV2",
 			"tags":["military", "wantCauseHarm", "canSatBomb"],
 			"module":MILITARY
 		},
@@ -137,6 +137,7 @@
 		"diplomacyPositive":{
 			"name":"Diplomatic Action (Positive)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
+			"antiRepetition":35,
 			"cooldown":60,	# longer since it's instant action
 			"tags":["diplomacy", "canDiplomacy", "friendly"],
 		},
@@ -161,11 +162,13 @@
 		"agentRaiseRelations":{
 			"name":"Raise Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.RaiseRelationsAction",
+			"antiRepetition":35,
 			"tags":["diplomacy", "covert", "canDiplomacy", "diplomacy_positive", "friendly"],
 		},
 		"agentLowerRelations":{
 			"name":"Lower Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.LowerRelationsAction",
+			"antiRepetition":35,
 			"tags":["diplomacy", "covert", "canLowerRelations", "diplomacy_negative", "unfriendly"],
 		},
 		"agentDestroyCommodityStocks":{

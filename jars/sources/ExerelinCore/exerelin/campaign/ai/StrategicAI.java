@@ -258,7 +258,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		
 		panel.addUIElement(superheaderHolder).inTL(width*0.3f, 0);
 		
-		TooltipMakerAPI tableHolder = panel.createUIElement(width, 600, true);
+		TooltipMakerAPI tableHolder = panel.createUIElement(width, height - 50, true);
 		
 		displayReport(tableHolder, panel, width, 10);
 		panel.addUIElement(tableHolder).inTL(3, 48);

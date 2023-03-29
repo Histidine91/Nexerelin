@@ -21,7 +21,16 @@ public interface StrategicAction {
     StrategicActionDelegate getDelegate();
     void setDelegate(StrategicActionDelegate delegate);
 
+    /**
+     * Creates the action. {@code canUse()} should already have been called beforehand to determine as much as possible
+     * whether the action can actually be executed, but we may nevertheless find the action unable to proceed here.
+     * @return True if successfully generated, false otherwise.
+     */
     boolean generate();
+
+    /**
+     * Called after {@code generate()} to actually begin executing the action.
+     */
     void init();
     /**
      * Called every half-day or so to ensure the action should still continue.
@@ -42,6 +51,11 @@ public interface StrategicAction {
     String getId();
     void setId(String id);
 
+    /**
+     * Can the action be used, with the specified concern or in general? Called when deciding which action to take.
+     * @param concern
+     * @return
+     */
     boolean canUse(StrategicConcern concern);
     RepLevel getMinRelToTarget(FactionAPI target);
     RepLevel getMaxRelToTarget(FactionAPI target);

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.ai.action.DiplomacyAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.agents.LowerRelations;
@@ -40,12 +41,23 @@ public class LowerRelationsAction extends CovertAction {
     }
 
     @Override
+    protected boolean beginAction(CovertActionIntel intel) {
+        boolean result = super.beginAction(intel);
+        if (result) {
+            Global.getSector().getMemoryWithoutUpdate().set(DiplomacyAction.MEM_KEY_GLOBAL_COOLDOWN, true, DiplomacyAction.DIPLOMACY_GLOBAL_COOLDOWN);
+        }
+        return result;
+    }
+
+    @Override
     public String getActionType() {
         return CovertOpsManager.CovertActionType.LOWER_RELATIONS;
     }
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(DiplomacyAction.MEM_KEY_GLOBAL_COOLDOWN))
+            return false;
         return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy && concern.getDef().hasTag("diplomacy_negative");
     }
 }

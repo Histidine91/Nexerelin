@@ -7,11 +7,11 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.RaidListener;
+import exerelin.utilities.NexUtilsMath;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.jetbrains.annotations.Nullable;
@@ -72,8 +72,16 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
         if (defender == ai.getFaction()) {
             log.info(String.format("Raid against %s ended: %s", defender.getDisplayName(), intel.getName()));
         }
+        if (attacker != ai.faction && defender != ai.faction) {
+            return;
+        }
 
-        if (attacker != ai.faction || defender != ai.faction) return;
+        MarketAPI origin = null;
+        if (intel instanceof OffensiveFleetIntel) {
+            origin = ((OffensiveFleetIntel)intel).getMarketFrom();
+        } else {
+            origin = intel.getOrganizeStage() != null ? intel.getOrganizeStage().getMarket() : null;
+        }
 
         String name = intel.getName();
         String type = "raid";
@@ -93,12 +101,14 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
         else if ("satbomb".equals(type))
             impact *= 3;
 
-        RaidRecord record = new RaidRecord(intel, name, type, attacker, defender, target, success, impact);
+        RaidRecord record = new RaidRecord(intel, name, type, attacker, defender, target, origin, success, impact);
+        log.info("Adding recent raid to raid record: " + intel.getName());
         recentRaids.add(record);
     }
 
     public static class RaidRecord {
-        public static final float MAX_AGE = 120;
+        public static final float MAX_AGE = 210;
+        public static final float IMPACT_MULT_AT_MAX_AGE = 0.5f;
 
         public transient RaidIntel intelTransient;
         public Class intelClass;
@@ -106,14 +116,15 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
         public FactionAPI attacker;
         public FactionAPI defender;
         public MarketAPI target;
+        public MarketAPI origin;
         public String type;
         public boolean success;
         public float impact;
 
         public float age;
 
-        public RaidRecord(RaidIntel intel, String name, String type, FactionAPI attacker,
-                          @Nullable FactionAPI defender, @Nullable MarketAPI target, boolean success, float impact) {
+        public RaidRecord(RaidIntel intel, String name, String type, FactionAPI attacker, @Nullable FactionAPI defender,
+                          @Nullable MarketAPI target, @Nullable MarketAPI origin, boolean success, float impact) {
             this.intelTransient = intel;
             intelClass = intel.getClass();
             this.name = name;
@@ -121,8 +132,15 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
             this.attacker = attacker;
             this.defender = defender;
             this.target = target;
+            this.origin = origin;
             this.success = success;
             this.impact = impact;
+        }
+
+        public float getAgeAdjustedImpact() {
+            float ageProportion = age/MAX_AGE;
+            float mult = NexUtilsMath.lerp(IMPACT_MULT_AT_MAX_AGE, 1, ageProportion);
+            return impact * mult;
         }
     }
 }

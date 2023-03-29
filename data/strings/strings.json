@@ -2413,6 +2413,7 @@
 		"statCompetingShare":"competitor's market share",
 		"statExistingMarketShare":"existing market share",
 		"statRage":"current pirate rage",
+		"statRaidAnger":"rage at recent attacks",
 		"statAlignment":"alignment",
 		"statTrait":"trait",
 		"statDiplomacyChancePositive":"positive diplomacy chance",

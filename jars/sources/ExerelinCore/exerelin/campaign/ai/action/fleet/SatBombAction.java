@@ -19,8 +19,17 @@ public class SatBombAction extends OffensiveFleetAction {
         if (!concern.getDef().hasTag("canSatBomb")) return false;
 
         if (!InvasionFleetManager.canSatBomb(ai.getFaction(), concern.getFaction())) return false;
-        if (status == null && InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId()) < NexConfig.pointsRequiredForInvasionFleet)
+
+        float pointReq = NexConfig.pointsRequiredForInvasionFleet;
+        float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());
+
+        if (pointHave < pointReq)
             return false;
+
+        float pointCostEst = getWantedFleetSizeForConcern(false);
+        if ((pointCostEst > pointReq * 2) && (pointCostEst > pointHave + pointReq)) {
+            return false;
+        }
 
         return true;
     }
