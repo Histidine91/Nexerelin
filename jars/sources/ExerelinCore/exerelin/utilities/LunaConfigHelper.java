@@ -6,7 +6,6 @@ import exerelin.plugins.ExerelinModPlugin;
 import lombok.extern.log4j.Log4j;
 import lunalib.lunaSettings.LunaSettings;
 import lunalib.lunaSettings.LunaSettingsListener;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -14,6 +13,8 @@ import java.util.List;
 
 @Log4j
 public class LunaConfigHelper implements LunaSettingsListener {
+
+    public static final String PREFIX = "nex_";
 
     @Deprecated public static final List<String> DEFAULT_TAGS = new ArrayList<>();  // we don't use tags no more
     static {
@@ -169,6 +170,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
     public static Object loadSetting(String var, String type) {
         String mid = ExerelinConstants.MOD_ID;
+        var = PREFIX + var;
         switch (type) {
             case "bool":
             case "boolean":
@@ -208,6 +210,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         String name = getString("name_" + var);
 
         if (tab == null) tab = "";
+
+        var = PREFIX + var;
 
         switch (type) {
             case "boolean":
