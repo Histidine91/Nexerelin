@@ -10,6 +10,9 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.missions.SurplusShipHull;
+import com.fs.starfarer.api.impl.campaign.missions.hub.BaseMissionHub;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMission;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
 import com.fs.starfarer.api.impl.campaign.plog.SModRecord;
@@ -116,6 +119,18 @@ public class BuyShip extends HubMissionWithBarEvent {
 		}
 
 		if (Global.getSector().getPlayerFleet().getNumShips() <= 1) return false;
+
+		// don't offer this mission if the hub also has a SurplusShipHull mission
+		if (getHub() instanceof BaseMissionHub) {
+			BaseMissionHub bmh = (BaseMissionHub)getHub();
+			for (HubMission otherMission : bmh.getOfferedMissions()) {
+				if (otherMission.isMissionCreationAborted()) continue;
+				if (otherMission instanceof SurplusShipHull) {
+					return false;
+				}
+			}
+		}
+
 
 		setPostingLocation(market.getPrimaryEntity());
 
