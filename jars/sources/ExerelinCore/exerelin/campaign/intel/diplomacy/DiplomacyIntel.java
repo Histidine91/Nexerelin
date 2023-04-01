@@ -35,7 +35,7 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 	protected String factionId1;
 	protected String factionId2;
 	protected MarketAPI market;
-	ExerelinReputationAdjustmentResult reputation;
+	@Getter protected ExerelinReputationAdjustmentResult reputation;
 	protected float storedRelation;
 	protected boolean isWar;
 	protected boolean isPeace;

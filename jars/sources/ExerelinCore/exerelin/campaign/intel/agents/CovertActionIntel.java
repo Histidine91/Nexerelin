@@ -891,6 +891,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 
 	public void addStrategicActionPara(TooltipMakerAPI info, float width, float pad) {
 		if (strategicAction == null) return;
+		if (!isAgentFactionKnown()) return;
 		info.addPara(StrategicAI.getString("intelPara_actionDelegateDesc"), pad, Misc.getHighlightColor(), strategicAction.getConcern().getName());
 		info.addButton(StrategicAI.getString("btnGoIntel"), StrategicActionDelegate.BUTTON_GO_INTEL, width, 24, 3);
 	}

@@ -577,7 +577,7 @@ public class DiplomacyBrain {
 		String eventId = peaceTreaty ? "peace_treaty" : "ceasefire";
 		float reduction = peaceTreaty ? NexConfig.warWearinessPeaceTreatyReduction : NexConfig.warWearinessCeasefireReduction;
 		
-		DiplomacyIntel intel = DiplomacyManager.createDiplomacyEvent(faction, enemy, eventId, null);
+		DiplomacyIntel intel = DiplomacyManager.createDiplomacyEventV2(faction, enemy, eventId, null);
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
 		DiplomacyManager.getManager().modifyWarWeariness(enemyId, -reduction);
 		return intel;
@@ -752,7 +752,7 @@ public class DiplomacyBrain {
 		}
 		if (warPicker.isEmpty()) return null;
 		
-		return DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(warPicker.pick()),
+		return DiplomacyManager.createDiplomacyEventV2(faction, Global.getSector().getFaction(warPicker.pick()),
 				"declare_war", null);
 	}
 
