@@ -1375,6 +1375,7 @@
 		"actionMove":"move",
 		"actionDeploy":"deploy",
 		"actionDisrupt":"disrupt",
+		"actionDisruptTooltipNotOwner":"Defending units can only disrupt if they belong to the market owner.",
 		"actionResize":"resize",
 		"actionWithdraw":"withdraw",
 		"actionDisband":"disband",

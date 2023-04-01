@@ -2,12 +2,6 @@ package exerelin.campaign.intel.groundbattle.dialog;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-
-import java.util.Map;
-
-import exerelin.utilities.CrewReplacerUtils;
-import org.lwjgl.input.Keyboard;
-
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -15,27 +9,27 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCProcessSectorGenerationSliders;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.ui.ValueDisplayMode;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
-import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
+import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 
 public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 
@@ -148,9 +142,18 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		if (deployed) {
 			options.addOption(getString("actionMove", true), OptionId.MOVE, null);
 			options.addOption(getString("actionWithdraw", true), OptionId.WITHDRAW, null);
-			
-			if (unit.getLocation().heldByAttacker == unit.isAttacker())
+
+			boolean canDisrupt = unit.getLocation().heldByAttacker == unit.isAttacker();
+			if (canDisrupt) {
 				options.addOption(getString("actionDisrupt", true), OptionId.DISRUPT, null);
+				if (!unit.isAttacker()) {
+					boolean isOwnerUnit = unit.getFaction() == intel.getSide(false).getFaction();
+					if (!isOwnerUnit) {
+						options.setEnabled(OptionId.DISRUPT, false);
+						options.setTooltip(OptionId.DISRUPT, getString("actionDisruptTooltipNotOwner"));
+					}
+				}
+			}
 			
 			if (unit.isReorganizing()) {
 				options.setEnabled(OptionId.MOVE, false);
