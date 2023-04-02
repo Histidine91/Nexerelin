@@ -501,8 +501,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(Tags.INTEL_MILITARY);
 		//tags.add(StringHelper.getString("exerelin_invasion", "invasions", true));
-		if (targetFaction.isPlayerFaction())
+		tags.remove(Tags.INTEL_COLONIES);
+		if (targetFaction.isPlayerFaction()) {
 			tags.add(Tags.INTEL_COLONIES);
+		}
 		tags.add(getFaction().getId());
 		tags.add(target.getFactionId());
 		return tags;

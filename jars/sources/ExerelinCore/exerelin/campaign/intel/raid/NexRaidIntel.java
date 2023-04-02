@@ -13,9 +13,11 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.econ.RaidCondition;
@@ -33,10 +35,8 @@ import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class NexRaidIntel extends OffensiveFleetIntel {
 	
@@ -137,14 +137,20 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		}
 		addETABullet(info, tc, h, 0);
 	}
-	
-	protected void writeRaidTargetsBullet(TooltipMakerAPI info, Color tc, float pad) {
-		List<MarketAPI> targets = ((NexRaidActionStage)action).getTargets();
+
+	protected List<FactionAPI> getTargetFactions() {
 		List<FactionAPI> targetFactions = new ArrayList<>();
+
+		List<MarketAPI> targets = ((NexRaidActionStage)action).getTargets();
 		for (MarketAPI target : targets) {
 			if (targetFactions.contains(target.getFaction())) continue;
 			targetFactions.add(target.getFaction());
 		}
+		return targetFactions;
+	}
+	
+	protected void writeRaidTargetsBullet(TooltipMakerAPI info, Color tc, float pad) {
+		List<FactionAPI> targetFactions = getTargetFactions();
 		
 		Collections.sort(targetFactions, Nex_FactionDirectoryHelper.NAME_COMPARATOR);
 		List<String> factionNames = new ArrayList<>();
@@ -335,5 +341,15 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 	public String getIcon() {
 		//return Global.getSettings().getSpriteName("intel", "nex_invasion");
 		return faction.getCrest();
+	}
+
+	@Override
+	public Set<String> getIntelTags(SectorMapAPI map) {
+		Set<String> tags = super.getIntelTags(map);
+		for (FactionAPI faction : getTargetFactions()) {
+			tags.add(faction.getId());
+			if (faction.isPlayerFaction()) tags.add(Tags.INTEL_COLONIES);
+		}
+		return tags;
 	}
 }
