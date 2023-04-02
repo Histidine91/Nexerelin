@@ -31,7 +31,7 @@ public class SatBombAction extends OffensiveFleetAction {
             return false;
         }
 
-        return true;
+        return super.canUse(concern);
     }
 
     @Override

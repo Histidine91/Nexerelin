@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import lombok.extern.log4j.Log4j;
@@ -24,7 +23,7 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
 
         float ourStrength = getFactionStrength(us);
 
-        for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+        for (String factionId : getRelevantLiveFactionIds()) {
             FactionAPI faction = Global.getSector().getFaction(factionId);
             if (faction == us) continue;
             if (alreadyConcerned.contains(faction)) continue;
@@ -45,6 +44,10 @@ public class DevelopRelationsConcern extends DiplomacyConcern {
 
     @Override
     public void update() {
+        if (isFactionCommissionedPlayer(faction)) {
+            end();
+            return;
+        }
         float ourStrength = getFactionStrength(ai.getFaction());
         float theirStrength = getFactionStrength(faction);
         if (!wantToBefriend(faction)) {

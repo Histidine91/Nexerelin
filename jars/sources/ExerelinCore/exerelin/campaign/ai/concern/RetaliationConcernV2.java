@@ -44,8 +44,6 @@ public class RetaliationConcernV2 extends BaseStrategicConcern {
 
     @Override
     public void update() {
-        topRaid = null;
-
         List<Pair<RaidRecord, Float>> raidsSorted = new ArrayList<>();
         List<RaidRecord> recentRaids = new ArrayList<>();
         Map<String, Integer> numRaidsByFaction = new HashMap<>();
@@ -62,8 +60,14 @@ public class RetaliationConcernV2 extends BaseStrategicConcern {
             totalImpact += raid.getAgeAdjustedImpact();
         }
         if (recentRaids.isEmpty()) {
+            // don't end concern yet if we have a raid en route
+            if (currentAction == null || currentAction.isEnded()) {
+                end();
+            }
             return;
         }
+
+        topRaid = null;
 
         for (RaidRecord raid : recentRaids) {
             // multiply each raid's impact by number of raids that faction has in total, so if someone is frequently attacking us we're extra mad
@@ -72,10 +76,6 @@ public class RetaliationConcernV2 extends BaseStrategicConcern {
         }
 
         Collections.sort(raidsSorted, VALUE_COMPARATOR);
-        if (raidsSorted.isEmpty()) {
-            end();
-            return;
-        }
 
         topRaid = raidsSorted.get(0).one;
         market = topRaid.origin;

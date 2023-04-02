@@ -7,7 +7,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -27,7 +26,7 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
 
         float ourStrength = getFactionStrength(us);
 
-        for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+        for (String factionId : getRelevantLiveFactionIds()) {
             FactionAPI faction = Global.getSector().getFaction(factionId);
             if (alreadyConcerned.contains(faction)) continue;
             float theirStrength = getFactionStrength(faction);
@@ -48,6 +47,10 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
 
     @Override
     public void update() {
+        if (isFactionCommissionedPlayer(faction)) {
+            end();
+            return;
+        }
         float ourStrength = getFactionStrength(ai.getFaction());
         float theirStrength = getFactionStrength(faction);
         if (!shouldBeConcernedAbout(faction, ourStrength, theirStrength)) {

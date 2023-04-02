@@ -140,9 +140,13 @@ public class StrategicAI extends BaseIntelPlugin {
 		findConcerns(milModule);
 		findConcerns(diploModule);
 
-		// tell executive module to take action
-		execModule.actOnConcerns();
-		lastAddedActions.addAll(execModule.getRecentActions());
+		// tell executive module to take action (if not a commissioned player)
+		if (faction.isPlayerFaction() && Misc.getCommissionFaction() != null) {
+
+		} else {
+			execModule.actOnConcerns();
+			lastAddedActions.addAll(execModule.getRecentActions());
+		}
 
 		if (!lastAddedConcerns.isEmpty() || !lastRemovedConcerns.isEmpty() || !lastAddedActions.isEmpty()) {
 			sendUpdateIfPlayerHasIntel(UPDATE_NEW_CONCERNS, true, false);

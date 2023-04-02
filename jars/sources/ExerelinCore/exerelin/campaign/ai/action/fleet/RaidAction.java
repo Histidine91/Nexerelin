@@ -45,6 +45,6 @@ public class RaidAction extends OffensiveFleetAction {
             return false;
         }
 
-        return true;
+        return super.canUse(concern);
     }
 }

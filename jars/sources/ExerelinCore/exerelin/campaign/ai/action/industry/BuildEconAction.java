@@ -104,6 +104,7 @@ public class BuildEconAction extends BuildIndustryAction {
     @Override
     public boolean canUse(StrategicConcern concern) {
         if (!concern.getDef().hasTag("canBuildEcon")) return false;
+        if (!super.canUse(concern)) return false;
 
         return concern instanceof HasCommodityTarget || concern instanceof HasIndustryToBuild;
     }

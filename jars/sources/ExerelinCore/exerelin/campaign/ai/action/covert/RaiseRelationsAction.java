@@ -2,8 +2,8 @@ package exerelin.campaign.ai.action.covert;
 
 import com.fs.starfarer.api.Global;
 import exerelin.campaign.CovertOpsManager;
-import exerelin.campaign.ai.action.DiplomacyAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
+import exerelin.campaign.ai.action.DiplomacyAction;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.agents.RaiseRelations;
 import exerelin.utilities.NexConfig;
@@ -35,6 +35,8 @@ public class RaiseRelationsAction extends CovertAction {
     public boolean canUse(StrategicConcern concern) {
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(DiplomacyAction.MEM_KEY_GLOBAL_COOLDOWN))
             return false;
-        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy && concern.getDef().hasTag("diplomacy_positive");
+        if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
+        if (!concern.getDef().hasTag("diplomacy_positive")) return false;
+        return super.canUse(concern);
     }
 }

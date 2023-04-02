@@ -12,6 +12,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.BaseStrategicAction;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
+import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.ProductionMap;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
@@ -188,6 +189,11 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
             //Global.getLogger(this.getClass()).info("boom chaka chaka wow ");
             this.end(ActionStatus.SUCCESS);
         }
+    }
+
+    @Override
+    public boolean canUse(StrategicConcern concern) {
+        return !ai.getFaction().isPlayerFaction();
     }
 
     @Override

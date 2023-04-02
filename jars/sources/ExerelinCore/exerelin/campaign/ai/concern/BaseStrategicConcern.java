@@ -6,12 +6,14 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.*;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
@@ -343,6 +345,12 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         return getName();
     }
 
+    public static List<String> getRelevantLiveFactionIds() {
+        List<String> live = SectorManager.getLiveFactionIdsCopy();
+        if (Misc.getCommissionFaction() != null) live.remove(Factions.PLAYER);
+        return live;
+    }
+
     public static float getSpaceDefenseValue(MarketAPI market) {
         MilitaryInfoHelper helper = MilitaryInfoHelper.getInstance();
         MilitaryInfoHelper.PatrolStrengthEntry patrolStr = helper.getPatrolStrength(market.getContainingLocation());
@@ -361,5 +369,14 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     public static float getGroundDefenseValue(MarketAPI market) {
         return market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0);
+    }
+
+    /**
+     * Is this faction the player faction and does player have commission?
+     * @param faction
+     * @return
+     */
+    public static boolean isFactionCommissionedPlayer(FactionAPI faction) {
+        return faction.isPlayerFaction() && Misc.getCommissionFaction() != null;
     }
 }

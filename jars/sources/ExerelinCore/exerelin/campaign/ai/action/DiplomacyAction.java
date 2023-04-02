@@ -1,6 +1,7 @@
 package exerelin.campaign.ai.action;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
@@ -132,6 +133,10 @@ public class DiplomacyAction extends BaseStrategicAction {
         if (concern.getDef().hasTag("diplomacy_negative") && !this.getDef().hasTag("unfriendly"))
             return false;
 
+        if ((ai.getFaction().isPlayerFaction() || concern.getFaction() == Global.getSector().getPlayerFaction())) {
+            if (!NexConfig.followersDiplomacy) return false;
+            if (Misc.getCommissionFaction() != null) return false;
+        }
         return concern.getDef().hasTag("canDiplomacy");
     }
 }

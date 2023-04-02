@@ -49,7 +49,7 @@ public class BaseStrikeAction extends OffensiveFleetAction {
         delegate = InvasionFleetManager.getManager().spawnBaseStrikeFleet(ai.getFaction(), target);
         if (delegate == null) return false;
 
-        return true;
+        return super.canUse(concern);
     }
 
     @Override

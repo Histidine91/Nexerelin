@@ -50,7 +50,7 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
         Pair<MarketAPI, Float> goal = picker.pick();
         if (goal != null) {
             market = goal.one;
-            priority.modifyFlat("defenseAdjustedValue", goal.two, StrategicAI.getString("statDefenseAdjustedValue", true));
+            priority.modifyFlat("defenseAdjustedValue", goal.two * 2, StrategicAI.getString("statDefenseAdjustedValue", true));
             reapplyPriorityModifiers();
         }
 

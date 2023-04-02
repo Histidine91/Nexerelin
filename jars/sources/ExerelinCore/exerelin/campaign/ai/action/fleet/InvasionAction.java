@@ -5,6 +5,7 @@ import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -27,6 +28,10 @@ public class InvasionAction extends OffensiveFleetAction {
             return false;
         }
 
+        if (concern.getMarket() != null) {
+            if (!NexUtilsMarket.shouldTargetForInvasions(concern.getMarket(), 0)) return false;
+        }
+
         float pointReq = NexConfig.pointsRequiredForInvasionFleet;
         float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());
 
@@ -38,7 +43,7 @@ public class InvasionAction extends OffensiveFleetAction {
             return false;
         }
 
-        return true;
+        return super.canUse(concern);
     }
 
     @Override

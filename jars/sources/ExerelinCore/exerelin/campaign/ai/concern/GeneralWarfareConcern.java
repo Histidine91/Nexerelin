@@ -7,6 +7,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
@@ -22,7 +23,7 @@ import java.util.Set;
 
 public class GeneralWarfareConcern extends BaseStrategicConcern {
 
-    public static final float BASE_PRIORITY = 50;
+    public static final float BASE_PRIORITY = SAIConstants.MIN_FACTION_PRIORITY_TO_CARE;
     public static final float PRIORITY_PER_DAY = 0.2f;
 
     @Getter protected Set<String> hostileFactions = new HashSet<>();
@@ -101,6 +102,7 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
         if (newStatus == StrategicActionDelegate.ActionStatus.STARTING) {
             Global.getLogger(this.getClass()).info("Lowering priority by " + action.getDef().cooldown + " based on action cooldown");
             priorityFromTime -= action.getDef().cooldown * 2;
+            if (priorityFromTime < 0) priorityFromTime = 0;
             priority.modifyFlat("priorityFromTime", priorityFromTime, StrategicAI.getString("statPriorityOverTime", true));
         }
     }

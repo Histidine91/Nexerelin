@@ -4,7 +4,9 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ai.action.BaseStrategicAction;
+import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.intel.agents.CovertActionIntel;
+import exerelin.utilities.NexConfig;
 
 import java.util.List;
 
@@ -37,6 +39,14 @@ public abstract class CovertAction extends BaseStrategicAction {
         if (concern.getMarket() != null) return concern.getMarket();
 
         return CovertOpsManager.getManager().pickTargetMarket(getAgentFaction(), getTargetFaction(), getActionType(), concern.getMarkets(), null);
+    }
+
+    @Override
+    public boolean canUse(StrategicConcern concern) {
+        if (ai.getFaction().isPlayerFaction() && !NexConfig.followersAgents)
+            return false;
+
+        return true;
     }
 
     public abstract String getActionType();

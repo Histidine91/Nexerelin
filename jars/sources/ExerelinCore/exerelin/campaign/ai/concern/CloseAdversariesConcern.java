@@ -9,7 +9,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
@@ -40,7 +39,7 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
         boolean canPirate = false;  // NexConfig.allowPirateInvasions;
 
         List<Pair<FactionAPI, Float>> adversaries = new ArrayList<>();
-        for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+        for (String factionId : getRelevantLiveFactionIds()) {
             if (canPirate && NexUtilsFaction.isPirateFaction(factionId)) continue;
             if (us.isAtWorst(factionId, RepLevel.NEUTRAL)) continue;
             FactionAPI faction = Global.getSector().getFaction(factionId);
@@ -91,19 +90,7 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
 
     @Override
     public void update() {
-        boolean cancel = false;
-        FactionAPI us = ai.getFaction();
-        if (us.isAtWorst(faction, RepLevel.NEUTRAL)) {
-            cancel = true;
-        }
-        else if (us.isAtWorst(faction2, RepLevel.NEUTRAL)) {
-            cancel = true;
-        }
-        else if (faction.isAtBest(faction2, RepLevel.FAVORABLE)) {
-            cancel = true;
-        }
-
-        if (cancel) {
+        if (shouldCancel()) {
             end();
             return;
         }
@@ -122,6 +109,26 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
         priority.modifyFlat("power", theirStrength + theirStrength2, StrategicAI.getString("statFactionPower", true));
 
         super.update();
+    }
+
+    protected boolean shouldCancel() {
+        FactionAPI us = ai.getFaction();
+        if (us.isAtWorst(faction, RepLevel.NEUTRAL)) {
+            return true;
+        }
+        else if (us.isAtWorst(faction2, RepLevel.NEUTRAL)) {
+            return true;
+        }
+        else if (faction.isAtBest(faction2, RepLevel.FAVORABLE)) {
+            return true;
+        }
+        else if (isFactionCommissionedPlayer(faction)) {
+            return true;
+        }
+        else if (isFactionCommissionedPlayer(faction2)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

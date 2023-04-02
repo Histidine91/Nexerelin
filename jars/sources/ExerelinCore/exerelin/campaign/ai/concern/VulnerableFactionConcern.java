@@ -7,7 +7,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
@@ -29,7 +28,7 @@ public class VulnerableFactionConcern extends DiplomacyConcern {
 
         float ourStrength = getFactionStrength(us);
 
-        for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+        for (String factionId : getRelevantLiveFactionIds()) {
             FactionAPI faction = Global.getSector().getFaction(factionId);
             if (alreadyConcerned.contains(faction)) continue;
             float theirStrength = getFactionStrength(faction);
