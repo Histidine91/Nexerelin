@@ -1343,6 +1343,7 @@
 		"industryPanel_header_industry":"Industry",
 		"industryPanel_header_heldBy":"Held by",
 		"industryPanel_header_defBonus":"Defense bonus",
+		"industryPanel_header_disrupt":"Disrupted: %s day(s)",
 		"industryPanel_header_bombardmentImmune":"Bombardment immune",
 		"industryPanel_header_bombardmentResistant":"Not disrupted by bombardments",
 		"industryPanel_header_attacker":"Attacking forces",

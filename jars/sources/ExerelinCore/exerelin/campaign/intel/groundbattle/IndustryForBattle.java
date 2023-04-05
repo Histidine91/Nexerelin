@@ -4,15 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.IconRenderMode;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
-import com.fs.starfarer.api.ui.UIComponentAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.CovertOpsManager;
@@ -24,15 +18,11 @@ import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 public class IndustryForBattle {
 	
@@ -591,8 +581,8 @@ public class IndustryForBattle {
 					boolean trueDisrupt = isIndustryTrueDisrupted();
 					
 					if (trueDisrupt) {
-						str = StringHelper.getString("disrupted", true);
-						tt.addPara(str, Misc.getHighlightColor(), pad);
+						str = GroundBattleIntel.getString("industryPanel_header_disrupt");
+						tt.addPara(str, pad, Misc.getNegativeHighlightColor(), "" + Math.round(getIndustry().getDisruptedDays()));
 					}
 					float strMult = plugin.getStrengthMult();
 					if (strMult != 1) {
@@ -605,7 +595,7 @@ public class IndustryForBattle {
 					str = StringHelper.getString("nex_invasion2", "industryPanel_header_heldBy");
 					tt.addPara(str + ": " + owner, pad, intel.getHighlightColorForSide(heldByAttacker), owner);
 					
-					if (!trueDisrupt) {
+					if (true || !trueDisrupt) {
 						if (getPlugin().getDef().hasTag("noBombard")) {
 							str = StringHelper.getString("nex_invasion2", "industryPanel_header_bombardmentImmune");
 							tt.addPara(str, pad);
