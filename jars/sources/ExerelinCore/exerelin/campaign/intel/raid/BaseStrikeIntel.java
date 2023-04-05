@@ -15,9 +15,12 @@ import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BaseStrikeIntel extends NexRaidIntel {
@@ -269,6 +272,11 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		else if (!faction.isHostileTo(target.getFaction())) {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
+	}
+	
+	@Override
+	protected List<FactionAPI> getTargetFactions() {
+		return new ArrayList<>(Arrays.asList(this.targetFaction));
 	}
 
 	@Override
