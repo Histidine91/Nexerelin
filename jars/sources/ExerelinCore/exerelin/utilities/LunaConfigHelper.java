@@ -86,8 +86,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("specialForcesSizeMult", "float", tabFleets, NexConfig.specialForcesSizeMult, 0.2, 5);
 
         addHeader("misc", null);
+        addSetting("enableStrategicAI", "boolean", NexConfig.enableStrategicAI);
         addSetting("enableVictory", "boolean", NexConfig.enableVictory);
-
         addSetting("hardModeColonyGrowthMult", "float", NexConfig.hardModeColonyGrowthMult, 0.5f, 1f);
         addSetting("hardModeColonyIncomeMult", "float", NexConfig.hardModeColonyIncomeMult, 0.5f, 1f);
         addSetting("enablePunitiveExpeditions", "boolean", NexConfig.enablePunitiveExpeditions);
@@ -157,6 +157,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.specialForcesPointMult = (float)loadSetting("specialForcesPointMult", "float");
         NexConfig.specialForcesSizeMult = (float)loadSetting("specialForcesSizeMult", "float");
 
+        NexConfig.enableStrategicAI = (boolean)loadSetting("enableStrategicAI", "boolean");
         NexConfig.enableVictory = (boolean)loadSetting("enableVictory", "boolean");
         NexConfig.hardModeColonyGrowthMult = (float)loadSetting("hardModeColonyGrowthMult", "float");
         NexConfig.hardModeColonyIncomeMult = (float)loadSetting("hardModeColonyIncomeMult", "float");

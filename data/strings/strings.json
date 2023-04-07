@@ -2709,6 +2709,7 @@
 		"selectShipGeneric":"Select ship",
 		
 		"intelTagDebug":"Debug",
+		"intelTagStrategicAI":"Strat. AI",
 		
 		"xpProfitableTradeMsg":"Gained experience from profitable trades",
 		
@@ -2820,6 +2821,8 @@
 		"tooltip_specialForcesPointMult":"Controls the rate at which NPC special task groups spawn and are replaced.",
 		"name_specialForcesSizeMult":"Special task group size mult",
 		
+		"name_enableStrategicAI":"Enable strategic AI",
+		"tooltip_enableStrategicAI":"Toggles the new experimental strategic AI for NPC factions. This setting takes effect on [game load], adding AIs to applicable factions if enabled and purging any AIs if disabled.",
 		"name_enableVictory":"Enable victory",
 		"tooltip_enableVictory":"If off, prevents the victory event from occuring even if conditions are met (except for story-based or other scripted victories).",
 		"name_hardModeColonyGrowthMult":"Starfarer mode colony growth mult",

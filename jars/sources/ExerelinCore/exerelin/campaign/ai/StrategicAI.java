@@ -311,7 +311,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(StringHelper.getString("exerelin_misc", "intelTagDebug"));
+		tags.add(StringHelper.getString("exerelin_misc", "intelTagStrategicAI"));
 		//tags.add(DiplomacyProfileIntel.getString("intelTag"));
 		return tags;
 	}	

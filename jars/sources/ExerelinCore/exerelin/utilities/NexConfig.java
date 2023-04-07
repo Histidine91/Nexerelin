@@ -3,15 +3,16 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.ExerelinConstants;
-import org.json.JSONObject;
-import java.util.List;
-import java.util.ArrayList;
-
-import static exerelin.utilities.NexUtils.JSONArrayToStringArray;
-import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static exerelin.utilities.NexUtils.JSONArrayToStringArray;
 
 public class NexConfig
 {
@@ -135,6 +136,7 @@ public class NexConfig
     public static int agentEventFilterLevel = 0;
     public static int nexIntelQueued = 0;
     public static boolean queuedNexMissions = false;
+    public static boolean enableStrategicAI = true;
 	public static boolean enableVictory = true;
     
     public static float baseTariffMult = 0.6f;
@@ -287,6 +289,7 @@ public class NexConfig
             agentEventFilterLevel = settings.optInt("agentEventFilterLevel", agentEventFilterLevel);
             nexIntelQueued = settings.optInt("nexIntelQueued", nexIntelQueued);
             queuedNexMissions = settings.optBoolean("queuedNexMissions", queuedNexMissions);
+            enableStrategicAI = settings.optBoolean("enableStrategicAI", enableStrategicAI);
             enableVictory = settings.optBoolean("enableVictory", enableVictory);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));

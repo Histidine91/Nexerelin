@@ -405,7 +405,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
         }
 
-        if (SAIConstants.AI_ENABLED){
+        if (NexConfig.enableStrategicAI){
             StrategicAI.addAIsIfNeeded();
         } else {
             StrategicAI.removeAIs();
