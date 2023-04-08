@@ -21,7 +21,9 @@ public class Nex_NGCFinalize extends BaseCommandPlugin {
 		if ("tutorialStart".equals(memoryMap.get(MemKeys.LOCAL).getString("$nex_customStart"))) 
 		{
 			CharacterCreationData ccd = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
-			ccd.getPerson().getStats().addPoints(-1);
+			if (ccd.getPerson().getStats().getLevel() == 1) {
+				ccd.getPerson().getStats().addPoints(-1);
+			}
 		}
 		
 		return true;
