@@ -36,10 +36,8 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 import static exerelin.campaign.battle.NexWarSimScript.*;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
@@ -53,6 +51,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public static final float ALLY_GEAR_CHANCE = 0.5f;
 	public static final float FP_MULT = 0.7f;
 	public static final float ROUTE_STRENGTH_MULT = 1/FP_MULT;
+	public static final List<String> NO_ALLY_SHARE_FACTIONS = new ArrayList<>(Arrays.asList("tahlan_legioinfernalis"));
 	
 	public static Logger log = Global.getLogger(OffensiveFleetIntel.class);
 	
@@ -601,10 +600,15 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			log.info("Brawl mode: Using gear from faction " + factionId);
 		}
 		else if (alliance != null && random.nextFloat() < ALLY_GEAR_CHANCE) {
-			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
-			picker.addAll(alliance.getMembersCopy());
-			factionId = picker.pick();
-			log.info("Using allied gear from faction " + factionId);
+			Set<String> allyFactions = alliance.getMembersCopy();
+			allyFactions.removeAll(NO_ALLY_SHARE_FACTIONS);
+			if (!allyFactions.isEmpty()) {
+				WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+				picker.addAll(allyFactions);
+				factionId = picker.pick();
+				log.info("Using allied gear from faction " + factionId);
+			}
+
 		}
 		
 		CampaignFleetAPI fleet = createFleet(factionId, route, market, null, random);
