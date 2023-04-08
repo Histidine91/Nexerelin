@@ -160,9 +160,12 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		addSuccessStages(Stage.COMPLETED);
 		addFailureStages(Stage.FAILED);
 		
+		// don't use a completion stage trigger, it can't be trusted https://fractalsoftworks.com/forum/index.php?topic=5061.msg392175#msg392175
+		/*
 		beginStageTrigger(Stage.COMPLETED);
 		triggerSetGlobalMemoryValue("$nex_remFragments_missionCompleted", true);
 		endTrigger();
+		*/
 		
 		beginStageTrigger(Stage.FAILED);
 		triggerSetGlobalMemoryValue("$nex_remFragments_missionFailed", true);
@@ -562,9 +565,8 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	}
 	
 	@Override
-	public boolean callEvent(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
-		String action = params.get(0).getString(memoryMap);
-		
+	public boolean callAction(String action, String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) 
+	{		
 		switch (action) {
 			case "pursue_mothership":
 				setCurrentStage(Stage.FOLLOW_MOTHERSHIP, dialog, memoryMap);
@@ -636,12 +638,13 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				return true;
 			case "complete":
 				setCurrentStage(Stage.COMPLETED, dialog, memoryMap);
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_remFragments_missionCompleted", true);
 				return true;
 			default:
 				break;
 		}
 		
-		return super.callEvent(ruleId, dialog, params, memoryMap);
+		return false;
 	}
 		
 	@Override

@@ -130,6 +130,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		connectWithMarketDecivilized(Stage.RETRIEVE_CORES, Stage.FAILED_DECIV, market);
 		setStageOnMarketDecivilized(Stage.FAILED_DECIV, createdAt);
 		
+		// don't use a completion stage trigger, it can't be trusted https://fractalsoftworks.com/forum/index.php?topic=5061.msg392175#msg392175
 		/*
 		beginStageTrigger(Stage.COMPLETED);
 		triggerSetGlobalMemoryValue("$nex_remM1_missionCompleted", true);
@@ -171,6 +172,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 		set("$nex_remM1_stage", getCurrentStage());
 	}
 	
+	// not CallAction becase we may need to return false here?
 	@Override
 	public boolean callEvent(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
 		String action = params.get(0).getString(memoryMap);

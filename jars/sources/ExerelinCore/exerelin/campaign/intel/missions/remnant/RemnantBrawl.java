@@ -165,7 +165,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		setStartingStage(Stage.GO_TO_ORIGIN_SYSTEM);
 		addSuccessStages(Stage.COMPLETED);
-		addFailureStages(Stage.FAILED);
+		addFailureStages(Stage.FAILED);		
 		
 		beginStageTrigger(Stage.COMPLETED);
 		triggerSetGlobalMemoryValue("$nex_remBrawl_missionCompleted", true);
@@ -731,6 +731,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	public void remnantVictory() {
 		setCurrentStage(Stage.COMPLETED, null, null);
+		Global.getSector().getMemoryWithoutUpdate().set("$nex_remBrawl_missionCompleted", true);
 		getPerson().setImportance(getPerson().getImportance().next());
 		ContactIntel ci = ContactIntel.getContactIntel(getPerson());
 		if (ci != null) ci.sendUpdateIfPlayerHasIntel(null, false, false);
@@ -742,6 +743,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			setPersonOverride(admiral);
 			
 			setCurrentStage(Stage.COMPLETED, null, null);
+			Global.getSector().getMemoryWithoutUpdate().set("$nex_remBrawl_missionCompleted", true);
 			NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(Factions.REMNANTS), 
 					midnight, -0.15f, -0.3f, null, null);
 			unsetDefendersNonHostile();
@@ -819,9 +821,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	}
 	
 	@Override
-	public boolean callEvent(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
-		String action = params.get(0).getString(memoryMap);
-		
+	public boolean callAction(String action, String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) 
+	{		
 		switch (action) {
 			case "showAdmiral":
 				dialog.getVisualPanel().showSecondPerson(admiral);
@@ -854,7 +855,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				break;
 		}
 		
-		return super.callEvent(ruleId, dialog, params, memoryMap);
+		return false;
 	}
 	
 	@Override

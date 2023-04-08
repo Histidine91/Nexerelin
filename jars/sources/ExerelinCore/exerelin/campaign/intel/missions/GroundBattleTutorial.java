@@ -82,9 +82,12 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		addInvasionFleet();
 		//setStoryMission();
 		
+		// don't use a completion stage trigger, it can't be trusted https://fractalsoftworks.com/forum/index.php?topic=5061.msg392175#msg392175
+		/*
 		beginStageTrigger(Stage.COMPLETED);
 		triggerSetGlobalMemoryValue("$nex_gbTut_missionCompleted", true);
 		endTrigger();
+		*/
 		
 		setCreditReward(CreditReward.HIGH);
 
@@ -134,6 +137,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 				return true;
 			case "endMission":
 				setCurrentStage(Stage.COMPLETED, dialog, dialog.getPlugin().getMemoryMap());
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_gbTut_missionCompleted", true);
 				return true;
 			default:
 				break;
