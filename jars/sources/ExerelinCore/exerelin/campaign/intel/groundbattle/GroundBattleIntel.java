@@ -1,16 +1,8 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -27,24 +19,13 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_BuyColony;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -53,7 +34,6 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
@@ -62,26 +42,19 @@ import exerelin.campaign.intel.groundbattle.GroundUnit.UnitQuickMoveHax;
 import exerelin.campaign.intel.groundbattle.GroundUnit.UnitSize;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
 import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
-import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
-import exerelin.campaign.intel.groundbattle.plugins.FactionBonusPlugin;
-import exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin;
-import exerelin.campaign.intel.groundbattle.plugins.GeneralPlugin;
-import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
-import exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin;
-import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
-import exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin;
+import exerelin.campaign.intel.groundbattle.plugins.*;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.ui.ProgressBar;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
-
-import java.awt.Color;
-import java.util.*;
-
 import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /**
  * Primary class for handling ground battles.
@@ -1061,10 +1034,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			
 		}
 
-		if (outcome == BattleOutcome.DEFENDER_VICTORY && rebelsArose) {
-			RebellionIntel reb = RebellionIntel.getOngoingEvent(market);
-			if (reb != null) reb.endEvent(RebellionIntel.RebellionResult.GOVERNMENT_VICTORY);
-		}
+		endRebellionIfNeeded();
 
 		// reset garrison strength
 		if (outcome == BattleOutcome.ATTACKER_VICTORY && playerInitiated) {
@@ -1133,6 +1103,18 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		updateStability();
 		endAfterDelay();
+	}
+
+	protected void endRebellionIfNeeded() {
+		if (!rebelsArose) return;
+		RebellionIntel reb = RebellionIntel.getOngoingEvent(market);
+		if (reb == null) return;
+
+		if (outcome == BattleOutcome.DEFENDER_VICTORY) {
+			reb.endEvent(RebellionIntel.RebellionResult.GOVERNMENT_VICTORY);
+		} else if (outcome == BattleOutcome.ATTACKER_VICTORY) {
+			reb.endEvent(RebellionIntel.RebellionResult.LIBERATED);
+		}
 	}
 	
 	public boolean hasAnyDeployedUnits(boolean attacker) {
