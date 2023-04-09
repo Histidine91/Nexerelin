@@ -13,6 +13,11 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.StrategicAIListener;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
+import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.plugins.ExerelinModPlugin;
@@ -29,13 +34,14 @@ import java.util.List;
 import java.util.Set;
 
 @Log4j
-public class DebugIntel extends BaseIntelPlugin {
+public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener {
 		
 	public static final float MARGIN = 40;
 	public static final String DATA_KEY = "nex_debugIntel";
 	
 	public DebugIntel init() {
 		Global.getSector().getIntelManager().addIntel(this);
+		Global.getSector().getListenerManager().addListener(this);
 		Global.getSector().getPersistentData().put(DATA_KEY, this);
 		this.setImportant(true);
 		return this;
@@ -47,6 +53,9 @@ public class DebugIntel extends BaseIntelPlugin {
 	
 	// runcode exerelin.debug.DebugIntel.createIntel();
 	public static DebugIntel createIntel() {
+		if (getIntel() != null) {
+			getIntel().endImmediately();
+		}
 		DebugIntel intel = new DebugIntel();
 		intel.init();
 		Global.getSector().getPersistentData().put(DATA_KEY, intel);
@@ -219,5 +228,52 @@ public class DebugIntel extends BaseIntelPlugin {
 	@Override
 	public boolean isHidden() {
 		return !ExerelinModPlugin.isNexDev;
+	}
+
+	@Override
+	public void reportStrategyMeetingHeld(StrategicAI ai) {
+
+	}
+
+	public boolean allowConcern(StrategicAI ai, StrategicConcern concern) {
+		return true;
+	}
+
+	@Override
+	public void reportConcernAdded(StrategicAI ai, StrategicConcern concern) {
+		concern.getPriority().modifyFlat("debug", 1, "Listener debug (added)");
+	}
+
+	@Override
+	public void reportConcernUpdated(StrategicAI ai, StrategicConcern concern) {
+		concern.getPriority().modifyFlat("debug", 1, "Listener debug (updated)");
+	}
+
+	@Override
+	public void reportConcernRemoved(StrategicAI ai, StrategicConcern concern) {
+
+	}
+
+	public boolean allowAction(StrategicAI ai, StrategicAction action) {
+		return true;
+	}
+
+	@Override
+	public void reportActionAdded(StrategicAI ai, StrategicAction action) {
+	}
+
+	@Override
+	public void reportActionPriorityUpdated(StrategicAI ai, StrategicAction action) {
+		action.getPriority().modifyFlat("debug", 1, "Listener debug (priority update)");
+	}
+
+	@Override
+	public void reportActionUpdated(StrategicAI ai, StrategicAction action, StrategicActionDelegate.ActionStatus status) {
+
+	}
+
+	@Override
+	public void reportActionCancelled(StrategicAI ai, StrategicAction action) {
+
 	}
 }

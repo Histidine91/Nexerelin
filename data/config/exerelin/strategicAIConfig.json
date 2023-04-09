@@ -118,7 +118,7 @@
 			"name":"Invasion",
 			"classPath":"exerelin.campaign.ai.action.fleet.InvasionAction",
 			"cooldown":60,			# how long after action completion before a new action can be taken for the concern; default 30
-			"antiRepetition":35,	# reduction in action priority if recently used elsewhere, decays over time; default 25
+			"antiRepetition":30,	# reduction in action priority if recently used elsewhere, decays over time; default 25
 			"chance":0.8,			# if the roll fails, skip the action before even checking its priority
 			# wartime actions can only be used when at war
 			"tags":["military", "market", "canInvade", "unfriendly", "aggressive", "wartime"],

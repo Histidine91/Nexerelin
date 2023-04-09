@@ -288,7 +288,8 @@ public class StrategicAI extends BaseIntelPlugin {
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_MEETING) {
-			update();
+			interval.forceIntervalElapsed();
+			advanceImpl(0);
 			ui.updateUIForItem(this);
 		}
 	}

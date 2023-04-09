@@ -81,6 +81,15 @@ public class SAIUtils {
         }
     }
 
+    public static boolean allowConcern(StrategicAI ai, StrategicConcern concern)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            boolean allowed = x.allowConcern(ai, concern);
+            if (!allowed) return false;
+        }
+        return true;
+    }
+
     public static void reportConcernAdded(StrategicAI ai, StrategicConcern concern)
     {
         for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
@@ -100,6 +109,15 @@ public class SAIUtils {
         for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
             x.reportConcernRemoved(ai, concern);
         }
+    }
+
+    public static boolean allowAction(StrategicAI ai, StrategicAction action)
+    {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            boolean allowed = x.allowAction(ai, action);
+            if (!allowed) return false;
+        }
+        return true;
     }
 
     public static void reportActionAdded(StrategicAI ai, StrategicAction action)

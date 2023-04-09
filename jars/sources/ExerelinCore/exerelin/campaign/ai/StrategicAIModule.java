@@ -63,6 +63,7 @@ public abstract class StrategicAIModule {
 
             concern.setAI(this.ai, this);
             boolean have = concern.generate();
+            have &= SAIUtils.allowConcern(ai, concern);
             if (have) {
                 //log.info("Found concern " + concern.getName());
                 currentConcerns.add(concern);

@@ -10,6 +10,7 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMath;
 import lombok.extern.log4j.Log4j;
 
 import java.util.List;
@@ -60,11 +61,17 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
         if (FleetPoolManager.USE_POOL) {
+
             float curPool = FleetPoolManager.getManager().getCurrentPool(ai.getFactionId());
             float max = FleetPoolManager.getManager().getMaxPool(ai.getFactionId());
-            float proportion = curPool/max;
-            if (max <= 0) proportion = 0;
-            if (proportion > 0.75f) proportion = 1;
+            if (max < 1) max = 1;
+
+            float ratio = Math.min(curPool/max, 1.25f);
+            float proportion = NexUtilsMath.lerp(0.4f, 1f, ratio);
+
+            if (max <= 0 || curPool <= 0) proportion = 0;
+            if (ratio > 0.75f) proportion = Math.max(proportion, 1);
+
             priority.modifyMult("fleetPool", proportion, StrategicAI.getString("statFleetPool", true));
         }
     }

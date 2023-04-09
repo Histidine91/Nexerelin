@@ -1,6 +1,8 @@
 package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -84,16 +86,22 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
         }
     }
 
-    protected boolean isRelyOnImports(String commodityId) {
-        int threshold = 4 + EconomyInfoHelper.getCommodityOutputModifier(commodityId);
+    /**
+     * Gets a list of enemy faction markets producing enough of the commodity to cover our imports.
+     * @return
+     */
+    @Override
+    public List<MarketAPI> getMarkets() {
+        FactionAPI us = ai.getFaction();
         int imports = EconomyInfoHelper.getInstance().getFactionCommodityImports(ai.getFactionId(), commodityId);
-        if (imports < threshold) {
-            return false;
+        List<MarketAPI> markets = new ArrayList<>();
+        List<EconomyInfoHelper.ProducerEntry> competitors = EconomyInfoHelper.getInstance().getCompetingProducers(
+                ai.getFactionId(), commodityId, imports);
+        for (EconomyInfoHelper.ProducerEntry entry : competitors) {
+            if (!entry.market.getFaction().isHostileTo(us)) continue;
+            markets.add(entry.market);
         }
-        int production = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
-        if (production >= imports) return false;
-
-        return true;
+        return markets;
     }
 
     @Override

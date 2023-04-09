@@ -4,6 +4,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import exerelin.campaign.SectorManager;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -57,7 +58,7 @@ public abstract class DiplomacyConcern extends BaseStrategicConcern {
 
     @Override
     public boolean isValid() {
-        return faction != null;
+        return faction != null && SectorManager.isFactionAlive(faction.getId());
     }
 
     // TODO: should count allies as well

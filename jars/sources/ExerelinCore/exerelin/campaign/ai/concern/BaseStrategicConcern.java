@@ -169,6 +169,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         log.info(String.format("Picking action for concern %s", getName()));
         StrategicAction bestAction = null;
         float bestPrio = 0;
+        boolean printReason = true;
 
         for (StrategicDefManager.StrategicActionDef possibleActionDef : module.getRelevantActionDefs(this)) {
             StrategicAction action = StrategicDefManager.instantiateAction(possibleActionDef);
@@ -176,15 +177,28 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             action.setConcern(this);
 
             // check if action is usable
-            if (Math.random() > action.getDef().chance) continue;
-            if (!this.canTakeAction(action)) continue;
+            if (Math.random() > action.getDef().chance) {
+                if (printReason) log.info(String.format("Action %s failed chance roll", action.getName()));
+                continue;
+            }
+            if (!this.canTakeAction(action)) {
+                if (printReason) log.info(String.format("Action %s blocked by concern", action.getName()));
+                continue;
+            }
             FactionAPI targetFaction = getFaction();
             if (targetFaction != null) {
                 RepLevel rep = targetFaction.getRelationshipLevel(ai.getFactionId());
                 if (!rep.isAtBest(action.getMaxRelToTarget(targetFaction))) continue;
                 if (!rep.isAtWorst(action.getMinRelToTarget(targetFaction))) continue;
             }
-            if (!action.canUse(this)) continue;
+            if (!action.canUse(this)) {
+                if (printReason) log.info(String.format("Action %s reports cannot use", action.getName()));
+                continue;
+            }
+            if (!SAIUtils.allowAction(ai, action)) {
+                if (printReason) log.info(String.format("Action %s blocked by listener", action.getName()));
+                continue;
+            }
 
             action.updatePriority();
             float priority = action.getPriorityFloat();

@@ -23,7 +23,7 @@ import java.util.Set;
 
 public class GeneralWarfareConcern extends BaseStrategicConcern {
 
-    public static final float BASE_PRIORITY = SAIConstants.MIN_FACTION_PRIORITY_TO_CARE;
+    public static final float BASE_PRIORITY = SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT - 10;
     public static final float PRIORITY_PER_DAY = 0.2f;
 
     @Getter protected Set<String> hostileFactions = new HashSet<>();
@@ -56,7 +56,7 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
                 strengthRatio = them/us;
                 if (strengthRatio > 2) strengthRatio = 2;
 
-                float priorityThisUpdate = PRIORITY_PER_DAY * days;
+                float priorityThisUpdate = PRIORITY_PER_DAY * days * strengthRatio;
                 Global.getLogger(this.getClass()).info(String.format("Priority increment this update: %.1f", priorityThisUpdate));
                 priorityFromTime += priorityThisUpdate;
                 priority.modifyFlat("priorityFromTime", priorityFromTime, StrategicAI.getString("statPriorityOverTime", true));
