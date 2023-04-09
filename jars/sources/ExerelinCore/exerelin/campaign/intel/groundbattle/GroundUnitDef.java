@@ -10,6 +10,10 @@ public class GroundUnitDef {
     @Getter protected static final List<GroundUnitDef> UNIT_DEFS = new ArrayList<>();
     @Getter protected static final Map<String, GroundUnitDef> UNIT_DEFS_BY_ID = new HashMap<>();
 
+    static {
+        boolean bla = GBDataManager.abilityDefs.isEmpty(); // trigger GBDataManager's definition load in static block
+    }
+
     public static final String MARINE = "marine";
     public static final String HEAVY = "heavy";
     public static final String MILITIA = "militia";

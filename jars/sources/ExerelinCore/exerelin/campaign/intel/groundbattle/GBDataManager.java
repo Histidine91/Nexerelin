@@ -3,18 +3,15 @@ package exerelin.campaign.intel.groundbattle;
 import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import lombok.extern.log4j.Log4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+@Log4j
 public class GBDataManager {
 	
 	public static final String CONFIG_PATH = "data/config/exerelin/groundBattleDefs.json";
@@ -50,7 +47,8 @@ public class GBDataManager {
 		
 		try {
 			JSONObject json = Global.getSettings().getMergedJSONForMod(CONFIG_PATH, ExerelinConstants.MOD_ID);
-			
+
+			// load industries
 			JSONObject jsonInd = json.getJSONObject("industries");
 			Iterator iter = jsonInd.keys();
 			while (iter.hasNext()) {
@@ -80,7 +78,8 @@ public class GBDataManager {
 				industryDefs.add(def);
 				industryDefsById.put(indId, def);
 			}
-			
+
+			// load conditions
 			JSONObject jsonCond = json.getJSONObject("conditions");
 			iter = jsonCond.keys();
 			while (iter.hasNext()) {
@@ -101,7 +100,8 @@ public class GBDataManager {
 				conditionDefs.add(def);
 				conditionDefsById.put(condId, def);
 			}
-			
+
+			// load abilities
 			JSONObject jsonAbility = json.getJSONObject("abilities");
 			iter = jsonAbility.keys();
 			while (iter.hasNext()) {
@@ -126,6 +126,7 @@ public class GBDataManager {
 			}
 			Collections.sort(abilityDefs);
 
+			// load units
 			JSONObject jsonUnit = json.getJSONObject("unitTypes");
 			iter = jsonUnit.keys();
 			while (iter.hasNext()) {
