@@ -1,0 +1,86 @@
+{
+  "variantId": "nex_silverlight_restrained_Standard",
+  "hullId": "nex_silverlight_restrained",
+  "displayName": "Standard",
+  "goalVariant": true,
+  "fluxCapacitors": 9,
+  "fluxVents": 32,
+  "quality": 1,
+  "permaMods": [],
+  "hullMods": [
+    "advancedshieldemitter",
+    "fluxbreakers",
+    "autorepair",
+    "magazines",
+    "armoredweapons",
+    "stabilizedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0008": "nex_alicorn"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "autopulse",
+        "WS0004": "autopulse"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "plasma",
+        "WS0006": "plasma"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "mark9",
+        "WS0002": "mark9"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0011": "railgun",
+        "WS0012": "railgun",
+        "WS0015": "taclaser",
+        "WS0016": "taclaser",
+        "WS0017": "taclaser",
+        "WS0018": "taclaser"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "guardian",
+        "WS0009": "pdburst",
+        "WS0010": "pdburst",
+        "WS0013": "pdlaser",
+        "WS0014": "pdlaser",
+        "WS0019": "pdlaser",
+        "WS0020": "pdlaser"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0021": "heatseeker",
+        "WS0022": "heatseeker"
+      }
+    }
+  ],
+  "modules": [],
+  "wings": []
+}

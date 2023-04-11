@@ -1,0 +1,36 @@
+{
+	"id":"nex_alicorn_proj",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"onHitEffect":"exerelin.combat.weapons.AlicornEffect",
+	"onFireEffect":"exerelin.combat.weapons.AlicornEffect",
+	#"bulletSprite":"graphics/missiles/rift_torpedo.png",
+	"coreColor":[160,192,255,255],
+	"fringeColor":[100,128,255,192],
+	"length":36,
+	"width":36,
+	"explosionColor":[255,90,110,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":250, # purely visual
+	"explosionSpec":{"duration":1f, # not visual
+					 "radius":250,
+					 "coreRadius":125, # full damage within core radius
+					 "collisionClass":HITS_SHIPS_AND_ASTEROIDS,
+					 "collisionClassByFighter":HITS_SHIPS_AND_ASTEROIDS,
+					 "particleSizeMin":8.0,
+					 "particleSizeRange":4.0,
+					 "particleDuration":1,
+					 "particleCount":250,
+					 "particleColor":[255,145,165,255],
+					 "useDetailedExplosion":true,
+					 "sound":"nex_alicorn_impact"},
+	#"reduceDamageWhileFading":true,
+	"useHitGlowWhenDealingDamage":false, # using the scripted explosion instead
+	#"useHitGlowWhenDestroyed":true, # instead of the default explosion
+	"noEngineGlowTime":0.2, # time spent without the engine glow being rendered
+	"fadeTime":0.2, # fadeout duration			
+	"glowColor":[100,128,255,75],
+	"glowRadius":125,
+}
+			

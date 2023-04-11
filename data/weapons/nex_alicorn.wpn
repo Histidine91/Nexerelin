@@ -1,0 +1,47 @@
+{
+  "id": "nex_alicorn",
+  "specClass": "projectile",
+  "projectileSpecId": "nex_alicorn_proj",
+  "everyFrameEffect": "exerelin.combat.weapons.AlicornEffect",
+  "type": "BALLISTIC",
+  "mountTypeOverride": "COMPOSITE",
+  "size": "LARGE",
+  "turretSprite": "graphics/exerelin/weapons/nex_alicorn_placeholder_turret.png",
+  "turretGunSprite": "graphics/exerelin/weapons/nex_alicorn_placeholder_turret_recoil.png",
+  "hardpointSprite": "graphics/exerelin/weapons/nex_alicorn_placeholder_hardpoint.png",
+  "hardpointGunSprite": "graphics/exerelin/weapons/nex_alicorn_placeholder_hardpoint_recoil.png",
+  "visualRecoil": 10,
+  "turretOffsets": [
+    40,
+    0
+  ],
+  "turretAngleOffsets": [
+    0
+  ],
+  "hardpointOffsets": [
+    51.5,
+    0
+  ],
+  "hardpointAngleOffsets": [
+    0
+  ],
+  "barrelMode": "ALTERNATING",
+  "animationType": "MUZZLE_FLASH",
+  "autocharge": true,
+  "muzzleFlashSpec": {
+    "length": 60,
+    "spread": 20,
+    "particleSizeMin": 20,
+    "particleSizeRange": 10,
+    "particleDuration": 1,
+    "particleCount": 35,
+    "particleColor": [
+      96,
+      180,
+      224,
+      255
+    ]
+  },
+  "renderHints":["RENDER_BARREL_BELOW"],
+  "fireSoundTwo":"nex_alicorn_fire",
+}

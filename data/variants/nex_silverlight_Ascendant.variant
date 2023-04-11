@@ -1,0 +1,96 @@
+{
+  "variantId": "nex_silverlight_Ascendant",
+  "hullId": "nex_silverlight",
+  "displayName": "Ascendant",
+  "goalVariant": true,
+  "fluxCapacitors": 9,
+  "fluxVents": 42,
+  "quality": 1,
+  "permaMods": [],
+  "hullMods": [
+    "advancedshieldemitter",
+    "autorepair",
+    "stabilizedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0008": "nex_alicorn"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "vpdriver",
+        "WS0004": "vpdriver"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "gauss",
+        "WS0002": "gauss"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "riftcascade",
+        "WS0006": "riftcascade"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0011": "railgun",
+        "WS0012": "railgun",
+        "WS0015": "ioncannon",
+        "WS0016": "ioncannon",
+        "WS0017": "riftlance",
+        "WS0018": "riftlance"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0021": "heatseeker",
+        "WS0022": "heatseeker"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "guardian",
+        "WS0009": "shockrepeater",
+        "WS0010": "shockrepeater",
+        "WS0013": "shockrepeater",
+        "WS0014": "shockrepeater",
+        "WS0019": "shockrepeater",
+        "WS0020": "shockrepeater"
+      }
+    }
+  ],
+  "modules": [
+    {
+      "WS0024": "shard_right_Attack"
+    },
+    {
+      "WS0023": "shard_left_Attack"
+    },
+    {
+      "WS0025": "shard_right_Attack"
+    },
+    {
+      "WS0026": "shard_left_Attack2"
+    }
+  ],
+  "wings": []
+}

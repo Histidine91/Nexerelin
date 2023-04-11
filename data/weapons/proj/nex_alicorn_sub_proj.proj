@@ -1,0 +1,74 @@
+{
+	"id":"nex_alicorn_sub_proj",
+	"specClass":"projectile",
+	"spawnType":"PLASMA",
+	#"specClass":"missile",
+	#"spawnType":"MISSILE",
+	"collisionClass":"PROJECTILE_FF",
+	#"collisionClass":"MISSILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	
+	"onHitEffect":"exerelin.combat.weapons.AlicornEffect",
+	"width":30,
+	"fringeColor":[0,0,255,255],
+	"coreColor":[100,160,192,255],
+	"useHitGlowWhenDealingDamage":false, # using the scripted explosion instead
+	"behaviorSpec":{"behavior":"PROXIMITY_FUSE",
+					"range":40,
+					"shotRangeVariance":0.67,
+					"explosionSpec":{"duration":0.1f,
+									 "radius":150,
+									 "coreRadius":60, # full damage within core radius - also equal to proximity fuse range
+									 "collisionClass":PROJECTILE_FF,
+									 "collisionClassByFighter":PROJECTILE_FIGHTER,
+									 "particleSizeMin":6.0,
+									 "particleSizeRange":3.0,
+									 "particleDuration":1,
+									 "particleCount":100,
+									 "particleColor":[155,192,255,255],
+									 "useDetailedExplosion":true,
+									 "sound":"nex_alicorn_impact_light"},
+					},
+	
+	## missile values, can remove if we're going back to regular projectiles
+	"missileType":"PHASE_CHARGE",
+	"sprite":"graphics/missiles/rift_torpedo.png",
+	"size":[14,16],	
+	"center":[7,8],
+	"collisionRadius":10,
+	"armingTime":0,	
+	"fadeTime":10, # fadeout duration
+	"flameoutTime":10, # total time from flameout to full fadeout
+	"dudProbabilityOnFlameout":0,
+	"noEngineGlowTime":0, # time spent without the engine glow being rendered
+	#"fizzleOnReachingWeaponRange":false,
+	
+	"engineSpec":{"turnAcc":0,
+				  "turnRate":0,
+				  #"acc":35,
+				  "acc":500,
+				  "dec":0},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-11, 0],
+					#"loc":[-14, 0],
+				    #"style":"TORPEDO",
+				    "style":"CUSTOM",
+					"styleSpec":{
+						"mode":"QUAD_STRIP", # PARTICLES or QUAD_STRIP, determines which params are used
+						"engineColor":[255,100,100,255],
+						"contrailDuration":2,
+						"contrailWidthMult":1.5,
+						"contrailWidthAddedFractionAtEnd":1,  # can be negative. makes trail spread out/narrow at the end
+						"contrailMinSeg":5, # min segment length, in pixels
+						"contrailMaxSpeedMult":0f,
+						"contrailAngularVelocityMult":0.5f,
+						"contrailSpawnDistMult":0f, # how far away from engine it starts
+						"contrailColor":[155,192,255,255],
+						"glowSizeMult":2.5,
+						"glowAlternateColor":[155,192,255,255],
+						"type":"GLOW" # GLOW or SMOKE; additive or regular blend mode
+					},
+				    "width":10.0,
+				    "length":80.0,
+				    "angle":180.0}]
+}

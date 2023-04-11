@@ -1,0 +1,26 @@
+{
+  "id": "nex_alicorn_sub",
+  "specClass": "projectile",
+  "projectileSpecId": "nex_alicorn_sub_proj",
+  "type": "BALLISTIC",
+  "mountTypeOverride": "COMPOSITE",
+  "size": "LARGE",
+  "turretSprite": "",
+  "hardpointSprite": "",
+  "turretOffsets": [
+    40,
+    0
+  ],
+  "turretAngleOffsets": [
+    0
+  ],
+  "hardpointOffsets": [
+    51.5,
+    0
+  ],
+  "hardpointAngleOffsets": [
+    0
+  ],
+  "barrelMode": "ALTERNATING",
+  "animationType": "NONE",
+}
