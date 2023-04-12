@@ -503,7 +503,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
 		MarketAPI market = agentMarket;
 		FactionAPI mktFaction = market != null ? market.getFaction() : null;
-		if (agentFaction == mktFaction)
+		if (agentFaction == mktFaction || mktFaction == Global.getSector().getPlayerFaction())
 			agentFaction = Global.getSector().getPlayerFaction();
 		
 		switch (def.id) {
