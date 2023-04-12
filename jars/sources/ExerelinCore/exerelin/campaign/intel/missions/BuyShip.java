@@ -36,7 +36,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 	public static final float PRICE_IMPORTANCE_LOW = 50000;
 	public static final float PRICE_IMPORTANCE_HIGH = 150000;
 	public static final int SET_MIN_SIZE = 2;
-	public static final int MIN_RULES = 2;
+	public static final int MIN_RULES = 1;
 	
 	static {
 		AVAILABLE_RULES.add(DesignTypeRule.class);
@@ -44,6 +44,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 		AVAILABLE_RULES.add(DPRule.class);
 		AVAILABLE_RULES.add(DModRule.class);
 		AVAILABLE_RULES.add(ShipTypeRule.class);
+		AVAILABLE_RULES.add(SModRule.class);
 	}
 
 	public static float BASE_PRICE_MULT = 1.6f;
@@ -176,6 +177,14 @@ public class BuyShip extends HubMissionWithBarEvent {
 			rules.add(rule);
 		}
 		Collections.shuffle(rules, genRandom);
+		Collections.sort(rules, new Comparator<BuyShipRule>() {
+			@Override
+			public int compare(BuyShipRule o1, BuyShipRule o2) {
+				if (o1.isMandatoryRule() && !o2.isMandatoryRule()) return -1;
+				if (!o1.isMandatoryRule() && o2.isMandatoryRule()) return 1;
+				return 0;
+			}
+		});
 	}
 
 	protected float getPrice() {
@@ -235,10 +244,10 @@ public class BuyShip extends HubMissionWithBarEvent {
 
 	/**
 	 * Gets the valid ships for sale in the current player fleet.
-	 * @param pruneRules If true, remove rules that do not give us a sufficient restriction on saleable ships.
+	 * @param rulePickerMode If true, remove rules that do not give us a sufficient restriction on saleable ships.
 	 * @return
 	 */
-	protected List<FleetMemberAPI> getEligibleShips(boolean pruneRules) {
+	protected List<FleetMemberAPI> getEligibleShips(boolean rulePickerMode) {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		List<FleetMemberAPI> bestList = new ArrayList<>();
 
@@ -249,51 +258,70 @@ public class BuyShip extends HubMissionWithBarEvent {
 			}
 		}
 
+		// not trying to pick rules? Just run the ships through all the rules and see who's left
+		if (!rulePickerMode) {
+			for (BuyShipRule currRule : new ArrayList<>(rules)) {
+				List<FleetMemberAPI> fromThisRule = currRule.getShipsMeetingRule(player);
+				bestList.retainAll(fromThisRule);
+			}
+			return bestList;
+		}
+
 		int tries = 0;
 		do {
 			if (tries > 0) loadRules();
+			boolean prevRulesIncludeMandatory = false;
+
 			for (BuyShipRule currRule : new ArrayList<>(rules)) {
 				List<FleetMemberAPI> fromThisRule = currRule.getShipsMeetingRule(player);
+				boolean currIsMandatory = currRule.isMandatoryRule();
 
 				// nothing eligible from this rule, it has failed
 				if (fromThisRule.isEmpty()) {
-					if (pruneRules) {
-						rules.remove(currRule);
+					if (currIsMandatory) {
+						// failed a mandatory rule, halt completely
+						return new ArrayList<>();
 					}
+					rules.remove(currRule);
 					continue;
 				}
 
 				List<FleetMemberAPI> intersect = NexUtils.getCollectionIntersection(bestList, fromThisRule);
+				boolean newIsSmaller = fromThisRule.size() < bestList.size();
+				boolean newIsBigEnough = fromThisRule.size() >= SET_MIN_SIZE || currRule.isMandatoryRule();
 
 				// if have a (sufficiently large) intersection, use that
-				if (!intersect.isEmpty() && intersect.size() >= SET_MIN_SIZE) {
+				if (!intersect.isEmpty() && (intersect.size() >= SET_MIN_SIZE || currRule.isMandatoryRule())) {
 					bestList = intersect;
 				}
-				// else use the new list if it's smaller
-				else if (isSmallerButNotTooSmall(fromThisRule, bestList)) {
+				// else use the new list if it's smaller (unless previous list includes a mandatory rule)
+				else if (newIsSmaller && newIsBigEnough && !prevRulesIncludeMandatory) {
 					bestList = fromThisRule;
 					// previous rules have failed, remove them
-					if (pruneRules && rules.contains(currRule)) {
+					if (rulePickerMode && rules.contains(currRule)) {
 						rules = rules.subList(rules.indexOf(currRule), rules.size());
 					}
 				}
-				// old list is bigger, use that
-				else {
+				// old list is bigger, use that (unless our current rule is mandatory)
+				else if (!currRule.isMandatoryRule()) {
 					// new rule has failed, remove it
-					if (pruneRules) {
+					if (rulePickerMode) {
 						rules.remove(currRule);
 					}
+				}
+				// at this point I have no idea what's going on, restart the whole loop
+				else {
+					break;
+				}
+
+				if (currIsMandatory) {
+					prevRulesIncludeMandatory = true;
 				}
 			}
 			tries++;
 		} while (rules.size() < MIN_RULES && tries < 15);
 
 		return bestList;
-	}
-	
-	protected boolean isSmallerButNotTooSmall(Collection coll, Collection other) {
-		if (coll.size() < SET_MIN_SIZE) return false;
-		return (coll.size() > other.size());
 	}
 
 	protected float getAveragePrice(Collection<FleetMemberAPI> members) {

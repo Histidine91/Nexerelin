@@ -641,6 +641,7 @@
 		"ruleHullSize":"Size: %s",
 		"ruleDP":"DP at least %s/%s/%s/%s",
 		"ruleDMods":"Maximum D-mods: %s",
+		"ruleSMod":"Has at least 1 S-mod",
 		"ruleShipType":"Type: %s",
 		"ruleShipType_warship":"warship",
 		"ruleShipType_carrier":"carrier",

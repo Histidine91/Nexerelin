@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +21,9 @@ import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import static exerelin.campaign.intel.missions.BuyShip.getString;
 
@@ -51,6 +52,10 @@ public abstract class BuyShipRule {
 	 */
 	public boolean wantToUseRule(CampaignFleetAPI fleet) {
 		return true;
+	}
+
+	public boolean isMandatoryRule() {
+		return false;
 	}
 	
 	/**
@@ -93,6 +98,11 @@ public abstract class BuyShipRule {
 		}
 		return rule;
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getName();
+	}
 	
 	// =========================================================================
 	
@@ -102,21 +112,29 @@ public abstract class BuyShipRule {
 		
 		@Override
 		public void init(CampaignFleetAPI fleet) {
-			Set<String> designTypes = new HashSet<>();
+			Map<String, Integer> designTypes = new HashMap<>();
 			
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(mission.getGenRandom());
+			WeightedRandomPicker<String> pickerBackup = new WeightedRandomPicker<>(mission.getGenRandom());
+
 			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 				if (!shouldCheckShipForRule(member)) continue;
-				designTypes.add(member.getHullSpec().getManufacturer());
+				NexUtils.modifyMapEntry(designTypes, member.getHullSpec().getManufacturer(), 1);
 			}
 			
 			// yeet anything we could buy on a local store
 			for (FleetMemberAPI forSale : getShipsAtMarket()) {
 				designTypes.remove(forSale.getHullSpec().getManufacturer());
 			}
-			
-			picker.addAll(designTypes);
+
+			for (String key : designTypes.keySet()) {
+				int count = designTypes.get(key);
+				if (count > 1) picker.add(key, count);
+				else pickerBackup.add(key);
+			}
+
 			designType = picker.pick();
+			if (designType == null) designType = pickerBackup.pick();
 		}
 		
 		protected List<FleetMemberAPI> getShipsAtMarket() {
@@ -143,6 +161,11 @@ public abstract class BuyShipRule {
 		@Override
 		public boolean canUseRule(CampaignFleetAPI fleet) {
 			return designType != null;
+		}
+
+		@Override
+		public boolean isMandatoryRule() {
+			return true;
 		}
 
 		@Override
@@ -260,7 +283,7 @@ public abstract class BuyShipRule {
 		}
 
 		@Override
-		void printRule(TooltipMakerAPI tooltip, float pad) {
+		public void printRule(TooltipMakerAPI tooltip, float pad) {
 			tooltip.addPara(getString("ruleDMods"), pad, Misc.getNegativeHighlightColor(), maxDMods + "");
 		}
 
@@ -304,8 +327,33 @@ public abstract class BuyShipRule {
 		}
 
 		@Override
-		void printRule(TooltipMakerAPI tooltip, float pad) {
+		public void printRule(TooltipMakerAPI tooltip, float pad) {
 			tooltip.addPara(getString("ruleShipType"), pad, Misc.getHighlightColor(), getString("ruleShipType_"+type));
+		}
+
+		@Override
+		public boolean wantToUseRule(CampaignFleetAPI fleet) {
+			return mission.getGenRandom().nextFloat() < CHANCE_TO_USE_RULE;
+		}
+	}
+
+	public static class SModRule extends BuyShipRule {
+
+		public static final float CHANCE_TO_USE_RULE = 0.7f;
+
+		@Override
+		void init(CampaignFleetAPI fleet) {
+
+		}
+
+		@Override
+		boolean isShipAllowed(FleetMemberAPI member) {
+			return member.getVariant().getSMods().size() > 0;
+		}
+
+		@Override
+		public void printRule(TooltipMakerAPI tooltip, float pad) {
+			tooltip.addPara(getString("ruleSMod"), pad, Misc.getStoryOptionColor(), "1");
 		}
 
 		@Override
