@@ -1,0 +1,33 @@
+{
+	"id":"nex_silverlight_dash",
+	"type":"ENGINE_MOD",
+	"aiType":"BURN_DRIVE",
+	
+	"statsScript":"exerelin.combat.shipsystems.SilverlightDashStats",
+	
+	#"engineGlowColor":[150,50,255,255],
+	"engineGlowLengthMult":2,
+	"engineGlowWidthMult":1.25,
+	"engineGlowGlowMult":2,
+	
+	"flameoutOnImpactChance":0,
+
+	"clampTurnRateAfter":true,
+	"clampMaxSpeedAfter":true,
+	"alwaysAccelerate":true,
+	
+	"soundFilterType":"LOWPASS",
+	"soundFilterGain":0.75,
+	"soundFilterGainHF":0.5,
+
+	"fadeActivationSoundOnChargedown":true,
+	"useSound":"system_temporalshell",
+	"loopSound":"system_temporalshell_loop",
+	"deactivateSound":"system_temporalshell_off",
+	
+	"aiHints":{
+		"activeSpeedIncrease":100,
+		"burstMovementPotential":600,
+		"averageSpeedMult":2,
+	}
+}

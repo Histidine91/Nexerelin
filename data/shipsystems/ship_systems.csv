@@ -1,0 +1,2 @@
+name,id,flux/second,f/s (base rate),f/s (base cap),flux/use,f/u (base rate),f/u (base cap),cr/u,max uses,regen,charge up,active,down,cooldown,toggle,noDissipation,noHardDissipation,hardFlux,noFiring,noTurning,noStrafing,noAccel,noShield,noVent,isPhaseCloak,tags,icon
+Aspect Seeker,nex_silverlight_dash,,,,,,,,,,0.5,5,0.5,24,,,,,TRUE,,TRUE,TRUE,TRUE,TRUE,,restricted,graphics/icons/hullsys/temporal_shell.png

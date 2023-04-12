@@ -13,7 +13,6 @@
   "viewOffset": 0,
   "builtInMods": [
     "advancedcore",
-    "advanced_ground_support",
     "high_maintenance",
     "stealth_minefield",
     "operations_center",
@@ -87,6 +86,15 @@
       "locations": [-105.5, -0]
     },
     {
+      "id": "WS0008",
+      "size": "LARGE",
+      "type": "BUILT_IN",
+      "mount": "HARDPOINT",
+      "arc": 10,
+      "angle": 0,
+      "locations": [63, -0]
+    },
+    {
       "id": "WS0009",
       "size": "SMALL",
       "type": "ENERGY",
@@ -103,15 +111,6 @@
       "arc": 180,
       "angle": -30,
       "locations": [216, -31]
-    },
-    {
-      "id": "WS0008",
-      "size": "LARGE",
-      "type": "BUILT_IN",
-      "mount": "HARDPOINT",
-      "arc": 10,
-      "angle": 0,
-      "locations": [63, -0]
     },
     {
       "id": "WS0011",

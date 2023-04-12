@@ -2388,6 +2388,12 @@
 		"makeshipEquipmentExDesc2":"-%s%% upkeep cost",
 	},
 	
+	"nex_ships":{
+		"silverlightDash_descTimeMob":"%.1fx time mult and mobility",
+		"silverlightDash_descZFSB":"always zero flux speed boost",
+		"silverlightDash_descDamper":"%.0f%% less damage taken",
+	},
+	
 	"nex_strategicAI":{
 		"intelBulletUpdate":"Strategy meeting",
 		"intelBulletUpdateAdd":"%s new concern(s): %s",
