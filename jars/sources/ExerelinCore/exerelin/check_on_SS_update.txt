@@ -20,6 +20,9 @@ Partial list.
 
 last thing to look at is Nex_MarketCMD
 
+0.96 notes:
+- Remove RestoreCommanderPlugin, Nex_CheapCommodityMission
+
 0.95 notes:
 - SSP_BattleCreationPluginImpl looks RIP, it can't access needed variables from the data class
 

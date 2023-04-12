@@ -11,10 +11,11 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.agents.AgentIntel.Specialization;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.awt.*;
+import java.util.Map;
 
 public class RecruitAgent extends CovertActionIntel {
 	
@@ -39,7 +40,7 @@ public class RecruitAgent extends CovertActionIntel {
 		newAgent.init();
 		newAgent.setMarket(market);
 		newAgent.setImportant(true);
-		Global.getSector().getIntelManager().addIntel(newAgent);
+		//Global.getSector().getIntelManager().addIntel(newAgent);	// already done in init, but test this
 	}
 	
 	public float getSpecializationDistance() {

@@ -10,14 +10,16 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import static com.fs.starfarer.api.util.Misc.isMilitary;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.Nex_FactionCommissionIntel;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.fs.starfarer.api.util.Misc.isMilitary;
 
 public class NexUtilsFaction {
 	
@@ -216,7 +218,7 @@ public class NexUtilsFaction {
         FactionAPI faction = Global.getSector().getFaction(factionId);
         if (!NexConfig.getFactionConfig(faction.getId()).playableFaction)
             return;
-        if (faction.getId().equals(getCommissionFactionId()))
+        if (faction.getId().equals(Misc.getCommissionFactionId()))
             return;    // already have commission
         
         revokeCommission();
@@ -233,13 +235,6 @@ public class NexUtilsFaction {
 		intel.setMissionResult(result);
 		intel.setMissionState(BaseMissionIntel.MissionState.ABANDONED);
 		intel.endMission(null);
-    }
-    
-    public static String getCommissionFactionId()
-    {
-        FactionAPI commissionFaction = Misc.getCommissionFaction();
-        if (commissionFaction == null) return null;
-        return commissionFaction.getId();
     }
 	
 	public static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {

@@ -4,8 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import java.awt.Color;
-
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -13,11 +11,10 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
+
+import java.awt.*;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class RaidCondition extends BaseMarketConditionPlugin {
 	public static final String CONDITION_ID = "nex_raid_condition";
@@ -98,11 +95,13 @@ public class RaidCondition extends BaseMarketConditionPlugin {
 		// list raiders
 		tooltip.addPara(StringHelper.getString("exerelin_raid", "conditionListHeader"), opad);
 		Set<FactionAPI> alreadySeen = new HashSet<>();
+		float thisPad = pad;
 		for (RaidIntel raid : raids) {
 			FactionAPI faction = raid.getFaction();
 			if (alreadySeen.contains(faction)) continue;
 			alreadySeen.add(faction);
-			tooltip.addPara(" - " + faction.getDisplayName(), pad, faction.getBaseUIColor(), faction.getDisplayName());
+			tooltip.addPara(" - " + faction.getDisplayName(), thisPad, faction.getBaseUIColor(), faction.getDisplayName());
+			thisPad = 0;
 		}
 	}
 

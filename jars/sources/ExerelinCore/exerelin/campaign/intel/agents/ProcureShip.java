@@ -1,14 +1,8 @@
 package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
-import com.fs.starfarer.api.campaign.FactionProductionAPI;
-import com.fs.starfarer.api.campaign.FleetInflater;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -30,26 +24,19 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import static com.fs.starfarer.api.util.Misc.random;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.submarkets.PrismMarket;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsGUI;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static com.fs.starfarer.api.util.Misc.random;
 
 /**
  * Obtains semi-illegally a ship from the target faction and sends it to a specified location.
@@ -147,7 +134,7 @@ public class ProcureShip extends CovertActionIntel {
 	protected boolean hasCommission() {
 		if (!targetFaction.getCustomBoolean(Factions.CUSTOM_OFFERS_COMMISSIONS)) return true;
 		
-		String cfId = NexUtilsFaction.getCommissionFactionId();
+		String cfId = Misc.getCommissionFactionId();
 		String afId = agentFaction.getId();
 		String tgtId = targetFaction.getId();
 		//Global.getLogger(this.getClass()).info(cfId + ", " + afId + ", " + tgtId);
