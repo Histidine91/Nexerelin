@@ -402,13 +402,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (repResult.wasHostile && !repResult.isHostile)
         {
             DiplomacyManager manager = getManager();
-            if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, false);
+            if (!isAllianceAction) {
+                log.info(String.format("Initiating alliance vote due to diplomacy event between %s, %s", faction1Id, faction2Id));
+                AllianceVoter.allianceVote(faction1Id, faction2Id, false);
+            }
             manager.getDiplomacyBrain(faction1Id).addCeasefire(faction2Id);
             manager.getDiplomacyBrain(faction2Id).addCeasefire(faction1Id);
         }
         else if (!repResult.wasHostile && repResult.isHostile)
         {
-            if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, true);
+            if (!isAllianceAction) {
+                log.info(String.format("Initiating alliance vote due to diplomacy event between %s, %s", faction1Id, faction2Id));
+                AllianceVoter.allianceVote(faction1Id, faction2Id, true);
+            }
             
             getManager().setLastWarTimestamp(Global.getSector().getClock().getTimestamp());
         }
@@ -1009,8 +1015,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // but only if our relationship should be synced
         if (!NexConfig.getFactionConfig(factionId).noSyncRelations) {
             if (isHostile && currentRel - delta > AllianceManager.HOSTILE_THRESHOLD 
-                || !isHostile && currentRel - delta < AllianceManager.HOSTILE_THRESHOLD)
+                || !isHostile && currentRel - delta < AllianceManager.HOSTILE_THRESHOLD) {
+                log.info("Initiating alliance vote due to player relationship with " + factionId + " crossing threshold");
                 AllianceVoter.allianceVote(playerAlignedFactionId, factionId, isHostile);
+            }
         }
         
         // handled by commission intel
