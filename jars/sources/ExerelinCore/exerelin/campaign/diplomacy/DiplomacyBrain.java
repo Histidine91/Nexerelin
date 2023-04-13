@@ -101,6 +101,7 @@ public class DiplomacyBrain {
 	public static final float EVENT_SKIP_CHANCE = 0.5f;
 	public static final float EVENT_CHANCE_EXPONENT_BASE = 0.8f;
 	public static final float CEASEFIRE_LENGTH = 150f;
+	public static final float RECENT_WAR_LENGTH = 120f;
 	
 	// used to be in DiplomacyTraits but that made compiling annoying
 	public static final float FREE_PORT_PENALTY_MULT = 0.4f;
@@ -117,6 +118,7 @@ public class DiplomacyBrain {
 	protected transient FactionAPI faction;
 	protected Map<String, DispositionEntry> dispositions = new HashMap<>();
 	@Getter protected Map<String, Float> ceasefires = new HashMap<>();
+	@Getter protected Map<String, Float> recentWars = new HashMap<>();
 	protected List<String> enemies = new ArrayList<>();
 	protected IntervalUtil intervalShort = new IntervalUtil(0.45f, 0.55f);
 	protected IntervalUtil interval;
@@ -528,6 +530,13 @@ public class DiplomacyBrain {
 		return score;
 	}
 	
+	/**
+	 * Try to make peace with the specified faction. May fail if our/their war weariness is too low.
+	 * @param enemyId
+	 * @param ourWeariness
+	 * @return A {@code DiplomacyIntel} representing the ceasefire/peace treaty if successful, 
+	 * or a {@code CeasefirePromptIntel} if offering to player.
+	 */
 	protected IntelInfoPlugin tryMakePeace(String enemyId, float ourWeariness)
 	{
 		FactionAPI enemy = Global.getSector().getFaction(enemyId);
@@ -583,6 +592,14 @@ public class DiplomacyBrain {
 		return intel;
 	}
 	
+	/**
+	 * Try to make peace with one of our enemies. 
+	 * Normally checks the top three enemy factions sorted by their war weariness, descending.
+	 * May fail if our war weariness is too low or there are no suitable targets for this action.
+	 * @param targetFactionId If non-null, only check peace with this faction.
+	 * @return A {@code DiplomacyIntel} representing the ceasefire/peace treaty if successful, 
+	 * or a {@code CeasefirePromptIntel} if offering to player.
+	 */
 	public IntelInfoPlugin checkPeace(@Nullable String targetFactionId)
 	{
 		if (enemies.isEmpty()) return null;
@@ -620,6 +637,7 @@ public class DiplomacyBrain {
 
 			if (factionsAttackingOrAttacked.contains(enemyId))
 				continue;
+			if (recentWars.containsKey(enemyId)) continue;
 			if (!NexFactionConfig.canCeasefire(factionId, enemyId))
 				continue;
 			// don't diplomacy with a commissioned player
@@ -635,6 +653,10 @@ public class DiplomacyBrain {
 		return null;
 	}
 	
+	/**
+	 * Gets a set of faction IDs that we shouldn't make peace with until ongoing invasions etc. are resolved.
+	 * @return
+	 */
 	public Set<String> getOngoingOffensiveFactions() {
 		Set<String> factionsInvadingOrInvaded = new HashSet<>();
 				
@@ -706,6 +728,12 @@ public class DiplomacyBrain {
 		return required;
 	}
 	
+	/**
+	 * Try to declare war on a target that we dislike and consider vulnerable. 
+	 * Don't do anything if no suitable targets or we are otherwise not willing to go to war.
+	 * @param targetFactionId If non-null, only check war with this faction.
+	 * @return A {@code DiplomacyIntel} representing the war declaration, if successful.
+	 */
 	public DiplomacyIntel checkWar(@Nullable String targetFactionId)
 	{
 		long lastWar = DiplomacyManager.getManager().getLastWarTimestamp();
@@ -944,7 +972,6 @@ public class DiplomacyBrain {
 	
 	public void updateEnemiesAndCeasefires(float days)
 	{
-		List<String> ceasefiresToRemove = new ArrayList<>();
 		Iterator<String> ceasefiresIter = ceasefires.keySet().iterator();
 		while (ceasefiresIter.hasNext())
 		{
@@ -952,13 +979,21 @@ public class DiplomacyBrain {
 			float timeRemaining = ceasefires.get(otherFactionId);
 			timeRemaining -= days;
 			if (timeRemaining <= 0)
-				ceasefiresToRemove.add(otherFactionId);
+				ceasefiresIter.remove();
 			else
 				ceasefires.put(otherFactionId, timeRemaining);
 		}
-		for (String otherFactionId : ceasefiresToRemove)
+		
+		Iterator<String> recentWarsIter = recentWars.keySet().iterator();
+		while (recentWarsIter.hasNext())
 		{
-			ceasefires.remove(otherFactionId);
+			String otherFactionId = recentWarsIter.next();
+			float timeRemaining = recentWars.get(otherFactionId);
+			timeRemaining -= days;
+			if (timeRemaining <= 0)
+				recentWarsIter.remove();
+			else
+				recentWars.put(otherFactionId, timeRemaining);
 		}
 		
 		List<String> latestEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, true, true);
@@ -970,6 +1005,13 @@ public class DiplomacyBrain {
 				ceasefires.put(enemyId, CEASEFIRE_LENGTH);
 			}
 		}
+		
+		Set<String> newEnemies = new HashSet<>(latestEnemies);
+		newEnemies.removeAll(enemies);
+		for (String enemyId : newEnemies) {
+			recentWars.put(enemyId, RECENT_WAR_LENGTH);
+		}
+		
 		enemies = latestEnemies;
 	}
 	
@@ -1021,6 +1063,8 @@ public class DiplomacyBrain {
 			enemies = new ArrayList<>();
 		if (revanchismCache == null)
 			revanchismCache = new HashMap<>();
+		if (recentWars == null)
+			recentWars = new HashMap<>();
 		
 		faction = Global.getSector().getFaction(factionId);
 		return this;
