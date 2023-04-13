@@ -4,9 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.PositionAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -16,22 +14,16 @@ import exerelin.campaign.ui.CustomPanelPluginWithBorder;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.rectanglepacker.Packer;
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
-import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.lazylib.ui.LazyFont;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /**
  * Draws the tacticool planet map.
@@ -42,11 +34,23 @@ public class MarketMapDrawer {
 	
 	public static final float INDUSTRY_PANEL_BASE_WIDTH = 330;
 	public static final float INDUSTRY_PANEL_BASE_HEIGHT = 171;
+
+	public static LazyFont debugFont;
+
+	public static Logger log = Global.getLogger(MarketMapDrawer.class);
 	
 	public static final List<Color> DEBUG_COLORS = new ArrayList<>();
 	static {
 		for (int i=0; i<50; i++) {
 			DEBUG_COLORS.add(getRandomColor());
+		}
+
+		if (DEBUG_MODE) {
+			try {
+				debugFont = LazyFont.loadFont("graphics/fonts/insignia16a.fnt");
+			} catch (Exception ex) {
+				log.info("Failed to load font", ex);
+			}
 		}
 	}
 	public static Color getRandomColor() {
@@ -56,8 +60,6 @@ public class MarketMapDrawer {
 				MathUtils.getRandomNumberInRange(0, 255)
 		);
 	}
-	
-	public static Logger log = Global.getLogger(MarketMapDrawer.class);
 	
 	protected float width;
 	protected GroundBattleIntel intel;
@@ -151,17 +153,19 @@ public class MarketMapDrawer {
 		@Override
 		public void render(float alphaMult) {
 			super.render(alphaMult);
-			
-			/*
+
+			if (!DEBUG_MODE) return;
+
 			if (debugRects != null) {
 				int num = 0;
 				for (Rectangle r : debugRects) {
 					Color color = DEBUG_COLORS.get(num);
-					drawDebugRect(r, color);
+					drawDebugRect(r, color, num);
 					num++;
 				}
 			}
-			
+
+			/*
 			int num = 0;
 			for (IndustryForBattle ifb : map.intel.getIndustries()) {
 				num++;
@@ -169,7 +173,19 @@ public class MarketMapDrawer {
 				Color color = DEBUG_COLORS.get(num);
 				drawDebugSpot(ifb.getPosOnMap().x, ifb.getPosOnMap().y, color);
 			}
-			*/
+			 */
+		}
+
+		public boolean doesRectOverlapEdge(Rectangle rect) {
+			float width = map.width;
+			float height = map.width/2;
+
+			if (rect.x < 0) return true;
+			if (rect.x + rect.width > width) return true;
+			if (rect.y < 0) return true;
+			if (rect.y + rect.height > height) return true;
+
+			return false;
 		}
 		
 		public void drawArrow(GroundUnit unit, IndustryForBattle from, IndustryForBattle to, boolean prevTurn) 
@@ -199,9 +215,16 @@ public class MarketMapDrawer {
 			} catch (Exception ex) {}
 		}
 		
-		public void drawDebugRect(Rectangle r, Color color) {
+		public void drawDebugRect(Rectangle r, Color color, int num) {
 			float x = r.x + pos.getX();
 			float y = r.y + pos.getY();
+
+			Color fontColor = Color.WHITE;
+			if (doesRectOverlapEdge(r)) fontColor = Color.orange;
+			if (debugFont != null) {
+				LazyFont.DrawableString str = debugFont.createText(num + "", fontColor, 32, 48);
+				str.draw(x + 4, y + r.height);
+			}
 			GL11.glColor4f(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, 0.5f);
 			GL11.glRectf(x, y, x + r.width, y + r.height);
 			GL11.glColor4f(1, 1, 1, 1);
@@ -360,8 +383,16 @@ public class MarketMapDrawer {
 			//log.info("Maximum rectangles for placement: " + rows * columns);
 			return rows * columns;
 		}
-		
-		public List<Rectangle> generateLocs(List<IndustryForBattle> industries, float mapWidth, boolean isStation) 
+
+		/**
+		 * Generates a bunch of rectangles and tries to pack them into the map; picks random rectangles; assigns the
+		 * industry panels to random rectangles; and gives each panel a randomized position in its rectangle.
+		 * @param industries
+		 * @param mapWidth
+		 * @param isStation
+		 * @return
+		 */
+		public List<Rectangle> generateLocs(List<IndustryForBattle> industries, float mapWidth, boolean isStation)
 		{
 			// work with a copy of the actual arg, since we'll be modifying it
 			industries = new LinkedList<>(industries);
@@ -383,8 +414,8 @@ public class MarketMapDrawer {
 				if (max < industries.size()) max = industries.size();
 				
 				for (int i=0; i<max; i++) {
-					float width = baseWidth * MathUtils.getRandomNumberInRange(1.1f, 1.3f);
-					float height = baseHeight * MathUtils.getRandomNumberInRange(1.1f, 1.4f);
+					float width = baseWidth * 1.2f;	//MathUtils.getRandomNumberInRange(1.1f, 1.3f);
+					float height = baseHeight * 1.2f;	//MathUtils.getRandomNumberInRange(1.1f, 1.4f);
 					rects.add(new Rectangle(0, 0, (int)width, (int)height));
 				}
 
@@ -431,12 +462,18 @@ public class MarketMapDrawer {
 			return rects;
 			//return picked;
 		}
-		
+
+		/**
+		 * Pick a random element from the list, but not the very last ones.
+		 * @param list
+		 * @param <T>
+		 * @return
+		 */
 		public <T> T pickFromListMaybeOffset(List<T> list) {
 			if (list.isEmpty()) return null;
 			
 			int index = 0;
-			int maxOffset = list.size()/2 - 1;
+			int maxOffset = list.size() - list.size()/4 - 1;
 			if (maxOffset < 0) maxOffset = 0;
 			index += MathUtils.getRandomNumberInRange(0, maxOffset);
 			return list.remove(index);
@@ -538,7 +575,6 @@ public class MarketMapDrawer {
 		// generate initial 5 rectangles by extending central rectangle's bounds vertically
 		// actually, maybe try 9 rectangles
 		List<Rectangle> rects = new LinkedList<>();
-		
 		
 		rects.add(new Rectangle(x, y, minWidth, minHeight));									// center
 		rects.add(new Rectangle(0, 0, x, outerHeight));											// left
