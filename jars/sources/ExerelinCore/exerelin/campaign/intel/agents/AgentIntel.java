@@ -18,12 +18,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.BaseOptionStoryPointActionDelegate;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.StoryOptionParams;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -44,19 +39,12 @@ import exerelin.campaign.intel.groundbattle.GroundUnitDef;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 public class AgentIntel extends BaseIntelPlugin {
 	
@@ -418,8 +406,12 @@ public class AgentIntel extends BaseIntelPlugin {
 			addAction(action);
 			action.activate();
 		}
+
+		FactionAPI agentFaction = faction;
+		if (agentFaction == target.getFaction() || target.getFaction().isPlayerFaction())
+			agentFaction = Global.getSector().getPlayerFaction();
 				
-		action = new InfiltrateCell(this, target, faction, target.getFaction(), true, null);
+		action = new InfiltrateCell(this, target, agentFaction, target.getFaction(), true, null);
 		action.init();
 		addAction(action);
 		if (target == this.market) action.activate();
