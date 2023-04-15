@@ -871,6 +871,11 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		terminateEvent(OffensiveOutcome.OTHER);
 	}
 
+	@Override
+	public String getStrategicActionName() {
+		return getBaseName();
+	}
+
 	public static void reportRaid(OffensiveFleetIntel intel)
 	{
 		for (RaidListener x : Global.getSector().getListenerManager().getListeners(RaidListener.class)) {

@@ -352,4 +352,9 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 	public void abortStrategicAction() {
 		// too late lol, do nothing
 	}
+
+	@Override
+	public String getStrategicActionName() {
+		return getName();
+	}
 }

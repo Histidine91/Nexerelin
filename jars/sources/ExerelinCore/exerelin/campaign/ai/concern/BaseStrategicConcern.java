@@ -96,6 +96,14 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         SAIUtils.applyPriorityModifierForTraits(def.tags, ai.getFactionId(), priority);
     }
 
+    /**
+     * If the concern should modify the priority of a proposed action before choosing the best action, do it here.
+     * @param action
+     */
+    public void modifyActionPriority(StrategicAction action) {
+
+    }
+
     @Override
     public CustomPanelAPI createPanel(final CustomPanelAPI holder) {
         final float pad = 3;
@@ -169,7 +177,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         log.info(String.format("Picking action for concern %s", getName()));
         StrategicAction bestAction = null;
         float bestPrio = 0;
-        boolean printReason = true;
+        boolean printReason = false;
 
         for (StrategicDefManager.StrategicActionDef possibleActionDef : module.getRelevantActionDefs(this)) {
             StrategicAction action = StrategicDefManager.instantiateAction(possibleActionDef);
@@ -201,6 +209,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             }
 
             action.updatePriority();
+            modifyActionPriority(action);
             float priority = action.getPriorityFloat();
             if (ExerelinModPlugin.isNexDev) {
                 log.info(String.format("  Action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));

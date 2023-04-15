@@ -3,8 +3,7 @@ package exerelin.campaign.ai.action;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.combat.MutableStat;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.SAIUtils;
@@ -122,7 +121,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
     @Override
     public String getName() {
-        if (delegate != null && delegate != this) return delegate.getName();
+        if (delegate != null && delegate != this) return delegate.getStrategicActionName();
         return getDef().name;
     }
 
@@ -162,7 +161,17 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
         int prioVal = (int)getPriorityFloat();
         String prio = String.format(StringHelper.getString("priority", true) + ": %s", prioVal);
-        iwt.addPara(prio, 0, Misc.getHighlightColor(), prioVal + "");
+        LabelAPI prioLbl = iwt.addPara(prio, 0, Misc.getHighlightColor(), prioVal + "");
+
+        if (ai.getDelegateAsIntel(this) != null) {
+            //float currHeight = iwt.getPosition().getHeight();
+            ButtonAPI toAction = iwt.addButton(StrategicAI.getString("btnGoIntelShort"), this, 64, 0, 0);
+            toAction.getPosition().inTR(0, 0);// .rightOfTop((UIComponentAPI) prioLbl, opad);
+            toAction.getPosition().setSize(64, 18);
+            iwt.setForceProcessInput(true);
+            //iwt.getPosition().setSize(iwt.getPosition().getWidth(), currHeight);
+        }
+
         tooltip.addImageWithText(pad);
         tooltip.addTooltipToPrevious(new TooltipMakerAPI.TooltipCreator() {
             @Override

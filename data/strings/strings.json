@@ -2454,6 +2454,7 @@
 		"concernDesc_retaliation_fail":"Although their attempt failed, we must swiftly punish them for their insolence.",
 		
 		"btnGoIntel":"Go to intel",
+		"btnGoIntelShort":"goto",
 	},
 	
 	"exerelin_superweapon":{

@@ -226,12 +226,14 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 
 	@Override
 	public String getSmallDescriptionTitle() {
-		return getName();
+		return getName(false);
 	}
 	
-	public String getName() {
+	public String getName(boolean withStatus) {
 		String str = StringHelper.getString("exerelin_diplomacy", isPeaceTreaty ? 
 				"intelPeaceTreatyTitle" : "intelCeasefireTitle");
+		if (!withStatus) return str;
+
 		if (listInfoParam == EXPIRED_UPDATE)
 			str += " - " + StringHelper.getString("expired");
 		else if (state == 1)
@@ -373,5 +375,10 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		state =-1;
 		sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
 		endAfterDelay();
+	}
+
+	@Override
+	public String getStrategicActionName() {
+		return getName(false);
 	}
 }

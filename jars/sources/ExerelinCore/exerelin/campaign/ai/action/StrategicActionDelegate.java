@@ -14,7 +14,7 @@ public interface StrategicActionDelegate {
 
     ActionStatus getStrategicActionStatus();
     float getStrategicActionDaysRemaining();
-    String getName();
+    String getStrategicActionName();
     String getIcon();
     StrategicAction getStrategicAction();
     void setStrategicAction(StrategicAction action);

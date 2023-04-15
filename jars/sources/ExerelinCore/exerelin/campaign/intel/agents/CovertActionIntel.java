@@ -950,6 +950,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		abort();
 	}
 
+	@Override
+	public String getStrategicActionName() {
+		return getSubbedName();
+	}
+
 	public static String getString(String id) {
 		return getString(id, false);
 	}

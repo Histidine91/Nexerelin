@@ -1,7 +1,9 @@
 package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
@@ -10,6 +12,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -215,6 +218,13 @@ public class StrategicAI extends BaseIntelPlugin {
 			tooltip.addButton("Force meeting", BUTTON_MEETING, 128, 24, pad);
 		}
 
+		tooltip.addSectionHeading(getString("intelHeader_executive"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
+		try {
+			execModule.generateReport(tooltip, panel, width);
+		} catch (Exception ex) {
+			log.error("Failed to generate executive report", ex);
+		}
+
 		tooltip.addSectionHeading(getString("intelHeader_economy"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
 		try {
 			econModule.generateReport(tooltip, panel, width);
@@ -222,9 +232,7 @@ public class StrategicAI extends BaseIntelPlugin {
 			log.error("Failed to generate economy report", ex);
 		}
 
-		tooltip.setParaInsigniaLarge();
 		tooltip.addSectionHeading(getString("intelHeader_military"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
-		tooltip.setParaFontDefault();
 		try {
 			milModule.generateReport(tooltip, panel, width);
 		} catch (Exception ex) {
@@ -236,13 +244,6 @@ public class StrategicAI extends BaseIntelPlugin {
 			diploModule.generateReport(tooltip, panel, width);
 		} catch (Exception ex) {
 			log.error("Failed to generate diplomacy report", ex);
-		}
-
-		tooltip.addSectionHeading(getString("intelHeader_executive"), faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, sectionPad);
-		try {
-			execModule.generateReport(tooltip, panel, width);
-		} catch (Exception ex) {
-			log.error("Failed to generate executive report", ex);
 		}
 	}
 	
@@ -290,8 +291,26 @@ public class StrategicAI extends BaseIntelPlugin {
 		if (buttonId == BUTTON_MEETING) {
 			interval.forceIntervalElapsed();
 			advanceImpl(0);
+			interval.advance(0.001f);
 			ui.updateUIForItem(this);
 		}
+		else if (buttonId instanceof StrategicAction) {
+			IntelInfoPlugin intel = getDelegateAsIntel((StrategicAction) buttonId);
+			if (intel != null) {
+				Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
+			}
+		}
+	}
+
+	public IntelInfoPlugin getDelegateAsIntel(StrategicAction action) {
+		StrategicActionDelegate del = action.getDelegate();
+		if (del == null) return null;
+		if (!(del instanceof IntelInfoPlugin)) return null;
+		IntelInfoPlugin intel = (IntelInfoPlugin) del;
+		if (!Global.getSector().getIntelManager().hasIntel(intel))
+			return null;
+
+		return intel;
 	}
 
 	@Override

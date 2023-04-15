@@ -240,4 +240,9 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
             ColonyManager.getManager().removeQueuedIndustry(industryId, market);
         }
     }
+
+    @Override
+    public String getStrategicActionName() {
+        return getName();
+    }
 }
