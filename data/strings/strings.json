@@ -2423,6 +2423,7 @@
 		"statExistingMarketShare":"existing market share",
 		"statRage":"current pirate rage",
 		"statRaidAnger":"rage at recent attacks",
+		"statQualityDeficit":"Distance to target quality",
 		"statAlignment":"alignment",
 		"statTrait":"trait",
 		"statDiplomacyChancePositive":"positive diplomacy chance",
@@ -2433,6 +2434,7 @@
 		"statDispositionNegative":"low disposition",
 		"statWarDecisionRating":"war decision rating vs. target",
 		"statAntiRepetition":"recently used this action",
+		"statBadAction":"bad action for this concern",
 		"statCannotBeSolved":"concern cannot be solved with this action",
 		
 		"descCooldown":"Action cooldown: %s day(s)",

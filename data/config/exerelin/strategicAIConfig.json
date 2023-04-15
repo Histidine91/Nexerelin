@@ -109,6 +109,13 @@
 			"tags":["economy", "commodity", "canBuildEcon", "trait_monopolist"],
 			"module":ECONOMIC
 		},
+		"lowShipQuality":{
+			"name":"Low Ship Quality",
+			"desc":"Our lack of heavy industry is resulting in heavily defective ships. This is a dangerous and unacceptable state of affairs we should remedy promptly.",
+			"classPath":"exerelin.campaign.ai.concern.LowShipQualityConcern",
+			"tags":["economy", "military", "canBuildEcon", "canInvade"],
+			"module":ECONOMIC
+		},
 	},
 	
 	# for an action to be usable for a concern, they need to have at least one matching tag

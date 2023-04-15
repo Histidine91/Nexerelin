@@ -33,7 +33,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
             if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD) continue;
             if (gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) continue;
 
-            float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR;
+            float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR * 2;
             if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) continue;
 
             targetsSorted.add(new Pair<>(market, valueMod));

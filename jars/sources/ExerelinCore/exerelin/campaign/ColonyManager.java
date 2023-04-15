@@ -86,7 +86,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final float MAX_EXPEDITION_FP = 600;
 	//public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
 	public static final float NPC_FREE_PORT_GROWTH_REDUCTION_MULT = 0.5f;
-	public static final boolean STRATEGIC_AI_BLOCKS_BUILD_ON_UPSIZE = false;
+	public static final boolean STRATEGIC_AI_BLOCKS_BUILD_ECON_ON_UPSIZE = false;
+	public static final boolean STRATEGIC_AI_BLOCKS_BUILD_MILITARY_ON_UPSIZE = true;
 	
 	public static final int[] BONUS_ADMIN_LEVELS;
 	
@@ -1565,10 +1566,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (!market.hasIndustry(Industries.SPACEPORT) && !market.hasIndustry(Industries.MEGAPORT))
 			NexMarketBuilder.addSpaceportOrMegaport(market, entity.type, false, random);
 
-		if (military)
-			NexMarketBuilder.addMilitaryStructures(entity, false, random);
+		if (!STRATEGIC_AI_BLOCKS_BUILD_MILITARY_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null) {
+			if (military)
+				NexMarketBuilder.addMilitaryStructures(entity, false, random);
+		}
 
-		if (!STRATEGIC_AI_BLOCKS_BUILD_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null) {
+		if (!STRATEGIC_AI_BLOCKS_BUILD_ECON_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null) {
 			if (productive)
 				NexMarketBuilder.addIndustriesToMarket(entity, false, random);
 		}

@@ -46,7 +46,7 @@ public class HeavyIndustry extends IndustryClassGen {
 		if (!Global.getSector().isInNewGameAdvance()) {
 			if (!EconomyInfoHelper.getInstance().hasHeavyIndustry(market.getFactionId()) 
 					&& market.getSize() >= 4)
-				return 99999;
+				return 9999;
 		}
 		
 		float weight = 20 + market.getSize() * 4;
