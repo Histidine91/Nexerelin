@@ -25,6 +25,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
     @Getter protected MutableStat priority = new MutableStat(0);
     @Getter protected StrategicActionDelegate.ActionStatus status;
     @Getter protected boolean isEnded;
+    @Getter @Setter protected int meetingsSinceEnded;
 
     @Override
     public StrategicAI getAI() {

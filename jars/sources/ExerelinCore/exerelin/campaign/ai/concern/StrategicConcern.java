@@ -98,6 +98,7 @@ public interface StrategicConcern {
     boolean initAction(StrategicAction action);
     //void setCurrentAction(StrategicAction action);
     StrategicAction getCurrentAction();
+    void clearAction();
     /**
      * To be called when an action has any news to report. Note: The completion status update may be called before the starting status update.
      * @param action

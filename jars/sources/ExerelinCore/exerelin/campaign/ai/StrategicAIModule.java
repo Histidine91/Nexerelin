@@ -2,6 +2,7 @@ package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.utilities.NexUtilsGUI;
 import lombok.Getter;
@@ -86,6 +87,20 @@ public abstract class StrategicAIModule {
             if (!concern.isEnded()) concern.end();
             currentConcerns.remove(concern);
             SAIUtils.reportConcernRemoved(ai, concern);
+        }
+
+        // clear already-ended actions so they don't stay in memory/save forever
+        for (StrategicConcern concern : currentConcerns) {
+            StrategicAction action = concern.getCurrentAction();
+            if (action == null || !action.isEnded()) continue;
+
+            int sinceEnded = action.getMeetingsSinceEnded();
+            sinceEnded++;
+            if (sinceEnded > SAIConstants.KEEP_ENDED_ACTIONS_FOR_NUM_MEETINGS) {
+                concern.clearAction();
+            } else {
+                action.setMeetingsSinceEnded(sinceEnded);
+            }
         }
         return toRemove;
     }

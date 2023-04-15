@@ -37,6 +37,7 @@ public class SAIConstants {
     public static float DEFAULT_ACTION_COOLDOWN = 30;
     public static float DEFAULT_ANTI_REPETITION_VALUE = 25;
     public static float ANTI_REPETITION_DECAY_PER_DAY = 0.1f;
+    public static int KEEP_ENDED_ACTIONS_FOR_NUM_MEETINGS = 1;
 
     // UI stuff
     public static final float CONCERN_ITEM_WIDTH = 320;

@@ -45,6 +45,8 @@ public interface StrategicAction {
     void abort();
     void end(StrategicActionDelegate.ActionStatus newStatus);
     boolean isEnded();
+    int getMeetingsSinceEnded();
+    void setMeetingsSinceEnded(int num);
 
     String getName();
     String getIcon();
