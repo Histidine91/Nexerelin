@@ -1,21 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.FleetAssignment;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SpecialItemData;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
@@ -29,7 +15,6 @@ import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
-import static com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.XP_PER_RAID_MULT;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
@@ -40,34 +25,15 @@ import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.graid.GroundRaidObjectivePlugin;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.Items;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
 import com.fs.starfarer.api.impl.campaign.population.CoreImmigrationPluginImpl;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin.getEntityMemory;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
 import com.fs.starfarer.api.impl.campaign.rulecmd.VIC_MarketCMD;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.BOMBARD;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.ENGAGE;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.GO_BACK;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.HOSTILE_ACTIONS_TIMEOUT_DAYS;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RAID;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RAID_CONFIRM_CONTINUE;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.addBombardVisual;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.applyDefenderIncreaseFromRaid;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getBombardDestroyThreshold;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getSaturationBombardmentStabilityPenalty;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getTacticalBombardmentStabilityPenalty;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -79,7 +45,6 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
-import static exerelin.campaign.InvasionRound.getString;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
@@ -91,22 +56,17 @@ import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
-import exerelin.utilities.CrewReplacerUtils;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import exerelin.campaign.intel.satbomb.SatBombIntel;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.XP_PER_RAID_MULT;
+import static exerelin.campaign.InvasionRound.getString;
 
 public class Nex_MarketCMD extends MarketCMD {
 	
@@ -1976,11 +1936,11 @@ public class Nex_MarketCMD extends MarketCMD {
 //		
 //		text.addTooltip();
 		
-		setSatBombLimitedHatred(false);
+		setSatBombLimitedHatred(false, null);
 		if (hidden) {
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningHidden", "$market", market.getName()));
-			setSatBombLimitedHatred(true);
+			setSatBombLimitedHatred(true, SatBombExcuse.HIDDEN);
 		}
 		else if (nonHostile.isEmpty()) {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
@@ -1988,13 +1948,20 @@ public class Nex_MarketCMD extends MarketCMD {
 		else if (DiplomacyTraits.hasTrait(faction.getId(), TraitIds.MONSTROUS)) {
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningMonstrous", "$theFaction", faction.getDisplayNameWithArticle()));
-			setSatBombLimitedHatred(true);
+			setSatBombLimitedHatred(true, SatBombExcuse.MONSTROUS);
 		}
 		else if (market.getSize() <= 3 || market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 		{
 			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
 					"satBombWarningSmall", "$market", market.getName()));
-			setSatBombLimitedHatred(true);
+			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
+		}
+		else if (market.getFaction().getMemoryWithoutUpdate().contains(SatBombIntel.FACTION_MEMORY_KEY)
+				&& market.getFaction().getMemoryWithoutUpdate().getInt(SatBombIntel.FACTION_MEMORY_KEY) > 0)
+		{
+			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment",
+					"satBombWarningSatBomber", "$market", market.getName()));
+			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
 		} else {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarning"));
 		}
@@ -2038,10 +2005,14 @@ public class Nex_MarketCMD extends MarketCMD {
 		addBombardConfirmOptions();
 	}
 	
-	protected void setSatBombLimitedHatred(boolean val) {
+	protected void setSatBombLimitedHatred(boolean val, SatBombExcuse excuse) {
 		if (!(temp instanceof NexTempData)) return;
+		NexTempData nexTemp = (NexTempData)temp;
+
 		//log.info("Trying sat bomb limited hatred: " + val);
-		((NexTempData)temp).satBombLimitedHatred = val;
+		nexTemp.satBombLimitedHatred = val;
+		if (!val) nexTemp.satBombExcuse = null;
+		else nexTemp.satBombExcuse = excuse;
 	}
 	
 	// Changes from vanilla: Custom rep and data handling for sat bomb;
@@ -2102,7 +2073,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				else if (DiplomacyTraits.hasTrait(faction.getId(), TraitIds.MONSTROUS)) {
 					impact.ensureAtBest = null;
 				}
-				else if (size <= 3) {
+				else if (((NexTempData)temp).satBombLimitedHatred) {
 					impact.ensureAtBest = RepLevel.NEUTRAL;
 				}
 				DiplomacyManager.getManager().getDiplomacyBrain(curr.getId()).reportDiplomacyEvent(
@@ -2511,7 +2482,12 @@ public class Nex_MarketCMD extends MarketCMD {
 		 * Set to true if there are any factors that led the sat bombardment to not inflict the full rep penalties, such as size.
 		 */
 		public boolean satBombLimitedHatred;
+		public SatBombExcuse satBombExcuse;
 		public FactionAPI targetFaction;
 		public int sizeBeforeBombardment;
+	}
+
+	public enum SatBombExcuse {
+		MONSTROUS, SMALL_SIZE, HIDDEN, SAT_BOMBER
 	}
 }

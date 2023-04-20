@@ -11,6 +11,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.InvActionStage;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -49,6 +50,7 @@ public class SatBombActionStage extends InvActionStage {
 			status = RaidIntel.RaidStageStatus.SUCCESS;
 			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
 			intel.sendOutcomeUpdate();
+			NexUtils.incrementMemoryValue(intel.getFaction().getMemoryWithoutUpdate(), SatBombIntel.FACTION_MEMORY_KEY, 1);
 		}
 		offFltIntel.setRouteActionDone(fleet);
 	}

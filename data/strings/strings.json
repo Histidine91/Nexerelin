@@ -589,6 +589,7 @@
 		"satBombWarningSmall":"An atrocity of this scale cannot be hidden. $market is sufficiently low-populated and/or remote that the reputational impacts will be limited, but the following factions will nevertheless be angry:",
 		"satBombWarningAllHostile":"An atrocity of this scale cannot be hidden, but any factions that would be dismayed by such actions are already hostile to you.",
 		"satBombWarningMonstrous":"An atrocity of this scale cannot be hidden. However, $theFaction's inhumanity in the eyes of the Sector's general population will mitigate the reputational repercussions of your massacre, although the following factions will still disapprove:",
+		"satBombWarningSatBomber":"An atrocity of this scale cannot be hidden. $TheFaction has committed just such a crime themselves, mitigating relationship penalties (somewhat). Reputation will nevertheless be lost with the following factions:",
 		"satBombWarningVengeful":"Due to their hatred of $theFaction, the following factions can be expected to overlook your crime:",
 		"satBombWarningHidden":"As $market is a hidden and/or transient habitation, its destruction will not attract much, if any, attention from other factions.",
 		

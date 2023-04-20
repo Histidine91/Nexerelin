@@ -3,6 +3,7 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
@@ -117,6 +118,26 @@ public class NexUtils
 			f += value;
 		}
 		return f;
+	}
+
+	public static void incrementMemoryValue(MemoryAPI mem, String key, int amount) {
+		if (!mem.contains(key)) {
+			mem.set(key, amount);
+			return;
+		}
+		int current = mem.getInt(key);
+		amount += current;
+		mem.set(key, amount);
+	}
+
+	public static void incrementMemoryValue(MemoryAPI mem, String key, float amount) {
+		if (!mem.contains(key)) {
+			mem.set(key, amount);
+			return;
+		}
+		float current = mem.getFloat(key);
+		amount += current;
+		mem.set(key, amount);
 	}
 	
 	/**
@@ -319,7 +340,7 @@ public class NexUtils
 		result *= precision;
 		
 		return result;
-	}	
+	}
 	
 	public static TooltipMakerAPI.StatModValueGetter getStatModValueGetter(boolean color, 
 			final int numDigits) {
@@ -354,6 +375,28 @@ public class NexUtils
 		}
 		for (String multModId : stat.getMultMods().keySet()) {
 			MutableStat.StatMod mod = stat.getMultMods().get(multModId);
+			float val = mod.value;
+			sb.append(String.format("\n  %s: %.2fx", mod.desc, val));
+		}
+
+		return sb.toString();
+	}
+
+	public static String statBonusToString(StatBonus stat, float base) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Value: " + stat.computeEffective(base));
+		for (String flatModId : stat.getFlatBonuses().keySet()) {
+			MutableStat.StatMod mod = stat.getFlatBonuses().get(flatModId);
+			float val = mod.value;
+			sb.append(String.format("\n  %s: %s%.1f", mod.desc, val > 0 ? "+" : "", val));
+		}
+		for (String percentModId : stat.getPercentBonuses().keySet()) {
+			MutableStat.StatMod mod = stat.getPercentBonuses().get(percentModId);
+			float val = mod.value;
+			sb.append(String.format("\n  %s: %s%.1f%%", mod.desc, val > 0 ? "+" : "", val));
+		}
+		for (String multModId : stat.getMultBonuses().keySet()) {
+			MutableStat.StatMod mod = stat.getMultBonuses().get(multModId);
 			float val = mod.value;
 			sb.append(String.format("\n  %s: %.2fx", mod.desc, val));
 		}

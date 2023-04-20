@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class SatBombIntel extends OffensiveFleetIntel {
+
+	public static final String FACTION_MEMORY_KEY = "$nex_satBombCount";
 	
 	protected boolean isVengeance;
 	protected boolean isVirusBomb;
