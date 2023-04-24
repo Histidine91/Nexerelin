@@ -55,6 +55,7 @@ public class NexConfig
     public static boolean legacyInvasions = false;
 	public static boolean invasionsOnlyAfterPlayerColony = false;
     public static boolean allowInvadeStoryCritical = false;
+    public static boolean allowInvadeStartingMarkets = true;
     public static boolean allowPirateInvasions = false;
     public static boolean retakePirateMarkets = true;
     public static float fleetRequestCostPerFP = 400f;
@@ -194,6 +195,7 @@ public class NexConfig
             legacyInvasions = settings.optBoolean("legacyInvasions", legacyInvasions);
 			invasionsOnlyAfterPlayerColony = settings.optBoolean("invasionsOnlyAfterPlayerColony", invasionsOnlyAfterPlayerColony);
             allowInvadeStoryCritical = settings.optBoolean("allowInvadeStoryCritical", allowInvadeStoryCritical);
+            allowInvadeStartingMarkets = settings.optBoolean("allowInvadeStartingMarkets", allowInvadeStartingMarkets);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             retakePirateMarkets = settings.optBoolean("retakePirateMarkets", retakePirateMarkets);
             fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);

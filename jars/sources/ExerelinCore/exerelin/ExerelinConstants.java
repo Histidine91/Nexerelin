@@ -1,7 +1,6 @@
 package exerelin;
 
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import exerelin.utilities.StringHelper;
 
 /**
  * Stores shared constants
@@ -16,5 +15,6 @@ public class ExerelinConstants {
 	public static final String MEMORY_KEY_NPC_NO_INVADE = "$nex_npc_no_invade";
 	public static final String MEMORY_KEY_VISITED_BEFORE = "$visitedBefore";
 	public static final String MEMKEY_MARKET_STARTING_FACTION = "$startingFactionId";
+	public static final String MEMKEY_MARKET_EXISTED_AT_START = "$nex_existed_at_start";
 
 }

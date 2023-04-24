@@ -49,6 +49,7 @@
     "legacyInvasions": false,	# old invasion system before v0.10.3 revamp
     "invasionsOnlyAfterPlayerColony": false,	# if true, factions will only invade after player faction is configured (as happens upon first having a colony)
     "allowInvadeStoryCritical":false,    # block NPC invasions from targeting story-critical markets
+    "allowInvadeStartingMarkets":true,	# if false, markets that exist at the start of the game cannot be invaded by NPCs, only by player
     "allowPirateInvasions": false,
     "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
     "fleetRequestCostPerFP": 400,  # used for player-requested fleets

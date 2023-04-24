@@ -1,44 +1,31 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignEntityPickerListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.PersonImportance;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
+import lombok.extern.log4j.Log4j;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class NexUtilsMarket {
@@ -186,6 +173,9 @@ public class NexUtilsMarket {
 			return false;
 		
 		if (!NexConfig.allowInvadeStoryCritical && Misc.isStoryCritical(market))
+			return false;
+
+		if (!NexConfig.allowInvadeStartingMarkets && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMKEY_MARKET_EXISTED_AT_START))
 			return false;
 		
 		if (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_NPC_NO_INVADE))

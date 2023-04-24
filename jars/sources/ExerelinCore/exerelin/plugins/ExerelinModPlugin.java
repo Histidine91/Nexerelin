@@ -2,14 +2,9 @@ package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FleetDataAPI;
-import com.fs.starfarer.api.campaign.GenericPluginManagerAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SpecialItemData;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.InstallableIndustryItemPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -17,13 +12,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo;
-import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.CATALYTIC_CORE_BONUS;
-import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.SYNCHROTRON_FUEL_BONUS;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Items;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
@@ -36,65 +25,51 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.AcademyStoryVictoryScript;
-import exerelin.campaign.AllianceManager;
-import exerelin.campaign.ColonyManager;
-import exerelin.campaign.CovertOpsManager;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.*;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ai.MilitaryInfoHelper;
-import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.ui.FieldOptionsScreenScript;
-import exerelin.campaign.MarketDescChanger;
-import exerelin.campaign.MiningCooldownDrawer;
-import exerelin.campaign.MiscEventsManager;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.ui.PlayerFactionSetupNag;
-import exerelin.campaign.StartSetupPostTimePass;
-import exerelin.campaign.ui.ReinitScreenScript;
-import exerelin.campaign.RevengeanceManager;
-import exerelin.campaign.SectorManager;
-import exerelin.campaign.StatsTracker;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
-import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.PlayerInSystemTracker;
 import exerelin.campaign.fleets.VultureFleetManager;
-import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.merc.MercSectorManager;
+import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.campaign.submarkets.PrismMarket;
+import exerelin.campaign.ui.FieldOptionsScreenScript;
+import exerelin.campaign.ui.PlayerFactionSetupNag;
+import exerelin.campaign.ui.ReinitScreenScript;
+import exerelin.utilities.*;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
-import exerelin.world.ExerelinNewGameSetup;
-import exerelin.world.ExerelinProcGen;
-import exerelin.world.LandmarkGenerator;
-import exerelin.world.SSP_AsteroidTracker;
-import exerelin.world.VanillaSystemsGenerator;
+import exerelin.world.*;
 import exerelin.world.scenarios.DerelictEmpireOfficerGeneratorPlugin;
 import exerelin.world.scenarios.ScenarioManager;
-import java.io.IOException;
-import java.util.Random;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.io.IOException;
+import java.util.Random;
+
+import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.CATALYTIC_CORE_BONUS;
+import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.SYNCHROTRON_FUEL_BONUS;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -169,6 +144,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
                 market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, market.getFactionId());
+
+            market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_EXISTED_AT_START, true);
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
             ColonyManager.updateFreePortSetting(market);
         }
@@ -559,6 +536,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             if (!market.getMemoryWithoutUpdate().contains(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION))
                 market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, market.getFactionId());
+
+            market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_EXISTED_AT_START, true);
             market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT) || market.isFreePort());
 			
 			if (NexConfig.getFactionConfig(market.getFactionId()).noMissionTarget) {

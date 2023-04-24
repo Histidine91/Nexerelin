@@ -39,6 +39,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("legacyInvasions", "boolean", tabFleets, NexConfig.legacyInvasions);
         addSetting("invasionsOnlyAfterPlayerColony", "boolean", tabFleets, NexConfig.invasionsOnlyAfterPlayerColony);
         addSetting("allowInvadeStoryCritical", "boolean", tabFleets, NexConfig.allowInvadeStoryCritical);
+        addSetting("allowInvadeStartingMarkets", "boolean", tabFleets, NexConfig.allowInvadeStartingMarkets);
         addSetting("followersInvasions", "boolean", tabFleets, NexConfig.followersInvasions);
         addSetting("allowPirateInvasions", "boolean", tabFleets, NexConfig.allowPirateInvasions);
         addSetting("retakePirateMarkets", "boolean", tabFleets, NexConfig.retakePirateMarkets);
@@ -119,6 +120,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.legacyInvasions = (boolean)loadSetting("legacyInvasions", "boolean");
         NexConfig.invasionsOnlyAfterPlayerColony = (boolean)loadSetting("invasionsOnlyAfterPlayerColony", "boolean");
         NexConfig.allowInvadeStoryCritical = (boolean)loadSetting("allowInvadeStoryCritical", "boolean");
+        NexConfig.allowInvadeStartingMarkets = (boolean)loadSetting("allowInvadeStartingMarkets", "boolean");
         NexConfig.followersInvasions = (boolean)loadSetting("followersInvasions", "boolean");
         NexConfig.allowPirateInvasions = (boolean)loadSetting("allowPirateInvasions", "boolean");
         NexConfig.retakePirateMarkets = (boolean)loadSetting("retakePirateMarkets", "boolean");

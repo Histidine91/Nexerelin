@@ -2784,6 +2784,8 @@
 		"name_invasionsOnlyAfterPlayerColony":"Prevent invasions until first player colony",
 		"name_allowInvadeStoryCritical":"Allow invasion of story-critical markets",
 		"tooltip_allowInvadeStoryCritical":"Allows NPC factions to invade markets marked as story-critical by the game. This can result in nonsensical (but potentially amusing) situations with story missions.",
+		"name_allowInvadeStartingMarkets":"Allow invasion of markets existing at start",
+		"tooltip_allowInvadeStartingMarkets":"If false, markets that were present at the start of the game will not be invaded by NPC factions (does not affect player).",
 		"name_followersInvasions":"Player faction launches invasions",
 		"tooltip_followersInvasions":"If true, player invasion will launch invasion events of its own. (Autonomous colonies can do this regardless of this setting, but very infrequently.)",
 		"name_allowPirateInvasions":"Allow pirate invasions",
