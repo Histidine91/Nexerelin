@@ -2594,6 +2594,9 @@
 		"dissonantName2":"Dissonant",
 		"dissonantAlias":"N",
 		
+		"toweringName1":"Mauve",
+		"toweringName2":"Towering",
+		
 		"m1_name":"Captive Cores",
 		"m1_stage1Desc":"Recover the Beta Cores stored on %s. You could hit the secure facility where they're stored, or talk to someone in authority who can help you.",
 		"m1_stage2Desc":"Return the Beta Cores you've recovered to %s at %s. Alternatively, you might choose to bring them to either %s or %s.",
@@ -2636,6 +2639,18 @@
 		"brawl_battleBetrayNextStep":"Destroy Remnant station in %s",
 		
 		"brawl_msg_disableWatchtowers":"Artillery network in %s disabled!",
+		
+		"salvation_name":"Salvation",
+		"salvation_boilerplateDesc":"$name has requested your assistance in rooting out a treasonous plot among the AI Remnants, involving a sudden raid on $base.",
+		"salvation_startDesc":"Go to %s and gain more information on the attack.",
+		"salvation_investigateLeadsDesc":"Agent $agentName has given you two potential leads to follow.",
+		"salvation_investigateLeadsDesc1":"Go to the %s and see if you can find the fleet that attacked the base.",
+		"salvation_investigateLeadsDesc2":"A senior %s executive might be able to help. If you don't know anyone like that, Midnight might be able to help.",
+		"salvation_returnDesc":"Return to %s and report what you have learned.",
+		"salvation_startNextStep":"Go to %s",
+		"salvation_investigateLeadsNextStep1":"Go to the %s",
+		"salvation_investigateLeadsNextStep2":"Talk to a senior %s executive",
+		"salvation_returnNextStep":"Return to %s",
 		
 		"deadDropItem1":"a crate of exotic optronic components",
 		"deadDropItem2":"a data chip containing Hegemony deployment schedules",

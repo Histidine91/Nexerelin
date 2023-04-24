@@ -1,0 +1,4 @@
+Made by SniZupGun for the AI War mod:
+	plasma_gun_fire_0x.ogg
+	plasma_cannon_fire_01.ogg
+	plasma_cannon_kaboom_01.ogg

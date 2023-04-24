@@ -1,2 +1,6 @@
 midnight.png
-by Coherent Watermelon, edited by Histidine
+	by Coherent Watermelon, edited by Histidine
+	
+towering.png
+	by Nia Tahl, ask him for use outside Nexerelin
+	placeholder version is bash of vanilla's gamma core and beta core portraits

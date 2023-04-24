@@ -38,6 +38,10 @@
 		{"file":"sounds/nexerelin/sfx_interface/groundbattle/draw.ogg","pitch":1,"volume":0.6},
 	],
 	
+	"nex_sfx_explosion":[
+		{"file":"sounds/nexerelin/sfx_interface/explosion.ogg","pitch":1,"volume":1},
+	],
+	
 	"nex_alarm":[
 		{"file":"sounds/nexerelin/sfx_interface/alarm.wav","pitch":1,"volume":1.0}
 	],

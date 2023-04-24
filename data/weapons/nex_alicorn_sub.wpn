@@ -3,7 +3,7 @@
   "specClass": "projectile",
   "projectileSpecId": "nex_alicorn_sub_proj",
   "type": "BALLISTIC",
-  "mountTypeOverride": "COMPOSITE",
+  "mountTypeOverride": "HYBRID",
   "size": "LARGE",
   "turretSprite": "",
   "hardpointSprite": "",

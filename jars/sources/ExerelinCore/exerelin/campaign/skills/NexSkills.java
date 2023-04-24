@@ -1,6 +1,5 @@
 package exerelin.campaign.skills;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.CharacterStatsSkillEffect;
 import com.fs.starfarer.api.characters.LevelBasedEffect;
@@ -16,6 +15,7 @@ public class NexSkills {
 	public static final String AUXILIARY_SUPPORT_EX = "nex_auxiliary_support_ex";
 	public static final String BULK_TRANSPORT_EX = "nex_bulk_transport_ex";
 	public static final String MAKESHIFT_EQUIPMENT_EX = "nex_makeshift_equipment_ex";
+	public static final String FORCE_CONCENTRATION_EX = "nex_force_concentration_ex";
 	
 	public static String getString(String id) {
 		return StringHelper.getString("nex_skills", id);

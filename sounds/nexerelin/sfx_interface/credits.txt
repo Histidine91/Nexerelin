@@ -15,7 +15,9 @@ groundbattle/static.ogg - by harveyjnz at Freesound https://freesound.org/people
 	
 groundbattle/cheer.ogg - clipped from a work by Gregor Quendel at Freesound https://freesound.org/people/GregorQuendel/sounds/481781/
 	CC-BY
-	
+
+explosion.ogg - by Iwiploppenisse at Freesound https://freesound.org/people/Iwiploppenisse/sounds/156031/
+	CC-BY
 
 Battle sounds by Hanawub https://soundcloud.com/hanawub
 - groundbattle/victory.ogg

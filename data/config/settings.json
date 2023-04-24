@@ -213,6 +213,7 @@
 		
 		"characters":{
 			"nex_dissonant":"graphics/exerelin/portraits/dissonant.png",
+			"nex_towering":"graphics/exerelin/portraits/towering.png",
 			"volta":"graphics/portraits/characters/volta.png",
 		},
 		

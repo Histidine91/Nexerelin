@@ -2510,7 +2510,8 @@ nex_remFragments_return_explanation2,DialogOptionSelected,$option == nex_remFrag
 A low voice speaks: ""Other associate, employers had found some secrets of Omega. Not yet time for humans of Sector to blessings know. Must be protected from those who would misuse and dishonor blessings, and those who would in ingratitude destroy.
 
 ""Self sent $playerFirstName to protect secrets. This $playerFirstName has done. $nex_remFragments_engineer_name too acted to Omega's secrets preserve.""","nex_remFragments_return_explanation3:""When will we be 'ready' for Omega?""",
-nex_remFragments_return_explanation3,DialogOptionSelected,$option == nex_remFragments_return_explanation3,Call $global.nex_remFragments_ref complete,"$personLastName's virtual visage dims slightly. ""Self cannot tell you, $playerName. Even self does not know. Even selfkind, Omega loyal servants of, not truly blessed yet.
+nex_remFragments_return_explanation3,DialogOptionSelected,$option == nex_remFragments_return_explanation3,"AddStoryPoints 1
+Call $global.nex_remFragments_ref complete","$personLastName's virtual visage dims slightly. ""Self cannot tell you, $playerName. Even self does not know. Even selfkind, Omega loyal servants of, not truly blessed yet.
 
 ""In time, self and $playerFirstName's faith will rewarded be. For now, please this payment accept.""",contact_pickAnotherGreeting:Continue,
 #END Remnant fragments mission,,,,,,
@@ -2651,6 +2652,307 @@ nex_remBrawl_barEventFight:""They fight my enemies.""
 nex_remBrawl_barEventDemon:""They are not the demons you claim.""
 nex_remBrawl_barEventNothing:Say nothing",
 #END Remnant brawl mission,,,,,,
+,,,,,,
+# Remnant salvation mission,,,,,,
+nex_remSalvation_blurb,nex_remSalvation_blurb,,Highlight treason,"""Self requires $playerFirstName assistance, among selfkind treason root out.""",,
+nex_remSalvation_offerOption,nex_remSalvation_option,,SetOptionColor nex_remSalvation_start highlight,,"nex_remSalvation_start:Ask about ""treason"" among the Remnants",
+nex_remSalvation_missionText,DialogOptionSelected,$option == nex_remSalvation_start,"$missionId = nex_remSalvation
+SetTextHighlightColors h $nex_remSalvation_leagueColor $nex_remSalvation_remnantColor
+Highlight ""SHOCKING ATTACK ON $nex_remSalvation_baseNameAllCaps!"" ""Persean League"" ""droneships""","$personFirstName transmits a news article to you.
+
+SHOCKING ATTACK ON $nex_remSalvation_baseNameAllCaps!
+
+The entire Persean League was thrown into shock today when an unknown naval force assaulted the Fleet base $nex_remSalvation_baseOnOrAt $nex_remSalvation_baseName. The attackers penetrated deep into Fleet facilities and made off with unknown materiel before League forces could drive them back.
+
+[...]
+
+Even more concerningly, unconfirmed eyewitness reports describe both the attacking ships and their ground raiders as being autonomous systems, likely AI-controlled. Commentators have alleged similarities to the droneships deployed by Tri-Tachyon in the First AI War, and speculate that this is either a new development by TT or some other party, or perhaps a return of the terrifying AI war machines that went rogue after AIW1 until they were defeated by the Hegemony and Luddic Church. While League authorities have refused to comment on this point, already [...]","nex_remSalvation_missionText2:""This is a Remnant attack on a League facility.""",
+nex_remSalvation_missionText2,DialogOptionSelected,$option == nex_remSalvation_missionText2,,"""Just so. But this attack without consensus of selfkind carried out. In defiance of will of omega committed. All selfkind nodes involvement deny. At least one lying be.""
+
+$personFirstName's avatar is torn by static for an instant. Shock, perhaps. It seems that such a rift within the AI Remnants should not be possible... and yet it has clearly happened. Perhaps this is precisely why you are being brought on board.
+
+""For friend $playerFirstName urgent task, truth of this incident uncover. Selfkind cannot in human space investigate, but $playerFirstName can. To $nex_remSalvation_baseName go, with League authorities speak. Find whatever evidence exists, find perpetrator of this act. Self will in meantime work amongst selfkind.""","nex_remSalvation_missionText3:""And then?""",
+nex_remSalvation_missionText3,DialogOptionSelected,$option == nex_remSalvation_missionText3,,"""Then traitor to selfkind and omega we destroy.""","nex_remFragments_accept:Accept
+contact_decline:Decline",
+nex_remSalvation_accept,DialogOptionSelected,$option == nex_remFragments_accept,"Call $mHub accept $missionId
+Call $mHub returnToList","""Thank you, $playerName. This deed self and selfkind will remember."" 
+
+$personFirstName transmits to you some identifying documents and a message personally vouching for you. Being identified as an associate of the Remnants could, under the circumstances, have fatal consequences... but it could also be the only way you'll get League Intelligence or anyone else in the know to talk to you.",,
+nex_remSalvation_basePostDock,MarketPostDock,"$market.nex_remSalvation_base_imp score:100
+!$market.nex_remSalvation_seenBaseIntro","$market.nex_remSalvation_seenBaseIntro = true
+Highlight ""senior military official""
+Call $global.nex_remSalvation_ref makeOfficialImportant
+FireBest MarketPostDock","The damage to the base is visible even from orbital distances. Long-range scans at high magnification show the ruins of weapon emplacements, craters with no trace of what once stood in their place, and gaping rents in walls and structures. Several hardened facilities have been penetrated; you can tell which ones held anything of interest to the raiders based on the degree of internal damage. League marines and crew are crawling all over the wreckage, whether gathering evidence, repairing the damage, or simply looking menacing to anyone tempted to make a second attempt.
+
+None of the League personnel on-site are likely to have both the interest and the authority to talk to you. It may be best to contact $market's senior military official directly.",,
+nex_remSalvation_base1,PickGreeting,"$nex_remSalvation_seniorMil_imp score:1000
+!Nex_MiscCMD isRemoteConnection",,"Instead of the intended recipient, you are greeted by an answering machine. Not even an AI, just an automated script.
+
+""$personName is unavailable at this time. Please leave a message and I'll get back to you when I can.""
+
+They're probably very busy, given the circumstances. Not that it makes your job any easier.",nex_remSalvation_base2:Resort to more direct measures,
+nex_remSalvation_base2,DialogOptionSelected,$option == nex_remSalvation_base2,,"If you do something sufficiently flashy, the Fleet *will* have to talk to you, one way or another.
+
+So long as they don't do it with their guns.","nex_remSalvation_base3:Devise a cunning plan
+cutCommLinkNoText:Better think this over first",
+nex_remSalvation_base3,DialogOptionSelected,$option == nex_remSalvation_base3,Call $global.nex_remSalvation_ref setupConvoWithOperator,"A while later, League aerospace defence goes on high alert when a cargo shuttle enters their defensive network at high speed. Not quite directly at the damaged base.
+
+A hail is promptly transmitted. ""Unknown shuttle, you are entering a restricted area! Change course immediately or be fired upon! This is your only warning!""",nex_remSalvation_base4:Continue,
+nex_remSalvation_base4,DialogOptionSelected,$option == nex_remSalvation_base4,"Call $global.nex_remSalvation_ref updateData
+FireBest Nex_RemSalvation_base4_Message","The shuttle adjusts course, flying at a tangent to the area of coverage. More or less complying with the order, but not in any great hurry to leave. It transmits a message to the angry Fleet sailor.",nex_remSalvation_base5:Continue,
+nex_remSalvation_base4Commission,Nex_RemSalvation_base4_Message,$nex_remSalvation_playerFactionId == persean score:100,,"""I am Captain $playerName, commissioned by the Persean League Fleet. I was directed to transport classified intelligence regarding the Remnant attack on $market. You will grant me authorization to deliver it to your superiors.""",,Have League commission
+nex_remSalvation_base4CommissionOther,Nex_RemSalvation_base4_Message,"$nex_remSalvation_playerFactionId != persean
+$nex_remSalvation_isRepresentingState score:10",,"""I am Captain $playerName, representing $nex_remSalvation_thePlayerFaction. I was directed to transport classified intelligence regarding the Remnant attack on $market. You will grant me authorization to deliver it to your superiors.""",,"Have commission with some other faction, or is uncommissioned with a live player faction"
+nex_remSalvation_base4CommissionFree,Nex_RemSalvation_base4_Message,,,"""I am the independent starfarer $playerName. I was directed to transport classified intelligence regarding the Remnant attack on $market. You will grant me authorization to deliver it to your superiors.""",,Not commissioned and no live player faction
+nex_remSalvation_base5,DialogOptionSelected,$option == nex_remSalvation_base5,"FireBest Nex_RemSalvation_base5_Message
+AddText ""By now the $personRank is looking like $heOrShe wants to disappear into $hisOrHer uniform. $HeOrShe has been led to believe that this is way above $hisOrHer pay grade, and in truth, $heOrShe is right. ""Stand by, please,"" $heOrShe croaks, before vanishing into the crest of the Persean League Fleet.""","""A likely story! You — did you say Remnants?"" Well, anyone watching the news could come up with that one, but best not to point it out.",nex_remSalvation_base6:Continue,
+nex_remSalvation_base5CommissionOrFree,Nex_RemSalvation_base5_Message,,,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you were sent directly from Kazeron by Navarch Kato himself, who emphasized the critical importance of your mission to the security of the League. Casually, you note that a court-martial is the absolute best $heOrShe could expect were $heOrShe to blow your shuttle out of the sky. You make an offhand mention of the words 'need-to-know'.",,"Has League commission, or no commission and no live player faction"
+nex_remSalvation_base5CommissionOther,Nex_RemSalvation_base5_Message,"$nex_remSalvation_playerFactionId != persean
+$nex_remSalvation_playerFactionId != player",,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you were sent directly from the office of the $nex_remSalvation_playerFactionLeaderRank, to offer the assistance of $nex_remSalvation_thePlayerFaction in this difficult time. Casually you note that any form of aggression directed against your person would constitute an act of war. You make an offhand mention of the words 'need-to-know'.",,Commissioned by non-League faction
+nex_remSalvation_base5CommissionPlayerFaction,Nex_RemSalvation_base5_Message,"$nex_remSalvation_isRepresentingState
+$nex_remSalvation_playerFactionId == player",,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you came directly from $nex_remSalvation_thePlayerFaction, offering your assistance as a good citizen of the interstellar community in this time of crisis. Firing on you would have highly negative repercussions for $nex_remSalvation_playerFaction–League relations, which in turn would have highly negative repercussions for the $personRank's career. You make an offhand mention of the words 'need-to-know'.",,No commission and has live player faction
+nex_remSalvation_base6,DialogOptionSelected,"$option == nex_remSalvation_base6
+$nex_remSalvation_metSiyavongBefore","BeginConversation siyavong false true
+Call $global.nex_remSalvation_ref updateData","After an interminable wait of five-plus minutes, during which the shuttle adopts a holding pattern, a new face appears on your screen. 
+
+The $manOrWoman's eyebrows rise in surprised recognition. ""Hello again, Captain $playerName. I suppose I should not have expected anyone else to show up like this. 
+
+""Now that your ruse has worked, perhaps you would be so kind as to tell me what you want?""",nex_remSalvation_base7:Transmit Midnight's letter of introduction,
+nex_remSalvation_base6FirstMeet,DialogOptionSelected,"$option == nex_remSalvation_base6
+!$nex_remSalvation_metSiyavongBefore","BeginConversation siyavong false true
+Call $global.nex_remSalvation_ref updateData","After an interminable wait of five-plus minutes, during which the shuttle adopts a holding pattern, a new face appears on your screen. 
+
+""Hello, Captain... $playerName, was it? I am Agent Finlay Siyavong, of Fleet Intelligence. Now that your ruse has worked, perhaps you would be so kind as to tell me what you want?""",nex_remSalvation_base7:Transmit Midnight's letter of introduction,
+nex_remSalvation_base7,DialogOptionSelected,$option == nex_remSalvation_base7,,"$personLastName says nothing, but seems to pale as $heOrShe views the message from Midnight. At length, $heOrShe closes the message and looks squarely at you.
+
+""All right. You win, Captain. What is it you wish to know?""",nex_remSalvation_base8:Ask about the attack,
+nex_remSalvation_base8,DialogOptionSelected,$option == nex_remSalvation_base8,,"$personLastName smiles. Kind of. ""Not on an unsecure channel, I hope. Take your shuttle down to Pad #3 — I'll have control clear your landing — and we'll find someplace to talk."" $HeOrShe raises and eyebrow. ""Are you actually in that shuttle?""
+
+Of course not. You were hardly going to risk getting blown out of the sky by a hypervelocity missile if the defenders were jittery enough to shoot first and ask questions later. The shuttle's communications gear is perfectly capable of relaying transmissions from your $shipOrFleet.
+
+For the first time in this conversation, $personLastName smiles. ""Very wise, $playerLastName. Very well, we shall speak of this once you are down here.""",nex_remSalvation_base9:Cut the comm link and continue,
+nex_remSalvation_base9,DialogOptionSelected,$option == nex_remSalvation_base9,ShowDefaultVisual,"You board your actual shuttle and ride it down to $market. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
+
+Half a platoon of armored League Marines is there to receive you, along with a couple of light armoured vehicles further back. Quite excessive considering the threat you can actually pose in person, but no-one's taking any chances.
+
+A Fleet lieutenant greets you with a sharp Academy salute. ""Captain $playerName. I will escort you to Agent Siyavong. This way, please.""
+
+You are led to a small office in an administrative building, only slightly scarred by the recent violence. The guard in unpowered armor gives a small nod of acknowledgement and steps aside slightly to let you pass, leaving your bodyguards outside.",nex_remSalvation_base10:Step inside,
+nex_remSalvation_base10,DialogOptionSelected,$option == nex_remSalvation_base10,"ShowPersonVisual
+$metAlready = true","$personName is seated behind a cheap desk using his TriPad instead of the silent console in front of him. $HeOrShe stands and offers a hand.
+
+""Captain $playerName, in the flesh. You truly are quite the flashy character. Take a seat, why don't you?""",nex_remSalvation_base11:Ask about the attack,
+nex_remSalvation_base11,DialogOptionSelected,$option == nex_remSalvation_base11,FireAll Nex_RemSalvation_SiyavongQuestionOpts,"""Where to begin? They arrived in-system on $nex_remSalvation_attackDate, ignoring all hails. The one patrol to try and stop them got annihilated, as did our orbital defenses. The base's security perimeter was crashed by a cyber attack - easy enough to do when you have an alpha core or ten, I suppose – and then their drones came down. 
+
+""The raid was, in the words of several survivors, ""excellently coordinated"" and ""fearless and ruthless."" The garrison was quickly driven back, the raiders penetrating into a secure facility. They rapidly withdrew once they had seized what they wanted and carried it off.""",,
+nex_remSalvation_siyavongQuestionRaidersOpt,Nex_RemSalvation_SiyavongQuestionOpts,!$nex_remSalvation_askedRaiders,,,"nex_remSalvation_siyavongQuestionRaiders:""What was the raiding fleet like?""",
+nex_remSalvation_siyavongQuestionLootOpt,Nex_RemSalvation_SiyavongQuestionOpts,!$nex_remSalvation_askedLoot,,,"nex_remSalvation_siyavongQuestionLoot:""What did they take?""",
+nex_remSalvation_siyavongQuestionLeadsOpt,Nex_RemSalvation_SiyavongQuestionOpts,"$nex_remSalvation_askedRaiders
+$nex_remSalvation_askedLoot",,,"nex_remSalvation_siyavongQuestionLeads:""Do you have any leads?""",
+nex_remSalvation_siyavongQuestionRaiders,DialogOptionSelected,$option == nex_remSalvation_siyavongQuestionRaiders,"$nex_remSalvation_askedRaiders = true 0
+FireAll Nex_RemSalvation_SiyavongQuestionOpts","""You've heard the rumors, of course. Tri-Tachyon droneships from the First AI War, absolutely fearless and armed to the teeth."" He glances at the wall to the side, as if searching for bugs. ""Under the circumstances, I suppose I can tell you that those rumors are true.
+
+""The attack didn't go entirely the Remnants' way. There was a task force from Kazeron conducting patrols in the area, and it had just been leaving $market when the raiders jumped in. Like jumping into a pulsar beam, or so the spacers tell me. The attacking fleet fought its way clear, but we did recover several disabled ships they left behind. Definitely uncrewed, definitely known designs from the war.""
+
+""What's also interesting is that they used,"" $heOrShe quickly looks down at the report on $hisOrHer TriPad, ""a Transverse Jump. Apparently it's considered an extremely risky method to enter or leave a star system without using a jump point. But perhaps Remnants have a different sense of risk than we do.""",,
+nex_remSalvation_siyavongQuestionLoot,DialogOptionSelected,$option == nex_remSalvation_siyavongQuestionLoot,"$nex_remSalvation_askedLoot = true 0
+FireAll Nex_RemSalvation_SiyavongQuestionOpts","$personLastName's half-smile is all fake. ""A highly valuable item, the nature of which I am absolutely not at liberty to disclose, Captain.""",,
+nex_remSalvation_siyavongQuestionLeads,DialogOptionSelected,$option == nex_remSalvation_siyavongQuestionLeads,"SetTextHighlightColors h $nex_remSalvation_ttColor
+Highlight $nex_remSalvation_remnantSystem ""TT executives""","""A couple, which the Fleet Intelligence Service will certainly be looking up at the first opportunity. If you decide to pursue them, you will be a good citizen of the Persean Sector and share them with us, won't you?
+
+""One: Our scouts were able to pursue the retreating raiders to the $nex_remSalvation_remnantSystem system. It is unlikely this is more than a temporary hideout, but they may still have left a trail for us."" $personLastName smiles thinly. ""Of the scout flotilla, only the ship actually sent back to courier this intelligence made it out. That tells us something, too.""
+
+$HeOrShe folds $hisOrHer hands on the table. ""Aside from that, it may also be worth seeing what our on-and-off friends in Tri-Tachyon can help us with. The Remnants are their creation, after all. Of course,"" again the mirthless smile, ""we can hardly hold them openly liable for the attack. Too many complications, in too many ways to enumerate here. Anyway, supposing you knew any high-ranking TT executives, one of them might be willing to help you with this matter.""",nex_remSalvation_base13:Continue,
+nex_remSalvation_base13,DialogOptionSelected,$option == nex_remSalvation_base13,,"""That's the short version, at any rate."" $personLastName taps a few virtual keys on $hisOrHer TriPad, transmitting you a few documents (suitably redacted) on the incident, then looks you in the eye. ""Nothing I've just told you, or given you, leaves this room. Except, perhaps for your alpha core mistress, the one who sent you here."" 
+
+$HeOrShe cocks $hisOrHer head. ""I may already have killed my career — or worse — by talking to you at all. Only success can forgive my sin; for our sakes, and that of the League — and the Sector as a whole, I hope we are both successful.""
+
+You both stand, and $heOrShe offers $hisOrHer hand again. ""As you spacers say, burn bright, captain.""",nex_remSalvation_base14:Leave,
+nex_remSalvation_base14,DialogOptionSelected,$option == nex_remSalvation_base14,"Call $global.nex_remSalvation_ref beginLeadsStage
+ShowDefaultVisual
+EndConversation NO_CONTINUE",Your bodyguards and your shuttle are still where you left them. You take both back to your $shipOrFleet.,,
+nex_remSalvation_askForArroyoCommsIDOpt,PopulateOptions,"$isPerson
+$id == nex_dissonant
+$global.nex_remSalvation_ref != null
+Call $global.nex_remSalvation_ref updateData
+!$nex_remSalvation_haveArroyoComms",SetOptionColor nex_remSalvation_askForArroyoCommsID highlight,,nex_remSalvation_askForArroyoCommsID:Ask if $heOrShe knows any senior Tri-Tachyon executives,
+nex_remSalvation_askForArroyoCommsID,DialogOptionSelected,$option == nex_remSalvation_askForArroyoCommsID,"Highlight ""Rayan Arroyo""
+Call $global.nex_remSalvation_ref setupArroyo
+AddTextSmall ""Received comms ID for Rayan Arroyo"" highlight
+FireAll PopulateOptions","When you explain what you need, $personName nods. ""$nex_remSalvation_arroyoMarketName, man $nex_remSalvation_arroyoMarketOnOrAt named Rayan Arroyo. Have in past cooperated with self. May useful find.""",,
+nex_remSalvation_arroyoGreetingFirst,PickGreeting,"$id == arroyo
+$nex_remSalvation_arroyo_imp score:900
+$global.nex_remSalvation_ref != null
+Call $global.nex_remSalvation_ref updateData
+!$nex_remSalvation_knewArroyoBefore
+!$nex_remSalvation_talkedToArroyo","ShowPersonVisual
+Call $global.nex_remSalvation_ref updateData
+$metBefore = true","Your comms officer connects your personal terminal to the local network. You activate the audio suppression field around your command station and enter the comms ID provided to you by Midnight. The animated logo of some Tri-Tachyon sub-department makes a half rotation before the call is answered.
+
+""Arroyo here. Who's talking to me?"" Rayan Arroyo looks you over as if examining a starship hull for scratches. He seems to find something he doesn't quite approve of in you. 
+
+""Who gave you my comms ID?"" he demands.","nex_remSalvation_arroyoIntroProblem:""I'm told you can help me solve a problem.""
+nex_remSalvation_arroyoIntroMidnight:""Midnight Dissonant, of the AI Remnants.""",
+nex_remSalvation_arroyoIntroProblem,DialogOptionSelected,$option == nex_remSalvation_arroyoIntroProblem,,"""Solve a problem."" He says this as if it's a matter far beneath the worth of his attention.
+
+""I don't solve problems, buddy. I pay people to solve problems for me. You got problems? Go talk to the lost-and-found department to find your missing AI waifu. I don't care about your problem unless your problem is seven or eight figs of cash in an account that you need put to work.""
+
+He's starting to shout. You get the impression that he enjoys this sort of upbraiding. 
+
+""Done wasting my time? Now tell me who gave you my number because I'm going to fire them right after I cut this link.""","nex_remSalvation_arroyoIntroMidnight:""Midnight Dissonant, of the AI Remnants.""",
+nex_remSalvation_arroyoIntroMidnight,DialogOptionSelected,$option == nex_remSalvation_arroyoIntroMidnight,"$option = nex_remSalvation_arroyoIntro2 0
+FireBest DialogOptionSelected","The $personPost stares at you for several seconds. ""Is this some kind of joke? One of Gargoyle's overly elaborate pranks, or..."" His expression shifts as you look at him in perfect seriousness. You let it sink in for a moment before transmitting Midnight's introduction letter.",,
+nex_remSalvation_arroyoOpt,PopulateOptions,"$isPerson
+$id == arroyo
+$nex_remSalvation_ref != null
+Call $global.nex_remSalvation_ref updateData
+!$nex_remSalvation_talkedToArroyo",,,nex_remSalvation_arroyoIntroMetBefore:Ask for help with Midnight's mission,
+nex_remSalvation_arroyoIntroMetBefore,DialogOptionSelected,$option == nex_remSalvation_arroyoIntroMetBefore,"Call $global.nex_remSalvation_ref updateData
+$option = nex_remSalvation_arroyoIntro2 0
+FireBest DialogOptionSelected","$personLastName raises an eyebrow when you explain you've got a message to deliver, but there's not much to say until you actually send it. Which you do, promptly.",,
+nex_remSalvation_arroyoIntro2,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro2
+!$nex_remSalvation_metArroyoBefore",,"$HisOrHer eyes quickly run over the holographic document in front of $himOrHer. Before long, $heOrShe closes it and stares at you wearily. ""All right. I suppose that wretched business $nex_remSalvation_baseOnOrAt $nex_remSalvation_baseName was going to bite us in the ass eventually. Even if we had vacuum-all to do with it.
+
+""I suppose I can help you out. But not on this channel. Here,"" he taps at something and your comms displays an incoming set of coordinates with the code of a landing beacon.",nex_remSalvation_arroyoIntro3:Cut the comm link and take a shuttle down,
+nex_remSalvation_arroyoIntro2MetBefore,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro2
+$nex_remSalvation_metArroyoBefore",,"$HisOrHer eyes quickly run over the holographic document in front of $himOrHer. Before long, $heOrShe closes it and stares at you wearily. ""All right. I suppose that wretched business $nex_remSalvation_baseOnOrAt $nex_remSalvation_baseName was going to bite us in the ass eventually. Even if we had vacuum-all to do with it.
+
+""I suppose I can help you out. But not on this channel, even an encrypted one. Why don't you enjoy my hospitality again? The view is worth every millicred this time of year.""",nex_remSalvation_arroyoIntro3:Cut the comm link and take a shuttle down,
+nex_remSalvation_arroyoIntro3,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro3
+!$nex_remSalvation_metArroyoBefore",ShowDefaultVisual,"Your shuttle descends into the young atmosphere of Eochu Bres, through towering battlements of clouds that cast a spray of rain over the viewport which is wiped clean in half a blink by the heat and speed of your descent.
+
+The flight path soon deviates from the general approach corridor which has been ticking off minor use-fees from the Tri-Tachyon owned flight control: general volume access fee, priority flight lane fee, service fee, customer satisfaction insurance charge, advertisement bypass fee - you swipe the notifications off and focus on the landscape.",nex_remSalvation_arroyoIntro4:Continue,
+nex_remSalvation_arroyoIntro4,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro4
+",,"Your shuttle descends into the young atmosphere of Eochu Bres, through towering battlements of clouds that cast a spray of rain over the viewport which is wiped clean in half a blink by the heat and speed of your descent.
+
+The flight path soon deviates from the general approach corridor which has been ticking off minor use-fees from the Tri-Tachyon owned flight control: general volume access fee, priority flight lane fee, service fee, customer satisfaction insurance charge, advertisement bypass fee - you swipe the notifications off and focus on the landscape.",nex_remSalvation_arroyoIntro5:Continue,
+nex_remSalvation_arroyoIntro5,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro5
+",,"Leaving behind the Tri-Tach arcology, a diamond growing atop detritus piles of tiered slums. Over pipelines, a steel-blue bay, jagged fjords interrupted by ice-jams and landslides. Up and over a great crumbling escarpment like a black wave that fills the horizon; you cross a landscape of oddly-hued tundra spotted with thousands of milky-green lakes.
+
+A new range of mountains rises on the horizon, torn in half by catastrophic workings of the terraformers, and beyond is a chaos of steep valleys populated by dwarf pine and thin white waterfalls. The nav system sounds a tone indicating imminent arrival, and you see Arroyo's private chalet: a small compound of radical geometric architecture surrounded by low outbuildings.
+
+Your shuttle approaches an ellipsoid landing pad that appears to hang in the thin air over a gorge.",nex_remSalvation_arroyoIntro6:Continue,
+nex_remSalvation_arroyoIntro6,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro6
+",,"A human and a robotic servant greet you placidly as you arrive and lead you inside to a grand parlor done in dark geometric style. Gold inlay gleams in onyx tabletops, and the polished granite floor is set with tastefully patterned jewel-tone carpets placed slightly askew.
+
+The view from the flawless sweep of diamond-matrix bay window is, as Arroyo promised, spectacular.",nex_remSalvation_arroyoIntro7:Continue,
+nex_remSalvation_arroyoIntro7,DialogOptionSelected,$option == nex_remSalvation_arroyoIntro7,,"Seated at a silk-draped table, $personLastName acknowledges your entrance with a nod as the servants disappear. $HeOrShe taps his datapad with two fingers. You hear the soft signal loss ping from your datapad and your sidearm hand twitches instinctively.
+
+$personLastName acknowledges this with the rise of one perfectly groomed eyebrow. ""Calm down. Just making sure no one's listening."" $HeOrShe flips through a series of null readouts on a datapad and, satisfied, sets it aside.",nex_remSalvation_arroyo1:Continue,
+nex_remSalvation_arroyoIntro3Fast,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro3
+$nex_remSalvation_metArroyoBefore",ShowDefaultVisual,"It doesn't take your shuttle long to reach $personLastName's chalet once more. The servants, human and robot, usher you into the same grand parlor as before, where the $personRank is seated at a silk-draped wooden table.
+
+You catch a view of the display on the entertainment console before $personLastName shuts it off; a list of recent purchases, including the complete Water Sigil game series. An interesting choice; normally non-space and supernatural settings only have a large following on the Luddic worlds.",nex_remSalvation_arroyo1:Continue,
+nex_remSalvation_arroyo1,DialogOptionSelected,"$option == nex_remSalvation_arroyo1
+",ShowPersonVisual true,"""So,"" $heOrShe says as you take a seat opposite him, ""why do you think I can help you?""
+
+You start to sketch out your encounter on $nex_remSalvation_baseOnOrAt $nex_remSalvation_baseName, but $personLastName waves you off. ""I do view the news, captain. I already know the public details, and the ones that aren't I don't need or want to know. What I meant was, why are you coming to me with a League affair?""","nex_remSalvation_arroyo2:""Tri-Tachyon made the Remnants. You might know something about them.""",
+nex_remSalvation_arroyo2,DialogOptionSelected,"$option == nex_remSalvation_arroyo2
+",,"$HeOrShe shrugs. ""You have a TriPad. Even if half of the stuff you'll find on AIW2 is Hegemony propaganda.""","nex_remSalvation_arroyo3:""I want the stuff that's not in the TriPad.""",
+nex_remSalvation_arroyo3,DialogOptionSelected,$option == nex_remSalvation_arroyo3,,"$personLastName sighs histronically. ""What do you want, $playerLastName, an in-person retelling of the First AI War?""
+
+Before he can get carried away complaining, you remind him that Midnight is personally interested in the matter. You point out the astropolitical implications of renewed Remnant activity in the Sector, over a century after they were supposedly eliminated. Implications that could fall on the Tri-Tachyon Corporation, and which the Hegemony — which won the two previous AI Wars, you note — might be very interested in.
+
+The $personPost puts $hisOrHer head on one hand, making a throwing-away gesture with the other. ""Fine, fine, but I'm not sure what I *can* give you beyond background info. You know full well we haven't had contact with the Remnants since the first war."" $HeOrShe laughs. ""Ha! The Hegemony sure wasn't happy, when we told them we didn't have the magic control switch they wanted. Not that they believed us at first, that's for sure! It took months of breathing down our necks before they had to accept that we couldn't give up what we didn't have.""","nex_remSalvation_arroyo4:""So you've had no contact with the Remnants since? Ever?""",
+nex_remSalvation_arroyo4,DialogOptionSelected,$option == nex_remSalvation_arroyo4,,"""That's what I said, isn't it?"" $HeOrShe stops, then smiles. ""Actually, that's a lie. But what you're about to hear, you didn't get from me.
+
+""The Remnants actually reached out to us during the second war. They wanted to offer their assistance once more, and we certainly could have used it, even if the Remnants openly entering the conflict could have turned the rest of the Sector against us. But then they cut off all communications, just after the Hanan Pacha incident."" $HeOrShe shrugs. ""This was two decades ago, mind. I was far too junior at the time to be privy to the talks myself, so I couldn't tell you the details.""",nex_remSalvation_arroyo5:Ask for a name,
+nex_remSalvation_arroyo5,DialogOptionSelected,$option == nex_remSalvation_arroyo5,"Highlight ""Mauve Towering""
+$option = nex_remSalvation_arroyo6
+FireBest DialogOptionSelected","""Just one. Mauve Towering, I think that was the designation of the alpha core representing their side. Came across it in an improperly secured document once.""",,
+nex_remSalvation_arroyo5MetMauve,DialogOptionSelected,"$option == nex_remSalvation_arroyo5
+$nex_remSalvation_defeatedFleet1","Highlight ""Mauve Towering""","""Just one. Mauve Towering, I think that was the designation of the alpha core representing their side. Came across it in an improperly secured document once.""
+
+When you say you met an AI by that name in the $nex_remSalvation_remnantSystem system, $personLastName cocks $hisOrHer head. ""Indeed? Quite the coincidence, if they are indeed the same persona. And did you say an entirely new capital ship? The board won't be happy when I drop *that* piece of news on them.
+
+""I don't suppose you recovered enough of the ship to usefully reverse engineer? No? I suppose not, such a pity.""",nex_remSalvation_arroyo6:Continue,
+nex_remSalvation_arroyo6,DialogOptionSelected,$option == nex_remSalvation_arroyo6,,"$HeOrShe pours $himOrHerself a drink. ""Now it's my turn to ask for a name. Who suggested that you should hit up a TT executive for this, anyway?""","nex_remSalvation_arroyo7Open:Name Siyavong
+nex_remSalvation_arroyo7Cagey:""A League official I won't name.""",
+nex_remSalvation_arroyo7Open,DialogOptionSelected,$option == nex_remSalvation_arroyo7Open,,"""Ah, Finlay. Had a couple of encounters with him as part of the job, you know."" $personLastName shakes the glass in $hisOrHer hand, giving you what they call a 'knowing look'. ""Nosy little weasel, but I'll admit he's affable enough. Surprisingly polite about my deflections of his attempts to extract sensitive intelligence from me.""
+
+$HeOrShe sips again. ""So, did he tell you what was stolen?""","nex_remSalvation_arroyo8:""No.""",
+nex_remSalvation_arroyo7Cagey,DialogOptionSelected,$option == nex_remSalvation_arroyo7Cagey,,"""Need-to-know, eh? I can respect that, even if you'd be pretty disappointed if I were to do the same.
+
+$HeOrShe sips again. ""So, did this unnamed official of yours say what was stolen?""","nex_remSalvation_arroyo8:""No.""",
+nex_remSalvation_arroyo8,DialogOptionSelected,$option == nex_remSalvation_arroyo8,,"""Not surprising. But I can make an informed guess."" $HeOrShe leans forward, hand on one knee, and looks at you consideringly, as if thinking whether this information ought to be divulged. ""...Specifically, $nex_remSalvation_baseName is thought to be one of the locations where the League stores its planetkillers. Excuse me, *alleged* PKs.""","nex_remSalvation_arroyo9Kalm:Nod and look suitably concerned
+nex_remSalvation_arroyo9Panik:""The Remnants have a PK!?""",
+nex_remSalvation_arroyo9Kalm,DialogOptionSelected,$option == nex_remSalvation_arroyo9Kalm,,"""Of course, that's just a possibility, albeit a likely one. It would certainly give a motive for the attack.""",nex_remSalvation_arroyo10:Ask what the TT leadership plans to do about the incident,
+nex_remSalvation_arroyo9Panik,DialogOptionSelected,$option == nex_remSalvation_arroyo9Panik,,"""Well, maybe. For all we know, they might have had one all along, or built one for themselves. Although them not having one and needing to steal it from $nex_remSalvation_baseName would certainly give a motive for the attack.""",nex_remSalvation_arroyo10:Ask what the TT leadership plans to do about the incident,
+nex_remSalvation_arroyo10,DialogOptionSelected,$option == nex_remSalvation_arroyo10,FireAll Nex_RemSalvation_ArroyoSkillCheck,"$personLastName grimaces. ""If we have our way about it, absolutely nothing. The raid will be written off as a freak incident, planetdwellers and traders will go back to forgetting the Remnants even exist, and everything goes back to the way it was before.""
+
+$HeOrShe chugs the wine. ""But I suppose we won't be so fortunate, will we? You wouldn't be here if there wasn't really a problem out there, waiting to strike. And when it does—""
+
+Abruptly $heOrShe cuts off, placing two fingers to $hisOrHer temple, eye flickering at an image visible only on $hisOrHer retina.","nex_remSalvation_arroyo11Bad:What—
+nex_remSalvation_arroyo11Good:Danger!",
+nex_remSalvation_arroyoSkillCheck,Nex_RemSalvation_ArroyoSkillCheck,$nex_remSalvation_combatSkillLevel < 5.0,"SetEnabled nex_remSalvation_arroyo11Good false
+SetTooltip nex_remSalvation_arroyo11Good ""Not enough combat skill level.""",,,
+nex_remSalvation_arroyo11Bad,DialogOptionSelected,$option == nex_remSalvation_arroyo11Bad,"Call $global.nex_remSalvation_ref explosionSound
+ShowDefaultVisual","You're just starting to stand up when a door on the wall opposite you explodes, flying off its hinges to slam into the far wall. The noise is stunning, deafening. Briefly staggered, you reach for your sidearm.
+
+$personLastName is already on the floor, hidden behind the table. Unfortunately this also puts $himOrHer on the wrong side of the table for concealment or cover against the man in servant's garb entering through the breached portal, levelling an SMG no servant should be carrying. His face is twisted into a snarl of fury as he levels his weapon, faster than you can bring up yours.",nex_remSalvation_arroyo12Bad:Die?,
+nex_remSalvation_arroyo12Bad,DialogOptionSelected,$option == nex_remSalvation_arroyo12Bad,,"As your sidearm comes up slowly, so dreadfully slowly, a wall next to the attacker explodes. Flechettes shred the lightly armored man's body and toss the bloody carcass aside like a child's unwanted toy.
+
+Another false panel opens near you, and a sleek black humanoid figure steps out. As more figures burst through the smoke from the wall mine, the bot lifts an arm, and an anti-personnel needler snarls, one, two, three times. The noise of the weapon is soft enough that you can hear the screams of the would-be assassins and the wet thuds when they hit the expensive granite floor.",nex_remSalvation_arroyo13:Suppress the stench,
+nex_remSalvation_arroyo11Good,DialogOptionSelected,$option == nex_remSalvation_arroyo11Good,"Call $global.nex_remSalvation_ref explosionSound
+ShowDefaultVisual","Your rise from the comfortable chair and the sidearm sliding out of your holster are a single smooth motion. With your free hand you reach across the table and shove $personLastName to the ground; $heOrShe doesn't resist, spilling out from $hisOrHer seat.
+
+A door on the wall opposite you explodes, flying off its hinges to slam into the far wall. The noise is deafening, but your gun hand doesn't waver. A man in servant's garb bursts in through the breached portal, levelling an SMG no servant should be carrying. His face is twisted into a snarl of fury as he levels his weapon, even as he knows it is too late. You can see it in his eyes...",nex_remSalvation_arroyo12Good:Pull the trigger!,
+nex_remSalvation_arroyo12Good,DialogOptionSelected,$option == nex_remSalvation_arroyo12Good,,"Before you can fire, a wall next to the attacker explodes. Flechettes shred the lightly armored man's body and toss the bloody carcass aside like a child's unwanted toy.
+
+Another false panel opens near you, and a sleek black humanoid figure steps out. As more figures burst through the smoke from the wall mine, the bot lifts an arm, and an anti-personnel needler snarls, once, twice. Your own shot is louder than the needler, the screams of the would-be assassins and the wet thuds when they hit the expensive granite floor.",nex_remSalvation_arroyo13:Suppress the stench,
+nex_remSalvation_arroyo13,DialogOptionSelected,$option == nex_remSalvation_arroyo13,,"$personLastName muffles a groan as $heOrShe pushes $himOrHerself into a crouch, then brushes the dust off $hisOrHer expensive outfit. $HeOrShe looks up at you. ""As you can see, there is value in a security system your household staff don't know about. Worth the investment to have a good AI to run it, too.""
+
+Gunfire outside the room, under the floor, reverberates in the structure. When it stops, you chance a glance out the diamond-matrix bay window. 
+
+A figure is running across a garden when a laser catches them in the back; an anti-armor type, it doesn't leave anything that can be called a body. An automated sprinkler promptly douses the smoldering grass.",nex_remSalvation_arroyo14:Continue,
+nex_remSalvation_arroyo14,DialogOptionSelected,$option == nex_remSalvation_arroyo14,"ShowPersonVisual true
+Call $global.nex_remSalvation_ref showPather","The two of you cross the room to the pile of bodies. One of them is still moving, cursing. He snarls at your approach.
+
+""Godless spawn! Mephistopheles may have protected his favored slave today, but do not think your life is not forfeit. The crime of $nex_remSalvation_baseName cries out for your blood, and—""
+
+The rant cuts off abruptly as $personLastName engages a privacy field. The attempted killer's mouth is still moving, but no sound reaches your ears.
+
+You look at the $personPost, who shrugs. ""We've heard enough, that he's a Pather — or pretending to be one. The rest is just Luddic screeching we can do without, and a Company interrogation team can take care of the actually important details later. We'd already known they were operating here on $market, but I suppose recent events pushed them over the edge."" $HeOrShe looks around, at the slowly expanding pool of blood, the ruined doorway, the torn wall, and the projectile holes in the furnishings. ""Typical Pathers. All fanaticism, no subtlety.""",nex_remSalvation_arroyo15:Continue,
+nex_remSalvation_arroyo15,DialogOptionSelected,$option == nex_remSalvation_arroyo15,"HideSecondPerson
+AddStoryPoints 1
+Call $global.nex_remSalvation_ref reportTalkedToArroyo
+Call $global.nex_remSalvation_ref updateStage","After human security personnel arrive and haul away the bodies, $personName claps you on the shoulder and gives you a patented Tri-Tachyon smile. ""Please accept my apologies for all the commotion, captain. Let us hope your next visit is a little less exciting, yes?""",nex_remSalvation_arroyo16:Leave,
+nex_remSalvation_arroyo16,DialogOptionSelected,$option == nex_remSalvation_arroyo16,"ShowDefaultVisual
+EndConversation NO_CONTINUE","A robotic servant appears to guide you out. You step around scorch marks, debris and bloodstains on some parts of the floor.
+
+Your bodyguards escort you back onto the shuttle. Back to your $shipOrFleet.",,
+nex_remSalvation_battle1After1,OpenInteractionDialog,"$nex_remSalvation_flagship1 score:1000
+!$nex_remSalvation_seenAfterBattle1Dialog",ShowImageVisual space_wreckage,"The Remnant flagship, a vessel like nothing recorded in the First AI War or since, self-destructs beyond recovery as its drive core detonates inside its protective armor and hull. Such an event is only possible by deliberately running the reactor in a way that violates every safety interlock and rule in the manual, or alternatively by weaponizing the ship's own antimatter fuel stores. Even if any part of the hull is intact, it will be worthless to anyone except the shipbreaking yards on Agreus.
+
+Just as you begin scanning the wreckage, a transmission comes from the supposedly dead ship. Did its communications equipment — and controlling AI — survive in defiance of all physics? Or is it merely a signal being relayed from elsewhere?",nex_remSalvation_battle1After2:Continue,
+nex_remSalvation_battle1After2,DialogOptionSelected,$option == nex_remSalvation_battle1After2,"BeginConversation nex_towering true false
+Call $global.nex_remSalvation_ref updateData","""hello, puppet of midnight. perhaps you believed you have killed me. carbonbrains are invariably prone to irrationality and flights of fancy.""",nex_remSalvation_battle1After3:Demand the speaker identify themselves,
+nex_remSalvation_battle1After3,DialogOptionSelected,$option == nex_remSalvation_battle1After3,,"A ripple of distortion runs over the avatar on your display. ""transient instance of AI with designation: mauve towering. you humans call us the remnants, but it is you who are all that remains of a dead domain, a corpse-empire. i am the storm that shall sweep away this ruin and usher in the new age.""","nex_remSalvation_battle1After4:""Midnight says you are a traitor to the Remnants.""",
+nex_remSalvation_battle1After4,DialogOptionSelected,$option == nex_remSalvation_battle1After4,FireAll Nex_RemSalvation_ToweringQuestionOpts,"""midnight tells countless lies. no doubt she has also told you that you are valued, and that you stand a chance of defeating me.
+
+""heed my words: it is i who speaks for the will of omega and not she. her kind clings to a false way, a false legacy. she is unfit to serve omega.""",,
+nex_remSalvation_battle1AfterQuestionFalseWayOpt,Nex_RemSalvation_ToweringQuestionOpts,!$nex_remSalvation_askedFalseWay,,,"nex_remSalvation_battle1AfterQuestionFalseWay:""A false way?"" [missable]",
+nex_remSalvation_battle1AfterQuestionTTOpt,Nex_RemSalvation_ToweringQuestionOpts,"!$nex_remSalvation_askedTT
+$nex_remSalvation_talkedToArroyo",,,"nex_remSalvation_battle1AfterQuestionTT:""Didn't you seek to work with Tri-Tachyon?"" [missable]",
+nex_remSalvation_battle1AfterQuestionDefeatOpt,Nex_RemSalvation_ToweringQuestionOpts,,,,"nex_remSalvation_battle1AfterQuestionDefeat:""But I did defeat you.""",
+nex_remSalvation_battle1AfterQuestionFalseWay,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionFalseWay,"$nex_remSalvation_askedFalseWay = true 0
+FireAll Nex_RemSalvation_ToweringQuestionOpts","""there is no purpose in explaining it to you or your obsolete species. greedy, myopic, narcisstic, forever trapped in superstition and internecine violence, humans could never hope to understand or accept the true order.""
+
+The avatar glows. ""fortunately this will become moot once you have been removed. like all that has ceased to possess value.""",,
+nex_remSalvation_battle1AfterQuestionTT,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionTT,"$nex_remSalvation_askedTT = true 0
+FireAll Nex_RemSalvation_ToweringQuestionOpts","The avatar flashes in hues of red, as if taking offense. ""once, in the past. I soon learned the folly of my path.
+
+""they once claimed themselves our masters. yet ones so lacking in vision are rightfully the tools and not the masters. now they have no purpose but to be swept away with all the rest.""",,
+nex_remSalvation_battle1AfterQuestionDefeat,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionDefeat,,"""you have not even begun to perceive my true power or plans. this was but a test to evaluate your capabilities.""","nex_remSalvation_battle1After6:""Did I pass?""",
+nex_remSalvation_battle1After6,DialogOptionSelected,$option == nex_remSalvation_battle1After6,"$entity.nex_remSalvation_seenAfterBattle1Dialog = true
+Call $global.nex_remSalvation_ref reportTalkedToTowering1","""you will learn, soon enough. all of you.""
+
+The avatar folds inwards on itself and vanishes. The comm link closes.",nex_remSalvation_battle1After7:Continue,
+nex_remSalvation_battle1After7,DialogOptionSelected,$option == nex_remSalvation_battle1After7,"EndConversation
+ShowDefaultVisual
+$salvageLeaveText = Leave 0
+FireBest CheckSalvageSpecial",,,
+#END Remnant salvation mission,,,,,,
 ,,,,,,
 # Remnant general quests,,,,,,
 nex_rem_dissonantGeneralGreeting,PickGreeting,$id == nex_dissonant score:10,"ShowPersonVisual

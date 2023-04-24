@@ -4,7 +4,7 @@
   "projectileSpecId": "nex_alicorn_proj",
   "everyFrameEffect": "exerelin.combat.weapons.AlicornEffect",
   "type": "BALLISTIC",
-  "mountTypeOverride": "COMPOSITE",
+  "mountTypeOverride": "HYBRID",
   "size": "LARGE",
   "turretSprite": "graphics/exerelin/weapons/nex_alicorn_placeholder_turret.png",
   "turretGunSprite": "graphics/exerelin/weapons/nex_alicorn_placeholder_turret_recoil.png",
