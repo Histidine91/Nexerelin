@@ -7,17 +7,11 @@ import com.fs.starfarer.api.characters.FullName.Gender;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.*;
 
 public class MercDataManager {
 	
@@ -107,6 +101,7 @@ public class MercDataManager {
 			def.voice = thisJson.optString("voice", null);
 			def.persistentId = thisJson.optString("persistentId", null);
 			def.aiCoreId = thisJson.optString("aiCoreId", null);
+			def.chatterCharacterId = thisJson.optString("chatterCharacterId", null);
 			
 			if (thisJson.has("skills")) {
 				def.skills = new HashMap<>();
@@ -273,5 +268,6 @@ public class MercDataManager {
 		public boolean skillsReplace;
 		public String aiCoreId;
 		public String persistentId;
+		public String chatterCharacterId;
 	}
 }

@@ -18,13 +18,13 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.plugins.OfficerLevelupPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercDataManager.OfficerDef;
+import org.apache.log4j.Logger;
+
 import java.util.List;
 import java.util.Random;
-import org.apache.log4j.Logger;
 
 public class MercFleetGenPlugin {
 	
@@ -171,6 +171,9 @@ public class MercFleetGenPlugin {
 		if (def.persistentId != null) {
 			person.setId(def.persistentId);
 			Global.getSector().getImportantPeople().addPerson(person);
+		}
+		if (def.chatterCharacterId != null) {
+			person.getMemoryWithoutUpdate().set("$chatterChar", def.chatterCharacterId);
 		}
 		
 		//OfficerLevelupPlugin plugin = (OfficerLevelupPlugin) Global.getSettings().getPlugin("officerLevelUp");
