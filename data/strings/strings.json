@@ -1511,8 +1511,8 @@
 		
 		"modifierGroundSupport":"Ground Support",
 		"modifierGroundSupportEstimate":"Ground Support (estimated)",
-		"modifierGroundSupportDesc1":"Ground support is charged over time from nearby fleets each turn, and distributed proportionally to units that are engaged with the enemy. Fleets must be within %s units of the target to contribute.",
-		"modifierGroundSupportDesc2":"Current support charge: %s, estimated max %s",
+		"modifierGroundSupportDesc1":"Ground support is charged over time from nearby fleets each turn; when resolving the turn's combat, it is distributed proportionally to units that are engaged with the enemy. Fleets must be within %s units of the target to contribute. Charge is reset at the start of each turn.",
+		"modifierGroundSupportDesc2":"Support charge this turn: %s, estimated max %s",
 		"modifierGroundSupportDesc3":"Ground support applied during a turn also increases movement points available the next turn.",
 		
 		"modifierFaction":"Faction Modifiers",
