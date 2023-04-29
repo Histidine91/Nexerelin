@@ -332,6 +332,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onGameLoad(boolean newGame) {
+        if (HAVE_LUNALIB) {
+            LunaConfigHelper.tryLoadLunaConfig();
+        }
+
         log.info("Game load");
         isNewGame = newGame;
         
@@ -464,6 +468,11 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGame() {
         log.info("New game");
+
+        if (HAVE_LUNALIB) {
+            LunaConfigHelper.tryLoadLunaConfig();
+        }
+
         isNewGame = true;
         //ExerelinSetupData.resetInstance();
         //ExerelinCheck.checkModCompatability();

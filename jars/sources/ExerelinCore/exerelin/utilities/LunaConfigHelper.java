@@ -101,6 +101,10 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
         LunaSettings.SettingsCreator.refresh(mid);
 
+        tryLoadLunaConfig();
+    }
+
+    public static void tryLoadLunaConfig() {
         try {
             loadConfigFromLuna();
         } catch (NullPointerException npe) {
