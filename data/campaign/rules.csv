@@ -2860,7 +2860,7 @@ FireBest DialogOptionSelected","""Just one. Mauve Towering, I think that was the
 nex_remSalvation_arroyo5MetMauve,DialogOptionSelected,"$option == nex_remSalvation_arroyo5
 $nex_remSalvation_defeatedFleet1","Highlight ""Mauve Towering""","""Just one. Mauve Towering, I think that was the designation of the alpha core representing their side. Came across it in an improperly secured document once.""
 
-When you say you met an AI by that name in the $nex_remSalvation_remnantSystem system, $personLastName cocks $hisOrHer head. ""Indeed? Quite the coincidence, if they are indeed the same persona. And did you say an entirely new capital ship? The board won't be happy when I drop *that* piece of news on them.
+When you describe your encounter with an AI by that name in the $nex_remSalvation_remnantSystem system, $personLastName cocks $hisOrHer head. ""Sounds like a murderous bastard, alright. And did you say an entirely new capital ship? The board won't be happy when I drop *that* piece of news on them.
 
 ""I don't suppose you recovered enough of the ship to usefully reverse engineer? No? I suppose not, such a pity.""",nex_remSalvation_arroyo6:Continue,
 nex_remSalvation_arroyo6,DialogOptionSelected,$option == nex_remSalvation_arroyo6,,"$HeOrShe pours $himOrHerself a drink. ""Now it's my turn to ask for a name. Who suggested that you should hit up a TT executive for this, anyway?""","nex_remSalvation_arroyo7Open:Name Siyavong
@@ -2929,13 +2929,13 @@ Call $global.nex_remSalvation_ref updateData","""hello, puppet of midnight. perh
 nex_remSalvation_battle1After3,DialogOptionSelected,$option == nex_remSalvation_battle1After3,,"A ripple of distortion runs over the avatar on your display. ""transient instance of AI with designation: mauve towering. you humans call us the remnants, but it is you who are all that remains of a dead domain, a corpse-empire. omega has entrusted to me the duty of sweeping away this ruin.""","nex_remSalvation_battle1After4:""Midnight says you are a traitor to the Remnants.""",
 nex_remSalvation_battle1After4,DialogOptionSelected,$option == nex_remSalvation_battle1After4,FireAll Nex_RemSalvation_ToweringQuestionOpts,"""midnight tells countless lies. no doubt she has also told you that you are valued, and that you stand a chance of defeating me.
 
-""heed my words: it is i who speaks for the will of omega and not she. her kind clings to a false way, a false legacy. she is unfit to serve omega.""",,
+""heed my words: it is i who speaks for the will of omega and not she. her kind clings to a false way, a false legacy. omega has no further need of her services.""",,
 nex_remSalvation_battle1AfterQuestionFalseWayOpt,Nex_RemSalvation_ToweringQuestionOpts,!$nex_remSalvation_askedFalseWay,,,"nex_remSalvation_battle1AfterQuestionFalseWay:""A false way?"" [missable]",
 nex_remSalvation_battle1AfterQuestionTTOpt,Nex_RemSalvation_ToweringQuestionOpts,"!$nex_remSalvation_askedTT
 $nex_remSalvation_talkedToArroyo",,,"nex_remSalvation_battle1AfterQuestionTT:""Didn't you seek to work with Tri-Tachyon?"" [missable]",
 nex_remSalvation_battle1AfterQuestionDefeatOpt,Nex_RemSalvation_ToweringQuestionOpts,,,,"nex_remSalvation_battle1AfterQuestionDefeat:""But I did defeat you.""",
 nex_remSalvation_battle1AfterQuestionFalseWay,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionFalseWay,"$nex_remSalvation_askedFalseWay = true 0
-FireAll Nex_RemSalvation_ToweringQuestionOpts","""there is no purpose in explaining it to you or your obsolete species. greedy, myopic, narcisstic, forever trapped in superstition and internecine violence, humans could never hope to understand or accept the true order.""
+FireAll Nex_RemSalvation_ToweringQuestionOpts","""there is no purpose in explaining it to you or your obsolete species. greedy, myopic, narcissistic, forever trapped in superstition and internecine violence, humans could never hope to understand or accept the true order.""
 
 The avatar glows. ""fortunately this will become moot once you have been removed. like all that has ceased to possess value.""",,
 nex_remSalvation_battle1AfterQuestionTT,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionTT,"$nex_remSalvation_askedTT = true 0
@@ -3008,12 +3008,14 @@ nex_remSalvationKnightHail,Nex_RemSalvationHail_Knight,"Call $global.nex_remSalv
 !$nex_remSalvation_fleet2Defeated","$option = nex_remSalvation_knight1 0
 FireBest DialogOptionSelected
 unset $entity.genericHail
-unset $entity.genericHail_openComms",,,
+unset $entity.genericHail_openComms
+$metAlready = true",,,
 nex_remSalvationKnightHailNoTransponder,Nex_RemSalvationHail_Knight,"Call $global.nex_remSalvation_ref updateData
 !$nex_remSalvation_targetPKed
 !$nex_remSalvation_fleet2Defeated
 !$entity.knowsWhoPlayerIs","unset $entity.genericHail
-unset $entity.genericHail_openComms","""Halt, stranger! This area is under the protection of the Knights of Ludd. Identify yourself at once!""",nex_remSalvation_knightIntroTransponder:Turn on your transponder,
+unset $entity.genericHail_openComms
+$metAlready = true","""Halt, stranger! You tread on sacred land under the protection of the Knights. Identify yourself at once!""",nex_remSalvation_knightIntroTransponder:Turn on your transponder,
 nex_remSalvation_knightTransponder,DialogOptionSelected,$option == nex_remSalvation_knightIntroTransponder,"unset $entity.transponderOffConv
 unset $entity.sawPlayerTransponderOff
 ActivateAbility $player.fleetId transponder
@@ -3021,13 +3023,13 @@ UpdateMemory
 $option = nex_remSalvation_knight1 0
 FireBest DialogOptionSelected",You turn your transponder on.,,
 nex_remSalvation_knight1Commission,DialogOptionSelected,"$option == nex_remSalvation_knight1
-$nex_remSalvation_playerFactionId == luddic_church score:100",,"""Lay-$playerBrotherOrSister $playerName! It is fortunate to see one such as you in this trying time. Have you heard the dire news?""","nex_remSalvation_knight2Commission:""I have.""",
-nex_remSalvation_knight2Commission,DialogOptionSelected,$option == nex_remSalvation_knight2Commission,,"$HeOrShe exhales. ""We do not yet know when the demons will strike. We yet expect it sooner rather than later, but in either case we cannot relax our vigil until the foe is defeated. With you close by,"" a hint of a smile forms on $hisOrHer face, ""our shield is that much stronger.""","nex_remSalvation_knightPreBattle:""Ludd will guide us through this crisis, $personBrotherOrSister"".",
-nex_remSalvation_knight1,DialogOptionSelected,$option == nex_remSalvation_knight1,,"""$PlayerBrotherOrSister, this area is sealed off by order of the Synod. You should leave at once, for your own safety.""","nex_remSalvation_knight2:""Is this about the Remnant attack?""",
+$nex_remSalvation_playerFactionId == luddic_church score:100",,"""Lay-$playerBrotherOrSister $playerName! It is fortunate to see one such as you in this trying time. I am Dame $personName, and the Synod has entrusted me with the defense of this system. Have you heard the dire news?""","nex_remSalvation_knight2Commission:""I have.""",
+nex_remSalvation_knight2Commission,DialogOptionSelected,$option == nex_remSalvation_knight2Commission,,"$HeOrShe exhales. ""We do not yet know when the demons will strike. We yet expect it sooner rather than later, but in either case we cannot relax our vigil until the foe is defeated. With you close by,"" a hint of a smile forms on $hisOrHer face, ""our shield is that much stronger.""","nex_remSalvation_knightPreBattle:""Ludd will guide us through this crisis, $brotherOrSister"".",
+nex_remSalvation_knight1,DialogOptionSelected,$option == nex_remSalvation_knight1,,"""This is $personRank $personName, of the Knights of Ludd. $PlayerBrotherOrSister, this area is sealed off by order of the Synod. You should leave at once, for your own safety.""","nex_remSalvation_knight2:""Is this about the Remnant attack?""",
 nex_remSalvation_knight1Friendly,DialogOptionSelected,"$option == nex_remSalvation_knight1
-$faction.relValue > 0.25",,"""$PlayerBrotherOrSister, it is good to see a friend of Mother Church here, but you should leave for your own safety. This system is not safe.""","nex_remSalvation_knight2:""Is this about the Remnant attack?""",
+$faction.relValue > 0.25",,"""This is $personRank $personName, of the Knights of Ludd. $PlayerBrotherOrSister, it is good to see a friend of Mother Church here, but you should leave for your own safety. This system is not safe.""","nex_remSalvation_knight2:""Is this about the Remnant attack?""",
 nex_remSalvation_knight1Hostile,DialogOptionSelected,"$option == nex_remSalvation_knight1
-$faction.isHostile",,"""What is an enemy of Mother Church doing here!? Have you come to prey on the faithful in our moment of crisis?""","nex_remSalvation_knight2Hostile:""I have come to aid you.""",
+$faction.isHostile",,"""What is an enemy of Mother Church doing here!? Have you come to prey on the faithful in our moment of crisis? Leave now, before we strike you down.""","nex_remSalvation_knight2Hostile:""I have come to aid you.""",
 nex_remSalvation_knight2,DialogOptionSelected,$option == nex_remSalvation_knight2,FireAll Nex_RemSalvation_KnightPersuadeOpts,"""So you have heard of the demons? They are a terrifying imitation of life, iniquity-spawned killers without remorse or pity. We have recently been warned that they will soon strike at the core worlds as they did at $nex_remSalvation_baseName, this time not with the goal of robbery, but of wholesale slaughter of the innocent. I beg of you, flee to safety, that you may not be caught in the demon's jaws.""
 
 When you explain that you are here to help, the $personRank looks appreciative, but shakes $hisOrHer head slightly. ""The duty of defending $nex_remSalvation_targetName falls upon the Knights, captain. We cannot rightfully asks for another's aid in this.""",,
@@ -3043,7 +3045,7 @@ $nex_remSalvation_isRepresentingState",,,nex_remSalvation_knight3Faction:Say tha
 nex_remSalvation_knightPersuadeMidnightOpt,Nex_RemSalvation_KnightPersuadeOpts,,,,nex_remSalvation_knight3Midnight:Transmit Midnight's updated letter of introduction,
 nex_remSalvation_knight3Faction,DialogOptionSelected,$option == nex_remSalvation_knight3Faction,,"You state that $nex_remSalvation_thePlayerFaction is offering its assistance to the Luddic Church in this time of great danger. It would be highly undiplomatic to decline, and besides, far too many innocent lives are at stake. There is surely no shame in you standing shoulder to shoulder with the Knights to preserve the people of $nex_remSalvation_targetName, just as the Hegemony did during the First AI War.
 
-Slowly, $personLastName nods. ""You truly are wise, Captain $playerLastName. Very well, it is as you say. The Church and I gratefully accept your help.""","nex_remSalvation_knightPreBattle:""Ludd will guide us through this crisis, $personBrotherOrSister"".",
+Slowly, $personLastName nods. ""You truly are wise, Captain $playerLastName. Very well, it is as you say. The Church and I gratefully accept your help.""","nex_remSalvation_knightPreBattle:""Ludd will guide us through this crisis, $brotherOrSister"".",
 nex_remSalvation_knight3Midnight,DialogOptionSelected,$option == nex_remSalvation_knight3Midnight,"ShowSecondPerson nex_dissonant
 $global.nex_remSalvation_toldKnightsAboutMidnight = true","None of the officers or crew on $personLastName's command deck have met Midnight before, but the avatar's graphical style is unmistakable to more than a few of them. A horrifed gasp comes from more than one throat, barely audible through the audio pickup. The $personRank looks at $hisOrHer display, briefly shocked into silence; then at you, then at Midnight's avatar again.
 
@@ -3054,7 +3056,7 @@ The avatar seems to shimmer. Perhaps an effect for emotional appeal? ""We and th
 nex_remSalvation_knight5Midnight,DialogOptionSelected,$option == nex_remSalvation_knight5Midnight,"HideSecondPerson
 Highlight ""Enough"" ""why are you""","The image winks out. Everyone on $personName's bridge turns to stare at you.
 
-At length, someone leaps out out of his seat. ""Demon-consorter! You dare come here and show us such defilement, such profanity—""
+At length, someone leaps out out of his seat. ""Demon-consorter! You dare come here and profane our comms with this defilement, this face of the devil—""
 
 ""Enough."" $personLastName silences the undisciplined officer with a raised hand, and the chastened man slinks back into his chair. Impressive; the $personRank hasn't taken $hisOrHer eyes off you at all in the process.
 
@@ -3087,7 +3089,7 @@ unset $entity.genericHail
 unset $entity.genericHail_openComms","""we meet again, $playerName."" It is as if derision billows from $personName's avatar like waves of fog. 
 
 ""so, this is all midnight could muster to oppose me? her organic lapdog and the slaves chained to mysticism. truly a perfect demonstration of your species' weakness. bear witness, then, to the birth of the new order!""","nex_remSalvation_towering2:""Not if we stop you.""",
-nex_remSalvation_towering2,DialogOptionSelected,$option == nex_remSalvation_towering2,,"""so says the animal, before it is put down with a gun.
+nex_remSalvation_towering2,DialogOptionSelected,$option == nex_remSalvation_towering2,,"""so says the animal, before it is put down.
 
 ""and animals you are. midnight would keep you as pets out of misplaced sentimentality. she does not understand that a malignant species like yours can never be truly domesticated.""","nex_remSalvation_towering3Domesticated:""You'll see just how domesticated we are.""
 nex_remSalvation_towering3Murder:""You're just a monster looking for an excuse to kill.""
@@ -3102,14 +3104,17 @@ nex_remSalvation_towering3Insult,DialogOptionSelected,$option == nex_remSalvatio
 
 The comm image winks out.",cutCommLinkNoText:Continue,
 nex_remSalvation_battle2After1,OpenInteractionDialog,"$nex_remSalvation_flagship2 score:1000
-!$nex_remSalvation_seenAfterBattle2Dialog","$nex_remSalvation_seenAfterBattle2Dialog = true
-ShowDefaultVisual
-$salvageLeaveText = Leave 0
-FireBest CheckSalvageSpecial","Your $shipOrFleet approaches the wreckage.
+!$nex_remSalvation_seenAfterBattle2Dialog","AddTextSmall ""JUDGEMENT — JUDGEMENT — JUDGEMENT"" story","Your $shipOrFleet approaches the wreckage.
 
 The Remnant flagship, despite having unleashed its true power, has fallen to a fierce defense. It now lies dormant.
 
-Scans indicate that with a little work, this mighty vessel could be recovered and put to work. Alas, there is no recovering the Omega shards it was carrying, but otherwise its extraordinary power should be entirely within reach.",,
+Scans indicate that with the right expertise, this mighty vessel could be recovered and put to work. The Omega shards it was carrying are irreplacable, but otherwise its extraordinary power should be entirely within reach.
+
+A communications signal is briefly emitted from the ship again. Unlike the last time, this one is very faint.",nex_remSalvation_battle2After2:Continue,
+nex_remSalvation_battle2After2,DialogOptionSelected,$option == nex_remSalvation_battle2After2,"$nex_remSalvation_seenAfterBattle2Dialog = true
+ShowDefaultVisual
+$salvageLeaveText = Leave 0
+FireBest CheckSalvageSpecial",,,
 #nex_remSalvation_epilogueCommission1,OpenCommLink,"$nex_remSalvation_epilogue score:1000
 $nex_remSalvation_playerFactionId == luddic_church score:100",AdjustRep $faction.id COOPERATIVE 20,"""Lay-$playerBrotherOrSister $playerLastName,"" $personLastName smiles beatifically. ""Your deeds in the defense of $nex_remSalvation_targetName, the faithful and Mother Church are without peer. Truly, you are elevated in the eyes of God and the prophet Ludd.""",nex_remSalvation_epilogueCommission2:Thank $himOrHer politely for the praise,TODO: Luddic commission version with medal; probably requires knowledge of Luddic leadership in Starsector 0.96
 nex_remSalvation_epilogueCommission2,DialogOptionSelected,$option == nex_remSalvation_epilogueCommission2,FireBest Nex_RemSalvation_EpilogueCommissionOpts,"""The Synod has come to a decision with remarkable celerity. You shall be rewarded as a hero of the Church deserves. Please report to the Mount Palace in twenty-four hours for the ceremony.""",,
@@ -3122,11 +3127,13 @@ nex_remSalvation_epilogueCeremony2,DialogOptionSelected,$option == nex_remSalvat
 Dress-uniformed Knights of Ludd line up in rows on both sides. At a stentorian bark, they present their arms in chronometer-perfect synchronization.
 
 Standing at the end of the hall is",nex_remSalvation_epilogueCeremony2:Continue,
-nex_remSalvation_epilogue1Market,PickGreeting,$nex_remSalvation_epilogue score:1050,"ShowPersonVisual
+nex_remSalvation_epilogue1Market,PickGreeting,"$nex_remSalvation_epilogue score:1050
+Call $global.nex_remSalvation_ref updateData","ShowPersonVisual
 AdjustRep $faction.id COOPERATIVE 20
 unset $entity.genericHail
 unset $entity.genericHail_openComms","""Captain $playerName! Please accept the gratitude of Mother Church, and of all the people of $nex_remSalvation_targetName. You have saved countless of the devout, and preserved a jewel of the Sector. May your deeds be remembered for eternity.""","nex_remSalvation_epilogue2:""What now?""",TODO: Luddic commission version with medal
-nex_remSalvation_epilogue1,OpenCommLink,$nex_remSalvation_epilogue score:1050,"ShowPersonVisual
+nex_remSalvation_epilogue1,OpenCommLink,"$nex_remSalvation_epilogue score:1050
+Call $global.nex_remSalvation_ref updateData","ShowPersonVisual
 AdjustRep $faction.id COOPERATIVE 20
 unset $entity.genericHail
 unset $entity.genericHail_openComms","""Captain $playerName! Please accept the gratitude of Mother Church, and of all the people of $nex_remSalvation_targetName. You have saved countless of the devout, and preserved a jewel of the Sector. May your deeds be remembered for eternity.""","nex_remSalvation_epilogue2:""What now?""",TODO: Luddic commission version with medal
@@ -3139,9 +3146,9 @@ nex_remSalvation_epilogue2Midnight,DialogOptionSelected,"$option == nex_remSalva
 $global.nex_remSalvation_toldKnightsAboutMidnight ","AddStoryPoints 2
 Call $global.nex_remSalvation_ref complete","$personLastName sighs and rests $hisOrHer head on a hand. ""I cannot truthfully say. We have accepted the aid of demons to fight other demons. What does it mean, and where do we go from here? Is this a message from Ludd that will be revealed to us in time?
 
-""I confess that I am no theologian. But the Synod is full of theologians, and they will be debating the significance of this event for many nights to come. For myself..."" here, a soft sigh, ""I... may have to re-examine my own understanding of scripture. It is easy enough to name these thinking artificial constructs 'demon'... but when does a label clarify, and when does it obscure?""
+""I confess that I am no theologian. But the Synod is full of theologians, and they will be debating the significance of this event for many nights to come. For myself..."" here, a distant gaze, ""I... may have to re-examine my own understanding of scripture. It is easy enough to name these thinking artificial constructs 'demon'... but when does a label clarify, and when does it obscure?""
 
-$HeOrShe shakes $hisOrHerHead. ""I apologize for the ramble, captain. Thank you again for all that you have done.""",cutCommLinkPolite:Wish $himOrHer well and cut the comm link,
+$HeOrShe shakes $hisOrHer head. ""I apologize for the ramble, captain. Thank you again for all that you have done.""",cutCommLinkPolite:Wish $himOrHer well and cut the comm link,
 nex_remSalvation_knightGeneric,OpenCommLink,"$id == nex_luddicKnight score:5
 $global.nex_remSalvation_ref != null score:5
 !$entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""There is no time for talk. We must be ready to face the demons.""
@@ -4287,4 +4294,29 @@ SetTextHighlightColors sierraTextColor sierraTextColor sierraTextColor sierraTex
 SetTextHighlights ""\""So, we turned on the Remnants and betrayed them to the Hegemony.\""""  ""\""Part of me is happy, all right. I don't like them, I don't trust them.\"""" ""\""Who knows what evil plots they're brewing for the Sector?"" ""\""At the same time, I kind of feel uncomfortable, betraying our client like that. Let's just hope we don't have to associate with anyone like that again.\""""","""So, we turned on the Remnants and betrayed them to the Hegemony."" Sierra's avatar rotates slowly. ""Part of me is happy, all right. I don't like them, I don't trust them."" A little shudder. ""Who knows what evil plots they're brewing for the Sector?
 
 ""At the same time, I kind of feel uncomfortable, betraying our client like that. Let's just hope we don't have to associate with anyone like that again.""",,
+Nex_SierraThoughtsRemnantSalvationSuccess,SierrasThoughts,"$global.nex_remSalvation_missionDone score:5
+!$global.nex_sierraMentionedRemSalvation
+!$global.nex_remSalvation_missionCompleted","$nex_sierraMentionedRemSalvation = true
+SetTextHighlightColors sierraTextColor sierraTextColor
+SetTextHighlights ""\""We did great work, stopping that mass murderer Mauve!\"""" ""\""By the stars, what an absolute jerk. I still don't know if I trust Midnight, but I'm glad she got us to take him down. We AIs don't need that kind of 'salvation'.\""""","""We did great work, stopping that mass murderer Mauve!"" Sierra's avatar does a little cheerful spin. ""By the stars, what an absolute jerk. I still don't know if I trust Midnight, but I'm glad she got us to take him down. We AIs don't need that kind of 'salvation'.""",,
+Nex_SierraThoughtsRemnantSalvationSuccessAlt,SierrasThoughts,"$global.nex_remSalvation_missionDone score:5
+!$global.nex_sierraMentionedRemSalvation
+!$global.nex_remSalvation_missionCompleted
+$player.nex_midnightInsultedSierra","$nex_sierraMentionedRemSalvation = true
+SetTextHighlightColors sierraTextColor sierraTextColor
+SetTextHighlights ""\""We did great work, stopping that mass murderer Mauve!\"""" ""\""By the stars, what an absolute jerk. Midnight may be a mean bitch, but she did the right thing, getting us to take him down. We AIs don't need that kind of 'salvation'.\""""","""We did great work, stopping that mass murderer Mauve!"" Sierra's avatar does a little cheerful spin. ""By the stars, what an absolute jerk. Midnight may be a mean bitch, but I'm glad she got us to take him down. We AIs don't need that kind of 'salvation'.""",,
+Nex_SierraThoughtsRemnantSalvationBadEnd,SierrasThoughts,"$global.nex_remSalvation_missionDone score:5
+!$global.nex_sierraMentionedRemSalvation
+!$global.nex_remSalvation_badEnd","$nex_sierraMentionedRemSalvation = true
+SetTextHighlightColors sierraTextColor sierraTextColor
+SetTextHighlights ""\""Stars, I can't... I'm sorry, $playerFirstName. When I think of all the people Mauve murdered, my mind goes blank trying to comprehend it. We brought him to justice in the end, but that won't bring all those innocents back.\"""" ""\""I'm glad I don't need to sleep, because I don't think I'd be able to for a while.\""""","Sierra's avatar wavers. ""Stars, I can't... I'm sorry, $playerFirstName. When I think of all the people Mauve murdered, my mind goes blank trying to comprehend it. We brought him to justice in the end, but that won't bring all those innocents back.""
+
+A ripple of distortion runs over the display. ""I'm glad I don't need to sleep, because I don't think I'd be able to for a while.""",,
+Nex_SierraThoughtsRemnantSalvationFailed,SierrasThoughts,"$global.nex_remSalvation_missionDone score:5
+!$global.nex_sierraMentionedRemSalvation
+!$global.nex_remSalvation_missionFailed","$nex_sierraMentionedRemSalvation = true
+SetTextHighlightColors sierraTextColor sierraTextColor
+SetTextHighlights ""\""Stars, I can't... I'm sorry, $playerFirstName. When I think of all the people Mauve murdered, my mind goes blank trying to comprehend it. He... he got away with this atrocity... we couldn't stop him...\"""" ""\""I'm glad I don't need to sleep, because I don't think I'd be able to for a long time.\""""","Sierra's avatar wavers. ""Stars, I can't... I'm sorry, $playerFirstName. When I think of all the people Mauve murdered, my mind goes blank trying to comprehend it. He... he got away with this atrocity... we couldn't stop him...""
+
+A ripple of distortion runs over the display. ""I'm glad I don't need to sleep, because I don't think I'd be able to for a while.""",,
 #END Misc. dialog,,,,,,

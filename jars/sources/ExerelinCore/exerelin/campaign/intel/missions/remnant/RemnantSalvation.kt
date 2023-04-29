@@ -48,6 +48,7 @@ import lombok.Getter
 import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
 import java.awt.Color
+import kotlin.math.abs
 
 
 open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
@@ -159,7 +160,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         setRepPersonChangesVeryHigh()
         setRepFactionChangesHigh()
         setCreditReward(CreditReward.VERY_HIGH)
-        setCreditReward(creditReward * 4)
+        setCreditReward(creditReward * 5)
         return true
     }
 
@@ -184,7 +185,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         triggerRunScriptAfterDelay(0.01f, GenericMissionScript(this, "trashBase"))
         endTrigger()
 
-        // Approach Remnant system: add a salvagable station and the fleet
+        // Approach Remnant system: add a salvagable station and the first fleet
         beginWithinHyperspaceRangeTrigger(remnantSystem, 2f, false, Stage.INVESTIGATE_LEADS)
         triggerRunScriptAfterDelay(0.01f, GenericMissionScript(this, "setupFleet1"))
         endTrigger()
@@ -216,6 +217,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         }
 
         deployPK()
+        sendUpdateIfPlayerHasIntel(null, false)
     }
 
     protected fun deployPK() {
@@ -230,10 +232,13 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         lowerRep(Factions.HEGEMONY, Factions.PERSEAN, false)
         lowerRep(Factions.HEGEMONY, Factions.TRITACHYON, false)
 
-        fleet2?.memoryWithoutUpdate!!.unset("\$genericHail")
-        knightFleet?.memoryWithoutUpdate!!.unset("\$genericHail")
+        fleet2?.memoryWithoutUpdate?.unset("\$genericHail")
+        knightFleet?.memoryWithoutUpdate?.unset("\$genericHail")
     }
 
+    /**
+     * Lowers relations between the two factions, creating a Declare War diplomacy event if needed.
+     */
     protected fun lowerRep(factionId1 : String, factionId2 : String, severe: Boolean) {
         // TODO: maybe set relationship cap between Church and TT? Meh probably not needed, don't they already have a cap
         var faction1 = Global.getSector().getFaction(factionId1)
@@ -258,13 +263,16 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             var str = StringHelper.getString("exerelin_diplomacy", "intelRepResultNegative")
             str = StringHelper.substituteToken(str, "\$faction1", faction1.displayName)
             str = StringHelper.substituteToken(str, "\$faction2", faction2.displayName)
-            str = StringHelper.substituteToken(str, "\$deltaAbs", "" + repResult.delta)
+            str = StringHelper.substituteToken(str, "\$deltaAbs", "" + abs(repResult.delta * 100).toInt())
             str = StringHelper.substituteToken(str, "\$newRelationStr", relationStr)
             val nhl = Misc.getNegativeHighlightColor()
             Global.getSector().campaignUI.addMessage(str, Misc.getTextColor(), "" + repResult.delta, relationStr, nhl, relColor)
         }
     }
 
+    /**
+     * Generates the station that Towering's first fleet will orbit.
+     */
     protected fun setupFleet1Station() : SectorEntityToken {
         //log.info("Running station setup")
         val loc = this.generateLocation(null, EntityLocationType.ORBITING_PLANET_OR_STAR, null, remnantSystem)
@@ -275,6 +283,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         return station
     }
 
+    /**
+     * Generates Towering's first fleet.
+     */
     protected fun setupFleet1(toOrbit : SectorEntityToken): CampaignFleetAPI {
         val playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().playerFleet).toFloat()
         val capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus())
@@ -314,7 +325,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.fleetData.setFlagship(flagship)
         flagship.setCaptain(commander)
         flagship.repairTracker.cr = flagship.repairTracker.maxCR
-        setupFlagshipVariant(flagship)
+        setupSpecialVariant(flagship, false)
         flagship.shipName = RemnantQuestUtils.getString("salvation_shipName1")
         fleet.commander = commander
 
@@ -333,6 +344,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         return fleet
     }
 
+    /**
+     * Generates Towering's second fleet.
+     */
     protected fun setupFleet2(): CampaignFleetAPI? {
         if (fleet2 != null) return null
 
@@ -360,21 +374,19 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         val spParams = ShipPickParams(ShipPickMode.PRIORITY_THEN_ALL)
         var picks = Global.getSector().getFaction(Factions.OMEGA).pickShip(ShipRoles.COMBAT_MEDIUM, spParams)
         if (picks.isNotEmpty()) {
-            val plugin = Misc.getAICoreOfficerPlugin(Commodities.OMEGA_CORE)
+            val plugin = Misc.getAICoreOfficerPlugin(Commodities.ALPHA_CORE)
 
-            var name = Global.getSector().getFaction(Factions.OMEGA).pickRandomShipName(genRandom)
-            var member = fleet.fleetData.addFleetMember(picks.random().variantId)
-            var person = plugin.createPerson(Commodities.ALPHA_CORE, Factions.REMNANTS, genRandom)
-            member.captain = person
-            member.repairTracker.cr = member.repairTracker.maxCR
-            member.shipName = name
-
-            name = Global.getSector().getFaction(Factions.OMEGA).pickRandomShipName(genRandom)
-            member = fleet.fleetData.addFleetMember(picks.random().variantId)
-            person = plugin.createPerson(Commodities.ALPHA_CORE, Factions.REMNANTS, genRandom)
-            member.captain = person
-            member.repairTracker.cr = member.repairTracker.maxCR
-            member.shipName = name
+            var i = 0;
+            while (i < 2) {
+                var name = Global.getSector().getFaction(Factions.OMEGA).pickRandomShipName(genRandom)
+                var member = fleet.fleetData.addFleetMember(picks.random().variantId)
+                var person = plugin.createPerson(Commodities.ALPHA_CORE, Factions.REMNANTS, genRandom)
+                member.captain = person
+                member.repairTracker.cr = member.repairTracker.maxCR
+                member.shipName = name
+                setupSpecialVariant(member, true)
+                i++
+            }
         }
 
         fleet.name = RemnantQuestUtils.getString("salvation_fleetName")
@@ -406,7 +418,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.fleetData.setFlagship(flagship)
         flagship.setCaptain(commander)
         flagship.repairTracker.cr = flagship.repairTracker.maxCR
-        setupFlagshipVariant(flagship)
+        setupSpecialVariant(flagship, true)
         flagship.shipName = RemnantQuestUtils.getString("salvation_shipName2")
         fleet.commander = commander
 
@@ -423,6 +435,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         return fleet
     }
 
+    /**
+     * Adds Towering's second fleet to the sector (in hyperspace above the target system and transverse jumps in).
+     * Currently the jump animation is broken.
+     */
     protected fun insertFleet2(fleet: CampaignFleetAPI) {
         // spawn in hyperspace
         Global.getSector().hyperspace.addEntity(fleet)
@@ -451,6 +467,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         Misc.giveStandardReturnToSourceAssignments(fleet, false)
     }
 
+    /**
+     * Generates the Knights of Ludd fleet.
+     */
     protected fun setupKnightFleet(): CampaignFleetAPI {
         var fp = 100f
 
@@ -491,11 +510,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         return fleet
     }
 
-    protected fun setupFlagshipVariant(flagship : FleetMemberAPI) {
+    protected fun setupSpecialVariant(flagship : FleetMemberAPI, consistentWeapons : Boolean) {
         flagship.setVariant(flagship.variant.clone(), false, false)
         flagship.variant.source = VariantSource.REFIT
         flagship.variant.addTag(Tags.SHIP_LIMITED_TOOLTIP)  // might be lost if done before inflating
-        //flagship.variant.addTag(Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
+        if (consistentWeapons) flagship.variant.addTag(Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
         flagship.variant.addTag(Tags.UNRECOVERABLE)
     }
 
@@ -707,6 +726,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     protected fun completeMissionBadEnd(dialog : InteractionDialogAPI?, memoryMap: Map<String, MemoryAPI>?) {
+        setCreditReward(0)
+        setRepFactionChangesNone()
+        setRepPersonChangesNone()
         setCurrentStage(Stage.BAD_END, dialog, memoryMap)
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_missionDone"] = true
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_badEnd"] = true
@@ -773,15 +795,18 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
                 setLuddicFleetsNonHostile()
             }
 
-            this.timerToPK -= days;
-            if (timerToPK > 0) return
+            if (!targetPKed && fleet2 == null) {
+                this.timerToPK -= days;
+                if (timerToPK > 0) return
 
-            if (!Misc.isNear(Global.getSector().playerFleet, target!!.locationInHyperspace)) {
-                //setupFleet2()
-                deployPK()
-                failMission(null, null)
-            } else {
-                setupFleet2()
+                if (!Misc.isNear(Global.getSector().playerFleet, target!!.locationInHyperspace)) {
+                    //setupFleet2()
+                    deployPK()
+                    failMission(null, null)
+                } else {
+                    setupFleet2()
+                    applyStationMalfunction()
+                }
             }
         }
     }
@@ -922,12 +947,17 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         } else if (currentStage == Stage.RETURN_TO_MIDNIGHT) {
             info.addPara(RemnantQuestUtils.getString("salvation_returnDesc"), opad, person.faction.baseUIColor, person.name.first)
         } else if (currentStage == Stage.DEFEND_PLANET) {
-            info.addPara(RemnantQuestUtils.getString("salvation_defendPlanetDesc"), opad, target!!.faction.baseUIColor, target!!.name)
+            var key = "salvation_defendPlanetDesc"
+            if (targetPKed) key += "PKed"
+            info.addPara(RemnantQuestUtils.getString(key), opad, target!!.faction.baseUIColor, target!!.name)
+            if (Global.getSettings().isDevMode) {
+                info.addPara("[debug] Time left: %s days", opad, hl, String.format("%.1f", this.timerToPK))
+            }
         } else if (currentStage == Stage.EPILOGUE) {
             var knight = RemnantQuestUtils.getOrCreateM4LuddicKnight()
             var str = RemnantQuestUtils.getString("salvation_epilogueDesc")
             str = StringHelper.substituteToken(str, "\$system", target!!.containingLocation.name)
-            info.addPara(str, opad, knight.faction.baseUIColor, knight.name.last)
+            info.addPara(str, opad, knight.faction.baseUIColor, knight.nameString)
         }
     }
 
@@ -967,7 +997,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         } else if (currentStage == Stage.RETURN_TO_MIDNIGHT) {
             info.addPara(RemnantQuestUtils.getString("salvation_returnNextStep"), pad, tc, person.faction.baseUIColor, person.name.first)
         } else if (currentStage == Stage.DEFEND_PLANET) {
-            info.addPara(RemnantQuestUtils.getString("salvation_defendPlanetNextStep"), pad, tc, target!!.faction.baseUIColor, target!!.name)
+            var key = "salvation_defendPlanetNextStep"
+            if (targetPKed) key += "PKed"
+            info.addPara(RemnantQuestUtils.getString(key), pad, tc, target!!.faction.baseUIColor, target!!.name)
         } else if (currentStage == Stage.EPILOGUE) {
             var knight = RemnantQuestUtils.getOrCreateM4LuddicKnight()
             info.addPara(RemnantQuestUtils.getString("salvation_epilogueNextStep"), pad, tc, knight.faction.baseUIColor, knight.name.last)

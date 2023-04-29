@@ -2600,7 +2600,7 @@
 		"toweringName2":"Towering",
 		
 		# a reference to https://kiseki.fandom.com/wiki/Ries_Argent
-		"knightName1":"Rhiannon",
+		"knightName1":"Rhianne",
 		"knightName2":"Argent",
 		
 		"m1_name":"Captive Cores",
@@ -2654,12 +2654,14 @@
 		"salvation_investigateLeadsDesc2":"A senior %s executive might be able to help. If you don't know anyone like that, Midnight could put you in touch.",
 		"salvation_returnDesc":"Return to %s and report what you have learned.",
 		"salvation_defendPlanetDesc":"Go to %s and help defend it from Towering's attack. Move quickly.",
+		"salvation_defendPlanetDescPKed":"%s has been destroyed, but Towering is still in sight. Destroy him.",
 		"salvation_epilogueDesc":"Meet with %s in the $system and settle accounts.",
 		"salvation_startNextStep":"Go to %s",
 		"salvation_investigateLeadsNextStep1":"Go to the %s",
 		"salvation_investigateLeadsNextStep2":"Talk to a senior %s executive",
 		"salvation_returnNextStep":"Return to %s",
 		"salvation_defendPlanetNextStep":"Defend %s (time-sensitive)",
+		"salvation_defendPlanetNextStepPKed":"Avenge %s",
 		"salvation_epilogueNextStep":"Meet with %s",
 		"salvation_endTextFail":"You have received a communication from Midnight. It states: \"To defend $nex_remSalvation_targetName you have failed. On us all omega have mercy.\"",
 		"salvation_endTextBadEnd":"You have received a communication from Midnight. It states: \"Though Towering destroyed, to defend $nex_remSalvation_targetName you have failed. On us all omega have mercy.\"",
