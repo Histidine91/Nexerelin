@@ -9,8 +9,9 @@
 			"requiredSkillLevel":1,
 			"effectBasedOnLevel":false,
 			"effects":[
-				{"type":"CHARACTER_STATS", "script":"com.fs.starfarer.api.impl.campaign.skills.ForceConcentration$Level2"},
-				{"type":"CHARACTER_STATS", "script":"com.fs.starfarer.api.impl.campaign.skills.ForceConcentration$Level3"},
+				#{"type":"CHARACTER_STATS", "script":"com.fs.starfarer.api.impl.campaign.skills.ForceConcentration$Level2"},	# ZFSB, non-functional
+				{"type":"ALL_SHIPS_IN_FLEET", "script":"exerelin.campaign.skills.NexSkills$ForceConcentrationEx1"},				# modified ZFSB
+				{"type":"CHARACTER_STATS", "script":"com.fs.starfarer.api.impl.campaign.skills.ForceConcentration$Level3"},		# deploy from side
 				{"type":"CHARACTER_STATS", "script":"com.fs.starfarer.api.impl.campaign.skills.ForceConcentration$Level4"},
 			]
 		},

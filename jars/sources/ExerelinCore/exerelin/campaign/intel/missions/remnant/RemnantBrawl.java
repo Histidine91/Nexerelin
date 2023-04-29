@@ -5,8 +5,6 @@ import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
-import java.awt.Color;
-
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.BaseFleetEventListener;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
@@ -16,13 +14,7 @@ import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Skills;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
@@ -35,20 +27,20 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.abilities.ai.AlwaysOnTransponderAI;
 import exerelin.campaign.intel.missions.BuildStation;
-import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinNewGameSetup;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 
 // aka "Showdown"
 public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventListener {
@@ -73,7 +65,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		FAILED,
 	}
 	
-	@Deprecated protected PersonAPI dissonant;
+	//@Deprecated protected PersonAPI dissonant;
 	protected MarketAPI stragglerOrigin;
 	protected StarSystemAPI stagingArea;
 	protected SectorEntityToken stagingPoint;

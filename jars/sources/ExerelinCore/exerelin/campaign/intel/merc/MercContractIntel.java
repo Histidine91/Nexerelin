@@ -22,18 +22,16 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.campaign.Faction;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
-import exerelin.utilities.*;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.ModPluginEventListener;
+import exerelin.utilities.NexUtilsGUI;
+import exerelin.utilities.NexUtilsReputation;
+import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 public class MercContractIntel extends BaseIntelPlugin implements EconomyTickListener, ColonyInteractionListener, ModPluginEventListener
 {
@@ -70,8 +68,12 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	}
 	
 	public void init(MarketAPI market) {
+		init(market, false);
+	}
+
+	public void init(MarketAPI market, boolean force) {
 		fleetPlugin = MercFleetGenPlugin.createPlugin(this);
-		if (fleetPlugin.isAvailableAt(market)) {
+		if (force || fleetPlugin.isAvailableAt(market)) {
 			offeredFleet = fleetPlugin.generateFleet(market);
 			startingShipValue = calcOfferedFleetValue();
 		}

@@ -1,10 +1,9 @@
 package exerelin.campaign.skills;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.characters.CharacterStatsSkillEffect;
-import com.fs.starfarer.api.characters.LevelBasedEffect;
-import com.fs.starfarer.api.characters.MarketSkillEffect;
-import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
+import com.fs.starfarer.api.characters.*;
+import com.fs.starfarer.api.combat.MutableShipStatsAPI;
+import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.utilities.StringHelper;
@@ -223,6 +222,32 @@ public class NexSkills {
 
 		public LevelBasedEffect.ScopeDescription getScopeDescription() {
 			return LevelBasedEffect.ScopeDescription.GOVERNED_OUTPOST;
+		}
+	}
+
+	public static class ForceConcentrationEx1 implements ShipSkillEffect {
+		public static final int ZERO_FLUX_SPEED_BONUS = 50;
+
+		public String getEffectDescription(float level) {
+			return String.format(getString("forceConcentrationExDesc1"), ZERO_FLUX_SPEED_BONUS);
+		}
+
+		public String getEffectPerLevelDescription() {
+			return null;
+		}
+
+		public ScopeDescription getScopeDescription() {
+			return ScopeDescription.ALL_SHIPS;
+		}
+
+		@Override
+		public void apply(MutableShipStatsAPI stats, ShipAPI.HullSize hullSize, String id, float level) {
+			stats.getZeroFluxSpeedBoost().modifyFlat(id, ZERO_FLUX_SPEED_BONUS);
+		}
+		
+		@Override
+		public void unapply(MutableShipStatsAPI stats, ShipAPI.HullSize hullSize, String id) {
+			stats.getZeroFluxSpeedBoost().unmodify(id);
 		}
 	}
 }

@@ -2387,6 +2387,8 @@
 		"makeshipEquipmentEx":"Makeship Equipment EX",
 		"makeshipEquipmentExDesc1":"All industries demand %s less unit of all the commodities they consume",
 		"makeshipEquipmentExDesc2":"-%s%% upkeep cost",
+		
+		"forceConcentrationExDesc1":"+%s to 0-flux speed boost"
 	},
 	
 	"nex_ships":{
@@ -2597,6 +2599,10 @@
 		"toweringName1":"Mauve",
 		"toweringName2":"Towering",
 		
+		# a reference to https://kiseki.fandom.com/wiki/Ries_Argent
+		"knightName1":"Rhiannon",
+		"knightName2":"Argent",
+		
 		"m1_name":"Captive Cores",
 		"m1_stage1Desc":"Recover the Beta Cores stored on %s. You could hit the secure facility where they're stored, or talk to someone in authority who can help you.",
 		"m1_stage2Desc":"Return the Beta Cores you've recovered to %s at %s. Alternatively, you might choose to bring them to either %s or %s.",
@@ -2645,12 +2651,23 @@
 		"salvation_startDesc":"Go to %s and gain more information on the attack.",
 		"salvation_investigateLeadsDesc":"Agent $agentName has given you two potential leads to follow.",
 		"salvation_investigateLeadsDesc1":"Go to the %s and see if you can find the fleet that attacked the base.",
-		"salvation_investigateLeadsDesc2":"A senior %s executive might be able to help. If you don't know anyone like that, Midnight might be able to help.",
+		"salvation_investigateLeadsDesc2":"A senior %s executive might be able to help. If you don't know anyone like that, Midnight could put you in touch.",
 		"salvation_returnDesc":"Return to %s and report what you have learned.",
+		"salvation_defendPlanetDesc":"Go to %s and help defend it from Towering's attack. Move quickly.",
+		"salvation_epilogueDesc":"Meet with %s in the $system and settle accounts.",
 		"salvation_startNextStep":"Go to %s",
 		"salvation_investigateLeadsNextStep1":"Go to the %s",
 		"salvation_investigateLeadsNextStep2":"Talk to a senior %s executive",
 		"salvation_returnNextStep":"Return to %s",
+		"salvation_defendPlanetNextStep":"Defend %s (time-sensitive)",
+		"salvation_epilogueNextStep":"Meet with %s",
+		"salvation_endTextFail":"You have received a communication from Midnight. It states: \"To defend $nex_remSalvation_targetName you have failed. On us all omega have mercy.\"",
+		"salvation_endTextBadEnd":"You have received a communication from Midnight. It states: \"Though Towering destroyed, to defend $nex_remSalvation_targetName you have failed. On us all omega have mercy.\"",
+		"salvation_endTextSuccess":"You have received a communication from Midnight. It states: \"For this service rendered, selfkind's eternal thanks. omega be with you, friend $playerFirstName.\"",
+		"salvation_fleetName":"Arcana XVI",	# "the Tower", also "the House of God"
+		"salvation_shipName1":"TTDS Silverlight",
+		"salvation_shipName2":"TTDS Silverlight",
+		"salvation_statDescSabotage":"Remnant sabotage",
 		
 		"deadDropItem1":"a crate of exotic optronic components",
 		"deadDropItem2":"a data chip containing Hegemony deployment schedules",

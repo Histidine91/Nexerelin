@@ -35,9 +35,8 @@ nex_playerOutpost,CUSTOM,"A small space station of modular design, favored by ex
 ,,,,,
 nex_silverlight,SHIP,"> designation VOX_OMEGA
 core volition primed for subsumption
-CONFIRM RESPONSE",Unidentified Vessel,"UNKNOWN ENTRY
-
-Please register your Tri-Tachyon datapad to receive the latest news and updates.",
+CONFIRM RESPONSE",Unidentified Vessel,"ERROR: Combat analysis system failed to generate tactical recommendations (code 0xf000003)
+Shutting down...",
 nex_alicorn,WEAPON,"""if you wish to live, then you must let go of your life!""","- Mauve Towering, during encirclement at [REDACTED] post-AIW1",,
 nex_silverlight_dash,SHIP_SYSTEM,"Synchronizes all systems for a powerful forward dash, suited to Mauve Towering's love of the chase. Doubles timeflow and mobility stats, and halves damage taken. The system disables shield, weapons and deceleration while active, so it is most useful for aggressive repositioning. Summons Aspects and detaches the ship's parasite Shards if in combat.",Special,"Doubles timeflow and mobility stats. Halves damage taken. Disables shield, weapons and deceleration while active. Summons Aspects and detaches Shards if in combat.",
 ,,,,,

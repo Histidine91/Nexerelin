@@ -4,8 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import java.awt.Color;
-
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -24,10 +22,13 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.SpecialContactIntel;
-import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
+import org.apache.log4j.Logger;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+
+import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 
 public class RemnantM1 extends HubMissionWithBarEvent {
 	
@@ -213,6 +214,7 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				dissonant.getName().setLast(getString("dissonantName2"));
 				SpecialContactIntel intel = new SpecialContactIntel(dissonant, sourceMarket);
 				Global.getSector().getIntelManager().addIntel(intel, false, dialog.getTextPanel());
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_remM1_missionCompleted", true);
 				return true;
 			case "betray":
 				PersonAPI person = dialog.getInteractionTarget().getActivePerson();
@@ -239,6 +241,9 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				bounty *= 2 * pFaction.getCustomFloat("AICoreValueMult");
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(bounty);
 				AddRemoveCommodity.addCreditsGainText((int)bounty, dialog.getTextPanel());
+
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_remM1_missionCompleted", true);
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_remM1_betrayed", true);
 				
 				// fall through to next level
 			case "refuse":
@@ -246,6 +251,8 @@ public class RemnantM1 extends HubMissionWithBarEvent {
 				sourceMarket.getCommDirectory().removePerson(dissonant);
 				sourceMarket.removePerson(dissonant);
 				dissonant.getMemoryWithoutUpdate().set("$nex_remM1_failed", true);
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_remM1_missionCompleted", true);
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_remM1_betrayed", true);
 				return false;				
 			default:
 				break;

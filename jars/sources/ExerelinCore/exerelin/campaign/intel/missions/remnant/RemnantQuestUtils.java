@@ -11,6 +11,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.skills.NexSkills;
 import exerelin.utilities.StringHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ public class RemnantQuestUtils {
 		
 	public static final String PERSON_DISSONANT = "nex_dissonant";
 	public static final String PERSON_TOWERING = "nex_towering";
+	public static final String PERSON_M4_KNIGHT = "nex_luddicKnight";
 	public static final List<String> TAG_AS_REMNANT_MISSION = new ArrayList<>(Arrays.asList(new String[]{
 		//"proCom", // meh
 		"sShip", 
@@ -76,10 +78,10 @@ public class RemnantQuestUtils {
 		person.getStats().setSkillLevel(Skills.COMBAT_ENDURANCE, 2);
 		person.getStats().setSkillLevel(Skills.DAMAGE_CONTROL, 2);
 		person.getStats().setSkillLevel(Skills.POINT_DEFENSE, 2);
-		person.getStats().setSkillLevel(Skills.TACTICAL_DRILLS, 2);
-		person.getStats().setSkillLevel(Skills.ELECTRONIC_WARFARE, 2);
-		person.getStats().setSkillLevel(Skills.CARRIER_GROUP, 2);
-		person.getStats().setSkillLevel(Skills.FLUX_REGULATION, 2);
+		person.getStats().setSkillLevel(Skills.TACTICAL_DRILLS, 1);
+		person.getStats().setSkillLevel(Skills.ELECTRONIC_WARFARE, 1);
+		person.getStats().setSkillLevel(Skills.CARRIER_GROUP, 1);
+		person.getStats().setSkillLevel(Skills.FLUX_REGULATION, 1);
 
 		return person;
 	}
@@ -89,8 +91,43 @@ public class RemnantQuestUtils {
 		person.getStats().setLevel(10);
 		person.getStats().setSkillLevel(Skills.ORDNANCE_EXPERTISE, 2);
 		person.getStats().setSkillLevel(Skills.SYSTEMS_EXPERTISE, 2);
-		person.getStats().setSkillLevel(Skills.COORDINATED_MANEUVERS, 2);
-		person.getStats().setSkillLevel(NexSkills.FORCE_CONCENTRATION_EX, 2);
+		person.getStats().setSkillLevel(Skills.COORDINATED_MANEUVERS, 1);
+		person.getStats().setSkillLevel(NexSkills.FORCE_CONCENTRATION_EX, 1);
+	}
+
+	public static PersonAPI getOrCreateM4LuddicKnight() {
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_M4_KNIGHT);
+		if (person != null) return person;
+
+		person = Global.getSector().getFaction(Factions.LUDDIC_CHURCH).createRandomPerson(FullName.Gender.ANY);
+		person.setId(PERSON_M4_KNIGHT);
+		person.setImportance(PersonImportance.HIGH);
+		person.setVoice(Voices.FAITHFUL);
+		person.setFaction(Factions.LUDDIC_CHURCH);
+		person.setRankId(Ranks.KNIGHT_CAPTAIN);
+		person.setPostId(Ranks.POST_FLEET_COMMANDER);
+		person.setPersonality(Personalities.STEADY);
+
+		person.getStats().setLevel(7);
+		person.getStats().setSkillLevel(Skills.HELMSMANSHIP, 2);
+		person.getStats().setSkillLevel(Skills.TARGET_ANALYSIS, 2);
+		person.getStats().setSkillLevel(Skills.IMPACT_MITIGATION, 1);
+		person.getStats().setSkillLevel(Skills.COMBAT_ENDURANCE, 2);
+		person.getStats().setSkillLevel(Skills.DAMAGE_CONTROL, 1);
+		person.getStats().setSkillLevel(Skills.MISSILE_SPECIALIZATION, 2);
+		person.getStats().setSkillLevel(Skills.ORDNANCE_EXPERTISE, 1);
+		person.getStats().setSkillLevel(Skills.TACTICAL_DRILLS, 1);
+		person.getStats().setSkillLevel(Skills.CREW_TRAINING, 1);
+		person.getStats().setSkillLevel(Skills.COORDINATED_MANEUVERS, 1);
+
+		// personal stuff; uncomment if/when we get a permanent character
+		person.setGender(FullName.Gender.FEMALE);
+		person.getName().setFirst(getString("knightName1"));
+		person.getName().setLast(getString("knightName2"));
+		person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_m4Knight"));
+
+		Global.getSector().getImportantPeople().addPerson(person);
+		return person;
 	}
 	
 	public static void setupRemnantContactMissions() {
