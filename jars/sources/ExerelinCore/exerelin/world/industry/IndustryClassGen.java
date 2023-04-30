@@ -5,10 +5,10 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.*;
 
 public abstract class IndustryClassGen implements Comparable {
 	
@@ -19,6 +19,7 @@ public abstract class IndustryClassGen implements Comparable {
 	protected String name;
 	protected float priority;
 	protected boolean special;
+	@Getter	@Setter	protected transient Random random;
 		
 	public IndustryClassGen(Collection<String> industryIds)
 	{

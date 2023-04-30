@@ -2437,6 +2437,7 @@
 		"statDispositionNegative":"low disposition",
 		"statWarDecisionRating":"war decision rating vs. target",
 		"statAntiRepetition":"recently used this action",
+		"statNumWars":"number of wars",
 		"statBadAction":"bad action for this concern",
 		"statCannotBeSolved":"concern cannot be solved with this action",
 		

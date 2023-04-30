@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
+import exerelin.campaign.ai.concern.BaseStrategicConcern;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -300,6 +301,16 @@ public class StrategicAI extends BaseIntelPlugin {
 				Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, intel);
 			}
 		}
+		else if (buttonId instanceof StrategicConcern) {
+			BaseStrategicConcern concern = ((BaseStrategicConcern)buttonId);
+			concern.setActionCooldown(0);
+			StrategicAction act = concern.pickAction();
+			if (act != null && true) {
+				concern.initAction(act);
+				ui.updateUIForItem(this);
+			}
+		}
+
 	}
 
 	public IntelInfoPlugin getDelegateAsIntel(StrategicAction action) {

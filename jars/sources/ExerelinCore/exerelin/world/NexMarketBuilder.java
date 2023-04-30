@@ -825,6 +825,7 @@ public class NexMarketBuilder
 						seed.industryId, factionId));
 				continue;
 			}
+			gen.setRandom(random);
 			
 			// order entities by reverse priority, highest priority markets get the industries
 			List<Pair<ProcGenEntity, Float>> ordered = new ArrayList<>();	// float is priority value
@@ -894,7 +895,7 @@ public class NexMarketBuilder
 	 * @param picker
 	 * @param from
 	 */
-	protected static void loadPicker(ProcGenEntity ent, WeightedRandomPicker<IndustryClassGen> picker, List<IndustryClassGen> from)
+	protected static void loadPicker(ProcGenEntity ent, WeightedRandomPicker<IndustryClassGen> picker, List<IndustryClassGen> from, Random random)
 	{
 		Float currPriority = null;
 		while (true)
@@ -908,6 +909,7 @@ public class NexMarketBuilder
 				break;
 			
 			IndustryClassGen next = from.remove(from.size() - 1);
+			next.setRandom(random);
 			float weight = next.getWeight(ent);
 			if (weight <= 0) continue;
 			log.info("\tAdding industry class to picker: " + next.getName() 
@@ -980,7 +982,7 @@ public class NexMarketBuilder
 				break;
 			
 			if (picker.isEmpty())
-				loadPicker(entity, picker, availableIndustries);
+				loadPicker(entity, picker, availableIndustries, random);
 			
 			IndustryClassGen gen = picker.pickAndRemove();
 			if (gen == null)
@@ -1005,6 +1007,7 @@ public class NexMarketBuilder
 		{
 			if (!gen.canAutogen()) continue;
 			if (!gen.canApply(entity)) continue;
+			gen.setRandom(random);
 			
 			float weight = gen.getWeight(entity);
 			if (weight <= 0) continue;

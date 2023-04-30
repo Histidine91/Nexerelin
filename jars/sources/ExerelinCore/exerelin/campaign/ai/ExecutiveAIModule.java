@@ -24,11 +24,13 @@ public class ExecutiveAIModule extends StrategicAIModule {
 
     public void reportRecentAction(StrategicAction action) {
         StrategicDefManager.StrategicActionDef def = action.getDef();
-        NexUtils.modifyMapEntry(recentActionsForAntiRepetition, def.id, def.antiRepetition);
+        String id = def.idForAntiRepetition != null ? def.idForAntiRepetition : def.id;
+        NexUtils.modifyMapEntry(recentActionsForAntiRepetition, id, def.antiRepetition);
     }
 
     public float getAntiRepetitionValue(String actionDefId) {
-        Float val = recentActionsForAntiRepetition.get(actionDefId);
+        StrategicDefManager.StrategicActionDef def = StrategicDefManager.getActionDef(actionDefId);
+        Float val = recentActionsForAntiRepetition.get(def.idForAntiRepetition != null ? def.idForAntiRepetition : actionDefId);
         if (val == null) return 0;
         return val;
     }

@@ -113,7 +113,7 @@
 			"name":"Low Ship Quality",
 			"desc":"Our lack of heavy industry is resulting in heavily defective ships. This is a dangerous and unacceptable state of affairs we should remedy promptly.",
 			"classPath":"exerelin.campaign.ai.concern.LowShipQualityConcern",
-			"tags":["economy", "military", "canBuildEcon", "canInvade"],
+			"tags":["economy", "military", "canBuildHeavyIndustry", "canInvade", "trait_paranoid", "trait_predatory", "!trait_pacifist"],
 			"module":ECONOMIC
 		},
 	},
@@ -203,6 +203,15 @@
 			"cooldown":60,
 			"antiRepetition":50,
 			"tags":["economy", "canBuildEcon"],
+		},
+		# special handling for the low ship quality concern
+		"buildHeavyIndustry":{
+			"name":"Build (Heavy Industry)",
+			"classPath":"exerelin.campaign.ai.action.industry.BuildHeavyIndustryAction",
+			"cooldown":90,
+			"antiRepetition":50,
+			"idForAntiRepetition":"buildEcon",
+			"tags":["economy", "canBuildHeavyIndustry"],
 		},
 	}	
 }

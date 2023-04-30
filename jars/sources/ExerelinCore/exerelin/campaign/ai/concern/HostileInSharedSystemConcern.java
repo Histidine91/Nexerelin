@@ -86,10 +86,19 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
         return market.getFaction().isAtBest(ai.getFactionId(), atBest);
     }
 
+    protected boolean havePresenceInSystem() {
+        for (MarketAPI otherMarket : Global.getSector().getEconomy().getMarkets(market.getContainingLocation())) {
+            if (otherMarket.getFaction() == ai.getFaction()) return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean isValid() {
         if (market == null) return false;
-        return repCheck(market);
+        if (!repCheck(market)) return false;
+
+        return havePresenceInSystem();
     }
 
     @Override

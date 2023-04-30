@@ -1,10 +1,12 @@
 package exerelin.campaign.ai.concern;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
@@ -15,11 +17,13 @@ import java.util.ArrayList;
 
 public class LowShipQualityConcern extends BaseStrategicConcern implements HasIndustryToBuild, HasIndustryTarget {
 
-    public static final float BASE_DESIRED_QUALITY = 0.25f;
-    public static final float BASE_PRIORITY = 200;
+    public static final float BASE_DESIRED_QUALITY = 0.2f;
+    public static final float BASE_PRIORITY = 150;
 
     @Override
     public boolean generate() {
+        if (!getExistingConcernsOfSameType().isEmpty()) return false;
+
         // not much to do with this one?
         if (!isValid()) return false;
 
@@ -35,6 +39,7 @@ public class LowShipQualityConcern extends BaseStrategicConcern implements HasIn
     public void update() {
         float qual = getQualityFromIndustry();
         float wanted = getWantedQualityFromIndustry();
+        Global.getLogger(this.getClass()).info(String.format("Quality %s, wanted %s", qual, wanted));
         if (qual >= wanted) {
             end();
             return;
@@ -47,7 +52,8 @@ public class LowShipQualityConcern extends BaseStrategicConcern implements HasIn
 
     protected float getWantedQualityFromIndustry() {
         // if we have a high quality from doctrine, we don't need industry contribution as much
-        return BASE_DESIRED_QUALITY + (0.25f - ai.getFaction().getDoctrine().getShipQualityContribution());
+        // actually screw that, if we have a high quality setting in doctrine that's because we're quality addicts and want EVEN MORE quality
+        return BASE_DESIRED_QUALITY;    // + (0.25f - ai.getFaction().getDoctrine().getShipQualityContribution());
     }
 
     protected float getQualityFromIndustry() {
@@ -65,6 +71,17 @@ public class LowShipQualityConcern extends BaseStrategicConcern implements HasIn
         if (action.getDef().hasTag(SAIConstants.TAG_MILITARY)) {
             action.getPriority().modifyMult("badAction", 0.5f, StrategicAI.getString("statBadAction"));
         }
+    }
+
+    @Override
+    public void reapplyPriorityModifiers() {
+        super.reapplyPriorityModifiers();
+
+        int numWars = DiplomacyManager.getFactionsAtWarWithFaction(ai.getFactionId(), false, true, false).size();
+        if (numWars == 0) return;
+        float warMult = 1 + (.2f * numWars);
+
+        priority.modifyMult("wars", warMult, StrategicAI.getString("statNumWars", true));
     }
 
     @Override

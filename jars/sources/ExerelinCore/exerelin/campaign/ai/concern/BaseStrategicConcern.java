@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -153,6 +154,15 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             currentAction.createPanel(holder, tooltip);
         } else {
             tooltip.addPara(StrategicAI.getString("descNoAction", false), Misc.getGrayColor(), 0);
+        }
+
+        if (ExerelinModPlugin.isNexDev) {
+            //float currHeight = iwt.getPosition().getHeight();
+            ButtonAPI pickActionBtn = iwt.addButton("pickAct", this, 64, 0, 0);
+            pickActionBtn.getPosition().inTR(0, 0);// .rightOfTop((UIComponentAPI) prioLbl, opad);
+            pickActionBtn.getPosition().setSize(64, 18);
+            iwt.setForceProcessInput(true);
+            //iwt.getPosition().setSize(iwt.getPosition().getWidth(), currHeight);
         }
 
         myPanel.addUIElement(tooltip).inTL(0, 0);

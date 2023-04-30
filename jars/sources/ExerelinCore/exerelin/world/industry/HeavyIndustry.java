@@ -1,17 +1,18 @@
 package exerelin.world.industry;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 
 public class HeavyIndustry extends IndustryClassGen {
 	
@@ -19,8 +20,37 @@ public class HeavyIndustry extends IndustryClassGen {
 		Industries.HEAVYINDUSTRY, Industries.ORBITALWORKS, "ms_modularFac", 
 			"ms_massIndustry", "ms_militaryProduction", "ms_orbitalShipyard"));
 
+	public static final String MEM_KEY_WANTED_SHADOWYARDS_UPGRADE = "$nex_sraModularFab_wantedUpgrade";
+	/**
+	 * Key = special item ID, value = the industry ID that this special item allows an upgrade to. Bi-directional with {@code SHADOWYARDS_MODULARFAC_UPGRADE_INDUSTRIES}.
+	 */
+	public static final Map<String, String> SHADOWYARDS_MODULARFAC_UPGRADES_BY_ITEM = new LinkedHashMap<>();
+	/**
+	 * Key = industry ID, value = the special item to allow an upgrade to this industry. Bi-directional with {@code SHADOWYARDS_MODULARFAC_UPGRADE_ITEMS}.
+	 */
+	public static final Map<String, String> SHADOWYARDS_MODULARFAC_UPGRADES_BY_INDUSTRY = new LinkedHashMap<>();
+
+	static {
+		SHADOWYARDS_MODULARFAC_UPGRADES_BY_ITEM.put("ms_parallelTooling", "ms_massIndustry");
+		SHADOWYARDS_MODULARFAC_UPGRADES_BY_ITEM.put("ms_militaryLogistics", "ms_militaryProduction");
+		SHADOWYARDS_MODULARFAC_UPGRADES_BY_ITEM.put("ms_specializedSystemsFabs", "ms_militaryProduction");
+
+		for (String specialItemId : SHADOWYARDS_MODULARFAC_UPGRADES_BY_ITEM.keySet()) {
+			String industryId = SHADOWYARDS_MODULARFAC_UPGRADES_BY_ITEM.get(specialItemId);
+			SHADOWYARDS_MODULARFAC_UPGRADES_BY_INDUSTRY.put(industryId, specialItemId);
+		}
+
+	}
+
 	public HeavyIndustry() {
 		super(HEAVY_INDUSTRY);
+	}
+
+	public String pickRandomModularFabIndustry(Random random) {
+		if (random == null) random = new Random();
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+		picker.addAll(SHADOWYARDS_MODULARFAC_UPGRADES_BY_INDUSTRY.keySet());
+		return picker.pick();
 	}
 
 	@Override
@@ -38,7 +68,8 @@ public class HeavyIndustry extends IndustryClassGen {
 		MarketAPI market = entity.market;
 		
 		// upgrades have max priority
-		if (market.hasIndustry(Industries.HEAVYINDUSTRY)) {
+		if (market.hasIndustry(Industries.HEAVYINDUSTRY) || market.hasIndustry("ms_modularFac")) {
+			//Global.getLogger(this.getClass()).info("Enforcing Heavy Industry upgrade on " + entity.name + "(" + entity.market.getFactionId() + ")");
 			return 9999 * market.getSize();
 		}
 		
@@ -105,10 +136,14 @@ public class HeavyIndustry extends IndustryClassGen {
 			if (instant) ind.finishBuildingOrUpgrading();
 		}
 		else if (market.hasIndustry("ms_modularFac")) {
-			// FIXME: figure out how new upgrade system works
-			//Industry ind = market.getIndustry("ms_modularFac");
-			//ind.startUpgrading();
-			//if (instant) ind.finishBuildingOrUpgrading();
+			String wantedIndustry = market.getMemoryWithoutUpdate().getString(MEM_KEY_WANTED_SHADOWYARDS_UPGRADE);
+			if (wantedIndustry == null) wantedIndustry = pickRandomModularFabIndustry(random);
+			String wantedSpecial = SHADOWYARDS_MODULARFAC_UPGRADES_BY_INDUSTRY.get(wantedIndustry);
+
+			Industry ind = market.getIndustry("ms_modularFac");
+			ind.setSpecialItem(new SpecialItemData(wantedSpecial, null));
+			ind.startUpgrading();
+			if (instant) ind.finishBuildingOrUpgrading();
 		}
 		else {
 			boolean upgrade = false;
@@ -118,7 +153,7 @@ public class HeavyIndustry extends IndustryClassGen {
 			
 			String id;
 			if (market.getFactionId().equals("shadow_industry"))
-				id = upgrade ? "ms_massIndustry" : "ms_modularFac";
+				id = upgrade ? "ms_specializedSystemsFabs" : "ms_modularFac";
 			else
 				id = upgrade ? Industries.ORBITALWORKS : Industries.HEAVYINDUSTRY;
 			

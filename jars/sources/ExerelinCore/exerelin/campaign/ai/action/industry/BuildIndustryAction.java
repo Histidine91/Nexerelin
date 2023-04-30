@@ -57,6 +57,7 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
         if (industryId == null) return false;
         if (market == null) market = pickMarketFallback(industryId);
+        //log.info(String.format("Concern is %s, industry ID is %s, market is %s", concern, industryId, market != null ? market.getId() : "null"));
         if (market == null) return false;
 
         delegate = this;
@@ -73,6 +74,40 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
     protected abstract MarketAPI pickMarketFallback(String industryId);
 
+    /*
+    protected boolean isUpgradingFromNonIndustryToIndustry(MarketAPI market, String industryId) {
+        IndustrySpecAPI ispec = Global.getSettings().getIndustrySpec(industryId);
+        String upId = ispec.getUpgrade();
+        String downId = ispec.getDowngrade();
+        if (upId == null) return false;
+        IndustrySpecAPI upspec = Global.getSettings().getIndustrySpec(upId);
+
+        // Does the market already have a building within the upgrade chain (e.g. for Military Base check, both Patrol HQ and Military Base count)?
+        boolean doesMarketHaveMemberOfUpgradeChain = market.hasIndustry(industryId) || market.hasIndustry(downId);
+
+        if (doesMarketHaveMemberOfUpgradeChain) {
+            return upspec.hasTag(Industries.TAG_INDUSTRY) && !ispec.hasTag(Industries.TAG_INDUSTRY);
+        } else {
+            return ispec.hasTag(Industries.TAG_INDUSTRY);
+        }
+    }
+    */
+
+    protected boolean willExceedMaxIndustries(MarketAPI market, String industryId) {
+        IndustrySpecAPI ispec = Global.getSettings().getIndustrySpec(industryId);
+
+        // not an industry
+        if (!ispec.hasTag(Industries.TAG_INDUSTRY)) return false;
+        // have free slots anyway
+        if (Misc.getNumIndustries(market) < Misc.getMaxIndustries(market)) return false;
+
+        // can we upgrade?
+        // actually upgrading should be its own action maybe, this is getting too complicated
+
+
+        return true;
+    }
+
     /**
      * Tries all the provided producer industries on the market and returns the one with the highest score, along with its score.
      * Uses the market builder's {@code IndustryClassGen} to determine validity and score.
@@ -88,10 +123,7 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
         for (String producerId : producerIds) {
             // first check local industry limit
-            IndustrySpecAPI ispec = Global.getSettings().getIndustrySpec(producerId);
-            if (ispec.hasTag(Industries.TAG_INDUSTRY)) {
-                if (Misc.getNumIndustries(entity.market) >= Misc.getMaxIndustries(entity.market)) continue;
-            }
+            if (willExceedMaxIndustries(market, producerId)) continue;
 
             // for extraction industries, check if the relevant resource actually exists
             if (commodityId != null) {
@@ -139,10 +171,7 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         for (MarketAPI market : markets) {
             ProcGenEntity entity = ExerelinProcGen.createEntityData(market.getPrimaryEntity());
             // first check local industry limit
-            IndustrySpecAPI ispec = Global.getSettings().getIndustrySpec(producerId);
-            if (ispec.hasTag(Industries.TAG_INDUSTRY)) {
-                if (Misc.getNumIndustries(entity.market) >= Misc.getMaxIndustries(entity.market)) continue;
-            }
+            if (willExceedMaxIndustries(market, producerId)) continue;
 
             // for extraction industries, check if the relevant resource actually exists
             if (commodityId != null) {
