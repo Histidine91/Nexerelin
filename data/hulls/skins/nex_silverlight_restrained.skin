@@ -6,7 +6,7 @@
   },
   "descriptionPrefix": "The variant of the Silverlight first encountered by the Persean Sector, restraining its true power.",
   "fighterBays": 0,
-  "fpMod": -10,
+  "fleetPoints":40,
   "ordnancePoints":350,
   "hullName": "Silverlight (R)",
   "restoreToBaseHull": false,

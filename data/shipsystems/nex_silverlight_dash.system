@@ -1,7 +1,8 @@
 {
 	"id":"nex_silverlight_dash",
 	"type":"ENGINE_MOD",
-	"aiType":"BURN_DRIVE",
+	"aiType":"CUSTOM",
+    "aiScript":"exerelin.combat.shipsystems.SilverlightDashAI",
 	
 	"statsScript":"exerelin.combat.shipsystems.SilverlightDashStats",
 	
@@ -27,7 +28,7 @@
 	
 	"aiHints":{
 		"activeSpeedIncrease":100,
-		"burstMovementPotential":600,
+		"burstMovementPotential":900,
 		"averageSpeedMult":2,
 	}
 }

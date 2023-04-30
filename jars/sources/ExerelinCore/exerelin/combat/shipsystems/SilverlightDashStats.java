@@ -110,7 +110,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
                 module.setStationSlot(null);
                 //module.getVelocity().set(ship.getVelocity());   // breaks the travel drive?
                 module.turnOnTravelDrive(SHARD_BURN_TIME);
-                engine.addPlugin(new NoCollidePlugin(ship, SHARD_BURN_TIME));
+                engine.addPlugin(new NoCollidePlugin(module, SHARD_BURN_TIME));
             }
         }
     }
