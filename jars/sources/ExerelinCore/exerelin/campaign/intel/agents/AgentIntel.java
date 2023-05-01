@@ -334,6 +334,22 @@ public class AgentIntel extends BaseIntelPlugin {
 		}
 		return false;
 	}
+
+	public Set<MarketAPI> getOtherAgentActionTargets(Class action) {
+		Set<MarketAPI> targets = new HashSet<>();
+		for (AgentIntel otherAgent : CovertOpsManager.getManager().getAgents()) {
+			if (otherAgent == this) continue;
+			CovertActionIntel currAction = otherAgent.getCurrentAction(), nextAction = otherAgent.getNextAction();
+			if (currAction == null) continue;
+			if (action.isInstance(nextAction)) {
+				targets.add(currAction.market);
+			}
+			else if (currAction instanceof Travel && nextAction != null && action.isInstance(nextAction)) {
+				targets.add(currAction.market);
+			}
+		}
+		return targets;
+	}
 	
 	/**
 	 * Find a target (if any) for automatic Pather cell killing.
@@ -343,18 +359,21 @@ public class AgentIntel extends BaseIntelPlugin {
 			return;
 		
 		MarketAPI target;
-		
 		List<MarketAPI> playerMarkets = new ArrayList<>();
+		Set<MarketAPI> otherAgentTargets = getOtherAgentActionTargets(InfiltrateCell.class);
+
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
 				playerMarkets.add(market);
 			}
 		}
+		playerMarkets.removeAll(otherAgentTargets);
 		
 		target = getClosestMarketForCellKill(playerMarkets);
 		
 		if (target == null && Misc.getCommissionFaction() != null && Global.getSettings().getBoolean("nex_killCellsForCommissioner")) {
 			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
+			commMarkets.removeAll(otherAgentTargets);
 			target = getClosestMarketForCellKill(commMarkets);
 		}
 		
@@ -427,12 +446,21 @@ public class AgentIntel extends BaseIntelPlugin {
 			return;
 		
 		MarketAPI target;
-		
-		List<MarketAPI> playerMarkets = Misc.getFactionMarkets(Factions.PLAYER);
+		List<MarketAPI> playerMarkets = new ArrayList<>();
+		Set<MarketAPI> otherAgentTargets = getOtherAgentActionTargets(FindPirateBase.class);
+
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
+				playerMarkets.add(market);
+			}
+		}
+
+		playerMarkets.removeAll(otherAgentTargets);
 		target = getClosestMarketForBaseFind(playerMarkets);
 		
 		if (target == null && Misc.getCommissionFaction() != null) {
 			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
+			commMarkets.removeAll(otherAgentTargets);
 			target = getClosestMarketForBaseFind(commMarkets);
 		}
 		
