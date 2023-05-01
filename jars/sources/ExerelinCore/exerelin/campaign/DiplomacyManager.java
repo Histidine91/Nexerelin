@@ -606,8 +606,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         createDiplomacyEvent(faction1, faction2, null, new DiplomacyEventParams());
     }
-    
-    // legacy method kept to prevent Iron Shell crash
+
+
+    /**
+     * Executes a diplomacy event between the two specified factions. Deprecated, use the mostly identical (except for return type)
+     * {@code createDiplomacyEventV2} instead.
+     * @param faction1
+     * @param faction2
+     * @param eventId If null, pick a random event.
+     * @param params
+     * @return
+     */
     @Deprecated
     public static ExerelinReputationAdjustmentResult createDiplomacyEvent(
             FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params) {

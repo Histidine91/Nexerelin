@@ -15,16 +15,13 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.intel.AllianceVoteIntel;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsReputation;
+import exerelin.utilities.*;
+import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.log4j.Logger;
-import org.lazywizard.lazylib.MathUtils;
 
 /**
  * Handles voting by an alliance's members to join one of their own in war or peace
@@ -71,6 +68,9 @@ public class AllianceVoter {
 		Alliance ally2 = AllianceManager.getFactionAlliance(faction2Id);
 		if (ally1 == null && ally2 == null) return;
 		if (ally1 == ally2) return;
+
+		log.info("Vote initiated, printing partial stacktrace");
+		NexUtils.printStackTrace(log, 7);
 		
 		String playerFacId = PlayerFactionStore.getPlayerFactionId();
 		

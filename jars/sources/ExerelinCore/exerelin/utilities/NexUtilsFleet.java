@@ -22,12 +22,13 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
+import exerelin.plugins.ExerelinModPlugin;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.apache.log4j.Logger;
 
 
 public class NexUtilsFleet
@@ -155,6 +156,8 @@ public class NexUtilsFleet
 	// adapted from new Dark.Revenant algorithm, replacing older implementation from SS+
 	/**
 	 * Estimate of a fleet's strength based on fleet points, D/S-mods, officer levels and commander levels.
+	 * For converting to FP: a challenging fight should have an FP count of 1/4th this method's return value, or less.
+	 * Further reductions should be applied for enemy fleets with S-mods, AI cores, etc.
 	 * @param fleet
 	 * @return
 	 */

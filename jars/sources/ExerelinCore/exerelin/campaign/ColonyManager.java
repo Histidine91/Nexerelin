@@ -1182,6 +1182,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		colonyExpeditionProgress += days;
 		float interval = NexConfig.colonyExpeditionInterval;
+		if (interval < 0) return;
 		if (colonyExpeditionProgress > interval) {
 			ColonyExpeditionIntel intel = spawnColonyExpedition();
 			if (intel != null) {

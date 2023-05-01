@@ -356,6 +356,7 @@ public class NexUtils
 	public static void printStackTrace(Logger log, int depth) {
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		for (int i=0; i<depth; i++) {
+			if (depth >= stack.length) return;
 			log.info(stack[i].toString());
 		}
 	}
