@@ -1,7 +1,6 @@
 package exerelin.campaign.ai.action.fleet;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.BaseStrategicAction;
@@ -22,31 +21,21 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
 
     @Override
     public boolean generate() {
-        MarketAPI market = concern.getMarket();
-        FactionAPI us = ai.getFaction();
-        List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
-        List<MarketAPI> potentialTargets = getPotentialTargets();
 
-        // pick a target market if the concern doesn't have one yet
-        if (market == null) {
-            //log.info("Picking random market");
-            market = InvasionFleetManager.getManager().getTargetMarketForFleet(us, concern.getFaction(), null,
-                    potentialTargets, getEventType());
-        }
-        if (market == null) {
-            //log.info("No market found");
+        MarketAPI target = pickTargetMarket();
+        if (target == null) {
+            //log.info("No target found");
             return false;
         }
 
-        // pick an origin market
-        MarketAPI origin = InvasionFleetManager.getManager().getSourceMarketForFleet(us, market.getLocationInHyperspace(), allMarkets);
+        MarketAPI origin = pickOriginMarket(target);
         if (origin == null) {
             //log.info("No origin found");
             return false;
         }
 
-        OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(origin, market,
-                getEventType(), 1, new FleetPoolManager.RequisitionParams());
+        OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(origin, target,
+                getEventType(), 1, getFleetPoolRequisitionParams());
         if (intel != null)
         {
             InvasionFleetManager.getManager().modifySpawnCounterV2(ai.getFactionId(), -InvasionFleetManager.getInvasionPointCost(intel));
@@ -55,6 +44,21 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
         }
 
         return false;
+    }
+
+    public FleetPoolManager.RequisitionParams getFleetPoolRequisitionParams() {
+        return new FleetPoolManager.RequisitionParams();
+    }
+
+    public MarketAPI pickTargetMarket() {
+        if (concern.getMarket() != null) return concern.getMarket();
+        return InvasionFleetManager.getManager().getTargetMarketForFleet(ai.getFaction(), concern.getFaction(), null,
+                getPotentialTargets(), getEventType());
+    }
+
+    public MarketAPI pickOriginMarket(MarketAPI target) {
+        return InvasionFleetManager.getManager().getSourceMarketForFleet(ai.getFaction(), target.getLocationInHyperspace(),
+                Global.getSector().getEconomy().getMarketsCopy());
     }
 
     @Override

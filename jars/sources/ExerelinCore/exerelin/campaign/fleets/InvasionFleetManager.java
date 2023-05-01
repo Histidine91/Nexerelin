@@ -512,15 +512,19 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 
 	public MarketAPI getSourceMarketForFleet(FactionAPI faction, List<MarketAPI> markets) {
-		return getSourceMarketForFleet(faction, null, markets);
+		return getSourceMarketForFleet(faction, null, markets, false);
 	}
 
 	public MarketAPI getSourceMarketForFleet(FactionAPI faction, Vector2f target, List<MarketAPI> markets) {
+		return getSourceMarketForFleet(faction, target, markets, false);
+	}
+
+	public MarketAPI getSourceMarketForFleet(FactionAPI faction, Vector2f target, List<MarketAPI> markets, boolean allowHidden) {
 		WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
 		WeightedRandomPicker<MarketAPI> sourcePickerBackup = new WeightedRandomPicker();
 		for (MarketAPI market : markets) {
 			if (market.getFaction() != faction) continue;
-			if (market.isHidden()) continue;
+			if (!allowHidden && market.isHidden()) continue;
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
 			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
 			if (!NexUtilsMarket.hasWorkingSpaceport(market)) continue;
@@ -791,13 +795,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			fp *= RESPAWN_SIZE_MULT;
 		
 		if (rp != null) {
+			String rpFactionId = rp.factionId != null ? rp.factionId : factionId;
 			rp.amount = fp;
-			fp = FleetPoolManager.getManager().drawFromPool(factionId, rp);
+			fp = FleetPoolManager.getManager().drawFromPool(rpFactionId, rp);
 			if (fp < 10) {
-				FleetPoolManager.getManager().modifyPool(factionId, fp);
+				// put the points back in the pool and terminate
+				FleetPoolManager.getManager().modifyPool(rpFactionId, fp);
 				return null;
 			}
-		}		
+		}
 		
 		if (type != EventType.RAID)
 			organizeTime *= 1.25f;
@@ -1120,8 +1126,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			return null;
 		
 		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1, new RequisitionParams());
-		
-		NexUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
+
+		// deduct rage points if the strike fleet was spawned by our own {@code processPirateRage()} method rather than strategic AI
+		if (StrategicAI.getAI(faction.getId()) == null) {
+			NexUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
+		}
 		return intel;
 	}
 	

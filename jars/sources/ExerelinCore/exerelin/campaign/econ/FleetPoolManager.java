@@ -425,6 +425,11 @@ public class FleetPoolManager extends BaseIntelPlugin {
 		 * If the pool won't give us at least this many points, cancel the requisition. Defaults to {@code DEFAULT_ABORT_RATIO} times amount.
 		 */
 		public float abortIfNotAtLeast;
+
+		/**
+		 * Not read directly by FPM; instead, whoever is submitting the request should read this value and act appropriately.
+		 */
+		public String factionId;
 		
 		public RequisitionParams() {}
 		

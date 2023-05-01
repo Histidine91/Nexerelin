@@ -41,7 +41,7 @@
 			"name":"Retaliation",
 			"desc":"We were recently attacked by our enemies, the most notable of which was the $event by the dastardly $faction.",
 			"classPath":"exerelin.campaign.ai.concern.RetaliationConcernV2",
-			"tags":["military", "wantCauseHarm", "canSatBomb"],
+			"tags":["military", "wantCauseHarm", "canSatBomb"],	# 'cause harm' tags are checked by several fleet and operative actions
 			"module":MILITARY
 		},
 		"generalWarfare":{
@@ -134,6 +134,13 @@
 			"name":"Raid",
 			"classPath":"exerelin.campaign.ai.action.fleet.RaidAction",
 			"tags":["military", "market", "canRaid", "unfriendly", "aggressive", "wartime"],
+		},
+		"pirateRaid":{
+			"name":"Pirate Raid",
+			"classPath":"exerelin.campaign.ai.action.fleet.PirateRaidAction",
+			"idForAntiRepetition":"raid",
+			"chance":0.4,
+			"tags":["military", "market", "canRaid", "unfriendly", "aggressive", "trait_devious"],	# notably, can be done in peacetime
 		},
 		"baseStrike":{
 			"name":"Base Strike",
