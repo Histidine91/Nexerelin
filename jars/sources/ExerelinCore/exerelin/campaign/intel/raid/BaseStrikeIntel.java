@@ -269,11 +269,16 @@ public class BaseStrikeIntel extends NexRaidIntel {
 			else
 				terminateEvent(OffensiveOutcome.MARKET_NO_LONGER_EXISTS);
 		}
-		else if (!faction.isHostileTo(target.getFaction())) {
+		else if (isAbortIfNonHostile() && !faction.isHostileTo(target.getFaction())) {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
 	}
-	
+
+	@Override
+	public boolean isAbortIfNonHostile() {
+		return false;
+	}
+
 	@Override
 	protected List<FactionAPI> getTargetFactions() {
 		return new ArrayList<>(Arrays.asList(this.targetFaction));
