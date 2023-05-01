@@ -1,29 +1,28 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyDecivListener;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.InvasionListener;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Handles changing of market descriptions when a market is captured.
  */
-public class MarketDescChanger implements InvasionListener {
+public class MarketDescChanger implements InvasionListener, ColonyDecivListener {
 	
 	public static final List<DescUpdateEntry> DESCRIPTIONS = new ArrayList<>();
 	public static final Map<String, List<DescUpdateEntry>> DESCRIPTIONS_BY_ENTITY_ID = new HashMap<>();
@@ -126,7 +125,18 @@ public class MarketDescChanger implements InvasionListener {
 			setEntityDescId(linked, factionId);
 		}
 	}
-	
+
+	@Override
+	public void reportColonyAboutToBeDecivilized(MarketAPI market, boolean fullyDestroyed) {
+
+	}
+
+	@Override
+	public void reportColonyDecivilized(MarketAPI market, boolean fullyDestroyed) {
+		reportMarketTransfered(market, Global.getSector().getFaction(Factions.NEUTRAL), null, false,
+				false, null, 0f);
+	}
+
 	public static class DescUpdateEntry {
 		public final String entityId;
 		public final String factionId;
