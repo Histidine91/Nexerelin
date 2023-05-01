@@ -1134,7 +1134,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			if (hasAnyDeployedUnits(true)) return true;
 		}
 		// guess not, end the battle
-		endBattle(turnNum <= 1 ? BattleOutcome.CANCELLED : BattleOutcome.DEFENDER_VICTORY);
+		boolean shouldCancel = turnNum <= 1 && attacker.losses.isEmpty();
+		endBattle(shouldCancel ? BattleOutcome.CANCELLED : BattleOutcome.DEFENDER_VICTORY);
 		return false;
 	}
 	
