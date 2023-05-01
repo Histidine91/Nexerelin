@@ -693,15 +693,18 @@ public class NexBattleAutoresolverPlugin implements BattleAutoresolverPlugin {
         FleetAutoresolveData fleetData = new FleetAutoresolveData();
         fleetData.fleet = fleet;
 
-        // MODIFIED
-        float fleetMult = 1;
-        if (fleet.getMemoryWithoutUpdate().contains(MEM_KEY_STRENGTH_MULT)) {
-            fleetMult = fleet.getMemoryWithoutUpdate().getFloat(MEM_KEY_STRENGTH_MULT);
-        }
+
 
         fleetData.fightingStrength = 0;
         for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
             FleetMemberAutoresolveData data = computeDataForMember(member);
+
+            // MODIFIED
+            float fleetMult = 1;
+            CampaignFleetAPI membersFleet = member.getFleetData() != null ? member.getFleetData().getFleet() : null;
+            if (membersFleet != null && membersFleet.getMemoryWithoutUpdate().contains(MEM_KEY_STRENGTH_MULT)) {
+                fleetMult = membersFleet.getMemoryWithoutUpdate().getFloat(MEM_KEY_STRENGTH_MULT);
+            }
 
             // MODIFIED
             data.strength *= fleetMult;

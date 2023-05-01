@@ -31,24 +31,31 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch.MarketRequirement
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData
 import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.util.DelayedActionScript
 import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.combat.entities.terrain.Planet
+import com.fs.starfarer.loading.specs.PlanetSpec
 import exerelin.campaign.DiplomacyManager
 import exerelin.campaign.PlayerFactionStore
 import exerelin.campaign.SectorManager
+import exerelin.campaign.battle.NexBattleAutoresolverPlugin
+import exerelin.campaign.graphics.BombardmentAnimationV2
 import exerelin.campaign.intel.merc.MercContractIntel
 import exerelin.campaign.intel.missions.BuildStation.SystemUninhabitedReq
+import exerelin.plugins.ExerelinCampaignPlugin
 import exerelin.utilities.*
 import lombok.Getter
 import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
 import java.awt.Color
 import kotlin.math.abs
+import kotlin.math.pow
 
 
 open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
@@ -71,6 +78,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     @Getter protected var targetPKed = false
     protected var hiredEndbringer = false
 
+    @Deprecated("Unused") protected var warpFleet2Delay = 0.2f;
     @Getter protected var timerToPK : Float = 30f;
 
     companion object {
@@ -83,11 +91,17 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             mission.addAdditionalTriggersDev()
         }
 
-        // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.debugArgentRank()
-        @JvmStatic fun debugArgentRank() {
-            var person = RemnantQuestUtils.getOrCreateM4LuddicKnight()
-            person.setPersonality(Personalities.AGGRESSIVE)
-            log.info("Person rank is ${person.rankId} (${person.rank})")
+        // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.pk()
+        @JvmStatic fun pk() {
+            var mission = Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_ref"] as RemnantSalvation
+            mission.deployPK()
+        }
+
+        // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.killToweringFlagship()
+        @JvmStatic fun killToweringFlagship() {
+            var mission = Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_ref"] as RemnantSalvation
+            mission.fleet2?.removeFleetMemberWithDestructionFlash(mission.fleet2?.flagship)
+            mission.reportBattleOccurred(mission.fleet2, null, null)
         }
     }
 
@@ -198,18 +212,24 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     protected fun addAdditionalTriggersDev() {
+
     }
 
     protected fun checkPK() {
         if (fleet2 != null) {
-            // TODO: engage any nearby fleets before attempting PK
+            // if not in actual contact with the target, try again
+            if (MathUtils.getDistance(fleet2, target!!.primaryEntity) > 100)
+                return
+
+            // engage any nearby fleets before attempting PK
             for (otherFleet in target!!.containingLocation.fleets) {
+                if (otherFleet === fleet2) continue;
                 if (!otherFleet.isHostileTo(fleet2)) continue;
-                if (MathUtils.getDistance(otherFleet, target!!.primaryEntity) < 250f) continue;
+                if (MathUtils.getDistance(otherFleet, target!!.primaryEntity) > 350f) continue;
 
                 // engage station if there's one
                 // as for patrols, fuck 'em, if they can't catch us we get a free PK
-                if (otherFleet == Misc.getStationFleet(target)) {
+                if (otherFleet === Misc.getStationFleet(target) || otherFleet === knightFleet) {
                     Global.getFactory().createBattle(fleet2, otherFleet)
                     return
                 }
@@ -217,13 +237,51 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         }
 
         deployPK()
-        sendUpdateIfPlayerHasIntel(null, false)
+    }
+
+    protected fun convertPlanet(planet : PlanetAPI, newType : String) {
+        val allSpecs: Iterator<*> = Global.getSettings().allPlanetSpecs.iterator()
+        var myspec = planet.spec
+        while (allSpecs.hasNext()) {
+            val spec = allSpecs.next() as PlanetSpecAPI
+            if (spec.planetType == newType) {
+                myspec.atmosphereColor = spec.atmosphereColor
+                myspec.atmosphereThickness = spec.atmosphereThickness
+                myspec.atmosphereThicknessMin = spec.atmosphereThicknessMin
+                myspec.cloudColor = spec.cloudColor
+                myspec.cloudRotation = spec.cloudRotation
+                myspec.cloudTexture = spec.cloudTexture
+                myspec.glowColor = spec.glowColor
+                myspec.glowTexture = spec.glowTexture
+                myspec.iconColor = spec.iconColor
+                myspec.planetColor = spec.planetColor
+                myspec.starscapeIcon = spec.starscapeIcon
+                myspec.texture = spec.texture
+                myspec.isUseReverseLightForGlow = spec.isUseReverseLightForGlow
+                (myspec as PlanetSpec).planetType = newType
+                myspec.name = spec.name
+                myspec.descriptionId = (spec as PlanetSpec).descriptionId
+                break
+            }
+        }
+        planet.applySpecChanges()
+        val market = planet.market;
+        market.removeCondition(Conditions.MILD_CLIMATE)
+        market.removeCondition(Conditions.FARMLAND_POOR)
+        market.removeCondition(Conditions.FARMLAND_ADEQUATE)
+        market.removeCondition(Conditions.FARMLAND_RICH)
+        market.removeCondition(Conditions.FARMLAND_BOUNTIFUL)
+        market.removeCondition(Conditions.WATER_SURFACE)
     }
 
     protected fun deployPK() {
-        Nex_MarketCMD.addBombardVisual(target!!.primaryEntity)
+        if (targetPKed) return; // already done the deed
+
+        val planet = target!!.planetEntity
+        BombardmentAnimationV2.addBombardVisual(planet, 4f, Color(255, 128, 96, 255))
         DecivTracker.decivilize(target, true, true)
         target!!.addCondition(Conditions.POLLUTION)
+
         targetPKed = true
 
         // relationship effects
@@ -234,6 +292,19 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         fleet2?.memoryWithoutUpdate?.unset("\$genericHail")
         knightFleet?.memoryWithoutUpdate?.unset("\$genericHail")
+
+        Global.getSector().addScript(object: DelayedActionScript(0.1f) {
+            override fun doAction() {
+                convertPlanet(planet, "barren-desert")
+                planet.customDescriptionId = "nex_planet_gilead_pked"
+            }
+        })
+
+        makeUnimportant(target, Stage.DEFEND_PLANET)
+        sendUpdateIfPlayerHasIntel(null, false)
+        if (fleet2 != null) {
+            Misc.giveStandardReturnToSourceAssignments(fleet2, true)
+        }
     }
 
     /**
@@ -260,13 +331,14 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             val relation = faction1.getRelationship(factionId2)
             val relationStr = NexUtilsReputation.getRelationStr(relation)
             val relColor = NexUtilsReputation.getRelColor(relation)
+            val delta = abs(repResult.delta * 100).toInt()
             var str = StringHelper.getString("exerelin_diplomacy", "intelRepResultNegative")
             str = StringHelper.substituteToken(str, "\$faction1", faction1.displayName)
             str = StringHelper.substituteToken(str, "\$faction2", faction2.displayName)
-            str = StringHelper.substituteToken(str, "\$deltaAbs", "" + abs(repResult.delta * 100).toInt())
+            str = StringHelper.substituteToken(str, "\$deltaAbs", "" + delta)
             str = StringHelper.substituteToken(str, "\$newRelationStr", relationStr)
             val nhl = Misc.getNegativeHighlightColor()
-            Global.getSector().campaignUI.addMessage(str, Misc.getTextColor(), "" + repResult.delta, relationStr, nhl, relColor)
+            Global.getSector().campaignUI.addMessage(str, Misc.getTextColor(), "" + delta, relationStr, nhl, relColor)
         }
     }
 
@@ -278,6 +350,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         val loc = this.generateLocation(null, EntityLocationType.ORBITING_PLANET_OR_STAR, null, remnantSystem)
         val stationDefId = if (Global.getSettings().modManager.isModEnabled("IndEvo")) "IndEvo_arsenalStation" else "station_mining_remnant"
         var station = remnantSystem!!.addCustomEntity("nex_remSalvation_fleet1_station", null, stationDefId, Factions.REMNANTS)
+        station.isDiscoverable = true
         station.orbit = loc.orbit.makeCopy()
         //log.info(String.format("Wololo, orbit period %s, target %s", station.orbit.orbitalPeriod, station.orbit.focus.name))
         return station
@@ -289,7 +362,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     protected fun setupFleet1(toOrbit : SectorEntityToken): CampaignFleetAPI {
         val playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().playerFleet).toFloat()
         val capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus())
-        var fp = (playerStr + capBonus) * 0.6f// - 40
+        var fp = playerStr/4 * 0.8f + capBonus - 40
+        log.info(String.format("Estimating needed FP at %.1f based on player strength %.1f, capBonus %s", fp, playerStr, capBonus))
+        fp = fp.coerceAtMost(350f)
         fp = fp.coerceAtLeast(10f)
 
         var params = FleetParamsV3(remnantSystem!!.location, Factions.REMNANTS, 1.2f, FleetTypes.TASK_FORCE,
@@ -354,8 +429,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         val playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().playerFleet).toFloat()
         val capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus())
-        var fp = (playerStr + capBonus) * 0.6f// - 40
-        fp += 150f
+        var fp = (playerStr / 4 * 0.55f)
+        fp += capBonus - 50
+        fp = fp.coerceAtMost(300f)
+        fp += 140f
 
         var params = FleetParamsV3(target!!.locationInHyperspace, Factions.REMNANTS, 1.5f, FleetTypes.TASK_FORCE,
             fp, // combat
@@ -363,13 +440,13 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             0f
         )
         params.aiCores = OfficerQuality.AI_MIXED
-        params.averageSMods = 3
+        params.averageSMods = 2
         //params.commander = RemnantQuestUtils.getOrCreateTowering()
         //params.flagshipVariantId = "nex_silverlight_Ascendant"
         var fleet = FleetFactoryV3.createFleet(params)
         fleet2 = fleet
 
-        // add about two Facets
+        // add two Facets
         //genRandom = Misc.random;
         val spParams = ShipPickParams(ShipPickMode.PRIORITY_THEN_ALL)
         var picks = Global.getSector().getFaction(Factions.OMEGA).pickShip(ShipRoles.COMBAT_MEDIUM, spParams)
@@ -406,10 +483,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.memoryWithoutUpdate[MemFlags.FLEET_IGNORES_OTHER_FLEETS] = true
         fleet.memoryWithoutUpdate[MemFlags.FLEET_DO_NOT_IGNORE_PLAYER] = true
         fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 1f)
+        fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 1.25f);
 
         fleet.inflateIfNeeded()
 
-        // janky stuff because specifying the flagship directly crashes
+        // manual flagship replacement because specifying it in params breaks if flagship is modular
         var flagship = fleet.flagship
         flagship.isFlagship = false
 
@@ -430,31 +508,38 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         //Misc.addDefeatTrigger(fleet, "Nex_RemSalvation_Fleet1Defeated")
         fleet.addEventListener(this)
 
+        fleet.memoryWithoutUpdate[ExerelinCampaignPlugin.MEM_KEY_BATTLE_PLUGIN] =
+            SalvationBattleCreationPlugin::class.java.name
+
+        //Global.getSector().hyperspace.addEntity(fleet)
+        //fleet.setLocation(target!!.locationInHyperspace.x, target!!.locationInHyperspace.y)
         insertFleet2(fleet)
 
         return fleet
     }
 
     /**
-     * Adds Towering's second fleet to the sector (in hyperspace above the target system and transverse jumps in).
-     * Currently the jump animation is broken.
+     * Triggers the transverse jump for Towering's second fleet.
      */
     protected fun insertFleet2(fleet: CampaignFleetAPI) {
-        // spawn in hyperspace
-        Global.getSector().hyperspace.addEntity(fleet)
-        fleet.setLocation(target!!.locationInHyperspace.x, target!!.locationInHyperspace.y)
+        var planet = target!!.primaryEntity
+
+        target!!.containingLocation.addEntity(fleet)
+        fleet.setLocation(99999f, 99999f)
+        //Global.getSector().hyperspace.addEntity(fleet)
+        //fleet.setLocation(target!!.locationInHyperspace.x, target!!.locationInHyperspace.y)
 
         // Transverse jump code adapted from FractureJumpAbility
-        fleet.addAbility(Abilities.TRANSVERSE_JUMP)
-        var planet = target!!.primaryEntity
+        // the only way I've found to do what I want reliably is to do actually do the jump from in-system
         val loc = Misc.getPointAtRadius(planet.location, planet.radius + 200f + fleet.radius)
         val token = planet.containingLocation.createToken(loc.x, loc.y)
         val dest = JumpDestination(token, null)
         Global.getSector().doHyperspaceTransition(fleet, null, dest)
+        //fleet.abilities[Abilities.TRANSVERSE_JUMP]!!.activate()   // needs to be specifically on the gravity well
 
         // chase player if player is near target, else chase the knight fleet
         var player = Global.getSector().playerFleet
-        if (planet.containingLocation == player.containingLocation && Misc.getDistance(player, planet) < 400) {
+        if (planet.containingLocation == player.containingLocation && Misc.getDistance(player, planet) <= 500) {
             fleet.addAssignment(FleetAssignment.INTERCEPT, player, 2f)
         }
         else if (knightFleet != null && knightFleet!!.isAlive) {
@@ -464,14 +549,16 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             StringHelper.getFleetAssignmentString("movingInToAttack", planet.name))
         fleet.addAssignment(FleetAssignment.HOLD, planet, 0.25f, StringHelper.getFleetAssignmentString("attacking", planet.name),
             GenericMissionScript(this, "pk"))
-        Misc.giveStandardReturnToSourceAssignments(fleet, false)
+
+        // don't issue return order until we've actually PK'd the target or died trying
+        //Misc.giveStandardReturnToSourceAssignments(fleet, false)
     }
 
     /**
      * Generates the Knights of Ludd fleet.
      */
     protected fun setupKnightFleet(): CampaignFleetAPI {
-        var fp = 100f
+        var fp = 100f * 2.5f;   // approximate fleet size mult of Gilead
 
         var params = FleetParamsV3(target!!, target!!.locationInHyperspace, Factions.LUDDIC_CHURCH, null, FleetTypes.TASK_FORCE,
             fp, // combat
@@ -479,17 +566,24 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             .5f
         )
         params.averageSMods = 1
+        params.ignoreMarketFleetSizeMult = true
         //params.commander = RemnantQuestUtils.getOrCreateM4LuddicKnight()  // add manualy later, else we'll have to reset their rank
+        params.officerNumberMult = 1.2f
+        params.officerLevelBonus = 1
+
         var fleet = FleetFactoryV3.createFleet(params)
         knightFleet = fleet
 
         fleet.memoryWithoutUpdate["\$genericHail"] = true
         fleet.memoryWithoutUpdate["\$genericHail_openComms"] = "Nex_RemSalvationHail_Knight"
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE] = true
-        fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_PATROL_FLEET] = true  // try to make sure it joins the battle
+        // try to make sure it joins the battle
+        fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_PATROL_FLEET] = true
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_PATROL_ALLOW_TOFF] = true
         fleet.memoryWithoutUpdate["\$nex_remSalvation_knightFleet"] = true
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_WAR_FLEET] = true
+        // make it busy so patrol assignments don't pull it elsewhere
+        Misc.setFlagWithReason(fleet.memoryWithoutUpdate, MemFlags.FLEET_BUSY, "nex_remSalvation", true, -1f)
 
         val commander = RemnantQuestUtils.getOrCreateM4LuddicKnight();
         fleet.flagship.captain = commander;
@@ -515,13 +609,16 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         flagship.variant.source = VariantSource.REFIT
         flagship.variant.addTag(Tags.SHIP_LIMITED_TOOLTIP)  // might be lost if done before inflating
         if (consistentWeapons) flagship.variant.addTag(Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
-        flagship.variant.addTag(Tags.UNRECOVERABLE)
+        flagship.variant.addTag(Tags.VARIANT_UNBOARDABLE)
+        flagship.variant.addTag(Tags.VARIANT_DO_NOT_DROP_AI_CORE_FROM_CAPTAIN)
     }
 
-    protected fun reportWonBattle1() {
+    protected fun reportWonBattle1(dialog: InteractionDialogAPI?, memoryMap: Map<String, MemoryAPI>?) {
         if (defeatedFleet1) return
         defeatedFleet1 = true
         spawnFlagship1Wreck()
+        // send the fleet home if it's still alive
+        Misc.giveStandardReturnToSourceAssignments(fleet1, true)
     }
 
     protected fun reportWonBattle2(dialog: InteractionDialogAPI?, memoryMap: Map<String, MemoryAPI>?) {
@@ -536,6 +633,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         // unfuck station's malfunction rate
         unapplyStationMalfunction()
+        // send the fleet home if it's still alive
+        Misc.giveStandardReturnToSourceAssignments(fleet2, true)
     }
 
     protected fun spawnFlagship1Wreck() {
@@ -556,7 +655,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     protected fun spawnFlagship2Wreck() {
-        val variantId = "nex_silverlight_Ascendant"
+        val variantId = "nex_silverlight_Hull"  // no weapons, since they'll already have dropped in post-battle salvage
         val params = DerelictShipData(
             PerShipData(
                 Global.getSettings().getVariant(variantId), ShipRecoverySpecial.ShipCondition.WRECKED,
@@ -578,11 +677,23 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         data.addShip(copy)
 
         Misc.setSalvageSpecial(flagship2, data)
+        if (!targetPKed && Global.getSettings().modManager.isModEnabled("Terraforming & Station Construction")) {
+            val salvage = Global.getFactory().createCargo(true)
+            salvage.addSpecial(SpecialItemData("boggled_planetkiller", null), 1f)
+            BaseSalvageSpecial.addExtraSalvage(flagship2, salvage)
+        }
 
         flagship2.isDiscoverable = true
         flagship2.setLocation(fleet2!!.location.x, fleet2!!.location.y)
         Misc.makeImportant(flagship2, "\$nex_remSalvation_flagship2_imp")
         flagship2.memoryWithoutUpdate.set("\$nex_remSalvation_flagship2", true)
+    }
+
+    protected fun checkFlagshipKilled(fleet : CampaignFleetAPI, function: (dialog: InteractionDialogAPI?, memoryMap : Map<String, MemoryAPI>?) -> Unit)
+    {
+        if (fleet!!.flagship == null || fleet!!.flagship.captain != RemnantQuestUtils.getOrCreateTowering()) {
+            function(null, null)
+        }
     }
 
     override fun acceptImpl(dialog: InteractionDialogAPI, memoryMap: Map<String, MemoryAPI>) {
@@ -591,6 +702,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         Misc.makeStoryCritical(target, "nex_remSalvation")
     }
 
+    /**
+     * Disrupts the defense buildings on the League base.
+     */
     protected fun trashBase() {
         for (ind in base!!.industries) {
             val spec = ind.spec
@@ -600,6 +714,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         }
     }
 
+    /**
+     * Opens a conversation with a random League ensign in the base visit section of the dialog.
+     */
     protected fun setupConvoWithRandomOperator(dialog : InteractionDialogAPI) {
         var person : PersonAPI = OfficerManagerEvent.createOfficer(Global.getSector().getFaction(Factions.PERSEAN), 1)
         person.setPersonality(Personalities.STEADY);    // just to fit the convo, even though no-one will see it lol
@@ -754,10 +871,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         val fleet = Misc.getStationFleet(target)
         if (fleet != null) {
             for (member in fleet.fleetData.membersListCopy) {
-                val stats = member.stats
-                //stats.dynamic.getStat(Stats.CR_MALFUNCION_RANGE).modifyMult(STAT_MOD_ID, 10f, desc)
-                fleet.removeFleetMemberWithDestructionFlash(member)
+                //fleet.removeFleetMemberWithDestructionFlash(member)
             }
+            fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 0.25f, 20f);
         }
     }
 
@@ -765,15 +881,26 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         val fleet = Misc.getStationFleet(target)
         if (fleet != null) {
             for (member in fleet.fleetData.membersListCopy) {
-                val stats = member.stats
-                //stats.dynamic.getStat(Stats.CR_MALFUNCION_RANGE).unmodify(STAT_MOD_ID)
                 //stats.weaponMalfunctionChance.unmodify(STAT_MOD_ID)
             }
+            fleet.memoryWithoutUpdate.unset(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT);
         }
+
+        /*
+        for (ind in target!!.industries) {
+            if (ind.spec.hasTag(Industries.TAG_STATION)) {
+                ind.setDisrupted(0.01f)
+            }
+        }
+        */
     }
 
     protected fun fleet2AILoop() {
         if (fleet2 == null) return;
+
+        if (targetPKed) {
+            Misc.giveStandardReturnToSourceAssignments(fleet2, false)
+        }
 
         val planet = target!!.primaryEntity
         if (fleet2!!.currentAssignment == null) {
@@ -790,7 +917,13 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         if (currentStage == Stage.DEFEND_PLANET) {
 
             if (fleet2 != null) {
-                // there used to be something here but now there isn't
+                /*
+                if (warpFleet2Delay > 0) {
+                    warpFleet2Delay -= days
+                    if (warpFleet2Delay <= 0) insertFleet2(fleet2!!)
+                }
+                */
+                fleet2AILoop()
             } else {
                 setLuddicFleetsNonHostile()
             }
@@ -873,6 +1006,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
                 // can't change CR directly, it's auto-set
                 // actually we can't change it at all
                 applyStationMalfunction()
+                makeUnimportant(knightFleet, Stage.DEFEND_PLANET)
                 return true
             }
             "complete" -> {completeMission(dialog, memoryMap); return true}
@@ -1052,7 +1186,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         param: Any?
     ) {
         if (fleet == this.fleet1) {
-            reportWonBattle1()
+            reportWonBattle1(null, null)
         }
         else if (fleet == this.knightFleet) {
             var knight = RemnantQuestUtils.getOrCreateM4LuddicKnight()
@@ -1067,7 +1201,13 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     override fun reportBattleOccurred(fleet: CampaignFleetAPI?, primaryWinner: CampaignFleetAPI?, battle: BattleAPI?) {
+        if (fleet == fleet1) {
+            checkFlagshipKilled(fleet!!) { _: InteractionDialogAPI?, _: Map<String, MemoryAPI>? -> reportWonBattle1(null, null) }
+        }
 
+        if (fleet == fleet2) {
+            checkFlagshipKilled(fleet!!) { _: InteractionDialogAPI?, _: Map<String, MemoryAPI>? -> reportWonBattle2(null, null) }
+        }
     }
 
     class GenericMissionScript(var intel : RemnantSalvation, val param : String) : Script {

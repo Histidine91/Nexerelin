@@ -23,7 +23,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
     public static final float ACCEL_MULT = 2;
     public static final float TIMEFLOW_MULT = 2;
     public static final float DAMPER_MULT = 0.5f;
-    public static final int MAX_ASPECTS = 9;
+    public static final int MAX_ASPECTS = 7;
     public static final float SHARD_BURN_TIME = 0.2f;
     public static final Color JITTER_COLOR = new Color(168,255,192,55);
     public static final Color JITTER_UNDER_COLOR = new Color(168,255,192,155);
@@ -265,7 +265,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
 
         public NoCollidePlugin(ShipAPI ship, float timer) {
             this.ship = ship;
-            col = ship.getCollisionClass();
+            col = CollisionClass.SHIP;   //ship.getCollisionClass();
             this.timer = timer;
         }
 

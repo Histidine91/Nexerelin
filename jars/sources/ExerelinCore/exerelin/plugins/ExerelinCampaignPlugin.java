@@ -8,21 +8,16 @@ import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.AbilityPlugin;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import exerelin.campaign.AllianceManager;
-import exerelin.campaign.CovertOpsManager;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.MiningHelperLegacy;
-import exerelin.campaign.RevengeanceManager;
+import exerelin.campaign.*;
 import exerelin.campaign.abilities.ai.AlwaysOnTransponderAI;
-import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.battle.NexBattleAutoresolverPlugin;
+import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.colony.AICoreAdminPluginOmega;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.utilities.NexUtilsFleet;
@@ -195,6 +190,17 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	public PluginPick<AICoreAdminPlugin> pickAICoreAdminPlugin(String commodityId) {
 		if (Commodities.OMEGA_CORE.equals(commodityId)) {
 			return new PluginPick<AICoreAdminPlugin>(new AICoreAdminPluginOmega(), PickPriority.MOD_GENERAL);
+		}
+		return null;
+	}
+
+	@Override
+	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(BattleAPI battle) {
+		if (battle.isPlayerInvolved()) return null;
+		for (CampaignFleetAPI fleet : battle.getBothSides()) {
+			if (fleet.getMemoryWithoutUpdate().contains(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT)) {
+				return new PluginPick<BattleAutoresolverPlugin>(new NexBattleAutoresolverPlugin(battle), PickPriority.MOD_GENERAL);
+			}
 		}
 		return null;
 	}

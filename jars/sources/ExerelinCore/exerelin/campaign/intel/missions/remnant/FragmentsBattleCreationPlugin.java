@@ -10,10 +10,11 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.combat.BattleCreationPluginImpl;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
-import java.util.ArrayList;
-import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Custom plugin to add the force-deploy shards plugin to the Fragments combat encounter.
@@ -32,8 +33,8 @@ public class FragmentsBattleCreationPlugin extends BattleCreationPluginImpl {
 	}	
 	
 	public static class ForceDeployRemnantShards extends BaseEveryFrameCombatPlugin {
-		boolean ran = false;
-		CombatEngineAPI engine;
+		//boolean ran = false;
+		protected CombatEngineAPI engine;
 		
 		private static final float MIN_OFFSET = 300f;
 		
@@ -73,7 +74,6 @@ public class FragmentsBattleCreationPlugin extends BattleCreationPluginImpl {
 		
 		@Override
 		public void advance(float amount, List<InputEventAPI> events) {
-			if (ran) return;
 			if (engine == null) return;
 			
 			final CombatFleetManagerAPI cfm = Global.getCombatEngine().getFleetManager(FleetSide.PLAYER);
@@ -88,7 +88,7 @@ public class FragmentsBattleCreationPlugin extends BattleCreationPluginImpl {
 
 			moveToSpawnLocations(deployed);
 			
-			ran = true;
+			engine.removePlugin(this);
 		}
 		
 		@Override

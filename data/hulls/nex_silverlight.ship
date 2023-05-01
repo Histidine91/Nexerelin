@@ -14,7 +14,7 @@
   "builtInMods": [
     "advancedcore",
     "high_maintenance",
-    "stealth_minefield",
+    #"stealth_minefield",
     "operations_center",
     "automated"
   ],
