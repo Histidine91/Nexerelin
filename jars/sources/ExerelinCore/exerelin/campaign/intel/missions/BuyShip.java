@@ -23,7 +23,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.missions.BuyShipRule.*;
-import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 
@@ -286,7 +285,8 @@ public class BuyShip extends HubMissionWithBarEvent {
 					continue;
 				}
 
-				List<FleetMemberAPI> intersect = NexUtils.getCollectionIntersection(bestList, fromThisRule);
+				List<FleetMemberAPI> intersect = new ArrayList<>(bestList);
+				intersect.retainAll(fromThisRule);
 				boolean newIsSmaller = fromThisRule.size() < bestList.size();
 				boolean newIsBigEnough = fromThisRule.size() >= SET_MIN_SIZE || currRule.isMandatoryRule();
 

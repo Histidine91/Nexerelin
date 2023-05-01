@@ -289,14 +289,6 @@ public class NexUtils
 		return list;
 	}
 	
-	public static <T> List<T> getCollectionIntersection(Collection<T> first, Collection<T> second) {
-		List<T> result = new ArrayList<>();
-		for (T foo : first) {
-			if (second.contains(foo)) result.add(foo);
-		}
-		return result;
-	}
-	
 	// invented by DarkRevenant
 	// see DynaSector mod plugin for example
 	public static void removeScriptAndListener(SectorEntityToken entity, Class<?> oldClass, Class<?> newClass)
