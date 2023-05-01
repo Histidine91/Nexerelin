@@ -167,6 +167,9 @@ public class NexFactionConfig
     
     public Map<StartFleetType, StartFleetSet> startShips = new HashMap<>();
     public List<SpecialItemSet> startSpecialItems = new ArrayList<>();
+
+    // strategy AI
+    public Map<String, Float> strategyPriorityMults = new HashMap<>();
     
     // set defaults
     static {
@@ -443,6 +446,16 @@ public class NexFactionConfig
                     int count = seedJson.optInt("count", 0);
                     float mult = (float)seedJson.optDouble("mult", 0);
                     bonusSeeds.add(new BonusSeed(id, count, mult));
+                }
+            }
+
+            if (settings.has("strategyPriorityMults")) {
+                JSONObject multsJson = settings.getJSONObject("strategyPriorityMults");
+                Iterator<?> keys = multsJson.keys();
+                while( keys.hasNext() ) {
+                    String key = (String)keys.next();
+                    float value = (float)multsJson.optDouble(key, 0);
+                    strategyPriorityMults.put(key, value);
                 }
             }
             

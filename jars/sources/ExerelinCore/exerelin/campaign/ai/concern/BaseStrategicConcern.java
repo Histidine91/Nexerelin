@@ -21,10 +21,7 @@ import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -95,6 +92,11 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         }
 
         SAIUtils.applyPriorityModifierForTraits(def.tags, ai.getFactionId(), priority);
+
+        Float factionMult = NexConfig.getFactionConfig(ai.getFactionId()).strategyPriorityMults.get(id);
+        if (factionMult != null) {
+            priority.modifyMult("faction", factionMult, StrategicAI.getString("statFaction", true));
+        }
     }
 
     /**

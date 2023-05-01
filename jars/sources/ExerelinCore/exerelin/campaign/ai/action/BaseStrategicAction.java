@@ -11,6 +11,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -66,6 +67,11 @@ public abstract class BaseStrategicAction implements StrategicAction {
         }
 
         SAIUtils.applyPriorityModifierForTraits(def.tags, ai.getFactionId(), priority);
+
+        Float factionMult = NexConfig.getFactionConfig(ai.getFactionId()).strategyPriorityMults.get(id);
+        if (factionMult != null) {
+            priority.modifyMult("faction", factionMult, StrategicAI.getString("statFaction", true));
+        }
 
         priority.modifyFlat("antiRepetition", -ai.getExecModule().getAntiRepetitionValue(id), StrategicAI.getString("statAntiRepetition", true));
     }
