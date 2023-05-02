@@ -1,7 +1,6 @@
 package exerelin.campaign.ai.action;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
@@ -17,7 +16,7 @@ public class DeclareWarAction extends DiplomacyAction {
 
     @Override
     public boolean generate() {
-        String factionId = concern.getFaction() != null ? concern.getFaction().getId() : null;
+        String factionId = faction != null ? faction.getId() : null;
         DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
 
         delegate = brain.checkWar(factionId);
@@ -29,7 +28,6 @@ public class DeclareWarAction extends DiplomacyAction {
     @Override
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
-        FactionAPI faction = concern.getFaction();
         if (faction != null) {
             DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
             float decisionRating = brain.getWarDecisionRating(faction.getId());
@@ -41,16 +39,16 @@ public class DeclareWarAction extends DiplomacyAction {
     public boolean canUse(StrategicConcern concern) {
         // we have the military tag for alignment purposes, but don't use this action for actual military actions
         if (concern.getDef().module == StrategicDefManager.ModuleType.MILITARY) return false;
-        if (concern.getFaction() != null) {
+        if (faction != null) {
             // already at war
-            if (concern.getFaction().isHostileTo(ai.getFaction())) return false;
+            if (faction.isHostileTo(ai.getFaction())) return false;
 
             // check validity
             DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
-            if (brain.canWarWithFaction(concern.getFaction().getId())) return false;
+            if (brain.canWarWithFaction(faction.getId())) return false;
         }
 
-        if ((ai.getFaction().isPlayerFaction() || concern.getFaction() == Global.getSector().getPlayerFaction())) {
+        if ((ai.getFaction().isPlayerFaction() || faction == Global.getSector().getPlayerFaction())) {
             if (!NexConfig.followersDiplomacy) return false;
             if (Misc.getCommissionFaction() != null) return false;
         }

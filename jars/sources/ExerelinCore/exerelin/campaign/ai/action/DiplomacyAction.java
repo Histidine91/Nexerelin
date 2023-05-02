@@ -30,9 +30,9 @@ public class DiplomacyAction extends BaseStrategicAction {
         }
 
         DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
-        float disp = brain.getDisposition(concern.getFaction().getId()).disposition.getModifiedValue();
+        float disp = brain.getDisposition(faction.getId()).disposition.getModifiedValue();
         float ourStrength = DiplomacyBrain.getFactionStrength(ai.getFactionId());
-        float theirStrength = DiplomacyBrain.getFactionStrength(concern.getFaction().getId());
+        float theirStrength = DiplomacyBrain.getFactionStrength(faction.getId());
 
         if (ourStrength*1.5f < theirStrength)
         {
@@ -54,7 +54,7 @@ public class DiplomacyAction extends BaseStrategicAction {
         params.onlyPositive = !canNegative;
         params.onlyNegative = !canPositive;
 
-        delegate = DiplomacyManager.createDiplomacyEventV2(concern.getFaction(), ai.getFaction(), null, params);
+        delegate = DiplomacyManager.createDiplomacyEventV2(faction, ai.getFaction(), null, params);
         return delegate != null;
     }
 
@@ -70,7 +70,7 @@ public class DiplomacyAction extends BaseStrategicAction {
         } else if (!canPositive && canNegative) {
             positive = false;
         } else return;
-        diplomacyChanceAdjustment = getFactionDiplomacyChance(!positive, concern.getFaction().getId());
+        diplomacyChanceAdjustment = getFactionDiplomacyChance(!positive, faction.getId());
         priority.modifyMult("diplomacyChance", diplomacyChanceAdjustment,
                 StrategicAI.getString("statDiplomacyChance" + (positive ? "Positive" : "Negative"), true));
     }
@@ -101,8 +101,8 @@ public class DiplomacyAction extends BaseStrategicAction {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void postGenerate() {
+        super.postGenerate();
         // used to be in generate() directly but putting it here makes some stuff technically cleaner
         end(StrategicActionDelegate.ActionStatus.SUCCESS);
         Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY_GLOBAL_COOLDOWN, true, DIPLOMACY_GLOBAL_COOLDOWN);
@@ -133,7 +133,7 @@ public class DiplomacyAction extends BaseStrategicAction {
         if (concern.getDef().hasTag("diplomacy_negative") && !this.getDef().hasTag("unfriendly"))
             return false;
 
-        if ((ai.getFaction().isPlayerFaction() || concern.getFaction() == Global.getSector().getPlayerFaction())) {
+        if ((ai.getFaction().isPlayerFaction() || faction == Global.getSector().getPlayerFaction())) {
             if (!NexConfig.followersDiplomacy) return false;
             if (Misc.getCommissionFaction() != null) return false;
         }

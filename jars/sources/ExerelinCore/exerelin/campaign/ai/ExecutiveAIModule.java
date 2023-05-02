@@ -23,7 +23,8 @@ public class ExecutiveAIModule extends StrategicAIModule {
     }
 
     public void reportRecentAction(StrategicAction action) {
-        StrategicDefManager.StrategicActionDef def = action.getDef();
+        StrategicAction forId = action;
+        StrategicDefManager.StrategicActionDef def = forId.getDef();
         String id = def.idForAntiRepetition != null ? def.idForAntiRepetition : def.id;
         NexUtils.modifyMapEntry(recentActionsForAntiRepetition, id, def.antiRepetition);
     }
@@ -96,10 +97,8 @@ public class ExecutiveAIModule extends StrategicAIModule {
             if (concern.getActionCooldown() > 0) continue;
             if (concern.getPriorityFloat() < SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT) continue;
 
-            StrategicAction bestAction = concern.pickAction();
+            StrategicAction bestAction = concern.fireBestAction();
             if (bestAction == null) continue;
-            boolean success = concern.initAction(bestAction);
-            if (!success) continue;
 
             log.info("Adding action " + bestAction.getName());
 

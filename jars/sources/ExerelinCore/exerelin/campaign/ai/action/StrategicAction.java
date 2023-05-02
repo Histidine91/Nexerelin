@@ -9,7 +9,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 
-public interface StrategicAction {
+public interface StrategicAction extends Comparable<StrategicAction> {
 
     StrategicAI getAI();
     void setAI(StrategicAI ai);
@@ -21,6 +21,9 @@ public interface StrategicAction {
     StrategicActionDelegate getDelegate();
     void setDelegate(StrategicActionDelegate delegate);
 
+    FactionAPI getFaction();
+    void setFaction(FactionAPI faction);
+
     /**
      * Creates the action. {@code canUse()} should already have been called beforehand to determine as much as possible
      * whether the action can actually be executed, but we may nevertheless find the action unable to proceed here.
@@ -28,10 +31,12 @@ public interface StrategicAction {
      */
     boolean generate();
 
+    void initForConcern(StrategicConcern concern);
+
     /**
      * Called after {@code generate()} to actually begin executing the action.
      */
-    void init();
+    void postGenerate();
     /**
      * Called every half-day or so to ensure the action should still continue.
      * @return

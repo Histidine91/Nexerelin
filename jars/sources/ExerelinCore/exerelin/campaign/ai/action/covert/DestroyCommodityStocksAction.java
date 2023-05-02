@@ -57,7 +57,7 @@ public class DestroyCommodityStocksAction extends CovertAction {
         if (commodityId != null) {
             WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
             List<EconomyInfoHelper.ProducerEntry> competitors = EconomyInfoHelper.getInstance().getProducers(
-                    concern.getFaction().getId(), commodityId, 3, true);
+                    faction.getId(), commodityId, 3, true);
             for (EconomyInfoHelper.ProducerEntry entry : competitors) {
                 //log.info(String.format("  Adding competing producer as agent target: %s, output %s", entry.market.getName(), entry.output));
                 picker.add(entry.market, entry.output);

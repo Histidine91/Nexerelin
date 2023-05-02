@@ -38,6 +38,7 @@ public class StrategicDefManager {
                 def.icon = defJSON.optString("icon", null);
                 def.classPath = defJSON.getString("classPath");
                 def.module = ModuleType.valueOf(defJSON.getString("module"));
+                def.noAutoGenerate = defJSON.optBoolean("noAutoGenerate", false);
                 List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
                 def.tags.addAll(tags);
 
@@ -56,6 +57,7 @@ public class StrategicDefManager {
                 def.cooldown = (float)defJSON.optDouble("cooldown", SAIConstants.DEFAULT_ACTION_COOLDOWN);
                 def.antiRepetition = (float)defJSON.optDouble("antiRepetition", SAIConstants.DEFAULT_ANTI_REPETITION_VALUE);
                 def.idForAntiRepetition = defJSON.optString("idForAntiRepetition", null);
+                def.shim = defJSON.optBoolean("shim", false);
                 List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
                 def.tags.addAll(tags);
 
@@ -116,6 +118,7 @@ public class StrategicDefManager {
         public String icon;
         public String classPath;
         public ModuleType module;
+        public boolean noAutoGenerate;
         public Set<String> tags = new HashSet<>();
 
         public StrategicConcernDef(String id) {
@@ -135,6 +138,10 @@ public class StrategicDefManager {
         public float cooldown;
         public float antiRepetition;
         public String idForAntiRepetition;
+        /**
+         * Intended for actions that exist purely to replace themselves with another action.
+         */
+        public boolean shim;
         public Set<String> tags = new HashSet<>();
 
         public StrategicActionDef(String id) {

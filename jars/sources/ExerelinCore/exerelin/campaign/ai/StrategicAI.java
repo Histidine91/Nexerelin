@@ -304,9 +304,8 @@ public class StrategicAI extends BaseIntelPlugin {
 		else if (buttonId instanceof StrategicConcern) {
 			BaseStrategicConcern concern = ((BaseStrategicConcern)buttonId);
 			concern.setActionCooldown(0);
-			StrategicAction act = concern.pickAction();
-			if (act != null && true) {
-				concern.initAction(act);
+			StrategicAction act = concern.fireBestAction();
+			if (act != null) {
 				ui.updateUIForItem(this);
 			}
 		}

@@ -59,6 +59,7 @@ public abstract class StrategicAIModule {
         List<StrategicConcern> newConcerns = new ArrayList<>();
 
         for (StrategicDefManager.StrategicConcernDef def : getRelevantConcernDefs()) {
+            if (def.noAutoGenerate) continue;
             StrategicConcern concern = StrategicDefManager.instantiateConcern(def);
             if (concern == null) continue;
 

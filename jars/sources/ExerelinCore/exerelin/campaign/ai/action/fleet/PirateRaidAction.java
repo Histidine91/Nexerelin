@@ -20,7 +20,7 @@ public class PirateRaidAction extends RaidAction {
 
     @Override
     public boolean generate() {
-        proxy = pickProxy(concern.getFaction());
+        proxy = pickProxy(faction);
         if (proxy == null) return false;
 
         boolean success = super.generate();

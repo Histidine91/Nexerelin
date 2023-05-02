@@ -18,7 +18,7 @@ public class SatBombAction extends OffensiveFleetAction {
         if (Tuning.getDaysSinceStart() < NexConfig.invasionGracePeriod) return false;
         if (!concern.getDef().hasTag("canSatBomb")) return false;
 
-        if (!InvasionFleetManager.canSatBomb(ai.getFaction(), concern.getFaction())) return false;
+        if (!InvasionFleetManager.canSatBomb(ai.getFaction(), faction)) return false;
 
         float pointReq = NexConfig.pointsRequiredForInvasionFleet;
         float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());

@@ -3,7 +3,10 @@ package exerelin.campaign.ai.action;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.combat.MutableStat;
-import com.fs.starfarer.api.ui.*;
+import com.fs.starfarer.api.ui.ButtonAPI;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.SAIUtils;
@@ -11,6 +14,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
@@ -27,6 +31,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
     @Getter protected StrategicActionDelegate.ActionStatus status;
     @Getter protected boolean isEnded;
     @Getter @Setter protected int meetingsSinceEnded;
+    @Getter @Setter protected FactionAPI faction;
 
     @Override
     public StrategicAI getAI() {
@@ -57,15 +62,21 @@ public abstract class BaseStrategicAction implements StrategicAction {
             SAIUtils.applyPriorityModifierForAlignment(ai.getFactionId(), priority, Alignment.DIPLOMATIC);
         }
 
-        if (concern.getFaction() != null) {
+        if (faction != null) {
             if (def.hasTag(SAIConstants.TAG_FRIENDLY)) {
-                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), concern.getFaction().getId(), true, priority);
+                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), faction.getId(), true, priority);
             }
             if (def.hasTag(SAIConstants.TAG_UNFRIENDLY)) {
-                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), concern.getFaction().getId(), false, priority);
+                SAIUtils.applyPriorityModifierForDisposition(ai.getFactionId(), faction.getId(), false, priority);
             }
         }
 
+        if (def.hasTag(SAIConstants.TAG_AGGRESSIVE)) {
+            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.NEUTRALIST,
+                    SAIConstants.TRAIT_NEGATIVE_MULT, false);
+            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PACIFIST,
+                    SAIConstants.TRAIT_NEGATIVE_MULT, false);
+        }
         SAIUtils.applyPriorityModifierForTraits(def.tags, ai.getFactionId(), priority);
 
         Float factionMult = NexConfig.getFactionConfig(ai.getFactionId()).strategyPriorityMults.get(id);
@@ -93,7 +104,14 @@ public abstract class BaseStrategicAction implements StrategicAction {
     }
 
     @Override
-    public void init() {
+    public void initForConcern(StrategicConcern concern) {
+        setAI(concern.getAI());
+        setConcern(concern);
+        setFaction(concern.getFaction());
+    }
+
+    @Override
+    public void postGenerate() {
         delegate.setStrategicAction(this);
         status = delegate.getStrategicActionStatus();
     }
@@ -215,4 +233,8 @@ public abstract class BaseStrategicAction implements StrategicAction {
         return StrategicDefManager.getActionDef(id);
     }
 
+    @Override
+    public int compareTo(StrategicAction other) {
+        return Float.compare(this.getPriorityFloat(), other.getPriorityFloat());
+    }
 }

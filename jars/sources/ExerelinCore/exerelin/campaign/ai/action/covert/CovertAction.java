@@ -26,7 +26,7 @@ public abstract class CovertAction extends BaseStrategicAction {
     }
 
     public FactionAPI getTargetFaction() {
-        return concern.getFaction();
+        return faction;
     }
 
     public FactionAPI getThirdFaction() {

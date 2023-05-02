@@ -70,6 +70,7 @@ public interface StrategicConcern {
      */
     @Nullable List<MarketAPI> getMarkets();
     @Nullable FactionAPI getFaction();
+    void setFaction(FactionAPI faction);
     /**
      * Should be overriden for concerns that have a list of multiple factions involved. Return null if empty.
      * @return
@@ -84,11 +85,16 @@ public interface StrategicConcern {
     CustomPanelAPI createPanel(CustomPanelAPI holder);
 
     /**
-     * Asks the concern to select a strategic action it considers the most suitable (has highest priority score).
-     * Does not actually generate or activate the proposed action.
+     * Asks the concern to generate and activate a strategic action it considers the most suitable (has highest priority score).
      * @return
      */
-    @Nullable StrategicAction pickAction();
+    @Nullable StrategicAction fireBestAction();
+
+    /**
+     * Generates a list of actions potentially usable for the concern. Does not actually {@code generate()} or activate proposed actions.
+     * @return
+     */
+    @Nullable List<StrategicAction> getUsableActions();
 
     /**
      * Generates and initiates the specified strategic action.

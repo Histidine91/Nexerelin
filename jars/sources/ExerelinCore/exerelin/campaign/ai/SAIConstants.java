@@ -8,8 +8,8 @@ public class SAIConstants {
     public static float INTERVAL_PER_LIVE_FACTION = 0.5f;
 
     // Values below this (after dividing by market size) are considered vulnerable.
-    public static float GROUND_DEF_THRESHOLD = 160;
-    public static float SPACE_DEF_THRESHOLD = 120;
+    public static float GROUND_DEF_THRESHOLD = 200;
+    public static float SPACE_DEF_THRESHOLD = 150;
     public static float MARKET_VALUE_DIVISOR = 40;
     public static float MIN_COMPETITOR_SHARE = 10;
 
@@ -32,6 +32,7 @@ public class SAIConstants {
 
     public static int ACTIONS_PER_MEETING = 2;
     public static int MAX_SIMULTANEOUS_ACTIONS = 10;    // todo?
+    public static int MAX_ACTIONS_TO_CHECK_PER_CONCERN = 4;
     public static float MIN_CONCERN_PRIORITY_TO_ACT = 75;
     public static float MIN_ACTION_PRIORITY_TO_USE = 75;
     public static float DEFAULT_ACTION_COOLDOWN = 30;
@@ -48,6 +49,7 @@ public class SAIConstants {
     public static final String TAG_DIPLOMACY = "diplomacy";
     public static final String TAG_FRIENDLY = "friendly";
     public static final String TAG_UNFRIENDLY = "unfriendly";
+    public static final String TAG_AGGRESSIVE = "aggressive";
     public static final String TAG_COVERT = "covert";
     public static final String TAG_WANT_CAUSE_HARM = "wantCauseHarm";
 }

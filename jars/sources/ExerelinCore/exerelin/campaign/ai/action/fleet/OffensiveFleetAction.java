@@ -52,7 +52,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
 
     public MarketAPI pickTargetMarket() {
         if (concern.getMarket() != null) return concern.getMarket();
-        return InvasionFleetManager.getManager().getTargetMarketForFleet(ai.getFaction(), concern.getFaction(), null,
+        return InvasionFleetManager.getManager().getTargetMarketForFleet(ai.getFaction(), faction, null,
                 getPotentialTargets(), getEventType());
     }
 

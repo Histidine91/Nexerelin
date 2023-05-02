@@ -11,7 +11,7 @@ public class MakePeaceAction extends DiplomacyAction {
 
     @Override
     public boolean generate() {
-        String factionId = concern.getFaction() != null ? concern.getFaction().getId() : null;
+        String factionId = faction != null ? faction.getId() : null;
         DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
 
         delegate = (StrategicActionDelegate)brain.checkPeace(factionId);
@@ -32,7 +32,7 @@ public class MakePeaceAction extends DiplomacyAction {
     @Override
     public boolean canUse(StrategicConcern concern) {
         if (!concern.getDef().hasTag("canMakePeace")) return false;
-        if (concern.getFaction() != null && !concern.getFaction().isHostileTo(ai.getFaction())) {
+        if (faction != null && !faction.isHostileTo(ai.getFaction())) {
             return false;
         }
         return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;

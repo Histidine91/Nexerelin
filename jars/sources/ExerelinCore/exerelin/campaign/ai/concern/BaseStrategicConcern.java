@@ -16,6 +16,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.*;
+import exerelin.campaign.ai.action.ShimAction;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance.Alignment;
@@ -38,7 +39,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     protected StrategicAIModule module;
     @Getter protected MutableStat priority = new MutableStat(0);
     @Getter protected MarketAPI market;
-    protected FactionAPI faction;
+    @Getter @Setter protected FactionAPI faction;
     @Getter protected StrategicAction currentAction;
     @Getter protected boolean ended;
     @Getter @Setter protected float actionCooldown;
@@ -185,16 +186,31 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     }
 
     @Override
-    public StrategicAction pickAction() {
+    public StrategicAction fireBestAction() {
         log.info(String.format("Picking action for concern %s", getName()));
-        StrategicAction bestAction = null;
-        float bestPrio = 0;
+        List<StrategicAction> actions = getUsableActions();
+        Collections.sort(actions);
+
+        int index = 0;
+        for (StrategicAction action : actions) {
+            boolean success = initAction(action);
+            if (success) return action;
+            index++;
+            if (index > SAIConstants.MAX_ACTIONS_TO_CHECK_PER_CONCERN)
+                break;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<StrategicAction> getUsableActions() {
+        List<StrategicAction> actions = new ArrayList<>();
         boolean printReason = false;
 
         for (StrategicDefManager.StrategicActionDef possibleActionDef : module.getRelevantActionDefs(this)) {
             StrategicAction action = StrategicDefManager.instantiateAction(possibleActionDef);
-            action.setAI(this.ai);
-            action.setConcern(this);
+            action.initForConcern(this);
 
             // check if action is usable
             if (Math.random() > action.getDef().chance) {
@@ -228,21 +244,25 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             }
             if (priority < SAIConstants.MIN_ACTION_PRIORITY_TO_USE) continue;
 
-            if (priority > bestPrio) {
-                bestAction = action;
-                bestPrio = priority;
-            }
+            actions.add(action);
         }
 
-        return bestAction;
+        return actions;
     }
 
     @Override
     public boolean initAction(StrategicAction action) {
+        if (action instanceof ShimAction) {
+            ShimAction shim = (ShimAction)action;
+            action = shim.pickShimmedAction();
+            if (action == null) return false;
+        }
         boolean success = action.generate();
         if (!success) return false;
+
         this.currentAction = action;
-        action.init();
+        action.setConcern(this);    // in case it was set to anything else, e.g. by a shim
+        action.postGenerate();
         notifyActionUpdate(action, StrategicActionDelegate.ActionStatus.STARTING);
         SAIUtils.reportActionAdded(ai, action);
         return true;
