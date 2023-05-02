@@ -302,8 +302,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         makeUnimportant(target, Stage.DEFEND_PLANET)
         sendUpdateIfPlayerHasIntel(null, false)
+
         if (fleet2 != null) {
-            Misc.giveStandardReturnToSourceAssignments(fleet2, true)
+            RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, true)
         }
     }
 
@@ -634,7 +635,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         // unfuck station's malfunction rate
         unapplyStationMalfunction()
         // send the fleet home if it's still alive
-        Misc.giveStandardReturnToSourceAssignments(fleet2, true)
+        RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, true)
     }
 
     protected fun spawnFlagship1Wreck() {
@@ -760,9 +761,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     protected fun cleanup() {
-        if (fleet1 != null) Misc.giveStandardReturnToSourceAssignments(fleet1, true)
-        if (fleet2 != null) Misc.giveStandardReturnToSourceAssignments(fleet2, true)
-        if (knightFleet != null) Misc.giveStandardReturnToSourceAssignments(knightFleet, true)
+        if (fleet1?.isAlive == true) RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet1, true)
+        if (fleet2?.isAlive == true) RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, true)
+        if (knightFleet?.isAlive == true) Misc.giveStandardReturnToSourceAssignments(knightFleet, true)
     }
 
     protected fun setupArroyoIfNeeded() {
@@ -897,18 +898,20 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
     protected fun fleet2AILoop() {
         if (fleet2 == null) return;
+        if (fleet2!!.currentAssignment != null) {
+            return;
+        }
 
         if (targetPKed) {
-            Misc.giveStandardReturnToSourceAssignments(fleet2, false)
+            RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, false)
+            return;
         }
 
         val planet = target!!.primaryEntity
-        if (fleet2!!.currentAssignment == null) {
-            fleet2!!.addAssignment(FleetAssignment.DELIVER_FUEL, planet, 60f,
-                StringHelper.getFleetAssignmentString("movingInToAttack", planet.name))
-            fleet2!!.addAssignment(FleetAssignment.HOLD, planet, 0.25f, StringHelper.getFleetAssignmentString("attacking", planet.name),
-                GenericMissionScript(this, "pk"))
-        }
+        fleet2!!.addAssignment(FleetAssignment.DELIVER_FUEL, planet, 60f,
+            StringHelper.getFleetAssignmentString("movingInToAttack", planet.name))
+        fleet2!!.addAssignment(FleetAssignment.HOLD, planet, 0.25f, StringHelper.getFleetAssignmentString("attacking", planet.name),
+            GenericMissionScript(this, "pk"))
     }
 
     override fun advanceImpl(amount: Float) {

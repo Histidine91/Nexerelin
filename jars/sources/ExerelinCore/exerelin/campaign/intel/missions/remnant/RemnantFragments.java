@@ -2,19 +2,8 @@ package exerelin.campaign.intel.missions.remnant;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
-import com.fs.starfarer.api.campaign.FleetAssignment;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.JumpPointAPI;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
-import java.awt.Color;
-
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
@@ -27,15 +16,7 @@ import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipData;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
-import com.fs.starfarer.api.impl.campaign.ids.Skills;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
 import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec;
@@ -49,16 +30,19 @@ import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.missions.BuildStation;
-import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 import exerelin.plugins.ExerelinCampaignPlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
+
+import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 
 @Log4j
 public class RemnantFragments extends HubMissionWithBarEvent implements FleetEventListener, DiscoverEntityListener {
@@ -631,7 +615,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				return true;
 			case "despawnShards":
 				if (ally != null) {
-					Misc.giveStandardReturnToSourceAssignments(ally, true);
+					RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(ally, false);
 					ally.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
 				}
 				setCurrentStage(Stage.RETURN, dialog, memoryMap);

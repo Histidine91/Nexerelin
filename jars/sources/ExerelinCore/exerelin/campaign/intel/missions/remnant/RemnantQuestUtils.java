@@ -1,16 +1,22 @@
 package exerelin.campaign.intel.missions.remnant;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.PersonImportance;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.*;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.skills.NexSkills;
 import exerelin.utilities.StringHelper;
+import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,6 +156,50 @@ public class RemnantQuestUtils {
 		}
 		picker.add(Factions.INDEPENDENT, 1);
 		return picker.pick();
+	}
+
+	public static void giveReturnToNearestRemnantBaseAssignments(CampaignFleetAPI fleet, boolean withClear) {
+		CampaignFleetAPI nearestStation = null;
+		float nearestDistSq = 999999999999f;
+		Vector2f fleetPos = fleet.getLocationInHyperspace();
+
+		for (StarSystemAPI system : Global.getSector().getStarSystems())
+		{
+			if (!system.hasTag(Tags.THEME_REMNANT)) continue;
+
+			for (CampaignFleetAPI maybeStation : system.getFleets())
+			{
+				if (!Factions.REMNANTS.equals(maybeStation.getFaction().getId()))
+					continue;
+				if (maybeStation.isStationMode())
+				{
+					float distSq = MathUtils.getDistanceSquared(system.getHyperspaceAnchor().getLocation(), fleetPos);
+					if (distSq < nearestDistSq) {
+						nearestDistSq = distSq;
+						nearestStation = maybeStation;
+					} else {
+						// skip checking the other fleets in system
+						// even if there was somehow another nexus in the system it's not going to be any closer anyway
+						continue;
+					}
+				}
+			}
+		}
+
+		if (nearestStation == null) {
+			Misc.giveStandardReturnToSourceAssignments(fleet, withClear);
+			return;
+		}
+
+		if (withClear) {
+			fleet.clearAssignments();
+		}
+
+		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, nearestStation, 1000f,
+				StringHelper.getFleetAssignmentString("returningTo", nearestStation.getName()));
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, nearestStation, 1f + 1f * (float) Math.random());
+		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, nearestStation, 1000f);
+
 	}
 	
 	public static String getString(String id) {
