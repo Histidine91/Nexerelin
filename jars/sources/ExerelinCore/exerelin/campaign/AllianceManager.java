@@ -154,21 +154,23 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         return null;
     }
-    
+
+    /**
+     * Get the alliance's alignment compatibility score with the faction. Deprecated, call {@code Alliance.getAlignmentCompatibility} instead.
+     * @param factionId
+     * @param alliance
+     * @return
+     */
+    @Deprecated
     public static float getAlignmentCompatibilityWithAlliance(String factionId, Alliance alliance)
     {
         if (alliance == null) return 0;
-        float value = 0;
-        NexFactionConfig config = NexConfig.getFactionConfig(factionId);
-		Map<Alignment, Float> alignments = config.getAlignmentValues();
-        {
-            //log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.getName());
-            //log.info("Alliance alignment: " + alliance.alignment.toString());
-            Alignment align = alliance.getAlignment();
-            if (alignments.containsKey(align))
-                value = alignments.get(align);
-        }
-        return value;
+        return alliance.getAlignmentCompatibility(factionId);
+    }
+
+    public static Alliance createAlliance(String member1, String member2)
+    {
+        return createAlliance(member1, member2, getBestAlignment(member1, member2), null);
     }
     
     public static Alliance createAlliance(String member1, String member2, Alignment type)
@@ -412,7 +414,17 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 		
         SectorManager.checkForVictory();
     }
-    
+
+    public boolean canAlly(String factionId1, String factionId2) {
+        if (alliancesByFactionId.containsKey(factionId1) || alliancesByFactionId.containsKey(factionId2)) return false;
+        if (factionId2.equals(factionId1)) return false;
+        if (INVALID_FACTIONS.contains(factionId2)) return false;
+        if (Global.getSector().getFaction(factionId1).isAtBest(factionId2, RepLevel.WELCOMING)) return false;
+
+        Alignment bestAlignment = getBestAlignment(factionId1, factionId2);
+        return bestAlignment != null;
+    }
+
     /**
      * Check all factions for eligibility to join/form an alliance.
      */
@@ -424,6 +436,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         Collections.shuffle(liveFactionIds);
         
         // first let's look at forming a new alliance
+        // note: similar to but not the same as canAlly()
         for (String factionId : liveFactionIds)
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;

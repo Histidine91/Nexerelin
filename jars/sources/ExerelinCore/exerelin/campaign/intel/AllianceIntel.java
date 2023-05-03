@@ -4,36 +4,27 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CutStyle;
-import com.fs.starfarer.api.ui.Fonts;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TextFieldAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
 @Log4j
-public class AllianceIntel extends BaseIntelPlugin {
+public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDelegate {
 	
 	public static final Object BUTTON_RENAME = new Object();
 	
@@ -45,6 +36,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 	protected String allianceName;	
 	protected boolean isDissolved = false;
 	protected transient TextFieldAPI nameField;
+	@Getter	@Setter protected StrategicAction strategicAction;
 
 	public AllianceIntel(FactionAPI faction1, FactionAPI faction2, String allianceId, String allianceName) {
 		log.info("Creating Alliance Intel");
@@ -395,6 +387,16 @@ public class AllianceIntel extends BaseIntelPlugin {
 	}
 
 	@Override
+	public StrategicAction getStrategicAction() {
+		return null;
+	}
+
+	@Override
+	public void setStrategicAction(StrategicAction action) {
+
+	}
+
+	@Override
 	protected float getBaseDaysAfterEnd() {
 		return 30;
 	}
@@ -405,6 +407,26 @@ public class AllianceIntel extends BaseIntelPlugin {
 	
 	public String getString(String id, boolean ucFirst) {
 		return StringHelper.getString("exerelin_alliances", id, ucFirst);
+	}
+
+	@Override
+	public ActionStatus getStrategicActionStatus() {
+		return ActionStatus.SUCCESS;
+	}
+
+	@Override
+	public float getStrategicActionDaysRemaining() {
+		return -1;
+	}
+
+	@Override
+	public void abortStrategicAction() {
+		// I guess we could leave or something, but no
+	}
+
+	@Override
+	public String getStrategicActionName() {
+		return getName();
 	}
 	
 	public enum UpdateType {

@@ -4,29 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import exerelin.utilities.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.awt.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Alliance 
 {
@@ -223,6 +210,41 @@ public class Alliance
 		List<String> factionNames = StringHelper.factionIdListToFactionNameList(new ArrayList<>(getMembersCopy()), true);
 		String factions = StringHelper.writeStringCollection(factionNames);
 		return name + " (" + factions + ")";
+	}
+
+	public boolean isAlignmentCompatible(String factionId) {
+		if (NexConfig.ignoreAlignmentForAlliances) return true;
+		float compat = getAlignmentCompatibility(factionId);
+		return compat >= AllianceManager.MIN_ALIGNMENT_TO_JOIN_ALLIANCE;
+	}
+
+	public float getAlignmentCompatibility(String factionId)
+	{
+		float value = 0;
+		NexFactionConfig config = NexConfig.getFactionConfig(factionId);
+		Map<Alignment, Float> alignments = config.getAlignmentValues();
+		{
+			//log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.getName());
+			//log.info("Alliance alignment: " + alliance.alignment.toString());
+			Alignment align = this.getAlignment();
+			if (alignments.containsKey(align))
+				value = alignments.get(align);
+		}
+		return value;
+	}
+
+	public boolean canJoin(FactionAPI faction) {
+		if (isAlignmentCompatible(faction.getId())) return false;
+		float relationship = getAverageRelationshipWithFaction(faction.getId());
+		if (relationship < AllianceManager.MIN_RELATIONSHIP_TO_JOIN) {
+			return false;
+		}
+		for (String memberId : members)	{
+			if (faction.isHostileTo(memberId)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public float getAverageRelationshipWithFaction(String factionId)
