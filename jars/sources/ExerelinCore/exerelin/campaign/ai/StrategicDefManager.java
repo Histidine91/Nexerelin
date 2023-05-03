@@ -154,6 +154,6 @@ public class StrategicDefManager {
     }
 
     public enum ModuleType {
-        ECONOMIC, DIPLOMATIC, MILITARY
+        ECONOMIC, DIPLOMATIC, MILITARY, EXECUTIVE
     }
 }

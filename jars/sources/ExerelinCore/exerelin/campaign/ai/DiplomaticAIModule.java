@@ -2,11 +2,11 @@ package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import exerelin.campaign.ai.concern.StrategicConcern;
-import exerelin.utilities.NexUtilsGUI;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.*;
 
 public class DiplomaticAIModule extends StrategicAIModule {
     public DiplomaticAIModule(StrategicAI ai, StrategicDefManager.ModuleType module) {
@@ -26,6 +26,18 @@ public class DiplomaticAIModule extends StrategicAIModule {
 
     @Override
     public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
+        float opad = 10;
+        float weariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
+        String wearinessStr = String.format("%.0f", weariness);
+
+        String str = DiplomacyProfileIntel.getString("warWeariness", true) + ": " + wearinessStr;
+        float colorProgress = Math.min(weariness, DiplomacyProfileIntel.WEARINESS_MAX_FOR_COLOR)/DiplomacyProfileIntel.WEARINESS_MAX_FOR_COLOR;
+        if (colorProgress > 1) colorProgress = 1;
+        if (colorProgress < 0) colorProgress = 0;
+
+        Color wearinessColor = Misc.interpolateColor(Color.WHITE, Misc.getNegativeHighlightColor(), colorProgress);
+        tooltip.addPara(str, opad, wearinessColor, wearinessStr);
+
         super.generateReport(tooltip, holder, width);
     }
 }
