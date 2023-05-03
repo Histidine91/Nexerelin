@@ -5,7 +5,7 @@ towering.png
 	by Nia Tahl, ask him for use outside Nexerelin
 	placeholder version is bash of vanilla's gamma core and beta core portraits
 	
-argent.png
+argent_*.png
 	Generated using Stable Diffusion img2img
 		using Severian Void's model https://huggingface.co/Severian-Void/Starsector-Portraits
 		input image is portrait of Ries Argent from the Trails in the Sky series, by Falcom https://kiseki.fandom.com/wiki/Ries_Argent

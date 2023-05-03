@@ -272,6 +272,13 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         market.removeCondition(Conditions.FARMLAND_RICH)
         market.removeCondition(Conditions.FARMLAND_BOUNTIFUL)
         market.removeCondition(Conditions.WATER_SURFACE)
+        market.addCondition(Conditions.HOT)
+        market.addCondition(Conditions.EXTREME_WEATHER)
+        market.addCondition(Conditions.DECIVILIZED)
+        // keep the pre-existing ruins
+        market.removeCondition(Conditions.RUINS_VAST)
+        market.removeCondition(Conditions.RUINS_EXTENSIVE)
+        market.addCondition(Conditions.RUINS_WIDESPREAD)
     }
 
     protected fun deployPK() {
@@ -380,7 +387,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         var fleet = FleetFactoryV3.createFleet(params)
         fleet1 = fleet
 
-        fleet.memoryWithoutUpdate.set("\$ignorePlayerCommRequests", true)
+        fleet.memoryWithoutUpdate.set(MemFlags.MEMORY_KEY_IGNORE_PLAYER_COMMS, true)
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE] = true
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_PURSUE_PLAYER] = true
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE] = true
@@ -428,10 +435,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         RemnantQuestUtils.enhanceTowering()
 
-        val playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().playerFleet).toFloat()
+        val playerStr = NexUtilsFleet.calculatePowerLevel(Global.getSector().playerFleet, false).toFloat()
         val capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus())
         var fp = (playerStr / 4 * 0.55f)
         fp += capBonus - 50
+        //if (hiredEndbringer) fp -= 20;  // don't scale to Endbringer's Facet
         fp = fp.coerceAtMost(300f)
         fp += 140f
 
@@ -630,6 +638,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         else {
             setCurrentStage(Stage.EPILOGUE, dialog, memoryMap)
             knightFleet!!.memoryWithoutUpdate["\$genericHail"] = true
+            knightFleet!!.memoryWithoutUpdate.unset(MemFlags.MEMORY_KEY_IGNORE_PLAYER_COMMS)
         }
 
         // unfuck station's malfunction rate
@@ -764,6 +773,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         if (fleet1?.isAlive == true) RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet1, true)
         if (fleet2?.isAlive == true) RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, true)
         if (knightFleet?.isAlive == true) Misc.giveStandardReturnToSourceAssignments(knightFleet, true)
+
+        Misc.makeNonStoryCritical(base, "nex_remSalvation")
+        Misc.makeNonStoryCritical(arroyoMarket, "nex_remSalvation")
+        Misc.makeNonStoryCritical(target, "nex_remSalvation")
     }
 
     protected fun setupArroyoIfNeeded() {

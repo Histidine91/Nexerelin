@@ -196,7 +196,7 @@ public class RemnantQuestUtils {
 		}
 
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, nearestStation, 1000f,
-				StringHelper.getFleetAssignmentString("returningTo", nearestStation.getName()));
+				StringHelper.getFleetAssignmentString("returningTo", StringHelper.getString("unknownLocation")));
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, nearestStation, 1f + 1f * (float) Math.random());
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, nearestStation, 1000f);
 

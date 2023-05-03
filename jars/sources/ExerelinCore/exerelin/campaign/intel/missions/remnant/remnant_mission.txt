@@ -5,6 +5,7 @@ Mission 1
 - bring it back to Remnant contact for money and rep
 	- or defy Remnants and keep core
 
+--------------------
 Mission 2: Recover technology ("Fragments")
 - go to abandoned station in <system>
 - just outside the system is a wrecked Luddic Path capital
@@ -32,6 +33,7 @@ Mission 2: Recover technology ("Fragments")
 		- Has to be, since he wouldn't have asked Midnight to send the player (unless Midnight knew what was going on and he didn't)
 	- either way, there's some neat stuff in the station to salvage
 
+--------------------
 Mission 3: Brawl ("Showdown")
 - early warning of Hegemony operation against Remnant station in <system>; Midnight asks for assistance
 	- cooler implementation: target and staging area are unknown; player needs to follow a fleet joining the attack forces from a core world market
@@ -48,3 +50,46 @@ Mission 3: Brawl ("Showdown")
 		- player is asked to scout the Remnant system
 		- Interact with marked point near station to summon the attack
 
+--------------------
+Mission 4: Salvation
+mission requirements: Complete Remnant mission 3, be cooperative with Midnight Dissonant, [optional: Luddic Church has at least one size 5 or larger world, OR Gilead exists?]
+
+Part 1: This boat has the means
+- Suspected rogue Remnants attack a League planet, Midnight asks you to go investigate
+- Go to planet, find that a military base was raided
+- Agent Finlay Siyavong is there, tell him Midnight sent you in order to get answers
+- It turns out a PK was stolen! >:O
+    - The Remnant fleet that did this was badly damaged and fled to the fringe
+
+Part 2: It will be done with reason from beginning to end
+- Siyavong provides two leads?
+- In one, you go to Rayan Arroyo to get info on TT-Remnant relations during the Second AI War
+    - Maybe you meet in person, and then some <interesting thing> happens? I was thinking an assassination attempt text mini-quest (by Pathers, or Remnant kill-bots)
+- For the other, try to follow the trail of the escaped Remnants
+    - In a distant system you catch up with the mastermind of the plot, Mauve Towering
+    - But it was just a decoy! After you win, he leaves a message taunting you and Midnight
+
+Part 3: One million lives, gone
+- Go back to Midnight with all the info
+- She determines that Mauve plans to PK a high priority target, identifying Gilead [or whichever Luddic planet is appropriate, e.g. in random sector] as the most likely [based on 'psuedo-human intuition' from her past contacts with Mauve]
+    - Mauve is an AIW1 veteran and was involved in clandestine communications with Tri-Tachyon during AIW2 [insert connection to Hanan Pacha incident here]
+- Just in case, issue a general warning to the Sector that "rogue parties" are planning an attack on undetermined high-value worlds
+- Player travels to the target world
+- The Knights of Ludd don't want help defending their homeworld, persuade them otherwise (effect of failure: ?? should this even have a failure state?)
+- Face Mauve's boss fleet in a final confrontation and take him down!
+    - Or evil route: Let him PK Gilead and _then_ kill him (but letting him escape causes mission failure)
+- WTB cool boss ship for this battle (preferably without relying on mods, but otherwise the SEEKER Nova or SWP sporeship might be perfect)
+    - Maybe include Omega ships in the fleet as well?
+- Do you get to recover the PK from the salvage? Teehee
+
+Extra stuff:
+- "midnight would keep your kind as pets out of misplaced sentimentality"
+- Final words: say something defiant to Mauve or insult him for having a girl's name
+- Siyavong says something like "it's only a matter of weeks, months on the outside, before an an alpha core cracks the quantum encryption. And the Remnants have plenty of alpha cores."
+- "You let the Remnants have a PK!?"
+
+----------
+Silverlight ship system
+"Aspect Seeker?" "Nightfall Dash"?
+
+Boost ship forward with afterimages, adds damper field, disable weapons and shields, launches Aspects from sides with phase effect on the Aspects
