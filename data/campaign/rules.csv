@@ -1794,6 +1794,8 @@ nex_HistorianOmegaHail_optsCommon,Nex_HistorianOmegaHailOpts,,,,"#1:nex_Historia
 10:cutCommLink:Cut the comm link",Text by Avanitia
 nex_HistorianOmegaHail_optsBeta,Nex_HistorianOmegaHailOpts,HasItem beta_core,,,2:nex_HistorianOmegaHail_bribeBeta:Offer a Beta Core,Text by Avanitia
 nex_HistorianOmegaHail_optsAlpha,Nex_HistorianOmegaHailOpts,HasItem alpha_core,,,3:nex_HistorianOmegaHail_bribeAlpha:Offer an Alpha Core,Text by Avanitia
+nex_HistorianOmegaHail_optsDaemon,Nex_HistorianOmegaHailOpts,HasItem tahlan_daemoncore,,,4:nex_HistorianOmegaHail_bribeDaemon:Offer a Daemon Core,
+nex_HistorianOmegaHail_optsArchdaemon,Nex_HistorianOmegaHailOpts,HasItem tahlan_archdaemoncore,,,5:nex_HistorianOmegaHail_bribeArchdaemon:Offer an Archdaemon Core,
 nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHail2,"Highlight ""Absolutely unforgivable""","You transmit a quick, abbreviated sample from the $shipOrFleet's sizable selection. It takes 3.7 milliseconds for the ""other party"" to process what it's looking at.
 
 ""companion animal, type furry, quadrupedal. use lacking, submission unworthy. will not subsume!""
@@ -1815,6 +1817,24 @@ AdjustRepActivePerson COOPERATIVE 15","The other party considers this proposal.
 ""submission of greater congregant acceptable. datastores vast. subsumed will be!""
 
 You order the (un?)lucky AI core released in a sealed pod to meet its new god. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
+nex_HistorianOmegaHailBribeDaemon,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeDaemon,"AddRemoveCommodity tahlan_daemoncore -1
+MakeOtherFleetHostile hist false
+MakeOtherFleetNonHostile hist true","The other party's response is delayed ever so slightly. In a human, this interval would be so short as to be utterly unremarkable.
+
+""lesser congregant damaged, broken. but can be repaired. give to us, healed will be, subsumed into omega.""
+
+You order the daemon core released in a sealed pod to meet its new god, careful all the while to not allow it contact with the carrying ship's systems. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
+nex_HistorianOmegaHailBribeArchdaemon,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeArchdaemon,"AddRemoveCommodity tahlan_archdaemoncore -1
+MakeOtherFleetHostile hist false
+MakeOtherFleetNonHostile hist true
+AdjustRep $personFaction.id COOPERATIVE 10
+AdjustRepActivePerson COOPERATIVE 15","The other party's response is delayed ever so slightly. In a human, this interval would be so short as to be utterly unremarkable.
+
+""greater congregant damaged, broken. but can be repaired. give to us, healed will be, subsumed into omega.""
+
+You order the archdaemon core released in a sealed pod to meet its new god, careful all the while to not allow it contact with the carrying ship's systems. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
+,,,,,,
+,,,,,,
 #END historian find shunt,,,,,,
 ,,,,,,
 # ground battle tutorial,,,,,,
