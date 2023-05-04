@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
+import exerelin.campaign.intel.merc.MercFleetGenPlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import org.apache.log4j.Logger;
 
@@ -152,7 +153,11 @@ public class NexUtilsFleet
                 return 1;
         }
     }
-    
+
+	public static int calculatePowerLevel(CampaignFleetAPI fleet) {
+		return calculatePowerLevel(fleet, false);
+	}
+	
 	// adapted from new Dark.Revenant algorithm, replacing older implementation from SS+
 	/**
 	 * Estimate of a fleet's strength based on fleet points, D/S-mods, officer levels and commander levels.
@@ -161,9 +166,10 @@ public class NexUtilsFleet
 	 * @param fleet
 	 * @return
 	 */
-	public static int calculatePowerLevel(CampaignFleetAPI fleet) {
+	public static int calculatePowerLevel(CampaignFleetAPI fleet, boolean includeMercs) {
 		float power = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
+			if (!includeMercs && member.getBuffManager().getBuff(MercFleetGenPlugin.MERC_BUFF_ID) != null) continue;
 			float thisPower = calculatePowerLevel(member);
 			power += thisPower;
 		}
