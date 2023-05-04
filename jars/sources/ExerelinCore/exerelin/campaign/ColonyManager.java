@@ -1179,6 +1179,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		if (Global.getSector().getClock().getCycle() < MIN_CYCLE_FOR_EXPEDITIONS)
 			return;
+
+		if (Global.getSettings().getBoolean("nex_colonyExpeditionOnlyAfterGalatia")) {
+			boolean completed = !SectorManager.getManager().isCorvusMode() || Global.getSector().getMemoryWithoutUpdate().getBoolean("$gaATG_missionCompleted");
+			if (!completed) return;
+		}
 		
 		colonyExpeditionProgress += days;
 		float interval = NexConfig.colonyExpeditionInterval;

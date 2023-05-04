@@ -43,6 +43,7 @@
 	"nex_disruptMissionIntervalRateMult":0.125,
 	"nex_pirateRageIncrement":0.04,
 	"nex_expeditionDelayPerExistingColony":15,
+	"nex_colonyExpeditionOnlyAfterGalatia":false,
 	"nex_faction_respawn_cooldown":150,
 	"nex_revengeInvasionPointsToSpawn":125,
 	# if false, other factions will not attack Templars; recommend combining with "canInvade" tag in Templars' faction config to make them not invade others
