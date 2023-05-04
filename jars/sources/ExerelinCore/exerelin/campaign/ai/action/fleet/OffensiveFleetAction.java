@@ -34,8 +34,14 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
             return false;
         }
 
+        InvasionFleetManager.EventType type = getEventType();
+        // always invade rather than raid derelicts
+        if (target.getFactionId().equals("nex_derelict")
+                && (type == InvasionFleetManager.EventType.RAID || type == InvasionFleetManager.EventType.SAT_BOMB))
+            type = InvasionFleetManager.EventType.INVASION;
+
         OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(origin, target,
-                getEventType(), 1, getFleetPoolRequisitionParams());
+                type, 1, getFleetPoolRequisitionParams());
         if (intel != null)
         {
             InvasionFleetManager.getManager().modifySpawnCounterV2(ai.getFactionId(), -InvasionFleetManager.getInvasionPointCost(intel));

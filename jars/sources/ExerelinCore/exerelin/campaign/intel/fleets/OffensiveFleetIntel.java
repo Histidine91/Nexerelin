@@ -63,6 +63,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean intelQueuedOrAdded;
 	protected boolean outcomeUpdateSent;
 	protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
+	@Getter @Setter protected int playerFee;
 	protected float fp;
 	protected float baseFP;
 	protected float orgDur;
@@ -92,6 +93,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		
 		public boolean isFailed() {
 			return this == TASK_FORCE_DEFEATED || this == FAIL || this == RETREAT_BEFORE_ACTION;
+		}
+
+		public boolean isCancelled() {
+			return this == MARKET_NO_LONGER_EXISTS || this == NOT_ENOUGH_REACHED || this == NO_LONGER_HOSTILE || this == OTHER;
 		}
 	}
 	
@@ -287,7 +292,12 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 		reportRaid(this);
 	}
-	
+
+	@Override
+	protected void notifyEnding() {
+		refundPlayerFeeIfNeeded();
+	}
+
 	@Override
 	public boolean shouldSendUpdate() {
 		// FIXME: super version always sends updates if player is targeted,
@@ -507,6 +517,22 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		tags.add(getFaction().getId());
 		tags.add(target.getFactionId());
 		return tags;
+	}
+
+	protected void refundPlayerFeeIfNeeded() {
+		// 0 = organize; 1 = assemble; 2 = travel, 3 = action
+		if (playerFee <= 0) return;
+		if (outcome != null && !outcome.isCancelled()) return;
+
+		float refundMult = 0;
+		if (currentStage <= 1) refundMult = 1;
+		else if (currentStage == 2) refundMult = 0.67f;
+		else if (currentStage == 3) refundMult = 0.33f;
+
+		if (refundMult <= 0) return;
+		int refund = Math.round(playerFee * refundMult);
+		log.info(String.format("Refunding %s credits for action cancellation (mult %.1f)", refund, refundMult));
+		Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
 	}
 		
 	public void terminateEvent(OffensiveOutcome outcome)

@@ -8,15 +8,9 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage.MEMORY_KEY_RECENT;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage.STABILIZE_INTERVAL;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -32,13 +26,16 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage.MEMORY_KEY_RECENT;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage.STABILIZE_INTERVAL;
 
 public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	
@@ -53,6 +50,7 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	protected MarketAPI target;
 	protected EndReason endReason;
 	protected int cargoSize;
+	@Getter	@Setter	protected int playerFee;
 	protected boolean assembling = true;
 	protected float daysToLaunch;
 	protected final float daysToLaunchFixed;
@@ -351,8 +349,14 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 		
 		targetFactionId = target.getFactionId();
 	}
-		
-	public void init() {		
+
+	@Override
+	protected void notifyEnding() {
+		super.notifyEnding();
+		refundPlayerFeeIfNeeded();
+	}
+
+	public void init() {
 		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {
 
@@ -396,6 +400,19 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 			endEvent(EndReason.HOSTILE);
 		else if (!target.isInEconomy())
 			endEvent(EndReason.TARGET_DESTROYED);
+	}
+
+	protected void refundPlayerFeeIfNeeded() {
+		if (playerFee <= 0) return;
+		if (endReason != null && !endReason.isCancelled()) return;
+
+		float refundMult = 0.75f;
+		if (assembling) refundMult = 1;
+
+		if (refundMult <= 0) return;
+		int refund = Math.round(playerFee * refundMult);
+		log.info(String.format("Refunding %s credits for action cancellation (mult %.1f)", refund, refundMult));
+		Global.getSector().getPlayerFleet().getCargo().getCredits().add(refund);
 	}
 	
 	/**
@@ -525,6 +542,10 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	}
 	
 	public enum EndReason {
-		FAILED_TO_SPAWN, DEFEATED, TARGET_DESTROYED, HOSTILE, COMPLETE, OTHER
+		FAILED_TO_SPAWN, DEFEATED, TARGET_DESTROYED, HOSTILE, COMPLETE, OTHER;
+
+		public boolean isCancelled() {
+			return this == TARGET_DESTROYED || this == HOSTILE || this == OTHER;
+		}
 	}
 }

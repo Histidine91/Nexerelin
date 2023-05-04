@@ -1,18 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import java.util.List;
-import java.util.Map;
-
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
@@ -41,31 +30,22 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.invasion.InvasionIntel;
-import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
+import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.raid.BaseStrikeIntel;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.*;
 import exerelin.utilities.NexUtilsMarket.CampaignEntityPickerWrapper;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /**
  * Handles fleet requests: spawns fleets with specific origins and objectives based on their targets.
@@ -650,6 +630,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			setFP(intel.calcFP());
 			dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
 			Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());
+			intel.setPlayerFee(Math.round(cost));
 		}
 		else {
 			OffensiveFleetIntel intel;
@@ -673,6 +654,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				default:
 					return false;
 			}
+			intel.setPlayerFee(Math.round(cost));
 			intel.init();
 			if (fleetType == FleetType.INVASION) {
 				((InvasionIntel)intel).setMarinesTotal((int)(marines));
