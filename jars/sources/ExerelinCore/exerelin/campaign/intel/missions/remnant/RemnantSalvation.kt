@@ -30,6 +30,7 @@ import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch.MarketRequirement
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode
+import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
@@ -39,7 +40,6 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.DelayedActionScript
 import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.combat.entities.terrain.Planet
 import com.fs.starfarer.loading.specs.PlanetSpec
 import exerelin.campaign.DiplomacyManager
 import exerelin.campaign.PlayerFactionStore
@@ -55,7 +55,6 @@ import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
 import java.awt.Color
 import kotlin.math.abs
-import kotlin.math.pow
 
 
 open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
@@ -88,7 +87,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.devAddTriggers()
         @JvmStatic fun devAddTriggers() {
             var mission = Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_ref"] as RemnantSalvation
-            mission.addAdditionalTriggersDev()
+            val argent = RemnantQuestUtils.getOrCreateM4LuddicKnight();
+            argent.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_m4Knight"));
         }
 
         // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.pk()
@@ -854,6 +854,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         setCurrentStage(Stage.COMPLETED, dialog, memoryMap)
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_missionDone"] = true
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_missionCompleted"] = true
+
+        var logString = RemnantQuestUtils.getString("salvation_playthroughLog_line")
+        logString = StringHelper.substituteToken(logString, "\$target", target!!.name)
+        logString = StringHelper.substituteToken(logString, "\$towering", RemnantQuestUtils.getOrCreateTowering().nameString)
+        PlaythroughLog.getInstance().addEntry(logString, true)
     }
 
     protected fun completeMissionBadEnd(dialog : InteractionDialogAPI?, memoryMap: Map<String, MemoryAPI>?) {

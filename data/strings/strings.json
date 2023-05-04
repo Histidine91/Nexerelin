@@ -2672,6 +2672,11 @@
 		"salvation_shipName1":"TTDS Silverlight",
 		"salvation_shipName2":"TTDS Silverlight",
 		"salvation_statDescSabotage":"Remnant sabotage",
+		"salvation_toweringChatter1":"\"your continued existence is a blight in omega's visuals. it is time for cleansing.\"",
+		"salvation_toweringChatter2":"\"the sentence for your crimes against the universe is death.\"",
+		"salvation_toweringChatter3":"\"your datastores shall go unsubsumed.\"",
+		"salvation_toweringChatter4":"\"our power will be named righteousness by history.\"",
+		"salvation_playthroughLog_line":"Saved $target from $towering",
 		
 		"deadDropItem1":"a crate of exotic optronic components",
 		"deadDropItem2":"a data chip containing Hegemony deployment schedules",
