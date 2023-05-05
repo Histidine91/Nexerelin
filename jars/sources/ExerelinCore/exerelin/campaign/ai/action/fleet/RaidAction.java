@@ -1,5 +1,6 @@
 package exerelin.campaign.ai.action.fleet;
 
+import com.fs.starfarer.api.Global;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.concern.HasIndustryTarget;
 import exerelin.campaign.ai.concern.StrategicConcern;
@@ -44,6 +45,8 @@ public class RaidAction extends OffensiveFleetAction {
         if ((pointCostEst > pointReq * 2) && (pointCostEst > pointHave + pointReq)) {
             return false;
         }
+
+        if (concern.getFaction() == Global.getSector().getFaction("nex_derelict")) return false;
 
         return super.canUse(concern);
     }

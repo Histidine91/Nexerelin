@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.action.BaseStrategicAction;
 import exerelin.campaign.ai.action.EnterAllianceAction;
@@ -11,6 +12,7 @@ import exerelin.campaign.ai.action.ShimAction;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtils;
 
 import java.util.*;
@@ -85,6 +87,7 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             List<StrategicAction> actions = temp.getUsableActions();
             for (StrategicAction action : actions) {
                 float prio = action.getPriorityFloat();
+                if (SAIConstants.DEBUG_LOGGING && ExerelinModPlugin.isNexDev) Global.getLogger(this.getClass()).info(String.format("  Shimmed action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));
                 if (prio > bestPrio) {
                     bestPrio = prio;
                     bestAction = action;

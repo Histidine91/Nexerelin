@@ -3,6 +3,7 @@ package exerelin.campaign.ai;
 public class SAIConstants {
 
     @Deprecated public static boolean AI_ENABLED = true;
+    public static boolean DEBUG_LOGGING = true;
 
     public static float[] BASE_INTERVAL = {19f, 21f};
     public static float INTERVAL_PER_LIVE_FACTION = 0.5f;

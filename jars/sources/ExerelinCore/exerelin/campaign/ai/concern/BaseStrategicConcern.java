@@ -187,7 +187,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     @Override
     public StrategicAction fireBestAction() {
-        log.info(String.format("Picking action for concern %s", getName()));
+        if (SAIConstants.DEBUG_LOGGING && ExerelinModPlugin.isNexDev) log.info(String.format("Picking action for concern %s", getName()));
         List<StrategicAction> actions = getUsableActions();
         Collections.sort(actions);
 
@@ -239,7 +239,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             action.updatePriority();
             modifyActionPriority(action);
             float priority = action.getPriorityFloat();
-            if (ExerelinModPlugin.isNexDev) {
+            if (ExerelinModPlugin.isNexDev && SAIConstants.DEBUG_LOGGING) {
                 log.info(String.format("  Action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));
             }
             if (priority < SAIConstants.MIN_ACTION_PRIORITY_TO_USE) continue;

@@ -433,6 +433,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		if (attacker.getCustom() == null || !attacker.getCustom().has(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA))
 			return false;
+
+		if (defender == Global.getSector().getFaction("nex_derelict")) return false;
 		
 		boolean canBombard = false;
 		if (attacker.getCustom() != null && attacker.getCustom().has(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA))
