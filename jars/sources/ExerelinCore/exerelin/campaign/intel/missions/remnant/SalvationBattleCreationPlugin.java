@@ -3,7 +3,6 @@ package exerelin.campaign.intel.missions.remnant;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.fleet.FleetGoal;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.combat.BattleCreationPluginImpl;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
@@ -82,34 +81,55 @@ public class SalvationBattleCreationPlugin extends BattleCreationPluginImpl {
 
 	public static class ToweringChatterPlugin extends BaseEveryFrameCombatPlugin {
 		public static final int NUM_LINES = 4;
+		public static final int NUM_LINES_DEATH = 2;
 		public static final Color MAUVE = new Color(212, 115, 212, 255);
 
 		protected CombatEngineAPI engine;
+		protected IntervalUtil interval = new IntervalUtil(42, 48);
+		protected IntervalUtil intervalDeath = new IntervalUtil(6f, 7f);
 		protected int linesRead = 0;
-		protected IntervalUtil interval = new IntervalUtil(27, 33);
+		protected int deathLinesRead = 0;
+		protected ShipAPI flag;
+
 
 		@Override
 		public void advance(float amount, List<InputEventAPI> events) {
 			if (engine == null) return;
 			if (engine.isPaused()) return;
 
-			ShipAPI flag = getToweringShip();
+			if (flag == null) flag = getToweringShip();
 			if (flag == null) return;
-			if (!flag.isAlive()) {
-				engine.removePlugin(this);
+			if (flag.isAlive()) {
+				if (flag.areAnyEnemiesInRange()) processLiveChatter(flag, amount);
+			} else {
+				processDeathChatter(flag, amount);
+			}
+		}
+
+		protected void processDeathChatter(ShipAPI ship, float amount) {
+			if (deathLinesRead >= NUM_LINES_DEATH) {
 				return;
 			}
+			intervalDeath.advance(amount);
+			if (intervalDeath.intervalElapsed()) {
+				deathLinesRead++;
 
+				String line = RemnantQuestUtils.getString("salvation_toweringChatter_death" + deathLinesRead);
+				printMessage(ship, line, MAUVE, true);
+			}
+		}
+
+		protected void processLiveChatter(ShipAPI ship, float amount) {
+			if (linesRead >= NUM_LINES) {
+				return;
+			}
+			//Global.getLogger(this.getClass()).info(String.format("Interval at %s, needed %s", interval.getElapsed(), interval.getIntervalDuration()));
 			interval.advance(amount);
 			if (interval.intervalElapsed()) {
 				linesRead++;
 
 				String line = RemnantQuestUtils.getString("salvation_toweringChatter" + linesRead);
-				printMessage(flag.getFleetMember(), line, MAUVE, true);
-
-				if (linesRead >= NUM_LINES) {
-					engine.removePlugin(this);
-				}
+				printMessage(ship, line, MAUVE, true);
 			}
 		}
 
@@ -117,45 +137,38 @@ public class SalvationBattleCreationPlugin extends BattleCreationPluginImpl {
 			return engine.getFleetManager(FleetSide.ENEMY).getShipFor(RemnantQuestUtils.getOrCreateTowering());
 		}
 
-		public void printMessage(FleetMemberAPI member, String message, Color textColor, boolean withColon) {
-			String name = getShipName(member, true, false);
+		public void printMessage(ShipAPI ship, String message, Color textColor, boolean withColon) {
+			String name = getShipName(ship, true, false);
 			if (withColon) {
-				engine.getCombatUI().addMessage(1, member, getShipNameColor(member), name, Misc.getTextColor(), ": ", textColor, message);
+				engine.getCombatUI().addMessage(1, ship, getShipNameColor(ship), name, Misc.getTextColor(), ": ", textColor, message);
 			} else {
-				engine.getCombatUI().addMessage(1, member, getShipNameColor(member), name, textColor, message);
+				engine.getCombatUI().addMessage(1, ship, getShipNameColor(ship), name, textColor, message);
 			}
 		}
 
-		protected Color getShipNameColor(FleetMemberAPI member) {
-			if (member.isAlly()) return Misc.getHighlightColor();
-			ShipAPI ship = getShipForMember(member);
+		protected Color getShipNameColor(ShipAPI ship) {
+			if (ship.isAlly()) return Misc.getHighlightColor();
 			if (ship != null && ship.isAlly()) return Misc.getHighlightColor();
 
-			if (ship.getOwner() == 1) return Global.getSettings().getColor("textEnemyColor");
+			if (ship.getOwner() == 1 || ship.getFleetMember().getOwner() == 1)
+				return Global.getSettings().getColor("textEnemyColor");
 			return Global.getSettings().getColor("textFriendColor");
 		}
 
-		protected ShipAPI getShipForMember(FleetMemberAPI member)
-		{
-			ShipAPI ship = engine.getFleetManager(FleetSide.PLAYER).getShipFor(member);
-			if (ship == null) ship = engine.getFleetManager(FleetSide.ENEMY).getShipFor(member);
-			return ship;
-		}
-
-		protected String getShipName(FleetMemberAPI member, boolean includeClass, boolean useOfficerName)
+		protected String getShipName(ShipAPI ship, boolean includeClass, boolean useOfficerName)
 		{
 			String shipName = "";
-			if (member.isFighterWing()) {
-				shipName = member.getHullSpec().getHullName();
+			if (ship.isFighter()) {
+				shipName = ship.getHullSpec().getHullName();
 				// not proper way for some languages but good enough in that we're never actually using it
 				if (includeClass) shipName += " " + StringHelper.getString("fighterWingShort");
 			}
 			else {
-				if (useOfficerName && !member.getCaptain().isDefault()) {
-					return member.getCaptain().getNameString();
+				if (useOfficerName && !ship.getCaptain().isDefault()) {
+					return ship.getCaptain().getNameString();
 				}
-				shipName = member.getShipName();
-				if (includeClass) shipName += " (" + member.getHullSpec().getHullNameWithDashClass() + ")";
+				shipName = ship.getName();
+				if (includeClass) shipName += " (" + ship.getHullSpec().getHullNameWithDashClass() + ")";
 			}
 
 			return shipName;
@@ -164,6 +177,8 @@ public class SalvationBattleCreationPlugin extends BattleCreationPluginImpl {
 		@Override
 		public void init(CombatEngineAPI engine) {
 			this.engine = engine;
+			interval.forceCurrInterval(2);
+			intervalDeath.forceCurrInterval(0.1f);
 		}
 	}
 }

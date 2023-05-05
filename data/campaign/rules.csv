@@ -3146,9 +3146,9 @@ AdjustRep $faction.id COOPERATIVE 20
 AdjustRepActivePerson COOPERATIVE 5
 unset $entity.genericHail
 unset $entity.genericHail_openComms","""Lay-$playerBrotherOrSister $playerLastName,"" $personLastName smiles beatifically. ""Your deeds in the defense of $nex_remSalvation_targetName, the faithful and Mother Church are without peer. Truly, you are elevated in the eyes of God and the prophet Ludd.""",nex_remSalvation_epilogueCommission2:Thank $himOrHer politely for the praise,TODO: Luddic commission version with medal; probably requires knowledge of Luddic leadership in Starsector 0.96
-nex_remSalvation_epilogueCommission2,DialogOptionSelected,$option == nex_remSalvation_epilogueCommission2,FireBest Nex_RemSalvation_EpilogueCommissionOpts,"""The Synod has come to a decision with remarkable celerity. You shall be rewarded as a hero of the Church deserves. Please report to the Mount Palace in twenty-four hours for the ceremony.""",,
-nex_remSalvation_epilogueCommissionOpts,Nex_RemSalvation_CommissionOpts,,,,"cutCommLinkPolite:""This is a great honor. I'll be there.""",
-nex_remSalvation_epilogueCommissionOpts_alreadyThere,Nex_RemSalvation_CommissionOpts,"$entity.hasMarket
+#nex_remSalvation_epilogueCommission2,DialogOptionSelected,$option == nex_remSalvation_epilogueCommission2,FireBest Nex_RemSalvation_EpilogueCommissionOpts,"""The Synod has come to a decision with remarkable celerity. You shall be rewarded as a hero of the Church deserves. Please report to the Mount Palace in twenty-four hours for the ceremony.""",,
+#nex_remSalvation_epilogueCommissionOpts,Nex_RemSalvation_CommissionOpts,,,,"cutCommLinkPolite:""This is a great honor. I'll be there.""",
+#nex_remSalvation_epilogueCommissionOpts_alreadyThere,Nex_RemSalvation_CommissionOpts,"$entity.hasMarket
 $market.id == $nex_remSalvation_targetId",,,"nex_remSalvation_epilogueCeremony1:""This is a great honor. I'll be there.""",
 nex_remSalvation_epilogueCeremony1,DialogOptionSelected,$option == nex_remSalvation_epilogueCeremony1,,You take a shuttle down to the Mount Palace at the appointed time.,nex_remSalvation_epilogueCeremony2:Continue,"TODO: need variations for habitable and non-habitable worlds, maybe Gilead specifically as well"
 nex_remSalvation_epilogueCeremony2,DialogOptionSelected,$option == nex_remSalvation_epilogueCeremony2,"ShowVisual ""graphics/illustrations/luddic_church.jpg""","A few hours after arrival, you step into the great hallway at the center of the palace.
@@ -3173,6 +3173,12 @@ nex_remSalvation_epilogue2,DialogOptionSelected,"$option == nex_remSalvation_epi
 Call $global.nex_remSalvation_ref complete","""Swift action, I expect. The Sector has seen that these demons are not a distant memory of the past, but a present, mortal danger to everything we whole dear. Perhaps,"" $hisOrHer face hardens, ""the Hegemony will not be so slack this time in purging the threat from the Sector.
 
 ""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, you would do the Church honor by joining us, captain.""",cutCommLinkPolite:Wish $himOrHer well and cut the comm link,
+nex_remSalvation_epilogue2Commission,DialogOptionSelected,"$option == nex_remSalvation_epilogue2
+!$global.nex_remSalvation_toldKnightsAboutMidnight
+$nex_remSalvation_playerFactionId == luddic_church score:100","AddStoryPoints 2
+Call $global.nex_remSalvation_ref complete","""Swift action, I expect. The Sector has seen that these demons are not a distant memory of the past, but a present, mortal danger to everything we whole dear. Perhaps,"" $hisOrHer face hardens, ""the Hegemony will not be so slack this time in purging the threat from the Sector.
+
+""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, I would be honored if you would join me, captain.""",cutCommLinkPolite:Wish $himOrHer well and cut the comm link,
 nex_remSalvation_epilogue2Midnight,DialogOptionSelected,"$option == nex_remSalvation_epilogue2
 $global.nex_remSalvation_toldKnightsAboutMidnight ","AddStoryPoints 2
 Call $global.nex_remSalvation_ref complete","$personLastName sighs and rests $hisOrHer head on a hand. ""I cannot truthfully say. We have accepted the aid of demons to fight other demons. What does it mean, and where do we go from here? Is this a message from Ludd that will be revealed to us in time?

@@ -103,7 +103,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
 
     public void detachShardsIfNeeded(ShipAPI ship) {
         if (ship == null) return;
-        boolean wantLaunch = ship.areSignificantEnemiesInRange() || ship.getHardFluxLevel() > 0.2f;
+        boolean wantLaunch = ship.areSignificantEnemiesInRange() || ship.getHardFluxLevel() > 0.4f;
         if (wantLaunch) {
             CombatEngineAPI engine = Global.getCombatEngine();
             for (ShipAPI module : ship.getChildModulesCopy()) {
