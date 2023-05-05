@@ -113,7 +113,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		
 		for (int i=0; i<NUM_OPTS; i++) {
 			final int index = i;
-			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_startingRelations_" + i) 
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_startingRelations_" + i, buttonEntries)
 			{
 				@Override
 				public void onToggleImpl() {
@@ -121,10 +121,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				}
 			};
 			buttonEntries.add(radio);
-		}
-		for (RadioButtonEntry entry : buttonEntries) {
-			entry.buttons = buttonEntries;
-			plugin.addButton(entry);
+			plugin.addButton(radio);
 		}
 	}
 	
@@ -162,7 +159,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		
 		for (int i=0; i<NUM_OPTS; i++) {
 			final int index = i;
-			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_factionRespawn_" + i) 
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_factionRespawn_" + i, buttonEntries)
 			{
 				@Override
 				public void onToggleImpl() {
@@ -171,10 +168,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				}
 			};
 			buttonEntries.add(radio);
-		}
-		for (RadioButtonEntry entry : buttonEntries) {
-			entry.buttons = buttonEntries;
-			plugin.addButton(entry);
+			plugin.addButton(radio);
 		}
 	}
 	
@@ -204,7 +198,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		
 		for (int i=0; i<NUM_OPTS; i++) {
 			final int index = i;
-			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_factionWeights_" + i) 
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_factionWeights_" + i, buttonEntries)
 			{
 				@Override
 				public void onToggleImpl() {
@@ -213,10 +207,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				}
 			};
 			buttonEntries.add(radio);
-		}
-		for (RadioButtonEntry entry : buttonEntries) {
-			entry.buttons = buttonEntries;
-			plugin.addButton(entry);
+			plugin.addButton(radio);
 		}
 	}
 	
@@ -370,19 +361,16 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		
 		for (int i=0; i<ExerelinSetupData.NUM_DMOD_LEVELS; i++) {
 			final int index = i;
-			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_startingDMods_" + i) 
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_startingDMods_" + i, buttonEntries)
 			{
 				@Override
 				public void onToggleImpl() {
 					data.dModLevel = index;
-					Global.getLogger(this.getClass()).info("D-mod level: " + data.dModLevel);
+					//Global.getLogger(this.getClass()).info("D-mod level: " + data.dModLevel);
 				}
 			};
 			buttonEntries.add(radio);
-		}
-		for (RadioButtonEntry entry : buttonEntries) {
-			entry.buttons = buttonEntries;
-			plugin.addButton(entry);
+			plugin.addButton(radio);
 		}
 	}
 	
@@ -411,7 +399,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		
 		for (int i=0; i<NUM_OPTS; i++) {
 			final int index = i;
-			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_homeworldPickMode_" + i) 
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_homeworldPickMode_" + i, buttonEntries)
 			{
 				@Override
 				public void onToggleImpl() {
@@ -419,10 +407,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				}
 			};
 			buttonEntries.add(radio);
-		}
-		for (RadioButtonEntry entry : buttonEntries) {
-			entry.buttons = buttonEntries;
-			plugin.addButton(entry);
+			plugin.addButton(radio);
 		}
 	}
 	

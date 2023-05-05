@@ -10,10 +10,11 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
-import java.awt.Color;
+import lombok.RequiredArgsConstructor;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 
 public class NexUtilsGUI {
 		
@@ -98,7 +99,25 @@ public class NexUtilsGUI {
 			tooltip.addImageWithText(2);
 		}
 	}
-	
+
+	/**
+	 * Generates a panel where an image will be shown on the left end, with (optional) text to its right. Doesn't need to be a real image,
+	 * can be a shipList for instance (or indeed just left empty).
+	 * @param external
+	 * @param plugin
+	 * @param width
+	 * @param height
+	 * @param text
+	 * @param textWidth
+	 * @param textPad
+	 * @param imagePath
+	 * @param imageWidth
+	 * @param pad
+	 * @param textColor
+	 * @param largeFont
+	 * @param tooltip
+	 * @return A {@code CustomPanelGenResult} with the image holder as the first element and the text holder as the second.
+	 */
 	public static CustomPanelGenResult addPanelWithFixedWidthImage(CustomPanelAPI external,
 			CustomUIPanelPlugin plugin, float width, float height, 
 			String text, float textWidth, float textPad, String imagePath, float imageWidth, 

@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCPopulateCustomPanelOptions.initRadioButton;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -22,13 +21,12 @@ import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
+import java.awt.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
+import static com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCPopulateCustomPanelOptions.initRadioButton;
 
 public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 		
@@ -196,7 +194,7 @@ public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 		for (int i=0; i<3; i++) {
 			final int index = i;
 			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), 
-					"nex_enableFaction_" + factionId + " " + i) 
+					"nex_enableFaction_" + factionId + " " + i, buttonEntries)
 			{
 				@Override
 				public void onToggleImpl() {
@@ -207,10 +205,7 @@ public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 				}
 			};
 			buttonEntries.add(radio);
-		}
-		for (InteractionDialogCustomPanelPlugin.RadioButtonEntry entry : buttonEntries) {
-			entry.buttons = buttonEntries;
-			plugin.addButton(entry);
+			plugin.addButton(radio);
 		}
 	}
 }

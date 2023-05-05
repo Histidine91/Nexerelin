@@ -80,9 +80,20 @@ public class InteractionDialogCustomPanelPlugin extends FramedCustomPanelPlugin 
 	public static class RadioButtonEntry extends ButtonEntry {
 		
 		public List<RadioButtonEntry> buttons;
-		
+
+		/**
+		 * Use the other constructor, the one that specifies the buttons.
+		 * @param button
+		 * @param id
+		 */
+		@Deprecated
 		public RadioButtonEntry(ButtonAPI button, String id) {
 			super(button, id);
+		}
+
+		public RadioButtonEntry(ButtonAPI button, String id, List<RadioButtonEntry> buttons) {
+			super(button, id);
+			this.buttons = buttons;
 		}
 		
 		@Override
