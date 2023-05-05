@@ -530,16 +530,20 @@ public class MiningHelperLegacy {
 		float count = wingSpec.getNumFighters();
 		return strength * count;
 	}
+
+	public static float getMiningCRMult(FleetMemberAPI member) {
+		float cr = member.getRepairTracker().getCR();
+		return cr / 0.7f;
+	}
 	
 	public static float getShipMiningStrength(FleetMemberAPI member, boolean useCRMod)
 	{
 		if (member.isMothballed()) return 0;
 		
-		float crModifier = 1;
+		float crMult = 1;
 		if (useCRMod)
 		{
-			float cr = member.getRepairTracker().getCR();
-			crModifier = cr / 0.7f;
+			crMult = getMiningCRMult(member);
 		}
 		
 		ShipVariantAPI variant = member.getVariant();
@@ -553,7 +557,7 @@ public class MiningHelperLegacy {
 				strength += getVariantMiningStrength(moduleVar);
 		}
 		
-		return strength * crModifier;
+		return strength * crMult;
 	}
 	
 	public static float getFleetMiningStrength(CampaignFleetAPI fleet)

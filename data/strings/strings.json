@@ -148,6 +148,8 @@
 		"destroyer":"destroyer",
 		"cruiser":"cruiser",
 		"capital_ship":"capital ship",
+		"capital_ship_short":"capital",
+		"weapon":"weapon",
 		
 		"unknownLocation":"unknown location",
 		"anUnknownLocation":"an unknown location",
@@ -1720,6 +1722,7 @@
 		"miningAccident":"mining accident",
 		"miningReport":"mining report",
 		"miningStrength":"mining strength",
+		"miningStrengthWithCR":"mining strength %s (CR multiplier %s)",
 		"planetType":"type",
 		"resourcesExtracted":"resources extracted",
 		"theAsteroid":"the asteroid",
@@ -1742,6 +1745,15 @@
 		"cargoFull":"Cargo overloaded",
 		
 		"optionOpenCargo":"Open cargo screen",
+		
+		"miningToolsHeader_name":"Name",
+		"miningToolsHeader_strength":"Str",
+		"miningToolsHeader_size":"Size",
+		"miningToolsHeader_type":"Type",
+		"miningToolsHeader_manufacturer":"Design type",
+		"miningToolsHeader_opCost":"OP",
+		"miningToolsHeader_supplyCost":"Supl.",
+		"fleetHeader":"Mining ships in fleet"
 	},
 	
 	"exerelin_ngc":{

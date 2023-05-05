@@ -416,7 +416,7 @@ nex_miningOptionCooldown,PopulateOptions,"$nex_canMine
 $player.nex_miningCooldown","SetTooltip nex_miningPreview ""On cooldown, please wait a day before mining again.""
 SetEnabled nex_miningPreview false",,,
 ,,,,,,
-nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"Nex_PrintMiningInfo planet
+nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"Nex_PrintMiningInfoV2 planet
 FireAll nex_MiningOption",,,
 nex_miningMineOption,nex_MiningOption,,"SetEnabled nex_miningStart true
 SetShortcut nex_miningStart RETURN
@@ -428,9 +428,9 @@ nex_miningMineOptionNoMiners,nex_MiningOption,$player.miningStrength <= 0,"SetTo
 SetEnabled nex_miningStart false",,,
 nex_miningMineOptionPursued,nex_MiningOption,HostileFleetNearbyAndAware,"SetTooltip nex_miningStart ""Cannot mine while a hostile fleet is tracking your movements.""
 SetEnabled nex_miningStart false",,,
-nex_miningFleetInfo,DialogOptionSelected,$option == nex_miningFleetInfo,"Nex_PrintMiningInfo fleet
+nex_miningFleetInfo,DialogOptionSelected,$option == nex_miningFleetInfo,"Nex_PrintMiningInfoV2 fleet
 FireAll nex_miningOption",,,
-nex_miningListTools,DialogOptionSelected,$option == nex_miningListTools,"Nex_PrintMiningInfo tools
+nex_miningListTools,DialogOptionSelected,$option == nex_miningListTools,"Nex_PrintMiningInfoV2 tools
 FireAll nex_miningOption",,,
 nex_miningStart,DialogOptionSelected,"$nex_canMine
 $option == nex_miningStart","$player.nex_miningCooldown = true 1
@@ -438,9 +438,11 @@ Nex_GetMiningResults 1
 ShowDefaultVisual",,"# handled in code
 #nex_miningLeave:Leave",
 ,,,,,,
-nex_miningBack,DialogOptionSelected,$option == nex_miningBack,FireAll PopulateOptions,,,
+nex_miningBack,DialogOptionSelected,$option == nex_miningBack,"Nex_VisualCustomPanel clearPanel
+ShowDefaultVisual
+FireAll PopulateOptions",,,
 nex_miningLeave,DialogOptionSelected,$option == nex_miningLeave,DismissDialog,,,
-nex_miningOpenCargo,DialogOptionSelected,$option == nex_miningOpenCargo,Nex_PrintMiningInfo cargo,,,
+nex_miningOpenCargo,DialogOptionSelected,$option == nex_miningOpenCargo,Nex_PrintMiningInfoV2 cargo,,,
 #END Mining options,,,,,,
 ,,,,,,
 # Fleet requests,,,,,,
