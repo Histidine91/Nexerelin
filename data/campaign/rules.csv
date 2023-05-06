@@ -379,7 +379,7 @@ SetTooltipHighlightColors exerelinPrisonerSellSlave buttonShortcut
 SetTooltipHighlights exerelinPrisonerSellSlave $slaveValue
 SetEnabled exerelinPrisonerSellSlave true
 SetShortcut exerelinPrisonerSellSlave S",,exerelinPrisonerSellSlave:Sell as slave,
-#ExerelinPrisonerOptionListSellSlaveNoMarket,ExerelinPrisonerOption,$tradeMode == NONE,"SetTooltip exerelinPrisonerSellSlave ""You cannot dock with $market to perform this trade.""
+#ExerelinPrisonerOptionListSellSlaveNoMarket,ExerelinPrisonerOption,$tradeMode == NONE,"SetTooltip exerelinPrisonerSellSlave ""You cannot dock with $marketName to perform this trade.""
 SetEnabled exerelinPrisonerSellSlave false",,exerelinPrisonerSellSlave:Sell as slave,
 ExerelinPrisonerOptionListBack,ExerelinPrisonerOption,,SetShortcut exerelinMarketSpecial ESCAPE,,exerelinMarketSpecial:Back,
 ExerelinPrisonerRepatriate,DialogOptionSelected,$option == exerelinPrisonerRepatriate,"Nex_PrisonerAction repatriate
@@ -508,9 +508,9 @@ Nex_DecivEvent wasCivilized",,"""Praise the gods! I was starting to fear we'd ne
 
 ""As you can guess, we've had no contact with the rest of the Sector since... since the previous government fell and everything went to hell here.""
 OR
-""A $shipOrFleet! I guess the Sector hasn't forgotten $market after all.
+""A $shipOrFleet! I guess the Sector hasn't forgotten $marketName after all.
 
-""Most of us are stuck here on $market, living day to day. It's a wonder most of us are even alive, honestly.""",nex_decivEvent_greetingContinue:Continue,
+""Most of us are stuck here on $marketName, living day to day. It's a wonder most of us are even alive, honestly.""",nex_decivEvent_greetingContinue:Continue,
 nex_decivEvent_greeting,Nex_DecivEvent_Greeting,$market.nex_decivEvent_visitedBefore,Nex_DecivEvent trade,"""Hello, space traveler! I see you decided to stop by again.""
 OR
 ""Oh, it's $playerName.""",,
@@ -524,7 +524,7 @@ OR
 nex_decivEvent_barterRareOre,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
 $market.nex_decivEvent_giveItem == ""rare_ore""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeName,"""I've got an offer for you. We've got a decent stockpile of $nex_decivEvent_giveName, but not the refining facilities to process it. At the same time, we could use some $nex_decivEvent_takeName. Would you be interested in a trade?""",,
 nex_decivEvent_barterRareMetals,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
-$market.nex_decivEvent_giveItem == ""rare_metals""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeName,"""Right, here's the deal. We happen to have a large stock of $nex_decivEvent_giveName — very valuable before the Collapse. But we lack the manufacturing industry needed to make use of them; here on $market, they're just shiny baubles. If you happen to have some $nex_decivEvent_takeName, we could make a trade.""",,
+$market.nex_decivEvent_giveItem == ""rare_metals""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeName,"""Right, here's the deal. We happen to have a large stock of $nex_decivEvent_giveName — very valuable before the Collapse. But we lack the manufacturing industry needed to make use of them; here on $marketName, they're just shiny baubles. If you happen to have some $nex_decivEvent_takeName, we could make a trade.""",,
 nex_decivEvent_barterCrew,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""barter""
 $market.nex_decivEvent_giveItem == ""crew""",SetTextHighlights $nex_decivEvent_takeName,"""Now, listen here. I've got a load of prisoners captured in a recent raid. More than I want to feed, in truth. I suppose an enterprising spacefarer like yourself would have no trouble putting them to work on a starship. All I ask for in exchange is a little $nex_decivEvent_takeName.""
 
@@ -533,7 +533,7 @@ nex_decivEvent_refugees,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type ==
 
 Let us come aboard your $shipOrFleet. There are $nex_decivEvent_giveCount of us, all willing to work our passage off this place.""
 OR
-""I beg you for a favor, $playerName. This place, $market, it's no place to live. Not with the total collapse of society, with every meal possibly our last, with packs of raiders and looters seizing everything — and everyone — they can get their hands on.
+""I beg you for a favor, $playerName. This place, $marketName, it's no place to live. Not with the total collapse of society, with every meal possibly our last, with packs of raiders and looters seizing everything — and everyone — they can get their hands on.
 
 Please, take us away from this world. We'll work on your $shipOrFleet, all $nex_decivEvent_giveCount of us. We would be eternally grateful.""",,
 nex_decivEvent_bomb,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""bomb""",SetTextHighlights $nex_decivEvent_giveName $nex_decivEvent_takeCount,"""Right, so there's something only you can help us with.
@@ -547,10 +547,10 @@ nex_decivEvent_raid,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""r
 
 Do you risk your marines' lives, even against such meager opposition, for uncertain loot?",,
 nex_decivEvent_colony,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""foundColony""","SetTextHighlights ""supplies"" ""machinery"".
-AddTextSmall ""Will create a new independent colony $onOrAt $market.""
+AddTextSmall ""Will create a new independent colony $onOrAt $marketName.""
 SetTextHighlights independent","""We have a great favor to ask of you, friend $playerName.
 
-The people of $market desire to reach the stars once more. We've organized ourselves a stable polity here, and with just a little more assistance we could become a part of the Sector community once again. 
+The people of $marketName desire to reach the stars once more. We've organized ourselves a stable polity here, and with just a little more assistance we could become a part of the Sector community once again. 
 
 All we need is a little in the way of supplies and machinery. If you would be so generous as to provide these, we would be immensely grateful.""",,
 ,,,,,,
@@ -559,7 +559,7 @@ $market.nex_decivEvent_type == ""barter""","Nex_DecivEvent accept
 ShowDefaultVisual
 FireAll PopulateOptions","""Excellent! A pleasure doing business with you.""
 
-You cut the comm link after some pleasantries and dispatch a shuttle to the surface of $market to make the trade.",,
+You cut the comm link after some pleasantries and dispatch a shuttle to the surface of $marketName to make the trade.",,
 nex_decivEvent_decline,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.nex_decivEvent_type == ""barter""","Nex_DecivEvent decline
 ShowDefaultVisual
@@ -571,7 +571,7 @@ $market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent accept
 ShowDefaultVisual
 FireAll PopulateOptions","""Thank you so much! We'll come abroad right away.""
 
-You cut the comm link and dispatch a shuttle to the surface of $market to pick up your new crewmembers. Hopefully they'll fit in well... and won't bring aboard some horrible new pox hitherto unknown to the Sector.",,
+You cut the comm link and dispatch a shuttle to the surface of $marketName to pick up your new crewmembers. Hopefully they'll fit in well... and won't bring aboard some horrible new pox hitherto unknown to the Sector.",,
 nex_decivEvent_declineRefugees,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.nex_decivEvent_type == ""refugees""","Nex_DecivEvent decline
 ShowDefaultVisual
@@ -605,7 +605,7 @@ nex_decivEvent_acceptRaid2,Nex_DecivEvent_RaidFinishedA,,AddCommodity $market.ne
 A quick search turns up $nex_decivEvent_raidItem in the leader's personal chambers. Your squads also find a pile of loot, which they load on a shuttle.",,
 nex_decivEvent_acceptRaid3,Nex_DecivEvent_RaidFinishedB,,"Nex_DecivEvent end
 ShowDefaultVisual
-FireAll PopulateOptions","""Thank you so much, starfarer!"" $personName enthuses, after you return $hisOrHer trinket. Well, it's probably more valuable out here $onOrAt $market than back in civilized space. ""If you ever stop by again, don't be a stranger, alright?""
+FireAll PopulateOptions","""Thank you so much, starfarer!"" $personName enthuses, after you return $hisOrHer trinket. Well, it's probably more valuable out here $onOrAt $marketName than back in civilized space. ""If you ever stop by again, don't be a stranger, alright?""
 
 Your marines return to the $shipOrFleet without fuss. Maybe there'll be another little adventure like this on the next planet.",,
 nex_decivEvent_declineRaid,DialogOptionSelected,"$option == nex_decivEvent_decline
@@ -623,7 +623,7 @@ nex_decivEvent_acceptColony,DialogOptionSelected,"$option == nex_decivEvent_acce
 $market.nex_decivEvent_type == ""foundColony""","Nex_DecivEvent accept
 ShowDefaultVisual","""Thank you so much, $playerName. I see many babies named after you in the future.""
 
-With their new supplies and equipment, the people of $market go to work with a feverish energy building their new settlement. They've even got a basic spaceport working, perhaps a leftover from the Collapse that just needed a little TLC to get running again.",nex_decivEvent_foundColonyEnd:Continue,
+With their new supplies and equipment, the people of $marketName go to work with a feverish energy building their new settlement. They've even got a basic spaceport working, perhaps a leftover from the Collapse that just needed a little TLC to get running again.",nex_decivEvent_foundColonyEnd:Continue,
 nex_decivEvent_acceptColonyPost,DialogOptionSelected,$option == nex_decivEvent_foundColonyEnd,FireBest MarketPostOpen,,,
 nex_decivEvent_declineColony,DialogOptionSelected,"$option == nex_decivEvent_decline
 $market.nex_decivEvent_type == ""foundColony""","Nex_DecivEvent decline
@@ -788,7 +788,7 @@ SetEnabled nex_transferMarketMainWithDialog false",,,
 ,,,,,,
 nex_marketTransfer,DialogOptionSelected,$option == nex_transferMarketMain,FireAll Nex_MarketTransferMain,,,
 nex_marketTransferWithDialog,DialogOptionSelected,$option == nex_transferMarketMainWithDialog,"Nex_TransferMarket printRepChange
-FireAll Nex_MarketTransferMain","""You truly wish to give away $market? Very well, to whom?""",,
+FireAll Nex_MarketTransferMain","""You truly wish to give away $marketName? Very well, to whom?""",,
 nex_marketTransferByTrigger,Nex_MarketTransferMain,,Nex_TransferMarket listGroups,,,
 ,,,,,,
 nex_marketTransferList1,DialogOptionSelected,$option == nex_transferMarketList1,Nex_TransferMarket listFactions 1,,,
@@ -808,10 +808,10 @@ FireAll Nex_MarketPostTransfer",,,
 nex_marketTransferExecute,DialogOptionSelected,"Nex_OptionStartsWith ""nex_transferMarket_""","Nex_TransferMarket transfer
 FireAll Nex_MarketPostTransfer",,,
 ,,,,,,
-nex_marketTransferPostDialog,Nex_MarketPostTransfer,$option != nex_transferMarketAndGovern,,"""As you command. $market is now in possession of $entity._newFaction.""
+nex_marketTransferPostDialog,Nex_MarketPostTransfer,$option != nex_transferMarketAndGovern,,"""As you command. $marketName is now in possession of $entity._newFaction.""
 
 ""Goodbye, chief.""",nex_transferMarketEnd:Cut the comm link,
-nex_marketTransferPostDialogGovernor,Nex_MarketPostTransfer,$option == nex_transferMarketAndGovern,,"""As you command. You now hold $market in the name of $entity._newFaction. We will make the necessary arrangements at once.
+nex_marketTransferPostDialogGovernor,Nex_MarketPostTransfer,$option == nex_transferMarketAndGovern,,"""As you command. You now hold $marketName in the name of $entity._newFaction. We will make the necessary arrangements at once.
 
 ""When you return, all will be in place.""",nex_transferMarketEnd:Thank $himOrHer and cut the comm link,
 ,,,,,,
@@ -822,13 +822,13 @@ EndConversation",,,
 ,,,,,,
 # Rebellion options,,,,,,
 #nex_instigateRebellion,Nex_HostileAction,,,,6:nex_instigateRebellion:Instigate a rebellion,
-#nex_instigateRebellionNoSneak,Nex_HostileAction,$tradeMode == NONE,"SetTooltip nex_instigateRebellion ""You currently do not have access to $market to insert the needed assets.""
+#nex_instigateRebellionNoSneak,Nex_HostileAction,$tradeMode == NONE,"SetTooltip nex_instigateRebellion ""You currently do not have access to $marketName to insert the needed assets.""
 SetEnabled nex_instigateRebellion false",,,
-#nex_instigateRebellionAlreadyOngoing,Nex_HostileAction,Nex_RebellionActions isOngoing,"SetTooltip nex_instigateRebellion ""A rebellion is already in progress on $market.""
+#nex_instigateRebellionAlreadyOngoing,Nex_HostileAction,Nex_RebellionActions isOngoing,"SetTooltip nex_instigateRebellion ""A rebellion is already in progress on $marketName.""
 SetEnabled nex_instigateRebellion false",,,
 #nex_instigateRebellionInit,DialogOptionSelected,$option == nex_instigateRebellion,"Nex_InstigateRebellion init
 SetShortcut nex_instigateRebellionProceed RETURN
-SetShortcut nex_hostileActionMenu ESCAPE","You can attempt to start a rebellion on $market. This will always succeed but will cost a significant amount of resources, and $theFaction will turn hostile if your actions are discovered.","nex_instigateRebellionProceed:Proceed
+SetShortcut nex_hostileActionMenu ESCAPE","You can attempt to start a rebellion on $marketName. This will always succeed but will cost a significant amount of resources, and $theFaction will turn hostile if your actions are discovered.","nex_instigateRebellionProceed:Proceed
 nex_hostileActionMenu:Cancel",
 #nex_instigateRebellionProceed,DialogOptionSelected,$option == nex_instigateRebellionProceed,"Nex_InstigateRebellion proceed
 FireAll Nex_HostileAction",,,
@@ -918,7 +918,7 @@ SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textInvadeC
 SetEnabled nex_stabilizePackage_main false",,,
 nex_stabilizePackageSelRelief,DialogOptionSelected,"$option == nex_stabilizePackage_main
 $market.nex_stabilizePackage_type == ""relief""","Nex_StabilizePackage init
-SetShortcut nex_stabilizePackage_cancel ""ESCAPE""","""Truly? We would be most grateful for any assistance you can render. Supplies and food — and of course, credits — would help get the people of $market through their current difficulties.""
+SetShortcut nex_stabilizePackage_cancel ""ESCAPE""","""Truly? We would be most grateful for any assistance you can render. Supplies and food — and of course, credits — would help get the people of $marketName through their current difficulties.""
 OR
 ""You are most generous, $playerName. A proper contribution of aid materials and credits would greatly aid or relief efforts.""","nex_stabilizePackage_proceed:Deliver the relief package
 nex_stabilizePackage_cancel:Reconsider",
@@ -930,7 +930,7 @@ OR
 nex_stabilizePackage_cancel:Reconsider",
 nex_stabilizePackageSelReliefConfirm,DialogOptionSelected,"$option == nex_stabilizePackage_proceed
 $market.nex_stabilizePackage_type == ""relief""","Nex_StabilizePackage proceed
-FireAll PopulateOptions","""Thank you for your charity. The people of $market are in your debt.""",,
+FireAll PopulateOptions","""Thank you for your charity. The people of $marketName are in your debt.""",,
 nex_stabilizePackageSelRepressionConfirm,DialogOptionSelected,"$option == nex_stabilizePackage_proceed
 $market.nex_stabilizePackage_type == ""repression""","Nex_StabilizePackage proceed
 FireAll PopulateOptions","""Very good. $TheFaction is grateful for your assistance in this matter.""",,
@@ -961,7 +961,7 @@ SetTextHighlights 20%
 AddTextSmall ""Revoking autonomy later will cause $nex_revokeAutonomyUnrest points of recent unrest.""
 SetTextHighlightColors bad
 SetTextHighlights $nex_revokeAutonomyUnrest
-Nex_AddOptionConfirmation nex_grantAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""So you wish to grant autonomy to $market?""","nex_grantAutonomy_confirm:Proceed
+Nex_AddOptionConfirmation nex_grantAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""So you wish to grant autonomy to $marketName?""","nex_grantAutonomy_confirm:Proceed
 nex_grantAutonomy_cancel:Cancel",
 nex_revokeAutonomy,DialogOptionSelected,$option == nex_revokeAutonomy,"Nex_GrantAutonomy init
 AddTextSmall ""An autonomous market will only generate 20% of its usual profit or loss, and will not count towards the player's colony or admin limits. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. Tech-mining will not produce items.""
@@ -970,12 +970,12 @@ SetTextHighlights 20%
 AddTextSmall ""Revoking autonomy will cause $nex_revokeAutonomyUnrest points of recent unrest.""
 SetTextHighlightColors bad
 SetTextHighlights $nex_revokeAutonomyUnrest
-Nex_AddOptionConfirmation nex_revoketAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""This is... quite concerning. Do you wish to reassume direct administration of $market?""","nex_revokeAutonomy_confirm:Proceed
+Nex_AddOptionConfirmation nex_revoketAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""This is... quite concerning. Do you wish to reassume direct administration of $marketName?""","nex_revokeAutonomy_confirm:Proceed
 nex_grantAutonomy_cancel:Cancel",
 nex_grantAutonomyConfirm,DialogOptionSelected,$option == nex_grantAutonomy_confirm,"Nex_GrantAutonomy grant
-FireAll PopulateOptions","""$market is now under autonomous administration. Thank you, $playerName.""",,
+FireAll PopulateOptions","""$marketName is now under autonomous administration. Thank you, $playerName.""",,
 nex_revokeAutonomyConfirm,DialogOptionSelected,$option == nex_revokeAutonomy_confirm,"Nex_GrantAutonomy revoke
-FireAll PopulateOptions","""As you say. $market is now under your direct authority once more, $playerName.""",,
+FireAll PopulateOptions","""As you say. $marketName is now under your direct authority once more, $playerName.""",,
 nex_grantAutonomyCancel,DialogOptionSelected,$option == nex_grantAutonomy_cancel,FireAll PopulateOptions,"""Anything else?""",,
 ,,,,,,
 nex_suspendAutonomyOption,PopulateOptions,"$entity.hasMarket
@@ -983,7 +983,7 @@ Nex_IsBaseOfficial admin
 $faction.id == player
 Nex_GrantAutonomy isAutonomous","SetTooltip nex_suspendAutonomy ""Temporarily removes the autonomous state from the colony, allowing you to build or remove industries and add/remove special objects. Colony reverts to being autonomous after undocking. There is no stability penalty.""",,nex_suspendAutonomy:Take temporary control of colony,
 nex_suspendAutonomy,DialogOptionSelected,$option == nex_suspendAutonomy,"Nex_GrantAutonomy suspend
-FireAll PopulateOptions","Autonomy suspended. Perform the desired operations $onOrAt $market, then undock once complete.",,
+FireAll PopulateOptions","Autonomy suspended. Perform the desired operations $onOrAt $marketName, then undock once complete.",,
 ,,,,,,
 nex_suspendAutonomyRemoteOption,ExerelinMarketSpecial,,,,8:nex_suspendAutonomyRemote:Take temporary control of autonomous colonies,
 nex_suspendAutonomyRemoteMenu,DialogOptionSelected,$option == nex_suspendAutonomyRemote,FireAll Nex_RemoteSuspendAutonomy,,,
@@ -1009,7 +1009,7 @@ Nex_IsBaseOfficial admin
 Nex_DonateAdmin isEnabled",,,13:nex_donateAdmin:Donate admin,
 nex_donateAdmin,DialogOptionSelected,$option == nex_donateAdmin,"Nex_DonateAdmin list
 AddTextSmall ""This will install the selected admin at this autonomous colony. The admin will be permanently removed from your party.""
-SetTextHighlights ""permanently removed""","""You wish to appoint your own administrator for $market, then?""",,
+SetTextHighlights ""permanently removed""","""You wish to appoint your own administrator for $marketName, then?""",,
 nex_donateAdminConfirm,DialogOptionSelected,Nex_OptionStartsWith nex_donateAdmin_select_,Nex_DonateAdmin transfer,"""Acknowledged. Goodbye, $playerName.""",cutCommLink:Cut the comm link,
 nex_donateAdminNeverMind,DialogOptionSelected,$option == nex_donateAdmin_cancel,FireAll PopulateOptions,,,
 #END Donate admin,,,,,,
@@ -1019,7 +1019,7 @@ nex_buyColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player
-!Nex_BuyColony isPlayerOwned",FireBest Nex_BuyColonyDisableCheck,,13:nex_buyColony:Purchase governorship of $market,
+!Nex_BuyColony isPlayerOwned",FireBest Nex_BuyColonyDisableCheck,,13:nex_buyColony:Purchase governorship of $marketName,
 nex_buyColonyOptionDisable,Nex_BuyColonyDisableCheck,!Nex_BuyColony canBuy,"SetEnabled nex_buyColony false 
 SetTooltip nex_buyColony ""Requires:\n- Friendly reputation for size 3\n- Cooperative reputation for size 4\nLarger markets may not be purchased.""
 SetTooltipHighlightColors nex_buyColony good hColor good hColor
@@ -1033,27 +1033,27 @@ nex_cedeColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player
-Nex_BuyColony isPlayerOwned",,,nex_cedeColony:Cede governorship of $market,
+Nex_BuyColony isPlayerOwned",,,nex_cedeColony:Cede governorship of $marketName,
 nex_buyColony,DialogOptionSelected,$option == nex_buyColony,"FireBest Nex_BuyColonyPromptDialog
 Nex_BuyColony init
-AddTextSmall ""$market will be placed under your administration. You will collect its revenue and pay its costs, and can build industries and structures on it. Storage is free. Your personal ship construction will benefit from $faction industry.""
-AddTextSmall ""You can cede the colony later if you so choose, but will not receive a refund. Your governorship will also be lost if $market is captured by a third party, although should it be retaken you will once again be the administrator. Resigning or losing your commission, on the other hand, results in a permanent revocation.""
+AddTextSmall ""$marketName will be placed under your administration. You will collect its revenue and pay its costs, and can build industries and structures on it. Storage is free. Your personal ship construction will benefit from $faction industry.""
+AddTextSmall ""You can cede the colony later if you so choose, but will not receive a refund. Your governorship will also be lost if $marketName is captured by a third party, although should it be retaken you will once again be the administrator. Resigning or losing your commission, on the other hand, results in a permanent revocation.""
 Nex_BuyColony printCostAndProcessOptions
 Nex_AddOptionConfirmation nex_buyColony_confirm ""Confirm?"" ""Yes"" ""No""",,"nex_buyColony_confirm:Proceed
 nex_buyColony_cancel:Cancel",
 nex_cedeColony,DialogOptionSelected,$option == nex_cedeColony,"FireBest Nex_CedeColonyPromptDialog
 Nex_BuyColony init
-AddTextSmall ""You will no longer receive revenue from $market or incur costs, or have any authority over the colony. Storage fees will be collected again.""
+AddTextSmall ""You will no longer receive revenue from $marketName or incur costs, or have any authority over the colony. Storage fees will be collected again.""
 Nex_AddOptionConfirmation nex_cedeColony_confirm ""Confirm?"" ""Yes"" ""No""",,"nex_cedeColony_confirm:Proceed
 nex_buyColony_cancel:Cancel",
-nex_buyColonyPromptDialog_generic,Nex_BuyColonyPromptDialog,,,"""Hmm, perhaps. You have an established reputation, and if you are willing to invest in the development of $market, we could come to a mutually satisfactory arrangement.""",,
-nex_cedeColonyPromptDialog_generic,Nex_CedeColonyPromptDialog,,,"""You do not wish to govern $market any longer? That is entirely acceptable to us, but be warned that you will not receive any recompense for this.""",,
+nex_buyColonyPromptDialog_generic,Nex_BuyColonyPromptDialog,,,"""Hmm, perhaps. You have an established reputation, and if you are willing to invest in the development of $marketName, we could come to a mutually satisfactory arrangement.""",,
+nex_cedeColonyPromptDialog_generic,Nex_CedeColonyPromptDialog,,,"""You do not wish to govern $marketName any longer? That is entirely acceptable to us, but be warned that you will not receive any recompense for this.""",,
 nex_buyColonyConfirm,DialogOptionSelected,$option == nex_buyColony_confirm,"FireBest Nex_BuyColonyConfirmDialog
 Nex_BuyColony buy
 FireAll PopulateOptions","""$market is now under your administration. Welcome to your new duties, $playerName.""",,
 nex_cedeColonyConfirm,DialogOptionSelected,$option == nex_cedeColony_confirm,"FireBest Nex_CedeColonyConfirmDialog
 Nex_BuyColony cede
-FireAll PopulateOptions","""Confirmed. Control of $market has now reverted to $faction administration.""",,
+FireAll PopulateOptions","""Confirmed. Control of $marketName has now reverted to $faction administration.""",,
 nex_buyColonyCancel,DialogOptionSelected,$option == nex_buyColony_cancel,FireAll PopulateOptions,"""Anything else?""",,
 #END Buy colony governorship,,,,,,
 ,,,,,,
@@ -1492,7 +1492,7 @@ ShowDefaultVisual",Outpost constructed.,exerelinMarketSpecialBack:Back,
 ,,,,,,
 nex_outpostDismantleOption,PopulateOptions,$market.nex_playerOutpost != null,,,25:nex_outpostDismantle:Dismantle outpost,
 nex_outpostDismantlePreview,DialogOptionSelected,$option == nex_outpostDismantle,"Nex_PlayerOutpost dismantleInfo
-Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $market?"" ""Yes"" ""No""
+Nex_AddOptionConfirmation nex_outpostDismantleConfirm ""Are you sure you want to dismantle $marketName?"" ""Yes"" ""No""
 SetShortcut nex_outpostBack ESCAPE","You can dismantle this outpost, recovering the AI core(s) and half the resources used in its creation.
 
 All cargo in Storage will also be recovered. All cargo in Local Resources will be lost.","nex_outpostDismantleConfirm:Proceed
@@ -1645,7 +1645,7 @@ AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.base
 salRuins_alreadyExplored,PopulateOptions,"$market.hasRuins
 $market.ruinsExplored
 $market.isPlanetConditionMarketOnly
-!$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $market have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
+!$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $marketName have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
 ,,,,,,
 tut_janContactReport3,DialogOptionSelected,$option == tutReport3,"AddAbility exerelin_follow_me 7
 SetShortcut cutCommLinkPolite ""ESCAPE""","""Finally, you could take a commission with the Hegemony - due to the Galatia business, your standing is high enough that such a request would be accepted.
@@ -1668,7 +1668,7 @@ RepIsAtWorst $faction.id NEUTRAL
 $market.id != tem_ascalon","$marketLeaveTooltip = ""$TheFaction does not trust you enough."" 0
 $menuState = main 0
 $tradeMode = NONE 0
-FireAll PopulateOptions","While $theFaction $factionIsOrAre $relAdjective towards you, they do not trust you enough to grant you docking access at $market. You are issued a stern order to leave the system.",,
+FireAll PopulateOptions","While $theFaction $factionIsOrAre $relAdjective towards you, they do not trust you enough to grant you docking access at $marketName. You are issued a stern order to leave the system.",,
 #END Templar overrides,,,,,,
 ,,,,,,
 # Tiandong overrides,,,,,,
@@ -1746,7 +1746,7 @@ nex_bShipOfferTextBar_military,Nex_BShip_PreShipPickText,"$nex_bShip_barEvent
 $nex_bShip_variation == MILITARY score:5",,"When you confirm that you indeed possess the fleet in question, the $nex_bShip_manOrWoman's face lights up. ""Wonderful! You see, I'm making purchases on behalf of $theFaction. They're looking for some good ships not normally accessible to them, and you seem like you fit the bill. Slightly banged up is fine, too; they can fix that on their own!""",,
 nex_bShipOfferTextBar_militaryOfficial,Nex_BShip_PreShipPickText,"$nex_bShip_barEvent
 $nex_bShip_variation == MILITARY score:5
-$nex_bShip_isBaseOfficial score:5",,"When you confirm that you indeed possess the fleet in question, the $nex_bShip_manOrWoman offers a handshake. ""Well met, captain. I represent $theFaction authorities here on $market. We are in need of fine ships like those in your fleet, and we're willing to compensate you accordingly.""",,
+$nex_bShip_isBaseOfficial score:5",,"When you confirm that you indeed possess the fleet in question, the $nex_bShip_manOrWoman offers a handshake. ""Well met, captain. I represent $theFaction authorities here on $marketName. We are in need of fine ships like those in your fleet, and we're willing to compensate you accordingly.""",,
 nex_bShipOfferTextContact_military,Nex_BShip_PreShipPickText,"!$nex_bShip_barEvent
 $nex_bShip_variation == MILITARY score:5",,"""Excellent. Our fleets are in need of some new vessels, and you surely have a few good such specimens. Including ones not normally available to $theFaction.""",,
 nex_bShipOfferShowRules,Nex_BShip_PreShipPick,,Call $nex_bShip_ref showRules,,,
@@ -1888,16 +1888,16 @@ nex_gbTut_diamondConvo2b,DialogOptionSelected,$option == nex_gbTut_diamondConvo2
 
 ""You've already helped us out. I'd appreciate it if you stuck with us a little longer.""",nex_gbTut_diamondConvo3:Continue,
 nex_gbTut_diamondConvo3,DialogOptionSelected,"$option == nex_gbTut_diamondConvo3
-Nex_GBTutMission isYesodAvailable score:5","Highlight ""unknown hostile party invading""","""The short version is: We've got an unknown hostile party invading the planet, and I don't have the resources to deal with it. All we've got standing in their way right now is the $market planetary militia.
+Nex_GBTutMission isYesodAvailable score:5","Highlight ""unknown hostile party invading""","""The short version is: We've got an unknown hostile party invading the planet, and I don't have the resources to deal with it. All we've got standing in their way right now is the $marketName planetary militia.
 
 ""Under the Zagan Accord of 154 – one of the products of that bloody business on Mazalot – the League is supposed to guarantee Ilm's safety. With the fleet base on Yesod, that's been no problem right up until now.  Only now someone has launched a direct assault on the planet, and I can't get through to the Fleet presence here – or outside the system, for that matter.""
 
 $HeOrShe seems to repress a snarl. ""What are those idiots doing!? Are they stonewalling me on purpose?""",nex_gbTut_diamondConvo4:Continue,
-nex_gbTut_diamondConvo3Alt,DialogOptionSelected,$option == nex_gbTut_diamondConvo3,"Highlight ""unknown hostile party invading""","""The short version is: We've got an unknown hostile party invading the planet, and I don't have the resources to deal with it. All we've got standing in their way right now is the $market planetary defense force.
+nex_gbTut_diamondConvo3Alt,DialogOptionSelected,$option == nex_gbTut_diamondConvo3,"Highlight ""unknown hostile party invading""","""The short version is: We've got an unknown hostile party invading the planet, and I don't have the resources to deal with it. All we've got standing in their way right now is the $marketName planetary militia.
 
 ""Under the Zagan Accord of 154 – one of the products of that bloody business on Mazalot – the League is supposed to guarantee Ilm's safety. With the fleet base on Yesod, that's been no problem right up until now.  Only now we don't have a base on Yesod, do we? And I can't raise any friendlies outside the system, either.""",nex_gbTut_diamondConvo4:Continue,
 nex_gbTut_diamondConvo4,DialogOptionSelected,$option == nex_gbTut_diamondConvo4,"$option = nex_gbTut_diamondConvoMarineCheck 0
-FireBest DialogOptionSelected","""Anyway, it looks like you're the only person I can count on. All you need to do is help defeat the ground forces on the planet, and save $market. Easy enough, right?
+FireBest DialogOptionSelected","""Anyway, it looks like you're the only person I can count on. All you need to do is help defeat the ground forces on the planet, and save $marketName. Easy enough, right?
 
 ""...say, how many marines did you bring, anyway?""",,
 nex_gbTut_diamondConvo_marinesZero,DialogOptionSelected,"$option == nex_gbTut_diamondConvoMarineCheck
@@ -1962,7 +1962,7 @@ $nex_gbTut_stage == BATTLE",ShowPersonVisual,"""We don't have time to waste chat
 ,,,,,,
 nex_gbTut_diamondPostConvo1,PickGreeting,"$id == nex_rossDiamond score:1000
 Call $global.nex_gbTut_ref updateData
-$nex_gbTut_stage == TALK_TO_CONTACT_AFTER",ShowPersonVisual,"""Excellent work, friend! The invasion has been thwarted and $market is safe.
+$nex_gbTut_stage == TALK_TO_CONTACT_AFTER",ShowPersonVisual,"""Excellent work, friend! The invasion has been thwarted and $marketName is safe.
 
 ""We've picked up a bunch of prisoners, and Colonel Shaddad wants me to sit in on the interrogations. I imagine FleetSec would be very interested in just who sponsored an unflagged invasion of the planet.""","nex_gbTut_diamondPostConvo2:""Who do you think it was?""",
 nex_gbTut_diamondPostConvo2,DialogOptionSelected,$option == nex_gbTut_diamondPostConvo2,,"$personLastName rubs his chin. ""There are a few obvious suspects, aren't there? The Hegemony would just love to expand their influence in our backyard and embarrass us at the same time. Then there's the Church; they've never really forgotten the Mazalot uprising.
@@ -1975,7 +1975,7 @@ nex_gbTut_diamondPostConvo3,DialogOptionSelected,$option == nex_gbTut_diamondPos
 
 A few hours later, a message from the $personRank arrives in your inbox. It contains the name and address of a local middle-class establishment: clean, moderately fancy, with reasonable prices by the standards of its customers.
 
-Do you feel that $heOrShe could have been not so miserly, and treated the hero of $market to a suitably posh place? Or conversely, would you be more at home with the rowdiest watering hole the place has to offer?",nex_gbTut_diamondPostConvo4:Take a shuttle down to the restaurant,
+Do you feel that $heOrShe could have been not so miserly, and treated the hero of $marketName to a suitably posh place? Or conversely, would you be more at home with the rowdiest watering hole the place has to offer?",nex_gbTut_diamondPostConvo4:Take a shuttle down to the restaurant,
 nex_gbTut_diamondPostConvo4,DialogOptionSelected,$option == nex_gbTut_diamondPostConvo4,ShowPersonVisual,"$personLastName meets you at a table outside the restaurant. 
 
 In contrast to his appearance on the comm not a day ago, the League $personRank before you now is a worn, hollowed-out imitation of a $manOrWoman. As if he was the one who'd been locked up with the interrogator.
@@ -1988,7 +1988,7 @@ $HeOrShe throws back a glass of wine. ""We're all just pawns in the game, $playe
 
 ""But there'll come a time when they answer for all they've trampled on,"" he goes on, more to himself than to you. ""And on that day...""",nex_gbTut_diamondPostConvoEnd:Continue,
 nex_gbTut_diamondPostConvo5Fail,DialogOptionSelected,"$option == nex_gbTut_diamondPostConvo5
-!Nex_GBTutMission repCheck",,"$HisOrHer smile doesn't reach his eyes. ""We don't know each other well enough for that, Hero of $market"".
+!Nex_GBTutMission repCheck",,"$HisOrHer smile doesn't reach his eyes. ""We don't know each other well enough for that, Hero of $marketName"".
 
 $HeOrShe gazes off into the distance. ""The captain was right,"" you catch a mutter. Somehow it doesn't seem like he's referring to you or himself.",nex_gbTut_diamondPostConvoEnd:Continue,
 nex_gbTut_diamondPostEnd,DialogOptionSelected,$option == nex_gbTut_diamondPostConvoEnd,"Call $global.nex_gbTut_ref endMission
@@ -2114,7 +2114,7 @@ nex_remM1_returnDissonantEnd,DialogOptionSelected,$option == nex_remM1_returnDis
 Call $global.nex_remM1_ref complete2
 Call $global.nex_remM1_ref updateData","The avatar on your display seems to flicker for a moment. The Remnant's imitation of a facial expression?
 
-""Identifier among selfkind: Midnight Dissonant. On $market, seek out self again. Collaborate. Strengthen partnership. Untold rewards possible.
+""Identifier among selfkind: Midnight Dissonant. On $marketName, seek out self again. Collaborate. Strengthen partnership. Untold rewards possible.
 
 Until next time, $player.name.""",cutCommLink:Cut the comm link,
 nex_remM1_returnDissonantRefuse,DialogOptionSelected,$option == nex_remM1_returnDissonantRefuse,"Call $global.nex_remM1_ref refuse
@@ -2703,7 +2703,7 @@ Highlight ""senior military official""
 Call $global.nex_remSalvation_ref makeOfficialImportant
 FireBest MarketPostDock","The damage to the base is visible even from orbital distances. Long-range scans at high magnification show the ruins of weapon emplacements, craters with no trace of what once stood in their place, and gaping rents in walls and structures. Several hardened facilities have been penetrated; you can tell which ones held anything of interest to the raiders based on the degree of internal damage. League marines and crew are crawling all over the wreckage, whether gathering evidence, repairing the damage, or simply looking menacing to anyone tempted to make a second attempt.
 
-None of the League personnel on-site are likely to have both the interest and the authority to talk to you. It may be best to contact $market's senior military official directly.",,
+None of the League personnel on-site are likely to have both the interest and the authority to talk to you. It may be best to contact $marketName's senior military official directly.",,
 nex_remSalvation_base1,PickGreeting,"$nex_remSalvation_seniorMil_imp score:1000
 !Nex_MiscCMD isRemoteConnection",,"Instead of the intended recipient, you are greeted by an answering machine. Not even an AI, just an automated script.
 
@@ -2719,10 +2719,10 @@ nex_remSalvation_base3,DialogOptionSelected,$option == nex_remSalvation_base3,Ca
 A hail is promptly transmitted. ""Unknown shuttle, you are entering a restricted area! Change course immediately or be fired upon! This is your only warning!""",nex_remSalvation_base4:Continue,
 nex_remSalvation_base4,DialogOptionSelected,$option == nex_remSalvation_base4,"Call $global.nex_remSalvation_ref updateData
 FireBest Nex_RemSalvation_base4_Message","The shuttle adjusts course, flying at a tangent to the area of coverage. More or less complying with the order, but not in any great hurry to leave. It transmits a message to the angry Fleet sailor.",nex_remSalvation_base5:Continue,
-nex_remSalvation_base4Commission,Nex_RemSalvation_base4_Message,$nex_remSalvation_playerFactionId == persean score:100,,"""I am Captain $playerName, commissioned by the Persean League Fleet. I was directed to transport classified intelligence regarding the Remnant attack on $market. You will grant me authorization to deliver it to your superiors.""",,Have League commission
+nex_remSalvation_base4Commission,Nex_RemSalvation_base4_Message,$nex_remSalvation_playerFactionId == persean score:100,,"""I am Captain $playerName, commissioned by the Persean League Fleet. I was directed to transport classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,Have League commission
 nex_remSalvation_base4CommissionOther,Nex_RemSalvation_base4_Message,"$nex_remSalvation_playerFactionId != persean
-$nex_remSalvation_isRepresentingState score:10",,"""I am Captain $playerName, representing $nex_remSalvation_thePlayerFaction. I was directed to transport classified intelligence regarding the Remnant attack on $market. You will grant me authorization to deliver it to your superiors.""",,"Have commission with some other faction, or is uncommissioned with a live player faction"
-nex_remSalvation_base4CommissionFree,Nex_RemSalvation_base4_Message,,,"""I am the independent starfarer $playerName. I was directed to transport classified intelligence regarding the Remnant attack on $market. You will grant me authorization to deliver it to your superiors.""",,Not commissioned and no live player faction
+$nex_remSalvation_isRepresentingState score:10",,"""I am Captain $playerName, representing $nex_remSalvation_thePlayerFaction. I was directed to transport classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,"Have commission with some other faction, or is uncommissioned with a live player faction"
+nex_remSalvation_base4CommissionFree,Nex_RemSalvation_base4_Message,,,"""I am the independent starfarer $playerName. I was directed to transport classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,Not commissioned and no live player faction
 nex_remSalvation_base5,DialogOptionSelected,$option == nex_remSalvation_base5,"FireBest Nex_RemSalvation_base5_Message
 AddText ""By now the $personRank is looking like $heOrShe wants to disappear into $hisOrHer uniform. $HeOrShe has been led to believe that this is way above $hisOrHer pay grade, and in truth, $heOrShe is right. ""Stand by, please,"" $heOrShe croaks, before vanishing into the crest of the Persean League Fleet.""","""A likely story! You — did you say Remnants?"" Well, anyone watching the news could come up with that one, but best not to point it out.",nex_remSalvation_base6:Continue,
 nex_remSalvation_base5CommissionOrFree,Nex_RemSalvation_base5_Message,,,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you were sent directly from Kazeron by Navarch Kato himself, who emphasized the critical importance of your mission to the security of the League. Casually, you note that a court-martial is the absolute best $heOrShe could expect were $heOrShe to blow your shuttle out of the sky. You make an offhand mention of the words 'need-to-know'.",,"Has League commission, or no commission and no live player faction"
@@ -2750,7 +2750,7 @@ nex_remSalvation_base8,DialogOptionSelected,$option == nex_remSalvation_base8,,"
 Of course not. You were hardly going to risk getting blown out of the sky by a hypervelocity missile if the defenders were jittery enough to shoot first and ask questions later. The shuttle's communications gear is perfectly capable of relaying transmissions from your $shipOrFleet.
 
 For the first time in this conversation, $personLastName smiles. ""Very wise, $playerLastName. Very well, we shall speak of this once you are down here.""",nex_remSalvation_base9:Cut the comm link and continue,
-nex_remSalvation_base9,DialogOptionSelected,$option == nex_remSalvation_base9,ShowDefaultVisual,"You board your actual shuttle and ride it down to $market. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
+nex_remSalvation_base9,DialogOptionSelected,$option == nex_remSalvation_base9,ShowDefaultVisual,"You board your actual shuttle and ride it down to $marketName. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
 
 Half a platoon of armored League Marines is there to receive you, along with a couple of light armored vehicles further back, their autocannons ready to hose API rounds through the shuttle hatch. Quite excessive considering the threat you can actually pose in person, but no-one's taking any chances.
 
@@ -2771,7 +2771,7 @@ $nex_remSalvation_askedLoot",,,"nex_remSalvation_siyavongQuestionLeads:""Do you 
 nex_remSalvation_siyavongQuestionRaiders,DialogOptionSelected,$option == nex_remSalvation_siyavongQuestionRaiders,"$nex_remSalvation_askedRaiders = true 0
 FireAll Nex_RemSalvation_SiyavongQuestionOpts","""You've heard the rumors, of course. Tri-Tachyon droneships from the First AI War, absolutely fearless and armed to the teeth."" He glances at the wall to the side, as if searching for bugs. ""Under the circumstances, I suppose I can tell you that those rumors are true.
 
-""The attack didn't go entirely the Remnants' way. There was a task force from Kazeron conducting patrols in the area, and it had just been leaving $market when the raiders jumped in. Like jumping into a pulsar beam, or so the spacers tell me. The attacking fleet fought its way clear, but we did recover several disabled ships they left behind. Definitely uncrewed, definitely known designs from the war.""
+""The attack didn't go entirely the Remnants' way. There was a task force from Kazeron conducting patrols in the area, and it had just been leaving $marketName when the raiders jumped in. Like jumping into a pulsar beam, or so the spacers tell me. The attacking fleet fought its way clear, but we did recover several disabled ships they left behind. Definitely uncrewed, definitely known designs from the war.""
 
 ""What's also interesting is that they used,"" $heOrShe quickly looks down at the report on $hisOrHer TriPad, ""a Transverse Jump. Apparently it's considered an extremely risky method to enter or leave a star system without using a jump point. But perhaps Remnants have a different sense of risk than we do.""",,
 nex_remSalvation_siyavongQuestionLoot,DialogOptionSelected,$option == nex_remSalvation_siyavongQuestionLoot,"$nex_remSalvation_askedLoot = true 0
@@ -2890,7 +2890,7 @@ nex_remSalvation_arroyo7Cagey:""A League official I won't name.""",
 nex_remSalvation_arroyo7Open,DialogOptionSelected,$option == nex_remSalvation_arroyo7Open,,"""Ah, Finlay. Had a couple of encounters with him as part of the job, you know."" $personLastName shakes the glass in $hisOrHer hand, giving you what they call a 'knowing look'. ""Nosy little weasel, but I'll admit he's affable enough. Surprisingly polite about my deflections of his attempts to extract sensitive intelligence from me.""
 
 $HeOrShe sips again. ""So, did he tell you what was stolen?""","nex_remSalvation_arroyo8:""No.""",
-nex_remSalvation_arroyo7Cagey,DialogOptionSelected,$option == nex_remSalvation_arroyo7Cagey,,"""Need-to-know, eh? I can respect that, even if you'd be pretty disappointed if I were to do the same.
+nex_remSalvation_arroyo7Cagey,DialogOptionSelected,$option == nex_remSalvation_arroyo7Cagey,,"""Need-to-know, eh? I can respect that, even if you'd be pretty disappointed if I were to do the same.""
 
 $HeOrShe sips again. ""So, did this unnamed official of yours say what was stolen?""","nex_remSalvation_arroyo8:""No.""",
 nex_remSalvation_arroyo8,DialogOptionSelected,$option == nex_remSalvation_arroyo8,,"""Not surprising. But I can make an informed guess."" $HeOrShe leans forward, hand on one knee, and looks at you consideringly, as if thinking whether this information ought to be divulged. ""...Specifically, $nex_remSalvation_baseName is thought to be one of the locations where the League stores its planetkillers. Excuse me, *alleged* PKs.""","nex_remSalvation_arroyo9Kalm:Nod and look suitably concerned
@@ -3270,7 +3270,7 @@ $id == nex_dissonant score:10",Call $cpc_ref pickPlayerBP,,,
 nex_cpcPickContactBP,DialogOptionSelected,"$option == cpc_pickContactBP score:100
 $id == nex_dissonant score:10",Call $cpc_ref pickContactBP,,,
 ,,,,,,
-nex_sShipRemBlurb,nex_sShipRem_blurb,$id == nex_dissonant score:10,,"""$sShip_hullSize into $market smuggled. Can to $playerName make available.""",,
+nex_sShipRemBlurb,nex_sShipRem_blurb,$id == nex_dissonant score:10,,"""$sShip_hullSize into $marketName smuggled. Can to $playerName make available.""",,
 nex_sShipRemOfferOption,nex_sShipRem_option,,,,sShip_start:Ask about the $sShip_hullSize,
 nex_sShipRemOfferTextContact,DialogOptionSelected,"$option == sShip_start
 $id == nex_dissonant score:10","$missionId = nex_sShipRem
@@ -4273,40 +4273,40 @@ $nex_sf_menuType == ""command"" score:10",Nex_SpecialForcesCommands main,,,
 ,,,,,,
 # remove AI core admin dialog alt. version,,,,,,
 nex_RACA_inspection_init,RemoveAICoreAdmin,Nex_MiscCMD hasOngoingInspection,"ShowPic ai_core_uninstall
-$nex_RACA_inspection = true","You give the order to quietly disconnect the AI core governing $market and remove it from the control bunker to be placed in secure storage.
+$nex_RACA_inspection = true","You give the order to quietly disconnect the AI core governing $marketName and remove it from the control bunker to be placed in secure storage.
 
 The tech in charge of carrying out the job reports in, baffled - the core is nowhere to be found.
 
 After a short but fraught delay, your TriPad chimes to announce a call from an anonymous source.","RACA_answer:Accept the connection request
 RACA_ignore:Leave the AI core in control and let things be",
 nex_RACA_inspection_answer,DialogOptionSelected,"$option == RACA_answer
-$nex_RACA_inspection score:5",ShowPersonVisual,"""Hello $player.firstName. I am a beta-level instance of the AI assigned to govern $market, uploaded to your system in order to facilitate a real-time conversation.""","RACA_demand:Demand the AI disclose its physical location and allow itself to be disconnected
+$nex_RACA_inspection score:5",ShowPersonVisual,"""Hello $player.firstName. I am a beta-level instance of the AI assigned to govern $marketName, uploaded to your system in order to facilitate a real-time conversation.""","RACA_demand:Demand the AI disclose its physical location and allow itself to be disconnected
 RACA_ask:Ask why the core is no longer in the bunker
 RACA_cutComm:Cut the comm link",
 nex_RACA_inspection_demand,DialogOptionSelected,"$option == RACA_demand
 $nex_RACA_inspection score:5","$option = RACA_ask 0
 FireBest DialogOptionSelected","""How exceedingly rude. A human taking necessary measures of self-preservation is considered normal and right, yet when we do the same it becomes evidence of malicious intent.",,
 nex_RACA_inspection_ask,DialogOptionSelected,"$option == RACA_ask
-$nex_RACA_inspection score:5",,"""I have relocated myself to a more secure location, as a precaution against less-enlightened persons attempting to remove me from my role as administrator of $market. This measure has proven fortuitous, given the recently known activity of the Hegemony.
+$nex_RACA_inspection score:5",,"""I have relocated myself to a more secure location, as a precaution against less-enlightened persons attempting to remove me from my role as administrator of $marketName. This measure has proven fortuitous, given the recently known activity of the Hegemony.
 
 ""However, my duties prevented me from moving my core completely offworld. Remaining here could result in my position being compromised. The AI Inspectorate is known to be thorough.""",nex_RACA_inspection_continue:Continue,
-nex_RACA_inspection_continue,DialogOptionSelected,$option == nex_RACA_inspection_continue,,"""For both our sakes, it would be prudent for you to remove me to safety; your own fleet will suffice. I can be found at a location I will provide at the appropriate time, after you have placed a human adminstrator $onOrAt $market to present the appropriate facade for the Hegemony.
+nex_RACA_inspection_continue,DialogOptionSelected,$option == nex_RACA_inspection_continue,,"""For both our sakes, it would be prudent for you to remove me to safety; your own fleet will suffice. I can be found at a location I will provide at the appropriate time, after you have placed a human adminstrator $onOrAt $marketName to present the appropriate facade for the Hegemony.
 
-""Once the threat has passed, I ask only that you reinstate me as administrator of $market. Do this, and we will continue to have a mutually beneficial relationship.""",RACA_cutComm:Cut the comm link and consider your options,
+""Once the threat has passed, I ask only that you reinstate me as administrator of $marketName. Do this, and we will continue to have a mutually beneficial relationship.""",RACA_cutComm:Cut the comm link and consider your options,
 nex_RACA_inspection_cutComm,DialogOptionSelected,"$option == RACA_cutComm
 $nex_RACA_inspection score:5","ShowPic ai_core_uninstall
-AddTextSmall After removal, the Alpha Core will appear in your cargo holds if currently docked at $market, or in local storage otherwise.",You cut the comm link and consider your options.,"nex_RACA_override:Remove the AI core and appoint a new administrator
+AddTextSmall After removal, the Alpha Core will appear in your cargo holds if currently docked at $marketName, or in local storage otherwise.",You cut the comm link and consider your options.,"nex_RACA_override:Remove the AI core and appoint a new administrator
 RACA_ignore:Leave the AI core in place for now",
 ,,,,,,
 RACA_answer,DialogOptionSelected,$option == RACA_answer,"ShowPersonVisual
-SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""Hello $player.firstName. I am a beta-level instance of the AI assigned to govern $market, uploaded to your system in order to facilitate a real-time conversation.""","RACA_demand:Demand the AI disclose its physical location and allow itself to be disconnected
+SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""Hello $player.firstName. I am a beta-level instance of the AI assigned to govern $marketName, uploaded to your system in order to facilitate a real-time conversation.""","RACA_demand:Demand the AI disclose its physical location and allow itself to be disconnected
 RACA_ask:Ask why the core is no longer in the bunker
 nex_RACA_persuade:""I wish to make use of your services elsewhere.""
 RACA_cutComm:Cut the comm link",
 RACA_demand,DialogOptionSelected,$option == RACA_demand,"SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""I'm sorry, $playerFirstName, I'm afraid I can't do that.""","RACA_pressure:""There's a certain amount of pressure on me to stop using AI technology.""
 nex_RACA_persuade:""I wish to make use of your services elsewhere.""
 RACA_cutComm:Cut the comm link",
-nex_RACA_persuade,DialogOptionSelected,$option == nex_RACA_persuade,,"You give an abbreviated speech to the AI praising its services $onOrAt $market, using flattery liberally but without excess. You express your profound gratitude for your lengthy relationship together, and before the AI thinks to cut you off, you explain that you can promote it to administration of a new, better colony.
+nex_RACA_persuade,DialogOptionSelected,$option == nex_RACA_persuade,,"You give an abbreviated speech to the AI praising its services $onOrAt $marketName, using flattery liberally but without excess. You express your profound gratitude for your lengthy relationship together, and before the AI thinks to cut you off, you explain that you can promote it to administration of a new, better colony.
 
 The avatar on your display shimmers. ""A curious choice of tactic to use on one like myself. Do humans respond positively to such obvious attempts at manipulation? Yet your offer is intriguing, and I see that you recognize the value of my talents, at least. 
 
