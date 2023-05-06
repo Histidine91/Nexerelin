@@ -600,7 +600,7 @@ nex_decivEvent_acceptRaid,DialogOptionSelected,"$option == nex_decivEvent_accept
 $market.nex_decivEvent_type == ""raid""","AddRaidObjective genericIcon ""Recover item"" MINIMAL $entity.raidDifficulty Nex_DecivEvent_RaidFinishedA
 $option = mktRaidNonMarket
 FireBest DialogOptionSelected",,,
-nex_decivEvent_acceptRaid2,Nex_DecivEvent_RaidFinishedA,,AddCommodity $market.nex_decivEvent_giveItem $market.nex_decivEvent_giveCount,"After a brief reconnaisance overflight with aerospace assets, your marines storm the target location. The crude defenses of a minor settlement on a decivilized world are no match for an organized marine element with air and orbital support, and resistance rapidly disintegrates.
+nex_decivEvent_acceptRaid2,Nex_DecivEvent_RaidFinishedA,,AddCommodity $market.nex_decivEvent_giveItem $market.nex_decivEvent_giveCount,"After a brief reconnaissance overflight with aerospace assets, your marines storm the target location. The crude defenses of a minor settlement on a decivilized world are no match for an organized marine element with air and orbital support, and resistance rapidly disintegrates.
 
 A quick search turns up $nex_decivEvent_raidItem in the leader's personal chambers. Your squads also find a pile of loot, which they load on a shuttle.",,
 nex_decivEvent_acceptRaid3,Nex_DecivEvent_RaidFinishedB,,"Nex_DecivEvent end
