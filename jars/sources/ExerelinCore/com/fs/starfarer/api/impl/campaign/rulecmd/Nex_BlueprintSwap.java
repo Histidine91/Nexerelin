@@ -1,16 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoPickerListener;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SpecialItemData;
-import com.fs.starfarer.api.campaign.SpecialItemSpecAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -28,22 +19,17 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 
 public class Nex_BlueprintSwap extends PaginatedOptions {
 	
-	public static final String POINTS_KEY = "$nex_BPSwapPoints";
+	public static final String POINTS_KEY = "nex_BPSwapPoints";
 	public static final String STOCK_ARRAY_KEY = "$nex_BPSwapStock";
 	public static final String ALREADY_SOLD_KEY = "$nex_BPSwapAlreadySold";
 	public static final float STOCK_KEEP_DAYS = 30;
