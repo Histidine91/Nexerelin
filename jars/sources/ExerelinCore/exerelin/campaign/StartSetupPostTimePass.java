@@ -1,15 +1,7 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.PersonImportance;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SpecialItemData;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
@@ -20,14 +12,7 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
-import com.fs.starfarer.api.impl.campaign.ids.Abilities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Items;
-import com.fs.starfarer.api.impl.campaign.ids.People;
-
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.intel.misc.FleetLogIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -40,26 +25,24 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
+import exerelin.ExerelinConstants;
+import exerelin.campaign.customstart.Nex_SpacerObligation;
 import exerelin.campaign.intel.Nex_GalatianAcademyStipend;
 import exerelin.campaign.ui.OwnFactionSetupScript;
-import exerelin.world.ExerelinCorvusLocations;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.SpecialItemSet;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
+import exerelin.world.ExerelinCorvusLocations;
 import exerelin.world.VanillaSystemsGenerator;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import lombok.extern.log4j.Log4j;
 import org.lwjgl.util.vector.Vector2f;
 
-import static com.fs.starfarer.api.impl.campaign.ids.People.*;
-import exerelin.campaign.customstart.Nex_SpacerObligation;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+import static com.fs.starfarer.api.impl.campaign.ids.People.COTTON;
+import static com.fs.starfarer.api.impl.campaign.ids.People.SIYAVONG;
 
 @Log4j
 public class StartSetupPostTimePass {
@@ -71,6 +54,7 @@ public class StartSetupPostTimePass {
 		if (Global.getSector().isInNewGameAdvance()) return;
 		
 		boolean corvusMode = SectorManager.getManager().isCorvusMode();
+		Global.getSector().getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_RANDOM_SECTOR, !corvusMode);
 		
 		if (corvusMode && !TutorialMissionIntel.isTutorialInProgress())
 			VanillaSystemsGenerator.exerelinEndGalatiaPortionOfMission();
