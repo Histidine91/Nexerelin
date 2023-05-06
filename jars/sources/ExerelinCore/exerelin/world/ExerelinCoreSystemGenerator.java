@@ -1,36 +1,16 @@
 package exerelin.world;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.PlanetSpecAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.impl.campaign.procgen.AgeGenDataSpec;
-import com.fs.starfarer.api.impl.campaign.procgen.CategoryGenDataSpec;
-import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
-import com.fs.starfarer.api.impl.campaign.procgen.ConstellationGen;
-import com.fs.starfarer.api.impl.campaign.procgen.LocationGenDataSpec;
-import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
-import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
-import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
-import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
-import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.NEBULA_NONE;
-import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG_NOT_IN_NEBULA;
-import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG_REQUIRES_NEBULA;
-import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.getNormalRandom;
-import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.random;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.impl.campaign.procgen.*;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.ThemeGenContext;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.NexConfig;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.util.*;
 
 // same as vanilla except with moar planets + always custom names, and adds more gates + objectives
 public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
@@ -260,9 +240,8 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		String parentCategory = context.parentCategory;
 		
 		WeightedRandomPicker<CategoryGenDataSpec> picker = new WeightedRandomPicker<CategoryGenDataSpec>(random);
-		Collection<Object> categoryDataSpecs = Global.getSettings().getAllSpecs(CategoryGenDataSpec.class);
-		for (Object obj : categoryDataSpecs) {
-			CategoryGenDataSpec categoryData = (CategoryGenDataSpec) obj;
+		Collection<CategoryGenDataSpec> categoryDataSpecs = Global.getSettings().getAllSpecs(CategoryGenDataSpec.class);
+		for (CategoryGenDataSpec categoryData : categoryDataSpecs) {
 			boolean catNothing = categoryData.getCategory().equals(CAT_NOTHING);
 			if (!nothingOk && catNothing) continue;
 //			if (categoryData.getCategory().equals("cat_terrain_rings")) {

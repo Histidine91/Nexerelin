@@ -164,7 +164,7 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
         }
 
         @Override
-        public void createCustomDialog(CustomPanelAPI panel) {
+        public void createCustomDialog(CustomPanelAPI panel, CustomDialogCallback callback) {
             this.panel = panel;
             float pad = 3;
             float opad = 10;

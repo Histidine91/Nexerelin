@@ -102,7 +102,7 @@ public abstract class GBIndustryPickerDialogDelegate implements CustomDialogDele
     }
 
     @Override
-    public void createCustomDialog(CustomPanelAPI panel) {
+    public void createCustomDialog(CustomPanelAPI panel, CustomDialogCallback callback) {
         mainPanel = panel;
         TooltipMakerAPI tooltip = panel.createUIElement(panel.getPosition().getWidth(), panel.getPosition().getHeight(), true);
         createHeader(tooltip);

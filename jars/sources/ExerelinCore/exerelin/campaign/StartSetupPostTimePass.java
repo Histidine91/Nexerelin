@@ -439,7 +439,7 @@ public class StartSetupPostTimePass {
 		{
 			if (dir.getType() != CommDirectoryEntryAPI.EntryType.PERSON) continue;
 			PersonAPI contact = (PersonAPI)dir.getEntryData();
-			if (ContactIntel.playerHasContact(contact)) continue;
+			if (ContactIntel.playerHasContact(contact, true)) continue;
 			if (contact.getMemoryWithoutUpdate().getBoolean("$nex_no_starting_contact")) continue;
 			
 			String postId = contact.getPostId();

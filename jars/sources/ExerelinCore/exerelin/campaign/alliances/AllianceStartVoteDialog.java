@@ -11,7 +11,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.utilities.StringHelper;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AllianceStartVoteDialog implements CustomDialogDelegate {
@@ -39,7 +38,7 @@ public class AllianceStartVoteDialog implements CustomDialogDelegate {
      */
 
     @Override
-    public void createCustomDialog(CustomPanelAPI panel) {
+    public void createCustomDialog(CustomPanelAPI panel, CustomDialogCallback callback) {
 
     }
 

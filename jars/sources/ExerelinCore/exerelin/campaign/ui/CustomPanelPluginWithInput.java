@@ -58,4 +58,9 @@ public abstract class CustomPanelPluginWithInput implements CustomUIPanelPlugin 
     public boolean removeListener(CustomUIPanelInputListener listener) {
         return listeners.remove(listener);
     }
+
+    @Override
+    public void buttonPressed(Object buttonId) {
+        // TBD
+    }
 }

@@ -1,3 +1,5 @@
+TO DO FOR STARSECTOR 0.96
+
 Files to check on Starsector update, because they significantly modify vanilla code that could change under us.
 Partial list.
 
@@ -21,7 +23,9 @@ Partial list.
 last thing to look at is Nex_MarketCMD
 
 0.96 notes:
-- Remove RestoreCommanderPlugin, Nex_CheapCommodityMission
+- [done] Remove RestoreCommanderPlugin, Nex_CheapCommodityMission
+- tabo mission override might need to be in bar_events as well
+- showCampaignEntityPicker has new methods, check those out
 
 0.95 notes:
 - SSP_BattleCreationPluginImpl looks RIP, it can't access needed variables from the data class
@@ -31,6 +35,7 @@ Do on future SS release:
 	- Deciv listener applications:
 		- Sector manager (faction elimination): useless, we don't know who the previous owner was
 			- Just use it to run the live faction check
+		- We do have a pre-deciv checker that works
 	- Player colonized listener applications:
 		- Faction setup nag script? mehhh
 

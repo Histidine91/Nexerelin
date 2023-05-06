@@ -1,13 +1,7 @@
 package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -24,7 +18,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -37,20 +30,19 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
-import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
-import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
-import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.SOURCE_ID;
-import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.getString;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ModPluginEventListener;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
-import java.awt.Color;
-import java.util.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 
 public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements EconomyTickListener, ModPluginEventListener {
 	
@@ -181,7 +173,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			if (live.getVariant().getSource() != VariantSource.REFIT) {
 				live.setVariant(live.getVariant().clone(), false, false);
 				live.getVariant().setSource(VariantSource.REFIT);
-				live.getVariant().addTag(Items.TAG_NO_AUTOFIT);
+				live.getVariant().addTag(Tags.TAG_NO_AUTOFIT);
 			}
 		}
 		

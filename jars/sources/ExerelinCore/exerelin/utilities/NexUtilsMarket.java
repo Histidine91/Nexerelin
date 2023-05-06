@@ -3,6 +3,7 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
@@ -13,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
+import com.fs.starfarer.api.ui.MarkerData;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
@@ -26,6 +28,7 @@ import lombok.extern.log4j.Log4j;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 @Log4j
 public class NexUtilsMarket {
@@ -471,6 +474,21 @@ public class NexUtilsMarket {
 				}
 				public float getFuelRangeMult() {
 					return 1;
+				}
+
+				@Override
+				public List<IntelInfoPlugin.ArrowData> getArrows() {
+					return null;
+				}
+
+				@Override
+				public List<MarkerData> getMarkers() {
+					return null;
+				}
+
+				@Override
+				public Set<StarSystemAPI> getStarSystemsToShow() {
+					return null;
 				}
 			});
 	}
