@@ -27,7 +27,7 @@ public class RemnantQuestUtils {
 		
 	public static final String PERSON_DISSONANT = "nex_dissonant";
 	public static final String PERSON_TOWERING = "nex_towering";
-	public static final String PERSON_M4_KNIGHT = "nex_luddicKnight";
+	public static final String PERSON_ARGENT = "nex_luddicKnight";
 	public static final List<String> TAG_AS_REMNANT_MISSION = new ArrayList<>(Arrays.asList(new String[]{
 		//"proCom", // meh
 		"sShip", 
@@ -101,12 +101,12 @@ public class RemnantQuestUtils {
 		person.getStats().setSkillLevel(NexSkills.FORCE_CONCENTRATION_EX, 1);
 	}
 
-	public static PersonAPI getOrCreateM4LuddicKnight() {
-		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_M4_KNIGHT);
+	public static PersonAPI getOrCreateArgent() {
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_ARGENT);
 		if (person != null) return person;
 
 		person = Global.getSector().getFaction(Factions.LUDDIC_CHURCH).createRandomPerson(FullName.Gender.ANY);
-		person.setId(PERSON_M4_KNIGHT);
+		person.setId(PERSON_ARGENT);
 		person.setImportance(PersonImportance.HIGH);
 		person.setVoice(Voices.FAITHFUL);
 		person.setFaction(Factions.LUDDIC_CHURCH);
@@ -130,7 +130,7 @@ public class RemnantQuestUtils {
 		person.setGender(FullName.Gender.FEMALE);
 		person.getName().setFirst(getString("knightName1"));
 		person.getName().setLast(getString("knightName2"));
-		person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_m4Knight"));
+		person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_argent"));
 
 		Global.getSector().getImportantPeople().addPerson(person);
 		return person;

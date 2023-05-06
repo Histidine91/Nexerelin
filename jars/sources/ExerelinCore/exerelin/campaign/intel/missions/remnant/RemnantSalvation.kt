@@ -49,6 +49,7 @@ import exerelin.campaign.graphics.BombardmentAnimationV2
 import exerelin.campaign.intel.merc.MercContractIntel
 import exerelin.campaign.intel.missions.BuildStation.SystemUninhabitedReq
 import exerelin.plugins.ExerelinCampaignPlugin
+import exerelin.plugins.ExerelinModPlugin
 import exerelin.utilities.*
 import lombok.Getter
 import org.apache.log4j.Logger
@@ -81,14 +82,15 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     @Getter protected var timerToPK : Float = 30f;
 
     companion object {
+        @JvmField var SALVATION_ENABLED = false;
         @JvmField val STAT_MOD_ID = "nex_remSalvation_mod";
 
         @JvmField val log : Logger = Global.getLogger(ContactIntel::class.java)
         // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.devAddTriggers()
         @JvmStatic fun devAddTriggers() {
             var mission = Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_ref"] as RemnantSalvation
-            val argent = RemnantQuestUtils.getOrCreateM4LuddicKnight();
-            argent.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_m4Knight"));
+            val argent = RemnantQuestUtils.getOrCreateArgent();
+            argent.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_argent"));
         }
 
         // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.pk()
@@ -106,6 +108,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     override fun create(createdAt: MarketAPI, barEvent: Boolean): Boolean {
+        if (!SALVATION_ENABLED) {
+            //log.info("Blocking Salvation")
+            return false
+        }
+
         if (!setGlobalReference("\$nex_remSalvation_ref")) {
             return false
         }
@@ -183,7 +190,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         makeImportant(remnantSystem!!.hyperspaceAnchor, "\$nex_remSalvation_remnantSystem_imp", Stage.INVESTIGATE_LEADS)
         makeImportant(person, "\$nex_remSalvation_returnStage_imp", Stage.RETURN_TO_MIDNIGHT)
         makeImportant(target, "\$nex_remSalvation_target_imp", Stage.DEFEND_PLANET)
-        makeImportant(RemnantQuestUtils.getOrCreateM4LuddicKnight(), "\$nex_remSalvation_epilogue", Stage.EPILOGUE)
+        makeImportant(RemnantQuestUtils.getOrCreateArgent(), "\$nex_remSalvation_epilogue", Stage.EPILOGUE)
 
         // just sets up a memory value we'll use later
         beginStageTrigger(Stage.GO_TO_BASE)
@@ -313,6 +320,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         if (fleet2 != null) {
             RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, true)
         }
+
+        Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_endTimestamp"] = Global.getSector().clock.timestamp
     }
 
     /**
@@ -576,7 +585,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         )
         params.averageSMods = 1
         params.ignoreMarketFleetSizeMult = true
-        //params.commander = RemnantQuestUtils.getOrCreateM4LuddicKnight()  // add manualy later, else we'll have to reset their rank
+        params.commander = RemnantQuestUtils.getOrCreateArgent()
         params.officerNumberMult = 1.2f
         params.officerLevelBonus = 1
 
@@ -593,13 +602,6 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_WAR_FLEET] = true
         // make it busy so patrol assignments don't pull it elsewhere
         Misc.setFlagWithReason(fleet.memoryWithoutUpdate, MemFlags.FLEET_BUSY, "nex_remSalvation", true, -1f)
-
-        val commander = RemnantQuestUtils.getOrCreateM4LuddicKnight();
-        fleet.flagship.captain = commander;
-        fleet.commander = commander;
-
-        //var flagship = fleet.flagship
-        //flagship.captain = params.commander
 
         makeImportant(fleet, "\$nex_remSalvation_knightFleet_imp", Stage.DEFEND_PLANET)
         makeImportant(fleet, "\$nex_remSalvation_knightFleet_epilogue_imp", Stage.EPILOGUE)
@@ -645,6 +647,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         unapplyStationMalfunction()
         // send the fleet home if it's still alive
         RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, true)
+
+        Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_endTimestamp"] = Global.getSector().clock.timestamp
     }
 
     protected fun spawnFlagship1Wreck() {
@@ -687,9 +691,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         data.addShip(copy)
 
         Misc.setSalvageSpecial(flagship2, data)
-        if (!targetPKed && Global.getSettings().modManager.isModEnabled("Terraforming & Station Construction")) {
+        if (!targetPKed) {
+            val haveBoggled = Global.getSettings().modManager.isModEnabled("Terraforming & Station Construction")
             val salvage = Global.getFactory().createCargo(true)
-            salvage.addSpecial(SpecialItemData("boggled_planetkiller", null), 1f)
+            salvage.addSpecial(SpecialItemData(if (haveBoggled) "boggled_planetkiller" else Items.PLANETKILLER, null), 1f)
             BaseSalvageSpecial.addExtraSalvage(flagship2, salvage)
         }
 
@@ -1109,7 +1114,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
                 info.addPara("[debug] Time left: %s days", opad, hl, String.format("%.1f", this.timerToPK))
             }
         } else if (currentStage == Stage.EPILOGUE) {
-            var knight = RemnantQuestUtils.getOrCreateM4LuddicKnight()
+            var knight = RemnantQuestUtils.getOrCreateArgent()
             var str = RemnantQuestUtils.getString("salvation_epilogueDesc")
             str = StringHelper.substituteToken(str, "\$system", target!!.containingLocation.name)
             info.addPara(str, opad, knight.faction.baseUIColor, knight.nameString)
@@ -1156,7 +1161,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             if (targetPKed) key += "PKed"
             info.addPara(RemnantQuestUtils.getString(key), pad, tc, target!!.faction.baseUIColor, target!!.name)
         } else if (currentStage == Stage.EPILOGUE) {
-            var knight = RemnantQuestUtils.getOrCreateM4LuddicKnight()
+            var knight = RemnantQuestUtils.getOrCreateArgent()
             info.addPara(RemnantQuestUtils.getString("salvation_epilogueNextStep"), pad, tc, knight.faction.baseUIColor, knight.name.last)
         }
         return false
@@ -1210,7 +1215,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             reportWonBattle1(null, null)
         }
         else if (fleet == this.knightFleet) {
-            var knight = RemnantQuestUtils.getOrCreateM4LuddicKnight()
+            var knight = RemnantQuestUtils.getOrCreateArgent()
             target!!.addPerson(knight)
             target!!.commDirectory.addPerson(knight)
         }
