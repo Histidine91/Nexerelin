@@ -1,6 +1,5 @@
 package exerelin.utilities;
 
-import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import lombok.extern.log4j.Log4j;
@@ -102,6 +101,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         LunaSettings.SettingsCreator.refresh(mid);
 
         tryLoadLunaConfig();
+
+        createListener();
     }
 
     public static void tryLoadLunaConfig() {
@@ -260,7 +261,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
     public static LunaConfigHelper createListener() {
         LunaConfigHelper helper = new LunaConfigHelper();
-        Global.getSector().getListenerManager().addListener(helper, true);
+        LunaSettings.INSTANCE.addListener(helper);
         return helper;
     }
 

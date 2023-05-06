@@ -394,8 +394,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         alphaSiteWorkaround();
 
-        if (HAVE_LUNALIB) LunaConfigHelper.createListener();
-
         for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
         {
             x.onGameLoad(newGame);
