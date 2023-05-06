@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.GenericPluginManagerAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.listeners.CoreDiscoverEntityPlugin;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
+import com.fs.starfarer.api.campaign.listeners.TestIndustryOptionProvider;
 import com.fs.starfarer.api.characters.SkillsChangeOfficerEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveExcessOPEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveSmodsEffect;
@@ -18,6 +19,9 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
 import com.fs.starfarer.api.impl.campaign.enc.EncounterManager;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
+import com.fs.starfarer.api.impl.campaign.fleets.PersonalFleetHoracioCaden;
+import com.fs.starfarer.api.impl.campaign.fleets.PersonalFleetOxanaHyder;
+import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.ghosts.SensorGhostManager;
 import com.fs.starfarer.api.impl.campaign.graid.StandardGroundRaidObjectivesCreator;
 import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
@@ -26,12 +30,18 @@ import com.fs.starfarer.api.impl.campaign.intel.PersonBountyManager;
 import com.fs.starfarer.api.impl.campaign.intel.SurveyPlanetIntelCreator;
 import com.fs.starfarer.api.impl.campaign.intel.SystemBountyManager;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
+import com.fs.starfarer.api.impl.campaign.intel.events.CommerceBountyManager;
+import com.fs.starfarer.api.impl.campaign.intel.events.DisposableHostileActivityFleetManager;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager;
+import com.fs.starfarer.api.impl.campaign.intel.events.ht.HTFactorTracker;
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.OmegaOfficerGeneratorPlugin;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.PKDefenderPluginImpl;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantOfficerGeneratorPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamManager;
+import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamVisibilityManager;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
@@ -56,6 +66,11 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		SectorAPI sector = Global.getSector();
 		
 		ListenerManagerAPI listeners = sector.getListenerManager();
+
+		if (Global.getSettings().isDevMode()) {
+			listeners.addListener(new TestIndustryOptionProvider(), true);
+		}
+
 		if (!listeners.hasListenerOfClass(StandardGroundRaidObjectivesCreator.class)) {
 			listeners.addListener(new StandardGroundRaidObjectivesCreator(), true);
 		}
@@ -66,8 +81,14 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!listeners.hasListenerOfClass(PopulationAndInfrastructure.CoronalTapFactor.class)) {
 			listeners.addListener(new PopulationAndInfrastructure.CoronalTapFactor(), true);
 		}
-		
+		if (!listeners.hasListenerOfClass(SlipstreamVisibilityManager.class)) {
+			listeners.addListener(new SlipstreamVisibilityManager(), true);
+		}
+
 		GenericPluginManagerAPI plugins = sector.getGenericPlugins();
+		if (!plugins.hasPlugin(PKDefenderPluginImpl.class)) {
+			plugins.addPlugin(new PKDefenderPluginImpl(), true);
+		}
 		if (!plugins.hasPlugin(SalvageGenFromSeed.SalvageDefenderModificationPluginImpl.class)) {
 			plugins.addPlugin(new SalvageGenFromSeed.SalvageDefenderModificationPluginImpl(), true);
 		}
@@ -94,7 +115,19 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 //		}
 		
 		PlayerFleetPersonnelTracker.getInstance();
-		
+
+		if (!sector.hasScript(PersonalFleetHoracioCaden.class)) {
+			sector.addScript(new PersonalFleetHoracioCaden());
+		}
+		if (!sector.hasScript(PersonalFleetOxanaHyder.class)) {
+			sector.addScript(new PersonalFleetOxanaHyder());
+		}
+//		if (!sector.hasScript(PilgrimageFleetRouteManager.class)) {
+//			sector.addScript(new PilgrimageFleetRouteManager());
+//		}
+		if (!sector.hasScript(MiscFleetRouteManager.class)) {
+			sector.addScript(new MiscFleetRouteManager());
+		}
 		if (!sector.hasScript(EncounterManager.class)) {
 			sector.addScript(new EncounterManager());
 		}
@@ -139,6 +172,19 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		
 		if (!sector.hasScript(DecivTracker.class)) {
 			sector.addScript(new DecivTracker());
+		}
+
+		if (!sector.hasScript(DisposableHostileActivityFleetManager.class)) {
+			sector.addScript(new DisposableHostileActivityFleetManager());
+		}
+		if (!sector.hasScript(HostileActivityManager.class)) {
+			sector.addScript(new HostileActivityManager());
+		}
+		if (!sector.hasScript(HTFactorTracker.class)) {
+			sector.addScript(new HTFactorTracker());
+		}
+		if (!sector.hasScript(CommerceBountyManager.class)) {
+			sector.addScript(new CommerceBountyManager());
 		}
 		
 		// MODIFIED

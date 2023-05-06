@@ -17,7 +17,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -49,7 +48,17 @@ public class Nex_AICores extends AICores {
 				for (CargoStackAPI stack : cargo.getStacksCopy()) {
 					playerCargo.removeItems(stack.getType(), stack.getData(), stack.getSize());
 					if (stack.isCommodityStack()) { // should be always, but just in case
-						AddRemoveCommodity.addCommodityLossText(stack.getCommodityId(), (int) stack.getSize(), text);
+						int num = (int) stack.getSize();
+						AddRemoveCommodity.addCommodityLossText(stack.getCommodityId(), num, text);
+
+						String key = "$turnedIn_" + stack.getCommodityId();
+						int turnedIn = faction.getMemoryWithoutUpdate().getInt(key);
+						faction.getMemoryWithoutUpdate().set(key, turnedIn + num);
+
+						// Also, total of all cores! -dgb
+						String key2 = "$turnedIn_allCores";
+						int turnedIn2 = faction.getMemoryWithoutUpdate().getInt(key2);
+						faction.getMemoryWithoutUpdate().set(key2, turnedIn2 + num);
 					}
 				}
 				
