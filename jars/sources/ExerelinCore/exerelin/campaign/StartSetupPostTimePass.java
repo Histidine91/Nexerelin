@@ -163,6 +163,8 @@ public class StartSetupPostTimePass {
 		if (!corvusMode || ExerelinSetupData.getInstance().skipStory) {
 			Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
 			MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
+			MemoryAPI playMem = Global.getSector().getCharacterData().getMemoryWithoutUpdate();
+
 			mem.set(GateEntityPlugin.CAN_SCAN_GATES, true);
 			mem.set(GateEntityPlugin.GATES_ACTIVE, true);
 			Global.getSector().getCharacterData().addAbility(Abilities.TRANSVERSE_JUMP);
@@ -171,8 +173,11 @@ public class StartSetupPostTimePass {
 			mem.set("$interactedWithGABarEvent", true);
 			
 			if (corvusMode) {
-				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$metDaud", true);
-				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$gaveDaudYaribayContact", true);
+				
+				playMem.set("$metDaud", true);
+				playMem.set("$gaveDaudYaribayContact", true);
+				playMem.set("$metBrotherCotton", true);
+				playMem.set("$satWithCottonCount", 1);	// assume met once during gaATG
 				mem.set("$gaATG_missionCompleted", true);
 				mem.set("$gaATG_missionGiven", true);
 				mem.set("$gaFC_missionCompleted", true);
