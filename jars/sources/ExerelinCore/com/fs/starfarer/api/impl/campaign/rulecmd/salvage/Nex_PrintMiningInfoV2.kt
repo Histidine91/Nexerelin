@@ -34,24 +34,24 @@ import kotlin.collections.ArrayList
 open class Nex_PrintMiningInfoV2 : BaseCommandPlugin() {
 
     companion object {
-        @JvmStatic val log: Logger = Global.getLogger(Nex_PrintMiningInfoV2.javaClass)
+        @JvmField val log: Logger = Global.getLogger(Nex_PrintMiningInfoV2.javaClass)
 
-        @JvmStatic val STRING_CATEGORY = "exerelin_mining"
-        @JvmStatic val WING = Misc.ucFirst(StringHelper.getString("fighterWingShort"))
-        @JvmStatic val MEMORY_KEY_MINING_HULLS = "\$nex_miningHulls"
-        @JvmStatic val MEMORY_KEY_MINING_WINGS = "\$nex_miningWings"
-        @JvmStatic val MEMORY_KEY_MINING_WEAPONS = "\$nex_miningWeapons"
-        @JvmStatic val COST_HEIGHT = 67f
-        @JvmStatic val SHIP_PANEL_HEIGHT = 48f
-        @JvmStatic val SHIP_PANEL_HEIGHT_SMALL = 36f
-        @JvmStatic val TEXT_HEIGHT = 24f
-        @JvmStatic val SHIP_WING_COLUMN_WIDTHS = arrayOf(160f, 48f, 72f, 160f, 48f)
-        @JvmStatic val WEAPON_COLUMN_WIDTHS = arrayOf(160f, 48f, 72f, 60f, 100f, 48f)
+        @JvmField val STRING_CATEGORY = "exerelin_mining"
+        @JvmField val WING = Misc.ucFirst(StringHelper.getString("fighterWingShort"))
+        @JvmField val MEMORY_KEY_MINING_HULLS = "\$nex_miningHulls"
+        @JvmField val MEMORY_KEY_MINING_WINGS = "\$nex_miningWings"
+        @JvmField val MEMORY_KEY_MINING_WEAPONS = "\$nex_miningWeapons"
+        @JvmField val COST_HEIGHT = 67f
+        @JvmField val SHIP_PANEL_HEIGHT = 48f
+        @JvmField val SHIP_PANEL_HEIGHT_SMALL = 36f
+        @JvmField val TEXT_HEIGHT = 24f
+        @JvmField val SHIP_WING_COLUMN_WIDTHS = arrayOf(160f, 48f, 72f, 160f, 48f)
+        @JvmField val WEAPON_COLUMN_WIDTHS = arrayOf(160f, 48f, 72f, 60f, 100f, 48f)
 
-        @JvmStatic var miningToolTab = MiningToolTab.SHIP
-        @JvmStatic var sortColumn = SortColumn.NAME
-        @JvmStatic var sortAscending = true
-        @JvmStatic var needResort = true
+        @JvmField var miningToolTab = MiningToolTab.SHIP
+        @JvmField var sortColumn = SortColumn.NAME
+        @JvmField var sortAscending = true
+        @JvmField var needResort = true
 
         @JvmStatic fun getString(id: String): String {
             return getString(id, false)

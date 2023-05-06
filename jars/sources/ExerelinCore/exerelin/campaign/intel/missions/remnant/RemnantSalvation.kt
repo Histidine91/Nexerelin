@@ -81,9 +81,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     @Getter protected var timerToPK : Float = 30f;
 
     companion object {
-        @JvmStatic val STAT_MOD_ID = "nex_remSalvation_mod";
+        @JvmField val STAT_MOD_ID = "nex_remSalvation_mod";
 
-        @JvmStatic val log : Logger = Global.getLogger(ContactIntel::class.java)
+        @JvmField val log : Logger = Global.getLogger(ContactIntel::class.java)
         // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.devAddTriggers()
         @JvmStatic fun devAddTriggers() {
             var mission = Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_ref"] as RemnantSalvation

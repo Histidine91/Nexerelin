@@ -12,7 +12,7 @@ import exerelin.utilities.NexUtils
 class Nex_PrintMiningInfoSort {
 
     companion object {
-        @JvmStatic val COMPARE_NAME =
+        @JvmField val COMPARE_NAME =
             Comparator<Pair<*, Float>> { p1, p2 ->
                 val n1 : String
                 val n2: String
@@ -41,9 +41,9 @@ class Nex_PrintMiningInfoSort {
                 return@Comparator n1.compareTo(n2)
             }
 
-        @JvmStatic val COMPARE_STRENGTH = NexUtils.PairWithFloatComparator(false)
+        @JvmField val COMPARE_STRENGTH = NexUtils.PairWithFloatComparator(false)
 
-        @JvmStatic val COMPARE_SIZE = Comparator<Pair<*, Float>> { p1, p2 ->
+        @JvmField val COMPARE_SIZE = Comparator<Pair<*, Float>> { p1, p2 ->
             when (p1.one) {
                 is ShipHullSpecAPI -> {
                     val n1 = (p1.one as ShipHullSpecAPI).hullSize
@@ -67,7 +67,7 @@ class Nex_PrintMiningInfoSort {
             }
         }
 
-        @JvmStatic val COMPARE_WEAPON_TYPE = Comparator<Pair<*, Float>> { p1, p2 ->
+        @JvmField val COMPARE_WEAPON_TYPE = Comparator<Pair<*, Float>> { p1, p2 ->
             if (p1.one is WeaponSpecAPI) {
                 val n1 = (p1.one as WeaponSpecAPI).mountType
                 val n2 = (p2.one as WeaponSpecAPI).mountType
@@ -76,7 +76,7 @@ class Nex_PrintMiningInfoSort {
             0
         }
 
-        @JvmStatic val COMPARE_DESIGN_TYPE = Comparator<Pair<*, Float>> { p1, p2 ->
+        @JvmField val COMPARE_DESIGN_TYPE = Comparator<Pair<*, Float>> { p1, p2 ->
             val n1 : String
             val n2 : String
             when (p1.one) {
@@ -101,7 +101,7 @@ class Nex_PrintMiningInfoSort {
             return@Comparator n1.compareTo(n2)
         }
 
-        @JvmStatic val COMPARE_OP_COST = Comparator<Pair<*, Float>> { p1, p2 ->
+        @JvmField val COMPARE_OP_COST = Comparator<Pair<*, Float>> { p1, p2 ->
             val n1 : Float
             val n2 : Float
             if (p1.one is ShipHullSpecAPI) {
@@ -120,7 +120,7 @@ class Nex_PrintMiningInfoSort {
             return@Comparator n1.compareTo(n2)
         }
 
-        @JvmStatic val COMPARE_SUPPLY_COST = Comparator<Pair<*, Float>> { p1, p2 ->
+        @JvmField val COMPARE_SUPPLY_COST = Comparator<Pair<*, Float>> { p1, p2 ->
             val n1 : Float
             val n2 : Float
             when (p1.one) {
