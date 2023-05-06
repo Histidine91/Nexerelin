@@ -27,7 +27,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
 import data.scripts.campaign.intel.SWP_IBBTracker;
 import data.scripts.campaign.intel.VayraUniqueBountyManager;
-import data.scripts.util.MagicSettings;
+import org.magiclib.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;

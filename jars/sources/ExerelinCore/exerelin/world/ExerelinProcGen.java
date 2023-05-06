@@ -19,7 +19,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.AL_ChaosCrackFleetManager;
-import data.scripts.terrain.MagicAsteroidBeltTerrainPlugin;
+import org.magiclib.terrain.MagicAsteroidBeltTerrainPlugin;
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;

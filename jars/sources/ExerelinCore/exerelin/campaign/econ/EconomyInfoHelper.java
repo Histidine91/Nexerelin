@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import data.scripts.util.MagicSettings;
+import org.magiclib.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
 import lombok.Getter;

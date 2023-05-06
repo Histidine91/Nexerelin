@@ -26,7 +26,7 @@ import com.fs.starfarer.api.loading.HullModSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.util.MagicSettings;
+import org.magiclib.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.NexUtilsAstro;
