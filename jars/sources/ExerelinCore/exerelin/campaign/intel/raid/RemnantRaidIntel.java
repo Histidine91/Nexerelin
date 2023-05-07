@@ -1,11 +1,7 @@
 package exerelin.campaign.intel.raid;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -14,18 +10,17 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
-import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
-
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import static exerelin.campaign.intel.raid.NexRaidIntel.log;
-
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
+import org.lazywizard.lazylib.MathUtils;
+
 import java.util.List;
 import java.util.Random;
-import org.lazywizard.lazylib.MathUtils;
+
+import static com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage.STRAGGLER;
 
 public class RemnantRaidIntel extends NexRaidIntel {
 	
@@ -53,7 +48,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		
 		SectorEntityToken gather = base;
 		
-		addStage(new RemnantRaidOrganizeStage(this, null, orgDur));
+		addStage(new RemnantRaidOrganizeStage(this, InvasionFleetManager.getManager().getFakeMarketForRemnantRaids(), orgDur));
 		
 		float successMult = 0.4f;
 		RemnantRaidAssembleStage assemble = new RemnantRaidAssembleStage(this, gather);
@@ -200,5 +195,8 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		if (getCurrentStage() <= 1 && (base == null || !base.isAlive()))
 			terminateEvent(OffensiveOutcome.FAIL);
 	}
-	
+
+	public boolean hasMarket() {
+		return false;
+	}
 }

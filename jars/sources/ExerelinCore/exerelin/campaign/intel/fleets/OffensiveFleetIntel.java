@@ -883,6 +883,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return false;
 	}
 
+	/**
+	 * @return False for fleet events that do not have an originating market (e.g. Remnant raids), true otherwise.
+	 */
+	public boolean hasMarket() {
+		return true;
+	}
+
 	public InvasionFleetManager.EventType getEventType() {
 		return InvasionFleetManager.EventType.RAID;
 	}

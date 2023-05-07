@@ -101,11 +101,11 @@ public class NexOrganizeStage extends OrganizeStage {
 		super.updateStatus();
 		boolean fail = false;
 		// fail if market is no longer in economy
-		if (market != null && !market.isInEconomy()) {
+		if (offFltIntel.hasMarket() && !market.isInEconomy()) {
 			fail = true;
 		}
 		// fail if spaceport + any present military base are disrupted
-		else if (market != null && offFltIntel.requiresSpaceportOrBase) {
+		else if (offFltIntel.hasMarket() && offFltIntel.requiresSpaceportOrBase) {
 			if (!NexUtilsMarket.hasWorkingSpaceport(market) && !market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY))
 				fail = true;
 		}

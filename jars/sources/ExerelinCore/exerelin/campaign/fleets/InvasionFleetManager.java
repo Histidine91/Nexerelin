@@ -106,6 +106,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	protected final IntervalUtil tracker;
 	protected IntervalUtil remnantRaidInterval = new IntervalUtil(300, 390);
+	@Getter protected MarketAPI fakeMarketForRemnantRaids = Global.getFactory().createMarket("nex_fake_remnant_market", "Fake market", 4);
 	
 	protected float daysElapsed = 0;
 	protected float templarInvasionPoints = 0;
@@ -123,6 +124,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	}
 	
 	protected Object readResolve() {
+		if (fakeMarketForRemnantRaids == null) {
+			fakeMarketForRemnantRaids = Global.getFactory().createMarket("nex_fake_remnant_market", "Fake market", 4);
+		}
 		return this;
 	}	
 	
@@ -873,6 +877,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		float value = 0;
 		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
+		if (markets.isEmpty()) return MAX_INVASION_SIZE;	// assume this is a Remnant raid or similar
+
 		for (MarketAPI market : markets) {
 			value += getMarketInvasionCommodityValue(market);
 		}
