@@ -27,7 +27,7 @@ import java.util.*;
 @Log4j
 public class FleetPoolManager extends BaseIntelPlugin {
 	
-	public static final boolean USE_POOL = true;
+	public static final boolean USE_POOL = false;
 	
 	public static final String DATA_KEY = "nex_fleetPoolManager";
 	public static final String MEMORY_KEY_POINTS_LAST_TICK = "$nex_fleetPoolPointsLastTick";
