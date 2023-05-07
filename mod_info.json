@@ -5,15 +5,21 @@
     "version":{
         "major":0, 
         "minor":10, 
-        "patch":"6d"
+        "patch":"6x"
     },
     "description":"Join a faction and conquer the Sector!",
-    "gameVersion":"0.95.1a-RC6",
+    "gameVersion":"0.96a-RC8",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
     "dependencies": [
         {"id": "lw_lazylib", "name": "LazyLib"},
-        {"id": "MagicLib", "name": "MagicLib"},
+        {"id": "MagicLib", "name": "MagicLib", 
+            "version":{
+                "major":1, 
+                "minor":0, 
+                "patch":0
+            }
+        },
     ],
     "modPlugin":"exerelin.plugins.ExerelinModPlugin",
 }
