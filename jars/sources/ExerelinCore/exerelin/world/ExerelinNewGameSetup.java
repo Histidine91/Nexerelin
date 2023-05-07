@@ -1,7 +1,5 @@
 package exerelin.world;
 
-import org.apache.log4j.Logger;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -12,14 +10,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.DisposableLuddicPathFleetManage
 import com.fs.starfarer.api.impl.campaign.fleets.DisposablePirateFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.MercFleetManagerV2;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -30,24 +21,16 @@ import com.fs.starfarer.api.impl.campaign.terrain.StarCoronaTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.ColonyManager;
-import exerelin.plugins.*;
-import exerelin.campaign.ExerelinSetupData;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.SectorManager;
-import exerelin.campaign.StatsTracker;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.util.Random;
+import exerelin.campaign.*;
+import exerelin.plugins.ExerelinCampaignPlugin;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.*;
+import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.util.Random;
 
 @SuppressWarnings("unchecked")
 public class ExerelinNewGameSetup implements SectorGeneratorPlugin
@@ -88,6 +71,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		else if (!NexConfig.prismInHyperspace)
 		{
 			prismEntity = generatePrismInOwnSystem();
+			if (!newGame) clearDeepHyper(prismEntity.getStarSystem().getHyperspaceAnchor(), 400);
 		}
 		else
 		{

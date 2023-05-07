@@ -166,6 +166,8 @@ public class ExerelinModPlugin extends BaseModPlugin
                 break;
             }
         }
+
+        new exerelin.world.ExerelinNewGameSetup().addPrismMarket(Global.getSector(), false);
         
         sector.addTransientScript(new ReinitScreenScript());
     }
