@@ -79,7 +79,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected static DiplomacyEventDef peaceTreatyEvent;
     protected static DiplomacyEventDef ceasefireEvent;
     
-    protected static float baseInterval = 10f;
+    protected static float baseInterval = 20f;
     protected float interval = baseInterval;
     protected final IntervalUtil intervalUtil;
     
@@ -114,7 +114,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     private static void loadSettings() throws IOException, JSONException {
         JSONObject config = Global.getSettings().getMergedJSONForMod(CONFIG_FILE, ExerelinConstants.MOD_ID);
-        baseInterval = (float)config.optDouble("eventFrequency", 30f);
+        baseInterval = (float)config.optDouble("eventFrequency", 20f);
         warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 30f);
         
         JSONArray eventsJson = config.getJSONArray("events");
