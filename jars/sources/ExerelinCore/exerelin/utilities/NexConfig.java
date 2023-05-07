@@ -119,7 +119,7 @@ public class NexConfig
     // Combat
     @Deprecated public static boolean useCustomBattleCreationPlugin = false;
     public static boolean officerDeaths = false;
-    public static boolean officerDaredevilBonus = true;
+    public static boolean officerDaredevilBonus = false;
     
     // Colonies
     public static int maxNPCNewColonySize = 6;
