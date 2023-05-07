@@ -582,6 +582,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 
 		if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0)) return false;
 
+		if (isRemnantRaid && market.isHidden()) return false;
+
 		if (type == EventType.SAT_BOMB && faction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
 			return false;
 
