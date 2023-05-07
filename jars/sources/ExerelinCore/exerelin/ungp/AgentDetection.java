@@ -1,12 +1,12 @@
 package exerelin.ungp;
 
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
-import data.scripts.campaign.specialist.UNGP_SpecialistSettings;
-import data.scripts.ungprules.impl.UNGP_BaseRuleEffect;
-import data.scripts.ungprules.tags.UNGP_CharacterTag;
 import exerelin.utilities.NexUtilsMath;
+import ungp.api.rules.UNGP_BaseRuleEffect;
+import ungp.scripts.campaign.specialist.UNGP_SpecialistSettings;
 
-public class AgentDetection extends UNGP_BaseRuleEffect implements UNGP_CharacterTag {
+@Deprecated
+public class AgentDetection extends UNGP_BaseRuleEffect {
     protected float bonus;
 
     @Override
@@ -24,13 +24,13 @@ public class AgentDetection extends UNGP_BaseRuleEffect implements UNGP_Characte
         return 0;
     }
 	
-	@Override
+	//@Override
 	public void applyPlayerCharacterStats(MutableCharacterStatsAPI stats) {
 		stats.getDynamic().getStat("nex_agent_detectionChance").modifyMult(rule.getBuffID(), 1+bonus, rule.getName());
 		stats.getDynamic().getStat("nex_agent_injuryChance").modifyMult(rule.getBuffID(), 1+bonus*2, rule.getName());
 	}
 
-	@Override
+	//@Override
 	public void unapplyPlayerCharacterStats(MutableCharacterStatsAPI stats) {
 		stats.getDynamic().getStat("nex_agent_detectionChance").unmodify(rule.getBuffID());
         stats.getDynamic().getStat("nex_agent_injuryChance").unmodify(rule.getBuffID());

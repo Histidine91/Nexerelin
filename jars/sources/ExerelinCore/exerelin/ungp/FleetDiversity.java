@@ -3,11 +3,11 @@ package exerelin.ungp;
 import com.fs.starfarer.api.campaign.BuffManagerAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import data.scripts.campaign.specialist.UNGP_SpecialistSettings.Difficulty;
-import data.scripts.ungprules.impl.UNGP_BaseRuleEffect;
-import data.scripts.ungprules.tags.UNGP_PlayerFleetTag;
-import data.scripts.utils.UNGP_BaseBuff;
 import exerelin.utilities.NexUtils;
+import ungp.api.rules.UNGP_BaseRuleEffect;
+import ungp.api.rules.tags.UNGP_PlayerFleetTag;
+import ungp.scripts.campaign.specialist.UNGP_SpecialistSettings;
+import ungp.scripts.utils.UNGP_BaseBuff;
 
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +96,7 @@ public class FleetDiversity extends UNGP_BaseRuleEffect implements UNGP_PlayerFl
 	}
 	
 	@Override
-	public String getDescriptionParams(int index, Difficulty difficulty) {
+	public String getDescriptionParams(int index, UNGP_SpecialistSettings.Difficulty difficulty) {
 		return getDescriptionParams(index);
 	}
 }

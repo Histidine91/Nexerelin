@@ -1,15 +1,15 @@
 package exerelin.ungp;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BuffManagerAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
-import data.scripts.campaign.specialist.UNGP_SpecialistSettings;
-import data.scripts.ungprules.impl.UNGP_BaseRuleEffect;
-import data.scripts.ungprules.tags.UNGP_PlayerFleetTag;
-import data.scripts.utils.UNGP_BaseBuff;
+import ungp.api.rules.UNGP_BaseRuleEffect;
+import ungp.api.rules.tags.UNGP_PlayerFleetTag;
+import ungp.scripts.campaign.specialist.UNGP_SpecialistSettings;
+import ungp.scripts.utils.UNGP_BaseBuff;
+
 import java.util.List;
 
 public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFleetTag {

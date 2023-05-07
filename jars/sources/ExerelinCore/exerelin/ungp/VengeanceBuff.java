@@ -2,8 +2,8 @@ package exerelin.ungp;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Skills;
-import data.scripts.campaign.specialist.UNGP_SpecialistSettings;
-import data.scripts.ungprules.impl.UNGP_BaseRuleEffect;
+import ungp.api.rules.UNGP_BaseRuleEffect;
+import ungp.scripts.campaign.specialist.UNGP_SpecialistSettings;
 
 public class VengeanceBuff extends UNGP_BaseRuleEffect {
 	public static final float SEARCH_TIME_MULT = 1.5f;
@@ -18,7 +18,7 @@ public class VengeanceBuff extends UNGP_BaseRuleEffect {
 	
 	@Override
 	public float getValueByDifficulty(int index, int difficulty) {
-		float diffMult = (float)difficulty/UNGP_SpecialistSettings.MAX_DIFFICULTY;
+		float diffMult = (float)difficulty/ UNGP_SpecialistSettings.MAX_DIFFICULTY;
 		bonus = 0.05f + 0.2f * diffMult;
 		if (index == 0) return bonus;
 		return 0;
