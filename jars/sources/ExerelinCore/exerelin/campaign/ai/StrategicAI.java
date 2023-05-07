@@ -413,7 +413,7 @@ public class StrategicAI extends BaseIntelPlugin {
 
 	public static void removeAIs() {
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-			if (factionId.equals(Factions.PLAYER)) continue;
+			//if (factionId.equals(Factions.PLAYER)) continue;
 			removeAI(factionId);
 		}
 	}

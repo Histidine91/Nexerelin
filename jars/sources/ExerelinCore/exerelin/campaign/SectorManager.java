@@ -1,26 +1,10 @@
 package exerelin.campaign;
 
-import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.ui.PlayerFactionSetupNag;
-import exerelin.campaign.ui.VictoryScreenScript;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
-import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.Status;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -29,12 +13,7 @@ import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
@@ -47,47 +26,32 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.VayraModPlugin;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.events.NexRepTrackerEvent;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.campaign.intel.FactionInsuranceIntel;
-import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
-import exerelin.campaign.intel.InsuranceIntelV2;
-import exerelin.campaign.intel.MarketTransferIntel;
-import exerelin.campaign.intel.RespawnBaseIntel;
-import exerelin.campaign.intel.VictoryIntel;
-import exerelin.campaign.intel.VictoryScoreboardIntel;
+import exerelin.campaign.intel.*;
 import exerelin.campaign.intel.VictoryScoreboardIntel.ScoreEntry;
-import static exerelin.campaign.intel.VictoryScoreboardIntel.getNeededSizeForVictory;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
+import exerelin.campaign.ui.PlayerFactionSetupNag;
+import exerelin.campaign.ui.VictoryScreenScript;
+import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.StringHelper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
+
+import static exerelin.campaign.intel.VictoryScoreboardIntel.getNeededSizeForVictory;
 
 /**
  * General sector handler
@@ -856,7 +820,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // no, we already did that on launching the respawn event in the first place
         manager.incrementNumRespawns(factionId);
 
-        StrategicAI.addAIIfNeeded(factionId);
+        if (NexConfig.enableStrategicAI) StrategicAI.addAIIfNeeded(factionId);
     }
     
     public static int getAllianceTotalFromMap(Alliance alliance, Map<String, Integer> map) 
