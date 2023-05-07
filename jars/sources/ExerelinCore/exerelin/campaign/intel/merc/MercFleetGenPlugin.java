@@ -18,6 +18,8 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercDataManager.OfficerDef;
@@ -109,6 +111,15 @@ public class MercFleetGenPlugin {
 		}
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			member.getBuffManager().addBuffOnlyUpdateStat(new MercBuff());
+
+			// automated merc ships have no automated penalty
+			if (Misc.isAutomated(member)) {
+				if (member.getVariant().getSource() != VariantSource.REFIT) {
+					member.setVariant(member.getVariant().clone(), false, false);
+					member.getVariant().setSource(VariantSource.REFIT);
+				}
+				member.getVariant().addTag(Tags.TAG_AUTOMATED_NO_PENALTY);
+			}
 		}
 		
 		// custom name if present

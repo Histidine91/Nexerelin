@@ -3,7 +3,7 @@
 	"skinHullId":"facet_endbringer",
 	"hullName":"Facet (END)",
 	"descriptionPrefix":"[file not found]\n// Please do not touch ^_^",
-	"removeBuiltInMods":["automated"],
+	#"removeBuiltInMods":["automated"],
 	"ordnancePoints":50,
 	"weaponSlotChanges":{
 		"WS 000":{"type":BUILT_IN},
