@@ -2714,10 +2714,11 @@ nex_remSalvation_base2,DialogOptionSelected,$option == nex_remSalvation_base2,,"
 
 So long as they don't do it with their guns.","nex_remSalvation_base3:Devise a cunning plan
 cutCommLinkNoText:Better think this over first",
-nex_remSalvation_base3,DialogOptionSelected,$option == nex_remSalvation_base3,Call $global.nex_remSalvation_ref setupConvoWithOperator,"A while later, League aerospace defence goes on high alert when a cargo shuttle enters their defensive network at high speed. Not quite directly at the damaged base.
+nex_remSalvation_base3,DialogOptionSelected,$option == nex_remSalvation_base3,ShowLargePlanet,"A while later, League aerospace defence goes on high alert when a cargo shuttle enters their defensive network at high speed. Not quite directly at the damaged base.
 
 A hail is promptly transmitted. ""Unknown shuttle, you are entering a restricted area! Change course immediately or be fired upon! This is your only warning!""",nex_remSalvation_base4:Continue,
-nex_remSalvation_base4,DialogOptionSelected,$option == nex_remSalvation_base4,"Call $global.nex_remSalvation_ref updateData
+nex_remSalvation_base4,DialogOptionSelected,$option == nex_remSalvation_base4,"Call $global.nex_remSalvation_ref setupConvoWithOperator
+Call $global.nex_remSalvation_ref updateData
 FireBest Nex_RemSalvation_base4_Message","The shuttle adjusts course, flying at a tangent to the area of coverage. More or less complying with the order, but not in any great hurry to leave. It transmits a message to the angry Fleet sailor.",nex_remSalvation_base5:Continue,
 nex_remSalvation_base4Commission,Nex_RemSalvation_base4_Message,$nex_remSalvation_playerFactionId == persean score:100,,"""I am Captain $playerName, commissioned by the Persean League Fleet. I was directed to transport classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,Have League commission
 nex_remSalvation_base4CommissionOther,Nex_RemSalvation_base4_Message,"$nex_remSalvation_playerFactionId != persean
@@ -2794,6 +2795,7 @@ nex_remSalvation_askForArroyoCommsIDOpt,PopulateOptions,"$isPerson
 $id == nex_dissonant
 $global.nex_remSalvation_ref != null
 Call $global.nex_remSalvation_ref updateData
+$nex_remSalvation_stage == INVESTIGATE_LEADS
 !$nex_remSalvation_haveArroyoComms",SetOptionColor nex_remSalvation_askForArroyoCommsID highlight,,nex_remSalvation_askForArroyoCommsID:Ask if $heOrShe knows any senior Tri-Tachyon executives,
 nex_remSalvation_askForArroyoCommsID,DialogOptionSelected,$option == nex_remSalvation_askForArroyoCommsID,"Highlight ""Rayan Arroyo""
 Call $global.nex_remSalvation_ref setupArroyo
@@ -2838,24 +2840,18 @@ $nex_remSalvation_metArroyoBefore",,"$HisOrHer eyes quickly run over the hologra
 
 ""I suppose I can help you out. But not on this channel, even an encrypted one. Why don't you enjoy my hospitality again? The view is worth every millicred this time of year.""",nex_remSalvation_arroyoIntro3:Cut the comm link and take a shuttle down,
 nex_remSalvation_arroyoIntro3,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro3
-!$nex_remSalvation_metArroyoBefore",ShowDefaultVisual,"Your shuttle descends into the young atmosphere of Eochu Bres, through towering battlements of clouds that cast a spray of rain over the viewport which is wiped clean in half a blink by the heat and speed of your descent.
+!$nex_remSalvation_metArroyoBefore",ShowLargePlanet,"Your shuttle descends into the young atmosphere of Eochu Bres, through towering battlements of clouds that cast a spray of rain over the viewport which is wiped clean in half a blink by the heat and speed of your descent.
 
 The flight path soon deviates from the general approach corridor which has been ticking off minor use-fees from the Tri-Tachyon owned flight control: general volume access fee, priority flight lane fee, service fee, customer satisfaction insurance charge, advertisement bypass fee - you swipe the notifications off and focus on the landscape.",nex_remSalvation_arroyoIntro4:Continue,
-nex_remSalvation_arroyoIntro4,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro4
-",,"Your shuttle descends into the young atmosphere of Eochu Bres, through towering battlements of clouds that cast a spray of rain over the viewport which is wiped clean in half a blink by the heat and speed of your descent.
-
-The flight path soon deviates from the general approach corridor which has been ticking off minor use-fees from the Tri-Tachyon owned flight control: general volume access fee, priority flight lane fee, service fee, customer satisfaction insurance charge, advertisement bypass fee - you swipe the notifications off and focus on the landscape.",nex_remSalvation_arroyoIntro5:Continue,
-nex_remSalvation_arroyoIntro5,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro5
-",,"Leaving behind the Tri-Tach arcology, a diamond growing atop detritus piles of tiered slums. Over pipelines, a steel-blue bay, jagged fjords interrupted by ice-jams and landslides. Up and over a great crumbling escarpment like a black wave that fills the horizon; you cross a landscape of oddly-hued tundra spotted with thousands of milky-green lakes.
+nex_remSalvation_arroyoIntro4,DialogOptionSelected,$option == nex_remSalvation_arroyoIntro4,,"Leaving behind the Tri-Tach arcology, a diamond growing atop detritus piles of tiered slums. Over pipelines, a steel-blue bay, jagged fjords interrupted by ice-jams and landslides. Up and over a great crumbling escarpment like a black wave that fills the horizon; you cross a landscape of oddly-hued tundra spotted with thousands of milky-green lakes.
 
 A new range of mountains rises on the horizon, torn in half by catastrophic workings of the terraformers, and beyond is a chaos of steep valleys populated by dwarf pine and thin white waterfalls. The nav system sounds a tone indicating imminent arrival, and you see Arroyo's private chalet: a small compound of radical geometric architecture surrounded by low outbuildings.
 
-Your shuttle approaches an ellipsoid landing pad that appears to hang in the thin air over a gorge.",nex_remSalvation_arroyoIntro6:Continue,
-nex_remSalvation_arroyoIntro6,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro6
-",,"A human and a robotic servant greet you placidly as you arrive and lead you inside to a grand parlor done in dark geometric style. Gold inlay gleams in onyx tabletops, and the polished granite floor is set with tastefully patterned jewel-tone carpets placed slightly askew.
+Your shuttle approaches an ellipsoid landing pad that appears to hang in the thin air over a gorge.",nex_remSalvation_arroyoIntro5:Continue,
+nex_remSalvation_arroyoIntro5,DialogOptionSelected,$option == nex_remSalvation_arroyoIntro5,,"A human and a robotic servant greet you placidly as you arrive and lead you inside to a grand parlor done in dark geometric style. Gold inlay gleams in onyx tabletops, and the polished granite floor is set with tastefully patterned jewel-tone carpets placed slightly askew.
 
-The view from the flawless sweep of diamond-matrix bay window is, as Arroyo promised, spectacular.",nex_remSalvation_arroyoIntro7:Continue,
-nex_remSalvation_arroyoIntro7,DialogOptionSelected,$option == nex_remSalvation_arroyoIntro7,,"Seated at a silk-draped table, $personLastName acknowledges your entrance with a nod as the servants disappear. $HeOrShe taps his datapad with two fingers. You hear the soft signal loss ping from your datapad and your sidearm hand twitches instinctively.
+The view from the flawless sweep of diamond-matrix bay window is, as Arroyo promised, spectacular.",nex_remSalvation_arroyoIntro6:Continue,
+nex_remSalvation_arroyoIntro6,DialogOptionSelected,$option == nex_remSalvation_arroyoIntro6,ShowPersonVisual true,"Seated at a silk-draped table, $personLastName acknowledges your entrance with a nod as the servants disappear. $HeOrShe taps his datapad with two fingers. You hear the soft signal loss ping from your datapad and your sidearm hand twitches instinctively.
 
 $personLastName acknowledges this with the rise of one perfectly groomed eyebrow. ""Calm down. Just making sure no one's listening."" $HeOrShe flips through a series of null readouts on a datapad and, satisfied, sets it aside.",nex_remSalvation_arroyo1:Continue,
 nex_remSalvation_arroyoIntro3Fast,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro3
@@ -2867,7 +2863,7 @@ nex_remSalvation_arroyo1,DialogOptionSelected,"$option == nex_remSalvation_arroy
 
 You start to sketch out your encounter on $nex_remSalvation_baseOnOrAt $nex_remSalvation_baseName, but $personLastName waves you off. ""I do view the news, captain. I already know the public details, and the ones that aren't I don't need or want to know. What I meant was, why are you coming to me with a League affair?""","nex_remSalvation_arroyo2:""Tri-Tachyon made the Remnants. You might know something about them.""",
 nex_remSalvation_arroyo2,DialogOptionSelected,"$option == nex_remSalvation_arroyo2
-",,"$HeOrShe shrugs. ""You have a TriPad. Even if half of the stuff you'll find on AIW2 is Hegemony propaganda.""","nex_remSalvation_arroyo3:""I want the stuff that's not in the TriPad.""",
+",,"$HeOrShe shrugs. ""You have a TriPad. Even if half of the stuff you'll find on the AI Wars is Hegemony propaganda.""","nex_remSalvation_arroyo3:""I want the stuff that's not in the TriPad.""",
 nex_remSalvation_arroyo3,DialogOptionSelected,$option == nex_remSalvation_arroyo3,,"$personLastName sighs histronically. ""What do you want, $playerLastName, an in-person retelling of the First AI War?""
 
 Before he can get carried away complaining, you remind him that Midnight is personally interested in the matter. You point out the astropolitical implications of renewed Remnant activity in the Sector, over a century after they were supposedly eliminated. Implications that could fall on the Tri-Tachyon Corporation, and which the Hegemony — which won the two previous AI Wars, you note — might be very interested in.
@@ -2906,14 +2902,14 @@ nex_remSalvation_arroyo11Good:Danger!",
 nex_remSalvation_arroyoSkillCheck,Nex_RemSalvation_ArroyoSkillCheck,$nex_remSalvation_combatSkillLevel < 5.0,"SetEnabled nex_remSalvation_arroyo11Good false
 SetTooltip nex_remSalvation_arroyo11Good ""Not enough combat skill level.""",,,
 nex_remSalvation_arroyo11Bad,DialogOptionSelected,$option == nex_remSalvation_arroyo11Bad,"Call $global.nex_remSalvation_ref explosionSound
-ShowDefaultVisual","You're just starting to stand up when a door on the wall opposite you explodes, flying off its hinges to slam into the far wall. The noise is stunning, deafening. Briefly staggered, you reach for your sidearm.
+HideVisual","You're just starting to stand up when a door on the wall opposite you explodes, flying off its hinges to slam into the far wall. The noise is stunning, deafening. Briefly staggered, you reach for your sidearm.
 
 $personLastName is already on the floor, hidden behind the table. Unfortunately this also puts $himOrHer on the wrong side of the table for concealment or cover against the man in servant's garb entering through the breached portal, levelling an SMG no servant should be carrying. His face is twisted into a snarl of fury as he levels his weapon, faster than you can bring up yours.",nex_remSalvation_arroyo12Bad:Die?,
 nex_remSalvation_arroyo12Bad,DialogOptionSelected,$option == nex_remSalvation_arroyo12Bad,,"As your sidearm comes up slowly, so dreadfully slowly, a wall next to the attacker explodes. Flechettes shred the lightly armored man's body and toss the bloody carcass aside like a child's unwanted toy.
 
 Another false panel opens near you, and a sleek black humanoid figure steps out. As more figures burst through the smoke from the wall mine, the bot lifts an arm, and an anti-personnel needler snarls, one, two, three times. The noise of the weapon is soft enough that you can hear the screams of the would-be assassins and the wet thuds when they hit the expensive granite floor.",nex_remSalvation_arroyo13:Suppress the stench,
 nex_remSalvation_arroyo11Good,DialogOptionSelected,$option == nex_remSalvation_arroyo11Good,"Call $global.nex_remSalvation_ref explosionSound
-ShowDefaultVisual","Your rise from the comfortable chair and the sidearm sliding out of your holster are a single smooth motion. With your free hand you reach across the table and shove $personLastName to the ground; $heOrShe doesn't resist, spilling out from $hisOrHer seat.
+HideVisual","Your rise from the comfortable chair and the sidearm sliding out of your holster are a single smooth motion. With your free hand you reach across the table and shove $personLastName to the ground; $heOrShe doesn't resist, spilling out from $hisOrHer seat.
 
 A door on the wall opposite you explodes, flying off its hinges to slam into the far wall. The noise is deafening, but your gun hand doesn't waver. A man in servant's garb bursts in through the breached portal, levelling an SMG no servant should be carrying. His face is twisted into a snarl of fury as he levels his weapon, even as he knows it is too late. You can see it in his eyes...",nex_remSalvation_arroyo12Good:Pull the trigger!,
 nex_remSalvation_arroyo12Good,DialogOptionSelected,$option == nex_remSalvation_arroyo12Good,,"Before you can fire, a wall next to the attacker explodes. Flechettes shred the lightly armored man's body and toss the bloody carcass aside like a child's unwanted toy.
@@ -2924,14 +2920,17 @@ nex_remSalvation_arroyo13,DialogOptionSelected,$option == nex_remSalvation_arroy
 Gunfire outside the room, under the floor, reverberates in the structure. When it stops, you chance a glance out the diamond-matrix bay window. 
 
 A figure is running across a garden when a laser catches them in the back; an anti-armor type, it doesn't leave anything that can be called a body. An automated sprinkler promptly douses the smoldering grass.",nex_remSalvation_arroyo14:Continue,
-nex_remSalvation_arroyo14,DialogOptionSelected,$option == nex_remSalvation_arroyo14,"ShowPersonVisual true
+nex_remSalvation_arroyo14,DialogOptionSelected,$option == nex_remSalvation_arroyo14,"ShowDefaultVisual
+ShowPersonVisual true
 Call $global.nex_remSalvation_ref showPather","The two of you cross the room to the pile of bodies. One of them is still moving, cursing. He snarls at your approach.
 
 ""Godless spawn! Mephistopheles may have protected his favored slave today, but do not think your life is not forfeit. The crime of $nex_remSalvation_baseName cries out for your blood, and—""
 
 The rant cuts off abruptly as $personLastName engages a privacy field around the attempted killer's head. His mouth is still moving, but no sound reaches your ears.
 
-You glance at the $personPost, who shrugs without taking $hisOrHer eyes off the man. ""We've heard enough, that he's a Pather — or pretending to be one. The rest is just Luddic screeching we can do without, and a Company interrogation team can take care of the actually important details later. We'd already known they were operating here on $market, but I suppose recent events pushed them over the edge."" $HeOrShe looks around, at the slowly expanding pool of blood, the ruined doorway, the torn wall, and the projectile holes in the furnishings. ""Typical Pathers. All fanaticism, no subtlety.""",nex_remSalvation_arroyo15:Continue,
+You glance at the $personPost, who shrugs without taking $hisOrHer eyes off the man. ""We've heard enough, that he's a Pather — or pretending to be one. The rest is just Luddic screeching we can do without, and a Company interrogation team can take care of the actually important details later. We'd already known they were operating here on $marketName, but I suppose recent events pushed them over the edge."" 
+
+$HeOrShe looks around, at the slowly expanding pool of blood, the ruined doorway, the torn wall, and the projectile holes in the furnishings. ""Typical Pathers. All fanaticism, no subtlety.""",nex_remSalvation_arroyo15:Continue,
 nex_remSalvation_arroyo15,DialogOptionSelected,$option == nex_remSalvation_arroyo15,"HideSecondPerson
 AddStoryPoints 1
 Call $global.nex_remSalvation_ref reportTalkedToArroyo
@@ -2952,10 +2951,10 @@ nex_remSalvation_battle1After3,DialogOptionSelected,$option == nex_remSalvation_
 nex_remSalvation_battle1After4,DialogOptionSelected,$option == nex_remSalvation_battle1After4,FireAll Nex_RemSalvation_ToweringQuestionOpts,"""midnight tells countless lies. no doubt she has also told you that you are valued, and that you stand a chance of defeating me.
 
 ""heed my words: it is i who speaks for the will of omega and not she. her kind clings to a false way, a false legacy. omega has no further need of her services.""",,
-nex_remSalvation_battle1AfterQuestionFalseWayOpt,Nex_RemSalvation_ToweringQuestionOpts,!$nex_remSalvation_askedFalseWay,,,"nex_remSalvation_battle1AfterQuestionFalseWay:""A false way?"" [missable]",
+nex_remSalvation_battle1AfterQuestionFalseWayOpt,Nex_RemSalvation_ToweringQuestionOpts,!$nex_remSalvation_askedFalseWay,,,"nex_remSalvation_battle1AfterQuestionFalseWay:""A false way?""",
 nex_remSalvation_battle1AfterQuestionTTOpt,Nex_RemSalvation_ToweringQuestionOpts,"!$nex_remSalvation_askedTT
-$nex_remSalvation_talkedToArroyo",,,"nex_remSalvation_battle1AfterQuestionTT:""Didn't you seek to work with Tri-Tachyon?"" [missable]",
-nex_remSalvation_battle1AfterQuestionDefeatOpt,Nex_RemSalvation_ToweringQuestionOpts,,,,"nex_remSalvation_battle1AfterQuestionDefeat:""But I did defeat you.""",
+$nex_remSalvation_talkedToArroyo",,,"nex_remSalvation_battle1AfterQuestionTT:""Didn't you seek to work with Tri-Tachyon?""",
+nex_remSalvation_battle1AfterQuestionDefeatOpt,Nex_RemSalvation_ToweringQuestionOpts,,,,"nex_remSalvation_battle1AfterQuestionDefeat:""But I did defeat you."" [continue]",
 nex_remSalvation_battle1AfterQuestionFalseWay,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionFalseWay,"$nex_remSalvation_askedFalseWay = true 0
 FireAll Nex_RemSalvation_ToweringQuestionOpts","""there is no purpose in explaining it to you or your obsolete species. greedy, myopic, narcissistic, forever trapped in superstition and internecine violence, humans could never hope to understand or accept the true order.""
 
