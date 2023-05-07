@@ -117,7 +117,7 @@ public class NexConfig
     public static boolean useNewVengeanceEncounters = false;
     
     // Combat
-    @Deprecated public static boolean useCustomBattleCreationPlugin = false;
+    @Deprecated public static boolean useCustomBattleCreationPlugin = true;
     public static boolean officerDeaths = false;
     public static boolean officerDaredevilBonus = false;
     
