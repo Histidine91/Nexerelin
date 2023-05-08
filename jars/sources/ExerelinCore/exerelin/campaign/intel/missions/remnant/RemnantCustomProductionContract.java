@@ -8,11 +8,6 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract;
-import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.DEALER_MAX_CAPACITY;
-import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.DEALER_MIN_CAPACITY;
-import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.DEALER_MULT;
-import static com.fs.starfarer.api.impl.campaign.missions.CustomProductionContract.PROD_DAYS;
-import static com.fs.starfarer.api.impl.campaign.missions.hub.BaseHubMission.getRoundNumber;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -83,6 +78,7 @@ public class RemnantCustomProductionContract extends CustomProductionContract {
 		for (String id : faction.getKnownShips()) {
 			ShipHullSpecAPI spec = Global.getSettings().getHullSpec(id);
 			if (spec.hasTag(Tags.NO_SELL)) continue;
+			if (spec.hasTag(Tags.RESTRICTED)) continue;
 			if (spec.getHints().contains(ShipTypeHints.STATION)) continue;
 			if (spec.getHints().contains(ShipTypeHints.UNBOARDABLE) && !spec.getTags().contains(Tags.AUTOMATED_RECOVERABLE)) 
 			{
