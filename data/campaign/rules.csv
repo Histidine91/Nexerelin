@@ -540,7 +540,7 @@ nex_decivEvent_bomb,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""b
 
 There's a nearby pack of knaves and scum that needs dealing with. We'd clear the whole rotten nest out ourselves, but alas, their defenses are a little too entrenched. You, on the other hand... with your spaceship, you could drop a few  bombs on them and blow them straight to hell. In return, we'll give you some $nex_decivEvent_giveName. Sounds good?""
 
-$personName transmits several images and the coordinates of the target. With the rudimentary defenses present, you estimate that it'd take no more than $nex_decivEvent_takeCount fuel to completely destroy this settlement. Assuming, of course, that intervening in $market's conflicts is a good idea.",,
+$personName transmits several images and the coordinates of the target. With the rudimentary defenses present, you estimate that it'd take no more than $nex_decivEvent_takeCount fuel to completely destroy this settlement. Assuming, of course, that intervening in $marketName's conflicts is a good idea.",,
 nex_decivEvent_raid,Nex_DecivEvent_OfferText,"$market.nex_decivEvent_type == ""raid""",SetTextHighlights boys with fancy guns,"""Got any boys with fancy guns up there? If so, we have a little favor to ask.
 
 ""Recently, a rival camp stole something of great value to us,  $nex_decivEvent_raidItem. We'd go and get it back, but they're dug in too deep for us to handle. But if you were to come in with your fancy shuttles and power armor, they'd crumple like cellulose paper. In return, you can keep whatever other valuables you find in their miserable den. Interested?""
