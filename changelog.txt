@@ -1,0 +1,8 @@
+Version 0.10.6y
+
+* Fix random sector crashes
+
+
+Version 0.10.6x
+
+Too many changes to list here, please see online changelog at https://github.com/Histidine91/Nexerelin/wiki/Changelog
