@@ -171,9 +171,9 @@ public class StartSetupPostTimePass {
 			Global.getSector().getCharacterData().addAbility(Abilities.GRAVITIC_SCAN);
 			
 			mem.set("$interactedWithGABarEvent", true);
+			playMem.set("$metBaird", true);
 			
 			if (corvusMode) {
-				
 				playMem.set("$metDaud", true);
 				playMem.set("$gaveDaudYaribayContact", true);
 				playMem.set("$metBrotherCotton", true);

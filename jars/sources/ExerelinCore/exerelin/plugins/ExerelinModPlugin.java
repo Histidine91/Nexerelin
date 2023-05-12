@@ -12,6 +12,8 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo;
+import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetCreatorPlugin;
+import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
@@ -34,10 +36,7 @@ import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
-import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.fleets.MiningFleetManagerV2;
-import exerelin.campaign.fleets.PlayerInSystemTracker;
-import exerelin.campaign.fleets.VultureFleetManager;
+import exerelin.campaign.fleets.*;
 import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
@@ -461,6 +460,15 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         //MilitaryCustomBounty.CREATORS.clear();    // for debugging
         MilitaryCustomBounty.CREATORS.add(new Nex_CBHegInspector());
+
+        // fix Academy transport fleets in random sector
+        for (MiscFleetCreatorPlugin creator : MiscFleetRouteManager.CREATORS) {
+            if ("MiscAcademyFleetCreator".equals(creator.getId())) {
+                MiscFleetRouteManager.CREATORS.remove(creator);
+                MiscFleetRouteManager.CREATORS.add(new NexMiscAcademyFleetCreator());
+                break;
+            }
+        }
 
         if (HAVE_LUNALIB) LunaConfigHelper.initLunaConfig();
     }

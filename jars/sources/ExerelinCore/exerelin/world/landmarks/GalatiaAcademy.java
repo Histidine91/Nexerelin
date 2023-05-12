@@ -9,12 +9,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.People;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
 
 public class GalatiaAcademy extends BaseLandmarkDef {
 	
@@ -93,5 +90,7 @@ public class GalatiaAcademy extends BaseLandmarkDef {
 		galatiaAcademy.getMemoryWithoutUpdate().set("$metProvost", true);
 		// cockblock the Extract Researcher mission so Academy quest chain can't progress
 		Global.getSector().getMemoryWithoutUpdate().set("$gaTJ_ref", false);
+
+		Global.getSector().getMemoryWithoutUpdate().set("$nex_randomSector_galatiaAcademy", galatiaAcademy);
 	}
 }

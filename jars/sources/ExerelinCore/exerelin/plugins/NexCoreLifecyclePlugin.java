@@ -239,4 +239,12 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		
 		super.markStoryCriticalMarketsEtc();
 	}
+
+	@Override
+	public void tagLuddicShrines() {
+		if (!SectorManager.getManager().isCorvusMode())
+			return;
+
+		super.tagLuddicShrines();
+	}
 }
