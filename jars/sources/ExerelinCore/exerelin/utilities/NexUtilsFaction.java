@@ -241,4 +241,11 @@ public class NexUtilsFaction {
 		String name = Misc.ucFirst(faction.getDisplayName());
 		info.addPara(name, pad, color, faction.getBaseUIColor(), name);
 	}
+
+	// redundant method; remains here because Roider Union uses it
+	@Deprecated
+	public static String getCommissionFactionId()
+	{
+		return Misc.getCommissionFactionId();
+	}
 }
