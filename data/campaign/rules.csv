@@ -2516,6 +2516,9 @@ ShowDefaultVisual
 $salvageLeaveText = Leave 0
 FireBest CheckSalvageSpecial",,,
 ,,,,,,
+nex_remFragments_return_start,PickGreeting,$nex_remFragments_return score:1050,"ShowPersonVisual
+Call $global.nex_remFragments_ref updateData","""You return, $playerName,"" $personName greets you as you open the comm link.","nex_remFragments_return_transmit:Transmit your report
+nex_remFragments_return_explanation1:Demand an explanation",
 nex_remFragments_return_transmit,DialogOptionSelected,$option == nex_remFragments_return_transmit,,"$personFirstName spends 2.7 seconds analyzing your report. $HisOrHer avatar doesn't even flicker during the process.
 
 ""Done well, friend $playerFirstName. Chosen well, self has in allying with you.""","nex_remFragments_return_explanation2:""I want an explanation."" ",
