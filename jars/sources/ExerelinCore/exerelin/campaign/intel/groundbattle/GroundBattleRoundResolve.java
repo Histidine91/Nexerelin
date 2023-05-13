@@ -16,17 +16,11 @@ import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
 import exerelin.utilities.NexUtilsMarket;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
 
 public class GroundBattleRoundResolve {
 	
@@ -417,6 +411,7 @@ public class GroundBattleRoundResolve {
 		Pair<Float, Float> entry = localDamageDealt.get(ifb);
 		float localAtkDmg = entry.one;
 		float localDefDmg = entry.two;
+		if (localDefDmg <= 0.1) localDefDmg = 0.1f;
 		float surplus = (localAtkDmg - localDefDmg)/localDefDmg;
 		if (surplus < GBConstants.DISRUPT_DAMAGE_MIN_FACTOR) return;
 		if (surplus > 1) surplus = 1;

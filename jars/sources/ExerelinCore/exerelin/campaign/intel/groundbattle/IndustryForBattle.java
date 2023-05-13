@@ -244,11 +244,11 @@ public class IndustryForBattle {
 		return null;
 	}
 	
-	public String getIconTooltipPartial(ForceType type, float value) {
+	public String getIconTooltipPartial(GroundUnitDef def, float value) {
 		String displayNum = String.format("%.1f", value);
 		String str = GroundBattleIntel.getString("unitEquivalent");
 		str = StringHelper.substituteToken(str, "$num", displayNum);
-		str = StringHelper.substituteToken(str, "$type", type.getName());
+		str = StringHelper.substituteToken(str, "$type", def.name);
 		str = StringHelper.substituteToken(str, "$unit", intel.unitSize.getNamePlural());
 		return str;
 	}
@@ -503,7 +503,7 @@ public class IndustryForBattle {
 	{		
 		CustomPanelAPI troops = indPanel.createCustomPanel(width, height, null);
 		
-		final Map<ForceType, Float> strengths = new HashMap<>();
+		final Map<GroundUnitDef, Float> strengths = new HashMap<>();
 		
 		// attacker/defender icon
 		TooltipMakerAPI iconHolder = troops.createUIElement(height, height, false);
@@ -515,7 +515,7 @@ public class IndustryForBattle {
 		for (GroundUnit unit : units) {
 			if (unit.isAttacker != attacker) continue;
 			any = true;
-			NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
+			NexUtils.modifyMapEntry(strengths, unit.unitDef, unit.getNumUnitEquivalents());
 		}
 		if (!any) {
 			return troops;
@@ -524,14 +524,14 @@ public class IndustryForBattle {
 		TooltipMakerAPI iconGroupHolder = troops.createUIElement(width - height, height, false);
 		iconGroupHolder.beginIconGroup();
 		
-		List<ForceType> keys = new ArrayList<>(strengths.keySet());
+		List<GroundUnitDef> keys = new ArrayList<>(strengths.keySet());
 		Collections.sort(keys);
-		for (ForceType type : keys) {
-			float val = strengths.get(type);
+		for (GroundUnitDef def : keys) {
+			float val = strengths.get(def);
 			int count = Math.round(val * NUM_ICONS_PER_UNIT);
 			if (count <= 0 && val > 0) count = 1;
 			
-			CommodityOnMarketAPI com = intel.market.getCommodityData(type.commodityId);
+			CommodityOnMarketAPI com = intel.market.getCommodityData(def.getCommodityIdForIcon());
 			iconGroupHolder.addIcons(com, count, IconRenderMode.NORMAL);
 		}
 		iconGroupHolder.addIconGroup(height, 0);
@@ -652,8 +652,8 @@ public class IndustryForBattle {
 				return width;
 			}
 			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-				
-				Map<ForceType, Float> strengths = new HashMap<>();
+
+				Map<GroundUnitDef, Float> strengths = new HashMap<>();
 				
 				boolean devmode = Global.getSettings().isDevMode();
 				
@@ -662,7 +662,7 @@ public class IndustryForBattle {
 					for (GroundUnit unit : units) {
 						if (unit.isPlayer) continue;
 						if (unit.isAttacker != isAttacker) continue;
-						NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
+						NexUtils.modifyMapEntry(strengths, unit.unitDef, unit.getNumUnitEquivalents());
 					}	
 				}						
 				
@@ -680,11 +680,11 @@ public class IndustryForBattle {
 				
 				// non-player units
 				if (!devmode) {
-					List<ForceType> keys = new ArrayList<>(strengths.keySet());
+					List<GroundUnitDef> keys = new ArrayList<>(strengths.keySet());
 					Collections.sort(keys);
-					for (ForceType type : keys) {
-						float val = strengths.get(type);
-						String tooltipStr = getIconTooltipPartial(type, val);
+					for (GroundUnitDef def : keys) {
+						float val = strengths.get(def);
+						String tooltipStr = getIconTooltipPartial(def, val);
 						String displayNum = String.format("%.1f", val);
 						tooltip.addPara(tooltipStr, 0f, Misc.getHighlightColor(), displayNum);
 					}

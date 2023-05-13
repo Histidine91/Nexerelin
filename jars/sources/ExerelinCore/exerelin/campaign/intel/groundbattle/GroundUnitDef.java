@@ -1,10 +1,12 @@
 package exerelin.campaign.intel.groundbattle;
 
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class GroundUnitDef {
+public class GroundUnitDef implements Comparable<GroundUnitDef> {
 
     //public static final String DEF_FILE = null;
     @Getter protected static final List<GroundUnitDef> UNIT_DEFS = new ArrayList<>();
@@ -31,7 +33,9 @@ public class GroundUnitDef {
     public float dropCostMult;
     public float offensiveStrMult;
     public float crampedStrMult;
+    public String sprite;
     public Set<String> tags = new HashSet<>();
+    public float sortOrder;
     public GroundUnitCommodity personnel;
     public GroundUnitCommodity equipment;
 
@@ -52,6 +56,22 @@ public class GroundUnitDef {
 
     public boolean hasTag(String tag) {
         return tags.contains(tag);
+    }
+
+    public String getCommodityIdForIcon() {
+        if (equipment != null) return equipment.commodityId;
+        if (personnel != null) return personnel.commodityId;
+        return Commodities.MARINES;
+    }
+
+    public String getSprite() {
+        if (sprite != null) return sprite;
+        return GroundBattleIntel.getCommoditySprite(getCommodityIdForIcon());
+    }
+
+    @Override
+    public int compareTo(@NotNull GroundUnitDef other) {
+        return Float.compare(sortOrder, other.sortOrder);
     }
 
     public static class GroundUnitCommodity {

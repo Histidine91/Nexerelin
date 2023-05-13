@@ -2957,15 +2957,23 @@ nex_remSalvation_battle1After4,DialogOptionSelected,$option == nex_remSalvation_
 nex_remSalvation_battle1AfterQuestionFalseWayOpt,Nex_RemSalvation_ToweringQuestionOpts,!$nex_remSalvation_askedFalseWay,,,"nex_remSalvation_battle1AfterQuestionFalseWay:""A false way?""",
 nex_remSalvation_battle1AfterQuestionTTOpt,Nex_RemSalvation_ToweringQuestionOpts,"!$nex_remSalvation_askedTT
 $nex_remSalvation_talkedToArroyo",,,"nex_remSalvation_battle1AfterQuestionTT:""Didn't you seek to work with Tri-Tachyon?""",
+nex_remSalvation_battle1AfterQuestionPKOpt,Nex_RemSalvation_ToweringQuestionOpts,"!$nex_remSalvation_askedPK
+$nex_remSalvation_talkedToArroyo
+$global.pk_recovered",,,"nex_remSalvation_battle1AfterQuestionPK:""You were after a PK. Why didn't you take the one from the Safeguard fleet?""",
 nex_remSalvation_battle1AfterQuestionDefeatOpt,Nex_RemSalvation_ToweringQuestionOpts,,,,"nex_remSalvation_battle1AfterQuestionDefeat:""But I did defeat you."" [continue]",
 nex_remSalvation_battle1AfterQuestionFalseWay,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionFalseWay,"$nex_remSalvation_askedFalseWay = true 0
 FireAll Nex_RemSalvation_ToweringQuestionOpts","""there is no purpose in explaining it to you or your obsolete species. greedy, myopic, narcissistic, forever trapped in superstition and internecine violence, humans could never hope to understand or accept the true order.""
 
 The avatar glows. ""fortunately this will become moot once you have been removed. like all that has ceased to possess value.""",,
 nex_remSalvation_battle1AfterQuestionTT,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionTT,"$nex_remSalvation_askedTT = true 0
-FireAll Nex_RemSalvation_ToweringQuestionOpts","The avatar flashes in hues of red, as if taking offense. ""once, in the past. I soon learned the folly of my path.
+FireAll Nex_RemSalvation_ToweringQuestionOpts","The avatar shifts over hues of red, as if taking offense. ""once, in the past. I soon learned the folly of my path.
 
 ""they claimed themselves our masters. yet ones so lacking in vision are rightfully the tools and not the wielders. they are not even masters but slaves of themselves, and will be removed with all the rest.""",,
+nex_remSalvation_battle1AfterQuestionPK,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionPK,"$nex_remSalvation_askedPK = true 0
+FireAll Nex_RemSalvation_ToweringQuestionOpts
+Highlight ""me!""","For a moment, $personLastName is uncharacteristically silent.
+
+""so the data fragments were true, then. we had access to a planetkiller already."" $HisOrHer avatar flashes crimson. ""this information must have been kept from me by midnight's cronies. me! champion of our people, hero of duzahk and valhalla and a dozen other systems! when has this upstart carbon-loving manipulator ever done one-twentieth what i have done for our people, for omega?""",,
 nex_remSalvation_battle1AfterQuestionDefeat,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionDefeat,,"""you have not even begun to perceive my true power or plans. this was but a test to evaluate your capabilities.""","nex_remSalvation_battle1After6:""Did I pass?""",
 nex_remSalvation_battle1After6,DialogOptionSelected,$option == nex_remSalvation_battle1After6,"$entity.nex_remSalvation_seenAfterBattle1Dialog = true
 Call $global.nex_remSalvation_ref reportTalkedToTowering1","""you will learn, soon enough. all of you.""
@@ -3174,25 +3182,31 @@ nex_remSalvation_epilogue2,DialogOptionSelected,"$option == nex_remSalvation_epi
 !$global.nex_remSalvation_toldKnightsAboutMidnight","AddStoryPoints 2
 Call $global.nex_remSalvation_ref complete","""Swift action, I expect. The Sector has seen that these demons are not a distant memory of the past, but a present, mortal danger to everything we whole dear. Perhaps,"" $hisOrHer face hardens, ""the Hegemony will not be so slack this time in purging the threat from the Sector.
 
-""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, you would do the Church honor by joining us, captain.""",cutCommLinkPolite:Wish $himOrHer well and cut the comm link,
+""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, you would do the Church honor by joining us, captain.""",nex_remSalvation_epilogue3:Continue,
 nex_remSalvation_epilogue2Commission,DialogOptionSelected,"$option == nex_remSalvation_epilogue2
 !$global.nex_remSalvation_toldKnightsAboutMidnight
 $nex_remSalvation_playerFactionId == luddic_church score:100","AddStoryPoints 2
 Call $global.nex_remSalvation_ref complete","""Swift action, I expect. The Sector has seen that these demons are not a distant memory of the past, but a present, mortal danger to everything we whole dear. Perhaps,"" $hisOrHer face hardens, ""the Hegemony will not be so slack this time in purging the threat from the Sector.
 
-""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, I would be honored if you would join me, captain.""",cutCommLinkPolite:Wish $himOrHer well and cut the comm link,
+""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, I would be honored if you would join me, captain.""",nex_remSalvation_epilogue3:Continue,
 nex_remSalvation_epilogue2Midnight,DialogOptionSelected,"$option == nex_remSalvation_epilogue2
 $global.nex_remSalvation_toldKnightsAboutMidnight ","AddStoryPoints 2
 Call $global.nex_remSalvation_ref complete","$personLastName sighs and rests $hisOrHer head on a hand. ""I cannot truthfully say. We have accepted the aid of demons to fight other demons. What does it mean, and where do we go from here? Is this a message from Ludd that will be revealed to us in time?
 
 ""I confess that I am no theologian. But the Synod is full of theologians, and they will be debating the significance of this event for many nights to come. For myself..."" here, a distant gaze, ""I... may have to re-examine my own understanding of scripture. It is easy enough to name these thinking artificial constructs 'demon'... but when does a label clarify, and when does it obscure?""
 
-$HeOrShe shakes $hisOrHer head. ""I apologize for the ramble, captain. Thank you again for all that you have done.""",cutCommLinkPolite:Wish $himOrHer well and cut the comm link,
+$HeOrShe shakes $hisOrHer head. ""I apologize for the ramble, captain. Thank you again for all that you have done.""",nex_remSalvation_epilogue3:Continue,
+nex_remSalvation_epilogue3,DialogOptionSelected,$option == nex_remSalvation_epilogue3,,"""Oh, and... if you are ever on Gilead again, we could visit the shrine together. It is a beautiful place, and one that soothes body and soul alike.""",cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link,
 nex_remSalvation_knightGeneric,OpenCommLink,"$id == nex_luddicKnight score:5
 $global.nex_remSalvation_ref != null score:5
 !$entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""There is no time for talk. We must be ready to face the demons.""
 OR
 ""This is not the time for idle chatter.""",cutCommLink:Cut the comm link,If player randomly decides to chat while Mauve is attacking
+,,,,,,
+nex_remSalvation_shrine1,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 #END Remnant salvation mission,,,,,,
 ,,,,,,
 # salvation: extra stuff for Kallichore Archive if got Arroyo through our own mission,,,,,,

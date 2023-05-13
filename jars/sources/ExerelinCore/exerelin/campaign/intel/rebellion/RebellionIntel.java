@@ -78,10 +78,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected float suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
 	protected IntervalUtil disruptInterval = new IntervalUtil(30, 42);
 	@Getter @Setter protected boolean playerInitiated;
-	
-	protected FactionAPI govtFaction;
-	protected FactionAPI rebelFaction;
-	protected FactionAPI liberatorFaction;
+
+	@Getter protected FactionAPI govtFaction;
+	@Getter protected FactionAPI rebelFaction;
+	@Getter @Setter protected FactionAPI liberatorFaction;
 	protected float govtStrength = 1;
 	protected float rebelStrength = 1;
 	protected float govtTradePoints = 0;
@@ -454,10 +454,6 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		market.getCommodityData(Commodities.MARINES).getPlayerDemandPriceMod().modifyMult(modId, priceMult, desc);
 		market.getCommodityData(Commodities.HAND_WEAPONS).getPlayerDemandPriceMod().modifyMult(modId, priceMult, desc);
 		market.getCommodityData(Commodities.SUPPLIES).getPlayerDemandPriceMod().modifyMult(modId, priceMult, desc);
-	}
-	
-	public FactionAPI getRebelFaction() {
-		return rebelFaction;
 	}
 	
 	public int getStabilityPenalty() {
@@ -1057,6 +1053,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 					break;
 				case LIBERATED:
 					String str = getString("intelBulletLiberated");
+					if (liberatorFaction != null) {
+						log.warn("Liberation faction is null, hiding bullet point");
+						break;
+					}
 					String name = liberatorFaction.getDisplayName();
 					str = StringHelper.substituteToken(str, "$faction", name);
 					info.addPara(str, pad, tc, liberatorFaction.getBaseUIColor(), name);

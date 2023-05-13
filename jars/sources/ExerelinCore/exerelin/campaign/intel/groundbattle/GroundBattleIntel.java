@@ -1113,6 +1113,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (outcome == BattleOutcome.DEFENDER_VICTORY) {
 			reb.endEvent(RebellionIntel.RebellionResult.GOVERNMENT_VICTORY);
 		} else if (outcome == BattleOutcome.ATTACKER_VICTORY) {
+			reb.setLiberatorFaction(attacker.faction);
 			reb.endEvent(RebellionIntel.RebellionResult.LIBERATED);
 		}
 	}

@@ -13,7 +13,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -21,21 +20,21 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
 import com.fs.starfarer.api.util.Misc;
-import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.campaign.intel.specialforces.namer.PlanetNamer;
 import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 
 @Log4j
 public class GroundUnit {
@@ -995,7 +994,7 @@ public class GroundUnit {
 			pad = 4.5f;
 		}
 		
-		String commoditySprite = type.getCommoditySprite();
+		String commoditySprite = unitDef.getSprite();
 		String crest = faction.getCrest();
 		
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH * sizeMult, 

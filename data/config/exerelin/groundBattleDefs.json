@@ -193,6 +193,7 @@
 		"marine":{
 			"name":"marine",
 			"type":"MARINE",	# legacy setting, may remove later
+			#"sprite":"optional/path_to/sprite.png",
 			"playerCanCreate":true,
 			"strength":1,
 			"personnel":{
@@ -201,6 +202,7 @@
 				"mult":1,	# integer, at least for now
 			},
 			"tags":["marine"],
+			"sortOrder":1,
 		},
 		"heavy":{
 			"name":"heavy",
@@ -222,6 +224,7 @@
 				"mult":2,
 			},
 			"tags":["heavy"],
+			"sortOrder":2,
 		},
 		"militia":{
 			"name":"militia",
@@ -236,6 +239,7 @@
 				"mult":1,
 			},
 			"tags":["militia"],
+			"sortOrder":3,
 		},
 		"rebel":{
 			"name":"rebel",
@@ -250,6 +254,7 @@
 				"mult":1,
 			},
 			"tags":["rebel"],
+			"sortOrder":4,
 		}
 	},
 	
