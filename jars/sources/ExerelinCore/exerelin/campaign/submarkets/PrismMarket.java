@@ -145,6 +145,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (spec.isDHull()) return false;
         if (spec.hasTag(Tags.NO_SELL) && spec.hasTag(Items.TAG_NO_DEALER)) return false;
         if (spec.hasTag(Tags.RESTRICTED)) return false;
+        if (spec.hasTag(Items.TAG_NO_DEALER)) return false;
         if (spec.getFleetPoints() < requiredFP) return false; //quality check
         if (restrictedShips.contains(spec.getBaseHullId())) return false;
         if (spec.getHints().contains(ShipTypeHints.STATION)) return false;
@@ -163,6 +164,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (spec.getTier() >= 5) return false;
         if (spec.hasTag(Tags.WING_NO_SELL)) return false;
         if (spec.hasTag(Tags.RESTRICTED)) return false;
+        if (spec.hasTag(Items.TAG_NO_DEALER)) return false;
         String specId = spec.getId();
         for (String prefix : DISALLOWED_PREFIXES)
         {
@@ -177,6 +179,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         if (spec.getTier() < 2 || spec.getTier() > 4) return false;
         if (spec.hasTag(Tags.RESTRICTED)) return false;
+        if (spec.hasTag(Items.TAG_NO_DEALER)) return false;
         String specId = spec.getWeaponId();
         for (String prefix : DISALLOWED_PREFIXES)
         {
@@ -244,7 +247,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             String id = fighterPicker.pick();        
             cargo.addItems(CargoAPI.CargoItemType.FIGHTER_CHIP, id, 1);
             picks++;
-            log.info("Adding fighter " + id + ": " + picks);
+            //log.info("Adding fighter " + id + ": " + picks);
         }
     }
 
