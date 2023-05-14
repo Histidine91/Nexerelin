@@ -8,13 +8,16 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel.AntiInspectionOrders;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.utilities.NexUtilsReputation;
+import org.lazywizard.lazylib.MathUtils;
+
 import java.util.List;
 import java.util.Map;
-import org.lazywizard.lazylib.MathUtils;
 
 public class Nex_MiscCMD extends BaseCommandPlugin {
 	
@@ -27,6 +30,8 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 		{
 			case "hasSierra":
 				return hasSierra(memoryMap.get(MemKeys.LOCAL));
+			case "hasMidnightContact":
+				return ContactIntel.playerHasIntelItemForContact(Global.getSector().getImportantPeople().getPerson(RemnantQuestUtils.PERSON_DISSONANT));
 			case "isRemoteConnection":
 				return isRemote(dialog.getInteractionTarget());
 			case "hasOngoingInspection":

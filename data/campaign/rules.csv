@@ -3753,6 +3753,33 @@ OR
 ""Okay, it's done."" $HeOrShe seems to key in some kind of confirmation on an off-brand datapad, then looks back up at you. ""This never happened.""",,
 #END supply rebellion,,,,,,
 ,,,,,,
+# Scythe of Orion modifications,,,,,,
+nex_PKHackMenuSel,DialogOptionSelected,"$option == pk_hackMenu
+!$doesFakeVarExist score:5",FireAll PKRelayOpts,"It is not unusual that the Remnant Nexus exchanges signals with the local comm relay. Wherever Tri-Tachyon's AI fleets linger, one finds clouds of tiny spy-sats, relays, and repeaters chirping squirts of data back and forth. Very quietly, almost enough to be lost in the background noise. But not quite.
+
+It is not a simple thing to tap into this self-evolved network to request a very specific piece of information. You assemble your senior officers and consider your options for hacking into the Nexus",,
+nex_PKHackDefaultOpts,PKRelayOpts,,"SetStoryOption pk_hackStory technology ""Hacked into a remnant Nexus using a nearby comm relay""
+FireBest PKRelayCheckTTCommission",,"pk_hack:Use Tri-Tachyon security codes to make the task possible
+pk_hackStory:Open a comm-link into the network
+20:pk_commGoBack:Go back",
+nex_PKHackRemnantOpt,PKRelayOpts,RepGTE remnant SUSPICIOUS,,,nex_pk_hackRemnant:Use access codes from your Remnant associates,
+nex_PKHackRemnantSel,DialogOptionSelected,$option == nex_pk_hackRemnant,"$global.pk_nexusDataGained = true
+Call $global.pk_ref updateStage","As an associate of the AI Remnants, you have access to a basic set of up-to-date access codes, giving you a channel of communication.
+
+You submit your request and receive an answer with the promptness expected of a friendly AI. You now have navigation coordinates which should lead to the planetkiller.",defaultLeave:Leave,
+nex_PKHackStoryWhatDoMidnight0,PKHackStoryWhatDo,Nex_MiscCMD hasMidnightContact,,,"nex_pk_hackStoryWhatDoMidnight:""I will give it to Midnight Dissonant.""",
+nex_PKHackStoryWhatDoGiveMidnight,DialogOptionSelected,$option == nex_pk_hackStoryWhatDoMidnight,$player.ethosProAI++,"
+   the one who watches, of course
+
+   but if you were to choose this path
+   you could just as easily leave it where it is now
+
+   (much amusement!)
+",pk_hackStoryGetData:Continue,
+,,,,,,
+,,,,,,
+#END Scythe of Orion modifications,,,,,,
+,,,,,,
 # chatty stuff,,,,,,
 nex_dissonantConvo1Opt,PopulateOptions,"$id == nex_dissonant
 !$nex_convo1Seen
