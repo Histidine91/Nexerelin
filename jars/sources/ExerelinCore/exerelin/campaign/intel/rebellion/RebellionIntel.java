@@ -1070,10 +1070,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			}
 			// also print rep changes, if this is an update
 			if (listInfoParam != null) {
-				if (repResultGovt != null)
+				if (repResultGovt != null && repResultGovt.delta != 0)
 					CoreReputationPlugin.addAdjustmentMessage(repResultGovt.delta, govtFaction, null, 
 							null, null, info, tc, false, pad);
-				if (repResultRebel != null)
+				if (repResultRebel != null && repResultRebel.delta != 0)
 					CoreReputationPlugin.addAdjustmentMessage(repResultRebel.delta, rebelFaction, null, 
 							null, null, info, tc, false, pad);
 			}
