@@ -1629,6 +1629,11 @@
 		"intelBullet3":"and speak with $name",
 	},
 	
+	"nex_hostileActivity":{
+		"cellDisruptName":"Cell infiltrated",
+		"cellDisruptDesc":"Your operative has infiltrated and destroyed a Luddic Path cell on one of your colonies."
+	},
+	
 	"exerelin_landmarks":{
 		"abandonedStation":"Abandoned Station",
 		"beholderStation":"Beholder Station",

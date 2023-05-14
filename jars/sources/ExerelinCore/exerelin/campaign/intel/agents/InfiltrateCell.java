@@ -8,12 +8,14 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -22,11 +24,14 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
 public class InfiltrateCell extends CovertActionIntel {
+
+	public static final float MAX_SLEEPER_TIME_REMAINING = 90f;
 	
 	LuddicPathBaseIntel base;
 	
@@ -125,6 +130,8 @@ public class InfiltrateCell extends CovertActionIntel {
 		if (!sleeper) base = LuddicPathCellsIntel.getClosestBase(market);
 		if (base != null && (base.isEnding() || base.isEnded()))
 			base = null;
+
+		float disruptDur = Global.getSettings().getFloat("patherCellDisruptionDuration");
 		
 		// kill cell
 		/*
@@ -132,8 +139,17 @@ public class InfiltrateCell extends CovertActionIntel {
 		cellIntel.sendUpdateIfPlayerHasIntel(LuddicPathCellsIntel.UPDATE_DISSOLVED, false);
 		*/
 		// don't kill cell, disrupt instead
-		cellIntel.makeSleeper(Global.getSettings().getFloat("patherCellDisruptionDuration") * 2);
+		boolean alreadyDisrupted = cellIntel.getSleeperTimeout() > MAX_SLEEPER_TIME_REMAINING;
+		cellIntel.makeSleeper(disruptDur * 2);
 		cellIntel.sendUpdateIfPlayerHasIntel(LuddicPathCellsIntel.UPDATE_DISRUPTED, false);
+		ListenerUtil.reportCellDisrupted(cellIntel);
+		if (!alreadyDisrupted && HostileActivityEventIntel.get() != null) {
+			int perCell = Global.getSettings().getInt("HA_patherBasePerActiveCell");
+
+			int points = -1 * perCell;
+			HACellInfiltratedFactor factor = new HACellInfiltratedFactor(points);
+			HostileActivityEventIntel.get().addFactor(factor);
+		}
 		
 		// locate base
 		if (base != null && base.isHidden())

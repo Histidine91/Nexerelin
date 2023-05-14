@@ -671,7 +671,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			MarketConditionAPI cond = agentMarket.getCondition(Conditions.PATHER_CELLS);
 			LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
 			LuddicPathCellsIntel cellIntel = cellCond.getIntel();
-			if (cellIntel.getSleeperTimeout() <= 90)
+			if (cellIntel.getSleeperTimeout() <= InfiltrateCell.MAX_SLEEPER_TIME_REMAINING)
 				addActionOption(CovertActionType.INFILTRATE_CELL);
 		}
 		if (agentMarket != null) {
