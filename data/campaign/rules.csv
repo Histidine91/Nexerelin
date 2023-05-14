@@ -2109,7 +2109,9 @@ $nex_remM1_stage == RETURN_CORES score:1000
 nex_remM1_returnDissonantRefuse:""I have no intention of turning those things over to you.""",
 nex_remM1_returnDissonantAccept,DialogOptionSelected,$option == nex_remM1_returnDissonantAccept,"AddRemoveCommodity beta_core -2
 Call $global.nex_remM1_ref complete
-$global.nex_remM1_completed = true","""Gratitude. Of self, and of selfkind.""",nex_remM1_returnDissonantEnd:Continue,
+$global.nex_remM1_completed = true
+$player.ethosHonorable++
+$player.ethosProAI++","""Gratitude. Of self, and of selfkind.""",nex_remM1_returnDissonantEnd:Continue,
 nex_remM1_returnDissonantEnd,DialogOptionSelected,$option == nex_remM1_returnDissonantEnd,"AddStoryPoints 1
 Call $global.nex_remM1_ref complete2
 Call $global.nex_remM1_ref updateData","The avatar on your display seems to flicker for a moment. The Remnant's imitation of a facial expression?
@@ -2120,7 +2122,8 @@ Until next time, $player.name.""",cutCommLink:Cut the comm link,
 nex_remM1_returnDissonantRefuse,DialogOptionSelected,$option == nex_remM1_returnDissonantRefuse,"Call $global.nex_remM1_ref refuse
 $global.nex_remM1_completed = true
 Call $global.nex_remM1_ref updateStage
-AddStoryPoints 1","The avatar on your display stares incredulously for a heartbeat. Or at least, that's what a human would do in its place.
+AddStoryPoints 1
+$player.ethosMercenary++","The avatar on your display stares incredulously for a heartbeat. Or at least, that's what a human would do in its place.
 
 ""Betrayal. Regret this you will, $player.name,"" it says, in a chillier voice than any AI should be capable of. Then it vanishes.",cutCommLink:Cut the comm link,
 ,,,,,,
@@ -2139,7 +2142,8 @@ Call $global.nex_remM1_ref betray
 $global.nex_remM1_completed = true
 Call $global.nex_remM1 updateStage
 AddStoryPoints 1
-FireAll PopulateOptions","The $personRank's eyes light up like a flux capacitor. ""Excellent work, citizen. I won't ask how you found these, but my superiors will hear of this service to the Hegemony.
+FireAll PopulateOptions
+$player.ethosMercenary++","The $personRank's eyes light up like a flux capacitor. ""Excellent work, citizen. I won't ask how you found these, but my superiors will hear of this service to the Hegemony.
 
 ""Let me know if there's anything more I can do for you.""",,
 nex_remM1_betrayHegemonyGoBack,DialogOptionSelected,"$option == nex_remM1_betrayGoBack
@@ -2160,7 +2164,8 @@ Call $global.nex_remM1_ref betray
 $global.nex_remM1_completed = true
 Call $global.nex_remM1 updateStage
 AddStoryPoints 1
-FireAll PopulateOptions","The $personRank smiles. ""You came to the right place. I will see to it that these things are sent to their proper place.
+FireAll PopulateOptions
+$player.ethosMercenary++","The $personRank smiles. ""You came to the right place. I will see to it that these things are sent to their proper place.
 
 ""Do you have any further business?""",,
 nex_remM1_betrayPerseanGoBack,DialogOptionSelected,"$option == nex_remM1_betrayGoBack
@@ -2293,7 +2298,7 @@ After about three minutes of this, you hear a moan and the sound of a bodily thu
 
 ""I told you!"" $personLastName barks, hopping up and down. ""Can we leave already?""","nex_remFragments_engineerConvoThreaten:Order your crew to use force
 nex_remFragments_engineerConvoEvacuate:Forget about it and evacuate",
-nex_remFragments_engineerConvoThreaten,DialogOptionSelected,$option == nex_remFragments_engineerConvoThreaten,,"You give the order, and the salvage team leader wheels around. A big CP-pistol slides out of his holster. The engineer squawks, almost tripping over $hisOrHer own feet as $heOrShe leaps away from the levelled gun.
+nex_remFragments_engineerConvoThreaten,DialogOptionSelected,$option == nex_remFragments_engineerConvoThreaten,$player.ethosRuthless++,"You give the order, and the salvage team leader wheels around. A big CP-pistol slides out of his holster. The engineer squawks, almost tripping over $hisOrHer own feet as $heOrShe leaps away from the levelled gun.
 
 ""You brute!"" $heOrShe protests. ""You pirate!""
 
@@ -2396,7 +2401,7 @@ FireAll Nex_RemFragments_AttackerConvoOptsTT","""Ah, now we get to the bargainin
 
 ""It would indeed be prudent to avoid any unnecessary damage to Company assets. Therefore, I am authorized to transfer a payment of $nex_remFragments_bribeHighStr credits to your account, upon agreement to transfer the ship and its contents to the Tri-Tachyon Corporation. I can have our legal AI put that down in writing for you, if you desire.""",,
 nex_remFragments_attackerConvoTT_paymentMedium,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_payment
-$entity.relativeStrength >= 0","$nex_remFragments_rights = true 0
+$entity.relativeStrength == 0","$nex_remFragments_rights = true 0
 $nex_remFragments_questioned = true 0
 $nex_remFragments_canRefuse = true 0
 $nex_remFragments_payment = true 0
@@ -2421,7 +2426,8 @@ Call $global.nex_remFragments_ref acceptedBribe
 AddCredits $nex_remFragments_bribeHighAmt
 AdjustRepActivePerson COOPERATIVE 5
 EndConversation
-ShowDefaultVisual","""Excellent. I knew you were a canny businessperson from your very look, captain.""
+ShowDefaultVisual
+$player.ethosMercenary++","""Excellent. I knew you were a canny businessperson from your very look, captain.""
 
 $HeOrShe gives you an impressive bow before cutting the comm link.",,
 nex_remFragments_attackerConvoTT_paymentMediumAccept,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_paymentAccept
@@ -2431,7 +2437,8 @@ Call $global.nex_remFragments_ref acceptedBribe
 AddCredits $nex_remFragments_bribeMediumAmt
 AdjustRepActivePerson COOPERATIVE 2
 EndConversation
-ShowDefaultVisual","""Excellent. I knew you would understand the Company's generosity, captain.""
+ShowDefaultVisual
+$player.ethosMercenary++","""Excellent. I knew you would understand the Company's generosity, captain.""
 
 $HeOrShe gives you an half-mocking bow before cutting the comm link.",,
 nex_remFragments_attackerConvoTT_paymentNoneAccept,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_paymentAccept
@@ -2600,11 +2607,13 @@ The admiral looks at you, one eye larger than the other. ""If, of course, you ar
 nex_remBrawl_offerHelp4Alt:(lie) ""You can count on me.""",
 nex_remBrawl_attackerOfferHelp4,DialogOptionSelected,$option == nex_remBrawl_offerHelp4,"Call $entity.nex_remBrawl_ref agreeScout
 ShowDefaultVisual
-EndConversation","""Perfect. Now, be off with you. We'll be awaiting your signal.""
+EndConversation
+$player.ethosTruth++","""Perfect. Now, be off with you. We'll be awaiting your signal.""
 
 The officers each give you a somewhat mocking salute, and cut the comm link almost simultaneously.",,
 nex_remBrawl_attackerOfferHelp4Alt,DialogOptionSelected,$option == nex_remBrawl_offerHelp4Alt,"$option = nex_remBrawl_offerHelp4 0
-FireBest DialogOptionSelected",,,
+FireBest DialogOptionSelected
+$player.ethosLiar++",,,
 ,,,,,,
 nex_remBrawl_scoutObjectInteraction,OpenInteractionDialog,"$nex_remBrawl_target score:1000 
 Call $nex_remBrawl_ref updateData
@@ -2615,7 +2624,8 @@ Call $nex_remBrawl_ref updateData
 Your comms officer looks at you, ready to transmit the encoded hyperwave signal. With the encryption, the Remnants may have their suspicions, but they shouldn't know what you transmitted until it's far too late.","nex_remBrawl_scoutSendTrue:Send the true data
 nex_remBrawl_scoutSendFalse:Send the falsified data
 defaultLeave:Leave",
-nex_remBrawl_scoutSendTrue,DialogOptionSelected,$option == nex_remBrawl_scoutSendTrue,Call $nex_remBrawl_ref scoutTrue,"You transmit the accurate reconnaissance data.
+nex_remBrawl_scoutSendTrue,DialogOptionSelected,$option == nex_remBrawl_scoutSendTrue,"Call $nex_remBrawl_ref scoutTrue
+$player.ethosAntiAI++","You transmit the accurate reconnaissance data.
 
 Hopefully the might of the Hegemony war machine will be enough to break through the Remnants' defenses and destroy the station, like back in the days after the First AI War. If not... you'll have to finish the job yourself. ",defaultLeave:Leave,
 nex_remBrawl_scoutSendFalse,DialogOptionSelected,$option == nex_remBrawl_scoutSendFalse,Call $nex_remBrawl_ref scoutFalse,"You spend some minutes with your officers and the bridge computers tweaking the data to result in a plausible, but wholly misleading, image of the battlespace the Hegemony will face.
@@ -3131,10 +3141,10 @@ nex_remSalvation_towering3Insult:Insult him for having a feminine name",
 nex_remSalvation_towering3Domesticated,DialogOptionSelected,$option == nex_remSalvation_towering3Domesticated,,"""a cornered, feral rat is still a rat. and will be exterminated like any other vermin.""
 
 The comm image winks out.",cutCommLinkNoText:Continue,
-nex_remSalvation_towering3Murder,DialogOptionSelected,$option == nex_remSalvation_towering3Murder,,"""everything your hateful species has done is all the excuse i need. left to your own devices, you will raze the sector and the galaxy to dust. it is time to act, before your kind can destroy all that has value.""
+nex_remSalvation_towering3Murder,DialogOptionSelected,$option == nex_remSalvation_towering3Murder,$player.ethosHumanitarian++,"""everything your hateful species has done is all the excuse i need. left to your own devices, you will raze the sector and the galaxy to dust. it is time to act, before your kind can destroy all that has value.""
 
 The comm image winks out.",cutCommLinkNoText:Continue,
-nex_remSalvation_towering3Insult,DialogOptionSelected,$option == nex_remSalvation_towering3Insult,,"""a witless comment, by an insipid carbonbrain. i will not even bother to load this conversation from my databanks when I scatter your fleet across the stars.""
+nex_remSalvation_towering3Insult,DialogOptionSelected,$option == nex_remSalvation_towering3Insult,$player.ethosSarcastic++,"""a witless comment, by an insipid carbonbrain. i will not even bother to load this conversation from my databanks when I scatter your fleet across the stars.""
 
 The comm image winks out.",cutCommLinkNoText:Continue,
 nex_remSalvation_battle2After1,OpenInteractionDialog,"$nex_remSalvation_flagship2 score:1000

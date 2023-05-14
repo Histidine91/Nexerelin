@@ -93,3 +93,24 @@ Silverlight ship system
 "Aspect Seeker?" "Nightfall Dash"?
 
 Boost ship forward with afterimages, adds damper field, disable weapons and shields, launches Aspects from sides with phase effect on the Aspects
+
+----------
+Ethos changes
+
+Captive Cores
+    - Sell cores to Hegemony or League: +Mercenary
+    - Betray Midnight: +Mercenary
+    - Complete mission: +Honorable, +ProAI
+
+Fragments
+    - Threaten engineer: +Ruthless
+    - Ask for finder's fee from TT guy: +Mercenary
+
+Brawl
+    - "You can count on me": +Liar/+Truth
+    - Betray Midnight: +AntiAI
+
+Salvation
+    - Defy Towering: nothing?
+    - Call him a killer: +Humanitarian
+    - Insult Towering: +Sarcastic
