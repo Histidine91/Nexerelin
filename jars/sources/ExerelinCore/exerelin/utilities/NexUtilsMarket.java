@@ -25,10 +25,7 @@ import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import lombok.extern.log4j.Log4j;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Log4j
 public class NexUtilsMarket {
@@ -441,24 +438,32 @@ public class NexUtilsMarket {
 		if (quant == null) return 0;
 		return quant.getQuantity().getModifiedInt();
 	}
+
+	public static void pickEntityDestination(final InteractionDialogAPI dialog,
+											 final List<SectorEntityToken> destinations, String confirmText,
+											 final CampaignEntityPickerWrapper wrapper) {
+		pickEntityDestination(dialog, destinations, confirmText, wrapper, null);
+	}
 	
 	public static void pickEntityDestination(final InteractionDialogAPI dialog, 
-			final List<SectorEntityToken> destinations, String confirmText, 
-			final CampaignEntityPickerWrapper wrapper)
+			final List<SectorEntityToken> destinations, String confirmText,
+			final CampaignEntityPickerWrapper wrapper, final List<IntelInfoPlugin.ArrowData> arrows)
 	{
+		final Set<StarSystemAPI> toShow = new HashSet<>();
+		for (SectorEntityToken token : destinations) {
+			if (token.getStarSystem() == null) continue;
+			toShow.add(token.getStarSystem());
+		}
 		dialog.showCampaignEntityPicker(StringHelper.getString("exerelin_misc", "campaignEntityPicker_selectDestination"),
 				StringHelper.getString("exerelin_misc", "campaignEntityPicker_destination"),
 				confirmText, 
 				Global.getSector().getPlayerFaction(), destinations, 
-			new CampaignEntityPickerListener() {
+			new BaseCampaignEntityPickerListener() {
 				public void pickedEntity(SectorEntityToken entity) {
 					wrapper.reportEntityPicked(entity);
 				}
 				public void cancelledEntityPicking() {
 					wrapper.reportEntityPickCancelled();
-				}
-				public String getMenuItemNameOverrideFor(SectorEntityToken entity) {
-					return null;
 				}
 				public String getSelectedTextOverrideFor(SectorEntityToken entity) {
 					return entity.getName() + " - " + entity.getContainingLocation().getNameWithTypeShort();
@@ -478,7 +483,7 @@ public class NexUtilsMarket {
 
 				@Override
 				public List<IntelInfoPlugin.ArrowData> getArrows() {
-					return null;
+					return arrows;
 				}
 
 				@Override
@@ -488,7 +493,7 @@ public class NexUtilsMarket {
 
 				@Override
 				public Set<StarSystemAPI> getStarSystemsToShow() {
-					return null;
+					return toShow;
 				}
 			});
 	}

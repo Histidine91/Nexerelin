@@ -697,14 +697,18 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		super.notifyEnding();
 		Global.getSector().getListenerManager().removeListener(this);
 	}
-	
-	public static int getActiveIntelCount() {
-		int num = 0;
+
+	public static List<PlayerSpecialForcesIntel> getActiveIntelList() {
+		List<PlayerSpecialForcesIntel> list = new ArrayList<>();
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(PlayerSpecialForcesIntel.class)) {
 			if (intel.isEnding() || intel.isEnded()) continue;
-			num++;
+			list.add((PlayerSpecialForcesIntel) intel);
 		}
-		return num;
+		return list;
+	}
+	
+	public static int getActiveIntelCount() {
+		return getActiveIntelList().size();
 	}
 	
 	public void reportShipDeath(FleetMemberAPI member) {

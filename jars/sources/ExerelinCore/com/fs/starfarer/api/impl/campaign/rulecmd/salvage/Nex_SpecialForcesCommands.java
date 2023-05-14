@@ -1,40 +1,26 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin.ListInfoMode;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
-import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
-import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
-import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.CutStyle;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.*;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.specialforces.PlayerSpecialForcesIntel;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.utilities.NexUtilsGUI;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.StringHelper;
+
+import java.util.*;
 
 public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 	
@@ -168,6 +154,14 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 		ai.assignTask(task);
 		printTaskInfo(dialog, sf, task);
 	}
+
+	protected List<IntelInfoPlugin.ArrowData> getDestinationArrows() {
+		List<IntelInfoPlugin.ArrowData> arrows = new ArrayList<>();
+		for (PlayerSpecialForcesIntel psf : PlayerSpecialForcesIntel.getActiveIntelList()) {
+			arrows.addAll(psf.getArrowData(null));
+		}
+		return arrows;
+	}
 	
 	public void giveOrderAtLocation(final InteractionDialogAPI dialog, final String orderType, final MemoryAPI local) 
 	{
@@ -195,7 +189,7 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 			{
 				Nex_FleetRequest.createInfoTextBasic(info, entity, dialog.getInteractionTarget());
 			}
-		});
+		}, getDestinationArrows());
 	}
 	
 	public void giveWaitOrder(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {

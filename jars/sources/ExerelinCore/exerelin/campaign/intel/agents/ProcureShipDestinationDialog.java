@@ -1,11 +1,8 @@
 package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -14,16 +11,18 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import static exerelin.campaign.intel.agents.AgentOrdersDialog.getString;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.apache.log4j.Logger;
+import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
-import org.lwjgl.input.Keyboard;
+
+import static exerelin.campaign.intel.agents.AgentOrdersDialog.getString;
 
 public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	
@@ -158,6 +157,14 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 		options.setShortcut(Menu.BACK, Keyboard.KEY_ESCAPE,
 				false, false, false, true);
 	}
+
+	protected List<IntelInfoPlugin.ArrowData> getDestinationArrows() {
+		List<IntelInfoPlugin.ArrowData> arrows = new ArrayList<>();
+		if (destination != null) {
+			arrows.add(new IntelInfoPlugin.ArrowData(action.market.getPrimaryEntity(), destination.getPrimaryEntity()));
+		}
+		return arrows;
+	}
 	
 	protected void openDestinationPicker() {
 		List<SectorEntityToken> dests = new ArrayList<>();
@@ -192,7 +199,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 						text.setHighlight(factionName, size);
 						text.setHighlightColors(market.getFaction().getBaseUIColor(), hl);
 					}
-				});						
+				}, getDestinationArrows());
 		populateOptions();
 	}
 

@@ -1074,24 +1074,42 @@ public class AgentIntel extends BaseIntelPlugin {
 	@Override
 	public List<ArrowData> getArrowData(SectorMapAPI map) {
 		CovertActionIntel currentAction = getCurrentAction();
-		if (currentAction != null && currentAction.getDefId().equals(CovertActionType.TRAVEL))
+		List<ArrowData> result = new ArrayList<ArrowData>();
+		MarketAPI origin = market;
+		if (origin == null) return null;
+		CovertActionIntel act = currentAction;
+		if (act != null && act.getDefId().equals(CovertActionType.TRAVEL))
 		{
-			Travel travel = (Travel)currentAction;
+			Travel travel = (Travel)act;
 			if (travel.from == null || travel.from.getPrimaryEntity() == null
 					|| travel.market == null || travel.market.getPrimaryEntity() == null) {
 				return null;
 			}
-			
-			List<ArrowData> result = new ArrayList<ArrowData>();
-			ArrowData arrow = new ArrowData(travel.from.getPrimaryEntity(), travel.market.getPrimaryEntity());
+
+			ArrowData arrow = new ArrowData(origin.getPrimaryEntity(), travel.market.getPrimaryEntity());
 			arrow.color = Global.getSector().getPlayerFaction().getColor();
 			arrow.width = 10f;
 			result.add(arrow);
-			
-			return result;
+			origin = travel.market;
 		}
+
+		act = this.getNextAction();
+		if (act != null && act.getDefId().equals(CovertActionType.TRAVEL))
+		{
+			Travel travel = (Travel)act;
+			if (travel.from == null || travel.from.getPrimaryEntity() == null
+					|| travel.market == null || travel.market.getPrimaryEntity() == null) {
+				return null;
+			}
+
+			ArrowData arrow = new ArrowData(origin.getPrimaryEntity(), travel.market.getPrimaryEntity());
+			arrow.color = Global.getSector().getPlayerFaction().getColor();
+			arrow.width = 10f;
+			result.add(arrow);
+		}
+
 		
-		return null;
+		return result;
 	}
 	
 	public FactionAPI updateAgentDisplayedFaction() {

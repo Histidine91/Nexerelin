@@ -697,6 +697,14 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		}
 		showPaginatedMenu();
 	}
+
+	protected List<IntelInfoPlugin.ArrowData> getDestinationArrows() {
+		List<IntelInfoPlugin.ArrowData> arrows = new ArrayList<>();
+		for (AgentIntel intel : CovertOpsManager.getManager().getAgents()) {
+			arrows.addAll(intel.getArrowData(null));
+		}
+		return arrows;
+	}
 	
 	/**
 	 * Display a paginated list of the available targets for the selected action type.
@@ -710,6 +718,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				MarketAPI market = (MarketAPI)marketRaw;
 				dests.add(market.getPrimaryEntity());
 			}
+			List<IntelInfoPlugin.ArrowData> arrows = getDestinationArrows();
+
 			NexUtilsMarket.pickEntityDestination(dialog, dests, 
 				StringHelper.getString("confirm", true), new NexUtilsMarket.CampaignEntityPickerWrapper(){
 					@Override
@@ -726,7 +736,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 						MarketAPI market = agent.getMarket();
 						Nex_FleetRequest.createInfoTextBasic(info, entity, market != null ? market.getPrimaryEntity() : null);
 					}
-				});
+				}, arrows);
 			lastSelectedMenu = null;						
 			populateOptions();
 			return;
