@@ -20,6 +20,7 @@
 			"mininglaser": 1.5,
 			"hammer": 1.5,
 			"hammerrack": 20,
+			"jackhammer": 5,
 			"hammer_single": 0.75,
 		},
 		"mining_hidden_ships_and_weapons":["drone_borer"],
