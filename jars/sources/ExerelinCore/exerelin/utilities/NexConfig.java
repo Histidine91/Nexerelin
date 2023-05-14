@@ -123,7 +123,7 @@ public class NexConfig
     
     // Colonies
     public static int maxNPCNewColonySize = 6;
-    public static float hardModeColonyGrowthMult = 0.5f;
+    public static float hardModeColonyGrowthMult = 0.75f;
     public static float hardModeColonyIncomeMult = 0.9f;
     public static float colonyExpeditionInterval = 270;
     

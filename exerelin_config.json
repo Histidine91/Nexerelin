@@ -144,7 +144,7 @@
     "rebellionMult": 1,	# higher mult means unrest will boil over into rebellion more quickly
     
     "maxNPCNewColonySize": 6,	# for new colonies created by colony expedition event
-    "hardModeColonyGrowthMult": 0.5,
+    "hardModeColonyGrowthMult": 0.75,
     "hardModeColonyIncomeMult": 0.9,
     "colonyExpeditionInterval": 270,	# days, starts in cycle 207; also note nex_expeditionDelayPerExistingColony in settings.json
     
