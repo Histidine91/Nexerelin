@@ -1,3 +1,17 @@
+Version 0.10.6z
+
+* Ground battle fixes/enhancements
+	* Fix crash with liberation outcome
+	* Fix possible NaN industry disruption time
+	* Custom ground unit types can have their sprite specified
+	* Fix various cases where ground unit behavior was hardcoded instead of reading from definition
+* Prism no longer sells no_dealer items (including Kinetic Blaster and Gigacannon)
+* Operative find pirate base action should support Hostile Activity system
+* AI admin hiding on market capture by 'hates AI' faction works properly, including with admins existing at start of game
+* Fix Remnant mission 2 not being completable
+* Rebellion intel doesn't print no-relationship-changes to notification on event end
+* Add relevant arrows to maps in destination picker dialogs (e.g. operative travel action, special task group orders)
+
 Version 0.10.6y
 
 * Fix random sector crashes

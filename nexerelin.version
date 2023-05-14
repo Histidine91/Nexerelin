@@ -7,9 +7,9 @@
 	{
 		"major":0,
 		"minor":10,
-		"patch":"67"
+		"patch":"6z"
 	},
-	"starsectorVersion":"0.95.1a-RC6",
-	"directDownloadURL":"https://github.com/Histidine91/Nexerelin/releases/download/v0.10.67/Nexerelin_0.10.6y.zip",
-	"changelogURL":"https://raw.githubusercontent.com/Histidine91/SS-CombatChatter/release/changelog.txt"
+	"starsectorVersion":"0.96a-RC9",
+	"directDownloadURL":"https://github.com/Histidine91/Nexerelin/releases/download/v0.10.6z/Nexerelin_0.10.6z.zip",
+	"changelogURL":"https://raw.githubusercontent.com/Histidine91/Nexerelin/release/changelog.txt"
 }
