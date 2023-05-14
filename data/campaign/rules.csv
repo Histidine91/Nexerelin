@@ -3195,18 +3195,14 @@ Call $global.nex_remSalvation_ref complete","$personLastName sighs and rests $hi
 
 ""I confess that I am no theologian. But the Synod is full of theologians, and they will be debating the significance of this event for many nights to come. For myself..."" here, a distant gaze, ""I... may have to re-examine my own understanding of scripture. It is easy enough to name these thinking artificial constructs 'demon'... but when does a label clarify, and when does it obscure?""
 
-$HeOrShe shakes $hisOrHer head. ""I apologize for the ramble, captain. Thank you again for all that you have done.""",nex_remSalvation_epilogue3:Continue,
-nex_remSalvation_epilogue3,DialogOptionSelected,$option == nex_remSalvation_epilogue3,,"""Oh, and... if you are ever on Gilead again, we could visit the shrine together. It is a beautiful place, and one that soothes body and soul alike.""",cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link,
+$HeOrShe shakes $hisOrHer head. ""I apologize for the ramble, captain. Thank you again for all that you have done.""","#nex_remSalvation_epilogue3:Continue
+cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link",
+#nex_remSalvation_epilogue3,DialogOptionSelected,$option == nex_remSalvation_epilogue3,$player.haveArgentShrineInvitation = true,"""Oh, and... if you are ever on Gilead again, we could visit the shrine together. It is a beautiful place, and one that soothes body and soul alike.""",cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link,
 nex_remSalvation_knightGeneric,OpenCommLink,"$id == nex_luddicKnight score:5
 $global.nex_remSalvation_ref != null score:5
 !$entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""There is no time for talk. We must be ready to face the demons.""
 OR
 ""This is not the time for idle chatter.""",cutCommLink:Cut the comm link,If player randomly decides to chat while Mauve is attacking
-,,,,,,
-nex_remSalvation_shrine1,,,,,,
-,,,,,,
-,,,,,,
-,,,,,,
 #END Remnant salvation mission,,,,,,
 ,,,,,,
 # salvation: extra stuff for Kallichore Archive if got Arroyo through our own mission,,,,,,
@@ -3231,6 +3227,15 @@ $global.nex_gaKA_arroyoVisitShort score:5",BeginConversation arroyo false true,"
 ""So Baird is calling in another installment."" Arroyo sets aside his datapad. ""What will that be, Captain $playerName?""","gaKA_arroyoBreakIn:""I need to break into the datavault of the Ministry of Technology Standards.""
 gaKA_arroyoTour:""No small-talk? What about the tour?""",
 #END salvation: extra stuff for Kallichore Archive if got Arroyo through our own mission,,,,,,
+,,,,,,
+# salvation: extra for Pilgrim's Path,,,,,,
+nex_lppHesperusExcubitorEndAllowFromRemM4,DialogOptionSelected,"$option == lpp_hesperusExcubitorRepCheck
+$global.nex_remSalvation_missionCompleted score:120",,"A long pause.
+
+""Dame Rhianne has spoken of your services during the crisis on $nex_remSalvation_targetNamePermanent,"" the Excubitor Orbis says. ""Her words carry weight among the Knights, for all that she is too lenient with unbelievers. May your spirit find that for which it searches.""","lpp_hesperusExcubitorAllowEndCutoff:""Wait, that's it?""
+lpp_hesperusExcubitorAllowEndNice:""Thank you, Excubitor Orbis.""
+lpp_ExcubitorCutCommLink:Cut the comm link",
+#END salvation: extra for Pilgrim's Path,,,,,,
 ,,,,,,
 # Remnant general quests,,,,,,
 nex_rem_dissonantGeneralGreeting,PickGreeting,$id == nex_dissonant score:10,"ShowPersonVisual
@@ -3804,6 +3809,35 @@ AddText ""Well, hopefully she won't sulk about it for too long. Just how long ca
 EndConversation DO_NOT_FIRE
 ShowDefaultVisual
 FireAll PopulateOptions",,,
+,,,,,,
+#nex_argent_shrineVisitOpt,PopulateOptions,"$id == nex_luddicKnight
+$player.haveArgentShrineInvitation
+$entity.hasMarket
+$entity.tradeMode == OPEN",,,"nex_argent_shrineVisit1:""I'd like to take you up on that offer to visit the shrine.""",
+#nex_argent_shrineVisit1,DialogOptionSelected,$option == nex_argent_shrineVisit1,,,,
+,,,,,,
+#nex_pkTurnInArgentOpt,PopulateOptions,"$id == nex_luddicKnight
+PlayerHasCargo planetkiller",,,"nex_pkTurnInArgent:""I'd like to turn over a planetkiller.""",
+#nex_pkTurnInArgent,DialogOptionSelected,$option == nex_pkTurnInArgent,,"$HeOrShe looks at you in shock. ""How did you come to be in possession of such an abomination?"" 
+
+It takes $himOrHer a couple of second to restrain $hisOrHer visible fretting. ""We must handle this discreetly. Do you have this dreadful item in your possession at present?""","nex_pkTurnInArgentConfirm:""Yes.""
+nex_pkTurnInArgentCancel:""Not yet."" (lie)",
+#nex_pkTurnInArgentConfirm,DialogOptionSelected,$option == nex_pkTurnInArgentConfirm,"AddStoryPoints 3
+AdjustRep luddic_church 15
+AdjustRepActivePerson 5
+AddRemoveAnyItem SPECIAL planetkiller -1
+$player.turnedInPlanetkiller = true
+$player.turnedInPlanetkillerToKnights = true
+$player.ethosOrder++
+FireAll PopulateOptions","A squad of Knights led by an inquisitor-captain shuttles to your $shipOrFleet, examines the planetkiller device, says a prayer against evil, and then takes it back with them.
+
+""Ludd bless you for your wisdom, $playerFirstName,"" $personLastName says, hands put together. Then her smile fades. ""I would advise not letting the Hegemony or others know, or worse, the Luddic Path. Each would claim the toys of Belial for their games, heedless of the risk.""
+
+""If there is anything further I can do for you, let me know.""",,
+#nex_pkTurnInArgentCancel,DialogOptionSelected,$option == nex_pkTurnInArgentCancel,FireAll PopulateOptions,"""Do not delay too long, $playerBrotherOrSister. I shudder to think what such an instrument were to do in the wrong hands.""",,
+,,,,,,
+,,,,,,
+,,,,,,
 #END chatty stuff,,,,,,
 #END missions,,,,,,
 ,,,,,,

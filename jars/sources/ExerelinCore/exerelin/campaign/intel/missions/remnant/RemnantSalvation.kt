@@ -715,6 +715,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         Misc.makeStoryCritical(base, "nex_remSalvation")
         Misc.makeStoryCritical(arroyoMarket, "nex_remSalvation")
         Misc.makeStoryCritical(target, "nex_remSalvation")
+        Global.getSector().memoryWithoutUpdate.set("\$nex_remSalvation_targetNamePermanent", target!!.name)
     }
 
     /**
