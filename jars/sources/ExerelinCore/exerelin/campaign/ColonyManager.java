@@ -1280,10 +1280,17 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 
 		PersonAPI admin = market.getAdmin();
-		if (admin != null && admin.isAICore() && !Global.getSector().getImportantPeople().containsPerson(admin)) {
+		if (admin != null && admin.isAICore()) {
 			market.getMemoryWithoutUpdate().set(MEMORY_KEY_STASHED_CORE_ADMIN, admin);
 			market.setAdmin(null);
+
+			// set AI admin to the faction they were before SectorManager applied its changes
+			if (SectorManager.POSTS_TO_CHANGE_ON_CAPTURE.contains(admin.getPostId())) {
+				admin.setFaction(oldOwner.getId());
+			}
+
 			reassignAdminIfNeeded(market, oldOwner, newOwner);
+			replaceDisappearedAdmin(market, admin);
 			numStashed++;
 		}
 
@@ -1305,6 +1312,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			market.setAdmin(aiAdmin);
 			replaceDisappearedAdmin(market, currAdmin);
 			market.getMemoryWithoutUpdate().unset(MEMORY_KEY_STASHED_CORE_ADMIN);
+			//market.getCommDirectory().addPerson(aiAdmin);
+
+			// set AI admin to the new faction
+			if (SectorManager.POSTS_TO_CHANGE_ON_CAPTURE.contains(aiAdmin.getPostId()))
+				aiAdmin.setFaction(market.getFactionId());
+
 			numRestored++;
 		}
 
@@ -1337,7 +1350,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 	}
 	
-	public boolean doesFactionAllowAI(FactionAPI faction) {
+	public static boolean doesFactionAllowAI(FactionAPI faction) {
 		return !DiplomacyTraits.hasTrait(faction.getId(), TraitIds.HATES_AI);
 	}
 	
@@ -1639,6 +1652,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (prevAdmin == null) return;
 		if (prevAdmin.isPlayer()) return;
 		if (isPlayerHiredAdmin(prevAdmin)) return;
+		if (prevAdmin.isDefault()) return;
 		
 		market.addPerson(prevAdmin);
 		market.getCommDirectory().addPerson(prevAdmin);
@@ -1668,7 +1682,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static void reassignAdminIfNeeded(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner) {
 		
 		// do nothing if admin is AI core (unless it's a faction ruler, e.g. II)
-		if (market.getAdmin().isAICore() && !Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())) 
+		// or if the new owner hates AI
+		if (market.getAdmin().isAICore() && !Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId()) && !doesFactionAllowAI(newOwner))
 		{
 			return;
 		}
