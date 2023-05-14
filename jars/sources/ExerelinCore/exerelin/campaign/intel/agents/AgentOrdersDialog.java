@@ -2,6 +2,7 @@ package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -15,7 +16,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
@@ -674,11 +674,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			if (cellIntel.getSleeperTimeout() <= 90)
 				addActionOption(CovertActionType.INFILTRATE_CELL);
 		}
-		if (agentMarket != null && agentMarket.hasCondition(Conditions.PIRATE_ACTIVITY)) {
-			MarketConditionAPI cond = agentMarket.getCondition(Conditions.PIRATE_ACTIVITY);
-			PirateActivity activityCond = (PirateActivity)(cond.getPlugin());
-			PirateBaseIntel baseIntel = activityCond.getIntel();
-			if (!baseIntel.isEnding() && !baseIntel.isEnded() && !baseIntel.isPlayerVisible())
+		if (agentMarket != null) {
+			PirateBaseIntel baseIntel = FindPirateBase.getRelevantPirateBase(agentMarket);
+			if (baseIntel != null && !baseIntel.isEnding() && !baseIntel.isEnded() && !baseIntel.isPlayerVisible())
 				addActionOption(CovertActionType.FIND_PIRATE_BASE);
 		}
 		if (agentMarket != null) {

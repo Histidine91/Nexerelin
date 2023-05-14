@@ -6,14 +6,16 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.PirateBasePirateActivityCause2;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
-import exerelin.utilities.NexUtilsMarket;
-import java.awt.Color;
-import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.Map;
 
 public class FindPirateBase extends CovertActionIntel {
 		
@@ -68,8 +70,7 @@ public class FindPirateBase extends CovertActionIntel {
 	@Override
 	protected void onSuccess() {
 		try {
-			PirateActivity activity = (PirateActivity)market.getCondition(Conditions.PIRATE_ACTIVITY).getPlugin();
-			PirateBaseIntel intel = activity.getIntel();
+			PirateBaseIntel intel = getRelevantPirateBase(market);
 			intel.makeKnown();
 			intel.sendUpdateIfPlayerHasIntel(PirateBaseIntel.DISCOVERED_PARAM, false);
 		} catch (Exception ex) {
@@ -92,5 +93,18 @@ public class FindPirateBase extends CovertActionIntel {
 	@Override
 	public String getIcon() {
 		return Global.getSettings().getSpriteName("intel", "pirate_base");
+	}
+
+	public static PirateBaseIntel getRelevantPirateBase(MarketAPI market) {
+		PirateBaseIntel intel = null;
+		HostileActivityEventIntel ha = HostileActivityEventIntel.get();
+		if (ha != null) {
+			intel = PirateBasePirateActivityCause2.getBaseIntel(market.getStarSystem());
+		}
+		else if (market.hasCondition(Conditions.PIRATE_ACTIVITY)) {
+			PirateActivity activity = (PirateActivity)market.getCondition(Conditions.PIRATE_ACTIVITY).getPlugin();
+			intel = activity.getIntel();
+		}
+		return intel;
 	}
 }
