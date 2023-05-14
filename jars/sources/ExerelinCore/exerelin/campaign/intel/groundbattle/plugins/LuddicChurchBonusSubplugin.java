@@ -1,16 +1,15 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
-import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class LuddicChurchBonusSubplugin extends FactionBonusSubplugin {
 		
@@ -23,7 +22,7 @@ public class LuddicChurchBonusSubplugin extends FactionBonusSubplugin {
 			Float mult = getSettingsFloat("luddef_moraleDamageTakenMult");
 			if (mult != null) {
 				dmg *= mult;
-				if (unit.getType() == ForceType.MILITIA)
+				if (unit.getUnitDef().hasTag("militia"))
 					dmg *= mult;
 			}
 		}

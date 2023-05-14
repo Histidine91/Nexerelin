@@ -11,11 +11,8 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCProcessSectorGenerationSliders;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
-import exerelin.campaign.intel.groundbattle.GroundUnit;
+import exerelin.campaign.intel.groundbattle.*;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
-import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexUtilsGUI;
@@ -261,22 +258,16 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	}
 	
 	public static int getMaxCountForResize(GroundUnit unit, int curr, int absoluteMax) {
-		ForceType type = unit.getType();
+		GroundUnitDef def = unit.getUnitDef();
 		CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
 		int max = absoluteMax;
 
-		// marine: cap by number of available marine equivalents remaining
-		if (unit.getType() == ForceType.MARINE) {
-			max = Math.min(max, curr + (int)CrewReplacerUtils.getMarines(fleet, GBConstants.CREW_REPLACER_JOB_MARINES));
-		}
-		// heavy: cap by number of available heavy arms equivalents remaining, and also marine equivalents to crew them
-		else if (unit.getType() == ForceType.HEAVY) {
-			max = Math.min(max, curr + (int)CrewReplacerUtils.getHeavyArms(fleet, GBConstants.CREW_REPLACER_JOB_HEAVYARMS));
-			max = Math.min(max, (unit.getPersonnelCount() + (int)CrewReplacerUtils.getMarines(fleet, GBConstants.CREW_REPLACER_JOB_TANKCREW))/GroundUnit.CREW_PER_MECH);
-		}
-		// other types: just check cargo for the available commodity ID
-		else {
-			max = Math.min(max, curr + (int)fleet.getCargo().getCommodityQuantity(type.commodityId));
+		// check available commodities
+		{
+			if (unit.getUnitDef().equipment != null) {
+				max = Math.min(max, curr + (int)CrewReplacerUtils.getAvailableCommodity(fleet, def.equipment.commodityId, def.equipment.crewReplacerJobId));
+			}
+			max = Math.min(max, curr + (int)CrewReplacerUtils.getAvailableCommodity(fleet, def.personnel.commodityId, def.personnel.crewReplacerJobId));
 		}
 		
 		return max;

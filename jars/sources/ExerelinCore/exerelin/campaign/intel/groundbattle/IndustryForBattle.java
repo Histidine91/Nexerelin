@@ -11,7 +11,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.intel.agents.AgentIntel;
-import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.IndustryForBattlePlugin;
 import exerelin.campaign.intel.groundbattle.plugins.MarketMapDrawer;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
@@ -291,7 +290,7 @@ public class IndustryForBattle {
 		return ind.getMarket() != null && ind.getMarket().hasIndustry(ind.getId());
 	}
 	
-	// old tabular display?
+	// old tabular display, should not be used
 	@Deprecated
 	public TooltipMakerAPI renderForcePanel(CustomPanelAPI panel, float width, 
 			boolean attacker, UIComponentAPI rightOf) 
@@ -301,14 +300,14 @@ public class IndustryForBattle {
 		TooltipMakerAPI troops = panel.createUIElement(width, height, false);
 		final Color hl = Misc.getHighlightColor();
 		
-		final Map<ForceType, Float> strengths = new HashMap<>();
+		final Map<GroundUnitDef, Float> strengths = new HashMap<>();
 		
 		// display units present here
 		boolean any = false;
 		for (GroundUnit unit : units) {
 			if (unit.isAttacker != attacker) continue;
 			any = true;
-			NexUtils.modifyMapEntry(strengths, unit.type, unit.getNumUnitEquivalents());
+			NexUtils.modifyMapEntry(strengths, unit.unitDef, unit.getNumUnitEquivalents());
 		}
 		if (!any) {	// nothing to display, quit now
 			panel.addUIElement(troops).rightOfTop(rightOf, 0);
@@ -316,14 +315,14 @@ public class IndustryForBattle {
 		}
 		
 		troops.beginIconGroup();
-		List<ForceType> keys = new ArrayList<>(strengths.keySet());
+		List<GroundUnitDef> keys = new ArrayList<>(strengths.keySet());
 		Collections.sort(keys);
-		for (ForceType type : keys) {
-			float val = strengths.get(type);
+		for (GroundUnitDef def : keys) {
+			float val = strengths.get(def);
 			int count = Math.round(val * NUM_ICONS_PER_UNIT);
 			if (count <= 0 && val > 0) count = 1;
 			
-			CommodityOnMarketAPI com = intel.market.getCommodityData(type.commodityId);
+			CommodityOnMarketAPI com = intel.market.getCommodityData(def.getCommodityIdForIcon());
 			troops.addIcons(com, count, IconRenderMode.NORMAL);
 		}
 		troops.addIconGroup(40, pad);

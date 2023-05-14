@@ -688,18 +688,16 @@ public class GroundUnit {
 				*/
 			}
 		}
-		if (type == ForceType.HEAVY) {	// heavy unit bonus on offensive
+		if (unitDef.offensiveStrMult != 1) {	// heavy unit bonus on offensive
 			boolean offensiveBonus = ifb == null && this.isAttacker;
 			offensiveBonus |= ifb != null && ifb.heldByAttacker != isAttacker;
 			if (offensiveBonus) {
-				modifyAttackStatWithDesc(stat, "heavy_offensive", GBConstants.HEAVY_OFFENSIVE_MULT);
+				modifyAttackStatWithDesc(stat, "heavy_offensive", unitDef.offensiveStrMult);
 			}
 		}
 		
-		if (intel.isCramped()) {
-			if (type == ForceType.HEAVY) {
-				modifyAttackStatWithDesc(stat, "heavy_cramped", GBConstants.HEAVY_STATION_MULT);
-			}
+		if (intel.isCramped() && unitDef.crampedStrMult != 1) {
+			modifyAttackStatWithDesc(stat, "heavy_cramped", unitDef.crampedStrMult);
 		}
 		
 		if (type == ForceType.REBEL)
@@ -913,7 +911,7 @@ public class GroundUnit {
 	}
 	
 	public int getSize() {
-		int num = type == ForceType.HEAVY ? getEquipmentCount() : getPersonnelCount();
+		int num = unitDef.equipment != null ? getEquipmentCount() : getPersonnelCount();
 		return num;
 	}
 	
@@ -923,8 +921,8 @@ public class GroundUnit {
 	 */
 	public float getSizeForStrength() {
 		float str = 0;
-		Map<String, Integer> map = type == ForceType.HEAVY ? this.equipmentMap : this.personnelMap;
-		String jobId = type == ForceType.HEAVY ? GBConstants.CREW_REPLACER_JOB_HEAVYARMS : GBConstants.CREW_REPLACER_JOB_MARINES;
+		Map<String, Integer> map = unitDef.equipment != null ? this.equipmentMap : this.personnelMap;
+		String jobId = unitDef.equipment != null ? unitDef.equipment.crewReplacerJobId : unitDef.personnel.crewReplacerJobId;
 		for (String commodity : map.keySet()) {
 			int count = map.get(commodity);
 			float power = CrewReplacerUtils.getCommodityPower(jobId, commodity);
@@ -1273,7 +1271,8 @@ public class GroundUnit {
 			minSize = (int)(avgSize * GBConstants.UNIT_MIN_SIZE_MULT);
 			this.damMult = damMult;
 		}
-		
+
+		@Deprecated
 		public static int getSizeForType(int count, ForceType type) {
 			if (type == ForceType.HEAVY) count = Math.round(count/GroundUnit.HEAVY_COUNT_DIVISOR);
 			// don't do it here since it messes with the icon count in IndustryForBattle.renderTroopPanelNew
