@@ -2,6 +2,7 @@ package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
@@ -14,6 +15,8 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.PirateBasePirateActivityCause2;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.BaseOptionStoryPointActionDelegate;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.StoryOptionParams;
@@ -473,13 +476,25 @@ public class AgentIntel extends BaseIntelPlugin {
 		
 		MarketAPI best = null;
 		float bestDist = 9999999;
+		HostileActivityEventIntel ha = HostileActivityEventIntel.get();
+		Set<LocationAPI> seen = new HashSet<>();
 		
 		for (MarketAPI market : toCheck) {
 			if (!market.hasCondition(Conditions.PIRATE_ACTIVITY)) continue;
-			MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
-			PirateActivity activityCond = (PirateActivity)(cond.getPlugin());
-			PirateBaseIntel baseIntel = activityCond.getIntel();
-			if (baseIntel.isEnding() || baseIntel.isEnded() || baseIntel.isPlayerVisible())
+			PirateBaseIntel baseIntel = null;
+
+			if (!seen.contains(market.getContainingLocation())) {
+				baseIntel = PirateBasePirateActivityCause2.getBaseIntel(market.getStarSystem());
+			}
+			else if (market.hasCondition(Conditions.PIRATE_ACTIVITY)) {
+				MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
+				PirateActivity activityCond = (PirateActivity)(cond.getPlugin());
+				baseIntel = activityCond.getIntel();
+			}
+
+			seen.add(market.getContainingLocation());
+
+			if (baseIntel == null || baseIntel.isEnding() || baseIntel.isEnded() || baseIntel.isPlayerVisible())
 				continue;
 			
 			// agent has no location, just pick the first market with cell we find
