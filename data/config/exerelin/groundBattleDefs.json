@@ -192,8 +192,8 @@
 	"unitTypes":{
 		"marine":{
 			"name":"marine",
-			"type":"MARINE",	# legacy setting, may remove later
-			#"sprite":"optional/path_to/sprite.png",
+			"type":"MARINE",	# legacy setting, may remove later; for now it's mandatory though
+			#"sprite":"optional/path_to/sprite.png",	# used in background of unit card; not automatically loaded so specify it in settings.json if needed
 			"playerCanCreate":true,
 			"strength":1,
 			"personnel":{
@@ -245,9 +245,10 @@
 			"name":"rebel",
 			"type":"REBEL",
 			"playerCanCreate":false,
-			"strength":0.5,
+			"strength":0.3,
 			"moraleMult":0.7,
 			"dropCostMult":0.7,
+			"damageTakenMult":0.6,
 			"personnel":{
 				"commodityId":"crew",
 				"crewReplacerJobId":"nex_groundBattle_rebel",

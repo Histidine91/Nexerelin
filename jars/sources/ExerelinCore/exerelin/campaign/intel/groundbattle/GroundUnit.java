@@ -629,16 +629,16 @@ public class GroundUnit {
 	}
 	
 	/**
-	 * Unit size multiplied by the unit type's strength multiplier.
+	 * Unit size multiplied by the unitdef's strength multiplier.
 	 * @return
 	 */
 	public float getBaseStrength() {
-		return getSizeForStrength() * type.strength;
+		return getSizeForStrength() * unitDef.strength;
 	}
 	
-	public static float getBaseStrengthForAverageUnit(UnitSize size, ForceType type) 
+	public static float getBaseStrengthForAverageUnit(UnitSize size, String unitDefId)
 	{
-		return size.avgSize * type.strength;
+		return size.avgSize * GroundUnitDef.getUnitDef(unitDefId).strength;
 	}
 	
 	public int getDeployCost() {
@@ -699,9 +699,6 @@ public class GroundUnit {
 		if (intel.isCramped() && unitDef.crampedStrMult != 1) {
 			modifyAttackStatWithDesc(stat, "heavy_cramped", unitDef.crampedStrMult);
 		}
-		
-		if (type == ForceType.REBEL)
-			modifyAttackStatWithDesc(stat, "rebel", GBConstants.REBEL_DAMAGE_MULT);
 		
 		float moraleMult = NexUtilsMath.lerp(1 - GBConstants.MORALE_ATTACK_MOD, 
 				1 + GBConstants.MORALE_ATTACK_MOD, morale);
@@ -801,7 +798,7 @@ public class GroundUnit {
 		}
 		else if (isAttacker) {
 			// generic XP bonus for non-player attacker units (assumes 50% XP), except rebels which use the defender bonus
-			if (type == ForceType.REBEL) {
+			if (unitDef.hasTag(GBConstants.TAG_REBEL)) {
 				injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
 			} else {
 				injectXPBonus(bonus, GBConstants.OFFENSE_STAT, true);
@@ -862,9 +859,11 @@ public class GroundUnit {
 		if (location != null && isAttacker == location.heldByAttacker)
 			stat.modifyMult(location.getIndustry().getId(), 1/location.getPlugin().getStrengthMult(),
 					location.getIndustry().getCurrentName());
-		
-		if (type == ForceType.REBEL)
-			stat.modifyMult("rebel", GBConstants.REBEL_DAMAGE_MULT, Misc.ucFirst(type.getName()));
+
+		if (unitDef.damageTakenMult != 1) {
+			stat.modifyMult("unitDefMult", unitDef.damageTakenMult,
+					getString("unitCard_tooltip_defbreakdown_defMult"));
+		}
 				
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
 			stat = plugin.modifyDamageReceived(this, stat);
@@ -881,7 +880,7 @@ public class GroundUnit {
 			substituteLocalXPBonus(bonus, false);
 		}
 		else if (isAttacker) {
-			if (type == ForceType.REBEL) {
+			if (unitDef.hasTag(GBConstants.TAG_REBEL)) {
 				injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
 			}
 			else if (!isPlayer) {

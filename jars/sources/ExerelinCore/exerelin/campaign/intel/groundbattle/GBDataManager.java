@@ -140,6 +140,7 @@ public class GBDataManager {
 				def.unitSizeMult = (float)jsonUnitEntry.optDouble("unitSizeMult", 1);
 				def.dropCostMult = (float)jsonUnitEntry.optDouble("dropCostMult", 1);
 				def.offensiveStrMult = (float)jsonUnitEntry.optDouble("offensiveStrMult", 1);
+				def.damageTakenMult = (float)jsonUnitEntry.optDouble("damageTakenMult", 1);
 				def.crampedStrMult = (float)jsonUnitEntry.optDouble("crampedStrMult", 1);
 				def.sprite = jsonUnitEntry.optString("sprite", null);
 				def.sortOrder = (float)jsonUnitEntry.optDouble("sortOrder", 10);

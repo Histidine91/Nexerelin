@@ -32,7 +32,7 @@ public class GroundUnitDef implements Comparable<GroundUnitDef> {
     public float moraleMult;
     public float dropCostMult;
     public float offensiveStrMult;
-    // public float damageTakenMult;
+    public float damageTakenMult;
     public float crampedStrMult;
     public String sprite;
     public Set<String> tags = new HashSet<>();

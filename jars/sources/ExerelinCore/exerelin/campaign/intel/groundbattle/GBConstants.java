@@ -8,6 +8,7 @@ public class GBConstants {
 	public static final String TAG_PREVENT_BOMBARDMENT_SUPER = "preventBombardmentSuper";
 	public static final String TAG_PREVENT_EW = "preventEW";
 	public static final String TAG_PREVENT_INSPIRE = "preventInspire";
+	public static final String TAG_REBEL = "rebel";
 	public static final String MEMKEY_GARRISON_DAMAGE = "$nex_garrisonDamage";
 	public static final String MEMKEY_AWAIT_DECISION = "$nex_gbAwaitDecision";
 	public static final String MEMKEY_INVASION_FAIL_STREAK = "$nex_invasionFailStreak";

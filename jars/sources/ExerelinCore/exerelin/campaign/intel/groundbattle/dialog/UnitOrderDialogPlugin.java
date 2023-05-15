@@ -12,7 +12,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCProcessSectorGe
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.*;
-import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexUtilsGUI;
@@ -121,7 +120,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	}
 	
 	public int getDisruptTime() {
-		float strRatio = unit.getAttackStrength()/GroundUnit.getBaseStrengthForAverageUnit(intel.getUnitSize(), ForceType.MARINE);
+		float strRatio = unit.getAttackStrength()/GroundUnit.getBaseStrengthForAverageUnit(intel.getUnitSize(), GroundUnitDef.MARINE);
 		Industry ind = unit.getLocation().getIndustry();
 		float days = ind.getSpec().getDisruptDanger().disruptionDays * strRatio;
 		float already = ind.getDisruptedDays();

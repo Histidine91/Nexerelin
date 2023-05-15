@@ -1373,6 +1373,7 @@
 		"unitCard_tooltip_atkbreakdown_reorganizing":"Reorganizing",
 		"unitCard_tooltip_atkbreakdown_disabled":"Attack disabled",
 		"unitCard_tooltip_atkbreakdown_rebel":"Rebel",
+		"unitCard_tooltip_defbreakdown_defMult":"Unit defense mult",
 		
 		"actionSelectTargetHeader":"Select target",
 		"actionSelectDestinationHeader":"Select destination",
